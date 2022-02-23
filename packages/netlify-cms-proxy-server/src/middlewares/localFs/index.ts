@@ -1,9 +1,11 @@
-import winston from 'winston';
-import express from 'express';
 import path from 'path';
+
 import { defaultSchema, joi } from '../joi';
 import { pathTraversal } from '../joi/customValidators';
-import {
+import { listRepoFiles, deleteFile, writeFile, move } from '../utils/fs';
+import { entriesFromFiles, readMediaFile } from '../utils/entries';
+
+import type {
   EntriesByFolderParams,
   EntriesByFilesParams,
   GetEntryParams,
@@ -15,8 +17,8 @@ import {
   DeleteFilesParams,
   DataFile,
 } from '../types';
-import { listRepoFiles, deleteFile, writeFile, move } from '../utils/fs';
-import { entriesFromFiles, readMediaFile } from '../utils/entries';
+import type express from 'express';
+import type winston from 'winston';
 
 type FsOptions = {
   repoPath: string;
@@ -24,7 +26,7 @@ type FsOptions = {
 };
 
 export function localFsMiddleware({ repoPath, logger }: FsOptions) {
-  return async function(req: express.Request, res: express.Response) {
+  return async function (req: express.Request, res: express.Response) {
     try {
       const { body } = req;
 
@@ -32,7 +34,6 @@ export function localFsMiddleware({ repoPath, logger }: FsOptions) {
         case 'info': {
           res.json({
             repo: path.basename(repoPath),
-            // eslint-disable-next-line @typescript-eslint/camelcase
             publish_modes: ['simple'],
             type: 'local_fs',
           });

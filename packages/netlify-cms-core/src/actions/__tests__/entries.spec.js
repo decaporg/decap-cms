@@ -1,4 +1,7 @@
 import { fromJS, Map } from 'immutable';
+import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+
 import {
   createEmptyDraft,
   createEmptyDraftData,
@@ -7,11 +10,9 @@ import {
   getMediaAssets,
   validateMetaField,
 } from '../entries';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
 import AssetProxy from '../../valueObjects/AssetProxy';
 
-jest.mock('coreSrc/backend');
+jest.mock('../../backend');
 jest.mock('netlify-cms-lib-util');
 jest.mock('../mediaLibrary');
 jest.mock('../../reducers/entries');
@@ -22,7 +23,7 @@ const mockStore = configureMockStore(middlewares);
 
 describe('entries', () => {
   describe('createEmptyDraft', () => {
-    const { currentBackend } = require('coreSrc/backend');
+    const { currentBackend } = require('../../backend');
     const backend = {
       processEntry: jest.fn((_state, _collection, entry) => Promise.resolve(entry)),
     };
@@ -319,7 +320,7 @@ describe('entries', () => {
     });
 
     it('should persist local backup with media files', () => {
-      const { currentBackend } = require('coreSrc/backend');
+      const { currentBackend } = require('../../backend');
 
       const backend = {
         persistLocalDraftBackup: jest.fn(() => Promise.resolve()),
@@ -351,7 +352,7 @@ describe('entries', () => {
     });
 
     it('should retrieve media files with local backup', () => {
-      const { currentBackend } = require('coreSrc/backend');
+      const { currentBackend } = require('../../backend');
       const { createAssetProxy } = require('../../valueObjects/AssetProxy');
 
       const backend = {
@@ -436,9 +437,9 @@ describe('entries', () => {
     });
 
     it('should not return error on meta path field', () => {
-      expect(
-        validateMetaField(null, null, fromJS({ meta: true, name: 'other' }), null, t),
-      ).toEqual({ error: false });
+      expect(validateMetaField(null, null, fromJS({ meta: true, name: 'other' }), null, t)).toEqual(
+        { error: false },
+      );
     });
 
     it('should return error on empty path', () => {

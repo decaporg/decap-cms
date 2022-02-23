@@ -1,6 +1,8 @@
-import { AnyAction } from 'redux';
 import { produce } from 'immer';
+
 import { USE_OPEN_AUTHORING } from '../actions/auth';
+
+import type { AnyAction } from 'redux';
 
 export type GlobalUI = {
   isFetching: boolean;

@@ -1,6 +1,7 @@
 import { Map } from 'immutable';
 import trim from 'lodash/trim';
 import trimEnd from 'lodash/trimEnd';
+
 import { createNonce, validateNonce, isInsecureProtocol } from './utils';
 
 export default class ImplicitAuthenticator {

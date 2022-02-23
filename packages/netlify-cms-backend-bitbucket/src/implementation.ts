@@ -1,4 +1,4 @@
-import semaphore, { Semaphore } from 'semaphore';
+import semaphore from 'semaphore';
 import { trimStart } from 'lodash';
 import { stripIndent } from 'common-tags';
 import {
@@ -7,30 +7,17 @@ import {
   unsentRequest,
   basename,
   getBlobSHA,
-  Entry,
-  ApiRequest,
-  Cursor,
-  AssetProxy,
-  PersistOptions,
-  DisplayURL,
-  Implementation,
   entriesByFolder,
   entriesByFiles,
-  User,
-  Credentials,
   getMediaDisplayURL,
   getMediaAsBlob,
-  Config,
-  ImplementationFile,
   unpublishedEntries,
   runWithLock,
-  AsyncLock,
   asyncLock,
   getPreviewStatus,
   getLargeMediaPatternsFromGitAttributesFile,
   getPointerFileForMediaFileObj,
   getLargeMediaFilteredMediaFiles,
-  FetchError,
   blobToFileObj,
   contentKeyFromBranch,
   generateContentKey,
@@ -40,9 +27,27 @@ import {
   branchFromContentKey,
 } from 'netlify-cms-lib-util';
 import { NetlifyAuthenticator } from 'netlify-cms-lib-auth';
+
 import AuthenticationPage from './AuthenticationPage';
 import API, { API_NAME } from './API';
 import { GitLfsClient } from './git-lfs-client';
+
+import type {
+  Entry,
+  ApiRequest,
+  Cursor,
+  AssetProxy,
+  PersistOptions,
+  DisplayURL,
+  Implementation,
+  User,
+  Credentials,
+  Config,
+  ImplementationFile,
+  AsyncLock,
+  FetchError,
+} from 'netlify-cms-lib-util';
+import type { Semaphore } from 'semaphore';
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
 
@@ -220,9 +225,7 @@ export default class BitbucketBackend implements Implementation {
       name: user.display_name,
       login: user.username,
       token: state.token,
-      // eslint-disable-next-line @typescript-eslint/camelcase
       avatar_url: user.links.avatar.href,
-      // eslint-disable-next-line @typescript-eslint/camelcase
       refresh_token: state.refresh_token,
     };
   }
@@ -238,27 +241,23 @@ export default class BitbucketBackend implements Implementation {
     // instantiating a new Authenticator on each refresh isn't ideal,
     if (!this.authenticator) {
       const cfg = {
-        // eslint-disable-next-line @typescript-eslint/camelcase
         base_url: this.baseUrl,
-        // eslint-disable-next-line @typescript-eslint/camelcase
         site_id: this.siteId,
       };
       this.authenticator = new NetlifyAuthenticator(cfg);
     }
 
-    this.refreshedTokenPromise = this.authenticator! // eslint-disable-next-line @typescript-eslint/camelcase
-      .refresh({ provider: 'bitbucket', refresh_token: this.refreshToken as string })
-      // eslint-disable-next-line @typescript-eslint/camelcase
-      .then(({ token, refresh_token }) => {
-        this.token = token;
-        // eslint-disable-next-line @typescript-eslint/camelcase
-        this.refreshToken = refresh_token;
-        this.refreshedTokenPromise = undefined;
+    this.refreshedTokenPromise = this.authenticator!.refresh({
+      provider: 'bitbucket',
+      refresh_token: this.refreshToken as string,
+    }).then(({ token, refresh_token }) => {
+      this.token = token;
+      this.refreshToken = refresh_token;
+      this.refreshedTokenPromise = undefined;
 
-        // eslint-disable-next-line @typescript-eslint/camelcase
-        this.updateUserCredentials({ token, refresh_token });
-        return token;
-      });
+      this.updateUserCredentials({ token, refresh_token });
+      return token;
+    });
 
     return this.refreshedTokenPromise;
   }
@@ -277,9 +276,9 @@ export default class BitbucketBackend implements Implementation {
   }
 
   apiRequestFunction = async (req: ApiRequest) => {
-    const token = (this.refreshedTokenPromise
-      ? await this.refreshedTokenPromise
-      : this.token) as string;
+    const token = (
+      this.refreshedTokenPromise ? await this.refreshedTokenPromise : this.token
+    ) as string;
 
     const authorizedRequest = unsentRequest.withHeaders({ Authorization: `Bearer ${token}` }, req);
     const response: Response = await unsentRequest.performRequest(authorizedRequest);
@@ -320,7 +319,7 @@ export default class BitbucketBackend implements Implementation {
       API_NAME,
     );
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     files[CURSOR_COMPATIBILITY_SYMBOL] = cursor;
     return files;

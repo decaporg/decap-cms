@@ -2,10 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { css } from '@emotion/core';
 import styled from '@emotion/styled';
-import { FileUploadButton } from 'UI';
 import copyToClipboard from 'copy-text-to-clipboard';
 import { isAbsolutePath } from 'netlify-cms-lib-util';
 import { buttons, shadows, zIndex } from 'netlify-cms-ui-default';
+
+import { FileUploadButton } from '../UI';
 
 const styles = {
   button: css`

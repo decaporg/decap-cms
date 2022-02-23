@@ -3,6 +3,41 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.11.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-test/compare/netlify-cms-backend-test@2.11.2...netlify-cms-backend-test@2.11.3) (2021-06-01)
+
+**Note:** Version bump only for package netlify-cms-backend-test
+
+
+
+
+
+## [2.11.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-test/compare/netlify-cms-backend-test@2.11.1...netlify-cms-backend-test@2.11.2) (2021-05-31)
+
+**Note:** Version bump only for package netlify-cms-backend-test
+
+
+
+
+
+## [2.11.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-test/compare/netlify-cms-backend-test@2.11.0...netlify-cms-backend-test@2.11.1) (2021-05-19)
+
+**Note:** Version bump only for package netlify-cms-backend-test
+
+
+
+
+
+# [2.11.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-test/compare/netlify-cms-backend-test@2.10.7...netlify-cms-backend-test@2.11.0) (2021-05-04)
+
+
+### Features
+
+* added react 17 as peer dependency in packages ([#5316](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-test/issues/5316)) ([9e42380](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-test/commit/9e423805707321396eec137f5b732a5b07a0dd3f))
+
+
+
+
+
 ## [2.10.7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-test/compare/netlify-cms-backend-test@2.10.6...netlify-cms-backend-test@2.10.7) (2021-02-23)
 
 **Note:** Version bump only for package netlify-cms-backend-test

@@ -1,4 +1,13 @@
 import {
+  EditorialWorkflowError,
+  APIError,
+  unsentRequest,
+  blobToFileObj,
+} from 'netlify-cms-lib-util';
+
+import AuthenticationPage from './AuthenticationPage';
+
+import type {
   Entry,
   AssetProxy,
   PersistOptions,
@@ -6,13 +15,8 @@ import {
   Config,
   Implementation,
   ImplementationFile,
-  EditorialWorkflowError,
-  APIError,
-  unsentRequest,
   UnpublishedEntry,
-  blobToFileObj,
 } from 'netlify-cms-lib-util';
-import AuthenticationPage from './AuthenticationPage';
 
 async function serializeAsset(assetProxy: AssetProxy) {
   const base64content = await assetProxy.toBase64!();
@@ -80,7 +84,7 @@ export default class ProxyBackend implements Implementation {
   }
 
   authenticate() {
-    return (Promise.resolve() as unknown) as Promise<User>;
+    return Promise.resolve() as unknown as Promise<User>;
   }
 
   logout() {

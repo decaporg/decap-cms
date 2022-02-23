@@ -1,11 +1,13 @@
-import { ThunkDispatch } from 'redux-thunk';
-import { AnyAction } from 'redux';
 import { isEqual } from 'lodash';
-import { State } from '../types/redux';
+
 import { currentBackend } from '../backend';
 import { getIntegrationProvider } from '../integrations';
 import { selectIntegration } from '../reducers';
-import { EntryValue } from '../valueObjects/Entry';
+
+import type { State } from '../types/redux';
+import type { AnyAction } from 'redux';
+import type { ThunkDispatch } from 'redux-thunk';
+import type { EntryValue } from '../valueObjects/Entry';
 
 /*
  * Constant Declarations

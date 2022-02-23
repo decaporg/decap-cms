@@ -23,6 +23,9 @@ npm install --save react react-dom next
 # Install webpack loader for Markdown (Use version 3+)
 npm install --save-dev frontmatter-markdown-loader
 
+# If using NextJS v11.0.0 or above, @babel/core and @babel/preset-react has to be installed as dependencies of frontmatter-markdown-loader
+npm install --save-dev @babel/core @babel/preset-react
+
 # Create folder for pages (default for NextJS), and add a index file
 mkdir pages
 touch pages/index.js
@@ -164,7 +167,7 @@ Paste the following configuration into your `public/admin/config.yml` file:
 ```yaml
 backend:
   name: git-gateway
-  branch: master
+  branch: main # Branch to update (optional; defaults to master)
 media_folder: public/img
 public_folder: img
 collections:

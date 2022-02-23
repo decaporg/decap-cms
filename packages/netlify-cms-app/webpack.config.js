@@ -1,4 +1,5 @@
 const webpack = require('webpack');
+
 const pkg = require('./package.json');
 const { getConfig, plugins } = require('../../scripts/webpack');
 const baseWebpackConfig = getConfig({ baseOnly: true });

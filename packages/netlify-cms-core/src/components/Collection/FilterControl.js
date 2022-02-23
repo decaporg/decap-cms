@@ -1,6 +1,7 @@
 import React from 'react';
 import { translate } from 'react-polyglot';
 import { Dropdown, DropdownCheckedItem } from 'netlify-cms-ui-default';
+
 import { ControlButton } from './ControlButton';
 
 function FilterControl({ viewFilters, t, onFilterClick, filter }) {

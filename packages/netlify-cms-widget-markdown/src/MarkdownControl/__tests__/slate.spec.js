@@ -1,7 +1,8 @@
 /** @jsx h */
 
-import h from '../../../test-helpers/h';
 import { Editor } from 'slate';
+
+import h from '../../../test-helpers/h';
 import plugins from '../plugins/visual';
 import schema from '../schema';
 
@@ -40,10 +41,7 @@ describe.skip('slate', () => {
     );
 
     function fn(editor) {
-      editor
-        .deleteBackward()
-        .insertText('b')
-        .setBlocks('heading-one');
+      editor.deleteBackward().insertText('b').setBlocks('heading-one');
     }
 
     const [actual, expected] = run(input, output, fn);

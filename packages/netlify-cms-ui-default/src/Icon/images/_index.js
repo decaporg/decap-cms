@@ -22,6 +22,7 @@ import iconH2 from './h2.svg';
 import iconHOptions from './h-options.svg';
 import iconHome from './home.svg';
 import iconImage from './image.svg';
+import iconInfoCircle from './info-circle.svg';
 import iconItalic from './italic.svg';
 import iconLink from './link.svg';
 import iconList from './list.svg';
@@ -72,6 +73,7 @@ const images = {
   hOptions: iconHOptions,
   home: iconHome,
   image: iconImage,
+  'info-circle': iconInfoCircle,
   italic: iconItalic,
   link: iconLink,
   list: iconList,

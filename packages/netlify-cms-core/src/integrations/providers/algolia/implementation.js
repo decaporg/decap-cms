@@ -1,7 +1,8 @@
 import _ from 'lodash';
-import { createEntry } from 'ValueObjects/Entry';
-import { selectEntrySlug } from 'Reducers/collections';
 import { unsentRequest } from 'netlify-cms-lib-util';
+
+import { createEntry } from '../../../valueObjects/Entry';
+import { selectEntrySlug } from '../../../reducers/collections';
 
 const { fetchWithTimeout: fetch } = unsentRequest;
 

@@ -16,8 +16,9 @@ const ForkApprovalContainer = styled.div`
 `;
 const ForkButtonsContainer = styled.div`
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: column nowrap;
   justify-content: space-around;
+  align-items: center;
 `;
 
 export default class GitHubAuthenticationPage extends React.Component {
@@ -75,10 +76,8 @@ export default class GitHubAuthenticationPage extends React.Component {
     };
     const auth = new NetlifyAuthenticator(cfg);
 
-    const {
-      open_authoring: openAuthoring = false,
-      auth_scope: authScope = '',
-    } = this.props.config.backend;
+    const { open_authoring: openAuthoring = false, auth_scope: authScope = '' } =
+      this.props.config.backend;
 
     const scope = authScope || (openAuthoring ? 'public_repo' : 'repo');
     auth.authenticate({ provider: 'github', scope }, (err, data) => {
@@ -111,7 +110,7 @@ export default class GitHubAuthenticationPage extends React.Component {
     if (requestingFork) {
       const { approveFork, refuseFork } = this.state;
       return {
-        renderPageContent: ({ LoginButton }) => (
+        renderPageContent: ({ LoginButton, TextButton, showAbortButton }) => (
           <ForkApprovalContainer>
             <p>
               Open Authoring is enabled: we need to use a fork on your github account. (If a fork
@@ -119,7 +118,9 @@ export default class GitHubAuthenticationPage extends React.Component {
             </p>
             <ForkButtonsContainer>
               <LoginButton onClick={approveFork}>Fork the repo</LoginButton>
-              <LoginButton onClick={refuseFork}>Don&#39;t fork the repo</LoginButton>
+              {showAbortButton && (
+                <TextButton onClick={refuseFork}>Don&#39;t fork the repo</TextButton>
+              )}
             </ForkButtonsContainer>
           </ForkApprovalContainer>
         ),

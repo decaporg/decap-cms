@@ -3,6 +3,52 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.14.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-backend-bitbucket@2.13.3...netlify-cms-backend-bitbucket@2.14.0) (2021-10-18)
+
+
+### Features
+
+* display author of changes in workflow tab ([#5780](https://github.com/netlify/netlify-cms/issues/5780)) ([3f607e4](https://github.com/netlify/netlify-cms/commit/3f607e41d9c4d8fe5329a9ab6841cada7742825e))
+
+
+
+
+
+## [2.13.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/compare/netlify-cms-backend-bitbucket@2.13.2...netlify-cms-backend-bitbucket@2.13.3) (2021-06-01)
+
+**Note:** Version bump only for package netlify-cms-backend-bitbucket
+
+
+
+
+
+## [2.13.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/compare/netlify-cms-backend-bitbucket@2.13.1...netlify-cms-backend-bitbucket@2.13.2) (2021-05-31)
+
+**Note:** Version bump only for package netlify-cms-backend-bitbucket
+
+
+
+
+
+## [2.13.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/compare/netlify-cms-backend-bitbucket@2.13.0...netlify-cms-backend-bitbucket@2.13.1) (2021-05-19)
+
+**Note:** Version bump only for package netlify-cms-backend-bitbucket
+
+
+
+
+
+# [2.13.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/compare/netlify-cms-backend-bitbucket@2.12.8...netlify-cms-backend-bitbucket@2.13.0) (2021-05-04)
+
+
+### Features
+
+* added react 17 as peer dependency in packages ([#5316](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/issues/5316)) ([9e42380](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/commit/9e423805707321396eec137f5b732a5b07a0dd3f))
+
+
+
+
+
 ## [2.12.8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbucket/compare/netlify-cms-backend-bitbucket@2.12.7...netlify-cms-backend-bitbucket@2.12.8) (2021-02-23)
 
 **Note:** Version bump only for package netlify-cms-backend-bitbucket

@@ -1,6 +1,7 @@
 import React from 'react';
-import { CopyToClipBoardButton } from '../MediaLibraryButtons';
 import { render } from '@testing-library/react';
+
+import { CopyToClipBoardButton } from '../MediaLibraryButtons';
 
 describe('CopyToClipBoardButton', () => {
   const props = {

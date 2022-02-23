@@ -170,6 +170,19 @@ describe('registry', () => {
           expect(handler).toHaveBeenCalledTimes(2);
           expect(handler).toHaveBeenLastCalledWith(data, options2);
         });
+
+        it(`should throw error when '${name}' handler throws error`, async () => {
+          const { registerEventListener, invokeEvent } = require('../registry');
+
+          const handler = jest.fn(() => {
+            throw new Error('handler failed!');
+          });
+
+          registerEventListener({ name, handler });
+          const data = { entry: fromJS({ data: {} }) };
+
+          await expect(invokeEvent({ name, data })).rejects.toThrow('handler failed!');
+        });
       });
 
       it(`should return an updated entry's DataMap`, async () => {

@@ -64,7 +64,7 @@ const colors = {
   active: colorsRaw.blue,
   activeBackground: colorsRaw.blueLight,
   inactive: colorsRaw.gray,
-  button: colorsRaw.gray,
+  button: colorsRaw.grayDark,
   buttonText: colorsRaw.white,
   inputBackground: colorsRaw.white,
   infoText: colorsRaw.blue,
@@ -191,6 +191,15 @@ const buttons = {
     background-color: ${colorsRaw.gray};
     color: ${colorsRaw.white};
   `,
+  widget: css`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2px 12px;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 3px;
+  `,
   medium: css`
     height: 27px;
     line-height: 27px;
@@ -241,6 +250,7 @@ const buttons = {
   disabled: css`
     background-color: ${colorsRaw.grayLight};
     color: ${colorsRaw.gray};
+    cursor: default;
   `,
 };
 
@@ -490,6 +500,10 @@ function GlobalStyles() {
         a {
           color: ${colors.text};
           text-decoration: none;
+        }
+
+        button {
+          font-family: inherit;
         }
 
         img {

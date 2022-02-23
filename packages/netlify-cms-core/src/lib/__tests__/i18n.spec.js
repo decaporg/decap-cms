@@ -1,4 +1,5 @@
 import { fromJS } from 'immutable';
+
 import * as i18n from '../i18n';
 
 jest.mock('../../reducers/collections', () => {
@@ -180,6 +181,17 @@ describe('i18n', () => {
         ),
       ).toEqual(['src/content/en/index.md', 'src/content/de/index.md']);
     });
+
+    it('should return array with single path when structure is I18N_STRUCTURE.SINGLE_FILE', () => {
+      expect(
+        i18n.getFilePaths(
+          fromJS({
+            i18n: { structure: i18n.I18N_STRUCTURE.SINGLE_FILE, locales: ['en', 'de'] },
+          }),
+          ...args,
+        ),
+      ).toEqual(['src/content/index.md']);
+    });
   });
 
   describe('normalizeFilePath', () => {
@@ -203,6 +215,36 @@ describe('i18n', () => {
       expect(
         i18n.normalizeFilePath(i18n.I18N_STRUCTURE.SINGLE_FILE, 'src/content/index.md', 'en'),
       ).toEqual('src/content/index.md');
+    });
+  });
+
+  describe('getLocaleFromPath', () => {
+    it('should return the locale from folder name in the path when structure is I18N_STRUCTURE.MULTIPLE_FOLDERS', () => {
+      expect(
+        i18n.getLocaleFromPath(
+          i18n.I18N_STRUCTURE.MULTIPLE_FOLDERS,
+          'md',
+          'src/content/en/index.md',
+        ),
+      ).toEqual('en');
+    });
+
+    it('should return the locale extension from the file name when structure is I18N_STRUCTURE.MULTIPLE_FILES', () => {
+      expect(
+        i18n.getLocaleFromPath(i18n.I18N_STRUCTURE.MULTIPLE_FILES, 'md', 'src/content/index.en.md'),
+      ).toEqual('en');
+    });
+
+    it('issue #5909: return the correct locale extension for language gd', () => {
+      expect(
+        i18n.getLocaleFromPath(i18n.I18N_STRUCTURE.MULTIPLE_FILES, 'md', 'src/content/index.gd.md'),
+      ).toEqual('gd');
+    });
+
+    it('should return an empty string when structure is I18N_STRUCTURE.SINGLE_FILE', () => {
+      expect(
+        i18n.getLocaleFromPath(i18n.I18N_STRUCTURE.SINGLE_FILE, 'md', 'src/content/index.md'),
+      ).toEqual('');
     });
   });
 

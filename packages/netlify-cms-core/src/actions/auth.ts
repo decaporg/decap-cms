@@ -1,9 +1,11 @@
 import { actions as notifActions } from 'redux-notifications';
-import { Credentials, User } from 'netlify-cms-lib-util';
-import { ThunkDispatch } from 'redux-thunk';
-import { AnyAction } from 'redux';
+
 import { currentBackend } from '../backend';
-import { State } from '../types/redux';
+
+import type { Credentials, User } from 'netlify-cms-lib-util';
+import type { ThunkDispatch } from 'redux-thunk';
+import type { AnyAction } from 'redux';
+import type { State } from '../types/redux';
 
 const { notifSend, notifClear } = notifActions;
 

@@ -4,11 +4,12 @@ import styled from '@emotion/styled';
 import { Map } from 'immutable';
 import { isEmpty } from 'lodash';
 import { translate } from 'react-polyglot';
-import { Modal } from 'UI';
+import { colors } from 'netlify-cms-ui-default';
+
+import { Modal } from '../UI';
 import MediaLibraryTop from './MediaLibraryTop';
 import MediaLibraryCardGrid from './MediaLibraryCardGrid';
 import EmptyMessage from './EmptyMessage';
-import { colors } from 'netlify-cms-ui-default';
 
 /**
  * Responsive styling needs to be overhauled. Current setup requires specifying

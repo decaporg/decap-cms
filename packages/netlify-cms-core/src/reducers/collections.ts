@@ -1,12 +1,17 @@
 import { List, Set, fromJS, OrderedMap } from 'immutable';
 import { get, escapeRegExp } from 'lodash';
+import { stringTemplate } from 'netlify-cms-lib-widgets';
+
 import consoleError from '../lib/consoleError';
-import { CONFIG_SUCCESS, ConfigAction } from '../actions/config';
+import { CONFIG_SUCCESS } from '../actions/config';
 import { FILES, FOLDER } from '../constants/collectionTypes';
 import { COMMIT_DATE, COMMIT_AUTHOR } from '../constants/commitProps';
 import { INFERABLE_FIELDS, IDENTIFIER_FIELDS, SORTABLE_FIELDS } from '../constants/fieldInference';
 import { formatExtensions } from '../formats/formats';
-import {
+import { selectMediaFolder } from './entries';
+import { summaryFormatter } from '../lib/formatters';
+
+import type {
   Collection,
   Collections,
   CollectionFiles,
@@ -16,10 +21,8 @@ import {
   ViewGroup,
   CmsConfig,
 } from '../types/redux';
-import { selectMediaFolder } from './entries';
-import { stringTemplate } from 'netlify-cms-lib-widgets';
-import { summaryFormatter } from '../lib/formatters';
-import { Backend } from '../backend';
+import type { ConfigAction } from '../actions/config';
+import type { Backend } from '../backend';
 
 const { keyToPathArray } = stringTemplate;
 
@@ -144,10 +147,7 @@ export function selectFieldsWithMediaFolders(collection: Collection, slug: strin
     const fields = collection.get('fields').toArray();
     return getFieldsWithMediaFolders(fields);
   } else if (collection.has('files')) {
-    const fields =
-      getFileFromSlug(collection, slug)
-        ?.get('fields')
-        .toArray() || [];
+    const fields = getFileFromSlug(collection, slug)?.get('fields').toArray() || [];
     return getFieldsWithMediaFolders(fields);
   }
 
@@ -317,16 +317,18 @@ export function selectInferedField(collection: Collection, fieldName: string) {
   if (fieldName === 'title' && collection.get('identifier_field')) {
     return selectIdentifier(collection);
   }
-  const inferableField = (INFERABLE_FIELDS as Record<
-    string,
-    {
-      type: string;
-      synonyms: string[];
-      secondaryTypes: string[];
-      fallbackToFirstField: boolean;
-      showError: boolean;
-    }
-  >)[fieldName];
+  const inferableField = (
+    INFERABLE_FIELDS as Record<
+      string,
+      {
+        type: string;
+        synonyms: string[];
+        secondaryTypes: string[];
+        fallbackToFirstField: boolean;
+        showError: boolean;
+      }
+    >
+  )[fieldName];
   const fields = collection.get('fields');
   let field;
 
@@ -376,7 +378,14 @@ export function selectEntryCollectionTitle(collection: Collection, entry: EntryM
   // try to infer a title field from the entry data
   const entryData = entry.get('data');
   const titleField = selectInferedField(collection, 'title');
-  return titleField && entryData.getIn(keyToPathArray(titleField));
+  const result = titleField && entryData.getIn(keyToPathArray(titleField));
+
+  // if the custom field does not yield a result, fallback to 'title'
+  if (!result && titleField !== 'title') {
+    return entryData.getIn(keyToPathArray('title'));
+  }
+
+  return result;
 }
 
 export function selectDefaultSortableFields(

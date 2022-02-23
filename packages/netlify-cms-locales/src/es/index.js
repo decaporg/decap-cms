@@ -115,7 +115,7 @@ const es = {
       save: 'Guardar',
       deleting: 'Eliminando...',
       updating: 'Actualizando...',
-      setStatus: 'Actualizar estado',
+      status: 'Estado: %{status}',
       backCollection: ' Escribiendo en la colección %{collectionLabel}',
       unsavedChanges: 'Cambios no guardados',
       changesSaved: 'Cambios guardados',

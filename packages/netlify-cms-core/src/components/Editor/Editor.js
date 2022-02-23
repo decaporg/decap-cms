@@ -5,8 +5,9 @@ import { connect } from 'react-redux';
 import { Loader } from 'netlify-cms-ui-default';
 import { translate } from 'react-polyglot';
 import { debounce } from 'lodash';
-import history from 'Routing/history';
-import { logoutUser } from 'Actions/auth';
+
+import { history, navigateToCollection, navigateToNewEntry } from '../../routing/history';
+import { logoutUser } from '../../actions/auth';
 import {
   loadEntry,
   loadEntries,
@@ -21,20 +22,19 @@ import {
   loadLocalBackup,
   retrieveLocalBackup,
   deleteLocalBackup,
-} from 'Actions/entries';
+} from '../../actions/entries';
 import {
   updateUnpublishedEntryStatus,
   publishUnpublishedEntry,
   unpublishPublishedEntry,
   deleteUnpublishedEntry,
-} from 'Actions/editorialWorkflow';
-import { loadDeployPreview } from 'Actions/deploys';
-import { selectEntry, selectUnpublishedEntry, selectDeployPreview } from 'Reducers';
-import { selectFields } from 'Reducers/collections';
-import { status, EDITORIAL_WORKFLOW } from 'Constants/publishModes';
+} from '../../actions/editorialWorkflow';
+import { loadDeployPreview } from '../../actions/deploys';
+import { selectEntry, selectUnpublishedEntry, selectDeployPreview } from '../../reducers';
+import { selectFields } from '../../reducers/collections';
+import { status, EDITORIAL_WORKFLOW } from '../../constants/publishModes';
 import EditorInterface from './EditorInterface';
 import withWorkflow from './withWorkflow';
-import { navigateToCollection, navigateToNewEntry } from '../../routing/history';
 
 export class Editor extends React.Component {
   static propTypes = {
@@ -192,7 +192,7 @@ export class Editor extends React.Component {
     window.removeEventListener('beforeunload', this.exitBlocker);
   }
 
-  createBackup = debounce(function(entry, collection) {
+  createBackup = debounce(function (entry, collection) {
     this.props.persistLocalBackup(entry, collection);
   }, 2000);
 
@@ -202,14 +202,8 @@ export class Editor extends React.Component {
   };
 
   handleChangeStatus = newStatusName => {
-    const {
-      entryDraft,
-      updateUnpublishedEntryStatus,
-      collection,
-      slug,
-      currentStatus,
-      t,
-    } = this.props;
+    const { entryDraft, updateUnpublishedEntryStatus, collection, slug, currentStatus, t } =
+      this.props;
     if (entryDraft.get('hasChanged')) {
       window.alert(t('editor.editor.onUpdatingWithUnsavedChanges'));
       return;
@@ -318,15 +312,8 @@ export class Editor extends React.Component {
   };
 
   handleDeleteUnpublishedChanges = async () => {
-    const {
-      entryDraft,
-      collection,
-      slug,
-      deleteUnpublishedEntry,
-      loadEntry,
-      isModification,
-      t,
-    } = this.props;
+    const { entryDraft, collection, slug, deleteUnpublishedEntry, loadEntry, isModification, t } =
+      this.props;
     if (
       entryDraft.get('hasChanged') &&
       !window.confirm(t('editor.editor.onDeleteUnpublishedChangesWithUnsavedChanges'))

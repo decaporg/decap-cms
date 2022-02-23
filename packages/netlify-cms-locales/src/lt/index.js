@@ -132,7 +132,7 @@ const lt = {
       save: 'Išsaugoti',
       deleting: 'Trinama...',
       updating: 'Atnaujinama...',
-      setStatus: 'Nustatyti statusą',
+      status: 'Statusą: %{status}',
       backCollection: ' Rašoma %{collectionLabel} kolekcijoje',
       unsavedChanges: 'Neišsaugoti pakeitimai',
       changesSaved: 'Pakeitimai išsauogti',

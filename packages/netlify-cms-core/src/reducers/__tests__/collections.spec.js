@@ -1,4 +1,5 @@
 import { fromJS, Map } from 'immutable';
+
 import { configLoaded } from '../../actions/config';
 import collections, {
   selectAllowDeletion,
@@ -368,36 +369,23 @@ describe('collections', () => {
       });
 
       expect(selectField(collection, 'en.title')).toBe(
-        collection
-          .get('fields')
-          .get(0)
-          .get('fields')
-          .get(0),
+        collection.get('fields').get(0).get('fields').get(0),
       );
 
       expect(selectField(collection, 'it.title.subTitle')).toBe(
-        collection
-          .get('fields')
-          .get(2)
-          .get('field')
-          .get('fields')
-          .get(0),
+        collection.get('fields').get(2).get('field').get('fields').get(0),
       );
 
       expect(selectField(collection, 'fr.title.variableType')).toBe(
-        collection
-          .get('fields')
-          .get(3)
-          .get('fields')
-          .get(0)
-          .get('types')
-          .get(0),
+        collection.get('fields').get(3).get('fields').get(0).get('types').get(0),
       );
     });
   });
 
   describe('selectEntryCollectionTitle', () => {
-    const entry = fromJS({ data: { title: 'entry title', otherField: 'other field' } });
+    const entry = fromJS({
+      data: { title: 'entry title', otherField: 'other field', emptyLinkTitle: '' },
+    });
 
     it('should return the entry title if set', () => {
       const collection = fromJS({
@@ -425,6 +413,24 @@ describe('collections', () => {
       });
 
       expect(selectEntryCollectionTitle(collection, entry)).toEqual('other field');
+    });
+
+    it('should return the entry title if identifier_field content is not defined in collection', () => {
+      const collection = fromJS({
+        identifier_field: 'missingLinkTitle',
+        fields: [{ name: 'title' }, { name: 'otherField' }],
+      });
+
+      expect(selectEntryCollectionTitle(collection, entry)).toEqual('entry title');
+    });
+
+    it('should return the entry title if identifier_field content is empty', () => {
+      const collection = fromJS({
+        identifier_field: 'emptyLinkTitle',
+        fields: [{ name: 'title' }, { name: 'otherField' }, { name: 'emptyLinkTitle' }],
+      });
+
+      expect(selectEntryCollectionTitle(collection, entry)).toEqual('entry title');
     });
 
     it('should return the entry label of a file collection', () => {

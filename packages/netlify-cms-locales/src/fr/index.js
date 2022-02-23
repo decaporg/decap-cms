@@ -136,7 +136,7 @@ const fr = {
       save: 'Enregistrer',
       deleting: 'Suppression...',
       updating: 'Mise à jour...',
-      setStatus: 'Définir le statut',
+      status: 'Statut: %{status}',
       backCollection: ' Écriture dans la collection %{collectionLabel}',
       unsavedChanges: 'Modifications non enregistrées',
       changesSaved: 'Modifications enregistrées',
@@ -195,6 +195,10 @@ const fr = {
       },
       datetime: {
         now: 'Maintenant',
+      },
+      list: {
+        add: 'Ajouter %{item}',
+        addType: 'Ajouter une entrée de type %{item}',
       },
     },
   },

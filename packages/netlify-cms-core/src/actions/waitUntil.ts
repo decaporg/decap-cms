@@ -1,7 +1,9 @@
-import { WAIT_UNTIL_ACTION, WaitActionArgs } from '../redux/middleware/waitUntilAction';
-import { ThunkDispatch } from 'redux-thunk';
-import { AnyAction } from 'redux';
-import { State } from '../types/redux';
+import { WAIT_UNTIL_ACTION } from '../redux/middleware/waitUntilAction';
+
+import type { WaitActionArgs } from '../redux/middleware/waitUntilAction';
+import type { ThunkDispatch } from 'redux-thunk';
+import type { AnyAction } from 'redux';
+import type { State } from '../types/redux';
 
 export function waitUntil({ predicate, run }: WaitActionArgs) {
   return {

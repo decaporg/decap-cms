@@ -1,4 +1,5 @@
 import mapValues from 'lodash/mapValues';
+
 import images from './images/_index';
 
 /**

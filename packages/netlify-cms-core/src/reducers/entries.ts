@@ -1,5 +1,13 @@
 import { Map, List, fromJS, OrderedMap, Set } from 'immutable';
 import { dirname, join } from 'path';
+import { isAbsolutePath, basename } from 'netlify-cms-lib-util';
+import { trim, once, sortBy, set, orderBy, groupBy } from 'lodash';
+import { stringTemplate } from 'netlify-cms-lib-widgets';
+
+import { SortDirection } from '../types/redux';
+import { folderFormatter } from '../lib/formatters';
+import { selectSortDataPath } from './collections';
+import { SEARCH_ENTRIES_SUCCESS } from '../actions/search';
 import {
   ENTRY_REQUEST,
   ENTRY_SUCCESS,
@@ -19,8 +27,10 @@ import {
   GROUP_ENTRIES_FAILURE,
   CHANGE_VIEW_STYLE,
 } from '../actions/entries';
-import { SEARCH_ENTRIES_SUCCESS } from '../actions/search';
-import {
+import { VIEW_STYLE_LIST } from '../constants/collectionViews';
+import { joinUrlPath } from '../lib/urlHelper';
+
+import type {
   EntriesAction,
   EntryRequestPayload,
   EntrySuccessPayload,
@@ -41,7 +51,6 @@ import {
   SortMap,
   SortObject,
   Sort,
-  SortDirection,
   Filter,
   Group,
   FilterMap,
@@ -53,13 +62,6 @@ import {
   EntriesGroupFailurePayload,
   GroupOfEntries,
 } from '../types/redux';
-import { folderFormatter } from '../lib/formatters';
-import { isAbsolutePath, basename } from 'netlify-cms-lib-util';
-import { trim, once, sortBy, set, orderBy, groupBy } from 'lodash';
-import { selectSortDataPath } from './collections';
-import { stringTemplate } from 'netlify-cms-lib-widgets';
-import { VIEW_STYLE_LIST } from '../constants/collectionViews';
-import { joinUrlPath } from '../lib/urlHelper';
 
 const { keyToPathArray } = stringTemplate;
 
@@ -105,10 +107,9 @@ function persistSort(sort: Sort | undefined) {
     const storageSort: StorageSort = {};
     sort.keySeq().forEach(key => {
       const collection = key as string;
-      const sortObjects = (sort
-        .get(collection)
-        .valueSeq()
-        .toJS() as SortObject[]).map((value, index) => ({ ...value, index }));
+      const sortObjects = (sort.get(collection).valueSeq().toJS() as SortObject[]).map(
+        (value, index) => ({ ...value, index }),
+      );
 
       sortObjects.forEach(value => {
         set(storageSort, [collection, value.key], value);
@@ -333,7 +334,7 @@ function entries(
     }
 
     case CHANGE_VIEW_STYLE: {
-      const payload = (action.payload as unknown) as ChangeViewStylePayload;
+      const payload = action.payload as unknown as ChangeViewStylePayload;
       const { style } = payload;
       const newState = state.withMutations(map => {
         map.setIn(['viewStyle'], style);
@@ -492,10 +493,8 @@ export function selectGroups(state: Entries, collection: Collection) {
     return [];
   }
 
-  let groups: Record<
-    string,
-    { id: string; label: string; value: string | boolean | undefined }
-  > = {};
+  let groups: Record<string, { id: string; label: string; value: string | boolean | undefined }> =
+    {};
   const groupedEntries = groupBy(entries.toArray(), entry => {
     const group = getGroup(entry, selectedGroup);
     groups = { ...groups, [group.id]: group };

@@ -7,8 +7,8 @@
  * action coming through the system. Think of it as a thunk that
  * blocks until the condition is met.
  */
-import { Middleware, MiddlewareAPI, Dispatch, AnyAction } from 'redux';
-import { State } from '../../types/redux';
+import type { Middleware, MiddlewareAPI, Dispatch, AnyAction } from 'redux';
+import type { State } from '../../types/redux';
 
 export const WAIT_UNTIL_ACTION = 'WAIT_UNTIL_ACTION';
 
@@ -51,13 +51,14 @@ export const waitUntilAction: Middleware<{}, State, Dispatch> = ({
     }
   }
 
-  return (next: Dispatch<AnyAction>) => (action: AnyAction): null | AnyAction => {
-    if (action.type === WAIT_UNTIL_ACTION) {
-      pending.push(action as WaitAction);
-      return null;
-    }
-    const result = next(action);
-    checkPending(action);
-    return result;
-  };
+  return (next: Dispatch<AnyAction>) =>
+    (action: AnyAction): null | AnyAction => {
+      if (action.type === WAIT_UNTIL_ACTION) {
+        pending.push(action as WaitAction);
+        return null;
+      }
+      const result = next(action);
+      checkPending(action);
+      return result;
+    };
 };

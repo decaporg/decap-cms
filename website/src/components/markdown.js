@@ -78,6 +78,8 @@ const StyledMarkdown = styled.div`
     margin-bottom: 40px;
     width: 100%;
     text-align: left;
+    display: block;
+    overflow: auto;
   }
 
   tbody tr {

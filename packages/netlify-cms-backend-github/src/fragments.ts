@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import { gql } from 'graphql-tag';
 
 export const repository = gql`
   fragment RepositoryParts on Repository {
@@ -50,6 +50,13 @@ export const pullRequest = gql`
     state
     title
     merged_at: mergedAt
+    updated_at: updatedAt
+    user: author {
+      login
+      ... on User {
+        name
+      }
+    }
     repository {
       ...RepositoryParts
     }

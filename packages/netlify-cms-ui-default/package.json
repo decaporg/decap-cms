@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-ui-default",
   "description": "Default UI components for Netlify CMS.",
-  "version": "2.12.2",
+  "version": "2.15.4",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
   "license": "MIT",
@@ -17,15 +17,15 @@
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
   },
   "dependencies": {
-    "react-aria-menubutton": "^6.0.0",
+    "react-aria-menubutton": "^7.0.0",
     "react-toggled": "^1.1.2",
-    "react-transition-group": "^2.6.0"
+    "react-transition-group": "^4.0.0"
   },
   "peerDependencies": {
     "@emotion/core": "^10.0.35",
     "@emotion/styled": "^10.0.27",
     "lodash": "^4.17.11",
     "prop-types": "^15.7.2",
-    "react": "^16.8.4"
+    "react": "^16.8.4 || ^17.0.0"
   }
 }

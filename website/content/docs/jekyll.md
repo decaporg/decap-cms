@@ -31,6 +31,8 @@ Create a file `admin/index.html` in the root of your repo - it should look like 
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Content Manager</title>
+    <!-- Include the identity widget -->
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js" type="text/javascript"></script>
   </head>
   <body>
     <!-- Include the script that builds the page and powers Netlify CMS -->
@@ -48,7 +50,7 @@ Create a file `admin/config.yml` in the root of your repo - it should look like 
 
 backend:
   name: git-gateway
-  branch: master # Branch to update (optional; defaults to master)
+  branch: main # Branch to update (optional; defaults to master)
 media_folder: 'assets/uploads'
 collections:
   - name: 'blog'
@@ -58,9 +60,11 @@ collections:
       - { name: Title }
 ```
 
-### Setup Backend
+### Enable authentication for CMS users
 
-Follow the directions in the docs [to enable Identity and Git Gateway](https://www.netlifycms.org/docs/add-to-your-site/#enable-identity-and-git-gateway) then add the [Identity Widget](https://www.netlifycms.org/docs/add-to-your-site/#add-the-netlify-identity-widget)
+Netlify CMS stores content in your online Git repository. Therefore, to make content changes, users need to authenticate with the corresponding Git provider to prove that they have read and write access to that content.
+
+Follow the directions in the Introduction section to [enable Netlify Identity and Git Gateway services](https://www.netlifycms.org/docs/add-to-your-site/#enable-identity-and-git-gateway) for the backend, then [add the Identity widget](https://www.netlifycms.org/docs/add-to-your-site/#add-the-netlify-identity-widget) to render a login portal on the frontend.
 
 ## CMS Configuration
 
@@ -126,8 +130,8 @@ then update `_layouts/author.html`, `_layouts/post.html` and `staff.html` accord
 
 <h2>Posts</h2>
 <ul>
-  {% assign filtered_posts = site.posts | where: 'author', page.name %} {% for
-  post in filtered_posts %}
+  {% assign filtered_posts = site.posts | where: 'author', page.name %} {% for post in
+  filtered_posts %}
   <li>
     <a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a>
   </li>
@@ -142,10 +146,8 @@ then update `_layouts/author.html`, `_layouts/post.html` and `staff.html` accord
 <h1>{{ page.title }}</h1>
 
 <p>
-  {{ page.date | date_to_string }}
-  {% assign author = site.authors | where: 'name', page.author | first %}
-  {% if author %}
-    - <a href="{{ author.url }}">{{ author.display_name }}</a>
+  {{ page.date | date_to_string }} {% assign author = site.authors | where: 'name', page.author |
+  first %} {% if author %} - <a href="{{ author.url }}">{{ author.display_name }}</a>
   {% endif %}
 </p>
 
@@ -277,21 +279,21 @@ You'll need to update `_includes/navigation.html` accordingly. `{% for item in s
 Finally, add the following to the collections array in `config.yml`
 
 ```yaml
-- name: "config"
-  label: "Config"
+- name: 'config'
+  label: 'Config'
   editor:
     preview: false
   files:
-    - label: "Navigation"
-      name: "navigation"
-      file: "_data/navigation.yml"
+    - label: 'Navigation'
+      name: 'navigation'
+      file: '_data/navigation.yml'
       fields:
-        - label: "Navigation Items"
-          name: "items"
-          widget: "list"
+        - label: 'Navigation Items'
+          name: 'items'
+          widget: 'list'
           fields:
-            - {label: Name, name: name, widget: string}
-            - {label: Link, name: link, widget: string}
+            - { label: Name, name: name, widget: string }
+            - { label: Link, name: link, widget: string }
 ```
 
 Now you can add, rename, and rearrange the navigation items on your blog.

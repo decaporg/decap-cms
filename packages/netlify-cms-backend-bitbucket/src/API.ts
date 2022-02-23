@@ -7,9 +7,6 @@ import {
   basename,
   Cursor,
   APIError,
-  ApiRequest,
-  AssetProxy,
-  PersistOptions,
   readFile,
   CMS_BRANCH_PREFIX,
   generateContentKey,
@@ -20,17 +17,23 @@ import {
   DEFAULT_PR_BODY,
   MERGE_COMMIT_MESSAGE,
   PreviewState,
-  FetchError,
   parseContentKey,
   branchFromContentKey,
   requestWithBackoff,
   readFileMetadata,
   throwOnConflictingBranches,
-  DataFile,
 } from 'netlify-cms-lib-util';
 import { dirname } from 'path';
 import { oneLine } from 'common-tags';
 import { parse } from 'what-the-diff';
+
+import type {
+  ApiRequest,
+  AssetProxy,
+  PersistOptions,
+  FetchError,
+  DataFile,
+} from 'netlify-cms-lib-util';
 
 interface Config {
   apiRoot?: string;
@@ -81,6 +84,7 @@ type BitBucketPullRequest = {
       name: string;
     };
   };
+  author: BitBucketUser;
 };
 
 type BitBucketPullRequests = {
@@ -373,7 +377,6 @@ export default class API {
     const result: BitBucketSrcResult = await this.requestJSON({
       url: `${this.repoURL}/src/${node}/${path}`,
       params: {
-        // eslint-disable-next-line @typescript-eslint/camelcase
         max_depth: depth,
         pagelen,
       },
@@ -553,7 +556,6 @@ export default class API {
           },
         },
         description: DEFAULT_PR_BODY,
-        // eslint-disable-next-line @typescript-eslint/camelcase
         close_source_branch: true,
       }),
     });
@@ -653,8 +655,8 @@ export default class API {
       params: {
         pagelen: 50,
         q: oneLine`
-        source.repository.full_name = "${this.repo}" 
-        AND state = "${BitBucketPullRequestState.OPEN}" 
+        source.repository.full_name = "${this.repo}"
+        AND state = "${BitBucketPullRequestState.OPEN}"
         AND destination.branch.name = "${this.branch}"
         AND comment_count > 0
         AND ${sourceQuery}
@@ -698,6 +700,7 @@ export default class API {
     const label = await this.getPullRequestLabel(pullRequest.id);
     const status = labelToStatus(label, this.cmsLabelPrefix);
     const updatedAt = pullRequest.updated_on;
+    const pullRequestAuthor = pullRequest.author.display_name;
     return {
       collection,
       slug,
@@ -707,6 +710,7 @@ export default class API {
         .filter(d => d.status !== 'deleted')
         .map(d => ({ path: d.path, newFile: d.newFile, id: '' })),
       updatedAt,
+      pullRequestAuthor,
     };
   }
 
@@ -725,9 +729,7 @@ export default class API {
       headers: { 'Content-Type': APPLICATION_JSON },
       body: JSON.stringify({
         message: MERGE_COMMIT_MESSAGE,
-        // eslint-disable-next-line @typescript-eslint/camelcase
         close_source_branch: true,
-        // eslint-disable-next-line @typescript-eslint/camelcase
         merge_strategy: this.mergeStrategy,
       }),
     });
@@ -787,7 +789,6 @@ export default class API {
         state === BitBucketPullRequestStatusState.Successful
           ? PreviewState.Success
           : PreviewState.Other,
-      // eslint-disable-next-line @typescript-eslint/camelcase
       target_url: url,
     }));
   }

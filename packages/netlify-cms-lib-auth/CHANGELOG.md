@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.4.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-auth/compare/netlify-cms-lib-auth@2.4.1...netlify-cms-lib-auth@2.4.2) (2021-06-01)
+
+**Note:** Version bump only for package netlify-cms-lib-auth
+
+
+
+
+
+## [2.4.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-auth/compare/netlify-cms-lib-auth@2.4.0...netlify-cms-lib-auth@2.4.1) (2021-05-19)
+
+**Note:** Version bump only for package netlify-cms-lib-auth
+
+
+
+
+
 # [2.4.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-auth/compare/netlify-cms-lib-auth@2.3.0...netlify-cms-lib-auth@2.4.0) (2021-04-14)
 
 

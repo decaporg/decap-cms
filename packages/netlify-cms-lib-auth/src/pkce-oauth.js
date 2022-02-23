@@ -1,5 +1,6 @@
 import trim from 'lodash/trim';
 import trimEnd from 'lodash/trimEnd';
+
 import { createNonce, validateNonce, isInsecureProtocol } from './utils';
 
 async function sha256(text) {
@@ -26,10 +27,7 @@ function generateVerifierCode() {
 async function createCodeChallenge(codeVerifier) {
   const sha = await sha256(codeVerifier);
   // https://tools.ietf.org/html/rfc7636#appendix-A
-  return btoa(sha)
-    .split('=')[0]
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_');
+  return btoa(sha).split('=')[0].replace(/\+/g, '-').replace(/\//g, '_');
 }
 
 const CODE_VERIFIER_STORAGE_KEY = 'netlify-cms-pkce-verifier-code';

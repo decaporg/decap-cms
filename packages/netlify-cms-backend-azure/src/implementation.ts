@@ -1,34 +1,39 @@
 import { trimStart, trim } from 'lodash';
-import semaphore, { Semaphore } from 'semaphore';
-import AuthenticationPage from './AuthenticationPage';
-import API, { API_NAME } from './API';
+import semaphore from 'semaphore';
 import {
-  Credentials,
-  Implementation,
-  ImplementationFile,
-  ImplementationMediaFile,
-  DisplayURL,
   basename,
-  Entry,
-  AssetProxy,
-  PersistOptions,
   getMediaDisplayURL,
   generateContentKey,
   getMediaAsBlob,
-  Config,
   getPreviewStatus,
   asyncLock,
-  AsyncLock,
   runWithLock,
-  User,
   unpublishedEntries,
-  UnpublishedEntryMediaFile,
   entriesByFiles,
   filterByExtension,
   branchFromContentKey,
   entriesByFolder,
   contentKeyFromBranch,
   getBlobSHA,
+} from 'netlify-cms-lib-util';
+
+import AuthenticationPage from './AuthenticationPage';
+import API, { API_NAME } from './API';
+
+import type { Semaphore } from 'semaphore';
+import type {
+  Credentials,
+  Implementation,
+  ImplementationFile,
+  ImplementationMediaFile,
+  DisplayURL,
+  Entry,
+  AssetProxy,
+  PersistOptions,
+  Config,
+  AsyncLock,
+  User,
+  UnpublishedEntryMediaFile,
 } from 'netlify-cms-lib-util';
 
 const MAX_CONCURRENT_DOWNLOADS = 10;

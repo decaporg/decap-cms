@@ -8,9 +8,10 @@ import {
   SEARCH_ENTRIES_FAILURE,
   SEARCH_ENTRIES_REQUEST,
   SEARCH_ENTRIES_SUCCESS,
-  SearchAction,
 } from '../actions/search';
-import { EntryValue } from '../valueObjects/Entry';
+
+import type { SearchAction } from '../actions/search';
+import type { EntryValue } from '../valueObjects/Entry';
 
 export type Search = {
   isFetching: boolean;

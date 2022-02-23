@@ -1,5 +1,8 @@
 import { produce } from 'immer';
-import { STATUS_REQUEST, STATUS_SUCCESS, STATUS_FAILURE, StatusAction } from '../actions/status';
+
+import { STATUS_REQUEST, STATUS_SUCCESS, STATUS_FAILURE } from '../actions/status';
+
+import type { StatusAction } from '../actions/status';
 
 export type Status = {
   isFetching: boolean;

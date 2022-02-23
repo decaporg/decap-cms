@@ -13,6 +13,7 @@ import {
   zIndex,
 } from 'netlify-cms-ui-default';
 import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
+
 import EditorControlPane from './EditorControlPane/EditorControlPane';
 import RightControlPane from './RightControlPane/RightControlPane';
 import EditorNotesPane from './EditorNotesPane/EditorNotesPane';
@@ -320,6 +321,7 @@ class EditorInterface extends Component {
                 entry={previewEntry}
                 fields={fields}
                 fieldsMetaData={fieldsMetaData}
+                locale={leftPanelLocale}
               />
             </PreviewPaneContainer> */}
           </StyledSplitPane>

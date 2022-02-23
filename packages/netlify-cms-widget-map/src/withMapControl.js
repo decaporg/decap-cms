@@ -33,11 +33,13 @@ export default function withMapControl({ getFormat, getMap } = {}) {
     static propTypes = {
       onChange: PropTypes.func.isRequired,
       field: PropTypes.object.isRequired,
+      height: PropTypes.string,
       value: PropTypes.node,
     };
 
     static defaultProps = {
       value: '',
+      height: '400px',
     };
 
     constructor(props) {
@@ -70,6 +72,8 @@ export default function withMapControl({ getFormat, getMap } = {}) {
     }
 
     render() {
+      const { height } = this.props;
+
       return (
         <ClassNames>
           {({ cx, css }) => (
@@ -80,6 +84,7 @@ export default function withMapControl({ getFormat, getMap } = {}) {
                   ${olStyles};
                   padding: 0;
                   overflow: hidden;
+                  height: ${height};
                 `,
               )}
               ref={this.mapContainer}

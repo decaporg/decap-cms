@@ -1,4 +1,5 @@
 import matter from 'gray-matter';
+
 import tomlFormatter from './toml';
 import yamlFormatter from './yaml';
 import jsonFormatter from './json';
@@ -123,7 +124,7 @@ export class FrontmatterFormatter {
     const trimLastLineBreak = body.slice(-1) !== '\n';
     const file = matter.stringify(body, meta, {
       engines: parsers,
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore `sortedKeys` is not recognized by gray-matter, so it gets passed through to the parser
       sortedKeys,
       comments,

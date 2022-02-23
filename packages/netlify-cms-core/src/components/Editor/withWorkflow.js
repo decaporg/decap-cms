@@ -1,9 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { EDITORIAL_WORKFLOW } from 'Constants/publishModes';
-import { selectUnpublishedEntry } from 'Reducers';
-import { selectAllowDeletion } from 'Reducers/collections';
-import { loadUnpublishedEntry, persistUnpublishedEntry } from 'Actions/editorialWorkflow';
+
+import { EDITORIAL_WORKFLOW } from '../../constants/publishModes';
+import { selectUnpublishedEntry } from '../../reducers';
+import { selectAllowDeletion } from '../../reducers/collections';
+import { loadUnpublishedEntry, persistUnpublishedEntry } from '../../actions/editorialWorkflow';
 
 function mapStateToProps(state, ownProps) {
   const { collections } = state;

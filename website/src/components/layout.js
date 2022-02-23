@@ -2,6 +2,7 @@ import React from 'react';
 import { Helmet } from 'react-helmet';
 import { graphql, StaticQuery } from 'gatsby';
 import { ThemeProvider } from 'emotion-theming';
+
 import Header from './header';
 import Footer from './footer';
 import GlobalStyles from '../global-styles';

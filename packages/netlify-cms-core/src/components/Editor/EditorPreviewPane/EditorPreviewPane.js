@@ -5,13 +5,19 @@ import { List, Map } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import Frame, { FrameContextConsumer } from 'react-frame-component';
 import { lengths } from 'netlify-cms-ui-default';
-import { resolveWidget, getPreviewTemplate, getPreviewStyles } from 'Lib/registry';
-import { ErrorBoundary } from 'UI';
-import { selectTemplateName, selectInferedField, selectField } from 'Reducers/collections';
 import { connect } from 'react-redux';
-import { boundGetAsset } from 'Actions/media';
-import { selectIsLoadingAsset } from 'Reducers/medias';
-import { INFERABLE_FIELDS } from 'Constants/fieldInference';
+
+import {
+  resolveWidget,
+  getPreviewTemplate,
+  getPreviewStyles,
+  getRemarkPlugins,
+} from '../../../lib/registry';
+import { ErrorBoundary } from '../../UI';
+import { selectTemplateName, selectInferedField, selectField } from '../../../reducers/collections';
+import { boundGetAsset } from '../../../actions/media';
+import { selectIsLoadingAsset } from '../../../reducers/medias';
+import { INFERABLE_FIELDS } from '../../../constants/fieldInference';
 import EditorPreviewContent from './EditorPreviewContent.js';
 import PreviewHOC from './PreviewHOC';
 import EditorPreview from './EditorPreview';
@@ -44,6 +50,7 @@ export class PreviewPane extends React.Component {
         entry={entry}
         fieldsMetaData={metadata}
         resolveWidget={resolveWidget}
+        getRemarkPlugins={getRemarkPlugins}
       />
     );
   };

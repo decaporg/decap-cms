@@ -1,5 +1,3 @@
-import winston from 'winston';
-import express from 'express';
 import path from 'path';
 import { promises as fs } from 'fs';
 import {
@@ -12,8 +10,15 @@ import {
   parseContentKey,
 } from 'netlify-cms-lib-util/src/APIUtils';
 import { parse } from 'what-the-diff';
+import simpleGit from 'simple-git/promise';
+import { Mutex, withTimeout } from 'async-mutex';
+
 import { defaultSchema, joi } from '../joi';
-import {
+import { pathTraversal } from '../joi/customValidators';
+import { listRepoFiles, writeFile, move, deleteFile, getUpdateDate } from '../utils/fs';
+import { entriesFromFiles, readMediaFile } from '../utils/entries';
+
+import type {
   EntriesByFolderParams,
   EntriesByFilesParams,
   GetEntryParams,
@@ -33,12 +38,8 @@ import {
   UnpublishedEntryDataFileParams,
   UnpublishedEntryMediaFileParams,
 } from '../types';
-// eslint-disable-next-line import/default
-import simpleGit from 'simple-git/promise';
-import { Mutex, withTimeout } from 'async-mutex';
-import { pathTraversal } from '../joi/customValidators';
-import { listRepoFiles, writeFile, move, deleteFile, getUpdateDate } from '../utils/fs';
-import { entriesFromFiles, readMediaFile } from '../utils/entries';
+import type express from 'express';
+import type winston from 'winston';
 
 async function commit(git: simpleGit.SimpleGit, commitMessage: string) {
   await git.add('.');
@@ -173,7 +174,7 @@ export function localGitMiddleware({ repoPath, logger }: GitOptions) {
   // we can only perform a single git operation at any given time
   const mutex = withTimeout(new Mutex(), 3000, new Error('Request timed out'));
 
-  return async function(req: express.Request, res: express.Response) {
+  return async function (req: express.Request, res: express.Response) {
     let release;
     try {
       release = await mutex.acquire();
@@ -181,7 +182,6 @@ export function localGitMiddleware({ repoPath, logger }: GitOptions) {
       if (body.action === 'info') {
         res.json({
           repo: path.basename(repoPath),
-          // eslint-disable-next-line @typescript-eslint/camelcase
           publish_modes: ['simple', 'editorial_workflow'],
           type: 'local_git',
         });
@@ -345,12 +345,8 @@ export function localGitMiddleware({ repoPath, logger }: GitOptions) {
           break;
         }
         case 'updateUnpublishedEntryStatus': {
-          const {
-            collection,
-            slug,
-            newStatus,
-            cmsLabelPrefix,
-          } = body.params as UpdateUnpublishedEntryStatusParams;
+          const { collection, slug, newStatus, cmsLabelPrefix } =
+            body.params as UpdateUnpublishedEntryStatusParams;
           const contentKey = generateContentKey(collection, slug);
           const cmsBranch = branchFromContentKey(contentKey);
           const description = statusToLabel(newStatus, cmsLabelPrefix || '');

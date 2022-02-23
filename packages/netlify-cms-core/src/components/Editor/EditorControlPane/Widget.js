@@ -3,7 +3,9 @@ import React, { Component } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Map, List } from 'immutable';
 import { oneLine } from 'common-tags';
-import ValidationErrorTypes from 'Constants/validationErrorTypes';
+
+import { getRemarkPlugins } from '../../../lib/registry';
+import ValidationErrorTypes from '../../../constants/validationErrorTypes';
 
 function truthy() {
   return { error: false };
@@ -325,6 +327,7 @@ export default class Widget extends Component {
       resolveWidget,
       widget,
       getEditorComponents,
+      getRemarkPlugins,
       query,
       queryHits,
       clearSearch,

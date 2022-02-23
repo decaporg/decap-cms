@@ -6,10 +6,11 @@ import styled from '@emotion/styled';
 import moment from 'moment';
 import { translate } from 'react-polyglot';
 import { colors, lengths } from 'netlify-cms-ui-default';
-import { status } from 'Constants/publishModes';
-import { DragSource, DropTarget, HTML5DragDrop } from 'UI';
+
+import { status } from '../../constants/publishModes';
+import { DragSource, DropTarget, HTML5DragDrop } from '../UI';
 import WorkflowCard from './WorkflowCard';
-import { selectEntryCollectionTitle } from 'Reducers/collections';
+import { selectEntryCollectionTitle } from '../../reducers/collections';
 
 const WorkflowListContainer = styled.div`
   min-height: 60%;
@@ -219,6 +220,7 @@ class WorkflowList extends React.Component {
 
           const allowPublish = collection?.get('publish');
           const canPublish = ownStatus === status.last() && !entry.get('isPersisting', false);
+          const postAuthor = entry.get('author');
 
           return (
             <DragSource
@@ -243,6 +245,7 @@ class WorkflowList extends React.Component {
                       allowPublish={allowPublish}
                       canPublish={canPublish}
                       onPublish={this.requestPublish.bind(this, collectionName, slug, ownStatus)}
+                      postAuthor={postAuthor}
                     />
                   </div>,
                 )

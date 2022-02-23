@@ -3,6 +3,7 @@ const pt = {
     login: 'Entrar',
     loggingIn: 'Entrando...',
     loginWithNetlifyIdentity: 'Entrar com o Netlify Identity',
+    loginWithAzure: 'Entrar com o Azure',
     loginWithBitbucket: 'Entrar com o Bitbucket',
     loginWithGitHub: 'Entrar com o GitHub',
     loginWithGitLab: 'Entrar com o GitLab',
@@ -47,12 +48,17 @@ const pt = {
       searchResults: 'Resultados da busca por "%{searchTerm}"',
       searchResultsInCollection: 'Resultados da busca por "%{searchTerm}" em %{collection}',
       filterBy: 'Filtrar por',
+      groupBy: 'Agrupar por',
     },
     entries: {
       loadingEntries: 'Carregando Entradas',
       cachingEntries: 'Armazenando Entradas em Cache',
       longerLoading: 'Isso pode levar alguns minutos',
       noEntries: 'Nenhuma Entrada',
+    },
+    groups: {
+      other: 'Outro',
+      negateLabel: 'Não %{label}',
     },
     defaultFields: {
       author: {
@@ -84,6 +90,9 @@ const pt = {
         invalidPath: `'%{path}' não é um caminho válido`,
         pathExists: `O caminho '%{path}' já existe`,
       },
+      i18n: {
+        writingInLocale: 'Escrevendo em %{locale}',
+      },
     },
     editor: {
       onLeavePage: 'Tem certeza que deseja sair desta página?',
@@ -104,6 +113,11 @@ const pt = {
       loadingEntry: 'Carregando entrada...',
       confirmLoadBackup: 'Um backup local foi recuperado para esta entrada. Deseja usá-lo?',
     },
+    editorInterface: {
+      toggleI18n: 'Mudar i18n',
+      togglePreview: 'Mudar pré-visualização',
+      toggleScrollSync: 'Sincronizar rolagem',
+    },
     editorToolbar: {
       publishing: 'Publicando...',
       publish: 'Publicar',
@@ -119,9 +133,13 @@ const pt = {
       deleteEntry: 'Excluir entrada',
       saving: 'Salvando...',
       save: 'Salvar',
+      statusInfoTooltipDraft:
+        "Entrada definida como rascunho. Para finalizar e enviá-la a revisão, mude seu estado para 'Em revisão'",
+      statusInfoTooltipInReview:
+        'Entrada está sendo revisada, nenhuma ação extra é requirida. Porém, você ainda pode fazer mudanças adicionais enquanto ela está sendo revisada.',
       deleting: 'Excluindo...',
       updating: 'Atualizando...',
-      setStatus: 'Definir status',
+      status: 'Status: %{status}',
       backCollection: ' Escrevendo na coleção %{collectionLabel}',
       unsavedChanges: 'Alterações não salvas',
       changesSaved: 'Alterações salvas',
@@ -135,16 +153,32 @@ const pt = {
     },
     editorWidgets: {
       markdown: {
+        bold: 'Negrito',
+        italic: 'Itálico',
+        code: 'Código',
+        link: 'Link',
+        linkPrompt: 'Insira a URL do link',
+        headings: 'Cabeçalho',
+        quote: 'Citação',
+        bulletedList: 'Lista Pontilhada',
+        numberedList: 'Lista Numerada',
+        addComponent: 'Adicionar Componente',
         richText: 'Rich Text',
         markdown: 'Markdown',
       },
       image: {
         choose: 'Escolha uma imagem',
+        chooseUrl: 'Inserir de uma URL',
+        replaceUrl: 'Substituir com uma URL',
+        promptUrl: 'Insira a URL da imagem',
         chooseDifferent: 'Escolha uma imagem diferente',
         remove: 'Remover imagem',
       },
       file: {
         choose: 'Escolha um arquivo',
+        chooseUrl: 'Inserir de uma URL',
+        replaceUrl: 'Substituir com uma URL',
+        promptUrl: 'Insira a URL do arquivo',
         chooseDifferent: 'Escolha um arquivo diferente',
         remove: 'Remover arquivo',
       },
@@ -165,11 +199,20 @@ const pt = {
       datetime: {
         now: 'Agora',
       },
+      list: {
+        add: 'Adicionar %{item}',
+        addType: 'Adicionar %{item} item',
+      },
     },
   },
   mediaLibrary: {
     mediaLibraryCard: {
       draft: 'Rascunho',
+      copy: 'Copiar',
+      copyUrl: 'Copiar URL',
+      copyPath: 'Copiar Caminho',
+      copyName: 'Copiar Nome',
+      copied: 'Copiado',
     },
     mediaLibrary: {
       onDelete: 'Tem certeza de que deseja excluir a mídia selecionada?',

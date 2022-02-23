@@ -5,6 +5,12 @@ import {
   Cursor,
   CURSOR_COMPATIBILITY_SYMBOL,
   basename,
+} from 'netlify-cms-lib-util';
+import { extname, dirname } from 'path';
+
+import AuthenticationPage from './AuthenticationPage';
+
+import type {
   Implementation,
   Entry,
   ImplementationEntry,
@@ -15,8 +21,6 @@ import {
   ImplementationFile,
   DataFile,
 } from 'netlify-cms-lib-util';
-import { extname, dirname } from 'path';
-import AuthenticationPage from './AuthenticationPage';
 
 type RepoFile = { path: string; content: string | AssetProxy };
 type RepoTree = { [key: string]: RepoFile | RepoTree };
@@ -54,7 +58,7 @@ function getFile(path: string, tree: RepoTree) {
   while (obj && segments.length) {
     obj = obj[segments.shift() as string] as RepoTree;
   }
-  return ((obj as unknown) as RepoFile) || {};
+  return (obj as unknown as RepoFile) || {};
 }
 
 function writeFile(path: string, content: string | AssetProxy, tree: RepoTree) {
@@ -146,7 +150,7 @@ export default class TestBackend implements Implementation {
   }
 
   authenticate() {
-    return (Promise.resolve() as unknown) as Promise<User>;
+    return Promise.resolve() as unknown as Promise<User>;
   }
 
   logout() {
@@ -199,7 +203,7 @@ export default class TestBackend implements Implementation {
     }));
     const cursor = getCursor(folder, extension, entries, 0, depth);
     const ret = take(entries, pageSize);
-    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     ret[CURSOR_COMPATIBILITY_SYMBOL] = cursor;
     return Promise.resolve(ret);

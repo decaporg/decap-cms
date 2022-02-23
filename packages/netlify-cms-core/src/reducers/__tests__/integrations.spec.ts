@@ -1,6 +1,8 @@
 import integrations from '../integrations';
-import { CONFIG_SUCCESS, ConfigAction } from '../../actions/config';
+import { CONFIG_SUCCESS } from '../../actions/config';
 import { FOLDER } from '../../constants/collectionTypes';
+
+import type { ConfigAction } from '../../actions/config';
 
 describe('integrations', () => {
   it('should return default state when no integrations', () => {

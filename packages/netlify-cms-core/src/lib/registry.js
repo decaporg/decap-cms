@@ -1,7 +1,8 @@
 import { Map } from 'immutable';
 import produce from 'immer';
 import { oneLine } from 'common-tags';
-import EditorComponent from 'ValueObjects/EditorComponent';
+
+import EditorComponent from '../valueObjects/EditorComponent';
 
 const allowedEvents = [
   'prePublish',
@@ -25,6 +26,7 @@ const registry = {
   previewStyles: [],
   widgets: {},
   editorComponents: Map(),
+  remarkPlugins: [],
   widgetValueSerializers: {},
   mediaLibraries: [],
   locales: {},
@@ -42,6 +44,8 @@ export default {
   resolveWidget,
   registerEditorComponent,
   getEditorComponents,
+  registerRemarkPlugin,
+  getRemarkPlugins,
   registerWidgetValueSerializer,
   getWidgetValueSerializer,
   registerBackend,
@@ -163,6 +167,19 @@ export function getEditorComponents() {
 }
 
 /**
+ * Remark plugins
+ */
+/** @typedef {import('unified').Pluggable} RemarkPlugin */
+/** @type {(plugin: RemarkPlugin) => void} */
+export function registerRemarkPlugin(plugin) {
+  registry.remarkPlugins.push(plugin);
+}
+/** @type {() => Array<RemarkPlugin>} */
+export function getRemarkPlugins() {
+  return registry.remarkPlugins;
+}
+
+/**
  * Widget Serializers
  */
 export function registerWidgetValueSerializer(widgetName, serializer) {
@@ -229,14 +246,10 @@ export async function invokeEvent({ name, data }) {
 
   let _data = { ...data };
   for (const { handler, options } of handlers) {
-    try {
-      const result = await handler(_data, options);
-      if (result !== undefined) {
-        const entry = _data.entry.set('data', result);
-        _data = { ...data, entry };
-      }
-    } catch (e) {
-      console.warn(`Failed running handler for event ${name} with message: ${e.message}`);
+    const result = await handler(_data, options);
+    if (result !== undefined) {
+      const entry = _data.entry.set('data', result);
+      _data = { ...data, entry };
     }
   }
   return _data.entry.get('data');

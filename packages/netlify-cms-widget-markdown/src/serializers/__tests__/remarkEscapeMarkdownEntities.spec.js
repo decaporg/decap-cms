@@ -1,12 +1,11 @@
 import unified from 'unified';
 import u from 'unist-builder';
+
 import remarkEscapeMarkdownEntities from '../remarkEscapeMarkdownEntities';
 
 function process(text) {
   const tree = u('root', [u('text', text)]);
-  const escapedMdast = unified()
-    .use(remarkEscapeMarkdownEntities)
-    .runSync(tree);
+  const escapedMdast = unified().use(remarkEscapeMarkdownEntities).runSync(tree);
 
   return escapedMdast.children[0].value;
 }

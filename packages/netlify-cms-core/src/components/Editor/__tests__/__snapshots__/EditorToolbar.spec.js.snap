@@ -1,0 +1,4020 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EditorToolbar should render normal save button 1`] = `
+<DocumentFragment>
+  .emotion-21 {
+  box-shadow: 0 2px 6px 0 rgba(68,74,87,0.05),0 1px 3px 0 rgba(68,74,87,0.1),0 2px 54px rgba(0,0,0,0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-width: 800px;
+  z-index: 300;
+  background-color: #fff;
+  height: 66px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+}
+
+.emotion-0 {
+  color: #313d3e;
+  font-size: 21px;
+  font-weight: 600;
+  margin-right: 16px;
+}
+
+.emotion-2 {
+  color: #313d3e;
+  font-size: 14px;
+}
+
+.emotion-2 {
+  color: #313d3e;
+  font-size: 14px;
+}
+
+.emotion-17 {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  border: 0 solid #dfdfe3;
+  -webkit-flex: 10;
+  -ms-flex: 10;
+  flex: 10;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  padding: 0 10px;
+}
+
+.emotion-13 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.emotion-11 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  height: 36px;
+  line-height: 36px;
+  font-weight: 500;
+  padding: 0 15px;
+  background-color: #798291;
+  color: #fff;
+  margin: 0 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+  background-color: #fcefea;
+  color: #ff003b;
+}
+
+@media (max-width:1200px) {
+  .emotion-11 {
+    padding: 0 10px;
+  }
+}
+
+.emotion-15 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: end;
+  -webkit-justify-content: flex-end;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+}
+
+.emotion-19 {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  border: 0 solid #dfdfe3;
+  border-left-width: 1px;
+  padding: 0 7px;
+}
+
+.emotion-9 {
+  position: relative;
+  font-size: 14px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  margin: 0 10px;
+}
+
+.emotion-9 .ei6fm2r1 {
+  color: #17a2b8;
+}
+
+.emotion-4 {
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1;
+  display: inline-block;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #ff003b;
+}
+
+.emotion-6 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  height: 36px;
+  line-height: 36px;
+  font-weight: 500;
+  padding: 0 15px;
+  background-color: #798291;
+  color: #fff;
+  display: block;
+  padding-left: 20px;
+  padding-right: 40px;
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  background-color: #17a2b8;
+}
+
+.emotion-6:after {
+  color: #fff;
+  width: 0;
+  height: 0;
+  border: 5px solid transparent;
+  border-radius: 2px;
+  border-top: 6px solid currentColor;
+  border-bottom: 0;
+  content: '';
+  display: block;
+  position: absolute;
+  top: 16px;
+  right: 10px;
+  color: currentColor;
+}
+
+@media (max-width:1200px) {
+  .emotion-6 {
+    padding-left: 10px;
+  }
+}
+
+<div
+    class="emotion-21 emotion-22"
+  >
+    <mock-link
+      classname="css-6yv32w-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      to=""
+    >
+      <div
+        class="emotion-0 emotion-1"
+      >
+        ←
+      </div>
+      <div>
+        <div
+          class="emotion-2 emotion-3"
+        >
+          editor.editorToolbar.backCollection
+        </div>
+        <div
+          class="emotion-4 emotion-5"
+        >
+          editor.editorToolbar.unsavedChanges
+        </div>
+      </div>
+    </mock-link>
+    <div
+      class="emotion-17 emotion-18"
+    >
+      <div
+        class="emotion-13 emotion-14"
+      >
+        <div>
+          <div
+            class="emotion-8 emotion-9 emotion-10"
+          >
+            <span
+              aria-expanded="false"
+              aria-haspopup="true"
+              class="emotion-6 emotion-7"
+              role="button"
+              tabindex="0"
+            >
+              editor.editorToolbar.publish
+            </span>
+          </div>
+        </div>
+        <div>
+          <button
+            class="emotion-11 emotion-12"
+          >
+            editor.editorToolbar.deleteEntry
+          </button>
+        </div>
+      </div>
+      <div
+        class="emotion-15 emotion-16"
+      />
+    </div>
+    <div
+      class="emotion-19 emotion-20"
+    >
+      <mock-settings-dropdown />
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`EditorToolbar should render normal save button 2`] = `
+<DocumentFragment>
+  .emotion-21 {
+  box-shadow: 0 2px 6px 0 rgba(68,74,87,0.05),0 1px 3px 0 rgba(68,74,87,0.1),0 2px 54px rgba(0,0,0,0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-width: 800px;
+  z-index: 300;
+  background-color: #fff;
+  height: 66px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+}
+
+.emotion-0 {
+  color: #313d3e;
+  font-size: 21px;
+  font-weight: 600;
+  margin-right: 16px;
+}
+
+.emotion-2 {
+  color: #313d3e;
+  font-size: 14px;
+}
+
+.emotion-2 {
+  color: #313d3e;
+  font-size: 14px;
+}
+
+.emotion-17 {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  border: 0 solid #dfdfe3;
+  -webkit-flex: 10;
+  -ms-flex: 10;
+  flex: 10;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  padding: 0 10px;
+}
+
+.emotion-13 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.emotion-11 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  height: 36px;
+  line-height: 36px;
+  font-weight: 500;
+  padding: 0 15px;
+  background-color: #798291;
+  color: #fff;
+  margin: 0 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+  background-color: #fcefea;
+  color: #ff003b;
+}
+
+@media (max-width:1200px) {
+  .emotion-11 {
+    padding: 0 10px;
+  }
+}
+
+.emotion-15 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: end;
+  -webkit-justify-content: flex-end;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+}
+
+.emotion-19 {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  border: 0 solid #dfdfe3;
+  border-left-width: 1px;
+  padding: 0 7px;
+}
+
+.emotion-9 {
+  position: relative;
+  font-size: 14px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  margin: 0 10px;
+}
+
+.emotion-9 .ei6fm2r1 {
+  color: #17a2b8;
+}
+
+.emotion-4 {
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1;
+  display: inline-block;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #ff003b;
+}
+
+.emotion-6 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  height: 36px;
+  line-height: 36px;
+  font-weight: 500;
+  padding: 0 15px;
+  background-color: #798291;
+  color: #fff;
+  display: block;
+  padding-left: 20px;
+  padding-right: 40px;
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  background-color: #17a2b8;
+}
+
+.emotion-6:after {
+  color: #fff;
+  width: 0;
+  height: 0;
+  border: 5px solid transparent;
+  border-radius: 2px;
+  border-top: 6px solid currentColor;
+  border-bottom: 0;
+  content: '';
+  display: block;
+  position: absolute;
+  top: 16px;
+  right: 10px;
+  color: currentColor;
+}
+
+@media (max-width:1200px) {
+  .emotion-6 {
+    padding-left: 10px;
+  }
+}
+
+<div
+    class="emotion-21 emotion-22"
+  >
+    <mock-link
+      classname="css-6yv32w-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      to=""
+    >
+      <div
+        class="emotion-0 emotion-1"
+      >
+        ←
+      </div>
+      <div>
+        <div
+          class="emotion-2 emotion-3"
+        >
+          editor.editorToolbar.backCollection
+        </div>
+        <div
+          class="emotion-4 emotion-5"
+        >
+          editor.editorToolbar.unsavedChanges
+        </div>
+      </div>
+    </mock-link>
+    <div
+      class="emotion-17 emotion-18"
+    >
+      <div
+        class="emotion-13 emotion-14"
+      >
+        <div>
+          <div
+            class="emotion-8 emotion-9 emotion-10"
+          >
+            <span
+              aria-expanded="false"
+              aria-haspopup="true"
+              class="emotion-6 emotion-7"
+              role="button"
+              tabindex="0"
+            >
+              editor.editorToolbar.publish
+            </span>
+          </div>
+        </div>
+        <div>
+          <button
+            class="emotion-11 emotion-12"
+          >
+            editor.editorToolbar.deleteEntry
+          </button>
+        </div>
+      </div>
+      <div
+        class="emotion-15 emotion-16"
+      />
+    </div>
+    <div
+      class="emotion-19 emotion-20"
+    >
+      <mock-settings-dropdown />
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`EditorToolbar should render with default props 1`] = `
+<DocumentFragment>
+  .emotion-18 {
+  box-shadow: 0 2px 6px 0 rgba(68,74,87,0.05),0 1px 3px 0 rgba(68,74,87,0.1),0 2px 54px rgba(0,0,0,0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-width: 800px;
+  z-index: 300;
+  background-color: #fff;
+  height: 66px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+}
+
+.emotion-0 {
+  color: #313d3e;
+  font-size: 21px;
+  font-weight: 600;
+  margin-right: 16px;
+}
+
+.emotion-2 {
+  color: #313d3e;
+  font-size: 14px;
+}
+
+.emotion-2 {
+  color: #313d3e;
+  font-size: 14px;
+}
+
+.emotion-4 {
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1;
+  display: inline-block;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #005614;
+}
+
+.emotion-14 {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  border: 0 solid #dfdfe3;
+  -webkit-flex: 10;
+  -ms-flex: 10;
+  flex: 10;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  padding: 0 10px;
+}
+
+.emotion-10 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.emotion-6 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  height: 36px;
+  line-height: 36px;
+  font-weight: 500;
+  padding: 0 15px;
+  background-color: #798291;
+  color: #fff;
+  margin: 0 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+  background-color: #ddf5f9;
+  color: #17a2b8;
+}
+
+@media (max-width:1200px) {
+  .emotion-6 {
+    padding: 0 10px;
+  }
+}
+
+.emotion-8 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  height: 36px;
+  line-height: 36px;
+  font-weight: 500;
+  padding: 0 15px;
+  background-color: #798291;
+  color: #fff;
+  margin: 0 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+  background-color: #fcefea;
+  color: #ff003b;
+}
+
+@media (max-width:1200px) {
+  .emotion-8 {
+    padding: 0 10px;
+  }
+}
+
+.emotion-12 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: end;
+  -webkit-justify-content: flex-end;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+}
+
+.emotion-16 {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  border: 0 solid #dfdfe3;
+  border-left-width: 1px;
+  padding: 0 7px;
+}
+
+<div
+    class="emotion-18 emotion-19"
+  >
+    <mock-link
+      classname="css-6yv32w-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      to=""
+    >
+      <div
+        class="emotion-0 emotion-1"
+      >
+        ←
+      </div>
+      <div>
+        <div
+          class="emotion-2 emotion-3"
+        >
+          editor.editorToolbar.backCollection
+        </div>
+        <div
+          class="emotion-4 emotion-5"
+        >
+          editor.editorToolbar.changesSaved
+        </div>
+      </div>
+    </mock-link>
+    <div
+      class="emotion-14 emotion-15"
+    >
+      <div
+        class="emotion-10 emotion-11"
+      >
+        <button
+          class="emotion-6 emotion-7"
+        >
+          editor.editorToolbar.published
+        </button>
+        <div>
+          <button
+            class="emotion-8 emotion-9"
+          >
+            editor.editorToolbar.deleteEntry
+          </button>
+        </div>
+      </div>
+      <div
+        class="emotion-12 emotion-13"
+      />
+    </div>
+    <div
+      class="emotion-16 emotion-17"
+    >
+      <mock-settings-dropdown />
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`EditorToolbar should render with status=draft,useOpenAuthoring=false 1`] = `
+<DocumentFragment>
+  .emotion-23 {
+  box-shadow: 0 2px 6px 0 rgba(68,74,87,0.05),0 1px 3px 0 rgba(68,74,87,0.1),0 2px 54px rgba(0,0,0,0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-width: 800px;
+  z-index: 300;
+  background-color: #fff;
+  height: 66px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+}
+
+.emotion-0 {
+  color: #313d3e;
+  font-size: 21px;
+  font-weight: 600;
+  margin-right: 16px;
+}
+
+.emotion-2 {
+  color: #313d3e;
+  font-size: 14px;
+}
+
+.emotion-2 {
+  color: #313d3e;
+  font-size: 14px;
+}
+
+.emotion-4 {
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1;
+  display: inline-block;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #005614;
+}
+
+.emotion-19 {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  border: 0 solid #dfdfe3;
+  -webkit-flex: 10;
+  -ms-flex: 10;
+  flex: 10;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  padding: 0 10px;
+}
+
+.emotion-15 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.emotion-13 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  height: 36px;
+  line-height: 36px;
+  font-weight: 500;
+  padding: 0 15px;
+  background-color: #798291;
+  color: #fff;
+  margin: 0 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+  background-color: #fcefea;
+  color: #ff003b;
+}
+
+@media (max-width:1200px) {
+  .emotion-13 {
+    padding: 0 10px;
+  }
+}
+
+.emotion-17 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: end;
+  -webkit-justify-content: flex-end;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+}
+
+.emotion-21 {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  border: 0 solid #dfdfe3;
+  border-left-width: 1px;
+  padding: 0 7px;
+}
+
+.emotion-6 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  height: 36px;
+  line-height: 36px;
+  font-weight: 500;
+  padding: 0 15px;
+  background-color: #798291;
+  color: #fff;
+  margin: 0 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+  background-color: #e8f5fe;
+  color: #3a69c7;
+}
+
+@media (max-width:1200px) {
+  .emotion-6 {
+    padding: 0 10px;
+  }
+}
+
+.emotion-6[disabled] {
+  background-color: #eff0f4;
+  color: #798291;
+  cursor: default;
+}
+
+.emotion-11 {
+  position: relative;
+  font-size: 14px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  margin: 0 10px;
+}
+
+.emotion-11 .ei6fm2r1 {
+  color: #17a2b8;
+}
+
+.emotion-8 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  height: 36px;
+  line-height: 36px;
+  font-weight: 500;
+  padding: 0 15px;
+  background-color: #798291;
+  color: #fff;
+  display: block;
+  padding-left: 20px;
+  padding-right: 40px;
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  background-color: #ddf5f9;
+  color: #17a2b8;
+}
+
+.emotion-8:after {
+  color: #fff;
+  width: 0;
+  height: 0;
+  border: 5px solid transparent;
+  border-radius: 2px;
+  border-top: 6px solid currentColor;
+  border-bottom: 0;
+  content: '';
+  display: block;
+  position: absolute;
+  top: 16px;
+  right: 10px;
+  color: currentColor;
+}
+
+@media (max-width:1200px) {
+  .emotion-8 {
+    padding-left: 10px;
+  }
+}
+
+<div
+    class="emotion-23 emotion-24"
+  >
+    <mock-link
+      classname="css-6yv32w-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      to=""
+    >
+      <div
+        class="emotion-0 emotion-1"
+      >
+        ←
+      </div>
+      <div>
+        <div
+          class="emotion-2 emotion-3"
+        >
+          editor.editorToolbar.backCollection
+        </div>
+        <div
+          class="emotion-4 emotion-5"
+        >
+          editor.editorToolbar.changesSaved
+        </div>
+      </div>
+    </mock-link>
+    <div
+      class="emotion-19 emotion-20"
+    >
+      <div
+        class="emotion-15 emotion-16"
+      >
+        <button
+          class="emotion-6 emotion-7"
+          disabled=""
+        >
+          editor.editorToolbar.save
+        </button>
+        <div
+          class="emotion-10 emotion-11 emotion-12"
+        >
+          <span
+            aria-expanded="false"
+            aria-haspopup="true"
+            class="emotion-8 emotion-9"
+            role="button"
+            tabindex="0"
+          >
+            editor.editorToolbar.status
+          </span>
+        </div>
+        <button
+          class="emotion-13 emotion-14"
+        >
+          editor.editorToolbar.deletePublishedEntry
+        </button>
+      </div>
+      <div
+        class="emotion-17 emotion-18"
+      />
+    </div>
+    <div
+      class="emotion-21 emotion-22"
+    >
+      <mock-settings-dropdown />
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`EditorToolbar should render with status=draft,useOpenAuthoring=true 1`] = `
+<DocumentFragment>
+  .emotion-30 {
+  box-shadow: 0 2px 6px 0 rgba(68,74,87,0.05),0 1px 3px 0 rgba(68,74,87,0.1),0 2px 54px rgba(0,0,0,0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-width: 800px;
+  z-index: 300;
+  background-color: #fff;
+  height: 66px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+}
+
+.emotion-0 {
+  color: #313d3e;
+  font-size: 21px;
+  font-weight: 600;
+  margin-right: 16px;
+}
+
+.emotion-2 {
+  color: #313d3e;
+  font-size: 14px;
+}
+
+.emotion-2 {
+  color: #313d3e;
+  font-size: 14px;
+}
+
+.emotion-4 {
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1;
+  display: inline-block;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #005614;
+}
+
+.emotion-26 {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  border: 0 solid #dfdfe3;
+  -webkit-flex: 10;
+  -ms-flex: 10;
+  flex: 10;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  padding: 0 10px;
+}
+
+.emotion-22 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.emotion-24 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: end;
+  -webkit-justify-content: flex-end;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+}
+
+.emotion-28 {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  border: 0 solid #dfdfe3;
+  border-left-width: 1px;
+  padding: 0 7px;
+}
+
+.emotion-6 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  height: 36px;
+  line-height: 36px;
+  font-weight: 500;
+  padding: 0 15px;
+  background-color: #798291;
+  color: #fff;
+  margin: 0 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+  background-color: #e8f5fe;
+  color: #3a69c7;
+}
+
+@media (max-width:1200px) {
+  .emotion-6 {
+    padding: 0 10px;
+  }
+}
+
+.emotion-6[disabled] {
+  background-color: #eff0f4;
+  color: #798291;
+  cursor: default;
+}
+
+.emotion-11 {
+  position: relative;
+  font-size: 14px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  margin: 0 10px;
+}
+
+.emotion-11 .emotion-13 {
+  color: #17a2b8;
+}
+
+.emotion-8 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  height: 36px;
+  line-height: 36px;
+  font-weight: 500;
+  padding: 0 15px;
+  background-color: #798291;
+  color: #fff;
+  display: block;
+  padding-left: 20px;
+  padding-right: 40px;
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  background-color: #ddf5f9;
+  color: #17a2b8;
+}
+
+.emotion-8:after {
+  color: #fff;
+  width: 0;
+  height: 0;
+  border: 5px solid transparent;
+  border-radius: 2px;
+  border-top: 6px solid currentColor;
+  border-bottom: 0;
+  content: '';
+  display: block;
+  position: absolute;
+  top: 16px;
+  right: 10px;
+  color: currentColor;
+}
+
+@media (max-width:1200px) {
+  .emotion-8 {
+    padding-left: 10px;
+  }
+}
+
+.emotion-20 {
+  position: relative;
+}
+
+.emotion-16 {
+  position: relative;
+  display: inline-block;
+}
+
+.emotion-16:hover + .emotion-19 {
+  visibility: visible;
+  opacity: 0.9;
+}
+
+.emotion-14 {
+  display: inline-block;
+  line-height: 0;
+  width: 18px;
+  height: 18px;
+  -webkit-transform: rotate(0deg);
+  -ms-transform: rotate(0deg);
+  transform: rotate(0deg);
+}
+
+.emotion-14 path:not(.no-fill),
+.emotion-14 circle:not(.no-fill),
+.emotion-14 polygon:not(.no-fill),
+.emotion-14 rect:not(.no-fill) {
+  fill: currentColor;
+}
+
+.emotion-14 path.clipped {
+  fill: transparent;
+}
+
+.emotion-14 svg {
+  width: 100%;
+  height: 100%;
+}
+
+.emotion-18 {
+  visibility: hidden;
+  width: 321px;
+  background-color: #555;
+  color: #fff;
+  text-align: unset;
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  top: 145%;
+  left: 50%;
+  margin-left: -320px;
+  opacity: 0;
+  -webkit-transition: opacity 0.3s;
+  transition: opacity 0.3s;
+}
+
+<div
+    class="emotion-30 emotion-31"
+  >
+    <mock-link
+      classname="css-6yv32w-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      to=""
+    >
+      <div
+        class="emotion-0 emotion-1"
+      >
+        ←
+      </div>
+      <div>
+        <div
+          class="emotion-2 emotion-3"
+        >
+          editor.editorToolbar.backCollection
+        </div>
+        <div
+          class="emotion-4 emotion-5"
+        >
+          editor.editorToolbar.changesSaved
+        </div>
+      </div>
+    </mock-link>
+    <div
+      class="emotion-26 emotion-27"
+    >
+      <div
+        class="emotion-22 emotion-23"
+      >
+        <button
+          class="emotion-6 emotion-7"
+          disabled=""
+        >
+          editor.editorToolbar.save
+        </button>
+        <div
+          class="emotion-10 emotion-11 emotion-12"
+        >
+          <span
+            aria-expanded="false"
+            aria-haspopup="true"
+            class="emotion-8 emotion-9"
+            role="button"
+            tabindex="0"
+          >
+            editor.editorToolbar.status
+          </span>
+        </div>
+        <div
+          class="emotion-20 emotion-21"
+        >
+          <div
+            class="emotion-16 emotion-17"
+          >
+            <span
+              class="tooltip emotion-13 emotion-14 emotion-15"
+            >
+              <svg
+                class="bi bi-info-circle"
+                fill="currentColor"
+                height="16"
+                viewBox="0 0 16 16"
+                width="16"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
+                />
+                <path
+                  d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"
+                />
+              </svg>
+            </span>
+          </div>
+          <div
+            class="emotion-18 emotion-19"
+          >
+            editor.editorToolbar.statusInfoTooltipDraft
+          </div>
+        </div>
+      </div>
+      <div
+        class="emotion-24 emotion-25"
+      />
+    </div>
+    <div
+      class="emotion-28 emotion-29"
+    >
+      <mock-settings-dropdown />
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`EditorToolbar should render with status=pending_publish,useOpenAuthoring=false 1`] = `
+<DocumentFragment>
+  .emotion-23 {
+  box-shadow: 0 2px 6px 0 rgba(68,74,87,0.05),0 1px 3px 0 rgba(68,74,87,0.1),0 2px 54px rgba(0,0,0,0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-width: 800px;
+  z-index: 300;
+  background-color: #fff;
+  height: 66px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+}
+
+.emotion-0 {
+  color: #313d3e;
+  font-size: 21px;
+  font-weight: 600;
+  margin-right: 16px;
+}
+
+.emotion-2 {
+  color: #313d3e;
+  font-size: 14px;
+}
+
+.emotion-2 {
+  color: #313d3e;
+  font-size: 14px;
+}
+
+.emotion-4 {
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1;
+  display: inline-block;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #005614;
+}
+
+.emotion-19 {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  border: 0 solid #dfdfe3;
+  -webkit-flex: 10;
+  -ms-flex: 10;
+  flex: 10;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  padding: 0 10px;
+}
+
+.emotion-15 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.emotion-13 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  height: 36px;
+  line-height: 36px;
+  font-weight: 500;
+  padding: 0 15px;
+  background-color: #798291;
+  color: #fff;
+  margin: 0 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+  background-color: #fcefea;
+  color: #ff003b;
+}
+
+@media (max-width:1200px) {
+  .emotion-13 {
+    padding: 0 10px;
+  }
+}
+
+.emotion-17 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: end;
+  -webkit-justify-content: flex-end;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+}
+
+.emotion-21 {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  border: 0 solid #dfdfe3;
+  border-left-width: 1px;
+  padding: 0 7px;
+}
+
+.emotion-6 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  height: 36px;
+  line-height: 36px;
+  font-weight: 500;
+  padding: 0 15px;
+  background-color: #798291;
+  color: #fff;
+  margin: 0 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+  background-color: #e8f5fe;
+  color: #3a69c7;
+}
+
+@media (max-width:1200px) {
+  .emotion-6 {
+    padding: 0 10px;
+  }
+}
+
+.emotion-6[disabled] {
+  background-color: #eff0f4;
+  color: #798291;
+  cursor: default;
+}
+
+.emotion-11 {
+  position: relative;
+  font-size: 14px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  margin: 0 10px;
+}
+
+.emotion-11 .ei6fm2r1 {
+  color: #17a2b8;
+}
+
+.emotion-8 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  height: 36px;
+  line-height: 36px;
+  font-weight: 500;
+  padding: 0 15px;
+  background-color: #798291;
+  color: #fff;
+  display: block;
+  padding-left: 20px;
+  padding-right: 40px;
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  background-color: #ddf5f9;
+  color: #17a2b8;
+}
+
+.emotion-8:after {
+  color: #fff;
+  width: 0;
+  height: 0;
+  border: 5px solid transparent;
+  border-radius: 2px;
+  border-top: 6px solid currentColor;
+  border-bottom: 0;
+  content: '';
+  display: block;
+  position: absolute;
+  top: 16px;
+  right: 10px;
+  color: currentColor;
+}
+
+@media (max-width:1200px) {
+  .emotion-8 {
+    padding-left: 10px;
+  }
+}
+
+<div
+    class="emotion-23 emotion-24"
+  >
+    <mock-link
+      classname="css-6yv32w-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      to=""
+    >
+      <div
+        class="emotion-0 emotion-1"
+      >
+        ←
+      </div>
+      <div>
+        <div
+          class="emotion-2 emotion-3"
+        >
+          editor.editorToolbar.backCollection
+        </div>
+        <div
+          class="emotion-4 emotion-5"
+        >
+          editor.editorToolbar.changesSaved
+        </div>
+      </div>
+    </mock-link>
+    <div
+      class="emotion-19 emotion-20"
+    >
+      <div
+        class="emotion-15 emotion-16"
+      >
+        <button
+          class="emotion-6 emotion-7"
+          disabled=""
+        >
+          editor.editorToolbar.save
+        </button>
+        <div
+          class="emotion-10 emotion-11 emotion-12"
+        >
+          <span
+            aria-expanded="false"
+            aria-haspopup="true"
+            class="emotion-8 emotion-9"
+            role="button"
+            tabindex="0"
+          >
+            editor.editorToolbar.status
+          </span>
+        </div>
+        <button
+          class="emotion-13 emotion-14"
+        >
+          editor.editorToolbar.deletePublishedEntry
+        </button>
+      </div>
+      <div
+        class="emotion-17 emotion-18"
+      />
+    </div>
+    <div
+      class="emotion-21 emotion-22"
+    >
+      <mock-settings-dropdown />
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`EditorToolbar should render with status=pending_publish,useOpenAuthoring=true 1`] = `
+<DocumentFragment>
+  .emotion-28 {
+  box-shadow: 0 2px 6px 0 rgba(68,74,87,0.05),0 1px 3px 0 rgba(68,74,87,0.1),0 2px 54px rgba(0,0,0,0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-width: 800px;
+  z-index: 300;
+  background-color: #fff;
+  height: 66px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+}
+
+.emotion-0 {
+  color: #313d3e;
+  font-size: 21px;
+  font-weight: 600;
+  margin-right: 16px;
+}
+
+.emotion-2 {
+  color: #313d3e;
+  font-size: 14px;
+}
+
+.emotion-2 {
+  color: #313d3e;
+  font-size: 14px;
+}
+
+.emotion-4 {
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1;
+  display: inline-block;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #005614;
+}
+
+.emotion-24 {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  border: 0 solid #dfdfe3;
+  -webkit-flex: 10;
+  -ms-flex: 10;
+  flex: 10;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  padding: 0 10px;
+}
+
+.emotion-20 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.emotion-22 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: end;
+  -webkit-justify-content: flex-end;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+}
+
+.emotion-26 {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  border: 0 solid #dfdfe3;
+  border-left-width: 1px;
+  padding: 0 7px;
+}
+
+.emotion-6 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  height: 36px;
+  line-height: 36px;
+  font-weight: 500;
+  padding: 0 15px;
+  background-color: #798291;
+  color: #fff;
+  margin: 0 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+  background-color: #e8f5fe;
+  color: #3a69c7;
+}
+
+@media (max-width:1200px) {
+  .emotion-6 {
+    padding: 0 10px;
+  }
+}
+
+.emotion-6[disabled] {
+  background-color: #eff0f4;
+  color: #798291;
+  cursor: default;
+}
+
+.emotion-11 {
+  position: relative;
+  font-size: 14px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  margin: 0 10px;
+}
+
+.emotion-11 .emotion-13 {
+  color: #17a2b8;
+}
+
+.emotion-8 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  height: 36px;
+  line-height: 36px;
+  font-weight: 500;
+  padding: 0 15px;
+  background-color: #798291;
+  color: #fff;
+  display: block;
+  padding-left: 20px;
+  padding-right: 40px;
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  background-color: #ddf5f9;
+  color: #17a2b8;
+}
+
+.emotion-8:after {
+  color: #fff;
+  width: 0;
+  height: 0;
+  border: 5px solid transparent;
+  border-radius: 2px;
+  border-top: 6px solid currentColor;
+  border-bottom: 0;
+  content: '';
+  display: block;
+  position: absolute;
+  top: 16px;
+  right: 10px;
+  color: currentColor;
+}
+
+@media (max-width:1200px) {
+  .emotion-8 {
+    padding-left: 10px;
+  }
+}
+
+.emotion-18 {
+  position: relative;
+}
+
+.emotion-16 {
+  position: relative;
+  display: inline-block;
+}
+
+.emotion-16:hover + .evqrzhe0 {
+  visibility: visible;
+  opacity: 0.9;
+}
+
+.emotion-14 {
+  display: inline-block;
+  line-height: 0;
+  width: 18px;
+  height: 18px;
+  -webkit-transform: rotate(0deg);
+  -ms-transform: rotate(0deg);
+  transform: rotate(0deg);
+}
+
+.emotion-14 path:not(.no-fill),
+.emotion-14 circle:not(.no-fill),
+.emotion-14 polygon:not(.no-fill),
+.emotion-14 rect:not(.no-fill) {
+  fill: currentColor;
+}
+
+.emotion-14 path.clipped {
+  fill: transparent;
+}
+
+.emotion-14 svg {
+  width: 100%;
+  height: 100%;
+}
+
+<div
+    class="emotion-28 emotion-29"
+  >
+    <mock-link
+      classname="css-6yv32w-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      to=""
+    >
+      <div
+        class="emotion-0 emotion-1"
+      >
+        ←
+      </div>
+      <div>
+        <div
+          class="emotion-2 emotion-3"
+        >
+          editor.editorToolbar.backCollection
+        </div>
+        <div
+          class="emotion-4 emotion-5"
+        >
+          editor.editorToolbar.changesSaved
+        </div>
+      </div>
+    </mock-link>
+    <div
+      class="emotion-24 emotion-25"
+    >
+      <div
+        class="emotion-20 emotion-21"
+      >
+        <button
+          class="emotion-6 emotion-7"
+          disabled=""
+        >
+          editor.editorToolbar.save
+        </button>
+        <div
+          class="emotion-10 emotion-11 emotion-12"
+        >
+          <span
+            aria-expanded="false"
+            aria-haspopup="true"
+            class="emotion-8 emotion-9"
+            role="button"
+            tabindex="0"
+          >
+            editor.editorToolbar.status
+          </span>
+        </div>
+        <div
+          class="emotion-18 emotion-19"
+        >
+          <div
+            class="emotion-16 emotion-17"
+          >
+            <span
+              class="tooltip emotion-13 emotion-14 emotion-15"
+            >
+              <svg
+                class="bi bi-info-circle"
+                fill="currentColor"
+                height="16"
+                viewBox="0 0 16 16"
+                width="16"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
+                />
+                <path
+                  d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"
+                />
+              </svg>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div
+        class="emotion-22 emotion-23"
+      />
+    </div>
+    <div
+      class="emotion-26 emotion-27"
+    >
+      <mock-settings-dropdown />
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring=false 1`] = `
+<DocumentFragment>
+  .emotion-23 {
+  box-shadow: 0 2px 6px 0 rgba(68,74,87,0.05),0 1px 3px 0 rgba(68,74,87,0.1),0 2px 54px rgba(0,0,0,0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-width: 800px;
+  z-index: 300;
+  background-color: #fff;
+  height: 66px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+}
+
+.emotion-0 {
+  color: #313d3e;
+  font-size: 21px;
+  font-weight: 600;
+  margin-right: 16px;
+}
+
+.emotion-2 {
+  color: #313d3e;
+  font-size: 14px;
+}
+
+.emotion-2 {
+  color: #313d3e;
+  font-size: 14px;
+}
+
+.emotion-4 {
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1;
+  display: inline-block;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #005614;
+}
+
+.emotion-19 {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  border: 0 solid #dfdfe3;
+  -webkit-flex: 10;
+  -ms-flex: 10;
+  flex: 10;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  padding: 0 10px;
+}
+
+.emotion-15 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.emotion-13 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  height: 36px;
+  line-height: 36px;
+  font-weight: 500;
+  padding: 0 15px;
+  background-color: #798291;
+  color: #fff;
+  margin: 0 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+  background-color: #fcefea;
+  color: #ff003b;
+}
+
+@media (max-width:1200px) {
+  .emotion-13 {
+    padding: 0 10px;
+  }
+}
+
+.emotion-17 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: end;
+  -webkit-justify-content: flex-end;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+}
+
+.emotion-21 {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  border: 0 solid #dfdfe3;
+  border-left-width: 1px;
+  padding: 0 7px;
+}
+
+.emotion-6 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  height: 36px;
+  line-height: 36px;
+  font-weight: 500;
+  padding: 0 15px;
+  background-color: #798291;
+  color: #fff;
+  margin: 0 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+  background-color: #e8f5fe;
+  color: #3a69c7;
+}
+
+@media (max-width:1200px) {
+  .emotion-6 {
+    padding: 0 10px;
+  }
+}
+
+.emotion-6[disabled] {
+  background-color: #eff0f4;
+  color: #798291;
+  cursor: default;
+}
+
+.emotion-11 {
+  position: relative;
+  font-size: 14px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  margin: 0 10px;
+}
+
+.emotion-11 .ei6fm2r1 {
+  color: #17a2b8;
+}
+
+.emotion-8 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  height: 36px;
+  line-height: 36px;
+  font-weight: 500;
+  padding: 0 15px;
+  background-color: #798291;
+  color: #fff;
+  display: block;
+  padding-left: 20px;
+  padding-right: 40px;
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  background-color: #ddf5f9;
+  color: #17a2b8;
+}
+
+.emotion-8:after {
+  color: #fff;
+  width: 0;
+  height: 0;
+  border: 5px solid transparent;
+  border-radius: 2px;
+  border-top: 6px solid currentColor;
+  border-bottom: 0;
+  content: '';
+  display: block;
+  position: absolute;
+  top: 16px;
+  right: 10px;
+  color: currentColor;
+}
+
+@media (max-width:1200px) {
+  .emotion-8 {
+    padding-left: 10px;
+  }
+}
+
+<div
+    class="emotion-23 emotion-24"
+  >
+    <mock-link
+      classname="css-6yv32w-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      to=""
+    >
+      <div
+        class="emotion-0 emotion-1"
+      >
+        ←
+      </div>
+      <div>
+        <div
+          class="emotion-2 emotion-3"
+        >
+          editor.editorToolbar.backCollection
+        </div>
+        <div
+          class="emotion-4 emotion-5"
+        >
+          editor.editorToolbar.changesSaved
+        </div>
+      </div>
+    </mock-link>
+    <div
+      class="emotion-19 emotion-20"
+    >
+      <div
+        class="emotion-15 emotion-16"
+      >
+        <button
+          class="emotion-6 emotion-7"
+          disabled=""
+        >
+          editor.editorToolbar.save
+        </button>
+        <div
+          class="emotion-10 emotion-11 emotion-12"
+        >
+          <span
+            aria-expanded="false"
+            aria-haspopup="true"
+            class="emotion-8 emotion-9"
+            role="button"
+            tabindex="0"
+          >
+            editor.editorToolbar.status
+          </span>
+        </div>
+        <button
+          class="emotion-13 emotion-14"
+        >
+          editor.editorToolbar.deletePublishedEntry
+        </button>
+      </div>
+      <div
+        class="emotion-17 emotion-18"
+      />
+    </div>
+    <div
+      class="emotion-21 emotion-22"
+    >
+      <mock-settings-dropdown />
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring=true 1`] = `
+<DocumentFragment>
+  .emotion-30 {
+  box-shadow: 0 2px 6px 0 rgba(68,74,87,0.05),0 1px 3px 0 rgba(68,74,87,0.1),0 2px 54px rgba(0,0,0,0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-width: 800px;
+  z-index: 300;
+  background-color: #fff;
+  height: 66px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+}
+
+.emotion-0 {
+  color: #313d3e;
+  font-size: 21px;
+  font-weight: 600;
+  margin-right: 16px;
+}
+
+.emotion-2 {
+  color: #313d3e;
+  font-size: 14px;
+}
+
+.emotion-2 {
+  color: #313d3e;
+  font-size: 14px;
+}
+
+.emotion-4 {
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1;
+  display: inline-block;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #005614;
+}
+
+.emotion-26 {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  border: 0 solid #dfdfe3;
+  -webkit-flex: 10;
+  -ms-flex: 10;
+  flex: 10;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  padding: 0 10px;
+}
+
+.emotion-22 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.emotion-24 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: end;
+  -webkit-justify-content: flex-end;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+}
+
+.emotion-28 {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  border: 0 solid #dfdfe3;
+  border-left-width: 1px;
+  padding: 0 7px;
+}
+
+.emotion-6 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  height: 36px;
+  line-height: 36px;
+  font-weight: 500;
+  padding: 0 15px;
+  background-color: #798291;
+  color: #fff;
+  margin: 0 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+  background-color: #e8f5fe;
+  color: #3a69c7;
+}
+
+@media (max-width:1200px) {
+  .emotion-6 {
+    padding: 0 10px;
+  }
+}
+
+.emotion-6[disabled] {
+  background-color: #eff0f4;
+  color: #798291;
+  cursor: default;
+}
+
+.emotion-11 {
+  position: relative;
+  font-size: 14px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  margin: 0 10px;
+}
+
+.emotion-11 .emotion-13 {
+  color: #17a2b8;
+}
+
+.emotion-8 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  height: 36px;
+  line-height: 36px;
+  font-weight: 500;
+  padding: 0 15px;
+  background-color: #798291;
+  color: #fff;
+  display: block;
+  padding-left: 20px;
+  padding-right: 40px;
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  background-color: #ddf5f9;
+  color: #17a2b8;
+}
+
+.emotion-8:after {
+  color: #fff;
+  width: 0;
+  height: 0;
+  border: 5px solid transparent;
+  border-radius: 2px;
+  border-top: 6px solid currentColor;
+  border-bottom: 0;
+  content: '';
+  display: block;
+  position: absolute;
+  top: 16px;
+  right: 10px;
+  color: currentColor;
+}
+
+@media (max-width:1200px) {
+  .emotion-8 {
+    padding-left: 10px;
+  }
+}
+
+.emotion-20 {
+  position: relative;
+}
+
+.emotion-16 {
+  position: relative;
+  display: inline-block;
+}
+
+.emotion-16:hover + .emotion-19 {
+  visibility: visible;
+  opacity: 0.9;
+}
+
+.emotion-14 {
+  display: inline-block;
+  line-height: 0;
+  width: 18px;
+  height: 18px;
+  -webkit-transform: rotate(0deg);
+  -ms-transform: rotate(0deg);
+  transform: rotate(0deg);
+}
+
+.emotion-14 path:not(.no-fill),
+.emotion-14 circle:not(.no-fill),
+.emotion-14 polygon:not(.no-fill),
+.emotion-14 rect:not(.no-fill) {
+  fill: currentColor;
+}
+
+.emotion-14 path.clipped {
+  fill: transparent;
+}
+
+.emotion-14 svg {
+  width: 100%;
+  height: 100%;
+}
+
+.emotion-18 {
+  visibility: hidden;
+  width: 321px;
+  background-color: #555;
+  color: #fff;
+  text-align: unset;
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  top: 145%;
+  left: 50%;
+  margin-left: -320px;
+  opacity: 0;
+  -webkit-transition: opacity 0.3s;
+  transition: opacity 0.3s;
+}
+
+<div
+    class="emotion-30 emotion-31"
+  >
+    <mock-link
+      classname="css-6yv32w-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      to=""
+    >
+      <div
+        class="emotion-0 emotion-1"
+      >
+        ←
+      </div>
+      <div>
+        <div
+          class="emotion-2 emotion-3"
+        >
+          editor.editorToolbar.backCollection
+        </div>
+        <div
+          class="emotion-4 emotion-5"
+        >
+          editor.editorToolbar.changesSaved
+        </div>
+      </div>
+    </mock-link>
+    <div
+      class="emotion-26 emotion-27"
+    >
+      <div
+        class="emotion-22 emotion-23"
+      >
+        <button
+          class="emotion-6 emotion-7"
+          disabled=""
+        >
+          editor.editorToolbar.save
+        </button>
+        <div
+          class="emotion-10 emotion-11 emotion-12"
+        >
+          <span
+            aria-expanded="false"
+            aria-haspopup="true"
+            class="emotion-8 emotion-9"
+            role="button"
+            tabindex="0"
+          >
+            editor.editorToolbar.status
+          </span>
+        </div>
+        <div
+          class="emotion-20 emotion-21"
+        >
+          <div
+            class="emotion-16 emotion-17"
+          >
+            <span
+              class="tooltip emotion-13 emotion-14 emotion-15"
+            >
+              <svg
+                class="bi bi-info-circle"
+                fill="currentColor"
+                height="16"
+                viewBox="0 0 16 16"
+                width="16"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
+                />
+                <path
+                  d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"
+                />
+              </svg>
+            </span>
+          </div>
+          <div
+            class="emotion-18 emotion-19"
+          >
+            editor.editorToolbar.statusInfoTooltipInReview
+          </div>
+        </div>
+      </div>
+      <div
+        class="emotion-24 emotion-25"
+      />
+    </div>
+    <div
+      class="emotion-28 emotion-29"
+    >
+      <mock-settings-dropdown />
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`EditorToolbar should render with workflow controls hasUnpublishedChanges=false,isNewEntry=false,isModification=false,useOpenAuthoring=false 1`] = `
+<DocumentFragment>
+  .emotion-18 {
+  box-shadow: 0 2px 6px 0 rgba(68,74,87,0.05),0 1px 3px 0 rgba(68,74,87,0.1),0 2px 54px rgba(0,0,0,0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-width: 800px;
+  z-index: 300;
+  background-color: #fff;
+  height: 66px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+}
+
+.emotion-0 {
+  color: #313d3e;
+  font-size: 21px;
+  font-weight: 600;
+  margin-right: 16px;
+}
+
+.emotion-2 {
+  color: #313d3e;
+  font-size: 14px;
+}
+
+.emotion-2 {
+  color: #313d3e;
+  font-size: 14px;
+}
+
+.emotion-4 {
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1;
+  display: inline-block;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #005614;
+}
+
+.emotion-14 {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  border: 0 solid #dfdfe3;
+  -webkit-flex: 10;
+  -ms-flex: 10;
+  flex: 10;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  padding: 0 10px;
+}
+
+.emotion-10 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.emotion-8 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  height: 36px;
+  line-height: 36px;
+  font-weight: 500;
+  padding: 0 15px;
+  background-color: #798291;
+  color: #fff;
+  margin: 0 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+  background-color: #fcefea;
+  color: #ff003b;
+}
+
+@media (max-width:1200px) {
+  .emotion-8 {
+    padding: 0 10px;
+  }
+}
+
+.emotion-12 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: end;
+  -webkit-justify-content: flex-end;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+}
+
+.emotion-16 {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  border: 0 solid #dfdfe3;
+  border-left-width: 1px;
+  padding: 0 7px;
+}
+
+.emotion-6 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  height: 36px;
+  line-height: 36px;
+  font-weight: 500;
+  padding: 0 15px;
+  background-color: #798291;
+  color: #fff;
+  margin: 0 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+  background-color: #e8f5fe;
+  color: #3a69c7;
+}
+
+@media (max-width:1200px) {
+  .emotion-6 {
+    padding: 0 10px;
+  }
+}
+
+.emotion-6[disabled] {
+  background-color: #eff0f4;
+  color: #798291;
+  cursor: default;
+}
+
+<div
+    class="emotion-18 emotion-19"
+  >
+    <mock-link
+      classname="css-6yv32w-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      to=""
+    >
+      <div
+        class="emotion-0 emotion-1"
+      >
+        ←
+      </div>
+      <div>
+        <div
+          class="emotion-2 emotion-3"
+        >
+          editor.editorToolbar.backCollection
+        </div>
+        <div
+          class="emotion-4 emotion-5"
+        >
+          editor.editorToolbar.changesSaved
+        </div>
+      </div>
+    </mock-link>
+    <div
+      class="emotion-14 emotion-15"
+    >
+      <div
+        class="emotion-10 emotion-11"
+      >
+        <button
+          class="emotion-6 emotion-7"
+          disabled=""
+        >
+          editor.editorToolbar.save
+        </button>
+        <button
+          class="emotion-8 emotion-9"
+        >
+          editor.editorToolbar.deletePublishedEntry
+        </button>
+      </div>
+      <div
+        class="emotion-12 emotion-13"
+      />
+    </div>
+    <div
+      class="emotion-16 emotion-17"
+    >
+      <mock-settings-dropdown />
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`EditorToolbar should render with workflow controls hasUnpublishedChanges=false,isNewEntry=false,isModification=false,useOpenAuthoring=true 1`] = `
+<DocumentFragment>
+  .emotion-16 {
+  box-shadow: 0 2px 6px 0 rgba(68,74,87,0.05),0 1px 3px 0 rgba(68,74,87,0.1),0 2px 54px rgba(0,0,0,0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-width: 800px;
+  z-index: 300;
+  background-color: #fff;
+  height: 66px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+}
+
+.emotion-0 {
+  color: #313d3e;
+  font-size: 21px;
+  font-weight: 600;
+  margin-right: 16px;
+}
+
+.emotion-2 {
+  color: #313d3e;
+  font-size: 14px;
+}
+
+.emotion-2 {
+  color: #313d3e;
+  font-size: 14px;
+}
+
+.emotion-4 {
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1;
+  display: inline-block;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #005614;
+}
+
+.emotion-12 {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  border: 0 solid #dfdfe3;
+  -webkit-flex: 10;
+  -ms-flex: 10;
+  flex: 10;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  padding: 0 10px;
+}
+
+.emotion-8 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.emotion-10 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: end;
+  -webkit-justify-content: flex-end;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+}
+
+.emotion-14 {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  border: 0 solid #dfdfe3;
+  border-left-width: 1px;
+  padding: 0 7px;
+}
+
+.emotion-6 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  height: 36px;
+  line-height: 36px;
+  font-weight: 500;
+  padding: 0 15px;
+  background-color: #798291;
+  color: #fff;
+  margin: 0 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+  background-color: #e8f5fe;
+  color: #3a69c7;
+}
+
+@media (max-width:1200px) {
+  .emotion-6 {
+    padding: 0 10px;
+  }
+}
+
+.emotion-6[disabled] {
+  background-color: #eff0f4;
+  color: #798291;
+  cursor: default;
+}
+
+<div
+    class="emotion-16 emotion-17"
+  >
+    <mock-link
+      classname="css-6yv32w-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      to=""
+    >
+      <div
+        class="emotion-0 emotion-1"
+      >
+        ←
+      </div>
+      <div>
+        <div
+          class="emotion-2 emotion-3"
+        >
+          editor.editorToolbar.backCollection
+        </div>
+        <div
+          class="emotion-4 emotion-5"
+        >
+          editor.editorToolbar.changesSaved
+        </div>
+      </div>
+    </mock-link>
+    <div
+      class="emotion-12 emotion-13"
+    >
+      <div
+        class="emotion-8 emotion-9"
+      >
+        <button
+          class="emotion-6 emotion-7"
+          disabled=""
+        >
+          editor.editorToolbar.save
+        </button>
+      </div>
+      <div
+        class="emotion-10 emotion-11"
+      />
+    </div>
+    <div
+      class="emotion-14 emotion-15"
+    >
+      <mock-settings-dropdown />
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`EditorToolbar should render with workflow controls hasUnpublishedChanges=true,isNewEntry=false,isModification=false,useOpenAuthoring=false 1`] = `
+<DocumentFragment>
+  .emotion-18 {
+  box-shadow: 0 2px 6px 0 rgba(68,74,87,0.05),0 1px 3px 0 rgba(68,74,87,0.1),0 2px 54px rgba(0,0,0,0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-width: 800px;
+  z-index: 300;
+  background-color: #fff;
+  height: 66px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+}
+
+.emotion-0 {
+  color: #313d3e;
+  font-size: 21px;
+  font-weight: 600;
+  margin-right: 16px;
+}
+
+.emotion-2 {
+  color: #313d3e;
+  font-size: 14px;
+}
+
+.emotion-2 {
+  color: #313d3e;
+  font-size: 14px;
+}
+
+.emotion-4 {
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1;
+  display: inline-block;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #005614;
+}
+
+.emotion-14 {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  border: 0 solid #dfdfe3;
+  -webkit-flex: 10;
+  -ms-flex: 10;
+  flex: 10;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  padding: 0 10px;
+}
+
+.emotion-10 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.emotion-8 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  height: 36px;
+  line-height: 36px;
+  font-weight: 500;
+  padding: 0 15px;
+  background-color: #798291;
+  color: #fff;
+  margin: 0 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+  background-color: #fcefea;
+  color: #ff003b;
+}
+
+@media (max-width:1200px) {
+  .emotion-8 {
+    padding: 0 10px;
+  }
+}
+
+.emotion-12 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: end;
+  -webkit-justify-content: flex-end;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+}
+
+.emotion-16 {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  border: 0 solid #dfdfe3;
+  border-left-width: 1px;
+  padding: 0 7px;
+}
+
+.emotion-6 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  height: 36px;
+  line-height: 36px;
+  font-weight: 500;
+  padding: 0 15px;
+  background-color: #798291;
+  color: #fff;
+  margin: 0 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+  background-color: #e8f5fe;
+  color: #3a69c7;
+}
+
+@media (max-width:1200px) {
+  .emotion-6 {
+    padding: 0 10px;
+  }
+}
+
+.emotion-6[disabled] {
+  background-color: #eff0f4;
+  color: #798291;
+  cursor: default;
+}
+
+<div
+    class="emotion-18 emotion-19"
+  >
+    <mock-link
+      classname="css-6yv32w-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      to=""
+    >
+      <div
+        class="emotion-0 emotion-1"
+      >
+        ←
+      </div>
+      <div>
+        <div
+          class="emotion-2 emotion-3"
+        >
+          editor.editorToolbar.backCollection
+        </div>
+        <div
+          class="emotion-4 emotion-5"
+        >
+          editor.editorToolbar.changesSaved
+        </div>
+      </div>
+    </mock-link>
+    <div
+      class="emotion-14 emotion-15"
+    >
+      <div
+        class="emotion-10 emotion-11"
+      >
+        <button
+          class="emotion-6 emotion-7"
+          disabled=""
+        >
+          editor.editorToolbar.save
+        </button>
+        <button
+          class="emotion-8 emotion-9"
+        >
+          editor.editorToolbar.deleteUnpublishedEntry
+        </button>
+      </div>
+      <div
+        class="emotion-12 emotion-13"
+      />
+    </div>
+    <div
+      class="emotion-16 emotion-17"
+    >
+      <mock-settings-dropdown />
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`EditorToolbar should render with workflow controls hasUnpublishedChanges=true,isNewEntry=false,isModification=false,useOpenAuthoring=true 1`] = `
+<DocumentFragment>
+  .emotion-18 {
+  box-shadow: 0 2px 6px 0 rgba(68,74,87,0.05),0 1px 3px 0 rgba(68,74,87,0.1),0 2px 54px rgba(0,0,0,0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-width: 800px;
+  z-index: 300;
+  background-color: #fff;
+  height: 66px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+}
+
+.emotion-0 {
+  color: #313d3e;
+  font-size: 21px;
+  font-weight: 600;
+  margin-right: 16px;
+}
+
+.emotion-2 {
+  color: #313d3e;
+  font-size: 14px;
+}
+
+.emotion-2 {
+  color: #313d3e;
+  font-size: 14px;
+}
+
+.emotion-4 {
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1;
+  display: inline-block;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #005614;
+}
+
+.emotion-14 {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  border: 0 solid #dfdfe3;
+  -webkit-flex: 10;
+  -ms-flex: 10;
+  flex: 10;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  padding: 0 10px;
+}
+
+.emotion-10 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.emotion-8 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  height: 36px;
+  line-height: 36px;
+  font-weight: 500;
+  padding: 0 15px;
+  background-color: #798291;
+  color: #fff;
+  margin: 0 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+  background-color: #fcefea;
+  color: #ff003b;
+}
+
+@media (max-width:1200px) {
+  .emotion-8 {
+    padding: 0 10px;
+  }
+}
+
+.emotion-12 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: end;
+  -webkit-justify-content: flex-end;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+}
+
+.emotion-16 {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  border: 0 solid #dfdfe3;
+  border-left-width: 1px;
+  padding: 0 7px;
+}
+
+.emotion-6 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  height: 36px;
+  line-height: 36px;
+  font-weight: 500;
+  padding: 0 15px;
+  background-color: #798291;
+  color: #fff;
+  margin: 0 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+  background-color: #e8f5fe;
+  color: #3a69c7;
+}
+
+@media (max-width:1200px) {
+  .emotion-6 {
+    padding: 0 10px;
+  }
+}
+
+.emotion-6[disabled] {
+  background-color: #eff0f4;
+  color: #798291;
+  cursor: default;
+}
+
+<div
+    class="emotion-18 emotion-19"
+  >
+    <mock-link
+      classname="css-6yv32w-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      to=""
+    >
+      <div
+        class="emotion-0 emotion-1"
+      >
+        ←
+      </div>
+      <div>
+        <div
+          class="emotion-2 emotion-3"
+        >
+          editor.editorToolbar.backCollection
+        </div>
+        <div
+          class="emotion-4 emotion-5"
+        >
+          editor.editorToolbar.changesSaved
+        </div>
+      </div>
+    </mock-link>
+    <div
+      class="emotion-14 emotion-15"
+    >
+      <div
+        class="emotion-10 emotion-11"
+      >
+        <button
+          class="emotion-6 emotion-7"
+          disabled=""
+        >
+          editor.editorToolbar.save
+        </button>
+        <button
+          class="emotion-8 emotion-9"
+        >
+          editor.editorToolbar.deleteUnpublishedEntry
+        </button>
+      </div>
+      <div
+        class="emotion-12 emotion-13"
+      />
+    </div>
+    <div
+      class="emotion-16 emotion-17"
+    >
+      <mock-settings-dropdown />
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`EditorToolbar should render with workflow controls hasUnpublishedChanges=true,isNewEntry=false,isModification=true,useOpenAuthoring=false 1`] = `
+<DocumentFragment>
+  .emotion-18 {
+  box-shadow: 0 2px 6px 0 rgba(68,74,87,0.05),0 1px 3px 0 rgba(68,74,87,0.1),0 2px 54px rgba(0,0,0,0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-width: 800px;
+  z-index: 300;
+  background-color: #fff;
+  height: 66px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+}
+
+.emotion-0 {
+  color: #313d3e;
+  font-size: 21px;
+  font-weight: 600;
+  margin-right: 16px;
+}
+
+.emotion-2 {
+  color: #313d3e;
+  font-size: 14px;
+}
+
+.emotion-2 {
+  color: #313d3e;
+  font-size: 14px;
+}
+
+.emotion-4 {
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1;
+  display: inline-block;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #005614;
+}
+
+.emotion-14 {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  border: 0 solid #dfdfe3;
+  -webkit-flex: 10;
+  -ms-flex: 10;
+  flex: 10;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  padding: 0 10px;
+}
+
+.emotion-10 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.emotion-8 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  height: 36px;
+  line-height: 36px;
+  font-weight: 500;
+  padding: 0 15px;
+  background-color: #798291;
+  color: #fff;
+  margin: 0 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+  background-color: #fcefea;
+  color: #ff003b;
+}
+
+@media (max-width:1200px) {
+  .emotion-8 {
+    padding: 0 10px;
+  }
+}
+
+.emotion-12 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: end;
+  -webkit-justify-content: flex-end;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+}
+
+.emotion-16 {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  border: 0 solid #dfdfe3;
+  border-left-width: 1px;
+  padding: 0 7px;
+}
+
+.emotion-6 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  height: 36px;
+  line-height: 36px;
+  font-weight: 500;
+  padding: 0 15px;
+  background-color: #798291;
+  color: #fff;
+  margin: 0 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+  background-color: #e8f5fe;
+  color: #3a69c7;
+}
+
+@media (max-width:1200px) {
+  .emotion-6 {
+    padding: 0 10px;
+  }
+}
+
+.emotion-6[disabled] {
+  background-color: #eff0f4;
+  color: #798291;
+  cursor: default;
+}
+
+<div
+    class="emotion-18 emotion-19"
+  >
+    <mock-link
+      classname="css-6yv32w-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      to=""
+    >
+      <div
+        class="emotion-0 emotion-1"
+      >
+        ←
+      </div>
+      <div>
+        <div
+          class="emotion-2 emotion-3"
+        >
+          editor.editorToolbar.backCollection
+        </div>
+        <div
+          class="emotion-4 emotion-5"
+        >
+          editor.editorToolbar.changesSaved
+        </div>
+      </div>
+    </mock-link>
+    <div
+      class="emotion-14 emotion-15"
+    >
+      <div
+        class="emotion-10 emotion-11"
+      >
+        <button
+          class="emotion-6 emotion-7"
+          disabled=""
+        >
+          editor.editorToolbar.save
+        </button>
+        <button
+          class="emotion-8 emotion-9"
+        >
+          editor.editorToolbar.deleteUnpublishedChanges
+        </button>
+      </div>
+      <div
+        class="emotion-12 emotion-13"
+      />
+    </div>
+    <div
+      class="emotion-16 emotion-17"
+    >
+      <mock-settings-dropdown />
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`EditorToolbar should render with workflow controls hasUnpublishedChanges=true,isNewEntry=false,isModification=true,useOpenAuthoring=true 1`] = `
+<DocumentFragment>
+  .emotion-18 {
+  box-shadow: 0 2px 6px 0 rgba(68,74,87,0.05),0 1px 3px 0 rgba(68,74,87,0.1),0 2px 54px rgba(0,0,0,0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-width: 800px;
+  z-index: 300;
+  background-color: #fff;
+  height: 66px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+}
+
+.emotion-0 {
+  color: #313d3e;
+  font-size: 21px;
+  font-weight: 600;
+  margin-right: 16px;
+}
+
+.emotion-2 {
+  color: #313d3e;
+  font-size: 14px;
+}
+
+.emotion-2 {
+  color: #313d3e;
+  font-size: 14px;
+}
+
+.emotion-4 {
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1;
+  display: inline-block;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #005614;
+}
+
+.emotion-14 {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  border: 0 solid #dfdfe3;
+  -webkit-flex: 10;
+  -ms-flex: 10;
+  flex: 10;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  padding: 0 10px;
+}
+
+.emotion-10 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.emotion-8 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  height: 36px;
+  line-height: 36px;
+  font-weight: 500;
+  padding: 0 15px;
+  background-color: #798291;
+  color: #fff;
+  margin: 0 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+  background-color: #fcefea;
+  color: #ff003b;
+}
+
+@media (max-width:1200px) {
+  .emotion-8 {
+    padding: 0 10px;
+  }
+}
+
+.emotion-12 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: end;
+  -webkit-justify-content: flex-end;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+}
+
+.emotion-16 {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  border: 0 solid #dfdfe3;
+  border-left-width: 1px;
+  padding: 0 7px;
+}
+
+.emotion-6 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  height: 36px;
+  line-height: 36px;
+  font-weight: 500;
+  padding: 0 15px;
+  background-color: #798291;
+  color: #fff;
+  margin: 0 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+  background-color: #e8f5fe;
+  color: #3a69c7;
+}
+
+@media (max-width:1200px) {
+  .emotion-6 {
+    padding: 0 10px;
+  }
+}
+
+.emotion-6[disabled] {
+  background-color: #eff0f4;
+  color: #798291;
+  cursor: default;
+}
+
+<div
+    class="emotion-18 emotion-19"
+  >
+    <mock-link
+      classname="css-6yv32w-ToolbarSectionBackLink-toolbarSection evqrzhe8"
+      to=""
+    >
+      <div
+        class="emotion-0 emotion-1"
+      >
+        ←
+      </div>
+      <div>
+        <div
+          class="emotion-2 emotion-3"
+        >
+          editor.editorToolbar.backCollection
+        </div>
+        <div
+          class="emotion-4 emotion-5"
+        >
+          editor.editorToolbar.changesSaved
+        </div>
+      </div>
+    </mock-link>
+    <div
+      class="emotion-14 emotion-15"
+    >
+      <div
+        class="emotion-10 emotion-11"
+      >
+        <button
+          class="emotion-6 emotion-7"
+          disabled=""
+        >
+          editor.editorToolbar.save
+        </button>
+        <button
+          class="emotion-8 emotion-9"
+        >
+          editor.editorToolbar.deleteUnpublishedChanges
+        </button>
+      </div>
+      <div
+        class="emotion-12 emotion-13"
+      />
+    </div>
+    <div
+      class="emotion-16 emotion-17"
+    >
+      <mock-settings-dropdown />
+    </div>
+  </div>
+</DocumentFragment>
+`;

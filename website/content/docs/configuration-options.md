@@ -24,7 +24,7 @@ You can find details about all configuration options below. Note that [YAML synt
 
 The `backend` option specifies how to access the content for your site, including authentication. Full details and code samples can be found in [Backends](/docs/backends-overview).
 
-**Note**: no matter where you access Netlify CMS — whether running locally, in a staging environment, or in your published site — it will always fetch and commit files in your hosted repository (for example, on GitHub), on the branch you configured in your Netlify CMS config.yml file. This means that content fetched in the admin UI will match the content in the repository, which may be different from your locally running site. It also means that content saved using the admin UI will save directly to the hosted repository, even if you're running the UI locally or in staging.
+**Note**: no matter where you access Netlify CMS — whether running locally, in a staging environment, or in your published site — it will always fetch and commit files in your hosted repository (for example, on GitHub), on the branch you configured in your Netlify CMS config.yml file. This means that content fetched in the admin UI will match the content in the repository, which may be different from your locally running site. It also means that content saved using the admin UI will save directly to the hosted repository, even if you're running the UI locally or in staging. If you want to have your local CMS write to a local repository, try the `local_backend` setting, [currently in beta](/docs/beta-features/#working-with-a-local-git-repository).
 
 ## Publish Mode
 
@@ -158,6 +158,20 @@ When a translation for the selected locale is missing the English one will be us
 ```yaml
 show_preview_links: false
 ```
+
+## Search
+
+The search functionally requires loading all collection(s) entries, which can exhaust rate limits on large repositories.
+It can be disabled by setting the top level `search` property to `false`.
+
+Defaults to `true`
+
+**Example:**
+
+```yaml
+search: false
+```
+
 
 ## Slug Type
 

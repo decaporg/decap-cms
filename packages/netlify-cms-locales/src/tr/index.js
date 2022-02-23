@@ -9,9 +9,9 @@ const tr = {
     loginWithGitLab: 'GitLab ile Giriş',
     errors: {
       email: 'E-postanızı girdiğinizden emin olun.',
-      password: 'Şifrenizi lütfen giriniz.',
+      password: 'Lütfen şifrenizi girin.',
       identitySettings:
-        'Identity ayarlarına erişilemiyor. Git-gateway arka ucunu kullanırken Identity servisi ve Git Gateway etkin olduğundan emin olun.',
+        "Identity ayarlarına erişilemiyor. Git-gateway sunucusunu kullanmak için Identity servisi ve Git Gateway'in etkin olduğundan emin olun.",
     },
   },
   app: {
@@ -35,36 +35,67 @@ const tr = {
   collection: {
     sidebar: {
       collections: 'Koleksiyonlar',
+      allCollections: 'Bütün Koleksiyonlar',
       searchAll: 'Tümünü ara',
+      searchIn: 'İçinde ara',
     },
     collectionTop: {
+      sortBy: 'Sırala ...',
       viewAs: 'Görüntüle',
       newButton: 'Yeni %{collectionLabel}',
+      ascending: 'Artan',
+      descending: 'Azalan',
+      searchResults: '"%{searchTerm}" için Arama Sonuçları',
+      searchResultsInCollection:
+        '%{collection} koleksiyonunda, "%{searchTerm}" için Arama Sonuçları',
+      filterBy: 'Filtrele',
+      groupBy: 'Grupla',
     },
     entries: {
-      loadingEntries: 'Girdiler yükleniyor',
-      cachingEntries: 'Girdi önbelleği',
+      loadingEntries: 'Girdiler yükleniyor...',
+      cachingEntries: 'Girdi önbelleği...',
       longerLoading: 'Bu birkaç dakika sürebilir',
+      noEntries: 'Hiç Girdi Yok',
+    },
+    groups: {
+      other: 'Diğer',
+      negateLabel: '%{label} hariç',
+    },
+    defaultFields: {
+      author: {
+        label: 'Yazar',
+      },
+      updatedOn: {
+        label: 'Güncellenme Tarihi',
+      },
     },
   },
   editor: {
     editorControl: {
       field: {
-        optional: 'seçmeli',
+        optional: 'isteğe bağlı',
       },
     },
     editorControlPane: {
       widget: {
-        required: '%{fieldLabel} zorunlu',
+        required: '%{fieldLabel} gerekli.',
         regexPattern: '%{fieldLabel} eşleşmeyen kalıp: %{pattern}.',
         processing: '%{fieldLabel} işleniyor.',
-        range: '%{fieldLabel} - %{minValue} ve %{maxValue} arasında olmalı.',
+        range: '%{fieldLabel} %{minValue} ve %{maxValue} arasında olmalı.',
         min: '%{fieldLabel} en az %{minValue} olmalı.',
         max: '%{fieldLabel}, %{maxValue} veya daha az olmalı.',
         rangeCount: '%{fieldLabel}, %{minCount} ve %{maxCount} öğeleri arasında olmalı.',
         rangeCountExact: '%{fieldLabel}, %{count} öğe olmalıdır.',
         rangeMin: '%{fieldLabel}, en az %{minCount} öğe olmalıdır.',
         rangeMax: '%{fieldLabel}, %{maxCount} veya daha az öğe olmalıdır.',
+        invalidPath: `'%{path}' geçerli bir yol değil`,
+        pathExists: `'%{path}' yolu zaten var`,
+      },
+      i18n: {
+        writingInLocale: '%{locale} için yazılıyor',
+        copyFromLocale: 'Başka bir dilden doldurun',
+        copyFromLocaleConfirm:
+          'Verileri %{locale} dilinden mi doldurmak istiyorsun?\nVarolan bütün verilerin üzerine yazılacak.',
       },
     },
     editor: {
@@ -74,8 +105,8 @@ const tr = {
       onPublishingNotReady: 'Lütfen yayınlamadan önce içeriği "Hazır" olarak güncelleyin.',
       onPublishingWithUnsavedChanges:
         'Kaydedilmemiş değişiklikleriniz var, lütfen yayınlamadan önce kaydedin.',
-      onPublishing: 'Bu girdi yayınlamak istediğinize emin misiniz?',
-      onUnpublishing: 'Bu girdi yayından kaldırmak istediğinizden emin misiniz?',
+      onPublishing: 'Bu girdiyi yayınlamak istediğinize emin misiniz?',
+      onUnpublishing: 'Bu girdiyi yayından kaldırmak istediğinizden emin misiniz?',
       onDeleteWithUnsavedChanges:
         'Bu oturumda kaydedilmiş değişikliklerin yanı sıra geçerli oturumdaki kaydedilmemiş değişikliklerinizi silmek istediğinize emin misiniz?',
       onDeletePublishedEntry: 'Bu yayınlanmış girdiyi silmek istediğinize emin misiniz?',
@@ -86,12 +117,17 @@ const tr = {
       loadingEntry: 'Girdiler yükleniyor...',
       confirmLoadBackup: 'Bu girdi için yerel bir yedekleme kurtarıldı, kullanmak ister misiniz?',
     },
+    editorInterface: {
+      toggleI18n: 'i18n değiştir',
+      togglePreview: 'Önizlemeyi değiştir',
+      toggleScrollSync: 'Kaydırmayı senkronize et',
+    },
     editorToolbar: {
       publishing: 'Yayınlanıyor...',
       publish: 'Yayınla',
       published: 'Yayınlanan',
       unpublish: 'Yayından Kaldır',
-      duplicate: 'Yayını Kopyala',
+      duplicate: 'Kopyala',
       unpublishing: 'Yayından kaldırılıyor...',
       publishAndCreateNew: 'Yayınla ve yeni oluştur',
       publishAndDuplicate: 'Yayınla ve kopya oluştur',
@@ -100,58 +136,92 @@ const tr = {
       deletePublishedEntry: 'Yayınlanan girdiyi sil',
       deleteEntry: 'Girdiyi sil',
       saving: 'Kaydediliyor...',
-      save: 'Kayıt Et',
+      save: 'Kaydet',
+      statusInfoTooltipDraft:
+        'Giriş durumu taslak olarak ayarlandı. Girişi bitirmek ve incelemeye göndermek için giriş durumunu ‘İncelemede’ olarak ayarlayın',
+      statusInfoTooltipInReview:
+        'Giriş gözden geçiriliyor, başka bir işlem yapılmasına gerek yok. Ancak, incelenirken yine de ek değişiklikler yapabilirsiniz.',
       deleting: 'Siliniyor...',
       updating: 'Güncelleniyor...',
-      setStatus: 'Durumu ayarla',
-      backCollection: '%{collectionLabel} koleksiyonunda yazılı',
+      status: 'Durumu: %{status}',
+      backCollection: ' %{collectionLabel} koleksiyonunda yazılı',
       unsavedChanges: 'Kaydedilmemiş Değişiklikler',
       changesSaved: 'Değişiklikler kaydedildi',
       draft: 'Taslak',
       inReview: 'İncelemede',
       ready: 'Hazır',
-      publishNow: 'Şimdi yayınla',
+      publishNow: 'Şimdi yayımla',
       deployPreviewPendingButtonLabel: 'Önizlemeyi Denetle',
       deployPreviewButtonLabel: 'Önizlemeyi Görüntüle',
       deployButtonLabel: 'Canlı Görüntüle',
     },
     editorWidgets: {
       markdown: {
+        bold: 'Kalın',
+        italic: 'İtalik',
+        code: 'Kod',
+        link: 'Bağlantı',
+        linkPrompt: "Bağlantının URL'sini girin",
+        headings: 'Başlıklar',
+        quote: 'Alıntı',
+        bulletedList: 'Maddeli Liste',
+        numberedList: 'Numaralı Liste',
+        addComponent: 'Bileşen Ekle',
         richText: 'Zengin Metin',
         markdown: 'Markdown',
       },
       image: {
         choose: 'Bir resim seçin',
+        chooseUrl: "URL'den ekle",
+        replaceUrl: 'URL ile değiştir',
+        promptUrl: "Resmin URL'sini girin",
         chooseDifferent: 'Farklı bir resim seçin',
         remove: 'Resmi kaldır',
       },
       file: {
         choose: 'Bir dosya seçin',
+        chooseUrl: "URL'den ekle",
+        replaceUrl: 'URL ile değiştir',
+        promptUrl: "Dosyanın URL'sini girin",
         chooseDifferent: 'Farklı bir dosya seçin',
         remove: 'Dosyayı kaldır',
       },
       unknownControl: {
-        noControl: "'%{widget}' Widget için kontrol yok.",
+        noControl: "'%{widget}' bileşeni için kontrol yok.",
       },
       unknownPreview: {
-        noPreview: "'%{widget}' Widget için önizleme yok.",
+        noPreview: "'%{widget}' bileşeni için önizleme yok.",
       },
       headingOptions: {
-        headingOne: 'Heading 1',
-        headingTwo: 'Heading 2',
-        headingThree: 'Heading 3',
-        headingFour: 'Heading 4',
-        headingFive: 'Heading 5',
-        headingSix: 'Heading 6',
+        headingOne: 'Başlık 1',
+        headingTwo: 'Başlık 2',
+        headingThree: 'Başlık 3',
+        headingFour: 'Başlık 4',
+        headingFive: 'Başlık 5',
+        headingSix: 'Başlık 6',
+      },
+      datetime: {
+        now: 'Şimdi',
+      },
+      list: {
+        add: '%{item} Ekle',
+        addType: '%{item} Ekle',
       },
     },
   },
   mediaLibrary: {
     mediaLibraryCard: {
       draft: 'Taslak',
+      copy: 'Kopyala',
+      copyUrl: 'URLyi Kopyala',
+      copyPath: 'Dosya Yolunu Kopyala',
+      copyName: 'Adını Kopyala',
+      copied: 'Kopyalandı',
     },
     mediaLibrary: {
       onDelete: 'Seçilen medyayı silmek istediğinize emin misiniz?',
+      fileTooLarge:
+        'Dosya çok büyük.\n%{size} kilobaytdan daha büyük dosyaların yüklenmemesi için ayarlanmış.',
     },
     mediaLibraryModal: {
       loading: 'Yükleniyor...',
@@ -159,22 +229,28 @@ const tr = {
       noAssetsFound: 'Hiçbir dosya bulunamadı.',
       noImagesFound: 'Resim bulunamadı.',
       private: 'Özel ',
-      images: 'Görüntüler',
+      images: 'Görseller',
       mediaAssets: 'Medya dosyaları',
       search: 'Ara...',
       uploading: 'Yükleniyor...',
-      upload: 'Yeni yükle',
+      upload: 'Yükle',
+      download: 'İndir',
       deleting: 'Siliniyor...',
-      deleteSelected: 'Silme seçildi',
-      chooseSelected: 'Seç',
+      deleteSelected: 'Seçileni sil',
+      chooseSelected: 'Seçileni kullan',
     },
   },
   ui: {
+    default: {
+      goBackToSite: 'Siteye geri git',
+    },
     errorBoundary: {
       title: 'Hata',
       details: 'Bir hata oluştu - lütfen ',
-      reportIt: 'onu rapor et.',
+      reportIt: 'GitHub üzerinde hata raporu aç.',
       detailsHeading: 'Ayrıntılar',
+      privacyWarning:
+        'Bir hata raporu oluşturmak için gereken form otomatik olarak hata mesajı ve hata ayıklama verileriyle doldurulur.\nLütfen bilgilerin doğru olduğunu doğrulayın ve varsa hassas verileri kaldırın.',
       recoveredEntry: {
         heading: 'Kurtarılan belge',
         warning: 'Lütfen gitmeden önce bunu bir yere kopyalayın / yapıştırın!',
@@ -199,6 +275,9 @@ const tr = {
       entryUpdated: 'Girdi durumu güncellendi',
       onDeleteUnpublishedChanges: 'Yayımlanmamış değişiklikler silindi',
       onFailToAuth: '%{details}',
+      onLoggedOut: 'Çıkış yaptınız, lütfen tüm verileri yedekleyin ve tekrar giriş yapın',
+      onBackendDown:
+        'Arka uç hizmetinde bir kesinti yaşanıyor. Daha fazla bilgi için %{details} gör',
     },
   },
   workflow: {

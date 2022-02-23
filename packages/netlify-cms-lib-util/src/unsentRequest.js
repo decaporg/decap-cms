@@ -60,13 +60,7 @@ function toURL(req) {
 }
 
 function toFetchArguments(req) {
-  return [
-    toURL(req),
-    req
-      .remove('url')
-      .remove('params')
-      .toJS(),
-  ];
+  return [toURL(req), req.remove('url').remove('params').toJS()];
 }
 
 function maybeRequestArg(req) {

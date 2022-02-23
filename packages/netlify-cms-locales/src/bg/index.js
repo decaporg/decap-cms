@@ -135,7 +135,7 @@ const bg = {
       save: 'Запази',
       deleting: 'Изтриване...',
       updating: 'Актуализиране...',
-      setStatus: 'Задайте състояние',
+      status: 'Cъстояние: %{status}',
       backCollection: 'Записване в %{collectionLabel} колекция',
       unsavedChanges: 'Незапазени Промени',
       changesSaved: 'Запазени промени',

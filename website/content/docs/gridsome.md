@@ -106,7 +106,7 @@ Your `config.yml` for GitHub should look like this:
 ```yml
 backend:
   name: git-gateway
-  branch: master
+  branch: main # Branch to update (optional; defaults to master)
 
 media_folder: "static/uploads"
 public_folder: "/uploads"
@@ -133,7 +133,7 @@ git init
 git add .
 git commit -m "Initial Commit"
 git remote add origin https://github.com/YOUR_USERNAME/NEW_REPO_NAME.git
-git push -u origin master
+git push -u origin main
 ```
 
 ### Add your repo to Netlify

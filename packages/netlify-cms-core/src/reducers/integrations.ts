@@ -1,6 +1,9 @@
 import { fromJS } from 'immutable';
-import { CONFIG_SUCCESS, ConfigAction } from '../actions/config';
-import { Integrations, CmsConfig } from '../types/redux';
+
+import { CONFIG_SUCCESS } from '../actions/config';
+
+import type { ConfigAction } from '../actions/config';
+import type { Integrations, CmsConfig } from '../types/redux';
 
 interface Acc {
   providers: Record<string, {}>;

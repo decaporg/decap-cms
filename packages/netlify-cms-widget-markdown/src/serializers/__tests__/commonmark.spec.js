@@ -1,6 +1,7 @@
 import { flow } from 'lodash';
 import { tests as commonmarkSpec } from 'commonmark-spec';
 import * as commonmark from 'commonmark';
+
 import { markdownToSlate, slateToMarkdown } from '../index.js';
 
 const skips = [
@@ -25,24 +26,7 @@ const skips = [
   { number: 507, reason: 'Remark allows a space between link alt and url' },
   {
     number: [
-      511,
-      516,
-      525,
-      528,
-      529,
-      530,
-      532,
-      533,
-      534,
-      540,
-      541,
-      542,
-      543,
-      546,
-      548,
-      560,
-      565,
-      567,
+      511, 516, 525, 528, 529, 530, 532, 533, 534, 540, 541, 542, 543, 546, 548, 560, 565, 567,
     ],
     reason: 'we convert link references to standard links, but Remark also fails these',
   },
@@ -81,7 +65,7 @@ const parse = flow([markdownToSlate, slateToMarkdown]);
  * tests, of which we're passing about 300 as of introduction of this suite. To
  * work on improving Commonmark support, update __fixtures__/commonmarkExpected.json
  */
-describe.skip('Commonmark support', function() {
+describe.skip('Commonmark support', function () {
   const specs =
     onlys.length > 0
       ? commonmarkSpec.filter(({ number }) => onlys.includes(number))

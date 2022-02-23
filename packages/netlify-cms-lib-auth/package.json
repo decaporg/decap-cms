@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-lib-auth",
   "description": "Shared authentication functionality for Netlify CMS.",
-  "version": "2.4.0",
+  "version": "2.4.2",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-auth",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
   "module": "dist/esm/index.js",

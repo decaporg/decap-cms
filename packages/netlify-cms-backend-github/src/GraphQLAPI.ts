@@ -1,9 +1,8 @@
-import { ApolloClient, QueryOptions, MutationOptions, OperationVariables } from 'apollo-client';
+import { ApolloClient } from 'apollo-client';
 import {
   InMemoryCache,
   defaultDataIdFromObject,
   IntrospectionFragmentMatcher,
-  NormalizedCacheObject,
 } from 'apollo-cache-inmemory';
 import { createHttpLink } from 'apollo-link-http';
 import { setContext } from 'apollo-link-context';
@@ -17,12 +16,17 @@ import {
   throwOnConflictingBranches,
 } from 'netlify-cms-lib-util';
 import { trim, trimStart } from 'lodash';
+
 import introspectionQueryResultData from './fragmentTypes';
-import API, { Config, BlobArgs, API_NAME, PullRequestState, MOCK_PULL_REQUEST } from './API';
+import API, { API_NAME, PullRequestState, MOCK_PULL_REQUEST } from './API';
 import * as queries from './queries';
 import * as mutations from './mutations';
-import { GraphQLError } from 'graphql';
-import { Octokit } from '@octokit/rest';
+
+import type { Config, BlobArgs } from './API';
+import type { NormalizedCacheObject } from 'apollo-cache-inmemory';
+import type { QueryOptions, MutationOptions, OperationVariables } from 'apollo-client';
+import type { GraphQLError } from 'graphql';
+import type { Octokit } from '@octokit/rest';
 
 const NO_CACHE = 'no-cache';
 const CACHE_FIRST = 'cache-first';
@@ -62,11 +66,20 @@ type GraphQLPullRequest = {
   state: string;
   title: string;
   mergedAt: string | null;
+  updatedAt: string | null;
   labels: { nodes: { name: string }[] };
   repository: {
     id: string;
     isFork: boolean;
   };
+  user: GraphQLPullsListResponseItemUser;
+};
+
+type GraphQLPullsListResponseItemUser = {
+  avatar_url: string;
+  login: string;
+  url: string;
+  name: string;
 };
 
 function transformPullRequest(pr: GraphQLPullRequest) {
@@ -267,6 +280,11 @@ export default class GraphQLAPI extends API {
     }
   }
 
+  async getPullRequestAuthor(pullRequest: Octokit.PullsListResponseItem) {
+    const user = pullRequest.user as unknown as GraphQLPullsListResponseItemUser;
+    return user?.name || user?.login;
+  }
+
   async getPullRequests(
     head: string | undefined,
     state: PullRequestState,
@@ -300,7 +318,7 @@ export default class GraphQLAPI extends API {
 
     const mapped = pullRequests.nodes.map(transformPullRequest);
 
-    return ((mapped as unknown) as Octokit.PullsListResponseItem[]).filter(
+    return (mapped as unknown as Octokit.PullsListResponseItem[]).filter(
       pr => pr.head.ref.startsWith(`${CMS_BRANCH_PREFIX}/`) && predicate(pr),
     );
   }
@@ -673,7 +691,7 @@ export default class GraphQLAPI extends API {
       },
     });
     const { pullRequest } = data!.createPullRequest;
-    return (transformPullRequest(pullRequest) as unknown) as Octokit.PullsCreateResponse;
+    return transformPullRequest(pullRequest) as unknown as Octokit.PullsCreateResponse;
   }
 
   async getFileSha(path: string, { repoURL = this.repoURL, branch = this.branch } = {}) {

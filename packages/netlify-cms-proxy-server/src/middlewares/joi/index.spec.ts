@@ -1,6 +1,7 @@
 import { defaultSchema, joi } from '.';
-import express from 'express';
-import Joi from '@hapi/joi';
+
+import type express from 'express';
+import type Joi from '@hapi/joi';
 
 function assetFailure(result: Joi.ValidationResult, expectedMessage: string) {
   const { error } = result;
@@ -601,7 +602,7 @@ describe('joi', () => {
     } as express.Request;
     const json = jest.fn();
     const status = jest.fn(() => ({ json }));
-    const res: express.Response = ({ status } as unknown) as express.Response;
+    const res: express.Response = { status } as unknown as express.Response;
 
     joi(defaultSchema())(req, res, next);
 

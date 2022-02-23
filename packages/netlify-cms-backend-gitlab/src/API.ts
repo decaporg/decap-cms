@@ -1,3 +1,7 @@
+import { ApolloClient } from 'apollo-client';
+import { InMemoryCache } from 'apollo-cache-inmemory';
+import { createHttpLink } from 'apollo-link-http';
+import { setContext } from 'apollo-link-context';
 import {
   localForage,
   parseLinkHeader,
@@ -5,10 +9,6 @@ import {
   then,
   APIError,
   Cursor,
-  ApiRequest,
-  DataFile,
-  AssetProxy,
-  PersistOptions,
   readFile,
   CMS_BRANCH_PREFIX,
   generateContentKey,
@@ -24,7 +24,6 @@ import {
   branchFromContentKey,
   requestWithBackoff,
   readFileMetadata,
-  FetchError,
   throwOnConflictingBranches,
 } from 'netlify-cms-lib-util';
 import { Base64 } from 'js-base64';
@@ -32,16 +31,32 @@ import { Map } from 'immutable';
 import { flow, partial, result, trimStart } from 'lodash';
 import { dirname } from 'path';
 
+const NO_CACHE = 'no-cache';
+import * as queries from './queries';
+
+import type { ApolloQueryResult } from 'apollo-client';
+import type { NormalizedCacheObject } from 'apollo-cache-inmemory';
+import type {
+  ApiRequest,
+  DataFile,
+  AssetProxy,
+  PersistOptions,
+  FetchError,
+  ImplementationFile,
+} from 'netlify-cms-lib-util';
+
 export const API_NAME = 'GitLab';
 
 export interface Config {
   apiRoot?: string;
+  graphQLAPIRoot?: string;
   token?: string;
   branch?: string;
   repo?: string;
   squashMerges: boolean;
   initialWorkflowStatus: string;
   cmsLabelPrefix: string;
+  useGraphQL?: boolean;
 }
 
 export interface CommitAuthor {
@@ -62,6 +77,8 @@ type CommitItem = {
   oldPath?: string;
   action: CommitAction;
 };
+
+type FileEntry = { id: string; type: string; path: string; name: string };
 
 interface CommitsParams {
   commit_message: string;
@@ -180,8 +197,16 @@ export function getMaxAccess(groups: { group_access_level: number }[]) {
   }, groups[0]);
 }
 
+function batch<T>(items: T[], maxPerBatch: number, action: (items: T[]) => void) {
+  for (let index = 0; index < items.length; index = index + maxPerBatch) {
+    const itemsSlice = items.slice(index, index + maxPerBatch);
+    action(itemsSlice);
+  }
+}
+
 export default class API {
   apiRoot: string;
+  graphQLAPIRoot: string;
   token: string | boolean;
   branch: string;
   useOpenAuthoring?: boolean;
@@ -192,8 +217,11 @@ export default class API {
   initialWorkflowStatus: string;
   cmsLabelPrefix: string;
 
+  graphQLClient?: ApolloClient<NormalizedCacheObject>;
+
   constructor(config: Config) {
     this.apiRoot = config.apiRoot || 'https://gitlab.com/api/v4';
+    this.graphQLAPIRoot = config.graphQLAPIRoot || 'https://gitlab.com/api/graphql';
     this.token = config.token || false;
     this.branch = config.branch || 'master';
     this.repo = config.repo || '';
@@ -201,6 +229,40 @@ export default class API {
     this.squashMerges = config.squashMerges;
     this.initialWorkflowStatus = config.initialWorkflowStatus;
     this.cmsLabelPrefix = config.cmsLabelPrefix;
+    if (config.useGraphQL === true) {
+      this.graphQLClient = this.getApolloClient();
+    }
+  }
+
+  getApolloClient() {
+    const authLink = setContext((_, { headers }) => {
+      return {
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+          ...headers,
+          authorization: this.token ? `token ${this.token}` : '',
+        },
+      };
+    });
+    const httpLink = createHttpLink({ uri: this.graphQLAPIRoot });
+    return new ApolloClient({
+      link: authLink.concat(httpLink),
+      cache: new InMemoryCache(),
+      defaultOptions: {
+        watchQuery: {
+          fetchPolicy: NO_CACHE,
+          errorPolicy: 'ignore',
+        },
+        query: {
+          fetchPolicy: NO_CACHE,
+          errorPolicy: 'all',
+        },
+      },
+    });
+  }
+
+  reset() {
+    return this.graphQLClient?.resetStore();
   }
 
   withAuthorizationHeaders = (req: ApiRequest) => {
@@ -245,10 +307,8 @@ export default class API {
   MAINTAINER_ACCESS = 40;
 
   hasWriteAccess = async () => {
-    const {
-      shared_with_groups: sharedWithGroups,
-      permissions,
-    }: GitLabRepo = await this.requestJSON(this.repoURL);
+    const { shared_with_groups: sharedWithGroups, permissions }: GitLabRepo =
+      await this.requestJSON(this.repoURL);
 
     const { project_access: projectAccess, group_access: groupAccess } = permissions;
     if (projectAccess && projectAccess.access_level >= this.WRITE_ACCESS) {
@@ -303,7 +363,6 @@ export default class API {
       try {
         const result: GitLabCommit[] = await this.requestJSON({
           url: `${this.repoURL}/repository/commits`,
-          // eslint-disable-next-line @typescript-eslint/camelcase
           params: { path, ref_name: this.branch },
         });
         const commit = result[0];
@@ -352,7 +411,7 @@ export default class API {
   fetchCursorAndEntries = (
     req: ApiRequest,
   ): Promise<{
-    entries: { id: string; type: string; path: string; name: string }[];
+    entries: FileEntry[];
     cursor: Cursor;
   }> =>
     flow([
@@ -392,13 +451,107 @@ export default class API {
     };
   };
 
+  listAllFilesGraphQL = async (path: string, recursive: boolean, branch: String) => {
+    const files: FileEntry[] = [];
+    let blobsPaths;
+    let cursor;
+    do {
+      blobsPaths = await this.graphQLClient!.query({
+        query: queries.files,
+        variables: { repo: this.repo, branch, path, recursive, cursor },
+      });
+      files.push(...blobsPaths.data.project.repository.tree.blobs.nodes);
+      cursor = blobsPaths.data.project.repository.tree.blobs.pageInfo.endCursor;
+    } while (blobsPaths.data.project.repository.tree.blobs.pageInfo.hasNextPage);
+
+    return files;
+  };
+
+  readFilesGraphQL = async (files: ImplementationFile[]) => {
+    const paths = files.map(({ path }) => path);
+
+    type BlobResult = {
+      project: { repository: { blobs: { nodes: { id: string; data: string }[] } } };
+    };
+
+    const blobPromises: Promise<ApolloQueryResult<BlobResult>>[] = [];
+    batch(paths, 90, slice => {
+      blobPromises.push(
+        this.graphQLClient!.query({
+          query: queries.blobs,
+          variables: {
+            repo: this.repo,
+            branch: this.branch,
+            paths: slice,
+          },
+          fetchPolicy: 'cache-first',
+        }),
+      );
+    });
+
+    type LastCommit = {
+      id: string;
+      authoredDate: string;
+      authorName: string;
+      author?: {
+        name: string;
+        username: string;
+        publicEmail: string;
+      };
+    };
+
+    type CommitResult = {
+      project: { repository: { [tree: string]: { lastCommit: LastCommit } } };
+    };
+
+    const commitPromises: Promise<ApolloQueryResult<CommitResult>>[] = [];
+    batch(paths, 8, slice => {
+      commitPromises.push(
+        this.graphQLClient!.query({
+          query: queries.lastCommits(slice),
+          variables: {
+            repo: this.repo,
+            branch: this.branch,
+          },
+          fetchPolicy: 'cache-first',
+        }),
+      );
+    });
+
+    const [blobsResults, commitsResults] = await Promise.all([
+      (await Promise.all(blobPromises)).map(result => result.data.project.repository.blobs.nodes),
+      (
+        await Promise.all(commitPromises)
+      ).map(
+        result =>
+          Object.values(result.data.project.repository)
+            .map(({ lastCommit }) => lastCommit)
+            .filter(Boolean) as LastCommit[],
+      ),
+    ]);
+
+    const blobs = blobsResults.flat().map(result => result.data) as string[];
+    const metadata = commitsResults.flat().map(({ author, authoredDate, authorName }) => ({
+      author: author ? author.name || author.username || author.publicEmail : authorName,
+      updatedOn: authoredDate,
+    }));
+
+    const filesWithData = files.map((file, index) => ({
+      file: { ...file, ...metadata[index] },
+      data: blobs[index],
+    }));
+    return filesWithData;
+  };
+
   listAllFiles = async (path: string, recursive = false, branch = this.branch) => {
+    if (this.graphQLClient) {
+      return await this.listAllFilesGraphQL(path, recursive, branch);
+    }
     const entries = [];
     // eslint-disable-next-line prefer-const
     let { cursor, entries: initialEntries } = await this.fetchCursorAndEntries({
       url: `${this.repoURL}/repository/tree`,
       // Get the maximum number of entries per page
-      // eslint-disable-next-line @typescript-eslint/camelcase
       params: { path, ref: branch, per_page: 100, recursive },
     });
     entries.push(...initialEntries);
@@ -427,9 +580,7 @@ export default class API {
   ) {
     const actions = items.map(item => ({
       action: item.action,
-      // eslint-disable-next-line @typescript-eslint/camelcase
       file_path: item.path,
-      // eslint-disable-next-line @typescript-eslint/camelcase
       ...(item.oldPath ? { previous_path: item.oldPath } : {}),
       ...(item.base64Content !== undefined
         ? { content: item.base64Content, encoding: 'base64' }
@@ -438,17 +589,13 @@ export default class API {
 
     const commitParams: CommitsParams = {
       branch,
-      // eslint-disable-next-line @typescript-eslint/camelcase
       commit_message: commitMessage,
       actions,
-      // eslint-disable-next-line @typescript-eslint/camelcase
       ...(newBranch ? { start_branch: this.branch } : {}),
     };
     if (this.commitAuthor) {
       const { name, email } = this.commitAuthor;
-      // eslint-disable-next-line @typescript-eslint/camelcase
       commitParams.author_name = name;
-      // eslint-disable-next-line @typescript-eslint/camelcase
       commitParams.author_email = email;
     }
 
@@ -530,13 +677,10 @@ export default class API {
 
   deleteFiles = (paths: string[], commitMessage: string) => {
     const branch = this.branch;
-    // eslint-disable-next-line @typescript-eslint/camelcase
     const commitParams: CommitsParams = { commit_message: commitMessage, branch };
     if (this.commitAuthor) {
       const { name, email } = this.commitAuthor;
-      // eslint-disable-next-line @typescript-eslint/camelcase
       commitParams.author_name = name;
-      // eslint-disable-next-line @typescript-eslint/camelcase
       commitParams.author_email = email;
     }
 
@@ -552,9 +696,8 @@ export default class API {
       params: {
         state: 'opened',
         labels: 'Any',
-        // eslint-disable-next-line @typescript-eslint/camelcase
+        per_page: 100,
         target_branch: this.branch,
-        // eslint-disable-next-line @typescript-eslint/camelcase
         ...(sourceBranch ? { source_branch: sourceBranch } : {}),
       },
     });
@@ -666,12 +809,14 @@ export default class API {
     const label = mergeRequest.labels.find(l => isCMSLabel(l, this.cmsLabelPrefix)) as string;
     const status = labelToStatus(label, this.cmsLabelPrefix);
     const updatedAt = mergeRequest.updated_at;
+    const pullRequestAuthor = mergeRequest.author.name;
     return {
       collection,
       slug,
       status,
       diffs: diffsWithIds,
       updatedAt,
+      pullRequestAuthor,
     };
   }
 
@@ -687,7 +832,6 @@ export default class API {
       rebase = await this.requestJSON({
         url: `${this.repoURL}/merge_requests/${mergeRequest.iid}`,
         params: {
-          // eslint-disable-next-line @typescript-eslint/camelcase
           include_rebase_in_progress: true,
         },
       });
@@ -709,14 +853,11 @@ export default class API {
       method: 'POST',
       url: `${this.repoURL}/merge_requests`,
       params: {
-        // eslint-disable-next-line @typescript-eslint/camelcase
         source_branch: branch,
-        // eslint-disable-next-line @typescript-eslint/camelcase
         target_branch: this.branch,
         title: commitMessage,
         description: DEFAULT_PR_BODY,
         labels: statusToLabel(status, this.cmsLabelPrefix),
-        // eslint-disable-next-line @typescript-eslint/camelcase
         remove_source_branch: true,
         squash: this.squashMerges,
       },
@@ -791,12 +932,9 @@ export default class API {
       method: 'PUT',
       url: `${this.repoURL}/merge_requests/${mergeRequest.iid}/merge`,
       params: {
-        // eslint-disable-next-line @typescript-eslint/camelcase
         merge_commit_message: MERGE_COMMIT_MESSAGE,
-        // eslint-disable-next-line @typescript-eslint/camelcase
         squash_commit_message: MERGE_COMMIT_MESSAGE,
         squash: this.squashMerges,
-        // eslint-disable-next-line @typescript-eslint/camelcase
         should_remove_source_branch: true,
       },
     });
@@ -814,7 +952,6 @@ export default class API {
       method: 'PUT',
       url: `${this.repoURL}/merge_requests/${mergeRequest.iid}`,
       params: {
-        // eslint-disable-next-line @typescript-eslint/camelcase
         state_event: 'close',
       },
     });
@@ -865,11 +1002,9 @@ export default class API {
     const branch = branchFromContentKey(contentKey);
     const mergeRequest = await this.getBranchMergeRequest(branch);
     const statuses: GitLabCommitStatus[] = await this.getMergeRequestStatues(mergeRequest, branch);
-    // eslint-disable-next-line @typescript-eslint/camelcase
     return statuses.map(({ name, status, target_url }) => ({
       context: name,
       state: status === GitLabCommitStatuses.Success ? PreviewState.Success : PreviewState.Other,
-      // eslint-disable-next-line @typescript-eslint/camelcase
       target_url,
     }));
   }

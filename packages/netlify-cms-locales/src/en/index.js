@@ -92,6 +92,9 @@ const en = {
       },
       i18n: {
         writingInLocale: 'Writing in %{locale}',
+        copyFromLocale: 'Fill in from another locale',
+        copyFromLocaleConfirm:
+          'Do you want to fill in data from %{locale} locale?\nAll existing content will be overwritten.',
       },
     },
     editor: {
@@ -131,9 +134,13 @@ const en = {
       deleteEntry: 'Delete entry',
       saving: 'Saving...',
       save: 'Save',
+      statusInfoTooltipDraft:
+        'Entry status is set to draft. To finalize and submit it for review, set the status to ‘In review’',
+      statusInfoTooltipInReview:
+        'Entry is being reviewed, no further actions are required. However, you can still make additional changes while it is being reviewed.',
       deleting: 'Deleting...',
       updating: 'Updating...',
-      setStatus: 'Set status',
+      status: 'Status: %{status}',
       backCollection: ' Writing in %{collectionLabel} collection',
       unsavedChanges: 'Unsaved Changes',
       changesSaved: 'Changes saved',
@@ -192,6 +199,10 @@ const en = {
       },
       datetime: {
         now: 'Now',
+      },
+      list: {
+        add: 'Add %{item}',
+        addType: 'Add %{item}',
       },
     },
   },

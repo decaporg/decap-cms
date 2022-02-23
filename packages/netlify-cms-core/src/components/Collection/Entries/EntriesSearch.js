@@ -4,11 +4,12 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import { isEqual } from 'lodash';
 import { Cursor } from 'netlify-cms-lib-util';
-import { selectSearchedEntries } from 'Reducers';
+
+import { selectSearchedEntries } from '../../../reducers';
 import {
   searchEntries as actionSearchEntries,
   clearSearch as actionClearSearch,
-} from 'Actions/search';
+} from '../../../actions/search';
 import Entries from './Entries';
 
 class EntriesSearch extends React.Component {

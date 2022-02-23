@@ -4,22 +4,25 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import { css, ClassNames } from '@emotion/core';
 import { List, Map, fromJS } from 'immutable';
-import { partial, isEmpty } from 'lodash';
+import { partial, isEmpty, uniqueId } from 'lodash';
 import uuid from 'uuid/v4';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 import NetlifyCmsWidgetObject from 'netlify-cms-widget-object';
+import {
+  ListItemTopBar,
+  ObjectWidgetTopBar,
+  colors,
+  lengths,
+  FieldLabel,
+} from 'netlify-cms-ui-default';
+import { stringTemplate, validations } from 'netlify-cms-lib-widgets';
+
 import {
   TYPES_KEY,
   getTypedFieldForValue,
   resolveFieldKeyType,
   getErrorMessageForTypedFieldAndValue,
 } from './typedListHelpers';
-import { ListItemTopBar, ObjectWidgetTopBar, colors, lengths } from 'netlify-cms-ui-default';
-import { stringTemplate, validations } from 'netlify-cms-lib-widgets';
-
-function valueToString(value) {
-  return value ? value.join(',').replace(/,([^\s]|$)/g, ', $1') : '';
-}
 
 const ObjectControl = NetlifyCmsWidgetObject.controlComponent;
 
@@ -90,6 +93,14 @@ function validateItem(field, item) {
 
   return true;
 }
+function LabelComponent({ field, isActive, hasErrors, uniqueFieldId, isFieldOptional, t }) {
+  const label = `${field.get('label', field.get('name'))}`;
+  return (
+    <FieldLabel isActive={isActive} hasErrors={hasErrors} htmlFor={uniqueFieldId}>
+      {label} {`${isFieldOptional ? ` (${t('editor.editorControl.field.optional')})` : ''}`}
+    </FieldLabel>
+  );
+}
 
 export default class ListControl extends React.Component {
   validations = [];
@@ -117,6 +128,7 @@ export default class ListControl extends React.Component {
     clearFieldErrors: PropTypes.func.isRequired,
     fieldsErrors: ImmutablePropTypes.map.isRequired,
     entry: ImmutablePropTypes.map.isRequired,
+    t: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -134,10 +146,25 @@ export default class ListControl extends React.Component {
     this.state = {
       listCollapsed,
       itemsCollapsed,
-      value: valueToString(value),
+      value: this.valueToString(value),
       keys,
     };
   }
+
+  valueToString = value => {
+    let stringValue;
+    if (List.isList(value) || Array.isArray(value)) {
+      stringValue = value.join(',');
+    } else {
+      console.warn(
+        `Expected List value to be an array but received '${value}' with type of '${typeof value}'. Please check the value provided to the '${this.props.field.get(
+          'name',
+        )}' field`,
+      );
+      stringValue = String(value);
+    }
+    return stringValue.replace(/,([^\s]|$)/g, ', $1');
+  };
 
   getValueType = () => {
     const { field } = this.props;
@@ -152,6 +179,7 @@ export default class ListControl extends React.Component {
     }
   };
 
+  uniqueFieldId = uniqueId(`${this.props.field.get('name')}-field-`);
   /**
    * Always update so that each nested widget has the option to update. This is
    * required because ControlHOC provides a default `shouldComponentUpdate`
@@ -171,7 +199,7 @@ export default class ListControl extends React.Component {
       listValue.pop();
     }
 
-    const parsedValue = valueToString(listValue);
+    const parsedValue = this.valueToString(listValue);
     this.setState({ value: parsedValue });
     onChange(List(listValue.map(val => val.trim())));
   };
@@ -185,7 +213,7 @@ export default class ListControl extends React.Component {
       .split(',')
       .map(el => el.trim())
       .filter(el => el);
-    this.setState({ value: valueToString(listValue) });
+    this.setState({ value: this.valueToString(listValue) });
     this.props.setInactiveStyle();
   };
 
@@ -481,6 +509,7 @@ export default class ListControl extends React.Component {
       resolveWidget,
       parentIds,
       forID,
+      t,
     } = this.props;
 
     const { itemsCollapsed, keys } = this.state;
@@ -488,20 +517,29 @@ export default class ListControl extends React.Component {
     const key = keys[index];
     let field = this.props.field;
     const hasError = this.hasError(index);
-
-    if (this.getValueType() === valueTypes.MIXED) {
+    const isVariableTypesList = this.getValueType() === valueTypes.MIXED;
+    if (isVariableTypesList) {
       field = getTypedFieldForValue(field, item);
       if (!field) {
         return this.renderErroneousTypedItem(index, item);
       }
     }
-
     return (
       <SortableListItem
         css={[styles.listControlItem, collapsed && styles.listControlItemCollapsed]}
         index={index}
         key={key}
       >
+        {isVariableTypesList && (
+          <LabelComponent
+            field={field}
+            isActive={false}
+            hasErrors={hasError}
+            uniqueFieldId={this.uniqueFieldId}
+            isFieldOptional={field.get('required') === false}
+            t={t}
+          />
+        )}
         <StyledListItemTopBar
           collapsed={collapsed}
           onCollapseToggle={partial(this.handleItemCollapseToggle, index)}
@@ -567,7 +605,7 @@ export default class ListControl extends React.Component {
   }
 
   renderListControl() {
-    const { value, forID, field, classNameWrapper } = this.props;
+    const { value, forID, field, classNameWrapper, t } = this.props;
     const { itemsCollapsed, listCollapsed } = this.state;
     const items = value || List();
     const label = field.get('label', field.get('name'));
@@ -598,6 +636,7 @@ export default class ListControl extends React.Component {
               label={labelSingular.toLowerCase()}
               onCollapseToggle={this.handleCollapseAllToggle}
               collapsed={selfCollapsed}
+              t={t}
             />
             {(!selfCollapsed || !minimizeCollapsedItems) && (
               <SortableList

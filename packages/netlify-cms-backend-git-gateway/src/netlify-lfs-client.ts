@@ -1,7 +1,9 @@
 import { flow, fromPairs, map } from 'lodash/fp';
 import { isPlainObject, isEmpty } from 'lodash';
 import minimatch from 'minimatch';
-import { ApiRequest, PointerFile, unsentRequest } from 'netlify-cms-lib-util';
+import { unsentRequest } from 'netlify-cms-lib-util';
+
+import type { ApiRequest, PointerFile } from 'netlify-cms-lib-util';
 
 type MakeAuthorizedRequest = (req: ApiRequest) => Promise<Response>;
 

@@ -1,4 +1,5 @@
 import { Map, List, fromJS } from 'immutable';
+
 import {
   resolveBackend,
   Backend,
@@ -6,7 +7,7 @@ import {
   expandSearchEntries,
   mergeExpandedEntries,
 } from '../backend';
-import registry from '../lib/registry';
+import { getBackend } from '../lib/registry';
 import { FOLDER, FILES } from '../constants/collectionTypes';
 
 jest.mock('../lib/registry');
@@ -18,7 +19,7 @@ describe('Backend', () => {
     let backend;
 
     beforeEach(() => {
-      registry.getBackend.mockReturnValue({
+      getBackend.mockReturnValue({
         init: jest.fn(),
       });
       backend = resolveBackend({

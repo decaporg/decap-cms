@@ -1,12 +1,13 @@
 import toml from '@iarna/toml';
 import tomlify from 'tomlify-j0.4';
 import moment from 'moment';
+
 import AssetProxy from '../valueObjects/AssetProxy';
 import { sortKeys } from './helpers';
 
 function outputReplacer(_key: string, value: unknown) {
   if (moment.isMoment(value)) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     return value.format(value._f);
   }

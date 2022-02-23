@@ -1,5 +1,7 @@
 import { Map, List } from 'immutable';
 import uuid from 'uuid/v4';
+import { dirname } from 'path';
+
 import {
   MEDIA_LIBRARY_OPEN,
   MEDIA_LIBRARY_CLOSE,
@@ -18,11 +20,12 @@ import {
   MEDIA_DISPLAY_URL_REQUEST,
   MEDIA_DISPLAY_URL_SUCCESS,
   MEDIA_DISPLAY_URL_FAILURE,
-  MediaLibraryAction,
 } from '../actions/mediaLibrary';
 import { selectEditingDraft, selectMediaFolder } from './entries';
 import { selectIntegration } from './';
-import {
+
+import type { MediaLibraryAction } from '../actions/mediaLibrary';
+import type {
   State,
   MediaLibraryInstance,
   MediaFile,
@@ -30,7 +33,6 @@ import {
   DisplayURLState,
   EntryField,
 } from '../types/redux';
-import { dirname } from 'path';
 
 const defaultState: {
   isVisible: boolean;
@@ -262,7 +264,7 @@ export function selectMediaFileByPath(state: State, path: string) {
 export function selectMediaDisplayURL(state: State, id: string) {
   const displayUrlState = state.mediaLibrary.getIn(
     ['displayURLs', id],
-    (Map() as unknown) as DisplayURLState,
+    Map() as unknown as DisplayURLState,
   );
   return displayUrlState;
 }

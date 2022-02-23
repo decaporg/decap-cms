@@ -1,4 +1,5 @@
 import NetlifyCmsWidgetFile from 'netlify-cms-widget-file';
+
 import previewComponent from './ImagePreview';
 import schema from './schema';
 

@@ -79,7 +79,7 @@ const uk = {
       save: 'Зберегти',
       deleting: 'Видалення...',
       updating: 'Оновлення...',
-      setStatus: 'Змінити стан',
+      status: 'Cтан: %{status}',
       backCollection: ' Робота над %{collectionLabel} колекцією',
       unsavedChanges: 'Незбережені зміни',
       changesSaved: 'Зміни збережено',

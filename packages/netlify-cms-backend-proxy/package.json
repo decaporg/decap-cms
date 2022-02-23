@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-backend-proxy",
   "description": "Proxy backend for Netlify CMS",
-  "version": "1.1.7",
+  "version": "1.2.3",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-proxy",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
   "license": "MIT",
@@ -24,6 +24,6 @@
     "netlify-cms-lib-util": "^2.12.3",
     "netlify-cms-ui-default": "^2.12.1",
     "prop-types": "^15.7.2",
-    "react": "^16.8.4"
+    "react": "^16.8.4 || ^17.0.0"
   }
 }

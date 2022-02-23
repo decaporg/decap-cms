@@ -113,7 +113,7 @@ const nn_no = {
       save: 'Lagre',
       deleting: 'Slettar...',
       updating: 'Oppdaterer...',
-      setStatus: 'Sett status',
+      status: 'Status: %{status}',
       backCollection: ' Skriv i samlinga %{collectionLabel}',
       unsavedChanges: 'Ulagra endringar',
       changesSaved: 'Endringar lagret',

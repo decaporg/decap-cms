@@ -3,6 +3,545 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.15.66](https://github.com/netlify/netlify-cms/compare/netlify-cms-app@2.15.65...netlify-cms-app@2.15.66) (2022-02-08)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.65](https://github.com/netlify/netlify-cms/compare/netlify-cms-app@2.15.64...netlify-cms-app@2.15.65) (2022-01-21)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.64](https://github.com/netlify/netlify-cms/compare/netlify-cms-app@2.15.63...netlify-cms-app@2.15.64) (2022-01-21)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.63](https://github.com/netlify/netlify-cms/compare/netlify-cms-app@2.15.62...netlify-cms-app@2.15.63) (2021-12-28)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.62](https://github.com/netlify/netlify-cms/compare/netlify-cms-app@2.15.61...netlify-cms-app@2.15.62) (2021-12-21)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.61](https://github.com/netlify/netlify-cms/compare/netlify-cms-app@2.15.60...netlify-cms-app@2.15.61) (2021-12-08)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.60](https://github.com/netlify/netlify-cms/compare/netlify-cms-app@2.15.59...netlify-cms-app@2.15.60) (2021-12-03)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.59](https://github.com/netlify/netlify-cms/compare/netlify-cms-app@2.15.58...netlify-cms-app@2.15.59) (2021-11-12)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.58](https://github.com/netlify/netlify-cms/compare/netlify-cms-app@2.15.57...netlify-cms-app@2.15.58) (2021-11-01)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.57](https://github.com/netlify/netlify-cms/compare/netlify-cms-app@2.15.56...netlify-cms-app@2.15.57) (2021-10-28)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.56](https://github.com/netlify/netlify-cms/compare/netlify-cms-app@2.15.55...netlify-cms-app@2.15.56) (2021-10-28)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.55](https://github.com/netlify/netlify-cms/compare/netlify-cms-app@2.15.54...netlify-cms-app@2.15.55) (2021-10-25)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.54](https://github.com/netlify/netlify-cms/compare/netlify-cms-app@2.15.53...netlify-cms-app@2.15.54) (2021-10-21)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.53](https://github.com/netlify/netlify-cms/compare/netlify-cms-app@2.15.52...netlify-cms-app@2.15.53) (2021-10-18)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.52](https://github.com/netlify/netlify-cms/compare/netlify-cms-app@2.15.51...netlify-cms-app@2.15.52) (2021-10-15)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.51](https://github.com/netlify/netlify-cms/compare/netlify-cms-app@2.15.50...netlify-cms-app@2.15.51) (2021-10-11)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.50](https://github.com/netlify/netlify-cms/compare/netlify-cms-app@2.15.49...netlify-cms-app@2.15.50) (2021-10-11)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.49](https://github.com/netlify/netlify-cms/compare/netlify-cms-app@2.15.48...netlify-cms-app@2.15.49) (2021-10-08)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.48](https://github.com/netlify/netlify-cms/compare/netlify-cms-app@2.15.47...netlify-cms-app@2.15.48) (2021-10-07)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.47](https://github.com/netlify/netlify-cms/compare/netlify-cms-app@2.15.46...netlify-cms-app@2.15.47) (2021-10-07)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.46](https://github.com/netlify/netlify-cms/compare/netlify-cms-app@2.15.45...netlify-cms-app@2.15.46) (2021-09-30)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.45](https://github.com/netlify/netlify-cms/compare/netlify-cms-app@2.15.44...netlify-cms-app@2.15.45) (2021-09-29)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.44](https://github.com/netlify/netlify-cms/compare/netlify-cms-app@2.15.43...netlify-cms-app@2.15.44) (2021-09-13)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.43](https://github.com/netlify/netlify-cms/compare/netlify-cms-app@2.15.42...netlify-cms-app@2.15.43) (2021-09-13)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.42](https://github.com/netlify/netlify-cms/compare/netlify-cms-app@2.15.41...netlify-cms-app@2.15.42) (2021-09-13)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.41](https://github.com/netlify/netlify-cms/compare/netlify-cms-app@2.15.40...netlify-cms-app@2.15.41) (2021-09-10)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.40](https://github.com/netlify/netlify-cms/compare/netlify-cms-app@2.15.39...netlify-cms-app@2.15.40) (2021-08-30)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.39](https://github.com/netlify/netlify-cms/compare/netlify-cms-app@2.15.38...netlify-cms-app@2.15.39) (2021-08-24)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.38](https://github.com/netlify/netlify-cms/compare/netlify-cms-app@2.15.37...netlify-cms-app@2.15.38) (2021-08-17)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.37](https://github.com/netlify/netlify-cms/compare/netlify-cms-app@2.15.36...netlify-cms-app@2.15.37) (2021-08-17)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.36](https://github.com/netlify/netlify-cms/compare/netlify-cms-app@2.15.35...netlify-cms-app@2.15.36) (2021-08-11)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.35](https://github.com/netlify/netlify-cms/compare/netlify-cms-app@2.15.34...netlify-cms-app@2.15.35) (2021-08-10)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.34](https://github.com/netlify/netlify-cms/compare/netlify-cms-app@2.15.33...netlify-cms-app@2.15.34) (2021-08-09)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.33](https://github.com/netlify/netlify-cms/compare/netlify-cms-app@2.15.32...netlify-cms-app@2.15.33) (2021-08-04)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.32](https://github.com/netlify/netlify-cms/compare/netlify-cms-app@2.15.31...netlify-cms-app@2.15.32) (2021-08-04)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.31](https://github.com/netlify/netlify-cms/compare/netlify-cms-app@2.15.30...netlify-cms-app@2.15.31) (2021-08-03)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.30](https://github.com/netlify/netlify-cms/compare/netlify-cms-app@2.15.29...netlify-cms-app@2.15.30) (2021-07-25)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.29](https://github.com/netlify/netlify-cms/compare/netlify-cms-app@2.15.28...netlify-cms-app@2.15.29) (2021-07-25)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.28](https://github.com/netlify/netlify-cms/compare/netlify-cms-app@2.15.27...netlify-cms-app@2.15.28) (2021-07-20)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.27](https://github.com/netlify/netlify-cms/compare/netlify-cms-app@2.15.26...netlify-cms-app@2.15.27) (2021-07-14)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.26](https://github.com/netlify/netlify-cms/compare/netlify-cms-app@2.15.25...netlify-cms-app@2.15.26) (2021-07-07)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.25](https://github.com/netlify/netlify-cms/compare/netlify-cms-app@2.15.24...netlify-cms-app@2.15.25) (2021-07-07)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.24](https://github.com/netlify/netlify-cms/compare/netlify-cms-app@2.15.23...netlify-cms-app@2.15.24) (2021-07-07)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.23](https://github.com/netlify/netlify-cms/compare/netlify-cms-app@2.15.22...netlify-cms-app@2.15.23) (2021-07-06)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.22](https://github.com/netlify/netlify-cms/compare/netlify-cms-app@2.15.21...netlify-cms-app@2.15.22) (2021-07-06)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.21](https://github.com/netlify/netlify-cms/compare/netlify-cms-app@2.15.20...netlify-cms-app@2.15.21) (2021-07-05)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.20](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.15.19...netlify-cms-app@2.15.20) (2021-06-24)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.19](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.15.18...netlify-cms-app@2.15.19) (2021-06-10)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.18](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.15.17...netlify-cms-app@2.15.18) (2021-06-07)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.17](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.15.16...netlify-cms-app@2.15.17) (2021-06-01)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.16](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.15.15...netlify-cms-app@2.15.16) (2021-05-31)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.15](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.15.14...netlify-cms-app@2.15.15) (2021-05-30)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.14](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.15.13...netlify-cms-app@2.15.14) (2021-05-30)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.13](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.15.12...netlify-cms-app@2.15.13) (2021-05-30)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.12](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.15.11...netlify-cms-app@2.15.12) (2021-05-30)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.11](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.15.10...netlify-cms-app@2.15.11) (2021-05-23)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.10](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.15.9...netlify-cms-app@2.15.10) (2021-05-23)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.9](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.15.8...netlify-cms-app@2.15.9) (2021-05-19)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.15.7...netlify-cms-app@2.15.8) (2021-05-19)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.15.6...netlify-cms-app@2.15.7) (2021-05-19)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.15.5...netlify-cms-app@2.15.6) (2021-05-12)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.15.4...netlify-cms-app@2.15.5) (2021-05-12)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.15.3...netlify-cms-app@2.15.4) (2021-05-10)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.15.2...netlify-cms-app@2.15.3) (2021-05-09)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.15.1...netlify-cms-app@2.15.2) (2021-05-04)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+## [2.15.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.15.0...netlify-cms-app@2.15.1) (2021-05-04)
+
+**Note:** Version bump only for package netlify-cms-app
+
+
+
+
+
+# [2.15.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.14.48...netlify-cms-app@2.15.0) (2021-05-04)
+
+
+### Features
+
+* added react 17 as peer dependency in packages ([#5316](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/issues/5316)) ([9e42380](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/commit/9e423805707321396eec137f5b732a5b07a0dd3f))
+
+
+
+
+
 ## [2.14.48](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app/compare/netlify-cms-app@2.14.47...netlify-cms-app@2.14.48) (2021-05-03)
 
 **Note:** Version bump only for package netlify-cms-app

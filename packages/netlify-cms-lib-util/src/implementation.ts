@@ -1,10 +1,13 @@
-import semaphore, { Semaphore } from 'semaphore';
+import semaphore from 'semaphore';
 import { unionBy, sortBy } from 'lodash';
-import Cursor from './Cursor';
-import { AsyncLock } from './asyncLock';
-import { FileMetadata } from './API';
+
 import { basename } from './path';
 import integrations from 'packages/netlify-cms-core/src/reducers/integrations';
+
+import type { Semaphore } from 'semaphore';
+import type Cursor from './Cursor';
+import type { AsyncLock } from './asyncLock';
+import type { FileMetadata } from './API';
 
 export type DisplayURLObject = { id: string; path: string };
 
@@ -52,6 +55,7 @@ export interface UnpublishedEntryDiff {
 }
 
 export interface UnpublishedEntry {
+  pullRequestAuthor?: string;
   slug: string;
   collection: string;
   status: string;
@@ -113,6 +117,7 @@ export type Config = {
     api_root?: string;
     squash_merges?: boolean;
     use_graphql?: boolean;
+    graphql_api_root?: string;
     preview_context?: string;
     identity_url?: string;
     gateway_url?: string;
@@ -216,6 +221,8 @@ type ReadFile = (
 ) => Promise<string | Blob>;
 
 type ReadFileMetadata = (path: string, id: string | null | undefined) => Promise<FileMetadata>;
+
+type CustomFetchFunc = (files: ImplementationFile[]) => Promise<ImplementationEntry[]>;
 
 async function fetchFiles(
   files: ImplementationFile[],
@@ -473,6 +480,7 @@ type AllEntriesByFolderArgs = GetKeyArgs &
     isShaExistsInBranch: (branch: string, sha: string) => Promise<boolean>;
     apiName: string;
     localForage: LocalForage;
+    customFetch?: CustomFetchFunc;
   };
 
 export async function allEntriesByFolder({
@@ -490,6 +498,7 @@ export async function allEntriesByFolder({
   getDifferences,
   getFileId,
   filterFile,
+  customFetch,
 }: AllEntriesByFolderArgs) {
   async function listAllFilesAndPersist() {
     const files = await listAllFiles(folder, extension, depth);
@@ -573,5 +582,8 @@ export async function allEntriesByFolder({
   }
 
   const files = await listFiles();
-  return fetchFiles(files, readFile, readFileMetadata, apiName);
+  if (customFetch) {
+    return await customFetch(files);
+  }
+  return await fetchFiles(files, readFile, readFileMetadata, apiName);
 }

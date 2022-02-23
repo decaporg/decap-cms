@@ -1,4 +1,5 @@
 import { produce } from 'immer';
+
 import {
   ADD_ASSETS,
   ADD_ASSET,
@@ -6,9 +7,10 @@ import {
   LOAD_ASSET_REQUEST,
   LOAD_ASSET_SUCCESS,
   LOAD_ASSET_FAILURE,
-  MediasAction,
 } from '../actions/media';
-import AssetProxy from '../valueObjects/AssetProxy';
+
+import type { MediasAction } from '../actions/media';
+import type AssetProxy from '../valueObjects/AssetProxy';
 
 export type Medias = {
   [path: string]: { asset: AssetProxy | undefined; isLoading: boolean; error: Error | null };

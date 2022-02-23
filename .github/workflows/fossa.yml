@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - chore/fossa-workflow
 
 defaults:
   run:
@@ -15,10 +16,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Fossa init
+      - name: Download fossa cli
         run: |-
-          curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | bash
-          fossa init
+          mkdir -p $HOME/.local/bin
+          curl https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | bash -s -- -b $HOME/.local/bin
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Fossa init
+        run: fossa init
       - name: Set env
         run: echo "line_number=$(grep -n "project" .fossa.yml | cut -f1 -d:)" >> $GITHUB_ENV
       - name: Configuration

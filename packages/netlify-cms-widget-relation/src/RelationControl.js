@@ -1,12 +1,35 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { Async as AsyncSelect } from 'react-select';
-import { find, isEmpty, last, debounce, get, uniqBy } from 'lodash';
-import { List, Map, fromJS } from 'immutable';
+import { components } from 'react-select';
+import AsyncSelect from 'react-select/async';
+import { debounce, find, get, isEmpty, last, uniqBy } from 'lodash';
+import { fromJS, List, Map } from 'immutable';
 import { reactSelectStyles } from 'netlify-cms-ui-default';
 import { stringTemplate, validations } from 'netlify-cms-lib-widgets';
 import { FixedSizeList } from 'react-window';
+import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
+
+function arrayMove(array, from, to) {
+  const slicedArray = array.slice();
+  slicedArray.splice(to < 0 ? array.length + to : to, 0, slicedArray.splice(from, 1)[0]);
+  return slicedArray;
+}
+
+const MultiValue = SortableElement(props => {
+  // prevent the menu from being opened/closed when the user clicks on a value to begin dragging it
+  function onMouseDown(e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+
+  const innerProps = { ...props.innerProps, onMouseDown };
+  return <components.MultiValue {...props} innerProps={innerProps} />;
+});
+
+const MultiValueLabel = SortableHandle(props => <components.MultiValueLabel {...props} />);
+
+const SortableSelect = SortableContainer(AsyncSelect);
 
 function Option({ index, style, data }) {
   return <div style={style}>{data.options[index]}</div>;
@@ -151,11 +174,12 @@ export default class RelationControl extends React.Component {
       this.mounted && this.setState({ initialOptions });
 
       //set metadata
-      onChange(value, {
-        [field.get('name')]: {
-          [field.get('collection')]: metadata,
-        },
-      });
+      this.mounted &&
+        onChange(value, {
+          [field.get('name')]: {
+            [field.get('collection')]: metadata,
+          },
+        });
     }
   }
 
@@ -163,19 +187,36 @@ export default class RelationControl extends React.Component {
     this.mounted = false;
   }
 
-  handleChange = selectedOption => {
-    const { onChange, field } = this.props;
-    let value;
-    let metadata;
-
-    if (Array.isArray(selectedOption)) {
-      this.setState({ initialOptions: selectedOption.filter(Boolean) });
-      value = selectedOption.map(optionToString);
-      metadata =
-        (!isEmpty(selectedOption) && {
+  onSortEnd =
+    options =>
+    ({ oldIndex, newIndex }) => {
+      const { onChange, field } = this.props;
+      const value = options.map(optionToString);
+      const newValue = arrayMove(value, oldIndex, newIndex);
+      const metadata =
+        (!isEmpty(options) && {
           [field.get('name')]: {
             [field.get('collection')]: {
-              [last(value)]: last(selectedOption).data,
+              [last(newValue)]: last(options).data,
+            },
+          },
+        }) ||
+        {};
+      onChange(fromJS(newValue), metadata);
+    };
+
+  handleChange = selectedOption => {
+    const { onChange, field } = this.props;
+
+    if (this.isMultiple()) {
+      const options = selectedOption;
+      this.setState({ initialOptions: options.filter(Boolean) });
+      const value = options.map(optionToString);
+      const metadata =
+        (!isEmpty(options) && {
+          [field.get('name')]: {
+            [field.get('collection')]: {
+              [last(value)]: last(options).data,
             },
           },
         }) ||
@@ -183,8 +224,8 @@ export default class RelationControl extends React.Component {
       onChange(fromJS(value), metadata);
     } else {
       this.setState({ initialOptions: [selectedOption].filter(Boolean) });
-      value = optionToString(selectedOption);
-      metadata = selectedOption && {
+      const value = optionToString(selectedOption);
+      const metadata = selectedOption && {
         [field.get('name')]: {
           [field.get('collection')]: { [value]: selectedOption.data },
         },
@@ -248,15 +289,8 @@ export default class RelationControl extends React.Component {
   }, 500);
 
   render() {
-    const {
-      value,
-      field,
-      forID,
-      classNameWrapper,
-      setActiveStyle,
-      setInactiveStyle,
-      queryHits,
-    } = this.props;
+    const { value, field, forID, classNameWrapper, setActiveStyle, setInactiveStyle, queryHits } =
+      this.props;
     const isMultiple = this.isMultiple();
     const isClearable = !field.get('required', true) || isMultiple;
 
@@ -269,8 +303,16 @@ export default class RelationControl extends React.Component {
     });
 
     return (
-      <AsyncSelect
-        components={{ MenuList }}
+      <SortableSelect
+        useDragHandle
+        // react-sortable-hoc props:
+        axis="xy"
+        onSortEnd={this.onSortEnd(selectedValue)}
+        distance={4}
+        // small fix for https://github.com/clauderic/react-sortable-hoc/pull/352:
+        getHelperDimensions={({ node }) => node.getBoundingClientRect()}
+        // react-select props:
+        components={{ MenuList, MultiValue, MultiValueLabel }}
         value={selectedValue}
         inputId={forID}
         cacheOptions

@@ -1,26 +1,18 @@
 import { attempt, flatten, isError, uniq, trim, sortBy, get, set } from 'lodash';
-import { List, Map, fromJS, Set } from 'immutable';
+import { List, fromJS, Set } from 'immutable';
 import * as fuzzy from 'fuzzy';
 import {
   localForage,
   Cursor,
   CURSOR_COMPATIBILITY_SYMBOL,
   EditorialWorkflowError,
-  Implementation as BackendImplementation,
-  DisplayURL,
-  ImplementationEntry,
-  Credentials,
-  User,
   getPathDepth,
   blobToFileObj,
   asyncLock,
-  AsyncLock,
-  UnpublishedEntry,
-  DataFile,
-  UnpublishedEntryDiff,
 } from 'netlify-cms-lib-util';
 import { basename, join, extname, dirname } from 'path';
 import { stringTemplate } from 'netlify-cms-lib-widgets';
+
 import { resolveFormat } from './formats/formats';
 import { selectUseWorkflow } from './reducers/config';
 import { selectMediaFilePath, selectEntry } from './reducers/entries';
@@ -37,23 +29,11 @@ import {
   selectFieldsComments,
   selectHasMetaPath,
 } from './reducers/collections';
-import { createEntry, EntryValue } from './valueObjects/Entry';
+import { createEntry } from './valueObjects/Entry';
 import { sanitizeChar } from './lib/urlHelper';
 import { getBackend, invokeEvent } from './lib/registry';
 import { commitMessageFormatter, slugFormatter, previewUrlFormatter } from './lib/formatters';
 import { status } from './constants/publishModes';
-import {
-  CmsConfig,
-  EntryMap,
-  FilterRule,
-  EntryDraft,
-  Collection,
-  Collections,
-  CollectionFile,
-  State,
-  EntryField,
-} from './types/redux';
-import AssetProxy from './valueObjects/AssetProxy';
 import { FOLDER, FILES } from './constants/collectionTypes';
 import { selectCustomPath } from './reducers/entryDraft';
 import {
@@ -67,6 +47,32 @@ import {
   getI18nBackup,
   formatI18nBackup,
 } from './lib/i18n';
+
+import type AssetProxy from './valueObjects/AssetProxy';
+import type {
+  CmsConfig,
+  EntryMap,
+  FilterRule,
+  EntryDraft,
+  Collection,
+  Collections,
+  CollectionFile,
+  State,
+  EntryField,
+} from './types/redux';
+import type { EntryValue } from './valueObjects/Entry';
+import type {
+  Implementation as BackendImplementation,
+  DisplayURL,
+  ImplementationEntry,
+  Credentials,
+  User,
+  AsyncLock,
+  UnpublishedEntry,
+  DataFile,
+  UnpublishedEntryDiff,
+} from 'netlify-cms-lib-util';
+import type { Map } from 'immutable';
 
 const { extractTemplateVars, dateParsers, expandPath } = stringTemplate;
 
@@ -523,7 +529,7 @@ export class Backend {
           from. This is done to prevent traverseCursor from requiring a
           `collection` argument.
         */
-    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const cursor = Cursor.create(loadedEntries[CURSOR_COMPATIBILITY_SYMBOL]).wrapData({
       cursorType: 'collectionEntries',
@@ -611,7 +617,7 @@ export class Backend {
     const entries = await Promise.all(collectionEntriesRequests).then(arrays => flatten(arrays));
 
     if (errors.length > 0) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       throw new Error({ message: 'Errors ocurred while searching entries locally!', errors });
     }
@@ -876,6 +882,7 @@ export class Backend {
         label: collection && selectFileEntryLabel(collection, slug),
         mediaFiles,
         updatedOn: entryData.updatedAt,
+        author: entryData.pullRequestAuthor,
         status: entryData.status,
         meta: { path: prepareMetaPath(path, collection) },
       });
@@ -1333,7 +1340,7 @@ export function resolveBackend(config: CmsConfig) {
   }
 }
 
-export const currentBackend = (function() {
+export const currentBackend = (function () {
   let backend: Backend;
 
   return (config: CmsConfig) => {

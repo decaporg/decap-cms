@@ -3,6 +3,69 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.11.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-widget-relation@2.10.4...netlify-cms-widget-relation@2.11.0) (2021-10-21)
+
+
+### Features
+
+* **relation-widget:** enable reordering for relation controls ([#5873](https://github.com/netlify/netlify-cms/issues/5873)) ([a77a355](https://github.com/netlify/netlify-cms/commit/a77a355bac376758a6c9f9948e258bd32ccd4302))
+
+
+
+
+
+## [2.10.4](https://github.com/netlify/netlify-cms/compare/netlify-cms-widget-relation@2.10.3...netlify-cms-widget-relation@2.10.4) (2021-09-13)
+
+
+### Bug Fixes
+
+* **widget-relation:** don't invoke onChange if component is not mounted ([#5804](https://github.com/netlify/netlify-cms/issues/5804)) ([bd35474](https://github.com/netlify/netlify-cms/commit/bd35474b928642af3fa3be434928709fd6e9e844))
+
+
+
+
+
+## [2.10.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/compare/netlify-cms-widget-relation@2.10.2...netlify-cms-widget-relation@2.10.3) (2021-05-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency react-select to v4 ([#5417](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/issues/5417)) ([03362ef](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/commit/03362ef5ab87c6fe5c964da5c5a18099b73a3fc6))
+
+
+
+
+
+## [2.10.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/compare/netlify-cms-widget-relation@2.10.1...netlify-cms-widget-relation@2.10.2) (2021-05-19)
+
+**Note:** Version bump only for package netlify-cms-widget-relation
+
+
+
+
+
+## [2.10.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/compare/netlify-cms-widget-relation@2.10.0...netlify-cms-widget-relation@2.10.1) (2021-05-19)
+
+
+### Bug Fixes
+
+* **deps:** update react-select to v3 ([#5394](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/issues/5394)) ([03be13c](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/commit/03be13c1e87b318fd10ae6f6ab54cd2634fb9662))
+
+
+
+
+
+# [2.10.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/compare/netlify-cms-widget-relation@2.9.0...netlify-cms-widget-relation@2.10.0) (2021-05-04)
+
+
+### Features
+
+* added react 17 as peer dependency in packages ([#5316](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/issues/5316)) ([9e42380](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/commit/9e423805707321396eec137f5b732a5b07a0dd3f))
+
+
+
+
+
 # [2.9.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation/compare/netlify-cms-widget-relation@2.8.10...netlify-cms-widget-relation@2.9.0) (2021-04-13)
 
 

@@ -1,6 +1,8 @@
 import yaml from 'yaml';
+
 import { sortKeys } from './helpers';
-import { YAMLMap, YAMLSeq, Pair, Node } from 'yaml/types';
+
+import type { YAMLMap, YAMLSeq, Pair, Node } from 'yaml/types';
 
 function addComments(items: Array<Pair>, comments: Record<string, string>, prefix = '') {
   items.forEach(item => {
@@ -24,10 +26,10 @@ const timestampTag = {
   tag: '!timestamp',
   test: RegExp(
     '^' +
-    '([0-9]{4})-([0-9]{2})-([0-9]{2})' + // YYYY-MM-DD
-    'T' + // T
-    '([0-9]{2}):([0-9]{2}):([0-9]{2}(\\.[0-9]+)?)' + // HH:MM:SS(.ss)?
-    'Z' + // Z
+      '([0-9]{4})-([0-9]{2})-([0-9]{2})' + // YYYY-MM-DD
+      'T' + // T
+      '([0-9]{2}):([0-9]{2}):([0-9]{2}(\\.[0-9]+)?)' + // HH:MM:SS(.ss)?
+      'Z' + // Z
       '$',
   ),
   resolve: (str: string) => new Date(str),

@@ -1,29 +1,17 @@
 import trimStart from 'lodash/trimStart';
-import semaphore, { Semaphore } from 'semaphore';
+import semaphore from 'semaphore';
 import { trim } from 'lodash';
 import { stripIndent } from 'common-tags';
 import {
   CURSOR_COMPATIBILITY_SYMBOL,
   basename,
-  Entry,
-  AssetProxy,
-  PersistOptions,
-  Cursor,
-  Implementation,
-  DisplayURL,
   entriesByFolder,
   entriesByFiles,
   getMediaDisplayURL,
   getMediaAsBlob,
-  User,
-  Credentials,
-  Config,
-  ImplementationFile,
   unpublishedEntries,
   getPreviewStatus,
-  UnpublishedEntryMediaFile,
   asyncLock,
-  AsyncLock,
   runWithLock,
   getBlobSHA,
   blobToFileObj,
@@ -34,8 +22,25 @@ import {
   filterByExtension,
   branchFromContentKey,
 } from 'netlify-cms-lib-util';
+
 import AuthenticationPage from './AuthenticationPage';
 import API, { API_NAME } from './API';
+
+import type {
+  Entry,
+  AssetProxy,
+  PersistOptions,
+  Cursor,
+  Implementation,
+  DisplayURL,
+  User,
+  Credentials,
+  Config,
+  ImplementationFile,
+  UnpublishedEntryMediaFile,
+  AsyncLock,
+} from 'netlify-cms-lib-util';
+import type { Semaphore } from 'semaphore';
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
 
@@ -55,6 +60,8 @@ export default class GitLab implements Implementation {
   cmsLabelPrefix: string;
   mediaFolder: string;
   previewContext: string;
+  useGraphQL: boolean;
+  graphQLAPIRoot: string;
 
   _mediaDisplayURLSem?: Semaphore;
 
@@ -83,6 +90,8 @@ export default class GitLab implements Implementation {
     this.cmsLabelPrefix = config.backend.cms_label_prefix || '';
     this.mediaFolder = config.media_folder;
     this.previewContext = config.backend.preview_context || '';
+    this.useGraphQL = config.backend.use_graphql || false;
+    this.graphQLAPIRoot = config.backend.graphql_api_root || 'https://gitlab.com/api/graphql';
     this.lock = asyncLock();
   }
 
@@ -121,6 +130,8 @@ export default class GitLab implements Implementation {
       squashMerges: this.squashMerges,
       cmsLabelPrefix: this.cmsLabelPrefix,
       initialWorkflowStatus: this.options.initialWorkflowStatus,
+      useGraphQL: this.useGraphQL,
+      graphQLAPIRoot: this.graphQLAPIRoot,
     });
     const user = await this.api.user();
     const isCollab = await this.api.hasWriteAccess().catch((error: Error) => {
@@ -178,7 +189,7 @@ export default class GitLab implements Implementation {
       this.api!.readFileMetadata.bind(this.api),
       API_NAME,
     );
-    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     files[CURSOR_COMPATIBILITY_SYMBOL] = cursor;
     return files;
@@ -207,7 +218,9 @@ export default class GitLab implements Implementation {
       getDifferences: (to, from) => this.api!.getDifferences(to, from),
       getFileId: path => this.api!.getFileId(path, this.branch),
       filterFile: file => this.filterFile(folder, file, extension, depth),
+      customFetch: this.useGraphQL ? files => this.api!.readFilesGraphQL(files) : undefined,
     });
+
     return files;
   }
 

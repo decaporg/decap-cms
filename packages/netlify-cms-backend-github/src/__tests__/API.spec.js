@@ -1,4 +1,5 @@
 import { Base64 } from 'js-base64';
+
 import API from '../API';
 
 global.fetch = jest.fn().mockRejectedValue(new Error('should not call fetch inside tests'));

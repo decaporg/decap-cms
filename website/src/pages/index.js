@@ -13,7 +13,6 @@ import Lead from '../components/lead';
 import Features from '../components/features';
 import HomeSection from '../components/home-section';
 import Grid from '../components/grid';
-
 import theme from '../theme';
 import { mq } from '../utils';
 

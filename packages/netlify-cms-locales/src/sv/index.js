@@ -3,6 +3,7 @@ const sv = {
     login: 'Logga in',
     loggingIn: 'Loggar in...',
     loginWithNetlifyIdentity: 'Logga in med Netlify Identity',
+    loginWithAzure: 'Logga in med Azure',
     loginWithBitbucket: 'Logga in med Bitbucket',
     loginWithGitHub: 'Logga in med GitHub',
     loginWithGitLab: 'Logga in med GitLab',
@@ -34,7 +35,9 @@ const sv = {
   collection: {
     sidebar: {
       collections: 'Samlingar',
+      allCollections: 'Alla Samlingar',
       searchAll: 'Sök',
+      searchIn: 'Sök i',
     },
     collectionTop: {
       sortBy: 'Sortera efter',
@@ -42,12 +45,20 @@ const sv = {
       newButton: 'Ny %{collectionLabel}',
       ascending: 'Stigande',
       descending: 'Fallande',
+      searchResults: 'Sökresultat för "%{searchTerm}"',
+      searchResultsInCollection: 'Sökresultat för "%{searchTerm}" i %{collection}',
+      filterBy: 'Filtrera efter',
+      groupBy: 'Gruppera efter',
     },
     entries: {
       loadingEntries: 'Hämtar inlägg...',
       cachingEntries: 'Sparar inlägg i cache...',
       longerLoading: 'Det här kan ta några minuter',
       noEntries: 'Inga inlägg',
+    },
+    groups: {
+      other: 'Annat',
+      negateLabel: 'Inte %{label}',
     },
     defaultFields: {
       author: {
@@ -76,6 +87,11 @@ const sv = {
         rangeCountExact: '%{fieldLabel} måste ha exakt %{count} element.',
         rangeMin: '%{fieldLabel} måste ha åtminstone %{minCount} element.',
         rangeMax: '%{fieldLabel} måste ha %{maxCount} eller färre element.',
+        invalidPath: `'%{path}' är inte en giltig sökväg`,
+        pathExists: `Sökvägen '%{path}' existerar redan`,
+      },
+      i18n: {
+        writingInLocale: 'Skriver i %{locale}',
       },
     },
     editor: {
@@ -97,6 +113,11 @@ const sv = {
       loadingEntry: 'Hämtar inlägg...',
       confirmLoadBackup: 'En lokal kopia hittades för det här inlägget, vill du använda den?',
     },
+    editorInterface: {
+      toggleI18n: 'Slå på/av i18n',
+      togglePreview: 'Visa/Dölj förhandsvisning',
+      toggleScrollSync: 'Synka scrollning',
+    },
     editorToolbar: {
       publishing: 'Publicerar...',
       publish: 'Publicera',
@@ -114,7 +135,7 @@ const sv = {
       save: 'Spara',
       deleting: 'Raderar...',
       updating: 'Updaterar...',
-      setStatus: 'Sätt status',
+      status: 'Status: %{status}',
       backCollection: ' Redigerar i samlingen %{collectionLabel}',
       unsavedChanges: 'Osparade ändringar',
       changesSaved: 'Ändringar sparade',
@@ -128,16 +149,32 @@ const sv = {
     },
     editorWidgets: {
       markdown: {
+        bold: 'Fetstil',
+        italic: 'Kursiv',
+        code: 'Kod',
+        link: 'Länk',
+        linkPrompt: 'Ange en URL för länken',
+        headings: 'Rubriker',
+        quote: 'Citat',
+        bulletedList: 'Punktlista',
+        numberedList: 'Numrerad lista',
+        addComponent: 'Lägg till komponent',
         richText: 'Rich Text',
         markdown: 'Markdown',
       },
       image: {
         choose: 'Välj en bild',
+        chooseUrl: 'Infoga från URL',
+        replaceUrl: 'Ersätt med URL',
+        promptUrl: 'Ange en URL för bilden',
         chooseDifferent: 'Välj en annan bild',
         remove: 'Ta bort bild',
       },
       file: {
         choose: 'Välj en fil',
+        chooseUrl: 'Infoga från URL',
+        replaceUrl: 'Ersätt med URL',
+        promptUrl: 'Ange en URL för filen',
         chooseDifferent: 'Välj en annan fil',
         remove: 'Ta bort fil',
       },
@@ -163,6 +200,11 @@ const sv = {
   mediaLibrary: {
     mediaLibraryCard: {
       draft: 'Utkast',
+      copy: 'Kopiera',
+      copyUrl: 'Kopiera URL',
+      copyPath: 'Kopiera Sökväg',
+      copyName: 'Kopiera Namn',
+      copied: 'Kopierad',
     },
     mediaLibrary: {
       onDelete: 'Är du säker på att du vill radera valt mediaobjekt?',
@@ -222,6 +264,9 @@ const sv = {
       entryUpdated: 'Inläggsstatus uppdaterad',
       onDeleteUnpublishedChanges: 'Opublicerade ändringar raderade',
       onFailToAuth: '%{details}',
+      onLoggedOut:
+        'Du har blivit utloggad, vänligen spara en kopia av eventuella ändringar och logga in på nytt',
+      onBackendDown: 'Tjänsten är drabbad av en störning. Se %{details} för mer information',
     },
   },
   workflow: {

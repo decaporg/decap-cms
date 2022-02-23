@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import Joi from '@hapi/joi';
-import express from 'express';
 import winston from 'winston';
+
 import { validateRepo, getSchema, localGitMiddleware } from '.';
+
+import type Joi from '@hapi/joi';
+import type express from 'express';
 
 jest.mock('netlify-cms-lib-util', () => jest.fn());
 jest.mock('simple-git/promise');
@@ -123,7 +125,7 @@ describe('localGitMiddleware', () => {
   describe('localGitMiddleware', () => {
     const json = jest.fn();
     const status = jest.fn(() => ({ json }));
-    const res: express.Response = ({ status } as unknown) as express.Response;
+    const res: express.Response = { status } as unknown as express.Response;
 
     const repoPath = '.';
 

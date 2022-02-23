@@ -8,6 +8,7 @@ import { get, isEmpty, debounce } from 'lodash';
 import { Value, Document, Block, Text } from 'slate';
 import { Editor as Slate } from 'slate-react';
 import { lengths, fonts, zIndex } from 'netlify-cms-ui-default';
+
 import { editorStyleVars, EditorControlBar } from '../styles';
 import { slateToMarkdown, markdownToSlate } from '../serializers';
 import Toolbar from '../MarkdownControl/Toolbar';
@@ -18,8 +19,7 @@ import schema from './schema';
 function visualEditorStyles({ minimal }) {
   return `
   position: relative;
-  overflow: hidden;
-  overflow-x: auto;
+  overflow: auto;
   font-family: ${fonts.primary};
   min-height: ${minimal ? 'auto' : lengths.richTextEditorMinHeight};
   border-top-left-radius: 0;
@@ -44,8 +44,8 @@ function createEmptyRawDoc() {
   return { nodes: [emptyBlock] };
 }
 
-function createSlateValue(rawValue, { voidCodeBlock }) {
-  const rawDoc = rawValue && markdownToSlate(rawValue, { voidCodeBlock });
+function createSlateValue(rawValue, { voidCodeBlock, remarkPlugins }) {
+  const rawDoc = rawValue && markdownToSlate(rawValue, { voidCodeBlock, remarkPlugins });
   const rawDocHasNodes = !isEmpty(get(rawDoc, 'nodes'));
   const document = Document.fromJSON(rawDocHasNodes ? rawDoc : createEmptyRawDoc());
   return Value.create({ document });
@@ -94,6 +94,8 @@ export default class Editor extends React.Component {
         ? editorComponents
         : editorComponents.set('code-block', { label: 'Code Block', type: 'code-block' });
 
+    this.remarkPlugins = props.getRemarkPlugins();
+
     mergeMediaConfig(this.editorComponents, this.props.field);
     this.renderBlock = renderBlock({
       classNameWrapper: props.className,
@@ -107,9 +109,13 @@ export default class Editor extends React.Component {
       getAsset: props.getAsset,
       resolveWidget: props.resolveWidget,
       t: props.t,
+      remarkPlugins: this.remarkPlugins,
     });
     this.state = {
-      value: createSlateValue(this.props.value, { voidCodeBlock: !!this.codeBlockComponent }),
+      value: createSlateValue(this.props.value, {
+        voidCodeBlock: !!this.codeBlockComponent,
+        remarkPlugins: this.remarkPlugins,
+      }),
     };
   }
 
@@ -122,14 +128,20 @@ export default class Editor extends React.Component {
     value: PropTypes.string,
     field: ImmutablePropTypes.map.isRequired,
     getEditorComponents: PropTypes.func.isRequired,
+    getRemarkPlugins: PropTypes.func.isRequired,
     isShowModeToggle: PropTypes.bool.isRequired,
     t: PropTypes.func.isRequired,
   };
 
   shouldComponentUpdate(nextProps, nextState) {
+    if (!this.state.value.equals(nextState.value)) return true;
+
     const raw = nextState.value.document.toJS();
-    const markdown = slateToMarkdown(raw, { voidCodeBlock: this.codeBlockComponent });
-    return !this.state.value.equals(nextState.value) || nextProps.value !== markdown;
+    const markdown = slateToMarkdown(raw, {
+      voidCodeBlock: this.codeBlockComponent,
+      remarkPlugins: this.remarkPlugins,
+    });
+    return nextProps.value !== markdown;
   }
 
   componentDidMount() {
@@ -142,7 +154,10 @@ export default class Editor extends React.Component {
   componentDidUpdate(prevProps) {
     if (prevProps.value !== this.props.value) {
       this.setState({
-        value: createSlateValue(this.props.value, { voidCodeBlock: !!this.codeBlockComponent }),
+        value: createSlateValue(this.props.value, {
+          voidCodeBlock: !!this.codeBlockComponent,
+          remarkPlugins: this.remarkPlugins,
+        }),
       });
     }
   }
@@ -164,6 +179,8 @@ export default class Editor extends React.Component {
   hasMark = type => this.editor && this.editor.hasMark(type);
   hasInline = type => this.editor && this.editor.hasInline(type);
   hasBlock = type => this.editor && this.editor.hasBlock(type);
+  hasQuote = type => this.editor && this.editor.hasQuote(type);
+  hasListItems = type => this.editor && this.editor.hasListItems(type);
 
   handleToggleMode = () => {
     this.props.onMode('raw');
@@ -180,7 +197,10 @@ export default class Editor extends React.Component {
   handleDocumentChange = debounce(editor => {
     const { onChange } = this.props;
     const raw = editor.value.document.toJS();
-    const markdown = slateToMarkdown(raw, { voidCodeBlock: this.codeBlockComponent });
+    const markdown = slateToMarkdown(raw, {
+      voidCodeBlock: this.codeBlockComponent,
+      remarkPlugins: this.remarkPlugins,
+    });
     onChange(markdown);
   }, 150);
 
@@ -218,6 +238,8 @@ export default class Editor extends React.Component {
             hasMark={this.hasMark}
             hasInline={this.hasInline}
             hasBlock={this.hasBlock}
+            hasQuote={this.hasQuote}
+            hasListItems={this.hasListItems}
             isShowModeToggle={isShowModeToggle}
             t={t}
             disabled={isDisabled}

@@ -5,7 +5,8 @@ import styled from '@emotion/styled';
 import { connect } from 'react-redux';
 import { translate } from 'react-polyglot';
 import { lengths, components } from 'netlify-cms-ui-default';
-import { getNewEntryUrl } from 'Lib/urlHelper';
+
+import { getNewEntryUrl } from '../../lib/urlHelper';
 import Sidebar from './Sidebar';
 import CollectionTop from './CollectionTop';
 import EntriesCollection from './Entries/EntriesCollection';
@@ -76,6 +77,7 @@ export class Collection extends React.Component {
       collection,
       collections,
       collectionName,
+      isSearchEnabled,
       isSearchResults,
       isSingleSearchResult,
       searchTerm,
@@ -110,6 +112,7 @@ export class Collection extends React.Component {
         <Sidebar
           collections={collections}
           collection={(!isSearchResults || isSingleSearchResult) && collection}
+          isSearchEnabled={isSearchEnabled}
           searchTerm={searchTerm}
           filterTerm={filterTerm}
         />
@@ -148,6 +151,7 @@ export class Collection extends React.Component {
 
 function mapStateToProps(state, ownProps) {
   const { collections } = state;
+  const isSearchEnabled = state.config && state.config.search != false;
   const { isSearchResults, match, t } = ownProps;
   const { name, searchTerm = '', filterTerm = '' } = match.params;
   const collection = name ? collections.get(name) : collections.first();
@@ -163,6 +167,7 @@ function mapStateToProps(state, ownProps) {
     collection,
     collections,
     collectionName: name,
+    isSearchEnabled,
     isSearchResults,
     searchTerm,
     filterTerm,

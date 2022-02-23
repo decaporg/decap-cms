@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-backend-github",
   "description": "GitHub backend for Netlify CMS",
-  "version": "2.12.0",
+  "version": "2.14.0",
   "license": "MIT",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
@@ -39,6 +39,6 @@
     "netlify-cms-lib-util": "^2.12.3",
     "netlify-cms-ui-default": "^2.12.1",
     "prop-types": "^15.7.2",
-    "react": "^16.8.4"
+    "react": "^16.8.4 || ^17.0.0"
   }
 }

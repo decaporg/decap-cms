@@ -3,6 +3,44 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.8.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-lib-widgets@1.7.0...netlify-cms-lib-widgets@1.8.0) (2022-01-21)
+
+
+### Features
+
+* add truncate filter to summary tag ([#6105](https://github.com/netlify/netlify-cms/issues/6105)) ([d66c573](https://github.com/netlify/netlify-cms/commit/d66c573697c6a66919e048f0fde9cf2f8ea6acac))
+
+
+
+
+
+# [1.7.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-lib-widgets@1.6.3...netlify-cms-lib-widgets@1.7.0) (2021-10-11)
+
+
+### Features
+
+* add string template filters "default" and "ternary" ([#3677](https://github.com/netlify/netlify-cms/issues/3677)) ([#5878](https://github.com/netlify/netlify-cms/issues/5878)) ([c791158](https://github.com/netlify/netlify-cms/commit/c791158dd5ea8ea03930f9881a86c71cb1770836))
+
+
+
+
+
+## [1.6.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-widgets/compare/netlify-cms-lib-widgets@1.6.2...netlify-cms-lib-widgets@1.6.3) (2021-06-01)
+
+**Note:** Version bump only for package netlify-cms-lib-widgets
+
+
+
+
+
+## [1.6.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-widgets/compare/netlify-cms-lib-widgets@1.6.1...netlify-cms-lib-widgets@1.6.2) (2021-05-31)
+
+**Note:** Version bump only for package netlify-cms-lib-widgets
+
+
+
+
+
 ## [1.6.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-widgets/compare/netlify-cms-lib-widgets@1.6.0...netlify-cms-lib-widgets@1.6.1) (2021-02-10)
 
 **Note:** Version bump only for package netlify-cms-lib-widgets

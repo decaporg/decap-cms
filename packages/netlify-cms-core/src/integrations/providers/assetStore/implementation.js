@@ -1,6 +1,7 @@
 import { pickBy, trimEnd } from 'lodash';
-import { addParams } from 'Lib/urlHelper';
 import { unsentRequest } from 'netlify-cms-lib-util';
+
+import { addParams } from '../../../lib/urlHelper';
 
 const { fetchWithTimeout: fetch } = unsentRequest;
 

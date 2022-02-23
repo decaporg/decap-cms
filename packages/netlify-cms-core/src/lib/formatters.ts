@@ -1,17 +1,19 @@
-import { Map } from 'immutable';
 import { flow, partialRight, trimEnd, trimStart } from 'lodash';
-import { sanitizeSlug } from './urlHelper';
 import { stringTemplate } from 'netlify-cms-lib-widgets';
+import { stripIndent } from 'common-tags';
+
 import {
   selectIdentifier,
   selectField,
   selectInferedField,
   getFileFromSlug,
 } from '../reducers/collections';
-import { Collection, CmsConfig, CmsSlug, EntryMap } from '../types/redux';
-import { stripIndent } from 'common-tags';
+import { sanitizeSlug } from './urlHelper';
 import { FILES } from '../constants/collectionTypes';
 import { COMMIT_AUTHOR, COMMIT_DATE } from '../constants/commitProps';
+
+import type { Collection, CmsConfig, CmsSlug, EntryMap } from '../types/redux';
+import type { Map } from 'immutable';
 
 const {
   compileStringTemplate,
@@ -182,7 +184,7 @@ export function previewUrlFormatter(
   let fields = entry.get('data') as Map<string, string>;
   fields = addFileTemplateFields(entry.get('path'), fields, collection.get('folder'));
   const dateFieldName = getDateField() || selectInferedField(collection, 'date');
-  const date = parseDateFromEntry((entry as unknown) as Map<string, unknown>, dateFieldName);
+  const date = parseDateFromEntry(entry as unknown as Map<string, unknown>, dateFieldName);
 
   // Prepare and sanitize slug variables only, leave the rest of the
   // `preview_path` template as is.
@@ -213,7 +215,7 @@ export function summaryFormatter(summaryTemplate: string, entry: EntryMap, colle
   let entryData = entry.get('data');
   const date =
     parseDateFromEntry(
-      (entry as unknown) as Map<string, unknown>,
+      entry as unknown as Map<string, unknown>,
       selectInferedField(collection, 'date'),
     ) || null;
   const identifier = entryData.getIn(keyToPathArray(selectIdentifier(collection) as string));
@@ -247,7 +249,7 @@ export function folderFormatter(
 
   const date =
     parseDateFromEntry(
-      (entry as unknown) as Map<string, unknown>,
+      entry as unknown as Map<string, unknown>,
       selectInferedField(collection, 'date'),
     ) || null;
   const identifier = fields.getIn(keyToPathArray(selectIdentifier(collection) as string));

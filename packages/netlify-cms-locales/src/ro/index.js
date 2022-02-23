@@ -136,7 +136,7 @@ const ro = {
       save: 'Salvează',
       deleting: 'Se șterge...',
       updating: 'Se actualizează...',
-      setStatus: 'Setează status',
+      status: 'Status: %{status}',
       backCollection: ' Scrii în colecția „%{collectionLabel}”',
       unsavedChanges: 'Modificări nesalvate',
       changesSaved: 'Modificări salvate',

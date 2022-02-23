@@ -3,7 +3,6 @@ import moment from 'moment';
 import styled from '@emotion/styled';
 
 import Markdownify from './markdownify';
-
 import theme from '../theme';
 
 const Root = styled.div`

@@ -1,6 +1,8 @@
-import { asyncLock, AsyncLock } from './asyncLock';
+import { asyncLock } from './asyncLock';
 import unsentRequest from './unsentRequest';
 import APIError from './APIError';
+
+import type { AsyncLock } from './asyncLock';
 
 export interface FetchError extends Error {
   status: number;

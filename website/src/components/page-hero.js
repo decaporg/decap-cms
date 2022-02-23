@@ -2,7 +2,6 @@ import React from 'react';
 import { css } from '@emotion/core';
 
 import Container from './container';
-
 import theme from '../theme';
 import { mq } from '../utils';
 

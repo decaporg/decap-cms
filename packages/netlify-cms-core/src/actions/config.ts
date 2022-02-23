@@ -3,8 +3,7 @@ import { fromJS } from 'immutable';
 import deepmerge from 'deepmerge';
 import { produce } from 'immer';
 import { trimStart, trim, isEmpty } from 'lodash';
-import { AnyAction } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
+
 import { SIMPLE as SIMPLE_PUBLISH_MODE } from '../constants/publishModes';
 import { validateConfig } from '../constants/configSchema';
 import { selectDefaultSortableFields } from '../reducers/collections';
@@ -12,7 +11,10 @@ import { getIntegrations, selectIntegration } from '../reducers/integrations';
 import { resolveBackend } from '../backend';
 import { I18N, I18N_FIELD, I18N_STRUCTURE } from '../lib/i18n';
 import { FILES, FOLDER } from '../constants/collectionTypes';
-import {
+
+import type { ThunkDispatch } from 'redux-thunk';
+import type { AnyAction } from 'redux';
+import type {
   CmsCollection,
   CmsConfig,
   CmsField,
@@ -69,7 +71,7 @@ function getConfigUrl() {
 }
 
 function setDefaultPublicFolderForField<T extends CmsField>(field: T) {
-  if ('media_folder' in field && !field.public_folder) {
+  if ('media_folder' in field && !('public_folder' in field)) {
     return { ...field, public_folder: field.media_folder };
   }
   return field;
@@ -271,7 +273,7 @@ export function applyDefaults(originalConfig: CmsConfig) {
           collection.media_folder = '';
         }
 
-        if ('media_folder' in collection && !collection.public_folder) {
+        if ('media_folder' in collection && !('public_folder' in collection)) {
           collection.public_folder = collection.media_folder;
         }
 
@@ -303,7 +305,7 @@ export function applyDefaults(originalConfig: CmsConfig) {
         for (const file of files) {
           file.file = trimStart(file.file, '/');
 
-          if ('media_folder' in file && !file.public_folder) {
+          if ('media_folder' in file && !('public_folder' in file)) {
             file.public_folder = file.media_folder;
           }
 
@@ -474,9 +476,11 @@ export async function handleLocalBackend(originalConfig: CmsConfig) {
     return originalConfig;
   }
 
-  const { proxyUrl, publish_modes: publishModes, type: backendType } = await detectProxyServer(
-    originalConfig.local_backend,
-  );
+  const {
+    proxyUrl,
+    publish_modes: publishModes,
+    type: backendType,
+  } = await detectProxyServer(originalConfig.local_backend);
 
   if (!proxyUrl) {
     return originalConfig;

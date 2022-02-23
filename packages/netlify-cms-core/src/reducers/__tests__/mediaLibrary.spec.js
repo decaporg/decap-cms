@@ -1,5 +1,6 @@
 import { Map, fromJS } from 'immutable';
-import { mediaDeleted } from 'Actions/mediaLibrary';
+
+import { mediaDeleted } from '../../actions/mediaLibrary';
 import mediaLibrary, {
   selectMediaFiles,
   selectMediaFileByPath,
@@ -7,8 +8,8 @@ import mediaLibrary, {
 } from '../mediaLibrary';
 
 jest.mock('uuid/v4');
-jest.mock('Reducers/entries');
-jest.mock('Reducers');
+jest.mock('../entries');
+jest.mock('../');
 
 describe('mediaLibrary', () => {
   it('should remove media file by key', () => {
@@ -44,7 +45,7 @@ describe('mediaLibrary', () => {
   });
 
   it('should select draft media files from field when editing a draft', () => {
-    const { selectEditingDraft, selectMediaFolder } = require('Reducers/entries');
+    const { selectEditingDraft, selectMediaFolder } = require('../../reducers/entries');
 
     selectEditingDraft.mockReturnValue(true);
     selectMediaFolder.mockReturnValue('/static/images/posts/logos');
@@ -76,7 +77,7 @@ describe('mediaLibrary', () => {
   });
 
   it('should select draft media files from collection when editing a draft', () => {
-    const { selectEditingDraft, selectMediaFolder } = require('Reducers/entries');
+    const { selectEditingDraft, selectMediaFolder } = require('../../reducers/entries');
 
     selectEditingDraft.mockReturnValue(true);
     selectMediaFolder.mockReturnValue('/static/images/posts');
@@ -108,7 +109,7 @@ describe('mediaLibrary', () => {
   });
 
   it('should select global media files when not editing a draft', () => {
-    const { selectEditingDraft } = require('Reducers/entries');
+    const { selectEditingDraft } = require('../../reducers/entries');
 
     selectEditingDraft.mockReturnValue(false);
 
@@ -120,7 +121,7 @@ describe('mediaLibrary', () => {
   });
 
   it('should select global media files when not using asset store integration', () => {
-    const { selectIntegration } = require('Reducers');
+    const { selectIntegration } = require('../../reducers');
 
     selectIntegration.mockReturnValue({});
 
@@ -132,7 +133,7 @@ describe('mediaLibrary', () => {
   });
 
   it('should return media file by path', () => {
-    const { selectEditingDraft } = require('Reducers/entries');
+    const { selectEditingDraft } = require('../../reducers/entries');
 
     selectEditingDraft.mockReturnValue(false);
 

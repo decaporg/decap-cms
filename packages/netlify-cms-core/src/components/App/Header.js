@@ -16,8 +16,9 @@ import {
   buttons,
   zIndex,
 } from 'netlify-cms-ui-default';
-import SettingsDropdown from 'UI/SettingsDropdown';
 import { connect } from 'react-redux';
+
+import { SettingsDropdown } from '../UI';
 import { checkBackendStatus } from '../../actions/status';
 
 const styles = {

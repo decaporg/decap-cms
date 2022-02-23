@@ -8,24 +8,25 @@ import { connect } from 'react-redux';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import { Notifs } from 'redux-notifications';
 import TopBarProgress from 'react-topbar-progress-indicator';
-import { loginUser, logoutUser } from 'Actions/auth';
-import { currentBackend } from 'coreSrc/backend';
-import { createNewEntry } from 'Actions/collections';
-import { openMediaLibrary } from 'Actions/mediaLibrary';
-import MediaLibrary from 'MediaLibrary/MediaLibrary';
-import { Toast } from 'UI';
 import { Loader, colors } from 'netlify-cms-ui-default';
-import history from 'Routing/history';
-import { SIMPLE, EDITORIAL_WORKFLOW } from 'Constants/publishModes';
-import Collection from 'Collection/Collection';
-import Workflow from 'Workflow/Workflow';
-import Editor from 'Editor/Editor';
+
+import { loginUser, logoutUser } from '../../actions/auth';
+import { currentBackend } from '../../backend';
+import { createNewEntry } from '../../actions/collections';
+import { openMediaLibrary } from '../../actions/mediaLibrary';
+import MediaLibrary from '../MediaLibrary/MediaLibrary';
+import { Toast } from '../UI';
+import { history } from '../../routing/history';
+import { SIMPLE, EDITORIAL_WORKFLOW } from '../../constants/publishModes';
+import Collection from '../Collection/Collection';
+import Workflow from '../Workflow/Workflow';
+import Editor from '../Editor/Editor';
 import NotFoundPage from './NotFoundPage';
 import Header from './Header';
 
 TopBarProgress.config({
   barColors: {
-    '0': colors.active,
+    0: colors.active,
     '1.0': colors.active,
   },
   shadowBlur: 0,

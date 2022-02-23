@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-widget-image",
   "description": "Widget for uploading images in Netlify CMS.",
-  "version": "2.7.7",
+  "version": "2.8.1",
   "homepage": "https://www.netlifycms.org/docs/widgets/#image",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-image",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
@@ -29,6 +29,6 @@
     "netlify-cms-ui-default": "^2.12.1",
     "netlify-cms-widget-file": "^2.9.2",
     "prop-types": "^15.7.2",
-    "react": "^16.8.4"
+    "react": "^16.8.4 || ^17.0.0"
   }
 }

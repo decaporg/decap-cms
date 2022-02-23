@@ -1,9 +1,10 @@
 import React from 'react';
 import styled from '@emotion/styled';
+import { lengths } from 'netlify-cms-ui-default';
+
 import ViewStyleControl from './ViewStyleControl';
 import SortControl from './SortControl';
 import FilterControl from './FilterControl';
-import { lengths } from 'netlify-cms-ui-default';
 import GroupControl from './GroupControl';
 
 const CollectionControlsContainer = styled.div`

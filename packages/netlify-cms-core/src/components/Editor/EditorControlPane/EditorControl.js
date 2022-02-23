@@ -8,20 +8,22 @@ import styled from '@emotion/styled';
 import { partial, uniqueId } from 'lodash';
 import { connect } from 'react-redux';
 import { FieldLabel, colors, transitions, lengths, borders } from 'netlify-cms-ui-default';
-import { resolveWidget, getEditorComponents } from 'Lib/registry';
-import { clearFieldErrors, tryLoadEntry } from 'Actions/entries';
-import { addAsset, boundGetAsset } from 'Actions/media';
-import { selectIsLoadingAsset } from 'Reducers/medias';
-import { query, clearSearch } from 'Actions/search';
+import ReactMarkdown from 'react-markdown';
+import gfm from 'remark-gfm';
+
+import { resolveWidget, getEditorComponents } from '../../../lib/registry';
+import { clearFieldErrors, tryLoadEntry, validateMetaField } from '../../../actions/entries';
+import { addAsset, boundGetAsset } from '../../../actions/media';
+import { selectIsLoadingAsset } from '../../../reducers/medias';
+import { query, clearSearch } from '../../../actions/search';
 import {
   openMediaLibrary,
   removeInsertedMedia,
   clearMediaControl,
   removeMediaControl,
   persistMedia,
-} from 'Actions/mediaLibrary';
+} from '../../../actions/mediaLibrary';
 import Widget from './Widget';
-import { validateMetaField } from '../../../actions/entries';
 
 /**
  * This is a necessary bridge as we are still passing classnames to widgets
@@ -328,7 +330,24 @@ class EditorControl extends React.Component {
             />
             {fieldHint && (
               <ControlHint active={isSelected || this.state.styleActive} error={hasErrors}>
-                {fieldHint}
+                <ReactMarkdown
+                  remarkPlugins={[gfm]}
+                  allowedElements={['a', 'strong', 'em', 'del']}
+                  unwrapDisallowed={true}
+                  components={{
+                    // eslint-disable-next-line no-unused-vars
+                    a: ({ node, ...props }) => (
+                      <a
+                        {...props}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ color: 'inherit' }}
+                      />
+                    ),
+                  }}
+                >
+                  {fieldHint}
+                </ReactMarkdown>
               </ControlHint>
             )}
           </ControlContainer>

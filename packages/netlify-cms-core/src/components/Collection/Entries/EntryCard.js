@@ -1,12 +1,13 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import { connect } from 'react-redux';
-import { boundGetAsset } from 'Actions/media';
 import { Link } from 'react-router-dom';
 import { colors, colorsRaw, components, lengths, zIndex } from 'netlify-cms-ui-default';
-import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from 'Constants/collectionViews';
-import { selectIsLoadingAsset } from 'Reducers/medias';
-import { selectEntryCollectionTitle } from 'Reducers/collections';
+
+import { boundGetAsset } from '../../../actions/media';
+import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from '../../../constants/collectionViews';
+import { selectIsLoadingAsset } from '../../../reducers/medias';
+import { selectEntryCollectionTitle } from '../../../reducers/collections';
 
 const ListCard = styled.li`
   ${components.card};

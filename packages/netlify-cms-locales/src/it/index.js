@@ -98,7 +98,7 @@ const it = {
       save: 'Salva',
       deleting: 'Cancellando...',
       updating: 'Aggiornando...',
-      setStatus: 'Imposta status',
+      status: 'Status: %{status}',
       backCollection: ' Scrivendo nella sezione %{collectionLabel}',
       unsavedChanges: 'Modifiche non salvate',
       changesSaved: 'Modifiche salvate',

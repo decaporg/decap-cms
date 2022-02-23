@@ -82,8 +82,7 @@ const PublishButton = styled.button`
   margin-left: 6px;
 
   &[disabled] {
-    background-color: ${colorsRaw.grayLight};
-    color: ${colorsRaw.gray};
+    ${buttons.disabled};
   }
 `;
 
@@ -129,12 +128,14 @@ function WorkflowCard({
   allowPublish,
   canPublish,
   onPublish,
+  postAuthor,
   t,
 }) {
   return (
     <WorkflowCardContainer>
       <WorkflowLink to={editLink}>
         <CardCollection>{collectionLabel}</CardCollection>
+        {postAuthor}
         <CardTitle>{title}</CardTitle>
         {(timestamp || authorLastChange) && <CardDate date={timestamp} author={authorLastChange} />}
         <CardBody>{body}</CardBody>
@@ -169,6 +170,7 @@ WorkflowCard.propTypes = {
   allowPublish: PropTypes.bool.isRequired,
   canPublish: PropTypes.bool.isRequired,
   onPublish: PropTypes.func.isRequired,
+  postAuthor: PropTypes.string,
   t: PropTypes.func.isRequired,
 };
 

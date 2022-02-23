@@ -1,5 +1,6 @@
 import { isNumber } from 'lodash';
-import { List } from 'immutable';
+
+import type { List } from 'immutable';
 
 export function validateMinMax(
   t: (key: string, options: unknown) => string,

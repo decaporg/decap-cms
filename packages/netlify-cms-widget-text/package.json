@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-widget-text",
   "description": "Widget for editing multiline plain string values in Netlify CMS.",
-  "version": "2.3.6",
+  "version": "2.4.1",
   "homepage": "https://www.netlifycms.org/docs/widgets/#text",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-text",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
@@ -29,6 +29,6 @@
   "peerDependencies": {
     "netlify-cms-ui-default": "^2.12.1",
     "prop-types": "^15.7.2",
-    "react": "^16.8.4"
+    "react": "^16.8.4 || ^17.0.0"
   }
 }

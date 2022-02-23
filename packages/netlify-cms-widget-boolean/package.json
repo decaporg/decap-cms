@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-widget-boolean",
   "description": "Widget for editing boolean values in Netlify CMS.",
-  "version": "2.3.6",
+  "version": "2.4.1",
   "homepage": "https://www.netlifycms.org/docs/widgets/#boolean",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-boolean",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
@@ -25,7 +25,7 @@
     "lodash": "^4.17.11",
     "netlify-cms-ui-default": "^2.12.1",
     "prop-types": "^15.7.2",
-    "react": "^16.8.4",
+    "react": "^16.8.4 || ^17.0.0",
     "react-immutable-proptypes": "^2.1.0"
   }
 }

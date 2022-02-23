@@ -11,19 +11,20 @@ This tutorial guides you through the steps for adding Netlify CMS to a site that
 
 A static `admin` folder contains all Netlify CMS files, stored at the root of your published site. Where you store this folder in the source files depends on your static site generator. Here's the static file location for a few of the most popular static site generators:
 
-| These generators                           | store static files in |
-| ------------------------------------------ | --------------------- |
-| Jekyll, GitBook                            | `/` (project root)    |
-| Hugo, Gatsby, Nuxt, Gridsome, Zola, Sapper | `/static`             |
-| Next                                       | `/public`             |
-| Hexo, Middleman, Jigsaw                    | `/source`             |
-| Spike                                      | `/views`              |
-| Wyam                                       | `/input`              |
-| Pelican                                    | `/content`            |
-| VuePress                                   | `/.vuepress/public`   |
-| Elmstatic                                  | `/_site`              |
-| 11ty                                       | `/_site`              |
-| preact-cli                                 | `/src/static`         |
+| These generators                             | store static files in |
+| -------------------------------------------- | --------------------- |
+| Jekyll, GitBook                              | `/` (project root)    |
+| Hugo, Gatsby, Nuxt 2, Gridsome, Zola, Sapper | `/static`             |
+| Next, Nuxt 3                                 | `/public`             |
+| Hexo, Middleman, Jigsaw                      | `/source`             |
+| Spike                                        | `/views`              |
+| Wyam                                         | `/input`              |
+| Pelican                                      | `/content`            |
+| VuePress                                     | `/.vuepress/public`   |
+| Elmstatic                                    | `/_site`              |
+| 11ty                                         | `/_site`              |
+| preact-cli                                   | `/src/static`         |
+| Docusaurus                                   | `/static`         |
 
 If your generator isn't listed here, you can check its documentation, or as a shortcut, look in your project for a `css` or `images` folder. The contents of folders like that are usually processed as static files, so it's likely you can store your `admin` folder next to those. (When you've found the location, feel free to add it to these docs by [filing a pull request](https://github.com/netlify/netlify-cms/blob/master/CONTRIBUTING.md#pull-requests)!)
 
@@ -35,7 +36,9 @@ admin
  └ config.yml
 ```
 
-The first file, `admin/index.html`, is the entry point for the Netlify CMS admin interface. This means that users navigate to `yoursite.com/admin/` to access it. On the code side, it's a basic HTML starter page that loads the Netlify CMS JavaScript file. In this example, we pull the file from a public CDN:
+The first file, `admin/index.html`, is the entry point for the Netlify CMS admin interface. This means that users navigate to `yoursite.com/admin/` to access it. On the code side, it's a basic HTML starter page that loads the Netlify CMS JavaScript file. The second file, `admin/config.yml`, is the heart of your Netlify CMS installation, and a bit more complex. The [Configuration](#configuration) section covers the details.
+
+In this example, we pull the `admin/index.html` file from a public CDN. 
 
 ```html
 <!doctype html>
@@ -53,8 +56,6 @@ The first file, `admin/index.html`, is the entry point for the Netlify CMS admin
 ```
 
 In the code above the `script` is loaded from the `unpkg` CDN. Should there be any issue, `jsDelivr` can be used as an alternative source. Simply set the `src` to `https://cdn.jsdelivr.net/npm/netlify-cms@^2.0.0/dist/netlify-cms.js`
-
-The second file, `admin/config.yml`, is the heart of your Netlify CMS installation, and a bit more complex. The [Configuration](#configuration) section covers the details.
 
 ### Installing with npm
 

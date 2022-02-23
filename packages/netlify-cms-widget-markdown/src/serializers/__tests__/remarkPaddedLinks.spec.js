@@ -1,6 +1,7 @@
 import unified from 'unified';
 import markdownToRemark from 'remark-parse';
 import remarkToMarkdown from 'remark-stringify';
+
 import remarkPaddedLinks from '../remarkPaddedLinks';
 
 function input(markdown) {
@@ -12,10 +13,7 @@ function input(markdown) {
 }
 
 function output(markdown) {
-  return unified()
-    .use(markdownToRemark)
-    .use(remarkToMarkdown)
-    .processSync(markdown).contents;
+  return unified().use(markdownToRemark).use(remarkToMarkdown).processSync(markdown).contents;
 }
 
 describe('remarkPaddedLinks', () => {

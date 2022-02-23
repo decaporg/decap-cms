@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-backend-git-gateway",
   "description": "Git Gateway backend for Netlify CMS",
-  "version": "2.11.11",
+  "version": "2.13.0",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
   "module": "dist/esm/index.js",
@@ -37,6 +37,6 @@
     "netlify-cms-lib-util": "^2.12.3",
     "netlify-cms-ui-default": "^2.12.1",
     "prop-types": "^15.7.2",
-    "react": "^16.8.4"
+    "react": "^16.8.4 || ^17.0.0"
   }
 }
