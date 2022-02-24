@@ -7,6 +7,30 @@ publish_mode: editorial_workflow
 media_folder: assets/uploads
 
 collections: # A list of collections the CMS should be able to edit
+  - name: 'nested'
+    label: 'Nested Pages'
+    label_singular: 'Nested Page'
+    folder: '_nested'
+    preview_path: '{{slug}}'
+    nested: {depth: 100}
+    meta:
+      path: { widget: string, label: 'Path', index_file: 'index' }
+    create: true
+    fields: # The fields each document in this collection have
+      - { label: 'Title', name: 'title', widget: 'string', tagname: 'h1' }
+      - { label: 'Body', name: 'body', widget: 'markdown' }
+  - name: 'slug-field'
+    label: 'Slug Pages'
+    label_singular: 'Slug Page'
+    folder: '_slugs'
+    slug: '{{fields.slug}}'
+    preview_path: '{{fields.slug}}'
+    preview_preserve_slash: true
+    create: true
+    fields: # The fields each document in this collection have
+      - { label: 'Title', name: 'title', widget: 'string', tagname: 'h1' }
+      - { label: 'Slug', name: 'slug', widget: 'string' }
+      - { label: 'Body', name: 'body', widget: 'markdown' }
   - name: 'posts' # Used in routes, ie.: /admin/collections/:slug/edit
     label: 'Posts' # Used in the UI
     label_singular: 'Post' # Used in the UI, ie: "New Post"
