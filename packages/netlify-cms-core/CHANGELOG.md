@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.54.6](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.54.5...netlify-cms-core@2.54.6) (2022-02-28)
+
+
+### Bug Fixes
+
+* **i18n:** fix that unable to delete page with SINGLE_FILE i18n structure ([#6218](https://github.com/netlify/netlify-cms/issues/6218)) ([a14580a](https://github.com/netlify/netlify-cms/commit/a14580a7549c7576fd1c6f5bc4fde0373215ec99))
+
+
+
+
+
 ## [2.54.5](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.54.4...netlify-cms-core@2.54.5) (2022-01-21)
 
 
