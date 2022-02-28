@@ -1,8 +1,12 @@
 ---
-title: Hugo
 group: Guides
 weight: 20
+title: Hugo
 ---
+Lorem ipsum dolor sit amet
+
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
 ## Introduction
 
 This guide will walk you through how to integrate Netlify CMS with Hugo. This is a good place to start if you want to learn from the ground up how these two tools work together. If you want to get up-and-running quicker, you can use one of the pre-existing and amazing [starter templates](/docs/start-with-a-template/)!
