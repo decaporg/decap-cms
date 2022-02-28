@@ -132,7 +132,7 @@ function publishWorkflowEntry({ title }, timeout) {
           cy.contains('button', 'Publish new entry').click({ force: true });
         });
     });
-  assertNotification(notifications.published);
+  // assertNotification(notifications.published);
 }
 
 function deleteWorkflowEntry({ title }) {
