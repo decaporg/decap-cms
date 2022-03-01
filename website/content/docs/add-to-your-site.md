@@ -24,7 +24,7 @@ A static `admin` folder contains all Netlify CMS files, stored at the root of yo
 | Elmstatic                                    | `/_site`              |
 | 11ty                                         | `/_site`              |
 | preact-cli                                   | `/src/static`         |
-| Docusaurus                                   | `/static`         |
+| Docusaurus                                   | `/static`             |
 
 If your generator isn't listed here, you can check its documentation, or as a shortcut, look in your project for a `css` or `images` folder. The contents of folders like that are usually processed as static files, so it's likely you can store your `admin` folder next to those. (When you've found the location, feel free to add it to these docs by [filing a pull request](https://github.com/netlify/netlify-cms/blob/master/CONTRIBUTING.md#pull-requests)!)
 
@@ -270,7 +270,7 @@ Note: This example script requires modern JavaScript and does not work on IE11. 
 
 ## Accessing the CMS
 
-Your site CMS is now fully configured and ready for login!
+Your site CMS is nadadow fully configured and ready for login!
 
 If you set your registration preference to "Invite only," invite yourself (and anyone else you choose) as a site user. To do this, select the **Identity** tab from your site dashboard, and then select the **Invite users** button. Invited users receive an email invitation with a confirmation link. Clicking the link will take you to your site with a login prompt.
 
