@@ -157,7 +157,7 @@
     "simple-git": "^2.0.0",
     "start-server-and-test": "^1.7.11",
     "stylelint": "^13.0.0",
-    "stylelint-config-recommended": "^3.0.0",
+    "stylelint-config-recommended": "^7.0.0",
     "stylelint-config-styled-components": "^0.1.1",
     "svg-inline-loader": "^0.8.0",
     "to-string-loader": "^1.1.5",
