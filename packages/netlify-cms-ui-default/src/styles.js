@@ -302,8 +302,8 @@ const components = {
     color: ${colorsRaw.red};
   `,
   loaderSize: css`
-    width: 2.28571429rem;
-    height: 2.28571429rem;
+    width: 2.2857rem;
+    height: 2.2857rem;
   `,
   cardTop: css`
     ${card};
