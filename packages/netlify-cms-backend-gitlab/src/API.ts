@@ -950,6 +950,17 @@ export default class API {
     await this.mergeMergeRequest(mergeRequest);
   }
 
+  async approveEntry(collectionName: string, slug: string) {
+    const contentKey = generateContentKey(collectionName, slug);
+    const branch = branchFromContentKey(contentKey);
+
+    const mergeRequest = await this.getBranchMergeRequest(branch);
+    await this.requestJSON({
+      method: 'POST',
+      url: `${this.repoURL}/merge_requests/${mergeRequest.iid}/approve`,
+    });
+  }
+
   async closeMergeRequest(mergeRequest: GitLabMergeRequest) {
     await this.requestJSON({
       method: 'PUT',

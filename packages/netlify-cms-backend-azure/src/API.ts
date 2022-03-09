@@ -719,6 +719,22 @@ export default class API {
     await this.completePullRequest(pullRequest);
   }
 
+  async approveEntry(collectionName: string, slug: string) {
+    const contentKey = generateContentKey(collectionName, slug);
+    const branch = branchFromContentKey(contentKey);
+
+    const pullRequest = await this.getBranchPullRequest(branch);
+    const pullRequestCompleted = {
+      status: AzurePullRequestStatus.COMPLETED,
+    };
+
+    await this.requestJSON({
+      method: 'PATCH',
+      url: `${this.endpointUrl}/pullrequests/${encodeURIComponent(pullRequest.pullRequestId)}`,
+      body: JSON.stringify(pullRequestCompleted),
+    });
+  }
+
   async updatePullRequestLabels(pullRequest: AzurePullRequest, labels: string[]) {
     const cmsLabels = pullRequest.labels.filter(l => isCMSLabel(l.name, this.cmsLabelPrefix));
     await Promise.all(

@@ -746,6 +746,17 @@ export default class API {
     await this.mergePullRequest(pullRequest);
   }
 
+  async approveEntry(collectionName: string, slug: string) {
+    const contentKey = generateContentKey(collectionName, slug);
+    const branch = branchFromContentKey(contentKey);
+
+    const pullRequest = await this.getBranchPullRequest(branch);
+    await this.requestJSON({
+      method: 'POST',
+      url: `${this.repoURL}/pullrequests/${pullRequest.id}/approve`,
+    });
+  }
+
   async declinePullRequest(pullRequest: BitBucketPullRequest) {
     await this.requestJSON({
       method: 'POST',
