@@ -107,7 +107,7 @@ Defaults to `site_url`.
 **Example:**
 
 ```yaml
-display_url: https://your-site.com
+display_url: your-site.com
 ```
 
 ## Custom Logo
@@ -171,7 +171,6 @@ Defaults to `true`
 ```yaml
 search: false
 ```
-
 
 ## Slug Type
 
