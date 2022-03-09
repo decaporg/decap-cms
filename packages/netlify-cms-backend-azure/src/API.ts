@@ -462,8 +462,10 @@ export default class API {
     const status = labelToStatus(labelName, this.cmsLabelPrefix);
     // Uses creationDate, as we do not have direct access to the updated date
     const updatedAt = pullRequest.closedDate ? pullRequest.closedDate : pullRequest.creationDate;
-    const pullRequestAuthor =
-      pullRequest.createdBy?.displayName || pullRequest.createdBy?.uniqueName;
+    const pullRequestAuthor = {
+      name: pullRequest.createdBy?.displayName,
+      login: pullRequest.createdBy?.uniqueName,
+    };
     return {
       collection,
       slug,

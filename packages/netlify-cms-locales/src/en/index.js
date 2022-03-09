@@ -296,6 +296,7 @@ const en = {
       publishChanges: 'Publish changes',
       publishNewEntry: 'Publish new entry',
       approveEntry: 'Approve entry',
+      cantApprove: "You can't approve this entry since you authored it",
     },
     workflowList: {
       onDeleteEntry: 'Are you sure you want to delete this entry?',

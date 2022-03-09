@@ -18,6 +18,8 @@ interface Options {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [locale: string]: any;
   };
+  supportsApprove?: boolean;
+  canApprove?: boolean;
 }
 
 export interface EntryValue {
@@ -39,6 +41,8 @@ export interface EntryValue {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [locale: string]: any;
   };
+  supportsApprove: boolean;
+  canApprove: boolean;
 }
 
 export function createEntry(collection: string, slug = '', path = '', options: Options = {}) {
@@ -57,6 +61,8 @@ export function createEntry(collection: string, slug = '', path = '', options: O
     status: options.status || '',
     meta: options.meta || {},
     i18n: options.i18n || {},
+    canApprove: options.canApprove || false,
+    supportsApprove: options.supportsApprove || false,
   };
 
   return returnObj;

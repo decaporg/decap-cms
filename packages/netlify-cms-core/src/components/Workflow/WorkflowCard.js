@@ -141,6 +141,8 @@ function WorkflowCard({
   onPublish,
   onApprove,
   postAuthor,
+  canApprove,
+  supportsApprove,
   t,
 }) {
   return (
@@ -165,7 +167,13 @@ function WorkflowCard({
               : t('workflow.workflowCard.publishNewEntry')}
           </PublishButton>
         )}
-        <ApproveButton onClick={onApprove}>{t('workflow.workflowCard.approveEntry')}</ApproveButton>
+        {supportsApprove && (
+          <>
+            <ApproveButton onClick={onApprove} disabled={!canApprove}>
+              {t('workflow.workflowCard.approveEntry')}
+            </ApproveButton>
+          </>
+        )}
       </CardButtonContainer>
     </WorkflowCardContainer>
   );
@@ -184,6 +192,8 @@ WorkflowCard.propTypes = {
   canPublish: PropTypes.bool.isRequired,
   onPublish: PropTypes.func.isRequired,
   postAuthor: PropTypes.string,
+  canApprove: PropTypes.bool.isRequired,
+  supportsApprove: PropTypes.bool.isRequired,
   t: PropTypes.func.isRequired,
 };
 

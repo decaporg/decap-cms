@@ -281,8 +281,8 @@ export default class GraphQLAPI extends API {
   }
 
   async getPullRequestAuthor(pullRequest: Octokit.PullsListResponseItem) {
-    const user = pullRequest.user as unknown as GraphQLPullsListResponseItemUser;
-    return user?.name || user?.login;
+    const { name, login } = pullRequest.user as unknown as GraphQLPullsListResponseItemUser;
+    return { name, login };
   }
 
   async getPullRequests(
