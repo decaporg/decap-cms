@@ -228,8 +228,6 @@ class WorkflowList extends React.Component {
           const supportsApprove = entry.get('supportsApprove');
           const canApprove = entry.get('canApprove');
 
-          console.log(JSON.stringify(entry, null, 2));
-
           return (
             <DragSource
               namespace={DNDNamespace}
