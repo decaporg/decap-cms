@@ -100,14 +100,14 @@ site_url: https://your-site.com
 
 ## Display URL
 
-When the `display_url` setting is specified, the CMS UI will include a link in the fixed area at the top of the page, allowing content authors to easily return to your main site. The text of the link consists of the URL without the protocol portion (e.g., `your-site.com`).
+When the `display_url` setting is specified, the CMS UI will include a link in the fixed area at the top of the page, allowing content authors to easily return to your main site. The text of the link consists of the URL with the protocol portion (e.g., `https://your-site.com`).
 
 Defaults to `site_url`.
 
 **Example:**
 
 ```yaml
-display_url: your-site.com
+display_url: https://your-site.com
 ```
 
 ## Custom Logo
