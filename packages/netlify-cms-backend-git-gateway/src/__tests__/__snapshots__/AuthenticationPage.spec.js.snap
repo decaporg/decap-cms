@@ -140,7 +140,7 @@ exports[`GitGatewayAuthenticationPage should render with no identity error 1`] =
   padding: 0 15px;
   background-color: #798291;
   color: #fff;
-  background-color: #798291;
+  background-color: #313d3e;
   color: #fff;
   padding: 0 12px;
   margin-top: -40px;
@@ -232,7 +232,7 @@ exports[`GitGatewayAuthenticationPage should render with no identity error 1`] =
   padding: 0 15px;
   background-color: #798291;
   color: #fff;
-  background-color: #798291;
+  background-color: #313d3e;
   color: #fff;
   padding: 0 12px;
   margin-top: -40px;

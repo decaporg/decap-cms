@@ -62,6 +62,17 @@ const LoginButton = styled.button`
   position: relative;
 `;
 
+const TextButton = styled.button`
+  ${buttons.button};
+  ${buttons.default};
+  ${buttons.grayText};
+
+  margin-top: 40px;
+  display: flex;
+  align-items: center;
+  position: relative;
+`;
+
 function AuthenticationPage({
   onLogin,
   loginDisabled,
@@ -76,7 +87,9 @@ function AuthenticationPage({
     <StyledAuthenticationPage>
       {renderPageLogo(logoUrl)}
       {loginErrorMessage ? <p>{loginErrorMessage}</p> : null}
-      {!renderPageContent ? null : renderPageContent({ LoginButton })}
+      {!renderPageContent
+        ? null
+        : renderPageContent({ LoginButton, TextButton, showAbortButton: !siteUrl })}
       {!renderButtonContent ? null : (
         <LoginButton disabled={loginDisabled} onClick={onLogin}>
           {renderButtonContent()}

@@ -59,7 +59,7 @@ const DraftText = styled.p`
   background-color: ${colors.mediaDraftBackground};
   position: absolute;
   padding: 8px;
-  border-radius: ${lengths.borderRadius} 0px ${lengths.borderRadius} 0;
+  border-radius: ${lengths.borderRadius} 0 ${lengths.borderRadius} 0;
 `;
 
 class MediaLibraryCard extends React.Component {
