@@ -42,7 +42,6 @@ type GitHubCompareCommit = Octokit.ReposCompareCommitsResponseCommitsItem;
 type GitHubAuthor = Octokit.GitCreateCommitResponseAuthor;
 type GitHubCommitter = Octokit.GitCreateCommitResponseCommitter;
 type GitHubPull = Octokit.PullsListResponseItem;
-type GithubRepo = Octokit.ReposGetResponse;
 
 export const API_NAME = 'GitHub';
 
