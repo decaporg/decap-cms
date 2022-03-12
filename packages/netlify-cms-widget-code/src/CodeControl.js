@@ -272,7 +272,7 @@ export default class CodeControl extends React.Component {
               id={forID}
               className={css`
                 height: 100%;
-                border-radius: 0 3px 3px 3px;
+                border-radius: 0 3px 3px;
                 overflow: hidden;
 
                 .CodeMirror {

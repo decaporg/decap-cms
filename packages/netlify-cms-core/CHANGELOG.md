@@ -3,6 +3,143 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.54.7](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.54.6...netlify-cms-core@2.54.7) (2022-03-08)
+
+**Note:** Version bump only for package netlify-cms-core
+
+
+
+
+
+## [2.54.6](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.54.5...netlify-cms-core@2.54.6) (2022-02-28)
+
+
+### Bug Fixes
+
+* **i18n:** fix that unable to delete page with SINGLE_FILE i18n structure ([#6218](https://github.com/netlify/netlify-cms/issues/6218)) ([a14580a](https://github.com/netlify/netlify-cms/commit/a14580a7549c7576fd1c6f5bc4fde0373215ec99))
+
+
+
+
+
+## [2.54.5](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.54.4...netlify-cms-core@2.54.5) (2022-01-21)
+
+
+### Bug Fixes
+
+* remove redundant log from EditorControlPane ([#6141](https://github.com/netlify/netlify-cms/issues/6141)) ([6c924db](https://github.com/netlify/netlify-cms/commit/6c924db10b9f1baab15cdcebdc1e2c01bca4ec83))
+
+
+
+
+
+## [2.54.4](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.54.3...netlify-cms-core@2.54.4) (2022-01-21)
+
+**Note:** Version bump only for package netlify-cms-core
+
+
+
+
+
+## [2.54.3](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.54.2...netlify-cms-core@2.54.3) (2021-12-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency react-frame-component to v5.2.1 ([#6048](https://github.com/netlify/netlify-cms/issues/6048)) ([f558ce0](https://github.com/netlify/netlify-cms/commit/f558ce06e3692ec4fa59189cdcc7f06e8d6c58bf))
+
+
+
+
+
+## [2.54.2](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.54.1...netlify-cms-core@2.54.2) (2021-12-08)
+
+
+### Bug Fixes
+
+* add generic type support for CmsWidget and CmsWidgetParam ([#6018](https://github.com/netlify/netlify-cms/issues/6018)) ([83fc501](https://github.com/netlify/netlify-cms/commit/83fc5018a5df650b7052b584ccff15698164b139))
+
+
+
+
+
+## [2.54.1](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.54.0...netlify-cms-core@2.54.1) (2021-12-03)
+
+
+### Bug Fixes
+
+* **types:** Add missing `auth_type` to `CmsBackend` type ([#5981](https://github.com/netlify/netlify-cms/issues/5981)) ([db4dd10](https://github.com/netlify/netlify-cms/commit/db4dd10f4794d4e45daee4f2a74bda1e45919abe))
+
+
+
+
+
+# [2.54.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.53.1...netlify-cms-core@2.54.0) (2021-11-01)
+
+
+### Features
+
+* **locales:** allow copying data from other locales ([#5850](https://github.com/netlify/netlify-cms/issues/5850)) ([#5881](https://github.com/netlify/netlify-cms/issues/5881)) ([5e2d181](https://github.com/netlify/netlify-cms/commit/5e2d1814981e2c09762b18d9ff66d1fefcbe73b3))
+
+
+
+
+
+## [2.53.1](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.53.0...netlify-cms-core@2.53.1) (2021-10-25)
+
+
+### Bug Fixes
+
+* **i18n:** return the correct locale from filenames ([#5922](https://github.com/netlify/netlify-cms/issues/5922)) ([6a42f98](https://github.com/netlify/netlify-cms/commit/6a42f98b518d2b42c6e181e4dffdae8115b22f1e))
+
+
+
+
+
+# [2.53.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.52.0...netlify-cms-core@2.53.0) (2021-10-21)
+
+
+### Features
+
+* **core:** pass `locale` to custom preview templates ([#5912](https://github.com/netlify/netlify-cms/issues/5912)) ([c789852](https://github.com/netlify/netlify-cms/commit/c7898525ecdc67e55886774ce3fbfffb644542f5)), closes [#5911](https://github.com/netlify/netlify-cms/issues/5911)
+
+
+
+
+
+# [2.52.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.51.1...netlify-cms-core@2.52.0) (2021-10-18)
+
+
+### Features
+
+* display author of changes in workflow tab ([#5780](https://github.com/netlify/netlify-cms/issues/5780)) ([3f607e4](https://github.com/netlify/netlify-cms/commit/3f607e41d9c4d8fe5329a9ab6841cada7742825e))
+
+
+
+
+
+## [2.51.1](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.51.0...netlify-cms-core@2.51.1) (2021-10-08)
+
+
+### Bug Fixes
+
+* **i18n:** fixes that preview not changing with locale ([#5875](https://github.com/netlify/netlify-cms/issues/5875)) ([b331cc6](https://github.com/netlify/netlify-cms/commit/b331cc6373a715a022e92405bb2082dee961a8c6))
+
+
+
+
+
+# [2.51.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.50.0...netlify-cms-core@2.51.0) (2021-09-30)
+
+
+### Features
+
+* change invoke CMS Events to throw Error ([#5813](https://github.com/netlify/netlify-cms/issues/5813)) ([90bf4cb](https://github.com/netlify/netlify-cms/commit/90bf4cb06a630b8839e17c6b44b0bd2871fdece4))
+
+
+
+
+
 # [2.50.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.49.0...netlify-cms-core@2.50.0) (2021-09-13)
 
 

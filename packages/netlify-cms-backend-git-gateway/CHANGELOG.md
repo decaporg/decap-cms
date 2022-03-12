@@ -3,6 +3,31 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.13.1](https://github.com/netlify/netlify-cms/compare/netlify-cms-backend-git-gateway@2.13.0...netlify-cms-backend-git-gateway@2.13.1) (2022-03-08)
+
+**Note:** Version bump only for package netlify-cms-backend-git-gateway
+
+
+
+
+
+# [2.13.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-backend-git-gateway@2.12.2...netlify-cms-backend-git-gateway@2.13.0) (2021-12-28)
+
+
+### Bug Fixes
+
+* **netlify-cms-ui-default:** use grayDark for button ([#6069](https://github.com/netlify/netlify-cms/issues/6069)) ([ad85514](https://github.com/netlify/netlify-cms/commit/ad85514cba607f066ab7071bee5932b2192466ee)), closes [/github.com/netlify/netlify-cms/issues/1333#issuecomment-998115794](https://github.com//github.com/netlify/netlify-cms/issues/1333/issues/issuecomment-998115794)
+
+
+### Features
+
+* **backend-gitlab:** initial GraphQL support ([#6059](https://github.com/netlify/netlify-cms/issues/6059)) ([1523a41](https://github.com/netlify/netlify-cms/commit/1523a4140a3d2f4cc01a1548514ae17bc1ad504e))
+* disable 'Save' button when there are no changes ([#5595](https://github.com/netlify/netlify-cms/issues/5595)) ([4b566a7](https://github.com/netlify/netlify-cms/commit/4b566a78f4282a6f04caf3deafaaac4d74acfd63))
+
+
+
+
+
 ## [2.12.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-git-gateway/compare/netlify-cms-backend-git-gateway@2.12.1...netlify-cms-backend-git-gateway@2.12.2) (2021-06-01)
 
 **Note:** Version bump only for package netlify-cms-backend-git-gateway

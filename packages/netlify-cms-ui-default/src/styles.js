@@ -64,7 +64,7 @@ const colors = {
   active: colorsRaw.blue,
   activeBackground: colorsRaw.blueLight,
   inactive: colorsRaw.gray,
-  button: colorsRaw.gray,
+  button: colorsRaw.grayDark,
   buttonText: colorsRaw.white,
   inputBackground: colorsRaw.white,
   infoText: colorsRaw.blue,
@@ -302,8 +302,8 @@ const components = {
     color: ${colorsRaw.red};
   `,
   loaderSize: css`
-    width: 2.28571429rem;
-    height: 2.28571429rem;
+    width: 2.2857rem;
+    height: 2.2857rem;
   `,
   cardTop: css`
     ${card};

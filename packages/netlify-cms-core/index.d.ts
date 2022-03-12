@@ -355,6 +355,8 @@ declare module 'netlify-cms-core' {
     site_domain?: string;
     base_url?: string;
     auth_endpoint?: string;
+    app_id?: string;
+    auth_type?: 'implicit' | 'pkce';
     cms_label_prefix?: string;
     squash_merges?: boolean;
     proxy_url?: string;
@@ -461,16 +463,16 @@ declare module 'netlify-cms-core' {
     fieldsMetaData: Map<string, any>;
   }
 
-  export interface CmsWidgetParam {
+  export interface CmsWidgetParam<T = any> {
     name: string;
-    controlComponent: CmsWidgetControlProps;
-    previewComponent?: CmsWidgetPreviewProps;
+    controlComponent: CmsWidgetControlProps<T>;
+    previewComponent?: CmsWidgetPreviewProps<T>;
     globalStyles?: any;
   }
 
-  export interface CmsWidget {
-    control: CmsWidgetControlProps;
-    preview?: CmsWidgetPreviewProps;
+  export interface CmsWidget<T = any> {
+    control: CmsWidgetControlProps<T>;
+    preview?: CmsWidgetPreviewProps<T>;
     globalStyles?: any;
   }
 

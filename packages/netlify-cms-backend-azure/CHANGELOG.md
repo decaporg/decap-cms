@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.3.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-backend-azure@1.2.2...netlify-cms-backend-azure@1.3.0) (2021-10-18)
+
+
+### Features
+
+* display author of changes in workflow tab ([#5780](https://github.com/netlify/netlify-cms/issues/5780)) ([3f607e4](https://github.com/netlify/netlify-cms/commit/3f607e41d9c4d8fe5329a9ab6841cada7742825e))
+
+
+
+
+
 ## [1.2.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-azure/compare/netlify-cms-backend-azure@1.2.1...netlify-cms-backend-azure@1.2.2) (2021-06-01)
 
 **Note:** Version bump only for package netlify-cms-backend-azure

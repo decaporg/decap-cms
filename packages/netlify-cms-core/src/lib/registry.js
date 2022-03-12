@@ -246,14 +246,10 @@ export async function invokeEvent({ name, data }) {
 
   let _data = { ...data };
   for (const { handler, options } of handlers) {
-    try {
-      const result = await handler(_data, options);
-      if (result !== undefined) {
-        const entry = _data.entry.set('data', result);
-        _data = { ...data, entry };
-      }
-    } catch (e) {
-      console.warn(`Failed running handler for event ${name} with message: ${e.message}`);
+    const result = await handler(_data, options);
+    if (result !== undefined) {
+      const entry = _data.entry.set('data', result);
+      _data = { ...data, entry };
     }
   }
   return _data.entry.get('data');
