@@ -347,21 +347,6 @@ describe('github API', () => {
     });
   });
 
-  describe('newGetDefaultBranch', () => {
-    it('should return a non-empty value for the default branch', async () => {
-      const defaultBranch = 'main';
-      const repo = `owner/my-repo`;
-      const api = new API({ branch: defaultBranch, repo });
-      const responses = {
-        '/repos/owner/my-repo': () => ({ default_branch: defaultBranch }),
-      };
-      mockAPI(api, responses);
-
-      await expect(api.newGetDefaultBranch()).resolves.toBe(defaultBranch);
-      expect(api.request).toHaveBeenCalledTimes(1);
-      expect(api.request.mock.calls[0]).toEqual([`/repos/${repo}`]);
-    });
-  });
   describe('migratePullRequest', () => {
     it('should migrate to pull request labels when no version', async () => {
       const api = new API({ branch: 'master', repo: 'owner/repo' });

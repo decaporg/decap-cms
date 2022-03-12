@@ -1189,16 +1189,6 @@ export default class API {
     return result;
   }
 
-  async newGetDefaultBranch() {
-    try {
-      const result: GithubRepo = await this.request(`${this.originRepoURL}`);
-      return result.default_branch;
-    } catch (e) {
-      console.error('Problem fetching repo data from Github');
-      return null;
-    }
-  }
-
   async backupBranch(branchName: string) {
     try {
       const existingBranch = await this.getBranch(branchName);
