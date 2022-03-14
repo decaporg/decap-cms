@@ -109,6 +109,7 @@ const resp = {
           access_level: 30,
         },
       },
+      default_branch: 'main',
     },
     readOnly: {
       permissions: {
