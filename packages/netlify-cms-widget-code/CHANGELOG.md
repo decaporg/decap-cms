@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.3.4](https://github.com/netlify/netlify-cms/compare/netlify-cms-widget-code@1.3.3...netlify-cms-widget-code@1.3.4) (2022-03-08)
+
+**Note:** Version bump only for package netlify-cms-widget-code
+
+
+
+
+
 ## [1.3.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-code/compare/netlify-cms-widget-code@1.3.2...netlify-cms-widget-code@1.3.3) (2021-06-01)
 
 **Note:** Version bump only for package netlify-cms-widget-code

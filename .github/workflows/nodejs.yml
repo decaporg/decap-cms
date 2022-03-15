@@ -21,9 +21,9 @@ jobs:
       matrix:
         os: [macos-latest, windows-latest, ubuntu-latest]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Use Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: '*'
           check-latest: true
@@ -55,9 +55,9 @@ jobs:
       fail-fast: false
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Use Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: '*'
           check-latest: true
@@ -81,7 +81,7 @@ jobs:
           NODE_OPTIONS: --max-old-space-size=4096
           MACHINE_COUNT: 8
           MACHINE_INDEX: ${{ matrix.machine }}
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: ${{ always() }}
         with:
           name: cypress-results-${{ matrix.machine }}

@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-widget-code",
   "description": "Widget for editing code in Netlify CMS",
-  "version": "1.3.3",
+  "version": "1.3.4",
   "homepage": "https://www.netlifycms.org/docs/widgets/#code",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-code",
   "bugs": "https://github.com/netlify/netlify-cms/issues",

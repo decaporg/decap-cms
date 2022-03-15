@@ -34,7 +34,7 @@ const AuthInput = styled.input`
   border-radius: ${lengths.borderRadius};
 
   font-size: 14px;
-  padding: 10px 10px;
+  padding: 10px;
   margin-bottom: 15px;
   margin-top: 6px;
   width: 100%;
