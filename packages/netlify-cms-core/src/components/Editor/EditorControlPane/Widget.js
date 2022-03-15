@@ -71,6 +71,7 @@ export default class Widget extends Component {
     isDisabled: PropTypes.bool,
     isFieldDuplicate: PropTypes.func,
     isFieldHidden: PropTypes.func,
+    locale: PropTypes.string,
   };
 
   shouldComponentUpdate(nextProps) {
@@ -292,6 +293,7 @@ export default class Widget extends Component {
       isDisabled,
       isFieldDuplicate,
       isFieldHidden,
+      locale,
     } = this.props;
 
     return React.createElement(controlComponent, {
@@ -343,6 +345,7 @@ export default class Widget extends Component {
       isDisabled,
       isFieldDuplicate,
       isFieldHidden,
+      locale,
     });
   }
 }
