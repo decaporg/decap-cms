@@ -156,8 +156,8 @@ export const endpointConstants = {
     bitbucket: '/repositories',
     github: '/repos',
     gitlab: '/projects',
-  }
-}
+  },
+};
 
 const api = {
   buildRequest(req: ApiRequest) {
