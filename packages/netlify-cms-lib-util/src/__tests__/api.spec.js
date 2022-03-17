@@ -2,6 +2,10 @@ import nock from "nock";
 
 import * as api from '../API';
 
+const branchProp = { default_branch: 'master' }
+const MOCK_CREDENTIALS = { token: 'MOCK_TOKEN' }
+const REPO_PATH = 'foo/bar'
+
 function mockApi(backend) {
   return nock(backend.apiRoot)
 }
