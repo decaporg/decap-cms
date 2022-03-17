@@ -53,4 +53,22 @@ describe('Api', () => {
       expect(api.getPreviewStatus([{ context: 'other' }])).toBeUndefined();
     });
   });
+  describe('getDefaultBranchName', () => {
+    it('should return non-empty string as default branch', async () => {
+      const { apiRoots, endpointConstants: { singleRepo: staticRepoEndpoints } } = api
+      let normalizedRepoPath
+      for (const backendName in apiRoots) {
+        if (backendName === 'gitlab') {
+          // Gitlab API requires the repo slug to be url-encoded
+          normalizedRepoPath = encodeURIComponent(REPO_PATH)
+        } else {
+          normalizedRepoPath = REPO_PATH
+        }
+        const repoEndpoint = `${staticRepoEndpoints[backendName]}/${normalizedRepoPath}`
+        interceptRepo({ apiRoot: apiRoots[backendName], repoEndpoint, backendName })
+        const defaultBranchName = await api.getDefaultBranchName({ backend: backendName, repo: REPO_PATH, token: MOCK_CREDENTIALS.token })
+        expect(defaultBranchName).not.toBe('')
+      }
+    })
+  })
 });
