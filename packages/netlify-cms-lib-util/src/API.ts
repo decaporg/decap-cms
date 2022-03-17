@@ -151,6 +151,14 @@ export const apiRoots = {
   bitbucket: 'https://api.bitbucket.org/2.0',
 };
 
+export const endpointConstants = {
+  singleRepo: {
+    bitbucket: '/repositories',
+    github: '/repos',
+    gitlab: '/projects',
+  }
+}
+
 const api = {
   buildRequest(req: ApiRequest) {
     return req;
