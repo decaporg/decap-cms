@@ -157,7 +157,7 @@ const api = {
   },
 };
 
-function constructUrl(url: string, params?: ParamObject) {
+function constructUrlWithParams(url: string, params?: ParamObject) {
   if (params) {
     const paramList = [];
     for (const key in params) {
@@ -192,7 +192,7 @@ export async function apiRequest(
   const options = { cache: 'no-cache', ...props };
   const headers = await constructRequestHeaders({ headers: options.headers || {}, token });
   const baseUrl = rootApi[backend];
-  const url = constructUrl(`${baseUrl}${path}`, options.params);
+  const url = constructUrlWithParams(`${baseUrl}${path}`, options.params);
   let responseStatus = 500;
   try {
     const req = unsentRequest.fromFetchArguments(url, {
