@@ -3,6 +3,31 @@ import nock from "nock";
 import * as api from '../API';
 
 const branchProp = { default_branch: 'master' }
+
+const repoResp = {
+  github: {
+    ...branchProp,
+    permissions: {
+      pull: true,
+      push: true,
+      admin: true
+    }
+  },
+  gitlab: {
+    ...branchProp,
+    permissions: {
+      project_access: {
+        access_level: 10
+      }
+    }
+  },
+  bitbucket: {
+    mainbranch: {
+      name: "master"
+    }
+  }
+}
+
 const MOCK_CREDENTIALS = { token: 'MOCK_TOKEN' }
 const REPO_PATH = 'foo/bar'
 
