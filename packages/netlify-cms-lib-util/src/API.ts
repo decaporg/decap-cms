@@ -145,7 +145,7 @@ type RequestConfig = Omit<RequestInit, 'headers'> &
     params?: ParamObject;
   };
 
-export const rootApi = {
+export const apiRoots = {
   github: 'https://api.github.com',
   gitlab: 'https://gitlab.com/api/v4',
   bitbucket: 'https://api.bitbucket.org/2.0',
@@ -191,7 +191,7 @@ export async function apiRequest(
   const { token, backend, ...props } = config;
   const options = { cache: 'no-cache', ...props };
   const headers = await constructRequestHeaders({ headers: options.headers || {}, token });
-  const baseUrl = rootApi[backend];
+  const baseUrl = apiRoots[backend];
   const url = constructUrlWithParams(`${baseUrl}${path}`, options.params);
   let responseStatus = 500;
   try {
