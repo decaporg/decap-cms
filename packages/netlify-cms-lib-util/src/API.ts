@@ -247,7 +247,7 @@ export async function getDefaultBranchName(configs: {
     const { default_branch } = repoInfo;
     defaultBranchName = default_branch;
   }
-  return defaultBranchName || null;
+  return defaultBranchName;
 }
 
 export async function readFile(
