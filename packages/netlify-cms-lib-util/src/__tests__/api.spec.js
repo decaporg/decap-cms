@@ -1,4 +1,11 @@
+import nock from "nock";
+
 import * as api from '../API';
+
+function mockApi(backend) {
+  return nock(backend.apiRoot)
+}
+
 describe('Api', () => {
   describe('getPreviewStatus', () => {
     it('should return preview status on matching context', () => {
