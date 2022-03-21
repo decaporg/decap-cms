@@ -246,6 +246,7 @@ collections: # A list of collections the CMS should be able to edit
         types:
           - label: 'Type 1 Object'
             name: 'type_1_object'
+            hint: 'Hint for a typed list item'
             widget: 'object'
             fields:
               - { label: 'String', name: 'string', widget: 'string' }

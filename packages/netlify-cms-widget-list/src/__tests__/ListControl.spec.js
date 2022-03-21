@@ -789,4 +789,32 @@ describe('ListControl', () => {
     listControl.validate();
     expect(props.onValidateObject).toHaveBeenCalledWith('forID', []);
   });
+
+  it('should render list type hint', () => {
+    const field = fromJS({
+      name: 'list',
+      label: 'List',
+      types: [
+        {
+          label: 'Type 1 Object',
+          name: 'type_1_object',
+          hint: 'Type 1 Object hint',
+          widget: 'object',
+          fields: [
+            { label: 'First Name', name: 'first_name', widget: 'string' },
+            { label: 'Last Name', name: 'last_name', widget: 'string' },
+          ],
+        },
+      ],
+    });
+
+    const { getAllByText } = render(
+      <ListControl
+        {...props}
+        field={field}
+        value={fromJS([{ first_name: 'hello', last_name: 'world', type: 'type_1_object' }])}
+      />,
+    );
+    expect(getAllByText('Type 1 Object hint')[0]).toBeInTheDocument();
+  });
 });

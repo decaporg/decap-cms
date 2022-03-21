@@ -212,17 +212,19 @@ exports[`ListControl should add to list when add button is clicked 1`] = `
         >
           No string
         </div>
-        <mock-object-control
-          classnamewrapper="classNameWrapper"
-          collapsed="false"
-          data-testid="object-control-0"
-          field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
-          fieldserrors="Map {}"
-          forlist="true"
-          parentids="forID,0"
-          validationkey="0"
-          value="Map {}"
-        />
+        <div>
+          <mock-object-control
+            classnamewrapper="classNameWrapper"
+            collapsed="false"
+            data-testid="object-control-0"
+            field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
+            fieldserrors="Map {}"
+            forlist="true"
+            parentids="forID,0"
+            validationkey="0"
+            value="Map {}"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -441,17 +443,19 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
         >
           item 1
         </div>
-        <mock-object-control
-          classnamewrapper="classNameWrapper"
-          collapsed="false"
-          data-testid="object-control-0"
-          field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"minimize_collapsed\\": true, \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
-          fieldserrors="Map {}"
-          forlist="true"
-          parentids="forID,0"
-          validationkey="0"
-          value="Map { \\"string\\": \\"item 1\\" }"
-        />
+        <div>
+          <mock-object-control
+            classnamewrapper="classNameWrapper"
+            collapsed="false"
+            data-testid="object-control-0"
+            field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"minimize_collapsed\\": true, \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
+            fieldserrors="Map {}"
+            forlist="true"
+            parentids="forID,0"
+            validationkey="0"
+            value="Map { \\"string\\": \\"item 1\\" }"
+          />
+        </div>
       </div>
       <div
         class="emotion-16 emotion-17"
@@ -470,17 +474,19 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
         >
           item 2
         </div>
-        <mock-object-control
-          classnamewrapper="classNameWrapper"
-          collapsed="false"
-          data-testid="object-control-1"
-          field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"minimize_collapsed\\": true, \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
-          fieldserrors="Map {}"
-          forlist="true"
-          parentids="forID,1"
-          validationkey="1"
-          value="Map { \\"string\\": \\"item 2\\" }"
-        />
+        <div>
+          <mock-object-control
+            classnamewrapper="classNameWrapper"
+            collapsed="false"
+            data-testid="object-control-1"
+            field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"minimize_collapsed\\": true, \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
+            fieldserrors="Map {}"
+            forlist="true"
+            parentids="forID,1"
+            validationkey="1"
+            value="Map { \\"string\\": \\"item 2\\" }"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -700,17 +706,19 @@ exports[`ListControl should remove from list when remove button is clicked 2`] =
         >
           item 2
         </div>
-        <mock-object-control
-          classnamewrapper="classNameWrapper css-1pznrxi"
-          collapsed="true"
-          data-testid="object-control-2"
-          field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"minimize_collapsed\\": true, \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
-          fieldserrors="Map {}"
-          forlist="true"
-          parentids="forID,2"
-          validationkey="2"
-          value="Map { \\"string\\": \\"item 2\\" }"
-        />
+        <div>
+          <mock-object-control
+            classnamewrapper="classNameWrapper css-d8z35y"
+            collapsed="true"
+            data-testid="object-control-2"
+            field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"minimize_collapsed\\": true, \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
+            fieldserrors="Map {}"
+            forlist="true"
+            parentids="forID,2"
+            validationkey="2"
+            value="Map { \\"string\\": \\"item 2\\" }"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -940,17 +948,19 @@ exports[`ListControl should render list with fields with collapse = "false" and 
         >
           item 1
         </div>
-        <mock-object-control
-          classnamewrapper="classNameWrapper"
-          collapsed="false"
-          data-testid="object-control-0"
-          field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
-          fieldserrors="Map {}"
-          forlist="true"
-          parentids="forID,0"
-          validationkey="0"
-          value="Map { \\"string\\": \\"item 1\\" }"
-        />
+        <div>
+          <mock-object-control
+            classnamewrapper="classNameWrapper"
+            collapsed="false"
+            data-testid="object-control-0"
+            field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
+            fieldserrors="Map {}"
+            forlist="true"
+            parentids="forID,0"
+            validationkey="0"
+            value="Map { \\"string\\": \\"item 1\\" }"
+          />
+        </div>
       </div>
       <div
         class="emotion-16 emotion-17"
@@ -969,17 +979,19 @@ exports[`ListControl should render list with fields with collapse = "false" and 
         >
           item 2
         </div>
-        <mock-object-control
-          classnamewrapper="classNameWrapper"
-          collapsed="false"
-          data-testid="object-control-1"
-          field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
-          fieldserrors="Map {}"
-          forlist="true"
-          parentids="forID,1"
-          validationkey="1"
-          value="Map { \\"string\\": \\"item 2\\" }"
-        />
+        <div>
+          <mock-object-control
+            classnamewrapper="classNameWrapper"
+            collapsed="false"
+            data-testid="object-control-1"
+            field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
+            fieldserrors="Map {}"
+            forlist="true"
+            parentids="forID,1"
+            validationkey="1"
+            value="Map { \\"string\\": \\"item 2\\" }"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -1198,17 +1210,19 @@ exports[`ListControl should render list with fields with collapse = "false" and 
         >
           item 1
         </div>
-        <mock-object-control
-          classnamewrapper="classNameWrapper"
-          collapsed="false"
-          data-testid="object-control-0"
-          field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"minimize_collapsed\\": true, \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
-          fieldserrors="Map {}"
-          forlist="true"
-          parentids="forID,0"
-          validationkey="0"
-          value="Map { \\"string\\": \\"item 1\\" }"
-        />
+        <div>
+          <mock-object-control
+            classnamewrapper="classNameWrapper"
+            collapsed="false"
+            data-testid="object-control-0"
+            field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"minimize_collapsed\\": true, \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
+            fieldserrors="Map {}"
+            forlist="true"
+            parentids="forID,0"
+            validationkey="0"
+            value="Map { \\"string\\": \\"item 1\\" }"
+          />
+        </div>
       </div>
       <div
         class="emotion-16 emotion-17"
@@ -1227,17 +1241,19 @@ exports[`ListControl should render list with fields with collapse = "false" and 
         >
           item 2
         </div>
-        <mock-object-control
-          classnamewrapper="classNameWrapper"
-          collapsed="false"
-          data-testid="object-control-1"
-          field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"minimize_collapsed\\": true, \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
-          fieldserrors="Map {}"
-          forlist="true"
-          parentids="forID,1"
-          validationkey="1"
-          value="Map { \\"string\\": \\"item 2\\" }"
-        />
+        <div>
+          <mock-object-control
+            classnamewrapper="classNameWrapper"
+            collapsed="false"
+            data-testid="object-control-1"
+            field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"minimize_collapsed\\": true, \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
+            fieldserrors="Map {}"
+            forlist="true"
+            parentids="forID,1"
+            validationkey="1"
+            value="Map { \\"string\\": \\"item 2\\" }"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -1457,17 +1473,19 @@ exports[`ListControl should render list with fields with default collapse ("true
         >
           item 1
         </div>
-        <mock-object-control
-          classnamewrapper="classNameWrapper css-1pznrxi"
-          collapsed="true"
-          data-testid="object-control-0"
-          field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
-          fieldserrors="Map {}"
-          forlist="true"
-          parentids="forID,0"
-          validationkey="0"
-          value="Map { \\"string\\": \\"item 1\\" }"
-        />
+        <div>
+          <mock-object-control
+            classnamewrapper="classNameWrapper css-d8z35y"
+            collapsed="true"
+            data-testid="object-control-0"
+            field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
+            fieldserrors="Map {}"
+            forlist="true"
+            parentids="forID,0"
+            validationkey="0"
+            value="Map { \\"string\\": \\"item 1\\" }"
+          />
+        </div>
       </div>
       <div
         class="emotion-16 emotion-17"
@@ -1486,17 +1504,19 @@ exports[`ListControl should render list with fields with default collapse ("true
         >
           item 2
         </div>
-        <mock-object-control
-          classnamewrapper="classNameWrapper css-1pznrxi"
-          collapsed="true"
-          data-testid="object-control-1"
-          field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
-          fieldserrors="Map {}"
-          forlist="true"
-          parentids="forID,1"
-          validationkey="1"
-          value="Map { \\"string\\": \\"item 2\\" }"
-        />
+        <div>
+          <mock-object-control
+            classnamewrapper="classNameWrapper css-d8z35y"
+            collapsed="true"
+            data-testid="object-control-1"
+            field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
+            fieldserrors="Map {}"
+            forlist="true"
+            parentids="forID,1"
+            validationkey="1"
+            value="Map { \\"string\\": \\"item 2\\" }"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -1897,17 +1917,19 @@ exports[`ListControl should render list with nested object 1`] = `
         >
           Object
         </div>
-        <mock-object-control
-          classnamewrapper="classNameWrapper css-1pznrxi"
-          collapsed="true"
-          data-testid="object-control-0"
-          field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"field\\": Map { \\"name\\": \\"object\\", \\"widget\\": \\"object\\", \\"label\\": \\"Object\\", \\"fields\\": List [ Map { \\"name\\": \\"title\\", \\"widget\\": \\"string\\", \\"label\\": \\"Title\\" } ] } }"
-          fieldserrors="Map {}"
-          forlist="true"
-          parentids="forID,0"
-          validationkey="0"
-          value="Map { \\"object\\": Map { \\"title\\": \\"item 1\\" } }"
-        />
+        <div>
+          <mock-object-control
+            classnamewrapper="classNameWrapper css-d8z35y"
+            collapsed="true"
+            data-testid="object-control-0"
+            field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"field\\": Map { \\"name\\": \\"object\\", \\"widget\\": \\"object\\", \\"label\\": \\"Object\\", \\"fields\\": List [ Map { \\"name\\": \\"title\\", \\"widget\\": \\"string\\", \\"label\\": \\"Title\\" } ] } }"
+            fieldserrors="Map {}"
+            forlist="true"
+            parentids="forID,0"
+            validationkey="0"
+            value="Map { \\"object\\": Map { \\"title\\": \\"item 1\\" } }"
+          />
+        </div>
       </div>
       <div
         class="emotion-16 emotion-17"
@@ -1926,17 +1948,19 @@ exports[`ListControl should render list with nested object 1`] = `
         >
           Object
         </div>
-        <mock-object-control
-          classnamewrapper="classNameWrapper css-1pznrxi"
-          collapsed="true"
-          data-testid="object-control-1"
-          field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"field\\": Map { \\"name\\": \\"object\\", \\"widget\\": \\"object\\", \\"label\\": \\"Object\\", \\"fields\\": List [ Map { \\"name\\": \\"title\\", \\"widget\\": \\"string\\", \\"label\\": \\"Title\\" } ] } }"
-          fieldserrors="Map {}"
-          forlist="true"
-          parentids="forID,1"
-          validationkey="1"
-          value="Map { \\"object\\": Map { \\"title\\": \\"item 2\\" } }"
-        />
+        <div>
+          <mock-object-control
+            classnamewrapper="classNameWrapper css-d8z35y"
+            collapsed="true"
+            data-testid="object-control-1"
+            field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"field\\": Map { \\"name\\": \\"object\\", \\"widget\\": \\"object\\", \\"label\\": \\"Object\\", \\"fields\\": List [ Map { \\"name\\": \\"title\\", \\"widget\\": \\"string\\", \\"label\\": \\"Title\\" } ] } }"
+            fieldserrors="Map {}"
+            forlist="true"
+            parentids="forID,1"
+            validationkey="1"
+            value="Map { \\"object\\": Map { \\"title\\": \\"item 2\\" } }"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -2155,17 +2179,19 @@ exports[`ListControl should render list with nested object with collapse = false
         >
           Object
         </div>
-        <mock-object-control
-          classnamewrapper="classNameWrapper"
-          collapsed="false"
-          data-testid="object-control-0"
-          field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"field\\": Map { \\"name\\": \\"object\\", \\"widget\\": \\"object\\", \\"label\\": \\"Object\\", \\"fields\\": List [ Map { \\"name\\": \\"title\\", \\"widget\\": \\"string\\", \\"label\\": \\"Title\\" } ] } }"
-          fieldserrors="Map {}"
-          forlist="true"
-          parentids="forID,0"
-          validationkey="0"
-          value="Map { \\"object\\": Map { \\"title\\": \\"item 1\\" } }"
-        />
+        <div>
+          <mock-object-control
+            classnamewrapper="classNameWrapper"
+            collapsed="false"
+            data-testid="object-control-0"
+            field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"field\\": Map { \\"name\\": \\"object\\", \\"widget\\": \\"object\\", \\"label\\": \\"Object\\", \\"fields\\": List [ Map { \\"name\\": \\"title\\", \\"widget\\": \\"string\\", \\"label\\": \\"Title\\" } ] } }"
+            fieldserrors="Map {}"
+            forlist="true"
+            parentids="forID,0"
+            validationkey="0"
+            value="Map { \\"object\\": Map { \\"title\\": \\"item 1\\" } }"
+          />
+        </div>
       </div>
       <div
         class="emotion-16 emotion-17"
@@ -2184,17 +2210,19 @@ exports[`ListControl should render list with nested object with collapse = false
         >
           Object
         </div>
-        <mock-object-control
-          classnamewrapper="classNameWrapper"
-          collapsed="false"
-          data-testid="object-control-1"
-          field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"field\\": Map { \\"name\\": \\"object\\", \\"widget\\": \\"object\\", \\"label\\": \\"Object\\", \\"fields\\": List [ Map { \\"name\\": \\"title\\", \\"widget\\": \\"string\\", \\"label\\": \\"Title\\" } ] } }"
-          fieldserrors="Map {}"
-          forlist="true"
-          parentids="forID,1"
-          validationkey="1"
-          value="Map { \\"object\\": Map { \\"title\\": \\"item 2\\" } }"
-        />
+        <div>
+          <mock-object-control
+            classnamewrapper="classNameWrapper"
+            collapsed="false"
+            data-testid="object-control-1"
+            field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"field\\": Map { \\"name\\": \\"object\\", \\"widget\\": \\"object\\", \\"label\\": \\"Object\\", \\"fields\\": List [ Map { \\"name\\": \\"title\\", \\"widget\\": \\"string\\", \\"label\\": \\"Title\\" } ] } }"
+            fieldserrors="Map {}"
+            forlist="true"
+            parentids="forID,1"
+            validationkey="1"
+            value="Map { \\"object\\": Map { \\"title\\": \\"item 2\\" } }"
+          />
+        </div>
       </div>
     </div>
   </div>
