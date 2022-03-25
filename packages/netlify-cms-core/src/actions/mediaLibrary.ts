@@ -413,6 +413,7 @@ function mediaLibraryOpened(payload: {
   forImage?: boolean;
   privateUpload?: boolean;
   value?: string;
+  replaceIndex?: number;
   allowMultiple?: boolean;
   config?: Map<string, unknown>;
   field?: EntryField;
