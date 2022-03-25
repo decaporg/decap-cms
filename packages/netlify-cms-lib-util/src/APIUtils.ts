@@ -13,7 +13,7 @@ export function isCMSLabel(label: string, labelPrefix: string) {
 }
 
 export function labelToStatus(label: string, labelPrefix: string) {
-  return label.substr(getLabelPrefix(labelPrefix).length);
+  return label.slice(getLabelPrefix(labelPrefix).length);
 }
 
 export function statusToLabel(status: string, labelPrefix: string) {
@@ -26,7 +26,7 @@ export function generateContentKey(collectionName: string, slug: string) {
 
 export function parseContentKey(contentKey: string) {
   const index = contentKey.indexOf('/');
-  return { collection: contentKey.substr(0, index), slug: contentKey.substr(index + 1) };
+  return { collection: contentKey.substring(0, index), slug: contentKey.slice(index + 1) };
 }
 
 export function contentKeyFromBranch(branch: string) {

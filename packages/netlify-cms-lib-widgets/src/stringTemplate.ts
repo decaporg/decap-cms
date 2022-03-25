@@ -241,7 +241,7 @@ export function addFileTemplateFields(entryPath: string, fields: Map<string, str
   fields = fields.withMutations(map => {
     map.set('dirname', dirnameExcludingFolder);
     map.set('filename', filename);
-    map.set('extension', extension === '' ? extension : extension.substr(1));
+    map.set('extension', extension === '' ? extension : extension.slice(1));
   });
 
   return fields;
