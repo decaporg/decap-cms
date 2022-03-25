@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.54.8](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.54.7...netlify-cms-core@2.54.8) (2022-03-14)
+
+
+### Bug Fixes
+
+* replace instanceof check ([#6284](https://github.com/netlify/netlify-cms/issues/6284)) ([a0d3917](https://github.com/netlify/netlify-cms/commit/a0d391724973161b68891a7ebcf4fdac4fe2384c))
+
+
+
+
+
 ## [2.54.7](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.54.6...netlify-cms-core@2.54.7) (2022-03-08)
 
 **Note:** Version bump only for package netlify-cms-core
