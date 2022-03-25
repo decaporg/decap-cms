@@ -59,7 +59,7 @@ You can add Netlify CMS [to an existing site](/docs/add-to-your-site/), but the 
         <div style="padding: 0 30%; height: 100px; display: flex; justify-content: center;">
           <img style="display: flex" src="/img/metalsmith.svg"/>
         </div>
-        <h4>Metalsmith Netlify Starter</h4>
+        <h4>Metalsmith Starter</h4>
         <p><a href="https://app.netlify.com/start/deploy?repository=https://github.com/wernerglinka/metalsmith-netlify-starter"><img src="https://www.netlify.com/img/deploy/button.svg" alt="Deploy to Netlify" /></a></p>
     </div>
 </div>
