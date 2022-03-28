@@ -26,11 +26,11 @@ export function generateContentKey(collectionName: string, slug: string) {
 
 export function parseContentKey(contentKey: string) {
   const index = contentKey.indexOf('/');
-  return { collection: contentKey.substring(0, index), slug: contentKey.slice(index + 1) };
+  return { collection: contentKey.slice(0, index), slug: contentKey.slice(index + 1) };
 }
 
 export function contentKeyFromBranch(branch: string) {
-  return branch.substring(`${CMS_BRANCH_PREFIX}/`.length);
+  return branch.slice(`${CMS_BRANCH_PREFIX}/`.length);
 }
 
 export function branchFromContentKey(contentKey: string) {

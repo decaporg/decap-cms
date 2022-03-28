@@ -36,6 +36,7 @@ const parsers = {
       let JSONoutput = jsonFormatter.toFile(metadata).trim();
       // Trim leading and trailing brackets.
       if (JSONoutput.slice(0, 1) === '{' && JSONoutput.slice(-1) === '}') {
+        // eslint-disable-next-line unicorn/prefer-string-slice
         JSONoutput = JSONoutput.substring(1, JSONoutput.length - 1);
       }
       return JSONoutput;
@@ -54,6 +55,7 @@ const parsers = {
 };
 
 function inferFrontmatterFormat(str: string) {
+  // eslint-disable-next-line unicorn/prefer-string-slice
   const firstLine = str.substring(0, str.indexOf('\n')).trim();
   if (firstLine.length > 3 && firstLine.slice(0, 3) === '---') {
     // No need to infer, `gray-matter` will handle things like `---toml` for us.
@@ -130,6 +132,7 @@ export class FrontmatterFormatter {
       comments,
       ...format,
     });
+    // eslint-disable-next-line unicorn/prefer-string-slice
     return trimLastLineBreak && file.slice(-1) === '\n' ? file.substring(0, file.length - 1) : file;
   }
 }
