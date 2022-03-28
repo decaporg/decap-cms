@@ -7,7 +7,7 @@ import type Joi from '@hapi/joi';
 import type express from 'express';
 
 jest.mock('netlify-cms-lib-util', () => jest.fn());
-jest.mock('simple-git/promise');
+jest.mock('simple-git');
 
 function assetFailure(result: Joi.ValidationResult, expectedMessage: string) {
   const { error } = result;
@@ -22,7 +22,7 @@ const defaultParams = {
 };
 
 describe('localGitMiddleware', () => {
-  const simpleGit = require('simple-git/promise');
+  const simpleGit = require('simple-git');
 
   const git = {
     checkIsRepo: jest.fn(),
