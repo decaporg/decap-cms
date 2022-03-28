@@ -11,7 +11,7 @@ describe('github API', () => {
 
   function mockAPI(api, responses) {
     api.request = jest.fn().mockImplementation((path, options = {}) => {
-      const normalizedPath = path.indexOf('?') !== -1 ? path.substr(0, path.indexOf('?')) : path;
+      const normalizedPath = path.indexOf('?') !== -1 ? path.slice(0, path.indexOf('?')) : path;
       const response = responses[normalizedPath];
       return typeof response === 'function'
         ? Promise.resolve(response(options))

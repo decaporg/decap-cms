@@ -177,7 +177,9 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
     const index = node.text.search(exp);
     if (index > -1) {
       const substringIndex = trailing ? index : index + 1;
+      // eslint-disable-next-line unicorn/prefer-string-slice
       const firstSplit = node.text.substring(0, substringIndex);
+      // eslint-disable-next-line unicorn/prefer-string-slice
       const secondSplit = node.text.substring(substringIndex);
       const whitespace = trailing ? secondSplit : firstSplit;
       const text = trailing ? firstSplit : secondSplit;

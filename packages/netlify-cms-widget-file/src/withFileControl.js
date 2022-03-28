@@ -319,6 +319,7 @@ export default function withFileControl({ forImage } = {}) {
       if (!value || value.length <= size) {
         return value;
       }
+      // eslint-disable-next-line unicorn/prefer-string-slice
       const text = `${value.substring(0, size / 2)}\u2026${value.substring(
         value.length - size / 2 + 1,
         value.length,

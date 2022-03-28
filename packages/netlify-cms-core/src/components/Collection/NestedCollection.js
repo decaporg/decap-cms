@@ -144,7 +144,7 @@ export function getTreeData(collection, entries) {
   const rootFolder = '/';
   const entriesObj = entries
     .toJS()
-    .map(e => ({ ...e, path: e.path.substring(collectionFolder.length) }));
+    .map(e => ({ ...e, path: e.path.slice(collectionFolder.length) }));
 
   const dirs = entriesObj.reduce((acc, entry) => {
     let dir = dirname(entry.path);
