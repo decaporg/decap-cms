@@ -7,6 +7,5 @@ export function stringToRGB(str) {
 
   const c = (hash & 0x00ffffff).toString(16).toUpperCase();
 
-  // eslint-disable-next-line unicorn/prefer-string-slice
-  return '00000'.substring(0, 6 - c.length) + c;
+  return `00000${c}`.slice(-6);
 }

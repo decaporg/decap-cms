@@ -52,7 +52,7 @@ async function prepareTestGitLabRepo() {
   // postfix a random string to avoid collisions
   const postfix = Math.random()
     .toString(32)
-    .substring(2);
+    .slice(2);
   const testRepoName = `${repo}-${Date.now()}-${postfix}`;
 
   const client = getGitLabClient(token);
