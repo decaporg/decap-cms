@@ -13010,9 +13010,9 @@ mkdirp@^1.0.3, mkdirp@^1.0.4:
   integrity sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==
 
 mockserver-client@^5.8.0:
-  version "5.13.0"
-  resolved "https://registry.yarnpkg.com/mockserver-client/-/mockserver-client-5.13.0.tgz#aee302b8f11568ab3dc94822c3173187ec240de9"
-  integrity sha512-yk+bdXh+WXQz376p3O3LuHV3BVKCWQeRBH2+86uLGa0PcgfPhSVEVi4iVCqyI3lhmB0AJcpZnIKcbyJvGqWpjQ==
+  version "5.13.1"
+  resolved "https://registry.yarnpkg.com/mockserver-client/-/mockserver-client-5.13.1.tgz#0f88f6eb76002015f4f5882dfd85c5747cedb359"
+  integrity sha512-5fhJSwxcHWYAHI0PcKkh3khQsHiM5CIDDtFvFv18FqCf5wJzdlDwzX6VoeDTUrnN5MAab2+JxChXphTBM7CFTQ==
   dependencies:
     browser-or-node "^2.0.0"
     q "~2.0"
@@ -13207,9 +13207,9 @@ node-forge@^0.10.0:
   integrity sha512-PPmu8eEeG9saEUvI97fm4OYxXVB6bFvyNTyiUOBichBpFG8A1Ljw3bY62+5oOjDEMHRnd0Y7HQ+x7uzxOzC6JA==
 
 node-gyp-build@^4.3.0:
-  version "4.3.0"
-  resolved "https://registry.yarnpkg.com/node-gyp-build/-/node-gyp-build-4.3.0.tgz#9f256b03e5826150be39c764bf51e993946d71a3"
-  integrity sha512-iWjXZvmboq0ja1pUGULQBexmxq8CV4xBhX7VDOTbL7ZR4FOowwY/VOtRxBN/yKxmdGoIp4j5ysNT4u3S2pDQ3Q==
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/node-gyp-build/-/node-gyp-build-4.4.0.tgz#42e99687ce87ddeaf3a10b99dc06abc11021f3f4"
+  integrity sha512-amJnQCcgtRVw9SvoebO3BKGESClrfXGCUTX9hSn1OuGQTQBOZmVd0Z0OlecpuRksKvbsUqALE8jls/ErClAPuQ==
 
 node-gyp@^5.0.2:
   version "5.1.1"
