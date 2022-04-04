@@ -13019,9 +13019,9 @@ mockserver-client@^5.8.0:
     websocket "~1.0.34"
 
 mockserver-node@^5.8.0:
-  version "5.13.0"
-  resolved "https://registry.yarnpkg.com/mockserver-node/-/mockserver-node-5.13.0.tgz#f542eedf4d1a43807c09df9f5e7c3f87f735e9da"
-  integrity sha512-wyw0N076jFz3wQhd6Mq5hJZ6nxOJQusF9OS/GUwud00dwqHBWEFqyZ39+e883xh9WynrYCOrHhpqRUAYiEgDsw==
+  version "5.13.1"
+  resolved "https://registry.yarnpkg.com/mockserver-node/-/mockserver-node-5.13.1.tgz#94392a7eeb59c57c4a4a0bdd96a00e2f9a6c0901"
+  integrity sha512-fhNpuvLhaGCPfw9VxSNwfj3ei63T0UeCXeFtbr/mhkXlBKffzu+2FrvMLdnqkgwy2+xHgXoK6WQvrZ171R90sg==
   dependencies:
     follow-redirects "~1.14.7"
     glob "~7.2.0"
