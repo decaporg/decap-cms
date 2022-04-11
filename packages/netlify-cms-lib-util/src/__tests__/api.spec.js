@@ -22,7 +22,10 @@ const repoResp = {
     ...branchProp,
     permissions: {
       project_access: {
-        access_level: 10,
+        access_level: 30, // This means the user is at least a developer
+        // and can be a maintainer or owner. If this number is below
+        // 30, user is not a collaborator and Gitlab API will throw
+        // an error
       },
     },
   },
