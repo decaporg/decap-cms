@@ -63,6 +63,12 @@ const userResp = {
 
 const MOCK_CREDENTIALS = { token: 'MOCK_TOKEN' };
 const REPO_PATH = 'foo/bar';
+const defaultConfig = {
+  backend: {
+    name: 'github',
+    repo: REPO_PATH
+  }
+}
 
 function mockApi(backend) {
   return nock(backend.apiRoot);
