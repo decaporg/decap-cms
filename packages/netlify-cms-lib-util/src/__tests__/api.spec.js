@@ -75,7 +75,23 @@ function mockApi(backend) {
   return nock(backend.implementation.apiRoot);
 }
 
-export function interceptRepo(backend) {
+function interceptAuth(backend, { userResponse, projectResponse } = {}) {
+  const { backendName, implementation: { repo } } = backend
+  const repoEndpoint = getRepoEndpoint(backendName, repo)
+  console.log(repoEndpoint)
+  const api = mockApi(backend)
+  console.log(repoResp[backendName])
+  api
+    .get('/user')
+    .query(true)
+    .reply(200, userResponse || userResp[backendName]['success'])
+  api
+    .get(repoEndpoint)
+    .times(2)
+    .query(true)
+    .reply(200, projectResponse || repoResp[backendName])
+}
+
 function getRepoEndpoint(backendName, repo = REPO_PATH) {
   const prefix = api.endpointConstants['singleRepo'][backendName]
   switch(backendName) {
