@@ -75,8 +75,15 @@ function mockApi(backend) {
 }
 
 export function interceptRepo(backend) {
+export function interceptRepo(backend, urlPath) {
+  // A URL path given to Nock needs to start with a forward slash. 
+  if (urlPath[0] !== '/') {
+    urlPath = `/${urlPath}`
+  }
   const api = mockApi(backend);
-  api.get(backend.repoEndpoint).query(true).reply(200, repoResp[backend.backendName]);
+  api.get(urlPath).query(true).reply(200, repoResp[backend.backendName]);
+}
+
 }
 
 describe('Api', () => {
