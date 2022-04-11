@@ -84,6 +84,38 @@ export function interceptRepo(backend, urlPath) {
   api.get(urlPath).query(true).reply(200, repoResp[backend.backendName]);
 }
 
+let authStore, backend
+
+function resolveBackend(config = defaultConfig) {
+  const { backend: { name } } = config
+  authStore = new LocalStorageAuthStore()
+  const options = { backendName: name, config, authStore }
+  switch(name) {
+    case 'gitlab':
+      return new Backend(
+        {
+          init: (...args) => new GitLab(...args)
+        },
+        options
+      )
+    case 'bitbucket':
+      return new Backend(
+        {
+          init: (...args) => new BitBucket(...args)
+        },
+        options
+      )
+    default:
+      return new Backend(
+        {
+          init: (...args) => {
+            return new GitHub(...args) 
+          }
+        },
+        options
+      )
+  }
+
 }
 
 describe('Api', () => {
