@@ -3,6 +3,9 @@
   "ignorePresets": [":prHourlyLimit2"],
   "semanticCommits": true,
   "dependencyDashboard": true,
+  "lockFileMaintenance": {
+    "enabled": true
+  },
   "packageRules": [
     {
       "matchPackagePatterns": ["emotion", "^remark", "slate"],
