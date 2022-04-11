@@ -76,6 +76,16 @@ function mockApi(backend) {
 }
 
 export function interceptRepo(backend) {
+function getRepoEndpoint(backendName, repo = REPO_PATH) {
+  const prefix = api.endpointConstants['singleRepo'][backendName]
+  switch(backendName) {
+    case 'gitlab':
+      return `${prefix}/${encodeURIComponent(repo)}`
+    default:
+      return `${prefix}/${repo}`
+  }
+}
+
 export function interceptRepo(backend, urlPath) {
   // A URL path given to Nock needs to start with a forward slash. 
   if (urlPath[0] !== '/') {
