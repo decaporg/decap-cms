@@ -71,7 +71,7 @@ const defaultConfig = {
 }
 
 function mockApi(backend) {
-  return nock(backend.apiRoot);
+  return nock(backend.implementation.apiRoot);
 }
 
 export function interceptRepo(backend) {
