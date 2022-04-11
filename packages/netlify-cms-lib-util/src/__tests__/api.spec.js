@@ -2,6 +2,8 @@ import nock from 'nock';
 
 import * as api from '../API';
 
+const { Backend, LocalStorageAuthStore } = jest.requireActual('netlify-cms-core/src/backend')
+
 const branchProp = { default_branch: 'master' };
 
 const repoResp = {
