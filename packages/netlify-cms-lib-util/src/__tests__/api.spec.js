@@ -1,5 +1,8 @@
 import nock from 'nock';
 import { set } from 'lodash'
+import { GitLabBackend as GitLab } from 'netlify-cms-backend-gitlab'
+import { GitHubBackend as GitHub } from 'netlify-cms-backend-github'
+import { BitbucketBackend as BitBucket } from 'netlify-cms-backend-bitbucket';
 
 import * as api from '../API';
 
