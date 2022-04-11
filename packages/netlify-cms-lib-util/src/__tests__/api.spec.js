@@ -36,6 +36,31 @@ const repoResp = {
   },
 };
 
+const userResp = {
+  github: {
+    success: {
+      id: 1
+    }
+  },
+  gitlab: {
+    success: {
+      id: 1
+    }
+  },
+  bitbucket: {
+    success: {
+      id: 1,
+      display_name: 'Test Account',
+      username: 'test',
+      links: {
+        avatar: {
+          href: 'https://example.com'
+        }
+      }
+    }
+  }
+}
+
 const MOCK_CREDENTIALS = { token: 'MOCK_TOKEN' };
 const REPO_PATH = 'foo/bar';
 
