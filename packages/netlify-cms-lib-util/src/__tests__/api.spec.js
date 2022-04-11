@@ -97,11 +97,11 @@ describe('Api', () => {
     });
   });
   describe('getDefaultBranchName', () => {
+    const {
+      apiRoots,
+      endpointConstants: { singleRepo: staticRepoEndpoints },
+    } = api;
     it('should return non-empty string as default branch', async () => {
-      const {
-        apiRoots,
-        endpointConstants: { singleRepo: staticRepoEndpoints },
-      } = api;
       let normalizedRepoPath;
       for (const backendName in apiRoots) {
         if (backendName === 'gitlab') {
@@ -111,7 +111,9 @@ describe('Api', () => {
           normalizedRepoPath = REPO_PATH;
         }
         const repoEndpoint = `${staticRepoEndpoints[backendName]}/${normalizedRepoPath}`;
-        interceptRepo({ apiRoot: apiRoots[backendName], repoEndpoint, backendName });
+        const backendConfig = set(defaultConfig, 'backend.name', backendName)
+        backend = resolveBackend(backendConfig)
+        interceptRepo(backend, repoEndpoint);
         const defaultBranchName = await api.getDefaultBranchName({
           backend: backendName,
           repo: REPO_PATH,
