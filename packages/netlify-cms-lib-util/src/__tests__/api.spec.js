@@ -9,6 +9,9 @@ const branchProp = { default_branch: 'master' };
 const repoResp = {
   github: {
     ...branchProp,
+    owner: {
+      login: 'owner'
+    },
     permissions: {
       pull: true,
       push: true,
