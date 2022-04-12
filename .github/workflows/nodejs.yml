@@ -4,49 +4,62 @@ on:
   push:
     branches:
       - master
-
-    paths-ignore:
-      - 'website/**'
-
   pull_request:
     types: [opened, synchronize, reopened]
 
-    paths-ignore:
-      - 'website/**'
-
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      cms: ${{ steps.filter.outputs.cms }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            cms:
+              - '!website/**'
   build:
+    needs: changes
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [macos-latest, windows-latest, ubuntu-latest]
     steps:
       - uses: actions/checkout@v3
+        if: ${{ needs.changes.outputs.cms == 'true' }}
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '*'
           check-latest: true
+        if: ${{ needs.changes.outputs.cms == 'true' }}
       - name: log versions
         run: node --version && npm --version && yarn --version
+        if: ${{ needs.changes.outputs.cms == 'true' }}
       - name: install dependecies
         run: yarn --frozen-lockfile --network-timeout 1000000 && yarn bootstrap
+        if: ${{ needs.changes.outputs.cms == 'true' }}
       - name: run unit tests
         run: yarn test:ci
         env:
           CI: true
           NODE_OPTIONS: --max-old-space-size=4096
+        if: ${{ needs.changes.outputs.cms == 'true' }}
       - name: build demo site
         run: yarn build:demo
         env:
           NODE_OPTIONS: --max-old-space-size=4096
+        if: ${{ needs.changes.outputs.cms == 'true' }}
       - uses: actions/upload-artifact@master
         with:
           name: dev-test-website-${{ runner.os }}
           path: dev-test
+        if: ${{ needs.changes.outputs.cms == 'true' }}
 
   e2e-with-cypress:
-    needs: build
+    needs: [changes, build]
     runs-on: ubuntu-latest
 
     strategy:
@@ -56,22 +69,26 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        if: ${{ needs.changes.outputs.cms == 'true' }}
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '*'
           check-latest: true
           cache: yarn
+        if: ${{ needs.changes.outputs.cms == 'true' }}
       - uses: actions/download-artifact@master
         with:
           name: dev-test-website-${{ runner.os }}
           path: dev-test
+        if: ${{ needs.changes.outputs.cms == 'true' }}
       - name: npm install
         run: |
           node --version
           npm --version
           yarn --version
           yarn --frozen-lockfile
+        if: ${{ needs.changes.outputs.cms == 'true' }}
       - name: e2e test
         run: |
           yarn test:e2e:run-ci
@@ -81,8 +98,9 @@ jobs:
           NODE_OPTIONS: --max-old-space-size=4096
           MACHINE_COUNT: 8
           MACHINE_INDEX: ${{ matrix.machine }}
+        if: ${{ needs.changes.outputs.cms == 'true' }}
       - uses: actions/upload-artifact@v3
-        if: ${{ always() }}
+        if: ${{ always() && needs.changes.outputs.cms == 'true' }}
         with:
           name: cypress-results-${{ matrix.machine }}
           path: |

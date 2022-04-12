@@ -29,7 +29,7 @@ export async function listRepoFiles(
   depth: number,
 ) {
   const files = await listFiles(path.join(repoPath, folder), extension, depth);
-  return files.map(f => f.substr(repoPath.length + 1));
+  return files.map(f => f.slice(repoPath.length + 1));
 }
 
 export async function writeFile(filePath: string, content: Buffer | string) {
