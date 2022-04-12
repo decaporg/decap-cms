@@ -4,18 +4,25 @@ on:
   push:
     branches:
       - master
-
-    paths-ignore:
-      - 'website/**'
-
   pull_request:
     types: [opened, synchronize, reopened]
 
-    paths-ignore:
-      - 'website/**'
-
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    # Set job outputs to values from filter step
+    outputs:
+      website: ${{ steps.filter.outputs.website }}
+    steps:
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            website:
+              - '!website/**'
   build:
+    needs: changes
+    if: ${{ needs.changes.outputs.website == 'true' }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -46,7 +53,8 @@ jobs:
           path: dev-test
 
   e2e-with-cypress:
-    needs: build
+    needs: [changes, build]
+    if: ${{ needs.changes.outputs.website == 'true' }}
     runs-on: ubuntu-latest
 
     strategy:
