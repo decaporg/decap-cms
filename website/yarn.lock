@@ -5110,9 +5110,9 @@ extract-files@9.0.0:
   integrity sha512-CvdFfHkC95B4bBBk36hcEmvdR2awOdhhVUYH6S/zrVj3477zven/fJMYg7121h4T1xHZC+tetUpubpAhxwI7hQ==
 
 fast-copy@^2.1.0:
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/fast-copy/-/fast-copy-2.1.2.tgz#63cd359d437abd5a77e1dca9d24d6140f3677d7a"
-  integrity sha512-E21IWnBHEgErz34xgFRADHi4RA8YzSQvoqfjeEft1kAFq0wViH90HZ3X0J4y59IKdJaVWE9v1+FbPpCr8JYByQ==
+  version "2.1.3"
+  resolved "https://registry.yarnpkg.com/fast-copy/-/fast-copy-2.1.3.tgz#bf6e05ac3cb7a9d66fbf12c51dd4440e9ddd4afb"
+  integrity sha512-LDzYKNTHhD+XOp8wGMuCkY4eTxFZOOycmpwLBiuF3r3OjOmZnURRD8t2dUAbmKuXGbo/MGggwbSjcBdp8QT0+g==
 
 fast-deep-equal@^3.1.1, fast-deep-equal@^3.1.3:
   version "3.1.3"
