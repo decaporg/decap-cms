@@ -138,7 +138,7 @@ function baseConfig({ target = isProduction ? 'umd' : 'umddir' } = {}) {
      * Exclude peer dependencies from package bundles.
      */
     externals:
-      target.substr(0, 3) === 'umd'
+      target.slice(0, 3) === 'umd'
         ? umdExternals
         : (context, request, cb) => {
             const externals = Object.keys(pkg.peerDependencies || {});

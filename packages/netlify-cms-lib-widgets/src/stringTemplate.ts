@@ -135,7 +135,7 @@ function getExplicitFieldReplacement(key: string, data: Map<string, unknown>) {
   if (!key.startsWith(FIELD_PREFIX)) {
     return;
   }
-  const fieldName = key.substring(FIELD_PREFIX.length);
+  const fieldName = key.slice(FIELD_PREFIX.length);
   const value = data.getIn(keyToPathArray(fieldName));
   if (typeof value === 'object' && value !== null) {
     return JSON.stringify(value);
@@ -241,7 +241,7 @@ export function addFileTemplateFields(entryPath: string, fields: Map<string, str
   fields = fields.withMutations(map => {
     map.set('dirname', dirnameExcludingFolder);
     map.set('filename', filename);
-    map.set('extension', extension === '' ? extension : extension.substr(1));
+    map.set('extension', extension === '' ? extension : extension.slice(1));
   });
 
   return fields;
