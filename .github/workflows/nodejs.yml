@@ -19,7 +19,7 @@ jobs:
         with:
           filters: |
             website:
-              - '!website/**'
+              - '!.github/workflows/**'
   build:
     needs: changes
     if: ${{ needs.changes.outputs.website == 'true' }}
