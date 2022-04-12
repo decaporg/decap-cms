@@ -21,6 +21,7 @@ const ListCardLink = styled(Link)`
   display: block;
   max-width: 100%;
   padding: 16px 22px;
+
   &:hover {
     background-color: ${colors.foreground};
   }
@@ -39,6 +40,7 @@ const GridCardLink = styled(Link)`
   display: block;
   height: 100%;
   outline-offset: -2px;
+
   &,
   &:hover {
     background-color: ${colors.foreground};

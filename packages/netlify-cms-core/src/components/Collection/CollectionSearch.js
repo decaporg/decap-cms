@@ -50,8 +50,8 @@ const SuggestionsContainer = styled.div`
 const Suggestions = styled.ul`
   position: absolute;
   top: 6px;
-  left: 0px;
-  right: 0px;
+  left: 0;
+  right: 0;
   padding: 10px 0;
   margin: 0;
   list-style: none;
@@ -62,7 +62,7 @@ const Suggestions = styled.ul`
 `;
 
 const SuggestionHeader = styled.li`
-  padding: 0px 6px 6px 32px;
+  padding: 0 6px 6px 32px;
   font-size: 12px;
   color: ${colors.text};
 `;

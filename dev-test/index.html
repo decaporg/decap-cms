@@ -183,7 +183,7 @@
           h('h2', {}, 'Related Post'),
           h('h3', {}, post.get('title')),
           h('img', { src: post.get('image') }),
-          h('p', {}, post.get('body', '').substr(0, 100) + '...'),
+          h('p', {}, post.get('body', '').slice(0, 100) + '...'),
         ) : null;
       }
     });

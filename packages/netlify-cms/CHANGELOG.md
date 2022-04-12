@@ -3,6 +3,94 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.10.190](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.10.189...netlify-cms@2.10.190) (2022-03-28)
+
+**Note:** Version bump only for package netlify-cms
+
+
+
+
+
+## [2.10.189](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.10.188...netlify-cms@2.10.189) (2022-03-14)
+
+**Note:** Version bump only for package netlify-cms
+
+
+
+
+
+## [2.10.188](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.10.187...netlify-cms@2.10.188) (2022-03-08)
+
+**Note:** Version bump only for package netlify-cms
+
+
+
+
+
+## [2.10.187](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.10.186...netlify-cms@2.10.187) (2022-02-28)
+
+**Note:** Version bump only for package netlify-cms
+
+
+
+
+
+## [2.10.186](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.10.185...netlify-cms@2.10.186) (2022-02-08)
+
+**Note:** Version bump only for package netlify-cms
+
+
+
+
+
+## [2.10.185](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.10.184...netlify-cms@2.10.185) (2022-01-21)
+
+**Note:** Version bump only for package netlify-cms
+
+
+
+
+
+## [2.10.184](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.10.183...netlify-cms@2.10.184) (2022-01-21)
+
+**Note:** Version bump only for package netlify-cms
+
+
+
+
+
+## [2.10.183](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.10.182...netlify-cms@2.10.183) (2021-12-28)
+
+**Note:** Version bump only for package netlify-cms
+
+
+
+
+
+## [2.10.182](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.10.181...netlify-cms@2.10.182) (2021-12-21)
+
+**Note:** Version bump only for package netlify-cms
+
+
+
+
+
+## [2.10.181](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.10.180...netlify-cms@2.10.181) (2021-12-08)
+
+**Note:** Version bump only for package netlify-cms
+
+
+
+
+
+## [2.10.180](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.10.179...netlify-cms@2.10.180) (2021-12-03)
+
+**Note:** Version bump only for package netlify-cms
+
+
+
+
+
 ## [2.10.179](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.10.178...netlify-cms@2.10.179) (2021-11-12)
 
 **Note:** Version bump only for package netlify-cms

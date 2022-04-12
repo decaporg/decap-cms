@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.15.5](https://github.com/netlify/netlify-cms/compare/netlify-cms-ui-default@2.15.4...netlify-cms-ui-default@2.15.5) (2022-03-08)
+
+**Note:** Version bump only for package netlify-cms-ui-default
+
+
+
+
+
+## [2.15.4](https://github.com/netlify/netlify-cms/compare/netlify-cms-ui-default@2.15.3...netlify-cms-ui-default@2.15.4) (2021-12-21)
+
+
+### Bug Fixes
+
+* **netlify-cms-ui-default:** use grayDark for button ([#6069](https://github.com/netlify/netlify-cms/issues/6069)) ([ad85514](https://github.com/netlify/netlify-cms/commit/ad85514cba607f066ab7071bee5932b2192466ee)), closes [/github.com/netlify/netlify-cms/issues/1333#issuecomment-998115794](https://github.com//github.com/netlify/netlify-cms/issues/1333/issues/issuecomment-998115794)
+
+
+
+
+
 ## [2.15.3](https://github.com/netlify/netlify-cms/compare/netlify-cms-ui-default@2.15.2...netlify-cms-ui-default@2.15.3) (2021-10-15)
 
 

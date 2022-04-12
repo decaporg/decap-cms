@@ -5,10 +5,10 @@ import {
   localForage,
   Cursor,
   CURSOR_COMPATIBILITY_SYMBOL,
-  EditorialWorkflowError,
   getPathDepth,
   blobToFileObj,
   asyncLock,
+  EDITORIAL_WORKFLOW_ERROR,
 } from 'netlify-cms-lib-util';
 import { basename, join, extname, dirname } from 'path';
 import { stringTemplate } from 'netlify-cms-lib-widgets';
@@ -292,7 +292,7 @@ function prepareMetaPath(path: string, collection: Collection) {
     return path;
   }
   const dir = dirname(path);
-  return dir.substr(collection.get('folder')!.length + 1) || '/';
+  return dir.slice(collection.get('folder')!.length + 1) || '/';
 }
 
 function collectionDepth(collection: Collection) {
@@ -417,7 +417,7 @@ export class Backend {
       (await this.implementation
         .unpublishedEntry({ collection: collection.get('name'), slug })
         .catch(error => {
-          if (error instanceof EditorialWorkflowError && error.notUnderEditorialWorkflow) {
+          if (error.name === EDITORIAL_WORKFLOW_ERROR && error.notUnderEditorialWorkflow) {
             return Promise.resolve(false);
           }
           return Promise.reject(error);

@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.3.23](https://github.com/netlify/netlify-cms/compare/netlify-cms-proxy-server@1.3.22...netlify-cms-proxy-server@1.3.23) (2021-12-28)
+
+**Note:** Version bump only for package netlify-cms-proxy-server
+
+
+
+
+
 ## [1.3.22](https://github.com/netlify/netlify-cms/compare/netlify-cms-proxy-server@1.3.21...netlify-cms-proxy-server@1.3.22) (2021-11-01)
 
 **Note:** Version bump only for package netlify-cms-proxy-server

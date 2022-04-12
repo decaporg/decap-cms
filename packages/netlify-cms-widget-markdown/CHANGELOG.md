@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.15.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-widget-markdown@2.14.4...netlify-cms-widget-markdown@2.15.0) (2022-01-21)
+
+
+### Features
+
+* use keyboard shortcuts to insert bullet points ([#6134](https://github.com/netlify/netlify-cms/issues/6134)) ([dd149f6](https://github.com/netlify/netlify-cms/commit/dd149f6d0479d20eef0bc9cede738784c9cdb4fd))
+
+
+
+
+
 ## [2.14.4](https://github.com/netlify/netlify-cms/compare/netlify-cms-widget-markdown@2.14.3...netlify-cms-widget-markdown@2.14.4) (2021-10-28)
 
 

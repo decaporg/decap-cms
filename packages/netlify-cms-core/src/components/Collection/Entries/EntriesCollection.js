@@ -117,7 +117,7 @@ export class EntriesCollection extends React.Component {
 
 export function filterNestedEntries(path, collectionFolder, entries) {
   const filtered = entries.filter(e => {
-    const entryPath = e.get('path').substring(collectionFolder.length + 1);
+    const entryPath = e.get('path').slice(collectionFolder.length + 1);
     if (!entryPath.startsWith(path)) {
       return false;
     }
@@ -125,7 +125,7 @@ export function filterNestedEntries(path, collectionFolder, entries) {
     // only show immediate children
     if (path) {
       // non root path
-      const trimmed = entryPath.substring(path.length + 1);
+      const trimmed = entryPath.slice(path.length + 1);
       return trimmed.split('/').length === 2;
     } else {
       // root path

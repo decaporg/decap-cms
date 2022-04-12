@@ -1,7 +1,7 @@
-import moment from 'moment';
 import { Map } from 'immutable';
+import { get, trimEnd, truncate } from 'lodash';
+import moment from 'moment';
 import { basename, dirname, extname } from 'path';
-import { get, trimEnd } from 'lodash';
 
 const filters = [
   { pattern: /^upper$/, transform: (str: string) => str.toUpperCase() },
@@ -20,6 +20,18 @@ const filters = [
   {
     pattern: /^ternary\('(.*)',\s*'(.*)'\)$/,
     transform: (str: string, match: RegExpMatchArray) => (str ? match[1] : match[2]),
+  },
+  {
+    pattern: /^truncate\(([0-9]+)(?:(?:,\s*['"])([^'"]*)(?:['"]))?\)$/,
+    transform: (str: string, match: RegExpMatchArray) => {
+      const omission = match[2] || '...';
+      const length = parseInt(match[1]) + omission.length;
+
+      return truncate(str, {
+        length,
+        omission,
+      });
+    },
   },
 ];
 
@@ -123,7 +135,7 @@ function getExplicitFieldReplacement(key: string, data: Map<string, unknown>) {
   if (!key.startsWith(FIELD_PREFIX)) {
     return;
   }
-  const fieldName = key.substring(FIELD_PREFIX.length);
+  const fieldName = key.slice(FIELD_PREFIX.length);
   const value = data.getIn(keyToPathArray(fieldName));
   if (typeof value === 'object' && value !== null) {
     return JSON.stringify(value);
@@ -229,7 +241,7 @@ export function addFileTemplateFields(entryPath: string, fields: Map<string, str
   fields = fields.withMutations(map => {
     map.set('dirname', dirnameExcludingFolder);
     map.set('filename', filename);
-    map.set('extension', extension === '' ? extension : extension.substr(1));
+    map.set('extension', extension === '' ? extension : extension.slice(1));
   });
 
   return fields;
