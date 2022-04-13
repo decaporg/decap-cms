@@ -143,9 +143,10 @@ export class ErrorBoundary extends React.Component {
 
   static getDerivedStateFromError(error) {
     console.error(error);
+    const basePath = typeof window === 'undefined' ? process.cwd() : window.location.origin || '';
     return {
       hasError: true,
-      errorMessage: cleanStack(error.stack, { basePath: process.cwd() }),
+      errorMessage: cleanStack(error.stack, { basePath }),
       errorTitle: error.toString(),
     };
   }
