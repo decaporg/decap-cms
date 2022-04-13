@@ -1,12 +1,12 @@
 import nock from 'nock';
-import { set } from 'lodash'
-import { GitLabBackend as GitLab } from 'netlify-cms-backend-gitlab'
-import { GitHubBackend as GitHub } from 'netlify-cms-backend-github'
+import { set } from 'lodash';
+import { GitLabBackend as GitLab } from 'netlify-cms-backend-gitlab';
+import { GitHubBackend as GitHub } from 'netlify-cms-backend-github';
 import { BitbucketBackend as BitBucket } from 'netlify-cms-backend-bitbucket';
 
 import * as api from '../API';
 
-const { Backend, LocalStorageAuthStore } = jest.requireActual('netlify-cms-core/src/backend')
+const { Backend, LocalStorageAuthStore } = jest.requireActual('netlify-cms-core/src/backend');
 
 const branchProp = { default_branch: 'master' };
 
@@ -14,7 +14,7 @@ const repoResp = {
   github: {
     ...branchProp,
     owner: {
-      login: 'owner'
+      login: 'owner',
     },
     permissions: {
       pull: true,
@@ -43,13 +43,13 @@ const repoResp = {
 const userResp = {
   github: {
     success: {
-      id: 1
-    }
+      id: 1,
+    },
   },
   gitlab: {
     success: {
-      id: 1
-    }
+      id: 1,
+    },
   },
   bitbucket: {
     success: {
@@ -58,94 +58,98 @@ const userResp = {
       username: 'test',
       links: {
         avatar: {
-          href: 'https://example.com'
-        }
-      }
-    }
-  }
-}
+          href: 'https://example.com',
+        },
+      },
+    },
+  },
+};
 
 const MOCK_CREDENTIALS = { token: 'MOCK_TOKEN' };
 const REPO_PATH = 'foo/bar';
 const defaultConfig = {
   backend: {
     name: 'github',
-    repo: REPO_PATH
-  }
-}
+    repo: REPO_PATH,
+  },
+};
 
 function mockApi(backend) {
   return nock(backend.implementation.apiRoot);
 }
 
 function interceptAuth(backend, { userResponse, projectResponse } = {}) {
-  const { backendName, implementation: { repo } } = backend
-  const repoEndpoint = getRepoEndpoint(backendName, repo)
-  console.log(repoEndpoint)
-  const api = mockApi(backend)
-  console.log(repoResp[backendName])
+  const {
+    backendName,
+    implementation: { repo },
+  } = backend;
+  const repoEndpoint = getRepoEndpoint(backendName, repo);
+  console.log(repoEndpoint);
+  const api = mockApi(backend);
+  console.log(repoResp[backendName]);
   api
     .get('/user')
     .query(true)
-    .reply(200, userResponse || userResp[backendName]['success'])
+    .reply(200, userResponse || userResp[backendName]['success']);
   api
     .get(repoEndpoint)
     .times(2)
     .query(true)
-    .reply(200, projectResponse || repoResp[backendName])
+    .reply(200, projectResponse || repoResp[backendName]);
 }
 
 function getRepoEndpoint(backendName, repo = REPO_PATH) {
-  const prefix = api.endpointConstants['singleRepo'][backendName]
-  switch(backendName) {
+  const prefix = api.endpointConstants['singleRepo'][backendName];
+  switch (backendName) {
     case 'gitlab':
-      return `${prefix}/${encodeURIComponent(repo)}`
+      return `${prefix}/${encodeURIComponent(repo)}`;
     default:
-      return `${prefix}/${repo}`
+      return `${prefix}/${repo}`;
   }
 }
 
 export function interceptRepo(backend, urlPath) {
-  // A URL path given to Nock needs to start with a forward slash. 
+  // A URL path given to Nock needs to start with a forward slash.
   if (urlPath[0] !== '/') {
-    urlPath = `/${urlPath}`
+    urlPath = `/${urlPath}`;
   }
   const api = mockApi(backend);
   api.get(urlPath).query(true).reply(200, repoResp[backend.backendName]);
 }
 
-let authStore, backend
+let authStore, backend;
 
 function resolveBackend(config = defaultConfig) {
-  const { backend: { name } } = config
-  authStore = new LocalStorageAuthStore()
-  const options = { backendName: name, config, authStore }
-  switch(name) {
+  const {
+    backend: { name },
+  } = config;
+  authStore = new LocalStorageAuthStore();
+  const options = { backendName: name, config, authStore };
+  switch (name) {
     case 'gitlab':
       return new Backend(
         {
-          init: (...args) => new GitLab(...args)
+          init: (...args) => new GitLab(...args),
         },
-        options
-      )
+        options,
+      );
     case 'bitbucket':
       return new Backend(
         {
-          init: (...args) => new BitBucket(...args)
+          init: (...args) => new BitBucket(...args),
         },
-        options
-      )
+        options,
+      );
     default:
       return new Backend(
         {
           init: (...args) => {
-            return new GitHub(...args) 
-          }
+            return new GitHub(...args);
+          },
         },
-        options
-      )
+        options,
+      );
   }
-
 }
 
 describe('Api', () => {
@@ -173,8 +177,8 @@ describe('Api', () => {
           normalizedRepoPath = REPO_PATH;
         }
         const repoEndpoint = `${staticRepoEndpoints[backendName]}/${normalizedRepoPath}`;
-        const backendConfig = set(defaultConfig, 'backend.name', backendName)
-        backend = resolveBackend(backendConfig)
+        const backendConfig = set(defaultConfig, 'backend.name', backendName);
+        backend = resolveBackend(backendConfig);
         interceptRepo(backend, repoEndpoint);
         const defaultBranchName = await api.getDefaultBranchName({
           backend: backendName,
@@ -188,18 +192,21 @@ describe('Api', () => {
     describe('getDefaultBranchName is called by each backend', () => {
       for (const b in repoResp) {
         it(`getDefaultBranchName is called by ${b} backend`, async () => {
-          const backendConfig = set(defaultConfig, 'backend.name', b)
-          const spy = jest.spyOn(api, 'getDefaultBranchName')
-          backend = resolveBackend(backendConfig)
-          const { backendName, implementation: { repo } } = backend
-          interceptAuth(backend)
-          await backend.authenticate(MOCK_CREDENTIALS)
-          const args = { backend: backendName, repo, ...MOCK_CREDENTIALS }
-          expect(spy).toHaveBeenCalledWith(args)
-          spy.mockRestore()
-          expect(1).toEqual(1)
-        })
+          const backendConfig = set(defaultConfig, 'backend.name', b);
+          const spy = jest.spyOn(api, 'getDefaultBranchName');
+          backend = resolveBackend(backendConfig);
+          const {
+            backendName,
+            implementation: { repo },
+          } = backend;
+          interceptAuth(backend);
+          await backend.authenticate(MOCK_CREDENTIALS);
+          const args = { backend: backendName, repo, ...MOCK_CREDENTIALS };
+          expect(spy).toHaveBeenCalledWith(args);
+          spy.mockRestore();
+          expect(1).toEqual(1);
+        });
       }
-    })
+    });
   });
 });
