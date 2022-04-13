@@ -494,6 +494,19 @@ describe('config', () => {
         }).toThrowError(`'i18n.locales[1]' must NOT have more than 10 characters`);
       });
 
+      it('should throw error when locales is less than 1 items', () => {
+        expect(() => {
+          validateConfig(
+            merge({}, validConfig, {
+              i18n: {
+                structure: 'multiple_folders',
+                locales: [],
+              },
+            }),
+          );
+        }).toThrowError(`'i18n.locales' must NOT have fewer than 1 items`);
+      });
+
       it('should allow valid locales strings', () => {
         expect(() => {
           validateConfig(
