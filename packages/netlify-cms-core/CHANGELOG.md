@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.55.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.54.8...netlify-cms-core@2.55.0) (2022-03-28)
+
+
+### Features
+
+* **image-widget:** media library gallery tools ([#6087](https://github.com/netlify/netlify-cms/issues/6087)) ([#6236](https://github.com/netlify/netlify-cms/issues/6236)) ([80c577a](https://github.com/netlify/netlify-cms/commit/80c577a462e91e29ce3517cf1419af35d9de3928))
+
+
+
+
+
 ## [2.54.8](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.54.7...netlify-cms-core@2.54.8) (2022-03-14)
 
 

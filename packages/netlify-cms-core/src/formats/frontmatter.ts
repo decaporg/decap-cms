@@ -27,7 +27,7 @@ const parsers = {
     parse: (input: string) => {
       let JSONinput = input.trim();
       // Fix JSON if leading and trailing brackets were trimmed.
-      if (JSONinput.substr(0, 1) !== '{') {
+      if (JSONinput.slice(0, 1) !== '{') {
         JSONinput = '{' + JSONinput + '}';
       }
       return jsonFormatter.fromFile(JSONinput);
@@ -35,8 +35,8 @@ const parsers = {
     stringify: (metadata: object) => {
       let JSONoutput = jsonFormatter.toFile(metadata).trim();
       // Trim leading and trailing brackets.
-      if (JSONoutput.substr(0, 1) === '{' && JSONoutput.substr(-1) === '}') {
-        JSONoutput = JSONoutput.substring(1, JSONoutput.length - 1);
+      if (JSONoutput.slice(0, 1) === '{' && JSONoutput.slice(-1) === '}') {
+        JSONoutput = JSONoutput.slice(1, -1);
       }
       return JSONoutput;
     },
@@ -54,8 +54,9 @@ const parsers = {
 };
 
 function inferFrontmatterFormat(str: string) {
-  const firstLine = str.substr(0, str.indexOf('\n')).trim();
-  if (firstLine.length > 3 && firstLine.substr(0, 3) === '---') {
+  const lineEnd = str.indexOf('\n');
+  const firstLine = str.slice(0, lineEnd !== -1 ? lineEnd : 0).trim();
+  if (firstLine.length > 3 && firstLine.slice(0, 3) === '---') {
     // No need to infer, `gray-matter` will handle things like `---toml` for us.
     return;
   }
@@ -130,7 +131,7 @@ export class FrontmatterFormatter {
       comments,
       ...format,
     });
-    return trimLastLineBreak && file.slice(-1) === '\n' ? file.substring(0, file.length - 1) : file;
+    return trimLastLineBreak && file.slice(-1) === '\n' ? file.slice(0, -1) : file;
   }
 }
 

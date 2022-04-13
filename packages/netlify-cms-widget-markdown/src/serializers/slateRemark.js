@@ -177,8 +177,8 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
     const index = node.text.search(exp);
     if (index > -1) {
       const substringIndex = trailing ? index : index + 1;
-      const firstSplit = node.text.substring(0, substringIndex);
-      const secondSplit = node.text.substring(substringIndex);
+      const firstSplit = node.text.slice(0, substringIndex);
+      const secondSplit = node.text.slice(substringIndex);
       const whitespace = trailing ? secondSplit : firstSplit;
       const text = trailing ? firstSplit : secondSplit;
       return { whitespace, trimmedNode: { ...node, text } };
