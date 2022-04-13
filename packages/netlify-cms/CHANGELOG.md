@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.10.192](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.10.191...netlify-cms@2.10.192) (2022-04-13)
+
+**Note:** Version bump only for package netlify-cms
+
+
+
+
+
+## [2.10.191](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.10.190...netlify-cms@2.10.191) (2022-04-13)
+
+**Note:** Version bump only for package netlify-cms
+
+
+
+
+
+## [2.10.190](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.10.189...netlify-cms@2.10.190) (2022-03-28)
+
+**Note:** Version bump only for package netlify-cms
+
+
+
+
+
 ## [2.10.189](https://github.com/netlify/netlify-cms/compare/netlify-cms@2.10.188...netlify-cms@2.10.189) (2022-03-14)
 
 **Note:** Version bump only for package netlify-cms

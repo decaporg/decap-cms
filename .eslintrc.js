@@ -51,8 +51,9 @@ module.exports = {
         destructuring: 'all',
       },
     ],
+    'unicorn/prefer-string-slice': 'error',
   },
-  plugins: ['babel', '@emotion', 'cypress'],
+  plugins: ['babel', '@emotion', 'cypress', 'unicorn'],
   settings: {
     react: {
       version: 'detect',

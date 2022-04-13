@@ -292,7 +292,7 @@ function prepareMetaPath(path: string, collection: Collection) {
     return path;
   }
   const dir = dirname(path);
-  return dir.substr(collection.get('folder')!.length + 1) || '/';
+  return dir.slice(collection.get('folder')!.length + 1) || '/';
 }
 
 function collectionDepth(collection: Collection) {
