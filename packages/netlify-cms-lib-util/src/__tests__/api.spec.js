@@ -184,5 +184,22 @@ describe('Api', () => {
         expect(defaultBranchName).not.toBe('');
       }
     });
+
+    describe('getDefaultBranchName is called by each backend', () => {
+      for (const b in repoResp) {
+        it(`getDefaultBranchName is called by ${b} backend`, async () => {
+          const backendConfig = set(defaultConfig, 'backend.name', b)
+          const spy = jest.spyOn(api, 'getDefaultBranchName')
+          backend = resolveBackend(backendConfig)
+          const { backendName, implementation: { repo } } = backend
+          interceptAuth(backend)
+          await backend.authenticate(MOCK_CREDENTIALS)
+          const args = { backend: backendName, repo, ...MOCK_CREDENTIALS }
+          expect(spy).toHaveBeenCalledWith(args)
+          spy.mockRestore()
+          expect(1).toEqual(1)
+        })
+      }
+    })
   });
 });
