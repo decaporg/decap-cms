@@ -7,6 +7,7 @@ import { truncate } from 'lodash';
 import copyToClipboard from 'copy-text-to-clipboard';
 import { localForage } from 'netlify-cms-lib-util';
 import { buttons, colors } from 'netlify-cms-ui-default';
+import cleanStack from 'clean-stack';
 
 const ISSUE_URL = 'https://github.com/netlify/netlify-cms/issues/new?';
 
@@ -136,12 +137,17 @@ export class ErrorBoundary extends React.Component {
   state = {
     hasError: false,
     errorMessage: '',
+    errorTitle: '',
     backup: '',
   };
 
   static getDerivedStateFromError(error) {
     console.error(error);
-    return { hasError: true, errorMessage: error.toString() };
+    return {
+      hasError: true,
+      errorMessage: cleanStack(error.stack, { basePath: window.location.origin || '' }),
+      errorTitle: error.toString(),
+    };
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -162,7 +168,7 @@ export class ErrorBoundary extends React.Component {
   }
 
   render() {
-    const { hasError, errorMessage, backup } = this.state;
+    const { hasError, errorMessage, backup, errorTitle } = this.state;
     const { showBackup, t } = this.props;
     if (!hasError) {
       return this.props.children;
@@ -173,7 +179,7 @@ export class ErrorBoundary extends React.Component {
         <p>
           <span>{t('ui.errorBoundary.details')}</span>
           <a
-            href={buildIssueUrl({ title: errorMessage, config: this.props.config })}
+            href={buildIssueUrl({ title: errorTitle, config: this.props.config })}
             target="_blank"
             rel="noopener noreferrer"
             data-testid="issue-url"
