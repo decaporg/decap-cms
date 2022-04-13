@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.11.1](https://github.com/netlify/netlify-cms/compare/netlify-cms-widget-relation@2.11.0...netlify-cms-widget-relation@2.11.1) (2022-04-13)
+
+
+### Bug Fixes
+
+* **relation-widget:** i18n options ([#6299](https://github.com/netlify/netlify-cms/issues/6299)) ([4bf6464](https://github.com/netlify/netlify-cms/commit/4bf64642e4c0be4adce81af1d407bdbd5770a727))
+
+
+
+
+
 # [2.11.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-widget-relation@2.10.4...netlify-cms-widget-relation@2.11.0) (2021-10-21)
 
 

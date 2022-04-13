@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.14.1](https://github.com/netlify/netlify-cms/compare/netlify-cms-backend-github@2.14.0...netlify-cms-backend-github@2.14.1) (2022-04-13)
+
+**Note:** Version bump only for package netlify-cms-backend-github
+
+
+
+
+
 # [2.14.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-backend-github@2.13.5...netlify-cms-backend-github@2.14.0) (2021-10-18)
 
 

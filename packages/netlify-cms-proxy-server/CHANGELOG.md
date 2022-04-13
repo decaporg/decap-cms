@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.3.24](https://github.com/netlify/netlify-cms/compare/netlify-cms-proxy-server@1.3.23...netlify-cms-proxy-server@1.3.24) (2022-04-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency simple-git to v3 [security] ([#6305](https://github.com/netlify/netlify-cms/issues/6305)) ([e997101](https://github.com/netlify/netlify-cms/commit/e99710116d015ca47b5cbe114710fdf93fabfe61))
+
+
+
+
+
 ## [1.3.23](https://github.com/netlify/netlify-cms/compare/netlify-cms-proxy-server@1.3.22...netlify-cms-proxy-server@1.3.23) (2021-12-28)
 
 **Note:** Version bump only for package netlify-cms-proxy-server
