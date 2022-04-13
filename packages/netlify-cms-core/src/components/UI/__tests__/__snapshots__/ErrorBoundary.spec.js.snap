@@ -69,6 +69,47 @@ exports[`Editor should match snapshot with issue URL 1`] = `
     </h2>
     <p>
       Error: Some unknown error
+    at WithError (/packages/netlify-cms-core/src/components/UI/__tests__/ErrorBoundary.spec.js:8:9)
+    at renderWithHooks (/node_modules/react-dom/cjs/react-dom.development.js:14803:18)
+    at mountIndeterminateComponent (/node_modules/react-dom/cjs/react-dom.development.js:17482:13)
+    at beginWork (/node_modules/react-dom/cjs/react-dom.development.js:18596:16)
+    at HTMLUnknownElement.callCallback (/node_modules/react-dom/cjs/react-dom.development.js:188:14)
+    at HTMLUnknownElement.callTheUserObjectsOperation (/node_modules/jsdom/lib/jsdom/living/generated/EventListener.js:26:30)
+    at innerInvokeEventListeners (/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:338:25)
+    at invokeEventListeners (/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:274:3)
+    at HTMLUnknownElementImpl._dispatch (/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:221:9)
+    at HTMLUnknownElementImpl.dispatchEvent (/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:94:17)
+    at HTMLUnknownElement.dispatchEvent (/node_modules/jsdom/lib/jsdom/living/generated/EventTarget.js:231:34)
+    at Object.invokeGuardedCallbackDev (/node_modules/react-dom/cjs/react-dom.development.js:237:16)
+    at invokeGuardedCallback (/node_modules/react-dom/cjs/react-dom.development.js:292:31)
+    at beginWork$1 (/node_modules/react-dom/cjs/react-dom.development.js:23203:7)
+    at performUnitOfWork (/node_modules/react-dom/cjs/react-dom.development.js:22157:12)
+    at workLoopSync (/node_modules/react-dom/cjs/react-dom.development.js:22130:22)
+    at performSyncWorkOnRoot (/node_modules/react-dom/cjs/react-dom.development.js:21756:9)
+    at scheduleUpdateOnFiber (/node_modules/react-dom/cjs/react-dom.development.js:21188:7)
+    at updateContainer (/node_modules/react-dom/cjs/react-dom.development.js:24373:3)
+    at /node_modules/react-dom/cjs/react-dom.development.js:24758:7
+    at unbatchedUpdates (/node_modules/react-dom/cjs/react-dom.development.js:21903:12)
+    at legacyRenderSubtreeIntoContainer (/node_modules/react-dom/cjs/react-dom.development.js:24757:5)
+    at Object.render (/node_modules/react-dom/cjs/react-dom.development.js:24840:10)
+    at /node_modules/@testing-library/react/dist/pure.js:101:25
+    at batchedUpdates$1 (/node_modules/react-dom/cjs/react-dom.development.js:21856:12)
+    at act (/node_modules/react-dom/cjs/react-dom-test-utils.development.js:929:14)
+    at render (/node_modules/@testing-library/react/dist/pure.js:97:26)
+    at Object.&lt;anonymous&gt; (/packages/netlify-cms-core/src/components/UI/__tests__/ErrorBoundary.spec.js:37:41)
+    at Promise.then.completed (/node_modules/jest-circus/build/utils.js:391:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/node_modules/jest-circus/build/utils.js:316:10)
+    at _callCircusTest (/node_modules/jest-circus/build/run.js:218:40)
+    at _runTest (/node_modules/jest-circus/build/run.js:155:3)
+    at _runTestsForDescribeBlock (/node_modules/jest-circus/build/run.js:66:9)
+    at _runTestsForDescribeBlock (/node_modules/jest-circus/build/run.js:60:9)
+    at run (/node_modules/jest-circus/build/run.js:25:3)
+    at runAndTransformResultsToJestFormat (/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:170:21)
+    at jestAdapter (/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:82:19)
+    at runTestInternal (/node_modules/jest-runner/build/runTest.js:389:16)
+    at runTest (/node_modules/jest-runner/build/runTest.js:475:34)
+    at Object.worker (/node_modules/jest-runner/build/testWorker.js:133:12)
     </p>
   </div>
 </DocumentFragment>
