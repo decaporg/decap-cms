@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.55.2](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.55.1...netlify-cms-core@2.55.2) (2022-04-13)
+
+
+### Bug Fixes
+
+* preview show error stack trace ([#6281](https://github.com/netlify/netlify-cms/issues/6281)) ([ada077d](https://github.com/netlify/netlify-cms/commit/ada077d22c28eb2e6999b30b868740912af44111))
+
+
+
+
+
 ## [2.55.1](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.55.0...netlify-cms-core@2.55.1) (2022-04-13)
 
 
