@@ -30,7 +30,7 @@
     "express": "^4.17.1",
     "morgan": "^1.9.1",
     "simple-git": "^3.0.0",
-    "netlify-cms-lib-util": "^2.13.3",
+    "netlify-cms-lib-util": "^2.15.1",
     "what-the-diff": "^0.6.0",
     "winston": "^3.3.3"
   },
