@@ -39,6 +39,7 @@ export default class ObjectControl extends React.Component {
     fieldsErrors: ImmutablePropTypes.map.isRequired,
     hasError: PropTypes.bool,
     t: PropTypes.func.isRequired,
+    locale: PropTypes.string,
   };
 
   static defaultProps = {
@@ -85,6 +86,7 @@ export default class ObjectControl extends React.Component {
       parentIds,
       isFieldDuplicate,
       isFieldHidden,
+      locale,
     } = this.props;
 
     if (field.get('widget') === 'hidden') {
@@ -113,6 +115,7 @@ export default class ObjectControl extends React.Component {
         isHidden={isHidden}
         isFieldDuplicate={isFieldDuplicate}
         isFieldHidden={isFieldHidden}
+        locale={locale}
       />
     );
   }

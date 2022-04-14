@@ -235,6 +235,7 @@ export default class ControlPane extends React.Component {
                 isHidden={isHidden}
                 isFieldDuplicate={field => isFieldDuplicate(field, locale, defaultLocale)}
                 isFieldHidden={field => isFieldHidden(field, locale, defaultLocale)}
+                locale={locale}
               />
             );
           })}
@@ -251,4 +252,5 @@ ControlPane.propTypes = {
   fieldsErrors: ImmutablePropTypes.map.isRequired,
   onChange: PropTypes.func.isRequired,
   onValidate: PropTypes.func.isRequired,
+  locale: PropTypes.string,
 };
