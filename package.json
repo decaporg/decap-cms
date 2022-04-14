@@ -191,6 +191,7 @@
     "lerna": "^4.0.0"
   },
   "resolutions": {
-    "react-redux": "^7.2.0"
+    "react-redux": "^7.2.0",
+    "@types/react": "^18.0.5"
   }
 }
