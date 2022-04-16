@@ -8670,9 +8670,9 @@ fd-slicer@~1.1.0:
     pend "~1.2.0"
 
 fecha@^4.2.0:
-  version "4.2.2"
-  resolved "https://registry.yarnpkg.com/fecha/-/fecha-4.2.2.tgz#902c69d332b93c69be48992b9a11e41d36c03581"
-  integrity sha512-5rOQWkBVz3FnYWTi/ELZmq4CoK1Pb+xKNZWuJRsOwo0+8DrP43CrWJtyLVvb5U7z7ggE5llahfDbLjaVNzXVJQ==
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/fecha/-/fecha-4.2.3.tgz#4d9ccdbc61e8629b259fdca67e65891448d569fd"
+  integrity sha512-OP2IUU6HeYKJi3i0z4A19kHMQoLVs4Hc+DPqqxI2h/DPZHTm/vjsfC6P0b4jCMy14XizLBqvndQ+UilD7707Jw==
 
 figgy-pudding@^3.5.1:
   version "3.5.2"
