@@ -8643,9 +8643,9 @@ micromark-util-encode@^1.0.0:
   integrity sha512-U2s5YdnAYexjKDel31SVMPbfi+eF8y1U4pfiRW/Y8EFVCy/vgxk/2wWTxzcqE71LHtCuCzlBDRU2a5CQ5j+mQA==
 
 micromark-util-events-to-acorn@^1.0.0:
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/micromark-util-events-to-acorn/-/micromark-util-events-to-acorn-1.0.5.tgz#5644b4d3095e247199cd1a87c838aa1ff61b385c"
-  integrity sha512-RSKYkkaLcGbK/IPGmB6H9xRbBxQ1jWY7mcy2O9cXH/pnwpv4nQTX/xT5eYZ3QWxpTXxMtm/UiZDqJYkMYYcMDg==
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/micromark-util-events-to-acorn/-/micromark-util-events-to-acorn-1.0.6.tgz#3bfc9a59825b14dd31e4ff8d566a0c76ecce1751"
+  integrity sha512-+kUMe2kNGy4mljNVt+YmFfwomSIVqX3NI6ePrk6SIl/0GaR53a6eUIGmhV5DDUkbLPPNWgVFCS6ExOqb0WFgHQ==
   dependencies:
     "@types/acorn" "^4.0.0"
     "@types/estree" "^0.0.51"
