@@ -9,7 +9,7 @@ We run new functionality in an open beta format from time to time. That means th
 
 ## Working with a Local Git Repository
 
-***added in netlify-cms@2.10.17 / netlify-cms-app@2.11.14***
+***added in `netlify-cms@2.10.17` / `netlify-cms-app@2.11.14`***
 
 You can connect Netlify CMS to a local Git repository, instead of working with a live repo.
 
@@ -55,7 +55,7 @@ local_backend:
 
 ## GitLab and BitBucket Editorial Workflow Support
 
-***added in netlify-cms@2.10.6 / netlify-cms-app@2.11.3***
+***added in `netlify-cms@2.10.6` / `netlify-cms-app@2.11.3`***
 
 You can enable the Editorial Workflow with the following line in your Netlify CMS `config.yml` file:
 
@@ -228,6 +228,7 @@ backend:
   # optional, defaults to 'https://gitlab.com/api/graphql'. Can be used to configure a self hosted GitLab instance.
   graphql_api_root: https://my-self-hosted-gitlab.com/api/graphql
 ```
+
 ## Open Authoring
 
 When using the [GitHub backend](/docs/github-backend), you can use Netlify CMS to accept contributions from GitHub users without giving them access to your repository. When they make changes in the CMS, the CMS forks your repository for them behind the scenes, and all the changes are made to the fork. When the contributor is ready to submit their changes, they can set their draft as ready for review in the CMS. This triggers a pull request to your repository, which you can merge using the GitHub UI.
