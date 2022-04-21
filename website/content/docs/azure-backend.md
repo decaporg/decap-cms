@@ -3,7 +3,6 @@ group: Accounts
 weight: 20
 title: Azure
 ---
-
 For repositories stored on Azure, the `azure` backend allows CMS users to log in directly with their Azure account. Note that all users must have write access to your content repository for this to work.
 
 In order to get Netlify-CMS working with Azure DevOps, you need a Tenant Id and an Application Id.
@@ -16,6 +15,7 @@ In order to get Netlify-CMS working with Azure DevOps, you need a Tenant Id and 
 6. Under `Authentication->Implicit grant` enable [Access tokens](https://docs.microsoft.com/en-us/azure/active-directory/develop/access-tokens) for the application and click `Save`.
 7. Verify your Azure DevOps organization is connected to the same directory as your tenant under: `https://dev.azure.com/<organization>/_settings/organizationAad`
 8. Add the following lines to your Netlify CMS `config.yml` file:
+9. After adding them don't add anythinh else ;-)
 
 ```yaml
 backend:
@@ -28,5 +28,4 @@ backend:
 ### Limitations
 
 1. Pagination is not supported so some endpoints might return missing data
-
 2. Nested collection are partially supported as Azure doesn't allow [renaming and editing](https://docs.microsoft.com/en-us/rest/api/azure/devops/git/pushes/create?view=azure-devops-rest-6.1&source=docs#rename-a-file) in a single operation
