@@ -709,5 +709,3 @@ CMS.registerCustomFormat('yml', 'yml', {
   toFile: value => jsYaml.dump(value),
 });
 ```
-
-Note: custom formats must be registered before the CMS is initialized, so enable [manual initialization](#manual-initialization) when using it.
