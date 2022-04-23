@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.12.1](https://github.com/netlify/netlify-cms/compare/netlify-cms-widget-file@2.12.0...netlify-cms-widget-file@2.12.1) (2022-04-13)
+
+**Note:** Version bump only for package netlify-cms-widget-file
+
+
+
+
+
+# [2.12.0](https://github.com/netlify/netlify-cms/compare/netlify-cms-widget-file@2.11.1...netlify-cms-widget-file@2.12.0) (2022-03-28)
+
+
+### Features
+
+* **image-widget:** media library gallery tools ([#6087](https://github.com/netlify/netlify-cms/issues/6087)) ([#6236](https://github.com/netlify/netlify-cms/issues/6236)) ([80c577a](https://github.com/netlify/netlify-cms/commit/80c577a462e91e29ce3517cf1419af35d9de3928))
+
+
+
+
+
 ## [2.11.1](https://github.com/netlify/netlify-cms/compare/netlify-cms-widget-file@2.11.0...netlify-cms-widget-file@2.11.1) (2021-08-17)
 
 

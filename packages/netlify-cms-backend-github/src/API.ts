@@ -361,7 +361,7 @@ export default class API {
       return parseContentKey(contentKey);
     }
 
-    return parseContentKey(contentKey.substring(this.repo.length + 1));
+    return parseContentKey(contentKey.slice(this.repo.length + 1));
   }
 
   checkMetadataRef() {
@@ -728,7 +728,7 @@ export default class API {
 
   async migrateToVersion1(pullRequest: GitHubPull, metadata: Metadata) {
     // hard code key/branch generation logic to ignore future changes
-    const oldContentKey = pullRequest.head.ref.substring(`cms/`.length);
+    const oldContentKey = pullRequest.head.ref.slice(`cms/`.length);
     const newContentKey = `${metadata.collection}/${oldContentKey}`;
     const newBranchName = `cms/${newContentKey}`;
 
@@ -765,7 +765,7 @@ export default class API {
   async migrateToPullRequestLabels(pullRequest: GitHubPull, metadata: Metadata) {
     await this.setPullRequestStatus(pullRequest, metadata.status);
 
-    const contentKey = pullRequest.head.ref.substring(`cms/`.length);
+    const contentKey = pullRequest.head.ref.slice(`cms/`.length);
     await this.deleteMetadata(contentKey);
   }
 
@@ -829,7 +829,7 @@ export default class API {
       // open authoring branches can exist without a pr
       const cmsBranches: Octokit.GitListMatchingRefsResponse =
         await this.getOpenAuthoringBranches();
-      branches = cmsBranches.map(b => b.ref.substring('refs/heads/'.length));
+      branches = cmsBranches.map(b => b.ref.slice('refs/heads/'.length));
       // filter irrelevant branches
       const branchesWithFilter = await Promise.all(
         branches.map(b => this.filterOpenAuthoringBranches(b)),

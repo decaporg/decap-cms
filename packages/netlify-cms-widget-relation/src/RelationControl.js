@@ -118,6 +118,7 @@ export default class RelationControl extends React.Component {
     classNameWrapper: PropTypes.string.isRequired,
     setActiveStyle: PropTypes.func.isRequired,
     setInactiveStyle: PropTypes.func.isRequired,
+    locale: PropTypes.string,
   };
 
   isValid = () => {
@@ -235,12 +236,17 @@ export default class RelationControl extends React.Component {
   };
 
   parseNestedFields = (hit, field) => {
+    const { locale } = this.props;
+    const hitData =
+      locale != null && hit.i18n != null && hit.i18n[locale] != null
+        ? hit.i18n[locale].data
+        : hit.data;
     const templateVars = stringTemplate.extractTemplateVars(field);
     // return non template fields as is
     if (templateVars.length <= 0) {
-      return get(hit.data, field);
+      return get(hitData, field);
     }
-    const data = stringTemplate.addFileTemplateFields(hit.path, fromJS(hit.data));
+    const data = stringTemplate.addFileTemplateFields(hit.path, fromJS(hitData));
     const value = stringTemplate.compileStringTemplate(field, null, hit.slug, data);
     return value;
   };

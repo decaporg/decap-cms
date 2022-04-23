@@ -293,7 +293,7 @@ export default class API {
   fromBase64 = (str: string) => Base64.decode(str);
 
   branchToRef = (branch: string): string => `refs/heads/${branch}`;
-  refToBranch = (ref: string): string => ref.substr('refs/heads/'.length);
+  refToBranch = (ref: string): string => ref.slice('refs/heads/'.length);
 
   user = async () => {
     const result = await this.requestJSON<AzureUser>({

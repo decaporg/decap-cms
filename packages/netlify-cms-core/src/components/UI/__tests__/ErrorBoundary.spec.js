@@ -34,7 +34,7 @@ describe('Editor', () => {
 
   it('should match snapshot with issue URL', () => {
     global.navigator.userAgent = 'Test User Agent';
-    const { asFragment, getByTestId } = render(
+    const { getByTestId } = render(
       <ErrorBoundary {...props}>
         <WithError />
       </ErrorBoundary>,
@@ -53,7 +53,5 @@ describe('Editor', () => {
         Additional+context**%0A&labels=type%3A+bug
         `,
     );
-
-    expect(asFragment()).toMatchSnapshot();
   });
 });

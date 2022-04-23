@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-widget-file",
   "description": "Widget for uploading files in Netlify CMS.",
-  "version": "2.11.1",
+  "version": "2.12.1",
   "homepage": "https://www.netlifycms.org/docs/widgets/#file",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-file",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
