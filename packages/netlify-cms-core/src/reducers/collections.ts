@@ -48,7 +48,8 @@ const selectors = {
     entryExtension(collection: Collection) {
       return (
         collection.get('extension') ||
-        get(getFormatExtensions(), collection.get('format') || 'frontmatter')
+        get(getFormatExtensions(), collection.get('format') || 'frontmatter') ||
+        get(getFormatExtensions(), 'frontmatter')
       ).replace(/^\./, '');
     },
     fields(collection: Collection) {
