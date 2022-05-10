@@ -2,6 +2,7 @@ import type { Action } from 'redux';
 import type { StaticallyTypedRecord } from './immutable';
 import type { Map, List, OrderedMap, Set } from 'immutable';
 import type { FILES, FOLDER } from '../constants/collectionTypes';
+import type { Status as PublishStatus } from '../constants/publishModes';
 import type { MediaFile as BackendMediaFile } from '../backend';
 import type { Auth } from '../reducers/auth';
 import type { Status } from '../reducers/status';
@@ -402,6 +403,7 @@ export interface CmsConfig {
   media_folder_relative?: boolean;
   media_library?: CmsMediaLibrary;
   publish_mode?: CmsPublishMode;
+  default_workflow_status?: PublishStatus;
   load_config_file?: boolean;
   integrations?: {
     hooks: string[];
@@ -457,6 +459,7 @@ export type Config = StaticallyTypedRecord<{
   media_folder: string;
   public_folder: string;
   publish_mode?: string;
+  default_workflow_status?: string;
   media_library: StaticallyTypedRecord<{ name: string }> & { name: string };
   locale?: string;
   slug: SlugConfig;

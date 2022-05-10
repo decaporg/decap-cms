@@ -41,6 +41,15 @@ You can enable the Editorial Workflow with the following line in your Decap CMS 
 publish_mode: editorial_workflow
 ```
 
+You can select the initial status with the following line in your Netlify CMS `config.yml` file:
+
+```yaml
+# /admin/config.yml
+default_workflow_status: 'draft'
+```
+
+There is the 3 available status: `'draft' | 'pending_review' | 'pending_publish'`
+
 From a technical perspective, the workflow translates editor UI actions into common Git commands:
 
 | Actions in Netlify UI     | Perform these Git actions                                                                                         |

@@ -44,6 +44,7 @@ describe('config', () => {
       local_backend: true
       site_url: https://www.decapcms.org
       publish_mode: editorial_workflow
+      default_workflow_status: pending_publish
       media_folder: website/static/img
       public_folder: img
       docs_collection: &docs_collection
@@ -69,6 +70,7 @@ describe('config', () => {
         local_backend: true,
         site_url: 'https://www.decapcms.org',
         publish_mode: 'editorial_workflow',
+        default_workflow_status: 'pending_publish',
         media_folder: 'website/static/img',
         public_folder: 'img',
         docs_collection: {
