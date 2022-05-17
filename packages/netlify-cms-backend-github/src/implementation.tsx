@@ -306,12 +306,12 @@ export default class GitHub implements Implementation {
     // in the config file
     if (!this.isBranchConfigured) {
       const repoInfo = await fetch(`${this.apiRoot}/repos/${this.originRepo}`, {
-        headers: { Authorization: `token ${this.token}`}
+        headers: { Authorization: `token ${this.token}` },
       })
         .then(res => res.json())
-        .catch(() => null)
+        .catch(() => null);
       if (repoInfo && repoInfo.default_branch) {
-        this.branch = repoInfo.default_branch
+        this.branch = repoInfo.default_branch;
       }
     }
     const apiCtor = this.useGraphql ? GraphQLAPI : API;
