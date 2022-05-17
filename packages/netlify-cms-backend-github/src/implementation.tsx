@@ -20,7 +20,6 @@ import {
   contentKeyFromBranch,
   unsentRequest,
   branchFromContentKey,
-  getDefaultBranchName,
 } from 'netlify-cms-lib-util';
 
 import AuthenticationPage from './AuthenticationPage';
