@@ -60,7 +60,7 @@ type BitbucketStatusComponent = {
   status: string;
 };
 
-const { fetchWithTimeout: fetch } = unsentRequest
+const { fetchWithTimeout: fetch } = unsentRequest;
 
 // Implementation wrapper class
 export default class BitbucketBackend implements Implementation {
@@ -197,14 +197,14 @@ export default class BitbucketBackend implements Implementation {
     if (!this.isBranchConfigured) {
       const repo = await fetch(`${this.apiRoot}/repositories/${this.repo}`, {
         headers: {
-          Authorization: `token ${this.token}`
-        }
+          Authorization: `token ${this.token}`,
+        },
       })
         .then(res => res.json())
-        .catch(() => null)
-        if (repo) {
-          this.branch = repo.mainbranch.name
-        }
+        .catch(() => null);
+      if (repo) {
+        this.branch = repo.mainbranch.name;
+      }
     }
     this.refreshToken = state.refresh_token;
     this.api = new API({
