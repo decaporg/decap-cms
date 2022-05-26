@@ -25,7 +25,6 @@ import {
   allEntriesByFolder,
   AccessTokenError,
   branchFromContentKey,
-  getDefaultBranchName,
 } from 'netlify-cms-lib-util';
 import { NetlifyAuthenticator } from 'netlify-cms-lib-auth';
 
@@ -60,6 +59,8 @@ type BitbucketStatusComponent = {
   name: string;
   status: string;
 };
+
+const { fetchWithTimeout: fetch } = unsentRequest
 
 // Implementation wrapper class
 export default class BitbucketBackend implements Implementation {
@@ -193,6 +194,18 @@ export default class BitbucketBackend implements Implementation {
 
   async authenticate(state: Credentials) {
     this.token = state.token as string;
+    if (!this.isBranchConfigured) {
+      const repo = await fetch(`${this.apiRoot}/repositories/${this.repo}`, {
+        headers: {
+          Authorization: `token ${this.token}`
+        }
+      })
+        .then(res => res.json())
+        .catch(() => null)
+        if (repo) {
+          this.branch = repo.mainbranch.name
+        }
+    }
     this.refreshToken = state.refresh_token;
     this.api = new API({
       requestFunction: this.apiRequestFunction,
@@ -219,16 +232,16 @@ export default class BitbucketBackend implements Implementation {
     if (!isCollab) {
       throw new Error('Your BitBucket user account does not have access to this repo.');
     }
-    if (!this.isBranchConfigured) {
-      const defaultBranchName = await getDefaultBranchName({
-        backend: 'bitbucket',
-        repo: this.repo,
-        token: this.token,
-      });
-      if (defaultBranchName) {
-        this.branch = defaultBranchName;
-      }
-    }
+    // if (!this.isBranchConfigured) {
+    //   const defaultBranchName = await getDefaultBranchName({
+    //     backend: 'bitbucket',
+    //     repo: this.repo,
+    //     token: this.token,
+    //   });
+    //   if (defaultBranchName) {
+    //     this.branch = defaultBranchName;
+    //   }
+    // }
     const user = await this.api.user();
 
     // Authorized user
