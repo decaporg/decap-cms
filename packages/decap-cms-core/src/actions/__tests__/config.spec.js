@@ -9,6 +9,7 @@ import {
   detectProxyServer,
   handleLocalBackend,
 } from '../config';
+import { Statues } from '../../constants/publishModes';
 
 jest.spyOn(console, 'log').mockImplementation(() => {});
 jest.spyOn(console, 'warn').mockImplementation(() => {});
@@ -119,6 +120,23 @@ describe('config', () => {
           collections: [],
         };
         expect(applyDefaults(config).publish_mode).toEqual('complex');
+      });
+    });
+
+    describe('default_workflow_status', () => {
+      it('should set default_workflow_status to "draft" by default if publish_mode is "editorial_workflow"', () => {
+        const config = {
+          publish_mode: 'editorial_workflow',
+        };
+        expect(applyDefaults(config).default_workflow_status).toEqual(Statues.DRAFT);
+      });
+
+      it('should set default_workflow_status from config', () => {
+        const config = {
+          publish_mode: 'editorial_workflow',
+          default_workflow_status: Statues.PENDING_REVIEW,
+        };
+        expect(applyDefaults(config).default_workflow_status).toEqual(Statues.PENDING_REVIEW);
       });
     });
 
