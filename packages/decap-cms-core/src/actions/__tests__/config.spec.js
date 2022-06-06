@@ -131,6 +131,14 @@ describe('config', () => {
         expect(applyDefaults(config).default_workflow_status).toEqual(Statues.DRAFT);
       });
 
+      it('should set default_workflow_status to "draft" if the given one is unknown', () => {
+        const config = {
+          publish_mode: 'editorial_workflow',
+          default_workflow_status: 'unknown',
+        };
+        expect(applyDefaults(config).default_workflow_status).toEqual(Statues.DRAFT);
+      });
+
       it('should set default_workflow_status from config', () => {
         const config = {
           publish_mode: 'editorial_workflow',

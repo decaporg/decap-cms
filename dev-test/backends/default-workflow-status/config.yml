@@ -1,6 +1,5 @@
 backend:
-  name: git-gateway
-  branch: master
+  name: test-repo
 
 publish_mode: editorial_workflow
 default_workflow_status: pending_publish

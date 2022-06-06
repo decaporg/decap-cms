@@ -215,7 +215,11 @@ export function applyDefaults(originalConfig: CmsConfig) {
     config.collections = config.collections || [];
 
     if (config.publish_mode === EDITORIAL_WORKFLOW) {
-      config.default_workflow_status = config.default_workflow_status || Statues.DRAFT;
+      config.default_workflow_status =
+        config.default_workflow_status &&
+        Object.values(Statues).includes(config.default_workflow_status)
+          ? config.default_workflow_status
+          : Statues.DRAFT;
     }
 
     // Use `site_url` as default `display_url`.
