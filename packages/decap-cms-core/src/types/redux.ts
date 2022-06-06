@@ -11,6 +11,7 @@ import type { Search } from '../reducers/search';
 import type { GlobalUI } from '../reducers/globalUI';
 import type { NotificationsState } from '../reducers/notifications';
 import type { formatExtensions } from '../formats/formats';
+import type { StatusValues as PublishStatusValues } from '../constants/publishModes';
 
 export type CmsBackendType =
   | 'azure'
@@ -402,7 +403,7 @@ export interface CmsConfig {
   media_folder_relative?: boolean;
   media_library?: CmsMediaLibrary;
   publish_mode?: CmsPublishMode;
-  default_workflow_status?: string;
+  default_workflow_status?: PublishStatusValues;
   load_config_file?: boolean;
   integrations?: {
     hooks: string[];
