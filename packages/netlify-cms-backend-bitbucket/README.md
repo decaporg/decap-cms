@@ -1,6 +1,6 @@
 # Bitbucket backend
 
-An abstraction layer between the CMS and [Bitbucket](https://docs.microsoft.com/en-us/rest/api/azure/devops/git/)
+An abstraction layer between the CMS and [Bitbucket](https://docs.microsoft.com/rest/api/azure/devops/git/)
 
 ## Code structure
 
