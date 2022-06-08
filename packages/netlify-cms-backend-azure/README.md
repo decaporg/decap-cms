@@ -1,6 +1,6 @@
 # Azure backend
 
-An abstraction layer between the CMS and [Azure DevOps](https://docs.microsoft.com/en-us/rest/api/azure/devops/git/)
+An abstraction layer between the CMS and [Azure DevOps](https://docs.microsoft.com/rest/api/azure/devops/git/)
 
 ## Code structure
 
