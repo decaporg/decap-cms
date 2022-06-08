@@ -7,7 +7,7 @@ For details on contributing to documentation, see [Website Directory Readme](htt
 
 ## Setup
 
-> Install [Node.js (LTS)](https://nodejs.org/) and [yarn](https://yarnpkg.com/en/docs/install) on your system.
+> Install [Node.js (LTS)](https://nodejs.org/) and [yarn](https://classic.yarnpkg.com/en/docs/install) on your system.
 
 ### Install dependencies
 
