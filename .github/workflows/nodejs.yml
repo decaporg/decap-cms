@@ -26,13 +26,14 @@ jobs:
     strategy:
       matrix:
         os: [macos-latest, windows-latest, ubuntu-latest]
+        node-version: [10.x, 12.x, 14.x, 16.x]
     steps:
       - uses: actions/checkout@v3
         if: ${{ needs.changes.outputs.cms == 'true' }}
-      - name: Use Node.js
+      - name: Use Node.js {{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
-          node-version: '*'
+          node-version: ${{ matrix.node-version }}
           check-latest: true
         if: ${{ needs.changes.outputs.cms == 'true' }}
       - name: log versions
