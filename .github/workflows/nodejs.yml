@@ -26,7 +26,7 @@ jobs:
     strategy:
       matrix:
         os: [macos-latest, windows-latest, ubuntu-latest]
-        node-version: [10.x, 12.x, 14.x, 16.x]
+        node-version: [12.x, 14.x, 16.x]
     steps:
       - uses: actions/checkout@v3
         if: ${{ needs.changes.outputs.cms == 'true' }}
