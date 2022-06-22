@@ -265,7 +265,12 @@ class EditorInterface extends Component {
 
     const editor2 = (
       <ControlPaneContainer overFlow={!this.state.scrollSyncEnabled} blockEntry={showEventBlocker}>
-        <EditorControlPane {...editorProps} locale={locales?.[1]} t={t} />
+        <EditorControlPane 
+          {...editorProps} 
+          locale={locales?.[1]} 
+          t={t} 
+          onLocaleChange={this.handleLeftPanelLocaleChange}
+      />
       </ControlPaneContainer>
     );
 
