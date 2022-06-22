@@ -253,4 +253,5 @@ ControlPane.propTypes = {
   onChange: PropTypes.func.isRequired,
   onValidate: PropTypes.func.isRequired,
   locale: PropTypes.string,
+  onLocaleChange: PropTypes.func.isRequired,
 };
