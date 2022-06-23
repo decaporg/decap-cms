@@ -88,7 +88,7 @@ exports[`NestedCollection should render connected component 1`] = `
       />
     </div>
   </a>
-  .emotion-2 {
+  .emotion-4 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -107,7 +107,21 @@ exports[`NestedCollection should render connected component 1`] = `
   margin-right: 4px;
 }
 
-.emotion-4 {
+.emotion-2 {
+  position: relative;
+  top: 2px;
+  color: #fff;
+  width: 0;
+  height: 0;
+  border: 5px solid transparent;
+  border-radius: 2px;
+  border-left: 6px solid currentColor;
+  border-right: 0;
+  color: currentColor;
+  left: 2px;
+}
+
+.emotion-6 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -123,23 +137,23 @@ exports[`NestedCollection should render connected component 1`] = `
   border-left: 2px solid #fff;
 }
 
-.emotion-4 mocked-icon {
+.emotion-6 mocked-icon {
   margin-right: 8px;
   -webkit-flex-shrink: 0;
   -ms-flex-negative: 0;
   flex-shrink: 0;
 }
 
-.emotion-4:hover,
-.emotion-4:active,
-.emotion-4.sidebar-active {
+.emotion-6:hover,
+.emotion-6:active,
+.emotion-6.sidebar-active {
   color: #3a69c7;
   background-color: #e8f5fe;
   border-left-color: #4863c6;
 }
 
 <a
-    class="emotion-4 emotion-5"
+    class="emotion-6 emotion-7"
     data-testid="/a"
     depth="1"
     href="/collections/pages/filter/a"
@@ -148,16 +162,19 @@ exports[`NestedCollection should render connected component 1`] = `
       type="write"
     />
     <div
-      class="emotion-2 emotion-3"
+      class="emotion-4 emotion-5"
     >
       <div
         class="emotion-0 emotion-1"
       >
         File 1
       </div>
+      <div
+        class="emotion-2 emotion-3"
+      />
     </div>
   </a>
-  .emotion-2 {
+  .emotion-4 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -176,7 +193,21 @@ exports[`NestedCollection should render connected component 1`] = `
   margin-right: 4px;
 }
 
-.emotion-4 {
+.emotion-2 {
+  position: relative;
+  top: 2px;
+  color: #fff;
+  width: 0;
+  height: 0;
+  border: 5px solid transparent;
+  border-radius: 2px;
+  border-left: 6px solid currentColor;
+  border-right: 0;
+  color: currentColor;
+  left: 2px;
+}
+
+.emotion-6 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -192,23 +223,23 @@ exports[`NestedCollection should render connected component 1`] = `
   border-left: 2px solid #fff;
 }
 
-.emotion-4 mocked-icon {
+.emotion-6 mocked-icon {
   margin-right: 8px;
   -webkit-flex-shrink: 0;
   -ms-flex-negative: 0;
   flex-shrink: 0;
 }
 
-.emotion-4:hover,
-.emotion-4:active,
-.emotion-4.sidebar-active {
+.emotion-6:hover,
+.emotion-6:active,
+.emotion-6.sidebar-active {
   color: #3a69c7;
   background-color: #e8f5fe;
   border-left-color: #4863c6;
 }
 
 <a
-    class="emotion-4 emotion-5"
+    class="emotion-6 emotion-7"
     data-testid="/b"
     depth="1"
     href="/collections/pages/filter/b"
@@ -217,13 +248,16 @@ exports[`NestedCollection should render connected component 1`] = `
       type="write"
     />
     <div
-      class="emotion-2 emotion-3"
+      class="emotion-4 emotion-5"
     >
       <div
         class="emotion-0 emotion-1"
       >
         File 2
       </div>
+      <div
+        class="emotion-2 emotion-3"
+      />
     </div>
   </a>
 </DocumentFragment>
@@ -317,7 +351,7 @@ exports[`NestedCollection should render correctly with nested entries 1`] = `
       />
     </div>
   </a>
-  .emotion-2 {
+  .emotion-4 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -336,7 +370,21 @@ exports[`NestedCollection should render correctly with nested entries 1`] = `
   margin-right: 4px;
 }
 
-.emotion-4 {
+.emotion-2 {
+  position: relative;
+  top: 2px;
+  color: #fff;
+  width: 0;
+  height: 0;
+  border: 5px solid transparent;
+  border-radius: 2px;
+  border-left: 6px solid currentColor;
+  border-right: 0;
+  color: currentColor;
+  left: 2px;
+}
+
+.emotion-6 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -352,23 +400,23 @@ exports[`NestedCollection should render correctly with nested entries 1`] = `
   border-left: 2px solid #fff;
 }
 
-.emotion-4 mocked-icon {
+.emotion-6 mocked-icon {
   margin-right: 8px;
   -webkit-flex-shrink: 0;
   -ms-flex-negative: 0;
   flex-shrink: 0;
 }
 
-.emotion-4:hover,
-.emotion-4:active,
-.emotion-4.sidebar-active {
+.emotion-6:hover,
+.emotion-6:active,
+.emotion-6.sidebar-active {
   color: #3a69c7;
   background-color: #e8f5fe;
   border-left-color: #4863c6;
 }
 
 <a
-    class="emotion-4 emotion-5"
+    class="emotion-6 emotion-7"
     data-testid="/a"
     depth="1"
     href="/collections/pages/filter/a"
@@ -377,16 +425,19 @@ exports[`NestedCollection should render correctly with nested entries 1`] = `
       type="write"
     />
     <div
-      class="emotion-2 emotion-3"
+      class="emotion-4 emotion-5"
     >
       <div
         class="emotion-0 emotion-1"
       >
         File 1
       </div>
+      <div
+        class="emotion-2 emotion-3"
+      />
     </div>
   </a>
-  .emotion-2 {
+  .emotion-4 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -405,7 +456,21 @@ exports[`NestedCollection should render correctly with nested entries 1`] = `
   margin-right: 4px;
 }
 
-.emotion-4 {
+.emotion-2 {
+  position: relative;
+  top: 2px;
+  color: #fff;
+  width: 0;
+  height: 0;
+  border: 5px solid transparent;
+  border-radius: 2px;
+  border-left: 6px solid currentColor;
+  border-right: 0;
+  color: currentColor;
+  left: 2px;
+}
+
+.emotion-6 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -421,23 +486,23 @@ exports[`NestedCollection should render correctly with nested entries 1`] = `
   border-left: 2px solid #fff;
 }
 
-.emotion-4 mocked-icon {
+.emotion-6 mocked-icon {
   margin-right: 8px;
   -webkit-flex-shrink: 0;
   -ms-flex-negative: 0;
   flex-shrink: 0;
 }
 
-.emotion-4:hover,
-.emotion-4:active,
-.emotion-4.sidebar-active {
+.emotion-6:hover,
+.emotion-6:active,
+.emotion-6.sidebar-active {
   color: #3a69c7;
   background-color: #e8f5fe;
   border-left-color: #4863c6;
 }
 
 <a
-    class="emotion-4 emotion-5"
+    class="emotion-6 emotion-7"
     data-testid="/b"
     depth="1"
     href="/collections/pages/filter/b"
@@ -446,13 +511,16 @@ exports[`NestedCollection should render correctly with nested entries 1`] = `
       type="write"
     />
     <div
-      class="emotion-2 emotion-3"
+      class="emotion-4 emotion-5"
     >
       <div
         class="emotion-0 emotion-1"
       >
         File 2
       </div>
+      <div
+        class="emotion-2 emotion-3"
+      />
     </div>
   </a>
 </DocumentFragment>

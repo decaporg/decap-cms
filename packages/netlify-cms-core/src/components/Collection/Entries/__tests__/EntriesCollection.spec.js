@@ -45,11 +45,11 @@ describe('filterNestedEntries', () => {
     ];
     const entries = fromJS(entriesArray);
     expect(filterNestedEntries('dir3', 'src/pages', entries).toJS()).toEqual([
-      { slug: 'dir3/dir4/index', path: 'src/pages/dir3/dir4/index.md', data: { title: 'File 4' } },
+      { slug: 'dir3/index', path: 'src/pages/dir3/index.md', data: { title: 'File 3' } },
     ]);
   });
 
-  it('should return immediate children and root for root path', () => {
+  it('should return only immediate children for root path', () => {
     const entriesArray = [
       { slug: 'index', path: 'src/pages/index.md', data: { title: 'Root' } },
       { slug: 'dir1/index', path: 'src/pages/dir1/index.md', data: { title: 'File 1' } },
@@ -60,8 +60,6 @@ describe('filterNestedEntries', () => {
     const entries = fromJS(entriesArray);
     expect(filterNestedEntries('', 'src/pages', entries).toJS()).toEqual([
       { slug: 'index', path: 'src/pages/index.md', data: { title: 'Root' } },
-      { slug: 'dir1/index', path: 'src/pages/dir1/index.md', data: { title: 'File 1' } },
-      { slug: 'dir3/index', path: 'src/pages/dir3/index.md', data: { title: 'File 3' } },
     ]);
   });
 });
@@ -126,7 +124,7 @@ describe('EntriesCollection', () => {
     expect(asFragment()).toMatchSnapshot();
   });
 
-  it('should render apply filter term for nested collections', () => {
+  it('should render with applied filter term for nested collections', () => {
     const entriesArray = [
       { slug: 'index', path: 'src/pages/index.md', data: { title: 'Root' } },
       { slug: 'dir1/index', path: 'src/pages/dir1/index.md', data: { title: 'File 1' } },
