@@ -1,6 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
-const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
+const FriendlyErrorsWebpackPlugin = require('@soda/friendly-errors-webpack-plugin');
 const { flatMap } = require('lodash');
 
 const { toGlobalName, externals } = require('./externals');
@@ -44,8 +44,21 @@ function rules() {
 
 function plugins() {
   return {
-    ignoreEsprima: () => new webpack.IgnorePlugin(/^esprima$/, /js-yaml/),
-    ignoreMomentOptionalDeps: () => new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+    ignoreEsprima: () =>
+      new webpack.IgnorePlugin({
+        resourceRegExp: /^esprima$/,
+        contextRegExp: /js-yaml/,
+      }),
+    ignoreMomentOptionalDeps: () =>
+      new webpack.IgnorePlugin({
+        resourceRegExp: /^\.\/locale$/,
+        contextRegExp: /moment$/,
+      }),
+    includePolyfills: () =>
+      new webpack.ProvidePlugin({
+        Buffer: ['buffer', 'Buffer'],
+        process: 'process',
+      }),
     friendlyErrors: () => new FriendlyErrorsWebpackPlugin(),
   };
 }
@@ -128,6 +141,12 @@ function baseConfig({ target = isProduction ? 'umd' : 'umddir' } = {}) {
       extensions: ['.ts', '.tsx', '.js', '.json'],
       alias: {
         moment$: 'moment/moment.js',
+      },
+      fallback: {
+        buffer: require.resolve('buffer'),
+        path: require.resolve('path-browserify'),
+        process: require.resolve('process'),
+        stream: require.resolve('stream-browserify'),
       },
     },
     plugins: Object.values(plugins()).map(plugin => plugin()),
