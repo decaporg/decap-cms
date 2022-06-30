@@ -46,11 +46,15 @@ function collections(state = defaultState, action: ConfigAction) {
 const selectors = {
   [FOLDER]: {
     entryExtension(collection: Collection) {
-      return (
+      const ext = (
         collection.get('extension') ||
-        get(getFormatExtensions(), collection.get('format') || 'frontmatter') ||
-        get(getFormatExtensions(), 'frontmatter')
-      ).replace(/^\./, '');
+        get(getFormatExtensions(), collection.get('format') || 'frontmatter') 
+      )
+      if (!ext) {
+        throw new Error(`No extension found for format ${collection.get('format')}`)
+      }
+
+      return ext.replace(/^\./, '');
     },
     fields(collection: Collection) {
       return collection.get('fields');

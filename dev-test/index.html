@@ -246,15 +246,6 @@
       }
     });
 
-    const PreWidget = createClass({
-      render: function() {
-        const { value, fieldsMetaData } = this.props;
-        return value ? h('pre', { style: style },
-          value.toJS()
-        ) : null;
-      }
-    });
-
     CMS.registerCustomFormat('custom', 'json', {
       fromFile(content) {
         const {__ns, ...others} = JSON.parse(content);
