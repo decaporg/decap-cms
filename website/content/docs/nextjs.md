@@ -46,7 +46,7 @@ Next, we need to add some modifications to our `package.json` file to make it ea
     "dev": "next",
     "build": "next build",
     "start": "next start",
-    "export": "npm run build && next export"
+    "export": "next build && next export"
   }
 }
 ```
