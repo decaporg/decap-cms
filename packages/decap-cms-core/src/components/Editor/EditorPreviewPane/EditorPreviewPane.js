@@ -7,6 +7,8 @@ import Frame, { FrameContextConsumer } from 'react-frame-component';
 import { lengths } from 'decap-cms-ui-default';
 import { connect } from 'react-redux';
 
+import { loadEntry } from '../../../actions/entries';
+import { selectEntry, selectEntries } from '../../../reducers';
 import {
   resolveWidget,
   getPreviewTemplate,
@@ -196,6 +198,27 @@ export class PreviewPane extends React.Component {
     });
   };
 
+  /**
+   * This function exists entirely to expose collections from outside of this entry
+   *
+   */
+  getCollection = (collectionName, slug) => {
+    const { collections, state } = this.props;
+
+    if (typeof slug === 'undefined') {
+      const selectedCollection = collections.get('posts');
+      const allSelectedEntry = selectEntries(state, selectedCollection);
+      if (List.isList(allSelectedEntry)) {
+        return Map({
+          data: allSelectedEntry.get('data'),
+        });
+      }
+    }
+
+    const selectedEntry = selectEntry(state, collectionName, slug);
+    return selectedEntry.get('data');
+  };
+
   render() {
     const { entry, collection, config } = this.props;
 
@@ -212,6 +235,7 @@ export class PreviewPane extends React.Component {
       ...this.props,
       widgetFor: this.widgetFor,
       widgetsFor: this.widgetsFor,
+      getCollection: this.getCollection,
     };
 
     const styleEls = getPreviewStyles().map((style, i) => {
@@ -252,6 +276,7 @@ export class PreviewPane extends React.Component {
 }
 
 PreviewPane.propTypes = {
+  collections: ImmutablePropTypes.map.isRequired,
   collection: ImmutablePropTypes.map.isRequired,
   fields: ImmutablePropTypes.list.isRequired,
   entry: ImmutablePropTypes.map.isRequired,
@@ -261,7 +286,7 @@ PreviewPane.propTypes = {
 
 function mapStateToProps(state) {
   const isLoadingAsset = selectIsLoadingAsset(state.medias);
-  return { isLoadingAsset, config: state.config };
+  return { isLoadingAsset, config: state.config, state };
 }
 
 function mapDispatchToProps(dispatch) {

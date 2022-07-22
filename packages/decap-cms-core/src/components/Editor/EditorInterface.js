@@ -208,6 +208,7 @@ class EditorInterface extends Component {
 
   render() {
     const {
+      collections,
       collection,
       entry,
       fields,
@@ -293,6 +294,7 @@ class EditorInterface extends Component {
             <ScrollSyncPane>{editor}</ScrollSyncPane>
             <PreviewPaneContainer blockEntry={showEventBlocker}>
               <EditorPreviewPane
+                collections={collections}
                 collection={collection}
                 entry={previewEntry}
                 fields={fields}
@@ -405,6 +407,7 @@ class EditorInterface extends Component {
 }
 
 EditorInterface.propTypes = {
+  collections: ImmutablePropTypes.map.isRequired,
   collection: ImmutablePropTypes.map.isRequired,
   entry: ImmutablePropTypes.map.isRequired,
   fields: ImmutablePropTypes.list.isRequired,
