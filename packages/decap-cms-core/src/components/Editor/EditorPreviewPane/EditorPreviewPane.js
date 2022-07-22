@@ -7,8 +7,6 @@ import Frame, { FrameContextConsumer } from 'react-frame-component';
 import { lengths } from 'decap-cms-ui-default';
 import { connect } from 'react-redux';
 
-import { loadEntry } from '../../../actions/entries';
-import { selectEntry, selectEntries } from '../../../reducers';
 import {
   resolveWidget,
   getPreviewTemplate,
