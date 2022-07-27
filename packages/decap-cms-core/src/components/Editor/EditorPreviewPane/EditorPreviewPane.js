@@ -205,7 +205,7 @@ export class PreviewPane extends React.Component {
    *
    */
   getCollection = async (collectionName, slug) => {
-    const { collections, state } = this.props;
+    const { state } = this.props;
     const selectedCollection = state.collections.get(collectionName);
 
     if (typeof slug === 'undefined') {
@@ -274,7 +274,6 @@ export class PreviewPane extends React.Component {
 }
 
 PreviewPane.propTypes = {
-  collections: ImmutablePropTypes.map.isRequired,
   collection: ImmutablePropTypes.map.isRequired,
   fields: ImmutablePropTypes.list.isRequired,
   entry: ImmutablePropTypes.map.isRequired,

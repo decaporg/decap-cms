@@ -335,7 +335,6 @@ export class Editor extends React.Component {
 
   render() {
     const {
-      collections,
       entry,
       entryDraft,
       fields,
@@ -379,7 +378,6 @@ export class Editor extends React.Component {
       <EditorInterface
         draftKey={draftKey}
         entry={entryDraft.get('entry')}
-        collections={collections}
         collection={collection}
         fields={fields}
         fieldsMetaData={entryDraft.get('fieldsMetaData')}
