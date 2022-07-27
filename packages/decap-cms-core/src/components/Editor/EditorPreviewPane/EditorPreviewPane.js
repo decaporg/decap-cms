@@ -13,6 +13,10 @@ import {
   getPreviewStyles,
   getRemarkPlugins,
 } from '../../../lib/registry';
+import {
+  getAllEntries,
+  tryLoadEntry,
+} from '../../../actions/entries';
 import { ErrorBoundary } from '../../UI';
 import {
   selectTemplateName,
@@ -200,21 +204,17 @@ export class PreviewPane extends React.Component {
    * This function exists entirely to expose collections from outside of this entry
    *
    */
-  getCollection = (collectionName, slug) => {
+  getCollection = async (collectionName, slug) => {
     const { collections, state } = this.props;
+    const selectedCollection = state.collections.get(collectionName);
 
     if (typeof slug === 'undefined') {
-      const selectedCollection = collections.get('posts');
-      const allSelectedEntry = selectEntries(state, selectedCollection);
-      if (List.isList(allSelectedEntry)) {
-        return Map({
-          data: allSelectedEntry.get('data'),
-        });
-      }
+      const entries = await getAllEntries(state, selectedCollection);
+      return entries.map((entry) => Map().set('data', entry.data));
     }
 
-    const selectedEntry = selectEntry(state, collectionName, slug);
-    return selectedEntry.get('data');
+    const entry = await tryLoadEntry(state, selectedCollection, slug);
+    return Map().set('data', entry.data);
   };
 
   render() {
