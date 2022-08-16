@@ -84,7 +84,7 @@ module.exports = {
                 options: { mode: ['react-component'] }
             }
         )
-        return cfg;
+        return cfg
     }
 }
 ```
@@ -94,11 +94,11 @@ Almost there! The last thing we need to do is to add some content to our `pages/
 ```js
 import Head from "next/head"
 import { Component } from 'react'
-import { attributes, react as HomeContent } from '../content/home.md';
+import { attributes, react as HomeContent } from '../content/home.md'
 
 export default class Home extends Component {
   render() {
-    let { title, cats } = attributes;
+    let { title, cats } = attributes
     return (
       <>
         <Head>
