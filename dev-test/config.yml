@@ -125,6 +125,14 @@ collections: # A list of collections the CMS should be able to edit
       - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
       - { label: 'Datetime', name: 'datetime', widget: 'datetime' }
       - { label: 'Date', name: 'date', widget: 'date' }
+      - { label: 'Color', name: 'color', widget: 'color' }
+      - {
+          label: 'Color string editable and alpha enabled',
+          name: 'colorEditable',
+          widget: 'color',
+          enableAlpha: true,
+          allowInput: true,
+        }
       - { label: 'Image', name: 'image', widget: 'image' }
       - { label: 'File', name: 'file', widget: 'file' }
       - { label: 'Select', name: 'select', widget: 'select', options: ['a', 'b', 'c'] }
@@ -134,6 +142,13 @@ collections: # A list of collections the CMS should be able to edit
           widget: 'select',
           options: ['a', 'b', 'c'],
           multiple: true,
+        }
+      - {
+          label: 'Select numeric',
+          name: 'select_numeric',
+          widget: 'select',
+          options:
+            [{ label: 'One', value: 1 }, { label: 'Two', value: 2 }, { label: 'Three', value: 3 }],
         }
       - { label: 'Hidden', name: 'hidden', widget: 'hidden', default: 'hidden' }
       - label: 'Object'
@@ -251,14 +266,3 @@ collections: # A list of collections the CMS should be able to edit
               - { label: 'Date', name: 'date', widget: 'date' }
               - { label: 'Image', name: 'image', widget: 'image' }
               - { label: 'File', name: 'file', widget: 'file' }
-  - name: pages # a nested collection
-    label: Pages
-    label_singular: 'Page'
-    folder: _pages
-    create: true
-    nested: { depth: 100 }
-    fields:
-      - label: Title
-        name: title
-        widget: string
-    meta: { path: { widget: string, label: 'Path', index_file: 'index' } }
