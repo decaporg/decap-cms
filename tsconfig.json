@@ -20,7 +20,7 @@
       "netlify-cms-backend-bitbucket": ["packages/netlify-cms-backend-bitbucket/src"],
       "netlify-cms-lib-util": ["packages/netlify-cms-lib-util/src"],
       "netlify-cms-lib-widgets": ["packages/netlify-cms-lib-widgets/src"],
-      "ajv": [".sink.d.ts"]
+      "ajv": [".sink"]
     }
   },
   "include": ["**/src/**/*"],
