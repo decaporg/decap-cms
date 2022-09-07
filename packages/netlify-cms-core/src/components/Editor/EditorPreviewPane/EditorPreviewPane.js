@@ -3,9 +3,9 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { List, Map } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import Frame, { FrameContextConsumer } from 'react-frame-component';
 import { lengths } from 'netlify-cms-ui-default';
 import { connect } from 'react-redux';
+import { ScrollSyncPane } from 'react-scroll-sync';
 
 import {
   resolveWidget,
@@ -22,12 +22,13 @@ import EditorPreviewContent from './EditorPreviewContent.js';
 import PreviewHOC from './PreviewHOC';
 import EditorPreview from './EditorPreview';
 
-const PreviewPaneFrame = styled(Frame)`
+const PreviewPaneFrame = styled.div`
   width: 100%;
   height: 100%;
   border: none;
   background: #fff;
   border-radius: ${lengths.borderRadius};
+  overflow: auto;
 `;
 
 export class PreviewPane extends React.Component {
@@ -231,17 +232,13 @@ export class PreviewPane extends React.Component {
 
     return (
       <ErrorBoundary config={config}>
-        <PreviewPaneFrame id="preview-pane" head={styleEls} initialContent={initialContent}>
-          <FrameContextConsumer>
-            {({ document, window }) => {
-              return (
-                <EditorPreviewContent
-                  {...{ previewComponent, previewProps: { ...previewProps, document, window } }}
-                />
-              );
-            }}
-          </FrameContextConsumer>
-        </PreviewPaneFrame>
+        <ScrollSyncPane>{/* attachTo={document.getElementById('control-pane')}>*/}
+          <PreviewPaneFrame id="preview-pane" head={styleEls} initialContent={initialContent}>
+            <EditorPreviewContent
+              {...{ previewComponent, previewProps: { ...previewProps, document, window } }}
+            />
+          </PreviewPaneFrame>
+        </ScrollSyncPane>
       </ErrorBoundary>
     );
   }

@@ -47,7 +47,7 @@ function AppHeader(props) {
 const AppHeaderContent = styled.div`
   display: flex;
   justify-content: space-between;
-  min-width: 800px;
+  min-width: 1200px;
   max-width: 1440px;
   padding: 0 12px;
   margin: 0 auto;

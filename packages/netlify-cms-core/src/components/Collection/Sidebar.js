@@ -39,6 +39,7 @@ const SidebarHeading = styled.h2`
 
 const SidebarNavList = styled.ul`
   margin: 16px 0 0;
+  padding-left: 0;
   list-style: none;
   overflow: auto;
 `;

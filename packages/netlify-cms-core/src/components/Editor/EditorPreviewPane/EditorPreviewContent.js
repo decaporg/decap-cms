@@ -1,8 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { isElement } from 'react-is';
-import { ScrollSyncPane } from 'react-scroll-sync';
-import { FrameContextConsumer } from 'react-frame-component';
 
 /**
  * We need to create a lightweight component here so that we can access the
@@ -12,17 +10,9 @@ import { FrameContextConsumer } from 'react-frame-component';
 class PreviewContent extends React.Component {
   render() {
     const { previewComponent, previewProps } = this.props;
-    return (
-      <FrameContextConsumer>
-        {context => (
-          <ScrollSyncPane attachTo={context.document.scrollingElement}>
-            {isElement(previewComponent)
-              ? React.cloneElement(previewComponent, previewProps)
-              : React.createElement(previewComponent, previewProps)}
-          </ScrollSyncPane>
-        )}
-      </FrameContextConsumer>
-    );
+    return isElement(previewComponent)
+      ? React.cloneElement(previewComponent, previewProps)
+      : React.createElement(previewComponent, previewProps);
   }
 }
 

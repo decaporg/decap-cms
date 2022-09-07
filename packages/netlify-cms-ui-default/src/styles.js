@@ -1,5 +1,4 @@
-import React from 'react';
-import { css, Global } from '@emotion/core';
+import { css } from '@emotion/core';
 
 /**
  * Font Stacks
@@ -89,7 +88,7 @@ const lengths = {
   borderRadius: '5px',
   richTextEditorMinHeight: '300px',
   borderWidth: '2px',
-  topCardWidth: '682px',
+  topCardWidth: '722px',
   pageMargin: '28px 18px',
   objectWidgetTopBarContainerPadding: '0 14px 14px',
 };
@@ -424,100 +423,6 @@ const zIndex = {
   zIndex99999: 99999,
 };
 
-function GlobalStyles() {
-  return (
-    <Global
-      styles={css`
-        *,
-        *:before,
-        *:after {
-          box-sizing: border-box;
-        }
-
-        :focus {
-          outline: -webkit-focus-ring-color auto ${lengths.borderRadius};
-        }
-
-        /**
-       * Don't show outlines if the user is utilizing mouse rather than keyboard.
-       */
-        [data-whatintent='mouse'] *:focus {
-          outline: none;
-        }
-
-        input {
-          border: 0;
-        }
-
-        body {
-          font-family: ${fonts.primary};
-          font-weight: normal;
-          background-color: ${colors.background};
-          color: ${colors.text};
-          margin: 0;
-        }
-
-        ul,
-        ol {
-          padding-left: 0;
-        }
-
-        h1,
-        h2,
-        h3,
-        h4,
-        h5,
-        h6,
-        p {
-          font-family: ${fonts.primary};
-          color: ${colors.textLead};
-          font-size: 15px;
-          line-height: 1.5;
-          margin-top: 0;
-        }
-
-        h1,
-        h2,
-        h3,
-        h4,
-        h5,
-        h6 {
-          font-weight: 500;
-        }
-
-        h1 {
-          font-size: 24px;
-          letter-spacing: 0.4px;
-          color: ${colors.textLead};
-        }
-
-        a,
-        button {
-          font-size: 14px;
-          font-weight: 500;
-        }
-
-        a {
-          color: ${colors.text};
-          text-decoration: none;
-        }
-
-        button {
-          font-family: inherit;
-        }
-
-        img {
-          max-width: 100%;
-        }
-
-        textarea {
-          resize: none;
-        }
-      `}
-    />
-  );
-}
-
 export {
   fonts,
   colorsRaw,
@@ -532,5 +437,4 @@ export {
   effects,
   zIndex,
   reactSelectStyles,
-  GlobalStyles,
 };

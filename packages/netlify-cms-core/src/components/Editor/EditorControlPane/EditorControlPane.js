@@ -23,7 +23,7 @@ import {
 } from '../../../lib/i18n';
 
 const ControlPaneContainer = styled.div`
-  max-width: 800px;
+  max-width: 1200px;
   margin: 0 auto;
   padding-bottom: 16px;
   font-size: 16px;

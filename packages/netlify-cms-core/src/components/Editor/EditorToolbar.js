@@ -89,7 +89,7 @@ const ToolbarContainer = styled.div`
   top: 0;
   left: 0;
   width: 100%;
-  min-width: 800px;
+  min-width: 1200px;
   z-index: ${zIndex.zIndex300};
   background-color: #fff;
   height: 66px;

@@ -89,7 +89,7 @@ const NoPreviewContainer = styled.div`
 
 const EditorContainer = styled.div`
   width: 100%;
-  min-width: 800px;
+  min-width: 1200px;
   height: 100%;
   position: absolute;
   top: 0;
@@ -252,7 +252,7 @@ class EditorInterface extends Component {
 
     const leftPanelLocale = this.state.leftPanelLocale || locales?.[0];
     const editor = (
-      <ControlPaneContainer overFlow blockEntry={showEventBlocker}>
+      <ControlPaneContainer id="control-pane" overFlow blockEntry={showEventBlocker}>
         <EditorControlPane
           {...editorProps}
           ref={c => (this.controlPaneRef = c)}

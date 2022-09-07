@@ -34,7 +34,7 @@ TopBarProgress.config({
 });
 
 const AppMainContainer = styled.div`
-  min-width: 800px;
+  min-width: 1200px;
   max-width: 1440px;
   margin: 0 auto;
 `;

@@ -5,7 +5,6 @@ import { ThemeProvider } from 'emotion-theming';
 
 import Header from './header';
 import Footer from './footer';
-import GlobalStyles from '../global-styles';
 import theme from '../theme';
 
 const LAYOUT_QUERY = graphql`
@@ -32,7 +31,6 @@ const LAYOUT_QUERY = graphql`
 export function LayoutTemplate({ children }) {
   return (
     <ThemeProvider theme={theme}>
-      <GlobalStyles />
       {children}
     </ThemeProvider>
   );
