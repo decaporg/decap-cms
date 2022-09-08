@@ -3,6 +3,8 @@ import produce from 'immer';
 import { oneLine } from 'common-tags';
 
 import EditorComponent from '../valueObjects/EditorComponent';
+import { selectMediaFiles as selectMediaFilesSelector } from '../reducers/mediaLibrary';
+import { store } from '../redux';
 
 const allowedEvents = [
   'prePublish',
@@ -221,6 +223,19 @@ export function registerMediaLibrary(mediaLibrary, options) {
 }
 
 export function getMediaLibrary(name) {
+  return registry.mediaLibraries.find(ml => ml.name === name);
+}
+
+export function selectMediaFiles(field) {
+  const state = store.getState();
+  if (state) {
+    return selectMediaFilesSelector(state, field);
+  }
+
+  return [];
+}
+
+export function getFiles(name) {
   return registry.mediaLibraries.find(ml => ml.name === name);
 }
 
