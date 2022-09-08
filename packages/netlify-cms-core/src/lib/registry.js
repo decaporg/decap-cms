@@ -54,6 +54,7 @@ export default {
   getBackend,
   registerMediaLibrary,
   getMediaLibrary,
+  selectMediaFiles,
   registerLocale,
   getLocale,
   registerEventListener,

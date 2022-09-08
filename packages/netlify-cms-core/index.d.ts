@@ -579,7 +579,7 @@ declare module 'netlify-cms-core' {
     getRemarkPlugins: () => Array<Pluggable>;
     getLocale: (locale: string) => CmsLocalePhrases | undefined;
     getMediaLibrary: (name: string) => CmsMediaLibrary | undefined;
-    selectMediaFiles(field?: EntryField | undefined): MediaFile[];
+    selectMediaFiles: (field?: EntryField | undefined) => MediaFile[];
     resolveWidget: (name: string) => CmsWidget | undefined;
     getPreviewStyles: () => PreviewStyle[];
     getPreviewTemplate: (name: string) => ComponentType<PreviewTemplateComponentProps> | undefined;
