@@ -195,6 +195,8 @@ export default function withFileControl({ forImage } = {}) {
     }
 
     shouldComponentUpdate(nextProps) {
+      console.log('[withFileControl][shouldComponentUpdate] nextProps', nextProps);
+
       /**
        * Always update if the value or getAsset changes.
        */
@@ -217,6 +219,8 @@ export default function withFileControl({ forImage } = {}) {
     componentDidUpdate() {
       const { mediaPaths, value, onRemoveInsertedMedia, onChange } = this.props;
       const mediaPath = mediaPaths.get(this.controlID);
+      console.log('[withFileControl][shouldComponentUpdate] mediaPath', mediaPath);
+      console.log('[withFileControl][shouldComponentUpdate] value', value);
       if (mediaPath && mediaPath !== value) {
         onChange(mediaPath);
       } else if (mediaPath && mediaPath === value) {
