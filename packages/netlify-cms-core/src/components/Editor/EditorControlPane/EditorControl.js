@@ -222,6 +222,8 @@ class EditorControl extends React.Component {
     const childErrors = this.isAncestorOfFieldError();
     const hasErrors = !!errors || childErrors;
 
+    console.log('[EditorControl] widgetName', widgetName, 'mediaPaths', mediaPaths);
+
     return (
       <ClassNames>
         {({ css, cx }) => (
