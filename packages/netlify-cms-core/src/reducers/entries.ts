@@ -737,25 +737,20 @@ export function selectMediaFolder(
   let mediaFolder = config[name];
 
   const customFolder = hasCustomFolder(name, collection, entryMap?.get('slug'), field);
-  console.log('[MEDIA][selectMediaFolder] mediaFolder', mediaFolder, 'customFolder', customFolder);
 
   if (customFolder) {
     const folder = evaluateFolder(name, config, collection!, entryMap, field);
-    console.log('[MEDIA][selectMediaFolder] has custom folder! folder', folder);
     if (folder.startsWith('/')) {
       // return absolute paths as is
       mediaFolder = join(folder);
-      console.log('[MEDIA][selectMediaFolder] folder is absolute!');
     } else {
       const entryPath = entryMap?.get('path');
       mediaFolder = entryPath
         ? join(dirname(entryPath), folder)
         : join(collection!.get('folder') as string, DRAFT_MEDIA_FILES);
-      console.log('[MEDIA][selectMediaFolder] folder is NOT absolute! entryPath', entryPath, 'new mediaFolder', mediaFolder);
     }
   }
 
-  console.log('[MEDIA][selectMediaFolder] trimming mediaFolder', trim(mediaFolder, '/'));
   return trim(mediaFolder, '/');
 }
 
@@ -766,14 +761,11 @@ export function selectMediaFilePath(
   mediaPath: string,
   field: EntryField | undefined,
 ) {
-  console.log('[MEDIA][selectMediaFilePath] mediaPath', mediaPath);
   if (isAbsolutePath(mediaPath)) {
-    console.log('[MEDIA][selectMediaFilePath] mediaPath is absolute!');
     return mediaPath;
   }
 
   const mediaFolder = selectMediaFolder(config, collection, entryMap, field);
-  console.log('[MEDIA][selectMediaFilePath] final mediaFolder', mediaFolder, 'full file path', join(mediaFolder, basename(mediaPath)));
 
   return join(mediaFolder, basename(mediaPath));
 }
@@ -785,9 +777,7 @@ export function selectMediaFilePublicPath(
   entryMap: EntryMap | undefined,
   field: EntryField | undefined,
 ) {
-  console.log('[MEDIA][selectMediaFilePublicPath] mediaPath', mediaPath);
   if (isAbsolutePath(mediaPath)) {
-    console.log('[MEDIA][selectMediaFilePublicPath] mediaPath is absolute!');
     return mediaPath;
   }
 
@@ -795,19 +785,15 @@ export function selectMediaFilePublicPath(
   let publicFolder = config[name]!;
 
   const customFolder = hasCustomFolder(name, collection, entryMap?.get('slug'), field);
-  console.log('[MEDIA][selectMediaFilePublicPath] publicFolder', publicFolder, 'customFolder', customFolder);
 
   if (customFolder) {
     publicFolder = evaluateFolder(name, config, collection!, entryMap, field);
-    console.log('[MEDIA][selectMediaFilePublicPath] has custom folder! new public folder', publicFolder);
   }
 
   if (isAbsolutePath(publicFolder)) {
-    console.log('[MEDIA][selectMediaFilePublicPath] publicFolder is absolute! publicPath',  joinUrlPath(publicFolder, basename(mediaPath)));
     return joinUrlPath(publicFolder, basename(mediaPath));
   }
 
-  console.log('[MEDIA][selectMediaFilePublicPath] publicFolder is NOT absolute! publicPath',  join(publicFolder, basename(mediaPath)));
   return join(publicFolder, basename(mediaPath));
 }
 
