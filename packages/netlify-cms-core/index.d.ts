@@ -528,36 +528,6 @@ declare module 'netlify-cms-core' {
     fileObj: File;
   };
 
-  type DisplayURL = { id: string; path: string } | string;
-  
-  type EntryField = StaticallyTypedRecord<{
-    field?: EntryField;
-    fields?: List<EntryField>;
-    types?: List<EntryField>;
-    widget: string;
-    name: string;
-    default: string | null | boolean | List<unknown>;
-    media_folder?: string;
-    public_folder?: string;
-    comment?: string;
-    meta?: boolean;
-    i18n: 'translate' | 'duplicate' | 'none';
-  }>;
-
-  interface BackendMediaFile {
-    name: string;
-    id: string;
-    size?: number;
-    displayURL?: DisplayURL;
-    path: string;
-    draft?: boolean;
-    url?: string;
-    file?: File;
-    field?: EntryField;
-  }
-
-  type MediaFile = BackendMediaFile & { key?: string };
-
   export type PreviewTemplateComponentProps = {
     entry: Map<string, any>;
     collection: Map<string, any>;
@@ -579,7 +549,6 @@ declare module 'netlify-cms-core' {
     getRemarkPlugins: () => Array<Pluggable>;
     getLocale: (locale: string) => CmsLocalePhrases | undefined;
     getMediaLibrary: (name: string) => CmsMediaLibrary | undefined;
-    selectMediaFiles: (field?: EntryField | undefined) => MediaFile[];
     resolveWidget: (name: string) => CmsWidget | undefined;
     getPreviewStyles: () => PreviewStyle[];
     getPreviewTemplate: (name: string) => ComponentType<PreviewTemplateComponentProps> | undefined;
