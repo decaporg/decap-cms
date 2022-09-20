@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.15.17](https://github.com/netlify/netlify-cms/compare/netlify-cms-ui-default@2.15.16...netlify-cms-ui-default@2.15.17) (2022-09-20)
+
+**Note:** Version bump only for package netlify-cms-ui-default
+
+
+
+
+
 ## [2.15.16](https://github.com/netlify/netlify-cms/compare/netlify-cms-ui-default@2.15.15...netlify-cms-ui-default@2.15.16) (2022-09-20)
 
 **Note:** Version bump only for package netlify-cms-ui-default
