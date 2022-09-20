@@ -36,11 +36,13 @@ TopBarProgress.config({
 
 const AppRoot = styled.div`
   width: 100%;
+  min-width: 1200px;
   min-height: 100vh;
 `;
 
 const AppWrapper = styled.div`
   width: 100%;
+  min-width: 1200px;
   min-height: 100vh;
 `;
 
