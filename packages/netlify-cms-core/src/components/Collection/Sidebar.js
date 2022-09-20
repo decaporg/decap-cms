@@ -88,6 +88,19 @@ const AdditionalLink = styled.a`
   }
 `;
 
+const IconWrapper = styled.div`
+  height: 24px;
+  width: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px;
+
+  > span {
+    margin-right: 0;
+  }
+`;
+
 export class Sidebar extends React.Component {
   static propTypes = {
     collections: ImmutablePropTypes.map.isRequired,
@@ -144,7 +157,7 @@ export class Sidebar extends React.Component {
     return (
       <li key={title}>
         <AdditionalLink href={url} target="_blank" rel="noopener">
-          {icon}
+          <IconWrapper>{icon}</IconWrapper>
           {title}
         </AdditionalLink>
       </li>
@@ -179,7 +192,7 @@ export class Sidebar extends React.Component {
           activeClassName="sidebar-active"
           data-testid={collectionName}
         >
-          {icon}
+          <IconWrapper>{icon}</IconWrapper>
           {collection.get('label')}
         </SidebarNavLink>
       </li>
