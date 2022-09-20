@@ -26,7 +26,7 @@ const registry = {
   previewStyles: [],
   widgets: {},
   icons: {},
-  additionalLinks: [],
+  additionalLinks: {},
   editorComponents: Map(),
   remarkPlugins: [],
   widgetValueSerializers: {},
@@ -304,8 +304,8 @@ export function getIcon(name) {
 /**
  * Icons
  */
-export function registerAdditionalLink(title, url, iconName) {
-  registry.additionalLinks.push({ title, url, iconName });
+export function registerAdditionalLink(id, title, url, iconName) {
+  registry.additionalLinks[id] = { title, url, iconName };
 }
 export function getAdditionalLinks() {
   return registry.additionalLinks;

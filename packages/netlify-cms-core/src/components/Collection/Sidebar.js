@@ -205,7 +205,7 @@ export class Sidebar extends React.Component {
             .toList()
             .filter(collection => collection.get('hide') !== true)
             .map(collection => this.renderLink(collection, filterTerm))}
-          {additionalLinks.map(this.renderAdditionalLink)}
+          {Object.values(additionalLinks).map(this.renderAdditionalLink)}
         </SidebarNavList>
       </SidebarContainer>
     );
