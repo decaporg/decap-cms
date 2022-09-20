@@ -21,7 +21,7 @@ const StyledPreviewContent = styled.div`
 `;
 
 const PreviewContent = ({ previewComponent, previewProps }: PreviewContentProps) => {
-  const element = useMemo(() => document.getElementById('nc-root'), []);
+  const element = useMemo(() => document.getElementById('cms-root'), []);
 
   return useMemo(() => {
     if (!element) {

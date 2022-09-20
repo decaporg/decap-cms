@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
+import { ScrollSyncPane } from 'react-scroll-sync';
 
 function isVisible(field) {
   return field.get('widget') !== 'hidden';
@@ -26,11 +27,13 @@ export default class Preview extends React.Component {
       return null;
     }
     return (
-      <PreviewContainer>
-        {fields.filter(isVisible).map(field => (
-          <div key={field.get('name')}>{widgetFor(field.get('name'))}</div>
-        ))}
-      </PreviewContainer>
+      <ScrollSyncPane>
+        <PreviewContainer>
+          {fields.filter(isVisible).map(field => (
+            <div key={field.get('name')}>{widgetFor(field.get('name'))}</div>
+          ))}
+        </PreviewContainer>
+      </ScrollSyncPane>
     );
   }
 }

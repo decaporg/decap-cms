@@ -5,7 +5,6 @@ import { List, Map } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { lengths } from 'netlify-cms-ui-default';
 import { connect } from 'react-redux';
-import { ScrollSyncPane } from 'react-scroll-sync';
 
 import {
   resolveWidget,
@@ -232,13 +231,11 @@ export class PreviewPane extends React.Component {
 
     return (
       <ErrorBoundary config={config}>
-        <ScrollSyncPane>{/* attachTo={document.getElementById('control-pane')}>*/}
-          <PreviewPaneFrame id="preview-pane" head={styleEls} initialContent={initialContent}>
-            <EditorPreviewContent
-              {...{ previewComponent, previewProps: { ...previewProps, document, window } }}
-            />
-          </PreviewPaneFrame>
-        </ScrollSyncPane>
+        <PreviewPaneFrame id="preview-pane" head={styleEls} initialContent={initialContent}>
+          <EditorPreviewContent
+            {...{ previewComponent, previewProps: { ...previewProps, document, window } }}
+          />
+        </PreviewPaneFrame>
       </ErrorBoundary>
     );
   }
