@@ -66,6 +66,7 @@
     "pack:app": "cd packages/netlify-cms-app && npm pack",
     "pack:ui-default": "cd packages/netlify-cms-ui-default && npm pack",
     "pack:widget-file": "cd packages/netlify-cms-widget-file && npm pack",
+    "pack:git-gateway": "cd packages/netlify-cms-backend-git-gateway && npm pack",
     "pack-copy": "mv packages/**/*.tgz ./packs",
     "pack-clear": "rm -Rf packs/*",
     "pack-all": "run-p pack:* && npm run pack-copy",

@@ -18,6 +18,7 @@ const StyledPreviewContent = styled.div`
   right: 0;
   position: absolute;
   height: calc(100% - 66px);
+  overflow-y: auto;
 `;
 
 const PreviewContent = ({ previewComponent, previewProps }: PreviewContentProps) => {
