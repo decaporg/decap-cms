@@ -580,7 +580,7 @@ declare module 'netlify-cms-core' {
     ) => void;
     registerIcon: (iconName: string, icon: ReactNode) => void;
     getIcon: (iconName: string) => ReactNode;
-    registerAdditionalLink: (title: string, link: string, iconName?: string) => void;
+    registerAdditionalLink: (id: string, title: string, link: string, iconName?: string) => void;
     getAdditionalLinks: () => { title: string, link: string, iconName?: string }[];
   }
 
