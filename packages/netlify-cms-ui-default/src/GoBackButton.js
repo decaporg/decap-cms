@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { colorsRaw } from './styles.js';
+import { colorsRaw } from './styles';
 import Icon from './Icon';
 
 const GoBackButtonStyle = styled.a`
