@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 declare module 'netlify-cms-core' {
-  import type { ComponentType } from 'react';
+  import type { ComponentType, ReactNode } from 'react';
   import type { List, Map } from 'immutable';
   import type { Pluggable } from 'unified';
 
@@ -578,7 +578,10 @@ declare module 'netlify-cms-core' {
       widgetName: string,
       serializer: CmsWidgetValueSerializer,
     ) => void;
-    resolveWidget: (name: string) => CmsWidget | undefined;
+    registerIcon: (iconName: string, icon: ReactNode) => void;
+    getIcon: (iconName: string) => ReactNode;
+    registerAdditionalLink: (title: string, link: string, iconName?: string) => void;
+    getAdditionalLinks: () => { title: string, link: string, iconName?: string }[];
   }
 
   export const NetlifyCmsCore: CMS;

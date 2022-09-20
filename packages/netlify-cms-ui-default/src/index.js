@@ -14,6 +14,7 @@ import AuthenticationPage from './AuthenticationPage';
 import WidgetPreviewContainer from './WidgetPreviewContainer';
 import ObjectWidgetTopBar from './ObjectWidgetTopBar';
 import GoBackButton from './GoBackButton';
+import images from './Icon/images/_index';
 import {
   fonts,
   colorsRaw,
@@ -63,6 +64,7 @@ export const NetlifyCmsUiDefault = {
   zIndex,
   reactSelectStyles,
   GlobalStyles,
+  images,
 };
 export {
   Dropdown,
@@ -97,4 +99,5 @@ export {
   reactSelectStyles,
   GlobalStyles,
   GoBackButton,
+  images,
 };

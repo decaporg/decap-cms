@@ -25,6 +25,8 @@ const registry = {
   templates: {},
   previewStyles: [],
   widgets: {},
+  icons: {},
+  additionalLinks: [],
   editorComponents: Map(),
   remarkPlugins: [],
   widgetValueSerializers: {},
@@ -58,6 +60,10 @@ export default {
   removeEventListener,
   getEventListeners,
   invokeEvent,
+  registerIcon,
+  getIcon,
+  registerAdditionalLink,
+  getAdditionalLinks
 };
 
 /**
@@ -283,4 +289,24 @@ export function registerLocale(locale, phrases) {
 
 export function getLocale(locale) {
   return registry.locales[locale];
+}
+
+/**
+ * Icons
+ */
+export function registerIcon(name, icon) {
+  registry.icons[name] = icon;
+}
+export function getIcon(name) {
+  return registry.icons[name];
+}
+
+/**
+ * Icons
+ */
+export function registerAdditionalLink(title, url, iconName) {
+  registry.additionalLinks.push({ title, url, iconName });
+}
+export function getAdditionalLinks() {
+  return registry.additionalLinks;
 }

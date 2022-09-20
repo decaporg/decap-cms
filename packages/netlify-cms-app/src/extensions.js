@@ -1,3 +1,4 @@
+import React from 'react';
 // Core
 import { NetlifyCmsCore as CMS } from 'netlify-cms-core';
 // Backends
@@ -29,6 +30,7 @@ import NetlifyCmsWidgetColorString from 'netlify-cms-widget-colorstring';
 import image from 'netlify-cms-editor-component-image';
 // Locales
 import * as locales from 'netlify-cms-locales';
+import { images, Icon } from 'netlify-cms-ui-default';
 
 // Register all the things
 CMS.registerBackend('git-gateway', GitGatewayBackend);
@@ -65,4 +67,8 @@ CMS.registerEditorComponent({
 });
 Object.keys(locales).forEach(locale => {
   CMS.registerLocale(locale, locales[locale]);
+});
+
+Object.keys(images).forEach(iconName => {
+  CMS.registerIcon(iconName, <Icon type={iconName} />);
 });

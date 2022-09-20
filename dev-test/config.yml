@@ -62,6 +62,7 @@ collections: # A list of collections the CMS should be able to edit
 
   - name: 'settings'
     label: 'Settings'
+    icon: 'settings'
     delete: false # Prevent users from deleting documents in this collection
     editor:
       preview: false

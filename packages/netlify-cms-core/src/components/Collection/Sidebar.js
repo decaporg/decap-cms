@@ -10,6 +10,7 @@ import { Icon, components, colors } from 'netlify-cms-ui-default';
 import { searchCollections } from '../../actions/collections';
 import CollectionSearch from './CollectionSearch';
 import NestedCollection from './NestedCollection';
+import { getAdditionalLinks, getIcon } from '../../lib/registry';
 
 const styles = {
   sidebarNavLinkActive: css`
@@ -67,6 +68,26 @@ const SidebarNavLink = styled(NavLink)`
   `};
 `;
 
+const AdditionalLink = styled.a`
+  display: flex;
+  font-size: 14px;
+  font-weight: 500;
+  align-items: center;
+  padding: 8px 12px;
+  border-left: 2px solid #fff;
+  z-index: -1;
+
+  ${Icon} {
+    margin-right: 8px;
+    flex-shrink: 0;
+  }
+
+  &:hover,
+  &:active {
+    ${styles.sidebarNavLinkActive};
+  }
+`;
+
 export class Sidebar extends React.Component {
   static propTypes = {
     collections: ImmutablePropTypes.map.isRequired,
@@ -79,6 +100,14 @@ export class Sidebar extends React.Component {
 
   renderLink = (collection, filterTerm) => {
     const collectionName = collection.get('name');
+    const iconName = collection.get('icon');
+    let icon = <Icon type="write" />;
+    if (iconName) {
+      const storedIcon = getIcon(iconName);
+      if (storedIcon) {
+        icon = storedIcon;
+      }
+    }
     if (collection.has('nested')) {
       return (
         <li key={collectionName}>
@@ -97,7 +126,60 @@ export class Sidebar extends React.Component {
           activeClassName="sidebar-active"
           data-testid={collectionName}
         >
-          <Icon type="write" />
+          {icon}
+          {collection.get('label')}
+        </SidebarNavLink>
+      </li>
+    );
+  };
+
+  renderAdditionalLink = ({ title, url, iconName }) => {
+    let icon = <Icon type="write" />;
+    if (iconName) {
+      const storedIcon = getIcon(iconName);
+      if (storedIcon) {
+        icon = storedIcon;
+      }
+    }
+    return (
+      <li key={title}>
+        <AdditionalLink href={url} target="_blank" rel="noopener">
+          {icon}
+          {title}
+        </AdditionalLink>
+      </li>
+    );
+  };
+
+  renderLink = (collection, filterTerm) => {
+    const collectionName = collection.get('name');
+    const iconName = collection.get('icon');
+    let icon = <Icon type="write" />;
+    if (iconName) {
+      const storedIcon = getIcon(iconName);
+      if (storedIcon) {
+        icon = storedIcon;
+      }
+    }
+    if (collection.has('nested')) {
+      return (
+        <li key={collectionName}>
+          <NestedCollection
+            collection={collection}
+            filterTerm={filterTerm}
+            data-testid={collectionName}
+          />
+        </li>
+      );
+    }
+    return (
+      <li key={collectionName}>
+        <SidebarNavLink
+          to={`/collections/${collectionName}`}
+          activeClassName="sidebar-active"
+          data-testid={collectionName}
+        >
+          {icon}
           {collection.get('label')}
         </SidebarNavLink>
       </li>
@@ -106,6 +188,7 @@ export class Sidebar extends React.Component {
 
   render() {
     const { collections, collection, isSearchEnabled, searchTerm, t, filterTerm } = this.props;
+    const additionalLinks = getAdditionalLinks();
     return (
       <SidebarContainer>
         <SidebarHeading>{t('collection.sidebar.collections')}</SidebarHeading>
@@ -122,6 +205,7 @@ export class Sidebar extends React.Component {
             .toList()
             .filter(collection => collection.get('hide') !== true)
             .map(collection => this.renderLink(collection, filterTerm))}
+          {additionalLinks.map(this.renderAdditionalLink)}
         </SidebarNavList>
       </SidebarContainer>
     );
