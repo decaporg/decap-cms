@@ -38,6 +38,7 @@ const AppRoot = styled.div`
   width: 100%;
   min-width: 1200px;
   min-height: 100vh;
+  position: relative;
 `;
 
 const AppWrapper = styled.div`
