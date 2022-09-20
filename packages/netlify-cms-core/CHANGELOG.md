@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.55.30](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.55.29...netlify-cms-core@2.55.30) (2022-09-20)
+
+**Note:** Version bump only for package netlify-cms-core
+
+
+
+
+
 ## [2.55.29](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.55.28...netlify-cms-core@2.55.29) (2022-09-20)
 
 **Note:** Version bump only for package netlify-cms-core
