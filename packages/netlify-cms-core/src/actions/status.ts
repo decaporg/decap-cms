@@ -87,7 +87,7 @@ export function checkBackendStatus() {
       }
 
       dispatch(statusSuccess(status));
-    } catch (error) {
+    } catch (error: any) {
       dispatch(statusFailure(error));
     }
   };

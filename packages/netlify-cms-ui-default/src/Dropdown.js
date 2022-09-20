@@ -17,8 +17,8 @@ const StyledDropdownButton = styled(DropdownButton)`
   ${buttons.button};
   ${buttons.default};
   display: block;
-  padding-left: 20px;
-  padding-right: 40px;
+  padding-left: 20px!important;
+  padding-right: 40px!important;
   position: relative;
 
   &:after {

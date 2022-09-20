@@ -562,6 +562,11 @@ function GlobalStyles() {
           textarea {
             resize: none;
           }
+
+          .ol-viewport {
+            position: absolute!important;
+            top: 0;
+          }
         }
       `}
     />

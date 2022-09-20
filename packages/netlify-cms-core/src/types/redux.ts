@@ -1,15 +1,16 @@
+import type { List, Map, OrderedMap, Set } from 'immutable';
 import type { Action } from 'redux';
-import type { StaticallyTypedRecord } from './immutable';
-import type { Map, List, OrderedMap, Set } from 'immutable';
-import type { FILES, FOLDER } from '../constants/collectionTypes';
 import type { MediaFile as BackendMediaFile } from '../backend';
-import type { Auth } from '../reducers/auth';
-import type { Status } from '../reducers/status';
-import type { Medias } from '../reducers/medias';
-import type { Deploys } from '../reducers/deploys';
-import type { Search } from '../reducers/search';
-import type { GlobalUI } from '../reducers/globalUI';
+import type { FILES, FOLDER } from '../constants/collectionTypes';
 import type { formatExtensions } from '../formats/formats';
+import type { Auth } from '../reducers/auth';
+import type { Deploys } from '../reducers/deploys';
+import type { GlobalUI } from '../reducers/globalUI';
+import type { Medias } from '../reducers/medias';
+import type { ScrollState } from '../reducers/scroll';
+import type { Search } from '../reducers/search';
+import type { Status } from '../reducers/status';
+import type { StaticallyTypedRecord } from './immutable';
 
 export type CmsBackendType =
   | 'azure'
@@ -699,6 +700,7 @@ export interface State {
   search: Search;
   notifs: { message: { key: string }; kind: string; id: number }[];
   status: Status;
+  scroll: ScrollState;
 }
 
 export interface Integration {

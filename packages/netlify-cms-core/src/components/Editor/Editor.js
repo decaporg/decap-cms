@@ -1,38 +1,39 @@
+import { debounce } from 'lodash';
+import { Loader } from 'netlify-cms-ui-default';
 import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { connect } from 'react-redux';
-import { Loader } from 'netlify-cms-ui-default';
 import { translate } from 'react-polyglot';
-import { debounce } from 'lodash';
+import { connect } from 'react-redux';
 
-import { history, navigateToCollection, navigateToNewEntry } from '../../routing/history';
 import { logoutUser } from '../../actions/auth';
+import { loadDeployPreview } from '../../actions/deploys';
 import {
-  loadEntry,
-  loadEntries,
-  createDraftDuplicateFromEntry,
-  createEmptyDraft,
-  discardDraft,
-  changeDraftField,
-  changeDraftFieldValidation,
-  persistEntry,
-  deleteEntry,
-  persistLocalBackup,
-  loadLocalBackup,
-  retrieveLocalBackup,
-  deleteLocalBackup,
-} from '../../actions/entries';
-import {
-  updateUnpublishedEntryStatus,
+  deleteUnpublishedEntry,
   publishUnpublishedEntry,
   unpublishPublishedEntry,
-  deleteUnpublishedEntry,
+  updateUnpublishedEntryStatus,
 } from '../../actions/editorialWorkflow';
-import { loadDeployPreview } from '../../actions/deploys';
-import { selectEntry, selectUnpublishedEntry, selectDeployPreview } from '../../reducers';
+import {
+  changeDraftField,
+  changeDraftFieldValidation,
+  createDraftDuplicateFromEntry,
+  createEmptyDraft,
+  deleteEntry,
+  deleteLocalBackup,
+  discardDraft,
+  loadEntries,
+  loadEntry,
+  loadLocalBackup,
+  persistEntry,
+  persistLocalBackup,
+  retrieveLocalBackup,
+} from '../../actions/entries';
+import { loadScroll, toggleScroll } from '../../actions/scroll';
+import { EDITORIAL_WORKFLOW, status } from '../../constants/publishModes';
+import { selectDeployPreview, selectEntry, selectUnpublishedEntry } from '../../reducers';
 import { selectFields } from '../../reducers/collections';
-import { status, EDITORIAL_WORKFLOW } from '../../constants/publishModes';
+import { history, navigateToCollection, navigateToNewEntry } from '../../routing/history';
 import EditorInterface from './EditorInterface';
 import withWorkflow from './withWorkflow';
 
@@ -79,6 +80,9 @@ export class Editor extends React.Component {
     loadLocalBackup: PropTypes.func,
     persistLocalBackup: PropTypes.func.isRequired,
     deleteLocalBackup: PropTypes.func,
+    toggleScroll: PropTypes.func.isRequired,
+    scrollSyncEnabled: PropTypes.bool.isRequired,
+    loadScroll: PropTypes.func.isRequired,
   };
 
   componentDidMount() {
@@ -356,6 +360,9 @@ export class Editor extends React.Component {
       slug,
       t,
       editorBackLink,
+      toggleScroll,
+      scrollSyncEnabled,
+      loadScroll,
     } = this.props;
 
     const isPublished = !newEntry && !unpublishedEntry;
@@ -405,6 +412,9 @@ export class Editor extends React.Component {
         deployPreview={deployPreview}
         loadDeployPreview={opts => loadDeployPreview(collection, slug, entry, isPublished, opts)}
         editorBackLink={editorBackLink}
+        toggleScroll={toggleScroll}
+        scrollSyncEnabled={scrollSyncEnabled}
+        loadScroll={loadScroll}
         t={t}
       />
     );
@@ -412,7 +422,7 @@ export class Editor extends React.Component {
 }
 
 function mapStateToProps(state, ownProps) {
-  const { collections, entryDraft, auth, config, entries, globalUI } = state;
+  const { collections, entryDraft, auth, config, entries, globalUI, scroll } = state;
   const slug = ownProps.match.params[0];
   const collection = collections.get(ownProps.match.params.name);
   const collectionName = collection.get('name');
@@ -444,6 +454,8 @@ function mapStateToProps(state, ownProps) {
     }
   }
 
+  const scrollSyncEnabled = scroll.isScrolling;
+
   return {
     collection,
     collections,
@@ -466,6 +478,7 @@ function mapStateToProps(state, ownProps) {
     publishedEntry,
     unPublishedEntry,
     editorBackLink,
+    scrollSyncEnabled,
   };
 }
 
@@ -489,6 +502,8 @@ const mapDispatchToProps = {
   unpublishPublishedEntry,
   deleteUnpublishedEntry,
   logoutUser,
+  toggleScroll,
+  loadScroll,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withWorkflow(translate()(Editor)));

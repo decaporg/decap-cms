@@ -174,7 +174,7 @@ export class ErrorBoundary extends React.Component {
       return this.props.children;
     }
     return (
-      <ErrorBoundaryContainer>
+      <ErrorBoundaryContainer key="error-boundary-container">
         <h1>{t('ui.errorBoundary.title')}</h1>
         <p>
           <span>{t('ui.errorBoundary.details')}</span>
@@ -190,17 +190,15 @@ export class ErrorBoundary extends React.Component {
         <p>
           {t('ui.errorBoundary.privacyWarning')
             .split('\n')
-            .map((item, index) => (
-              <>
-                <PrivacyWarning key={index}>{item}</PrivacyWarning>
-                <br />
-              </>
-            ))}
+            .map((item, index) => [
+              <PrivacyWarning key={`private-warning-${index}`}>{item}</PrivacyWarning>,
+              <br key={`break-${index}`} />,
+            ])}
         </p>
         <hr />
         <h2>{t('ui.errorBoundary.detailsHeading')}</h2>
         <p>{errorMessage}</p>
-        {backup && showBackup && <RecoveredEntry entry={backup} t={t} />}
+        {backup && showBackup && <RecoveredEntry key="backup" entry={backup} t={t} />}
       </ErrorBoundaryContainer>
     );
   }

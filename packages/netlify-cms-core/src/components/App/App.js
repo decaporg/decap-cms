@@ -36,12 +36,12 @@ TopBarProgress.config({
 
 const AppRoot = styled.div`
   width: 100%;
-  min-height: 100%;
+  min-height: 100vh;
 `;
 
 const AppWrapper = styled.div`
   width: 100%;
-  min-height: 100%;
+  min-height: 100vh;
 `;
 
 const AppMainContainer = styled.div`
@@ -96,6 +96,7 @@ class App extends React.Component {
     useMediaLibrary: PropTypes.bool,
     openMediaLibrary: PropTypes.func.isRequired,
     showMediaButton: PropTypes.bool,
+    scrollSyncEnabled: PropTypes.bool.isRequired,
     t: PropTypes.func.isRequired,
   };
 
@@ -164,6 +165,7 @@ class App extends React.Component {
       openMediaLibrary,
       t,
       showMediaButton,
+      scrollSyncEnabled,
     } = this.props;
 
     if (config === null) {
@@ -186,7 +188,7 @@ class App extends React.Component {
     const hasWorkflow = publishMode === EDITORIAL_WORKFLOW;
 
     return (
-      <ScrollSync>
+      <ScrollSync enabled={scrollSyncEnabled}>
         <AppRoot id="cms-root">
           <AppWrapper className="cms-wrapper">
             <Notifs CustomComponent={Toast} />
@@ -269,12 +271,13 @@ class App extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { auth, config, collections, globalUI, mediaLibrary } = state;
+  const { auth, config, collections, globalUI, mediaLibrary, scroll } = state;
   const user = auth.user;
   const isFetching = globalUI.isFetching;
   const publishMode = config.publish_mode;
   const useMediaLibrary = !mediaLibrary.get('externalLibrary');
   const showMediaButton = mediaLibrary.get('showMediaButton');
+  const scrollSyncEnabled = scroll.isScrolling;
   return {
     auth,
     config,
@@ -284,6 +287,7 @@ function mapStateToProps(state) {
     publishMode,
     showMediaButton,
     useMediaLibrary,
+    scrollSyncEnabled,
   };
 }
 

@@ -21,7 +21,6 @@ import { FILES } from '../../constants/collectionTypes';
 import { getFileFromSlug } from '../../reducers/collections';
 
 const PREVIEW_VISIBLE = 'cms.preview-visible';
-const SCROLL_SYNC_ENABLED = 'cms.scroll-sync-enabled';
 const I18N_VISIBLE = 'cms.i18n-visible';
 
 const styles = {
@@ -103,6 +102,7 @@ const Editor = styled.div`
   height: 100%;
   margin: 0 auto;
   position: relative;
+  background-color: ${colorsRaw.white};
 `;
 
 const PreviewPaneContainer = styled.div`
@@ -152,9 +152,14 @@ function isPreviewEnabled(collection, entry) {
 class EditorInterface extends Component {
   state = {
     previewVisible: localStorage.getItem(PREVIEW_VISIBLE) !== 'false',
-    scrollSyncEnabled: localStorage.getItem(SCROLL_SYNC_ENABLED) !== 'false',
     i18nVisible: localStorage.getItem(I18N_VISIBLE) !== 'false',
   };
+
+  constructor(props) {
+    super(props);
+
+    this.props.loadScroll();
+  }
 
   handleOnPersist = async (opts = {}) => {
     const { createNew = false, duplicate = false } = opts;
@@ -177,9 +182,8 @@ class EditorInterface extends Component {
   };
 
   handleToggleScrollSync = () => {
-    const newScrollSyncEnabled = !this.state.scrollSyncEnabled;
-    this.setState({ scrollSyncEnabled: newScrollSyncEnabled });
-    localStorage.setItem(SCROLL_SYNC_ENABLED, newScrollSyncEnabled);
+    const { toggleScroll } = this.props;
+    toggleScroll();
   };
 
   handleToggleI18n = () => {
@@ -222,10 +226,9 @@ class EditorInterface extends Component {
       deployPreview,
       draftKey,
       editorBackLink,
+      scrollSyncEnabled,
       t,
     } = this.props;
-
-    const { scrollSyncEnabled } = this.state;
 
     const previewEnabled = isPreviewEnabled(collection, entry);
 
@@ -255,7 +258,7 @@ class EditorInterface extends Component {
     );
 
     const editor2 = (
-      <ControlPaneContainer overFlow={!this.state.scrollSyncEnabled}>
+      <ControlPaneContainer overFlow={!this.props.scrollSyncEnabled}>
         <EditorControlPane {...editorProps} locale={locales?.[1]} t={t} />
       </ControlPaneContainer>
     );
@@ -265,27 +268,25 @@ class EditorInterface extends Component {
       : entry;
 
     const editorWithPreview = (
-      <ScrollSync enabled={this.state.scrollSyncEnabled}>
-        <>
-          <ReactSplitPaneGlobalStyles />
-          <StyledSplitPane>
-            <ScrollSyncPane>{editor}</ScrollSyncPane>
-            <PreviewPaneContainer>
-              <EditorPreviewPane
-                collection={collection}
-                entry={previewEntry}
-                fields={fields}
-                fieldsMetaData={fieldsMetaData}
-                locale={leftPanelLocale}
-              />
-            </PreviewPaneContainer>
-          </StyledSplitPane>
-        </>
-      </ScrollSync>
+      <>
+        <ReactSplitPaneGlobalStyles />
+        <StyledSplitPane>
+          <ScrollSyncPane>{editor}</ScrollSyncPane>
+          <PreviewPaneContainer>
+            <EditorPreviewPane
+              collection={collection}
+              entry={previewEntry}
+              fields={fields}
+              fieldsMetaData={fieldsMetaData}
+              locale={leftPanelLocale}
+            />
+          </PreviewPaneContainer>
+        </StyledSplitPane>
+      </>
     );
 
     const editorWithEditor = (
-      <ScrollSync enabled={this.state.scrollSyncEnabled}>
+      <ScrollSync enabled={this.props.scrollSyncEnabled}>
         <div>
           <StyledSplitPane>
             <ScrollSyncPane>{editor}</ScrollSyncPane>
@@ -406,6 +407,9 @@ EditorInterface.propTypes = {
   deployPreview: PropTypes.object,
   loadDeployPreview: PropTypes.func.isRequired,
   draftKey: PropTypes.string.isRequired,
+  toggleScroll: PropTypes.func.isRequired,
+  scrollSyncEnabled: PropTypes.bool.isRequired,
+  loadScroll: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
 };
 

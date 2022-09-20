@@ -140,7 +140,7 @@ export function searchEntries(searchTerm: string, searchCollections: string[], p
     try {
       const response: SearchResponse = await searchPromise;
       return dispatch(searchSuccess(response.entries, response.pagination));
-    } catch (error) {
+    } catch (error: any) {
       return dispatch(searchFailure(error));
     }
   };
@@ -177,7 +177,7 @@ export function query(
     try {
       const response: QueryResponse = await queryPromise;
       return dispatch(querySuccess(namespace, response.hits));
-    } catch (error) {
+    } catch (error: any) {
       return dispatch(queryFailure(error));
     }
   };
