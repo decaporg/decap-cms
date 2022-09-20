@@ -297,6 +297,7 @@ declare module 'netlify-cms-core' {
 
   export interface CmsCollection {
     name: string;
+    icon?: string;
     label: string;
     label_singular?: string;
     description?: string;

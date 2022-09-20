@@ -603,6 +603,7 @@ export type Format = keyof typeof formatExtensions;
 
 type CollectionObject = {
   name: string;
+  icon?: string;
   folder?: string;
   files?: CollectionFiles;
   fields: EntryFields;
