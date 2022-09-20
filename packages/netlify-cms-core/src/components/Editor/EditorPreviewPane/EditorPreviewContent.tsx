@@ -4,6 +4,7 @@ import styled from '@emotion/styled';
 import { CmsWidgetPreviewProps } from 'netlify-cms-core';
 import React, { ComponentType, ReactNode, useMemo } from 'react';
 import ReactDOM from 'react-dom';
+import { ScrollSyncPane } from 'react-scroll-sync';
 
 interface PreviewContentProps {
   previewComponent?:
@@ -39,7 +40,9 @@ const PreviewContent = ({ previewComponent, previewProps }: PreviewContentProps)
     }
 
     return ReactDOM.createPortal(
-      <StyledPreviewContent className="preview-content">{children}</StyledPreviewContent>,
+      <ScrollSyncPane>
+        <StyledPreviewContent className="preview-content">{children}</StyledPreviewContent>
+      </ScrollSyncPane>,
       element,
     );
   }, [previewComponent, previewProps, element]);

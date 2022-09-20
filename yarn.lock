@@ -3697,6 +3697,13 @@
     hoist-non-react-statics "^3.3.0"
     redux "^4.0.0"
 
+"@types/react-scroll-sync@0.8.4":
+  version "0.8.4"
+  resolved "https://registry.yarnpkg.com/@types/react-scroll-sync/-/react-scroll-sync-0.8.4.tgz#6caa894cb0bf87c205508474d902ce43e433dd7d"
+  integrity sha512-88N2vgZdVqlwr5ayH/5GNAAjfdlzhted/qPTyXgT/DzQwsuIWkwFpZtoOhyGCRmxUC3w5wA+ZhkpbzagIXWNaQ==
+  dependencies:
+    "@types/react" "*"
+
 "@types/react-syntax-highlighter@11.0.4":
   version "11.0.4"
   resolved "https://registry.yarnpkg.com/@types/react-syntax-highlighter/-/react-syntax-highlighter-11.0.4.tgz#d86d17697db62f98046874f62fdb3e53a0bbc4cd"
