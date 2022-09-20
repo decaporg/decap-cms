@@ -6,6 +6,7 @@
     "module": "esnext",
     "moduleResolution": "node",
     "esModuleInterop": true,
+    "preserveSymlinks": true,
     "noEmit": true,
     "strict": true,
     "isolatedModules": true,

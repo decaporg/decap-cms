@@ -300,7 +300,9 @@ export class EditorToolbar extends React.Component {
           : this.renderNewEntrySimplePublishControls({ canCreate })}
         <div>
           {showDelete ? (
-            <DeleteButton onClick={onDelete}>{t('editor.editorToolbar.deleteEntry')}</DeleteButton>
+            <DeleteButton key="delete-button" onClick={onDelete}>
+              {t('editor.editorToolbar.deleteEntry')}
+            </DeleteButton>
           ) : null}
         </div>
       </>
@@ -319,12 +321,17 @@ export class EditorToolbar extends React.Component {
     return (
       <PreviewButtonContainer>
         {deployPreviewReady ? (
-          <PreviewLink rel="noopener noreferrer" target="_blank" href={url}>
+          <PreviewLink
+            key="preview-ready-button"
+            rel="noopener noreferrer"
+            target="_blank"
+            href={url}
+          >
             <span>{label}</span>
             <Icon type="new-tab" size="xsmall" />
           </PreviewLink>
         ) : (
-          <RefreshPreviewButton onClick={loadDeployPreview}>
+          <RefreshPreviewButton key="preview-pending-button" onClick={loadDeployPreview}>
             <span>{t('editor.editorToolbar.deployPreviewPendingButtonLabel')}</span>
             <Icon type="refresh" size="xsmall" />
           </RefreshPreviewButton>
@@ -348,7 +355,9 @@ export class EditorToolbar extends React.Component {
           <Icon type="info-circle" size="small" className="tooltip" />
         </Tooltip>
         {statusKey && (
-          <TooltipText>{t(`editor.editorToolbar.${statusToLocaleKey[statusKey]}`)}</TooltipText>
+          <TooltipText key="status-tooltip">
+            {t(`editor.editorToolbar.${statusToLocaleKey[statusKey]}`)}
+          </TooltipText>
         )}
       </TooltipContainer>
     );
@@ -388,6 +397,7 @@ export class EditorToolbar extends React.Component {
             ''
           ) : (
             <StatusDropdownItem
+              key="workflow-status-pending-publish"
               label={t('editor.editorToolbar.ready')}
               onClick={() => onChangeStatus('PENDING_PUBLISH')}
               icon={currentStatus === status.get('PENDING_PUBLISH') ? 'check' : null}
@@ -404,6 +414,7 @@ export class EditorToolbar extends React.Component {
 
     return canPublish ? (
       <ToolbarDropdown
+        key="workflow-new-publish-controls"
         dropdownTopOverlap="40px"
         dropdownWidth="150px"
         renderButton={() => (
@@ -445,6 +456,7 @@ export class EditorToolbar extends React.Component {
 
     return canPublish || canCreate ? (
       <ToolbarDropdown
+        key="workflow-existing-publish-controls"
         dropdownTopOverlap="40px"
         dropdownWidth="150px"
         renderButton={() => (
@@ -480,6 +492,7 @@ export class EditorToolbar extends React.Component {
     const { onDuplicate, t } = this.props;
     return canCreate ? (
       <ToolbarDropdown
+        key="simple-existing-publish-controls"
         dropdownTopOverlap="40px"
         dropdownWidth="150px"
         renderButton={() => (
@@ -503,7 +516,7 @@ export class EditorToolbar extends React.Component {
     const { onPersist, onPersistAndNew, onPersistAndDuplicate, isPersisting, t } = this.props;
 
     return (
-      <div>
+      <div key="simple-new-publish-controls">
         <ToolbarDropdown
           dropdownTopOverlap="40px"
           dropdownWidth="150px"
@@ -643,9 +656,9 @@ export class EditorToolbar extends React.Component {
               })}
             </BackCollection>
             {hasChanged ? (
-              <BackStatusChanged>{t('editor.editorToolbar.unsavedChanges')}</BackStatusChanged>
+              <BackStatusChanged key="back-changed">{t('editor.editorToolbar.unsavedChanges')}</BackStatusChanged>
             ) : (
-              <BackStatusUnchanged>{t('editor.editorToolbar.changesSaved')}</BackStatusUnchanged>
+              <BackStatusUnchanged key="back-unchanged">{t('editor.editorToolbar.changesSaved')}</BackStatusUnchanged>
             )}
           </div>
         </ToolbarSectionBackLink>

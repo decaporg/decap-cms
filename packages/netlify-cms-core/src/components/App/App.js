@@ -33,6 +33,11 @@ TopBarProgress.config({
   barThickness: 2,
 });
 
+const AppWrapper = styled.div`
+  width: 100%;
+  min-height: 100%;
+`
+
 const AppMainContainer = styled.div`
   min-width: 1200px;
   max-width: 1440px;
@@ -175,7 +180,7 @@ class App extends React.Component {
     const hasWorkflow = publishMode === EDITORIAL_WORKFLOW;
 
     return (
-      <>
+      <AppWrapper className="cms-wrapper">
         <Notifs CustomComponent={Toast} />
         <Header
           user={user}
@@ -248,7 +253,7 @@ class App extends React.Component {
           </Switch>
           {useMediaLibrary ? <MediaLibrary /> : null}
         </AppMainContainer>
-      </>
+      </AppWrapper>
     );
   }
 }

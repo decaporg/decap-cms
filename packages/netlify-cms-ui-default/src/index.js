@@ -28,6 +28,7 @@ import {
   effects,
   zIndex,
   reactSelectStyles,
+  GlobalStyles,
 } from './styles';
 
 export const NetlifyCmsUiDefault = {
@@ -61,6 +62,7 @@ export const NetlifyCmsUiDefault = {
   effects,
   zIndex,
   reactSelectStyles,
+  GlobalStyles,
 };
 export {
   Dropdown,
@@ -93,5 +95,6 @@ export {
   effects,
   zIndex,
   reactSelectStyles,
+  GlobalStyles,
   GoBackButton,
 };

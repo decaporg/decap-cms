@@ -7,7 +7,13 @@ import { ClassNames, Global, css as coreCss } from '@emotion/core';
 import styled from '@emotion/styled';
 import { partial, uniqueId } from 'lodash';
 import { connect } from 'react-redux';
-import { FieldLabel, colors, transitions, lengths, borders } from 'netlify-cms-ui-default';
+import {
+  FieldLabel,
+  colors,
+  transitions,
+  lengths,
+  borders,
+} from 'netlify-cms-ui-default';
 import ReactMarkdown from 'react-markdown';
 import gfm from 'remark-gfm';
 
