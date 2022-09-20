@@ -55,7 +55,7 @@ const SidebarNavLink = styled(NavLink)`
   z-index: -1;
 
   ${Icon} {
-    margin-right: 8px;
+    margin-right: 0;
     flex-shrink: 0;
   }
 
@@ -78,7 +78,7 @@ const AdditionalLink = styled.a`
   z-index: -1;
 
   ${Icon} {
-    margin-right: 8px;
+    margin-right: 0;
     flex-shrink: 0;
   }
 
@@ -95,10 +95,6 @@ const IconWrapper = styled.div`
   align-items: center;
   justify-content: center;
   margin-right: 8px;
-
-  > span {
-    margin-right: 0;
-  }
 `;
 
 export class Sidebar extends React.Component {
