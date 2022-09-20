@@ -18,7 +18,7 @@ import { selectTemplateName, selectInferedField, selectField } from '../../../re
 import { boundGetAsset } from '../../../actions/media';
 import { selectIsLoadingAsset } from '../../../reducers/medias';
 import { INFERABLE_FIELDS } from '../../../constants/fieldInference';
-import EditorPreviewContent from './EditorPreviewContent.js';
+import EditorPreviewContent from './EditorPreviewContent';
 import PreviewHOC from './PreviewHOC';
 import EditorPreview from './EditorPreview';
 
