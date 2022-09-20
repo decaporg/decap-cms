@@ -40,10 +40,12 @@ const AuthInput = styled.input`
   width: 100%;
   position: relative;
   z-index: ${zIndex.zIndex1};
+  border: 1px solid ${colorsRaw.gray};
 
   &:focus {
     outline: none;
     box-shadow: inset 0 0 0 2px ${colors.active};
+    border: 1px solid transparent;
   }
 `;
 
