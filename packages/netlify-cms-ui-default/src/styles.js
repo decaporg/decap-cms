@@ -497,6 +497,10 @@ function GlobalStyles() {
           margin: 0;
         }
 
+        img {
+          max-width: 100%;
+        }
+
         ${quantifier} {
           font-family: ${fonts.primary};
           font-weight: normal;
@@ -553,10 +557,6 @@ function GlobalStyles() {
           a {
             color: ${colors.text};
             text-decoration: none;
-          }
-
-          img {
-            max-width: 100%;
           }
 
           textarea {

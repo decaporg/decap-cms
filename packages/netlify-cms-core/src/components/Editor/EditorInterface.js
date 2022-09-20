@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { css, Global } from '@emotion/core';
 import styled from '@emotion/styled';
-import SplitPane from 'react-split-pane';
 import {
   colors,
   colorsRaw,
@@ -23,7 +22,6 @@ import { getFileFromSlug } from '../../reducers/collections';
 
 const PREVIEW_VISIBLE = 'cms.preview-visible';
 const SCROLL_SYNC_ENABLED = 'cms.scroll-sync-enabled';
-const SPLIT_PANE_POSITION = 'cms.split-pane-position';
 const I18N_VISIBLE = 'cms.i18n-visible';
 
 const styles = {
@@ -34,7 +32,6 @@ const styles = {
   `,
   pane: css`
     height: 100%;
-    overflow-y: auto;
   `,
 };
 
@@ -72,14 +69,18 @@ function ReactSplitPaneGlobalStyles() {
   );
 }
 
-const StyledSplitPane = styled(SplitPane)`
-  ${styles.splitPane};
+const StyledSplitPane = styled.div`
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  height: 100%;
 
-  /**
-   * Quick fix for preview pane not fully displaying in Safari
-   */
-  .Pane {
+  div:nth-child(2)::before {
+    content: '';
+    width: 2px;
     height: 100%;
+    position: relative;
+    background-color: rgb(223, 223, 227);
+    display: block;
   }
 `;
 
@@ -96,7 +97,6 @@ const EditorContainer = styled.div`
   left: 0;
   overflow: hidden;
   padding-top: 66px;
-  background-color: ${colors.background};
 `;
 
 const Editor = styled.div`
@@ -120,7 +120,7 @@ const ControlPaneContainer = styled(PreviewPaneContainer)`
 const ViewControls = styled.div`
   position: absolute;
   top: 10px;
-  right: 10px;
+  right: 28px;
   z-index: ${zIndex.zIndex299};
 `;
 
@@ -151,18 +151,9 @@ function isPreviewEnabled(collection, entry) {
 
 class EditorInterface extends Component {
   state = {
-    showEventBlocker: false,
     previewVisible: localStorage.getItem(PREVIEW_VISIBLE) !== 'false',
     scrollSyncEnabled: localStorage.getItem(SCROLL_SYNC_ENABLED) !== 'false',
     i18nVisible: localStorage.getItem(I18N_VISIBLE) !== 'false',
-  };
-
-  handleSplitPaneDragStart = () => {
-    this.setState({ showEventBlocker: true });
-  };
-
-  handleSplitPaneDragFinished = () => {
-    this.setState({ showEventBlocker: false });
   };
 
   handleOnPersist = async (opts = {}) => {
@@ -234,7 +225,7 @@ class EditorInterface extends Component {
       t,
     } = this.props;
 
-    const { scrollSyncEnabled, showEventBlocker } = this.state;
+    const { scrollSyncEnabled } = this.state;
 
     const previewEnabled = isPreviewEnabled(collection, entry);
 
@@ -252,7 +243,7 @@ class EditorInterface extends Component {
 
     const leftPanelLocale = this.state.leftPanelLocale || locales?.[0];
     const editor = (
-      <ControlPaneContainer id="control-pane" overFlow blockEntry={showEventBlocker}>
+      <ControlPaneContainer id="control-pane" overFlow>
         <EditorControlPane
           {...editorProps}
           ref={c => (this.controlPaneRef = c)}
@@ -264,7 +255,7 @@ class EditorInterface extends Component {
     );
 
     const editor2 = (
-      <ControlPaneContainer overFlow={!this.state.scrollSyncEnabled} blockEntry={showEventBlocker}>
+      <ControlPaneContainer overFlow={!this.state.scrollSyncEnabled}>
         <EditorControlPane {...editorProps} locale={locales?.[1]} t={t} />
       </ControlPaneContainer>
     );
@@ -275,17 +266,11 @@ class EditorInterface extends Component {
 
     const editorWithPreview = (
       <ScrollSync enabled={this.state.scrollSyncEnabled}>
-        <div>
+        <>
           <ReactSplitPaneGlobalStyles />
-          <StyledSplitPane
-            maxSize={-100}
-            defaultSize={parseInt(localStorage.getItem(SPLIT_PANE_POSITION), 10) || '50%'}
-            onChange={size => localStorage.setItem(SPLIT_PANE_POSITION, size)}
-            onDragStarted={this.handleSplitPaneDragStart}
-            onDragFinished={this.handleSplitPaneDragFinished}
-          >
+          <StyledSplitPane>
             <ScrollSyncPane>{editor}</ScrollSyncPane>
-            <PreviewPaneContainer blockEntry={showEventBlocker}>
+            <PreviewPaneContainer>
               <EditorPreviewPane
                 collection={collection}
                 entry={previewEntry}
@@ -295,20 +280,14 @@ class EditorInterface extends Component {
               />
             </PreviewPaneContainer>
           </StyledSplitPane>
-        </div>
+        </>
       </ScrollSync>
     );
 
     const editorWithEditor = (
       <ScrollSync enabled={this.state.scrollSyncEnabled}>
         <div>
-          <StyledSplitPane
-            maxSize={-100}
-            defaultSize={parseInt(localStorage.getItem(SPLIT_PANE_POSITION), 10) || '50%'}
-            onChange={size => localStorage.setItem(SPLIT_PANE_POSITION, size)}
-            onDragStarted={this.handleSplitPaneDragStart}
-            onDragFinished={this.handleSplitPaneDragFinished}
-          >
+          <StyledSplitPane>
             <ScrollSyncPane>{editor}</ScrollSyncPane>
             <ScrollSyncPane>{editor2}</ScrollSyncPane>
           </StyledSplitPane>
