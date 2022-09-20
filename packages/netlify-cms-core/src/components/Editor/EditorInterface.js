@@ -73,7 +73,7 @@ const StyledSplitPane = styled.div`
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   height: 100%;
 
-  div:nth-child(2)::before {
+  > div:nth-child(2)::before {
     content: '';
     width: 2px;
     height: 100%;
