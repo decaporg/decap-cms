@@ -64,7 +64,7 @@ const ErrorCodeBlock = styled.pre`
 `;
 
 function getDefaultPath(collections) {
-  const first = collections.filter(collection => collection.get('hide') !== true).first();
+  const first = collections.filter(collection => collection.get('hide') !== true && (!collection.has('files') || collection.get('files').size > 1)).first();
   if (first) {
     return `/collections/${first.get('name')}`;
   } else {
