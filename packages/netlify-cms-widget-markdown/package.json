@@ -42,8 +42,8 @@
     "unist-util-visit-parents": "^2.0.1"
   },
   "peerDependencies": {
-    "@emotion/core": "^10.0.35",
-    "@emotion/styled": "^10.0.27",
+    "@emotion/core": "11.0.0",
+    "@emotion/styled": "11.10.4",
     "immutable": "^3.7.6",
     "lodash": "^4.17.11",
     "netlify-cms-ui-default": "^2.12.1",
