@@ -61,7 +61,6 @@
     "publish:graduate:dry-run": "run-s \"publish:version --conventional-graduate --no-git-tag-version\"",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
-    "prepare": "husky install",
     "pack:core": "cd packages/netlify-cms-core && npm pack",
     "pack:app": "cd packages/netlify-cms-app && npm pack",
     "pack:ui-default": "cd packages/netlify-cms-ui-default && npm pack",
@@ -148,7 +147,6 @@
     "fs-extra": "^10.0.0",
     "gitlab": "^14.1.1",
     "http-server": "^14.0.0",
-    "husky": "^7.0.0",
     "jest": "^27.0.0",
     "jest-cli": "^27.0.0",
     "jest-emotion": "^10.0.32",
@@ -186,7 +184,6 @@
       "packages/*"
     ],
     "nohoist": [
-      "husky",
       "run-node"
     ]
   },
