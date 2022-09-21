@@ -72,6 +72,42 @@ function getDefaultPath(collections) {
   }
 }
 
+/**
+ * Returns default collection name if only one collection
+ * 
+ * @param {Collection} collection
+ * @returns {string}
+ */
+function getDefaultCollectionPath(collection) {
+  if (collection.has('files') && collection.get('files').size === 1) {
+    return `/collections/${collection.get('name')}/entries/${collection.get('files').first().get('name')}`;
+  }
+
+  return null;
+}
+
+function RouteInCollectionDefault({ collections, render, ...props }) {
+  const defaultPath = getDefaultPath(collections);
+  return (
+    <Route
+      {...props}
+      render={routeProps => {
+        const collectionExists = collections.get(routeProps.match.params.name);
+        if (!collectionExists) {
+          return <Redirect to={defaultPath} />;
+        }
+
+        const defaultCollectionPath = getDefaultCollectionPath(collections);
+        if (defaultCollectionPath !== null) {
+          return <Redirect to={defaultCollectionPath} />;
+        }
+
+        return render(routeProps);
+      }}
+    />
+  );
+}
+
 function RouteInCollection({ collections, render, ...props }) {
   const defaultPath = getDefaultPath(collections);
   return (
@@ -224,7 +260,7 @@ class App extends React.Component {
                   to={defaultPath}
                 />
                 {hasWorkflow ? <Route path="/workflow" component={Workflow} /> : null}
-                <RouteInCollection
+                <RouteInCollectionDefault
                   exact
                   collections={collections}
                   path="/collections/:name"
