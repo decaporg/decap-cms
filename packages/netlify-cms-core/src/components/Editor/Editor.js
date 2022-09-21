@@ -447,6 +447,10 @@ function mapStateToProps(state, ownProps) {
     editorBackLink = `/workflow`;
   }
 
+  if (collection.has('files') && collection.get('files').size === 1) {
+    editorBackLink = '/';
+  }
+
   if (collection.has('nested') && slug) {
     const pathParts = slug.split('/');
     if (pathParts.length > 2) {

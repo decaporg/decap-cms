@@ -74,13 +74,16 @@ function getDefaultPath(collections) {
 
 /**
  * Returns default collection name if only one collection
- * 
+ *
  * @param {Collection} collection
  * @returns {string}
  */
 function getDefaultCollectionPath(collection) {
   if (collection.has('files') && collection.get('files').size === 1) {
-    return `/collections/${collection.get('name')}/entries/${collection.get('files').first().get('name')}`;
+    return `/collections/${collection.get('name')}/entries/${collection
+      .get('files')
+      .first()
+      .get('name')}`;
   }
 
   return null;
@@ -97,7 +100,7 @@ function RouteInCollectionDefault({ collections, render, ...props }) {
           return <Redirect to={defaultPath} />;
         }
 
-        const defaultCollectionPath = getDefaultCollectionPath(collections);
+        const defaultCollectionPath = getDefaultCollectionPath(collectionExists);
         if (defaultCollectionPath !== null) {
           return <Redirect to={defaultCollectionPath} />;
         }
