@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { ClassNames } from '@emotion/core';
+import { ClassNames } from '@emotion/react';
 import { Map } from 'immutable';
 import { uniq, isEqual, isEmpty } from 'lodash';
 import uuid from 'uuid/v4';

@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { translate } from 'react-polyglot';
-import { ClassNames, Global, css as coreCss } from '@emotion/core';
+import { ClassNames, Global, css as coreCss } from '@emotion/react';
 import styled from '@emotion/styled';
 import { partial, uniqueId } from 'lodash';
 import { connect } from 'react-redux';
@@ -77,10 +77,6 @@ const styleStrings = {
 
 const ControlContainer = styled.div`
   margin-top: 16px;
-
-  &:first-of-type {
-    margin-top: 36px;
-  }
 `;
 
 const ControlErrorsList = styled.ul`

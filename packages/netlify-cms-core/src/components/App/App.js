@@ -37,8 +37,9 @@ TopBarProgress.config({
 const AppRoot = styled.div`
   width: 100%;
   min-width: 1200px;
-  min-height: 100vh;
+  height: 100vh;
   position: relative;
+  overflow: hidden;
 `;
 
 const AppWrapper = styled.div`

@@ -1,17 +1,27 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
+import PropTypes from 'prop-types';
+import React from 'react';
+import transientOptions from 'netlify-cms-lib-util';
 
 import Icon from './Icon';
-import { colors, lengths, buttons } from './styles';
+import { buttons, colors, lengths } from './styles';
 
-const TopBar = styled.div`
-  display: flex;
-  justify-content: space-between;
-  height: 26px;
-  border-radius: ${lengths.borderRadius} ${lengths.borderRadius} 0 0;
-  position: relative;
-`;
+const TopBar = styled(
+  'div',
+  transientOptions,
+)(
+  ({ $isVariableTypesList, $collapsed }) => `
+    display: flex;
+    justify-content: space-between;
+    height: 32px!important;
+    border-radius: ${
+      !$isVariableTypesList
+        ? $collapsed ? lengths.borderRadius : `${lengths.borderRadius} ${lengths.borderRadius} 0 0`
+        : $collapsed ? `0 ${lengths.borderRadius} ${lengths.borderRadius} ${lengths.borderRadius}` : `0 ${lengths.borderRadius} 0 0`
+    }!important;
+    position: relative;
+  `,
+);
 
 const TopBarButton = styled.button`
   ${buttons.button};
@@ -26,6 +36,16 @@ const TopBarButton = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
+`;
+
+const StyledTitle = styled.div`
+  position: absolute;
+  left: 36px;
+  line-height: 30px;
+  white-space: nowrap;
+  cursor: pointer;
+  z-index: 1;
 `;
 
 const TopBarButtonSpan = TopBarButton.withComponent('span');
@@ -44,14 +64,23 @@ function DragHandle({ dragHandleHOC }) {
   return <Handle />;
 }
 
-function ListItemTopBar({ className, collapsed, onCollapseToggle, onRemove, dragHandleHOC }) {
+function ListItemTopBar({
+  className,
+  title,
+  collapsed,
+  onCollapseToggle,
+  onRemove,
+  dragHandleHOC,
+  isVariableTypesList,
+}) {
   return (
-    <TopBar className={className}>
+    <TopBar className={className} $collapsed={collapsed} $isVariableTypesList={isVariableTypesList}>
       {onCollapseToggle ? (
         <TopBarButton onClick={onCollapseToggle}>
           <Icon type="chevron" size="small" direction={collapsed ? 'right' : 'down'} />
         </TopBarButton>
       ) : null}
+      {title ? <StyledTitle onClick={onCollapseToggle}>{title}</StyledTitle> : null}
       {dragHandleHOC ? <DragHandle dragHandleHOC={dragHandleHOC} /> : null}
       {onRemove ? (
         <TopBarButton onClick={onRemove}>
@@ -64,9 +93,11 @@ function ListItemTopBar({ className, collapsed, onCollapseToggle, onRemove, drag
 
 ListItemTopBar.propTypes = {
   className: PropTypes.string,
+  title: PropTypes.node,
   collapsed: PropTypes.bool,
   onCollapseToggle: PropTypes.func,
   onRemove: PropTypes.func,
+  isVariableTypesList: PropTypes.bool,
 };
 
 const StyledListItemTopBar = styled(ListItemTopBar)`
@@ -75,6 +106,7 @@ const StyledListItemTopBar = styled(ListItemTopBar)`
   height: 26px;
   border-radius: ${lengths.borderRadius} ${lengths.borderRadius} 0 0;
   position: relative;
+  border-top-left-radius: 0;
 `;
 
 export default StyledListItemTopBar;

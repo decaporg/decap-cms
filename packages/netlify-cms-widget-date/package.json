@@ -25,7 +25,7 @@
     "react-datetime": "^3.1.1"
   },
   "peerDependencies": {
-    "@emotion/core": "11.0.0",
+    "@emotion/react": "11.10.4",
     "@emotion/styled": "11.10.4",
     "moment": "^2.24.0",
     "netlify-cms-ui-default": "^2.12.1",

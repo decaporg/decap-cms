@@ -44,6 +44,7 @@ const PreviewContent = ({ previewComponent, previewProps }: PreviewContentProps)
         <StyledPreviewContent className="preview-content">{children}</StyledPreviewContent>
       </ScrollSyncPane>,
       element,
+      'preview-content'
     );
   }, [previewComponent, previewProps, element]);
 };

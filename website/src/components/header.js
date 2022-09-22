@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, graphql, StaticQuery } from 'gatsby';
 import styled from '@emotion/styled';
-import { css } from '@emotion/core';
+import { css } from '@emotion/react';
 import GitHubButton from 'react-github-btn';
 
 import Container from './container';

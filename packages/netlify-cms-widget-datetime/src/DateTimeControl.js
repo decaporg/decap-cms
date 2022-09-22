@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { jsx, css } from '@emotion/core';
+import { jsx, css } from '@emotion/react';
 import reactDateTimeStyles from 'react-datetime/css/react-datetime.css';
 import DateTime from 'react-datetime';
 import moment from 'moment';

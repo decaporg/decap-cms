@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { fromJS } from 'immutable';
 import styled from '@emotion/styled';
-import { css as coreCss, ClassNames } from '@emotion/core';
+import { css as coreCss, ClassNames } from '@emotion/react';
 import { get, isEmpty, debounce } from 'lodash';
 import { Value, Document, Block, Text } from 'slate';
 import { Editor as Slate } from 'slate-react';

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
-import { css } from '@emotion/core';
+import { css } from '@emotion/react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 
 import Icon from './Icon';
@@ -14,7 +14,7 @@ const TopBarContainer = styled.div`
   display: flex;
   justify-content: space-between;
   margin: 0 -14px;
-  padding: 13px;
+  padding: 6px 13px;
 `;
 
 const ExpandButtonContainer = styled.div`
@@ -43,6 +43,7 @@ const ExpandButton = styled.button`
 const AddButton = styled.button`
   ${buttons.button}
   ${buttons.widget}
+  padding: 4px 12px;
 
   ${Icon} {
     margin-left: 6px;

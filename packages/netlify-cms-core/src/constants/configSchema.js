@@ -210,6 +210,12 @@ function getConfigSchema() {
                   file: { type: 'string' },
                   preview_path: { type: 'string' },
                   preview_path_date_field: { type: 'string' },
+                  editor: {
+                    type: 'object',
+                    properties: {
+                      preview: { type: 'boolean' },
+                    },
+                  },
                   fields: fieldsConfig(),
                 },
                 required: ['name', 'label', 'file', 'fields'],

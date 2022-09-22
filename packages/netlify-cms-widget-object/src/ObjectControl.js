@@ -1,14 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { ClassNames } from '@emotion/core';
+import { ClassNames } from '@emotion/react';
+import styled from '@emotion/styled';
 import { List, Map } from 'immutable';
 import { colors, lengths, ObjectWidgetTopBar } from 'netlify-cms-ui-default';
 import { stringTemplate } from 'netlify-cms-lib-widgets';
 
 const styleStrings = {
   nestedObjectControl: `
-    padding: 6px 14px 14px;
+    padding: 6px 14px 0;
     border-top: 0;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
@@ -20,6 +21,10 @@ const styleStrings = {
     display: none;
   `,
 };
+
+const StyledFieldsBox = styled.div`
+  padding-bottom: 14px;
+`;
 
 export default class ObjectControl extends React.Component {
   componentValidate = {};
@@ -175,7 +180,7 @@ export default class ObjectControl extends React.Component {
                   t={t}
                 />
               )}
-              <div
+              <StyledFieldsBox
                 className={cx({
                   [css`
                     ${styleStrings.collapsedObjectControl}
@@ -183,7 +188,7 @@ export default class ObjectControl extends React.Component {
                 })}
               >
                 {this.renderFields(multiFields, singleField)}
-              </div>
+              </StyledFieldsBox>
             </div>
           )}
         </ClassNames>

@@ -71,6 +71,8 @@ collections: # A list of collections the CMS should be able to edit
         label: 'Site Settings'
         file: '_data/settings.json'
         description: 'General Site Settings'
+        editor:
+          preview: true
         fields:
           - { label: 'Global title', name: 'site_title', widget: 'string' }
           - label: 'Post Settings'

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { css, Global } from '@emotion/core';
+import { css, Global } from '@emotion/react';
 import styled from '@emotion/styled';
 import {
   colors,
@@ -118,9 +118,9 @@ const ControlPaneContainer = styled(PreviewPaneContainer)`
 `;
 
 const ViewControls = styled.div`
-  position: absolute;
-  top: 10px;
-  right: 28px;
+  position: fixed;
+  bottom: 3px;
+  right: 12px;
   z-index: ${zIndex.zIndex299};
 `;
 

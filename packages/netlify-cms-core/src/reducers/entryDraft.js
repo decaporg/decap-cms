@@ -114,10 +114,13 @@ function entryDraftReducer(state = Map(), action) {
         state.mergeDeepIn(['fieldsMetaData'], fromJS(metadata));
         const newData = state.getIn(['entry', ...dataPath]);
         const newMeta = state.getIn(['entry', 'meta']);
+        if (entries.length === 0) {
+          return;
+        }
         state.set(
           'hasChanged',
-          !entries.some(e => newData.equals(e.get(...dataPath))) ||
-            !entries.some(e => newMeta.equals(e.get('meta'))),
+          !newData.equals(entries[0].get(...dataPath)) ||
+            !newMeta.equals(entries[0].get('meta')),
         );
       });
     }

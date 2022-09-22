@@ -44,7 +44,6 @@ module.exports = {
     '@emotion/styled-import': 'error',
     'require-atomic-updates': [0],
     'object-shorthand': ['error', 'always'],
-    'func-style': ['error', 'declaration'],
     'prefer-const': [
       'error',
       {

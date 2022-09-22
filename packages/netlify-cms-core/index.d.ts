@@ -281,6 +281,9 @@ declare module 'netlify-cms-core' {
     i18n?: boolean | CmsI18nConfig;
     media_folder?: string;
     public_folder?: string;
+    editor?: {
+      preview?: boolean;
+    };
   }
 
   export interface ViewFilter {

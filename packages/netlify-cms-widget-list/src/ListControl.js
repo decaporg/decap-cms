@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
-import { css, ClassNames } from '@emotion/core';
+import { css, ClassNames } from '@emotion/react';
 import { List, Map, fromJS } from 'immutable';
 import { partial, isEmpty, uniqueId } from 'lodash';
 import uuid from 'uuid/v4';
@@ -39,7 +39,7 @@ const NestedObjectLabel = styled.div`
   border-top: 0;
   color: ${props => (props.error ? colors.errorText : 'inherit')};
   background-color: ${colors.textFieldBorder};
-  padding: 13px;
+  padding: 6px 13px;
   border-radius: 0 0 ${lengths.borderRadius} ${lengths.borderRadius};
 `;
 
@@ -56,13 +56,11 @@ const styles = {
   listControlItem: css`
     margin-top: 18px;
 
-    &:first-of-type {
-      margin-top: 26px;
+    &:last-of-type {
+      margin-bottom: 14px;
     }
   `,
-  listControlItemCollapsed: css`
-    padding-bottom: 0;
-  `,
+
 };
 
 const SortableList = SortableContainer(({ items, renderItem }) => {
@@ -546,10 +544,12 @@ export default class ListControl extends React.Component {
           onRemove={partial(this.handleRemove, index)}
           dragHandleHOC={SortableHandle}
           data-testid={`styled-list-item-top-bar-${key}`}
+          title={collapsed ? this.objectLabel(item) : null}
+          isVariableTypesList={isVariableTypesList}
         />
-        <NestedObjectLabel collapsed={collapsed} error={hasError}>
+        {/* <NestedObjectLabel collapsed={collapsed} error={hasError}>
           {this.objectLabel(item)}
-        </NestedObjectLabel>
+        </NestedObjectLabel> */}
         <ClassNames>
           {({ css, cx }) => (
             <ObjectControl

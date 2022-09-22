@@ -2,7 +2,7 @@ import React from 'react';
 import CMS from 'netlify-cms-app';
 import dayjs from 'dayjs';
 import Prism from 'prismjs';
-import { CacheProvider } from '@emotion/core';
+import { CacheProvider } from '@emotion/react';
 import createCache from '@emotion/cache';
 
 import BlogPostTemplate from '../components/blog-post-template';
