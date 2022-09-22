@@ -70,7 +70,7 @@ function ReactSplitPaneGlobalStyles() {
 
 const StyledSplitPane = styled.div`
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-columns: min(864px, 50%) auto;;
   height: 100%;
 
   > div:nth-child(2)::before {

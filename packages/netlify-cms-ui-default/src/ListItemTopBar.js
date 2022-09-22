@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
 import React from 'react';
-import transientOptions from 'netlify-cms-lib-util';
+import { transientOptions } from 'netlify-cms-lib-util';
 
 import Icon from './Icon';
 import { buttons, colors, lengths } from './styles';

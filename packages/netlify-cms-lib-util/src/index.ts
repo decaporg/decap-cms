@@ -55,6 +55,7 @@ import {
   parsePointerFile,
   getPointerFileForMediaFileObj,
 } from './git-lfs';
+import transientOptions from './transientOptions';
 
 import type { PointerFile as PF } from './git-lfs';
 import type { FetchError as FE, ApiRequest as AR } from './API';
@@ -207,4 +208,5 @@ export {
   allEntriesByFolder,
   AccessTokenError,
   throwOnConflictingBranches,
+  transientOptions,
 };

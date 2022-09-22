@@ -14,7 +14,7 @@ interface PreviewContentProps {
 }
 
 const StyledPreviewContent = styled.div`
-  width: calc(50% - 2px);
+  width: calc(100% - min(864px, 50%));
   top: 66px;
   right: 0;
   position: absolute;
