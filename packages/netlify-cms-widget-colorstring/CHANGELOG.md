@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.4](https://github.com/netlify/netlify-cms/compare/netlify-cms-widget-colorstring@1.1.3...netlify-cms-widget-colorstring@1.1.4) (2022-09-22)
+
+**Note:** Version bump only for package netlify-cms-widget-colorstring
+
+
+
+
+
 ## [1.1.3](https://github.com/netlify/netlify-cms/compare/netlify-cms-widget-colorstring@1.1.2...netlify-cms-widget-colorstring@1.1.3) (2022-09-21)
 
 **Note:** Version bump only for package netlify-cms-widget-colorstring
