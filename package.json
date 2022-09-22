@@ -70,6 +70,7 @@
     "pack:proxy": "cd packages/netlify-cms-backend-proxy && npm pack",
     "pack:test": "cd packages/netlify-cms-backend-test && npm pack",
     "pack:core": "cd packages/netlify-cms-core && npm pack",
+    "pack:default-exports": "cd packages/netlify-cms-default-exports && npm pack",
     "pack:lib-util": "cd packages/netlify-cms-lib-util && npm pack",
     "pack:ui-default": "cd packages/netlify-cms-ui-default && npm pack",
     "pack:widget-boolean": "cd packages/netlify-cms-widget-boolean && npm pack",
