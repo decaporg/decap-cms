@@ -206,13 +206,13 @@ Example for running all the tests for the file `gitlab.spec.js`: `yarn jest gitl
 
 Some test files like `API.spec.js` is available in several packages. You can pass a regexp pattern instead of file path to narrow down files.
 
-Example for running all the tests for the file `API.spec.js` in the `netlify-cms-backend-gitlab` package:
+Example for running all the tests for the file `API.spec.js` in the `gitlab` package:
 
 `yarn jest ".+backend-gitlab/.+/API.spec.js`
 
 To run a specific test in a file, add the flag `--testNamePattern`, or `-t` for short followed by a regexp to match your test name.
 
-Example for running the test "should return true on project access_level >= 30" in the API.spec.js in `netlify-cms-backend-gitlab` package:
+Example for running the test "should return true on project access_level >= 30" in the API.spec.js in `gitlab` package:
 
 ```
 yarn jest -t "true on p" ".+backend-gitlab/.+/API.spec.js"

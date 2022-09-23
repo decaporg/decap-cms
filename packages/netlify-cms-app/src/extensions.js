@@ -1,11 +1,16 @@
 import React from 'react';
 // Core
 import {
+  AzureBackend,
+  BitbucketBackend,
   BooleanWidget,
   CodeWidget,
   ColorStringWidget,
   DateTimeWidget,
   FileWidget,
+  GitGatewayBackend,
+  GitHubBackend,
+  GitLabBackend,
   ImageWidget,
   ListWidget,
   MapWidget,
@@ -13,20 +18,13 @@ import {
   NetlifyCmsCore as CMS,
   NumberWidget,
   ObjectWidget,
+  ProxyBackend,
   RelationWidget,
   SelectWidget,
   StringWidget,
+  TestBackend,
   TextWidget,
 } from 'netlify-cms-core';
-// Backends
-import { AzureBackend } from 'netlify-cms-backend-azure';
-import { BitbucketBackend } from 'netlify-cms-backend-bitbucket';
-import { GitGatewayBackend } from 'netlify-cms-backend-git-gateway';
-import { GitHubBackend } from 'netlify-cms-backend-github';
-import { GitLabBackend } from 'netlify-cms-backend-gitlab';
-import { ProxyBackend } from 'netlify-cms-backend-proxy';
-import { TestBackend } from 'netlify-cms-backend-test';
-// Widgets
 // Editor Components
 import image from 'netlify-cms-editor-component-image';
 // Locales

@@ -11,13 +11,6 @@ below. The legacy pre-2.0 changelog is below as well.
 - [netlify-cms-lib-util](https://github.com/netlify/netlify-cms/blob/master/packages/netlify-cms-lib-util/CHANGELOG.md)
 - [netlify-cms-ui-default](https://github.com/netlify/netlify-cms/blob/master/packages/netlify-cms-ui-default/CHANGELOG.md)
 
-## Backends
-- [netlify-cms-backend-bitbucket](https://github.com/netlify/netlify-cms/blob/master/packages/netlify-cms-backend-bitbucket/CHANGELOG.md)
-- [netlify-cms-backend-git-gateway](https://github.com/netlify/netlify-cms/blob/master/packages/netlify-cms-backend-git-gateway/CHANGELOG.md)
-- [netlify-cms-backend-github](https://github.com/netlify/netlify-cms/blob/master/packages/netlify-cms-backend-github/CHANGELOG.md)
-- [netlify-cms-backend-gitlab](https://github.com/netlify/netlify-cms/blob/master/packages/netlify-cms-backend-gitlab/CHANGELOG.md)
-- [netlify-cms-backend-test](https://github.com/netlify/netlify-cms/blob/master/packages/netlify-cms-backend-test/CHANGELOG.md)
-
 ## Editor Components
 - [netlify-cms-editor-component-image](https://github.com/netlify/netlify-cms/blob/master/packages/netlify-cms-editor-component-image/CHANGELOG.md)
 

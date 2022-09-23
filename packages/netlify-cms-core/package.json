@@ -100,7 +100,16 @@
     "url-join": "^4.0.1",
     "validate-color": "^2.1.0",
     "what-input": "^5.1.4",
-    "yaml": "^1.8.3"
+    "yaml": "^1.8.3",
+    "what-the-diff": "^0.6.0",
+    "ini": "^2.0.0",
+    "minimatch": "^3.0.4",
+    "apollo-cache-inmemory": "^1.6.2",
+    "apollo-client": "^2.6.3",
+    "apollo-link-context": "^1.0.18",
+    "apollo-link-http": "^1.5.15",
+    "graphql": "^15.0.0",
+    "graphql-tag": "^2.10.1"
   },
   "peerDependencies": {
     "@emotion/react": "11.10.4",

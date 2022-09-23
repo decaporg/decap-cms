@@ -1,6 +1,6 @@
 # Lib Util
 
-Shared utilities to handle various `netlify-cms-backend-*` backends operations.
+Shared utilities to handle various backends operations.
 
 ## Code structure
 
