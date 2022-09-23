@@ -19,7 +19,7 @@ The date widget translates a date picker input to a date string. For saving date
   ```yaml
   - label: 'Birthdate'
     name: 'birthdate'
-    widget: 'date'
+    widget: 'datetime'
     default: ''
     format: 'MMM Do YY'
   ```

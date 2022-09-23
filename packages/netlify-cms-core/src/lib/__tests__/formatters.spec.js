@@ -547,7 +547,7 @@ describe('formatters', () => {
 
       const date = new Date('2020-01-02T13:28:27.679Z');
       const entry = fromJS({ data: { date, title: 'title' } });
-      const collection = fromJS({ fields: [{ name: 'date', widget: 'date' }] });
+      const collection = fromJS({ fields: [{ name: 'date', widget: 'datetime' }] });
 
       expect(summaryFormatter('{{title}}-{{year}}', entry, collection)).toBe('title-2020');
     });
@@ -558,7 +558,7 @@ describe('formatters', () => {
 
       const date = new Date('2020-01-02T13:28:27.679Z');
       const entry = fromJS({ path: 'post.md', data: { date, title: 'title' } });
-      const collection = fromJS({ fields: [{ name: 'date', widget: 'date' }] });
+      const collection = fromJS({ fields: [{ name: 'date', widget: 'datetime' }] });
 
       expect(
         summaryFormatter('{{title}}-{{year}}-{{filename}}.{{extension}}', entry, collection),
@@ -576,7 +576,7 @@ describe('formatters', () => {
       });
       const collection = fromJS({
         folder: '_portfolio',
-        fields: [{ name: 'date', widget: 'date' }],
+        fields: [{ name: 'date', widget: 'datetime' }],
       });
 
       expect(summaryFormatter('{{dirname}}/{{title}}-{{year}}', entry, collection)).toBe(
@@ -597,7 +597,7 @@ describe('formatters', () => {
         folder: '_portfolio',
         nested: { depth: 100 },
         meta: { path: { widget: 'string', label: 'Path', index_file: 'index' } },
-        fields: [{ name: 'date', widget: 'date' }],
+        fields: [{ name: 'date', widget: 'datetime' }],
       });
 
       expect(summaryFormatter('{{dirname}}/{{title}}-{{year}}', entry, collection)).toBe(
@@ -705,7 +705,7 @@ describe('formatters', () => {
         folder: '_portfolio',
         nested: { depth: 100 },
         meta: { path: { widget: 'string', label: 'Path', index_file: 'index' } },
-        fields: [{ name: 'date', widget: 'date' }],
+        fields: [{ name: 'date', widget: 'datetime' }],
       });
 
       expect(

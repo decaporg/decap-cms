@@ -126,7 +126,6 @@ collections: # A list of collections the CMS should be able to edit
       - { label: 'Number', name: 'number', widget: 'number', hint: 'To infinity and beyond!' }
       - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
       - { label: 'Datetime', name: 'datetime', widget: 'datetime' }
-      - { label: 'Date', name: 'date', widget: 'date' }
       - { label: 'Image', name: 'image', widget: 'image' }
       - { label: 'File', name: 'file', widget: 'file' }
       - { label: 'Select', name: 'select', widget: 'select', options: ['a', 'b', 'c'] }
@@ -155,7 +154,6 @@ collections: # A list of collections the CMS should be able to edit
           - { label: 'Number', name: 'number', widget: 'number' }
           - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
           - { label: 'Datetime', name: 'datetime', widget: 'datetime' }
-          - { label: 'Date', name: 'date', widget: 'date' }
           - { label: 'Image', name: 'image', widget: 'image' }
           - { label: 'File', name: 'file', widget: 'file' }
           - { label: 'Select', name: 'select', widget: 'select', options: ['a', 'b', 'c'] }
@@ -169,7 +167,6 @@ collections: # A list of collections the CMS should be able to edit
           - { label: 'Number', name: 'number', widget: 'number' }
           - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
           - { label: 'Datetime', name: 'datetime', widget: 'datetime' }
-          - { label: 'Date', name: 'date', widget: 'date' }
           - { label: 'Image', name: 'image', widget: 'image' }
           - { label: 'File', name: 'file', widget: 'file' }
           - { label: 'Select', name: 'select', widget: 'select', options: ['a', 'b', 'c'] }
@@ -183,7 +180,6 @@ collections: # A list of collections the CMS should be able to edit
               - { label: 'Number', name: 'number', widget: 'number' }
               - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
               - { label: 'Datetime', name: 'datetime', widget: 'datetime' }
-              - { label: 'Date', name: 'date', widget: 'date' }
               - { label: 'Image', name: 'image', widget: 'image' }
               - { label: 'File', name: 'file', widget: 'file' }
               - { label: 'Select', name: 'select', widget: 'select', options: ['a', 'b', 'c'] }
@@ -203,7 +199,6 @@ collections: # A list of collections the CMS should be able to edit
                   - { label: 'Number', name: 'number', widget: 'number' }
                   - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
                   - { label: 'Datetime', name: 'datetime', widget: 'datetime' }
-                  - { label: 'Date', name: 'date', widget: 'date' }
                   - { label: 'Image', name: 'image', widget: 'image' }
                   - { label: 'File', name: 'file', widget: 'file' }
                   - { label: 'Select', name: 'select', widget: 'select', options: ['a', 'b', 'c'] }
@@ -218,7 +213,6 @@ collections: # A list of collections the CMS should be able to edit
                       - { label: 'Number', name: 'number', widget: 'number' }
                       - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
                       - { label: 'Datetime', name: 'datetime', widget: 'datetime' }
-                      - { label: 'Date', name: 'date', widget: 'date' }
                       - { label: 'Image', name: 'image', widget: 'image' }
                       - { label: 'File', name: 'file', widget: 'file' }
                       - {
@@ -250,7 +244,6 @@ collections: # A list of collections the CMS should be able to edit
             name: 'type_3_object'
             widget: 'object'
             fields:
-              - { label: 'Date', name: 'date', widget: 'date' }
               - { label: 'Image', name: 'image', widget: 'image' }
               - { label: 'File', name: 'file', widget: 'file' }
   - name: pages # a nested collection

@@ -595,7 +595,6 @@ declare module 'netlify-cms-core' {
   export const BooleanWidget: CmsWidgetParam<boolean>;
   export const CodeWidget: CmsWidgetParam<any>;
   export const ColorStringWidget: CmsWidgetParam<string>;
-  export const DateWidget: CmsWidgetParam<Date | string>;
   export const DateTimeWidget: CmsWidgetParam<Date | string>;
   export const FileWidget: CmsWidgetParam<string | string[] | List<string>>;
   export const ImageWidget: CmsWidgetParam<string | string[] | List<string>>;

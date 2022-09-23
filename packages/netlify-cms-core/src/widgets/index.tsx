@@ -1,7 +1,6 @@
 import BooleanWidget from './boolean';
 import CodeWidget from './code';
 import ColorStringWidget from './colorstring';
-import DateWidget from './date';
 import DateTimeWidget from './datetime';
 import FileWidget from './file';
 import ImageWidget from './image';
@@ -19,7 +18,6 @@ export {
   BooleanWidget,
   CodeWidget,
   ColorStringWidget,
-  DateWidget,
   DateTimeWidget,
   FileWidget,
   ImageWidget,
