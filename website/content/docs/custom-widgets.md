@@ -276,7 +276,7 @@ Here is the content of `package.json` that you will have at the end:
 
 ```javascript
 {
-  "name": "netlify-cms-widget-starter",
+  "name": "widget-starter",
   "description": "A boilerplate for creating Netlify CMS widgets.",
   "author": "name of developer",
   "keywords": [
@@ -521,7 +521,7 @@ You'll want to take a few steps before publishing a production built package to 
 
    ```json
    {
-     "name": "netlify-cms-widget-starter",
+     "name": "starter",
      "description": "A boilerplate for creating Netlify CMS widgets.",
      "author": "name of developer",
      "keywords": [
@@ -536,9 +536,8 @@ You'll want to take a few steps before publishing a production built package to 
      // ... rest
    }
    ```
-2. For discoverability, ensure that your package name follows the pattern `netlify-cms-widget-<name>`.
-3. Delete this `README.md`, rename `README_TEMPLATE.md` to `README.md`, and update the new file for your specific widget.
-4. Rename the exports in `src/index.js`. For example, if your widget is `netlify-cms-widget-awesome`, you would do:
+2. Delete this `README.md`, rename `README_TEMPLATE.md` to `README.md`, and update the new file for your specific widget.
+3. Rename the exports in `src/index.js`. For example, if your widget is `awesome-widget`, you would do:
 
 ```javascript
 if (typeof window !== 'undefined') {

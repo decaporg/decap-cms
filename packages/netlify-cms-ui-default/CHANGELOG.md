@@ -640,7 +640,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Features
 
-* **netlify-cms-widget-relation:** use react-select and add support for multiple entries ([#1936](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/issues/1936)) ([518f6fb](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/commit/518f6fb))
+* **relation-widget:** use react-select and add support for multiple entries ([#1936](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/issues/1936)) ([518f6fb](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/commit/518f6fb))
 
 
 
@@ -662,7 +662,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Features
 
-* **netlify-cms-widget-list:** add variable type definitions to list widget ([#1857](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/issues/1857)) ([8ddc168](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/commit/8ddc168))
+* **list-widget:** add variable type definitions to list widget ([#1857](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/issues/1857)) ([8ddc168](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-ui-default/commit/8ddc168))
 
 
 

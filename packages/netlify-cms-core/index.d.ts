@@ -591,4 +591,21 @@ declare module 'netlify-cms-core' {
   export const NetlifyCmsCore: CMS;
 
   export default NetlifyCmsCore;
+
+  export const BooleanWidget: CmsWidgetParam<boolean>;
+  export const CodeWidget: CmsWidgetParam<any>;
+  export const ColorStringWidget: CmsWidgetParam<string>;
+  export const DateWidget: CmsWidgetParam<Date | string>;
+  export const DateTimeWidget: CmsWidgetParam<Date | string>;
+  export const FileWidget: CmsWidgetParam<string | string[] | List<string>>;
+  export const ImageWidget: CmsWidgetParam<string | string[] | List<string>>;
+  export const ListWidget: CmsWidgetParam<List<any>>;
+  export const MapWidget: CmsWidgetParam<any>;
+  export const MarkdownWidget: CmsWidgetParam<string>;
+  export const NumberWidget: CmsWidgetParam<string | number>;
+  export const ObjectWidget: CmsWidgetParam<Map<string, any> | Record<string, any>>;
+  export const RelationWidget: CmsWidgetParam<any>;
+  export const SelectWidget: CmsWidgetParam<string | string[]>;
+  export const StringWidget: CmsWidgetParam<string>;
+  export const TextWidget: CmsWidgetParam<string>;
 }

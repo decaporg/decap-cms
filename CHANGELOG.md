@@ -21,21 +21,6 @@ below. The legacy pre-2.0 changelog is below as well.
 ## Editor Components
 - [netlify-cms-editor-component-image](https://github.com/netlify/netlify-cms/blob/master/packages/netlify-cms-editor-component-image/CHANGELOG.md)
 
-## Widgets
-- [netlify-cms-widget-boolean](https://github.com/netlify/netlify-cms/blob/master/packages/netlify-cms-widget-boolean/CHANGELOG.md)
-- [netlify-cms-widget-date](https://github.com/netlify/netlify-cms/blob/master/packages/netlify-cms-widget-date/CHANGELOG.md)
-- [netlify-cms-widget-datetime](https://github.com/netlify/netlify-cms/blob/master/packages/netlify-cms-widget-datetime/CHANGELOG.md)
-- [netlify-cms-widget-file](https://github.com/netlify/netlify-cms/blob/master/packages/netlify-cms-widget-file/CHANGELOG.md)
-- [netlify-cms-widget-image](https://github.com/netlify/netlify-cms/blob/master/packages/netlify-cms-widget-image/CHANGELOG.md)
-- [netlify-cms-widget-list](https://github.com/netlify/netlify-cms/blob/master/packages/netlify-cms-widget-list/CHANGELOG.md)
-- [netlify-cms-widget-markdown](https://github.com/netlify/netlify-cms/blob/master/packages/netlify-cms-widget-markdown/CHANGELOG.md)
-- [netlify-cms-widget-number](https://github.com/netlify/netlify-cms/blob/master/packages/netlify-cms-widget-number/CHANGELOG.md)
-- [netlify-cms-widget-object](https://github.com/netlify/netlify-cms/blob/master/packages/netlify-cms-widget-object/CHANGELOG.md)
-- [netlify-cms-widget-relation](https://github.com/netlify/netlify-cms/blob/master/packages/netlify-cms-widget-relation/CHANGELOG.md)
-- [netlify-cms-widget-select](https://github.com/netlify/netlify-cms/blob/master/packages/netlify-cms-widget-select/CHANGELOG.md)
-- [netlify-cms-widget-string](https://github.com/netlify/netlify-cms/blob/master/packages/netlify-cms-widget-string/CHANGELOG.md)
-- [netlify-cms-widget-text](https://github.com/netlify/netlify-cms/blob/master/packages/netlify-cms-widget-text/CHANGELOG.md)
-
 ## Legacy Changelog
 
 ## [Unreleased] ([demo](https://cms-demo.netlify.com/))

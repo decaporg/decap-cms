@@ -73,7 +73,34 @@
     "url": "^0.11.0",
     "url-join": "^4.0.1",
     "what-input": "^5.1.4",
-    "yaml": "^1.8.3"
+    "yaml": "^1.8.3",
+    "react-codemirror2": "^7.0.0",
+    "react-select": "^4.0.0",
+    "react-color": "^2.18.1",
+    "validate-color": "^2.1.0",
+    "react-datetime": "^3.1.1",
+    "array-move": "4.0.0",
+    "common-tags": "^1.8.0",
+    "ol": "^6.9.0",
+    "dompurify": "^2.2.6",
+    "is-hotkey": "^0.2.0",
+    "mdast-util-definitions": "^1.2.3",
+    "mdast-util-to-string": "^1.0.5",
+    "rehype-parse": "^6.0.0",
+    "rehype-remark": "^8.0.0",
+    "rehype-stringify": "^7.0.0",
+    "remark-parse": "^6.0.3",
+    "remark-rehype": "^4.0.0",
+    "remark-stringify": "^6.0.4",
+    "slate": "^0.47.0",
+    "slate-base64-serializer": "^0.2.107",
+    "slate-plain-serializer": "^0.7.1",
+    "slate-react": "^0.22.0",
+    "slate-soft-break": "^0.9.0",
+    "unified": "^7.1.0",
+    "unist-builder": "^1.0.3",
+    "unist-util-visit-parents": "^2.0.1",
+    "react-textarea-autosize": "^8.0.0"
   },
   "peerDependencies": {
     "@emotion/react": "11.10.4",
@@ -89,7 +116,9 @@
     "prop-types": "^15.7.2",
     "react": "^16.8.4 || ^17.0.0",
     "react-dom": "^16.8.4 || ^17.0.0",
-    "react-immutable-proptypes": "^2.1.0"
+    "react-immutable-proptypes": "^2.1.0",
+    "codemirror": "^5.46.0",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "@types/history": "^4.7.8",
@@ -97,6 +126,9 @@
     "@types/react-scroll-sync": "0.8.4",
     "@types/redux-mock-store": "^1.0.2",
     "@types/url-join": "^4.0.0",
-    "redux-mock-store": "^1.5.3"
+    "redux-mock-store": "^1.5.3",
+    "commonmark": "^0.30.0",
+    "commonmark-spec": "^0.30.0",
+    "slate-hyperscript": "^0.13.3"
   }
 }
