@@ -13,8 +13,8 @@ This package is similar to the [`netlify-cms`](https://github.com/netlify/netlif
 - It does not automatically initialize - you must run the CMS `init` method.
 - It does not include `react` or `react-dom` - they are required as peer dependencies.
 - It does not include the following extensions:
-  - [`netlify-cms-media-library-cloudinary`]
-  - [`netlify-cms-media-library-uploadcare`]
+  - [`media-library/cloudinary`]
+  - [`media-library/uploadcare`]
   
 ## Usage
 Install via script tag:

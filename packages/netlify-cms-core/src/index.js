@@ -2,6 +2,7 @@ import bootstrap from './bootstrap';
 import Registry from './lib/registry';
 
 export * from './widgets';
+export * from './media-libraries';
 
 export const NetlifyCmsCore = {
   ...Registry,

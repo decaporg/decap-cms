@@ -109,7 +109,9 @@
     "validate-color": "^2.1.0",
     "what-input": "^5.1.4",
     "what-the-diff": "^0.6.0",
-    "yaml": "^1.8.3"
+    "yaml": "^1.8.3",
+    "uploadcare-widget": "^3.7.0",
+    "uploadcare-widget-tab-effects": "^1.4.0"
   },
   "peerDependencies": {
     "@emotion/react": "11.10.4",

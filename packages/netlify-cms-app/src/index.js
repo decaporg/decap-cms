@@ -1,4 +1,8 @@
-import { NetlifyCmsCore as CMS } from 'netlify-cms-core';
+import {
+  NetlifyCmsCore as CMS,
+  MediaLibraryCloudinary,
+  MediaLibraryUploadcare,
+} from 'netlify-cms-core';
 import moment from 'moment';
 import './extensions.js';
 
@@ -8,6 +12,8 @@ if (typeof window !== 'undefined') {
     console.log(`netlify-cms-app ${NETLIFY_CMS_APP_VERSION}`);
   }
 }
+
+export { MediaLibraryCloudinary, MediaLibraryUploadcare };
 
 export const NetlifyCmsApp = {
   ...CMS,

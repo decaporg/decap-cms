@@ -585,7 +585,7 @@ declare module 'netlify-cms-core' {
     registerIcon: (iconName: string, icon: ReactNode) => void;
     getIcon: (iconName: string) => ReactNode;
     registerAdditionalLink: (id: string, title: string, link: string, iconName?: string) => void;
-    getAdditionalLinks: () => { title: string, link: string, iconName?: string }[];
+    getAdditionalLinks: () => { title: string; link: string; iconName?: string }[];
   }
 
   export const NetlifyCmsCore: CMS;
@@ -607,4 +607,54 @@ declare module 'netlify-cms-core' {
   export const SelectWidget: CmsWidgetParam<string | string[]>;
   export const StringWidget: CmsWidgetParam<string>;
   export const TextWidget: CmsWidgetParam<string>;
+
+  export const MediaLibraryCloudinary: {
+    name: string;
+    init: ({
+      options,
+      handleInsert,
+    }?: {
+      options?: Record<string, any> | undefined;
+      handleInsert: any;
+    }) => Promise<{
+      show: ({
+        config,
+        allowMultiple,
+      }?: {
+        config?: Record<string, any> | undefined;
+        allowMultiple: boolean;
+      }) => any;
+      hide: () => any;
+      enableStandalone: () => boolean;
+    }>;
+  };
+
+  export const MediaLibraryUploadcare: {
+    name: string;
+    init: ({
+      options,
+      handleInsert,
+    }?: {
+      options?:
+        | {
+            config: Record<string, any>;
+            settings: Record<string, any>;
+          }
+        | undefined;
+      handleInsert: any;
+    }) => Promise<{
+      show: ({
+        value,
+        config,
+        allowMultiple,
+        imagesOnly,
+      }?: {
+        value: any;
+        config?: Record<string, any> | undefined;
+        allowMultiple: boolean;
+        imagesOnly?: boolean | undefined;
+      }) => any;
+      enableStandalone: () => boolean;
+    }>;
+  };
 }

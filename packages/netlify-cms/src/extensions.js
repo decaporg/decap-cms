@@ -1,7 +1,8 @@
-import { NetlifyCmsApp as CMS } from 'netlify-cms-app/dist/esm';
-// Media libraries
-import uploadcare from 'netlify-cms-media-library-uploadcare';
-import cloudinary from 'netlify-cms-media-library-cloudinary';
+import {
+  NetlifyCmsApp as CMS,
+  MediaLibraryCloudinary,
+  MediaLibraryUploadcare,
+} from 'netlify-cms-app/dist/esm';
 
-CMS.registerMediaLibrary(uploadcare);
-CMS.registerMediaLibrary(cloudinary);
+CMS.registerMediaLibrary(MediaLibraryCloudinary);
+CMS.registerMediaLibrary(MediaLibraryUploadcare);
