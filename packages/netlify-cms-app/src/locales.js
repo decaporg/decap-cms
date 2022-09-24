@@ -1,4 +1,3 @@
-import { NetlifyCmsCore as CMS } from 'netlify-cms-core';
-import { en } from 'netlify-cms-locales';
+import { NetlifyCmsCore as CMS, locales } from 'netlify-cms-core';
 
-CMS.registerLocale('en', en);
+CMS.registerLocale('en', locales.en);

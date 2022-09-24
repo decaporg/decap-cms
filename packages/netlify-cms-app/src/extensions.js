@@ -11,6 +11,7 @@ import {
   GitGatewayBackend,
   GitHubBackend,
   GitLabBackend,
+  imageEditorComponent,
   ImageWidget,
   ListWidget,
   MapWidget,
@@ -24,11 +25,8 @@ import {
   StringWidget,
   TestBackend,
   TextWidget,
+  locales
 } from 'netlify-cms-core';
-// Editor Components
-import image from 'netlify-cms-editor-component-image';
-// Locales
-import * as locales from 'netlify-cms-locales';
 import { Icon, images } from 'netlify-cms-ui-default';
 
 // Register all the things
@@ -56,7 +54,7 @@ CMS.registerWidget([
   CodeWidget.Widget(),
   ColorStringWidget.Widget(),
 ]);
-CMS.registerEditorComponent(image);
+CMS.registerEditorComponent(imageEditorComponent);
 CMS.registerEditorComponent({
   id: 'code-block',
   label: 'Code Block',

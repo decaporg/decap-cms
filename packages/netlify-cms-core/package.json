@@ -140,6 +140,9 @@
     "commonmark": "^0.30.0",
     "commonmark-spec": "^0.30.0",
     "redux-mock-store": "^1.5.3",
-    "slate-hyperscript": "^0.13.3"
+    "slate-hyperscript": "^0.13.3",
+    "cross-env": "^7.0.0",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^4.0.0"
   }
 }

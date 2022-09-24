@@ -11,9 +11,6 @@ below. The legacy pre-2.0 changelog is below as well.
 - [netlify-cms-lib-util](https://github.com/netlify/netlify-cms/blob/master/packages/netlify-cms-lib-util/CHANGELOG.md)
 - [netlify-cms-ui-default](https://github.com/netlify/netlify-cms/blob/master/packages/netlify-cms-ui-default/CHANGELOG.md)
 
-## Editor Components
-- [netlify-cms-editor-component-image](https://github.com/netlify/netlify-cms/blob/master/packages/netlify-cms-editor-component-image/CHANGELOG.md)
-
 ## Legacy Changelog
 
 ## [Unreleased] ([demo](https://cms-demo.netlify.com/))
