@@ -2,7 +2,7 @@ import { actions as notifActions } from 'redux-notifications';
 
 import { currentBackend } from '../backend';
 
-import type { Credentials, User } from 'netlify-cms-lib-util';
+import type { Credentials, User } from '../lib/util';
 import type { ThunkDispatch } from 'redux-thunk';
 import type { AnyAction } from 'redux';
 import type { State } from '../types/redux';

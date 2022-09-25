@@ -1,13 +1,13 @@
 import { attempt, isError, take, unset, isEmpty } from 'lodash';
 import uuid from 'uuid/v4';
+import { extname, dirname } from 'path';
+
 import {
   EditorialWorkflowError,
   Cursor,
   CURSOR_COMPATIBILITY_SYMBOL,
   basename,
-} from 'netlify-cms-lib-util';
-import { extname, dirname } from 'path';
-
+} from '../../lib/util';
 import AuthenticationPage from './AuthenticationPage';
 
 import type {
@@ -20,7 +20,7 @@ import type {
   Config,
   ImplementationFile,
   DataFile,
-} from 'netlify-cms-lib-util';
+} from '../../lib/util';
 
 type RepoFile = { path: string; content: string | AssetProxy };
 type RepoTree = { [key: string]: RepoFile | RepoTree };

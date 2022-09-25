@@ -16,9 +16,10 @@ import {
   shadows,
   IconButton,
 } from 'netlify-cms-ui-default';
-import { basename } from 'netlify-cms-lib-util';
 import { SortableContainer, SortableElement } from 'react-sortable-hoc';
 import { arrayMoveImmutable as arrayMove } from 'array-move';
+
+import { basename } from '../../lib/util';
 
 const MAX_DISPLAY_LENGTH = 50;
 

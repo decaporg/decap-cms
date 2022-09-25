@@ -5,9 +5,9 @@ import { connect } from 'react-redux';
 import styled from '@emotion/styled';
 import { translate } from 'react-polyglot';
 import { partial } from 'lodash';
-import { Cursor } from 'netlify-cms-lib-util';
 import { colors } from 'netlify-cms-ui-default';
 
+import { Cursor } from '../../../lib/util';
 import {
   loadEntries as actionLoadEntries,
   traverseCollectionCursor as actionTraverseCollectionCursor,

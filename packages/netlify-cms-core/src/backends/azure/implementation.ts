@@ -1,5 +1,6 @@
 import { trimStart, trim } from 'lodash';
 import semaphore from 'semaphore';
+
 import {
   basename,
   getMediaDisplayURL,
@@ -15,8 +16,7 @@ import {
   entriesByFolder,
   contentKeyFromBranch,
   getBlobSHA,
-} from 'netlify-cms-lib-util';
-
+} from '../../lib/util';
 import AuthenticationPage from './AuthenticationPage';
 import API, { API_NAME } from './API';
 
@@ -34,7 +34,7 @@ import type {
   AsyncLock,
   User,
   UnpublishedEntryMediaFile,
-} from 'netlify-cms-lib-util';
+} from '../../lib/util';
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
 

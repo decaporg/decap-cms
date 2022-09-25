@@ -1,8 +1,8 @@
 import { get } from 'lodash';
 import { actions as notifActions } from 'redux-notifications';
 import { Map, List } from 'immutable';
-import { EDITORIAL_WORKFLOW_ERROR } from 'netlify-cms-lib-util';
 
+import { EDITORIAL_WORKFLOW_ERROR } from '../lib/util';
 import { currentBackend, slugFromCustomPath } from '../backend';
 import {
   selectPublishedSlugs,
@@ -271,7 +271,7 @@ export function loadUnpublishedEntry(collection: Collection, slug: string) {
       dispatch(addAssets(assetProxies));
       dispatch(unpublishedEntryLoaded(collection, entry));
       dispatch(createDraftFromEntry(entry));
-    } catch (error) {
+    } catch (error: any) {
       if (error.name === EDITORIAL_WORKFLOW_ERROR && error.notUnderEditorialWorkflow) {
         dispatch(unpublishedEntryRedirected(collection, slug));
         dispatch(loadEntry(collection, slug));
@@ -392,7 +392,7 @@ export function persistUnpublishedEntry(collection: Collection, existingUnpublis
         dispatch(loadUnpublishedEntry(collection, newSlug));
         navigateToEntry(collection.get('name'), newSlug);
       }
-    } catch (error) {
+    } catch (error: any) {
       dispatch(
         notifSend({
           message: {

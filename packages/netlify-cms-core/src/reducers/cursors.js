@@ -1,6 +1,6 @@
 import { fromJS } from 'immutable';
-import { Cursor } from 'netlify-cms-lib-util';
 
+import { Cursor } from '../lib/util';
 import {
   ENTRIES_SUCCESS,
   SORT_ENTRIES_SUCCESS,

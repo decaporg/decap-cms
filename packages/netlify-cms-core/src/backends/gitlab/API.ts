@@ -2,6 +2,13 @@ import { ApolloClient } from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { createHttpLink } from 'apollo-link-http';
 import { setContext } from 'apollo-link-context';
+import { Base64 } from 'js-base64';
+import { Map } from 'immutable';
+import { flow, partial, result, trimStart } from 'lodash';
+import { dirname } from 'path';
+
+const NO_CACHE = 'no-cache';
+import * as queries from './queries';
 import {
   localForage,
   parseLinkHeader,
@@ -25,14 +32,7 @@ import {
   requestWithBackoff,
   readFileMetadata,
   throwOnConflictingBranches,
-} from 'netlify-cms-lib-util';
-import { Base64 } from 'js-base64';
-import { Map } from 'immutable';
-import { flow, partial, result, trimStart } from 'lodash';
-import { dirname } from 'path';
-
-const NO_CACHE = 'no-cache';
-import * as queries from './queries';
+} from '../../lib/util';
 
 import type { ApolloQueryResult } from 'apollo-client';
 import type { NormalizedCacheObject } from 'apollo-cache-inmemory';
@@ -43,7 +43,7 @@ import type {
   PersistOptions,
   FetchError,
   ImplementationFile,
-} from 'netlify-cms-lib-util';
+} from '../../lib/util';
 
 export const API_NAME = 'GitLab';
 

@@ -5,9 +5,10 @@ import styled from '@emotion/styled';
 import yaml from 'yaml';
 import { truncate } from 'lodash';
 import copyToClipboard from 'copy-text-to-clipboard';
-import { localForage } from 'netlify-cms-lib-util';
 import { buttons, colors } from 'netlify-cms-ui-default';
 import cleanStack from 'clean-stack';
+
+import { localForage } from '../../lib/util';
 
 const ISSUE_URL = 'https://github.com/netlify/netlify-cms/issues/new?';
 

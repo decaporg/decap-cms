@@ -5,12 +5,12 @@ import styled from '@emotion/styled';
 import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { dirname, sep } from 'path';
-import { stringTemplate } from 'netlify-cms-lib-widgets';
 import { Icon, colors, components } from 'netlify-cms-ui-default';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { sortBy } from 'lodash';
 
+import { stringTemplate } from '../../lib/widgets';
 import { selectEntries } from '../../reducers/entries';
 import { selectEntryCollectionTitle } from '../../reducers/collections';
 

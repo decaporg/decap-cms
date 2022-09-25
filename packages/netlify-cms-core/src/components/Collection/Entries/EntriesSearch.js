@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import { isEqual } from 'lodash';
-import { Cursor } from 'netlify-cms-lib-util';
 
+import { Cursor } from '../../../lib/util';
 import { selectSearchedEntries } from '../../../reducers';
 import {
   searchEntries as actionSearchEntries,

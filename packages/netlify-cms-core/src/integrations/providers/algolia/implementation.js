@@ -1,6 +1,6 @@
 import _ from 'lodash';
-import { unsentRequest } from 'netlify-cms-lib-util';
 
+import { unsentRequest } from '../../../lib/util';
 import { createEntry } from '../../../valueObjects/Entry';
 import { selectEntrySlug } from '../../../reducers/collections';
 

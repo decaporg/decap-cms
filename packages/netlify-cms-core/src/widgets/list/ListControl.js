@@ -14,8 +14,8 @@ import {
   lengths,
   FieldLabel,
 } from 'netlify-cms-ui-default';
-import { stringTemplate, validations } from 'netlify-cms-lib-widgets';
 
+import { stringTemplate, validations } from '../../lib/widgets';
 import NetlifyCmsWidgetObject from '../object';
 import {
   TYPES_KEY,

@@ -5,7 +5,8 @@ import { ClassNames } from '@emotion/react';
 import styled from '@emotion/styled';
 import { List, Map } from 'immutable';
 import { colors, lengths, ObjectWidgetTopBar } from 'netlify-cms-ui-default';
-import { stringTemplate } from 'netlify-cms-lib-widgets';
+
+import { stringTemplate } from '../../lib/widgets';
 
 const styleStrings = {
   nestedObjectControl: `

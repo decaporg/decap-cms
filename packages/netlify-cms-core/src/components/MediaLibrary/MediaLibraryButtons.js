@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import copyToClipboard from 'copy-text-to-clipboard';
-import { isAbsolutePath } from 'netlify-cms-lib-util';
 import { buttons, shadows, zIndex } from 'netlify-cms-ui-default';
 
+import { isAbsolutePath } from '../../lib/util';
 import { FileUploadButton } from '../UI';
 
 const styles = {

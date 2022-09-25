@@ -6,11 +6,6 @@ below. The legacy pre-2.0 changelog is below as well.
 - [netlify-cms](https://github.com/netlify/netlify-cms/blob/master/packages/netlify-cms/CHANGELOG.md)
 - [netlify-cms-core](https://github.com/netlify/netlify-cms/blob/master/packages/netlify-cms-core/CHANGELOG.md)
 
-## Shared libraries
-- [netlify-cms-lib-auth](https://github.com/netlify/netlify-cms/blob/master/packages/netlify-cms-lib-auth/CHANGELOG.md)
-- [netlify-cms-lib-util](https://github.com/netlify/netlify-cms/blob/master/packages/netlify-cms-lib-util/CHANGELOG.md)
-- [netlify-cms-ui-default](https://github.com/netlify/netlify-cms/blob/master/packages/netlify-cms-ui-default/CHANGELOG.md)
-
 ## Legacy Changelog
 
 ## [Unreleased] ([demo](https://cms-demo.netlify.com/))

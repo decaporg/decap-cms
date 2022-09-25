@@ -1,7 +1,7 @@
 import { List, Set, fromJS, OrderedMap } from 'immutable';
 import { get, escapeRegExp } from 'lodash';
-import { stringTemplate } from 'netlify-cms-lib-widgets';
 
+import { stringTemplate } from '../lib/widgets';
 import consoleError from '../lib/consoleError';
 import { CONFIG_SUCCESS } from '../actions/config';
 import { FILES, FOLDER } from '../constants/collectionTypes';

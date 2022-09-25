@@ -5,8 +5,8 @@ import { connect } from 'react-redux';
 import { orderBy, map } from 'lodash';
 import { translate } from 'react-polyglot';
 import fuzzy from 'fuzzy';
-import { fileExtension } from 'netlify-cms-lib-util';
 
+import { fileExtension } from '../../lib/util';
 import {
   loadMedia as loadMediaAction,
   persistMedia as persistMediaAction,

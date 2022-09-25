@@ -1,4 +1,8 @@
 import { flow, get } from 'lodash';
+import { dirname } from 'path';
+import { oneLine } from 'common-tags';
+import { parse } from 'what-the-diff';
+
 import {
   localForage,
   unsentRequest,
@@ -22,10 +26,7 @@ import {
   requestWithBackoff,
   readFileMetadata,
   throwOnConflictingBranches,
-} from 'netlify-cms-lib-util';
-import { dirname } from 'path';
-import { oneLine } from 'common-tags';
-import { parse } from 'what-the-diff';
+} from '../../lib/util';
 
 import type {
   ApiRequest,
@@ -33,7 +34,7 @@ import type {
   PersistOptions,
   FetchError,
   DataFile,
-} from 'netlify-cms-lib-util';
+} from '../../lib/util';
 
 interface Config {
   apiRoot?: string;

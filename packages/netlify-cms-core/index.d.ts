@@ -712,4 +712,14 @@ declare module 'netlify-cms-core' {
     zh_Hans: Record<string, any>;
     he: Record<string, any>;
   };
+
+  class NetlifyAuthenticator {
+    constructor(config: Record<string, any>);
+
+    refresh: (args: {
+      provider: string;
+      refresh_token: string;
+    }) => Promise<{ token: string; refresh_token: string }>;
+  }
+  export { NetlifyAuthenticator };
 }

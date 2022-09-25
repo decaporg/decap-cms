@@ -2,6 +2,7 @@ import GoTrue from 'gotrue-js';
 import jwtDecode from 'jwt-decode';
 import { get, pick, intersection } from 'lodash';
 import ini from 'ini';
+
 import {
   APIError,
   unsentRequest,
@@ -13,8 +14,7 @@ import {
   getLargeMediaFilteredMediaFiles,
   AccessTokenError,
   PreviewState,
-} from 'netlify-cms-lib-util';
-
+} from '../../lib/util';
 import { GitHubBackend } from '../github';
 import { GitLabBackend } from '../gitlab';
 import { BitbucketBackend, API as BitBucketAPI } from '../bitbucket';
@@ -37,7 +37,7 @@ import type {
   Config,
   ImplementationFile,
   DisplayURLObject,
-} from 'netlify-cms-lib-util';
+} from '../../lib/util';
 
 const STATUS_PAGE = 'https://www.netlifystatus.com';
 const GIT_GATEWAY_STATUS_ENDPOINT = `${STATUS_PAGE}/api/v2/components.json`;

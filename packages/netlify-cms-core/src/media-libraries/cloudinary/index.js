@@ -1,5 +1,6 @@
 import { pick } from 'lodash';
-import { loadScript } from 'netlify-cms-lib-util';
+
+import { loadScript } from '../../lib/util';
 
 const defaultOptions = {
   use_secure_url: true,

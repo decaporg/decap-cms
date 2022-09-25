@@ -1,5 +1,7 @@
 import { Base64 } from 'js-base64';
 import { partial, result, trim, trimStart } from 'lodash';
+import { dirname, basename } from 'path';
+
 import {
   localForage,
   APIError,
@@ -18,10 +20,9 @@ import {
   PreviewState,
   readFileMetadata,
   branchFromContentKey,
-} from 'netlify-cms-lib-util';
-import { dirname, basename } from 'path';
+} from '../../lib/util';
 
-import type { ApiRequest, AssetProxy, PersistOptions, DataFile } from 'netlify-cms-lib-util';
+import type { ApiRequest, AssetProxy, PersistOptions, DataFile } from '../../lib/util';
 import type { Map } from 'immutable';
 
 export const API_NAME = 'Azure DevOps';

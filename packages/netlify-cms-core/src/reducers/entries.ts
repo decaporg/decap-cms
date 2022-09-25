@@ -1,9 +1,9 @@
 import { Map, List, fromJS, OrderedMap, Set } from 'immutable';
 import { dirname, join } from 'path';
-import { isAbsolutePath, basename } from 'netlify-cms-lib-util';
 import { trim, once, sortBy, set, orderBy, groupBy } from 'lodash';
-import { stringTemplate } from 'netlify-cms-lib-widgets';
 
+import { isAbsolutePath, basename } from '../lib/util';
+import { stringTemplate } from '../lib/widgets';
 import { SortDirection } from '../types/redux';
 import { folderFormatter } from '../lib/formatters';
 import { selectSortDataPath } from './collections';

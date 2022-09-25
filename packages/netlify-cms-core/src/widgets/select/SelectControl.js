@@ -5,7 +5,8 @@ import { Map, List, fromJS } from 'immutable';
 import { find } from 'lodash';
 import Select from 'react-select';
 import { reactSelectStyles } from 'netlify-cms-ui-default';
-import { validations } from 'netlify-cms-lib-widgets';
+
+import { validations } from '../../lib/widgets';
 
 function optionToString(option) {
   return option && option.value ? option.value : null;

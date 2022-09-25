@@ -29,6 +29,5 @@
       "lower",
       { "ignoreKeywords": ["dummyValue"], "camelCaseSvgKeywords": true }
     ]
-  },
-  "ignoreFiles": ["packages/netlify-cms-lib-auth/index.d.ts"]
+  }
 }

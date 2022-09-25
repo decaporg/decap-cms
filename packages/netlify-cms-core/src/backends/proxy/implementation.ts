@@ -3,8 +3,7 @@ import {
   APIError,
   unsentRequest,
   blobToFileObj,
-} from 'netlify-cms-lib-util';
-
+} from '../../lib/util';
 import AuthenticationPage from './AuthenticationPage';
 
 import type {
@@ -16,7 +15,7 @@ import type {
   Implementation,
   ImplementationFile,
   UnpublishedEntry,
-} from 'netlify-cms-lib-util';
+} from '../../lib/util';
 
 async function serializeAsset(assetProxy: AssetProxy) {
   const base64content = await assetProxy.toBase64!();

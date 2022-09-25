@@ -1,9 +1,8 @@
-import { unsentRequest } from 'netlify-cms-lib-util';
-
+import { unsentRequest } from '../../lib/util';
 import { API as GitlabAPI } from '../gitlab';
 
 import type { Config as GitLabConfig, CommitAuthor } from '../gitlab/API';
-import type { ApiRequest } from 'netlify-cms-lib-util';
+import type { ApiRequest } from '../../lib/util';
 
 type Config = GitLabConfig & { tokenPromise: () => Promise<string>; commitAuthor: CommitAuthor };
 

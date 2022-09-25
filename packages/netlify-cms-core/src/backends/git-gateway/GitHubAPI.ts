@@ -1,9 +1,8 @@
-import { APIError } from 'netlify-cms-lib-util';
-
+import { APIError } from '../../lib/util';
 import { API as GithubAPI } from '../github';
 
 import type { Config as GitHubConfig, Diff } from '../github/API';
-import type { FetchError } from 'netlify-cms-lib-util';
+import type { FetchError } from '../../lib/util';
 import type { Octokit } from '@octokit/rest';
 
 type Config = GitHubConfig & {

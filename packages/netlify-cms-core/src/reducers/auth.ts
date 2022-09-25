@@ -8,7 +8,7 @@ import {
   LOGOUT,
 } from '../actions/auth';
 
-import type { User } from 'netlify-cms-lib-util';
+import type { User } from '../lib/util';
 import type { AuthAction } from '../actions/auth';
 
 export type Auth = {

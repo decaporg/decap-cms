@@ -6,6 +6,8 @@ import {
 } from 'apollo-cache-inmemory';
 import { createHttpLink } from 'apollo-link-http';
 import { setContext } from 'apollo-link-context';
+import { trim, trimStart } from 'lodash';
+
 import {
   APIError,
   readFile,
@@ -14,9 +16,7 @@ import {
   branchFromContentKey,
   CMS_BRANCH_PREFIX,
   throwOnConflictingBranches,
-} from 'netlify-cms-lib-util';
-import { trim, trimStart } from 'lodash';
-
+} from '../../lib/util';
 import introspectionQueryResultData from './fragmentTypes';
 import API, { API_NAME, PullRequestState, MOCK_PULL_REQUEST } from './API';
 import * as queries from './queries';

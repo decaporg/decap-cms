@@ -1,6 +1,8 @@
 import { attempt, flatten, isError, uniq, trim, sortBy, get, set } from 'lodash';
 import { List, fromJS, Set } from 'immutable';
 import * as fuzzy from 'fuzzy';
+import { basename, join, extname, dirname } from 'path';
+
 import {
   localForage,
   Cursor,
@@ -9,10 +11,8 @@ import {
   blobToFileObj,
   asyncLock,
   EDITORIAL_WORKFLOW_ERROR,
-} from 'netlify-cms-lib-util';
-import { basename, join, extname, dirname } from 'path';
-import { stringTemplate } from 'netlify-cms-lib-widgets';
-
+} from './lib/util';
+import { stringTemplate } from './lib/widgets';
 import { resolveFormat } from './formats/formats';
 import { selectUseWorkflow } from './reducers/config';
 import { selectMediaFilePath, selectEntry } from './reducers/entries';
@@ -71,7 +71,7 @@ import type {
   UnpublishedEntry,
   DataFile,
   UnpublishedEntryDiff,
-} from 'netlify-cms-lib-util';
+} from './lib/util';
 import type { Map } from 'immutable';
 
 const { extractTemplateVars, dateParsers, expandPath } = stringTemplate;
@@ -399,7 +399,7 @@ export class Backend {
   async logout() {
     try {
       await this.implementation.logout();
-    } catch (e) {
+    } catch (e: any) {
       console.warn('Error during logout', e.message);
     } finally {
       this.user = null;

@@ -1,7 +1,7 @@
 import { Map } from 'immutable';
 import { actions as notifActions } from 'redux-notifications';
-import { basename, getBlobSHA } from 'netlify-cms-lib-util';
 
+import { basename, getBlobSHA } from '../lib/util';
 import { currentBackend } from '../backend';
 import { createAssetProxy } from '../valueObjects/AssetProxy';
 import { selectIntegration } from '../reducers';
@@ -27,7 +27,7 @@ import type {
 import type { AnyAction } from 'redux';
 import type { ThunkDispatch } from 'redux-thunk';
 import type AssetProxy from '../valueObjects/AssetProxy';
-import type { ImplementationMediaFile } from 'netlify-cms-lib-util';
+import type { ImplementationMediaFile } from '../lib/util';
 
 const { notifSend } = notifActions;
 
@@ -323,7 +323,7 @@ export function deleteMedia(file: MediaFile, opts: MediaOptions = {}) {
       try {
         await provider.delete(file.id);
         return dispatch(mediaDeleted(file, { privateUpload }));
-      } catch (error) {
+      } catch (error: any) {
         console.error(error);
         dispatch(
           notifSend({
@@ -353,7 +353,7 @@ export function deleteMedia(file: MediaFile, opts: MediaOptions = {}) {
           dispatch(removeDraftEntryMediaFile({ id: file.id }));
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
       dispatch(
         notifSend({
@@ -401,7 +401,7 @@ export function loadMediaDisplayURL(file: MediaFile) {
       } else {
         throw new Error('No display URL was returned!');
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
       dispatch(mediaDisplayURLFailure(id, err));
     }

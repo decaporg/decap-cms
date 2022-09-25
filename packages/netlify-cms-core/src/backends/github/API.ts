@@ -2,6 +2,8 @@ import { Base64 } from 'js-base64';
 import semaphore from 'semaphore';
 import { initial, last, partial, result, trimStart, trim } from 'lodash';
 import { oneLine } from 'common-tags';
+import { dirname } from 'path';
+
 import {
   getAllResponses,
   APIError,
@@ -23,8 +25,7 @@ import {
   requestWithBackoff,
   unsentRequest,
   throwOnConflictingBranches,
-} from 'netlify-cms-lib-util';
-import { dirname } from 'path';
+} from '../../lib/util';
 
 import type {
   AssetProxy,
@@ -32,7 +33,7 @@ import type {
   PersistOptions,
   FetchError,
   ApiRequest,
-} from 'netlify-cms-lib-util';
+} from '../../lib/util';
 import type { Semaphore } from 'semaphore';
 import type { Octokit } from '@octokit/rest';
 

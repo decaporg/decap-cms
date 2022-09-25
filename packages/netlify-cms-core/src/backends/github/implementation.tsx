@@ -2,6 +2,7 @@ import * as React from 'react';
 import semaphore from 'semaphore';
 import trimStart from 'lodash/trimStart';
 import { stripIndent } from 'common-tags';
+
 import {
   CURSOR_COMPATIBILITY_SYMBOL,
   Cursor,
@@ -20,8 +21,7 @@ import {
   contentKeyFromBranch,
   unsentRequest,
   branchFromContentKey,
-} from 'netlify-cms-lib-util';
-
+} from '../../lib/util';
 import AuthenticationPage from './AuthenticationPage';
 import API, { API_NAME } from './API';
 import GraphQLAPI from './GraphQLAPI';
@@ -39,7 +39,7 @@ import type {
   ImplementationFile,
   UnpublishedEntryMediaFile,
   Entry,
-} from 'netlify-cms-lib-util';
+} from '../../lib/util';
 import type { Semaphore } from 'semaphore';
 
 type GitHubUser = Octokit.UsersGetAuthenticatedResponse;
@@ -495,7 +495,7 @@ export default class GitHub implements Implementation {
     try {
       await this.api!.persistFiles([], [mediaFile], options);
       const { sha, path, fileObj } = mediaFile as AssetProxy & { sha: string };
-      const displayURL = URL.createObjectURL(fileObj);
+      const displayURL = URL.createObjectURL(fileObj as Blob);
       return {
         id: sha,
         name: fileObj!.name,

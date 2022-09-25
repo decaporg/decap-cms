@@ -1,5 +1,4 @@
-import { isAbsolutePath } from 'netlify-cms-lib-util';
-
+import { isAbsolutePath } from '../lib/util';
 import { createAssetProxy } from '../valueObjects/AssetProxy';
 import { selectMediaFilePath } from '../reducers/entries';
 import { selectMediaFileByPath } from '../reducers/mediaLibrary';
@@ -60,7 +59,7 @@ export function loadAsset(resolvedPath: string) {
         dispatch(addAsset(asset));
       }
       dispatch(loadAssetSuccess(resolvedPath));
-    } catch (e) {
+    } catch (e: any) {
       dispatch(loadAssetFailure(resolvedPath, e));
     }
   };

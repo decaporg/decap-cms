@@ -1,7 +1,7 @@
 import { flow, partialRight, trimEnd, trimStart } from 'lodash';
-import { stringTemplate } from 'netlify-cms-lib-widgets';
 import { stripIndent } from 'common-tags';
 
+import { stringTemplate } from '../lib/widgets';
 import {
   selectIdentifier,
   selectField,

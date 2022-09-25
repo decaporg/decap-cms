@@ -1,8 +1,8 @@
 import { fromJS, List, Map } from 'immutable';
 import { isEqual } from 'lodash';
 import { actions as notifActions } from 'redux-notifications';
-import { Cursor } from 'netlify-cms-lib-util';
 
+import { Cursor } from '../lib/util';
 import { selectCollectionEntriesCursor } from '../reducers/cursors';
 import { selectFields, updateFieldByKey } from '../reducers/collections';
 import { selectIntegration, selectPublishedSlugs } from '../reducers';
@@ -22,7 +22,7 @@ import { navigateToEntry } from '../routing/history';
 import { getProcessSegment } from '../lib/formatters';
 import { hasI18n, duplicateDefaultI18nFields, serializeI18n, I18N, I18N_FIELD } from '../lib/i18n';
 
-import type { ImplementationMediaFile } from 'netlify-cms-lib-util';
+import type { ImplementationMediaFile } from '../lib/util';
 import type { AnyAction } from 'redux';
 import type { ThunkDispatch } from 'redux-thunk';
 import type {
@@ -534,7 +534,7 @@ export function loadEntry(collection: Collection, slug: string) {
       const loadedEntry = await tryLoadEntry(getState(), collection, slug);
       dispatch(entryLoaded(collection, loadedEntry));
       dispatch(createDraftFromEntry(loadedEntry));
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
       dispatch(
         notifSend({
@@ -630,7 +630,7 @@ export function loadEntries(collection: Collection, page = 0) {
           append,
         ),
       );
-    } catch (err) {
+    } catch (err: any) {
       dispatch(
         notifSend({
           message: {
@@ -681,7 +681,7 @@ export function traverseCollectionCursor(collection: Collection, action: string)
       return dispatch(
         entriesLoaded(collection, entries, pagination, addAppendActionsToCursor(newCursor), append),
       );
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
       dispatch(
         notifSend({
