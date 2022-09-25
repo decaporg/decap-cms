@@ -3617,9 +3617,9 @@
   integrity sha512-Z6/KzgyWOga3pJNS42A+zayjhPbf2zM3hegRQaOPnLOzEi86VV++6FLDWgR1LGrVCRufP/ph2daa3tEa5br1zA==
 
 "@types/node@^16.0.0":
-  version "16.11.27"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-16.11.27.tgz#5da19383bdbeda99bc0d09cfbb88cab7297ebc51"
-  integrity sha512-C1pD3kgLoZ56Uuy5lhfOxie4aZlA3UMGLX9rXteq4WitEZH6Rl80mwactt9QG0w0gLFlN/kLBTFnGXtDVWvWQw==
+  version "16.11.60"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-16.11.60.tgz#a1fbca80c18dd80c8783557304cdb7d55ac3aff5"
+  integrity sha512-kYIYa1D1L+HDv5M5RXQeEu1o0FKA6yedZIoyugm/MBPROkLpX4L7HRxMrPVyo8bnvjpW/wDlqFNGzXNMb7AdRw==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.1"
@@ -3637,9 +3637,9 @@
   integrity sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==
 
 "@types/prettier@^2.1.5":
-  version "2.6.0"
-  resolved "https://registry.yarnpkg.com/@types/prettier/-/prettier-2.6.0.tgz#efcbd41937f9ae7434c714ab698604822d890759"
-  integrity sha512-G/AdOadiZhnJp0jXCaBQU449W2h716OW/EoXeYkCytxKL06X1WCXB4DZpp8TpZ8eyIJVS1cw4lrlkkSYU21cDw==
+  version "2.7.1"
+  resolved "https://registry.yarnpkg.com/@types/prettier/-/prettier-2.7.1.tgz#dfd20e2dc35f027cdd6c1908e80a5ddc7499670e"
+  integrity sha512-ri0UmynRRvZiiUJdiz38MmIblKK+oH30MztdBVR95dv/Ubw6neWSb8u1XpRb72L4qsZOhz+L+z9JD40SJmfWow==
 
 "@types/prop-types@*":
   version "15.7.5"
