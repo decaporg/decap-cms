@@ -1,6 +1,5 @@
 import { fromJS, List, Map } from 'immutable';
 import { isEqual } from 'lodash';
-import { actions as notifActions } from 'redux-notifications';
 
 import { Cursor } from '../lib/util';
 import { selectCollectionEntriesCursor } from '../reducers/cursors';
@@ -21,6 +20,7 @@ import { selectCustomPath } from '../reducers/entryDraft';
 import { navigateToEntry } from '../routing/history';
 import { getProcessSegment } from '../lib/formatters';
 import { hasI18n, duplicateDefaultI18nFields, serializeI18n, I18N, I18N_FIELD } from '../lib/i18n';
+import { addSnackbar } from '../store/slices/snackbars';
 
 import type { ImplementationMediaFile } from '../lib/util';
 import type { AnyAction } from 'redux';
@@ -39,8 +39,6 @@ import type { EntryValue } from '../valueObjects/Entry';
 import type { Backend } from '../backend';
 import type AssetProxy from '../valueObjects/AssetProxy';
 import type { Set } from 'immutable';
-
-const { notifSend } = notifActions;
 
 /*
  * Constant Declarations
@@ -537,13 +535,12 @@ export function loadEntry(collection: Collection, slug: string) {
     } catch (error: any) {
       console.error(error);
       dispatch(
-        notifSend({
+        addSnackbar({
+          type: 'error',
           message: {
-            details: error.message,
             key: 'ui.toast.onFailToLoadEntries',
+            details: error.message,
           },
-          kind: 'danger',
-          dismissAfter: 8000,
         }),
       );
       dispatch(entryLoadError(error, collection, slug));
@@ -632,13 +629,12 @@ export function loadEntries(collection: Collection, page = 0) {
       );
     } catch (err: any) {
       dispatch(
-        notifSend({
+        addSnackbar({
+          type: 'error',
           message: {
-            details: err,
             key: 'ui.toast.onFailToLoadEntries',
+            details: err,
           },
-          kind: 'danger',
-          dismissAfter: 8000,
         }),
       );
       return Promise.reject(dispatch(entriesFailed(collection, err)));
@@ -684,13 +680,12 @@ export function traverseCollectionCursor(collection: Collection, action: string)
     } catch (err: any) {
       console.error(err);
       dispatch(
-        notifSend({
+        addSnackbar({
+          type: 'error',
           message: {
-            details: err,
             key: 'ui.toast.onFailToLoadEntries',
+            details: err,
           },
-          kind: 'danger',
-          dismissAfter: 8000,
         }),
       );
       return Promise.reject(dispatch(entriesFailed(collection, err)));
@@ -894,12 +889,11 @@ export function persistEntry(collection: Collection) {
 
       if (hasPresenceErrors) {
         dispatch(
-          notifSend({
+          addSnackbar({
+            type: 'error',
             message: {
               key: 'ui.toast.missingRequiredField',
             },
-            kind: 'danger',
-            dismissAfter: 8000,
           }),
         );
       }
@@ -926,12 +920,11 @@ export function persistEntry(collection: Collection) {
       })
       .then(async (newSlug: string) => {
         dispatch(
-          notifSend({
+          addSnackbar({
+            type: 'success',
             message: {
               key: 'ui.toast.entrySaved',
             },
-            kind: 'success',
-            dismissAfter: 4000,
           }),
         );
 
@@ -951,13 +944,12 @@ export function persistEntry(collection: Collection) {
       .catch((error: Error) => {
         console.error(error);
         dispatch(
-          notifSend({
+          addSnackbar({
+            type: 'error',
             message: {
-              details: error,
               key: 'ui.toast.onFailToPersist',
+              details: error,
             },
-            kind: 'danger',
-            dismissAfter: 8000,
           }),
         );
         return Promise.reject(dispatch(entryPersistFail(collection, serializedEntry, error)));
@@ -978,13 +970,12 @@ export function deleteEntry(collection: Collection, slug: string) {
       })
       .catch((error: Error) => {
         dispatch(
-          notifSend({
+          addSnackbar({
+            type: 'error',
             message: {
-              details: error,
               key: 'ui.toast.onFailToDelete',
+              details: error,
             },
-            kind: 'danger',
-            dismissAfter: 8000,
           }),
         );
         console.error(error);

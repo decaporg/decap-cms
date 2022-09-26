@@ -1,5 +1,4 @@
 import { Map } from 'immutable';
-import { actions as notifActions } from 'redux-notifications';
 
 import { basename, getBlobSHA } from '../lib/util';
 import { currentBackend } from '../backend';
@@ -16,6 +15,7 @@ import { addAsset, removeAsset } from './media';
 import { addDraftEntryMediaFile, removeDraftEntryMediaFile } from './entries';
 import { sanitizeSlug } from '../lib/urlHelper';
 import { waitUntilWithTimeout } from './waitUntil';
+import { addSnackbar } from '../store/slices/snackbars';
 
 import type {
   State,
@@ -28,8 +28,6 @@ import type { AnyAction } from 'redux';
 import type { ThunkDispatch } from 'redux-thunk';
 import type AssetProxy from '../valueObjects/AssetProxy';
 import type { ImplementationMediaFile } from '../lib/util';
-
-const { notifSend } = notifActions;
 
 export const MEDIA_LIBRARY_OPEN = 'MEDIA_LIBRARY_OPEN';
 export const MEDIA_LIBRARY_CLOSE = 'MEDIA_LIBRARY_CLOSE';
@@ -299,10 +297,12 @@ export function persistMedia(file: File, opts: MediaOptions = {}) {
     } catch (error) {
       console.error(error);
       dispatch(
-        notifSend({
-          message: `Failed to persist media: ${error}`,
-          kind: 'danger',
-          dismissAfter: 8000,
+        addSnackbar({
+          type: 'error',
+          message: {
+            key: 'ui.toast.onFailToPersistMedia',
+            details: error,
+          },
         }),
       );
       return dispatch(mediaPersistFailed({ privateUpload }));
@@ -326,10 +326,12 @@ export function deleteMedia(file: MediaFile, opts: MediaOptions = {}) {
       } catch (error: any) {
         console.error(error);
         dispatch(
-          notifSend({
-            message: `Failed to delete media: ${error.message}`,
-            kind: 'danger',
-            dismissAfter: 8000,
+          addSnackbar({
+            type: 'error',
+            message: {
+              key: 'ui.toast.onFailToDeleteMedia',
+              details: error.message,
+            },
           }),
         );
         return dispatch(mediaDeleteFailed({ privateUpload }));
@@ -356,10 +358,12 @@ export function deleteMedia(file: MediaFile, opts: MediaOptions = {}) {
     } catch (error: any) {
       console.error(error);
       dispatch(
-        notifSend({
-          message: `Failed to delete media: ${error.message}`,
-          kind: 'danger',
-          dismissAfter: 8000,
+        addSnackbar({
+          type: 'error',
+          message: {
+            key: 'ui.toast.onFailToDeleteMedia',
+            details: error.message,
+          },
         }),
       );
       return dispatch(mediaDeleteFailed());

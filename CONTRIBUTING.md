@@ -164,7 +164,7 @@ backend:
     <title>Netlify CMS</title>
   </head>
   <body>
-    <script src="dist/netlify-cms.js"></script>
+    <script src="dist/netlify-cms-core.js"></script>
     <!-- <script>
       // this is the place to add CMS customizations if you need to, e.g.
       CMS.registerPreviewTemplate('posts', PostPreview);

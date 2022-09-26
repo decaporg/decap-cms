@@ -1,5 +1,6 @@
 import bootstrap from './bootstrap';
 import Registry from './lib/registry';
+import loadDev from './dev';
 
 export * from './backends';
 export * from './widgets';
@@ -9,8 +10,13 @@ export * from './locales';
 export * from './lib';
 export * from './ui';
 
-export const NetlifyCmsCore = {
+export const CMS = {
   ...Registry,
   init: bootstrap,
 };
-export default NetlifyCmsCore;
+
+if (process.env.NODE_ENV === 'development') {
+  loadDev(CMS)
+}
+
+export default CMS;

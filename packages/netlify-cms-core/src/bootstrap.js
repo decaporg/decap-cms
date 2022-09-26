@@ -1,11 +1,11 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { Provider, connect } from 'react-redux';
-import { Route, Router } from 'react-router-dom';
+import { Router } from 'react-router-dom';
 import { I18n } from 'react-polyglot';
 
 import { GlobalStyles } from './ui';
-import { store } from './redux';
+import { store } from './store';
 import { history } from './routing/history';
 import { loadConfig } from './actions/config';
 import { authenticateUser } from './actions/auth';
@@ -24,7 +24,7 @@ function TranslatedApp({ locale, config }) {
     <I18n locale={locale} messages={getPhrases(locale)}>
       <ErrorBoundary showBackup config={config}>
         <Router history={history}>
-          <Route component={App} />
+          <App />
         </Router>
       </ErrorBoundary>
     </I18n>

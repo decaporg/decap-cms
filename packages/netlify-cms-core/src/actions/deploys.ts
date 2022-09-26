@@ -1,13 +1,11 @@
-import { actions as notifActions } from 'redux-notifications';
-
 import { currentBackend } from '../backend';
 import { selectDeployPreview } from '../reducers';
+import { addSnackbar } from '../store/slices/snackbars';
 
-import type { ThunkDispatch } from 'redux-thunk';
+import type { t } from 'react-polyglot';
 import type { AnyAction } from 'redux';
+import type { ThunkDispatch } from 'redux-thunk';
 import type { Collection, Entry, State } from '../types/redux';
-
-const { notifSend } = notifActions;
 
 export const DEPLOY_PREVIEW_REQUEST = 'DEPLOY_PREVIEW_REQUEST';
 export const DEPLOY_PREVIEW_SUCCESS = 'DEPLOY_PREVIEW_SUCCESS';
@@ -85,16 +83,12 @@ export function loadDeployPreview(
         return dispatch(deployPreviewLoaded(collectionName, slug, deploy));
       }
       return dispatch(deployPreviewError(collectionName, slug));
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
       dispatch(
-        notifSend({
-          message: {
-            details: error.message,
-            key: 'ui.toast.onFailToLoadDeployPreview',
-          },
-          kind: 'danger',
-          dismissAfter: 8000,
+        addSnackbar({
+          type: 'error',
+          message: { key: 'ui.toast.onFailToLoadDeployPreview', details: error.message },
         }),
       );
       dispatch(deployPreviewError(collectionName, slug));

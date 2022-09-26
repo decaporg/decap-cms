@@ -1,12 +1,12 @@
+import { sortBy, unionBy } from 'lodash';
 import semaphore from 'semaphore';
-import { unionBy, sortBy } from 'lodash';
 
 import { basename } from './path';
 
 import type { Semaphore } from 'semaphore';
-import type Cursor from './Cursor';
-import type { AsyncLock } from './asyncLock';
+import type { Implementation as I } from '../../interface';
 import type { FileMetadata } from './API';
+import type { AsyncLock } from './asyncLock';
 
 export type DisplayURLObject = { id: string; path: string };
 
@@ -119,76 +119,7 @@ export type Config = {
   site_id?: string;
 };
 
-export interface Implementation {
-  authComponent: () => void;
-  restoreUser: (user: User) => Promise<User>;
-
-  authenticate: (credentials: Credentials) => Promise<User>;
-  logout: () => Promise<void> | void | null;
-  getToken: () => Promise<string | null>;
-
-  getEntry: (path: string) => Promise<ImplementationEntry>;
-  entriesByFolder: (
-    folder: string,
-    extension: string,
-    depth: number,
-  ) => Promise<ImplementationEntry[]>;
-  entriesByFiles: (files: ImplementationFile[]) => Promise<ImplementationEntry[]>;
-
-  getMediaDisplayURL?: (displayURL: DisplayURL) => Promise<string>;
-  getMedia: (folder?: string) => Promise<ImplementationMediaFile[]>;
-  getMediaFile: (path: string) => Promise<ImplementationMediaFile>;
-
-  persistEntry: (entry: Entry, opts: PersistOptions) => Promise<void>;
-  persistMedia: (file: AssetProxy, opts: PersistOptions) => Promise<ImplementationMediaFile>;
-  deleteFiles: (paths: string[], commitMessage: string) => Promise<void>;
-
-  unpublishedEntries: () => Promise<string[]>;
-  unpublishedEntry: (args: {
-    id?: string;
-    collection?: string;
-    slug?: string;
-  }) => Promise<UnpublishedEntry>;
-  unpublishedEntryDataFile: (
-    collection: string,
-    slug: string,
-    path: string,
-    id: string,
-  ) => Promise<string>;
-  unpublishedEntryMediaFile: (
-    collection: string,
-    slug: string,
-    path: string,
-    id: string,
-  ) => Promise<ImplementationMediaFile>;
-  updateUnpublishedEntryStatus: (
-    collection: string,
-    slug: string,
-    newStatus: string,
-  ) => Promise<void>;
-  publishUnpublishedEntry: (collection: string, slug: string) => Promise<void>;
-  deleteUnpublishedEntry: (collection: string, slug: string) => Promise<void>;
-  getDeployPreview: (
-    collectionName: string,
-    slug: string,
-  ) => Promise<{ url: string; status: string } | null>;
-
-  allEntriesByFolder?: (
-    folder: string,
-    extension: string,
-    depth: number,
-  ) => Promise<ImplementationEntry[]>;
-  traverseCursor?: (
-    cursor: Cursor,
-    action: string,
-  ) => Promise<{ entries: ImplementationEntry[]; cursor: Cursor }>;
-
-  isGitBackend?: () => boolean;
-  status: () => Promise<{
-    auth: { status: boolean };
-    api: { status: boolean; statusPage: string };
-  }>;
-}
+export type Implementation = I;
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
 

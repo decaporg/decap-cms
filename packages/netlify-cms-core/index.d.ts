@@ -453,7 +453,7 @@ declare module 'netlify-cms-core' {
     value: string;
   }
 
-  export type CmsBackendClass = any; // TODO: type properly
+  export type CmsBackendClass = Implementation;
 
   export interface CmsRegistryBackend {
     init: (args: any) => CmsBackendClass;
@@ -556,7 +556,7 @@ declare module 'netlify-cms-core' {
     document: Document;
   };
 
-  export interface CMS {
+  export interface CMSApi {
     getBackend: (name: string) => CmsRegistryBackend | undefined;
     getEditorComponents: () => Map<string, ComponentType<any>>;
     getRemarkPlugins: () => Array<Pluggable>;
@@ -597,9 +597,9 @@ declare module 'netlify-cms-core' {
     getAdditionalLinks: () => { title: string; link: string; iconName?: string }[];
   }
 
-  export const NetlifyCmsCore: CMS;
+  export const CMS: CMSApi;
 
-  export default NetlifyCmsCore;
+  export default CMS;
 
   // Backends
   export type DisplayURLObject = { id: string; path: string };
@@ -910,36 +910,7 @@ declare module 'netlify-cms-core' {
   export const imageEditorComponent: EditorComponentManualOptions;
 
   export const locales: {
-    cs: Record<string, any>;
-    da: Record<string, any>;
-    de: Record<string, any>;
     en: Record<string, any>;
-    es: Record<string, any>;
-    ca: Record<string, any>;
-    fr: Record<string, any>;
-    gr: Record<string, any>;
-    hu: Record<string, any>;
-    it: Record<string, any>;
-    lt: Record<string, any>;
-    ja: Record<string, any>;
-    nl: Record<string, any>;
-    nb_no: Record<string, any>;
-    nn_no: Record<string, any>;
-    pl: Record<string, any>;
-    pt: Record<string, any>;
-    ro: Record<string, any>;
-    ru: Record<string, any>;
-    sv: Record<string, any>;
-    th: Record<string, any>;
-    tr: Record<string, any>;
-    uk: Record<string, any>;
-    vi: Record<string, any>;
-    zh_Hant: Record<string, any>;
-    ko: Record<string, any>;
-    hr: Record<string, any>;
-    bg: Record<string, any>;
-    zh_Hans: Record<string, any>;
-    he: Record<string, any>;
   };
 
   class NetlifyAuthenticator {

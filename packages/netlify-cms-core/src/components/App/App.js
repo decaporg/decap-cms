@@ -1,29 +1,28 @@
+import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { hot } from 'react-hot-loader';
-import { translate } from 'react-polyglot';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import styled from '@emotion/styled';
+import { translate } from 'react-polyglot';
 import { connect } from 'react-redux';
-import { Route, Switch, Redirect } from 'react-router-dom';
-import { Notifs } from 'redux-notifications';
-import TopBarProgress from 'react-topbar-progress-indicator';
+import { Redirect, Route, Switch } from 'react-router-dom';
 import { ScrollSync } from 'react-scroll-sync';
+import TopBarProgress from 'react-topbar-progress-indicator';
 
-import { Loader, colors } from '../../ui';
 import { loginUser, logoutUser } from '../../actions/auth';
-import { currentBackend } from '../../backend';
 import { createNewEntry } from '../../actions/collections';
 import { openMediaLibrary } from '../../actions/mediaLibrary';
-import MediaLibrary from '../MediaLibrary/MediaLibrary';
-import { Toast } from '../UI';
+import { currentBackend } from '../../backend';
+import { EDITORIAL_WORKFLOW, SIMPLE } from '../../constants/publishModes';
 import { history } from '../../routing/history';
-import { SIMPLE, EDITORIAL_WORKFLOW } from '../../constants/publishModes';
+import { colors, Loader } from '../../ui';
 import Collection from '../Collection/Collection';
-import Workflow from '../Workflow/Workflow';
 import Editor from '../Editor/Editor';
-import NotFoundPage from './NotFoundPage';
+import MediaLibrary from '../MediaLibrary/MediaLibrary';
+import Snackbars from '../snackbar/Snackbars';
+import Workflow from '../Workflow/Workflow';
 import Header from './Header';
+import NotFoundPage from './NotFoundPage';
 
 TopBarProgress.config({
   barColors: {
@@ -65,7 +64,13 @@ const ErrorCodeBlock = styled.pre`
 `;
 
 function getDefaultPath(collections) {
-  const first = collections.filter(collection => collection.get('hide') !== true && (!collection.has('files') || collection.get('files').size > 1)).first();
+  const first = collections
+    .filter(
+      collection =>
+        collection.get('hide') !== true &&
+        (!collection.has('files') || collection.get('files').size > 1),
+    )
+    .first();
   if (first) {
     return `/collections/${first.get('name')}`;
   } else {
@@ -175,7 +180,6 @@ class App extends React.Component {
 
     return (
       <div>
-        <Notifs CustomComponent={Toast} />
         {React.createElement(backend.authComponent(), {
           onLogin: this.handleLogin.bind(this),
           error: auth.error,
@@ -234,7 +238,7 @@ class App extends React.Component {
       <ScrollSync enabled={scrollSyncEnabled}>
         <AppRoot id="cms-root">
           <AppWrapper className="cms-wrapper">
-            <Notifs CustomComponent={Toast} />
+            <Snackbars />
             <Header
               user={user}
               collections={collections}

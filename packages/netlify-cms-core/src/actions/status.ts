@@ -1,12 +1,9 @@
-import { actions as notifActions } from 'redux-notifications';
-
 import { currentBackend } from '../backend';
+import { addSnackbar, removeSnackbarById } from '../store/slices/snackbars';
 
-import type { ThunkDispatch } from 'redux-thunk';
 import type { AnyAction } from 'redux';
+import type { ThunkDispatch } from 'redux-thunk';
 import type { State } from '../types/redux';
-
-const { notifSend, notifDismiss } = notifActions;
 
 export const STATUS_REQUEST = 'STATUS_REQUEST';
 export const STATUS_SUCCESS = 'STATUS_SUCCESS';
@@ -48,17 +45,16 @@ export function checkBackendStatus() {
       const status = await backend.status();
 
       const backendDownKey = 'ui.toast.onBackendDown';
-      const previousBackendDownNotifs = state.notifs.filter(n => n.message?.key === backendDownKey);
+      const previousBackendDownNotifs = state.snackbar.messages.filter(
+        n => n.message?.key === backendDownKey,
+      );
 
       if (status.api.status === false) {
         if (previousBackendDownNotifs.length === 0) {
           dispatch(
-            notifSend({
-              message: {
-                details: status.api.statusPage,
-                key: 'ui.toast.onBackendDown',
-              },
-              kind: 'danger',
+            addSnackbar({
+              type: 'error',
+              message: { key: 'ui.toast.onBackendDown', details: status.api.statusPage },
             }),
           );
         }
@@ -66,21 +62,19 @@ export function checkBackendStatus() {
       } else if (status.api.status === true && previousBackendDownNotifs.length > 0) {
         // If backend is up, clear all the danger messages
         previousBackendDownNotifs.forEach(notif => {
-          dispatch(notifDismiss(notif.id));
+          dispatch(removeSnackbarById(notif.id));
         });
       }
 
       const authError = status.auth.status === false;
       if (authError) {
         const key = 'ui.toast.onLoggedOut';
-        const existingNotification = state.notifs.find(n => n.message?.key === key);
+        const existingNotification = state.snackbar.messages.find(n => n.message?.key === key);
         if (!existingNotification) {
           dispatch(
-            notifSend({
-              message: {
-                key: 'ui.toast.onLoggedOut',
-              },
-              kind: 'danger',
+            addSnackbar({
+              type: 'error',
+              message: { key: 'ui.toast.onLoggedOut' },
             }),
           );
         }

@@ -1,13 +1,11 @@
-import { actions as notifActions } from 'redux-notifications';
-
 import { currentBackend } from '../backend';
+import { addSnackbar } from '../store/slices/snackbars';
 
 import type { Credentials, User } from '../lib/util';
 import type { ThunkDispatch } from 'redux-thunk';
 import type { AnyAction } from 'redux';
 import type { State } from '../types/redux';
-
-const { notifSend, notifClear } = notifActions;
+import type { t } from 'react-polyglot';
 
 export const AUTH_REQUEST = 'AUTH_REQUEST';
 export const AUTH_SUCCESS = 'AUTH_SUCCESS';
@@ -96,13 +94,12 @@ export function loginUser(credentials: Credentials) {
       .catch((error: Error) => {
         console.error(error);
         dispatch(
-          notifSend({
+          addSnackbar({
+            type: 'warning',
             message: {
-              details: error.message,
               key: 'ui.toast.onFailToAuth',
+              message: error.message,
             },
-            kind: 'warning',
-            dismissAfter: 8000,
           }),
         );
         dispatch(authError(error));
@@ -116,7 +113,6 @@ export function logoutUser() {
     const backend = currentBackend(state.config);
     Promise.resolve(backend.logout()).then(() => {
       dispatch(logout());
-      dispatch(notifClear());
     });
   };
 }

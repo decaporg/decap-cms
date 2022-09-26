@@ -2,10 +2,9 @@
   "version": "0.0.0",
   "scripts": {
     "bootstrap": "lerna bootstrap",
-    "start": "run-s clean bootstrap build:esm develop",
+    "start": "run-s clean bootstrap develop",
     "develop": "cd packages/netlify-cms-core && yarn develop",
-    "build": "run-s clean build:esm build:webpack",
-    "build:esm": "cd packages/netlify-cms-core && yarn build:esm",
+    "build": "run-s clean build:webpack",
     "build:webpack": "cd packages/netlify-cms-core && yarn build",
     "type-check": "tsc --noEmit",
     "type-check:watch": "npm run type-check -- --watch",
@@ -128,8 +127,6 @@
     "postcss": "8.4.16",
     "postcss-scss": "4.0.5",
     "prettier": "2.7.1",
-    "react": "16.14.0",
-    "react-dom": "16.14.0",
     "react-test-renderer": "16.14.0",
     "rehype": "7.0.0",
     "rimraf": "3.0.2",
@@ -139,7 +136,6 @@
     "stylelint-config-standard-scss": "3.0.0",
     "stylelint-config-styled-components": "0.1.1",
     "stylelint-processor-styled-components": "1.10.0",
-    "svg-inline-loader": "0.8.2",
     "to-string-loader": "1.2.0",
     "typescript": "3.9.10",
     "unist-util-visit": "1.4.1",
@@ -157,8 +153,6 @@
   },
   "private": true,
   "dependencies": {
-    "@emotion/react": "11.10.4",
-    "@emotion/styled": "11.10.4",
     "@emotion/babel-preset-css-prop": "11.10.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-babel": "5.3.1",
@@ -166,6 +160,6 @@
     "lerna": "4.0.0"
   },
   "resolutions": {
-    "react-redux": "7.2.9"
+    "react-redux": "8.0.4"
   }
 }

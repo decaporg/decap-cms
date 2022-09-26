@@ -10,6 +10,7 @@ import type { Medias } from '../reducers/medias';
 import type { ScrollState } from '../reducers/scroll';
 import type { Search } from '../reducers/search';
 import type { Status } from '../reducers/status';
+import type { SnackbarState } from '../store/slices/snackbars';
 import type { StaticallyTypedRecord } from './immutable';
 
 export type CmsBackendType =
@@ -699,9 +700,9 @@ export interface State {
   medias: Medias;
   mediaLibrary: MediaLibrary;
   search: Search;
-  notifs: { message: { key: string }; kind: string; id: number }[];
   status: Status;
   scroll: ScrollState;
+  snackbar: SnackbarState;
 }
 
 export interface Integration {

@@ -152,6 +152,7 @@ export const NetlifyCmsLibUtil = {
   allEntriesByFolder,
   AccessTokenError,
   throwOnConflictingBranches,
+  transientOptions
 };
 export {
   APIError,

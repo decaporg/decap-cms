@@ -28,16 +28,27 @@ function rules() {
     css: () => [
       {
         test: /\.css$/,
-        include: ['ol', 'redux-notifications', 'react-datetime', 'codemirror'].map(
-          moduleNameToPath,
-        ),
+        include: ['ol', 'react-datetime', 'codemirror'].map(moduleNameToPath),
         use: ['to-string-loader', 'css-loader'],
       },
     ],
     svg: () => ({
       test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
       exclude: [/node_modules/],
-      use: 'svg-inline-loader',
+      use: [
+        {
+          loader: 'babel-loader',
+          options: {
+            rootMode: 'upward',
+          },
+        },
+        {
+          loader: 'react-svg-loader',
+          options: {
+            jsx: true, // true outputs JSX tags
+          },
+        },
+      ],
     }),
   };
 }
@@ -128,6 +139,7 @@ function baseConfig({ target = isProduction ? 'umd' : 'umddir' } = {}) {
       extensions: ['.ts', '.tsx', '.js', '.json'],
       alias: {
         moment$: 'moment/moment.js',
+        'react-dom': '@hot-loader/react-dom',
       },
     },
     plugins: Object.values(plugins()).map(plugin => plugin()),
