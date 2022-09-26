@@ -15,8 +15,7 @@ export const CMS = {
   init: bootstrap,
 };
 
-if (process.env.NODE_ENV === 'cmsdev') {
-  loadDev(CMS)
-}
+// TODO Fix - setup permament fix for dev environment
+// loadDev(CMS);
 
 export default CMS;
