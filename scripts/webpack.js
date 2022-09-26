@@ -3,7 +3,7 @@ const webpack = require('webpack');
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 const { flatMap } = require('lodash');
 
-const { toGlobalName, externals } = require('./externals');
+const { toGlobalName } = require('./externals');
 const pkg = require(path.join(process.cwd(), 'package.json'));
 
 const isProduction = process.env.NODE_ENV === 'production';
@@ -115,12 +115,6 @@ function targetOutputs() {
   };
 }
 
-const umdExternals = Object.keys(pkg.peerDependencies || {}).reduce((previous, key) => {
-  if (!externals[key]) throw `Missing external [${key}]`;
-  previous[key] = externals[key] || null;
-  return previous;
-}, {});
-
 /**
  * Use [getConfig({ target:'umd' }), getConfig({ target:'cjs' })] for
  *  getting multiple configs and add the new output in targetOutputs if needed.
@@ -145,22 +139,6 @@ function baseConfig({ target = isProduction ? 'umd' : 'umddir' } = {}) {
     plugins: Object.values(plugins()).map(plugin => plugin()),
     devtool: isTest ? '' : 'source-map',
     target: 'web',
-
-    /**
-     * Exclude peer dependencies from package bundles.
-     */
-    externals:
-      target.slice(0, 3) === 'umd'
-        ? umdExternals
-        : (context, request, cb) => {
-            const externals = Object.keys(pkg.peerDependencies || {});
-
-            function isPeerDep(dep) {
-              return new RegExp(`^${dep}($|/)`).test(request);
-            }
-
-            return externals.some(isPeerDep) ? cb(null, request) : cb();
-          },
     stats: stats(),
   };
 }

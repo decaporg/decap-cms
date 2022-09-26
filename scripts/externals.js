@@ -33,7 +33,4 @@ packages.map(name => {
 
 module.exports = {
   toGlobalName,
-  externals: {
-    ...packageExports,
-  },
 };
