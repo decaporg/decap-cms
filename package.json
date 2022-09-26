@@ -2,10 +2,11 @@
   "version": "0.0.0",
   "scripts": {
     "bootstrap": "lerna bootstrap",
-    "start": "run-s clean bootstrap develop",
+    "start": "run-s clean bootstrap build:esm develop",
     "develop": "cd packages/netlify-cms-core && yarn develop",
-    "build": "run-s clean build:webpack",
+    "build": "run-s clean build:esm build:webpack",
     "build:webpack": "cd packages/netlify-cms-core && yarn build",
+    "build:esm": "cd packages/netlify-cms-core && yarn build:esm",
     "type-check": "tsc --noEmit",
     "type-check:watch": "npm run type-check -- --watch",
     "clean": "rimraf \"packages/*/dist\" dev-test/dist",
