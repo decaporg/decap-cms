@@ -15,7 +15,7 @@ export const CMS = {
   init: bootstrap,
 };
 
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === 'cmsdev') {
   loadDev(CMS)
 }
 

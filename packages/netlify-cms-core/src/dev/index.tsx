@@ -51,9 +51,9 @@ const loadDev = (cms: CMSApi) => {
   } as any /* TODO Fix */);
   cms.registerLocale('en', locales.en as any /* TODO Fix */);
 
-  // Object.keys(images).forEach(iconName => {
-  //   cms.registerIcon(iconName, <Icon type={iconName} />);
-  // });
+  Object.keys(images).forEach(iconName => {
+    cms.registerIcon(iconName, <Icon type={iconName} />);
+  });
 
   cms.init({
     config: {
