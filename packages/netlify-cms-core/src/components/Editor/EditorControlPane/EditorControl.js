@@ -7,16 +7,16 @@ import { ClassNames, Global, css as coreCss } from '@emotion/react';
 import styled from '@emotion/styled';
 import { partial, uniqueId } from 'lodash';
 import { connect } from 'react-redux';
+import ReactMarkdown from 'react-markdown';
+import gfm from 'remark-gfm';
+
 import {
   FieldLabel,
   colors,
   transitions,
   lengths,
   borders,
-} from 'netlify-cms-ui-default';
-import ReactMarkdown from 'react-markdown';
-import gfm from 'remark-gfm';
-
+} from '../../../ui';
 import { resolveWidget, getEditorComponents } from '../../../lib/registry';
 import { clearFieldErrors, tryLoadEntry, validateMetaField } from '../../../actions/entries';
 import { addAsset, boundGetAsset } from '../../../actions/media';

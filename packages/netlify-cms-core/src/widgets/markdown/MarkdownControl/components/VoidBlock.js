@@ -1,7 +1,8 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { css } from '@emotion/react';
-import { zIndex } from 'netlify-cms-ui-default';
+
+import { zIndex } from '../../../../ui';
 
 function InsertionPoint(props) {
   return (

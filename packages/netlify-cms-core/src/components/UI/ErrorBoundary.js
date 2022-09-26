@@ -5,9 +5,9 @@ import styled from '@emotion/styled';
 import yaml from 'yaml';
 import { truncate } from 'lodash';
 import copyToClipboard from 'copy-text-to-clipboard';
-import { buttons, colors } from 'netlify-cms-ui-default';
 import cleanStack from 'clean-stack';
 
+import { buttons, colors } from '../../ui';
 import { localForage } from '../../lib/util';
 
 const ISSUE_URL = 'https://github.com/netlify/netlify-cms/issues/new?';

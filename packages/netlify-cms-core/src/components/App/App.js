@@ -8,9 +8,9 @@ import { connect } from 'react-redux';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import { Notifs } from 'redux-notifications';
 import TopBarProgress from 'react-topbar-progress-indicator';
-import { Loader, colors } from 'netlify-cms-ui-default';
 import { ScrollSync } from 'react-scroll-sync';
 
+import { Loader, colors } from '../../ui';
 import { loginUser, logoutUser } from '../../actions/auth';
 import { currentBackend } from '../../backend';
 import { createNewEntry } from '../../actions/collections';

@@ -51,6 +51,7 @@ module.exports = {
       },
     ],
     'unicorn/prefer-string-slice': 'error',
+    'react/no-unknown-property': ['error', { ignore: ['css'] }],
   },
   plugins: ['babel', '@emotion', 'cypress', 'unicorn'],
   settings: {

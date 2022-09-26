@@ -4,8 +4,8 @@ import styled from '@emotion/styled';
 import { Map } from 'immutable';
 import { isEmpty } from 'lodash';
 import { translate } from 'react-polyglot';
-import { colors } from 'netlify-cms-ui-default';
 
+import { colors } from '../../ui';
 import { Modal } from '../UI';
 import MediaLibraryTop from './MediaLibraryTop';
 import MediaLibraryCardGrid from './MediaLibraryCardGrid';

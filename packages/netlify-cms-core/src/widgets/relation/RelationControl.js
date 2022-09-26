@@ -5,10 +5,10 @@ import { components } from 'react-select';
 import AsyncSelect from 'react-select/async';
 import { debounce, find, get, isEmpty, last, uniqBy } from 'lodash';
 import { fromJS, List, Map } from 'immutable';
-import { reactSelectStyles } from 'netlify-cms-ui-default';
 import { FixedSizeList } from 'react-window';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 
+import { reactSelectStyles } from '../../ui';
 import { stringTemplate, validations } from '../../lib/widgets';
 
 function arrayMove(array, from, to) {

@@ -1,9 +1,10 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { colorsRaw, colors, Icon, lengths, zIndex } from 'netlify-cms-ui-default';
 import { translate } from 'react-polyglot';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+
+import { colorsRaw, colors, Icon, lengths, zIndex } from '../../ui';
 
 const SearchContainer = styled.div`
   margin: 0 12px;

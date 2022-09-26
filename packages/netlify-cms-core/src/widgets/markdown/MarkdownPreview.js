@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { WidgetPreviewContainer } from 'netlify-cms-ui-default';
 import DOMPurify from 'dompurify';
 
+import { WidgetPreviewContainer } from '../../ui';
 import { markdownToHtml } from './serializers';
 class MarkdownPreview extends React.Component {
   static propTypes = {

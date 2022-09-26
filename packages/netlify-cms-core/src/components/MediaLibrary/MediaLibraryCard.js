@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
-import { colors, borders, lengths, shadows, effects } from 'netlify-cms-ui-default';
+
+import { colors, borders, lengths, shadows, effects } from '../../ui';
 
 const IMAGE_HEIGHT = 160;
 

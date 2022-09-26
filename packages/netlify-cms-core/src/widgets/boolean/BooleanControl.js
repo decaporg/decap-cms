@@ -2,7 +2,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { css } from '@emotion/react';
-import { Toggle, ToggleBackground, colors } from 'netlify-cms-ui-default';
+
+import { Toggle, ToggleBackground, colors } from '../../ui';
 
 function BooleanBackground({ isActive, ...props }) {
   return (

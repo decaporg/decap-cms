@@ -7,6 +7,9 @@ import { Map, List } from 'immutable';
 import { once } from 'lodash';
 import uuid from 'uuid/v4';
 import { oneLine } from 'common-tags';
+import { SortableContainer, SortableElement } from 'react-sortable-hoc';
+import { arrayMoveImmutable as arrayMove } from 'array-move';
+
 import {
   lengths,
   components,
@@ -15,10 +18,7 @@ import {
   effects,
   shadows,
   IconButton,
-} from 'netlify-cms-ui-default';
-import { SortableContainer, SortableElement } from 'react-sortable-hoc';
-import { arrayMoveImmutable as arrayMove } from 'array-move';
-
+} from '../../ui';
 import { basename } from '../../lib/util';
 
 const MAX_DISPLAY_LENGTH = 50;

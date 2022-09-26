@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import copyToClipboard from 'copy-text-to-clipboard';
-import { buttons, shadows, zIndex } from 'netlify-cms-ui-default';
 
+import { buttons, shadows, zIndex } from '../../ui';
 import { isAbsolutePath } from '../../lib/util';
 import { FileUploadButton } from '../UI';
 

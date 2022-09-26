@@ -5,8 +5,8 @@ import styled from '@emotion/styled';
 import { css } from '@emotion/react';
 import { translate } from 'react-polyglot';
 import { NavLink } from 'react-router-dom';
-import { Icon, components, colors } from 'netlify-cms-ui-default';
 
+import { Icon, components, colors } from '../../ui';
 import { searchCollections } from '../../actions/collections';
 import CollectionSearch from './CollectionSearch';
 import NestedCollection from './NestedCollection';

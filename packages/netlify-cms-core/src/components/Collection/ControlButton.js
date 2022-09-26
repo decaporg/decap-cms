@@ -1,7 +1,8 @@
 import React from 'react';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { buttons, StyledDropdownButton, colors } from 'netlify-cms-ui-default';
+
+import { buttons, StyledDropdownButton, colors } from '../../ui';
 
 const Button = styled(StyledDropdownButton)`
   ${buttons.button};

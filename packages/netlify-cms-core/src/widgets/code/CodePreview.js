@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
 import { isString } from 'lodash';
-import { WidgetPreviewContainer } from 'netlify-cms-ui-default';
+
+import { WidgetPreviewContainer } from '../../ui';
 
 function toValue(value, field) {
   if (isString(value)) {

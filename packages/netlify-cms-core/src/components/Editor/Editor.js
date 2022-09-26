@@ -1,11 +1,11 @@
 import { debounce } from 'lodash';
-import { Loader } from 'netlify-cms-ui-default';
 import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { translate } from 'react-polyglot';
 import { connect } from 'react-redux';
 
+import { Loader } from '../../ui';
 import { logoutUser } from '../../actions/auth';
 import { loadDeployPreview } from '../../actions/deploys';
 import {

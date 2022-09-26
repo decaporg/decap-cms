@@ -1,7 +1,7 @@
 import React from 'react';
 import { translate } from 'react-polyglot';
-import { Dropdown, DropdownItem } from 'netlify-cms-ui-default';
 
+import { Dropdown, DropdownItem } from '../../ui';
 import { ControlButton } from './ControlButton';
 
 function GroupControl({ viewGroups, t, onGroupClick, group }) {

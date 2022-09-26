@@ -4,7 +4,8 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { translate } from 'react-polyglot';
 import { Link } from 'react-router-dom';
-import { components, buttons, shadows } from 'netlify-cms-ui-default';
+
+import { components, buttons, shadows } from '../../ui';
 
 const CollectionTopContainer = styled.div`
   ${components.cardTop};

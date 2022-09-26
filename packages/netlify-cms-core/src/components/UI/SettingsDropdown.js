@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { translate } from 'react-polyglot';
-import { Icon, Dropdown, DropdownItem, DropdownButton, colors } from 'netlify-cms-ui-default';
 
+import { Icon, Dropdown, DropdownItem, DropdownButton, colors } from '../../ui';
 import { stripProtocol } from '../../lib/urlHelper';
 
 const styles = {

@@ -5,6 +5,7 @@ import styled from '@emotion/styled';
 import { OrderedMap } from 'immutable';
 import { translate } from 'react-polyglot';
 import { connect } from 'react-redux';
+
 import {
   Dropdown,
   DropdownItem,
@@ -13,8 +14,7 @@ import {
   lengths,
   components,
   shadows,
-} from 'netlify-cms-ui-default';
-
+} from '../../ui';
 import { createNewEntry } from '../../actions/collections';
 import {
   loadUnpublishedEntries,

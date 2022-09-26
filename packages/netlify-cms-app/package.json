@@ -29,19 +29,18 @@
   "dependencies": {
     "@emotion/react": "11.10.4",
     "@emotion/styled": "11.10.4",
-    "codemirror": "^5.46.0",
-    "immutable": "^3.7.6",
-    "lodash": "^4.17.11",
-    "moment": "^2.24.0",
+    "codemirror": "5.65.9",
+    "immutable": "3.8.2",
+    "lodash": "4.17.21",
+    "moment": "2.29.4",
     "netlify-cms-core": "^2.55.41",
-    "netlify-cms-ui-default": "^2.15.22",
-    "prop-types": "^15.7.2",
-    "react-immutable-proptypes": "^2.1.0",
-    "uuid": "^3.3.2"
+    "prop-types": "15.8.1",
+    "react-immutable-proptypes": "2.2.0",
+    "uuid": "3.4.0"
   },
   "peerDependencies": {
-    "react": "^16.8.4 || ^17.0.0",
-    "react-dom": "^16.8.4 || ^17.0.0"
+    "react": "16.14.0",
+    "react-dom": "16.14.0"
   },
   "incrementToForceBump": 2
 }

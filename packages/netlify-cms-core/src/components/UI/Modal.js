@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { css, Global, ClassNames } from '@emotion/react';
 import ReactModal from 'react-modal';
-import { transitions, shadows, lengths, zIndex } from 'netlify-cms-ui-default';
+
+import { transitions, shadows, lengths, zIndex } from '../../ui';
 
 function ReactModalGlobalStyles() {
   return (

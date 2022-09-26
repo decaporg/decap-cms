@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 declare module 'netlify-cms-core' {
+  import type { Iterable as ImmutableIterable, List, Map } from 'immutable';
   import type { ComponentType, ReactNode } from 'react';
-  import type { List, Map, Iterable as ImmutableIterable } from 'immutable';
   import type { Pluggable } from 'unified';
 
   export type CmsBackendType =
@@ -425,7 +425,14 @@ declare module 'netlify-cms-core' {
     widget: string;
   }
 
-  export interface EditorComponentOptions {
+  export interface EditorComponentWidgetOptions {
+    id: string;
+    label: string;
+    widget: string;
+    type: string;
+  }
+
+  export interface EditorComponentManualOptions {
     id: string;
     label: string;
     fields: EditorComponentField[];
@@ -435,6 +442,8 @@ declare module 'netlify-cms-core' {
     toBlock: (data: any) => string;
     toPreview: (data: any) => string;
   }
+
+  export type EditorComponentOptions = EditorComponentManualOptions | EditorComponentWidgetOptions
 
   export interface PreviewStyleOptions {
     raw: boolean;
@@ -573,6 +582,7 @@ declare module 'netlify-cms-core' {
       name: string,
       component: ComponentType<PreviewTemplateComponentProps>,
     ) => void;
+    registerWidget: (widgets: CmsWidgetParam[]) => void;
     registerWidget: (
       widget: string | CmsWidgetParam,
       control?: ComponentType<CmsWidgetControlProps> | string,
@@ -802,21 +812,51 @@ declare module 'netlify-cms-core' {
   export class TestBackend extends Implementation {}
 
   // Widgets
-  export const BooleanWidget: CmsWidgetParam<boolean>;
-  export const CodeWidget: CmsWidgetParam<any>;
-  export const ColorStringWidget: CmsWidgetParam<string>;
-  export const DateTimeWidget: CmsWidgetParam<Date | string>;
-  export const FileWidget: CmsWidgetParam<string | string[] | List<string>>;
-  export const ImageWidget: CmsWidgetParam<string | string[] | List<string>>;
-  export const ListWidget: CmsWidgetParam<List<any>>;
-  export const MapWidget: CmsWidgetParam<any>;
-  export const MarkdownWidget: CmsWidgetParam<string>;
-  export const NumberWidget: CmsWidgetParam<string | number>;
-  export const ObjectWidget: CmsWidgetParam<Map<string, any> | Record<string, any>>;
-  export const RelationWidget: CmsWidgetParam<any>;
-  export const SelectWidget: CmsWidgetParam<string | string[]>;
-  export const StringWidget: CmsWidgetParam<string>;
-  export const TextWidget: CmsWidgetParam<string>;
+  export const BooleanWidget: {
+    Widget: () => CmsWidgetParam<boolean>;
+  };
+  export const CodeWidget: {
+    Widget: () => CmsWidgetParam<any>;
+  };
+  export const ColorStringWidget: {
+    Widget: () => CmsWidgetParam<string>;
+  };
+  export const DateTimeWidget: {
+    Widget: () => CmsWidgetParam<Date | string>;
+  };
+  export const FileWidget: {
+    Widget: () => CmsWidgetParam<string | string[] | List<string>>;
+  };
+  export const ImageWidget: {
+    Widget: () => CmsWidgetParam<string | string[] | List<string>>;
+  };
+  export const ListWidget: {
+    Widget: () => CmsWidgetParam<List<any>>;
+  };
+  export const MapWidget: {
+    Widget: () => CmsWidgetParam<any>;
+  };
+  export const MarkdownWidget: {
+    Widget: () => CmsWidgetParam<string>;
+  };
+  export const NumberWidget: {
+    Widget: () => CmsWidgetParam<string | number>;
+  };
+  export const ObjectWidget: {
+    Widget: () => CmsWidgetParam<Map<string, any> | Record<string, any>>;
+  };
+  export const RelationWidget: {
+    Widget: () => CmsWidgetParam<any>;
+  };
+  export const SelectWidget: {
+    Widget: () => CmsWidgetParam<string | string[]>;
+  };
+  export const StringWidget: {
+    Widget: () => CmsWidgetParam<string>;
+  };
+  export const TextWidget: {
+    Widget: () => CmsWidgetParam<string>;
+  };
 
   export const MediaLibraryCloudinary: {
     name: string;
@@ -868,27 +908,7 @@ declare module 'netlify-cms-core' {
     }>;
   };
 
-  export const imageEditorComponent: {
-    label: string;
-    id: string;
-    fromBlock: (match: any) => any;
-    toBlock: ({ alt, image, title }: { alt: any; image: any; title: any }) => string;
-    toPreview: (
-      {
-        alt,
-        image,
-        title,
-      }: {
-        alt: any;
-        image: any;
-        title: any;
-      },
-      getAsset: any,
-      fields: any,
-    ) => JSX.Element;
-    pattern: RegExp;
-    fields: CmsField;
-  };
+  export const imageEditorComponent: EditorComponentManualOptions;
 
   export const locales: {
     cs: Record<string, any>;
@@ -932,4 +952,16 @@ declare module 'netlify-cms-core' {
     }) => Promise<{ token: string; refresh_token: string }>;
   }
   export { NetlifyAuthenticator };
+
+  // Images
+  export interface IconProps {
+    type: string;
+    direction?: 'right' | 'down' | 'left' | 'up';
+    size?: string;
+    className?: string;
+  }
+
+  export const Icon: React.ComponentType<IconProps>;
+
+  export const images: Record<string, ReactNode>;
 }

@@ -7,6 +7,7 @@ export * from './media-libraries';
 export * from './editor-components';
 export * from './locales';
 export * from './lib';
+export * from './ui';
 
 export const NetlifyCmsCore = {
   ...Registry,

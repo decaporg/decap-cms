@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
-import { Icon, buttons } from 'netlify-cms-ui-default';
+
+import { Icon, buttons } from '../../../ui';
 
 const StyledToolbarButton = styled.button`
   ${buttons.button};

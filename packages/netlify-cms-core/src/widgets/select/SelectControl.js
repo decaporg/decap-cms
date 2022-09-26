@@ -4,8 +4,8 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Map, List, fromJS } from 'immutable';
 import { find } from 'lodash';
 import Select from 'react-select';
-import { reactSelectStyles } from 'netlify-cms-ui-default';
 
+import { reactSelectStyles } from '../../ui';
 import { validations } from '../../lib/widgets';
 
 function optionToString(option) {

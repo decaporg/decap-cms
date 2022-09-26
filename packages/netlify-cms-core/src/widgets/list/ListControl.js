@@ -7,14 +7,14 @@ import { List, Map, fromJS } from 'immutable';
 import { partial, isEmpty, uniqueId } from 'lodash';
 import uuid from 'uuid/v4';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
+
 import {
   ListItemTopBar,
   ObjectWidgetTopBar,
   colors,
   lengths,
   FieldLabel,
-} from 'netlify-cms-ui-default';
-
+} from '../../ui';
 import { stringTemplate, validations } from '../../lib/widgets';
 import NetlifyCmsWidgetObject from '../object';
 import {

@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
-import { AuthenticationPage, Icon } from 'netlify-cms-ui-default';
 
+import { AuthenticationPage, Icon } from '../../ui';
 import { NetlifyAuthenticator } from '../../lib/auth';
 
 const LoginButtonIcon = styled(Icon)`

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { lengths } from 'netlify-cms-ui-default';
 
+import { lengths } from '../../ui';
 import ViewStyleControl from './ViewStyleControl';
 import SortControl from './SortControl';
 import FilterControl from './FilterControl';

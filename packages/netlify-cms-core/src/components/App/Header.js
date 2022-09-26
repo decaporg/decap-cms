@@ -5,6 +5,8 @@ import styled from '@emotion/styled';
 import { css } from '@emotion/react';
 import { translate } from 'react-polyglot';
 import { NavLink } from 'react-router-dom';
+import { connect } from 'react-redux';
+
 import {
   Icon,
   Dropdown,
@@ -15,9 +17,7 @@ import {
   shadows,
   buttons,
   zIndex,
-} from 'netlify-cms-ui-default';
-import { connect } from 'react-redux';
-
+} from '../../ui';
 import { SettingsDropdown } from '../UI';
 import { checkBackendStatus } from '../../actions/status';
 

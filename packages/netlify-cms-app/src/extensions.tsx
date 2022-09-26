@@ -25,9 +25,10 @@ import {
   StringWidget,
   TestBackend,
   TextWidget,
-  locales
+  locales,
+  Icon,
+  images
 } from 'netlify-cms-core';
-import { Icon, images } from 'netlify-cms-ui-default';
 
 // Register all the things
 CMS.registerBackend('git-gateway', GitGatewayBackend);
@@ -61,8 +62,8 @@ CMS.registerEditorComponent({
   widget: 'code',
   type: 'code-block',
 });
-Object.keys(locales).forEach(locale => {
-  CMS.registerLocale(locale, locales[locale]);
+Object.keys(locales).forEach((locale) => {
+  CMS.registerLocale(locale, locales[locale as keyof typeof locales]);
 });
 
 Object.keys(images).forEach(iconName => {

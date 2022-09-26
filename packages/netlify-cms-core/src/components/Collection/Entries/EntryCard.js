@@ -2,8 +2,8 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { colors, colorsRaw, components, lengths, zIndex } from 'netlify-cms-ui-default';
 
+import { colors, colorsRaw, components, lengths, zIndex } from '../../../ui';
 import { boundGetAsset } from '../../../actions/media';
 import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from '../../../constants/collectionViews';
 import { selectIsLoadingAsset } from '../../../reducers/medias';

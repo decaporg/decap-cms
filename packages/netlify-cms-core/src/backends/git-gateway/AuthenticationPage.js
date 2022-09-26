@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import styled from '@emotion/styled';
 import { partial } from 'lodash';
+
 import {
   AuthenticationPage,
   buttons,
@@ -10,7 +11,7 @@ import {
   colorsRaw,
   lengths,
   zIndex,
-} from 'netlify-cms-ui-default';
+} from '../../ui';
 
 const LoginButton = styled.button`
   ${buttons.button};

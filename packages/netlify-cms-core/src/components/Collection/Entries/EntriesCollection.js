@@ -5,8 +5,8 @@ import { connect } from 'react-redux';
 import styled from '@emotion/styled';
 import { translate } from 'react-polyglot';
 import { partial } from 'lodash';
-import { colors } from 'netlify-cms-ui-default';
 
+import { colors } from '../../../ui';
 import { Cursor } from '../../../lib/util';
 import {
   loadEntries as actionLoadEntries,

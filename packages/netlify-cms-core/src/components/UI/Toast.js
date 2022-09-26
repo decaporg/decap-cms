@@ -4,7 +4,8 @@ import PropTypes from 'prop-types';
 import { css, Global } from '@emotion/react';
 import { translate } from 'react-polyglot';
 import reduxNotificationsStyles from 'redux-notifications/lib/styles.css';
-import { shadows, colors, lengths, zIndex } from 'netlify-cms-ui-default';
+
+import { shadows, colors, lengths, zIndex } from '../../ui';
 
 function ReduxNotificationsGlobalStyles() {
   return (

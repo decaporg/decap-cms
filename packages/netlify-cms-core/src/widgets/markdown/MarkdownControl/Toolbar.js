@@ -4,6 +4,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import { css } from '@emotion/react';
 import { List } from 'immutable';
+
 import {
   Toggle,
   Dropdown,
@@ -12,8 +13,7 @@ import {
   colors,
   transitions,
   lengths,
-} from 'netlify-cms-ui-default';
-
+} from '../../../ui';
 import ToolbarButton from './ToolbarButton';
 
 const ToolbarContainer = styled.div`

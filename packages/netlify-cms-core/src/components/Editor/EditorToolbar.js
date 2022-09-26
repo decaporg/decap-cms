@@ -5,6 +5,7 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { translate } from 'react-polyglot';
 import { Link } from 'react-router-dom';
+
 import {
   Icon,
   Dropdown,
@@ -15,8 +16,7 @@ import {
   components,
   buttons,
   zIndex,
-} from 'netlify-cms-ui-default';
-
+} from '../../ui';
 import { status } from '../../constants/publishModes';
 import { SettingsDropdown } from '../UI';
 

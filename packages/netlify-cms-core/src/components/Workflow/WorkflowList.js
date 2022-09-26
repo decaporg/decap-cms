@@ -5,8 +5,8 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import moment from 'moment';
 import { translate } from 'react-polyglot';
-import { colors, lengths } from 'netlify-cms-ui-default';
 
+import { colors, lengths } from '../../ui';
 import { status } from '../../constants/publishModes';
 import { DragSource, DropTarget, HTML5DragDrop } from '../UI';
 import WorkflowCard from './WorkflowCard';

@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { WidgetPreviewContainer } from 'netlify-cms-ui-default';
+
+import { WidgetPreviewContainer } from '../../ui';
 
 function MapPreview({ value }) {
   return <WidgetPreviewContainer>{value ? value.toString() : null}</WidgetPreviewContainer>;

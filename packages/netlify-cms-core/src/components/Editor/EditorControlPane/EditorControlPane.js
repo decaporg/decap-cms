@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
+
 import {
   buttons,
   colors,
@@ -10,8 +11,7 @@ import {
   DropdownItem,
   StyledDropdownButton,
   text,
-} from 'netlify-cms-ui-default';
-
+} from '../../../ui';
 import EditorControl from './EditorControl';
 import {
   getI18nInfo,

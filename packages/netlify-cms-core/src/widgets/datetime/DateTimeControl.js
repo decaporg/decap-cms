@@ -5,7 +5,8 @@ import { jsx, css } from '@emotion/react';
 import reactDateTimeStyles from 'react-datetime/css/react-datetime.css';
 import DateTime from 'react-datetime';
 import moment from 'moment';
-import { buttons } from 'netlify-cms-ui-default';
+
+import { buttons } from '../../ui';
 
 function NowButton({ t, handleChange }) {
   return (

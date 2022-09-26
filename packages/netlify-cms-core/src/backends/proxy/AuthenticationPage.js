@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
-import { Icon, buttons, shadows, GoBackButton } from 'netlify-cms-ui-default';
+
+import { Icon, buttons, shadows, GoBackButton } from '../../ui';
 
 const StyledAuthenticationPage = styled.section`
   display: flex;

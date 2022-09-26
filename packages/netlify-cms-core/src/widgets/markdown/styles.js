@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
-import { zIndex } from 'netlify-cms-ui-default';
+
+import { zIndex } from '../../ui';
 
 export const editorStyleVars = {
   stickyDistanceBottom: '100px',

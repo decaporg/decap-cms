@@ -3,9 +3,9 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { List, Map } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { lengths } from 'netlify-cms-ui-default';
 import { connect } from 'react-redux';
 
+import { lengths } from '../../../ui';
 import {
   resolveWidget,
   getPreviewTemplate,

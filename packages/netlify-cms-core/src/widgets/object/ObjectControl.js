@@ -4,8 +4,8 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { ClassNames } from '@emotion/react';
 import styled from '@emotion/styled';
 import { List, Map } from 'immutable';
-import { colors, lengths, ObjectWidgetTopBar } from 'netlify-cms-ui-default';
 
+import { colors, lengths, ObjectWidgetTopBar } from '../../ui';
 import { stringTemplate } from '../../lib/widgets';
 
 const styleStrings = {

@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { css, Global } from '@emotion/react';
 import styled from '@emotion/styled';
+import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
+
 import {
   colors,
   colorsRaw,
@@ -10,9 +12,7 @@ import {
   transitions,
   IconButton,
   zIndex,
-} from 'netlify-cms-ui-default';
-import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
-
+} from '../../ui';
 import EditorControlPane from './EditorControlPane/EditorControlPane';
 import EditorPreviewPane from './EditorPreviewPane/EditorPreviewPane';
 import EditorToolbar from './EditorToolbar';

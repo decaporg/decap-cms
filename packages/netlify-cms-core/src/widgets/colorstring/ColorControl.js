@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import ChromePicker from 'react-color';
 import validateColor from 'validate-color';
-import { zIndex } from 'netlify-cms-ui-default';
+
+import { zIndex } from '../../ui';
 
 function ClearIcon() {
   return (
