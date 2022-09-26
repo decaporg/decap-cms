@@ -1,7 +1,6 @@
 const path = require('path');
 const { extendDefaultPlugins } = require('svgo');
 
-const appVersion = require('./packages/netlify-cms-app/package.json').version;
 const coreVersion = require('./packages/netlify-cms-core/package.json').version;
 const isProduction = process.env.NODE_ENV === 'production';
 const isTest = process.env.NODE_ENV === 'test';
@@ -57,7 +56,6 @@ function plugins() {
       [
         'transform-define',
         {
-          NETLIFY_CMS_APP_VERSION: `${appVersion}`,
           NETLIFY_CMS_CORE_VERSION: `${coreVersion}`,
         },
       ],

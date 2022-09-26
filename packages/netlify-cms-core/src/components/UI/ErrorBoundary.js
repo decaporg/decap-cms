@@ -40,8 +40,6 @@ function buildIssueTemplate({ config }) {
   let version = '';
   if (typeof NETLIFY_CMS_VERSION === 'string') {
     version = `netlify-cms@${NETLIFY_CMS_VERSION}`;
-  } else if (typeof NETLIFY_CMS_APP_VERSION === 'string') {
-    version = `netlify-cms-app@${NETLIFY_CMS_APP_VERSION}`;
   }
   const template = getIssueTemplate({
     version,

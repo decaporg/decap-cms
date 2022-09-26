@@ -69,7 +69,6 @@
     "react-datetime": "3.1.1",
     "react-dnd-html5-backend": "14.1.0",
     "react-dnd": "14.0.5",
-    "react-dom": "16.14.0",
     "react-frame-component": "5.2.3",
     "react-hot-loader": "4.13.0",
     "react-immutable-proptypes": "2.2.0",
@@ -125,7 +124,8 @@
   "peerDependencies": {
     "@emotion/react": "11.10.4",
     "@emotion/styled": "11.10.4",
-    "react": "^16.14.0 | ^17"
+    "react": "^16.14.0 || ^17.0.0",
+    "react-dom": "^16.14.0 || ^17.0.0"
   },
   "devDependencies": {
     "@types/history": "4.7.11",

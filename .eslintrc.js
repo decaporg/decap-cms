@@ -63,7 +63,7 @@ module.exports = {
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
       },
     },
-    'import/core-modules': [...packages, 'netlify-cms-app/dist/esm'],
+    'import/core-modules': [...packages],
   },
   overrides: [
     {
