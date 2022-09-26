@@ -19,5 +19,4 @@ coverage/
 *.log
 .env
 .temp/
-storybook-static/
 *.tgz
