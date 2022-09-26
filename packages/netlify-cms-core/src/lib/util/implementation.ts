@@ -264,7 +264,7 @@ export async function unpublishedEntries(listEntriesKeys: () => Promise<string[]
   try {
     const keys = await listEntriesKeys();
     return keys;
-  } catch (error) {
+  } catch (error: any) {
     if (error.message === 'Not Found') {
       return Promise.resolve([]);
     }

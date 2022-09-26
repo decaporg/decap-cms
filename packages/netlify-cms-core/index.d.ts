@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 declare module 'netlify-cms-core' {
   import type { ComponentType, ReactNode } from 'react';
-  import type { List, Map } from 'immutable';
+  import type { List, Map, Iterable as ImmutableIterable } from 'immutable';
   import type { Pluggable } from 'unified';
 
   export type CmsBackendType =
@@ -592,6 +592,216 @@ declare module 'netlify-cms-core' {
 
   export default NetlifyCmsCore;
 
+  // Backends
+  export type DisplayURLObject = { id: string; path: string };
+
+  export type DisplayURL = DisplayURLObject | string;
+
+  export type DataFile = {
+    path: string;
+    slug: string;
+    raw: string;
+    newPath?: string;
+  };
+
+  export type AssetProxy = {
+    path: string;
+    fileObj?: File;
+    toBase64?: () => Promise<string>;
+  };
+
+  export type Entry = {
+    dataFiles: DataFile[];
+    assets: AssetProxy[];
+  };
+
+  export type PersistOptions = {
+    newEntry?: boolean;
+    commitMessage: string;
+    collectionName?: string;
+    useWorkflow?: boolean;
+    unpublished?: boolean;
+    status?: string;
+  };
+
+  export type DeleteOptions = {};
+
+  export type Credentials = { token: string | {}; refresh_token?: string };
+
+  export type User = Credentials & {
+    backendName?: string;
+    login?: string;
+    name: string;
+    useOpenAuthoring?: boolean;
+  };
+
+  export interface ImplementationEntry {
+    data: string;
+    file: { path: string; label?: string; id?: string | null; author?: string; updatedOn?: string };
+  }
+
+  export type ImplementationFile = {
+    id?: string | null | undefined;
+    label?: string;
+    path: string;
+  };
+  export interface ImplementationMediaFile {
+    name: string;
+    id: string;
+    size?: number;
+    displayURL?: DisplayURL;
+    path: string;
+    draft?: boolean;
+    url?: string;
+    file?: File;
+  }
+
+  export interface UnpublishedEntryMediaFile {
+    id: string;
+    path: string;
+  }
+
+  export interface UnpublishedEntryDiff {
+    id: string;
+    path: string;
+    newFile: boolean;
+  }
+
+  export interface UnpublishedEntry {
+    pullRequestAuthor?: string;
+    slug: string;
+    collection: string;
+    status: string;
+    diffs: UnpublishedEntryDiff[];
+    updatedAt: string;
+  }
+
+  export type CursorStoreObject = {
+    actions: Set<string>;
+    data: Map<string, unknown>;
+    meta: Map<string, unknown>;
+  };
+
+  export type CursorStore = {
+    get<K extends keyof CursorStoreObject>(
+      key: K,
+      defaultValue?: CursorStoreObject[K],
+    ): CursorStoreObject[K];
+    getIn<V>(path: string[]): V;
+    set<K extends keyof CursorStoreObject, V extends CursorStoreObject[K]>(
+      key: K,
+      value: V,
+    ): CursorStoreObject[K];
+    setIn(path: string[], value: unknown): CursorStore;
+    hasIn(path: string[]): boolean;
+    mergeIn(path: string[], value: unknown): CursorStore;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    update: (...args: any[]) => CursorStore;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    updateIn: (...args: any[]) => CursorStore;
+  };
+
+  export type ActionHandler = (action: string) => unknown;
+
+  export class Cursor {
+    static create(...args: {}[]): Cursor;
+    updateStore(...args: any[]): Cursor;
+    updateInStore(...args: any[]): Cursor;
+    hasAction(action: string): boolean;
+    addAction(action: string): Cursor;
+    removeAction(action: string): Cursor;
+    setActions(actions: Iterable<string>): Cursor;
+    mergeActions(actions: Set<string>): Cursor;
+    getActionHandlers(handler: ActionHandler): ImmutableIterable<string, unknown>;
+    setData(data: {}): Cursor;
+    mergeData(data: {}): Cursor;
+    wrapData(data: {}): Cursor;
+    unwrapData(): [Map<string, unknown>, Cursor];
+    clearData(): Cursor;
+    setMeta(meta: {}): Cursor;
+    mergeMeta(meta: {}): Cursor;
+  }
+
+  class Implementation {
+    authComponent: () => void;
+    restoreUser: (user: User) => Promise<User>;
+
+    authenticate: (credentials: Credentials) => Promise<User>;
+    logout: () => Promise<void> | void | null;
+    getToken: () => Promise<string | null>;
+
+    getEntry: (path: string) => Promise<ImplementationEntry>;
+    entriesByFolder: (
+      folder: string,
+      extension: string,
+      depth: number,
+    ) => Promise<ImplementationEntry[]>;
+    entriesByFiles: (files: ImplementationFile[]) => Promise<ImplementationEntry[]>;
+
+    getMediaDisplayURL?: (displayURL: DisplayURL) => Promise<string>;
+    getMedia: (folder?: string) => Promise<ImplementationMediaFile[]>;
+    getMediaFile: (path: string) => Promise<ImplementationMediaFile>;
+
+    persistEntry: (entry: Entry, opts: PersistOptions) => Promise<void>;
+    persistMedia: (file: AssetProxy, opts: PersistOptions) => Promise<ImplementationMediaFile>;
+    deleteFiles: (paths: string[], commitMessage: string) => Promise<void>;
+
+    unpublishedEntries: () => Promise<string[]>;
+    unpublishedEntry: (args: {
+      id?: string;
+      collection?: string;
+      slug?: string;
+    }) => Promise<UnpublishedEntry>;
+    unpublishedEntryDataFile: (
+      collection: string,
+      slug: string,
+      path: string,
+      id: string,
+    ) => Promise<string>;
+    unpublishedEntryMediaFile: (
+      collection: string,
+      slug: string,
+      path: string,
+      id: string,
+    ) => Promise<ImplementationMediaFile>;
+    updateUnpublishedEntryStatus: (
+      collection: string,
+      slug: string,
+      newStatus: string,
+    ) => Promise<void>;
+    publishUnpublishedEntry: (collection: string, slug: string) => Promise<void>;
+    deleteUnpublishedEntry: (collection: string, slug: string) => Promise<void>;
+    getDeployPreview: (
+      collectionName: string,
+      slug: string,
+    ) => Promise<{ url: string; status: string } | null>;
+
+    allEntriesByFolder?: (
+      folder: string,
+      extension: string,
+      depth: number,
+    ) => Promise<ImplementationEntry[]>;
+    traverseCursor?: (
+      cursor: Cursor,
+      action: string,
+    ) => Promise<{ entries: ImplementationEntry[]; cursor: Cursor }>;
+
+    isGitBackend?: () => boolean;
+    status: () => Promise<{
+      auth: { status: boolean };
+      api: { status: boolean; statusPage: string };
+    }>;
+  }
+
+  export class AzureBackend extends Implementation {}
+  export class BitbucketBackend extends Implementation {}
+  export class GitGatewayBackend extends Implementation {}
+  export class GitHubBackend extends Implementation {}
+  export class GitLabBackend extends Implementation {}
+  export class ProxyBackend extends Implementation {}
+  export class TestBackend extends Implementation {}
+
+  // Widgets
   export const BooleanWidget: CmsWidgetParam<boolean>;
   export const CodeWidget: CmsWidgetParam<any>;
   export const ColorStringWidget: CmsWidgetParam<string>;
