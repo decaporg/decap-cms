@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-app",
   "description": "An extensible, open source, Git-based, React CMS for static sites. Reusable congiuration with React as peer.",
-  "version": "2.15.111",
+  "version": "2.15.112",
   "homepage": "https://www.netlifycms.org",
   "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-app",
   "bugs": "https://github.com/netlify/netlify-cms/issues",
@@ -33,8 +33,8 @@
     "immutable": "^3.7.6",
     "lodash": "^4.17.11",
     "moment": "^2.24.0",
-    "netlify-cms-core": "^2.55.39",
-    "netlify-cms-ui-default": "^2.15.21",
+    "netlify-cms-core": "^2.55.40",
+    "netlify-cms-ui-default": "^2.15.22",
     "prop-types": "^15.7.2",
     "react-immutable-proptypes": "^2.1.0",
     "uuid": "^3.3.2"
