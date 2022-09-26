@@ -90,7 +90,6 @@
     "react-virtualized-auto-sizer": "1.0.7",
     "react-waypoint": "10.3.0",
     "react-window": "1.8.7",
-    "react": "16.14.0",
     "redux-devtools-extension": "2.13.9",
     "redux-notifications": "4.0.1",
     "redux-thunk": "2.4.1",
@@ -125,7 +124,8 @@
   },
   "peerDependencies": {
     "@emotion/react": "11.10.4",
-    "@emotion/styled": "11.10.4"
+    "@emotion/styled": "11.10.4",
+    "react": "^16.14.0 | ^17"
   },
   "devDependencies": {
     "@types/history": "4.7.11",
