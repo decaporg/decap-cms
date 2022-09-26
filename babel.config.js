@@ -1,5 +1,4 @@
 const path = require('path');
-const { extendDefaultPlugins } = require('svgo');
 
 const coreVersion = require('./packages/netlify-cms-core/package.json').version;
 const isProduction = process.env.NODE_ENV === 'production';
@@ -27,12 +26,16 @@ const defaultPlugins = [
 ];
 
 const svgo = {
-  plugins: extendDefaultPlugins([
+  plugins: [
     {
-      name: 'removeViewBox',
-      active: false,
+      name: 'preset-default',
+      params: {
+        overrides: {
+          removeViewBox: false,
+        },
+      },
     },
-  ]),
+  ],
 };
 
 function presets() {
@@ -42,7 +45,7 @@ function presets() {
     [
       '@emotion/babel-preset-css-prop',
       {
-        autoLabel: "always",
+        autoLabel: 'always',
       },
     ],
     '@babel/typescript',
