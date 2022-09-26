@@ -4,7 +4,7 @@ import {
   MediaLibraryUploadcare,
 } from 'netlify-cms-core';
 import moment from 'moment';
-import './extensions.js';
+import './extensions';
 
 // Log version
 if (typeof window !== 'undefined') {
