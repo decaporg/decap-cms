@@ -124,7 +124,7 @@ function baseConfig({ target = isProduction ? 'umd' : 'umddir' } = {}) {
   return {
     context: process.cwd(),
     mode: isProduction ? 'production' : 'development',
-    entry: './src',
+    entry: isProduction ? './src' : '../../dev-test',
     output: targetOutputs()[target],
     module: {
       rules: flatMap(Object.values(rules()), rule => rule()),

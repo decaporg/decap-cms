@@ -14,8 +14,11 @@
     "allowJs": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "baseUrl": "./"
+    "baseUrl": "./",
+    "paths": {
+      "netlify-cms-core": ["./packages/netlify-cms-core/src"]
+    }
   },
-  "include": ["**/src/**/*"],
+  "include": ["**/src/**/*", "dev-test/index.tsx"],
   "exclude": ["node_modules", "**/*.spec.ts"]
 }

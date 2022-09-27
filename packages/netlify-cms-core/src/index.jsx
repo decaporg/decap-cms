@@ -1,6 +1,5 @@
 import bootstrap from './bootstrap';
 import Registry from './lib/registry';
-import loadDev from './dev';
 
 export * from './backends';
 export * from './widgets';
@@ -14,8 +13,5 @@ export const CMS = {
   ...Registry,
   init: bootstrap,
 };
-
-// TODO Fix - setup permament fix for dev environment
-// loadDev(CMS);
 
 export default CMS;
