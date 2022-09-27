@@ -419,6 +419,7 @@ export interface CmsConfig {
   };
   error: string | undefined;
   isFetching: boolean;
+  search: boolean | any;
 }
 
 export type CmsMediaLibraryOptions = unknown; // TODO: type properly

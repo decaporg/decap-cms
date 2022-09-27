@@ -443,7 +443,7 @@ declare module 'netlify-cms-core' {
     toPreview: (data: any) => string;
   }
 
-  export type EditorComponentOptions = EditorComponentManualOptions | EditorComponentWidgetOptions
+  export type EditorComponentOptions = EditorComponentManualOptions | EditorComponentWidgetOptions;
 
   export interface PreviewStyleOptions {
     raw: boolean;
@@ -593,8 +593,14 @@ declare module 'netlify-cms-core' {
     ) => void;
     registerIcon: (iconName: string, icon: ReactNode) => void;
     getIcon: (iconName: string) => ReactNode;
-    registerAdditionalLink: (id: string, title: string, link: string, iconName?: string) => void;
-    getAdditionalLinks: () => { title: string; link: string; iconName?: string }[];
+    registerAdditionalLink: (
+      id: string,
+      title: string,
+      data: string | ComponentType,
+      iconName?: string,
+    ) => void;
+    getAdditionalLinks: () => { title: string; data: string | ComponentType; iconName?: string }[];
+    getAdditionalLink: (id: string) => { title: string; data: string | ComponentType; iconName?: string } | undefined;
   }
 
   export const CMS: CMSApi;

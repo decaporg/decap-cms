@@ -142,7 +142,7 @@ export class Sidebar extends React.Component {
     );
   };
 
-  renderAdditionalLink = ({ title, url, iconName }) => {
+  renderAdditionalLink = ({ id, title, data, iconName }) => {
     let icon = <Icon type="write" />;
     if (iconName) {
       const storedIcon = getIcon(iconName);
@@ -150,12 +150,25 @@ export class Sidebar extends React.Component {
         icon = storedIcon;
       }
     }
+
+    const content = (
+      <>
+        <IconWrapper>{icon}</IconWrapper>
+        {title}
+      </>
+    );
+
     return (
       <li key={title}>
-        <AdditionalLink href={url} target="_blank" rel="noopener">
-          <IconWrapper>{icon}</IconWrapper>
-          {title}
-        </AdditionalLink>
+        {typeof data === 'string' ? (
+          <AdditionalLink href={data} target="_blank" rel="noopener">
+            {content}
+          </AdditionalLink>
+        ) : (
+          <SidebarNavLink to={`/page/${id}`} activeClassName="sidebar-active">
+            {content}
+          </SidebarNavLink>
+        )}
       </li>
     );
   };

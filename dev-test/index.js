@@ -760,7 +760,11 @@ const GeneralPreview = window.createClass({
         window.h('dd', {}, this.props.widgetsFor('posts').getIn(['data', 'author']) || 'None'),
 
         window.h('dt', {}, 'Default Thumbnail'),
-        window.h('dd', {}, thumb && window.h('img', { src: this.props.getAsset(thumb).toString() })),
+        window.h(
+          'dd',
+          {},
+          thumb && window.h('img', { src: this.props.getAsset(thumb).toString() }),
+        ),
       ),
     );
   },
@@ -838,3 +842,4 @@ window.CMS.registerPreviewTemplate('authors', AuthorsPreview);
 window.CMS.registerPreviewStyle(previewStyles, { raw: true });
 // Pass the name of a registered control to reuse with a new widget preview.
 window.CMS.registerWidget('relationKitchenSinkPost', 'relation', RelationKitchenSinkPostPreview);
+window.CMS.registerAdditionalLink('example', 'Example.com', 'https://example.com', 'page');

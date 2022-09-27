@@ -304,9 +304,12 @@ export function getIcon(name) {
 /**
  * Icons
  */
-export function registerAdditionalLink(id, title, url, iconName) {
-  registry.additionalLinks[id] = { title, url, iconName };
+export function registerAdditionalLink(id, title, data, iconName) {
+  registry.additionalLinks[id] = { id, title, data, iconName };
 }
 export function getAdditionalLinks() {
   return registry.additionalLinks;
+}
+export function getAdditionalLink(id) {
+  return registry.additionalLinks[id];
 }

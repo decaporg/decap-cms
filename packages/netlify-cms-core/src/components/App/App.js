@@ -19,6 +19,7 @@ import { colors, Loader } from '../../ui';
 import Collection from '../Collection/Collection';
 import Editor from '../Editor/Editor';
 import MediaLibrary from '../MediaLibrary/MediaLibrary';
+import Page from '../page/Page';
 import Snackbars from '../snackbar/Snackbars';
 import { Alert } from '../UI/Alert';
 import { Confirm } from '../UI/Confirm';
@@ -308,6 +309,7 @@ class App extends React.Component {
                     return <Redirect to={`/collections/${name}/entries/${entryName}`} />;
                   }}
                 />
+                <Route path="/page/:id" render={props => <Page {...props} />} />
                 <Route component={NotFoundPage} />
               </Switch>
               {useMediaLibrary ? <MediaLibrary /> : null}
