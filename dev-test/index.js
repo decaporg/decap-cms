@@ -1,75 +1,43 @@
-import React from 'react';
-import cms, {
-  GitGatewayBackend,
-  ProxyBackend,
-  TestBackend,
-  imageEditorComponent,
-  images,
-  Icon,
-  BooleanWidget,
-  ColorStringWidget,
-  DateTimeWidget,
-  FileWidget,
-  ImageWidget,
-  ListWidget,
-  MarkdownWidget,
-  NumberWidget,
-  ObjectWidget,
-  RelationWidget,
-  SelectWidget,
-  StringWidget,
-  TextWidget,
-  locales,
-} from 'netlify-cms-core';
-
-import type {
-  CmsWidgetPreviewProps,
-  PreviewTemplateComponentProps,
-} from '../packages/netlify-cms-core/src/interface';
-
 // Register all the things
-cms.registerBackend('git-gateway', GitGatewayBackend as any /* TODO Fix */);
-cms.registerBackend('proxy', ProxyBackend as any /* TODO Fix */);
-cms.registerBackend('test-repo', TestBackend as any /* TODO Fix */);
-cms.registerWidget(
-  [
-    StringWidget.Widget(),
-    NumberWidget.Widget(),
-    TextWidget.Widget(),
-    ImageWidget.Widget(),
-    FileWidget.Widget(),
-    SelectWidget.Widget(),
-    MarkdownWidget.Widget(),
-    ListWidget.Widget(),
-    ObjectWidget.Widget(),
-    RelationWidget.Widget(),
-    BooleanWidget.Widget(),
-    DateTimeWidget.Widget(),
-    ColorStringWidget.Widget(),
-  ] as any[] /* TODO Fix */,
-);
-cms.registerEditorComponent(imageEditorComponent as any /* TODO Fix */);
-cms.registerEditorComponent(
-  {
-    id: 'code-block',
-    label: 'Code Block',
-    widget: 'code',
-    type: 'code-block',
-  } as any /* TODO Fix */,
-);
-cms.registerLocale('en', locales.en as any /* TODO Fix */);
+window.CMS.registerBackend('git-gateway', window.CMS.GitGatewayBackend);
+window.CMS.registerBackend('proxy', window.CMS.ProxyBackend);
+window.CMS.registerBackend('test-repo', window.CMS.TestBackend);
+window.CMS.registerWidget([
+  window.CMS.StringWidget.Widget(),
+  window.CMS.NumberWidget.Widget(),
+  window.CMS.TextWidget.Widget(),
+  window.CMS.ImageWidget.Widget(),
+  window.CMS.FileWidget.Widget(),
+  window.CMS.SelectWidget.Widget(),
+  window.CMS.MarkdownWidget.Widget(),
+  window.CMS.ListWidget.Widget(),
+  window.CMS.ObjectWidget.Widget(),
+  window.CMS.RelationWidget.Widget(),
+  window.CMS.BooleanWidget.Widget(),
+  window.CMS.DateTimeWidget.Widget(),
+  window.CMS.ColorStringWidget.Widget(),
+]);
+window.CMS.registerEditorComponent(window.CMS.imageEditorComponent);
+window.CMS.registerEditorComponent({
+  id: 'code-block',
+  label: 'Code Block',
+  widget: 'code',
+  type: 'code-block',
+});
+window.CMS.registerLocale('en', window.CMS.locales.en);
 
-Object.keys(images).forEach(iconName => {
-  cms.registerIcon(iconName, <Icon type={iconName} />);
+Object.keys(window.CMS.images).forEach(iconName => {
+  window.CMS.registerIcon(iconName, window.h(window.CMS.Icon, { type: iconName }));
 });
 
-cms.init({
+window.CMS.init({
   config: {
     backend: {
       name: 'test-repo',
     },
     site_url: 'https://example.com',
     media_folder: 'assets/uploads',
+    publish_mode: 'editorial_workflow',
     collections: [
       {
         name: 'posts',
@@ -751,82 +719,94 @@ cms.init({
       },
     ],
   },
-} as any);
+});
 
-const PostPreview = ({ entry, widgetFor }: PreviewTemplateComponentProps) => {
-  return (
-    <div>
-      <div className="cover">
-        <h1>{entry.getIn(['data', 'title'], '')}</h1>
-        {widgetFor('image')}
-      </div>
-      <p>
-        <small>{`Written ${entry.getIn(['data', 'date'], '')}`}</small>
-      </p>
-      <div className="text">{widgetFor('body')}</div>
-    </div>
-  );
-};
+const PostPreview = window.createClass({
+  render: function () {
+    var entry = this.props.entry;
+    return window.h(
+      'div',
+      {},
+      window.h(
+        'div',
+        { className: 'cover' },
+        window.h('h1', {}, entry.getIn(['data', 'title'])),
+        this.props.widgetFor('image'),
+      ),
+      window.h('p', {}, window.h('small', {}, 'Written ' + entry.getIn(['data', 'date']))),
+      window.h('div', { className: 'text' }, this.props.widgetFor('body')),
+    );
+  },
+});
 
-const GeneralPreview = ({ entry, widgetsFor, getAsset }: PreviewTemplateComponentProps) => {
-  const title = entry.getIn(['data', 'site_title'], '') as string;
-  const post = entry.getIn(['data', 'posts'], {}) as any;
-  const thumb = post && post.thumb;
+const GeneralPreview = window.createClass({
+  render: function () {
+    const entry = this.props.entry;
+    const title = entry.getIn(['data', 'site_title']);
+    const posts = entry.getIn(['data', 'posts']);
+    const thumb = posts && posts.get('thumb');
 
-  return (
-    <div>
-      <h1>{title}</h1>
-      <dl>
-        <dt>Posts on Frontpage</dt>
-        <dd>{widgetsFor('posts').widgets.front_limit || 0}</dd>
-        <dt>Default Author</dt>
-        <dd>{widgetsFor('posts').data.author || 'None'}</dd>
-        <dt>Default Thumbnail</dt>
-        <dd>{thumb ? <img src={getAsset(thumb).toString()} /> : null}</dd>
-      </dl>
-    </div>
-  );
-};
+    return window.h(
+      'div',
+      {},
+      window.h('h1', {}, title),
+      window.h(
+        'dl',
+        {},
+        window.h('dt', {}, 'Posts on Frontpage'),
+        window.h('dd', {}, this.props.widgetsFor('posts').getIn(['widgets', 'front_limit']) || 0),
 
-const AuthorsPreview = ({ widgetsFor }: PreviewTemplateComponentProps) => {
-  return (
-    <div>
-      <h1>Authors</h1>
-      {widgetsFor('authors').map((author: any, index: number) => (
-        <div key={index}>
-          <hr />
-          <strong>{author.data.name}</strong>
-          {author.widgets.description}
-        </div>
-      ))}
-    </div>
-  );
-};
+        window.h('dt', {}, 'Default Author'),
+        window.h('dd', {}, this.props.widgetsFor('posts').getIn(['data', 'author']) || 'None'),
 
-const RelationKitchenSinkPostPreview = ({ value, fieldsMetaData }: CmsWidgetPreviewProps) => {
-  // When a post is selected from the relation field, all of it's data
-  // will be available in the field's metadata nested under the collection
-  // name, and then further nested under the value specified in `value_field`.
-  // In this case, the post would be nested under "posts" and then under
-  // the title of the selected post, since our `value_field` in the config
-  // is "title".
-  console.log();
-  const post = fieldsMetaData && fieldsMetaData.getIn(['posts', value]);
-  const style = { border: '2px solid #ccc', borderRadius: '8px', padding: '20px' };
+        window.h('dt', {}, 'Default Thumbnail'),
+        window.h('dd', {}, thumb && window.h('img', { src: this.props.getAsset(thumb).toString() })),
+      ),
+    );
+  },
+});
+const AuthorsPreview = window.createClass({
+  render: function () {
+    return window.h(
+      'div',
+      {},
+      window.h('h1', {}, 'Authors'),
+      this.props.widgetsFor('authors').map(function (author, index) {
+        return window.h(
+          'div',
+          { key: index },
+          window.h('hr', {}),
+          window.h('strong', {}, author.getIn(['data', 'name'])),
+          author.getIn(['widgets', 'description']),
+        );
+      }),
+    );
+  },
+});
 
-  if (!post) {
-    return null;
-  }
-
-  return (
-    <div style={style}>
-      <h2>Related Post</h2>
-      <h3>{post.title}</h3>
-      <img src={post.image} />
-      <p>{`${post.body?.slice(0, 100)}...`}</p>
-    </div>
-  );
-};
+const RelationKitchenSinkPostPreview = window.createClass({
+  render: function () {
+    // When a post is selected from the relation field, all of it's data
+    // will be available in the field's metadata nested under the collection
+    // name, and then further nested under the value specified in `value_field`.
+    // In this case, the post would be nested under "posts" and then under
+    // the title of the selected post, since our `value_field` in the config
+    // is "title".
+    const { value, fieldsMetaData } = this.props;
+    const post = fieldsMetaData && fieldsMetaData.getIn(['posts', value]);
+    const style = { border: '2px solid #ccc', borderRadius: '8px', padding: '20px' };
+    return post
+      ? window.h(
+          'div',
+          { style: style },
+          window.h('h2', {}, 'Related Post'),
+          window.h('h3', {}, post.get('title')),
+          window.h('img', { src: post.get('image') }),
+          window.h('p', {}, post.get('body', '').slice(0, 100) + '...'),
+        )
+      : null;
+  },
+});
 
 const previewStyles = `
   html,
@@ -852,9 +832,9 @@ const previewStyles = `
   }
 `;
 
-cms.registerPreviewTemplate('posts', PostPreview);
-cms.registerPreviewTemplate('general', GeneralPreview);
-cms.registerPreviewTemplate('authors', AuthorsPreview);
-cms.registerPreviewStyle(previewStyles, { raw: true });
+window.CMS.registerPreviewTemplate('posts', PostPreview);
+window.CMS.registerPreviewTemplate('general', GeneralPreview);
+window.CMS.registerPreviewTemplate('authors', AuthorsPreview);
+window.CMS.registerPreviewStyle(previewStyles, { raw: true });
 // Pass the name of a registered control to reuse with a new widget preview.
-cms.registerWidget('relationKitchenSinkPost', 'relation', RelationKitchenSinkPostPreview);
+window.CMS.registerWidget('relationKitchenSinkPost', 'relation', RelationKitchenSinkPostPreview);

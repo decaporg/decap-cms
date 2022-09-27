@@ -19,6 +19,6 @@
       "netlify-cms-core": ["./packages/netlify-cms-core/src"]
     }
   },
-  "include": ["**/src/**/*", "dev-test/index.tsx"],
+  "include": ["**/src/**/*", "dev-test/index.js,, "packages/netlify-cms-core/dev.tsx"
   "exclude": ["node_modules", "**/*.spec.ts"]
 }

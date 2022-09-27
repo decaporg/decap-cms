@@ -10,9 +10,16 @@ const en = {
     errors: {
       email: 'Make sure to enter your email.',
       password: 'Please enter your password.',
+      authTitle: 'Error logging in',
+      authBody: '%{details}',
       identitySettings:
         'Unable to access identity settings. When using git-gateway backend make sure to enable Identity service and Git Gateway.',
     },
+  },
+  api: {
+    labelsMigrationTitle: 'Labels Migration',
+    labelsMigrationBody:
+      'Netlify CMS is adding labels to %{pullRequests} of your Editorial Workflow entries. The "Workflow" tab will be unavailable during this migration. You may use other areas of the CMS during this time. Note that closing the CMS will pause the migration.',
   },
   app: {
     header: {
@@ -93,26 +100,41 @@ const en = {
       i18n: {
         writingInLocale: 'Writing in %{locale}',
         copyFromLocale: 'Fill in from another locale',
-        copyFromLocaleConfirm:
+        copyFromLocaleConfirmTitle:
+          'Fill in data from locale',
+        copyFromLocaleConfirmBody:
           'Do you want to fill in data from %{locale} locale?\nAll existing content will be overwritten.',
       },
     },
     editor: {
       onLeavePage: 'Are you sure you want to leave this page?',
-      onUpdatingWithUnsavedChanges: 'You have unsaved changes, please save before updating status.',
-      onPublishingNotReady: 'Please update status to "Ready" before publishing.',
-      onPublishingWithUnsavedChanges: 'You have unsaved changes, please save before publishing.',
-      onPublishing: 'Are you sure you want to publish this entry?',
-      onUnpublishing: 'Are you sure you want to unpublish this entry?',
-      onDeleteWithUnsavedChanges:
+      onUpdatingWithUnsavedChangesTitle: 'Unsaved changes',
+      onUpdatingWithUnsavedChangesBody:
+        'You have unsaved changes, please save before updating status.',
+      onPublishingNotReadyTitle: 'Publishing unavailable',
+      onPublishingNotReadyBody: 'Please update status to "Ready" before publishing.',
+      onPublishingWithUnsavedChangesTitle: 'Unsaved changes',
+      onPublishingWithUnsavedChangesBody:
+        'You have unsaved changes, please save before publishing.',
+      onPublishingTitle: 'Publish this entry?',
+      onPublishingBody: 'Are you sure you want to publish this entry?',
+      onUnpublishingTitle: 'Unpublish this entry?',
+      onUnpublishingBody: 'Are you sure you want to unpublish this entry?',
+      onDeleteWithUnsavedChangesTitle: 'Delete this published entry?',
+      onDeleteWithUnsavedChangesBody:
         'Are you sure you want to delete this published entry, as well as your unsaved changes from the current session?',
-      onDeletePublishedEntry: 'Are you sure you want to delete this published entry?',
-      onDeleteUnpublishedChangesWithUnsavedChanges:
+      onDeletePublishedEntryTitle: 'Delete this published entry?',
+      onDeletePublishedEntryBody: 'Are you sure you want to delete this published entry?',
+      onDeleteUnpublishedChangesWithUnsavedChangesTitle: 'Delete this entry?',
+      onDeleteUnpublishedChangesWithUnsavedChangesBody:
         'This will delete all unpublished changes to this entry, as well as your unsaved changes from the current session. Do you still want to delete?',
-      onDeleteUnpublishedChanges:
+      onDeleteUnpublishedChangesTitle: 'Delete this entry?',
+      onDeleteUnpublishedChangesBody:
         'All unpublished changes to this entry will be deleted. Do you still want to delete?',
       loadingEntry: 'Loading entry...',
-      confirmLoadBackup: 'A local backup was recovered for this entry, would you like to use it?',
+      confirmLoadBackupTitle: 'Use local backup?',
+      confirmLoadBackupBody:
+        'A local backup was recovered for this entry, would you like to use it?',
     },
     editorInterface: {
       toggleI18n: 'Toggle i18n',
@@ -205,6 +227,8 @@ const en = {
       },
       datetime: {
         now: 'Now',
+        invalidDateTitle: 'Invalid date',
+        invalidDateBody: 'The date you entered is invalid.',
       },
       list: {
         add: 'Add %{item}',
@@ -222,8 +246,12 @@ const en = {
       copied: 'Copied',
     },
     mediaLibrary: {
-      onDelete: 'Are you sure you want to delete selected media?',
-      fileTooLarge: 'File too large.\nConfigured to not allow files greater than %{size} kB.',
+      onDeleteTitle: 'Delete selected media?',
+      onDeleteBody: 'Are you sure you want to delete selected media?',
+      fileTooLargeTitle: 'File too large',
+      fileTooLargeBody: 'File too large.\nConfigured to not allow files greater than %{size} kB.',
+      alreadyExistsTitle: 'File already exists',
+      alreadyExistsBody: `%{filename} already exists. Do you want to replace it?`
     },
     mediaLibraryModal: {
       loading: 'Loading...',
@@ -243,6 +271,11 @@ const en = {
     },
   },
   ui: {
+    common: {
+      yes: 'Yes',
+      no: 'No',
+      okay: 'OK',
+    },
     default: {
       goBackToSite: 'Go back to site',
     },
@@ -303,10 +336,13 @@ const en = {
       publishNewEntry: 'Publish new entry',
     },
     workflowList: {
-      onDeleteEntry: 'Are you sure you want to delete this entry?',
-      onPublishingNotReadyEntry:
+      onDeleteEntryTitle: 'Delete this entry?',
+      onDeleteEntryBody: 'Are you sure you want to delete this entry?',
+      onPublishingNotReadyEntryTitle: 'Not ready to be published',
+      onPublishingNotReadyEntryBody:
         'Only items with a "Ready" status can be published. Please drag the card to the "Ready" column to enable publishing.',
-      onPublishEntry: 'Are you sure you want to publish this entry?',
+      onPublishEntryTitle: 'Publish this entry?',
+      onPublishEntryBody: 'Are you sure you want to publish this entry?',
       draftHeader: 'Drafts',
       inReviewHeader: 'In Review',
       readyHeader: 'Ready',

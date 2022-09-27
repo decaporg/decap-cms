@@ -20,6 +20,8 @@ import Collection from '../Collection/Collection';
 import Editor from '../Editor/Editor';
 import MediaLibrary from '../MediaLibrary/MediaLibrary';
 import Snackbars from '../snackbar/Snackbars';
+import { Alert } from '../UI/Alert';
+import { Confirm } from '../UI/Confirm';
 import Workflow from '../Workflow/Workflow';
 import Header from './Header';
 import NotFoundPage from './NotFoundPage';
@@ -309,6 +311,8 @@ class App extends React.Component {
                 <Route component={NotFoundPage} />
               </Switch>
               {useMediaLibrary ? <MediaLibrary /> : null}
+              <Alert />
+              <Confirm />
             </AppMainContainer>
           </AppWrapper>
         </AppRoot>

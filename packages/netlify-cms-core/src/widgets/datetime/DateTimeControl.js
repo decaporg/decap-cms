@@ -1,11 +1,12 @@
 /** @jsx jsx */
-import React from 'react';
-import PropTypes from 'prop-types';
-import { jsx, css } from '@emotion/react';
-import reactDateTimeStyles from 'react-datetime/css/react-datetime.css';
-import DateTime from 'react-datetime';
+import { css, jsx } from '@emotion/react';
 import moment from 'moment';
+import PropTypes from 'prop-types';
+import React from 'react';
+import DateTime from 'react-datetime';
+import reactDateTimeStyles from 'react-datetime/css/react-datetime.css';
 
+import alert from '../../components/UI/Alert';
 import { buttons } from '../../ui';
 
 function NowButton({ t, handleChange }) {
@@ -133,7 +134,10 @@ export default class DateTimeControl extends React.Component {
       if (parsedDate.isValid()) {
         this.handleChange(datetime);
       } else {
-        window.alert('The date you entered is invalid.');
+        alert({
+          title: 'editor.editorWidgets.datetime.invalidDateTitle',
+          body: 'editor.editorWidgets.datetime.invalidDateBody',
+        });
       }
     }
 

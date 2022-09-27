@@ -1,21 +1,22 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import ImmutablePropTypes from 'react-immutable-proptypes';
-import { connect } from 'react-redux';
-import { orderBy, map } from 'lodash';
-import { translate } from 'react-polyglot';
 import fuzzy from 'fuzzy';
+import { map, orderBy } from 'lodash';
+import PropTypes from 'prop-types';
+import React from 'react';
+import ImmutablePropTypes from 'react-immutable-proptypes';
+import { translate } from 'react-polyglot';
+import { connect } from 'react-redux';
 
-import { fileExtension } from '../../lib/util';
 import {
-  loadMedia as loadMediaAction,
-  persistMedia as persistMediaAction,
+  closeMediaLibrary as closeMediaLibraryAction,
   deleteMedia as deleteMediaAction,
   insertMedia as insertMediaAction,
+  loadMedia as loadMediaAction,
   loadMediaDisplayURL as loadMediaDisplayURLAction,
-  closeMediaLibrary as closeMediaLibraryAction,
+  persistMedia as persistMediaAction,
 } from '../../actions/mediaLibrary';
+import { fileExtension } from '../../lib/util';
 import { selectMediaFiles } from '../../reducers/mediaLibrary';
+import alert from '../UI/Alert';
 import MediaLibraryModal, { fileShape } from './MediaLibraryModal';
 
 /**
@@ -171,18 +172,22 @@ class MediaLibrary extends React.Component {
     event.persist();
     event.stopPropagation();
     event.preventDefault();
-    const { persistMedia, privateUpload, config, t, field } = this.props;
+    const { persistMedia, privateUpload, config, field } = this.props;
     const { files: fileList } = event.dataTransfer || event.target;
     const files = [...fileList];
     const file = files[0];
     const maxFileSize = config.get('max_file_size');
 
     if (maxFileSize && file.size > maxFileSize) {
-      window.alert(
-        t('mediaLibrary.mediaLibrary.fileTooLarge', {
-          size: Math.floor(maxFileSize / 1000),
-        }),
-      );
+      alert({
+        title: 'mediaLibrary.mediaLibrary.fileTooLargeTitle',
+        body: {
+          key: 'mediaLibrary.mediaLibrary.fileTooLargeBody',
+          options: {
+            size: Math.floor(maxFileSize / 1000),
+          },
+        },
+      });
     } else {
       await persistMedia(file, { privateUpload, field });
 
@@ -209,10 +214,16 @@ class MediaLibrary extends React.Component {
   /**
    * Removes the selected file from the backend.
    */
-  handleDelete = () => {
+  handleDelete = async () => {
     const { selectedFile } = this.state;
     const { files, deleteMedia, privateUpload, t } = this.props;
-    if (!window.confirm(t('mediaLibrary.mediaLibrary.onDelete'))) {
+    if (
+      !(await confirm({
+        title: 'mediaLibrary.mediaLibrary.onDeleteTitle',
+        body: 'mediaLibrary.mediaLibrary.onDeleteBody',
+        color: 'error',
+      }))
+    ) {
       return;
     }
     const file = files.find(file => selectedFile.key === file.key);

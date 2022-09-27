@@ -4,6 +4,7 @@ import styled from '@emotion/styled';
 
 import { AuthenticationPage, Icon } from '../../ui';
 import { ImplicitAuthenticator } from '../../lib/auth';
+import alert from '../../components/UI/Alert';
 
 const LoginButtonIcon = styled(Icon)`
   margin-right: 18px;
@@ -33,7 +34,10 @@ export default class AzureAuthenticationPage extends React.Component {
     // Complete implicit authentication if we were redirected back to from the provider.
     this.auth.completeAuth((err, data) => {
       if (err) {
-        alert(err);
+        alert({
+          title: 'auth.errors.authTitle',
+          body: { key: 'auth.errors.authBody', options: { details: err } },
+        });
         return;
       }
       this.props.onLogin(data);

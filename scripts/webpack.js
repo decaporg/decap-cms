@@ -124,13 +124,13 @@ function baseConfig({ target = isProduction ? 'umd' : 'umddir' } = {}) {
   return {
     context: process.cwd(),
     mode: isProduction ? 'production' : 'development',
-    entry: isProduction ? './src' : '../../dev-test',
+    entry: './src',
     output: targetOutputs()[target],
     module: {
       rules: flatMap(Object.values(rules()), rule => rule()),
     },
     resolve: {
-      extensions: ['.ts', '.tsx', '.js', '.json'],
+      extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
       alias: {
         moment$: 'moment/moment.js',
         'react-dom': '@hot-loader/react-dom',

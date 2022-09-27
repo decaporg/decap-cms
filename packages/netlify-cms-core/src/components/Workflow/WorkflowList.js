@@ -1,16 +1,18 @@
-import PropTypes from 'prop-types';
-import React from 'react';
-import ImmutablePropTypes from 'react-immutable-proptypes';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import moment from 'moment';
+import PropTypes from 'prop-types';
+import React from 'react';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 import { translate } from 'react-polyglot';
 
-import { colors, lengths } from '../../ui';
 import { status } from '../../constants/publishModes';
-import { DragSource, DropTarget, HTML5DragDrop } from '../UI';
-import WorkflowCard from './WorkflowCard';
 import { selectEntryCollectionTitle } from '../../reducers/collections';
+import { colors, lengths } from '../../ui';
+import { DragSource, DropTarget, HTML5DragDrop } from '../UI';
+import alert from '../UI/Alert';
+import confirm from '../UI/Confirm';
+import WorkflowCard from './WorkflowCard';
 
 const WorkflowListContainer = styled.div`
   min-height: 60%;
@@ -146,17 +148,30 @@ class WorkflowList extends React.Component {
     this.props.handleChangeStatus(collection, slug, oldStatus, newStatus);
   };
 
-  requestDelete = (collection, slug, ownStatus) => {
-    if (window.confirm(this.props.t('workflow.workflowList.onDeleteEntry'))) {
+  requestDelete = async (collection, slug, ownStatus) => {
+    if (
+      await confirm({
+        title: 'workflow.workflowList.onDeleteEntryTitle',
+        body: 'workflow.workflowList.onDeleteEntryBody',
+      })
+    ) {
       this.props.handleDelete(collection, slug, ownStatus);
     }
   };
 
-  requestPublish = (collection, slug, ownStatus) => {
+  requestPublish = async (collection, slug, ownStatus) => {
     if (ownStatus !== status.last()) {
-      window.alert(this.props.t('workflow.workflowList.onPublishingNotReadyEntry'));
+      alert({
+        title: 'workflow.workflowList.onPublishingNotReadyEntryTitle',
+        body: 'workflow.workflowList.onPublishingNotReadyEntryBody',
+      });
       return;
-    } else if (!window.confirm(this.props.t('workflow.workflowList.onPublishEntry'))) {
+    } else if (
+      !(await confirm({
+        title: 'workflow.workflowList.onPublishEntryTitle',
+        body: 'workflow.workflowList.onPublishEntryBody',
+      }))
+    ) {
       return;
     }
     this.props.handlePublish(collection, slug);

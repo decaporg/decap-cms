@@ -4,14 +4,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 
-import {
-  buttons,
-  colors,
-  Dropdown,
-  DropdownItem,
-  StyledDropdownButton,
-  text,
-} from '../../../ui';
+import { buttons, colors, Dropdown, DropdownItem, StyledDropdownButton, text } from '../../../ui';
 import EditorControl from './EditorControl';
 import {
   getI18nInfo,
@@ -116,13 +109,15 @@ export default class ControlPane extends React.Component {
 
   copyFromOtherLocale =
     ({ targetLocale, t }) =>
-    sourceLocale => {
+    async sourceLocale => {
       if (
-        !window.confirm(
-          t('editor.editorControlPane.i18n.copyFromLocaleConfirm', {
-            locale: sourceLocale.toUpperCase(),
-          }),
-        )
+        !(await confirm({
+          title: 'editor.editorControlPane.i18n.copyFromLocaleConfirmTitle',
+          body: {
+            key: 'editor.editorControlPane.i18n.copyFromLocaleConfirmBody',
+            options: { locale: sourceLocale.toUpperCase() },
+          },
+        }))
       ) {
         return;
       }

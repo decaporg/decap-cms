@@ -26,7 +26,7 @@ const baseConfig = {
   devServer: {
     contentBase: '../../dev-test',
     watchContentBase: true,
-    publicPath: '/dist/',
+    publicPath: '/dist',
     quiet: true,
     host: '0.0.0.0',
     port: devServerPort,

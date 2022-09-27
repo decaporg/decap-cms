@@ -5,7 +5,6 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { translate } from 'react-polyglot';
 import { connect } from 'react-redux';
 
-import { Loader } from '../../ui';
 import { logoutUser } from '../../actions/auth';
 import { loadDeployPreview } from '../../actions/deploys';
 import {
@@ -34,6 +33,9 @@ import { EDITORIAL_WORKFLOW, status } from '../../constants/publishModes';
 import { selectDeployPreview, selectEntry, selectUnpublishedEntry } from '../../reducers';
 import { selectFields } from '../../reducers/collections';
 import { history, navigateToCollection, navigateToNewEntry } from '../../routing/history';
+import { Loader } from '../../ui';
+import alert from '../UI/Alert';
+import confirm from '../UI/Confirm';
 import EditorInterface from './EditorInterface';
 import withWorkflow from './withWorkflow';
 
@@ -167,21 +169,32 @@ export class Editor extends React.Component {
     }
   }
 
-  componentDidUpdate(prevProps) {
-    if (!prevProps.localBackup && this.props.localBackup) {
-      const confirmLoadBackup = window.confirm(this.props.t('editor.editor.confirmLoadBackup'));
+  async checkLocalBackup(prevProps) {
+    const { t, hasChanged, localBackup, loadLocalBackup, entryDraft, collection } = this.props;
+
+    if (!prevProps.localBackup && localBackup) {
+      const confirmLoadBackup = await confirm({
+        title: 'editor.editor.confirmLoadBackupTitle',
+        body: 'editor.editor.confirmLoadBackupBody',
+      });
       if (confirmLoadBackup) {
-        this.props.loadLocalBackup();
+        loadLocalBackup();
       } else {
         this.deleteBackup();
       }
     }
 
-    if (this.props.hasChanged) {
-      this.createBackup(this.props.entryDraft.get('entry'), this.props.collection);
+    if (hasChanged) {
+      this.createBackup(entryDraft.get('entry'), collection);
     }
+  }
 
-    if (prevProps.entry === this.props.entry) return;
+  componentDidUpdate(prevProps) {
+    this.checkLocalBackup(prevProps);
+
+    if (prevProps.entry === this.props.entry) {
+      return;
+    }
 
     const { newEntry, collection } = this.props;
 
@@ -206,10 +219,13 @@ export class Editor extends React.Component {
   };
 
   handleChangeStatus = newStatusName => {
-    const { entryDraft, updateUnpublishedEntryStatus, collection, slug, currentStatus, t } =
+    const { entryDraft, updateUnpublishedEntryStatus, collection, slug, currentStatus } =
       this.props;
     if (entryDraft.get('hasChanged')) {
-      window.alert(t('editor.editor.onUpdatingWithUnsavedChanges'));
+      alert({
+        title: 'editor.editor.onUpdatingWithUnsavedChangesTitle',
+        body: 'editor.editor.onUpdatingWithUnsavedChangesBody',
+      });
       return;
     }
     const newStatus = status.get(newStatusName);
@@ -256,15 +272,25 @@ export class Editor extends React.Component {
       collection,
       slug,
       currentStatus,
-      t,
     } = this.props;
     if (currentStatus !== status.last()) {
-      window.alert(t('editor.editor.onPublishingNotReady'));
+      alert({
+        title: 'editor.editor.onPublishingNotReadyTitle',
+        body: 'editor.editor.onPublishingNotReadyBody',
+      });
       return;
     } else if (entryDraft.get('hasChanged')) {
-      window.alert(t('editor.editor.onPublishingWithUnsavedChanges'));
+      alert({
+        title: 'editor.editor.onPublishingWithUnsavedChangesTitle',
+        body: 'editor.editor.onPublishingWithUnsavedChangesBody',
+      });
       return;
-    } else if (!window.confirm(t('editor.editor.onPublishing'))) {
+    } else if (
+      !(await confirm({
+        title: 'editor.editor.onPublishingTitle',
+        body: 'editor.editor.onPublishingBody',
+      }))
+    ) {
       return;
     }
 
@@ -280,8 +306,16 @@ export class Editor extends React.Component {
   };
 
   handleUnpublishEntry = async () => {
-    const { unpublishPublishedEntry, collection, slug, t } = this.props;
-    if (!window.confirm(t('editor.editor.onUnpublishing'))) return;
+    const { unpublishPublishedEntry, collection, slug } = this.props;
+    if (
+      !(await confirm({
+        title: 'editor.editor.onUnpublishingTitle',
+        body: 'editor.editor.onUnpublishingBody',
+        color: 'error',
+      }))
+    ) {
+      return;
+    }
 
     await unpublishPublishedEntry(collection, slug);
 
@@ -295,15 +329,28 @@ export class Editor extends React.Component {
     createDraftDuplicateFromEntry(entryDraft.get('entry'));
   };
 
-  handleDeleteEntry = () => {
-    const { entryDraft, newEntry, collection, deleteEntry, slug, t } = this.props;
+  handleDeleteEntry = async () => {
+    const { entryDraft, newEntry, collection, deleteEntry, slug } = this.props;
     if (entryDraft.get('hasChanged')) {
-      if (!window.confirm(t('editor.editor.onDeleteWithUnsavedChanges'))) {
+      if (
+        !(await confirm({
+          title: 'editor.editor.onDeleteWithUnsavedChangesTitle',
+          body: 'editor.editor.onDeleteWithUnsavedChangesBody',
+          color: 'error',
+        }))
+      ) {
         return;
       }
-    } else if (!window.confirm(t('editor.editor.onDeletePublishedEntry'))) {
+    } else if (
+      !(await confirm({
+        title: 'editor.editor.onDeletePublishedEntryTitle',
+        body: 'editor.editor.onDeletePublishedEntryBody',
+        color: 'error',
+      }))
+    ) {
       return;
     }
+
     if (newEntry) {
       return navigateToCollection(collection.get('name'));
     }
@@ -316,14 +363,24 @@ export class Editor extends React.Component {
   };
 
   handleDeleteUnpublishedChanges = async () => {
-    const { entryDraft, collection, slug, deleteUnpublishedEntry, loadEntry, isModification, t } =
+    const { entryDraft, collection, slug, deleteUnpublishedEntry, loadEntry, isModification } =
       this.props;
     if (
       entryDraft.get('hasChanged') &&
-      !window.confirm(t('editor.editor.onDeleteUnpublishedChangesWithUnsavedChanges'))
+      !(await confirm({
+        title: 'editor.editor.onDeleteUnpublishedChangesWithUnsavedChangesTitle',
+        body: 'editor.editor.onDeleteUnpublishedChangesWithUnsavedChangesBody',
+        color: 'error',
+      }))
     ) {
       return;
-    } else if (!window.confirm(t('editor.editor.onDeleteUnpublishedChanges'))) {
+    } else if (
+      !(await confirm({
+        title: 'editor.editor.onDeleteUnpublishedChangesTitle',
+        body: 'editor.editor.onDeleteUnpublishedChangesBody',
+        color: 'error',
+      }))
+    ) {
       return;
     }
     await deleteUnpublishedEntry(collection.get('name'), slug);

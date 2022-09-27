@@ -1,7 +1,6 @@
 import { Base64 } from 'js-base64';
 import semaphore from 'semaphore';
 import { initial, last, partial, result, trimStart, trim } from 'lodash';
-import { oneLine } from 'common-tags';
 import { dirname } from 'path';
 
 import {
@@ -26,14 +25,9 @@ import {
   unsentRequest,
   throwOnConflictingBranches,
 } from '../../lib/util';
+import alert from '../../components/UI/Alert';
 
-import type {
-  AssetProxy,
-  DataFile,
-  PersistOptions,
-  FetchError,
-  ApiRequest,
-} from '../../lib/util';
+import type { AssetProxy, DataFile, PersistOptions, FetchError, ApiRequest } from '../../lib/util';
 import type { Semaphore } from 'semaphore';
 import type { Octokit } from '@octokit/rest';
 
@@ -847,11 +841,13 @@ export default class API {
       for (const pr of pullRequests) {
         if (!migrationNotified) {
           migrationNotified = true;
-          alert(oneLine`
-            Netlify CMS is adding labels to ${pullRequests.length} of your Editorial Workflow
-            entries. The "Workflow" tab will be unavailable during this migration. You may use other
-            areas of the CMS during this time. Note that closing the CMS will pause the migration.
-          `);
+          alert({
+            title: 'api.labelsMigrationTitle',
+            body: {
+              key: 'api.labelsMigrationBody',
+              options: { pullRequests: pullRequests.length },
+            },
+          });
         }
         prCount = prCount + 1;
         await this.migratePullRequest(pr, `${prCount} of ${pullRequests.length}`);
