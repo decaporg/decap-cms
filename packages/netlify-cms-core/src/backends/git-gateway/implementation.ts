@@ -113,7 +113,7 @@ if (window.netlifyIdentity) {
     }),
     new Promise(resolve => setTimeout(resolve, 2500)).then(() => {
       if (!initialized) {
-        console.log('Manually initializing identity widget');
+        console.info('Manually initializing identity widget');
         window.netlifyIdentity?.init();
       }
     }),
@@ -458,7 +458,7 @@ export default class GitGateway implements Implementation {
       .then((patterns: string[]) => ({ err: null, patterns }))
       .catch((err: Error) => {
         if (err.message.includes('404')) {
-          console.log('This 404 was expected and handled appropriately.');
+          console.info('This 404 was expected and handled appropriately.');
           return { err: null, patterns: [] as string[] };
         } else {
           return { err, patterns: [] as string[] };

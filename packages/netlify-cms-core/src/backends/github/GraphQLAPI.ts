@@ -180,7 +180,7 @@ export default class GraphQLAPI extends API {
             const result = await this.client.mutate(options);
             return result;
           } catch (e) {
-            console.log(e);
+            console.error(e);
           }
         }
       }

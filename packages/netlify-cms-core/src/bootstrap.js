@@ -44,7 +44,7 @@ function bootstrap(opts = {}) {
    * Log the version number.
    */
   if (typeof NETLIFY_CMS_CORE_VERSION === 'string') {
-    console.log(`netlify-cms-core ${NETLIFY_CMS_CORE_VERSION}`);
+    console.info(`netlify-cms-core ${NETLIFY_CMS_CORE_VERSION}`);
   }
 
   /**

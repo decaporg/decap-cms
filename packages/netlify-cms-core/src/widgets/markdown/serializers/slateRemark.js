@@ -68,7 +68,6 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
       : convertInlineAndTextChildren(node.nodes);
 
     const output = convertBlockNode(node, children);
-    //console.log(JSON.stringify(output, null, 2));
     return output;
   }
 

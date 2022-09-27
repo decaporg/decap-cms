@@ -437,7 +437,7 @@ export default class API {
   }
 
   async retrieveMetadataOld(key: string): Promise<Metadata> {
-    console.log(
+    console.info(
       '%c Checking for MetaData files',
       'line-height: 30px;text-align: center;font-weight: bold',
     );
@@ -449,7 +449,7 @@ export default class API {
 
     function errorHandler(err: Error) {
       if (err.message === 'Not Found') {
-        console.log(
+        console.info(
           '%c %s does not have metadata',
           'line-height: 30px;text-align: center;font-weight: bold',
           key,
@@ -560,7 +560,7 @@ export default class API {
       );
       return commits;
     } catch (e) {
-      console.log(e);
+      console.info(e);
       return [];
     }
   }
@@ -693,7 +693,7 @@ export default class API {
       );
     } catch (err: any) {
       if (err && err.status === 404) {
-        console.log('This 404 was expected and handled appropriately.');
+        console.info('This 404 was expected and handled appropriately.');
         return [];
       } else {
         throw err;
@@ -766,40 +766,40 @@ export default class API {
 
   async migratePullRequest(pullRequest: GitHubPull, countMessage: string) {
     const { number } = pullRequest;
-    console.log(`Migrating Pull Request '${number}' (${countMessage})`);
+    console.info(`Migrating Pull Request '${number}' (${countMessage})`);
     const contentKey = contentKeyFromBranch(pullRequest.head.ref);
     let metadata = await this.retrieveMetadataOld(contentKey).catch(() => undefined);
 
     if (!metadata) {
-      console.log(`Skipped migrating Pull Request '${number}' (${countMessage})`);
+      console.info(`Skipped migrating Pull Request '${number}' (${countMessage})`);
       return;
     }
 
     let newNumber = number;
     if (!metadata.version) {
-      console.log(`Migrating Pull Request '${number}' to version 1`);
+      console.info(`Migrating Pull Request '${number}' to version 1`);
       // migrate branch from cms/slug to cms/collection/slug
       try {
         ({ metadata, pullRequest } = await this.migrateToVersion1(pullRequest, metadata));
       } catch (e) {
-        console.log(`Failed to migrate Pull Request '${number}' to version 1. See error below.`);
+        console.info(`Failed to migrate Pull Request '${number}' to version 1. See error below.`);
         console.error(e);
         return;
       }
       newNumber = pullRequest.number;
-      console.log(
+      console.info(
         `Done migrating Pull Request '${number}' to version 1. New pull request '${newNumber}' created.`,
       );
     }
 
     if (metadata.version === '1') {
-      console.log(`Migrating Pull Request '${newNumber}' to labels`);
+      console.info(`Migrating Pull Request '${newNumber}' to labels`);
       // migrate branch from using orphan ref to store metadata to pull requests label
       await this.migrateToPullRequestLabels(pullRequest, metadata);
-      console.log(`Done migrating Pull Request '${newNumber}' to labels`);
+      console.info(`Done migrating Pull Request '${newNumber}' to labels`);
     }
 
-    console.log(
+    console.info(
       `Done migrating Pull Request '${
         number === newNumber ? newNumber : `${number} => ${newNumber}`
       }'`,
@@ -814,7 +814,7 @@ export default class API {
   }
 
   async listUnpublishedBranches() {
-    console.log(
+    console.info(
       '%c Checking for Unpublished entries',
       'line-height: 30px;text-align: center;font-weight: bold',
     );
@@ -1236,7 +1236,7 @@ export default class API {
           const result = await this.patchBranch(branchName, sha, { force: true });
           return result;
         } catch (e) {
-          console.log(e);
+          console.error(e);
         }
       }
       throw e;
@@ -1287,7 +1287,7 @@ export default class API {
   }
 
   async openPR(number: number) {
-    console.log('%c Re-opening PR', 'line-height: 30px;text-align: center;font-weight: bold');
+    console.info('%c Re-opening PR', 'line-height: 30px;text-align: center;font-weight: bold');
     const result: Octokit.PullsUpdateBranchResponse = await this.request(
       `${this.originRepoURL}/pulls/${number}`,
       {
@@ -1301,7 +1301,7 @@ export default class API {
   }
 
   async closePR(number: number) {
-    console.log('%c Deleting PR', 'line-height: 30px;text-align: center;font-weight: bold');
+    console.info('%c Deleting PR', 'line-height: 30px;text-align: center;font-weight: bold');
     const result: Octokit.PullsUpdateBranchResponse = await this.request(
       `${this.originRepoURL}/pulls/${number}`,
       {
@@ -1315,7 +1315,7 @@ export default class API {
   }
 
   async mergePR(pullrequest: GitHubPull) {
-    console.log('%c Merging PR', 'line-height: 30px;text-align: center;font-weight: bold');
+    console.info('%c Merging PR', 'line-height: 30px;text-align: center;font-weight: bold');
     try {
       const result: Octokit.PullsMergeResponse = await this.request(
         `${this.originRepoURL}/pulls/${pullrequest.number}/merge`,
@@ -1346,7 +1346,7 @@ export default class API {
     files.forEach(file => {
       commitMessage += `\n* "${file.path}"`;
     });
-    console.log(
+    console.info(
       '%c Automatic merge not possible - Forcing merge.',
       'line-height: 30px;text-align: center;font-weight: bold',
     );

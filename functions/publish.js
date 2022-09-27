@@ -33,7 +33,7 @@ const verifySignature = event => {
 
 exports.handler = async function(event) {
   try {
-    console.log(
+    console.info(
       JSON.stringify(
         {
           event,
@@ -74,7 +74,7 @@ exports.handler = async function(event) {
       throw new Error(`Command is not allowed. Expected: ${expectedCommand}. Actual: ${command}`);
     }
   } catch (e) {
-    console.log(e);
+    console.info(e);
     const response = {
       body: 'Unauthorized',
       status: 401,

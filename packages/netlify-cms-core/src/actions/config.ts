@@ -64,7 +64,7 @@ function getConfigUrl() {
   };
   const configLinkEl = document.querySelector<HTMLLinkElement>('link[rel="cms-config-url"]');
   if (configLinkEl && validTypes[configLinkEl.type] && configLinkEl.href) {
-    console.log(`Using config file path: "${configLinkEl.href}"`);
+    console.info(`Using config file path: "${configLinkEl.href}"`);
     return configLinkEl.href;
   }
   return 'config.yml';
@@ -100,7 +100,7 @@ function setSnakeCaseConfig<T extends CmsField>(field: T) {
     console.warn(
       `Field ${field.name} is using a deprecated configuration '${camel}'. Please use '${snake}'`,
     );
-    return { [snake]: (field as Record<string, unknown>)[camel] };
+    return { [snake]: (field as unknown as Record<string, unknown>)[camel] };
   });
 
   return Object.assign({}, field, ...snakeValues) as T;
@@ -388,7 +388,7 @@ async function getConfigYaml(file: string, hasManualConfig: boolean) {
   const contentType = response.headers.get('Content-Type') || 'Not-Found';
   const isYaml = contentType.indexOf('yaml') !== -1;
   if (!isYaml) {
-    console.log(`Response for ${file} was not yaml. (Content-Type: ${contentType})`);
+    console.info(`Response for ${file} was not yaml. (Content-Type: ${contentType})`);
     if (hasManualConfig) {
       return {};
     }
@@ -435,7 +435,7 @@ export async function detectProxyServer(localBackend?: boolean | CmsLocalBackend
       : localBackend.url || defaultUrl.replace('localhost', location.hostname);
 
   try {
-    console.log(`Looking for Netlify CMS Proxy Server at '${proxyUrl}'`);
+    console.info(`Looking for Netlify CMS Proxy Server at '${proxyUrl}'`);
     const res = await fetch(`${proxyUrl}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -447,14 +447,14 @@ export async function detectProxyServer(localBackend?: boolean | CmsLocalBackend
       type?: string;
     };
     if (typeof repo === 'string' && Array.isArray(publish_modes) && typeof type === 'string') {
-      console.log(`Detected Netlify CMS Proxy Server at '${proxyUrl}' with repo: '${repo}'`);
+      console.info(`Detected Netlify CMS Proxy Server at '${proxyUrl}' with repo: '${repo}'`);
       return { proxyUrl, publish_modes, type };
     } else {
-      console.log(`Netlify CMS Proxy Server not detected at '${proxyUrl}'`);
+      console.info(`Netlify CMS Proxy Server not detected at '${proxyUrl}'`);
       return {};
     }
   } catch {
-    console.log(`Netlify CMS Proxy Server not detected at '${proxyUrl}'`);
+    console.info(`Netlify CMS Proxy Server not detected at '${proxyUrl}'`);
     return {};
   }
 }
@@ -462,7 +462,7 @@ export async function detectProxyServer(localBackend?: boolean | CmsLocalBackend
 function getPublishMode(config: CmsConfig, publishModes?: CmsPublishMode[], backendType?: string) {
   if (config.publish_mode && publishModes && !publishModes.includes(config.publish_mode)) {
     const newPublishMode = publishModes[0];
-    console.log(
+    console.info(
       `'${config.publish_mode}' is not supported by '${backendType}' backend, switching to '${newPublishMode}'`,
     );
     return newPublishMode;
@@ -526,7 +526,7 @@ export function loadConfig(manualConfig: Partial<CmsConfig> = {}, onLoad: () => 
       if (typeof onLoad === 'function') {
         onLoad();
       }
-    } catch (err) {
+    } catch (err: any) {
       dispatch(configFailed(err));
       throw err;
     }

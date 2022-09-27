@@ -168,7 +168,7 @@ export function loadMedia(
         .catch((error: { status?: number }) => {
           console.error(error);
           if (error.status === 404) {
-            console.log('This 404 was expected and handled appropriately.');
+            console.info('This 404 was expected and handled appropriately.');
             dispatch(mediaLoaded([]));
           } else {
             dispatch(mediaLoadFailed());

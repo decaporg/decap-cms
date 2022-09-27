@@ -40,7 +40,6 @@ export const SnackbarSlice = createSlice({
     removeSnackbarById: (state, action: PayloadAction<string>) => {
       const messages = [...state.messages];
       const filteredMessages = messages.filter(message => message.id !== action.payload);
-      console.log('new messages after removing', action.payload, filteredMessages);
       return { ...state, messages: filteredMessages };
     },
   },

@@ -802,7 +802,6 @@ const loadDev = (cms: CMSApi) => {
     // In this case, the post would be nested under "posts" and then under
     // the title of the selected post, since our `value_field` in the config
     // is "title".
-    console.log();
     const post = fieldsMetaData && fieldsMetaData.getIn(['posts', value]);
     const style = { border: '2px solid #ccc', borderRadius: '8px', padding: '20px' };
 

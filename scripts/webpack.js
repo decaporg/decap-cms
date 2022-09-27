@@ -86,7 +86,7 @@ const umdDirPath = path.resolve(process.cwd(), 'dist/umd');
 const cjsPath = path.resolve(process.cwd(), 'dist/cjs');
 
 function targetOutputs() {
-  console.log(`Building [${pkg.name}, library: ${toGlobalName(pkg.name)}]`);
+  console.info(`Building [${pkg.name}, library: ${toGlobalName(pkg.name)}]`);
   return {
     umd: {
       path: umdPath,

@@ -439,7 +439,7 @@ export async function allEntriesByFolder({
       // if the branch was forced pushed the local tree sha can be removed from the remote tree
       const localTreeInBranch = await isShaExistsInBranch(branch.name, localTree.head);
       if (!localTreeInBranch) {
-        console.log(
+        console.info(
           `Can't find local tree head '${localTree.head}' in branch '${branch.name}', rebuilding local tree`,
         );
         return listAllFilesAndPersist();
@@ -454,12 +454,12 @@ export async function allEntriesByFolder({
         getFileId,
         filterFile,
       }).catch(e => {
-        console.log('Failed getting diff from local tree:', e);
+        console.info('Failed getting diff from local tree:', e);
         return null;
       });
 
       if (!diff) {
-        console.log(`Diff is null, rebuilding local tree`);
+        console.info(`Diff is null, rebuilding local tree`);
         return listAllFilesAndPersist();
       }
 

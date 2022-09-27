@@ -41,7 +41,7 @@ fetch(`${API_HOST}/graphql`, {
         if (err) {
           console.error('Error writing fragmentTypes file', err);
         } else {
-          console.log('Fragment types successfully extracted!');
+          console.info('Fragment types successfully extracted!');
         }
       },
     );

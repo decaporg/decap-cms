@@ -15,7 +15,6 @@ export function useWindowEvent<K extends keyof EventMap>(eventName: K, callback:
 export function useWindowEvent(eventName: string, callback: EventListenerOrEventListenerObject): void {
   useEffect(() => {
     window.addEventListener(eventName, callback);
-    console.log('listening for', eventName);
 
     return () => {
       window.removeEventListener(eventName, callback);

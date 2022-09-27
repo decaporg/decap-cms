@@ -193,7 +193,7 @@ const APPLICATION_JSON = 'application/json; charset=utf-8';
 
 function replace404WithEmptyResponse(err: FetchError) {
   if (err && err.status === 404) {
-    console.log('This 404 was expected and handled appropriately.');
+    console.info('This 404 was expected and handled appropriately.');
     return { size: 0, values: [] as BitBucketFile[] } as BitBucketSrcResult;
   } else {
     return Promise.reject(err);
@@ -346,7 +346,7 @@ export default class API {
       url: `${this.repoURL}/commits`,
       params: { include: branch, pagelen: 100 },
     }).catch(e => {
-      console.log(`Failed getting commits for branch '${branch}'`, e);
+      console.info(`Failed getting commits for branch '${branch}'`, e);
       return [];
     });
 
@@ -682,7 +682,7 @@ export default class API {
   }
 
   async listUnpublishedBranches() {
-    console.log(
+    console.info(
       '%c Checking for Unpublished entries',
       'line-height: 30px;text-align: center;font-weight: bold',
     );

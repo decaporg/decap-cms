@@ -333,7 +333,7 @@ export default class API {
             return true;
           }
         } catch (e) {
-          console.log('Failed getting default branch', e);
+          console.error('Failed getting default branch', e);
         }
       }
     }
@@ -710,7 +710,7 @@ export default class API {
   }
 
   async listUnpublishedBranches() {
-    console.log(
+    console.info(
       '%c Checking for Unpublished entries',
       'line-height: 30px;text-align: center;font-weight: bold',
     );

@@ -380,7 +380,7 @@ export default class API {
       return files;
     } catch (err: any) {
       if (err && err.status === 404) {
-        console.log('This 404 was expected and handled appropriately.');
+        console.info('This 404 was expected and handled appropriately.');
         return [];
       } else {
         throw err;

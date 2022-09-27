@@ -386,7 +386,7 @@ export default class BitbucketBackend implements Implementation {
           .then(attributes => getLargeMediaPatternsFromGitAttributesFile(attributes as string))
           .catch((err: FetchError) => {
             if (err.status === 404) {
-              console.log('This 404 was expected and handled appropriately.');
+              console.info('This 404 was expected and handled appropriately.');
             } else {
               console.error(err);
             }

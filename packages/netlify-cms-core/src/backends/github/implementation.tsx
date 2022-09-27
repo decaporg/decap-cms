@@ -190,7 +190,7 @@ export default class GitHub implements Implementation {
         .then(() => true)
         .catch(err => {
           if (err && err.status === 404) {
-            console.log('This 404 was expected and handled appropriately.');
+            console.info('This 404 was expected and handled appropriately.');
             return false;
           } else {
             return Promise.reject(err);

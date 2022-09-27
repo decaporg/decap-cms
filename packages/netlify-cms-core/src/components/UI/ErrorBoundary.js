@@ -62,7 +62,7 @@ function buildIssueUrl({ title, config }) {
 
     return `${ISSUE_URL}${params.toString()}`;
   } catch (e) {
-    console.log(e);
+    console.info(e);
     return `${ISSUE_URL}template=bug_report.md`;
   }
 }
@@ -110,7 +110,7 @@ const CopyButton = styled.button`
 `;
 
 function RecoveredEntry({ entry, t }) {
-  console.log(entry);
+  console.info(entry);
   return (
     <>
       <hr />
@@ -161,7 +161,7 @@ export class ErrorBoundary extends React.Component {
   async componentDidUpdate() {
     if (this.props.showBackup) {
       const backup = await localForage.getItem('backup');
-      backup && console.log(backup);
+      backup && console.info(backup);
       this.setState({ backup });
     }
   }

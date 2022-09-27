@@ -20,7 +20,7 @@ function plugins({ getAsset, resolveWidget, t, remarkPlugins }) {
     {
       onKeyDown(event, editor, next) {
         if (isHotkey('mod+j', event)) {
-          console.log(JSON.stringify(editor.value.document.toJS(), null, 2));
+          console.info(JSON.stringify(editor.value.document.toJS(), null, 2));
         }
         next();
       },
