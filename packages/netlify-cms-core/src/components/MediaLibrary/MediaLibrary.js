@@ -17,6 +17,7 @@ import {
 import { fileExtension } from '../../lib/util';
 import { selectMediaFiles } from '../../reducers/mediaLibrary';
 import alert from '../UI/Alert';
+import confirm from '../UI/Confirm';
 import MediaLibraryModal, { fileShape } from './MediaLibraryModal';
 
 /**

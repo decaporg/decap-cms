@@ -15,7 +15,7 @@ const enforcedConfig = {
   button_class: undefined,
   inline_container: undefined,
   insert_transformation: false,
-  z_index: '99999',
+  z_index: '1003',
 };
 
 const defaultConfig = {

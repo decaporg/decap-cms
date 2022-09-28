@@ -32,7 +32,7 @@ const styleStrings = {
     }
   `,
   overlay: `
-    z-index: ${zIndex.zIndex99999};
+    z-index: ${zIndex.zIndex1002};
     position: fixed;
     top: 0;
     left: 0;
