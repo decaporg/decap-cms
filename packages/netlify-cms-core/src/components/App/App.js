@@ -41,7 +41,7 @@ const AppRoot = styled.div`
   min-width: 1200px;
   height: 100vh;
   position: relative;
-  overflow: hidden;
+  overflow-y: auto;
 `;
 
 const AppWrapper = styled.div`
