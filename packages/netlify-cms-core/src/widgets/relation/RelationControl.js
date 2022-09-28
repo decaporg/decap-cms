@@ -122,26 +122,6 @@ export default class RelationControl extends React.Component {
     locale: PropTypes.string,
   };
 
-  isValid = () => {
-    const { field, value, t } = this.props;
-    const min = field.get('min');
-    const max = field.get('max');
-
-    if (!this.isMultiple()) {
-      return { error: false };
-    }
-
-    const error = validations.validateMinMax(
-      t,
-      field.get('label', field.get('name')),
-      value,
-      min,
-      max,
-    );
-
-    return error ? { error } : { error: false };
-  };
-
   shouldComponentUpdate(nextProps) {
     return (
       this.props.value !== nextProps.value ||

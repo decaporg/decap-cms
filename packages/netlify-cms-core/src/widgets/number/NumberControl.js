@@ -80,21 +80,6 @@ export default class NumberControl extends React.Component {
     }
   };
 
-  isValid = () => {
-    const { field, value, t } = this.props;
-    const hasPattern = !!field.get('pattern', false);
-    const min = field.get('min', false);
-    const max = field.get('max', false);
-
-    // Pattern overrides min/max logic always:
-    if (hasPattern) {
-      return true;
-    }
-
-    const error = validateMinMax(value, min, max, field, t);
-    return error ? { error } : true;
-  };
-
   render() {
     const { field, value, classNameWrapper, forID, setActiveStyle, setInactiveStyle } = this.props;
     const min = field.get('min', '');

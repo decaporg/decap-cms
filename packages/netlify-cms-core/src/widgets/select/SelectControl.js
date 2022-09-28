@@ -57,26 +57,6 @@ export default class SelectControl extends React.Component {
     }),
   };
 
-  isValid = () => {
-    const { field, value, t } = this.props;
-    const min = field.get('min');
-    const max = field.get('max');
-
-    if (!field.get('multiple')) {
-      return { error: false };
-    }
-
-    const error = validations.validateMinMax(
-      t,
-      field.get('label', field.get('name')),
-      value,
-      min,
-      max,
-    );
-
-    return error ? { error } : { error: false };
-  };
-
   handleChange = selectedOption => {
     const { onChange, field } = this.props;
     const isMultiple = field.get('multiple', false);

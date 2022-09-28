@@ -1,6 +1,6 @@
 import type { List, Map } from 'immutable';
-import type { ComponentType, ReactNode } from 'react';
-import type { TranslateProps as ReactPolyglotTranslateProps } from 'react-polyglot';
+import type { ComponentType, FocusEventHandler, ReactNode } from 'react';
+import type { t, TranslateProps as ReactPolyglotTranslateProps } from 'react-polyglot';
 import type { Pluggable } from 'unified';
 import type Cursor from './lib/util/Cursor';
 
@@ -19,8 +19,9 @@ export interface CmsWidgetControlProps<T = any> {
   onChange: (value: T) => void;
   forID: string;
   classNameWrapper: string;
-  setActiveStyle: React.FocusEventHandler;
-  setInactiveStyle: React.FocusEventHandler;
+  setActiveStyle: FocusEventHandler;
+  setInactiveStyle: FocusEventHandler;
+  t: t;
 }
 
 export interface CmsWidgetPreviewProps<T = any> {
@@ -36,12 +37,17 @@ export interface CmsWidgetParam<T = any> {
   name: string;
   controlComponent: ComponentType<CmsWidgetControlProps<T>>;
   previewComponent?: ComponentType<CmsWidgetPreviewProps<T>>;
+  validator?: (props: {
+    field: Map<string, any>;
+    value: T | undefined | null;
+    t: t;
+  }) => boolean | { error: any } | Promise<boolean | { error: any }>;
   globalStyles?: any;
 }
 
 export interface CmsWidget<T = any> {
-  control: CmsWidgetControlProps<T>;
-  preview?: CmsWidgetPreviewProps<T>;
+  control: ComponentType<CmsWidgetControlProps<T>>;
+  preview?: ComponentType<CmsWidgetPreviewProps<T>>;
   globalStyles?: any;
 }
 

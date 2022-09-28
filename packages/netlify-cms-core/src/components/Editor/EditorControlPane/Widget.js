@@ -23,7 +23,8 @@ function isEmpty(value) {
 
 export default class Widget extends Component {
   static propTypes = {
-    controlComponent: PropTypes.func.isRequired,
+    controlComponent: PropTypes.oneOfType([PropTypes.func, PropTypes.object]).isRequired,
+    validator: PropTypes.func,
     field: ImmutablePropTypes.map.isRequired,
     hasActiveStyle: PropTypes.bool,
     setActiveStyle: PropTypes.func.isRequired,
@@ -98,8 +99,6 @@ export default class Widget extends Component {
      * `withRef: true` to `connect` in the options object.
      */
     this.innerWrappedControl = ref.getWrappedInstance ? ref.getWrappedInstance() : ref;
-
-    this.wrappedControlValid = this.innerWrappedControl.isValid || truthy;
 
     /**
      * Get the `shouldComponentUpdate` method from the wrapped control, and
@@ -180,44 +179,38 @@ export default class Widget extends Component {
   };
 
   validateWrappedControl = field => {
-    const { t, parentIds } = this.props;
-    if (typeof this.wrappedControlValid !== 'function') {
-      throw new Error(oneLine`
-        this.wrappedControlValid is not a function. Are you sure widget
-        "${field.get('widget')}" is registered?
-      `);
-    }
+    const { t, parentIds, validator, value } = this.props;
+    const response = validator?.({ value, field, t });
+    if (response !== undefined) {
+      if (typeof response === 'boolean') {
+        return { error: !response };
+      } else if (Object.prototype.hasOwnProperty.call(response, 'error')) {
+        return response;
+      } else if (response instanceof Promise) {
+        response.then(
+          () => {
+            this.validate({ error: false });
+          },
+          err => {
+            const error = {
+              type: ValidationErrorTypes.CUSTOM,
+              message: `${field.get('label', field.get('name'))} - ${err}.`,
+            };
 
-    const response = this.wrappedControlValid();
-    if (typeof response === 'boolean') {
-      const isValid = response;
-      return { error: !isValid };
-    } else if (Object.prototype.hasOwnProperty.call(response, 'error')) {
-      return response;
-    } else if (response instanceof Promise) {
-      response.then(
-        () => {
-          this.validate({ error: false });
-        },
-        err => {
-          const error = {
-            type: ValidationErrorTypes.CUSTOM,
-            message: `${field.get('label', field.get('name'))} - ${err}.`,
-          };
+            this.validate({ error });
+          },
+        );
 
-          this.validate({ error });
-        },
-      );
+        const error = {
+          type: ValidationErrorTypes.CUSTOM,
+          parentIds,
+          message: t('editor.editorControlPane.widget.processing', {
+            fieldLabel: field.get('label', field.get('name')),
+          }),
+        };
 
-      const error = {
-        type: ValidationErrorTypes.CUSTOM,
-        parentIds,
-        message: t('editor.editorControlPane.widget.processing', {
-          fieldLabel: field.get('label', field.get('name')),
-        }),
-      };
-
-      return { error };
+        return { error };
+      }
     }
     return { error: false };
   };
@@ -315,7 +308,6 @@ export default class Widget extends Component {
       onRemoveInsertedMedia,
       getAsset,
       forID: uniqueFieldId,
-      ref: this.processInnerControlRef,
       validate: this.validate,
       classNameWrapper,
       classNameWidget,

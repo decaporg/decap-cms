@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 declare module 'netlify-cms-core' {
   import type { Iterable as ImmutableIterable, List, Map } from 'immutable';
-  import type { ComponentType, ReactNode } from 'react';
+  import type { ComponentType, FocusEventHandler, ReactNode } from 'react';
+  import type { t } from 'react-polyglot';
   import type { Pluggable } from 'unified';
 
   export type CmsBackendType =
@@ -465,6 +466,9 @@ declare module 'netlify-cms-core' {
     onChange: (value: T) => void;
     forID: string;
     classNameWrapper: string;
+    setActiveStyle: FocusEventHandler;
+    setInactiveStyle: FocusEventHandler;
+    t: t;
   }
 
   export interface CmsWidgetPreviewProps<T = any> {
@@ -480,12 +484,17 @@ declare module 'netlify-cms-core' {
     name: string;
     controlComponent: CmsWidgetControlProps<T>;
     previewComponent?: CmsWidgetPreviewProps<T>;
+    validator?: (props: {
+      field: Map<string, any>;
+      value: T | undefined | null;
+      t: t;
+    }) => boolean | { error: any } | Promise<boolean | { error: any }>;
     globalStyles?: any;
   }
 
   export interface CmsWidget<T = any> {
-    control: CmsWidgetControlProps<T>;
-    preview?: CmsWidgetPreviewProps<T>;
+    control: ComponentType<CmsWidgetControlProps<T>>;
+    preview?: ComponentType<CmsWidgetPreviewProps<T>>;
     globalStyles?: any;
   }
 
@@ -600,7 +609,9 @@ declare module 'netlify-cms-core' {
       iconName?: string,
     ) => void;
     getAdditionalLinks: () => { title: string; data: string | ComponentType; iconName?: string }[];
-    getAdditionalLink: (id: string) => { title: string; data: string | ComponentType; iconName?: string } | undefined;
+    getAdditionalLink: (
+      id: string,
+    ) => { title: string; data: string | ComponentType; iconName?: string } | undefined;
   }
 
   export const CMS: CMSApi;

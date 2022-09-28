@@ -92,7 +92,7 @@ export function getPreviewTemplate(name) {
 /**
  * Editor Widgets
  */
-export function registerWidget(name, control, preview, schema = {}) {
+export function registerWidget(name, control, preview, validtor = () => {}, schema = {}) {
   if (Array.isArray(name)) {
     name.forEach(widget => {
       if (typeof widget !== 'object') {
@@ -105,12 +105,13 @@ export function registerWidget(name, control, preview, schema = {}) {
     // A registered widget control can be reused by a new widget, allowing
     // multiple copies with different previews.
     const newControl = typeof control === 'string' ? registry.widgets[control].control : control;
-    registry.widgets[name] = { control: newControl, preview, schema };
+    registry.widgets[name] = { control: newControl, preview, validtor, schema };
   } else if (typeof name === 'object') {
     const {
       name: widgetName,
       controlComponent: control,
       previewComponent: preview,
+      validtor = () => {},
       schema = {},
       allowMapValue,
       globalStyles,
@@ -128,6 +129,7 @@ export function registerWidget(name, control, preview, schema = {}) {
     registry.widgets[widgetName] = {
       control,
       preview,
+      validtor,
       schema,
       globalStyles,
       allowMapValue,
