@@ -175,15 +175,17 @@ export default class ObjectControl extends React.Component {
                   t={t}
                 />
               )}
-              <div
-                className={cx({
-                  [css`
-                    ${styleStrings.collapsedObjectControl}
-                  `]: collapsed,
-                })}
-              >
-                {this.renderFields(multiFields, singleField)}
-              </div>
+              {!collapsed && (
+                <div
+                  className={cx({
+                    [css`
+                      ${styleStrings.collapsedObjectControl}
+                    `]: collapsed,
+                  })}
+                >
+                  {this.renderFields(multiFields, singleField)}
+                </div>
+              )}
             </div>
           )}
         </ClassNames>
