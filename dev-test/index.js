@@ -127,6 +127,24 @@ window.CMS.init({
             name: 'body',
             widget: 'text',
           },
+          {
+            name: 'posts',
+            label: 'Posts',
+            label_singular: 'Post',
+            widget: 'list',
+            summary: "{{fields.post | split('|', '$1')}}",
+            fields: [
+              {
+                label: 'Related Post',
+                name: 'post',
+                widget: 'relationKitchenSinkPost',
+                collection: 'posts',
+                display_fields: ['title', 'date'],
+                search_fields: ['title', 'body'],
+                value_field: '{{title}}|{{date}}',
+              }
+            ]
+          },
         ],
       },
       {

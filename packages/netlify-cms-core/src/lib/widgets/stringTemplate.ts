@@ -36,11 +36,18 @@ const filters = [
   {
     pattern: /^split\('(.+)',\s*'(.+)'\)$/,
     transform: (str: string, match: RegExpMatchArray) => {
+      if (!str || str.trim().length === 0) {
+        return '';
+      }
+
       const parts = str.split(match[1]);
+      if (parts.length === 0) {
+        return '';
+      }
 
       let output = match[2];
       for (let i = 0; i < match[2].length; i++) {
-        output = output.replace(new RegExp(`/\$${i + 1}/`, 'g'), parts[i]);
+        output = output.replace(new RegExp(`\\$${i + 1}`, 'g'), parts[i]);
       }
 
       return output;
