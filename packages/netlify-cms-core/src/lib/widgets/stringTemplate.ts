@@ -38,9 +38,9 @@ const filters = [
     transform: (str: string, match: RegExpMatchArray) => {
       const parts = str.split(match[1]);
 
-      const output = match[2];
+      let output = match[2];
       for (let i = 0; i < match[2].length; i++) {
-        output.replace(new RegExp(`/\$${i + 1}/`, 'g'), parts[i]);
+        output = output.replace(new RegExp(`/\$${i + 1}/`, 'g'), parts[i]);
       }
 
       return output;
