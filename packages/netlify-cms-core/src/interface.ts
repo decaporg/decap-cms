@@ -19,6 +19,8 @@ export interface CmsWidgetControlProps<T = any> {
   onChange: (value: T) => void;
   forID: string;
   classNameWrapper: string;
+  setActiveStyle: React.FocusEventHandler;
+  setInactiveStyle: React.FocusEventHandler;
 }
 
 export interface CmsWidgetPreviewProps<T = any> {
@@ -32,8 +34,8 @@ export interface CmsWidgetPreviewProps<T = any> {
 
 export interface CmsWidgetParam<T = any> {
   name: string;
-  controlComponent: CmsWidgetControlProps<T>;
-  previewComponent?: CmsWidgetPreviewProps<T>;
+  controlComponent: ComponentType<CmsWidgetControlProps<T>>;
+  previewComponent?: ComponentType<CmsWidgetPreviewProps<T>>;
   globalStyles?: any;
 }
 

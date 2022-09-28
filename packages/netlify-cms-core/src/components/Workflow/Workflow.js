@@ -28,7 +28,7 @@ import WorkflowList from './WorkflowList';
 
 const WorkflowContainer = styled.div`
   padding: ${lengths.pageMargin} 0;
-  height: 100vh;
+  height: calc(100vh - 56px);
 `;
 
 const WorkflowTop = styled.div`
