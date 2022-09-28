@@ -34,7 +34,7 @@ const filters = [
     },
   },
   {
-    pattern: /^split\('(.+)'\, '(.+)')$/,
+    pattern: /^split\('(.+)'\,\s*'(.+)')$/,
     transform: (str: string, match: RegExpMatchArray) => {
       const parts = str.split(match[1]);
 
