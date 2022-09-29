@@ -1,44 +1,36 @@
 import { fromJS, List, Map } from 'immutable';
 import { isEqual } from 'lodash';
 
-import { Cursor } from '../lib/util';
-import { selectCollectionEntriesCursor } from '../reducers/cursors';
-import { selectFields, updateFieldByKey } from '../reducers/collections';
-import { selectIntegration, selectPublishedSlugs } from '../reducers';
-import { getIntegrationProvider } from '../integrations';
 import { currentBackend } from '../backend';
-import { serializeValues } from '../lib/serializeEntryValues';
-import { createEntry } from '../valueObjects/Entry';
-import { createAssetProxy } from '../valueObjects/AssetProxy';
 import ValidationErrorTypes from '../constants/validationErrorTypes';
-import { addAssets, getAsset } from './media';
-import { SortDirection } from '../types/redux';
-import { waitForMediaLibraryToLoad, loadMedia } from './mediaLibrary';
-import { waitUntil } from './waitUntil';
-import { selectIsFetching, selectEntriesSortFields, selectEntryByPath } from '../reducers/entries';
+import { getIntegrationProvider } from '../integrations';
+import { SortDirection } from '../interface';
+import { getProcessSegment } from '../lib/formatters';
+import { duplicateDefaultI18nFields, hasI18n, I18N, I18N_FIELD, serializeI18n } from '../lib/i18n';
+import { serializeValues } from '../lib/serializeEntryValues';
+import { Cursor } from '../lib/util';
+import { selectIntegration, selectPublishedSlugs } from '../reducers';
+import { selectFields, updateFieldByKey } from '../reducers/collections';
+import { selectCollectionEntriesCursor } from '../reducers/cursors';
+import { selectEntriesSortFields, selectEntryByPath, selectIsFetching } from '../reducers/entries';
 import { selectCustomPath } from '../reducers/entryDraft';
 import { navigateToEntry } from '../routing/history';
-import { getProcessSegment } from '../lib/formatters';
-import { hasI18n, duplicateDefaultI18nFields, serializeI18n, I18N, I18N_FIELD } from '../lib/i18n';
 import { addSnackbar } from '../store/slices/snackbars';
+import { createAssetProxy } from '../valueObjects/AssetProxy';
+import { createEntry } from '../valueObjects/Entry';
+import { addAssets, getAsset } from './media';
+import { loadMedia, waitForMediaLibraryToLoad } from './mediaLibrary';
+import { waitUntil } from './waitUntil';
 
-import type { ImplementationMediaFile } from '../lib/util';
+import type { Set } from 'immutable';
 import type { AnyAction } from 'redux';
 import type { ThunkDispatch } from 'redux-thunk';
-import type {
-  Collection,
-  EntryMap,
-  State,
-  EntryFields,
-  EntryField,
-  ViewFilter,
-  ViewGroup,
-  Entry,
-} from '../types/redux';
-import type { EntryValue } from '../valueObjects/Entry';
 import type { Backend } from '../backend';
+import type { ViewFilter, ViewGroup } from '../interface';
+import type { ImplementationMediaFile } from '../lib/util';
+import type { Collection, Entry, EntryField, EntryFields, EntryMap, State } from '../types/redux';
 import type AssetProxy from '../valueObjects/AssetProxy';
-import type { Set } from 'immutable';
+import type { EntryValue } from '../valueObjects/Entry';
 
 /*
  * Constant Declarations

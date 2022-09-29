@@ -1,66 +1,66 @@
-import { Map, List, fromJS, OrderedMap, Set } from 'immutable';
+import { fromJS, List, Map, OrderedMap, Set } from 'immutable';
+import { groupBy, once, orderBy, set, sortBy, trim } from 'lodash';
 import { dirname, join } from 'path';
-import { trim, once, sortBy, set, orderBy, groupBy } from 'lodash';
 
-import { isAbsolutePath, basename } from '../lib/util';
-import { stringTemplate } from '../lib/widgets';
-import { SortDirection } from '../types/redux';
-import { folderFormatter } from '../lib/formatters';
-import { selectSortDataPath } from './collections';
-import { SEARCH_ENTRIES_SUCCESS } from '../actions/search';
 import {
-  ENTRY_REQUEST,
-  ENTRY_SUCCESS,
-  ENTRY_FAILURE,
+  CHANGE_VIEW_STYLE,
+  ENTRIES_FAILURE,
   ENTRIES_REQUEST,
   ENTRIES_SUCCESS,
-  ENTRIES_FAILURE,
   ENTRY_DELETE_SUCCESS,
-  SORT_ENTRIES_REQUEST,
-  SORT_ENTRIES_SUCCESS,
-  SORT_ENTRIES_FAILURE,
+  ENTRY_FAILURE,
+  ENTRY_REQUEST,
+  ENTRY_SUCCESS,
+  FILTER_ENTRIES_FAILURE,
   FILTER_ENTRIES_REQUEST,
   FILTER_ENTRIES_SUCCESS,
-  FILTER_ENTRIES_FAILURE,
+  GROUP_ENTRIES_FAILURE,
   GROUP_ENTRIES_REQUEST,
   GROUP_ENTRIES_SUCCESS,
-  GROUP_ENTRIES_FAILURE,
-  CHANGE_VIEW_STYLE,
+  SORT_ENTRIES_FAILURE,
+  SORT_ENTRIES_REQUEST,
+  SORT_ENTRIES_SUCCESS,
 } from '../actions/entries';
+import { SEARCH_ENTRIES_SUCCESS } from '../actions/search';
 import { VIEW_STYLE_LIST } from '../constants/collectionViews';
+import { SortDirection } from '../interface';
+import { folderFormatter } from '../lib/formatters';
 import { joinUrlPath } from '../lib/urlHelper';
+import { basename, isAbsolutePath } from '../lib/util';
+import { stringTemplate } from '../lib/widgets';
+import { selectSortDataPath } from './collections';
 
+import type { CmsConfig } from '../interface';
 import type {
+  ChangeViewStylePayload,
+  Collection,
+  CollectionFiles,
+  Entries,
   EntriesAction,
+  EntriesFilterFailurePayload,
+  EntriesFilterRequestPayload,
+  EntriesGroupFailurePayload,
+  EntriesGroupRequestPayload,
+  EntriesRequestPayload,
+  EntriesSortFailurePayload,
+  EntriesSortRequestPayload,
+  EntriesSuccessPayload,
+  EntryDeletePayload,
+  EntryDraft,
+  EntryFailurePayload,
+  EntryField,
+  EntryMap,
+  EntryObject,
   EntryRequestPayload,
   EntrySuccessPayload,
-  EntriesSuccessPayload,
-  EntryObject,
-  Entries,
-  CmsConfig,
-  Collection,
-  EntryFailurePayload,
-  EntryDeletePayload,
-  EntriesRequestPayload,
-  EntryDraft,
-  EntryMap,
-  EntryField,
-  CollectionFiles,
-  EntriesSortRequestPayload,
-  EntriesSortFailurePayload,
+  Filter,
+  FilterMap,
+  Group,
+  GroupMap,
+  GroupOfEntries,
+  Sort,
   SortMap,
   SortObject,
-  Sort,
-  Filter,
-  Group,
-  FilterMap,
-  GroupMap,
-  EntriesFilterRequestPayload,
-  EntriesFilterFailurePayload,
-  ChangeViewStylePayload,
-  EntriesGroupRequestPayload,
-  EntriesGroupFailurePayload,
-  GroupOfEntries,
 } from '../types/redux';
 
 const { keyToPathArray } = stringTemplate;
@@ -459,7 +459,7 @@ function getGroup(entry: EntryMap, selectedGroup: GroupMap) {
 
   const dataAsString = String(fieldData);
   if (selectedGroup.has('pattern')) {
-    const pattern = selectedGroup.get('pattern');
+    const pattern = selectedGroup.get('pattern') ?? '';
     let value = '';
     try {
       const regex = new RegExp(pattern);

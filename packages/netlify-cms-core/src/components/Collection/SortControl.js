@@ -1,8 +1,8 @@
 import React from 'react';
 import { translate } from 'react-polyglot';
 
+import { SortDirection } from '../../interface';
 import { Dropdown, DropdownItem } from '../../ui';
-import { SortDirection } from '../../types/redux';
 import { ControlButton } from './ControlButton';
 
 function nextSortDirection(direction) {

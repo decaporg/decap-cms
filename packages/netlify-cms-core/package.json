@@ -129,7 +129,9 @@
   },
   "devDependencies": {
     "@types/history": "4.7.11",
-    "@types/react": "18.0.20",
+    "@types/react": "17.0.50",
+    "@types/react-dom": "17.0.17",
+    "@types/react-router-dom": "5.3.3",
     "@types/react-scroll-sync": "0.8.4",
     "@types/url-join": "4.0.1",
     "commonmark": "0.30.0",

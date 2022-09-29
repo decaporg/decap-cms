@@ -56,7 +56,7 @@ function withGroups(groups, entries, EntriesToRender, t) {
   });
 }
 
-export class EntriesCollection extends React.Component {
+class EntriesCollection extends React.Component {
   static propTypes = {
     collection: ImmutablePropTypes.map.isRequired,
     page: PropTypes.number,

@@ -1,19 +1,20 @@
-import { flow, partialRight, trimEnd, trimStart } from 'lodash';
 import { stripIndent } from 'common-tags';
+import { flow, partialRight, trimEnd, trimStart } from 'lodash';
 
-import { stringTemplate } from '../lib/widgets';
-import {
-  selectIdentifier,
-  selectField,
-  selectInferedField,
-  getFileFromSlug,
-} from '../reducers/collections';
-import { sanitizeSlug } from './urlHelper';
 import { FILES } from '../constants/collectionTypes';
 import { COMMIT_AUTHOR, COMMIT_DATE } from '../constants/commitProps';
+import { stringTemplate } from '../lib/widgets';
+import {
+  getFileFromSlug,
+  selectField,
+  selectIdentifier,
+  selectInferedField,
+} from '../reducers/collections';
+import { sanitizeSlug } from './urlHelper';
 
-import type { Collection, CmsConfig, CmsSlug, EntryMap } from '../types/redux';
 import type { Map } from 'immutable';
+import { CmsConfig } from '../interface';
+import type { CmsSlug, Collection, EntryMap } from '../types/redux';
 
 const {
   compileStringTemplate,
@@ -193,7 +194,7 @@ export function previewUrlFormatter(
 
   try {
     compiledPath = compileStringTemplate(pathTemplate, date, slug, fields, processSegment);
-  } catch (err) {
+  } catch (err: any) {
     // Print an error and ignore `preview_path` if both:
     //   1. Date is invalid (according to Moment), and
     //   2. A date expression (eg. `{{year}}`) is used in `preview_path`

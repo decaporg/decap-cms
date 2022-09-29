@@ -97,7 +97,7 @@ const IconWrapper = styled.div`
   margin-right: 8px;
 `;
 
-export class Sidebar extends React.Component {
+class Sidebar extends React.Component {
   static propTypes = {
     collections: ImmutablePropTypes.map.isRequired,
     collection: ImmutablePropTypes.map,

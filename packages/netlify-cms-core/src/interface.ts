@@ -3,6 +3,7 @@ import type { ComponentType, FocusEventHandler, ReactNode } from 'react';
 import type { t, TranslateProps as ReactPolyglotTranslateProps } from 'react-polyglot';
 import type { Pluggable } from 'unified';
 import type Cursor from './lib/util/Cursor';
+import type { CollectionType } from './constants/collectionTypes';
 
 export type TranslatedProps<T> = T & ReactPolyglotTranslateProps;
 
@@ -550,19 +551,38 @@ export interface CmsCollectionFile {
 }
 
 export interface ViewFilter {
+  id: string;
   label: string;
   field: string;
   pattern: string;
 }
 
 export interface ViewGroup {
+  id: string;
   label: string;
   field: string;
   pattern?: string;
 }
 
+export enum SortDirection {
+  Ascending = 'Ascending',
+  Descending = 'Descending',
+  None = 'None',
+}
+
+export interface CmsSortableFieldsDefault {
+  field: string;
+  direction: SortDirection;
+}
+
+export interface CmsSortableFields {
+  default?: CmsSortableFieldsDefault;
+  fields: string[];
+}
+
 export interface CmsCollection {
   name: string;
+  type?: CollectionType;
   icon?: string;
   label: string;
   label_singular?: string;
@@ -600,15 +620,10 @@ export interface CmsCollection {
   path?: string;
   media_folder?: string;
   public_folder?: string;
-  sortable_fields?: string[];
+  sortable_fields?: CmsSortableFields;
   view_filters?: ViewFilter[];
   view_groups?: ViewGroup[];
   i18n?: boolean | CmsI18nConfig;
-
-  /**
-   * @deprecated Use sortable_fields instead
-   */
-  sortableFields?: string[];
 }
 
 export interface CmsBackend {
@@ -676,6 +691,7 @@ export interface CmsConfig {
   editor?: {
     preview?: boolean;
   };
+  search?: boolean;
 }
 
 export interface InitOptions {

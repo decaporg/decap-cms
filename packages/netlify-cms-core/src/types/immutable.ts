@@ -36,4 +36,5 @@ export interface StaticallyTypedRecord<T> {
   ): StaticallyTypedRecord<{ [key: string]: V }>;
   keySeq<K extends keyof T>(): { toArray: () => K[] };
   withMutations(mutator: (mutable: StaticallyTypedRecord<T>) => unknown): StaticallyTypedRecord<T>;
+  first(): any;
 }

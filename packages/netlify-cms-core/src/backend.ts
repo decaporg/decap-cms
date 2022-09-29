@@ -1,78 +1,78 @@
-import { attempt, flatten, isError, uniq, trim, sortBy, get, set } from 'lodash';
-import { List, fromJS, Set } from 'immutable';
 import * as fuzzy from 'fuzzy';
-import { basename, join, extname, dirname } from 'path';
+import { fromJS, List, Set } from 'immutable';
+import { attempt, flatten, get, isError, set, sortBy, trim, uniq } from 'lodash';
+import { basename, dirname, extname, join } from 'path';
 
+import { FILES, FOLDER } from './constants/collectionTypes';
+import { status } from './constants/publishModes';
+import { resolveFormat } from './formats/formats';
+import { commitMessageFormatter, previewUrlFormatter, slugFormatter } from './lib/formatters';
 import {
-  localForage,
+  formatI18nBackup,
+  getFilePaths,
+  getI18nBackup,
+  getI18nDataFiles,
+  getI18nEntry,
+  getI18nFiles,
+  getI18nFilesDepth,
+  groupEntries,
+  hasI18n,
+} from './lib/i18n';
+import { getBackend, invokeEvent } from './lib/registry';
+import { sanitizeChar } from './lib/urlHelper';
+import {
+  asyncLock,
+  blobToFileObj,
   Cursor,
   CURSOR_COMPATIBILITY_SYMBOL,
-  getPathDepth,
-  blobToFileObj,
-  asyncLock,
   EDITORIAL_WORKFLOW_ERROR,
+  getPathDepth,
+  localForage,
 } from './lib/util';
 import { stringTemplate } from './lib/widgets';
-import { resolveFormat } from './formats/formats';
-import { selectUseWorkflow } from './reducers/config';
-import { selectMediaFilePath, selectEntry } from './reducers/entries';
-import { selectIntegration } from './reducers/integrations';
 import {
-  selectEntrySlug,
-  selectEntryPath,
-  selectFileEntryLabel,
-  selectAllowNewEntries,
   selectAllowDeletion,
+  selectAllowNewEntries,
+  selectEntryPath,
+  selectEntrySlug,
+  selectFieldsComments,
+  selectFileEntryLabel,
   selectFolderEntryExtension,
+  selectHasMetaPath,
   selectInferedField,
   selectMediaFolders,
-  selectFieldsComments,
-  selectHasMetaPath,
 } from './reducers/collections';
-import { createEntry } from './valueObjects/Entry';
-import { sanitizeChar } from './lib/urlHelper';
-import { getBackend, invokeEvent } from './lib/registry';
-import { commitMessageFormatter, slugFormatter, previewUrlFormatter } from './lib/formatters';
-import { status } from './constants/publishModes';
-import { FOLDER, FILES } from './constants/collectionTypes';
+import { selectUseWorkflow } from './reducers/config';
+import { selectEntry, selectMediaFilePath } from './reducers/entries';
 import { selectCustomPath } from './reducers/entryDraft';
-import {
-  getI18nFilesDepth,
-  getI18nFiles,
-  hasI18n,
-  getFilePaths,
-  getI18nEntry,
-  groupEntries,
-  getI18nDataFiles,
-  getI18nBackup,
-  formatI18nBackup,
-} from './lib/i18n';
+import { selectIntegration } from './reducers/integrations';
+import { createEntry } from './valueObjects/Entry';
 
-import type AssetProxy from './valueObjects/AssetProxy';
+import type { Map } from 'immutable';
+import type { CmsConfig } from './interface';
 import type {
-  CmsConfig,
+  AsyncLock,
+  Credentials,
+  DataFile,
+  DisplayURL,
+  Implementation as BackendImplementation,
+  ImplementationEntry,
+  UnpublishedEntry,
+  UnpublishedEntryDiff,
+  User,
+} from './lib/util';
+import type {
+  Collection,
+  CollectionFile,
+  Collections,
+  EntryDraft,
+  EntryField,
   EntryMap,
   FilterRule,
-  EntryDraft,
-  Collection,
-  Collections,
-  CollectionFile,
   State,
-  EntryField,
 } from './types/redux';
+import type AssetProxy from './valueObjects/AssetProxy';
 import type { EntryValue } from './valueObjects/Entry';
-import type {
-  Implementation as BackendImplementation,
-  DisplayURL,
-  ImplementationEntry,
-  Credentials,
-  User,
-  AsyncLock,
-  UnpublishedEntry,
-  DataFile,
-  UnpublishedEntryDiff,
-} from './lib/util';
-import type { Map } from 'immutable';
 
 const { extractTemplateVars, dateParsers, expandPath } = stringTemplate;
 

@@ -249,16 +249,28 @@ function getConfigSchema() {
             },
             fields: fieldsConfig(),
             sortable_fields: {
-              type: 'array',
-              items: {
-                type: 'string',
+              type: 'object',
+              properties: {
+                default: {
+                  type: 'object',
+                  properties: {
+                    field: {
+                      type: 'string',
+                    },
+                    direction: {
+                      type: 'string',
+                    },
+                  },
+                  required: ['field'],
+                },
+                fields: {
+                  type: 'array',
+                  items: {
+                    type: 'string',
+                  },
+                },
               },
-            },
-            sortableFields: {
-              type: 'array',
-              items: {
-                type: 'string',
-              },
+              required: ['fields'],
             },
             view_filters: viewFilters,
             view_groups: viewGroups,
@@ -290,9 +302,6 @@ function getConfigSchema() {
           },
           required: ['name', 'label'],
           oneOf: [{ required: ['files'] }, { required: ['folder', 'fields'] }],
-          not: {
-            required: ['sortable_fields', 'sortableFields'],
-          },
           if: { required: ['extension'] },
           then: {
             // Cannot infer format from extension.

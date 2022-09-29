@@ -1,28 +1,26 @@
-import { List, Set, fromJS, OrderedMap } from 'immutable';
-import { get, escapeRegExp } from 'lodash';
+import { fromJS, List, OrderedMap, Set } from 'immutable';
+import { escapeRegExp, get } from 'lodash';
 
-import { stringTemplate } from '../lib/widgets';
-import consoleError from '../lib/consoleError';
 import { CONFIG_SUCCESS } from '../actions/config';
 import { FILES, FOLDER } from '../constants/collectionTypes';
-import { COMMIT_DATE, COMMIT_AUTHOR } from '../constants/commitProps';
-import { INFERABLE_FIELDS, IDENTIFIER_FIELDS, SORTABLE_FIELDS } from '../constants/fieldInference';
+import { COMMIT_AUTHOR, COMMIT_DATE } from '../constants/commitProps';
+import { IDENTIFIER_FIELDS, INFERABLE_FIELDS, SORTABLE_FIELDS } from '../constants/fieldInference';
 import { formatExtensions } from '../formats/formats';
-import { selectMediaFolder } from './entries';
+import consoleError from '../lib/consoleError';
 import { summaryFormatter } from '../lib/formatters';
+import { stringTemplate } from '../lib/widgets';
+import { selectMediaFolder } from './entries';
 
-import type {
-  Collection,
-  Collections,
-  CollectionFiles,
-  EntryField,
-  EntryMap,
-  ViewFilter,
-  ViewGroup,
-  CmsConfig,
-} from '../types/redux';
 import type { ConfigAction } from '../actions/config';
 import type { Backend } from '../backend';
+import type { CmsConfig, ViewFilter, ViewGroup } from '../interface';
+import type {
+  Collection,
+  CollectionFiles,
+  Collections,
+  EntryField,
+  EntryMap,
+} from '../types/redux';
 
 const { keyToPathArray } = stringTemplate;
 
@@ -411,8 +409,7 @@ export function selectDefaultSortableFields(
 }
 
 export function selectSortableFields(collection: Collection, t: (key: string) => string) {
-  const fields = collection
-    .get('sortable_fields')
+  const fields = (collection.getIn(['sortable_fields', 'fields']) as List<string>)
     .toArray()
     .map(key => {
       if (key === COMMIT_DATE) {

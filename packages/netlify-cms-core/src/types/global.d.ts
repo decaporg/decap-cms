@@ -1,6 +1,6 @@
-import type { CmsConfig } from './redux';
-
 declare global {
+  import type { CmsConfig } from './interface';
+
   interface Window {
     CMS_CONFIG?: CmsConfig;
     CMS_ENV?: string;

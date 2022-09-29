@@ -14,8 +14,8 @@ import { FILES, FOLDER } from '../constants/collectionTypes';
 
 import type { ThunkDispatch } from 'redux-thunk';
 import type { AnyAction } from 'redux';
-import type {
-  CmsCollection,
+import type { State } from '../types/redux';
+import {
   CmsConfig,
   CmsField,
   CmsFieldBase,
@@ -24,8 +24,8 @@ import type {
   CmsI18nConfig,
   CmsPublishMode,
   CmsLocalBackend,
-  State,
-} from '../types/redux';
+  CmsCollection,
+} from '../interface';
 
 export const CONFIG_REQUEST = 'CONFIG_REQUEST';
 export const CONFIG_SUCCESS = 'CONFIG_SUCCESS';
@@ -189,15 +189,6 @@ export function normalizeConfig(config: CmsConfig) {
       normalizedCollection = { ...normalizedCollection, files: normalizedFiles };
     }
 
-    if (normalizedCollection.sortableFields) {
-      const { sortableFields, ...rest } = normalizedCollection;
-      normalizedCollection = { ...rest, sortable_fields: sortableFields };
-
-      console.warn(
-        `Collection ${collection.name} is using a deprecated configuration 'sortableFields'. Please use 'sortable_fields'`,
-      );
-    }
-
     return normalizedCollection;
   });
 
@@ -332,12 +323,14 @@ export function applyDefaults(originalConfig: CmsConfig) {
       }
 
       if (!collection.sortable_fields) {
-        collection.sortable_fields = selectDefaultSortableFields(
-          // TODO remove fromJS when Immutable is removed from the collections state slice
-          fromJS(collection),
-          backend,
-          hasIntegration(config, collection),
-        );
+        collection.sortable_fields = {
+          fields: selectDefaultSortableFields(
+            // TODO remove fromJS when Immutable is removed from the collections state slice
+            fromJS(collection),
+            backend,
+            hasIntegration(config, collection),
+          ),
+        };
       }
 
       collection.view_filters = (view_filters || []).map(filter => {

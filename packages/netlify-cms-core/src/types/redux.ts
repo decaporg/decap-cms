@@ -1,8 +1,8 @@
 import type { List, Map, OrderedMap, Set } from 'immutable';
 import type { Action } from 'redux';
 import type { MediaFile as BackendMediaFile } from '../backend';
-import type { FILES, FOLDER } from '../constants/collectionTypes';
 import type { formatExtensions } from '../formats/formats';
+import type { CmsConfig, CmsSortableFields, SortDirection, ViewFilter, ViewGroup } from '../interface';
 import type { Auth } from '../reducers/auth';
 import type { Deploys } from '../reducers/deploys';
 import type { GlobalUI } from '../reducers/globalUI';
@@ -292,69 +292,6 @@ export interface CmsCollectionFile {
   public_folder?: string;
 }
 
-export interface ViewFilter {
-  label: string;
-  field: string;
-  pattern: string;
-  id: string;
-}
-
-export interface ViewGroup {
-  label: string;
-  field: string;
-  pattern: string;
-  id: string;
-}
-
-export interface CmsCollection {
-  name: string;
-  label: string;
-  label_singular?: string;
-  description?: string;
-  folder?: string;
-  files?: CmsCollectionFile[];
-  identifier_field?: string;
-  summary?: string;
-  slug?: string;
-  preview_path?: string;
-  preview_path_date_field?: string;
-  create?: boolean;
-  delete?: boolean;
-  editor?: {
-    preview?: boolean;
-  };
-  publish?: boolean;
-  nested?: {
-    depth: number;
-  };
-  type: typeof FOLDER | typeof FILES;
-  meta?: { path?: { label: string; widget: string; index_file: string } };
-
-  /**
-   * It accepts the following values: yml, yaml, toml, json, md, markdown, html
-   *
-   * You may also specify a custom extension not included in the list above, by specifying the format value.
-   */
-  extension?: string;
-  format?: CmsCollectionFormatType;
-
-  frontmatter_delimiter?: string[] | string;
-  fields?: CmsField[];
-  filter?: { field: string; value: unknown };
-  path?: string;
-  media_folder?: string;
-  public_folder?: string;
-  sortable_fields?: string[];
-  view_filters?: ViewFilter[];
-  view_groups?: ViewGroup[];
-  i18n?: boolean | CmsI18nConfig;
-
-  /**
-   * @deprecated Use sortable_fields instead
-   */
-  sortableFields?: string[];
-}
-
 export interface CmsBackend {
   name: CmsBackendType;
   auth_scope?: CmsAuthScope;
@@ -387,39 +324,6 @@ export interface CmsSlug {
 export interface CmsLocalBackend {
   url?: string;
   allowed_hosts?: string[];
-}
-
-export interface CmsConfig {
-  backend: CmsBackend;
-  collections: CmsCollection[];
-  locale?: string;
-  site_url?: string;
-  display_url?: string;
-  logo_url?: string;
-  show_preview_links?: boolean;
-  media_folder?: string;
-  public_folder?: string;
-  media_folder_relative?: boolean;
-  media_library?: CmsMediaLibrary;
-  publish_mode?: CmsPublishMode;
-  load_config_file?: boolean;
-  integrations?: {
-    hooks: string[];
-    provider: string;
-    collections?: '*' | string[];
-    applicationID?: string;
-    apiKey?: string;
-    getSignedFormURL?: string;
-  }[];
-  slug?: CmsSlug;
-  i18n?: CmsI18nConfig;
-  local_backend?: boolean | CmsLocalBackend;
-  editor?: {
-    preview?: boolean;
-  };
-  error: string | undefined;
-  isFetching: boolean;
-  search: boolean | any;
 }
 
 export type CmsMediaLibraryOptions = unknown; // TODO: type properly
@@ -478,12 +382,6 @@ type PagesObject = {
 type Pages = StaticallyTypedRecord<PagesObject>;
 
 type EntitiesObject = { [key: string]: EntryMap };
-
-export enum SortDirection {
-  Ascending = 'Ascending',
-  Descending = 'Descending',
-  None = 'None',
-}
 
 export type SortObject = { key: string; direction: SortDirection };
 
@@ -627,7 +525,7 @@ type CollectionObject = {
   slug?: string;
   label_singular?: string;
   label: string;
-  sortable_fields: List<string>;
+  sortable_fields: StaticallyTypedRecord<CmsSortableFields>;
   view_filters: List<StaticallyTypedRecord<ViewFilter>>;
   view_groups: List<StaticallyTypedRecord<ViewGroup>>;
   nested?: Nested;

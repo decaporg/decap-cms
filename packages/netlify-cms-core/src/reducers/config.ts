@@ -1,16 +1,21 @@
 import { produce } from 'immer';
 
-import { CONFIG_REQUEST, CONFIG_SUCCESS, CONFIG_FAILURE } from '../actions/config';
+import { CONFIG_FAILURE, CONFIG_REQUEST, CONFIG_SUCCESS } from '../actions/config';
 import { EDITORIAL_WORKFLOW } from '../constants/publishModes';
 
 import type { ConfigAction } from '../actions/config';
-import type { CmsConfig } from '../types/redux';
+import { CmsConfig } from '../interface';
 
-const defaultState = {
+interface ConfigState extends Partial<CmsConfig> {
+  isFetching: boolean;
+  error?: string;
+}
+
+const defaultState: ConfigState = {
   isFetching: true,
 };
 
-const config = produce((state: CmsConfig, action: ConfigAction) => {
+const config = produce((state: ConfigState, action: ConfigAction) => {
   switch (action.type) {
     case CONFIG_REQUEST:
       state.isFetching = true;

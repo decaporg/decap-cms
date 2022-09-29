@@ -299,6 +299,19 @@ declare module 'netlify-cms-core' {
     pattern?: string;
   }
 
+  export type SortDirection = 'Ascending' | 'Descending' | 'None';
+
+  export interface CmsSortableFieldsDefault {
+    field: string;
+    direction: SortDirection;
+  }
+  
+  export interface CmsSortableFields {
+    default?: CmsSortableFieldsDefault;
+    fields: string[];
+  }
+  
+
   export interface CmsCollection {
     name: string;
     icon?: string;
@@ -338,15 +351,10 @@ declare module 'netlify-cms-core' {
     path?: string;
     media_folder?: string;
     public_folder?: string;
-    sortable_fields?: string[];
+    sortable_fields?: CmsSortableFields;
     view_filters?: ViewFilter[];
     view_groups?: ViewGroup[];
     i18n?: boolean | CmsI18nConfig;
-
-    /**
-     * @deprecated Use sortable_fields instead
-     */
-    sortableFields?: string[];
   }
 
   export interface CmsBackend {

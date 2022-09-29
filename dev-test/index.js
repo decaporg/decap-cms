@@ -48,6 +48,12 @@ window.CMS.init({
         folder: '_posts',
         slug: '{{year}}-{{month}}-{{day}}-{{slug}}',
         summary: '{{title}} -- {{year}}/{{month}}/{{day}}',
+        sortable_fields: {
+          fields: ['title', 'date'],
+          default: {
+            field: 'title'
+          }
+        },
         create: true,
         view_filters: [
           {
