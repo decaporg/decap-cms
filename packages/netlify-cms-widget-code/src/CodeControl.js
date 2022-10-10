@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { ClassNames } from '@emotion/core';
 import { Map } from 'immutable';
-import { uniq, isEqual, isEmpty } from 'lodash';
+import { uniq, isEqual, isEmpty, debounce } from 'lodash';
 import uuid from 'uuid/v4';
 import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
 import CodeMirror from 'codemirror';
@@ -99,6 +99,8 @@ export default class CodeControl extends React.Component {
     this.updateCodeMirrorProps(prevState);
   }
 
+  debounceOnChange = debounce(value => this.props.onChange(value), 300);
+
   updateCodeMirrorProps(prevState) {
     const keys = ['lang', 'theme', 'keyMap'];
     const changedProps = getChangedProps(prevState, this.state, keys);
@@ -165,8 +167,6 @@ export default class CodeControl extends React.Component {
   }
 
   async handleChangeCodeMirrorProps(changedProps) {
-    const { onChange } = this.props;
-
     if (changedProps.lang) {
       const { mode } = this.getLanguageByName(changedProps.lang) || {};
       if (mode) {
@@ -195,7 +195,7 @@ export default class CodeControl extends React.Component {
     // Only persist the language change if supported - requires the value to be
     // a map rather than just a code string.
     if (changedProps.lang && this.valueIsMap()) {
-      onChange(this.toValue('lang', changedProps.lang));
+      this.debounceOnChange(this.toValue('lang', changedProps.lang));
     }
   }
 
@@ -203,7 +203,7 @@ export default class CodeControl extends React.Component {
     const cursor = this.cm.doc.getCursor();
     const selections = this.cm.doc.listSelections();
     this.setState({ lastKnownValue: newValue });
-    this.props.onChange(this.toValue('code', newValue), { cursor, selections });
+    this.debounceOnChange(this.toValue('code', newValue), { cursor, selections });
   }
 
   showSettings = () => {
