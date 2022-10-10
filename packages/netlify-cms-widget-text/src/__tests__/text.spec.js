@@ -69,4 +69,16 @@ describe('String widget', () => {
     expect(onChangeSpy).toBeCalledTimes(1);
     expect(onChangeSpy).toBeCalledWith(testValue);
   });
+
+  it('sets input value', () => {
+    const testValue = 'foo';
+    const { textarea } = setup({ defaultValue: 'bar' });
+
+    fireEvent.focus(textarea);
+    fireEvent.change(textarea, { target: { value: testValue } });
+
+    jest.runAllTimers();
+
+    expect(textarea.value).toEqual(testValue);
+  });
 });
