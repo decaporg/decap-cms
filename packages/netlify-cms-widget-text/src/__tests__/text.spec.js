@@ -1,9 +1,9 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 
-import { NetlifyCmsWidgetString } from '../';
+import { NetlifyCmsWidgetText } from '../';
 
-const StringControl = NetlifyCmsWidgetString.controlComponent;
+const TextControl = NetlifyCmsWidgetText.controlComponent;
 
 function setup({ defaultValue } = {}) {
   const setActiveSpy = jest.fn();
@@ -11,7 +11,7 @@ function setup({ defaultValue } = {}) {
   const onChangeSpy = jest.fn();
 
   const helpers = render(
-    <StringControl
+    <TextControl
       value={defaultValue}
       onChange={onChangeSpy}
       forID="test-string"
@@ -21,48 +21,48 @@ function setup({ defaultValue } = {}) {
     />,
   );
 
-  const input = helpers.container.querySelector('input');
+  const textarea = helpers.container.querySelector('textarea');
 
   return {
     ...helpers,
     setActiveSpy,
     setInactiveSpy,
     onChangeSpy,
-    input,
+    textarea,
   };
 }
 
 describe('String widget', () => {
-  it('calls setActiveStyle when input focused', () => {
-    const { input, setActiveSpy } = setup();
+  it('calls setActiveStyle when textarea focused', () => {
+    const { textarea, setActiveSpy } = setup();
 
-    fireEvent.focus(input);
+    fireEvent.focus(textarea);
 
     expect(setActiveSpy).toBeCalledTimes(1);
   });
 
-  it('calls setInactiveSpy when input blurred', () => {
-    const { input, setInactiveSpy } = setup();
+  it('calls setInactiveSpy when textarea blurred', () => {
+    const { textarea, setInactiveSpy } = setup();
 
-    fireEvent.focus(input);
-    fireEvent.blur(input);
+    fireEvent.focus(textarea);
+    fireEvent.blur(textarea);
 
     expect(setInactiveSpy).toBeCalledTimes(1);
   });
 
   it('renders with default value', () => {
     const testValue = 'bar';
-    const { input } = setup({ defaultValue: testValue });
-    expect(input.value).toEqual(testValue);
+    const { textarea } = setup({ defaultValue: testValue });
+    expect(textarea.value).toEqual(testValue);
   });
 
-  it('calls onChange when input changes', () => {
+  it('calls onChange when textarea changes', () => {
     jest.useFakeTimers();
     const testValue = 'foo';
-    const { input, onChangeSpy } = setup();
+    const { textarea, onChangeSpy } = setup();
 
-    fireEvent.focus(input);
-    fireEvent.change(input, { target: { value: testValue } });
+    fireEvent.focus(textarea);
+    fireEvent.change(textarea, { target: { value: testValue } });
 
     jest.runAllTimers();
 
