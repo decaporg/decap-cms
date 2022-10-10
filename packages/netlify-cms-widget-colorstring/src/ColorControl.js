@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import ChromePicker from 'react-color';
 import validateColor from 'validate-color';
@@ -79,6 +80,7 @@ const ClickOutsideDiv = styled.div`
 
 export default class ColorControl extends React.Component {
   static propTypes = {
+    field: ImmutablePropTypes.map.isRequired,
     onChange: PropTypes.func.isRequired,
     forID: PropTypes.string,
     value: PropTypes.node,
@@ -140,7 +142,7 @@ export default class ColorControl extends React.Component {
       <>
         {' '}
         {showClearButton && (
-          <ClearButtonWrapper>
+          <ClearButtonWrapper data-testid="clear-btn-wrapper">
             <ClearButton onClick={this.handleClear}>
               <ClearIcon />
             </ClearButton>
@@ -155,8 +157,8 @@ export default class ColorControl extends React.Component {
           ?
         </ColorSwatch>
         {this.state.showColorPicker && (
-          <ColorPickerContainer>
-            <ClickOutsideDiv onClick={this.handleClose} />
+          <ColorPickerContainer data-testid="color-picker-container">
+            <ClickOutsideDiv onClick={this.handleClose} data-testid="picker-bg" />
             <ChromePicker
               color={value || ''}
               onChange={this.handleChange}
