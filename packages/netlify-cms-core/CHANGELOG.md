@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.55.3](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.55.2...netlify-cms-core@2.55.3) (2022-11-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency ajv to v8.11.0 ([6533d62](https://github.com/netlify/netlify-cms/commit/6533d62126c777913f2473cd63905da86b66ee64))
+
+
+
+
+
 ## [2.55.2](https://github.com/netlify/netlify-cms/compare/netlify-cms-core@2.55.1...netlify-cms-core@2.55.2) (2022-04-13)
 
 
