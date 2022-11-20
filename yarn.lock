@@ -6302,9 +6302,9 @@ code-point-at@^1.0.0:
   integrity sha1-DQcLTQQ6W+ozovGkDi7bPZpMz3c=
 
 codemirror@^5.46.0:
-  version "5.65.2"
-  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.65.2.tgz#5799a70cb3d706e10f60e267245e3a75205d3dd9"
-  integrity sha512-SZM4Zq7XEC8Fhroqe3LxbEEX1zUPWH1wMr5zxiBuiUF64iYOUH/JI88v4tBag8MiBS8B8gRv8O1pPXGYXQ4ErA==
+  version "5.65.10"
+  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.65.10.tgz#4276a93b8534ce91f14b733ba9a1ac949666eac9"
+  integrity sha512-IXAG5wlhbgcTJ6rZZcmi4+sjWIbJqIGfeg3tNa3yX84Jb3T4huS5qzQAo/cUisc1l3bI47WZodpyf7cYcocDKg==
 
 collapse-white-space@^1.0.0, collapse-white-space@^1.0.2:
   version "1.0.6"
