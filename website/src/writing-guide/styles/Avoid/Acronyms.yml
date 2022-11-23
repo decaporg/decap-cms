@@ -1,7 +1,7 @@
 extends: existence
 message: "'%s' is redundant."
 ignorecase: true
-level: error
+level: suggestion
 action:
   name: edit
   params:
