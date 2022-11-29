@@ -1,7 +1,7 @@
 ---
-title: Releases
 group: Intro
-weight: 4
+weight: 3
+title: Releases
 ---
 
 
