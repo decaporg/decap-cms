@@ -1,6 +1,6 @@
 ---
 title: Community Page
-headline: Help us build the CMS of the future.
+headline: Help us build the CMS of the future..
 subhead: Get support, give support, and find out what's new through the channels below.
 sections:
   - title: support
