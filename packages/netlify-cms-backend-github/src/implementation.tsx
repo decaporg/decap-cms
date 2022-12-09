@@ -402,14 +402,16 @@ export default class GitHub implements Implementation {
     return files;
   }
 
-  async allEntriesByFolder(folder: string, extension: string, depth: number) {
+  async allEntriesByFolder(folder: string, extension: string, depth: number, pathRegex?: RegExp) {
     const repoURL = this.api!.originRepoURL;
 
     const listFiles = () =>
       this.api!.listFiles(folder, {
         repoURL,
         depth,
-      }).then(files => files.filter(file => filterByExtension(file, extension)));
+      }).then(files =>
+        files.filter(file =>
+          (!pathRegex || pathRegex.test(file.path)) && filterByExtension(file, extension)));
 
     const readFile = (path: string, id: string | null | undefined) => {
       return this.api!.readFile(path, id, { repoURL }) as Promise<string>;
