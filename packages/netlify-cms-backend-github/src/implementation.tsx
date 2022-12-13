@@ -410,8 +410,10 @@ export default class GitHub implements Implementation {
         repoURL,
         depth,
       }).then(files =>
-        files.filter(file =>
-          (!pathRegex || pathRegex.test(file.path)) && filterByExtension(file, extension)));
+        files.filter(
+          file => (!pathRegex || pathRegex.test(file.path)) && filterByExtension(file, extension),
+        ),
+      );
 
     const readFile = (path: string, id: string | null | undefined) => {
       return this.api!.readFile(path, id, { repoURL }) as Promise<string>;

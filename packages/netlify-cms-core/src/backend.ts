@@ -309,10 +309,13 @@ function collectionDepth(collection: Collection) {
 }
 
 function collectionRegex(collection: Collection): RegExp | undefined {
-  let ruleString = ''
+  let ruleString = '';
 
   if (collection.get('path')) {
-    ruleString = `${collection.get('folder')}/${collection.get('path')}`.replace(/{{.*}}/gm, '(.*)');
+    ruleString = `${collection.get('folder')}/${collection.get('path')}`.replace(
+      /{{.*}}/gm,
+      '(.*)',
+    );
   }
 
   if (hasI18n(collection)) {
@@ -568,7 +571,12 @@ export class Backend {
       const depth = collectionDepth(collection);
       const extension = selectFolderEntryExtension(collection);
       return this.implementation
-        .allEntriesByFolder(collection.get('folder') as string, extension, depth, collectionRegex(collection))
+        .allEntriesByFolder(
+          collection.get('folder') as string,
+          extension,
+          depth,
+          collectionRegex(collection),
+        )
         .then(entries => this.processEntries(entries, collection));
     }
 
