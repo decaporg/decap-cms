@@ -8,6 +8,7 @@ import type { State } from '../types/redux';
 import type { AnyAction } from 'redux';
 import type { ThunkDispatch } from 'redux-thunk';
 import type { EntryValue } from '../valueObjects/Entry';
+import type { QueryRequest } from '../reducers/search';
 
 /*
  * Constant Declarations
@@ -21,6 +22,7 @@ export const QUERY_SUCCESS = 'QUERY_SUCCESS';
 export const QUERY_FAILURE = 'QUERY_FAILURE';
 
 export const SEARCH_CLEAR = 'SEARCH_CLEAR';
+export const CLEAR_REQUESTS = 'CLEAR_REQUESTS';
 
 /*
  * Simple Action Creators (Internal)
@@ -50,11 +52,12 @@ export function searchFailure(error: Error) {
   } as const;
 }
 
-export function querying(searchTerm: string) {
+export function querying(searchTerm: string, request?: QueryRequest) {
   return {
     type: QUERY_REQUEST,
     payload: {
       searchTerm,
+      request,
     },
   } as const;
 }
@@ -92,6 +95,13 @@ export function queryFailure(error: Error) {
 
 export function clearSearch() {
   return { type: SEARCH_CLEAR } as const;
+}
+
+/*
+ * Clear outdated requests
+ */
+export function clearRequests() {
+  return { type: CLEAR_REQUESTS } as const;
 }
 
 /*
@@ -157,8 +167,6 @@ export function query(
   limit?: number,
 ) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
-    dispatch(querying(searchTerm));
-
     const state = getState();
     const backend = currentBackend(state.config);
     const integration = selectIntegration(state, collectionName, 'search');
@@ -166,13 +174,35 @@ export function query(
       collection => collection.get('name') === collectionName,
     );
 
-    const queryPromise = integration
+    dispatch(clearRequests());
+
+    const queryIdentifier = `${collectionName}-${searchFields.join()}-${searchTerm}-${file}-${limit}`;
+
+    const queuedQueryPromise = state.search.requests.find(({ id }) => id == queryIdentifier);
+    // const queuedQueryPromise = null
+
+    const queryPromise = queuedQueryPromise
+      ? queuedQueryPromise.queryResponse
+      : integration
       ? getIntegrationProvider(state.integrations, backend.getToken, integration).searchBy(
           searchFields.map(f => `data.${f}`),
           collectionName,
           searchTerm,
         )
       : backend.query(collection, searchFields, searchTerm, file, limit);
+
+    dispatch(
+      querying(
+        searchTerm,
+        queuedQueryPromise
+          ? undefined
+          : {
+              id: queryIdentifier,
+              expires: new Date(new Date().getTime() + 10 * 1000),
+              queryResponse: queryPromise,
+            },
+      ),
+    );
 
     try {
       const response: QueryResponse = await queryPromise;
@@ -191,4 +221,5 @@ export type SearchAction = ReturnType<
   | typeof querySuccess
   | typeof queryFailure
   | typeof clearSearch
+  | typeof clearRequests
 >;
