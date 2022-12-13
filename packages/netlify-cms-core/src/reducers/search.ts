@@ -8,10 +8,22 @@ import {
   SEARCH_ENTRIES_FAILURE,
   SEARCH_ENTRIES_REQUEST,
   SEARCH_ENTRIES_SUCCESS,
+  CLEAR_REQUESTS,
 } from '../actions/search';
 
 import type { SearchAction } from '../actions/search';
 import type { EntryValue } from '../valueObjects/Entry';
+
+type QueryResponse = {
+  hits: EntryValue[];
+  query: string;
+};
+
+export type QueryRequest = {
+  id: string;
+  expires: Date;
+  queryResponse: Promise<QueryResponse>;
+};
 
 export type Search = {
   isFetching: boolean;
@@ -21,6 +33,7 @@ export type Search = {
   entryIds: { collection: string; slug: string }[];
   queryHits: Record<string, EntryValue[]>;
   error: Error | undefined;
+  requests: QueryRequest[];
 };
 
 const defaultState: Search = {
@@ -31,6 +44,7 @@ const defaultState: Search = {
   entryIds: [],
   queryHits: {},
   error: undefined,
+  requests: [],
 };
 
 const search = produce((state: Search, action: SearchAction) => {
@@ -65,9 +79,17 @@ const search = produce((state: Search, action: SearchAction) => {
     }
 
     case QUERY_REQUEST: {
-      const { searchTerm } = action.payload;
+      const { searchTerm, request } = action.payload;
       state.isFetching = true;
       state.term = searchTerm;
+      if (request) {
+        state.requests.push(request);
+      }
+      break;
+    }
+
+    case CLEAR_REQUESTS: {
+      state.requests = state.requests.filter(req => req.expires >= new Date());
       break;
     }
 
