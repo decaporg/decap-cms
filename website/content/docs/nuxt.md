@@ -162,7 +162,7 @@ By adding nuxt content module you get `$content` injected into your whole app wh
 <br />
 This also gives a `<nuxt-content>` component which helps you display markdown content with ease and also gives option of live editing in dev mode.
 
-### Example Blog Post List
+### Example Blog Post List (Nuxt Content v1)
 
 `nuxt/content` module gives us `$content` which we can use to fetch the list of blog posts in `content/blog` directory.
 
@@ -188,7 +188,38 @@ export default {
 </script>
 ```
 
-### Example Blog Post
+### E﻿xample Blog Post List (Nuxt Content v2)
+
+```javascript
+#﻿## Nuxt Content v2 and vue 3 example
+<script setup>
+const { data: navigation } = await useAsyncData("navigation", () => {
+  return fetchContentNavigation();
+});
+</script>
+
+<template>
+  <main class="text-left">
+    <nav>
+      <ul class="navigation">
+        <li v-for="(item, index) in navigation" :key="index">
+          <NuxtLink  class="card-title" :to="item._path">
+            <h2>{{ item.title }}</h2>
+          </NuxtLink>
+        </li>
+          <AppNavigation
+            v-if="item.children"
+            :navigation-tree="item.children"
+            class="sub-navigation"
+          />
+      </ul>
+    </nav>
+  </main>
+</template>
+`﻿``
+
+
+### Example Blog Post (Nuxt Content v1)
 
 To generate blog posts create a `_slug.vue` file in the pages folder. By using `$content` you would get a json which you can use to display. But if you are using `markdown` to write and store your posts you can use `<nuxt-content>` module which gives you option to edit content on page in dev mode and many more [features](https://content.nuxtjs.org/).
 
@@ -217,6 +248,21 @@ export default {
   },
 };
 </script>
+```
+
+### Example Blog Post (Nuxt Content v2)
+
+To generate blog posts create a a﻿rticles/[...slug].vue` file in the pages folder. By using the globally available components by nuxt content.
+
+```javascript
+<template>
+  <main>
+    <ContentDoc v-slot="{ doc }">
+      <h1>{{ doc.title }}</h1>
+      <ContentRenderer :value="doc" />
+    </ContentDoc>
+  </main>
+</template>
 ```
 
 ### Generating pages with the `generate` property
