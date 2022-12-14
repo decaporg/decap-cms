@@ -238,7 +238,9 @@ export function addFileTemplateFields(entryPath: string, fields: Map<string, str
   const extension = extname(entryPath);
   const filename = basename(entryPath, extension);
   const dirnameExcludingFolder = dirname(entryPath).replace(new RegExp(`^(/?)${folder}/?`), '$1');
+
   fields = fields.withMutations(map => {
+    map.set('folder', basename(dirname(entryPath)));
     map.set('dirname', dirnameExcludingFolder);
     map.set('filename', filename);
     map.set('extension', extension === '' ? extension : extension.slice(1));
