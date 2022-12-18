@@ -7,14 +7,14 @@ title: Configuration Options
 
 All configuration options for Netlify CMS are specified in a `config.yml` file, in the folder where you access the editor UI (usually in the `/admin` folder).
 
-Alternatively, you can specify a custom config file using a link tag:
+Alternatively, you can specify a custom config file using a `link` tag:
 
 ```html
 <!-- Note the "type" and "rel" attribute values, which are required. -->
 <link href="path/to/config.yml" type="text/yaml" rel="cms-config-url">
 ```
 
-To see working configuration examples, you can [start from a template](../start-with-a-template) or check out the [CMS demo site](https://cms-demo.netlify.com). (No login required: click the login button and the CMS will open.) You can refer to the demo [configuration code](https://github.com/netlify/netlify-cms/blob/master/dev-test/config.yml) to see how each option was configured.
+To see working configuration examples, you can [start from a template](../start-with-a-template) or check out the [CMS demo site](https://cms-demo.netlify.com). (No login required; click the login button and the CMS will open.) You can refer to the demo [configuration code](https://github.com/netlify/netlify-cms/blob/master/dev-test/config.yml) to see how each option was configured.
 
 You can find details about all configuration options below. Note that [YAML syntax](https://en.wikipedia.org/wiki/YAML#Basic_components) allows lists and objects to be written in block or inline style, and the code samples below include a mix of both.
 
@@ -24,7 +24,7 @@ You can find details about all configuration options below. Note that [YAML synt
 
 The `backend` option specifies how to access the content for your site, including authentication. Full details and code samples can be found in [Backends](/docs/backends-overview).
 
-**Note**: no matter where you access Netlify CMS — whether running locally, in a staging environment, or in your published site — it will always fetch and commit files in your hosted repository (for example, on GitHub), on the branch you configured in your Netlify CMS config.yml file. This means that content fetched in the admin UI will match the content in the repository, which may be different from your locally running site. It also means that content saved using the admin UI will save directly to the hosted repository, even if you're running the UI locally or in staging. If you want to have your local CMS write to a local repository, try the `local_backend` setting, [currently in beta](/docs/beta-features/#working-with-a-local-git-repository).
+**Note**: no matter where you access Netlify CMS — whether running locally, in a staging environment, or in your published site — it will always fetch and commit files in your hosted repository (for example, on GitHub), on the branch you configured in your Netlify CMS `config.yml` file. This means that content fetched in the admin UI will match the content in the repository, which may be different from your locally running site. It also means that content saved using the admin UI will save directly to the hosted repository, even if you're running the UI locally or in staging. If you want to have your local CMS write to a local repository, try the `local_backend` setting, [currently in beta](/docs/beta-features/#working-with-a-local-git-repository).
 
 ## Publish Mode
 
@@ -73,7 +73,7 @@ public_folder: "/images/uploads"
 
 Based on the settings above, if a user used an image widget field called `avatar` to upload and select an image called `philosoraptor.png`, the image would be saved to the repository at `/static/images/uploads/philosoraptor.png`, and the `avatar` field for the file would be set to `/images/uploads/philosoraptor.png`.
 
-This setting can be set to an absolute URL e.g. `https://netlify.com/media` should you wish, however in general this is not advisable as content should have relative paths to other content.
+This setting can be set to an absolute URL (for example, `https://netlify.com/media`) should you wish; however, this is generally not advisable, as content should have relative paths to other content.
 
 ## Media Library
 
@@ -100,7 +100,7 @@ site_url: https://your-site.com
 
 ## Display URL
 
-When the `display_url` setting is specified, the CMS UI will include a link in the fixed area at the top of the page, allowing content authors to easily return to your main site. The text of the link consists of the URL with the protocol portion (e.g., `https://your-site.com`).
+When the `display_url` setting is specified, the CMS UI will include a link in the fixed area at the top of the page, allowing content authors to easily return to your main site. The text of the link consists of the URL with the protocol portion (for example, `https://your-site.com`).
 
 Defaults to `site_url`.
 
@@ -126,7 +126,7 @@ The CMS locale.
 
 Defaults to `en`.
 
-Other languages than English must be registered manually.
+You must manually register languages other than English.
 
 **Example**
 
@@ -145,7 +145,7 @@ import { de } from 'netlify-cms-locales';
 CMS.registerLocale('de', de);
 ```
 
-When a translation for the selected locale is missing the English one will be used.
+When a translation for the selected locale is missing, the English one will be used.
 
 > When importing `netlify-cms` all locales are registered by default (so you only need to update your `config.yml`).
 
@@ -162,9 +162,10 @@ show_preview_links: false
 ## Search
 
 The search functionally requires loading all collection(s) entries, which can exhaust rate limits on large repositories.
+
 It can be disabled by setting the top level `search` property to `false`.
 
-Defaults to `true`
+Defaults to `true.`
 
 **Example:**
 
@@ -184,7 +185,7 @@ For modifying the actual data in a slug, see the per-collection option below.
   * `unicode` (default): Sanitize filenames (slugs) according to [RFC3987](https://tools.ietf.org/html/rfc3987) and the [WHATWG URL spec](https://url.spec.whatwg.org/). This spec allows non-ASCII (or non-Latin) characters to exist in URLs.
   * `ascii`: Sanitize filenames (slugs) according to [RFC3986](https://tools.ietf.org/html/rfc3986). The only allowed characters are (0-9, a-z, A-Z, `_`, `-`, `~`).
 * `clean_accents`: Set to `true` to remove diacritics from slug characters before sanitizing. This is often helpful when using `ascii` encoding.
-* `sanitize_replacement`: The replacement string used to substitute unsafe characters, defaults to  `-`.
+* `sanitize_replacement`: The replacement string used to substitute unsafe characters; defaults to  `-`.
 
 **Example**
 
@@ -265,14 +266,14 @@ If you have an explicit frontmatter format declared, this option allows you to s
 
 ### `slug`
 
-For folder collections where users can create new items, the `slug` option specifies a template for generating new filenames based on a file's creation date and `title` field. (This means that all collections with `create: true` must have a `title` field (a different field can be used via [`identifier_field`](#identifier_field)).
+For folder collections where users can create new items, the `slug` option specifies a template for generating new filenames based on a file's creation date and `title` field. (This means that all collections with `create: true` must have a `title` field. (A different field can be used via `identifier_field`.)
 
-The slug template can also reference a field value by name, eg. `{{title}}`. If a field name conflicts with a built in template tag name - for example, if you have a field named `slug`, and would like to reference that field via `{{slug}}`, you can do so by adding the explicit `fields.` prefix, eg. `{{fields.slug}}`.
+The slug template can also reference a field value by name (for example, `{{title}}`). If a field name conflicts with a built in template tag name—for example, if you have a field named `slug`, and would like to reference that field via `{{slug}}`—you can do so by adding the explicit `fields.` prefix (for this example, `{{fields.slug}}`).
 
 **Available template tags:**
 
-* Any field can be referenced by wrapping the field name in double curly braces, eg. `{{author}}`
-* `{{slug}}`: a url-safe version of the `title` field (or identifier field) for the file
+* Any field can be referenced by wrapping the field name in double curly braces (for example, `{{author}}`)
+* `{{slug}}`: a URL-safe version of the `title` field (or identifier field) for the file
 * `{{year}}`: 4-digit year of the file creation date
 * `{{month}}`: 2-digit month of the file creation date
 * `{{day}}`: 2-digit day of the month of the file creation date
@@ -306,8 +307,8 @@ A string representing the path where content in this collection can be found on 
 
 Template tags are the same as those for [slug](#slug), with the following exceptions:
 
-* `{{slug}}` is the entire slug for the current entry (not just the url-safe identifier, as is the case with [`slug` configuration](#slug))
-* The date based template tags, such as `{{year}}` and `{{month}}`, are pulled from a date field in your entry, and may require additional configuration - see [`preview_path_date_field`](#preview_path_date_field) for details. If a date template tag is used and no date can be found, `preview_path` will be ignored.
+* `{{slug}}` is the entire slug for the current entry (not just the URL-safe identifier, as is the case with [`slug` configuration](#slug))
+* The date based template tags (such as `{{year}}` and `{{month}}`) are pulled from a date field in your entry, and may require additional configuration. (See [`preview_path_date_field`](#preview_path_date_field) for details.) If a date template tag is used and no date can be found, `preview_path` will be ignored.
 * `{{dirname}}` The path to the file's parent directory, relative to the collection's `folder`.
 * `{{filename}}` The file name without the extension part.
 * `{{extension}}` The file extension.
@@ -328,7 +329,7 @@ collections:
 
 ### `preview_path_date_field`
 
-The name of a date field for parsing date-based template tags from `preview_path`. If this field is not provided and `preview_path` contains date-based template tags (eg. `{{year}}`), Netlify CMS will attempt to infer a usable date field by checking for common date field names, such as `date`. If you find that you need to specify a date field, you can use `preview_path_date_field` to tell Netlify CMS which field to use for preview path template tags.
+The name of a date field for parsing date-based template tags from `preview_path`. If this field is not provided and `preview_path` contains date-based template tags (for example, `{{year}}`), Netlify CMS will attempt to infer a usable date field by checking for common date field names, such as `date`. If you find that you need to specify a date field, you can use `preview_path_date_field` to tell Netlify CMS which field to use for preview path template tags.
 
 **Example:**
 
@@ -381,11 +382,11 @@ This setting changes options for the editor view of a collection or a file insid
      preview: false
 ```
 
-**Note**: Setting this as a top level configuration will set the default for all collections
+**Note**: Setting this as a top level configuration will set the default for all collections.
 
 ### `summary`
 
-This setting allows the customization of the collection list view. Similar to the `slug` field, a string with templates can be used to include values of different fields, e.g. `{{title}}`. This option over-rides the default of `title` field and `identifier_field`.
+This setting allows the customization of the collection list view. Similar to the `slug` field, a string with templates can be used to include values of different fields (for example, `{{title}}`). This option overrides the default of `title` field and `identifier_field`.
 
 **Available template tags:**
 
@@ -394,8 +395,8 @@ Template tags are the same as those for [slug](#slug), with the following additi
 * `{{dirname}}` The path to the file's parent directory, relative to the collection's `folder`.
 * `{{filename}}` The file name without the extension part.
 * `{{extension}}` The file extension.
-* `{{commit_date}}` The file commit date on supported backends (git based backends).
-* `{{commit_author}}` The file author date on supported backends (git based backends).
+* `{{commit_date}}` The file commit date on supported backends (git-based backends).
+* `{{commit_author}}` The file author date on supported backends (git-based backends).
 
 **Example**
 
@@ -407,9 +408,9 @@ Template tags are the same as those for [slug](#slug), with the following additi
 
 An optional list of sort fields to show in the UI.
 
-Defaults to inferring `title`, `date`, `author` and `description` fields and will also show `Update On` sort field in git based backends.
+Defaults to inferring `title`, `date`, `author`, and `description` fields, and will also show `Update On` sort field in git-based backends.
 
-When `author` field can't be inferred commit author will be used.
+When `author` field can't be inferred, commit author will be used.
 
 **Example**
 
