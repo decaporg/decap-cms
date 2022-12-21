@@ -122,7 +122,7 @@
     "copy-webpack-plugin": "^6.0.0",
     "cross-env": "^7.0.0",
     "css-loader": "^3.0.0",
-    "cypress": "9.5.3",
+    "cypress": "11",
     "cypress-file-upload": "^5.0.0",
     "cypress-image-snapshot": "^4.0.0",
     "cypress-jest-adapter": "^0.1.1",
@@ -184,6 +184,7 @@
   "private": true,
   "dependencies": {
     "@emotion/babel-preset-css-prop": "^10.0.27",
+    "cy2": "^3.4.3",
     "emotion": "^10.0.9",
     "eslint-config-prettier": "^8.0.0",
     "eslint-plugin-babel": "^5.3.0",
