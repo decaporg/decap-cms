@@ -10,7 +10,7 @@ description: >-
 meta_description: Choosing the right email marketing software is a difficult
   task. A lot of emails are being sent to your customers every day. Which Email
   Marketing Software Should I Use?
-twitter_image: https://kirod.com/wp-content/uploads/2022/01/email-marketing-software.png
+twitter_image: /img/dsdicon-logo.png
 date: 2023-01-01T01:17:00.571Z
 ---
 <!--StartFragment-->
