@@ -19,6 +19,7 @@ date: 2023-01-01T01:17:00.571Z
 
 * [S﻿ysteme.io](https://systeme.io/?sa=sa0038695845d00c0d00adb040556e9de72e4e6963) Best free growing marketing software
 * [﻿M﻿ailchimp](https://eepurl.com/ihnFuj)  ﻿Growing email platform
-* ﻿S﻿endinBlue  h
+* ﻿[S﻿endinBlue  ](https://sendinblue.tapfiliate.com/justice-nwakwue)for building automation
+*
 
 <!--EndFragment-->
