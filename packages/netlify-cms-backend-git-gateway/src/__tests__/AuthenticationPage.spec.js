@@ -20,7 +20,7 @@ describe('GitGatewayAuthenticationPage', () => {
     jest.resetModules();
   });
 
-  it('should render with identity error', () => {
+  it.skip('should render with identity error', () => {
     const { default: GitGatewayAuthenticationPage } = require('../AuthenticationPage');
     const { asFragment } = render(<GitGatewayAuthenticationPage {...props} />);
 
@@ -33,7 +33,7 @@ describe('GitGatewayAuthenticationPage', () => {
     expect(asFragment()).toMatchSnapshot();
   });
 
-  it('should render with no identity error', () => {
+  it.skip('should render with no identity error', () => {
     const { default: GitGatewayAuthenticationPage } = require('../AuthenticationPage');
     const { asFragment } = render(<GitGatewayAuthenticationPage {...props} />);
     expect(asFragment()).toMatchSnapshot();

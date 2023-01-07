@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
-import { css, keyframes } from '@emotion/core';
+import { css, keyframes } from '@emotion/react';
 import { CSSTransition } from 'react-transition-group';
 
 import { colors, zIndex } from './styles';

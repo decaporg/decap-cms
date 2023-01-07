@@ -43,7 +43,7 @@ function presets() {
     [
       '@emotion/babel-preset-css-prop',
       {
-        autoLabel: true,
+        autoLabel: 'always',
       },
     ],
     '@babel/typescript',

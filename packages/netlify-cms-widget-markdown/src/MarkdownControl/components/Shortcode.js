@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { css } from '@emotion/core';
+import { css } from '@emotion/react';
 import { Map, fromJS } from 'immutable';
 import { omit } from 'lodash';
 

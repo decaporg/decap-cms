@@ -39,6 +39,7 @@ module.exports = {
       },
     ],
     'no-duplicate-imports': 'error',
+    '@emotion/pkg-renaming': 'error',
     '@emotion/no-vanilla': 'error',
     '@emotion/import-from-emotion': 'error',
     '@emotion/styled-import': 'error',

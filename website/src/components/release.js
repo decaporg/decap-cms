@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import styled from '@emotion/styled';
-import { css } from '@emotion/core';
+import { css } from '@emotion/react';
 
 import Markdownify from '../components/markdownify';
 import theme from '../theme';

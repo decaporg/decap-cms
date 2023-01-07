@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
-import { ClassNames } from '@emotion/core';
+import { ClassNames } from '@emotion/react';
 import { debounce } from 'lodash';
 import { Value } from 'slate';
 import { Editor as Slate, setEventTransfer } from 'slate-react';

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ClassNames } from '@emotion/core';
+import { ClassNames } from '@emotion/react';
 import olStyles from 'ol/ol.css';
 import Map from 'ol/Map.js';
 import View from 'ol/View.js';

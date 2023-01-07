@@ -1,12 +1,11 @@
 import { createHashHistory } from 'history';
-import { mocked } from 'ts-jest/utils';
 
 import type { History } from 'history';
 
 jest.mock('history');
 
 const history = { push: jest.fn(), replace: jest.fn() } as unknown as History;
-const mockedCreateHashHistory = mocked(createHashHistory);
+const mockedCreateHashHistory = jest.mocked(createHashHistory);
 mockedCreateHashHistory.mockReturnValue(history);
 
 describe('history', () => {
