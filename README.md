@@ -1,5 +1,7 @@
 ![Netlify CMS](cms.png)
 
+Warning/Notice: [Please read this community post before continuing with Netlify CMS](https://answers.netlify.com/t/is-this-project-dead/70988/61)
+
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/netlify/netlify-cms/blob/master/LICENSE) [![Netlify Status](https://api.netlify.com/api/v1/badges/2cfc19a8-1216-4070-bbb4-4a1c38b57132/deploy-status)](https://app.netlify.com/sites/cms-demo/deploys) [![npm version](https://img.shields.io/npm/v/netlify-cms.svg?style=flat)](https://www.npmjs.com/package/netlify-cms) [![Build Status](https://github.com/netlify/netlify-cms/workflows/Node%20CI/badge.svg)](https://github.com/netlify/netlify-cms/actions?query=branch%3Amaster+workflow%3A%22Node+CI%22) ![FOSSA Status](https://app.fossa.com/api/projects/custom%2B17679%2Fgit%40github.com%3Anetlify%2Fnetlify-cms.git.svg?type=shield) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/netlify/netlify-cms/blob/master/CONTRIBUTING.md)
 
 [netlifycms.org](https://www.netlifycms.org/) 
