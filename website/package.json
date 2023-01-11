@@ -30,7 +30,7 @@
     "gatsby-remark-prismjs": "5.11.0",
     "gatsby-source-filesystem": "3.14.0",
     "gatsby-transformer-json": "3.14.0",
-    "gatsby-transformer-remark": "4.11.0",
+    "gatsby-transformer-remark": "5.25.1",
     "gatsby-transformer-yaml": "3.14.0",
     "js-yaml": "^4.0.0",
     "lodash": "^4.17.15",
