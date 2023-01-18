@@ -2,7 +2,7 @@
 
 exports[`GitGatewayAuthenticationPage should render with identity error 1`] = `
 <DocumentFragment>
-  .emotion-5 {
+  .emotion-7 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -27,7 +27,45 @@ exports[`GitGatewayAuthenticationPage should render with identity error 1`] = `
   margin-top: -150px;
 }
 
-.emotion-3 {
+.emotion-2 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px 0 rgba(68,74,87,0.15),0 1px 3px 0 rgba(68,74,87,0.25);
+  height: 36px;
+  line-height: 36px;
+  font-weight: 500;
+  padding: 0 15px;
+  background-color: #798291;
+  color: #fff;
+  background-color: #313d3e;
+  color: #fff;
+  padding: 0 12px;
+  margin-top: -40px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  position: relative;
+}
+
+.emotion-2:focus,
+.emotion-2:hover {
+  color: #fff;
+  background-color: #555a65;
+}
+
+.emotion-2[disabled] {
+  background-color: #eff0f4;
+  color: #798291;
+  cursor: default;
+}
+
+.emotion-5 {
   display: inline-block;
   line-height: 0;
   width: 100px;
@@ -40,24 +78,24 @@ exports[`GitGatewayAuthenticationPage should render with identity error 1`] = `
   bottom: 10px;
 }
 
-.emotion-3 path:not(.no-fill),
-.emotion-3 circle:not(.no-fill),
-.emotion-3 polygon:not(.no-fill),
-.emotion-3 rect:not(.no-fill) {
+.emotion-5 path:not(.no-fill),
+.emotion-5 circle:not(.no-fill),
+.emotion-5 polygon:not(.no-fill),
+.emotion-5 rect:not(.no-fill) {
   fill: currentColor;
 }
 
-.emotion-3 path.clipped {
+.emotion-5 path.clipped {
   fill: transparent;
 }
 
-.emotion-3 svg {
+.emotion-5 svg {
   width: 100%;
   height: 100%;
 }
 
 <section
-    class="emotion-5 emotion-6"
+    class="emotion-7 emotion-8"
   >
     <span
       class="emotion-0 emotion-1"
@@ -67,15 +105,13 @@ exports[`GitGatewayAuthenticationPage should render with identity error 1`] = `
         src="logo_url"
       />
     </span>
-    <a
-      href="https://docs.netlify.com/visitor-access/git-gateway/#setup-and-settings"
-      rel="noopener noreferrer"
-      target="_blank"
+    <button
+      class="emotion-2 emotion-3"
     >
-      auth.errors.identitySettings
-    </a>
+      auth.loginWithNetlifyIdentity
+    </button>
     <span
-      class="emotion-2 emotion-3 emotion-4"
+      class="emotion-4 emotion-5 emotion-6"
     >
       <svg
         viewBox="0 0 182 47"

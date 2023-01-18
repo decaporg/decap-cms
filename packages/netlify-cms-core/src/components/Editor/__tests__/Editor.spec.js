@@ -63,9 +63,13 @@ describe('Editor', () => {
     jest.spyOn(console, 'error').mockImplementation(() => {});
     const { asFragment } = render(<Editor {...props} entryDraft={null} />);
     expect(asFragment()).toMatchSnapshot();
+
     expect(console.error).toHaveBeenCalledTimes(1);
     expect(console.error).toHaveBeenCalledWith(
-      'Warning: Failed prop type: Required prop `entryDraft` was not specified in `Editor`.\n    in Editor',
+      'Warning: Failed %s type: %s%s',
+      'prop',
+      'Required prop `entryDraft` was not specified in `Editor`.',
+      expect.anything(),
     );
   });
 
