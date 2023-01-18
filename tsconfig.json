@@ -13,6 +13,7 @@
     "allowJs": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    "useUnknownInCatchVariables": false,
     "baseUrl": "./",
     "paths": {
       "netlify-cms-backend-github": ["packages/netlify-cms-backend-github/src"],
