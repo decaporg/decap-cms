@@ -38,7 +38,7 @@ export default class ObjectControl extends React.Component {
     clearFieldErrors: PropTypes.func.isRequired,
     fieldsErrors: ImmutablePropTypes.map.isRequired,
     hasError: PropTypes.bool,
-    t: PropTypes.func.isRequired,
+    t: PropTypes.func,
     locale: PropTypes.string,
   };
 
