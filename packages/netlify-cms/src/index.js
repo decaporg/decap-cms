@@ -11,7 +11,6 @@ if (!window.CMS_MANUAL_INIT) {
 } else {
   console.log('`window.CMS_MANUAL_INIT` flag set, skipping automatic initialization.');
 }
-
 /**
  * Add extension hooks to global scope.
  */
