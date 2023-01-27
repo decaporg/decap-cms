@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import ChromePicker from 'react-color';
 import validateColor from 'validate-color';
 import { zIndex } from 'netlify-cms-ui-default';
+import { debounce } from 'lodash';
 
 function ClearIcon() {
   return (
@@ -78,6 +80,7 @@ const ClickOutsideDiv = styled.div`
 
 export default class ColorControl extends React.Component {
   static propTypes = {
+    field: ImmutablePropTypes.map.isRequired,
     onChange: PropTypes.func.isRequired,
     forID: PropTypes.string,
     value: PropTypes.node,
@@ -91,28 +94,44 @@ export default class ColorControl extends React.Component {
   };
 
   state = {
+    value: this.props.value,
     showColorPicker: false,
   };
+
+  debounceOnChange = debounce(value => this.props.onChange(value), 300);
+
   // show/hide color picker
   handleClick = () => {
     this.setState({ showColorPicker: !this.state.showColorPicker });
   };
+
   handleClear = () => {
-    this.props.onChange('');
+    this.setState({ value: '' });
+    this.debounceOnChange('');
   };
+
   handleClose = () => {
     this.setState({ showColorPicker: false });
   };
+
+  handleInputChange = e => {
+    const { value } = e.target;
+    this.setState({ value });
+    this.debounceOnChange(value);
+  };
+
   handleChange = color => {
     const formattedColor =
       color.rgb.a < 1
         ? `rgba(${color.rgb.r}, ${color.rgb.g}, ${color.rgb.b}, ${color.rgb.a})`
         : color.hex;
-    this.props.onChange(formattedColor);
+    this.setState({ value: formattedColor });
+    this.debounceOnChange(formattedColor);
   };
+
   render() {
-    const { forID, value, field, onChange, classNameWrapper, setActiveStyle, setInactiveStyle } =
-      this.props;
+    const { forID, field, classNameWrapper, setActiveStyle, setInactiveStyle } = this.props;
+    const { value } = this.state;
 
     const allowInput = field.get('allowInput', false);
 
@@ -123,7 +142,7 @@ export default class ColorControl extends React.Component {
       <>
         {' '}
         {showClearButton && (
-          <ClearButtonWrapper>
+          <ClearButtonWrapper data-testid="clear-btn-wrapper">
             <ClearButton onClick={this.handleClear}>
               <ClearIcon />
             </ClearButton>
@@ -138,8 +157,8 @@ export default class ColorControl extends React.Component {
           ?
         </ColorSwatch>
         {this.state.showColorPicker && (
-          <ColorPickerContainer>
-            <ClickOutsideDiv onClick={this.handleClose} />
+          <ColorPickerContainer data-testid="color-picker-container">
+            <ClickOutsideDiv onClick={this.handleClose} data-testid="picker-bg" />
             <ChromePicker
               color={value || ''}
               onChange={this.handleChange}
@@ -153,7 +172,7 @@ export default class ColorControl extends React.Component {
           id={forID}
           className={classNameWrapper}
           value={value || ''}
-          onChange={e => onChange(e.target.value)}
+          onChange={this.handleInputChange}
           onFocus={setActiveStyle}
           onBlur={setInactiveStyle}
           style={{

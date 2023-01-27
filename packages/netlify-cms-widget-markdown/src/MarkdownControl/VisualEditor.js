@@ -202,7 +202,7 @@ export default class Editor extends React.Component {
       remarkPlugins: this.remarkPlugins,
     });
     onChange(markdown);
-  }, 150);
+  }, 300);
 
   handleChange = editor => {
     if (!this.state.value.document.equals(editor.value.document)) {

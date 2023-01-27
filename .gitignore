@@ -1,4 +1,5 @@
-dist/
+*dist/
+!packages/netlify-cms/dist
 bin/
 public/
 node_modules/

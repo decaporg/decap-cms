@@ -44,9 +44,6 @@ const NestedObjectLabel = styled.div`
 `;
 
 const styleStrings = {
-  collapsedObjectControl: `
-    display: none;
-  `,
   objectWidgetTopBarContainer: `
     padding: ${lengths.objectWidgetTopBarContainerPadding};
   `,
@@ -550,34 +547,31 @@ export default class ListControl extends React.Component {
         <NestedObjectLabel collapsed={collapsed} error={hasError}>
           {this.objectLabel(item)}
         </NestedObjectLabel>
-        <ClassNames>
-          {({ css, cx }) => (
-            <ObjectControl
-              classNameWrapper={cx(classNameWrapper, {
-                [css`
-                  ${styleStrings.collapsedObjectControl};
-                `]: collapsed,
-              })}
-              value={item}
-              field={field}
-              onChangeObject={this.handleChangeFor(index)}
-              editorControl={editorControl}
-              resolveWidget={resolveWidget}
-              metadata={metadata}
-              forList
-              onValidateObject={onValidateObject}
-              clearFieldErrors={clearFieldErrors}
-              fieldsErrors={fieldsErrors}
-              ref={this.processControlRef}
-              controlRef={controlRef}
-              validationKey={key}
-              collapsed={collapsed}
-              data-testid={`object-control-${key}`}
-              hasError={hasError}
-              parentIds={[...parentIds, forID, key]}
-            />
-          )}
-        </ClassNames>
+        {!collapsed && (
+          <ClassNames>
+            {({ cx }) => (
+              <ObjectControl
+                classNameWrapper={cx(classNameWrapper)}
+                value={item}
+                field={field}
+                onChangeObject={this.handleChangeFor(index)}
+                editorControl={editorControl}
+                resolveWidget={resolveWidget}
+                metadata={metadata}
+                forList
+                onValidateObject={onValidateObject}
+                clearFieldErrors={clearFieldErrors}
+                fieldsErrors={fieldsErrors}
+                ref={this.processControlRef}
+                controlRef={controlRef}
+                validationKey={key}
+                data-testid={`object-control-${key}`}
+                hasError={hasError}
+                parentIds={[...parentIds, forID, key]}
+              />
+            )}
+          </ClassNames>
+        )}
       </SortableListItem>
     );
   };
