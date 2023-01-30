@@ -1,0 +1,30 @@
+{
+  "name": "netlify-cms-widget-uuid",
+  "description": "Widget for uuid values in Netlify CMS.",
+  "version": "0.1.0",
+  "homepage": "https://www.netlifycms.org/docs/widgets/#uuid",
+  "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-uuid",
+  "bugs": "https://github.com/netlify/netlify-cms/issues",
+  "module": "dist/esm/index.js",
+  "main": "dist/netlify-cms-widget-uuid.js",
+  "license": "MIT",
+  "keywords": [
+    "netlify",
+    "netlify-cms",
+    "widget",
+    "uuid"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "develop": "yarn build:esm --watch",
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
+  },
+  "peerDependencies": {
+    "base32-encode": "^2.0.0",
+    "hex-to-array-buffer": "^2.0.0",
+    "netlify-cms-ui-default": "^2.12.1",
+    "prop-types": "^15.7.2",
+    "react": "^16.8.4 || ^17.0.0"
+  }
+}

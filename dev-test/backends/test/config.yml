@@ -118,6 +118,7 @@ collections: # A list of collections the CMS should be able to edit
         search_fields: ['title', 'body']
         value_field: 'title'
       - { label: 'Title', name: 'title', widget: 'string' }
+      - { label: 'ID', name: 'uuid', widget: 'uuid', read_only: true, prefix: '', use_b32_encode: false }
       - { label: 'Boolean', name: 'boolean', widget: 'boolean', default: true }
       - { label: 'Map', name: 'map', widget: 'map' }
       - { label: 'Text', name: 'text', widget: 'text', hint: 'Plain text, not markdown' }

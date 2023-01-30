@@ -29,7 +29,9 @@
   "dependencies": {
     "@emotion/core": "^10.0.35",
     "@emotion/styled": "^10.0.27",
+    "base32-encode": "^2.0.0",
     "codemirror": "^5.46.0",
+    "hex-to-array-buffer": "^2.0.0",
     "immutable": "^3.7.6",
     "lodash": "^4.17.11",
     "moment": "^2.24.0",
@@ -63,6 +65,7 @@
     "netlify-cms-widget-select": "^2.8.2",
     "netlify-cms-widget-string": "^2.3.0",
     "netlify-cms-widget-text": "^2.4.1",
+    "netlify-cms-widget-uuid": "^0.1.0",
     "prop-types": "^15.7.2",
     "react-immutable-proptypes": "^2.1.0",
     "uuid": "^3.3.2"

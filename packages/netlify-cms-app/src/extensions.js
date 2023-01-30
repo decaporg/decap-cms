@@ -25,6 +25,7 @@ import NetlifyCmsWidgetDate from 'netlify-cms-widget-date';
 import NetlifyCmsWidgetDatetime from 'netlify-cms-widget-datetime';
 import NetlifyCmsWidgetCode from 'netlify-cms-widget-code';
 import NetlifyCmsWidgetColorString from 'netlify-cms-widget-colorstring';
+import NetlifyCmsWidgetUuid from 'netlify-cms-widget-uuid';
 // Editor Components
 import image from 'netlify-cms-editor-component-image';
 // Locales
@@ -55,6 +56,7 @@ CMS.registerWidget([
   NetlifyCmsWidgetDatetime.Widget(),
   NetlifyCmsWidgetCode.Widget(),
   NetlifyCmsWidgetColorString.Widget(),
+  NetlifyCmsWidgetUuid.Widget(),
 ]);
 CMS.registerEditorComponent(image);
 CMS.registerEditorComponent({
