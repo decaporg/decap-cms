@@ -9,6 +9,7 @@ import type { Medias } from '../reducers/medias';
 import type { Deploys } from '../reducers/deploys';
 import type { Search } from '../reducers/search';
 import type { GlobalUI } from '../reducers/globalUI';
+import type { NotificationsState } from '../reducers/notifications';
 import type { formatExtensions } from '../formats/formats';
 
 export type CmsBackendType =
@@ -698,8 +699,8 @@ export interface State {
   medias: Medias;
   mediaLibrary: MediaLibrary;
   search: Search;
-  notifs: { message: { key: string }; kind: string; id: number }[];
   status: Status;
+  notifications: NotificationsState;
 }
 
 export interface Integration {

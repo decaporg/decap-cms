@@ -1,6 +1,5 @@
 import { fromJS, List, Map } from 'immutable';
 import { isEqual } from 'lodash';
-import { actions as notifActions } from 'redux-notifications';
 import { Cursor } from 'netlify-cms-lib-util';
 
 import { selectCollectionEntriesCursor } from '../reducers/cursors';
@@ -21,6 +20,7 @@ import { selectCustomPath } from '../reducers/entryDraft';
 import { navigateToEntry } from '../routing/history';
 import { getProcessSegment } from '../lib/formatters';
 import { hasI18n, duplicateDefaultI18nFields, serializeI18n, I18N, I18N_FIELD } from '../lib/i18n';
+import { addNotification } from './notifications';
 
 import type { ImplementationMediaFile } from 'netlify-cms-lib-util';
 import type { AnyAction } from 'redux';
@@ -39,8 +39,6 @@ import type { EntryValue } from '../valueObjects/Entry';
 import type { Backend } from '../backend';
 import type AssetProxy from '../valueObjects/AssetProxy';
 import type { Set } from 'immutable';
-
-const { notifSend } = notifActions;
 
 /*
  * Constant Declarations
@@ -535,14 +533,13 @@ export function loadEntry(collection: Collection, slug: string) {
       dispatch(entryLoaded(collection, loadedEntry));
       dispatch(createDraftFromEntry(loadedEntry));
     } catch (error) {
-      console.error(error);
       dispatch(
-        notifSend({
+        addNotification({
           message: {
             details: error.message,
             key: 'ui.toast.onFailToLoadEntries',
           },
-          kind: 'danger',
+          type: 'error',
           dismissAfter: 8000,
         }),
       );
@@ -632,12 +629,12 @@ export function loadEntries(collection: Collection, page = 0) {
       );
     } catch (err) {
       dispatch(
-        notifSend({
+        addNotification({
           message: {
             details: err,
             key: 'ui.toast.onFailToLoadEntries',
           },
-          kind: 'danger',
+          type: 'error',
           dismissAfter: 8000,
         }),
       );
@@ -684,12 +681,12 @@ export function traverseCollectionCursor(collection: Collection, action: string)
     } catch (err) {
       console.error(err);
       dispatch(
-        notifSend({
+        addNotification({
           message: {
             details: err,
             key: 'ui.toast.onFailToLoadEntries',
           },
-          kind: 'danger',
+          type: 'error',
           dismissAfter: 8000,
         }),
       );
@@ -894,11 +891,11 @@ export function persistEntry(collection: Collection) {
 
       if (hasPresenceErrors) {
         dispatch(
-          notifSend({
+          addNotification({
             message: {
               key: 'ui.toast.missingRequiredField',
             },
-            kind: 'danger',
+            type: 'error',
             dismissAfter: 8000,
           }),
         );
@@ -926,11 +923,11 @@ export function persistEntry(collection: Collection) {
       })
       .then(async (newSlug: string) => {
         dispatch(
-          notifSend({
+          addNotification({
             message: {
               key: 'ui.toast.entrySaved',
             },
-            kind: 'success',
+            type: 'success',
             dismissAfter: 4000,
           }),
         );
@@ -951,12 +948,12 @@ export function persistEntry(collection: Collection) {
       .catch((error: Error) => {
         console.error(error);
         dispatch(
-          notifSend({
+          addNotification({
             message: {
               details: error,
               key: 'ui.toast.onFailToPersist',
             },
-            kind: 'danger',
+            type: 'error',
             dismissAfter: 8000,
           }),
         );
@@ -978,12 +975,12 @@ export function deleteEntry(collection: Collection, slug: string) {
       })
       .catch((error: Error) => {
         dispatch(
-          notifSend({
+          addNotification({
             message: {
               details: error,
               key: 'ui.toast.onFailToDelete',
             },
-            kind: 'danger',
+            type: 'error',
             dismissAfter: 8000,
           }),
         );

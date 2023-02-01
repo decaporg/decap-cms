@@ -6,7 +6,6 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import { connect } from 'react-redux';
 import { Route, Switch, Redirect } from 'react-router-dom';
-import { Notifs } from 'redux-notifications';
 import TopBarProgress from 'react-topbar-progress-indicator';
 import { Loader, colors } from 'netlify-cms-ui-default';
 
@@ -15,7 +14,7 @@ import { currentBackend } from '../../backend';
 import { createNewEntry } from '../../actions/collections';
 import { openMediaLibrary } from '../../actions/mediaLibrary';
 import MediaLibrary from '../MediaLibrary/MediaLibrary';
-import { Toast } from '../UI';
+import { Notifications } from '../UI';
 import { history } from '../../routing/history';
 import { SIMPLE, EDITORIAL_WORKFLOW } from '../../constants/publishModes';
 import Collection from '../Collection/Collection';
@@ -120,7 +119,7 @@ class App extends React.Component {
 
     return (
       <div>
-        <Notifs CustomComponent={Toast} />
+        <Notifications />
         {React.createElement(backend.authComponent(), {
           onLogin: this.handleLogin.bind(this),
           error: auth.error,
@@ -176,7 +175,7 @@ class App extends React.Component {
 
     return (
       <>
-        <Notifs CustomComponent={Toast} />
+        <Notifications />
         <Header
           user={user}
           collections={collections}
