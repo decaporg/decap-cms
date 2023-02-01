@@ -44,8 +44,8 @@
     "netlify-cms-lib-util": "^2.15.1",
     "nodemon": "^2.0.2",
     "ts-jest": "^27.0.0",
-    "ts-loader": "^8.0.0",
-    "ts-node": "^10.0.0",
+    "ts-loader": "^9.4.2",
+    "ts-node": "^10.9.1",
     "tsconfig-paths-webpack-plugin": "^3.2.0",
     "webpack": "^5.75.0",
     "webpack-node-externals": "^3.0.0"
