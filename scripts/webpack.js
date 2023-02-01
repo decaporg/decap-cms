@@ -28,13 +28,7 @@ function rules() {
     css: () => [
       {
         test: /\.css$/,
-        include: [
-          'ol',
-          'redux-notifications',
-          '../packages/netlify-cms-core/node_modules/redux-notifications',
-          'react-datetime',
-          'codemirror',
-        ].map(moduleNameToPath),
+        include: ['ol', 'react-toastify', 'react-datetime', 'codemirror'].map(moduleNameToPath),
         use: ['to-string-loader', 'css-loader'],
       },
     ],
