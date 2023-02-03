@@ -94,7 +94,7 @@ jobs:
           yarn test:e2e:run-ci
         env:
           IS_FORK: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == true }}
-          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY_TMP }}
           NODE_OPTIONS: --max-old-space-size=4096
           MACHINE_COUNT: 8
           MACHINE_INDEX: ${{ matrix.machine }}
