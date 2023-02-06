@@ -8,18 +8,10 @@ sections:
       - title: Decap CMS Slack
         description: Live community chat for all things Decap CMS.
         url: /chat
-      - title: Netlify Community
-        description: Ask and answer questions on the Decap CMS channel of the Netlify community forum.
-        url: https://community.netlify.com/c/netlify-cms
       - title: GitHub Issues
         description: Report bugs, request features, and comment on existing issues.
         url: https://github.com/netlify/netlify-cms/issues
       - title: Stack Overflow
-        description: Secondary forum. Questions should be tagged `netlify-cms`.
+        description: Secondary forum. Questions should be tagged `decap-cms`.
         url: https://stackoverflow.com/questions/tagged/netlify-cms
-  - title: development
-    channels:
-    - title: Priorities
-      description: Priority issues board on the Decap CMS GitHub repo.
-      url: https://github.com/netlify/netlify-cms/projects/7
 ---
