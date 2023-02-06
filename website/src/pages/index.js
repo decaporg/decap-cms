@@ -136,7 +136,8 @@ function HomePage({ data }) {
         </div>
       </section>
 
-      <WhatsNew updates={updates.updates} />
+      {/* Uncomment on when there are some recent updates */}
+      {/* <WhatsNew updates={updates.updates} /> */}
 
       <HomeSection
         title={<Markdownify source={landing.editors.hook} />}
