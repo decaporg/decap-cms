@@ -1,4 +1,4 @@
-# Netlify CMS Website & Docs
+# Decap CMS Website & Docs
 
 This directory builds netlifycms.org. If you'd like to propose changes to the site or docs, you'll find the source files in here.
 

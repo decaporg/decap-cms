@@ -5,7 +5,7 @@ group: Contributing
 weight: 200
 ---
 
-Netlify CMS is a React application, using Redux for state management with immutable data structures (immutable.js).
+Decap CMS is a React application, using Redux for state management with immutable data structures (immutable.js).
 
 The core abstractions for content editing are `collections`, `entries`, and `widgets`.
 
@@ -73,6 +73,6 @@ Furthermore, all editorial workflow state is managed in Redux - there's an `acti
 
 ### About metadata
 
-Netlify CMS embraces the idea of Git-as-backend for storing metadata. The first time it runs with the `editorial_workflow` setup, it creates a new ref called `meta/_netlify_cms`, pointing to an empty, orphan tree.
+Decap CMS embraces the idea of Git-as-backend for storing metadata. The first time it runs with the `editorial_workflow` setup, it creates a new ref called `meta/_netlify_cms`, pointing to an empty, orphan tree.
 
 Actual data are stored in individual `json` files committed to this tree.

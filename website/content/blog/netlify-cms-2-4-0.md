@@ -1,13 +1,13 @@
 ---
-title: Netlify CMS 2.4.0
+title: Decap CMS 2.4.0
 author: Shawn Erquhart
 description: >-
-  Netlify CMS 2.4.0 is out with Deploy Preview Links, a new Map widget, and
+  Decap CMS 2.4.0 is out with Deploy Preview Links, a new Map widget, and
   more!
 twitter_image: /img/preview-link-published.png
 date: 2019-02-08T23:00:58.501Z
 ---
-Netlify CMS 2.4.0 is out with significant bugfixes, like working validation for nested fields, and some nice new features, including [Deploy Preview Links](https://www.netlifycms.org/blog/2019/02/deploy-preview-links) and a new [Map widget](https://www.netlifycms.org/docs/widgets/#map)!
+Decap CMS 2.4.0 is out with significant bugfixes, like working validation for nested fields, and some nice new features, including [Deploy Preview Links](https://www.netlifycms.org/blog/2019/02/deploy-preview-links) and a new [Map widget](https://www.netlifycms.org/docs/widgets/#map)!
 
 ## Release Notes
 

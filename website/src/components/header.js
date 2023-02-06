@@ -189,7 +189,7 @@ function Header({ hasHeroBelow }) {
             <HeaderContainer>
               <Logo>
                 <Link to="/">
-                  <img src={logo} alt="Netlify CMS logo" />
+                  <img src={logo} alt="Decap CMS logo" />
                 </Link>
               </Logo>
               <MenuActions>

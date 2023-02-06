@@ -7,7 +7,6 @@ import Layout from '../components/layout';
 import Markdownify from '../components/markdownify';
 import PageHero from '../components/page-hero';
 import HeroTitle from '../components/hero-title';
-import VideoEmbed from '../components/video-embed';
 import WhatsNew from '../components/whats-new';
 import Lead from '../components/lead';
 import Features from '../components/features';
@@ -92,9 +91,6 @@ function HomePage({ data }) {
         <Grid cols={2}>
           <div>
             <Features items={landing.hero.devfeatures} kind="light" />
-          </div>
-          <div>
-            <VideoEmbed />
           </div>
         </Grid>
       </PageHero>

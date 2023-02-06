@@ -1,13 +1,13 @@
 hero:
   headline: "Open source content management for your Git&nbsp;workflow"
-  subhead: "Use Netlify CMS with any static site generator for a faster and more flexible web&nbsp;project"
+  subhead: "Use Decap CMS with any static site generator for a faster and more flexible web&nbsp;project"
   devfeatures:
     - feature: "Static + content management = ♥"
       description: "Get the speed, security, and scalability of a static site, while still providing a convenient editing interface for content."
     - feature: "An integrated part of your Git workflow"
       description: "Content is stored in your Git repository alongside your code for easier versioning, multi-channel publishing, and the option to handle content updates directly in Git."
     - feature: "An extensible CMS built on React"
-      description: "Netlify CMS is built as a single-page React app. Create custom-styled previews, UI widgets, and editor plugins or add backends to support different Git platform APIs."
+      description: "Decap CMS is built as a single-page React app. Create custom-styled previews, UI widgets, and editor plugins or add backends to support different Git platform APIs."
 
 cta:
   primaryhook: "Getting started is simple and free."
@@ -32,10 +32,10 @@ community:
   hook: "Supported by a growing&nbsp;community"
   features:
     - feature: "Built on the Jamstack"
-      description: "Netlify CMS is based on client-side JavaScript, reusable APIs and prebuilt Markup. Compared to server-side CMS like WordPress, this means better performance, higher security, lower cost of scaling, and a better developer experience. You can learn more about the Jamstack on [jamstack.org](https://jamstack.org)."
+      description: "Decap CMS is based on client-side JavaScript, reusable APIs and prebuilt Markup. Compared to server-side CMS like WordPress, this means better performance, higher security, lower cost of scaling, and a better developer experience. You can learn more about the Jamstack on [jamstack.org](https://jamstack.org)."
     - feature: "Support when you need it"
       description: "Get up and running with comprehensive [documentation](/docs) and templates or work through difficult problems in our [community chat](https://netlifycms.org/chat)."
     - feature: "A community-driven project you can help evolve"
-      description: "Netlify CMS is built by a community of more than 100 contributors — and you can help. Read the [contributing guide](/docs/contributor-guide) to join in."
+      description: "Decap CMS is built by a community of more than 100 contributors — and you can help. Read the [contributing guide](/docs/contributor-guide) to join in."
   contributors: "Made possible by awesome contributors"
 
