@@ -23,7 +23,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Vale Linter
-        uses: errata-ai/vale-action@0dec3032fa59c4097deece7cf6ee3261b27bb3f1
+        uses: errata-ai/vale-action@715c322f56159d8efe0f2efbae10aba6f4e16d93
         with:
           # Optional
           files: website/content/docs
