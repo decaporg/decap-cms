@@ -7,15 +7,15 @@ description: >-
 twitter_image: /img/preview-link-unpublished.png
 date: 2019-02-08T19:30:00.000Z
 ---
-Netlify CMS 2.4.0 brings deploy preview links!
+Decap CMS 2.4.0 brings deploy preview links!
 
 ![Deploy preview link for unpublished content](/img/preview-link-unpublished.png)
 
 ## Seeing is believing
 
-The editorial workflow allows editors to create draft content in Netlify CMS, and Netlify can
+The editorial workflow allows editors to create draft content in Decap CMS, and Netlify can
 provide deploy previews of draft content, but there hasn't been a way to access links to these
-preview builds from within Netlify CMS. The preview pane in the editor is a good tool for seeing how
+preview builds from within Decap CMS. The preview pane in the editor is a good tool for seeing how
 content will look on the site, but in the words of Marvin Gaye, "ain't nothing like the real thing!"
 As Mr. Gaye bemoaned the absence of his beloved, so content creators long for the warm embrace of an
 actual production build. Their words, not ours.
@@ -43,7 +43,7 @@ When the preview is ready, the "Check for Preview" button is replaced with a lin
 ![Deploy preview link for unpublished content](/img/preview-link-unpublished.png)
 
 ## Deep links
-Deploy preview links generally direct to the root of a site, but Netlify CMS can also link straight
+Deploy preview links generally direct to the root of a site, but Decap CMS can also link straight
 to the piece of content being edited. By [providing a string template](/docs/deploy-preview-links)
 for each collection, you can get links that go right where editors expect them to. More complex
 URL's can be constructed [using date
@@ -61,6 +61,6 @@ config, and that URL is used in place of the deploy preview URL.
 Support is coming soon for these two awesome backends! Stay tuned.
 
 ## Try it out!
-Deploy preview links are live in Netlify CMS 2.4.0. Please give them a try and let us know if you
+Deploy preview links are live in Decap CMS 2.4.0. Please give them a try and let us know if you
 have any problems by [opening an issue](https://github.com/netlify/netlify-cms/issues/new) or
 reaching out in our [community chat](https://netlifycms.org/chat)!

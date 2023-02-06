@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-site",
   "version": "1.0.0",
-  "description": "Netlify CMS documentation website built with Gatsby",
+  "description": "Decap CMS documentation website built with Gatsby",
   "scripts": {
     "start": "gatsby develop",
     "build": "gatsby build && rm -rf dist && mv public dist",

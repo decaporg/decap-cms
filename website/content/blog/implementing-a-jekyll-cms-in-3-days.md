@@ -3,14 +3,14 @@ title: Implementing a Jekyll CMS in 3 Days
 author: Shea Daniels
 description: >-
   Monetery, Dwolla's annual tech summit, needed flexibility after building a new
-  website. Using Netlify CMS they added content management to a Jekyll site in
+  website. Using Decap CMS they added content management to a Jekyll site in
   three days.
 twitter_image: /img/netlify-cms.png
 date: 2019-06-06T12:00:00.000Z
 canonical_url: https://www.dwolla.com/updates/implementing-netlify-cms/
 ---
 
-*This guest post was written by Shea Daniels, Lead Software Engineer at [Dwolla](https://www.dwolla.com) and user of Netlify CMS. It was originally published on the [Dwolla blog](https://www.dwolla.com/updates/implementing-netlify-cms/).*
+*This guest post was written by Shea Daniels, Lead Software Engineer at [Dwolla](https://www.dwolla.com) and user of Decap CMS. It was originally published on the [Dwolla blog](https://www.dwolla.com/updates/implementing-netlify-cms/).*
 
 ---
 <br>
@@ -31,20 +31,20 @@ So we took a look at our options:
 
 The landscape of potential products for both of these options is monumental. We were familiar with traditional options, so we scoured [headlesscms.org](https://headlesscms.org/) and [staticgen.com](https://www.staticgen.com) to see what else was out there. Dwolla affords its engineering staff with dedicated time for professional development each week, which gave us an opportunity to test drive potential solutions.
 
-One of the most interesting solutions we tried came from a company called [Netlify](https://www.netlify.com/), and their project [Netlify CMS](https://www.netlifycms.org/).
+One of the most interesting solutions we tried came from a company called [Netlify](https://www.netlify.com/), and their project [Decap CMS](https://www.netlifycms.org/).
 
-We thought Netlify CMS might benefit us for the following reasons:
+We thought Decap CMS might benefit us for the following reasons:
 - It’s built for use with Static Site Generators so we get to keep the speed, security and scalability benefits that drew us to SSGs in the first place
 - It’s SSG agnostic, so it would work with our existing [Jekyll](https://jekyllrb.com/) site but not prevent us from changing our mind down the road (hi there, [GatsbyJS](https://www.gatsbyjs.org/)!)
 - There is no database backend since content changes are stored as Git commits - which makes [InfoSec](https://www.dwolla.com/security/) folks happy
 - It provides a simple and usable editor experience
 - It’s open source, so there is no vendor lock-in, and we can contribute features that are important to us back to the community
 
-With buy-in from our stakeholders, we decided to move forward. We’ll talk about the decisions we had to make and show you how to integrate Netlify CMS with Jekyll on your own site.
+With buy-in from our stakeholders, we decided to move forward. We’ll talk about the decisions we had to make and show you how to integrate Decap CMS with Jekyll on your own site.
 
 ## Should you move from GitHub Pages to Netlify Hosting?
 
-This was the first choice we needed to make. Switching seemed like it would add additional time and complexity to our project, and thus initially our decision was “no.” Using Netlify CMS with your existing hosting provider is a perfectly valid choice.
+This was the first choice we needed to make. Switching seemed like it would add additional time and complexity to our project, and thus initially our decision was “no.” Using Decap CMS with your existing hosting provider is a perfectly valid choice.
 
 So why did we change our mind and move to Netlify hosting? The answer is that we found two features very compelling: [Git Gateway](https://www.netlify.com/docs/git-gateway/) and [branch deploys](https://www.netlify.com/docs/continuous-deployment/#branches-deploys).
 
@@ -79,9 +79,9 @@ If you were using the built-in Jekyll gems and build process that GitHub provide
 
 Once you’re satisfied that everything looks good and is deploying correctly from Netlify, you can proceed to claim your domain name on Netlify and migrate DNS over to Netlify’s name servers. After your DNS is fully cut over, you can safely turn off the GitHub Pages site from your repo.
 
-## Adding Netlify CMS to an Existing Site
+## Adding Decap CMS to an Existing Site
 
-Netlify CMS itself consists of a [Single Page Application](https://en.wikipedia.org/wiki/Single-page_application) built with [React](https://reactjs.org/) that lives in an admin folder on your site. For Jekyll, it goes right at the root of your project. It will contain two files:
+Decap CMS itself consists of a [Single Page Application](https://en.wikipedia.org/wiki/Single-page_application) built with [React](https://reactjs.org/) that lives in an admin folder on your site. For Jekyll, it goes right at the root of your project. It will contain two files:
 
 ```bash
 admin
@@ -89,9 +89,9 @@ admin
  └ config.yml
 ```
 
-The [Netlify CMS Docs](https://www.netlifycms.org/docs/add-to-your-site/) explain this better than we can:
+The [Decap CMS Docs](https://www.netlifycms.org/docs/add-to-your-site/) explain this better than we can:
 
-> The first file, `admin/index.html`, is the entry point for the Netlify CMS admin interface. This means that users navigate to `yoursite.com/admin/` to access it. On the code side, it's a basic HTML starter page that loads the Netlify CMS JavaScript file. In this example, we pull the file from a public CDN:
+> The first file, `admin/index.html`, is the entry point for the Decap CMS admin interface. This means that users navigate to `yoursite.com/admin/` to access it. On the code side, it's a basic HTML starter page that loads the Decap CMS JavaScript file. In this example, we pull the file from a public CDN:
 
 <figure>
   <figcaption>admin/index.html</figcaption>
@@ -107,14 +107,14 @@ The [Netlify CMS Docs](https://www.netlifycms.org/docs/add-to-your-site/) explai
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
   </head>
   <body>
-    <!-- Include the script that builds the page and powers Netlify CMS -->
+    <!-- Include the script that builds the page and powers Decap CMS -->
     <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
   </body>
   </html>
   ```
 </figure>
 
-> The second file, `admin/config.yml`, is the heart of your Netlify CMS installation, and a bit more complex. The [Configuration](https://www.netlifycms.org/docs/add-to-your-site/#configuration) section covers the details.
+> The second file, `admin/config.yml`, is the heart of your Decap CMS installation, and a bit more complex. The [Configuration](https://www.netlifycms.org/docs/add-to-your-site/#configuration) section covers the details.
 
 To start with, the config file might look something like this:
 
@@ -159,15 +159,15 @@ Now we just need to drop in the Netlify Identity Widget on the main site. This i
 </script>
 ```
 
-With this in place, and the appropriate authentication and Git Gateway configuration on netlify.com, you should be able to log into the Netlify CMS admin for your site at `https://yourdomain.com/admin`.
+With this in place, and the appropriate authentication and Git Gateway configuration on netlify.com, you should be able to log into the Decap CMS admin for your site at `https://yourdomain.com/admin`.
 
 ### What are Collections?
 
 Although at this point you can log in, you can’t do much yet! There is no data structure set up for the CMS fields you’ll need to edit your site. You may have noticed the empty `collections` field in the config file, and this is where the magic happens. All fields for data that you want to save need to be part of a collection.
 
-There are two [types of collections](https://www.netlifycms.org/docs/collection-types/), folder collections and file collections. To understand the difference, let’s figure out what Netlify CMS actually does when you make a content edit: the data has to be stored somewhere and we know that it uses Git as a back end. That means the data you save must end up inside of a file in your project. So when we configure a collection, we are telling Netlify CMS about the structure and naming convention of the files we want to create. It’s then up to your static site generator to determine how to interpret these files and pull the data into templates. In this blog post, we’ll cover how that works for Jekyll.
+There are two [types of collections](https://www.netlifycms.org/docs/collection-types/), folder collections and file collections. To understand the difference, let’s figure out what Decap CMS actually does when you make a content edit: the data has to be stored somewhere and we know that it uses Git as a back end. That means the data you save must end up inside of a file in your project. So when we configure a collection, we are telling Decap CMS about the structure and naming convention of the files we want to create. It’s then up to your static site generator to determine how to interpret these files and pull the data into templates. In this blog post, we’ll cover how that works for Jekyll.
 
-Knowing this, can you guess why there are two types of collections? In the case of defined options, we can tell the CMS to put that field in a specific file in our project. In the case of repeating content, like blog posts or pages built out of modular components, we want to set up Netlify CMS so that it can generate many files based on a pattern that we define. We can generate a number of different file formats too - it supports YAML, JSON, markdown with [front matter](https://jekyllrb.com/docs/front-matter/), and a few others.
+Knowing this, can you guess why there are two types of collections? In the case of defined options, we can tell the CMS to put that field in a specific file in our project. In the case of repeating content, like blog posts or pages built out of modular components, we want to set up Decap CMS so that it can generate many files based on a pattern that we define. We can generate a number of different file formats too - it supports YAML, JSON, markdown with [front matter](https://jekyllrb.com/docs/front-matter/), and a few others.
 
 ### Setting Up a File Collection for Global Options
 
@@ -203,7 +203,7 @@ A file collection is the perfect place to define data fields for things that are
 
 This will define a new collection that shows up on left side of the CMS admin UI, and it will make a “Navigation Menu” page underneath that collection. Inside are fields that define some site navigation items that each include a name, URL, etc. We define the data type and editor interface of the fields using [widgets](https://www.netlifycms.org/docs/widgets/). When a change is made, it will be saved to the file located at `_data/nav.yml` in your project.
 
-![Screenshot of a page in the Netlify CMS admin interface](https://cdn.dwolla.com/com/prod/20190529161537/Screen-Shot-2019-05-29-at-4.14.23-PM.png)
+![Screenshot of a page in the Decap CMS admin interface](https://cdn.dwolla.com/com/prod/20190529161537/Screen-Shot-2019-05-29-at-4.14.23-PM.png)
 
 Here’s an example of what the data file might look like:
 
@@ -284,9 +284,9 @@ Let’s look at the bones of a folder collection from a real config file to see 
 
 This defines another new collection called “Pages” that will consist of many files all stored in the `/_pages/` folder of your project. The files will be named according to the pattern in the slug field, which we’ve confusingly set to have a pattern of `{{slug}}`. Don’t worry, in this case it just means we’ll be using the default value, which is the contents of the `title` field. You can configure this in many ways to include dates and other things to match your intended use, but this is perfect for our case.
 
-![Screenshot of the Pages collections in Netlify CMS admin](https://cdn.dwolla.com/com/prod/20190529161807/Screen-Shot-2019-05-29-at-4.17.02-PM.png)
+![Screenshot of the Pages collections in Decap CMS admin](https://cdn.dwolla.com/com/prod/20190529161807/Screen-Shot-2019-05-29-at-4.17.02-PM.png)
 
-Of special note are the `permalink` and `preview_path` fields. We’ll use the permalink field to define the path of our page in Jekyll, and the preview field shares that definition with Netlify CMS so it knows how to link to the correct page preview (branch deploys FTW).
+Of special note are the `permalink` and `preview_path` fields. We’ll use the permalink field to define the path of our page in Jekyll, and the preview field shares that definition with Decap CMS so it knows how to link to the correct page preview (branch deploys FTW).
 
 Here’s an example of what the data file for a page might look like:
 
@@ -324,7 +324,7 @@ Before we start, we need to make an addition to the Jekyll config file:
 
 This tells Jekyll to generate a new page for each markdown file in the `pages` folder.
 
-But how does Jekyll know which template to use? In this case, the `layout` field we defined in Netlify CMS is doing exactly that. Jekyll maps the value in that front matter field directly to the name of a template file in the `_layouts` folder of your project.
+But how does Jekyll know which template to use? In this case, the `layout` field we defined in Decap CMS is doing exactly that. Jekyll maps the value in that front matter field directly to the name of a template file in the `_layouts` folder of your project.
 
 Let’s look at an example layout template:
 
@@ -350,7 +350,7 @@ All of the data we are interested in from the front matter is available using th
 
 We’re off to a great start, but we didn’t need to go to all that trouble with our folder collection if we weren’t going to take it one step farther: let’s make a flexible, component-based page builder!
 
-First, we need to define our components in the Netlify CMS config file:
+First, we need to define our components in the Decap CMS config file:
 
 <figure>
   <figcaption>_admin/config.yml</figcaption>
@@ -383,7 +383,7 @@ First, we need to define our components in the Netlify CMS config file:
 
 Here we’ve extended our pages collection to include a variable type list widget that contains several different types of objects that the content editor will be able to dynamically add and rearrange from the CMS Admin.
 
-![Screenshot of a page builder in Netlify CMS admin](https://cdn.dwolla.com/com/prod/20190529162003/Screen-Shot-2019-05-29-at-4.19.06-PM.png)
+![Screenshot of a page builder in Decap CMS admin](https://cdn.dwolla.com/com/prod/20190529162003/Screen-Shot-2019-05-29-at-4.19.06-PM.png)
 
 Now let’s make a new layout to render our widgets:
 
@@ -420,22 +420,22 @@ Here we’re looping through each component on the page, and including another t
 
 Because we passed along our block variable, everything is right where we need it. You’ll also notice we took special care to translate our markdown into HTML with markdownify since that isn’t being automatically done for us any more.
 
-## Our Experience with Netlify + Netlify CMS
+## Our Experience with Netlify + Decap CMS
 
-Using these techniques, our engineers were able to integrate Netlify CMS into our existing Jekyll site for [Monetery](https://monetery.com/) and launch a working CMS within a matter of days (three, to be exact). Content editors were able to onboard quickly and start publishing changes and new pages shortly after launch. During that time we also onboarded a new engineer who was able to start making meaningful contributions on their second day of work!
+Using these techniques, our engineers were able to integrate Decap CMS into our existing Jekyll site for [Monetery](https://monetery.com/) and launch a working CMS within a matter of days (three, to be exact). Content editors were able to onboard quickly and start publishing changes and new pages shortly after launch. During that time we also onboarded a new engineer who was able to start making meaningful contributions on their second day of work!
 
 
-That said, [we’re never done](https://www.dwolla.com/about/core-beliefs/). We’re constantly learning from our experiences and trying to improve. Let’s take a balanced look at both the pros and cons of using Netlify + Netlify CMS:
+That said, [we’re never done](https://www.dwolla.com/about/core-beliefs/). We’re constantly learning from our experiences and trying to improve. Let’s take a balanced look at both the pros and cons of using Netlify + Decap CMS:
 
 ### Pros
 - Hosting on Netlify is a breeze and we haven’t experienced any issues with the site itself
-- Netlify CMS was very easy to retrofit onto an existing Jekyll project and intuitive for new engineers to learn
+- Decap CMS was very easy to retrofit onto an existing Jekyll project and intuitive for new engineers to learn
 - It’s easy and very useful to get a copy of your entire project, including content, and run it locally using docker<
-- The Netlify CMS interface is simple and easy to learn for content editors
+- The Decap CMS interface is simple and easy to learn for content editors
 - Branch deploys and previews are amazing
 - Netlify’s free plans give you the freedom to evaluate the offering before committing
-- There is an active and very helpful [community chat](https://netlifycms.org/chat) for Netlify CMS
-- Netlify CMS is open source and welcomes contributions
+- There is an active and very helpful [community chat](https://netlifycms.org/chat) for Decap CMS
+- Decap CMS is open source and welcomes contributions
 
 ### Cons
 - Our content editors like the editorial workflow but don’t like the multiple steps to save and publish
@@ -447,7 +447,7 @@ That said, [we’re never done](https://www.dwolla.com/about/core-beliefs/). We�
 
 ## The Community &amp; Contributing Back
 
-The Netlify CMS community has been nothing short of wonderful to interact with, so we encourage you to reach out and give this technology a try. Dwolla also believes in linking our words with our actions, so we’re committed to giving back to the open source community. We’re happy to report that our first pull request contributing to Netlify CMS is already live!
+The Decap CMS community has been nothing short of wonderful to interact with, so we encourage you to reach out and give this technology a try. Dwolla also believes in linking our words with our actions, so we’re committed to giving back to the open source community. We’re happy to report that our first pull request contributing to Decap CMS is already live!
 
 
 Check out the code on GitHub: https://github.com/netlify/netlify-cms

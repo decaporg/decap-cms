@@ -10,7 +10,7 @@ Because Github [requires a server](https://github.com/netlify/netlify-cms/issues
 To enable basic GitHub authentication:
 
 1. Follow the authentication provider setup steps in the [Netlify docs](https://www.netlify.com/docs/authentication-providers/#using-an-authentication-provider).
-2. Add the following lines to your Netlify CMS `config.yml` file:
+2. Add the following lines to your Decap CMS `config.yml` file:
 
 ```yaml
 backend:
@@ -22,7 +22,7 @@ backend:
 
 ## Specifying a status for deploy previews
 
-The GitHub backend supports [deploy preview links](../deploy-preview-links). Netlify CMS checks the
+The GitHub backend supports [deploy preview links](../deploy-preview-links). Decap CMS checks the
 `context` of a commit's [statuses](https://help.github.com/articles/about-status-checks/) and infers
 one that seems to represent a deploy preview. If you need to customize this behavior, you can
 specify which context to look for using `preview_context`:

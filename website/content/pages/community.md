@@ -5,11 +5,11 @@ subhead: Get support, give support, and find out what's new through the channels
 sections:
   - title: support
     channels:
-      - title: Netlify CMS Slack
-        description: Live community chat for all things Netlify CMS.
+      - title: Decap CMS Slack
+        description: Live community chat for all things Decap CMS.
         url: /chat
       - title: Netlify Community
-        description: Ask and answer questions on the Netlify CMS channel of the Netlify community forum.
+        description: Ask and answer questions on the Decap CMS channel of the Netlify community forum.
         url: https://community.netlify.com/c/netlify-cms
       - title: GitHub Issues
         description: Report bugs, request features, and comment on existing issues.
@@ -20,6 +20,6 @@ sections:
   - title: development
     channels:
     - title: Priorities
-      description: Priority issues board on the Netlify CMS GitHub repo.
+      description: Priority issues board on the Decap CMS GitHub repo.
       url: https://github.com/netlify/netlify-cms/projects/7
 ---

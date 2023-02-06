@@ -4,7 +4,7 @@ weight: 1
 title: Overview
 ---
 
-A backend is JavaScript code that allows Netlify CMS to communicate with a service that stores content - typically a Git host like GitHub or GitLab. It provides functions that Netlify CMS can use to do things like read and update files using API's provided by the service.
+A backend is JavaScript code that allows Decap CMS to communicate with a service that stores content - typically a Git host like GitHub or GitLab. It provides functions that Decap CMS can use to do things like read and update files using API's provided by the service.
 
 ## Backend Configuration
 
