@@ -16421,13 +16421,13 @@ signal-exit@^3.0.0, signal-exit@^3.0.2, signal-exit@^3.0.3, signal-exit@^3.0.7:
   integrity sha512-wnD2ZE+l+SPC/uoS0vXeE9L1+0wuaMqKlfz9AMUo38JsyLSBWSFcHR1Rri62LZc12vLr1gb3jl7iwQhgwpAbGQ==
 
 simple-git@^3.0.0:
-  version "3.7.0"
-  resolved "https://registry.yarnpkg.com/simple-git/-/simple-git-3.7.0.tgz#b0aac4c2e6e8118c115460ed93d072cda966dd42"
-  integrity sha512-O9HlI83ywqkYqnr7Wh3CqKNNrMkfjzpKQSGtJAhk7+H5P+lAxHBTIPgu/eO/0D9pMciepgs433p0d5S+NYv5Jg==
+  version "3.16.0"
+  resolved "https://registry.yarnpkg.com/simple-git/-/simple-git-3.16.0.tgz#421773e24680f5716999cc4a1d60127b4b6a9dec"
+  integrity sha512-zuWYsOLEhbJRWVxpjdiXl6eyAyGo/KzVW+KFhhw9MqEEJttcq+32jTWSGyxTdf9e/YCohxRE+9xpWFj9FdiJNw==
   dependencies:
     "@kwsites/file-exists" "^1.1.1"
     "@kwsites/promise-deferred" "^1.1.1"
-    debug "^4.3.3"
+    debug "^4.3.4"
 
 simple-html-tokenizer@^0.1.1:
   version "0.1.1"
