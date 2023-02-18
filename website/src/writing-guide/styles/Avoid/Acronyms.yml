@@ -1,5 +1,5 @@
 extends: existence
-message: "'%s' is redundant."
+message: "'%s' is redundant.."
 ignorecase: true
 level: error
 action:
