@@ -220,6 +220,7 @@ class Header extends React.Component {
               displayUrl={displayUrl}
               isTestRepo={isTestRepo}
               imageUrl={user?.avatar_url}
+              logoUrl ={"https://assets-us-01.kc-usercontent.com/4ec262a7-3d6c-008c-aa10-1e6ffc6c2e14/ac7c0614-e1d3-407e-83ce-cd9cb62c7e2a/netlify-logo.png"} // need help pulling url here
               onLogoutClick={onLogoutClick}
             />
           </AppHeaderActions>

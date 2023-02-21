@@ -12,6 +12,9 @@ const styles = {
     width: 32px;
     border-radius: 32px;
   `,
+  CompanyImage: css`
+  width: 100px;
+`,
 };
 
 const AvatarDropdownButton = styled(DropdownButton)`
@@ -24,6 +27,10 @@ const AvatarDropdownButton = styled(DropdownButton)`
 
 const AvatarImage = styled.img`
   ${styles.avatarImage};
+`;
+
+const CompanyImage = styled.img`
+  ${styles.CompanyImage};
 `;
 
 const AvatarPlaceholderIcon = styled(Icon)`
@@ -59,7 +66,7 @@ Avatar.propTypes = {
   imageUrl: PropTypes.string,
 };
 
-function SettingsDropdown({ displayUrl, isTestRepo, imageUrl, onLogoutClick, t }) {
+function SettingsDropdown({ displayUrl, isTestRepo, imageUrl, onLogoutClick , logoUrl , t  }) {
   return (
     <React.Fragment>
       {isTestRepo && (
@@ -73,7 +80,7 @@ function SettingsDropdown({ displayUrl, isTestRepo, imageUrl, onLogoutClick, t }
       )}
       {displayUrl ? (
         <AppHeaderSiteLink href={displayUrl} target="_blank">
-          {stripProtocol(displayUrl)}
+          <CompanyImage src={logoUrl} />
         </AppHeaderSiteLink>
       ) : null}
       <Dropdown
