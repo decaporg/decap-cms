@@ -15,7 +15,7 @@ If you're starting a new project, the fastest route to publishing on a Jekyll we
 
 This guide will use the blog you get if you follow the [really excellent official Jekyll step by step tutorial](https://jekyllrb.com/docs/step-by-step/01-setup/) as a starting point. If you're new to Jekyll - I recommended you start by following the tutorial so you know your way around your new blog. Otherwise [you can clone this repo](https://github.com/adamwatters/jekyll-tutorial-with-netlify-cms/tree/without-cms) and checkout the `without-cms` branch.
 
-![Jekyll tutorial blog screenshot](https://www.netlifycms.org/img/screenshot-jekyll-tutorial-blog.png?raw=true)
+![Jekyll tutorial blog screenshot](https://www.decapcms.org/img/screenshot-jekyll-tutorial-blog.png?raw=true)
 
 ## Add Decap CMS
 
@@ -64,7 +64,7 @@ collections:
 
 Decap CMS stores content in your online Git repository. Therefore, to make content changes, users need to authenticate with the corresponding Git provider to prove that they have read and write access to that content.
 
-Follow the directions in the Introduction section to [enable Netlify Identity and Git Gateway services](https://www.netlifycms.org/docs/add-to-your-site/#enable-identity-and-git-gateway) for the backend, then [add the Identity widget](https://www.netlifycms.org/docs/add-to-your-site/#add-the-netlify-identity-widget) to render a login portal on the frontend.
+Follow the directions in the Introduction section to [enable Netlify Identity and Git Gateway services](https://www.decapcms.org/docs/add-to-your-site/#enable-identity-and-git-gateway) for the backend, then [add the Identity widget](https://www.decapcms.org/docs/add-to-your-site/#add-the-netlify-identity-widget) to render a login portal on the frontend.
 
 ## CMS Configuration
 
@@ -190,7 +190,7 @@ Next, copy and paste the following into the collections array in `config.yml` be
     - { label: 'Body', name: 'body', widget: 'markdown' }
 ```
 
-Now that we have the `authors` collection configured, we can add an `author` field to the `blog` collection. We'll use the [relation widget](https://www.netlifycms.org/docs/widgets/#relation) to define the relationship between blog posts and authors.
+Now that we have the `authors` collection configured, we can add an `author` field to the `blog` collection. We'll use the [relation widget](https://www.decapcms.org/docs/widgets/#relation) to define the relationship between blog posts and authors.
 
 ```yaml
 # updated fields in blog collection configuration
@@ -214,7 +214,7 @@ With that configuration added, you should be able to select the author for a pos
 
 ### About Page
 
-Our Jekyll blog includes an About page. It would nice to be able to edit that page just like we can edit our blog and author pages. Decap CMS provides [file collections](https://www.netlifycms.org/docs/collection-types/#file-collections) to solve this problem.
+Our Jekyll blog includes an About page. It would nice to be able to edit that page just like we can edit our blog and author pages. Decap CMS provides [file collections](https://www.decapcms.org/docs/collection-types/#file-collections) to solve this problem.
 
 Copy and paste the following into the collections array in `config.yml`
 

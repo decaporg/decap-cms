@@ -204,7 +204,7 @@ You can see this basic template includes all the fields you've specified in your
 
 Using `registerEditorComponent` we can register a block level component for the Markdown editor. You can use it to add Hugo's inbuilt shortcodes like `gist`,`youtube` and others as block components to the markdown editor.
 
-You can refer to [registering editor components](https://www.netlifycms.org/docs/custom-widgets/#registereditorcomponent) for a getting started guide or for creating your own editor components.
+You can refer to [registering editor components](https://www.decapcms.org/docs/custom-widgets/#registereditorcomponent) for a getting started guide or for creating your own editor components.
 
 **Example**
 

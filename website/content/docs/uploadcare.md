@@ -32,7 +32,7 @@ media_library:
 
 Once you've finished updating your Decap CMS configuration, the Uploadcare widget will appear when using the image or file widgets.
 
-**Note:** The Decap CMS media library extensions for Uploadcare are not included in `netlify-cms-app`. If you're using `netlify-cms-app`, you'll need to [register the media libraries yourself](https://www.netlifycms.org/blog/2019/07/netlify-cms-gatsby-plugin-4-0-0#using-media-libraries-with-netlify-cms-app).
+**Note:** The Decap CMS media library extensions for Uploadcare are not included in `netlify-cms-app`. If you're using `netlify-cms-app`, you'll need to [register the media libraries yourself](https://www.decapcms.org/blog/2019/07/netlify-cms-gatsby-plugin-4-0-0#using-media-libraries-with-netlify-cms-app).
 
 ## Configuring the Uploadcare Widget
 

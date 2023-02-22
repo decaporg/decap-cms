@@ -31,7 +31,7 @@ So we took a look at our options:
 
 The landscape of potential products for both of these options is monumental. We were familiar with traditional options, so we scoured [headlesscms.org](https://headlesscms.org/) and [staticgen.com](https://www.staticgen.com) to see what else was out there. Dwolla affords its engineering staff with dedicated time for professional development each week, which gave us an opportunity to test drive potential solutions.
 
-One of the most interesting solutions we tried came from a company called [Netlify](https://www.netlify.com/), and their project [Decap CMS](https://www.netlifycms.org/).
+One of the most interesting solutions we tried came from a company called [Netlify](https://www.netlify.com/), and their project [Decap CMS](https://www.decapcms.org/).
 
 We thought Decap CMS might benefit us for the following reasons:
 - It’s built for use with Static Site Generators so we get to keep the speed, security and scalability benefits that drew us to SSGs in the first place
@@ -89,7 +89,7 @@ admin
  └ config.yml
 ```
 
-The [Decap CMS Docs](https://www.netlifycms.org/docs/add-to-your-site/) explain this better than we can:
+The [Decap CMS Docs](https://www.decapcms.org/docs/add-to-your-site/) explain this better than we can:
 
 > The first file, `admin/index.html`, is the entry point for the Decap CMS admin interface. This means that users navigate to `yoursite.com/admin/` to access it. On the code side, it's a basic HTML starter page that loads the Decap CMS JavaScript file. In this example, we pull the file from a public CDN:
 
@@ -114,7 +114,7 @@ The [Decap CMS Docs](https://www.netlifycms.org/docs/add-to-your-site/) explain 
   ```
 </figure>
 
-> The second file, `admin/config.yml`, is the heart of your Decap CMS installation, and a bit more complex. The [Configuration](https://www.netlifycms.org/docs/add-to-your-site/#configuration) section covers the details.
+> The second file, `admin/config.yml`, is the heart of your Decap CMS installation, and a bit more complex. The [Configuration](https://www.decapcms.org/docs/add-to-your-site/#configuration) section covers the details.
 
 To start with, the config file might look something like this:
 
@@ -139,7 +139,7 @@ To start with, the config file might look something like this:
   ```
 </figure>
 
-The `backend` section covers the basics like which branch to update and sets up the Git Gateway connection that we talked about earlier. The `publish_mode` property sets up our workflow to use the [editorial](https://www.netlifycms.org/docs/add-to-your-site/#editorial-workflow) mode. In short, this means that we have the ability to save page drafts as pull requests in Git before we decide to publish them. Combined with the branch deploys feature of Netlify, this is going to give us live previews of unpublished content from a static site generator!
+The `backend` section covers the basics like which branch to update and sets up the Git Gateway connection that we talked about earlier. The `publish_mode` property sets up our workflow to use the [editorial](https://www.decapcms.org/docs/add-to-your-site/#editorial-workflow) mode. In short, this means that we have the ability to save page drafts as pull requests in Git before we decide to publish them. Combined with the branch deploys feature of Netlify, this is going to give us live previews of unpublished content from a static site generator!
 
 *Note: as of May 2019, the editorial workflow is only supported when you use GitHub as a provider*
 
@@ -165,7 +165,7 @@ With this in place, and the appropriate authentication and Git Gateway configura
 
 Although at this point you can log in, you can’t do much yet! There is no data structure set up for the CMS fields you’ll need to edit your site. You may have noticed the empty `collections` field in the config file, and this is where the magic happens. All fields for data that you want to save need to be part of a collection.
 
-There are two [types of collections](https://www.netlifycms.org/docs/collection-types/), folder collections and file collections. To understand the difference, let’s figure out what Decap CMS actually does when you make a content edit: the data has to be stored somewhere and we know that it uses Git as a back end. That means the data you save must end up inside of a file in your project. So when we configure a collection, we are telling Decap CMS about the structure and naming convention of the files we want to create. It’s then up to your static site generator to determine how to interpret these files and pull the data into templates. In this blog post, we’ll cover how that works for Jekyll.
+There are two [types of collections](https://www.decapcms.org/docs/collection-types/), folder collections and file collections. To understand the difference, let’s figure out what Decap CMS actually does when you make a content edit: the data has to be stored somewhere and we know that it uses Git as a back end. That means the data you save must end up inside of a file in your project. So when we configure a collection, we are telling Decap CMS about the structure and naming convention of the files we want to create. It’s then up to your static site generator to determine how to interpret these files and pull the data into templates. In this blog post, we’ll cover how that works for Jekyll.
 
 Knowing this, can you guess why there are two types of collections? In the case of defined options, we can tell the CMS to put that field in a specific file in our project. In the case of repeating content, like blog posts or pages built out of modular components, we want to set up Decap CMS so that it can generate many files based on a pattern that we define. We can generate a number of different file formats too - it supports YAML, JSON, markdown with [front matter](https://jekyllrb.com/docs/front-matter/), and a few others.
 
@@ -201,7 +201,7 @@ A file collection is the perfect place to define data fields for things that are
   ```
 </figure>
 
-This will define a new collection that shows up on left side of the CMS admin UI, and it will make a “Navigation Menu” page underneath that collection. Inside are fields that define some site navigation items that each include a name, URL, etc. We define the data type and editor interface of the fields using [widgets](https://www.netlifycms.org/docs/widgets/). When a change is made, it will be saved to the file located at `_data/nav.yml` in your project.
+This will define a new collection that shows up on left side of the CMS admin UI, and it will make a “Navigation Menu” page underneath that collection. Inside are fields that define some site navigation items that each include a name, URL, etc. We define the data type and editor interface of the fields using [widgets](https://www.decapcms.org/docs/widgets/). When a change is made, it will be saved to the file located at `_data/nav.yml` in your project.
 
 ![Screenshot of a page in the Decap CMS admin interface](https://cdn.dwolla.com/com/prod/20190529161537/Screen-Shot-2019-05-29-at-4.14.23-PM.png)
 
@@ -308,7 +308,7 @@ Here’s an example of what the data file for a page might look like:
 
 If you were reading closely, you may have noticed that the file collection is generating YAML files, while the folder collection is generating markdown files with front matter. You might think that’s a bit odd to have a markdown file with no content below the data in the front matter (demarcated by the triple dashes), but rest assured there’s a good reason!
 
-We’ll work in concert with Jekyll’s own [collections feature](https://jekyllrb.com/docs/collections/) to pair our markdown files with a template, read the data in the front matter and then use it to generate our page output. This lets us do neato things later like use the [variable type list widget](https://www.netlifycms.org/docs/beta-features/#list-widget-variable-types) to make a component based page builder!
+We’ll work in concert with Jekyll’s own [collections feature](https://jekyllrb.com/docs/collections/) to pair our markdown files with a template, read the data in the front matter and then use it to generate our page output. This lets us do neato things later like use the [variable type list widget](https://www.decapcms.org/docs/beta-features/#list-widget-variable-types) to make a component based page builder!
 
 Before we start, we need to make an addition to the Jekyll config file:
 
@@ -434,7 +434,7 @@ That said, [we’re never done](https://www.dwolla.com/about/core-beliefs/). We�
 - The Decap CMS interface is simple and easy to learn for content editors
 - Branch deploys and previews are amazing
 - Netlify’s free plans give you the freedom to evaluate the offering before committing
-- There is an active and very helpful [community chat](https://netlifycms.org/chat) for Decap CMS
+- There is an active and very helpful [community chat](https://decapcms.org/chat) for Decap CMS
 - Decap CMS is open source and welcomes contributions
 
 ### Cons

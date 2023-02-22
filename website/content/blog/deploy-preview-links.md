@@ -63,4 +63,4 @@ Support is coming soon for these two awesome backends! Stay tuned.
 ## Try it out!
 Deploy preview links are live in Decap CMS 2.4.0. Please give them a try and let us know if you
 have any problems by [opening an issue](https://github.com/netlify/netlify-cms/issues/new) or
-reaching out in our [community chat](https://netlifycms.org/chat)!
+reaching out in our [community chat](https://decapcms.org/chat)!

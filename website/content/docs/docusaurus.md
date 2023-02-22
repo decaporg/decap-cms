@@ -33,7 +33,7 @@ The development server now serves your website at `http://localhost:3000`. As yo
 
 ## Push your project to GitHub
 
-Decap CMS requires a [backend](https://www.netlifycms.org/docs/backends-overview/) to store content. Decap CMS supports using Git hosts, like GitHub or GitLab, as backends. This guide uses GitHub. 
+Decap CMS requires a [backend](https://www.decapcms.org/docs/backends-overview/) to store content. Decap CMS supports using Git hosts, like GitHub or GitLab, as backends. This guide uses GitHub. 
 
 ```bash
 # 1. Initialize your local Git repository.  
@@ -209,7 +209,7 @@ collections:
         - { name: imageUrl, label: ImageURL, widget: string } 
 ```
 
-`config.yml` specifies what kind of content your blog posts have. The content specification enables Decap CMS to edit existing posts and create new ones with the same format. To learn more, read about Decap CMS' [](https://www.netlifycms.org/docs/configuration-options/)[Configuration options](https://www.netlifycms.org/docs/configuration-options/).
+`config.yml` specifies what kind of content your blog posts have. The content specification enables Decap CMS to edit existing posts and create new ones with the same format. To learn more, read about Decap CMS' [](https://www.decapcms.org/docs/configuration-options/)[Configuration options](https://www.decapcms.org/docs/configuration-options/).
 </li> 
 
 <li>
