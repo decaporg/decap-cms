@@ -53,7 +53,7 @@ These services enable Decap CMS development.
 
 <p>
   <a href="https://www.netlify.com/">
-    <img src="/img/netlify.png" height="38" alt="Netlify" />
+    <img src="/img/netlify.svg" height="38" alt="Netlify" />
   </a>
   <img src="https://spacergif.org/spacer.gif" width="20"/>
   <!-- <a href="https://www.travis-ci.org">
