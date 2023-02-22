@@ -17,7 +17,7 @@ While you could already use Decap CMS with most static site generators, our long
 
 ## Becoming a Monorepo
 
-The other big change with 2.0 is the migration from a single codebase to a collection of interdependent packages called a “monorepo”. Decap CMS still lives in a [single repository on GitHub](https://github.com/netlify/netlify-cms), but the many extensions that were kept within Decap CMS itself are now completely separate from the application core. This brings a few benefits:
+The other big change with 2.0 is the migration from a single codebase to a collection of interdependent packages called a “monorepo”. Decap CMS still lives in a [single repository on GitHub](https://github.com/decapcms/decap-cms), but the many extensions that were kept within Decap CMS itself are now completely separate from the application core. This brings a few benefits:
 
 * Extension authors can easily copy an existing extension from the Decap CMS repo and create a custom version.
 * Your custom extensions can now do anything the “official” extensions can do (because official extensions are no longer taking advantage of privileged internal code).

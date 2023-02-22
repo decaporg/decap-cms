@@ -10,7 +10,7 @@ sections:
         url: /chat
       - title: GitHub Issues
         description: Report bugs, request features, and comment on existing issues.
-        url: https://github.com/netlify/netlify-cms/issues
+        url: https://github.com/decapcms/decap-cms/issues
       - title: Stack Overflow
         description: Secondary forum. Questions should be tagged `decap-cms`.
         url: https://stackoverflow.com/questions/tagged/netlify-cms

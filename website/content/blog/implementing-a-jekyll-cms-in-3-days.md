@@ -450,4 +450,4 @@ That said, [we’re never done](https://www.dwolla.com/about/core-beliefs/). We�
 The Decap CMS community has been nothing short of wonderful to interact with, so we encourage you to reach out and give this technology a try. Dwolla also believes in linking our words with our actions, so we’re committed to giving back to the open source community. We’re happy to report that our first pull request contributing to Decap CMS is already live!
 
 
-Check out the code on GitHub: https://github.com/netlify/netlify-cms
+Check out the code on GitHub: https://github.com/decapcms/decap-cms

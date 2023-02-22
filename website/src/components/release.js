@@ -29,7 +29,7 @@ const Version = styled.span`
 
 function Release({ version, versionPrevious, date, description, url }) {
   const displayDate = moment(date).format('MMMM D, YYYY');
-  const defaultUrl = `https://github.com/netlify/netlify-cms/compare/netlify-cms@${versionPrevious}...netlify-cms@${version}`;
+  const defaultUrl = `https://github.com/decapcms/decap-cms/compare/netlify-cms@${versionPrevious}...netlify-cms@${version}`;
 
   return (
     <li

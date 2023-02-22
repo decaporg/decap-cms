@@ -5,7 +5,7 @@ title: GitHub
 ---
 For repositories stored on GitHub, the `github` backend allows CMS users to log in directly with their GitHub account. Note that all users must have push access to your content repository for this to work.
 
-Because Github [requires a server](https://github.com/netlify/netlify-cms/issues/663#issuecomment-335023723) for authentication, Netlify facilitates basic GitHub authentication.
+Because Github [requires a server](https://github.com/decapcms/decap-cms/issues/663#issuecomment-335023723) for authentication, Netlify facilitates basic GitHub authentication.
 
 To enable basic GitHub authentication:
 
@@ -38,4 +38,4 @@ The above configuration would look for the status who's `"context"` is `"my-prov
 
 ## Git Large File Storage (LFS)
 
-Please note that the GitHub backend **does not** support [git-lfs](https://git-lfs.github.com/), see [this issue](https://github.com/netlify/netlify-cms/issues/1206) for more information.
+Please note that the GitHub backend **does not** support [git-lfs](https://git-lfs.github.com/), see [this issue](https://github.com/decapcms/decap-cms/issues/1206) for more information.
