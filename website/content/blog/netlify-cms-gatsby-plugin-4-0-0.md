@@ -84,10 +84,10 @@ module.exports = {
 }
 ```
 
-The plugin will create the Decap CMS app and output it to `/admin/index.html` on your site. The CMS will look for your configuration to be in the same directory on your live site, at `/admin/config.yml`, so you’ll want to place the configuration file in the `static` directory of your repo at `static/admin/config.yml`. You can also [configure Decap CMS with JavaScript](https://www.netlifycms.org/docs/beta-features/#manual-initialization). Read more about configuring the CMS in our docs, or check out the Gatsby / Decap CMS integration guides in both our docs and theirs.
+The plugin will create the Decap CMS app and output it to `/admin/index.html` on your site. The CMS will look for your configuration to be in the same directory on your live site, at `/admin/config.yml`, so you’ll want to place the configuration file in the `static` directory of your repo at `static/admin/config.yml`. You can also [configure Decap CMS with JavaScript](https://www.decapcms.org/docs/beta-features/#manual-initialization). Read more about configuring the CMS in our docs, or check out the Gatsby / Decap CMS integration guides in both our docs and theirs.
 
-- [Decap CMS Configuration Guide](https://www.netlifycms.org/docs/add-to-your-site/#configuration)
-- [Decap CMS Integration Guide for Gatsby Sites](https://www.netlifycms.org/docs/gatsby/)
+- [Decap CMS Configuration Guide](https://www.decapcms.org/docs/add-to-your-site/#configuration)
+- [Decap CMS Integration Guide for Gatsby Sites](https://www.decapcms.org/docs/gatsby/)
 - [Gatsby Guide - Sourcing from Decap CMS](https://www.gatsbyjs.org/docs/sourcing-from-netlify-cms/)
 
 ## Using Media Libraries with `netlify-cms-app`
@@ -109,8 +109,8 @@ CMS.registerMediaLibrary(cloudinary);
 
 For more information about the media libraries, refer to the docs.
 
-- [Using Cloudinary with Decap CMS](https://www.netlifycms.org/docs/cloudinary/)
-- [Using Uploadcare with Decap CMS](https://www.netlifycms.org/docs/uploadcare/)
+- [Using Cloudinary with Decap CMS](https://www.decapcms.org/docs/cloudinary/)
+- [Using Uploadcare with Decap CMS](https://www.decapcms.org/docs/uploadcare/)
 
 ### With `gatsby-plugin-netlify-cms@^4.0.0`
 In addition to calling `registerMediaLibrary()` as mentioned above, make sure to provide the path to your CMS customization entry point to Gatsby via `gatsby-config.js`:
@@ -130,4 +130,4 @@ module.exports = {
 }
 ```
 
-If you run into a problem or need help, [open an issue on GitHub](https://github.com/netlify/netlify-cms/issues/new/choose) or [chat with our community](https://netlifycms.org/chat)!
+If you run into a problem or need help, [open an issue on GitHub](https://github.com/netlify/netlify-cms/issues/new/choose) or [chat with our community](https://decapcms.org/chat)!
