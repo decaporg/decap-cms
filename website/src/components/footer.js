@@ -74,14 +74,14 @@ function Footer({ buttons }) {
           <Info>
             <p>
               <a
-                href="https://github.com/netlify/netlify-cms/blob/master/LICENSE"
+                href="https://github.com/decapcms/decap-cms/blob/master/LICENSE"
                 className="text-link"
               >
                 Distributed under MIT License
               </a>{' '}
               ·{' '}
               <a
-                href="https://github.com/netlify/netlify-cms/blob/master/CODE_OF_CONDUCT.md"
+                href="https://github.com/decapcms/decap-cms/blob/master/CODE_OF_CONDUCT.md"
                 className="text-link"
               >
                 Code of Conduct
