@@ -17,11 +17,11 @@ You can connect Netlify CMS to a local Git repository, instead of working with a
 2. Add the top-level property `local_backend` configuration to your `config.yml`:
 
 ```yaml
-backend:
-  name: git-gateway
-
 # when using the default proxy server port
 local_backend: true
+
+backend:
+  name: git-gateway
 ```
 
 3. Run `npx netlify-cms-proxy-server` from the root directory of the above repository.
@@ -228,6 +228,7 @@ backend:
   # optional, defaults to 'https://gitlab.com/api/graphql'. Can be used to configure a self hosted GitLab instance.
   graphql_api_root: https://my-self-hosted-gitlab.com/api/graphql
 ```
+
 ## Open Authoring
 
 When using the [GitHub backend](/docs/github-backend), you can use Netlify CMS to accept contributions from GitHub users without giving them access to your repository. When they make changes in the CMS, the CMS forks your repository for them behind the scenes, and all the changes are made to the fork. When the contributor is ready to submit their changes, they can set their draft as ready for review in the CMS. This triggers a pull request to your repository, which you can merge using the GitHub UI.
