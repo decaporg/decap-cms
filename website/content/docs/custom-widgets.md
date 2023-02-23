@@ -288,7 +288,7 @@ Here is the content of `package.json` that you will have at the end:
     "boilerplate"
   ],
   "version": "0.0.1",
-  "homepage": "https://github.com/decaporg/decap-cms-widget-starter",
+  "homepage": "https://github.com/netlify/netlify-cms-widget-starter",
   "license": "MIT",
   "main": "dist/main.js",
   "devDependencies": {
@@ -503,7 +503,7 @@ CMS.registerWidget('test', Control, Preview)
 init({ config })
 ```
 
-### [](https://github.com/decaporg/decap-cms-widget-starter#development)Development
+### [](https://github.com/netlify/netlify-cms-widget-starter#development)Development
 
 To run a copy of Decap CMS with your widget for development, use the start script:
 
@@ -513,7 +513,7 @@ npm start
 
 Your widget source is in the `src` directory, where there are separate files for the `Control` and `Preview` components.
 
-### [](https://github.com/decaporg/decap-cms-widget-starter#production--publishing)Production & Publishing
+### [](https://github.com/netlify/netlify-cms-widget-starter#production--publishing)Production & Publishing
 
 You'll want to take a few steps before publishing a production built package to npm:
 
