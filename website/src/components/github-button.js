@@ -18,10 +18,10 @@ class GitHubStarButton extends PureComponent {
 
     return (
       <GitHubButton
-        href="https://github.com/decaporg/decap-cms"
+        href="https://github.com/netlify/netlify-cms"
         data-icon="octicon-star"
         data-show-count="true"
-        aria-label="Star decaporg/decap-cms on GitHub"
+        aria-label="Star netlify/netlify-cms on GitHub"
       >
         Star
       </GitHubButton>
