@@ -22,4 +22,4 @@ Individual backends should provide their own configuration documentation, but th
 
 ## Creating a New Backend
 
-Anyone can write a backend, but we don't yet have a finalized and documented API. If you would like to write your own backend for a service that does not have one currently, we recommend using the [GitHub backend](https://github.com/decapcms/decap-cms/tree/master/packages/netlify-cms-backend-github) as a reference for API and best practices.
+Anyone can write a backend, but we don't yet have a finalized and documented API. If you would like to write your own backend for a service that does not have one currently, we recommend using the [GitHub backend](https://github.com/decaporg/decap-cms/tree/master/packages/netlify-cms-backend-github) as a reference for API and best practices.
