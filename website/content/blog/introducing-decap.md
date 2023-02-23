@@ -13,6 +13,6 @@ We love Netlify CMS for multiple reasons. Its ease of configuration and how simp
 
 As the new maintainers of Decap CMS, our plan is to continue on the premise of a simple, easy-to-use, open source, git-based CMS. We are excited about the potential for this type of product and we strive that it remains a viable option for developers and editors alike.
 
-First we plan to solve deprecation issues, then we will evaluate what are the next chapters for Decap. Additionally, we will continue to engage with the community to gather feedback and make improvements based on the needs of the users. We will gladly accept any contributions in form of pull requests, issues and discussions on GitHub.
+First we plan to solve deprecation issues, then we will evaluate what are the next chapters for Decap. In the mean time, we will gladly accept any contributions in form of pull requests, issues and discussions on GitHub.
 
 We understand that there may be some growing pains as we transition to being the maintainers of the project, but please bear with us. Please don't hesitate to reach out to us if you have any questions or concerns. We are excited to continue developing and improving Decap CMS with your help!
