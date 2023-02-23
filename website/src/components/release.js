@@ -7,7 +7,6 @@ import Markdownify from '../components/markdownify';
 import theme from '../theme';
 
 const ReleaseLink = styled.a`
-  color: white;
   display: block;
   padding: ${theme.space[2]} ${theme.space[3]};
   border-radius: ${theme.radii[1]};

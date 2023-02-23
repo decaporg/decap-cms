@@ -40,7 +40,7 @@ const SocialButton = styled.a`
 
   &:active,
   &:hover {
-    background-color: ${theme.colors.darkGreen};
+    background-color: ${theme.colors.primaryDark};
   }
 `;
 

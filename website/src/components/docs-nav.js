@@ -53,12 +53,12 @@ const NavLink = styled(Link)`
   padding: ${theme.space[2]} 0;
 
   &.active {
-    color: ${theme.colors.darkGreen};
+    color: ${theme.colors.primaryDark};
     font-weight: bold;
   }
 
   &:hover {
-    color: ${theme.colors.darkGreen};
+    color: ${theme.colors.primaryDark};
   }
 `;
 
