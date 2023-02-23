@@ -81,6 +81,13 @@ function Footer({ buttons }) {
               </a>{' '}
               ·{' '}
               <a
+                href="https://techhub.p-m.si/"
+                className="text-link"
+              >
+                Maintained by PM
+              </a>{' '}
+              ·{' '}
+              <a
                 href="https://github.com/decaporg/decap-cms/blob/master/CODE_OF_CONDUCT.md"
                 className="text-link"
               >
