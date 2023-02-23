@@ -7,6 +7,12 @@ class HTML extends React.Component {
     return (
       <html {...this.props.htmlAttributes}>
         <head>
+          <meta charSet="utf-8" />
+          <meta httpEquiv="x-ua-compatible" content="ie=edge" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <meta name="apple-mobile-web-app-title" content="Decap CMS" />
+          <meta name="application-name" content="Decap CMS" />
+
           <link rel="icon" type="image/png" href="/img/favicon/favicon-32x32.png" sizes="32x32" />
           <link rel="icon" type="image/png" href="/img/favicon/favicon-16x16.png" sizes="16x16" />
           {this.props.headComponents}
