@@ -16,3 +16,5 @@ As the new maintainers of Decap CMS, our plan is to continue on the premise of a
 First we plan to solve deprecation issues, then we will evaluate what are the next chapters for Decap. In the mean time, we will gladly accept any contributions in form of pull requests, issues and discussions on GitHub.
 
 We understand that there may be some growing pains as we transition to being the maintainers of this project, but please bear with us as we try to bring this project from the dead. We are excited to continue developing and improving Decap CMS with your help!
+
+Team of maintainers at [PM](https://techhub.p-m.si/)
