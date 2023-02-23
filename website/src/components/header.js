@@ -56,7 +56,7 @@ const Logo = styled.div`
 `;
 
 const MenuActions = styled.div`
-  flex: 1 0 50%;
+  flex: 1 0 60px;
   display: flex;
   justify-content: flex-end;
   ${mq[1]} {
@@ -67,8 +67,8 @@ const MenuActions = styled.div`
 const MenuBtn = styled.button`
   background: none;
   border: 0;
-  padding: ${theme.space[3]};
-  font-size: ${theme.fontsize[4]};
+  padding: ${theme.space[2]};
+  font-size: ${theme.fontsize[6]};
   line-height: 1;
 `;
 
@@ -76,7 +76,7 @@ const SearchBtn = styled(MenuBtn)``;
 
 const ToggleArea = styled.div`
   display: ${p => (p.open ? 'block' : 'none')};
-  flex: 1;
+  flex: 1 0 100px;
   width: 100%;
   margin-top: ${theme.space[3]};
 
