@@ -4,7 +4,7 @@ import theme from '../theme';
 import { mq } from '../utils';
 
 const HeroTitle = styled.h1`
-  color: ${theme.colors.green};
+  color: ${theme.colors.primaryDark};
   font-size: ${theme.fontsize[6]};
   margin-bottom: ${theme.space[1]};
 

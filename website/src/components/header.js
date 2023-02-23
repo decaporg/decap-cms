@@ -7,13 +7,12 @@ import GitHubButton from 'react-github-btn';
 import Container from './container';
 import Notifications from './notifications';
 import DocSearch from './docsearch';
-import logo from '../img/netlify-cms-logo.svg';
 import searchIcon from '../img/search.svg';
 import theme from '../theme';
 import { mq } from '../utils';
 
 const StyledHeader = styled.header`
-  background: ${theme.colors.darkerGray};
+  background: ${theme.colors.white};
   padding-top: ${theme.space[3]};
   padding-bottom: ${theme.space[3]};
   transition: background 0.2s ease, padding 0.2s ease, box-shadow 0.2s ease;
@@ -27,7 +26,6 @@ const StyledHeader = styled.header`
     ${p =>
       !p.collapsed &&
       css`
-        background: #2a2c24;
         padding-top: ${theme.space[5]};
         padding-bottom: ${theme.space[5]};
       `};
@@ -47,10 +45,13 @@ const HeaderContainer = styled(Container)`
 `;
 
 const Logo = styled.div`
-  flex: 1 0 50%;
   ${mq[1]} {
-    flex: 0 0 auto;
     margin-right: ${theme.space[5]};
+  }
+
+  img {
+    height: 60px;
+    width: auto;
   }
 `;
 
@@ -66,7 +67,6 @@ const MenuActions = styled.div`
 const MenuBtn = styled.button`
   background: none;
   border: 0;
-  color: white;
   padding: ${theme.space[3]};
   font-size: ${theme.fontsize[4]};
   line-height: 1;
@@ -123,7 +123,6 @@ const MenuItem = styled.li`
 `;
 
 const NavLink = styled(Link)`
-  color: white;
   text-decoration: none;
   font-weight: 600;
 `;
@@ -189,7 +188,7 @@ function Header({ hasHeroBelow }) {
             <HeaderContainer>
               <Logo>
                 <Link to="/">
-                  <img src={logo} alt="Decap CMS logo" />
+                  <img src="/img/decap-logo.svg" alt="Decap CMS logo" />
                 </Link>
               </Logo>
               <MenuActions>
