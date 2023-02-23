@@ -47,26 +47,6 @@ Every release is documented on the Github [Releases](https://github.com/decapcms
 Decap CMS is released under the [MIT License](LICENSE).
 Please make sure you understand its [implications and guarantees](https://writing.kemitchell.com/2016/09/21/MIT-License-Line-by-Line.html).
 
-## Services
+## Maintainers
 
-These services enable Decap CMS development.
-
-<p>
-  <a href="https://www.netlify.com/">
-    <img src="/img/netlify.svg" height="38" alt="Netlify" />
-  </a>
-  <img src="https://spacergif.org/spacer.gif" width="20"/>
-  <!-- <a href="https://www.travis-ci.org">
-    <img src="/img/travis.png" height="38" alt="Travis CI" />
-  </a>
-  <img src="https://spacergif.org/spacer.gif" width="20"/>
-  <a href="https://www.browserstack.com">
-    <img src="/img/browserstack.png" height="38" alt="Browserstack" />
-  </a>
-  <img src="https://spacergif.org/spacer.gif" width="20"/>
-  <a href="https://www.cypress.io">
-    <img src="/img/cypressio.png" height="38" alt="Cypress.io" />
-  </a> -->
-</p>
-
-Maintained with care by <a href="https://techhub.p-m.si/">PM TechHub</a> & friends.
+Maintained with care by <a href="https://techhub.p-m.si/">PM</a> & friends.
