@@ -50,7 +50,7 @@ const Logo = styled.div`
   }
 
   img {
-    height: 60px;
+    height: clamp(32px, 3vw, 60px);
     width: auto;
   }
 `;
