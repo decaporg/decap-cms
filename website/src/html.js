@@ -16,6 +16,7 @@ class HTML extends React.Component {
           <link rel="mask-icon" href="/img/favicon/safari-pinned-tab.svg" color="#96cf05" />
           <meta name="apple-mobile-web-app-title" content="NetlifyCMS" />
           <meta name="application-name" content="NetlifyCMS" />
+          <meta name="robots" content="noindex" />
           {this.props.headComponents}
           <link
             rel="stylesheet"

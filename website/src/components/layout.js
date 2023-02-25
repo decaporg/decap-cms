@@ -53,6 +53,7 @@ function Layout({ hasPageHero, children }) {
           >
             <Helmet defaultTitle={title} titleTemplate={`%s | ${title}`}>
               <meta name="description" content={description} />
+              <meta name="robots" content="noindex" />
               <link
                 rel="stylesheet"
                 href="https://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,700,900|Roboto+Mono:400,700"
