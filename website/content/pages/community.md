@@ -5,7 +5,7 @@ subhead: Get support, give support, and find out what's new through the channels
 sections:
   - title: support
     channels:
-      - title: Decap CMS Slack
+      - title: Decap CMS Discord
         description: Live community chat for all things Decap CMS.
         url: /chat
       - title: GitHub Issues
