@@ -5,7 +5,7 @@ and add content to any site built with a static site generator.
 ## Community Chat
 
 <a href="https://netlifycms.org/chat">
-  <img alt="Join us on Slack" src="https://raw.githubusercontent.com/decaporg/decap-cms/master/website/static/img/slack.png" width="165">
+  <img alt="Join us on Discord" src="https://raw.githubusercontent.com/decaporg/decap-cms/master/website/static/img/discord.png" width="165">
 </a>
 
 ## How it works

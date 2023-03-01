@@ -9,7 +9,7 @@ and add content to any site built with a static site generator.
 
 ## Community Chat
 
-<a href="https://decapcms.org/chat">Join us on Slack</a>
+<a href="https://decapcms.org/chat">Join us on Discord</a>
 
 ## How It Works
 
