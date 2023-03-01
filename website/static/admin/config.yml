@@ -1,6 +1,6 @@
 backend:
   name: github
-  repo: netlify/netlify-cms
+  repo: decaporg/decap-cms
   squash_merges: true
   open_authoring: true
 

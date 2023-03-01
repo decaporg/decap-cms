@@ -3,8 +3,8 @@
   "description": "An extensible, open source, Git-based, React CMS for static sites.",
   "version": "2.10.192",
   "homepage": "https://www.netlifycms.org",
-  "repository": "https://github.com/netlify/netlify-cms",
-  "bugs": "https://github.com/netlify/netlify-cms/issues",
+  "repository": "https://github.com/decaporg/decap-cms",
+  "bugs": "https://github.com/decaporg/decap-cms/issues",
   "main": "dist/netlify-cms.js",
   "scripts": {
     "webpack": "node --max_old_space_size=4096 ../../node_modules/webpack/bin/webpack.js",
