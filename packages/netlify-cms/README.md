@@ -5,7 +5,7 @@ and add content to any site built with a static site generator.
 ## Community Chat
 
 <a href="https://netlifycms.org/chat">
-  <img alt="Join us on Slack" src="https://raw.githubusercontent.com/netlify/netlify-cms/master/website/static/img/slack.png" width="165">
+  <img alt="Join us on Slack" src="https://raw.githubusercontent.com/decaporg/decap-cms/master/website/static/img/slack.png" width="165">
 </a>
 
 ## How it works
@@ -32,12 +32,12 @@ The Netlify CMS can be used in two different ways.
 
 # Contributing
 
-New contributors are always welcome! Check out [CONTRIBUTING.md](https://github.com/netlify/netlify-cms/blob/master/CONTRIBUTING.md) to get involved.
+New contributors are always welcome! Check out [CONTRIBUTING.md](https://github.com/decaporg/decap-cms/blob/master/CONTRIBUTING.md) to get involved.
 
 # Change Log
 
 This project adheres to [Semantic Versioning](http://semver.org/).
-Every release is documented on the Github [Releases](https://github.com/netlify/netlify-cms/releases) page.
+Every release is documented on the Github [Releases](https://github.com/decaporg/decap-cms/releases) page.
 
 # License
 
@@ -50,10 +50,10 @@ Please make sure you understand its [implications and guarantees](https://writin
 These services support Netlify CMS development by providing free infrastructure.
 <p>
   <a href="https://www.travis-ci.org">
-    <img src="https://raw.githubusercontent.com/netlify/netlify-cms/master/img/travis.png" height="38"/>
+    <img src="https://raw.githubusercontent.com/decaporg/decap-cms/master/img/travis.png" height="38"/>
   </a>
   <img src="https://spacergif.org/spacer.gif" width="20"/>
   <a href="https://www.browserstack.com">
-    <img src="https://raw.githubusercontent.com/netlify/netlify-cms/master/img/browserstack.png" height="38"/>
+    <img src="https://raw.githubusercontent.com/decaporg/decap-cms/master/img/browserstack.png" height="38"/>
   </a>
 </p>

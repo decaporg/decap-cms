@@ -3,7 +3,7 @@
 Contributions are always welcome, no matter how large or small. Before contributing,
 please read the [code of conduct](CODE_OF_CONDUCT.md).
 
-For details on contributing to documentation, see [Website Directory Readme](https://github.com/netlify/netlify-cms/blob/master/website/README.md).
+For details on contributing to documentation, see [Website Directory Readme](https://github.com/decaporg/decap-cms/blob/master/website/README.md).
 
 ## Setup
 
@@ -14,7 +14,7 @@ For details on contributing to documentation, see [Website Directory Readme](htt
 > Only required on the first run, subsequent runs can use `yarn start` to both bootstrap and run the development server.
 
 ```sh
-git clone https://github.com/netlify/netlify-cms
+git clone https://github.com/decaporg/decap-cms
 cd netlify-cms
 yarn
 yarn bootstrap
