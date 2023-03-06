@@ -46,6 +46,7 @@ In this example, we pull the `admin/index.html` file from a public CDN.
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
   <title>Content Manager</title>
 </head>
 <body>
