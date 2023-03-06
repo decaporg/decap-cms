@@ -7,7 +7,7 @@ import Layout from '../components/layout';
 import Markdownify from '../components/markdownify';
 import PageHero from '../components/page-hero';
 import HeroTitle from '../components/hero-title';
-import WhatsNew from '../components/whats-new';
+// import WhatsNew from '../components/whats-new';
 import Lead from '../components/lead';
 import Features from '../components/features';
 import HomeSection from '../components/home-section';
@@ -63,7 +63,7 @@ const ContribList = styled.div`
 
 function HomePage({ data }) {
   const landing = data.landing.childDataYaml;
-  const updates = data.updates.childDataYaml;
+  // const updates = data.updates.childDataYaml;
   const contribs = data.contribs.childDataJson;
 
   return (
