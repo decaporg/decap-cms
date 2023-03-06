@@ -9,7 +9,7 @@ import { localForage } from 'netlify-cms-lib-util';
 import { buttons, colors } from 'netlify-cms-ui-default';
 import cleanStack from 'clean-stack';
 
-const ISSUE_URL = 'https://github.com/netlify/netlify-cms/issues/new?';
+const ISSUE_URL = 'https://github.com/decaporg/decap-cms/issues/new?';
 
 function getIssueTemplate({ version, provider, browser, config }) {
   return `
