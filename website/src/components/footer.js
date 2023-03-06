@@ -40,7 +40,7 @@ const SocialButton = styled.a`
 
   &:active,
   &:hover {
-    background-color: ${theme.colors.darkGreen};
+    background-color: ${theme.colors.primaryDark};
   }
 `;
 
@@ -74,14 +74,21 @@ function Footer({ buttons }) {
           <Info>
             <p>
               <a
-                href="https://github.com/netlify/netlify-cms/blob/master/LICENSE"
+                href="https://github.com/decaporg/decap-cms/blob/master/LICENSE"
                 className="text-link"
               >
                 Distributed under MIT License
               </a>{' '}
               ·{' '}
               <a
-                href="https://github.com/netlify/netlify-cms/blob/master/CODE_OF_CONDUCT.md"
+                href="https://techhub.p-m.si/"
+                className="text-link"
+              >
+                Maintained by PM
+              </a>{' '}
+              ·{' '}
+              <a
+                href="https://github.com/decaporg/decap-cms/blob/master/CODE_OF_CONDUCT.md"
                 className="text-link"
               >
                 Code of Conduct
