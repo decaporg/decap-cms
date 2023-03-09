@@ -7,7 +7,7 @@ author: Martin Jagodic
 twitter_image: /img/preview-link-published.png
 canonical_url: https://techhub.p-m.si/insights/introducing-decap-cms
 ---
-We are proud to introduce Decap CMS, the rebranded version of Netlify CMS. We took this step because we didn't like that this awesome project was slowly dying, and we wanted to ensure that it would continue to be supported and improved.
+We are proud to introduce Decap CMS, the [rebranded version of Netlify CMS](https://www.netlify.com/blog/netlify-cms-to-become-decap-cms/). We took this step because we didn't like that this awesome project was slowly dying, and we wanted to ensure that it would continue to be supported and improved.
 
 We love Netlify CMS for multiple reasons. Its ease of configuration and how simple it is for editors to use. Additionally it ships with lots of features and is highly customisable. It is also an integral part of the great Jamstack and open source community.
 
