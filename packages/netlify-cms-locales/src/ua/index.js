@@ -46,8 +46,7 @@ const ua = {
       ascending: 'За зростанням',
       descending: 'За спаданням',
       searchResults: 'Результати по запиту "%{searchTerm}"',
-      searchResultsInCollection:
-        'Результати по запиту "%{searchTerm}" в %{collection}',
+      searchResultsInCollection: 'Результати по запиту "%{searchTerm}" в %{collection}',
       filterBy: 'Фільтрувати за',
       groupBy: 'Групувати за',
     },
@@ -79,21 +78,15 @@ const ua = {
     editorControlPane: {
       widget: {
         required: 'Необхідно вказати значення поля %{fieldLabel}.',
-        regexPattern:
-          'Значення поля %{fieldLabel} не відповідає шаблону: %{pattern}.',
+        regexPattern: 'Значення поля %{fieldLabel} не відповідає шаблону: %{pattern}.',
         processing: 'Значення поля %{fieldLabel} обробляється…',
-        range:
-          'Значення поля %{fieldLabel} повинно бути між %{minValue} і %{maxValue}.',
+        range: 'Значення поля %{fieldLabel} повинно бути між %{minValue} і %{maxValue}.',
         min: 'Значення поля %{fieldLabel} повинно бути не менше %{minValue}.',
         max: 'Значення поля %{fieldLabel} повинно бути %{maxValue} або менше.',
-        rangeCount:
-          '%{fieldLabel} повинно містити від %{minCount} до %{maxCount} елементів.',
-        rangeCountExact:
-          '%{fieldLabel} повинно містити строго %{count} елементів.',
-        rangeMin:
-          '%{fieldLabel} повинно містити не менше %{minCount} елементів.',
-        rangeMax:
-          '%{fieldLabel} повинно містити %{maxCount} або менше елементів.',
+        rangeCount: '%{fieldLabel} повинно містити від %{minCount} до %{maxCount} елементів.',
+        rangeCountExact: '%{fieldLabel} повинно містити строго %{count} елементів.',
+        rangeMin: '%{fieldLabel} повинно містити не менше %{minCount} елементів.',
+        rangeMax: '%{fieldLabel} повинно містити %{maxCount} або менше елементів.',
         invalidPath: `Шлях '%{path}' містить помилки`,
         pathExists: `Шлях '%{path}' вже існує`,
       },
@@ -105,17 +98,14 @@ const ua = {
       onLeavePage: 'Ви впевнені, що хочете залишити цю сторінку?',
       onUpdatingWithUnsavedChanges:
         'У вас є незбережені зміни, будь ласка, збережіть їх перед оновленням статусу.',
-      onPublishingNotReady:
-        'Будь ласка, змініть статус на «Готово» перед публікацією.',
+      onPublishingNotReady: 'Будь ласка, змініть статус на «Готово» перед публікацією.',
       onPublishingWithUnsavedChanges:
         'У вас є незбережені зміни, будь ласка, збережіть їх перед публікацією.',
       onPublishing: 'Ви впевнені, що хочете опублікувати цей запис?',
-      onUnpublishing:
-        'Ви впевнені, що хочете скасувати публікацію цієї записи?',
+      onUnpublishing: 'Ви впевнені, що хочете скасувати публікацію цієї записи?',
       onDeleteWithUnsavedChanges:
         'Ви впевнені, що хочете видалити цю опубліковану запис, а також незбережені зміни з поточного сеансу?',
-      onDeletePublishedEntry:
-        'Ви впевнені, що хочете видалити цю опубліковану запис?',
+      onDeletePublishedEntry: 'Ви впевнені, що хочете видалити цю опубліковану запис?',
       onDeleteUnpublishedChangesWithUnsavedChanges:
         'Це видалить всі неопубліковані зміни в цій записі, а також ваші незбережені зміни з поточного сеансу. Ви все ще хочете видалити?',
       onDeleteUnpublishedChanges:
@@ -248,8 +238,7 @@ const ua = {
         'При відкритті тікету автоматично заповнюється повідомленням про помилку та відлагоджувальною інформацією.\nБудь ласка, перевірте, що дані є вірними та не містять конфіденційної інформації.',
       recoveredEntry: {
         heading: 'Відновлений документ',
-        warning:
-          'Будь ласка, скопіюйте це повідомлення кудись, перед тим як залишити сторінку!',
+        warning: 'Будь ласка, скопіюйте це повідомлення кудись, перед тим як залишити сторінку!',
         copyButtonLabel: 'Скопіювати до буферу обміну',
       },
     },
@@ -258,8 +247,7 @@ const ua = {
     },
     toast: {
       onFailToLoadEntries: 'Не вдалося завантажити запис: %{details}',
-      onFailToLoadDeployPreview:
-        'Не вдалося завантажити попередній перегляд: %{details}',
+      onFailToLoadDeployPreview: 'Не вдалося завантажити попередній перегляд: %{details}',
       onFailToPersist: 'Не вдалося зберегти запис: %{details}',
       onFailToDelete: 'Не вдалося видалити запис: %{details}',
       onFailToUpdateStatus: 'Не вдалося оновити статус: %{details}',
@@ -269,13 +257,11 @@ const ua = {
       entryPublished: 'Запис опублікований',
       entryUnpublished: 'Публікація запису скасована',
       onFailToPublishEntry: 'Не вдалося опублікувати запис: %{details}',
-      onFailToUnpublishEntry:
-        'Не вдалося скасувати публікацію запису: %{details}',
+      onFailToUnpublishEntry: 'Не вдалося скасувати публікацію запису: %{details}',
       entryUpdated: 'Статус запису оновлено',
       onDeleteUnpublishedChanges: 'Неопубліковані зміни видалені',
       onFailToAuth: '%{details}',
-      onLoggedOut:
-        'Ви вийшли. Будь ласка, збережіть усі дані та увійдіть знову',
+      onLoggedOut: 'Ви вийшли. Будь ласка, збережіть усі дані та увійдіть знову',
       onBackendDown: 'Трапилися збої в роботі бекенду. Див. %{details}',
     },
   },
@@ -308,6 +294,6 @@ const ua = {
       currentEntries: '%{smart_count} запис |||| %{smart_count} записів',
     },
   },
-}
+};
 
-export default ua
+export default ua;
