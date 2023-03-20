@@ -1,7 +1,7 @@
 ---
-title: Github Discussions is now the official Decap forum
+title: GitHub Discussions is now the official Decap forum
 description: >-
-  What was once cateogry on Netlify Answers is now moving to Github Discussions on the main repository.
+  What was once category on Netlify Answers is now moving to GitHub Discussions on the main repository.
 date: 2023-03-09T10:30:00.000Z
 author: Martin Jagodic
 twitter_image: /img/preview-link-published.png
