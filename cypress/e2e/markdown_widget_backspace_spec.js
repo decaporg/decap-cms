@@ -5,10 +5,11 @@ describe('Markdown widget', () => {
   before(() => {
     Cypress.config('defaultCommandTimeout', 4000);
     cy.task('setupBackend', { backend: 'test' });
-    cy.loginAndNewPost();
+
   });
 
   beforeEach(() => {
+    cy.loginAndNewPost();
     cy.clearMarkdownEditorContent();
   });
 
