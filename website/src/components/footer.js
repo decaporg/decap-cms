@@ -80,10 +80,7 @@ function Footer({ buttons }) {
                 Distributed under MIT License
               </a>{' '}
               ·{' '}
-              <a
-                href="https://techhub.p-m.si/"
-                className="text-link"
-              >
+              <a href="https://techhub.p-m.si/" className="text-link">
                 Maintained by PM
               </a>{' '}
               ·{' '}
