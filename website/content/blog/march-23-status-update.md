@@ -2,7 +2,7 @@
 title: March 2023 Status Update
 description: >-
   Updating Slate, fixing Cypress tests, and preparing for the first PR
-date: 2023-03-09T10:30:00.000Z
+date: 2023-03-31T08:00:00.000Z
 author: Anže Demšar
 twitter_image: /img/preview-link-published.png
 ---
