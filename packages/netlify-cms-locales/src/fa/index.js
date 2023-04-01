@@ -44,8 +44,7 @@ const fa = {
       ascending: 'صعودی',
       descending: 'نزولی',
       searchResults: 'نتایج جستجو برای "%{searchTerm}"',
-      searchResultsInCollection:
-        'نتایج جستجو برای "%{searchTerm}" در %{collection}',
+      searchResultsInCollection: 'نتایج جستجو برای "%{searchTerm}" در %{collection}',
       filterBy: 'محدود شده توسط',
       groupBy: 'دسته بندی بر اساس',
     },
@@ -71,10 +70,8 @@ const fa = {
         range: '%{fieldLabel} باید بین %{minValue} و %{maxValue} باشد.',
         min: '%{fieldLabel} باید حداقل %{minValue} باشد.',
         max: '%{fieldLabel} باید %{maxValue} یا کمتر باشد.',
-        rangeCount:
-          '%{fieldLabel} باید بین %{minCount} و %{maxCount} مورد (ها) داشته باشد.',
-        rangeCountExact:
-          '%{fieldLabel} باید دقیقا %{count} مورد(ها) داشته باشد.',
+        rangeCount: '%{fieldLabel} باید بین %{minCount} و %{maxCount} مورد (ها) داشته باشد.',
+        rangeCountExact: '%{fieldLabel} باید دقیقا %{count} مورد(ها) داشته باشد.',
         rangeMin: '%{fieldLabel} باید حداقل %{minCount} مورد(ها) باشد.',
         rangeMax: '%{fieldLabel} باید %{maxCount} یا کمتر از موارد باشد.',
         invalidPath: "'%{path}' یک مسیر معتبر نیست",
@@ -91,18 +88,14 @@ const fa = {
       onLeavePage: 'آیا مطمئن هستید که می خواهید این صفحه را ترک کنید؟',
       onUpdatingWithUnsavedChanges:
         'شما تغییرات ذخیره نشده ای دارید، لطفا قبل از به روز رسانی وضعیت را ذخیره کنید.',
-      onPublishingNotReady:
-        'لطفاً قبل از انتشار وضعیت را به "آماده" به روز کنید.',
+      onPublishingNotReady: 'لطفاً قبل از انتشار وضعیت را به "آماده" به روز کنید.',
       onPublishingWithUnsavedChanges:
         'شما تغییرات ذخیره نشده ای دارید، لطفاً قبل از انتشار ذخیره کنید.',
-      onPublishing:
-        'آیا شما مطمئن هستید که می خواهید این مطلب را منتشر کنید؟',
-      onUnpublishing:
-        'آیا مطمئن هستید که می خواهید این ورودی را لغو انتشار کنید؟',
+      onPublishing: 'آیا شما مطمئن هستید که می خواهید این مطلب را منتشر کنید؟',
+      onUnpublishing: 'آیا مطمئن هستید که می خواهید این ورودی را لغو انتشار کنید؟',
       onDeleteWithUnsavedChanges:
         'آیا مطمئن هستید که می خواهید این ورودی منتشر شده و همچنین تغییرات ذخیره نشده خود را از جلسه فعلی حذف کنید؟',
-      onDeletePublishedEntry:
-        'آیا مطمئنید که می خواهید این ورودی منتشر شده را حذف کنید؟',
+      onDeletePublishedEntry: 'آیا مطمئنید که می خواهید این ورودی منتشر شده را حذف کنید؟',
       onDeleteUnpublishedChangesWithUnsavedChanges:
         'با این کار همه تغییرات منتشر نشده در این ورودی و همچنین تغییرات ذخیره نشده شما از جلسه فعلی حذف می شود. آیا هنوز می خواهید حذف کنید؟',
       onDeleteUnpublishedChanges:
@@ -272,8 +265,7 @@ const fa = {
       onFailToAuth: '٪{جزئیات}',
       onLoggedOut:
         'شما از سیستم خارج شده اید، لطفاً از داده ها نسخه پشتیبان تهیه کنید و دوباره وارد شوید',
-      onBackendDown:
-        'سرویس باطن در حال تجربه قطعی است. جهت اطلاعات بیشتر جزئیات را ببینید',
+      onBackendDown: 'سرویس باطن در حال تجربه قطعی است. جهت اطلاعات بیشتر جزئیات را ببینید',
     },
   },
   workflow: {
@@ -298,8 +290,7 @@ const fa = {
       onDeleteEntry: 'آیا مطمئن هستید که می خواهید این ورودی را حذف کنید؟',
       onPublishingNotReadyEntry:
         'فقط مواردی با وضعیت "آماده" قابل انتشار هستند. لطفاً کارت را به ستون "آماده" بکشید تا انتشار فعال شود.',
-      onPublishEntry:
-        'آیا شما مطمئن هستید که می خواهید این مطلب را منتشر کنید؟',
+      onPublishEntry: 'آیا شما مطمئن هستید که می خواهید این مطلب را منتشر کنید؟',
       draftHeader: 'پیش نویس',
       inReviewHeader: 'در بررسی',
       readyHeader: 'آماده',
