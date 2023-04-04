@@ -180,10 +180,10 @@ const fa = {
         removeAll: 'تمام فایل ها را حذف کنید',
       },
       unknownControl: {
-        noControl: 'هیچ کنترلی برای ویجت "%{ویجت}" وجود ندارد.',
+        noControl: 'هیچ کنترلی برای ویجت "%{widget}" وجود ندارد.',
       },
       unknownPreview: {
-        noPreview: 'هیچ پیش نمایشی برای ویجت "%{ویجت}" وجود ندارد.',
+        noPreview: 'هیچ پیش نمایشی برای ویجت "%{widget}" وجود ندارد.',
       },
       headingOptions: {
         headingOne: 'سرفصل 1',
