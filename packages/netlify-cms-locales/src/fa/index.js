@@ -262,7 +262,7 @@ const fa = {
       onFailToUnpublishEntry: 'لغو انتشار ورودی انجام نشد: %{details}',
       entryUpdated: 'وضعیت ورودی به روز شد',
       onDeleteUnpublishedChanges: 'تغییرات منتشر نشده حذف شد',
-      onFailToAuth: '٪{جزئیات}',
+      onFailToAuth: '٪{details}',
       onLoggedOut:
         'شما از سیستم خارج شده اید، لطفاً از داده ها نسخه پشتیبان تهیه کنید و دوباره وارد شوید',
       onBackendDown: 'سرویس باطن در حال تجربه قطعی است. جهت اطلاعات بیشتر جزئیات را ببینید',
