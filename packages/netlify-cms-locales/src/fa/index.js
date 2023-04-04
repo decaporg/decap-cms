@@ -203,7 +203,7 @@ const fa = {
   mediaLibrary: {
     mediaLibraryCard: {
       draft: 'پیش نویس',
-      copy: 'کپی 🀄',
+      copy: 'کپی',
       copyUrl: 'URL را کپی کنید',
       copyPath: 'مسیر را کپی کنید',
       copyName: 'کپی نام',
@@ -262,7 +262,7 @@ const fa = {
       onFailToUnpublishEntry: 'لغو انتشار ورودی انجام نشد: %{details}',
       entryUpdated: 'وضعیت ورودی به روز شد',
       onDeleteUnpublishedChanges: 'تغییرات منتشر نشده حذف شد',
-      onFailToAuth: '٪{details}',
+      onFailToAuth: '%{details}',
       onLoggedOut:
         'شما از سیستم خارج شده اید، لطفاً از داده ها نسخه پشتیبان تهیه کنید و دوباره وارد شوید',
       onBackendDown: 'سرویس باطن در حال تجربه قطعی است. جهت اطلاعات بیشتر جزئیات را ببینید',
@@ -279,7 +279,7 @@ const fa = {
     },
     workflowCard: {
       lastChange: '%{date} توسط %{author}',
-      lastChangeNoAuthor: '٪{تاریخ}',
+      lastChangeNoAuthor: '%{date}',
       lastChangeNoDate: 'توسط %{author}',
       deleteChanges: 'حذف تغییرات',
       deleteNewEntry: 'حذف ورودی جدید',
