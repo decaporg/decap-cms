@@ -154,9 +154,9 @@ function mediaLibrary(state = Map(defaultState), action: MediaLibraryAction) {
       return state.withMutations(map => {
         map.set('isLoading', false);
         map.set('isPaginating', false);
-        map.set('page', page ?? '');
+        map.set('page', page ?? 1);
         map.set('hasNextPage', !!(canPaginate && files.length > 0));
-        map.set('dynamicSearch', dynamicSearch ?? '');
+        map.set('dynamicSearch', dynamicSearch ?? false);
         map.set('dynamicSearchQuery', dynamicSearchQuery ?? '');
         map.set('dynamicSearchActive', !!dynamicSearchQuery);
         if (page && page > 1) {
