@@ -18,20 +18,20 @@ function InsertionPoint(props) {
   );
 }
 
-function VoidBlock({ editor, attributes, node, children }) {
+function VoidBlock({ attributes, element, children }) {
   function handleClick(event) {
     event.stopPropagation();
   }
 
   return (
     <div {...attributes} onClick={handleClick}>
-      {!editor.canInsertBeforeNode(node) && (
+      {/* {!editor.canInsertBeforeNode(node) && (
         <InsertionPoint onClick={() => editor.forceInsertBeforeNode(node)} />
-      )}
+      )} */}
       {children}
-      {!editor.canInsertAfterNode(node) && (
+      {/* {!editor.canInsertAfterNode(node) && (
         <InsertionPoint onClick={() => editor.forceInsertAfterNode(node)} />
-      )}
+      )} */}
     </div>
   );
 }

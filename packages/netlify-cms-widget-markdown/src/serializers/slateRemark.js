@@ -35,21 +35,25 @@ const typeMap = {
 const markMap = {
   bold: 'strong',
   italic: 'emphasis',
-  strikethrough: 'delete',
+  delete: 'delete',
   code: 'inlineCode',
 };
 
 const leadingWhitespaceExp = /^\s+\S/;
 const trailingWhitespaceExp = /(?!\S)\s+$/;
 
-export default function slateToRemark(raw, { voidCodeBlock }) {
+export default function slateToRemark(value, { voidCodeBlock }) {
+
   /**
    * The Slate Raw AST generally won't have a top level type, so we set it to
    * "root" for clarity.
    */
-  raw.type = 'root';
+  const root = {
+    type: 'root',
+    children: value,
+  }
 
-  return transform(raw);
+  return transform(root);
 
   /**
    * The transform function mimics the approach of a Remark plugin for
@@ -62,10 +66,12 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
      * Combine adjacent text and inline nodes before processing so they can
      * share marks.
      */
-    const hasBlockChildren = node.nodes && node.nodes[0] && node.nodes[0].object === 'block';
+    const blockTypes = ['paragraph', 'quote', 'heading-one', 'heading-two', 'heading-three', 'heading-four', 'heading-five', 'heading-six', 'bulleted-list', 'numbered-list', 'list-item'];
+
+    const hasBlockChildren = node.children && node.children[0] && blockTypes.includes(node.children[0].type);
     const children = hasBlockChildren
-      ? node.nodes.map(transform).filter(v => v)
-      : convertInlineAndTextChildren(node.nodes);
+      ? node.children.map(transform).filter(v => v)
+      : convertInlineAndTextChildren(node.children);
 
     const output = convertBlockNode(node, children);
     //console.log(JSON.stringify(output, null, 2));
@@ -74,9 +80,10 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
 
   function removeMarkFromNodes(nodes, markType) {
     return nodes.map(node => {
+      const newNode = { ...node };
       switch (node.type) {
         case 'link': {
-          const updatedNodes = removeMarkFromNodes(node.nodes, markType);
+          const updatedNodes = removeMarkFromNodes(node.children, markType);
           return {
             ...node,
             nodes: updatedNodes,
@@ -90,10 +97,12 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
         }
 
         default:
-          return {
-            ...node,
-            marks: node.marks.filter(({ type }) => type !== markType),
-          };
+          delete newNode[markType]
+          return newNode
+          // return {
+          //   ...node,
+          //   marks: node.marks.filter(({ type }) => type !== markType),
+          // };
       }
     });
   }
@@ -106,10 +115,16 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
         // ends up nested inside of that mark. Code marks sometimes can't do
         // that, like when they wrap all of the text content of a link. Here we
         // remove code marks before processing so that they stay put.
-        const nodesWithoutCode = node.nodes.map(n => ({
-          ...n,
-          marks: n.marks ? n.marks.filter(({ type }) => type !== 'code') : n.marks,
-        }));
+        // const nodesWithoutCode = node.children.map(n => ({
+        //   ...n,
+        //   marks: n.marks ? n.marks.filter(({ type }) => type !== 'code') : n.marks,
+        // }));
+        const nodesWithoutCode = node.children.map(n => {
+          if (n.marks && n.marks.code) {
+            delete n.marks.code;
+          }
+          return n;
+        });
         const childMarks = map(nodesWithoutCode, getNodeMarks);
         return intersection(...childMarks);
       }
@@ -119,8 +134,13 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
         return map(get(node, ['data', 'marks']), mark => mark.type);
 
       default:
-        return map(node.marks, mark => mark.type);
+        return getNodeMarkArray(node)
+        // return map(node.marks, mark => mark.type);
     }
+  }
+
+  function getNodeMarkArray(node) {
+    return Object.keys(markMap).filter(mark => !!node[mark])
   }
 
   function getSharedMarks(marks, node) {
@@ -212,13 +232,18 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
     return text && u('html', text);
   }
 
+  function isNodeInline(node) {
+    return node.type === 'text' || node.type === 'link';
+  }
+
   function convertInlineAndTextChildren(nodes = []) {
     const convertedNodes = [];
-    let remainingNodes = nodes;
+    let remainingNodes = [...nodes];
 
     while (remainingNodes.length > 0) {
       const nextNode = remainingNodes[0];
-      if (nextNode.object === 'inline' || (nextNode.marks && nextNode.marks.length > 0)) {
+
+      if (isNodeInline(nextNode) || (getNodeMarkArray(nextNode).length > 0)) {
         const [markType, markNodes, remainder] = extractFirstMark(remainingNodes);
         /**
          * A node with a code mark will be a text node, and will not be adjacent
@@ -229,9 +254,9 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
         if (markType === 'code') {
           const node = markNodes[0];
           convertedNodes.push(u(markMap[markType], node.data, node.text));
-        } else if (!markType && markNodes.length === 1 && markNodes[0].object === 'inline') {
+        } else if (!markType && markNodes.length === 1 && isNodeInline(nextNode)) {
           const node = markNodes[0];
-          convertedNodes.push(convertInlineNode(node, convertInlineAndTextChildren(node.nodes)));
+          convertedNodes.push(convertInlineNode(node, convertInlineAndTextChildren(node.children)));
         } else {
           const { leadingWhitespace, trailingWhitespace, centerNodes } =
             normalizeFlankingWhitespace(markNodes);
@@ -253,6 +278,9 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
           convertedNodes.push(...normalizedNodes);
         }
         remainingNodes = remainder;
+      } else if (nextNode.type === 'break') {
+        remainingNodes = remainingNodes.slice(1);
+        convertedNodes.push(convertInlineNode(nextNode));
       } else {
         remainingNodes.shift();
         convertedNodes.push(u('html', nextNode.text));
@@ -273,12 +301,19 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
       case 'root':
       case 'paragraph':
       case 'quote':
-      case 'list-item':
       case 'table':
       case 'table-row':
       case 'table-cell': {
         return u(typeMap[node.type], children);
       }
+
+      /**
+       * Lists
+       *
+       * Enclose list items in paragraphs
+       */
+      case 'list-item':
+        return u(typeMap[node.type], [{ type: 'paragraph', children}])
 
       /**
        * Shortcodes
@@ -383,7 +418,7 @@ export default function slateToRemark(raw, { voidCodeBlock }) {
        * the node for both Slate and Remark schemas.
        */
       case 'link': {
-        const { url, title, ...data } = get(node, 'data', {});
+        const { url, title, data } = node
         return u(typeMap[node.type], { url, title, data }, children);
       }
 

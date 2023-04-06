@@ -24,7 +24,7 @@ const typeMap = {
 const markMap = {
   strong: 'bold',
   emphasis: 'italic',
-  delete: 'strikethrough',
+  delete: 'delete',
   inlineCode: 'code',
 };
 
@@ -114,6 +114,11 @@ export default function remarkToSlate({ voidCodeBlock } = {}) {
   return transformNode;
 
   function transformNode(node) {
+
+    // if (node.type == 'root') {
+    //   return node.children;
+    // }
+
     /**
      * Call `transformNode` recursively on child nodes.
      *
@@ -144,7 +149,7 @@ export default function remarkToSlate({ voidCodeBlock } = {}) {
    * Add nodes to a parent node only if `nodes` is truthy.
    */
   function addNodes(parent, nodes) {
-    return nodes ? { ...parent, nodes } : parent;
+    return nodes ? { ...parent, children: nodes } : parent;
   }
 
   /**
@@ -218,7 +223,7 @@ export default function remarkToSlate({ voidCodeBlock } = {}) {
         return processMarkNode(childNode, marks);
 
       case 'link': {
-        const nodes = map(childNode.children, child => processMarkChild(child, marks));
+        const nodes = map(childNode.children, child => normalizeMarks(processMarkChild(child, marks)));
         const result = convertNode(childNode, flatten(nodes));
         return result;
       }
@@ -242,9 +247,19 @@ export default function remarkToSlate({ voidCodeBlock } = {}) {
       ? [...parentMarks.filter(({ type }) => type !== markType), { type: markType }]
       : parentMarks;
 
-    const children = flatMap(node.children, child => processMarkChild(child, marks));
+    const children = flatMap(node.children, child => normalizeMarks(processMarkChild(child, marks)));
 
     return children;
+  }
+
+  function normalizeMarks(node) {
+    if (node.marks) {
+      node.marks.forEach((mark) => {
+        node[mark.type] = true;
+      })
+    }
+
+    return node;
   }
 
   /**
