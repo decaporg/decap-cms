@@ -12,27 +12,32 @@ export default class Shortcode extends React.Component {
   };
 
   componentDidMount() {
-    const { node, typeOverload } = this.props;
-    const plugin = getEditorComponents().get(typeOverload || node.data.get('shortcode'));
+    console.log('props', this.props)
+    // const { node, typeOverload } = this.props;
+    const { element } = this.props;
+    const plugin = getEditorComponents().get(element.pluginConfig.id);
     const fieldKeys = ['id', 'fromBlock', 'toBlock', 'toPreview', 'pattern', 'icon'];
     const field = fromJS(omit(plugin, fieldKeys));
     this.setState({ field });
   }
 
   render() {
-    const { editor, node, dataKey = 'shortcodeData' } = this.props;
+    // const { editor, element, dataKey = 'shortcodeData' } = this.props;
     const { field } = this.state;
     const EditorControl = getEditorControl();
-    const value = dataKey === false ? node.data : fromJS(node.data.get(dataKey));
+    // const value = dataKey === false ? node.data : fromJS(node.data.get(dataKey));
+    const value = ''
 
     function handleChange(fieldName, value, metadata) {
-      const dataValue = dataKey === false ? value : node.data.set('shortcodeData', value);
-      editor.setNodeByKey(node.key, { data: dataValue || Map(), metadata });
+      // const dataValue = dataKey === false ? value : node.data.set('shortcodeData', value);
+      // editor.setNodeByKey(node.key, { data: dataValue || Map(), metadata });
     }
 
     function handleFocus() {
-      return editor.moveToRangeOfNode(node);
+      // return editor.moveToRangeOfNode(node);
     }
+
+    console.log(field)
 
     return (
       !field.isEmpty() && (
@@ -50,8 +55,9 @@ export default class Shortcode extends React.Component {
             field={field}
             onChange={handleChange}
             isEditorComponent={true}
-            isNewEditorComponent={node.data.get('shortcodeNew')}
-            isSelected={editor.isSelected(node)}
+            onValidateObject={()=>{}}
+            // isNewEditorComponent={node.data.get('shortcodeNew')}
+            // isSelected={editor.isSelected(node)}
           />
         </div>
       )

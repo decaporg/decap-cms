@@ -87,11 +87,11 @@ const StyledUl = styled.ul`
 const StyledOl = StyledUl.withComponent('ol');
 
 const StyledLi = styled.li`
-  & > p:first-child {
+  & > p:first-of-type {
     margin-top: 8px;
   }
 
-  & > p:last-child {
+  & > p:last-of-type {
     margin-bottom: 8px;
   }
 `;
@@ -230,16 +230,15 @@ function BulletedList(props) {
 
 function NumberedList(props) {
   return (
-    <StyledOl {...props.attributes} start={props.node.data.get('start') || 1}>
+    <StyledOl {...props.attributes} start={1}>
       {props.children}
     </StyledOl>
   );
 }
 
 function Link(props) {
-  const data = props.node.get('data');
-  const url = data.get('url');
-  const title = data.get('title') || url;
+  const url = props.url;
+  const title = props.title || url;
 
   return (
     <StyledA href={url} title={title} {...props.attributes}>
@@ -258,12 +257,12 @@ function Image(props) {
   const result = !marks
     ? image
     : marks.reduce((acc, mark) => {
-        return renderMark({ mark, children: acc });
+        return renderMark__DEPRECATED({ mark, children: acc });
       }, image);
   return result;
 }
 
-export function renderMark() {
+export function renderMark__DEPRECATED() {
   return props => {
     switch (props.mark.type) {
       case 'bold':
@@ -278,7 +277,31 @@ export function renderMark() {
   };
 }
 
-export function renderInline() {
+export function Leaf({ attributes, children, leaf }) {
+  if (leaf.bold) {
+    children = <Bold>{children}</Bold>;
+  }
+
+  if (leaf.italic) {
+    children = <Italic>{children}</Italic>;
+  }
+
+  if (leaf.delete) {
+    children = <Strikethrough>{children}</Strikethrough>;
+  }
+
+  if (leaf.code) {
+    children = <Code>{children}</Code>;
+  }
+
+  // if (leaf.break) {
+  //   children = <Break />;
+  // }
+
+  return <span {...attributes}>{children}</span>;
+}
+
+export function renderInline__DEPRECATED() {
   return props => {
     switch (props.node.type) {
       case 'link':
@@ -291,7 +314,46 @@ export function renderInline() {
   };
 }
 
-export function renderBlock({ classNameWrapper, codeBlockComponent }) {
+export function Element(props) {
+  const { children, element } = props;
+  const style = { textAlign: element.align };
+  switch (element.type) {
+    case 'bulleted-list':
+      return <BulletedList>{children}</BulletedList>;
+    case 'quote':
+      return <Quote>{children}</Quote>;
+    case 'heading-one':
+      return <HeadingOne>{children}</HeadingOne>;
+    case 'heading-two':
+      return <HeadingTwo>{children}</HeadingTwo>;
+    case 'heading-three':
+      return <HeadingThree>{children}</HeadingThree>;
+    case 'heading-four':
+      return <HeadingFour>{children}</HeadingFour>;
+    case 'heading-five':
+      return <HeadingFive>{children}</HeadingFive>;
+    case 'heading-six':
+      return <HeadingSix>{children}</HeadingSix>;
+    case 'list-item':
+      return <ListItem>{children}</ListItem>;
+    case 'numbered-list':
+      return <NumberedList>{children}</NumberedList>;
+    case 'link':
+      return <Link {...props} />;
+    case 'break':
+      return <Break {...props} />;
+    case 'shortcode':
+      return (
+        <VoidBlock>
+          <Shortcode {...props}>{children}</Shortcode>
+        </VoidBlock>
+      );
+    default:
+      return <Paragraph style={style}>{children}</Paragraph>;
+  }
+}
+
+export function renderBlock__DEPRECATED({ classNameWrapper, codeBlockComponent }) {
   return props => {
     switch (props.node.type) {
       case 'paragraph':
