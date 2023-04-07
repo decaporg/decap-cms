@@ -1,12 +1,17 @@
-import { Editor, Element } from "slate";
+import { Editor, Element, Transforms } from "slate";
 
-import keyDown from "./keyDown";
+import keyDown from "./events/keyDown";
+import moveListToListItem from "./transforms/moveListToListItem";
+import toggleListType from "./events/toggleListType";
 
 function withLists(editor) {
+  const { normalizeNode } = editor;
   if (editor.keyDownHandlers === undefined) {
     editor.keyDownHandlers = [];
   }
   editor.keyDownHandlers.push((event, editor) => keyDown(event, editor));
+
+  editor.toggleList = (type) => toggleListType(editor, type)
 
   editor.isListItem = () => {
       const { selection } = editor;
@@ -27,6 +32,23 @@ function withLists(editor) {
 
       return !!match && match[0].type === 'list-item';
   }
+
+  editor.normalizeNode = entry => {
+    // Fall back to the original `normalizeNode` to enforce other constraints before changing path by moving
+    normalizeNode(entry);
+
+    const [node, path] = entry;
+    if (Element.isElement(node) && `${node.type}`.endsWith('-list')) {
+      const previousNode = Editor.previous(editor, { at: path });
+      const [parentNode, parentNodePath] = Editor.parent(editor, path);
+
+      if (!previousNode && parentNode.type === 'list-item') {
+        const previousListItem = Editor.previous(editor, { at: parentNodePath });
+        moveListToListItem(editor, path, previousListItem);
+        Transforms.removeNodes(editor, { at: parentNodePath });
+      }
+    }
+  };
 
   return editor;
 }
