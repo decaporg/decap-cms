@@ -290,32 +290,40 @@ function Editor(props) {
   // console.count('render')
 
   const emptyValue = [
-    // {
-    //   type: 'paragraph',
-    //   children: [{ text: '' }],
-    // },
     {
-        type: 'bulleted-list',
-        children: [{
-          type: 'list-item',
-          children: [{
-            type: 'paragraph',
-            children: [{ text: 'foo'}],
-          }],
-        },{
-          type: 'list-item',
-          children: [{
-            type: 'paragraph',
-            children: [{ text: 'bar'}],
-          }],
-        },{
-          type: 'list-item',
-          children: [{
-            type: 'paragraph',
-            children: [{ text: 'baz'}],
-          }],
-        }],
-      }
+      type: 'paragraph',
+      children: [{ text: 'foo' }],
+    },
+    {
+      type: 'paragraph',
+      children: [{ text: 'bar' }],
+    },
+    {
+      type: 'paragraph',
+      children: [{ text: 'baz' }],
+    },
+    // {
+    //     type: 'bulleted-list',
+    //     children: [{
+    //       type: 'list-item',
+    //       children: [{
+    //         type: 'paragraph',
+    //         children: [{ text: 'foo'}],
+    //       }],
+    //     },{
+    //       type: 'list-item',
+    //       children: [{
+    //         type: 'paragraph',
+    //         children: [{ text: 'bar'}],
+    //       }],
+    //     },{
+    //       type: 'list-item',
+    //       children: [{
+    //         type: 'paragraph',
+    //         children: [{ text: 'baz'}],
+    //       }],
+    //     }],
+    //   }
     // {
     //   type: 'quote',
     //   children: [{
@@ -424,6 +432,13 @@ function Editor(props) {
   }
 
   function handleBlockClick(format) {
+    ReactEditor.focus(editor);
+    if (format.endsWith('-list')) {
+      editor.toggleList(format);
+    }
+  }
+
+  function handleBlockClickDepr(format) {
     const isActive = isBlockActive(editor, format);
     const isList = LIST_TYPES.includes(format);
     const isHeading = format.startsWith('heading');
@@ -737,105 +752,105 @@ function Editor(props) {
       return;
     }
 
-    if (
-      isHotkey('enter', event) &&
-      (isBlockReallyActive(editor, 'bulleted-list') || isBlockReallyActive(editor, 'numbered-list'))
-    ) {
-      /**
-       * When hitting enter in lists
-       *  - if the cursor is at the beginning, unwrap the list item
-       *  - if list has a nested list, insert a new item to the beging of the nested list
-       *  - if an empty paragraph in a list item has previous elements, convert it to a list item
-       *  - otherwise create a new item in the current list
-       */
+    // if (
+    //   isHotkey('enter', event) &&
+    //   (isBlockReallyActive(editor, 'bulleted-list') || isBlockReallyActive(editor, 'numbered-list'))
+    // ) {
+    //   /**
+    //    * When hitting enter in lists
+    //    *  - if the cursor is at the beginning, unwrap the list item
+    //    *  - if list has a nested list, insert a new item to the beging of the nested list
+    //    *  - if an empty paragraph in a list item has previous elements, convert it to a list item
+    //    *  - otherwise create a new item in the current list
+    //    */
 
-      const path = editor.selection.focus.path;
+    //   const path = editor.selection.focus.path;
 
-      const nodeParent = Node.parent(editor, [...path.slice(0, -1)]);
+    //   const nodeParent = Node.parent(editor, [...path.slice(0, -1)]);
 
-      // if you change this, always test: creates new quote block if parent is not a quote, can deeply nest
-      console.log('node parent', nodeParent.children);
-      if (
-        nodeParent.children.length > 1 &&
-        nodeParent.children[nodeParent.children.length - 1].type != 'bulleted-list' &&
-        nodeParent.children[nodeParent.children.length - 1].type != 'numbered-list'
-      ) {
-        //haha
-        console.log('ttt', nodeParent.type);
-        Transforms.liftNodes(editor);
-        Transforms.wrapNodes(editor, { type: 'list-item' });
-        // wrap into list item
-        // lift
-        event.preventDefault();
-        return;
-      }
+    //   // if you change this, always test: creates new quote block if parent is not a quote, can deeply nest
+    //   console.log('node parent', nodeParent.children);
+    //   if (
+    //     nodeParent.children.length > 1 &&
+    //     nodeParent.children[nodeParent.children.length - 1].type != 'bulleted-list' &&
+    //     nodeParent.children[nodeParent.children.length - 1].type != 'numbered-list'
+    //   ) {
+    //     //haha
+    //     console.log('ttt', nodeParent.type);
+    //     Transforms.liftNodes(editor);
+    //     Transforms.wrapNodes(editor, { type: 'list-item' });
+    //     // wrap into list item
+    //     // lift
+    //     event.preventDefault();
+    //     return;
+    //   }
 
-      if (editor.selection.focus.offset == 0) {
-        Transforms.liftNodes(editor, {
-          match: (_, path) => path.length === getSelectionMinPathLength(editor) - 2,
-          split: true,
-        });
-        if (
-          isBlockReallyActive(editor, 'bulleted-list') ||
-          isBlockReallyActive(editor, 'numbered-list')
-        ) {
-          Transforms.liftNodes(editor, {
-            match: (_, path) => path.length === getSelectionMinPathLength(editor) - 2,
-            split: true,
-          });
-        } else {
-          Transforms.unwrapNodes(editor, {
-            match: (_, path) => path.length === getSelectionMinPathLength(editor) - 2,
-            split: true,
-          });
-        }
-        event.preventDefault();
-        // handleBlockClick(isBlockActive('bulleted-list') ? 'bulleted-list' : 'numbered-list'); // can this be nicer? most probably.. (unwrap?)
-        return false;
-      }
-      const newLine = {
-        type: 'list-item',
-        children: [
-          {
-            type: 'paragraph',
-            children: [
-              {
-                text: '',
-              },
-            ],
-          },
-        ],
-      };
+    //   if (editor.selection.focus.offset == 0) {
+    //     Transforms.liftNodes(editor, {
+    //       match: (_, path) => path.length === getSelectionMinPathLength(editor) - 2,
+    //       split: true,
+    //     });
+    //     if (
+    //       isBlockReallyActive(editor, 'bulleted-list') ||
+    //       isBlockReallyActive(editor, 'numbered-list')
+    //     ) {
+    //       Transforms.liftNodes(editor, {
+    //         match: (_, path) => path.length === getSelectionMinPathLength(editor) - 2,
+    //         split: true,
+    //       });
+    //     } else {
+    //       Transforms.unwrapNodes(editor, {
+    //         match: (_, path) => path.length === getSelectionMinPathLength(editor) - 2,
+    //         split: true,
+    //       });
+    //     }
+    //     event.preventDefault();
+    //     // handleBlockClick(isBlockActive('bulleted-list') ? 'bulleted-list' : 'numbered-list'); // can this be nicer? most probably.. (unwrap?)
+    //     return false;
+    //   }
+    //   const newLine = {
+    //     type: 'list-item',
+    //     children: [
+    //       {
+    //         type: 'paragraph',
+    //         children: [
+    //           {
+    //             text: '',
+    //           },
+    //         ],
+    //       },
+    //     ],
+    //   };
 
-      // change path if list has children
+    //   // change path if list has children
 
-      // const selectedNode = editor.selection && SlateEditor.node(editor, editor.selection.focus)
-      let insertPath = [...path.slice(0, -3), path[path.length - 3] + 1];
+    //   // const selectedNode = editor.selection && SlateEditor.node(editor, editor.selection.focus)
+    //   let insertPath = [...path.slice(0, -3), path[path.length - 3] + 1];
 
-      if (
-        nodeParent.children.length > 1 &&
-        (nodeParent.children[1].type == 'bulleted-list' ||
-          nodeParent.children[1].type == 'numbered-list')
-      ) {
-        console.log('found exception, fix insert path'); // figure and describe what this is
-        insertPath = [...path.slice(0, -2), 1, 0];
-      }
+    //   if (
+    //     nodeParent.children.length > 1 &&
+    //     (nodeParent.children[1].type == 'bulleted-list' ||
+    //       nodeParent.children[1].type == 'numbered-list')
+    //   ) {
+    //     console.log('found exception, fix insert path'); // figure and describe what this is
+    //     insertPath = [...path.slice(0, -2), 1, 0];
+    //   }
 
-      // zanimivosti
-      Transforms.insertNodes(editor, newLine, {
-        at: insertPath,
-        // select: true,
-        // select: true, //set timeout below should be the same as this, but this sometimes leaves the cursor in the same line when cypress is testing
-      });
-      setTimeout(() => {
-        Transforms.select(editor, {
-          anchor: { path: [...insertPath, 0, 0], offset: 0 },
-          focus: { path: [...insertPath, 0, 0], offset: 0 },
-        });
-      });
-      event.preventDefault();
-      return false;
-    }
+    //   // zanimivosti
+    //   Transforms.insertNodes(editor, newLine, {
+    //     at: insertPath,
+    //     // select: true,
+    //     // select: true, //set timeout below should be the same as this, but this sometimes leaves the cursor in the same line when cypress is testing
+    //   });
+    //   setTimeout(() => {
+    //     Transforms.select(editor, {
+    //       anchor: { path: [...insertPath, 0, 0], offset: 0 },
+    //       focus: { path: [...insertPath, 0, 0], offset: 0 },
+    //     });
+    //   });
+    //   event.preventDefault();
+    //   return false;
+    // }
 
     // enter if empty non default block is currently active removes the block
     // -- get first parent block element
@@ -902,95 +917,95 @@ function Editor(props) {
       Transforms.select(editor, SlateEditor.end(editor, []));
     }
 
-    if (isHotkey('tab', event)) {
-      console.log('TAB KEY PRESSED');
-      event.preventDefault();
-      const path = editor.selection.anchor.path;
+    // if (isHotkey('tab', event)) {
+    //   console.log('TAB KEY PRESSED');
+    //   event.preventDefault();
+    //   const path = editor.selection.anchor.path;
 
-      if (path[path.length - 3] == 0 || (!isBlockReallyActive(editor, 'bulleted-list') && !isBlockReallyActive(editor, 'numbered-list'))) {
-        return false;
-      }
+    //   if (path[path.length - 3] == 0 || (!isBlockReallyActive(editor, 'bulleted-list') && !isBlockReallyActive(editor, 'numbered-list'))) {
+    //     return false;
+    //   }
 
-      const listType = isBlockActive(editor, 'numbered-list') ? 'numbered-list' : 'bulleted-list';
-      setTimeout(() => {
-        Transforms.mergeNodes(editor, {
-          at: path.slice(0, -2),
-        });
-        Transforms.wrapNodes(
-          editor,
-          { type: 'list-item' },
-          {
-            match: (_, path) => path.length === getSelectionMinPathLength(editor) -1,
-          },
-        );
-        Transforms.wrapNodes(
-          editor,
-          { type: listType },
-          {
-            match: (_, path) => path.length === getSelectionMinPathLength(editor) -2,
-          },
-        );
-      });
-      // setTimeout(() => {
-      // });
-      // setTimeout(() => {
-      //   Transforms.wrapNodes(
-      //     editor,
-      //     { type: 'list-item' },
-      //     {
-      //       match: (_, path) => path.length === getSelectionMinPathLength(editor) -1,
-      //     },
-      //   );
-      // });
-      // setTimeout(() => {
-      //   Transforms.wrapNodes(
-      //     editor,
-      //     { type: listType },
-      //     {
-      //       match: (_, path) => path.length === getSelectionMinPathLength(editor) -2,
-      //     },
-      //   );
-      // });
-      return false;
-      // return false;
-      // zanimivosti?
-      // this is just horrible - not even checking if in a list and not handling different types of lists
-      const offset = editor.selection.focus.offset;
-      const targetPath = [...path.slice(0, -3), path[path.length - 3] - 1, 1];
-      Transforms.wrapNodes(
-        editor,
-        { type: isBlockActive(editor, 'numbered-list') ? 'numbered-list' : 'bulleted-list' },
-        { at: path.slice(0, -2) },
-      );
-      Transforms.moveNodes(editor, { at: path.slice(0, -2), to: targetPath });
-      // Transforms.select(editor, {
-      //   anchor: { path: [...targetPath, 0, 0, 0], offset },
-      //   focus: { path: [...targetPath, 0, 0, 0], offset },
-      // });
+    //   const listType = isBlockActive(editor, 'numbered-list') ? 'numbered-list' : 'bulleted-list';
+    //   setTimeout(() => {
+    //     Transforms.mergeNodes(editor, {
+    //       at: path.slice(0, -2),
+    //     });
+    //     Transforms.wrapNodes(
+    //       editor,
+    //       { type: 'list-item' },
+    //       {
+    //         match: (_, path) => path.length === getSelectionMinPathLength(editor) -1,
+    //       },
+    //     );
+    //     Transforms.wrapNodes(
+    //       editor,
+    //       { type: listType },
+    //       {
+    //         match: (_, path) => path.length === getSelectionMinPathLength(editor) -2,
+    //       },
+    //     );
+    //   });
+    //   // setTimeout(() => {
+    //   // });
+    //   // setTimeout(() => {
+    //   //   Transforms.wrapNodes(
+    //   //     editor,
+    //   //     { type: 'list-item' },
+    //   //     {
+    //   //       match: (_, path) => path.length === getSelectionMinPathLength(editor) -1,
+    //   //     },
+    //   //   );
+    //   // });
+    //   // setTimeout(() => {
+    //   //   Transforms.wrapNodes(
+    //   //     editor,
+    //   //     { type: listType },
+    //   //     {
+    //   //       match: (_, path) => path.length === getSelectionMinPathLength(editor) -2,
+    //   //     },
+    //   //   );
+    //   // });
+    //   return false;
+    //   // return false;
+    //   // zanimivosti?
+    //   // this is just horrible - not even checking if in a list and not handling different types of lists
+    //   const offset = editor.selection.focus.offset;
+    //   const targetPath = [...path.slice(0, -3), path[path.length - 3] - 1, 1];
+    //   Transforms.wrapNodes(
+    //     editor,
+    //     { type: isBlockActive(editor, 'numbered-list') ? 'numbered-list' : 'bulleted-list' },
+    //     { at: path.slice(0, -2) },
+    //   );
+    //   Transforms.moveNodes(editor, { at: path.slice(0, -2), to: targetPath });
+    //   // Transforms.select(editor, {
+    //   //   anchor: { path: [...targetPath, 0, 0, 0], offset },
+    //   //   focus: { path: [...targetPath, 0, 0, 0], offset },
+    //   // });
 
-      return false;
-    }
+    //   return false;
+    // }
 
-    if (
-      isHotkey('shift+tab', event) &&
-      (isBlockReallyActive(editor, 'bulleted-list') || isBlockReallyActive(editor, 'numbered-list'))
-    ) {
-      console.log('SHIFT TAB KEY PRESSED');
+    // if (
+    //   isHotkey('shift+tab', event) &&
+    //   (isBlockReallyActive(editor, 'bulleted-list') || isBlockReallyActive(editor, 'numbered-list'))
+    // ) {
+    //   console.log('SHIFT TAB KEY PRESSED');
 
-      if (getSelectionMinPathLength(editor) > 4) {
-        Transforms.liftNodes(editor, {
-          match: (_, path) => path.length === getSelectionMinPathLength(editor) - 2,
-          split: true,
-        });
-        Transforms.liftNodes(editor, {
-          match: (_, path) => path.length === getSelectionMinPathLength(editor) - 2,
-          split: true,
-        });
-      }
+    //   if (getSelectionMinPathLength(editor) > 4) {
+    //     Transforms.liftNodes(editor, {
+    //       match: (_, path) => path.length === getSelectionMinPathLength(editor) - 2,
+    //       split: true,
+    //     });
+    //     Transforms.liftNodes(editor, {
+    //       match: (_, path) => path.length === getSelectionMinPathLength(editor) - 2,
+    //       split: true,
+    //     });
+    //   }
 
-      event.preventDefault();
-      return false;
-    }
+    //   event.preventDefault();
+    //   return false;
+    // }
   }
 
   function reportSelect(e) {

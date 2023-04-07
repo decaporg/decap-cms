@@ -5,10 +5,10 @@ import liftFirstMatchedParent from './liftFirstMatchedParent';
 
 function liftListItem(editor) {
   Editor.withoutNormalizing(editor, () => {
-    // unwrap the paragraph from list-item element
-    unwrapFirstMatchedParent(editor, 'list-item', { split: true });
     // lift the paragraph out of the list and split if necessary
-    liftFirstMatchedParent(editor, 'paragraph', { split: true });
+    liftFirstMatchedParent(editor, 'list-item', { split: true });
+    // unwrap the paragraph from list-item element
+    unwrapFirstMatchedParent(editor, 'list-item');
   });
 
   Editor.normalize(editor, { force: true });
