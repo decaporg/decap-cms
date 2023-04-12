@@ -1,4 +1,4 @@
-import { Editor, Element, Transforms } from "slate";
+import { Editor, Element, Node, Transforms } from "slate";
 
 import keyDown from "./events/keyDown";
 import moveListToListItem from "./transforms/moveListToListItem";
@@ -34,10 +34,20 @@ function withLists(editor) {
   }
 
   editor.normalizeNode = entry => {
-    // Fall back to the original `normalizeNode` to enforce other constraints before changing path by moving
     normalizeNode(entry);
-
     const [node, path] = entry;
+
+    let previousType = null;
+    if (Element.isElement(node) || Editor.isEditor(node)) {
+      for (const [child, childPath] of Node.children(editor, path)) {
+        if (`${child.type}`.endsWith('-list') && child.type === previousType) {
+          Transforms.mergeNodes(editor, { at: childPath });
+          break;
+        }
+        previousType = child.type;
+      }
+    }
+
     if (Element.isElement(node) && `${node.type}`.endsWith('-list')) {
       const previousNode = Editor.previous(editor, { at: path });
       const [parentNode, parentNodePath] = Editor.parent(editor, path);

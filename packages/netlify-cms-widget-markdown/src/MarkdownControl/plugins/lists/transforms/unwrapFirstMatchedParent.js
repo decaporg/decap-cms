@@ -1,13 +1,11 @@
 import { Transforms } from "slate";
 
-function unwrapFirstMatchedParent(editor, format, options) {
+import lowestMatchedAncestor from "../../matchers/lowestMatchedAncestor";
+
+function unwrapFirstMatchedParent(editor, format) {
   Transforms.unwrapNodes(
     editor,
-    {
-      match: n => n.type === format || (format === 'paragraph' && `${n.type}`.startsWith('heading')),
-      mode: 'lowest',
-      ...options,
-    },
+    lowestMatchedAncestor(editor, format)
   );
 }
 
