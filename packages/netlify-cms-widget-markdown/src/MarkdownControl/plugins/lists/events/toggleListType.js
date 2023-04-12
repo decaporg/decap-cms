@@ -14,7 +14,6 @@ function toggleListType (editor, type) {
   // if a list is active but the type doesn't match, change selection to the given list type
   const currentList = getLowestAncestorList(editor);
   if (currentList && currentList[0].type !== type) {
-    console.log('in list item 2')
     return changeListType(editor, type);
   }
 

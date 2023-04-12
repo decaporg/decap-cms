@@ -1,6 +1,6 @@
 import { Editor, Element } from "slate"
 
-function isCursorInListItem (editor) {
+function isCursorInListItem (editor, immediate) {
   const { selection } = editor;
   if (!selection) return false;
 
@@ -10,7 +10,7 @@ function isCursorInListItem (editor) {
         Element.isElement(n) &&
         Editor.isBlock(editor, n) &&
         n.type !== 'paragraph' &&
-        !`${n.type}`.startsWith('heading-'),
+        (immediate || !`${n.type}`.startsWith('heading-')),
       mode: 'lowest',
     }),
   );
