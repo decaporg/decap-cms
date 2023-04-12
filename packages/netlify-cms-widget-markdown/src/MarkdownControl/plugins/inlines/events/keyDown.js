@@ -1,32 +1,37 @@
 import isHotkey from 'is-hotkey';
-import { Editor, Transforms } from 'slate';
+
+import toggleMark from './toggleMark';
+import keyDownShiftEnter from './keyDownShiftEnter';
+import toggleLink from './toggleLink';
+
+const MARK_HOTKEYS = {
+  'mod+b': 'bold',
+  'mod+i': 'italic',
+  'mod+u': 'underline',
+  'mod+`': 'code',
+  'mod+shift+s': 'delete',
+  'mod+shift+c': 'code',
+};
 
 function keyDown(event, editor) {
   if (!editor.selection) return;
 
+  for (const hotkey in MARK_HOTKEYS) {
+    if (isHotkey(hotkey, event)) {
+      toggleMark(editor, MARK_HOTKEYS[hotkey])
+      event.preventDefault();
+      return false;
+    }
+  }
+
+  if (isHotkey('mod+k', event)) {
+    event.preventDefault();
+    return toggleLink(editor);
+  }
+
   if (isHotkey('shift+enter', event)) {
     event.preventDefault();
-
-    const focus = {
-      path: [
-        ...editor.selection.focus.path.slice(0, -1),
-        editor.selection.focus.path[editor.selection.focus.path.length - 1] + 2,
-      ],
-      offset: 0,
-    };
-
-    Transforms.insertNodes(editor, {
-      type: 'break',
-      children: [
-        {
-          text: '',
-        },
-      ],
-    });
-    Editor.normalize(editor, { force: true });
-
-    Transforms.select(editor, focus)
-    return false;
+    return keyDownShiftEnter(editor);
   }
 }
 
