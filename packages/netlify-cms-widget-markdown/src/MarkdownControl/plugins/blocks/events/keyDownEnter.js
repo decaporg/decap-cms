@@ -10,7 +10,7 @@ function keyDownEnter(editor) {
     return handleHeading(editor);
   }
 
-  return !unwrapIfCursorAtStart(editor);
+  return unwrapIfCursorAtStart(editor);
 }
 
 function handleHeading(editor) {
