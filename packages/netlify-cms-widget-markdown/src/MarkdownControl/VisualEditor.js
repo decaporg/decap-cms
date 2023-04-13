@@ -70,6 +70,14 @@ function Editor(props) {
       type: 'paragraph',
       children: [{ text: '' }],
     },
+    // {
+    //   type: 'bulleted-list',
+    //   children: [
+    //     { type: 'list-item', children: [{ type: 'paragraph', children: [ { text: "foo" } ] }] },
+    //     { type: 'list-item', children: [{ type: 'paragraph', children: [ { text: "bar" } ] }] },
+    //     { type: 'list-item', children: [{ type: 'paragraph', children: [ { text: "baz" } ] }] },
+    //   ],
+    // }
   ];
 
   const [value, setValue] = useState(props.value ? markdownToSlate(props.value) : emptyValue);
