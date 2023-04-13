@@ -1,10 +1,16 @@
-import { Transforms } from "slate";
+import { Range, Transforms } from 'slate';
 
-import isCursorInBlockType from "../locations/isCursorInBlockType";
+import isCursorInBlockType from '../locations/isCursorInBlockType';
+import getListTypeAtCursor from '../locations/getListTypeAtCursor';
+import wrapListItemsInBlock from '../transforms/wrapListItemsInBlock';
 
 function toggleBlock(editor, type) {
+  const { selection } = editor;
+  if (!selection) return;
+
   const isHeading = type.startsWith('heading-');
-  const isActive = isCursorInBlockType(editor, type, isHeading);
+  const isActive = isCursorInBlockType(editor, type, isHeading, Range.isExpanded(selection));
+  const listType = getListTypeAtCursor(editor);
 
   // headings do not contain paragraphs so they could be converted, not wrapped/unwrapped
   if (isHeading) {
@@ -12,10 +18,17 @@ function toggleBlock(editor, type) {
     return;
   }
 
+  const { focus, anchor } = selection;
+  if (
+    !isActive &&
+    listType &&
+    focus.path[focus.path.length - 3] != anchor.path[anchor.path.length - 3]
+  ) {
+    return wrapListItemsInBlock(editor, type, listType)
+  }
+
   if (!isActive) {
-    // todo: split list if multiple list items selected, old implementation below
-    Transforms.wrapNodes(editor, { type });
-    return;
+    return Transforms.wrapNodes(editor, { type });
   }
 
   Transforms.unwrapNodes(editor, { match: n => n.type === type });
@@ -24,45 +37,3 @@ function toggleBlock(editor, type) {
 }
 
 export default toggleBlock;
-
-/*
-      if (
-        isListItem &&
-        selection.focus.path[selection.focus.path.length - 3] !=
-          selection.anchor.path[selection.anchor.path.length - 3]
-      ) {
-        const listType = isBlockActive(editor, 'bulleted-list') ? 'bulleted-list' : 'numbered-list';
-        Transforms.wrapNodes(
-          editor,
-          { type: listType },
-          {
-            match: (_, path) => path.length === getSelectionMinPathLength(editor) - 2,
-          },
-        );
-        Transforms.wrapNodes(
-          editor,
-          { type: format },
-          {
-            match: (_, path) => path.length === getSelectionMinPathLength(editor) - 3,
-          },
-        );
-        Transforms.liftNodes(editor, {
-          match: (_, path) => path.length === getSelectionMinPathLength(editor) - 4,
-          split: true,
-        });
-        // Transforms.liftNodes(editor, {
-        //   match: (_, path) => path.length === getSelectionMinPathLength(editor) - 3,
-        //   split: true,
-        // });
-
-        // Transforms.wrapNodes(
-        //   editor,
-        //   { type: format },
-        //   {
-        //     match: (_, path) => path.length === getSelectionMinPathLength(editor) - 2,
-        //   },
-        // );
-      } else {
-        Transforms.wrapNodes(editor, { type: format });
-      }
-*/

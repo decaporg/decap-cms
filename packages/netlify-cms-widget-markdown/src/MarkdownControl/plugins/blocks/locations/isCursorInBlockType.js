@@ -1,6 +1,6 @@
 import { Editor, Element } from "slate";
 
-function isCursorInBlockType(editor, type, ignoreHeadings) {
+function isCursorInBlockType(editor, type, ignoreHeadings, ignoreLists) {
   const { selection } = editor;
   if (!selection) return false;
 
@@ -10,12 +10,14 @@ function isCursorInBlockType(editor, type, ignoreHeadings) {
         Element.isElement(n) &&
         Editor.isBlock(editor, n) &&
         n.type !== 'paragraph' &&
-        (ignoreHeadings || !`${n.type}`.startsWith('heading-')),
+        n.type !== 'list-item' &&
+        (ignoreHeadings || !`${n.type}`.startsWith('heading-')) &&
+        (!ignoreLists || !`${n.type}`.endsWith('-list')),
       mode: 'lowest',
     }),
   );
 
-  return !!match && (match[0].type === type || `${match[0].type}`.startsWith(`${type}-`));
+  return !!match && (match[0].type === type || `${match[0].type}`.startsWith(`${type}-` || `${match[0].type}`.endsWith(`-${type}`)));
 }
 
 export default isCursorInBlockType;

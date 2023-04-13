@@ -9,6 +9,7 @@ function matchedAncestors(editor, format, mode) {
       (n.type === format ||
         (format === 'heading' && `${n.type}`.startsWith('heading-')) ||
         (format === 'paragraph' && `${n.type}`.startsWith('heading-')) ||
+        (format === 'block' && !`${n.type}`.startsWith('heading-') && n.type !== 'paragraph') ||
         (format === 'list' && `${n.type}`.endsWith('-list'))) ||
         format === 'non-default' && n.type !== 'paragraph',
     mode,
