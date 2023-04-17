@@ -11,14 +11,14 @@ You can add Decap CMS [to an existing site](/docs/add-to-your-site/), but the qu
           <img style="display: flex" src="/img/hugo.svg"/>
         </div>
         <h4>Hugo Site Starter</h4>
-        <p><a href="https://app.netlify.com/start/deploy?repository=https://github.com/netlify-templates/one-click-hugo-cms&amp;stack=cms"><img src="https://www.netlify.com/img/deploy/button.svg" alt="Deploy to Netlify" /></a></p>
+        <p><a href="https://app.netlify.com/start/deploy?repository=https://github.com/decaporg/one-click-hugo-cms&amp;stack=cms"><img src="https://www.netlify.com/img/deploy/button.svg" alt="Deploy to Netlify" /></a></p>
     </div>
     <div style="flex-basis: 33%">
         <div style="padding: 0 30%; height: 100px; display: flex; justify-content: center;">
           <img style="display: flex" src="/img/gatsby.svg"/>
         </div>
         <h4>Gatsby Site Starter</h4>
-        <p><a href="https://app.netlify.com/start/deploy?repository=https://github.com/AustinGreen/gatsby-starter-netlify-cms&amp;stack=cms"><img src="https://www.netlify.com/img/deploy/button.svg" alt="Deploy to Netlify" /></a></p>
+        <p><a href="https://app.netlify.com/start/deploy?repository=https://github.com/decaporg/gatsby-starter-decap-cms&amp;stack=cms"><img src="https://www.netlify.com/img/deploy/button.svg" alt="Deploy to Netlify" /></a></p>
     </div>
     <div style="flex-basis: 33%">
         <div style="padding: 0 30%; height: 100px; display: flex; justify-content: center;">
