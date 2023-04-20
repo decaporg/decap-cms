@@ -15,7 +15,7 @@ For details on contributing to documentation, see [Website Directory Readme](htt
 
 ```sh
 git clone https://github.com/decaporg/decap-cms
-cd netlify-cms
+cd decap-cms
 yarn
 yarn bootstrap
 ```
