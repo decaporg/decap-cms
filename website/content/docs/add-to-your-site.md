@@ -15,7 +15,7 @@ A static `admin` folder contains all Decap CMS files, stored at the root of your
 | ------------------------------------------------------- | --------------------- |
 | Jekyll, GitBook                                         | `/` (project root)    |
 | Hugo, Gatsby, Nuxt 2, Gridsome, Zola, Sapper, SvelteKit | `/static`             |
-| Next, Nuxt 3                                            | `/public`             |
+| Next, Nuxt 3, Astro                                     | `/public`             |
 | Hexo, Middleman, Jigsaw                                 | `/source`             |
 | Wyam                                                    | `/input`              |
 | Pelican                                                 | `/content`            |
