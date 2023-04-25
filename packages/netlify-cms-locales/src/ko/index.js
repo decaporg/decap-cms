@@ -3,6 +3,7 @@ const ko = {
     login: '로그인',
     loggingIn: '로그인 중...',
     loginWithNetlifyIdentity: 'Netlify Identity 로 로그인',
+    loginWithAzure: 'Azure 로 로그인',
     loginWithBitbucket: 'Bitbucket 으로 로그인',
     loginWithGitHub: 'GitHub 로 로그인',
     loginWithGitLab: 'GitLab 으로 로그인',
@@ -47,12 +48,17 @@ const ko = {
       searchResults: '"%{searchTerm}"에 대한 검색결과',
       searchResultsInCollection: '%{collection} 컬랙션에서 "%{searchTerm}"에 대한 검색결과',
       filterBy: '필터 기준',
+      groupBy: '그룹화 기준',
     },
     entries: {
       loadingEntries: '항목 불러오는 중...',
       cachingEntries: '항목 캐시 중...',
       longerLoading: '몇 분 정도 걸릴 수 있습니다.',
       noEntries: '항목 없음',
+    },
+    groups: {
+      other: '다른 그룹',
+      negateLabel: '%{label} 제외',
     },
     defaultFields: {
       author: {
@@ -84,6 +90,12 @@ const ko = {
         invalidPath: `'%{path}' 은(는) 올바른 경로가 아닙니다.`,
         pathExists: `'%{path}' 경로가 이미 존재합니다.`,
       },
+      i18n: {
+        writingInLocale: '%{locale}로 작성 중',
+        copyFromLocale: '다른 로케일로부터 채우기',
+        copyFromLocaleConfirm:
+          '%{locale} 로케일로부터 데이터를 채우시겠습니까?\n모든 기존 내용을 덮어쓰기 합니다.',
+      },
     },
     editor: {
       onLeavePage: '이 페이지를 떠나시겠습니까?',
@@ -104,6 +116,11 @@ const ko = {
       loadingEntry: '항목 불러오는 중...',
       confirmLoadBackup:
         '이 항목에 대한 로컬 백업이 복구되었습니다, 복구된 것으로 사용하시겠습니까?',
+    },
+    editorInterface: {
+      toggleI18n: '국제화(i18n) 토글',
+      togglePreview: '미리보기 토글',
+      toggleScrollSync: '스크롤 동기화',
     },
     editorToolbar: {
       publishing: '게시 중...',
@@ -136,21 +153,43 @@ const ko = {
     },
     editorWidgets: {
       markdown: {
+        bold: '굵은체',
+        italic: '기울임체',
+        code: '코드',
+        link: '링크',
+        linkPrompt: '링크의 URL을 입력하세요',
+        headings: '제목',
+        quote: '인용',
+        bulletedList: '글머리 기호 목록',
+        numberedList: '번호 매기기 목록',
+        addComponent: '구성요소 추가',
         richText: '리치 텍스트',
         markdown: '마크다운',
       },
       image: {
         choose: '이미지 선택',
+        chooseMultiple: '이미지 여러개 선택',
+        chooseUrl: 'URL에서 삽입',
+        replaceUrl: 'URL 변경',
+        promptUrl: '이미지 URL을 입력하세요',
         chooseDifferent: '다른 이미지 선택',
+        addMore: '더 많은 이미지 추가',
         remove: '이미지 삭제',
+        removeAll: '모든 이미지 삭제',
       },
       file: {
         choose: '파일 선택',
+        chooseUrl: 'URL에서 삽입',
+        chooseMultiple: '파일 여러개 선택',
+        replaceUrl: 'URL 변경',
+        promptUrl: '파일 URL을 입력하세요',
         chooseDifferent: '다른 파일 선택',
+        addMore: '더 많은 파일 추가',
         remove: '파일 삭제',
+        removeAll: '모든 파일 삭제',
       },
       unknownControl: {
-        noControl: "'%{widget}' 위젝에 대한 컨트롤이 없습니다.",
+        noControl: "'%{widget}' 위젯에 대한 컨트롤이 없습니다.",
       },
       unknownPreview: {
         noPreview: "'%{widget}' 위젯에 대한 미리보기가 없습니다.",
@@ -166,11 +205,20 @@ const ko = {
       datetime: {
         now: '현재시각',
       },
+      list: {
+        add: '%{item} 추가',
+        addType: '%{item} 추가',
+      },
     },
   },
   mediaLibrary: {
     mediaLibraryCard: {
       draft: '초안',
+      copy: '복사',
+      copyUrl: 'URL 복사',
+      copyPath: '경로 복사',
+      copyName: '이름 복사',
+      copied: '복사됨',
     },
     mediaLibrary: {
       onDelete: '선택하신 미디어를 삭제하시겠습니까?',
@@ -253,7 +301,7 @@ const ko = {
       publishNewEntry: '새 항목 게시',
     },
     workflowList: {
-      onDeleteEntry: 'Are you sure you want to delete this entry?',
+      onDeleteEntry: '정말로 이 항목을 삭제하시겠습니까?',
       onPublishingNotReadyEntry:
         '"준비됨" 상태의 항목만 게시할 수 있습니다. 게시를 활성화 하려면 카드를 "준비됨" 열에 끌어 놓으세요.',
       onPublishEntry: '이 항목을 게시하시곘습니까?',

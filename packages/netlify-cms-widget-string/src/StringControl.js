@@ -27,8 +27,8 @@ export default class StringControl extends React.Component {
   // issue on fields nested within other components, namely widgets nested
   // within a `markdown` widget. For example, the alt text on a block image
   // within markdown.
-  // SEE: https://github.com/netlify/netlify-cms/issues/4539
-  // SEE: https://github.com/netlify/netlify-cms/issues/3578
+  // SEE: https://github.com/decaporg/decap-cms/issues/4539
+  // SEE: https://github.com/decaporg/decap-cms/issues/3578
   componentDidUpdate() {
     if (this._el && this._el.selectionStart !== this._sel) {
       this._el.setSelectionRange(this._sel, this._sel);
