@@ -3,13 +3,13 @@ group: Intro
 weight: 3
 title: Add to Your Site
 ---
-You can adapt Netlify CMS to a wide variety of projects. It works with any content written in markdown, JSON, YAML, or TOML files, stored in a repo on [GitHub](https://github.com/), [GitLab](https://about.gitlab.com/), or [Bitbucket](https://bitbucket.org). You can also create your own custom backend.
+You can adapt Decap CMS to a wide variety of projects. It works with any content written in markdown, JSON, YAML, or TOML files, stored in a repo on [GitHub](https://github.com/), [GitLab](https://about.gitlab.com/), or [Bitbucket](https://bitbucket.org). You can also create your own custom backend.
 
-This tutorial guides you through the steps for adding Netlify CMS to a site that's built with a common [static site generator](https://www.staticgen.com/), like Jekyll, Hugo, Hexo, or Gatsby. Alternatively, you can [start from a template](../start-with-a-template) or dive right into [configuration options](../configuration-options).
+This tutorial guides you through the steps for adding Decap CMS to a site that's built with a common [static site generator](https://www.staticgen.com/), like Jekyll, Hugo, Hexo, or Gatsby. Alternatively, you can [start from a template](../start-with-a-template) or dive right into [configuration options](../configuration-options).
 
 ## App File Structure
 
-A static `admin` folder contains all Netlify CMS files, stored at the root of your published site. Where you store this folder in the source files depends on your static site generator. Here's the static file location for a few of the most popular static site generators:
+A static `admin` folder contains all Decap CMS files, stored at the root of your published site. Where you store this folder in the source files depends on your static site generator. Here's the static file location for a few of the most popular static site generators:
 
 | These generators                                        | store static files in |
 | ------------------------------------------------------- | --------------------- |
@@ -26,7 +26,7 @@ A static `admin` folder contains all Netlify CMS files, stored at the root of yo
 | preact-cli                                              | `/src/static`         |
 | Docusaurus                                              | `/static`             |
 
-If your generator isn't listed here, you can check its documentation, or as a shortcut, look in your project for a `css` or `images` folder. The contents of folders like that are usually processed as static files, so it's likely you can store your `admin` folder next to those. (When you've found the location, feel free to add it to these docs by [filing a pull request](https://github.com/netlify/netlify-cms/blob/master/CONTRIBUTING.md#pull-requests)!)
+If your generator isn't listed here, you can check its documentation, or as a shortcut, look in your project for a `css` or `images` folder. The contents of folders like that are usually processed as static files, so it's likely you can store your `admin` folder next to those. (When you've found the location, feel free to add it to these docs by [filing a pull request](https://github.com/decaporg/decap-cms/blob/master/CONTRIBUTING.md#pull-requests)!)
 
 Inside the `admin` folder, you'll create two files:
 
@@ -36,7 +36,7 @@ admin
  └ config.yml
 ```
 
-The first file, `admin/index.html`, is the entry point for the Netlify CMS admin interface. This means that users navigate to `yoursite.com/admin/` to access it. On the code side, it's a basic HTML starter page that loads the Netlify CMS JavaScript file. The second file, `admin/config.yml`, is the heart of your Netlify CMS installation, and a bit more complex. The [Configuration](#configuration) section covers the details.
+The first file, `admin/index.html`, is the entry point for the Decap CMS admin interface. This means that users navigate to `yoursite.com/admin/` to access it. On the code side, it's a basic HTML starter page that loads the Decap CMS JavaScript file. The second file, `admin/config.yml`, is the heart of your Decap CMS installation, and a bit more complex. The [Configuration](#configuration) section covers the details.
 
 In this example, we pull the `admin/index.html` file from a public CDN. 
 
@@ -46,10 +46,11 @@ In this example, we pull the `admin/index.html` file from a public CDN.
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
   <title>Content Manager</title>
 </head>
 <body>
-  <!-- Include the script that builds the page and powers Netlify CMS -->
+  <!-- Include the script that builds the page and powers Decap CMS -->
   <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
 </body>
 </html>
@@ -59,7 +60,7 @@ In the code above the `script` is loaded from the `unpkg` CDN. Should there be a
 
 ### Installing with npm
 
-You can also use Netlify CMS as an npm module. Wherever you import Netlify CMS, it automatically runs, taking over the current page. Make sure the script that imports it only runs on your CMS page. First install the package and save it to your project:
+You can also use Decap CMS as an npm module. Wherever you import Decap CMS, it automatically runs, taking over the current page. Make sure the script that imports it only runs on your CMS page. First install the package and save it to your project:
 
 ```bash
 npm install netlify-cms-app --save
@@ -83,7 +84,7 @@ Configuration is different for every site, so we'll break it down into parts.  A
 
 We're using [Netlify](https://www.netlify.com) for our hosting and authentication in this tutorial, so backend configuration is fairly straightforward.
 
-For GitHub and GitLab repositories, you can start your Netlify CMS `config.yml` file with these lines:
+For GitHub and GitLab repositories, you can start your Decap CMS `config.yml` file with these lines:
 
 ```yaml
 backend:
@@ -99,7 +100,7 @@ The configuration above specifies your backend protocol and your publication bra
 
 **Note:** Editorial workflow works with GitHub repositories, and support for GitLab and Bitbucket is [in beta](/docs/beta-features/#gitlab-and-bitbucket-editorial-workflow-support).
 
-By default, saving a post in the CMS interface pushes a commit directly to the publication branch specified in `backend`. However, you also have the option to enable the [Editorial Workflow](../configuration-options/#publish-mode), which adds an interface for drafting, reviewing, and approving posts. To do this, add the following line to your Netlify CMS `config.yml`:
+By default, saving a post in the CMS interface pushes a commit directly to the publication branch specified in `backend`. However, you also have the option to enable the [Editorial Workflow](../configuration-options/#publish-mode), which adds an interface for drafting, reviewing, and approving posts. To do this, add the following line to your Decap CMS `config.yml`:
 
 ```yaml
 # This line should *not* be indented
@@ -108,7 +109,7 @@ publish_mode: editorial_workflow
 
 ### Media and Public Folders
 
-Netlify CMS allows users to upload images directly within the editor. For this to work, the CMS needs to know where to save them. If you already have an `images` folder in your project, you could use its path, possibly creating an `uploads` sub-folder, for example:
+Decap CMS allows users to upload images directly within the editor. For this to work, the CMS needs to know where to save them. If you already have an `images` folder in your project, you could use its path, possibly creating an `uploads` sub-folder, for example:
 
 ```yaml
 # This line should *not* be indented
@@ -127,7 +128,7 @@ public_folder: "/images/uploads" # The src attribute for uploaded media will beg
 
 The configuration above adds a new setting, `public_folder`. While `media_folder` specifies where uploaded files are saved in the repo, `public_folder` indicates where they are found in the published site. Image `src` attributes use this path, which is relative to the file where it's called. For this reason, we usually start the path at the site root, using the opening `/`.
 
-*If `public_folder` is not set, Netlify CMS defaults to the same value as `media_folder`, adding an opening `/` if one is not included.*
+*If `public_folder` is not set, Decap CMS defaults to the same value as `media_folder`, adding an opening `/` if one is not included.*
 
 ### Collections
 
@@ -205,7 +206,7 @@ Let's break that down:
 
 As described above, the `widget` property specifies a built-in or custom UI widget for a given field. When a content editor enters a value into a widget, that value is saved in the document front matter as the value for the `name` specified for that field. A full listing of available widgets can be found in the [Widgets doc](../widgets).
 
-Based on this example, you can go through the post types in your site and add the appropriate settings to your Netlify CMS `config.yml` file. Each post type should be listed as a separate node under the `collections` field. See the [Collections reference doc](../configuration-options/#collections) for more configuration options.
+Based on this example, you can go through the post types in your site and add the appropriate settings to your Decap CMS `config.yml` file. Each post type should be listed as a separate node under the `collections` field. See the [Collections reference doc](../configuration-options/#collections) for more configuration options.
 
 ### Filter
 
@@ -225,7 +226,7 @@ collections:
 
 ## Authentication
 
-Now that you have your Netlify CMS files in place and configured, all that's left is to enable authentication. We're using the [Netlify](https://www.netlify.com/) platform here because it's one of the quickest ways to get started, but you can learn about other authentication options in the [Backends](/docs/backends-overview) doc.
+Now that you have your Decap CMS files in place and configured, all that's left is to enable authentication. We're using the [Netlify](https://www.netlify.com/) platform here because it's one of the quickest ways to get started, but you can learn about other authentication options in the [Backends](/docs/backends-overview) doc.
 
 ### Setup on Netlify
 
@@ -276,6 +277,6 @@ If you set your registration preference to "Invite only," invite yourself (and a
 
 If you left your site registration open, or for return visits after confirming an email invitation, access your site's CMS at `yoursite.com/admin/`.
 
-**Note:** No matter where you access Netlify CMS — whether running locally, in a staging environment, or in your published site — it always fetches and commits files in your hosted repository (for example, on GitHub), on the branch you configured in your Netlify CMS config.yml file. This means that content fetched in the admin UI matches the content in the repository, which may be different from your locally running site. It also means that content saved using the admin UI saves directly to the hosted repository, even if you're running the UI locally or in staging.
+**Note:** No matter where you access Decap CMS — whether running locally, in a staging environment, or in your published site — it always fetches and commits files in your hosted repository (for example, on GitHub), on the branch you configured in your Decap CMS config.yml file. This means that content fetched in the admin UI matches the content in the repository, which may be different from your locally running site. It also means that content saved using the admin UI saves directly to the hosted repository, even if you're running the UI locally or in staging.
 
 Happy posting!

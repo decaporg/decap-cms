@@ -8,7 +8,7 @@ For repositories stored on Bitbucket, the `bitbucket` backend allows CMS users t
 To enable it:
 
 1. Follow the authentication provider setup steps in the [Netlify docs](https://www.netlify.com/docs/authentication-providers/#using-an-authentication-provider).
-2. Add the following lines to your Netlify CMS `config.yml` file:
+2. Add the following lines to your Decap CMS `config.yml` file:
 
    ```yaml
    backend:
@@ -20,8 +20,8 @@ To enable it:
 
 With Bitbucket's Implicit Grant, users can authenticate with Bitbucket directly from the client. To do this:
 
-1. Follow the [Atlassian docs](https://confluence.atlassian.com/bitbucket/oauth-on-bitbucket-cloud-238027431.html) to create an OAuth consumer. Make sure you allow `Account/Read` and `Repository/Write` permissions. To use the [Editorial Workflow](https://www.netlifycms.org/docs/configuration-options/#publish-mode), allow `PullRequests/Write` permissions. For the **Callback URL**, enter the address where you access Netlify CMS, for example, `https://www.mysite.com/admin/`.
-2. Bitbucket gives you a **Key**. Copy this Key and enter it in your Netlify CMS `config.yml` file, along with the following settings:
+1. Follow the [Atlassian docs](https://confluence.atlassian.com/bitbucket/oauth-on-bitbucket-cloud-238027431.html) to create an OAuth consumer. Make sure you allow `Account/Read` and `Repository/Write` permissions. To use the [Editorial Workflow](https://www.decapcms.org/docs/configuration-options/#publish-mode), allow `PullRequests/Write` permissions. For the **Callback URL**, enter the address where you access Decap CMS, for example, `https://www.mysite.com/admin/`.
+2. Bitbucket gives you a **Key**. Copy this Key and enter it in your Decap CMS `config.yml` file, along with the following settings:
 
    ```yaml
    backend:

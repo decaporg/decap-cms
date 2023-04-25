@@ -3,7 +3,7 @@
 Contributions are always welcome, no matter how large or small. Before contributing,
 please read the [code of conduct](CODE_OF_CONDUCT.md).
 
-For details on contributing to documentation, see [Website Directory Readme](https://github.com/netlify/netlify-cms/blob/master/website/README.md).
+For details on contributing to documentation, see [Website Directory Readme](https://github.com/decaporg/decap-cms/blob/master/website/README.md).
 
 ## Setup
 
@@ -14,8 +14,8 @@ For details on contributing to documentation, see [Website Directory Readme](htt
 > Only required on the first run, subsequent runs can use `yarn start` to both bootstrap and run the development server.
 
 ```sh
-git clone https://github.com/netlify/netlify-cms
-cd netlify-cms
+git clone https://github.com/decaporg/decap-cms
+cd decap-cms
 yarn
 yarn bootstrap
 ```
@@ -181,7 +181,7 @@ The most important thing is to make sure that Netlify CMS is loaded from the `di
 
 When debugging the CMS with Git Gateway you must:
 
-1. Have a Netlify site with [Git Gateway](https://docs.netlify.com/visitor-access/git-gateway/) and [Netlify Identity](https://docs.netlify.com/visitor-access/identity/) enabled. An easy way to create such a site is to use a [template](https://www.netlifycms.org/docs/start-with-a-template/), for example the [Gatsby template](https://app.netlify.com/start/deploy?repository=https://github.com/AustinGreen/gatsby-starter-netlify-cms&stack=cms)
+1. Have a Netlify site with [Git Gateway](https://docs.netlify.com/visitor-access/git-gateway/) and [Netlify Identity](https://docs.netlify.com/visitor-access/identity/) enabled. An easy way to create such a site is to use a [template](https://www.netlifycms.org/docs/start-with-a-template/), for example the [Gatsby template](https://app.netlify.com/start/deploy?repository=https://github.com/decaporg/gatsby-starter-decap-cms&stack=cms)
 2. Tell the CMS the URL of your Netlify site using a local storage item. To do so:
 
     1. Open `http://localhost:8080/` in the browser
