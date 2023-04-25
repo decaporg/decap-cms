@@ -34,7 +34,7 @@ const Cal = styled.div`
 `;
 
 const Month = styled.div`
-  background: ${theme.colors.green};
+  background: ${theme.colors.primaryDark};
   color: ${theme.colors.gray};
   font-weight: bold;
   text-transform: uppercase;

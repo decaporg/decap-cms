@@ -7,8 +7,7 @@ import Layout from '../components/layout';
 import Markdownify from '../components/markdownify';
 import PageHero from '../components/page-hero';
 import HeroTitle from '../components/hero-title';
-import VideoEmbed from '../components/video-embed';
-import WhatsNew from '../components/whats-new';
+// import WhatsNew from '../components/whats-new';
 import Lead from '../components/lead';
 import Features from '../components/features';
 import HomeSection from '../components/home-section';
@@ -20,15 +19,13 @@ const MarkdownButton = styled.span`
   a {
     white-space: nowrap;
     display: inline-block;
-    color: white;
     text-transform: uppercase;
     font-weight: 700;
     font-size: ${theme.fontsize[3]};
     letter-spacing: 0.5px;
     line-height: ${theme.lineHeight[1]};
-    background-color: ${theme.colors.blue};
-    background-image: linear-gradient(-180deg, #4a7fdd 0%, #3a69c7 100%);
-    box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.3), 0 1px 3px 0 rgba(0, 0, 0, 0.6);
+    background-color: ${theme.colors.primaryLight};
+    color: ${theme.colors.white};
     border-radius: ${theme.radii[1]};
     padding: ${theme.space[2]} ${theme.space[3]};
     transition: 0.2s;
@@ -66,7 +63,7 @@ const ContribList = styled.div`
 
 function HomePage({ data }) {
   const landing = data.landing.childDataYaml;
-  const updates = data.updates.childDataYaml;
+  // const updates = data.updates.childDataYaml;
   const contribs = data.contribs.childDataJson;
 
   return (
@@ -92,9 +89,6 @@ function HomePage({ data }) {
         <Grid cols={2}>
           <div>
             <Features items={landing.hero.devfeatures} kind="light" />
-          </div>
-          <div>
-            <VideoEmbed />
           </div>
         </Grid>
       </PageHero>
@@ -140,7 +134,8 @@ function HomePage({ data }) {
         </div>
       </section>
 
-      <WhatsNew updates={updates.updates} />
+      {/* Uncomment on when there are some recent updates */}
+      {/* <WhatsNew updates={updates.updates} /> */}
 
       <HomeSection
         title={<Markdownify source={landing.editors.hook} />}

@@ -1,12 +1,12 @@
 backend:
   name: github
-  repo: netlify/netlify-cms
+  repo: decaporg/decap-cms
   squash_merges: true
   open_authoring: true
 
 local_backend: true
 
-site_url: https://www.netlifycms.org
+site_url: https://www.decapcms.org
 
 publish_mode: editorial_workflow
 

@@ -1,14 +1,14 @@
 # Netlify CMS App
-_For a Netlify CMS overview, see the general [Netlify CMS project README](https://github.com/netlify/netlify-cms)._
+_For a Netlify CMS overview, see the general [Netlify CMS project README](https://github.com/decaporg/decap-cms)._
 
 ## Community Chat
 
 <a href="https://netlifycms.org/chat">
-  <img alt="Join us on Slack" src="https://raw.githubusercontent.com/netlify/netlify-cms/master/website/static/img/slack.png" width="165">
+  <img alt="Join us on Discord" src="https://raw.githubusercontent.com/decaporg/decap-cms/master/website/static/img/discord.png" width="165">
 </a>
 
 ## Purpose
-This package is similar to the [`netlify-cms`](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms/) package, but is designed for use with extensions. It serves that purpose in the following ways.
+This package is similar to the [`netlify-cms`](https://github.com/decaporg/decap-cms/tree/master/packages/netlify-cms/) package, but is designed for use with extensions. It serves that purpose in the following ways.
 
 - It does not automatically initialize - you must run the CMS `init` method.
 - It does not include `react` or `react-dom` - they are required as peer dependencies.
