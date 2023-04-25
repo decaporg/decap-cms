@@ -9,7 +9,7 @@ We run new functionality in an open beta format from time to time. That means th
 
 ## Working with a Local Git Repository
 
-***added in netlify-cms@2.10.17 / netlify-cms-app@2.11.14***
+***added in `netlify-cms@2.10.17` / `netlify-cms-app@2.11.14`***
 
 You can connect Decap CMS to a local Git repository, instead of working with a live repo.
 
@@ -55,7 +55,7 @@ local_backend:
 
 ## GitLab and BitBucket Editorial Workflow Support
 
-***added in netlify-cms@2.10.6 / netlify-cms-app@2.11.3***
+***added in `netlify-cms@2.10.6` / `netlify-cms-app@2.11.3`***
 
 You can enable the Editorial Workflow with the following line in your Decap CMS `config.yml` file:
 
