@@ -9,9 +9,7 @@ function PageHero({ children }) {
   return (
     <section
       css={css`
-        background: ${theme.colors.darkerGray};
-        background-image: linear-gradient(to bottom, #2a2c24 0%, ${theme.colors.darkerGray} 20%);
-        color: ${theme.colors.blueGray};
+        color: ${theme.colors.gray};
         position: relative;
         padding-top: ${theme.space[6]};
         padding-bottom: ${theme.space[6]};

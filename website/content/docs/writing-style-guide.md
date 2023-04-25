@@ -3,9 +3,10 @@ group: Contributing
 weight: 30
 title: Writing Style Guide
 ---
-# Netlify CMS Style Guide
+# Decap CMS Style Guide
 
 *Adapted from the [Kubernetes Style Guide](https://kubernetes.io/docs/contribute/style/style-guide)*
+
 
 ## Documentation Formatting Standards
 
@@ -243,7 +244,7 @@ Don't: In version 1.4, we have added …
 
 - - -
 
-Do: Netlify CMS provides a new feature for …
+Do: Decap CMS provides a new feature for …
 
 Don't: We provide a new feature …
 

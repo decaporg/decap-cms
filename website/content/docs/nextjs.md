@@ -3,7 +3,7 @@ group: Guides
 weight: 40
 title: NextJS
 ---
-This guide will help you get started using Netlify CMS with NextJS.
+This guide will help you get started using Decap CMS with NextJS.
 
 ## Creating a new project
 
@@ -69,7 +69,7 @@ cats:
 ---
 Welcome to my awesome page about cats of the internet.
 
-This page is built with NextJS, and content is managed in Netlify CMS
+This page is built with NextJS, and content is managed in Decap CMS
 ```
 
 Next, we need to tell webpack how to load Markdown files. Create a new `next.config.js` file at the root of your project with the following content:
@@ -84,7 +84,7 @@ module.exports = {
                 options: { mode: ['react-component'] }
             }
         )
-        return cfg;
+        return cfg
     }
 }
 ```
@@ -94,11 +94,11 @@ Almost there! The last thing we need to do is to add some content to our `pages/
 ```js
 import Head from "next/head"
 import { Component } from 'react'
-import { attributes, react as HomeContent } from '../content/home.md';
+import { attributes, react as HomeContent } from '../content/home.md'
 
 export default class Home extends Component {
   render() {
-    let { title, cats } = attributes;
+    let { title, cats } = attributes
     return (
       <>
         <Head>
@@ -128,9 +128,9 @@ Great! We now have a page that displays content from our Markdown file. Go ahead
 npm run dev
 ```
 
-## Adding Netlify CMS
+## Adding Decap CMS
 
-There are many different ways to add Netlify CMS to your project. The easiest is probably just to embed it from a CDN, and that's exactly what we're gonna do. To avoid making this guide too complicated, we're just going to add Netlify into a subfolder inside the `/public` directory (which is just served as static files by Next):
+There are many different ways to add Decap CMS to your project. The easiest is probably just to embed it from a CDN, and that's exactly what we're gonna do. To avoid making this guide too complicated, we're just going to add Netlify into a subfolder inside the `/public` directory (which is just served as static files by Next):
 
 ```bash
 # Create and navigate into public/admin folder
@@ -142,7 +142,7 @@ touch index.html
 touch config.yml
 ```
 
-Paste HTML for Netlify CMS into your `public/admin/index.html` file (check out the [Add Netlify To Your Site](https://www.netlifycms.org/docs/add-to-your-site/) section for more information)
+Paste HTML for Decap CMS into your `public/admin/index.html` file (check out the [Add Netlify To Your Site](https://www.decapcms.org/docs/add-to-your-site/) section for more information)
 
 ```html
 <!doctype html>
@@ -154,7 +154,7 @@ Paste HTML for Netlify CMS into your `public/admin/index.html` file (check out t
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
-  <!-- Include the script that builds the page and powers Netlify CMS -->
+  <!-- Include the script that builds the page and powers Decap CMS -->
   <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
 </body>
 </html>
@@ -189,9 +189,9 @@ collections:
             - { label: "Description", name: "description", widget: "text"}
 ```
 
-Awesome! Netlify CMS should now be available at `localhost:3000/admin/index.html`. Unfortunately we can't edit our content just yet. First we need to move our code into a git repository, and create a new Netlify site.
+Awesome! Decap CMS should now be available at `localhost:3000/admin/index.html`. Unfortunately we can't edit our content just yet. First we need to move our code into a git repository, and create a new Netlify site.
 
-**Tip:** If you want to test changes made to your config.yml file locally, swap out "git-gateway" with "test-repo" and navigate to `localhost:3000/admin/index.html` to view Netlify CMS locally (you can't make changes or read actual content from Git this way, but it's great to verify how things will look).
+**Tip:** If you want to test changes made to your config.yml file locally, swap out "git-gateway" with "test-repo" and navigate to `localhost:3000/admin/index.html` to view Decap CMS locally (you can't make changes or read actual content from Git this way, but it's great to verify how things will look).
 
 ## Publishing to GitHub and Netlify
 
@@ -229,6 +229,6 @@ Netlify's Identity and Git Gateway services allow you to manage CMS admin users 
 
 Great job - you did it! Open your new page via the new Netlify URL, and navigate to `/admin`. If you did everything correct in the previous step, you should now be able to sign up for an account, and log in. 
 
-**Tip:** Signing up with an external provider is the easiest. If you want to sign up by email, you'll have to set up a redirect in your index.js page (which we won't be covering in this guide). For more information, have a look at the [Add To Your Site](https://www.netlifycms.org/docs/add-to-your-site) section.
+**Tip:** Signing up with an external provider is the easiest. If you want to sign up by email, you'll have to set up a redirect in your index.js page (which we won't be covering in this guide). For more information, have a look at the [Add To Your Site](https://www.decapcms.org/docs/add-to-your-site) section.
 
 Congratulations - you can finally manage your new list of cats!

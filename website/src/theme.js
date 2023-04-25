@@ -16,6 +16,8 @@ module.exports = {
     darkerGreen: '#628013',
     shadeBlue: '#EFF0F4',
     blue: '#3A69C7',
+    primaryLight: '#ff0080',
+    primaryDark: '#683bab',
   },
   fontWeight: {
     thin: 100,

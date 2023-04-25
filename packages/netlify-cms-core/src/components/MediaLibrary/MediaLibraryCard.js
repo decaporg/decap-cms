@@ -92,7 +92,7 @@ class MediaLibraryCard extends React.Component {
         <CardImageWrapper>
           {isDraft ? <DraftText data-testid="draft-text">{draftText}</DraftText> : null}
           {url && isViewableImage ? (
-            <CardImage src={url} />
+            <CardImage loading="lazy" src={url} />
           ) : (
             <CardFileIcon data-testid="card-file-icon">{type}</CardFileIcon>
           )}
