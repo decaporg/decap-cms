@@ -3,7 +3,7 @@ group: Guides
 weight: 50
 title: Nuxt
 ---
-This guide will walk you through how to integrate Netlify CMS with Nuxt.
+This guide will walk you through how to integrate Decap CMS with Nuxt.
 
 ## Starting With `create-nuxt-app`
 
@@ -15,11 +15,13 @@ cd <name-of-your-new-project>
 npm run dev
 ```
 
-## Setting Up Netlify CMS
+## Setting Up Decap CMS
 
-### Add the Netlify CMS files to Nuxt
+### Add the Decap CMS files to Nuxt
 
-In the `static/` directory, create a new directory `admin/`. Inside that directory you'll create two files, your `index.html` and a `config.yml`. Per the [Netlify CMS documentation](/docs/add-to-your-site/), we'll set the content of `static/admin/index.html` to the following:
+For nuxt 3 apps and above use the \`public/\` folder instead of \`/static\` which is for nuxt 2.
+
+In the `static/` directory, create a new directory `admin/`. Inside that directory you'll create two files, your `index.html` and a `config.yml`. Per the [Decap CMS documentation](/docs/add-to-your-site/), we'll set the content of `static/admin/index.html` to the following:
 
 ```html
 <!DOCTYPE html>
@@ -32,7 +34,7 @@ In the `static/` directory, create a new directory `admin/`. Inside that directo
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
   </head>
   <body>
-    <!-- Include the script that builds the page and powers Netlify CMS -->
+    <!-- Include the script that builds the page and powers Decap CMS -->
     <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
   </body>
 </html>
@@ -107,6 +109,8 @@ Now you can go ahead and deploy to Netlify. Go to your Netlify dashboard and cli
 
 You've already added the Netlify Identity widget to our `admin/index.html`. The next thing to do is add the Netlify Identity widget to our site's index page. In `pages/index.vue`, we can add the following to the page `<script>` tag:
 
+#### N﻿uxt 2 apps:
+
 ```javascript
 export default {
   head() {
@@ -115,6 +119,20 @@ export default {
     };
   },
 };
+```
+
+#### N﻿uxt 3 apps:
+
+```javascript
+<script setup>
+  
+useHead({
+  script: [
+    { src: "https://identity.netlify.com/v1/netlify-identity-widget.js" },
+  ],
+});
+
+</script>
 ```
 
 Once you've added this, make sure to push your changes to GitHub!
@@ -135,7 +153,7 @@ Once you've reached this point, you should be able to access the CMS in your bro
 
 ## Using nuxt/content
 
-Netlify CMS and [nuxt/content](https://content.nuxtjs.org) module click together and complement each other to give you best authoring experience and developer experience respectively.
+Decap CMS and [nuxt/content](https://content.nuxtjs.org) module click together and complement each other to give you best authoring experience and developer experience respectively.
 
 Adding nuxt/content dependency
 

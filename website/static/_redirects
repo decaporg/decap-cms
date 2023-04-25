@@ -1,3 +1,11 @@
+https://decapcms.com/* https://decapcms.org/:splat 301!
+https://www.decapcms.com/* https://decapcms.org/:splat 301!
+https://decap-cms.com/* https://decapcms.org/:splat 301!
+https://www.decap-cms.com/* https://decapcms.org/:splat 301!
+https://decap-cms.org/* https://decapcms.org/:splat 301!
+https://www.decap-cms.org/* https://decapcms.org/:splat 301!
+https://www.netlifycms.org/* https://decapcms.org/:splat 301!
+
 /docs                                   /docs/intro 301
 /docs/custom-authentication             /docs/backends-overview 301
 /docs/authentication-backends           /docs/backends-overview 301
@@ -6,5 +14,5 @@
 /docs/editorial-workflow                /docs/configuration/#publish-mode 301
 /docs/test-drive                        /docs/start-with-a-template 301
 /docs/quick-start                       /docs/add-to-your-site 301
-/chat                                   https://join.slack.com/t/netlifycms/shared_invite/zt-lqcwloxz-HLLf5O3EcR4rmZZ9Lm~ptQ 301
+/chat                                   https://discord.gg/KZRDXmTm9v 301
 /docs/update-the-cms-version            /docs/releases 301

@@ -38,7 +38,7 @@ describe('config', () => {
       const file = stripIndent`
       backend:
         name: github
-        repo: netlify/netlify-cms
+        repo: decaporg/decap-cms
         squash_merges: true
         open_authoring: true
       local_backend: true
@@ -62,7 +62,7 @@ describe('config', () => {
       expect(parseConfig(file)).toEqual({
         backend: {
           name: 'github',
-          repo: 'netlify/netlify-cms',
+          repo: 'decaporg/decap-cms',
           squash_merges: true,
           open_authoring: true,
         },

@@ -3,7 +3,7 @@ group: Guides
 weight: 70
 title: Gridsome
 ---
-This guide will help you get started using Netlify CMS and Gridsome.
+This guide will help you get started using Decap CMS and Gridsome.
 
 ## How to install Gridsome
 ### 1. Install Gridsome CLI tool
@@ -29,7 +29,7 @@ cd gridsome-netlify-blog
 gridsome develop
 ```
 
-### Install Netlify CMS the required dependencies to your project
+### Install Decap CMS the required dependencies to your project
 
 ```bash
 
@@ -73,7 +73,7 @@ module.exports = {
 
 Please read [gridsome-plugin-netlify-cms](https://gridsome.org/plugins/gridsome-plugin-netlify-cms), [transformer-remark](https://gridsome.org/plugins/@gridsome/transformer-remark) for more information.
 
-## Netlify CMS setup
+## Decap CMS setup
 
 1. Create an `admin` directory inside the `src`
 2. Create an `uploads` directory inside the root of your project
@@ -87,7 +87,7 @@ Your `index.html` should look like this:
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Netlify CMS</title>
+    <title>Decap CMS</title>
   </head>
   <body>
     <script src="index.js" type="module"></script>
