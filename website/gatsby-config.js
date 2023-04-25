@@ -7,7 +7,7 @@ const staticConfig = yaml.load(fs.readFileSync('./site.yml', 'utf8'));
 
 module.exports = {
   siteMetadata: {
-    title: 'Netlify CMS | Open-Source Content Management System',
+    title: 'Decap CMS | Open-Source Content Management System',
     description: 'Open source content management for your Git workflow',
     siteUrl: pkg.homepage,
     menu: staticConfig.menu,
