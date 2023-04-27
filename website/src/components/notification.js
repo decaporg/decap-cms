@@ -16,7 +16,7 @@ const Notif = styled.a`
   ${p =>
     p.loud &&
     css`
-      background-color: ${theme.colors.green};
+      background-color: ${theme.colors.primaryDark};
       color: ${theme.colors.darkerGray};
     `}
 
@@ -34,7 +34,7 @@ const Notif = styled.a`
 
   .text-link {
     text-decoration: underline;
-    color: ${theme.colors.green};
+    color: ${theme.colors.primaryDark};
   }
 `;
 
