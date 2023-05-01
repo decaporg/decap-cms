@@ -60,6 +60,12 @@ export default class RawEditor extends React.Component {
     }
   }
 
+  handleKeyDown = (event, editor) => {
+    if (isHotkey('esc', event)) {
+      editor.blur();
+    }
+  };
+
   handleCopy = (event, editor) => {
     const { getAsset, resolveWidget } = this.props;
     const markdown = Plain.serialize(Value.create({ document: editor.value.fragment }));
@@ -137,6 +143,7 @@ export default class RawEditor extends React.Component {
               onPaste={this.handlePaste}
               onCut={this.handleCut}
               onCopy={this.handleCopy}
+              onKeyDown={this.handleKeyDown}
               ref={this.processRef}
             />
           )}
