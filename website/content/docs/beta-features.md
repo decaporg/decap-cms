@@ -9,19 +9,19 @@ We run new functionality in an open beta format from time to time. That means th
 
 ## Working with a Local Git Repository
 
-***added in netlify-cms@2.10.17 / netlify-cms-app@2.11.14***
+***added in `netlify-cms@2.10.17` / `netlify-cms-app@2.11.14`***
 
-You can connect Netlify CMS to a local Git repository, instead of working with a live repo.
+You can connect Decap CMS to a local Git repository, instead of working with a live repo.
 
 1. Navigate to a local Git repository configured with the CMS.
 2. Add the top-level property `local_backend` configuration to your `config.yml`:
 
 ```yaml
-backend:
-  name: git-gateway
-
 # when using the default proxy server port
 local_backend: true
+
+backend:
+  name: git-gateway
 ```
 
 3. Run `npx netlify-cms-proxy-server` from the root directory of the above repository.
@@ -32,7 +32,7 @@ local_backend: true
 
 **Note:** `netlify-cms-proxy-server` runs an unauthenticated express server. As any client can send requests to the server, it should only be used for local development. Also note that `editorial_workflow` is not supported in this environment.
 
-### Configure the Netlify CMS proxy server port number
+### Configure the Decap CMS proxy server port number
 
 1. Create a `.env` file in the project's root folder and define the PORT you'd like the proxy server to use
 
@@ -55,9 +55,9 @@ local_backend:
 
 ## GitLab and BitBucket Editorial Workflow Support
 
-***added in netlify-cms@2.10.6 / netlify-cms-app@2.11.3***
+***added in `netlify-cms@2.10.6` / `netlify-cms-app@2.11.3`***
 
-You can enable the Editorial Workflow with the following line in your Netlify CMS `config.yml` file:
+You can enable the Editorial Workflow with the following line in your Decap CMS `config.yml` file:
 
 ```yaml
 publish_mode: editorial_workflow
@@ -228,11 +228,12 @@ backend:
   # optional, defaults to 'https://gitlab.com/api/graphql'. Can be used to configure a self hosted GitLab instance.
   graphql_api_root: https://my-self-hosted-gitlab.com/api/graphql
 ```
+
 ## Open Authoring
 
-When using the [GitHub backend](/docs/github-backend), you can use Netlify CMS to accept contributions from GitHub users without giving them access to your repository. When they make changes in the CMS, the CMS forks your repository for them behind the scenes, and all the changes are made to the fork. When the contributor is ready to submit their changes, they can set their draft as ready for review in the CMS. This triggers a pull request to your repository, which you can merge using the GitHub UI.
+When using the [GitHub backend](/docs/github-backend), you can use Decap CMS to accept contributions from GitHub users without giving them access to your repository. When they make changes in the CMS, the CMS forks your repository for them behind the scenes, and all the changes are made to the fork. When the contributor is ready to submit their changes, they can set their draft as ready for review in the CMS. This triggers a pull request to your repository, which you can merge using the GitHub UI.
 
-At the same time, any contributors who *do* have write access to the repository can continue to use Netlify CMS normally.
+At the same time, any contributors who *do* have write access to the repository can continue to use Decap CMS normally.
 
 More details and setup instructions can be found on [the Open Authoring docs page](/docs/open-authoring).
 
@@ -313,7 +314,7 @@ Supports all of the [`slug` templates](/docs/configuration-options#slug) and:
 
 ## List Widget: Variable Types
 
-Before this feature, the [list widget](/docs/widgets/#list) allowed a set of fields to be repeated, but every list item had the same set of fields available. With variable types, multiple named sets of fields can be defined, which opens the door to highly flexible content authoring (even page building) in Netlify CMS.
+Before this feature, the [list widget](/docs/widgets/#list) allowed a set of fields to be repeated, but every list item had the same set of fields available. With variable types, multiple named sets of fields can be defined, which opens the door to highly flexible content authoring (even page building) in Decap CMS.
 
 **Note: this feature does not yet support default previews and requires [registering a preview template](/docs/customization#registerpreviewtemplate) in order to show up in the preview pane.**
 
@@ -393,13 +394,13 @@ sections:
 
 ## Custom Mount Element
 
-Netlify CMS always creates its own DOM element for mounting the application, which means it always takes over the entire page, and is generally inflexible if you're trying to do something creative, like injecting it into a shared context.
+Decap CMS always creates its own DOM element for mounting the application, which means it always takes over the entire page, and is generally inflexible if you're trying to do something creative, like injecting it into a shared context.
 
-You can now provide your own element for Netlify CMS to mount in by setting the target element's ID as `nc-root`. If Netlify CMS finds an element with this ID during initialization, it will mount within that element instead of creating its own.
+You can now provide your own element for Decap CMS to mount in by setting the target element's ID as `nc-root`. If Decap CMS finds an element with this ID during initialization, it will mount within that element instead of creating its own.
 
 ## Manual Initialization
 
-Netlify CMS can now be manually initialized, rather than automatically loading up the moment you import it. The whole point of this at the moment is to inject configuration into Netlify CMS before it loads, bypassing need for an actual Netlify CMS `config.yml`. This is important, for example, when creating tight integrations with static site generators.
+Decap CMS can now be manually initialized, rather than automatically loading up the moment you import it. The whole point of this at the moment is to inject configuration into Decap CMS before it loads, bypassing need for an actual Decap CMS `config.yml`. This is important, for example, when creating tight integrations with static site generators.
 
 Assuming you have the netlify-cms package installed to your project, manual initialization works by setting `window.CMS_MANUAL_INIT = true` **before importing the CMS**:
 
@@ -412,7 +413,7 @@ import CMS, { init } from 'netlify-cms'
 const { CMS, initCMS: init } = window
 /**
  * Initialize without passing in config - equivalent to just importing
- * Netlify CMS the old way.
+ * Decap CMS the old way.
  */
 init()
 /**
@@ -479,11 +480,11 @@ CMS.registerPreviewStyle(styles.toString(), { raw: true });
 
 ## Squash merge GitHub pull requests
 
-When using the [Editorial Workflow](../configuration-options/#publish-mode) with the `github` or GitHub-connected `git-gateway` backends, Netlify CMS creates a pull request for each unpublished entry. Every time the unpublished entry is changed and saved, a new commit is added to the pull request. When the entry is published, the pull request is merged, and all of those commits are added to your project commit history in a merge commit.
+When using the [Editorial Workflow](../configuration-options/#publish-mode) with the `github` or GitHub-connected `git-gateway` backends, Decap CMS creates a pull request for each unpublished entry. Every time the unpublished entry is changed and saved, a new commit is added to the pull request. When the entry is published, the pull request is merged, and all of those commits are added to your project commit history in a merge commit.
 
 The squash merge option causes all commits to be "squashed" into a single commit when the pull request is merged, and the resulting commit is rebased onto the target branch, avoiding the merge commit altogether.
 
-To enable this feature, you can set the following option in your Netlify CMS `config.yml`:
+To enable this feature, you can set the following option in your Decap CMS `config.yml`:
 
 ```yaml
 backend:
@@ -492,11 +493,11 @@ backend:
 
 ## Commit Message Templates
 
-You can customize the templates used by Netlify CMS to generate commit messages by setting the `commit_messages` option under `backend` in your Netlify CMS `config.yml`.
+You can customize the templates used by Decap CMS to generate commit messages by setting the `commit_messages` option under `backend` in your Decap CMS `config.yml`.
 
 Template tags wrapped in curly braces will be expanded to include information about the file changed by the commit. For example, `{{path}}` will include the full path to the file changed.
 
-Setting up your Netlify CMS `config.yml` to recreate the default values would look like this:
+Setting up your Decap CMS `config.yml` to recreate the default values would look like this:
 
 ```yaml
 backend:
@@ -509,7 +510,7 @@ backend:
     openAuthoring: '{{message}}'
 ```
 
-Netlify CMS generates the following commit types:
+Decap CMS generates the following commit types:
 
 | Commit type     | When is it triggered?                    | Available template tags                                     |
 | --------------- | ---------------------------------------- | ----------------------------------------------------------- |

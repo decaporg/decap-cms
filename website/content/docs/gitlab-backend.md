@@ -19,9 +19,9 @@ When using GitLab's Authorization Code Flow for authentication, you can use Netl
 
 To enable it:
 
-1. Follow the [GitLab docs](https://docs.gitlab.com/ee/integration/oauth_provider.html#adding-an-application-through-the-profile) to add your Netlify CMS instance as an OAuth application. For the **Redirect URI**, enter `https://api.netlify.com/auth/done`, and check the box for `api` scope.
+1. Follow the [GitLab docs](https://docs.gitlab.com/ee/integration/oauth_provider.html#adding-an-application-through-the-profile) to add your Decap CMS instance as an OAuth application. For the **Redirect URI**, enter `https://api.netlify.com/auth/done`, and check the box for `api` scope.
 2. Follow the [Netlify docs](https://www.netlify.com/docs/authentication-providers/#using-an-authentication-provider) to add your new GitLab Application ID and Secret to your Netlify site dashboard.
-3. In your repository, add the following lines to your Netlify CMS `config.yml` file:
+3. In your repository, add the following lines to your Decap CMS `config.yml` file:
 
 ```yaml
 backend:
@@ -34,8 +34,8 @@ backend:
 
 With GitLab's PKCE authorization, users can authenticate with GitLab directly from the client. To do this:
 
-1. Follow the [GitLab docs](https://docs.gitlab.com/ee/integration/oauth_provider.html#adding-an-application-through-the-profile) to add your Netlify CMS instance as an OAuth application and uncheck the **Confidential** checkbox. For the **Redirect URI**, enter the address where you access Netlify CMS, for example, `https://www.mysite.com/admin/`. For scope, select `api`.
-2. GitLab gives you an **Application ID**. Copy this ID and enter it in your Netlify CMS `config.yml` file, along with the following settings:
+1. Follow the [GitLab docs](https://docs.gitlab.com/ee/integration/oauth_provider.html#adding-an-application-through-the-profile) to add your Decap CMS instance as an OAuth application and uncheck the **Confidential** checkbox. For the **Redirect URI**, enter the address where you access Decap CMS, for example, `https://www.mysite.com/admin/`. For scope, select `api`.
+2. GitLab gives you an **Application ID**. Copy this ID and enter it in your Decap CMS `config.yml` file, along with the following settings:
 
    ```yaml
    backend:
@@ -64,8 +64,8 @@ With GitLab's PKCE authorization, users can authenticate with GitLab directly fr
 
 With GitLab's Implicit Grant, users can authenticate with GitLab directly from the client. To do this:
 
-1. Follow the [GitLab docs](https://docs.gitlab.com/ee/integration/oauth_provider.html#adding-an-application-through-the-profile) to add your Netlify CMS instance as an OAuth application and uncheck the **Confidential** checkbox. For the **Redirect URI**, enter the address where you access Netlify CMS, for example, `https://www.mysite.com/admin/`. For scope, select `api`.
-2. GitLab gives you an **Application ID**. Copy this ID and enter it in your Netlify CMS `config.yml` file, along with the following settings:
+1. Follow the [GitLab docs](https://docs.gitlab.com/ee/integration/oauth_provider.html#adding-an-application-through-the-profile) to add your Decap CMS instance as an OAuth application and uncheck the **Confidential** checkbox. For the **Redirect URI**, enter the address where you access Decap CMS, for example, `https://www.mysite.com/admin/`. For scope, select `api`.
+2. GitLab gives you an **Application ID**. Copy this ID and enter it in your Decap CMS `config.yml` file, along with the following settings:
 
    ```yaml
    backend:
