@@ -32,14 +32,12 @@ function ViewStyleControl({ viewStyle, onChangeViewStyle }) {
   return (
     <ViewControlsSection>
       <ViewControlsButton
-        aria-label="list view option"
         isActive={viewStyle === VIEW_STYLE_LIST}
         onClick={() => onChangeViewStyle(VIEW_STYLE_LIST)}
       >
         <Icon type="list" />
       </ViewControlsButton>
       <ViewControlsButton
-        aria-label="grid view option"
         isActive={viewStyle === VIEW_STYLE_GRID}
         onClick={() => onChangeViewStyle(VIEW_STYLE_GRID)}
       >
