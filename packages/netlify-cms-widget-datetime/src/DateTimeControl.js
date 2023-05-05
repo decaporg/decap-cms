@@ -7,7 +7,7 @@ import DateTime from 'react-datetime';
 import moment from 'moment';
 import { buttons } from 'netlify-cms-ui-default';
 
-function NowButton({ t, handleChange }) {
+function NowButton({ t, fieldName, handleChange }) {
   return (
     <div
       css={css`
@@ -19,6 +19,7 @@ function NowButton({ t, handleChange }) {
       `}
     >
       <button
+        aria-label={'set '.concat(fieldName).concat(' to now')}
         css={css`
           ${buttons.button}
           ${buttons.widget}
@@ -140,8 +141,9 @@ export default class DateTimeControl extends React.Component {
   };
 
   render() {
-    const { forID, value, classNameWrapper, setActiveStyle, t, isDisabled } = this.props;
+    const { forID, field, value, classNameWrapper, setActiveStyle, t, isDisabled } = this.props;
     const { format, dateFormat, timeFormat } = this.formats;
+    const fieldName = field.get('name');
 
     return (
       <div
@@ -160,7 +162,9 @@ export default class DateTimeControl extends React.Component {
           inputProps={{ className: classNameWrapper, id: forID }}
           utc={this.pickerUtc}
         />
-        {!isDisabled && <NowButton t={t} handleChange={v => this.handleChange(v)} />}
+        {!isDisabled && (
+          <NowButton t={t} fieldName={fieldName} handleChange={v => this.handleChange(v)} />
+        )}
       </div>
     );
   }

@@ -31,7 +31,7 @@ const LibraryTitle = styled.h1`
 function MediaLibraryHeader({ onClose, title, isPrivate }) {
   return (
     <div>
-      <CloseButton onClick={onClose}>
+      <CloseButton aria-label="close" onClick={onClose}>
         <Icon type="close" />
       </CloseButton>
       <LibraryTitle isPrivate={isPrivate}>{title}</LibraryTitle>
