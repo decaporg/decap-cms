@@ -266,11 +266,7 @@ export default class Toolbar extends React.Component {
             <ToolbarToggleLabel isActive={!rawMode} offPosition>
               {t('editor.editorWidgets.markdown.richText')}
             </ToolbarToggleLabel>
-            <StyledToggle
-              active={rawMode}
-              onChange={onToggleMode}
-              aria-label={rawMode ? 'toggle to rich text mode' : 'toggle to markdown mode'}
-            />
+            <StyledToggle active={rawMode} onChange={onToggleMode} />
             <ToolbarToggleLabel isActive={rawMode}>
               {t('editor.editorWidgets.markdown.markdown')}
             </ToolbarToggleLabel>
