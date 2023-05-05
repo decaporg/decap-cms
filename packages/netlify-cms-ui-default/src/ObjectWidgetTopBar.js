@@ -108,7 +108,7 @@ class ObjectWidgetTopBar extends React.Component {
     return (
       <TopBarContainer>
         <ExpandButtonContainer hasHeading={!!heading}>
-          <ExpandButton onClick={onCollapseToggle} data-testid="expand-button" aria-label="expand">
+          <ExpandButton onClick={onCollapseToggle} data-testid="expand-button">
             <Icon type="chevron" direction={collapsed ? 'right' : 'down'} size="small" />
           </ExpandButton>
           {heading}
