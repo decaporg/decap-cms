@@ -142,7 +142,7 @@ export default class DateTimeControl extends React.Component {
   render() {
     const { forID, value, classNameWrapper, setActiveStyle, t, isDisabled } = this.props;
     const { format, dateFormat, timeFormat } = this.formats;
-    
+
     return (
       <div
         css={css`
