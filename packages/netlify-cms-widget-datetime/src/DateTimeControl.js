@@ -142,6 +142,7 @@ export default class DateTimeControl extends React.Component {
   render() {
     const { forID, value, classNameWrapper, setActiveStyle, t, isDisabled } = this.props;
     const { format, dateFormat, timeFormat } = this.formats;
+    
     return (
       <div
         css={css`
@@ -159,9 +160,7 @@ export default class DateTimeControl extends React.Component {
           inputProps={{ className: classNameWrapper, id: forID }}
           utc={this.pickerUtc}
         />
-        {!isDisabled && (
-          <NowButton t={t} handleChange={v => this.handleChange(v)} />
-        )}
+        {!isDisabled && <NowButton t={t} handleChange={v => this.handleChange(v)} />}
       </div>
     );
   }
