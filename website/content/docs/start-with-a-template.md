@@ -62,6 +62,13 @@ You can add Decap CMS [to an existing site](/docs/add-to-your-site/), but the qu
         <h4>Metalsmith Starter</h4>
         <p><a href="https://app.netlify.com/start/deploy?repository=https://github.com/wernerglinka/metalsmith-netlify-starter"><img src="https://www.netlify.com/img/deploy/button.svg" alt="Deploy to Netlify" /></a></p>
     </div>
+    <div style="flex-basis: 33%">
+        <div style="padding: 0 30%; height: 100px; display: flex; justify-content: center;">
+          <img style="display: flex" src="/img/vuepress.png"/>
+        </div>
+        <h4>VuePress Template</h4>
+        <p><a href="https://app.netlify.com/start/deploy?repository=https://github.com/NdagiStanley/VueDN"><img src="https://www.netlify.com/img/deploy/button.svg" alt="Deploy to Netlify" /></a></p>
+    </div>
 </div>
 
 After clicking one of those buttons, authenticate with GitHub or GitLab and choose a repository name. Netlify then automatically creates a clone of the repository in your GitHub or GitLab account. Next, it builds and deploys the new site on Netlify, bringing you to the site dashboard after completing the build.
