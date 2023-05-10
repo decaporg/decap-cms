@@ -13,7 +13,7 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "build": "webpack",
+    "build": "cross-env  NODE_OPTIONS=\"--openssl-legacy-provider\" webpack",
     "prestart": "yarn build",
     "start": "node dist/index.js",
     "develop": "nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' --exec 'ts-node' --files src/index.ts",

@@ -7,6 +7,8 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+
+
 jobs:
   changes:
     runs-on: ubuntu-latest
@@ -45,12 +47,12 @@ jobs:
         run: yarn test:ci
         env:
           CI: true
-          NODE_OPTIONS: --max-old-space-size=4096
+          NODE_OPTIONS: --max-old-space-size=4096 --openssl-legacy-provider
         if: ${{ needs.changes.outputs.cms == 'true' }}
       - name: build demo site
         run: yarn build:demo
         env:
-          NODE_OPTIONS: --max-old-space-size=4096
+          NODE_OPTIONS: --max-old-space-size=4096 --openssl-legacy-provider
         if: ${{ needs.changes.outputs.cms == 'true' }}
       - uses: actions/upload-artifact@master
         with:
