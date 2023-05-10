@@ -1,5 +1,4 @@
 const path = require('path');
-const { extendDefaultPlugins } = require('svgo');
 
 const appVersion = require('./packages/netlify-cms-app/package.json').version;
 const coreVersion = require('./packages/netlify-cms-core/package.json').version;
@@ -28,12 +27,16 @@ const defaultPlugins = [
 ];
 
 const svgo = {
-  plugins: extendDefaultPlugins([
+  plugins: [
     {
-      name: 'removeViewBox',
-      active: false,
+      name: 'preset-default',
+      params: {
+        overrides: {
+          removeViewBox: false,
+        },
+      },
     },
-  ]),
+  ],
 };
 
 function presets() {
