@@ -11,7 +11,7 @@ sections:
       - title: GitHub Issues
         description: Report bugs, request features, and comment on existing issues.
         url: https://github.com/decaporg/decap-cms/issues
-      - title: Stack Overflow
-        description: Secondary forum. Questions should be tagged `decap-cms`.
-        url: https://stackoverflow.com/questions/tagged/netlify-cms
+      - title: GitHub Discussions
+        description: Ask questions and discuss ideas.
+        url: https://github.com/decaporg/decap-cms/discussions
 ---
