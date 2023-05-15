@@ -10,6 +10,7 @@ import HeroTitle from '../components/hero-title';
 // import WhatsNew from '../components/whats-new';
 import Lead from '../components/lead';
 import Features from '../components/features';
+// import Awards from '../components/awards';
 import HomeSection from '../components/home-section';
 import Grid from '../components/grid';
 import theme from '../theme';
@@ -138,6 +139,9 @@ function HomePage({ data }) {
       {/* <WhatsNew updates={updates.updates} /> */}
 
       <HomeSection
+        css={css`
+          background: white;
+        `}
         title={<Markdownify source={landing.editors.hook} />}
         text={<Markdownify source={landing.editors.intro} />}
       >
@@ -147,9 +151,6 @@ function HomePage({ data }) {
       </HomeSection>
 
       <HomeSection
-        css={css`
-          background: white;
-        `}
         title={<Markdownify source={landing.community.hook} />}
       >
         <Grid cols={2}>
@@ -174,6 +175,16 @@ function HomePage({ data }) {
           </div>
         </Grid>
       </HomeSection>
+
+      {/* <HomeSection
+        css={css`
+          background: white;
+        `}
+        title={<Markdownify source={landing.awards.title} />}
+        text={<Markdownify source={landing.awards.description} />}
+      >
+        <Awards items={landing.awards.items} />
+      </HomeSection> */}
     </Layout>
   );
 }
@@ -198,6 +209,15 @@ export const pageQuery = graphql`
           devfeatures {
             feature
             description
+          }
+        }
+        awards {
+          title
+          description
+          items {
+            title
+            href
+            image
           }
         }
         cta {
