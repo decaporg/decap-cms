@@ -36,7 +36,9 @@ admin
  └ config.yml
 ```
 
-The first file, `admin/index.html`, is the entry point for the Decap CMS admin interface. This means that users navigate to `yoursite.com/admin/` to access it. On the code side, it's a basic HTML starter page that loads the Decap CMS JavaScript file. The second file, `admin/config.yml`, is the heart of your Decap CMS installation, and a bit more complex. The [Configuration](#configuration) section covers the details.
+The first file, `admin/index.html`, is the entry point for the Decap CMS admin interface. This means that users navigate to `yoursite.com/admin/` to access it. On the code side, it's a basic HTML starter page that loads the Decap CMS JavaScript file. 
+
+The second file, `admin/config.yml`, is the heart of your Decap CMS installation, and a bit more complex. The [Configuration](#configuration) section covers the details.
 
 In this example, we pull the `admin/index.html` file from a public CDN. 
 
@@ -60,7 +62,9 @@ In the code above the `script` is loaded from the `unpkg` CDN. Should there be a
 
 ### Installing with npm
 
-You can also use Decap CMS as an npm module. Wherever you import Decap CMS, it automatically runs, taking over the current page. Make sure the script that imports it only runs on your CMS page. First install the package and save it to your project:
+You can also use Decap CMS as an npm module. Wherever you import Decap CMS, it automatically runs, taking over the current page. Make sure the script that imports it only runs on your CMS page. 
+
+First install the package and save it to your project:
 
 ```bash
 npm install netlify-cms-app --save
@@ -98,7 +102,7 @@ The configuration above specifies your backend protocol and your publication bra
 
 ### Editorial Workflow
 
-**Note:** Editorial workflow works with GitHub repositories, and support for GitLab and Bitbucket is [in beta](/docs/beta-features/#gitlab-and-bitbucket-editorial-workflow-support).
+**Note:** Editorial workflow works with GitHub repositories. Support for GitLab and Bitbucket is [in beta](/docs/beta-features/#gitlab-and-bitbucket-editorial-workflow-support).
 
 By default, saving a post in the CMS interface pushes a commit directly to the publication branch specified in `backend`. However, you also have the option to enable the [Editorial Workflow](../configuration-options/#publish-mode), which adds an interface for drafting, reviewing, and approving posts. To do this, add the following line to your Decap CMS `config.yml`:
 
@@ -118,7 +122,7 @@ media_folder: "images/uploads" # Media files will be stored in the repo under im
 
 If you're creating a new folder for uploaded media, you'll need to know where your static site generator expects static files. You can refer to the paths outlined above in [App File Structure](#app-file-structure), and put your media folder in the same location where you put the `admin` folder.
 
-Note that the`media_folder` file path is relative to the project root, so the example above would work for Jekyll, GitBook, or any other generator that stores static files at the project root. However, it would not work for Hugo, Hexo, Middleman or others that store static files in a subfolder. Here's an example that could work for a Hugo site:
+Note that the `media_folder` file path is relative to the project root, so the example above would work for Jekyll, GitBook, or any other generator that stores static files at the project root. However, it would not work for Hugo, Hexo, Middleman, or others that store static files in a subfolder. Here's an example that could work for a Hugo site:
 
 ```yaml
 # These lines should *not* be indented
@@ -126,9 +130,9 @@ media_folder: "static/images/uploads" # Media files will be stored in the repo u
 public_folder: "/images/uploads" # The src attribute for uploaded media will begin with /images/uploads
 ```
 
-The configuration above adds a new setting, `public_folder`. While `media_folder` specifies where uploaded files are saved in the repo, `public_folder` indicates where they are found in the published site. Image `src` attributes use this path, which is relative to the file where it's called. For this reason, we usually start the path at the site root, using the opening `/`.
+The configuration above adds a new setting: `public_folder`. Whereas `media_folder` specifies where uploaded files are saved in the repo, `public_folder` indicates where they are found in the published site. Image `src` attributes use this path, which is relative to the file where it's called. For this reason, we usually start the path at the site root, using the opening `/`.
 
-*If `public_folder` is not set, Decap CMS defaults to the same value as `media_folder`, adding an opening `/` if one is not included.*
+*__Note:__ If `public_folder` is not set, Decap CMS defaults to the same value as `media_folder`, adding an opening `/` if one is not included.*
 
 ### Collections
 
@@ -148,7 +152,7 @@ rating: 5
 This is the post body, where I write about our last chance to party before the Y2K bug destroys us all.
 ```
 
-Given this example, our `collections` settings would look like this in your NetlifyCMS `config.yml` file:
+Given this example, our `collections` settings would look like this in your Decap CMS `config.yml` file:
 
 ```yaml
 collections:
@@ -188,7 +192,7 @@ Let's break that down:
   </tr>
   <tr>
     <td><code>slug</code></td>
-    <td>Template for filenames. <code>{{year}}</code>, <code>{{month}}</code>, and <code>{{day}}</code> pulls from the post's <code>date</code> field or save date. <code>{{slug}}</code> is a url-safe version of the post's <code>title</code>. Default is simply <code>{{slug}}</code>.
+    <td>Template for filenames. <code>{{year}}</code>, <code>{{month}}</code>, and <code>{{day}}</code> pulls from the post's <code>date</code> field or save date. <code>{{slug}}</code> is a URL-safe version of the post's <code>title</code>. Default is simply <code>{{slug}}</code>.
 </td>
   </tr>
   <tr>
@@ -243,7 +247,7 @@ Netlify's Identity and Git Gateway services allow you to manage CMS admin users 
 
 ### Add the Netlify Identity Widget
 
-With the backend set to handle authentication, now you need a frontend interface to connect to it. The open source Netlify Identity Widget is a drop-in widget made for just this purpose. To include the widget in your site, add the following script tag in two places:
+With the backend configured to handle authentication, now you need a frontend interface to connect to it. The open source Netlify Identity Widget is a drop-in widget made for just this purpose. To include the widget in your site, add the following script tag in two places:
 
 ```html
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
@@ -267,7 +271,7 @@ When a user logs in with the Netlify Identity widget, an access token directs to
 </script>
 ```
 
-Note: This example script requires modern JavaScript and does not work on IE11. For legacy browser support, use function expressions (`function () {}`) in place of the arrow functions (`() => {}`), or use a transpiler such as [Babel](https://babeljs.io/).
+**Note:** This example script requires modern JavaScript and does not work on IE11. For legacy browser support, use function expressions (`function () {}`) in place of the arrow functions (`() => {}`), or use a transpiler such as [Babel](https://babeljs.io/).
 
 ## Accessing the CMS
 
@@ -277,6 +281,13 @@ If you set your registration preference to "Invite only," invite yourself (and a
 
 If you left your site registration open, or for return visits after confirming an email invitation, access your site's CMS at `yoursite.com/admin/`.
 
-**Note:** No matter where you access Decap CMS — whether running locally, in a staging environment, or in your published site — it always fetches and commits files in your hosted repository (for example, on GitHub), on the branch you configured in your Decap CMS config.yml file. This means that content fetched in the admin UI matches the content in the repository, which may be different from your locally running site. It also means that content saved using the admin UI saves directly to the hosted repository, even if you're running the UI locally or in staging.
+---
+**Note:** No matter where you access Decap CMS — whether running locally, in a staging environment, or in your published site — it always fetches and commits files in your hosted repository (for example, on GitHub), on the branch you configured in your Decap CMS `config.yml` file. 
+
+This means:
+
+- Content fetched in the admin UI matches the content in the repository, which may be different from your locally running site.
+- Content saved using the admin UI saves directly to the hosted repository, even if you're running the UI locally or in staging.
+---
 
 Happy posting!
