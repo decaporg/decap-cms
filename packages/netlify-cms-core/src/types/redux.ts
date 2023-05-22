@@ -129,6 +129,7 @@ export interface CmsFieldFileOrImage {
 
   media_library?: CmsMediaLibrary;
   allow_multiple?: boolean;
+  choose_url?: boolean;
   config?: unknown;
 }
 

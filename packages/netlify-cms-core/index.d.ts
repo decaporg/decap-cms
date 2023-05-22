@@ -114,6 +114,7 @@ declare module 'netlify-cms-core' {
 
     media_library?: CmsMediaLibrary;
     allow_multiple?: boolean;
+    choose_url?: boolean;
     config?: any;
   }
 

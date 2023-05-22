@@ -37,7 +37,7 @@ const styles = {
   `,
   publishedButton: css`
     background-color: ${colorsRaw.tealLight};
-    color: ${colorsRaw.teal};
+    color: ${colorsRaw.tealDark};
   `,
 };
 

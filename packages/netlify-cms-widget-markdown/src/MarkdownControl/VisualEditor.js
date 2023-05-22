@@ -7,6 +7,7 @@ import { css as coreCss, ClassNames } from '@emotion/core';
 import { get, isEmpty, debounce } from 'lodash';
 import { Value, Document, Block, Text } from 'slate';
 import { Editor as Slate } from 'slate-react';
+import isHotkey from 'is-hotkey';
 import { lengths, fonts, zIndex } from 'netlify-cms-ui-default';
 
 import { editorStyleVars, EditorControlBar } from '../styles';
@@ -194,6 +195,12 @@ export default class Editor extends React.Component {
     this.editor.moveToEndOfDocument();
   };
 
+  handleKeyDown = (event, editor) => {
+    if (isHotkey('esc', event)) {
+      editor.blur();
+    }
+  };
+
   handleDocumentChange = debounce(editor => {
     const { onChange } = this.props;
     const raw = editor.value.document.toJS();
@@ -266,6 +273,7 @@ export default class Editor extends React.Component {
                 schema={this.schema}
                 plugins={this.plugins}
                 onChange={this.handleChange}
+                onKeyDown={this.handleKeyDown}
                 ref={this.processRef}
                 spellCheck
               />
