@@ -42,7 +42,7 @@ describe('Editor', () => {
 
     expect(console.error).toHaveBeenCalledWith(new Error('Some unknown error'));
     expect(getByTestId('issue-url').getAttribute('href')).toEqual(
-      oneLineTrim`https://github.com/netlify/netlify-cms/issues/new?
+      oneLineTrim`https://github.com/decaporg/decap-cms/issues/new?
         title=Error%3A+Some+unknown+error&
         body=%0A**Describe+the+bug**%0A%0A**To+Reproduce**%0A%0A**Expected+behavior**%0A%0A**
         Screenshots**%0A%0A**Applicable+Versions%3A**%0A+-+

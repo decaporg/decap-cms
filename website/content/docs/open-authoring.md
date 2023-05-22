@@ -5,9 +5,9 @@ title: Open Authoring
 ---
 **This is a [beta feature](/docs/beta-features#open-authoring).**
 
-When using the [GitHub backend](/docs/github-backend), you can use Netlify CMS to accept contributions from GitHub users without giving them access to your repository. When they make changes in the CMS, the CMS forks your repository for them behind the scenes, and all the changes are made to the fork. When the contributor is ready to submit their changes, they can set their draft as ready for review in the CMS. This triggers a pull request to your repository, which you can merge using the GitHub UI.
+When using the [GitHub backend](/docs/github-backend), you can use Decap CMS to accept contributions from GitHub users without giving them access to your repository. When they make changes in the CMS, the CMS forks your repository for them behind the scenes, and all the changes are made to the fork. When the contributor is ready to submit their changes, they can set their draft as ready for review in the CMS. This triggers a pull request to your repository, which you can merge using the GitHub UI.
 
-At the same time, any contributors who *do* have write access to the repository can continue to use Netlify CMS normally.
+At the same time, any contributors who *do* have write access to the repository can continue to use Decap CMS normally.
 
 ## Requirements
 
@@ -38,11 +38,11 @@ backend:
 
 ## Usage
 
-When a user logs into Netlify CMS who doesn't have write access to your repo, the CMS asks for permission to create a fork of your repo (or uses their existing fork, if they already have one). They are then presented with the normal CMS interface. The published content shown is from the original repo, so it stays up-to-date as changes are made.
+When a user logs into Decap CMS who doesn't have write access to your repo, the CMS asks for permission to create a fork of your repo (or uses their existing fork, if they already have one). They are then presented with the normal CMS interface. The published content shown is from the original repo, so it stays up-to-date as changes are made.
 
 On the editorial workflow screen, the normal three columns are replaced by two columns instead — "Draft" and "Ready to Review".
 
-When they make changes to content in the CMS, the changes are made to a branch on their fork. In the editorial workflow screen, they see only their own pending changes. Once they're ready to submit their changes, they can move the card into the "Ready To Review" column to create a pull request. When the pull request is merged (by a repository maintainer via the GitHub UI), Netlify CMS deletes the branch and removes the card from the user's editorial workflow screen. Open Authoring users cannot publish entries through the CMS.
+When they make changes to content in the CMS, the changes are made to a branch on their fork. In the editorial workflow screen, they see only their own pending changes. Once they're ready to submit their changes, they can move the card into the "Ready To Review" column to create a pull request. When the pull request is merged (by a repository maintainer via the GitHub UI), Decap CMS deletes the branch and removes the card from the user's editorial workflow screen. Open Authoring users cannot publish entries through the CMS.
 
 Users who *do* have write access to the original repository continue to use the CMS normally. Unpublished changes made by users via Open Authoring are not visible on the editorial workflow screen, and their unpublished changes must be merged through the GitHub UI.
 
@@ -56,7 +56,7 @@ Users who *do* have write access to the original repository continue to use the 
 
 ## Linking to specific entries in the CMS
 
-Open authoring often includes some sort of "Edit this page" link on the live site. Netlify CMS supports this via the **edit** path:
+Open authoring often includes some sort of "Edit this page" link on the live site. Decap CMS supports this via the **edit** path:
 
 ```js
 /#/edit/{collectionName}/{entryName}

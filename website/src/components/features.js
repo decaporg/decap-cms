@@ -14,7 +14,7 @@ const Box = styled.div`
 `;
 
 const Title = styled.h3`
-  color: ${p => (p.kind === 'light' ? theme.colors.white : theme.colors.gray)};
+  color: ${p => (p.kind === 'light' ? theme.colors.primaryLight : theme.colors.primaryLight)};
   font-size: ${theme.fontsize[4]};
 `;
 
