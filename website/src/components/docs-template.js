@@ -28,7 +28,7 @@ export default function DocsTemplate({
   group,
 }) {
   return (
-    <Container size="md">
+    <Container>
       <SidebarLayout sidebar={showSidebar && <DocsSidebar docsNav={docsNav} location={location} />}>
         <article data-docs-content>
           {filename && <EditLink collection={`docs_${group}`} filename={filename} />}
