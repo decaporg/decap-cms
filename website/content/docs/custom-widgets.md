@@ -23,7 +23,7 @@ Register a custom widget.
 CMS.registerWidget(name, control, [preview], [schema]);
 
 // Using npm module import
-import CMS from 'netlify-cms';
+import CMS from 'netlify-cms-app';
 CMS.registerWidget(name, control, [preview], [schema]);
 ```
 
@@ -474,7 +474,7 @@ window.CMS_MANUAL_INIT = true
 
 ```javascript
 import './bootstrap.js'
-import CMS, { init } from 'netlify-cms'
+import CMS, { init } from 'netlify-cms-app'
 import 'netlify-cms/dist/cms.css'
 import { Control, Preview } from '../src'
 
