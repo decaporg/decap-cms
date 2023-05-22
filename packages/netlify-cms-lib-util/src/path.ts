@@ -36,9 +36,9 @@ export function basename(p: string, ext = '') {
   }
   // Remove the extension, if need be.
   if (ext.length > 0) {
-    const lastPartExt = lastPart.substr(lastPart.length - ext.length);
+    const lastPartExt = lastPart.slice(-ext.length);
     if (lastPartExt === ext) {
-      return lastPart.substr(0, lastPart.length - ext.length);
+      return lastPart.slice(0, -ext.length);
     }
   }
   return lastPart;
@@ -68,7 +68,7 @@ export function fileExtensionWithSeparator(p: string) {
   if (i === -1 || i === 0) {
     return '';
   }
-  return p.substr(i);
+  return p.slice(i);
 }
 
 /**
@@ -82,5 +82,5 @@ export function fileExtensionWithSeparator(p: string) {
  */
 export function fileExtension(p: string) {
   const ext = fileExtensionWithSeparator(p);
-  return ext === '' ? ext : ext.substr(1);
+  return ext === '' ? ext : ext.slice(1);
 }

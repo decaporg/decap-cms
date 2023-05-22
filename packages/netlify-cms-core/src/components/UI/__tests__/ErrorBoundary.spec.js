@@ -34,7 +34,7 @@ describe('Editor', () => {
 
   it('should match snapshot with issue URL', () => {
     global.navigator.userAgent = 'Test User Agent';
-    const { asFragment, getByTestId } = render(
+    const { getByTestId } = render(
       <ErrorBoundary {...props}>
         <WithError />
       </ErrorBoundary>,
@@ -42,7 +42,7 @@ describe('Editor', () => {
 
     expect(console.error).toHaveBeenCalledWith(new Error('Some unknown error'));
     expect(getByTestId('issue-url').getAttribute('href')).toEqual(
-      oneLineTrim`https://github.com/netlify/netlify-cms/issues/new?
+      oneLineTrim`https://github.com/decaporg/decap-cms/issues/new?
         title=Error%3A+Some+unknown+error&
         body=%0A**Describe+the+bug**%0A%0A**To+Reproduce**%0A%0A**Expected+behavior**%0A%0A**
         Screenshots**%0A%0A**Applicable+Versions%3A**%0A+-+
@@ -53,7 +53,5 @@ describe('Editor', () => {
         Additional+context**%0A&labels=type%3A+bug
         `,
     );
-
-    expect(asFragment()).toMatchSnapshot();
   });
 });

@@ -146,6 +146,7 @@ class EditorControl extends React.Component {
     isHidden: PropTypes.bool,
     isFieldDuplicate: PropTypes.func,
     isFieldHidden: PropTypes.func,
+    locale: PropTypes.string,
   };
 
   static defaultProps = {
@@ -207,6 +208,7 @@ class EditorControl extends React.Component {
       isHidden,
       isFieldDuplicate,
       isFieldHidden,
+      locale,
     } = this.props;
 
     const widgetName = field.get('widget');
@@ -327,6 +329,7 @@ class EditorControl extends React.Component {
               isDisabled={isDisabled}
               isFieldDuplicate={isFieldDuplicate}
               isFieldHidden={isFieldHidden}
+              locale={locale}
             />
             {fieldHint && (
               <ControlHint active={isSelected || this.state.styleActive} error={hasErrors}>

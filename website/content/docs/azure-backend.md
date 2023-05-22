@@ -15,7 +15,7 @@ In order to get Netlify-CMS working with Azure DevOps, you need a Tenant Id and 
 5. [Grant admin consent](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-configure-app-access-web-apis#admin-consent-button) for the application.
 6. Under `Authentication->Implicit grant` enable [Access tokens](https://docs.microsoft.com/en-us/azure/active-directory/develop/access-tokens) for the application and click `Save`.
 7. Verify your Azure DevOps organization is connected to the same directory as your tenant under: `https://dev.azure.com/<organization>/_settings/organizationAad`
-8. Add the following lines to your Netlify CMS `config.yml` file:
+8. Add the following lines to your Decap CMS `config.yml` file:
 
 ```yaml
 backend:

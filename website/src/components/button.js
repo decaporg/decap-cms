@@ -12,7 +12,7 @@ const Button = styled.button`
   font-size: ${theme.fontsize[3]};
   font-weight: 700;
   padding: ${theme.space[2]} ${theme.space[3]};
-  border: 2px solid ${theme.colors.darkGreen};
+  border: 2px solid ${theme.colors.primaryDark};
   cursor: pointer;
 
   ${p => p.block && css`
@@ -26,7 +26,7 @@ const Button = styled.button`
   `};
 
   ${p => p.active && css`
-    background: ${theme.colors.darkGreen};
+    background: ${theme.colors.primaryDark};
     color: white;
   `};
 `;

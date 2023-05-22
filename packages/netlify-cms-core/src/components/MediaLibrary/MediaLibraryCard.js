@@ -59,7 +59,7 @@ const DraftText = styled.p`
   background-color: ${colors.mediaDraftBackground};
   position: absolute;
   padding: 8px;
-  border-radius: ${lengths.borderRadius} 0px ${lengths.borderRadius} 0;
+  border-radius: ${lengths.borderRadius} 0 ${lengths.borderRadius} 0;
 `;
 
 class MediaLibraryCard extends React.Component {
@@ -92,7 +92,7 @@ class MediaLibraryCard extends React.Component {
         <CardImageWrapper>
           {isDraft ? <DraftText data-testid="draft-text">{draftText}</DraftText> : null}
           {url && isViewableImage ? (
-            <CardImage src={url} />
+            <CardImage loading="lazy" src={url} />
           ) : (
             <CardFileIcon data-testid="card-file-icon">{type}</CardFileIcon>
           )}

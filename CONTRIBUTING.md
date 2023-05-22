@@ -3,7 +3,7 @@
 Contributions are always welcome, no matter how large or small. Before contributing,
 please read the [code of conduct](CODE_OF_CONDUCT.md).
 
-For details on contributing to documentation, see [Website Directory Readme](https://github.com/netlify/netlify-cms/blob/master/website/README.md).
+For details on contributing to documentation, see [Website Directory Readme](https://github.com/decaporg/decap-cms/blob/master/website/README.md).
 
 ## Setup
 
@@ -14,8 +14,8 @@ For details on contributing to documentation, see [Website Directory Readme](htt
 > Only required on the first run, subsequent runs can use `yarn start` to both bootstrap and run the development server.
 
 ```sh
-git clone https://github.com/netlify/netlify-cms
-cd netlify-cms
+git clone https://github.com/decaporg/decap-cms
+cd decap-cms
 yarn
 yarn bootstrap
 ```
@@ -181,7 +181,7 @@ The most important thing is to make sure that Netlify CMS is loaded from the `di
 
 When debugging the CMS with Git Gateway you must:
 
-1. Have a Netlify site with [Git Gateway](https://docs.netlify.com/visitor-access/git-gateway/) and [Netlify Identity](https://docs.netlify.com/visitor-access/identity/) enabled. An easy way to create such a site is to use a [template](https://www.netlifycms.org/docs/start-with-a-template/), for example the [Gatsby template](https://app.netlify.com/start/deploy?repository=https://github.com/AustinGreen/gatsby-starter-netlify-cms&stack=cms)
+1. Have a Netlify site with [Git Gateway](https://docs.netlify.com/visitor-access/git-gateway/) and [Netlify Identity](https://docs.netlify.com/visitor-access/identity/) enabled. An easy way to create such a site is to use a [template](https://www.netlifycms.org/docs/start-with-a-template/), for example the [Gatsby template](https://app.netlify.com/start/deploy?repository=https://github.com/decaporg/gatsby-starter-decap-cms&stack=cms)
 2. Tell the CMS the URL of your Netlify site using a local storage item. To do so:
 
     1. Open `http://localhost:8080/` in the browser
@@ -189,6 +189,36 @@ When debugging the CMS with Git Gateway you must:
     3. To be sure, you can run this command as well: `localStorage.getItem('netlifySiteURL')`
     4. Refresh the page
     5. You should be able to log in via your Netlify Identity email/password
+
+### Fine tune the way you run unit tests
+
+There are situations where you would want to run a specific test file, or tests that match a certain pattern.
+
+To run all the tests for a specific file, use this command:
+
+```
+yarn jest <filename or file path>
+```
+
+The first part of the command, `yarn jest` means running the locally installed version of `jest`. It is equivalent to running `node_modules/.bin/jest`.
+
+Example for running all the tests for the file `gitlab.spec.js`: `yarn jest gitlab.spec.js`
+
+Some test files like `API.spec.js` is available in several packages. You can pass a regexp pattern instead of file path to narrow down files.
+
+Example for running all the tests for the file `API.spec.js` in the `netlify-cms-backend-gitlab` package:
+
+`yarn jest ".+backend-gitlab/.+/API.spec.js`
+
+To run a specific test in a file, add the flag `--testNamePattern`, or `-t` for short followed by a regexp to match your test name.
+
+Example for running the test "should return true on project access_level >= 30" in the API.spec.js in `netlify-cms-backend-gitlab` package:
+
+```
+yarn jest -t "true on p" ".+backend-gitlab/.+/API.spec.js"
+```
+
+For more information about running tests exactly the way you want, check out the official documentation for [Jest CLI](https://jestjs.io/docs/cli).
 
 ## License
 

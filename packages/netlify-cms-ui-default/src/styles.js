@@ -42,10 +42,12 @@ const colorsRaw = {
   brown: '#754e00',
   yellow: '#ffee9c',
   red: '#ff003b',
+  redDark: '#D60032',
   redLight: '#fcefea',
   purple: '#70399f',
   purpleLight: '#f6d8ff',
   teal: '#17a2b8',
+  tealDark: '#117888',
   tealLight: '#ddf5f9',
 };
 
@@ -76,7 +78,7 @@ const colors = {
   errorText: colorsRaw.red,
   errorBackground: colorsRaw.redLight,
   textFieldBorder: '#dfdfe3',
-  controlLabel: '#7a8291',
+  controlLabel: '#5D626F',
   checkerboardLight: '#f2f2f2',
   checkerboardDark: '#e6e6e6',
   mediaDraftText: colorsRaw.purple,
@@ -233,7 +235,7 @@ const buttons = {
   `,
   lightRed: css`
     background-color: ${colorsRaw.redLight};
-    color: ${colorsRaw.red};
+    color: ${colorsRaw.redDark};
   `,
   lightBlue: css`
     background-color: ${colorsRaw.blueLight};
@@ -302,8 +304,8 @@ const components = {
     color: ${colorsRaw.red};
   `,
   loaderSize: css`
-    width: 2.28571429rem;
-    height: 2.28571429rem;
+    width: 2.2857rem;
+    height: 2.2857rem;
   `,
   cardTop: css`
     ${card};
@@ -338,7 +340,7 @@ const components = {
     ${buttons.button};
     background-color: transparent;
     border-radius: 0;
-    color: ${colorsRaw.gray};
+    color: ${colorsRaw.grayDark};
     font-weight: 500;
     border-bottom: 1px solid #eaebf1;
     padding: 8px 14px;

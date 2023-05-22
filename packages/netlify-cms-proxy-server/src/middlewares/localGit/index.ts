@@ -10,7 +10,7 @@ import {
   parseContentKey,
 } from 'netlify-cms-lib-util/src/APIUtils';
 import { parse } from 'what-the-diff';
-import simpleGit from 'simple-git/promise';
+import simpleGit from 'simple-git';
 import { Mutex, withTimeout } from 'async-mutex';
 
 import { defaultSchema, joi } from '../joi';
@@ -40,8 +40,9 @@ import type {
 } from '../types';
 import type express from 'express';
 import type winston from 'winston';
+import type { SimpleGit } from 'simple-git';
 
-async function commit(git: simpleGit.SimpleGit, commitMessage: string) {
+async function commit(git: SimpleGit, commitMessage: string) {
   await git.add('.');
   await git.commit(commitMessage, undefined, {
     // setting the value to a string passes name=value
@@ -51,12 +52,12 @@ async function commit(git: simpleGit.SimpleGit, commitMessage: string) {
   });
 }
 
-async function getCurrentBranch(git: simpleGit.SimpleGit) {
+async function getCurrentBranch(git: SimpleGit) {
   const currentBranch = await git.branchLocal().then(summary => summary.current);
   return currentBranch;
 }
 
-async function runOnBranch<T>(git: simpleGit.SimpleGit, branch: string, func: () => Promise<T>) {
+async function runOnBranch<T>(git: SimpleGit, branch: string, func: () => Promise<T>) {
   const currentBranch = await getCurrentBranch(git);
   try {
     if (currentBranch !== branch) {
@@ -79,7 +80,7 @@ type GitOptions = {
 };
 
 async function commitEntry(
-  git: simpleGit.SimpleGit,
+  git: SimpleGit,
   repoPath: string,
   dataFiles: DataFile[],
   assets: Asset[],
@@ -103,7 +104,7 @@ async function commitEntry(
   await commit(git, commitMessage);
 }
 
-async function rebase(git: simpleGit.SimpleGit, branch: string) {
+async function rebase(git: SimpleGit, branch: string) {
   const gpgSign = await git.raw(['config', 'commit.gpgsign']);
   try {
     if (gpgSign === 'true') {
@@ -117,7 +118,7 @@ async function rebase(git: simpleGit.SimpleGit, branch: string) {
   }
 }
 
-async function merge(git: simpleGit.SimpleGit, from: string, to: string) {
+async function merge(git: SimpleGit, from: string, to: string) {
   const gpgSign = await git.raw(['config', 'commit.gpgsign']);
   try {
     if (gpgSign === 'true') {
@@ -131,12 +132,12 @@ async function merge(git: simpleGit.SimpleGit, from: string, to: string) {
   }
 }
 
-async function isBranchExists(git: simpleGit.SimpleGit, branch: string) {
+async function isBranchExists(git: SimpleGit, branch: string) {
   const branchExists = await git.branchLocal().then(({ all }) => all.includes(branch));
   return branchExists;
 }
 
-async function getDiffs(git: simpleGit.SimpleGit, source: string, dest: string) {
+async function getDiffs(git: SimpleGit, source: string, dest: string) {
   const rawDiff = await git.diff([source, dest]);
   const diffs = parse(rawDiff).map(d => {
     const oldPath = d.oldPath?.replace(/b\//, '') || '';

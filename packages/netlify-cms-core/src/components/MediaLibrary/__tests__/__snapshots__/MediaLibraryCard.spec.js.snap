@@ -47,7 +47,7 @@ exports[`MediaLibraryCard should match snapshot for draft image 1`] = `
   background-color: #f6d8ff;
   position: absolute;
   padding: 8px;
-  border-radius: 5px 0px 5px 0;
+  border-radius: 5px 0 5px 0;
 }
 
 <div
