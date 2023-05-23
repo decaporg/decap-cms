@@ -5,12 +5,9 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { ClassNames, css as coreCss } from '@emotion/core';
 import { lengths, fonts, zIndex } from 'netlify-cms-ui-default';
 import styled from '@emotion/styled';
-import {
-  createEditor,
-  Transforms,
-  Editor as SlateEditor,
-} from 'slate';
+import { createEditor, Transforms, Editor as SlateEditor } from 'slate';
 import { Editable, ReactEditor, Slate, withReact } from 'slate-react';
+import { fromJS } from 'immutable';
 
 import { editorStyleVars, EditorControlBar } from '../styles';
 import Toolbar from './Toolbar';
@@ -24,6 +21,9 @@ import getActiveLink from './plugins/inlines/selectors/getActiveLink';
 import isMarkActive from './plugins/inlines/locations/isMarkActive';
 import isCursorInBlockType from './plugins/blocks/locations/isCursorInBlockType';
 import { markdownToSlate, slateToMarkdown } from '../serializers';
+import withShortcodes from './plugins/shortcodes/withShortcodes';
+import insertShortcode from './plugins/shortcodes/insertShortcode';
+import defaultEmptyBlock from './plugins/blocks/defaultEmptyBlock';
 
 function visualEditorStyles({ minimal }) {
   return `
@@ -56,43 +56,42 @@ function Editor(props) {
     t,
     isDisabled,
     getEditorComponents,
+    getRemarkPlugins,
     onChange,
   } = props;
-  const renderElement = useCallback(props => <Element {...props} />, []);
-  const renderLeaf = useCallback(props => <Leaf {...props} />, []);
-
   const [editor] = useState(
-    withReact((withBlocks(withLists(withInlines(createEditor()))))),
+    withReact(withShortcodes(withBlocks(withLists(withInlines(createEditor()))))),
   );
 
-  const emptyValue = [
-    {
-      type: 'paragraph',
-      children: [{ text: '' }],
-    },
-    // {
-    //   type: 'bulleted-list',
-    //   children: [
-    //     { type: 'list-item', children: [{ type: 'paragraph', children: [ { text: "foo" } ] }] },
-    //     { type: 'list-item', children: [{ type: 'paragraph', children: [ { text: "bar" } ] }] },
-    //     { type: 'list-item', children: [{ type: 'paragraph', children: [ { text: "baz" } ] }] },
-    //   ],
-    // }
-  ];
+  const emptyValue = [defaultEmptyBlock()];
 
   const [value, setValue] = useState(props.value ? markdownToSlate(props.value) : emptyValue);
 
-  const editorComponents = getEditorComponents();
+  let editorComponents = getEditorComponents();
+  const codeBlockComponent = fromJS(editorComponents.find(({ type }) => type === 'code-block'));
+
+  editorComponents =
+    codeBlockComponent || editorComponents.has('code-block')
+      ? editorComponents
+      : editorComponents.set('code-block', { label: 'Code Block', type: 'code-block' });
+
+  const renderElement = useCallback(
+    props => (
+      <Element {...props} classNameWrapper={className} codeBlockComponent={codeBlockComponent} />
+    ),
+    [],
+  );
+  const renderLeaf = useCallback(props => <Leaf {...props} />, []);
 
   useEffect(() => {
     if (props.pendingFocus) {
       ReactEditor.focus(editor);
     }
-  });
+  }, []);
 
   function handleMarkClick(format) {
     ReactEditor.focus(editor);
-    toggleMark(editor, format)
+    toggleMark(editor, format);
   }
 
   function handleBlockClick(format) {
@@ -114,14 +113,7 @@ function Editor(props) {
   }
 
   function handleInsertShortcode(pluginConfig) {
-    // const text = { text: '' };
-    // const voidNode = {
-    //   type: 'shortcode',
-    //   children: [text],
-    //   pluginConfig,
-    // };
-    // Transforms.insertNodes(editor, voidNode);
-    console.log('handleInsertShortcode', pluginConfig);
+    insertShortcode(editor, pluginConfig);
   }
 
   function handleKeyDown(event) {
@@ -139,17 +131,15 @@ function Editor(props) {
   }
   const [toolbarKey, setToolbarKey] = useState(0);
 
-  // const handleDocumentChange = debounce(newValue => {
-  //   console.log('handleDocumentChange', newValue);
-  //
-  // }, 150);
 
   function handleChange(newValue) {
-    // if (slateToMarkdown(newValue) !== slateToMarkdown(value)) {
     setValue(newValue);
-    // handleDocumentChange(newValue);
-    onChange(slateToMarkdown(newValue));
-    // }
+    onChange(
+      slateToMarkdown(newValue, {
+        voidCodeBlock: !!codeBlockComponent,
+        remarkPlugins: getRemarkPlugins(),
+      }),
+    );
     setToolbarKey(prev => prev + 1);
   }
 
@@ -225,7 +215,6 @@ function Editor(props) {
                     renderElement={renderElement}
                     renderLeaf={renderLeaf}
                     onKeyDown={handleKeyDown}
-                    autoFocus={false} // trying to fix race condition bug
                   />
                 )}
                 <InsertionPoint onClick={handleClickBelowDocument} />

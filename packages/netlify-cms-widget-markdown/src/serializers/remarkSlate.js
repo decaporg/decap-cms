@@ -163,7 +163,7 @@ export default function remarkToSlate({ voidCodeBlock } = {}) {
 
     // Ensure block nodes have at least one text child to conform to slate schema
     const children = isEmpty(nodes) ? [createText('')] : nodes;
-    const node = { object: 'block', type, ...props };
+    const node = { type, ...props };
     return addNodes(node, children);
   }
 
@@ -303,7 +303,7 @@ export default function remarkToSlate({ voidCodeBlock } = {}) {
        */
       case 'shortcode': {
         const nodes = [createText('')];
-        const data = { ...node.data };
+        const data = { ...node.data, id: node.data.shortcode, shortcodeNew: true };
         return createBlock(typeMap[node.type], nodes, { data });
       }
 
@@ -379,10 +379,15 @@ export default function remarkToSlate({ voidCodeBlock } = {}) {
         const data = {
           lang: node.lang,
           ...(voidCodeBlock ? { code: node.value } : {}),
+          shortcode: 'code-block',
+          shortcodeData: {
+            code: node.value,
+            lang: node.lang,
+          }
         };
         const text = createText(voidCodeBlock ? '' : node.value);
         const nodes = [text];
-        const block = createBlock(typeMap[node.type], nodes, { data });
+        const block = createBlock('shortcode', nodes, { data });
         return block;
       }
 

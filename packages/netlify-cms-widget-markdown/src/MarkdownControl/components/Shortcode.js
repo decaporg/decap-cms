@@ -1,66 +1,69 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useState } from 'react';
 import { css } from '@emotion/core';
-import { Map, fromJS } from 'immutable';
+import { fromJS } from 'immutable';
 import { omit } from 'lodash';
+import { ReactEditor, useSlate } from 'slate-react';
+import { Range, Transforms } from 'slate';
 
 import { getEditorControl, getEditorComponents } from '../index';
 
-export default class Shortcode extends React.Component {
-  state = {
-    field: Map(),
-  };
+function Shortcode(props) {
+  const editor = useSlate();
+  const { element, dataKey = 'shortcodeData', children } = props;
+  const EditorControl = getEditorControl();
+  const plugin = getEditorComponents().get(element.data.shortcode);
+  const fieldKeys = ['id', 'fromBlock', 'toBlock', 'toPreview', 'pattern', 'icon'];
 
-  componentDidMount() {
-    console.log('props', this.props)
-    // const { node, typeOverload } = this.props;
-    const { element } = this.props;
-    const plugin = getEditorComponents().get(element.pluginConfig.id);
-    const fieldKeys = ['id', 'fromBlock', 'toBlock', 'toPreview', 'pattern', 'icon'];
-    const field = fromJS(omit(plugin, fieldKeys));
-    this.setState({ field });
+  const field = fromJS(omit(plugin, fieldKeys));
+  const [value, setValue] = useState(fromJS(element.data[dataKey]));
+
+  function handleChange(fieldName, value, metadata) {
+    const path = ReactEditor.findPath(editor, element);
+    const newProperties = {
+      data: {
+        ...element.data,
+        [dataKey]: value.toJS(),
+        metadata,
+      },
+    };
+    Transforms.setNodes(editor, newProperties, {
+      at: path,
+    });
+    setValue(value);
   }
 
-  render() {
-    // const { editor, element, dataKey = 'shortcodeData' } = this.props;
-    const { field } = this.state;
-    const EditorControl = getEditorControl();
-    // const value = dataKey === false ? node.data : fromJS(node.data.get(dataKey));
-    const value = ''
+  function handleFocus() {
+    const path = ReactEditor.findPath(editor, element);
+    Transforms.select(editor, path);
+  }
 
-    function handleChange(fieldName, value, metadata) {
-      // const dataValue = dataKey === false ? value : node.data.set('shortcodeData', value);
-      // editor.setNodeByKey(node.key, { data: dataValue || Map(), metadata });
-    }
+  const path = ReactEditor.findPath(editor, element);
+  const isSelected = editor.selection && path && Range.isRange(editor.selection) && Range.includes(editor.selection, path);
 
-    function handleFocus() {
-      // return editor.moveToRangeOfNode(node);
-    }
+  return (
+    !field.isEmpty() && (
+      <div onClick={handleFocus} onFocus={handleFocus}>
+        <EditorControl
+          css={css`
+            margin-top: 0;
+            margin-bottom: 16px;
 
-    console.log(field)
-
-    return (
-      !field.isEmpty() && (
-        <div onClick={handleFocus} onFocus={handleFocus}>
-          <EditorControl
-            css={css`
+            &:first-of-type {
               margin-top: 0;
-              margin-bottom: 16px;
-
-              &:first-of-type {
-                margin-top: 0;
-              }
-            `}
-            value={value}
-            field={field}
-            onChange={handleChange}
-            isEditorComponent={true}
-            onValidateObject={()=>{}}
-            // isNewEditorComponent={node.data.get('shortcodeNew')}
-            // isSelected={editor.isSelected(node)}
-          />
-        </div>
-      )
-    );
-  }
+            }
+          `}
+          value={value}
+          field={field}
+          onChange={handleChange}
+          isEditorComponent={true}
+          onValidateObject={() => {}}
+          isNewEditorComponent={element.data.shortcodeNew}
+          isSelected={isSelected}
+        />{children}
+      </div>
+    )
+  );
 }
+
+export default Shortcode;
