@@ -39,11 +39,25 @@ const markMap = {
   code: 'inlineCode',
 };
 
+const blockTypes = [
+  'paragraph',
+  'quote',
+  'heading-one',
+  'heading-two',
+  'heading-three',
+  'heading-four',
+  'heading-five',
+  'heading-six',
+  'bulleted-list',
+  'numbered-list',
+  'list-item',
+  'shortcode',
+];
+
 const leadingWhitespaceExp = /^\s+\S/;
 const trailingWhitespaceExp = /(?!\S)\s+$/;
 
 export default function slateToRemark(value, { voidCodeBlock }) {
-
   /**
    * The Slate Raw AST generally won't have a top level type, so we set it to
    * "root" for clarity.
@@ -51,7 +65,7 @@ export default function slateToRemark(value, { voidCodeBlock }) {
   const root = {
     type: 'root',
     children: value,
-  }
+  };
 
   return transform(root);
 
@@ -66,9 +80,8 @@ export default function slateToRemark(value, { voidCodeBlock }) {
      * Combine adjacent text and inline nodes before processing so they can
      * share marks.
      */
-    const blockTypes = ['paragraph', 'quote', 'heading-one', 'heading-two', 'heading-three', 'heading-four', 'heading-five', 'heading-six', 'bulleted-list', 'numbered-list', 'list-item'];
-
-    const hasBlockChildren = node.children && node.children[0] && blockTypes.includes(node.children[0].type);
+    const hasBlockChildren =
+      node.children && node.children[0] && blockTypes.includes(node.children[0].type);
     const children = hasBlockChildren
       ? node.children.map(transform).filter(v => v)
       : convertInlineAndTextChildren(node.children);
@@ -97,12 +110,8 @@ export default function slateToRemark(value, { voidCodeBlock }) {
         }
 
         default:
-          delete newNode[markType]
-          return newNode
-          // return {
-          //   ...node,
-          //   marks: node.marks.filter(({ type }) => type !== markType),
-          // };
+          delete newNode[markType];
+          return newNode;
       }
     });
   }
@@ -134,13 +143,12 @@ export default function slateToRemark(value, { voidCodeBlock }) {
         return map(get(node, ['data', 'marks']), mark => mark.type);
 
       default:
-        return getNodeMarkArray(node)
-        // return map(node.marks, mark => mark.type);
+        return getNodeMarkArray(node);
     }
   }
 
   function getNodeMarkArray(node) {
-    return Object.keys(markMap).filter(mark => !!node[mark])
+    return Object.keys(markMap).filter(mark => !!node[mark]);
   }
 
   function getSharedMarks(marks, node) {
@@ -243,7 +251,7 @@ export default function slateToRemark(value, { voidCodeBlock }) {
     while (remainingNodes.length > 0) {
       const nextNode = remainingNodes[0];
 
-      if (isNodeInline(nextNode) || (getNodeMarkArray(nextNode).length > 0)) {
+      if (isNodeInline(nextNode) || getNodeMarkArray(nextNode).length > 0) {
         const [markType, markNodes, remainder] = extractFirstMark(remainingNodes);
         /**
          * A node with a code mark will be a text node, and will not be adjacent
@@ -290,7 +298,22 @@ export default function slateToRemark(value, { voidCodeBlock }) {
     return convertedNodes;
   }
 
+  function convertCodeBlock(node) {
+    return {
+      ...node,
+      type: 'code-block',
+      data: {
+        ...node.data,
+        ...node.data.shortcodeData,
+      },
+    };
+  }
+
   function convertBlockNode(node, children) {
+    if (node.type == 'shortcode' && node.data.shortcode == 'code-block') {
+      node = convertCodeBlock(node);
+    }
+
     switch (node.type) {
       /**
        * General
@@ -313,7 +336,7 @@ export default function slateToRemark(value, { voidCodeBlock }) {
        * Enclose list items in paragraphs
        */
       case 'list-item':
-        return u(typeMap[node.type], [{ type: 'paragraph', children}])
+        return u(typeMap[node.type], [{ type: 'paragraph', children }]);
 
       /**
        * Shortcodes
@@ -418,7 +441,7 @@ export default function slateToRemark(value, { voidCodeBlock }) {
        * the node for both Slate and Remark schemas.
        */
       case 'link': {
-        const { url, title, data } = node
+        const { url, title, data } = node;
         return u(typeMap[node.type], { url, title, data }, children);
       }
 

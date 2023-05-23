@@ -1,14 +1,14 @@
 import { oneLineTrim, stripIndent } from 'common-tags';
 import '../utils/dismiss-local-backup';
 
-describe('Markdown widget', () => {
+describe('Markdown widget code block', () => {
   before(() => {
     Cypress.config('defaultCommandTimeout', 4000);
     cy.task('setupBackend', { backend: 'test' });
-    cy.loginAndNewPost();
   });
 
   beforeEach(() => {
+    cy.loginAndNewPost();
     cy.clearMarkdownEditorContent();
   });
 
@@ -62,59 +62,61 @@ function codeBlock(content) {
 
   return oneLineTrim`
     <div>
-      <div><span><span><span><span></span><span>﻿</span></span></span></span></div>
+      <div></div>
       <div>
-        <div>
-          <div></div>
-          <div>
-            <div><label>Code Block </label>
-              <div><button><span><svg>
-                      <path></path>
-                    </svg></span></button>
+        <div><label>Code Block </label>
+          <div><button><span><svg>
+                  <path></path>
+                </svg></span></button>
+            <div>
+              <div>
+                <div><textarea></textarea></div>
+                <div>
+                  <div></div>
+                </div>
+                <div>
+                  <div></div>
+                </div>
+                <div></div>
+                <div></div>
                 <div>
                   <div>
-                    <div><textarea></textarea></div>
-                    <div>
-                      <div></div>
-                    </div>
-                    <div>
-                      <div></div>
-                    </div>
-                    <div></div>
-                    <div></div>
                     <div>
                       <div>
                         <div>
                           <div>
-                            <div>
-                              <div>
-                                <pre><span>xxxxxxxxxx</span></pre>
-                              </div>
-                              <div></div>
-                              <div></div>
-                              <div>
-                                <div> </div>
-                              </div>
-                              <div>
-                                ${lines}
-                              </div>
-                            </div>
+                            <pre><span>xxxxxxxxxx</span></pre>
+                          </div>
+                          <div></div>
+                          <div></div>
+                          <div>
+                            <div> </div>
+                          </div>
+                          <div>
+                            ${lines}
                           </div>
                         </div>
                       </div>
-                      <div></div>
-                      <div>
-                        <div></div>
-                      </div>
                     </div>
+                  </div>
+                  <div></div>
+                  <div>
+                    <div></div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <div></div>
+        </div>
+        <div>
+            <span>
+                <span>
+                    <span>﻿</span>
+                </span>
+            </span>
         </div>
       </div>
+      <div></div>
     </div>
   `;
 }

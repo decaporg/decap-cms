@@ -2,6 +2,10 @@
 import React from 'react';
 import { css } from '@emotion/core';
 import { zIndex } from 'netlify-cms-ui-default';
+import { ReactEditor, useSlate } from 'slate-react';
+import { Transforms } from 'slate';
+
+import defaultEmptyBlock from '../plugins/blocks/defaultEmptyBlock';
 
 function InsertionPoint(props) {
   return (
@@ -18,20 +22,39 @@ function InsertionPoint(props) {
   );
 }
 
-function VoidBlock({ attributes, element, children }) {
+function VoidBlock({ attributes, children, element }) {
+  const editor = useSlate();
+  const path = ReactEditor.findPath(editor, element);
+
+  function insertAtPath(at) {
+    Transforms.insertNodes(editor, defaultEmptyBlock(), { select: true, at });
+  }
+
   function handleClick(event) {
     event.stopPropagation();
   }
 
+  function handleInsertBefore() {
+    insertAtPath(path);
+  }
+
+  function handleInsertAfter() {
+    insertAtPath([...path.slice(0, -1), path[path.length -1] + 1])
+  }
+
+  const insertBefore = path[0] === 0;
+  const nextElement = editor.children[path[0] + 1];
+  const insertAfter = path[0] === editor.children.length - 1 || editor.isVoid(nextElement);
+
   return (
-    <div {...attributes} onClick={handleClick}>
-      {/* {!editor.canInsertBeforeNode(node) && (
-        <InsertionPoint onClick={() => editor.forceInsertBeforeNode(node)} />
-      )} */}
+    <div {...attributes} onClick={handleClick} contentEditable={false}>
+      {insertBefore && (
+        <InsertionPoint onClick={handleInsertBefore} />
+      )}
       {children}
-      {/* {!editor.canInsertAfterNode(node) && (
-        <InsertionPoint onClick={() => editor.forceInsertAfterNode(node)} />
-      )} */}
+      {insertAfter && (
+        <InsertionPoint onClick={handleInsertAfter} />
+      )}
     </div>
   );
 }

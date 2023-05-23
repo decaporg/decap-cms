@@ -5,10 +5,10 @@ describe('Markdown widget', () => {
     before(() => {
       Cypress.config('defaultCommandTimeout', 4000);
       cy.task('setupBackend', { backend: 'test' });
-      cy.loginAndNewPost();
     });
 
     beforeEach(() => {
+      cy.loginAndNewPost();
       cy.clearMarkdownEditorContent();
     });
 
@@ -207,7 +207,7 @@ describe('Markdown widget', () => {
                   </blockquote>
                 </li>
               </ul>
-            </blockquote> 
+            </blockquote>
           `)
           /*
            * First Enter creates new paragraph within the innermost block quote.

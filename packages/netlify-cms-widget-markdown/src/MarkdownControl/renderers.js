@@ -315,8 +315,9 @@ export function renderInline__DEPRECATED() {
 }
 
 export function Element(props) {
-  const { children, element } = props;
+  const { children, element, classNameWrapper, codeBlockComponent } = props;
   const style = { textAlign: element.align };
+
   switch (element.type) {
     case 'bulleted-list':
       return <BulletedList>{children}</BulletedList>;
@@ -343,8 +344,19 @@ export function Element(props) {
     case 'break':
       return <Break {...props} />;
     case 'shortcode':
+      if (element.id === 'code-block' && codeBlockComponent) {
+        return (
+          <VoidBlock {...props}>
+            <Shortcode
+              classNameWrapper={classNameWrapper}
+              typeOverload="code-block"
+              {...props}
+            />
+          </VoidBlock>
+        );
+      }
       return (
-        <VoidBlock>
+        <VoidBlock {...props}>
           <Shortcode {...props}>{children}</Shortcode>
         </VoidBlock>
       );
@@ -406,7 +418,7 @@ export function renderBlock__DEPRECATED({ classNameWrapper, codeBlockComponent }
         return <NumberedList {...props} />;
       case 'shortcode':
         return (
-          <VoidBlock {...props}>
+          <VoidBlock {...props} node={props.node}>
             <Shortcode classNameWrapper={classNameWrapper} {...props} />
           </VoidBlock>
         );

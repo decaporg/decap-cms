@@ -5,10 +5,10 @@ describe('Markdown widget', () => {
     before(() => {
       Cypress.config('defaultCommandTimeout', 4000);
       cy.task('setupBackend', { backend: 'test' });
-      cy.loginAndNewPost();
     });
 
     beforeEach(() => {
+      cy.loginAndNewPost();
       cy.clearMarkdownEditorContent();
     });
 
@@ -18,8 +18,7 @@ describe('Markdown widget', () => {
 
     describe('toolbar buttons', () => {
       it('creates and focuses empty list', () => {
-        cy.clickUnorderedListButton()
-          .confirmMarkdownEditorContent(`
+        cy.clickUnorderedListButton().confirmMarkdownEditorContent(`
             <ul>
               <li>
                 <p></p>
@@ -29,17 +28,13 @@ describe('Markdown widget', () => {
       });
 
       it('removes list', () => {
-        cy.clickUnorderedListButton({ times: 2 })
-          .confirmMarkdownEditorContent(`
+        cy.clickUnorderedListButton().clickUnorderedListButton().confirmMarkdownEditorContent(`
             <p></p>
           `);
       });
 
       it('converts a list item to a paragraph block which is a sibling of the parent list', () => {
-        cy.clickUnorderedListButton()
-          .type('foo')
-          .enter()
-          .clickUnorderedListButton()
+        cy.clickUnorderedListButton().type('foo').enter().clickUnorderedListButton()
           .confirmMarkdownEditorContent(`
             <ul>
               <li>
@@ -47,18 +42,20 @@ describe('Markdown widget', () => {
               </li>
             </ul>
             <p></p>
-          `)
+          `);
       });
 
       it('converts empty nested list item to empty paragraph block in parent list item', () => {
-        cy.clickUnorderedListButton()
+        cy
+          .clickUnorderedListButton()
           .type('foo')
           .enter()
           .tabkey()
           .type('bar')
           .enter()
           .tabkey()
-          .confirmMarkdownEditorContent(`
+          .confirmMarkdownEditorContent(
+            `
             <ul>
               <li>
                 <p>foo</p>
@@ -74,9 +71,11 @@ describe('Markdown widget', () => {
                 </ul>
               </li>
             </ul>
-          `)
+          `,
+          )
           .clickUnorderedListButton()
-          .confirmMarkdownEditorContent(`
+          .confirmMarkdownEditorContent(
+            `
             <ul>
               <li>
                 <p>foo</p>
@@ -88,10 +87,10 @@ describe('Markdown widget', () => {
                 </ul>
               </li>
             </ul>
-          `)
+          `,
+          )
           .backspace({ times: 4 })
-          .clickUnorderedListButton()
-          .confirmMarkdownEditorContent(`
+          .clickUnorderedListButton().confirmMarkdownEditorContent(`
             <ul>
               <li>
                 <p>foo</p>
@@ -102,7 +101,8 @@ describe('Markdown widget', () => {
       });
 
       it('moves nested list item content to parent list item when in first block', () => {
-        cy.clickUnorderedListButton()
+        cy
+          .clickUnorderedListButton()
           .type('foo')
           .enter()
           .tabkey()
@@ -111,7 +111,8 @@ describe('Markdown widget', () => {
           .tabkey()
           .type('baz')
           .clickUnorderedListButton()
-          .confirmMarkdownEditorContent(`
+          .confirmMarkdownEditorContent(
+            `
             <ul>
               <li>
                 <p>foo</p>
@@ -123,10 +124,12 @@ describe('Markdown widget', () => {
                 </ul>
               </li>
             </ul>
-          `)
+          `,
+          )
           .up()
           .clickUnorderedListButton()
-          .confirmMarkdownEditorContent(`
+          .confirmMarkdownEditorContent(
+            `
             <ul>
               <li>
                 <p>foo</p>
@@ -134,10 +137,10 @@ describe('Markdown widget', () => {
                 <p>baz</p>
               </li>
             </ul>
-          `)
+          `,
+          )
           .up()
-          .clickUnorderedListButton()
-          .confirmMarkdownEditorContent(`
+          .clickUnorderedListButton().confirmMarkdownEditorContent(`
             <p>foo</p>
             <p>bar</p>
             <p>baz</p>
@@ -145,15 +148,15 @@ describe('Markdown widget', () => {
       });
 
       it('affects only the current block with collapsed selection', () => {
-        cy.focused()
+        cy
+          .focused()
           .type('foo')
           .enter()
           .type('bar')
           .enter()
           .type('baz')
           .up()
-          .clickUnorderedListButton()
-          .confirmMarkdownEditorContent(`
+          .clickUnorderedListButton().confirmMarkdownEditorContent(`
             <p>foo</p>
             <ul>
               <li>
@@ -165,15 +168,15 @@ describe('Markdown widget', () => {
       });
 
       it('wrap each bottom-most block in a selection with a list item block', () => {
-        cy.focused()
+        cy
+          .focused()
           .type('foo')
           .enter()
           .type('bar')
           .enter()
           .type('baz')
           .setSelection('foo', 'baz')
-          .clickUnorderedListButton()
-          .confirmMarkdownEditorContent(`
+          .clickUnorderedListButton().confirmMarkdownEditorContent(`
             <ul>
               <li>
                 <p>foo</p>
@@ -185,25 +188,25 @@ describe('Markdown widget', () => {
                 <p>baz</p>
               </li>
             </ul>
-          `)
-      })
+          `);
+      });
 
       it('unwraps list item block from each selected list item and unwraps all of them from the outer list block', () => {
-        cy.clickUnorderedListButton()
+        cy
+          .clickUnorderedListButton()
           .type('foo')
           .enter()
           .type('bar')
           .enter()
           .type('baz')
           .setSelection('foo', 'baz')
-          .clickUnorderedListButton()
-          .confirmMarkdownEditorContent(`
+          .clickUnorderedListButton().confirmMarkdownEditorContent(`
             <p>foo</p>
             <p>bar</p>
             <p>baz</p>
-          `)
-      })
-      
+          `);
+      });
+
       it('combines adjacent same-typed lists, not differently typed lists', () => {
         cy.focused()
           .type('foo')
@@ -215,7 +218,8 @@ describe('Markdown widget', () => {
           .clickUnorderedListButton()
           .up()
           .clickUnorderedListButton()
-          .confirmMarkdownEditorContent(`
+          .confirmMarkdownEditorContent(
+            `
             <ul>
               <li>
                 <p>foo</p>
@@ -225,10 +229,13 @@ describe('Markdown widget', () => {
               </li>
             </ul>
             <p>baz</p>
-          `)
+          `,
+          )
           .down({ times: 2 })
+          .focused()
           .clickUnorderedListButton()
-          .confirmMarkdownEditorContent(`
+          .confirmMarkdownEditorContent(
+            `
             <ul>
               <li>
                 <p>foo</p>
@@ -240,12 +247,14 @@ describe('Markdown widget', () => {
                 <p>baz</p>
               </li>
             </ul>
-          `)
+          `,
+          )
           .up()
           .enter()
           .type('qux')
           .tabkey()
-          .confirmMarkdownEditorContent(`
+          .confirmMarkdownEditorContent(
+            `
             <ul>
               <li>
                 <p>foo</p>
@@ -262,11 +271,13 @@ describe('Markdown widget', () => {
                 <p>baz</p>
               </li>
             </ul>
-          `)
+          `,
+          )
           .up()
           .enter()
           .type('quux')
-          .confirmMarkdownEditorContent(`
+          .confirmMarkdownEditorContent(
+            `
             <ul>
               <li>
                 <p>foo</p>
@@ -286,9 +297,11 @@ describe('Markdown widget', () => {
                 <p>baz</p>
               </li>
             </ul>
-          `)
+          `,
+          )
           .clickOrderedListButton()
-          .confirmMarkdownEditorContent(`
+          .confirmMarkdownEditorContent(
+            `
             <ul>
               <li>
                 <p>foo</p>
@@ -310,7 +323,8 @@ describe('Markdown widget', () => {
                 <p>baz</p>
               </li>
             </ul>
-          `)
+          `,
+          )
           .setSelection({
             anchorQuery: 'ul > li > ol p',
             anchorOffset: 1,
@@ -320,7 +334,8 @@ describe('Markdown widget', () => {
       });
 
       it('affects only selected list items', () => {
-        cy.clickUnorderedListButton()
+        cy
+          .clickUnorderedListButton()
           .type('foo')
           .enter()
           .type('bar')
@@ -328,7 +343,8 @@ describe('Markdown widget', () => {
           .type('baz')
           .setSelection('bar')
           .clickUnorderedListButton()
-          .confirmMarkdownEditorContent(`
+          .confirmMarkdownEditorContent(
+            `
             <ul>
               <li>
                 <p>foo</p>
@@ -340,11 +356,13 @@ describe('Markdown widget', () => {
                 <p>baz</p>
               </li>
             </ul>
-          `)
+          `,
+          )
           .clickUnorderedListButton()
           .setSelection('bar', 'baz')
           .clickUnorderedListButton()
-          .confirmMarkdownEditorContent(`
+          .confirmMarkdownEditorContent(
+            `
             <ul>
               <li>
                 <p>foo</p>
@@ -352,9 +370,11 @@ describe('Markdown widget', () => {
             </ul>
             <p>bar</p>
             <p>baz</p>
-          `)
+          `,
+          )
           .clickUnorderedListButton()
-          .confirmMarkdownEditorContent(`
+          .confirmMarkdownEditorContent(
+            `
             <ul>
               <li>
                 <p>foo</p>
@@ -366,10 +386,12 @@ describe('Markdown widget', () => {
                 <p>baz</p>
               </li>
             </ul>
-          `)
+          `,
+          )
           .setSelection('baz')
           .clickUnorderedListButton()
-          .confirmMarkdownEditorContent(`
+          .confirmMarkdownEditorContent(
+            `
             <ul>
               <li>
                 <p>foo</p>
@@ -379,14 +401,16 @@ describe('Markdown widget', () => {
               </li>
             </ul>
             <p>baz</p>
-          `)
+          `,
+          )
           .clickUnorderedListButton()
           .tabkey()
           .setCursorAfter('baz')
           .enter()
           .tabkey()
           .type('qux')
-          .confirmMarkdownEditorContent(`
+          .confirmMarkdownEditorContent(
+            `
           <ul>
             <li>
               <p>foo</p>
@@ -404,11 +428,13 @@ describe('Markdown widget', () => {
                 </li>
               </ul>
             </li>
-          </ul>  
-          `)
+          </ul>
+          `,
+          )
           .setSelection('baz')
           .clickOrderedListButton()
-          .confirmMarkdownEditorContent(`
+          .confirmMarkdownEditorContent(
+            `
           <ul>
             <li>
               <p>foo</p>
@@ -426,8 +452,9 @@ describe('Markdown widget', () => {
                 </li>
               </ol>
             </li>
-          </ul>  
-          `)
+          </ul>
+          `,
+          )
           .setCursorAfter('qux')
           .enter({ times: 2 })
           .clickUnorderedListButton()
@@ -455,24 +482,25 @@ describe('Markdown widget', () => {
                 </ul>
               </li>
             </ul>
-          `)
+          `);
       });
-    });
+    // });
+});
 
     describe('on Enter', () => {
       it('removes the list item and list if empty', () => {
-        cy.clickUnorderedListButton()
-          .enter()
-          .confirmMarkdownEditorContent(`
+        cy.clickUnorderedListButton().enter().confirmMarkdownEditorContent(`
             <p></p>
           `);
       });
 
       it('creates a new list item in a non-empty list', () => {
-        cy.clickUnorderedListButton()
+        cy
+          .clickUnorderedListButton()
           .type('foo')
           .enter()
-          .confirmMarkdownEditorContent(`
+          .confirmMarkdownEditorContent(
+            `
             <ul>
               <li>
                 <p>foo</p>
@@ -481,10 +509,10 @@ describe('Markdown widget', () => {
                 <p></p>
               </li>
             </ul>
-          `)
+          `,
+          )
           .type('bar')
-          .enter()
-          .confirmMarkdownEditorContent(`
+          .enter().confirmMarkdownEditorContent(`
             <ul>
               <li>
                 <p>foo</p>
@@ -500,10 +528,7 @@ describe('Markdown widget', () => {
       });
 
       it('creates a new default block below a list when hitting Enter twice on an empty list item of the list', () => {
-        cy.clickUnorderedListButton()
-          .type('foo')
-          .enter({ times: 2 })
-          .confirmMarkdownEditorContent(`
+        cy.clickUnorderedListButton().type('foo').enter({ times: 2 }).confirmMarkdownEditorContent(`
             <ul>
               <li>
                 <p>foo</p>
@@ -516,19 +541,13 @@ describe('Markdown widget', () => {
 
     describe('on Backspace', () => {
       it('removes the list item and list if empty', () => {
-        cy.clickUnorderedListButton()
-          .backspace()
-          .confirmMarkdownEditorContent(`
+        cy.clickUnorderedListButton().backspace().confirmMarkdownEditorContent(`
             <p></p>
           `);
       });
 
       it('removes the list item if list not empty', () => {
-        cy.clickUnorderedListButton()
-          .type('foo')
-          .enter()
-          .backspace()
-          .confirmMarkdownEditorContent(`
+        cy.clickUnorderedListButton().type('foo').enter().backspace().confirmMarkdownEditorContent(`
             <ul>
               <li>
                 <p>foo</p>
@@ -539,9 +558,7 @@ describe('Markdown widget', () => {
       });
 
       it('does not remove list item if empty with non-default block', () => {
-        cy.clickUnorderedListButton()
-          .clickHeadingOneButton()
-          .backspace()
+        cy.clickUnorderedListButton().clickHeadingOneButton().backspace()
           .confirmMarkdownEditorContent(`
             <ul>
               <li>
@@ -554,33 +571,37 @@ describe('Markdown widget', () => {
 
     describe('on Tab', () => {
       it('does nothing in top level list', () => {
-        cy.clickUnorderedListButton()
+        cy
+          .clickUnorderedListButton()
           .tabkey()
-          .confirmMarkdownEditorContent(`
+          .confirmMarkdownEditorContent(
+            `
             <ul>
               <li>
                 <p></p>
               </li>
             </ul>
-          `)
+          `,
+          )
           .type('foo')
-          .tabkey()
-          .confirmMarkdownEditorContent(`
+          .tabkey().confirmMarkdownEditorContent(`
             <ul>
               <li>
                 <p>foo</p>
               </li>
             </ul>
-          `)
+          `);
       });
 
       it('indents nested list items', () => {
-        cy.clickUnorderedListButton()
+        cy
+          .clickUnorderedListButton()
           .type('foo')
           .enter()
           .type('bar')
           .tabkey()
-          .confirmMarkdownEditorContent(`
+          .confirmMarkdownEditorContent(
+            `
             <ul>
               <li>
                 <p>foo</p>
@@ -591,10 +612,10 @@ describe('Markdown widget', () => {
                 </ul>
               </li>
             </ul>
-          `)
+          `,
+          )
           .enter()
-          .tabkey()
-          .confirmMarkdownEditorContent(`
+          .tabkey().confirmMarkdownEditorContent(`
             <ul>
               <li>
                 <p>foo</p>
@@ -610,15 +631,11 @@ describe('Markdown widget', () => {
                 </ul>
               </li>
             </ul>
-          `)
+          `);
       });
 
       it('only nests up to one level down from the parent list', () => {
-        cy.clickUnorderedListButton()
-          .type('foo')
-          .enter()
-          .tabkey()
-          .confirmMarkdownEditorContent(`
+        cy.clickUnorderedListButton().type('foo').enter().tabkey().confirmMarkdownEditorContent(`
             <ul>
               <li>
                 <p>foo</p>
@@ -633,11 +650,7 @@ describe('Markdown widget', () => {
       });
 
       it('unindents nested list items with shift', () => {
-        cy.clickUnorderedListButton()
-          .type('foo')
-          .enter()
-          .tabkey()
-          .tabkey({ shift: true })
+        cy.clickUnorderedListButton().type('foo').enter().tabkey().tabkey({ shift: true })
           .confirmMarkdownEditorContent(`
             <ul>
               <li>
@@ -647,11 +660,12 @@ describe('Markdown widget', () => {
                 <p></p>
               </li>
             </ul>
-          `)
+          `);
       });
 
       it('indents and unindents from one level below parent back to document root', () => {
-        cy.clickUnorderedListButton()
+        cy
+          .clickUnorderedListButton()
           .type('foo')
           .enter()
           .tabkey()
@@ -659,7 +673,8 @@ describe('Markdown widget', () => {
           .enter()
           .tabkey()
           .type('baz')
-          .confirmMarkdownEditorContent(`
+          .confirmMarkdownEditorContent(
+            `
             <ul>
               <li>
                 <p>foo</p>
@@ -675,9 +690,11 @@ describe('Markdown widget', () => {
                 </ul>
               </li>
             </ul>
-          `)
+          `,
+          )
           .tabkey({ shift: true })
-          .confirmMarkdownEditorContent(`
+          .confirmMarkdownEditorContent(
+            `
             <ul>
               <li>
                 <p>foo</p>
@@ -691,9 +708,9 @@ describe('Markdown widget', () => {
                 </ul>
               </li>
             </ul>
-          `)
-          .tabkey({ shift: true })
-          .confirmMarkdownEditorContent(`
+          `,
+          )
+          .tabkey({ shift: true }).confirmMarkdownEditorContent(`
             <ul>
               <li>
                 <p>foo</p>
@@ -707,7 +724,7 @@ describe('Markdown widget', () => {
                 <p>baz</p>
               </li>
             </ul>
-          `)
+          `);
       });
     });
   });
