@@ -497,7 +497,8 @@ function validateListFields({ name, description }) {
   cy.getMarkdownEditor()
     .eq(2)
     .type(description);
-  flushClockAndSave();
+  // flushClockAndSave(); does not play well with toastify
+  cy.contains('button', 'Save').click();
   assertNotification(notifications.saved);
   assertFieldErrorStatus('Authors', colorNormal);
 }
@@ -597,7 +598,8 @@ function validateNestedListFields() {
   cy.contains('label', 'Country')
     .next()
     .type('United States');
-  flushClockAndSave();
+  // flushClockAndSave();
+  cy.contains('button', 'Save').click();
   assertNotification(notifications.saved);
 }
 
