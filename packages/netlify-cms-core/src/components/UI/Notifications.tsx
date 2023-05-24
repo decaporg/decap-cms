@@ -71,7 +71,7 @@ function Notifications({ notifications }: Props) {
 
   return (
     <>
-      <ToastContainer position="top-center" theme="colored" />
+      <ToastContainer position="top-center" theme="colored" className="notif__container" />
     </>
   );
 }
