@@ -73,6 +73,7 @@ class MediaLibrary extends React.Component {
   state = {
     selectedFile: {},
     query: '',
+    isPersisted: false,
   };
 
   componentDidMount() {
@@ -89,6 +90,13 @@ class MediaLibrary extends React.Component {
     if (isOpening) {
       this.setState({ selectedFile: {}, query: '' });
     }
+
+    if (this.state.isPersisted) {
+      this.setState({
+        selectedFile: nextProps.files[0],
+        isPersisted: false
+       });
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -96,6 +104,13 @@ class MediaLibrary extends React.Component {
 
     if (isOpening && prevProps.privateUpload !== this.props.privateUpload) {
       this.props.loadMedia({ privateUpload: this.props.privateUpload });
+    }
+
+    if (this.state.isPersisted) {
+      this.setState({
+        selectedFile: this.props.files[0],
+        isPersisted: false
+       });
     }
   }
 
@@ -186,7 +201,7 @@ class MediaLibrary extends React.Component {
     } else {
       await persistMedia(file, { privateUpload, field });
 
-      this.setState({ selectedFile: this.props.files[0] });
+      this.setState({ isPersisted: true });
 
       this.scrollToTop();
     }
