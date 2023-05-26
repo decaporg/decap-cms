@@ -38,11 +38,15 @@ function login(user) {
 }
 
 function assertNotification(message) {
-  cy.get('.notif__container').within(() => {
-    cy.contains(message);
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(500);
-    cy.contains(message).invoke('hide');
+  // if clock is use, a tick is needed for toastify to show the notifications
+  cy.clock().then(clock => {
+    if (clock) {
+      advanceClock(clock);
+    }
+    cy.get('.notif__container').within(() => {
+      cy.contains(message);
+      cy.contains(message).invoke('hide');
+    });
   });
 }
 
@@ -119,7 +123,12 @@ function updateWorkflowStatus({ title }, fromColumnHeading, toColumnHeading) {
   cy.contains('h2', toColumnHeading)
     .parent()
     .drop();
-  assertNotification(notifications.updated);
+  cy.clock().then(clock => {
+    if (clock) {
+      advanceClock(clock);
+    }
+    assertNotification(notifications.updated);
+  });
 }
 
 function publishWorkflowEntry({ title }, timeout) {
@@ -248,15 +257,10 @@ function flushClockAndSave() {
   cy.clock().then(clock => {
     // some input fields are de-bounced thus require advancing the clock
     if (clock) {
-      // https://github.com/cypress-io/cypress/issues/1273
-      clock.tick(150);
-      clock.tick(150);
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.wait(500);
+      advanceClock(clock);
     }
 
     cy.contains('button', 'Save').click();
-    assertNotification(notifications.saved);
   });
 }
 
@@ -497,8 +501,7 @@ function validateListFields({ name, description }) {
   cy.getMarkdownEditor()
     .eq(2)
     .type(description);
-  // flushClockAndSave(); does not play well with toastify
-  cy.contains('button', 'Save').click();
+  flushClockAndSave();
   assertNotification(notifications.saved);
   assertFieldErrorStatus('Authors', colorNormal);
 }
@@ -598,8 +601,7 @@ function validateNestedListFields() {
   cy.contains('label', 'Country')
     .next()
     .type('United States');
-  // flushClockAndSave();
-  cy.contains('button', 'Save').click();
+  flushClockAndSave();
   assertNotification(notifications.saved);
 }
 

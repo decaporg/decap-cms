@@ -111,7 +111,9 @@ export default class ControlPane extends React.Component {
 
   handleLocaleChange = val => {
     this.setState({ selectedLocale: val });
-    this.props.onLocaleChange(val);
+    if (this.props.onLocaleChange) {
+      this.props.onLocaleChange(val);
+    }
   };
 
   copyFromOtherLocale =
