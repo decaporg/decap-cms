@@ -85,7 +85,7 @@ function mediaLibrary(state = Map(defaultState), action: MediaLibraryAction) {
       }
       return state.withMutations(map => {
         map.set('isVisible', true);
-        map.set('forImage', forImage ?? '');
+        map.set('forImage', forImage ?? false);
         map.set('controlID', controlID ?? '');
         map.set('canInsert', !!controlID);
         map.set('privateUpload', privateUpload);

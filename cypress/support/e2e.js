@@ -13,7 +13,6 @@
 // https://on.cypress.io/configuration
 // ***********************************************************
 import 'cypress-plugin-tab';
-import 'cypress-file-upload';
 import 'cypress-jest-adapter';
 import { addMatchImageSnapshotCommand } from 'cypress-image-snapshot/command';
 
