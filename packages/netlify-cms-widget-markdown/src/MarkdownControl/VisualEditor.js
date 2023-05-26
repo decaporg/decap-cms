@@ -8,6 +8,7 @@ import styled from '@emotion/styled';
 import { createEditor, Transforms, Editor as SlateEditor } from 'slate';
 import { Editable, ReactEditor, Slate, withReact } from 'slate-react';
 import { fromJS } from 'immutable';
+import { debounce } from 'lodash';
 
 import { editorStyleVars, EditorControlBar } from '../styles';
 import Toolbar from './Toolbar';
@@ -131,8 +132,7 @@ function Editor(props) {
   }
   const [toolbarKey, setToolbarKey] = useState(0);
 
-
-  function handleChange(newValue) {
+  const handleDocumentChange = debounce((newValue) => {
     setValue(newValue);
     onChange(
       slateToMarkdown(newValue, {
@@ -140,6 +140,10 @@ function Editor(props) {
         remarkPlugins: getRemarkPlugins(),
       }),
     );
+  }, 150);
+
+  function handleChange(newValue) {
+    handleDocumentChange(newValue);
     setToolbarKey(prev => prev + 1);
   }
 
@@ -163,6 +167,7 @@ function Editor(props) {
   function hasListItems(type) {
     return isCursorInBlockType(editor, type);
   }
+
 
   return (
     <div

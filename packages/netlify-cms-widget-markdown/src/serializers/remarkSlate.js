@@ -67,7 +67,7 @@ export function wrapInlinesWithTexts(children) {
   }
 
   for (let i = 0; i < insertLocations.length; i++) {
-    children.splice(insertLocations[i] + i, 0, { object: 'text', text: '' });
+    children.splice(insertLocations[i] + i, 0, { text: '' });
   }
 
   return children;
@@ -182,7 +182,7 @@ export default function remarkToSlate({ voidCodeBlock } = {}) {
    * Create a Slate Raw text node.
    */
   function createText(node) {
-    const newNode = { object: 'text' };
+    const newNode = {};
     if (typeof node === 'string') {
       return { ...newNode, text: node };
     }
