@@ -21,9 +21,7 @@ const assertEntriesCount = count => {
 };
 
 const assertInEntries = text => {
-  cy.get('[class*=ListCardLink]').within(() => {
-    cy.contains('h2', text);
-  });
+  cy.get('[class*=ListCardLink] h2').contains('h2', text);
 };
 
 describe('View Group', () => {
