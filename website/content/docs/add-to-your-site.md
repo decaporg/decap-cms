@@ -36,11 +36,11 @@ admin
  └ config.yml
 ```
 
-The first file, `admin/index.html`, is the entry point for the Decap CMS admin interface. This means that users navigate to `yoursite.com/admin/` to access it. On the code side, it's a basic HTML starter page that loads the Decap CMS JavaScript file. 
+The first file, `admin/index.html`, is the entry point for the Decap CMS admin interface. This means that users navigate to `yoursite.com/admin/` to access it. On the code side, it's a basic HTML starter page that loads the Decap CMS JavaScript file.
 
 The second file, `admin/config.yml`, is the heart of your Decap CMS installation, and a bit more complex. The [Configuration](#configuration) section covers the details.
 
-In this example, we pull the `admin/index.html` file from a public CDN. 
+In this example, we pull the `admin/index.html` file from a public CDN.
 
 ```html
 <!doctype html>
@@ -62,7 +62,7 @@ In the code above the `script` is loaded from the `unpkg` CDN. Should there be a
 
 ### Installing with npm
 
-You can also use Decap CMS as an npm module. Wherever you import Decap CMS, it automatically runs, taking over the current page. Make sure the script that imports it only runs on your CMS page. 
+You can also use Decap CMS as an npm module. Wherever you import Decap CMS, it automatically runs, taking over the current page. Make sure the script that imports it only runs on your CMS page.
 
 First install the package and save it to your project:
 
@@ -282,12 +282,14 @@ If you set your registration preference to "Invite only," invite yourself (and a
 If you left your site registration open, or for return visits after confirming an email invitation, access your site's CMS at `yoursite.com/admin/`.
 
 ---
-**Note:** No matter where you access Decap CMS — whether running locally, in a staging environment, or in your published site — it always fetches and commits files in your hosted repository (for example, on GitHub), on the branch you configured in your Decap CMS `config.yml` file. 
+**Note:** No matter where you access Decap CMS — whether running locally, in a staging environment, or in your published site — it always fetches and commits files in your hosted repository (for example, on GitHub), on the branch you configured in your Decap CMS `config.yml` file.
 
 This means:
 
 - Content fetched in the admin UI matches the content in the repository, which may be different from your locally running site.
+
 - Content saved using the admin UI saves directly to the hosted repository, even if you're running the UI locally or in staging.
+
 ---
 
 Happy posting!
