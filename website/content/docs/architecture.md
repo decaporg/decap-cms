@@ -13,20 +13,28 @@ The core abstractions for content editing are `collections`, `entries`, and `wid
 * The structure of an `entry` is defined as a series of fields, each with a `name`, a `label`, and a `widget`.
 * The `widget` determines the UI widget that the content editor will use when editing this field of an entry, as well as how the content of the field is presented in the editing preview.
 
-Entries are loaded and persisted through a `backend` that will typically represent a `git` repository. 
+Entries are loaded and persisted through a `backend` that will typically represent a `git` repository.
 
 ## State shape / reducers
+
 - **Auth:** Keeps track of the logged state and the current user.
+
 - **Config:** Holds the environment configuration (backend type, available collections, and fields).
+
 - **Collections:** List of available collections, their fields, and metadata information.
+
 - **Entries:** Entries for each field.
+
 - **EntryDraft:** Reused for each entry that is edited or created. It holds the entry's temporary data until it's persisted on the backend.
 
 ## Selectors
 Selectors are functions defined within reducers used to compute derived data from the Redux store. The available selectors are:
 
+
 - **`selectEntry`:** Selects a single entry, given the collection and a slug.
+
 - **`selectEntries`:** Selects all entries for a given collection.
+
 - **`getAsset`:** Selects a single `AssetProxy` object for the given path.
 
 ## Value Objects
