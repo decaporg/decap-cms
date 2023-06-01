@@ -72,6 +72,8 @@ function newPostWithImage(entry) {
 
 function publishPostWithImage(entry) {
   newPostWithImage(entry);
+  // eslint-disable-next-line cypress/no-unnecessary-waiting
+  cy.wait(500);
   exitEditor();
   goToWorkflow();
   updateWorkflowStatus(entry, workflowStatus.draft, workflowStatus.ready);
