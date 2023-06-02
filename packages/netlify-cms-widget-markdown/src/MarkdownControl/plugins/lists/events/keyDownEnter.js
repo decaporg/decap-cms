@@ -18,7 +18,6 @@ function keyDownEnter(editor) {
 
   // if edge of selection is in the begining of the first text node in list-item
   if (isCursorAtListItemStart(editor)) {
-    // todo: handle moving lifing to parent list
     return liftListItem(editor);
   }
 
