@@ -250,6 +250,9 @@ Cypress.Commands.add('clickToolbarButton', (title, { times } = {}) => {
   }
   const instance = isHeading ? cy.contains('div', title) : cy.get(`button[title="${title}"]`);
   const fn = chain => chain.click();
+  // this seems to be the only thing that makes cypress stable(ish)
+  // eslint-disable-next-line cypress/no-unnecessary-waiting
+  cy.wait(40);
   return runTimes(instance, fn, times).focused();
 });
 

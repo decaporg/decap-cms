@@ -60,14 +60,13 @@ function Editor(props) {
     getRemarkPlugins,
     onChange,
   } = props;
-  const [editor] = useState(
+
+  const [editor] = useState(() =>
     withReact(withShortcodes(withBlocks(withLists(withInlines(createEditor()))))),
-  );
+    );
 
   const emptyValue = [defaultEmptyBlock()];
-
-  const [value, setValue] = useState(props.value ? markdownToSlate(props.value) : emptyValue);
-
+  const [editorValue, setEditorValue] = useState(props.value ? markdownToSlate(props.value) : emptyValue);
   let editorComponents = getEditorComponents();
   const codeBlockComponent = fromJS(editorComponents.find(({ type }) => type === 'code-block'));
 
@@ -133,19 +132,22 @@ function Editor(props) {
   const [toolbarKey, setToolbarKey] = useState(0);
 
   const handleDocumentChange = debounce((newValue) => {
-    setValue(newValue);
-    onChange(
-      slateToMarkdown(newValue, {
-        voidCodeBlock: !!codeBlockComponent,
-        remarkPlugins: getRemarkPlugins(),
-      }),
-    );
+    setEditorValue(newValue);
   }, 150);
 
   function handleChange(newValue) {
     handleDocumentChange(newValue);
     setToolbarKey(prev => prev + 1);
   }
+
+  useEffect(() => {
+    onChange(
+      slateToMarkdown(editorValue, {
+        voidCodeBlock: !!codeBlockComponent,
+        remarkPlugins: getRemarkPlugins(),
+      }),
+    );
+  }, [editorValue]);
 
   function hasMark(format) {
     return isMarkActive(editor, format);
@@ -168,14 +170,13 @@ function Editor(props) {
     return isCursorInBlockType(editor, type);
   }
 
-
   return (
     <div
       css={coreCss`
         position: relative;
       `}
     >
-      <Slate editor={editor} value={value} onChange={handleChange}>
+      <Slate editor={editor} value={editorValue} onChange={handleChange}>
         <EditorControlBar>
           {
             <Toolbar
@@ -212,7 +213,7 @@ function Editor(props) {
                   `,
                 )}
               >
-                {value.length !== 0 && (
+                {editorValue.length !== 0 && (
                   <Editable
                     className={css`
                       padding: 16px 20px 0;
@@ -220,6 +221,7 @@ function Editor(props) {
                     renderElement={renderElement}
                     renderLeaf={renderLeaf}
                     onKeyDown={handleKeyDown}
+                    autoFocus={false}
                   />
                 )}
                 <InsertionPoint onClick={handleClickBelowDocument} />
