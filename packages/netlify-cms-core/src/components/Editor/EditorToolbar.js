@@ -405,7 +405,7 @@ export class EditorToolbar extends React.Component {
     return canPublish ? (
       <ToolbarDropdown
         dropdownTopOverlap="40px"
-        dropdownWidth="150px"
+        dropdownWidth="200px"
         renderButton={() => (
           <PublishButton>
             {isPublishing
