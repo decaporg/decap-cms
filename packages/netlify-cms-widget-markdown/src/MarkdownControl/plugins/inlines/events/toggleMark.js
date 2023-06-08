@@ -1,6 +1,6 @@
-import { Editor } from "slate";
+import { Editor } from 'slate';
 
-import isMarkActive from "../locations/isMarkActive";
+import isMarkActive from '../locations/isMarkActive';
 
 function toggleMark(editor, format) {
   if (isMarkActive(editor, format)) {

@@ -50,7 +50,6 @@ function RawEditor(props) {
   }
 
   function handleChange(value) {
-    console.log('handleChange', value);
     onChange(value.map(line => line.children[0].text).join('\n'));
     setValue(value);
   }
