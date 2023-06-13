@@ -9,6 +9,7 @@ declare module 'netlify-cms-core' {
     | 'git-gateway'
     | 'github'
     | 'gitlab'
+    | 'gitea'
     | 'bitbucket'
     | 'test-repo'
     | 'proxy';

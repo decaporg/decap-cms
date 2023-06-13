@@ -6,6 +6,8 @@ const es = {
     loginWithBitbucket: 'Iniciar sesión con Bitbucket',
     loginWithGitHub: 'Iniciar sesión con GitHub',
     loginWithGitLab: 'Iniciar sesión con GitLab',
+    loginWithGitLab: 'Iniciar sesión con GitLab',
+    loginWithGitea: 'Iniciar sesión con Gitea',
     errors: {
       email: 'Asegúrate de introducir tu correo electrónico.',
       password: 'Por favor introduce tu contraseña.',

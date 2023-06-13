@@ -6,6 +6,7 @@ const gr = {
     loginWithBitbucket: 'Σύνδεση μέσω Bitbucket',
     loginWithGitHub: 'Σύνδεση μέσω GitHub',
     loginWithGitLab: 'Σύνδεση μέσω GitLab',
+    loginWithGitea: 'Σύνδεση μέσω Gitea',
     errors: {
       email: 'Βεβαιωθείτε ότι έχετε εισαγάγει το email σας.',
       password: 'Παρακαλώ εισάγετε τον κωδικό πρόσβασής σας.',

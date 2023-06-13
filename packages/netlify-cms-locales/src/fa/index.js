@@ -7,6 +7,7 @@ const fa = {
     loginWithBitbucket: 'با Bitbucket وارد شوید',
     loginWithGitHub: 'با GitHub وارد شوید',
     loginWithGitLab: 'با GitLab وارد شوید',
+    loginWithGitea: 'با Gitea وارد شوید',
     errors: {
       email: 'ایمیل خود را حتما وارد کنید.',
       password: 'لطفا رمز عبور خود را وارد کنید.',

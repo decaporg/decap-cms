@@ -7,6 +7,7 @@ const ja = {
     loginWithBitbucket: 'Bitbucket でログインする',
     loginWithGitHub: 'GitHub でログインする',
     loginWithGitLab: 'GitLab でログインする',
+    loginWithGitea: 'Gitea でログインする',
     errors: {
       email: 'メールアドレスを確認してください。',
       password: 'パスワードを入力してください。',

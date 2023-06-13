@@ -6,6 +6,7 @@ const it = {
     loginWithBitbucket: 'Accedi con Bitbucket',
     loginWithGitHub: 'Accedi con GitHub',
     loginWithGitLab: 'Accedi con GitLab',
+    loginWithGitea: 'Accedi con Gitea',
     errors: {
       email: 'Assicurati di inserire la tua mail.',
       password: 'Inserisci la tua password.',
