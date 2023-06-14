@@ -1,6 +1,6 @@
 ---
 title: Gitea
-group: Backends
+group: Accounts
 weight: 25
 ---
 
