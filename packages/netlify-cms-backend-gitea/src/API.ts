@@ -1,6 +1,5 @@
 import { Base64 } from 'js-base64';
 import { trimStart, trim, result, partial, last, initial } from 'lodash';
-
 import {
   APIError,
   basename,
@@ -105,7 +104,7 @@ export default class API {
   constructor(config: Config) {
     this.apiRoot = config.apiRoot || 'https://try.gitea.io/api/v1';
     this.token = config.token || '';
-    this.branch = config.branch || 'main';
+    this.branch = config.branch || 'master';
     this.repo = config.repo || '';
     this.originRepo = config.originRepo || this.repo;
     this.repoURL = `/repos/${this.repo}`;

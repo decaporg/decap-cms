@@ -1,12 +1,9 @@
 backend:
   name: gitea
-  base_url: https://git.denyskon.de
-  api_root: https://git.denyskon.de/api/v1
-  app_id: 247f0cf9-bc42-4a86-9d83-949f057d53ef
+  app_id: a582de8c-2459-4e5f-b671-80f99a0592cc
   branch: master
-  repo: gcg/gcg-website
+  repo: owner/repo
 
-publish_mode: editorial_workflow
 media_folder: static/media
 public_folder: /media
 collections:

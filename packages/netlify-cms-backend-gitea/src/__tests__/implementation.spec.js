@@ -1,12 +1,8 @@
-import Cursor, { CURSOR_COMPATIBILITY_SYMBOL } from '@staticcms/core/lib/util/Cursor';
+import { Cursor, CURSOR_COMPATIBILITY_SYMBOL } from 'netlify-cms-lib-util';
+
 import GiteaImplementation from '../implementation';
 
-import type { Config, UnknownField } from '@staticcms/core';
-import type API from '../API';
-import type { AssetProxy } from '@staticcms/core/valueObjects';
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-declare const global: any;
+jest.spyOn(console, 'error').mockImplementation(() => {});
 
 describe('gitea backend implementation', () => {
   const config = {
@@ -14,7 +10,7 @@ describe('gitea backend implementation', () => {
       repo: 'owner/repo',
       api_root: 'https://try.gitea.io/api/v1',
     },
-  } as Config<UnknownField>;
+  };
 
   const createObjectURL = jest.fn();
   global.URL = {
@@ -25,7 +21,7 @@ describe('gitea backend implementation', () => {
 
   beforeAll(() => {
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    jest.spyOn(console, 'error').mockImplementation(() => {});
+    
   });
 
   beforeEach(() => {
@@ -40,11 +36,11 @@ describe('gitea backend implementation', () => {
     const persistFiles = jest.fn();
     const mockAPI = {
       persistFiles,
-    } as unknown as API;
+    };
 
-    persistFiles.mockImplementation((_, files: (AssetProxy & { sha: string })[]) => {
+    persistFiles.mockImplementation((_, files) => {
       files.forEach((file, index) => {
-        file.sha = `${index}`;
+        file.sha = index;
       });
     });
 
@@ -55,13 +51,13 @@ describe('gitea backend implementation', () => {
       const mediaFile = {
         fileObj: { size: 100, name: 'image.png' },
         path: '/media/image.png',
-      } as AssetProxy;
+      };
 
       expect.assertions(5);
       await expect(
         giteaImplementation.persistMedia(mediaFile, { commitMessage: 'Persisting media' }),
       ).resolves.toEqual({
-        id: '0',
+        id: 0,
         name: 'image.png',
         size: 100,
         displayURL: 'displayURL',
@@ -86,7 +82,7 @@ describe('gitea backend implementation', () => {
       const mediaFile = {
         fileObj: { size: 100 },
         path: '/media/image.png',
-      } as AssetProxy;
+      };
 
       expect.assertions(5);
       await expect(
@@ -110,7 +106,7 @@ describe('gitea backend implementation', () => {
       readFile,
       readFileMetadata,
       originRepoURL: 'originRepoURL',
-    } as unknown as API;
+    };
 
     it('should return entries and cursor', async () => {
       const giteaImplementation = new GiteaImplementation(config);
@@ -140,7 +136,7 @@ describe('gitea backend implementation', () => {
       });
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (expectedEntries as any)[CURSOR_COMPATIBILITY_SYMBOL] = expectedCursor;
+      expectedEntries[CURSOR_COMPATIBILITY_SYMBOL] = expectedCursor;
 
       const result = await giteaImplementation.entriesByFolder('posts', 'md', 1);
 
@@ -161,10 +157,10 @@ describe('gitea backend implementation', () => {
       readFile,
       originRepoURL: 'originRepoURL',
       readFileMetadata,
-    } as unknown as API;
+    };
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const files: any[] = [];
+    const files = [];
     const count = 1501;
     for (let i = 0; i < count; i++) {
       const id = `${i}`.padStart(`${count}`.length, '0');

@@ -1,7 +1,6 @@
 import { stripIndent } from 'common-tags';
 import trimStart from 'lodash/trimStart';
 import semaphore from 'semaphore';
-
 import {
   asyncLock,
   basename,
@@ -17,6 +16,7 @@ import {
   runWithLock,
   unsentRequest,
 } from 'netlify-cms-lib-util';
+
 import API, { API_NAME } from './API';
 import AuthenticationPage from './AuthenticationPage';
 
@@ -77,12 +77,12 @@ export default class Gitea implements Implementation {
     }
 
     if (this.options.useWorkflow) {
-      throw new Error('The Gitea baclend does not support editorial workflow.')
+      throw new Error('The Gitea backend does not support editorial workflow.')
     }
 
     this.api = this.options.API || null;
     this.repo = this.originRepo = config.backend.repo || '';
-    this.branch = config.backend.branch?.trim() || 'main';
+    this.branch = config.backend.branch?.trim() || 'master';
     this.apiRoot = config.backend.api_root || 'https://try.gitea.io/api/v1';
     this.token = '';
     this.mediaFolder = config.media_folder;
@@ -178,8 +178,6 @@ export default class Gitea implements Implementation {
     if (!isCollab) {
       throw new Error('Your Gitea user account does not have access to this repo.');
     }
-
-    console.log(user);
 
     // Authorized user
     return {
@@ -415,26 +413,38 @@ export default class Gitea implements Implementation {
   }
 
   async unpublishedEntries() {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return {} as any;
   }
 
   async unpublishedEntry() {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return {} as any;
   }
 
   async unpublishedEntryDataFile() {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return {} as any;
   }
   
   async unpublishedEntryMediaFile() {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return {} as any;
   };
   
-  async updateUnpublishedEntryStatus() { };
-  async publishUnpublishedEntry() { };
-  async deleteUnpublishedEntry() {};
+  async updateUnpublishedEntryStatus() {
+    return;
+  };
+
+  async publishUnpublishedEntry() {
+    return;
+  };
+  async deleteUnpublishedEntry() {
+    return;
+  };
   
   async getDeployPreview() {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return {} as any;
   };
 }

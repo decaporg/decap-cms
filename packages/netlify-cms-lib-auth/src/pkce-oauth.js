@@ -110,7 +110,7 @@ export default class PkceAuthenticator {
         method: 'POST',
         body: JSON.stringify({
           client_id: this.appID,
-          code: code,
+          code,
           grant_type: 'authorization_code',
           redirect_uri: document.location.origin + document.location.pathname,
           code_verifier: getCodeVerifier(),

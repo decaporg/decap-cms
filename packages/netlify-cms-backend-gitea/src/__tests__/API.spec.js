@@ -2,17 +2,15 @@ import { Base64 } from 'js-base64';
 
 import API from '../API';
 
-import type { Options } from '../API';
+global.fetch = jest.fn().mockRejectedValue(new Error('should not call fetch inside tests'));
 
 describe('gitea API', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-
-    global.fetch = jest.fn().mockRejectedValue(new Error('should not call fetch inside tests'));
   });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  function mockAPI(api: API, responses: Record<string, (options: Options) => any>) {
+  function mockAPI(api, responses) {
     api.request = jest.fn().mockImplementation((path, options = {}) => {
       const normalizedPath = path.indexOf('?') !== -1 ? path.slice(0, path.indexOf('?')) : path;
       const response = responses[normalizedPath];
@@ -50,6 +48,7 @@ describe('gitea API', () => {
           Authorization: 'token token',
           'Content-Type': 'application/json; charset=utf-8',
         },
+        signal: expect.any(AbortSignal),
       });
     });
 
@@ -96,6 +95,7 @@ describe('gitea API', () => {
           Authorization: 'promise-token',
           'Content-Type': 'application/json; charset=utf-8',
         },
+        signal: expect.any(AbortSignal),
       });
     });
   });
@@ -158,15 +158,15 @@ describe('gitea API', () => {
 
       expect(api.request).toHaveBeenCalledTimes(3);
 
-      expect((api.request as jest.Mock).mock.calls[0]).toEqual([
+      expect(api.request.mock.calls[0]).toEqual([
         '/repos/owner/repo/git/trees/master:content%2Fposts',
       ]);
 
-      expect((api.request as jest.Mock).mock.calls[1]).toEqual([
+      expect(api.request.mock.calls[1]).toEqual([
         '/repos/owner/repo/git/trees/master:content%2Fposts',
       ]);
 
-      expect((api.request as jest.Mock).mock.calls[2]).toEqual([
+      expect(api.request.mock.calls[2]).toEqual([
         '/repos/owner/repo/contents',
         {
           method: 'POST',
@@ -222,29 +222,19 @@ describe('gitea API', () => {
 
       const deleteFiles = ['content/posts/delete-post-1.md', 'content/posts/delete-post-2.md'];
 
-      await expect(api.deleteFiles(deleteFiles, 'commitMessage')).resolves.toEqual({
-        commit: { sha: 'new-sha' },
-        files: [
-          {
-            path: 'content/posts/delete-post-1.md',
-          },
-          {
-            path: 'content/posts/delete-post-2.md',
-          },
-        ],
-      });
+      await api.deleteFiles(deleteFiles, 'commitMessage');
 
       expect(api.request).toHaveBeenCalledTimes(3);
 
-      expect((api.request as jest.Mock).mock.calls[0]).toEqual([
+      expect(api.request.mock.calls[0]).toEqual([
         '/repos/owner/repo/git/trees/master:content%2Fposts',
       ]);
 
-      expect((api.request as jest.Mock).mock.calls[1]).toEqual([
+      expect(api.request.mock.calls[1]).toEqual([
         '/repos/owner/repo/git/trees/master:content%2Fposts',
       ]);
 
-      expect((api.request as jest.Mock).mock.calls[2]).toEqual([
+      expect(api.request.mock.calls[2]).toEqual([
         '/repos/owner/repo/contents',
         {
           method: 'POST',

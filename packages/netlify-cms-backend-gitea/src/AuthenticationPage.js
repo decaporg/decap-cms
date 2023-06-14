@@ -1,3 +1,4 @@
+import React from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import { PkceAuthenticator } from 'netlify-cms-lib-auth';
@@ -11,7 +12,6 @@ export default class GiteaAuthenticationPage extends React.Component {
   static propTypes = {
     inProgress: PropTypes.bool,
     config: PropTypes.object.isRequired,
-    clearHash: PropTypes.func,
     onLogin: PropTypes.func.isRequired,
     t: PropTypes.func.isRequired,
   };
@@ -25,12 +25,11 @@ export default class GiteaAuthenticationPage extends React.Component {
       auth_endpoint: 'login/oauth/authorize',
       app_id,
       auth_token_endpoint: 'login/oauth/access_token',
-      clearHash,
     });
     // Complete authentication if we were redirected back to from the provider.
     this.auth.completeAuth((err, data) => {
       if (err) {
-        his.setState({ loginError: err.toString() });
+        this.setState({ loginError: err.toString() });
         return;
       } else if (data) {
         this.props.onLogin(data);
@@ -58,12 +57,13 @@ export default class GiteaAuthenticationPage extends React.Component {
         loginErrorMessage={this.state.loginError}
         logoUrl={config.logoUrl}
         siteUrl={config.siteUrl}
-        renderButtonCOntent={() => (
+        renderButtonContent={() => (
           <React.Fragment>
             <LoginButtonIcon type="gitea" />{' '}
             {inProgress ? t('auth.loggingIn') : t('auth.loginWithGitea')}
           </React.Fragment>
         )}
+        t={t}
       />
     );
   }
