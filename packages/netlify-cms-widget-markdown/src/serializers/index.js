@@ -139,7 +139,6 @@ export function remarkToMarkdown(obj, remarkPlugins) {
    * Transform the MDAST with plugins.
    */
   const processedMdast = processor.runSync(mdast);
-
   /**
    * Serialize the MDAST to markdown.
    */
@@ -202,16 +201,10 @@ export function htmlToSlate(html) {
 export function markdownToSlate(markdown, { voidCodeBlock, remarkPlugins = [] } = {}) {
   const mdast = markdownToRemark(markdown, remarkPlugins);
 
-  // console.log('# MD -> SLATE');
-  // console.log('md', markdown);
-  // console.log('mdast', mdast);
-
   const slateRaw = unified()
     .use(remarkWrapHtml)
     .use(remarkToSlate, { voidCodeBlock })
     .runSync(mdast);
-
-  // console.log('slateRaw', slateRaw);
 
   return slateRaw.children;
 }
@@ -226,11 +219,7 @@ export function markdownToSlate(markdown, { voidCodeBlock, remarkPlugins = [] } 
  * trees.
  */
 export function slateToMarkdown(raw, { voidCodeBlock, remarkPlugins = [] } = {}) {
-  console.log('# SLATE -> MD');
-  console.log('slate', raw);
   const mdast = slateToRemark(raw, { voidCodeBlock });
-  // console.log('mdast', mdast);
   const markdown = remarkToMarkdown(mdast, remarkPlugins);
-  // console.log('md', markdown)
   return markdown;
 }

@@ -54,6 +54,8 @@ const blockTypes = [
   'shortcode',
 ];
 
+const inlineTypes = ['link', 'image', 'break'];
+
 const leadingWhitespaceExp = /^\s+\S/;
 const trailingWhitespaceExp = /(?!\S)\s+$/;
 
@@ -99,7 +101,7 @@ export default function slateToRemark(value, { voidCodeBlock }) {
           const updatedNodes = removeMarkFromNodes(node.children, markType);
           return {
             ...node,
-            nodes: updatedNodes,
+            children: updatedNodes,
           };
         }
 
@@ -111,6 +113,13 @@ export default function slateToRemark(value, { voidCodeBlock }) {
 
         default:
           delete newNode[markType];
+          newNode.marks = newNode.marks
+            ? newNode.marks.filter(({ type }) => type !== markType)
+            : [];
+
+          if (newNode.marks.length === 0) {
+            delete newNode.marks;
+          }
           return newNode;
       }
     });
@@ -124,15 +133,11 @@ export default function slateToRemark(value, { voidCodeBlock }) {
         // ends up nested inside of that mark. Code marks sometimes can't do
         // that, like when they wrap all of the text content of a link. Here we
         // remove code marks before processing so that they stay put.
-        // const nodesWithoutCode = node.children.map(n => ({
-        //   ...n,
-        //   marks: n.marks ? n.marks.filter(({ type }) => type !== 'code') : n.marks,
-        // }));
         const nodesWithoutCode = node.children.map(n => {
-          if (n.marks && n.marks.code) {
-            delete n.marks.code;
-          }
-          return n;
+          const newNode = { ...n };
+          newNode.marks = n.marks ? n.marks.filter(({ type }) => type !== 'code') : n.marks,
+          delete newNode.code;
+          return newNode;
         });
         const childMarks = map(nodesWithoutCode, getNodeMarks);
         return intersection(...childMarks);
@@ -241,7 +246,7 @@ export default function slateToRemark(value, { voidCodeBlock }) {
   }
 
   function isNodeInline(node) {
-    return node.type === 'text' || node.type === 'link';
+    return inlineTypes.includes(node.type);
   }
 
   function convertInlineAndTextChildren(nodes = []) {
@@ -442,7 +447,7 @@ export default function slateToRemark(value, { voidCodeBlock }) {
        */
       case 'link': {
         const { url, title, data } = node;
-        return u(typeMap[node.type], { url, title, data }, children);
+        return u(typeMap[node.type], { url, title, ...data }, children);
       }
 
       /**
