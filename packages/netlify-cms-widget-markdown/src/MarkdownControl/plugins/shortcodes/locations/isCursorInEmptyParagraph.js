@@ -1,4 +1,4 @@
-import { Editor, Element } from "slate";
+import { Editor, Element } from 'slate';
 
 function isCursorInEmptyParagraph(editor) {
   const { selection } = editor;
@@ -6,14 +6,12 @@ function isCursorInEmptyParagraph(editor) {
 
   const [match] = Array.from(
     Editor.nodes(editor, {
-      match: n =>
-        Element.isElement(n) &&
-        Editor.isBlock(editor, n) && n.type === 'paragraph',
+      match: n => Element.isElement(n) && Editor.isBlock(editor, n) && n.type === 'paragraph',
       mode: 'lowest',
     }),
   );
 
-  return !!match && Editor.isEmpty(editor, match[0])
+  return !!match && Editor.isEmpty(editor, match[0]);
 }
 
 export default isCursorInEmptyParagraph;

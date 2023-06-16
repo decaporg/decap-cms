@@ -17,12 +17,12 @@ function splitListItem(editor) {
     });
     // set the new node to paragraph (to avoid splitting headings)
     Transforms.setNodes(editor, {
-      type: 'paragraph'
+      type: 'paragraph',
     });
     // wrap the paragraph in a list item
     wrapFirstMatchedParent(editor, 'paragraph', {
       type: 'list-item',
-    })
+    });
     // lift new list item out the paragraph
     liftFirstMatchedParent(editor, 'list-item');
   });

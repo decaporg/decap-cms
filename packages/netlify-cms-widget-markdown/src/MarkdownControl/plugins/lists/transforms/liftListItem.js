@@ -15,7 +15,8 @@ function liftListItem(editor) {
     const parentQuote = getLowestAncestorQuote(editor);
     if (
       (parentList && !parentQuote) ||
-      (parentList && parentQuote && parentList[1].length > parentQuote[1].length)) {
+      (parentList && parentQuote && parentList[1].length > parentQuote[1].length)
+    ) {
       liftFirstMatchedParent(editor, 'list-item', { split: true });
     } else {
       // unwrap the paragraph from list-item element

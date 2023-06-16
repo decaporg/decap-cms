@@ -2,7 +2,6 @@ import { Editor, Range, Transforms } from 'slate';
 
 import wrapFirstMatchedParent from './wrapFirstMatchedParent';
 
-
 function splitToNestedList(editor, listType) {
   if (!editor.selection) return false;
 
@@ -17,7 +16,7 @@ function splitToNestedList(editor, listType) {
     });
     // set the new node to paragraph (to avoid splitting headings)
     Transforms.setNodes(editor, {
-      type: 'paragraph'
+      type: 'paragraph',
     });
     // wrap the paragraph in a list item
     wrapFirstMatchedParent(editor, 'paragraph', {
@@ -26,7 +25,6 @@ function splitToNestedList(editor, listType) {
     wrapFirstMatchedParent(editor, 'list-item', {
       type: listType,
     });
-
   });
 
   Editor.normalize(editor, { force: true });

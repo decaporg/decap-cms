@@ -1,6 +1,6 @@
-import { Editor, Element } from "slate"
+import { Editor, Element } from 'slate';
 
-function isCursorInListItem (editor, immediate) {
+function isCursorInListItem(editor, immediate) {
   const { selection } = editor;
   if (!selection) return false;
 

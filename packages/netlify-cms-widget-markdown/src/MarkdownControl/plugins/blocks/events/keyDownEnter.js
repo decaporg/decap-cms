@@ -1,7 +1,7 @@
-import isCursorInBlockType from "../locations/isCursorInBlockType";
-import splitIntoParagraph from "../transforms/splitIntoParagraph";
-import unwrapIfCursorAtStart from "../transforms/unwrapIfCursorAtStart";
-import isCursorAtEndOfParagraph from "../locations/isCursorAtEndOfParagraph";
+import isCursorInBlockType from '../locations/isCursorInBlockType';
+import splitIntoParagraph from '../transforms/splitIntoParagraph';
+import unwrapIfCursorAtStart from '../transforms/unwrapIfCursorAtStart';
+import isCursorAtEndOfParagraph from '../locations/isCursorAtEndOfParagraph';
 
 function keyDownEnter(editor) {
   if (!editor.selection) return;

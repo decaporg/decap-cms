@@ -12,14 +12,14 @@ const HEADING_HOTKEYS = {
   'mod+4': 'heading-four',
   'mod+5': 'heading-five',
   'mod+6': 'heading-six',
-}
+};
 
 function keyDown(event, editor) {
   if (!editor.selection) return;
 
   for (const hotkey in HEADING_HOTKEYS) {
     if (isHotkey(hotkey, event)) {
-      toggleBlock(editor, HEADING_HOTKEYS[hotkey])
+      toggleBlock(editor, HEADING_HOTKEYS[hotkey]);
       event.preventDefault();
       return false;
     }
@@ -28,7 +28,7 @@ function keyDown(event, editor) {
   if (!isCursorInNonDefaultBlock(editor)) return;
 
   if (isHotkey('enter', event)) {
-    const eventIntercepted =  keyDownEnter(editor);
+    const eventIntercepted = keyDownEnter(editor);
     if (eventIntercepted) {
       event.preventDefault();
       return false;

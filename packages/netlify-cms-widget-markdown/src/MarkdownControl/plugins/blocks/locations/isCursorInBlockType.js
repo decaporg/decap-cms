@@ -1,4 +1,4 @@
-import { Editor, Element } from "slate";
+import { Editor, Element } from 'slate';
 
 function isCursorInBlockType(editor, type, ignoreHeadings, ignoreLists) {
   const { selection } = editor;
@@ -17,7 +17,11 @@ function isCursorInBlockType(editor, type, ignoreHeadings, ignoreLists) {
     }),
   );
 
-  return !!match && (match[0].type === type || `${match[0].type}`.startsWith(`${type}-` || `${match[0].type}`.endsWith(`-${type}`)));
+  return (
+    !!match &&
+    (match[0].type === type ||
+      `${match[0].type}`.startsWith(`${type}-` || `${match[0].type}`.endsWith(`-${type}`)))
+  );
 }
 
 export default isCursorInBlockType;

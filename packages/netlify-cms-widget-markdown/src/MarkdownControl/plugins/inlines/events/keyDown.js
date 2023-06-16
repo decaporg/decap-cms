@@ -18,7 +18,7 @@ function keyDown(event, editor) {
 
   for (const hotkey in MARK_HOTKEYS) {
     if (isHotkey(hotkey, event)) {
-      toggleMark(editor, MARK_HOTKEYS[hotkey])
+      toggleMark(editor, MARK_HOTKEYS[hotkey]);
       event.preventDefault();
       return false;
     }

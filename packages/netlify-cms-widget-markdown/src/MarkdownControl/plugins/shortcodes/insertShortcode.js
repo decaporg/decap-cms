@@ -3,7 +3,6 @@ import { Transforms } from 'slate';
 import isCursorInEmptyParagraph from './locations/isCursorInEmptyParagraph';
 
 function insertShortcode(editor, pluginConfig) {
-
   const defaultValues = pluginConfig.fields
     .toMap()
     .mapKeys((_, field) => field.get('name'))

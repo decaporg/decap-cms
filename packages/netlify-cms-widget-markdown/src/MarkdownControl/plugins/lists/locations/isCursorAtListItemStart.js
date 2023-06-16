@@ -1,4 +1,4 @@
-import { Range } from "slate";
+import { Range } from 'slate';
 
 function isCursorAtListItemStart(editor) {
   if (!editor.selection) return false;

@@ -39,7 +39,7 @@ function VoidBlock({ attributes, children, element }) {
   }
 
   function handleInsertAfter() {
-    insertAtPath([...path.slice(0, -1), path[path.length -1] + 1])
+    insertAtPath([...path.slice(0, -1), path[path.length - 1] + 1]);
   }
 
   const insertBefore = path[0] === 0;
@@ -48,13 +48,9 @@ function VoidBlock({ attributes, children, element }) {
 
   return (
     <div {...attributes} onClick={handleClick} contentEditable={false}>
-      {insertBefore && (
-        <InsertionPoint onClick={handleInsertBefore} />
-      )}
+      {insertBefore && <InsertionPoint onClick={handleInsertBefore} />}
       {children}
-      {insertAfter && (
-        <InsertionPoint onClick={handleInsertAfter} />
-      )}
+      {insertAfter && <InsertionPoint onClick={handleInsertAfter} />}
     </div>
   );
 }

@@ -39,7 +39,11 @@ function Shortcode(props) {
   }
 
   const path = ReactEditor.findPath(editor, element);
-  const isSelected = editor.selection && path && Range.isRange(editor.selection) && Range.includes(editor.selection, path);
+  const isSelected =
+    editor.selection &&
+    path &&
+    Range.isRange(editor.selection) &&
+    Range.includes(editor.selection, path);
 
   return (
     !field.isEmpty() && (
@@ -60,7 +64,8 @@ function Shortcode(props) {
           onValidateObject={() => {}}
           isNewEditorComponent={element.data.shortcodeNew}
           isSelected={isSelected}
-        />{children}
+        />
+        {children}
       </div>
     )
   );

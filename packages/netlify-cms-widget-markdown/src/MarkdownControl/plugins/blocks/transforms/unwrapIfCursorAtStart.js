@@ -1,6 +1,6 @@
-import { Editor, Transforms } from "slate";
+import { Editor, Transforms } from 'slate';
 
-import lowestMatchedAncestor from "../../matchers/lowestMatchedAncestor";
+import lowestMatchedAncestor from '../../matchers/lowestMatchedAncestor';
 
 function unwrapIfCursorAtStart(editor, mergeWithPrevious = false) {
   if (editor.selection.anchor.offset !== 0) return false;

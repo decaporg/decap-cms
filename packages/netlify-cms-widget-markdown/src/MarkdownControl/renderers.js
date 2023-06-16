@@ -347,11 +347,7 @@ export function Element(props) {
       if (element.id === 'code-block' && codeBlockComponent) {
         return (
           <VoidBlock {...props}>
-            <Shortcode
-              classNameWrapper={classNameWrapper}
-              typeOverload="code-block"
-              {...props}
-            />
+            <Shortcode classNameWrapper={classNameWrapper} typeOverload="code-block" {...props} />
           </VoidBlock>
         );
       }

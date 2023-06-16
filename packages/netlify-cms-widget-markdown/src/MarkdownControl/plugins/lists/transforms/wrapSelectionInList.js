@@ -1,6 +1,6 @@
-import { Editor, Transforms } from "slate";
+import { Editor, Transforms } from 'slate';
 
-import lowestMatchedAncestor from "../../matchers/lowestMatchedAncestor";
+import lowestMatchedAncestor from '../../matchers/lowestMatchedAncestor';
 
 function wrapSelectionInList(editor, type) {
   Editor.withoutNormalizing(editor, () => {

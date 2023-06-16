@@ -1,5 +1,5 @@
-import keyDown from "./events/keyDown";
-import toggleBlock from "./events/toggleBlock";
+import keyDown from './events/keyDown';
+import toggleBlock from './events/toggleBlock';
 
 function withBlocks(editor) {
   if (editor.keyDownHandlers === undefined) {
@@ -7,7 +7,7 @@ function withBlocks(editor) {
   }
   editor.keyDownHandlers.push((event, editor) => keyDown(event, editor));
 
-  editor.toggleBlock = (type) => toggleBlock(editor, type)
+  editor.toggleBlock = type => toggleBlock(editor, type);
 
   return editor;
 }

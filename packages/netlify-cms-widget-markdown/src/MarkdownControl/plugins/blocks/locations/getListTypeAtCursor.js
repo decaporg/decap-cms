@@ -1,6 +1,6 @@
-import { Editor } from "slate";
+import { Editor } from 'slate';
 
-import lowestMatchedAncestor from "../../matchers/lowestMatchedAncestor";
+import lowestMatchedAncestor from '../../matchers/lowestMatchedAncestor';
 
 function getListTypeAtCursor(editor) {
   const list = Editor.above(editor, lowestMatchedAncestor(editor, 'list'));

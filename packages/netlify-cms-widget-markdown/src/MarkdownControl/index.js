@@ -106,7 +106,7 @@ export default class MarkdownControl extends React.Component {
     );
     const rawEditor = (
       <div className="cms-editor-raw" ref={this.processRef}>
-         <RawEditor
+        <RawEditor
           onChange={onChange}
           onAddAsset={onAddAsset}
           isShowModeToggle={isShowModeToggle}

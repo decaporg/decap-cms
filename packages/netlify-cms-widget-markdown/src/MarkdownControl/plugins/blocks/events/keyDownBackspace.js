@@ -13,7 +13,10 @@ function keyDownBackspace(editor) {
     return;
   }
 
-  if (isCursorAtStartOfBlockType(editor, 'quote') && areCurrentAndPreviousBlocksOfType(editor, 'quote')) {
+  if (
+    isCursorAtStartOfBlockType(editor, 'quote') &&
+    areCurrentAndPreviousBlocksOfType(editor, 'quote')
+  ) {
     Transforms.mergeNodes(editor, lowestMatchedAncestor(editor, 'quote'));
     return true;
   }

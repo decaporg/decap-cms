@@ -1,7 +1,7 @@
-import { Range, Transforms } from "slate";
+import { Range, Transforms } from 'slate';
 
-import getActiveLink from "../selectors/getActiveLink";
-import matchLink from "../../matchers/matchLink";
+import getActiveLink from '../selectors/getActiveLink';
+import matchLink from '../../matchers/matchLink';
 
 function wrapLink(editor, url) {
   if (getActiveLink(editor)) {

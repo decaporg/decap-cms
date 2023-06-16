@@ -1,8 +1,8 @@
-import { Editor, Element, Node, Transforms } from "slate";
+import { Editor, Element, Node, Transforms } from 'slate';
 
-import keyDown from "./events/keyDown";
-import moveListToListItem from "./transforms/moveListToListItem";
-import toggleListType from "./events/toggleListType";
+import keyDown from './events/keyDown';
+import moveListToListItem from './transforms/moveListToListItem';
+import toggleListType from './events/toggleListType';
 
 function withLists(editor) {
   const { normalizeNode } = editor;
@@ -11,27 +11,27 @@ function withLists(editor) {
   }
   editor.keyDownHandlers.push((event, editor) => keyDown(event, editor));
 
-  editor.toggleList = (type) => toggleListType(editor, type)
+  editor.toggleList = type => toggleListType(editor, type);
 
   editor.isListItem = () => {
-      const { selection } = editor;
-      if (!selection) return false;
+    const { selection } = editor;
+    if (!selection) return false;
 
-      const [match] = Array.from(
-        Editor.nodes(editor, {
-          at: Editor.unhangRange(editor, selection),
-          match: n =>
-            !Editor.isEditor(n) &&
-            Element.isElement(n) &&
-            Editor.isBlock(editor, n) &&
-            n.type !== 'paragraph' &&
-            !`${n.type}`.startsWith('heading-'),
-          mode: 'lowest',
-        }),
-      );
+    const [match] = Array.from(
+      Editor.nodes(editor, {
+        at: Editor.unhangRange(editor, selection),
+        match: n =>
+          !Editor.isEditor(n) &&
+          Element.isElement(n) &&
+          Editor.isBlock(editor, n) &&
+          n.type !== 'paragraph' &&
+          !`${n.type}`.startsWith('heading-'),
+        mode: 'lowest',
+      }),
+    );
 
-      return !!match && match[0].type === 'list-item';
-  }
+    return !!match && match[0].type === 'list-item';
+  };
 
   editor.normalizeNode = entry => {
     normalizeNode(entry);

@@ -1,6 +1,6 @@
-import { Transforms } from "slate";
+import { Transforms } from 'slate';
 
-import matchLink from "../../matchers/matchLink";
+import matchLink from '../../matchers/matchLink';
 
 function unwrapLink(editor) {
   Transforms.unwrapNodes(editor, matchLink());

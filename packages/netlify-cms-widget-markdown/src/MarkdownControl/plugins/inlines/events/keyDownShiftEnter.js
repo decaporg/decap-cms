@@ -1,4 +1,4 @@
-import { Editor, Transforms } from "slate";
+import { Editor, Transforms } from 'slate';
 
 function keyDownShiftEnter(editor) {
   if (!editor.selection) return;
@@ -21,10 +21,8 @@ function keyDownShiftEnter(editor) {
   });
   Editor.normalize(editor, { force: true });
 
-  Transforms.select(editor, focus)
+  Transforms.select(editor, focus);
   return false;
 }
-
-
 
 export default keyDownShiftEnter;

@@ -1,7 +1,6 @@
-import { Editor, Transforms } from "slate";
+import { Editor, Transforms } from 'slate';
 
 function splitIntoParagraph(editor) {
-
   Editor.withoutNormalizing(editor, () => {
     Transforms.splitNodes(editor, { always: true });
     Transforms.setNodes(editor, { type: 'paragraph' });

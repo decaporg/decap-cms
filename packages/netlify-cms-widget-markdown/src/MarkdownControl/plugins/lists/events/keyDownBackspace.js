@@ -1,4 +1,4 @@
-import {  Range } from 'slate';
+import { Range } from 'slate';
 
 import isCursorInListItem from '../locations/isCursorInListItem';
 import isSelectionWithinNoninitialListItem from '../locations/isSelectionWithinNoninitialListItem';

@@ -1,4 +1,4 @@
-import { Editor } from "slate";
+import { Editor } from 'slate';
 
 function isMarkActive(editor, format) {
   const { selection } = editor;

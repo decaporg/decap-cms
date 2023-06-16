@@ -1,4 +1,4 @@
-import { Editor, Element } from "slate";
+import { Editor, Element } from 'slate';
 
 function isCursorInNonDefaultBlock(editor) {
   const { selection } = editor;
@@ -6,10 +6,7 @@ function isCursorInNonDefaultBlock(editor) {
 
   const [match] = Array.from(
     Editor.nodes(editor, {
-      match: n =>
-        Element.isElement(n) &&
-        Editor.isBlock(editor, n) &&
-        n.type !== 'paragraph',
+      match: n => Element.isElement(n) && Editor.isBlock(editor, n) && n.type !== 'paragraph',
       mode: 'lowest',
     }),
   );

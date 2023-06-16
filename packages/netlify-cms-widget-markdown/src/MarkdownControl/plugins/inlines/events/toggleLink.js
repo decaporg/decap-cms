@@ -1,6 +1,6 @@
-import getActiveLink from "../selectors/getActiveLink";
-import unwrapLink from "../transforms/unwrapLink";
-import wrapLink from "../transforms/wrapLink";
+import getActiveLink from '../selectors/getActiveLink';
+import unwrapLink from '../transforms/unwrapLink';
+import wrapLink from '../transforms/wrapLink';
 
 function toggleLink(editor, promptText) {
   const activeLink = getActiveLink(editor);
