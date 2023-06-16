@@ -6,7 +6,7 @@ const backend = 'git-gateway';
 const provider = 'github';
 
 describe('Git Gateway (GitHub) Backend Editorial Workflow', () => {
-  let taskResult = { data: {} };
+  const taskResult = { data: {} };
 
   before(() => {
     specUtils.before(taskResult, { publish_mode: 'editorial_workflow', provider }, backend);
