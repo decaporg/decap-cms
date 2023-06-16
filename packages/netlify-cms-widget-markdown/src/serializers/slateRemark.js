@@ -135,8 +135,8 @@ export default function slateToRemark(value, { voidCodeBlock }) {
         // remove code marks before processing so that they stay put.
         const nodesWithoutCode = node.children.map(n => {
           const newNode = { ...n };
-          newNode.marks = n.marks ? n.marks.filter(({ type }) => type !== 'code') : n.marks,
-          delete newNode.code;
+          (newNode.marks = n.marks ? n.marks.filter(({ type }) => type !== 'code') : n.marks),
+            delete newNode.code;
           return newNode;
         });
         const childMarks = map(nodesWithoutCode, getNodeMarks);

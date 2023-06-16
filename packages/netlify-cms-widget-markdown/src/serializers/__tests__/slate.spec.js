@@ -9,7 +9,9 @@ const process = flow([markdownToSlate, slateToMarkdown]);
 
 describe('slate', () => {
   it('should not decode encoded html entities in inline code', () => {
-    expect(process('<element type="code">&lt;div&gt;</element>')).toEqual('<element type="code">&lt;div&gt;</element>');
+    expect(process('<element type="code">&lt;div&gt;</element>')).toEqual(
+      '<element type="code">&lt;div&gt;</element>',
+    );
   });
 
   it('should parse non-text children of mark nodes', () => {
