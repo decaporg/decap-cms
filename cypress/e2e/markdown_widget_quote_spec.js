@@ -71,11 +71,13 @@ describe('Markdown widget', () => {
           `);
       });
       it('toggles empty quote block on and off for selected blocks', () => {
+        // eslint-disable-next-line cypress/no-unnecessary-waiting
         cy.focused()
           .type('foo')
           .enter()
           .type('bar')
           .setSelection('foo', 'bar')
+          .wait(300)
           .clickQuoteButton()
           .confirmMarkdownEditorContent(`
             <blockquote>
@@ -97,11 +99,13 @@ describe('Markdown widget', () => {
           `);
       });
       it('toggles empty quote block on and off for partially selected blocks', () => {
+        // eslint-disable-next-line cypress/no-unnecessary-waiting
         cy.focused()
           .type('foo')
           .enter()
           .type('bar')
           .setSelection('oo', 'ba')
+          .wait(300)
           .clickQuoteButton()
           .confirmMarkdownEditorContent(`
             <blockquote>
@@ -123,12 +127,14 @@ describe('Markdown widget', () => {
           `);
       });
       it('toggles quote block on and off for multiple selected list items', () => {
+        // eslint-disable-next-line cypress/no-unnecessary-waiting
         cy.focused()
           .clickUnorderedListButton()
           .type('foo')
           .enter()
           .type('bar')
           .setSelection('foo', 'bar')
+          .wait(300)
           .clickQuoteButton()
           .confirmMarkdownEditorContent(`
             <blockquote>
@@ -154,9 +160,11 @@ describe('Markdown widget', () => {
             </ul>
           `)
           .setCursorAfter('bar')
+          .wait(300)
           .enter()
           .type('baz')
           .setSelection('bar', 'baz')
+          .wait(300)
           .clickQuoteButton()
           .confirmMarkdownEditorContent(`
             <ul>
@@ -294,11 +302,13 @@ describe('Markdown widget', () => {
           `);
       });
       it('removes first block from quote when focused at first block at start', () => {
+        // eslint-disable-next-line cypress/no-unnecessary-waiting
         cy.clickQuoteButton()
           .type('foo')
           .enter()
           .type('bar')
           .setCursorBefore('foo')
+          .wait(300)
           .backspace()
           .confirmMarkdownEditorContent(`
             <p>foo</p>
@@ -311,6 +321,7 @@ describe('Markdown widget', () => {
 
     describe('enter inside quote', () => {
       it('creates new block inside quote', () => {
+        // eslint-disable-next-line cypress/no-unnecessary-waiting
         cy.clickQuoteButton()
           .type('foo')
           .enter()
@@ -322,6 +333,7 @@ describe('Markdown widget', () => {
           `)
           .type('bar')
           .setCursorAfter('ba')
+          .wait(300)
           .enter()
           .confirmMarkdownEditorContent(`
             <blockquote>
