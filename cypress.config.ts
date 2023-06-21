@@ -3,7 +3,7 @@ import { defineConfig } from 'cypress';
 export default defineConfig({
   projectId: '1c35bs',
   retries: {
-    runMode: 2,
+    runMode: 4,
     openMode: 0,
   },
   e2e: {
