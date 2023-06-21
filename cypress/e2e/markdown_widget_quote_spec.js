@@ -77,7 +77,7 @@ describe('Markdown widget', () => {
           .enter()
           .type('bar')
           .setSelection('foo', 'bar')
-          .wait(300)
+          .wait(500)
           .clickQuoteButton()
           .confirmMarkdownEditorContent(`
             <blockquote>
@@ -105,7 +105,7 @@ describe('Markdown widget', () => {
           .enter()
           .type('bar')
           .setSelection('oo', 'ba')
-          .wait(300)
+          .wait(500)
           .clickQuoteButton()
           .confirmMarkdownEditorContent(`
             <blockquote>
@@ -134,7 +134,7 @@ describe('Markdown widget', () => {
           .enter()
           .type('bar')
           .setSelection('foo', 'bar')
-          .wait(300)
+          .wait(500)
           .clickQuoteButton()
           .confirmMarkdownEditorContent(`
             <blockquote>
@@ -160,11 +160,11 @@ describe('Markdown widget', () => {
             </ul>
           `)
           .setCursorAfter('bar')
-          .wait(300)
+          .wait(500)
           .enter()
           .type('baz')
           .setSelection('bar', 'baz')
-          .wait(300)
+          .wait(500)
           .clickQuoteButton()
           .confirmMarkdownEditorContent(`
             <ul>
@@ -308,7 +308,7 @@ describe('Markdown widget', () => {
           .enter()
           .type('bar')
           .setCursorBefore('foo')
-          .wait(300)
+          .wait(500)
           .backspace()
           .confirmMarkdownEditorContent(`
             <p>foo</p>
@@ -333,7 +333,7 @@ describe('Markdown widget', () => {
           `)
           .type('bar')
           .setCursorAfter('ba')
-          .wait(300)
+          .wait(500)
           .enter()
           .confirmMarkdownEditorContent(`
             <blockquote>

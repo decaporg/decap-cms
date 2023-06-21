@@ -168,6 +168,7 @@ describe('Markdown widget', () => {
       });
 
       it('wrap each bottom-most block in a selection with a list item block', () => {
+        // eslint-disable-next-line cypress/no-unnecessary-waiting
         cy
           .focused()
           .type('foo')
@@ -176,6 +177,7 @@ describe('Markdown widget', () => {
           .enter()
           .type('baz')
           .setSelection('foo', 'baz')
+          .wait(500)
           .clickUnorderedListButton().confirmMarkdownEditorContent(`
             <ul>
               <li>
@@ -192,6 +194,7 @@ describe('Markdown widget', () => {
       });
 
       it('unwraps list item block from each selected list item and unwraps all of them from the outer list block', () => {
+        // eslint-disable-next-line cypress/no-unnecessary-waiting
         cy
           .clickUnorderedListButton()
           .type('foo')
@@ -200,6 +203,7 @@ describe('Markdown widget', () => {
           .enter()
           .type('baz')
           .setSelection('foo', 'baz')
+          .wait(500)
           .clickUnorderedListButton().confirmMarkdownEditorContent(`
             <p>foo</p>
             <p>bar</p>

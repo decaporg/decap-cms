@@ -8,7 +8,6 @@ function toggleListType(editor, type) {
   // list being active means that we are in a paragraph or heading whose parent is a list
   // if no list is active, wrap selection in a new list of the given type
   if (!isCursorInListItem(editor)) {
-    console.log('in list item1 ');
     return wrapSelectionInList(editor, type);
   }
   // if a list is active but the type doesn't match, change selection to the given list type
