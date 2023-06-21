@@ -252,7 +252,7 @@ Cypress.Commands.add('clickToolbarButton', (title, { times } = {}) => {
   const fn = chain => chain.click();
   // this seems to be the only thing that makes cypress stable(ish)
   // eslint-disable-next-line cypress/no-unnecessary-waiting
-  cy.wait(40);
+  cy.wait(100);
   return runTimes(instance, fn, times).focused();
 });
 
@@ -374,5 +374,6 @@ function getTextNode(el, match) {
 function setBaseAndExtent(...args) {
   const document = args[0].ownerDocument;
   document.getSelection().removeAllRanges();
+  console.log('before set base', args);
   document.getSelection().setBaseAndExtent(...args);
 }

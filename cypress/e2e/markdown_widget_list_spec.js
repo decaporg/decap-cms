@@ -16,7 +16,7 @@ describe('Markdown widget', () => {
       cy.task('teardownBackend', { backend: 'test' });
     });
 
-    describe('toolbar buttons', () => {
+    // describe('toolbar buttons', () => {
       it('creates and focuses empty list', () => {
         cy.clickUnorderedListButton().confirmMarkdownEditorContent(`
             <ul>
@@ -486,9 +486,9 @@ describe('Markdown widget', () => {
       //     `);
       // });
     // });
-});
+// });
 
-    describe('on Enter', () => {
+//     describe('on Enter', () => {
       it('removes the list item and list if empty', () => {
         cy.clickUnorderedListButton().enter().confirmMarkdownEditorContent(`
             <p></p>
@@ -538,9 +538,9 @@ describe('Markdown widget', () => {
             <p></p>
           `);
       });
-    });
+    // });
 
-    describe('on Backspace', () => {
+    // describe('on Backspace', () => {
       it('removes the list item and list if empty', () => {
         cy.clickUnorderedListButton().backspace().confirmMarkdownEditorContent(`
             <p></p>
@@ -568,9 +568,9 @@ describe('Markdown widget', () => {
             </ul>
           `);
       });
-    });
+    // });
 
-    describe('on Tab', () => {
+    // describe('on Tab', () => {
       it('does nothing in top level list', () => {
         cy
           .clickUnorderedListButton()
@@ -727,6 +727,6 @@ describe('Markdown widget', () => {
             </ul>
           `);
       });
-    });
+    // });
   });
 });

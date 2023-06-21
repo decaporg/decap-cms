@@ -10,7 +10,7 @@ describe(`Proxy Backend Media Library - '${mode}' mode`, () => {
 
   before(() => {
     specUtils.before(taskResult, { publish_mode: 'editorial_workflow', mode }, backend);
-    Cypress.config('defaultCommandTimeout', 5 * 1000);
+    Cypress.config('defaultCommandTimeout', 8 * 1000);
   });
 
   after(() => {

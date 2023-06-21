@@ -16,7 +16,7 @@ describe('Markdown widget', () => {
       cy.task('teardownBackend', { backend: 'test' });
     });
 
-    describe('toggle quote', () => {
+    // describe('toggle quote', () => {
       it('toggles empty quote block on and off in empty editor', () => {
         cy.clickQuoteButton()
           .confirmMarkdownEditorContent(`
@@ -262,9 +262,9 @@ describe('Markdown widget', () => {
           */
           .backspace({ times: 14 })
       });
-    });
+    // });
 
-    describe('backspace inside quote', () => {
+    // describe('backspace inside quote', () => {
       it('joins two paragraphs', () => {
         cy.clickQuoteButton()
           .type('foo')
@@ -317,9 +317,9 @@ describe('Markdown widget', () => {
             </blockquote>
           `)
       });
-    });
+    // });
 
-    describe('enter inside quote', () => {
+    // describe('enter inside quote', () => {
       it('creates new block inside quote', () => {
         // eslint-disable-next-line cypress/no-unnecessary-waiting
         cy.clickQuoteButton()
@@ -355,6 +355,6 @@ describe('Markdown widget', () => {
             <p></p>
           `)
       });
-    });
+    // });
   });
 });

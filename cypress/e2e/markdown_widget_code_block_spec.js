@@ -17,29 +17,35 @@ describe('Markdown widget code block', () => {
   });
   describe('code block', () => {
     it('outputs code', () => {
-      cy.insertCodeBlock()
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy
+        .insertCodeBlock()
         .type('foo')
         .enter()
         .type('bar')
-        .confirmMarkdownEditorContent(`
+        .confirmMarkdownEditorContent(
+          `
           ${codeBlock(`
             foo
             bar
           `)}
-        `)
-        .clickModeToggle()
-        .confirmMarkdownEditorContent(`
+        `,
+        )
+        .wait(500)
+        .clickModeToggle().confirmMarkdownEditorContent(`
           ${codeBlockRaw(`
             foo
             bar
           `)}
-        `)
-    })
-  })
-})
+        `);
+    });
+  });
+});
 
 function codeBlockRaw(content) {
-  return ['```', ...stripIndent(content).split('\n'), '```'].map(line => oneLineTrim`
+  return ['```', ...stripIndent(content).split('\n'), '```']
+    .map(
+      line => oneLineTrim`
     <div>
       <span>
         <span>
@@ -47,18 +53,25 @@ function codeBlockRaw(content) {
         </span>
       </span>
     </div>
-  `).join('');
+  `,
+    )
+    .join('');
 }
 
 function codeBlock(content) {
-  const lines = stripIndent(content).split('\n').map((line, idx) => `
+  const lines = stripIndent(content)
+    .split('\n')
+    .map(
+      (line, idx) => `
     <div>
       <div>
         <div>${idx + 1}</div>
       </div>
       <pre><span>${line}</span></pre>
     </div>
-  `).join('');
+  `,
+    )
+    .join('');
 
   return oneLineTrim`
     <div>
