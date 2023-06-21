@@ -329,6 +329,7 @@ export default function slateToRemark(value, { voidCodeBlock }) {
       case 'root':
       case 'paragraph':
       case 'quote':
+      case 'list-item':
       case 'table':
       case 'table-row':
       case 'table-cell': {
@@ -340,8 +341,8 @@ export default function slateToRemark(value, { voidCodeBlock }) {
        *
        * Enclose list items in paragraphs
        */
-      case 'list-item':
-        return u(typeMap[node.type], [{ type: 'paragraph', children }]);
+      // case 'list-item':
+      //   return u(typeMap[node.type], [{ type: 'paragraph', children }]);
 
       /**
        * Shortcodes
