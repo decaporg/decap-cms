@@ -4,6 +4,7 @@ import u from 'unist-builder';
 import markdownToRemarkPlugin from 'remark-parse';
 import remarkToMarkdownPlugin from 'remark-stringify';
 import remarkToRehype from 'remark-rehype';
+import rehypeRemoveComments from 'rehype-remove-comments';
 import rehypeToHtml from 'rehype-stringify';
 import htmlToRehype from 'rehype-parse';
 import rehypeToRemark from 'rehype-remark';
@@ -182,6 +183,7 @@ export function htmlToSlate(html) {
   const hast = unified().use(htmlToRehype, { fragment: true }).parse(html);
 
   const mdast = unified()
+    .use(rehypeRemoveComments, { removeConditional: true })
     .use(rehypePaperEmoji)
     .use(rehypeToRemark, { minify: false })
     .runSync(hast);
