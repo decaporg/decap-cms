@@ -1,5 +1,5 @@
 // @refresh reset
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { ClassNames, css as coreCss } from '@emotion/core';
@@ -94,8 +94,8 @@ function Editor(props) {
     onChange,
   } = props;
 
-  const [editor] = useState(() =>
-    withReact(withShortcodes(withBlocks(withLists(withInlines(createEditor()))))),
+  const editor = useMemo(() =>
+    withReact(withShortcodes(withBlocks(withLists(withInlines(createEditor()))))), []
   );
 
   const emptyValue = [defaultEmptyBlock()];
@@ -165,6 +165,7 @@ function Editor(props) {
         break;
       }
     }
+    ReactEditor.focus(editor);
   }
 
   function handleClickBelowDocument() {
@@ -175,7 +176,7 @@ function Editor(props) {
   const [toolbarKey, setToolbarKey] = useState(0);
 
   const handleDocumentChange = debounce(newValue => {
-    setEditorValue(newValue);
+    setEditorValue(() => newValue);
     onChange(
       slateToMarkdown(newValue, {
         voidCodeBlock: !!codeBlockComponent,
@@ -186,7 +187,15 @@ function Editor(props) {
 
   function handleChange(newValue) {
     if (!isEqual(newValue, editorValue)) {
-      handleDocumentChange(newValue);
+      // debounce makes rerendering quite unpredictible
+      // handleDocumentChange(newValue);
+      setEditorValue(() => newValue);
+      onChange(
+        slateToMarkdown(newValue, {
+          voidCodeBlock: !!codeBlockComponent,
+          remarkPlugins: getRemarkPlugins(),
+        }),
+      );
     }
     setToolbarKey(prev => prev + 1);
   }

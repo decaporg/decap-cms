@@ -150,7 +150,7 @@ function runTimes(cyInstance, fn, count = 1) {
 ].forEach(key => {
   const [cmd, keyName] = typeof key === 'object' ? key : [key, key];
   Cypress.Commands.add(cmd, { prevSubject: true }, (subject, { shift, times = 1 } = {}) => {
-    const fn = chain => chain.type(`${shift ? '{shift}' : ''}{${keyName}}`);
+    const fn = chain => chain.type(`${shift ? '{shift}' : ''}{${keyName}}`, { delay: 50 });
     return runTimes(cy.wrap(subject), fn, times);
   });
 });
