@@ -9,6 +9,22 @@ function keyDownTab(editor) {
 
   if (!isSelectionWithinNoninitialListItem(editor)) return;
 
+  // In a case where one edge of the range is within a nested list item, we need to even the selection to the outer most level
+  const { focus, anchor } = editor.selection;
+
+  const pathLength =
+    focus.path.length > anchor.path.length ? anchor.path.length : focus.path.length;
+  const at = {
+    anchor: {
+      offset: 0,
+      path: [...anchor.path.slice(0, pathLength - 2), 0, 0],
+    },
+    focus: {
+      offset: 0,
+      path: [...focus.path.slice(0, pathLength - 2), 0, 0],
+    },
+  };
+
   Editor.withoutNormalizing(editor, () => {
     // wrap selected list items into a new bulleted list
     Transforms.wrapNodes(
@@ -16,7 +32,10 @@ function keyDownTab(editor) {
       {
         type: 'bulleted-list',
       },
-      lowestMatchedAncestor(editor, 'list-item'),
+      {
+        ...lowestMatchedAncestor(editor, 'list-item'),
+        at,
+      },
     );
 
     // get the new bulleted list position
