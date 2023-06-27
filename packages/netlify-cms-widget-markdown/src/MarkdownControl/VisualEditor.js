@@ -8,7 +8,7 @@ import styled from '@emotion/styled';
 import { createEditor, Transforms, Editor as SlateEditor } from 'slate';
 import { Editable, ReactEditor, Slate, withReact } from 'slate-react';
 import { fromJS } from 'immutable';
-import { debounce, isEqual } from 'lodash';
+import { isEqual } from 'lodash';
 
 import { editorStyleVars, EditorControlBar } from '../styles';
 import Toolbar from './Toolbar';
@@ -94,8 +94,9 @@ function Editor(props) {
     onChange,
   } = props;
 
-  const editor = useMemo(() =>
-    withReact(withShortcodes(withBlocks(withLists(withInlines(createEditor()))))), []
+  const editor = useMemo(
+    () => withReact(withShortcodes(withBlocks(withLists(withInlines(createEditor()))))),
+    [],
   );
 
   const emptyValue = [defaultEmptyBlock()];
@@ -175,15 +176,15 @@ function Editor(props) {
   }
   const [toolbarKey, setToolbarKey] = useState(0);
 
-  const handleDocumentChange = debounce(newValue => {
-    setEditorValue(() => newValue);
-    onChange(
-      slateToMarkdown(newValue, {
-        voidCodeBlock: !!codeBlockComponent,
-        remarkPlugins: getRemarkPlugins(),
-      }),
-    );
-  }, 150);
+  // const handleDocumentChange = debounce(newValue => {
+  //   setEditorValue(() => newValue);
+  //   onChange(
+  //     slateToMarkdown(newValue, {
+  //       voidCodeBlock: !!codeBlockComponent,
+  //       remarkPlugins: getRemarkPlugins(),
+  //     }),
+  //   );
+  // }, 150);
 
   function handleChange(newValue) {
     if (!isEqual(newValue, editorValue)) {
