@@ -1,5 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
+const TerserPlugin = require("terser-webpack-plugin");
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 const { flatMap } = require('lodash');
 
@@ -47,6 +48,9 @@ function plugins() {
     ignoreEsprima: () => new webpack.IgnorePlugin(/^esprima$/, /js-yaml/),
     ignoreMomentOptionalDeps: () => new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     friendlyErrors: () => new FriendlyErrorsWebpackPlugin(),
+    terser: () => new TerserPlugin({
+      exclude: /unminified/,
+    }),
   };
 }
 
@@ -79,12 +83,13 @@ function targetOutputs() {
   return {
     umd: {
       path: umdPath,
-      filename: `${pkg.name}.js`,
+      filename: pathData => pathData.chunk.name === 'minified' ? `${pkg.name}.js` : `${pkg.name}.[name].js`,
       library: toGlobalName(pkg.name),
       libraryTarget: 'umd',
       libraryExport: toGlobalName(pkg.name),
       umdNamedDefine: true,
       globalObject: 'window',
+      chunkFilename: `${pkg.name}.[name].[id].[chunkhash].js`
     },
     umddir: {
       path: umdDirPath,
@@ -119,7 +124,10 @@ function baseConfig({ target = isProduction ? 'umd' : 'umddir' } = {}) {
   return {
     context: process.cwd(),
     mode: isProduction ? 'production' : 'development',
-    entry: './src',
+    entry: {
+      minified: './src',
+      unminified: './src',
+    },
     output: targetOutputs()[target],
     module: {
       rules: flatMap(Object.values(rules()), rule => rule()),
@@ -131,6 +139,9 @@ function baseConfig({ target = isProduction ? 'umd' : 'umddir' } = {}) {
       },
     },
     plugins: Object.values(plugins()).map(plugin => plugin()),
+    optimization: {
+      minimizer: [plugins().terser()],
+    },
     devtool: isTest ? '' : 'source-map',
     target: 'web',
 
