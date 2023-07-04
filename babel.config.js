@@ -28,12 +28,12 @@ const defaultPlugins = [
 ];
 
 const svgo = {
-  plugins: extendDefaultPlugins([
-    {
-      name: 'removeViewBox',
-      active: false,
+  name: 'preset-default',
+  params: {
+    overrides: {
+      removeViewBox: false,
     },
-  ]),
+  },
 };
 
 function presets() {
