@@ -158,6 +158,7 @@ function runTimes(cyInstance, fn, count = 1) {
 // Convert `tab` command from plugin to a child command with `times` support
 Cypress.Commands.add('tabkey', { prevSubject: true }, (subject, { shift, times } = {}) => {
   const fn = chain => chain.tab({ shift });
+  cy.wait(100);
   return runTimes(cy, fn, times).wrap(subject);
 });
 
