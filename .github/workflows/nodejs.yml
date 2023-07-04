@@ -64,7 +64,7 @@ jobs:
 
     strategy:
       matrix:
-        machine: [1, 2, 3, 4, 5, 6, 7, 8]
+        machine: [1, 2, 3, 4]
       fail-fast: false
 
     steps:
@@ -94,7 +94,7 @@ jobs:
           yarn test:e2e:run-ci
         env:
           IS_FORK: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == true }}
-          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY_TMP }}
+          CYPRESS_RECORD_KEY: b140e0a7-ce43-4093-a8a2-bf0fb3318ef8
           NODE_OPTIONS: --max-old-space-size=4096
           MACHINE_COUNT: 8
           MACHINE_INDEX: ${{ matrix.machine }}
