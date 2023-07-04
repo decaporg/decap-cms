@@ -96,7 +96,7 @@ jobs:
           IS_FORK: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == true }}
           CYPRESS_RECORD_KEY: b140e0a7-ce43-4093-a8a2-bf0fb3318ef8
           NODE_OPTIONS: --max-old-space-size=4096
-          MACHINE_COUNT: 8
+          MACHINE_COUNT: 4
           MACHINE_INDEX: ${{ matrix.machine }}
         if: ${{ needs.changes.outputs.cms == 'true' }}
       - uses: actions/upload-artifact@v3
