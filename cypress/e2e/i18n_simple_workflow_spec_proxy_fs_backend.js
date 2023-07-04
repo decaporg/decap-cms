@@ -33,11 +33,11 @@ en:
   template: post
   date: 1970-01-01T00:00:00.000Z
   title: first title
+  body: first body
   description: first description
   category: first category
   tags:
     - tag1
-  body: first body
 de:
   date: 1970-01-01T00:00:00.000Z
   title: de
