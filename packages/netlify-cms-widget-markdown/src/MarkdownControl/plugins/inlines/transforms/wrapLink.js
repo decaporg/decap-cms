@@ -5,7 +5,7 @@ import matchLink from '../../matchers/matchLink';
 
 function wrapLink(editor, url) {
   if (getActiveLink(editor)) {
-    Transforms.setNodes(editor, { url }, matchLink());
+    Transforms.setNodes(editor, { data: { url } }, matchLink());
     return;
   }
 
@@ -13,7 +13,9 @@ function wrapLink(editor, url) {
   const isCollapsed = selection && Range.isCollapsed(selection);
   const link = {
     type: 'link',
-    url,
+    data: {
+      url,
+    },
     children: isCollapsed ? [{ text: url }] : [],
   };
 

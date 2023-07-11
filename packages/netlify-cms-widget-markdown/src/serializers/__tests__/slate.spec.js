@@ -112,12 +112,12 @@ describe('slate', () => {
       <editor>
         <element type="paragraph">
           <text bold>shared mark</text>
-          <element type="link" url="link">
+          <element type="link" data={{ url: "link" }}>
             <text bold><text italic>link</text></text>
           </element>
           {' '}
           <text bold>not shared mark</text>
-          <element type="link" url="link">
+          <element type="link" data={{ url: "link" }}>
             <text italic>another </text>
             <text bold><text italic>link</text></text>
           </element>
@@ -135,7 +135,7 @@ describe('slate', () => {
       const slateAst = (
         <editor>
           <element type="paragraph">
-            <element type="link" url="link">
+            <element type="link" data={{ url: "link" }}>
               <text code>foo</text>
             </element>
           </element>

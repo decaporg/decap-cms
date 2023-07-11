@@ -443,12 +443,11 @@ export default function slateToRemark(value, { voidCodeBlock }) {
       /**
        * Links
        *
-       * The url and title attributes of link nodes are stored in properties on
-       * the node for both Slate and Remark schemas.
+       * Url is now stored in data for slate, so we need to pull it out.
        */
       case 'link': {
-        const { url, title, data } = node;
-        return u(typeMap[node.type], { url, title, ...data }, children);
+        const { title, data } = node;
+        return u(typeMap[node.type], { url: data?.url, title, ...data }, children);
       }
 
       /**
