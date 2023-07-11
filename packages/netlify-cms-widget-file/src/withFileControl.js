@@ -5,7 +5,7 @@ import styled from '@emotion/styled';
 import { css } from '@emotion/core';
 import { Map, List } from 'immutable';
 import { once } from 'lodash';
-import uuid from 'uuid/v4';
+import { v4 as uuid } from 'uuid';
 import { oneLine } from 'common-tags';
 import {
   lengths,

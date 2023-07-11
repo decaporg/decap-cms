@@ -23,6 +23,6 @@
   "peerDependencies": {
     "immutable": "^3.7.6",
     "lodash": "^4.17.11",
-    "uuid": "^3.3.2"
+    "uuid": "^8.3.2"
   }
 }

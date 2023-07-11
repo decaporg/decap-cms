@@ -4,7 +4,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { ClassNames } from '@emotion/core';
 import { Map } from 'immutable';
 import { uniq, isEqual, isEmpty } from 'lodash';
-import uuid from 'uuid/v4';
+import { v4 as uuid } from 'uuid';
 import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
 import CodeMirror from 'codemirror';
 import 'codemirror/keymap/vim';

@@ -101,7 +101,7 @@
     "@types/js-base64": "^3.0.0",
     "@types/jwt-decode": "^2.2.1",
     "@types/lodash": "^4.14.149",
-    "@types/uuid": "^3.4.6",
+    "@types/uuid": "^8.3.2",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
     "all-contributors-cli": "^6.0.0",
@@ -193,7 +193,7 @@
     "eslint-plugin-babel": "^5.3.0",
     "globby": "^12.0.0",
     "imports-loader": "^4.0.1",
-    "lerna": "^4.0.0",
+    "lerna": "^6.6.2",
     "process": "^0.11.10"
   },
   "resolutions": {

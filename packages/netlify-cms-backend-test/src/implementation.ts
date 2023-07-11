@@ -1,5 +1,5 @@
 import { attempt, isError, take, unset, isEmpty } from 'lodash';
-import uuid from 'uuid/v4';
+import { v4 as uuid } from 'uuid';
 import {
   EditorialWorkflowError,
   Cursor,

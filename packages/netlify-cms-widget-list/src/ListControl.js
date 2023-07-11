@@ -5,7 +5,7 @@ import styled from '@emotion/styled';
 import { css, ClassNames } from '@emotion/core';
 import { List, Map, fromJS } from 'immutable';
 import { partial, isEmpty, uniqueId } from 'lodash';
-import uuid from 'uuid/v4';
+import { v4 as uuid } from 'uuid';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 import NetlifyCmsWidgetObject from 'netlify-cms-widget-object';
 import {

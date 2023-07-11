@@ -27,7 +27,7 @@
     "moment": "^2.24.0",
     "prop-types": "^15.7.2",
     "react-immutable-proptypes": "^2.1.0",
-    "uuid": "^3.3.2"
+    "uuid": "^8.3.2"
   },
   "peerDependencies": {
     "react": "^16.8.4 || ^17.0.0",
