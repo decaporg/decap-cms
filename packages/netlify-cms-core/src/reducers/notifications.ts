@@ -1,5 +1,5 @@
 import { produce } from 'immer';
-import uuid from 'uuid';
+import { v4 as uuid } from 'uuid';
 
 import {
   NOTIFICATION_SEND,

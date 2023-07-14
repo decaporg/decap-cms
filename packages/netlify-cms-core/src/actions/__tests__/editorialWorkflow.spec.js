@@ -8,8 +8,8 @@ import * as actions from '../editorialWorkflow';
 jest.mock('../../backend');
 jest.mock('../../valueObjects/AssetProxy');
 jest.mock('netlify-cms-lib-util');
-jest.mock('uuid/v4', () => {
-  return jest.fn().mockReturnValue('000000000000000000000');
+jest.mock('uuid', () => {
+  return { v4: jest.fn().mockReturnValue('000000000000000000000') };
 });
 
 const middlewares = [thunk];

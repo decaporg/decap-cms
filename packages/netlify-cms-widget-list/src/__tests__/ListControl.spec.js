@@ -34,7 +34,7 @@ jest.mock('netlify-cms-ui-default', () => {
     ListItemTopBar,
   };
 });
-jest.mock('uuid/v4');
+jest.mock('uuid');
 
 describe('ListControl', () => {
   const props = {
@@ -63,9 +63,9 @@ describe('ListControl', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    const uuid = require('uuid/v4');
+    const uuid = require('uuid');
     let id = 0;
-    uuid.mockImplementation(() => {
+    uuid.v4.mockImplementation(() => {
       return id++;
     });
   });
