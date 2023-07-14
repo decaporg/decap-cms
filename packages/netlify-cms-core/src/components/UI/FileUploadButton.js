@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 export function FileUploadButton({ label, imagesOnly, onChange, disabled, className }) {
   return (
-    <label className={`nc-fileUploadButton ${className || ''}`}>
+    <label tabIndex={'0'} className={`nc-fileUploadButton ${className || ''}`}>
       <span>{label}</span>
       <input
         type="file"

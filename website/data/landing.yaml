@@ -8,7 +8,13 @@ hero:
       description: "Content is stored in your Git repository alongside your code for easier versioning, multi-channel publishing, and the option to handle content updates directly in Git."
     - feature: "An extensible CMS built on React"
       description: "Decap CMS is built as a single-page React app. Create custom-styled previews, UI widgets, and editor plugins or add backends to support different Git platform APIs."
-
+awards:
+  title: "Awards"
+  description: "Decap was recognized with these awards"
+  items:
+    - title: "Software Reviews Gold Medal 2023"
+      href: "https://www.softwarereviews.com/categories/content-marketing?entitlement=gold_medal_Decap_CMS_%28formerly_Netlify%29_data_quadrant_awards_2023_content_marketing&utm_medium=badge&utm_source=netlify"
+      image: "/img/sr-gold_medal-2023.png"
 cta:
   primaryhook: "Getting started is simple and free."
   primary: "Choose a template that’s pre-configured with a static site generator and deploys to a global CDN in one&nbsp;click."

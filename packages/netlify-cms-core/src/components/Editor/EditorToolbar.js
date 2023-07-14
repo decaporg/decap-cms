@@ -37,7 +37,7 @@ const styles = {
   `,
   publishedButton: css`
     background-color: ${colorsRaw.tealLight};
-    color: ${colorsRaw.teal};
+    color: ${colorsRaw.tealDark};
   `,
 };
 
@@ -234,6 +234,10 @@ const RefreshPreviewButton = styled.button`
 
 const PreviewLink = RefreshPreviewButton.withComponent('a');
 
+const PublishDropDownItem = styled(DropdownItem)`
+  min-width: initial;
+`;
+
 const StatusDropdownItem = styled(DropdownItem)`
   ${Icon} {
     color: ${colors.infoText};
@@ -405,7 +409,7 @@ export class EditorToolbar extends React.Component {
     return canPublish ? (
       <ToolbarDropdown
         dropdownTopOverlap="40px"
-        dropdownWidth="150px"
+        dropdownWidth="200px"
         renderButton={() => (
           <PublishButton>
             {isPublishing
@@ -414,7 +418,7 @@ export class EditorToolbar extends React.Component {
           </PublishButton>
         )}
       >
-        <DropdownItem
+        <PublishDropDownItem
           label={t('editor.editorToolbar.publishNow')}
           icon="arrow"
           iconDirection="right"
@@ -422,12 +426,12 @@ export class EditorToolbar extends React.Component {
         />
         {canCreate ? (
           <>
-            <DropdownItem
+            <PublishDropDownItem
               label={t('editor.editorToolbar.publishAndCreateNew')}
               icon="add"
               onClick={onPublishAndNew}
             />
-            <DropdownItem
+            <PublishDropDownItem
               label={t('editor.editorToolbar.publishAndDuplicate')}
               icon="add"
               onClick={onPublishAndDuplicate}
