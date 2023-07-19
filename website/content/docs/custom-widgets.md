@@ -3,7 +3,7 @@ group: Fields
 weight: 20
 title: Creating Custom Widgets
 ---
-The NetlifyCMS exposes a `window.CMS` a global object that you can use to register custom widgets, previews, and editor plugins. The same object is also the default export if you import Netlify CMS as an npm module. The available widget extension methods are:
+Decap CMS exposes a `window.CMS` global object that you can use to register custom widgets, previews, and editor plugins. The same object is also the default export if you import Decap CMS as an npm module. The available widget extension methods are:
 
 * **registerWidget:** registers a custom widget.
 * **registerEditorComponent:** adds a block component to the Markdown editor.
@@ -23,7 +23,7 @@ Register a custom widget.
 CMS.registerWidget(name, control, [preview], [schema]);
 
 // Using npm module import
-import CMS from 'netlify-cms';
+import CMS from 'netlify-cms-app';
 CMS.registerWidget(name, control, [preview], [schema]);
 ```
 
@@ -190,7 +190,7 @@ CMS.registerEditorComponent({
 
 **Result:**
 
-![youtube-widget](/img/screen shot 2018-01-05 at 4.25.07 pm.png)
+![youtube-widget](/img/img/screen%20shot%202018-01-05%20at%204.25.07%20pm.png)
 
 ## Advanced field validation
 
@@ -240,7 +240,7 @@ You can also return a promise from `isValid`. While the promise is pending, the 
 
 ## Writing custom widgets as a separate package
 
-Widgets are inputs for the Netlify CMS editor interface. It's a React component that receives user input and outputs a serialized value. Those are the only rules - the component can be extremely simple, like text input, or extremely complicated, like a full-blown markdown editor. They can make calls to external services, and generally do anything that JavaScript can do.
+Widgets are inputs for the Decap CMS editor interface. It's a React component that receives user input and outputs a serialized value. Those are the only rules - the component can be extremely simple, like text input, or extremely complicated, like a full-blown markdown editor. They can make calls to external services, and generally do anything that JavaScript can do.
 
 For writing custom widgets as a separate package you should follow these steps:
 
@@ -277,7 +277,7 @@ Here is the content of `package.json` that you will have at the end:
 ```javascript
 {
   "name": "netlify-cms-widget-starter",
-  "description": "A boilerplate for creating Netlify CMS widgets.",
+  "description": "A boilerplate for creating Decap CMS widgets.",
   "author": "name of developer",
   "keywords": [
     "netlify",
@@ -288,7 +288,7 @@ Here is the content of `package.json` that you will have at the end:
     "boilerplate"
   ],
   "version": "0.0.1",
-  "homepage": "https://github.com/netlify/netlify-cms-widget-starter",
+  "homepage": "https://github.com/decaporg/decap-cms-widget-starter",
   "license": "MIT",
   "main": "dist/main.js",
   "devDependencies": {
@@ -474,7 +474,7 @@ window.CMS_MANUAL_INIT = true
 
 ```javascript
 import './bootstrap.js'
-import CMS, { init } from 'netlify-cms'
+import CMS, { init } from 'netlify-cms-app'
 import 'netlify-cms/dist/cms.css'
 import { Control, Preview } from '../src'
 
@@ -503,9 +503,9 @@ CMS.registerWidget('test', Control, Preview)
 init({ config })
 ```
 
-### [](https://github.com/netlify/netlify-cms-widget-starter#development)Development
+### [](https://github.com/decaporg/decap-cms-widget-starter#development)Development
 
-To run a copy of Netlify CMS with your widget for development, use the start script:
+To run a copy of Decap CMS with your widget for development, use the start script:
 
 ```javascript
 npm start
@@ -513,7 +513,7 @@ npm start
 
 Your widget source is in the `src` directory, where there are separate files for the `Control` and `Preview` components.
 
-### [](https://github.com/netlify/netlify-cms-widget-starter#production--publishing)Production & Publishing
+### [](https://github.com/decaporg/decap-cms-widget-starter#production--publishing)Production & Publishing
 
 You'll want to take a few steps before publishing a production built package to npm:
 
@@ -522,7 +522,7 @@ You'll want to take a few steps before publishing a production built package to 
    ```json
    {
      "name": "netlify-cms-widget-starter",
-     "description": "A boilerplate for creating Netlify CMS widgets.",
+     "description": "A boilerplate for creating Decap CMS widgets.",
      "author": "name of developer",
      "keywords": [
        "netlify",

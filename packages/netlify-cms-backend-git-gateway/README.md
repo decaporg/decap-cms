@@ -4,11 +4,11 @@ Netlify's [gateway](https://github.com/netlify/git-gateway) to hosted git APIs.
 
 ## Code structure
 
-`Implementation` for [File Management System API](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-util/README.md) based on `Api`.
+`Implementation` for [File Management System API](https://github.com/decaporg/decap-cms/tree/master/packages/netlify-cms-lib-util/README.md) based on `Api`.
 
-`Api` and `Implementation` from backend-[github](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-github/README.md)/[gitlab](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-gitlab/README.md)/[bitbacket](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-bitbacket/README.md) extended with Netlify-specific `LargeMedia(LFS)` and `JWT` auth.
+`Api` and `Implementation` from backend-[github](https://github.com/decaporg/decap-cms/tree/master/packages/netlify-cms-backend-github/README.md)/[gitlab](https://github.com/decaporg/decap-cms/tree/master/packages/netlify-cms-backend-gitlab/README.md)/[bitbacket](https://github.com/decaporg/decap-cms/tree/master/packages/netlify-cms-backend-bitbacket/README.md) extended with Netlify-specific `LargeMedia(LFS)` and `JWT` auth.
 
-`AuthenticationPage` - uses [lib-auth](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-lib-auth/README.md) and implements Netlify Identity authentication flow.
+`AuthenticationPage` - uses [lib-auth](https://github.com/decaporg/decap-cms/tree/master/packages/netlify-cms-lib-auth/README.md) and implements Netlify Identity authentication flow.
 
 Look at tests or types for more info.
 
@@ -16,7 +16,7 @@ Look at tests or types for more info.
 
 When debugging the CMS with Git Gateway you must:
 
-1. Have a Netlify site with [Git Gateway](https://docs.netlify.com/visitor-access/git-gateway/) and [Netlify Identity](https://docs.netlify.com/visitor-access/identity/) enabled. An easy way to create such a site is to use a [template](https://www.netlifycms.org/docs/start-with-a-template/), for example the [Gatsby template](https://app.netlify.com/start/deploy?repository=https://github.com/AustinGreen/gatsby-starter-netlify-cms&stack=cms)
+1. Have a Netlify site with [Git Gateway](https://docs.netlify.com/visitor-access/git-gateway/) and [Netlify Identity](https://docs.netlify.com/visitor-access/identity/) enabled. An easy way to create such a site is to use a [template](https://www.netlifycms.org/docs/start-with-a-template/), for example the [Gatsby template](https://app.netlify.com/start/deploy?repository=https://github.com/decaporg/gatsby-starter-decap-cms&stack=cms)
 2. Tell the CMS the URL of your Netlify site using a local storage item. To do so:
 
     1. Open `http://localhost:8080/` in the browser

@@ -7,8 +7,8 @@ import theme from '../theme';
 
 const Header = styled.header`
   text-align: center;
-  padding-top: ${theme.space[7]};
-  padding-bottom: ${theme.space[7]};
+  padding-top: ${theme.space[6]};
+  padding-bottom: ${theme.space[6]};
 `;
 
 const Title = styled.h2`

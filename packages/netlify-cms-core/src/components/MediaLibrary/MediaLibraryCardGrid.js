@@ -36,6 +36,7 @@ function CardWrapper(props) {
 
   return (
     <div
+      tabIndex="0"
       style={{
         ...style,
         left: style.left + gutter * columnIndex,

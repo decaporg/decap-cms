@@ -10,7 +10,7 @@ notifications:
       project with other devs!
     published: false
     title: Chat shoutout
-    url: https://netlifycms.org/chat
+    url: https://decapcms.org/chat
   - loud: true
     message: Netlify CMS now supports GitLab!
     published: false
