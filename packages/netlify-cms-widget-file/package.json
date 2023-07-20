@@ -33,7 +33,7 @@
     "immutable": "^3.7.6",
     "netlify-cms-ui-default": "^2.12.1",
     "prop-types": "^15.7.2",
-    "react": "^16.8.4 || ^17.0.0",
+    "react": "^18.2.0",
     "react-immutable-proptypes": "^2.1.0",
     "uuid": "^8.3.2"
   }

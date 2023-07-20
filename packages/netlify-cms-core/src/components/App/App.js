@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { hot } from 'react-hot-loader';
 import { translate } from 'react-polyglot';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
@@ -277,4 +276,4 @@ const mapDispatchToProps = {
   logoutUser,
 };
 
-export default hot(module)(connect(mapStateToProps, mapDispatchToProps)(translate()(App)));
+export default connect(mapStateToProps, mapDispatchToProps)(translate()(App));

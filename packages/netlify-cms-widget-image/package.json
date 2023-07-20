@@ -29,6 +29,6 @@
     "netlify-cms-ui-default": "^2.12.1",
     "netlify-cms-widget-file": "^2.9.2",
     "prop-types": "^15.7.2",
-    "react": "^16.8.4 || ^17.0.0"
+    "react": "^18.2.0"
   }
 }
