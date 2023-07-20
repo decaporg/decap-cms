@@ -17,8 +17,10 @@ import {
   IconButton,
 } from 'netlify-cms-ui-default';
 import { basename } from 'netlify-cms-lib-util';
-import { SortableContainer, SortableElement } from 'react-sortable-hoc';
 import { arrayMoveImmutable as arrayMove } from 'array-move';
+import { DndContext, MouseSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { SortableContext, useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 const MAX_DISPLAY_LENGTH = 50;
 
@@ -64,9 +66,20 @@ function SortableImageButtons({ onRemove, onReplace }) {
   );
 }
 
-const SortableImage = SortableElement(({ itemValue, getAsset, field, onRemove, onReplace }) => {
+function SortableImage(props) {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id: props.id,
+  });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  const { itemValue, getAsset, field, onRemove, onReplace } = props;
+
   return (
-    <div>
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
       <ImageWrapper sortable>
         <Image src={getAsset(itemValue, field) || ''} />
       </ImageWrapper>
@@ -77,32 +90,59 @@ const SortableImage = SortableElement(({ itemValue, getAsset, field, onRemove, o
       ></SortableImageButtons>
     </div>
   );
-});
+}
 
-const SortableMultiImageWrapper = SortableContainer(
-  ({ items, getAsset, field, onRemoveOne, onReplaceOne }) => {
-    return (
-      <div
-        css={css`
-          display: flex;
-          flex-wrap: wrap;
-        `}
-      >
-        {items.map((itemValue, index) => (
-          <SortableImage
-            key={`item-${itemValue}`}
-            index={index}
-            itemValue={itemValue}
-            getAsset={getAsset}
-            field={field}
-            onRemove={onRemoveOne(index)}
-            onReplace={onReplaceOne(index)}
-          />
-        ))}
-      </div>
-    );
-  },
-);
+function SortableMultiImageWrapper({
+  items,
+  getAsset,
+  field,
+  onSortEnd,
+  onRemoveOne,
+  onReplaceOne,
+}) {
+  const sensors = useSensors(
+    useSensor(MouseSensor, {
+      activationConstraint: {
+        distance: 10,
+      },
+    }),
+  );
+
+  function handleDragEnd({ active, over }) {
+    const itemArray = valueListToArray(items);
+    onSortEnd({
+      oldIndex: itemArray.indexOf(active.id),
+      newIndex: itemArray.indexOf(over.id),
+    });
+  }
+
+  return (
+    <div
+      // eslint-disable-next-line react/no-unknown-property
+      css={css`
+        display: flex;
+        flex-wrap: wrap;
+      `}
+    >
+      <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+        <SortableContext items={items}>
+          {items.map((itemValue, index) => (
+            <SortableImage
+              key={itemValue}
+              id={itemValue}
+              index={index}
+              itemValue={itemValue}
+              getAsset={getAsset}
+              field={field}
+              onRemove={onRemoveOne(index)}
+              onReplace={onReplaceOne(index)}
+            ></SortableImage>
+          ))}
+        </SortableContext>
+      </DndContext>
+    </div>
+  );
+}
 
 const FileLink = styled.a`
   margin-bottom: 20px;
@@ -259,7 +299,7 @@ export default function withFileControl({ forImage } = {}) {
     };
 
     onRemoveOne = index => () => {
-      const { value } = this.props;
+      const value = valueListToArray(this.props.value);
       value.splice(index, 1);
       return this.props.onChange(sizeOfValue(value) > 0 ? [...value] : null);
     };
@@ -350,7 +390,7 @@ export default function withFileControl({ forImage } = {}) {
       if (isMultiple(value)) {
         return (
           <SortableMultiImageWrapper
-            items={value}
+            items={valueListToArray(value)}
             onSortEnd={this.onSortEnd}
             onRemoveOne={this.onRemoveOne}
             onReplaceOne={this.onReplaceOne}
