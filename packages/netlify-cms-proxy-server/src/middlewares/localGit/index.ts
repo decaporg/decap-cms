@@ -10,7 +10,7 @@ import {
   parseContentKey,
 } from 'netlify-cms-lib-util/src/APIUtils';
 import { parse } from 'what-the-diff';
-import simpleGit from 'simple-git';
+import { simpleGit } from 'simple-git';
 import { Mutex, withTimeout } from 'async-mutex';
 
 import { defaultSchema, joi } from '../joi';
