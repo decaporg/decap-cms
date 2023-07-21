@@ -11,15 +11,11 @@ const assertEntriesCount = count => {
 };
 
 const assertInEntries = text => {
-  cy.get('[class*=ListCardLink]').within(() => {
-    cy.contains('h2', text);
-  });
+  cy.get('[class*=ListCardLink] h2').contains(text);
 };
 
 const assertNotInEntries = text => {
-  cy.get('[class*=ListCardLink]').within(() => {
-    cy.contains('h2', text).should('not.exist');
-  });
+  cy.get('[class*=ListCardLink] h2').contains(text).should('not.exist');
 };
 
 describe('View Filter', () => {

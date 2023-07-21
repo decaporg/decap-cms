@@ -3,18 +3,18 @@ import {HOT_KEY_MAP} from "../utils/constants";
 const headingNumberToWord = ['', 'one', 'two', 'three', 'four', 'five', 'six'];
 const isMac = Cypress.platform === 'darwin';
 const modifierKey = isMac ? '{meta}' : '{ctrl}';
+// eslint-disable-next-line func-style
 const replaceMod = (str) => str.replace(/mod\+/g, modifierKey).replace(/shift\+/g, '{shift}');
 
-describe('Markdown widget', () => {
+describe('Markdown widget hotkeys', () => {
   describe('hot keys', () => {
     before(() => {
       Cypress.config('defaultCommandTimeout', 4000);
       cy.task('setupBackend', { backend: 'test' });
-      cy.loginAndNewPost();
-
     });
 
     beforeEach(() => {
+      cy.loginAndNewPost();
       cy.clearMarkdownEditorContent();
       cy.focused()
         .type('foo')
@@ -77,15 +77,18 @@ describe('Markdown widget', () => {
 
     describe('link', () => {
       before(() => {
-        cy.window().then((win) => {
-          cy.stub(win, 'prompt').returns('https://google.com');
-        });
+
       });
       it('pressing mod+k transforms the text to a link', () => {
-        cy.get('@selection')
+        cy.window().then((win) => {
+          cy.get('@selection')
           .type(replaceMod(HOT_KEY_MAP['link']))
-          .confirmMarkdownEditorContent('<p><a>foo</a></p>')
+          cy.stub(win, 'prompt').returns('https://google.com');
+          cy.confirmMarkdownEditorContent('<p><a>foo</a></p>')
           .type(replaceMod(HOT_KEY_MAP['link']));
+        });
+
+
       });
     });
 

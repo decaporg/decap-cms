@@ -5,10 +5,10 @@ describe('Markdown widget', () => {
     before(() => {
       Cypress.config('defaultCommandTimeout', 4000);
       cy.task('setupBackend', { backend: 'test' });
-      cy.loginAndNewPost();
     });
 
     beforeEach(() => {
+      cy.loginAndNewPost();
       cy.clearMarkdownEditorContent();
     });
 
@@ -16,7 +16,7 @@ describe('Markdown widget', () => {
       cy.task('teardownBackend', { backend: 'test' });
     });
 
-    describe('toggle quote', () => {
+    // describe('toggle quote', () => {
       it('toggles empty quote block on and off in empty editor', () => {
         cy.clickQuoteButton()
           .confirmMarkdownEditorContent(`
@@ -71,11 +71,13 @@ describe('Markdown widget', () => {
           `);
       });
       it('toggles empty quote block on and off for selected blocks', () => {
+        // eslint-disable-next-line cypress/no-unnecessary-waiting
         cy.focused()
           .type('foo')
           .enter()
           .type('bar')
           .setSelection('foo', 'bar')
+          .wait(500)
           .clickQuoteButton()
           .confirmMarkdownEditorContent(`
             <blockquote>
@@ -97,11 +99,13 @@ describe('Markdown widget', () => {
           `);
       });
       it('toggles empty quote block on and off for partially selected blocks', () => {
+        // eslint-disable-next-line cypress/no-unnecessary-waiting
         cy.focused()
           .type('foo')
           .enter()
           .type('bar')
           .setSelection('oo', 'ba')
+          .wait(500)
           .clickQuoteButton()
           .confirmMarkdownEditorContent(`
             <blockquote>
@@ -123,12 +127,14 @@ describe('Markdown widget', () => {
           `);
       });
       it('toggles quote block on and off for multiple selected list items', () => {
+        // eslint-disable-next-line cypress/no-unnecessary-waiting
         cy.focused()
           .clickUnorderedListButton()
           .type('foo')
           .enter()
           .type('bar')
           .setSelection('foo', 'bar')
+          .wait(500)
           .clickQuoteButton()
           .confirmMarkdownEditorContent(`
             <blockquote>
@@ -154,9 +160,11 @@ describe('Markdown widget', () => {
             </ul>
           `)
           .setCursorAfter('bar')
+          .wait(500)
           .enter()
           .type('baz')
           .setSelection('bar', 'baz')
+          .wait(500)
           .clickQuoteButton()
           .confirmMarkdownEditorContent(`
             <ul>
@@ -207,7 +215,7 @@ describe('Markdown widget', () => {
                   </blockquote>
                 </li>
               </ul>
-            </blockquote> 
+            </blockquote>
           `)
           /*
            * First Enter creates new paragraph within the innermost block quote.
@@ -254,9 +262,9 @@ describe('Markdown widget', () => {
           */
           .backspace({ times: 14 })
       });
-    });
+    // });
 
-    describe('backspace inside quote', () => {
+    // describe('backspace inside quote', () => {
       it('joins two paragraphs', () => {
         cy.clickQuoteButton()
           .type('foo')
@@ -294,11 +302,13 @@ describe('Markdown widget', () => {
           `);
       });
       it('removes first block from quote when focused at first block at start', () => {
+        // eslint-disable-next-line cypress/no-unnecessary-waiting
         cy.clickQuoteButton()
           .type('foo')
           .enter()
           .type('bar')
           .setCursorBefore('foo')
+          .wait(500)
           .backspace()
           .confirmMarkdownEditorContent(`
             <p>foo</p>
@@ -307,10 +317,11 @@ describe('Markdown widget', () => {
             </blockquote>
           `)
       });
-    });
+    // });
 
-    describe('enter inside quote', () => {
+    // describe('enter inside quote', () => {
       it('creates new block inside quote', () => {
+        // eslint-disable-next-line cypress/no-unnecessary-waiting
         cy.clickQuoteButton()
           .type('foo')
           .enter()
@@ -322,6 +333,7 @@ describe('Markdown widget', () => {
           `)
           .type('bar')
           .setCursorAfter('ba')
+          .wait(500)
           .enter()
           .confirmMarkdownEditorContent(`
             <blockquote>
@@ -343,6 +355,6 @@ describe('Markdown widget', () => {
             <p></p>
           `)
       });
-    });
+    // });
   });
 });

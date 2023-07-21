@@ -150,9 +150,7 @@ function HomePage({ data }) {
         </Grid>
       </HomeSection>
 
-      <HomeSection
-        title={<Markdownify source={landing.community.hook} />}
-      >
+      <HomeSection title={<Markdownify source={landing.community.hook} />}>
         <Grid cols={2}>
           <div>
             <Features items={landing.community.features} />
