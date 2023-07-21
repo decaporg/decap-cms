@@ -250,7 +250,7 @@ export default function remarkEscapeMarkdownEntities() {
      * Escape characters in text and html nodes only. We store a lot of normal
      * text in html nodes to keep Remark from escaping html entities.
      */
-    if (['text', 'html'].includes(node.type)) {
+    if (['text', 'html'].includes(node.type) && node.value) {
       /**
        * Escape all characters if this is the first child node, otherwise only
        * common characters.
