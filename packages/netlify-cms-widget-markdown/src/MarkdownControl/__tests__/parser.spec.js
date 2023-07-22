@@ -10,32 +10,24 @@ describe('Compile markdown to Slate Raw AST', () => {
 sweet body
 `;
     expect(parser(value)).toMatchInlineSnapshot(`
-Object {
-  "nodes": Array [
-    Object {
-      "nodes": Array [
-        Object {
-          "object": "text",
-          "text": "H1",
-        },
-      ],
-      "object": "block",
-      "type": "heading-one",
-    },
-    Object {
-      "nodes": Array [
-        Object {
-          "object": "text",
-          "text": "sweet body",
-        },
-      ],
-      "object": "block",
-      "type": "paragraph",
-    },
-  ],
-  "object": "block",
-  "type": "root",
-}
+Array [
+  Object {
+    "children": Array [
+      Object {
+        "text": "H1",
+      },
+    ],
+    "type": "heading-one",
+  },
+  Object {
+    "children": Array [
+      Object {
+        "text": "sweet body",
+      },
+    ],
+    "type": "paragraph",
+  },
+]
 `);
   });
 
@@ -48,79 +40,63 @@ Object {
 3. fro
 `;
     expect(parser(value)).toMatchInlineSnapshot(`
-Object {
-  "nodes": Array [
-    Object {
-      "nodes": Array [
-        Object {
-          "object": "text",
-          "text": "H1",
-        },
-      ],
-      "object": "block",
-      "type": "heading-one",
-    },
-    Object {
-      "data": Object {
-        "start": 1,
+Array [
+  Object {
+    "children": Array [
+      Object {
+        "text": "H1",
       },
-      "nodes": Array [
-        Object {
-          "nodes": Array [
-            Object {
-              "nodes": Array [
-                Object {
-                  "object": "text",
-                  "text": "yo",
-                },
-              ],
-              "object": "block",
-              "type": "paragraph",
-            },
-          ],
-          "object": "block",
-          "type": "list-item",
-        },
-        Object {
-          "nodes": Array [
-            Object {
-              "nodes": Array [
-                Object {
-                  "object": "text",
-                  "text": "bro",
-                },
-              ],
-              "object": "block",
-              "type": "paragraph",
-            },
-          ],
-          "object": "block",
-          "type": "list-item",
-        },
-        Object {
-          "nodes": Array [
-            Object {
-              "nodes": Array [
-                Object {
-                  "object": "text",
-                  "text": "fro",
-                },
-              ],
-              "object": "block",
-              "type": "paragraph",
-            },
-          ],
-          "object": "block",
-          "type": "list-item",
-        },
-      ],
-      "object": "block",
-      "type": "numbered-list",
+    ],
+    "type": "heading-one",
+  },
+  Object {
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "children": Array [
+              Object {
+                "text": "yo",
+              },
+            ],
+            "type": "paragraph",
+          },
+        ],
+        "type": "list-item",
+      },
+      Object {
+        "children": Array [
+          Object {
+            "children": Array [
+              Object {
+                "text": "bro",
+              },
+            ],
+            "type": "paragraph",
+          },
+        ],
+        "type": "list-item",
+      },
+      Object {
+        "children": Array [
+          Object {
+            "children": Array [
+              Object {
+                "text": "fro",
+              },
+            ],
+            "type": "paragraph",
+          },
+        ],
+        "type": "list-item",
+      },
+    ],
+    "data": Object {
+      "start": 1,
     },
-  ],
-  "object": "block",
-  "type": "root",
-}
+    "type": "numbered-list",
+  },
+]
 `);
   });
 
@@ -133,79 +109,63 @@ Object {
 * fro
 `;
     expect(parser(value)).toMatchInlineSnapshot(`
-Object {
-  "nodes": Array [
-    Object {
-      "nodes": Array [
-        Object {
-          "object": "text",
-          "text": "H1",
-        },
-      ],
-      "object": "block",
-      "type": "heading-one",
-    },
-    Object {
-      "data": Object {
-        "start": null,
+Array [
+  Object {
+    "children": Array [
+      Object {
+        "text": "H1",
       },
-      "nodes": Array [
-        Object {
-          "nodes": Array [
-            Object {
-              "nodes": Array [
-                Object {
-                  "object": "text",
-                  "text": "yo",
-                },
-              ],
-              "object": "block",
-              "type": "paragraph",
-            },
-          ],
-          "object": "block",
-          "type": "list-item",
-        },
-        Object {
-          "nodes": Array [
-            Object {
-              "nodes": Array [
-                Object {
-                  "object": "text",
-                  "text": "bro",
-                },
-              ],
-              "object": "block",
-              "type": "paragraph",
-            },
-          ],
-          "object": "block",
-          "type": "list-item",
-        },
-        Object {
-          "nodes": Array [
-            Object {
-              "nodes": Array [
-                Object {
-                  "object": "text",
-                  "text": "fro",
-                },
-              ],
-              "object": "block",
-              "type": "paragraph",
-            },
-          ],
-          "object": "block",
-          "type": "list-item",
-        },
-      ],
-      "object": "block",
-      "type": "bulleted-list",
+    ],
+    "type": "heading-one",
+  },
+  Object {
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "children": Array [
+              Object {
+                "text": "yo",
+              },
+            ],
+            "type": "paragraph",
+          },
+        ],
+        "type": "list-item",
+      },
+      Object {
+        "children": Array [
+          Object {
+            "children": Array [
+              Object {
+                "text": "bro",
+              },
+            ],
+            "type": "paragraph",
+          },
+        ],
+        "type": "list-item",
+      },
+      Object {
+        "children": Array [
+          Object {
+            "children": Array [
+              Object {
+                "text": "fro",
+              },
+            ],
+            "type": "paragraph",
+          },
+        ],
+        "type": "list-item",
+      },
+    ],
+    "data": Object {
+      "start": null,
     },
-  ],
-  "object": "block",
-  "type": "root",
-}
+    "type": "bulleted-list",
+  },
+]
 `);
   });
 
@@ -218,42 +178,32 @@ Object {
 ### H3
 `;
     expect(parser(value)).toMatchInlineSnapshot(`
-Object {
-  "nodes": Array [
-    Object {
-      "nodes": Array [
-        Object {
-          "object": "text",
-          "text": "H1",
-        },
-      ],
-      "object": "block",
-      "type": "heading-one",
-    },
-    Object {
-      "nodes": Array [
-        Object {
-          "object": "text",
-          "text": "H2",
-        },
-      ],
-      "object": "block",
-      "type": "heading-two",
-    },
-    Object {
-      "nodes": Array [
-        Object {
-          "object": "text",
-          "text": "H3",
-        },
-      ],
-      "object": "block",
-      "type": "heading-three",
-    },
-  ],
-  "object": "block",
-  "type": "root",
-}
+Array [
+  Object {
+    "children": Array [
+      Object {
+        "text": "H1",
+      },
+    ],
+    "type": "heading-one",
+  },
+  Object {
+    "children": Array [
+      Object {
+        "text": "H2",
+      },
+    ],
+    "type": "heading-two",
+  },
+  Object {
+    "children": Array [
+      Object {
+        "text": "H3",
+      },
+    ],
+    "type": "heading-three",
+  },
+]
 `);
   });
 
@@ -266,42 +216,32 @@ Object {
 blue moon
 `;
     expect(parser(value)).toMatchInlineSnapshot(`
-Object {
-  "nodes": Array [
-    Object {
-      "nodes": Array [
-        Object {
-          "object": "text",
-          "text": "H1",
-        },
-      ],
-      "object": "block",
-      "type": "heading-one",
-    },
-    Object {
-      "nodes": Array [
-        Object {
-          "object": "text",
-          "text": "",
-        },
-      ],
-      "object": "block",
-      "type": "thematic-break",
-    },
-    Object {
-      "nodes": Array [
-        Object {
-          "object": "text",
-          "text": "blue moon",
-        },
-      ],
-      "object": "block",
-      "type": "paragraph",
-    },
-  ],
-  "object": "block",
-  "type": "root",
-}
+Array [
+  Object {
+    "children": Array [
+      Object {
+        "text": "H1",
+      },
+    ],
+    "type": "heading-one",
+  },
+  Object {
+    "children": Array [
+      Object {
+        "text": "",
+      },
+    ],
+    "type": "thematic-break",
+  },
+  Object {
+    "children": Array [
+      Object {
+        "text": "blue moon",
+      },
+    ],
+    "type": "paragraph",
+  },
+]
 `);
   });
 
@@ -314,42 +254,32 @@ Object {
 blue moon
 `;
     expect(parser(value)).toMatchInlineSnapshot(`
-Object {
-  "nodes": Array [
-    Object {
-      "nodes": Array [
-        Object {
-          "object": "text",
-          "text": "H1",
-        },
-      ],
-      "object": "block",
-      "type": "heading-one",
-    },
-    Object {
-      "nodes": Array [
-        Object {
-          "object": "text",
-          "text": "",
-        },
-      ],
-      "object": "block",
-      "type": "thematic-break",
-    },
-    Object {
-      "nodes": Array [
-        Object {
-          "object": "text",
-          "text": "blue moon",
-        },
-      ],
-      "object": "block",
-      "type": "paragraph",
-    },
-  ],
-  "object": "block",
-  "type": "root",
-}
+Array [
+  Object {
+    "children": Array [
+      Object {
+        "text": "H1",
+      },
+    ],
+    "type": "heading-one",
+  },
+  Object {
+    "children": Array [
+      Object {
+        "text": "",
+      },
+    ],
+    "type": "thematic-break",
+  },
+  Object {
+    "children": Array [
+      Object {
+        "text": "blue moon",
+      },
+    ],
+    "type": "paragraph",
+  },
+]
 `);
   });
 
@@ -359,37 +289,28 @@ blue moon
 footballs
 `;
     expect(parser(value)).toMatchInlineSnapshot(`
-Object {
-  "nodes": Array [
-    Object {
-      "nodes": Array [
-        Object {
-          "object": "text",
-          "text": "blue moon",
-        },
-        Object {
-          "data": undefined,
-          "nodes": Array [
-            Object {
-              "object": "text",
-              "text": "",
-            },
-          ],
-          "object": "inline",
-          "type": "break",
-        },
-        Object {
-          "object": "text",
-          "text": "footballs",
-        },
-      ],
-      "object": "block",
-      "type": "paragraph",
-    },
-  ],
-  "object": "block",
-  "type": "root",
-}
+Array [
+  Object {
+    "children": Array [
+      Object {
+        "text": "blue moon",
+      },
+      Object {
+        "children": Array [
+          Object {
+            "text": "",
+          },
+        ],
+        "data": undefined,
+        "type": "break",
+      },
+      Object {
+        "text": "footballs",
+      },
+    ],
+    "type": "paragraph",
+  },
+]
 `);
   });
 
@@ -398,41 +319,26 @@ Object {
 ![super](duper.jpg)
 `;
     expect(parser(value)).toMatchInlineSnapshot(`
-Object {
-  "nodes": Array [
-    Object {
-      "nodes": Array [
-        Object {
-          "object": "text",
-          "text": "",
-        },
-        Object {
-          "data": Object {
-            "alt": "super",
-            "title": null,
-            "url": "duper.jpg",
+Array [
+  Object {
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "text": "",
           },
-          "nodes": Array [
-            Object {
-              "object": "text",
-              "text": "",
-            },
-          ],
-          "object": "inline",
-          "type": "image",
+        ],
+        "data": Object {
+          "alt": "super",
+          "title": null,
+          "url": "duper.jpg",
         },
-        Object {
-          "object": "text",
-          "text": "",
-        },
-      ],
-      "object": "block",
-      "type": "paragraph",
-    },
-  ],
-  "object": "block",
-  "type": "root",
-}
+        "type": "image",
+      },
+    ],
+    "type": "paragraph",
+  },
+]
 `);
   });
 
@@ -443,25 +349,24 @@ var a = 1;
 \`\`\`
 `;
     expect(parser(value)).toMatchInlineSnapshot(`
-Object {
-  "nodes": Array [
-    Object {
-      "data": Object {
+Array [
+  Object {
+    "children": Array [
+      Object {
+        "text": "var a = 1;",
+      },
+    ],
+    "data": Object {
+      "lang": "javascript",
+      "shortcode": "code-block",
+      "shortcodeData": Object {
+        "code": "var a = 1;",
         "lang": "javascript",
       },
-      "nodes": Array [
-        Object {
-          "object": "text",
-          "text": "var a = 1;",
-        },
-      ],
-      "object": "block",
-      "type": "code-block",
     },
-  ],
-  "object": "block",
-  "type": "root",
-}
+    "type": "shortcode",
+  },
+]
 `);
   });
 
@@ -474,85 +379,75 @@ This is **some *hot* content**
 perhaps **scalding** even
 `;
     expect(parser(value)).toMatchInlineSnapshot(`
-Object {
-  "nodes": Array [
-    Object {
-      "nodes": Array [
-        Object {
-          "object": "text",
-          "text": "Word",
-        },
-      ],
-      "object": "block",
-      "type": "heading-one",
-    },
-    Object {
-      "nodes": Array [
-        Object {
-          "object": "text",
-          "text": "This is ",
-        },
-        Object {
-          "marks": Array [
-            Object {
-              "type": "bold",
-            },
-          ],
-          "object": "text",
-          "text": "some ",
-        },
-        Object {
-          "marks": Array [
-            Object {
-              "type": "bold",
-            },
-            Object {
-              "type": "italic",
-            },
-          ],
-          "object": "text",
-          "text": "hot",
-        },
-        Object {
-          "marks": Array [
-            Object {
-              "type": "bold",
-            },
-          ],
-          "object": "text",
-          "text": " content",
-        },
-      ],
-      "object": "block",
-      "type": "paragraph",
-    },
-    Object {
-      "nodes": Array [
-        Object {
-          "object": "text",
-          "text": "perhaps ",
-        },
-        Object {
-          "marks": Array [
-            Object {
-              "type": "bold",
-            },
-          ],
-          "object": "text",
-          "text": "scalding",
-        },
-        Object {
-          "object": "text",
-          "text": " even",
-        },
-      ],
-      "object": "block",
-      "type": "paragraph",
-    },
-  ],
-  "object": "block",
-  "type": "root",
-}
+Array [
+  Object {
+    "children": Array [
+      Object {
+        "text": "Word",
+      },
+    ],
+    "type": "heading-one",
+  },
+  Object {
+    "children": Array [
+      Object {
+        "text": "This is ",
+      },
+      Object {
+        "bold": true,
+        "marks": Array [
+          Object {
+            "type": "bold",
+          },
+        ],
+        "text": "some ",
+      },
+      Object {
+        "bold": true,
+        "italic": true,
+        "marks": Array [
+          Object {
+            "type": "bold",
+          },
+          Object {
+            "type": "italic",
+          },
+        ],
+        "text": "hot",
+      },
+      Object {
+        "bold": true,
+        "marks": Array [
+          Object {
+            "type": "bold",
+          },
+        ],
+        "text": " content",
+      },
+    ],
+    "type": "paragraph",
+  },
+  Object {
+    "children": Array [
+      Object {
+        "text": "perhaps ",
+      },
+      Object {
+        "bold": true,
+        "marks": Array [
+          Object {
+            "type": "bold",
+          },
+        ],
+        "text": "scalding",
+      },
+      Object {
+        "text": " even",
+      },
+    ],
+    "type": "paragraph",
+  },
+]
 `);
   });
 
@@ -563,45 +458,36 @@ Object {
 This is some sweet \`inline code\` yo!
 `;
     expect(parser(value)).toMatchInlineSnapshot(`
-Object {
-  "nodes": Array [
-    Object {
-      "nodes": Array [
-        Object {
-          "object": "text",
-          "text": "Word",
-        },
-      ],
-      "object": "block",
-      "type": "heading-one",
-    },
-    Object {
-      "nodes": Array [
-        Object {
-          "object": "text",
-          "text": "This is some sweet ",
-        },
-        Object {
-          "marks": Array [
-            Object {
-              "type": "code",
-            },
-          ],
-          "object": "text",
-          "text": "inline code",
-        },
-        Object {
-          "object": "text",
-          "text": " yo!",
-        },
-      ],
-      "object": "block",
-      "type": "paragraph",
-    },
-  ],
-  "object": "block",
-  "type": "root",
-}
+Array [
+  Object {
+    "children": Array [
+      Object {
+        "text": "Word",
+      },
+    ],
+    "type": "heading-one",
+  },
+  Object {
+    "children": Array [
+      Object {
+        "text": "This is some sweet ",
+      },
+      Object {
+        "code": true,
+        "marks": Array [
+          Object {
+            "type": "code",
+          },
+        ],
+        "text": "inline code",
+      },
+      Object {
+        "text": " yo!",
+      },
+    ],
+    "type": "paragraph",
+  },
+]
 `);
   });
 
@@ -612,50 +498,39 @@ Object {
 How far is it to [Google](https://google.com) land?
 `;
     expect(parser(value)).toMatchInlineSnapshot(`
-Object {
-  "nodes": Array [
-    Object {
-      "nodes": Array [
-        Object {
-          "object": "text",
-          "text": "Word",
-        },
-      ],
-      "object": "block",
-      "type": "heading-one",
-    },
-    Object {
-      "nodes": Array [
-        Object {
-          "object": "text",
-          "text": "How far is it to ",
-        },
-        Object {
-          "data": Object {
-            "title": null,
-            "url": "https://google.com",
+Array [
+  Object {
+    "children": Array [
+      Object {
+        "text": "Word",
+      },
+    ],
+    "type": "heading-one",
+  },
+  Object {
+    "children": Array [
+      Object {
+        "text": "How far is it to ",
+      },
+      Object {
+        "children": Array [
+          Object {
+            "text": "Google",
           },
-          "nodes": Array [
-            Object {
-              "object": "text",
-              "text": "Google",
-            },
-          ],
-          "object": "inline",
-          "type": "link",
+        ],
+        "data": Object {
+          "title": null,
+          "url": "https://google.com",
         },
-        Object {
-          "object": "text",
-          "text": " land?",
-        },
-      ],
-      "object": "block",
-      "type": "paragraph",
-    },
-  ],
-  "object": "block",
-  "type": "root",
-}
+        "type": "link",
+      },
+      Object {
+        "text": " land?",
+      },
+    ],
+    "type": "paragraph",
+  },
+]
 `);
   });
 
@@ -666,51 +541,34 @@ Object {
 {{< test >}}
 `;
     expect(parser(value)).toMatchInlineSnapshot(`
-Object {
-  "nodes": Array [
-    Object {
-      "nodes": Array [
-        Object {
-          "object": "text",
-          "text": "",
-        },
-        Object {
-          "data": Object {
-            "alt": "test",
-            "title": null,
-            "url": "test.png",
+Array [
+  Object {
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "text": "",
           },
-          "nodes": Array [
-            Object {
-              "object": "text",
-              "text": "",
-            },
-          ],
-          "object": "inline",
-          "type": "image",
+        ],
+        "data": Object {
+          "alt": "test",
+          "title": null,
+          "url": "test.png",
         },
-        Object {
-          "object": "text",
-          "text": "",
-        },
-      ],
-      "object": "block",
-      "type": "paragraph",
-    },
-    Object {
-      "nodes": Array [
-        Object {
-          "object": "text",
-          "text": "{{< test >}}",
-        },
-      ],
-      "object": "block",
-      "type": "paragraph",
-    },
-  ],
-  "object": "block",
-  "type": "root",
-}
+        "type": "image",
+      },
+    ],
+    "type": "paragraph",
+  },
+  Object {
+    "children": Array [
+      Object {
+        "text": "{{< test >}}",
+      },
+    ],
+    "type": "paragraph",
+  },
+]
 `);
   });
 
