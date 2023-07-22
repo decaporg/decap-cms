@@ -100,7 +100,7 @@ function setSnakeCaseConfig<T extends CmsField>(field: T) {
     console.warn(
       `Field ${field.name} is using a deprecated configuration '${camel}'. Please use '${snake}'`,
     );
-    return { [snake]: (field as Record<string, unknown>)[camel] };
+    return { [snake]: (field as unknown as Record<string, unknown>)[camel] };
   });
 
   return Object.assign({}, field, ...snakeValues) as T;

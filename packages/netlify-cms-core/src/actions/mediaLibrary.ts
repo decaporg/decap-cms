@@ -549,7 +549,7 @@ export async function getMediaDisplayURL(
       dispatch(loadMediaDisplayURL(file));
     }
 
-    url = await promise;
+    url = (await promise) ?? null;
   }
 
   return url;
