@@ -89,6 +89,7 @@
     "@commitlint/config-conventional": "^16.0.0",
     "@emotion/eslint-plugin": "^11.0.0",
     "@octokit/rest": "^16.28.7",
+    "@soda/friendly-errors-webpack-plugin": "^1.8.1",
     "@storybook/addon-actions": "^5.3.6",
     "@storybook/addon-links": "^5.3.6",
     "@storybook/react": "^5.3.6",
@@ -119,7 +120,7 @@
     "babel-plugin-transform-export-extensions": "^6.22.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",
     "cache-me-outside": "^0.0.10",
-    "copy-webpack-plugin": "^6.0.0",
+    "copy-webpack-plugin": "^10.2.4",
     "cross-env": "^7.0.0",
     "css-loader": "^3.0.0",
     "cypress": "9.5.3",
@@ -135,7 +136,6 @@
     "eslint-plugin-react": "^7.17.0",
     "eslint-plugin-unicorn": "^41.0.1",
     "execa": "^5.0.0",
-    "friendly-errors-webpack-plugin": "^1.7.0",
     "fs-extra": "^10.0.0",
     "gitlab": "^14.1.1",
     "http-server": "^14.0.0",
@@ -155,22 +155,24 @@
     "prettier": "^2.3.0",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
+    "react-hot-loader": "^4.13.1",
     "react-test-renderer": "^16.8.4",
     "rehype": "^7.0.0",
     "rimraf": "^3.0.0",
     "simple-git": "^3.0.0",
     "start-server-and-test": "^1.7.11",
+    "style-loader": "^3.3.3",
     "stylelint": "^14.5.3",
     "stylelint-config-standard-scss": "^3.0.0",
     "stylelint-config-styled-components": "^0.1.1",
     "stylelint-processor-styled-components": "^1.10.0",
     "svg-inline-loader": "^0.8.0",
     "to-string-loader": "^1.1.5",
-    "typescript": "^3.7.2",
+    "typescript": "^4.9.4",
     "unist-util-visit": "^1.4.0",
-    "webpack": "^4.29.6",
-    "webpack-cli": "^4.0.0",
-    "webpack-dev-server": "^3.2.1"
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1",
+    "webpack-dev-server": "^4.11.1"
   },
   "workspaces": {
     "packages": [
@@ -184,11 +186,15 @@
   "private": true,
   "dependencies": {
     "@emotion/babel-preset-css-prop": "^10.0.27",
+    "browserify": "^17.0.0",
+    "buffer": "^6.0.3",
     "emotion": "^10.0.9",
     "eslint-config-prettier": "^8.0.0",
     "eslint-plugin-babel": "^5.3.0",
     "globby": "^12.0.0",
-    "lerna": "^4.0.0"
+    "imports-loader": "^4.0.1",
+    "lerna": "^4.0.0",
+    "process": "^0.11.10"
   },
   "resolutions": {
     "react-redux": "^7.2.0"
