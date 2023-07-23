@@ -7,8 +7,6 @@ describe('Markdown widget link', () => {
   });
 
   beforeEach(() => {
-    cy.clearLocalStorage();
-    cy.reload();
     cy.loginAndNewPost();
     cy.clearMarkdownEditorContent();
   });
@@ -17,7 +15,7 @@ describe('Markdown widget link', () => {
     cy.task('teardownBackend', { backend: 'test' });
   });
 
-  describe('pressing backspace', () => {
+  describe('link', () => {
     it('can add a new valid link', () => {
       const link = 'https://www.netlifycms.org/';
       cy.window().then(win => {

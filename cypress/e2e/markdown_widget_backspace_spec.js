@@ -5,10 +5,11 @@ describe('Markdown widget', () => {
   before(() => {
     Cypress.config('defaultCommandTimeout', 4000);
     cy.task('setupBackend', { backend: 'test' });
-    cy.loginAndNewPost();
+
   });
 
   beforeEach(() => {
+    cy.loginAndNewPost();
     cy.clearMarkdownEditorContent();
   });
 
@@ -16,7 +17,7 @@ describe('Markdown widget', () => {
     cy.task('teardownBackend', { backend: 'test' });
   });
 
-  describe('pressing backspace', () => {
+  // describe('pressing backspace', () => {
     it('sets non-default block to default when empty', () => {
       cy.focused()
         .clickHeadingOneButton()
@@ -88,6 +89,6 @@ describe('Markdown widget', () => {
         .confirmMarkdownEditorContent(`
           <p>foobarbaz</p>
         `);
-    });
+    // });
   });
 });

@@ -16,8 +16,8 @@ import { workflowStatus } from '../../utils/constants';
 function uploadMediaFile() {
   assertNoImagesInLibrary();
 
-  const fixture = 'media/netlify.png';
-  cy.get('input[type="file"]').attachFile(fixture);
+  const fixture = 'cypress/fixtures/media/netlify.png';
+  cy.get('input[type="file"]').selectFile(fixture, { force: true });
   cy.contains('span', 'Uploading...').should('not.exist');
 
   assertImagesInLibrary();
@@ -41,6 +41,7 @@ function deleteImage() {
 }
 
 function chooseSelectedMediaFile() {
+  cy.contains('button', 'Choose selected').should('not.be.disabled');
   cy.contains('button', 'Choose selected').click();
 }
 
@@ -49,6 +50,7 @@ function chooseAnImage() {
 }
 
 function waitForEntryToLoad() {
+  cy.contains('button', 'Saving...').should('not.exist');
   cy.contains('div', 'Loading entry...').should('not.exist');
 }
 
@@ -71,6 +73,8 @@ function newPostWithImage(entry) {
 
 function publishPostWithImage(entry) {
   newPostWithImage(entry);
+  // eslint-disable-next-line cypress/no-unnecessary-waiting
+  cy.wait(500);
   exitEditor();
   goToWorkflow();
   updateWorkflowStatus(entry, workflowStatus.draft, workflowStatus.ready);

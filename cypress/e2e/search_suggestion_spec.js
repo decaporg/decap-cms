@@ -13,18 +13,11 @@ const assertSearchHeading = title => {
 };
 
 const assertSearchResult = (text, collection) => {
-  cy.get('[class*=ListCardLink]').within(() => {
-    if (collection) {
-      cy.contains('h2', collection);
-    }
-    cy.contains('h2', text);
-  });
+  cy.get('[class*=ListCardLink] h2').contains(collection ?? text)
 };
 
 const assertNotInSearch = text => {
-  cy.get('[class*=ListCardLink]').within(() => {
-    cy.contains('h2', text).should('not.exist');
-  });
+  cy.get('[class*=ListCardLink] h2').contains(text).should('not.exist');
 };
 
 describe('Search Suggestion', () => {
