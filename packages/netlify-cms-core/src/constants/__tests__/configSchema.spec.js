@@ -381,7 +381,7 @@ describe('config', () => {
     it('should throw if collection meta is an empty object', () => {
       expect(() => {
         validateConfig(merge({}, validConfig, { collections: [{ meta: {} }] }));
-      }).toThrowError("'collections[0].meta' must NOT have fewer than 1 items");
+      }).toThrowError("'collections[0].meta' must NOT have fewer than 1 properties");
     });
 
     it('should throw if collection meta is an empty object', () => {

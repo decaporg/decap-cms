@@ -395,7 +395,7 @@ export default class API {
     if (!this._metadataSemaphore) {
       this._metadataSemaphore = semaphore(1);
     }
-    return new Promise((resolve, reject) =>
+    return new Promise<void>((resolve, reject) =>
       this._metadataSemaphore?.take(async () => {
         try {
           const branchData = await this.checkMetadataRef();
@@ -422,7 +422,7 @@ export default class API {
     if (!this._metadataSemaphore) {
       this._metadataSemaphore = semaphore(1);
     }
-    return new Promise(resolve =>
+    return new Promise<void>(resolve =>
       this._metadataSemaphore?.take(async () => {
         try {
           const branchData = await this.checkMetadataRef();
