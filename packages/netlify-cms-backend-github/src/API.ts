@@ -818,15 +818,6 @@ export default class API {
     return cmsBranches;
   }
 
-  async latestRelease() {
-    console.log(
-      '%c Loading latest release',
-      'line-height: 30px;text-align: center;font-weight: bold',
-    );
-
-    return this.request(`${this.repoURL}/releases/latest`)
-  }
-
   async listReleases() {
     console.log(
       '%c Loading releases',
