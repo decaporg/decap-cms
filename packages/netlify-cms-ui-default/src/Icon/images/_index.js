@@ -39,6 +39,7 @@ import iconPages from './pages.svg';
 import iconPagesAlt from './pages-alt.svg';
 import iconQuote from './quote.svg';
 import iconRefresh from './refresh.svg';
+import iconRocket from './rocket.svg';
 import iconScroll from './scroll.svg';
 import iconSearch from './search.svg';
 import iconSettings from './settings.svg';
@@ -90,6 +91,7 @@ const images = {
   'pages-alt': iconPagesAlt,
   quote: iconQuote,
   refresh: iconRefresh,
+  rocket: iconRocket,
   scroll: iconScroll,
   search: iconSearch,
   settings: iconSettings,

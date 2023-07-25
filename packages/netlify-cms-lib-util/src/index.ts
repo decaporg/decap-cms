@@ -20,6 +20,7 @@ import { asyncLock } from './asyncLock';
 import {
   entriesByFiles,
   entriesByFolder,
+  listReleases,
   unpublishedEntries,
   getMediaDisplayURL,
   getMediaAsBlob,
@@ -122,6 +123,7 @@ export const NetlifyCmsLibUtil = {
   getPathDepth,
   entriesByFiles,
   entriesByFolder,
+  listReleases,
   unpublishedEntries,
   getMediaDisplayURL,
   getMediaAsBlob,
@@ -178,6 +180,7 @@ export {
   getPathDepth,
   entriesByFiles,
   entriesByFolder,
+  listReleases,
   unpublishedEntries,
   getMediaDisplayURL,
   getMediaAsBlob,

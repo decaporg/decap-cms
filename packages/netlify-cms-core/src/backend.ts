@@ -924,6 +924,14 @@ export class Backend {
     }
   }
 
+  async listReleases() {
+    return await this.implementation.listReleases!();
+  }
+
+  async publishRelease(version: string) {
+    await this.implementation.publishRelease(version);
+  }
+
   async unpublishedEntries(collections: Collections) {
     const ids = await this.implementation.unpublishedEntries!();
     const entries = (

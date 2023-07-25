@@ -19,6 +19,7 @@ const en = {
       content: 'Contents',
       workflow: 'Workflow',
       media: 'Media',
+      releases: 'Releases',
       quickAdd: 'Quick add',
     },
     app: {
@@ -280,6 +281,16 @@ const en = {
       onLoggedOut: 'You have been logged out, please back up any data and login again',
       onBackendDown:
         'The backend service is experiencing an outage. See %{details} for more information',
+      releasePublished: 'Release published successfully',
+      onReleaseFailed: 'Failed to publish release',
+    },
+  },
+  releases: {
+    releases: {
+      loading: 'Loading Releases',
+      publishing: 'Publishing Release',
+      releasesHeading: 'Releases',
+      newRelease: 'New Release',
     },
   },
   workflow: {

@@ -636,6 +636,13 @@ export type Collection = StaticallyTypedRecord<CollectionObject>;
 
 export type Collections = StaticallyTypedRecord<{ [path: string]: Collection & CollectionObject }>;
 
+export interface Release {
+  tag_name: string;
+  html_url: string;
+}
+
+export type Releases = Release[];
+
 export interface MediaLibraryInstance {
   show: (args: {
     id?: string;
@@ -700,6 +707,7 @@ export interface State {
   search: Search;
   status: Status;
   notifications: NotificationsState;
+  releases: Releases;
 }
 
 export interface Integration {
@@ -806,5 +814,12 @@ export interface EditorialWorkflowAction extends Action<string> {
     collection: string;
     slug: string;
     newStatus: string;
+  };
+}
+
+export interface ReleasesAction extends Action<string> {
+  payload?: CmsConfig & {
+    pages: [];
+    entries: any[];
   };
 }

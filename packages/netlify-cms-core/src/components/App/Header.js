@@ -126,6 +126,7 @@ class Header extends React.Component {
     isTestRepo: PropTypes.bool,
     t: PropTypes.func.isRequired,
     checkBackendStatus: PropTypes.func.isRequired,
+    isGitBackend: PropTypes.bool.isRequired,
   };
 
   intervalId;
@@ -158,6 +159,7 @@ class Header extends React.Component {
       isTestRepo,
       t,
       showMediaButton,
+      isGitBackend,
     } = this.props;
 
     const createableCollections = collections
@@ -193,6 +195,14 @@ class Header extends React.Component {
                     <Icon type="media-alt" />
                     {t('app.header.media')}
                   </AppHeaderButton>
+                </li>
+              )}
+              {isGitBackend && (
+                <li>
+                  <AppHeaderNavLink to="/releases" activeClassName="header-link-active">
+                    <Icon type="rocket" />
+                    {t('app.header.releases')}
+                  </AppHeaderNavLink>
                 </li>
               )}
             </AppHeaderNavList>
