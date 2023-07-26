@@ -79,9 +79,6 @@ function RawEditor(props) {
               )}
               value={value}
               onChange={handleChange}
-              // onPaste={this.handlePaste}
-              // onCut={this.handleCut}
-              // onCopy={this.handleCopy}
             />
           )}
         </ClassNames>

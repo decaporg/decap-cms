@@ -96,7 +96,8 @@ function Editor(props) {
   } = props;
 
   const editor = useMemo(
-    () => withReact(withHistory(withShortcodes(withBlocks(withLists(withInlines(createEditor())))))),
+    () =>
+      withReact(withHistory(withShortcodes(withBlocks(withLists(withInlines(createEditor())))))),
     [],
   );
 
@@ -177,20 +178,8 @@ function Editor(props) {
   }
   const [toolbarKey, setToolbarKey] = useState(0);
 
-  // const handleDocumentChange = debounce(newValue => {
-  //   setEditorValue(() => newValue);
-  //   onChange(
-  //     slateToMarkdown(newValue, {
-  //       voidCodeBlock: !!codeBlockComponent,
-  //       remarkPlugins: getRemarkPlugins(),
-  //     }),
-  //   );
-  // }, 150);
-
   function handleChange(newValue) {
     if (!isEqual(newValue, editorValue)) {
-      // debounce makes rerendering quite unpredictible
-      // handleDocumentChange(newValue);
       setEditorValue(() => newValue);
       onChange(
         slateToMarkdown(newValue, {

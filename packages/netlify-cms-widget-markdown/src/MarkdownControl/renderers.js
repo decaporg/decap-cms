@@ -58,21 +58,6 @@ const StyledBlockQuote = styled.blockquote`
   margin-bottom: ${bottomMargin};
 `;
 
-const StyledPre = styled.pre`
-  margin-bottom: ${bottomMargin};
-  white-space: pre-wrap;
-
-  & > code {
-    display: block;
-    width: 100%;
-    overflow-y: auto;
-    background-color: #000;
-    color: #ccc;
-    border-radius: ${lengths.borderRadius};
-    padding: 10px;
-  }
-`;
-
 const StyledCode = styled.code`
   background-color: ${colors.background};
   border-radius: ${lengths.borderRadius};
@@ -155,14 +140,6 @@ function ListItem(props) {
 
 function Quote(props) {
   return <StyledBlockQuote {...props.attributes}>{props.children}</StyledBlockQuote>;
-}
-
-function CodeBlock(props) {
-  return (
-    <StyledPre>
-      <StyledCode {...props.attributes}>{props.children}</StyledCode>
-    </StyledPre>
-  );
 }
 
 function HeadingOne(props) {
@@ -276,21 +253,6 @@ function Image(props) {
   );
 }
 
-export function renderMark__DEPRECATED() {
-  return props => {
-    switch (props.mark.type) {
-      case 'bold':
-        return <Bold {...props} />;
-      case 'italic':
-        return <Italic {...props} />;
-      case 'strikethrough':
-        return <Strikethrough {...props} />;
-      case 'code':
-        return <Code {...props} />;
-    }
-  };
-}
-
 export function Leaf({ attributes, children, leaf }) {
   if (leaf.bold) {
     children = <Bold>{children}</Bold>;
@@ -387,65 +349,4 @@ export function Element(props) {
     default:
       return <Paragraph style={style}>{children}</Paragraph>;
   }
-}
-
-export function renderBlock__DEPRECATED({ classNameWrapper, codeBlockComponent }) {
-  return props => {
-    switch (props.node.type) {
-      case 'paragraph':
-        return <Paragraph {...props} />;
-      case 'list-item':
-        return <ListItem {...props} />;
-      case 'quote':
-        return <Quote {...props} />;
-      case 'code-block':
-        if (codeBlockComponent) {
-          return (
-            <VoidBlock {...props}>
-              <Shortcode
-                classNameWrapper={classNameWrapper}
-                typeOverload="code-block"
-                dataKey={false}
-                {...props}
-              />
-            </VoidBlock>
-          );
-        }
-        return <CodeBlock {...props} />;
-      case 'heading-one':
-        return <HeadingOne {...props} />;
-      case 'heading-two':
-        return <HeadingTwo {...props} />;
-      case 'heading-three':
-        return <HeadingThree {...props} />;
-      case 'heading-four':
-        return <HeadingFour {...props} />;
-      case 'heading-five':
-        return <HeadingFive {...props} />;
-      case 'heading-six':
-        return <HeadingSix {...props} />;
-      case 'table':
-        return <Table {...props} />;
-      case 'table-row':
-        return <TableRow {...props} />;
-      case 'table-cell':
-        return <TableCell {...props} />;
-      case 'thematic-break':
-        return (
-          <VoidBlock {...props}>
-            <ThematicBreak />
-          </VoidBlock>
-        );
-      case 'bulleted-list':
-        return <BulletedList {...props} />;
-      case 'numbered-list':
-        return <NumberedList {...props} />;
-      case 'shortcode':
-        return (
-          <VoidBlock {...props} node={props.node}>
-            <Shortcode classNameWrapper={classNameWrapper} {...props} />
-          </VoidBlock>
-        );
-    }
-  };
 }
