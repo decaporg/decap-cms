@@ -206,19 +206,24 @@ function TableCell(props) {
 }
 
 function ThematicBreak(props) {
-  const isSelected = useSelected()
+  const isSelected = useSelected();
   return (
-    <StyledHr
-      {...props.attributes}
-      css={
-        isSelected &&
-        css`
-          box-shadow: 0 0 0 2px ${colors.active};
-          border-radius: 8px;
-          color: ${colors.active};
-        `
-      }
-    />
+    <div {...props.attributes}>
+      {props.children}
+      <div contentEditable={false}>
+        <StyledHr
+          {...props.attributes}
+          css={
+            isSelected &&
+            css`
+              box-shadow: 0 0 0 2px ${colors.active};
+              border-radius: 8px;
+              color: ${colors.active};
+            `
+          }
+        />
+      </div>
+    </div>
   );
 }
 
@@ -250,18 +255,25 @@ function Link(props) {
 }
 
 function Image(props) {
-  const data = props.node.get('data');
-  const marks = data.get('marks');
-  const url = data.get('url');
-  const title = data.get('title');
-  const alt = data.get('alt');
-  const image = <img src={url} title={title} alt={alt} {...props.attributes} />;
-  const result = !marks
-    ? image
-    : marks.reduce((acc, mark) => {
-        return renderMark__DEPRECATED({ mark, children: acc });
-      }, image);
-  return result;
+  const { url, title, alt } = props.element.data;
+  const isSelected = useSelected();
+  return (
+    <span {...props.attributes}>
+      {props.children}
+      <img
+        src={url}
+        title={title}
+        alt={alt}
+        {...props.attributes}
+        css={
+          isSelected &&
+          css`
+            box-shadow: 0 0 0 2px ${colors.active};
+          `
+        }
+      />
+    </span>
+  );
 }
 
 export function renderMark__DEPRECATED() {
@@ -350,11 +362,13 @@ export function Element(props) {
     case 'thematic-break':
       return (
         <VoidBlock {...props}>
-          <ThematicBreak />
+          <ThematicBreak {...props} />
         </VoidBlock>
       );
     case 'link':
       return <Link {...props} />;
+    case 'image':
+      return <Image {...props} />;
     case 'break':
       return <Break {...props} />;
     case 'shortcode':

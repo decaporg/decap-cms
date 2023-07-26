@@ -4,9 +4,9 @@ function withInlines(editor) {
   const { isInline, isVoid } = editor;
 
   editor.isInline = element =>
-    ['link', 'button', 'break'].includes(element.type) || isInline(element);
+    ['link', 'button', 'break', 'image'].includes(element.type) || isInline(element);
 
-  editor.isVoid = element => ['break'].includes(element.type) || isVoid(element);
+  editor.isVoid = element => ['break', 'image', 'thematic-break'].includes(element.type) || isVoid(element);
 
   if (editor.keyDownHandlers === undefined) {
     editor.keyDownHandlers = [];
