@@ -339,6 +339,12 @@ export function Element(props) {
       return <ListItem>{children}</ListItem>;
     case 'numbered-list':
       return <NumberedList>{children}</NumberedList>;
+    case 'table':
+      return <Table {...props} />;
+    case 'table-row':
+      return <TableRow {...props} />;
+    case 'table-cell':
+      return <TableCell {...props} />;
     case 'link':
       return <Link {...props} />;
     case 'break':
