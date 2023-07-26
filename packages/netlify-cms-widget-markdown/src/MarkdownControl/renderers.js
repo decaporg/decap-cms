@@ -3,6 +3,7 @@ import React from 'react';
 import { css } from '@emotion/core';
 import styled from '@emotion/styled';
 import { colors, lengths } from 'netlify-cms-ui-default';
+import { useSelected } from 'slate-react';
 
 import VoidBlock from './components/VoidBlock';
 import Shortcode from './components/Shortcode';
@@ -55,21 +56,6 @@ const StyledBlockQuote = styled.blockquote`
   margin-left: 0;
   margin-right: 0;
   margin-bottom: ${bottomMargin};
-`;
-
-const StyledPre = styled.pre`
-  margin-bottom: ${bottomMargin};
-  white-space: pre-wrap;
-
-  & > code {
-    display: block;
-    width: 100%;
-    overflow-y: auto;
-    background-color: #000;
-    color: #ccc;
-    border-radius: ${lengths.borderRadius};
-    padding: 10px;
-  }
 `;
 
 const StyledCode = styled.code`
@@ -156,14 +142,6 @@ function Quote(props) {
   return <StyledBlockQuote {...props.attributes}>{props.children}</StyledBlockQuote>;
 }
 
-function CodeBlock(props) {
-  return (
-    <StyledPre>
-      <StyledCode {...props.attributes}>{props.children}</StyledCode>
-    </StyledPre>
-  );
-}
-
 function HeadingOne(props) {
   return <StyledH1 {...props.attributes}>{props.children}</StyledH1>;
 }
@@ -205,18 +183,24 @@ function TableCell(props) {
 }
 
 function ThematicBreak(props) {
+  const isSelected = useSelected();
   return (
-    <StyledHr
-      {...props.attributes}
-      css={
-        props.editor.isSelected(props.node) &&
-        css`
-          box-shadow: 0 0 0 2px ${colors.active};
-          border-radius: 8px;
-          color: ${colors.active};
-        `
-      }
-    />
+    <div {...props.attributes}>
+      {props.children}
+      <div contentEditable={false}>
+        <StyledHr
+          {...props.attributes}
+          css={
+            isSelected &&
+            css`
+              box-shadow: 0 0 0 2px ${colors.active};
+              border-radius: 8px;
+              color: ${colors.active};
+            `
+          }
+        />
+      </div>
+    </div>
   );
 }
 
@@ -248,33 +232,25 @@ function Link(props) {
 }
 
 function Image(props) {
-  const data = props.node.get('data');
-  const marks = data.get('marks');
-  const url = data.get('url');
-  const title = data.get('title');
-  const alt = data.get('alt');
-  const image = <img src={url} title={title} alt={alt} {...props.attributes} />;
-  const result = !marks
-    ? image
-    : marks.reduce((acc, mark) => {
-        return renderMark__DEPRECATED({ mark, children: acc });
-      }, image);
-  return result;
-}
-
-export function renderMark__DEPRECATED() {
-  return props => {
-    switch (props.mark.type) {
-      case 'bold':
-        return <Bold {...props} />;
-      case 'italic':
-        return <Italic {...props} />;
-      case 'strikethrough':
-        return <Strikethrough {...props} />;
-      case 'code':
-        return <Code {...props} />;
-    }
-  };
+  const { url, title, alt } = props.element.data;
+  const isSelected = useSelected();
+  return (
+    <span {...props.attributes}>
+      {props.children}
+      <img
+        src={url}
+        title={title}
+        alt={alt}
+        {...props.attributes}
+        css={
+          isSelected &&
+          css`
+            box-shadow: 0 0 0 2px ${colors.active};
+          `
+        }
+      />
+    </span>
+  );
 }
 
 export function Leaf({ attributes, children, leaf }) {
@@ -339,8 +315,22 @@ export function Element(props) {
       return <ListItem>{children}</ListItem>;
     case 'numbered-list':
       return <NumberedList>{children}</NumberedList>;
+    case 'table':
+      return <Table {...props} />;
+    case 'table-row':
+      return <TableRow {...props} />;
+    case 'table-cell':
+      return <TableCell {...props} />;
+    case 'thematic-break':
+      return (
+        <VoidBlock {...props}>
+          <ThematicBreak {...props} />
+        </VoidBlock>
+      );
     case 'link':
       return <Link {...props} />;
+    case 'image':
+      return <Image {...props} />;
     case 'break':
       return <Break {...props} />;
     case 'shortcode':
@@ -359,65 +349,4 @@ export function Element(props) {
     default:
       return <Paragraph style={style}>{children}</Paragraph>;
   }
-}
-
-export function renderBlock__DEPRECATED({ classNameWrapper, codeBlockComponent }) {
-  return props => {
-    switch (props.node.type) {
-      case 'paragraph':
-        return <Paragraph {...props} />;
-      case 'list-item':
-        return <ListItem {...props} />;
-      case 'quote':
-        return <Quote {...props} />;
-      case 'code-block':
-        if (codeBlockComponent) {
-          return (
-            <VoidBlock {...props}>
-              <Shortcode
-                classNameWrapper={classNameWrapper}
-                typeOverload="code-block"
-                dataKey={false}
-                {...props}
-              />
-            </VoidBlock>
-          );
-        }
-        return <CodeBlock {...props} />;
-      case 'heading-one':
-        return <HeadingOne {...props} />;
-      case 'heading-two':
-        return <HeadingTwo {...props} />;
-      case 'heading-three':
-        return <HeadingThree {...props} />;
-      case 'heading-four':
-        return <HeadingFour {...props} />;
-      case 'heading-five':
-        return <HeadingFive {...props} />;
-      case 'heading-six':
-        return <HeadingSix {...props} />;
-      case 'table':
-        return <Table {...props} />;
-      case 'table-row':
-        return <TableRow {...props} />;
-      case 'table-cell':
-        return <TableCell {...props} />;
-      case 'thematic-break':
-        return (
-          <VoidBlock {...props}>
-            <ThematicBreak editor={props.editor} node={props.node} />
-          </VoidBlock>
-        );
-      case 'bulleted-list':
-        return <BulletedList {...props} />;
-      case 'numbered-list':
-        return <NumberedList {...props} />;
-      case 'shortcode':
-        return (
-          <VoidBlock {...props} node={props.node}>
-            <Shortcode classNameWrapper={classNameWrapper} {...props} />
-          </VoidBlock>
-        );
-    }
-  };
 }

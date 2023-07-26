@@ -7,6 +7,7 @@ import { lengths, fonts, zIndex } from 'netlify-cms-ui-default';
 import styled from '@emotion/styled';
 import { createEditor, Transforms, Editor as SlateEditor } from 'slate';
 import { Editable, ReactEditor, Slate, withReact } from 'slate-react';
+import { withHistory } from 'slate-history';
 import { fromJS } from 'immutable';
 import { isEqual } from 'lodash';
 
@@ -95,7 +96,8 @@ function Editor(props) {
   } = props;
 
   const editor = useMemo(
-    () => withReact(withShortcodes(withBlocks(withLists(withInlines(createEditor()))))),
+    () =>
+      withReact(withHistory(withShortcodes(withBlocks(withLists(withInlines(createEditor())))))),
     [],
   );
 
@@ -176,20 +178,8 @@ function Editor(props) {
   }
   const [toolbarKey, setToolbarKey] = useState(0);
 
-  // const handleDocumentChange = debounce(newValue => {
-  //   setEditorValue(() => newValue);
-  //   onChange(
-  //     slateToMarkdown(newValue, {
-  //       voidCodeBlock: !!codeBlockComponent,
-  //       remarkPlugins: getRemarkPlugins(),
-  //     }),
-  //   );
-  // }, 150);
-
   function handleChange(newValue) {
     if (!isEqual(newValue, editorValue)) {
-      // debounce makes rerendering quite unpredictible
-      // handleDocumentChange(newValue);
       setEditorValue(() => newValue);
       onChange(
         slateToMarkdown(newValue, {

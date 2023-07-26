@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { ClassNames } from '@emotion/core';
@@ -6,6 +6,7 @@ import styled from '@emotion/styled';
 import { lengths, fonts } from 'netlify-cms-ui-default';
 import { createEditor } from 'slate';
 import { Editable, ReactEditor, Slate, withReact } from 'slate-react';
+import { withHistory } from 'slate-history';
 
 import { editorStyleVars, EditorControlBar } from '../styles';
 import Toolbar from './Toolbar';
@@ -31,7 +32,7 @@ const RawEditorContainer = styled.div`
 function RawEditor(props) {
   const { className, field, isShowModeToggle, t, onChange } = props;
 
-  const [editor] = useState(() => withReact(createEditor()));
+  const editor = useMemo(() => withReact(withHistory(createEditor())), []);
 
   const [value, setValue] = useState(
     props.value
@@ -78,9 +79,6 @@ function RawEditor(props) {
               )}
               value={value}
               onChange={handleChange}
-              // onPaste={this.handlePaste}
-              // onCut={this.handleCut}
-              // onCopy={this.handleCopy}
             />
           )}
         </ClassNames>

@@ -52,6 +52,9 @@ const blockTypes = [
   'numbered-list',
   'list-item',
   'shortcode',
+  'table',
+  'table-row',
+  'table-cell',
 ];
 
 const inlineTypes = ['link', 'image', 'break'];
