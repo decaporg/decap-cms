@@ -160,7 +160,7 @@
     "rimraf": "^3.0.0",
     "simple-git": "^3.0.0",
     "start-server-and-test": "^1.7.11",
-    "stylelint": "^14.5.3",
+    "stylelint": "^15.10.1",
     "stylelint-config-standard-scss": "^3.0.0",
     "stylelint-config-styled-components": "^0.1.1",
     "stylelint-processor-styled-components": "^1.10.0",
