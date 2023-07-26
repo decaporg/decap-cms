@@ -3,6 +3,7 @@ import React from 'react';
 import { css } from '@emotion/core';
 import styled from '@emotion/styled';
 import { colors, lengths } from 'netlify-cms-ui-default';
+import { useSelected } from 'slate-react';
 
 import VoidBlock from './components/VoidBlock';
 import Shortcode from './components/Shortcode';
@@ -205,11 +206,12 @@ function TableCell(props) {
 }
 
 function ThematicBreak(props) {
+  const isSelected = useSelected()
   return (
     <StyledHr
       {...props.attributes}
       css={
-        props.editor.isSelected(props.node) &&
+        isSelected &&
         css`
           box-shadow: 0 0 0 2px ${colors.active};
           border-radius: 8px;
@@ -345,6 +347,12 @@ export function Element(props) {
       return <TableRow {...props} />;
     case 'table-cell':
       return <TableCell {...props} />;
+    case 'thematic-break':
+      return (
+        <VoidBlock {...props}>
+          <ThematicBreak />
+        </VoidBlock>
+      );
     case 'link':
       return <Link {...props} />;
     case 'break':
@@ -411,7 +419,7 @@ export function renderBlock__DEPRECATED({ classNameWrapper, codeBlockComponent }
       case 'thematic-break':
         return (
           <VoidBlock {...props}>
-            <ThematicBreak editor={props.editor} node={props.node} />
+            <ThematicBreak />
           </VoidBlock>
         );
       case 'bulleted-list':
