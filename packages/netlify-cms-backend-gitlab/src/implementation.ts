@@ -453,4 +453,22 @@ export default class GitLab implements Implementation {
       return null;
     }
   }
+
+  async listReleases() {
+    try {
+      const response = await this.api!.listReleases();
+      const json = await response.json()
+      return json;
+    } catch (e) {
+      return [];
+    }
+  }
+
+  async publishRelease(version: string) {
+    try {
+      return await this.api!.publishRelease(version);
+    } catch (e) {
+      return;
+    }
+  }
 }

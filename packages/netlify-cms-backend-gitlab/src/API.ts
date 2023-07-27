@@ -1015,4 +1015,30 @@ export default class API {
     const mergeRequest = await this.getBranchMergeRequest(branch);
     return mergeRequest.sha;
   }
+
+  async listReleases() {
+    console.log(
+      '%c Loading releases',
+      'line-height: 30px;text-align: center;font-weight: bold',
+    );
+
+    return this.request(`${this.repoURL}/releases`)
+  }
+
+  async publishRelease(version: string) {
+    console.log(
+      `%c Publishing release ${version}`,
+      'line-height: 30px;text-align: center;font-weight: bold',
+    );
+
+    return this.requestJSON({
+      url: `${this.repoURL}/releases`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json; charset=utf-8' },
+      body: JSON.stringify({
+        tag_name: version,
+        ref: this.branch,
+      }),
+    });
+  }
 }

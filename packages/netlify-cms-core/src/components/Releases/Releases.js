@@ -80,7 +80,7 @@ class Releases extends Component {
                 <ul>
                   {releases.map(release => (
                     <li key={release.tag_name}>
-                      <a href={release.html_url}>
+                      <a href={release.html_url || release._links.self}>
                         {release.tag_name}
                       </a>
                     </li>
