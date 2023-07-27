@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.4-beta.0](https://github.com/decaporg/decap-cms/compare/netlify-cms-backend-proxy@1.2.3...netlify-cms-backend-proxy@1.2.4-beta.0) (2023-07-27)
+
+**Note:** Version bump only for package netlify-cms-backend-proxy
+
+
+
+
+
 ## [1.2.3](https://github.com/decaporg/decap-cms/tree/master/packages/netlify-cms-backend-proxy/compare/netlify-cms-backend-proxy@1.2.2...netlify-cms-backend-proxy@1.2.3) (2021-06-01)
 
 **Note:** Version bump only for package netlify-cms-backend-proxy

@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.5.1-beta.0](https://github.com/decaporg/decap-cms/compare/netlify-cms-widget-number@2.5.0...netlify-cms-widget-number@2.5.1-beta.0) (2023-07-27)
+
+**Note:** Version bump only for package netlify-cms-widget-number
+
+
+
+
+
 # [2.5.0](https://github.com/decaporg/decap-cms/tree/master/packages/netlify-cms-widget-number/compare/netlify-cms-widget-number@2.4.7...netlify-cms-widget-number@2.5.0) (2021-05-04)
 
 
