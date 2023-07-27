@@ -9,7 +9,9 @@ const process = flow([markdownToSlate, slateToMarkdown]);
 
 describe('slate', () => {
   it('should not decode encoded html entities in inline code', () => {
-    expect(process('<code>&lt;div&gt;</code>')).toEqual('<code>&lt;div&gt;</code>');
+    expect(process('<element type="code">&lt;div&gt;</element>')).toEqual(
+      '<element type="code">&lt;div&gt;</element>',
+    );
   });
 
   it('should parse non-text children of mark nodes', () => {
@@ -51,75 +53,78 @@ describe('slate', () => {
     expect(process('*a  \nb*')).toEqual('*a\\\nb*');
   });
 
+  // slateAst no longer valid
+
   it('should not output empty headers in markdown', () => {
     // prettier-ignore
     const slateAst = (
-      <document>
-        <heading-one></heading-one>
-        <paragraph>foo</paragraph>
-        <heading-one></heading-one>
-      </document>
+      <editor>
+        <element type="heading-one"></element>
+        <element type="paragraph">foo</element>
+        <element type="heading-one"></element>
+
+      </editor>
     );
-    expect(slateToMarkdown(slateAst.toJSON())).toMatchInlineSnapshot(`"foo"`);
+    expect(slateToMarkdown(slateAst.children)).toMatchInlineSnapshot(`"foo"`);
   });
 
   it('should not output empty marks in markdown', () => {
     // prettier-ignore
     const slateAst = (
-      <document>
-        <paragraph>
-          <b></b>
-          foo<i><b></b></i>bar
-          <b></b>baz<i></i>
-        </paragraph>
-      </document>
+      <editor>
+        <element type="paragraph">
+          <text bold></text>
+          foo<text italic><text bold></text></text>bar
+          <text bold></text>baz<text italic></text>
+        </element>
+      </editor>
     );
-    expect(slateToMarkdown(slateAst.toJSON())).toMatchInlineSnapshot(`"foobarbaz"`);
+    expect(slateToMarkdown(slateAst.children)).toMatchInlineSnapshot(`"foobarbaz"`);
   });
 
   it('should not produce invalid markdown when a styled block has trailing whitespace', () => {
     // prettier-ignore
     const slateAst = (
-      <document>
-        <paragraph>
-          <b>foo </b>bar <b>bim </b><b><i>bam</i></b>
-        </paragraph>
-      </document>
+      <editor>
+        <element type="paragraph">
+          <text bold>foo </text>bar <text bold>bim </text><text bold><text italic>bam</text></text>
+        </element>
+      </editor>
     );
-    expect(slateToMarkdown(slateAst.toJSON())).toMatchInlineSnapshot(`"**foo** bar **bim *bam***"`);
+    expect(slateToMarkdown(slateAst.children)).toMatchInlineSnapshot(`"**foo** bar **bim *bam***"`);
   });
 
   it('should not produce invalid markdown when a styled block has leading whitespace', () => {
     // prettier-ignore
     const slateAst = (
-      <document>
-        <paragraph>
-          foo<b> bar</b>
-        </paragraph>
-      </document>
+      <editor>
+        <element type="paragraph">
+          foo<text bold> bar</text>
+        </element>
+      </editor>
     );
-    expect(slateToMarkdown(slateAst.toJSON())).toMatchInlineSnapshot(`"foo **bar**"`);
+    expect(slateToMarkdown(slateAst.children)).toMatchInlineSnapshot(`"foo **bar**"`);
   });
 
   it('should group adjacent marks into a single mark when possible', () => {
     // prettier-ignore
     const slateAst = (
-      <document>
-        <paragraph>
-          <b>shared mark</b>
-          <link url="link">
-            <b><i>link</i></b>
-          </link>
+      <editor>
+        <element type="paragraph">
+          <text bold>shared mark</text>
+          <element type="link" data={{ url: "link" }}>
+            <text bold><text italic>link</text></text>
+          </element>
           {' '}
-          <b>not shared mark</b>
-          <link url="link">
-            <i>another </i>
-            <b><i>link</i></b>
-          </link>
-        </paragraph>
-      </document>
+          <text bold>not shared mark</text>
+          <element type="link" data={{ url: "link" }}>
+            <text italic>another </text>
+            <text bold><text italic>link</text></text>
+          </element>
+        </element>
+      </editor>
     );
-    expect(slateToMarkdown(slateAst.toJSON())).toMatchInlineSnapshot(
+    expect(slateToMarkdown(slateAst.children)).toMatchInlineSnapshot(
       `"**shared mark*[link](link)*** **not shared mark***[another **link**](link)*"`,
     );
   });
@@ -128,15 +133,15 @@ describe('slate', () => {
     it('should handle inline code in link content', () => {
       // prettier-ignore
       const slateAst = (
-        <document>
-          <paragraph>
-            <link url="link">
-              <code>foo</code>
-            </link>
-          </paragraph>
-        </document>
+        <editor>
+          <element type="paragraph">
+            <element type="link" data={{ url: "link" }}>
+              <text code>foo</text>
+            </element>
+          </element>
+        </editor>
       );
-      expect(slateToMarkdown(slateAst.toJSON())).toMatchInlineSnapshot(`"[\`foo\`](link)"`);
+      expect(slateToMarkdown(slateAst.children)).toMatchInlineSnapshot(`"[\`foo\`](link)"`);
     });
   });
 
@@ -144,26 +149,26 @@ describe('slate', () => {
     it('can contain other marks', () => {
       // prettier-ignore
       const slateAst = (
-        <document>
-          <paragraph>
-            <code><i><b>foo</b></i></code>
-          </paragraph>
-        </document>
+        <editor>
+          <element type="paragraph">
+            <text code><text italic><text bold>foo</text></text></text>
+          </element>
+        </editor>
       );
-      expect(slateToMarkdown(slateAst.toJSON())).toMatchInlineSnapshot(`"***\`foo\`***"`);
+      expect(slateToMarkdown(slateAst.children)).toMatchInlineSnapshot(`"***\`foo\`***"`);
     });
 
     it('can be condensed when no other marks are present', () => {
       // prettier-ignore
       const slateAst = (
-        <document>
-          <paragraph>
-          <code>foo</code>
-          <code>bar</code>
-          </paragraph>
-        </document>
+        <editor>
+          <element type="paragraph">
+          <text code>foo</text>
+          <text code>bar</text>
+          </element>
+        </editor>
       );
-      expect(slateToMarkdown(slateAst.toJSON())).toMatchInlineSnapshot(`"\`foo\`"`);
+      expect(slateToMarkdown(slateAst.children)).toMatchInlineSnapshot(`"\`foo\`"`);
     });
   });
 
@@ -171,125 +176,125 @@ describe('slate', () => {
     it('should not produce invalid markdown when a bold word has italics applied to a smaller part', () => {
       // prettier-ignore
       const slateAst = (
-        <document>
-          <paragraph>
-            <b>h</b>
-            <b><i>e</i></b>
-            <b>y</b>
-          </paragraph>
-        </document>
+        <editor>
+          <element type="paragraph">
+            <text bold>h</text>
+            <text bold><text italic>e</text></text>
+            <text bold>y</text>
+          </element>
+        </editor>
       );
-      expect(slateToMarkdown(slateAst.toJSON())).toMatchInlineSnapshot(`"**h*e*y**"`);
+      expect(slateToMarkdown(slateAst.children)).toMatchInlineSnapshot(`"**h*e*y**"`);
     });
 
     it('should not produce invalid markdown when an italic word has bold applied to a smaller part', () => {
       // prettier-ignore
       const slateAst = (
-        <document>
-          <paragraph>
-            <i>h</i>
-            <i><b>e</b></i>
-            <i>y</i>
-          </paragraph>
-        </document>
+        <editor>
+          <element type="paragraph">
+            <text italic>h</text>
+            <text italic><text bold>e</text></text>
+            <text italic>y</text>
+          </element>
+        </editor>
       );
-      expect(slateToMarkdown(slateAst.toJSON())).toMatchInlineSnapshot(`"*h**e**y*"`);
+      expect(slateToMarkdown(slateAst.children)).toMatchInlineSnapshot(`"*h**e**y*"`);
     });
 
     it('should handle italics inside bold inside strikethrough', () => {
       // prettier-ignore
       const slateAst = (
-        <document>
-          <paragraph>
-            <s>h</s>
-            <s><b>e</b></s>
-            <s><b><i>l</i></b></s>
-            <s><b>l</b></s>
-            <s>o</s>
-          </paragraph>
-        </document>
+        <editor>
+          <element type="paragraph">
+            <text delete>h</text>
+            <text delete><text bold>e</text></text>
+            <text delete><text bold><text italic>l</text></text></text>
+            <text delete><text bold>l</text></text>
+            <text delete>o</text>
+          </element>
+        </editor>
       );
-      expect(slateToMarkdown(slateAst.toJSON())).toMatchInlineSnapshot(`"~~h**e*l*l**o~~"`);
+      expect(slateToMarkdown(slateAst.children)).toMatchInlineSnapshot(`"~~h**e*l*l**o~~"`);
     });
 
     it('should handle bold inside italics inside strikethrough', () => {
       // prettier-ignore
       const slateAst = (
-        <document>
-          <paragraph>
-            <s>h</s>
-            <s><i>e</i></s>
-            <s><i><b>l</b></i></s>
-            <s><i>l</i></s>
-            <s>o</s>
-          </paragraph>
-        </document>
+        <editor>
+          <element type="paragraph">
+            <text delete>h</text>
+            <text delete><text italic>e</text></text>
+            <text delete><text italic><text bold>l</text></text></text>
+            <text delete><text italic>l</text></text>
+            <text delete>o</text>
+          </element>
+        </editor>
       );
-      expect(slateToMarkdown(slateAst.toJSON())).toMatchInlineSnapshot(`"~~h*e**l**l*o~~"`);
+      expect(slateToMarkdown(slateAst.children)).toMatchInlineSnapshot(`"~~h*e**l**l*o~~"`);
     });
 
     it('should handle strikethrough inside italics inside bold', () => {
       // prettier-ignore
       const slateAst = (
-        <document>
-          <paragraph>
-            <b>h</b>
-            <b><i>e</i></b>
-            <b><i><s>l</s></i></b>
-            <b><i>l</i></b>
-            <b>o</b>
-          </paragraph>
-        </document>
+        <editor>
+          <element type="paragraph">
+            <text bold>h</text>
+            <text bold><text italic>e</text></text>
+            <text bold><text italic><text delete>l</text></text></text>
+            <text bold><text italic>l</text></text>
+            <text bold>o</text>
+          </element>
+        </editor>
       );
-      expect(slateToMarkdown(slateAst.toJSON())).toMatchInlineSnapshot(`"**h*e~~l~~l*o**"`);
+      expect(slateToMarkdown(slateAst.children)).toMatchInlineSnapshot(`"**h*e~~l~~l*o**"`);
     });
 
     it('should handle italics inside strikethrough inside bold', () => {
       // prettier-ignore
       const slateAst = (
-        <document>
-          <paragraph>
-            <b>h</b>
-            <b><s>e</s></b>
-            <b><s><i>l</i></s></b>
-            <b><s>l</s></b>
-            <b>o</b>
-          </paragraph>
-        </document>
+        <editor>
+          <element type="paragraph">
+            <text bold>h</text>
+            <text bold><text delete>e</text></text>
+            <text bold><text delete><text italic>l</text></text></text>
+            <text bold><text delete>l</text></text>
+            <text bold>o</text>
+          </element>
+        </editor>
       );
-      expect(slateToMarkdown(slateAst.toJSON())).toMatchInlineSnapshot(`"**h~~e*l*l~~o**"`);
+      expect(slateToMarkdown(slateAst.children)).toMatchInlineSnapshot(`"**h~~e*l*l~~o**"`);
     });
 
     it('should handle strikethrough inside bold inside italics', () => {
       // prettier-ignore
       const slateAst = (
-        <document>
-          <paragraph>
-            <i>h</i>
-            <i><b>e</b></i>
-            <i><b><s>l</s></b></i>
-            <i><b>l</b></i>
-            <i>o</i>
-          </paragraph>
-        </document>
+        <editor>
+          <element type="paragraph">
+            <text italic>h</text>
+            <text italic><text bold>e</text></text>
+            <text italic><text bold><text delete>l</text></text></text>
+            <text italic><text bold>l</text></text>
+            <text italic>o</text>
+          </element>
+        </editor>
       );
-      expect(slateToMarkdown(slateAst.toJSON())).toMatchInlineSnapshot(`"*h**e~~l~~l**o*"`);
+      expect(slateToMarkdown(slateAst.children)).toMatchInlineSnapshot(`"*h**e~~l~~l**o*"`);
     });
 
     it('should handle bold inside strikethrough inside italics', () => {
       // prettier-ignore
       const slateAst = (
-        <document>
-          <paragraph>
-            <i>h</i>
-            <i><s>e</s></i>
-            <i><s><b>l</b></s></i>
-            <i><s>l</s></i>
-            <i>o</i>
-          </paragraph>
-        </document>
+        <editor>
+          <element type="paragraph">
+            <text italic>h</text>
+            <text italic><text delete>e</text></text>
+            <text italic><text delete><text bold>l</text></text></text>
+            <text italic><text delete>l</text></text>
+            <text italic>o</text>
+          </element>
+        </editor>
       );
-      expect(slateToMarkdown(slateAst.toJSON())).toMatchInlineSnapshot(`"*h~~e**l**l~~o*"`);
+      expect(slateToMarkdown(slateAst.children)).toMatchInlineSnapshot(`"*h~~e**l**l~~o*"`);
     });
   });
 });
