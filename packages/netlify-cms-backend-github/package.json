@@ -1,7 +1,7 @@
 {
   "name": "netlify-cms-backend-github",
   "description": "GitHub backend for Netlify CMS",
-  "version": "2.14.1",
+  "version": "2.14.2-beta.0",
   "license": "MIT",
   "repository": "https://github.com/decaporg/decap-cms/tree/master/packages/netlify-cms-backend-github",
   "bugs": "https://github.com/decaporg/decap-cms/issues",

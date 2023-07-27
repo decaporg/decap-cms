@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.13.2-beta.0](https://github.com/decaporg/decap-cms/compare/netlify-cms-backend-git-gateway@2.13.1...netlify-cms-backend-git-gateway@2.13.2-beta.0) (2023-07-27)
+
+**Note:** Version bump only for package netlify-cms-backend-git-gateway
+
+
+
+
+
 ## [2.13.1](https://github.com/decaporg/decap-cms/compare/netlify-cms-backend-git-gateway@2.13.0...netlify-cms-backend-git-gateway@2.13.1) (2022-03-08)
 
 **Note:** Version bump only for package netlify-cms-backend-git-gateway

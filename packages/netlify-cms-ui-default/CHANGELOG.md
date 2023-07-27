@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.15.6-beta.0](https://github.com/decaporg/decap-cms/compare/netlify-cms-ui-default@2.15.5...netlify-cms-ui-default@2.15.6-beta.0) (2023-07-27)
+
+
+### Bug Fixes
+
+* accessibility - color contrast and keyboard navigation ([#6757](https://github.com/decaporg/decap-cms/issues/6757)) ([194d1ce](https://github.com/decaporg/decap-cms/commit/194d1ce351c35d3feed4c1be704fbf79ac3c0efa))
+
+
+
+
+
 ## [2.15.5](https://github.com/decaporg/decap-cms/compare/netlify-cms-ui-default@2.15.4...netlify-cms-ui-default@2.15.5) (2022-03-08)
 
 **Note:** Version bump only for package netlify-cms-ui-default
