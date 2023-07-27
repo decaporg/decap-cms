@@ -12,11 +12,11 @@ const AwardLink = styled.a`
 `;
 
 function Awards({ items }) {
-  return items.map(item =>
-    <AwardLink href={item.href} title={item.title}>
+  return items.map((item, key) => (
+    <AwardLink key={key} href={item.href} title={item.title}>
       <img src={item.image} alt={item.title} />
     </AwardLink>
-  );
+  ));
 }
 
 export default Awards;

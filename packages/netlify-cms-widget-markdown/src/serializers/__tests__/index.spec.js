@@ -10,35 +10,24 @@ describe('markdownToSlate', () => {
     );
     const slate = markdownToSlate(mdast);
 
-    expect(slate).toEqual({
-      object: 'block',
-      type: 'root',
-      nodes: [
-        {
-          object: 'block',
-          type: 'paragraph',
-          nodes: [
-            {
-              object: 'text',
-              text: 'Fill to',
-            },
-            {
-              object: 'text',
-              text: 'this_mark, and your charge is but a penny; tothisa penny more; and so on to the full glass—the Cape Horn measure, which you may gulp down for a shilling.\\n\\nUpon entering the place I found a number of young seamen gathered about a table, examining by a dim light divers specimens ofskrimshander',
-              marks: [
-                {
-                  type: 'italic',
-                },
-              ],
-            },
-            {
-              object: 'text',
-              text: '.',
-            },
-          ],
-        },
-      ],
-    });
+    expect(slate).toEqual([
+      {
+        type: 'paragraph',
+        children: [
+          {
+            text: 'Fill to',
+          },
+          {
+            italic: true,
+            marks: [{ type: 'italic' }],
+            text: 'this_mark, and your charge is but a penny; tothisa penny more; and so on to the full glass—the Cape Horn measure, which you may gulp down for a shilling.\\n\\nUpon entering the place I found a number of young seamen gathered about a table, examining by a dim light divers specimens ofskrimshander',
+          },
+          {
+            text: '.',
+          },
+        ],
+      },
+    ]);
   });
 });
 
@@ -48,15 +37,13 @@ describe('htmlToSlate', () => {
 
     const actual = htmlToSlate(html);
     expect(actual).toEqual({
-      object: 'block',
       type: 'root',
-      nodes: [
+      children: [
         {
-          object: 'block',
           type: 'paragraph',
-          nodes: [
-            { object: 'text', text: 'Bold Text', marks: [{ type: 'bold' }] },
-            { object: 'text', text: ' regular text' },
+          children: [
+            { text: 'Bold Text', bold: true, marks: [{ type: 'bold' }] },
+            { text: ' regular text' },
           ],
         },
       ],

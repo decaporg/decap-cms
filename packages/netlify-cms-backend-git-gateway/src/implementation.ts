@@ -105,7 +105,7 @@ let initPromise = Promise.resolve() as Promise<unknown>;
 if (window.netlifyIdentity) {
   let initialized = false;
   initPromise = Promise.race([
-    new Promise(resolve => {
+    new Promise<void>(resolve => {
       window.netlifyIdentity?.on('init', () => {
         initialized = true;
         resolve();
@@ -422,7 +422,7 @@ export default class GitGateway implements Implementation {
         path,
         url,
         displayURL: url,
-        file: new File([blob], name),
+        file: new File([blob], basename(path)),
         size: blob.size,
       };
     } else {
@@ -537,7 +537,7 @@ export default class GitGateway implements Implementation {
         path,
         url,
         displayURL: url,
-        file: new File([blob], name),
+        file: new File([blob], basename(path)),
         size: blob.size,
       };
     }
@@ -556,7 +556,7 @@ export default class GitGateway implements Implementation {
 
   async persistMedia(mediaFile: AssetProxy, options: PersistOptions) {
     const { fileObj, path } = mediaFile;
-    const displayURL = URL.createObjectURL(fileObj);
+    const displayURL = fileObj ? URL.createObjectURL(fileObj) : '';
     const client = await this.getLargeMediaClient();
     const fixedPath = path.startsWith('/') ? path.slice(1) : path;
     const isLargeMedia = await this.isLargeMediaFile(fixedPath);
