@@ -1,5 +1,4 @@
 import { get } from 'lodash';
-import { actions as notifActions } from 'redux-notifications';
 import { Map, List } from 'immutable';
 import { EDITORIAL_WORKFLOW_ERROR } from 'netlify-cms-lib-util';
 
@@ -25,6 +24,7 @@ import { addAssets } from './media';
 import { loadMedia } from './mediaLibrary';
 import ValidationErrorTypes from '../constants/validationErrorTypes';
 import { navigateToEntry } from '../routing/history';
+import { addNotification } from './notifications';
 
 import type {
   Collection,
@@ -38,8 +38,6 @@ import type { AnyAction } from 'redux';
 import type { EntryValue } from '../valueObjects/Entry';
 import type { Status } from '../constants/publishModes';
 import type { ThunkDispatch } from 'redux-thunk';
-
-const { notifSend } = notifActions;
 
 /*
  * Constant Declarations
@@ -277,12 +275,12 @@ export function loadUnpublishedEntry(collection: Collection, slug: string) {
         dispatch(loadEntry(collection, slug));
       } else {
         dispatch(
-          notifSend({
+          addNotification({
             message: {
               key: 'ui.toast.onFailToLoadEntries',
               details: error,
             },
-            kind: 'danger',
+            type: 'error',
             dismissAfter: 8000,
           }),
         );
@@ -307,12 +305,12 @@ export function loadUnpublishedEntries(collections: Collections) {
       .then(response => dispatch(unpublishedEntriesLoaded(response.entries, response.pagination)))
       .catch((error: Error) => {
         dispatch(
-          notifSend({
+          addNotification({
             message: {
               key: 'ui.toast.onFailToLoadEntries',
               details: error,
             },
-            kind: 'danger',
+            type: 'error',
             dismissAfter: 8000,
           }),
         );
@@ -343,11 +341,11 @@ export function persistUnpublishedEntry(collection: Collection, existingUnpublis
 
       if (hasPresenceErrors) {
         dispatch(
-          notifSend({
+          addNotification({
             message: {
               key: 'ui.toast.missingRequiredField',
             },
-            kind: 'danger',
+            type: 'error',
             dismissAfter: 8000,
           }),
         );
@@ -378,11 +376,11 @@ export function persistUnpublishedEntry(collection: Collection, existingUnpublis
         usedSlugs,
       });
       dispatch(
-        notifSend({
+        addNotification({
           message: {
             key: 'ui.toast.entrySaved',
           },
-          kind: 'success',
+          type: 'success',
           dismissAfter: 4000,
         }),
       );
@@ -394,12 +392,12 @@ export function persistUnpublishedEntry(collection: Collection, existingUnpublis
       }
     } catch (error) {
       dispatch(
-        notifSend({
+        addNotification({
           message: {
             key: 'ui.toast.onFailToPersist',
             details: error,
           },
-          kind: 'danger',
+          type: 'error',
           dismissAfter: 8000,
         }),
       );
@@ -425,11 +423,11 @@ export function updateUnpublishedEntryStatus(
       .updateUnpublishedEntryStatus(collection, slug, newStatus)
       .then(() => {
         dispatch(
-          notifSend({
+          addNotification({
             message: {
               key: 'ui.toast.entryUpdated',
             },
-            kind: 'success',
+            type: 'success',
             dismissAfter: 4000,
           }),
         );
@@ -437,12 +435,12 @@ export function updateUnpublishedEntryStatus(
       })
       .catch((error: Error) => {
         dispatch(
-          notifSend({
+          addNotification({
             message: {
               key: 'ui.toast.onFailToUpdateStatus',
               details: error,
             },
-            kind: 'danger',
+            type: 'error',
             dismissAfter: 8000,
           }),
         );
@@ -460,9 +458,9 @@ export function deleteUnpublishedEntry(collection: string, slug: string) {
       .deleteUnpublishedEntry(collection, slug)
       .then(() => {
         dispatch(
-          notifSend({
+          addNotification({
             message: { key: 'ui.toast.onDeleteUnpublishedChanges' },
-            kind: 'success',
+            type: 'success',
             dismissAfter: 4000,
           }),
         );
@@ -470,9 +468,9 @@ export function deleteUnpublishedEntry(collection: string, slug: string) {
       })
       .catch((error: Error) => {
         dispatch(
-          notifSend({
+          addNotification({
             message: { key: 'ui.toast.onDeleteUnpublishedChanges', details: error },
-            kind: 'danger',
+            type: 'error',
             dismissAfter: 8000,
           }),
         );
@@ -493,9 +491,9 @@ export function publishUnpublishedEntry(collectionName: string, slug: string) {
       // re-load media after entry was published
       dispatch(loadMedia());
       dispatch(
-        notifSend({
+        addNotification({
           message: { key: 'ui.toast.entryPublished' },
-          kind: 'success',
+          type: 'success',
           dismissAfter: 4000,
         }),
       );
@@ -513,9 +511,9 @@ export function publishUnpublishedEntry(collectionName: string, slug: string) {
       }
     } catch (error) {
       dispatch(
-        notifSend({
+        addNotification({
           message: { key: 'ui.toast.onFailToPublishEntry', details: error },
-          kind: 'danger',
+          type: 'error',
           dismissAfter: 8000,
         }),
       );
@@ -548,18 +546,18 @@ export function unpublishPublishedEntry(collection: Collection, slug: string) {
         dispatch(entryDeleted(collection, slug));
         dispatch(loadUnpublishedEntry(collection, slug));
         dispatch(
-          notifSend({
+          addNotification({
             message: { key: 'ui.toast.entryUnpublished' },
-            kind: 'success',
+            type: 'success',
             dismissAfter: 4000,
           }),
         );
       })
       .catch((error: Error) => {
         dispatch(
-          notifSend({
+          addNotification({
             message: { key: 'ui.toast.onFailToUnpublishEntry', details: error },
-            kind: 'danger',
+            type: 'error',
             dismissAfter: 8000,
           }),
         );

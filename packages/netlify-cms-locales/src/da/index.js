@@ -118,7 +118,7 @@ const da = {
       confirmLoadBackup:
         'En lokal sikkerhedskopi blev gendannet for dette dokument, vil du anvende denne?',
     },
-    
+
     editorToolbar: {
       publishing: 'Publicerer...',
       publish: 'Publicer',
@@ -135,7 +135,7 @@ const da = {
       saving: 'Gemmer...',
       save: 'Gem',
       statusInfoTooltipDraft:
-      'Status for elementet er kladde. For at afslutte og sende til gennemsyn, skift status til ‘Til gennemsyn’',
+        'Status for elementet er kladde. For at afslutte og sende til gennemsyn, skift status til ‘Til gennemsyn’',
       statusInfoTooltipInReview:
         'Elementet er til gennemsyn, det er ikke nødvendigt med yderligere handlinger. Du kan dog stadig lave yderligere ændringer mens det er til gennemsyn.',
       deleting: 'Sletter...',

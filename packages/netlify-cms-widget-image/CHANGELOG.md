@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.8.2-beta.0](https://github.com/decaporg/decap-cms/compare/netlify-cms-widget-image@2.8.1...netlify-cms-widget-image@2.8.2-beta.0) (2023-07-27)
+
+**Note:** Version bump only for package netlify-cms-widget-image
+
+
+
+
+
 ## [2.8.1](https://github.com/decaporg/decap-cms/tree/master/packages/netlify-cms-widget-image/compare/netlify-cms-widget-image@2.8.0...netlify-cms-widget-image@2.8.1) (2021-06-01)
 
 **Note:** Version bump only for package netlify-cms-widget-image
