@@ -16,8 +16,8 @@ module.exports = {
     {
       resolve: 'gatsby-plugin-manifest',
       options: {
-        name: 'NetlifyCMS',
-        short_name: 'NetlifyCMS',
+        name: 'Decap CMS',
+        short_name: 'Decap CMS',
         start_url: '/',
         background_color: '#ffffff',
         theme_color: '#ffffff',
@@ -67,7 +67,7 @@ module.exports = {
     'gatsby-plugin-react-helmet',
     'gatsby-plugin-catch-links',
     {
-      resolve: 'gatsby-plugin-netlify-cms',
+      resolve: 'gatsby-plugin-decap-cms',
       options: {
         modulePath: `${__dirname}/src/cms/cms.js`,
       },

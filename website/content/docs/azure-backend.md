@@ -6,7 +6,7 @@ title: Azure
 
 For repositories stored on Azure, the `azure` backend allows CMS users to log in directly with their Azure account. Note that all users must have write access to your content repository for this to work.
 
-In order to get Netlify-CMS working with Azure DevOps, you need a Tenant Id and an Application Id.
+In order to get Decap CMS working with Azure DevOps, you need a Tenant Id and an Application Id.
 
 1. If you do not have an Azure account, [create one here](https://azure.microsoft.com/en-us/free/?WT.mc_id=A261C142F) and make sure to have a credit card linked to the account.
 2. If you do not have an Azure Active Directory Tenant Id, [set one up here](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-create-new-tenant).

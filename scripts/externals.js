@@ -3,7 +3,7 @@ const path = require('path');
 
 /**
  * Takes a dash [-] separated name and makes it camel-cased
- * netlify-cms-something to NetlifyCmsSomething
+ * decap-cms-something to DecapCmsSomething
  * @param {} string
  */
 function toGlobalName(name) {
@@ -36,21 +36,21 @@ module.exports = {
   externals: {
     ...packageExports,
     lodash: {
-      root: ['NetlifyCmsDefaultExports', 'Lodash'],
+      root: ['DecapCmsDefaultExports', 'Lodash'],
       commonjs2: 'lodash',
       commonjs: 'lodash',
       amd: 'lodash',
       umd: 'lodash',
     },
     '@emotion/core': {
-      root: ['NetlifyCmsDefaultExports', 'EmotionCore'],
+      root: ['DecapCmsDefaultExports', 'EmotionCore'],
       commonjs2: '@emotion/core',
       commonjs: '@emotion/core',
       amd: '@emotion/core',
       umd: '@emotion/core',
     },
     '@emotion/styled': {
-      root: ['NetlifyCmsDefaultExports', 'EmotionStyled'],
+      root: ['DecapCmsDefaultExports', 'EmotionStyled'],
       commonjs2: '@emotion/styled',
       commonjs: '@emotion/styled',
       amd: '@emotion/styled',
@@ -64,28 +64,28 @@ module.exports = {
       umd: 'codemirror',
     },
     immutable: {
-      root: ['NetlifyCmsDefaultExports', 'Immutable'],
+      root: ['DecapCmsDefaultExports', 'Immutable'],
       commonjs2: 'immutable',
       commonjs: 'immutable',
       amd: 'immutable',
       umd: 'immutable',
     },
     moment: {
-      root: ['NetlifyCmsDefaultExports', 'Moment'],
+      root: ['DecapCmsDefaultExports', 'Moment'],
       commonjs2: 'moment',
       commonjs: 'moment',
       amd: 'moment',
       umd: 'moment',
     },
     'prop-types': {
-      root: ['NetlifyCmsDefaultExports', 'PropTypes'],
+      root: ['DecapCmsDefaultExports', 'PropTypes'],
       commonjs2: 'prop-types',
       commonjs: 'prop-types',
       amd: 'prop-types',
       umd: 'prop-types',
     },
     'react-immutable-proptypes': {
-      root: ['NetlifyCmsDefaultExports', 'ImmutablePropTypes'],
+      root: ['DecapCmsDefaultExports', 'ImmutablePropTypes'],
       commonjs2: 'react-immutable-proptypes',
       commonjs: 'react-immutable-proptypes',
       amd: 'react-immutable-proptypes',
@@ -106,7 +106,7 @@ module.exports = {
       umd: 'react-dom',
     },
     uuid: {
-      root: ['NetlifyCmsDefaultExports', 'UUId'],
+      root: ['DecapCmsDefaultExports', 'UUId'],
       commonjs2: 'uuid',
       commonjs: 'uuid',
       amd: 'uuid',

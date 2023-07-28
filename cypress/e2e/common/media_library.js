@@ -16,7 +16,7 @@ import { workflowStatus } from '../../utils/constants';
 function uploadMediaFile() {
   assertNoImagesInLibrary();
 
-  const fixture = 'cypress/fixtures/media/netlify.png';
+  const fixture = 'cypress/fixtures/media/decap.png';
   cy.get('input[type="file"]').selectFile(fixture, { force: true });
   cy.contains('span', 'Uploading...').should('not.exist');
 

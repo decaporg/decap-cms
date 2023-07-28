@@ -1,5 +1,5 @@
 import React from 'react';
-import CMS from 'netlify-cms-app';
+import CMS from 'decap-cms-app';
 import dayjs from 'dayjs';
 import Prism from 'prismjs';
 import { CacheProvider } from '@emotion/core';
