@@ -1,6 +1,6 @@
 [
   {
-    "body": "grant_type=password&username=decapCMS%40netlify.com&password=12345678",
+    "body": "grant_type=password&username=decap%40p-m.si&password=12345678",
     "method": "POST",
     "url": "/.netlify/identity/token",
     "headers": {
