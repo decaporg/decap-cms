@@ -10,6 +10,7 @@ import {
   parseContentKey,
 } from 'decap-cms-lib-util/src/APIUtils';
 import { parse } from 'what-the-diff';
+// eslint-disable-next-line import/no-named-as-default
 import simpleGit from 'simple-git';
 import { Mutex, withTimeout } from 'async-mutex';
 
