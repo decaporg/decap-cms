@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.14.1-beta.0](https://github.com/decaporg/decap-cms/compare/netlify-cms-backend-bitbucket@2.14.0...netlify-cms-backend-bitbucket@2.14.1-beta.0) (2023-07-27)
+
+**Note:** Version bump only for package netlify-cms-backend-bitbucket
+
+
+
+
+
 # [2.14.0](https://github.com/decaporg/decap-cms/compare/netlify-cms-backend-bitbucket@2.13.3...netlify-cms-backend-bitbucket@2.14.0) (2021-10-18)
 
 

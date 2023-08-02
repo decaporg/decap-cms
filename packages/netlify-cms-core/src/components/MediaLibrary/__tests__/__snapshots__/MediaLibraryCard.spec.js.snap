@@ -67,6 +67,7 @@ exports[`MediaLibraryCard should match snapshot for draft image 1`] = `
       </p>
       <img
         class="emotion-2 emotion-3"
+        loading="lazy"
         src="url"
       />
     </div>
@@ -132,6 +133,7 @@ exports[`MediaLibraryCard should match snapshot for non draft image 1`] = `
     >
       <img
         class="emotion-0 emotion-1"
+        loading="lazy"
         src="url"
       />
     </div>

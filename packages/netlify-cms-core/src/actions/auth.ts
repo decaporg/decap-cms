@@ -1,13 +1,10 @@
-import { actions as notifActions } from 'redux-notifications';
-
 import { currentBackend } from '../backend';
+import { addNotification, clearNotifications } from './notifications';
 
 import type { Credentials, User } from 'netlify-cms-lib-util';
 import type { ThunkDispatch } from 'redux-thunk';
 import type { AnyAction } from 'redux';
 import type { State } from '../types/redux';
-
-const { notifSend, notifClear } = notifActions;
 
 export const AUTH_REQUEST = 'AUTH_REQUEST';
 export const AUTH_SUCCESS = 'AUTH_SUCCESS';
@@ -96,12 +93,12 @@ export function loginUser(credentials: Credentials) {
       .catch((error: Error) => {
         console.error(error);
         dispatch(
-          notifSend({
+          addNotification({
             message: {
               details: error.message,
               key: 'ui.toast.onFailToAuth',
             },
-            kind: 'warning',
+            type: 'error',
             dismissAfter: 8000,
           }),
         );
@@ -116,7 +113,7 @@ export function logoutUser() {
     const backend = currentBackend(state.config);
     Promise.resolve(backend.logout()).then(() => {
       dispatch(logout());
-      dispatch(notifClear());
+      dispatch(clearNotifications());
     });
   };
 }

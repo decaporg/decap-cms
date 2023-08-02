@@ -1,7 +1,7 @@
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '..', '..', '.env') });
 const webpack = require('webpack');
-const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
+const FriendlyErrorsWebpackPlugin = require('@soda/friendly-errors-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const pkg = require('./package.json');
@@ -30,12 +30,15 @@ const baseConfig = {
     new CopyWebpackPlugin({ patterns: [{ from: './shims/cms.css', to: './' }] }),
   ],
   devServer: {
-    contentBase: '../../dev-test',
-    watchContentBase: true,
-    publicPath: '/dist/',
-    quiet: true,
+    static: '../../dev-test',
+    devMiddleware: {
+      publicPath: '/dist/',
+    },
     host: '0.0.0.0',
     port: devServerPort,
+    client: {
+      overlay: false,
+    },
   },
 };
 
