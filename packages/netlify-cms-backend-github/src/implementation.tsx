@@ -495,7 +495,7 @@ export default class GitHub implements Implementation {
     try {
       await this.api!.persistFiles([], [mediaFile], options);
       const { sha, path, fileObj } = mediaFile as AssetProxy & { sha: string };
-      const displayURL = URL.createObjectURL(fileObj);
+      const displayURL = fileObj ? URL.createObjectURL(fileObj) : '';
       return {
         id: sha,
         name: fileObj!.name,

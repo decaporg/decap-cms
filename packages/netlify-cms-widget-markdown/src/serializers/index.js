@@ -207,7 +207,7 @@ export function markdownToSlate(markdown, { voidCodeBlock, remarkPlugins = [] } 
     .use(remarkToSlate, { voidCodeBlock })
     .runSync(mdast);
 
-  return slateRaw;
+  return slateRaw.children;
 }
 
 /**

@@ -26,7 +26,7 @@ export default class ObjectControl extends React.Component {
 
   static propTypes = {
     onChangeObject: PropTypes.func.isRequired,
-    onValidateObject: PropTypes.func.isRequired,
+    onValidateObject: PropTypes.func,
     value: PropTypes.oneOfType([PropTypes.node, PropTypes.object, PropTypes.bool]),
     field: PropTypes.object,
     forID: PropTypes.string,
@@ -36,9 +36,9 @@ export default class ObjectControl extends React.Component {
     editorControl: PropTypes.elementType.isRequired,
     resolveWidget: PropTypes.func.isRequired,
     clearFieldErrors: PropTypes.func.isRequired,
-    fieldsErrors: ImmutablePropTypes.map.isRequired,
+    fieldsErrors: ImmutablePropTypes.map,
     hasError: PropTypes.bool,
-    t: PropTypes.func.isRequired,
+    t: PropTypes.func,
     locale: PropTypes.string,
   };
 

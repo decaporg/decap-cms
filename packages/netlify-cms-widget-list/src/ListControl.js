@@ -128,7 +128,7 @@ export default class ListControl extends React.Component {
     clearFieldErrors: PropTypes.func.isRequired,
     fieldsErrors: ImmutablePropTypes.map.isRequired,
     entry: ImmutablePropTypes.map.isRequired,
-    t: PropTypes.func.isRequired,
+    t: PropTypes.func,
   };
 
   static defaultProps = {

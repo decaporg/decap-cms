@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.40.0-beta.0](https://github.com/decaporg/decap-cms/compare/netlify-cms-locales@1.39.0...netlify-cms-locales@1.40.0-beta.0) (2023-07-27)
+
+
+### Bug Fixes
+
+* **locales:** Add missing [Btranslations, fix typos ([#6774](https://github.com/decaporg/decap-cms/issues/6774)) ([bdccfeb](https://github.com/decaporg/decap-cms/commit/bdccfebf68ad64a338b08dee69029c54010af074))
+
+
+### Features
+
+* **locale:** Update 'ko' locale ([#6512](https://github.com/decaporg/decap-cms/issues/6512)) ([e279a6b](https://github.com/decaporg/decap-cms/commit/e279a6b833bb0027f563719e026fdfdd9fc61b56))
+
+
+
+
+
 # [1.39.0](https://github.com/decaporg/decap-cms/compare/netlify-cms-locales@1.38.2...netlify-cms-locales@1.39.0) (2022-03-28)
 
 

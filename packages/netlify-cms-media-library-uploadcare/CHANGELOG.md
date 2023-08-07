@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.11-beta.0](https://github.com/decaporg/decap-cms/compare/netlify-cms-media-library-uploadcare@0.5.10...netlify-cms-media-library-uploadcare@0.5.11-beta.0) (2023-07-27)
+
+**Note:** Version bump only for package netlify-cms-media-library-uploadcare
+
+
+
+
+
 ## [0.5.10](https://github.com/decaporg/decap-cms/tree/master/packages/netlify-cms-media-library-uploadcare/compare/netlify-cms-media-library-uploadcare@0.5.9...netlify-cms-media-library-uploadcare@0.5.10) (2021-02-10)
 
 **Note:** Version bump only for package netlify-cms-media-library-uploadcare

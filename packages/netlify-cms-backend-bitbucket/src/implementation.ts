@@ -450,7 +450,7 @@ export default class BitbucketBackend implements Implementation {
 
   async persistMedia(mediaFile: AssetProxy, options: PersistOptions) {
     const { fileObj, path } = mediaFile;
-    const displayURL = URL.createObjectURL(fileObj);
+    const displayURL = fileObj ? URL.createObjectURL(fileObj) : '';
     const client = await this.getLargeMediaClient();
     const fixedPath = path.startsWith('/') ? path.slice(1) : path;
     if (!client.enabled || !client.matchPath(fixedPath)) {

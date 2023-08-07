@@ -150,7 +150,7 @@ function runTimes(cyInstance, fn, count = 1) {
 ].forEach(key => {
   const [cmd, keyName] = typeof key === 'object' ? key : [key, key];
   Cypress.Commands.add(cmd, { prevSubject: true }, (subject, { shift, times = 1 } = {}) => {
-    const fn = chain => chain.type(`${shift ? '{shift}' : ''}{${keyName}}`);
+    const fn = chain => chain.type(`${shift ? '{shift}' : ''}{${keyName}}`, { delay: 50 });
     return runTimes(cy.wrap(subject), fn, times);
   });
 });
@@ -158,6 +158,7 @@ function runTimes(cyInstance, fn, count = 1) {
 // Convert `tab` command from plugin to a child command with `times` support
 Cypress.Commands.add('tabkey', { prevSubject: true }, (subject, { shift, times } = {}) => {
   const fn = chain => chain.tab({ shift });
+  cy.wait(100);
   return runTimes(cy, fn, times).wrap(subject);
 });
 
@@ -250,6 +251,9 @@ Cypress.Commands.add('clickToolbarButton', (title, { times } = {}) => {
   }
   const instance = isHeading ? cy.contains('div', title) : cy.get(`button[title="${title}"]`);
   const fn = chain => chain.click();
+  // this seems to be the only thing that makes cypress stable(ish)
+  // eslint-disable-next-line cypress/no-unnecessary-waiting
+  cy.wait(100);
   return runTimes(instance, fn, times).focused();
 });
 

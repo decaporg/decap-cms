@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.11.2-beta.0](https://github.com/decaporg/decap-cms/compare/netlify-cms-widget-relation@2.11.1...netlify-cms-widget-relation@2.11.2-beta.0) (2023-07-27)
+
+**Note:** Version bump only for package netlify-cms-widget-relation
+
+
+
+
+
 ## [2.11.1](https://github.com/decaporg/decap-cms/compare/netlify-cms-widget-relation@2.11.0...netlify-cms-widget-relation@2.11.1) (2022-04-13)
 
 

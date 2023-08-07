@@ -436,7 +436,11 @@ export function localGitMiddleware({ repoPath, logger }: GitOptions) {
         }
       }
     } catch (e) {
-      logger.error(`Error handling ${JSON.stringify(req.body)}: ${e.message}`);
+      logger.error(
+        `Error handling ${JSON.stringify(req.body)}: ${
+          e instanceof Error ? e.message : 'Unknown error'
+        }`,
+      );
       res.status(500).json({ error: 'Unknown error' });
     } finally {
       release && release();

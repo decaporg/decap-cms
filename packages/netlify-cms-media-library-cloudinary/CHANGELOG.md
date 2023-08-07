@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.3.11-beta.0](https://github.com/decaporg/decap-cms/compare/netlify-cms-media-library-cloudinary@1.3.10...netlify-cms-media-library-cloudinary@1.3.11-beta.0) (2023-07-27)
+
+**Note:** Version bump only for package netlify-cms-media-library-cloudinary
+
+
+
+
+
 ## [1.3.10](https://github.com/decaporg/decap-cms/tree/master/packages/netlify-cms-media-library-cloudinary/compare/netlify-cms-media-library-cloudinary@1.3.9...netlify-cms-media-library-cloudinary@1.3.10) (2021-02-23)
 
 **Note:** Version bump only for package netlify-cms-media-library-cloudinary

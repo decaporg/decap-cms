@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.4.1-beta.0](https://github.com/decaporg/decap-cms/compare/netlify-cms-default-exports@2.4.0...netlify-cms-default-exports@2.4.1-beta.0) (2023-07-27)
+
+**Note:** Version bump only for package netlify-cms-default-exports
+
+
+
+
+
 # [2.4.0](https://github.com/decaporg/decap-cms/tree/master/packages/netlify-cms-default-exports/compare/netlify-cms-default-exports@2.3.5...netlify-cms-default-exports@2.4.0) (2021-05-04)
 
 

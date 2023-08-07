@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.56.0-beta.0](https://github.com/decaporg/decap-cms/compare/netlify-cms-core@2.55.2...netlify-cms-core@2.56.0-beta.0) (2023-07-27)
+
+
+### Bug Fixes
+
+* **#6355:** publish button dropdown items overflow menu ([#6796](https://github.com/decaporg/decap-cms/issues/6796)) ([88382dc](https://github.com/decaporg/decap-cms/commit/88382dc100924b28adaf545879a5845654e594f1)), closes [#6355](https://github.com/decaporg/decap-cms/issues/6355)
+* accessibility - color contrast and keyboard navigation ([#6757](https://github.com/decaporg/decap-cms/issues/6757)) ([194d1ce](https://github.com/decaporg/decap-cms/commit/194d1ce351c35d3feed4c1be704fbf79ac3c0efa))
+* sets a limit for editor minSize in editor split view ([#6492](https://github.com/decaporg/decap-cms/issues/6492)) ([48719f6](https://github.com/decaporg/decap-cms/commit/48719f6242a542446ff141a6599acaf4c9a03724))
+
+
+### Features
+
+* add choose url option to file or image ts interface ([#6466](https://github.com/decaporg/decap-cms/issues/6466)) ([4f4eb38](https://github.com/decaporg/decap-cms/commit/4f4eb381c2c3d87420d5d7c84eec3dca101faf81))
+* **netlify-cms-core:** add lazy property to images in Media Library ([#6613](https://github.com/decaporg/decap-cms/issues/6613)) ([aa16cb8](https://github.com/decaporg/decap-cms/commit/aa16cb878094cda5e9e687b61066fbbbc1e71d48))
+
+
+
+
+
 ## [2.55.2](https://github.com/decaporg/decap-cms/compare/netlify-cms-core@2.55.1...netlify-cms-core@2.55.2) (2022-04-13)
 
 
