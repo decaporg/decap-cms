@@ -3,7 +3,7 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [1.2.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-proxy/compare/netlify-cms-backend-proxy@1.2.2...netlify-cms-backend-proxy@1.2.3) (2021-06-01)
+## [1.2.4-beta.0](https://github.com/decaporg/decap-cms/compare/netlify-cms-backend-proxy@1.2.3...netlify-cms-backend-proxy@1.2.4-beta.0) (2023-07-27)
 
 **Note:** Version bump only for package netlify-cms-backend-proxy
 
@@ -11,7 +11,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [1.2.2](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-proxy/compare/netlify-cms-backend-proxy@1.2.1...netlify-cms-backend-proxy@1.2.2) (2021-05-31)
+## [1.2.3](https://github.com/decaporg/decap-cms/tree/master/packages/netlify-cms-backend-proxy/compare/netlify-cms-backend-proxy@1.2.2...netlify-cms-backend-proxy@1.2.3) (2021-06-01)
 
 **Note:** Version bump only for package netlify-cms-backend-proxy
 
@@ -19,7 +19,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [1.2.1](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-proxy/compare/netlify-cms-backend-proxy@1.2.0...netlify-cms-backend-proxy@1.2.1) (2021-05-19)
+## [1.2.2](https://github.com/decaporg/decap-cms/tree/master/packages/netlify-cms-backend-proxy/compare/netlify-cms-backend-proxy@1.2.1...netlify-cms-backend-proxy@1.2.2) (2021-05-31)
 
 **Note:** Version bump only for package netlify-cms-backend-proxy
 
@@ -27,26 +27,26 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-# [1.2.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-proxy/compare/netlify-cms-backend-proxy@1.1.7...netlify-cms-backend-proxy@1.2.0) (2021-05-04)
+## [1.2.1](https://github.com/decaporg/decap-cms/tree/master/packages/netlify-cms-backend-proxy/compare/netlify-cms-backend-proxy@1.2.0...netlify-cms-backend-proxy@1.2.1) (2021-05-19)
+
+**Note:** Version bump only for package netlify-cms-backend-proxy
+
+
+
+
+
+# [1.2.0](https://github.com/decaporg/decap-cms/tree/master/packages/netlify-cms-backend-proxy/compare/netlify-cms-backend-proxy@1.1.7...netlify-cms-backend-proxy@1.2.0) (2021-05-04)
 
 
 ### Features
 
-* added react 17 as peer dependency in packages ([#5316](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-proxy/issues/5316)) ([9e42380](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-proxy/commit/9e423805707321396eec137f5b732a5b07a0dd3f))
+* added react 17 as peer dependency in packages ([#5316](https://github.com/decaporg/decap-cms/tree/master/packages/netlify-cms-backend-proxy/issues/5316)) ([9e42380](https://github.com/decaporg/decap-cms/tree/master/packages/netlify-cms-backend-proxy/commit/9e423805707321396eec137f5b732a5b07a0dd3f))
 
 
 
 
 
-## [1.1.7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-proxy/compare/netlify-cms-backend-proxy@1.1.6...netlify-cms-backend-proxy@1.1.7) (2021-02-23)
-
-**Note:** Version bump only for package netlify-cms-backend-proxy
-
-
-
-
-
-## [1.1.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-proxy/compare/netlify-cms-backend-proxy@1.1.5...netlify-cms-backend-proxy@1.1.6) (2021-02-10)
+## [1.1.7](https://github.com/decaporg/decap-cms/tree/master/packages/netlify-cms-backend-proxy/compare/netlify-cms-backend-proxy@1.1.6...netlify-cms-backend-proxy@1.1.7) (2021-02-23)
 
 **Note:** Version bump only for package netlify-cms-backend-proxy
 
@@ -54,7 +54,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [1.1.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-proxy/compare/netlify-cms-backend-proxy@1.1.4...netlify-cms-backend-proxy@1.1.5) (2020-09-20)
+## [1.1.6](https://github.com/decaporg/decap-cms/tree/master/packages/netlify-cms-backend-proxy/compare/netlify-cms-backend-proxy@1.1.5...netlify-cms-backend-proxy@1.1.6) (2021-02-10)
 
 **Note:** Version bump only for package netlify-cms-backend-proxy
 
@@ -62,7 +62,15 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [1.1.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-proxy/compare/netlify-cms-backend-proxy@1.1.3...netlify-cms-backend-proxy@1.1.4) (2020-09-15)
+## [1.1.5](https://github.com/decaporg/decap-cms/tree/master/packages/netlify-cms-backend-proxy/compare/netlify-cms-backend-proxy@1.1.4...netlify-cms-backend-proxy@1.1.5) (2020-09-20)
+
+**Note:** Version bump only for package netlify-cms-backend-proxy
+
+
+
+
+
+## [1.1.4](https://github.com/decaporg/decap-cms/tree/master/packages/netlify-cms-backend-proxy/compare/netlify-cms-backend-proxy@1.1.3...netlify-cms-backend-proxy@1.1.4) (2020-09-15)
 
 **Note:** Version bump only for package netlify-cms-backend-proxy
 
@@ -75,7 +83,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Reverts
 
-* Revert "chore(release): publish" ([828bb16](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-proxy/commit/828bb16415b8c22a34caa19c50c38b24ffe9ceae))
+* Revert "chore(release): publish" ([828bb16](https://github.com/decaporg/decap-cms/tree/master/packages/netlify-cms-backend-proxy/commit/828bb16415b8c22a34caa19c50c38b24ffe9ceae))
 
 
 
@@ -86,7 +94,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Reverts
 
-* Revert "chore(release): publish" ([8262487](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-proxy/commit/82624879ccbcb16610090041db28f00714d924c8))
+* Revert "chore(release): publish" ([8262487](https://github.com/decaporg/decap-cms/tree/master/packages/netlify-cms-backend-proxy/commit/82624879ccbcb16610090041db28f00714d924c8))
 
 
 
@@ -97,48 +105,29 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Reverts
 
-* Revert "chore(release): publish" ([118d50a](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-proxy/commit/118d50a7a70295f25073e564b5161aa2b9883056))
+* Revert "chore(release): publish" ([118d50a](https://github.com/decaporg/decap-cms/tree/master/packages/netlify-cms-backend-proxy/commit/118d50a7a70295f25073e564b5161aa2b9883056))
 
 
 
 
 
-# [1.1.0](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-proxy/compare/netlify-cms-backend-proxy@1.0.7...netlify-cms-backend-proxy@1.1.0) (2020-06-18)
+# [1.1.0](https://github.com/decaporg/decap-cms/tree/master/packages/netlify-cms-backend-proxy/compare/netlify-cms-backend-proxy@1.0.7...netlify-cms-backend-proxy@1.1.0) (2020-06-18)
 
 
 ### Bug Fixes
 
-* handle token expiry ([#3847](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-proxy/issues/3847)) ([285c940](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-proxy/commit/285c940562548d7bc88de244123ba87ff66fba65))
+* handle token expiry ([#3847](https://github.com/decaporg/decap-cms/tree/master/packages/netlify-cms-backend-proxy/issues/3847)) ([285c940](https://github.com/decaporg/decap-cms/tree/master/packages/netlify-cms-backend-proxy/commit/285c940562548d7bc88de244123ba87ff66fba65))
 
 
 ### Features
 
-* add backend status down indicator ([#3889](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-proxy/issues/3889)) ([a50edc7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-proxy/commit/a50edc70553ad6afa1acee6a51996ad226443f8c))
+* add backend status down indicator ([#3889](https://github.com/decaporg/decap-cms/tree/master/packages/netlify-cms-backend-proxy/issues/3889)) ([a50edc7](https://github.com/decaporg/decap-cms/tree/master/packages/netlify-cms-backend-proxy/commit/a50edc70553ad6afa1acee6a51996ad226443f8c))
 
 
 
 
 
-## [1.0.7](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-proxy/compare/netlify-cms-backend-proxy@1.0.6...netlify-cms-backend-proxy@1.0.7) (2020-05-19)
-
-**Note:** Version bump only for package netlify-cms-backend-proxy
-
-
-
-
-
-## [1.0.6](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-proxy/compare/netlify-cms-backend-proxy@1.0.5...netlify-cms-backend-proxy@1.0.6) (2020-04-06)
-
-
-### Bug Fixes
-
-* **backend-proxy:** fix error reporting ([#3527](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-proxy/issues/3527)) ([f94dea3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-proxy/commit/f94dea386ce89f0f92744d0c4196416706999ea0))
-
-
-
-
-
-## [1.0.5](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-proxy/compare/netlify-cms-backend-proxy@1.0.4...netlify-cms-backend-proxy@1.0.5) (2020-04-01)
+## [1.0.7](https://github.com/decaporg/decap-cms/tree/master/packages/netlify-cms-backend-proxy/compare/netlify-cms-backend-proxy@1.0.6...netlify-cms-backend-proxy@1.0.7) (2020-05-19)
 
 **Note:** Version bump only for package netlify-cms-backend-proxy
 
@@ -146,23 +135,42 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [1.0.4](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-proxy/compare/netlify-cms-backend-proxy@1.0.3...netlify-cms-backend-proxy@1.0.4) (2020-03-03)
+## [1.0.6](https://github.com/decaporg/decap-cms/tree/master/packages/netlify-cms-backend-proxy/compare/netlify-cms-backend-proxy@1.0.5...netlify-cms-backend-proxy@1.0.6) (2020-04-06)
 
 
 ### Bug Fixes
 
-* **locale:** Remove hard coded string literals ([#3333](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-proxy/issues/3333)) ([7c45a3c](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-proxy/commit/7c45a3cda983be427864a56e58791565eb9232e2))
+* **backend-proxy:** fix error reporting ([#3527](https://github.com/decaporg/decap-cms/tree/master/packages/netlify-cms-backend-proxy/issues/3527)) ([f94dea3](https://github.com/decaporg/decap-cms/tree/master/packages/netlify-cms-backend-proxy/commit/f94dea386ce89f0f92744d0c4196416706999ea0))
 
 
 
 
 
-## [1.0.3](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-proxy/compare/netlify-cms-backend-proxy@1.0.2...netlify-cms-backend-proxy@1.0.3) (2020-02-06)
+## [1.0.5](https://github.com/decaporg/decap-cms/tree/master/packages/netlify-cms-backend-proxy/compare/netlify-cms-backend-proxy@1.0.4...netlify-cms-backend-proxy@1.0.5) (2020-04-01)
+
+**Note:** Version bump only for package netlify-cms-backend-proxy
+
+
+
+
+
+## [1.0.4](https://github.com/decaporg/decap-cms/tree/master/packages/netlify-cms-backend-proxy/compare/netlify-cms-backend-proxy@1.0.3...netlify-cms-backend-proxy@1.0.4) (2020-03-03)
 
 
 ### Bug Fixes
 
-* **locale:** remove hard coded strings ([#3193](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-proxy/issues/3193)) ([fc91bf8](https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-backend-proxy/commit/fc91bf8781e65ce1dc946363dbb10419a145c66b))
+* **locale:** Remove hard coded string literals ([#3333](https://github.com/decaporg/decap-cms/tree/master/packages/netlify-cms-backend-proxy/issues/3333)) ([7c45a3c](https://github.com/decaporg/decap-cms/tree/master/packages/netlify-cms-backend-proxy/commit/7c45a3cda983be427864a56e58791565eb9232e2))
+
+
+
+
+
+## [1.0.3](https://github.com/decaporg/decap-cms/tree/master/packages/netlify-cms-backend-proxy/compare/netlify-cms-backend-proxy@1.0.2...netlify-cms-backend-proxy@1.0.3) (2020-02-06)
+
+
+### Bug Fixes
+
+* **locale:** remove hard coded strings ([#3193](https://github.com/decaporg/decap-cms/tree/master/packages/netlify-cms-backend-proxy/issues/3193)) ([fc91bf8](https://github.com/decaporg/decap-cms/tree/master/packages/netlify-cms-backend-proxy/commit/fc91bf8781e65ce1dc946363dbb10419a145c66b))
 
 
 

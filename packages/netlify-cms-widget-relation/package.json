@@ -1,10 +1,10 @@
 {
   "name": "netlify-cms-widget-relation",
   "description": "Widget for linking related entries in Netlify CMS.",
-  "version": "2.11.1",
+  "version": "2.11.2-beta.0",
   "homepage": "https://www.netlifycms.org/docs/widgets/#relation",
-  "repository": "https://github.com/netlify/netlify-cms/tree/master/packages/netlify-cms-widget-relation",
-  "bugs": "https://github.com/netlify/netlify-cms/issues",
+  "repository": "https://github.com/decaporg/decap-cms/tree/master/packages/netlify-cms-widget-relation",
+  "bugs": "https://github.com/decaporg/decap-cms/issues",
   "module": "dist/esm/index.js",
   "main": "dist/netlify-cms-widget-relation.js",
   "license": "MIT",

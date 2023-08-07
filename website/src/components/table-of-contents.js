@@ -19,7 +19,7 @@ const TocLink = styled.a`
   margin: ${theme.space[2]} 0;
 
   &:hover {
-    color: ${theme.colors.darkGreen};
+    color: ${theme.colors.primaryDark};
   }
 `;
 

@@ -11,18 +11,6 @@ jest.mock('netlify-cms-lib-util');
 jest.mock('uuid/v4', () => {
   return jest.fn().mockReturnValue('000000000000000000000');
 });
-jest.mock('redux-notifications', () => {
-  const actual = jest.requireActual('redux-notifications');
-  return {
-    ...actual,
-    actions: {
-      notifSend: jest.fn().mockImplementation(payload => ({
-        type: 'NOTIF_SEND',
-        ...payload,
-      })),
-    },
-  };
-});
 
 const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);
@@ -134,10 +122,12 @@ describe('editorialWorkflow actions', () => {
           },
         });
         expect(actions[2]).toEqual({
-          type: 'NOTIF_SEND',
-          message: { key: 'ui.toast.entryPublished' },
-          kind: 'success',
-          dismissAfter: 4000,
+          type: 'NOTIFICATION_SEND',
+          payload: {
+            message: { key: 'ui.toast.entryPublished' },
+            type: 'success',
+            dismissAfter: 4000,
+          },
         });
         expect(actions[3]).toEqual({
           type: 'UNPUBLISHED_ENTRY_PUBLISH_SUCCESS',
@@ -206,10 +196,12 @@ describe('editorialWorkflow actions', () => {
           },
         });
         expect(actions[1]).toEqual({
-          type: 'NOTIF_SEND',
-          message: { key: 'ui.toast.onFailToPublishEntry', details: error },
-          kind: 'danger',
-          dismissAfter: 8000,
+          type: 'NOTIFICATION_SEND',
+          payload: {
+            message: { key: 'ui.toast.onFailToPublishEntry', details: error },
+            type: 'error',
+            dismissAfter: 8000,
+          },
         });
         expect(actions[2]).toEqual({
           type: 'UNPUBLISHED_ENTRY_PUBLISH_FAILURE',

@@ -1,18 +1,16 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import styled from '@emotion/styled';
 import { ClassNames } from '@emotion/core';
-import { debounce } from 'lodash';
-import { Value } from 'slate';
-import { Editor as Slate, setEventTransfer } from 'slate-react';
-import Plain from 'slate-plain-serializer';
-import isHotkey from 'is-hotkey';
+import styled from '@emotion/styled';
 import { lengths, fonts } from 'netlify-cms-ui-default';
+import { createEditor } from 'slate';
+import { Editable, ReactEditor, Slate, withReact } from 'slate-react';
+import { withHistory } from 'slate-history';
 
-import { markdownToHtml } from '../serializers';
 import { editorStyleVars, EditorControlBar } from '../styles';
 import Toolbar from './Toolbar';
+import defaultEmptyBlock from './plugins/blocks/defaultEmptyBlock';
 
 function rawEditorStyles({ minimal }) {
   return `
@@ -31,91 +29,38 @@ function rawEditorStyles({ minimal }) {
 const RawEditorContainer = styled.div`
   position: relative;
 `;
+function RawEditor(props) {
+  const { className, field, isShowModeToggle, t, onChange } = props;
 
-export default class RawEditor extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      value: Plain.deserialize(this.props.value || ''),
-    };
+  const editor = useMemo(() => withReact(withHistory(createEditor())), []);
+
+  const [value, setValue] = useState(
+    props.value
+      ? props.value.split('\n').map(line => defaultEmptyBlock(line))
+      : [defaultEmptyBlock()],
+  );
+
+  useEffect(() => {
+    if (props.pendingFocus) {
+      ReactEditor.focus(editor);
+    }
+  }, []);
+
+  function handleToggleMode() {
+    props.onMode('rich_text');
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return (
-      !this.state.value.equals(nextState.value) ||
-      nextProps.value !== Plain.serialize(nextState.value)
-    );
+  function handleChange(value) {
+    onChange(value.map(line => line.children[0].text).join('\n'));
+    setValue(value);
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.value !== this.props.value) {
-      this.setState({ value: Plain.deserialize(this.props.value) });
-    }
-  }
-
-  componentDidMount() {
-    if (this.props.pendingFocus) {
-      this.editor.focus();
-      this.props.pendingFocus();
-    }
-  }
-
-  handleCopy = (event, editor) => {
-    const { getAsset, resolveWidget } = this.props;
-    const markdown = Plain.serialize(Value.create({ document: editor.value.fragment }));
-    const html = markdownToHtml(markdown, { getAsset, resolveWidget });
-    setEventTransfer(event, 'text', markdown);
-    setEventTransfer(event, 'html', html);
-    event.preventDefault();
-  };
-
-  handleCut = (event, editor, next) => {
-    this.handleCopy(event, editor, next);
-    editor.delete();
-  };
-
-  handlePaste = (event, editor, next) => {
-    event.preventDefault();
-    const data = event.clipboardData;
-    if (isHotkey('shift', event)) {
-      return next();
-    }
-
-    const value = Plain.deserialize(data.getData('text/plain'));
-    return editor.insertFragment(value.document);
-  };
-
-  handleChange = editor => {
-    if (!this.state.value.document.equals(editor.value.document)) {
-      this.handleDocumentChange(editor);
-    }
-    this.setState({ value: editor.value });
-  };
-
-  /**
-   * When the document value changes, serialize from Slate's AST back to plain
-   * text (which is Markdown) and pass that up as the new value.
-   */
-  handleDocumentChange = debounce(editor => {
-    const value = Plain.serialize(editor.value);
-    this.props.onChange(value);
-  }, 150);
-
-  handleToggleMode = () => {
-    this.props.onMode('rich_text');
-  };
-
-  processRef = ref => {
-    this.editor = ref;
-  };
-
-  render() {
-    const { className, field, isShowModeToggle, t } = this.props;
-    return (
+  return (
+    <Slate editor={editor} value={value} onChange={handleChange}>
       <RawEditorContainer>
         <EditorControlBar>
           <Toolbar
-            onToggleMode={this.handleToggleMode}
+            onToggleMode={handleToggleMode}
             buttons={field.get('buttons')}
             disabled
             rawMode
@@ -125,25 +70,21 @@ export default class RawEditor extends React.Component {
         </EditorControlBar>
         <ClassNames>
           {({ css, cx }) => (
-            <Slate
+            <Editable
               className={cx(
                 className,
                 css`
                   ${rawEditorStyles({ minimal: field.get('minimal') })}
                 `,
               )}
-              value={this.state.value}
-              onChange={this.handleChange}
-              onPaste={this.handlePaste}
-              onCut={this.handleCut}
-              onCopy={this.handleCopy}
-              ref={this.processRef}
+              value={value}
+              onChange={handleChange}
             />
           )}
         </ClassNames>
       </RawEditorContainer>
-    );
-  }
+    </Slate>
+  );
 }
 
 RawEditor.propTypes = {
@@ -155,3 +96,5 @@ RawEditor.propTypes = {
   isShowModeToggle: PropTypes.bool.isRequired,
   t: PropTypes.func.isRequired,
 };
+
+export default RawEditor;

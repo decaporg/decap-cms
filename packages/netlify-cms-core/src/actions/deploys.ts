@@ -1,13 +1,10 @@
-import { actions as notifActions } from 'redux-notifications';
-
 import { currentBackend } from '../backend';
 import { selectDeployPreview } from '../reducers';
+import { addNotification } from './notifications';
 
 import type { ThunkDispatch } from 'redux-thunk';
 import type { AnyAction } from 'redux';
 import type { Collection, Entry, State } from '../types/redux';
-
-const { notifSend } = notifActions;
 
 export const DEPLOY_PREVIEW_REQUEST = 'DEPLOY_PREVIEW_REQUEST';
 export const DEPLOY_PREVIEW_SUCCESS = 'DEPLOY_PREVIEW_SUCCESS';
@@ -88,12 +85,12 @@ export function loadDeployPreview(
     } catch (error) {
       console.error(error);
       dispatch(
-        notifSend({
+        addNotification({
           message: {
             details: error.message,
             key: 'ui.toast.onFailToLoadDeployPreview',
           },
-          kind: 'danger',
+          type: 'error',
           dismissAfter: 8000,
         }),
       );

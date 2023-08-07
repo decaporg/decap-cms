@@ -17,7 +17,7 @@ const ru = {
   app: {
     header: {
       content: 'Записи',
-      workflow: 'Документооборот',
+      workflow: 'Рабочая область',
       media: 'Медиафайлы',
       quickAdd: 'Быстрое добавление',
     },
@@ -65,7 +65,7 @@ const ru = {
         label: 'Автор',
       },
       updatedOn: {
-        label: 'Обновлено',
+        label: 'Дате обновления',
       },
     },
   },
@@ -92,6 +92,9 @@ const ru = {
       },
       i18n: {
         writingInLocale: 'Пишем на %{locale}',
+        copyFromLocale: 'Заполнить из другого региона',
+        copyFromLocaleConfirm:
+          'Вы хотите заполнять данные используя %{locale} локализацию?\nВесь существующий контент будет перезаписан.',
       },
     },
     editor: {
@@ -113,6 +116,11 @@ const ru = {
       loadingEntry: 'Загрузка записи…',
       confirmLoadBackup:
         'Для этой записи была восстановлена локальная резервная копия, хотите ли вы ее использовать?',
+    },
+    editorInterface: {
+      toggleI18n: 'Переключиться на i18n',
+      togglePreview: 'Переключиться на предварительный просмотр',
+      toggleScrollSync: 'Синхронизация прокрутки',
     },
     editorToolbar: {
       publishing: 'Публикация…',
@@ -142,6 +150,10 @@ const ru = {
       deployPreviewPendingButtonLabel: 'Проверить предварительный просмотр',
       deployPreviewButtonLabel: 'Предварительный просмотр',
       deployButtonLabel: 'Просмотр',
+      statusInfoTooltipDraft:
+        'Статус записи установлен на черновик. Чтобы доработать и отправить его на рассмотрение, установите статус «На рассмотрении».',
+      statusInfoTooltipInReview:
+        'Запись находится на рассмотрении, дальнейших действий не требуется. Тем не менее, вы все еще можете внести дополнительные изменения, пока она находится на рассмотрении.',
     },
     editorWidgets: {
       markdown: {
@@ -160,19 +172,25 @@ const ru = {
       },
       image: {
         choose: 'Выберите изображение',
+        chooseMultiple: 'Выберите изображения',
         chooseUrl: 'Вставить из URL',
         replaceUrl: 'Заменить на URL',
         promptUrl: 'Введите URL изображения',
         chooseDifferent: 'Выберите другое изображение',
+        addMore: 'Добавьте еще изображений',
         remove: 'Удалить изображение',
+        removeAll: 'Удалить все изображения',
       },
       file: {
         choose: 'Выберите файл',
         chooseUrl: 'Вставить из URL',
+        chooseMultiple: 'Выбрать файлы',
         replaceUrl: 'Заменить на URL',
         promptUrl: 'Введите URL файла',
         chooseDifferent: 'Выберите другой файл',
+        addMore: 'Добавить больше файлов',
         remove: 'Удалить файл',
+        removeAll: 'Удалить все файлы',
       },
       unknownControl: {
         noControl: "Нет контрола для виджета '%{widget}'.",
@@ -190,6 +208,10 @@ const ru = {
       },
       datetime: {
         now: 'Сейчас',
+      },
+      list: {
+        add: 'Добавить %{item}',
+        addType: 'Добавить %{item}',
       },
     },
   },
@@ -266,8 +288,8 @@ const ru = {
   },
   workflow: {
     workflow: {
-      loading: 'Загрузка записей редакционного документооборота',
-      workflowHeading: 'Редакционный документооборот',
+      loading: 'Загрузка записей в рабочей области',
+      workflowHeading: 'Рабочая область',
       newPost: 'Новая запись',
       description:
         'Число записей, ожидающих проверки — %{smart_count}, готовых к публикации — %{readyCount}. |||| Число записей, ожидающих проверки — %{smart_count}, готовых к публикации — %{readyCount}. ',

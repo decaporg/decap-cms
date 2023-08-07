@@ -1,20 +1,31 @@
-import React from 'react';
+// @refresh reset
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { fromJS } from 'immutable';
-import styled from '@emotion/styled';
-import { css as coreCss, ClassNames } from '@emotion/core';
-import { get, isEmpty, debounce } from 'lodash';
-import { Value, Document, Block, Text } from 'slate';
-import { Editor as Slate } from 'slate-react';
+import { ClassNames, css as coreCss } from '@emotion/core';
 import { lengths, fonts, zIndex } from 'netlify-cms-ui-default';
+import styled from '@emotion/styled';
+import { createEditor, Transforms, Editor as SlateEditor } from 'slate';
+import { Editable, ReactEditor, Slate, withReact } from 'slate-react';
+import { withHistory } from 'slate-history';
+import { fromJS } from 'immutable';
+import { isEqual } from 'lodash';
 
 import { editorStyleVars, EditorControlBar } from '../styles';
-import { slateToMarkdown, markdownToSlate } from '../serializers';
-import Toolbar from '../MarkdownControl/Toolbar';
-import { renderBlock, renderInline, renderMark } from './renderers';
-import plugins from './plugins/visual';
-import schema from './schema';
+import Toolbar from './Toolbar';
+import { Element, Leaf } from './renderers';
+import withLists from './plugins/lists/withLists';
+import withBlocks from './plugins/blocks/withBlocks';
+import withInlines from './plugins/inlines/withInlines';
+import toggleMark from './plugins/inlines/events/toggleMark';
+import toggleLink from './plugins/inlines/events/toggleLink';
+import getActiveLink from './plugins/inlines/selectors/getActiveLink';
+import isMarkActive from './plugins/inlines/locations/isMarkActive';
+import isCursorInBlockType from './plugins/blocks/locations/isCursorInBlockType';
+import { markdownToSlate, slateToMarkdown } from '../serializers';
+import withShortcodes from './plugins/shortcodes/withShortcodes';
+import insertShortcode from './plugins/shortcodes/insertShortcode';
+import defaultEmptyBlock from './plugins/blocks/defaultEmptyBlock';
 
 function visualEditorStyles({ minimal }) {
   return `
@@ -37,19 +48,6 @@ const InsertionPoint = styled.div`
   flex: 1 1 auto;
   cursor: text;
 `;
-
-function createEmptyRawDoc() {
-  const emptyText = Text.create('');
-  const emptyBlock = Block.create({ object: 'block', type: 'paragraph', nodes: [emptyText] });
-  return { nodes: [emptyBlock] };
-}
-
-function createSlateValue(rawValue, { voidCodeBlock, remarkPlugins }) {
-  const rawDoc = rawValue && markdownToSlate(rawValue, { voidCodeBlock, remarkPlugins });
-  const rawDocHasNodes = !isEmpty(get(rawDoc, 'nodes'));
-  const document = Document.fromJSON(rawDocHasNodes ? rawDoc : createEmptyRawDoc());
-  return Value.create({ document });
-}
 
 export function mergeMediaConfig(editorComponents, field) {
   // merge editor media library config to image components
@@ -83,197 +81,213 @@ export function mergeMediaConfig(editorComponents, field) {
   }
 }
 
-export default class Editor extends React.Component {
-  constructor(props) {
-    super(props);
-    const editorComponents = props.getEditorComponents();
-    this.shortcodeComponents = editorComponents.filter(({ type }) => type === 'shortcode');
-    this.codeBlockComponent = fromJS(editorComponents.find(({ type }) => type === 'code-block'));
-    this.editorComponents =
-      this.codeBlockComponent || editorComponents.has('code-block')
-        ? editorComponents
-        : editorComponents.set('code-block', { label: 'Code Block', type: 'code-block' });
+function Editor(props) {
+  const {
+    onAddAsset,
+    getAsset,
+    className,
+    field,
+    isShowModeToggle,
+    t,
+    isDisabled,
+    getEditorComponents,
+    getRemarkPlugins,
+    onChange,
+  } = props;
 
-    this.remarkPlugins = props.getRemarkPlugins();
+  const editor = useMemo(
+    () =>
+      withReact(withHistory(withShortcodes(withBlocks(withLists(withInlines(createEditor())))))),
+    [],
+  );
 
-    mergeMediaConfig(this.editorComponents, this.props.field);
-    this.renderBlock = renderBlock({
-      classNameWrapper: props.className,
-      resolveWidget: props.resolveWidget,
-      codeBlockComponent: this.codeBlockComponent,
-    });
-    this.renderInline = renderInline();
-    this.renderMark = renderMark();
-    this.schema = schema({ voidCodeBlock: !!this.codeBlockComponent });
-    this.plugins = plugins({
-      getAsset: props.getAsset,
-      resolveWidget: props.resolveWidget,
-      t: props.t,
-      remarkPlugins: this.remarkPlugins,
-    });
-    this.state = {
-      value: createSlateValue(this.props.value, {
-        voidCodeBlock: !!this.codeBlockComponent,
-        remarkPlugins: this.remarkPlugins,
-      }),
-    };
+  const emptyValue = [defaultEmptyBlock()];
+  let editorComponents = getEditorComponents();
+  const codeBlockComponent = fromJS(editorComponents.find(({ type }) => type === 'code-block'));
+
+  editorComponents =
+    codeBlockComponent || editorComponents.has('code-block')
+      ? editorComponents
+      : editorComponents.set('code-block', { label: 'Code Block', type: 'code-block' });
+
+  mergeMediaConfig(editorComponents, field);
+
+  const [editorValue, setEditorValue] = useState(
+    props.value
+      ? markdownToSlate(props.value, {
+          voidCodeBlock: !!codeBlockComponent,
+          remarkPlugins: getRemarkPlugins(),
+        })
+      : emptyValue,
+  );
+
+  const renderElement = useCallback(
+    props => (
+      <Element {...props} classNameWrapper={className} codeBlockComponent={codeBlockComponent} />
+    ),
+    [],
+  );
+  const renderLeaf = useCallback(props => <Leaf {...props} />, []);
+
+  useEffect(() => {
+    if (props.pendingFocus) {
+      ReactEditor.focus(editor);
+    }
+  }, []);
+
+  function handleMarkClick(format) {
+    ReactEditor.focus(editor);
+    toggleMark(editor, format);
   }
 
-  static propTypes = {
-    onAddAsset: PropTypes.func.isRequired,
-    getAsset: PropTypes.func.isRequired,
-    onChange: PropTypes.func.isRequired,
-    onMode: PropTypes.func.isRequired,
-    className: PropTypes.string.isRequired,
-    value: PropTypes.string,
-    field: ImmutablePropTypes.map.isRequired,
-    getEditorComponents: PropTypes.func.isRequired,
-    getRemarkPlugins: PropTypes.func.isRequired,
-    isShowModeToggle: PropTypes.bool.isRequired,
-    t: PropTypes.func.isRequired,
-  };
-
-  shouldComponentUpdate(nextProps, nextState) {
-    if (!this.state.value.equals(nextState.value)) return true;
-
-    const raw = nextState.value.document.toJS();
-    const markdown = slateToMarkdown(raw, {
-      voidCodeBlock: this.codeBlockComponent,
-      remarkPlugins: this.remarkPlugins,
-    });
-    return nextProps.value !== markdown;
-  }
-
-  componentDidMount() {
-    if (this.props.pendingFocus) {
-      this.editor.focus();
-      this.props.pendingFocus();
+  function handleBlockClick(format) {
+    ReactEditor.focus(editor);
+    if (format.endsWith('-list')) {
+      editor.toggleList(format);
+    } else {
+      editor.toggleBlock(format);
     }
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.value !== this.props.value) {
-      this.setState({
-        value: createSlateValue(this.props.value, {
-          voidCodeBlock: !!this.codeBlockComponent,
-          remarkPlugins: this.remarkPlugins,
+  function handleLinkClick() {
+    toggleLink(editor, t('editor.editorWidgets.markdown.linkPrompt'));
+    ReactEditor.focus(editor);
+  }
+
+  function handleToggleMode() {
+    props.onMode('raw');
+  }
+
+  function handleInsertShortcode(pluginConfig) {
+    insertShortcode(editor, pluginConfig);
+  }
+
+  function handleKeyDown(event) {
+    for (const handler of editor.keyDownHandlers || []) {
+      if (handler(event, editor) === false) {
+        break;
+      }
+    }
+    ReactEditor.focus(editor);
+  }
+
+  function handleClickBelowDocument() {
+    ReactEditor.focus(editor);
+    Transforms.select(editor, { path: [0, 0], offset: 0 });
+    Transforms.select(editor, SlateEditor.end(editor, []));
+  }
+  const [toolbarKey, setToolbarKey] = useState(0);
+
+  function handleChange(newValue) {
+    if (!isEqual(newValue, editorValue)) {
+      setEditorValue(() => newValue);
+      onChange(
+        slateToMarkdown(newValue, {
+          voidCodeBlock: !!codeBlockComponent,
+          remarkPlugins: getRemarkPlugins(),
         }),
-      });
+      );
     }
+    setToolbarKey(prev => prev + 1);
   }
 
-  handleMarkClick = type => {
-    this.editor.toggleMark(type).focus();
-  };
+  function hasMark(format) {
+    return isMarkActive(editor, format);
+  }
 
-  handleBlockClick = type => {
-    this.editor.toggleBlock(type).focus();
-  };
-
-  handleLinkClick = () => {
-    this.editor.toggleLink(oldUrl =>
-      window.prompt(this.props.t('editor.editorWidgets.markdown.linkPrompt'), oldUrl),
-    );
-  };
-
-  hasMark = type => this.editor && this.editor.hasMark(type);
-  hasInline = type => this.editor && this.editor.hasInline(type);
-  hasBlock = type => this.editor && this.editor.hasBlock(type);
-  hasQuote = type => this.editor && this.editor.hasQuote(type);
-  hasListItems = type => this.editor && this.editor.hasListItems(type);
-
-  handleToggleMode = () => {
-    this.props.onMode('raw');
-  };
-
-  handleInsertShortcode = pluginConfig => {
-    this.editor.insertShortcode(pluginConfig);
-  };
-
-  handleClickBelowDocument = () => {
-    this.editor.moveToEndOfDocument();
-  };
-
-  handleDocumentChange = debounce(editor => {
-    const { onChange } = this.props;
-    const raw = editor.value.document.toJS();
-    const markdown = slateToMarkdown(raw, {
-      voidCodeBlock: this.codeBlockComponent,
-      remarkPlugins: this.remarkPlugins,
-    });
-    onChange(markdown);
-  }, 150);
-
-  handleChange = editor => {
-    if (!this.state.value.document.equals(editor.value.document)) {
-      this.handleDocumentChange(editor);
+  function hasInline(format) {
+    if (format == 'link') {
+      return !!getActiveLink(editor);
     }
-    this.setState({ value: editor.value });
-  };
+    return false;
+  }
 
-  processRef = ref => {
-    this.editor = ref;
-  };
+  function hasBlock(format) {
+    return isCursorInBlockType(editor, format);
+  }
+  function hasQuote() {
+    return isCursorInBlockType(editor, 'quote');
+  }
+  function hasListItems(type) {
+    return isCursorInBlockType(editor, type);
+  }
 
-  render() {
-    const { onAddAsset, getAsset, className, field, isShowModeToggle, t, isDisabled } = this.props;
-    return (
-      <div
-        css={coreCss`
-          position: relative;
-        `}
-      >
+  return (
+    <div
+      css={coreCss`
+        position: relative;
+      `}
+    >
+      <Slate editor={editor} value={editorValue} onChange={handleChange}>
         <EditorControlBar>
-          <Toolbar
-            onMarkClick={this.handleMarkClick}
-            onBlockClick={this.handleBlockClick}
-            onLinkClick={this.handleLinkClick}
-            onToggleMode={this.handleToggleMode}
-            plugins={this.editorComponents}
-            onSubmit={this.handleInsertShortcode}
-            onAddAsset={onAddAsset}
-            getAsset={getAsset}
-            buttons={field.get('buttons')}
-            editorComponents={field.get('editor_components')}
-            hasMark={this.hasMark}
-            hasInline={this.hasInline}
-            hasBlock={this.hasBlock}
-            hasQuote={this.hasQuote}
-            hasListItems={this.hasListItems}
-            isShowModeToggle={isShowModeToggle}
-            t={t}
-            disabled={isDisabled}
-          />
+          {
+            <Toolbar
+              key={toolbarKey}
+              onMarkClick={handleMarkClick}
+              onBlockClick={handleBlockClick}
+              onLinkClick={handleLinkClick}
+              onToggleMode={handleToggleMode}
+              plugins={editorComponents}
+              onSubmit={handleInsertShortcode}
+              onAddAsset={onAddAsset}
+              getAsset={getAsset}
+              buttons={field.get('buttons')}
+              editorComponents={field.get('editor_components')}
+              hasMark={hasMark}
+              hasInline={hasInline}
+              hasBlock={hasBlock}
+              hasQuote={hasQuote}
+              hasListItems={hasListItems}
+              isShowModeToggle={isShowModeToggle}
+              t={t}
+              disabled={isDisabled}
+            />
+          }
         </EditorControlBar>
-        <ClassNames>
-          {({ css, cx }) => (
-            <div
-              className={cx(
-                className,
-                css`
-                  ${visualEditorStyles({ minimal: field.get('minimal') })}
-                `,
-              )}
-            >
-              <Slate
-                className={css`
-                  padding: 16px 20px 0;
-                `}
-                value={this.state.value}
-                renderBlock={this.renderBlock}
-                renderInline={this.renderInline}
-                renderMark={this.renderMark}
-                schema={this.schema}
-                plugins={this.plugins}
-                onChange={this.handleChange}
-                ref={this.processRef}
-                spellCheck
-              />
-              <InsertionPoint onClick={this.handleClickBelowDocument} />
-            </div>
-          )}
-        </ClassNames>
-      </div>
-    );
-  }
+        {
+          <ClassNames>
+            {({ css, cx }) => (
+              <div
+                className={cx(
+                  className,
+                  css`
+                    ${visualEditorStyles({ minimal: field.get('minimal') })}
+                  `,
+                )}
+              >
+                {editorValue.length !== 0 && (
+                  <Editable
+                    className={css`
+                      padding: 16px 20px 0;
+                    `}
+                    renderElement={renderElement}
+                    renderLeaf={renderLeaf}
+                    onKeyDown={handleKeyDown}
+                    autoFocus={false}
+                  />
+                )}
+                <InsertionPoint onClick={handleClickBelowDocument} />
+              </div>
+            )}
+          </ClassNames>
+        }
+      </Slate>
+    </div>
+  );
 }
+
+Editor.propTypes = {
+  onAddAsset: PropTypes.func.isRequired,
+  getAsset: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
+  onMode: PropTypes.func.isRequired,
+  className: PropTypes.string.isRequired,
+  value: PropTypes.string,
+  field: ImmutablePropTypes.map.isRequired,
+  getEditorComponents: PropTypes.func.isRequired,
+  getRemarkPlugins: PropTypes.func.isRequired,
+  isShowModeToggle: PropTypes.bool.isRequired,
+  t: PropTypes.func.isRequired,
+};
+
+export default Editor;

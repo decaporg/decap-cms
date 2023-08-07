@@ -3,6 +3,7 @@ import React from 'react';
 import { css } from '@emotion/core';
 import styled from '@emotion/styled';
 import { colors, lengths } from 'netlify-cms-ui-default';
+import { useSelected } from 'slate-react';
 
 import VoidBlock from './components/VoidBlock';
 import Shortcode from './components/Shortcode';
@@ -57,21 +58,6 @@ const StyledBlockQuote = styled.blockquote`
   margin-bottom: ${bottomMargin};
 `;
 
-const StyledPre = styled.pre`
-  margin-bottom: ${bottomMargin};
-  white-space: pre-wrap;
-
-  & > code {
-    display: block;
-    width: 100%;
-    overflow-y: auto;
-    background-color: #000;
-    color: #ccc;
-    border-radius: ${lengths.borderRadius};
-    padding: 10px;
-  }
-`;
-
 const StyledCode = styled.code`
   background-color: ${colors.background};
   border-radius: ${lengths.borderRadius};
@@ -87,11 +73,11 @@ const StyledUl = styled.ul`
 const StyledOl = StyledUl.withComponent('ol');
 
 const StyledLi = styled.li`
-  & > p:first-child {
+  & > p:first-of-type {
     margin-top: 8px;
   }
 
-  & > p:last-child {
+  & > p:last-of-type {
     margin-bottom: 8px;
   }
 `;
@@ -156,14 +142,6 @@ function Quote(props) {
   return <StyledBlockQuote {...props.attributes}>{props.children}</StyledBlockQuote>;
 }
 
-function CodeBlock(props) {
-  return (
-    <StyledPre>
-      <StyledCode {...props.attributes}>{props.children}</StyledCode>
-    </StyledPre>
-  );
-}
-
 function HeadingOne(props) {
   return <StyledH1 {...props.attributes}>{props.children}</StyledH1>;
 }
@@ -205,18 +183,24 @@ function TableCell(props) {
 }
 
 function ThematicBreak(props) {
+  const isSelected = useSelected();
   return (
-    <StyledHr
-      {...props.attributes}
-      css={
-        props.editor.isSelected(props.node) &&
-        css`
-          box-shadow: 0 0 0 2px ${colors.active};
-          border-radius: 8px;
-          color: ${colors.active};
-        `
-      }
-    />
+    <div {...props.attributes}>
+      {props.children}
+      <div contentEditable={false}>
+        <StyledHr
+          {...props.attributes}
+          css={
+            isSelected &&
+            css`
+              box-shadow: 0 0 0 2px ${colors.active};
+              border-radius: 8px;
+              color: ${colors.active};
+            `
+          }
+        />
+      </div>
+    </div>
   );
 }
 
@@ -230,16 +214,15 @@ function BulletedList(props) {
 
 function NumberedList(props) {
   return (
-    <StyledOl {...props.attributes} start={props.node.data.get('start') || 1}>
+    <StyledOl {...props.attributes} start={1}>
       {props.children}
     </StyledOl>
   );
 }
 
 function Link(props) {
-  const data = props.node.get('data');
-  const url = data.get('url');
-  const title = data.get('title') || url;
+  const url = props.url;
+  const title = props.title || url;
 
   return (
     <StyledA href={url} title={title} {...props.attributes}>
@@ -249,36 +232,52 @@ function Link(props) {
 }
 
 function Image(props) {
-  const data = props.node.get('data');
-  const marks = data.get('marks');
-  const url = data.get('url');
-  const title = data.get('title');
-  const alt = data.get('alt');
-  const image = <img src={url} title={title} alt={alt} {...props.attributes} />;
-  const result = !marks
-    ? image
-    : marks.reduce((acc, mark) => {
-        return renderMark({ mark, children: acc });
-      }, image);
-  return result;
+  const { url, title, alt } = props.element.data;
+  const isSelected = useSelected();
+  return (
+    <span {...props.attributes}>
+      {props.children}
+      <img
+        src={url}
+        title={title}
+        alt={alt}
+        {...props.attributes}
+        css={
+          isSelected &&
+          css`
+            box-shadow: 0 0 0 2px ${colors.active};
+          `
+        }
+      />
+    </span>
+  );
 }
 
-export function renderMark() {
-  return props => {
-    switch (props.mark.type) {
-      case 'bold':
-        return <Bold {...props} />;
-      case 'italic':
-        return <Italic {...props} />;
-      case 'strikethrough':
-        return <Strikethrough {...props} />;
-      case 'code':
-        return <Code {...props} />;
-    }
-  };
+export function Leaf({ attributes, children, leaf }) {
+  if (leaf.bold) {
+    children = <Bold>{children}</Bold>;
+  }
+
+  if (leaf.italic) {
+    children = <Italic>{children}</Italic>;
+  }
+
+  if (leaf.delete) {
+    children = <Strikethrough>{children}</Strikethrough>;
+  }
+
+  if (leaf.code) {
+    children = <Code>{children}</Code>;
+  }
+
+  // if (leaf.break) {
+  //   children = <Break />;
+  // }
+
+  return <span {...attributes}>{children}</span>;
 }
 
-export function renderInline() {
+export function renderInline__DEPRECATED() {
   return props => {
     switch (props.node.type) {
       case 'link':
@@ -291,63 +290,63 @@ export function renderInline() {
   };
 }
 
-export function renderBlock({ classNameWrapper, codeBlockComponent }) {
-  return props => {
-    switch (props.node.type) {
-      case 'paragraph':
-        return <Paragraph {...props} />;
-      case 'list-item':
-        return <ListItem {...props} />;
-      case 'quote':
-        return <Quote {...props} />;
-      case 'code-block':
-        if (codeBlockComponent) {
-          return (
-            <VoidBlock {...props}>
-              <Shortcode
-                classNameWrapper={classNameWrapper}
-                typeOverload="code-block"
-                dataKey={false}
-                {...props}
-              />
-            </VoidBlock>
-          );
-        }
-        return <CodeBlock {...props} />;
-      case 'heading-one':
-        return <HeadingOne {...props} />;
-      case 'heading-two':
-        return <HeadingTwo {...props} />;
-      case 'heading-three':
-        return <HeadingThree {...props} />;
-      case 'heading-four':
-        return <HeadingFour {...props} />;
-      case 'heading-five':
-        return <HeadingFive {...props} />;
-      case 'heading-six':
-        return <HeadingSix {...props} />;
-      case 'table':
-        return <Table {...props} />;
-      case 'table-row':
-        return <TableRow {...props} />;
-      case 'table-cell':
-        return <TableCell {...props} />;
-      case 'thematic-break':
+export function Element(props) {
+  const { children, element, classNameWrapper, codeBlockComponent } = props;
+  const style = { textAlign: element.align };
+
+  switch (element.type) {
+    case 'bulleted-list':
+      return <BulletedList>{children}</BulletedList>;
+    case 'quote':
+      return <Quote>{children}</Quote>;
+    case 'heading-one':
+      return <HeadingOne>{children}</HeadingOne>;
+    case 'heading-two':
+      return <HeadingTwo>{children}</HeadingTwo>;
+    case 'heading-three':
+      return <HeadingThree>{children}</HeadingThree>;
+    case 'heading-four':
+      return <HeadingFour>{children}</HeadingFour>;
+    case 'heading-five':
+      return <HeadingFive>{children}</HeadingFive>;
+    case 'heading-six':
+      return <HeadingSix>{children}</HeadingSix>;
+    case 'list-item':
+      return <ListItem>{children}</ListItem>;
+    case 'numbered-list':
+      return <NumberedList>{children}</NumberedList>;
+    case 'table':
+      return <Table {...props} />;
+    case 'table-row':
+      return <TableRow {...props} />;
+    case 'table-cell':
+      return <TableCell {...props} />;
+    case 'thematic-break':
+      return (
+        <VoidBlock {...props}>
+          <ThematicBreak {...props} />
+        </VoidBlock>
+      );
+    case 'link':
+      return <Link {...props} />;
+    case 'image':
+      return <Image {...props} />;
+    case 'break':
+      return <Break {...props} />;
+    case 'shortcode':
+      if (element.id === 'code-block' && codeBlockComponent) {
         return (
           <VoidBlock {...props}>
-            <ThematicBreak editor={props.editor} node={props.node} />
+            <Shortcode classNameWrapper={classNameWrapper} typeOverload="code-block" {...props} />
           </VoidBlock>
         );
-      case 'bulleted-list':
-        return <BulletedList {...props} />;
-      case 'numbered-list':
-        return <NumberedList {...props} />;
-      case 'shortcode':
-        return (
-          <VoidBlock {...props}>
-            <Shortcode classNameWrapper={classNameWrapper} {...props} />
-          </VoidBlock>
-        );
-    }
-  };
+      }
+      return (
+        <VoidBlock {...props}>
+          <Shortcode {...props}>{children}</Shortcode>
+        </VoidBlock>
+      );
+    default:
+      return <Paragraph style={style}>{children}</Paragraph>;
+  }
 }

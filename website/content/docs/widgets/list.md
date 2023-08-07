@@ -16,7 +16,7 @@ The list widget allows you to create a repeatable item in the UI which saves as 
   * `allow_add`: `false` hides the button to add additional items
   * `collapsed`: when `true`, the entries collapse by default
   * `summary`: specify the label displayed on collapsed entries
-  * `minimize_collapsed`: when `true`, collapsing the list widget will hide all of it's entries instead of showing summaries
+  * `minimize_collapsed`: when `true`, collapsing the list widget will hide all of its entries instead of showing summaries
   * `label_singular`: the text to show on the add button
   * `field`: a single widget field to be repeated
   * `fields`: a nested list of multiple widget fields to be included in each repeatable iteration

@@ -24,53 +24,16 @@ const typeMap = {
 const markMap = {
   strong: 'bold',
   emphasis: 'italic',
-  delete: 'strikethrough',
+  delete: 'delete',
   inlineCode: 'code',
 };
 
-function isInline(node) {
-  return node.object === 'inline';
-}
-
 function isText(node) {
-  return node.object === 'text';
+  return !!node.text;
 }
 
 function isMarksEqual(node1, node2) {
   return isEqual(node1.marks, node2.marks);
-}
-
-export function wrapInlinesWithTexts(children) {
-  if (children.length <= 0) {
-    return children;
-  }
-
-  const insertLocations = [];
-  let prev = children[0];
-  if (isInline(prev)) {
-    insertLocations.push(0);
-  }
-
-  for (let i = 1; i < children.length; i++) {
-    const current = children[i];
-    if (isInline(prev) && !isText(current)) {
-      insertLocations.push(i);
-    } else if (!isText(prev) && isInline(current)) {
-      insertLocations.push(i);
-    }
-
-    prev = current;
-  }
-
-  if (isInline(prev)) {
-    insertLocations.push(children.length);
-  }
-
-  for (let i = 0; i < insertLocations.length; i++) {
-    children.splice(insertLocations[i] + i, 0, { object: 'text', text: '' });
-  }
-
-  return children;
 }
 
 export function mergeAdjacentTexts(children) {
@@ -127,8 +90,6 @@ export default function remarkToSlate({ voidCodeBlock } = {}) {
       flatMap(node.children, transformNode).filter(val => val);
 
     if (Array.isArray(children)) {
-      // Ensure that inline nodes are surrounded by text nodes to conform to slate schema
-      children = wrapInlinesWithTexts(children);
       // Merge adjacent text nodes with the same marks to conform to slate schema
       children = mergeAdjacentTexts(children);
     }
@@ -144,7 +105,7 @@ export default function remarkToSlate({ voidCodeBlock } = {}) {
    * Add nodes to a parent node only if `nodes` is truthy.
    */
   function addNodes(parent, nodes) {
-    return nodes ? { ...parent, nodes } : parent;
+    return nodes ? { ...parent, children: nodes } : parent;
   }
 
   /**
@@ -158,7 +119,7 @@ export default function remarkToSlate({ voidCodeBlock } = {}) {
 
     // Ensure block nodes have at least one text child to conform to slate schema
     const children = isEmpty(nodes) ? [createText('')] : nodes;
-    const node = { object: 'block', type, ...props };
+    const node = { type, ...props };
     return addNodes(node, children);
   }
 
@@ -166,7 +127,7 @@ export default function remarkToSlate({ voidCodeBlock } = {}) {
    * Create a Slate Inline node.
    */
   function createInline(type, props = {}, nodes) {
-    const node = { object: 'inline', type, ...props };
+    const node = { type, ...props };
 
     // Ensure inline nodes have at least one text child to conform to slate schema
     const children = isEmpty(nodes) ? [createText('')] : nodes;
@@ -177,12 +138,12 @@ export default function remarkToSlate({ voidCodeBlock } = {}) {
    * Create a Slate Raw text node.
    */
   function createText(node) {
-    const newNode = { object: 'text' };
+    const newNode = {};
     if (typeof node === 'string') {
       return { ...newNode, text: node };
     }
     const { text, marks } = node;
-    return { ...newNode, text, marks };
+    return normalizeMarks({ ...newNode, text, marks });
   }
 
   function processMarkChild(childNode, marks) {
@@ -202,8 +163,7 @@ export default function remarkToSlate({ voidCodeBlock } = {}) {
        * first add the inline code mark to the marks array.
        */
       case 'inlineCode': {
-        const childMarks = [...marks, { type: markMap[childNode.type] }];
-        return { ...convertNode(childNode), marks: childMarks };
+        return { ...convertNode(childNode), marks: [...marks, { type: 'code' }] };
       }
 
       /**
@@ -218,7 +178,9 @@ export default function remarkToSlate({ voidCodeBlock } = {}) {
         return processMarkNode(childNode, marks);
 
       case 'link': {
-        const nodes = map(childNode.children, child => processMarkChild(child, marks));
+        const nodes = map(childNode.children, child =>
+          normalizeMarks(processMarkChild(child, marks)),
+        );
         const result = convertNode(childNode, flatten(nodes));
         return result;
       }
@@ -242,9 +204,21 @@ export default function remarkToSlate({ voidCodeBlock } = {}) {
       ? [...parentMarks.filter(({ type }) => type !== markType), { type: markType }]
       : parentMarks;
 
-    const children = flatMap(node.children, child => processMarkChild(child, marks));
+    const children = flatMap(node.children, child =>
+      normalizeMarks(processMarkChild(child, marks)),
+    );
 
     return children;
+  }
+
+  function normalizeMarks(node) {
+    if (node.marks) {
+      node.marks.forEach(mark => {
+        node[mark.type] = true;
+      });
+    }
+
+    return node;
   }
 
   /**
@@ -288,7 +262,7 @@ export default function remarkToSlate({ voidCodeBlock } = {}) {
        */
       case 'shortcode': {
         const nodes = [createText('')];
-        const data = { ...node.data };
+        const data = { ...node.data, id: node.data.shortcode, shortcodeNew: true };
         return createBlock(typeMap[node.type], nodes, { data });
       }
 
@@ -320,7 +294,7 @@ export default function remarkToSlate({ voidCodeBlock } = {}) {
        * as a Slate text node's children array.
        */
       case 'inlineCode': {
-        return createText({ text: node.value, marks: [{ type: 'code' }] });
+        return createText({ text: node.value, code: true, marks: [{ type: 'code' }] });
       }
 
       /**
@@ -364,10 +338,15 @@ export default function remarkToSlate({ voidCodeBlock } = {}) {
         const data = {
           lang: node.lang,
           ...(voidCodeBlock ? { code: node.value } : {}),
+          shortcode: 'code-block',
+          shortcodeData: {
+            code: node.value,
+            lang: node.lang,
+          },
         };
         const text = createText(voidCodeBlock ? '' : node.value);
         const nodes = [text];
-        const block = createBlock(typeMap[node.type], nodes, { data });
+        const block = createBlock('shortcode', nodes, { data });
         return block;
       }
 

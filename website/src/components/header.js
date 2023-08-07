@@ -7,13 +7,12 @@ import GitHubButton from 'react-github-btn';
 import Container from './container';
 import Notifications from './notifications';
 import DocSearch from './docsearch';
-import logo from '../img/netlify-cms-logo.svg';
 import searchIcon from '../img/search.svg';
 import theme from '../theme';
 import { mq } from '../utils';
 
 const StyledHeader = styled.header`
-  background: ${theme.colors.darkerGray};
+  background: ${theme.colors.white};
   padding-top: ${theme.space[3]};
   padding-bottom: ${theme.space[3]};
   transition: background 0.2s ease, padding 0.2s ease, box-shadow 0.2s ease;
@@ -27,7 +26,6 @@ const StyledHeader = styled.header`
     ${p =>
       !p.collapsed &&
       css`
-        background: #2a2c24;
         padding-top: ${theme.space[5]};
         padding-bottom: ${theme.space[5]};
       `};
@@ -47,15 +45,18 @@ const HeaderContainer = styled(Container)`
 `;
 
 const Logo = styled.div`
-  flex: 1 0 50%;
   ${mq[1]} {
-    flex: 0 0 auto;
     margin-right: ${theme.space[5]};
+  }
+
+  img {
+    height: clamp(32px, 3vw, 60px);
+    width: auto;
   }
 `;
 
 const MenuActions = styled.div`
-  flex: 1 0 50%;
+  flex: 1 0 60px;
   display: flex;
   justify-content: flex-end;
   ${mq[1]} {
@@ -66,9 +67,8 @@ const MenuActions = styled.div`
 const MenuBtn = styled.button`
   background: none;
   border: 0;
-  color: white;
-  padding: ${theme.space[3]};
-  font-size: ${theme.fontsize[4]};
+  padding: ${theme.space[2]};
+  font-size: ${theme.fontsize[6]};
   line-height: 1;
 `;
 
@@ -76,7 +76,7 @@ const SearchBtn = styled(MenuBtn)``;
 
 const ToggleArea = styled.div`
   display: ${p => (p.open ? 'block' : 'none')};
-  flex: 1;
+  flex: 1 0 100px;
   width: 100%;
   margin-top: ${theme.space[3]};
 
@@ -123,7 +123,6 @@ const MenuItem = styled.li`
 `;
 
 const NavLink = styled(Link)`
-  color: white;
   text-decoration: none;
   font-weight: 600;
 `;
@@ -189,7 +188,7 @@ function Header({ hasHeroBelow }) {
             <HeaderContainer>
               <Logo>
                 <Link to="/">
-                  <img src={logo} alt="Netlify CMS logo" />
+                  <img src="/img/decap-logo.svg" alt="Decap CMS logo" />
                 </Link>
               </Logo>
               <MenuActions>
@@ -211,10 +210,10 @@ function Header({ hasHeroBelow }) {
                     `}
                   >
                     <GitHubButton
-                      href="https://github.com/netlify/netlify-cms"
+                      href="https://github.com/decaporg/decap-cms"
                       data-icon="octicon-star"
                       data-show-count="true"
-                      aria-label="Star netlify/netlify-cms on GitHub"
+                      aria-label="Star decaporg/decap-cms on GitHub"
                     >
                       Star
                     </GitHubButton>

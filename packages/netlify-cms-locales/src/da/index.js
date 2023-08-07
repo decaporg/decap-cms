@@ -3,7 +3,7 @@ const da = {
     login: 'Log ind',
     loggingIn: 'Logger ind...',
     loginWithNetlifyIdentity: 'Log ind med Netlify Identity',
-    loginWithAzure: 'Log ing med Azure',
+    loginWithAzure: 'Log ind med Azure',
     loginWithBitbucket: 'Log ind med Bitbucket',
     loginWithGitHub: 'Log ind med GitHub',
     loginWithGitLab: 'Log ind med GitLab',
@@ -92,6 +92,9 @@ const da = {
       },
       i18n: {
         writingInLocale: 'Skriver på %{locale}',
+        copyFromLocale: 'Kopier fra et andet sprog',
+        copyFromLocaleConfirm:
+          'Vil du indsætte data fra sproget %{locale}?\nAlt eksisterende indhold vil blive overskrevet.',
       },
     },
     editor: {
@@ -114,6 +117,7 @@ const da = {
       confirmLoadBackup:
         'En lokal sikkerhedskopi blev gendannet for dette dokument, vil du anvende denne?',
     },
+
     editorToolbar: {
       publishing: 'Publicerer...',
       publish: 'Publicer',
@@ -129,8 +133,12 @@ const da = {
       deleteEntry: 'Slet dokument',
       saving: 'Gemmer...',
       save: 'Gem',
+      statusInfoTooltipDraft:
+        'Status for elementet er kladde. For at afslutte og sende til gennemsyn, skift status til ‘Til gennemsyn’',
+      statusInfoTooltipInReview:
+        'Elementet er til gennemsyn, det er ikke nødvendigt med yderligere handlinger. Du kan dog stadig lave yderligere ændringer mens det er til gennemsyn.',
       deleting: 'Sletter...',
-      updating: 'Updaterer...',
+      updating: 'Opdaterer...',
       status: 'Status: %{status}',
       backCollection: ' Skriver til %{collectionLabel} samlingen',
       unsavedChanges: 'Ugemte ændringer',
@@ -160,16 +168,28 @@ const da = {
       },
       image: {
         choose: 'Vælg et billede',
+        chooseMultiple: 'Vælg billeder',
+        chooseUrl: 'Indsæt fra URL',
+        replaceUrl: 'Erstat med URL',
+        promptUrl: 'Indtast URL for billeder',
         chooseDifferent: 'Vælg et andet billede',
+        addMore: 'Tilføj flere billeder',
         remove: 'Fjern billede',
+        removeAll: 'Fjern alle billeder',
       },
       file: {
         choose: 'Vælg fil',
+        chooseUrl: 'Indsæt fra URL',
+        chooseMultiple: 'Vælg filer',
+        replaceUrl: 'Erstat med URL',
+        promptUrl: 'Indtast URL for filen',
         chooseDifferent: 'Vælg en anden fil',
+        addMore: 'Tilføj flere filer',
         remove: 'Fjern fil',
+        removeAll: 'Fjern alle filer',
       },
       unknownControl: {
-        noControl: "Ingen kontrol finden for '%{widget}'.",
+        noControl: "Ingen kontrol for '%{widget}'.",
       },
       unknownPreview: {
         noPreview: "Ingen preview for '%{widget}'.",
@@ -185,11 +205,20 @@ const da = {
       datetime: {
         now: 'Nu',
       },
+      list: {
+        add: 'Tilføj %{item}',
+        addType: 'Tilføj %{item}',
+      },
     },
   },
   mediaLibrary: {
     mediaLibraryCard: {
       draft: 'Kladde',
+      copy: 'Kopier',
+      copyUrl: 'Kopier URL',
+      copyPath: 'Kopier sti',
+      copyName: 'Kopier navn',
+      copied: 'Kopieret',
     },
     mediaLibrary: {
       onDelete: 'Er du sikker på at du vil slette det valgte medie?',

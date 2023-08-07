@@ -1,7 +1,7 @@
 menu:
   docs:
     - name: Intro
-      title: Intro to Netlify CMS
+      title: Intro to Decap CMS
     - name: Accounts
       title: Account Settings
     - name: Configuration
@@ -17,6 +17,6 @@ menu:
     - name: Guides
       title: Platform Guides
     - name: Customization
-      title: Customizing Netlify CMS
+      title: Customizing Decap CMS
     - name: Contributing
       title: Community
