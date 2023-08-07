@@ -22,6 +22,7 @@ import Workflow from '../Workflow/Workflow';
 import Editor from '../Editor/Editor';
 import NotFoundPage from './NotFoundPage';
 import Header from './Header';
+import Releases from '../Releases/Releases';
 
 TopBarProgress.config({
   barColors: {
@@ -172,6 +173,7 @@ class App extends React.Component {
 
     const defaultPath = getDefaultPath(collections);
     const hasWorkflow = publishMode === EDITORIAL_WORKFLOW;
+    const isGitBackend = currentBackend(this.props.config).isGitBackend();
 
     return (
       <>
@@ -186,6 +188,7 @@ class App extends React.Component {
           displayUrl={config.display_url}
           isTestRepo={config.backend.name === 'test-repo'}
           showMediaButton={showMediaButton}
+          isGitBackend={isGitBackend}
         />
         <AppMainContainer>
           {isFetching && <TopBarProgress />}
@@ -205,6 +208,7 @@ class App extends React.Component {
               to={defaultPath}
             />
             {hasWorkflow ? <Route path="/workflow" component={Workflow} /> : null}
+            {isGitBackend ? <Route path="/releases" component={Releases}/> : null }
             <RouteInCollection
               exact
               collections={collections}

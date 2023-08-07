@@ -15,6 +15,7 @@ import deploys, * as fromDeploys from './deploys';
 import globalUI from './globalUI';
 import status from './status';
 import notifications from './notifications';
+import releases from './releases';
 
 import type { Status } from '../constants/publishModes';
 import type { State, Collection } from '../types/redux';
@@ -35,6 +36,7 @@ const reducers = {
   globalUI,
   status,
   notifications,
+  releases,
 };
 
 export default reducers;

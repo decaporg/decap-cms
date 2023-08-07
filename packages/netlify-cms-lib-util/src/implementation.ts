@@ -143,6 +143,9 @@ export interface Implementation {
   persistMedia: (file: AssetProxy, opts: PersistOptions) => Promise<ImplementationMediaFile>;
   deleteFiles: (paths: string[], commitMessage: string) => Promise<void>;
 
+  listReleases: () => Promise<string[]>;
+  publishRelease: (version: string) => Promise<void>;
+
   unpublishedEntries: () => Promise<string[]>;
   unpublishedEntry: (args: {
     id?: string;
@@ -258,6 +261,18 @@ export async function entriesByFiles(
   apiName: string,
 ) {
   return fetchFiles(files, readFile, readFileMetadata, apiName);
+}
+
+export async function listReleases(listReleases: () => Promise<string[]>) {
+  try {
+    const keys = await listReleases();
+    return keys;
+  } catch (error) {
+    if (error.message === 'Not Found') {
+      return Promise.resolve([]);
+    }
+    throw error;
+  }
 }
 
 export async function unpublishedEntries(listEntriesKeys: () => Promise<string[]>) {

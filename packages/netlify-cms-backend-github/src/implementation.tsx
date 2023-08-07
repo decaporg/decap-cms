@@ -579,6 +579,22 @@ export default class GitHub implements Implementation {
     };
   }
 
+  async listReleases() {
+    try {
+      return await this.api!.listReleases();
+    } catch (e) {
+      return [];
+    }
+  }
+
+  async publishRelease(version: string) {
+    try {
+      return await this.api!.publishRelease(version);
+    } catch (e) {
+      return;
+    }
+  }
+
   async unpublishedEntries() {
     const listEntriesKeys = () =>
       this.api!.listUnpublishedBranches().then(branches =>

@@ -818,6 +818,27 @@ export default class API {
     return cmsBranches;
   }
 
+  async listReleases() {
+    console.log(
+      '%c Loading releases',
+      'line-height: 30px;text-align: center;font-weight: bold',
+    );
+
+    return this.request(`${this.repoURL}/releases`)
+  }
+
+  async publishRelease(version: string) {
+    console.log(
+      `%c Publishing release ${version}`,
+      'line-height: 30px;text-align: center;font-weight: bold',
+    );
+
+    return this.request(`${this.repoURL}/releases`, {
+      method: 'POST',
+      body: JSON.stringify({ tag_name: version }),
+    });
+  }
+
   async listUnpublishedBranches() {
     console.log(
       '%c Checking for Unpublished entries',
@@ -1449,6 +1470,7 @@ export default class API {
     author?: GitHubAuthor,
     committer?: GitHubCommitter,
   ) {
+    console.log(message);
     const result: Octokit.GitCreateCommitResponse = await this.request(
       `${this.repoURL}/git/commits`,
       {
