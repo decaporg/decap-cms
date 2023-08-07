@@ -274,7 +274,7 @@ describe('formatters', () => {
   };
 
   describe('slugFormatter', () => {
-    const date = new Date('2020-01-01');
+    const date = new Date('2020-01-01T13:28:27.679Z');
     jest.spyOn(global, 'Date').mockImplementation(() => date);
 
     const { selectIdentifier } = require('../../reducers/collections');
@@ -310,6 +310,18 @@ describe('formatters', () => {
           slugConfig,
         ),
       ).toBe('entry-slug');
+    });
+
+    it('should allow filters in slug templates', () => {
+      selectIdentifier.mockReturnValueOnce('published');
+
+      expect(
+        slugFormatter(
+          Map({ slug: "{{published | date('MM-DD')}}" }),
+          Map({ title: 'Post Title', published: date }),
+          slugConfig,
+        ),
+      ).toBe('01-01');
     });
 
     it('should return slug', () => {
