@@ -40,7 +40,7 @@ export interface UnpublishedEntryDiff {
 }
 
 export interface UnpublishedEntry {
-  pullRequestAuthor?: string;
+  pullRequestAuthor?: { name?: string; login?: string };
   slug: string;
   collection: string;
   status: string;
@@ -167,6 +167,7 @@ export interface Implementation {
     newStatus: string,
   ) => Promise<void>;
   publishUnpublishedEntry: (collection: string, slug: string) => Promise<void>;
+  approveEntry?: (collection: string, slug: string) => Promise<void>;
   deleteUnpublishedEntry: (collection: string, slug: string) => Promise<void>;
   getDeployPreview: (
     collectionName: string,

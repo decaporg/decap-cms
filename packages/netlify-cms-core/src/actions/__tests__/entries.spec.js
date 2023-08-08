@@ -60,6 +60,8 @@ describe('entries', () => {
             slug: '',
             status: '',
             updatedOn: '',
+            canApprove: false,
+            supportsApprove: false,
           },
           type: 'DRAFT_CREATE_EMPTY',
         });
@@ -93,6 +95,8 @@ describe('entries', () => {
             slug: '',
             status: '',
             updatedOn: '',
+            canApprove: false,
+            supportsApprove: false,
           },
           type: 'DRAFT_CREATE_EMPTY',
         });
@@ -128,6 +132,8 @@ describe('entries', () => {
               slug: '',
               status: '',
               updatedOn: '',
+              canApprove: false,
+              supportsApprove: false,
             },
             type: 'DRAFT_CREATE_EMPTY',
           });

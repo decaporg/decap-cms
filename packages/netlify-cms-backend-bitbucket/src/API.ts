@@ -700,7 +700,10 @@ export default class API {
     const label = await this.getPullRequestLabel(pullRequest.id);
     const status = labelToStatus(label, this.cmsLabelPrefix);
     const updatedAt = pullRequest.updated_on;
-    const pullRequestAuthor = pullRequest.author.display_name;
+    const pullRequestAuthor = {
+      name: pullRequest.author.display_name,
+      login: pullRequest.author.username,
+    };
     return {
       collection,
       slug,
@@ -741,6 +744,17 @@ export default class API {
     const pullRequest = await this.getBranchPullRequest(branch);
 
     await this.mergePullRequest(pullRequest);
+  }
+
+  async approveEntry(collectionName: string, slug: string) {
+    const contentKey = generateContentKey(collectionName, slug);
+    const branch = branchFromContentKey(contentKey);
+
+    const pullRequest = await this.getBranchPullRequest(branch);
+    await this.requestJSON({
+      method: 'POST',
+      url: `${this.repoURL}/pullrequests/${pullRequest.id}/approve`,
+    });
   }
 
   async declinePullRequest(pullRequest: BitBucketPullRequest) {

@@ -612,6 +612,15 @@ export default class BitbucketBackend implements Implementation {
     );
   }
 
+  approveEntry(collection: string, slug: string) {
+    // approveEntry is a transactional operation
+    return runWithLock(
+      this.lock,
+      () => this.api!.approveEntry(collection, slug),
+      'Failed to acquire approve entry lock',
+    );
+  }
+
   async getDeployPreview(collection: string, slug: string) {
     try {
       const statuses = await this.api!.getStatuses(collection, slug);

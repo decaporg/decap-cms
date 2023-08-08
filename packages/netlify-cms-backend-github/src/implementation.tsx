@@ -670,4 +670,13 @@ export default class GitHub implements Implementation {
       'Failed to acquire publish entry lock',
     );
   }
+
+  approveEntry(collection: string, slug: string) {
+    // approveEntry is a transactional operation
+    return runWithLock(
+      this.lock,
+      () => this.api!.approveEntry(collection, slug),
+      'Failed to acquire approve entry lock',
+    );
+  }
 }

@@ -882,9 +882,13 @@ export class Backend {
         label: collection && selectFileEntryLabel(collection, slug),
         mediaFiles,
         updatedOn: entryData.updatedAt,
-        author: entryData.pullRequestAuthor,
+        author: entryData.pullRequestAuthor?.name || entryData.pullRequestAuthor?.login,
         status: entryData.status,
         meta: { path: prepareMetaPath(path, collection) },
+        supportsApprove: this.isGitBackend(),
+        canApprove: this.user?.login
+          ? this.user?.login !== entryData.pullRequestAuthor?.login
+          : false,
       });
 
       const entryWithFormat = this.entryWithFormat(collection)(entry);
@@ -1266,6 +1270,13 @@ export class Backend {
     await this.invokePrePublishEvent(entry);
     await this.implementation.publishUnpublishedEntry!(collection, slug);
     await this.invokePostPublishEvent(entry);
+  }
+
+  async approveEntry(entry: EntryMap) {
+    const collection = entry.get('collection');
+    const slug = entry.get('slug');
+
+    await this.implementation.approveEntry!(collection, slug);
   }
 
   deleteUnpublishedEntry(collection: string, slug: string) {

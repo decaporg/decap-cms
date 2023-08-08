@@ -162,6 +162,10 @@ class WorkflowList extends React.Component {
     this.props.handlePublish(collection, slug);
   };
 
+  requestApprove = (collection, slug) => {
+    this.props.handleApprove(collection, slug);
+  };
+
   // eslint-disable-next-line react/display-name
   renderColumns = (entries, column) => {
     const { isOpenAuthoring, collections, t } = this.props;
@@ -221,6 +225,8 @@ class WorkflowList extends React.Component {
           const allowPublish = collection?.get('publish');
           const canPublish = ownStatus === status.last() && !entry.get('isPersisting', false);
           const postAuthor = entry.get('author');
+          const supportsApprove = entry.get('supportsApprove');
+          const canApprove = entry.get('canApprove');
 
           return (
             <DragSource
@@ -245,7 +251,10 @@ class WorkflowList extends React.Component {
                       allowPublish={allowPublish}
                       canPublish={canPublish}
                       onPublish={this.requestPublish.bind(this, collectionName, slug, ownStatus)}
+                      onApprove={this.requestApprove.bind(this, collectionName, slug)}
                       postAuthor={postAuthor}
+                      supportsApprove={supportsApprove}
+                      canApprove={canApprove}
                     />
                   </div>,
                 )

@@ -20,6 +20,7 @@ import {
   loadUnpublishedEntries,
   updateUnpublishedEntryStatus,
   publishUnpublishedEntry,
+  approveEntry,
   deleteUnpublishedEntry,
 } from '../../actions/editorialWorkflow';
 import { selectUnpublishedEntriesByStatus } from '../../reducers';
@@ -62,6 +63,7 @@ class Workflow extends Component {
     loadUnpublishedEntries: PropTypes.func.isRequired,
     updateUnpublishedEntryStatus: PropTypes.func.isRequired,
     publishUnpublishedEntry: PropTypes.func.isRequired,
+    approveEntry: PropTypes.func.isRequired,
     deleteUnpublishedEntry: PropTypes.func.isRequired,
     t: PropTypes.func.isRequired,
   };
@@ -81,6 +83,7 @@ class Workflow extends Component {
       unpublishedEntries,
       updateUnpublishedEntryStatus,
       publishUnpublishedEntry,
+      approveEntry,
       deleteUnpublishedEntry,
       collections,
       t,
@@ -127,6 +130,7 @@ class Workflow extends Component {
           entries={unpublishedEntries}
           handleChangeStatus={updateUnpublishedEntryStatus}
           handlePublish={publishUnpublishedEntry}
+          handleApprove={approveEntry}
           handleDelete={deleteUnpublishedEntry}
           isOpenAuthoring={isOpenAuthoring}
           collections={collections}
@@ -162,5 +166,6 @@ export default connect(mapStateToProps, {
   loadUnpublishedEntries,
   updateUnpublishedEntryStatus,
   publishUnpublishedEntry,
+  approveEntry,
   deleteUnpublishedEntry,
 })(translate()(Workflow));

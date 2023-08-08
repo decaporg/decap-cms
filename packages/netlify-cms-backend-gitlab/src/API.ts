@@ -809,7 +809,10 @@ export default class API {
     const label = mergeRequest.labels.find(l => isCMSLabel(l, this.cmsLabelPrefix)) as string;
     const status = labelToStatus(label, this.cmsLabelPrefix);
     const updatedAt = mergeRequest.updated_at;
-    const pullRequestAuthor = mergeRequest.author.name;
+    const pullRequestAuthor = {
+      name: mergeRequest.author.name,
+      login: mergeRequest.author.username,
+    };
     return {
       collection,
       slug,
@@ -945,6 +948,17 @@ export default class API {
     const branch = branchFromContentKey(contentKey);
     const mergeRequest = await this.getBranchMergeRequest(branch);
     await this.mergeMergeRequest(mergeRequest);
+  }
+
+  async approveEntry(collectionName: string, slug: string) {
+    const contentKey = generateContentKey(collectionName, slug);
+    const branch = branchFromContentKey(contentKey);
+
+    const mergeRequest = await this.getBranchMergeRequest(branch);
+    await this.requestJSON({
+      method: 'POST',
+      url: `${this.repoURL}/merge_requests/${mergeRequest.iid}/approve`,
+    });
   }
 
   async closeMergeRequest(mergeRequest: GitLabMergeRequest) {

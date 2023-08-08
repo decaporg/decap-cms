@@ -202,6 +202,8 @@ describe('Backend', () => {
           isModification: null,
           status: '',
           updatedOn: '',
+          canApprove: false,
+          supportsApprove: false,
         },
       });
       expect(localForage.getItem).toHaveBeenCalledTimes(1);
@@ -243,6 +245,8 @@ describe('Backend', () => {
           isModification: null,
           status: '',
           updatedOn: '',
+          canApprove: false,
+          supportsApprove: false,
         },
       });
       expect(localForage.getItem).toHaveBeenCalledTimes(1);
@@ -392,6 +396,8 @@ describe('Backend', () => {
         mediaFiles: [{ id: '1', draft: true }],
         status: '',
         updatedOn: '',
+        canApprove: false,
+        supportsApprove: false,
       });
     });
   });

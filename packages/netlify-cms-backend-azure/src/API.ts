@@ -462,8 +462,10 @@ export default class API {
     const status = labelToStatus(labelName, this.cmsLabelPrefix);
     // Uses creationDate, as we do not have direct access to the updated date
     const updatedAt = pullRequest.closedDate ? pullRequest.closedDate : pullRequest.creationDate;
-    const pullRequestAuthor =
-      pullRequest.createdBy?.displayName || pullRequest.createdBy?.uniqueName;
+    const pullRequestAuthor = {
+      name: pullRequest.createdBy?.displayName,
+      login: pullRequest.createdBy?.uniqueName,
+    };
     return {
       collection,
       slug,
@@ -715,6 +717,22 @@ export default class API {
     const branch = branchFromContentKey(contentKey);
     const pullRequest = await this.getBranchPullRequest(branch);
     await this.completePullRequest(pullRequest);
+  }
+
+  async approveEntry(collectionName: string, slug: string) {
+    const contentKey = generateContentKey(collectionName, slug);
+    const branch = branchFromContentKey(contentKey);
+
+    const pullRequest = await this.getBranchPullRequest(branch);
+    const pullRequestCompleted = {
+      status: AzurePullRequestStatus.COMPLETED,
+    };
+
+    await this.requestJSON({
+      method: 'PATCH',
+      url: `${this.endpointUrl}/pullrequests/${encodeURIComponent(pullRequest.pullRequestId)}`,
+      body: JSON.stringify(pullRequestCompleted),
+    });
   }
 
   async updatePullRequestLabels(pullRequest: AzurePullRequest, labels: string[]) {
