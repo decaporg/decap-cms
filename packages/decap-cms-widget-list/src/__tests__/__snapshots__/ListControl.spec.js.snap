@@ -199,7 +199,7 @@ exports[`ListControl should add to list when add button is clicked 1`] = `
         class="emotion-16 emotion-17"
       >
         <mock-list-item-top-bar
-          classname="css-1e1b0lr-StyledListItemTopBar e14bfka81"
+          classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
           collapsed="false"
           data-testid="styled-list-item-top-bar-0"
         >
@@ -428,7 +428,7 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
         class="emotion-16 emotion-17"
       >
         <mock-list-item-top-bar
-          classname="css-1e1b0lr-StyledListItemTopBar e14bfka81"
+          classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
           collapsed="false"
           data-testid="styled-list-item-top-bar-0"
         >
@@ -457,7 +457,7 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
         class="emotion-16 emotion-17"
       >
         <mock-list-item-top-bar
-          classname="css-1e1b0lr-StyledListItemTopBar e14bfka81"
+          classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
           collapsed="false"
           data-testid="styled-list-item-top-bar-1"
         >
@@ -687,7 +687,7 @@ exports[`ListControl should remove from list when remove button is clicked 2`] =
         class="emotion-16 emotion-17"
       >
         <mock-list-item-top-bar
-          classname="css-1e1b0lr-StyledListItemTopBar e14bfka81"
+          classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
           collapsed="true"
           data-testid="styled-list-item-top-bar-2"
         >
@@ -927,7 +927,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
         class="emotion-16 emotion-17"
       >
         <mock-list-item-top-bar
-          classname="css-1e1b0lr-StyledListItemTopBar e14bfka81"
+          classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
           collapsed="false"
           data-testid="styled-list-item-top-bar-0"
         >
@@ -956,7 +956,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
         class="emotion-16 emotion-17"
       >
         <mock-list-item-top-bar
-          classname="css-1e1b0lr-StyledListItemTopBar e14bfka81"
+          classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
           collapsed="false"
           data-testid="styled-list-item-top-bar-1"
         >
@@ -1185,7 +1185,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
         class="emotion-16 emotion-17"
       >
         <mock-list-item-top-bar
-          classname="css-1e1b0lr-StyledListItemTopBar e14bfka81"
+          classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
           collapsed="false"
           data-testid="styled-list-item-top-bar-0"
         >
@@ -1214,7 +1214,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
         class="emotion-16 emotion-17"
       >
         <mock-list-item-top-bar
-          classname="css-1e1b0lr-StyledListItemTopBar e14bfka81"
+          classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
           collapsed="false"
           data-testid="styled-list-item-top-bar-1"
         >
@@ -1444,7 +1444,7 @@ exports[`ListControl should render list with fields with default collapse ("true
         class="emotion-16 emotion-17"
       >
         <mock-list-item-top-bar
-          classname="css-1e1b0lr-StyledListItemTopBar e14bfka81"
+          classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
           collapsed="true"
           data-testid="styled-list-item-top-bar-0"
         >
@@ -1473,7 +1473,7 @@ exports[`ListControl should render list with fields with default collapse ("true
         class="emotion-16 emotion-17"
       >
         <mock-list-item-top-bar
-          classname="css-1e1b0lr-StyledListItemTopBar e14bfka81"
+          classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
           collapsed="true"
           data-testid="styled-list-item-top-bar-1"
         >
@@ -1884,7 +1884,7 @@ exports[`ListControl should render list with nested object 1`] = `
         class="emotion-16 emotion-17"
       >
         <mock-list-item-top-bar
-          classname="css-1e1b0lr-StyledListItemTopBar e14bfka81"
+          classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
           collapsed="true"
           data-testid="styled-list-item-top-bar-0"
         >
@@ -1913,7 +1913,7 @@ exports[`ListControl should render list with nested object 1`] = `
         class="emotion-16 emotion-17"
       >
         <mock-list-item-top-bar
-          classname="css-1e1b0lr-StyledListItemTopBar e14bfka81"
+          classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
           collapsed="true"
           data-testid="styled-list-item-top-bar-1"
         >
@@ -2142,7 +2142,7 @@ exports[`ListControl should render list with nested object with collapse = false
         class="emotion-16 emotion-17"
       >
         <mock-list-item-top-bar
-          classname="css-1e1b0lr-StyledListItemTopBar e14bfka81"
+          classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
           collapsed="false"
           data-testid="styled-list-item-top-bar-0"
         >
@@ -2171,7 +2171,7 @@ exports[`ListControl should render list with nested object with collapse = false
         class="emotion-16 emotion-17"
       >
         <mock-list-item-top-bar
-          classname="css-1e1b0lr-StyledListItemTopBar e14bfka81"
+          classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
           collapsed="false"
           data-testid="styled-list-item-top-bar-1"
         >

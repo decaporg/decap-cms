@@ -23,7 +23,7 @@ const LoginButton = styled.button`
   ${buttons.gray};
 
   padding: 0 30px;
-  margin-top: -40px;
+  margin-top: 0;
   display: flex;
   align-items: center;
   position: relative;
