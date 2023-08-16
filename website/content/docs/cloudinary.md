@@ -102,11 +102,11 @@ fields: # The fields each document in this collection have
   media_library:
     config:
       default_transformations:
-        - fetch_format: auto
-          width: 300    
-          quality: auto
-          crop: fill
-          effect: grayscale
+        - - fetch_format: auto
+            width: 300    
+            quality: auto
+            crop: fill
+            effect: grayscale
 ```
 
 ## Inserting Cloudinary URL in page templates
