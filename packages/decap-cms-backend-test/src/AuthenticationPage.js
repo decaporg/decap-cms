@@ -8,12 +8,12 @@ const StyledAuthenticationPage = styled.section`
   flex-flow: column nowrap;
   align-items: center;
   justify-content: center;
+  gap: 50px;
   height: 100vh;
 `;
 
 const PageLogoIcon = styled(Icon)`
-  color: #c4c6d2;
-  margin-top: -300px;
+  height: auto;
 `;
 
 const LoginButton = styled.button`
@@ -23,7 +23,7 @@ const LoginButton = styled.button`
   ${buttons.gray};
 
   padding: 0 30px;
-  margin-top: -40px;
+  margin-top: 0;
   display: flex;
   align-items: center;
   position: relative;

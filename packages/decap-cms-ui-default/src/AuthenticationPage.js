@@ -11,18 +11,17 @@ const StyledAuthenticationPage = styled.section`
   flex-flow: column nowrap;
   align-items: center;
   justify-content: center;
+  gap: 50px;
   height: 100vh;
 `;
 
 const CustomIconWrapper = styled.span`
   width: 300px;
-  height: 200px;
-  margin-top: -150px;
+  height: auto;
 `;
 
-const NetlifyLogoIcon = styled(Icon)`
-  color: #c4c6d2;
-  margin-top: -300px;
+const DecapLogoIcon = styled(Icon)`
+  height: auto;
 `;
 
 const NetlifyCreditIcon = styled(Icon)`
@@ -43,7 +42,7 @@ function renderPageLogo(logoUrl) {
   if (logoUrl) {
     return <CustomLogoIcon url={logoUrl} />;
   }
-  return <NetlifyLogoIcon size="300px" type="decap-cms" />;
+  return <DecapLogoIcon size="300px" type="decap-cms" />;
 }
 
 const LoginButton = styled.button`
@@ -56,7 +55,7 @@ const LoginButton = styled.button`
   }
 
   padding: 0 12px;
-  margin-top: -40px;
+  margin-top: 0;
   display: flex;
   align-items: center;
   position: relative;
@@ -67,7 +66,7 @@ const TextButton = styled.button`
   ${buttons.default};
   ${buttons.grayText};
 
-  margin-top: 40px;
+  margin-top: 0;
   display: flex;
   align-items: center;
   position: relative;
