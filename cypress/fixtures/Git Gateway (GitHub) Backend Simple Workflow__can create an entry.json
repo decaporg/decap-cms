@@ -688,7 +688,7 @@
     "status": 201
   },
   {
-    "body": "{\"message\":\"Create Post “1970-01-01-first-title”\",\"tree\":\"db0a1252e0080f515b12fa2fded1cc1521582c3b\",\"parents\":[\"3fecda1a7b7ac6af17ef29573013d32b79c41d30\"],\"author\":{\"name\":\"decapCMS\",\"email\":\"decap@p-m.si\",\"date\":\"1970-01-01T00:00:00.300Z\"}}",
+    "body": "{\"message\":\"Create Post “1970-01-01-first-title”\",\"tree\":\"db0a1252e0080f515b12fa2fded1cc1521582c3b\",\"parents\":[\"3fecda1a7b7ac6af17ef29573013d32b79c41d30\"],\"author\":{\"name\":\"decap\",\"email\":\"decap@p-m.si\",\"date\":\"1970-01-01T00:00:00.300Z\"}}",
     "method": "POST",
     "url": "/.netlify/git/github/git/commits",
     "headers": {
@@ -716,7 +716,7 @@
       "Connection": "keep-alive",
       "Vary": "Origin,Accept,Authorization,Cookie,X-GitHub-OTP,Accept-Encoding,Accept,X-Requested-With"
     },
-    "response": "{\n  \"sha\": \"07b40292cadac32df8808494031ac1740382ff59\",\n  \"node_id\": \"MDY6Q29tbWl0MjU1MDc4OTEwOjA3YjQwMjkyY2FkYWMzMmRmODgwODQ5NDAzMWFjMTc0MDM4MmZmNTk=\",\n  \"url\": \"https://api.github.com/repos/owner/repo/git/commits/07b40292cadac32df8808494031ac1740382ff59\",\n  \"html_url\": \"https://github.com/owner/repo/commit/07b40292cadac32df8808494031ac1740382ff59\",\n  \"author\": {\n    \"name\": \"decapCMS\",\n    \"email\": \"decap@p-m.si\",\n    \"date\": \"1970-01-01T00:00:00Z\"\n  },\n  \"committer\": {\n    \"name\": \"decapCMS\",\n    \"email\": \"decap@p-m.si\",\n    \"date\": \"1970-01-01T00:00:00Z\"\n  },\n  \"tree\": {\n    \"sha\": \"db0a1252e0080f515b12fa2fded1cc1521582c3b\",\n    \"url\": \"https://api.github.com/repos/owner/repo/git/trees/db0a1252e0080f515b12fa2fded1cc1521582c3b\"\n  },\n  \"message\": \"Create Post “1970-01-01-first-title”\",\n  \"parents\": [\n    {\n      \"sha\": \"3fecda1a7b7ac6af17ef29573013d32b79c41d30\",\n      \"url\": \"https://api.github.com/repos/owner/repo/git/commits/3fecda1a7b7ac6af17ef29573013d32b79c41d30\",\n      \"html_url\": \"https://github.com/owner/repo/commit/3fecda1a7b7ac6af17ef29573013d32b79c41d30\"\n    }\n  ],\n  \"verification\": {\n    \"verified\": false,\n    \"reason\": \"unsigned\",\n    \"signature\": null,\n    \"payload\": null\n  }\n}\n",
+    "response": "{\n  \"sha\": \"07b40292cadac32df8808494031ac1740382ff59\",\n  \"node_id\": \"MDY6Q29tbWl0MjU1MDc4OTEwOjA3YjQwMjkyY2FkYWMzMmRmODgwODQ5NDAzMWFjMTc0MDM4MmZmNTk=\",\n  \"url\": \"https://api.github.com/repos/owner/repo/git/commits/07b40292cadac32df8808494031ac1740382ff59\",\n  \"html_url\": \"https://github.com/owner/repo/commit/07b40292cadac32df8808494031ac1740382ff59\",\n  \"author\": {\n    \"name\": \"decap\",\n    \"email\": \"decap@p-m.si\",\n    \"date\": \"1970-01-01T00:00:00Z\"\n  },\n  \"committer\": {\n    \"name\": \"decap\",\n    \"email\": \"decap@p-m.si\",\n    \"date\": \"1970-01-01T00:00:00Z\"\n  },\n  \"tree\": {\n    \"sha\": \"db0a1252e0080f515b12fa2fded1cc1521582c3b\",\n    \"url\": \"https://api.github.com/repos/owner/repo/git/trees/db0a1252e0080f515b12fa2fded1cc1521582c3b\"\n  },\n  \"message\": \"Create Post “1970-01-01-first-title”\",\n  \"parents\": [\n    {\n      \"sha\": \"3fecda1a7b7ac6af17ef29573013d32b79c41d30\",\n      \"url\": \"https://api.github.com/repos/owner/repo/git/commits/3fecda1a7b7ac6af17ef29573013d32b79c41d30\",\n      \"html_url\": \"https://github.com/owner/repo/commit/3fecda1a7b7ac6af17ef29573013d32b79c41d30\"\n    }\n  ],\n  \"verification\": {\n    \"verified\": false,\n    \"reason\": \"unsigned\",\n    \"signature\": null,\n    \"payload\": null\n  }\n}\n",
     "status": 201
   },
   {

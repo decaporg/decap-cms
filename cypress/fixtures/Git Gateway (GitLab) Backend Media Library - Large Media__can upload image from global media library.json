@@ -705,7 +705,7 @@
     "status": 404
   },
   {
-    "body": "{\"branch\":\"master\",\"commit_message\":\"Upload “static/media/decap.png”\",\"actions\":[{\"action\":\"create\",\"file_path\":\"static/media/decap.png\",\"content\":\"dmVyc2lvbiBodHRwczovL2dpdC1sZnMuZ2l0aHViLmNvbS9zcGVjL3YxCm9pZCBzaGEyNTY6YjFkNDBjMTliOTEyZDIxMzBkMWJlZDhmZjFhNjJhNTVjN2Q5MzI5Nzg1MDJlMWQ4NTU5ZWI3Nzk1MWM1ZThkMwpzaXplIDM0NzAK\",\"encoding\":\"base64\"}],\"author_name\":\"decapCMS\",\"author_email\":\"decap@p-m.si\"}",
+    "body": "{\"branch\":\"master\",\"commit_message\":\"Upload “static/media/decap.png”\",\"actions\":[{\"action\":\"create\",\"file_path\":\"static/media/decap.png\",\"content\":\"dmVyc2lvbiBodHRwczovL2dpdC1sZnMuZ2l0aHViLmNvbS9zcGVjL3YxCm9pZCBzaGEyNTY6YjFkNDBjMTliOTEyZDIxMzBkMWJlZDhmZjFhNjJhNTVjN2Q5MzI5Nzg1MDJlMWQ4NTU5ZWI3Nzk1MWM1ZThkMwpzaXplIDM0NzAK\",\"encoding\":\"base64\"}],\"author_name\":\"decap\",\"author_email\":\"decap@p-m.si\"}",
     "method": "POST",
     "url": "/.netlify/git/gitlab/repository/commits",
     "headers": {
@@ -733,7 +733,7 @@
       "Connection": "keep-alive",
       "Vary": "Origin,Origin"
     },
-    "response": "{\"id\":\"9a9bcfb6af769b9f997297e569ddb6e3e96dbd4a\",\"short_id\":\"9a9bcfb6\",\"created_at\":\"2020-04-12T10:29:51.000+00:00\",\"parent_ids\":[\"b06f90b147afb70c4bb7f11c58be77a1d63c656e\"],\"title\":\"Upload âstatic/media/decap.pngâ\",\"message\":\"Upload âstatic/media/decap.pngâ\",\"author_name\":\"decapCMS\",\"author_email\":\"decap@p-m.si\",\"authored_date\":\"2020-04-12T10:29:51.000+00:00\",\"committer_name\":\"owner\",\"committer_email\":\"owner@gmail.com\",\"committed_date\":\"2020-04-12T10:29:51.000+00:00\",\"web_url\":\"https://gitlab.com/owner/repo/-/commit/9a9bcfb6af769b9f997297e569ddb6e3e96dbd4a\",\"stats\":{\"additions\":3,\"deletions\":0,\"total\":3},\"status\":null,\"project_id\":18082407,\"last_pipeline\":null}",
+    "response": "{\"id\":\"9a9bcfb6af769b9f997297e569ddb6e3e96dbd4a\",\"short_id\":\"9a9bcfb6\",\"created_at\":\"2020-04-12T10:29:51.000+00:00\",\"parent_ids\":[\"b06f90b147afb70c4bb7f11c58be77a1d63c656e\"],\"title\":\"Upload âstatic/media/decap.pngâ\",\"message\":\"Upload âstatic/media/decap.pngâ\",\"author_name\":\"decap\",\"author_email\":\"decap@p-m.si\",\"authored_date\":\"2020-04-12T10:29:51.000+00:00\",\"committer_name\":\"owner\",\"committer_email\":\"owner@gmail.com\",\"committed_date\":\"2020-04-12T10:29:51.000+00:00\",\"web_url\":\"https://gitlab.com/owner/repo/-/commit/9a9bcfb6af769b9f997297e569ddb6e3e96dbd4a\",\"stats\":{\"additions\":3,\"deletions\":0,\"total\":3},\"status\":null,\"project_id\":18082407,\"last_pipeline\":null}",
     "status": 201
   }
 ]
