@@ -428,7 +428,7 @@
     "status": 200
   },
   {
-    "body": "{\"base_tree\":\"cb2e8e6e165648920f696fe4c50113d15ee95937\",\"tree\":[{\"path\":\"static/media/decap.png\",\"mode\":\"100644\",\"type\":\"blob\",\"sha\":\"13692e6574cb4bf447aefcf7e0278e2f3fad6cf3\"}]}",
+    "body": "{\"base_tree\":\"cb2e8e6e165648920f696fe4c50113d15ee95937\",\"tree\":[{\"path\":\"static/media/netlify.png\",\"mode\":\"100644\",\"type\":\"blob\",\"sha\":\"13692e6574cb4bf447aefcf7e0278e2f3fad6cf3\"}]}",
     "method": "POST",
     "url": "/repos/owner/repo/git/trees",
     "headers": {
@@ -456,7 +456,7 @@
     "status": 201
   },
   {
-    "body": "{\"message\":\"Upload “static/media/decap.png”\",\"tree\":\"10a22c7823ff4c83a6df2456ff3b41b15edc49f8\",\"parents\":[\"cb2e8e6e165648920f696fe4c50113d15ee95937\"]}",
+    "body": "{\"message\":\"Upload “static/media/netlify.png”\",\"tree\":\"10a22c7823ff4c83a6df2456ff3b41b15edc49f8\",\"parents\":[\"cb2e8e6e165648920f696fe4c50113d15ee95937\"]}",
     "method": "POST",
     "url": "/repos/owner/repo/git/commits",
     "headers": {
@@ -480,7 +480,7 @@
       "Referrer-Policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
       "Content-Security-Policy": "default-src 'none'"
     },
-    "response": "{\"sha\":\"fca1caeb587569fa2847d8b853834af3feb8d830\",\"node_id\":\"MDY6Q29tbWl0Mjg2NzU3NjIxOmZjYTFjYWViNTg3NTY5ZmEyODQ3ZDhiODUzODM0YWYzZmViOGQ4MzA=\",\"url\":\"https://api.github.com/repos/owner/repo/git/commits/fca1caeb587569fa2847d8b853834af3feb8d830\",\"html_url\":\"https://github.com/owner/repo/commit/fca1caeb587569fa2847d8b853834af3feb8d830\",\"author\":{\"name\":\"owner\",\"email\":\"owner@users.noreply.github.com\",\"date\":\"2020-08-11T13:53:10Z\"},\"committer\":{\"name\":\"owner\",\"email\":\"owner@users.noreply.github.com\",\"date\":\"2020-08-11T13:53:10Z\"},\"tree\":{\"sha\":\"10a22c7823ff4c83a6df2456ff3b41b15edc49f8\",\"url\":\"https://api.github.com/repos/owner/repo/git/trees/10a22c7823ff4c83a6df2456ff3b41b15edc49f8\"},\"message\":\"Upload “static/media/decap.png”\",\"parents\":[{\"sha\":\"cb2e8e6e165648920f696fe4c50113d15ee95937\",\"url\":\"https://api.github.com/repos/owner/repo/git/commits/cb2e8e6e165648920f696fe4c50113d15ee95937\",\"html_url\":\"https://github.com/owner/repo/commit/cb2e8e6e165648920f696fe4c50113d15ee95937\"}],\"verification\":{\"verified\":false,\"reason\":\"unsigned\",\"signature\":null,\"payload\":null}}",
+    "response": "{\"sha\":\"fca1caeb587569fa2847d8b853834af3feb8d830\",\"node_id\":\"MDY6Q29tbWl0Mjg2NzU3NjIxOmZjYTFjYWViNTg3NTY5ZmEyODQ3ZDhiODUzODM0YWYzZmViOGQ4MzA=\",\"url\":\"https://api.github.com/repos/owner/repo/git/commits/fca1caeb587569fa2847d8b853834af3feb8d830\",\"html_url\":\"https://github.com/owner/repo/commit/fca1caeb587569fa2847d8b853834af3feb8d830\",\"author\":{\"name\":\"owner\",\"email\":\"owner@users.noreply.github.com\",\"date\":\"2020-08-11T13:53:10Z\"},\"committer\":{\"name\":\"owner\",\"email\":\"owner@users.noreply.github.com\",\"date\":\"2020-08-11T13:53:10Z\"},\"tree\":{\"sha\":\"10a22c7823ff4c83a6df2456ff3b41b15edc49f8\",\"url\":\"https://api.github.com/repos/owner/repo/git/trees/10a22c7823ff4c83a6df2456ff3b41b15edc49f8\"},\"message\":\"Upload “static/media/netlify.png”\",\"parents\":[{\"sha\":\"cb2e8e6e165648920f696fe4c50113d15ee95937\",\"url\":\"https://api.github.com/repos/owner/repo/git/commits/cb2e8e6e165648920f696fe4c50113d15ee95937\",\"html_url\":\"https://github.com/owner/repo/commit/cb2e8e6e165648920f696fe4c50113d15ee95937\"}],\"verification\":{\"verified\":false,\"reason\":\"unsigned\",\"signature\":null,\"payload\":null}}",
     "status": 201
   },
   {
@@ -565,7 +565,7 @@
     "status": 200
   },
   {
-    "body": "{\"base_tree\":\"fca1caeb587569fa2847d8b853834af3feb8d830\",\"tree\":[{\"path\":\"static/media/decap.png\",\"mode\":\"100644\",\"type\":\"blob\",\"sha\":null}]}",
+    "body": "{\"base_tree\":\"fca1caeb587569fa2847d8b853834af3feb8d830\",\"tree\":[{\"path\":\"static/media/netlify.png\",\"mode\":\"100644\",\"type\":\"blob\",\"sha\":null}]}",
     "method": "POST",
     "url": "/repos/owner/repo/git/trees",
     "headers": {
@@ -593,7 +593,7 @@
     "status": 201
   },
   {
-    "body": "{\"message\":\"Delete “static/media/decap.png”\",\"tree\":\"6dd5ba49336e5ff268561aa9d3ffad2d9496df0b\",\"parents\":[\"fca1caeb587569fa2847d8b853834af3feb8d830\"]}",
+    "body": "{\"message\":\"Delete “static/media/netlify.png”\",\"tree\":\"6dd5ba49336e5ff268561aa9d3ffad2d9496df0b\",\"parents\":[\"fca1caeb587569fa2847d8b853834af3feb8d830\"]}",
     "method": "POST",
     "url": "/repos/owner/repo/git/commits",
     "headers": {
@@ -617,7 +617,7 @@
       "Referrer-Policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
       "Content-Security-Policy": "default-src 'none'"
     },
-    "response": "{\"sha\":\"d69120fbe1545b7346496a7bb531e8f2ccfc44e7\",\"node_id\":\"MDY6Q29tbWl0Mjg2NzU3NjIxOmQ2OTEyMGZiZTE1NDViNzM0NjQ5NmE3YmI1MzFlOGYyY2NmYzQ0ZTc=\",\"url\":\"https://api.github.com/repos/owner/repo/git/commits/d69120fbe1545b7346496a7bb531e8f2ccfc44e7\",\"html_url\":\"https://github.com/owner/repo/commit/d69120fbe1545b7346496a7bb531e8f2ccfc44e7\",\"author\":{\"name\":\"owner\",\"email\":\"owner@users.noreply.github.com\",\"date\":\"2020-08-11T13:53:14Z\"},\"committer\":{\"name\":\"owner\",\"email\":\"owner@users.noreply.github.com\",\"date\":\"2020-08-11T13:53:14Z\"},\"tree\":{\"sha\":\"6dd5ba49336e5ff268561aa9d3ffad2d9496df0b\",\"url\":\"https://api.github.com/repos/owner/repo/git/trees/6dd5ba49336e5ff268561aa9d3ffad2d9496df0b\"},\"message\":\"Delete “static/media/decap.png”\",\"parents\":[{\"sha\":\"fca1caeb587569fa2847d8b853834af3feb8d830\",\"url\":\"https://api.github.com/repos/owner/repo/git/commits/fca1caeb587569fa2847d8b853834af3feb8d830\",\"html_url\":\"https://github.com/owner/repo/commit/fca1caeb587569fa2847d8b853834af3feb8d830\"}],\"verification\":{\"verified\":false,\"reason\":\"unsigned\",\"signature\":null,\"payload\":null}}",
+    "response": "{\"sha\":\"d69120fbe1545b7346496a7bb531e8f2ccfc44e7\",\"node_id\":\"MDY6Q29tbWl0Mjg2NzU3NjIxOmQ2OTEyMGZiZTE1NDViNzM0NjQ5NmE3YmI1MzFlOGYyY2NmYzQ0ZTc=\",\"url\":\"https://api.github.com/repos/owner/repo/git/commits/d69120fbe1545b7346496a7bb531e8f2ccfc44e7\",\"html_url\":\"https://github.com/owner/repo/commit/d69120fbe1545b7346496a7bb531e8f2ccfc44e7\",\"author\":{\"name\":\"owner\",\"email\":\"owner@users.noreply.github.com\",\"date\":\"2020-08-11T13:53:14Z\"},\"committer\":{\"name\":\"owner\",\"email\":\"owner@users.noreply.github.com\",\"date\":\"2020-08-11T13:53:14Z\"},\"tree\":{\"sha\":\"6dd5ba49336e5ff268561aa9d3ffad2d9496df0b\",\"url\":\"https://api.github.com/repos/owner/repo/git/trees/6dd5ba49336e5ff268561aa9d3ffad2d9496df0b\"},\"message\":\"Delete “static/media/netlify.png”\",\"parents\":[{\"sha\":\"fca1caeb587569fa2847d8b853834af3feb8d830\",\"url\":\"https://api.github.com/repos/owner/repo/git/commits/fca1caeb587569fa2847d8b853834af3feb8d830\",\"html_url\":\"https://github.com/owner/repo/commit/fca1caeb587569fa2847d8b853834af3feb8d830\"}],\"verification\":{\"verified\":false,\"reason\":\"unsigned\",\"signature\":null,\"payload\":null}}",
     "status": 201
   },
   {

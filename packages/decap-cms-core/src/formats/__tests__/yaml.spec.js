@@ -30,7 +30,7 @@ describe('yaml', () => {
       # title comment
       title: title
       # image comment
-      image: /media/decap.png
+      image: /media/netlify.png
       # date comment
       date: 2020-04-02T13:27:48.617Z
       # object comment
@@ -52,7 +52,7 @@ describe('yaml', () => {
           object_list: [{ object_list_item_1: '1', object_list_item_2: '2' }],
         },
         date: new Date('2020-04-02T13:27:48.617Z'),
-        image: '/media/decap.png',
+        image: '/media/netlify.png',
         title: 'title',
         template: 'post',
       });
@@ -111,7 +111,7 @@ template: post
 # title comment
 title: title
 # image comment
-image: /media/decap.png
+image: /media/netlify.png
 # date comment
 date: 2020-04-02T13:27:48.617Z
 # object comment
@@ -135,7 +135,7 @@ list:
             object_list: [{ object_list_item_1: '1', object_list_item_2: '2' }],
           },
           date: new Date('2020-04-02T13:27:48.617Z'),
-          image: '/media/decap.png',
+          image: '/media/netlify.png',
           title: 'title',
           template: 'post',
         },

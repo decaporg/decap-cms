@@ -683,7 +683,7 @@
     "status": 200
   },
   {
-    "body": "------WebKitFormBoundaryInJihWjeYUN0L2d9\r\nContent-Disposition: form-data; name=\"content/posts/1970-01-01-first-title.md\"; filename=\"1970-01-01-first-title.md\"\r\nContent-Type: application/octet-stream\r\n\r\n---\ntemplate: post\ntitle: first title\nimage: /media/decap.png\ndate: 1970-01-01T00:00:00.000Z\ndescription: first description\ncategory: first category\ntags:\n  - tag1\n---\nfirst body\r\n------WebKitFormBoundaryInJihWjeYUN0L2d9\r\nContent-Disposition: form-data; name=\"static/media/decap.png\"; filename=\"decap.png\"\r\nContent-Type: text/plain\r\n\r\nversion https://git-lfs.github.com/spec/v1\noid sha256:b1d40c19b912d2130d1bed8ff1a62a55c7d932978502e1d8559eb77951c5e8d3\nsize 3470\n\r\n------WebKitFormBoundaryInJihWjeYUN0L2d9\r\nContent-Disposition: form-data; name=\"message\"\r\n\r\nCreate Post â1970-01-01-first-titleâ\r\n------WebKitFormBoundaryInJihWjeYUN0L2d9\r\nContent-Disposition: form-data; name=\"branch\"\r\n\r\ncms/posts/1970-01-01-first-title\r\n------WebKitFormBoundaryInJihWjeYUN0L2d9\r\nContent-Disposition: form-data; name=\"parents\"\r\n\r\n53eb7709cda173b8c923b4bef2a51a1ce49d14af\r\n------WebKitFormBoundaryInJihWjeYUN0L2d9--\r\n",
+    "body": "------WebKitFormBoundaryInJihWjeYUN0L2d9\r\nContent-Disposition: form-data; name=\"content/posts/1970-01-01-first-title.md\"; filename=\"1970-01-01-first-title.md\"\r\nContent-Type: application/octet-stream\r\n\r\n---\ntemplate: post\ntitle: first title\nimage: /media/netlify.png\ndate: 1970-01-01T00:00:00.000Z\ndescription: first description\ncategory: first category\ntags:\n  - tag1\n---\nfirst body\r\n------WebKitFormBoundaryInJihWjeYUN0L2d9\r\nContent-Disposition: form-data; name=\"static/media/netlify.png\"; filename=\"netlify.png\"\r\nContent-Type: text/plain\r\n\r\nversion https://git-lfs.github.com/spec/v1\noid sha256:b1d40c19b912d2130d1bed8ff1a62a55c7d932978502e1d8559eb77951c5e8d3\nsize 3470\n\r\n------WebKitFormBoundaryInJihWjeYUN0L2d9\r\nContent-Disposition: form-data; name=\"message\"\r\n\r\nCreate Post â1970-01-01-first-titleâ\r\n------WebKitFormBoundaryInJihWjeYUN0L2d9\r\nContent-Disposition: form-data; name=\"branch\"\r\n\r\ncms/posts/1970-01-01-first-title\r\n------WebKitFormBoundaryInJihWjeYUN0L2d9\r\nContent-Disposition: form-data; name=\"parents\"\r\n\r\n53eb7709cda173b8c923b4bef2a51a1ce49d14af\r\n------WebKitFormBoundaryInJihWjeYUN0L2d9--\r\n",
     "method": "POST",
     "url": "/2.0/repositories/owner/repo/src",
     "headers": {
@@ -842,7 +842,7 @@
       "X-Version": "e1ce49ad4aa3",
       "Content-Length": "738"
     },
-    "response": "diff --git a/content/posts/1970-01-01-first-title.md b/content/posts/1970-01-01-first-title.md\nnew file mode 100644\nindex 0000000..5712f24\n--- /dev/null\n+++ b/content/posts/1970-01-01-first-title.md\n@@ -0,0 +1,11 @@\n+---\n+template: post\n+title: first title\n+image: /media/decap.png\n+date: 1970-01-01T00:00:00.000Z\n+description: first description\n+category: first category\n+tags:\n+  - tag1\n+---\n+first body\n\\ No newline at end of file\ndiff --git a/static/media/decap.png b/static/media/decap.png\nnew file mode 100644\nindex 0000000..a137fb3\n--- /dev/null\n+++ b/static/media/decap.png\n@@ -0,0 +1,3 @@\n+version https://git-lfs.github.com/spec/v1\n+oid sha256:b1d40c19b912d2130d1bed8ff1a62a55c7d932978502e1d8559eb77951c5e8d3\n+size 3470\n",
+    "response": "diff --git a/content/posts/1970-01-01-first-title.md b/content/posts/1970-01-01-first-title.md\nnew file mode 100644\nindex 0000000..5712f24\n--- /dev/null\n+++ b/content/posts/1970-01-01-first-title.md\n@@ -0,0 +1,11 @@\n+---\n+template: post\n+title: first title\n+image: /media/netlify.png\n+date: 1970-01-01T00:00:00.000Z\n+description: first description\n+category: first category\n+tags:\n+  - tag1\n+---\n+first body\n\\ No newline at end of file\ndiff --git a/static/media/netlify.png b/static/media/netlify.png\nnew file mode 100644\nindex 0000000..a137fb3\n--- /dev/null\n+++ b/static/media/netlify.png\n@@ -0,0 +1,3 @@\n+version https://git-lfs.github.com/spec/v1\n+oid sha256:b1d40c19b912d2130d1bed8ff1a62a55c7d932978502e1d8559eb77951c5e8d3\n+size 3470\n",
     "status": 200
   },
   {
@@ -921,7 +921,7 @@
       "X-Version": "e1ce49ad4aa3",
       "Content-Length": "180"
     },
-    "response": "---\ntemplate: post\ntitle: first title\nimage: /media/decap.png\ndate: 1970-01-01T00:00:00.000Z\ndescription: first description\ncategory: first category\ntags:\n  - tag1\n---\nfirst body",
+    "response": "---\ntemplate: post\ntitle: first title\nimage: /media/netlify.png\ndate: 1970-01-01T00:00:00.000Z\ndescription: first description\ncategory: first category\ntags:\n  - tag1\n---\nfirst body",
     "status": 200
   },
   {
@@ -952,7 +952,7 @@
   },
   {
     "method": "GET",
-    "url": "/2.0/repositories/owner/repo/src/032c0a2fcec6e77cd946f09cc11c1758c239dd49/static/media/decap.png",
+    "url": "/2.0/repositories/owner/repo/src/032c0a2fcec6e77cd946f09cc11c1758c239dd49/static/media/netlify.png",
     "headers": {
       "Server": "nginx",
       "Vary": "Authorization",
@@ -960,7 +960,7 @@
       "X-OAuth-Scopes": "pullrequest:write, repository:delete, repository:admin, account",
       "Access-Control-Expose-Headers": "Accept-Ranges, Content-Encoding, Content-Length, Content-Type, ETag, Last-Modified",
       "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
-      "Location": "https://api.media.atlassian.com/file/b851259d-0ea4-4c32-808d-5d73b564ac66/binarytoken=fakeTokenclient=fakeClient&dl=1&name=decap.png",
+      "Location": "https://api.media.atlassian.com/file/b851259d-0ea4-4c32-808d-5d73b564ac66/binarytoken=fakeTokenclient=fakeClient&dl=1&name=netlify.png",
       "X-Served-By": "app-1118",
       "Access-Control-Allow-Origin": "*",
       "X-Static-Version": "e1ce49ad4aa3",
@@ -979,7 +979,7 @@
   },
   {
     "method": "GET",
-    "url": "/file/b851259d-0ea4-4c32-808d-5d73b564ac66/binarytoken=fakeTokenclient=fakeClient&dl=1&name=decap.png",
+    "url": "/file/b851259d-0ea4-4c32-808d-5d73b564ac66/binarytoken=fakeTokenclient=fakeClient&dl=1&name=netlify.png",
     "headers": {
       "Content-Type": "image/png",
       "Content-Length": "3470",
@@ -997,7 +997,7 @@
       "Content-Security-Policy": "script-src 'none'",
       "Timing-Allow-Origin": "*",
       "Accept-Ranges": "bytes",
-      "Content-Disposition": "attachment; filename=\"decap.png\"",
+      "Content-Disposition": "attachment; filename=\"netlify.png\"",
       "Cache-Control": "private",
       "Atl-Traceid": "7cfa312bab43a451",
       "X-Envoy-Upstream-Service-Time": "483",
@@ -1378,7 +1378,7 @@
       "X-Version": "e1ce49ad4aa3",
       "content-length": "1168"
     },
-    "response": "{\"pagelen\":100,\"values\":[{\"mimetype\":\"image/png\",\"links\":{\"self\":{\"href\":\"https://api.bitbucket.org/2.0/repositories/owner/repo/src/2089e8fee28d8777e6365c3c27435c5566c8dd7d/static/media/decap.png\"},\"meta\":{\"href\":\"https://api.bitbucket.org/2.0/repositories/owner/repo/src/2089e8fee28d8777e6365c3c27435c5566c8dd7d/static/media/decap.png?format=meta\"},\"history\":{\"href\":\"https://api.bitbucket.org/2.0/repositories/owner/repo/filehistory/2089e8fee28d8777e6365c3c27435c5566c8dd7d/static/media/decap.png\"}},\"path\":\"static/media/decap.png\",\"commit\":{\"type\":\"commit\",\"hash\":\"2089e8fee28d8777e6365c3c27435c5566c8dd7d\",\"links\":{\"self\":{\"href\":\"https://api.bitbucket.org/2.0/repositories/owner/repo/commit/2089e8fee28d8777e6365c3c27435c5566c8dd7d\"},\"html\":{\"href\":\"https://bitbucket.org/owner/repo/commits/2089e8fee28d8777e6365c3c27435c5566c8dd7d\"}}},\"attributes\":[\"binary\",\"lfs\"],\"type\":\"commit_file\",\"size\":3470}],\"page\":1}",
+    "response": "{\"pagelen\":100,\"values\":[{\"mimetype\":\"image/png\",\"links\":{\"self\":{\"href\":\"https://api.bitbucket.org/2.0/repositories/owner/repo/src/2089e8fee28d8777e6365c3c27435c5566c8dd7d/static/media/netlify.png\"},\"meta\":{\"href\":\"https://api.bitbucket.org/2.0/repositories/owner/repo/src/2089e8fee28d8777e6365c3c27435c5566c8dd7d/static/media/netlify.png?format=meta\"},\"history\":{\"href\":\"https://api.bitbucket.org/2.0/repositories/owner/repo/filehistory/2089e8fee28d8777e6365c3c27435c5566c8dd7d/static/media/netlify.png\"}},\"path\":\"static/media/netlify.png\",\"commit\":{\"type\":\"commit\",\"hash\":\"2089e8fee28d8777e6365c3c27435c5566c8dd7d\",\"links\":{\"self\":{\"href\":\"https://api.bitbucket.org/2.0/repositories/owner/repo/commit/2089e8fee28d8777e6365c3c27435c5566c8dd7d\"},\"html\":{\"href\":\"https://bitbucket.org/owner/repo/commits/2089e8fee28d8777e6365c3c27435c5566c8dd7d\"}}},\"attributes\":[\"binary\",\"lfs\"],\"type\":\"commit_file\",\"size\":3470}],\"page\":1}",
     "status": 200
   },
   {
@@ -1431,7 +1431,7 @@
       "X-Version": "e1ce49ad4aa3",
       "Content-Length": "180"
     },
-    "response": "---\ntemplate: post\ntitle: first title\nimage: /media/decap.png\ndate: 1970-01-01T00:00:00.000Z\ndescription: first description\ncategory: first category\ntags:\n  - tag1\n---\nfirst body",
+    "response": "---\ntemplate: post\ntitle: first title\nimage: /media/netlify.png\ndate: 1970-01-01T00:00:00.000Z\ndescription: first description\ncategory: first category\ntags:\n  - tag1\n---\nfirst body",
     "status": 200
   },
   {
@@ -1488,7 +1488,7 @@
   },
   {
     "method": "GET",
-    "url": "/2.0/repositories/owner/repo/src/2089e8fee28d8777e6365c3c27435c5566c8dd7d/static/media/decap.png",
+    "url": "/2.0/repositories/owner/repo/src/2089e8fee28d8777e6365c3c27435c5566c8dd7d/static/media/netlify.png",
     "headers": {
       "Server": "nginx",
       "Vary": "Authorization",
@@ -1496,7 +1496,7 @@
       "X-OAuth-Scopes": "pullrequest:write, repository:delete, repository:admin, account",
       "Access-Control-Expose-Headers": "Accept-Ranges, Content-Encoding, Content-Length, Content-Type, ETag, Last-Modified",
       "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
-      "Location": "https://api.media.atlassian.com/file/b851259d-0ea4-4c32-808d-5d73b564ac66/binarytoken=fakeTokenclient=fakeClient&dl=1&name=decap.png",
+      "Location": "https://api.media.atlassian.com/file/b851259d-0ea4-4c32-808d-5d73b564ac66/binarytoken=fakeTokenclient=fakeClient&dl=1&name=netlify.png",
       "X-Served-By": "app-1117",
       "Access-Control-Allow-Origin": "*",
       "X-Static-Version": "e1ce49ad4aa3",
@@ -1515,7 +1515,7 @@
   },
   {
     "method": "GET",
-    "url": "/file/b851259d-0ea4-4c32-808d-5d73b564ac66/binarytoken=fakeTokenclient=fakeClient&dl=1&name=decap.png",
+    "url": "/file/b851259d-0ea4-4c32-808d-5d73b564ac66/binarytoken=fakeTokenclient=fakeClient&dl=1&name=netlify.png",
     "headers": {
       "Content-Type": "image/png",
       "Content-Length": "3470",
@@ -1533,7 +1533,7 @@
       "Content-Security-Policy": "script-src 'none'",
       "Timing-Allow-Origin": "*",
       "Accept-Ranges": "bytes",
-      "Content-Disposition": "attachment; filename=\"decap.png\"",
+      "Content-Disposition": "attachment; filename=\"netlify.png\"",
       "Cache-Control": "private",
       "Atl-Traceid": "d87d97d4e170fc1e",
       "X-Envoy-Upstream-Service-Time": "246",

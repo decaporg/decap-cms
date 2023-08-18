@@ -553,7 +553,7 @@
     "status": 200
   },
   {
-    "body": "------WebKitFormBoundarylqeaNOpGJEYhUJbZ\r\nContent-Disposition: form-data; name=\"static/media/decap.png\"; filename=\"decap.png\"\r\nContent-Type: text/plain\r\n\r\nversion https://git-lfs.github.com/spec/v1\noid sha256:b1d40c19b912d2130d1bed8ff1a62a55c7d932978502e1d8559eb77951c5e8d3\nsize 3470\n\r\n------WebKitFormBoundarylqeaNOpGJEYhUJbZ\r\nContent-Disposition: form-data; name=\"message\"\r\n\r\nUpload âstatic/media/decap.pngâ\r\n------WebKitFormBoundarylqeaNOpGJEYhUJbZ\r\nContent-Disposition: form-data; name=\"branch\"\r\n\r\nmaster\r\n------WebKitFormBoundarylqeaNOpGJEYhUJbZ--\r\n",
+    "body": "------WebKitFormBoundarylqeaNOpGJEYhUJbZ\r\nContent-Disposition: form-data; name=\"static/media/netlify.png\"; filename=\"netlify.png\"\r\nContent-Type: text/plain\r\n\r\nversion https://git-lfs.github.com/spec/v1\noid sha256:b1d40c19b912d2130d1bed8ff1a62a55c7d932978502e1d8559eb77951c5e8d3\nsize 3470\n\r\n------WebKitFormBoundarylqeaNOpGJEYhUJbZ\r\nContent-Disposition: form-data; name=\"message\"\r\n\r\nUpload âstatic/media/netlify.pngâ\r\n------WebKitFormBoundarylqeaNOpGJEYhUJbZ\r\nContent-Disposition: form-data; name=\"branch\"\r\n\r\nmaster\r\n------WebKitFormBoundarylqeaNOpGJEYhUJbZ--\r\n",
     "method": "POST",
     "url": "/2.0/repositories/owner/repo/src",
     "headers": {
@@ -581,7 +581,7 @@
     "status": 201
   },
   {
-    "body": "------WebKitFormBoundaryhs3SJxnMEnlXGn8L\r\nContent-Disposition: form-data; name=\"files\"\r\n\r\nstatic/media/decap.png\r\n------WebKitFormBoundaryhs3SJxnMEnlXGn8L\r\nContent-Disposition: form-data; name=\"branch\"\r\n\r\nmaster\r\n------WebKitFormBoundaryhs3SJxnMEnlXGn8L\r\nContent-Disposition: form-data; name=\"message\"\r\n\r\nDelete âstatic/media/decap.pngâ\r\n------WebKitFormBoundaryhs3SJxnMEnlXGn8L--\r\n",
+    "body": "------WebKitFormBoundaryhs3SJxnMEnlXGn8L\r\nContent-Disposition: form-data; name=\"files\"\r\n\r\nstatic/media/netlify.png\r\n------WebKitFormBoundaryhs3SJxnMEnlXGn8L\r\nContent-Disposition: form-data; name=\"branch\"\r\n\r\nmaster\r\n------WebKitFormBoundaryhs3SJxnMEnlXGn8L\r\nContent-Disposition: form-data; name=\"message\"\r\n\r\nDelete âstatic/media/netlify.pngâ\r\n------WebKitFormBoundaryhs3SJxnMEnlXGn8L--\r\n",
     "method": "POST",
     "url": "/2.0/repositories/owner/repo/src",
     "headers": {

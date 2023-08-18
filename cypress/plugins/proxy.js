@@ -22,7 +22,7 @@ const initRepo = async dir => {
 
 const startServer = async (repoDir, mode) => {
   const tsNode = path.join(__dirname, '..', '..', 'node_modules', '.bin', 'ts-node');
-  const serverDir = path.join(__dirname, '..', '..', 'packages', 'decap-server');
+  const serverDir = path.join(__dirname, '..', '..', 'packages', 'decap-cms-proxy-server');
   const distIndex = path.join(serverDir, 'dist', 'index.js');
   const tsIndex = path.join(serverDir, 'src', 'index.ts');
 

@@ -417,7 +417,7 @@
     "status": 200
   },
   {
-    "body": "{\"base_tree\":\"b33a2edece736f6f228c7ec28c385c57d5f890af\",\"tree\":[{\"path\":\"static/media/decap.png\",\"mode\":\"100644\",\"type\":\"blob\",\"sha\":\"13692e6574cb4bf447aefcf7e0278e2f3fad6cf3\"}]}",
+    "body": "{\"base_tree\":\"b33a2edece736f6f228c7ec28c385c57d5f890af\",\"tree\":[{\"path\":\"static/media/netlify.png\",\"mode\":\"100644\",\"type\":\"blob\",\"sha\":\"13692e6574cb4bf447aefcf7e0278e2f3fad6cf3\"}]}",
     "method": "POST",
     "url": "/repos/owner/repo/git/trees",
     "headers": {
@@ -445,7 +445,7 @@
     "status": 201
   },
   {
-    "body": "{\"message\":\"Upload “static/media/decap.png”\",\"tree\":\"6ae16633f927d065891673ddeec2740f9f134129\",\"parents\":[\"b33a2edece736f6f228c7ec28c385c57d5f890af\"]}",
+    "body": "{\"message\":\"Upload “static/media/netlify.png”\",\"tree\":\"6ae16633f927d065891673ddeec2740f9f134129\",\"parents\":[\"b33a2edece736f6f228c7ec28c385c57d5f890af\"]}",
     "method": "POST",
     "url": "/repos/owner/repo/git/commits",
     "headers": {
@@ -469,7 +469,7 @@
       "Referrer-Policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
       "Content-Security-Policy": "default-src 'none'"
     },
-    "response": "{\n  \"sha\": \"7950d1275895a1bc399e943fc741c6e8746a4f67\",\n  \"node_id\": \"MDY6Q29tbWl0MjU1MDc3OTE0Ojc5NTBkMTI3NTg5NWExYmMzOTllOTQzZmM3NDFjNmU4NzQ2YTRmNjc=\",\n  \"url\": \"https://api.github.com/repos/owner/repo/git/commits/7950d1275895a1bc399e943fc741c6e8746a4f67\",\n  \"html_url\": \"https://github.com/owner/repo/commit/7950d1275895a1bc399e943fc741c6e8746a4f67\",\n  \"author\": {\n    \"name\": \"owner\",\n    \"email\": \"owner@users.noreply.github.com\",\n    \"date\": \"2020-04-12T12:30:23Z\"\n  },\n  \"committer\": {\n    \"name\": \"owner\",\n    \"email\": \"owner@users.noreply.github.com\",\n    \"date\": \"2020-04-12T12:30:23Z\"\n  },\n  \"tree\": {\n    \"sha\": \"6ae16633f927d065891673ddeec2740f9f134129\",\n    \"url\": \"https://api.github.com/repos/owner/repo/git/trees/6ae16633f927d065891673ddeec2740f9f134129\"\n  },\n  \"message\": \"Upload “static/media/decap.png”\",\n  \"parents\": [\n    {\n      \"sha\": \"b33a2edece736f6f228c7ec28c385c57d5f890af\",\n      \"url\": \"https://api.github.com/repos/owner/repo/git/commits/b33a2edece736f6f228c7ec28c385c57d5f890af\",\n      \"html_url\": \"https://github.com/owner/repo/commit/b33a2edece736f6f228c7ec28c385c57d5f890af\"\n    }\n  ],\n  \"verification\": {\n    \"verified\": false,\n    \"reason\": \"unsigned\",\n    \"signature\": null,\n    \"payload\": null\n  }\n}\n",
+    "response": "{\n  \"sha\": \"7950d1275895a1bc399e943fc741c6e8746a4f67\",\n  \"node_id\": \"MDY6Q29tbWl0MjU1MDc3OTE0Ojc5NTBkMTI3NTg5NWExYmMzOTllOTQzZmM3NDFjNmU4NzQ2YTRmNjc=\",\n  \"url\": \"https://api.github.com/repos/owner/repo/git/commits/7950d1275895a1bc399e943fc741c6e8746a4f67\",\n  \"html_url\": \"https://github.com/owner/repo/commit/7950d1275895a1bc399e943fc741c6e8746a4f67\",\n  \"author\": {\n    \"name\": \"owner\",\n    \"email\": \"owner@users.noreply.github.com\",\n    \"date\": \"2020-04-12T12:30:23Z\"\n  },\n  \"committer\": {\n    \"name\": \"owner\",\n    \"email\": \"owner@users.noreply.github.com\",\n    \"date\": \"2020-04-12T12:30:23Z\"\n  },\n  \"tree\": {\n    \"sha\": \"6ae16633f927d065891673ddeec2740f9f134129\",\n    \"url\": \"https://api.github.com/repos/owner/repo/git/trees/6ae16633f927d065891673ddeec2740f9f134129\"\n  },\n  \"message\": \"Upload “static/media/netlify.png”\",\n  \"parents\": [\n    {\n      \"sha\": \"b33a2edece736f6f228c7ec28c385c57d5f890af\",\n      \"url\": \"https://api.github.com/repos/owner/repo/git/commits/b33a2edece736f6f228c7ec28c385c57d5f890af\",\n      \"html_url\": \"https://github.com/owner/repo/commit/b33a2edece736f6f228c7ec28c385c57d5f890af\"\n    }\n  ],\n  \"verification\": {\n    \"verified\": false,\n    \"reason\": \"unsigned\",\n    \"signature\": null,\n    \"payload\": null\n  }\n}\n",
     "status": 201
   },
   {

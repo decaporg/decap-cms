@@ -346,7 +346,7 @@ describe('Backend', () => {
   describe('unpublishedEntry', () => {
     it('should return unpublished entry', async () => {
       const unpublishedEntryResult = {
-        diffs: [{ path: 'src/posts/index.md', newFile: false }, { path: 'decap.png' }],
+        diffs: [{ path: 'src/posts/index.md', newFile: false }, { path: 'netlify.png' }],
       };
       const implementation = {
         init: jest.fn(() => implementation),
