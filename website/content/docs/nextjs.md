@@ -130,7 +130,7 @@ npm run dev
 
 ## Adding Decap CMS
 
-There are many different ways to add Decap CMS to your project. The easiest is probably just to embed it from a CDN, and that's exactly what we're gonna do. To avoid making this guide too complicated, we're just going to add Netlify into a subfolder inside the `/public` directory (which is just served as static files by Next):
+There are many different ways to add Decap CMS to your project. The easiest is probably just to embed it from a CDN, and that's exactly what we're gonna do. To avoid making this guide too complicated, we're just going to add Decap into a subfolder inside the `/public` directory (which is just served as static files by Next):
 
 ```bash
 # Create and navigate into public/admin folder
@@ -142,7 +142,7 @@ touch index.html
 touch config.yml
 ```
 
-Paste HTML for Decap CMS into your `public/admin/index.html` file (check out the [Add Netlify To Your Site](https://www.decapcms.org/docs/add-to-your-site/) section for more information)
+Paste HTML for Decap CMS into your `public/admin/index.html` file (check out the [Add Decap To Your Site](https://www.decapcms.org/docs/add-to-your-site/) section for more information)
 
 ```html
 <!doctype html>
@@ -155,7 +155,7 @@ Paste HTML for Decap CMS into your `public/admin/index.html` file (check out the
 </head>
 <body>
   <!-- Include the script that builds the page and powers Decap CMS -->
-  <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
+  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 </body>
 </html>
 ```

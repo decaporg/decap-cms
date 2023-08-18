@@ -24,13 +24,13 @@ backend:
   name: git-gateway
 ```
 
-3. Run `npx netlify-cms-proxy-server` from the root directory of the above repository.
+3. Run `npx decap-server` from the root directory of the above repository.
 
-   * If the default port (8081) is in use, the proxy server won't start and you will see an error message. In this case, follow [these steps](#configure-the-netlify-cms-proxy-server-port-number) before proceeding.
+   * If the default port (8081) is in use, the proxy server won't start and you will see an error message. In this case, follow [these steps](#configure-the-decap-server-port-number) before proceeding.
 4. Start your local development server (e.g. run `gatsby develop`).
 5. Open `http://localhost:<port>/admin` to verify that your can administer your content locally. Replace `<port>` with the port of your local development server. For example Gatsby's default port is `8000`
 
-**Note:** `netlify-cms-proxy-server` runs an unauthenticated express server. As any client can send requests to the server, it should only be used for local development. Also note that `editorial_workflow` is not supported in this environment.
+**Note:** `decap-server` runs an unauthenticated express server. As any client can send requests to the server, it should only be used for local development. Also note that `editorial_workflow` is not supported in this environment.
 
 ### Configure the Decap CMS proxy server port number
 
@@ -402,13 +402,13 @@ You can now provide your own element for Decap CMS to mount in by setting the ta
 
 Decap CMS can now be manually initialized, rather than automatically loading up the moment you import it. The whole point of this at the moment is to inject configuration into Decap CMS before it loads, bypassing need for an actual Decap CMS `config.yml`. This is important, for example, when creating tight integrations with static site generators.
 
-Assuming you have the netlify-cms package installed to your project, manual initialization works by setting `window.CMS_MANUAL_INIT = true` **before importing the CMS**:
+Assuming you have the decap-cms package installed to your project, manual initialization works by setting `window.CMS_MANUAL_INIT = true` **before importing the CMS**:
 
 ```js
 // This global flag enables manual initialization.
 window.CMS_MANUAL_INIT = true
 // Usage with import from npm package
-import CMS, { init } from 'netlify-cms-app'
+import CMS, { init } from 'decap-cms-app'
 // Usage with script tag
 const { CMS, initCMS: init } = window
 /**
@@ -473,7 +473,7 @@ CMS.registerPreviewTemplate(...);
  * Assumes a webpack project with `sass-loader` and `css-loader` installed.
  * Takes advantage of the `toString` method in the return value of `css-loader`.
  */
-import CMS from 'netlify-cms-app';
+import CMS from 'decap-cms-app';
 import styles from '!css-loader!sass-loader!../main.scss';
 CMS.registerPreviewStyle(styles.toString(), { raw: true });
 ```

@@ -15,7 +15,7 @@ function login(user) {
       onBeforeLoad: () => {
         // https://github.com/cypress-io/cypress/issues/1208
         window.indexedDB.deleteDatabase('localforage');
-        window.localStorage.setItem('netlify-cms-user', JSON.stringify(user));
+        window.localStorage.setItem('decap-cms-user', JSON.stringify(user));
         if (user.netlifySiteURL) {
           window.localStorage.setItem('netlifySiteURL', user.netlifySiteURL);
         }

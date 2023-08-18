@@ -1,7 +1,7 @@
 const path = require('path');
 
-const appVersion = require('./packages/netlify-cms-app/package.json').version;
-const coreVersion = require('./packages/netlify-cms-core/package.json').version;
+const appVersion = require('./packages/decap-cms-app/package.json').version;
+const coreVersion = require('./packages/decap-cms-core/package.json').version;
 const isProduction = process.env.NODE_ENV === 'production';
 const isTest = process.env.NODE_ENV === 'test';
 const isESM = process.env.NODE_ENV === 'esm';
@@ -60,8 +60,8 @@ function plugins() {
       [
         'transform-define',
         {
-          NETLIFY_CMS_APP_VERSION: `${appVersion}`,
-          NETLIFY_CMS_CORE_VERSION: `${coreVersion}`,
+          DECAP_CMS_APP_VERSION: `${appVersion}`,
+          DECAP_CMS_CORE_VERSION: `${coreVersion}`,
         },
       ],
       [
