@@ -84,7 +84,7 @@ function VideoEmbed() {
 
   const embedcode = (
     <iframe
-      title="Netlify CMS video"
+      title="Decap CMS video"
       width={560}
       height={315}
       src="https://www.youtube-nocookie.com/embed/p6h-rYSVX90?rel=0&showinfo=0&autoplay=1"
@@ -94,7 +94,7 @@ function VideoEmbed() {
     />
   );
 
-  const imgPlaceholder = <img src={screenshotEditor} alt="Netlify CMS editor" />;
+  const imgPlaceholder = <img src={screenshotEditor} alt="Decap CMS editor" />;
 
   return (
     <VideoLink onClick={toggleVideo}>

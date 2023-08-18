@@ -4,14 +4,14 @@ weight: 50
 group: Customization
 ---
 
-The NetlifyCMS exposes a `window.CMS` global object that you can use to register custom widgets, previews and editor plugins. The available customization methods are:
+The Decap CMS exposes a `window.CMS` global object that you can use to register custom widgets, previews and editor plugins. The available customization methods are:
 
 * **registerPreviewStyle:** Register a custom stylesheet to use on the preview pane.
 * **registerPreviewTemplate:** Registers a template for a collection.
 
 ### React Components inline interaction
 
-NetlifyCMS is a collection of React components and exposes two constructs globally to allow you to create components inline: ‘createClass’ and ‘h’ (alias for React.createElement).
+Decap CMS is a collection of React components and exposes two constructs globally to allow you to create components inline: ‘createClass’ and ‘h’ (alias for React.createElement).
 
 ## `registerPreviewStyle`
 
@@ -29,7 +29,7 @@ CMS.registerPreviewStyle(file);
 
 ```html
 // index.html
-<script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
+<script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 <script>
   CMS.registerPreviewStyle("/example.css");
 </script>
@@ -69,7 +69,7 @@ Registers a template for a folder collection or an individual file in a file col
     **Example:**
 
     ```html
-    <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
+    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
     <script>
       var PostPreview = createClass({
         render: function() {
@@ -92,7 +92,7 @@ Registers a template for a folder collection or an individual file in a file col
 
   ### Lists and Objects
     The API for accessing the individual fields of list- and object-type entries is similar to the API for accessing fields in standard entries, but there are a few key differences. Access to these nested fields is facilitated through the `widgetsFor` function, which is passed to the preview template component during render.
-	**Note**: as is often the case with the NetlifyCMS API, arrays and objects are created with Immutable.js. If some of the methods that we use are unfamiliar, such as `getIn`, check out [their docs](https://facebook.github.io/immutable-js/docs/#/) to get a better understanding.
+	**Note**: as is often the case with the Decap CMS API, arrays and objects are created with Immutable.js. If some of the methods that we use are unfamiliar, such as `getIn`, check out [their docs](https://facebook.github.io/immutable-js/docs/#/) to get a better understanding.
     **List Example:**
     ```html
     <script>

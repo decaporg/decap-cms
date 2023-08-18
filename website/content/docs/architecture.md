@@ -73,6 +73,6 @@ Furthermore, all editorial workflow state is managed in Redux; there's an `actio
 
 ### About metadata
 
-Decap CMS embraces the idea of Git-as-backend for storing metadata. The first time it runs with the `editorial_workflow` setup, it creates a new ref called `meta/_netlify_cms`, pointing to an empty, orphan tree.
+Decap CMS embraces the idea of Git-as-backend for storing metadata. The first time it runs with the `editorial_workflow` setup, it creates a new ref called `meta/_decap_cms`, pointing to an empty, orphan tree.
 
 Actual data are stored in individual `json` files committed to this tree.

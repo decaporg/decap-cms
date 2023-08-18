@@ -55,12 +55,12 @@ In this example, we pull the `admin/index.html` file from a public CDN.
 </head>
 <body>
   <!-- Include the script that builds the page and powers Decap CMS -->
-  <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
+  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 </body>
 </html>
 ```
 
-In the code above the `script` is loaded from the `unpkg` CDN. Should there be any issue, `jsDelivr` can be used as an alternative source. Simply set the `src` to `https://cdn.jsdelivr.net/npm/netlify-cms@^2.0.0/dist/netlify-cms.js`
+In the code above the `script` is loaded from the `unpkg` CDN. Should there be any issue, `jsDelivr` can be used as an alternative source. Simply set the `src` to `https://cdn.jsdelivr.net/npm/decap-cms@^3.0.0/dist/decap-cms.js`
 
 ### Installing with npm
 
@@ -69,13 +69,13 @@ You can also use Decap CMS as an npm module. Wherever you import Decap CMS, it a
 First install the package and save it to your project:
 
 ```bash
-npm install netlify-cms-app --save
+npm install decap-cms-app --save
 ```
 
 Then import it (assuming your project has tooling for imports):
 
 ```js
-import CMS from 'netlify-cms-app'
+import CMS from 'decap-cms-app'
 // Initialize the CMS object
 CMS.init()
 // Now the registry is available via the CMS object.
