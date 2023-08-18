@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.14.0](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-git-gateway@2.14.0-beta.0...decap-cms-backend-git-gateway@2.14.0) (2023-08-18)
+
+**Note:** Version bump only for package decap-cms-backend-git-gateway
+
+
+
+
+
 # 2.14.0-beta.0 (2023-08-18)
 
 
