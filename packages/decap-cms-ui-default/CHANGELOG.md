@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 2.16.0-beta.0 (2023-08-18)
+
+
+### Features
+
+* rename packages ([#6863](https://github.com/decaporg/decap-cms/issues/6863)) ([d515e7b](https://github.com/decaporg/decap-cms/commit/d515e7bd33216a775d96887b08c4f7b1962941bb))
+
+
+
+
+
 ## [2.15.6-beta.0](https://github.com/decaporg/decap-cms/compare/decap-cms-ui-default@2.15.5...decap-cms-ui-default@2.15.6-beta.0) (2023-07-27)
 
 
