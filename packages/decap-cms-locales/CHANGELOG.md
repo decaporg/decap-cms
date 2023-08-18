@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.40.0](https://github.com/decaporg/decap-cms/compare/decap-cms-locales@1.40.0-beta.1...decap-cms-locales@1.40.0) (2023-08-18)
+
+**Note:** Version bump only for package decap-cms-locales
+
+
+
+
+
 # 1.40.0-beta.1 (2023-08-18)
 
 
