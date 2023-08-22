@@ -1,6 +1,6 @@
 [
   {
-    "body": "grant_type=password&username=netlifyCMS%40netlify.com&password=12345678",
+    "body": "grant_type=password&username=decap%40p-m.si&password=12345678",
     "method": "POST",
     "url": "/.netlify/identity/token",
     "headers": {
@@ -33,7 +33,7 @@
       "Vary": "Origin,Accept-Encoding",
       "content-length": "262"
     },
-    "response": "{\"id\":\"92130508-7f49-4862-958c-37cbb9f5e857\",\"aud\":\"\",\"role\":\"\",\"email\":\"netlifyCMS@netlify.com\",\"confirmed_at\":\"2020-04-12T10:42:48Z\",\"app_metadata\":{\"provider\":\"email\"},\"user_metadata\":{},\"created_at\":\"2020-04-12T10:42:48Z\",\"updated_at\":\"2020-04-12T10:42:48Z\"}",
+    "response": "{\"id\":\"92130508-7f49-4862-958c-37cbb9f5e857\",\"aud\":\"\",\"role\":\"\",\"email\":\"decap@p-m.si\",\"confirmed_at\":\"2020-04-12T10:42:48Z\",\"app_metadata\":{\"provider\":\"email\"},\"user_metadata\":{},\"created_at\":\"2020-04-12T10:42:48Z\",\"updated_at\":\"2020-04-12T10:42:48Z\"}",
     "status": 200
   },
   {
