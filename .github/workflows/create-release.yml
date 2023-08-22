@@ -1,7 +1,7 @@
 name: Create release
 
 on:
-  create
+  workflow_dispatch
 
 jobs:
   create-release:
