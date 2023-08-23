@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.1.0](https://github.com/decaporg/decap-cms/compare/decap-cms-locales@3.0.0...decap-cms-locales@3.1.0) (2023-08-23)
+
+
+### Features
+
+* add Slovenian locale ([#6875](https://github.com/decaporg/decap-cms/issues/6875)) ([e7a1a88](https://github.com/decaporg/decap-cms/commit/e7a1a886697625419a04a94e76799afdbd488fa3))
+
+
+
+
+
 # [3.0.0](https://github.com/decaporg/decap-cms/compare/decap-cms-locales@1.40.0...decap-cms-locales@3.0.0) (2023-08-18)
 
 **Note:** Version bump only for package decap-cms-locales
