@@ -238,8 +238,8 @@ class EditorInterface extends Component {
 
     const previewEnabled = isPreviewEnabled(collection, entry);
 
-    const collectionI18nEnabled = hasI18n(collection);
     const { locales, defaultLocale } = getI18nInfo(this.props.collection);
+    const collectionI18nEnabled = hasI18n(collection) && locales.length > 1;
     const editorProps = {
       collection,
       entry,

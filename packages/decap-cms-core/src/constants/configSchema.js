@@ -20,7 +20,7 @@ const i18n = {
     structure: { type: 'string', enum: Object.values(I18N_STRUCTURE) },
     locales: {
       type: 'array',
-      minItems: 2,
+      minItems: 1,
       items: localeType,
       uniqueItems: true,
     },
