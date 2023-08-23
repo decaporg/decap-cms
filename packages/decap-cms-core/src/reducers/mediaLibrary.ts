@@ -46,7 +46,7 @@ const defaultState: {
   config: Map<string, unknown>;
   field?: EntryField;
   value?: string | string[];
-  replaceIndex?: number;
+  replaceIndex?: number | boolean;
 } = {
   isVisible: false,
   showMediaButton: true,
@@ -91,8 +91,8 @@ function mediaLibrary(state = Map(defaultState), action: MediaLibraryAction) {
         map.set('privateUpload', privateUpload);
         map.set('config', libConfig);
         map.set('field', field ?? '');
-        map.set('value', value ?? '');
-        map.set('replaceIndex', replaceIndex ?? 0);
+        map.set('value', value == '' && libConfig.get('multiple') ? [] : (value ?? ''));
+        map.set('replaceIndex', replaceIndex ?? false);
       });
     }
 
