@@ -78,7 +78,7 @@ const sl = {
     editorControlPane: {
       widget: {
         required: '%{fieldLabel} je obvezen.',
-        regexPattern: "%{fieldLabel} se ni ujemal z vzorcem: %{pattern}.",
+        regexPattern: '%{fieldLabel} se ni ujemal z vzorcem: %{pattern}.',
         processing: '%{fieldLabel} je v obdelavi.',
         range: '%{fieldLabel} mora biti med %{minValue} in %{maxValue}.',
         min: '%{fieldLabel} mora biti vsaj %{minValue}.',
@@ -112,7 +112,8 @@ const sl = {
       onDeleteUnpublishedChanges:
         'Vse neobjavljene spremembe tega vnosa bodo izbrisane. Ali še vedno želiš izbrisati?',
       loadingEntry: 'Nalaganje vnosa ...',
-      confirmLoadBackup: 'Za ta vnos je bila povrnjena lokalna varnostna kopija, ali bi jo radi uporabili?',
+      confirmLoadBackup:
+        'Za ta vnos je bila povrnjena lokalna varnostna kopija, ali bi jo radi uporabili?',
     },
     editorInterface: {
       toggleI18n: 'Preklopi i18n',
@@ -248,7 +249,7 @@ const sl = {
     },
     errorBoundary: {
       title: 'Napaka',
-      details: "Prišlo je do napake.",
+      details: 'Prišlo je do napake.',
       reportIt: 'Odprite težavo na GitHubu.',
       detailsHeading: 'Podrobnosti',
       privacyWarning:
@@ -268,7 +269,7 @@ const sl = {
       onFailToPersist: 'Ni uspelo vztrajati: %{details}',
       onFailToDelete: 'Ni uspelo izbrisati vnosa: %{details}',
       onFailToUpdateStatus: 'Ni uspelo posodobiti stanja: %{details}',
-      missingRequiredField: "Ups, zgrešili ste obvezno polje. Pred shranjevanjem izpolnite.",
+      missingRequiredField: 'Ups, zgrešili ste obvezno polje. Pred shranjevanjem izpolnite.',
       entrySaved: 'Vnos shranjen',
       entryPublished: 'Vnos objavljen',
       entryUnpublished: 'Objava vnosa preklicana',
@@ -278,8 +279,7 @@ const sl = {
       onDeleteUnpublishedChanges: 'Neobjavljene spremembe izbrisane',
       onFailToAuth: '%{details}',
       onLoggedOut: 'Bili ste odjavljeni, varnostno kopirate vse podatke in se ponovno prijavite',
-      onBackendDown:
-        'Zaledna storitev doživlja izpad. Glejte %{details} za več informacij',
+      onBackendDown: 'Zaledna storitev doživlja izpad. Glejte %{details} za več informacij',
     },
   },
   workflow: {
