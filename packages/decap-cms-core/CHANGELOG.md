@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.1.1](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.1.0...decap-cms-core@3.1.1) (2023-08-23)
+
+
+### Bug Fixes
+
+* adding multiple images via media library ([b1a6a63](https://github.com/decaporg/decap-cms/commit/b1a6a634f86b426db92a21fa04c32836fa760721))
+* lint medialibrary ([39932d2](https://github.com/decaporg/decap-cms/commit/39932d27540480c56b3afc2a816a48a886cfc4d6))
+
+
+
+
+
 # [3.1.0](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.0.0...decap-cms-core@3.1.0) (2023-08-23)
 
 
