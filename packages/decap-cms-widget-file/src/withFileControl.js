@@ -109,10 +109,9 @@ function SortableMultiImageWrapper({
   );
 
   function handleDragEnd({ active, over }) {
-    const itemArray = valueListToArray(items);
     onSortEnd({
-      oldIndex: itemArray.indexOf(active.id),
-      newIndex: itemArray.indexOf(over.id),
+      oldIndex: items.findIndex(item => item.id === active.id),
+      newIndex: items.findIndex(item => item.id === over.id),
     });
   }
 
@@ -126,12 +125,12 @@ function SortableMultiImageWrapper({
     >
       <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
         <SortableContext items={items}>
-          {items.map((itemValue, index) => (
+          {items.map((item, index) => (
             <SortableImage
-              key={itemValue}
-              id={itemValue}
+              key={item.id}
+              id={item.id}
               index={index}
-              itemValue={itemValue}
+              itemValue={item.value}
               getAsset={getAsset}
               field={field}
               onRemove={onRemoveOne(index)}
@@ -192,7 +191,16 @@ function sizeOfValue(value) {
 }
 
 function valueListToArray(value) {
-  return List.isList(value) ? value.toArray() : value;
+  return List.isList(value) ? value.toArray() : value ?? [];
+}
+
+function valueListToSortableArray(value) {
+  const valueArray = valueListToArray(value).map(value => ({
+    id: uuid(),
+    value,
+  }));
+
+  return valueArray;
 }
 
 const warnDeprecatedOptions = once(field =>
@@ -387,10 +395,15 @@ export default function withFileControl({ forImage } = {}) {
     renderImages = () => {
       const { getAsset, value, field } = this.props;
 
+      console.log(value);
+      const items = valueListToSortableArray(value);
+
+      console.log('renderImages items', items);
+
       if (isMultiple(value)) {
         return (
           <SortableMultiImageWrapper
-            items={valueListToArray(value)}
+            items={items}
             onSortEnd={this.onSortEnd}
             onRemoveOne={this.onRemoveOne}
             onReplaceOne={this.onReplaceOne}
