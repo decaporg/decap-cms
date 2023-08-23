@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
-import ReactToggled from 'react-toggled';
 
 import { colors, colorsRaw, shadows, transitions } from './styles';
 
@@ -56,25 +55,29 @@ function Toggle({
   Background = ToggleBackground,
   Handle = ToggleHandle,
 }) {
+  const [isActive, setIsActive] = useState(active);
+
+  function handleToggle() {
+    setIsActive(prevIsActive => !prevIsActive);
+    if (onChange) {
+      onChange(!isActive);
+    }
+  }
+
   return (
-    <ReactToggled on={active} onToggle={onChange}>
-      {({ on, getTogglerProps }) => (
-        <Container
-          id={id}
-          onFocus={onFocus}
-          onBlur={onBlur}
-          className={className}
-          {...getTogglerProps({
-            role: 'switch',
-            'aria-checked': on.toString(),
-            'aria-expanded': null,
-          })}
-        >
-          <Background isActive={on} />
-          <Handle isActive={on} />
-        </Container>
-      )}
-    </ReactToggled>
+    <Container
+      id={id}
+      onFocus={onFocus}
+      onBlur={onBlur}
+      className={className}
+      onClick={handleToggle}
+      role="switch"
+      aria-checked={isActive?.toString()}
+      aria-expanded={null}
+    >
+      <Background isActive={isActive} />
+      <Handle isActive={isActive} />
+    </Container>
   );
 }
 
