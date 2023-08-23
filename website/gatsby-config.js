@@ -7,7 +7,7 @@ const staticConfig = yaml.load(fs.readFileSync('./site.yml', 'utf8'));
 
 module.exports = {
   siteMetadata: {
-    title: 'Netlify CMS | Open-Source Content Management System',
+    title: 'Decap CMS | Open-Source Content Management System',
     description: 'Open source content management for your Git workflow',
     siteUrl: pkg.homepage,
     menu: staticConfig.menu,
@@ -16,8 +16,8 @@ module.exports = {
     {
       resolve: 'gatsby-plugin-manifest',
       options: {
-        name: 'NetlifyCMS',
-        short_name: 'NetlifyCMS',
+        name: 'Decap CMS',
+        short_name: 'Decap CMS',
         start_url: '/',
         background_color: '#ffffff',
         theme_color: '#ffffff',
