@@ -91,7 +91,7 @@ function mediaLibrary(state = Map(defaultState), action: MediaLibraryAction) {
         map.set('privateUpload', privateUpload);
         map.set('config', libConfig);
         map.set('field', field ?? '');
-        map.set('value', value == '' && libConfig.get('multiple') ? [] : (value ?? ''));
+        map.set('value', value == '' && libConfig.get('multiple') ? [] : value ?? '');
         map.set('replaceIndex', replaceIndex ?? false);
       });
     }
