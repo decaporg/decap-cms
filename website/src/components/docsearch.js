@@ -34,7 +34,7 @@ function DocSearch() {
     if (window.docsearch) {
       window.docsearch({
         apiKey: '08d03dc80862e84c70c5a1e769b13019',
-        indexName: 'decapcms',
+        indexName: 'netlifycms',
         inputSelector: '#algolia-search',
         debug: false, // Set debug to true if you want to inspect the dropdown
       });
