@@ -710,3 +710,4 @@ CMS.registerCustomFormat('yml', 'yml', {
   toFile: value => jsYaml.dump(value),
 });
 ```
+
