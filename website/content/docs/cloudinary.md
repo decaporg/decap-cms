@@ -27,7 +27,7 @@ media_library:
 
 **Note:** The user must be logged in to the Cloudinary account connected to the `api_key` used in your Decap CMS configuration. 
 
-**Note:** The Decap CMS media library extensions for Cloudinary are not included in `netlify-cms-app`. If you're using `netlify-cms-app`, you'll need to [register the media libraries yourself](https://www.decapcms.org/blog/2019/07/netlify-cms-gatsby-plugin-4-0-0#using-media-libraries-with-netlify-cms-app).
+**Note:** The Decap CMS media library extensions for Cloudinary are not included in `decap-cms-app`. If you're using `decap-cms-app`, you'll need to register the media libraries yourself.
 
 ### Security Considerations
 Although this setup exposes the `cloud_name` and `api_key` publicly via the `/admin/config.yml` endpoint, this information is not sensitive. Any integration of the Cloudinary media library requires this information to be exposed publicly. To use this library or use the restricted Cloudinary API endpoints, the user must have access to the Cloudinary account login details or the `api_secret` associated with the `cloud_name` and `api_key`.
@@ -102,11 +102,11 @@ fields: # The fields each document in this collection have
   media_library:
     config:
       default_transformations:
-        - fetch_format: auto
-          width: 300    
-          quality: auto
-          crop: fill
-          effect: grayscale
+        - - fetch_format: auto
+            width: 300    
+            quality: auto
+            crop: fill
+            effect: grayscale
 ```
 
 ## Inserting Cloudinary URL in page templates

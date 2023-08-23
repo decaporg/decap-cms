@@ -176,7 +176,7 @@ function baseConfig({ target = isProduction ? 'umd' : 'umddir' } = {}) {
 
 function getConfig({ baseOnly = false } = {}) {
   if (baseOnly) {
-    // netlify-cms build
+    // decap-cms build
     return baseConfig({ target: 'umd' });
   }
   return [baseConfig({ target: 'umd' })];

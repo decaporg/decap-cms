@@ -2,14 +2,14 @@
   "scripts": {
     "bootstrap": "lerna bootstrap",
     "start": "run-s clean bootstrap build:esm develop",
-    "develop": "lerna run develop --parallel --ignore netlify-cms-proxy-server",
+    "develop": "lerna run develop --parallel --ignore decap-server",
     "build": "run-s clean build:esm build:lerna",
     "build:lerna": "lerna run build",
     "build:esm": "lerna run build:esm",
     "build-preview": "run-s build build-preview:lerna",
     "build-preview:lerna": "lerna run build-preview",
     "build:demo": "run-s build build:demo:copy",
-    "build:demo:copy": "ncp packages/netlify-cms/dist dev-test/dist/",
+    "build:demo:copy": "ncp packages/decap-cms/dist dev-test/dist/",
     "type-check": "tsc --noEmit",
     "type-check:watch": "npm run type-check -- --watch",
     "clean": "rimraf \"packages/*/dist\" dev-test/dist",
@@ -74,7 +74,7 @@
   ],
   "devDependencies": {
     "@babel/cli": "^7.11.6",
-    "@babel/core": "^7.11.6",
+    "@babel/core": "^7.20.0",
     "@babel/plugin-proposal-class-properties": "^7.10.4",
     "@babel/plugin-proposal-export-default-from": "^7.10.4",
     "@babel/plugin-proposal-nullish-coalescing-operator": "^7.10.4",
@@ -196,6 +196,7 @@
     "process": "^0.11.10"
   },
   "resolutions": {
-    "react-redux": "^7.2.0"
+    "react-redux": "^7.2.0",
+    "babel-plugin-lodash/@babel/types": "~7.20.0"
   }
 }
