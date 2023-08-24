@@ -5,10 +5,12 @@ import yamlFormatter from './yaml';
 import tomlFormatter from './toml';
 import jsonFormatter from './json';
 import { FrontmatterInfer, frontmatterJSON, frontmatterTOML, frontmatterYAML } from './frontmatter';
+import { getCustomFormatsExtensions, getCustomFormatsFormatters } from '../lib/registry';
 
 import type { Delimiter } from './frontmatter';
 import type { Collection, EntryObject, Format } from '../types/redux';
 import type { EntryValue } from '../valueObjects/Entry';
+import type { Formatter } from 'decap-cms-core';
 
 export const frontmatterFormats = ['yaml-frontmatter', 'toml-frontmatter', 'json-frontmatter'];
 
@@ -23,6 +25,10 @@ export const formatExtensions = {
   'yaml-frontmatter': 'md',
 };
 
+export function getFormatExtensions() {
+  return { ...formatExtensions, ...getCustomFormatsExtensions() };
+}
+
 export const extensionFormatters = {
   yml: yamlFormatter,
   yaml: yamlFormatter,
@@ -33,8 +39,8 @@ export const extensionFormatters = {
   html: FrontmatterInfer,
 };
 
-function formatByName(name: Format, customDelimiter?: Delimiter) {
-  return {
+function formatByName(name: Format, customDelimiter?: Delimiter): Formatter {
+  const formatters: Record<string, Formatter> = {
     yml: yamlFormatter,
     yaml: yamlFormatter,
     toml: tomlFormatter,
@@ -43,7 +49,12 @@ function formatByName(name: Format, customDelimiter?: Delimiter) {
     'json-frontmatter': frontmatterJSON(customDelimiter),
     'toml-frontmatter': frontmatterTOML(customDelimiter),
     'yaml-frontmatter': frontmatterYAML(customDelimiter),
-  }[name];
+    ...getCustomFormatsFormatters(),
+  };
+  if (name in formatters) {
+    return formatters[name];
+  }
+  throw new Error(`No formatter available with name: ${name}`);
 }
 
 function frontmatterDelimiterIsList(
