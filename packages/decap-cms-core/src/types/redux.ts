@@ -599,7 +599,7 @@ type i18n = StaticallyTypedRecord<{
   default_locale: string;
 }>;
 
-export type Format = keyof typeof formatExtensions;
+export type Format = keyof typeof formatExtensions | string;
 
 type CollectionObject = {
   name: string;

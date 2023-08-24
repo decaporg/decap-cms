@@ -7,7 +7,7 @@ import { CONFIG_SUCCESS } from '../actions/config';
 import { FILES, FOLDER } from '../constants/collectionTypes';
 import { COMMIT_DATE, COMMIT_AUTHOR } from '../constants/commitProps';
 import { INFERABLE_FIELDS, IDENTIFIER_FIELDS, SORTABLE_FIELDS } from '../constants/fieldInference';
-import { formatExtensions } from '../formats/formats';
+import { getFormatExtensions } from '../formats/formats';
 import { selectMediaFolder } from './entries';
 import { summaryFormatter } from '../lib/formatters';
 
@@ -46,10 +46,14 @@ function collections(state = defaultState, action: ConfigAction) {
 const selectors = {
   [FOLDER]: {
     entryExtension(collection: Collection) {
-      return (
+      const ext =
         collection.get('extension') ||
-        get(formatExtensions, collection.get('format') || 'frontmatter')
-      ).replace(/^\./, '');
+        get(getFormatExtensions(), collection.get('format') || 'frontmatter');
+      if (!ext) {
+        throw new Error(`No extension found for format ${collection.get('format')}`);
+      }
+
+      return ext.replace(/^\./, '');
     },
     fields(collection: Collection) {
       return collection.get('fields');
