@@ -46,6 +46,21 @@ describe('registry', () => {
     });
   });
 
+  describe('registerCustomFormat', () => {
+    it('can register a custom format', () => {
+      const { getCustomFormats, registerCustomFormat } = require('../registry');
+
+      expect(Object.keys(getCustomFormats())).not.toContain('querystring');
+
+      registerCustomFormat('querystring', 'qs', {
+        fromFile: content => Object.fromEntries(new URLSearchParams(content)),
+        toFile: obj => new URLSearchParams(obj).toString(),
+      });
+
+      expect(Object.keys(getCustomFormats())).toContain('querystring');
+    });
+  });
+
   describe('eventHandlers', () => {
     const events = [
       'prePublish',

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.2.0](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.1.1...decap-cms-core@3.2.0) (2023-08-24)
+
+
+### Features
+
+* register custom formats take 2 ([#6205](https://github.com/decaporg/decap-cms/issues/6205)) ([b3d41ea](https://github.com/decaporg/decap-cms/commit/b3d41eaede2253b92b52fba3c49968d20abe86b0))
+
+
+
+
+
 ## [3.1.1](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.1.0...decap-cms-core@3.1.1) (2023-08-23)
 
 
