@@ -26,7 +26,7 @@ jobs:
     strategy:
       matrix:
         os: [macos-latest, windows-latest, ubuntu-latest]
-        node-version: [12.x, 14.x, 16.x]
+        node-version: [12.x, 14.x, 16.x, 18.x]
     steps:
       - uses: actions/checkout@v3
         if: ${{ needs.changes.outputs.cms == 'true' }}
@@ -74,7 +74,7 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '*'
+          node-version: 18
           check-latest: true
           cache: yarn
         if: ${{ needs.changes.outputs.cms == 'true' }}

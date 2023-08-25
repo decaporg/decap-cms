@@ -11,7 +11,7 @@ const SectionLabel = styled.h3`
   margin-bottom: ${theme.space[4]};
 
   &:after {
-    background: ${theme.colors.darkGreen};
+    background: ${theme.colors.primaryDark};
     content: ' ';
     display: block;
     height: 2px;

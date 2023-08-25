@@ -1,6 +1,6 @@
 [
   {
-    "body": "grant_type=password&username=netlifyCMS%40netlify.com&password=12345678",
+    "body": "grant_type=password&username=decap%40p-m.si&password=12345678",
     "method": "POST",
     "url": "/.netlify/identity/token",
     "headers": {
@@ -33,7 +33,7 @@
       "Server": "Netlify",
       "Vary": "Origin"
     },
-    "response": "{\"id\":\"7095d206-f6a8-4c00-a711-fde907100dc0\",\"aud\":\"\",\"role\":\"\",\"email\":\"netlifyCMS@netlify.com\",\"confirmed_at\":\"2020-08-11T14:55:21Z\",\"app_metadata\":{\"provider\":\"email\"},\"user_metadata\":{},\"created_at\":\"2020-08-11T14:55:21Z\",\"updated_at\":\"2020-08-11T14:55:21Z\"}",
+    "response": "{\"id\":\"7095d206-f6a8-4c00-a711-fde907100dc0\",\"aud\":\"\",\"role\":\"\",\"email\":\"decap@p-m.si\",\"confirmed_at\":\"2020-08-11T14:55:21Z\",\"app_metadata\":{\"provider\":\"email\"},\"user_metadata\":{},\"created_at\":\"2020-08-11T14:55:21Z\",\"updated_at\":\"2020-08-11T14:55:21Z\"}",
     "status": 200
   },
   {
@@ -712,7 +712,7 @@
     "status": 201
   },
   {
-    "body": "{\"message\":\"Upload “static/media/netlify.png”\",\"tree\":\"4f7bf36ab5dcec18504ee0a215d39184cbcedd83\",\"parents\":[\"53145723604c528d6ce5f8d034b3e86234aa170a\"],\"author\":{\"name\":\"netlifyCMS\",\"email\":\"netlifyCMS@netlify.com\",\"date\":\"1970-01-01T00:00:00.000Z\"}}",
+    "body": "{\"message\":\"Upload “static/media/netlify.png”\",\"tree\":\"4f7bf36ab5dcec18504ee0a215d39184cbcedd83\",\"parents\":[\"53145723604c528d6ce5f8d034b3e86234aa170a\"],\"author\":{\"name\":\"decap\",\"email\":\"decap@p-m.si\",\"date\":\"1970-01-01T00:00:00.000Z\"}}",
     "method": "POST",
     "url": "/.netlify/git/github/git/commits",
     "headers": {
@@ -740,7 +740,7 @@
       "Connection": "keep-alive",
       "Vary": "Origin,Accept,Authorization,Cookie,X-GitHub-OTP,Accept-Encoding,Accept,X-Requested-With"
     },
-    "response": "{\"sha\":\"e52276c185e1e6a2145167ade78b09068b05bc20\",\"node_id\":\"MDY6Q29tbWl0Mjg2NzcxMTE2OmU1MjI3NmMxODVlMWU2YTIxNDUxNjdhZGU3OGIwOTA2OGIwNWJjMjA=\",\"url\":\"https://api.github.com/repos/owner/repo/git/commits/e52276c185e1e6a2145167ade78b09068b05bc20\",\"html_url\":\"https://github.com/owner/repo/commit/e52276c185e1e6a2145167ade78b09068b05bc20\",\"author\":{\"name\":\"netlifyCMS\",\"email\":\"netlifyCMS@netlify.com\",\"date\":\"1970-01-01T00:00:00Z\"},\"committer\":{\"name\":\"netlifyCMS\",\"email\":\"netlifyCMS@netlify.com\",\"date\":\"1970-01-01T00:00:00Z\"},\"tree\":{\"sha\":\"4f7bf36ab5dcec18504ee0a215d39184cbcedd83\",\"url\":\"https://api.github.com/repos/owner/repo/git/trees/4f7bf36ab5dcec18504ee0a215d39184cbcedd83\"},\"message\":\"Upload “static/media/netlify.png”\",\"parents\":[{\"sha\":\"53145723604c528d6ce5f8d034b3e86234aa170a\",\"url\":\"https://api.github.com/repos/owner/repo/git/commits/53145723604c528d6ce5f8d034b3e86234aa170a\",\"html_url\":\"https://github.com/owner/repo/commit/53145723604c528d6ce5f8d034b3e86234aa170a\"}],\"verification\":{\"verified\":false,\"reason\":\"unsigned\",\"signature\":null,\"payload\":null}}",
+    "response": "{\"sha\":\"e52276c185e1e6a2145167ade78b09068b05bc20\",\"node_id\":\"MDY6Q29tbWl0Mjg2NzcxMTE2OmU1MjI3NmMxODVlMWU2YTIxNDUxNjdhZGU3OGIwOTA2OGIwNWJjMjA=\",\"url\":\"https://api.github.com/repos/owner/repo/git/commits/e52276c185e1e6a2145167ade78b09068b05bc20\",\"html_url\":\"https://github.com/owner/repo/commit/e52276c185e1e6a2145167ade78b09068b05bc20\",\"author\":{\"name\":\"decap\",\"email\":\"decap@p-m.si\",\"date\":\"1970-01-01T00:00:00Z\"},\"committer\":{\"name\":\"decap\",\"email\":\"decap@p-m.si\",\"date\":\"1970-01-01T00:00:00Z\"},\"tree\":{\"sha\":\"4f7bf36ab5dcec18504ee0a215d39184cbcedd83\",\"url\":\"https://api.github.com/repos/owner/repo/git/trees/4f7bf36ab5dcec18504ee0a215d39184cbcedd83\"},\"message\":\"Upload “static/media/netlify.png”\",\"parents\":[{\"sha\":\"53145723604c528d6ce5f8d034b3e86234aa170a\",\"url\":\"https://api.github.com/repos/owner/repo/git/commits/53145723604c528d6ce5f8d034b3e86234aa170a\",\"html_url\":\"https://github.com/owner/repo/commit/53145723604c528d6ce5f8d034b3e86234aa170a\"}],\"verification\":{\"verified\":false,\"reason\":\"unsigned\",\"signature\":null,\"payload\":null}}",
     "status": 201
   },
   {
@@ -801,7 +801,7 @@
       "Vary": "Origin,Accept,Authorization,Cookie,X-GitHub-OTP,Accept-Encoding,Accept,X-Requested-With",
       "content-length": "2628"
     },
-    "response": "{\"name\":\"master\",\"commit\":{\"sha\":\"e52276c185e1e6a2145167ade78b09068b05bc20\",\"node_id\":\"MDY6Q29tbWl0Mjg2NzcxMTE2OmU1MjI3NmMxODVlMWU2YTIxNDUxNjdhZGU3OGIwOTA2OGIwNWJjMjA=\",\"commit\":{\"author\":{\"name\":\"netlifyCMS\",\"email\":\"netlifyCMS@netlify.com\",\"date\":\"1970-01-01T00:00:00Z\"},\"committer\":{\"name\":\"netlifyCMS\",\"email\":\"netlifyCMS@netlify.com\",\"date\":\"1970-01-01T00:00:00Z\"},\"message\":\"Upload “static/media/netlify.png”\",\"tree\":{\"sha\":\"4f7bf36ab5dcec18504ee0a215d39184cbcedd83\",\"url\":\"https://api.github.com/repos/owner/repo/git/trees/4f7bf36ab5dcec18504ee0a215d39184cbcedd83\"},\"url\":\"https://api.github.com/repos/owner/repo/git/commits/e52276c185e1e6a2145167ade78b09068b05bc20\",\"comment_count\":0,\"verification\":{\"verified\":false,\"reason\":\"unsigned\",\"signature\":null,\"payload\":null}},\"url\":\"https://api.github.com/repos/owner/repo/commits/e52276c185e1e6a2145167ade78b09068b05bc20\",\"html_url\":\"https://github.com/owner/repo/commit/e52276c185e1e6a2145167ade78b09068b05bc20\",\"comments_url\":\"https://api.github.com/repos/owner/repo/commits/e52276c185e1e6a2145167ade78b09068b05bc20/comments\",\"author\":null,\"committer\":null,\"parents\":[{\"sha\":\"53145723604c528d6ce5f8d034b3e86234aa170a\",\"url\":\"https://api.github.com/repos/owner/repo/commits/53145723604c528d6ce5f8d034b3e86234aa170a\",\"html_url\":\"https://github.com/owner/repo/commit/53145723604c528d6ce5f8d034b3e86234aa170a\"}]},\"_links\":{\"self\":\"https://api.github.com/repos/owner/repo/branches/master\",\"html\":\"https://github.com/owner/repo/tree/master\"},\"protected\":false,\"protection\":{\"enabled\":false,\"required_status_checks\":{\"enforcement_level\":\"off\",\"contexts\":[]}},\"protection_url\":\"https://api.github.com/repos/owner/repo/branches/master/protection\"}",
+    "response": "{\"name\":\"master\",\"commit\":{\"sha\":\"e52276c185e1e6a2145167ade78b09068b05bc20\",\"node_id\":\"MDY6Q29tbWl0Mjg2NzcxMTE2OmU1MjI3NmMxODVlMWU2YTIxNDUxNjdhZGU3OGIwOTA2OGIwNWJjMjA=\",\"commit\":{\"author\":{\"name\":\"decap\",\"email\":\"decap@p-m.si\",\"date\":\"1970-01-01T00:00:00Z\"},\"committer\":{\"name\":\"decap\",\"email\":\"decap@p-m.si\",\"date\":\"1970-01-01T00:00:00Z\"},\"message\":\"Upload “static/media/netlify.png”\",\"tree\":{\"sha\":\"4f7bf36ab5dcec18504ee0a215d39184cbcedd83\",\"url\":\"https://api.github.com/repos/owner/repo/git/trees/4f7bf36ab5dcec18504ee0a215d39184cbcedd83\"},\"url\":\"https://api.github.com/repos/owner/repo/git/commits/e52276c185e1e6a2145167ade78b09068b05bc20\",\"comment_count\":0,\"verification\":{\"verified\":false,\"reason\":\"unsigned\",\"signature\":null,\"payload\":null}},\"url\":\"https://api.github.com/repos/owner/repo/commits/e52276c185e1e6a2145167ade78b09068b05bc20\",\"html_url\":\"https://github.com/owner/repo/commit/e52276c185e1e6a2145167ade78b09068b05bc20\",\"comments_url\":\"https://api.github.com/repos/owner/repo/commits/e52276c185e1e6a2145167ade78b09068b05bc20/comments\",\"author\":null,\"committer\":null,\"parents\":[{\"sha\":\"53145723604c528d6ce5f8d034b3e86234aa170a\",\"url\":\"https://api.github.com/repos/owner/repo/commits/53145723604c528d6ce5f8d034b3e86234aa170a\",\"html_url\":\"https://github.com/owner/repo/commit/53145723604c528d6ce5f8d034b3e86234aa170a\"}]},\"_links\":{\"self\":\"https://api.github.com/repos/owner/repo/branches/master\",\"html\":\"https://github.com/owner/repo/tree/master\"},\"protected\":false,\"protection\":{\"enabled\":false,\"required_status_checks\":{\"enforcement_level\":\"off\",\"contexts\":[]}},\"protection_url\":\"https://api.github.com/repos/owner/repo/branches/master/protection\"}",
     "status": 200
   },
   {
@@ -837,7 +837,7 @@
     "status": 201
   },
   {
-    "body": "{\"message\":\"Delete “static/media/netlify.png”\",\"tree\":\"9801bc49ad87a5f15cbe4e701e0a9899e7500038\",\"parents\":[\"e52276c185e1e6a2145167ade78b09068b05bc20\"],\"author\":{\"name\":\"netlifyCMS\",\"email\":\"netlifyCMS@netlify.com\",\"date\":\"1970-01-01T00:00:00.000Z\"}}",
+    "body": "{\"message\":\"Delete “static/media/netlify.png”\",\"tree\":\"9801bc49ad87a5f15cbe4e701e0a9899e7500038\",\"parents\":[\"e52276c185e1e6a2145167ade78b09068b05bc20\"],\"author\":{\"name\":\"decap\",\"email\":\"decap@p-m.si\",\"date\":\"1970-01-01T00:00:00.000Z\"}}",
     "method": "POST",
     "url": "/.netlify/git/github/git/commits",
     "headers": {
@@ -865,7 +865,7 @@
       "Connection": "keep-alive",
       "Vary": "Origin,Accept,Authorization,Cookie,X-GitHub-OTP,Accept-Encoding,Accept,X-Requested-With"
     },
-    "response": "{\"sha\":\"66200efd1d7c87d4fba2d7ed5385d3e81edd2bd6\",\"node_id\":\"MDY6Q29tbWl0Mjg2NzcxMTE2OjY2MjAwZWZkMWQ3Yzg3ZDRmYmEyZDdlZDUzODVkM2U4MWVkZDJiZDY=\",\"url\":\"https://api.github.com/repos/owner/repo/git/commits/66200efd1d7c87d4fba2d7ed5385d3e81edd2bd6\",\"html_url\":\"https://github.com/owner/repo/commit/66200efd1d7c87d4fba2d7ed5385d3e81edd2bd6\",\"author\":{\"name\":\"netlifyCMS\",\"email\":\"netlifyCMS@netlify.com\",\"date\":\"1970-01-01T00:00:00Z\"},\"committer\":{\"name\":\"netlifyCMS\",\"email\":\"netlifyCMS@netlify.com\",\"date\":\"1970-01-01T00:00:00Z\"},\"tree\":{\"sha\":\"9801bc49ad87a5f15cbe4e701e0a9899e7500038\",\"url\":\"https://api.github.com/repos/owner/repo/git/trees/9801bc49ad87a5f15cbe4e701e0a9899e7500038\"},\"message\":\"Delete “static/media/netlify.png”\",\"parents\":[{\"sha\":\"e52276c185e1e6a2145167ade78b09068b05bc20\",\"url\":\"https://api.github.com/repos/owner/repo/git/commits/e52276c185e1e6a2145167ade78b09068b05bc20\",\"html_url\":\"https://github.com/owner/repo/commit/e52276c185e1e6a2145167ade78b09068b05bc20\"}],\"verification\":{\"verified\":false,\"reason\":\"unsigned\",\"signature\":null,\"payload\":null}}",
+    "response": "{\"sha\":\"66200efd1d7c87d4fba2d7ed5385d3e81edd2bd6\",\"node_id\":\"MDY6Q29tbWl0Mjg2NzcxMTE2OjY2MjAwZWZkMWQ3Yzg3ZDRmYmEyZDdlZDUzODVkM2U4MWVkZDJiZDY=\",\"url\":\"https://api.github.com/repos/owner/repo/git/commits/66200efd1d7c87d4fba2d7ed5385d3e81edd2bd6\",\"html_url\":\"https://github.com/owner/repo/commit/66200efd1d7c87d4fba2d7ed5385d3e81edd2bd6\",\"author\":{\"name\":\"decap\",\"email\":\"decap@p-m.si\",\"date\":\"1970-01-01T00:00:00Z\"},\"committer\":{\"name\":\"decap\",\"email\":\"decap@p-m.si\",\"date\":\"1970-01-01T00:00:00Z\"},\"tree\":{\"sha\":\"9801bc49ad87a5f15cbe4e701e0a9899e7500038\",\"url\":\"https://api.github.com/repos/owner/repo/git/trees/9801bc49ad87a5f15cbe4e701e0a9899e7500038\"},\"message\":\"Delete “static/media/netlify.png”\",\"parents\":[{\"sha\":\"e52276c185e1e6a2145167ade78b09068b05bc20\",\"url\":\"https://api.github.com/repos/owner/repo/git/commits/e52276c185e1e6a2145167ade78b09068b05bc20\",\"html_url\":\"https://github.com/owner/repo/commit/e52276c185e1e6a2145167ade78b09068b05bc20\"}],\"verification\":{\"verified\":false,\"reason\":\"unsigned\",\"signature\":null,\"payload\":null}}",
     "status": 201
   },
   {

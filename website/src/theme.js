@@ -16,6 +16,8 @@ module.exports = {
     darkerGreen: '#628013',
     shadeBlue: '#EFF0F4',
     blue: '#3A69C7',
+    primaryLight: '#ff0080',
+    primaryDark: '#683bab',
   },
   fontWeight: {
     thin: 100,
@@ -28,7 +30,7 @@ module.exports = {
   fontFamily: "'Roboto', -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
   fontsize: ['10px', '12px', '14px', '16px', '18px', '24px', '32px', '42px', '64px'],
   lineHeight: [1, 1.3, 1.7],
-  space: [0, '4px', '8px', '16px', '24px', '40px', '64px', '104px', '152px'],
+  space: [0, '4px', '8px', '16px', '24px', '40px', '64px', '96px', '144px'],
   radii: [0, '4px', '8px'],
   breakpoints: [480, 768, 960, 1200, 1280],
   zIndexes: {
