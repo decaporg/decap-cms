@@ -26,7 +26,7 @@
   "peerDependencies": {
     "@emotion/core": "^10.0.35",
     "@emotion/styled": "^10.0.27",
-    "decap-cms-ui-default": "^2.12.1",
+    "decap-cms-ui-default": "^3.0.0",
     "prop-types": "^15.7.2",
     "react": "^16.8.4 || ^17.0.0"
   }
