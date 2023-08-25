@@ -28,12 +28,12 @@
   "peerDependencies": {
     "@emotion/core": "^10.0.35",
     "@emotion/styled": "^10.0.27",
-    "decap-cms-backend-bitbucket": "^2.12.8",
-    "decap-cms-backend-github": "^2.11.9",
-    "decap-cms-backend-gitlab": "^2.9.9",
-    "decap-cms-lib-auth": "^2.3.0",
-    "decap-cms-lib-util": "^2.12.3",
-    "decap-cms-ui-default": "^2.12.1",
+    "decap-cms-backend-bitbucket": "^3.0.0",
+    "decap-cms-backend-github": "^3.0.0",
+    "decap-cms-backend-gitlab": "^3.0.0",
+    "decap-cms-lib-auth": "^3.0.0",
+    "decap-cms-lib-util": "^3.0.0",
+    "decap-cms-ui-default": "^3.0.0",
     "lodash": "^4.17.11",
     "prop-types": "^15.7.2",
     "react": "^16.8.4 || ^17.0.0"
