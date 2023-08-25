@@ -20,13 +20,14 @@ jobs:
           filters: |
             cms:
               - '!website/**'
+
   build:
     needs: changes
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [macos-latest, windows-latest, ubuntu-latest]
-        node-version: [14.x, 16.x, 18.x]
+        node-version: [16.x, 18.x]
     steps:
       - uses: actions/checkout@v3
         if: ${{ needs.changes.outputs.cms == 'true' }}
@@ -65,8 +66,8 @@ jobs:
 
     strategy:
       matrix:
-        machine: [1, 2, 3]
-        node-version: [14.x, 16.x, 18.x]
+        machine: [1, 2]
+        node-version: [16.x, 18.x]
       fail-fast: false
 
     steps:
@@ -98,7 +99,7 @@ jobs:
           IS_FORK: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == true }}
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           NODE_OPTIONS: --max-old-space-size=4096
-          MACHINE_COUNT: 3
+          MACHINE_COUNT: 4
           MACHINE_INDEX: ${{ matrix.machine }}
         if: ${{ needs.changes.outputs.cms == 'true' }}
       - uses: actions/upload-artifact@v3
