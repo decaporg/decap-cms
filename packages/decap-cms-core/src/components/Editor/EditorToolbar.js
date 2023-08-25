@@ -451,6 +451,7 @@ export class EditorToolbar extends React.Component {
       <ToolbarDropdown
         dropdownTopOverlap="40px"
         dropdownWidth="150px"
+        key="td-publish-create"
         renderButton={() => (
           <PublishedToolbarButton>
             {isPersisting
