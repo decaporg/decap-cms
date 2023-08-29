@@ -1,7 +1,7 @@
 {
   "name": "decap-cms-backend-github",
   "description": "GitHub backend for Decap CMS",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "license": "MIT",
   "repository": "https://github.com/decaporg/decap-cms/tree/master/packages/decap-cms-backend-github",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
@@ -33,9 +33,9 @@
   "peerDependencies": {
     "@emotion/core": "^10.0.35",
     "@emotion/styled": "^10.0.27",
-    "decap-cms-lib-auth": "^2.3.0",
-    "decap-cms-lib-util": "^2.12.3",
-    "decap-cms-ui-default": "^2.12.1",
+    "decap-cms-lib-auth": "^3.0.0",
+    "decap-cms-lib-util": "^3.0.0",
+    "decap-cms-ui-default": "^3.0.0",
     "lodash": "^4.17.11",
     "prop-types": "^15.7.2",
     "react": "^16.8.4 || ^17.0.0"
