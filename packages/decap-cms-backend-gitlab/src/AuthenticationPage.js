@@ -63,7 +63,7 @@ export default class GitLabAuthenticationPage extends React.Component {
         base_url: this.props.base_url,
         site_id:
           document.location.host.split(':')[0] === 'localhost'
-            ? 'cms-demo.netlify.com'
+            ? 'demo.decapcms.org'
             : this.props.siteId,
         auth_endpoint: this.props.authEndpoint,
       });
