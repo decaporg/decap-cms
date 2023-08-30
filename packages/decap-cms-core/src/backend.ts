@@ -46,6 +46,7 @@ import {
   getI18nDataFiles,
   getI18nBackup,
   formatI18nBackup,
+  getI18nInfo,
 } from './lib/i18n';
 
 import type AssetProxy from './valueObjects/AssetProxy';
@@ -307,6 +308,27 @@ function collectionDepth(collection: Collection) {
   return depth;
 }
 
+function collectionRegex(collection: Collection): RegExp | undefined {
+  console.log('collection', collection.toJS());
+  let ruleString = '';
+
+  if (collection.get('path')) {
+    ruleString = `${collection.get('folder')}/${collection.get('path')}`.replace(
+      /{{.*}}/gm,
+      '(.*)',
+    );
+  }
+
+  if (hasI18n(collection)) {
+    const { defaultLocale } = getI18nInfo(collection) as { defaultLocale: string };
+    ruleString += `\\.${defaultLocale}\\..*`;
+  }
+
+  console.log('ruleString', ruleString);
+
+  return ruleString ? new RegExp(ruleString) : undefined;
+}
+
 export class Backend {
   implementation: Implementation;
   backendName: string;
@@ -552,7 +574,12 @@ export class Backend {
       const depth = collectionDepth(collection);
       const extension = selectFolderEntryExtension(collection);
       return this.implementation
-        .allEntriesByFolder(collection.get('folder') as string, extension, depth)
+        .allEntriesByFolder(
+          collection.get('folder') as string,
+          extension,
+          depth,
+          collectionRegex(collection),
+        )
         .then(entries => this.processEntries(entries, collection));
     }
 
