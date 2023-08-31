@@ -46,7 +46,6 @@
     "decap-cms-widget-boolean": "^3.0.1",
     "decap-cms-widget-code": "^3.0.1",
     "decap-cms-widget-colorstring": "^3.0.1",
-    "decap-cms-widget-date": "^3.0.1",
     "decap-cms-widget-datetime": "^3.0.1",
     "decap-cms-widget-file": "^3.0.1",
     "decap-cms-widget-image": "^3.0.1",
