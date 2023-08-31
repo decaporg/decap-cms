@@ -21,7 +21,6 @@ import DecapCmsWidgetObject from 'decap-cms-widget-object';
 import DecapCmsWidgetRelation from 'decap-cms-widget-relation';
 import DecapCmsWidgetBoolean from 'decap-cms-widget-boolean';
 import DecapCmsWidgetMap from 'decap-cms-widget-map';
-import DecapCmsWidgetDate from 'decap-cms-widget-date';
 import DecapCmsWidgetDatetime from 'decap-cms-widget-datetime';
 import DecapCmsWidgetCode from 'decap-cms-widget-code';
 import DecapCmsWidgetColorString from 'decap-cms-widget-colorstring';
@@ -51,7 +50,6 @@ CMS.registerWidget([
   DecapCmsWidgetRelation.Widget(),
   DecapCmsWidgetBoolean.Widget(),
   DecapCmsWidgetMap.Widget(),
-  DecapCmsWidgetDate.Widget(),
   DecapCmsWidgetDatetime.Widget(),
   DecapCmsWidgetCode.Widget(),
   DecapCmsWidgetColorString.Widget(),
