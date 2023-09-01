@@ -394,12 +394,7 @@ export default function withFileControl({ forImage } = {}) {
 
     renderImages = () => {
       const { getAsset, value, field } = this.props;
-
-      console.log(value);
       const items = valueListToSortableArray(value);
-
-      console.log('renderImages items', items);
-
       if (isMultiple(value)) {
         return (
           <SortableMultiImageWrapper
