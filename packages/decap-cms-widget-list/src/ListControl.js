@@ -7,8 +7,16 @@ import { List, Map, fromJS } from 'immutable';
 import { partial, isEmpty, uniqueId } from 'lodash';
 import uuid from 'uuid/v4';
 import DecapCmsWidgetObject from 'decap-cms-widget-object';
-import { DndContext, MouseSensor, useSensor, useSensors } from '@dnd-kit/core';
+import {
+  DndContext,
+  MouseSensor,
+  TouchSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
 import { SortableContext, useSortable } from '@dnd-kit/sortable';
+import { restrictToParentElement } from '@dnd-kit/modifiers';
 import { CSS } from '@dnd-kit/utilities';
 import {
   ListItemTopBar,
@@ -66,12 +74,10 @@ const styles = {
 };
 
 function SortableList({ items, children, onSortEnd, keys }) {
+  const activationConstraint = { distance: 4 };
   const sensors = useSensors(
-    useSensor(MouseSensor, {
-      activationConstraint: {
-        distance: 10,
-      },
-    }),
+    useSensor(MouseSensor, { activationConstraint }),
+    useSensor(TouchSensor, { activationConstraint }),
   );
 
   function handleSortEnd({ active, over }) {
@@ -83,7 +89,12 @@ function SortableList({ items, children, onSortEnd, keys }) {
 
   return (
     <div>
-      <DndContext sensors={sensors} onDragEnd={handleSortEnd}>
+      <DndContext
+        modifiers={[restrictToParentElement]}
+        collisionDetection={closestCenter}
+        sensors={sensors}
+        onDragEnd={handleSortEnd}
+      >
         <SortableContext items={items}>{children}</SortableContext>
       </DndContext>
     </div>

@@ -63,22 +63,17 @@ function MultiValueLabel(props) {
 }
 
 function SortableSelect(props) {
+  const { distance, value, onSortEnd } = props;
+  const keys = value.map(({ data }) => data.id) || [];
+
+  const activationConstraint = { distance };
   const sensors = useSensors(
-    useSensor(MouseSensor, {
-      activationConstraint: {
-        distance: props.distance,
-      },
-    }),
-    useSensor(TouchSensor, {
-      activationConstraint: {
-        distance: props.distance,
-      },
-    }),
+    useSensor(MouseSensor, { activationConstraint }),
+    useSensor(TouchSensor, { activationConstraint }),
   );
-  const keys = props.value.map(({ data }) => data.id) || [];
 
   function handleSortEnd({ active, over }) {
-    props.onSortEnd({
+    onSortEnd({
       oldIndex: keys.indexOf(active.id),
       newIndex: keys.indexOf(over.id),
     });
@@ -87,9 +82,9 @@ function SortableSelect(props) {
   return (
     <DndContext
       modifiers={[restrictToParentElement]}
+      collisionDetection={closestCenter}
       sensors={sensors}
       onDragEnd={handleSortEnd}
-      collisionDetection={closestCenter}
     >
       <SortableContext items={keys} strategy={horizontalListSortingStrategy}>
         <AsyncSelect {...props} />

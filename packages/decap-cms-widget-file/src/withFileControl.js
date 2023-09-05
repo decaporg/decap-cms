@@ -18,9 +18,17 @@ import {
 } from 'decap-cms-ui-default';
 import { basename } from 'decap-cms-lib-util';
 import { arrayMoveImmutable as arrayMove } from 'array-move';
-import { DndContext, MouseSensor, useSensor, useSensors } from '@dnd-kit/core';
+import {
+  DndContext,
+  MouseSensor,
+  TouchSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
 import { SortableContext, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { restrictToParentElement } from '@dnd-kit/modifiers';
 
 const MAX_DISPLAY_LENGTH = 50;
 
@@ -100,15 +108,13 @@ function SortableMultiImageWrapper({
   onRemoveOne,
   onReplaceOne,
 }) {
+  const activationConstraint = { distance: 4 };
   const sensors = useSensors(
-    useSensor(MouseSensor, {
-      activationConstraint: {
-        distance: 10,
-      },
-    }),
+    useSensor(MouseSensor, { activationConstraint }),
+    useSensor(TouchSensor, { activationConstraint }),
   );
 
-  function handleDragEnd({ active, over }) {
+  function handleSortEnd({ active, over }) {
     onSortEnd({
       oldIndex: items.findIndex(item => item.id === active.id),
       newIndex: items.findIndex(item => item.id === over.id),
@@ -123,7 +129,12 @@ function SortableMultiImageWrapper({
         flex-wrap: wrap;
       `}
     >
-      <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+      <DndContext
+        modifiers={[restrictToParentElement]}
+        collisionDetection={closestCenter}
+        sensors={sensors}
+        onDragEnd={handleSortEnd}
+      >
         <SortableContext items={items}>
           {items.map((item, index) => (
             <SortableImage
