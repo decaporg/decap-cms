@@ -21,8 +21,8 @@
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
   },
   "dependencies": {
+    "@dnd-kit/modifiers": "^6.0.1",
     "react-select": "^4.0.0",
-    "react-sortable-hoc": "^2.0.0",
     "react-window": "^1.8.5"
   },
   "peerDependencies": {

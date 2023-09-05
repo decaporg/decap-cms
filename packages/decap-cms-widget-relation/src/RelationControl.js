@@ -8,7 +8,18 @@ import { fromJS, List, Map } from 'immutable';
 import { reactSelectStyles } from 'decap-cms-ui-default';
 import { stringTemplate, validations } from 'decap-cms-lib-widgets';
 import { FixedSizeList } from 'react-window';
-import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
+import {
+  DndContext,
+  MouseSensor,
+  TouchSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import { SortableContext, horizontalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
+import { restrictToParentElement } from '@dnd-kit/modifiers';
+import { CSS } from '@dnd-kit/utilities';
+import uuid from 'uuid';
 
 function arrayMove(array, from, to) {
   const slicedArray = array.slice();
@@ -16,20 +27,76 @@ function arrayMove(array, from, to) {
   return slicedArray;
 }
 
-const MultiValue = SortableElement(props => {
-  // prevent the menu from being opened/closed when the user clicks on a value to begin dragging it
+function MultiValue(props) {
+  const { setNodeRef, transform, transition } = useSortable({
+    id: props.data.data.id,
+  });
+
   function onMouseDown(e) {
     e.preventDefault();
     e.stopPropagation();
   }
 
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
   const innerProps = { ...props.innerProps, onMouseDown };
-  return <components.MultiValue {...props} innerProps={innerProps} />;
-});
+  return (
+    <div ref={setNodeRef} style={style}>
+      <components.MultiValue {...props} innerProps={innerProps} />
+    </div>
+  );
+}
 
-const MultiValueLabel = SortableHandle(props => <components.MultiValueLabel {...props} />);
+function MultiValueLabel(props) {
+  const { attributes, listeners } = useSortable({
+    id: props.data.data.id,
+  });
 
-const SortableSelect = SortableContainer(AsyncSelect);
+  return (
+    <div {...attributes} {...listeners}>
+      <components.MultiValueLabel {...props} />
+    </div>
+  );
+}
+
+function SortableSelect(props) {
+  const sensors = useSensors(
+    useSensor(MouseSensor, {
+      activationConstraint: {
+        distance: props.distance,
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        distance: props.distance,
+      },
+    }),
+  );
+  const keys = props.value.map(({ data }) => data.id) || [];
+
+  function handleSortEnd({ active, over }) {
+    props.onSortEnd({
+      oldIndex: keys.indexOf(active.id),
+      newIndex: keys.indexOf(over.id),
+    });
+  }
+
+  return (
+    <DndContext
+      modifiers={[restrictToParentElement]}
+      sensors={sensors}
+      onDragEnd={handleSortEnd}
+      collisionDetection={closestCenter}
+    >
+      <SortableContext items={keys} strategy={horizontalListSortingStrategy}>
+        <AsyncSelect {...props} />
+      </SortableContext>
+    </DndContext>
+  );
+}
 
 function Option({ index, style, data }) {
   return <div style={style}>{data.options[index]}</div>;
@@ -94,11 +161,22 @@ function getSelectedValue({ value, options, isMultiple }) {
     const selected = selectedOptions
       .map(i => options.find(o => o.value === (i.value || i)))
       .filter(Boolean)
-      .map(convertToOption);
+      .map(convertToSortableOption);
     return selected;
   } else {
     return find(options, ['value', value]) || null;
   }
+}
+
+function convertToSortableOption(raw) {
+  const option = convertToOption(raw);
+  return {
+    ...option,
+    data: {
+      ...option.data,
+      id: uuid(),
+    },
+  };
 }
 
 export default class RelationControl extends React.Component {
@@ -311,12 +389,8 @@ export default class RelationControl extends React.Component {
     return (
       <SortableSelect
         useDragHandle
-        // react-sortable-hoc props:
-        axis="xy"
         onSortEnd={this.onSortEnd(selectedValue)}
         distance={4}
-        // small fix for https://github.com/clauderic/react-sortable-hoc/pull/352:
-        getHelperDimensions={({ node }) => node.getBoundingClientRect()}
         // react-select props:
         components={{ MenuList, MultiValue, MultiValueLabel }}
         value={selectedValue}
