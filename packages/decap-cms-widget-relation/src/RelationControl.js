@@ -63,8 +63,13 @@ function MultiValueLabel(props) {
 }
 
 function SortableSelect(props) {
-  const { distance, value, onSortEnd } = props;
-  const keys = value.map(({ data }) => data.id) || [];
+  const { distance, value, onSortEnd, isMulti } = props;
+
+  if (!isMulti) {
+    return <AsyncSelect {...props} />;
+  }
+
+  const keys = Array.isArray(value) ? value.map(({ data }) => data.id) : [];
 
   const activationConstraint = { distance };
   const sensors = useSensors(
