@@ -114,13 +114,14 @@ function SortableListItem(props) {
   const { collapsed } = props;
 
   return (
-    <div
+    <ListItem
+      sortable
       ref={setNodeRef}
       style={style}
       css={[styles.listControlItem, collapsed && styles.listControlItemCollapsed]}
     >
-      <ListItem sortable>{props.children}</ListItem>
-    </div>
+      {props.children}
+    </ListItem>
   );
 }
 
@@ -592,6 +593,8 @@ export default class ListControl extends React.Component {
       }
     }
 
+    console.log('kurwa', classNameWrapper);
+
     return (
       <SortableListItem
         css={[styles.listControlItem, collapsed && styles.listControlItemCollapsed]}
@@ -670,7 +673,7 @@ export default class ListControl extends React.Component {
           id={key}
         />
         <NestedObjectLabel collapsed={true} error={true}>
-          {errorMessage}
+          {errorMessage}aaaasdd
         </NestedObjectLabel>
       </SortableListItem>
     );
