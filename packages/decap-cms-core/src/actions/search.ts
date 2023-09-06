@@ -176,11 +176,10 @@ export function query(
     const queryIdentifier = `${collectionName}-${searchFields.join()}-${searchTerm}-${file}-${limit}`;
 
     const queuedQueryPromise = state.search.requests.find(({ id }) => id == queryIdentifier);
-    // const queuedQueryPromise = null
 
     const queryPromise = queuedQueryPromise
       ? queuedQueryPromise.queryResponse
-      :integration
+      : integration
       ? getIntegrationProvider(state.integrations, backend.getToken, integration).searchBy(
           searchFields.map(f => `data.${f}`),
           collectionName,
