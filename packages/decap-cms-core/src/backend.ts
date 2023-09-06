@@ -309,7 +309,6 @@ function collectionDepth(collection: Collection) {
 }
 
 function collectionRegex(collection: Collection): RegExp | undefined {
-  console.log('collection', collection.toJS());
   let ruleString = '';
 
   if (collection.get('path')) {
@@ -323,8 +322,6 @@ function collectionRegex(collection: Collection): RegExp | undefined {
     const { defaultLocale } = getI18nInfo(collection) as { defaultLocale: string };
     ruleString += `\\.${defaultLocale}\\..*`;
   }
-
-  console.log('ruleString', ruleString);
 
   return ruleString ? new RegExp(ruleString) : undefined;
 }
