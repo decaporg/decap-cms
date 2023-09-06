@@ -3,6 +3,52 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.2.3](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.2.2...decap-cms-core@3.2.3) (2023-09-06)
+
+
+### Bug Fixes
+
+* fill from locale error if undefined ([#6897](https://github.com/decaporg/decap-cms/issues/6897)) ([2c8aaf8](https://github.com/decaporg/decap-cms/commit/2c8aaf8c589da8436588b33261e6af9701d59b42))
+
+
+### Performance Improvements
+
+* filter by path when loading collection from github backend ([#6898](https://github.com/decaporg/decap-cms/issues/6898)) ([18ef773](https://github.com/decaporg/decap-cms/commit/18ef773f35db1b7ef3ab5a0f25527d87745b9c73))
+
+
+
+
+
+## [3.2.2](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.2.1...decap-cms-core@3.2.2) (2023-08-25)
+
+
+### Bug Fixes
+
+* update peer dependencies ([#6886](https://github.com/decaporg/decap-cms/issues/6886)) ([e580ce5](https://github.com/decaporg/decap-cms/commit/e580ce52ce5f80fa040e8fbcab7fed0744f4f695))
+
+
+
+
+
+## [3.2.1](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.2.0...decap-cms-core@3.2.1) (2023-08-25)
+
+**Note:** Version bump only for package decap-cms-core
+
+
+
+
+
+# [3.2.0](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.1.1...decap-cms-core@3.2.0) (2023-08-24)
+
+
+### Features
+
+* register custom formats take 2 ([#6205](https://github.com/decaporg/decap-cms/issues/6205)) ([b3d41ea](https://github.com/decaporg/decap-cms/commit/b3d41eaede2253b92b52fba3c49968d20abe86b0))
+
+
+
+
+
 ## [3.1.1](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.1.0...decap-cms-core@3.1.1) (2023-08-23)
 
 

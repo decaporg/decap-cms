@@ -1,7 +1,7 @@
 {
   "name": "decap-cms-ui-default",
   "description": "Default UI components for Decap CMS.",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "repository": "https://github.com/decaporg/decap-cms/tree/master/packages/decap-cms-ui-default",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
   "license": "MIT",
@@ -18,7 +18,6 @@
   },
   "dependencies": {
     "react-aria-menubutton": "^7.0.0",
-    "react-toggled": "^1.1.2",
     "react-transition-group": "^4.4.5"
   },
   "peerDependencies": {

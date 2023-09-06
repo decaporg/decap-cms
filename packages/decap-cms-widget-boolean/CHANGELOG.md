@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.0.1](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-boolean@3.0.0...decap-cms-widget-boolean@3.0.1) (2023-08-25)
+
+
+### Bug Fixes
+
+* update peer dependencies ([#6886](https://github.com/decaporg/decap-cms/issues/6886)) ([e580ce5](https://github.com/decaporg/decap-cms/commit/e580ce52ce5f80fa040e8fbcab7fed0744f4f695))
+
+
+
+
+
 # [3.0.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-boolean@2.5.0...decap-cms-widget-boolean@3.0.0) (2023-08-18)
 
 **Note:** Version bump only for package decap-cms-widget-boolean

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.0.1](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-util@3.0.0...decap-cms-lib-util@3.0.1) (2023-09-06)
+
+
+### Performance Improvements
+
+* filter by path when loading collection from github backend ([#6898](https://github.com/decaporg/decap-cms/issues/6898)) ([18ef773](https://github.com/decaporg/decap-cms/commit/18ef773f35db1b7ef3ab5a0f25527d87745b9c73))
+
+
+
+
+
 # [3.0.0](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-util@2.16.0...decap-cms-lib-util@3.0.0) (2023-08-18)
 
 **Note:** Version bump only for package decap-cms-lib-util
