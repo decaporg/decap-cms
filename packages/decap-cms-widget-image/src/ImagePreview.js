@@ -17,8 +17,8 @@ function StyledImageAsset({ getAsset, value, field }) {
 function ImagePreviewContent(props) {
   const { value, getAsset, field } = props;
   if (Array.isArray(value) || List.isList(value)) {
-    return value.map(val => (
-      <StyledImageAsset key={val} value={val} getAsset={getAsset} field={field} />
+    return value.map((val, index) => (
+      <StyledImageAsset key={index} value={val} getAsset={getAsset} field={field} />
     ));
   }
   return <StyledImageAsset {...props} />;

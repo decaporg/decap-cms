@@ -103,6 +103,14 @@ exports[`ListControl should add to list when add button is clicked 1`] = `
   height: 100%;
 }
 
+.emotion-16 {
+  margin-top: 18px;
+}
+
+.emotion-16:first-of-type {
+  margin-top: 26px;
+}
+
 .emotion-1 {
   display: inline-block;
   line-height: 0;
@@ -127,14 +135,6 @@ exports[`ListControl should add to list when add button is clicked 1`] = `
 .emotion-1 svg {
   width: 100%;
   height: 100%;
-}
-
-.emotion-16 {
-  margin-top: 18px;
-}
-
-.emotion-16:first-of-type {
-  margin-top: 26px;
 }
 
 .emotion-14 {
@@ -202,6 +202,7 @@ exports[`ListControl should add to list when add button is clicked 1`] = `
           classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
           collapsed="false"
           data-testid="styled-list-item-top-bar-0"
+          id="0"
         >
           <button>
             Remove
@@ -224,6 +225,23 @@ exports[`ListControl should add to list when add button is clicked 1`] = `
           value="Map {}"
         />
       </div>
+      <div
+        id="DndDescribedBy-19"
+        style="display: none;"
+      >
+        
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  
+      </div>
+      <div
+        aria-atomic="true"
+        aria-live="assertive"
+        id="DndLiveRegion-19"
+        role="status"
+        style="position: fixed; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip-path: inset(100%); white-space: nowrap;"
+      />
     </div>
   </div>
 </DocumentFragment>
@@ -332,6 +350,14 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
   height: 100%;
 }
 
+.emotion-16 {
+  margin-top: 18px;
+}
+
+.emotion-16:first-of-type {
+  margin-top: 26px;
+}
+
 .emotion-1 {
   display: inline-block;
   line-height: 0;
@@ -356,14 +382,6 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
 .emotion-1 svg {
   width: 100%;
   height: 100%;
-}
-
-.emotion-16 {
-  margin-top: 18px;
-}
-
-.emotion-16:first-of-type {
-  margin-top: 26px;
 }
 
 .emotion-14 {
@@ -431,6 +449,7 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
           classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
           collapsed="false"
           data-testid="styled-list-item-top-bar-0"
+          id="0"
         >
           <button>
             Remove
@@ -460,6 +479,7 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
           classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
           collapsed="false"
           data-testid="styled-list-item-top-bar-1"
+          id="1"
         >
           <button>
             Remove
@@ -482,6 +502,23 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
           value="Map { \\"string\\": \\"item 2\\" }"
         />
       </div>
+      <div
+        id="DndDescribedBy-20"
+        style="display: none;"
+      >
+        
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  
+      </div>
+      <div
+        aria-atomic="true"
+        aria-live="assertive"
+        id="DndLiveRegion-20"
+        role="status"
+        style="position: fixed; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip-path: inset(100%); white-space: nowrap;"
+      />
     </div>
   </div>
 </DocumentFragment>
@@ -592,7 +629,6 @@ exports[`ListControl should remove from list when remove button is clicked 2`] =
 
 .emotion-16 {
   margin-top: 18px;
-  padding-bottom: 0;
 }
 
 .emotion-16:first-of-type {
@@ -685,11 +721,13 @@ exports[`ListControl should remove from list when remove button is clicked 2`] =
     <div>
       <div
         class="emotion-16 emotion-17"
+        style="transition: transform 0ms linear;"
       >
         <mock-list-item-top-bar
           classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
           collapsed="true"
           data-testid="styled-list-item-top-bar-2"
+          id="2"
         >
           <button>
             Remove
@@ -712,6 +750,23 @@ exports[`ListControl should remove from list when remove button is clicked 2`] =
           value="Map { \\"string\\": \\"item 2\\" }"
         />
       </div>
+      <div
+        id="DndDescribedBy-20"
+        style="display: none;"
+      >
+        
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  
+      </div>
+      <div
+        aria-atomic="true"
+        aria-live="assertive"
+        id="DndLiveRegion-20"
+        role="status"
+        style="position: fixed; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip-path: inset(100%); white-space: nowrap;"
+      />
     </div>
   </div>
 </DocumentFragment>
@@ -831,6 +886,14 @@ exports[`ListControl should render list with fields with collapse = "false" and 
   height: 100%;
 }
 
+.emotion-16 {
+  margin-top: 18px;
+}
+
+.emotion-16:first-of-type {
+  margin-top: 26px;
+}
+
 .emotion-1 {
   display: inline-block;
   line-height: 0;
@@ -855,14 +918,6 @@ exports[`ListControl should render list with fields with collapse = "false" and 
 .emotion-1 svg {
   width: 100%;
   height: 100%;
-}
-
-.emotion-16 {
-  margin-top: 18px;
-}
-
-.emotion-16:first-of-type {
-  margin-top: 26px;
 }
 
 .emotion-14 {
@@ -930,6 +985,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
           classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
           collapsed="false"
           data-testid="styled-list-item-top-bar-0"
+          id="0"
         >
           <button>
             Remove
@@ -959,6 +1015,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
           classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
           collapsed="false"
           data-testid="styled-list-item-top-bar-1"
+          id="1"
         >
           <button>
             Remove
@@ -981,6 +1038,23 @@ exports[`ListControl should render list with fields with collapse = "false" and 
           value="Map { \\"string\\": \\"item 2\\" }"
         />
       </div>
+      <div
+        id="DndDescribedBy-16"
+        style="display: none;"
+      >
+        
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  
+      </div>
+      <div
+        aria-atomic="true"
+        aria-live="assertive"
+        id="DndLiveRegion-16"
+        role="status"
+        style="position: fixed; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip-path: inset(100%); white-space: nowrap;"
+      />
     </div>
   </div>
 </DocumentFragment>
@@ -1089,6 +1163,14 @@ exports[`ListControl should render list with fields with collapse = "false" and 
   height: 100%;
 }
 
+.emotion-16 {
+  margin-top: 18px;
+}
+
+.emotion-16:first-of-type {
+  margin-top: 26px;
+}
+
 .emotion-1 {
   display: inline-block;
   line-height: 0;
@@ -1113,14 +1195,6 @@ exports[`ListControl should render list with fields with collapse = "false" and 
 .emotion-1 svg {
   width: 100%;
   height: 100%;
-}
-
-.emotion-16 {
-  margin-top: 18px;
-}
-
-.emotion-16:first-of-type {
-  margin-top: 26px;
 }
 
 .emotion-14 {
@@ -1188,6 +1262,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
           classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
           collapsed="false"
           data-testid="styled-list-item-top-bar-0"
+          id="0"
         >
           <button>
             Remove
@@ -1217,6 +1292,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
           classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
           collapsed="false"
           data-testid="styled-list-item-top-bar-1"
+          id="1"
         >
           <button>
             Remove
@@ -1239,6 +1315,23 @@ exports[`ListControl should render list with fields with collapse = "false" and 
           value="Map { \\"string\\": \\"item 2\\" }"
         />
       </div>
+      <div
+        id="DndDescribedBy-18"
+        style="display: none;"
+      >
+        
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  
+      </div>
+      <div
+        aria-atomic="true"
+        aria-live="assertive"
+        id="DndLiveRegion-18"
+        role="status"
+        style="position: fixed; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip-path: inset(100%); white-space: nowrap;"
+      />
     </div>
   </div>
 </DocumentFragment>
@@ -1375,7 +1468,6 @@ exports[`ListControl should render list with fields with default collapse ("true
 
 .emotion-16 {
   margin-top: 18px;
-  padding-bottom: 0;
 }
 
 .emotion-16:first-of-type {
@@ -1447,6 +1539,7 @@ exports[`ListControl should render list with fields with default collapse ("true
           classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
           collapsed="true"
           data-testid="styled-list-item-top-bar-0"
+          id="0"
         >
           <button>
             Remove
@@ -1476,6 +1569,7 @@ exports[`ListControl should render list with fields with default collapse ("true
           classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
           collapsed="true"
           data-testid="styled-list-item-top-bar-1"
+          id="1"
         >
           <button>
             Remove
@@ -1498,6 +1592,23 @@ exports[`ListControl should render list with fields with default collapse ("true
           value="Map { \\"string\\": \\"item 2\\" }"
         />
       </div>
+      <div
+        id="DndDescribedBy-15"
+        style="display: none;"
+      >
+        
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  
+      </div>
+      <div
+        aria-atomic="true"
+        aria-live="assertive"
+        id="DndLiveRegion-15"
+        role="status"
+        style="position: fixed; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip-path: inset(100%); white-space: nowrap;"
+      />
     </div>
   </div>
 </DocumentFragment>
@@ -1815,7 +1926,6 @@ exports[`ListControl should render list with nested object 1`] = `
 
 .emotion-16 {
   margin-top: 18px;
-  padding-bottom: 0;
 }
 
 .emotion-16:first-of-type {
@@ -1887,6 +1997,7 @@ exports[`ListControl should render list with nested object 1`] = `
           classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
           collapsed="true"
           data-testid="styled-list-item-top-bar-0"
+          id="0"
         >
           <button>
             Remove
@@ -1916,6 +2027,7 @@ exports[`ListControl should render list with nested object 1`] = `
           classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
           collapsed="true"
           data-testid="styled-list-item-top-bar-1"
+          id="1"
         >
           <button>
             Remove
@@ -1938,6 +2050,23 @@ exports[`ListControl should render list with nested object 1`] = `
           value="Map { \\"object\\": Map { \\"title\\": \\"item 2\\" } }"
         />
       </div>
+      <div
+        id="DndDescribedBy-0"
+        style="display: none;"
+      >
+        
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  
+      </div>
+      <div
+        aria-atomic="true"
+        aria-live="assertive"
+        id="DndLiveRegion-0"
+        role="status"
+        style="position: fixed; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip-path: inset(100%); white-space: nowrap;"
+      />
     </div>
   </div>
 </DocumentFragment>
@@ -2046,6 +2175,14 @@ exports[`ListControl should render list with nested object with collapse = false
   height: 100%;
 }
 
+.emotion-16 {
+  margin-top: 18px;
+}
+
+.emotion-16:first-of-type {
+  margin-top: 26px;
+}
+
 .emotion-1 {
   display: inline-block;
   line-height: 0;
@@ -2070,14 +2207,6 @@ exports[`ListControl should render list with nested object with collapse = false
 .emotion-1 svg {
   width: 100%;
   height: 100%;
-}
-
-.emotion-16 {
-  margin-top: 18px;
-}
-
-.emotion-16:first-of-type {
-  margin-top: 26px;
 }
 
 .emotion-14 {
@@ -2145,6 +2274,7 @@ exports[`ListControl should render list with nested object with collapse = false
           classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
           collapsed="false"
           data-testid="styled-list-item-top-bar-0"
+          id="0"
         >
           <button>
             Remove
@@ -2174,6 +2304,7 @@ exports[`ListControl should render list with nested object with collapse = false
           classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
           collapsed="false"
           data-testid="styled-list-item-top-bar-1"
+          id="1"
         >
           <button>
             Remove
@@ -2196,6 +2327,23 @@ exports[`ListControl should render list with nested object with collapse = false
           value="Map { \\"object\\": Map { \\"title\\": \\"item 2\\" } }"
         />
       </div>
+      <div
+        id="DndDescribedBy-1"
+        style="display: none;"
+      >
+        
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  
+      </div>
+      <div
+        aria-atomic="true"
+        aria-live="assertive"
+        id="DndLiveRegion-1"
+        role="status"
+        style="position: fixed; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip-path: inset(100%); white-space: nowrap;"
+      />
     </div>
   </div>
 </DocumentFragment>
