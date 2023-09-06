@@ -486,7 +486,7 @@ function validateListFields({ name, description }) {
   cy.contains('button', 'Save').click();
   assertNotification(notifications.error.missingField);
   assertFieldErrorStatus('Authors', colorError);
-  cy.get('div[class*=ListControl]')
+  cy.get('div[class*=SortableListItem]')
     .eq(2)
     .as('listControl');
   assertFieldErrorStatus('Name', colorError, { scope: cy.get('@listControl') });
@@ -527,7 +527,7 @@ function validateNestedListFields() {
   cy.contains('button', 'cities').click();
   cy.contains('label', 'Cities')
     .next()
-    .find('div[class*=ListControl]')
+    .find('div[class*=SortableListItem]')
     .eq(2)
     .as('secondCitiesListControl');
   cy.get('@secondCitiesListControl')
@@ -560,22 +560,22 @@ function validateNestedListFields() {
   // list control aliases
   cy.contains('label', 'Hotel Locations')
     .next()
-    .find('div[class*=ListControl]')
+    .find('div[class*=SortableListItem]')
     .first()
     .as('hotelLocationsListControl');
   cy.contains('label', 'Cities')
     .next()
-    .find('div[class*=ListControl]')
+    .find('div[class*=SortableListItem]')
     .eq(0)
     .as('firstCitiesListControl');
   cy.contains('label', 'City Locations')
     .next()
-    .find('div[class*=ListControl]')
+    .find('div[class*=SortableListItem]')
     .eq(0)
     .as('firstCityLocationsListControl');
   cy.contains('label', 'Cities')
     .next()
-    .find('div[class*=ListControl]')
+    .find('div[class*=SortableListItem]')
     .eq(3)
     .as('secondCityLocationsListControl');
 

@@ -6,8 +6,18 @@ import { css, ClassNames } from '@emotion/core';
 import { List, Map, fromJS } from 'immutable';
 import { partial, isEmpty, uniqueId } from 'lodash';
 import uuid from 'uuid/v4';
-import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 import DecapCmsWidgetObject from 'decap-cms-widget-object';
+import {
+  DndContext,
+  MouseSensor,
+  TouchSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import { SortableContext, useSortable } from '@dnd-kit/sortable';
+import { restrictToParentElement } from '@dnd-kit/modifiers';
+import { CSS } from '@dnd-kit/utilities';
 import {
   ListItemTopBar,
   ObjectWidgetTopBar,
@@ -27,8 +37,6 @@ import {
 const ObjectControl = DecapCmsWidgetObject.controlComponent;
 
 const ListItem = styled.div();
-
-const SortableListItem = SortableElement(ListItem);
 
 const StyledListItemTopBar = styled(ListItemTopBar)`
   background-color: ${colors.textFieldBorder};
@@ -65,9 +73,69 @@ const styles = {
   `,
 };
 
-const SortableList = SortableContainer(({ items, renderItem }) => {
-  return <div>{items.map(renderItem)}</div>;
-});
+function SortableList({ items, children, onSortEnd, keys }) {
+  const activationConstraint = { distance: 4 };
+  const sensors = useSensors(
+    useSensor(MouseSensor, { activationConstraint }),
+    useSensor(TouchSensor, { activationConstraint }),
+  );
+
+  function handleSortEnd({ active, over }) {
+    onSortEnd({
+      oldIndex: keys.indexOf(active.id),
+      newIndex: keys.indexOf(over.id),
+    });
+  }
+
+  return (
+    <div>
+      <DndContext
+        modifiers={[restrictToParentElement]}
+        collisionDetection={closestCenter}
+        sensors={sensors}
+        onDragEnd={handleSortEnd}
+      >
+        <SortableContext items={items}>{children}</SortableContext>
+      </DndContext>
+    </div>
+  );
+}
+
+function SortableListItem(props) {
+  const { setNodeRef, transform, transition } = useSortable({
+    id: props.id,
+  });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  const { collapsed } = props;
+
+  return (
+    <ListItem
+      sortable
+      ref={setNodeRef}
+      style={style}
+      css={[styles.listControlItem, collapsed && styles.listControlItemCollapsed]}
+    >
+      {props.children}
+    </ListItem>
+  );
+}
+
+function DragHandle({ children, id }) {
+  const { attributes, listeners } = useSortable({
+    id,
+  });
+
+  return (
+    <div {...attributes} {...listeners}>
+      {children}
+    </div>
+  );
+}
 
 const valueTypes = {
   SINGLE: 'SINGLE',
@@ -524,11 +592,16 @@ export default class ListControl extends React.Component {
         return this.renderErroneousTypedItem(index, item);
       }
     }
+
+    console.log('kurwa', classNameWrapper);
+
     return (
       <SortableListItem
         css={[styles.listControlItem, collapsed && styles.listControlItemCollapsed]}
         index={index}
         key={key}
+        id={key}
+        keys={keys}
       >
         {isVariableTypesList && (
           <LabelComponent
@@ -543,8 +616,9 @@ export default class ListControl extends React.Component {
         <StyledListItemTopBar
           collapsed={collapsed}
           onCollapseToggle={partial(this.handleItemCollapseToggle, index)}
+          dragHandle={DragHandle}
+          id={key}
           onRemove={partial(this.handleRemove, index)}
-          dragHandleHOC={SortableHandle}
           data-testid={`styled-list-item-top-bar-${key}`}
         />
         <NestedObjectLabel collapsed={collapsed} error={hasError}>
@@ -595,10 +669,11 @@ export default class ListControl extends React.Component {
         <StyledListItemTopBar
           onCollapseToggle={null}
           onRemove={partial(this.handleRemove, index, key)}
-          dragHandleHOC={SortableHandle}
+          dragHandle={DragHandle}
+          id={key}
         />
         <NestedObjectLabel collapsed={true} error={true}>
-          {errorMessage}
+          {errorMessage}aaaasdd
         </NestedObjectLabel>
       </SortableListItem>
     );
@@ -606,7 +681,7 @@ export default class ListControl extends React.Component {
 
   renderListControl() {
     const { value, forID, field, classNameWrapper, t } = this.props;
-    const { itemsCollapsed, listCollapsed } = this.state;
+    const { itemsCollapsed, listCollapsed, keys } = this.state;
     const items = value || List();
     const label = field.get('label', field.get('name'));
     const labelSingular = field.get('label_singular') || field.get('label', field.get('name'));
@@ -614,6 +689,8 @@ export default class ListControl extends React.Component {
     const minimizeCollapsedItems = field.get('minimize_collapsed', false);
     const allItemsCollapsed = itemsCollapsed.every(val => val === true);
     const selfCollapsed = allItemsCollapsed && (listCollapsed || !minimizeCollapsedItems);
+
+    const itemsArray = keys.map(key => ({ id: key }));
 
     return (
       <ClassNames>
@@ -639,13 +716,9 @@ export default class ListControl extends React.Component {
               t={t}
             />
             {(!selfCollapsed || !minimizeCollapsedItems) && (
-              <SortableList
-                items={items}
-                renderItem={this.renderItem}
-                onSortEnd={this.onSortEnd}
-                useDragHandle
-                lockAxis="y"
-              />
+              <SortableList items={itemsArray} keys={keys} onSortEnd={this.onSortEnd}>
+                {items.map(this.renderItem)}
+              </SortableList>
             )}
           </div>
         )}
