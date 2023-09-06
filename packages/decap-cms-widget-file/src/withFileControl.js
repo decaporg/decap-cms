@@ -206,6 +206,10 @@ function valueListToArray(value) {
 }
 
 function valueListToSortableArray(value) {
+  if (!isMultiple(value)) {
+    return value;
+  }
+
   const valueArray = valueListToArray(value).map(value => ({
     id: uuid(),
     value,
