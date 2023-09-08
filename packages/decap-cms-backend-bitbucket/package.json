@@ -25,7 +25,7 @@
     "what-the-diff": "^0.6.0"
   },
   "peerDependencies": {
-    "@emotion/core": "^11.0.0",
+    "@emotion/react": "^11.0.0",
     "@emotion/styled": "^11.10.5",
     "decap-cms-lib-auth": "^3.0.0",
     "decap-cms-lib-util": "^3.0.0",

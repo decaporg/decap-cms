@@ -28,7 +28,7 @@
     "react-window": "^1.8.5"
   },
   "peerDependencies": {
-    "@emotion/core": "^11.0.0",
+    "@emotion/react": "^11.0.0",
     "@emotion/styled": "^11.10.5",
     "decap-cms-lib-widgets": "^3.0.0",
     "decap-cms-ui-default": "^3.0.0",
