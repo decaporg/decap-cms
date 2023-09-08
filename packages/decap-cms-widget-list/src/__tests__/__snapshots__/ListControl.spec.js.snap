@@ -230,11 +230,11 @@ exports[`ListControl should add to list when add button is clicked 1`] = `
         id="DndDescribedBy-19"
         style="display: none;"
       >
-
+        
     To pick up a draggable item, press the space bar.
     While dragging, use the arrow keys to move the item.
     Press space again to drop the item in its new position, or press escape to cancel.
-
+  
       </div>
       <div
         aria-atomic="true"
@@ -508,11 +508,11 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
         id="DndDescribedBy-20"
         style="display: none;"
       >
-
+        
     To pick up a draggable item, press the space bar.
     While dragging, use the arrow keys to move the item.
     Press space again to drop the item in its new position, or press escape to cancel.
-
+  
       </div>
       <div
         aria-atomic="true"
@@ -724,6 +724,7 @@ exports[`ListControl should remove from list when remove button is clicked 2`] =
     <div>
       <div
         class="emotion-15 emotion-16"
+        style="transition: transform 0ms linear;"
       >
         <mock-list-item-top-bar
           classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
@@ -756,11 +757,11 @@ exports[`ListControl should remove from list when remove button is clicked 2`] =
         id="DndDescribedBy-20"
         style="display: none;"
       >
-
+        
     To pick up a draggable item, press the space bar.
     While dragging, use the arrow keys to move the item.
     Press space again to drop the item in its new position, or press escape to cancel.
-
+  
       </div>
       <div
         aria-atomic="true"
@@ -1045,11 +1046,11 @@ exports[`ListControl should render list with fields with collapse = "false" and 
         id="DndDescribedBy-16"
         style="display: none;"
       >
-
+        
     To pick up a draggable item, press the space bar.
     While dragging, use the arrow keys to move the item.
     Press space again to drop the item in its new position, or press escape to cancel.
-
+  
       </div>
       <div
         aria-atomic="true"
@@ -1323,11 +1324,11 @@ exports[`ListControl should render list with fields with collapse = "false" and 
         id="DndDescribedBy-18"
         style="display: none;"
       >
-
+        
     To pick up a draggable item, press the space bar.
     While dragging, use the arrow keys to move the item.
     Press space again to drop the item in its new position, or press escape to cancel.
-
+  
       </div>
       <div
         aria-atomic="true"
@@ -1601,11 +1602,11 @@ exports[`ListControl should render list with fields with default collapse ("true
         id="DndDescribedBy-15"
         style="display: none;"
       >
-
+        
     To pick up a draggable item, press the space bar.
     While dragging, use the arrow keys to move the item.
     Press space again to drop the item in its new position, or press escape to cancel.
-
+  
       </div>
       <div
         aria-atomic="true"
@@ -2061,11 +2062,11 @@ exports[`ListControl should render list with nested object 1`] = `
         id="DndDescribedBy-0"
         style="display: none;"
       >
-
+        
     To pick up a draggable item, press the space bar.
     While dragging, use the arrow keys to move the item.
     Press space again to drop the item in its new position, or press escape to cancel.
-
+  
       </div>
       <div
         aria-atomic="true"
@@ -2339,11 +2340,11 @@ exports[`ListControl should render list with nested object with collapse = false
         id="DndDescribedBy-1"
         style="display: none;"
       >
-
+        
     To pick up a draggable item, press the space bar.
     While dragging, use the arrow keys to move the item.
     Press space again to drop the item in its new position, or press escape to cancel.
-
+  
       </div>
       <div
         aria-atomic="true"

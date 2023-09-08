@@ -88,7 +88,7 @@ exports[`EditorToolbar should render normal save button 1`] = `
   margin: 0 10px;
 }
 
-.emotion-13 .ei6fm2r0 {
+.emotion-13 .e1jeq5dr0 {
   color: #17a2b8;
 }
 
@@ -150,7 +150,7 @@ exports[`EditorToolbar should render normal save button 1`] = `
   text-overflow: ellipsis;
   display: block;
   background-color: #fcefea;
-  color: #ff003b;
+  color: #D60032;
 }
 
 @media (max-width: 1200px) {
@@ -193,7 +193,7 @@ exports[`EditorToolbar should render normal save button 1`] = `
     class="emotion-0 emotion-1"
   >
     <mock-link
-      classname="css-abwcjt-ToolbarSectionBackLink-toolbarSection evqrzhe17"
+      classname="css-abwcjt-ToolbarSectionBackLink-toolbarSection e1d2l9mo18"
       to=""
     >
       <div
@@ -344,7 +344,7 @@ exports[`EditorToolbar should render normal save button 2`] = `
   margin: 0 10px;
 }
 
-.emotion-13 .ei6fm2r0 {
+.emotion-13 .e1jeq5dr0 {
   color: #17a2b8;
 }
 
@@ -406,7 +406,7 @@ exports[`EditorToolbar should render normal save button 2`] = `
   text-overflow: ellipsis;
   display: block;
   background-color: #fcefea;
-  color: #ff003b;
+  color: #D60032;
 }
 
 @media (max-width: 1200px) {
@@ -449,7 +449,7 @@ exports[`EditorToolbar should render normal save button 2`] = `
     class="emotion-0 emotion-1"
   >
     <mock-link
-      classname="css-abwcjt-ToolbarSectionBackLink-toolbarSection evqrzhe17"
+      classname="css-abwcjt-ToolbarSectionBackLink-toolbarSection e1d2l9mo18"
       to=""
     >
       <div
@@ -674,7 +674,7 @@ exports[`EditorToolbar should render with default props 1`] = `
     class="emotion-0 emotion-1"
   >
     <mock-link
-      classname="css-abwcjt-ToolbarSectionBackLink-toolbarSection evqrzhe17"
+      classname="css-abwcjt-ToolbarSectionBackLink-toolbarSection e1d2l9mo18"
       to=""
     >
       <div
@@ -846,7 +846,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=false 1`
   margin: 0 10px;
 }
 
-.emotion-15 .ei6fm2r0 {
+.emotion-15 .e1jeq5dr0 {
   color: #17a2b8;
 }
 
@@ -909,7 +909,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=false 1`
   text-overflow: ellipsis;
   display: block;
   background-color: #fcefea;
-  color: #ff003b;
+  color: #D60032;
 }
 
 @media (max-width: 1200px) {
@@ -952,7 +952,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=false 1`
     class="emotion-0 emotion-1"
   >
     <mock-link
-      classname="css-abwcjt-ToolbarSectionBackLink-toolbarSection evqrzhe17"
+      classname="css-abwcjt-ToolbarSectionBackLink-toolbarSection e1d2l9mo18"
       to=""
     >
       <div
@@ -1276,7 +1276,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=true 1`]
     class="emotion-0 emotion-1"
   >
     <mock-link
-      classname="css-abwcjt-ToolbarSectionBackLink-toolbarSection evqrzhe17"
+      classname="css-abwcjt-ToolbarSectionBackLink-toolbarSection e1d2l9mo18"
       to=""
     >
       <div
@@ -1487,7 +1487,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
   margin: 0 10px;
 }
 
-.emotion-15 .ei6fm2r0 {
+.emotion-15 .e1jeq5dr0 {
   color: #17a2b8;
 }
 
@@ -1550,7 +1550,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
   text-overflow: ellipsis;
   display: block;
   background-color: #fcefea;
-  color: #ff003b;
+  color: #D60032;
 }
 
 @media (max-width: 1200px) {
@@ -1593,7 +1593,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
     class="emotion-0 emotion-1"
   >
     <mock-link
-      classname="css-abwcjt-ToolbarSectionBackLink-toolbarSection evqrzhe17"
+      classname="css-abwcjt-ToolbarSectionBackLink-toolbarSection e1d2l9mo18"
       to=""
     >
       <div
@@ -1833,7 +1833,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
   display: inline-block;
 }
 
-.emotion-21:hover+.evqrzhe25 {
+.emotion-21:hover+.e1d2l9mo26 {
   visibility: visible;
   opacity: 0.9;
 }
@@ -1899,7 +1899,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
     class="emotion-0 emotion-1"
   >
     <mock-link
-      classname="css-abwcjt-ToolbarSectionBackLink-toolbarSection evqrzhe17"
+      classname="css-abwcjt-ToolbarSectionBackLink-toolbarSection e1d2l9mo18"
       to=""
     >
       <div
@@ -2105,7 +2105,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
   margin: 0 10px;
 }
 
-.emotion-15 .ei6fm2r0 {
+.emotion-15 .e1jeq5dr0 {
   color: #17a2b8;
 }
 
@@ -2168,7 +2168,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
   text-overflow: ellipsis;
   display: block;
   background-color: #fcefea;
-  color: #ff003b;
+  color: #D60032;
 }
 
 @media (max-width: 1200px) {
@@ -2211,7 +2211,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
     class="emotion-0 emotion-1"
   >
     <mock-link
-      classname="css-abwcjt-ToolbarSectionBackLink-toolbarSection evqrzhe17"
+      classname="css-abwcjt-ToolbarSectionBackLink-toolbarSection e1d2l9mo18"
       to=""
     >
       <div
@@ -2535,7 +2535,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
     class="emotion-0 emotion-1"
   >
     <mock-link
-      classname="css-abwcjt-ToolbarSectionBackLink-toolbarSection evqrzhe17"
+      classname="css-abwcjt-ToolbarSectionBackLink-toolbarSection e1d2l9mo18"
       to=""
     >
       <div
@@ -2752,7 +2752,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   text-overflow: ellipsis;
   display: block;
   background-color: #fcefea;
-  color: #ff003b;
+  color: #D60032;
 }
 
 @media (max-width: 1200px) {
@@ -2795,7 +2795,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
     class="emotion-0 emotion-1"
   >
     <mock-link
-      classname="css-abwcjt-ToolbarSectionBackLink-toolbarSection evqrzhe17"
+      classname="css-abwcjt-ToolbarSectionBackLink-toolbarSection e1d2l9mo18"
       to=""
     >
       <div
@@ -2990,7 +2990,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
     class="emotion-0 emotion-1"
   >
     <mock-link
-      classname="css-abwcjt-ToolbarSectionBackLink-toolbarSection evqrzhe17"
+      classname="css-abwcjt-ToolbarSectionBackLink-toolbarSection e1d2l9mo18"
       to=""
     >
       <div
@@ -3162,7 +3162,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   text-overflow: ellipsis;
   display: block;
   background-color: #fcefea;
-  color: #ff003b;
+  color: #D60032;
 }
 
 @media (max-width: 1200px) {
@@ -3205,7 +3205,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
     class="emotion-0 emotion-1"
   >
     <mock-link
-      classname="css-abwcjt-ToolbarSectionBackLink-toolbarSection evqrzhe17"
+      classname="css-abwcjt-ToolbarSectionBackLink-toolbarSection e1d2l9mo18"
       to=""
     >
       <div
@@ -3382,7 +3382,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   text-overflow: ellipsis;
   display: block;
   background-color: #fcefea;
-  color: #ff003b;
+  color: #D60032;
 }
 
 @media (max-width: 1200px) {
@@ -3425,7 +3425,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
     class="emotion-0 emotion-1"
   >
     <mock-link
-      classname="css-abwcjt-ToolbarSectionBackLink-toolbarSection evqrzhe17"
+      classname="css-abwcjt-ToolbarSectionBackLink-toolbarSection e1d2l9mo18"
       to=""
     >
       <div
@@ -3602,7 +3602,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   text-overflow: ellipsis;
   display: block;
   background-color: #fcefea;
-  color: #ff003b;
+  color: #D60032;
 }
 
 @media (max-width: 1200px) {
@@ -3645,7 +3645,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
     class="emotion-0 emotion-1"
   >
     <mock-link
-      classname="css-abwcjt-ToolbarSectionBackLink-toolbarSection evqrzhe17"
+      classname="css-abwcjt-ToolbarSectionBackLink-toolbarSection e1d2l9mo18"
       to=""
     >
       <div
@@ -3822,7 +3822,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   text-overflow: ellipsis;
   display: block;
   background-color: #fcefea;
-  color: #ff003b;
+  color: #D60032;
 }
 
 @media (max-width: 1200px) {
@@ -3865,7 +3865,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
     class="emotion-0 emotion-1"
   >
     <mock-link
-      classname="css-abwcjt-ToolbarSectionBackLink-toolbarSection evqrzhe17"
+      classname="css-abwcjt-ToolbarSectionBackLink-toolbarSection e1d2l9mo18"
       to=""
     >
       <div
