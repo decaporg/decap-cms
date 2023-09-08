@@ -20,19 +20,21 @@ jobs:
           filters: |
             cms:
               - '!website/**'
+
   build:
     needs: changes
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [macos-latest, windows-latest, ubuntu-latest]
+        node-version: [16.x, 18.x]
     steps:
       - uses: actions/checkout@v3
         if: ${{ needs.changes.outputs.cms == 'true' }}
-      - name: Use Node.js
+      - name: Use Node.js {{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
-          node-version: '*'
+          node-version: ${{ matrix.node-version }}
           check-latest: true
         if: ${{ needs.changes.outputs.cms == 'true' }}
       - name: log versions
@@ -64,7 +66,7 @@ jobs:
 
     strategy:
       matrix:
-        machine: [1, 2, 3, 4, 5, 6, 7, 8]
+        node-version: [16.x, 18.x]
       fail-fast: false
 
     steps:
@@ -73,7 +75,7 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '*'
+          node-version: ${{ matrix.node-version }}
           check-latest: true
           cache: yarn
         if: ${{ needs.changes.outputs.cms == 'true' }}
@@ -96,13 +98,13 @@ jobs:
           IS_FORK: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == true }}
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           NODE_OPTIONS: --max-old-space-size=4096
-          MACHINE_COUNT: 8
-          MACHINE_INDEX: ${{ matrix.machine }}
+          MACHINE_COUNT: 2
+          MACHINE_INDEX: ${{ matrix.node-version }}
         if: ${{ needs.changes.outputs.cms == 'true' }}
       - uses: actions/upload-artifact@v3
         if: ${{ always() && needs.changes.outputs.cms == 'true' }}
         with:
-          name: cypress-results-${{ matrix.machine }}
+          name: cypress-results-${{ matrix.node-version }}
           path: |
             cypress/screenshots
             cypress/videos

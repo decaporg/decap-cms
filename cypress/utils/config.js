@@ -30,12 +30,12 @@ async function switchVersion(version) {
 
   const replaceString =
     version === 'latest'
-      ? '<script src="dist/netlify-cms.js"></script>'
-      : `<script src="https://unpkg.com/netlify-cms@${version}/dist/netlify-cms.js"></script>`;
+      ? '<script src="dist/decap-cms.js"></script>'
+      : `<script src="https://unpkg.com/decap-cms@${version}/dist/decap-cms.js"></script>`;
 
   await fs.writeFile(
     htmlFile,
-    content.toString().replace(/<script src=".+?netlify-cms.+?"><\/script>/, replaceString),
+    content.toString().replace(/<script src=".+?decap-cms.+?"><\/script>/, replaceString),
   );
 }
 

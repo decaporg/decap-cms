@@ -3,7 +3,7 @@ group: Guides
 weight: 80
 title: Docusaurus
 ---
-This guide instructs you on how to integrate Netlify CMS with Docusaurus.
+This guide instructs you on how to integrate Decap CMS with Docusaurus.
 
 ### Before you begin
 
@@ -33,7 +33,7 @@ The development server now serves your website at `http://localhost:3000`. As yo
 
 ## Push your project to GitHub
 
-Netlify CMS requires a [backend](https://www.netlifycms.org/docs/backends-overview/) to store content. Netlify CMS supports using Git hosts, like GitHub or GitLab, as backends. This guide uses GitHub. 
+Decap CMS requires a [backend](https://www.decapcms.org/docs/backends-overview/) to store content. Decap CMS supports using Git hosts, like GitHub or GitLab, as backends. This guide uses GitHub. 
 
 ```bash
 # 1. Initialize your local Git repository.  
@@ -83,7 +83,7 @@ Choose the default option for everything else.
 
 Your website is now deployed. Netlify provides you with a randomly generated domain name. Run `netlify open --site` to view your deployed site.
 
-## Add Netlify CMS to your project
+## Add Decap CMS to your project
 
 ### Before you begin
 
@@ -161,13 +161,13 @@ touch index.html
   <title>Content Manager</title>
 </head>
 <body>
-  <!-- Include the script that builds the page and powers Netlify CMS -->
-  <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
+  <!-- Include the script that builds the page and powers Decap CMS -->
+  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 </body>
 </html>
 ```
 
-`index.html` displays the Netlify CMS admin interface. You'll use the admin interface to edit your blog posts.
+`index.html` displays the Decap CMS admin interface. You'll use the admin interface to edit your blog posts.
 
 </li> 
 
@@ -209,7 +209,7 @@ collections:
         - { name: imageUrl, label: ImageURL, widget: string } 
 ```
 
-`config.yml` specifies what kind of content your blog posts have. The content specification enables Netlify CMS to edit existing posts and create new ones with the same format. To learn more, read about Netlify CMS' [](https://www.netlifycms.org/docs/configuration-options/)[Configuration options](https://www.netlifycms.org/docs/configuration-options/).
+`config.yml` specifies what kind of content your blog posts have. The content specification enables Decap CMS to edit existing posts and create new ones with the same format. To learn more, read about Decap CMS' [](https://www.decapcms.org/docs/configuration-options/)[Configuration options](https://www.decapcms.org/docs/configuration-options/).
 </li> 
 
 <li>
@@ -224,7 +224,7 @@ You can now view and edit `2021-11-15-first-blog-post.md` through the admin inte
 
 ```bash
 git add . 
-git commit -m "Add Netlify CMS"
+git commit -m "Add Decap CMS"
 git push
 ```
 
@@ -236,7 +236,7 @@ Netlify builds and deploys your new changes.
 
 ## Add GitHub as an authentication provider
 
-Before you can access `/admin/` through your Netlify domain, you need to set up an authentication provider. The authentication provider allows Netlify CMS to determine whether users have read and write access to `/admin/`. This guide uses GitHub credentials for authentication. 
+Before you can access `/admin/` through your Netlify domain, you need to set up an authentication provider. The authentication provider allows Decap CMS to determine whether users have read and write access to `/admin/`. This guide uses GitHub credentials for authentication. 
 
 ### Configure GitHub 
 

@@ -3,7 +3,7 @@ group: Fields
 weight: 20
 title: Creating Custom Widgets
 ---
-The NetlifyCMS exposes a `window.CMS` a global object that you can use to register custom widgets, previews, and editor plugins. The same object is also the default export if you import Netlify CMS as an npm module. The available widget extension methods are:
+Decap CMS exposes a `window.CMS` global object that you can use to register custom widgets, previews, and editor plugins. The same object is also the default export if you import Decap CMS as an npm module. The available widget extension methods are:
 
 * **registerWidget:** registers a custom widget.
 * **registerEditorComponent:** adds a block component to the Markdown editor.
@@ -12,7 +12,7 @@ The NetlifyCMS exposes a `window.CMS` a global object that you can use to regist
 
 The `registerWidget` requires you to provide a React component. If you have a build process in place for your project, it is possible to integrate with this build process.
 
-However, although possible, it may be cumbersome or even impractical to add a React build phase. For this reason, NetlifyCMS exposes two constructs globally to allow you to create components inline: ‘createClass’ and ‘h’ (alias for React.createElement).
+However, although possible, it may be cumbersome or even impractical to add a React build phase. For this reason, Decap CMS exposes two constructs globally to allow you to create components inline: ‘createClass’ and ‘h’ (alias for React.createElement).
 
 ## `registerWidget`
 
@@ -23,7 +23,7 @@ Register a custom widget.
 CMS.registerWidget(name, control, [preview], [schema]);
 
 // Using npm module import
-import CMS from 'netlify-cms';
+import CMS from 'decap-cms-app';
 CMS.registerWidget(name, control, [preview], [schema]);
 ```
 
@@ -41,7 +41,7 @@ CMS.registerWidget(name, control, [preview], [schema]);
 `admin/index.html`
 
 ```html
-<script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
+<script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 <script>
 var CategoriesControl = createClass({
   handleChange: function(e) {
@@ -116,7 +116,7 @@ CMS.registerEditorComponent(definition)
 **Example:**
 
 ```html
-<script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
+<script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 <script>
 CMS.registerEditorComponent({
   // Internal id of the component
@@ -190,7 +190,7 @@ CMS.registerEditorComponent({
 
 **Result:**
 
-![youtube-widget](/img/screen shot 2018-01-05 at 4.25.07 pm.png)
+![youtube-widget](/img/img/screen%20shot%202018-01-05%20at%204.25.07%20pm.png)
 
 ## Advanced field validation
 
@@ -240,7 +240,7 @@ You can also return a promise from `isValid`. While the promise is pending, the 
 
 ## Writing custom widgets as a separate package
 
-Widgets are inputs for the Netlify CMS editor interface. It's a React component that receives user input and outputs a serialized value. Those are the only rules - the component can be extremely simple, like text input, or extremely complicated, like a full-blown markdown editor. They can make calls to external services, and generally do anything that JavaScript can do.
+Widgets are inputs for the Decap CMS editor interface. It's a React component that receives user input and outputs a serialized value. Those are the only rules - the component can be extremely simple, like text input, or extremely complicated, like a full-blown markdown editor. They can make calls to external services, and generally do anything that JavaScript can do.
 
 For writing custom widgets as a separate package you should follow these steps:
 
@@ -263,7 +263,7 @@ For writing custom widgets as a separate package you should follow these steps:
 5. In order to build React components, we need to set up a build step. We'll be using Webpack. Please run the following commands to install the required dependencies:
 
 ```javascript
-   npm install --save-dev babel-loader@7 babel-core babel-plugin-transform-class-properties babel-plugin-transform-export-extensions babel-plugin-transform-object-rest-spread babel-preset-env babel-preset-react cross-env css-loader html-webpack-plugin netlify-cms react source-map-loader style-loader webpack webpack-cli webpack-serve
+   npm install --save-dev babel-loader@7 babel-core babel-plugin-transform-class-properties babel-plugin-transform-export-extensions babel-plugin-transform-object-rest-spread babel-preset-env babel-preset-react cross-env css-loader html-webpack-plugin decap-cms react source-map-loader style-loader webpack webpack-cli webpack-serve
 ```
 
 ```javascript
@@ -276,19 +276,19 @@ Here is the content of `package.json` that you will have at the end:
 
 ```javascript
 {
-  "name": "netlify-cms-widget-starter",
-  "description": "A boilerplate for creating Netlify CMS widgets.",
+  "name": "decap-cms-widget-starter",
+  "description": "A boilerplate for creating Decap CMS widgets.",
   "author": "name of developer",
   "keywords": [
     "netlify",
-    "netlify-cms",
+    "decap-cms",
     "cms",
     "widget",
     "starter",
     "boilerplate"
   ],
   "version": "0.0.1",
-  "homepage": "https://github.com/netlify/netlify-cms-widget-starter",
+  "homepage": "https://github.com/decaporg/decap-cms-widget-starter",
   "license": "MIT",
   "main": "dist/main.js",
   "devDependencies": {
@@ -301,7 +301,7 @@ Here is the content of `package.json` that you will have at the end:
     "cross-env": "^5.1.4",
     "css-loader": "^0.28.11",
     "html-webpack-plugin": "^3.2.0",
-    "netlify-cms": "^1.5.0",
+    "decap-cms": "^1.5.0",
     "react": "^16.3.2",
     "source-map-loader": "^0.2.3",
     "style-loader": "^0.20.3",
@@ -474,8 +474,8 @@ window.CMS_MANUAL_INIT = true
 
 ```javascript
 import './bootstrap.js'
-import CMS, { init } from 'netlify-cms'
-import 'netlify-cms/dist/cms.css'
+import CMS, { init } from 'decap-cms-app'
+import 'decap-cms/dist/cms.css'
 import { Control, Preview } from '../src'
 
 const config = {
@@ -503,9 +503,9 @@ CMS.registerWidget('test', Control, Preview)
 init({ config })
 ```
 
-### [](https://github.com/netlify/netlify-cms-widget-starter#development)Development
+### [](https://github.com/decaporg/decap-cms-widget-starter#development)Development
 
-To run a copy of Netlify CMS with your widget for development, use the start script:
+To run a copy of Decap CMS with your widget for development, use the start script:
 
 ```javascript
 npm start
@@ -513,7 +513,7 @@ npm start
 
 Your widget source is in the `src` directory, where there are separate files for the `Control` and `Preview` components.
 
-### [](https://github.com/netlify/netlify-cms-widget-starter#production--publishing)Production & Publishing
+### [](https://github.com/decaporg/decap-cms-widget-starter#production--publishing)Production & Publishing
 
 You'll want to take a few steps before publishing a production built package to npm:
 
@@ -521,12 +521,12 @@ You'll want to take a few steps before publishing a production built package to 
 
    ```json
    {
-     "name": "netlify-cms-widget-starter",
-     "description": "A boilerplate for creating Netlify CMS widgets.",
+     "name": "decap-cms-widget-starter",
+     "description": "A boilerplate for creating Decap CMS widgets.",
      "author": "name of developer",
      "keywords": [
        "netlify",
-       "netlify-cms",
+       "decap-cms",
        "cms",
        "widget",
        "starter",
@@ -536,9 +536,9 @@ You'll want to take a few steps before publishing a production built package to 
      // ... rest
    }
    ```
-2. For discoverability, ensure that your package name follows the pattern `netlify-cms-widget-<name>`.
+2. For discoverability, ensure that your package name follows the pattern `decap-cms-widget-<name>`.
 3. Delete this `README.md`, rename `README_TEMPLATE.md` to `README.md`, and update the new file for your specific widget.
-4. Rename the exports in `src/index.js`. For example, if your widget is `netlify-cms-widget-awesome`, you would do:
+4. Rename the exports in `src/index.js`. For example, if your widget is `decap-cms-widget-awesome`, you would do:
 
 ```javascript
 if (typeof window !== 'undefined') {

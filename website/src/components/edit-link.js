@@ -12,7 +12,7 @@ function EditLink({ collection, filename }) {
         }
 
         #pencil {
-          fill: #7ca511;
+          fill: #683bab;
         }
       `}
     >

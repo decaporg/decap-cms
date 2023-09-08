@@ -3,7 +3,7 @@ group: Guides
 weight: 70
 title: Gridsome
 ---
-This guide will help you get started using Netlify CMS and Gridsome.
+This guide will help you get started using Decap CMS and Gridsome.
 
 ## How to install Gridsome
 ### 1. Install Gridsome CLI tool
@@ -29,15 +29,15 @@ cd gridsome-netlify-blog
 gridsome develop
 ```
 
-### Install Netlify CMS the required dependencies to your project
+### Install Decap CMS the required dependencies to your project
 
 ```bash
 
 # Using Yarn
-yarn add netlify-cms gridsome-plugin-netlify-cms @gridsome/source-filesystem @gridsome/transformer-remark
+yarn add decap-cms gridsome-plugin-netlify-cms @gridsome/source-filesystem @gridsome/transformer-remark
 
 # Using NPM
-npm add netlify-cms gridsome-plugin-netlify-cms @gridsome/source-filesystem @gridsome/transformer-remark
+npm add decap-cms gridsome-plugin-netlify-cms @gridsome/source-filesystem @gridsome/transformer-remark
 ```
 
 Now that the plugins are installed, it's time to setup the configuration. Open the `gridsome.config.js` file and update its content to:
@@ -62,7 +62,7 @@ module.exports = {
       }
     },
     {
-      use: `gridsome-plugin-netlify-cms`,
+      use: `gridsome-plugin-decap-cms`,
       options: {
         publicPath: `/admin`
       }
@@ -73,7 +73,7 @@ module.exports = {
 
 Please read [gridsome-plugin-netlify-cms](https://gridsome.org/plugins/gridsome-plugin-netlify-cms), [transformer-remark](https://gridsome.org/plugins/@gridsome/transformer-remark) for more information.
 
-## Netlify CMS setup
+## Decap CMS setup
 
 1. Create an `admin` directory inside the `src`
 2. Create an `uploads` directory inside the root of your project
@@ -87,7 +87,7 @@ Your `index.html` should look like this:
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Netlify CMS</title>
+    <title>Decap CMS</title>
   </head>
   <body>
     <script src="index.js" type="module"></script>
@@ -98,7 +98,7 @@ Your `index.html` should look like this:
 Your `index.js` should look like this:
 
 ```js
-import CMS from "netlify-cms"
+import CMS from "decap-cms"
 ```
 
 Your `config.yml` for GitHub should look like this:

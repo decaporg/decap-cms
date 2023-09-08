@@ -1,6 +1,6 @@
 [
   {
-    "body": "grant_type=password&username=netlifyCMS%40netlify.com&password=12345678",
+    "body": "grant_type=password&username=decap%40p-m.si&password=12345678",
     "method": "POST",
     "url": "/.netlify/identity/token",
     "headers": {
@@ -33,7 +33,7 @@
       "Server": "Netlify",
       "Vary": "Origin"
     },
-    "response": "{\"id\":\"16caa6d5-eb17-4ff6-834b-9d217debe415\",\"aud\":\"\",\"role\":\"\",\"email\":\"netlifyCMS@netlify.com\",\"confirmed_at\":\"2020-08-11T15:18:28Z\",\"app_metadata\":{\"provider\":\"email\"},\"user_metadata\":{},\"created_at\":\"2020-08-11T15:18:28Z\",\"updated_at\":\"2020-08-11T15:18:28Z\"}",
+    "response": "{\"id\":\"16caa6d5-eb17-4ff6-834b-9d217debe415\",\"aud\":\"\",\"role\":\"\",\"email\":\"decap@p-m.si\",\"confirmed_at\":\"2020-08-11T15:18:28Z\",\"app_metadata\":{\"provider\":\"email\"},\"user_metadata\":{},\"created_at\":\"2020-08-11T15:18:28Z\",\"updated_at\":\"2020-08-11T15:18:28Z\"}",
     "status": 200
   },
   {
@@ -720,7 +720,7 @@
     "status": 404
   },
   {
-    "body": "{\"branch\":\"master\",\"commit_message\":\"Upload “static/media/netlify.png”\",\"actions\":[{\"action\":\"create\",\"file_path\":\"static/media/netlify.png\",\"content\":\"dmVyc2lvbiBodHRwczovL2dpdC1sZnMuZ2l0aHViLmNvbS9zcGVjL3YxCm9pZCBzaGEyNTY6YjFkNDBjMTliOTEyZDIxMzBkMWJlZDhmZjFhNjJhNTVjN2Q5MzI5Nzg1MDJlMWQ4NTU5ZWI3Nzk1MWM1ZThkMwpzaXplIDM0NzAK\",\"encoding\":\"base64\"}],\"author_name\":\"netlifyCMS\",\"author_email\":\"netlifyCMS@netlify.com\"}",
+    "body": "{\"branch\":\"master\",\"commit_message\":\"Upload “static/media/netlify.png”\",\"actions\":[{\"action\":\"create\",\"file_path\":\"static/media/netlify.png\",\"content\":\"dmVyc2lvbiBodHRwczovL2dpdC1sZnMuZ2l0aHViLmNvbS9zcGVjL3YxCm9pZCBzaGEyNTY6YjFkNDBjMTliOTEyZDIxMzBkMWJlZDhmZjFhNjJhNTVjN2Q5MzI5Nzg1MDJlMWQ4NTU5ZWI3Nzk1MWM1ZThkMwpzaXplIDM0NzAK\",\"encoding\":\"base64\"}],\"author_name\":\"decap\",\"author_email\":\"decap@p-m.si\"}",
     "method": "POST",
     "url": "/.netlify/git/gitlab/repository/commits",
     "headers": {
@@ -749,11 +749,11 @@
       "Connection": "keep-alive",
       "Vary": "Origin,Origin"
     },
-    "response": "{\"id\":\"ebd21650e9c5973c1eecbdabbaba0b15ab885ec4\",\"short_id\":\"ebd21650\",\"created_at\":\"2020-08-11T15:18:38.000+00:00\",\"parent_ids\":[\"f5023e69482c8cb7b440bb637be4647cda28ec42\"],\"title\":\"Upload âstatic/media/netlify.pngâ\",\"message\":\"Upload âstatic/media/netlify.pngâ\",\"author_name\":\"netlifyCMS\",\"author_email\":\"netlifyCMS@netlify.com\",\"authored_date\":\"2020-08-11T15:18:38.000+00:00\",\"committer_name\":\"owner\",\"committer_email\":\"4843565-owner@users.noreply.gitlab.com\",\"committed_date\":\"2020-08-11T15:18:38.000+00:00\",\"web_url\":\"https://gitlab.com/owner/repo/-/commit/ebd21650e9c5973c1eecbdabbaba0b15ab885ec4\",\"stats\":{\"additions\":3,\"deletions\":0,\"total\":3},\"status\":null,\"project_id\":20469934,\"last_pipeline\":null}",
+    "response": "{\"id\":\"ebd21650e9c5973c1eecbdabbaba0b15ab885ec4\",\"short_id\":\"ebd21650\",\"created_at\":\"2020-08-11T15:18:38.000+00:00\",\"parent_ids\":[\"f5023e69482c8cb7b440bb637be4647cda28ec42\"],\"title\":\"Upload âstatic/media/netlify.pngâ\",\"message\":\"Upload âstatic/media/netlify.pngâ\",\"author_name\":\"decap\",\"author_email\":\"decap@p-m.si\",\"authored_date\":\"2020-08-11T15:18:38.000+00:00\",\"committer_name\":\"owner\",\"committer_email\":\"4843565-owner@users.noreply.gitlab.com\",\"committed_date\":\"2020-08-11T15:18:38.000+00:00\",\"web_url\":\"https://gitlab.com/owner/repo/-/commit/ebd21650e9c5973c1eecbdabbaba0b15ab885ec4\",\"stats\":{\"additions\":3,\"deletions\":0,\"total\":3},\"status\":null,\"project_id\":20469934,\"last_pipeline\":null}",
     "status": 201
   },
   {
-    "body": "{\"branch\":\"master\",\"commit_message\":\"Delete “static/media/netlify.png”\",\"actions\":[{\"action\":\"delete\",\"file_path\":\"static/media/netlify.png\"}],\"author_name\":\"netlifyCMS\",\"author_email\":\"netlifyCMS@netlify.com\"}",
+    "body": "{\"branch\":\"master\",\"commit_message\":\"Delete “static/media/netlify.png”\",\"actions\":[{\"action\":\"delete\",\"file_path\":\"static/media/netlify.png\"}],\"author_name\":\"decap\",\"author_email\":\"decap@p-m.si\"}",
     "method": "POST",
     "url": "/.netlify/git/gitlab/repository/commits",
     "headers": {
@@ -782,7 +782,7 @@
       "Connection": "keep-alive",
       "Vary": "Origin,Origin"
     },
-    "response": "{\"id\":\"05f80ce4288d9a641f2600d885e65f388603a1c7\",\"short_id\":\"05f80ce4\",\"created_at\":\"2020-08-11T15:18:40.000+00:00\",\"parent_ids\":[\"ebd21650e9c5973c1eecbdabbaba0b15ab885ec4\"],\"title\":\"Delete âstatic/media/netlify.pngâ\",\"message\":\"Delete âstatic/media/netlify.pngâ\",\"author_name\":\"netlifyCMS\",\"author_email\":\"netlifyCMS@netlify.com\",\"authored_date\":\"2020-08-11T15:18:40.000+00:00\",\"committer_name\":\"owner\",\"committer_email\":\"4843565-owner@users.noreply.gitlab.com\",\"committed_date\":\"2020-08-11T15:18:40.000+00:00\",\"web_url\":\"https://gitlab.com/owner/repo/-/commit/05f80ce4288d9a641f2600d885e65f388603a1c7\",\"stats\":{\"additions\":0,\"deletions\":3,\"total\":3},\"status\":null,\"project_id\":20469934,\"last_pipeline\":null}",
+    "response": "{\"id\":\"05f80ce4288d9a641f2600d885e65f388603a1c7\",\"short_id\":\"05f80ce4\",\"created_at\":\"2020-08-11T15:18:40.000+00:00\",\"parent_ids\":[\"ebd21650e9c5973c1eecbdabbaba0b15ab885ec4\"],\"title\":\"Delete âstatic/media/netlify.pngâ\",\"message\":\"Delete âstatic/media/netlify.pngâ\",\"author_name\":\"decap\",\"author_email\":\"decap@p-m.si\",\"authored_date\":\"2020-08-11T15:18:40.000+00:00\",\"committer_name\":\"owner\",\"committer_email\":\"4843565-owner@users.noreply.gitlab.com\",\"committed_date\":\"2020-08-11T15:18:40.000+00:00\",\"web_url\":\"https://gitlab.com/owner/repo/-/commit/05f80ce4288d9a641f2600d885e65f388603a1c7\",\"stats\":{\"additions\":0,\"deletions\":3,\"total\":3},\"status\":null,\"project_id\":20469934,\"last_pipeline\":null}",
     "status": 201
   }
 ]

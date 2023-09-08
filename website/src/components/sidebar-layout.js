@@ -16,7 +16,7 @@ function SidebarLayout({ sidebar, children }) {
       css={css`
         ${mq[1]} {
           display: grid;
-          grid-template-columns: ${sidebar ? '300px' : ''} minmax(0, 1fr);
+          grid-template-columns: ${sidebar ? 'clamp(160px, 20vw, 320px)' : ''} minmax(0, 1fr);
           grid-gap: 2rem;
         }
       `}

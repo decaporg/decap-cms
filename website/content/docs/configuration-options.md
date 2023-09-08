@@ -5,7 +5,7 @@ title: Configuration Options
 ---
 ## Configuration File
 
-All configuration options for Netlify CMS are specified in a `config.yml` file, in the folder where you access the editor UI (usually in the `/admin` folder).
+All configuration options for Decap CMS are specified in a `config.yml` file, in the folder where you access the editor UI (usually in the `/admin` folder).
 
 Alternatively, you can specify a custom config file using a link tag:
 
@@ -14,7 +14,7 @@ Alternatively, you can specify a custom config file using a link tag:
 <link href="path/to/config.yml" type="text/yaml" rel="cms-config-url">
 ```
 
-To see working configuration examples, you can [start from a template](../start-with-a-template) or check out the [CMS demo site](https://cms-demo.netlify.com). (No login required: click the login button and the CMS will open.) You can refer to the demo [configuration code](https://github.com/netlify/netlify-cms/blob/master/dev-test/config.yml) to see how each option was configured.
+To see working configuration examples, you can [start from a template](../start-with-a-template) or check out the [CMS demo site](https://cms-demo.netlify.com). (No login required: click the login button and the CMS will open.) You can refer to the demo [configuration code](https://github.com/decaporg/decap-cms/blob/master/dev-test/config.yml) to see how each option was configured.
 
 You can find details about all configuration options below. Note that [YAML syntax](https://en.wikipedia.org/wiki/YAML#Basic_components) allows lists and objects to be written in block or inline style, and the code samples below include a mix of both.
 
@@ -24,17 +24,17 @@ You can find details about all configuration options below. Note that [YAML synt
 
 The `backend` option specifies how to access the content for your site, including authentication. Full details and code samples can be found in [Backends](/docs/backends-overview).
 
-**Note**: no matter where you access Netlify CMS — whether running locally, in a staging environment, or in your published site — it will always fetch and commit files in your hosted repository (for example, on GitHub), on the branch you configured in your Netlify CMS config.yml file. This means that content fetched in the admin UI will match the content in the repository, which may be different from your locally running site. It also means that content saved using the admin UI will save directly to the hosted repository, even if you're running the UI locally or in staging. If you want to have your local CMS write to a local repository, try the `local_backend` setting, [currently in beta](/docs/beta-features/#working-with-a-local-git-repository).
+**Note**: no matter where you access Decap CMS — whether running locally, in a staging environment, or in your published site — it will always fetch and commit files in your hosted repository (for example, on GitHub), on the branch you configured in your Decap CMS config.yml file. This means that content fetched in the admin UI will match the content in the repository, which may be different from your locally running site. It also means that content saved using the admin UI will save directly to the hosted repository, even if you're running the UI locally or in staging. If you want to have your local CMS write to a local repository, try the `local_backend` setting, [currently in beta](/docs/beta-features/#working-with-a-local-git-repository).
 
 ## Publish Mode
 
-By default, all entries created or edited in the Netlify CMS are committed directly into the main repository branch.
+By default, all entries created or edited in the Decap CMS are committed directly into the main repository branch.
 
 The `publish_mode` option allows you to enable "Editorial Workflow" mode for more control over the content publishing phases. All unpublished entries will be arranged in a board according to their status, and they can be further reviewed and edited before going live.
 
 **Note:** Editorial workflow works with GitHub repositories, and support for GitLab and Bitbucket is [in beta](/docs/beta-features/#gitlab-and-bitbucket-editorial-workflow-support).
 
-You can enable the Editorial Workflow with the following line in your Netlify CMS `config.yml` file:
+You can enable the Editorial Workflow with the following line in your Decap CMS `config.yml` file:
 
 ```yaml
 # /admin/config.yml
@@ -51,7 +51,7 @@ From a technical perspective, the workflow translates editor UI actions into com
 
 ## Media and Public Folders
 
-Netlify CMS users can upload files to your repository using the Media Gallery. The following settings specify where these files are saved, and where they can be accessed on your built site.
+Decap CMS users can upload files to your repository using the Media Gallery. The following settings specify where these files are saved, and where they can be accessed on your built site.
 
 ### Media Folder
 
@@ -139,15 +139,15 @@ locale: 'de'
 And in your custom JavaScript code:
 
 ```js
-import CMS from 'netlify-cms-app';
-import { de } from 'netlify-cms-locales';
+import CMS from 'decap-cms-app';
+import { de } from 'decap-cms-locales';
 
 CMS.registerLocale('de', de);
 ```
 
 When a translation for the selected locale is missing the English one will be used.
 
-> When importing `netlify-cms` all locales are registered by default (so you only need to update your `config.yml`).
+> When importing `decap-cms` all locales are registered by default (so you only need to update your `config.yml`).
 
 ## Show Preview Links
 
@@ -199,7 +199,7 @@ slug:
 
 *This setting is required.*
 
-The `collections` setting is the heart of your Netlify CMS configuration, as it determines how content types and editor fields in the UI generate files and content in your repository. Each collection you configure displays in the left sidebar of the Content page of the editor UI, in the order they are entered into your Netlify CMS `config.yml` file.
+The `collections` setting is the heart of your Decap CMS configuration, as it determines how content types and editor fields in the UI generate files and content in your repository. Each collection you configure displays in the left sidebar of the Content page of the editor UI, in the order they are entered into your Decap CMS `config.yml` file.
 
 `collections` accepts a list of collection objects, each with the following options:
 
@@ -231,7 +231,7 @@ The last few options require more detailed information.
 
 ### `identifier_field`
 
-Netlify CMS expects every entry to provide a field named `"title"` that serves as an identifier for the entry. The identifier field serves as an entry's title when viewing a list of entries, and is used in [slug](#slug) creation. If you would like to use a field other than `"title"` as the identifier, you can set `identifier_field` to the name of the other field.
+Decap CMS expects every entry to provide a field named `"title"` that serves as an identifier for the entry. The identifier field serves as an entry's title when viewing a list of entries, and is used in [slug](#slug) creation. If you would like to use a field other than `"title"` as the identifier, you can set `identifier_field` to the name of the other field.
 
 **Example**
 
@@ -243,7 +243,7 @@ collections:
 
 ### `extension` and `format`
 
-These settings determine how collection files are parsed and saved. Both are optional—Netlify CMS will attempt to infer your settings based on existing items in the collection. If your collection is empty, or you'd like more control, you can set these fields explicitly.
+These settings determine how collection files are parsed and saved. Both are optional—Decap CMS will attempt to infer your settings based on existing items in the collection. If your collection is empty, or you'd like more control, you can set these fields explicitly.
 
 `extension` determines the file extension searched for when finding existing entries in a folder collection and it determines the file extension used to save new collection items. It accepts the following values: `yml`, `yaml`, `toml`, `json`, `md`, `markdown`, `html`.
 
@@ -328,7 +328,7 @@ collections:
 
 ### `preview_path_date_field`
 
-The name of a date field for parsing date-based template tags from `preview_path`. If this field is not provided and `preview_path` contains date-based template tags (eg. `{{year}}`), Netlify CMS will attempt to infer a usable date field by checking for common date field names, such as `date`. If you find that you need to specify a date field, you can use `preview_path_date_field` to tell Netlify CMS which field to use for preview path template tags.
+The name of a date field for parsing date-based template tags from `preview_path`. If this field is not provided and `preview_path` contains date-based template tags (eg. `{{year}}`), Decap CMS will attempt to infer a usable date field by checking for common date field names, such as `date`. If you find that you need to specify a date field, you can use `preview_path_date_field` to tell Decap CMS which field to use for preview path template tags.
 
 **Example:**
 
@@ -340,7 +340,7 @@ collections:
 
 ### `fields`
 
-The `fields` option maps editor UI widgets to field-value pairs in the saved file. The order of the fields in your Netlify CMS `config.yml` file determines their order in the editor UI and in the saved file.
+The `fields` option maps editor UI widgets to field-value pairs in the saved file. The order of the fields in your Decap CMS `config.yml` file determines their order in the editor UI and in the saved file.
 
 `fields` accepts a list of collection objects, each with the following options:
 
@@ -349,6 +349,7 @@ The `fields` option maps editor UI widgets to field-value pairs in the saved fil
 * `widget`: defines editor UI and inputs and file field data types; details in [Widgets](../widgets)
 * `default`: specify a default value for a field; available for most widget types (see [Widgets](../widgets) for details on each widget type). Please note that field default value only works for folder collection type.
 * `required`: specify as `false` to make a field optional; defaults to `true`
+* `hint`: optionally add helper text directly below a widget. Useful for including instructions. Accepts markdown for bold, italic, strikethrough, and links.
 * `pattern`: add field validation by specifying a list with a regex pattern and an error message; more extensive validation can be achieved with [custom widgets](../custom-widgets/#advanced-field-validation)
 * `comment`: optional comment to add before the field (only supported for `yaml`)
 

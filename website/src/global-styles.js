@@ -58,7 +58,7 @@ const globalStyles = css`
   }
 
   a {
-    color: ${theme.colors.darkGreen};
+    color: ${theme.colors.primaryDark};
     text-decoration: none;
   }
 
@@ -71,12 +71,12 @@ const globalStyles = css`
       letter-spacing: 0.5px;
       line-height: 1;
       color: ${theme.colors.gray};
-      background-color: ${theme.colors.green};
+      background-color: ${theme.colors.primaryDark};
       box-shadow: 0 2px 16px 0 rgba(68, 74, 87, 0.15), 0 1px 4px 0 rgba(68, 74, 87, 0.3);
     }
 
     &:hover {
-      background-color: ${theme.colors.lightGreen};
+      background-color: ${theme.colors.primaryLight};
       box-shadow: 0 2px 16px 0 rgba(68, 74, 87, 0.25), 0 1px 4px 0 rgba(68, 74, 87, 0.5);
     }
 

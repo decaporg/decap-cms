@@ -30,7 +30,7 @@ const StyledCommunityChannelsList = styled.ul`
       position: absolute;
       width: 3px;
       height: 100%;
-      background-color: ${theme.colors.darkGreen};
+      background-color: ${theme.colors.primaryDark};
       left: -16px;
     }
   }

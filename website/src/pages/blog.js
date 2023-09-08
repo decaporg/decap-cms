@@ -15,11 +15,11 @@ function Blog({ data }) {
     <Layout>
       <Helmet>
         <title>Blog</title>
-        <meta name="description" content="Recent news and updates about Netlify CMS." />
+        <meta name="description" content="Recent news and updates about Decap CMS." />
       </Helmet>
       <Page>
         <Container size="sm">
-          <h1>Netlify CMS Blog</h1>
+          <h1>Blog</h1>
           {data.allMarkdownRemark.edges.map(({ node }) => (
             <article
               key={node.id}
