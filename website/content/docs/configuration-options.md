@@ -139,15 +139,15 @@ locale: 'de'
 And in your custom JavaScript code:
 
 ```js
-import CMS from 'netlify-cms-app';
-import { de } from 'netlify-cms-locales';
+import CMS from 'decap-cms-app';
+import { de } from 'decap-cms-locales';
 
 CMS.registerLocale('de', de);
 ```
 
 When a translation for the selected locale is missing the English one will be used.
 
-> When importing `netlify-cms` all locales are registered by default (so you only need to update your `config.yml`).
+> When importing `decap-cms` all locales are registered by default (so you only need to update your `config.yml`).
 
 ## Show Preview Links
 

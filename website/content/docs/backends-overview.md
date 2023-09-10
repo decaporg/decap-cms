@@ -18,8 +18,8 @@ Individual backends should provide their own configuration documentation, but th
 | `site_domain`   | `location.hostname` (or `cms.netlify.com` when on `localhost`) | Sets the `site_id` query param sent to the API endpoint. Non-Netlify auth setups will often need to set this for local development to work properly. |
 | `base_url`      | `https://api.netlify.com` (GitHub, Bitbucket), `https://gitlab.com` (GitLab) or `https://try.gitea.io` (Gitea)         | OAuth client hostname (just the base domain, no path). **Required** when using an external OAuth server or self-hosted GitLab/Gitea.                               |
 | `auth_endpoint` | `auth` (GitHub, Bitbucket) or `oauth/authorize` (GitLab)                  | Path to append to `base_url` for authentication requests. Optional.                                                                                  |
-| `cms_label_prefix` | `netlify-cms/` | Pull (or Merge) Requests label prefix when using editorial workflow. Optional. |
+| `cms_label_prefix` | `decap-cms/` | Pull (or Merge) Requests label prefix when using editorial workflow. Optional. |
 
 ## Creating a New Backend
 
-Anyone can write a backend, but we don't yet have a finalized and documented API. If you would like to write your own backend for a service that does not have one currently, we recommend using the [GitHub backend](https://github.com/decaporg/decap-cms/tree/master/packages/netlify-cms-backend-github) as a reference for API and best practices.
+Anyone can write a backend, but we don't yet have a finalized and documented API. If you would like to write your own backend for a service that does not have one currently, we recommend using the [GitHub backend](https://github.com/decaporg/decap-cms/tree/master/packages/decap-cms-backend-github) as a reference for API and best practices.

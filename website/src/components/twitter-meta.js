@@ -5,7 +5,7 @@ function TwitterMeta({ title, description, image, imageAlt }) {
   return (
     <Helmet>
       <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:site" content="@netlifycms" />
+      <meta name="twitter:site" content="@Decap_CMS" />
       {title && <meta name="twitter:title" content={title} />}
       {description && <meta name="twitter:description" content={description} />}
       {image && <meta name="twitter:image" content={image} />}

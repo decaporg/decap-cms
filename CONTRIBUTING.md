@@ -128,9 +128,9 @@ yarn format
 
 We actively welcome your pull requests!
 
-If you need help with Git or our workflow, please ask in our [community chat](https://netlifycms.org/chat). We want your contributions even if you're just learning Git. Our maintainers are happy to help!
+If you need help with Git or our workflow, please ask in our [community chat](https://decapcms.org/chat). We want your contributions even if you're just learning Git. Our maintainers are happy to help!
 
-Netlify CMS uses the [Forking Workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/forking-workflow) + [Feature Branches](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow). Additionally, PR's should be [rebased](https://www.atlassian.com/git/tutorials/merging-vs-rebasing) on master when opened, and again before merging.
+Decap CMS uses the [Forking Workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/forking-workflow) + [Feature Branches](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow). Additionally, PR's should be [rebased](https://www.atlassian.com/git/tutorials/merging-vs-rebasing) on master when opened, and again before merging.
 
 1. Fork the repo.
 2. Create a branch from `master`. If you're addressing a specific issue, prefix your branch name with the issue number.
@@ -161,10 +161,10 @@ backend:
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Netlify CMS</title>
+    <title>Decap CMS</title>
   </head>
   <body>
-    <script src="dist/netlify-cms.js"></script>
+    <script src="dist/decap-cms.js"></script>
     <!-- <script>
       // this is the place to add CMS customizations if you need to, e.g.
       CMS.registerPreviewTemplate('posts', PostPreview);
@@ -172,7 +172,7 @@ backend:
   </body>
 </html>
 ```
-The most important thing is to make sure that Netlify CMS is loaded from the `dist` folder. This way, every time you make changes to the source code, they will be compiled and reflected immediately on `localhost`.
+The most important thing is to make sure that Decap CMS is loaded from the `dist` folder. This way, every time you make changes to the source code, they will be compiled and reflected immediately on `localhost`.
 
 3. Run `yarn start`
 4. Open `http://localhost:8080/` in the browser and you should have access to the CMS
@@ -181,7 +181,7 @@ The most important thing is to make sure that Netlify CMS is loaded from the `di
 
 When debugging the CMS with Git Gateway you must:
 
-1. Have a Netlify site with [Git Gateway](https://docs.netlify.com/visitor-access/git-gateway/) and [Netlify Identity](https://docs.netlify.com/visitor-access/identity/) enabled. An easy way to create such a site is to use a [template](https://www.netlifycms.org/docs/start-with-a-template/), for example the [Gatsby template](https://app.netlify.com/start/deploy?repository=https://github.com/decaporg/gatsby-starter-decap-cms&stack=cms)
+1. Have a Netlify site with [Git Gateway](https://docs.netlify.com/visitor-access/git-gateway/) and [Netlify Identity](https://docs.netlify.com/visitor-access/identity/) enabled. An easy way to create such a site is to use a [template](https://www.decapcms.org/docs/start-with-a-template/), for example the [Gatsby template](https://app.netlify.com/start/deploy?repository=https://github.com/decaporg/gatsby-starter-decap-cms&stack=cms)
 2. Tell the CMS the URL of your Netlify site using a local storage item. To do so:
 
     1. Open `http://localhost:8080/` in the browser
@@ -206,13 +206,13 @@ Example for running all the tests for the file `gitlab.spec.js`: `yarn jest gitl
 
 Some test files like `API.spec.js` is available in several packages. You can pass a regexp pattern instead of file path to narrow down files.
 
-Example for running all the tests for the file `API.spec.js` in the `netlify-cms-backend-gitlab` package:
+Example for running all the tests for the file `API.spec.js` in the `decap-cms-backend-gitlab` package:
 
 `yarn jest ".+backend-gitlab/.+/API.spec.js`
 
 To run a specific test in a file, add the flag `--testNamePattern`, or `-t` for short followed by a regexp to match your test name.
 
-Example for running the test "should return true on project access_level >= 30" in the API.spec.js in `netlify-cms-backend-gitlab` package:
+Example for running the test "should return true on project access_level >= 30" in the API.spec.js in `decap-cms-backend-gitlab` package:
 
 ```
 yarn jest -t "true on p" ".+backend-gitlab/.+/API.spec.js"
@@ -222,5 +222,5 @@ For more information about running tests exactly the way you want, check out the
 
 ## License
 
-By contributing to Netlify CMS, you agree that your contributions will be licensed
+By contributing to Decap CMS, you agree that your contributions will be licensed
 under its [MIT license](LICENSE).

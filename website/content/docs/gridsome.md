@@ -34,10 +34,10 @@ gridsome develop
 ```bash
 
 # Using Yarn
-yarn add netlify-cms gridsome-plugin-netlify-cms @gridsome/source-filesystem @gridsome/transformer-remark
+yarn add decap-cms gridsome-plugin-netlify-cms @gridsome/source-filesystem @gridsome/transformer-remark
 
 # Using NPM
-npm add netlify-cms gridsome-plugin-netlify-cms @gridsome/source-filesystem @gridsome/transformer-remark
+npm add decap-cms gridsome-plugin-netlify-cms @gridsome/source-filesystem @gridsome/transformer-remark
 ```
 
 Now that the plugins are installed, it's time to setup the configuration. Open the `gridsome.config.js` file and update its content to:
@@ -62,7 +62,7 @@ module.exports = {
       }
     },
     {
-      use: `gridsome-plugin-netlify-cms`,
+      use: `gridsome-plugin-decap-cms`,
       options: {
         publicPath: `/admin`
       }
@@ -98,7 +98,7 @@ Your `index.html` should look like this:
 Your `index.js` should look like this:
 
 ```js
-import CMS from "netlify-cms"
+import CMS from "decap-cms"
 ```
 
 Your `config.yml` for GitHub should look like this:

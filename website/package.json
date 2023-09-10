@@ -1,5 +1,5 @@
 {
-  "name": "netlify-cms-site",
+  "name": "decap-cms-site",
   "version": "1.0.0",
   "description": "Decap CMS documentation website built with Gatsby",
   "scripts": {
