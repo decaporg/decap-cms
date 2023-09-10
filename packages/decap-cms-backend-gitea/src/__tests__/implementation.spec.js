@@ -1,4 +1,4 @@
-import { Cursor, CURSOR_COMPATIBILITY_SYMBOL } from 'netlify-cms-lib-util';
+import { Cursor, CURSOR_COMPATIBILITY_SYMBOL } from 'decap-cms-lib-util';
 
 import GiteaImplementation from '../implementation';
 
@@ -21,7 +21,7 @@ describe('gitea backend implementation', () => {
 
   beforeAll(() => {
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    
+
   });
 
   beforeEach(() => {

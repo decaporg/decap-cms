@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
-import { PkceAuthenticator } from 'netlify-cms-lib-auth';
-import { AuthenticationPage, Icon } from 'netlify-cms-ui-default';
+import { PkceAuthenticator } from 'decap-cms-lib-auth';
+import { AuthenticationPage, Icon } from 'decap-cms-ui-default';
 
 const LoginButtonIcon = styled(Icon)`
   margin-right: 18px;

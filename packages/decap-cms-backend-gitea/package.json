@@ -1,15 +1,14 @@
 {
-    "name": "netlify-cms-backend-gitea",
-    "description": "Gitea backend for Netlify CMS",
-    "version": "1.0.0",
-    "repository": "https://github.com/decaporg/decap-cms/tree/master/packages/netlify-cms-backend-gitea",
+    "name": "decap-cms-backend-gitea",
+    "description": "Gitea backend for Decap CMS",
+    "version": "3.0.2",
+    "repository": "https://github.com/decaporg/decap-cms/tree/master/packages/decap-cms-backend-gitea",
     "bugs": "https://github.com/decaporg/decap-cms/issues",
     "license": "MIT",
     "module": "dist/esm/index.js",
-    "main": "dist/netlify-cms-backend-gitea.js",
+    "main": "dist/decap-cms-backend-gitea.js",
     "keywords": [
-      "netlify",
-      "netlify-cms",
+      "decap-cms",
       "backend",
       "gitea"
     ],
@@ -28,11 +27,10 @@
       "@emotion/styled": "^10.0.27",
       "immutable": "^3.7.6",
       "lodash": "^4.17.11",
-      "netlify-cms-lib-auth": "^2.3.0",
-      "netlify-cms-lib-util": "^2.12.3",
-      "netlify-cms-ui-default": "^2.12.1",
+      "decap-cms-lib-auth": "^3.0.0",
+      "decap-cms-lib-util": "^3.0.0",
+      "decap-cms-ui-default": "^3.0.0",
       "prop-types": "^15.7.2",
       "react": "^16.8.4 || ^17.0.0"
     }
   }
-  

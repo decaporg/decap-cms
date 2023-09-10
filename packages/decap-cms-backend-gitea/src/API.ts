@@ -10,9 +10,9 @@ import {
   readFileMetadata,
   requestWithBackoff,
   unsentRequest,
-} from 'netlify-cms-lib-util';
+} from 'decap-cms-lib-util';
 
-import type { DataFile, PersistOptions, AssetProxy, ApiRequest, FetchError } from 'netlify-cms-lib-util';
+import type { DataFile, PersistOptions, AssetProxy, ApiRequest, FetchError } from 'decap-cms-lib-util';
 import type { Semaphore } from 'semaphore';
 import type {
   FilesResponse,

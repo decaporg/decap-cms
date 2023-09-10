@@ -15,7 +15,7 @@ import {
   getMediaDisplayURL,
   runWithLock,
   unsentRequest,
-} from 'netlify-cms-lib-util';
+} from 'decap-cms-lib-util';
 
 import API, { API_NAME } from './API';
 import AuthenticationPage from './AuthenticationPage';
@@ -31,7 +31,7 @@ import type {
   ImplementationFile,
   PersistOptions,
   User,
-} from 'netlify-cms-lib-util';
+} from 'decap-cms-lib-util';
 import type { Semaphore } from 'semaphore';
 import type { GiteaUser } from './types';
 
@@ -426,12 +426,12 @@ export default class Gitea implements Implementation {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return {} as any;
   }
-  
+
   async unpublishedEntryMediaFile() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return {} as any;
   };
-  
+
   async updateUnpublishedEntryStatus() {
     return;
   };
@@ -442,7 +442,7 @@ export default class Gitea implements Implementation {
   async deleteUnpublishedEntry() {
     return;
   };
-  
+
   async getDeployPreview() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return {} as any;
