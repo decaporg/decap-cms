@@ -1,5 +1,5 @@
 import { produce } from 'immer';
-import uuid from 'uuid';
+import { v4 as uuid } from 'uuid';
 
 import {
   NOTIFICATION_SEND,
@@ -35,7 +35,6 @@ const notifications = produce((state: NotificationsState, action: NotificationsA
       state.notifications = [];
       break;
     case NOTIFICATION_DISMISS:
-      console.log('dismissed!');
       state.notifications = state.notifications.filter(n => n.id !== action.id);
       break;
     case NOTIFICATION_SEND:

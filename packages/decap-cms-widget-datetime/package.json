@@ -1,7 +1,7 @@
 {
   "name": "decap-cms-widget-datetime",
   "description": "Widget for editing dates and times in Decap CMS.",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "homepage": "https://www.decapcms.org/docs/widgets/#datetime",
   "repository": "https://github.com/decaporg/decap-cms/tree/master/packages/decap-cms-widget-datetime",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
@@ -23,7 +23,6 @@
   },
   "peerDependencies": {
     "@emotion/core": "^10.0.35",
-    "decap-cms-widget-date": "^3.0.0",
     "react": "^16.8.4 || ^17.0.0"
   },
   "dependencies": {

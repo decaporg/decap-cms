@@ -35,16 +35,18 @@ const DragIconContainer = styled(TopBarButtonSpan)`
   cursor: move;
 `;
 
-function DragHandle({ dragHandleHOC }) {
-  const Handle = dragHandleHOC(() => (
-    <DragIconContainer>
-      <Icon type="drag-handle" size="small" />
-    </DragIconContainer>
-  ));
-  return <Handle />;
+function DragHandle({ Wrapper, id }) {
+  return (
+    <Wrapper id={id}>
+      <DragIconContainer>
+        <Icon type="drag-handle" size="small" />
+      </DragIconContainer>
+    </Wrapper>
+  );
 }
 
-function ListItemTopBar({ className, collapsed, onCollapseToggle, onRemove, dragHandleHOC }) {
+function ListItemTopBar(props) {
+  const { className, collapsed, onCollapseToggle, onRemove, dragHandle, id } = props;
   return (
     <TopBar className={className}>
       {onCollapseToggle ? (
@@ -52,7 +54,7 @@ function ListItemTopBar({ className, collapsed, onCollapseToggle, onRemove, drag
           <Icon type="chevron" size="small" direction={collapsed ? 'right' : 'down'} />
         </TopBarButton>
       ) : null}
-      {dragHandleHOC ? <DragHandle dragHandleHOC={dragHandleHOC} /> : null}
+      {dragHandle ? <DragHandle Wrapper={dragHandle} id={id} /> : null}
       {onRemove ? (
         <TopBarButton onClick={onRemove}>
           <Icon type="close" size="small" />

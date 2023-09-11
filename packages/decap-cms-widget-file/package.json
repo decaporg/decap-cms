@@ -1,7 +1,7 @@
 {
   "name": "decap-cms-widget-file",
   "description": "Widget for uploading files in Decap CMS.",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "homepage": "https://www.decapcms.org/docs/widgets/#file",
   "repository": "https://github.com/decaporg/decap-cms/tree/master/packages/decap-cms-widget-file",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
@@ -22,9 +22,11 @@
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
   },
   "dependencies": {
+    "@dnd-kit/core": "^6.0.8",
+    "@dnd-kit/modifiers": "^6.0.1",
+    "@dnd-kit/sortable": "^7.0.2",
     "array-move": "4.0.0",
-    "common-tags": "^1.8.0",
-    "react-sortable-hoc": "^2.0.0"
+    "common-tags": "^1.8.0"
   },
   "peerDependencies": {
     "@emotion/core": "^10.0.35",
@@ -34,6 +36,6 @@
     "prop-types": "^15.7.2",
     "react": "^16.8.4 || ^17.0.0",
     "react-immutable-proptypes": "^2.1.0",
-    "uuid": "^3.3.2"
+    "uuid": "^8.3.2"
   }
 }

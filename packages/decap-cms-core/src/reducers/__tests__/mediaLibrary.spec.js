@@ -7,7 +7,7 @@ import mediaLibrary, {
   selectMediaDisplayURL,
 } from '../mediaLibrary';
 
-jest.mock('uuid/v4');
+jest.mock('uuid');
 jest.mock('../entries');
 jest.mock('../');
 

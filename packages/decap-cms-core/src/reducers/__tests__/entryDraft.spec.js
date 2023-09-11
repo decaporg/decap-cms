@@ -3,7 +3,7 @@ import { Map, fromJS } from 'immutable';
 import * as actions from '../../actions/entries';
 import reducer from '../entryDraft';
 
-jest.mock('uuid/v4', () => jest.fn(() => '1'));
+jest.mock('uuid', () => ({ v4: jest.fn(() => '1') }));
 
 const initialState = Map({
   entry: Map(),

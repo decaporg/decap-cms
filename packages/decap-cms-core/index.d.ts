@@ -412,6 +412,14 @@ declare module 'decap-cms-core' {
     name: string;
     label: string;
     widget: string;
+    /**
+     * Used if widget === "list" to create a flat array
+     */
+    field: EditorComponentField;
+    /**
+     * Used if widget === "list" to create an array of objects
+     */
+    fields: EditorComponentField[];
   }
 
   export interface EditorComponentOptions {

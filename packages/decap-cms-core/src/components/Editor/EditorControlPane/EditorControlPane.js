@@ -144,7 +144,7 @@ export default class ControlPane extends React.Component {
             locale: sourceLocale,
             isTranslatable: sourceLocale !== defaultLocale,
           });
-          this.props.onChange(field, copyValue, undefined, i18n);
+          if (copyValue) this.props.onChange(field, copyValue, undefined, i18n);
         }
       });
     };

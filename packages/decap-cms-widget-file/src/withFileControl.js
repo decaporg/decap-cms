@@ -5,7 +5,7 @@ import styled from '@emotion/styled';
 import { css } from '@emotion/core';
 import { Map, List } from 'immutable';
 import { once } from 'lodash';
-import uuid from 'uuid/v4';
+import { v4 as uuid } from 'uuid';
 import { oneLine } from 'common-tags';
 import {
   lengths,
@@ -17,8 +17,18 @@ import {
   IconButton,
 } from 'decap-cms-ui-default';
 import { basename } from 'decap-cms-lib-util';
-import { SortableContainer, SortableElement } from 'react-sortable-hoc';
 import { arrayMoveImmutable as arrayMove } from 'array-move';
+import {
+  DndContext,
+  MouseSensor,
+  TouchSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import { SortableContext, useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { restrictToParentElement } from '@dnd-kit/modifiers';
 
 const MAX_DISPLAY_LENGTH = 50;
 
@@ -64,9 +74,20 @@ function SortableImageButtons({ onRemove, onReplace }) {
   );
 }
 
-const SortableImage = SortableElement(({ itemValue, getAsset, field, onRemove, onReplace }) => {
+function SortableImage(props) {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id: props.id,
+  });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  const { itemValue, getAsset, field, onRemove, onReplace } = props;
+
   return (
-    <div>
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
       <ImageWrapper sortable>
         <Image src={getAsset(itemValue, field) || ''} />
       </ImageWrapper>
@@ -77,32 +98,61 @@ const SortableImage = SortableElement(({ itemValue, getAsset, field, onRemove, o
       ></SortableImageButtons>
     </div>
   );
-});
+}
 
-const SortableMultiImageWrapper = SortableContainer(
-  ({ items, getAsset, field, onRemoveOne, onReplaceOne }) => {
-    return (
-      <div
-        css={css`
-          display: flex;
-          flex-wrap: wrap;
-        `}
+function SortableMultiImageWrapper({
+  items,
+  getAsset,
+  field,
+  onSortEnd,
+  onRemoveOne,
+  onReplaceOne,
+}) {
+  const activationConstraint = { distance: 4 };
+  const sensors = useSensors(
+    useSensor(MouseSensor, { activationConstraint }),
+    useSensor(TouchSensor, { activationConstraint }),
+  );
+
+  function handleSortEnd({ active, over }) {
+    onSortEnd({
+      oldIndex: items.findIndex(item => item.id === active.id),
+      newIndex: items.findIndex(item => item.id === over.id),
+    });
+  }
+
+  return (
+    <div
+      // eslint-disable-next-line react/no-unknown-property
+      css={css`
+        display: flex;
+        flex-wrap: wrap;
+      `}
+    >
+      <DndContext
+        modifiers={[restrictToParentElement]}
+        collisionDetection={closestCenter}
+        sensors={sensors}
+        onDragEnd={handleSortEnd}
       >
-        {items.map((itemValue, index) => (
-          <SortableImage
-            key={`item-${itemValue}`}
-            index={index}
-            itemValue={itemValue}
-            getAsset={getAsset}
-            field={field}
-            onRemove={onRemoveOne(index)}
-            onReplace={onReplaceOne(index)}
-          />
-        ))}
-      </div>
-    );
-  },
-);
+        <SortableContext items={items}>
+          {items.map((item, index) => (
+            <SortableImage
+              key={item.id}
+              id={item.id}
+              index={index}
+              itemValue={item.value}
+              getAsset={getAsset}
+              field={field}
+              onRemove={onRemoveOne(index)}
+              onReplace={onReplaceOne(index)}
+            ></SortableImage>
+          ))}
+        </SortableContext>
+      </DndContext>
+    </div>
+  );
+}
 
 const FileLink = styled.a`
   margin-bottom: 20px;
@@ -152,7 +202,20 @@ function sizeOfValue(value) {
 }
 
 function valueListToArray(value) {
-  return List.isList(value) ? value.toArray() : value;
+  return List.isList(value) ? value.toArray() : value ?? [];
+}
+
+function valueListToSortableArray(value) {
+  if (!isMultiple(value)) {
+    return value;
+  }
+
+  const valueArray = valueListToArray(value).map(value => ({
+    id: uuid(),
+    value,
+  }));
+
+  return valueArray;
 }
 
 const warnDeprecatedOptions = once(field =>
@@ -259,7 +322,7 @@ export default function withFileControl({ forImage } = {}) {
     };
 
     onRemoveOne = index => () => {
-      const { value } = this.props;
+      const value = valueListToArray(this.props.value);
       value.splice(index, 1);
       return this.props.onChange(sizeOfValue(value) > 0 ? [...value] : null);
     };
@@ -346,11 +409,11 @@ export default function withFileControl({ forImage } = {}) {
 
     renderImages = () => {
       const { getAsset, value, field } = this.props;
-
+      const items = valueListToSortableArray(value);
       if (isMultiple(value)) {
         return (
           <SortableMultiImageWrapper
-            items={value}
+            items={items}
             onSortEnd={this.onSortEnd}
             onRemoveOne={this.onRemoveOne}
             onReplaceOne={this.onReplaceOne}

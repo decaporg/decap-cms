@@ -177,6 +177,7 @@ export interface Implementation {
     folder: string,
     extension: string,
     depth: number,
+    pathRegex?: RegExp,
   ) => Promise<ImplementationEntry[]>;
   traverseCursor?: (
     cursor: Cursor,

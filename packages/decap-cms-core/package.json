@@ -1,7 +1,7 @@
 {
   "name": "decap-cms-core",
   "description": "Decap CMS core application, see decap-cms package for the main distribution.",
-  "version": "3.2.2",
+  "version": "3.2.4",
   "repository": "https://github.com/decaporg/decap-cms/tree/master/packages/decap-cms-core",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
   "module": "dist/esm/index.js",
@@ -56,7 +56,6 @@
     "react-redux": "^7.2.0",
     "react-router-dom": "^5.2.0",
     "react-scroll-sync": "^0.9.0",
-    "react-sortable-hoc": "^2.0.0",
     "react-split-pane": "^0.1.85",
     "react-toastify": "^9.1.1",
     "react-topbar-progress-indicator": "^4.0.0",

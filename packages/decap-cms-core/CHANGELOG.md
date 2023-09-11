@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.2.4](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.2.3...decap-cms-core@3.2.4) (2023-09-06)
+
+**Note:** Version bump only for package decap-cms-core
+
+
+
+
+
+## [3.2.3](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.2.2...decap-cms-core@3.2.3) (2023-09-06)
+
+
+### Bug Fixes
+
+* fill from locale error if undefined ([#6897](https://github.com/decaporg/decap-cms/issues/6897)) ([2c8aaf8](https://github.com/decaporg/decap-cms/commit/2c8aaf8c589da8436588b33261e6af9701d59b42))
+
+
+### Performance Improvements
+
+* filter by path when loading collection from github backend ([#6898](https://github.com/decaporg/decap-cms/issues/6898)) ([18ef773](https://github.com/decaporg/decap-cms/commit/18ef773f35db1b7ef3ab5a0f25527d87745b9c73))
+
+
+
+
+
 ## [3.2.2](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.2.1...decap-cms-core@3.2.2) (2023-08-25)
 
 
