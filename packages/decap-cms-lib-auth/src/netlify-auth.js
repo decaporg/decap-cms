@@ -81,7 +81,7 @@ class Authenticator {
       return this.site_id;
     }
     const host = document.location.host.split(':')[0];
-    return host === 'localhost' ? 'cms-demo.netlify.com' : host;
+    return host === 'localhost' ? 'demo.decapcms.org' : host;
   }
 
   authenticate(options, cb) {
