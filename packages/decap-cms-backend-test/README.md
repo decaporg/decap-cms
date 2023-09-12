@@ -1,6 +1,6 @@
 # Test backend
 
-The backend behind https://cms-demo.netlify.com/.
+The backend behind https://demo.decapcms.org/.
 Used for demo purposes only.
 
 ## Code structure
