@@ -14,4 +14,7 @@ sections:
       - title: GitHub Discussions
         description: Ask questions and discuss ideas.
         url: https://github.com/decaporg/decap-cms/discussions
+      - title: Yesy1
+        url: www.example.com
+        description: Test 1
 ---
