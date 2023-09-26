@@ -50,3 +50,5 @@ Please make sure you understand its [implications and guarantees](https://writin
 ## Maintainers
 
 Maintained with care by <a href="https://techhub.p-m.si/">PM</a> & friends.
+
+Decap CMS is the new name of Netlify CMS [since February 2023](https://www.netlify.com/blog/netlify-cms-to-become-decap-cms/).
