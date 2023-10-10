@@ -198,5 +198,6 @@
   "resolutions": {
     "react-redux": "^7.2.0",
     "babel-plugin-lodash/@babel/types": "~7.20.0"
-  }
+  },
+  "version": "0.0.0"
 }
