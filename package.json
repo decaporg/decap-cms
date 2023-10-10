@@ -1,4 +1,6 @@
 {
+  "name": "decap-cms-app",
+  "version": "3.0.8",
   "scripts": {
     "bootstrap": "lerna bootstrap",
     "start": "run-s clean bootstrap build:esm develop",
