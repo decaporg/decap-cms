@@ -593,8 +593,6 @@ export default class ListControl extends React.Component {
       }
     }
 
-    console.log('kurwa', classNameWrapper);
-
     return (
       <SortableListItem
         css={[styles.listControlItem, collapsed && styles.listControlItemCollapsed]}
