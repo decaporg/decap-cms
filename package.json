@@ -1,6 +1,6 @@
 {
-  "name": "decap-cms-app",
-  "version": "3.0.8",
+  "name": "digits-decap-cms",
+  "version": "1.0.0",
   "scripts": {
     "bootstrap": "lerna bootstrap",
     "start": "run-s clean bootstrap build:esm develop",
