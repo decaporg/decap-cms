@@ -19,7 +19,7 @@ import {
 import { SortableContext, horizontalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { restrictToParentElement } from '@dnd-kit/modifiers';
 import { CSS } from '@dnd-kit/utilities';
-import uuid from 'uuid';
+import { v4 as uuid } from 'uuid';
 
 function arrayMove(array, from, to) {
   const slicedArray = array.slice();
