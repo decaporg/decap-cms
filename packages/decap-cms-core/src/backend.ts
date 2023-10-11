@@ -47,8 +47,10 @@ import {
   getI18nBackup,
   formatI18nBackup,
   getI18nInfo,
+  I18N_STRUCTURE,
 } from './lib/i18n';
 
+import type { I18nInfo } from './lib/i18n';
 import type AssetProxy from './valueObjects/AssetProxy';
 import type {
   CmsConfig,
@@ -308,6 +310,13 @@ function collectionDepth(collection: Collection) {
   return depth;
 }
 
+function i18nRulestring(ruleString: string, { defaultLocale, structure }: I18nInfo): string {
+  if (structure === I18N_STRUCTURE.MULTIPLE_FOLDERS) {
+    return `${defaultLocale}\\/${ruleString}`;
+  }
+  return `${ruleString}\\.${defaultLocale}\\..*`;
+}
+
 function collectionRegex(collection: Collection): RegExp | undefined {
   let ruleString = '';
 
@@ -319,8 +328,7 @@ function collectionRegex(collection: Collection): RegExp | undefined {
   }
 
   if (hasI18n(collection)) {
-    const { defaultLocale } = getI18nInfo(collection) as { defaultLocale: string };
-    ruleString += `\\.${defaultLocale}\\..*`;
+    ruleString = i18nRulestring(ruleString, getI18nInfo(collection) as I18nInfo);
   }
 
   return ruleString ? new RegExp(ruleString) : undefined;
