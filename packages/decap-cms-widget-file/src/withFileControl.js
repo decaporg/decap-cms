@@ -202,7 +202,7 @@ function sizeOfValue(value) {
 }
 
 function valueListToArray(value) {
-  return List.isList(value) ? value.toArray() : value ?? [];
+  return List.isList(value) ? value.toArray() : value ?? '';
 }
 
 function valueListToSortableArray(value) {
