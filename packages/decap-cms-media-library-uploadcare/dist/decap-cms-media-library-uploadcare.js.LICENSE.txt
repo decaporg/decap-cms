@@ -1,0 +1,27 @@
+/*!
+   * Pusher JavaScript Library v1.12.2
+   * http://pusherapp.com/
+   *
+   * Copyright 2011, Pusher
+   * Released under the MIT licence.
+   */
+
+/*!
+ * jQuery JavaScript Library v3.7.0
+ * https://jquery.com/
+ *
+ * Copyright OpenJS Foundation and other contributors
+ * Released under the MIT license
+ * https://jquery.org/license
+ *
+ * Date: 2023-05-11T18:29Z
+ */
+
+/**
+ * @license uploadcare-widget v3.21.2
+ *
+ * Copyright (c) 2023 Uploadcare, Inc.
+ *
+ * This source code is licensed under the BSD 2-Clause License
+ * found in the LICENSE file in the root directory of this source tree.
+ */
