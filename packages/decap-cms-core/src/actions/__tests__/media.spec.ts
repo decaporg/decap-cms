@@ -1,7 +1,7 @@
 import { Map } from 'immutable';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { mocked } from 'ts-jest/utils';
+import { mocked } from 'jest-mock';
 
 import { getAsset, ADD_ASSET, LOAD_ASSET_REQUEST } from '../media';
 import { selectMediaFilePath } from '../../reducers/entries';
