@@ -24,7 +24,7 @@
     "process:languages": "node ./scripts/process-languages"
   },
   "peerDependencies": {
-    "@emotion/core": "^10.0.35",
+    "@emotion/react": "^11.11.1",
     "codemirror": "^5.46.0",
     "decap-cms-ui-default": "^3.0.0",
     "lodash": "^4.17.11",

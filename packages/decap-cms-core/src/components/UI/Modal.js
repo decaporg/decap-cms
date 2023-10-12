@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { css, Global, ClassNames } from '@emotion/core';
+import { css, Global, ClassNames } from '@emotion/react';
 import ReactModal from 'react-modal';
 import { transitions, shadows, lengths, zIndex } from 'decap-cms-ui-default';
 

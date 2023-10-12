@@ -2,7 +2,7 @@
 
 exports[`NestedCollection should render connected component 1`] = `
 <DocumentFragment>
-  .emotion-6 {
+  .emotion-0 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -18,29 +18,29 @@ exports[`NestedCollection should render connected component 1`] = `
   border-left: 2px solid #fff;
 }
 
-.emotion-6 mocked-icon {
+.emotion-0 mocked-icon {
   margin-right: 8px;
   -webkit-flex-shrink: 0;
   -ms-flex-negative: 0;
   flex-shrink: 0;
 }
 
-.emotion-6:hover,
-.emotion-6:active,
-.emotion-6.sidebar-active {
+.emotion-0:hover,
+.emotion-0:active,
+.emotion-0.sidebar-active {
   color: #3a69c7;
   background-color: #e8f5fe;
   border-left-color: #4863c6;
 }
 
-.emotion-4 {
+.emotion-2 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
   -webkit-box-pack: center;
-  -webkit-justify-content: center;
   -ms-flex-pack: center;
+  -webkit-justify-content: center;
   justify-content: center;
   -webkit-align-items: center;
   -webkit-box-align: center;
@@ -48,11 +48,11 @@ exports[`NestedCollection should render connected component 1`] = `
   align-items: center;
 }
 
-.emotion-0 {
+.emotion-4 {
   margin-right: 4px;
 }
 
-.emotion-2 {
+.emotion-6 {
   position: relative;
   top: 2px;
   color: #fff;
@@ -67,7 +67,7 @@ exports[`NestedCollection should render connected component 1`] = `
 
 <a
     aria-current="page"
-    class="emotion-6 emotion-7 sidebar-active"
+    class="emotion-0 emotion-1 sidebar-active"
     data-testid="/"
     depth="0"
     href="/collections/pages"
@@ -76,38 +76,19 @@ exports[`NestedCollection should render connected component 1`] = `
       type="write"
     />
     <div
-      class="emotion-4 emotion-5"
+      class="emotion-2 emotion-3"
     >
       <div
-        class="emotion-0 emotion-1"
+        class="emotion-4 emotion-5"
       >
         Pages
       </div>
       <div
-        class="emotion-2 emotion-3"
+        class="emotion-6 emotion-7"
       />
     </div>
   </a>
-  .emotion-2 {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-}
-
-.emotion-0 {
-  margin-right: 4px;
-}
-
-.emotion-4 {
+  .emotion-0 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -123,23 +104,42 @@ exports[`NestedCollection should render connected component 1`] = `
   border-left: 2px solid #fff;
 }
 
-.emotion-4 mocked-icon {
+.emotion-0 mocked-icon {
   margin-right: 8px;
   -webkit-flex-shrink: 0;
   -ms-flex-negative: 0;
   flex-shrink: 0;
 }
 
-.emotion-4:hover,
-.emotion-4:active,
-.emotion-4.sidebar-active {
+.emotion-0:hover,
+.emotion-0:active,
+.emotion-0.sidebar-active {
   color: #3a69c7;
   background-color: #e8f5fe;
   border-left-color: #4863c6;
 }
 
+.emotion-2 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.emotion-4 {
+  margin-right: 4px;
+}
+
 <a
-    class="emotion-4 emotion-5"
+    class="emotion-0 emotion-1"
     data-testid="/a"
     depth="1"
     href="/collections/pages/filter/a"
@@ -151,32 +151,13 @@ exports[`NestedCollection should render connected component 1`] = `
       class="emotion-2 emotion-3"
     >
       <div
-        class="emotion-0 emotion-1"
+        class="emotion-4 emotion-5"
       >
         File 1
       </div>
     </div>
   </a>
-  .emotion-2 {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-}
-
-.emotion-0 {
-  margin-right: 4px;
-}
-
-.emotion-4 {
+  .emotion-0 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -192,23 +173,42 @@ exports[`NestedCollection should render connected component 1`] = `
   border-left: 2px solid #fff;
 }
 
-.emotion-4 mocked-icon {
+.emotion-0 mocked-icon {
   margin-right: 8px;
   -webkit-flex-shrink: 0;
   -ms-flex-negative: 0;
   flex-shrink: 0;
 }
 
-.emotion-4:hover,
-.emotion-4:active,
-.emotion-4.sidebar-active {
+.emotion-0:hover,
+.emotion-0:active,
+.emotion-0.sidebar-active {
   color: #3a69c7;
   background-color: #e8f5fe;
   border-left-color: #4863c6;
 }
 
+.emotion-2 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.emotion-4 {
+  margin-right: 4px;
+}
+
 <a
-    class="emotion-4 emotion-5"
+    class="emotion-0 emotion-1"
     data-testid="/b"
     depth="1"
     href="/collections/pages/filter/b"
@@ -220,7 +220,7 @@ exports[`NestedCollection should render connected component 1`] = `
       class="emotion-2 emotion-3"
     >
       <div
-        class="emotion-0 emotion-1"
+        class="emotion-4 emotion-5"
       >
         File 2
       </div>
@@ -231,7 +231,7 @@ exports[`NestedCollection should render connected component 1`] = `
 
 exports[`NestedCollection should render correctly with nested entries 1`] = `
 <DocumentFragment>
-  .emotion-6 {
+  .emotion-0 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -247,29 +247,29 @@ exports[`NestedCollection should render correctly with nested entries 1`] = `
   border-left: 2px solid #fff;
 }
 
-.emotion-6 mocked-icon {
+.emotion-0 mocked-icon {
   margin-right: 8px;
   -webkit-flex-shrink: 0;
   -ms-flex-negative: 0;
   flex-shrink: 0;
 }
 
-.emotion-6:hover,
-.emotion-6:active,
-.emotion-6.sidebar-active {
+.emotion-0:hover,
+.emotion-0:active,
+.emotion-0.sidebar-active {
   color: #3a69c7;
   background-color: #e8f5fe;
   border-left-color: #4863c6;
 }
 
-.emotion-4 {
+.emotion-2 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
   -webkit-box-pack: center;
-  -webkit-justify-content: center;
   -ms-flex-pack: center;
+  -webkit-justify-content: center;
   justify-content: center;
   -webkit-align-items: center;
   -webkit-box-align: center;
@@ -277,11 +277,11 @@ exports[`NestedCollection should render correctly with nested entries 1`] = `
   align-items: center;
 }
 
-.emotion-0 {
+.emotion-4 {
   margin-right: 4px;
 }
 
-.emotion-2 {
+.emotion-6 {
   position: relative;
   top: 2px;
   color: #fff;
@@ -296,7 +296,7 @@ exports[`NestedCollection should render correctly with nested entries 1`] = `
 
 <a
     aria-current="page"
-    class="emotion-6 emotion-7 sidebar-active"
+    class="emotion-0 emotion-1 sidebar-active"
     data-testid="/"
     depth="0"
     href="/collections/pages"
@@ -305,38 +305,19 @@ exports[`NestedCollection should render correctly with nested entries 1`] = `
       type="write"
     />
     <div
-      class="emotion-4 emotion-5"
+      class="emotion-2 emotion-3"
     >
       <div
-        class="emotion-0 emotion-1"
+        class="emotion-4 emotion-5"
       >
         Pages
       </div>
       <div
-        class="emotion-2 emotion-3"
+        class="emotion-6 emotion-7"
       />
     </div>
   </a>
-  .emotion-2 {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-}
-
-.emotion-0 {
-  margin-right: 4px;
-}
-
-.emotion-4 {
+  .emotion-0 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -352,23 +333,42 @@ exports[`NestedCollection should render correctly with nested entries 1`] = `
   border-left: 2px solid #fff;
 }
 
-.emotion-4 mocked-icon {
+.emotion-0 mocked-icon {
   margin-right: 8px;
   -webkit-flex-shrink: 0;
   -ms-flex-negative: 0;
   flex-shrink: 0;
 }
 
-.emotion-4:hover,
-.emotion-4:active,
-.emotion-4.sidebar-active {
+.emotion-0:hover,
+.emotion-0:active,
+.emotion-0.sidebar-active {
   color: #3a69c7;
   background-color: #e8f5fe;
   border-left-color: #4863c6;
 }
 
+.emotion-2 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.emotion-4 {
+  margin-right: 4px;
+}
+
 <a
-    class="emotion-4 emotion-5"
+    class="emotion-0 emotion-1"
     data-testid="/a"
     depth="1"
     href="/collections/pages/filter/a"
@@ -380,32 +380,13 @@ exports[`NestedCollection should render correctly with nested entries 1`] = `
       class="emotion-2 emotion-3"
     >
       <div
-        class="emotion-0 emotion-1"
+        class="emotion-4 emotion-5"
       >
         File 1
       </div>
     </div>
   </a>
-  .emotion-2 {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-}
-
-.emotion-0 {
-  margin-right: 4px;
-}
-
-.emotion-4 {
+  .emotion-0 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -421,23 +402,42 @@ exports[`NestedCollection should render correctly with nested entries 1`] = `
   border-left: 2px solid #fff;
 }
 
-.emotion-4 mocked-icon {
+.emotion-0 mocked-icon {
   margin-right: 8px;
   -webkit-flex-shrink: 0;
   -ms-flex-negative: 0;
   flex-shrink: 0;
 }
 
-.emotion-4:hover,
-.emotion-4:active,
-.emotion-4.sidebar-active {
+.emotion-0:hover,
+.emotion-0:active,
+.emotion-0.sidebar-active {
   color: #3a69c7;
   background-color: #e8f5fe;
   border-left-color: #4863c6;
 }
 
+.emotion-2 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.emotion-4 {
+  margin-right: 4px;
+}
+
 <a
-    class="emotion-4 emotion-5"
+    class="emotion-0 emotion-1"
     data-testid="/b"
     depth="1"
     href="/collections/pages/filter/b"
@@ -449,7 +449,7 @@ exports[`NestedCollection should render correctly with nested entries 1`] = `
       class="emotion-2 emotion-3"
     >
       <div
-        class="emotion-0 emotion-1"
+        class="emotion-4 emotion-5"
       >
         File 2
       </div>
@@ -460,7 +460,7 @@ exports[`NestedCollection should render correctly with nested entries 1`] = `
 
 exports[`NestedCollection should render correctly with no entries 1`] = `
 <DocumentFragment>
-  .emotion-6 {
+  .emotion-0 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -476,29 +476,29 @@ exports[`NestedCollection should render correctly with no entries 1`] = `
   border-left: 2px solid #fff;
 }
 
-.emotion-6 mocked-icon {
+.emotion-0 mocked-icon {
   margin-right: 8px;
   -webkit-flex-shrink: 0;
   -ms-flex-negative: 0;
   flex-shrink: 0;
 }
 
-.emotion-6:hover,
-.emotion-6:active,
-.emotion-6.sidebar-active {
+.emotion-0:hover,
+.emotion-0:active,
+.emotion-0.sidebar-active {
   color: #3a69c7;
   background-color: #e8f5fe;
   border-left-color: #4863c6;
 }
 
-.emotion-4 {
+.emotion-2 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
   -webkit-box-pack: center;
-  -webkit-justify-content: center;
   -ms-flex-pack: center;
+  -webkit-justify-content: center;
   justify-content: center;
   -webkit-align-items: center;
   -webkit-box-align: center;
@@ -506,11 +506,11 @@ exports[`NestedCollection should render correctly with no entries 1`] = `
   align-items: center;
 }
 
-.emotion-0 {
+.emotion-4 {
   margin-right: 4px;
 }
 
-.emotion-2 {
+.emotion-6 {
   position: relative;
   top: 2px;
   color: #fff;
@@ -525,7 +525,7 @@ exports[`NestedCollection should render correctly with no entries 1`] = `
 }
 
 <a
-    class="emotion-6 emotion-7"
+    class="emotion-0 emotion-1"
     data-testid="/"
     depth="0"
     href="/collections/pages"
@@ -534,15 +534,15 @@ exports[`NestedCollection should render correctly with no entries 1`] = `
       type="write"
     />
     <div
-      class="emotion-4 emotion-5"
+      class="emotion-2 emotion-3"
     >
       <div
-        class="emotion-0 emotion-1"
+        class="emotion-4 emotion-5"
       >
         Pages
       </div>
       <div
-        class="emotion-2 emotion-3"
+        class="emotion-6 emotion-7"
       />
     </div>
   </a>
