@@ -1,6 +1,6 @@
 import React from 'react';
 import { fromJS } from 'immutable';
-import { render, fireEvent, waitFor } from '@testing-library/react';
+import { render, fireEvent, waitFor, act } from '@testing-library/react';
 
 import { DecapCmsWidgetRelation } from '../';
 
@@ -151,12 +151,16 @@ class RelationController extends React.Component {
   }
 
   handleOnChange = jest.fn(value => {
-    this.setState({ ...this.state, value });
+    act(() => {
+      this.setState({ ...this.state, value });
+    });
   });
 
   setQueryHits = jest.fn(queryHits => {
     if (this.mounted) {
-      this.setState({ ...this.state, queryHits });
+      act(() => {
+        this.setState({ ...this.state, queryHits });
+      });
     }
   });
 
