@@ -21,8 +21,8 @@
     "react-transition-group": "^4.4.5"
   },
   "peerDependencies": {
-    "@emotion/core": "^10.0.35",
-    "@emotion/styled": "^10.0.27",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
     "lodash": "^4.17.11",
     "prop-types": "^15.7.2",
     "react": "^16.8.4 || ^17.0.0"

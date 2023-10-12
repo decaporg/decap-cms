@@ -45,8 +45,8 @@
     "unist-util-visit-parents": "^2.0.1"
   },
   "peerDependencies": {
-    "@emotion/core": "^10.0.35",
-    "@emotion/styled": "^10.0.27",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
     "decap-cms-ui-default": "^3.0.0",
     "immutable": "^3.7.6",
     "lodash": "^4.17.11",

@@ -26,8 +26,8 @@
     "@dnd-kit/sortable": "^7.0.2"
   },
   "peerDependencies": {
-    "@emotion/core": "^10.0.35",
-    "@emotion/styled": "^10.0.27",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
     "decap-cms-lib-widgets": "^3.0.0",
     "decap-cms-ui-default": "^3.0.0",
     "decap-cms-widget-object": "^3.0.0",
