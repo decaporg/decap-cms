@@ -1,5 +1,5 @@
 {
-  "name": "digits-decap-cms",
+  "name": "decap-cms-app",
   "version": "1.0.0",
   "main": "dist/decap-cms-app.js",
   "files": [
