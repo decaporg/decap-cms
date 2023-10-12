@@ -1,6 +1,6 @@
 import React from 'react';
 import { List } from 'immutable';
-import { css } from '@emotion/core';
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';

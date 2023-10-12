@@ -28,8 +28,8 @@
     "react-window": "^1.8.5"
   },
   "peerDependencies": {
-    "@emotion/core": "^10.0.35",
-    "@emotion/styled": "^10.0.27",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
     "decap-cms-lib-widgets": "^3.0.0",
     "decap-cms-ui-default": "^3.0.0",
     "immutable": "^3.7.6",

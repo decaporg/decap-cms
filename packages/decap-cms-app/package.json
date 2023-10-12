@@ -26,8 +26,8 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@emotion/core": "^10.0.35",
-    "@emotion/styled": "^10.0.27",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
     "codemirror": "^5.46.0",
     "decap-cms-backend-azure": "^3.0.1",
     "decap-cms-backend-bitbucket": "^3.0.1",

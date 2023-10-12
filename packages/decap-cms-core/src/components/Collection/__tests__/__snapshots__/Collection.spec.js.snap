@@ -2,16 +2,16 @@
 
 exports[`Collection should render connected component 1`] = `
 <DocumentFragment>
-  .emotion-2 {
+  .emotion-0 {
   margin: 28px 18px;
 }
 
-.emotion-0 {
+.emotion-2 {
   padding-left: 280px;
 }
 
 <div
-    class="emotion-2 emotion-3"
+    class="emotion-0 emotion-1"
   >
     <mock-sidebar
       collection="Map { \\"name\\": \\"pages\\", \\"sortable_fields\\": List [], \\"view_filters\\": List [], \\"view_groups\\": List [] }"
@@ -20,7 +20,7 @@ exports[`Collection should render connected component 1`] = `
       searchterm=""
     />
     <main
-      class="emotion-0 emotion-1"
+      class="emotion-2 emotion-3"
     >
       <mock-collection-top
         collection="Map { \\"name\\": \\"pages\\", \\"sortable_fields\\": List [], \\"view_filters\\": List [], \\"view_groups\\": List [] }"
@@ -44,23 +44,23 @@ exports[`Collection should render connected component 1`] = `
 
 exports[`Collection should render with collection with create url 1`] = `
 <DocumentFragment>
-  .emotion-2 {
+  .emotion-0 {
   margin: 28px 18px;
 }
 
-.emotion-0 {
+.emotion-2 {
   padding-left: 280px;
 }
 
 <div
-    class="emotion-2 emotion-3"
+    class="emotion-0 emotion-1"
   >
     <mock-sidebar
       collection="Map { \\"name\\": \\"pages\\", \\"sortable_fields\\": List [], \\"view_filters\\": List [], \\"view_groups\\": List [], \\"create\\": true }"
       collections="OrderedMap { 0: Map { \\"name\\": \\"pages\\", \\"sortable_fields\\": List [], \\"view_filters\\": List [], \\"view_groups\\": List [] } }"
     />
     <main
-      class="emotion-0 emotion-1"
+      class="emotion-2 emotion-3"
     >
       <mock-collection-top
         collection="Map { \\"name\\": \\"pages\\", \\"sortable_fields\\": List [], \\"view_filters\\": List [], \\"view_groups\\": List [], \\"create\\": true }"
@@ -77,16 +77,16 @@ exports[`Collection should render with collection with create url 1`] = `
 
 exports[`Collection should render with collection with create url and path 1`] = `
 <DocumentFragment>
-  .emotion-2 {
+  .emotion-0 {
   margin: 28px 18px;
 }
 
-.emotion-0 {
+.emotion-2 {
   padding-left: 280px;
 }
 
 <div
-    class="emotion-2 emotion-3"
+    class="emotion-0 emotion-1"
   >
     <mock-sidebar
       collection="Map { \\"name\\": \\"pages\\", \\"sortable_fields\\": List [], \\"view_filters\\": List [], \\"view_groups\\": List [], \\"create\\": true }"
@@ -94,7 +94,7 @@ exports[`Collection should render with collection with create url and path 1`] =
       filterterm="dir1/dir2"
     />
     <main
-      class="emotion-0 emotion-1"
+      class="emotion-2 emotion-3"
     >
       <mock-collection-top
         collection="Map { \\"name\\": \\"pages\\", \\"sortable_fields\\": List [], \\"view_filters\\": List [], \\"view_groups\\": List [], \\"create\\": true }"
@@ -112,23 +112,23 @@ exports[`Collection should render with collection with create url and path 1`] =
 
 exports[`Collection should render with collection without create url 1`] = `
 <DocumentFragment>
-  .emotion-2 {
+  .emotion-0 {
   margin: 28px 18px;
 }
 
-.emotion-0 {
+.emotion-2 {
   padding-left: 280px;
 }
 
 <div
-    class="emotion-2 emotion-3"
+    class="emotion-0 emotion-1"
   >
     <mock-sidebar
       collection="Map { \\"name\\": \\"pages\\", \\"sortable_fields\\": List [], \\"view_filters\\": List [], \\"view_groups\\": List [], \\"create\\": false }"
       collections="OrderedMap { 0: Map { \\"name\\": \\"pages\\", \\"sortable_fields\\": List [], \\"view_filters\\": List [], \\"view_groups\\": List [] } }"
     />
     <main
-      class="emotion-0 emotion-1"
+      class="emotion-2 emotion-3"
     >
       <mock-collection-top
         collection="Map { \\"name\\": \\"pages\\", \\"sortable_fields\\": List [], \\"view_filters\\": List [], \\"view_groups\\": List [], \\"create\\": false }"
