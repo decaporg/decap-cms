@@ -1,15 +1,22 @@
 {
+  "name": "digits-decap-cms",
+  "version": "1.0.0",
+  "main": "dist/decap-cms-app.js",
+  "files": [
+    "dist/"
+  ],
   "scripts": {
     "bootstrap": "lerna bootstrap",
     "start": "run-s clean bootstrap build:esm develop",
     "develop": "lerna run develop --parallel --ignore decap-server",
-    "build": "run-s clean build:esm build:lerna",
+    "build": "run-s clean build:esm build:lerna postbuild",
     "build:lerna": "lerna run build",
     "build:esm": "lerna run build:esm",
     "build-preview": "run-s build build-preview:lerna",
     "build-preview:lerna": "lerna run build-preview",
     "build:demo": "run-s build build:demo:copy",
     "build:demo:copy": "ncp packages/decap-cms/dist dev-test/dist/",
+    "postbuild": "cp -r packages/decap-cms-app/dist/ dist/",
     "type-check": "tsc --noEmit",
     "type-check:watch": "npm run type-check -- --watch",
     "clean": "rimraf \"packages/*/dist\" dev-test/dist",
