@@ -28,7 +28,6 @@
     "file-loader": "^6.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-hot-loader": "^4.13.1",
     "svgo-loader": "^3.0.3"
   },
   "incrementToForceBump": 2
