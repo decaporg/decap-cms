@@ -314,7 +314,12 @@ function i18nRulestring(ruleString: string, { defaultLocale, structure }: I18nIn
   if (structure === I18N_STRUCTURE.MULTIPLE_FOLDERS) {
     return `${defaultLocale}\\/${ruleString}`;
   }
-  return `${ruleString}\\.${defaultLocale}\\..*`;
+
+  if (structure === I18N_STRUCTURE.MULTIPLE_FILES) {
+    return `${ruleString}\\.${defaultLocale}\\..*`;
+  }
+
+  return ruleString;
 }
 
 function collectionRegex(collection: Collection): RegExp | undefined {
