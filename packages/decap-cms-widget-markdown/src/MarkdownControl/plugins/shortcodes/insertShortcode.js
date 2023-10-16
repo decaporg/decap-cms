@@ -9,8 +9,6 @@ function insertShortcode(editor, pluginConfig) {
     .filter(field => field.has('default'))
     .map(field => field.get('default'));
 
-  // console.log(defaultValues);
-
   const nodeData = {
     type: 'shortcode',
     id: pluginConfig.id,
@@ -28,7 +26,6 @@ function insertShortcode(editor, pluginConfig) {
   }
 
   Transforms.insertNodes(editor, nodeData);
-  console.log('handleInsertShortcode', pluginConfig);
 }
 
 export default insertShortcode;

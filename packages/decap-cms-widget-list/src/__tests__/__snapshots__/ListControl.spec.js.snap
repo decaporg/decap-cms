@@ -2,11 +2,11 @@
 
 exports[`ListControl should add to list when add button is clicked 1`] = `
 <DocumentFragment>
-  .emotion-18 {
+  .emotion-0 {
   padding: 0 14px 14px;
 }
 
-.emotion-12 {
+.emotion-1 {
   -webkit-align-items: center;
   -webkit-box-align: center;
   -ms-flex-align: center;
@@ -18,13 +18,12 @@ exports[`ListControl should add to list when add button is clicked 1`] = `
   display: flex;
   -webkit-box-pack: justify;
   -webkit-justify-content: space-between;
-  -ms-flex-pack: justify;
   justify-content: space-between;
   margin: 0 -14px;
   padding: 13px;
 }
 
-.emotion-5 {
+.emotion-3 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -38,7 +37,7 @@ exports[`ListControl should add to list when add button is clicked 1`] = `
   line-height: 1;
 }
 
-.emotion-3 {
+.emotion-5 {
   border: 0;
   border-radius: 5px;
   cursor: pointer;
@@ -47,42 +46,17 @@ exports[`ListControl should add to list when add button is clicked 1`] = `
   color: inherit;
 }
 
-.emotion-3:last-of-type {
+.emotion-5:last-of-type {
   margin-right: 4px;
-}
-
-.emotion-10 {
-  border: 0;
-  border-radius: 5px;
-  cursor: pointer;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  padding: 2px 12px;
-  font-size: 12px;
-  font-weight: bold;
-  border-radius: 3px;
-}
-
-.emotion-10 .emotion-0 {
-  margin-left: 6px;
 }
 
 .emotion-8 {
   display: inline-block;
   line-height: 0;
-  width: 12px;
-  height: 12px;
+  width: 18px;
+  height: 18px;
   -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
   -ms-transform: rotate(0deg);
   transform: rotate(0deg);
 }
@@ -103,41 +77,68 @@ exports[`ListControl should add to list when add button is clicked 1`] = `
   height: 100%;
 }
 
-.emotion-16 {
-  margin-top: 18px;
+.emotion-10 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  padding: 2px 12px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 3px;
 }
 
-.emotion-16:first-of-type {
-  margin-top: 26px;
+.emotion-10 .emotion-7 {
+  margin-left: 6px;
 }
 
-.emotion-1 {
+.emotion-13 {
   display: inline-block;
   line-height: 0;
-  width: 18px;
-  height: 18px;
+  width: 12px;
+  height: 12px;
   -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
   -ms-transform: rotate(0deg);
   transform: rotate(0deg);
 }
 
-.emotion-1 path:not(.no-fill),
-.emotion-1 circle:not(.no-fill),
-.emotion-1 polygon:not(.no-fill),
-.emotion-1 rect:not(.no-fill) {
+.emotion-13 path:not(.no-fill),
+.emotion-13 circle:not(.no-fill),
+.emotion-13 polygon:not(.no-fill),
+.emotion-13 rect:not(.no-fill) {
   fill: currentColor;
 }
 
-.emotion-1 path.clipped {
+.emotion-13 path.clipped {
   fill: transparent;
 }
 
-.emotion-1 svg {
+.emotion-13 svg {
   width: 100%;
   height: 100%;
 }
 
-.emotion-14 {
+.emotion-15 {
+  margin-top: 18px;
+}
+
+.emotion-15:first-of-type {
+  margin-top: 26px;
+}
+
+.emotion-17 {
   display: none;
   border-top: 0;
   color: inherit;
@@ -147,21 +148,21 @@ exports[`ListControl should add to list when add button is clicked 1`] = `
 }
 
 <div
-    class="classNameWrapper emotion-18"
+    class="classNameWrapper emotion-0"
     id="forID"
   >
     <div
-      class="emotion-12 emotion-13"
+      class="emotion-1 emotion-2"
     >
       <div
-        class="emotion-5 emotion-6"
+        class="emotion-3 emotion-4"
       >
         <button
-          class="emotion-3 emotion-4"
+          class="emotion-5 emotion-6"
           data-testid="expand-button"
         >
           <span
-            class="emotion-0 emotion-1 emotion-2"
+            class="emotion-7 emotion-8 emotion-9"
           >
             <svg
               viewBox="0 0 24 24"
@@ -179,7 +180,7 @@ exports[`ListControl should add to list when add button is clicked 1`] = `
       >
         editor.editorWidgets.list.add
         <span
-          class="emotion-0 emotion-8 emotion-2"
+          class="emotion-7 emotion-13 emotion-9"
         >
           <svg
             height="24"
@@ -196,7 +197,7 @@ exports[`ListControl should add to list when add button is clicked 1`] = `
     </div>
     <div>
       <div
-        class="emotion-16 emotion-17"
+        class="emotion-15 emotion-16"
       >
         <mock-list-item-top-bar
           classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
@@ -209,7 +210,7 @@ exports[`ListControl should add to list when add button is clicked 1`] = `
           </button>
         </mock-list-item-top-bar>
         <div
-          class="emotion-14 emotion-15"
+          class="emotion-17 emotion-18"
         >
           No string
         </div>
@@ -249,11 +250,11 @@ exports[`ListControl should add to list when add button is clicked 1`] = `
 
 exports[`ListControl should remove from list when remove button is clicked 1`] = `
 <DocumentFragment>
-  .emotion-22 {
+  .emotion-0 {
   padding: 0 14px 14px;
 }
 
-.emotion-12 {
+.emotion-1 {
   -webkit-align-items: center;
   -webkit-box-align: center;
   -ms-flex-align: center;
@@ -265,13 +266,12 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
   display: flex;
   -webkit-box-pack: justify;
   -webkit-justify-content: space-between;
-  -ms-flex-pack: justify;
   justify-content: space-between;
   margin: 0 -14px;
   padding: 13px;
 }
 
-.emotion-5 {
+.emotion-3 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -285,7 +285,7 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
   line-height: 1;
 }
 
-.emotion-3 {
+.emotion-5 {
   border: 0;
   border-radius: 5px;
   cursor: pointer;
@@ -294,42 +294,17 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
   color: inherit;
 }
 
-.emotion-3:last-of-type {
+.emotion-5:last-of-type {
   margin-right: 4px;
-}
-
-.emotion-10 {
-  border: 0;
-  border-radius: 5px;
-  cursor: pointer;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  padding: 2px 12px;
-  font-size: 12px;
-  font-weight: bold;
-  border-radius: 3px;
-}
-
-.emotion-10 .emotion-0 {
-  margin-left: 6px;
 }
 
 .emotion-8 {
   display: inline-block;
   line-height: 0;
-  width: 12px;
-  height: 12px;
+  width: 18px;
+  height: 18px;
   -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
   -ms-transform: rotate(0deg);
   transform: rotate(0deg);
 }
@@ -350,41 +325,68 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
   height: 100%;
 }
 
-.emotion-16 {
-  margin-top: 18px;
+.emotion-10 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  padding: 2px 12px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 3px;
 }
 
-.emotion-16:first-of-type {
-  margin-top: 26px;
+.emotion-10 .emotion-7 {
+  margin-left: 6px;
 }
 
-.emotion-1 {
+.emotion-13 {
   display: inline-block;
   line-height: 0;
-  width: 18px;
-  height: 18px;
+  width: 12px;
+  height: 12px;
   -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
   -ms-transform: rotate(0deg);
   transform: rotate(0deg);
 }
 
-.emotion-1 path:not(.no-fill),
-.emotion-1 circle:not(.no-fill),
-.emotion-1 polygon:not(.no-fill),
-.emotion-1 rect:not(.no-fill) {
+.emotion-13 path:not(.no-fill),
+.emotion-13 circle:not(.no-fill),
+.emotion-13 polygon:not(.no-fill),
+.emotion-13 rect:not(.no-fill) {
   fill: currentColor;
 }
 
-.emotion-1 path.clipped {
+.emotion-13 path.clipped {
   fill: transparent;
 }
 
-.emotion-1 svg {
+.emotion-13 svg {
   width: 100%;
   height: 100%;
 }
 
-.emotion-14 {
+.emotion-15 {
+  margin-top: 18px;
+}
+
+.emotion-15:first-of-type {
+  margin-top: 26px;
+}
+
+.emotion-17 {
   display: none;
   border-top: 0;
   color: inherit;
@@ -394,21 +396,21 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
 }
 
 <div
-    class="classNameWrapper emotion-22"
+    class="classNameWrapper emotion-0"
     id="forID"
   >
     <div
-      class="emotion-12 emotion-13"
+      class="emotion-1 emotion-2"
     >
       <div
-        class="emotion-5 emotion-6"
+        class="emotion-3 emotion-4"
       >
         <button
-          class="emotion-3 emotion-4"
+          class="emotion-5 emotion-6"
           data-testid="expand-button"
         >
           <span
-            class="emotion-0 emotion-1 emotion-2"
+            class="emotion-7 emotion-8 emotion-9"
           >
             <svg
               viewBox="0 0 24 24"
@@ -426,7 +428,7 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
       >
         editor.editorWidgets.list.add
         <span
-          class="emotion-0 emotion-8 emotion-2"
+          class="emotion-7 emotion-13 emotion-9"
         >
           <svg
             height="24"
@@ -443,7 +445,7 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
     </div>
     <div>
       <div
-        class="emotion-16 emotion-17"
+        class="emotion-15 emotion-16"
       >
         <mock-list-item-top-bar
           classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
@@ -456,7 +458,7 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
           </button>
         </mock-list-item-top-bar>
         <div
-          class="emotion-14 emotion-15"
+          class="emotion-17 emotion-18"
         >
           item 1
         </div>
@@ -473,7 +475,7 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
         />
       </div>
       <div
-        class="emotion-16 emotion-17"
+        class="emotion-15 emotion-16"
       >
         <mock-list-item-top-bar
           classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
@@ -486,7 +488,7 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
           </button>
         </mock-list-item-top-bar>
         <div
-          class="emotion-14 emotion-15"
+          class="emotion-17 emotion-18"
         >
           item 2
         </div>
@@ -526,11 +528,11 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
 
 exports[`ListControl should remove from list when remove button is clicked 2`] = `
 <DocumentFragment>
-  .emotion-18 {
+  .emotion-0 {
   padding: 0 14px 14px;
 }
 
-.emotion-12 {
+.emotion-1 {
   -webkit-align-items: center;
   -webkit-box-align: center;
   -ms-flex-align: center;
@@ -542,13 +544,12 @@ exports[`ListControl should remove from list when remove button is clicked 2`] =
   display: flex;
   -webkit-box-pack: justify;
   -webkit-justify-content: space-between;
-  -ms-flex-pack: justify;
   justify-content: space-between;
   margin: 0 -14px;
   padding: 13px;
 }
 
-.emotion-5 {
+.emotion-3 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -562,7 +563,7 @@ exports[`ListControl should remove from list when remove button is clicked 2`] =
   line-height: 1;
 }
 
-.emotion-3 {
+.emotion-5 {
   border: 0;
   border-radius: 5px;
   cursor: pointer;
@@ -571,42 +572,17 @@ exports[`ListControl should remove from list when remove button is clicked 2`] =
   color: inherit;
 }
 
-.emotion-3:last-of-type {
+.emotion-5:last-of-type {
   margin-right: 4px;
-}
-
-.emotion-10 {
-  border: 0;
-  border-radius: 5px;
-  cursor: pointer;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  padding: 2px 12px;
-  font-size: 12px;
-  font-weight: bold;
-  border-radius: 3px;
-}
-
-.emotion-10 .emotion-0 {
-  margin-left: 6px;
 }
 
 .emotion-8 {
   display: inline-block;
   line-height: 0;
-  width: 12px;
-  height: 12px;
+  width: 18px;
+  height: 18px;
   -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
   -ms-transform: rotate(0deg);
   transform: rotate(0deg);
 }
@@ -627,15 +603,68 @@ exports[`ListControl should remove from list when remove button is clicked 2`] =
   height: 100%;
 }
 
-.emotion-16 {
+.emotion-10 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  padding: 2px 12px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 3px;
+}
+
+.emotion-10 .emotion-7 {
+  margin-left: 6px;
+}
+
+.emotion-13 {
+  display: inline-block;
+  line-height: 0;
+  width: 12px;
+  height: 12px;
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -ms-transform: rotate(0deg);
+  transform: rotate(0deg);
+}
+
+.emotion-13 path:not(.no-fill),
+.emotion-13 circle:not(.no-fill),
+.emotion-13 polygon:not(.no-fill),
+.emotion-13 rect:not(.no-fill) {
+  fill: currentColor;
+}
+
+.emotion-13 path.clipped {
+  fill: transparent;
+}
+
+.emotion-13 svg {
+  width: 100%;
+  height: 100%;
+}
+
+.emotion-15 {
   margin-top: 18px;
 }
 
-.emotion-16:first-of-type {
+.emotion-15:first-of-type {
   margin-top: 26px;
 }
 
-.emotion-14 {
+.emotion-17 {
   display: block;
   border-top: 0;
   color: inherit;
@@ -644,48 +673,22 @@ exports[`ListControl should remove from list when remove button is clicked 2`] =
   border-radius: 0 0 5px 5px;
 }
 
-.emotion-1 {
-  display: inline-block;
-  line-height: 0;
-  width: 18px;
-  height: 18px;
-  -webkit-transform: rotate(0deg);
-  -ms-transform: rotate(0deg);
-  transform: rotate(0deg);
-}
-
-.emotion-1 path:not(.no-fill),
-.emotion-1 circle:not(.no-fill),
-.emotion-1 polygon:not(.no-fill),
-.emotion-1 rect:not(.no-fill) {
-  fill: currentColor;
-}
-
-.emotion-1 path.clipped {
-  fill: transparent;
-}
-
-.emotion-1 svg {
-  width: 100%;
-  height: 100%;
-}
-
 <div
-    class="classNameWrapper emotion-18"
+    class="classNameWrapper emotion-0"
     id="forID"
   >
     <div
-      class="emotion-12 emotion-13"
+      class="emotion-1 emotion-2"
     >
       <div
-        class="emotion-5 emotion-6"
+        class="emotion-3 emotion-4"
       >
         <button
-          class="emotion-3 emotion-4"
+          class="emotion-5 emotion-6"
           data-testid="expand-button"
         >
           <span
-            class="emotion-0 emotion-1 emotion-2"
+            class="emotion-7 emotion-8 emotion-9"
           >
             <svg
               viewBox="0 0 24 24"
@@ -703,7 +706,7 @@ exports[`ListControl should remove from list when remove button is clicked 2`] =
       >
         editor.editorWidgets.list.add
         <span
-          class="emotion-0 emotion-8 emotion-2"
+          class="emotion-7 emotion-13 emotion-9"
         >
           <svg
             height="24"
@@ -720,7 +723,7 @@ exports[`ListControl should remove from list when remove button is clicked 2`] =
     </div>
     <div>
       <div
-        class="emotion-16 emotion-17"
+        class="emotion-15 emotion-16"
         style="transition: transform 0ms linear;"
       >
         <mock-list-item-top-bar
@@ -734,7 +737,7 @@ exports[`ListControl should remove from list when remove button is clicked 2`] =
           </button>
         </mock-list-item-top-bar>
         <div
-          class="emotion-14 emotion-15"
+          class="emotion-17 emotion-18"
         >
           item 2
         </div>
@@ -785,11 +788,11 @@ exports[`ListControl should render empty list 1`] = `
 
 exports[`ListControl should render list with fields with collapse = "false" and default minimize_collapsed ("false") 1`] = `
 <DocumentFragment>
-  .emotion-22 {
+  .emotion-0 {
   padding: 0 14px 14px;
 }
 
-.emotion-12 {
+.emotion-1 {
   -webkit-align-items: center;
   -webkit-box-align: center;
   -ms-flex-align: center;
@@ -801,13 +804,12 @@ exports[`ListControl should render list with fields with collapse = "false" and 
   display: flex;
   -webkit-box-pack: justify;
   -webkit-justify-content: space-between;
-  -ms-flex-pack: justify;
   justify-content: space-between;
   margin: 0 -14px;
   padding: 13px;
 }
 
-.emotion-5 {
+.emotion-3 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -821,7 +823,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
   line-height: 1;
 }
 
-.emotion-3 {
+.emotion-5 {
   border: 0;
   border-radius: 5px;
   cursor: pointer;
@@ -830,42 +832,17 @@ exports[`ListControl should render list with fields with collapse = "false" and 
   color: inherit;
 }
 
-.emotion-3:last-of-type {
+.emotion-5:last-of-type {
   margin-right: 4px;
-}
-
-.emotion-10 {
-  border: 0;
-  border-radius: 5px;
-  cursor: pointer;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  padding: 2px 12px;
-  font-size: 12px;
-  font-weight: bold;
-  border-radius: 3px;
-}
-
-.emotion-10 .emotion-0 {
-  margin-left: 6px;
 }
 
 .emotion-8 {
   display: inline-block;
   line-height: 0;
-  width: 12px;
-  height: 12px;
+  width: 18px;
+  height: 18px;
   -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
   -ms-transform: rotate(0deg);
   transform: rotate(0deg);
 }
@@ -886,41 +863,68 @@ exports[`ListControl should render list with fields with collapse = "false" and 
   height: 100%;
 }
 
-.emotion-16 {
-  margin-top: 18px;
+.emotion-10 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  padding: 2px 12px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 3px;
 }
 
-.emotion-16:first-of-type {
-  margin-top: 26px;
+.emotion-10 .emotion-7 {
+  margin-left: 6px;
 }
 
-.emotion-1 {
+.emotion-13 {
   display: inline-block;
   line-height: 0;
-  width: 18px;
-  height: 18px;
+  width: 12px;
+  height: 12px;
   -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
   -ms-transform: rotate(0deg);
   transform: rotate(0deg);
 }
 
-.emotion-1 path:not(.no-fill),
-.emotion-1 circle:not(.no-fill),
-.emotion-1 polygon:not(.no-fill),
-.emotion-1 rect:not(.no-fill) {
+.emotion-13 path:not(.no-fill),
+.emotion-13 circle:not(.no-fill),
+.emotion-13 polygon:not(.no-fill),
+.emotion-13 rect:not(.no-fill) {
   fill: currentColor;
 }
 
-.emotion-1 path.clipped {
+.emotion-13 path.clipped {
   fill: transparent;
 }
 
-.emotion-1 svg {
+.emotion-13 svg {
   width: 100%;
   height: 100%;
 }
 
-.emotion-14 {
+.emotion-15 {
+  margin-top: 18px;
+}
+
+.emotion-15:first-of-type {
+  margin-top: 26px;
+}
+
+.emotion-17 {
   display: none;
   border-top: 0;
   color: inherit;
@@ -930,21 +934,21 @@ exports[`ListControl should render list with fields with collapse = "false" and 
 }
 
 <div
-    class="classNameWrapper emotion-22"
+    class="classNameWrapper emotion-0"
     id="forID"
   >
     <div
-      class="emotion-12 emotion-13"
+      class="emotion-1 emotion-2"
     >
       <div
-        class="emotion-5 emotion-6"
+        class="emotion-3 emotion-4"
       >
         <button
-          class="emotion-3 emotion-4"
+          class="emotion-5 emotion-6"
           data-testid="expand-button"
         >
           <span
-            class="emotion-0 emotion-1 emotion-2"
+            class="emotion-7 emotion-8 emotion-9"
           >
             <svg
               viewBox="0 0 24 24"
@@ -962,7 +966,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
       >
         editor.editorWidgets.list.add
         <span
-          class="emotion-0 emotion-8 emotion-2"
+          class="emotion-7 emotion-13 emotion-9"
         >
           <svg
             height="24"
@@ -979,7 +983,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
     </div>
     <div>
       <div
-        class="emotion-16 emotion-17"
+        class="emotion-15 emotion-16"
       >
         <mock-list-item-top-bar
           classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
@@ -992,7 +996,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
           </button>
         </mock-list-item-top-bar>
         <div
-          class="emotion-14 emotion-15"
+          class="emotion-17 emotion-18"
         >
           item 1
         </div>
@@ -1009,7 +1013,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
         />
       </div>
       <div
-        class="emotion-16 emotion-17"
+        class="emotion-15 emotion-16"
       >
         <mock-list-item-top-bar
           classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
@@ -1022,7 +1026,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
           </button>
         </mock-list-item-top-bar>
         <div
-          class="emotion-14 emotion-15"
+          class="emotion-17 emotion-18"
         >
           item 2
         </div>
@@ -1062,11 +1066,11 @@ exports[`ListControl should render list with fields with collapse = "false" and 
 
 exports[`ListControl should render list with fields with collapse = "false" and default minimize_collapsed = "true" 1`] = `
 <DocumentFragment>
-  .emotion-22 {
+  .emotion-0 {
   padding: 0 14px 14px;
 }
 
-.emotion-12 {
+.emotion-1 {
   -webkit-align-items: center;
   -webkit-box-align: center;
   -ms-flex-align: center;
@@ -1078,13 +1082,12 @@ exports[`ListControl should render list with fields with collapse = "false" and 
   display: flex;
   -webkit-box-pack: justify;
   -webkit-justify-content: space-between;
-  -ms-flex-pack: justify;
   justify-content: space-between;
   margin: 0 -14px;
   padding: 13px;
 }
 
-.emotion-5 {
+.emotion-3 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -1098,7 +1101,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
   line-height: 1;
 }
 
-.emotion-3 {
+.emotion-5 {
   border: 0;
   border-radius: 5px;
   cursor: pointer;
@@ -1107,42 +1110,17 @@ exports[`ListControl should render list with fields with collapse = "false" and 
   color: inherit;
 }
 
-.emotion-3:last-of-type {
+.emotion-5:last-of-type {
   margin-right: 4px;
-}
-
-.emotion-10 {
-  border: 0;
-  border-radius: 5px;
-  cursor: pointer;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  padding: 2px 12px;
-  font-size: 12px;
-  font-weight: bold;
-  border-radius: 3px;
-}
-
-.emotion-10 .emotion-0 {
-  margin-left: 6px;
 }
 
 .emotion-8 {
   display: inline-block;
   line-height: 0;
-  width: 12px;
-  height: 12px;
+  width: 18px;
+  height: 18px;
   -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
   -ms-transform: rotate(0deg);
   transform: rotate(0deg);
 }
@@ -1163,41 +1141,68 @@ exports[`ListControl should render list with fields with collapse = "false" and 
   height: 100%;
 }
 
-.emotion-16 {
-  margin-top: 18px;
+.emotion-10 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  padding: 2px 12px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 3px;
 }
 
-.emotion-16:first-of-type {
-  margin-top: 26px;
+.emotion-10 .emotion-7 {
+  margin-left: 6px;
 }
 
-.emotion-1 {
+.emotion-13 {
   display: inline-block;
   line-height: 0;
-  width: 18px;
-  height: 18px;
+  width: 12px;
+  height: 12px;
   -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
   -ms-transform: rotate(0deg);
   transform: rotate(0deg);
 }
 
-.emotion-1 path:not(.no-fill),
-.emotion-1 circle:not(.no-fill),
-.emotion-1 polygon:not(.no-fill),
-.emotion-1 rect:not(.no-fill) {
+.emotion-13 path:not(.no-fill),
+.emotion-13 circle:not(.no-fill),
+.emotion-13 polygon:not(.no-fill),
+.emotion-13 rect:not(.no-fill) {
   fill: currentColor;
 }
 
-.emotion-1 path.clipped {
+.emotion-13 path.clipped {
   fill: transparent;
 }
 
-.emotion-1 svg {
+.emotion-13 svg {
   width: 100%;
   height: 100%;
 }
 
-.emotion-14 {
+.emotion-15 {
+  margin-top: 18px;
+}
+
+.emotion-15:first-of-type {
+  margin-top: 26px;
+}
+
+.emotion-17 {
   display: none;
   border-top: 0;
   color: inherit;
@@ -1207,21 +1212,21 @@ exports[`ListControl should render list with fields with collapse = "false" and 
 }
 
 <div
-    class="classNameWrapper emotion-22"
+    class="classNameWrapper emotion-0"
     id="forID"
   >
     <div
-      class="emotion-12 emotion-13"
+      class="emotion-1 emotion-2"
     >
       <div
-        class="emotion-5 emotion-6"
+        class="emotion-3 emotion-4"
       >
         <button
-          class="emotion-3 emotion-4"
+          class="emotion-5 emotion-6"
           data-testid="expand-button"
         >
           <span
-            class="emotion-0 emotion-1 emotion-2"
+            class="emotion-7 emotion-8 emotion-9"
           >
             <svg
               viewBox="0 0 24 24"
@@ -1239,7 +1244,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
       >
         editor.editorWidgets.list.add
         <span
-          class="emotion-0 emotion-8 emotion-2"
+          class="emotion-7 emotion-13 emotion-9"
         >
           <svg
             height="24"
@@ -1256,7 +1261,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
     </div>
     <div>
       <div
-        class="emotion-16 emotion-17"
+        class="emotion-15 emotion-16"
       >
         <mock-list-item-top-bar
           classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
@@ -1269,7 +1274,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
           </button>
         </mock-list-item-top-bar>
         <div
-          class="emotion-14 emotion-15"
+          class="emotion-17 emotion-18"
         >
           item 1
         </div>
@@ -1286,7 +1291,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
         />
       </div>
       <div
-        class="emotion-16 emotion-17"
+        class="emotion-15 emotion-16"
       >
         <mock-list-item-top-bar
           classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
@@ -1299,7 +1304,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
           </button>
         </mock-list-item-top-bar>
         <div
-          class="emotion-14 emotion-15"
+          class="emotion-17 emotion-18"
         >
           item 2
         </div>
@@ -1339,11 +1344,11 @@ exports[`ListControl should render list with fields with collapse = "false" and 
 
 exports[`ListControl should render list with fields with default collapse ("true") and minimize_collapsed ("false") 1`] = `
 <DocumentFragment>
-  .emotion-22 {
+  .emotion-0 {
   padding: 0 14px 14px;
 }
 
-.emotion-12 {
+.emotion-1 {
   -webkit-align-items: center;
   -webkit-box-align: center;
   -ms-flex-align: center;
@@ -1355,13 +1360,12 @@ exports[`ListControl should render list with fields with default collapse ("true
   display: flex;
   -webkit-box-pack: justify;
   -webkit-justify-content: space-between;
-  -ms-flex-pack: justify;
   justify-content: space-between;
   margin: 0 -14px;
   padding: 13px;
 }
 
-.emotion-5 {
+.emotion-3 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -1375,7 +1379,7 @@ exports[`ListControl should render list with fields with default collapse ("true
   line-height: 1;
 }
 
-.emotion-3 {
+.emotion-5 {
   border: 0;
   border-radius: 5px;
   cursor: pointer;
@@ -1384,70 +1388,19 @@ exports[`ListControl should render list with fields with default collapse ("true
   color: inherit;
 }
 
-.emotion-3:last-of-type {
+.emotion-5:last-of-type {
   margin-right: 4px;
-}
-
-.emotion-1 {
-  display: inline-block;
-  line-height: 0;
-  width: 18px;
-  height: 18px;
-  -webkit-transform: rotate(-90deg);
-  -ms-transform: rotate(-90deg);
-  transform: rotate(-90deg);
-}
-
-.emotion-1 path:not(.no-fill),
-.emotion-1 circle:not(.no-fill),
-.emotion-1 polygon:not(.no-fill),
-.emotion-1 rect:not(.no-fill) {
-  fill: currentColor;
-}
-
-.emotion-1 path.clipped {
-  fill: transparent;
-}
-
-.emotion-1 svg {
-  width: 100%;
-  height: 100%;
-}
-
-.emotion-10 {
-  border: 0;
-  border-radius: 5px;
-  cursor: pointer;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  padding: 2px 12px;
-  font-size: 12px;
-  font-weight: bold;
-  border-radius: 3px;
-}
-
-.emotion-10 .emotion-0 {
-  margin-left: 6px;
 }
 
 .emotion-8 {
   display: inline-block;
   line-height: 0;
-  width: 12px;
-  height: 12px;
-  -webkit-transform: rotate(0deg);
-  -ms-transform: rotate(0deg);
-  transform: rotate(0deg);
+  width: 18px;
+  height: 18px;
+  -webkit-transform: rotate(-90deg);
+  -moz-transform: rotate(-90deg);
+  -ms-transform: rotate(-90deg);
+  transform: rotate(-90deg);
 }
 
 .emotion-8 path:not(.no-fill),
@@ -1466,15 +1419,68 @@ exports[`ListControl should render list with fields with default collapse ("true
   height: 100%;
 }
 
-.emotion-16 {
+.emotion-10 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  padding: 2px 12px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 3px;
+}
+
+.emotion-10 .emotion-7 {
+  margin-left: 6px;
+}
+
+.emotion-13 {
+  display: inline-block;
+  line-height: 0;
+  width: 12px;
+  height: 12px;
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -ms-transform: rotate(0deg);
+  transform: rotate(0deg);
+}
+
+.emotion-13 path:not(.no-fill),
+.emotion-13 circle:not(.no-fill),
+.emotion-13 polygon:not(.no-fill),
+.emotion-13 rect:not(.no-fill) {
+  fill: currentColor;
+}
+
+.emotion-13 path.clipped {
+  fill: transparent;
+}
+
+.emotion-13 svg {
+  width: 100%;
+  height: 100%;
+}
+
+.emotion-15 {
   margin-top: 18px;
 }
 
-.emotion-16:first-of-type {
+.emotion-15:first-of-type {
   margin-top: 26px;
 }
 
-.emotion-14 {
+.emotion-17 {
   display: block;
   border-top: 0;
   color: inherit;
@@ -1484,21 +1490,21 @@ exports[`ListControl should render list with fields with default collapse ("true
 }
 
 <div
-    class="classNameWrapper emotion-22"
+    class="classNameWrapper emotion-0"
     id="forID"
   >
     <div
-      class="emotion-12 emotion-13"
+      class="emotion-1 emotion-2"
     >
       <div
-        class="emotion-5 emotion-6"
+        class="emotion-3 emotion-4"
       >
         <button
-          class="emotion-3 emotion-4"
+          class="emotion-5 emotion-6"
           data-testid="expand-button"
         >
           <span
-            class="emotion-0 emotion-1 emotion-2"
+            class="emotion-7 emotion-8 emotion-9"
           >
             <svg
               viewBox="0 0 24 24"
@@ -1516,7 +1522,7 @@ exports[`ListControl should render list with fields with default collapse ("true
       >
         editor.editorWidgets.list.add
         <span
-          class="emotion-0 emotion-8 emotion-2"
+          class="emotion-7 emotion-13 emotion-9"
         >
           <svg
             height="24"
@@ -1533,7 +1539,7 @@ exports[`ListControl should render list with fields with default collapse ("true
     </div>
     <div>
       <div
-        class="emotion-16 emotion-17"
+        class="emotion-15 emotion-16"
       >
         <mock-list-item-top-bar
           classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
@@ -1546,7 +1552,7 @@ exports[`ListControl should render list with fields with default collapse ("true
           </button>
         </mock-list-item-top-bar>
         <div
-          class="emotion-14 emotion-15"
+          class="emotion-17 emotion-18"
         >
           item 1
         </div>
@@ -1563,7 +1569,7 @@ exports[`ListControl should render list with fields with default collapse ("true
         />
       </div>
       <div
-        class="emotion-16 emotion-17"
+        class="emotion-15 emotion-16"
       >
         <mock-list-item-top-bar
           classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
@@ -1576,7 +1582,7 @@ exports[`ListControl should render list with fields with default collapse ("true
           </button>
         </mock-list-item-top-bar>
         <div
-          class="emotion-14 emotion-15"
+          class="emotion-17 emotion-18"
         >
           item 2
         </div>
@@ -1616,11 +1622,11 @@ exports[`ListControl should render list with fields with default collapse ("true
 
 exports[`ListControl should render list with fields with default collapse ("true") and minimize_collapsed = "true" 1`] = `
 <DocumentFragment>
-  .emotion-14 {
+  .emotion-0 {
   padding: 0 14px 14px;
 }
 
-.emotion-12 {
+.emotion-1 {
   -webkit-align-items: center;
   -webkit-box-align: center;
   -ms-flex-align: center;
@@ -1632,13 +1638,12 @@ exports[`ListControl should render list with fields with default collapse ("true
   display: flex;
   -webkit-box-pack: justify;
   -webkit-justify-content: space-between;
-  -ms-flex-pack: justify;
   justify-content: space-between;
   margin: 0 -14px;
   padding: 13px;
 }
 
-.emotion-5 {
+.emotion-3 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -1652,7 +1657,7 @@ exports[`ListControl should render list with fields with default collapse ("true
   line-height: 1;
 }
 
-.emotion-3 {
+.emotion-5 {
   border: 0;
   border-radius: 5px;
   cursor: pointer;
@@ -1661,70 +1666,19 @@ exports[`ListControl should render list with fields with default collapse ("true
   color: inherit;
 }
 
-.emotion-3:last-of-type {
+.emotion-5:last-of-type {
   margin-right: 4px;
-}
-
-.emotion-1 {
-  display: inline-block;
-  line-height: 0;
-  width: 18px;
-  height: 18px;
-  -webkit-transform: rotate(-90deg);
-  -ms-transform: rotate(-90deg);
-  transform: rotate(-90deg);
-}
-
-.emotion-1 path:not(.no-fill),
-.emotion-1 circle:not(.no-fill),
-.emotion-1 polygon:not(.no-fill),
-.emotion-1 rect:not(.no-fill) {
-  fill: currentColor;
-}
-
-.emotion-1 path.clipped {
-  fill: transparent;
-}
-
-.emotion-1 svg {
-  width: 100%;
-  height: 100%;
-}
-
-.emotion-10 {
-  border: 0;
-  border-radius: 5px;
-  cursor: pointer;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  padding: 2px 12px;
-  font-size: 12px;
-  font-weight: bold;
-  border-radius: 3px;
-}
-
-.emotion-10 .emotion-0 {
-  margin-left: 6px;
 }
 
 .emotion-8 {
   display: inline-block;
   line-height: 0;
-  width: 12px;
-  height: 12px;
-  -webkit-transform: rotate(0deg);
-  -ms-transform: rotate(0deg);
-  transform: rotate(0deg);
+  width: 18px;
+  height: 18px;
+  -webkit-transform: rotate(-90deg);
+  -moz-transform: rotate(-90deg);
+  -ms-transform: rotate(-90deg);
+  transform: rotate(-90deg);
 }
 
 .emotion-8 path:not(.no-fill),
@@ -1743,22 +1697,75 @@ exports[`ListControl should render list with fields with default collapse ("true
   height: 100%;
 }
 
+.emotion-10 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  padding: 2px 12px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 3px;
+}
+
+.emotion-10 .emotion-7 {
+  margin-left: 6px;
+}
+
+.emotion-13 {
+  display: inline-block;
+  line-height: 0;
+  width: 12px;
+  height: 12px;
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -ms-transform: rotate(0deg);
+  transform: rotate(0deg);
+}
+
+.emotion-13 path:not(.no-fill),
+.emotion-13 circle:not(.no-fill),
+.emotion-13 polygon:not(.no-fill),
+.emotion-13 rect:not(.no-fill) {
+  fill: currentColor;
+}
+
+.emotion-13 path.clipped {
+  fill: transparent;
+}
+
+.emotion-13 svg {
+  width: 100%;
+  height: 100%;
+}
+
 <div
-    class="classNameWrapper emotion-14"
+    class="classNameWrapper emotion-0"
     id="forID"
   >
     <div
-      class="emotion-12 emotion-13"
+      class="emotion-1 emotion-2"
     >
       <div
-        class="emotion-5 emotion-6"
+        class="emotion-3 emotion-4"
       >
         <button
-          class="emotion-3 emotion-4"
+          class="emotion-5 emotion-6"
           data-testid="expand-button"
         >
           <span
-            class="emotion-0 emotion-1 emotion-2"
+            class="emotion-7 emotion-8 emotion-9"
           >
             <svg
               viewBox="0 0 24 24"
@@ -1776,7 +1783,7 @@ exports[`ListControl should render list with fields with default collapse ("true
       >
         editor.editorWidgets.list.add
         <span
-          class="emotion-0 emotion-8 emotion-2"
+          class="emotion-7 emotion-13 emotion-9"
         >
           <svg
             height="24"
@@ -1797,11 +1804,11 @@ exports[`ListControl should render list with fields with default collapse ("true
 
 exports[`ListControl should render list with nested object 1`] = `
 <DocumentFragment>
-  .emotion-22 {
+  .emotion-0 {
   padding: 0 14px 14px;
 }
 
-.emotion-12 {
+.emotion-1 {
   -webkit-align-items: center;
   -webkit-box-align: center;
   -ms-flex-align: center;
@@ -1813,13 +1820,12 @@ exports[`ListControl should render list with nested object 1`] = `
   display: flex;
   -webkit-box-pack: justify;
   -webkit-justify-content: space-between;
-  -ms-flex-pack: justify;
   justify-content: space-between;
   margin: 0 -14px;
   padding: 13px;
 }
 
-.emotion-5 {
+.emotion-3 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -1833,7 +1839,7 @@ exports[`ListControl should render list with nested object 1`] = `
   line-height: 1;
 }
 
-.emotion-3 {
+.emotion-5 {
   border: 0;
   border-radius: 5px;
   cursor: pointer;
@@ -1842,70 +1848,19 @@ exports[`ListControl should render list with nested object 1`] = `
   color: inherit;
 }
 
-.emotion-3:last-of-type {
+.emotion-5:last-of-type {
   margin-right: 4px;
-}
-
-.emotion-1 {
-  display: inline-block;
-  line-height: 0;
-  width: 18px;
-  height: 18px;
-  -webkit-transform: rotate(-90deg);
-  -ms-transform: rotate(-90deg);
-  transform: rotate(-90deg);
-}
-
-.emotion-1 path:not(.no-fill),
-.emotion-1 circle:not(.no-fill),
-.emotion-1 polygon:not(.no-fill),
-.emotion-1 rect:not(.no-fill) {
-  fill: currentColor;
-}
-
-.emotion-1 path.clipped {
-  fill: transparent;
-}
-
-.emotion-1 svg {
-  width: 100%;
-  height: 100%;
-}
-
-.emotion-10 {
-  border: 0;
-  border-radius: 5px;
-  cursor: pointer;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  padding: 2px 12px;
-  font-size: 12px;
-  font-weight: bold;
-  border-radius: 3px;
-}
-
-.emotion-10 .emotion-0 {
-  margin-left: 6px;
 }
 
 .emotion-8 {
   display: inline-block;
   line-height: 0;
-  width: 12px;
-  height: 12px;
-  -webkit-transform: rotate(0deg);
-  -ms-transform: rotate(0deg);
-  transform: rotate(0deg);
+  width: 18px;
+  height: 18px;
+  -webkit-transform: rotate(-90deg);
+  -moz-transform: rotate(-90deg);
+  -ms-transform: rotate(-90deg);
+  transform: rotate(-90deg);
 }
 
 .emotion-8 path:not(.no-fill),
@@ -1924,15 +1879,68 @@ exports[`ListControl should render list with nested object 1`] = `
   height: 100%;
 }
 
-.emotion-16 {
+.emotion-10 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  padding: 2px 12px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 3px;
+}
+
+.emotion-10 .emotion-7 {
+  margin-left: 6px;
+}
+
+.emotion-13 {
+  display: inline-block;
+  line-height: 0;
+  width: 12px;
+  height: 12px;
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -ms-transform: rotate(0deg);
+  transform: rotate(0deg);
+}
+
+.emotion-13 path:not(.no-fill),
+.emotion-13 circle:not(.no-fill),
+.emotion-13 polygon:not(.no-fill),
+.emotion-13 rect:not(.no-fill) {
+  fill: currentColor;
+}
+
+.emotion-13 path.clipped {
+  fill: transparent;
+}
+
+.emotion-13 svg {
+  width: 100%;
+  height: 100%;
+}
+
+.emotion-15 {
   margin-top: 18px;
 }
 
-.emotion-16:first-of-type {
+.emotion-15:first-of-type {
   margin-top: 26px;
 }
 
-.emotion-14 {
+.emotion-17 {
   display: block;
   border-top: 0;
   color: inherit;
@@ -1942,21 +1950,21 @@ exports[`ListControl should render list with nested object 1`] = `
 }
 
 <div
-    class="classNameWrapper emotion-22"
+    class="classNameWrapper emotion-0"
     id="forID"
   >
     <div
-      class="emotion-12 emotion-13"
+      class="emotion-1 emotion-2"
     >
       <div
-        class="emotion-5 emotion-6"
+        class="emotion-3 emotion-4"
       >
         <button
-          class="emotion-3 emotion-4"
+          class="emotion-5 emotion-6"
           data-testid="expand-button"
         >
           <span
-            class="emotion-0 emotion-1 emotion-2"
+            class="emotion-7 emotion-8 emotion-9"
           >
             <svg
               viewBox="0 0 24 24"
@@ -1974,7 +1982,7 @@ exports[`ListControl should render list with nested object 1`] = `
       >
         editor.editorWidgets.list.add
         <span
-          class="emotion-0 emotion-8 emotion-2"
+          class="emotion-7 emotion-13 emotion-9"
         >
           <svg
             height="24"
@@ -1991,7 +1999,7 @@ exports[`ListControl should render list with nested object 1`] = `
     </div>
     <div>
       <div
-        class="emotion-16 emotion-17"
+        class="emotion-15 emotion-16"
       >
         <mock-list-item-top-bar
           classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
@@ -2004,7 +2012,7 @@ exports[`ListControl should render list with nested object 1`] = `
           </button>
         </mock-list-item-top-bar>
         <div
-          class="emotion-14 emotion-15"
+          class="emotion-17 emotion-18"
         >
           Object
         </div>
@@ -2021,7 +2029,7 @@ exports[`ListControl should render list with nested object 1`] = `
         />
       </div>
       <div
-        class="emotion-16 emotion-17"
+        class="emotion-15 emotion-16"
       >
         <mock-list-item-top-bar
           classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
@@ -2034,7 +2042,7 @@ exports[`ListControl should render list with nested object 1`] = `
           </button>
         </mock-list-item-top-bar>
         <div
-          class="emotion-14 emotion-15"
+          class="emotion-17 emotion-18"
         >
           Object
         </div>
@@ -2074,11 +2082,11 @@ exports[`ListControl should render list with nested object 1`] = `
 
 exports[`ListControl should render list with nested object with collapse = false 1`] = `
 <DocumentFragment>
-  .emotion-22 {
+  .emotion-0 {
   padding: 0 14px 14px;
 }
 
-.emotion-12 {
+.emotion-1 {
   -webkit-align-items: center;
   -webkit-box-align: center;
   -ms-flex-align: center;
@@ -2090,13 +2098,12 @@ exports[`ListControl should render list with nested object with collapse = false
   display: flex;
   -webkit-box-pack: justify;
   -webkit-justify-content: space-between;
-  -ms-flex-pack: justify;
   justify-content: space-between;
   margin: 0 -14px;
   padding: 13px;
 }
 
-.emotion-5 {
+.emotion-3 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -2110,7 +2117,7 @@ exports[`ListControl should render list with nested object with collapse = false
   line-height: 1;
 }
 
-.emotion-3 {
+.emotion-5 {
   border: 0;
   border-radius: 5px;
   cursor: pointer;
@@ -2119,42 +2126,17 @@ exports[`ListControl should render list with nested object with collapse = false
   color: inherit;
 }
 
-.emotion-3:last-of-type {
+.emotion-5:last-of-type {
   margin-right: 4px;
-}
-
-.emotion-10 {
-  border: 0;
-  border-radius: 5px;
-  cursor: pointer;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  padding: 2px 12px;
-  font-size: 12px;
-  font-weight: bold;
-  border-radius: 3px;
-}
-
-.emotion-10 .emotion-0 {
-  margin-left: 6px;
 }
 
 .emotion-8 {
   display: inline-block;
   line-height: 0;
-  width: 12px;
-  height: 12px;
+  width: 18px;
+  height: 18px;
   -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
   -ms-transform: rotate(0deg);
   transform: rotate(0deg);
 }
@@ -2175,41 +2157,68 @@ exports[`ListControl should render list with nested object with collapse = false
   height: 100%;
 }
 
-.emotion-16 {
-  margin-top: 18px;
+.emotion-10 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  padding: 2px 12px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 3px;
 }
 
-.emotion-16:first-of-type {
-  margin-top: 26px;
+.emotion-10 .emotion-7 {
+  margin-left: 6px;
 }
 
-.emotion-1 {
+.emotion-13 {
   display: inline-block;
   line-height: 0;
-  width: 18px;
-  height: 18px;
+  width: 12px;
+  height: 12px;
   -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
   -ms-transform: rotate(0deg);
   transform: rotate(0deg);
 }
 
-.emotion-1 path:not(.no-fill),
-.emotion-1 circle:not(.no-fill),
-.emotion-1 polygon:not(.no-fill),
-.emotion-1 rect:not(.no-fill) {
+.emotion-13 path:not(.no-fill),
+.emotion-13 circle:not(.no-fill),
+.emotion-13 polygon:not(.no-fill),
+.emotion-13 rect:not(.no-fill) {
   fill: currentColor;
 }
 
-.emotion-1 path.clipped {
+.emotion-13 path.clipped {
   fill: transparent;
 }
 
-.emotion-1 svg {
+.emotion-13 svg {
   width: 100%;
   height: 100%;
 }
 
-.emotion-14 {
+.emotion-15 {
+  margin-top: 18px;
+}
+
+.emotion-15:first-of-type {
+  margin-top: 26px;
+}
+
+.emotion-17 {
   display: none;
   border-top: 0;
   color: inherit;
@@ -2219,21 +2228,21 @@ exports[`ListControl should render list with nested object with collapse = false
 }
 
 <div
-    class="classNameWrapper emotion-22"
+    class="classNameWrapper emotion-0"
     id="forID"
   >
     <div
-      class="emotion-12 emotion-13"
+      class="emotion-1 emotion-2"
     >
       <div
-        class="emotion-5 emotion-6"
+        class="emotion-3 emotion-4"
       >
         <button
-          class="emotion-3 emotion-4"
+          class="emotion-5 emotion-6"
           data-testid="expand-button"
         >
           <span
-            class="emotion-0 emotion-1 emotion-2"
+            class="emotion-7 emotion-8 emotion-9"
           >
             <svg
               viewBox="0 0 24 24"
@@ -2251,7 +2260,7 @@ exports[`ListControl should render list with nested object with collapse = false
       >
         editor.editorWidgets.list.add
         <span
-          class="emotion-0 emotion-8 emotion-2"
+          class="emotion-7 emotion-13 emotion-9"
         >
           <svg
             height="24"
@@ -2268,7 +2277,7 @@ exports[`ListControl should render list with nested object with collapse = false
     </div>
     <div>
       <div
-        class="emotion-16 emotion-17"
+        class="emotion-15 emotion-16"
       >
         <mock-list-item-top-bar
           classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
@@ -2281,7 +2290,7 @@ exports[`ListControl should render list with nested object with collapse = false
           </button>
         </mock-list-item-top-bar>
         <div
-          class="emotion-14 emotion-15"
+          class="emotion-17 emotion-18"
         >
           Object
         </div>
@@ -2298,7 +2307,7 @@ exports[`ListControl should render list with nested object with collapse = false
         />
       </div>
       <div
-        class="emotion-16 emotion-17"
+        class="emotion-15 emotion-16"
       >
         <mock-list-item-top-bar
           classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
@@ -2311,7 +2320,7 @@ exports[`ListControl should render list with nested object with collapse = false
           </button>
         </mock-list-item-top-bar>
         <div
-          class="emotion-14 emotion-15"
+          class="emotion-17 emotion-18"
         >
           Object
         </div>
