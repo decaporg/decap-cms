@@ -31,7 +31,7 @@ If you hook up Decap CMS to your website, you're basically adding a tool for con
 
 ### Find out more
 
-- Get a feel for the UI in the [demo site](https://cms-demo.netlify.com). (No login required. Click the login button to go straight to the CMS editor UI.)
+- Get a feel for the UI in the [demo site](https://demo.decapcms.org). (No login required. Click the login button to go straight to the CMS editor UI.)
 - [Start with a template](../start-with-a-template/) to make a Decap CMS-enabled site of your own.
 - Configure your existing site by following a [tutorial](../add-to-your-site/) or checking [configuration options](../configuration-options).
 - Ask questions and share ideas in the Decap CMS [community chat](https://decapcms.org/chat).

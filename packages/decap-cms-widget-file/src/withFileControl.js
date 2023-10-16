@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
-import { css } from '@emotion/core';
+import { css } from '@emotion/react';
 import { Map, List } from 'immutable';
 import { once } from 'lodash';
 import { v4 as uuid } from 'uuid';
@@ -202,7 +202,7 @@ function sizeOfValue(value) {
 }
 
 function valueListToArray(value) {
-  return List.isList(value) ? value.toArray() : value ?? [];
+  return List.isList(value) ? value.toArray() : value ?? '';
 }
 
 function valueListToSortableArray(value) {

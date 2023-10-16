@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
-import { css, ClassNames } from '@emotion/core';
+import { css, ClassNames } from '@emotion/react';
 import { List, Map, fromJS } from 'immutable';
 import { partial, isEmpty, uniqueId } from 'lodash';
 import { v4 as uuid } from 'uuid';
@@ -592,8 +592,6 @@ export default class ListControl extends React.Component {
         return this.renderErroneousTypedItem(index, item);
       }
     }
-
-    console.log('kurwa', classNameWrapper);
 
     return (
       <SortableListItem

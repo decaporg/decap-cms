@@ -2,11 +2,12 @@
 
 exports[`GitGatewayAuthenticationPage should render with identity error 1`] = `
 <DocumentFragment>
-  .emotion-5 {
+  .emotion-0 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
+  -webkit-box-flex-flow: column nowrap;
   -webkit-flex-flow: column nowrap;
   -ms-flex-flow: column nowrap;
   flex-flow: column nowrap;
@@ -15,24 +16,63 @@ exports[`GitGatewayAuthenticationPage should render with identity error 1`] = `
   -ms-flex-align: center;
   align-items: center;
   -webkit-box-pack: center;
-  -webkit-justify-content: center;
   -ms-flex-pack: center;
+  -webkit-justify-content: center;
   justify-content: center;
   gap: 50px;
   height: 100vh;
 }
 
-.emotion-0 {
+.emotion-2 {
   width: 300px;
   height: auto;
 }
 
-.emotion-3 {
+.emotion-4 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px 0 rgba(68, 74, 87, 0.15),0 1px 3px 0 rgba(68, 74, 87, 0.25);
+  height: 36px;
+  line-height: 36px;
+  font-weight: 500;
+  padding: 0 15px;
+  background-color: #798291;
+  color: #fff;
+  background-color: #313d3e;
+  color: #fff;
+  padding: 0 12px;
+  margin-top: 0;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  position: relative;
+}
+
+.emotion-4:focus,
+.emotion-4:hover {
+  color: #fff;
+  background-color: #555a65;
+}
+
+.emotion-4[disabled] {
+  background-color: #eff0f4;
+  color: #798291;
+  cursor: default;
+}
+
+.emotion-7 {
   display: inline-block;
   line-height: 0;
   width: 100px;
   height: 100px;
   -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
   -ms-transform: rotate(0deg);
   transform: rotate(0deg);
   color: #c4c6d2;
@@ -40,42 +80,40 @@ exports[`GitGatewayAuthenticationPage should render with identity error 1`] = `
   bottom: 10px;
 }
 
-.emotion-3 path:not(.no-fill),
-.emotion-3 circle:not(.no-fill),
-.emotion-3 polygon:not(.no-fill),
-.emotion-3 rect:not(.no-fill) {
+.emotion-7 path:not(.no-fill),
+.emotion-7 circle:not(.no-fill),
+.emotion-7 polygon:not(.no-fill),
+.emotion-7 rect:not(.no-fill) {
   fill: currentColor;
 }
 
-.emotion-3 path.clipped {
+.emotion-7 path.clipped {
   fill: transparent;
 }
 
-.emotion-3 svg {
+.emotion-7 svg {
   width: 100%;
   height: 100%;
 }
 
 <section
-    class="emotion-5 emotion-6"
+    class="emotion-0 emotion-1"
   >
     <span
-      class="emotion-0 emotion-1"
+      class="emotion-2 emotion-3"
     >
       <img
         alt="Logo"
         src="logo_url"
       />
     </span>
-    <a
-      href="https://docs.netlify.com/visitor-access/git-gateway/#setup-and-settings"
-      rel="noopener noreferrer"
-      target="_blank"
+    <button
+      class="emotion-4 emotion-5"
     >
-      auth.errors.identitySettings
-    </a>
+      auth.loginWithNetlifyIdentity
+    </button>
     <span
-      class="emotion-2 emotion-3 emotion-4"
+      class="emotion-6 emotion-7 emotion-8"
     >
       <svg
         fill="none"
@@ -102,11 +140,12 @@ exports[`GitGatewayAuthenticationPage should render with identity error 1`] = `
 
 exports[`GitGatewayAuthenticationPage should render with no identity error 1`] = `
 <DocumentFragment>
-  .emotion-7 {
+  .emotion-0 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
+  -webkit-box-flex-flow: column nowrap;
   -webkit-flex-flow: column nowrap;
   -ms-flex-flow: column nowrap;
   flex-flow: column nowrap;
@@ -115,23 +154,23 @@ exports[`GitGatewayAuthenticationPage should render with no identity error 1`] =
   -ms-flex-align: center;
   align-items: center;
   -webkit-box-pack: center;
-  -webkit-justify-content: center;
   -ms-flex-pack: center;
+  -webkit-justify-content: center;
   justify-content: center;
   gap: 50px;
   height: 100vh;
 }
 
-.emotion-0 {
+.emotion-2 {
   width: 300px;
   height: auto;
 }
 
-.emotion-2 {
+.emotion-4 {
   border: 0;
   border-radius: 5px;
   cursor: pointer;
-  box-shadow: 0 4px 12px 0 rgba(68,74,87,0.15),0 1px 3px 0 rgba(68,74,87,0.25);
+  box-shadow: 0 4px 12px 0 rgba(68, 74, 87, 0.15),0 1px 3px 0 rgba(68, 74, 87, 0.25);
   height: 36px;
   line-height: 36px;
   font-weight: 500;
@@ -153,116 +192,25 @@ exports[`GitGatewayAuthenticationPage should render with no identity error 1`] =
   position: relative;
 }
 
-.emotion-2:focus,
-.emotion-2:hover {
+.emotion-4:focus,
+.emotion-4:hover {
   color: #fff;
   background-color: #555a65;
 }
 
-.emotion-2[disabled] {
+.emotion-4[disabled] {
   background-color: #eff0f4;
   color: #798291;
   cursor: default;
-}
-
-.emotion-5 {
-  display: inline-block;
-  line-height: 0;
-  width: 100px;
-  height: 100px;
-  -webkit-transform: rotate(0deg);
-  -ms-transform: rotate(0deg);
-  transform: rotate(0deg);
-  color: #c4c6d2;
-  position: absolute;
-  bottom: 10px;
-}
-
-.emotion-5 path:not(.no-fill),
-.emotion-5 circle:not(.no-fill),
-.emotion-5 polygon:not(.no-fill),
-.emotion-5 rect:not(.no-fill) {
-  fill: currentColor;
-}
-
-.emotion-5 path.clipped {
-  fill: transparent;
-}
-
-.emotion-5 svg {
-  width: 100%;
-  height: 100%;
 }
 
 .emotion-7 {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-flex-flow: column nowrap;
-  -ms-flex-flow: column nowrap;
-  flex-flow: column nowrap;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  gap: 50px;
-  height: 100vh;
-}
-
-.emotion-0 {
-  width: 300px;
-  height: auto;
-}
-
-.emotion-2 {
-  border: 0;
-  border-radius: 5px;
-  cursor: pointer;
-  box-shadow: 0 4px 12px 0 rgba(68,74,87,0.15),0 1px 3px 0 rgba(68,74,87,0.25);
-  height: 36px;
-  line-height: 36px;
-  font-weight: 500;
-  padding: 0 15px;
-  background-color: #798291;
-  color: #fff;
-  background-color: #313d3e;
-  color: #fff;
-  padding: 0 12px;
-  margin-top: 0;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  position: relative;
-}
-
-.emotion-2:focus,
-.emotion-2:hover {
-  color: #fff;
-  background-color: #555a65;
-}
-
-.emotion-2[disabled] {
-  background-color: #eff0f4;
-  color: #798291;
-  cursor: default;
-}
-
-.emotion-5 {
   display: inline-block;
   line-height: 0;
   width: 100px;
   height: 100px;
   -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
   -ms-transform: rotate(0deg);
   transform: rotate(0deg);
   color: #c4c6d2;
@@ -270,27 +218,27 @@ exports[`GitGatewayAuthenticationPage should render with no identity error 1`] =
   bottom: 10px;
 }
 
-.emotion-5 path:not(.no-fill),
-.emotion-5 circle:not(.no-fill),
-.emotion-5 polygon:not(.no-fill),
-.emotion-5 rect:not(.no-fill) {
+.emotion-7 path:not(.no-fill),
+.emotion-7 circle:not(.no-fill),
+.emotion-7 polygon:not(.no-fill),
+.emotion-7 rect:not(.no-fill) {
   fill: currentColor;
 }
 
-.emotion-5 path.clipped {
+.emotion-7 path.clipped {
   fill: transparent;
 }
 
-.emotion-5 svg {
+.emotion-7 svg {
   width: 100%;
   height: 100%;
 }
 
 <section
-    class="emotion-7 emotion-8"
+    class="emotion-0 emotion-1"
   >
     <span
-      class="emotion-0 emotion-1"
+      class="emotion-2 emotion-3"
     >
       <img
         alt="Logo"
@@ -298,12 +246,12 @@ exports[`GitGatewayAuthenticationPage should render with no identity error 1`] =
       />
     </span>
     <button
-      class="emotion-2 emotion-3"
+      class="emotion-4 emotion-5"
     >
       auth.loginWithNetlifyIdentity
     </button>
     <span
-      class="emotion-4 emotion-5 emotion-6"
+      class="emotion-6 emotion-7 emotion-8"
     >
       <svg
         fill="none"
