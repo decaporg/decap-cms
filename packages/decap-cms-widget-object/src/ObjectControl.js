@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { ClassNames } from '@emotion/core';
+import { ClassNames } from '@emotion/react';
 import { List, Map } from 'immutable';
 import { colors, lengths, ObjectWidgetTopBar } from 'decap-cms-ui-default';
 import { stringTemplate } from 'decap-cms-lib-widgets';

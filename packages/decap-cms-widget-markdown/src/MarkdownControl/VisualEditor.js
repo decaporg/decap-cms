@@ -2,7 +2,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { ClassNames, css as coreCss } from '@emotion/core';
+import { ClassNames, css as coreCss } from '@emotion/react';
 import { lengths, fonts, zIndex } from 'decap-cms-ui-default';
 import styled from '@emotion/styled';
 import { createEditor, Transforms, Editor as SlateEditor } from 'slate';

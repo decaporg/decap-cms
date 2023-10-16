@@ -1,6 +1,8 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 
+import GitGatewayAuthenticationPage from '../AuthenticationPage';
+
 window.netlifyIdentity = {
   currentUser: jest.fn(),
   on: jest.fn(),
@@ -21,21 +23,32 @@ describe('GitGatewayAuthenticationPage', () => {
   });
 
   it('should render with identity error', () => {
-    const { default: GitGatewayAuthenticationPage } = require('../AuthenticationPage');
-    const { asFragment } = render(<GitGatewayAuthenticationPage {...props} />);
+    // obtain mock calls
+    require('../AuthenticationPage');
 
-    const errorCallback = window.netlifyIdentity.on.mock.calls.find(call => call[0] === 'error')[1];
+    function TestComponent() {
+      const { asFragment } = render(<GitGatewayAuthenticationPage {...props} />);
 
-    errorCallback(
-      new Error('Failed to load settings from https://site.netlify.com/.netlify/identity'),
-    );
+      const errorCallback = window.netlifyIdentity.on.mock.calls.find(
+        call => call[0] === 'error',
+      )[1];
 
-    expect(asFragment()).toMatchSnapshot();
+      errorCallback(
+        new Error('Failed to load settings from https://site.netlify.com/.netlify/identity'),
+      );
+
+      expect(asFragment()).toMatchSnapshot();
+    }
+
+    TestComponent();
   });
 
-  it('should render with no identity error', () => {
-    const { default: GitGatewayAuthenticationPage } = require('../AuthenticationPage');
-    const { asFragment } = render(<GitGatewayAuthenticationPage {...props} />);
-    expect(asFragment()).toMatchSnapshot();
+  test('should render with no identity error', () => {
+    function TestComponent() {
+      const { asFragment } = render(<GitGatewayAuthenticationPage {...props} />);
+      expect(asFragment()).toMatchSnapshot();
+    }
+
+    TestComponent();
   });
 });
