@@ -6,17 +6,17 @@ weight: 20
 
 [Netlify Large Media](https://www.netlify.com/features/large-media/) is a [Git LFS](https://git-lfs.github.com/) implementation for repositories connected to Netlify sites. This means that you can use Git to work with large asset files like images, audio, and video, without bloating your repository. It does this by replacing the asset files in your repository with text pointer files, then uploading the assets to the Netlify Large Media storage service.
 
-If you have a Netlify site with Large Media enabled, Netlify CMS (version 2.6.0 and above) will handle Large Media asset files seamlessly, in the same way as files stored directly in the repository.
+If you have a Netlify site with Large Media enabled, Decap CMS (version 2.6.0 and above) will handle Large Media asset files seamlessly, in the same way as files stored directly in the repository.
 
 ## Requirements
 
-To use Netlify Large Media with Netlify CMS, you will need to do the following:
+To use Netlify Large Media with Decap CMS, you will need to do the following:
 
-- [Upgrade Netlify CMS](/docs/update-the-cms-version/) to version 2.6.0 or above.
-- Configure Netlify CMS to use the [Git Gateway backend with Netlify Identity](/docs/git-gateway-backend/#git-gateway-with-netlify-identity).
+- [Upgrade Decap CMS](/docs/update-the-cms-version/) to version 2.6.0 or above.
+- Configure Decap CMS to use the [Git Gateway backend with Netlify Identity](/docs/git-gateway-backend/#git-gateway-with-netlify-identity).
 - Configure the Netlify site and connected repository to use Large Media, following the [Large Media docs on Netlify](https://www.netlify.com/docs/large-media/).
 
-When these are complete, you can use Netlify CMS as normal, and the configured asset files will automatically be handled by Netlify Large Media.
+When these are complete, you can use Decap CMS as normal, and the configured asset files will automatically be handled by Netlify Large Media.
 
 ## Image transformations
 
@@ -26,7 +26,7 @@ You can learn more about this feature in [Netlify's image transformation docs](h
 
 ### Transformation control for media gallery thumbnails
 
-In repositories enabled with Netlify Large Media, Netlify CMS will use the image transformation query parameters to load thumbnail-sized images for the media gallery view. This makes images in the media gallery load significantly faster.
+In repositories enabled with Netlify Large Media, Decap CMS will use the image transformation query parameters to load thumbnail-sized images for the media gallery view. This makes images in the media gallery load significantly faster.
 
 **Note:** When using this option all tracked file types have to be imported into Large Media. For example if you track `*.jpg` but still have jpg-files that are not imported into Large Media the backend will throw an error. Check the [netlify docs](https://docs.netlify.com/large-media/setup/#migrate-files-from-git-history) on how to add previously committed files to Large Media.
 

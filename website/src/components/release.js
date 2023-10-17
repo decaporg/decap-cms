@@ -7,7 +7,6 @@ import Markdownify from '../components/markdownify';
 import theme from '../theme';
 
 const ReleaseLink = styled.a`
-  color: white;
   display: block;
   padding: ${theme.space[2]} ${theme.space[3]};
   border-radius: ${theme.radii[1]};
@@ -29,7 +28,7 @@ const Version = styled.span`
 
 function Release({ version, versionPrevious, date, description, url }) {
   const displayDate = moment(date).format('MMMM D, YYYY');
-  const defaultUrl = `https://github.com/netlify/netlify-cms/compare/netlify-cms@${versionPrevious}...netlify-cms@${version}`;
+  const defaultUrl = `https://github.com/decaporg/decap-cms/compare/decap-cms@${versionPrevious}...decap-cms@${version}`;
 
   return (
     <li

@@ -120,7 +120,7 @@ async function createUser(netlifyApiToken, siteUrl, email, password) {
 }
 
 const netlifySiteURL = 'https://fake-site-url.netlify.com/';
-const email = 'netlifyCMS@netlify.com';
+const email = 'decap@p-m.si';
 const password = '12345678';
 const backendName = 'git-gateway';
 

@@ -5,7 +5,7 @@ weight: 10
 ---
 Cloudinary is a digital asset management platform with a broad feature set, including support for responsive image generation and url based image transformation. They also provide a powerful media library UI for managing assets, and tools for organizing your assets into a hierarchy.
 
-The Cloudinary media library integration for Netlify CMS uses Cloudinary's own media library interface within Netlify CMS. To get started, you'll need a Cloudinary account and Netlify CMS 2.3.0 or greater.
+The Cloudinary media library integration for Decap CMS uses Cloudinary's own media library interface within Decap CMS. To get started, you'll need a Cloudinary account and Decap CMS 2.3.0 or greater.
 
 ## Creating a Cloudinary Account
 
@@ -13,9 +13,9 @@ You can [sign up for Cloudinary](https://cloudinary.com/users/register/free) for
 
 ![Cloudinary console screenshot](/img/cloudinary-console-details.png)
 
-## Connecting Cloudinary to Netlify CMS
+## Connecting Cloudinary to Decap CMS
 
-To use the Cloudinary media library within Netlify CMS, you'll need to update your Netlify CMS configuration file with the information from your Cloudinary account:
+To use the Cloudinary media library within Decap CMS, you'll need to update your Decap CMS configuration file with the information from your Cloudinary account:
 
 ```yaml
 media_library:
@@ -25,16 +25,16 @@ media_library:
     api_key: your_api_key
 ```
 
-**Note:** The user must be logged in to the Cloudinary account connected to the `api_key` used in your Netlify CMS configuration. 
+**Note:** The user must be logged in to the Cloudinary account connected to the `api_key` used in your Decap CMS configuration. 
 
-**Note:** The Netlify CMS media library extensions for Cloudinary are not included in `netlify-cms-app`. If you're using `netlify-cms-app`, you'll need to [register the media libraries yourself](https://www.netlifycms.org/blog/2019/07/netlify-cms-gatsby-plugin-4-0-0#using-media-libraries-with-netlify-cms-app).
+**Note:** The Decap CMS media library extensions for Cloudinary are not included in `decap-cms-app`. If you're using `decap-cms-app`, you'll need to register the media libraries yourself.
 
 ### Security Considerations
 Although this setup exposes the `cloud_name` and `api_key` publicly via the `/admin/config.yml` endpoint, this information is not sensitive. Any integration of the Cloudinary media library requires this information to be exposed publicly. To use this library or use the restricted Cloudinary API endpoints, the user must have access to the Cloudinary account login details or the `api_secret` associated with the `cloud_name` and `api_key`.
 
-## Netlify CMS configuration options
+## Decap CMS configuration options
 
-The following options are specific to the Netlify CMS integration for Cloudinary:
+The following options are specific to the Decap CMS integration for Cloudinary:
 
 * **`output_filename_only`**: _(default: `false`)_\
   By default, the value provided for a selected image is a complete URL for the asset on Cloudinary's CDN. Setting `output_filename_only` to `true` will instead produce just the filename (e.g. `image.jpg`). This should be `true` if you will be directly embedding cloudinary transformation urls in page templates. Refer to [Inserting Cloudinary URL in page templates](#inserting-cloudinary-url-in-page-templates).
@@ -45,7 +45,7 @@ The following options are specific to the Netlify CMS integration for Cloudinary
 
 ## Cloudinary configuration options
 
-The following options are used to configure the media library. All options are listed in Cloudinary's [media library documentation](https://cloudinary.com/documentation/media_library_widget#3_set_the_configuration_options), but only options listed below are available or recommended for the Netlify CMS integration:
+The following options are used to configure the media library. All options are listed in Cloudinary's [media library documentation](https://cloudinary.com/documentation/media_library_widget#3_set_the_configuration_options), but only options listed below are available or recommended for the Decap CMS integration:
 
 ### Authentication
 
@@ -60,7 +60,7 @@ The following options are used to configure the media library. All options are l
 
 ## Image transformations
 
-The Cloudinary integration allows images to be transformed in two ways: directly within Netlify CMS via [Cloudinary's Media Library](#transforming-images-via-media-library), and separately from the CMS via Cloudinary's [dynamic URL's](https://cloudinary.com/documentation/image_transformations#delivering_media_assets_using_dynamic_urls) by [inserting cloudinary urls](#inserting-cloudinary-url-in-page-templates).
+The Cloudinary integration allows images to be transformed in two ways: directly within Decap CMS via [Cloudinary's Media Library](#transforming-images-via-media-library), and separately from the CMS via Cloudinary's [dynamic URL's](https://cloudinary.com/documentation/image_transformations#delivering_media_assets_using_dynamic_urls) by [inserting cloudinary urls](#inserting-cloudinary-url-in-page-templates).
 
 ### Transforming images via Media Library
 If you transform and insert images from within the Cloudinary media library, the transformed image URL will be output by default. This gives the editor complete freedom to make changes to the image output.
@@ -102,11 +102,11 @@ fields: # The fields each document in this collection have
   media_library:
     config:
       default_transformations:
-        - fetch_format: auto
-          width: 300    
-          quality: auto
-          crop: fill
-          effect: grayscale
+        - - fetch_format: auto
+            width: 300    
+            quality: auto
+            crop: fill
+            effect: grayscale
 ```
 
 ## Inserting Cloudinary URL in page templates
