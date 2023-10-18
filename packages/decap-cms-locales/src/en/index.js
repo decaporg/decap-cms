@@ -120,14 +120,14 @@ const en = {
       toggleScrollSync: 'Sync scrolling',
     },
     editorToolbar: {
-      publishing: 'Merging...',
-      publish: 'Merge',
-      published: 'Merged',
+      publishing: 'Publishing...',
+      publish: 'Publish',
+      published: 'Publish',
       unpublish: 'Unpublish',
       duplicate: 'Duplicate',
       unpublishing: 'Unpublishing...',
-      publishAndCreateNew: 'Merge and create new',
-      publishAndDuplicate: 'Merge and duplicate',
+      publishAndCreateNew: 'Publish and create new',
+      publishAndDuplicate: 'Publish and duplicate',
       deleteUnpublishedChanges: 'Delete unpublished changes',
       deleteUnpublishedEntry: 'Delete unpublished entry',
       deletePublishedEntry: 'Delete published entry',
@@ -151,6 +151,11 @@ const en = {
       deployPreviewPendingButtonLabel: 'Check for Preview',
       deployPreviewButtonLabel: 'View Preview',
       deployButtonLabel: 'View Live',
+      gitHub: {
+        label: 'GitHub',
+        viewCode: 'View Code',
+        pullRequests: 'Pull Requests',
+      },
     },
     editorWidgets: {
       markdown: {

@@ -19,6 +19,7 @@ import {
 
 import { status } from '../../constants/publishModes';
 import { SettingsDropdown } from '../UI';
+import { has } from 'lodash';
 
 const styles = {
   noOverflow: css`
@@ -199,6 +200,10 @@ const PublishButton = styled(DropdownButton)`
   background-color: ${colorsRaw.teal};
 `;
 
+const GithubButton = styled(DropdownButton)`
+  background-color: ${colorsRaw.teal};
+`;
+
 const StatusButton = styled(DropdownButton)`
   background-color: ${colorsRaw.tealLight};
   color: ${colorsRaw.teal};
@@ -238,6 +243,10 @@ const PublishDropDownItem = styled(DropdownItem)`
   min-width: initial;
 `;
 
+const GitHubDropDownItem = styled(DropdownItem)`
+  min-width: initial;
+`;
+
 const StatusDropdownItem = styled(DropdownItem)`
   ${Icon} {
     color: ${colors.infoText};
@@ -262,6 +271,7 @@ export class EditorToolbar extends React.Component {
     onDuplicate: PropTypes.func.isRequired,
     onPublishAndNew: PropTypes.func.isRequired,
     onPublishAndDuplicate: PropTypes.func.isRequired,
+    onViewCode: PropTypes.func.isRequired,
     user: PropTypes.object,
     hasChanged: PropTypes.bool,
     displayUrl: PropTypes.string,
@@ -402,6 +412,39 @@ export class EditorToolbar extends React.Component {
       </>
     );
   };
+
+  renderGithubControls = () => {
+    const { onViewCode, onViewPullRequests, t } = this.props;
+
+    return (
+      <ToolbarDropdown
+        dropdownTopOverlap="40px"
+        dropdownWidth="200px"
+        renderButton={() => (
+          <GithubButton
+            key="github-button"
+          >
+            {t('editor.editorToolbar.gitHub.label')}
+          </GithubButton>
+        )}
+      >
+        <GitHubDropDownItem
+          key="github-view-code"
+          label={t('editor.editorToolbar.gitHub.viewCode')}
+          icon="code"
+          iconDirection="right"
+          onClick={onViewCode}
+        />
+        <GitHubDropDownItem
+          key="github-view-pull-requests"
+          label={t('editor.editorToolbar.gitHub.pullRequests')}
+          icon="workflow"
+          iconDirection="right"
+          onClick={onViewPullRequests}
+        />
+
+      </ToolbarDropdown>)
+  }
 
   renderNewEntryWorkflowPublishControls = ({ canCreate, canPublish }) => {
     const { isPublishing, onPublish, onPublishAndNew, onPublishAndDuplicate, t } = this.props;
@@ -556,24 +599,25 @@ export class EditorToolbar extends React.Component {
   renderWorkflowControls = () => {
     const {
       onPersist,
-      onDelete,
+      // onDelete,
       onDeleteUnpublishedChanges,
-      showDelete,
+      // onViewCode,
+      // showDelete,
       hasChanged,
       hasUnpublishedChanges,
-      useOpenAuthoring,
+      // useOpenAuthoring,
       isPersisting,
-      isDeleting,
+      // isDeleting,
       isNewEntry,
       isModification,
-      currentStatus,
-      collection,
+      // currentStatus,
+      // collection,
       t,
     } = this.props;
 
-    const canCreate = collection.get('create');
-    const canPublish = collection.get('publish') && !useOpenAuthoring;
-    const canDelete = collection.get('delete', true);
+    // const canCreate = collection.get('create');
+    // const canPublish = collection.get('publish') && !useOpenAuthoring;
+    // const canDelete = collection.get('delete', true);
 
     const deleteLabel =
       (hasUnpublishedChanges &&
@@ -581,8 +625,7 @@ export class EditorToolbar extends React.Component {
         t('editor.editorToolbar.deleteUnpublishedChanges')) ||
       (hasUnpublishedChanges &&
         (isNewEntry || !isModification) &&
-        t('editor.editorToolbar.deleteUnpublishedEntry')) ||
-      (!hasUnpublishedChanges && !isModification && t('editor.editorToolbar.deletePublishedEntry'));
+        t('editor.editorToolbar.deleteUnpublishedEntry'));
 
     return [
       <SaveButton
@@ -592,21 +635,29 @@ export class EditorToolbar extends React.Component {
       >
         {isPersisting ? t('editor.editorToolbar.saving') : t('editor.editorToolbar.save')}
       </SaveButton>,
-      currentStatus
-        ? [
-            this.renderWorkflowStatusControls(),
-            this.renderNewEntryWorkflowPublishControls({ canCreate, canPublish }),
-          ]
-        : !isNewEntry &&
-          this.renderExistingEntryWorkflowPublishControls({ canCreate, canPublish, canDelete }),
-      (!showDelete || useOpenAuthoring) && !hasUnpublishedChanges && !isModification ? null : (
+      this.renderGithubControls(),
+      hasUnpublishedChanges &&
         <DeleteButton
           key="delete-button"
-          onClick={hasUnpublishedChanges ? onDeleteUnpublishedChanges : onDelete}
+          onClick={onDeleteUnpublishedChanges}
         >
-          {isDeleting ? t('editor.editorToolbar.deleting') : deleteLabel}
+          {deleteLabel}
         </DeleteButton>
-      ),
+      // currentStatus
+      //   ? [
+      //       this.renderWorkflowStatusControls(),
+      //       this.renderNewEntryWorkflowPublishControls({ canCreate, canPublish }),
+      //     ] : null,
+      //   : !isNewEntry &&
+      //     this.renderExistingEntryWorkflowPublishControls({ canCreate, canPublish, canDelete }),
+      // (!showDelete || useOpenAuthoring) && !hasUnpublishedChanges && !isModification ? null : (
+      //   <DeleteButton
+      //     key="delete-button"
+      //     onClick={hasUnpublishedChanges ? onDeleteUnpublishedChanges : onDelete}
+      //   >
+      //     {isDeleting ? t('editor.editorToolbar.deleting') : deleteLabel}
+      //   </DeleteButton>
+      // ),
     ];
   };
 

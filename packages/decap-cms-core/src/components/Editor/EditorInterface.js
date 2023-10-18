@@ -201,6 +201,14 @@ class EditorInterface extends Component {
     this.setState({ leftPanelLocale: locale });
   };
 
+  handleViewCode = () => {
+    window.open("https://github.com/digits/marketing", "_blank")
+  };
+
+  handleViewPullRequests = () => {
+    window.open("https://github.com/digits/marketing/pulls", "_blank")
+  };
+
   render() {
     const {
       collection,
@@ -340,6 +348,8 @@ class EditorInterface extends Component {
           onDuplicate={onDuplicate}
           onPublishAndNew={() => this.handleOnPublish({ createNew: true })}
           onPublishAndDuplicate={() => this.handleOnPublish({ createNew: true, duplicate: true })}
+          onViewCode={this.handleViewCode}
+          onViewPullRequests={this.handleViewPullRequests}
           user={user}
           hasChanged={hasChanged}
           displayUrl={displayUrl}
