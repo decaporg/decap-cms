@@ -286,7 +286,7 @@ export default class GitHub implements Implementation {
     // If a fork exists merge it with upstream
     // otherwise create a new fork.
     if (await this.forkExists({ token })) {
-      return fetch(`${this.apiRoot}/repos/${userData.login}/${this.originRepo}/merge-upstream`, {
+      return fetch(`${this.apiRoot}/repos/${this.originRepo}/merge-upstream`, {
         method: 'POST',
         headers: {
           Authorization: `token ${token}`,
