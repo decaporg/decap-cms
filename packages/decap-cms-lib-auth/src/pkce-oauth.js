@@ -120,7 +120,7 @@ export default class PkceAuthenticator {
         },
       });
       const data = await response.json();
-      
+
       //no need for verifier code so remove
       clearCodeVerifier();
 

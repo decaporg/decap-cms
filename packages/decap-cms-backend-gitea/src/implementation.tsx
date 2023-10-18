@@ -77,7 +77,7 @@ export default class Gitea implements Implementation {
     }
 
     if (this.options.useWorkflow) {
-      throw new Error('The Gitea backend does not support editorial workflow.')
+      throw new Error('The Gitea backend does not support editorial workflow.');
     }
 
     this.api = this.options.API || null;
@@ -430,21 +430,21 @@ export default class Gitea implements Implementation {
   async unpublishedEntryMediaFile() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return {} as any;
-  };
+  }
 
   async updateUnpublishedEntryStatus() {
     return;
-  };
+  }
 
   async publishUnpublishedEntry() {
     return;
-  };
+  }
   async deleteUnpublishedEntry() {
     return;
-  };
+  }
 
   async getDeployPreview() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return {} as any;
-  };
+  }
 }

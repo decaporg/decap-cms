@@ -21,7 +21,6 @@ describe('gitea backend implementation', () => {
 
   beforeAll(() => {
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-
   });
 
   beforeEach(() => {

@@ -12,7 +12,13 @@ import {
   unsentRequest,
 } from 'decap-cms-lib-util';
 
-import type { DataFile, PersistOptions, AssetProxy, ApiRequest, FetchError } from 'decap-cms-lib-util';
+import type {
+  DataFile,
+  PersistOptions,
+  AssetProxy,
+  ApiRequest,
+  FetchError,
+} from 'decap-cms-lib-util';
 import type { Semaphore } from 'semaphore';
 import type {
   FilesResponse,
