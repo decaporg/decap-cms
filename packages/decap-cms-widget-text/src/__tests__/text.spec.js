@@ -1,9 +1,9 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 
-import { NetlifyCmsWidgetText } from '../';
+import { DecapCmsWidgetText } from '../';
 
-const TextControl = NetlifyCmsWidgetText.controlComponent;
+const TextControl = DecapCmsWidgetText.controlComponent;
 
 function setup({ defaultValue } = {}) {
   const setActiveSpy = jest.fn();
