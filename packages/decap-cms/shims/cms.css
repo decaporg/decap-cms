@@ -1,0 +1,5 @@
+/**
+ * Decap CMS 2.0 moved from static CSS to CSS-in-JS. Some site builds are configured to look
+ * for `cms.css`, and will break when it's missing, so we're putting out this blank file to help.
+ * We'll eventually remove it, so please update your build to not require it.
+ */

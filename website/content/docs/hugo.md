@@ -76,7 +76,7 @@ In Hugo, static files that don't need to be processed by the build commands live
   </head>
   <body>
     <!-- Include the script that builds the page and powers Decap CMS -->
-    <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
+    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
   </body>
 </html>
 ```

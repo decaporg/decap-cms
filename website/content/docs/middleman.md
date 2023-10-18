@@ -115,7 +115,7 @@ In the newly created `index.html` we add scripts for Decap CMS and the Netlify I
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js" type="text/javascript"></script>
   </head>
   <body>
-    <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js" type="text/javascript"></script>
+    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js" type="text/javascript"></script>
   </body>
 </html>
 

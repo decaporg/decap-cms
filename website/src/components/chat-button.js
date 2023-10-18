@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from '@emotion/styled';
 
+import { mq } from '../utils';
 import theme from '../theme';
 
 const ChatLink = styled.a`
@@ -16,6 +17,14 @@ const ChatLink = styled.a`
   background-color: ${theme.colors.white};
   font-size: 14px;
   text-align: right;
+  display: none;
+  &:hover {
+    box-shadow: 0 0.5em 0.5em -0.4em var(--hover);
+    transform: translateY(-0.25em);
+  }
+  ${mq[1]} {
+    display: block;
+  }
 `;
 
 function ChatButton() {
