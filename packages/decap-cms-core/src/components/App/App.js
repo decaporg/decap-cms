@@ -70,6 +70,10 @@ function RouteInCollection({ collections, render, ...props }) {
   );
 }
 
+const handleOpenGitHub = () => {
+  window.open("https://github.com/digits/marketing", "_blank")
+}
+
 class App extends React.Component {
   static propTypes = {
     auth: PropTypes.object.isRequired,
@@ -83,6 +87,7 @@ class App extends React.Component {
     siteId: PropTypes.string,
     useMediaLibrary: PropTypes.bool,
     openMediaLibrary: PropTypes.func.isRequired,
+    openGitHub: PropTypes.func.isRequired,
     showMediaButton: PropTypes.bool,
     t: PropTypes.func.isRequired,
   };
@@ -150,6 +155,7 @@ class App extends React.Component {
       publishMode,
       useMediaLibrary,
       openMediaLibrary,
+      openGitHub,
       t,
       showMediaButton,
     } = this.props;
@@ -182,6 +188,7 @@ class App extends React.Component {
           onCreateEntryClick={createNewEntry}
           onLogoutClick={logoutUser}
           openMediaLibrary={openMediaLibrary}
+          openGitHub={handleOpenGitHub}
           hasWorkflow={hasWorkflow}
           displayUrl={config.display_url}
           isTestRepo={config.backend.name === 'test-repo'}

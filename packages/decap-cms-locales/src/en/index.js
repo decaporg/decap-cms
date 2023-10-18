@@ -20,6 +20,7 @@ const en = {
       workflow: 'Workflow',
       media: 'Media',
       quickAdd: 'Quick add',
+      gitHub: 'GitHub',
     },
     app: {
       errorHeader: 'Error loading the CMS configuration',

@@ -121,6 +121,7 @@ class Header extends React.Component {
     onCreateEntryClick: PropTypes.func.isRequired,
     onLogoutClick: PropTypes.func.isRequired,
     openMediaLibrary: PropTypes.func.isRequired,
+    openGitHub: PropTypes.func.isRequired,
     hasWorkflow: PropTypes.bool.isRequired,
     displayUrl: PropTypes.string,
     isTestRepo: PropTypes.bool,
@@ -153,6 +154,7 @@ class Header extends React.Component {
       collections,
       onLogoutClick,
       openMediaLibrary,
+      openGitHub,
       hasWorkflow,
       displayUrl,
       isTestRepo,
@@ -195,6 +197,12 @@ class Header extends React.Component {
                   </AppHeaderButton>
                 </li>
               )}
+              <li>
+                <AppHeaderButton onClick={openGitHub}>
+                  <Icon type="github" />
+                  {t('app.header.gitHub')}
+                </AppHeaderButton>
+              </li>
             </AppHeaderNavList>
           </nav>
           <AppHeaderActions>
