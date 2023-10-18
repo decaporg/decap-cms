@@ -636,13 +636,13 @@ export class EditorToolbar extends React.Component {
         {isPersisting ? t('editor.editorToolbar.saving') : t('editor.editorToolbar.save')}
       </SaveButton>,
       this.renderGithubControls(),
-      hasUnpublishedChanges &&
+      hasUnpublishedChanges && (
         <DeleteButton
           key="delete-button"
           onClick={onDeleteUnpublishedChanges}
         >
           {deleteLabel}
-        </DeleteButton>
+        </DeleteButton>)
       // currentStatus
       //   ? [
       //       this.renderWorkflowStatusControls(),

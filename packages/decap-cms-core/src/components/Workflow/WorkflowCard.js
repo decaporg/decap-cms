@@ -146,13 +146,13 @@ function WorkflowCard({
             ? t('workflow.workflowCard.deleteChanges')
             : t('workflow.workflowCard.deleteNewEntry')}
         </DeleteButton>
-        {allowPublish && (
+        {/* {allowPublish && (
           <PublishButton disabled={!canPublish} onClick={onPublish}>
             {isModification
               ? t('workflow.workflowCard.publishChanges')
               : t('workflow.workflowCard.publishNewEntry')}
           </PublishButton>
-        )}
+        )} */}
       </CardButtonContainer>
     </WorkflowCardContainer>
   );
