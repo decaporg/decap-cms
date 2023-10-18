@@ -2,8 +2,8 @@
 
 exports[`Sidebar should render nested collection with filterTerm 1`] = `
 <DocumentFragment>
-  .emotion-4 {
-  box-shadow: 0 2px 6px 0 rgba(68,74,87,0.05),0 1px 3px 0 rgba(68,74,87,0.1);
+  .emotion-0 {
+  box-shadow: 0 2px 6px 0 rgba(68, 74, 87, 0.05),0 1px 3px 0 rgba(68, 74, 87, 0.1);
   border-radius: 5px;
   background-color: #fff;
   width: 250px;
@@ -19,7 +19,7 @@ exports[`Sidebar should render nested collection with filterTerm 1`] = `
   flex-direction: column;
 }
 
-.emotion-0 {
+.emotion-2 {
   font-size: 23px;
   font-weight: 600;
   padding: 0;
@@ -27,17 +27,17 @@ exports[`Sidebar should render nested collection with filterTerm 1`] = `
   color: #313d3e;
 }
 
-.emotion-2 {
+.emotion-4 {
   margin: 16px 0 0;
   list-style: none;
   overflow: auto;
 }
 
 <aside
-    class="emotion-4 emotion-5"
+    class="emotion-0 emotion-1"
   >
     <h2
-      class="emotion-0 emotion-1"
+      class="emotion-2 emotion-3"
     >
       collection.sidebar.collections
     </h2>
@@ -46,7 +46,7 @@ exports[`Sidebar should render nested collection with filterTerm 1`] = `
       searchterm=""
     />
     <ul
-      class="emotion-2 emotion-3"
+      class="emotion-4 emotion-5"
     >
       <li>
         <nested-collection
@@ -62,8 +62,8 @@ exports[`Sidebar should render nested collection with filterTerm 1`] = `
 
 exports[`Sidebar should render sidebar with a nested collection 1`] = `
 <DocumentFragment>
-  .emotion-4 {
-  box-shadow: 0 2px 6px 0 rgba(68,74,87,0.05),0 1px 3px 0 rgba(68,74,87,0.1);
+  .emotion-0 {
+  box-shadow: 0 2px 6px 0 rgba(68, 74, 87, 0.05),0 1px 3px 0 rgba(68, 74, 87, 0.1);
   border-radius: 5px;
   background-color: #fff;
   width: 250px;
@@ -79,7 +79,7 @@ exports[`Sidebar should render sidebar with a nested collection 1`] = `
   flex-direction: column;
 }
 
-.emotion-0 {
+.emotion-2 {
   font-size: 23px;
   font-weight: 600;
   padding: 0;
@@ -87,17 +87,17 @@ exports[`Sidebar should render sidebar with a nested collection 1`] = `
   color: #313d3e;
 }
 
-.emotion-2 {
+.emotion-4 {
   margin: 16px 0 0;
   list-style: none;
   overflow: auto;
 }
 
 <aside
-    class="emotion-4 emotion-5"
+    class="emotion-0 emotion-1"
   >
     <h2
-      class="emotion-0 emotion-1"
+      class="emotion-2 emotion-3"
     >
       collection.sidebar.collections
     </h2>
@@ -106,7 +106,7 @@ exports[`Sidebar should render sidebar with a nested collection 1`] = `
       searchterm=""
     />
     <ul
-      class="emotion-2 emotion-3"
+      class="emotion-4 emotion-5"
     >
       <li>
         <nested-collection
@@ -121,8 +121,8 @@ exports[`Sidebar should render sidebar with a nested collection 1`] = `
 
 exports[`Sidebar should render sidebar with a simple collection 1`] = `
 <DocumentFragment>
-  .emotion-6 {
-  box-shadow: 0 2px 6px 0 rgba(68,74,87,0.05),0 1px 3px 0 rgba(68,74,87,0.1);
+  .emotion-0 {
+  box-shadow: 0 2px 6px 0 rgba(68, 74, 87, 0.05),0 1px 3px 0 rgba(68, 74, 87, 0.1);
   border-radius: 5px;
   background-color: #fff;
   width: 250px;
@@ -138,7 +138,7 @@ exports[`Sidebar should render sidebar with a simple collection 1`] = `
   flex-direction: column;
 }
 
-.emotion-0 {
+.emotion-2 {
   font-size: 23px;
   font-weight: 600;
   padding: 0;
@@ -152,7 +152,7 @@ exports[`Sidebar should render sidebar with a simple collection 1`] = `
   overflow: auto;
 }
 
-.emotion-2 {
+.emotion-6 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -168,26 +168,26 @@ exports[`Sidebar should render sidebar with a simple collection 1`] = `
   z-index: -1;
 }
 
-.emotion-2 mocked-icon {
+.emotion-6 mocked-icon {
   margin-right: 8px;
   -webkit-flex-shrink: 0;
   -ms-flex-negative: 0;
   flex-shrink: 0;
 }
 
-.emotion-2:hover,
-.emotion-2:active,
-.emotion-2.sidebar-active {
+.emotion-6:hover,
+.emotion-6:active,
+.emotion-6.sidebar-active {
   color: #3a69c7;
   background-color: #e8f5fe;
   border-left-color: #4863c6;
 }
 
 <aside
-    class="emotion-6 emotion-7"
+    class="emotion-0 emotion-1"
   >
     <h2
-      class="emotion-0 emotion-1"
+      class="emotion-2 emotion-3"
     >
       collection.sidebar.collections
     </h2>
@@ -200,7 +200,7 @@ exports[`Sidebar should render sidebar with a simple collection 1`] = `
     >
       <li>
         <a
-          class="emotion-2 emotion-3"
+          class="emotion-6 emotion-7"
           data-testid="posts"
           href="/collections/posts"
         >
@@ -217,8 +217,8 @@ exports[`Sidebar should render sidebar with a simple collection 1`] = `
 
 exports[`Sidebar should render sidebar without search 1`] = `
 <DocumentFragment>
-  .emotion-6 {
-  box-shadow: 0 2px 6px 0 rgba(68,74,87,0.05),0 1px 3px 0 rgba(68,74,87,0.1);
+  .emotion-0 {
+  box-shadow: 0 2px 6px 0 rgba(68, 74, 87, 0.05),0 1px 3px 0 rgba(68, 74, 87, 0.1);
   border-radius: 5px;
   background-color: #fff;
   width: 250px;
@@ -234,7 +234,7 @@ exports[`Sidebar should render sidebar without search 1`] = `
   flex-direction: column;
 }
 
-.emotion-0 {
+.emotion-2 {
   font-size: 23px;
   font-weight: 600;
   padding: 0;
@@ -248,7 +248,7 @@ exports[`Sidebar should render sidebar without search 1`] = `
   overflow: auto;
 }
 
-.emotion-2 {
+.emotion-6 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -264,26 +264,26 @@ exports[`Sidebar should render sidebar without search 1`] = `
   z-index: -1;
 }
 
-.emotion-2 mocked-icon {
+.emotion-6 mocked-icon {
   margin-right: 8px;
   -webkit-flex-shrink: 0;
   -ms-flex-negative: 0;
   flex-shrink: 0;
 }
 
-.emotion-2:hover,
-.emotion-2:active,
-.emotion-2.sidebar-active {
+.emotion-6:hover,
+.emotion-6:active,
+.emotion-6.sidebar-active {
   color: #3a69c7;
   background-color: #e8f5fe;
   border-left-color: #4863c6;
 }
 
 <aside
-    class="emotion-6 emotion-7"
+    class="emotion-0 emotion-1"
   >
     <h2
-      class="emotion-0 emotion-1"
+      class="emotion-2 emotion-3"
     >
       collection.sidebar.collections
     </h2>
@@ -292,7 +292,7 @@ exports[`Sidebar should render sidebar without search 1`] = `
     >
       <li>
         <a
-          class="emotion-2 emotion-3"
+          class="emotion-6 emotion-7"
           data-testid="posts"
           href="/collections/posts"
         >

@@ -1,7 +1,7 @@
 {
   "name": "decap-cms-backend-test",
   "description": "Development testing backend for Decap CMS",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "repository": "https://github.com/decaporg/decap-cms/tree/master/packages/decap-cms-backend-test",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
   "license": "MIT",
@@ -18,8 +18,8 @@
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward --extensions \".js,.jsx,.ts,.tsx\""
   },
   "peerDependencies": {
-    "@emotion/core": "^10.0.35",
-    "@emotion/styled": "^10.0.27",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
     "decap-cms-lib-util": "^3.0.0",
     "decap-cms-ui-default": "^3.0.0",
     "lodash": "^4.17.11",

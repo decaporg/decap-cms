@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.2.6](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.2.5...decap-cms-core@3.2.6) (2023-10-13)
+
+
+### Bug Fixes
+
+* handle single file i18n ([#6942](https://github.com/decaporg/decap-cms/issues/6942)) ([283fe5b](https://github.com/decaporg/decap-cms/commit/283fe5bafa079a631247e9bc7ff1ac8fccdf5f69))
+
+
+
+
+
+## [3.2.5](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.2.4...decap-cms-core@3.2.5) (2023-10-11)
+
+
+### Bug Fixes
+
+* consider i18n strucutre when determining regex ruleString for github backend ([#6937](https://github.com/decaporg/decap-cms/issues/6937)) ([1aac51d](https://github.com/decaporg/decap-cms/commit/1aac51d864e15a6b1646eb13ca8d95ad8554b0d5))
+
+
+
+
+
 ## [3.2.4](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.2.3...decap-cms-core@3.2.4) (2023-09-06)
 
 **Note:** Version bump only for package decap-cms-core
