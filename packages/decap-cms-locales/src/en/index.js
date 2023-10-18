@@ -123,7 +123,7 @@ const en = {
     editorToolbar: {
       publishing: 'Publishing...',
       publish: 'Publish',
-      published: 'Publish',
+      published: 'Published',
       unpublish: 'Unpublish',
       duplicate: 'Duplicate',
       unpublishing: 'Unpublishing...',
