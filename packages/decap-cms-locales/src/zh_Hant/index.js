@@ -6,6 +6,7 @@ const zh_Hant = {
     loginWithBitbucket: '使用你的 Bitbucket 帳號來進行登入',
     loginWithGitHub: '使用你的 GitHub 帳號來進行登入',
     loginWithGitLab: '使用你的 GitLab 帳號來進行登入',
+    loginWithGitea: '使用你的 Gitea 帳號來進行登入',
     errors: {
       email: '請確認你已經輸入你的電子郵件。',
       password: '請輸入你的密碼。',

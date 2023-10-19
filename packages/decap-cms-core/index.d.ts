@@ -9,6 +9,7 @@ declare module 'decap-cms-core' {
     | 'git-gateway'
     | 'github'
     | 'gitlab'
+    | 'gitea'
     | 'bitbucket'
     | 'test-repo'
     | 'proxy';

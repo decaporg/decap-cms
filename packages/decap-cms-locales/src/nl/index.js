@@ -7,6 +7,7 @@ const nl = {
     loginWithBitbucket: 'Inloggen met Bitbucket',
     loginWithGitHub: 'Inloggen met GitHub',
     loginWithGitLab: 'Inloggen met GitLab',
+    loginWithGitea: 'Inloggen met Gitea',
     errors: {
       email: 'Voer uw email in.',
       password: 'Voer uw wachtwoord in.',
