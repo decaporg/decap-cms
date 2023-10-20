@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.0.1](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-auth@3.0.0...decap-cms-lib-auth@3.0.1) (2023-10-20)
+
+
+### Features
+
+* **backend:** add gitea backend ([#6808](https://github.com/decaporg/decap-cms/issues/6808)) ([0d89a58](https://github.com/decaporg/decap-cms/commit/0d89a58e93f64f868ff3e4e8f0945ccf166ad738))
+
+
+
+
+
 # [3.0.0](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-auth@2.5.0...decap-cms-lib-auth@3.0.0) (2023-08-18)
 
 **Note:** Version bump only for package decap-cms-lib-auth

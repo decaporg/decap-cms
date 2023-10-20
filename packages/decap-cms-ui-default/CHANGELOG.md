@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.0.4](https://github.com/decaporg/decap-cms/compare/decap-cms-ui-default@3.0.3...decap-cms-ui-default@3.0.4) (2023-10-20)
+
+
+### Features
+
+* **backend:** add gitea backend ([#6808](https://github.com/decaporg/decap-cms/issues/6808)) ([0d89a58](https://github.com/decaporg/decap-cms/commit/0d89a58e93f64f868ff3e4e8f0945ccf166ad738))
+
+
+
+
+
 ## [3.0.3](https://github.com/decaporg/decap-cms/compare/decap-cms-ui-default@3.0.2...decap-cms-ui-default@3.0.3) (2023-10-13)
 
 **Note:** Version bump only for package decap-cms-ui-default
