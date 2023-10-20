@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.1.0-beta.0](https://github.com/decaporg/decap-cms/compare/decap-cms@3.1.0...decap-cms@3.1.0-beta.0) (2023-10-20)
+
+
+### Reverts
+
+* Revert "chore(release): publish" ([b89fc89](https://github.com/decaporg/decap-cms/commit/b89fc894dfbb5f4136b2e5427fd25a29378a58c6))
+
+
+
+
+
 ## [3.0.12](https://github.com/decaporg/decap-cms/compare/decap-cms@3.0.10...decap-cms@3.0.12) (2023-10-20)
 
 **Note:** Version bump only for package decap-cms
