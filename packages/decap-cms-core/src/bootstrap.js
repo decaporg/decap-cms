@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { Provider, connect } from 'react-redux';
 import { Route, Router } from 'react-router-dom';
 import { GlobalStyles } from 'decap-cms-ui-default';
@@ -96,7 +96,8 @@ function bootstrap(opts = {}) {
   /**
    * Render application root.
    */
-  render(<Root />, getRoot());
+  const root = createRoot(getRoot());
+  root.render(<Root />);
 }
 
 export default bootstrap;
