@@ -3,14 +3,6 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-# [3.1.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-select@3.0.1...decap-cms-widget-select@3.1.0) (2023-10-20)
-
-**Note:** Version bump only for package decap-cms-widget-select
-
-
-
-
-
 ## [3.0.1](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-select@3.0.0...decap-cms-widget-select@3.0.1) (2023-08-25)
 
 
