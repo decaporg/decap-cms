@@ -10,6 +10,8 @@ The string widget translates a basic text input to a string value. For larger te
 - **Data type:** string
 - **Options:**
   - `default`: accepts a string; defaults to an empty string
+  - `prefix`: display a message before the string input; accepts a string; defaults to an empty string
+  - `suffix`: display a message after the string input; accepts a string; defaults to an empty string
 - **Example:**
     ```yaml
     - {label: "Title", name: "title", widget: "string"}

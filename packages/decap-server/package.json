@@ -52,7 +52,5 @@
   "engines": {
     "node": ">=v10.22.1"
   },
-  "bin": {
-    "decap-server": "./dist/index.js"
-  }
+  "bin": "./dist/index.js"
 }
