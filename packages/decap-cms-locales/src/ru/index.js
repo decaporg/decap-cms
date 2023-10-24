@@ -7,6 +7,7 @@ const ru = {
     loginWithBitbucket: 'Войти через Bitbucket',
     loginWithGitHub: 'Войти через GitHub',
     loginWithGitLab: 'Войти через GitLab',
+    loginWithGitea: 'Войти через Gitea',
     errors: {
       email: 'Введите ваш email.',
       password: 'Введите пароль.',

@@ -6,6 +6,7 @@ const th = {
     loginWithBitbucket: 'เข้าสู่ระบบด้วย Bitbucket',
     loginWithGitHub: 'เข้าสู่ระบบด้วย GitHub',
     loginWithGitLab: 'เข้าสู่ระบบด้วย GitLab',
+    loginWithGitea: 'เข้าสู่ระบบด้วย Gitea',
     errors: {
       email: 'ตรวจสอบให้แน่ใจว่าได้ใส่อีเมลล์แล้ว',
       password: 'โปรดใส่รหัสผ่านของคุณ',

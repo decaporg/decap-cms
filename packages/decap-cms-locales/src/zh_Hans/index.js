@@ -7,6 +7,7 @@ const zh_Hans = {
     loginWithBitbucket: '使用 Bitbucket 登录',
     loginWithGitHub: '使用 GitHub 登录',
     loginWithGitLab: '使用 GitLab 登录',
+    loginWithGitea: '使用 Gitea 登录',
     errors: {
       email: '请输入电子邮箱',
       password: '请输入密码',

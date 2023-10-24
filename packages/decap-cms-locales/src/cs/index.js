@@ -7,6 +7,7 @@ const cs = {
     loginWithBitbucket: 'Přihlásit pomocí Bitbucket',
     loginWithGitHub: 'Přihlásit pomocí GitHub',
     loginWithGitLab: 'Přihlásit pomocí GitLab',
+    loginWithGitea: 'Přihlásit pomocí Gitea',
     errors: {
       email: 'Vyplňte e-mailovou adresu.',
       password: 'Vyplňte heslo.',
