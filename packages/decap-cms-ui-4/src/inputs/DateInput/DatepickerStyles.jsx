@@ -1,6 +1,5 @@
 import React from 'react';
-import { Global, css } from '@emotion/core';
-import { withTheme } from 'emotion-theming';
+import { Global, css , withTheme } from '@emotion/react';
 
 const getDatepickerStyles = theme => css`
   .datetime-picker {

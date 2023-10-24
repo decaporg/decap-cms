@@ -6869,6 +6869,14 @@ create-react-class@^15.7.0:
     loose-envify "^1.3.1"
     object-assign "^4.1.1"
 
+create-react-context@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/create-react-context/-/create-react-context-0.3.0.tgz#546dede9dc422def0d3fc2fe03afe0bc0f4f7d8c"
+  integrity sha512-dNldIoSuNSvlTJ7slIKC/ZFGKexBMBrrcc+TTe1NdmROnaASuLPvqpwj9v4XS4uXZ8+YPu0sNmShX2rXI5LNsw==
+  dependencies:
+    gud "^1.0.0"
+    warning "^4.0.3"
+
 create-require@^1.1.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/create-require/-/create-require-1.1.1.tgz#c1d7e8f1e5f6cfc9ff65f9cd352d37348756c333"
@@ -7181,6 +7189,256 @@ decamelize@^1.1.0, decamelize@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/decamelize/-/decamelize-1.2.0.tgz#f6534d15148269b20352e7bee26f501f9a191290"
   integrity sha512-z2S+W9X73hAUUki+N+9Za2lBlun89zigOyGrsax+KUQ6wKW4ZoWpEYBkGhQjwAjjDCkWxhY0VKEhk8wzY7F5cA==
+
+decap-cms-app@^3.1.0-beta.0:
+  version "3.1.0-beta.0"
+  resolved "https://registry.yarnpkg.com/decap-cms-app/-/decap-cms-app-3.1.0-beta.0.tgz#33f56680e18c0e628758da250c09d2bb0caeb30c"
+  integrity sha512-FFjbQ5IItLnX6Fr2TW6Q8Z5JFicrYb8zUPH9eLF7ZMU20HiM48XF9io9/q/drIaj6ZLApRefNiAp75WDndnIBQ==
+  dependencies:
+    "@emotion/react" "^11.11.1"
+    "@emotion/styled" "^11.11.0"
+    codemirror "^5.46.0"
+    decap-cms-backend-azure "^3.1.0-beta.0"
+    decap-cms-backend-bitbucket "^3.1.0-beta.0"
+    decap-cms-backend-git-gateway "^3.1.0-beta.0"
+    decap-cms-backend-github "^3.1.0-beta.0"
+    decap-cms-backend-gitlab "^3.1.0-beta.0"
+    decap-cms-backend-proxy "^3.1.0-beta.0"
+    decap-cms-backend-test "^3.1.0-beta.0"
+    decap-cms-core "^3.3.0-beta.0"
+    decap-cms-editor-component-image "^3.1.0-beta.0"
+    decap-cms-lib-auth "^3.0.2"
+    decap-cms-lib-util "^3.0.1"
+    decap-cms-lib-widgets "^3.0.0"
+    decap-cms-locales "^3.1.2"
+    decap-cms-ui-default "^3.1.0-beta.0"
+    decap-cms-widget-boolean "^3.1.0-beta.0"
+    decap-cms-widget-code "^3.1.0-beta.0"
+    decap-cms-widget-colorstring "^3.1.0-beta.0"
+    decap-cms-widget-datetime "^3.1.0-beta.0"
+    decap-cms-widget-file "^3.1.0-beta.0"
+    decap-cms-widget-image "^3.1.0-beta.0"
+    decap-cms-widget-list "^3.1.0-beta.0"
+    decap-cms-widget-map "^3.1.0-beta.0"
+    decap-cms-widget-markdown "^3.1.0-beta.0"
+    decap-cms-widget-number "^3.1.0-beta.0"
+    decap-cms-widget-object "^3.1.0-beta.0"
+    decap-cms-widget-relation "^3.1.0-beta.0"
+    decap-cms-widget-select "^3.1.0-beta.0"
+    decap-cms-widget-string "^3.1.0-beta.0"
+    decap-cms-widget-text "^3.1.0-beta.0"
+    immutable "^3.7.6"
+    lodash "^4.17.11"
+    moment "^2.24.0"
+    prop-types "^15.7.2"
+    react-immutable-proptypes "^2.1.0"
+    uuid "^8.3.2"
+
+decap-cms-backend-azure@^3.0.0:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/decap-cms-backend-azure/-/decap-cms-backend-azure-3.0.2.tgz#8e8179f555ba6c157b7c2621acf25adb0b7c1d85"
+  integrity sha512-bB9y8RIxn6aMMSTkD4/l67+JJZbetWipBmmjm6YVy5j/tTaSb0SBTDPaCvB3lUaImiPrVNo6OE9YpLS/MkWrVQ==
+  dependencies:
+    js-base64 "^3.0.0"
+    semaphore "^1.1.0"
+
+decap-cms-backend-bitbucket@^3.0.0:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/decap-cms-backend-bitbucket/-/decap-cms-backend-bitbucket-3.0.2.tgz#392750cf68cea1c60b3444e6fdc0c80d94be12c3"
+  integrity sha512-0WIKGy3fbFIX+UdScBizDrEvqesQkxNaFYf8LhEOF/gX29QSHhCyaIEDVjim/ohFnTCs59O4tPFjxFNdaZl4yg==
+  dependencies:
+    common-tags "^1.8.0"
+    js-base64 "^3.0.0"
+    semaphore "^1.1.0"
+    what-the-diff "^0.6.0"
+
+decap-cms-backend-git-gateway@^3.0.0:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/decap-cms-backend-git-gateway/-/decap-cms-backend-git-gateway-3.0.3.tgz#a5dcc1ee775b048c31d65e678e248d15cfaf62e5"
+  integrity sha512-PR6j14opbvF2XfOkoKEqlO+PfNB8lAqhJqJiyqIJPeQ9EIlxl1Xcm/UDa6zwLblnHIRCNSrJ3kO2RAm/C0cdyQ==
+  dependencies:
+    gotrue-js "^0.9.24"
+    ini "^2.0.0"
+    jwt-decode "^3.0.0"
+    minimatch "^3.0.4"
+
+decap-cms-backend-github@^3.0.0:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/decap-cms-backend-github/-/decap-cms-backend-github-3.0.3.tgz#3639dc0616c328d1337fbe3f9c3d690ce00ad0fb"
+  integrity sha512-a3yTdJyjBRpcMWOlxDEnAhcKffeDHSWa0g5uqq5UNYtDa/erXQHuH5UENq1tb2edzVlQ6FTq+x05m7/5I/fUTw==
+  dependencies:
+    apollo-cache-inmemory "^1.6.2"
+    apollo-client "^2.6.3"
+    apollo-link-context "^1.0.18"
+    apollo-link-http "^1.5.15"
+    common-tags "^1.8.0"
+    graphql "^15.0.0"
+    graphql-tag "^2.10.1"
+    js-base64 "^3.0.0"
+    semaphore "^1.1.0"
+
+decap-cms-backend-gitlab@^3.0.0:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/decap-cms-backend-gitlab/-/decap-cms-backend-gitlab-3.0.2.tgz#904e7782a507b9fda1012c095203515e60718f6f"
+  integrity sha512-M0UsPpg9pMKjW24gRVqlZ0jFq2nt4E1XoseXdTMQ7fjEV/JY1SB7DkqZTfT1+anXGToi4s6ylb1Ya9sTSmXqhQ==
+  dependencies:
+    apollo-cache-inmemory "^1.6.2"
+    apollo-client "^2.6.3"
+    apollo-link-context "^1.0.18"
+    apollo-link-http "^1.5.15"
+    js-base64 "^3.0.0"
+    semaphore "^1.1.0"
+
+decap-cms-backend-proxy@^3.0.0:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/decap-cms-backend-proxy/-/decap-cms-backend-proxy-3.0.2.tgz#89c0bf2b710f02bf593c89d42804679aac44e5b8"
+  integrity sha512-TOZojrNc3f/QacCxlQKNCHXSGNzxuRdF0lSS5pQF5Uwek6V584YfAxRKFftRTYPfPC2OTNA9mgf/P3l/QBHQqQ==
+
+decap-cms-backend-test@^3.0.0:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/decap-cms-backend-test/-/decap-cms-backend-test-3.0.2.tgz#86340a5c479b14e75b8cf724303c7b287a0028e9"
+  integrity sha512-4PB5sAehPVvZpAoHGiXNDuPIhVLSwfEZ2oN2MzwuG+5y5G6zRABrMCVXXKfkV9fR1MLMvRbWx/5oz5h5rqeQVA==
+
+decap-cms-editor-component-image@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/decap-cms-editor-component-image/-/decap-cms-editor-component-image-3.0.0.tgz#d15cf55d6184cee785508c2a56845f88b961efbe"
+  integrity sha512-yTiX1OxZpUDAe7v5AmwTXD0b4Tz3BaEPP6hy2DKeft846U2LC5fQm3fTQ9SIS8PFzStfGvEPKoI2s/8utGHtsQ==
+
+decap-cms-ui-default@^3.0.0:
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/decap-cms-ui-default/-/decap-cms-ui-default-3.0.5.tgz#b78c4827658b9125117b8a3486f7f8b388b11195"
+  integrity sha512-Fdvb+amAFg4H/GPa78rG5RBm/r8QTZUByW+KAwx54YaFoAvfkWBcVQSkJq0dEfXanY98SwivrI963WCstcEbFw==
+  dependencies:
+    react-aria-menubutton "^7.0.0"
+    react-transition-group "^4.4.5"
+
+decap-cms-widget-boolean@^3.0.0:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/decap-cms-widget-boolean/-/decap-cms-widget-boolean-3.0.2.tgz#044c207a3e4a283f29bb331e9c877ea6a3fa05dc"
+  integrity sha512-kNLirN5QkKWmFIWqKkxRl1nt1fluuxPsbdwBh6M80KqsvQUZn63Kn3tK3NUAOp19PMMbwIINWr1J0mx+zaOaZA==
+
+decap-cms-widget-code@^3.0.0:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/decap-cms-widget-code/-/decap-cms-widget-code-3.0.2.tgz#73e2225daaae3013a3b4bf808cba9319b5d97f80"
+  integrity sha512-NQ5wVSzS3aY5+M3YsGQM47nbhSe3aO9dnaBRpAheJZ/AJR6aZ225T/fBR7WNMF/yYrwoEXlbBg49l1E6LL2C6A==
+  dependencies:
+    react-codemirror2 "^7.0.0"
+    react-select "^4.0.0"
+
+decap-cms-widget-colorstring@^3.0.0:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/decap-cms-widget-colorstring/-/decap-cms-widget-colorstring-3.0.2.tgz#0373f85cfb76e1aadd52d86892dc9bdc10bde0ce"
+  integrity sha512-UmT13F+tlJ71WK10rb8dfWPqhaspSO5sMlcx7DCRYHyi7yV1jZNu8QwSAf9d5cXVKdNdW2+vBMAS829wVG/47Q==
+  dependencies:
+    react-color "^2.18.1"
+    validate-color "^2.1.0"
+
+decap-cms-widget-datetime@^3.0.0:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/decap-cms-widget-datetime/-/decap-cms-widget-datetime-3.0.3.tgz#2787e6c5b3157de7e62b3c996e45ff755428fba6"
+  integrity sha512-lY7icSiMSW8nAaLXMzAgLU5bhe6Coj3znQ2y+n2jftc7KQ4ppYBszpAmCjuJmiMbQ6IbZ3zGSDssUZifAKbyFQ==
+  dependencies:
+    react-datetime "^3.1.1"
+
+decap-cms-widget-file@^3.0.0:
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/decap-cms-widget-file/-/decap-cms-widget-file-3.0.4.tgz#e9bb103b2b1beb1c017b94b23495b973dec7e9da"
+  integrity sha512-lq86moCuFMn/XMJXHalmtZNSnuu27Asg10luajfrhLSYqluAA9l4f/ckCrn9kiSIWBVkkoWRqhm0Fr/HAeKqWg==
+  dependencies:
+    "@dnd-kit/core" "^6.0.8"
+    "@dnd-kit/modifiers" "^6.0.1"
+    "@dnd-kit/sortable" "^7.0.2"
+    array-move "4.0.0"
+    common-tags "^1.8.0"
+
+decap-cms-widget-image@^3.0.0:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/decap-cms-widget-image/-/decap-cms-widget-image-3.0.3.tgz#76f4ff5ad5a229b196bf0c777b91e4fc02334d09"
+  integrity sha512-IzbjZq5dwXaOHOnEqREGmQErULDEw95y5dj9ZcRnT5w2aSRitnKf9K/mjMkZrznjSanSWNZv5BYx8/1OPe2k3Q==
+
+decap-cms-widget-list@^3.0.0:
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/decap-cms-widget-list/-/decap-cms-widget-list-3.0.4.tgz#7404a85232f5a4e2945f1ee3b0c7f8b0eaa3c8a6"
+  integrity sha512-2CpTexznKhgenOSsVnxUBSCdxsZpCYIL6MrxoqFFYil3v9i5N2rSW4U/6fFpOvZz6DPTEBmRWNluacQhaJw3Jw==
+  dependencies:
+    "@dnd-kit/core" "^6.0.8"
+    "@dnd-kit/modifiers" "^6.0.1"
+    "@dnd-kit/sortable" "^7.0.2"
+
+decap-cms-widget-map@^3.0.0:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/decap-cms-widget-map/-/decap-cms-widget-map-3.0.2.tgz#7723c81d1f2170e52be24e184d04c381575e20e0"
+  integrity sha512-pG95r+ehEO9skBaytLBUF8KSo69+xRoDshN1xO9nkF6w7BPXfMBHbEUArQqMWksGYAnK/5XRq9iwyXR3z0+pRQ==
+  dependencies:
+    ol "^6.9.0"
+
+decap-cms-widget-markdown@^3.0.0:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/decap-cms-widget-markdown/-/decap-cms-widget-markdown-3.0.3.tgz#b303f196409597684e3eb33c9ecbde756cd94ca9"
+  integrity sha512-XOIoRNwMRX/gJmRahVZexUPOTCGqug9Wqvo4XWGlJioXm/dSxsQgEaqU6IRgzXQs6bIa1DOmpeieRy29uKrwig==
+  dependencies:
+    dompurify "^2.2.6"
+    is-hotkey "^0.2.0"
+    is-url "^1.2.4"
+    mdast-util-definitions "^1.2.3"
+    mdast-util-to-string "^1.0.5"
+    rehype-parse "^6.0.0"
+    rehype-remark "^8.0.0"
+    rehype-stringify "^7.0.0"
+    remark-parse "^6.0.3"
+    remark-rehype "^4.0.0"
+    remark-slate "^1.8.6"
+    remark-slate-transformer "^0.7.4"
+    remark-stringify "^6.0.4"
+    slate "^0.91.1"
+    slate-base64-serializer "^0.2.107"
+    slate-history "^0.93.0"
+    slate-plain-serializer "^0.7.1"
+    slate-react "^0.91.2"
+    slate-soft-break "^0.9.0"
+    unified "^7.1.0"
+    unist-builder "^1.0.3"
+    unist-util-visit-parents "^2.0.1"
+
+decap-cms-widget-number@^3.0.0:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/decap-cms-widget-number/-/decap-cms-widget-number-3.0.1.tgz#90629328997bc32770ac4d5b252a57275e7c277e"
+  integrity sha512-2VsVNPIP/rnu2KkJrkvZOUhIGwqXLDA791CLTowAcyzQuheKlYdiujM2IWdQGCACDQWMgcAnPDiZkjdRvLbyZQ==
+
+decap-cms-widget-object@^3.0.0:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/decap-cms-widget-object/-/decap-cms-widget-object-3.0.2.tgz#feddbebbb4f4b4f43694423a8682e07fea7a8099"
+  integrity sha512-kNf/SBjinmSSEaK5Ckfy/SM6DOJCyxlhqIixmfcAK1ZvC+hPoBcVXfE7f0nMWTP8yZStbxRAawcu26B2tHhElg==
+
+decap-cms-widget-relation@^3.0.0:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/decap-cms-widget-relation/-/decap-cms-widget-relation-3.0.3.tgz#32b662c48ba9b3d747a566d73b60efe89ad274c2"
+  integrity sha512-UMc6JkfR+EqfwkCNnRrnRp++BcYYaCB+OBRfDdBNmhV0fUOjL0VRW4xJllH/CQVJG8qx2FVtYPKr8TE4Wujv/Q==
+  dependencies:
+    "@dnd-kit/core" "^6.0.8"
+    "@dnd-kit/modifiers" "^6.0.1"
+    "@dnd-kit/sortable" "^7.0.2"
+    react-select "^4.0.0"
+    react-window "^1.8.5"
+
+decap-cms-widget-select@^3.0.0:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/decap-cms-widget-select/-/decap-cms-widget-select-3.0.1.tgz#db3d7a9dc3354f973c43c1aa71d2274a5139346a"
+  integrity sha512-nzt20Yb6fQFyzPeEbCW3ObR8h6PDIuAggMAK6rK+ZIb+joFeYzqzuNc4YxV3snv+TkqKVIDHUDRm8493jhNj5g==
+  dependencies:
+    react-select "^4.0.0"
+
+decap-cms-widget-string@^3.0.0:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/decap-cms-widget-string/-/decap-cms-widget-string-3.0.1.tgz#45876c2c6d4472b6b2a14e89f1582f3892820d45"
+  integrity sha512-XfUcjs5A8DiHpcesYDG9yferfW9hAfkYUZGp6Vg8KZ7jzCZFqS+rgQKZtHqBmEZiFRAjdtzQQr3tkud98fQjiA==
+
+decap-cms-widget-text@^3.0.0:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/decap-cms-widget-text/-/decap-cms-widget-text-3.0.1.tgz#4f15b3b311aba3be2268cbc7a281ae352d96c008"
+  integrity sha512-e07FITEJ+5mL6d/1mHbo4sgpNGWyDbzb3RWeqk6d/ryruRvu+WZMt/wvc3vs4XSLnCvyxlcV9PPNLFa7RqIFEQ==
+  dependencies:
+    react-textarea-autosize "^8.0.0"
 
 decimal.js@^10.2.1:
   version "10.4.3"
@@ -7495,7 +7753,7 @@ dom-accessibility-api@^0.5.6, dom-accessibility-api@^0.5.9:
   resolved "https://registry.yarnpkg.com/dom-accessibility-api/-/dom-accessibility-api-0.5.16.tgz#5a7429e6066eb3664d911e33fb0e45de8eb08453"
   integrity sha512-X7BJ2yElsnOJ30pZF4uIIDfBEVgF4XEBxL9Bxhy6dnrm5hkzqmsWHGTiHqRiITNhMyFLyAiWndIJP7Z1NTteDg==
 
-dom-helpers@^3.2.0:
+dom-helpers@^3.2.0, dom-helpers@^3.4.0:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/dom-helpers/-/dom-helpers-3.4.0.tgz#e9b369700f959f62ecde5a6babde4bccd9169af8"
   integrity sha512-LnuPJ+dwqKDIyotW1VzmOZ5TONUN7CwkCR5hrgawTUbkBGYdeoNLZo6nNfGkCrjtE1nXXaj7iMMpDa8/d9WoIA==
@@ -9224,6 +9482,11 @@ gray-matter@^4.0.2:
     kind-of "^6.0.2"
     section-matter "^1.0.0"
     strip-bom-string "^1.0.0"
+
+gud@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/gud/-/gud-1.0.0.tgz#a489581b17e6a70beca9abe3ae57de7a499852c0"
+  integrity sha512-zGEOVKFM5sVPPrYs7J5/hYEw2Pof8KCyOwyhG8sAF26mCAeUFAcYPu1mwB7hhpIP29zOIBaDqwuHdLp0jvZXjw==
 
 handle-thing@^2.0.0:
   version "2.0.1"
@@ -14039,6 +14302,17 @@ rbush@^3.0.1:
   dependencies:
     quickselect "^2.0.0"
 
+react-aria-menubutton@^6.0.0:
+  version "6.3.0"
+  resolved "https://registry.yarnpkg.com/react-aria-menubutton/-/react-aria-menubutton-6.3.0.tgz#01acc4322c5271488941270b278b17001031e687"
+  integrity sha512-qlvbPgBDg+YreqrAsT2I0qpQfM7soRxA6dsTacogfCoVajcTEsgIPU3ewS7IzPvm+UMphK5Z8684WA2TNP3Zmg==
+  dependencies:
+    create-react-context "^0.3.0"
+    focus-group "^0.3.1"
+    prop-types "^15.6.0"
+    react-display-name "^0.2.4"
+    teeny-tap "^0.2.0"
+
 react-aria-menubutton@^7.0.0:
   version "7.0.3"
   resolved "https://registry.yarnpkg.com/react-aria-menubutton/-/react-aria-menubutton-7.0.3.tgz#9f3c96e8f0b9469dc1d5dab7cf244b73069f2882"
@@ -14072,6 +14346,11 @@ react-datetime@^3.1.1:
   integrity sha512-w5XdeNIGzBht9CadaZIJhKUhEcDTgH0XokKxGPCxeeJRYL7B3HIKA8CM6Q0xej2JFJt0n5d+zi3maMwaY3262A==
   dependencies:
     prop-types "^15.5.7"
+
+react-display-name@^0.2.4:
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/react-display-name/-/react-display-name-0.2.5.tgz#304c7cbfb59ee40389d436e1a822c17fe27936c6"
+  integrity sha512-I+vcaK9t4+kypiSgaiVWAipqHRXYmZIuAiS8vzFvXHHXVigg/sMKwlRgLy6LH2i3rmP+0Vzfl5lFsFRwF1r3pg==
 
 react-dnd-html5-backend@^14.0.0:
   version "14.1.0"
@@ -14331,6 +14610,11 @@ react-toastify@^9.1.1:
   dependencies:
     clsx "^1.1.1"
 
+react-toggled@^1.1.2:
+  version "1.2.7"
+  resolved "https://registry.yarnpkg.com/react-toggled/-/react-toggled-1.2.7.tgz#be1b72058358dd1ffe11811e4427e5c9cf140c10"
+  integrity sha512-3am1uA5ZzDwUkReEuUkK+fJ0DAYcGiLraWEPqXfL1kKD/NHbbB7fB/t+5FflMGd+FA6n9hih1es4pui1yzKi0w==
+
 react-topbar-progress-indicator@^4.0.0:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/react-topbar-progress-indicator/-/react-topbar-progress-indicator-4.1.1.tgz#58d89114b8ddc2ec6e6235495bff7ab39900d100"
@@ -14348,6 +14632,16 @@ react-transition-group@^1.1.3:
     loose-envify "^1.3.1"
     prop-types "^15.5.6"
     warning "^3.0.0"
+
+react-transition-group@^2.6.0:
+  version "2.9.0"
+  resolved "https://registry.yarnpkg.com/react-transition-group/-/react-transition-group-2.9.0.tgz#df9cdb025796211151a436c69a8f3b97b5b07c8d"
+  integrity sha512-+HzNTCHpeQyl4MJ/bdE0u6XRMe9+XG/+aL4mCxVN4DnPBQ0/5bfHWPDuOZUzYdMj94daZaZdCCc1Dzt9R/xSSg==
+  dependencies:
+    dom-helpers "^3.4.0"
+    loose-envify "^1.4.0"
+    prop-types "^15.6.2"
+    react-lifecycles-compat "^3.0.4"
 
 react-transition-group@^4.3.0, react-transition-group@^4.4.5:
   version "4.4.5"
@@ -16895,6 +17189,11 @@ typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==
+
+typeface-inter@^3.12.0:
+  version "3.18.1"
+  resolved "https://registry.yarnpkg.com/typeface-inter/-/typeface-inter-3.18.1.tgz#24cccdf29923f318589783997be20a662cd3ab9c"
+  integrity sha512-c+TBanYFCvmg3j5vPk+zxK4ocMZbPxMEmjnwG7rPQoV87xvQ6b07VbAOC0Va0XBbbZCGw6cWNeFuLeg1YQru3Q==
 
 typescript@^4.4.3, typescript@^4.9.4:
   version "4.9.5"

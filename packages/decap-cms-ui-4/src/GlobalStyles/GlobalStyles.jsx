@@ -1,7 +1,6 @@
 import React from 'react';
-import { Global, css } from '@emotion/core';
+import { Global, css , withTheme } from '@emotion/react';
 import color from 'color';
-import { withTheme } from 'emotion-theming';
 import interTypeface from 'typeface-inter/inter.css';
 
 const getGlobalStyles = theme => css`

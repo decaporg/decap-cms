@@ -43,7 +43,7 @@
     "decap-cms-lib-widgets": "^3.0.0",
     "decap-cms-locales": "^3.1.2",
     "decap-cms-ui-default": "^3.0.0",
-    "decap-cms-ui-4": "^3.0.0",
+    "decap-cms-ui-4": "^1.0.0",
     "decap-cms-widget-boolean": "^3.0.0",
     "decap-cms-widget-code": "^3.0.0",
     "decap-cms-widget-colorstring": "^3.0.0",

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { withKnobs, boolean, number, color, text } from '@storybook/addon-knobs';
 import styled from '@emotion/styled';
-import { withTheme } from 'emotion-theming';
+import { withTheme } from '@emotion/react';
 
 import Thumbnail, { ThumbnailGrid } from '.';
 import getMockData from '../utils/getMockData';

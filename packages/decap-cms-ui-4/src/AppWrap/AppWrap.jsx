@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
-import { ThemeProvider } from 'emotion-theming';
+import { ThemeProvider } from '@emotion/react';
 import styled from '@emotion/styled';
+
 import { lightTheme, darkTheme } from '../theme';
 import { ToastContainer } from '../Toast';
 import GlobalStyles from '../GlobalStyles';
