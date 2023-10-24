@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { colorsRaw } from './styles.js';
-import Icon from './Icon';
+import Icon from './Icon.js';
 
 const GoBackButtonStyle = styled.a`
   display: flex;
