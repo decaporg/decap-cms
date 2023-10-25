@@ -14,7 +14,7 @@
 // ***********************************************************
 import 'cypress-plugin-tab';
 import 'cypress-jest-adapter';
-import { addMatchImageSnapshotCommand } from 'cypress-image-snapshot/command';
+import { addMatchImageSnapshotCommand } from '@simonsmith/cypress-image-snapshot/command';
 
 addMatchImageSnapshotCommand({
   failureThreshold: 0.01,
