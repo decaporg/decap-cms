@@ -5,7 +5,8 @@ import styled from '@emotion/styled';
 import { css } from '@emotion/react';
 import { translate } from 'react-polyglot';
 import { NavLink } from 'react-router-dom';
-import { Icon, components, colors } from 'decap-cms-ui-default';
+import { Icon, colors } from 'decap-cms-ui-default';
+import { Card } from 'decap-cms-ui-4';
 
 import { searchCollections } from '../../actions/collections';
 import CollectionSearch from './CollectionSearch';
@@ -19,14 +20,12 @@ const styles = {
   `,
 };
 
-const SidebarContainer = styled.aside`
-  ${components.card};
+const SidebarContainer = styled(Card)`
   width: 250px;
   padding: 8px 0 12px;
   position: fixed;
   max-height: calc(100vh - 112px);
-  display: flex;
-  flex-direction: column;
+  overflow: auto;
 `;
 
 const SidebarHeading = styled.h2`
