@@ -17,9 +17,17 @@
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
   },
   "dependencies": {
+    "classnames": "^2.3.2",
+    "debounce": "^1.2.1",
+    "dom-helpers": "^5.2.1",
+    "keycode": "^2.2.1",
+    "particleground-light": "^1.0.6",
     "react-aria-menubutton": "^6.0.0",
+    "react-event-listener": "^0.6.6",
+    "react-spring": "^9.7.3",
     "react-toggled": "^1.1.2",
     "react-transition-group": "^2.6.0",
+    "resize-observer-polyfill": "^1.5.1",
     "typeface-inter": "^3.12.0"
   },
   "peerDependencies": {

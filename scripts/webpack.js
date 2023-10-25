@@ -28,7 +28,7 @@ function rules() {
     css: () => [
       {
         test: /\.css$/,
-        include: ['ol', 'react-toastify', 'react-datetime', 'codemirror'].map(moduleNameToPath),
+        include: ['ol', 'react-toastify', 'react-datetime', 'codemirror', 'typeface-inter'].map(moduleNameToPath),
         use: ['to-string-loader', 'css-loader'],
       },
     ],
@@ -36,6 +36,19 @@ function rules() {
       test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
       exclude: [/node_modules/],
       use: 'svg-inline-loader',
+    }),
+    fonts: () => ({
+      test: /\.(woff(2)?)?$/,
+      include: ['typeface-inter'].map(moduleNameToPath),
+      use: [
+        {
+          loader: 'file-loader',
+          options: {
+            name: '[name].[ext]',
+            outputPath: 'fonts/',
+          },
+        },
+      ],
     }),
     vfile: () => ({
       test: /node_modules\/vfile\/core\.js/,
