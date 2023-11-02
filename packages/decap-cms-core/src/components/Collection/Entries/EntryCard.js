@@ -2,19 +2,19 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { colors, colorsRaw, zIndex } from 'decap-cms-ui-default';import { Card } from 'decap-cms-ui-4';
+import { colors, colorsRaw, components, lengths, zIndex } from 'decap-cms-ui-default';
 
 import { boundGetAsset } from '../../../actions/media';
 import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from '../../../constants/collectionViews';
 import { selectIsLoadingAsset } from '../../../reducers/medias';
 import { selectEntryCollectionTitle } from '../../../reducers/collections';
 
-const ListCard = styled(Card)`
-  width: 100%;
+const ListCard = styled.li`
+  ${components.card};
+  width: ${lengths.topCardWidth};
   margin-left: 12px;
   margin-bottom: 10px;
   overflow: hidden;
-  color: ${({ theme }) => theme.color.mediumEmphasis};
 `;
 
 const ListCardLink = styled(Link)`
@@ -27,13 +27,13 @@ const ListCardLink = styled(Link)`
   }
 `;
 
-const GridCard = styled(Card)`
+const GridCard = styled.li`
+  ${components.card};
   flex: 0 0 335px;
   height: 240px;
   overflow: hidden;
   margin-left: 12px;
   margin-bottom: 16px;
-  background-color: ${({ theme }) => theme.color.elevatedSurface};
 `;
 
 const GridCardLink = styled(Link)`
