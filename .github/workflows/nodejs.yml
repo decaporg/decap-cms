@@ -40,17 +40,17 @@ jobs:
       - name: log versions
         run: node --version && npm --version && yarn --version
         if: ${{ needs.changes.outputs.cms == 'true' }}
-      - name: install dependencies
-        run: yarn --frozen-lockfile --network-timeout 1000000 && yarn bootstrap
+      - name: install dependecies
+        run: npm install
         if: ${{ needs.changes.outputs.cms == 'true' }}
       - name: run unit tests
-        run: yarn test:ci
+        run: npm run test:ci
         env:
           CI: true
           NODE_OPTIONS: --max-old-space-size=4096
         if: ${{ needs.changes.outputs.cms == 'true' }}
       - name: build demo site
-        run: yarn build:demo
+        run: npm run build:demo
         env:
           NODE_OPTIONS: --max-old-space-size=4096
         if: ${{ needs.changes.outputs.cms == 'true' }}
@@ -77,7 +77,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           check-latest: true
-          cache: yarn
+          cache: npm
         if: ${{ needs.changes.outputs.cms == 'true' }}
       - uses: actions/download-artifact@master
         with:
@@ -89,11 +89,10 @@ jobs:
           node --version
           npm --version
           yarn --version
-          yarn --frozen-lockfile
         if: ${{ needs.changes.outputs.cms == 'true' }}
       - name: e2e test
         run: |
-          yarn test:e2e:run-ci
+          npm run test:e2e:run-ci
         env:
           IS_FORK: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == true }}
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
