@@ -1,7 +1,6 @@
 {
   "scripts": {
-    "develop": "lerna run develop --parallel --ignore decap-server",
-    "develop/nx": "nx run-many -t develop --exclude decap-server"
+    "start": "nx run-many -t develop --parallel=999 --output-style=stream --exclude=decap-server"
   },
   "browserslist": [
     "last 2 Chrome versions",
@@ -89,6 +88,7 @@
     "nock": "^13.0.0",
     "node-fetch": "^2.3.0",
     "npm-run-all": "^4.1.5",
+    "nx": "^17.0.2",
     "postcss": "^8.4.7",
     "postcss-scss": "^4.0.3",
     "prettier": "^2.3.0",
@@ -131,7 +131,6 @@
     "eslint-plugin-babel": "^5.3.0",
     "globby": "^12.0.0",
     "imports-loader": "^4.0.1",
-    "lerna": "^4.0.0",
     "process": "^0.11.10"
   },
   "resolutions": {
