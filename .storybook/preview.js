@@ -1,8 +1,11 @@
+// convert file to storybook v7 preview.ts
+
+
 import React, { useEffect } from 'react';
-import addons from '@storybook/addons';
+import { addons } from '@storybook/addons';
 import { addDecorator, addParameters } from '@storybook/react';
 import { themes } from '@storybook/theming';
-import { ThemeProvider } from 'emotion-theming';
+import { ThemeProvider } from '@emotion/react';
 import styled from '@emotion/styled';
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
 import {
@@ -11,7 +14,7 @@ import {
   UIProvider,
   UIContext,
   GlobalStyles,
-} from '../packages/netlify-cms-ui-default/src';
+} from '../packages/decap-cms-ui-4/src';
 
 import './preview.css';
 
@@ -50,7 +53,7 @@ const themeViewports = {
   },
 };
 
-addParameters({
+export const parameters = {
   options: {
     /**
      * display the top-level grouping as a "root" in the sidebar
@@ -139,7 +142,7 @@ addParameters({
       brandImage: 'https://www.netlify.com/img/press/logos/full-logo-light.png',
     },
   },
-});
+};
 
 // get channel to listen to event emitter
 const channel = addons.getChannel();
@@ -181,7 +184,7 @@ const StoryWrap = styled.div`
   background-color: ${({ theme }) => theme.color.surface};
 `;
 
-addDecorator(Story => (
+export const decorators = [Story => (
   <UIProvider>
     <UIContext.Consumer>
       {({ darkMode, setDarkMode }) => (
@@ -194,4 +197,4 @@ addDecorator(Story => (
       )}
     </UIContext.Consumer>
   </UIProvider>
-));
+)];

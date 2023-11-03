@@ -1,1 +1,0 @@
-import './manager.css';

@@ -1,28 +1,23 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
+import DateTimePicker from 'react-datetime-picker';
 import moment from 'moment';
-import { DatetimePicker } from 'rc-datetime-picker';
+
 import TextInput from '../TextInput';
-import { IconButton } from '../../Button';
 import { Menu } from '../../Menu';
 import DatepickerStyles from './DatepickerStyles';
 
 const StyledMenu = styled(Menu)`
   padding: 0;
 `;
-const shortcuts = {
-  Today: moment(),
-  Yesterday: moment().subtract(1, 'days'),
-  Tomorrow: moment().add(1, 'days'),
-  Clear: '',
-};
-const StyledDatetimePicker = styled(DatetimePicker)`
+
+const StyledDatetimePicker = styled(DateTimePicker)`
   width: 100%;
   background-color: transparent;
 `;
 
-const DateInput = ({ onChange, ...props }) => {
-  const [date, setDate] = useState(moment());
+function DateInput ({ onChange, ...props }) {
+  const [date, setDate] = useState(new Date());
   const [anchorEl, setAnchorEl] = useState(null);
 
   function handleOpenMenu(event) {
@@ -43,7 +38,7 @@ const DateInput = ({ onChange, ...props }) => {
       <TextInput
         {...props}
         readOnly
-        value={date && date.format('YYYY-MM-DD HH:mm')}
+        value={date && moment(date).format('YYYY-MM-DD HH:mm')}
         onClick={handleOpenMenu}
         focus={!!anchorEl}
         icon="calendar"
@@ -57,9 +52,7 @@ const DateInput = ({ onChange, ...props }) => {
         width={'300px'}
       >
         <StyledDatetimePicker
-          shortcuts={shortcuts}
-          closeOnSelectDay
-          moment={date}
+          value={date}
           onChange={date => setDate(date)}
         />
       </StyledMenu>
