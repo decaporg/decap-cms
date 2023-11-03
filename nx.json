@@ -1,0 +1,10 @@
+{
+  "targetDefaults": {
+    "build:esm": {
+      "cache": true
+    },
+    "build": {
+      "cache": true
+    }
+  }
+}

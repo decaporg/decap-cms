@@ -1,6 +1,31 @@
 {
   "scripts": {
-    "start": "nx run-many -t develop --parallel=999 --output-style=stream --exclude=decap-server"
+    "start": "npm run develop",
+    "develop": "nx run-many -t develop --parallel=999 --output-style=stream --exclude=decap-server",
+    "build": "npm run build:esm && nx run-many -t build",
+    "build:esm": "nx run-many -t build:esm",
+    "build:demo": "npm run build && ncp packages/decap-cms/dist dev-test/dist/",
+    "type-check": "tsc --noEmit",
+    "type-check:watch": "npm run type-check -- --watch",
+    "test": "npm run lint && npm run type-check && npm run test:unit",
+    "test:ci": "lint-quiet && type-check && test:unit",
+    "test:unit": "cross-env NODE_ENV=test jest --no-cache",
+    "test:e2e": "npm run build:demo && npm run test:e2e:run",
+    "test:e2e:ci": "npm run build:demo && npm run test:e2e:run-ci",
+    "test:e2e:dev": "run-p test:e2e:start test:e2e:exec-dev",
+    "test:e2e:start": "start-test develop 8080",
+    "test:e2e:serve": "http-server -c-1 dev-test",
+    "test:e2e:exec": "cypress run --browser chrome --headless",
+    "test:e2e:exec-ci": "node cypress/run.mjs",
+    "test:e2e:exec-dev": "cypress open",
+    "test:e2e:record-fixtures:dev": "HTTP_PROXY=http://localhost:1080 RECORD_FIXTURES=true cypress open",
+    "test:e2e:run": "start-test test:e2e:serve 8080 test:e2e:exec",
+    "test:e2e:run-ci": "start-test test:e2e:serve 8080 test:e2e:exec-ci",
+    "lint": "run-p -c --aggregate-output \"lint:*\"",
+    "lint-quiet": "run-p -c --aggregate-output \"lint:* --quiet\"",
+    "lint:css": "stylelint --ignore-path .gitignore \"{packages/**/*.{css,js,jsx,ts,tsx},website/**/*.css}\"",
+    "lint:js": "eslint --color --ignore-path .gitignore \"{{packages,scripts,website}/**/,}*.{js,jsx,ts,tsx}\"",
+    "lint:format": "prettier \"{{packages,scripts,website}/**/,}*.{js,jsx,ts,tsx,css}\" --list-different"
   },
   "browserslist": [
     "last 2 Chrome versions",
