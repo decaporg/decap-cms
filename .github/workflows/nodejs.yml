@@ -77,7 +77,6 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           check-latest: true
-          cache: npm
         if: ${{ needs.changes.outputs.cms == 'true' }}
       - uses: actions/download-artifact@master
         with:
