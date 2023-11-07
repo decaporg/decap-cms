@@ -11,7 +11,7 @@
     "clean": "rimraf \"packages/*/dist\" dev-test/dist \"packages/*/node_modules\"",
     "reset": "npm run clean",
     "test": "npm run lint && npm run type-check && npm run test:unit",
-    "test:ci": "npm run lint-quiet && type-check && test:unit",
+    "test:ci": "npm run lint-quiet && npm run type-check && npm run test:unit",
     "test:unit": "cross-env NODE_ENV=test jest --no-cache",
     "test:e2e": "npm run build:demo && npm run test:e2e:run",
     "test:e2e:ci": "npm run build:demo && npm run test:e2e:run-ci",
