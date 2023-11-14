@@ -156,6 +156,7 @@
   },
   "private": true,
   "dependencies": {
+    "@changesets/cli": "^2.26.2",
     "@emotion/babel-preset-css-prop": "^11.11.0",
     "browserify": "^17.0.0",
     "buffer": "^6.0.3",
