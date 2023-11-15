@@ -4,7 +4,6 @@ description: >-
   We are migrating our community chat from Slack to Discord
 date: 2023-03-01T10:30:00.000Z
 author: Martin Jagodic
-twitter_image: /img/preview-link-published.png
 ---
 During the transition period, we will be active on both services, and Slack will remain open until it dies off. This decision was based on the fact that when we took over, the most requested feature on Slack was to migrate to Discord, and we were already considering it ourselves.
 

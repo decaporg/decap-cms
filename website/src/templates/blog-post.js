@@ -9,22 +9,20 @@ import BlogPostTemplate from '../components/blog-post-template';
 
 function BlogPost({ data }) {
   const { html, frontmatter } = data.markdownRemark;
-  const { author, title, date, description, meta_description, twitter_image, canonical_url } =
-    frontmatter;
+  const { author, title, date, description, meta_description, image, canonical_url } = frontmatter;
   const { siteUrl } = data.site.siteMetadata;
-  const twitterImageUrl =
-    twitter_image && `${trimEnd(siteUrl, '/')}/${trimStart(twitter_image, '/')}`;
-
-  const desc = meta_description || description;
+  const imageUrl = image && `${trimEnd(siteUrl, '/')}/${trimStart(image, '/')}`;
+  const desc = description || meta_description;
 
   return (
     <Layout>
       <Helmet>
         <title>{title}</title>
         {desc && <meta name="description" content={desc} />}
+        {image && <meta name="og:image" content={imageUrl} />}
         {canonical_url && <link rel="canonical" href={canonical_url} />}
       </Helmet>
-      <TwitterMeta title={title} description={desc} image={twitterImageUrl} />
+      <TwitterMeta title={title} description={desc} image={imageUrl} />
       <BlogPostTemplate title={title} author={author} date={date} html={html} />
     </Layout>
   );
@@ -46,7 +44,7 @@ export const pageQuery = graphql`
         # meta_description
         date(formatString: "MMMM D, YYYY")
         author
-        twitter_image
+        image
         canonical_url
       }
       html

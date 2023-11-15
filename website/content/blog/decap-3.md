@@ -4,7 +4,7 @@ description: >-
   First release as Decap CMS is now available
 date: 2023-08-23T08:00:00.000Z
 author: Martin Jagodic
-twitter_image: /img/decap-3.png
+image: /img/decap-3.png
 ---
 We are happy to announce that the first release of Decap CMS is now available. It is released under 3.0 to honor the 2 major versions of the Netlify CMS.
 
