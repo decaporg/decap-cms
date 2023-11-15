@@ -241,9 +241,7 @@ export default class GitHub implements Implementation {
 
   async forkExists({ token }: { token: string }) {
     try {
-      const currentUser = await this.currentUser({ token });
-      const repoName = this.originRepo.split('/')[1];
-      const repo = await fetch(`${this.apiRoot}/repos/${currentUser.login}/${repoName}`, {
+      const repo = await fetch(`${this.apiRoot}/repos/${this.repo}`, {
         method: 'GET',
         headers: {
           Authorization: `token ${token}`,
@@ -285,8 +283,13 @@ export default class GitHub implements Implementation {
 
     // If a fork exists merge it with upstream
     // otherwise create a new fork.
+    const currentUser = await this.currentUser({ token });
+    const repoName = this.originRepo.split('/')[1];
+    this.repo = `${currentUser.login}/${repoName}`;
+    this.useOpenAuthoring = true;
+
     if (await this.forkExists({ token })) {
-      return fetch(`${this.apiRoot}/repos/${this.originRepo}/merge-upstream`, {
+      return fetch(`${this.apiRoot}/repos/${this.repo}/merge-upstream`, {
         method: 'POST',
         headers: {
           Authorization: `token ${token}`,
@@ -304,8 +307,6 @@ export default class GitHub implements Implementation {
           Authorization: `token ${token}`,
         },
       }).then(res => res.json());
-      this.useOpenAuthoring = true;
-      this.repo = fork.full_name;
       return this.pollUntilForkExists({ repo: fork.full_name, token });
     }
   }
