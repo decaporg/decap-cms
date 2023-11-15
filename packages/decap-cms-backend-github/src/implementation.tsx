@@ -241,7 +241,9 @@ export default class GitHub implements Implementation {
 
   async forkExists({ token }: { token: string }) {
     try {
-      const repo = await fetch(`${this.apiRoot}/repos/${this.repo}`, {
+      const currentUser = await this.currentUser({ token });
+      const repoName = this.originRepo.split('/')[1];
+      const repo = await fetch(`${this.apiRoot}/repos/${currentUser.login}/${repoName}`, {
         method: 'GET',
         headers: {
           Authorization: `token ${token}`,
