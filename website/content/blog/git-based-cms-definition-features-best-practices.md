@@ -5,7 +5,7 @@ description: A dive into the definition, main features, caveats, and best
   practices of a Git-based CMS. This will help you make an informed decision for
   your next project.
 twitter_image: /img/definition-features-best-practices.png
-date: 2023-11-10T09:18:08.062Z
+date: 2023-11-15T09:18:08.062Z
 ---
 In this post, we'll dive into the definition, main features, caveats, and best practices of Git-based CMS, helping you make an informed decision for your next project.
 
