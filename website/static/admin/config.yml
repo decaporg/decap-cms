@@ -165,7 +165,7 @@ collections:
           widget: text,
           required: false,
         }
-      - { label: Twitter Image, name: twitter_image, widget: image }
+      - { label: Image, name: image, widget: image }
       - { label: Date, name: date, widget: date }
       - { label: Body, name: body, widget: markdown }
   - name: community
