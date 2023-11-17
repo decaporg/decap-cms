@@ -19,7 +19,8 @@ function BlogPost({ data }) {
       <Helmet>
         <title>{title}</title>
         {desc && <meta name="description" content={desc} />}
-        {image && <meta name="og:image" content={imageUrl} />}
+        {image && <meta name="image" property="og:image" content={imageUrl} />}
+        {author && <meta name="author" content={author} />}
         {canonical_url && <link rel="canonical" href={canonical_url} />}
       </Helmet>
       <TwitterMeta title={title} description={desc} image={imageUrl} />
