@@ -205,9 +205,7 @@ class WorkflowList extends React.Component {
     return (
       <div>
         {entries.map(entry => {
-          const timestamp = dayjs(entry.get('updatedOn')).format(
-            t('workflow.workflow.dateFormat'),
-          );
+          const timestamp = dayjs(entry.get('updatedOn')).format(t('workflow.workflow.dateFormat'));
           const slug = entry.get('slug');
           const collectionName = entry.get('collection');
           const editLink = `collections/${collectionName}/entries/${slug}?ref=workflow`;

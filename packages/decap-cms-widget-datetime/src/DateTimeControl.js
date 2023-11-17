@@ -73,8 +73,7 @@ export default class DateTimeControl extends React.Component {
 
   // Date is valid if datetime is a dayjs or Date object otherwise it's a string.
   // Handle the empty case, if the user wants to empty the field.
-  isValidDate = datetime =>
-    dayjs.isDayjs(datetime) || datetime instanceof Date || datetime === '';
+  isValidDate = datetime => dayjs.isDayjs(datetime) || datetime instanceof Date || datetime === '';
 
   handleChange = datetime => {
     /**
@@ -100,7 +99,8 @@ export default class DateTimeControl extends React.Component {
   };
 
   render() {
-    const { forID, value, classNameWrapper, setActiveStyle, setInactiveStyle, t, isDisabled } = this.props;
+    const { forID, value, classNameWrapper, setActiveStyle, setInactiveStyle, t, isDisabled } =
+      this.props;
 
     return (
       <div
@@ -112,7 +112,7 @@ export default class DateTimeControl extends React.Component {
           id={forID}
           className={classNameWrapper}
           type="datetime-local"
-          value={dayjs(value).format("YYYY-MM-DDThh:mm")}
+          value={dayjs(value).format('YYYY-MM-DDThh:mm')}
           onChange={e => this.handleChange(dayjs(e.target.value))}
           onFocus={setActiveStyle}
           onBlur={setInactiveStyle}
