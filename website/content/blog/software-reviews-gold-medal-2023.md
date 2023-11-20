@@ -3,7 +3,7 @@ title: Decap Receives Software Reviews Gold Medal for 2023
 author: Martin Jagodic
 description: Decap has been named a top content marketing tool in the Software
   Reviews Content Marketing Data Quadrant Awards for 2023.
-twitter_image: /img/sr-gold_medal-2023.png
+image: /img/sr-gold_medal-2023.png
 date: 2023-05-15T08:00:00.000Z
 ---
 Decap (ex-Netlify CMS) has been recognized as a top content marketing tool in the 2023 Software Reviews Content Marketing Data Quadrant Awards. With a score of 9.1 out of 10 and 100% user satisfaction, Decap proves its value in enhancing content marketing workflows.

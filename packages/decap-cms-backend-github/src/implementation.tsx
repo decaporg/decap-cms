@@ -283,19 +283,34 @@ export default class GitHub implements Implementation {
       return Promise.resolve();
     }
 
-    if (!(await this.forkExists({ token }))) {
-      await getPermissionToFork();
-    }
-
-    const fork = await fetch(`${this.apiRoot}/repos/${this.originRepo}/forks`, {
-      method: 'POST',
-      headers: {
-        Authorization: `token ${token}`,
-      },
-    }).then(res => res.json());
+    // If a fork exists merge it with upstream
+    // otherwise create a new fork.
+    const currentUser = await this.currentUser({ token });
+    const repoName = this.originRepo.split('/')[1];
+    this.repo = `${currentUser.login}/${repoName}`;
     this.useOpenAuthoring = true;
-    this.repo = fork.full_name;
-    return this.pollUntilForkExists({ repo: fork.full_name, token });
+
+    if (await this.forkExists({ token })) {
+      return fetch(`${this.apiRoot}/repos/${this.repo}/merge-upstream`, {
+        method: 'POST',
+        headers: {
+          Authorization: `token ${token}`,
+        },
+        body: JSON.stringify({
+          branch: this.branch,
+        }),
+      });
+    } else {
+      await getPermissionToFork();
+
+      const fork = await fetch(`${this.apiRoot}/repos/${this.originRepo}/forks`, {
+        method: 'POST',
+        headers: {
+          Authorization: `token ${token}`,
+        },
+      }).then(res => res.json());
+      return this.pollUntilForkExists({ repo: fork.full_name, token });
+    }
   }
 
   async authenticate(state: Credentials) {
