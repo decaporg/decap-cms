@@ -34,7 +34,7 @@ const SidebarHeading = styled.h2`
   font-weight: 600;
   line-height: 37px;
   padding: 0;
-  margin: 10px 12px 10px;
+  margin: 10px 12px;
   color: ${colors.textLead};
 `;
 
