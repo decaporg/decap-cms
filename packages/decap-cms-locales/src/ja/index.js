@@ -198,6 +198,7 @@ const ja = {
       },
       datetime: {
         now: '現時刻',
+        clear: 'クリア',
       },
     },
   },
