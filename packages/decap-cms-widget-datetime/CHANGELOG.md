@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.1.0-beta.1](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-datetime@3.1.0-beta.0...decap-cms-widget-datetime@3.1.0-beta.1) (2023-11-23)
+
+
+### Performance Improvements
+
+* replace moment with dayjs ([#6980](https://github.com/decaporg/decap-cms/issues/6980)) ([22370b1](https://github.com/decaporg/decap-cms/commit/22370b13e49a4a5f58a60ebd4bc40ce4b141eb11))
+
+
+
+
+
 # [3.1.0-beta.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-datetime@3.1.0...decap-cms-widget-datetime@3.1.0-beta.0) (2023-10-20)
 
 

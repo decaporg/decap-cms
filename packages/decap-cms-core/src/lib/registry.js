@@ -1,5 +1,5 @@
 import { Map } from 'immutable';
-import produce from 'immer';
+import { produce } from 'immer';
 import { oneLine } from 'common-tags';
 
 import EditorComponent from '../valueObjects/EditorComponent';

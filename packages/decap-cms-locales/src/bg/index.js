@@ -195,6 +195,7 @@ const bg = {
       },
       datetime: {
         now: 'Сега',
+        clear: 'Изчисти',
       },
     },
   },

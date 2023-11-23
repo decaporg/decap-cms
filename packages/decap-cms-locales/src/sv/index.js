@@ -195,6 +195,7 @@ const sv = {
       },
       datetime: {
         now: 'Nu',
+        clear: 'Rensa',
       },
     },
   },

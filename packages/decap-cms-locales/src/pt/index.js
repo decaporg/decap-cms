@@ -199,6 +199,7 @@ const pt = {
       },
       datetime: {
         now: 'Agora',
+        clear: 'Limpar',
       },
       list: {
         add: 'Adicionar %{item}',
