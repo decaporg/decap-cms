@@ -920,7 +920,7 @@
     "status": 200
   },
   {
-    "body": "{\"content\":\"LS0tCnRlbXBsYXRlOiBwb3N0CnRpdGxlOiBzZWNvbmQgdGl0bGUKZGF0ZTogMTk3MC0wMS0wMVQwMDowMDowMC4zMDBaCmRlc2NyaXB0aW9uOiBzZWNvbmQgZGVzY3JpcHRpb24KY2F0ZWdvcnk6IHNlY29uZCBjYXRlZ29yeQp0YWdzOgogIC0gdGFnMgotLS0Kc2Vjb25kIGJvZHk=\",\"encoding\":\"base64\"}",
+    "body": "{\"content\":\"LS0tCnRlbXBsYXRlOiBwb3N0CnRpdGxlOiBzZWNvbmQgdGl0bGUKZGF0ZTogMTk3MC0wMS0wMVQwMDowMDowMC42MDBaCmRlc2NyaXB0aW9uOiBzZWNvbmQgZGVzY3JpcHRpb24KY2F0ZWdvcnk6IHNlY29uZCBjYXRlZ29yeQp0YWdzOgogIC0gdGFnMgotLS0Kc2Vjb25kIGJvZHk=\",\"encoding\":\"base64\"}",
     "method": "POST",
     "url": "/repos/owner/repo/git/blobs",
     "headers": {
@@ -1425,7 +1425,7 @@
     "status": 200
   },
   {
-    "body": "{\"content\":\"LS0tCnRlbXBsYXRlOiBwb3N0CnRpdGxlOiB0aGlyZCB0aXRsZQpkYXRlOiAxOTcwLTAxLTAxVDAwOjAwOjAwLjYwMFoKZGVzY3JpcHRpb246IHRoaXJkIGRlc2NyaXB0aW9uCmNhdGVnb3J5OiB0aGlyZCBjYXRlZ29yeQp0YWdzOgogIC0gdGFnMwotLS0KdGhpcmQgYm9keQ==\",\"encoding\":\"base64\"}",
+    "body": "{\"content\":\"LS0tCnRlbXBsYXRlOiBwb3N0CnRpdGxlOiB0aGlyZCB0aXRsZQpkYXRlOiAxOTcwLTAxLTAxVDAwOjAwOjAxLjIwMFoKZGVzY3JpcHRpb246IHRoaXJkIGRlc2NyaXB0aW9uCmNhdGVnb3J5OiB0aGlyZCBjYXRlZ29yeQp0YWdzOgogIC0gdGFnMwotLS0KdGhpcmQgYm9keQ==\",\"encoding\":\"base64\"}",
     "method": "POST",
     "url": "/repos/owner/repo/git/blobs",
     "headers": {
