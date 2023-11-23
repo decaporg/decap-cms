@@ -167,6 +167,7 @@ const th = {
       },
       datetime: {
         now: 'เวลาตอนนี้',
+        clear: 'ล้าง',
       },
     },
   },

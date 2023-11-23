@@ -157,6 +157,7 @@ const nn_no = {
       },
       datetime: {
         now: 'No',
+        clear: 'Nullstill',
       },
     },
   },

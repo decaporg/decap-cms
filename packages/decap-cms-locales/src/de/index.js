@@ -204,6 +204,7 @@ const de = {
       },
       datetime: {
         now: 'Jetzt',
+        clear: 'Löschen',
       },
       list: {
         add: '%{item} hinzufügen',

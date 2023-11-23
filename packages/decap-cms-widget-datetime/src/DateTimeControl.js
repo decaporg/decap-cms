@@ -5,15 +5,13 @@ import { jsx, css } from '@emotion/react';
 import dayjs from 'dayjs';
 import { buttons } from 'decap-cms-ui-default';
 
-function NowButton({ t, handleChange }) {
+function Buttons({ t, handleChange }) {
   return (
     <div
       css={css`
-        position: absolute;
-        right: 20px;
-        transform: translateY(-40px);
+        display: flex;
+        gap: 20px;
         width: fit-content;
-        z-index: 1;
       `}
     >
       <button
@@ -21,11 +19,18 @@ function NowButton({ t, handleChange }) {
           ${buttons.button}
           ${buttons.widget}
         `}
-        onClick={() => {
-          handleChange(dayjs());
-        }}
+        onClick={() => handleChange(dayjs())}
       >
         {t('editor.editorWidgets.datetime.now')}
+      </button>
+      <button
+        css={css`
+          ${buttons.button}
+          ${buttons.widget}
+        `}
+        onClick={() => handleChange('')}
+      >
+        {t('editor.editorWidgets.datetime.clear')}
       </button>
     </div>
   );
@@ -104,23 +109,23 @@ export default class DateTimeControl extends React.Component {
 
     return (
       <div
+        className={classNameWrapper}
         css={css`
-          position: relative;
+          display: flex !important;
+          gap: 20px;
+          align-items: center;
         `}
       >
         <input
           id={forID}
-          className={classNameWrapper}
           type="datetime-local"
           value={dayjs(value).format('YYYY-MM-DDThh:mm')}
           onChange={e => this.handleChange(dayjs(e.target.value))}
           onFocus={setActiveStyle}
           onBlur={setInactiveStyle}
-          css={css`
-            padding: 16px 80px 16px 20px !important;
-          `}
+          disabled={isDisabled}
         />
-        {!isDisabled && <NowButton t={t} handleChange={v => this.handleChange(v)} />}
+        {!isDisabled && <Buttons t={t} handleChange={v => this.handleChange(v)} />}
       </div>
     );
   }
