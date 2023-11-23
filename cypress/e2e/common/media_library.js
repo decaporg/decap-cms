@@ -51,6 +51,7 @@ function chooseAnImage() {
 
 function waitForEntryToLoad() {
   cy.contains('button', 'Saving...').should('not.exist');
+  cy.clock().tick(5000);
   cy.contains('div', 'Loading entry...').should('not.exist');
 }
 
@@ -143,10 +144,18 @@ export default function({ entries, getUser }) {
 
   it('should not show draft entry image in global media library', () => {
     newPostWithImage(entries[0]);
-    exitEditor();
-    goToMediaLibrary();
-    assertNoImagesInLibrary();
-    matchImageSnapshot();
+    cy.clock().then(clock => {
+      if (clock) {
+        clock.tick(150);
+        clock.tick(150);
+        // eslint-disable-next-line cypress/no-unnecessary-waiting
+        cy.wait(500);
+      }
+      exitEditor();
+      goToMediaLibrary();
+      assertNoImagesInLibrary();
+      matchImageSnapshot();
+    });
   });
 
   it('should show published entry image in global media library', () => {
