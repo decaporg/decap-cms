@@ -23,12 +23,12 @@
     "@emotion/styled": "^11.11.0",
     "immutable": "^3.7.6",
     "lodash": "^4.17.11",
-    "moment": "^2.24.0",
     "prop-types": "^15.7.2",
     "react-immutable-proptypes": "^2.1.0",
     "uuid": "^8.3.2"
   },
   "peerDependencies": {
+    "dayjs": "^1.11.10",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   }

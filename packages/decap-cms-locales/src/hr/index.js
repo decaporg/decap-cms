@@ -184,6 +184,7 @@ const hr = {
       },
       datetime: {
         now: 'Sad',
+        clear: 'Očisti',
       },
     },
   },

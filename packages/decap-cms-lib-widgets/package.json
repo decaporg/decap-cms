@@ -17,8 +17,8 @@
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward --extensions \".js,.jsx,.ts,.tsx\""
   },
   "peerDependencies": {
+    "dayjs": "^1.11.10",
     "immutable": "^3.7.6",
-    "lodash": "^4.17.11",
-    "moment": "^2.24.0"
+    "lodash": "^4.17.11"
   }
 }

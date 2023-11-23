@@ -191,6 +191,7 @@ const zh_Hans = {
       },
       datetime: {
         now: '现在',
+        clear: '清除',
       },
     },
   },

@@ -197,6 +197,7 @@ const he = {
       },
       datetime: {
         now: 'עכשיו',
+        clear: 'ניקוי',
       },
       list: {
         add: 'הוספת %{item}',

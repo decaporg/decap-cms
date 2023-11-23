@@ -203,6 +203,7 @@ const tr = {
       },
       datetime: {
         now: 'Şimdi',
+        clear: 'Temizle',
       },
       list: {
         add: '%{item} Ekle',

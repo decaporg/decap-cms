@@ -205,6 +205,7 @@ const ko = {
       },
       datetime: {
         now: '현재시각',
+        clear: '지우기',
       },
       list: {
         add: '%{item} 추가',

@@ -196,6 +196,7 @@ const fr = {
       },
       datetime: {
         now: 'Maintenant',
+        clear: 'Effacer',
       },
       list: {
         add: 'Ajouter %{item}',

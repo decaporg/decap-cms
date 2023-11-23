@@ -194,6 +194,7 @@ const cs = {
       },
       datetime: {
         now: 'Teď',
+        clear: 'Vymazat',
       },
     },
   },
