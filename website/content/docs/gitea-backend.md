@@ -23,7 +23,7 @@ backend:
   api_root: https://gitea.example.com/api/v1 # API URL of your Gitea instance
   base_url: https://gitea.example.com # Root URL of your Gitea instance
   # optional, defaults to master
-  # branch: master
+  # branch: main
 ```
 
 ## Git Large File Storage (LFS)

@@ -95,7 +95,7 @@ For GitHub and GitLab repositories, you can start your Decap CMS `config.yml` fi
 ```yaml
 backend:
   name: git-gateway
-  branch: master # Branch to update (optional; defaults to master)
+  branch: main # Branch to update (optional; defaults to master)
 ```
 
 *(For Bitbucket repositories, use the [Bitbucket backend](/docs/bitbucket-backend) instructions instead.)*
