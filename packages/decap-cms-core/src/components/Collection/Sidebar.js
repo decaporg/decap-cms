@@ -34,12 +34,12 @@ const SidebarHeading = styled.h2`
   font-weight: 600;
   line-height: 37px;
   padding: 0;
-  margin: 10px 12px;
+  margin: 10px 20px;
   color: ${colors.textLead};
 `;
 
 const SidebarNavList = styled.ul`
-  margin: 16px 0 0;
+  margin: 12px 0 0;
   list-style: none;
   overflow: auto;
 `;
