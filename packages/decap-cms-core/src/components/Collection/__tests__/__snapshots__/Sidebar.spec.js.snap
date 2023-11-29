@@ -20,15 +20,16 @@ exports[`Sidebar should render nested collection with filterTerm 1`] = `
 }
 
 .emotion-2 {
-  font-size: 23px;
+  font-size: 22px;
   font-weight: 600;
+  line-height: 37px;
   padding: 0;
-  margin: 18px 12px 12px;
+  margin: 10px 20px;
   color: #313d3e;
 }
 
 .emotion-4 {
-  margin: 16px 0 0;
+  margin: 12px 0 0;
   list-style: none;
   overflow: auto;
 }
@@ -80,15 +81,16 @@ exports[`Sidebar should render sidebar with a nested collection 1`] = `
 }
 
 .emotion-2 {
-  font-size: 23px;
+  font-size: 22px;
   font-weight: 600;
+  line-height: 37px;
   padding: 0;
-  margin: 18px 12px 12px;
+  margin: 10px 20px;
   color: #313d3e;
 }
 
 .emotion-4 {
-  margin: 16px 0 0;
+  margin: 12px 0 0;
   list-style: none;
   overflow: auto;
 }
@@ -139,15 +141,16 @@ exports[`Sidebar should render sidebar with a simple collection 1`] = `
 }
 
 .emotion-2 {
-  font-size: 23px;
+  font-size: 22px;
   font-weight: 600;
+  line-height: 37px;
   padding: 0;
-  margin: 18px 12px 12px;
+  margin: 10px 20px;
   color: #313d3e;
 }
 
 .emotion-4 {
-  margin: 16px 0 0;
+  margin: 12px 0 0;
   list-style: none;
   overflow: auto;
 }
@@ -235,15 +238,16 @@ exports[`Sidebar should render sidebar without search 1`] = `
 }
 
 .emotion-2 {
-  font-size: 23px;
+  font-size: 22px;
   font-weight: 600;
+  line-height: 37px;
   padding: 0;
-  margin: 18px 12px 12px;
+  margin: 10px 20px;
   color: #313d3e;
 }
 
 .emotion-4 {
-  margin: 16px 0 0;
+  margin: 12px 0 0;
   list-style: none;
   overflow: auto;
 }
