@@ -3,7 +3,12 @@ title: Community
 headline: Help us build the CMS of the future.
 subhead: Get support, give support, and find out what's new through the channels below.
 sections:
-  - title: support
+  - title: contribitung
+    channels:
+      - title: Contrubutor guide
+        description: Instructions for contribitung to the project
+        url: /docs/contributor-guide
+  - title: communication
     channels:
       - title: Decap CMS Discord
         description: Live community chat for all things Decap CMS.

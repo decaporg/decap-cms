@@ -7,7 +7,6 @@ import HeroTitle from './hero-title';
 import Lead from './lead';
 import Container from './container';
 import SectionLabel from './section-label';
-import Page from './page';
 import Grid from './grid';
 import CommunityChannelsList from './community-channels-list';
 import theme from '../theme';
@@ -16,22 +15,15 @@ function Community({ headline, subhead, sections }) {
   return (
     <>
       <PageHero>
-        <div
-          css={css`
-            margin-bottom: 20px;
-          `}
-        >
-          <HeroTitle>
-            <Markdownify source={headline} />
-          </HeroTitle>
-          <Lead light>
-            <Markdownify source={subhead} />
-          </Lead>
-        </div>
+        <HeroTitle>
+          <Markdownify source={headline} />
+        </HeroTitle>
+        <Lead light>
+          <Markdownify source={subhead} />
+        </Lead>
       </PageHero>
 
       <Container>
-        <Page>
           <Grid cols={2}>
             <div
               css={css`
@@ -46,7 +38,6 @@ function Community({ headline, subhead, sections }) {
               ))}
             </div>
           </Grid>
-        </Page>
       </Container>
     </>
   );

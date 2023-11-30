@@ -222,7 +222,7 @@ function Header({ hasHeroBelow }) {
                     <NavLink to="/docs/intro/">Docs</NavLink>
                   </MenuItem>
                   <MenuItem>
-                    <NavLink to="/docs/contributor-guide/">Contributing</NavLink>
+                    <NavLink to="/support/">Support</NavLink>
                   </MenuItem>
                   <MenuItem>
                     <NavLink to="/community/">Community</NavLink>
