@@ -120,6 +120,11 @@ const MenuItem = styled.li`
       margin-right: ${theme.space[3]};
     }
   }
+  ${mq[2]} {
+    &:not(:last-child) {
+      margin-right: ${theme.space[4]};
+    }
+  }
 `;
 
 const NavLink = styled(Link)`
@@ -222,7 +227,7 @@ function Header({ hasHeroBelow }) {
                     <NavLink to="/docs/intro/">Docs</NavLink>
                   </MenuItem>
                   <MenuItem>
-                    <NavLink to="/support/">Support</NavLink>
+                    <NavLink to="/services/">Services</NavLink>
                   </MenuItem>
                   <MenuItem>
                     <NavLink to="/community/">Community</NavLink>

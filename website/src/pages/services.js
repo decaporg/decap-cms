@@ -44,13 +44,13 @@ function BlogPost({ data }) {
 export default BlogPost;
 
 export const pageQuery = graphql`
-  query supportPage {
+  query servicesPage {
     site {
       siteMetadata {
         siteUrl
       }
     }
-    markdownRemark(fileAbsolutePath: { regex: "/support/" }) {
+    markdownRemark(fileAbsolutePath: { regex: "/services/" }) {
       frontmatter {
         title
         description

@@ -1,7 +1,7 @@
 ---
 title: Community
 headline: Help us build the CMS of the future.
-subhead: Get support, give support, and find out what's new through the channels below.
+subhead: Get help, help others, and find out what's new through the channels below.
 sections:
   - title: contribitung
     channels:
