@@ -49,12 +49,12 @@ const SidebarNavLink = styled(NavLink)`
   font-size: 14px;
   font-weight: 500;
   align-items: center;
-  padding: 8px 12px;
+  padding: 8px 18px;
   border-left: 2px solid #fff;
   z-index: -1;
 
   ${Icon} {
-    margin-right: 8px;
+    margin-right: 4px;
     flex-shrink: 0;
   }
 
