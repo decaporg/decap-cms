@@ -78,6 +78,7 @@ export default class GitHub implements Implementation {
   mediaFolder: string;
   previewContext: string;
   token: string | null;
+  token_keyword: string | null;
   squashMerges: boolean;
   cmsLabelPrefix: string;
   useGraphql: boolean;
@@ -119,6 +120,7 @@ export default class GitHub implements Implementation {
     this.branch = config.backend.branch?.trim() || 'master';
     this.apiRoot = config.backend.api_root || 'https://api.github.com';
     this.token = '';
+    this.token_keyword = config.backend.token_keyword || 'token';
     this.squashMerges = config.backend.squash_merges || false;
     this.cmsLabelPrefix = config.backend.cms_label_prefix || '';
     this.useGraphql = config.backend.use_graphql || false;
@@ -185,7 +187,7 @@ export default class GitHub implements Implementation {
     let repoExists = false;
     while (!repoExists) {
       repoExists = await fetch(`${this.apiRoot}/repos/${repo}`, {
-        headers: { Authorization: `token ${token}` },
+        headers: { Authorization: `${this.token_keyword} ${token}` },
       })
         .then(() => true)
         .catch(err => {
@@ -208,7 +210,7 @@ export default class GitHub implements Implementation {
     if (!this._currentUserPromise) {
       this._currentUserPromise = fetch(`${this.apiRoot}/user`, {
         headers: {
-          Authorization: `token ${token}`,
+          Authorization: `${this.token_keyword} ${token}`,
         },
       }).then(res => res.json());
     }
@@ -229,7 +231,7 @@ export default class GitHub implements Implementation {
         `${this.apiRoot}/repos/${this.originRepo}/collaborators/${username}/permission`,
         {
           headers: {
-            Authorization: `token ${token}`,
+            Authorization: `${this.token_keyword} ${token}`,
           },
         },
       )
@@ -246,7 +248,7 @@ export default class GitHub implements Implementation {
       const repo = await fetch(`${this.apiRoot}/repos/${currentUser.login}/${repoName}`, {
         method: 'GET',
         headers: {
-          Authorization: `token ${token}`,
+          Authorization: `${this.token_keyword} ${token}`,
         },
       }).then(res => res.json());
 
@@ -294,7 +296,7 @@ export default class GitHub implements Implementation {
       return fetch(`${this.apiRoot}/repos/${this.repo}/merge-upstream`, {
         method: 'POST',
         headers: {
-          Authorization: `token ${token}`,
+          Authorization: `${this.token_keyword} ${token}`,
         },
         body: JSON.stringify({
           branch: this.branch,
@@ -306,7 +308,7 @@ export default class GitHub implements Implementation {
       const fork = await fetch(`${this.apiRoot}/repos/${this.originRepo}/forks`, {
         method: 'POST',
         headers: {
-          Authorization: `token ${token}`,
+          Authorization: `${this.token_keyword} ${token}`,
         },
       }).then(res => res.json());
       return this.pollUntilForkExists({ repo: fork.full_name, token });
@@ -318,6 +320,7 @@ export default class GitHub implements Implementation {
     const apiCtor = this.useGraphql ? GraphQLAPI : API;
     this.api = new apiCtor({
       token: this.token,
+      token_keyword: this.token_keyword || 'token',
       branch: this.branch,
       repo: this.repo,
       originRepo: this.originRepo,

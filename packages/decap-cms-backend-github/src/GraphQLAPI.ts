@@ -108,7 +108,7 @@ export default class GraphQLAPI extends API {
         headers: {
           'Content-Type': 'application/json; charset=utf-8',
           ...headers,
-          authorization: this.token ? `token ${this.token}` : '',
+          authorization: this.token ? `${this.token_keyword} ${this.token}` : '',
         },
       };
     });
@@ -197,6 +197,7 @@ export default class GraphQLAPI extends API {
         fetchPolicy: CACHE_FIRST, // we can assume permission doesn't change often
       });
       // https://developer.github.com/v4/enum/repositorypermission/
+      console.log(data)
       const { viewerPermission } = data.repository;
       return ['ADMIN', 'MAINTAIN', 'WRITE'].includes(viewerPermission);
     } catch (error) {

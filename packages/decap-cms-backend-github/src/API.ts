@@ -50,6 +50,7 @@ export const MOCK_PULL_REQUEST = -1;
 export interface Config {
   apiRoot?: string;
   token?: string;
+  token_keyword?: string;
   branch?: string;
   useOpenAuthoring?: boolean;
   repo?: string;
@@ -173,6 +174,7 @@ let migrationNotified = false;
 export default class API {
   apiRoot: string;
   token: string;
+  token_keyword: string;
   branch: string;
   useOpenAuthoring?: boolean;
   repo: string;
@@ -195,6 +197,7 @@ export default class API {
   constructor(config: Config) {
     this.apiRoot = config.apiRoot || 'https://api.github.com';
     this.token = config.token || '';
+    this.token_keyword = config.token_keyword || 'token';
     this.branch = config.branch || 'master';
     this.useOpenAuthoring = config.useOpenAuthoring;
     this.repo = config.repo || '';
@@ -251,7 +254,7 @@ export default class API {
     };
 
     if (this.token) {
-      baseHeader.Authorization = `token ${this.token}`;
+      baseHeader.Authorization = `${this.token_keyword} ${this.token}`;
       return Promise.resolve(baseHeader);
     }
 
