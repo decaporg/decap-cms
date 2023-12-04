@@ -76,6 +76,11 @@ export default class Widget extends Component {
 
   shouldComponentUpdate(nextProps) {
     /**
+     * Avoid unnecessary rerenders while loading assets.
+     */
+    if(this.props.isLoadingAsset)
+      return false;
+    /**
      * Allow widgets to provide their own `shouldComponentUpdate` method.
      */
     if (this.wrappedControlShouldComponentUpdate) {
