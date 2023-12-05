@@ -1,7 +1,9 @@
 import React from 'react';
 import styled from '@emotion/styled';
+import { css } from '@emotion/core';
 
 import Markdownify from './markdownify';
+import Button from './button';
 import theme from '../theme';
 
 const Box = styled.div`
@@ -25,7 +27,7 @@ const Text = styled.p`
   }
 `;
 
-function FeatureItem({ feature, description, imgpath, kind }) {
+function FeatureItem({ feature, description, imgpath, kind, cta }) {
   return (
     <Box>
       {imgpath && <img src={require(`../img/${imgpath}`).default} alt="" />}
@@ -34,7 +36,15 @@ function FeatureItem({ feature, description, imgpath, kind }) {
       </Title>
       <Text>
         <Markdownify source={description} />
+        <br/>
       </Text>
+      {cta && <Button
+        key={cta.label}
+        href={cta.href}
+        css={css`
+          margin-top: ${theme.space[3]};
+        `}
+      >{cta.label}</Button>}
     </Box>
   );
 }

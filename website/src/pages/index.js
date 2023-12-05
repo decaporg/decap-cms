@@ -29,16 +29,15 @@ const MarkdownButton = styled.span`
     color: ${theme.colors.white};
     border-radius: ${theme.radii[1]};
     padding: ${theme.space[2]} ${theme.space[3]};
-    transition: 0.2s;
+    transition: all 0.2s ease-out;
     text-decoration: none;
+    box-shadow: 0;
 
     &:hover {
-      transform: scale(1.05);
-      box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.5), 0 1px 3px 0 rgba(0, 0, 0, 1);
+      box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.5);
     }
     &:active {
-      transform: scale(0.95);
-      box-shadow: none;
+      box-shadow: inset 0 0 4px 0 rgba(0, 0, 0, 0.5);
     }
   }
 `;
@@ -150,6 +149,18 @@ function HomePage({ data }) {
         </Grid>
       </HomeSection>
 
+      <HomeSection
+        css={css`
+          background: lightgrey;
+        `}
+        title={<Markdownify source={landing.services?.hook} />}
+        text={<Markdownify source={landing.services?.intro} />}
+      >
+        <Grid cols={4}>
+          <Features items={landing.services?.features} />
+        </Grid>
+      </HomeSection>
+
       <HomeSection title={<Markdownify source={landing.community.hook} />}>
         <Grid cols={2}>
           <div>
@@ -230,6 +241,18 @@ export const pageQuery = graphql`
             feature
             imgpath
             description
+          }
+        }
+        services {
+          hook
+          intro
+          features {
+            feature
+            description
+            cta {
+              href
+              label
+            }
           }
         }
         community {
