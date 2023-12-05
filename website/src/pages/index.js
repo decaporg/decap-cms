@@ -90,6 +90,16 @@ function HomePage({ data }) {
           <div>
             <Features items={landing.hero.devfeatures} kind="light" />
           </div>
+          <div>
+            <p
+            css={css`
+              margin-bottom: ${theme.space[2]};
+              font-weight: 700;
+            `}>Try it out in the <a href="https://demo.decapcms.org/" target="_blank" rel="noreferrer">Decap CMS Demo</a></p>
+            <a href="https://demo.decapcms.org/" target="_blank" rel="noreferrer">
+              <img src="/img/screenshot-editor-2.png" />
+            </a>
+          </div>
         </Grid>
       </PageHero>
 
