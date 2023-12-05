@@ -5,6 +5,12 @@ image: /img/decap-3.png
 ---
 Support partners offer a range of services from SLA support to custom development.
 
+## Onboarding & Training
+
+Get started with Decap CMS with the help of our partners.
+
+- [PM TechHub](https://develop--pm-techhub.netlify.app/services/decap/#onboarding-package), maintainers of Decap CMS
+
 ## Priority Support
 
 These guys offer support during working hours
@@ -21,7 +27,7 @@ You can sponsor a custom feature that will be added to the CMS. This feature wil
 
 Find experts and agencies that build with Decap:
 
-- [PM TechHub](https://develop--pm-techhub.netlify.app/services/decap/#monthly-premium-support), maintainers of Decap CMS
+- [PM TechHub](https://develop--pm-techhub.netlify.app/), maintainers of Decap CMS
 
 <br>
 
@@ -31,4 +37,4 @@ Find experts and agencies that build with Decap:
 
 If you offer support for Decap CMS, you can become a partner. Partners are listed on this page and can use the Decap Partner logo on their website.
 
-Contact us to find out more how to become a partner and how the partnership works.
+[Contact us](decap@p-m.si) to find out more how to become a partner and how the partnership works.

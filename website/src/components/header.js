@@ -125,11 +125,20 @@ const MenuItem = styled.li`
       margin-right: ${theme.space[4]};
     }
   }
+  ${mq[4]} {
+    &:not(:last-child) {
+      margin-right: ${theme.space[5]};
+    }
+  }
 `;
 
 const NavLink = styled(Link)`
   text-decoration: none;
   font-weight: 600;
+
+  ${mq[2]} {
+    font-size: ${theme.fontsize[4]};
+  }
 `;
 
 const NOTIFS_QUERY = graphql`
@@ -227,7 +236,16 @@ function Header({ hasHeroBelow }) {
                     <NavLink to="/docs/intro/">Docs</NavLink>
                   </MenuItem>
                   <MenuItem>
-                    <NavLink to="/services/">Services</NavLink>
+                    <NavLink to="/services/">
+                      Services
+                      <span
+                        css={css`
+                          font-size: ${theme.fontsize[0]};
+                          color: ${theme.colors.primaryLight};
+                          margin-left: ${theme.space[1]};
+                          vertical-align: top;
+                        `}>New</span>
+                      </NavLink>
                   </MenuItem>
                   <MenuItem>
                     <NavLink to="/community/">Community</NavLink>
