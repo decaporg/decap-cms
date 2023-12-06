@@ -38,26 +38,26 @@ services:
   hook: "Do you need professional&nbsp;help?"
   intro: "The Decap CMS team offers a range of professional services to help you get the most out of Decap CMS."
   features:
-    - feature: "Oboarding"
+    - feature: "Onboarding"
       description: "Get up to speed quickly with a customized onboarding program tailored to your team and project."
       cta:
-        href: "https://calendly.com/netlify-cms/onboarding"
-        label: "Schedule a call"
+        href: "/services/"
+        label: "Find out more"
     - feature: "Priority Support"
       description: "Benefit from a dedicated support line and priority ticket handling."
       cta:
-        href: "https://calendly.com/netlify-cms/priority-support"
-        label: "Schedule a call"
+        href: "/services/"
+        label: "Find out more"
     - feature: "Custom Features Development"
       description: "Sponsor the development of custom features or integrations to meet your specific needs."
       cta:
-        href: "https://calendly.com/netlify-cms/custom-features"
-        label: "Schedule a call"
+        href: "/services/"
+        label: "Find out more"
     - feature: "Building Websites with Decap CMS"
       description: "Get help building your website from the Decap CMS team or one of our trusted partners."
       cta:
-        href: "https://calendly.com/netlify-cms/building-websites"
-        label: "Schedule a call"
+        href: "/services/"
+        label: "Find out more"
 
 community:
   hook: "Supported by a growing&nbsp;community"

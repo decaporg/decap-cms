@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import { css } from '@emotion/core';
+import { Link } from 'gatsby';
 
 import Markdownify from './markdownify';
-import Button from './button';
 import theme from '../theme';
 
 const Box = styled.div`
@@ -37,14 +37,8 @@ function FeatureItem({ feature, description, imgpath, kind, cta }) {
       <Text>
         <Markdownify source={description} />
         <br/>
+        {cta && <Link to={cta.href}>{cta.label}</Link>}
       </Text>
-      {cta && <Button
-        key={cta.label}
-        href={cta.href}
-        css={css`
-          margin-top: ${theme.space[3]};
-        `}
-      >{cta.label}</Button>}
     </Box>
   );
 }
