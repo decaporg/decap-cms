@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "react-color": "^2.18.1",
-    "validate-color": "^2.1.0"
+    "tinycolor2": "^1.4.1"
   },
   "peerDependencies": {
     "@emotion/react": "^11.11.1",
