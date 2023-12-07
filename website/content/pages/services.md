@@ -1,33 +1,31 @@
 ---
-title: Services
-description: Find support and more for Decap CMS with our partners.
+title: Professional help
+description: Our partners offer a range of services that can help you get the most out of Decap CMS. Find onboarding, priority support, and development of custom features.
 image: /img/decap-3.png
 ---
-Support partners offer a range of services from SLA support to custom development.
+## Onboarding
 
-## Onboarding & Training
-
-Get started with Decap CMS with the help of our partners.
+Get started with Decap CMS with onboarding sessions provided by experts.
 
 - [PM TechHub](https://develop--pm-techhub.netlify.app/services/decap/#onboarding-package), maintainers of Decap CMS
 
 ## Priority Support
 
-These guys offer support during working hours
+Get support for Decap CMS with priority response time.
 
 - [PM TechHub](https://develop--pm-techhub.netlify.app/services/decap/#monthly-premium-support), maintainers of Decap CMS
 
-## Custom Features Development
+## Development of Custom Features
 
-You can sponsor a custom feature that will be added to the CMS. This feature will be available to everyone and you will be listed as a sponsor.
+Sponsor a custom feature that will be added to the CMS. Tailored to your exact specifications, the team of maintainers is ready to bring your vision to life.
 
-[Contact us](decap@p-m.si) for more information.
+Read more at [PM TechHub - Development of Custom Features](https://develop--pm-techhub.netlify.app/services/decap/#development-of-custom-features).
 
 ## Building Websites with Decap CMS
 
-Find experts and agencies that build with Decap:
+Work with experts and agencies that build with Decap CMS.
 
-- [PM TechHub](https://develop--pm-techhub.netlify.app/), maintainers of Decap CMS
+- [PM TechHub](https://develop--pm-techhub.netlify.app/services/web-development/)
 
 <br>
 

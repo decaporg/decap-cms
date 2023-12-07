@@ -237,7 +237,7 @@ function Header({ hasHeroBelow }) {
                   </MenuItem>
                   <MenuItem>
                     <NavLink to="/services/">
-                      Services
+                      Pro Help
                       <span
                         css={css`
                           font-size: ${theme.fontsize[0]};
