@@ -6,6 +6,7 @@ import { css, Global } from '@emotion/react';
  */
 const fonts = {
   primary: `
+    system-ui,
     -apple-system,
     BlinkMacSystemFont,
     "Segoe UI",
