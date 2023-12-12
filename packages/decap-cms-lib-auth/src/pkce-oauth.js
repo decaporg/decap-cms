@@ -124,10 +124,9 @@ export default class PkceAuthenticator {
 
       const response = await fetch(authURL.href, {
         method: 'POST',
-        body:
-          this.auth_token_endpoint_content_type.startsWith('application/x-www-form-urlencoded')
-            ? new URLSearchParams(Object.entries(token_request_body_object)).toString()
-            : JSON.stringify(token_request_body_object),
+        body: this.auth_token_endpoint_content_type.startsWith('application/x-www-form-urlencoded')
+          ? new URLSearchParams(Object.entries(token_request_body_object)).toString()
+          : JSON.stringify(token_request_body_object),
         headers: {
           'Content-Type': this.auth_token_endpoint_content_type,
         },

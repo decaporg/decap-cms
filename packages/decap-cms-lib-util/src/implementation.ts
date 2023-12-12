@@ -110,8 +110,8 @@ export type Config = {
     use_large_media_transforms_in_media_library?: boolean;
     proxy_url?: string;
     auth_type?: string;
-    token_keyword?: string;
     app_id?: string;
+    base_url?: string;
     cms_label_prefix?: string;
     api_version?: string;
   };
