@@ -3,7 +3,7 @@
 exports[`EditorToolbar should render normal save button 1`] = `
 <DocumentFragment>
   .emotion-0 {
-  box-shadow: 0 2px 4px 0 rgba(19, 39, 48, 0.12);
+  box-shadow: 0 2px 6px 0 rgba(68, 74, 87, 0.05),0 1px 3px 0 rgba(68, 74, 87, 0.1),0 2px 54px rgba(0, 0, 0, 0.1);
   position: fixed;
   top: 0;
   left: 0;
@@ -259,7 +259,7 @@ exports[`EditorToolbar should render normal save button 1`] = `
 exports[`EditorToolbar should render normal save button 2`] = `
 <DocumentFragment>
   .emotion-0 {
-  box-shadow: 0 2px 4px 0 rgba(19, 39, 48, 0.12);
+  box-shadow: 0 2px 6px 0 rgba(68, 74, 87, 0.05),0 1px 3px 0 rgba(68, 74, 87, 0.1),0 2px 54px rgba(0, 0, 0, 0.1);
   position: fixed;
   top: 0;
   left: 0;
@@ -515,7 +515,7 @@ exports[`EditorToolbar should render normal save button 2`] = `
 exports[`EditorToolbar should render with default props 1`] = `
 <DocumentFragment>
   .emotion-0 {
-  box-shadow: 0 2px 4px 0 rgba(19, 39, 48, 0.12);
+  box-shadow: 0 2px 6px 0 rgba(68, 74, 87, 0.05),0 1px 3px 0 rgba(68, 74, 87, 0.1),0 2px 54px rgba(0, 0, 0, 0.1);
   position: fixed;
   top: 0;
   left: 0;
@@ -730,7 +730,7 @@ exports[`EditorToolbar should render with default props 1`] = `
 exports[`EditorToolbar should render with status=draft,useOpenAuthoring=false 1`] = `
 <DocumentFragment>
   .emotion-0 {
-  box-shadow: 0 2px 4px 0 rgba(19, 39, 48, 0.12);
+  box-shadow: 0 2px 6px 0 rgba(68, 74, 87, 0.05),0 1px 3px 0 rgba(68, 74, 87, 0.1),0 2px 54px rgba(0, 0, 0, 0.1);
   position: fixed;
   top: 0;
   left: 0;
@@ -1020,7 +1020,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=false 1`
 exports[`EditorToolbar should render with status=draft,useOpenAuthoring=true 1`] = `
 <DocumentFragment>
   .emotion-0 {
-  box-shadow: 0 2px 4px 0 rgba(19, 39, 48, 0.12);
+  box-shadow: 0 2px 6px 0 rgba(68, 74, 87, 0.05),0 1px 3px 0 rgba(68, 74, 87, 0.1),0 2px 54px rgba(0, 0, 0, 0.1);
   position: fixed;
   top: 0;
   left: 0;
@@ -1371,7 +1371,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=true 1`]
 exports[`EditorToolbar should render with status=pending_publish,useOpenAuthoring=false 1`] = `
 <DocumentFragment>
   .emotion-0 {
-  box-shadow: 0 2px 4px 0 rgba(19, 39, 48, 0.12);
+  box-shadow: 0 2px 6px 0 rgba(68, 74, 87, 0.05),0 1px 3px 0 rgba(68, 74, 87, 0.1),0 2px 54px rgba(0, 0, 0, 0.1);
   position: fixed;
   top: 0;
   left: 0;
@@ -1661,7 +1661,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
 exports[`EditorToolbar should render with status=pending_publish,useOpenAuthoring=true 1`] = `
 <DocumentFragment>
   .emotion-0 {
-  box-shadow: 0 2px 4px 0 rgba(19, 39, 48, 0.12);
+  box-shadow: 0 2px 6px 0 rgba(68, 74, 87, 0.05),0 1px 3px 0 rgba(68, 74, 87, 0.1),0 2px 54px rgba(0, 0, 0, 0.1);
   position: fixed;
   top: 0;
   left: 0;
@@ -1989,7 +1989,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
 exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring=false 1`] = `
 <DocumentFragment>
   .emotion-0 {
-  box-shadow: 0 2px 4px 0 rgba(19, 39, 48, 0.12);
+  box-shadow: 0 2px 6px 0 rgba(68, 74, 87, 0.05),0 1px 3px 0 rgba(68, 74, 87, 0.1),0 2px 54px rgba(0, 0, 0, 0.1);
   position: fixed;
   top: 0;
   left: 0;
@@ -2279,7 +2279,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
 exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring=true 1`] = `
 <DocumentFragment>
   .emotion-0 {
-  box-shadow: 0 2px 4px 0 rgba(19, 39, 48, 0.12);
+  box-shadow: 0 2px 6px 0 rgba(68, 74, 87, 0.05),0 1px 3px 0 rgba(68, 74, 87, 0.1),0 2px 54px rgba(0, 0, 0, 0.1);
   position: fixed;
   top: 0;
   left: 0;
@@ -2630,7 +2630,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
 exports[`EditorToolbar should render with workflow controls hasUnpublishedChanges=false,isNewEntry=false,isModification=false,useOpenAuthoring=false 1`] = `
 <DocumentFragment>
   .emotion-0 {
-  box-shadow: 0 2px 4px 0 rgba(19, 39, 48, 0.12);
+  box-shadow: 0 2px 6px 0 rgba(68, 74, 87, 0.05),0 1px 3px 0 rgba(68, 74, 87, 0.1),0 2px 54px rgba(0, 0, 0, 0.1);
   position: fixed;
   top: 0;
   left: 0;
@@ -2850,7 +2850,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
 exports[`EditorToolbar should render with workflow controls hasUnpublishedChanges=false,isNewEntry=false,isModification=false,useOpenAuthoring=true 1`] = `
 <DocumentFragment>
   .emotion-0 {
-  box-shadow: 0 2px 4px 0 rgba(19, 39, 48, 0.12);
+  box-shadow: 0 2px 6px 0 rgba(68, 74, 87, 0.05),0 1px 3px 0 rgba(68, 74, 87, 0.1),0 2px 54px rgba(0, 0, 0, 0.1);
   position: fixed;
   top: 0;
   left: 0;
@@ -3040,7 +3040,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
 exports[`EditorToolbar should render with workflow controls hasUnpublishedChanges=true,isNewEntry=false,isModification=false,useOpenAuthoring=false 1`] = `
 <DocumentFragment>
   .emotion-0 {
-  box-shadow: 0 2px 4px 0 rgba(19, 39, 48, 0.12);
+  box-shadow: 0 2px 6px 0 rgba(68, 74, 87, 0.05),0 1px 3px 0 rgba(68, 74, 87, 0.1),0 2px 54px rgba(0, 0, 0, 0.1);
   position: fixed;
   top: 0;
   left: 0;
@@ -3260,7 +3260,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
 exports[`EditorToolbar should render with workflow controls hasUnpublishedChanges=true,isNewEntry=false,isModification=false,useOpenAuthoring=true 1`] = `
 <DocumentFragment>
   .emotion-0 {
-  box-shadow: 0 2px 4px 0 rgba(19, 39, 48, 0.12);
+  box-shadow: 0 2px 6px 0 rgba(68, 74, 87, 0.05),0 1px 3px 0 rgba(68, 74, 87, 0.1),0 2px 54px rgba(0, 0, 0, 0.1);
   position: fixed;
   top: 0;
   left: 0;
@@ -3480,7 +3480,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
 exports[`EditorToolbar should render with workflow controls hasUnpublishedChanges=true,isNewEntry=false,isModification=true,useOpenAuthoring=false 1`] = `
 <DocumentFragment>
   .emotion-0 {
-  box-shadow: 0 2px 4px 0 rgba(19, 39, 48, 0.12);
+  box-shadow: 0 2px 6px 0 rgba(68, 74, 87, 0.05),0 1px 3px 0 rgba(68, 74, 87, 0.1),0 2px 54px rgba(0, 0, 0, 0.1);
   position: fixed;
   top: 0;
   left: 0;
@@ -3700,7 +3700,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
 exports[`EditorToolbar should render with workflow controls hasUnpublishedChanges=true,isNewEntry=false,isModification=true,useOpenAuthoring=true 1`] = `
 <DocumentFragment>
   .emotion-0 {
-  box-shadow: 0 2px 4px 0 rgba(19, 39, 48, 0.12);
+  box-shadow: 0 2px 6px 0 rgba(68, 74, 87, 0.05),0 1px 3px 0 rgba(68, 74, 87, 0.1),0 2px 54px rgba(0, 0, 0, 0.1);
   position: fixed;
   top: 0;
   left: 0;
