@@ -162,7 +162,7 @@ function HomePage({ data }) {
 
       <HomeSection
         css={css`
-          background: lightgrey;
+          background: ${theme.colors.lightestGray};
         `}
         title={<Markdownify source={landing.services?.hook} />}
         text={<Markdownify source={landing.services?.intro} />}
