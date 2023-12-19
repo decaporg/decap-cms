@@ -36,7 +36,7 @@ function FeatureItem({ feature, description, imgpath, kind, cta }) {
       <Text>
         <Markdownify source={description} />
         <br/>
-        {cta && <Link to={cta.href}>{cta.label}</Link>}
+        {cta && <Link to={cta.href} className="ga-home">{cta.label}</Link>}
       </Text>
     </Box>
   );

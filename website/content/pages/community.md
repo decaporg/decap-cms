@@ -19,4 +19,12 @@ sections:
       - title: GitHub Discussions
         description: Ask questions and discuss ideas.
         url: https://github.com/decaporg/decap-cms/discussions
+  - title: help
+    channels:
+      - title: Professional help
+        description: Our partners offer a range of services that can help you get the most out of Decap CMS. Find onboarding, priority support, and development of custom features.
+        url: /services
+      - title: Community help
+        description: Get help from the community on our Dicsord server's help channel.
+        url: /chat
 ---

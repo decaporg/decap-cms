@@ -5326,9 +5326,9 @@ ee-first@1.1.1:
   integrity sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==
 
 electron-to-chromium@^1.4.601:
-  version "1.4.614"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.614.tgz#2fe789d61fa09cb875569f37c309d0c2701f91c0"
-  integrity sha512-X4ze/9Sc3QWs6h92yerwqv7aB/uU8vCjZcrMjA8N9R1pjMFRe44dLsck5FzLilOYvcXuDn93B+bpGYyufc70gQ==
+  version "1.4.615"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.615.tgz#b1c41839962d2e4e63dca05519da9040e34848c2"
+  integrity sha512-/bKPPcgZVUziECqDc+0HkT87+0zhaWSZHNXqF8FLd2lQcptpmUFwoCSWjCdOng9Gdq+afKArPdEg/0ZW461Eng==
 
 emoji-regex@^8.0.0:
   version "8.0.0"
@@ -6092,9 +6092,9 @@ fastest-levenshtein@^1.0.16:
   integrity sha512-eRnCtTTtGZFpQCwhJiUOuxPQWRXVKYDn0b2PeHfXL6/Zi53SLAzAHfVhVWK2AryC/WH05kGfxhFIPvTF0SXQzg==
 
 fastq@^1.15.0, fastq@^1.6.0:
-  version "1.15.0"
-  resolved "https://registry.yarnpkg.com/fastq/-/fastq-1.15.0.tgz#d04d07c6a2a68fe4599fea8d2e103a937fae6b3a"
-  integrity sha512-wBrocU2LCXXa+lWBt8RoIRD89Fi8OdABODa/kEnyeyjS5aZO5/GNvI5sEINADqP/h8M29UHTHUb53sUu5Ihqdw==
+  version "1.16.0"
+  resolved "https://registry.yarnpkg.com/fastq/-/fastq-1.16.0.tgz#83b9a9375692db77a822df081edb6a9cf6839320"
+  integrity sha512-ifCoaXsDrsdkWTtiNJX5uzHDsrck5TzfKKDcuFFTIrrc/BS076qgEIfoIy1VeZqViznfKiysPYTh/QeHtnIsYA==
   dependencies:
     reusify "^1.0.4"
 
@@ -6518,7 +6518,7 @@ gatsby-plugin-catch-links@5.13.0:
     "@babel/runtime" "^7.20.13"
     escape-string-regexp "^1.0.5"
 
-gatsby-plugin-decap-cms@^3.0.0:
+gatsby-plugin-decap-cms@^4.0.3:
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/gatsby-plugin-decap-cms/-/gatsby-plugin-decap-cms-4.0.3.tgz#fe7791f5d2181bcf7d59ac5ce68ad532d6f8ff4b"
   integrity sha512-9AHlBrM/dP07X1wDNSNPHe8Cr7PcO2IO64adT7vux6p4QwHRghu9AVSx+a+amyGSWxavGPP8pjioyyFVX2H+aA==
@@ -6663,7 +6663,7 @@ gatsby-sharp@^1.13.0:
   dependencies:
     sharp "^0.32.6"
 
-gatsby-source-filesystem@5.13.0:
+gatsby-source-filesystem@^5.13.0:
   version "5.13.0"
   resolved "https://registry.yarnpkg.com/gatsby-source-filesystem/-/gatsby-source-filesystem-5.13.0.tgz#33d6a5307a268a67c931dd3602d3e9150b597905"
   integrity sha512-yn4axQhIPHLQDMgrhEmerXyoawiTVB1haUz36BTlQers0HfMmODyjbnIK01Dt1IKAbYVfS0A2suBjBjIbNLwAg==
