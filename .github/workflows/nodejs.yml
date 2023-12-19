@@ -56,7 +56,7 @@ jobs:
         if: ${{ needs.changes.outputs.cms == 'true' }}
       - uses: actions/upload-artifact@master
         with:
-          name: dev-test-website-${{ runner.os }}
+          name: dev-test-website-${{ runner.os }}-${{ matrix.node-version }}
           path: dev-test
         if: ${{ needs.changes.outputs.cms == 'true' }}
 
@@ -81,7 +81,7 @@ jobs:
         if: ${{ needs.changes.outputs.cms == 'true' }}
       - uses: actions/download-artifact@master
         with:
-          name: dev-test-website-${{ runner.os }}
+          name: dev-test-website-${{ runner.os }}-18.x
           path: dev-test
         if: ${{ needs.changes.outputs.cms == 'true' }}
       - name: npm install
