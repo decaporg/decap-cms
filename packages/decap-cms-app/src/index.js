@@ -1,5 +1,4 @@
 import { DecapCmsCore as CMS } from 'decap-cms-core';
-import dayjs from 'dayjs';
 import './extensions.js';
 
 // Log version
@@ -11,6 +10,5 @@ if (typeof window !== 'undefined') {
 
 export const DecapCmsApp = {
   ...CMS,
-  dayjs,
 };
 export default CMS;

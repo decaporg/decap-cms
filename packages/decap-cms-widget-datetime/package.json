@@ -21,9 +21,11 @@
     "build": "cross-env NODE_ENV=production webpack",
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
   },
+  "dependencies": {
+    "dayjs": "^1.11.10"
+  },
   "peerDependencies": {
     "@emotion/react": "^11.11.1",
-    "dayjs": "^1.11.10",
     "react": "^18.2.0"
   }
 }
