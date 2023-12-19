@@ -11,9 +11,9 @@ This service is provided by PM TechHub, the maintainers of Decap CMS.
 
 <a href="https://develop--pm-techhub.netlify.app/services/decap/#monthly-premium-support" class="button ga-onboarding">Learn more about Onboarding</a>
 
-## Priority Support
+## Monthly Priority Support
 
-Get continuous support for Decap CMS with priority response time.
+Get continuous support for Decap CMS with priority response times.
 
 This service is provided by PM TechHub, the maintainers of Decap CMS.
 
