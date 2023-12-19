@@ -13,7 +13,7 @@ This service is provided by PM TechHub, the maintainers of Decap CMS.
 
 ## Priority Support
 
-Get support for Decap CMS with priority response time.
+Get continuous support for Decap CMS with priority response time.
 
 This service is provided by PM TechHub, the maintainers of Decap CMS.
 
@@ -21,15 +21,15 @@ This service is provided by PM TechHub, the maintainers of Decap CMS.
 
 ## Development of Custom Features
 
-Sponsor a custom feature that will be added to the CMS. Tailored to your exact specifications, the team of maintainers is ready to bring your vision to life.
+Sponsor the development of a custom feature tailored to your needs. The expert team of maintainers is ready to bring your vision to life.
 
 This service is provided by PM TechHub, the maintainers of Decap CMS.
 
-<a href="https://develop--pm-techhub.netlify.app/services/decap/#development-of-custom-features" class="ga-features button">Learn more about Development of Custom Features</a>
+<a href="https://develop--pm-techhub.netlify.app/services/decap/#development-of-custom-features" class="ga-features button">Learn more about Custom Features</a>
 
 ## Building Websites with Decap CMS
 
-Work with experts and agencies that build with Decap CMS.
+Work with experts and agencies that build websites with Decap CMS.
 
 - <a href="https://develop--pm-techhub.netlify.app/services/web-development/" class="ga-webdev">PM TechHub</a>
 
