@@ -1,5 +1,7 @@
+/** @jsx jsx */
+import { jsx } from '@emotion/react'
 import React from 'react';
-import { css } from '@emotion/core';
+import { css } from '@emotion/react';
 
 import Markdownify from './markdownify';
 import PageHero from './page-hero';

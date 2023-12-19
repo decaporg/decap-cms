@@ -50,7 +50,7 @@ function DocPage({ data, location }) {
 
 export const pageQuery = graphql`
   query docPage($slug: String!) {
-    page: markdownRemark(fields: { slug: { eq: $slug } }) {
+    page: markdownRemark(fields: {slug: {eq: $slug}}) {
       fields {
         path
       }
@@ -61,13 +61,10 @@ export const pageQuery = graphql`
       html
     }
     nav: allMarkdownRemark(
-      sort: { fields: [frontmatter___weight], order: ASC }
-      filter: {
-        frontmatter: { title: { ne: null }, group: { ne: null } }
-        fields: { slug: { regex: "/docs/" } }
-      }
+      sort: {frontmatter: {weight: ASC}}
+      filter: {frontmatter: {title: {ne: null}, group: {ne: null}}, fields: {slug: {regex: "/docs/"}}}
     ) {
-      group(field: frontmatter___group) {
+      group(field: {frontmatter: {group: SELECT}}) {
         fieldValue
         edges {
           node {
@@ -94,8 +91,8 @@ export const pageQuery = graphql`
       }
     }
     widgets: allMarkdownRemark(
-      sort: { fields: [frontmatter___label], order: ASC }
-      filter: { frontmatter: { label: { ne: null } }, fields: { slug: { regex: "/widgets/" } } }
+      sort: {frontmatter: {label: ASC}}
+      filter: {frontmatter: {label: {ne: null}}, fields: {slug: {regex: "/widgets/"}}}
     ) {
       edges {
         node {

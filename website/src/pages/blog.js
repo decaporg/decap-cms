@@ -1,7 +1,8 @@
-import React from 'react';
+/** @jsx jsx */
+import { jsx } from '@emotion/react'
 import { Helmet } from 'react-helmet';
 import { Link, graphql } from 'gatsby';
-import { css } from '@emotion/core';
+import { css } from '@emotion/react';
 
 import Layout from '../components/layout';
 import Container from '../components/container';
@@ -52,8 +53,8 @@ export default Blog;
 export const pageQuery = graphql`
   query blogList {
     allMarkdownRemark(
-      filter: { fields: { slug: { regex: "/blog/" } } }
-      sort: { order: DESC, fields: [frontmatter___date] }
+      filter: {fields: {slug: {regex: "/blog/"}}}
+      sort: {frontmatter: {date: DESC}}
     ) {
       edges {
         node {

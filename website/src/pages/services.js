@@ -1,8 +1,9 @@
-import React from 'react';
+/** @jsx jsx */
+import { jsx } from '@emotion/react'
 import { Helmet } from 'react-helmet';
 import { graphql } from 'gatsby';
 import { trimStart, trimEnd } from 'lodash';
-import { css } from '@emotion/core';
+import { css } from '@emotion/react';
 
 import TwitterMeta from '../components/twitter-meta';
 import Layout from '../components/layout';

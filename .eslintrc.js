@@ -40,6 +40,8 @@ module.exports = {
     ],
     'no-duplicate-imports': 'error',
     '@emotion/no-vanilla': 'error',
+    '@emotion/jsx-import': 'error',
+    '@emotion/pkg-renaming': 'error',
     '@emotion/import-from-emotion': 'error',
     '@emotion/styled-import': 'error',
     'require-atomic-updates': [0],

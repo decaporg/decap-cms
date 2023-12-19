@@ -1,5 +1,6 @@
-import React from 'react';
-import { css } from '@emotion/core';
+/** @jsx jsx */
+import { jsx } from '@emotion/react'
+import { css } from '@emotion/react';
 
 import Container from './container';
 import Release from './release';
