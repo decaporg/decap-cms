@@ -21,5 +21,6 @@ If you would like to facilitate your own OAuth authentication rather than use Ne
 | [@adrian-ub](https://github.com/adrian-ub)                   | GitHub, GitLab                    | TypeScript                        | [Repo](https://github.com/ublabs/netlify-cms-oauth)                                                                                                          |
 | [@hatappo](https://github.com/hatappo)                       | GitHub                            | ClojureScript, Firebase Functions | [Repo](https://github.com/hatappo/netlifycms-oauth-server)                                                                                                   |
 | [@njfamirm](https://github.com/njfamirm)                     | GitHub                            | Node.js, Typescript               | [Repo](https://github.com/njfamirm/decap-cms-github-backend), [Blog](https://www.njfamirm.ir/en/blog/self-hosting-decap-cms/)                                |
+| [@augustogunsch](https://github.com/augustogunsch)           | GitHub, GitHub Enterprise, GitLab | Rust                              | [Repo](https://github.com/augustogunsch/decap_oauth)                                                                                                         |
 
 Check each project's documentation for instructions on installation and usage.
