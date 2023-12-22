@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { css } from '@emotion/core';
+import { css } from '@emotion/react';
 
 import { mq } from '../utils';
 import theme from '../theme';
