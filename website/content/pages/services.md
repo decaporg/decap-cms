@@ -1,7 +1,7 @@
 ---
 title: Professional help
 description: Our partners offer a range of services that can help you get the most out of Decap CMS. Find onboarding, priority support, and development of custom features.
-image: /img/decap-3.png
+image: /img/pro-help.png
 ---
 ## Onboarding
 
