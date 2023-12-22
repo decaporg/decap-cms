@@ -204,6 +204,7 @@ class EditorControl extends React.Component {
       parentIds,
       t,
       validateMetaField,
+      isLoadingAsset,
       isDisabled,
       isHidden,
       isFieldDuplicate,
@@ -329,6 +330,7 @@ class EditorControl extends React.Component {
               isDisabled={isDisabled}
               isFieldDuplicate={isFieldDuplicate}
               isFieldHidden={isFieldHidden}
+              isLoadingAsset={isLoadingAsset}
               locale={locale}
             />
             {fieldHint && (
