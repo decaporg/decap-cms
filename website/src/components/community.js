@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx, css } from '@emotion/react'
+import { jsx, css } from '@emotion/react';
 import React from 'react';
 
 import Markdownify from './markdownify';
@@ -25,20 +25,20 @@ function Community({ headline, subhead, sections }) {
       </PageHero>
 
       <Container>
-          <Grid cols={2}>
-            <div
-              css={css`
-                margin-bottom: ${theme.space[5]};
-              `}
-            >
-              {sections.map(({ title: sectionTitle, channels }, channelIdx) => (
-                <React.Fragment key={channelIdx}>
-                  <SectionLabel>{sectionTitle}</SectionLabel>
-                  <CommunityChannelsList channels={channels} />
-                </React.Fragment>
-              ))}
-            </div>
-          </Grid>
+        <Grid cols={2}>
+          <div
+            css={css`
+              margin-bottom: ${theme.space[5]};
+            `}
+          >
+            {sections.map(({ title: sectionTitle, channels }, channelIdx) => (
+              <React.Fragment key={channelIdx}>
+                <SectionLabel>{sectionTitle}</SectionLabel>
+                <CommunityChannelsList channels={channels} />
+              </React.Fragment>
+            ))}
+          </div>
+        </Grid>
       </Container>
     </>
   );

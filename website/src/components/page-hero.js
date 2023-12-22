@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx, css } from '@emotion/react'
+import { jsx, css } from '@emotion/react';
 
 import Container from './container';
 import theme from '../theme';

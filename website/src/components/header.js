@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx, css } from '@emotion/react'
+import { jsx, css } from '@emotion/react';
 import { useState, useEffect } from 'react';
 import { Link, graphql, StaticQuery } from 'gatsby';
 import styled from '@emotion/styled';
@@ -245,8 +245,11 @@ function Header({ hasHeroBelow }) {
                           color: ${theme.colors.primaryLight};
                           margin-left: ${theme.space[1]};
                           vertical-align: top;
-                        `}>New</span>
-                      </NavLink>
+                        `}
+                      >
+                        New
+                      </span>
+                    </NavLink>
                   </MenuItem>
                   <MenuItem>
                     <NavLink to="/community/">Community</NavLink>

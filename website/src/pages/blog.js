@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx, css } from '@emotion/react'
+import { jsx, css } from '@emotion/react';
 import { Helmet } from 'react-helmet';
 import { Link, graphql } from 'gatsby';
 
@@ -52,8 +52,8 @@ export default Blog;
 export const pageQuery = graphql`
   query blogList {
     allMarkdownRemark(
-      filter: {fields: {slug: {regex: "/blog/"}}}
-      sort: {frontmatter: {date: DESC}}
+      filter: { fields: { slug: { regex: "/blog/" } } }
+      sort: { frontmatter: { date: DESC } }
     ) {
       edges {
         node {

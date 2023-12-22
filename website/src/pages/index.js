@@ -1,7 +1,7 @@
 /** @jsx jsx */
 // eslint-disable-next-line no-unused-vars
 import React from 'react';
-import { jsx, css } from '@emotion/react'
+import { jsx, css } from '@emotion/react';
 import { graphql } from 'gatsby';
 import styled from '@emotion/styled';
 
@@ -94,12 +94,21 @@ function HomePage({ data }) {
           </div>
           <div>
             <p
-            css={css`
-              margin-bottom: ${theme.space[2]};
-              font-weight: 700;
-            `}>Try it out in the <a href="https://demo.decapcms.org/" target="_blank" rel="noreferrer">Decap CMS Demo</a></p>
+              css={css`
+                margin-bottom: ${theme.space[2]};
+                font-weight: 700;
+              `}
+            >
+              Try it out in the{' '}
+              <a href="https://demo.decapcms.org/" target="_blank" rel="noreferrer">
+                Decap CMS Demo
+              </a>
+            </p>
             <a href="https://demo.decapcms.org/" target="_blank" rel="noreferrer">
-              <img src="/img/screenshot-editor-2.png" alt="Screenshot of Decap CMS page editing view" />
+              <img
+                src="/img/screenshot-editor-2.png"
+                alt="Screenshot of Decap CMS page editing view"
+              />
             </a>
           </div>
         </Grid>
@@ -171,7 +180,8 @@ function HomePage({ data }) {
               css={css`
                 color: ${theme.colors.primaryLight};
                 margin-right: ${theme.space[2]};
-              `}>
+              `}
+            >
               New!
             </span>
             {landing.services?.hook}
