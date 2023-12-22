@@ -1,8 +1,9 @@
 /** @jsx jsx */
-import { jsx } from '@emotion/react'
+// eslint-disable-next-line no-unused-vars
+import React from 'react';
+import { jsx, css } from '@emotion/react'
 import { graphql } from 'gatsby';
 import styled from '@emotion/styled';
-import { css } from '@emotion/react';
 
 import Layout from '../components/layout';
 import Markdownify from '../components/markdownify';
@@ -164,7 +165,18 @@ function HomePage({ data }) {
         css={css`
           background: ${theme.colors.lightestGray};
         `}
-        title={<Markdownify source={landing.services?.hook} />}
+        title={
+          <>
+            <span
+              css={css`
+                color: ${theme.colors.primaryLight};
+                margin-right: ${theme.space[2]};
+              `}>
+              New!
+            </span>
+            {landing.services?.hook}
+          </>
+        }
         text={<Markdownify source={landing.services?.intro} />}
       >
         <Grid cols={4}>

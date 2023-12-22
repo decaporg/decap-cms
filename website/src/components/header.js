@@ -242,7 +242,7 @@ function Header({ hasHeroBelow }) {
                       Pro Help
                       <span
                         css={css`
-                          font-size: ${theme.fontsize[0]};
+                          font-size: ${theme.fontsize[1]};
                           color: ${theme.colors.primaryLight};
                           margin-left: ${theme.space[1]};
                           vertical-align: top;

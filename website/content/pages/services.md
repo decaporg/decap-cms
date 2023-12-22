@@ -9,7 +9,7 @@ Get started with Decap CMS with onboarding sessions provided by experts.
 
 This service is provided by PM TechHub, the maintainers of Decap CMS.
 
-<a href="https://develop--pm-techhub.netlify.app/services/decap/#monthly-premium-support" class="button ga-onboarding">Learn more about Onboarding</a>
+<a href="https://techhub.p-m.si/services/decap/" class="button ga-onboarding">Learn more about Onboarding</a>
 
 ## Monthly Priority Support
 
@@ -17,7 +17,7 @@ Get continuous support for Decap CMS with priority response times.
 
 This service is provided by PM TechHub, the maintainers of Decap CMS.
 
-<a href="https://develop--pm-techhub.netlify.app/services/decap/#monthly-premium-support" class="ga-support button">Learn more about Priority Support</a>
+<a href="https://techhub.p-m.si/services/decap/" class="ga-support button">Learn more about Priority Support</a>
 
 ## Development of Custom Features
 
@@ -25,13 +25,13 @@ Sponsor the development of a custom feature tailored to your needs. The expert t
 
 This service is provided by PM TechHub, the maintainers of Decap CMS.
 
-<a href="https://develop--pm-techhub.netlify.app/services/decap/#development-of-custom-features" class="ga-features button">Learn more about Custom Features</a>
+<a href="https://techhub.p-m.si/services/decap/" class="ga-features button">Learn more about Custom Features</a>
 
 ## Building Websites with Decap CMS
 
 Work with experts and agencies that build websites with Decap CMS.
 
-- <a href="https://develop--pm-techhub.netlify.app/services/web-development/" class="ga-webdev">PM TechHub</a>
+- <a href="https://techhub.p-m.si/services/web-development/" class="ga-webdev">PM TechHub</a>
 
 <br>
 
