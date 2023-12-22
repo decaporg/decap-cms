@@ -1,9 +1,8 @@
 /** @jsx jsx */
-import { jsx } from '@emotion/react'
+import { jsx, css } from '@emotion/react'
 import { useState, useEffect } from 'react';
 import { Link, graphql, StaticQuery } from 'gatsby';
 import styled from '@emotion/styled';
-import { css } from '@emotion/react';
 import GitHubButton from 'react-github-btn';
 
 import Container from './container';

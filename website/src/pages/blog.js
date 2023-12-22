@@ -1,8 +1,7 @@
 /** @jsx jsx */
-import { jsx } from '@emotion/react'
+import { jsx, css } from '@emotion/react'
 import { Helmet } from 'react-helmet';
 import { Link, graphql } from 'gatsby';
-import { css } from '@emotion/react';
 
 import Layout from '../components/layout';
 import Container from '../components/container';
