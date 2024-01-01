@@ -7,6 +7,7 @@ const hr = {
     loginWithBitbucket: 'Prijava sa Bitbucket računom',
     loginWithGitHub: 'Prijava sa GitHub računom',
     loginWithGitLab: 'Prijava sa GitLab računom',
+    loginWithGitea: 'Prijava sa Gitea računom',
     errors: {
       email: 'Unesite email.',
       password: 'Molimo unisite lozinku.',
@@ -183,6 +184,7 @@ const hr = {
       },
       datetime: {
         now: 'Sad',
+        clear: 'Očisti',
       },
     },
   },

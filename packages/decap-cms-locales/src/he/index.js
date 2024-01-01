@@ -7,6 +7,7 @@ const he = {
     loginWithBitbucket: 'התחברות עם Bitbucket',
     loginWithGitHub: 'התחברות עם GitHub',
     loginWithGitLab: 'התחברות עם GitLab',
+    loginWithGitea: 'התחברות עם Gitea',
     errors: {
       email: 'נא  לא לשכוח להקליד את כתובת המייל',
       password: 'נא להקליד את הסיסמה.',
@@ -196,6 +197,7 @@ const he = {
       },
       datetime: {
         now: 'עכשיו',
+        clear: 'ניקוי',
       },
       list: {
         add: 'הוספת %{item}',

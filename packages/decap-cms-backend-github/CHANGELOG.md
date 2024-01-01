@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.1.0-beta.1](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-github@3.1.0-beta.0...decap-cms-backend-github@3.1.0-beta.1) (2023-11-15)
+
+
+### Bug Fixes
+
+* used merge-upstream to sync fork & upstream ([#6504](https://github.com/decaporg/decap-cms/issues/6504)) ([931399d](https://github.com/decaporg/decap-cms/commit/931399dd6eb675e06d59ac57ecfefc1b82467271))
+
+
+
+
+
+# [3.1.0-beta.0](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-github@3.1.0...decap-cms-backend-github@3.1.0-beta.0) (2023-10-20)
+
+
+### Reverts
+
+* Revert "chore(release): publish" ([b89fc89](https://github.com/decaporg/decap-cms/commit/b89fc894dfbb5f4136b2e5427fd25a29378a58c6))
+
+
+
+
+
 ## [3.0.3](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-github@3.0.2...decap-cms-backend-github@3.0.3) (2023-10-13)
 
 **Note:** Version bump only for package decap-cms-backend-github

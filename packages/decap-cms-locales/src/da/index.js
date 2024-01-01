@@ -7,6 +7,7 @@ const da = {
     loginWithBitbucket: 'Log ind med Bitbucket',
     loginWithGitHub: 'Log ind med GitHub',
     loginWithGitLab: 'Log ind med GitLab',
+    loginWithGitea: 'Log ind med Gitea',
     errors: {
       email: 'Vær sikker på du har indtastet din e-mail.',
       password: 'Indtast dit kodeord.',
@@ -204,6 +205,7 @@ const da = {
       },
       datetime: {
         now: 'Nu',
+        clear: 'Ryd',
       },
       list: {
         add: 'Tilføj %{item}',

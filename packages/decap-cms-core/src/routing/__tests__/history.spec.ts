@@ -1,5 +1,5 @@
 import { createHashHistory } from 'history';
-import { mocked } from 'ts-jest/utils';
+import { mocked } from 'jest-mock';
 
 import type { History } from 'history';
 

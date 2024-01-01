@@ -7,6 +7,7 @@ const de = {
     loginWithBitbucket: 'Mit Bitbucket einloggen',
     loginWithGitHub: 'Mit GitHub einloggen',
     loginWithGitLab: 'Mit GitLab einloggen',
+    loginWithGitea: 'Mit Gitea einloggen',
     errors: {
       email: 'Stellen Sie sicher, Ihre E-Mail-Adresse einzugeben.',
       password: 'Bitte geben Sie Ihr Passwort ein.',
@@ -203,6 +204,7 @@ const de = {
       },
       datetime: {
         now: 'Jetzt',
+        clear: 'Löschen',
       },
       list: {
         add: '%{item} hinzufügen',

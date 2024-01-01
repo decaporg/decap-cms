@@ -18,9 +18,11 @@ const ChatLink = styled.a`
   font-size: 14px;
   text-align: right;
   display: none;
+  transition: all 0.2s ease-out;
+  box-shadow: 0;
+
   &:hover {
-    box-shadow: 0 0.5em 0.5em -0.4em var(--hover);
-    transform: translateY(-0.25em);
+    box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.5);
   }
   ${mq[1]} {
     display: block;

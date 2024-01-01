@@ -3,6 +3,39 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.1.3-beta.0](https://github.com/decaporg/decap-cms/compare/decap-cms-locales@3.1.2...decap-cms-locales@3.1.3-beta.0) (2023-11-23)
+
+
+### Performance Improvements
+
+* replace moment with dayjs ([#6980](https://github.com/decaporg/decap-cms/issues/6980)) ([22370b1](https://github.com/decaporg/decap-cms/commit/22370b13e49a4a5f58a60ebd4bc40ce4b141eb11))
+
+
+
+
+
+## [3.1.2](https://github.com/decaporg/decap-cms/compare/decap-cms-locales@3.1.0...decap-cms-locales@3.1.2) (2023-10-20)
+
+
+### Features
+
+* **backend:** add gitea backend ([#6808](https://github.com/decaporg/decap-cms/issues/6808)) ([0d89a58](https://github.com/decaporg/decap-cms/commit/0d89a58e93f64f868ff3e4e8f0945ccf166ad738))
+
+
+
+
+
+## [3.1.1](https://github.com/decaporg/decap-cms/compare/decap-cms-locales@3.1.0...decap-cms-locales@3.1.1) (2023-10-20)
+
+
+### Features
+
+* **backend:** add gitea backend ([#6808](https://github.com/decaporg/decap-cms/issues/6808)) ([0d89a58](https://github.com/decaporg/decap-cms/commit/0d89a58e93f64f868ff3e4e8f0945ccf166ad738))
+
+
+
+
+
 # [3.1.0](https://github.com/decaporg/decap-cms/compare/decap-cms-locales@3.0.0...decap-cms-locales@3.1.0) (2023-08-23)
 
 

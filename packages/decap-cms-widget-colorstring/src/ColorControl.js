@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import ChromePicker from 'react-color';
-import validateColor from 'validate-color';
+import tinycolor from 'tinycolor2';
 import { zIndex } from 'decap-cms-ui-default';
 import { debounce } from 'lodash';
 
@@ -150,8 +150,10 @@ export default class ColorControl extends React.Component {
         )}
         <ColorSwatchBackground />
         <ColorSwatch
-          background={validateColor(this.props.value) ? this.props.value : '#fff'}
-          color={validateColor(this.props.value) ? 'rgba(255, 255, 255, 0)' : 'rgb(223, 223, 227)'}
+          background={tinycolor(this.props.value).isValid() ? this.props.value : '#fff'}
+          color={
+            tinycolor(this.props.value).isValid() ? 'rgba(255, 255, 255, 0)' : 'rgb(223, 223, 227)'
+          }
           onClick={this.handleClick}
         >
           ?

@@ -7,6 +7,7 @@ const bg = {
     loginWithBitbucket: 'Вход с Bitbucket',
     loginWithGitHub: 'Вход с GitHub',
     loginWithGitLab: 'Вход с GitLab',
+    loginWithGitea: 'Вход с Gitea',
     errors: {
       email: 'Въведете вашия имейл.',
       password: 'Въведете паролата.',
@@ -194,6 +195,7 @@ const bg = {
       },
       datetime: {
         now: 'Сега',
+        clear: 'Изчисти',
       },
     },
   },

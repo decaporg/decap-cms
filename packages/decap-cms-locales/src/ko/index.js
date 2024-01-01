@@ -7,6 +7,7 @@ const ko = {
     loginWithBitbucket: 'Bitbucket 으로 로그인',
     loginWithGitHub: 'GitHub 로 로그인',
     loginWithGitLab: 'GitLab 으로 로그인',
+    loginWithGitea: 'Gitea 으로 로그인',
     errors: {
       email: '반드시 이메일을 입력해 주세요.',
       password: '암호를 입력해 주세요.',
@@ -204,6 +205,7 @@ const ko = {
       },
       datetime: {
         now: '현재시각',
+        clear: '지우기',
       },
       list: {
         add: '%{item} 추가',

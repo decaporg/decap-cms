@@ -3,6 +3,58 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.3.0-beta.2](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.3.0-beta.1...decap-cms-core@3.3.0-beta.2) (2023-11-23)
+
+
+### Performance Improvements
+
+* replace moment with dayjs ([#6980](https://github.com/decaporg/decap-cms/issues/6980)) ([22370b1](https://github.com/decaporg/decap-cms/commit/22370b13e49a4a5f58a60ebd4bc40ce4b141eb11))
+
+
+
+
+
+# [3.3.0-beta.1](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.3.0-beta.0...decap-cms-core@3.3.0-beta.1) (2023-11-23)
+
+**Note:** Version bump only for package decap-cms-core
+
+
+
+
+
+# [3.3.0-beta.0](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.3.0...decap-cms-core@3.3.0-beta.0) (2023-10-20)
+
+
+### Reverts
+
+* Revert "chore(release): publish" ([b89fc89](https://github.com/decaporg/decap-cms/commit/b89fc894dfbb5f4136b2e5427fd25a29378a58c6))
+
+
+
+
+
+## [3.2.8](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.2.6...decap-cms-core@3.2.8) (2023-10-20)
+
+
+### Features
+
+* **backend:** add gitea backend ([#6808](https://github.com/decaporg/decap-cms/issues/6808)) ([0d89a58](https://github.com/decaporg/decap-cms/commit/0d89a58e93f64f868ff3e4e8f0945ccf166ad738))
+
+
+
+
+
+## [3.2.7](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.2.6...decap-cms-core@3.2.7) (2023-10-20)
+
+
+### Features
+
+* **backend:** add gitea backend ([#6808](https://github.com/decaporg/decap-cms/issues/6808)) ([0d89a58](https://github.com/decaporg/decap-cms/commit/0d89a58e93f64f868ff3e4e8f0945ccf166ad738))
+
+
+
+
+
 ## [3.2.6](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.2.5...decap-cms-core@3.2.6) (2023-10-13)
 
 

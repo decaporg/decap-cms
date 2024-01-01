@@ -7,6 +7,7 @@ const sv = {
     loginWithBitbucket: 'Logga in med Bitbucket',
     loginWithGitHub: 'Logga in med GitHub',
     loginWithGitLab: 'Logga in med GitLab',
+    loginWithGitea: 'Logga in med Gitea',
     errors: {
       email: 'Fyll i din epostadress.',
       password: 'Vänligen skriv ditt lösenord.',
@@ -194,6 +195,7 @@ const sv = {
       },
       datetime: {
         now: 'Nu',
+        clear: 'Rensa',
       },
     },
   },

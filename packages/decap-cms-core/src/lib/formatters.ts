@@ -195,7 +195,7 @@ export function previewUrlFormatter(
     compiledPath = compileStringTemplate(pathTemplate, date, slug, fields, processSegment);
   } catch (err) {
     // Print an error and ignore `preview_path` if both:
-    //   1. Date is invalid (according to Moment), and
+    //   1. Date is invalid (according to DayJs), and
     //   2. A date expression (eg. `{{year}}`) is used in `preview_path`
     if (err.name === SLUG_MISSING_REQUIRED_DATE) {
       console.error(stripIndent`

@@ -61,13 +61,13 @@ export const pageQuery = graphql`
       html
     }
     nav: allMarkdownRemark(
-      sort: { fields: [frontmatter___weight], order: ASC }
+      sort: { frontmatter: { weight: ASC } }
       filter: {
         frontmatter: { title: { ne: null }, group: { ne: null } }
         fields: { slug: { regex: "/docs/" } }
       }
     ) {
-      group(field: frontmatter___group) {
+      group(field: { frontmatter: { group: SELECT } }) {
         fieldValue
         edges {
           node {
@@ -94,7 +94,7 @@ export const pageQuery = graphql`
       }
     }
     widgets: allMarkdownRemark(
-      sort: { fields: [frontmatter___label], order: ASC }
+      sort: { frontmatter: { label: ASC } }
       filter: { frontmatter: { label: { ne: null } }, fields: { slug: { regex: "/widgets/" } } }
     ) {
       edges {

@@ -12,7 +12,6 @@ class HTML extends React.Component {
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
           <meta name="apple-mobile-web-app-title" content="Decap CMS" />
           <meta name="application-name" content="Decap CMS" />
-          <meta property="og:image" content="https://decapcms.org/img/og-image.jpg" />
 
           <link rel="icon" type="image/png" href="/img/favicon/favicon-32x32.png" sizes="32x32" />
           <link rel="icon" type="image/png" href="/img/favicon/favicon-16x16.png" sizes="16x16" />

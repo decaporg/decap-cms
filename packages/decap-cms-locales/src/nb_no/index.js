@@ -6,6 +6,7 @@ const nb_no = {
     loginWithBitbucket: 'Logg på med Bitbucket',
     loginWithGitHub: 'Logg på med GitHub',
     loginWithGitLab: 'Logg på med GitLab',
+    loginWithGitea: 'Logg på med Gitea',
     errors: {
       email: 'Du må skrive inn e-posten din.',
       password: 'Du må skrive inn passordet ditt.',
@@ -155,6 +156,7 @@ const nb_no = {
       },
       datetime: {
         now: 'Nå',
+        clear: 'Nullstill',
       },
     },
   },

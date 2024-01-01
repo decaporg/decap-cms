@@ -7,6 +7,7 @@ const lt = {
     loginWithBitbucket: 'Prisijungti su Bitbucket',
     loginWithGitHub: 'Prisijungti su GitHub',
     loginWithGitLab: 'Prisijungti su GitLab',
+    loginWithGitea: 'Prisijungti su Gitea',
     errors: {
       email: 'Įveskite savo elektroninį paštą.',
       password: 'Įveskite savo slaptažodį.',
@@ -185,6 +186,7 @@ const lt = {
       },
       datetime: {
         now: 'Dabar',
+        clear: 'Išvalyti',
       },
     },
   },

@@ -6,6 +6,7 @@ const vi = {
     loginWithBitbucket: 'Đăng nhập bằng Bitbucket',
     loginWithGitHub: 'Đăng nhập bằng GitHub',
     loginWithGitLab: 'Đăng nhập bằng GitLab',
+    loginWithGitea: 'Đăng nhập bằng Gitea',
     errors: {
       email: 'Hãy nhập email của bạn.',
       password: 'Hãy nhập mật khẩu của bạn.',
@@ -164,6 +165,7 @@ const vi = {
       },
       datetime: {
         now: 'Ngay lúc này',
+        clear: 'Xóa',
       },
     },
   },
