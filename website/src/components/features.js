@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from '@emotion/styled';
+import { Link } from 'gatsby';
 
 import Markdownify from './markdownify';
 import theme from '../theme';
@@ -25,7 +26,7 @@ const Text = styled.p`
   }
 `;
 
-function FeatureItem({ feature, description, imgpath, kind }) {
+function FeatureItem({ feature, description, imgpath, kind, cta }) {
   return (
     <Box>
       {imgpath && <img src={require(`../img/${imgpath}`).default} alt="" />}
@@ -34,6 +35,12 @@ function FeatureItem({ feature, description, imgpath, kind }) {
       </Title>
       <Text>
         <Markdownify source={description} />
+        <br />
+        {cta && (
+          <Link to={cta.href} className="ga-home">
+            {cta.label}
+          </Link>
+        )}
       </Text>
     </Box>
   );

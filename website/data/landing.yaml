@@ -34,6 +34,31 @@ editors:
       description: "With [Git Gateway](/docs/git-gateway-backend/#git-gateway-with-netlify-identity), you can add CMS access for any team member — even if they don’t have a GitHub account. "
       imgpath: "feature-access.svg"
 
+services:
+  hook: "Do you need professional help?"
+  intro: "The team of maintainers offers a range of professional services to help you get the most out of Decap CMS."
+  features:
+    - feature: "Onboarding"
+      description: "Get up to speed quickly with a customized onboarding program tailored to your team and project."
+      cta:
+        href: "/services/"
+        label: "Find out more"
+    - feature: "Priority Support"
+      description: "Benefit from a dedicated support line and priority ticket handling."
+      cta:
+        href: "/services/"
+        label: "Find out more"
+    - feature: "Custom Features Development"
+      description: "Sponsor the development of custom features or integrations to meet your specific needs."
+      cta:
+        href: "/services/"
+        label: "Find out more"
+    - feature: "Building Websites with Decap CMS"
+      description: "See the list of trusted partners that build websites with Decap CMS."
+      cta:
+        href: "/services/"
+        label: "Find out more"
+
 community:
   hook: "Supported by a growing&nbsp;community"
   features:

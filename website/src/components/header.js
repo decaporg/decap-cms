@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+/** @jsx jsx */
+import { jsx, css } from '@emotion/react';
+import { useState, useEffect } from 'react';
 import { Link, graphql, StaticQuery } from 'gatsby';
 import styled from '@emotion/styled';
-import { css } from '@emotion/core';
 import GitHubButton from 'react-github-btn';
 
 import Container from './container';
@@ -120,11 +121,25 @@ const MenuItem = styled.li`
       margin-right: ${theme.space[3]};
     }
   }
+  ${mq[2]} {
+    &:not(:last-child) {
+      margin-right: ${theme.space[4]};
+    }
+  }
+  ${mq[4]} {
+    &:not(:last-child) {
+      margin-right: ${theme.space[5]};
+    }
+  }
 `;
 
 const NavLink = styled(Link)`
   text-decoration: none;
   font-weight: 600;
+
+  ${mq[2]} {
+    font-size: ${theme.fontsize[4]};
+  }
 `;
 
 const NOTIFS_QUERY = graphql`
@@ -222,7 +237,19 @@ function Header({ hasHeroBelow }) {
                     <NavLink to="/docs/intro/">Docs</NavLink>
                   </MenuItem>
                   <MenuItem>
-                    <NavLink to="/docs/contributor-guide/">Contributing</NavLink>
+                    <NavLink to="/services/" className="ga-menu">
+                      Pro Help
+                      <span
+                        css={css`
+                          font-size: ${theme.fontsize[1]};
+                          color: ${theme.colors.primaryLight};
+                          margin-left: ${theme.space[1]};
+                          vertical-align: top;
+                        `}
+                      >
+                        New
+                      </span>
+                    </NavLink>
                   </MenuItem>
                   <MenuItem>
                     <NavLink to="/community/">Community</NavLink>
