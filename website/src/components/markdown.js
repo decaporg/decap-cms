@@ -4,9 +4,6 @@ import styled from '@emotion/styled';
 import theme from '../theme';
 
 const StyledMarkdown = styled.div`
-  > :first-of-type {
-    margin-top: 0;
-  }
   > :last-child {
     margin-bottom: 0;
   }

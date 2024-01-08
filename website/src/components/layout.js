@@ -1,7 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import { graphql, StaticQuery } from 'gatsby';
-import { ThemeProvider } from 'emotion-theming';
+import { ThemeProvider } from '@emotion/react';
 
 import Header from './header';
 import Footer from './footer';
@@ -53,6 +53,11 @@ function Layout({ hasPageHero, children }) {
           >
             <Helmet defaultTitle={title} titleTemplate={`%s | ${title}`}>
               <meta name="description" content={description} />
+              <meta
+                name="image"
+                property="og:image"
+                content="https://decapcms.org/img/og-image.jpg"
+              />
               <link
                 rel="stylesheet"
                 href="https://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,700,900|Roboto+Mono:400,700"

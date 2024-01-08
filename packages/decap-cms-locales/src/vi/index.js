@@ -165,6 +165,7 @@ const vi = {
       },
       datetime: {
         now: 'Ngay lúc này',
+        clear: 'Xóa',
       },
     },
   },

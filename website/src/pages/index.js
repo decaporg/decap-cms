@@ -1,7 +1,9 @@
+/** @jsx jsx */
+// eslint-disable-next-line no-unused-vars
 import React from 'react';
+import { jsx, css } from '@emotion/react';
 import { graphql } from 'gatsby';
 import styled from '@emotion/styled';
-import { css } from '@emotion/core';
 
 import Layout from '../components/layout';
 import Markdownify from '../components/markdownify';
@@ -29,16 +31,15 @@ const MarkdownButton = styled.span`
     color: ${theme.colors.white};
     border-radius: ${theme.radii[1]};
     padding: ${theme.space[2]} ${theme.space[3]};
-    transition: 0.2s;
+    transition: all 0.2s ease-out;
     text-decoration: none;
+    box-shadow: 0;
 
     &:hover {
-      transform: scale(1.05);
-      box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.5), 0 1px 3px 0 rgba(0, 0, 0, 1);
+      box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.5);
     }
     &:active {
-      transform: scale(0.95);
-      box-shadow: none;
+      box-shadow: inset 0 0 4px 0 rgba(0, 0, 0, 0.5);
     }
   }
 `;
@@ -90,6 +91,25 @@ function HomePage({ data }) {
         <Grid cols={2}>
           <div>
             <Features items={landing.hero.devfeatures} kind="light" />
+          </div>
+          <div>
+            <p
+              css={css`
+                margin-bottom: ${theme.space[2]};
+                font-weight: 700;
+              `}
+            >
+              Try it out in the{' '}
+              <a href="https://demo.decapcms.org/" target="_blank" rel="noreferrer">
+                Decap CMS Demo
+              </a>
+            </p>
+            <a href="https://demo.decapcms.org/" target="_blank" rel="noreferrer">
+              <img
+                src="/img/screenshot-editor-2.png"
+                alt="Screenshot of Decap CMS page editing view"
+              />
+            </a>
           </div>
         </Grid>
       </PageHero>
@@ -147,6 +167,30 @@ function HomePage({ data }) {
       >
         <Grid cols={3}>
           <Features items={landing.editors.features} />
+        </Grid>
+      </HomeSection>
+
+      <HomeSection
+        css={css`
+          background: ${theme.colors.lightestGray};
+        `}
+        title={
+          <>
+            <span
+              css={css`
+                color: ${theme.colors.primaryLight};
+                margin-right: ${theme.space[2]};
+              `}
+            >
+              New!
+            </span>
+            {landing.services?.hook}
+          </>
+        }
+        text={<Markdownify source={landing.services?.intro} />}
+      >
+        <Grid cols={4}>
+          <Features items={landing.services?.features} />
         </Grid>
       </HomeSection>
 
@@ -230,6 +274,18 @@ export const pageQuery = graphql`
             feature
             imgpath
             description
+          }
+        }
+        services {
+          hook
+          intro
+          features {
+            feature
+            description
+            cta {
+              href
+              label
+            }
           }
         }
         community {

@@ -4,7 +4,6 @@ description: >-
   Updating Slate, fixing Cypress tests, and preparing for the first PR
 date: 2023-03-31T08:00:00.000Z
 author: Anže Demšar
-twitter_image: /img/preview-link-published.png
 ---
 We took over this project a month ago and although there were not many commits to the main repository, we have been working on the project under the hood. We want the first Decap release to be a drop-in replacement, and we want to make sure that it works.
 

@@ -174,6 +174,7 @@ const zh_Hant = {
       },
       datetime: {
         now: '現在',
+        clear: '清除',
       },
     },
   },

@@ -2,20 +2,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { jsx, css } from '@emotion/react';
-import reactDateTimeStyles from 'react-datetime/css/react-datetime.css';
-import DateTime from 'react-datetime';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { buttons } from 'decap-cms-ui-default';
 
-function NowButton({ t, handleChange }) {
+function Buttons({ t, handleChange }) {
   return (
     <div
       css={css`
-        position: absolute;
-        right: 20px;
-        transform: translateY(-40px);
+        display: flex;
+        gap: 20px;
         width: fit-content;
-        z-index: 1;
       `}
     >
       <button
@@ -23,11 +19,18 @@ function NowButton({ t, handleChange }) {
           ${buttons.button}
           ${buttons.widget}
         `}
-        onClick={() => {
-          handleChange(moment());
-        }}
+        onClick={() => handleChange(dayjs())}
       >
         {t('editor.editorWidgets.datetime.now')}
+      </button>
+      <button
+        css={css`
+          ${buttons.button}
+          ${buttons.widget}
+        `}
+        onClick={() => handleChange('')}
+      >
+        {t('editor.editorWidgets.datetime.clear')}
       </button>
     </div>
   );
@@ -44,24 +47,10 @@ export default class DateTimeControl extends React.Component {
     value: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
   };
 
-  getFormats() {
+  getFormat() {
     const { field } = this.props;
     const format = field.get('format');
-
-    // dateFormat and timeFormat are strictly for modifying
-    // input field with the date/time pickers
-    const dateFormat = field.get('date_format');
-    // show time-picker? false hides it, true shows it using default format
-    let timeFormat = field.get('time_format');
-    if (typeof timeFormat === 'undefined') {
-      timeFormat = true;
-    }
-
-    return {
-      format,
-      dateFormat,
-      timeFormat,
-    };
+    return format;
   }
 
   getDefaultValue() {
@@ -70,15 +59,8 @@ export default class DateTimeControl extends React.Component {
     return defaultValue;
   }
 
-  getPickerUtc() {
-    const { field } = this.props;
-    const pickerUtc = field.get('picker_utc');
-    return pickerUtc;
-  }
-
-  formats = this.getFormats();
+  format = this.getFormat();
   defaultValue = this.getDefaultValue();
-  pickerUtc = this.getPickerUtc();
 
   componentDidMount() {
     const { value } = this.props;
@@ -94,10 +76,9 @@ export default class DateTimeControl extends React.Component {
     }
   }
 
-  // Date is valid if datetime is a moment or Date object otherwise it's a string.
+  // Date is valid if datetime is a dayjs or Date object otherwise it's a string.
   // Handle the empty case, if the user wants to empty the field.
-  isValidDate = datetime =>
-    moment.isMoment(datetime) || datetime instanceof Date || datetime === '';
+  isValidDate = datetime => dayjs.isDayjs(datetime) || datetime instanceof Date || datetime === '';
 
   handleChange = datetime => {
     /**
@@ -108,59 +89,43 @@ export default class DateTimeControl extends React.Component {
     }
 
     const { onChange } = this.props;
-    const { format } = this.formats;
 
     /**
      * Produce a formatted string only if a format is set in the config.
      * Otherwise produce a date object.
      */
-    if (format) {
-      const formattedValue = datetime ? moment(datetime).format(format) : '';
+    if (this.format) {
+      const formattedValue = datetime ? dayjs(datetime).format(this.format) : '';
       onChange(formattedValue);
     } else {
-      const value = moment.isMoment(datetime) ? datetime.toDate() : datetime;
+      const value = dayjs.isDayjs(datetime) ? datetime.toDate() : datetime;
       onChange(value);
     }
   };
 
-  onClose = datetime => {
-    const { setInactiveStyle } = this.props;
-
-    if (!this.isValidDate(datetime)) {
-      const parsedDate = moment(datetime);
-
-      if (parsedDate.isValid()) {
-        this.handleChange(datetime);
-      } else {
-        window.alert('The date you entered is invalid.');
-      }
-    }
-
-    setInactiveStyle();
-  };
-
   render() {
-    const { forID, value, classNameWrapper, setActiveStyle, t, isDisabled } = this.props;
-    const { format, dateFormat, timeFormat } = this.formats;
+    const { forID, value, classNameWrapper, setActiveStyle, setInactiveStyle, t, isDisabled } =
+      this.props;
 
     return (
       <div
+        className={classNameWrapper}
         css={css`
-          ${reactDateTimeStyles};
-          position: relative;
+          display: flex !important;
+          gap: 20px;
+          align-items: center;
         `}
       >
-        <DateTime
-          dateFormat={dateFormat}
-          timeFormat={timeFormat}
-          value={moment(value, format)}
-          onChange={this.handleChange}
-          onOpen={setActiveStyle}
-          onClose={this.onClose}
-          inputProps={{ className: classNameWrapper, id: forID }}
-          utc={this.pickerUtc}
+        <input
+          id={forID}
+          type="datetime-local"
+          value={dayjs(value).format('YYYY-MM-DDThh:mm')}
+          onChange={e => this.handleChange(dayjs(e.target.value))}
+          onFocus={setActiveStyle}
+          onBlur={setInactiveStyle}
+          disabled={isDisabled}
         />
-        {!isDisabled && <NowButton t={t} handleChange={v => this.handleChange(v)} />}
+        {!isDisabled && <Buttons t={t} handleChange={v => this.handleChange(v)} />}
       </div>
     );
   }

@@ -159,6 +159,7 @@ const es = {
       },
       datetime: {
         now: 'Ahora',
+        clear: 'Limpiar',
       },
     },
   },
