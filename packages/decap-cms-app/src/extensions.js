@@ -48,7 +48,7 @@ CMS.registerWidget([
   DecapCmsWidgetSelect.Widget(),
   DecapCmsWidgetMarkdown.Widget(),
   DecapCmsWidgetList.Widget(),
-  DecapCmsWidgetObject.Widget(),
+  DecapCmsWidgetList.OptionalObjectWidget(),
   DecapCmsWidgetRelation.Widget(),
   DecapCmsWidgetBoolean.Widget(),
   DecapCmsWidgetMap.Widget(),
