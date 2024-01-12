@@ -312,9 +312,9 @@ Supports all of the [`slug` templates](/docs/configuration-options#slug) and:
 * `{{media_folder}}` The global `media_folder`.
 * `{{public_folder}}` The global `public_folder`.
 
-## List Widget: Variable Types
+## List/Object Widget: Variable Types
 
-Before this feature, the [list widget](/docs/widgets/#list) allowed a set of fields to be repeated, but every list item had the same set of fields available. With variable types, multiple named sets of fields can be defined, which opens the door to highly flexible content authoring (even page building) in Decap CMS.
+Before this feature, the [list widget](/docs/widgets/#list) and [object widget](/docs/widget/#object) allowed a set of fields to be repeated, but every item had the same set of fields available. With variable types, multiple named sets of fields can be defined, which opens the door to highly flexible content authoring (even page building) in Decap CMS.
 
 **Note: this feature does not yet support default previews and requires [registering a preview template](/docs/customization#registerpreviewtemplate) in order to show up in the preview pane.**
 
