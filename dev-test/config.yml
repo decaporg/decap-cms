@@ -268,6 +268,20 @@ collections: # A list of collections the CMS should be able to edit
             fields:
               - { label: 'Image', name: 'image', widget: 'image' }
               - { label: 'File', name: 'file', widget: 'file' }
+      - label: Typed Object
+        name: typed_object
+        widget: object
+        types:
+          - name: copy
+            widget: object
+            fields:
+              - { name: text, widget: string }
+          - name: infographic
+            widget: object
+            fields:
+              - { name: caption, widget: string }
+              - { name: image, widget: image }
+              - { name: overlay, widget: image }
   - name: pages # a nested collection
     label: Pages
     label_singular: 'Page'
