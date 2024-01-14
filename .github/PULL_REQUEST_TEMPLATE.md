@@ -29,6 +29,6 @@ Example: The exact commands you ran and their output, screenshots / videos if th
 
 Please add a `x` inside each checkbox:
 
-- [ ] I have read the [contribution guidelines](../CONTRIBUTING.md).
+- [ ] I have read the [contribution guidelines](https://github.com/decaporg/decap-cms/blob/master/CONTRIBUTING.md).
 
 **A picture of a cute animal (not mandatory but encouraged)**
