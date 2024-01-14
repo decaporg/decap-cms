@@ -502,7 +502,7 @@ CMS.registerWidget('test', Control, Preview)
 init({ config })
 ```
 
-### [](https://github.com/decaporg/decap-cms-widget-starter#development)Development
+### Development
 
 To run a copy of Decap CMS with your widget for development, use the start script:
 
@@ -512,7 +512,7 @@ npm start
 
 Your widget source is in the `src` directory, where there are separate files for the `Control` and `Preview` components.
 
-### [](https://github.com/decaporg/decap-cms-widget-starter#production--publishing)Production & Publishing
+### Production & Publishing
 
 You'll want to take a few steps before publishing a production built package to npm:
 
