@@ -1201,7 +1201,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Bug Fixes
 
-* **deps:** update color widget dependecy ([#4512](https://github.com/decaporg/decap-cms/tree/master/packages/decap-cms-app/issues/4512)) ([a0176e4](https://github.com/decaporg/decap-cms/tree/master/packages/decap-cms-app/commit/a0176e457223da65dddf983707704dd4441553a0))
+* **deps:** update color widget dependency ([#4512](https://github.com/decaporg/decap-cms/tree/master/packages/decap-cms-app/issues/4512)) ([a0176e4](https://github.com/decaporg/decap-cms/tree/master/packages/decap-cms-app/commit/a0176e457223da65dddf983707704dd4441553a0))
 
 
 

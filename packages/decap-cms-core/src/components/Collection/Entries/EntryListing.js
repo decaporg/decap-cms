@@ -5,7 +5,7 @@ import styled from '@emotion/styled';
 import { Waypoint } from 'react-waypoint';
 import { Map } from 'immutable';
 
-import { selectFields, selectInferedField } from '../../../reducers/collections';
+import { selectFields, selectInferredField } from '../../../reducers/collections';
 import EntryCard from './EntryCard';
 
 const CardsGrid = styled.ul`
@@ -39,20 +39,20 @@ export default class EntryListing extends React.Component {
   };
 
   inferFields = collection => {
-    const titleField = selectInferedField(collection, 'title');
-    const descriptionField = selectInferedField(collection, 'description');
-    const imageField = selectInferedField(collection, 'image');
+    const titleField = selectInferredField(collection, 'title');
+    const descriptionField = selectInferredField(collection, 'description');
+    const imageField = selectInferredField(collection, 'image');
     const fields = selectFields(collection);
-    const inferedFields = [titleField, descriptionField, imageField];
+    const inferredFields = [titleField, descriptionField, imageField];
     const remainingFields =
-      fields && fields.filter(f => inferedFields.indexOf(f.get('name')) === -1);
+      fields && fields.filter(f => inferredFields.indexOf(f.get('name')) === -1);
     return { titleField, descriptionField, imageField, remainingFields };
   };
 
   renderCardsForSingleCollection = () => {
     const { collections, entries, viewStyle } = this.props;
-    const inferedFields = this.inferFields(collections);
-    const entryCardProps = { collection: collections, inferedFields, viewStyle };
+    const inferredFields = this.inferFields(collections);
+    const entryCardProps = { collection: collections, inferredFields, viewStyle };
     return entries.map((entry, idx) => <EntryCard {...entryCardProps} entry={entry} key={idx} />);
   };
 
@@ -63,8 +63,8 @@ export default class EntryListing extends React.Component {
       const collectionName = entry.get('collection');
       const collection = collections.find(coll => coll.get('name') === collectionName);
       const collectionLabel = !isSingleCollectionInList && collection.get('label');
-      const inferedFields = this.inferFields(collection);
-      const entryCardProps = { collection, entry, inferedFields, collectionLabel };
+      const inferredFields = this.inferFields(collection);
+      const entryCardProps = { collection, entry, inferredFields, collectionLabel };
       return <EntryCard {...entryCardProps} key={idx} />;
     });
   };

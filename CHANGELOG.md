@@ -236,7 +236,7 @@ Fixes date widget default format, collection load failure when entry fails
 ## 1.3.1 (March 3, 2018) ([demo](https://1-3-1--cms-demo.netlify.com/))
 Fixes editorial workflow failure for unknown collections.
 
-* Report editorial workflow load errors, ignore entries with unkown collections ([@erquhart](https://github.com/erquhart) in [#1153](https://github.com/decaporg/decap-cms/pull/1153))
+* Report editorial workflow load errors, ignore entries with unknown collections ([@erquhart](https://github.com/erquhart) in [#1153](https://github.com/decaporg/decap-cms/pull/1153))
 
 
 ## 1.3.0 (February 27, 2018) ([demo](https://1-3-0--cms-demo.netlify.com/))
