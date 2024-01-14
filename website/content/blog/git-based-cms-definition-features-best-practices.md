@@ -31,7 +31,7 @@ While there may be differences among Git-based CMS options, they are generally s
 
 Git-based CMS solutions balance simplicity and scalability, making them suitable for a wide range of projects. Scalability largely depends on the volume of your content and the speed at which you need to serve it. For static site projects, Git-based CMS can go a long way. 
 
-But not all the way. For example, a Decap project on Github scales to about 10.000 entries if you have a lot of collection relations. It’s possible to have more entries if there are fewer relations. The bottleneck in this case is the GitHub API, which has a rate limit of 5000 on the personal plan and 15000 on the enterprise plan. A new user with an empty cache will eat up that limit fast because Decap will make a request per each entry to create a cache.
+But not all the way. For example, a Decap project on GitHub scales to about 10.000 entries if you have a lot of collection relations. It’s possible to have more entries if there are fewer relations. The bottleneck in this case is the GitHub API, which has a rate limit of 5000 on the personal plan and 15000 on the enterprise plan. A new user with an empty cache will eat up that limit fast because Decap will make a request per each entry to create a cache.
 
 To mitigate this, some Git-based CMS platforms like [Tina](https://tina.io/) and [CloudCanon](https://cloudcannon.com/) offer a cloud database proxy, enabling advanced features that might be necessary for specific projects. Those could be real-time collaboration, user roles, and other resource-intensive queries.
 
