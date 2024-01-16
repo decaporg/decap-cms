@@ -193,6 +193,9 @@ const zh_Hans = {
         now: '现在',
         clear: '清除',
       },
+      list: {
+        add: '新增%{item}',
+      },
     },
   },
   mediaLibrary: {
