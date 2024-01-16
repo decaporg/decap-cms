@@ -1,6 +1,6 @@
 {
   "name": "decap-cms-widget-number",
-  "description": "Widget for editing numberic values in Decap CMS.",
+  "description": "Widget for editing numeric values in Decap CMS.",
   "version": "3.1.0-beta.0",
   "homepage": "https://www.decapcms.org/docs/widgets/#number",
   "repository": "https://github.com/decaporg/decap-cms/tree/master/packages/decap-cms-widget-number",

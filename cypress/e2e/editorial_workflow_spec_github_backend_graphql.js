@@ -4,7 +4,7 @@ import { entry1, entry2, entry3 } from './common/entries';
 
 const backend = 'github';
 
-describe('Github Backend Editorial Workflow - GraphQL API', () => {
+describe('GitHub Backend Editorial Workflow - GraphQL API', () => {
   const taskResult = { data: {} };
 
   before(() => {

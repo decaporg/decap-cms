@@ -13,7 +13,7 @@ async function sha256(text) {
 
 // based on https://github.com/auth0/auth0-spa-js/blob/9a83f698127eae7da72691b0d4b1b847567687e3/src/utils.ts#L147
 function generateVerifierCode() {
-  // characters that can be used for codeVerifer
+  // characters that can be used for codeVerifier
   // excludes _~ as if included would cause an uneven distribution as char.length would no longer be a factor of 256
   const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-.';
   const randomValues = Array.from(window.crypto.getRandomValues(new Uint8Array(128)));

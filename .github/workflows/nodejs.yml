@@ -38,7 +38,7 @@ jobs:
           check-latest: true
       - name: log versions
         run: node --version && npm --version && yarn --version
-      - name: install dependecies
+      - name: install dependencies
         run: yarn --frozen-lockfile --network-timeout 1000000 && yarn bootstrap
       - name: run unit tests
         run: yarn test:ci

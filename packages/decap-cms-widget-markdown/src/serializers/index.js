@@ -47,7 +47,7 @@ import { getEditorComponents } from '../MarkdownControl';
  *   temporarily before the document is stringified to HTML.
  *
  * - HTML {string}
- *   The field value is stringifed to HTML for preview purposes - the HTML value
+ *   The field value is stringified to HTML for preview purposes - the HTML value
  *   is never parsed, it is output only.
  *
  * - Slate Raw AST {object}

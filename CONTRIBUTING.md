@@ -146,7 +146,7 @@ Decap CMS uses the [Forking Workflow](https://www.atlassian.com/git/tutorials/co
 `yarn start` spawns a development server and uses `dev-test/config.yml` and `dev-test/index.html` to serve the CMS.
 In order to debug a specific issue follow the next steps:
 
-1. Replace `dev-test/config.yml` with the relevant `config.yml`. If you want to test the backend, make sure that the `backend` property of the config indicates which backend you use (Github, Gitlab, Bitbucket etc) and path to the repo.
+1. Replace `dev-test/config.yml` with the relevant `config.yml`. If you want to test the backend, make sure that the `backend` property of the config indicates which backend you use (GitHub, Gitlab, Bitbucket etc) and path to the repo.
 
 ```js
 backend:

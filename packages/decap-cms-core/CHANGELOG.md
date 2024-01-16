@@ -71,7 +71,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Bug Fixes
 
-* consider i18n strucutre when determining regex ruleString for github backend ([#6937](https://github.com/decaporg/decap-cms/issues/6937)) ([1aac51d](https://github.com/decaporg/decap-cms/commit/1aac51d864e15a6b1646eb13ca8d95ad8554b0d5))
+* consider i18n structure when determining regex ruleString for github backend ([#6937](https://github.com/decaporg/decap-cms/issues/6937)) ([1aac51d](https://github.com/decaporg/decap-cms/commit/1aac51d864e15a6b1646eb13ca8d95ad8554b0d5))
 
 
 

@@ -214,7 +214,7 @@ CMS.registerEditorComponent({
     label: "Gist",
     fields: [{
             name: "username",
-            label: "Github Username",
+            label: "GitHub Username",
             widget: "string"
         },
         {
