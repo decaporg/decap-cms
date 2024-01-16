@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.3.0-beta.3](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.3.0-beta.2...decap-cms-core@3.3.0-beta.3) (2024-01-16)
+
+
+### Bug Fixes
+
+* avoid unnecessary rerenders ([#7004](https://github.com/decaporg/decap-cms/issues/7004)) ([fdfb497](https://github.com/decaporg/decap-cms/commit/fdfb49758148bd104dfd8dec753793e762c372b0))
+* change dayjs to per-package dependency ([#6992](https://github.com/decaporg/decap-cms/issues/6992)) ([0c278b0](https://github.com/decaporg/decap-cms/commit/0c278b0a83d93233d3b3e860d3029df20fe1c501))
+
+
+
+
+
 # [3.3.0-beta.2](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.3.0-beta.1...decap-cms-core@3.3.0-beta.2) (2023-11-23)
 
 
