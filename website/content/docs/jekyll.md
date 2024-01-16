@@ -7,7 +7,7 @@ title: Jekyll
 
 This section will help you integrate Decap CMS with a new or existing Jekyll project.
 
-[Jekyll](https://jekyllrb.com/) is a blog-aware static site generator built with Ruby. [Github Pages](https://pages.github.com/) are powered by Jekyll, making it a popular choice for developer blogs and project pages.
+[Jekyll](https://jekyllrb.com/) is a blog-aware static site generator built with Ruby. [GitHub Pages](https://pages.github.com/) are powered by Jekyll, making it a popular choice for developer blogs and project pages.
 
 If you're starting a new project, the fastest route to publishing on a Jekyll website with Decap CMS is to [deploy a template on Netlify](https://templates.netlify.com/).
 

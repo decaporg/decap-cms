@@ -115,7 +115,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * **locale-hr:** fix typos ([0191f25](https://github.com/decaporg/decap-cms/commit/0191f25c51ef66292c920a93078697643c8dd68b))
-* **locale-tr:** fixe locales and added new ones. ([#6010](https://github.com/decaporg/decap-cms/issues/6010)) ([fdd9ec3](https://github.com/decaporg/decap-cms/commit/fdd9ec354d2ea3d9a2705e11119ee87b8ea96af5))
+* **locale-tr:** fixed locales and added new ones. ([#6010](https://github.com/decaporg/decap-cms/issues/6010)) ([fdd9ec3](https://github.com/decaporg/decap-cms/commit/fdd9ec354d2ea3d9a2705e11119ee87b8ea96af5))
 
 
 

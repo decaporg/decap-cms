@@ -1,6 +1,6 @@
 # GitHub backend
 
-An abstraction layer between the CMS and [Github](https://docs.github.com/en/rest)
+An abstraction layer between the CMS and [GitHub](https://docs.github.com/en/rest)
 
 ## Code structure
 

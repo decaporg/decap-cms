@@ -317,7 +317,7 @@ export function selectIdentifier(collection: Collection) {
   );
 }
 
-export function selectInferedField(collection: Collection, fieldName: string) {
+export function selectInferredField(collection: Collection, fieldName: string) {
   if (fieldName === 'title' && collection.get('identifier_field')) {
     return selectIdentifier(collection);
   }
@@ -381,7 +381,7 @@ export function selectEntryCollectionTitle(collection: Collection, entry: EntryM
 
   // try to infer a title field from the entry data
   const entryData = entry.get('data');
-  const titleField = selectInferedField(collection, 'title');
+  const titleField = selectInferredField(collection, 'title');
   const result = titleField && entryData.getIn(keyToPathArray(titleField));
 
   // if the custom field does not yield a result, fallback to 'title'
@@ -398,7 +398,7 @@ export function selectDefaultSortableFields(
   hasIntegration: boolean,
 ) {
   let defaultSortable = SORTABLE_FIELDS.map((type: string) => {
-    const field = selectInferedField(collection, type);
+    const field = selectInferredField(collection, type);
     if (backend.isGitBackend() && type === 'author' && !field && !hasIntegration) {
       // default to commit author if not author field is found
       return COMMIT_AUTHOR;

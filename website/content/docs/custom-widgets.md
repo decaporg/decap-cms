@@ -137,7 +137,7 @@ CMS.registerEditorComponent({
     }
   ],
   // Regex pattern used to search for instances of this block in the markdown document.
-  // Patterns are run in a multline environment (against the entire markdown document),
+  // Patterns are run in a multiline environment (against the entire markdown document),
   // and so generally should make use of the multiline flag (`m`). If you need to capture
   // newlines in your capturing groups, you can either use something like
   // `([\S\s]*)`, or you can additionally enable the "dot all" flag (`s`),
