@@ -176,6 +176,9 @@ const zh_Hant = {
         now: '現在',
         clear: '清除',
       },
+      list: {
+        add: '新增%{item}',
+      },
     },
   },
   mediaLibrary: {
