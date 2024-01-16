@@ -14,7 +14,11 @@ import {
   getRemarkPlugins,
 } from '../../../lib/registry';
 import { ErrorBoundary } from '../../UI';
-import { selectTemplateName, selectInferredField, selectField } from '../../../reducers/collections';
+import {
+  selectTemplateName,
+  selectInferredField,
+  selectField,
+} from '../../../reducers/collections';
 import { boundGetAsset } from '../../../actions/media';
 import { selectIsLoadingAsset } from '../../../reducers/medias';
 import { INFERABLE_FIELDS } from '../../../constants/fieldInference';
