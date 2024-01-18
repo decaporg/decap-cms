@@ -24,7 +24,7 @@ import {
   selectAllowNewEntries,
   selectAllowDeletion,
   selectFolderEntryExtension,
-  selectInferedField,
+  selectInferredField,
   selectMediaFolders,
   selectFieldsComments,
   selectHasMetaPath,
@@ -627,12 +627,12 @@ export class Backend {
           });
         } else {
           searchFields = [
-            selectInferedField(collection, 'title'),
-            selectInferedField(collection, 'shortTitle'),
-            selectInferedField(collection, 'author'),
+            selectInferredField(collection, 'title'),
+            selectInferredField(collection, 'shortTitle'),
+            selectInferredField(collection, 'author'),
             ...summaryFields.map(elem => {
               if (dateParsers[elem]) {
-                return selectInferedField(collection, 'date');
+                return selectInferredField(collection, 'date');
               }
               return elem;
             }),
@@ -656,7 +656,7 @@ export class Backend {
     if (errors.length > 0) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      throw new Error({ message: 'Errors ocurred while searching entries locally!', errors });
+      throw new Error({ message: 'Errors occurred while searching entries locally!', errors });
     }
 
     const hits = entries

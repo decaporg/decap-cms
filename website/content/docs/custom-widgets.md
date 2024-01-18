@@ -27,7 +27,7 @@ import CMS from 'decap-cms-app';
 CMS.registerWidget(name, control, [preview], [schema]);
 ```
 
-**Params:**
+### Params
 
 | Param       | Type                           | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | ----------- | ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -36,7 +36,7 @@ CMS.registerWidget(name, control, [preview], [schema]);
 | [`preview`] | `React.Component`, optional    | Renders the widget preview, receives the following props: <ul><li>**value:** Current preview value</li><li>**field:** Immutable map of current field configuration</li><li>**metadata:** Immutable map of any available metadata for the current field</li><li>**getAsset:** Function for retrieving an asset url for image/file fields</li><li>**entry:** Immutable Map of all entry data</li><li>**fieldsMetaData:** Immutable map of metadata from all fields.</li></ul>                              |
 | [`schema`]  | `JSON Schema object`, optional | Enforces a schema for the widget's field configuration                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 
-**Example:**
+### Example
 
 `admin/index.html`
 
@@ -107,13 +107,13 @@ Register a block level component for the Markdown editor:
 CMS.registerEditorComponent(definition)
 ```
 
-**Params**
+### Params
 
 * **definition:** The component definition; must specify: id, label, fields, patterns, fromBlock, toBlock, toPreview
 
 > Additional properties are optional and will be passed to the underlying widget control (object widget by default). For example, adding a `collapsed: true` property will collapse the widget by default.
 
-**Example:**
+### Example
 
 ```html
 <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
@@ -131,13 +131,13 @@ CMS.registerEditorComponent({
       widget: 'string'
     },
     {
-      name: 'details',
-      label: 'Details',
+      name: 'contents',
+      label: 'Contents',
       widget: 'markdown'
     }
   ],
   // Regex pattern used to search for instances of this block in the markdown document.
-  // Patterns are run in a multline environment (against the entire markdown document),
+  // Patterns are run in a multiline environment (against the entire markdown document),
   // and so generally should make use of the multiline flag (`m`). If you need to capture
   // newlines in your capturing groups, you can either use something like
   // `([\S\s]*)`, or you can additionally enable the "dot all" flag (`s`),
@@ -154,7 +154,7 @@ CMS.registerEditorComponent({
   fromBlock: function(match) {
     return {
       summary: match[1],
-      detail: match[2]
+      contents: match[2]
     };
   },
   // Given an object with one property for each field defined in `fields`,
@@ -167,7 +167,7 @@ CMS.registerEditorComponent({
 <details>
   <summary>${data.summary}</summary>
 
-  ${data.detail}
+  ${data.contents}
 
 </details>
 `;
@@ -179,7 +179,7 @@ CMS.registerEditorComponent({
 <details>
   <summary>${data.summary}</summary>
 
-  ${data.detail}
+  ${data.contents}
 
 </details>
 `;
@@ -188,17 +188,14 @@ CMS.registerEditorComponent({
 </script>
 ```
 
-**Result:**
-
-![youtube-widget](/img/img/screen%20shot%202018-01-05%20at%204.25.07%20pm.png)
-
 ## Advanced field validation
 
 All widget fields, including those for built-in widgets, [include basic validation](../widgets/#common-widget-options) capability using the `required` and `pattern` options.
 
 With custom widgets, the widget control can also optionally implement an `isValid` method to perform custom validations, in addition to presence and pattern. The `isValid` method will be automatically called, and it can return either a boolean value, an object with an error message or a promise. Examples:
 
-**Boolean**
+### Boolean
+
 No errors:
 
 ```javascript
@@ -217,7 +214,8 @@ Existing error:
   };
 ```
 
-**Object with `error` (useful for returning custom error messages)**
+### Object with `error` (useful for returning custom error messages)
+
 Existing error:
 
 ```javascript
@@ -227,7 +225,8 @@ Existing error:
   };
 ```
 
-**Promise**
+### Promise
+
 You can also return a promise from `isValid`. While the promise is pending, the widget will be marked as "in error". When the promise resolves, the error is automatically cleared.
 
 ```javascript
@@ -503,7 +502,7 @@ CMS.registerWidget('test', Control, Preview)
 init({ config })
 ```
 
-### [](https://github.com/decaporg/decap-cms-widget-starter#development)Development
+### Development
 
 To run a copy of Decap CMS with your widget for development, use the start script:
 
@@ -513,7 +512,7 @@ npm start
 
 Your widget source is in the `src` directory, where there are separate files for the `Control` and `Preview` components.
 
-### [](https://github.com/decaporg/decap-cms-widget-starter#production--publishing)Production & Publishing
+### Production & Publishing
 
 You'll want to take a few steps before publishing a production built package to npm:
 

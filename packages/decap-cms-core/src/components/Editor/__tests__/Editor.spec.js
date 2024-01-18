@@ -138,7 +138,7 @@ describe('Editor', () => {
     expect(props.loadEntry).toHaveBeenCalledWith(props.collection, 'slug');
   });
 
-  it('should load entires when entries are not loaded when mounting', () => {
+  it('should load entries when entries are not loaded when mounting', () => {
     render(
       <Editor
         {...props}
@@ -152,7 +152,7 @@ describe('Editor', () => {
     expect(props.loadEntries).toHaveBeenCalledWith(props.collection);
   });
 
-  it('should not load entires when entries are loaded when mounting', () => {
+  it('should not load entries when entries are loaded when mounting', () => {
     render(
       <Editor
         {...props}

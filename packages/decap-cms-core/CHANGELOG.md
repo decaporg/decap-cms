@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.3.0-beta.3](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.3.0-beta.2...decap-cms-core@3.3.0-beta.3) (2024-01-16)
+
+
+### Bug Fixes
+
+* avoid unnecessary rerenders ([#7004](https://github.com/decaporg/decap-cms/issues/7004)) ([fdfb497](https://github.com/decaporg/decap-cms/commit/fdfb49758148bd104dfd8dec753793e762c372b0))
+* change dayjs to per-package dependency ([#6992](https://github.com/decaporg/decap-cms/issues/6992)) ([0c278b0](https://github.com/decaporg/decap-cms/commit/0c278b0a83d93233d3b3e860d3029df20fe1c501))
+
+
+
+
+
 # [3.3.0-beta.2](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.3.0-beta.1...decap-cms-core@3.3.0-beta.2) (2023-11-23)
 
 
@@ -71,7 +83,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Bug Fixes
 
-* consider i18n strucutre when determining regex ruleString for github backend ([#6937](https://github.com/decaporg/decap-cms/issues/6937)) ([1aac51d](https://github.com/decaporg/decap-cms/commit/1aac51d864e15a6b1646eb13ca8d95ad8554b0d5))
+* consider i18n structure when determining regex ruleString for github backend ([#6937](https://github.com/decaporg/decap-cms/issues/6937)) ([1aac51d](https://github.com/decaporg/decap-cms/commit/1aac51d864e15a6b1646eb13ca8d95ad8554b0d5))
 
 
 
