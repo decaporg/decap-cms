@@ -91,12 +91,3 @@ With GitLab's Implicit Grant, users can authenticate with GitLab directly from t
 **Note:** In all cases, GitLab also provides you with a client secret. You should *never* store this in your repo or reveal it in the client.
 
 
-### Editorial Workflow Support
-
-You can enable the Editorial Workflow with the following line in your Decap CMS `config.yml` file:
-
-```yaml
-publish_mode: editorial_workflow
-```
-
-In order to track unpublished entries statuses the GitLab implementation uses merge requests labels
