@@ -1,8 +1,10 @@
 ---
 group: Collections
-weight: 10
+weight: 20
 title: File Collections
 ---
+
+Collections with type `files` displays in the left sidebar of the Content page of the editor UI along with other types.
 
 A `files` collection contains one or more uniquely configured files. Unlike items in `folder` collections, which repeat the same configuration over all files in the folder, each item in a `files` collection has an explicitly set path, filename, and configuration. This can be useful for unique files with a custom set of fields, like a settings file or a custom landing page with a unique content structure.
 

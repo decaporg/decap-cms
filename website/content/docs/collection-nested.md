@@ -1,8 +1,10 @@
 ---
 group: Collections
-weight: 10
+weight: 30
 title: Nested Collections (beta)
 ---
+
+There is beta support for Folder Collections which can also handle `nested` folder structures.
 
 Nested collections is a beta feature that allows a folder collection to show a nested structure of entries and edit the locations of the entries. This feature is useful when you have a complex folder structure and may not want to create separate collections for every directory. As it is in beta, please use with discretion.
 
