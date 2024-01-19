@@ -39,3 +39,23 @@ The above configuration would look for the status who's `"context"` is `"my-prov
 ## Git Large File Storage (LFS)
 
 Please note that the GitHub backend **does not** support [git-lfs](https://git-lfs.github.com/), see [this issue](https://github.com/decaporg/decap-cms/issues/1206) for more information.
+
+
+## GraphQL API
+
+Experimental support for GitHub's [GraphQL API](https://developer.github.com/v4/) is now available for the GitHub backend.
+
+**Note: not compatible with Git Gateway.**
+
+GraphQL allows to retrieve data using less individual API requests compared to a REST API. GitHub's GraphQL API still does not support all mutations necessary to completely replace their REST API, so this feature only calls the new GraphQL API where possible.
+
+You can use the GraphQL API for the GitHub backend by setting `backend.use_graphql` to `true` in your CMS config:
+
+```yml
+backend:
+  name: github
+  repo: owner/repo # replace this with your repo info
+  use_graphql: true
+```
+
+Learn more about the benefits of GraphQL in the [GraphQL docs](https://graphql.org).
