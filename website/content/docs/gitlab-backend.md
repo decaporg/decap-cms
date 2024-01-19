@@ -89,5 +89,3 @@ With GitLab's Implicit Grant, users can authenticate with GitLab directly from t
    ```
 
 **Note:** In all cases, GitLab also provides you with a client secret. You should *never* store this in your repo or reveal it in the client.
-
-

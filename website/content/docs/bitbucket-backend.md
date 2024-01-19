@@ -33,5 +33,3 @@ With Bitbucket's Implicit Grant, users can authenticate with Bitbucket directly 
    ```
 
 **Warning:** With Bitbucket implicit grant, the authentication is valid for 1 hour only. After that, the user has to login again, **which can lead to data loss** if the expiration occurs while content is being edited.
-
-
