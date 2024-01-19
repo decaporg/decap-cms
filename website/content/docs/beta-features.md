@@ -237,80 +237,6 @@ At the same time, any contributors who *do* have write access to the repository 
 
 More details and setup instructions can be found on [the Open Authoring docs page](/docs/open-authoring).
 
-## Folder Collections Path
-
-By default the CMS stores folder collection content under the folder specified in the collection setting.
-
-For example configuring `folder: posts` for a collection will save the content under `posts/post-title.md`.
-
-You can now specify an additional `path` template (similar to the `slug` template) to control the content destination.
-
-This allows saving content in subfolders, e.g. configuring `path: '{{year}}/{{slug}}'` will save the content under `posts/2019/post-title.md`.
-
-## Folder Collections Media and Public Folder
-
-By default the CMS stores media files for all collections under a global `media_folder` directory as specified in the configuration.
-
-When using the global `media_folder` directory any entry field that points to a media file will use the absolute path to the published file as designated by the `public_folder` configuration.
-
-For example configuring:
-
-```yaml
-media_folder: static/media
-public_folder: /media
-```
-
-And saving an entry with an image named `image.png` will result in the image being saved under `static/media/image.png` and relevant entry fields populated with the value of `/media/image.png`.
-
-Some static site generators (e.g. Gatsby) work best when using relative image paths.
-
-This can now be achieved using a per collection `media_folder` configuration which specifies a relative media folder for the collection.
-
-For example, the following configuration will result in media files being saved in the same directory as the entry, and the image field being populated with the relative path to the image.
-
-```yaml
-media_folder: static/media
-public_folder: /media
-collections:
-  - name: posts
-    label: Posts
-    label_singular: 'Post'
-    folder: content/posts
-    path: '{{slug}}/index'
-    media_folder: ''
-    public_folder: ''
-    fields:
-      - label: Title
-        name: title
-        widget: string
-      - label: 'Cover Image'
-        name: 'image'
-        widget: 'image'
-```
-
-More specifically, saving an entry with a title of `example post` with an image named `image.png` will result in a directory structure of:
-
-```bash
-content
-  posts
-    example-post
-      index.md
-      image.png
-```
-
-And for the image field being populated with a value of `image.png`.
-
-**Note: When specifying a `path` on a folder collection, `media_folder` defaults to an empty string.**
-
-**Available template tags:**
-
-Supports all of the [`slug` templates](/docs/configuration-options#slug) and:
-
-* `{{dirname}}` The path to the file's parent directory, relative to the collection's `folder`.
-* `{{filename}}` The file name without the extension part.
-* `{{extension}}` The file extension.
-* `{{media_folder}}` The global `media_folder`.
-* `{{public_folder}}` The global `public_folder`.
 
 ## List Widget: Variable Types
 
@@ -626,50 +552,6 @@ with `second` and the markdown `body` field with `# content`.
 
 **Note:** URL Encoding might be required for certain values (e.g. in the previous example the value for `body` is URL encoded).
 
-## Nested Collections
-
-Allows a folder collection to show a nested structure of entries and edit the locations of the entries.
-
-Example configuration:
-
-```yaml
-collections:
-  - name: pages
-    label: Pages
-    label_singular: 'Page'
-    folder: content/pages
-    create: true
-    # adding a nested object will show the collection folder structure
-    nested:
-      depth: 100 # max depth to show in the collection tree
-      summary: '{{title}}' # optional summary for a tree node, defaults to the inferred title field
-    fields:
-      - label: Title
-        name: title
-        widget: string
-      - label: Body
-        name: body
-        widget: markdown
-    # adding a meta object with a path property allows editing the path of entries
-    # moving an existing entry will move the entire sub tree of the entry to the new location
-    meta: { path: { widget: string, label: 'Path', index_file: 'index' } }
-```
-
-Nested collections expect the following directory structure:
-
-```bash
-content
-└── pages
-    ├── authors
-    │   ├── author-1
-    │   │   └── index.md
-    │   └── index.md
-    ├── index.md
-    └── posts
-        ├── hello-world
-        │   └── index.md
-        └── index.md
-```
 
 ## Remark plugins
 
