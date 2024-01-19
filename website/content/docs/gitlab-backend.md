@@ -64,10 +64,6 @@ With GitLab's PKCE authorization, users can authenticate with GitLab directly fr
 
 ## GraphQL API
 
-Experimental support for GitLab's [GraphQL API](https://docs.gitlab.com/ee/api/graphql/) is now available for the GitLab backend.
-
-**Note: not compatible with Git Gateway.**
-
 GraphQL allows to retrieve data using less individual API requests compared to a REST API.
 The current implementation uses the GraphQL API in specific cases, where using the REST API can be slow and lead to exceeding GitLab's rate limits. As we receive feedback and extend the feature, we'll migrate more functionality to the GraphQL API.
 
@@ -82,6 +78,10 @@ backend:
   # optional, defaults to 'https://gitlab.com/api/graphql'. Can be used to configure a self hosted GitLab instance.
   graphql_api_root: https://my-self-hosted-gitlab.com/api/graphql
 ```
+
+Learn more about the benefits of GraphQL in the [GraphQL docs](https://graphql.org).
+
+**Note: not compatible with `git-gateway`**
 
 
 ## (DEPRECATED) Client-Side Implicit Grant
