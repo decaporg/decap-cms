@@ -53,17 +53,6 @@ local_backend:
   allowed_hosts: ['192.168.0.1']
 ```
 
-## GitLab and BitBucket Editorial Workflow Support
-
-***added in `netlify-cms@2.10.6` / `netlify-cms-app@2.11.3`***
-
-You can enable the Editorial Workflow with the following line in your Decap CMS `config.yml` file:
-
-```yaml
-publish_mode: editorial_workflow
-```
-
-In order to track unpublished entries statuses the GitLab implementation uses merge requests labels and the BitBucket implementation uses pull requests comments.
 
 ## i18n Support
 

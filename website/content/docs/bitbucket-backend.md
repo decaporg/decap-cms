@@ -33,3 +33,14 @@ With Bitbucket's Implicit Grant, users can authenticate with Bitbucket directly 
    ```
 
 **Warning:** With Bitbucket implicit grant, the authentication is valid for 1 hour only. After that, the user has to login again, **which can lead to data loss** if the expiration occurs while content is being edited.
+
+
+### Editorial Workflow Support
+
+You can enable the Editorial Workflow with the following line in your Decap CMS `config.yml` file:
+
+```yaml
+publish_mode: editorial_workflow
+```
+
+In order to track unpublished entries statuses the BitBucket implementation uses pull requests comments.
