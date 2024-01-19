@@ -229,13 +229,6 @@ backend:
   graphql_api_root: https://my-self-hosted-gitlab.com/api/graphql
 ```
 
-## Open Authoring
-
-When using the [GitHub backend](/docs/github-backend), you can use Decap CMS to accept contributions from GitHub users without giving them access to your repository. When they make changes in the CMS, the CMS forks your repository for them behind the scenes, and all the changes are made to the fork. When the contributor is ready to submit their changes, they can set their draft as ready for review in the CMS. This triggers a pull request to your repository, which you can merge using the GitHub UI.
-
-At the same time, any contributors who *do* have write access to the repository can continue to use Decap CMS normally.
-
-More details and setup instructions can be found on [the Open Authoring docs page](/docs/open-authoring).
 
 ## Folder Collections Path
 
