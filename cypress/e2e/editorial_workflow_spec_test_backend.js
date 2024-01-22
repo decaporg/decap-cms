@@ -24,6 +24,8 @@ import {
   publishAndDuplicateEntryInEditor,
   assertNotification,
   assertFieldValidationError,
+  advanceClock,
+  flushClockAndSave,
 } from '../utils/steps';
 import { workflowStatus, editorStatus, publishTypes, notifications } from '../utils/constants';
 
@@ -253,10 +255,8 @@ describe('Test Backend Editorial Workflow', () => {
     cy.get('[id^="path-field"]').should('have.value', 'directory/sub-directory');
     cy.get('[id^="path-field"]').type('/new-path');
     cy.get('[id^="title-field"]').type('New Path Title');
-    cy.clock().then(clock => {
-      clock.tick(150);
-    });
-    cy.contains('button', 'Save').click();
+    cy.clock().then(clock => { advanceClock(clock); });
+    flushClockAndSave();
     assertNotification(notifications.saved);
     updateWorkflowStatusInEditor(editorStatus.ready);
     publishEntryInEditor(publishTypes.publishNow);
