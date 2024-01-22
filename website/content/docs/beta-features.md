@@ -10,45 +10,6 @@ We run new functionality in an open beta format from time to time. That means th
 
 
 
-## GitHub GraphQL API
-
-Experimental support for GitHub's [GraphQL API](https://developer.github.com/v4/) is now available for the GitHub backend.
-
-**Note: not compatible with Git Gateway.**
-
-GraphQL allows to retrieve data using less individual API requests compared to a REST API. GitHub's GraphQL API still does not support all mutations necessary to completely replace their REST API, so this feature only calls the new GraphQL API where possible.
-
-You can use the GraphQL API for the GitHub backend by setting `backend.use_graphql` to `true` in your CMS config:
-
-```yml
-backend:
-  name: github
-  repo: owner/repo # replace this with your repo info
-  use_graphql: true
-```
-
-Learn more about the benefits of GraphQL in the [GraphQL docs](https://graphql.org).
-
-## GitLab GraphQL API
-
-Experimental support for GitLab's [GraphQL API](https://docs.gitlab.com/ee/api/graphql/) is now available for the GitLab backend.
-
-**Note: not compatible with Git Gateway.**
-
-GraphQL allows to retrieve data using less individual API requests compared to a REST API.
-The current implementation uses the GraphQL API in specific cases, where using the REST API can be slow and lead to exceeding GitLab's rate limits. As we receive feedback and extend the feature, we'll migrate more functionality to the GraphQL API.
-
-You can enable the GraphQL API for the GitLab backend by setting `backend.use_graphql` to `true` in your CMS config:
-
-```yml
-backend:
-  name: gitlab
-  repo: owner/repo # replace this with your repo info
-  use_graphql: true
-
-  # optional, defaults to 'https://gitlab.com/api/graphql'. Can be used to configure a self hosted GitLab instance.
-  graphql_api_root: https://my-self-hosted-gitlab.com/api/graphql
-```
 
 
 
