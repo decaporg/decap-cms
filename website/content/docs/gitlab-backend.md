@@ -64,6 +64,8 @@ With GitLab's PKCE authorization, users can authenticate with GitLab directly fr
 
 ## GraphQL API
 
+**Note: not compatible with `git-gateway`**
+
 GraphQL allows to retrieve data using less individual API requests compared to a REST API.
 The current implementation uses the GraphQL API in specific cases, where using the REST API can be slow and lead to exceeding GitLab's rate limits. As we receive feedback and extend the feature, we'll migrate more functionality to the GraphQL API.
 
@@ -80,8 +82,6 @@ backend:
 ```
 
 Learn more about the benefits of GraphQL in the [GraphQL docs](https://graphql.org).
-
-**Note: not compatible with `git-gateway`**
 
 
 ## (DEPRECATED) Client-Side Implicit Grant

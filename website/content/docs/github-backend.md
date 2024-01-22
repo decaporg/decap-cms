@@ -43,6 +43,8 @@ Please note that the GitHub backend **does not** support [git-lfs](https://git-l
 
 ## GraphQL API
 
+**Note: not compatible with `git-gateway`**
+
 GraphQL allows to retrieve data using less individual API requests compared to a REST API. GitHub's GraphQL API still does not support all mutations necessary to completely replace their REST API, so this feature only calls the new GraphQL API where possible.
 
 You can use the GraphQL API for the GitHub backend by setting `backend.use_graphql` to `true` in your CMS config:
@@ -55,5 +57,3 @@ backend:
 ```
 
 Learn more about the benefits of GraphQL in the [GraphQL docs](https://graphql.org).
-
-**Note: not compatible with `git-gateway`**
