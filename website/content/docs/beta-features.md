@@ -103,21 +103,6 @@ You can now provide your own element for Decap CMS to mount in by setting the ta
 
 
 
-## Image widget file size limit
-
-You can set a limit to as what the maximum file size of a file is that users can upload directly into a image field.
-
-Example config:
-
-```yaml
-- label: 'Featured Image'
-  name: 'thumbnail'
-  widget: 'image'
-  default: '/uploads/chocolate-dogecoin.jpg'
-  media_library:
-    config:
-      max_file_size: 512000 # in bytes, only for default media library
-```
 
 ## Summary string template transformations
 
