@@ -26,6 +26,46 @@ The `backend` option specifies how to access the content for your site, includin
 
 **Note**: no matter where you access Decap CMS — whether running locally, in a staging environment, or in your published site — it will always fetch and commit files in your hosted repository (for example, on GitHub), on the branch you configured in your Decap CMS config.yml file. This means that content fetched in the admin UI will match the content in the repository, which may be different from your locally running site. It also means that content saved using the admin UI will save directly to the hosted repository, even if you're running the UI locally or in staging. If you want to have your local CMS write to a local repository, try the `local_backend` setting, [currently in beta](/docs/beta-features/#working-with-a-local-git-repository).
 
+### Commit Message Templates
+
+You can customize the templates used by Decap CMS to generate commit messages by setting the `commit_messages` option under `backend` in your Decap CMS `config.yml`.
+
+Template tags wrapped in curly braces will be expanded to include information about the file changed by the commit. For example, `{{path}}` will include the full path to the file changed.
+
+Setting up your Decap CMS `config.yml` to recreate the default values would look like this:
+
+```yaml
+backend:
+  commit_messages:
+    create: Create {{collection}} “{{slug}}”
+    update: Update {{collection}} “{{slug}}”
+    delete: Delete {{collection}} “{{slug}}”
+    uploadMedia: Upload “{{path}}”
+    deleteMedia: Delete “{{path}}”
+    openAuthoring: '{{message}}'
+```
+
+Decap CMS generates the following commit types:
+
+| Commit type     | When is it triggered?                    | Available template tags                                     |
+| --------------- | ---------------------------------------- | ----------------------------------------------------------- |
+| `create`        | A new entry is created                   | `slug`, `path`, `collection`, `author-login`, `author-name` |
+| `update`        | An existing entry is changed             | `slug`, `path`, `collection`, `author-login`, `author-name` |
+| `delete`        | An existing entry is deleted             | `slug`, `path`, `collection`, `author-login`, `author-name` |
+| `uploadMedia`   | A media file is uploaded                 | `path`, `author-login`, `author-name`                       |
+| `deleteMedia`   | A media file is deleted                  | `path`, `author-login`, `author-name`                       |
+| `openAuthoring` | A commit is made via a forked repository | `message`, `author-login`, `author-name`                    |
+
+Template tags produce the following output:
+
+* `{{slug}}`: the url-safe filename of the entry changed
+* `{{collection}}`: the name of the collection containing the entry changed
+* `{{path}}`: the full path to the file changed
+* `{{message}}`: the relevant message based on the current change (e.g. the `create` message when an entry is created)
+* `{{author-login}}`: the login/username of the author
+* `{{author-name}}`: the full name of the author (might be empty based on the user's profile)
+
+
 ## Publish Mode
 
 By default, all entries created or edited in the Decap CMS are committed directly into the main repository branch.
