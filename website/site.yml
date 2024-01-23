@@ -2,6 +2,8 @@ menu:
   docs:
     - name: Intro
       title: Intro to Decap CMS
+    - name: Add
+      title: Add To Your Site
     - name: Accounts
       title: Account Settings
     - name: Configuration

@@ -1,6 +1,6 @@
 ---
-group: Add To Your Site
-weight: 1
+group: Add
+weight: 2
 title: App File Structure
 ---
 
