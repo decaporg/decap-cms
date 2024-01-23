@@ -29,3 +29,15 @@ The image widget allows editors to upload an image or select an existing one fro
       config:
         multiple: true
 ```
+
+### Image Size Limit
+
+You can set a limit to as what the maximum file size of a file is that users can upload directly into a image field.
+
+**Example**
+
+```yaml
+  media_library:
+    config:
+      max_file_size: 512000 # in bytes, only for default media library
+```
