@@ -34,7 +34,7 @@ export const updateTranslation = () => {
 
     enterTranslation('de de');
   });
-  cy.contains('button', 'Save').click();
+  flushClockAndSave();
 };
 
 export const assertTranslation = () => {
