@@ -8,17 +8,6 @@ We run new functionality in an open beta format from time to time. That means th
 **Use these features at your own risk.**
 
 
-## GitLab and BitBucket Editorial Workflow Support
-
-***added in `netlify-cms@2.10.6` / `netlify-cms-app@2.11.3`***
-
-You can enable the Editorial Workflow with the following line in your Decap CMS `config.yml` file:
-
-```yaml
-publish_mode: editorial_workflow
-```
-
-In order to track unpublished entries statuses the GitLab implementation uses merge requests labels and the BitBucket implementation uses pull requests comments.
 
 
 
@@ -112,18 +101,6 @@ You can now provide your own element for Decap CMS to mount in by setting the ta
 
 
 
-## Squash merge GitHub pull requests
-
-When using the [Editorial Workflow](../configuration-options/#publish-mode) with the `github` or GitHub-connected `git-gateway` backends, Decap CMS creates a pull request for each unpublished entry. Every time the unpublished entry is changed and saved, a new commit is added to the pull request. When the entry is published, the pull request is merged, and all of those commits are added to your project commit history in a merge commit.
-
-The squash merge option causes all commits to be "squashed" into a single commit when the pull request is merged, and the resulting commit is rebased onto the target branch, avoiding the merge commit altogether.
-
-To enable this feature, you can set the following option in your Decap CMS `config.yml`:
-
-```yaml
-backend:
-  squash_merges: true
-```
 
 
 ## Image widget file size limit
