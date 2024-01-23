@@ -29,6 +29,9 @@ Example: The exact commands you ran and their output, screenshots / videos if th
 
 Please add a `x` inside each checkbox:
 
-- [ ] I have read the [contribution guidelines](../CONTRIBUTING.md).
+- [ ] I have read the [contribution guidelines](https://github.com/netlify/netlify-cms/blob/master/CONTRIBUTING.md).
+- [ ] Code is formatted via running `yarn format`.
+- [ ] Tests are passing via running `yarn test`.
+- [ ] The status checks are successful (continuous integration). Those can be seen below.
 
 **A picture of a cute animal (not mandatory but encouraged)**
