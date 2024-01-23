@@ -1,7 +1,7 @@
 ---
-title: Summary String Transformations
+group: Collections
 weight: 40
-title: File Collections
+title: Summary String Transformations
 ---
 
 You can apply transformations on fields in a summary string template using filter notation syntax.
