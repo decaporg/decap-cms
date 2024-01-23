@@ -20,7 +20,7 @@ From a technical perspective, the workflow translates editor UI actions into com
 | Edit draft                | Pushes another commit to the draft branch/pull request                                                            |
 | Approve and publish draft | Merges pull request and deletes branch                                                                            |
 
-**Note:** Editorial workflow works with GitHub repositories, and support for GitLab and Bitbucket is [in beta](/docs/beta-features/#gitlab-and-bitbucket-editorial-workflow-support).
+**Note:** Editorial workflow works with GitHub repositories, and support for [GitLab](/docs/gitlab-backend/) and [Bitbucket](/docs/bitbucket-backend/).
 
 
 ### Bitbucket Support
