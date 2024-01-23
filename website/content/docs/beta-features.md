@@ -111,19 +111,6 @@ Decap CMS always creates its own DOM element for mounting the application, which
 You can now provide your own element for Decap CMS to mount in by setting the target element's ID as `nc-root`. If Decap CMS finds an element with this ID during initialization, it will mount within that element instead of creating its own.
 
 
-## Raw CSS in `registerPreviewStyle`
-
-`registerPreviewStyle` can now accept a CSS string, in addition to accepting a url. The feature is activated by passing in an object as the second argument, with `raw` set to a truthy value. This is critical for integrating with modern build tooling. Here's an example using webpack:
-
-```js
-/**
- * Assumes a webpack project with `sass-loader` and `css-loader` installed.
- * Takes advantage of the `toString` method in the return value of `css-loader`.
- */
-import CMS from 'decap-cms-app';
-import styles from '!css-loader!sass-loader!../main.scss';
-CMS.registerPreviewStyle(styles.toString(), { raw: true });
-```
 
 ## Squash merge GitHub pull requests
 
@@ -138,44 +125,6 @@ backend:
   squash_merges: true
 ```
 
-## Commit Message Templates
-
-You can customize the templates used by Decap CMS to generate commit messages by setting the `commit_messages` option under `backend` in your Decap CMS `config.yml`.
-
-Template tags wrapped in curly braces will be expanded to include information about the file changed by the commit. For example, `{{path}}` will include the full path to the file changed.
-
-Setting up your Decap CMS `config.yml` to recreate the default values would look like this:
-
-```yaml
-backend:
-  commit_messages:
-    create: Create {{collection}} “{{slug}}”
-    update: Update {{collection}} “{{slug}}”
-    delete: Delete {{collection}} “{{slug}}”
-    uploadMedia: Upload “{{path}}”
-    deleteMedia: Delete “{{path}}”
-    openAuthoring: '{{message}}'
-```
-
-Decap CMS generates the following commit types:
-
-| Commit type     | When is it triggered?                    | Available template tags                                     |
-| --------------- | ---------------------------------------- | ----------------------------------------------------------- |
-| `create`        | A new entry is created                   | `slug`, `path`, `collection`, `author-login`, `author-name` |
-| `update`        | An existing entry is changed             | `slug`, `path`, `collection`, `author-login`, `author-name` |
-| `delete`        | An existing entry is deleted             | `slug`, `path`, `collection`, `author-login`, `author-name` |
-| `uploadMedia`   | A media file is uploaded                 | `path`, `author-login`, `author-name`                       |
-| `deleteMedia`   | A media file is deleted                  | `path`, `author-login`, `author-name`                       |
-| `openAuthoring` | A commit is made via a forked repository | `message`, `author-login`, `author-name`                    |
-
-Template tags produce the following output:
-
-* `{{slug}}`: the url-safe filename of the entry changed
-* `{{collection}}`: the name of the collection containing the entry changed
-* `{{path}}`: the full path to the file changed
-* `{{message}}`: the relevant message based on the current change (e.g. the `create` message when an entry is created)
-* `{{author-login}}`: the login/username of the author
-* `{{author-name}}`: the full name of the author (might be empty based on the user's profile)
 
 ## Image widget file size limit
 
