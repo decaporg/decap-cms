@@ -198,18 +198,3 @@ will open the editor for a new post with the `title` field populated with `first
 with `second` and the markdown `body` field with `# content`.
 
 **Note:** URL Encoding might be required for certain values (e.g. in the previous example the value for `body` is URL encoded).
-
-
-## Remark plugins
-
-You can register plugins to customize [`remark`](https://github.com/remarkjs/remark), the library used by the richtext editor for serializing and deserializing markdown.
-
-```js
-// register a plugin
-CMS.registerRemarkPlugin(plugin);
-
-// provide global settings to all plugins, e.g. for customizing `remark-stringify`
-CMS.registerRemarkPlugin({ settings: { bullet: '-' } });
-```
-
-Note that `netlify-widget-markdown` currently uses `remark@10`, so you should check a plugin's compatibility first.
