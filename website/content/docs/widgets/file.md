@@ -29,3 +29,15 @@ The file widget allows editors to upload a file or select an existing one from t
       config:
         multiple: true
   ```
+
+### File Size Limit
+
+You can set a limit to as what the maximum file size of a file is that users can upload directly into a file field.
+
+**Example**
+
+```yaml
+  media_library:
+    config:
+      max_file_size: 1024000 # in bytes, only for default media library
+```
