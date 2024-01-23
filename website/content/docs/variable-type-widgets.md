@@ -1,6 +1,7 @@
 ---
-label: "Variables"
-title: variables
+label: "Variable Type Widgets"
+group: Fields
+weight: 30
 ---
 
 Before this feature, the [list widget](/docs/widgets/#list) allowed a set of fields to be repeated, but every list item had the same set of fields available. With variable types, multiple named sets of fields can be defined, which opens the door to highly flexible content authoring (even page building) in Decap CMS.
