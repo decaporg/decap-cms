@@ -87,6 +87,8 @@ const zh_Hant = {
       },
       i18n: {
         writingInLocale: '以 %{locale} 書寫',
+        copyFromLocale: '用其他語言進行填充',
+        copyFromLocaleConfirm: '你確定要用“%{locale}”進行填充嗎？\n這將會覆蓋所有現有的內容。',
       },
     },
     editor: {
