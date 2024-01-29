@@ -29,20 +29,3 @@ collections:
 
 The above config will transform the title field to uppercase and format the date field using `YYYY-MM-DD` format.
 Available transformations are `upper`, `lower`, `date('<format>')`, `default('defaultValue')`, `ternary('valueForTrue','valueForFalse')` and `truncate(<number>)`/`truncate(<number>, '<string>')`  
-
-
-
-
-## Remark plugins
-
-You can register plugins to customize [`remark`](https://github.com/remarkjs/remark), the library used by the richtext editor for serializing and deserializing markdown.
-
-```js
-// register a plugin
-CMS.registerRemarkPlugin(plugin);
-
-// provide global settings to all plugins, e.g. for customizing `remark-stringify`
-CMS.registerRemarkPlugin({ settings: { bullet: '-' } });
-```
-
-Note that `netlify-widget-markdown` currently uses `remark@10`, so you should check a plugin's compatibility first.
