@@ -29,6 +29,7 @@ It is up to developers to determine how to build the raw content into something 
 
 To learn how to query raw content managed by Decap CMS and reformat them for delivery to end users, please refer the dedicated section for your site generator in the Table of Content.
 ___
+
 ### Local development
 
-If you are experimenting with Decap CMS or testing things out, you can connect it to a local Git repository instead of a live one. Learn how to do it [here](/docs/beta-features/#working-with-a-local-git-repository).
+If you are experimenting with Decap CMS or testing things out, you can connect it to a local Git repository instead of a live one. Learn how to do it [here](/docs/working-with-a-local-git-repository/).
