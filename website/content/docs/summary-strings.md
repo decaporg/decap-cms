@@ -1,15 +1,8 @@
 ---
-group: Configuration
-weight: 200
-title: Beta Features!
+group: Collections
+weight: 40
+title: Summary String Transformations
 ---
-We run new functionality in an open beta format from time to time. That means that this functionality is totally available for use, and we *think* it might be ready for primetime, but it could break or change without notice.
-
-**Use these features at your own risk.**
-
-
-
-## Summary string template transformations
 
 You can apply transformations on fields in a summary string template using filter notation syntax.
 
