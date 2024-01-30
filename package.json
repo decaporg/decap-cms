@@ -156,7 +156,6 @@
   },
   "private": true,
   "dependencies": {
-    "@changesets/cli": "^2.26.2",
     "@emotion/babel-preset-css-prop": "^11.11.0",
     "browserify": "^17.0.0",
     "buffer": "^6.0.3",
@@ -165,6 +164,7 @@
     "eslint-plugin-babel": "^5.3.0",
     "globby": "^12.0.0",
     "imports-loader": "^4.0.1",
+    "lerna": "^8.0.2",
     "process": "^0.11.10"
   },
   "resolutions": {

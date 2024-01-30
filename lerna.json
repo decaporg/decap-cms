@@ -1,9 +1,7 @@
 {
-  "lerna": "2.11.0",
   "packages": ["packages/*"],
   "version": "independent",
   "npmClient": "npm",
-  "useWorkspaces": true,
   "loglevel": "success",
   "command": {
     "version": {
@@ -14,9 +12,6 @@
       "message": "chore(release): publish"
     }
   },
-  "ignoreChanges": [
-    "**/__fixtures__/**",
-    "**/__tests__/**",
-    "**/*.md"
-  ]
+  "ignoreChanges": ["**/__fixtures__/**", "**/__tests__/**", "**/*.md"],
+  "$schema": "node_modules/lerna/schemas/lerna-schema.json"
 }
