@@ -119,7 +119,7 @@ export default class DateTimeControl extends React.Component {
         <input
           id={forID}
           type="datetime-local"
-          value={dayjs(value).format('YYYY-MM-DDThh:mm')}
+          value={dayjs(value).format('YYYY-MM-DDTHH:mm')}
           onChange={e => this.handleChange(dayjs(e.target.value))}
           onFocus={setActiveStyle}
           onBlur={setInactiveStyle}
