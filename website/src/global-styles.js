@@ -112,6 +112,10 @@ const globalStyles = css`
     }
   }
 
+  .content-bottom {
+    margin-top: 2em;
+  }
+
   .right {
     float: right;
   }

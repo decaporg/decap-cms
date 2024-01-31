@@ -139,11 +139,11 @@ collections:
       - {label: "Language", name: "language"}
 ```
 
-<div>
+<div class="content-bottom">
     <div class="right">
         <a href="/docs/access-your-content/" class="button">4. Access Your Content</a>
     </div>
     <p>
-        <strong>Once this is completed, proceed to</strong>
+        <strong>Once this is completed, proceed to step 4.</strong>
     </p>
 </div>
