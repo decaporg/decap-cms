@@ -15,7 +15,7 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "develop": "yarn build:esm --watch",
+    "develop": "npm run build:esm -- --watch",
     "build": "cross-env NODE_ENV=production webpack",
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward --extensions \".js,.jsx,.ts,.tsx\""
   },
@@ -37,5 +37,8 @@
     "lodash": "^4.17.11",
     "prop-types": "^15.7.2",
     "react": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/minimatch": "^5.1.2"
   }
 }

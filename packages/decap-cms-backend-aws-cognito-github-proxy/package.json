@@ -15,10 +15,9 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "develop": "yarn build:esm --watch",
+    "develop": "npm run build:esm -- --watch",
     "build": "cross-env NODE_ENV=production webpack",
-    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward --extensions \".js,.jsx,.ts,.tsx\"",
-    "createFragmentTypes": "node scripts/createFragmentTypes.js"
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore **/__tests__ --root-mode upward --extensions \".js,.jsx,.ts,.tsx\""
   },
   "dependencies": {
     "apollo-cache-inmemory": "^1.6.2",
