@@ -42,7 +42,7 @@ New contributors are always welcome! Check out [CONTRIBUTING.md](https://github.
 ## Change Log
 
 This project adheres to [Semantic Versioning](http://semver.org/).
-Every release is documented on the Github [Releases](https://github.com/decaporg/decap-cms/releases) page.
+Every release is documented on the GitHub [Releases](https://github.com/decaporg/decap-cms/releases) page.
 
 ## License
 

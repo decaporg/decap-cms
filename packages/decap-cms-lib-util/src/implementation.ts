@@ -111,6 +111,7 @@ export type Config = {
     proxy_url?: string;
     auth_type?: string;
     app_id?: string;
+    base_url?: string;
     cms_label_prefix?: string;
     api_version?: string;
   };

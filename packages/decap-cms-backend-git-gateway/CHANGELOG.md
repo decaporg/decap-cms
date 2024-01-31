@@ -617,7 +617,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Bug Fixes
 
-* **backend-github:** make non-Large Media previews work with Git Gateway+Github ([#2151](https://github.com/decaporg/decap-cms/tree/master/packages/decap-cms-backend-git-gateway/issues/2151)) ([63582dc](https://github.com/decaporg/decap-cms/tree/master/packages/decap-cms-backend-git-gateway/commit/63582dc))
+* **backend-github:** make non-Large Media previews work with Git Gateway+GitHub ([#2151](https://github.com/decaporg/decap-cms/tree/master/packages/decap-cms-backend-git-gateway/issues/2151)) ([63582dc](https://github.com/decaporg/decap-cms/tree/master/packages/decap-cms-backend-git-gateway/commit/63582dc))
 
 
 

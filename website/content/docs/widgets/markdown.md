@@ -28,3 +28,17 @@ This would render as:
 ![Markdown widget example](/img/widgets-markdown.png)
 
 *Please note:* The markdown widget outputs a raw markdown string. Your static site generator may or may not render the markdown to HTML automatically. Consult with your static site generator's documentation for more information about rendering markdown.
+
+### Remark plugins
+
+You can register plugins to customize [`remark`](https://github.com/remarkjs/remark), the library used by the richtext editor for serializing and deserializing markdown.
+
+```js
+// register a plugin
+CMS.registerRemarkPlugin(plugin);
+
+// provide global settings to all plugins, e.g. for customizing `remark-stringify`
+CMS.registerRemarkPlugin({ settings: { bullet: '-' } });
+```
+
+Note that `netlify-widget-markdown` currently uses `remark@10`, so you should check a plugin's compatibility first.

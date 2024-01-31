@@ -40,7 +40,7 @@ pending, which a content editor can use to manually check for a finished preview
 
 Deploy preview links point to the site root by default, but you'll probably want them to point to
 the specific piece of content that the content editor is viewing. You can do this by providing a
-`preview_path` string template for each collection, or for inidividual files in a files collection.
+`preview_path` string template for each collection, or for individual files in a files collection.
 
 Let's say we have a `blog` collection that stores content in our repo under `content/blog`. The path
 to a post in your repo may look like `content/blog/2018-01-new-post.md`, but the path to that post

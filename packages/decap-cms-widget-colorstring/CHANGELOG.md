@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.1.0-beta.1](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-colorstring@3.1.0-beta.0...decap-cms-widget-colorstring@3.1.0-beta.1) (2024-01-16)
+
+
+### Bug Fixes
+
+* **#7007:** Replace validate color with tiny color 2 ([#7009](https://github.com/decaporg/decap-cms/issues/7009)) ([76b469c](https://github.com/decaporg/decap-cms/commit/76b469c754953a54dce60ac678eb3b4089850760)), closes [#7007](https://github.com/decaporg/decap-cms/issues/7007)
+
+
+
+
+
 # [3.1.0-beta.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-colorstring@3.1.0...decap-cms-widget-colorstring@3.1.0-beta.0) (2023-10-20)
 
 

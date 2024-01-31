@@ -40,7 +40,7 @@ jobs:
       - name: log versions
         run: node --version && npm --version && yarn --version
         if: ${{ needs.changes.outputs.cms == 'true' }}
-      - name: install dependecies
+      - name: install dependencies
         run: yarn --frozen-lockfile --network-timeout 1000000 && yarn bootstrap
         if: ${{ needs.changes.outputs.cms == 'true' }}
       - name: run unit tests

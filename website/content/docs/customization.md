@@ -50,6 +50,21 @@ body {
 }
 ```
 
+## Raw CSS in `registerPreviewStyle`
+
+`registerPreviewStyle` can now accept a CSS string, in addition to accepting a url. The feature is activated by passing in an object as the second argument, with `raw` set to a truthy value. This is critical for integrating with modern build tooling. Here's an example using webpack:
+
+```js
+/**
+ * Assumes a webpack project with `sass-loader` and `css-loader` installed.
+ * Takes advantage of the `toString` method in the return value of `css-loader`.
+ */
+import CMS from 'decap-cms-app';
+import styles from '!css-loader!sass-loader!../main.scss';
+CMS.registerPreviewStyle(styles.toString(), { raw: true });
+```
+
+
 ## `registerPreviewTemplate`
 
 Registers a template for a folder collection or an individual file in a file collection.
@@ -169,7 +184,7 @@ Registers a template for a folder collection or an individual file in a file col
     </script>
     ```
     ### Accessing Metadata
-    Preview Components also receive an additional prop: `fieldsMetaData`. It contains aditional information (besides the plain textual value of each field) that can be useful for preview purposes. For example, the Relation widget passes the whole selected relation data in `fieldsMetaData`.
+    Preview Components also receive an additional prop: `fieldsMetaData`. It contains additional information (besides the plain textual value of each field) that can be useful for preview purposes. For example, the Relation widget passes the whole selected relation data in `fieldsMetaData`.
     ```js
     export default class ArticlePreview extends React.Component {
       render() {

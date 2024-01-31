@@ -42,7 +42,7 @@ import type {
 } from 'decap-cms-lib-util';
 import type { Semaphore } from 'semaphore';
 
-type GitHubUser = Octokit.UsersGetAuthenticatedResponse;
+export type GitHubUser = Octokit.UsersGetAuthenticatedResponse;
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
 
@@ -78,9 +78,12 @@ export default class GitHub implements Implementation {
   mediaFolder: string;
   previewContext: string;
   token: string | null;
+  tokenKeyword: string;
   squashMerges: boolean;
   cmsLabelPrefix: string;
   useGraphql: boolean;
+  baseUrl?: string;
+  bypassWriteAccessCheckForAppTokens = false;
   _currentUserPromise?: Promise<GitHubUser>;
   _userIsOriginMaintainerPromises?: {
     [key: string]: Promise<boolean>;
@@ -119,6 +122,8 @@ export default class GitHub implements Implementation {
     this.branch = config.backend.branch?.trim() || 'master';
     this.apiRoot = config.backend.api_root || 'https://api.github.com';
     this.token = '';
+    this.tokenKeyword = 'token';
+    this.baseUrl = config.backend.base_url;
     this.squashMerges = config.backend.squash_merges || false;
     this.cmsLabelPrefix = config.backend.cms_label_prefix || '';
     this.useGraphql = config.backend.use_graphql || false;
@@ -153,7 +158,7 @@ export default class GitHub implements Implementation {
     if (api) {
       auth =
         (await this.api
-          ?.getUser()
+          ?.getUser({ token: this.token ?? '' })
           .then(user => !!user)
           .catch(e => {
             console.warn('Failed getting GitHub user', e);
@@ -185,7 +190,7 @@ export default class GitHub implements Implementation {
     let repoExists = false;
     while (!repoExists) {
       repoExists = await fetch(`${this.apiRoot}/repos/${repo}`, {
-        headers: { Authorization: `token ${token}` },
+        headers: { Authorization: `${this.tokenKeyword} ${token}` },
       })
         .then(() => true)
         .catch(err => {
@@ -208,7 +213,7 @@ export default class GitHub implements Implementation {
     if (!this._currentUserPromise) {
       this._currentUserPromise = fetch(`${this.apiRoot}/user`, {
         headers: {
-          Authorization: `token ${token}`,
+          Authorization: `${this.tokenKeyword} ${token}`,
         },
       }).then(res => res.json());
     }
@@ -229,7 +234,7 @@ export default class GitHub implements Implementation {
         `${this.apiRoot}/repos/${this.originRepo}/collaborators/${username}/permission`,
         {
           headers: {
-            Authorization: `token ${token}`,
+            Authorization: `${this.tokenKeyword} ${token}`,
           },
         },
       )
@@ -246,7 +251,7 @@ export default class GitHub implements Implementation {
       const repo = await fetch(`${this.apiRoot}/repos/${currentUser.login}/${repoName}`, {
         method: 'GET',
         headers: {
-          Authorization: `token ${token}`,
+          Authorization: `${this.tokenKeyword} ${token}`,
         },
       }).then(res => res.json());
 
@@ -294,7 +299,7 @@ export default class GitHub implements Implementation {
       return fetch(`${this.apiRoot}/repos/${this.repo}/merge-upstream`, {
         method: 'POST',
         headers: {
-          Authorization: `token ${token}`,
+          Authorization: `${this.tokenKeyword} ${token}`,
         },
         body: JSON.stringify({
           branch: this.branch,
@@ -306,7 +311,7 @@ export default class GitHub implements Implementation {
       const fork = await fetch(`${this.apiRoot}/repos/${this.originRepo}/forks`, {
         method: 'POST',
         headers: {
-          Authorization: `token ${token}`,
+          Authorization: `${this.tokenKeyword} ${token}`,
         },
       }).then(res => res.json());
       return this.pollUntilForkExists({ repo: fork.full_name, token });
@@ -318,6 +323,7 @@ export default class GitHub implements Implementation {
     const apiCtor = this.useGraphql ? GraphQLAPI : API;
     this.api = new apiCtor({
       token: this.token,
+      tokenKeyword: this.tokenKeyword,
       branch: this.branch,
       repo: this.repo,
       originRepo: this.originRepo,
@@ -326,6 +332,8 @@ export default class GitHub implements Implementation {
       cmsLabelPrefix: this.cmsLabelPrefix,
       useOpenAuthoring: this.useOpenAuthoring,
       initialWorkflowStatus: this.options.initialWorkflowStatus,
+      baseUrl: this.baseUrl,
+      getUser: this.currentUser,
     });
     const user = await this.api!.user();
     const isCollab = await this.api!.hasWriteAccess().catch(error => {
@@ -342,7 +350,7 @@ export default class GitHub implements Implementation {
     });
 
     // Unauthorized user
-    if (!isCollab) {
+    if (!isCollab && !this.bypassWriteAccessCheckForAppTokens) {
       throw new Error('Your GitHub user account does not have access to this repo.');
     }
 

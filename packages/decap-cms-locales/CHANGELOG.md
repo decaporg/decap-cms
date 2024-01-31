@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.1.3-beta.1](https://github.com/decaporg/decap-cms/compare/decap-cms-locales@3.1.3-beta.0...decap-cms-locales@3.1.3-beta.1) (2024-01-16)
+
+
+### Bug Fixes
+
+* **i18n:** translate editor.editorWidgets.list.add in Simplified Chinese and Traditional Chinese ([#7038](https://github.com/decaporg/decap-cms/issues/7038)) ([cdbf5bc](https://github.com/decaporg/decap-cms/commit/cdbf5bc9c7646edd27daf062d3b5f098af211046))
+
+
+
+
+
 ## [3.1.3-beta.0](https://github.com/decaporg/decap-cms/compare/decap-cms-locales@3.1.2...decap-cms-locales@3.1.3-beta.0) (2023-11-23)
 
 
@@ -115,7 +126,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * **locale-hr:** fix typos ([0191f25](https://github.com/decaporg/decap-cms/commit/0191f25c51ef66292c920a93078697643c8dd68b))
-* **locale-tr:** fixe locales and added new ones. ([#6010](https://github.com/decaporg/decap-cms/issues/6010)) ([fdd9ec3](https://github.com/decaporg/decap-cms/commit/fdd9ec354d2ea3d9a2705e11119ee87b8ea96af5))
+* **locale-tr:** fixed locales and added new ones. ([#6010](https://github.com/decaporg/decap-cms/issues/6010)) ([fdd9ec3](https://github.com/decaporg/decap-cms/commit/fdd9ec354d2ea3d9a2705e11119ee87b8ea96af5))
 
 
 

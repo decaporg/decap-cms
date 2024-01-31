@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.1.0-beta.4](https://github.com/decaporg/decap-cms/compare/decap-cms-app@3.1.0-beta.3...decap-cms-app@3.1.0-beta.4) (2024-01-16)
+
+
+### Bug Fixes
+
+* change dayjs to per-package dependency ([#6992](https://github.com/decaporg/decap-cms/issues/6992)) ([0c278b0](https://github.com/decaporg/decap-cms/commit/0c278b0a83d93233d3b3e860d3029df20fe1c501))
+
+
+
+
+
 # [3.1.0-beta.3](https://github.com/decaporg/decap-cms/compare/decap-cms-app@3.1.0-beta.2...decap-cms-app@3.1.0-beta.3) (2023-11-23)
 
 
@@ -1201,7 +1212,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Bug Fixes
 
-* **deps:** update color widget dependecy ([#4512](https://github.com/decaporg/decap-cms/tree/master/packages/decap-cms-app/issues/4512)) ([a0176e4](https://github.com/decaporg/decap-cms/tree/master/packages/decap-cms-app/commit/a0176e457223da65dddf983707704dd4441553a0))
+* **deps:** update color widget dependency ([#4512](https://github.com/decaporg/decap-cms/tree/master/packages/decap-cms-app/issues/4512)) ([a0176e4](https://github.com/decaporg/decap-cms/tree/master/packages/decap-cms-app/commit/a0176e457223da65dddf983707704dd4441553a0))
 
 
 

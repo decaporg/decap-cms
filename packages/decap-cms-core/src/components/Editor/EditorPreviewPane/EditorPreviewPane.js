@@ -14,7 +14,11 @@ import {
   getRemarkPlugins,
 } from '../../../lib/registry';
 import { ErrorBoundary } from '../../UI';
-import { selectTemplateName, selectInferedField, selectField } from '../../../reducers/collections';
+import {
+  selectTemplateName,
+  selectInferredField,
+  selectField,
+} from '../../../reducers/collections';
 import { boundGetAsset } from '../../../actions/media';
 import { selectIsLoadingAsset } from '../../../reducers/medias';
 import { INFERABLE_FIELDS } from '../../../constants/fieldInference';
@@ -55,17 +59,17 @@ export class PreviewPane extends React.Component {
     );
   };
 
-  inferedFields = {};
+  inferredFields = {};
 
   inferFields() {
-    const titleField = selectInferedField(this.props.collection, 'title');
-    const shortTitleField = selectInferedField(this.props.collection, 'shortTitle');
-    const authorField = selectInferedField(this.props.collection, 'author');
+    const titleField = selectInferredField(this.props.collection, 'title');
+    const shortTitleField = selectInferredField(this.props.collection, 'shortTitle');
+    const authorField = selectInferredField(this.props.collection, 'author');
 
-    this.inferedFields = {};
-    if (titleField) this.inferedFields[titleField] = INFERABLE_FIELDS.title;
-    if (shortTitleField) this.inferedFields[shortTitleField] = INFERABLE_FIELDS.shortTitle;
-    if (authorField) this.inferedFields[authorField] = INFERABLE_FIELDS.author;
+    this.inferredFields = {};
+    if (titleField) this.inferredFields[titleField] = INFERABLE_FIELDS.title;
+    if (shortTitleField) this.inferredFields[shortTitleField] = INFERABLE_FIELDS.shortTitle;
+    if (authorField) this.inferredFields[authorField] = INFERABLE_FIELDS.author;
   }
 
   /**
@@ -100,15 +104,15 @@ export class PreviewPane extends React.Component {
     }
 
     const labelledWidgets = ['string', 'text', 'number'];
-    const inferedField = Object.entries(this.inferedFields)
+    const inferredField = Object.entries(this.inferredFields)
       .filter(([key]) => {
         const fieldToMatch = selectField(this.props.collection, key);
         return fieldToMatch === field;
       })
       .map(([, value]) => value)[0];
 
-    if (inferedField) {
-      value = inferedField.defaultPreview(value);
+    if (inferredField) {
+      value = inferredField.defaultPreview(value);
     } else if (
       value &&
       labelledWidgets.indexOf(field.get('widget')) !== -1 &&
