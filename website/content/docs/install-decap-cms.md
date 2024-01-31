@@ -77,6 +77,11 @@ CMS.init()
 CMS.registerPreviewTemplate('my-template', MyTemplate)
 ```
 
-<p>
-    <strong>Once this is completed, proceed to</strong> <a href="/docs/choosing-a-backend/" class="button">2. Choosing a Backend</a>
-</p>
+<div>
+    <div class="right">
+        <a href="/docs/choosing-a-backend/" class="button">2. Choosing a Backend</a>
+    </div>
+    <p>
+        <strong>Once this is completed, proceed to</strong>
+    </p>
+</div>

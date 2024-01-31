@@ -111,6 +111,11 @@ const globalStyles = css`
       box-shadow: inset 0 0 4px 0 rgba(0, 0, 0, 0.5);
     }
   }
+
+  .right {
+    float: right;
+  }
+
 `;
 
 function GlobalStyles() {
