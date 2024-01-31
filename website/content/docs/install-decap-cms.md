@@ -79,4 +79,6 @@ CMS.registerPreviewTemplate('my-template', MyTemplate)
 
 ---
 
-Once this is completed, proceed to: [2. Choosing a Backend](/docs/choosing-a-backend/)
+<p>
+    Once this is completed, proceed to: <a href="/docs/choosing-a-backend/" class="button">2. Choosing a Backend</a>
+</p>

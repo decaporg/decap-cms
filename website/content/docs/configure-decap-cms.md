@@ -141,4 +141,6 @@ collections:
 
 ---
 
-Once this is completed, proceed to: [4. Access Your Content](/docs/access-your-content/)
+<p>
+    Once this is completed, proceed to: <a href="/docs/access-your-content/" class="button">4. Access Your Content</a>
+</p>

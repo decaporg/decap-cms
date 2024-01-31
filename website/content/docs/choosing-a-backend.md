@@ -49,4 +49,6 @@ When a user logs in with the Netlify Identity widget, an access token directs to
 
 ---
 
-Once this is completed, proceed to: [3. Configure Decap CMS](/docs/configure-decap-cms/)
+<p>
+    Once this is completed, proceed to: <a href="/docs/configure-decap-cms/" class="button">3. Configure Decap CMS</a>
+</p>

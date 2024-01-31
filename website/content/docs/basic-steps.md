@@ -32,4 +32,6 @@ Decap CMS manages your content and provides editorial and admin features via a w
 
 ---
 
-If you are ready to get started, proceed to: [1. Install Decap CMS](/docs/install-decap-cms/)
+<p>
+    If you are ready to get started, proceed to: <a href="/docs/install-decap-cms/" class="button">1. Install Decap CMS</a>
+</p>
