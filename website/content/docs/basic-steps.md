@@ -30,8 +30,6 @@ Check out the [Configuration Options](/docs/configuration-options/) page for ful
 
 Decap CMS manages your content and provides editorial and admin features via a webpage in a browser, but it doesn't deliver content. Decap CMS only makes your content available through an API. It is up to developers to determine how to build the raw content into something useful and delightful on the frontend within your static site generator.
 
----
-
 <p>
-    If you are ready to get started, proceed to: <a href="/docs/install-decap-cms/" class="button">1. Install Decap CMS</a>
+    <strong>If you are ready to get started, proceed to</strong> <a href="/docs/install-decap-cms/" class="button">1. Install Decap CMS</a>
 </p>

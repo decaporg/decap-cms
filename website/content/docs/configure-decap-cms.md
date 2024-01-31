@@ -139,8 +139,6 @@ collections:
       - {label: "Language", name: "language"}
 ```
 
----
-
 <p>
-    Once this is completed, proceed to: <a href="/docs/access-your-content/" class="button">4. Access Your Content</a>
+    <strong>Once this is completed, proceed to</strong> <a href="/docs/access-your-content/" class="button">4. Access Your Content</a>
 </p>
