@@ -1,7 +1,7 @@
 ---
 group: Add
-weight: 4
-title: Authentication
+weight: 3
+title: 2. Choosing a Backend
 ---
 
 Now that you have your Decap CMS files in place and configured, all that's left is to enable authentication. We're using the [Netlify](https://www.netlify.com/) platform here because it's one of the quickest ways to get started, but you can learn about other authentication options in the [Backends](/docs/backends-overview) doc.
@@ -46,3 +46,7 @@ When a user logs in with the Netlify Identity widget, an access token directs to
 ```
 
 **Note:** This example script requires modern JavaScript and does not work on IE11. For legacy browser support, use function expressions (`function () {}`) in place of the arrow functions (`() => {}`), or use a transpiler such as [Babel](https://babeljs.io/).
+
+---
+
+Once this is completed, proceed to: [3. Configure Decap CMS](/docs/configure-decap-cms/)

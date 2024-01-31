@@ -1,7 +1,7 @@
 ---
 group: Add
 weight: 2
-title: App File Structure
+title: 1. Install Decap CMS
 ---
 
 A static `admin` folder contains all Decap CMS files, stored at the root of your published site. Where you store this folder in the source files depends on your static site generator. Here's the static file location for a few of the most popular static site generators:
@@ -76,3 +76,7 @@ CMS.init()
 // Now the registry is available via the CMS object.
 CMS.registerPreviewTemplate('my-template', MyTemplate)
 ```
+
+---
+
+Once this is completed, proceed to: [2. Choosing a Backend](/docs/choosing-a-backend/)

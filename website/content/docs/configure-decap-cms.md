@@ -1,7 +1,7 @@
 ---
 group: Add
-weight: 3
-title: Configuration
+weight: 4
+title: 3. Configure Decap CMS
 ---
 
 Configuration is different for every site, so we'll break it down into parts.  Add all the code snippets in this section to your `admin/config.yml` file.
@@ -138,3 +138,7 @@ collections:
     fields:
       - {label: "Language", name: "language"}
 ```
+
+---
+
+Once this is completed, proceed to: [4. Access Your Content](/docs/access-your-content/)

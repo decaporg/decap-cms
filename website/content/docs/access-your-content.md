@@ -1,7 +1,7 @@
 ---
 group: Add
 weight: 5
-title: Accessing the CMS
+title: 4. Access Your Content
 ---
 
 Your site CMS is now fully configured and ready for login!
