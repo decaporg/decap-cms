@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.0.1](https://github.com/decaporg/decap-cms/compare/decap-cms-media-library-uploadcare@3.0.1-beta.0...decap-cms-media-library-uploadcare@3.0.1) (2024-02-01)
+
+**Note:** Version bump only for package decap-cms-media-library-uploadcare
+
 ## [3.0.1-beta.0](https://github.com/decaporg/decap-cms/compare/decap-cms-media-library-uploadcare@3.0.0...decap-cms-media-library-uploadcare@3.0.1-beta.0) (2024-01-31)
 
 **Note:** Version bump only for package decap-cms-media-library-uploadcare
