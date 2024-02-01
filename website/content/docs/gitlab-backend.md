@@ -58,6 +58,32 @@ With GitLab's PKCE authorization, users can authenticate with GitLab directly fr
      auth_endpoint: oauth/authorize
    ```
 
+
+**Note:** In all cases, GitLab also provides you with a client secret. You should *never* store this in your repo or reveal it in the client.
+
+
+## GraphQL API
+
+**Note: not compatible with `git-gateway`**
+
+GraphQL allows to retrieve data using less individual API requests compared to a REST API.
+The current implementation uses the GraphQL API in specific cases, where using the REST API can be slow and lead to exceeding GitLab's rate limits. As we receive feedback and extend the feature, we'll migrate more functionality to the GraphQL API.
+
+You can enable the GraphQL API for the GitLab backend by setting `backend.use_graphql` to `true` in your CMS config:
+
+```yml
+backend:
+  name: gitlab
+  repo: owner/repo # replace this with your repo info
+  use_graphql: true
+
+  # optional, defaults to 'https://gitlab.com/api/graphql'. Can be used to configure a self hosted GitLab instance.
+  graphql_api_root: https://my-self-hosted-gitlab.com/api/graphql
+```
+
+Learn more about the benefits of GraphQL in the [GraphQL docs](https://graphql.org).
+
+
 ## (DEPRECATED) Client-Side Implicit Grant
 
 **Note:** This method is not recommended and will be deprecated both [by GitLab](https://gitlab.com/gitlab-org/gitlab/-/issues/288516) and [in the OAuth 2.1 specification](https://oauth.net/2.1/) in the future.
@@ -67,25 +93,23 @@ With GitLab's Implicit Grant, users can authenticate with GitLab directly from t
 1. Follow the [GitLab docs](https://docs.gitlab.com/ee/integration/oauth_provider.html#adding-an-application-through-the-profile) to add your Decap CMS instance as an OAuth application and uncheck the **Confidential** checkbox. For the **Redirect URI**, enter the address where you access Decap CMS, for example, `https://www.mysite.com/admin/`. For scope, select `api`.
 2. GitLab gives you an **Application ID**. Copy this ID and enter it in your Decap CMS `config.yml` file, along with the following settings:
 
-   ```yaml
-   backend:
-     name: gitlab
-     repo: owner-name/repo-name # Path to your GitLab repository
-     auth_type: implicit # Required for implicit grant
-     app_id: your-app-id # Application ID from your GitLab settings
-   ```
+```yaml
+backend:
+    name: gitlab
+    repo: owner-name/repo-name # Path to your GitLab repository
+    auth_type: implicit # Required for implicit grant
+    app_id: your-app-id # Application ID from your GitLab settings
+```
 
-   You can also use Implicit Grant with a self-hosted GitLab instance. This requires adding `api_root`, `base_url`, and `auth_endpoint` fields:
+You can also use Implicit Grant with a self-hosted GitLab instance. This requires adding `api_root`, `base_url`, and `auth_endpoint` fields:
 
-   ```yaml
-   backend:
-     name: gitlab
-     repo: owner-name/repo-name # Path to your GitLab repository
-     auth_type: implicit # Required for implicit grant
-     app_id: your-app-id # Application ID from your GitLab settings
-     api_root: https://my-hosted-gitlab-instance.com/api/v4
-     base_url: https://my-hosted-gitlab-instance.com
-     auth_endpoint: oauth/authorize
-   ```
-
-**Note:** In all cases, GitLab also provides you with a client secret. You should *never* store this in your repo or reveal it in the client.
+```yaml
+backend:
+    name: gitlab
+    repo: owner-name/repo-name # Path to your GitLab repository
+    auth_type: implicit # Required for implicit grant
+    app_id: your-app-id # Application ID from your GitLab settings
+    api_root: https://my-hosted-gitlab-instance.com/api/v4
+    base_url: https://my-hosted-gitlab-instance.com
+    auth_endpoint: oauth/authorize
+```

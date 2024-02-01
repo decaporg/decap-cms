@@ -3,7 +3,6 @@ group: Workflow
 weight: 20
 title: Open Authoring
 ---
-**This is a [beta feature](/docs/beta-features#open-authoring).**
 
 When using the [GitHub backend](/docs/github-backend), you can use Decap CMS to accept contributions from GitHub users without giving them access to your repository. When they make changes in the CMS, the CMS forks your repository for them behind the scenes, and all the changes are made to the fork. When the contributor is ready to submit their changes, they can set their draft as ready for review in the CMS. This triggers a pull request to your repository, which you can merge using the GitHub UI.
 

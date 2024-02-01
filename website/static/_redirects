@@ -16,3 +16,4 @@ https://www.netlifycms.org/* https://decapcms.org/:splat 301!
 /docs/quick-start                       /docs/add-to-your-site 301
 /chat                                   https://discord.gg/KZRDXmTm9v 301
 /docs/update-the-cms-version            /docs/releases 301
+/docs/beta-features/                    /docs/ 301
