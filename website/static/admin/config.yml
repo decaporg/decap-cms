@@ -166,7 +166,7 @@ collections:
           required: false,
         }
       - { label: Image, name: image, widget: image }
-      - { label: Date, name: date, widget: date }
+      - { label: Date, name: date, widget: datetime }
       - { label: Body, name: body, widget: markdown }
   - name: community
     label: Community
