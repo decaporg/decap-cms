@@ -14,6 +14,8 @@ The number widget uses an HTML number input, saving the value as a string, integ
   - `min`: accepts a number for minimum value accepted; unset by default
   - `max`: accepts a number for maximum value accepted; unset by default
   - `step`: accepts a number for stepping up/down values in the input; 1 by default
+  - `prefix`: display a message before the number input; accepts a string; defaults to an empty string
+  - `suffix`: display a message after the number input; accepts a string; defaults to an empty string
 - **Example:**
     ```yaml
     - label: "Puppy Count"
@@ -24,4 +26,5 @@ The number widget uses an HTML number input, saving the value as a string, integ
       min: 1
       max: 101
       step: 2
+      suffix: puppies
     ```
