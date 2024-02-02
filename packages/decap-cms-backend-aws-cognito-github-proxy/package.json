@@ -1,7 +1,7 @@
 {
   "name": "decap-cms-backend-aws-cognito-github-proxy",
   "description": "GitHub backend for Decap CMS proxied through AWS Cognito",
-  "version": "3.1.0-beta.1",
+  "version": "3.1.0",
   "license": "MIT",
   "repository": "https://github.com/decaporg/decap-cms/tree/master/packages/decap-cms-backend-aws-cognito-github-proxy",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
@@ -15,10 +15,9 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "develop": "yarn build:esm --watch",
+    "develop": "npm run build:esm -- --watch",
     "build": "cross-env NODE_ENV=production webpack",
-    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward --extensions \".js,.jsx,.ts,.tsx\"",
-    "createFragmentTypes": "node scripts/createFragmentTypes.js"
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore **/__tests__ --root-mode upward --extensions \".js,.jsx,.ts,.tsx\""
   },
   "dependencies": {
     "apollo-cache-inmemory": "^1.6.2",
@@ -34,8 +33,8 @@
   "peerDependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
-    "decap-cms-lib-auth": "^3.0.0",
     "decap-cms-backend-github": "^3.0.0",
+    "decap-cms-lib-auth": "^3.0.0",
     "decap-cms-lib-util": "^3.0.0",
     "decap-cms-ui-default": "^3.0.0",
     "lodash": "^4.17.11",

@@ -1,0 +1,20 @@
+{
+  "targetDefaults": {
+    "build:esm": {
+      "cache": true
+    },
+    "build": {
+      "cache": true
+    }
+  },
+  "namedInputs": {
+    "default": [
+      "{projectRoot}/**/*",
+      "sharedGlobals"
+    ],
+    "sharedGlobals": [],
+    "production": [
+      "default"
+    ]
+  }
+}
