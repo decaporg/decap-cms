@@ -28,7 +28,10 @@ export const pageQuery = graphql`
           channels {
             title
             description
-            url
+            cta {
+              href
+              label
+            }
           }
         }
       }

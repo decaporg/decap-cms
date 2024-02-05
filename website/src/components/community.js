@@ -6,41 +6,37 @@ import Markdownify from './markdownify';
 import PageHero from './page-hero';
 import HeroTitle from './hero-title';
 import Lead from './lead';
-import Container from './container';
-import SectionLabel from './section-label';
-import Grid from './grid';
-import CommunityChannelsList from './community-channels-list';
 import theme from '../theme';
+import Container from './container';
+import CommunityChannelsList from './community-channels-list';
 
 function Community({ headline, subhead, sections }) {
   return (
-    <>
+    <Container size="md">
       <PageHero>
-        <HeroTitle>
-          <Markdownify source={headline} />
-        </HeroTitle>
-        <Lead light>
-          <Markdownify source={subhead} />
-        </Lead>
-      </PageHero>
+        <div
+          css={css`
+            margin-bottom: ${theme.space[7]};
+          `}
+        >
+          <HeroTitle>
+            <Markdownify source={headline} />
+          </HeroTitle>
+          <Lead light>
+            <Markdownify source={subhead} />
+          </Lead>
+        </div>
 
-      <Container>
-        <Grid cols={2}>
-          <div
-            css={css`
-              margin-bottom: ${theme.space[5]};
-            `}
-          >
-            {sections.map(({ title: sectionTitle, channels }, channelIdx) => (
-              <React.Fragment key={channelIdx}>
-                <SectionLabel>{sectionTitle}</SectionLabel>
-                <CommunityChannelsList channels={channels} />
-              </React.Fragment>
-            ))}
-          </div>
-        </Grid>
-      </Container>
-    </>
+        {sections.map(({ title: sectionTitle, channels }, channelIdx) => (
+          <React.Fragment key={channelIdx}>
+            <h2>
+              <Markdownify source={sectionTitle} />
+            </h2>
+            <CommunityChannelsList channels={channels} />
+          </React.Fragment>
+        ))}
+      </PageHero>
+    </Container>
   );
 }
 
