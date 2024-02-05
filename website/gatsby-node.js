@@ -49,13 +49,12 @@ exports.createPages = async ({ graphql, actions }) => {
   });
 
   // redirects from older URLs
-  const { createRedirect } = actions
+  const { createRedirect } = actions;
 
   createRedirect({
     fromPath: `/docs/add-to-your-site/`,
     toPath: `/docs/basic-steps/`,
-  })
-
+  });
 };
 
 function pad(n) {

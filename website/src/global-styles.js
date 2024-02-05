@@ -119,7 +119,6 @@ const globalStyles = css`
   .right {
     float: right;
   }
-
 `;
 
 function GlobalStyles() {
