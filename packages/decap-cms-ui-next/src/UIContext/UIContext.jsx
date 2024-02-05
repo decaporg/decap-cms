@@ -43,3 +43,11 @@ export function UIProvider({ children }) {
     </UIContext.Provider>
   );
 }
+
+export function withUIContext(Component) {
+  return props => (
+    <UIContext.Consumer>{context => <Component {...props} {...context} />}</UIContext.Consumer>
+  );
+}
+
+export default withUIContext(UIProvider);

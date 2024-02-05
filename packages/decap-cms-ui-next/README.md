@@ -16,3 +16,13 @@ You can read these following resources:
 - https://github.com/decaporg/decap-cms/issues/2557
 - https://codesandbox.io/s/github/austincondiff/netlify-cms-ui-prototype
 - https://github.com/StaticJsCMS/static-cms
+- https://github.com/decaporg/decap-cms/labels/area%3A%20design
+- https://github.com/decaporg/decap-cms/issues/441
+
+## Need to be done
+
+migrate typeface/inter -> @fontface/inter
+fix HOC withUIContext
+migrate react-table -> @tanstack/react-table
+migrate react-sortable-hoc -> @dnd-kit
+migrate react-notifications -> react-toastify

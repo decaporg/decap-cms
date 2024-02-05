@@ -18,8 +18,12 @@
   },
   "dependencies": {
     "@fontsource/inter": "^5.0.16",
+    "@tanstack/react-table": "^8.11.8",
+    "rc-datetime-picker-dayjs": "^1.0.1",
     "react-aria-menubutton": "^7.0.0",
-    "react-transition-group": "^4.4.5"
+    "react-transition-group": "^4.4.5",
+    "react-spring": "^9.7.3",
+    "keycode": "^2.2.1"
   },
   "peerDependencies": {
     "@emotion/react": "^11.11.1",
