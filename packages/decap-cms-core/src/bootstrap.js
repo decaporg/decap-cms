@@ -2,7 +2,15 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { Provider, connect } from 'react-redux';
 import { Route, Router } from 'react-router-dom';
-import { GlobalStyles } from 'decap-cms-ui-default';
+import { ThemeProvider } from '@emotion/react';
+import { GlobalStyles as GlobalStylesDefault } from 'decap-cms-ui-default';
+import {
+  lightTheme,
+  darkTheme,
+  GlobalStyles as GlobalStylesNext,
+  UIContext,
+  UIProvider,
+} from 'decap-cms-ui-next';
 import { I18n } from 'react-polyglot';
 
 import { store } from './redux';
@@ -84,12 +92,21 @@ function bootstrap(opts = {}) {
    */
   function Root() {
     return (
-      <>
-        <GlobalStyles />
-        <Provider store={store}>
-          <ConnectedTranslatedApp />
-        </Provider>
-      </>
+      <UIProvider>
+        <UIContext.Consumer>
+          {({ darkMode }) => (
+            <ThemeProvider
+              theme={darkMode ? { darkMode, ...darkTheme } : { darkMode, ...lightTheme }}
+            >
+              <GlobalStylesDefault />
+              <GlobalStylesNext />
+              <Provider store={store}>
+                <ConnectedTranslatedApp />
+              </Provider>
+            </ThemeProvider>
+          )}
+        </UIContext.Consumer>
+      </UIProvider>
     );
   }
 
