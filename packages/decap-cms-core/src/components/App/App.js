@@ -149,13 +149,12 @@ class App extends React.Component {
         <Notifications />
         {React.createElement(backend.authComponent(), {
           onLogin: this.handleLogin.bind(this),
-          error: auth && auth.get('error'),
-          isFetching: auth && auth.get('isFetching'),
-          inProgress: (auth && auth.get('isFetching')) || false,
-          siteId: this.props.config.getIn(['backend', 'site_domain']),
-          base_url: this.props.config.getIn(['backend', 'base_url'], null),
-          authEndpoint: this.props.config.getIn(['backend', 'auth_endpoint']),
-          config: this.props.config.toJS(),
+          error: auth.error,
+          inProgress: auth.isFetching,
+          siteId: this.props.config.backend.site_domain,
+          base_url: this.props.config.backend.base_url,
+          authEndpoint: this.props.config.backend.auth_endpoint,
+          config: this.props.config,
           clearHash: () => history.replace('/'),
           t,
         })}
