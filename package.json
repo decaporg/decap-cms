@@ -28,11 +28,11 @@
     "mock:server:stop": "node -e 'require(\"./cypress/utils/mock-server\").stop()'",
     "lint": "run-p -c --aggregate-output \"lint:*\"",
     "lint-quiet": "run-p -c --aggregate-output \"lint:* --quiet\"",
-    "lint:css": "stylelint --ignore-path .gitignore \"{packages/**/*.{css,js,jsx,ts,tsx},website/**/*.css}\"",
-    "lint:js": "eslint --color --ignore-path .gitignore \"{{packages,scripts,website}/**/,}*.{js,jsx,ts,tsx}\"",
-    "lint:format": "prettier \"{{packages,scripts,website}/**/,}*.{js,jsx,ts,tsx,css}\" --list-different",
+    "lint:css": "stylelint --ignore-path .gitignore \"packages/**/*.{css,js,jsx,ts,tsx}\"",
+    "lint:js": "eslint --color --ignore-path .gitignore \"{{packages,scripts}/**/,}*.{js,jsx,ts,tsx}\"",
+    "lint:format": "prettier \"{{packages,scripts}/**/,}*.{js,jsx,ts,tsx,css}\" --list-different",
     "format": "npm run lint:js -- --fix --quiet && npm run format:prettier -- --write",
-    "format:prettier": "prettier \"{{packages,scripts,website}/**/,}*.{js,jsx,ts,tsx,css}\"",
+    "format:prettier": "prettier \"{{packages,scripts}/**/,}*.{js,jsx,ts,tsx,css}\"",
     "prepare": "husky install"
   },
   "browserslist": [
