@@ -5,6 +5,9 @@ import { jsx, css } from '@emotion/react';
 import dayjs from 'dayjs';
 import { buttons } from 'decap-cms-ui-default';
 
+const customParseFormat = require('dayjs/plugin/customParseFormat');
+dayjs.extend(customParseFormat);
+
 function Buttons({ t, handleChange }) {
   return (
     <div
@@ -47,10 +50,27 @@ export default class DateTimeControl extends React.Component {
     value: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
   };
 
+  inputType = 'datetime-local';
+
   getFormat() {
     const { field } = this.props;
     const format = field.get('format');
-    return format;
+    const dateFormat = field.get('date_format');
+    const timeFormat = field.get('time_format');
+
+    if (format) {
+      return format;
+    } else if (dateFormat && timeFormat) {
+      return `${dateFormat}T${timeFormat}`;
+    } else if (dateFormat && !timeFormat) {
+      this.inputType = 'date';
+      return dateFormat;
+    } else if (!dateFormat && timeFormat) {
+      this.inputType = 'time';
+      return timeFormat;
+    } else {
+      return 'YYYY-MM-DDTHH:mm';
+    }
   }
 
   getDefaultValue() {
@@ -107,6 +127,11 @@ export default class DateTimeControl extends React.Component {
     const { forID, value, classNameWrapper, setActiveStyle, setInactiveStyle, t, isDisabled } =
       this.props;
 
+    let formattedValue = dayjs(value).format(this.format);
+    if (dayjs(value, this.format).isValid()) {
+      formattedValue = dayjs(value, this.format).format(this.format);
+    }
+
     return (
       <div
         className={classNameWrapper}
@@ -118,8 +143,8 @@ export default class DateTimeControl extends React.Component {
       >
         <input
           id={forID}
-          type="datetime-local"
-          value={dayjs(value).format('YYYY-MM-DDTHH:mm')}
+          type={this.inputType}
+          value={formattedValue}
           onChange={e => this.handleChange(dayjs(e.target.value))}
           onFocus={setActiveStyle}
           onBlur={setInactiveStyle}
