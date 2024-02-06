@@ -1,10 +1,11 @@
 import React from 'react';
 import styled from '@emotion/styled';
+import color from 'color';
+
 import Tooltip from '../Tooltip';
 import Icon from '../Icon';
-import { ButtonGroup } from '../Button';
-import color from 'color';
-import { useUIContext } from '../hooks';
+import { ButtonGroup } from '../Buttons';
+import { useUIContext } from '../UIContext';
 
 const NavMenuItemWrap = styled.a`
   width: 100%;
@@ -27,11 +28,7 @@ const NavMenuItemInside = styled.span`
   color: ${({ theme, active }) =>
     active ? theme.color.success['900'] : theme.color.mediumEmphasis};
   background-color: ${({ theme, active }) =>
-    active
-      ? color(theme.color.success['900'])
-          .alpha(0.1)
-          .string()
-      : `transparent`};
+    active ? color(theme.color.success['900']).alpha(0.1).string() : `transparent`};
   border: none;
   height: 2rem;
   border-radius: 6px;
@@ -42,12 +39,8 @@ const NavMenuItemInside = styled.span`
       active ? theme.color.success['900'] : theme.color.highEmphasis};
     background-color: ${({ theme, active }) =>
       active
-        ? color(theme.color.success['900'])
-            .alpha(0.1)
-            .string()
-        : color(theme.color.highEmphasis)
-            .alpha(0.05)
-            .string()};
+        ? color(theme.color.success['900']).alpha(0.1).string()
+        : color(theme.color.highEmphasis).alpha(0.05).string()};
     ${({ active }) =>
       active
         ? `
@@ -60,12 +53,8 @@ const NavMenuItemInside = styled.span`
       active ? theme.color.success['900'] : theme.color.highEmphasis};
     background-color: ${({ theme, active }) =>
       active
-        ? color(theme.color.success['900'])
-            .alpha(0.1)
-            .string()
-        : color(theme.color.highEmphasis)
-            .alpha(0.1)
-            .string()};
+        ? color(theme.color.success['900']).alpha(0.1).string()
+        : color(theme.color.highEmphasis).alpha(0.1).string()};
   }
   ${ButtonGroup} & {
     margin: 2px;
@@ -93,7 +82,7 @@ export const NavItemContents = styled.span`
   width: 100%;
 `;
 
-const NavMenuItem = ({ icon, children, className, href, active, onClick }) => {
+function NavMenuItem({ icon, children, className, href, active, onClick }) {
   const { navCollapsed } = useUIContext();
 
   return (
@@ -121,6 +110,6 @@ const NavMenuItem = ({ icon, children, className, href, active, onClick }) => {
       </NavMenuItemWrap>
     </Tooltip>
   );
-};
+}
 
 export default NavMenuItem;

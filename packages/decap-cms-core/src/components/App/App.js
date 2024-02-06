@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import TopBarProgress from 'react-topbar-progress-indicator';
 import { Loader, colors } from 'decap-cms-ui-default';
-import { withUIContext, AppBar, ToastContainer } from 'decap-cms-ui-next';
+import { withUIContext, AppBar, UserMenu } from 'decap-cms-ui-next';
 
 import { loadConfig } from '../../actions/config';
 import { loginUser, logoutUser } from '../../actions/auth';
@@ -22,8 +22,7 @@ import Workflow from '../Workflow/Workflow';
 import Editor from '../Editor/Editor';
 import NotFoundPage from './NotFoundPage';
 import Nav from './Nav';
-import UserMenu from './UserMenu';
-import NotifMenu from './NotifMenu';
+// import NotifMenu from './NotifMenu';
 
 TopBarProgress.config({
   barColors: {
@@ -44,6 +43,7 @@ const AppOuter = styled.div`
   flex-direction: column;
   height: 100%;
 `;
+
 const AppBody = styled.div`
   display: flex;
   flex-direction: row;
@@ -53,6 +53,7 @@ const AppBody = styled.div`
     flex-direction: column-reverse;
   }
 `;
+
 const AppContent = styled.div`
   flex: 1;
   height: 100%;
@@ -69,6 +70,7 @@ const ErrorCodeBlock = styled.pre`
   font-size: 15px;
   line-height: 1.5;
 `;
+
 const StyledUserMenu = styled(UserMenu)`
   margin-left: 0.75rem;
 `;
@@ -92,13 +94,12 @@ function RouteInCollection({ collections, render, ...props }) {
 
 class App extends React.Component {
   static propTypes = {
-    auth: ImmutablePropTypes.map,
-    config: ImmutablePropTypes.map,
-    collections: ImmutablePropTypes.orderedMap,
-    loadConfig: PropTypes.func.isRequired,
+    auth: PropTypes.object.isRequired,
+    config: PropTypes.object.isRequired,
+    collections: ImmutablePropTypes.map.isRequired,
     loginUser: PropTypes.func.isRequired,
     logoutUser: PropTypes.func.isRequired,
-    user: ImmutablePropTypes.map,
+    user: PropTypes.object,
     isFetching: PropTypes.bool.isRequired,
     publishMode: PropTypes.oneOf([SIMPLE, EDITORIAL_WORKFLOW]),
     siteId: PropTypes.string,
@@ -115,7 +116,7 @@ class App extends React.Component {
         <h1>{t('app.app.errorHeader')}</h1>
         <div>
           <strong>{t('app.app.configErrors')}:</strong>
-          <ErrorCodeBlock>{config.get('error')}</ErrorCodeBlock>
+          <ErrorCodeBlock>{config.error}</ErrorCodeBlock>
           <span>{t('app.app.checkConfigYml')}</span>
         </div>
       </ErrorContainer>
@@ -185,11 +186,11 @@ class App extends React.Component {
       return null;
     }
 
-    if (config.get('error')) {
+    if (config.error) {
       return this.configError(config);
     }
 
-    if (config.get('isFetching')) {
+    if (config.isFetching) {
       return <Loader active>{t('app.app.loadingConfig')}</Loader>;
     }
 
@@ -209,7 +210,7 @@ class App extends React.Component {
             renderEnd={appBarEnd}
             renderActions={() => (
               <>
-                <NotifMenu />
+                {/* <NotifMenu /> */}
                 <StyledUserMenu onLogoutClick={logoutUser} />
               </>
             )}
@@ -264,7 +265,7 @@ class App extends React.Component {
               </AppMainContainer>
             </AppContent>
           </AppBody>
-          <ToastContainer />
+          {/* <ToastContainer /> */}
         </AppOuter>
       </>
     );

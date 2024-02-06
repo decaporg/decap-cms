@@ -1,3 +1,1 @@
-export * from './localStorageState';
-
-export * from './uiContext';
+export { default as useLocalStorageState } from './localStorageState';

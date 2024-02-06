@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 
-import { IconButton } from '../Button';
+import { IconButton } from '../Buttons';
 
 const CloseBtn = styled(IconButton)`
   align-self: flex-start;

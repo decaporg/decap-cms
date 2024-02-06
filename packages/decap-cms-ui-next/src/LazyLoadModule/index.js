@@ -1,1 +1,1 @@
-export { default as LazyLoadModule } from './LazyLoadModule';
+export { default } from './LazyLoadModule';

@@ -5,7 +5,7 @@ import { animated, useSpring, a } from 'react-spring';
 import { useMeasure, usePrevious } from '../utils/helpers';
 import Icon from '../Icon';
 import Label from '../Label';
-import { Button } from '../Button';
+import { Button } from '../Buttons';
 
 const ExpandButton = styled(Button)`
   padding: 0 0.5rem;

@@ -1,1 +1,1 @@
-export { default as RootRef } from './RootRef';
+export { default } from './RootRef';

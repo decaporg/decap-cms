@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
+
 import Card from '../Card';
 import NavMenuGroupLabel from './NavMenuGroupLabel';
 import NavMenuItem, { NavItemContents } from './NavMenuItem';
 import MobileNavMenu from './MobileNavMenu';
 import { isWindowDown } from '../utils/responsive';
-import { useUIContext } from '../hooks';
+import { useUIContext } from '../UIContext';
 
 const NavWrap = styled(Card)`
   width: ${({ collapsed }) => (collapsed ? '56px' : '240px')};
@@ -54,10 +55,12 @@ const CondenseNavMenuItem = styled(NavMenuItem)`
   }
 `;
 
-const NavMenu = ({ children, collapsable }) => {
+function NavMenu({ children, collapsable }) {
   const { navCollapsed: collapsed, setNavCollapsed: setCollapsed } = useUIContext();
   const [isMobile, setIsMobile] = useState(isWindowDown('xs'));
-  const handleResize = () => setIsMobile(isWindowDown('xs'));
+  function handleResize() {
+    setIsMobile(isWindowDown('xs'));
+  }
 
   useEffect(() => {
     window.addEventListener('resize', handleResize);
@@ -79,7 +82,7 @@ const NavMenu = ({ children, collapsable }) => {
       )}
     </NavWrap>
   );
-};
+}
 
 NavMenu.propTypes = {
   collapsable: PropTypes.bool,

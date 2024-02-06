@@ -6,8 +6,8 @@ import Modal from '../Modal';
 import Card from '../Card';
 import Grow from '../transitions/Grow';
 import Slide from '../transitions/Slide';
-import { ButtonGroup, IconButton } from '../Button';
-import { StyledButton } from '../Button/Button';
+import { ButtonGroup, IconButton } from '../Buttons';
+import { StyledButton } from '../Buttons/Button';
 import { isWindowDown } from '../utils/responsive';
 
 const DialogWrap = styled(Card)`

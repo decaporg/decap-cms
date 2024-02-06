@@ -9,7 +9,7 @@ import Icon from '../Icon';
 import LogoTile from '../LogoTile';
 import UserMenu from '../UserMenu';
 import { Menu, MenuItem } from '../Menu';
-import { useUIContext } from '../hooks';
+import { useUIContext } from '../UIContext';
 
 const NavWrap = styled.div`
   height: 3.5rem;
@@ -160,7 +160,7 @@ const MenuContent = styled.div`
   }}
 `;
 
-const MobileNavMenu = ({ children }) => {
+function MobileNavMenu({ children }) {
   const { darkMode, setDarkMode } = useUIContext();
   const [openMenu, setOpenMenu] = useState(false);
   const [addMenuOpen, setAddMenuOpen] = useState(false);
@@ -223,9 +223,9 @@ const MobileNavMenu = ({ children }) => {
       </Transition>
     </NavWrap>
   );
-};
+}
 
-const NavIconButton = ({ active, icon, hasSubmenu, ...props }) => {
+function NavIconButton({ active, icon, hasSubmenu, ...props }) {
   return (
     <NavIconButtonWrap active={active} {...props}>
       <IconWrap active={active}>
@@ -238,6 +238,6 @@ const NavIconButton = ({ active, icon, hasSubmenu, ...props }) => {
       )}
     </NavIconButtonWrap>
   );
-};
+}
 
 export default MobileNavMenu;

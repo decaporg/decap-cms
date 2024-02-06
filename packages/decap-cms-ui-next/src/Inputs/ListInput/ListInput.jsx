@@ -1,17 +1,41 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { sortableContainer, sortableElement } from 'react-sortable-hoc';
+import { SortableContext, useSortable } from '@dnd-kit/sortable';
+import { DndContext } from '@dnd-kit/core';
+import { CSS } from '@dnd-kit/utilities';
 import arrayMove from 'array-move';
-import { Field } from '../../Field';
+
+import Field from '../../Field';
 import { Button } from '../../Buttons';
 import ListInputItem from './ListInputItem';
 import { TreeContentWrap } from '../../Tree/Tree';
 
-const Draggable = sortableElement(({ children }) => <>{children}</>);
+function Draggable({ id, value }) {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
 
-const Container = sortableContainer(({ children }) => {
-  return <div>{children}</div>;
-});
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+      {value}
+    </div>
+  );
+}
+
+function Container({ items }) {
+  return (
+    <DndContext>
+      <SortableContext items={items}>
+        {items.map((value, index) => (
+          <Draggable key={index} id={index} value={value} />
+        ))}
+      </SortableContext>
+    </DndContext>
+  );
+}
 
 const StyledButton = styled(Button)`
   width: 100%;

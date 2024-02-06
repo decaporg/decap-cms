@@ -1,8 +1,21 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
 import { useLocalStorageState } from '../hooks';
 
-export const UIContext = createContext();
+export const UIContext = createContext({
+  appBarStart: () => null,
+  renderAppBarStart: () => {},
+  appBarEnd: () => null,
+  renderAppBarEnd: () => {},
+  darkMode: false,
+  setDarkMode: () => {},
+  navCollapsed: false,
+  setNavCollapsed: () => {},
+  pageTitle: '',
+  setPageTitle: () => {},
+  breadcrumbs: '',
+  setBreadcrumbs: () => {},
+});
 
 export function UIProvider({ children }) {
   const [darkMode, setDarkMode] = useLocalStorageState(
@@ -44,10 +57,12 @@ export function UIProvider({ children }) {
   );
 }
 
-export function withUIContext(Component) {
-  return props => (
-    <UIContext.Consumer>{context => <Component {...props} {...context} />}</UIContext.Consumer>
-  );
+export function useUIContext() {
+  return useContext(UIContext);
 }
 
-export default withUIContext(UIProvider);
+export function withUIContext(Component) {
+  return props => (
+    <UIContext.Consumer>{context => <Component {...context} {...props} />}</UIContext.Consumer>
+  );
+}

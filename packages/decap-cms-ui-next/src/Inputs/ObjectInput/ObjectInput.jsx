@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
+
 import Field, { FieldContext } from '../../Field';
 import Tree from '../../Tree';
 
@@ -7,16 +8,16 @@ const StyledField = styled(Field)`
   padding: 0 0 0 1rem;
 `;
 
-const ObjectInput = ({ label, onChange, fields, inline, className }) => {
+function ObjectInput({ label, onChange, fields, inline, className }) {
   const [expanded, setExpanded] = useState(true);
   const [data, setData] = useState();
   const [treeType, setTreeType] = useState();
 
-  const handleChange = changes => {
+  function handleChange(changes) {
     const newData = { ...data, ...changes };
     setData(newData);
     onChange(newData);
-  };
+  }
 
   return (
     <StyledField
@@ -40,6 +41,6 @@ const ObjectInput = ({ label, onChange, fields, inline, className }) => {
       </Tree>
     </StyledField>
   );
-};
+}
 
 export default ObjectInput;

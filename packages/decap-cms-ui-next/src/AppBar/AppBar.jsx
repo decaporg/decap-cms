@@ -3,9 +3,9 @@ import styled from '@emotion/styled';
 
 import Icon from '../Icon';
 import Card from '../Card';
-import { IconButton } from '../Button';
+import { IconButton } from '../Buttons';
 import { isWindowDown } from '../utils/responsive';
-import { useUIContext } from '../hooks';
+import { useUIContext } from '../UIContext';
 
 const AppBarWrap = styled(Card)`
   background-color: ${({ theme }) => theme.color.surface};

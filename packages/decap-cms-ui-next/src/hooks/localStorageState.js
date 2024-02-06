@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-export function useLocalStorageState(key, defaultValue) {
+export default function useLocalStorageState(key, defaultValue) {
   const localStorageKey = `decapCMS.${key}`;
   const [value, setValue] = useState(
     localStorage.getItem(localStorageKey)

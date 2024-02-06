@@ -3,13 +3,14 @@ import styled from '@emotion/styled';
 import { useReactTable, getCoreRowModel, getSortedRowModel } from '@tanstack/react-table';
 import { SortableContext, useSortable } from '@dnd-kit/sortable';
 import { DndContext } from '@dnd-kit/core';
+import { CSS } from '@dnd-kit/utilities';
 import { FixedSizeList as List } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import arrayMove from 'array-move';
 import color from 'color';
 
 import Icon from '../Icon';
-import { IconButton } from '../Button';
+import { IconButton } from '../Buttons';
 
 const TableWrap = styled.div`
   display: flex;
@@ -215,10 +216,9 @@ function SelectToggle({ id, onClick, checked, indeterminate, ...props }) {
   );
 }
 
-// New dnd-kit
-function SortableTableRow(props) {
+function SortableTableRow({ id, value }) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
-    id: props.id,
+    id,
   });
 
   const style = {
@@ -228,16 +228,18 @@ function SortableTableRow(props) {
 
   return (
     <TableRow sortable ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      {props.children}
+      {value}
     </TableRow>
   );
 }
 
-function SortableTableBody({ items, children }) {
+function SortableTableBody({ items }) {
   return (
     <DndContext>
       <SortableContext items={items}>
-        <TableBody>{children}</TableBody>
+        {items.map((value, index) => (
+          <SortableTableRow key={index} id={index} value={value} />
+        ))}
       </SortableContext>
     </DndContext>
   );

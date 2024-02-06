@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import styled from '@emotion/styled';
+
 import TextInput from '../TextInput';
 import Field from '../../Field';
 import { Tag, TagGroup } from '../../Tag';
 import { Menu, MenuItem } from '../../Menu';
 
-const SelectInput = ({
+function SelectInput({
   options,
   value,
   onChange,
@@ -14,21 +14,21 @@ const SelectInput = ({
   multiple,
   placeholder,
   ...props
-}) => {
+}) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorElWidth, setAnchorElWidth] = useState();
 
-  const handleOpenMenu = event => {
+  function handleOpenMenu(event) {
     setAnchorElWidth(`${event.currentTarget.offsetWidth}px`);
     setAnchorEl(event.currentTarget);
-  };
+  }
 
-  const handleClose = newValue => {
+  function handleClose(newValue) {
     if (newValue) {
       onChange(multiple ? [...(value || []), newValue] : newValue);
     }
     setAnchorEl(null);
-  };
+  }
 
   const selection = options.find(option =>
     Array.isArray(value) ? option.name === value?.[0]?.name : option.name === value?.name,
@@ -97,13 +97,13 @@ const SelectInput = ({
             ))
           ) : (
             <MenuItem disabled>
-              No {label?.[0]?.toLowerCase() + label?.substr(1)} to select.
+              No {label?.[0]?.toLowerCase() + label?.slice(1)} to select.
             </MenuItem>
           )}
         </Menu>
       )}
     </>
   );
-};
+}
 
 export default SelectInput;

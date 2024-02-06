@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 import { DatetimePicker } from 'rc-datetime-picker-dayjs';
 
 import TextInput from '../TextInput';
-import { IconButton } from '../../Button';
+import { IconButton } from '../../Buttons';
 import { Menu } from '../../Menu';
 import DatepickerStyles from './DatepickerStyles';
 

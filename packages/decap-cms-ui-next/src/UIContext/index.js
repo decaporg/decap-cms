@@ -1,2 +1,1 @@
-export { default as UIContext } from './UIContext';
-export * from './UIContext';
+export { UIContext, UIProvider, useUIContext, withUIContext } from './UIContext';

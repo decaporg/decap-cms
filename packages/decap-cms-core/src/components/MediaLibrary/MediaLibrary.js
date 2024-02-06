@@ -190,7 +190,7 @@ class MediaLibrary extends React.Component {
     const { files: fileList } = event.dataTransfer || event.target;
     const files = [...fileList];
     const file = files[0];
-    const maxFileSize = config.get('max_file_size');
+    const maxFileSize = config.max_file_size;
 
     if (maxFileSize && file.size > maxFileSize) {
       window.alert(

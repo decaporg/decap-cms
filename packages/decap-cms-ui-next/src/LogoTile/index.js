@@ -1,1 +1,1 @@
-export { default as LogoTile } from './LogoTile';
+export { default } from './LogoTile';

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
+
 import Field from '../../Field';
 import Icon from '../../Icon';
 
@@ -28,7 +29,7 @@ const InputIcon = styled(Icon)`
   right: 0;
 `;
 
-const TextInput = ({
+function TextInput({
   name,
   label,
   icon,
@@ -44,7 +45,7 @@ const TextInput = ({
   className,
   inline,
   error,
-}) => {
+}) {
   const [inputFocus, setInputFocus] = useState();
 
   return (
@@ -78,6 +79,6 @@ const TextInput = ({
       {children && children}
     </Field>
   );
-};
+}
 
 export default TextInput;

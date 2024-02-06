@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 
-import { AvatarButton } from '../Button';
+import { AvatarButton } from '../Buttons';
 import { Menu, MenuItem } from '../Menu';
-import { useUIContext } from '../hooks';
+import { useUIContext } from '../UIContext';
 
 function UserMenu({ className }) {
   const [userMenuAnchorEl, setUserMenuAnchorEl] = useState(null);

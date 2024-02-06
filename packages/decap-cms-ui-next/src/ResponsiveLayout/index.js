@@ -1,1 +1,1 @@
-export { default as ResponsiveLayout } from './ResponsiveLayout';
+export { default } from './ResponsiveLayout';

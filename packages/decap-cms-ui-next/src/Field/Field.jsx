@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { createContext, useContext } from 'react';
 import styled from '@emotion/styled';
 
-import { Label } from '../Label';
+import Label from '../Label';
 import { IconButton } from '../Buttons';
 
-export const FieldContext = React.createContext();
+export const FieldContext = createContext();
 
 const FocusIndicator = styled.div`
   position: absolute;
@@ -18,6 +18,7 @@ const FocusIndicator = styled.div`
   transform: scaleX(${({ focus }) => (focus ? 1 : 0)});
   backface-visibility: hidden;
 `;
+
 const FieldWrap = styled.div`
   ${({ inline }) =>
     inline
@@ -46,6 +47,7 @@ const FieldWrap = styled.div`
     height: 2px;
   }
 `;
+
 const FieldInside = styled.div`
   ${({ control }) => (control ? `display: flex; align-items: center;` : ``)}
   ${({ clickable }) => (clickable ? `cursor: pointer;` : ``)}
@@ -78,15 +80,18 @@ const FieldInside = styled.div`
     }
   `}
 `;
+
 const ChildrenWrap = styled.div`
   position: relative;
 `;
+
 const StyledLabel = styled(Label)`
   font-family: ${({ theme }) => theme.fontFamily};
   ${({ control }) => (control ? `flex: 1; margin: 0;` : ``)}
   ${({ clickable }) => (clickable ? `cursor: pointer;` : ``)};
   ${({ theme, error }) => (error ? `color: ${theme.color.danger['900']};` : ``)};
 `;
+
 const StyledIconButton = styled(IconButton)`
   position: absolute;
   right: ${({ inline }) => (inline ? 0 : 0.5)}rem;
@@ -108,42 +113,63 @@ function Field({
   icon,
   clickable,
 }) {
+  const contextValue = {
+    focus,
+    inline,
+    labelTarget,
+    label,
+    control,
+    onClick,
+    className,
+    noBorder,
+    insideStyle,
+    error,
+    icon,
+    clickable,
+  };
+
   return (
-    <FieldWrap
-      focus={focus}
-      control={control}
-      inline={inline}
-      className={className}
-      noBorder={noBorder}
-      error={error}
-      clickable={clickable || !!onClick}
-    >
-      <FieldInside
+    <FieldContext.Provider value={contextValue}>
+      <FieldWrap
         focus={focus}
         control={control}
         inline={inline}
-        onClick={onClick}
-        style={insideStyle}
+        className={className}
+        noBorder={noBorder}
         error={error}
-        icon={icon}
         clickable={clickable || !!onClick}
       >
-        <StyledLabel
+        <FieldInside
+          focus={focus}
           control={control}
           inline={inline}
-          htmlFor={labelTarget}
-          focus={focus}
-          clickable={clickable || !!onClick}
+          onClick={onClick}
+          style={insideStyle}
           error={error}
+          icon={icon}
+          clickable={clickable || !!onClick}
         >
-          {label}
-        </StyledLabel>
-        <ChildrenWrap>{children}</ChildrenWrap>
-        {icon && <StyledIconButton icon={icon} active={focus} inline={inline} />}
-      </FieldInside>
-      {!noBorder && inline && <FocusIndicator focus={focus} error={error} />}
-    </FieldWrap>
+          <StyledLabel
+            control={control}
+            inline={inline}
+            htmlFor={labelTarget}
+            focus={focus}
+            clickable={clickable || !!onClick}
+            error={error}
+          >
+            {label}
+          </StyledLabel>
+          <ChildrenWrap>{children}</ChildrenWrap>
+          {icon && <StyledIconButton icon={icon} active={focus} inline={inline} />}
+        </FieldInside>
+        {!noBorder && inline && <FocusIndicator focus={focus} error={error} />}
+      </FieldWrap>
+    </FieldContext.Provider>
   );
+}
+
+export function useFieldContext() {
+  return useContext(FieldContext);
 }
 
 export function withFieldContext(Component) {

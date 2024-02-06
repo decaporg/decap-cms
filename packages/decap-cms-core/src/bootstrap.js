@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Provider, connect } from 'react-redux';
 import { Route, Router } from 'react-router-dom';
@@ -8,8 +8,8 @@ import {
   lightTheme,
   darkTheme,
   GlobalStyles as GlobalStylesNext,
-  UIContext,
   UIProvider,
+  useUIContext,
 } from 'decap-cms-ui-next';
 import { I18n } from 'react-polyglot';
 
@@ -91,21 +91,31 @@ function bootstrap(opts = {}) {
    * Create connected root component.
    */
   function Root() {
+    const { darkMode } = useUIContext();
+    const theme = darkMode ? { darkMode, ...darkTheme } : { darkMode, ...lightTheme };
+
+    function handleResize() {
+      const vh = window.innerHeight * 0.01;
+
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    }
+
+    useEffect(() => {
+      window.addEventListener('resize', handleResize);
+      handleResize();
+
+      return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     return (
       <UIProvider>
-        <UIContext.Consumer>
-          {({ darkMode }) => (
-            <ThemeProvider
-              theme={darkMode ? { darkMode, ...darkTheme } : { darkMode, ...lightTheme }}
-            >
-              <GlobalStylesDefault />
-              <GlobalStylesNext />
-              <Provider store={store}>
-                <ConnectedTranslatedApp />
-              </Provider>
-            </ThemeProvider>
-          )}
-        </UIContext.Consumer>
+        <ThemeProvider theme={theme}>
+          <GlobalStylesDefault />
+          <GlobalStylesNext />
+          <Provider store={store}>
+            <ConnectedTranslatedApp />
+          </Provider>
+        </ThemeProvider>
       </UIProvider>
     );
   }

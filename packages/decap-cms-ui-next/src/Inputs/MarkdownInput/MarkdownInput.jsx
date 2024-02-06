@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { Editor } from 'slate-react';
-import { Value } from 'slate';
+import { createEditor } from 'slate';
+import { Editable, ReactEditor, Slate, withReact } from 'slate-react';
+import { withHistory } from 'slate-history';
 import { isKeyHotkey } from 'is-hotkey';
 
 import Field from '../../Field';
@@ -92,57 +93,65 @@ class MarkdownInput extends React.Component {
     const { isFullscreen } = this.state;
 
     return (
-      <Fullscreen isFullscreen={isFullscreen}>
-        <Field label={label} labelTarget={name} focus={this.state.hasFocus} noBorder={isFullscreen}>
-          <Toolbar>
-            <ToolbarButtonsStart>
-              {this.renderMarkButton('Bold', 'bold', 'bold')}
-              {this.renderMarkButton('Italic', 'italic', 'italic')}
-              {this.renderMarkButton('Underlined', 'underlined', 'underline')}
-              {this.renderMarkButton('Code', 'code', 'code')}
-              {this.renderBlockButton('Heading One', 'heading-one', 'heading-one')}
-              {this.renderBlockButton('Heading Two', 'heading-two', 'heading-two')}
-              {this.renderBlockButton('Heading Three', 'heading-three', 'heading-three')}
-              {this.renderBlockButton('Block Quote', 'block-quote', 'quote')}
-              {this.renderBlockButton('Numbered List', 'numbered-list', 'numbered-list')}
-              {this.renderBlockButton('Bulleted List', 'bulleted-list', 'bulleted-list')}
-            </ToolbarButtonsStart>
-            <ToolbarButtonsEnd>
-              <Tooltip label="Fullscreen" enterDelay={1000}>
-                <div>
-                  <IconButton
-                    onMouseDown={e => {
-                      e.preventDefault();
-                      this.setState({ isFullscreen: !isFullscreen });
-                    }}
-                    icon={isFullscreen ? 'minimize' : 'maximize'}
-                  />
-                </div>
-              </Tooltip>
-            </ToolbarButtonsEnd>
-          </Toolbar>
-          <EditorWrap
-            onFocus={() => {
-              setTimeout(() => this.setState({ hasFocus: true }), 0);
-            }}
-            onBlur={() => {
-              setTimeout(() => this.setState({ hasFocus: false }), 0);
-            }}
+      <Slate
+        editor={editor}
+        value={this.state.value}
+        onChange={this.onChange}
+        onKeyDown={this.onKeyDown}
+      >
+        <Fullscreen isFullscreen={isFullscreen}>
+          <Field
+            label={label}
+            labelTarget={name}
+            focus={this.state.hasFocus}
+            noBorder={isFullscreen}
           >
-            <Editor
-              spellCheck
-              placeholder={`Type ${label ? label.toLowerCase() : 'something'} here`}
+            <Toolbar>
+              <ToolbarButtonsStart>
+                {this.renderMarkButton('Bold', 'bold', 'bold')}
+                {this.renderMarkButton('Italic', 'italic', 'italic')}
+                {this.renderMarkButton('Underlined', 'underlined', 'underline')}
+                {this.renderMarkButton('Code', 'code', 'code')}
+                {this.renderBlockButton('Heading One', 'heading-one', 'heading-one')}
+                {this.renderBlockButton('Heading Two', 'heading-two', 'heading-two')}
+                {this.renderBlockButton('Heading Three', 'heading-three', 'heading-three')}
+                {this.renderBlockButton('Block Quote', 'block-quote', 'quote')}
+                {this.renderBlockButton('Numbered List', 'numbered-list', 'numbered-list')}
+                {this.renderBlockButton('Bulleted List', 'bulleted-list', 'bulleted-list')}
+              </ToolbarButtonsStart>
+              <ToolbarButtonsEnd>
+                <Tooltip label="Fullscreen" enterDelay={1000}>
+                  <div>
+                    <IconButton
+                      onMouseDown={e => {
+                        e.preventDefault();
+                        this.setState({ isFullscreen: !isFullscreen });
+                      }}
+                      icon={isFullscreen ? 'minimize' : 'maximize'}
+                    />
+                  </div>
+                </Tooltip>
+              </ToolbarButtonsEnd>
+            </Toolbar>
+            <EditorWrap
+              onFocus={() => {
+                setTimeout(() => this.setState({ hasFocus: true }), 0);
+              }}
+              onBlur={() => {
+                setTimeout(() => this.setState({ hasFocus: false }), 0);
+              }}
+            >
+              spellCheck placeholder={`Type ${label ? label.toLowerCase() : 'something'} here`}
               ref={this.ref}
-              value={this.state.value}
-              onChange={this.onChange}
               onKeyDown={this.onKeyDown}
               renderBlock={this.renderBlock}
               renderMark={this.renderMark}
               style={{ minHeight: '8rem' }}
-            />
-          </EditorWrap>
-        </Field>
-      </Fullscreen>
+              />
+            </EditorWrap>
+          </Field>
+        </Fullscreen>
+      </Slate>
     );
   }
 
