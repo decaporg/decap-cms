@@ -3,7 +3,7 @@
 Contributions are always welcome, no matter how large or small. Before contributing,
 please read the [code of conduct](CODE_OF_CONDUCT.md).
 
-For details on contributing to documentation, see [Website Directory Readme](https://github.com/decaporg/decap-cms/blob/master/website/README.md).
+For details on contributing to documentation, see [Website Readme](https://github.com/decaporg/decap-website/blob/main/README.md).
 
 ## Setup
 
