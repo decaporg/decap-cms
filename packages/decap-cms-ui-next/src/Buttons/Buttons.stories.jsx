@@ -13,6 +13,13 @@ export function _Button(args) {
 }
 
 _Button.argTypes = {
+  size: {
+    control: 'select',
+    options: ['sm', 'md', 'lg'],
+    mapping: {
+      md: null,
+    },
+  },
   type: {
     control: 'select',
     options: ['default', 'success', 'danger'],
@@ -20,10 +27,27 @@ _Button.argTypes = {
       default: null,
     },
   },
+  primary: {
+    control: 'boolean',
+  },
+  disabled: {
+    control: 'boolean',
+  },
+  icon: {
+    control: 'select',
+    options: {
+      default: null,
+      ...Object.keys(iconComponents).reduce((acc, key) => ({ ...acc, [key]: key }), {}),
+    },
+  },
 };
 
 _Button.args = {
   type: 'default',
+  size: 'md',
+  primary: false,
+  disabled: false,
+  icon: null,
   onClick: action('onClick'),
 };
 

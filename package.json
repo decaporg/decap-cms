@@ -68,7 +68,6 @@
     "@soda/friendly-errors-webpack-plugin": "^1.8.1",
     "@storybook/addon-a11y": "^7.6.13",
     "@storybook/addon-essentials": "7.6.13",
-    "@storybook/addon-links": "7.6.13",
     "@storybook/addon-storysource": "^7.6.13",
     "@storybook/addon-themes": "7.6.13",
     "@storybook/react": "7.6.13",

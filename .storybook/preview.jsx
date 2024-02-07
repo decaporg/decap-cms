@@ -37,6 +37,12 @@ export const parameters = {
     defaultViewport: 'lg',
   },
   actions: { argTypesRegex: '^on.*' },
+  options: {
+    storySort: {
+      method: 'alphabetical',
+      order: ['Pages', 'Components', 'Widgets'],
+    },
+  },
   deepControls: { enabled: true },
   darkMode: {
     dark: { ...themes.dark, ...brandTheme.dark },
