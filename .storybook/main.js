@@ -1,7 +1,21 @@
-module.exports = {
-  stories: [
-    '../packages/decap-cms-core/src/**/*.stories.js',
-    '../packages/decap-cms-ui-default/src/**/*.stories.js',
+import { dirname, join } from 'path';
+export default {
+  stories: ['../packages/decap-cms-ui-next/src/**/*.stories.@(js|jsx|ts|tsx)'],
+  addons: [
+    getAbsolutePath('@storybook/addon-links'),
+    getAbsolutePath('@storybook/addon-essentials'),
   ],
-  addons: ['@storybook/addon-actions', '@storybook/addon-links'],
+
+  framework: {
+    name: getAbsolutePath('@storybook/react-webpack5'),
+    options: {},
+  },
+
+  docs: {
+    autodocs: true,
+  },
 };
+
+function getAbsolutePath(value) {
+  return dirname(require.resolve(join(value, 'package.json')));
+}

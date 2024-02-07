@@ -7,13 +7,7 @@ const packages = fs
 
 module.exports = {
   parser: 'babel-eslint',
-  extends: [
-    'eslint:recommended',
-    'plugin:react/recommended',
-    'plugin:cypress/recommended',
-    'prettier',
-    'plugin:import/recommended',
-  ],
+  extends: ['eslint:recommended', 'plugin:react/recommended', 'plugin:cypress/recommended', 'prettier', 'plugin:import/recommended', 'plugin:storybook/recommended'],
   env: {
     es6: true,
     browser: true,
