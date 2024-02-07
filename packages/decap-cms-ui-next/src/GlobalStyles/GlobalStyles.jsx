@@ -1,11 +1,7 @@
 import React from 'react';
 import color from 'color';
 import { Global, css, withTheme } from '@emotion/react';
-/*
-  TODO: fix webpack not handle @font-face, should be good with css-loader but it's not working
-
-  import interTypeface from '@fontsource/inter/400.css';
-*/
+import interTypeface from '@fontsource/inter/400.css';
 
 function getGlobalStyles(theme) {
   return css`
@@ -23,6 +19,8 @@ function getGlobalStyles(theme) {
       background-color: ${color(theme.color.success['900']).alpha(0.3).string()};
       color: ${theme.color.success[theme.darkMode ? '200' : '1500']};
     }
+
+    ${interTypeface}
 
     html,
     body {

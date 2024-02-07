@@ -139,6 +139,7 @@
     "simple-git": "^3.0.0",
     "start-server-and-test": "^1.7.11",
     "storybook": "^7.6.13",
+    "storybook-dark-mode": "^3.0.3",
     "style-loader": "^3.3.3",
     "stylelint": "^14.5.3",
     "stylelint-config-standard-scss": "^3.0.0",
