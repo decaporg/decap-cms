@@ -36,6 +36,8 @@ export const parameters = {
     },
     defaultViewport: 'lg',
   },
+  actions: { argTypesRegex: '^on.*' },
+  deepControls: { enabled: true },
   darkMode: {
     dark: { ...themes.dark, ...brandTheme.dark },
     light: { ...themes.normal, ...brandTheme.light },
