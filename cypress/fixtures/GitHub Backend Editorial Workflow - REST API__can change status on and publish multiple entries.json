@@ -467,7 +467,7 @@
     "status": 200
   },
   {
-    "body": "{\"content\":\"LS0tCnRlbXBsYXRlOiBwb3N0CnRpdGxlOiBmaXJzdCB0aXRsZQpkYXRlOiAxOTcwLTAxLTAxVDAwOjAwOjAwLjAwMFoKZGVzY3JpcHRpb246IGZpcnN0IGRlc2NyaXB0aW9uCmNhdGVnb3J5OiBmaXJzdCBjYXRlZ29yeQp0YWdzOgogIC0gdGFnMQotLS0KZmlyc3QgYm9keQo=\",\"encoding\":\"base64\"}",
+    "body": "{\"content\":\"LS0tCnRlbXBsYXRlOiBwb3N0CnRpdGxlOiBmaXJzdCB0aXRsZQpkYXRlOiAxOTcwLTAxLTAxVDAxOjAwCmRlc2NyaXB0aW9uOiBmaXJzdCBkZXNjcmlwdGlvbgpjYXRlZ29yeTogZmlyc3QgY2F0ZWdvcnkKdGFnczoKICAtIHRhZzEKLS0tCmZpcnN0IGJvZHkK\",\"encoding\":\"base64\"}",
     "method": "POST",
     "url": "/repos/owner/repo/git/blobs",
     "headers": {
@@ -920,7 +920,7 @@
     "status": 200
   },
   {
-    "body": "{\"content\":\"LS0tCnRlbXBsYXRlOiBwb3N0CnRpdGxlOiBzZWNvbmQgdGl0bGUKZGF0ZTogMTk3MC0wMS0wMVQwMDowMDowMC42MDBaCmRlc2NyaXB0aW9uOiBzZWNvbmQgZGVzY3JpcHRpb24KY2F0ZWdvcnk6IHNlY29uZCBjYXRlZ29yeQp0YWdzOgogIC0gdGFnMgotLS0Kc2Vjb25kIGJvZHkK\",\"encoding\":\"base64\"}",
+    "body": "{\"content\":\"LS0tCnRlbXBsYXRlOiBwb3N0CnRpdGxlOiBzZWNvbmQgdGl0bGUKZGF0ZTogMTk3MC0wMS0wMVQwMTowMApkZXNjcmlwdGlvbjogc2Vjb25kIGRlc2NyaXB0aW9uCmNhdGVnb3J5OiBzZWNvbmQgY2F0ZWdvcnkKdGFnczoKICAtIHRhZzIKLS0tCnNlY29uZCBib2R5Cg==\",\"encoding\":\"base64\"}",
     "method": "POST",
     "url": "/repos/owner/repo/git/blobs",
     "headers": {
@@ -1425,7 +1425,7 @@
     "status": 200
   },
   {
-    "body": "{\"content\":\"LS0tCnRlbXBsYXRlOiBwb3N0CnRpdGxlOiB0aGlyZCB0aXRsZQpkYXRlOiAxOTcwLTAxLTAxVDAwOjAwOjAxLjIwMFoKZGVzY3JpcHRpb246IHRoaXJkIGRlc2NyaXB0aW9uCmNhdGVnb3J5OiB0aGlyZCBjYXRlZ29yeQp0YWdzOgogIC0gdGFnMwotLS0KdGhpcmQgYm9keQo=\",\"encoding\":\"base64\"}",
+    "body": "{\"content\":\"LS0tCnRlbXBsYXRlOiBwb3N0CnRpdGxlOiB0aGlyZCB0aXRsZQpkYXRlOiAxOTcwLTAxLTAxVDAxOjAwCmRlc2NyaXB0aW9uOiB0aGlyZCBkZXNjcmlwdGlvbgpjYXRlZ29yeTogdGhpcmQgY2F0ZWdvcnkKdGFnczoKICAtIHRhZzMKLS0tCnRoaXJkIGJvZHkK\",\"encoding\":\"base64\"}",
     "method": "POST",
     "url": "/repos/owner/repo/git/blobs",
     "headers": {
