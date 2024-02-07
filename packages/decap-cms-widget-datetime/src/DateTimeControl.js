@@ -110,17 +110,9 @@ export default class DateTimeControl extends React.Component {
 
     const { onChange } = this.props;
 
-    /**
-     * Produce a formatted string only if a format is set in the config.
-     * Otherwise produce a date object.
-     */
-    if (this.format) {
-      const formattedValue = datetime ? dayjs(datetime).format(this.format) : '';
-      onChange(formattedValue);
-    } else {
-      const value = dayjs.isDayjs(datetime) ? datetime.toDate() : datetime;
-      onChange(value);
-    }
+    const formattedValue = datetime ? dayjs(datetime).format(this.format) : '';
+    console.log('formattedValue', formattedValue);
+    onChange(formattedValue);
   };
 
   render() {
