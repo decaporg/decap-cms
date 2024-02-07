@@ -12,10 +12,16 @@ export default {
     'position.x': {
       control: 'select',
       options: ['left', 'center', 'right', 'stretch'],
+      table: {
+        defaultValue: { summary: 'center' },
+      },
     },
     'position.y': {
       control: 'select',
       options: ['top', 'center', 'bottom', 'stretch'],
+      table: {
+        defaultValue: { summary: 'center' },
+      },
     },
     actions: { control: 'boolean' },
   },

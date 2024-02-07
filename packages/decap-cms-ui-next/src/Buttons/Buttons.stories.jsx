@@ -19,6 +19,9 @@ _Button.argTypes = {
     mapping: {
       md: null,
     },
+    table: {
+      defaultValue: { summary: 'md' },
+    },
   },
   type: {
     control: 'select',
@@ -26,18 +29,30 @@ _Button.argTypes = {
     mapping: {
       default: null,
     },
+    table: {
+      defaultValue: { summary: 'default' },
+    },
   },
   primary: {
     control: 'boolean',
+    table: {
+      defaultValue: { summary: 'false' },
+    },
   },
   disabled: {
     control: 'boolean',
+    table: {
+      defaultValue: { summary: 'false' },
+    },
   },
   icon: {
     control: 'select',
     options: {
       default: null,
       ...Object.keys(iconComponents).reduce((acc, key) => ({ ...acc, [key]: key }), {}),
+    },
+    table: {
+      defaultValue: { summary: 'null' },
     },
   },
 };
