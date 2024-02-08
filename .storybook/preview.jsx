@@ -4,13 +4,7 @@ import { themes } from '@storybook/theming';
 import { useDarkMode } from 'storybook-dark-mode';
 import { INITIAL_VIEWPORTS, MINIMAL_VIEWPORTS } from '@storybook/addon-viewport';
 import { ThemeProvider } from '@emotion/react';
-import {
-  lightTheme,
-  darkTheme,
-  UIProvider,
-  useUIContext,
-  GlobalStyles,
-} from 'decap-cms-ui-next/src';
+import { lightTheme, darkTheme, UIProvider, GlobalStyles } from 'decap-cms-ui-next/src';
 import themeViewports from './viewports';
 import brandTheme from './theme';
 
@@ -19,10 +13,12 @@ function ThemeWrapper({ children }) {
   const theme = darkMode ? { darkMode, ...darkTheme } : { darkMode, ...lightTheme };
 
   return (
-    <ThemeProvider theme={theme}>
-      <GlobalStyles />
-      {children}
-    </ThemeProvider>
+    <UIProvider>
+      <ThemeProvider theme={theme}>
+        <GlobalStyles />
+        {children}
+      </ThemeProvider>
+    </UIProvider>
   );
 }
 
@@ -34,10 +30,11 @@ export const parameters = {
       // ...MINIMAL_VIEWPORTS,
       ...themeViewports,
     },
-    defaultViewport: 'lg',
+    // defaultViewport: 'lg',
   },
   actions: { argTypesRegex: '^on.*' },
   options: {
+    showPanel: true,
     storySort: {
       method: 'alphabetical',
       order: ['Pages', 'Components', 'Widgets'],

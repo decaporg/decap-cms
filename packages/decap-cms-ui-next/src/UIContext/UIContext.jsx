@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState } from 'react';
 
 import { useLocalStorageState } from '../hooks';
 
-export const UIContext = createContext({
+const UIContext = createContext({
   appBarStart: () => null,
   renderAppBarStart: () => {},
   appBarEnd: () => null,
@@ -13,7 +13,7 @@ export const UIContext = createContext({
   setNavCollapsed: () => {},
   pageTitle: '',
   setPageTitle: () => {},
-  breadcrumbs: '',
+  breadcrumbs: [],
   setBreadcrumbs: () => {},
 });
 
@@ -23,8 +23,8 @@ export function UIProvider({ children }) {
     window && window.matchMedia('(prefers-color-scheme: dark)').matches,
   );
   const [navCollapsed, setNavCollapsed] = useLocalStorageState('navCollapsed', false);
-  const [pageTitle, setPageTitle] = useState();
-  const [breadcrumbs, setBreadcrumbs] = useState();
+  const [pageTitle, setPageTitle] = useState('');
+  const [breadcrumbs, setBreadcrumbs] = useState([]);
   const [appBarStart, setAppBarStart] = useState(() => () => null);
   const [appBarEnd, setAppBarEnd] = useState(() => () => null);
 
@@ -58,7 +58,13 @@ export function UIProvider({ children }) {
 }
 
 export function useUIContext() {
-  return useContext(UIContext);
+  const context = useContext(UIContext);
+
+  if (!context) {
+    throw new Error('useUIContext must be used within a UIProvider');
+  }
+
+  return context;
 }
 
 export function withUIContext(Component) {

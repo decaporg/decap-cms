@@ -7,7 +7,7 @@ import { ToastContainer } from '../Toast';
 import GlobalStyles from '../GlobalStyles';
 import { NavMenu } from '../NavMenu';
 import AppBar from '../AppBar';
-import { UIContext, UIProvider } from '../UIContext';
+import { useUIContext, UIProvider } from '../UIContext';
 
 const AppOuter = styled.div`
   padding-top: 3.5rem;
@@ -32,6 +32,9 @@ const AppContent = styled.div`
 `;
 
 function AppWrap({ children }) {
+  const { darkMode } = useUIContext();
+  const theme = darkMode ? { darkMode, ...darkTheme } : { darkMode, ...lightTheme };
+
   function handleResize() {
     const vh = window.innerHeight * 0.01;
 
@@ -47,23 +50,17 @@ function AppWrap({ children }) {
 
   return (
     <UIProvider>
-      <UIContext.Consumer>
-        {({ darkMode }) => (
-          <ThemeProvider
-            theme={darkMode ? { darkMode, ...darkTheme } : { darkMode, ...lightTheme }}
-          >
-            <GlobalStyles />
-            <AppOuter>
-              <AppBar />
-              <AppBody>
-                <NavMenu />
-                <AppContent>{children}</AppContent>
-              </AppBody>
-              <ToastContainer />
-            </AppOuter>
-          </ThemeProvider>
-        )}
-      </UIContext.Consumer>
+      <ThemeProvider theme={theme}>
+        <GlobalStyles />
+        <AppOuter>
+          <AppBar />
+          <AppBody>
+            <NavMenu />
+            <AppContent>{children}</AppContent>
+          </AppBody>
+          <ToastContainer />
+        </AppOuter>
+      </ThemeProvider>
     </UIProvider>
   );
 }
