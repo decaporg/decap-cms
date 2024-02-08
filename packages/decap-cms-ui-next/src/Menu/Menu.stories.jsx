@@ -14,15 +14,15 @@ export function _Menu(args) {
   const [menuAnchorEl, setMenuAnchorEl] = useState();
   const [{ open }, updateArgs] = useArgs();
 
-  function toggleOpen(e) {
+  function toggleOpen(event) {
+    setMenuAnchorEl(event ? event.currentTarget : null);
     updateArgs({ open: !open });
-    setMenuAnchorEl(open ? null : e.currentTarget);
   }
 
   return (
     <>
       <ButtonGroup>
-        <Button onClick={toggleOpen} hasMenu>
+        <Button onClick={event => toggleOpen(event)} hasMenu>
           Open Dialog
         </Button>
       </ButtonGroup>
@@ -82,13 +82,15 @@ _Menu.args = {
 
 export function _MenuItem(args) {
   return (
-    <Menu
-      anchorOrigin={{ x: 'center', y: 'center' }}
-      transformOrigin={{ x: 'center', y: 'center' }}
-      open={true}
-    >
-      <MenuItem {...args}>Menu Item</MenuItem>
-    </Menu>
+    <>
+      <Menu
+        anchorOrigin={{ x: 'center', y: 'center' }}
+        transformOrigin={{ x: 'center', y: 'center' }}
+        open={true}
+      >
+        <MenuItem {...args}>Menu Item</MenuItem>
+      </Menu>
+    </>
   );
 }
 

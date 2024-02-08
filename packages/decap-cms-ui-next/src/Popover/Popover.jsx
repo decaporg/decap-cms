@@ -113,7 +113,9 @@ class Popover extends Component {
   }
 
   componentWillUnmount() {
-    this.handleResize.clear();
+    if (this.handleResize && this.handleResize.clear) {
+      this.handleResize.clear();
+    }
     window.removeEventListener('resize', this.handleResize);
   }
 
