@@ -17,11 +17,35 @@ export default {
     },
   },
   args: {
-    src: 'https://randomuser.me/api/portraits/men/94.jpg',
     size: 'md',
   },
 };
 
-export function _Avatar(args) {
+export function AvatarWithImage(args) {
   return <Avatar {...args} />;
 }
+
+AvatarWithImage.argTypes = {
+  src: {
+    control: 'text',
+  },
+};
+
+AvatarWithImage.args = {
+  src: 'https://randomuser.me/api/portraits/men/94.jpg',
+};
+
+export function AvatarWithInitials(args) {
+  return <Avatar {...args} />;
+}
+
+AvatarWithInitials.argTypes = {
+  initials: {
+    control: 'text',
+  },
+};
+
+AvatarWithInitials.args = {
+  initials: 'JD',
+  size: 'md',
+};
