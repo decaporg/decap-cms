@@ -64,11 +64,13 @@ const StartWrap = styled.div`
 const EndWrap = styled.div`
   display: flex;
   align-items: center;
+  margin-right: 1rem;
 `;
 
 function AppBar({ renderStart, renderEnd, renderActions }) {
   const [isMobile, setIsMobile] = useState(isWindowDown('xs'));
   const { pageTitle, breadcrumbs } = useUIContext();
+
   function handleResize() {
     setIsMobile(isWindowDown('xs'));
   }
