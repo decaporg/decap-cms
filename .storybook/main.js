@@ -1,4 +1,5 @@
 import { dirname, join } from 'path';
+
 export default {
   stories: ['../packages/decap-cms-ui-next/src/**/*.stories.@(js|jsx|ts|tsx)'],
   addons: [

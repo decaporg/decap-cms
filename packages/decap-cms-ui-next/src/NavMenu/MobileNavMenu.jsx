@@ -9,7 +9,7 @@ import Icon from '../Icon';
 import LogoTile from '../LogoTile';
 import UserMenu from '../UserMenu';
 import { Menu, MenuItem } from '../Menu';
-import { useUIContext } from '../UIContext';
+import { useUIContext } from '../hooks';
 
 const NavWrap = styled.div`
   height: 3.5rem;

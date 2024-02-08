@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { DocsContainer } from '@storybook/addon-docs';
 import { themes } from '@storybook/theming';
 import { useDarkMode } from 'storybook-dark-mode';
+import { addons } from '@storybook/preview-api';
 import { INITIAL_VIEWPORTS, MINIMAL_VIEWPORTS } from '@storybook/addon-viewport';
 import { ThemeProvider } from '@emotion/react';
 import { lightTheme, darkTheme, UIProvider, GlobalStyles } from 'decap-cms-ui-next/src';
@@ -13,7 +14,7 @@ function ThemeWrapper({ children }) {
   const theme = darkMode ? { darkMode, ...darkTheme } : { darkMode, ...lightTheme };
 
   return (
-    <UIProvider>
+    <UIProvider value={{ darkMode }}>
       <ThemeProvider theme={theme}>
         <GlobalStyles />
         {children}

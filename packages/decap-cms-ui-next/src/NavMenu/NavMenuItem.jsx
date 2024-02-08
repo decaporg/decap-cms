@@ -5,7 +5,7 @@ import color from 'color';
 import Tooltip from '../Tooltip';
 import Icon from '../Icon';
 import { ButtonGroup } from '../Buttons';
-import { useUIContext } from '../UIContext';
+import { useUIContext } from '../hooks';
 
 const NavMenuItemWrap = styled.a`
   width: 100%;

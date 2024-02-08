@@ -7,7 +7,7 @@ import NavMenuGroupLabel from './NavMenuGroupLabel';
 import NavMenuItem, { NavItemContents } from './NavMenuItem';
 import MobileNavMenu from './MobileNavMenu';
 import { isWindowDown } from '../utils/responsive';
-import { useUIContext } from '../UIContext';
+import { useUIContext } from '../hooks';
 
 const NavWrap = styled(Card)`
   width: ${({ collapsed }) => (collapsed ? '56px' : '240px')};

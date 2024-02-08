@@ -23,7 +23,7 @@ export function _Menu(args) {
     <>
       <ButtonGroup>
         <Button onClick={event => toggleOpen(event)} hasMenu>
-          Open Dialog
+          Open Menu
         </Button>
       </ButtonGroup>
 

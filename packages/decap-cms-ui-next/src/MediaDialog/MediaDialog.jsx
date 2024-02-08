@@ -10,7 +10,7 @@ import Table from '../Table';
 import SearchBar from '../SearchBar';
 import { NavMenuGroup, NavMenuGroupLabel, NavMenuItem, NavMenu } from '../NavMenu';
 import getMockData from '../utils/getMockData';
-import { useUIContext } from '../UIContext';
+import { useUIContext } from '../hooks';
 
 const MediaDialogWrap = styled(Dialog)`
   color: ${({ theme }) => theme.color.text};

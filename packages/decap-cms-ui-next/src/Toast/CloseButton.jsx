@@ -4,17 +4,17 @@ import styled from '@emotion/styled';
 
 import { IconButton } from '../Buttons';
 
-const CloseBtn = styled(IconButton)`
+const StyledCloseButton = styled(IconButton)`
   align-self: flex-start;
 `;
 
-CloseBtn.defaultProps = {
+StyledCloseButton.defaultProps = {
   icon: 'close',
 };
 
 function CloseButton({ closeToast, ariaLabel }) {
   return (
-    <CloseBtn
+    <StyledCloseButton
       onClick={e => {
         e.stopPropagation();
         closeToast();

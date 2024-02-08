@@ -7,7 +7,8 @@ import { ToastContainer } from '../Toast';
 import GlobalStyles from '../GlobalStyles';
 import { NavMenu } from '../NavMenu';
 import AppBar from '../AppBar';
-import { useUIContext, UIProvider } from '../UIContext';
+import { UIProvider } from '../UIContext';
+import { useUIContext } from '../hooks';
 
 const AppOuter = styled.div`
   padding-top: 3.5rem;

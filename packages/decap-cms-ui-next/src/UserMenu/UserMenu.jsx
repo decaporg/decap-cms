@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import { AvatarButton } from '../Buttons';
 import { Menu, MenuItem } from '../Menu';
-import { useUIContext } from '../UIContext';
+import { useUIContext } from '../hooks';
 
 function UserMenu({ className }) {
   const [userMenuAnchorEl, setUserMenuAnchorEl] = useState(null);

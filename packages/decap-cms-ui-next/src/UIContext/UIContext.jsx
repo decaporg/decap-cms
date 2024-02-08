@@ -1,8 +1,8 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useState } from 'react';
 
 import { useLocalStorageState } from '../hooks';
 
-const UIContext = createContext({
+export const UIContext = createContext({
   appBarStart: () => null,
   renderAppBarStart: () => {},
   appBarEnd: () => null,
@@ -17,11 +17,20 @@ const UIContext = createContext({
   setBreadcrumbs: () => {},
 });
 
-export function UIProvider({ children }) {
+export function UIProvider({ value, children }) {
+  const { darkMode: initialDarkMode } = value;
+
   const [darkMode, setDarkMode] = useLocalStorageState(
     'darkMode',
-    window && window.matchMedia('(prefers-color-scheme: dark)').matches,
+    initialDarkMode !== undefined
+      ? initialDarkMode
+      : window && window.matchMedia('(prefers-color-scheme: dark)').matches,
   );
+
+  if (initialDarkMode !== undefined && initialDarkMode !== darkMode) {
+    setDarkMode(initialDarkMode);
+  }
+
   const [navCollapsed, setNavCollapsed] = useLocalStorageState('navCollapsed', false);
   const [pageTitle, setPageTitle] = useState('');
   const [breadcrumbs, setBreadcrumbs] = useState([]);
@@ -54,21 +63,5 @@ export function UIProvider({ children }) {
     >
       {children}
     </UIContext.Provider>
-  );
-}
-
-export function useUIContext() {
-  const context = useContext(UIContext);
-
-  if (!context) {
-    throw new Error('useUIContext must be used within a UIProvider');
-  }
-
-  return context;
-}
-
-export function withUIContext(Component) {
-  return props => (
-    <UIContext.Consumer>{context => <Component {...context} {...props} />}</UIContext.Consumer>
   );
 }

@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+connect;
 import React from 'react';
 import { translate } from 'react-polyglot';
 import ImmutablePropTypes from 'react-immutable-proptypes';
@@ -7,7 +8,7 @@ import { connect } from 'react-redux';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import TopBarProgress from 'react-topbar-progress-indicator';
 import { Loader, colors } from 'decap-cms-ui-default';
-import { withUIContext, AppBar, UserMenu } from 'decap-cms-ui-next';
+import { AppBar, UserMenu } from 'decap-cms-ui-next';
 
 import { loadConfig } from '../../actions/config';
 import { loginUser, logoutUser } from '../../actions/auth';
@@ -297,4 +298,4 @@ const mapDispatchToProps = {
   logoutUser,
 };
 
-export default withUIContext(connect(mapStateToProps, mapDispatchToProps)(translate()(App)));
+export default connect(mapStateToProps, mapDispatchToProps)(translate()(App));

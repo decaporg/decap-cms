@@ -5,7 +5,7 @@ import Icon from '../Icon';
 import Card from '../Card';
 import { IconButton } from '../Buttons';
 import { isWindowDown } from '../utils/responsive';
-import { useUIContext } from '../UIContext';
+import { useUIContext } from '../hooks';
 
 const AppBarWrap = styled(Card)`
   background-color: ${({ theme }) => theme.color.surface};

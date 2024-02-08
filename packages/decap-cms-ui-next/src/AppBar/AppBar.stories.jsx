@@ -6,7 +6,7 @@ import { Button, ButtonGroup } from '../Buttons';
 import { Menu, MenuItem } from '../Menu';
 import Dialog from '../Dialog';
 import { isWindowDown } from '../utils/responsive';
-import { useUIContext } from '../UIContext';
+import { useUIContext } from '../hooks';
 
 const Wrap = styled.div`
   width: 100%;
