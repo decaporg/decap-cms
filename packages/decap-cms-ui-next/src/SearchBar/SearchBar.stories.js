@@ -9,6 +9,11 @@ import { Button } from '../Buttons';
 export default {
   title: 'Components/SearchBar',
   component: SearchBar,
+  parameters: {
+    backgrounds: {
+      default: 'light',
+    },
+  },
   argTypes: {
     placeholder: { control: 'text' },
     renderEnd: { control: 'boolean' },

@@ -8,6 +8,7 @@ export default {
     // UI
     appBg: lightTheme.color.background,
     appContentBg: lightTheme.color.surface,
+    appPreviewBg: lightTheme.color.surface,
     appBorderColor: lightTheme.color.border,
     appBorderRadius: 4,
 
@@ -18,6 +19,7 @@ export default {
     // Text colors
     textColor: lightTheme.color.highEmphasis,
     textInverseColor: lightTheme.color.surface,
+
     // Toolbar default and active colors
     barTextColor: lightTheme.color.mediumEmphasis,
     barSelectedColor: lightTheme.color.highEmphasis,
@@ -41,6 +43,7 @@ export default {
     // UI
     appBg: darkTheme.color.background,
     appContentBg: darkTheme.color.surface,
+    appPreviewBg: darkTheme.color.surface,
     appBorderColor: darkTheme.color.border,
     appBorderRadius: 4,
 
@@ -51,6 +54,7 @@ export default {
     // Text colors
     textColor: darkTheme.color.highEmphasis,
     textInverseColor: darkTheme.color.surface,
+
     // Toolbar default and active colors
     barTextColor: darkTheme.color.mediumEmphasis,
     barSelectedColor: darkTheme.color.highEmphasis,
