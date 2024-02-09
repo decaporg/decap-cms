@@ -13,20 +13,18 @@ StyledCloseButton.defaultProps = {
 };
 
 function CloseButton({ closeToast, ariaLabel }) {
-  return (
-    <StyledCloseButton
-      onClick={e => {
-        e.stopPropagation();
-        closeToast();
-      }}
-      aria-label={ariaLabel}
-    />
-  );
+  function handleClick(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    closeToast();
+  }
+
+  return <StyledCloseButton onClick={handleClick} ariaLabel={ariaLabel} />;
 }
 
 CloseButton.propTypes = {
   closeToast: PropTypes.func,
-  arialLabel: PropTypes.string,
+  ariaLabel: PropTypes.string,
 };
 
 CloseButton.defaultProps = {

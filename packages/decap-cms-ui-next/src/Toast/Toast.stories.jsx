@@ -8,16 +8,14 @@ export default {
 };
 
 export function _Toast(args) {
-  const { type, title, content, autoClose } = args;
-
   return (
-    <>
+    <div>
       <ButtonGroup>
-        <Button onClick={() => toast({ type, title, content, autoClose })}>Pop a Toast</Button>
+        <Button onClick={() => toast({ ...args })}>Pop a Toast</Button>
       </ButtonGroup>
 
       <ToastContainer />
-    </>
+    </div>
   );
 }
 
