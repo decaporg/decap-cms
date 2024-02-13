@@ -11,6 +11,7 @@ const AppBarWrap = styled(Card)`
   background-color: ${({ theme }) => theme.color.surface};
   height: 3.5rem;
   display: flex;
+  justify-content: space-between;
   position: fixed;
   top: 0;
   right: 0;
@@ -57,7 +58,10 @@ const ActionsWrap = styled.div`
 `;
 
 const StartWrap = styled.div`
-  flex: 1;
+  display: flex;
+  align-items: center;
+`;
+const ContentWrap = styled.div`
   display: flex;
   align-items: center;
 `;
@@ -67,7 +71,7 @@ const EndWrap = styled.div`
   margin-right: 1rem;
 `;
 
-function AppBar({ renderStart, renderEnd, renderActions }) {
+function AppBar({ renderStart, renderEnd, renderActions, children }) {
   const [isMobile, setIsMobile] = useState(isWindowDown('xs'));
   const { pageTitle, breadcrumbs } = useUIContext();
 
@@ -81,13 +85,15 @@ function AppBar({ renderStart, renderEnd, renderActions }) {
   }, []);
 
   return (
-    <AppBarWrap>
+    <AppBarWrap as="header">
       {isMobile && (
         <ActionsWrap noBorder>
           <IconButton icon="arrow-left" />
         </ActionsWrap>
       )}
       <StartWrap>
+        {renderStart && renderStart()}
+
         <TitleWrap>
           {pageTitle && <Title>{pageTitle}</Title>}
           {breadcrumbs && (
@@ -104,8 +110,10 @@ function AppBar({ renderStart, renderEnd, renderActions }) {
             </Breadcrumbs>
           )}
         </TitleWrap>
-        {renderStart && renderStart()}
       </StartWrap>
+
+      <ContentWrap>{children}</ContentWrap>
+
       <EndWrap>
         {renderEnd && renderEnd()}
         {!isMobile && renderActions && <ActionsWrap>{renderActions()}</ActionsWrap>}

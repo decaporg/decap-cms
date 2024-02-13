@@ -7,7 +7,11 @@ import Icon from '../Icon';
 import { ButtonGroup } from '../Buttons';
 import { useUIContext } from '../hooks';
 
-const NavMenuItemWrap = styled.a`
+const NavMenuListItem = styled.li`
+  list-style: none;
+`;
+
+const NavMenuLink = styled.a`
   width: 100%;
   display: flex;
   align-items: center;
@@ -34,7 +38,7 @@ const NavMenuItemInside = styled.span`
   border-radius: 6px;
   outline: none;
   transition: 200ms;
-  ${NavMenuItemWrap}:hover & {
+  ${NavMenuListItem}:hover & {
     color: ${({ theme, active }) =>
       active ? theme.color.success['900'] : theme.color.highEmphasis};
     background-color: ${({ theme, active }) =>
@@ -48,7 +52,7 @@ const NavMenuItemInside = styled.span`
     `
         : ``}
   }
-  ${NavMenuItemWrap}:active & {
+  ${NavMenuListItem}:active & {
     color: ${({ theme, active }) =>
       active ? theme.color.success['900'] : theme.color.highEmphasis};
     background-color: ${({ theme, active }) =>
@@ -93,21 +97,23 @@ function NavMenuItem({ icon, children, className, href, active, onClick }) {
       enterDelay={500}
       leaveDelay={250}
     >
-      <NavMenuItemWrap
-        className={className}
-        onClick={onClick}
-        href={href}
-        target={href ? '_blank' : undefined}
-        rel={href ? 'noopener noreferred' : undefined}
-      >
-        <NavMenuItemInside active={active}>
-          <NavItemContents>
-            <Icon name={icon} />
-            <Label collapsed={navCollapsed}>{children}</Label>
-            {href && <ExternalLinkIcon />}
-          </NavItemContents>
-        </NavMenuItemInside>
-      </NavMenuItemWrap>
+      <NavMenuListItem>
+        <NavMenuLink
+          className={className}
+          onClick={onClick}
+          href={href}
+          target={href ? '_blank' : undefined}
+          rel={href ? 'noopener noreferred' : undefined}
+        >
+          <NavMenuItemInside active={active}>
+            <NavItemContents>
+              <Icon name={icon} />
+              <Label collapsed={navCollapsed}>{children}</Label>
+              {href && <ExternalLinkIcon />}
+            </NavItemContents>
+          </NavMenuItemInside>
+        </NavMenuLink>
+      </NavMenuListItem>
     </Tooltip>
   );
 }

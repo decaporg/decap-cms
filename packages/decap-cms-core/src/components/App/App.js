@@ -8,7 +8,6 @@ import { connect } from 'react-redux';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import TopBarProgress from 'react-topbar-progress-indicator';
 import { Loader, colors } from 'decap-cms-ui-default';
-import { AppBar, UserMenu } from 'decap-cms-ui-next';
 
 import { loadConfig } from '../../actions/config';
 import { loginUser, logoutUser } from '../../actions/auth';
@@ -23,7 +22,7 @@ import Workflow from '../Workflow/Workflow';
 import Editor from '../Editor/Editor';
 import NotFoundPage from './NotFoundPage';
 import Nav from './Nav';
-// import NotifMenu from './NotifMenu';
+import Header from './Header';
 
 TopBarProgress.config({
   barColors: {
@@ -70,10 +69,6 @@ const ErrorCodeBlock = styled.pre`
   margin-left: 20px;
   font-size: 15px;
   line-height: 1.5;
-`;
-
-const StyledUserMenu = styled(UserMenu)`
-  margin-left: 0.75rem;
 `;
 
 function getDefaultPath(collections) {
@@ -169,18 +164,8 @@ class App extends React.Component {
   }
 
   render() {
-    const {
-      user,
-      config,
-      collections,
-      logoutUser,
-      isFetching,
-      publishMode,
-      useMediaLibrary,
-      t,
-      appBarStart,
-      appBarEnd,
-    } = this.props;
+    const { user, config, collections, logoutUser, isFetching, publishMode, useMediaLibrary, t } =
+      this.props;
 
     if (config === null) {
       return null;
@@ -205,18 +190,11 @@ class App extends React.Component {
       <>
         <Notifications />
         <AppOuter>
-          <AppBar
-            renderStart={appBarStart}
-            renderEnd={appBarEnd}
-            renderActions={() => (
-              <>
-                {/* <NotifMenu /> */}
-                <StyledUserMenu onLogoutClick={logoutUser} />
-              </>
-            )}
-          />
+          <Header t={t} collections={collections} logoutUser={logoutUser} />
+
           <AppBody>
-            <Nav collections={collections} />
+            <Nav collections={collections} location={location} />
+
             <AppContent>
               <AppMainContainer>
                 {isFetching && <TopBarProgress />}

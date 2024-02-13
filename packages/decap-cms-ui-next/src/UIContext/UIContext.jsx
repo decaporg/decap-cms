@@ -18,7 +18,7 @@ export const UIContext = createContext({
 });
 
 export function UIProvider({ value, children }) {
-  const { darkMode: initialDarkMode } = value;
+  const { darkMode: initialDarkMode } = !value;
 
   const [darkMode, setDarkMode] = useLocalStorageState(
     'darkMode',

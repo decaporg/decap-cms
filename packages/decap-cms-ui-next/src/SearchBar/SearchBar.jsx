@@ -56,15 +56,23 @@ const SearchInput = styled.input`
   }
 `;
 
-function SearchBar({ placeholder, renderEnd, onChange, className }) {
+function SearchBar({ placeholder, renderEnd, onChange, onSubmit, className }) {
   const [focus, setFocus] = useState();
+
+  function handleKeyDown(event) {
+    if (event.key === 'Enter') {
+      onSubmit();
+    }
+  }
 
   return (
     <SearchContainer focus={focus} className={className}>
       <SearchIcon name="search" focus={focus} />
       <SearchInput
+        type="search"
         placeholder={placeholder}
         onChange={onChange}
+        onKeyDown={handleKeyDown}
         focus={focus}
         onFocus={() => setFocus(true)}
         onBlur={() => setFocus(false)}

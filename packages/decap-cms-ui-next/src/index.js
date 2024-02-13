@@ -30,6 +30,7 @@ export { default as Popover } from './Popover';
 export { default as Portal } from './Portal';
 export { default as ResponsiveLayout } from './ResponsiveLayout';
 export { default as RootRef } from './RootRef';
+export { default as SearchBar } from './SearchBar';
 export { default as ToggleSwitch } from './ToggleSwitch';
 export { default as Tooltip } from './Tooltip';
 export { default as Tree } from './Tree';

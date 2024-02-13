@@ -42,7 +42,7 @@ const NavWrap = styled(Card)`
 `;
 NavWrap.defaultProps = { elevation: 'xs', rounded: false, direction: 'right' };
 
-const NavContent = styled.div`
+const NavContent = styled.nav`
   display: flex;
   flex-direction: column;
   flex: 1;

@@ -8,20 +8,20 @@ function Nav({ collections, location }) {
   const [activeItemId, setActiveItemId] = useState();
 
   useEffect(() => {
-    console.log({ location });
     const pathnameArray = location.pathname.split('/');
     let pathname = '';
+
     if (pathnameArray[1] === 'collections') {
       pathname = `${pathnameArray[1]}-${pathnameArray[2]}`;
     } else {
       pathname = pathnameArray[1];
     }
-    console.log({ location, pathnameArray, pathname, activeItemId });
+
     setActiveItemId(pathname);
   }, [location]);
 
   return (
-    <NavMenu>
+    <NavMenu collapsable={true}>
       <NavMenuGroup>
         <NavMenuItem active={activeItemId === 'dashboard'} onClick={() => false} icon="layout">
           Dashboard
@@ -44,7 +44,7 @@ function Nav({ collections, location }) {
         </NavMenuItem>
         {collections.toList().map(collection => {
           const collectionName = collection.get('name');
-          console.log(collections.toJS());
+
           return (
             <NavMenuItem
               key={collectionName}
@@ -61,7 +61,8 @@ function Nav({ collections, location }) {
           );
         })}
       </NavMenuGroup>
-      <NavMenuGroup>
+
+      <NavMenuGroup end>
         <NavMenuItem href="https://app.netlify.com/my-website/analytics" icon="bar-chart">
           Analytics
         </NavMenuItem>
