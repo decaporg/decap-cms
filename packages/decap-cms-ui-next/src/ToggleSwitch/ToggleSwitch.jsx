@@ -1,6 +1,14 @@
 import React from 'react';
 import styled from '@emotion/styled';
 
+const StyledInput = styled.input`
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+`;
+
 const ToggleSwitchInput = styled.div`
   width: 2.25rem;
   height: 1.5rem;
@@ -32,7 +40,14 @@ const ToggleSwitchInput = styled.div`
 
 function ToggleSwitch({ checked, onChange, className }) {
   return (
-    <ToggleSwitchInput className={className} checked={checked} onClick={() => onChange(!checked)} />
+    <>
+      <StyledInput type={'checkbox'} checked={checked} />
+      <ToggleSwitchInput
+        className={className}
+        checked={checked}
+        onClick={() => onChange(!checked)}
+      />
+    </>
   );
 }
 
