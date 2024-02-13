@@ -1,41 +1,107 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from '@emotion/styled';
-import { SortableContext, useSortable } from '@dnd-kit/sortable';
-import { DndContext } from '@dnd-kit/core';
+import {
+  closestCenter,
+  DndContext,
+  DragOverlay,
+  KeyboardSensor as KeyboardSensorCore,
+  MouseSensor as MouseSensorCore,
+  TouchSensor as TouchSensorCore,
+  PointerSensor as PointerSensorCore,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+  useSortable,
+} from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import arrayMove from 'array-move';
+import { restrictToParentElement } from '@dnd-kit/modifiers';
 
 import Field from '../../Field';
 import { Button } from '../../Buttons';
 import ListInputItem from './ListInputItem';
 import { TreeContentWrap } from '../../Tree/Tree';
 
-function Draggable({ id, value }) {
+export class MouseSensor extends MouseSensorCore {
+  static activators = [
+    {
+      eventName: 'onMouseDown',
+      handler: ({ nativeEvent: event }) => {
+        return shouldHandleEvent(event.target);
+      },
+    },
+  ];
+}
+
+export class TouchSensor extends TouchSensorCore {
+  static activators = [
+    {
+      eventName: 'onTouchStart',
+      handler: ({ nativeEvent: event }) => {
+        return shouldHandleEvent(event.target);
+      },
+    },
+  ];
+}
+
+export class PointerSensor extends PointerSensorCore {
+  static activators = [
+    {
+      eventName: 'onPointerDown',
+      handler: ({ nativeEvent: event }) => {
+        return shouldHandleEvent(event.target);
+      },
+    },
+  ];
+}
+
+export class KeyboardSensor extends KeyboardSensorCore {
+  static activators = [
+    {
+      eventName: 'onKeyDown',
+      handler: ({ nativeEvent: event }) => {
+        return shouldHandleEvent(event.target);
+      },
+    },
+  ];
+}
+
+function shouldHandleEvent(target) {
+  while (target) {
+    if (target.dataset && target.dataset.noDnd) {
+      return false;
+    }
+    target = target.parentElement;
+  }
+
+  return true;
+}
+
+function SortableItem({ id, children }) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
+    listStyleType: 'none',
+    touchAction: 'none',
   };
 
   return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      {value}
-    </div>
+    <li ref={setNodeRef} style={style} {...attributes} {...listeners}>
+      {children}
+    </li>
   );
 }
 
-function Container({ items }) {
-  return (
-    <DndContext>
-      <SortableContext items={items}>
-        {items.map((value, index) => (
-          <Draggable key={index} id={index} value={value} />
-        ))}
-      </SortableContext>
-    </DndContext>
-  );
-}
+const StyledSortableContainer = styled.ul`
+  padding: 0;
+  margin: 0;
+`;
 
 const StyledButton = styled(Button)`
   width: 100%;
@@ -47,77 +113,93 @@ const ActionWrap = styled.div`
   right: 0;
   z-index: 1;
 `;
-const StyledListInputItem = styled(ListInputItem)`
-  &.dragging {
-    background: ${({ theme }) => theme.color.elevatedSurface};
-    box-shadow: 0 0 4px 1px
-        ${({ theme }) => (theme.darkMode ? 'rgba(0, 0, 0, 0.1)' : 'rgba(14, 30, 37, 0.06)')},
-      0 ${({ isMobile }) => (isMobile ? '-' : '')}8px 16px 0
-        ${({ theme }) => (theme.darkMode ? 'rgba(0, 0, 0, 0.4)' : 'rgba(14, 30, 37, 0.2)')};
-    border-radius: ${({ isMobile }) => (isMobile ? 0 : '6px')};
-    & ${TreeContentWrap} {
-      box-shadow: 0 0 0 0 transparent;
-    }
+const DragOverlayListInputItem = styled(ListInputItem)`
+  background: ${({ theme }) => theme.color.elevatedSurface};
+  box-shadow: 0 0 4px 1px
+      ${({ theme }) => (theme.darkMode ? 'rgba(0, 0, 0, 0.1)' : 'rgba(14, 30, 37, 0.06)')},
+    0 ${({ isMobile }) => (isMobile ? '-' : '')}8px 16px 0
+      ${({ theme }) => (theme.darkMode ? 'rgba(0, 0, 0, 0.4)' : 'rgba(14, 30, 37, 0.2)')};
+  border-radius: ${({ isMobile }) => (isMobile ? 0 : '6px')};
+  & ${TreeContentWrap} {
+    box-shadow: 0 0 0 0 transparent;
   }
 `;
 
-class ListInput extends React.Component {
-  state = { focus: false, items: [], expandedItems: [] };
+function ListInput({ name, label, labelSingular, fields, className, inline, onChange }) {
+  const [activeId, setActiveId] = useState(null);
+  const [focus, setFocus] = useState(false);
+  const [items, setItems] = useState([]);
+  const [expandedItems, setExpandedItems] = useState([]);
 
-  addListItem = (index, data = {}) => {
-    const items = [...this.state.items];
-    items.splice(index, 0, data);
-    const expandedItems = this.state.expandedItems.map(item => (item >= index ? item + 1 : item));
+  const activationConstraint = { distance: 4 };
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint }),
+    useSensor(KeyboardSensor, {
+      activationConstraint,
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+  );
 
-    this.setState({ items, expandedItems }, () => {
-      this.props.onChange(this.state.items);
-      setTimeout(() => this.toggleExpand(index));
-    });
-  };
+  function addListItem(index, data = {}) {
+    console.log('addListItem', index, data);
 
-  handleAdd = () => this.addListItem(this.state.items.length);
+    const newItems = [...items];
+    newItems.splice(index, 0, data);
+    const newExpandedItems = expandedItems.map(item => (item >= index ? item + 1 : item));
 
-  handleDelete = index => {
-    let items = [...this.state.items];
-    const isExpanded = this.state.expandedItems.indexOf(index) !== -1;
+    setItems(newItems);
+    setExpandedItems(newExpandedItems);
+
+    setTimeout(() => toggleExpand(index));
+  }
+
+  function handleAdd() {
+    addListItem(items.length);
+  }
+
+  function handleDelete(index) {
+    let newItems = [...items];
+    const isExpanded = expandedItems.indexOf(index) !== -1;
 
     if (isExpanded) {
-      this.toggleExpand(index);
+      toggleExpand(index);
     }
 
-    delete items[index];
-    items = items.filter(item => item !== null);
+    delete newItems[index];
+    newItems = newItems.filter(item => item !== null);
 
-    this.setState({ items }, () => this.props.onChange(this.state.items));
-  };
+    setItems(newItems);
+    onChange(newItems);
+  }
 
-  handleChange = (data, index) => {
-    const items = [...this.state.items];
-    items[index] = {
-      ...items[index],
+  function handleChange(data, index) {
+    const newItems = [...items];
+    newItems[index] = {
+      ...newItems[index],
       ...data,
     };
 
-    this.setState({ items }, () => this.props.onChange(this.state.items));
-  };
+    setItems(newItems);
+    onChange(newItems);
+  }
 
-  toggleExpand = index => {
-    let expandedItems = [...this.state.expandedItems];
-    const expandedItemsIndex = expandedItems.indexOf(index);
+  function toggleExpand(index) {
+    const newExpandedItems = [...expandedItems];
+    const expandedItemsIndex = newExpandedItems.indexOf(index);
     const isExpanded = expandedItemsIndex !== -1;
 
     if (isExpanded) {
-      delete expandedItems[expandedItemsIndex];
-      expandedItems = expandedItems.filter(id => id !== null);
+      newExpandedItems.splice(expandedItemsIndex, 1);
     } else {
-      expandedItems.push(index);
+      newExpandedItems.push(index);
     }
-    this.setState({ expandedItems });
-  };
 
-  moveListItem = (oldIndex, newIndex) => {
-    const items = arrayMove([...this.state.items], oldIndex, newIndex);
-    const expandedItems = this.state.expandedItems.map(item => {
+    setExpandedItems(newExpandedItems);
+  }
+
+  function moveListItem(oldIndex, newIndex) {
+    const newItems = arrayMove(items, oldIndex, newIndex);
+    const newExpandedItems = expandedItems.map(item => {
       if (item === oldIndex) return newIndex;
       if (
         item === newIndex ||
@@ -130,78 +212,114 @@ class ListInput extends React.Component {
       return item;
     });
 
-    // Setting items to empty array intentionally to trigger unmount and remount so no transition animation occurs
-    this.setState({ items: [], expandedItems }, () =>
-      this.setState({ items }, () => this.props.onChange(this.state.items)),
-    );
-  };
-
-  handleDrop = ({ oldIndex, newIndex }) => {
-    this.moveListItem(oldIndex, newIndex);
-  };
-
-  render() {
-    const { name, label, labelSingular, fields, className, inline } = this.props;
-    const { focus, items, expandedItems } = this.state;
-
-    return (
-      <Field label={label} labelTarget={name} focus={focus} className={className} inline={inline}>
-        <ActionWrap>
-          {items && items.length > 1 && (
-            <Button
-              size="sm"
-              onClick={() => {
-                if (expandedItems.length) {
-                  this.setState({ expandedItems: [] });
-                } else {
-                  this.setState({
-                    expandedItems: items.map((item, index) => index),
-                  });
-                }
-              }}
-            >
-              {expandedItems.length ? 'Collapse' : 'Expand'} All
-            </Button>
-          )}
-        </ActionWrap>
-        <Container
-          onSortEnd={this.handleDrop}
-          lockAxis="y"
-          helperClass="dragging"
-          distance={1}
-          lockToContainerEdges
-          lockOffset="0%"
-        >
-          {items.map((item, index) => {
-            const itemExpanded = expandedItems.indexOf(index) !== -1;
-
-            return (
-              <Draggable key={name + index} index={index}>
-                <StyledListInputItem
-                  itemExpanded={itemExpanded}
-                  labelSingular={labelSingular}
-                  index={index}
-                  item={item}
-                  items={items}
-                  fields={fields}
-                  onDelete={this.handleDelete}
-                  handleChange={this.handleChange}
-                  toggleExpand={this.toggleExpand}
-                  last={index === items.length - 1}
-                  addListItem={this.addListItem}
-                  moveListItem={this.moveListItem}
-                />
-              </Draggable>
-            );
-          })}
-        </Container>
-
-        <StyledButton icon="plus" onClick={this.handleAdd}>
-          Add New {labelSingular}
-        </StyledButton>
-      </Field>
-    );
+    setItems(newItems);
+    setExpandedItems(newExpandedItems);
+    onChange(newItems);
   }
+
+  function handleDragStart({ active }) {
+    console.log('active:', active.id);
+
+    setFocus(true);
+    setActiveId(active.id);
+  }
+
+  function handleDragEnd({ active, over }) {
+    setFocus(false);
+
+    if (over && active.id !== over?.id) {
+      moveListItem(active.id, over.id);
+    }
+
+    setActiveId(null);
+  }
+
+  return (
+    <Field label={label} labelTarget={name} focus={focus} className={className} inline={inline}>
+      <ActionWrap>
+        {items && items.length > 1 && (
+          <Button
+            size="sm"
+            onClick={() => {
+              if (expandedItems.length) {
+                setExpandedItems([]);
+              } else {
+                setExpandedItems(items.map((item, index) => index));
+              }
+            }}
+          >
+            {expandedItems.length ? 'Collapse' : 'Expand'} All
+          </Button>
+        )}
+      </ActionWrap>
+
+      <StyledSortableContainer>
+        <DndContext
+          sensors={sensors}
+          colisionDetection={closestCenter}
+          modifiers={[restrictToParentElement]}
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+          onDragCancel={() => setActiveId(null)}
+        >
+          <SortableContext items={items} strategy={verticalListSortingStrategy}>
+            {items.map((item, index) => {
+              const itemExpanded = expandedItems.indexOf(index) !== -1;
+
+              return (
+                <SortableItem key={index} id={index}>
+                  <ListInputItem
+                    itemExpanded={itemExpanded}
+                    labelSingular={labelSingular}
+                    index={index}
+                    item={item}
+                    items={items}
+                    fields={fields}
+                    onDelete={handleDelete}
+                    handleChange={handleChange}
+                    toggleExpand={toggleExpand}
+                    last={index === items.length - 1}
+                    addListItem={addListItem}
+                    moveListItem={moveListItem}
+                  />
+                </SortableItem>
+              );
+            })}
+          </SortableContext>
+
+          <DragOverlay>
+            {activeId
+              ? () => {
+                  const itemExpanded = expandedItems.indexOf(activeId) !== -1;
+
+                  return (
+                    <DragOverlayListInputItem
+                      itemExpanded={itemExpanded}
+                      labelSingular={labelSingular}
+                      id={activeId}
+                      index={items.indexOf(activeId)}
+                      item={items[items.indexOf(activeId)]}
+                      items={items}
+                      fields={fields}
+                      onDelete={handleDelete}
+                      handleChange={handleChange}
+                      toggleExpand={toggleExpand}
+                      last={false}
+                      addListItem={addListItem}
+                      moveListItem={moveListItem}
+                    />
+                  );
+                }
+              : null}
+          </DragOverlay>
+        </DndContext>
+      </StyledSortableContainer>
+
+      <StyledButton icon="plus" onClick={handleAdd}>
+        Add New {labelSingular}
+      </StyledButton>
+    </Field>
+  );
 }
 
 export default ListInput;

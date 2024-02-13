@@ -120,6 +120,8 @@ const Tree = memo(function Tree({
           onClick={onExpandToggle}
           onMouseEnter={onHeaderMouseEnter}
           onMouseLeave={onHeaderMouseLeave}
+          aria-expanded={expanded}
+          data-no-dnd="true"
         >
           <ExpandIcon expanded={expanded} />
         </ExpandButton>
@@ -136,10 +138,9 @@ const Tree = memo(function Tree({
             </TreeHeaderDescription>
           )}
         </TreeHeaderText>
-        {actions && <Actions>{actions()}</Actions>}
+        {actions && <Actions data-no-dnd="true">{actions()}</Actions>}
       </TreeHeader>
       <TreeContentWrap
-        expanded={expanded}
         single={single}
         style={{
           height: expanded && previous === expanded ? 'auto' : height,
@@ -147,7 +148,7 @@ const Tree = memo(function Tree({
         }}
         type={type}
       >
-        <TreeContent style={{ transform, opacity }} {...bind}>
+        <TreeContent style={{ transform, opacity }} {...bind} data-no-dnd="true">
           {children}
         </TreeContent>
       </TreeContentWrap>
