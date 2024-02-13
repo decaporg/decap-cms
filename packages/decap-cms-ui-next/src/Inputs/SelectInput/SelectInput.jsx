@@ -30,12 +30,10 @@ function SelectInput({
     setAnchorEl(null);
   }
 
-  const selection = options.find(option =>
-    Array.isArray(value) ? option.name === value?.[0]?.name : option.name === value?.name,
-  );
+  const selection = options.find(option => option.value === value);
 
   const availableOptions = multiple
-    ? options.filter(option => value.every(opt => opt.name !== option.name))
+    ? options.filter(option => value.every(opt => opt.value !== option.value))
     : options;
 
   return (
@@ -52,10 +50,10 @@ function SelectInput({
             <TagGroup>
               {value.map(option => (
                 <Tag
-                  key={option.name}
-                  onDelete={() => onChange(value.filter(opt => opt.name !== option.name))}
+                  key={option.value}
+                  onDelete={() => onChange(value.filter(opt => opt !== option))}
                 >
-                  {option.label}
+                  {options.find(opt => opt.value === option).label}
                 </Tag>
               ))}
             </TagGroup>
@@ -88,9 +86,9 @@ function SelectInput({
           {availableOptions.length ? (
             availableOptions.map(option => (
               <MenuItem
-                selected={!multiple && value && value.name === option.name}
-                onClick={() => handleClose(option)}
-                key={option.name}
+                selected={!multiple && value && value.name === option.value}
+                onClick={() => handleClose(option.value)}
+                key={option.value}
               >
                 {option.label}
               </MenuItem>
