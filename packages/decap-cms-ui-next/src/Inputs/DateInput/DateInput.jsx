@@ -4,15 +4,8 @@ import dayjs from 'dayjs';
 import { DatetimePicker } from 'rc-datetime-picker-dayjs';
 
 import TextInput from '../TextInput';
-import { IconButton } from '../../Buttons';
 import { Menu } from '../../Menu';
 import DatepickerStyles from './DatepickerStyles';
-
-const StyledIconButton = styled(IconButton)`
-  position: absolute;
-  right: 0;
-  bottom: -0.5rem;
-`;
 
 const StyledMenu = styled(Menu)`
   padding: 0;
@@ -30,8 +23,8 @@ const StyledDatetimePicker = styled(DatetimePicker)`
   background-color: transparent;
 `;
 
-function DateInput({ onChange, ...props }) {
-  const [date, setDate] = useState(dayjs());
+function DateInput({ onChange, value = dayjs(), ...props }) {
+  const [date, setDate] = useState(value);
   const [anchorEl, setAnchorEl] = useState(null);
 
   function handleOpenMenu(event) {
@@ -49,6 +42,7 @@ function DateInput({ onChange, ...props }) {
   return (
     <>
       <DatepickerStyles />
+
       <TextInput
         {...props}
         readOnly
@@ -56,9 +50,8 @@ function DateInput({ onChange, ...props }) {
         onClick={handleOpenMenu}
         focus={!!anchorEl}
         icon="calendar"
-      >
-        <StyledIconButton icon="calendar" active={!!anchorEl} />
-      </TextInput>
+      />
+
       <StyledMenu
         anchorOrigin={{ x: 'right', y: 'bottom' }}
         transformOrigin={{ x: 'right', y: 'top' }}
@@ -70,8 +63,11 @@ function DateInput({ onChange, ...props }) {
         <StyledDatetimePicker
           shortcuts={shortcuts}
           closeOnSelectDay
-          moment={date}
-          onChange={date => setDate(date)}
+          dayjs={date}
+          onChange={date => {
+            setDate(date);
+            onChange(date);
+          }}
         />
       </StyledMenu>
     </>
