@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from '@emotion/styled';
 
+import Icon from '../Icon';
+
 const StylesAvatar = styled.div`
   ${({ theme, size }) => `
   border-radius: ${size === 'sm' ? 24 : size === 'lg' ? 40 : 32}px;
@@ -11,6 +13,7 @@ const StylesAvatar = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  color: ${theme.color.highEmphasis};
 `}
 `;
 
@@ -30,15 +33,17 @@ const StylesInitials = styled.span`
 `;
 
 function Avatar({ size, src, initials, ...props }) {
-  const hasImage = src;
-
-  return hasImage ? (
+  return src ? (
     <StylesImage size={size} src={src} {...props} />
-  ) : (
+  ) : initials ? (
     <StylesAvatar size={size} {...props}>
       <StylesInitials size={size} {...props}>
         {initials}
       </StylesInitials>
+    </StylesAvatar>
+  ) : (
+    <StylesAvatar size={size} {...props}>
+      <Icon name="user" />
     </StylesAvatar>
   );
 }

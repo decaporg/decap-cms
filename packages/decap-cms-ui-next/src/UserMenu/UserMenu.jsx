@@ -4,7 +4,7 @@ import { AvatarButton } from '../Buttons';
 import { Menu, MenuItem } from '../Menu';
 import { useUIContext } from '../hooks';
 
-function UserMenu({ user, className }) {
+function UserMenu({ user, onLogoutClick, className }) {
   const [userMenuAnchorEl, setUserMenuAnchorEl] = useState(null);
   const { darkMode, setDarkMode } = useUIContext();
 
@@ -15,7 +15,8 @@ function UserMenu({ user, className }) {
   return (
     <>
       <AvatarButton
-        src="https://randomuser.me/api/portraits/men/1.jpg"
+        src={user?.avatar_url}
+        initials={user?.name}
         onClick={e => setUserMenuAnchorEl(e.currentTarget)}
         active={!!userMenuAnchorEl}
         className={className}
@@ -37,33 +38,33 @@ function UserMenu({ user, className }) {
           Dark Mode
         </MenuItem>
         <MenuItem
+          as="a"
+          target="_blank"
+          href="https://www.decapcms.org/community/"
           icon="help-circle"
-          onClick={() => {
-            window.open('https://www.decapcms.org/community/');
-            handleClose();
-          }}
+          onClick={handleClose}
         >
           Help
         </MenuItem>
         <MenuItem
+          as="a"
+          target="_blank"
+          href="https://www.decapcms.org/docs/"
           icon="file-text"
-          onClick={() => {
-            window.open('https://www.decapcms.org/docs/');
-            handleClose();
-          }}
+          onClick={handleClose}
         >
           Documentation
         </MenuItem>
         <MenuItem
+          as="a"
+          target="_blank"
+          href="https://github.com/decaporg/decap-cms/issues"
           icon="alert-triangle"
-          onClick={() => {
-            window.open('https://github.com/decaporg/decap-cms/issues');
-            handleClose();
-          }}
+          onClick={handleClose}
         >
           Report an issue
         </MenuItem>
-        <MenuItem icon="log-out" onClick={handleClose}>
+        <MenuItem icon="log-out" onClick={onLogoutClick}>
           Log out
         </MenuItem>
       </Menu>
