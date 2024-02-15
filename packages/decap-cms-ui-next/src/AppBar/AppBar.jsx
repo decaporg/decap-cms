@@ -8,17 +8,20 @@ import { isWindowDown } from '../utils/responsive';
 import { useUIContext } from '../hooks';
 
 const AppBarWrap = styled(Card)`
-  background-color: ${({ theme }) => theme.color.surface};
+  background-color: ${({ theme }) => theme.color.background};
+  box-shadow: none;
   height: 3.5rem;
   display: flex;
-  justify-content: space-between;
-  position: fixed;
+  /* justify-content: space-between; */
+  justify-content: flex-end;
+  position: sticky;
   top: 0;
   right: 0;
   left: 0;
+  padding: 2.5rem 1rem;
   z-index: 100;
 `;
-AppBarWrap.defaultProps = { rounded: false, elevation: 'xs' };
+AppBarWrap.defaultProps = { rounded: false, elevation: false };
 const TitleWrap = styled.div`
   padding: 0.5rem 0;
   margin-right: 1rem;
@@ -68,7 +71,8 @@ const ContentWrap = styled.div`
 const EndWrap = styled.div`
   display: flex;
   align-items: center;
-  margin-right: 1rem;
+  justify-content: flex-end;
+  flex: 1;
 `;
 
 function AppBar({ renderStart, renderEnd, renderActions, children }) {
@@ -91,7 +95,7 @@ function AppBar({ renderStart, renderEnd, renderActions, children }) {
           <IconButton icon="arrow-left" />
         </ActionsWrap>
       )}
-      <StartWrap>
+      {/* <StartWrap>
         {renderStart && renderStart()}
 
         <TitleWrap>
@@ -110,9 +114,9 @@ function AppBar({ renderStart, renderEnd, renderActions, children }) {
             </Breadcrumbs>
           )}
         </TitleWrap>
-      </StartWrap>
+      </StartWrap> */}
 
-      <ContentWrap>{children}</ContentWrap>
+      {/* <ContentWrap>{children}</ContentWrap> */}
 
       <EndWrap>
         {renderEnd && renderEnd()}

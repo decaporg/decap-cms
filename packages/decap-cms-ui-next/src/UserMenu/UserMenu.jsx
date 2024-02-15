@@ -4,7 +4,7 @@ import { AvatarButton } from '../Buttons';
 import { Menu, MenuItem } from '../Menu';
 import { useUIContext } from '../hooks';
 
-function UserMenu({ className }) {
+function UserMenu({ user, className }) {
   const [userMenuAnchorEl, setUserMenuAnchorEl] = useState(null);
   const { darkMode, setDarkMode } = useUIContext();
 
@@ -39,7 +39,7 @@ function UserMenu({ className }) {
         <MenuItem
           icon="help-circle"
           onClick={() => {
-            window.open('https://www.netlifycms.org/community/');
+            window.open('https://www.decapcms.org/community/');
             handleClose();
           }}
         >
@@ -48,7 +48,7 @@ function UserMenu({ className }) {
         <MenuItem
           icon="file-text"
           onClick={() => {
-            window.open('https://www.netlifycms.org/docs/');
+            window.open('https://www.decapcms.org/docs/');
             handleClose();
           }}
         >
@@ -57,7 +57,7 @@ function UserMenu({ className }) {
         <MenuItem
           icon="alert-triangle"
           onClick={() => {
-            window.open('https://github.com/netlify/netlify-cms/issues');
+            window.open('https://github.com/decaporg/decap-cms/issues');
             handleClose();
           }}
         >

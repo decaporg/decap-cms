@@ -11,7 +11,7 @@ import { UIProvider } from '../UIContext';
 import { useUIContext } from '../hooks';
 
 const AppOuter = styled.div`
-  padding-top: 3.5rem;
+  /* padding-top: 3.5rem; */
   display: flex;
   flex-direction: column;
   height: 100%;

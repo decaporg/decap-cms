@@ -12,6 +12,7 @@ import { Loader, colors } from 'decap-cms-ui-default';
 import { loadConfig } from '../../actions/config';
 import { loginUser, logoutUser } from '../../actions/auth';
 import { currentBackend } from '../../backend';
+import { createNewEntry } from '../../actions/collections';
 import { openMediaLibrary } from '../../actions/mediaLibrary';
 import MediaLibrary from '../MediaLibrary/MediaLibrary';
 import { Notifications } from '../UI';
@@ -34,11 +35,12 @@ TopBarProgress.config({
 });
 
 const AppMainContainer = styled.div`
+  /* padding-top: 3.5rem; */
   height: 100%;
 `;
 
 const AppOuter = styled.div`
-  padding-top: 3.5rem;
+  /* padding-top: 3.5rem; */
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -59,6 +61,7 @@ const AppContent = styled.div`
   height: 100%;
   max-height: 100%;
   overflow-y: auto;
+  position: relative;
 `;
 
 const ErrorContainer = styled.div`
@@ -164,8 +167,18 @@ class App extends React.Component {
   }
 
   render() {
-    const { user, config, collections, logoutUser, isFetching, publishMode, useMediaLibrary, t } =
-      this.props;
+    const {
+      user,
+      config,
+      collections,
+      logoutUser,
+      isFetching,
+      publishMode,
+      useMediaLibrary,
+      openMediaLibrary,
+      showMediaButton,
+      t,
+    } = this.props;
 
     if (config === null) {
       return null;
@@ -190,12 +203,25 @@ class App extends React.Component {
       <>
         <Notifications />
         <AppOuter>
-          <Header t={t} collections={collections} logoutUser={logoutUser} />
-
           <AppBody>
-            <Nav collections={collections} location={location} />
+            <Nav
+              collections={collections}
+              location={location}
+              openMediaLibrary={openMediaLibrary}
+              showMediaButton={showMediaButton}
+              hasWorkflow={hasWorkflow}
+              siteUrl={config.site_url}
+              displayUrl={config.display_url || config.site_url}
+              logoUrl={config.logo_url}
+            />
 
             <AppContent>
+              <Header
+                user={user}
+                collections={collections}
+                onCreateEntryClick={createNewEntry}
+                onLogoutClick={logoutUser}
+              />
               <AppMainContainer>
                 {isFetching && <TopBarProgress />}
                 <Switch>
