@@ -14,7 +14,7 @@ export * from './Field';
 export { default as Fullscreen } from './Fullscreen';
 export { default as GlobalStyles } from './GlobalStyles';
 // export * from './HOC';
-export { default as Icon } from './Icon';
+export { default as Icon, iconComponents } from './Icon';
 export * from './Inputs';
 export { default as Label } from './Label';
 export { default as LazyLoadModule } from './LazyLoadModule';
