@@ -16,7 +16,7 @@ const NavWrap = styled(Card)`
   background-color: ${({ theme }) => theme.color.elevatedSurface};
   display: flex;
   flex-direction: column;
-  position: relative;
+  /* position: relative; */
   transition: width ${({ collapsed }) => (collapsed ? '200ms' : '250ms')}
     cubic-bezier(0.4, 0, 0.2, 1);
   overflow-x: hidden;

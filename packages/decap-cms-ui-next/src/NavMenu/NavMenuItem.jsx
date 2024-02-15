@@ -86,7 +86,7 @@ export const NavItemContents = styled.span`
   width: 100%;
 `;
 
-function NavMenuItem({ icon, children, className, href, active, onClick }) {
+function NavMenuItem({ icon, children, className, href, active, onClick, ...props }) {
   const { navCollapsed } = useUIContext();
 
   return (
@@ -104,6 +104,7 @@ function NavMenuItem({ icon, children, className, href, active, onClick }) {
           href={href}
           target={href ? '_blank' : undefined}
           rel={href ? 'noopener noreferred' : undefined}
+          {...props}
         >
           <NavMenuItemInside active={active}>
             <NavItemContents>

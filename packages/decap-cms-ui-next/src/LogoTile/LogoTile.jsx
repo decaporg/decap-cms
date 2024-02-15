@@ -17,10 +17,10 @@ const LogoWrap = styled.div`
   margin-right: 1rem;
 `;
 
-function LogoTile() {
+function LogoTile(...props) {
   return (
     <LogoWrap>
-      <Logo />
+      <Logo {...props} />
     </LogoWrap>
   );
 }

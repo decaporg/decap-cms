@@ -1,59 +1,169 @@
-import React, { useState, useEffect } from 'react';
-import { withRouter } from 'react-router-dom';
-import { NavMenu, NavMenuGroup, NavMenuItem } from 'decap-cms-ui-next';
+import React, { useMemo } from 'react';
+import { translate } from 'react-polyglot';
+import { NavLink as ReactRouterNavLink, useLocation } from 'react-router-dom';
+import styled from '@emotion/styled';
+import color from 'color';
+import {
+  NavMenu,
+  NavMenuItem,
+  NavMenuGroup,
+  NavMenuGroupLabel,
+  ExternalLinkIcon,
+  Logo,
+} from 'decap-cms-ui-next';
 
-import { history } from '../../routing/history';
+const StyledSiteLink = styled.a`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  height: 3rem;
+  padding: 0 12px;
+  cursor: pointer;
+`;
 
-function Nav({ collections, location }) {
-  const [activeItemId, setActiveItemId] = useState();
+const SiteContents = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  overflow: hidden;
+  color: ${({ theme, active }) =>
+    active ? theme.color.success['900'] : theme.color.mediumEmphasis};
+  background-color: ${({ theme, active }) =>
+    active ? color(theme.color.success['900']).alpha(0.1).string() : `transparent`};
+  border: none;
+  height: 2.5rem;
+  border-radius: 6px;
+  outline: none;
+  transition: 200ms;
+  ${StyledSiteLink}:hover & {
+    color: ${({ theme, active }) =>
+      active ? theme.color.success['900'] : theme.color.highEmphasis};
+    background-color: ${({ theme, active }) =>
+      active
+        ? color(theme.color.success['900']).alpha(0.1).string()
+        : color(theme.color.highEmphasis).alpha(0.05).string()};
+    ${({ active }) =>
+      active
+        ? `
+      cursor: default;
+    `
+        : ``}
+  }
+`;
+const StyledLogo = styled(Logo)`
+  margin: 0.375rem;
+`;
+const SiteName = styled.span`
+  margin-left: 0.75rem;
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  font-size: 0.875rem;
+  font-weight: 600;
+  opacity: ${({ collapsed }) => (collapsed ? '0' : '1')};
+  transition: opacity 200ms;
+`;
+const StyledExternalLinkIcon = styled(ExternalLinkIcon)`
+  margin-right: 0.5rem;
+`;
 
-  useEffect(() => {
-    const pathnameArray = location.pathname.split('/');
-    let pathname = '';
+function Nav({
+  collections,
+  openMediaLibrary,
+  showMediaButton,
+  hasWorkflow,
+  siteUrl,
+  displayUrl,
+  logoUrl,
+  t,
+}) {
+  const { pathname } = useLocation();
 
-    if (pathnameArray[1] === 'collections') {
-      pathname = `${pathnameArray[1]}-${pathnameArray[2]}`;
-    } else {
-      pathname = pathnameArray[1];
+  const { activeNavLinkId } = useMemo(() => {
+    const pathnameArray = pathname.split('/');
+
+    if (pathnameArray.length === 0) {
+      return { activeNavLinkId: 'dashboard' };
     }
 
-    setActiveItemId(pathname);
-  }, [location]);
+    if (pathnameArray[1] === 'collections') {
+      return { activeNavLinkId: `collections-${pathnameArray[2]}` };
+    }
+
+    return { activeNavLinkId: pathnameArray[1] };
+  }, [pathname]);
+
+  const startCollections = collections
+    .filter(collection => collection.get('position') !== 'end')
+    .toList();
+  const endCollections = collections
+    .filter(collection => collection.get('position') === 'end')
+    .toList();
+
+  function isExternalResource(collection) {
+    return collection.get('url');
+  }
 
   return (
     <NavMenu collapsable={true}>
+      <StyledSiteLink href={siteUrl} target="_blank">
+        <SiteContents>
+          <StyledLogo src={logoUrl} />
+          <SiteName>My Website</SiteName>
+          <StyledExternalLinkIcon />
+        </SiteContents>
+      </StyledSiteLink>
+
       <NavMenuGroup>
-        <NavMenuItem active={activeItemId === 'dashboard'} onClick={() => false} icon="layout">
+        <NavMenuItem
+          as={ReactRouterNavLink}
+          to={'/dashboard'}
+          active={activeNavLinkId === 'dashboard'}
+          onClick={() => false}
+          icon="layout"
+        >
           Dashboard
         </NavMenuItem>
-        <NavMenuItem
-          active={activeItemId === 'workflow'}
-          onClick={() => {
-            history.push(`/workflow`);
-          }}
-          icon="workflow"
-        >
-          Workflow
-        </NavMenuItem>
-        <NavMenuItem
-          active={activeItemId === 'media'}
-          onClick={() => history.push(`/media`)}
-          icon="image"
-        >
-          Media
-        </NavMenuItem>
-        {collections.toList().map(collection => {
+
+        {hasWorkflow && (
+          <NavMenuItem
+            as={ReactRouterNavLink}
+            to={'/workflow'}
+            active={activeNavLinkId === 'workflow'}
+            icon="workflow"
+          >
+            {t('app.header.workflow')}
+          </NavMenuItem>
+        )}
+
+        {showMediaButton && (
+          <NavMenuItem
+            as={ReactRouterNavLink}
+            to={'/media'}
+            active={activeNavLinkId === 'media'}
+            onClick={openMediaLibrary}
+            icon="image"
+          >
+            Media
+          </NavMenuItem>
+        )}
+      </NavMenuGroup>
+
+      <NavMenuGroup>
+        <NavMenuGroupLabel>{t('collection.sidebar.collections')}</NavMenuGroupLabel>
+
+        {startCollections.map(collection => {
           const collectionName = collection.get('name');
 
           return (
             <NavMenuItem
-              key={collectionName}
-              active={activeItemId === `collections-${collectionName}`}
-              onClick={() => history.push(`/collections/${collectionName}`)}
+              as={ReactRouterNavLink}
+              to={`/collections/${collectionName}`}
+              key={`collections-${collectionName}`}
+              active={activeNavLinkId === `collections-${collectionName}`}
               icon={
-                collection.get('icon') || collection.get('type') === 'file_based_collection'
-                  ? 'file'
-                  : 'folder'
+                collection.get('icon') ??
+                (collection.get('type') === 'file_based_collection' ? 'file' : 'folder')
               }
             >
               {collection.get('label')}
@@ -63,21 +173,28 @@ function Nav({ collections, location }) {
       </NavMenuGroup>
 
       <NavMenuGroup end>
-        <NavMenuItem href="https://app.netlify.com/my-website/analytics" icon="bar-chart">
-          Analytics
-        </NavMenuItem>
-        <NavMenuItem href="https://app.netlify.com/my-website/" icon="server">
-          Netlify
-        </NavMenuItem>
-        <NavMenuItem href="https://github.com/joebob/my-website" icon="github">
-          Github Repository
-        </NavMenuItem>
-        <NavMenuItem active={activeItemId === 'settings'} onClick={() => false} icon="settings">
-          Settings
-        </NavMenuItem>
+        {endCollections.map(collection => {
+          const collectionName = collection.get('name');
+
+          return (
+            <NavMenuItem
+              as={isExternalResource(collection) ? null : ReactRouterNavLink}
+              href={isExternalResource(collection) ? collection.get('url') : null}
+              to={`/collections/${collectionName}`}
+              key={`collections-${collectionName}`}
+              active={activeNavLinkId === `collections-${collectionName}`}
+              icon={
+                collection.get('icon') ??
+                (collection.get('type') === 'file_based_collection' ? 'file' : 'folder')
+              }
+            >
+              {collection.get('label')}
+            </NavMenuItem>
+          );
+        })}
       </NavMenuGroup>
     </NavMenu>
   );
 }
 
-export default withRouter(Nav);
+export default translate()(Nav);
