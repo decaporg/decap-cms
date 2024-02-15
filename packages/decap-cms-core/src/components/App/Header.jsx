@@ -9,7 +9,6 @@ import {
   Menu,
   MenuItem,
   SearchBar,
-  LogoTile,
   UserMenu,
   NotificationCenter,
 } from 'decap-cms-ui-next';
@@ -31,7 +30,7 @@ const SearchWrap = styled.div`
 `;
 
 function Header({ user, collections, onLogoutClick, onCreateEntryClick, isSearchEnabled, t }) {
-  const creatableCollections = collections.filter(collection => !collection.get('create')).toList();
+  const creatableCollections = collections.filter(collection => collection.get('create')).toList();
   const searcheableCollections = collections.filter(collection => !collection.get('url')).toList();
 
   const [quickAddMenuAnchorEl, setQuickAddMenuAnchorEl] = useState(null);
