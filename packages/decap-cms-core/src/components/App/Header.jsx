@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { translate } from 'react-polyglot';
 import { useLocation } from 'react-router-dom';
+import { connect } from 'react-redux';
 import styled from '@emotion/styled';
 import {
   AppBar,
@@ -21,14 +23,16 @@ const StyledUserMenu = styled(UserMenu)`
 const RenderEndWrap = styled.div`
   display: flex;
   gap: 1rem;
+  flex: 1;
 `;
 
 const SearchWrap = styled.div`
-  width: 33vw;
+  width: 100%;
 `;
 
-function Header({ collections, logoutUser, t }) {
-  const creatableCollections = collections.filter(collection => collection.get('create')).toList();
+function Header({ user, collections, onLogoutClick, onCreateEntryClick, isSearchEnabled, t }) {
+  const creatableCollections = collections.filter(collection => !collection.get('create')).toList();
+  const searcheableCollections = collections.filter(collection => !collection.get('url')).toList();
 
   const [quickAddMenuAnchorEl, setQuickAddMenuAnchorEl] = useState(null);
 
@@ -53,6 +57,12 @@ function Header({ collections, logoutUser, t }) {
     return pathname ? collections.keySeq().indexOf(pathname) : -1;
   }
 
+  function handleCreatePostClick(collectionName) {
+    if (onCreateEntryClick) {
+      onCreateEntryClick(collectionName);
+    }
+  }
+
   function submitSearch() {
     if (selectedCollectionIdx !== -1) {
       searchCollections(
@@ -66,60 +76,62 @@ function Header({ collections, logoutUser, t }) {
 
   return (
     <AppBar
-      renderStart={LogoTile}
+      // renderStart={LogoTile}
       renderEnd={() => {
         return (
           <RenderEndWrap>
-            <SearchWrap>
-              <SearchBar
-                placeholder={t('collection.sidebar.searchAll')}
-                onChange={event => setSearchTerm(event.currentTarget.value)}
-                onSubmit={submitSearch}
-                renderEnd={() => (
-                  <>
-                    <Button
-                      size="sm"
-                      hasMenu
-                      onClick={e => setCollectionMenuAnchorEl(e.currentTarget)}
-                    >
-                      {selectedCollectionIdx !== -1
-                        ? collections.toIndexedSeq().get(selectedCollectionIdx).get('label')
-                        : t('collection.sidebar.allCollections')}
-                    </Button>
-
-                    <Menu
-                      anchorEl={collectionMenuAnchorEl}
-                      anchorOrigin={{ y: 'bottom', x: 'right' }}
-                      open={!!collectionMenuAnchorEl}
-                      onClose={() => setCollectionMenuAnchorEl(null)}
-                    >
-                      <MenuItem
-                        selected={selectedCollectionIdx === -1}
-                        onClick={() => {
-                          setSelectedCollectionIdx(-1);
-                          setCollectionMenuAnchorEl(null);
-                        }}
+            {isSearchEnabled && (
+              <SearchWrap>
+                <SearchBar
+                  placeholder={t('collection.sidebar.searchAll')}
+                  onChange={event => setSearchTerm(event.currentTarget.value)}
+                  onSubmit={submitSearch}
+                  renderEnd={() => (
+                    <>
+                      <Button
+                        size="sm"
+                        hasMenu
+                        onClick={e => setCollectionMenuAnchorEl(e.currentTarget)}
                       >
-                        {t('collection.sidebar.allCollections')}
-                      </MenuItem>
+                        {selectedCollectionIdx !== -1
+                          ? collections.toIndexedSeq().get(selectedCollectionIdx).get('label')
+                          : t('collection.sidebar.allCollections')}
+                      </Button>
 
-                      {collections.toIndexedSeq().map((collection, idx) => (
+                      <Menu
+                        anchorEl={collectionMenuAnchorEl}
+                        anchorOrigin={{ y: 'bottom', x: 'right' }}
+                        open={!!collectionMenuAnchorEl}
+                        onClose={() => setCollectionMenuAnchorEl(null)}
+                      >
                         <MenuItem
-                          key={idx}
-                          selected={selectedCollectionIdx === idx}
+                          selected={selectedCollectionIdx === -1}
                           onClick={() => {
-                            setSelectedCollectionIdx(idx);
+                            setSelectedCollectionIdx(-1);
                             setCollectionMenuAnchorEl(null);
                           }}
                         >
-                          {collection.get('label')}
+                          {t('collection.sidebar.allCollections')}
                         </MenuItem>
-                      ))}
-                    </Menu>
-                  </>
-                )}
-              />
-            </SearchWrap>
+
+                        {searcheableCollections.toIndexedSeq().map((collection, idx) => (
+                          <MenuItem
+                            key={idx}
+                            selected={selectedCollectionIdx === idx}
+                            onClick={() => {
+                              setSelectedCollectionIdx(idx);
+                              setCollectionMenuAnchorEl(null);
+                            }}
+                          >
+                            {collection.get('label')}
+                          </MenuItem>
+                        ))}
+                      </Menu>
+                    </>
+                  )}
+                />
+              </SearchWrap>
+            )}
 
             <div>
               <Button icon="plus" hasMenu onClick={e => setQuickAddMenuAnchorEl(e.currentTarget)}>
@@ -136,10 +148,11 @@ function Header({ collections, logoutUser, t }) {
                   <MenuItem
                     key={collection.get('name')}
                     onClick={() => {
-                      history.push(`/collections/${collection.get('name')}/new`);
+                      setQuickAddMenuAnchorEl(null);
+                      handleCreatePostClick(collection.get('name'));
                     }}
                   >
-                    {collection.get('label')}
+                    {collection.get('label_singular') || collection.get('label')}
                   </MenuItem>
                 ))}
               </Menu>
@@ -150,11 +163,24 @@ function Header({ collections, logoutUser, t }) {
       renderActions={() => (
         <>
           <NotificationCenter />
-          <StyledUserMenu onLogoutClick={logoutUser} />
+          <StyledUserMenu user={user} onLogoutClick={onLogoutClick} />
         </>
       )}
     ></AppBar>
   );
 }
 
-export default Header;
+function mapStateToProps(state) {
+  const { collections, user } = state;
+  const isSearchEnabled = state.config && state.config.search != false;
+
+  return {
+    collections,
+    user,
+    isSearchEnabled,
+  };
+}
+
+const ConnectedHeader = connect(mapStateToProps)(Header);
+
+export default translate()(ConnectedHeader);
