@@ -17,20 +17,11 @@ export const UIContext = createContext({
   setBreadcrumbs: () => {},
 });
 
-export function UIProvider({ value, children }) {
-  const { darkMode: initialDarkMode } = !value;
-
+export function UIProvider({ children }) {
   const [darkMode, setDarkMode] = useLocalStorageState(
     'darkMode',
-    initialDarkMode !== undefined
-      ? initialDarkMode
-      : window && window.matchMedia('(prefers-color-scheme: dark)').matches,
+    window && window.matchMedia('(prefers-color-scheme: dark)').matches,
   );
-
-  if (initialDarkMode !== undefined && initialDarkMode !== darkMode) {
-    setDarkMode(initialDarkMode);
-  }
-
   const [navCollapsed, setNavCollapsed] = useLocalStorageState('navCollapsed', false);
   const [pageTitle, setPageTitle] = useState('');
   const [breadcrumbs, setBreadcrumbs] = useState([]);

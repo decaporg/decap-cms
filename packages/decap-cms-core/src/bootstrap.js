@@ -9,7 +9,7 @@ import {
   darkTheme,
   GlobalStyles as GlobalStylesNext,
   UIProvider,
-  useUIContext,
+  UIContext,
 } from 'decap-cms-ui-next';
 import { I18n } from 'react-polyglot';
 
@@ -91,9 +91,6 @@ function bootstrap(opts = {}) {
    * Create connected root component.
    */
   function Root() {
-    const { darkMode } = useUIContext();
-    const theme = darkMode ? { darkMode, ...darkTheme } : { darkMode, ...lightTheme };
-
     function handleResize() {
       const vh = window.innerHeight * 0.01;
 
@@ -109,13 +106,19 @@ function bootstrap(opts = {}) {
 
     return (
       <UIProvider>
-        <ThemeProvider theme={theme}>
-          <GlobalStylesDefault />
-          <GlobalStylesNext />
-          <Provider store={store}>
-            <ConnectedTranslatedApp />
-          </Provider>
-        </ThemeProvider>
+        <UIContext.Consumer>
+          {({ darkMode }) => (
+            <ThemeProvider
+              theme={darkMode ? { darkMode, ...darkTheme } : { darkMode, ...lightTheme }}
+            >
+              <GlobalStylesDefault />
+              <GlobalStylesNext />
+              <Provider store={store}>
+                <ConnectedTranslatedApp />
+              </Provider>
+            </ThemeProvider>
+          )}
+        </UIContext.Consumer>
       </UIProvider>
     );
   }
