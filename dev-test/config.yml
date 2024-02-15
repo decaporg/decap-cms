@@ -2,6 +2,8 @@ backend:
   name: test-repo
 
 site_url: https://example.com
+display_url: https://example.com
+logo_url: https://decapcms.org/icons/icon-256x256.png
 
 publish_mode: editorial_workflow
 media_folder: assets/uploads
@@ -10,6 +12,7 @@ collections: # A list of collections the CMS should be able to edit
   - name: 'posts' # Used in routes, ie.: /admin/collections/:slug/edit
     label: 'Posts' # Used in the UI
     label_singular: 'Post' # Used in the UI, ie: "New Post"
+    icon: edit-3
     description: >
       The description is a great place for tone setting, high level information, and editing
       guidelines that are specific to a collection.
@@ -65,8 +68,21 @@ collections: # A list of collections the CMS should be able to edit
     fields: # The fields each document in this collection have
       - { label: 'Title', name: 'title', widget: 'string', tagname: 'h1' }
       - { label: 'Body', name: 'body', widget: 'markdown', hint: 'Main content goes here.' }
-      - { name: 'gallery', widget: 'image', choose_url: true, media_library: {config: {multiple: true, max_files: 999}}}
-      - { name: 'post', widget: relation, collection: posts, multiple: true, search_fields: [ "title" ], display_fields: [ "title" ], value_field: "{{slug}}"}
+      - {
+          name: 'gallery',
+          widget: 'image',
+          choose_url: true,
+          media_library: { config: { multiple: true, max_files: 999 } },
+        }
+      - {
+          name: 'post',
+          widget: relation,
+          collection: posts,
+          multiple: true,
+          search_fields: ['title'],
+          display_fields: ['title'],
+          value_field: '{{slug}}',
+        }
       - name: authors
         label: Authors
         label_singular: 'Author'
@@ -83,8 +99,28 @@ collections: # A list of collections the CMS should be able to edit
       - { label: 'Question', name: 'title', widget: 'string', tagname: 'h1' }
       - { label: 'Answer', name: 'body', widget: 'markdown' }
 
+  - name: 'analytics'
+    label: 'Analytics'
+    url: 'https://app.netlify.com/sites/decap-www/metrics/analytics'
+    icon: bar-chart
+    position: end
+
+  - name: 'Hosting'
+    label: 'Hosting'
+    url: 'https://app.netlify.com/sites/decap-www/overview'
+    icon: server
+    position: end
+
+  - name: 'git-repository'
+    label: 'Git Repository'
+    url: 'https://github.com/decaporg/decap-website'
+    icon: github
+    position: end
+
   - name: 'settings'
     label: 'Settings'
+    icon: settings
+    position: end
     delete: false # Prevent users from deleting documents in this collection
     editor:
       preview: false
@@ -271,6 +307,7 @@ collections: # A list of collections the CMS should be able to edit
   - name: pages # a nested collection
     label: Pages
     label_singular: 'Page'
+    icon: file-text
     folder: _pages
     create: true
     nested: { depth: 100 }

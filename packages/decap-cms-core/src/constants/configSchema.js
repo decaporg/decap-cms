@@ -7,6 +7,7 @@ import {
 } from 'ajv-keywords/dist/keywords';
 import ajvErrors from 'ajv-errors';
 import { v4 as uuid } from 'uuid';
+import { iconComponents } from 'decap-cms-ui-next';
 
 import { frontmatterFormats, extensionFormatters } from '../formats/formats';
 import { getWidgets } from '../lib/registry';
@@ -196,6 +197,8 @@ function getConfigSchema() {
             label: { type: 'string' },
             label_singular: { type: 'string' },
             description: { type: 'string' },
+            icon: { type: 'string', enum: Object.keys(iconComponents) },
+            position: { type: 'string', enum: ['start', 'end'], examples: ['start'] },
             folder: { type: 'string' },
             files: {
               type: 'array',
@@ -283,9 +286,13 @@ function getConfigSchema() {
             i18n: i18nCollection,
           },
           required: ['name', 'label'],
-          oneOf: [{ required: ['files'] }, { required: ['folder', 'fields'] }],
+          oneOf: [
+            { required: ['files'] },
+            { required: ['folder', 'fields'] },
+            { required: ['url'] },
+          ],
           not: {
-            required: ['sortable_fields', 'sortableFields'],
+            required: ['sortable_fields', 'sortableFields', 'icon', 'position'],
           },
           if: { required: ['extension'] },
           then: {
