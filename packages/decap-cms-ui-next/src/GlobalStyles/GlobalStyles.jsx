@@ -32,6 +32,7 @@ function getGlobalStyles(theme) {
       color: ${theme.color.neutral['800']};
       background: ${theme.color.background};
       height: 100%;
+      scrollbar-color: ${theme.color.primary['900']} ${theme.color.background};
     }
 
     #root {
