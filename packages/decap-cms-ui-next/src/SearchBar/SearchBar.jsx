@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
+import color from 'color';
 
 import Icon from '../Icon';
 
@@ -10,7 +11,9 @@ const SearchContainer = styled.div`
   width: 100%;
   min-width: 200px;
   background-color: ${({ theme, focus }) =>
-    focus ? theme.color.elevatedSurfaceHighlight : theme.color.surfaceHighlight};
+    focus
+      ? theme.color.elevatedSurfaceHighlight
+      : color(theme.color.neutral['700']).alpha(0.2).string()};
   border-radius: 6px;
   transition: 200ms;
   ${({ theme, focus }) =>
@@ -18,7 +21,7 @@ const SearchContainer = styled.div`
       ? `box-shadow: inset 0 0 0 2px ${theme.color.primary['900']};`
       : `box-shadow: inset 0 0 0 0 ${theme.color.primary['900']};`}
   &:hover {
-    background-color: ${({ theme }) => theme.color.elevatedSurfaceHighlight};
+    background-color: ${({ theme }) => theme.color.neutral['200']};
   }
 `;
 const SearchIcon = styled(Icon)`
@@ -53,6 +56,12 @@ const SearchInput = styled.input`
   line-height: 1;
   &::placeholder {
     color: ${({ theme }) => theme.color.disabled};
+  }
+  &::-webkit-search-decoration,
+  &::-webkit-search-cancel-button,
+  &::-webkit-search-results-button,
+  &::-webkit-search-results-decoration {
+    display: none;
   }
 `;
 
