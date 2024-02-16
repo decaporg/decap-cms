@@ -9,8 +9,8 @@ import Thumbnail, { ThumbnailGrid } from '../Thumbnail';
 import Table from '../Table';
 import SearchBar from '../SearchBar';
 import { NavMenuGroup, NavMenuGroupLabel, NavMenuItem, NavMenu } from '../NavMenu';
-import getMockData from '../utils/getMockData';
 import { useUIContext } from '../hooks';
+import getMockData from '../utils/getMockData';
 
 const MediaDialogWrap = styled(Dialog)`
   color: ${({ theme }) => theme.color.text};
@@ -63,8 +63,6 @@ const DialogFooter = styled.div`
   background-color: ${({ theme }) => theme.color.surface};
   display: flex;
   flex-direction: column;
-  position: absolute;
-  bottom: 0;
   z-index: 10;
   width: 100%;
 `;
@@ -82,7 +80,6 @@ const DialogFooterActions = styled.div`
   padding: 1rem;
 `;
 
-// TODO: Fix the height
 const GalleryWrap = styled.div`
   overflow-y: auto;
   flex: 1;
@@ -136,7 +133,7 @@ const FeaturedImage = styled.div`
   border-radius: 6px;
 `;
 const StyledThumbnailGrid = styled(ThumbnailGrid)`
-  padding: 0 1rem ${({ hasSelection }) => (hasSelection ? 8 : 4)}rem 1rem;
+  padding: 0 1rem 0 1rem;
   grid-template-columns: repeat(
     auto-fill,
     minmax(min(${({ gridView }) => (gridView ? 12 : 24)}rem, 100%), 1fr)
@@ -204,7 +201,7 @@ function Gallery({ data, gridView, activeSource, selectedItems, setSelectedItems
   );
 
   return gridView ? (
-    <StyledThumbnailGrid gridView={gridView} hasSelection={!!selectedItems}>
+    <StyledThumbnailGrid gridView={gridView}>
       {data.map((thumb, i) => (
         <Thumbnail
           key={i}
@@ -386,7 +383,7 @@ function MediaDialog({ open, onClose }) {
                 {selectedItems
                   ?.map(item => data?.find(row => row.id === item))
                   ?.map(item => (
-                    <FeaturedImage srcUrl={item?.featuredImage?.small} />
+                    <FeaturedImage srcUrl={item?.featuredImage?.small} key={item?.id} />
                   ))}
               </SelectedImages>
             </DialogFooterSelection>
