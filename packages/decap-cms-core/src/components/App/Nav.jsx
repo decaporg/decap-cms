@@ -1,7 +1,12 @@
 import React, { useMemo } from 'react';
 import { translate } from 'react-polyglot';
 import { NavLink as ReactRouterNavLink, useLocation } from 'react-router-dom';
+import styled from '@emotion/styled';
 import { NavMenu, NavMenuItem, NavMenuGroup, NavMenuGroupLabel, Logo } from 'decap-cms-ui-next';
+
+const StyledLogo = styled(Logo)`
+  padding: 0.375rem;
+`;
 
 function Nav({
   collections,
@@ -42,11 +47,7 @@ function Nav({
 
   return (
     <NavMenu collapsable={true}>
-      {/* <NavMenuItem href={siteUrl} target="_blank" icon={<Logo src={logoUrl} />}>
-        {siteName || displayUrl}
-      </NavMenuItem> */}
-
-      <NavMenuItem href={siteUrl} target="_blank" icon="decap">
+      <NavMenuItem href={siteUrl} target="_blank" icon={<StyledLogo src={logoUrl} />}>
         My Website
       </NavMenuItem>
 

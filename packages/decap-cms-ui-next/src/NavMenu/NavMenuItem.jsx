@@ -108,7 +108,7 @@ function NavMenuItem({ icon, children, className, href, active, onClick, ...prop
         >
           <NavMenuItemInside active={active}>
             <NavItemContents>
-              <Icon name={icon} />
+              {icon && React.isValidElement(icon) ? icon : <Icon name={icon} />}
               <Label collapsed={navCollapsed}>{children}</Label>
               {href && <ExternalLinkIcon />}
             </NavItemContents>
