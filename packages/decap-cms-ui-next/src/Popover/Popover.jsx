@@ -4,12 +4,11 @@ import ReactDOM from 'react-dom';
 import warning from 'warning';
 import { debounce } from 'lodash';
 
+import Modal from '../Modal';
+import { Grow, Slide } from '../Transitions';
+import { isWindowDown } from '../utils/responsive';
 import ownerDocument from '../utils/ownerDocument';
 import ownerWindow from '../utils/ownerWindow';
-import Modal from '../Modal';
-import Grow from '../transitions/Grow';
-import Slide from '../transitions/Slide';
-import { isWindowDown } from '../utils/responsive';
 
 function getOffsetTop(rect, y) {
   let offset = 0;

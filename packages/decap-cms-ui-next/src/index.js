@@ -33,11 +33,11 @@ export { default as RootRef } from './RootRef';
 export { default as SearchBar } from './SearchBar';
 export { default as ToggleSwitch } from './ToggleSwitch';
 export { default as Tooltip } from './Tooltip';
+export * from './Transitions';
 export { default as Tree } from './Tree';
 export * from './UIContext';
 export { default as UserMenu } from './UserMenu';
 
-export * from './transitions';
 export * from './hooks';
 export { isWindowDown, isWindowUp } from './utils/responsive';
 export * from './WindowDimensionsProvider';

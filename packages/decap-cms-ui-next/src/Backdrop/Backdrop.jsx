@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import color from 'color';
 
-import Fade from '../transitions/Fade';
+import { Fade } from '../Transitions';
 
 const StyledBackdrop = styled.div`
   z-index: -1;
