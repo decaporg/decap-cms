@@ -24,7 +24,7 @@ const mockDataTypes = {
     status: faker.helpers.arrayElement(['Published', 'Draft', 'In Review']),
     dateModified: dayjs(faker.date.recent()).format('MM/DD/YYYY @ HH:mm A'),
     dateCreated: dayjs(faker.date.recent()).format('MM/DD/YYYY @ HH:mm A'),
-    author: `${faker.name.firstName()} ${faker.name.lastName()}`,
+    author: `${faker.person.fullName()}`,
   }),
 };
 
