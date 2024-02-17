@@ -26,11 +26,12 @@ import {
 } from '../../reducers/entries';
 
 const CollectionContainer = styled.div`
-  margin: ${lengths.pageMargin};
+  /* margin: ${lengths.pageMargin}; */
+  margin: 0 2rem;
 `;
 
 const CollectionMain = styled.main`
-  padding-left: 280px;
+  /* padding-left: 280px; */
 `;
 
 const SearchResultContainer = styled.div`
@@ -109,13 +110,13 @@ export class Collection extends React.Component {
 
     return (
       <CollectionContainer>
-        <Sidebar
+        {/* <Sidebar
           collections={collections}
           collection={(!isSearchResults || isSingleSearchResult) && collection}
           isSearchEnabled={isSearchEnabled}
           searchTerm={searchTerm}
           filterTerm={filterTerm}
-        />
+        /> */}
         <CollectionMain>
           {isSearchResults ? (
             <SearchResultContainer>

@@ -11,6 +11,7 @@ function windowDims() {
 
 function WindowDimensionsProvider({ children }) {
   const [dimensions, setDimensions] = useState(windowDims());
+
   useEffect(() => {
     function handleResize() {
       setDimensions(windowDims());
@@ -20,6 +21,7 @@ function WindowDimensionsProvider({ children }) {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
+
   return <WindowDimensionsCtx.Provider value={dimensions}>{children}</WindowDimensionsCtx.Provider>;
 }
 

@@ -21,7 +21,7 @@ const SearchContainer = styled.div`
       ? `box-shadow: inset 0 0 0 2px ${theme.color.primary['900']};`
       : `box-shadow: inset 0 0 0 0 ${theme.color.primary['900']};`}
   &:hover {
-    background-color: ${({ theme }) => theme.color.neutral['200']};
+    background-color: ${({ theme }) => theme.color.elevatedSurfaceHighlight};
   }
 `;
 const SearchIcon = styled(Icon)`

@@ -19,7 +19,6 @@ const AppBarWrap = styled(Card)`
   right: 0;
   left: 0;
   padding: 2.5rem 1rem;
-  z-index: 100;
 `;
 AppBarWrap.defaultProps = { rounded: false, elevation: false };
 const TitleWrap = styled.div`

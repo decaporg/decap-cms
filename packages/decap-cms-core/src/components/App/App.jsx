@@ -35,12 +35,10 @@ TopBarProgress.config({
 });
 
 const AppMainContainer = styled.div`
-  /* padding-top: 3.5rem; */
   height: 100%;
 `;
 
 const AppOuter = styled.div`
-  /* padding-top: 3.5rem; */
   display: flex;
   flex-direction: column;
   height: 100%;
