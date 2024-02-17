@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, forwardRef } from 'react';
 import styled from '@emotion/styled';
 
 import { Button } from '../../Buttons';
@@ -44,7 +44,7 @@ const AddNewIconButton = styled(Button)`
   }
 `;
 
-const ListInputItem = React.forwardRef(
+const ListInputItem = forwardRef(
   (
     {
       itemExpanded,
@@ -178,5 +178,7 @@ const ListInputItem = React.forwardRef(
     );
   },
 );
+
+ListInputItem.displayName = 'ListInputItem';
 
 export default ListInputItem;

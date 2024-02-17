@@ -82,7 +82,7 @@ function shouldHandleEvent(target) {
 }
 
 function SortableItem({ id, children }) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: `${id}` }); // Prevent falsy id if index is 0
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -134,6 +134,8 @@ function ListInput({ name, label, labelSingular, fields, className, inline, onCh
   const activationConstraint = { distance: 4 };
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint }),
+    useSensor(MouseSensor, { activationConstraint }),
+    useSensor(TouchSensor, { activationConstraint }),
     useSensor(KeyboardSensor, {
       activationConstraint,
       coordinateGetter: sortableKeyboardCoordinates,
@@ -141,8 +143,6 @@ function ListInput({ name, label, labelSingular, fields, className, inline, onCh
   );
 
   function addListItem(index, data = {}) {
-    console.log('addListItem', index, data);
-
     const newItems = [...items];
     newItems.splice(index, 0, data);
     const newExpandedItems = expandedItems.map(item => (item >= index ? item + 1 : item));
@@ -218,8 +218,6 @@ function ListInput({ name, label, labelSingular, fields, className, inline, onCh
   }
 
   function handleDragStart({ active }) {
-    console.log('active:', active.id);
-
     setFocus(true);
     setActiveId(active.id);
   }
@@ -288,29 +286,23 @@ function ListInput({ name, label, labelSingular, fields, className, inline, onCh
           </SortableContext>
 
           <DragOverlay>
-            {activeId
-              ? () => {
-                  const itemExpanded = expandedItems.indexOf(activeId) !== -1;
-
-                  return (
-                    <DragOverlayListInputItem
-                      itemExpanded={itemExpanded}
-                      labelSingular={labelSingular}
-                      id={activeId}
-                      index={items.indexOf(activeId)}
-                      item={items[items.indexOf(activeId)]}
-                      items={items}
-                      fields={fields}
-                      onDelete={handleDelete}
-                      handleChange={handleChange}
-                      toggleExpand={toggleExpand}
-                      last={false}
-                      addListItem={addListItem}
-                      moveListItem={moveListItem}
-                    />
-                  );
-                }
-              : null}
+            {activeId ? (
+              <DragOverlayListInputItem
+                itemExpanded={!expandedItems[activeId]}
+                labelSingular={labelSingular}
+                id={activeId}
+                index={activeId}
+                item={items[activeId]}
+                items={items}
+                fields={fields}
+                onDelete={handleDelete}
+                handleChange={handleChange}
+                toggleExpand={toggleExpand}
+                last={false}
+                addListItem={addListItem}
+                moveListItem={moveListItem}
+              />
+            ) : null}
           </DragOverlay>
         </DndContext>
       </StyledSortableContainer>
