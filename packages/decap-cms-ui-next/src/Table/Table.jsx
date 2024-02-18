@@ -22,7 +22,6 @@ import Icon from '../Icon';
 import { IconButton } from '../Buttons';
 
 const TableWrap = styled.table`
-  display: flex;
   flex-direction: column;
   height: 100%;
 `;
@@ -54,7 +53,7 @@ const TableHeaderCell = styled.th`
   transition: color 200ms;
   color: ${({ theme }) => theme.color.lowEmphasis};
   ${({ width }) => (width ? `width: ${width}px;` : ``)}
-  ${({ width }) => (!width ? `flex: 1;` : ``)}
+  ${({ width }) => (!width ? `flex: 1 1 0%;` : ``)}
   ${({ canSort, theme }) =>
     canSort
       ? `
@@ -68,8 +67,7 @@ const TableHeaderCell = styled.th`
   `}
 `;
 const TableBody = styled.tbody`
-  position: relative;
-  flex: 1;
+  flex: 1 1 0%;
   height: ${({ height }) => height}px;
 `;
 const TableRow = styled.tr`
@@ -131,7 +129,7 @@ const TableCell = styled.td`
   flex-direction: column;
   justify-content: center;
   ${({ width }) => (width ? `width: ${width}px;` : ``)}
-  ${({ width }) => (!width ? `flex: 1;` : ``)}
+  ${({ width }) => (!width ? `flex: 1 1 0%;` : ``)}
 
   ${({ onlyShowOnRowHover }) =>
     onlyShowOnRowHover
@@ -272,7 +270,7 @@ function Table({
         ? [
             {
               id: 'selection',
-              size: 60,
+              size: 36,
               header: ({ table }) => (
                 <SelectToggle
                   checked={table.getIsAllRowsSelected()}
@@ -383,86 +381,88 @@ function Table({
       modifiers={[restrictToParentElement]}
       onDragEnd={handleDragEnd}
     >
-      <TableWrap className={className} ref={tableContainerRef}>
-        <TableHeader>
-          {table.getHeaderGroups().map(headerGroup => (
-            <TableHeaderRow key={headerGroup.id}>
-              {headerGroup.headers.map(header => (
-                <TableHeaderCell
-                  key={header.id}
-                  canSort={header.column.getCanSort()}
-                  width={header.getSize() !== 0 ? header.getSize() : undefined}
-                  onClick={header.column.getToggleSortingHandler()}
-                >
-                  {flexRender(header.column.columnDef.header, header.getContext())}
-                  {header.column.getCanSort() && (
-                    <SortIcon
-                      desc={header.column.getIsSorted() === 'desc'}
-                      isSorted={header.column.getIsSorted()}
-                    />
-                  )}
-                </TableHeaderCell>
-              ))}
-            </TableHeaderRow>
-          ))}
-        </TableHeader>
+      <div ref={tableContainerRef}>
+        <TableWrap className={className}>
+          <TableHeader>
+            {table.getHeaderGroups().map(headerGroup => (
+              <TableHeaderRow key={headerGroup.id}>
+                {headerGroup.headers.map(header => (
+                  <TableHeaderCell
+                    key={header.id}
+                    canSort={header.column.getCanSort()}
+                    width={header.getSize() !== 0 ? header.getSize() : undefined}
+                    onClick={header.column.getToggleSortingHandler()}
+                  >
+                    {flexRender(header.column.columnDef.header, header.getContext())}
+                    {header.column.getCanSort() && (
+                      <SortIcon
+                        desc={header.column.getIsSorted() === 'desc'}
+                        isSorted={header.column.getIsSorted()}
+                      />
+                    )}
+                  </TableHeaderCell>
+                ))}
+              </TableHeaderRow>
+            ))}
+          </TableHeader>
 
-        <TableBody height={rowVirtualizer.getTotalSize()}>
-          <SortableContext
-            items={table.getRowModel().rows.map(row => row.id)}
-            strategy={verticalListSortingStrategy}
-            onSortEnd={handleDragEnd}
-          >
-            {rowVirtualizer.getVirtualItems().map(virtualRow => {
-              const row = table.getRowModel().rows[virtualRow.index];
+          <TableBody height={rowVirtualizer.getTotalSize()}>
+            <SortableContext
+              items={table.getRowModel().rows.map(row => row.id)}
+              strategy={verticalListSortingStrategy}
+              onSortEnd={handleDragEnd}
+            >
+              {rowVirtualizer.getVirtualItems().map(virtualRow => {
+                const row = table.getRowModel().rows[virtualRow.index];
 
-              return (
-                <SortableTableRow
-                  key={row.id}
-                  id={row.id}
-                  data-index={virtualRow.index}
-                  ref={node => rowVirtualizer.measureElement(node)}
-                  style={{
-                    display: 'flex',
-                    position: 'absolute',
-                    transform: `translateY(${virtualRow.start}px)`,
-                    width: '100%',
-                  }}
-                  clickable={!!onClick}
-                  onClick={
-                    selectable
-                      ? () => row.toggleRowSelected()
-                      : onClick
-                      ? () => onClick(row.original)
-                      : null
-                  }
-                  disabled={!draggable}
-                  isSelected={row.isSelected}
-                  rowSize={rowSize}
-                >
-                  {row.getVisibleCells().map(cell => {
-                    const [menuOpen, setMenuOpen] = useState();
+                return (
+                  <SortableTableRow
+                    key={row.id}
+                    id={row.id}
+                    data-index={virtualRow.index}
+                    ref={node => rowVirtualizer.measureElement(node)}
+                    style={{
+                      display: 'flex',
+                      position: 'absolute',
+                      transform: `translateY(${virtualRow.start}px)`,
+                      width: '100%',
+                    }}
+                    clickable={!!onClick}
+                    onClick={
+                      selectable
+                        ? () => row.toggleRowSelected()
+                        : onClick
+                        ? () => onClick(row.original)
+                        : null
+                    }
+                    disabled={!draggable}
+                    isSelected={row.isSelected}
+                    rowSize={rowSize}
+                  >
+                    {row.getVisibleCells().map(cell => {
+                      // const [menuOpen, setMenuOpen] = useState();
 
-                    return (
-                      <TableCell
-                        key={cell.id}
-                        onlyShowOnRowHover={cell.column.onlyShowOnRowHover && !menuOpen}
-                        width={cell.column.getSize()}
-                        rowSize={rowSize}
-                      >
-                        <TableCellInside>
-                          {/* {cell.render('Cell', { onMenuToggle: open => setMenuOpen(open) })} */}
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                        </TableCellInside>
-                      </TableCell>
-                    );
-                  })}
-                </SortableTableRow>
-              );
-            })}
-          </SortableContext>
-        </TableBody>
-      </TableWrap>
+                      return (
+                        <TableCell
+                          key={cell.id}
+                          // onlyShowOnRowHover={cell.column.onlyShowOnRowHover && !menuOpen}
+                          width={cell.column.getSize() !== 0 ? cell.column.getSize() : undefined}
+                          rowSize={rowSize}
+                        >
+                          <TableCellInside>
+                            {/* {cell.render('Cell', { onMenuToggle: open => setMenuOpen(open) })} */}
+                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          </TableCellInside>
+                        </TableCell>
+                      );
+                    })}
+                  </SortableTableRow>
+                );
+              })}
+            </SortableContext>
+          </TableBody>
+        </TableWrap>
+      </div>
     </DndContext>
   );
 }
