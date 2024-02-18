@@ -1,7 +1,10 @@
 import { dirname, join } from 'path';
 
 export default {
-  stories: ['../packages/decap-cms-ui-next/src/**/*.stories.@(js|jsx|ts|tsx)'],
+  stories: [
+    '../packages/decap-cms-ui-next/src/**/*.stories.@(js|jsx|ts|tsx)',
+    '../packages/decap-cms-backend-test/src/**/*.stories.@(js|jsx|ts|tsx)',
+  ],
   addons: [
     getAbsolutePath('@storybook/addon-essentials'),
     getAbsolutePath('@storybook/addon-storysource'),
