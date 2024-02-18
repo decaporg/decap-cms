@@ -24,7 +24,7 @@ export function _MediaDialog(args) {
   return (
     <>
       <ButtonGroup>
-        <Button onClick={toggleOpen}>Open Dialog</Button>
+        <Button onClick={toggleOpen}>Open Choose Media Dialog</Button>
       </ButtonGroup>
 
       <MediaDialog {...args} open={open} onClose={toggleOpen} />

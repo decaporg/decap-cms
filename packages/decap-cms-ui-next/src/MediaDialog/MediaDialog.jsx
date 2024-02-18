@@ -163,15 +163,15 @@ function Gallery({ data, gridView, activeSource, selectedItems, setSelectedItems
     () => [
       {
         id: 'featuredImage',
-        Cell({ row: { original: rowData } }) {
+        cell({ row: { original: rowData } }) {
           return <FeaturedImage size={'md'} srcUrl={rowData.featuredImage.small} />;
         },
-        width: `${3.5 * 16}px`,
+        size: 3.5 * 16,
       },
       {
-        Header: 'Title',
-        accessor: 'title',
-        Cell({ row: { original: rowData } }) {
+        header: 'Title',
+        accessorKey: 'title',
+        cell({ row: { original: rowData } }) {
           return (
             <>
               <Title>{rowData.title}</Title>
@@ -179,22 +179,21 @@ function Gallery({ data, gridView, activeSource, selectedItems, setSelectedItems
             </>
           );
         },
-        width: 'auto',
       },
       {
-        Header: 'Date Modified',
-        accessor: 'dateModified',
-        width: '15%',
+        header: 'Date Modified',
+        accessorKey: 'dateModified',
+        size: Math.round(window.innerWidth * 0.15), // 15%
       },
       {
-        Header: 'Date Created',
-        accessor: 'dateCreated',
-        width: '15%',
+        header: 'Date Created',
+        accessorKey: 'dateCreated',
+        size: Math.round(window.innerWidth * 0.15), // 15%
       },
       {
-        Header: 'Author',
-        accessor: 'author',
-        width: '10%',
+        header: 'Author',
+        accessorKey: 'author',
+        size: Math.round(window.innerWidth * 0.1), // 10%
       },
     ],
     [],
