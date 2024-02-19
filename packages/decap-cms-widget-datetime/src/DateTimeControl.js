@@ -6,9 +6,11 @@ import dayjs from 'dayjs';
 import { buttons } from 'decap-cms-ui-default';
 
 const customParseFormat = require('dayjs/plugin/customParseFormat');
+var localizedFormat = require('dayjs/plugin/localizedFormat');
 dayjs.extend(customParseFormat);
+dayjs.extend(localizedFormat);
 
-function Buttons({ t, handleChange }) {
+function Buttons({ t, handleChange, inputFormat }) {
   return (
     <div
       css={css`
@@ -22,7 +24,7 @@ function Buttons({ t, handleChange }) {
           ${buttons.button}
           ${buttons.widget}
         `}
-        onClick={() => handleChange(dayjs())}
+        onClick={() => handleChange(dayjs().format(inputFormat))}
       >
         {t('editor.editorWidgets.datetime.now')}
       </button>
@@ -39,7 +41,7 @@ function Buttons({ t, handleChange }) {
   );
 }
 
-export default class DateTimeControl extends React.Component {
+class DateTimeControl extends React.Component {
   static propTypes = {
     field: PropTypes.object.isRequired,
     forID: PropTypes.string,
@@ -48,28 +50,36 @@ export default class DateTimeControl extends React.Component {
     setActiveStyle: PropTypes.func.isRequired,
     setInactiveStyle: PropTypes.func.isRequired,
     value: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
+    t: PropTypes.func.isRequired,
+    isDisabled: PropTypes.bool,
   };
 
-  inputType = 'datetime-local';
+  static defaultProps = {
+    isDisabled: false,
+  };
 
   getFormat() {
     const { field } = this.props;
     const format = field.get('format');
     const dateFormat = field.get('date_format');
     const timeFormat = field.get('time_format');
+    let inputType = 'datetime-local';
+    let inputFormat = 'YYYY-MM-DDTHH:mm';
 
-    if (format) {
-      return format;
-    } else if (dateFormat && timeFormat) {
-      return `${dateFormat}T${timeFormat}`;
-    } else if (dateFormat && !timeFormat) {
-      this.inputType = 'date';
-      return dateFormat;
-    } else if (!dateFormat && timeFormat) {
-      this.inputType = 'time';
-      return timeFormat;
+    if (dateFormat && timeFormat) {
+      return { format: `${dateFormat}T${timeFormat}`, inputType, inputFormat };
+    } else if (timeFormat) {
+      inputType = 'time';
+      inputFormat = 'HH:mm';
+      return { format: timeFormat, inputType, inputFormat };
+    } else if (dateFormat) {
+      inputType = 'date';
+      inputFormat = 'YYYY-MM-DD';
+      return { format: dateFormat, inputType, inputFormat };
+    } else if (format) {
+      return { format, inputType, inputFormat };
     } else {
-      return 'YYYY-MM-DDTHH:mm';
+      return { format: 'YYYY-MM-DDTHH:mm', inputType, inputFormat };
     }
   }
 
@@ -79,50 +89,31 @@ export default class DateTimeControl extends React.Component {
     return defaultValue;
   }
 
-  format = this.getFormat();
-  defaultValue = this.getDefaultValue();
-
-  componentDidMount() {
-    const { value } = this.props;
-
-    /**
-     * Set the current date as default value if no value is provided and default is absent. An
-     * empty default string means the value is intentionally blank.
-     */
-    if (value === undefined) {
-      setTimeout(() => {
-        this.handleChange(this.defaultValue === undefined ? new Date() : this.defaultValue);
-      }, 0);
+  formatInputValue(value) {
+    const { format, inputFormat } = this.getFormat();
+    let formattedValue = dayjs(value).format(inputFormat);
+    if (!dayjs(formattedValue).isValid()) {
+      formattedValue = dayjs(value, format).format(inputFormat);
     }
+    return formattedValue;
   }
 
-  // Date is valid if datetime is a dayjs or Date object otherwise it's a string.
-  // Handle the empty case, if the user wants to empty the field.
-  isValidDate = datetime => dayjs.isDayjs(datetime) || datetime instanceof Date || datetime === '';
+  isValidDate = datetime => dayjs.isDayjs(datetime) || datetime === '';
 
   handleChange = datetime => {
-    /**
-     * Set the date only if it is valid.
-     */
-    if (!this.isValidDate(datetime)) {
-      return;
-    }
+    if (!this.isValidDate(datetime)) return;
+
+    const { format, inputFormat } = this.getFormat();
+    const formattedValue = datetime ? dayjs(datetime, inputFormat).format(format) : '';
 
     const { onChange } = this.props;
-
-    const formattedValue = datetime ? dayjs(datetime).format(this.format) : '';
-    console.log('formattedValue', formattedValue);
     onChange(formattedValue);
   };
 
   render() {
     const { forID, value, classNameWrapper, setActiveStyle, setInactiveStyle, t, isDisabled } =
       this.props;
-
-    let formattedValue = dayjs(value).format(this.format);
-    if (dayjs(value, this.format).isValid()) {
-      formattedValue = dayjs(value, this.format).format(this.format);
-    }
+    const { inputType, inputFormat } = this.getFormat();
 
     return (
       <div
@@ -135,15 +126,17 @@ export default class DateTimeControl extends React.Component {
       >
         <input
           id={forID}
-          type={this.inputType}
-          value={formattedValue}
+          type={inputType}
+          value={this.formatInputValue(value)}
           onChange={e => this.handleChange(dayjs(e.target.value))}
           onFocus={setActiveStyle}
           onBlur={setInactiveStyle}
           disabled={isDisabled}
         />
-        {!isDisabled && <Buttons t={t} handleChange={v => this.handleChange(v)} />}
+        {!isDisabled && <Buttons t={t} handleChange={v => this.handleChange(v)} inputFormat={inputFormat} />}
       </div>
     );
   }
 }
+
+export default DateTimeControl;
