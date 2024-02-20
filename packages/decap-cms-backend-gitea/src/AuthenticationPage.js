@@ -57,8 +57,8 @@ export default class GiteaAuthenticationPage extends React.Component {
         onLogin={this.handleLogin}
         loginDisabled={inProgress}
         loginErrorMessage={this.state.loginError}
-        logoUrl={config.logoUrl}
-        siteUrl={config.siteUrl}
+        logoUrl={config.logo_url}
+        siteUrl={config.site_url}
         renderButtonContent={() => (
           <React.Fragment>
             <LoginButtonIcon type="gitea" />{' '}
