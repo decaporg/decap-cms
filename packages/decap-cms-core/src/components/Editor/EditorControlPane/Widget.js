@@ -72,6 +72,7 @@ export default class Widget extends Component {
     isFieldDuplicate: PropTypes.func,
     isFieldHidden: PropTypes.func,
     locale: PropTypes.string,
+    isParentListCollapsed: PropTypes.bool,
   };
 
   shouldComponentUpdate(nextProps) {
@@ -298,6 +299,7 @@ export default class Widget extends Component {
       isFieldDuplicate,
       isFieldHidden,
       locale,
+      isParentListCollapsed,
     } = this.props;
 
     return React.createElement(controlComponent, {
@@ -350,6 +352,7 @@ export default class Widget extends Component {
       isFieldDuplicate,
       isFieldHidden,
       locale,
+      isParentListCollapsed,
     });
   }
 }
