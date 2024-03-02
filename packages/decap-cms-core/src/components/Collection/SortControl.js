@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { translate } from 'react-polyglot';
-import { Dropdown, DropdownItem } from 'decap-cms-ui-default';
+import styled from '@emotion/styled';
+import color from 'color';
+import { Button, Icon, Menu, MenuItem } from 'decap-cms-ui-next';
 
 import { SortDirection } from '../../types/redux';
-import { ControlButton } from './ControlButton';
 
 function nextSortDirection(direction) {
   switch (direction) {
@@ -16,18 +17,34 @@ function nextSortDirection(direction) {
   }
 }
 
-function sortIconProps(sortDir) {
-  return {
-    icon: 'chevron',
-    iconDirection: sortIconDirections[sortDir],
-    iconSmall: true,
-  };
-}
+const StyledMenuItem = styled(MenuItem)`
+  ${({ isActive, theme }) =>
+    isActive
+      ? `
+      background-color: ${color(theme.color.success['900']).alpha(0.2).string()};
+      color: ${theme.color.success[theme.darkMode ? '300' : '1400']};
+  `
+      : ``}
+`;
 
-const sortIconDirections = {
-  [SortDirection.Ascending]: 'up',
-  [SortDirection.Descending]: 'down',
-};
+const StyledIcon = styled(Icon)`
+  margin-left: 0.75rem;
+  vertical-align: middle;
+
+  ${({ direction }) =>
+    direction === SortDirection.Ascending
+      ? `
+      rotate: 180deg;
+    `
+      : ``}
+`;
+
+const TextWrap = styled.div`
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
 
 function SortControl({ t, fields, onSortClick, sort }) {
   const hasActiveSort = sort
@@ -35,34 +52,75 @@ function SortControl({ t, fields, onSortClick, sort }) {
     .toJS()
     .some(s => s.direction !== SortDirection.None);
 
+  const [sortMenuAnchorEl, setSortMenuAnchorEl] = useState(null);
+
   return (
-    <Dropdown
-      renderButton={() => {
-        return (
-          <ControlButton active={hasActiveSort} title={t('collection.collectionTop.sortBy')} />
-        );
-      }}
-      closeOnSelection={false}
-      dropdownTopOverlap="30px"
-      dropdownWidth="160px"
-      dropdownPosition="left"
-    >
-      {fields.map(field => {
-        const sortDir = sort?.getIn([field.key, 'direction']);
-        const isActive = sortDir && sortDir !== SortDirection.None;
-        const nextSortDir = nextSortDirection(sortDir);
-        return (
-          <DropdownItem
-            key={field.key}
-            label={field.label}
-            onClick={() => onSortClick(field.key, nextSortDir)}
-            isActive={isActive}
-            {...(isActive && sortIconProps(sortDir))}
-          />
-        );
-      })}
-    </Dropdown>
+    <>
+      <Button
+        // type={hasActiveSort ? 'success' : 'default'}
+        onClick={e => setSortMenuAnchorEl(e.currentTarget)}
+        hasMenu
+      >
+        {t('collection.collectionTop.sortBy')}
+      </Button>
+
+      <Menu
+        anchorEl={sortMenuAnchorEl}
+        open={!!sortMenuAnchorEl}
+        onClose={() => setSortMenuAnchorEl(null)}
+        anchorOrigin={{ y: 'bottom', x: 'right' }}
+      >
+        {fields.map(field => {
+          const sortDir = sort?.getIn([field.key, 'direction']);
+          const isActive = sortDir && sortDir !== SortDirection.None;
+          const nextSortDir = nextSortDirection(sortDir);
+
+          return (
+            <StyledMenuItem
+              key={field.key}
+              onClick={() => onSortClick(field.key, nextSortDir)}
+              isActive={isActive}
+            >
+              <TextWrap>
+                {field.label}
+
+                {isActive && <StyledIcon name="chevron-down" direction={sortDir} />}
+              </TextWrap>
+            </StyledMenuItem>
+          );
+        })}
+      </Menu>
+    </>
   );
+
+  // return (
+  //   <Dropdown
+  //     renderButton={() => {
+  //       return (
+  //         <ControlButton active={hasActiveSort} title={t('collection.collectionTop.sortBy')} />
+  //       );
+  //     }}
+  //     closeOnSelection={false}
+  //     dropdownTopOverlap="30px"
+  //     dropdownWidth="160px"
+  //     dropdownPosition="left"
+  //   >
+  //     {fields.map(field => {
+  //       const sortDir = sort?.getIn([field.key, 'direction']);
+  //       const isActive = sortDir && sortDir !== SortDirection.None;
+  //       const nextSortDir = nextSortDirection(sortDir);
+  //       return (
+  //         <DropdownItem
+  //           key={field.key}
+  //           label={field.label}
+  //           onClick={() => onSortClick(field.key, nextSortDir)}
+  //           isActive={isActive}
+  //           {...(isActive && sortIconProps(sortDir))}
+  //         />
+  //       );
+  //     })}
+  //   </Dropdown>
+  // );
 }
 
 export default translate()(SortControl);

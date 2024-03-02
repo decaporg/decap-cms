@@ -27,7 +27,7 @@ import {
 
 const CollectionContainer = styled.div`
   /* margin: ${lengths.pageMargin}; */
-  margin: 0 2rem;
+  /* margin: 0 2rem; */
 `;
 
 const CollectionMain = styled.main`

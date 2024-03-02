@@ -10,7 +10,7 @@ import GroupControl from './GroupControl';
 const CollectionControlsContainer = styled.div`
   display: flex;
   align-items: center;
-  flex-direction: row-reverse;
+  flex-direction: row;
   margin-top: 22px;
   width: ${lengths.topCardWidth};
   max-width: 100%;
