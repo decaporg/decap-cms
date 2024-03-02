@@ -16,7 +16,7 @@ function UserMenu({ user, onLogoutClick, className }) {
     <>
       <AvatarButton
         src={user?.avatar_url}
-        initials={user?.name}
+        fallback={user?.name}
         onClick={e => setUserMenuAnchorEl(e.currentTarget)}
         active={!!userMenuAnchorEl}
         className={className}

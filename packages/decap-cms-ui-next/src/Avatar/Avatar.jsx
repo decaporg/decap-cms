@@ -25,21 +25,21 @@ const StylesImage = styled(StylesAvatar)`
   `}
 `;
 
-const StylesInitials = styled.span`
+const StylesFallback = styled.span`
   ${({ size }) => `
     font-size: ${size === 'sm' ? 12 : size === 'lg' ? 20 : 16}px;
     color: #FFFFFF;
   `}
 `;
 
-function Avatar({ size, src, initials, ...props }) {
+function Avatar({ size, src, fallback, ...props }) {
   return src ? (
     <StylesImage size={size} src={src} {...props} />
-  ) : initials ? (
+  ) : fallback ? (
     <StylesAvatar size={size} {...props}>
-      <StylesInitials size={size} {...props}>
-        {initials}
-      </StylesInitials>
+      <StylesFallback size={size} {...props}>
+        {fallback}
+      </StylesFallback>
     </StylesAvatar>
   ) : (
     <StylesAvatar size={size} {...props}>
