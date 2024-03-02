@@ -35,17 +35,17 @@ AvatarWithImage.args = {
   src: 'https://randomuser.me/api/portraits/men/94.jpg',
 };
 
-export function AvatarWithInitials(args) {
+export function AvatarWithFallback(args) {
   return <Avatar {...args} />;
 }
 
-AvatarWithInitials.argTypes = {
-  initials: {
+AvatarWithFallback.argTypes = {
+  fallback: {
     control: 'text',
   },
 };
 
-AvatarWithInitials.args = {
-  initials: 'JD',
+AvatarWithFallback.args = {
+  fallback: 'JD',
   size: 'md',
 };
