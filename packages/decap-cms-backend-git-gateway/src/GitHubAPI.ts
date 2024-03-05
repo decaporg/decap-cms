@@ -5,7 +5,7 @@ import type { Config as GitHubConfig, Diff } from 'decap-cms-backend-github/src/
 import type { FetchError } from 'decap-cms-lib-util';
 import type { Octokit } from '@octokit/rest';
 
-type Config = GitHubConfig & {
+type Config = Omit<GitHubConfig, 'getUser'> & {
   apiRoot: string;
   tokenPromise: () => Promise<string>;
   commitAuthor: { name: string };
@@ -18,7 +18,10 @@ export default class API extends GithubAPI {
   isLargeMedia: (filename: string) => Promise<boolean>;
 
   constructor(config: Config) {
-    super(config);
+    super({
+      getUser: () => Promise.reject('Never used'),
+      ...config,
+    });
     this.apiRoot = config.apiRoot;
     this.tokenPromise = config.tokenPromise;
     this.commitAuthor = config.commitAuthor;

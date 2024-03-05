@@ -30,15 +30,16 @@ const SidebarContainer = styled.aside`
 `;
 
 const SidebarHeading = styled.h2`
-  font-size: 23px;
+  font-size: 22px;
   font-weight: 600;
+  line-height: 37px;
   padding: 0;
-  margin: 18px 12px 12px;
+  margin: 10px 20px;
   color: ${colors.textLead};
 `;
 
 const SidebarNavList = styled.ul`
-  margin: 16px 0 0;
+  margin: 12px 0 0;
   list-style: none;
   overflow: auto;
 `;
@@ -48,12 +49,12 @@ const SidebarNavLink = styled(NavLink)`
   font-size: 14px;
   font-weight: 500;
   align-items: center;
-  padding: 8px 12px;
+  padding: 8px 18px;
   border-left: 2px solid #fff;
   z-index: -1;
 
   ${Icon} {
-    margin-right: 8px;
+    margin-right: 4px;
     flex-shrink: 0;
   }
 

@@ -2,6 +2,7 @@
 import { DecapCmsCore as CMS } from 'decap-cms-core';
 // Backends
 import { AzureBackend } from 'decap-cms-backend-azure';
+import { AwsCognitoGitHubProxyBackend } from 'decap-cms-backend-aws-cognito-github-proxy';
 import { GitHubBackend } from 'decap-cms-backend-github';
 import { GitLabBackend } from 'decap-cms-backend-gitlab';
 import { GiteaBackend } from 'decap-cms-backend-gitea';
@@ -33,6 +34,7 @@ import * as locales from 'decap-cms-locales';
 // Register all the things
 CMS.registerBackend('git-gateway', GitGatewayBackend);
 CMS.registerBackend('azure', AzureBackend);
+CMS.registerBackend('aws-cognito-github-proxy', AwsCognitoGitHubProxyBackend);
 CMS.registerBackend('github', GitHubBackend);
 CMS.registerBackend('gitlab', GitLabBackend);
 CMS.registerBackend('gitea', GiteaBackend);

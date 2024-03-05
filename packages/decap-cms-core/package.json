@@ -1,7 +1,7 @@
 {
   "name": "decap-cms-core",
   "description": "Decap CMS core application, see decap-cms package for the main distribution.",
-  "version": "3.3.0-beta.2",
+  "version": "3.3.2",
   "repository": "https://github.com/decaporg/decap-cms/tree/master/packages/decap-cms-core",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
   "module": "dist/esm/index.js",
@@ -13,7 +13,7 @@
   ],
   "types": "index.d.ts",
   "scripts": {
-    "develop": "yarn build:esm --watch",
+    "develop": "npm run build:esm -- --watch",
     "webpack": "node --max_old_space_size=4096 ../../node_modules/webpack/bin/webpack.js",
     "build": "cross-env NODE_ENV=production run-s webpack",
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward --extensions \".js,.jsx,.ts,.tsx\""
