@@ -40,7 +40,7 @@
     "slate-plain-serializer": "^0.7.1",
     "slate-react": "^0.91.2",
     "slate-soft-break": "^0.9.0",
-    "unified": "^7.1.0",
+    "unified": "^9.2.0",
     "unist-builder": "^1.0.3",
     "unist-util-visit-parents": "^2.0.1"
   },

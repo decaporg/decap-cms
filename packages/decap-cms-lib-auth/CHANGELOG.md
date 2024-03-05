@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.0.4](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-auth@3.0.3...decap-cms-lib-auth@3.0.4) (2024-02-21)
+
+### Bug Fixes
+
+- gitlab pkce auth error ([#7110](https://github.com/decaporg/decap-cms/issues/7110)) ([bcd58d6](https://github.com/decaporg/decap-cms/commit/bcd58d6e117b4654b3e0dca173f7f8aaca8dabdf))
+
 ## [3.0.3](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-auth@3.0.3-beta.1...decap-cms-lib-auth@3.0.3) (2024-02-01)
 
 **Note:** Version bump only for package decap-cms-lib-auth
