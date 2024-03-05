@@ -54,7 +54,6 @@ export default class PkceAuthenticator {
     this.auth_url = `${baseURL}/${authEndpoint}`;
     this.auth_token_url = `${baseURL}/${authTokenEndpoint}`;
     this.auth_token_endpoint_content_type = config.auth_token_endpoint_content_type;
-    this.redirect_uri = trim(config.redirect_uri, '/');
     this.appID = config.app_id;
   }
 
@@ -65,7 +64,7 @@ export default class PkceAuthenticator {
 
     const authURL = new URL(this.auth_url);
     authURL.searchParams.set('client_id', this.appID);
-    authURL.searchParams.set('redirect_uri', this.redirect_uri);
+    authURL.searchParams.set('redirect_uri', document.location.origin + document.location.pathname);
     authURL.searchParams.set('response_type', 'code');
     authURL.searchParams.set('scope', options.scope);
 
@@ -118,7 +117,7 @@ export default class PkceAuthenticator {
         client_id: this.appID,
         code,
         grant_type: 'authorization_code',
-        redirect_uri: this.redirect_uri,
+        redirect_uri: document.location.origin + document.location.pathname,
         code_verifier: getCodeVerifier(),
       };
 
