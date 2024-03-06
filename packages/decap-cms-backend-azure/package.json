@@ -29,6 +29,7 @@
     "decap-cms-lib-auth": "^3.0.0",
     "decap-cms-lib-util": "^3.0.0",
     "decap-cms-ui-default": "^3.0.0",
+    "decap-cms-ui-4": "^1.0.0",
     "immutable": "^3.7.6",
     "lodash": "^4.17.11",
     "prop-types": "^15.7.2",

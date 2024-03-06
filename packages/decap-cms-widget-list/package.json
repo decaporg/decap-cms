@@ -30,6 +30,7 @@
     "@emotion/styled": "^11.11.0",
     "decap-cms-lib-widgets": "^3.0.0",
     "decap-cms-ui-default": "^3.0.0",
+    "decap-cms-ui-4": "^1.0.0",
     "decap-cms-widget-object": "^3.0.0",
     "immutable": "^3.7.6",
     "lodash": "^4.17.11",

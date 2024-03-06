@@ -1,0 +1,44 @@
+{
+  "name": "decap-cms-ui-4",
+  "description": "UI components for Decap CMS.",
+  "version": "1.0.0",
+  "repository": "https://github.com/decaporg/decap-cms/tree/master/packages/decap-cms-ui-4",
+  "bugs": "https://github.com/decaporg/decap-cms/issues",
+  "license": "MIT",
+  "module": "dist/esm/index.js",
+  "main": "dist/decap-cms-ui-4.js",
+  "keywords": [
+    "decap-cms"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "develop": "yarn build:esm --watch",
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
+  },
+  "dependencies": {
+    "classnames": "^2.3.2",
+    "debounce": "^1.2.1",
+    "dom-helpers": "^5.2.1",
+    "faker": "^4.1.0",
+    "keycode": "^2.2.1",
+    "particleground-light": "^1.0.6",
+    "react-aria-menubutton": "^6.0.0",
+    "react-datetime-picker": "^5.5.3",
+    "react-event-listener": "^0.6.6",
+    "react-sortable-hoc": "^2.0.0",
+    "react-spring": "^9.7.3",
+    "react-table": "^7.8.0",
+    "react-toggled": "^1.1.2",
+    "react-transition-group": "^2.6.0",
+    "resize-observer-polyfill": "^1.5.1",
+    "typeface-inter": "^3.12.0"
+  },
+  "peerDependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "lodash": "^4.17.11",
+    "prop-types": "^15.7.2",
+    "react": "^16.8.4"
+  }
+}
