@@ -27,7 +27,7 @@
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "decap-cms-ui-default": "^3.0.0",
-    "decap-cms-ui-4": "^1.0.0",
+    "decap-cms-ui-next": "^4.0.0",
     "prop-types": "^15.7.2",
     "react": "^18.2.0"
   }

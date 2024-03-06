@@ -48,7 +48,7 @@
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "decap-cms-ui-default": "^3.0.0",
-    "decap-cms-ui-4": "^1.0.0",
+    "decap-cms-ui-next": "^4.0.0",
     "immutable": "^3.7.6",
     "lodash": "^4.17.11",
     "prop-types": "^15.7.2",

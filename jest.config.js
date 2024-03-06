@@ -4,7 +4,7 @@ module.exports = {
     'decap-cms-lib-auth': '<rootDir>/packages/decap-cms-lib-auth/src/index.js',
     'decap-cms-lib-util': '<rootDir>/packages/decap-cms-lib-util/src/index.ts',
     'decap-cms-ui-default': '<rootDir>/packages/decap-cms-ui-default/src/index.js',
-    'decap-cms-ui-4': '<rootDir>/packages/decap-cms-ui-4/src/index.js',
+    'decap-cms-ui-next': '<rootDir>/packages/decap-cms-ui-next/src/index.js',
     'decap-cms-backend-github': '<rootDir>/packages/decap-cms-backend-github/src/index.ts',
     'decap-cms-lib-widgets': '<rootDir>/packages/decap-cms-lib-widgets/src/index.ts',
     'decap-cms-widget-object': '<rootDir>/packages/decap-cms-widget-object/src/index.js',
