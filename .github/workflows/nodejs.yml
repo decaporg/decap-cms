@@ -28,37 +28,31 @@ jobs:
       matrix:
         os: [macos-latest, windows-latest, ubuntu-latest]
         node-version: [18.x, 20.x]
+    if: ${{ needs.changes.outputs.cms == 'true' }}
     steps:
       - uses: actions/checkout@v3
-        if: ${{ needs.changes.outputs.cms == 'true' }}
       - name: Use Node.js {{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
           check-latest: true
-        if: ${{ needs.changes.outputs.cms == 'true' }}
       - name: log versions
         run: node --version && npm --version && yarn --version
-        if: ${{ needs.changes.outputs.cms == 'true' }}
       - name: install dependecies
         run: npm install
-        if: ${{ needs.changes.outputs.cms == 'true' }}
       - name: run unit tests
         run: npm run test:ci
         env:
           CI: true
           NODE_OPTIONS: --max-old-space-size=4096
-        if: ${{ needs.changes.outputs.cms == 'true' }}
       - name: build demo site
         run: npm run build:demo
         env:
           NODE_OPTIONS: --max-old-space-size=4096
-        if: ${{ needs.changes.outputs.cms == 'true' }}
       - uses: actions/upload-artifact@master
         with:
           name: dev-test-website-${{ runner.os }}-${{ matrix.node-version }}
           path: dev-test
-        if: ${{ needs.changes.outputs.cms == 'true' }}
 
   e2e-with-cypress:
     needs: [changes, build]
@@ -69,27 +63,24 @@ jobs:
         node-version: [18.x, 20.x]
       fail-fast: false
 
+    if: ${{ needs.changes.outputs.cms == 'true' }}
     steps:
       - uses: actions/checkout@v3
-        if: ${{ needs.changes.outputs.cms == 'true' }}
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
           check-latest: true
-        if: ${{ needs.changes.outputs.cms == 'true' }}
       - uses: actions/download-artifact@master
         with:
           name: dev-test-website-${{ runner.os }}-18.x
           path: dev-test
-        if: ${{ needs.changes.outputs.cms == 'true' }}
       - name: npm install
         run: |
           node --version
           npm --version
           yarn --version
           npm install
-        if: ${{ needs.changes.outputs.cms == 'true' }}
       - name: e2e test
         run: |
           npm run test:e2e:run-ci
@@ -99,9 +90,8 @@ jobs:
           NODE_OPTIONS: --max-old-space-size=4096
           MACHINE_COUNT: 2
           MACHINE_INDEX: ${{ matrix.node-version }}
-        if: ${{ needs.changes.outputs.cms == 'true' }}
       - uses: actions/upload-artifact@v3
-        if: ${{ always() && needs.changes.outputs.cms == 'true' }}
+        if: ${{ always() }}
         with:
           name: cypress-results-${{ matrix.node-version }}
           path: |
