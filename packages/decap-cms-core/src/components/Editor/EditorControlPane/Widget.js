@@ -79,7 +79,7 @@ export default class Widget extends Component {
     /**
      * Avoid unnecessary rerenders while loading assets.
      */
-    if (this.props.isLoadingAsset) return false;
+    if (this.props.isLoadingAsset && nextProps.isLoadingAsset) return false;
     /**
      * Allow widgets to provide their own `shouldComponentUpdate` method.
      */
