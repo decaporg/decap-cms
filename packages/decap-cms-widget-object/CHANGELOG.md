@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.1.1](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-object@3.1.0-beta.1...decap-cms-widget-object@3.1.1) (2024-03-08)
+
+### Bug Fixes
+
+- /decaporg/decap-cms/issues/6812 show code widget content if initially hidden ([#7131](https://github.com/decaporg/decap-cms/issues/7131)) ([b18b51b](https://github.com/decaporg/decap-cms/commit/b18b51bc876d3aad887b56ea1ef191c45b40fbcb))
+
 # [3.1.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-object@3.1.0-beta.1...decap-cms-widget-object@3.1.0) (2024-02-01)
 
 **Note:** Version bump only for package decap-cms-widget-object
