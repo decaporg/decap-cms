@@ -109,7 +109,7 @@ export default class CodeControl extends React.Component {
     if (
       this.visibility.isInvisibleOnInit &&
       !this.visibility.isRefreshedAfterInvisible &&
-      !this.props.listCollapsed
+      !this.props.isParentListCollapsed
     ) {
       this.refreshCodeMirrorInstance();
     }
