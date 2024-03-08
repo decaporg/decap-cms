@@ -1,1 +1,1 @@
-export { UIContext, UIProvider } from './UIContext';
+export { UIContext, UIProvider } from './UIContext.jsx';
