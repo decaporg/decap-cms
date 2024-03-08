@@ -17,7 +17,8 @@
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
   },
   "dependencies": {
-    "@fontsource/inter": "^5.0.16"
+    "@fontsource/inter": "^5.0.17",
+    "color": "4.2.3"
   },
   "devDependencies": {},
   "peerDependencies": {
