@@ -41,7 +41,7 @@ declare module 'decap-cms-core' {
 
   export type CmsAuthScope = 'repo' | 'public_repo';
 
-  export type CmsPublishMode = 'simple' | 'editorial_workflow';
+  export type CmsPublishMode = 'simple' | 'editorial_workflow' | '';
 
   export type CmsSlugEncoding = 'unicode' | 'ascii';
 
@@ -426,12 +426,12 @@ declare module 'decap-cms-core' {
   export interface EditorComponentOptions {
     id: string;
     label: string;
-    fields: EditorComponentField[];
+    fields?: EditorComponentField[];
     pattern: RegExp;
     allow_add?: boolean;
     fromBlock: (match: RegExpMatchArray) => any;
     toBlock: (data: any) => string;
-    toPreview: (data: any) => string;
+    toPreview: (data: any) => string | JSX.Element;
   }
 
   export interface PreviewStyleOptions {
