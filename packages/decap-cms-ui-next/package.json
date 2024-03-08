@@ -16,7 +16,13 @@
     "build": "cross-env NODE_ENV=production webpack",
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@fontsource/inter": "^5.0.17",
+    "color": "4.2.3"
+  },
   "devDependencies": {},
-  "peerDependencies": {}
+  "peerDependencies": {
+    "@emotion/react": "^11.11.1",
+    "react": "^18.2.0"
+  }
 }
