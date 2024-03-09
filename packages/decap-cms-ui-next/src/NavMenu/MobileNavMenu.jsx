@@ -6,7 +6,7 @@ import { Transition } from 'react-transition-group';
 import { ExternalLinkIcon } from './NavMenuItem';
 import Card from '../Card';
 import Icon from '../Icon';
-import LogoTile from '../LogoTile';
+import DecapTile from '../Logos/DecapTile';
 import UserMenu from '../UserMenu';
 import { Menu, MenuItem } from '../Menu';
 import { useUIContext } from '../hooks';
@@ -208,7 +208,7 @@ function MobileNavMenu({ children }) {
         {state => (
           <MenuWrap state={state}>
             <ToolbarWrap state={state}>
-              <LogoTile />
+              <DecapTile />
               <SiteNameWrap>
                 <SiteName>My Website</SiteName>
                 <ExternalLinkIcon />
