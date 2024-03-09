@@ -1,9 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { DocsContainer } from '@storybook/addon-docs';
 import { themes } from '@storybook/theming';
 import { useDarkMode } from 'storybook-dark-mode';
-import { addons } from '@storybook/preview-api';
-import { INITIAL_VIEWPORTS, MINIMAL_VIEWPORTS } from '@storybook/addon-viewport';
 import { ThemeProvider } from '@emotion/react';
 import { lightTheme, darkTheme, UIProvider, GlobalStyles } from 'decap-cms-ui-next/src';
 import themeViewports from './viewports';
@@ -27,18 +25,15 @@ export const parameters = {
   layout: 'centered',
   viewport: {
     viewports: {
-      // ...INITIAL_VIEWPORTS,
-      // ...MINIMAL_VIEWPORTS,
       ...themeViewports,
     },
-    // defaultViewport: 'lg',
   },
   actions: { argTypesRegex: '^on.*' },
   options: {
     showPanel: true,
     storySort: {
       method: 'alphabetical',
-      order: ['Pages', 'Components', 'Widgets'],
+      order: ['Branding', 'Pages', 'Components', 'Inputs'],
     },
   },
   deepControls: { enabled: true },
