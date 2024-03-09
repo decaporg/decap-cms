@@ -1,8 +1,6 @@
 import React from 'react';
 
-import DecapMark from './DecapMark';
-import DecapTile from './DecapTile';
-import DecapWordmark from './DecapWordmark';
+import { DecapMark, DecapTile, DecapWordmark } from '.';
 
 export default {
   title: 'Branding/Logos',
