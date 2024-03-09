@@ -70,6 +70,7 @@
     "@storybook/addon-essentials": "7.6.13",
     "@storybook/addon-storysource": "^7.6.13",
     "@storybook/addon-themes": "7.6.13",
+    "@storybook/preview-api": "^7.6.17",
     "@storybook/react": "7.6.13",
     "@storybook/react-webpack5": "^7.6.13",
     "@stylelint/postcss-css-in-js": "^0.37.2",
