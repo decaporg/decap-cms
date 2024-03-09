@@ -33,7 +33,7 @@ export default {
 
     brandTitle: 'Decap CMS',
     brandUrl: 'https://decapcms.org',
-    brandImage: 'https://decapcms.org/img/decap-logo.svg',
+    brandImage: ' https://decapcms.org/img/decap-logo.svg',
   },
 
   dark: {
@@ -68,6 +68,6 @@ export default {
 
     brandTitle: 'Decap CMS',
     brandUrl: 'https://decapcms.org',
-    brandImage: 'https://decapcms.org/img/decap-logo.svg',
+    brandImage: 'https://techhub.p-m.si/media/brand/decap-logotype-color.svg',
   },
 };
