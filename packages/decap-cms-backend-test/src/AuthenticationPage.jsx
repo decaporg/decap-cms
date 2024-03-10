@@ -6,7 +6,7 @@ import {
   IconButton,
   Button,
   ButtonGroup,
-  Logo,
+  DecapWordmark,
   TextInput,
   Slide,
   Grow,
@@ -276,7 +276,7 @@ function AuthenticationPage({ onLogin, inProgress, config, t, handleSubmit }) {
       <EnterTransitionComponent in={showAuth} direction="up">
         <AuthPageDialog>
           <LogoWrap>
-            <Logo />
+            <DecapWordmark />
           </LogoWrap>
           <MobileBackButton
             onClick={() => setSelectedBackend(null)}

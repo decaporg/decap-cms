@@ -2,10 +2,17 @@ import React, { useMemo } from 'react';
 import { translate } from 'react-polyglot';
 import { NavLink as ReactRouterNavLink, useLocation } from 'react-router-dom';
 import styled from '@emotion/styled';
-import { NavMenu, NavMenuItem, NavMenuGroup, NavMenuGroupLabel, Logo } from 'decap-cms-ui-next';
+import {
+  NavMenu,
+  NavMenuItem,
+  NavMenuGroup,
+  NavMenuGroupLabel,
+  DecapMark,
+} from 'decap-cms-ui-next';
 
-const StyledLogo = styled(Logo)`
-  padding: 0.375rem;
+const StyledCustomLogo = styled.img`
+  width: 20px;
+  margin: 0.375rem;
 `;
 
 function Nav({
@@ -47,7 +54,11 @@ function Nav({
 
   return (
     <NavMenu collapsable={true}>
-      <NavMenuItem href={siteUrl} target="_blank" icon={<StyledLogo src={logoUrl} />}>
+      <NavMenuItem
+        href={siteUrl}
+        target="_blank"
+        icon={logoUrl ? <StyledCustomLogo src={logoUrl} /> : <DecapMark size="20" />}
+      >
         My Website
       </NavMenuItem>
 
