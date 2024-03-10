@@ -51,16 +51,24 @@ const TextWrap = styled.div`
   flex: 1;
 `;
 
-const StyledIcon = styled(Icon)`
-  margin-right: 0.75rem;
-  vertical-align: middle;
-`;
 const SelectedIcon = styled(Icon)`
   margin-left: 0.75rem;
   vertical-align: middle;
 `;
 
-function MenuItem({ children, icon, onClick, selected, type, className, disabled, ...props }) {
+function MenuItem({
+  children,
+  startContent,
+  endContent,
+  onClick,
+  selected,
+  hideSelectedIcon,
+  type,
+  className,
+  disabled,
+
+  ...props
+}) {
   return (
     <MenuItemWrap
       onClick={!disabled && onClick}
@@ -69,9 +77,10 @@ function MenuItem({ children, icon, onClick, selected, type, className, disabled
       disabled={disabled}
       {...props}
     >
-      {icon && <StyledIcon name={icon} />}
+      {startContent}
       <TextWrap>{children}</TextWrap>
-      {selected && <SelectedIcon name="check" />}
+      {selected && !hideSelectedIcon && <SelectedIcon name="check" />}
+      {endContent}
     </MenuItemWrap>
   );
 }

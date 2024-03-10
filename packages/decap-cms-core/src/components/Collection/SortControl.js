@@ -31,19 +31,9 @@ const StyledIcon = styled(Icon)`
   margin-left: 0.75rem;
   vertical-align: middle;
 
-  ${({ direction }) =>
-    direction === SortDirection.Ascending
-      ? `
-      rotate: 180deg;
-    `
-      : ``}
-`;
-
-const TextWrap = styled.div`
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  transform: ${({ direction }) =>
+    direction === SortDirection.Ascending ? 'rotate(-180deg)' : 'rotate(0deg)'};
+  transition: transform 200ms;
 `;
 
 function SortControl({ t, fields, onSortClick, sort }) {
@@ -80,12 +70,16 @@ function SortControl({ t, fields, onSortClick, sort }) {
               key={field.key}
               onClick={() => onSortClick(field.key, nextSortDir)}
               isActive={isActive}
+              endContent={isActive && <StyledIcon name="chevron-down" direction={sortDir} />}
+              endIcon={
+                isActive && sortDir === SortDirection.Ascending
+                  ? 'chevron-up'
+                  : sortDir === SortDirection.Descending
+                  ? 'chevron-down'
+                  : null
+              }
             >
-              <TextWrap>
-                {field.label}
-
-                {isActive && <StyledIcon name="chevron-down" direction={sortDir} />}
-              </TextWrap>
+              {field.label}
             </StyledMenuItem>
           );
         })}
