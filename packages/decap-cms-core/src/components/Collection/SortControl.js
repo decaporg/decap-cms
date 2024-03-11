@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { translate } from 'react-polyglot';
 import styled from '@emotion/styled';
 import color from 'color';
-import { Button, Icon, Menu, MenuItem } from 'decap-cms-ui-next';
+import { Icon, Menu, MenuItem } from 'decap-cms-ui-next';
 
 import { SortDirection } from '../../types/redux';
+import { ControlButton } from './ControlButton';
 
 function nextSortDirection(direction) {
   switch (direction) {
@@ -46,13 +47,9 @@ function SortControl({ t, fields, onSortClick, sort }) {
 
   return (
     <>
-      <Button
-        // type={hasActiveSort ? 'success' : 'default'}
-        onClick={e => setSortMenuAnchorEl(e.currentTarget)}
-        hasMenu
-      >
+      <ControlButton active={hasActiveSort} onClick={e => setSortMenuAnchorEl(e.currentTarget)}>
         {t('collection.collectionTop.sortBy')}
-      </Button>
+      </ControlButton>
 
       <Menu
         anchorEl={sortMenuAnchorEl}

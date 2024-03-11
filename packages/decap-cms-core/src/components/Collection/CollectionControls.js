@@ -9,15 +9,12 @@ import GroupControl from './GroupControl';
 
 const CollectionControlsContainer = styled.div`
   display: flex;
-  align-items: center;
   flex-direction: row;
-  margin-top: 22px;
-  width: ${lengths.topCardWidth};
-  max-width: 100%;
-
-  & > div {
-    margin-left: 6px;
-  }
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin: 1rem;
+  width: auto;
 `;
 
 function CollectionControls({

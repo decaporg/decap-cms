@@ -4,11 +4,12 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { translate } from 'react-polyglot';
 import { Link } from 'react-router-dom';
-import { components, buttons, shadows } from 'decap-cms-ui-default';
+import { components } from 'decap-cms-ui-default';
+import { Button, Card } from 'decap-cms-ui-next';
 
-const CollectionTopContainer = styled.div`
-  ${components.cardTop};
-  margin-bottom: 22px;
+const CollectionTopContainer = styled(Card)`
+  padding: 18px 20px;
+  margin: 0 1rem 1rem 1rem;
 `;
 
 const CollectionTopRow = styled.div`
@@ -21,12 +22,7 @@ const CollectionTopHeading = styled.h1`
   ${components.cardTopHeading};
 `;
 
-const CollectionTopNewButton = styled(Link)`
-  ${buttons.button};
-  ${shadows.dropDeep};
-  ${buttons.default};
-  ${buttons.gray};
-
+const CollectionTopNewButton = styled(Button)`
   padding: 0 30px;
 `;
 
@@ -58,7 +54,7 @@ function CollectionTop({ collection, newEntryUrl, t }) {
       <CollectionTopRow>
         <CollectionTopHeading>{collectionLabel}</CollectionTopHeading>
         {newEntryUrl ? (
-          <CollectionTopNewButton to={newEntryUrl}>
+          <CollectionTopNewButton as={Link} to={newEntryUrl} primary>
             {t('collection.collectionTop.newButton', {
               collectionLabel: collectionLabelSingular || collectionLabel,
             })}
