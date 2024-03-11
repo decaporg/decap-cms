@@ -1,1 +1,1 @@
-export { default } from './GlobalStyles.jsx';
+export { default } from './GlobalStyles';
