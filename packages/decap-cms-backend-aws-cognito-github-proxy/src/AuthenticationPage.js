@@ -24,14 +24,12 @@ export default class GenericPKCEAuthenticationPage extends React.Component {
       app_id = '',
       auth_endpoint = 'oauth2/authorize',
       auth_token_endpoint = 'oauth2/token',
-      redirect_uri = document.location.origin + document.location.pathname,
     } = this.props.config.backend;
     this.auth = new PkceAuthenticator({
       base_url,
       auth_endpoint,
       app_id,
       auth_token_endpoint,
-      redirect_uri,
       auth_token_endpoint_content_type: 'application/x-www-form-urlencoded; charset=utf-8',
     });
     // Complete authentication if we were redirected back to from the provider.

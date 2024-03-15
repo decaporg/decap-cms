@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.3.3](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.3.2...decap-cms-core@3.3.3) (2024-03-08)
+
+### Bug Fixes
+
+- /decaporg/decap-cms/issues/6812 show code widget content if initially hidden ([#7131](https://github.com/decaporg/decap-cms/issues/7131)) ([b18b51b](https://github.com/decaporg/decap-cms/commit/b18b51bc876d3aad887b56ea1ef191c45b40fbcb))
+- images not loading in editor ([#7111](https://github.com/decaporg/decap-cms/issues/7111)) ([0c68d20](https://github.com/decaporg/decap-cms/commit/0c68d20005fd1c8d340eebb8e06d67daed6ee18e))
+
+## [3.3.2](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.3.1...decap-cms-core@3.3.2) (2024-02-21)
+
+**Note:** Version bump only for package decap-cms-core
+
 ## [3.3.1](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.3.0...decap-cms-core@3.3.1) (2024-02-01)
 
 **Note:** Version bump only for package decap-cms-core
