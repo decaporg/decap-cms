@@ -409,22 +409,24 @@ declare module 'decap-cms-core' {
     config: CmsConfig;
   }
 
-  export type EditorComponentField = {
-    name: string;
-    label: string;
-  } & {
-    widget: Omit<string, 'list'>;
-  } | {
-    widget: 'list';
-    /**
-     * Used if widget === "list" to create a flat array
-     */
-    field: EditorComponentField;
-    /**
-     * Used if widget === "list" to create an array of objects
-     */
-    fields: EditorComponentField[];
-  }
+  export type EditorComponentField =
+    | ({
+        name: string;
+        label: string;
+      } & {
+        widget: Omit<string, 'list'>;
+      })
+    | {
+        widget: 'list';
+        /**
+         * Used if widget === "list" to create a flat array
+         */
+        field?: EditorComponentField;
+        /**
+         * Used if widget === "list" to create an array of objects
+         */
+        fields?: EditorComponentField[];
+      };
 
   export interface EditorComponentOptions {
     id: string;
