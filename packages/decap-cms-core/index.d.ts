@@ -409,10 +409,13 @@ declare module 'decap-cms-core' {
     config: CmsConfig;
   }
 
-  export interface EditorComponentField {
+  export type EditorComponentField = {
     name: string;
     label: string;
-    widget: string;
+  } & {
+    widget: Omit<string, 'list'>;
+  } | {
+    widget: 'list';
     /**
      * Used if widget === "list" to create a flat array
      */
