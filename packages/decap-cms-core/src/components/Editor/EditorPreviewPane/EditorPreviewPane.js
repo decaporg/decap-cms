@@ -13,10 +13,7 @@ import {
   getPreviewStyles,
   getRemarkPlugins,
 } from '../../../lib/registry';
-import {
-  getAllEntries,
-  tryLoadEntry,
-} from '../../../actions/entries';
+import { getAllEntries, tryLoadEntry } from '../../../actions/entries';
 import { ErrorBoundary } from '../../UI';
 import {
   selectTemplateName,
@@ -210,7 +207,7 @@ export class PreviewPane extends React.Component {
 
     if (typeof slug === 'undefined') {
       const entries = await getAllEntries(state, selectedCollection);
-      return entries.map((entry) => Map().set('data', entry.data));
+      return entries.map(entry => Map().set('data', entry.data));
     }
 
     const entry = await tryLoadEntry(state, selectedCollection, slug);
