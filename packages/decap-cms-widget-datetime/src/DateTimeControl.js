@@ -7,10 +7,10 @@ import { buttons } from 'decap-cms-ui-default';
 
 const customParseFormat = require('dayjs/plugin/customParseFormat');
 const localizedFormat = require('dayjs/plugin/localizedFormat');
-const utc = require('dayjs/plugin/utc')
+const utc = require('dayjs/plugin/utc');
 dayjs.extend(customParseFormat);
 dayjs.extend(localizedFormat);
-dayjs.extend(utc)
+dayjs.extend(utc);
 
 function Buttons({ t, handleChange, inputFormat, isUtc }) {
   return (
@@ -26,7 +26,9 @@ function Buttons({ t, handleChange, inputFormat, isUtc }) {
           ${buttons.button}
           ${buttons.widget}
         `}
-        onClick={() => handleChange(isUtc ? dayjs.utc().format(inputFormat) : dayjs().format(inputFormat))}
+        onClick={() =>
+          handleChange(isUtc ? dayjs.utc().format(inputFormat) : dayjs().format(inputFormat))
+        }
       >
         {t('editor.editorWidgets.datetime.now')}
       </button>
@@ -69,7 +71,7 @@ class DateTimeControl extends React.Component {
     let inputType = 'datetime-local';
 
     if (dateFormat && timeFormat) {
-      return { format: `${dateFormat}T${timeFormat}${z}`, inputType, inputFormat };
+      return { format: `${dateFormat}T${timeFormat}`, inputType, inputFormat };
     } else if (timeFormat) {
       inputType = 'time';
       inputFormat = 'HH:mm';
@@ -89,9 +91,13 @@ class DateTimeControl extends React.Component {
   formatInputValue(value) {
     if (value === '') return value;
     const { format, inputFormat } = this.getFormat();
-    let formattedValue = this.isUtc ? dayjs.utc(value).format(inputFormat) : dayjs(value).format(inputFormat);
+    let formattedValue = this.isUtc
+      ? dayjs.utc(value).format(inputFormat)
+      : dayjs(value).format(inputFormat);
     if (!this.isValidDate(formattedValue)) {
-      formattedValue = this.isUtc ? dayjs.utc(value, format).format(inputFormat) : dayjs(value, format).format(inputFormat);
+      formattedValue = this.isUtc
+        ? dayjs.utc(value, format).format(inputFormat)
+        : dayjs(value, format).format(inputFormat);
     }
     return formattedValue;
   }
@@ -130,14 +136,19 @@ class DateTimeControl extends React.Component {
           onChange={e => {
             const etv = e.target.value;
             const newValue = dayjs(etv);
-            this.handleChange(etv === '' ? '' : newValue)}
-          }
+            this.handleChange(etv === '' ? '' : newValue);
+          }}
           onFocus={setActiveStyle}
           onBlur={setInactiveStyle}
           disabled={isDisabled}
         />
         {!isDisabled && (
-          <Buttons t={t} handleChange={v => this.handleChange(v)} inputFormat={inputFormat} isUtc={this.isUtc} />
+          <Buttons
+            t={t}
+            handleChange={v => this.handleChange(v)}
+            inputFormat={inputFormat}
+            isUtc={this.isUtc}
+          />
         )}
       </div>
     );
