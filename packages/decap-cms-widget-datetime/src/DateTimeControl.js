@@ -6,11 +6,13 @@ import dayjs from 'dayjs';
 import { buttons } from 'decap-cms-ui-default';
 
 const customParseFormat = require('dayjs/plugin/customParseFormat');
-var localizedFormat = require('dayjs/plugin/localizedFormat');
+const localizedFormat = require('dayjs/plugin/localizedFormat');
+const utc = require('dayjs/plugin/utc')
 dayjs.extend(customParseFormat);
 dayjs.extend(localizedFormat);
+dayjs.extend(utc)
 
-function Buttons({ t, handleChange, inputFormat }) {
+function Buttons({ t, handleChange, inputFormat, isUtc }) {
   return (
     <div
       css={css`
@@ -24,7 +26,7 @@ function Buttons({ t, handleChange, inputFormat }) {
           ${buttons.button}
           ${buttons.widget}
         `}
-        onClick={() => handleChange(dayjs().format(inputFormat))}
+        onClick={() => handleChange(isUtc ? dayjs.utc().format(inputFormat) : dayjs().format(inputFormat))}
       >
         {t('editor.editorWidgets.datetime.now')}
       </button>
@@ -60,14 +62,14 @@ class DateTimeControl extends React.Component {
 
   getFormat() {
     const { field } = this.props;
-    const format = field.get('format');
-    const dateFormat = field.get('date_format');
-    const timeFormat = field.get('time_format');
-    let inputType = 'datetime-local';
+    const format = field?.get('format') || 'YYYY-MM-DDTHH:mm';
+    const dateFormat = field?.get('date_format');
+    const timeFormat = field?.get('time_format');
     let inputFormat = 'YYYY-MM-DDTHH:mm';
+    let inputType = 'datetime-local';
 
     if (dateFormat && timeFormat) {
-      return { format: `${dateFormat}T${timeFormat}`, inputType, inputFormat };
+      return { format: `${dateFormat}T${timeFormat}${z}`, inputType, inputFormat };
     } else if (timeFormat) {
       inputType = 'time';
       inputFormat = 'HH:mm';
@@ -76,38 +78,35 @@ class DateTimeControl extends React.Component {
       inputType = 'date';
       inputFormat = 'YYYY-MM-DD';
       return { format: dateFormat, inputType, inputFormat };
-    } else if (format) {
-      return { format, inputType, inputFormat };
     } else {
-      return { format: 'YYYY-MM-DDTHH:mm', inputType, inputFormat };
+      return { format, inputType, inputFormat };
     }
   }
 
-  getDefaultValue() {
-    const { field } = this.props;
-    const defaultValue = field.get('default');
-    return defaultValue;
-  }
+  isUtc = this.props.field.get('picker_utc') || false;
+  isValidDate = datetime => dayjs(datetime).isValid() || datetime === '';
 
   formatInputValue(value) {
+    if (value === '') return value;
     const { format, inputFormat } = this.getFormat();
-    let formattedValue = dayjs(value).format(inputFormat);
-    if (!dayjs(formattedValue).isValid()) {
-      formattedValue = dayjs(value, format).format(inputFormat);
+    let formattedValue = this.isUtc ? dayjs.utc(value).format(inputFormat) : dayjs(value).format(inputFormat);
+    if (!this.isValidDate(formattedValue)) {
+      formattedValue = this.isUtc ? dayjs.utc(value, format).format(inputFormat) : dayjs(value, format).format(inputFormat);
     }
     return formattedValue;
   }
 
-  isValidDate = datetime => dayjs.isDayjs(datetime) || datetime === '';
-
   handleChange = datetime => {
     if (!this.isValidDate(datetime)) return;
-
-    const { format, inputFormat } = this.getFormat();
-    const formattedValue = datetime ? dayjs(datetime, inputFormat).format(format) : '';
-
     const { onChange } = this.props;
-    onChange(formattedValue);
+
+    if (datetime === '') {
+      onChange('');
+    } else {
+      const { format, inputFormat } = this.getFormat();
+      const formattedValue = dayjs(datetime, inputFormat).format(format);
+      onChange(formattedValue);
+    }
   };
 
   render() {
@@ -128,12 +127,18 @@ class DateTimeControl extends React.Component {
           id={forID}
           type={inputType}
           value={this.formatInputValue(value)}
-          onChange={e => this.handleChange(dayjs(e.target.value))}
+          onChange={e => {
+            const etv = e.target.value;
+            const newValue = dayjs(etv);
+            this.handleChange(etv === '' ? '' : newValue)}
+          }
           onFocus={setActiveStyle}
           onBlur={setInactiveStyle}
           disabled={isDisabled}
         />
-        {!isDisabled && <Buttons t={t} handleChange={v => this.handleChange(v)} inputFormat={inputFormat} />}
+        {!isDisabled && (
+          <Buttons t={t} handleChange={v => this.handleChange(v)} inputFormat={inputFormat} isUtc={this.isUtc} />
+        )}
       </div>
     );
   }
