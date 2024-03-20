@@ -541,6 +541,7 @@ declare module 'decap-cms-core' {
   export type PreviewTemplateComponentProps = {
     entry: Map<string, any>;
     collection: Map<string, any>;
+    getCollection: (collectionName: string, slug?: string) => Promise<Map<string, any>[]>;
     widgetFor: (name: any, fields?: any, values?: any, fieldsMetaData?: any) => JSX.Element | null;
     widgetsFor: (name: any) => any;
     getAsset: GetAssetFunction;
