@@ -33,7 +33,7 @@ The Decap CMS can be used in two different ways.
 
 ## Contributing
 
-New contributors are always welcome! Check out [CONTRIBUTING.md](https://github.com/decaporg/decap-cms/blob/master/CONTRIBUTING.md) to get involved.
+New contributors are always welcome! Check out [CONTRIBUTING.md](https://github.com/decaporg/decap-cms/blob/main/CONTRIBUTING.md) to get involved.
 
 ## Change Log
 

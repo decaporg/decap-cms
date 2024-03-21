@@ -12,7 +12,7 @@ At first, look at `Implementation`. This is File Management System API and has f
 
 An abstraction layer between the CMS and Git-repository manager API.
 
-Used as backend in [cms-core](https://github.com/decaporg/decap-cms/tree/master/packages/decap-cms-core/README.md).
+Used as backend in [cms-core](https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-core/README.md).
 
 ### Low-level abstractions for Git-repository manager API:
 
