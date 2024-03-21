@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { jsx, css } from '@emotion/react';
 import dayjs from 'dayjs';
 import { buttons } from 'decap-cms-ui-default';
+import { debounce } from 'lodash';
 
 function Buttons({ t, handleChange }) {
   return (
@@ -61,6 +62,7 @@ export default class DateTimeControl extends React.Component {
 
   format = this.getFormat();
   defaultValue = this.getDefaultValue();
+  state = { value: this.defaultValue };
 
   componentDidMount() {
     const { value } = this.props;
@@ -80,6 +82,8 @@ export default class DateTimeControl extends React.Component {
   // Handle the empty case, if the user wants to empty the field.
   isValidDate = datetime => dayjs.isDayjs(datetime) || datetime instanceof Date || datetime === '';
 
+  onChange = debounce(value => this.props.onChange(value), 300);
+
   handleChange = datetime => {
     /**
      * Set the date only if it is valid.
@@ -88,24 +92,26 @@ export default class DateTimeControl extends React.Component {
       return;
     }
 
-    const { onChange } = this.props;
+    let value;
 
     /**
      * Produce a formatted string only if a format is set in the config.
      * Otherwise produce a date object.
      */
     if (this.format) {
-      const formattedValue = datetime ? dayjs(datetime).format(this.format) : '';
-      onChange(formattedValue);
+      value = datetime ? dayjs(datetime).format(this.format) : '';
+      this.onChange(value);
     } else {
-      const value = dayjs.isDayjs(datetime) ? datetime.toDate() : datetime;
-      onChange(value);
+      value = dayjs.isDayjs(datetime) ? datetime.toDate() : datetime;
+      this.onChange(value);
     }
+
+    this.setState({ value });
   };
 
   render() {
-    const { forID, value, classNameWrapper, setActiveStyle, setInactiveStyle, t, isDisabled } =
-      this.props;
+    const { value } = this.state;
+    const { forID, classNameWrapper, setActiveStyle, setInactiveStyle, t, isDisabled } = this.props;
 
     return (
       <div

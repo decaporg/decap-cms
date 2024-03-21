@@ -449,12 +449,12 @@ function validateObjectFields({ limit, author }) {
   cy.get('a[href^="#/collections/settings"]').click();
   cy.get('a[href^="#/collections/settings/entries/general"]').click();
   cy.get('input[type=number]').type(limit);
-  cy.contains('button', 'Save').click();
+  flushClockAndSave();
   assertNotification(notifications.error.missingField);
   assertFieldErrorStatus('Default Author', colorError);
   cy.contains('label', 'Default Author').click();
   cy.focused().type(author);
-  cy.contains('button', 'Save').click();
+  flushClockAndSave();
   assertNotification(notifications.saved);
   assertFieldErrorStatus('Default Author', colorNormal);
 }
@@ -464,20 +464,20 @@ function validateNestedObjectFields({ limit, author }) {
   cy.get('a[href^="#/collections/settings/entries/general"]').click();
   cy.contains('label', 'Default Author').click();
   cy.focused().type(author);
-  cy.contains('button', 'Save').click();
+  flushClockAndSave();
   assertNotification(notifications.error.missingField);
   cy.get('input[type=number]').type(limit + 1);
-  cy.contains('button', 'Save').click();
+  flushClockAndSave();
   assertFieldValidationError(notifications.validation.range);
   cy.get('input[type=number]')
     .clear()
     .type(-1);
-  cy.contains('button', 'Save').click();
+    flushClockAndSave();
   assertFieldValidationError(notifications.validation.range);
   cy.get('input[type=number]')
     .clear()
     .type(limit);
-  cy.contains('button', 'Save').click();
+    flushClockAndSave();
   assertNotification(notifications.saved);
 }
 
@@ -485,7 +485,7 @@ function validateListFields({ name, description }) {
   cy.get('a[href^="#/collections/settings"]').click();
   cy.get('a[href^="#/collections/settings/entries/authors"]').click();
   cy.contains('button', 'Add').click();
-  cy.contains('button', 'Save').click();
+  flushClockAndSave();
   assertNotification(notifications.error.missingField);
   assertFieldErrorStatus('Authors', colorError);
   cy.get('div[class*=SortableListItem]')
@@ -500,10 +500,10 @@ function validateListFields({ name, description }) {
   });
   assertListControlErrorStatus([colorError, colorError], '@listControl');
   cy.get('input')
-    .eq(2)
+    .last()
     .type(name);
   cy.getMarkdownEditor()
-    .eq(2)
+    .last()
     .type(description);
   flushClockAndSave();
   assertNotification(notifications.saved);
@@ -718,4 +718,5 @@ module.exports = {
   assertPublishedEntryInEditor,
   assertUnpublishedEntryInEditor,
   assertUnpublishedChangesInEditor,
+  advanceClock,
 };
