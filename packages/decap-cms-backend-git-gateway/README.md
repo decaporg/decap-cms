@@ -4,11 +4,11 @@ Netlify's [gateway](https://github.com/netlify/git-gateway) to hosted git APIs.
 
 ## Code structure
 
-`Implementation` for [File Management System API](https://github.com/decaporg/decap-cms/tree/master/packages/decap-cms-lib-util/README.md) based on `Api`.
+`Implementation` for [File Management System API](https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-lib-util/README.md) based on `Api`.
 
-`Api` and `Implementation` from backend-[github](https://github.com/decaporg/decap-cms/tree/master/packages/decap-cms-backend-github/README.md)/[gitlab](https://github.com/decaporg/decap-cms/tree/master/packages/decap-cms-backend-gitlab/README.md)/[bitbacket](https://github.com/decaporg/decap-cms/tree/master/packages/decap-cms-backend-bitbacket/README.md) extended with Netlify-specific `LargeMedia(LFS)` and `JWT` auth.
+`Api` and `Implementation` from backend-[github](https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-backend-github/README.md)/[gitlab](https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-backend-gitlab/README.md)/[bitbacket](https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-backend-bitbacket/README.md) extended with Netlify-specific `LargeMedia(LFS)` and `JWT` auth.
 
-`AuthenticationPage` - uses [lib-auth](https://github.com/decaporg/decap-cms/tree/master/packages/decap-cms-lib-auth/README.md) and implements Netlify Identity authentication flow.
+`AuthenticationPage` - uses [lib-auth](https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-lib-auth/README.md) and implements Netlify Identity authentication flow.
 
 Look at tests or types for more info.
 
