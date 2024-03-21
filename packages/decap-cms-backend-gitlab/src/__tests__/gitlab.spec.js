@@ -109,6 +109,7 @@ const resp = {
           access_level: 30,
         },
       },
+      default_branch: 'main',
     },
     readOnly: {
       permissions: {
@@ -194,7 +195,16 @@ describe('gitlab backend', () => {
       .reply(200, userResponse || resp.user.success);
 
     api
+      // The `authenticate` method of the API class from netlify-cms-backend-gitlab
+      // calls the same endpoint twice for gettng a single project.
+      // First time through `this.api.hasWriteAccess()
+      // Second time through the method `getDefaultBranchName` from lib-util
+      // As a result, we need to repeat the same response twice.
+      // Otherwise, we'll get an error: "No match for request to
+      // https://gitlab.com/api/v4"
+
       .get(expectedRepoUrl)
+      .times(2)
       .query(true)
       .reply(200, projectResponse || resp.project.success);
   }
