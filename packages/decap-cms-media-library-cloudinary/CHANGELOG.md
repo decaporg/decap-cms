@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.0.3](https://github.com/decaporg/decap-cms/compare/decap-cms-media-library-cloudinary@3.0.2...decap-cms-media-library-cloudinary@3.0.3) (2024-03-21)
+
+**Note:** Version bump only for package decap-cms-media-library-cloudinary
+
 ## [3.0.2](https://github.com/decaporg/decap-cms/compare/decap-cms-media-library-cloudinary@3.0.2-beta.0...decap-cms-media-library-cloudinary@3.0.2) (2024-02-01)
 
 **Note:** Version bump only for package decap-cms-media-library-cloudinary
