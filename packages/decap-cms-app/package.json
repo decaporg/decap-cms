@@ -54,6 +54,7 @@
     "decap-cms-widget-list": "^3.1.0",
     "decap-cms-widget-map": "^3.1.0",
     "decap-cms-widget-markdown": "^3.1.0",
+    "decap-cms-widget-richtext": "^3.1.0",
     "decap-cms-widget-number": "^3.1.0",
     "decap-cms-widget-object": "^3.1.0",
     "decap-cms-widget-relation": "^3.1.0",
