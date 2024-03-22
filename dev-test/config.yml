@@ -50,7 +50,7 @@ collections: # A list of collections the CMS should be able to edit
         required: false
         tagname: ''
 
-      - { label: 'Body', name: 'body', widget: 'markdown', hint: 'Main content goes here.' }
+      - { label: 'Body', name: 'body', widget: 'richtext', hint: 'Main content goes here.' }
 
   - name: 'restaurants' # Used in routes, ie.: /admin/collections/:slug/edit
     label: 'Restaurants' # Used in the UI
