@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { components } from 'react-select';
 import AsyncSelect from 'react-select/async';
-import { debounce, filter, find, get, isEmpty, last, uniqBy } from 'lodash';
+import { debounce, find, get, isEmpty, last, uniqBy } from 'lodash';
 import { fromJS, List, Map } from 'immutable';
 import { reactSelectStyles } from 'decap-cms-ui-default';
 import { stringTemplate, validations } from 'decap-cms-lib-widgets';
@@ -379,10 +379,10 @@ export default class RelationControl extends React.Component {
     const searchFieldsArray = getFieldArray(field.get('search_fields'));
     const file = field.get('file');
 
-    query(forID, collection, searchFieldsArray, term, file, optionsLength).then(({ payload }) => {
+    query(forID, collection, searchFieldsArray, term, file).then(({ payload }) => {
       const hits = payload.hits || [];
       const options = this.parseHitOptions(hits);
-      const uniq = uniqOptions(this.state.initialOptions, options);
+      const uniq = uniqOptions(this.state.initialOptions, options).slice(0, optionsLength);
       callback(uniq);
     });
   }, 500);

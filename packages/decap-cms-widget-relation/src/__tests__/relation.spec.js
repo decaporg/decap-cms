@@ -109,7 +109,6 @@ const emptyFilterFieldConfig = {
   ],
 };
 
-
 function generateHits(length) {
   const hits = Array.from({ length }, (val, idx) => {
     const title = `Post # ${idx + 1}`;
@@ -247,11 +246,7 @@ class RelationController extends React.Component {
       hits = [queryHits[queryHits.length - 4]];
     }
 
-    console.log(hits.length)
-
     hits = hits.slice(0, optionsLength);
-    
-    console.log(hits.length, optionsLength)
 
     this.setQueryHits(hits);
 
@@ -409,7 +404,9 @@ describe('Relation widget', () => {
     const value = 'post-number-1';
     const label = 'post-number-1 post-number-1 md';
     const metadata = {
-      post: { posts: { 'post-number-1': { title: 'Post # 1', draft: true, slug: 'post-number-1' } } },
+      post: {
+        posts: { 'post-number-1': { title: 'Post # 1', draft: true, slug: 'post-number-1' } },
+      },
     };
 
     fireEvent.keyDown(input, { key: 'ArrowDown' });
@@ -553,7 +550,7 @@ describe('Relation widget', () => {
       const field = fromJS(filterBooleanFieldConfig);
       const { getAllByText, input } = setup({ field });
       const expectedOptions = [];
-      for (let i = 2; i <= 20; i += 2) {
+      for (let i = 2; i <= 25; i += 2) {
         expectedOptions.push(`Post # ${i} post-number-${i}`);
       }
       fireEvent.keyDown(input, { key: 'ArrowDown' });
@@ -561,11 +558,13 @@ describe('Relation widget', () => {
       await waitFor(() => {
         const displayedOptions = getAllByText(/^Post # (\d{1,2}) post-number-\1$/);
         expect(displayedOptions).toHaveLength(expectedOptions.length);
-        for (let i = 0; i < expectedOptions.length; i++) {  
+        for (let i = 0; i < expectedOptions.length; i++) {
           const expectedOption = expectedOptions[i];
-          const optionFound = displayedOptions.some(option => option.textContent === expectedOption);
+          const optionFound = displayedOptions.some(
+            option => option.textContent === expectedOption,
+          );
           expect(optionFound).toBe(true);
-        }  
+        }
       });
     });
 
@@ -573,22 +572,24 @@ describe('Relation widget', () => {
       const field = fromJS(filterStringFieldConfig);
       const { getAllByText, input } = setup({ field });
       const expectedOptions = [
-        'Post # 1 post-number-1',  
-        'Post # 2 post-number-2',  
-        'Post # 7 post-number-7',  
-        'Post # 9 post-number-9',  
-        'Post # 15 post-number-15' 
+        'Post # 1 post-number-1',
+        'Post # 2 post-number-2',
+        'Post # 7 post-number-7',
+        'Post # 9 post-number-9',
+        'Post # 15 post-number-15',
       ];
       fireEvent.keyDown(input, { key: 'ArrowDown' });
 
       await waitFor(() => {
         const displayedOptions = getAllByText(/^Post # (\d{1,2}) post-number-\1$/);
         expect(displayedOptions).toHaveLength(expectedOptions.length);
-        for (let i = 0; i < expectedOptions.length; i++) {  
+        for (let i = 0; i < expectedOptions.length; i++) {
           const expectedOption = expectedOptions[i];
-          const optionFound = displayedOptions.some(option => option.textContent === expectedOption);
+          const optionFound = displayedOptions.some(
+            option => option.textContent === expectedOption,
+          );
           expect(optionFound).toBe(true);
-        }  
+        }
       });
     });
 
@@ -596,21 +597,23 @@ describe('Relation widget', () => {
       const field = fromJS(multipleFiltersFieldConfig);
       const { getAllByText, input } = setup({ field });
       const expectedOptions = [
-        'Post # 1 post-number-1',  
-        'Post # 7 post-number-7',  
-        'Post # 9 post-number-9',  
-        'Post # 15 post-number-15' 
+        'Post # 1 post-number-1',
+        'Post # 7 post-number-7',
+        'Post # 9 post-number-9',
+        'Post # 15 post-number-15',
       ];
       fireEvent.keyDown(input, { key: 'ArrowDown' });
 
       await waitFor(() => {
         const displayedOptions = getAllByText(/^Post # (\d{1,2}) post-number-\1$/);
         expect(displayedOptions).toHaveLength(expectedOptions.length);
-        for (let i = 0; i < expectedOptions.length; i++) {  
+        for (let i = 0; i < expectedOptions.length; i++) {
           const expectedOption = expectedOptions[i];
-          const optionFound = displayedOptions.some(option => option.textContent === expectedOption);
+          const optionFound = displayedOptions.some(
+            option => option.textContent === expectedOption,
+          );
           expect(optionFound).toBe(true);
-        }  
+        }
       });
     });
 
@@ -623,6 +626,5 @@ describe('Relation widget', () => {
         expect(() => getAllByText(/^Post # (\d{1,2}) post-number-\1$/)).toThrow(Error);
       });
     });
-
   });
 });
