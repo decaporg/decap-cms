@@ -20,16 +20,18 @@ import {
   KEYS_HEADING,
 } from '@udecode/plate-heading';
 import { createSoftBreakPlugin, createExitBreakPlugin } from '@udecode/plate-break';
+import { createListPlugin, ELEMENT_UL, ELEMENT_OL, ELEMENT_LI } from '@udecode/plate-list';
 import { ClassNames } from '@emotion/react';
 import { fonts, lengths, zIndex } from 'decap-cms-ui-default';
 
+import { editorStyleVars } from '../styles';
+import withProps from './withProps';
 import Editor from './components/Editor';
 import Toolbar from './components/Toolbar';
-import { editorStyleVars } from '../styles';
-import CodeLeaf from './components/CodeLeaf';
-import ParagraphElement from './components/ParagraphElement';
-import HeadingElement from './components/HeadingElement';
-import withProps from './withProps';
+import CodeLeaf from './components/Leaf/CodeLeaf';
+import ParagraphElement from './components/Element/ParagraphElement';
+import HeadingElement from './components/Element/HeadingElement';
+import ListElement from './components/Element/ListElement';
 
 function visualEditorStyles({ minimal }) {
   return `
@@ -64,6 +66,7 @@ export default function VisualEditor(props) {
       createBoldPlugin(),
       createItalicPlugin(),
       createCodePlugin(),
+      createListPlugin(),
       createSoftBreakPlugin({
         options: {
           rules: [{ hotkey: 'shift+enter' }],
@@ -105,6 +108,9 @@ export default function VisualEditor(props) {
         [ELEMENT_H4]: withProps(HeadingElement, { variant: 'h4' }),
         [ELEMENT_H5]: withProps(HeadingElement, { variant: 'h5' }),
         [ELEMENT_H6]: withProps(HeadingElement, { variant: 'h6' }),
+        [ELEMENT_UL]: withProps(ListElement, { variant: 'ul' }),
+        [ELEMENT_OL]: withProps(ListElement, { variant: 'ol' }),
+        [ELEMENT_LI]: withProps(ListElement, { variant: 'li' }),
       },
     },
   );

@@ -11,6 +11,7 @@ import {
 } from '@udecode/plate-common';
 import styled from '@emotion/styled';
 import { ELEMENT_PARAGRAPH } from '@udecode/plate-paragraph';
+import { unwrapList } from '@udecode/plate-list';
 import { Dropdown, DropdownButton, DropdownItem } from 'decap-cms-ui-default';
 
 import ToolbarButton from './ToolbarButton';
@@ -47,6 +48,7 @@ function HeadingToolbarButton({ disabled, isVisible, t }) {
   }, []);
 
   function handleChange(optionKey) {
+    unwrapList(editor);
     toggleNodeType(editor, { activeType: optionKey });
     focusEditor(editor);
   }
