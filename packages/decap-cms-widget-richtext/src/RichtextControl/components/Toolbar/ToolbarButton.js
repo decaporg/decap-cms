@@ -8,9 +8,9 @@ const StyledToolbarButton = styled.button`
   display: inline-block;
   padding: 6px;
   border: none;
-  background-color: transparent;
+  background-color: ${props => (props.isActive ? '#e8f5fe' : 'transparent')};
   font-size: 16px;
-  color: ${props => (props.isActive ? '#1e2532' : 'inherit')};
+  color: ${props => (props.isActive ? '#3a69c7' : 'inherit')};
   cursor: pointer;
 
   &:disabled {
