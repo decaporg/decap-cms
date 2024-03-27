@@ -7,4 +7,4 @@ const ParagraphElement = styled(PlateElement)`
   margin-bottom: ${bottomMargin};
 `;
 
-export default ParagraphElement
+export default ParagraphElement;
