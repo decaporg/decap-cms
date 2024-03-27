@@ -6,7 +6,8 @@ import { Icon, buttons } from 'decap-cms-ui-default';
 const StyledToolbarButton = styled.button`
   ${buttons.button};
   display: inline-block;
-  padding: 6px;
+  padding: 4px;
+  margin: 2px;
   border: none;
   background-color: ${props => (props.isActive ? '#e8f5fe' : 'transparent')};
   font-size: 16px;
