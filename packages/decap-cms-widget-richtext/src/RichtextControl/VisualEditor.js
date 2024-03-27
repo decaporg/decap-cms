@@ -32,6 +32,7 @@ import CodeLeaf from './components/Leaf/CodeLeaf';
 import ParagraphElement from './components/Element/ParagraphElement';
 import HeadingElement from './components/Element/HeadingElement';
 import ListElement from './components/Element/ListElement';
+import { markdownToSlate, slateToMarkdown } from '../serializers';
 
 function visualEditorStyles({ minimal }) {
   return `
@@ -48,17 +49,15 @@ function visualEditorStyles({ minimal }) {
 `;
 }
 
-const initialValue = [
+const emptyValue = [
   {
     id: '1',
     type: 'p',
-    children: [{ text: 'Hello, World!' }],
+    children: [{ text: '' }],
   },
 ];
 
-export default function VisualEditor(props) {
-  const { t, field, className, isDisabled } = props;
-
+export default function VisualEditor({ t, field, className, isDisabled, onChange, ...props }) {
   const plugins = createPlugins(
     [
       createParagraphPlugin(),
@@ -100,7 +99,7 @@ export default function VisualEditor(props) {
       components: {
         [MARK_BOLD]: withProps(PlateLeaf, { as: 'b' }),
         [MARK_CODE]: CodeLeaf,
-        [MARK_ITALIC]: withProps(PlateLeaf, { as: 'em'}),
+        [MARK_ITALIC]: withProps(PlateLeaf, { as: 'em' }),
         [ELEMENT_PARAGRAPH]: ParagraphElement,
         [ELEMENT_H1]: withProps(HeadingElement, { variant: 'h1' }),
         [ELEMENT_H2]: withProps(HeadingElement, { variant: 'h2' }),
@@ -127,9 +126,14 @@ export default function VisualEditor(props) {
     console.log('handleToggleMode');
   }
 
-  function handleChange(data) {
-    console.log('handleChange', data);
+  function handleChange(value) {
+    const mdValue = slateToMarkdown(value, {});
+    onChange(mdValue);
   }
+
+  const initialValue = props.value
+      ? markdownToSlate(props.value, {})
+      : emptyValue;
 
   return (
     <ClassNames>
