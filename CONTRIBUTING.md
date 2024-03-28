@@ -103,10 +103,10 @@ We actively welcome your pull requests!
 
 If you need help with Git or our workflow, please ask in our [community chat](https://decapcms.org/chat). We want your contributions even if you're just learning Git. Our maintainers are happy to help!
 
-Decap CMS uses the [Forking Workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/forking-workflow) + [Feature Branches](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow). Additionally, PR's should be [rebased](https://www.atlassian.com/git/tutorials/merging-vs-rebasing) on master when opened, and again before merging.
+Decap CMS uses the [Forking Workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/forking-workflow) + [Feature Branches](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow). Additionally, PR's should be [rebased](https://www.atlassian.com/git/tutorials/merging-vs-rebasing) on main when opened, and again before merging.
 
 1. Fork the repo.
-2. Create a branch from `master`. If you're addressing a specific issue, prefix your branch name with the issue number.
+2. Create a branch from `main`. If you're addressing a specific issue, prefix your branch name with the issue number.
 3. If you've added code that should be tested, add tests.
 4. If you've changed APIs, update the documentation.
 5. Run `npm run test` and ensure the test suite passes.

@@ -205,7 +205,12 @@ function ThematicBreak(props) {
 }
 
 function Break(props) {
-  return <br {...props.attributes} />;
+  return (
+    <>
+      <br {...props.attributes} />
+      {props.children}
+    </>
+  );
 }
 
 function BulletedList(props) {

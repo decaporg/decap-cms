@@ -147,8 +147,12 @@ function uniqOptions(initial, current) {
   return uniqBy(initial.concat(current), o => o.value);
 }
 
-function getSearchFieldArray(searchFields) {
-  return List.isList(searchFields) ? searchFields.toJS() : [searchFields];
+function getFieldArray(field) {
+  if (!field) {
+    return [];
+  }
+
+  return List.isList(field) ? field.toJS() : [field];
 }
 
 function getSelectedValue({ value, options, isMultiple }) {
@@ -238,7 +242,7 @@ export default class RelationControl extends React.Component {
     const initialSearchValues = value && (this.isMultiple() ? getSelectedOptions(value) : [value]);
     if (initialSearchValues && initialSearchValues.length > 0) {
       const metadata = {};
-      const searchFieldsArray = getSearchFieldArray(field.get('search_fields'));
+      const searchFieldsArray = getFieldArray(field.get('search_fields'));
       const { payload } = await query(forID, collection, searchFieldsArray, '', file);
       const hits = payload.hits || [];
       const options = this.parseHitOptions(hits);
@@ -249,12 +253,13 @@ export default class RelationControl extends React.Component {
           return selectedOption;
         })
         .filter(Boolean);
+      const filteredValue = initialOptions.map(option => option.value);
 
       this.mounted && this.setState({ initialOptions });
 
       //set metadata
       this.mounted &&
-        onChange(value, {
+        onChange(filteredValue.length === 1 ? filteredValue[0] : fromJS(filteredValue), {
           [field.get('name')]: {
             [field.get('collection')]: metadata,
           },
@@ -337,18 +342,28 @@ export default class RelationControl extends React.Component {
     const { field } = this.props;
     const valueField = field.get('value_field');
     const displayField = field.get('display_fields') || List([field.get('value_field')]);
+    const filters = getFieldArray(field.get('filters'));
+
     const options = hits.reduce((acc, hit) => {
-      const valuesPaths = stringTemplate.expandPath({ data: hit.data, path: valueField });
-      for (let i = 0; i < valuesPaths.length; i++) {
-        const label = displayField
-          .toJS()
-          .map(key => {
-            const displayPaths = stringTemplate.expandPath({ data: hit.data, path: key });
-            return this.parseNestedFields(hit, displayPaths[i] || displayPaths[0]);
-          })
-          .join(' ');
-        const value = this.parseNestedFields(hit, valuesPaths[i]);
-        acc.push({ data: hit.data, value, label });
+      if (
+        filters.every(
+          filter =>
+            Object.prototype.hasOwnProperty.call(hit.data, filter.field) &&
+            filter.values.includes(hit.data[filter.field]),
+        )
+      ) {
+        const valuesPaths = stringTemplate.expandPath({ data: hit.data, path: valueField });
+        for (let i = 0; i < valuesPaths.length; i++) {
+          const label = displayField
+            .toJS()
+            .map(key => {
+              const displayPaths = stringTemplate.expandPath({ data: hit.data, path: key });
+              return this.parseNestedFields(hit, displayPaths[i] || displayPaths[0]);
+            })
+            .join(' ');
+          const value = this.parseNestedFields(hit, valuesPaths[i]);
+          acc.push({ data: hit.data, value, label });
+        }
       }
 
       return acc;
@@ -361,13 +376,13 @@ export default class RelationControl extends React.Component {
     const { field, query, forID } = this.props;
     const collection = field.get('collection');
     const optionsLength = field.get('options_length') || 20;
-    const searchFieldsArray = getSearchFieldArray(field.get('search_fields'));
+    const searchFieldsArray = getFieldArray(field.get('search_fields'));
     const file = field.get('file');
 
-    query(forID, collection, searchFieldsArray, term, file, optionsLength).then(({ payload }) => {
+    query(forID, collection, searchFieldsArray, term, file).then(({ payload }) => {
       const hits = payload.hits || [];
       const options = this.parseHitOptions(hits);
-      const uniq = uniqOptions(this.state.initialOptions, options);
+      const uniq = uniqOptions(this.state.initialOptions, options).slice(0, optionsLength);
       callback(uniq);
     });
   }, 500);
