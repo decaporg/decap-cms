@@ -90,6 +90,7 @@ jobs:
           NODE_OPTIONS: --max-old-space-size=4096
           MACHINE_COUNT: 2
           MACHINE_INDEX: ${{ matrix.node-version }}
+          TZ: Europe/Amsterdam
       - uses: actions/upload-artifact@v3
         if: ${{ always() }}
         with:
