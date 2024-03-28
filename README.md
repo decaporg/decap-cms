@@ -1,6 +1,6 @@
 ![Decap CMS](/img/decap.svg)
 
-[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/decaporg/decap-cms/blob/master/LICENSE) [![Netlify Status](https://api.netlify.com/api/v1/badges/8b87160b-0a11-4f75-8050-1d21bc1cff8c/deploy-status)](https://app.netlify.com/sites/decap-www/deploys) [![npm version](https://img.shields.io/npm/v/decap-cms.svg?style=flat)](https://www.npmjs.com/package/decap-cms) [![Build Status](https://github.com/decaporg/decap-cms/workflows/Node%20CI/badge.svg)](https://github.com/decaporg/decap-cms/actions?query=branch%3Amaster+workflow%3A%22Node+CI%22) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/decaporg/decap-cms/blob/master/CONTRIBUTING.md)
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/decaporg/decap-cms/blob/main/LICENSE) [![Netlify Status](https://api.netlify.com/api/v1/badges/8b87160b-0a11-4f75-8050-1d21bc1cff8c/deploy-status)](https://app.netlify.com/sites/decap-www/deploys) [![npm version](https://img.shields.io/npm/v/decap-cms.svg?style=flat)](https://www.npmjs.com/package/decap-cms) [![Build Status](https://github.com/decaporg/decap-cms/workflows/Node%20CI/badge.svg)](https://github.com/decaporg/decap-cms/actions?query=branch%3Amain+workflow%3A%22Node+CI%22) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/decaporg/decap-cms/blob/main/CONTRIBUTING.md)
 
 [decapcms.org](https://www.decapcms.org/)
 
@@ -37,7 +37,7 @@ The Decap CMS can be used in two different ways.
 
 ## Contributing
 
-New contributors are always welcome! Check out [CONTRIBUTING.md](https://github.com/decaporg/decap-cms/blob/master/CONTRIBUTING.md) to get involved.
+New contributors are always welcome! Check out [CONTRIBUTING.md](https://github.com/decaporg/decap-cms/blob/main/CONTRIBUTING.md) to get involved.
 
 ## Change Log
 
