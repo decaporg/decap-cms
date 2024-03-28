@@ -3,9 +3,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { jsx, css } from '@emotion/react';
 import dayjs from 'dayjs';
-import customParseFormat from "dayjs/plugin/customParseFormat";
-import localizedFormat from "dayjs/plugin/localizedFormat";
-import utc from "dayjs/plugin/utc";
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+import localizedFormat from 'dayjs/plugin/localizedFormat';
+import utc from 'dayjs/plugin/utc';
 import { buttons } from 'decap-cms-ui-default';
 
 dayjs.extend(customParseFormat);
@@ -104,7 +104,9 @@ class DateTimeControl extends React.Component {
     const { inputFormat } = this.getFormat();
     if (value === undefined) {
       setTimeout(() => {
-        this.handleChange(this.defaultValue === undefined ? dayjs().format(inputFormat) : this.defaultValue);
+        this.handleChange(
+          this.defaultValue === undefined ? dayjs().format(inputFormat) : this.defaultValue,
+        );
       }, 0);
     }
   }
@@ -140,7 +142,7 @@ class DateTimeControl extends React.Component {
     const etv = e.target.value;
     const newValue = dayjs(etv);
     this.handleChange(etv === '' ? '' : newValue);
-  }
+  };
 
   render() {
     const { forID, value, classNameWrapper, setActiveStyle, setInactiveStyle, t, isDisabled } =
