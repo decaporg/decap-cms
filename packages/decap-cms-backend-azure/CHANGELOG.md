@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.1.1](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-azure@3.1.0-beta.1...decap-cms-backend-azure@3.1.1) (2024-03-21)
+
+**Note:** Version bump only for package decap-cms-backend-azure
+
 # [3.1.0](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-azure@3.1.0-beta.1...decap-cms-backend-azure@3.1.0) (2024-02-01)
 
 **Note:** Version bump only for package decap-cms-backend-azure
@@ -55,25 +59,25 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 - display author of changes in workflow tab ([#5780](https://github.com/decaporg/decap-cms/issues/5780)) ([3f607e4](https://github.com/decaporg/decap-cms/commit/3f607e41d9c4d8fe5329a9ab6841cada7742825e))
 
-## [1.2.2](https://github.com/decaporg/decap-cms/tree/master/packages/decap-cms-backend-azure/compare/decap-cms-backend-azure@1.2.1...decap-cms-backend-azure@1.2.2) (2021-06-01)
+## [1.2.2](https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-backend-azure/compare/decap-cms-backend-azure@1.2.1...decap-cms-backend-azure@1.2.2) (2021-06-01)
 
 **Note:** Version bump only for package decap-cms-backend-azure
 
-## [1.2.1](https://github.com/decaporg/decap-cms/tree/master/packages/decap-cms-backend-azure/compare/decap-cms-backend-azure@1.2.0...decap-cms-backend-azure@1.2.1) (2021-05-31)
+## [1.2.1](https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-backend-azure/compare/decap-cms-backend-azure@1.2.0...decap-cms-backend-azure@1.2.1) (2021-05-31)
 
 **Note:** Version bump only for package decap-cms-backend-azure
 
-# [1.2.0](https://github.com/decaporg/decap-cms/tree/master/packages/decap-cms-backend-azure/compare/decap-cms-backend-azure@1.1.2...decap-cms-backend-azure@1.2.0) (2021-05-04)
+# [1.2.0](https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-backend-azure/compare/decap-cms-backend-azure@1.1.2...decap-cms-backend-azure@1.2.0) (2021-05-04)
 
 ### Features
 
-- added react 17 as peer dependency in packages ([#5316](https://github.com/decaporg/decap-cms/tree/master/packages/decap-cms-backend-azure/issues/5316)) ([9e42380](https://github.com/decaporg/decap-cms/tree/master/packages/decap-cms-backend-azure/commit/9e423805707321396eec137f5b732a5b07a0dd3f))
+- added react 17 as peer dependency in packages ([#5316](https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-backend-azure/issues/5316)) ([9e42380](https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-backend-azure/commit/9e423805707321396eec137f5b732a5b07a0dd3f))
 
-## [1.1.2](https://github.com/decaporg/decap-cms/tree/master/packages/decap-cms-backend-azure/compare/decap-cms-backend-azure@1.1.1...decap-cms-backend-azure@1.1.2) (2021-02-23)
+## [1.1.2](https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-backend-azure/compare/decap-cms-backend-azure@1.1.1...decap-cms-backend-azure@1.1.2) (2021-02-23)
 
 **Note:** Version bump only for package decap-cms-backend-azure
 
-## [1.1.1](https://github.com/decaporg/decap-cms/tree/master/packages/decap-cms-backend-azure/compare/decap-cms-backend-azure@1.1.0...decap-cms-backend-azure@1.1.1) (2021-02-10)
+## [1.1.1](https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-backend-azure/compare/decap-cms-backend-azure@1.1.0...decap-cms-backend-azure@1.1.1) (2021-02-10)
 
 **Note:** Version bump only for package decap-cms-backend-azure
 
@@ -81,4 +85,4 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Features
 
-- add azure devops backend ([#4427](https://github.com/decaporg/decap-cms/tree/master/packages/decap-cms-backend-azure/issues/4427)) ([4e6dc88](https://github.com/decaporg/decap-cms/tree/master/packages/decap-cms-backend-azure/commit/4e6dc88efb1dae4cf6137730c3b4fb6d0f75a8cc))
+- add azure devops backend ([#4427](https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-backend-azure/issues/4427)) ([4e6dc88](https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-backend-azure/commit/4e6dc88efb1dae4cf6137730c3b4fb6d0f75a8cc))
