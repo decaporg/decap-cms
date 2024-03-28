@@ -113,7 +113,7 @@
     "husky": "^7.0.0",
     "jest": "^27.0.0",
     "jest-cli": "^27.0.0",
-    "jest-environment-jsdom": "^29.7.0",
+    "jest-environment-jsdom": "^27.0.0",
     "js-yaml": "^4.0.0",
     "mockserver-client": "^5.8.0",
     "mockserver-node": "^5.8.0",
