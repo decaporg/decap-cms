@@ -8,6 +8,7 @@ import { MARK_BOLD, MARK_CODE, MARK_ITALIC } from '@udecode/plate-basic-marks';
 import MarkToolbarButton from './MarkToolbarButton';
 import HeadingToolbarButton from './HeadingToolbarButton';
 import ListToolbarButton from './ListToolbarButton';
+import LinkToolbarButton from './LinkToolbarButton';
 
 const ToolbarContainer = styled.div`
   position: relative;
@@ -58,6 +59,13 @@ function Toolbar(props) {
             disabled={disabled}
           />
         )}
+        <LinkToolbarButton
+          type="link"
+          label={t('editor.editorWidgets.markdown.link')}
+          icon="link"
+          disabled={disabled}
+          t={t}
+        />
         <HeadingToolbarButton isVisible={isVisible} disabled={disabled} t={t} />
         <ListToolbarButton
           type="ul"

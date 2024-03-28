@@ -21,6 +21,7 @@ import {
 } from '@udecode/plate-heading';
 import { createSoftBreakPlugin, createExitBreakPlugin } from '@udecode/plate-break';
 import { createListPlugin, ELEMENT_UL, ELEMENT_OL, ELEMENT_LI } from '@udecode/plate-list';
+import { createLinkPlugin, ELEMENT_LINK } from '@udecode/plate-link';
 import { ClassNames } from '@emotion/react';
 import { fonts, lengths, zIndex } from 'decap-cms-ui-default';
 
@@ -33,6 +34,7 @@ import ParagraphElement from './components/Element/ParagraphElement';
 import HeadingElement from './components/Element/HeadingElement';
 import ListElement from './components/Element/ListElement';
 import { markdownToSlate, slateToMarkdown } from '../serializers';
+import LinkElement from './components/Element/LinkElement';
 
 function visualEditorStyles({ minimal }) {
   return `
@@ -66,6 +68,7 @@ export default function VisualEditor({ t, field, className, isDisabled, onChange
       createItalicPlugin(),
       createCodePlugin(),
       createListPlugin(),
+      createLinkPlugin(),
       createSoftBreakPlugin({
         options: {
           rules: [{ hotkey: 'shift+enter' }],
@@ -101,6 +104,7 @@ export default function VisualEditor({ t, field, className, isDisabled, onChange
         [MARK_CODE]: CodeLeaf,
         [MARK_ITALIC]: withProps(PlateLeaf, { as: 'em' }),
         [ELEMENT_PARAGRAPH]: ParagraphElement,
+        [ELEMENT_LINK]: LinkElement,
         [ELEMENT_H1]: withProps(HeadingElement, { variant: 'h1' }),
         [ELEMENT_H2]: withProps(HeadingElement, { variant: 'h2' }),
         [ELEMENT_H3]: withProps(HeadingElement, { variant: 'h3' }),
@@ -127,6 +131,7 @@ export default function VisualEditor({ t, field, className, isDisabled, onChange
   }
 
   function handleChange(value) {
+    console.log('handleChange', value);
     const mdValue = slateToMarkdown(value, {});
     onChange(mdValue);
   }
