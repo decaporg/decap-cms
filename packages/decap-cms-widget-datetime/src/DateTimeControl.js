@@ -3,11 +3,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { jsx, css } from '@emotion/react';
 import dayjs from 'dayjs';
+import customParseFormat from "dayjs/plugin/customParseFormat";
+import localizedFormat from "dayjs/plugin/localizedFormat";
+import utc from "dayjs/plugin/utc";
 import { buttons } from 'decap-cms-ui-default';
 
-const customParseFormat = require('dayjs/plugin/customParseFormat');
-const localizedFormat = require('dayjs/plugin/localizedFormat');
-const utc = require('dayjs/plugin/utc');
 dayjs.extend(customParseFormat);
 dayjs.extend(localizedFormat);
 dayjs.extend(utc);
@@ -72,17 +72,21 @@ class DateTimeControl extends React.Component {
 
     if (dateFormat && timeFormat) {
       return { format: `${dateFormat}T${timeFormat}`, inputType, inputFormat };
-    } else if (timeFormat) {
+    }
+
+    if (timeFormat) {
       inputType = 'time';
       inputFormat = 'HH:mm';
       return { format: timeFormat, inputType, inputFormat };
-    } else if (dateFormat) {
+    }
+
+    if (dateFormat) {
       inputType = 'date';
       inputFormat = 'YYYY-MM-DD';
       return { format: dateFormat, inputType, inputFormat };
-    } else {
-      return { format, inputType, inputFormat };
     }
+
+    return { format, inputType, inputFormat };
   }
 
   isUtc = this.props.field.get('picker_utc') || false;
@@ -115,6 +119,12 @@ class DateTimeControl extends React.Component {
     }
   };
 
+  onInputChange = e => {
+    const etv = e.target.value;
+    const newValue = dayjs(etv);
+    this.handleChange(etv === '' ? '' : newValue);
+  }
+
   render() {
     const { forID, value, classNameWrapper, setActiveStyle, setInactiveStyle, t, isDisabled } =
       this.props;
@@ -133,11 +143,7 @@ class DateTimeControl extends React.Component {
           id={forID}
           type={inputType}
           value={this.formatInputValue(value)}
-          onChange={e => {
-            const etv = e.target.value;
-            const newValue = dayjs(etv);
-            this.handleChange(etv === '' ? '' : newValue);
-          }}
+          onChange={this.onInputChange}
           onFocus={setActiveStyle}
           onBlur={setInactiveStyle}
           disabled={isDisabled}
