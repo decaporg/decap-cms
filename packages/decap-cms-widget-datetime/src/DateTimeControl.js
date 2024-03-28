@@ -89,8 +89,25 @@ class DateTimeControl extends React.Component {
     return { format, inputType, inputFormat };
   }
 
+  getDefaultValue() {
+    const { field } = this.props;
+    const defaultValue = field.get('default');
+    return defaultValue;
+  }
+
   isUtc = this.props.field.get('picker_utc') || false;
   isValidDate = datetime => dayjs(datetime).isValid() || datetime === '';
+  defaultValue = this.getDefaultValue();
+
+  componentDidMount() {
+    const { value } = this.props;
+    const { inputFormat } = this.getFormat();
+    if (value === undefined) {
+      setTimeout(() => {
+        this.handleChange(this.defaultValue === undefined ? dayjs().format(inputFormat) : this.defaultValue);
+      }, 0);
+    }
+  }
 
   formatInputValue(value) {
     if (value === '') return value;
