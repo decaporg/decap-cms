@@ -13,8 +13,13 @@ import {
   getPreviewStyles,
   getRemarkPlugins,
 } from '../../../lib/registry';
+import { getAllEntries, tryLoadEntry } from '../../../actions/entries';
 import { ErrorBoundary } from '../../UI';
-import { selectTemplateName, selectInferedField, selectField } from '../../../reducers/collections';
+import {
+  selectTemplateName,
+  selectInferredField,
+  selectField,
+} from '../../../reducers/collections';
 import { boundGetAsset } from '../../../actions/media';
 import { selectIsLoadingAsset } from '../../../reducers/medias';
 import { INFERABLE_FIELDS } from '../../../constants/fieldInference';
@@ -55,17 +60,17 @@ export class PreviewPane extends React.Component {
     );
   };
 
-  inferedFields = {};
+  inferredFields = {};
 
   inferFields() {
-    const titleField = selectInferedField(this.props.collection, 'title');
-    const shortTitleField = selectInferedField(this.props.collection, 'shortTitle');
-    const authorField = selectInferedField(this.props.collection, 'author');
+    const titleField = selectInferredField(this.props.collection, 'title');
+    const shortTitleField = selectInferredField(this.props.collection, 'shortTitle');
+    const authorField = selectInferredField(this.props.collection, 'author');
 
-    this.inferedFields = {};
-    if (titleField) this.inferedFields[titleField] = INFERABLE_FIELDS.title;
-    if (shortTitleField) this.inferedFields[shortTitleField] = INFERABLE_FIELDS.shortTitle;
-    if (authorField) this.inferedFields[authorField] = INFERABLE_FIELDS.author;
+    this.inferredFields = {};
+    if (titleField) this.inferredFields[titleField] = INFERABLE_FIELDS.title;
+    if (shortTitleField) this.inferredFields[shortTitleField] = INFERABLE_FIELDS.shortTitle;
+    if (authorField) this.inferredFields[authorField] = INFERABLE_FIELDS.author;
   }
 
   /**
@@ -100,15 +105,15 @@ export class PreviewPane extends React.Component {
     }
 
     const labelledWidgets = ['string', 'text', 'number'];
-    const inferedField = Object.entries(this.inferedFields)
+    const inferredField = Object.entries(this.inferredFields)
       .filter(([key]) => {
         const fieldToMatch = selectField(this.props.collection, key);
         return fieldToMatch === field;
       })
       .map(([, value]) => value)[0];
 
-    if (inferedField) {
-      value = inferedField.defaultPreview(value);
+    if (inferredField) {
+      value = inferredField.defaultPreview(value);
     } else if (
       value &&
       labelledWidgets.indexOf(field.get('widget')) !== -1 &&
@@ -192,6 +197,23 @@ export class PreviewPane extends React.Component {
     });
   };
 
+  /**
+   * This function exists entirely to expose collections from outside of this entry
+   *
+   */
+  getCollection = async (collectionName, slug) => {
+    const { state } = this.props;
+    const selectedCollection = state.collections.get(collectionName);
+
+    if (typeof slug === 'undefined') {
+      const entries = await getAllEntries(state, selectedCollection);
+      return entries.map(entry => Map().set('data', entry.data));
+    }
+
+    const entry = await tryLoadEntry(state, selectedCollection, slug);
+    return Map().set('data', entry.data);
+  };
+
   render() {
     const { entry, collection, config } = this.props;
 
@@ -208,6 +230,7 @@ export class PreviewPane extends React.Component {
       ...this.props,
       widgetFor: this.widgetFor,
       widgetsFor: this.widgetsFor,
+      getCollection: this.getCollection,
     };
 
     const styleEls = getPreviewStyles().map((style, i) => {
@@ -257,7 +280,7 @@ PreviewPane.propTypes = {
 
 function mapStateToProps(state) {
   const isLoadingAsset = selectIsLoadingAsset(state.medias);
-  return { isLoadingAsset, config: state.config };
+  return { isLoadingAsset, config: state.config, state };
 }
 
 function mapDispatchToProps(dispatch) {

@@ -41,7 +41,7 @@ declare module 'decap-cms-core' {
 
   export type CmsAuthScope = 'repo' | 'public_repo';
 
-  export type CmsPublishMode = 'simple' | 'editorial_workflow';
+  export type CmsPublishMode = 'simple' | 'editorial_workflow' | '';
 
   export type CmsSlugEncoding = 'unicode' | 'ascii';
 
@@ -409,29 +409,34 @@ declare module 'decap-cms-core' {
     config: CmsConfig;
   }
 
-  export interface EditorComponentField {
-    name: string;
-    label: string;
-    widget: string;
-    /**
-     * Used if widget === "list" to create a flat array
-     */
-    field: EditorComponentField;
-    /**
-     * Used if widget === "list" to create an array of objects
-     */
-    fields: EditorComponentField[];
-  }
+  export type EditorComponentField =
+    | ({
+        name: string;
+        label: string;
+      } & {
+        widget: Omit<string, 'list'>;
+      })
+    | {
+        widget: 'list';
+        /**
+         * Used if widget === "list" to create a flat array
+         */
+        field?: EditorComponentField;
+        /**
+         * Used if widget === "list" to create an array of objects
+         */
+        fields?: EditorComponentField[];
+      };
 
   export interface EditorComponentOptions {
     id: string;
     label: string;
-    fields: EditorComponentField[];
+    fields?: EditorComponentField[];
     pattern: RegExp;
     allow_add?: boolean;
     fromBlock: (match: RegExpMatchArray) => any;
     toBlock: (data: any) => string;
-    toPreview: (data: any) => string;
+    toPreview: (data: any) => string | JSX.Element;
   }
 
   export interface PreviewStyleOptions {
@@ -541,6 +546,7 @@ declare module 'decap-cms-core' {
   export type PreviewTemplateComponentProps = {
     entry: Map<string, any>;
     collection: Map<string, any>;
+    getCollection: (collectionName: string, slug?: string) => Promise<Map<string, any>[]>;
     widgetFor: (name: any, fields?: any, values?: any, fieldsMetaData?: any) => JSX.Element | null;
     widgetsFor: (name: any) => any;
     getAsset: GetAssetFunction;

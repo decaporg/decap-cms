@@ -16,7 +16,7 @@ function keyDownEnter(editor) {
     Transforms.delete(editor);
   }
 
-  // if edge of selection is in the begining of the first text node in list-item
+  // if edge of selection is in the beginning of the first text node in list-item
   if (isCursorAtListItemStart(editor)) {
     return liftListItem(editor);
   }
