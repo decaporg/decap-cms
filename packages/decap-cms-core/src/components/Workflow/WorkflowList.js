@@ -3,7 +3,7 @@ import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { translate } from 'react-polyglot';
 import { colors, lengths } from 'decap-cms-ui-default';
 
@@ -205,9 +205,7 @@ class WorkflowList extends React.Component {
     return (
       <div>
         {entries.map(entry => {
-          const timestamp = moment(entry.get('updatedOn')).format(
-            t('workflow.workflow.dateFormat'),
-          );
+          const timestamp = dayjs(entry.get('updatedOn')).format(t('workflow.workflow.dateFormat'));
           const slug = entry.get('slug');
           const collectionName = entry.get('collection');
           const editLink = `collections/${collectionName}/entries/${slug}?ref=workflow`;

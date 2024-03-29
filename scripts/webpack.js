@@ -28,7 +28,7 @@ function rules() {
     css: () => [
       {
         test: /\.css$/,
-        include: ['ol', 'react-toastify', 'react-datetime', 'codemirror'].map(moduleNameToPath),
+        include: ['ol', 'react-toastify', 'codemirror'].map(moduleNameToPath),
         use: ['to-string-loader', 'css-loader'],
       },
     ],
@@ -56,8 +56,6 @@ function plugins() {
   return {
     ignoreEsprima: () =>
       new webpack.IgnorePlugin({ resourceRegExp: /^esprima$/, contextRegExp: /js-yaml/ }),
-    ignoreMomentOptionalDeps: () =>
-      new webpack.IgnorePlugin({ resourceRegExp: /^\.\/locale$/, contextRegExp: /moment$/ }),
     friendlyErrors: () => new FriendlyErrorsWebpackPlugin(),
     buffer: () =>
       new webpack.ProvidePlugin({
@@ -142,9 +140,6 @@ function baseConfig({ target = isProduction ? 'umd' : 'umddir' } = {}) {
     },
     resolve: {
       extensions: ['.ts', '.tsx', '.js', '.json'],
-      alias: {
-        moment$: 'moment/moment.js',
-      },
       fallback: {
         path: require.resolve('path-browserify'),
         stream: require.resolve('stream-browserify'),

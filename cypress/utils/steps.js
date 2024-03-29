@@ -288,7 +288,8 @@ function populateEntry(entry, onDone = flushClockAndSave) {
 }
 
 function newPost() {
-  cy.contains('a', 'New Post').click();
+  // click even if covered by toast
+  cy.contains('a', 'New Post').click({ force: true });
 }
 
 function createPost(entry) {
@@ -298,6 +299,7 @@ function createPost(entry) {
 
 function createPostAndExit(entry) {
   createPost(entry);
+  cy.clock().then(clock => { advanceClock(clock); });
   exitEditor();
 }
 

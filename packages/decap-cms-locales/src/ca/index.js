@@ -193,6 +193,7 @@ const ca = {
       },
       datetime: {
         now: 'Ara',
+        clear: 'Netejar',
       },
     },
   },

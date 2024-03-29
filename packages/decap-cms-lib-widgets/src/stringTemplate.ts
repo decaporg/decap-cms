@@ -1,6 +1,6 @@
 import { Map } from 'immutable';
 import { get, trimEnd, truncate } from 'lodash';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { basename, dirname, extname } from 'path';
 
 const filters = [
@@ -11,7 +11,7 @@ const filters = [
   },
   {
     pattern: /^date\('(.+)'\)$/,
-    transform: (str: string, match: RegExpMatchArray) => moment(str).format(match[1]),
+    transform: (str: string, match: RegExpMatchArray) => dayjs(str).format(match[1]),
   },
   {
     pattern: /^default\('(.+)'\)$/,
@@ -60,9 +60,9 @@ export function parseDateFromEntry(entry: Map<string, unknown>, dateFieldName?: 
   }
 
   const dateValue = entry.getIn(['data', dateFieldName]);
-  const dateMoment = dateValue && moment(dateValue);
-  if (dateMoment && dateMoment.isValid()) {
-    return dateMoment.toDate();
+  const dateDayjs = dateValue && dayjs(dateValue);
+  if (dateDayjs && dateDayjs.isValid()) {
+    return dateDayjs.toDate();
   }
 }
 

@@ -40,6 +40,7 @@ module.exports = {
     ],
     'no-duplicate-imports': 'error',
     '@emotion/no-vanilla': 'error',
+    '@emotion/pkg-renaming': 'error',
     '@emotion/import-from-emotion': 'error',
     '@emotion/styled-import': 'error',
     'require-atomic-updates': [0],
@@ -98,12 +99,6 @@ module.exports = {
           'error',
           { functions: false, classes: true, variables: true },
         ],
-      },
-    },
-    {
-      files: ['website/**/*'],
-      rules: {
-        'import/no-unresolved': [0],
       },
     },
   ],

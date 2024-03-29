@@ -1,5 +1,4 @@
 import { DecapCmsCore as CMS } from 'decap-cms-core';
-import moment from 'moment';
 import './extensions.js';
 
 // Log version
@@ -11,6 +10,5 @@ if (typeof window !== 'undefined') {
 
 export const DecapCmsApp = {
   ...CMS,
-  moment,
 };
 export default CMS;

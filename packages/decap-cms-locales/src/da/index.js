@@ -205,6 +205,7 @@ const da = {
       },
       datetime: {
         now: 'Nu',
+        clear: 'Ryd',
       },
       list: {
         add: 'Tilføj %{item}',

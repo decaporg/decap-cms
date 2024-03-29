@@ -495,7 +495,7 @@
     "status": 201
   },
   {
-    "body": "{\"content\":\"LS0tCnRlbXBsYXRlOiBwb3N0CnRpdGxlOiBmaXJzdCB0aXRsZQppbWFnZTogL21lZGlhL25ldGxpZnkucG5nCmRhdGU6IDE5NzAtMDEtMDFUMDA6MDA6MDAuMDAwWgpkZXNjcmlwdGlvbjogZmlyc3QgZGVzY3JpcHRpb24KY2F0ZWdvcnk6IGZpcnN0IGNhdGVnb3J5CnRhZ3M6CiAgLSB0YWcxCi0tLQpmaXJzdCBib2R5\",\"encoding\":\"base64\"}",
+    "body": "{\"content\":\"LS0tCnRlbXBsYXRlOiBwb3N0CnRpdGxlOiBmaXJzdCB0aXRsZQppbWFnZTogL21lZGlhL25ldGxpZnkucG5nCmRhdGU6IDE5NzAtMDEtMDFUMDE6MDAKZGVzY3JpcHRpb246IGZpcnN0IGRlc2NyaXB0aW9uCmNhdGVnb3J5OiBmaXJzdCBjYXRlZ29yeQp0YWdzOgogIC0gdGFnMQotLS0KZmlyc3QgYm9keQo=\",\"encoding\":\"base64\"}",
     "method": "POST",
     "url": "/repos/owner/repo/git/blobs",
     "headers": {

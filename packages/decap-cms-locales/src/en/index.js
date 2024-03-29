@@ -206,6 +206,7 @@ const en = {
       },
       datetime: {
         now: 'Now',
+        clear: 'Clear',
       },
       list: {
         add: 'Add %{item}',

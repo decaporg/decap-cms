@@ -196,6 +196,7 @@ const ro = {
       },
       datetime: {
         now: 'Acum',
+        clear: 'Șterge',
       },
     },
   },

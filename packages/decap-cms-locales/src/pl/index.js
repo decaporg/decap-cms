@@ -198,6 +198,7 @@ const pl = {
       },
       datetime: {
         now: 'Teraz',
+        clear: 'Wyczyść',
       },
       list: {
         add: 'Dodaj %{item}',

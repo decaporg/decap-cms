@@ -156,6 +156,7 @@ const nb_no = {
       },
       datetime: {
         now: 'Nå',
+        clear: 'Nullstill',
       },
     },
   },

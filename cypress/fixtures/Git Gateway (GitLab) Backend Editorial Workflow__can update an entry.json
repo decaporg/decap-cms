@@ -700,7 +700,7 @@
     "status": 404
   },
   {
-    "body": "{\"branch\":\"cms/posts/1970-01-01-first-title\",\"commit_message\":\"Create Post “1970-01-01-first-title”\",\"actions\":[{\"action\":\"create\",\"file_path\":\"content/posts/1970-01-01-first-title.md\",\"content\":\"LS0tCnRlbXBsYXRlOiBwb3N0CnRpdGxlOiBmaXJzdCB0aXRsZQpkYXRlOiAxOTcwLTAxLTAxVDAwOjAwOjAwLjAwMFoKZGVzY3JpcHRpb246IGZpcnN0IGRlc2NyaXB0aW9uCmNhdGVnb3J5OiBmaXJzdCBjYXRlZ29yeQp0YWdzOgogIC0gdGFnMQotLS0KZmlyc3QgYm9keQ==\",\"encoding\":\"base64\"}],\"start_branch\":\"master\",\"author_name\":\"decap\",\"author_email\":\"decap@p-m.si\"}",
+    "body": "{\"branch\":\"cms/posts/1970-01-01-first-title\",\"commit_message\":\"Create Post “1970-01-01-first-title”\",\"actions\":[{\"action\":\"create\",\"file_path\":\"content/posts/1970-01-01-first-title.md\",\"content\":\"LS0tCnRlbXBsYXRlOiBwb3N0CnRpdGxlOiBmaXJzdCB0aXRsZQpkYXRlOiAxOTcwLTAxLTAxVDAxOjAwCmRlc2NyaXB0aW9uOiBmaXJzdCBkZXNjcmlwdGlvbgpjYXRlZ29yeTogZmlyc3QgY2F0ZWdvcnkKdGFnczoKICAtIHRhZzEKLS0tCmZpcnN0IGJvZHkK\",\"encoding\":\"base64\"}],\"start_branch\":\"master\",\"author_name\":\"decap\",\"author_email\":\"decap@p-m.si\"}",
     "method": "POST",
     "url": "/.netlify/git/gitlab/repository/commits",
     "headers": {
@@ -1607,7 +1607,7 @@
     "status": 200
   },
   {
-    "body": "{\"branch\":\"cms/posts/1970-01-01-first-title\",\"commit_message\":\"Update Post “1970-01-01-first-title”\",\"actions\":[{\"action\":\"update\",\"file_path\":\"content/posts/1970-01-01-first-title.md\",\"content\":\"LS0tCnRlbXBsYXRlOiBwb3N0CnRpdGxlOiBzZWNvbmQgdGl0bGUKZGF0ZTogMTk3MC0wMS0wMVQwMDowMDowMC4wMDBaCmRlc2NyaXB0aW9uOiBzZWNvbmQgZGVzY3JpcHRpb24KY2F0ZWdvcnk6IHNlY29uZCBjYXRlZ29yeQp0YWdzOgogIC0gdGFnMgotLS0Kc2Vjb25kIGJvZHk=\",\"encoding\":\"base64\"}],\"author_name\":\"decap\",\"author_email\":\"decap@p-m.si\"}",
+    "body": "{\"branch\":\"cms/posts/1970-01-01-first-title\",\"commit_message\":\"Update Post “1970-01-01-first-title”\",\"actions\":[{\"action\":\"update\",\"file_path\":\"content/posts/1970-01-01-first-title.md\",\"content\":\"LS0tCnRlbXBsYXRlOiBwb3N0CnRpdGxlOiBzZWNvbmQgdGl0bGUKZGF0ZTogMTk3MC0wMS0wMVQwMDowMDowMC4wMDBaCmRlc2NyaXB0aW9uOiBzZWNvbmQgZGVzY3JpcHRpb24KY2F0ZWdvcnk6IHNlY29uZCBjYXRlZ29yeQp0YWdzOgogIC0gdGFnMgotLS0Kc2Vjb25kIGJvZHkK\",\"encoding\":\"base64\"}],\"author_name\":\"decap\",\"author_email\":\"decap@p-m.si\"}",
     "method": "POST",
     "url": "/.netlify/git/gitlab/repository/commits",
     "headers": {

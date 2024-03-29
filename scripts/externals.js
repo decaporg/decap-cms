@@ -70,13 +70,6 @@ module.exports = {
       amd: 'immutable',
       umd: 'immutable',
     },
-    moment: {
-      root: ['DecapCmsDefaultExports', 'Moment'],
-      commonjs2: 'moment',
-      commonjs: 'moment',
-      amd: 'moment',
-      umd: 'moment',
-    },
     'prop-types': {
       root: ['DecapCmsDefaultExports', 'PropTypes'],
       commonjs2: 'prop-types',

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import ChromePicker from 'react-color';
-import validateColor from 'validate-color';
+import tinycolor from 'tinycolor2';
 import { zIndex } from 'decap-cms-ui-default';
 
 function ClearIcon() {
@@ -131,8 +131,10 @@ export default class ColorControl extends React.Component {
         )}
         <ColorSwatchBackground />
         <ColorSwatch
-          background={validateColor(this.props.value) ? this.props.value : '#fff'}
-          color={validateColor(this.props.value) ? 'rgba(255, 255, 255, 0)' : 'rgb(223, 223, 227)'}
+          background={tinycolor(this.props.value).isValid() ? this.props.value : '#fff'}
+          color={
+            tinycolor(this.props.value).isValid() ? 'rgba(255, 255, 255, 0)' : 'rgb(223, 223, 227)'
+          }
           onClick={this.handleClick}
         >
           ?

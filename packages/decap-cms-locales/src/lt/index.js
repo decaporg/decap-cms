@@ -186,6 +186,7 @@ const lt = {
       },
       datetime: {
         now: 'Dabar',
+        clear: 'Išvalyti',
       },
     },
   },

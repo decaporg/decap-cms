@@ -1,11 +1,13 @@
 ![Decap CMS](/img/decap.svg)
 
-[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/decaporg/decap-cms/blob/master/LICENSE) [![Netlify Status](https://api.netlify.com/api/v1/badges/8b87160b-0a11-4f75-8050-1d21bc1cff8c/deploy-status)](https://app.netlify.com/sites/decap-www/deploys) [![npm version](https://img.shields.io/npm/v/decap-cms.svg?style=flat)](https://www.npmjs.com/package/decap-cms) [![Build Status](https://github.com/decaporg/decap-cms/workflows/Node%20CI/badge.svg)](https://github.com/decaporg/decap-cms/actions?query=branch%3Amaster+workflow%3A%22Node+CI%22) [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fdecaporg%2Fdecap-cms.svg?type=shield&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Fdecaporg%2Fdecap-cms?ref=badge_shield) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/decaporg/decap-cms/blob/master/CONTRIBUTING.md)
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/decaporg/decap-cms/blob/main/LICENSE) [![Netlify Status](https://api.netlify.com/api/v1/badges/8b87160b-0a11-4f75-8050-1d21bc1cff8c/deploy-status)](https://app.netlify.com/sites/decap-www/deploys) [![npm version](https://img.shields.io/npm/v/decap-cms.svg?style=flat)](https://www.npmjs.com/package/decap-cms) [![Build Status](https://github.com/decaporg/decap-cms/workflows/Node%20CI/badge.svg)](https://github.com/decaporg/decap-cms/actions?query=branch%3Amain+workflow%3A%22Node+CI%22) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/decaporg/decap-cms/blob/main/CONTRIBUTING.md)
 
-[decapcms.org](https://www.decapcms.org/) (formerly known as Netlify CMS)
+[decapcms.org](https://www.decapcms.org/)
 
 A CMS for static site generators. Give users a simple way to edit
 and add content to any site built with a static site generator.
+
+_Decap CMS is the new name of Netlify CMS [since February 2023](https://www.netlify.com/blog/netlify-cms-to-become-decap-cms/)._
 
 ## Community Chat
 
@@ -35,12 +37,12 @@ The Decap CMS can be used in two different ways.
 
 ## Contributing
 
-New contributors are always welcome! Check out [CONTRIBUTING.md](https://github.com/decaporg/decap-cms/blob/master/CONTRIBUTING.md) to get involved.
+New contributors are always welcome! Check out [CONTRIBUTING.md](https://github.com/decaporg/decap-cms/blob/main/CONTRIBUTING.md) to get involved.
 
 ## Change Log
 
 This project adheres to [Semantic Versioning](http://semver.org/).
-Every release is documented on the Github [Releases](https://github.com/decaporg/decap-cms/releases) page.
+Every release is documented on the GitHub [Releases](https://github.com/decaporg/decap-cms/releases) page.
 
 ## License
 
@@ -49,6 +51,10 @@ Please make sure you understand its [implications and guarantees](https://writin
 
 ## Maintainers
 
-Maintained with care by <a href="https://techhub.p-m.si/">PM</a> & friends.
+Maintained with care by <a href="https://techhub.p-m.si/">PM TechHub</a> & friends.
 
-Decap CMS is the new name of Netlify CMS [since February 2023](https://www.netlify.com/blog/netlify-cms-to-become-decap-cms/).
+## Professional help
+
+Our partners offer a range of services that can help you get the most out of Decap CMS. Find onboarding, priority support, and development of custom features.
+
+[Read more on our professional help page](https://decapcms.org/services/)

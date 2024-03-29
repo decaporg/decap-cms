@@ -387,7 +387,7 @@ export function persistUnpublishedEntry(collection: Collection, existingUnpublis
       dispatch(unpublishedEntryPersisted(collection, serializedEntry));
 
       if (entry.get('slug') !== newSlug) {
-        dispatch(loadUnpublishedEntry(collection, newSlug));
+        await dispatch(loadUnpublishedEntry(collection, newSlug));
         navigateToEntry(collection.get('name'), newSlug);
       }
     } catch (error) {

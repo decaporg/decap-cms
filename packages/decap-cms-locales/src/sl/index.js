@@ -206,6 +206,7 @@ const sl = {
       },
       datetime: {
         now: 'Zdaj',
+        clear: 'Počisti',
       },
       list: {
         add: 'Dodaj %{item}',

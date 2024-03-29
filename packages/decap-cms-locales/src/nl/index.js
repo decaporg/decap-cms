@@ -193,6 +193,7 @@ const nl = {
       },
       datetime: {
         now: 'Nu',
+        clear: 'Wissen',
       },
       list: {
         add: 'Voeg %{item} toe',

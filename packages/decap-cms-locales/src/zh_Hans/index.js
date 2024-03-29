@@ -93,6 +93,8 @@ const zh_Hans = {
       },
       i18n: {
         writingInLocale: '正在使用%{locale}撰写',
+        copyFromLocale: '用其他语言进行填充',
+        copyFromLocaleConfirm: '你确定要用“%{locale}”进行填充吗？\n这将会覆盖所有现有的内容。',
       },
     },
     editor: {
@@ -191,6 +193,10 @@ const zh_Hans = {
       },
       datetime: {
         now: '现在',
+        clear: '清除',
+      },
+      list: {
+        add: '新增%{item}',
       },
     },
   },

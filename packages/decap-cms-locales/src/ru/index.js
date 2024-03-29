@@ -209,6 +209,7 @@ const ru = {
       },
       datetime: {
         now: 'Сейчас',
+        clear: 'Очистить',
       },
       list: {
         add: 'Добавить %{item}',

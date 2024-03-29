@@ -1,8 +1,8 @@
 {
   "name": "decap-cms-core",
   "description": "Decap CMS core application, see decap-cms package for the main distribution.",
-  "version": "3.3.0-beta.0",
-  "repository": "https://github.com/decaporg/decap-cms/tree/master/packages/decap-cms-core",
+  "version": "3.3.5",
+  "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-core",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
   "module": "dist/esm/index.js",
   "main": "dist/decap-cms-core.js",
@@ -13,7 +13,7 @@
   ],
   "types": "index.d.ts",
   "scripts": {
-    "develop": "yarn build:esm --watch",
+    "develop": "npm run build:esm -- --watch",
     "webpack": "node --max_old_space_size=4096 ../../node_modules/webpack/bin/webpack.js",
     "build": "cross-env NODE_ENV=production run-s webpack",
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward --extensions \".js,.jsx,.ts,.tsx\""
@@ -31,6 +31,7 @@
     "ajv-keywords": "^5.0.0",
     "clean-stack": "^4.1.0",
     "copy-text-to-clipboard": "^3.0.0",
+    "dayjs": "^1.11.10",
     "deepmerge": "^4.2.2",
     "diacritics": "^1.3.0",
     "fuzzy": "^0.1.1",
@@ -84,7 +85,6 @@
     "decap-cms-ui-default": "^3.0.0",
     "immutable": "^3.7.6",
     "lodash": "^4.17.11",
-    "moment": "^2.24.0",
     "prop-types": "^15.7.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

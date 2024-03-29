@@ -5,7 +5,7 @@ import { stripIndent } from 'common-tags';
 import {
   selectIdentifier,
   selectField,
-  selectInferedField,
+  selectInferredField,
   getFileFromSlug,
 } from '../reducers/collections';
 import { sanitizeSlug } from './urlHelper';
@@ -183,7 +183,7 @@ export function previewUrlFormatter(
 
   let fields = entry.get('data') as Map<string, string>;
   fields = addFileTemplateFields(entry.get('path'), fields, collection.get('folder'));
-  const dateFieldName = getDateField() || selectInferedField(collection, 'date');
+  const dateFieldName = getDateField() || selectInferredField(collection, 'date');
   const date = parseDateFromEntry(entry as unknown as Map<string, unknown>, dateFieldName);
 
   // Prepare and sanitize slug variables only, leave the rest of the
@@ -195,7 +195,7 @@ export function previewUrlFormatter(
     compiledPath = compileStringTemplate(pathTemplate, date, slug, fields, processSegment);
   } catch (err) {
     // Print an error and ignore `preview_path` if both:
-    //   1. Date is invalid (according to Moment), and
+    //   1. Date is invalid (according to DayJs), and
     //   2. A date expression (eg. `{{year}}`) is used in `preview_path`
     if (err.name === SLUG_MISSING_REQUIRED_DATE) {
       console.error(stripIndent`
@@ -216,7 +216,7 @@ export function summaryFormatter(summaryTemplate: string, entry: EntryMap, colle
   const date =
     parseDateFromEntry(
       entry as unknown as Map<string, unknown>,
-      selectInferedField(collection, 'date'),
+      selectInferredField(collection, 'date'),
     ) || null;
   const identifier = entryData.getIn(keyToPathArray(selectIdentifier(collection) as string));
 
@@ -250,7 +250,7 @@ export function folderFormatter(
   const date =
     parseDateFromEntry(
       entry as unknown as Map<string, unknown>,
-      selectInferedField(collection, 'date'),
+      selectInferredField(collection, 'date'),
     ) || null;
   const identifier = fields.getIn(keyToPathArray(selectIdentifier(collection) as string));
   const processSegment = getProcessSegment(slugConfig, [defaultFolder, fields.get('dirname')]);

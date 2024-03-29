@@ -453,8 +453,8 @@ describe('formatters', () => {
     });
 
     it('should infer date field when preview_path_date_field is not configured', () => {
-      const { selectInferedField } = require('../../reducers/collections');
-      selectInferedField.mockReturnValue('date');
+      const { selectInferredField } = require('../../reducers/collections');
+      selectInferredField.mockReturnValue('date');
 
       const date = new Date('2020-01-02T13:28:27.679Z');
       expect(
@@ -542,8 +542,8 @@ describe('formatters', () => {
 
   describe('summaryFormatter', () => {
     it('should return summary from template', () => {
-      const { selectInferedField } = require('../../reducers/collections');
-      selectInferedField.mockReturnValue('date');
+      const { selectInferredField } = require('../../reducers/collections');
+      selectInferredField.mockReturnValue('date');
 
       const date = new Date('2020-01-02T13:28:27.679Z');
       const entry = fromJS({ data: { date, title: 'title' } });
@@ -553,8 +553,8 @@ describe('formatters', () => {
     });
 
     it('should handle filename and extension variables', () => {
-      const { selectInferedField } = require('../../reducers/collections');
-      selectInferedField.mockReturnValue('date');
+      const { selectInferredField } = require('../../reducers/collections');
+      selectInferredField.mockReturnValue('date');
 
       const date = new Date('2020-01-02T13:28:27.679Z');
       const entry = fromJS({ path: 'post.md', data: { date, title: 'title' } });
@@ -566,8 +566,8 @@ describe('formatters', () => {
     });
 
     it('should handle the dirname variable in a regular collection', () => {
-      const { selectInferedField } = require('../../reducers/collections');
-      selectInferedField.mockReturnValue('date');
+      const { selectInferredField } = require('../../reducers/collections');
+      selectInferredField.mockReturnValue('date');
 
       const date = new Date('2020-01-02T13:28:27.679Z');
       const entry = fromJS({
@@ -585,8 +585,8 @@ describe('formatters', () => {
     });
 
     it('should handle the dirname variable in a nested collection', () => {
-      const { selectInferedField } = require('../../reducers/collections');
-      selectInferedField.mockReturnValue('date');
+      const { selectInferredField } = require('../../reducers/collections');
+      selectInferredField.mockReturnValue('date');
 
       const date = new Date('2020-01-02T13:28:27.679Z');
       const entry = fromJS({

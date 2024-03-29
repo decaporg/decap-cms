@@ -1,6 +1,5 @@
 [build]
   base = "/"
-  ignore = "git diff --quiet HEAD^ HEAD -- . ':!website/'"
 
   [build.environment]
     YARN_FLAGS = "--frozen-lockfile"

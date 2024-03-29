@@ -312,7 +312,9 @@ export default function withFileControl({ forImage } = {}) {
 
       const url = window.prompt(this.props.t(`editor.editorWidgets.${subject}.promptUrl`));
 
-      return this.props.onChange(url);
+      if (url) {
+        return this.props.onChange(url);
+      }
     };
 
     handleRemove = e => {
