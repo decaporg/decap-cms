@@ -9,6 +9,7 @@ import MarkToolbarButton from './MarkToolbarButton';
 import HeadingToolbarButton from './HeadingToolbarButton';
 import ListToolbarButton from './ListToolbarButton';
 import LinkToolbarButton from './LinkToolbarButton';
+import BlockquoteToolbarButton from './BlockquoteToolbarButton';
 
 const ToolbarContainer = styled.div`
   position: relative;
@@ -67,6 +68,14 @@ function Toolbar(props) {
           t={t}
         />
         <HeadingToolbarButton isVisible={isVisible} disabled={disabled} t={t} />
+        {isVisible('blockquote') && (
+          <BlockquoteToolbarButton
+            type="quote"
+            label={t('editor.editorWidgets.markdown.quote')}
+            icon="quote"
+            disabled={disabled}
+          />
+        )}
         <ListToolbarButton
           type="ul"
           label={t('editor.editorWidgets.markdown.bulletedList')}

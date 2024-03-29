@@ -22,6 +22,8 @@ import {
 import { createSoftBreakPlugin, createExitBreakPlugin } from '@udecode/plate-break';
 import { createListPlugin, ELEMENT_UL, ELEMENT_OL, ELEMENT_LI } from '@udecode/plate-list';
 import { createLinkPlugin, ELEMENT_LINK } from '@udecode/plate-link';
+import { createBlockquotePlugin, ELEMENT_BLOCKQUOTE } from '@udecode/plate-block-quote';
+import { createTrailingBlockPlugin } from '@udecode/plate-trailing-block';
 import { ClassNames } from '@emotion/react';
 import { fonts, lengths, zIndex } from 'decap-cms-ui-default';
 
@@ -35,6 +37,7 @@ import HeadingElement from './components/Element/HeadingElement';
 import ListElement from './components/Element/ListElement';
 import { markdownToSlate, slateToMarkdown } from '../serializers';
 import LinkElement from './components/Element/LinkElement';
+import BlockquoteElement from './components/Element/BlockquoteElement';
 
 function visualEditorStyles({ minimal }) {
   return `
@@ -69,9 +72,18 @@ export default function VisualEditor({ t, field, className, isDisabled, onChange
       createCodePlugin(),
       createListPlugin(),
       createLinkPlugin(),
+      createBlockquotePlugin(),
       createSoftBreakPlugin({
         options: {
-          rules: [{ hotkey: 'shift+enter' }],
+          rules: [
+            { hotkey: 'shift+enter' },
+            {
+              hotkey: 'enter',
+              query: {
+                allow: [ELEMENT_BLOCKQUOTE],
+              },
+            },
+          ],
         },
       }),
       createExitBreakPlugin({
@@ -97,6 +109,9 @@ export default function VisualEditor({ t, field, className, isDisabled, onChange
           ],
         },
       }),
+      createTrailingBlockPlugin({
+        options: { type: ELEMENT_PARAGRAPH },
+      }),
     ],
     {
       components: {
@@ -104,6 +119,7 @@ export default function VisualEditor({ t, field, className, isDisabled, onChange
         [MARK_CODE]: CodeLeaf,
         [MARK_ITALIC]: withProps(PlateLeaf, { as: 'em' }),
         [ELEMENT_PARAGRAPH]: ParagraphElement,
+        [ELEMENT_BLOCKQUOTE]: BlockquoteElement,
         [ELEMENT_LINK]: LinkElement,
         [ELEMENT_H1]: withProps(HeadingElement, { variant: 'h1' }),
         [ELEMENT_H2]: withProps(HeadingElement, { variant: 'h2' }),
@@ -136,9 +152,7 @@ export default function VisualEditor({ t, field, className, isDisabled, onChange
     onChange(mdValue);
   }
 
-  const initialValue = props.value
-      ? markdownToSlate(props.value, {})
-      : emptyValue;
+  const initialValue = props.value ? markdownToSlate(props.value, {}) : emptyValue;
 
   return (
     <ClassNames>
