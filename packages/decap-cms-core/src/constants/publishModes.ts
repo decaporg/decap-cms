@@ -20,4 +20,4 @@ export const statusDescriptions = Map({
 });
 
 export type Status = keyof typeof Statues;
-export type StatusValues = typeof Statues[Status];
+export type StatusValues = (typeof Statues)[Status];
