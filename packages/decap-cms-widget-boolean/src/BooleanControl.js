@@ -7,7 +7,7 @@ import { Toggle, ToggleBackground, colors } from 'decap-cms-ui-default';
 const innerWrapper = css`
   display: flex;
   align-items: center;
-`
+`;
 
 function BooleanBackground({ isActive, ...props }) {
   return (
@@ -29,11 +29,11 @@ export default class BooleanControl extends React.Component {
     setInactiveStyle: PropTypes.func.isRequired,
     forID: PropTypes.string,
     value: PropTypes.bool,
-  }
+  };
 
   static defaultProps = {
     value: false,
-  }
+  };
 
   render() {
     const { value, forID, onChange, classNameWrapper, setActiveStyle, setInactiveStyle, field } =
@@ -45,7 +45,7 @@ export default class BooleanControl extends React.Component {
     return (
       <div className={classNameWrapper}>
         <div css={innerWrapper}>
-          {prefix && (<span>{prefix}&nbsp;</span>)}
+          {prefix && <span>{prefix}&nbsp;</span>}
           <Toggle
             id={forID}
             active={value}
@@ -54,7 +54,7 @@ export default class BooleanControl extends React.Component {
             onBlur={setInactiveStyle}
             Background={BooleanBackground}
           />
-          {suffix && (<span>&nbsp;{suffix}</span>)}
+          {suffix && <span>&nbsp;{suffix}</span>}
         </div>
       </div>
     );

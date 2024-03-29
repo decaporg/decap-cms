@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { css } from '@emotion/core';
+import { css } from '@emotion/react';
 
 const ValidationErrorTypes = {
   PRESENCE: 'PRESENCE',
@@ -13,7 +13,7 @@ const ValidationErrorTypes = {
 const innerWrapper = css`
   display: flex;
   align-items: baseline;
-`
+`;
 
 export function validateMinMax(value, min, max, field, t) {
   let error;
@@ -114,7 +114,7 @@ export default class NumberControl extends React.Component {
     return (
       <div className={classNameWrapper}>
         <div css={innerWrapper}>
-          {prefix && (<span>{prefix}&nbsp;</span>)}
+          {prefix && <span>{prefix}&nbsp;</span>}
           <input
             type="number"
             id={forID}
@@ -125,9 +125,11 @@ export default class NumberControl extends React.Component {
             min={min}
             max={max}
             onChange={this.handleChange}
-            css={css`flex-grow: 1`}
+            css={css`
+              flex-grow: 1;
+            `}
           />
-          {suffix && (<span>&nbsp;{suffix}</span>)}
+          {suffix && <span>&nbsp;{suffix}</span>}
         </div>
       </div>
     );

@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { css } from '@emotion/core';
+import { css } from '@emotion/react';
 
 const innerWrapper = css`
   display: flex;
   align-items: baseline;
-`
+`;
 
 export default class StringControl extends React.Component {
   static propTypes = {
@@ -57,7 +57,7 @@ export default class StringControl extends React.Component {
     return (
       <div className={classNameWrapper}>
         <div css={innerWrapper}>
-          {prefix && (<span>{prefix}&nbsp;</span>)}
+          {prefix && <span>{prefix}&nbsp;</span>}
           <input
             ref={el => {
               this._el = el;
@@ -68,9 +68,11 @@ export default class StringControl extends React.Component {
             onChange={this.handleChange}
             onFocus={setActiveStyle}
             onBlur={setInactiveStyle}
-            css={css`flex-grow: 1`}
+            css={css`
+              flex-grow: 1;
+            `}
           />
-          {suffix && (<span>&nbsp;{suffix}</span>)}
+          {suffix && <span>&nbsp;{suffix}</span>}
         </div>
       </div>
     );
