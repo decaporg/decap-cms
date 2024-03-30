@@ -5,7 +5,9 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import dayjs from 'dayjs';
 import { translate } from 'react-polyglot';
-import { colors, lengths } from 'decap-cms-ui-default';
+import Color from 'color';
+import { colors } from 'decap-cms-ui-default';
+import { Card, Icon } from 'decap-cms-ui-next';
 
 import { status } from '../../constants/publishModes';
 import { DragSource, DropTarget, HTML5DragDrop } from '../UI';
@@ -13,9 +15,14 @@ import WorkflowCard from './WorkflowCard';
 import { selectEntryCollectionTitle } from '../../reducers/collections';
 
 const WorkflowListContainer = styled.div`
-  min-height: 60%;
-  display: grid;
-  grid-template-columns: 33.3% 33.3% 33.3%;
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+
+  position: relative;
+  min-height: 100%;
+
+  scroll-snap-align: center;
 `;
 
 const WorkflowListContainerOpenAuthoring = styled.div`
@@ -24,98 +31,111 @@ const WorkflowListContainerOpenAuthoring = styled.div`
   grid-template-columns: 50% 50% 0%;
 `;
 
-const styles = {
-  columnPosition: idx =>
-    (idx === 0 &&
-      css`
-        margin-left: 0;
-      `) ||
-    (idx === 2 &&
-      css`
-        margin-right: 0;
-      `) ||
-    css`
-      &:before,
-      &:after {
-        content: '';
-        display: block;
-        position: absolute;
-        width: 2px;
-        height: 80%;
-        top: 76px;
-        background-color: ${colors.textFieldBorder};
-      }
+const Column = styled.div`
+  height: 100%;
 
-      &:before {
-        left: -23px;
-      }
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 0.65rem;
+`;
 
-      &:after {
-        right: -23px;
-      }
-    `,
-  column: css`
-    margin: 0 20px;
-    transition: background-color 0.5s ease;
-    border: 2px dashed transparent;
-    border-radius: 4px;
-    position: relative;
-    height: 100%;
-  `,
-  columnHovered: css`
-    border-color: ${colors.active};
-  `,
-  hiddenColumn: css`
-    display: none;
-  `,
-  hiddenRightBorder: css`
-    &:not(:first-child):not(:last-child) {
-      &:after {
-        display: none;
-      }
-    }
-  `,
-};
+const ColumnHeader = styled(Card)`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 
-const ColumnHeader = styled.h2`
-  font-size: 20px;
-  font-weight: normal;
-  padding: 4px 14px;
-  border-radius: ${lengths.borderRadius};
-  margin-bottom: 28px;
+  padding: 0.5rem 0.75rem;
 
   ${props =>
     props.name === 'draft' &&
     css`
-      background-color: ${colors.statusDraftBackground};
-      color: ${colors.statusDraftText};
+      background-color: ${Color(props.theme.color.pink[900]).alpha(0.15).string()};
+      box-shadow: inset 0 0 0 1.5px ${props.theme.color.pink[900]};
+      color: ${props.theme.color.pink[900]};
     `}
 
   ${props =>
     props.name === 'pending_review' &&
     css`
-      background-color: ${colors.statusReviewBackground};
-      color: ${colors.statusReviewText};
+      background-color: ${Color(props.theme.color.yellow[900]).alpha(0.15).string()};
+      box-shadow: inset 0 0 0 1.5px ${props.theme.color.yellow[900]};
+      color: ${props.theme.color.yellow[900]};
     `}
 
   ${props =>
     props.name === 'pending_publish' &&
     css`
-      background-color: ${colors.statusReadyBackground};
-      color: ${colors.statusReadyText};
+      background-color: ${Color(props.theme.color.green[900]).alpha(0.15).string()};
+      box-shadow: inset 0 0 0 1.5px ${props.theme.color.green[900]};
+      color: ${props.theme.color.green[900]};
     `}
 `;
 
-const ColumnCount = styled.p`
-  font-size: 13px;
-  font-weight: 500;
-  color: ${colors.text};
-  text-transform: uppercase;
-  margin-bottom: 6px;
+const ColumnHeaderIcon = styled(Icon)`
+  margin-right: 0.5rem;
 `;
 
+const ColumnHeaderTitle = styled.h2`
+  font-size: 1rem;
+  font-weight: bold;
+  margin: 0;
+  flex: 1;
+  color: inherit;
+
+  /* ${props =>
+    props.name === 'draft' &&
+    css`
+      color: ${props.theme.darkMode ? props.theme.color.pink[400] : props.theme.color.pink[900]};
+    `}
+
+  ${props =>
+    props.name === 'pending_review' &&
+    css`
+      color: ${props.theme.darkMode
+        ? props.theme.color.yellow[400]
+        : props.theme.color.yellow[900]};
+    `}
+
+  ${props =>
+    props.name === 'pending_publish' &&
+    css`
+      color: ${props.theme.darkMode ? props.theme.color.green[400] : props.theme.color.green[900]};
+    `} */
+`;
+
+const ColumnHeaderCount = styled.p`
+  font-size: 2rem;
+  font-weight: 500;
+  line-height: initial;
+  margin-bottom: 0;
+`;
+
+const WorkflowContainer = styled.div`
+  ${({ theme }) => css`
+    flex: 1;
+
+    display: flex;
+    flex-direction: row;
+
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    background-color: ${theme.color.elevatedSurfaceHighlight};
+  `}
+`;
 // This is a namespace so that we can only drop these elements on a DropTarget with the same
 const DNDNamespace = 'cms-workflow';
+
+function getColumnHeaderIconName(columnName) {
+  switch (columnName) {
+    case 'draft':
+      return 'edit-3';
+    case 'pending_review':
+      return 'hard-drive';
+    case 'pending_publish':
+      return 'check';
+  }
+}
 
 function getColumnHeaderText(columnName, t) {
   switch (columnName) {
@@ -164,7 +184,7 @@ class WorkflowList extends React.Component {
 
   // eslint-disable-next-line react/display-name
   renderColumns = (entries, column) => {
-    const { isOpenAuthoring, collections, t } = this.props;
+    const { collections, t } = this.props;
     if (!entries) return null;
 
     if (!column) {
@@ -174,36 +194,30 @@ class WorkflowList extends React.Component {
           key={currColumn}
           onDrop={this.handleChangeStatus.bind(this, currColumn)}
         >
-          {(connect, { isHovered }) =>
+          {connect =>
             connect(
-              <div style={{ height: '100%' }}>
-                <div
-                  css={[
-                    styles.column,
-                    styles.columnPosition(idx),
-                    isHovered && styles.columnHovered,
-                    isOpenAuthoring && currColumn === 'pending_publish' && styles.hiddenColumn,
-                    isOpenAuthoring && currColumn === 'pending_review' && styles.hiddenRightBorder,
-                  ]}
-                >
+              <div style={{ flexBasis: '33.33333%' }}>
+                <Column>
                   <ColumnHeader name={currColumn}>
-                    {getColumnHeaderText(currColumn, this.props.t)}
+                    <ColumnHeaderIcon name={getColumnHeaderIconName(currColumn)} size={'lg'} />
+
+                    <ColumnHeaderTitle name={currColumn}>
+                      {getColumnHeaderText(currColumn, this.props.t)}
+                    </ColumnHeaderTitle>
+
+                    <ColumnHeaderCount>{currEntries.size}</ColumnHeaderCount>
                   </ColumnHeader>
-                  <ColumnCount>
-                    {this.props.t('workflow.workflowList.currentEntries', {
-                      smart_count: currEntries.size,
-                    })}
-                  </ColumnCount>
                   {this.renderColumns(currEntries, currColumn)}
-                </div>
+                </Column>
               </div>,
             )
           }
         </DropTarget>
       ));
     }
+
     return (
-      <div>
+      <WorkflowContainer>
         {entries.map(entry => {
           const timestamp = dayjs(entry.get('updatedOn')).format(t('workflow.workflow.dateFormat'));
           const slug = entry.get('slug');
@@ -230,7 +244,7 @@ class WorkflowList extends React.Component {
             >
               {connect =>
                 connect(
-                  <div>
+                  <div style={{ width: '100%' }}>
                     <WorkflowCard
                       collectionLabel={collectionLabel || collectionName}
                       title={selectEntryCollectionTitle(collection, entry)}
@@ -251,7 +265,7 @@ class WorkflowList extends React.Component {
             </DragSource>
           );
         })}
-      </div>
+      </WorkflowContainer>
     );
   };
 

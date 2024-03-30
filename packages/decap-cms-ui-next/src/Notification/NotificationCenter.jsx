@@ -57,8 +57,8 @@ function NotificationCenter({ className }) {
                     toggleNotificationCenter(null);
                   }}
                 >
-                  {notification.content.props.title}
-                  {notification.content.props.content}
+                  {notification.title}
+                  {notification.content}
                   {notification.read ? ' (read)' : '(unread)'}
                 </MenuItem>
               ))}

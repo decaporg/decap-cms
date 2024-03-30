@@ -1,19 +1,12 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import { OrderedMap } from 'immutable';
 import { translate } from 'react-polyglot';
 import { connect } from 'react-redux';
-import {
-  Dropdown,
-  DropdownItem,
-  StyledDropdownButton,
-  Loader,
-  lengths,
-  components,
-  shadows,
-} from 'decap-cms-ui-default';
+import { Loader, components } from 'decap-cms-ui-default';
+import { Button, Menu, MenuItem } from 'decap-cms-ui-next';
 
 import { createNewEntry } from '../../actions/collections';
 import {
@@ -27,29 +20,19 @@ import { EDITORIAL_WORKFLOW, status } from '../../constants/publishModes';
 import WorkflowList from './WorkflowList';
 
 const WorkflowContainer = styled.div`
-  padding: ${lengths.pageMargin} 0;
+  padding: 0 2rem;
   height: 100vh;
 `;
 
 const WorkflowTop = styled.div`
-  ${components.cardTop};
-`;
-
-const WorkflowTopRow = styled.div`
   display: flex;
   justify-content: space-between;
 
-  span[role='button'] {
-    ${shadows.dropDeep};
-  }
+  margin-bottom: 1rem;
 `;
 
 const WorkflowTopHeading = styled.h1`
   ${components.cardTopHeading};
-`;
-
-const WorkflowTopDescription = styled.p`
-  ${components.cardTopDescription};
 `;
 
 class Workflow extends Component {
@@ -65,6 +48,13 @@ class Workflow extends Component {
     deleteUnpublishedEntry: PropTypes.func.isRequired,
     t: PropTypes.func.isRequired,
   };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      newPostMenuAnchorEl: null,
+    };
+  }
 
   componentDidMount() {
     const { loadUnpublishedEntries, isEditorialWorkflow, collections } = this.props;
@@ -94,35 +84,37 @@ class Workflow extends Component {
     return (
       <WorkflowContainer>
         <WorkflowTop>
-          <WorkflowTopRow>
-            <WorkflowTopHeading>{t('workflow.workflow.workflowHeading')}</WorkflowTopHeading>
-            <Dropdown
-              dropdownWidth="160px"
-              dropdownPosition="left"
-              dropdownTopOverlap="40px"
-              renderButton={() => (
-                <StyledDropdownButton>{t('workflow.workflow.newPost')}</StyledDropdownButton>
-              )}
-            >
-              {collections
-                .filter(collection => collection.get('create'))
-                .toList()
-                .map(collection => (
-                  <DropdownItem
-                    key={collection.get('name')}
-                    label={collection.get('label')}
-                    onClick={() => createNewEntry(collection.get('name'))}
-                  />
-                ))}
-            </Dropdown>
-          </WorkflowTopRow>
-          <WorkflowTopDescription>
-            {t('workflow.workflow.description', {
-              smart_count: reviewCount,
-              readyCount,
-            })}
-          </WorkflowTopDescription>
+          <WorkflowTopHeading>{t('workflow.workflow.workflowHeading')}</WorkflowTopHeading>
+
+          <Button
+            onClick={event =>
+              this.setState({ newPostMenuAnchorEl: event ? event.currentTarget : null })
+            }
+            icon={'plus'}
+            hasMenu
+          >
+            {t('workflow.workflow.newPost')}
+          </Button>
+
+          <Menu
+            anchorEl={this.state.newPostMenuAnchorEl}
+            open={!!this.state.newPostMenuAnchorEl}
+            onClose={() => this.setState({ newPostMenuAnchorEl: null })}
+          >
+            {collections
+              .filter(collection => collection.get('create'))
+              .toList()
+              .map(collection => (
+                <MenuItem
+                  key={collection.get('name')}
+                  onClick={() => createNewEntry(collection.get('name'))}
+                >
+                  {collection.get('label_singular') || collection.get('label')}
+                </MenuItem>
+              ))}
+          </Menu>
         </WorkflowTop>
+
         <WorkflowList
           entries={unpublishedEntries}
           handleChangeStatus={updateUnpublishedEntryStatus}
