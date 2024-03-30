@@ -22,6 +22,7 @@ import Icon from '../Icon';
 import { IconButton } from '../Buttons';
 
 const TableWrap = styled.table`
+  display: flex;
   flex-direction: column;
   height: 100%;
 `;
@@ -262,7 +263,7 @@ function Table({
   });
   const [columns] = useState(updateVisibleColumns());
 
-  useEffect(() => onSelect(selectedRows), [selectedRows]);
+  useEffect(() => onSelect && onSelect(selectedRows), [selectedRows]);
 
   function updateVisibleColumns() {
     return [
@@ -411,6 +412,7 @@ function Table({
               items={table.getRowModel().rows.map(row => row.id)}
               strategy={verticalListSortingStrategy}
               onSortEnd={handleDragEnd}
+              disabled={!draggable}
             >
               {rowVirtualizer.getVirtualItems().map(virtualRow => {
                 const row = table.getRowModel().rows[virtualRow.index];

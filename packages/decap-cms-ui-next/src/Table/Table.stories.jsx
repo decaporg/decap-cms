@@ -73,7 +73,7 @@ const Subtitle = styled.div`
   font-size: 12px;
 `;
 
-const mockData = getMockData('post', 500);
+const mockData = getMockData('post', 200);
 
 export function _Table(args) {
   const { rowSize } = args;

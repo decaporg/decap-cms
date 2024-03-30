@@ -6,16 +6,10 @@ import { Waypoint } from 'react-waypoint';
 import { Map } from 'immutable';
 
 import { selectFields, selectInferredField } from '../../../reducers/collections';
+import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from '../../../constants/collectionViews';
 import EntryCard from './EntryCard';
-
-const CardsGrid = styled.ul`
-  display: flex;
-  flex-flow: row wrap;
-  list-style-type: none;
-  margin-left: -12px;
-  margin-top: 16px;
-  margin-bottom: 16px;
-`;
+import EntriesGrid from './EntriesGrid';
+import EntriesTable from './EntriesTable';
 
 export default class EntryListing extends React.Component {
   static propTypes = {
@@ -49,14 +43,23 @@ export default class EntryListing extends React.Component {
     return { titleField, descriptionField, imageField, remainingFields };
   };
 
-  renderCardsForSingleCollection = () => {
+  renderEntriesForSingleCollection = () => {
     const { collections, entries, viewStyle } = this.props;
     const inferredFields = this.inferFields(collections);
-    const entryCardProps = { collection: collections, inferredFields, viewStyle };
-    return entries.map((entry, idx) => <EntryCard {...entryCardProps} entry={entry} key={idx} />);
+    const entryCardProps = { collection: collections, inferredFields };
+
+    // return entries.map((entry, idx) => <EntryCard {...entryCardProps} entry={entry} key={idx} />);
+
+    if (viewStyle === VIEW_STYLE_LIST) {
+      return <EntriesTable {...entryCardProps} entries={entries} />;
+    }
+
+    if (viewStyle === VIEW_STYLE_GRID) {
+      return <EntriesGrid {...entryCardProps} entries={entries} />;
+    }
   };
 
-  renderCardsForMultipleCollections = () => {
+  renderEntriesForMultipleCollections = () => {
     const { collections, entries } = this.props;
     const isSingleCollectionInList = collections.size === 1;
     return entries.map((entry, idx) => {
@@ -73,14 +76,12 @@ export default class EntryListing extends React.Component {
     const { collections, page } = this.props;
 
     return (
-      <div>
-        <CardsGrid>
-          {Map.isMap(collections)
-            ? this.renderCardsForSingleCollection()
-            : this.renderCardsForMultipleCollections()}
-          {this.hasMore() && <Waypoint key={page} onEnter={this.handleLoadMore} />}
-        </CardsGrid>
-      </div>
+      <>
+        {Map.isMap(collections)
+          ? this.renderEntriesForSingleCollection()
+          : this.renderEntriesForMultipleCollections()}
+        {this.hasMore() && <Waypoint key={page} onEnter={this.handleLoadMore} />}
+      </>
     );
   }
 }
