@@ -304,7 +304,7 @@ function Thumbnail({
       selected={selected}
       selectable={selectable}
       horizontal={horizontal}
-      clickable={!!onClick || selectable}
+      clickable={!!onClick || !!props.to || selectable}
       onClick={onClick ? (selectable ? onSelect : onClick) : selectable ? onSelect : null}
       {...props}
     >

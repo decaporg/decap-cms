@@ -4,7 +4,7 @@ import { withTheme } from '@emotion/react';
 import { useArgs } from '@storybook/preview-api';
 import { action } from '@storybook/addon-actions';
 
-import Thumbnail, { ThumbnailGrid } from '.';
+import { Thumbnail, ThumbnailGrid } from '.';
 import getMockData from '../utils/getMockData';
 
 export default {
@@ -17,8 +17,6 @@ const Wrap = styled.div`
   justify-content: center;
   overflow-y: auto;
   padding: 1rem;
-  box-shadow: inset -1px 0 0 ${({ theme }) => theme.color.surface},
-    inset 1px 0 0 ${({ theme }) => theme.color.surface};
 `;
 
 const StyledThumbnail = styled(Thumbnail)`
