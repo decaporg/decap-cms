@@ -8,8 +8,8 @@ import { components } from 'decap-cms-ui-default';
 import { Button, Card } from 'decap-cms-ui-next';
 
 const CollectionTopContainer = styled(Card)`
-  padding: 18px 20px;
-  margin: 0 1rem 1rem 1rem;
+  padding: 1rem;
+  margin: 0 2rem 2rem 2rem;
 `;
 
 const CollectionTopRow = styled.div`
@@ -20,10 +20,6 @@ const CollectionTopRow = styled.div`
 
 const CollectionTopHeading = styled.h1`
   ${components.cardTopHeading};
-`;
-
-const CollectionTopNewButton = styled(Button)`
-  padding: 0 30px;
 `;
 
 const CollectionTopDescription = styled.p`
@@ -54,11 +50,11 @@ function CollectionTop({ collection, newEntryUrl, t }) {
       <CollectionTopRow>
         <CollectionTopHeading>{collectionLabel}</CollectionTopHeading>
         {newEntryUrl ? (
-          <CollectionTopNewButton as={Link} to={newEntryUrl} primary>
+          <Button as={Link} to={newEntryUrl} icon={'plus'} primary type="success">
             {t('collection.collectionTop.newButton', {
               collectionLabel: collectionLabelSingular || collectionLabel,
             })}
-          </CollectionTopNewButton>
+          </Button>
         ) : null}
       </CollectionTopRow>
       {collectionDescription ? (

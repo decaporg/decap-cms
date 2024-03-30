@@ -74,7 +74,7 @@ const EndWrap = styled.div`
   flex: 1;
 `;
 
-function AppBar({ renderStart, renderEnd, renderActions, children }) {
+function AppBar({ renderStart, renderEnd, renderActions, children, ...props }) {
   const [isMobile, setIsMobile] = useState(isWindowDown('xs'));
   const { pageTitle, breadcrumbs } = useUIContext();
 
@@ -88,7 +88,7 @@ function AppBar({ renderStart, renderEnd, renderActions, children }) {
   }, []);
 
   return (
-    <AppBarWrap as="header">
+    <AppBarWrap as="header" {...props}>
       {isMobile && (
         <ActionsWrap noBorder>
           <IconButton icon="arrow-left" />

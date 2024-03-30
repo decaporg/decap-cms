@@ -15,6 +15,10 @@ import {
 
 import { searchCollections } from '../../actions/collections';
 
+const StyledAppBar = styled(AppBar)`
+  z-index: 1;
+`;
+
 const StyledUserMenu = styled(UserMenu)`
   margin-left: 0.75rem;
 `;
@@ -27,6 +31,7 @@ const RenderEndWrap = styled.div`
 
 const SearchWrap = styled.div`
   width: 100%;
+  padding-left: 1rem;
 `;
 
 function Header({ user, collections, onLogoutClick, onCreateEntryClick, isSearchEnabled, t }) {
@@ -74,7 +79,7 @@ function Header({ user, collections, onLogoutClick, onCreateEntryClick, isSearch
   }
 
   return (
-    <AppBar
+    <StyledAppBar
       // renderStart={LogoTile}
       renderEnd={() => {
         return (
@@ -165,7 +170,7 @@ function Header({ user, collections, onLogoutClick, onCreateEntryClick, isSearch
           <StyledUserMenu user={user} onLogoutClick={onLogoutClick} />
         </>
       )}
-    ></AppBar>
+    ></StyledAppBar>
   );
 }
 
