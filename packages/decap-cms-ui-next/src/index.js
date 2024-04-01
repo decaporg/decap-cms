@@ -33,6 +33,7 @@ export { default as SearchBar } from './SearchBar';
 export { default as Table } from './Table';
 export * from './Tag';
 export * from './Thumbnail';
+export * from './Toast';
 export { default as ToggleSwitch } from './ToggleSwitch';
 export { default as Tooltip } from './Tooltip';
 export * from './Transitions';

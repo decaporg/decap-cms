@@ -59,13 +59,13 @@ const StyledToastContainer = styled(ReactToastifyContainer)`
   }
 `;
 
-function ToastContainer() {
+function ToastContainer({ position = 'bottom-right' }) {
   const theme = useTheme();
 
   return (
     <StyledToastContainer
       theme={theme}
-      position={'bottom-right'}
+      position={position}
       closeButton={false}
       transition={ToastTransition}
     />

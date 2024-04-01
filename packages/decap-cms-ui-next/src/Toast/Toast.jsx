@@ -1,9 +1,8 @@
-import React, { useRef, useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import color from 'color';
 
-import ToastTransition from './ToastTransition';
 import CloseButton from './CloseButton';
 import LinearProgress from '../LinearProgress';
 import Icon from '../Icon';

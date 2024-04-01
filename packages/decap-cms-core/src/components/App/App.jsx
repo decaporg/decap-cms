@@ -199,7 +199,6 @@ class App extends React.Component {
 
     return (
       <>
-        <Notifications />
         <AppOuter>
           <AppBody>
             <Nav
@@ -268,6 +267,7 @@ class App extends React.Component {
             </AppContent>
           </AppBody>
           {/* <ToastContainer /> */}
+          <Notifications />
         </AppOuter>
       </>
     );

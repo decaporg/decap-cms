@@ -1,8 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useEffect } from 'react';
-// import { translate } from 'react-polyglot';
-import { injectStyle } from 'react-toastify/dist/inject-style';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
+import { Toast, ToastContainer } from 'decap-cms-ui-next';
 import { connect, useDispatch } from 'react-redux';
 import { useTranslate } from 'react-polyglot';
 
@@ -11,8 +10,6 @@ import { dismissNotification } from '../../actions/notifications';
 import type { Id, ToastItem } from 'react-toastify';
 import type { State } from '../../types/redux';
 import type { Notification } from '../../reducers/notifications';
-
-injectStyle();
 
 interface Props {
   notifications: Notification[];
@@ -32,13 +29,15 @@ function Notifications({ notifications }: Props) {
       .filter(notification => !idMap[notification.id])
       .forEach(notification => {
         const toastId = toast(
-          typeof notification.message == 'string'
-            ? notification.message
-            : t(notification.message.key, { ...notification.message }),
-          {
-            autoClose: notification.dismissAfter,
-            type: notification.type,
-          },
+          <Toast
+            content={
+              typeof notification.message == 'string'
+                ? notification.message
+                : t(notification.message.key, { ...notification.message })
+            }
+            autoClose={notification.dismissAfter}
+            type={notification.type}
+          />,
         );
 
         idMap[notification.id] = toastId;
@@ -71,7 +70,7 @@ function Notifications({ notifications }: Props) {
 
   return (
     <>
-      <ToastContainer position="top-right" theme="colored" className="notif__container" />
+      <ToastContainer position="bottom-right" />
     </>
   );
 }
