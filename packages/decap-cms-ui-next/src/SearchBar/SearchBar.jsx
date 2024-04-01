@@ -12,7 +12,9 @@ const SearchContainer = styled.div`
   min-width: 200px;
   background-color: ${({ theme, focus }) =>
     focus
-      ? theme.color.elevatedSurfaceHighlight
+      ? color(theme.color.neutral['700'])
+          .alpha(theme.darkMode ? 0.35 : 0.1)
+          .string()
       : color(theme.color.neutral['700']).alpha(0.2).string()};
   border-radius: 6px;
   transition: 200ms;
@@ -21,7 +23,10 @@ const SearchContainer = styled.div`
       ? `box-shadow: inset 0 0 0 2px ${theme.color.primary['900']};`
       : `box-shadow: inset 0 0 0 0 ${theme.color.primary['900']};`}
   &:hover {
-    background-color: ${({ theme }) => theme.color.elevatedSurfaceHighlight};
+    background-color: ${({ theme }) =>
+      color(theme.color.neutral['700'])
+        .alpha(theme.darkMode ? 0.35 : 0.1)
+        .string()};
   }
 `;
 const SearchIcon = styled(Icon)`
