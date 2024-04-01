@@ -5,8 +5,7 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import dayjs from 'dayjs';
 import { translate } from 'react-polyglot';
-import Color from 'color';
-import { colors } from 'decap-cms-ui-default';
+import color from 'color';
 import { Card, Icon } from 'decap-cms-ui-next';
 
 import { status } from '../../constants/publishModes';
@@ -50,7 +49,7 @@ const ColumnHeader = styled(Card)`
   ${props =>
     props.name === 'draft' &&
     css`
-      background-color: ${Color(props.theme.color.pink[900]).alpha(0.15).string()};
+      background-color: ${color(props.theme.color.pink[900]).alpha(0.15).string()};
       box-shadow: inset 0 0 0 1.5px ${props.theme.color.pink[900]};
       color: ${props.theme.color.pink[900]};
     `}
@@ -58,7 +57,7 @@ const ColumnHeader = styled(Card)`
   ${props =>
     props.name === 'pending_review' &&
     css`
-      background-color: ${Color(props.theme.color.yellow[900]).alpha(0.15).string()};
+      background-color: ${color(props.theme.color.yellow[900]).alpha(0.15).string()};
       box-shadow: inset 0 0 0 1.5px ${props.theme.color.yellow[900]};
       color: ${props.theme.color.yellow[900]};
     `}
@@ -66,7 +65,7 @@ const ColumnHeader = styled(Card)`
   ${props =>
     props.name === 'pending_publish' &&
     css`
-      background-color: ${Color(props.theme.color.green[900]).alpha(0.15).string()};
+      background-color: ${color(props.theme.color.green[900]).alpha(0.15).string()};
       box-shadow: inset 0 0 0 1.5px ${props.theme.color.green[900]};
       color: ${props.theme.color.green[900]};
     `}
@@ -120,7 +119,9 @@ const WorkflowContainer = styled.div`
 
     border-radius: 0.5rem;
     padding: 0.5rem;
-    background-color: ${theme.color.elevatedSurfaceHighlight};
+    background-color: ${color(theme.color.neutral['900'])
+      .alpha(theme.darkMode ? 0.35 : 0.1)
+      .string()};
   `}
 `;
 // This is a namespace so that we can only drop these elements on a DropTarget with the same

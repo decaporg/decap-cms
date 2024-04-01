@@ -1,26 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { css } from '@emotion/react';
 import styled from '@emotion/styled';
+import { css } from '@emotion/react';
 import { translate } from 'react-polyglot';
 import { Link } from 'react-router-dom';
-import { colors, colorsRaw, transitions, buttons } from 'decap-cms-ui-default';
-import { Card } from 'decap-cms-ui-next';
-
-const styles = {
-  text: css`
-    font-size: 13px;
-    font-weight: normal;
-    margin-top: 4px;
-  `,
-  button: css`
-    ${buttons.button};
-    width: auto;
-    flex: 1 0 0;
-    font-size: 13px;
-    padding: 6px 0;
-  `,
-};
+import { Card, Button } from 'decap-cms-ui-next';
 
 const WorkflowLink = styled(Link)`
   display: block;
@@ -30,8 +14,7 @@ const WorkflowLink = styled(Link)`
 `;
 
 const CardCollection = styled.div`
-  font-size: 14px;
-  color: ${colors.textLead};
+  color: ${({ theme }) => theme.color.mediumEmphasis};
   text-transform: uppercase;
   margin-top: 12px;
   text-overflow: ellipsis;
@@ -41,16 +24,13 @@ const CardCollection = styled.div`
 
 const CardTitle = styled.h2`
   margin: 28px 0 0;
-  color: ${colors.textLead};
 `;
 
 const CardDateContainer = styled.div`
-  ${styles.text};
+  color: ${({ theme }) => theme.color.mediumEmphasis};
 `;
 
 const CardBody = styled.p`
-  ${styles.text};
-  color: ${colors.text};
   margin: 24px 0 0;
   overflow-wrap: break-word;
   word-break: break-word;
@@ -58,43 +38,22 @@ const CardBody = styled.p`
 `;
 
 const CardButtonContainer = styled.div`
-  background-color: ${colors.foreground};
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  padding: 12px 18px;
   display: flex;
-  opacity: 0;
-  transition: opacity ${transitions.main};
-  cursor: pointer;
+  padding: 12px 18px;
 `;
 
-const DeleteButton = styled.button`
-  ${styles.button};
-  background-color: ${colorsRaw.redLight};
-  color: ${colorsRaw.red};
+const DeleteButton = styled(Button)`
   margin-right: 6px;
 `;
 
-const PublishButton = styled.button`
-  ${styles.button};
-  background-color: ${colorsRaw.teal};
-  color: ${colors.textLight};
+const PublishButton = styled(Button)`
   margin-left: 6px;
-
-  &[disabled] {
-    ${buttons.disabled};
-  }
 `;
 
 const WorkflowCardContainer = styled(Card)`
   margin-bottom: 24px;
   position: relative;
   overflow: hidden;
-
-  &:hover ${CardButtonContainer} {
-    opacity: 1;
-  }
 `;
 
 function lastChangePhraseKey(date, author) {
@@ -141,13 +100,13 @@ function WorkflowCard({
         <CardBody>{body}</CardBody>
       </WorkflowLink>
       <CardButtonContainer>
-        <DeleteButton onClick={onDelete}>
+        <DeleteButton onClick={onDelete} type="danger">
           {isModification
             ? t('workflow.workflowCard.deleteChanges')
             : t('workflow.workflowCard.deleteNewEntry')}
         </DeleteButton>
         {allowPublish && (
-          <PublishButton disabled={!canPublish} onClick={onPublish}>
+          <PublishButton disabled={!canPublish} onClick={onPublish} type="success" primary>
             {isModification
               ? t('workflow.workflowCard.publishChanges')
               : t('workflow.workflowCard.publishNewEntry')}
