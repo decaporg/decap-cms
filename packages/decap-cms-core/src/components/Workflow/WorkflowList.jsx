@@ -115,7 +115,7 @@ const WorkflowContainer = styled.div`
     flex: 1;
 
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
 
     border-radius: 0.5rem;
     padding: 0.5rem;
