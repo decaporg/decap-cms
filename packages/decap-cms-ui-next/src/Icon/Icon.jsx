@@ -57,6 +57,7 @@ import LogOut from './icons/LogOut';
 import Mail from './icons/Mail';
 import MapPin from './icons/MapPin';
 import Maximize from './icons/Maximize';
+import Maximize2 from './icons/Maximize2';
 import Menu from './icons/Menu';
 import Minimize from './icons/Minimize';
 import Moon from './icons/Moon';
@@ -152,6 +153,7 @@ export const iconComponents = {
   mail: Mail,
   'map-pin': MapPin,
   maximize: Maximize,
+  'maximize-2': Maximize2,
   menu: Menu,
   minimize: Minimize,
   moon: Moon,

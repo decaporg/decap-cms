@@ -4,7 +4,6 @@ import styled from '@emotion/styled';
 import { List, Map } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import Frame, { FrameContextConsumer } from 'react-frame-component';
-import { lengths } from 'decap-cms-ui-default';
 import { connect } from 'react-redux';
 
 import {
@@ -30,8 +29,7 @@ const PreviewPaneFrame = styled(Frame)`
   width: 100%;
   height: 100%;
   border: none;
-  background: #fff;
-  border-radius: ${lengths.borderRadius};
+  background: ${({ theme }) => theme.color.surface};
 `;
 
 export class PreviewPane extends React.Component {

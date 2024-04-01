@@ -1,17 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { css, Global } from '@emotion/react';
+import { css, Global, withTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import SplitPane from 'react-split-pane';
-import {
-  colors,
-  colorsRaw,
-  components,
-  transitions,
-  IconButton,
-  zIndex,
-} from 'decap-cms-ui-default';
+import { colors, transitions, IconButton, zIndex } from 'decap-cms-ui-default';
 import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
 
 import EditorControlPane from './EditorControlPane/EditorControlPane';
@@ -28,8 +21,6 @@ const I18N_VISIBLE = 'cms.i18n-visible';
 
 const styles = {
   splitPane: css`
-    ${components.card};
-    border-radius: 0;
     height: 100%;
   `,
   pane: css`
@@ -42,7 +33,7 @@ const EditorToggle = styled(IconButton)`
   margin-bottom: 12px;
 `;
 
-function ReactSplitPaneGlobalStyles() {
+function ReactSplitPaneGlobalStyles({ theme }) {
   return (
     <Global
       styles={css`
@@ -57,7 +48,7 @@ function ReactSplitPaneGlobalStyles() {
             width: 2px;
             height: 100%;
             position: relative;
-            background-color: ${colors.textFieldBorder};
+            background-color: ${theme.color.mediumEmphasis};
             display: block;
             z-index: 10;
             transition: background-color ${transitions.main};
@@ -68,7 +59,7 @@ function ReactSplitPaneGlobalStyles() {
             &:before {
               width: 4px;
               left: -1px;
-              background-color: ${colorsRaw.blue};
+              background-color: ${theme.color.primary['900']};
             }
           }
         }
@@ -93,6 +84,9 @@ const NoPreviewContainer = styled.div`
 `;
 
 const EditorContainer = styled.div`
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
   width: 100%;
   min-width: 800px;
   height: 100%;
@@ -100,8 +94,7 @@ const EditorContainer = styled.div`
   top: 0;
   left: 0;
   overflow: hidden;
-  padding-top: 66px;
-  background-color: ${colors.background};
+  /* padding-top: 80px; */
 `;
 
 const Editor = styled.div`
@@ -237,6 +230,7 @@ class EditorInterface extends Component {
       draftKey,
       editorBackLink,
       t,
+      theme,
     } = this.props;
 
     const { scrollSyncEnabled, showEventBlocker } = this.state;
@@ -281,7 +275,8 @@ class EditorInterface extends Component {
     const editorWithPreview = (
       <ScrollSync enabled={this.state.scrollSyncEnabled}>
         <div>
-          <ReactSplitPaneGlobalStyles />
+          <ReactSplitPaneGlobalStyles theme={theme} />
+
           <StyledSplitPane
             maxSize={-100}
             minSize={400}
@@ -434,6 +429,7 @@ EditorInterface.propTypes = {
   loadDeployPreview: PropTypes.func.isRequired,
   draftKey: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,
+  theme: PropTypes.object.isRequired,
 };
 
-export default EditorInterface;
+export default withTheme(EditorInterface);

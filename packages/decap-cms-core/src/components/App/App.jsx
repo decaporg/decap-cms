@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
 connect;
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { translate } from 'react-polyglot';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import { connect } from 'react-redux';
-import { Route, Switch, Redirect } from 'react-router-dom';
+import { Route, Switch, Redirect, useLocation } from 'react-router-dom';
 import TopBarProgress from 'react-topbar-progress-indicator';
 import { Loader, colors } from 'decap-cms-ui-default';
 
@@ -89,25 +89,22 @@ function RouteInCollection({ collections, render, ...props }) {
   );
 }
 
-class App extends React.Component {
-  static propTypes = {
-    auth: PropTypes.object.isRequired,
-    config: PropTypes.object.isRequired,
-    collections: ImmutablePropTypes.map.isRequired,
-    loginUser: PropTypes.func.isRequired,
-    logoutUser: PropTypes.func.isRequired,
-    user: PropTypes.object,
-    isFetching: PropTypes.bool.isRequired,
-    publishMode: PropTypes.oneOf([SIMPLE, EDITORIAL_WORKFLOW]),
-    siteId: PropTypes.string,
-    useMediaLibrary: PropTypes.bool,
-    openMediaLibrary: PropTypes.func.isRequired,
-    showMediaButton: PropTypes.bool,
-    t: PropTypes.func.isRequired,
-  };
-
-  configError(config) {
-    const t = this.props.t;
+function App({
+  auth,
+  config,
+  collections,
+  loginUser,
+  logoutUser,
+  loadConfig,
+  user,
+  isFetching,
+  publishMode,
+  useMediaLibrary,
+  openMediaLibrary,
+  showMediaButton,
+  t,
+}) {
+  function configError(config) {
     return (
       <ErrorContainer>
         <h1>{t('app.app.errorHeader')}</h1>
@@ -120,18 +117,30 @@ class App extends React.Component {
     );
   }
 
-  componentDidMount() {
-    const { loadConfig } = this.props;
+  useEffect(() => {
     loadConfig();
+  }, [loadConfig]);
+
+  const { pathname } = useLocation();
+  const [isEditing, setIsEditing] = useState(false);
+
+  useEffect(() => {
+    if (
+      pathname.match('/collections/[a-zA-Z0-9_-]+/new') ||
+      pathname.match('/collections/[a-zA-Z0-9_-]+/entries/[a-zA-Z0-9_-]+')
+    ) {
+      setIsEditing(true);
+    } else {
+      setIsEditing(false);
+    }
+  }, [pathname]);
+
+  function handleLogin(credentials) {
+    loginUser(credentials);
   }
 
-  handleLogin(credentials) {
-    this.props.loginUser(credentials);
-  }
-
-  authenticating() {
-    const { auth, t } = this.props;
-    const backend = currentBackend(this.props.config);
+  function authenticating() {
+    const backend = currentBackend(config);
 
     if (backend == null) {
       return (
@@ -145,13 +154,13 @@ class App extends React.Component {
       <div>
         <Notifications />
         {React.createElement(backend.authComponent(), {
-          onLogin: this.handleLogin.bind(this),
+          onLogin: handleLogin.bind(this),
           error: auth.error,
           inProgress: auth.isFetching,
-          siteId: this.props.config.backend.site_domain,
-          base_url: this.props.config.backend.base_url,
-          authEndpoint: this.props.config.backend.auth_endpoint,
-          config: this.props.config,
+          siteId: config.backend.site_domain,
+          base_url: config.backend.base_url,
+          authEndpoint: config.backend.auth_endpoint,
+          config,
           clearHash: () => history.replace('/'),
           t,
         })}
@@ -159,120 +168,124 @@ class App extends React.Component {
     );
   }
 
-  handleLinkClick(event, handler, ...args) {
+  function handleLinkClick(event, handler, ...args) {
     event.preventDefault();
     handler(...args);
   }
 
-  render() {
-    const {
-      user,
-      config,
-      collections,
-      logoutUser,
-      isFetching,
-      publishMode,
-      useMediaLibrary,
-      openMediaLibrary,
-      showMediaButton,
-      t,
-    } = this.props;
+  if (config === null) {
+    return null;
+  }
 
-    if (config === null) {
-      return null;
-    }
+  if (config.error) {
+    return configError(config);
+  }
 
-    if (config.error) {
-      return this.configError(config);
-    }
+  if (config.isFetching) {
+    return <Loader active>{t('app.app.loadingConfig')}</Loader>;
+  }
 
-    if (config.isFetching) {
-      return <Loader active>{t('app.app.loadingConfig')}</Loader>;
-    }
+  if (user == null) {
+    return authenticating(t);
+  }
 
-    if (user == null) {
-      return this.authenticating(t);
-    }
+  const defaultPath = getDefaultPath(collections);
+  const hasWorkflow = publishMode === EDITORIAL_WORKFLOW;
 
-    const defaultPath = getDefaultPath(collections);
-    const hasWorkflow = publishMode === EDITORIAL_WORKFLOW;
+  return (
+    <>
+      <AppOuter>
+        <AppBody>
+          <Nav
+            collections={collections}
+            location={location}
+            openMediaLibrary={openMediaLibrary}
+            showMediaButton={showMediaButton}
+            hasWorkflow={hasWorkflow}
+            siteUrl={config.site_url}
+            displayUrl={config.display_url || config.site_url}
+            logoUrl={config.logo_url}
+          />
 
-    return (
-      <>
-        <AppOuter>
-          <AppBody>
-            <Nav
-              collections={collections}
-              location={location}
-              openMediaLibrary={openMediaLibrary}
-              showMediaButton={showMediaButton}
-              hasWorkflow={hasWorkflow}
-              siteUrl={config.site_url}
-              displayUrl={config.display_url || config.site_url}
-              logoUrl={config.logo_url}
-            />
-
-            <AppContent>
+          <AppContent>
+            {!isEditing && (
               <Header
                 user={user}
                 collections={collections}
                 onCreateEntryClick={createNewEntry}
                 onLogoutClick={logoutUser}
               />
-              <AppMainContainer>
-                {isFetching && <TopBarProgress />}
-                <Switch>
-                  <Redirect exact from="/" to={defaultPath} />
-                  <Redirect exact from="/search/" to={defaultPath} />
-                  <Redirect
-                    // This happens on Identity + Invite Only + External Provider email not matching
-                    // the registered user
-                    from="/error=access_denied&error_description=Signups+not+allowed+for+this+instance"
-                    to={defaultPath}
-                  />
-                  {hasWorkflow ? <Route path="/workflow" component={Workflow} /> : null}
-                  <RouteInCollection
-                    exact
-                    collections={collections}
-                    path="/collections/:name"
-                    render={props => <Collection t={t} {...props} />}
-                  />
-                  <RouteInCollection
-                    path="/collections/:name/new"
-                    collections={collections}
-                    render={props => <Editor {...props} newRecord />}
-                  />
-                  <RouteInCollection
-                    path="/collections/:name/entries/*"
-                    collections={collections}
-                    render={props => <Editor {...props} />}
-                  />
-                  <Route
-                    path="/search/:searchTerm"
-                    render={props => <Collection t={t} {...props} isSearchResults />}
-                  />
-                  <Route path="/media" render={props => <MediaLibrary {...props} />} />
-                  <RouteInCollection
-                    path="/edit/:name/:entryName"
-                    collections={collections}
-                    render={({ match }) => {
-                      const { name, entryName } = match.params;
-                      return <Redirect to={`/collections/${name}/entries/${entryName}`} />;
-                    }}
-                  />
-                  <Route component={NotFoundPage} />
-                </Switch>
-                {useMediaLibrary ? <MediaLibrary /> : null}
-              </AppMainContainer>
-            </AppContent>
-          </AppBody>
-          {/* <ToastContainer /> */}
-          <Notifications />
-        </AppOuter>
-      </>
-    );
-  }
+            )}
+
+            <AppMainContainer>
+              {isFetching && <TopBarProgress />}
+              <Switch>
+                <Redirect exact from="/" to={defaultPath} />
+                <Redirect exact from="/search/" to={defaultPath} />
+                <Redirect
+                  // This happens on Identity + Invite Only + External Provider email not matching
+                  // the registered user
+                  from="/error=access_denied&error_description=Signups+not+allowed+for+this+instance"
+                  to={defaultPath}
+                />
+                {hasWorkflow ? <Route path="/workflow" component={Workflow} /> : null}
+                <RouteInCollection
+                  exact
+                  collections={collections}
+                  path="/collections/:name"
+                  render={props => <Collection t={t} {...props} />}
+                />
+                <RouteInCollection
+                  path="/collections/:name/new"
+                  collections={collections}
+                  render={props => <Editor {...props} newRecord />}
+                />
+                <RouteInCollection
+                  path="/collections/:name/entries/*"
+                  collections={collections}
+                  render={props => <Editor {...props} />}
+                />
+                <Route
+                  path="/search/:searchTerm"
+                  render={props => <Collection t={t} {...props} isSearchResults />}
+                />
+                <Route path="/media" render={props => <MediaLibrary {...props} />} />
+                <RouteInCollection
+                  path="/edit/:name/:entryName"
+                  collections={collections}
+                  render={({ match }) => {
+                    const { name, entryName } = match.params;
+                    return <Redirect to={`/collections/${name}/entries/${entryName}`} />;
+                  }}
+                />
+                <Route component={NotFoundPage} />
+              </Switch>
+              {useMediaLibrary ? <MediaLibrary /> : null}
+            </AppMainContainer>
+          </AppContent>
+        </AppBody>
+        {/* <ToastContainer /> */}
+        <Notifications />
+      </AppOuter>
+    </>
+  );
 }
+
+App.propTypes = {
+  auth: PropTypes.object.isRequired,
+  config: PropTypes.object.isRequired,
+  collections: ImmutablePropTypes.map.isRequired,
+  loginUser: PropTypes.func.isRequired,
+  logoutUser: PropTypes.func.isRequired,
+  user: PropTypes.object,
+  isFetching: PropTypes.bool.isRequired,
+  publishMode: PropTypes.oneOf([SIMPLE, EDITORIAL_WORKFLOW]),
+  siteId: PropTypes.string,
+  useMediaLibrary: PropTypes.bool,
+  openMediaLibrary: PropTypes.func.isRequired,
+  showMediaButton: PropTypes.bool,
+  t: PropTypes.func.isRequired,
+};
 
 function mapStateToProps(state) {
   const { auth, config, collections, globalUI, mediaLibrary } = state;

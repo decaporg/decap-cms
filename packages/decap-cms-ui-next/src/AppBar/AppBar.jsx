@@ -94,10 +94,11 @@ function AppBar({ renderStart, renderEnd, renderActions, children, ...props }) {
           <IconButton icon="arrow-left" />
         </ActionsWrap>
       )}
-      {/* <StartWrap>
+
+      <StartWrap>
         {renderStart && renderStart()}
 
-        <TitleWrap>
+        {/* <TitleWrap>
           {pageTitle && <Title>{pageTitle}</Title>}
           {breadcrumbs && (
             <Breadcrumbs hasTitle={!!pageTitle}>
@@ -112,8 +113,8 @@ function AppBar({ renderStart, renderEnd, renderActions, children, ...props }) {
                 ))}
             </Breadcrumbs>
           )}
-        </TitleWrap>
-      </StartWrap> */}
+        </TitleWrap> */}
+      </StartWrap>
 
       {/* <ContentWrap>{children}</ContentWrap> */}
 
