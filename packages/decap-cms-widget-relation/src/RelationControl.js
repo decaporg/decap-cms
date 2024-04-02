@@ -259,11 +259,16 @@ export default class RelationControl extends React.Component {
 
       //set metadata
       this.mounted &&
-        onChange(filteredValue.length === 1 ? filteredValue[0] : fromJS(filteredValue), {
-          [field.get('name')]: {
-            [field.get('collection')]: metadata,
+        onChange(
+          filteredValue.length === 1 && !this.isMultiple()
+            ? filteredValue[0]
+            : fromJS(filteredValue),
+          {
+            [field.get('name')]: {
+              [field.get('collection')]: metadata,
+            },
           },
-        });
+        );
     }
   }
 
