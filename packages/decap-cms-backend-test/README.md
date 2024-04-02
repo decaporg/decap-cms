@@ -5,7 +5,7 @@ Used for demo purposes only.
 
 ## Code structure
 
-`Implementation` for [File Management System API](https://github.com/decaporg/decap-cms/tree/master/packages/decap-cms-lib-util/README.md) based on simple JS objects:
+`Implementation` for [File Management System API](https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-lib-util/README.md) based on simple JS objects:
 
 ```js
 window.repoFiles // json file-system tree
