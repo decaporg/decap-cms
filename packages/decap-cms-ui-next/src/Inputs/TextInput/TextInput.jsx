@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, forwardRef } from 'react';
 import styled from '@emotion/styled';
 
 import Field from '../../Field';
@@ -29,56 +29,64 @@ const InputIcon = styled(Icon)`
   right: 0;
 `;
 
-function TextInput({
-  name,
-  label,
-  icon,
-  onChange,
-  onClick,
-  readOnly,
-  placeholder,
-  children,
-  value,
-  focus,
-  title,
-  password,
-  className,
-  inline,
-  error,
-}) {
-  const [inputFocus, setInputFocus] = useState();
+const TextInput = forwardRef(
+  (
+    {
+      name,
+      label,
+      icon,
+      onChange,
+      onClick,
+      readOnly,
+      placeholder,
+      children,
+      value,
+      focus,
+      title,
+      password,
+      className,
+      inline,
+      error,
+    },
+    ref,
+  ) => {
+    const [inputFocus, setInputFocus] = useState();
 
-  return (
-    <Field
-      onClick={onClick}
-      label={label}
-      labelTarget={name}
-      focus={focus || inputFocus}
-      className={className}
-      inline={inline}
-      error={error}
-      icon={icon}
-      clickable={!readOnly}
-    >
-      <StyledInput
-        clickable={readOnly && !!onClick}
+    return (
+      <Field
         onClick={onClick}
-        readOnly={readOnly}
-        type={password ? 'password' : 'text'}
-        id={name}
-        name={name}
-        placeholder={placeholder ? placeholder : label ? `Type ${label.toLowerCase()} here` : ''}
-        value={value || ''}
-        onChange={e => onChange(e.target.value)}
-        onFocus={() => setInputFocus(true)}
-        onBlur={() => setInputFocus(false)}
-        autoComplete="off"
-        title={title}
+        label={label}
+        labelTarget={name}
+        focus={focus || inputFocus}
+        className={className}
+        inline={inline}
         error={error}
-      />
-      {children && children}
-    </Field>
-  );
-}
+        icon={icon}
+        clickable={!readOnly}
+      >
+        <StyledInput
+          ref={ref}
+          clickable={readOnly && !!onClick}
+          onClick={onClick}
+          readOnly={readOnly}
+          type={password ? 'password' : 'text'}
+          id={name}
+          name={name}
+          placeholder={placeholder ? placeholder : label ? `Type ${label.toLowerCase()} here` : ''}
+          value={value || ''}
+          onChange={e => onChange(e)}
+          onFocus={() => setInputFocus(true)}
+          onBlur={() => setInputFocus(false)}
+          autoComplete="off"
+          title={title}
+          error={error}
+        />
+        {children && children}
+      </Field>
+    );
+  },
+);
+
+TextInput.displayName = 'TextInput';
 
 export default TextInput;

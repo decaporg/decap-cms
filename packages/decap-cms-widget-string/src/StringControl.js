@@ -1,11 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { TextInput } from 'decap-cms-ui-next';
 
 export default class StringControl extends React.Component {
   static propTypes = {
     onChange: PropTypes.func.isRequired,
     forID: PropTypes.string,
+    label: PropTypes.string.isRequired,
     value: PropTypes.node,
+    error: PropTypes.bool,
     classNameWrapper: PropTypes.string.isRequired,
     setActiveStyle: PropTypes.func.isRequired,
     setInactiveStyle: PropTypes.func.isRequired,
@@ -41,20 +44,18 @@ export default class StringControl extends React.Component {
   };
 
   render() {
-    const { forID, value, classNameWrapper, setActiveStyle, setInactiveStyle } = this.props;
+    const { forID, label, value, error } = this.props;
 
     return (
-      <input
+      <TextInput
         ref={el => {
           this._el = el;
         }}
-        type="text"
-        id={forID}
-        className={classNameWrapper}
+        name={forID}
+        label={label}
         value={value || ''}
         onChange={this.handleChange}
-        onFocus={setActiveStyle}
-        onBlur={setInactiveStyle}
+        error={error}
       />
     );
   }

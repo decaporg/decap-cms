@@ -214,6 +214,7 @@ class EditorControl extends React.Component {
 
     const widgetName = field.get('widget');
     const widget = resolveWidget(widgetName);
+    const label = field.get('label', field.get('name'));
     const fieldName = field.get('name');
     const fieldHint = field.get('hint');
     const isFieldOptional = field.get('required') === false;
@@ -246,14 +247,14 @@ class EditorControl extends React.Component {
                 )}
               </ControlErrorsList>
             )}
-            <LabelComponent
+            {/* <LabelComponent
               field={field}
               isActive={isSelected || this.state.styleActive}
               hasErrors={hasErrors}
               uniqueFieldId={this.uniqueFieldId}
               isFieldOptional={isFieldOptional}
               t={t}
-            />
+            /> */}
             <Widget
               classNameWrapper={cx(
                 css`
@@ -293,7 +294,9 @@ class EditorControl extends React.Component {
               config={config}
               field={field}
               uniqueFieldId={this.uniqueFieldId}
+              label={label}
               value={value}
+              error={hasErrors}
               mediaPaths={mediaPaths}
               metadata={metadata}
               onChange={(newValue, newMetadata) => onChange(field, newValue, newMetadata)}

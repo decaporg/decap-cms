@@ -29,7 +29,6 @@ const PreviewPaneFrame = styled(Frame)`
   width: 100%;
   height: 100%;
   border: none;
-  background: ${({ theme }) => theme.color.surface};
 `;
 
 export class PreviewPane extends React.Component {

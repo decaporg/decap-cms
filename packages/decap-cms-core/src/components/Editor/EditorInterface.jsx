@@ -48,7 +48,7 @@ function ReactSplitPaneGlobalStyles({ theme }) {
             width: 2px;
             height: 100%;
             position: relative;
-            background-color: ${theme.color.mediumEmphasis};
+            background-color: ${theme.color.neutral[theme.darkMode ? '900' : '400']};
             display: block;
             z-index: 10;
             transition: background-color ${transitions.main};
@@ -280,7 +280,7 @@ class EditorInterface extends Component {
           <StyledSplitPane
             maxSize={-100}
             minSize={400}
-            defaultSize={parseInt(localStorage.getItem(SPLIT_PANE_POSITION), 10) || '50%'}
+            defaultSize={parseInt(localStorage.getItem(SPLIT_PANE_POSITION), 10) || '30%'}
             onChange={size => localStorage.setItem(SPLIT_PANE_POSITION, size)}
             onDragStarted={this.handleSplitPaneDragStart}
             onDragFinished={this.handleSplitPaneDragFinished}
@@ -305,7 +305,7 @@ class EditorInterface extends Component {
         <div>
           <StyledSplitPane
             maxSize={-100}
-            defaultSize={parseInt(localStorage.getItem(SPLIT_PANE_POSITION), 10) || '50%'}
+            defaultSize={parseInt(localStorage.getItem(SPLIT_PANE_POSITION), 10) || '70%'}
             onChange={size => localStorage.setItem(SPLIT_PANE_POSITION, size)}
             onDragStarted={this.handleSplitPaneDragStart}
             onDragFinished={this.handleSplitPaneDragFinished}
