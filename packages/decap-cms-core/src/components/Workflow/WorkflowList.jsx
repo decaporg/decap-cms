@@ -49,9 +49,9 @@ const ColumnHeader = styled(Card)`
   ${props =>
     props.name === 'draft' &&
     css`
-      background-color: ${color(props.theme.color.pink[900]).alpha(0.15).string()};
-      box-shadow: inset 0 0 0 1.5px ${props.theme.color.pink[900]};
-      color: ${props.theme.color.pink[900]};
+      background-color: ${color(props.theme.color.blue[900]).alpha(0.15).string()};
+      box-shadow: inset 0 0 0 1.5px ${props.theme.color.blue[900]};
+      color: ${props.theme.color.blue[900]};
     `}
 
   ${props =>
