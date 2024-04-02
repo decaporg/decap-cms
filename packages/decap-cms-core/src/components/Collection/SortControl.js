@@ -67,14 +67,7 @@ function SortControl({ t, fields, onSortClick, sort }) {
               key={field.key}
               onClick={() => onSortClick(field.key, nextSortDir)}
               isActive={isActive}
-              endContent={isActive && <StyledIcon name="chevron-down" direction={sortDir} />}
-              endIcon={
-                isActive && sortDir === SortDirection.Ascending
-                  ? 'chevron-up'
-                  : sortDir === SortDirection.Descending
-                  ? 'chevron-down'
-                  : null
-              }
+              endIcon={isActive && <StyledIcon name="chevron-down" direction={sortDir} />}
             >
               {field.label}
             </StyledMenuItem>

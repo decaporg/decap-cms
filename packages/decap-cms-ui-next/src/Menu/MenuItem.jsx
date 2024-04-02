@@ -13,6 +13,7 @@ export const MenuItemWrap = styled.div`
   transition: 200ms;
   display: flex;
   align-items: center;
+  gap: 0.5rem;
   border-radius: 4px;
   color: ${({ theme, type }) =>
     type === 'danger'
@@ -58,8 +59,8 @@ const SelectedIcon = styled(Icon)`
 
 function MenuItem({
   children,
-  startContent,
-  endContent,
+  icon,
+  endIcon,
   onClick,
   selected,
   hideSelectedIcon,
@@ -77,10 +78,10 @@ function MenuItem({
       disabled={disabled}
       {...props}
     >
-      {startContent}
+      {icon ? React.isValidElement(icon) ? icon : <Icon name={icon} /> : null}
       <TextWrap>{children}</TextWrap>
       {selected && !hideSelectedIcon && <SelectedIcon name="check" />}
-      {endContent}
+      {endIcon ? React.isValidElement(endIcon) ? endIcon : <Icon name={endIcon} /> : null}
     </MenuItemWrap>
   );
 }

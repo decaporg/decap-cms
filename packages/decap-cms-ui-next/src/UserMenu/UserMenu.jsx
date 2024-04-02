@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import { AvatarButton } from '../Buttons';
-import { Menu, MenuItem } from '../Menu';
+import { Menu, MenuItem, MenuSeparator } from '../Menu';
 import { useUIContext } from '../hooks';
 
 function UserMenu({ user, onLogoutClick, className }) {
@@ -37,6 +37,9 @@ function UserMenu({ user, onLogoutClick, className }) {
         >
           Dark Mode
         </MenuItem>
+
+        <MenuSeparator />
+
         <MenuItem
           as="a"
           target="_blank"
@@ -64,6 +67,9 @@ function UserMenu({ user, onLogoutClick, className }) {
         >
           Report an issue
         </MenuItem>
+
+        <MenuSeparator />
+
         <MenuItem icon="log-out" onClick={onLogoutClick}>
           Log out
         </MenuItem>

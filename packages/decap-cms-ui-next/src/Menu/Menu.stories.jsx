@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import styled from '@emotion/styled';
 import { action } from '@storybook/addon-actions';
 import { useArgs } from '@storybook/preview-api';
 
 import { Button, ButtonGroup } from '../Buttons';
-import Icon from '../Icon';
+import { iconComponents } from '../Icon/Icon';
 import { Menu, MenuItem } from '.';
 
 export default {
@@ -96,6 +95,26 @@ export function _MenuItem(args) {
 }
 
 _MenuItem.argTypes = {
+  icon: {
+    control: 'select',
+    options: {
+      default: null,
+      ...Object.keys(iconComponents).reduce((acc, key) => ({ ...acc, [key]: key }), {}),
+    },
+    table: {
+      defaultValue: { summary: 'null' },
+    },
+  },
+  endIcon: {
+    control: 'select',
+    options: {
+      default: null,
+      ...Object.keys(iconComponents).reduce((acc, key) => ({ ...acc, [key]: key }), {}),
+    },
+    table: {
+      defaultValue: { summary: 'null' },
+    },
+  },
   type: {
     control: 'select',
     options: ['default', 'danger', 'success'],
@@ -127,66 +146,10 @@ _MenuItem.argTypes = {
 };
 
 _MenuItem.args = {
+  icon: null,
+  endIcon: null,
   type: 'default',
   selected: false,
   hideSelectedIcon: false,
   disabled: false,
-};
-
-const StyledStartIcon = styled(Icon)`
-  margin-right: 0.75rem;
-  vertical-align: middle;
-`;
-
-export function WithStartContent(args) {
-  return (
-    <>
-      <Menu
-        anchorOrigin={{ x: 'center', y: 'center' }}
-        transformOrigin={{ x: 'center', y: 'center' }}
-        open={true}
-      >
-        <MenuItem {...args} startContent={<StyledStartIcon name="edit-3" />}>
-          Menu Item
-        </MenuItem>
-      </Menu>
-    </>
-  );
-}
-
-WithStartContent.args = {
-  ..._MenuItem.args,
-};
-
-WithStartContent.argTypes = {
-  ..._MenuItem.argTypes,
-};
-
-const StyledEndIcon = styled(Icon)`
-  margin-left: 0.75rem;
-  vertical-align: middle;
-`;
-
-export function WithEndContent(args) {
-  return (
-    <>
-      <Menu
-        anchorOrigin={{ x: 'center', y: 'center' }}
-        transformOrigin={{ x: 'center', y: 'center' }}
-        open={true}
-      >
-        <MenuItem {...args} endContent={<StyledEndIcon name="chevron-down" />}>
-          Menu Item
-        </MenuItem>
-      </Menu>
-    </>
-  );
-}
-
-WithEndContent.args = {
-  ..._MenuItem.args,
-};
-
-WithEndContent.argTypes = {
-  ..._MenuItem.argTypes,
 };

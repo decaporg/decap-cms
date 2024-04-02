@@ -394,18 +394,12 @@ function EditorToolbar({
           key="td-publish-create"
         >
           {canDelete && canPublish && (
-            <MenuItem
-              startContent={<Icon name="eye-off" style={{ marginRight: '0.25rem' }} />}
-              onClick={unPublish}
-            >
+            <MenuItem icon="eye-off" onClick={unPublish}>
               {t('editor.editorToolbar.unpublish')}
             </MenuItem>
           )}
           {canCreate && (
-            <MenuItem
-              startContent={<Icon name="copy" style={{ marginRight: '0.25rem' }} />}
-              onClick={onDuplicate}
-            >
+            <MenuItem icon="copy" onClick={onDuplicate}>
               {t('editor.editorToolbar.duplicate')}
             </MenuItem>
           )}
@@ -415,7 +409,7 @@ function EditorToolbar({
 
               <MenuItem
                 type="danger"
-                startContent={<Icon name="trash-2" style={{ marginRight: '0.25rem' }} />}
+                icon="trash-2"
                 onClick={hasUnpublishedChanges ? onDeleteUnpublishedChanges : onDelete}
               >
                 {isDeleting ? t('editor.editorToolbar.deleting') : deleteLabel}
@@ -545,13 +539,10 @@ function EditorToolbar({
           onClose={() => setPostMenuAnchorEl(null)}
           anchorOrigin={{ y: 'bottom', x: 'right' }}
         >
-          <MenuItem startContent={<Icon name="eye" />} onClick={() => setPostMenuAnchorEl(null)}>
+          <MenuItem icon="eye" onClick={() => setPostMenuAnchorEl(null)}>
             {t('editor.editorInterface.togglePreview')}
           </MenuItem>
-          <MenuItem
-            startContent={<Icon name="maximize-2" />}
-            onClick={() => setPostMenuAnchorEl(null)}
-          >
+          <MenuItem icon="maximize-2" onClick={() => setPostMenuAnchorEl(null)}>
             {t('editor.editorInterface.toggleScrollSync')}
           </MenuItem>
         </Menu>
