@@ -21,6 +21,7 @@ import {
   allEntriesByFolder,
   filterByExtension,
   branchFromContentKey,
+  getDefaultBranchName,
 } from 'decap-cms-lib-util';
 
 import AuthenticationPage from './AuthenticationPage';
