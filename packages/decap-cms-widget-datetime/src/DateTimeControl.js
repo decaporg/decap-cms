@@ -64,7 +64,7 @@ class DateTimeControl extends React.Component {
 
   getFormat() {
     const { field } = this.props;
-    const format = field?.get('format') || 'YYYY-MM-DDTHH:mm';
+    const format = field?.get('format') || 'YYYY-MM-DDTHH:mm:ss.SSS[Z]';
     const dateFormat = field?.get('date_format');
     const timeFormat = field?.get('time_format');
     let inputFormat = 'YYYY-MM-DDTHH:mm';
