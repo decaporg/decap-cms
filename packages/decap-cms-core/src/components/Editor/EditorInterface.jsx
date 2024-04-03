@@ -4,7 +4,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { css, Global, withTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import SplitPane from 'react-split-pane';
-import { colors, transitions, IconButton, zIndex } from 'decap-cms-ui-default';
+import { transitions, IconButton, zIndex } from 'decap-cms-ui-default';
 import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
 
 import EditorControlPane from './EditorControlPane/EditorControlPane';
@@ -110,7 +110,7 @@ const PreviewPaneContainer = styled.div`
 `;
 
 const ControlPaneContainer = styled(PreviewPaneContainer)`
-  padding: 0 16px;
+  /* padding: 0 16px; */
   position: relative;
   overflow-x: hidden;
 `;

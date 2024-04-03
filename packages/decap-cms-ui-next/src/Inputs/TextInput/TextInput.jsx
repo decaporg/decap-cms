@@ -35,6 +35,8 @@ const TextInput = forwardRef(
       name,
       label,
       icon,
+      description,
+      status,
       onChange,
       onClick,
       readOnly,
@@ -47,6 +49,7 @@ const TextInput = forwardRef(
       className,
       inline,
       error,
+      errors,
     },
     ref,
   ) => {
@@ -57,10 +60,13 @@ const TextInput = forwardRef(
         onClick={onClick}
         label={label}
         labelTarget={name}
+        description={description}
+        status={status}
         focus={focus || inputFocus}
         className={className}
         inline={inline}
         error={error}
+        errors={errors}
         icon={icon}
         clickable={!readOnly}
       >

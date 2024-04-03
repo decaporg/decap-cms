@@ -11,20 +11,33 @@ const StyledTextInput = styled(TextInput)`
 export default {
   title: 'Inputs/TextInput',
   component: TextInput,
+  argTypes: {
+    errors: {
+      control: 'object',
+    },
+  },
   args: {
     label: 'Text Input Label',
     placeholder: 'Type something here',
+    description: 'This is a description',
+    status: 'Required',
     value: '',
+    title: false,
     inline: false,
     error: false,
+    errors: [
+      {
+        message: 'Error message.',
+      },
+    ],
   },
 };
 
 export function _TextInput(args) {
   const [{ value }, updateArgs] = useArgs();
 
-  function handleChange(value) {
-    updateArgs({ value });
+  function handleChange(e) {
+    updateArgs({ value: e.target.value });
   }
 
   return <StyledTextInput {...args} value={value} onChange={handleChange} />;

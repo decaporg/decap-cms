@@ -12,6 +12,7 @@ import ReactMarkdown from 'react-markdown';
 import gfm from 'remark-gfm';
 
 import { resolveWidget, getEditorComponents } from '../../../lib/registry';
+import { selectInferredField } from '../../../reducers/collections';
 import { clearFieldErrors, tryLoadEntry, validateMetaField } from '../../../actions/entries';
 import { addAsset, boundGetAsset } from '../../../actions/media';
 import { selectIsLoadingAsset } from '../../../reducers/medias';
@@ -109,6 +110,22 @@ function LabelComponent({ field, isActive, hasErrors, uniqueFieldId, isFieldOpti
   return labelComponent;
 }
 
+function FieldHintComponent({ fieldHint }) {
+  <ReactMarkdown
+    remarkPlugins={[gfm]}
+    allowedElements={['a', 'strong', 'em', 'del']}
+    unwrapDisallowed={true}
+    components={{
+      // eslint-disable-next-line no-unused-vars
+      a: ({ node, ...props }) => (
+        <a {...props} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit' }} />
+      ),
+    }}
+  >
+    {fieldHint}
+  </ReactMarkdown>;
+}
+
 class EditorControl extends React.Component {
   static propTypes = {
     value: PropTypes.oneOfType([
@@ -170,6 +187,12 @@ class EditorControl extends React.Component {
     return false;
   };
 
+  isFieldTitle = () => {
+    const { field, collection } = this.props;
+
+    return field.get('name') === selectInferredField(collection, 'title');
+  };
+
   render() {
     const {
       value,
@@ -214,10 +237,12 @@ class EditorControl extends React.Component {
 
     const widgetName = field.get('widget');
     const widget = resolveWidget(widgetName);
-    const label = field.get('label', field.get('name'));
+    const fieldLabel = field.get('label', field.get('name'));
     const fieldName = field.get('name');
     const fieldHint = field.get('hint');
     const isFieldOptional = field.get('required') === false;
+    const fieldOptional = isFieldOptional ? t('editor.editorControl.field.optional') : '';
+    const isFieldTitle = this.isFieldTitle();
     const onValidateObject = onValidate;
     const metadata = fieldsMetaData && fieldsMetaData.get(fieldName);
     const errors = fieldsErrors && fieldsErrors.get(this.uniqueFieldId);
@@ -234,7 +259,7 @@ class EditorControl extends React.Component {
             `}
           >
             {widget.globalStyles && <Global styles={coreCss`${widget.globalStyles}`} />}
-            {errors && (
+            {/* {errors && (
               <ControlErrorsList>
                 {errors.map(
                   error =>
@@ -246,7 +271,7 @@ class EditorControl extends React.Component {
                     ),
                 )}
               </ControlErrorsList>
-            )}
+            )} */}
             {/* <LabelComponent
               field={field}
               isActive={isSelected || this.state.styleActive}
@@ -294,9 +319,13 @@ class EditorControl extends React.Component {
               config={config}
               field={field}
               uniqueFieldId={this.uniqueFieldId}
-              label={label}
+              isFieldTitle={isFieldTitle}
+              fieldLabel={fieldLabel}
+              fieldHint={fieldHint ? FieldHintComponent({ fieldHint }) : null}
+              fieldOptional={fieldOptional}
               value={value}
               error={hasErrors}
+              errors={errors}
               mediaPaths={mediaPaths}
               metadata={metadata}
               onChange={(newValue, newMetadata) => onChange(field, newValue, newMetadata)}

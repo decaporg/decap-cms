@@ -2,6 +2,8 @@ import React, { createContext, useContext } from 'react';
 import styled from '@emotion/styled';
 
 import Label from '../Label';
+import { Tag } from '../Tag';
+import Icon from '../Icon';
 import { IconButton } from '../Buttons';
 
 export const FieldContext = createContext();
@@ -90,6 +92,10 @@ const StyledLabel = styled(Label)`
   ${({ control }) => (control ? `flex: 1; margin: 0;` : ``)}
   ${({ clickable }) => (clickable ? `cursor: pointer;` : ``)};
   ${({ theme, error }) => (error ? `color: ${theme.color.danger['900']};` : ``)};
+
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 `;
 
 const StyledIconButton = styled(IconButton)`
@@ -98,11 +104,43 @@ const StyledIconButton = styled(IconButton)`
   bottom: 0.5rem;
 `;
 
+const StyledDescription = styled.p`
+  font-size: 12px;
+  margin-top: 0.75rem;
+  margin-bottom: 0;
+`;
+
+const StyledErrorsList = styled.ul`
+  flex: 1;
+  justify-content: flex-end;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.25rem;
+
+  margin-bottom: 0;
+  list-style-type: none;
+
+  color: ${({ theme }) => theme.color.danger['900']};
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+
+    font-size: 12px;
+    font-weight: bolder;
+  }
+`;
+
 function Field({
   focus,
   inline,
   labelTarget,
   label,
+  description,
+  status,
   children,
   control,
   onClick,
@@ -110,6 +148,7 @@ function Field({
   noBorder,
   insideStyle,
   error,
+  errors,
   icon,
   clickable,
 }) {
@@ -157,11 +196,35 @@ function Field({
             clickable={clickable || !!onClick}
             error={error}
           >
-            {label}
+            {label} {status && <Tag color={error ? 'danger' : 'neutral'}>{status}</Tag>}
+            {error && errors && (
+              <StyledErrorsList inline={inline}>
+                <Icon name="alert-triangle" />
+
+                {errors.map(
+                  error =>
+                    error.message &&
+                    typeof error.message === 'string' && (
+                      <li key={error.message.trim().replace(/[^a-z0-9]+/gi, '-')}>
+                        {error.message}
+                      </li>
+                    ),
+                )}
+              </StyledErrorsList>
+            )}
           </StyledLabel>
+
           <ChildrenWrap>{children}</ChildrenWrap>
+
           {icon && <StyledIconButton icon={icon} active={focus} inline={inline} />}
+
+          {description && (
+            <StyledDescription inline={inline} error={error}>
+              {description}
+            </StyledDescription>
+          )}
         </FieldInside>
+
         {!noBorder && inline && <FocusIndicator focus={focus} error={error} />}
       </FieldWrap>
     </FieldContext.Provider>
