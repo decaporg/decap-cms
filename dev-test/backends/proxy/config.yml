@@ -32,6 +32,7 @@ collections:
       - label: Publish Date
         name: date
         widget: datetime
+        format: 'YYYY-MM-DDTHH:mm'
       - label: Description
         name: description
         widget: text
