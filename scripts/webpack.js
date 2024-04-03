@@ -143,7 +143,7 @@ function baseConfig({ target = isProduction ? 'umd' : 'umddir' } = {}) {
       rules: flatMap(Object.values(rules()), rule => rule()),
     },
     resolve: {
-      extensions: ['.ts', '.tsx', '.js', '.json'],
+      extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
       fallback: {
         path: require.resolve('path-browserify'),
         stream: require.resolve('stream-browserify'),
