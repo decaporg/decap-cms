@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.1.3](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-datetime@3.1.2...decap-cms-widget-datetime@3.1.3) (2024-04-03)
+
+### Bug Fixes
+
+- **datetime-widget:** revert default date format to include timezone ([#7165](https://github.com/decaporg/decap-cms/issues/7165)) ([46294d6](https://github.com/decaporg/decap-cms/commit/46294d6fcd7f785f8c6346baeaa703d72b833b3b))
+
 ## [3.1.2](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-datetime@3.1.1...decap-cms-widget-datetime@3.1.2) (2024-03-29)
 
 **Note:** Version bump only for package decap-cms-widget-datetime
