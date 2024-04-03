@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.2.1](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-relation@3.2.0...decap-cms-widget-relation@3.2.1) (2024-04-02)
+
+### Bug Fixes
+
+- handle single values in multiselect relation widget ([#7164](https://github.com/decaporg/decap-cms/issues/7164)) ([248f36f](https://github.com/decaporg/decap-cms/commit/248f36fdc8326803b8b6d7174ac21650a5c05b7c))
+
 # [3.2.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-relation@3.1.1...decap-cms-widget-relation@3.2.0) (2024-03-28)
 
 ### Features
