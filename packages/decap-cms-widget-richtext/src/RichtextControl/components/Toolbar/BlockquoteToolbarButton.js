@@ -1,6 +1,7 @@
 import React from 'react';
-import { useEditorRef, focusEditor, toggleNodeType } from '@udecode/plate-common';
+import { useEditorRef, focusEditor } from '@udecode/plate-common';
 import { unwrapList } from '@udecode/plate-list';
+import { toggleWrapNodes } from '@udecode/slate-utils';
 import { ELEMENT_BLOCKQUOTE } from '@udecode/plate-block-quote';
 
 import ToolbarButton from './ToolbarButton';
@@ -10,7 +11,7 @@ function BlockquoteToolbarButton(props) {
 
   function handleClick() {
     unwrapList(editor);
-    toggleNodeType(editor, { activeType: ELEMENT_BLOCKQUOTE });
+    toggleWrapNodes(editor, ELEMENT_BLOCKQUOTE);
     focusEditor(editor);
   }
   const pressed = false;

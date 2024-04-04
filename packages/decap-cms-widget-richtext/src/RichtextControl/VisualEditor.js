@@ -38,6 +38,7 @@ import ListElement from './components/Element/ListElement';
 import { markdownToSlate, slateToMarkdown } from '../serializers';
 import LinkElement from './components/Element/LinkElement';
 import BlockquoteElement from './components/Element/BlockquoteElement';
+import createBlockquoteExtPlugin from './plugins/createBlockquoteExitBreak';
 
 function visualEditorStyles({ minimal }) {
   return `
@@ -63,6 +64,7 @@ const emptyValue = [
 ];
 
 export default function VisualEditor({ t, field, className, isDisabled, onChange, ...props }) {
+  console.log('plff', createBlockquotePlugin())
   const plugins = createPlugins(
     [
       createParagraphPlugin(),
@@ -73,6 +75,7 @@ export default function VisualEditor({ t, field, className, isDisabled, onChange
       createListPlugin(),
       createLinkPlugin(),
       createBlockquotePlugin(),
+      createBlockquoteExtPlugin(),
       createSoftBreakPlugin({
         options: {
           rules: [
