@@ -3,7 +3,7 @@ import React from 'react';
 import { DecapMark, DecapTile, DecapWordmark } from '.';
 
 export default {
-  title: 'Branding/Logos',
+  title: 'Components/Logos',
 };
 
 export function _DecapMark(args) {
