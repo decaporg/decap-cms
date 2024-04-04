@@ -1,35 +1,24 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { css } from '@emotion/react';
-import { Toggle, ToggleBackground, colors } from 'decap-cms-ui-default';
-
-function BooleanBackground({ isActive, ...props }) {
-  return (
-    <ToggleBackground
-      css={css`
-        background-color: ${isActive ? colors.active : colors.textFieldBorder};
-      `}
-      {...props}
-    />
-  );
-}
+import { BooleanInput } from 'decap-cms-ui-next';
 
 export default class BooleanControl extends React.Component {
   render() {
-    const { value, forID, onChange, classNameWrapper, setActiveStyle, setInactiveStyle } =
+    const { label, status, description, value, forID, inline, onChange, error, errors } =
       this.props;
     return (
-      <div className={classNameWrapper}>
-        <Toggle
-          id={forID}
-          active={value}
-          onChange={onChange}
-          onFocus={setActiveStyle}
-          onBlur={setInactiveStyle}
-          Background={BooleanBackground}
-        />
-      </div>
+      <BooleanInput
+        id={forID}
+        value={value}
+        label={label}
+        status={status}
+        description={description}
+        inline={inline}
+        onChange={onChange}
+        error={error}
+        errors={errors}
+      />
     );
   }
 }
@@ -37,11 +26,14 @@ export default class BooleanControl extends React.Component {
 BooleanControl.propTypes = {
   field: ImmutablePropTypes.map.isRequired,
   onChange: PropTypes.func.isRequired,
-  classNameWrapper: PropTypes.string.isRequired,
-  setActiveStyle: PropTypes.func.isRequired,
-  setInactiveStyle: PropTypes.func.isRequired,
   forID: PropTypes.string,
+  label: PropTypes.string.isRequired,
+  description: PropTypes.string,
+  status: PropTypes.string,
   value: PropTypes.bool,
+  inline: PropTypes.bool,
+  error: PropTypes.bool,
+  errors: PropTypes.array,
 };
 
 BooleanControl.defaultProps = {

@@ -11,11 +11,26 @@ const StyledBooleanInput = styled(BooleanInput)`
 export default {
   title: 'Inputs/BooleanInput',
   component: BooleanInput,
+  argTypes: {
+    errors: {
+      control: 'object',
+      if: {
+        arg: 'error',
+      },
+    },
+  },
   args: {
     label: 'Boolean Input Label',
+    description: 'This is a description',
+    status: 'Required',
     value: false,
     inline: false,
     error: false,
+    errors: [
+      {
+        message: 'Error message.',
+      },
+    ],
   },
 };
 
