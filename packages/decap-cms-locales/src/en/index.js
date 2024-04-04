@@ -74,6 +74,7 @@ const en = {
     editorControl: {
       field: {
         optional: 'optional',
+        placeholder: 'Type %{fieldLabel} here',
       },
     },
     editorControlPane: {

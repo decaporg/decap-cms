@@ -10,6 +10,7 @@ export default class StringControl extends React.Component {
     label: PropTypes.string.isRequired,
     description: PropTypes.string,
     status: PropTypes.string,
+    placeholder: PropTypes.string,
     value: PropTypes.node,
     error: PropTypes.bool,
     errors: PropTypes.array,
@@ -48,7 +49,8 @@ export default class StringControl extends React.Component {
   };
 
   render() {
-    const { forID, title, label, description, status, value, error, errors } = this.props;
+    const { forID, title, label, description, status, placeholder, value, error, errors } =
+      this.props;
 
     return (
       <TextInput
@@ -60,6 +62,7 @@ export default class StringControl extends React.Component {
         label={label}
         description={description}
         status={status}
+        placeholder={placeholder}
         inline={true}
         value={value || ''}
         onChange={this.handleChange}

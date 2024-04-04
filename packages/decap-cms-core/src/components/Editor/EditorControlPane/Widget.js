@@ -37,6 +37,7 @@ export default class Widget extends Component {
     errors: PropTypes.array,
     fieldLabel: PropTypes.string.isRequired,
     fieldHint: PropTypes.string,
+    fieldPlaceholder: PropTypes.string,
     fieldOptional: PropTypes.string,
     isFieldTitle: PropTypes.bool,
     value: PropTypes.oneOfType([
@@ -266,6 +267,7 @@ export default class Widget extends Component {
       field,
       fieldLabel,
       fieldHint,
+      fieldPlaceholder,
       fieldOptional,
       isFieldTitle,
       value,
@@ -312,6 +314,8 @@ export default class Widget extends Component {
       locale,
     } = this.props;
 
+    console.log('widget placeholder:', fieldPlaceholder);
+
     return React.createElement(controlComponent, {
       entry,
       collection,
@@ -321,6 +325,7 @@ export default class Widget extends Component {
       label: fieldLabel,
       description: fieldHint,
       status: fieldOptional,
+      placeholder: fieldPlaceholder,
       value,
       error,
       errors,

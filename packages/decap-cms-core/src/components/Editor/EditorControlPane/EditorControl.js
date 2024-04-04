@@ -240,6 +240,11 @@ class EditorControl extends React.Component {
     const fieldLabel = field.get('label', field.get('name'));
     const fieldName = field.get('name');
     const fieldHint = field.get('hint');
+    const fieldPlaceholder =
+      field.get('placeholder') ||
+      t('editor.editorControl.field.placeholder', {
+        fieldLabel: fieldLabel.toLowerCase(),
+      });
     const isFieldOptional = field.get('required') === false;
     const fieldOptional = isFieldOptional ? t('editor.editorControl.field.optional') : '';
     const isFieldTitle = this.isFieldTitle();
@@ -322,6 +327,7 @@ class EditorControl extends React.Component {
               isFieldTitle={isFieldTitle}
               fieldLabel={fieldLabel}
               fieldHint={fieldHint ? FieldHintComponent({ fieldHint }) : null}
+              fieldPlaceholder={fieldPlaceholder}
               fieldOptional={fieldOptional}
               value={value}
               error={hasErrors}

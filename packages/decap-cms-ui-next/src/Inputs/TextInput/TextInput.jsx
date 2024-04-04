@@ -55,6 +55,8 @@ const TextInput = forwardRef(
   ) => {
     const [inputFocus, setInputFocus] = useState();
 
+    console.log('placeholder:', placeholder);
+
     return (
       <Field
         onClick={onClick}
