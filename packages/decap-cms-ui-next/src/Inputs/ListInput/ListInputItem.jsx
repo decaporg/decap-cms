@@ -88,7 +88,7 @@ const ListInputItem = forwardRef(
             <ListIconActions>
               <Button icon="more-horizontal" expanded={itemExpanded} onClick={handleOpenMenu} />
               <Button
-                icon="x"
+                icon="trash-2"
                 type="danger"
                 expanded={itemExpanded}
                 onMouseEnter={() => setTreeType('danger')}
