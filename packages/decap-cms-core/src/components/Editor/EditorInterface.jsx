@@ -88,7 +88,7 @@ const EditorContainer = styled.div`
   inset: 0;
   overflow: hidden;
   width: 100%;
-  min-width: 800px;
+  /* min-width: 800px; */
   height: 100%;
   position: absolute;
   top: 0;

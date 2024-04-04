@@ -14,6 +14,9 @@ export default {
   argTypes: {
     errors: {
       control: 'object',
+      if: {
+        arg: 'error',
+      },
     },
   },
   args: {

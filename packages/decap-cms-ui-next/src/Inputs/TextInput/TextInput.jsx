@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 import Field from '../../Field';
 import Icon from '../../Icon';
 
-const StyledInput = styled.input`
+export const StyledInput = styled.input`
   color: ${({ theme }) => theme.color.highEmphasis};
   background: none;
   border: none;
@@ -54,8 +54,6 @@ const TextInput = forwardRef(
     ref,
   ) => {
     const [inputFocus, setInputFocus] = useState();
-
-    console.log('placeholder:', placeholder);
 
     return (
       <Field

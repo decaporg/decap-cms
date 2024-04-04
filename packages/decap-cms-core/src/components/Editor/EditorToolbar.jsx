@@ -178,6 +178,10 @@ const StatusDropdownItem = styled(DropdownItem)`
   }
 `;
 
+const StyledScrollSyncIcon = styled(Icon)`
+  rotate: -45deg;
+`;
+
 function EditorToolbar({
   isPersisting,
   isPublishing,
@@ -542,7 +546,10 @@ function EditorToolbar({
           <MenuItem icon="eye" onClick={() => setPostMenuAnchorEl(null)}>
             {t('editor.editorInterface.togglePreview')}
           </MenuItem>
-          <MenuItem icon="maximize-2" onClick={() => setPostMenuAnchorEl(null)}>
+          <MenuItem
+            icon={<StyledScrollSyncIcon name="maximize-2" />}
+            onClick={() => setPostMenuAnchorEl(null)}
+          >
             {t('editor.editorInterface.toggleScrollSync')}
           </MenuItem>
         </Menu>

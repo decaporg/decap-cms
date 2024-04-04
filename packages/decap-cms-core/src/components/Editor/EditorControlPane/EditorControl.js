@@ -111,19 +111,21 @@ function LabelComponent({ field, isActive, hasErrors, uniqueFieldId, isFieldOpti
 }
 
 function FieldHintComponent({ fieldHint }) {
-  <ReactMarkdown
-    remarkPlugins={[gfm]}
-    allowedElements={['a', 'strong', 'em', 'del']}
-    unwrapDisallowed={true}
-    components={{
-      // eslint-disable-next-line no-unused-vars
-      a: ({ node, ...props }) => (
-        <a {...props} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit' }} />
-      ),
-    }}
-  >
-    {fieldHint}
-  </ReactMarkdown>;
+  return (
+    <ReactMarkdown
+      remarkPlugins={[gfm]}
+      allowedElements={['a', 'strong', 'em', 'del']}
+      unwrapDisallowed={true}
+      components={{
+        // eslint-disable-next-line no-unused-vars
+        a: ({ node, ...props }) => (
+          <a {...props} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit' }} />
+        ),
+      }}
+    >
+      {fieldHint}
+    </ReactMarkdown>
+  );
 }
 
 class EditorControl extends React.Component {
@@ -245,6 +247,7 @@ class EditorControl extends React.Component {
       t('editor.editorControl.field.placeholder', {
         fieldLabel: fieldLabel.toLowerCase(),
       });
+    const fieldInline = true;
     const isFieldOptional = field.get('required') === false;
     const fieldOptional = isFieldOptional ? t('editor.editorControl.field.optional') : '';
     const isFieldTitle = this.isFieldTitle();
@@ -328,6 +331,7 @@ class EditorControl extends React.Component {
               fieldLabel={fieldLabel}
               fieldHint={fieldHint ? FieldHintComponent({ fieldHint }) : null}
               fieldPlaceholder={fieldPlaceholder}
+              fieldInline={fieldInline}
               fieldOptional={fieldOptional}
               value={value}
               error={hasErrors}
@@ -371,7 +375,7 @@ class EditorControl extends React.Component {
               isLoadingAsset={isLoadingAsset}
               locale={locale}
             />
-            {fieldHint && (
+            {/* {fieldHint && (
               <ControlHint active={isSelected || this.state.styleActive} error={hasErrors}>
                 <ReactMarkdown
                   remarkPlugins={[gfm]}
@@ -392,7 +396,7 @@ class EditorControl extends React.Component {
                   {fieldHint}
                 </ReactMarkdown>
               </ControlHint>
-            )}
+            )} */}
           </ControlContainer>
         )}
       </ClassNames>

@@ -1,5 +1,6 @@
 import React, { createContext, useContext } from 'react';
 import styled from '@emotion/styled';
+import { css } from '@emotion/react';
 
 import Label from '../Label';
 import { Tag } from '../Tag';
@@ -24,26 +25,24 @@ const FocusIndicator = styled.div`
 const FieldWrap = styled.div`
   ${({ inline }) =>
     inline
-      ? `
-    padding: 0 1rem;
-      `
+      ? css`
+          padding: 0 1rem;
+        `
       : ``}
   position: relative;
   ${({ theme, noBorder, inline, error, focus, clickable }) =>
     inline && !noBorder
-      ? `
-        box-shadow: inset 0 -1px 0 0 ${error ? theme.color.danger[900] : theme.color.border};
-        transition: box-shadow 0.2s;
-        ${
-          clickable && !error && !focus
-            ? `
-      &:hover {
-        box-shadow: inset 0 -1px 0 0 ${theme.color.borderHover};
-      }
-    `
-            : ``
-        }
-      `
+      ? css`
+          box-shadow: inset 0 -1px 0 0 ${error ? theme.color.danger[900] : theme.color.border};
+          transition: box-shadow 0.2s;
+          ${clickable && !error && !focus
+            ? css`
+                &:hover {
+                  box-shadow: inset 0 -1px 0 0 ${theme.color.borderHover};
+                }
+              `
+            : ``}
+        `
       : ``}
   &:hover ${FocusIndicator} {
     height: 2px;
@@ -51,36 +50,46 @@ const FieldWrap = styled.div`
 `;
 
 const FieldInside = styled.div`
-  ${({ control }) => (control ? `display: flex; align-items: center;` : ``)}
-  ${({ clickable }) => (clickable ? `cursor: pointer;` : ``)}
+  ${({ control }) =>
+    control
+      ? css`
+          display: flex;
+          align-items: center;
+          flex-wrap: wrap;
+        `
+      : ``}
+  ${({ clickable }) =>
+    clickable
+      ? css`
+          cursor: pointer;
+        `
+      : ``}
   max-width: 800px;
   margin: 0 auto;
   position: relative;
   ${({ inline, focus, theme, error, icon, clickable }) =>
     inline
-      ? `padding: 1rem 0;`
-      : `
-    padding: 1rem;
-    ${icon ? `padding-right: 3rem;` : ``}
-    box-shadow: inset 0 0 0 ${focus ? 2 : 1}px ${
-          error
+      ? css`
+          padding: 1rem 0;
+        `
+      : css`
+          padding: 1rem;
+          ${icon ? `padding-right: 3rem;` : ``}
+          box-shadow: inset 0 0 0 ${focus ? 2 : 1}px ${error
             ? theme.color.danger['900']
             : focus
             ? theme.color.primary['900']
-            : theme.color.border
-        };
-    border-radius: 8px;
-    transition: 0.2s;
-    ${
-      clickable && !error && !focus
-        ? `
-      &:hover {
-        box-shadow: inset 0 0 0 1px ${theme.color.borderHover};
-      }
-    `
-        : ``
-    }
-  `}
+            : theme.color.border};
+          border-radius: 8px;
+          transition: 0.2s;
+          ${clickable && !error && !focus
+            ? css`
+                &:hover {
+                  box-shadow: inset 0 0 0 1px ${theme.color.borderHover};
+                }
+              `
+            : ``}
+        `}
 `;
 
 const ChildrenWrap = styled.div`
@@ -101,13 +110,15 @@ const StyledLabel = styled(Label)`
 const StyledIconButton = styled(IconButton)`
   position: absolute;
   right: ${({ inline }) => (inline ? 0 : 0.5)}rem;
-  bottom: 0.5rem;
+  bottom: 0.625rem;
 `;
 
 const StyledDescription = styled.p`
   font-size: 12px;
   margin-top: 0.75rem;
   margin-bottom: 0;
+
+  flex-basis: 100%;
 `;
 
 const StyledErrorsList = styled.ul`
@@ -120,6 +131,13 @@ const StyledErrorsList = styled.ul`
   gap: 0.25rem;
 
   margin-bottom: 0;
+  padding-left: 0;
+  ${({ control }) =>
+    control
+      ? css`
+          padding-right: 0.5rem;
+        `
+      : ``}
   list-style-type: none;
 
   color: ${({ theme }) => theme.color.danger['900']};
@@ -198,7 +216,7 @@ function Field({
           >
             {label} {status && <Tag color={error ? 'danger' : 'neutral'}>{status}</Tag>}
             {error && errors && (
-              <StyledErrorsList inline={inline}>
+              <StyledErrorsList control={control}>
                 <Icon name="alert-triangle" />
 
                 {errors.map(
@@ -218,11 +236,7 @@ function Field({
 
           {icon && <StyledIconButton icon={icon} active={focus} inline={inline} />}
 
-          {description && (
-            <StyledDescription inline={inline} error={error}>
-              {description}
-            </StyledDescription>
-          )}
+          {description && <StyledDescription>{description}</StyledDescription>}
         </FieldInside>
 
         {!noBorder && inline && <FocusIndicator focus={focus} error={error} />}
