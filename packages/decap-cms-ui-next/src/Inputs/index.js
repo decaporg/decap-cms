@@ -5,3 +5,4 @@ export { default as BooleanInput } from './BooleanInput';
 export { default as ObjectInput } from './ObjectInput';
 export { default as SelectInput } from './SelectInput';
 // export { default as MarkdownInput } from './MarkdownInput';
+export { default as NumberInput } from './NumberInput';

@@ -7,6 +7,7 @@ const ValidationErrorTypes = {
   RANGE: 'RANGE',
   CUSTOM: 'CUSTOM',
 };
+import { NumberInput } from 'decap-cms-ui-next';
 
 export function validateMinMax(value, min, max, field, t) {
   let error;
@@ -55,6 +56,12 @@ export default class NumberControl extends React.Component {
     classNameWrapper: PropTypes.string.isRequired,
     setActiveStyle: PropTypes.func.isRequired,
     setInactiveStyle: PropTypes.func.isRequired,
+    label: PropTypes.string.isRequired,
+    status: PropTypes.string,
+    description: PropTypes.string,
+    inline: PropTypes.bool,
+    error: PropTypes.bool,
+    errors: PropTypes.array,
     value: PropTypes.node,
     forID: PropTypes.string,
     valueType: PropTypes.string,
@@ -96,22 +103,25 @@ export default class NumberControl extends React.Component {
   };
 
   render() {
-    const { field, value, classNameWrapper, forID, setActiveStyle, setInactiveStyle } = this.props;
+    const { field, label, description, status, inline, error, errors, value, forID } = this.props;
     const min = field.get('min', '');
     const max = field.get('max', '');
     const step = field.get('step', field.get('value_type') === 'int' ? 1 : '');
     return (
-      <input
+      <NumberInput
         type="number"
         id={forID}
-        className={classNameWrapper}
-        onFocus={setActiveStyle}
-        onBlur={setInactiveStyle}
+        label={label}
+        description={description}
+        status={status}
+        inline={inline}
         value={value || (value === 0 ? value : '')}
         step={step}
         min={min}
         max={max}
         onChange={this.handleChange}
+        error={error}
+        errors={errors}
       />
     );
   }

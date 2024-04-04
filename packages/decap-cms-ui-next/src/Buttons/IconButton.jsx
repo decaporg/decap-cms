@@ -12,8 +12,9 @@ const IconButtonWrap = styled.button`
     active ? color(theme.color.success['900']).alpha(0.1).string() : `transparent`};
   border: none;
   padding: 0.25rem;
-  width: ${({ size }) => (size === 'lg' ? 2.5 : size === 'sm' ? 1.5 : 2)}rem;
-  height: ${({ size }) => (size === 'lg' ? 2.5 : size === 'sm' ? 1.5 : 2)}rem;
+  width: ${({ size }) => (size === 'lg' ? 2.5 : size === 'sm' ? 1.5 : size === 'xs' ? 1.25 : 2)}rem;
+  height: ${({ size }) =>
+    size === 'lg' ? 2.5 : size === 'sm' ? 1.5 : size === 'xs' ? 1.25 : 2}rem;
   border-radius: 6px;
   display: flex;
   justify-content: center;
