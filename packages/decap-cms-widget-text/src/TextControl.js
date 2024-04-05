@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Textarea from 'react-textarea-autosize';
+import { Textarea } from 'decap-cms-ui-next';
 
 export default class TextControl extends React.Component {
   static propTypes = {
@@ -28,19 +28,32 @@ export default class TextControl extends React.Component {
   }
 
   render() {
-    const { forID, value, onChange, classNameWrapper, setActiveStyle, setInactiveStyle } =
-      this.props;
+    const {
+      forID,
+      label,
+      status,
+      placeholder,
+      description,
+      inline,
+      value,
+      onChange,
+      error,
+      errors,
+    } = this.props;
 
     return (
       <Textarea
-        id={forID}
+        name={forID}
+        label={label}
+        status={status}
+        placeholder={placeholder}
+        description={description}
+        inline={inline}
         value={value || ''}
-        className={classNameWrapper}
-        onFocus={setActiveStyle}
-        onBlur={setInactiveStyle}
         minRows={5}
-        css={{ fontFamily: 'inherit' }}
         onChange={e => onChange(e.target.value)}
+        error={error}
+        errors={errors}
       />
     );
   }
