@@ -18,6 +18,7 @@ const config: StorybookConfig = {
     getAbsolutePath('@storybook/addon-a11y'),
     getAbsolutePath('storybook-addon-deep-controls'),
     getAbsolutePath('storybook-dark-mode'),
+    '@storybook/addon-webpack5-compiler-babel'
   ],
   framework: {
     name: getAbsolutePath('@storybook/react-webpack5'),
