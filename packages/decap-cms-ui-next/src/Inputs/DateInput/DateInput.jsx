@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import dayjs from 'dayjs';
 import { DatetimePicker } from 'rc-datetime-picker-dayjs';
@@ -11,21 +11,25 @@ const StyledMenu = styled(Menu)`
   padding: 0;
 `;
 
-const shortcuts = {
-  Today: dayjs(),
-  Yesterday: dayjs().subtract(1, 'days'),
-  Tomorrow: dayjs().add(1, 'days'),
-  Clear: '',
-};
-
 const StyledDatetimePicker = styled(DatetimePicker)`
   width: 100%;
   background-color: transparent;
 `;
 
-function DateInput({ onChange, value = dayjs(), ...props }) {
+function DateInput({ onChange, value = dayjs(), type, format, shortcuts, ...props }) {
   const [date, setDate] = useState(value);
+  const [inputFormat, setInputFormat] = useState('YYYY-MM-DDTHH:mm:ssZ');
   const [anchorEl, setAnchorEl] = useState(null);
+
+  useEffect(() => {
+    if (type === 'date') {
+      setInputFormat('YYYY-MM-DD');
+    } else if (type === 'time') {
+      setInputFormat('HH:mm');
+    } else {
+      setInputFormat('YYYY-MM-DDTHH:mm');
+    }
+  }, [type]);
 
   function handleOpenMenu(event) {
     // setAnchorElWidth(`${event.currentTarget.offsetWidth}px`);
@@ -41,12 +45,13 @@ function DateInput({ onChange, value = dayjs(), ...props }) {
 
   return (
     <>
-      <DatepickerStyles />
+      <DatepickerStyles shortcuts={shortcuts} />
 
       <TextInput
         {...props}
         readOnly
-        value={date && date.format('YYYY-MM-DD HH:mm')}
+        value={date && date.format(format || inputFormat)}
+        type={type}
         onClick={handleOpenMenu}
         focus={!!anchorEl}
         icon="calendar"
@@ -62,6 +67,8 @@ function DateInput({ onChange, value = dayjs(), ...props }) {
       >
         <StyledDatetimePicker
           shortcuts={shortcuts}
+          showCalendarPicker={type === 'date' || type === 'datetime-local'}
+          showTimePicker={type === 'time' || type === 'datetime-local'}
           closeOnSelectDay
           dayjs={date}
           onChange={date => {

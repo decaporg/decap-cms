@@ -1,7 +1,7 @@
 import React from 'react';
 import { Global, css, withTheme } from '@emotion/react';
 
-function getDatepickerStyles(theme) {
+function getDatepickerStyles(theme, hasShortcuts) {
   return css`
     .datetime-picker {
       position: relative;
@@ -27,6 +27,8 @@ function getDatepickerStyles(theme) {
       border-radius: 4px;
       outline: none;
       cursor: pointer;
+      display: flex;
+      align-items: center;
     }
     .datetime-picker .calendar .calendar-nav button .fa {
       font-size: 18px;
@@ -203,35 +205,39 @@ function getDatepickerStyles(theme) {
       cursor: pointer;
     }
 
-    .datetime-picker .shortcuts-bar {
-      border-bottom: 1px solid ${theme.color.border};
-      padding: 8px;
-    }
-    .datetime-picker .shortcuts-bar .btn {
-      border: 0;
-      background: none;
-      cursor: pointer;
-      border-radius: 2px;
-      padding: 2px 4px;
-      outline: none;
-      color: ${theme.color.mediumEmphasis};
-    }
-    .datetime-picker .shortcuts-bar .btn:hover {
-      background-color: ${theme.color.elevatedSurfaceHighlight};
-    }
-    .datetime-picker .shortcuts-bar .btn:last-child {
-      float: right;
-    }
-    .datetime-picker .shortcuts-bar .btn:not(:first-child) {
-      margin-left: 5px;
-    }
-    .datetime-range-picker {
-      border: 1px solid #dbdbdb;
-      background-color: #fff;
-      border-radius: 4px;
-      box-sizing: content-box;
-      z-index: 100;
-    }
+    ${hasShortcuts &&
+    css`
+      .datetime-picker .shortcuts-bar {
+        border-bottom: 1px solid ${theme.color.border};
+        padding: 8px;
+      }
+      .datetime-picker .shortcuts-bar .btn {
+        border: 0;
+        background: none;
+        cursor: pointer;
+        border-radius: 2px;
+        padding: 2px 4px;
+        outline: none;
+        color: ${theme.color.mediumEmphasis};
+      }
+      .datetime-picker .shortcuts-bar .btn:hover {
+        background-color: ${theme.color.elevatedSurfaceHighlight};
+      }
+      .datetime-picker .shortcuts-bar .btn:last-child {
+        float: right;
+      }
+      .datetime-picker .shortcuts-bar .btn:not(:first-child) {
+        margin-left: 5px;
+      }
+      .datetime-range-picker {
+        border: 1px solid #dbdbdb;
+        background-color: #fff;
+        border-radius: 4px;
+        box-sizing: content-box;
+        z-index: 100;
+      }
+    `}
+
     .datetime-trigger {
       position: relative;
     }
@@ -302,23 +308,19 @@ function getDatepickerStyles(theme) {
       background-color: ${theme.color.primary['900']};
       border: none;
       border-radius: 32px;
-      &:active {
-        background-color: ${theme.color.primary['1400']};
-      }
-    }
-    .datetime-picker .time .sliders .slider .handle:hover {
-      border-color: #b8b8b8;
     }
     .datetime-picker .time .sliders .slider .handle:active,
     .datetime-picker .time .sliders .slider .handle:focus {
-      background-color: #5cc4ef;
-      border-color: #5cc4ef;
+      background-color: ${theme.color.primary['1400']};
+      border-color: ${theme.color.primary['1400']};
     }
   `;
 }
 
-function DatepickerStyles({ theme }) {
-  return <Global styles={getDatepickerStyles(theme)} />;
+function DatepickerStyles({ theme, shortcuts }) {
+  const hasShortcuts = shortcuts && Object.keys(shortcuts).length > 0;
+
+  return <Global styles={getDatepickerStyles(theme, hasShortcuts)} />;
 }
 
 export default withTheme(DatepickerStyles);

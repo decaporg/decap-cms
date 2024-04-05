@@ -16,10 +16,22 @@ export default {
     value: {
       control: 'date',
     },
+    type: {
+      control: 'select',
+      options: ['date', 'time', 'datetime-local'],
+    },
+    shortcuts: {
+      control: 'object',
+    },
   },
   args: {
     label: 'Date Input Label',
     value: new Date(),
+    type: 'datetime-local',
+    shortcuts: {
+      Now: dayjs(),
+      Clear: '',
+    },
     inline: false,
     error: false,
   },
@@ -28,8 +40,8 @@ export default {
 export function _DateInput(args) {
   const [{ value }, updateArgs] = useArgs();
 
-  function handleValue(value) {
-    updateArgs({ value });
+  function handleValue(date) {
+    updateArgs({ value: date });
   }
 
   return <StyledDateInput {...args} value={dayjs(value)} onChange={handleValue} />;
