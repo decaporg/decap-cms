@@ -4,7 +4,7 @@ import { css } from '@emotion/react';
 
 import Field from '../../Field';
 import { IconButton } from '../../Buttons';
-import { StyledInput as StyledTextInput } from '../TextInput/TextInput';
+import { StyledInput as StyledTextInput } from '../TextInput';
 
 const StyledInput = styled(StyledTextInput)`
   padding-right: 3rem;

@@ -10,6 +10,7 @@ export const StyledInput = styled.input`
   border: none;
   outline: none;
   width: calc(100% + 32px);
+  font-family: inherit;
   font-size: ${({ title }) => (title ? '2rem' : '1rem')};
   font-weight: ${({ title }) => (title ? 'bold' : 'normal')};
   letter-spacing: ${({ title }) => (title ? '-0.5px' : '0')};
@@ -45,6 +46,7 @@ const TextInput = forwardRef(
       value,
       focus,
       title,
+      type,
       password,
       className,
       inline,
@@ -75,7 +77,7 @@ const TextInput = forwardRef(
           clickable={readOnly && !!onClick}
           onClick={onClick}
           readOnly={readOnly}
-          type={password ? 'password' : 'text'}
+          type={password ? 'password' : type ? type : 'text'}
           id={name}
           name={name}
           placeholder={placeholder ? placeholder : label ? `Type ${label.toLowerCase()} here` : ''}
