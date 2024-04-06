@@ -6,7 +6,7 @@ import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import utc from 'dayjs/plugin/utc';
-import { DateInput } from 'decap-cms-ui-next';
+import { DatetimeField } from 'decap-cms-ui-next';
 
 dayjs.extend(customParseFormat);
 dayjs.extend(localizedFormat);
@@ -18,6 +18,11 @@ class DateTimeControl extends React.Component {
     forID: PropTypes.string,
     onChange: PropTypes.func.isRequired,
     label: PropTypes.string.isRequired,
+    status: PropTypes.string,
+    description: PropTypes.string,
+    inline: PropTypes.bool,
+    error: PropTypes.bool,
+    errors: PropTypes.array,
     value: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
     t: PropTypes.func.isRequired,
     isDisabled: PropTypes.bool,
@@ -90,15 +95,18 @@ class DateTimeControl extends React.Component {
   };
 
   render() {
-    const { forID, label, value, inline, t, isDisabled } = this.props;
+    const { forID, label, status, description, value, inline, error, errors, t, isDisabled } =
+      this.props;
     const { inputType, inputFormat } = this.getFormat();
 
     return (
-      <DateInput
-        id={forID}
+      <DatetimeField
+        name={forID}
         type={inputType}
         format={inputFormat}
         label={label}
+        status={status}
+        description={description}
         value={dayjs(value)}
         shortcuts={this.shortcuts({
           t,
@@ -106,6 +114,8 @@ class DateTimeControl extends React.Component {
         })}
         inline={inline}
         onChange={this.onInputChange}
+        error={error}
+        errors={errors}
         disabled={isDisabled}
       />
     );

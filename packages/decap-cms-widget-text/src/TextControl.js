@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Textarea } from 'decap-cms-ui-next';
+import { TextareaField } from 'decap-cms-ui-next';
 
 export default class TextControl extends React.Component {
   static propTypes = {
@@ -42,7 +42,7 @@ export default class TextControl extends React.Component {
     } = this.props;
 
     return (
-      <Textarea
+      <TextareaField
         name={forID}
         label={label}
         status={status}

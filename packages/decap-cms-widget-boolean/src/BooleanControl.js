@@ -1,15 +1,15 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { BooleanInput } from 'decap-cms-ui-next';
+import { BooleanField } from 'decap-cms-ui-next';
 
 export default class BooleanControl extends React.Component {
   render() {
     const { label, status, description, value, forID, inline, onChange, error, errors } =
       this.props;
     return (
-      <BooleanInput
-        id={forID}
+      <BooleanField
+        name={forID}
         value={value}
         label={label}
         status={status}

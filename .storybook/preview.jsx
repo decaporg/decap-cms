@@ -33,7 +33,7 @@ export const parameters = {
     showPanel: true,
     storySort: {
       method: 'alphabetical',
-      order: ['Foundations', 'Pages', 'Components', 'Inputs'],
+      order: ['Foundations', 'Pages', 'Components', 'Fields'],
     },
   },
   deepControls: { enabled: true },

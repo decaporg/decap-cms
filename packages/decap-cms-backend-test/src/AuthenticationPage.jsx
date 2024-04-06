@@ -7,7 +7,7 @@ import {
   Button,
   ButtonGroup,
   DecapWordmark,
-  TextInput,
+  TextField,
   Slide,
   Grow,
   isWindowDown,
@@ -81,7 +81,7 @@ const StyledForm = styled.form`
   width: 100%;
   appearance: none;
 `;
-const StyledTextInput = styled(TextInput)`
+const StyledTextField = styled(TextField)`
   margin: 0 -1.5rem;
   padding: 0 1.75rem;
   ${({ theme }) => theme.responsive.mediaQueryDown('xs')} {
@@ -303,7 +303,7 @@ function AuthenticationPage({ onLogin, inProgress, config, t, handleSubmit }) {
                     handleSubmit;
                   }}
                 >
-                  <StyledTextInput
+                  <StyledTextField
                     label="Email"
                     icon="mail"
                     placeholder="Type email"
@@ -311,7 +311,7 @@ function AuthenticationPage({ onLogin, inProgress, config, t, handleSubmit }) {
                     inline
                     onChange={email => setEmail(email)}
                   />
-                  <StyledTextInput
+                  <StyledTextField
                     password
                     label="Password"
                     icon="lock"

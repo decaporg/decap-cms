@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { TextInput } from 'decap-cms-ui-next';
+import { TextField } from 'decap-cms-ui-next';
 
 export default class StringControl extends React.Component {
   static propTypes = {
@@ -54,7 +54,7 @@ export default class StringControl extends React.Component {
       this.props;
 
     return (
-      <TextInput
+      <TextField
         ref={el => {
           this._el = el;
         }}
