@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 import { Button } from '../../Buttons';
 import Tree from '../../Tree';
 import { FieldContext } from '../../Field';
-import { Menu, MenuItem } from '../../Menu';
+import { Menu, MenuItem, MenuSeparator } from '../../Menu';
 
 const ListItem = styled.div`
   margin-left: -1rem;
@@ -116,6 +116,9 @@ const ListFieldItem = forwardRef(
                 >
                   Move down
                 </MenuItem>
+
+                <MenuSeparator />
+
                 <MenuItem
                   icon="plus-circle"
                   onClick={() => {
@@ -134,6 +137,9 @@ const ListFieldItem = forwardRef(
                 >
                   Add new below
                 </MenuItem>
+
+                <MenuSeparator />
+
                 <MenuItem
                   icon="copy"
                   onClick={() => {
