@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.1.4](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-datetime@3.1.3...decap-cms-widget-datetime@3.1.4) (2024-04-11)
+
+### Bug Fixes
+
+- fix formatInputValue ignoring format ([#7170](https://github.com/decaporg/decap-cms/issues/7170)) ([0b4b1cb](https://github.com/decaporg/decap-cms/commit/0b4b1cbdaf9da623f115633b86c67015921453b0))
+
 ## [3.1.3](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-datetime@3.1.2...decap-cms-widget-datetime@3.1.3) (2024-04-03)
 
 ### Bug Fixes
