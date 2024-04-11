@@ -114,15 +114,9 @@ class DateTimeControl extends React.Component {
   formatInputValue(value) {
     if (value === '') return value;
     const { format, inputFormat } = this.getFormat();
-    let formattedValue = this.isUtc
-      ? dayjs.utc(value).format(inputFormat)
-      : dayjs(value).format(inputFormat);
-    if (!this.isValidDate(formattedValue)) {
-      formattedValue = this.isUtc
-        ? dayjs.utc(value, format).format(inputFormat)
-        : dayjs(value, format).format(inputFormat);
-    }
-    return formattedValue;
+    return this.isUtc
+      ? dayjs.utc(value, format).format(inputFormat)
+      : dayjs(value, format).format(inputFormat);
   }
 
   handleChange = datetime => {
