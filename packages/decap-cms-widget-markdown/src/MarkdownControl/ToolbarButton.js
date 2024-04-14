@@ -1,38 +1,44 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
-import { Icon, buttons } from 'decap-cms-ui-default';
+import { css } from '@emotion/react';
+import color from 'color';
+import { Tooltip, Button } from 'decap-cms-ui-next';
 
-const StyledToolbarButton = styled.button`
-  ${buttons.button};
-  display: inline-block;
-  padding: 6px;
-  border: none;
-  background-color: transparent;
-  font-size: 16px;
-  color: ${props => (props.isActive ? '#1e2532' : 'inherit')};
-  cursor: pointer;
+const StyledButton = styled(Button)`
+  ${({ theme, active }) => css`
+    color: ${active ? theme.color.success['900'] : theme.color.highEmphasis};
+    background-color: ${active
+      ? color(theme.color.success['900']).alpha(0.1).string()
+      : 'transparent'} !important;
+  `}
 
-  &:disabled {
-    cursor: auto;
-    opacity: 0.5;
-  }
-
-  ${Icon} {
-    display: block;
+  &:hover,
+  &:focus {
+    color: ${({ theme, active }) =>
+      active ? theme.color.success['900'] : theme.color.highEmphasis};
+    background-color: ${({ theme, active }) =>
+      active
+        ? color(theme.color.success['900']).alpha(0.2).string()
+        : color(theme.color.highEmphasis).alpha(0.05).string()} !important;
   }
 `;
 
-function ToolbarButton({ type, label, icon, onClick, isActive, disabled }) {
+function ToolbarButton({ children, type, label, icon, hasMenu, onClick, isActive, disabled }) {
   return (
-    <StyledToolbarButton
-      isActive={isActive}
-      onClick={e => onClick && onClick(e, type)}
-      title={label}
-      disabled={disabled}
-    >
-      {icon ? <Icon type={icon} /> : label}
-    </StyledToolbarButton>
+    <Tooltip label={label} enterDelay={1000}>
+      <div>
+        <StyledButton
+          active={isActive}
+          disabled={disabled}
+          onClick={event => onClick && onClick(event, type)}
+          icon={icon}
+          hasMenu={hasMenu}
+        >
+          {children}
+        </StyledButton>
+      </div>
+    </Tooltip>
   );
 }
 

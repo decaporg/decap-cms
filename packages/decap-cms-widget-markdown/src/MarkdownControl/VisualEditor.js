@@ -29,24 +29,28 @@ import defaultEmptyBlock from './plugins/blocks/defaultEmptyBlock';
 
 function visualEditorStyles({ minimal }) {
   return `
-  position: relative;
-  overflow: auto;
-  font-family: ${fonts.primary};
-  min-height: ${minimal ? 'auto' : lengths.richTextEditorMinHeight};
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-  border-top: 0;
-  margin-top: -${editorStyleVars.stickyDistanceBottom};
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  z-index: ${zIndex.zIndex100};
-`;
+    position: relative;
+    overflow: auto;
+    font-family: ${fonts.primary};
+    min-height: ${minimal ? 'auto' : lengths.richTextEditorMinHeight};
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-top: 0;
+    margin-top: -${editorStyleVars.stickyDistanceBottom};
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    z-index: ${zIndex.zIndex100};
+  `;
 }
 
 const InsertionPoint = styled.div`
   flex: 1 1 auto;
   cursor: text;
+`;
+
+const StyledEditable = styled(Editable)`
+  padding: 16px 20px 0;
 `;
 
 export function mergeMediaConfig(editorComponents, field) {
@@ -85,9 +89,10 @@ function Editor(props) {
   const {
     onAddAsset,
     getAsset,
-    className,
     field,
     isShowModeToggle,
+    isFullscreen,
+    onToggleFullscreen,
     t,
     isDisabled,
     getEditorComponents,
@@ -122,9 +127,7 @@ function Editor(props) {
   );
 
   const renderElement = useCallback(
-    props => (
-      <Element {...props} classNameWrapper={className} codeBlockComponent={codeBlockComponent} />
-    ),
+    props => <Element {...props} codeBlockComponent={codeBlockComponent} />,
     [],
   );
   const renderLeaf = useCallback(props => <Leaf {...props} />, []);
@@ -227,6 +230,8 @@ function Editor(props) {
               onBlockClick={handleBlockClick}
               onLinkClick={handleLinkClick}
               onToggleMode={handleToggleMode}
+              isFullscreen={isFullscreen}
+              onToggleFullscreen={onToggleFullscreen}
               plugins={editorComponents}
               onSubmit={handleInsertShortcode}
               onAddAsset={onAddAsset}
@@ -249,17 +254,13 @@ function Editor(props) {
             {({ css, cx }) => (
               <div
                 className={cx(
-                  className,
                   css`
                     ${visualEditorStyles({ minimal: field.get('minimal') })}
                   `,
                 )}
               >
                 {editorValue.length !== 0 && (
-                  <Editable
-                    className={css`
-                      padding: 16px 20px 0;
-                    `}
+                  <StyledEditable
                     renderElement={renderElement}
                     renderLeaf={renderLeaf}
                     onKeyDown={handleKeyDown}
@@ -281,7 +282,6 @@ Editor.propTypes = {
   getAsset: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   onMode: PropTypes.func.isRequired,
-  className: PropTypes.string.isRequired,
   value: PropTypes.string,
   field: ImmutablePropTypes.map.isRequired,
   getEditorComponents: PropTypes.func.isRequired,

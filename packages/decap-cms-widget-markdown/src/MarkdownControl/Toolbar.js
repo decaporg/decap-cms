@@ -2,61 +2,29 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
-import { css } from '@emotion/react';
 import { List } from 'immutable';
-import {
-  Toggle,
-  Dropdown,
-  DropdownItem,
-  DropdownButton,
-  colors,
-  transitions,
-  lengths,
-} from 'decap-cms-ui-default';
+import { Button, ButtonGroup, Menu, MenuItem } from 'decap-cms-ui-next';
 
 import ToolbarButton from './ToolbarButton';
 
 const ToolbarContainer = styled.div`
-  background-color: ${colors.textFieldBorder};
-  border-top-right-radius: ${lengths.borderRadius};
-  position: relative;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 11px 14px;
-  min-height: 58px;
-  transition: background-color ${transitions.main}, color ${transitions.main};
-  color: ${colors.text};
 `;
 
-const ToolbarDropdownWrapper = styled.div`
-  display: inline-block;
-  position: relative;
+const ToolbarButtonsStart = styled(ButtonGroup)`
+  margin: 0 -0.5rem;
+  flex: 1;
 `;
 
-const ToolbarToggle = styled.div`
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  font-size: 14px;
+const ToolbarButtonsEnd = styled(ButtonGroup)`
+  margin: 0 -0.5rem;
+`;
+
+const ToolbarSeparator = styled.div`
+  width: 1px;
+  height: 2rem;
   margin: 0 10px;
-`;
-
-const StyledToggle = ToolbarToggle.withComponent(Toggle);
-
-const ToolbarToggleLabel = styled.span`
-  display: inline-block;
-  text-align: center;
-  white-space: nowrap;
-  line-height: 20px;
-  min-width: ${props => (props.offPosition ? '62px' : '70px')};
-
-  ${props =>
-    props.isActive &&
-    css`
-      font-weight: 600;
-      color: ${colors.active};
-    `};
+  background-color: ${({ theme }) => theme.color.border};
 `;
 
 export default class Toolbar extends React.Component {
@@ -80,6 +48,27 @@ export default class Toolbar extends React.Component {
     t: PropTypes.func.isRequired,
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      rawModeAnchorEl: null,
+      editorComponentsAnchorEl: null,
+      headingsAnchorEl: null,
+    };
+  }
+
+  setRawModeAnchorEl = rawModeAnchorEl => {
+    this.setState({ rawModeAnchorEl });
+  };
+
+  setEditorComponentsAnchorEl = editorComponentsAnchorEl => {
+    this.setState({ editorComponentsAnchorEl });
+  };
+
+  setHeadingsAnchorEl = headingsAnchorEl => {
+    this.setState({ headingsAnchorEl });
+  };
+
   isVisible = button => {
     const { buttons } = this.props;
     return !List.isList(buttons) || buttons.includes(button);
@@ -101,7 +90,9 @@ export default class Toolbar extends React.Component {
     const {
       onLinkClick,
       onToggleMode,
+      onToggleFullscreen,
       rawMode,
+      isFullscreen,
       isShowModeToggle,
       plugins,
       disabled,
@@ -124,6 +115,7 @@ export default class Toolbar extends React.Component {
     const pluginsList = plugins ? plugins.toList().filter(showPlugin) : List();
 
     const headingOptions = {
+      paragraph: 'Paragraph', // 'Paragraph
       'heading-one': t('editor.editorWidgets.headingOptions.headingOne'),
       'heading-two': t('editor.editorWidgets.headingOptions.headingTwo'),
       'heading-three': t('editor.editorWidgets.headingOptions.headingThree'),
@@ -134,7 +126,73 @@ export default class Toolbar extends React.Component {
 
     return (
       <ToolbarContainer>
-        <div>
+        <ToolbarButtonsStart>
+          {showEditorComponents && (
+            <>
+              <ToolbarButton
+                icon="plus"
+                label={t('editor.editorWidgets.markdown.addComponent')}
+                onClick={e => this.setEditorComponentsAnchorEl(e.currentTarget)}
+                disabled={disabled}
+                hasMenu
+              />
+
+              <Menu
+                open={!!this.state.editorComponentsAnchorEl}
+                anchorOrigin={{ x: 'left' }}
+                transformOrigin={{ x: 'left' }}
+                anchorEl={this.state.editorComponentsAnchorEl}
+                onClose={() => this.setEditorComponentsAnchorEl(null)}
+              >
+                {pluginsList.map((plugin, idx) => (
+                  <MenuItem key={idx} icon={plugin.id} onClick={() => onSubmit(plugin)}>
+                    {plugin.label}
+                  </MenuItem>
+                ))}
+              </Menu>
+            </>
+          )}
+
+          {/* Show dropdown if at least one heading is not hidden */}
+          {Object.keys(headingOptions).some(isVisible) && (
+            <>
+              <ToolbarButton
+                type="headings"
+                label={'Turn into'}
+                onClick={e => this.setHeadingsAnchorEl(e.currentTarget)}
+                disabled={disabled}
+                hasMenu
+              >
+                {t('editor.editorWidgets.markdown.headings')}
+              </ToolbarButton>
+
+              <Menu
+                open={!!this.state.headingsAnchorEl}
+                anchorEl={this.state.headingsAnchorEl}
+                anchorOrigin={{ x: 'left' }}
+                transformOrigin={{ x: 'left' }}
+                onClose={() => this.setHeadingsAnchorEl(null)}
+              >
+                {!disabled &&
+                  Object.keys(headingOptions).map(
+                    (optionKey, idx) =>
+                      isVisible(optionKey) && (
+                        <MenuItem
+                          key={idx}
+                          icon={optionKey}
+                          selected={hasBlock(optionKey)}
+                          onClick={() => this.handleBlockClick(null, optionKey)}
+                        >
+                          {headingOptions[optionKey]}
+                        </MenuItem>
+                      ),
+                  )}
+              </Menu>
+            </>
+          )}
+
+          <ToolbarSeparator />
+
           {isVisible('bold') && (
             <ToolbarButton
               type="bold"
@@ -175,39 +233,7 @@ export default class Toolbar extends React.Component {
               disabled={disabled}
             />
           )}
-          {/* Show dropdown if at least one heading is not hidden */}
-          {Object.keys(headingOptions).some(isVisible) && (
-            <ToolbarDropdownWrapper>
-              <Dropdown
-                dropdownWidth="max-content"
-                dropdownTopOverlap="36px"
-                renderButton={() => (
-                  <DropdownButton>
-                    <ToolbarButton
-                      type="headings"
-                      label={t('editor.editorWidgets.markdown.headings')}
-                      icon="hOptions"
-                      disabled={disabled}
-                      isActive={!disabled && Object.keys(headingOptions).some(hasBlock)}
-                    />
-                  </DropdownButton>
-                )}
-              >
-                {!disabled &&
-                  Object.keys(headingOptions).map(
-                    (optionKey, idx) =>
-                      isVisible(optionKey) && (
-                        <DropdownItem
-                          key={idx}
-                          label={headingOptions[optionKey]}
-                          className={hasBlock(optionKey) ? 'active' : ''}
-                          onClick={() => this.handleBlockClick(null, optionKey)}
-                        />
-                      ),
-                  )}
-              </Dropdown>
-            </ToolbarDropdownWrapper>
-          )}
+
           {isVisible('quote') && (
             <ToolbarButton
               type="quote"
@@ -218,11 +244,14 @@ export default class Toolbar extends React.Component {
               disabled={disabled}
             />
           )}
+
+          <ToolbarSeparator />
+
           {isVisible('bulleted-list') && (
             <ToolbarButton
               type="bulleted-list"
               label={t('editor.editorWidgets.markdown.bulletedList')}
-              icon="list-bulleted"
+              icon="bulleted-list"
               onClick={this.handleBlockClick}
               isActive={hasListItems('bulleted-list')}
               disabled={disabled}
@@ -232,46 +261,43 @@ export default class Toolbar extends React.Component {
             <ToolbarButton
               type="numbered-list"
               label={t('editor.editorWidgets.markdown.numberedList')}
-              icon="list-numbered"
+              icon="numbered-list"
               onClick={this.handleBlockClick}
               isActive={hasListItems('numbered-list')}
               disabled={disabled}
             />
           )}
-          {showEditorComponents && (
-            <ToolbarDropdownWrapper>
-              <Dropdown
-                dropdownTopOverlap="36px"
-                dropdownWidth="max-content"
-                renderButton={() => (
-                  <DropdownButton>
-                    <ToolbarButton
-                      label={t('editor.editorWidgets.markdown.addComponent')}
-                      icon="add-with"
-                      onClick={this.handleComponentsMenuToggle}
-                      disabled={disabled}
-                    />
-                  </DropdownButton>
-                )}
+        </ToolbarButtonsStart>
+        <ToolbarButtonsEnd>
+          <ToolbarButton
+            label="Fullscreen"
+            icon={isFullscreen ? 'minimize' : 'maximize'}
+            onClick={onToggleFullscreen}
+          />
+
+          {isShowModeToggle && (
+            <>
+              <Button onClick={e => this.setRawModeAnchorEl(e.currentTarget)} hasMenu>
+                {rawMode
+                  ? t('editor.editorWidgets.markdown.markdown')
+                  : t('editor.editorWidgets.markdown.richText')}
+              </Button>
+
+              <Menu
+                open={!!this.state.rawModeAnchorEl}
+                anchorEl={this.state.rawModeAnchorEl}
+                onClose={() => this.setRawModeAnchorEl(null)}
               >
-                {pluginsList.map((plugin, idx) => (
-                  <DropdownItem key={idx} label={plugin.label} onClick={() => onSubmit(plugin)} />
-                ))}
-              </Dropdown>
-            </ToolbarDropdownWrapper>
+                <MenuItem selected={!rawMode} onClick={onToggleMode}>
+                  {t('editor.editorWidgets.markdown.richText')}
+                </MenuItem>
+                <MenuItem selected={rawMode} onClick={onToggleMode}>
+                  {t('editor.editorWidgets.markdown.markdown')}
+                </MenuItem>
+              </Menu>
+            </>
           )}
-        </div>
-        {isShowModeToggle && (
-          <ToolbarToggle>
-            <ToolbarToggleLabel isActive={!rawMode} offPosition>
-              {t('editor.editorWidgets.markdown.richText')}
-            </ToolbarToggleLabel>
-            <StyledToggle active={rawMode} onChange={onToggleMode} />
-            <ToolbarToggleLabel isActive={rawMode}>
-              {t('editor.editorWidgets.markdown.markdown')}
-            </ToolbarToggleLabel>
-          </ToolbarToggle>
-        )}
+        </ToolbarButtonsEnd>
       </ToolbarContainer>
     );
   }
