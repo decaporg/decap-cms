@@ -24,17 +24,33 @@ function SelectField({
   }
 
   function handleClose(newValue) {
-    if (newValue) {
-      onChange(multiple ? [...(value || []), newValue] : newValue);
+    if (!newValue) {
+      setAnchorEl(null);
+      return;
     }
+
+    if (multiple) {
+      const updatedValue =
+        value && value.includes(newValue)
+          ? value.filter(opt => opt !== newValue)
+          : value
+          ? [...value, newValue]
+          : [newValue];
+
+      onChange(updatedValue);
+    } else {
+      onChange(value === newValue ? null : newValue);
+    }
+
     setAnchorEl(null);
   }
 
   const selection = options.find(option => option.value === value);
 
-  const availableOptions = multiple
-    ? options.filter(option => value.every(opt => opt.value !== option.value))
-    : options;
+  const availableOptions =
+    multiple && value
+      ? options.filter(option => value.every(opt => opt.value !== option.value))
+      : options;
 
   return (
     <>
@@ -46,7 +62,7 @@ function SelectField({
           focus={!!anchorEl}
           icon="chevron-down"
         >
-          {value.length ? (
+          {value && value.length ? (
             <TagGroup>
               {value.map(option => (
                 <Tag
@@ -86,7 +102,7 @@ function SelectField({
           {availableOptions.length ? (
             availableOptions.map(option => (
               <MenuItem
-                selected={!multiple && value && value.name === option.value}
+                selected={multiple ? value && value.includes(option.value) : value === option.value}
                 onClick={() => handleClose(option.value)}
                 key={option.value}
               >

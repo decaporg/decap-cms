@@ -42,6 +42,12 @@ export default {
         truthy: true,
       },
     },
+    errors: {
+      control: 'object',
+      if: {
+        arg: 'error',
+      },
+    },
   },
   args: {
     name: 'category',
@@ -52,6 +58,11 @@ export default {
     inline: false,
     multiple: false,
     error: false,
+    errors: [
+      {
+        message: 'Error message.',
+      },
+    ],
     options,
   },
 };
