@@ -10,6 +10,7 @@ import TileLayer from 'ol/layer/Tile.js';
 import VectorLayer from 'ol/layer/Vector.js';
 import OSMSource from 'ol/source/OSM.js';
 import VectorSource from 'ol/source/Vector.js';
+import { Field } from 'decap-cms-ui-next';
 
 const formatOptions = {
   dataProjection: 'EPSG:4326',
@@ -34,7 +35,11 @@ export default function withMapControl({ getFormat, getMap } = {}) {
       onChange: PropTypes.func.isRequired,
       field: PropTypes.object.isRequired,
       height: PropTypes.string,
+      label: PropTypes.string,
       value: PropTypes.node,
+      inline: PropTypes.bool,
+      error: PropTypes.bool,
+      errors: PropTypes.array,
     };
 
     static defaultProps = {
@@ -72,25 +77,27 @@ export default function withMapControl({ getFormat, getMap } = {}) {
     }
 
     render() {
-      const { height } = this.props;
+      const { height, label, inline, error, errors } = this.props;
 
       return (
-        <ClassNames>
-          {({ cx, css }) => (
-            <div
-              className={cx(
-                this.props.classNameWrapper,
-                css`
-                  ${olStyles};
-                  padding: 0;
-                  overflow: hidden;
-                  height: ${height};
-                `,
-              )}
-              ref={this.mapContainer}
-            />
-          )}
-        </ClassNames>
+        <Field label={label} inline={inline} error={error} errors={errors}>
+          <ClassNames>
+            {({ cx, css }) => (
+              <div
+                className={cx(
+                  css`
+                    ${olStyles};
+                    padding: 0;
+                    border-radius: 8px;
+                    overflow: hidden;
+                    height: ${height};
+                  `,
+                )}
+                ref={this.mapContainer}
+              />
+            )}
+          </ClassNames>
+        </Field>
       );
     }
   };
