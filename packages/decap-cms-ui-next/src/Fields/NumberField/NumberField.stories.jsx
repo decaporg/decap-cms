@@ -24,7 +24,6 @@ export default {
     step: 1,
     min: 0,
     max: 100,
-    title: false,
     inline: false,
     error: false,
     errors: [
@@ -43,7 +42,6 @@ export function _NumberField(args) {
   const [{ value }, updateArgs] = useArgs();
 
   function handleChange(e) {
-    console.log(e.target.value);
     updateArgs({ value: e.target.value });
   }
 

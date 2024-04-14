@@ -25,8 +25,8 @@ const NumberInputStepper = styled.div`
   flex-direction: column;
 
   position: absolute;
-  right: 0;
-  bottom: -0.5rem;
+  right: 0.5rem;
+  top: 1.85rem;
 `;
 
 const NumberIncrementStepper = styled(IconButton)`
@@ -45,14 +45,54 @@ const NumberDecrementStepper = styled(IconButton)`
   `};
 `;
 
-function NumberField({ name, step, min, max, onChange, children, value, ...props }) {
+function NumberField({
+  name,
+  label,
+  status,
+  placeholder,
+  description,
+  step,
+  min,
+  max,
+  onChange,
+  children,
+  value,
+  inline,
+  error,
+  errors,
+  ...props
+}) {
   const ref = useRef(null);
 
   return (
-    <Field {...props}>
+    <Field
+      name={name}
+      label={label}
+      status={status}
+      placeholder={placeholder}
+      description={description}
+      inline={inline}
+      error={error}
+      errors={errors}
+      icon={
+        <NumberInputStepper>
+          <NumberIncrementStepper
+            icon="chevron-down"
+            size="xs"
+            onClick={() => ref.current.stepUp()}
+          />
+          <NumberDecrementStepper
+            icon="chevron-down"
+            size="xs"
+            onClick={() => ref.current.stepDown()}
+          />
+        </NumberInputStepper>
+      }
+      {...props}
+    >
       <StyledNumberInput
-        type="number"
         name={name}
+        type="number"
         value={value}
         step={step}
         min={min}
@@ -60,20 +100,6 @@ function NumberField({ name, step, min, max, onChange, children, value, ...props
         ref={ref}
         onChange={e => onChange(e)}
       />
-
-      <NumberInputStepper>
-        <NumberIncrementStepper
-          icon="chevron-down"
-          size="xs"
-          onClick={() => ref.current.stepUp()}
-        />
-        <NumberDecrementStepper
-          icon="chevron-down"
-          size="xs"
-          onClick={() => ref.current.stepDown()}
-        />
-      </NumberInputStepper>
-
       {children && children}
     </Field>
   );
