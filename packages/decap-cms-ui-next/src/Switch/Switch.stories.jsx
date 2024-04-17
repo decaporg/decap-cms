@@ -2,11 +2,11 @@ import React from 'react';
 import { action } from '@storybook/addon-actions';
 import { useArgs } from '@storybook/preview-api';
 
-import ToggleSwitch from '.';
+import Switch from '.';
 
 export default {
-  title: 'Components/ToggleSwitch',
-  component: ToggleSwitch,
+  title: 'Components/Switch',
+  component: Switch,
   argTypes: {
     checked: {
       control: 'boolean',
@@ -20,7 +20,7 @@ export default {
   },
 };
 
-export function _ToggleSwitch(args) {
+export function _Switch(args) {
   const [{ checked }, updateArgs] = useArgs();
 
   function toggleChecked() {
@@ -28,9 +28,9 @@ export function _ToggleSwitch(args) {
   }
 
   return (
-    <ToggleSwitch
+    <Switch
       {...args}
-      onChange={event => {
+      onCheckedChange={event => {
         action('onChange')(event ? 'checked' : 'unchecked');
         toggleChecked();
       }}

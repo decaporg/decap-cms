@@ -9,11 +9,12 @@ const StyledInput = styled.input`
   width: 0;
 `;
 
-const ToggleSwitchInput = styled.div`
+const SwitchButton = styled.button`
   width: 2.25rem;
   height: 1.5rem;
   border-radius: 100px;
   position: relative;
+  border: transparent;
   background-color: ${({ theme, checked }) =>
     checked ? theme.color.success['900'] : theme.color.neutral[theme.darkMode ? '1000' : '300']};
   transition: 0.25s;
@@ -38,17 +39,18 @@ const ToggleSwitchInput = styled.div`
   }
 `;
 
-function ToggleSwitch({ checked, onChange, className }) {
+function Switch({ checked, onCheckedChange, className }) {
   return (
     <>
       <StyledInput type={'checkbox'} checked={checked} />
-      <ToggleSwitchInput
+
+      <SwitchButton
         className={className}
         checked={checked}
-        onClick={() => onChange(!checked)}
+        onClick={() => onCheckedChange(!checked)}
       />
     </>
   );
 }
 
-export default ToggleSwitch;
+export default Switch;

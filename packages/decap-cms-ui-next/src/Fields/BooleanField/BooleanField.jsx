@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Field from '../../Field';
-import ToggleSwitch from '../../ToggleSwitch';
+import Switch from '../../Switch';
 
 function BooleanField({ name, onChange, children, value, ...props }) {
   return (
@@ -11,7 +11,7 @@ function BooleanField({ name, onChange, children, value, ...props }) {
       control
       onClick={() => (value ? onChange(false) : onChange(true))}
     >
-      <ToggleSwitch
+      <Switch
         onChange={() => (value && onChange ? onChange(false) : onChange(true))}
         checked={value}
       />

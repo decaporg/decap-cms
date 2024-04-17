@@ -42,6 +42,7 @@ import Gitlab from './icons/Gitlab';
 import Globe from './icons/Globe';
 import Grid from './icons/Grid';
 import HardDrive from './icons/HardDrive';
+import Heading from './icons/Heading';
 import HeadingOne from './icons/HeadingOne';
 import HeadingTwo from './icons/HeadingTwo';
 import HeadingThree from './icons/HeadingThree';
@@ -93,6 +94,7 @@ import User from './icons/User';
 import Users from './icons/Users';
 import Workflow from './icons/Workflow';
 import X from './icons/X';
+import Youtube from './icons/Youtube';
 import Zap from './icons/Zap';
 
 export const iconComponents = {
@@ -138,6 +140,7 @@ export const iconComponents = {
   globe: Globe,
   grid: Grid,
   'hard-drive': HardDrive,
+  heading: Heading,
   'heading-one': HeadingOne,
   'heading-two': HeadingTwo,
   'heading-three': HeadingThree,
@@ -189,6 +192,7 @@ export const iconComponents = {
   users: Users,
   workflow: Workflow,
   x: X,
+  youtube: Youtube,
   zap: Zap,
 };
 
