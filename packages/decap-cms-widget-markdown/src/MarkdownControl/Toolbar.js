@@ -3,7 +3,14 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import { List } from 'immutable';
-import { Button, ButtonGroup, Menu, MenuItem } from 'decap-cms-ui-next';
+import {
+  Button,
+  ButtonGroup,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownMenuItem,
+} from 'decap-cms-ui-next';
 
 import ToolbarButton from './ToolbarButton';
 
@@ -115,80 +122,65 @@ export default class Toolbar extends React.Component {
     const pluginsList = plugins ? plugins.toList().filter(showPlugin) : List();
 
     const headingOptions = {
-      paragraph: 'Paragraph', // 'Paragraph
       'heading-one': t('editor.editorWidgets.headingOptions.headingOne'),
       'heading-two': t('editor.editorWidgets.headingOptions.headingTwo'),
       'heading-three': t('editor.editorWidgets.headingOptions.headingThree'),
-      'heading-four': t('editor.editorWidgets.headingOptions.headingFour'),
-      'heading-five': t('editor.editorWidgets.headingOptions.headingFive'),
-      'heading-six': t('editor.editorWidgets.headingOptions.headingSix'),
     };
 
     return (
       <ToolbarContainer>
         <ToolbarButtonsStart>
           {showEditorComponents && (
-            <>
-              <ToolbarButton
-                icon="plus"
-                label={t('editor.editorWidgets.markdown.addComponent')}
-                onClick={e => this.setEditorComponentsAnchorEl(e.currentTarget)}
-                disabled={disabled}
-                hasMenu
-              />
+            <Dropdown>
+              <DropdownTrigger>
+                <ToolbarButton
+                  icon="plus"
+                  label={t('editor.editorWidgets.markdown.addComponent')}
+                  disabled={disabled}
+                  hasMenu
+                />
+              </DropdownTrigger>
 
-              <Menu
-                open={!!this.state.editorComponentsAnchorEl}
-                anchorOrigin={{ x: 'left' }}
-                transformOrigin={{ x: 'left' }}
-                anchorEl={this.state.editorComponentsAnchorEl}
-                onClose={() => this.setEditorComponentsAnchorEl(null)}
-              >
+              <DropdownMenu anchorOrigin={{ x: 'left' }} transformOrigin={{ x: 'left' }}>
                 {pluginsList.map((plugin, idx) => (
-                  <MenuItem key={idx} icon={plugin.id} onClick={() => onSubmit(plugin)}>
+                  <DropdownMenuItem key={idx} icon={plugin.id} onClick={() => onSubmit(plugin)}>
                     {plugin.label}
-                  </MenuItem>
+                  </DropdownMenuItem>
                 ))}
-              </Menu>
-            </>
+              </DropdownMenu>
+            </Dropdown>
           )}
 
           {/* Show dropdown if at least one heading is not hidden */}
           {Object.keys(headingOptions).some(isVisible) && (
-            <>
-              <ToolbarButton
-                type="headings"
-                label={'Turn into'}
-                onClick={e => this.setHeadingsAnchorEl(e.currentTarget)}
-                disabled={disabled}
-                hasMenu
-              >
-                {t('editor.editorWidgets.markdown.headings')}
-              </ToolbarButton>
+            <Dropdown>
+              <DropdownTrigger>
+                <ToolbarButton
+                  type="headings"
+                  label={t('editor.editorWidgets.markdown.headings')}
+                  icon="heading"
+                  disabled={disabled}
+                  hasMenu
+                />
+              </DropdownTrigger>
 
-              <Menu
-                open={!!this.state.headingsAnchorEl}
-                anchorEl={this.state.headingsAnchorEl}
-                anchorOrigin={{ x: 'left' }}
-                transformOrigin={{ x: 'left' }}
-                onClose={() => this.setHeadingsAnchorEl(null)}
-              >
+              <DropdownMenu anchorOrigin={{ x: 'left' }} transformOrigin={{ x: 'left' }}>
                 {!disabled &&
                   Object.keys(headingOptions).map(
                     (optionKey, idx) =>
                       isVisible(optionKey) && (
-                        <MenuItem
+                        <DropdownMenuItem
                           key={idx}
                           icon={optionKey}
                           selected={hasBlock(optionKey)}
                           onClick={() => this.handleBlockClick(null, optionKey)}
                         >
                           {headingOptions[optionKey]}
-                        </MenuItem>
+                        </DropdownMenuItem>
                       ),
                   )}
-              </Menu>
-            </>
+              </DropdownMenu>
+            </Dropdown>
           )}
 
           <ToolbarSeparator />
@@ -276,26 +268,24 @@ export default class Toolbar extends React.Component {
           />
 
           {isShowModeToggle && (
-            <>
-              <Button onClick={e => this.setRawModeAnchorEl(e.currentTarget)} hasMenu>
-                {rawMode
-                  ? t('editor.editorWidgets.markdown.markdown')
-                  : t('editor.editorWidgets.markdown.richText')}
-              </Button>
+            <Dropdown>
+              <DropdownTrigger>
+                <Button hasMenu>
+                  {rawMode
+                    ? t('editor.editorWidgets.markdown.markdown')
+                    : t('editor.editorWidgets.markdown.richText')}
+                </Button>
+              </DropdownTrigger>
 
-              <Menu
-                open={!!this.state.rawModeAnchorEl}
-                anchorEl={this.state.rawModeAnchorEl}
-                onClose={() => this.setRawModeAnchorEl(null)}
-              >
-                <MenuItem selected={!rawMode} onClick={onToggleMode}>
+              <DropdownMenu>
+                <DropdownMenuItem selected={!rawMode} onClick={onToggleMode}>
                   {t('editor.editorWidgets.markdown.richText')}
-                </MenuItem>
-                <MenuItem selected={rawMode} onClick={onToggleMode}>
+                </DropdownMenuItem>
+                <DropdownMenuItem selected={rawMode} onClick={onToggleMode}>
                   {t('editor.editorWidgets.markdown.markdown')}
-                </MenuItem>
-              </Menu>
-            </>
+                </DropdownMenuItem>
+              </DropdownMenu>
+            </Dropdown>
           )}
         </ToolbarButtonsEnd>
       </ToolbarContainer>

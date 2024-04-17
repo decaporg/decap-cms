@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { translate } from 'react-polyglot';
 import styled from '@emotion/styled';
 import color from 'color';
-import { Icon, Menu, MenuItem } from 'decap-cms-ui-next';
+import { Icon, Dropdown, DropdownMenu, DropdownMenuItem } from 'decap-cms-ui-next';
 
 import { SortDirection } from '../../types/redux';
 import { ControlButton } from './ControlButton';
@@ -18,9 +18,9 @@ function nextSortDirection(direction) {
   }
 }
 
-const StyledMenuItem = styled(MenuItem)`
-  ${({ isActive, theme }) =>
-    isActive
+const StyledDropdownMenuItem = styled(DropdownMenuItem)`
+  ${({ active, theme }) =>
+    active
       ? `
       background-color: ${color(theme.color.success['900']).alpha(0.2).string()};
       color: ${theme.color.success[theme.darkMode ? '300' : '1400']};
@@ -43,38 +43,29 @@ function SortControl({ t, fields, onSortClick, sort }) {
     .toJS()
     .some(s => s.direction !== SortDirection.None);
 
-  const [sortMenuAnchorEl, setSortMenuAnchorEl] = useState(null);
-
   return (
-    <>
-      <ControlButton active={hasActiveSort} onClick={e => setSortMenuAnchorEl(e.currentTarget)}>
-        {t('collection.collectionTop.sortBy')}
-      </ControlButton>
+    <Dropdown>
+      <ControlButton active={hasActiveSort}>{t('collection.collectionTop.sortBy')}</ControlButton>
 
-      <Menu
-        anchorEl={sortMenuAnchorEl}
-        open={!!sortMenuAnchorEl}
-        onClose={() => setSortMenuAnchorEl(null)}
-        anchorOrigin={{ y: 'bottom', x: 'right' }}
-      >
+      <DropdownMenu anchorOrigin={{ y: 'bottom', x: 'right' }}>
         {fields.map(field => {
           const sortDir = sort?.getIn([field.key, 'direction']);
           const isActive = sortDir && sortDir !== SortDirection.None;
           const nextSortDir = nextSortDirection(sortDir);
 
           return (
-            <StyledMenuItem
+            <StyledDropdownMenuItem
               key={field.key}
               onClick={() => onSortClick(field.key, nextSortDir)}
-              isActive={isActive}
+              active={isActive}
               endIcon={isActive && <StyledIcon name="chevron-down" direction={sortDir} />}
             >
               {field.label}
-            </StyledMenuItem>
+            </StyledDropdownMenuItem>
           );
         })}
-      </Menu>
-    </>
+      </DropdownMenu>
+    </Dropdown>
   );
 
   // return (

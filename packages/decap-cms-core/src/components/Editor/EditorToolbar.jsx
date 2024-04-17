@@ -5,22 +5,17 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { translate } from 'react-polyglot';
 import { Link } from 'react-router-dom';
-import {
-  Dropdown,
-  DropdownItem,
-  StyledDropdownButton,
-  colorsRaw,
-  colors,
-  buttons,
-} from 'decap-cms-ui-default';
+import { colorsRaw, colors, buttons } from 'decap-cms-ui-default';
 import {
   AppBar,
   Button,
   Icon,
   IconButton,
-  Menu,
-  MenuItem,
-  MenuSeparator,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
   UserMenu,
   NotificationCenter,
 } from 'decap-cms-ui-next';
@@ -79,7 +74,7 @@ const TooltipContainer = styled.div`
   position: relative;
 `;
 
-const DropdownButton = styled(StyledDropdownButton)`
+const DropdownButton = styled(Button)`
   ${styles.noOverflow}
   @media (max-width: 1200px) {
     padding-left: 10px;
@@ -172,7 +167,7 @@ const RefreshPreviewButton = styled.button`
 
 const PreviewLink = RefreshPreviewButton.withComponent('a');
 
-const StatusDropdownItem = styled(DropdownItem)`
+const StatusDropdownItem = styled(DropdownMenuItem)`
   ${Icon} {
     color: ${colors.infoText};
   }
@@ -214,8 +209,6 @@ function EditorToolbar({
   t,
   editorBackLink,
 }) {
-  const [postMenuAnchorEl, setPostMenuAnchorEl] = useState(null);
-
   useEffect(() => {
     if (!isNewEntry) {
       loadDeployPreview({ maxAttempts: 3 });
@@ -296,31 +289,34 @@ function EditorToolbar({
 
     return (
       <>
-        <Dropdown
-          dropdownTopOverlap="40px"
-          dropdownWidth="120px"
-          renderButton={() => <StatusButton>{buttonText}</StatusButton>}
-        >
-          <StatusDropdownItem
-            label={t('editor.editorToolbar.draft')}
-            onClick={() => onChangeStatus('DRAFT')}
-            icon={currentStatus === status.get('DRAFT') ? 'check' : null}
-          />
-          <StatusDropdownItem
-            label={t('editor.editorToolbar.inReview')}
-            onClick={() => onChangeStatus('PENDING_REVIEW')}
-            icon={currentStatus === status.get('PENDING_REVIEW') ? 'check' : null}
-          />
-          {useOpenAuthoring ? (
-            ''
-          ) : (
+        <Dropdown>
+          <DropdownTrigger>
+            <StatusButton>{buttonText}</StatusButton>
+          </DropdownTrigger>
+
+          <DropdownMenu>
             <StatusDropdownItem
-              label={t('editor.editorToolbar.ready')}
-              onClick={() => onChangeStatus('PENDING_PUBLISH')}
-              icon={currentStatus === status.get('PENDING_PUBLISH') ? 'check' : null}
+              label={t('editor.editorToolbar.draft')}
+              onClick={() => onChangeStatus('DRAFT')}
+              icon={currentStatus === status.get('DRAFT') ? 'check' : null}
             />
-          )}
+            <StatusDropdownItem
+              label={t('editor.editorToolbar.inReview')}
+              onClick={() => onChangeStatus('PENDING_REVIEW')}
+              icon={currentStatus === status.get('PENDING_REVIEW') ? 'check' : null}
+            />
+            {useOpenAuthoring ? (
+              ''
+            ) : (
+              <StatusDropdownItem
+                label={t('editor.editorToolbar.ready')}
+                onClick={() => onChangeStatus('PENDING_PUBLISH')}
+                icon={currentStatus === status.get('PENDING_PUBLISH') ? 'check' : null}
+              />
+            )}
+          </DropdownMenu>
         </Dropdown>
+
         {useOpenAuthoring && renderStatusInfoTooltip()}
       </>
     );
@@ -328,45 +324,42 @@ function EditorToolbar({
 
   function renderNewEntryWorkflowPublishControls({ canCreate, canPublish }) {
     return canPublish ? (
-      <>
-        <PublishButton onClick={e => setPostMenuAnchorEl(e.currentTarget)}>
-          {isPublishing ? t('editor.editorToolbar.publishing') : t('editor.editorToolbar.publish')}{' '}
-        </PublishButton>
+      <Dropdown>
+        <DropdownTrigger>
+          <PublishButton>
+            {isPublishing
+              ? t('editor.editorToolbar.publishing')
+              : t('editor.editorToolbar.publish')}{' '}
+          </PublishButton>
+        </DropdownTrigger>
 
-        <Menu
-          anchorEl={postMenuAnchorEl}
-          open={!!postMenuAnchorEl}
-          onClose={() => setPostMenuAnchorEl(null)}
-          anchorOrigin={{ y: 'bottom', x: 'right' }}
-        >
-          <MenuItem icon="arrow" iconDirection="right" onClick={onPublish}>
+        <DropdownMenu anchorOrigin={{ y: 'bottom', x: 'right' }}>
+          <DropdownMenuItem icon="arrow" iconDirection="right" onClick={onPublish}>
             {t('editor.editorToolbar.publishNow')}
-          </MenuItem>
+          </DropdownMenuItem>
 
           {canCreate ? (
             <>
-              <MenuItem
+              <DropdownMenuItem
                 label={t('editor.editorToolbar.publishAndCreateNew')}
                 icon="add"
                 onClick={onPublishAndNew}
               />
-              <MenuItem
+              <DropdownMenuItem
                 label={t('editor.editorToolbar.publishAndDuplicate')}
                 icon="add"
                 onClick={onPublishAndDuplicate}
               />
             </>
           ) : null}
-        </Menu>
-      </>
+        </DropdownMenu>
+      </Dropdown>
     ) : (
       ''
     );
   }
 
   function renderExistingEntryWorkflowPublishControls({ canCreate, canPublish, canDelete }) {
-    const [postMenuAnchorEl, setPostMenuAnchorEl] = useState(null);
-
     const deleteLabel =
       (hasUnpublishedChanges &&
         isModification &&
@@ -377,51 +370,41 @@ function EditorToolbar({
       (!hasUnpublishedChanges && !isModification && t('editor.editorToolbar.deletePublishedEntry'));
 
     return canPublish || canCreate ? (
-      <>
-        <Button
-          type="success"
-          primary
-          icon="radio"
-          hasMenu
-          onClick={e => setPostMenuAnchorEl(e.currentTarget)}
-        >
-          {isPersisting
-            ? t('editor.editorToolbar.unpublishing')
-            : t('editor.editorToolbar.published')}
-        </Button>
+      <Dropdown>
+        <DropdownTrigger>
+          <Button type="success" primary icon="radio" hasMenu>
+            {isPersisting
+              ? t('editor.editorToolbar.unpublishing')
+              : t('editor.editorToolbar.published')}
+          </Button>
+        </DropdownTrigger>
 
-        <Menu
-          anchorEl={postMenuAnchorEl}
-          open={!!postMenuAnchorEl}
-          onClose={() => setPostMenuAnchorEl(null)}
-          anchorOrigin={{ y: 'bottom', x: 'right' }}
-          key="td-publish-create"
-        >
+        <DropdownMenu anchorOrigin={{ y: 'bottom', x: 'right' }} key="td-publish-create">
           {canDelete && canPublish && (
-            <MenuItem icon="eye-off" onClick={unPublish}>
+            <DropdownMenuItem icon="eye-off" onClick={unPublish}>
               {t('editor.editorToolbar.unpublish')}
-            </MenuItem>
+            </DropdownMenuItem>
           )}
           {canCreate && (
-            <MenuItem icon="copy" onClick={onDuplicate}>
+            <DropdownMenuItem icon="copy" onClick={onDuplicate}>
               {t('editor.editorToolbar.duplicate')}
-            </MenuItem>
+            </DropdownMenuItem>
           )}
           {(!showDelete || useOpenAuthoring) && !hasUnpublishedChanges && !isModification ? null : (
             <>
-              <MenuSeparator />
+              <DropdownMenuSeparator />
 
-              <MenuItem
+              <DropdownMenuItem
                 type="danger"
                 icon="trash-2"
                 onClick={hasUnpublishedChanges ? onDeleteUnpublishedChanges : onDelete}
               >
                 {isDeleting ? t('editor.editorToolbar.deleting') : deleteLabel}
-              </MenuItem>
+              </DropdownMenuItem>
             </>
           )}
-        </Menu>
-      </>
+        </DropdownMenu>
+      </Dropdown>
     ) : (
       ''
     );
@@ -429,20 +412,18 @@ function EditorToolbar({
 
   function renderExistingEntrySimplePublishControls({ canCreate }) {
     return canCreate ? (
-      <Dropdown
-        dropdownTopOverlap="40px"
-        dropdownWidth="150px"
-        renderButton={() => (
+      <Dropdown>
+        <DropdownTrigger>
           <PublishedToolbarButton>{t('editor.editorToolbar.published')}</PublishedToolbarButton>
-        )}
-      >
-        {
-          <DropdownItem
+        </DropdownTrigger>
+
+        <DropdownMenu>
+          <DropdownMenuItem
             label={t('editor.editorToolbar.duplicate')}
             icon="add"
             onClick={onDuplicate}
           />
-        }
+        </DropdownMenu>
       </Dropdown>
     ) : (
       <PublishedButton>{t('editor.editorToolbar.published')}</PublishedButton>
@@ -463,7 +444,7 @@ function EditorToolbar({
             </PublishButton>
           )}
         >
-          <DropdownItem
+          <DropdownMenuItem
             label={t('editor.editorToolbar.publishNow')}
             icon="arrow"
             iconDirection="right"
@@ -471,12 +452,12 @@ function EditorToolbar({
           />
           {canCreate ? (
             <>
-              <DropdownItem
+              <DropdownMenuItem
                 label={t('editor.editorToolbar.publishAndCreateNew')}
                 icon="add"
                 onClick={onPersistAndNew}
               />
-              <DropdownItem
+              <DropdownMenuItem
                 label={t('editor.editorToolbar.publishAndDuplicate')}
                 icon="add"
                 onClick={onPersistAndDuplicate}
@@ -534,25 +515,19 @@ function EditorToolbar({
 
   function renderViewControls() {
     return (
-      <>
-        <Button icon="more-vertical" onClick={e => setPostMenuAnchorEl(e.currentTarget)} />
+      <Dropdown>
+        <DropdownTrigger>
+          <Button icon="more-vertical" />
+        </DropdownTrigger>
 
-        <Menu
-          anchorEl={postMenuAnchorEl}
-          open={!!postMenuAnchorEl}
-          onClose={() => setPostMenuAnchorEl(null)}
-          anchorOrigin={{ y: 'bottom', x: 'right' }}
-        >
-          <MenuItem icon="eye" onClick={() => setPostMenuAnchorEl(null)}>
+        <DropdownMenu anchorOrigin={{ y: 'bottom', x: 'right' }}>
+          <DropdownMenuItem icon="eye">
             {t('editor.editorInterface.togglePreview')}
-          </MenuItem>
-          <MenuItem
-            icon={<StyledScrollSyncIcon name="maximize-2" />}
-            onClick={() => setPostMenuAnchorEl(null)}
-          >
+          </DropdownMenuItem>
+          <DropdownMenuItem icon={<StyledScrollSyncIcon name="maximize-2" />}>
             {t('editor.editorInterface.toggleScrollSync')}
-          </MenuItem>
-        </Menu>
+          </DropdownMenuItem>
+        </DropdownMenu>
 
         {/* {previewEnabled && (
           <EditorToggle
@@ -572,7 +547,7 @@ function EditorToolbar({
             title={t('editor.editorInterface.toggleScrollSync')}
           />
         )} */}
-      </>
+      </Dropdown>
     );
   }
 

@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { translate } from 'react-polyglot';
-import { Menu, MenuItem } from 'decap-cms-ui-next';
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownMenuItem } from 'decap-cms-ui-next';
 
 import { ControlButton } from './ControlButton';
 
@@ -10,33 +10,28 @@ function GroupControl({ viewGroups, t, onGroupClick, group }) {
     .toJS()
     .some(f => f.active === true);
 
-  const [groupMenuAnchorEl, setGroupMenuAnchorEl] = useState(null);
-
   return (
-    <>
-      <ControlButton active={hasActiveGroup} onClick={e => setGroupMenuAnchorEl(e.currentTarget)}>
-        {t('collection.collectionTop.groupBy')}
-      </ControlButton>
+    <Dropdown>
+      <DropdownTrigger>
+        <ControlButton active={hasActiveGroup}>
+          {t('collection.collectionTop.groupBy')}
+        </ControlButton>
+      </DropdownTrigger>
 
-      <Menu
-        anchorEl={groupMenuAnchorEl}
-        open={!!groupMenuAnchorEl}
-        onClose={() => setGroupMenuAnchorEl(null)}
-        anchorOrigin={{ y: 'bottom', x: 'right' }}
-      >
+      <DropdownMenu anchorOrigin={{ y: 'bottom', x: 'right' }}>
         {viewGroups.map(viewGroup => {
           return (
-            <MenuItem
+            <DropdownMenuItem
               key={viewGroup.id}
               onClick={() => onGroupClick(viewGroup)}
               selected={group.getIn([viewGroup.id, 'active'], false)}
             >
               {viewGroup.label}
-            </MenuItem>
+            </DropdownMenuItem>
           );
         })}
-      </Menu>
-    </>
+      </DropdownMenu>
+    </Dropdown>
   );
 }
 

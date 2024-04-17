@@ -6,8 +6,10 @@ import styled from '@emotion/styled';
 import {
   AppBar,
   Button,
-  Menu,
-  MenuItem,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownMenuItem,
   SearchBar,
   UserMenu,
   NotificationCenter,
@@ -91,24 +93,17 @@ function Header({ user, collections, onLogoutClick, onCreateEntryClick, isSearch
                   onChange={event => setSearchTerm(event.currentTarget.value)}
                   onSubmit={submitSearch}
                   renderEnd={() => (
-                    <>
-                      <Button
-                        size="sm"
-                        hasMenu
-                        onClick={e => setCollectionMenuAnchorEl(e.currentTarget)}
-                      >
-                        {selectedCollectionIdx !== -1
-                          ? collections.toIndexedSeq().get(selectedCollectionIdx).get('label')
-                          : t('collection.sidebar.allCollections')}
-                      </Button>
+                    <Dropdown>
+                      <DropdownTrigger>
+                        <Button size="sm" hasMenu>
+                          {selectedCollectionIdx !== -1
+                            ? collections.toIndexedSeq().get(selectedCollectionIdx).get('label')
+                            : t('collection.sidebar.allCollections')}
+                        </Button>
+                      </DropdownTrigger>
 
-                      <Menu
-                        anchorEl={collectionMenuAnchorEl}
-                        anchorOrigin={{ y: 'bottom', x: 'right' }}
-                        open={!!collectionMenuAnchorEl}
-                        onClose={() => setCollectionMenuAnchorEl(null)}
-                      >
-                        <MenuItem
+                      <DropdownMenu anchorOrigin={{ y: 'bottom', x: 'right' }}>
+                        <DropdownMenuItem
                           selected={selectedCollectionIdx === -1}
                           onClick={() => {
                             setSelectedCollectionIdx(-1);
@@ -116,10 +111,10 @@ function Header({ user, collections, onLogoutClick, onCreateEntryClick, isSearch
                           }}
                         >
                           {t('collection.sidebar.allCollections')}
-                        </MenuItem>
+                        </DropdownMenuItem>
 
                         {searcheableCollections.toIndexedSeq().map((collection, idx) => (
-                          <MenuItem
+                          <DropdownMenuItem
                             key={idx}
                             selected={selectedCollectionIdx === idx}
                             onClick={() => {
@@ -128,39 +123,35 @@ function Header({ user, collections, onLogoutClick, onCreateEntryClick, isSearch
                             }}
                           >
                             {collection.get('label')}
-                          </MenuItem>
+                          </DropdownMenuItem>
                         ))}
-                      </Menu>
-                    </>
+                      </DropdownMenu>
+                    </Dropdown>
                   )}
                 />
               </SearchWrap>
             )}
 
-            <div>
-              <Button icon="plus" hasMenu onClick={e => setQuickAddMenuAnchorEl(e.currentTarget)}>
-                {t('app.header.quickAdd')}
-              </Button>
+            <Dropdown>
+              <DropdownTrigger>
+                <Button icon="plus" hasMenu>
+                  {t('app.header.quickAdd')}
+                </Button>
+              </DropdownTrigger>
 
-              <Menu
-                anchorEl={quickAddMenuAnchorEl}
-                anchorOrigin={{ y: 'bottom', x: 'right' }}
-                open={!!quickAddMenuAnchorEl}
-                onClose={() => setQuickAddMenuAnchorEl(null)}
-              >
+              <DropdownMenu anchorOrigin={{ y: 'bottom', x: 'right' }}>
                 {creatableCollections.map(collection => (
-                  <MenuItem
+                  <DropdownMenuItem
                     key={collection.get('name')}
                     onClick={() => {
-                      setQuickAddMenuAnchorEl(null);
                       handleCreatePostClick(collection.get('name'));
                     }}
                   >
                     {collection.get('label_singular') || collection.get('label')}
-                  </MenuItem>
+                  </DropdownMenuItem>
                 ))}
-              </Menu>
-            </div>
+              </DropdownMenu>
+            </Dropdown>
           </RenderEndWrap>
         );
       }}
