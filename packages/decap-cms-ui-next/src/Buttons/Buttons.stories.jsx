@@ -2,7 +2,7 @@ import React from 'react';
 import { action } from '@storybook/addon-actions';
 
 import { Button, ButtonGroup, IconButton, AvatarButton } from '.';
-import { iconComponents } from '../Icon/Icon';
+import { iconComponents } from '../Icon';
 
 export default {
   title: 'Components/Buttons',

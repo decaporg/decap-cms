@@ -1,12 +1,13 @@
 import React from 'react';
 import styled from '@emotion/styled';
+import { css } from '@emotion/react';
 import color from 'color';
 
 import Icon from '../Icon';
 import ButtonGroup from './ButtonGroup';
 
 export const StyledButton = styled.button`
-  ${({ theme, size, type, primary, transparent, disabled }) => `
+  ${({ theme, size, type, primary, transparent, disabled }) => css`
     font-family: ${theme.fontFamily};
     font-size: ${size === 'sm' ? 12 : size === 'lg' ? 14 : 14}px;
     padding: ${size === 'sm' ? `0 0.5rem` : size === 'lg' ? `0 1rem` : `0 0.75rem`};
@@ -19,34 +20,29 @@ export const StyledButton = styled.button`
     cursor: ${disabled ? 'not-allowed' : 'pointer'};
     white-space: nowrap;
     transition: 200ms;
-    background-color: ${
-      transparent
-        ? 'transparent'
-        : primary
-        ? type === 'success'
-          ? theme.color.success['900']
-          : type === 'danger'
-          ? theme.color.danger['900']
-          : theme.color.neutral[theme.darkMode ? '800' : '800']
-        : type === 'success'
-        ? color(theme.color.success['900']).alpha(0.2).string()
+    background-color: ${transparent
+      ? 'transparent'
+      : primary
+      ? type === 'success'
+        ? theme.color.success['900']
         : type === 'danger'
-        ? color(theme.color.danger['900']).alpha(0.2).string()
-        : color(theme.color.neutral['700']).alpha(0.2).string()
-    };
-    color: ${
-      primary
-        ? '#FFFFFF'
-        : type === 'success'
-        ? theme.color.success[theme.darkMode ? '200' : '700']
-        : type === 'danger'
-        ? theme.color.danger[theme.darkMode ? '200' : '700']
-        : theme.color.neutral[theme.darkMode ? '300' : '1000']
-    };
-    ${
-      disabled
-        ? 'opacity: 0.5;'
-        : `
+        ? theme.color.danger['900']
+        : theme.color.neutral[theme.darkMode ? '800' : '800']
+      : type === 'success'
+      ? color(theme.color.success['900']).alpha(0.2).string()
+      : type === 'danger'
+      ? color(theme.color.danger['900']).alpha(0.2).string()
+      : color(theme.color.neutral['700']).alpha(0.2).string()};
+    color: ${primary
+      ? '#FFFFFF'
+      : type === 'success'
+      ? theme.color.success[theme.darkMode ? '200' : '700']
+      : type === 'danger'
+      ? theme.color.danger[theme.darkMode ? '200' : '700']
+      : theme.color.neutral[theme.darkMode ? '300' : '1000']};
+    ${disabled
+      ? 'opacity: 0.5;'
+      : `
           &:hover {
             background-color: ${
               transparent
@@ -114,12 +110,11 @@ export const StyledButton = styled.button`
                     .string()
             };
           }
-          `
+          `}
+    ${ButtonGroup} & {
+      margin: 4px;
     }
-          ${ButtonGroup} & {
-            margin: 4px;
-          }
-        `}
+  `}
   ${({ type, theme, iconOnly }) =>
     iconOnly
       ? `

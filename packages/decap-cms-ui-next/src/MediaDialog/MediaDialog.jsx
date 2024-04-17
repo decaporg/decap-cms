@@ -5,7 +5,7 @@ import { Button, ButtonGroup, IconButton } from '../Buttons';
 import { Menu, MenuItem } from '../Menu';
 import Dialog from '../Dialog';
 import Icon from '../Icon';
-import Thumbnail, { ThumbnailGrid } from '../Thumbnail';
+import { Thumbnail, ThumbnailGrid } from '../Thumbnail';
 import Table from '../Table';
 import SearchBar from '../SearchBar';
 import { NavMenuGroup, NavMenuGroupLabel, NavMenuItem, NavMenu } from '../NavMenu';

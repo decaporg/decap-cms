@@ -2,7 +2,6 @@ import React, { useState, forwardRef } from 'react';
 import styled from '@emotion/styled';
 
 import Field from '../../Field';
-import Icon from '../../Icon';
 
 export const StyledInput = styled.input`
   color: ${({ theme }) => theme.color.highEmphasis};
@@ -22,12 +21,6 @@ export const StyledInput = styled.input`
   ${({ clickable }) => (clickable ? `cursor: pointer;` : ``)} ::placeholder {
     color: ${({ theme }) => theme.color.disabled};
   }
-`;
-
-const InputIcon = styled(Icon)`
-  position: absolute;
-  bottom: -0.125rem;
-  right: 0;
 `;
 
 const TextField = forwardRef(

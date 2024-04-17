@@ -110,7 +110,7 @@ const StyledLabel = styled(Label)`
 const StyledIconButton = styled(IconButton)`
   position: absolute;
   right: ${({ inline }) => (inline ? 0 : 0.5)}rem;
-  bottom: 0.625rem;
+  top: 1.85rem;
 `;
 
 const StyledDescription = styled.p`
@@ -122,6 +122,13 @@ const StyledDescription = styled.p`
 `;
 
 const StyledErrorsList = styled.ul`
+  ${({ icon }) =>
+    icon &&
+    css`
+      position: absolute;
+      right: 0.5rem;
+    `}
+
   flex: 1;
   justify-content: flex-end;
 
@@ -216,7 +223,7 @@ function Field({
           >
             {label} {status && <Tag color={error ? 'danger' : 'neutral'}>{status}</Tag>}
             {error && errors && (
-              <StyledErrorsList control={control}>
+              <StyledErrorsList control={control} icon={icon}>
                 <Icon name="alert-triangle" />
 
                 {errors.map(
@@ -234,7 +241,9 @@ function Field({
 
           <ChildrenWrap>{children}</ChildrenWrap>
 
-          {icon && <StyledIconButton icon={icon} active={focus} inline={inline} />}
+          {icon && React.isValidElement(icon)
+            ? icon
+            : icon && <StyledIconButton icon={icon || null} active={focus} inline={inline} />}
 
           {description && <StyledDescription>{description}</StyledDescription>}
         </FieldInside>

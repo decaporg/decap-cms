@@ -23,9 +23,17 @@ export default {
     shortcuts: {
       control: 'object',
     },
+    errors: {
+      control: 'object',
+      if: {
+        arg: 'error',
+      },
+    },
   },
   args: {
     label: 'Datetime Field Label',
+    status: 'Required',
+    description: 'This is a description',
     value: new Date(),
     type: 'datetime-local',
     shortcuts: {
@@ -34,6 +42,11 @@ export default {
     },
     inline: false,
     error: false,
+    errors: [
+      {
+        message: 'Error message.',
+      },
+    ],
   },
 };
 

@@ -22,6 +22,8 @@
     "@tanstack/react-virtual": "^3.0.4",
     "rc-datetime-picker-dayjs": "^1.0.1",
     "react-aria-menubutton": "^7.0.0",
+    "react-colorful": "^5.6.1",
+    "react-textarea-autosize": "^8.0.0",
     "react-transition-group": "^4.4.5",
     "react-spring": "^9.7.3",
     "keycode": "^2.2.1"

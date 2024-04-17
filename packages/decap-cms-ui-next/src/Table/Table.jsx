@@ -28,8 +28,9 @@ const TableWrap = styled.table`
 `;
 const TableHeader = styled.thead`
   position: sticky;
-  top: 0;
+  top: 80px; // Height of the header
   z-index: 1;
+  background-color: ${({ theme }) => theme.color.background};
 `;
 const TableHeaderRow = styled.tr`
   display: flex;

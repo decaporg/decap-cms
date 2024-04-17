@@ -140,15 +140,14 @@ class MarkdownField extends React.Component {
               onBlur={() => {
                 setTimeout(() => this.setState({ hasFocus: false }), 0);
               }}
-            >
-              spellCheck placeholder={`Type ${label ? label.toLowerCase() : 'something'} here`}
+              spellCheck
+              placeholder={`Type ${label ? label.toLowerCase() : 'something'} here`}
               ref={this.ref}
               onKeyDown={this.onKeyDown}
               renderBlock={this.renderBlock}
               renderMark={this.renderMark}
               style={{ minHeight: '8rem' }}
-              />
-            </EditorWrap>
+            />
           </Field>
         </Fullscreen>
       </Slate>
