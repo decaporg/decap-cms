@@ -1,281 +1,1006 @@
+locale: fr
 backend:
-  name: test-repo
+  name: github-large
+  repo: betagouv/aides-jeunes
+  branch: main
+  commit_messages:
+    create: Crée {{slug}}
+    update: Met à jour {{slug}}
+    delete: Supprime {{slug}}
+    uploadMedia: Nouvelle image {{path}}
+    deleteMedia: Suppression de l'image {{path}}
 
-site_url: https://example.com
+media_folder: public/img/institutions
+public_folder: img/institutions
 
+slug:
+  encoding: ascii
+  clean_accents: true
+
+# local_backend: true
 publish_mode: editorial_workflow
-media_folder: assets/uploads
 
-collections: # A list of collections the CMS should be able to edit
-  - name: 'posts' # Used in routes, ie.: /admin/collections/:slug/edit
-    label: 'Posts' # Used in the UI
-    label_singular: 'Post' # Used in the UI, ie: "New Post"
-    description: >
-      The description is a great place for tone setting, high level information, and editing
-      guidelines that are specific to a collection.
-    folder: '_posts'
-    slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
-    summary: '{{title}} -- {{year}}/{{month}}/{{day}}'
-    create: true # Allow users to create new documents in this collection
-    view_filters:
-      - label: Posts With Index
-        field: title
-        pattern: 'This is post #'
-      - label: Posts Without Index
-        field: title
-        pattern: front matter post
-      - label: Drafts
-        field: draft
-        pattern: true
-    view_groups:
-      - label: Year
-        field: date
-        pattern: \d{4}
-      - label: Drafts
-        field: draft
-    fields: # The fields each document in this collection have
-      - { label: 'Title', name: 'title', widget: 'string', tagname: 'h1' }
-      - { label: 'Draft', name: 'draft', widget: 'boolean', default: false }
-      - {
-          label: 'Publish Date',
-          name: 'date',
-          widget: 'datetime',
-          date_format: 'YYYY-MM-DD',
-          time_format: 'HH:mm',
-          format: 'YYYY-MM-DD HH:mm',
-        }
-      - label: 'Cover Image'
-        name: 'image'
-        widget: 'image'
-        required: false
-        tagname: ''
+root: ../../..
 
-      - { label: 'Body', name: 'body', widget: 'markdown', hint: 'Main content goes here.' }
+patterns:
+  pattern_url: &pattern_url
+    - "^(https?:\/\/)"
+    - 'Le champ doit contenir une url valide'
 
-  - name: 'restaurants' # Used in routes, ie.: /admin/collections/:slug/edit
-    label: 'Restaurants' # Used in the UI
-    label_singular: 'Restaurant' # Used in the UI, ie: "New Post"
-    description: >
-      Restaurants is an entry type used for testing galleries, relations and other widgets.
-      The tests must be written in such way that adding new fields does not affect previous flows.
-    folder: '_restaurants'
-    slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
-    summary: '{{title}} -- {{year}}/{{month}}/{{day}}'
-    create: true # Allow users to create new documents in this collection
-    fields: # The fields each document in this collection have
-      - { label: 'Title', name: 'title', widget: 'string', tagname: 'h1' }
-      - { label: 'Body', name: 'body', widget: 'markdown', hint: 'Main content goes here.' }
-      - { name: 'gallery', widget: 'image', choose_url: true, media_library: {config: {multiple: true, max_files: 999}}}
-      - { name: 'post', widget: relation, collection: posts, multiple: true, search_fields: [ "title" ], display_fields: [ "title" ], value_field: "{{slug}}", filters: [ {field: "draft", values: [false]} ] }
-      - name: authors
-        label: Authors
-        label_singular: 'Author'
+fields:
+  field_empty: &field_empty
+    widget: object
+    fields:
+      - label: empty
+        widget: hidden
+        name: empty
+  field_numeric_value: &field_numeric_value
+    label: Valeur
+    name: value
+    widget: number
+    step: -1
+  field_numeric_operator: &field_numeric_operator
+    label: Opérateur
+    name: operator
+    widget: select
+    options:
+      - label: Supérieur à
+        value: '>'
+      - label: Supérieur ou égal à
+        value: '>='
+      - label: Égal à
+        value: '='
+      - label: Inférieur à
+        value: '<'
+      - label: Inférieur ou égal à
+        value: '<='
+  field_number: &field_number
+    widget: object
+    fields:
+      - *field_numeric_operator
+      - *field_numeric_value
+  field_age: &field_age
+    <<: *field_number
+    label: Age
+    name: age
+  field_regions: &field_regions
+    label: Condition géographique régionale
+    name: regions
+    widget: object
+    fields:
+      - label: Régions
+        name: values
+        widget: select
+        multiple: true
+        options:
+          - label: Auvergne-Rhône-Alpes
+            value: '84'
+          - label: Bourgogne-Franche-Comté
+            value: '27'
+          - label: Bretagne
+            value: '53'
+          - label: Centre-Val de Loire
+            value: '24'
+          - label: Corse
+            value: '94'
+          - label: Grand Est
+            value: '44'
+          - label: Guadeloupe
+            value: '01'
+          - label: Guyane
+            value: '03'
+          - label: Hauts-de-France
+            value: '32'
+          - label: Île-de-France
+            value: '11'
+          - label: La Réunion
+            value: '04'
+          - label: Martinique
+            value: '02'
+          - label: Mayotte
+            value: '06'
+          - label: Normandie
+            value: '28'
+          - label: Nouvelle-Aquitaine
+            value: '75'
+          - label: Occitanie
+            value: '76'
+          - label: Pays de la Loire
+            value: '52'
+          - label: Provence-Alpes-Côte d'Azur
+            value: '93'
+  field_departements: &field_departements
+    label: Condition géographique départementale
+    name: departements
+    widget: object
+    fields:
+      - label: Code des départements
+        name: values
         widget: list
+        hint: Pour saisir plusieurs département, séparez les codes des départements par une virgule.
+  field_epcis: &field_epcis
+    label: Condition géographique d'EPCI
+    name: epcis
+    widget: object
+    fields:
+      - label: Code SIREN des EPCI
+        name: values
+        widget: list
+        hint: Pour saisir plusieurs EPCI, séparez les codes SIREN par une virgule.
+  field_excluded_epcis: &field_excluded_epcis
+    label: Condition d'exclusion géographique d'EPCI
+    name: excluded_epcis
+    widget: object
+    fields:
+      - label: Code SIREN des EPCI exclues
+        name: values
+        widget: list
+        hint: Pour saisir plusieurs EPCI, séparez les codes SIREN par une virgule.
+  field_communes: &field_communes
+    label: Condition géographique communale
+    name: communes
+    widget: object
+    fields:
+      - label: Code INSEE des communes
+        name: values
+        widget: list
+        hint: Pour saisir plusieurs communes, séparez les codes INSEE des communes par une virgule.
+  field_boursier: &field_boursier
+    <<: *field_empty
+    label: Boursier
+    name: boursier
+  field_mention_baccalaureat: &field_mention_baccalaureat
+    label: Mention au bac
+    name: mention_baccalaureat
+    widget: object
+    fields:
+      - label: Valeurs
+        name: values
+        widget: select
+        multiple: true
+        options:
+          - label: Mention assez bien
+            value: mention_assez_bien
+          - label: Mention bien
+            value: mention_bien
+          - label: Mention très bien
+            value: mention_tres_bien
+          - label: Mention très bien avec félicitations du jury
+            value: mention_tres_bien_felicitations_jury
+          - label: Autre
+            value: non_renseignee
+  field_select_regime_securite_sociale: &field_select_regime_securite_sociale
+    widget: select
+    multiple: true
+    required: false
+    options:
+      - label: Régime général
+        value: regime_general
+      - label: Régime agricole
+        value: regime_agricole
+      - label: Autres régimes
+        value: autres_regimes
+  field_regime_securite_sociale: &field_regime_securite_sociale
+    label: Régime de sécurité sociale
+    name: regime_securite_sociale
+    widget: object
+    fields:
+      - <<: *field_select_regime_securite_sociale
+        label: Inclus
+        name: includes
+      - <<: *field_select_regime_securite_sociale
+        label: Exclus
+        name: excludes
+  field_quotient_familial: &field_quotient_familial
+    label: Quotient familial
+    name: quotient_familial
+    widget: object
+    fields:
+      - *field_numeric_operator
+      - <<: *field_numeric_value
+        label: Montant
+      - label: Période
+        name: period
+        widget: select
+        options:
+          - label: Par mois
+            value: month
+          - label: Par an
+            value: year
+  field_taux_incapacite: &field_taux_incapacite
+    label: Taux d'incapacité
+    name: taux_incapacite
+    fields:
+      - *field_numeric_operator
+      - <<: *field_numeric_value
+        label: Taux
+        value_type: float
+        min: 0
+        max: 1
+        hint: Le taux est exprimé par un nombre entre 0 et 1. Exemple 0.8 pour 80%.
+  field_formation_sanitaire_social: &field_formation_sanitaire_social
+    <<: *field_empty
+    label: En formation sanitaire et sociale
+    name: formation_sanitaire_social
+  field_beneficiaire_rsa: &field_beneficiaire_rsa
+    <<: *field_empty
+    label: Bénéficiaire RSA
+    name: beneficiaire_rsa
+  field_attached_to_institution: &field_attached_to_institution
+    <<: *field_empty
+    label: Habite dans le périmètre géographique l'institution (uniquement commune, epci, département ou région)
+    name: attached_to_institution
+  field_exclude_epcis: &field_exclude_epcis
+    <<: *field_empty
+    label: Exclure les EPCI
+    name: exclude_epcis
+  field_select_statut_occupation_logement: &field_select_statut_occupation_logement
+    widget: select
+    multiple: true
+    required: false
+    options:
+      - label: Propriétaire primo-accédant
+        value: primo_accedant
+      - label: Propriétaire
+        value: proprietaire
+      - label: Locataire
+        value: locataire_vide
+      - label: Locataire de meublé ou hotel
+        value: locataire_meuble
+      - label: 'Logé gratuitement'
+        value: loge_gratuitement
+      - label: 'Locataire foyer'
+        value: locataire_foyer
+      - label: 'Sans domicile stable'
+        value: sans_domicile
+  field_statut_occupation_logement: &field_statut_occupation_logement
+    label: Statut d'occupation du logement
+    name: statut_occupation_logement
+    widget: object
+    fields:
+      - <<: *field_select_statut_occupation_logement
+        label: Inclus
+        name: includes
+      - <<: *field_select_statut_occupation_logement
+        label: Exclus
+        name: excludes
+  field_difficultes_acces_ou_frais_logement: &field_difficultes_acces_ou_frais_logement
+    <<: *field_empty
+    label: Difficultés importantes pour accéder à un logement ou pour payer les frais liés à un logement
+    name: difficultes_acces_ou_frais_logement
+  field_agence_travail_temporaire: &field_agence_travail_temporaire
+    <<: *field_empty
+    name: agence_travail_temporaire
+    label: Intérimaire d'une agence de travail temporaire
+  # common fields
+  field_benefit_image: &field_benefit_image
+    label: Logo
+    name: imgSrc
+    widget: hidden
+    allow_multiple: false
+    required: false
+    public_folder: 'img/benefits'
+    media_folder: '/public/img/benefits'
+    hint: Utile si vous voulez afficher le logo de l'aide à la place de l'image de l'institution.
+  field_benefit_name: &field_benefit_name
+    label: Nom de l'aide
+    name: label
+    widget: string
+  field_institution: &field_institution
+    label: Institution
+    name: institution
+    widget: relation
+    collection: institutions
+    value_field: '{{slug}}'
+    display_fields: ['{{name}}']
+    search_fields: [slug, name]
+    allow_multiple: false
+    options_length: -1
+    filter:
+      label: 'Type :'
+      target: 'type'
+    hint: Si votre institution n'apparaît pas dans la liste, vous pouvez [l'ajouter ici](https://contribuer-aides-jeunes.netlify.app/admin/#/collections/institutions/new).
+  field_description: &field_description
+    label: Courte description
+    name: description
+    widget: description
+  field_unmodeled_conditions: &field_unmodeled_conditions
+    label: Conditions non prises en compte par le simulateur
+    label_singular: Condition non prise en compte par le simulateur
+    hint: |
+      Certains critères d'éligibilité ne peuvent pas être demandés (trop précis)
+      ni pris en compte (trop complexe) dans le cadre d'un simulateur grand public.
+      Cette liste permet d'informer les usagers sur ces critères supplémentaires.
+      Par exemple : Signer un contrat d’engagement réciproque (CER) avec votre département
+      ou un Projet Personnalisé d’Accès à l’Emploi (PPAE) avec France travail.
+    name: conditions
+    widget: list
+    collapsed: false
+    field:
+      label: Texte
+      name: text
+      widget: string
+      pattern:
+        [
+          '\.$',
+          "La condition doit commencer par un verbe à l'infinitif et se terminer par un point",
+        ]
+  field_link_information: &field_link_information
+    label: Lien vers la page d'informations de référence
+    hint: Vers un site institutionnel de préférence (par exemple, pour les aides nationales il s'agit souvent de service-public.fr)
+    name: link
+    widget: string
+    pattern: *pattern_url
+  field_link_instructions: &field_link_instructions
+    label: Lien vers des instructions à suivre
+    name: instructions
+    widget: string
+    pattern: *pattern_url
+    required: false
+    required_group: cta
+  field_link_form: &field_link_form
+    label: Lien vers un formulaire à imprimer
+    name: form
+    widget: string
+    pattern: *pattern_url
+    required: false
+    required_group: cta
+  field_link_teleservice: &field_link_teleservice
+    label: Lien vers un téléservice
+    hint: Lorsqu'il y a la possibilité de faire la démarche en ligne.
+    name: teleservice
+    widget: string
+    pattern: *pattern_url
+    required: false
+    required_group: cta
+  field_definite_article: &field_definite_article
+    label: Article défini
+    name: prefix
+    hint: |
+      L'ajout d'un article défini permet la formation de phrase grammaticalement correcte.
+      Par exemple, dans la phrase « Comment obtenir l'aide exceptionnelle ? », on choisit le préfixe « l' ». Pour « Comment obtenir les aides au logement ? », on choisit le préfixe « les ».
+    widget: select
+    required: true
+    options: [le, la, les, l’, une, un, l’aide]
+  field_result_type: &field_result_type
+    label: Type du résultat
+    name: type
+    default: 'float'
+    widget: select
+    options:
+      - label: Valeur numérique
+        value: float
+      - label: Éligibilité (Oui / Non)
+        value: bool
+      - label: Autre
+        value: mixed
+  field_result_unit: &field_result_unit
+    label: Unité lorsque le type de résultat est une valeur numérique
+    hint: Il s'agit de spécifier l'unité du montant.
+    name: unit
+    widget: select
+    default: €
+    required: false
+    options:
+      - label: €
+        value: €
+      - label: '%'
+        value: '%'
+      - label: séances
+        value: séances
+  field_amount_legend: &field_amount_legend
+    label: Légende associée à la valeur numérique
+    hint: Cette légende permet d'ajouter des informations complémentaires sur le montant. Par exemple, si vous écrivez "maximum" dans ce champ, et que vous avez indiqué "200 €" en montant, cela affichera "200 € maximum".
+    name: legend
+    widget: string
+    required: false
+  field_amount_reliability: &field_amount_reliability
+    label: Niveau de fiabilité lorsque le résultat est un montant
+    name: floorAt
+    widget: select
+    required: false
+    options:
+      - label: 10 (pour arrondir à la dizaine inférieure)
+        value: 10
+      - label: 1 (pour l'euro inférieur)
+        value: 1
+      - label: 0.01 (pour éviter l'arrondi)
+        value: 0.01
+  field_specific_interest: &field_specific_interest
+    label: Faut-il limiter l'affichage de l'aide en fonction d'un intérêt particulier ?
+    name: interestFlag
+    hint: |
+      En fin de parcours, des questions sont posées pour connaitre certains intérêts des usagers.
+      Cela permet d'éviter d'afficher certaines aides qui ne seraient pas pertinentes pour les usagers.
+    widget: select
+    required: false
+    options:
+      - label: Oui, l'afficher en cas d'intérêt pour le BAFA ou le BAFD.
+        value: _interetBafa
+      - label: Oui, l'afficher en cas d'intérêt pour passer le permis de conduire.
+        value: _interetPermisDeConduire
+      - label: Oui, l'afficher en cas d'intérêt pour faire des études à l'étranger.
+        value: _interetEtudesEtranger
+      - label: Oui, l'afficher en cas d'intérêt pour faire une formation dans le sanitaire et social.
+        value: _interetAidesSanitaireSocial
+  field_openfisca_linked_entity: &field_openfisca_linked_entity
+    label: Entité de rattachement de la variable dans OpenFisca
+    name: entity
+    widget: select
+    hint: Cette variable fait le lien avec le moteur de calculs. Tant que vous ne savez pas quoi y indiquer, nous recommandons de laisser Ménage.
+    options:
+      - label: Famille
+        value: familles
+      - label: Foyer Fiscal
+        value: foyers_fiscaux
+      - label: Individu
+        value: individus
+      - label: Ménage
+        value: menages
+  field_openfisca_period: &field_openfisca_period
+    label: Période de la variable dans OpenFisca
+    name: openfiscaPeriod
+    widget: select
+    hint: Cette variable fait le lien avec le moteur de calculs. Tant que vous ne savez pas quoi y indiquer, nous recommandons de laisser Mois.
+    options:
+      - label: Mois
+        value: thisMonth
+      - label: Année
+        value: thisYear
+  field_benefit_max_amount: &field_benefit_max_amount
+    label: Montant maximal de l'aide
+    name: montant
+    widget: number
+    required: false
+    step: -1
+  field_benefit_amount_periodicity: &field_benefit_amount_periodicity
+    label: "Périodicité de l'aide"
+    name: periodicite
+    widget: select
+    hint: Cette variable permet de définir la fréquence de versement de l'aide.
+    required: true
+    default: autre
+    options:
+      - label: Ponctuelle
+        value: ponctuelle
+      - label: Mensuelle (/ mois)
+        value: mensuelle
+      - label: Annuelle (/ an)
+        value: annuelle
+      - label: Autre
+        value: autre
+  field_eligibility_profile: &field_eligibility_profile
+    label: profil d'éligibilité
+    label_singular: profils d'éligibilité
+    hint: Cette aide est-elle destinée à des publics spécifiques ? (lycéen(ne)s, apprenti(e)s, en recherche d'emploi, etc.)
+    name: profils
+    widget: list
+    collapsed: false
+    default: []
+    types:
+      - label: Lycéen ou lycéenne
+        name: lyceen
+        widget: object
         fields:
-          - { label: 'Name', name: 'name', widget: 'string', hint: 'First and Last' }
-          - { label: 'Description', name: 'description', widget: 'markdown' }
+          - label: Conditions à satisfaire simultanément
+            label_singular: Condition à satisfaire
+            name: conditions
+            default: []
+            widget: list
+            collapsed: false
+            types:
+              - *field_age
+              - *field_boursier
+              - *field_formation_sanitaire_social
+              - label: Année d'étude
+                name: annee_etude
+                widget: object
+                fields:
+                  - label: Valeurs
+                    name: values
+                    widget: select
+                    multiple: true
+                    options:
+                      - label: CAP - 1ère année
+                        value: cap_1
+                      - label: CAP - 2ème année
+                        value: cap_2
+                      - label: Seconde
+                        value: seconde
+                      - label: Première
+                        value: premiere
+                      - label: Terminale
+                        value: terminale
+                      - label: Autre
+                        value: autre
+      - label: Dans l'enseignement supérieur
+        name: enseignement_superieur
+        widget: object
+        fields:
+          - label: Conditions à satisfaire simultanément
+            label_singular: Condition à satisfaire
+            name: conditions
+            default: []
+            widget: list
+            collapsed: false
+            types:
+              - *field_age
+              - *field_boursier
+              - *field_mention_baccalaureat
+              - *field_formation_sanitaire_social
+              - label: Année d'étude
+                name: annee_etude
+                widget: object
+                fields:
+                  - label: Valeurs
+                    name: values
+                    widget: select
+                    multiple: true
+                    options:
+                      - label: BTS
+                        value: bts_1
+                      - label: BUT
+                        value: but_1
+                      - label: CPGE
+                        value: cpge_1
+                      - label: Licence - 1ère année
+                        value: licence_1
+                      - label: Licence - 2ème année
+                        value: licence_2
+                      - label: Licence - 3ème année
+                        value: licence_3
+                      - label: Master - 1ère année
+                        value: master_1
+                      - label: Master - 2ème année
+                        value: master_2
+                      - label: Doctorat - 1ère année
+                        value: doctorat_1
+                      - label: Doctorat - 2ème année
+                        value: doctorat_2
+                      - label: Doctorat - 3ème année
+                        value: doctorat_3
+                      - label: Autre
+                        value: autre
+      - label: Scolarisé ou scolarisée
+        name: etudiant
+        widget: object
+        fields:
+          - label: Conditions à satisfaire simultanément
+            label_singular: Condition à satisfaire
+            name: conditions
+            default: []
+            widget: list
+            collapsed: false
+            types:
+              - *field_age
+              - *field_formation_sanitaire_social
+              - *field_boursier
+              - label: Année d'étude
+                name: annee_etude
+                widget: object
+                fields:
+                  - label: Valeurs
+                    name: values
+                    widget: select
+                    multiple: true
+                    options:
+                      - label: CAP - 1ère année
+                        value: cap_1
+                      - label: CAP - 2ème année
+                        value: cap_2
+                      - label: Seconde
+                        value: seconde
+                      - label: Première
+                        value: premiere
+                      - label: Terminale
+                        value: terminale
+                      - label: BTS
+                        value: bts_1
+                      - label: BUT
+                        value: but_1
+                      - label: CPGE
+                        value: cpge_1
+                      - label: Licence - 1ère année
+                        value: licence_1
+                      - label: Licence - 2ème année
+                        value: licence_2
+                      - label: Licence - 3ème année
+                        value: licence_3
+                      - label: Master - 1ère année
+                        value: master_1
+                      - label: Master - 2ème année
+                        value: master_2
+                      - label: Doctorat - 1ère année
+                        value: doctorat_1
+                      - label: Doctorat - 2ème année
+                        value: doctorat_2
+                      - label: Doctorat - 3ème année
+                        value: doctorat_3
+                      - label: Autre
+                        value: autre
+      - label: Stagiaire
+        name: stagiaire
+        widget: object
+        fields:
+          - label: Conditions à satisfaire simultanément
+            label_singular: Condition à satisfaire
+            name: conditions
+            default: []
+            widget: list
+            collapsed: false
+            types:
+              - *field_formation_sanitaire_social
+              - *field_age
+              - *field_boursier
+      - label: Apprenti ou apprentie
+        name: apprenti
+        widget: object
+        fields:
+          - label: Conditions à satisfaire simultanément
+            label_singular: Condition à satisfaire
+            name: conditions
+            default: []
+            widget: list
+            collapsed: false
+            types:
+              - *field_formation_sanitaire_social
+              - *field_age
+              - *field_boursier
+      - label: En contrat de professionnalisation
+        name: professionnalisation
+        widget: object
+        fields:
+          - label: Conditions à satisfaire simultanément
+            label_singular: Condition à satisfaire
+            name: conditions
+            default: []
+            widget: list
+            collapsed: false
+            types:
+              - *field_formation_sanitaire_social
+              - *field_age
+      - label: En recherche d'emploi
+        name: chomeur
+        widget: object
+        fields:
+          - label: Conditions à satisfaire simultanément
+            label_singular: Condition à satisfaire
+            name: conditions
+            default: []
+            widget: list
+            collapsed: false
+            types:
+              - *field_age
+      - label: Salarié ou salariée
+        name: salarie
+        widget: object
+        fields:
+          - label: Conditions à satisfaire simultanément
+            label_singular: Condition à satisfaire
+            name: conditions
+            default: []
+            widget: list
+            collapsed: false
+            types:
+              - *field_age
+      - label: Travailleur indépendant ou travailleuse indépendante
+        name: independant
+        widget: object
+        fields:
+          - label: Conditions à satisfaire simultanément
+            label_singular: Condition à satisfaire
+            name: conditions
+            default: []
+            widget: list
+            collapsed: false
+            types:
+              - *field_age
+      - label: En service civique
+        name: service_civique
+        widget: object
+        fields:
+          - label: Conditions à satisfaire simultanément
+            label_singular: Condition à satisfaire
+            name: conditions
+            default: []
+            widget: list
+            collapsed: false
+            types:
+              - *field_age
+      - label: Bénéficiaire RSA
+        name: beneficiaire_rsa
+        widget: object
+        fields:
+          - label: Conditions à satisfaire simultanément
+            label_singular: Condition à satisfaire
+            name: conditions
+            default: []
+            widget: list
+            collapsed: false
+            types:
+              - *field_age
+      - label: En situation de handicap
+        name: situation_handicap
+        widget: object
+        fields:
+          - label: Conditions à satisfaire simultanément
+            label_singular: Condition à satisfaire
+            name: conditions
+            default: []
+            widget: list
+            collapsed: false
+            types:
+              - *field_taux_incapacite
+      - label: Inactif ou inactive
+        name: inactif
+        widget: object
+        fields:
+          - label: Conditions à satisfaire simultanément
+            label_singular: Condition à satisfaire
+            name: conditions
+            default: []
+            widget: list
+            collapsed: false
+            types:
+              - *field_age
+  field_private_benefit: &field_private_benefit
+    label: Masquer l'aide
+    name: private
+    required: false
+    widget: hidden
+  field_benefit_partial_support: &field_benefit_partial_support
+    label: L'aide ne couvre qu'une partie des frais
+    name: participation
+    widget: hidden
+  field_benefit_id: &field_benefit_id
+    name: id
+    widget: hidden
+  field_benefit_source: &field_benefit_source
+    name: source
+    widget: hidden
+  field_not_operator: &field_not_operator
+    name: not
+    widget: hidden
+  field_voluntary_conditions: &field_voluntary_conditions
+    label: Conditions bénévoles à satisfaire
+    name: voluntary_conditions
+    hint: Un lien dynamique vers la plateforme jeveuxaider.gouv.fr s'ajoutera à la suite de la dernière condition pour orienter l'utilisateur vers des organismes de bénévolat à proximité
+    required: false
+    widget: list
+    collapsed: false
+    field:
+      label: Texte
+      name: text
+      widget: string
+      pattern:
+        [
+          '\.$',
+          "La condition doit commencer par un verbe à l'infinitif et se terminer par un point",
+        ]
+  field_teleservice_prefill: &field_teleservice_prefill
+    name: teleservicePrefill
+    widget: hidden
+  # champs propre aux aides javascript
+  field_general_conditions: &field_general_conditions
+    label: Conditions générales à satisfaire simultanément
+    label_singular: Condition générale à satisfaire
+    name: conditions_generales
+    default: []
+    widget: list
+    collapsed: false
+    types:
+      - *field_age
+      - *field_regions
+      - *field_departements
+      - *field_epcis
+      - *field_excluded_epcis
+      - *field_communes
+      - *field_regime_securite_sociale
+      - *field_quotient_familial
+      - *field_formation_sanitaire_social
+      - *field_beneficiaire_rsa
+      - *field_attached_to_institution
+      - *field_statut_occupation_logement
+      - *field_not_operator
+      - *field_difficultes_acces_ou_frais_logement
+      - *field_agence_travail_temporaire
+  # champs propre aux aides openfisca
+  field_benefit_position: &field_benefit_position
+    label: Pondération de l'aide sur la page de résultat
+    name: top
+    widget: hidden
+  field_benefit_warning_message: &field_benefit_warning_message
+    label: Affiche un message d'avertissement spécifique
+    name: warning
+    widget: hidden
+  field_openfisca_eligibility_source: &openfisca_eligibility_source
+    label: Référence à la règle de calcul OpenFisca
+    name: openfisca_eligibility_source
+    widget: hidden
+  field_benefit_teleservices: &field_benefit_teleservices
+    label: Liens vers plusieurs téléservices
+    name: teleservices
+    widget: hidden
+  field_benefit_ressources_year_minus_two: &field_benefit_ressources_year_minus_two
+    label: Aide calculée en fonction des revenus N-2
+    name: isBaseRessourcesYearMinusTwo
+    widget: hidden
+  field_benefit_msa_specific: &field_benefit_msa_specific
+    label: Aide restreinte aux usagers de la MSA
+    name: msa
+    widget: hidden
+  field_benefit_institution: &field_benefit_institution
+    label: Référence aux types de lieux à proximité supervisant l'aide
+    name: lieuxTypes
+    widget: hidden
+  field_benefit_set_to_zero_recently: &field_benefit_set_to_zero_recently
+    label: L'aide OpenFisca a été remise à zéro récemment
+    name: setToZeroRecently
+    widget: hidden
+  field_benefit_capital_dependant: &field_benefit_capital_dependant
+    label: L'attribution de l'aide est dépendante du capital personnel
+    name: isBaseRessourcesPatrimoine
+    widget: hidden
+  field_benefit_openfisca_mapping: &field_benefit_openfisca_mapping
+    label: Identifiant OpenFisca de l'aide
+    name: openfisca_eligibility_source
+    widget: hidden
 
-  - name: 'faq' # Used in routes, ie.: /admin/collections/:slug/edit
-    label: 'FAQ' # Used in the UI
-    folder: '_faqs'
-    create: true # Allow users to create new documents in this collection
-    fields: # The fields each document in this collection have
-      - { label: 'Question', name: 'title', widget: 'string', tagname: 'h1' }
-      - { label: 'Answer', name: 'body', widget: 'markdown' }
-
-  - name: 'settings'
-    label: 'Settings'
-    delete: false # Prevent users from deleting documents in this collection
+collections:
+  - name: benefits_javascript
+    label: Aides avec critères d'éligibilités
+    label_singular: Aide avec critères d'éligibilités
+    identifier_field: label
+    folder: 'data/benefits/javascript'
+    create: true
+    delete: false
+    editor:
+      preview: true
+    slug: '{{fields.institution}}-{{label}}'
+    summary: '{{label}} ({{fields.institution}})'
+    extension: yml
+    fields:
+      - *field_benefit_name
+      - *field_benefit_image
+      - *field_institution
+      - *field_description
+      - *field_definite_article
+      - *field_general_conditions
+      - *field_voluntary_conditions
+      - *field_eligibility_profile
+      - *field_unmodeled_conditions
+      - *field_specific_interest
+      - *field_result_type
+      - *field_result_unit
+      - *field_benefit_amount_periodicity
+      - *field_amount_legend
+      - *field_benefit_max_amount
+      - *field_link_information
+      - *field_link_teleservice
+      - *field_link_form
+      - *field_link_instructions
+      - *field_amount_reliability
+      # hidden fields
+      - *field_benefit_position
+      - *field_private_benefit
+      - *field_benefit_partial_support
+      - *field_benefit_id
+      - *field_benefit_source
+      - *field_teleservice_prefill
+  - name: benefits_openfisca
+    label: Aides complexes
+    label_singular: Aide complexe
+    identifier_field: label
+    folder: 'data/benefits/openfisca'
+    create: true
+    delete: false
+    editor:
+      preview: true
+    slug: '{{label}}'
+    extension: yml
+    fields:
+      - *field_benefit_name
+      - *field_benefit_image
+      - *field_institution
+      - *field_description
+      - *field_definite_article
+      - *field_unmodeled_conditions
+      - *field_voluntary_conditions
+      - *field_specific_interest
+      - *field_result_type
+      - *field_result_unit
+      - *field_benefit_amount_periodicity
+      - *field_amount_legend
+      - *field_link_information
+      - *field_link_teleservice
+      - *field_link_form
+      - *field_link_instructions
+      - *field_amount_reliability
+      - *field_openfisca_linked_entity
+      - *field_openfisca_period
+      - *field_private_benefit
+      # hidden fields
+      - *field_benefit_position
+      - *field_benefit_warning_message
+      - *field_benefit_teleservices
+      - *field_benefit_ressources_year_minus_two
+      - *field_benefit_msa_specific
+      - *field_benefit_partial_support
+      - *field_benefit_institution
+      - *field_benefit_set_to_zero_recently
+      - *field_benefit_capital_dependant
+      - *field_benefit_openfisca_mapping
+      - *field_teleservice_prefill
+  - name: institutions
+    label: Institutions
+    label_singular: institution
+    identifier_field: name
+    folder: 'data/institutions'
+    create: true
+    delete: false
     editor:
       preview: false
-    files:
-      - name: 'general'
-        label: 'Site Settings'
-        file: '_data/settings.json'
-        description: 'General Site Settings'
-        fields:
-          - { label: 'Global title', name: 'site_title', widget: 'string' }
-          - label: 'Post Settings'
-            name: posts
-            widget: 'object'
-            fields:
-              - {
-                  label: 'Number of posts on frontpage',
-                  name: front_limit,
-                  widget: number,
-                  min: 1,
-                  max: 10,
-                }
-              - { label: 'Default Author', name: author, widget: string }
-              - {
-                  label: 'Default Thumbnail',
-                  name: thumb,
-                  widget: image,
-                  class: 'thumb',
-                  required: false,
-                }
-
-      - name: 'authors'
-        label: 'Authors'
-        file: '_data/authors.yml'
-        description: 'Author descriptions'
-        fields:
-          - name: authors
-            label: Authors
-            label_singular: 'Author'
-            widget: list
-            fields:
-              - { label: 'Name', name: 'name', widget: 'string', hint: 'First and Last' }
-              - { label: 'Description', name: 'description', widget: 'markdown' }
-
-  - name: 'kitchenSink' # all the things in one entry, for documentation and quick testing
-    label: 'Kitchen Sink'
-    folder: '_sink'
-    create: true
+    slug: '{{name}}'
+    extension: yml
     fields:
-      - label: 'Related Post'
-        name: 'post'
-        widget: 'relationKitchenSinkPost'
-        collection: 'posts'
-        display_fields: ['title', 'datetime']
-        search_fields: ['title', 'body']
-        value_field: 'title'
-      - { label: 'Title', name: 'title', widget: 'string' }
-      - { label: 'Boolean', name: 'boolean', widget: 'boolean', default: true }
-      - { label: 'Map', name: 'map', widget: 'map' }
-      - { label: 'Text', name: 'text', widget: 'text', hint: 'Plain text, not markdown' }
-      - { label: 'Number', name: 'number', widget: 'number', hint: 'To infinity and beyond!' }
-      - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
-      - { label: 'Datetime', name: 'datetime', widget: 'datetime' }
-      - { label: 'Image', name: 'image', widget: 'image' }
-      - { label: 'File', name: 'file', widget: 'file' }
-      - { label: 'Select', name: 'select', widget: 'select', options: ['a', 'b', 'c'] }
-      - {
-          label: 'Select multiple',
-          name: 'select_multiple',
-          widget: 'select',
-          options: ['a', 'b', 'c'],
-          multiple: true,
-        }
-      - { label: 'Hidden', name: 'hidden', widget: 'hidden', default: 'hidden' }
-      - { label: 'Color', name: 'color', widget: 'color' }
-      - label: 'Object'
-        name: 'object'
-        widget: 'object'
-        collapsed: true
-        fields:
-          - label: 'Related Post'
-            name: 'post'
-            widget: 'relationKitchenSinkPost'
-            collection: 'posts'
-            search_fields: ['title', 'body']
-            value_field: 'title'
-          - { label: 'String', name: 'string', widget: 'string' }
-          - { label: 'Boolean', name: 'boolean', widget: 'boolean', default: false }
-          - { label: 'Text', name: 'text', widget: 'text' }
-          - { label: 'Number', name: 'number', widget: 'number' }
-          - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
-          - { label: 'Datetime', name: 'datetime', widget: 'datetime' }
-          - { label: 'Image', name: 'image', widget: 'image' }
-          - { label: 'File', name: 'file', widget: 'file' }
-          - { label: 'Select', name: 'select', widget: 'select', options: ['a', 'b', 'c'] }
-      - label: 'List'
-        name: 'list'
-        widget: 'list'
-        fields:
-          - { label: 'String', name: 'string', widget: 'string' }
-          - { label: 'Boolean', name: 'boolean', widget: 'boolean' }
-          - { label: 'Text', name: 'text', widget: 'text' }
-          - { label: 'Number', name: 'number', widget: 'number' }
-          - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
-          - { label: 'Datetime', name: 'datetime', widget: 'datetime' }
-          - { label: 'Image', name: 'image', widget: 'image' }
-          - { label: 'File', name: 'file', widget: 'file' }
-          - { label: 'Select', name: 'select', widget: 'select', options: ['a', 'b', 'c'] }
-          - label: 'Object'
-            name: 'object'
-            widget: 'object'
-            fields:
-              - { label: 'String', name: 'string', widget: 'string' }
-              - { label: 'Boolean', name: 'boolean', widget: 'boolean' }
-              - { label: 'Text', name: 'text', widget: 'text' }
-              - { label: 'Number', name: 'number', widget: 'number' }
-              - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
-              - { label: 'Datetime', name: 'datetime', widget: 'datetime' }
-              - { label: 'Image', name: 'image', widget: 'image' }
-              - { label: 'File', name: 'file', widget: 'file' }
-              - { label: 'Select', name: 'select', widget: 'select', options: ['a', 'b', 'c'] }
-              - label: 'List'
-                name: 'list'
-                widget: 'list'
-                fields:
-                  - label: 'Related Post'
-                    name: 'post'
-                    widget: 'relationKitchenSinkPost'
-                    collection: 'posts'
-                    search_fields: ['title', 'body']
-                    value_field: 'title'
-                  - { label: 'String', name: 'string', widget: 'string' }
-                  - { label: 'Boolean', name: 'boolean', widget: 'boolean' }
-                  - { label: 'Text', name: 'text', widget: 'text' }
-                  - { label: 'Number', name: 'number', widget: 'number' }
-                  - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
-                  - { label: 'Datetime', name: 'datetime', widget: 'datetime' }
-                  - { label: 'Image', name: 'image', widget: 'image' }
-                  - { label: 'File', name: 'file', widget: 'file' }
-                  - { label: 'Select', name: 'select', widget: 'select', options: ['a', 'b', 'c'] }
-                  - { label: 'Hidden', name: 'hidden', widget: 'hidden', default: 'hidden' }
-                  - label: 'Object'
-                    name: 'object'
-                    widget: 'object'
-                    fields:
-                      - { label: 'String', name: 'string', widget: 'string' }
-                      - { label: 'Boolean', name: 'boolean', widget: 'boolean' }
-                      - { label: 'Text', name: 'text', widget: 'text' }
-                      - { label: 'Number', name: 'number', widget: 'number' }
-                      - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
-                      - { label: 'Datetime', name: 'datetime', widget: 'datetime' }
-                      - { label: 'Image', name: 'image', widget: 'image' }
-                      - { label: 'File', name: 'file', widget: 'file' }
-                      - {
-                          label: 'Select',
-                          name: 'select',
-                          widget: 'select',
-                          options: ['a', 'b', 'c'],
-                        }
-      - label: 'Typed List'
-        name: 'typed_list'
-        widget: 'list'
-        types:
-          - label: 'Type 1 Object'
-            name: 'type_1_object'
-            widget: 'object'
-            fields:
-              - { label: 'String', name: 'string', widget: 'string' }
-              - { label: 'Boolean', name: 'boolean', widget: 'boolean' }
-              - { label: 'Text', name: 'text', widget: 'text' }
-          - label: 'Type 2 Object'
-            name: 'type_2_object'
-            widget: 'object'
-            fields:
-              - { label: 'Number', name: 'number', widget: 'number' }
-              - { label: 'Select', name: 'select', widget: 'select', options: ['a', 'b', 'c'] }
-              - { label: 'Datetime', name: 'datetime', widget: 'datetime' }
-              - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
-          - label: 'Type 3 Object'
-            name: 'type_3_object'
-            widget: 'object'
-            fields:
-              - { label: 'Image', name: 'image', widget: 'image' }
-              - { label: 'File', name: 'file', widget: 'file' }
-  - name: pages # a nested collection
-    label: Pages
-    label_singular: 'Page'
-    folder: _pages
-    create: true
-    nested: { depth: 100 }
-    fields:
-      - label: Title
-        name: title
+      - label: Nom de votre institution
+        hint: Département de la Gironde, Ville de Canéjan, Mauges Communauté, etc.
+        name: name
         widget: string
-    meta: { path: { widget: string, label: 'Path', index_file: 'index' } }
+      - label: Logo
+        name: imgSrc
+        widget: image
+        allow_multiple: false
+        pattern: ['(\.png|\.jpg|\.jpeg)', 'Seul les images au format JPG et PNG sont supportées']
+      - label: Type d'institution
+        name: type
+        widget: relation
+        collection: institution_types
+        value_field: '{{slug}}'
+        display_fields: [name]
+        search_fields: [slug, name]
+      - label: Code INSEE
+        hint: Pour les communes, départements, régions
+        name: code_insee
+        widget: string
+        required: false
+        required_group: identifier
+      - label: Code SIREN
+        hint: En cas de doute, il est possible de rechercher sur https://annuaire-entreprises.data.gouv.fr
+        name: code_siren
+        widget: string
+        required: false
+        required_group: identifier
+      - label: Article défini
+        name: prefix
+        widget: hidden
+        required: false
+      - label: Types de lieux à proximité
+        name: lieuxTypes
+        widget: hidden
+        required: false
+      - label: repository
+        name: repository
+        widget: hidden
+        required: false
+      - label: Départements
+        name: departments
+        widget: hidden
+        required: false
+      - *field_benefit_position
+  - name: institution_types
+    label: Types d'institution
+    label_singular: Type d'institution
+    identifier_field: name
+    folder: 'data/institution_types'
+    create: true
+    delete: false
+    editor:
+      preview: false
+    slug: '{{name}}'
+    extension: yml
+    fields:
+      - label: Nom de votre type d'institution
+        hint: Commune, EPCI, CAF, MSA, autres, etc.
+        name: name
+        widget: string
