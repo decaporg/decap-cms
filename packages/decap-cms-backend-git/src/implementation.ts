@@ -18,18 +18,32 @@ const corsProxy = 'https://cors.isomorphic-git.org';
 const dir = '/repo';
 let singleton: Promise<any>;
 
+function determineRepositoryURL(backend: any): string {
+  const name = backend.name as string; // TOOD consolidate CmsConfig and Config
+  if (name.startsWith('github')) {
+    return `https://github.com/${backend.repo}.git`;
+  } else if (name.startsWith('gitlab')) {
+    return `https://gitlab.com/${backend.repo}.git`;
+  } else if (name.startsWith('git-gateway')) {
+    return backend.repo!;
+  }
+  throw new Error("Can't determine repository URL");
+}
+
 export default function GitProxyBackEndGenerator(T: any) {
   class GitProxyBackend implements Implementation {
     backend: Implementation;
     config: Config;
     fs: any;
     pfs: any;
+    repositoryUrl: string;
     repository: Promise<any>;
     constructor(config: Config, options = {}) {
       this.backend = new T(config, options);
       this.config = config;
       this.fs = new FS('decapfs');
       this.pfs = this.fs.promises;
+      this.repositoryUrl = determineRepositoryURL(config.backend);
       if (!singleton) {
         singleton = this.getRepository();
       }
@@ -37,6 +51,7 @@ export default function GitProxyBackEndGenerator(T: any) {
     }
 
     async getRepository() {
+      const branch = this.config.backend.branch || 'main';
       try {
         await this.pfs.stat(dir);
       } catch (e) {
@@ -44,23 +59,30 @@ export default function GitProxyBackEndGenerator(T: any) {
         await git.init({
           fs: this.fs,
           dir,
-          defaultBranch: 'main',
+          defaultBranch: branch,
         });
       }
-      const fetchResult = await git.fetch({
+      await git.addRemote({
+        fs: this.fs,
+        dir,
+        url: this.repositoryUrl,
+        remote: 'origin',
+        force: true,
+      });
+      await git.fetch({
         fs: this.fs,
         http,
         dir,
         corsProxy,
-        url: 'https://github.com/betagouv/aides-jeunes',
-        ref: 'main',
+        remote: 'origin',
+        ref: branch,
         singleBranch: true,
         depth: 1,
       });
       await git.checkout({
         fs: this.fs,
         dir,
-        ref: fetchResult.fetchHead!,
+        ref: branch,
         force: true,
         track: false,
       });
