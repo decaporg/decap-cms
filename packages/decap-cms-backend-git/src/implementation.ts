@@ -2,16 +2,29 @@ import git from 'isomorphic-git';
 import http from 'isomorphic-git/http/web';
 import FS from '@isomorphic-git/lightning-fs';
 
-import type { Implementation, Config } from 'decap-cms-lib-util';
+import type {
+  AssetProxy,
+  Config,
+  Credentials,
+  Cursor,
+  Entry,
+  Implementation,
+  ImplementationFile,
+  PersistOptions,
+  User,
+} from 'decap-cms-lib-util';
 
 const corsProxy = 'https://cors.isomorphic-git.org';
 const dir = '/repo';
-let singleton;
+let singleton: Promise<any>;
 
-export default function GitProxyBackEndGenerator(T) {
+export default function GitProxyBackEndGenerator(T: any) {
   class GitProxyBackend implements Implementation {
     backend: Implementation;
     config: Config;
+    fs: any;
+    pfs: any;
+    repository: Promise<any>;
     constructor(config: Config, options = {}) {
       this.backend = new T(config, options);
       this.config = config;
@@ -46,9 +59,8 @@ export default function GitProxyBackEndGenerator(T) {
       });
       await git.checkout({
         fs: this.fs,
-        http,
         dir,
-        ref: fetchResult.fetchHead,
+        ref: fetchResult.fetchHead!,
         force: true,
         track: false,
       });
@@ -59,12 +71,13 @@ export default function GitProxyBackEndGenerator(T) {
       return true;
     }
 
-    async entriesByFolder(folder: string, extension: string, depth: number) {
+    async entriesByFolder(folder: string, extension: string) {
       try {
+        await this.repository;
         const files = await this.pfs.readdir(`${dir}/${folder}`);
-        const relevantFiles = files.filter(name => name.endsWith(extension));
+        const relevantFiles = files.filter((name: string) => name.endsWith(extension));
         return Promise.all(
-          relevantFiles.map(async filename => {
+          relevantFiles.map(async (filename: string) => {
             const path = `${folder}/${filename}`;
             const fullPath = `${dir}/${path}`;
             const data = await this.pfs.readFile(fullPath, 'utf8');
@@ -79,6 +92,7 @@ export default function GitProxyBackEndGenerator(T) {
       }
     }
     async getEntry(path: string) {
+      await this.repository;
       const data = await this.pfs.readFile(`${dir}/${path}`, 'utf8');
       return {
         file: { path, id: null },
@@ -86,74 +100,68 @@ export default function GitProxyBackEndGenerator(T) {
       };
     }
 
-    status(...args) {
-      return this.backend.status(...args);
+    status() {
+      return this.backend.status();
     }
-    authComponent(...args) {
-      return this.backend.authComponent(...args);
+    authComponent() {
+      return this.backend.authComponent();
     }
-    restoreUser(...args) {
-      return this.backend.restoreUser(...args);
+    restoreUser(user: User) {
+      return this.backend.restoreUser(user);
     }
-    authenticate(...args) {
-      return this.backend.authenticate(...args);
+    authenticate(credentials: Credentials) {
+      return this.backend.authenticate(credentials);
     }
     logout() {
-      return this.backend.logout(...args);
+      return this.backend.logout();
     }
-    getToken(...args) {
-      return this.backend.getToken(...args);
+    getToken() {
+      return this.backend.getToken();
     }
-    traverseCursor(...args) {
-      return this.backend.traverseCursor(...args);
+    traverseCursor(cursor: Cursor, action: string) {
+      return this.backend.traverseCursor!(cursor, action);
     }
-    entriesByFiles(...args) {
-      return this.backend.entriesByFiles(...args);
+    entriesByFiles(files: ImplementationFile[]) {
+      return this.backend.entriesByFiles(files);
     }
-    unpublishedEntries(...args) {
-      return this.backend.unpublishedEntries(...args);
+    unpublishedEntries() {
+      return this.backend.unpublishedEntries();
     }
-    unpublishedEntry(...args) {
-      return this.backend.unpublishedEntry(...args);
+    unpublishedEntry(args: { id?: string; collection?: string; slug?: string }) {
+      return this.backend.unpublishedEntry(args);
     }
-    unpublishedEntryDataFile(...args) {
-      return this.backend.unpublishedEntryDataFile(...args);
+    unpublishedEntryDataFile(collection: string, slug: string, path: string, id: string) {
+      return this.backend.unpublishedEntryDataFile(collection, slug, path, id);
     }
-    unpublishedEntryMediaFile(...args) {
-      return this.backend.unpublishedEntryMediaFile(...args);
+    unpublishedEntryMediaFile(collection: string, slug: string, path: string, id: string) {
+      return this.backend.unpublishedEntryMediaFile(collection, slug, path, id);
     }
     deleteUnpublishedEntry(collection: string, slug: string) {
       return this.backend.deleteUnpublishedEntry(collection, slug);
     }
-    addOrUpdateUnpublishedEntry(...args) {
-      return this.backend.addOrUpdateUnpublishedEntry(...args);
+    persistEntry(entry: Entry, opts: PersistOptions) {
+      return this.backend.persistEntry(entry, opts);
     }
-    persistEntry(...args) {
-      return this.backend.persistEntry(...args);
+    updateUnpublishedEntryStatus(collection: string, slug: string, newStatus: string) {
+      return this.backend.updateUnpublishedEntryStatus(collection, slug, newStatus);
     }
-    updateUnpublishedEntryStatus(...args) {
-      return this.backend.updateUnpublishedEntryStatus(...args);
+    publishUnpublishedEntry(collection: string, slug: string) {
+      return this.backend.publishUnpublishedEntry(collection, slug);
     }
-    publishUnpublishedEntry(...args) {
-      return this.backend.publishUnpublishedEntry(...args);
+    getMedia(folder?: string) {
+      return this.backend.getMedia(folder);
     }
-    getMedia(...args) {
-      return this.backend.getMedia(...args);
+    getMediaFile(path: string) {
+      return this.backend.getMediaFile(path);
     }
-    getMediaFile(...args) {
-      return this.backend.getMediaFile(...args);
+    persistMedia(file: AssetProxy, opts: PersistOptions) {
+      return this.backend.persistMedia(file, opts);
     }
-    normalizeAsset(...args) {
-      return this.backend.normalizeAsset(...args);
+    deleteFiles(paths: string[], commitMessage: string) {
+      return this.backend.deleteFiles(paths, commitMessage);
     }
-    persistMedia(...args) {
-      return this.backend.persistMedia(...args);
-    }
-    deleteFiles(...args) {
-      return this.backend.deleteFiles(...args);
-    }
-    getDeployPreview(...args) {
-      return this.backend.getDeployPreview(...args);
+    getDeployPreview(collectionName: string, slug: string) {
+      return this.backend.getDeployPreview(collectionName, slug);
     }
   }
   return GitProxyBackend;
