@@ -10,6 +10,7 @@ const StyledTextarea = styled(TextareaAutoSize)`
   border: none;
   outline: none;
   resize: none;
+  overflow: hidden;
   width: calc(100% + 32px);
   font-family: inherit;
   font-size: ${({ title }) => (title ? '2rem' : '1rem')};
@@ -33,6 +34,7 @@ function TextareaField({
   description,
   value,
   onChange,
+  focus,
   inline,
   error,
   errors,

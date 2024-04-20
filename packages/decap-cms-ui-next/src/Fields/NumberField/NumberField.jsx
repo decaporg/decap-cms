@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import { css } from '@emotion/react';
 
@@ -57,12 +57,14 @@ function NumberField({
   onChange,
   children,
   value,
+  focus,
   inline,
   error,
   errors,
   ...props
 }) {
   const ref = useRef(null);
+  const [inputFocus, setInputFocus] = useState();
 
   return (
     <Field
@@ -71,6 +73,7 @@ function NumberField({
       status={status}
       placeholder={placeholder}
       description={description}
+      focus={focus || inputFocus}
       inline={inline}
       error={error}
       errors={errors}
@@ -99,6 +102,8 @@ function NumberField({
         max={max}
         ref={ref}
         onChange={e => onChange(e)}
+        onFocus={() => setInputFocus(true)}
+        onBlur={() => setInputFocus(false)}
       />
       {children && children}
     </Field>
