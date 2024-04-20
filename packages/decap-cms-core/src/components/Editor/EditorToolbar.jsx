@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { translate } from 'react-polyglot';
 import { Link } from 'react-router-dom';
-import { colorsRaw, colors, buttons } from 'decap-cms-ui-default';
 import {
   AppBar,
   Button,
@@ -21,24 +19,6 @@ import {
 } from 'decap-cms-ui-next';
 
 import { status } from '../../constants/publishModes';
-
-const styles = {
-  noOverflow: css`
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  `,
-  toolbarSection: css`
-    height: 100%;
-    display: flex;
-    align-items: center;
-    border: 0 solid ${colors.textFieldBorder};
-  `,
-  publishedButton: css`
-    background-color: ${colorsRaw.tealLight};
-    color: ${colorsRaw.tealDark};
-  `,
-};
 
 const TooltipText = styled.div`
   visibility: hidden;
@@ -74,13 +54,6 @@ const TooltipContainer = styled.div`
   position: relative;
 `;
 
-const DropdownButton = styled(Button)`
-  ${styles.noOverflow}
-  @media (max-width: 1200px) {
-    padding-left: 10px;
-  }
-`;
-
 const ToolbarContainer = styled(AppBar)`
   height: 80px;
   padding: 0 1rem;
@@ -108,69 +81,6 @@ const BackArrow = styled(IconButton)`
 
 const StyledUserMenu = styled(UserMenu)`
   margin-left: 0.75rem;
-`;
-
-const ToolbarButton = styled(Button)`
-  @media (max-width: 1200px) {
-    padding: 0 10px;
-  }
-`;
-
-const DeleteButton = styled(ToolbarButton)`
-  ${buttons.lightRed};
-`;
-
-const PublishedToolbarButton = styled(DropdownButton)`
-  ${styles.publishedButton}
-`;
-
-const PublishedButton = styled(ToolbarButton)`
-  ${styles.publishedButton}
-`;
-
-const PublishButton = styled(DropdownButton)`
-  background-color: '${colorsRaw.teal}';
-`;
-
-const StatusButton = styled(DropdownButton)`
-  background-color: ${colorsRaw.tealLight};
-  color: ${colorsRaw.teal};
-`;
-
-const PreviewButtonContainer = styled.div`
-  margin-right: 12px;
-  color: ${colorsRaw.blue};
-  display: flex;
-  align-items: center;
-
-  a,
-  ${Icon} {
-    color: ${colorsRaw.blue};
-  }
-
-  ${Icon} {
-    position: relative;
-    top: 1px;
-  }
-`;
-
-const RefreshPreviewButton = styled.button`
-  background: none;
-  border: 0;
-  cursor: pointer;
-  color: ${colorsRaw.blue};
-
-  span {
-    margin-right: 6px;
-  }
-`;
-
-const PreviewLink = RefreshPreviewButton.withComponent('a');
-
-const StatusDropdownItem = styled(DropdownMenuItem)`
-  ${Icon} {
-    color: ${colors.infoText};
-  }
 `;
 
 const StyledScrollSyncIcon = styled(Icon)`
@@ -206,6 +116,12 @@ function EditorToolbar({
   onLogoutClick,
   deployPreview = {},
   loadDeployPreview,
+  previewEnabled,
+  previewVisible,
+  handleTogglePreview,
+  scrollSyncEnabled,
+  scrollSyncVisible,
+  handleToggleScrollSync,
   t,
   editorBackLink,
 }) {
@@ -223,11 +139,6 @@ function EditorToolbar({
         {!isNewEntry && !hasChanged
           ? renderExistingEntrySimplePublishControls({ canCreate })
           : renderNewEntrySimplePublishControls({ canCreate })}
-        <div>
-          {showDelete ? (
-            <DeleteButton onClick={onDelete}>{t('editor.editorToolbar.deleteEntry')}</DeleteButton>
-          ) : null}
-        </div>
       </>
     );
   }
@@ -240,20 +151,27 @@ function EditorToolbar({
     }
 
     const deployPreviewReady = status === 'SUCCESS' && !isFetching;
+
     return (
-      <PreviewButtonContainer>
+      <>
+        {previewEnabled && <DropdownMenuSeparator />}
+
         {deployPreviewReady ? (
-          <PreviewLink rel="noopener noreferrer" target="_blank" href={url}>
-            <span>{label}</span>
-            <Icon type="new-tab" size="xsmall" />
-          </PreviewLink>
+          <DropdownMenuItem
+            as={'a'}
+            icon="external-link"
+            target="_blank"
+            rel="noopener noreferrer"
+            href={url}
+          >
+            {label}
+          </DropdownMenuItem>
         ) : (
-          <RefreshPreviewButton onClick={loadDeployPreview}>
-            <span>{t('editor.editorToolbar.deployPreviewPendingButtonLabel')}</span>
-            <Icon type="refresh" size="xsmall" />
-          </RefreshPreviewButton>
+          <DropdownMenuItem icon="refresh" onClick={loadDeployPreview}>
+            {t('editor.editorToolbar.deployPreviewPendingButtonLabel')}
+          </DropdownMenuItem>
         )}
-      </PreviewButtonContainer>
+      </>
     );
   }
 
@@ -291,28 +209,34 @@ function EditorToolbar({
       <>
         <Dropdown>
           <DropdownTrigger>
-            <StatusButton>{buttonText}</StatusButton>
+            <Button hasMenu>{buttonText}</Button>
           </DropdownTrigger>
 
           <DropdownMenu>
-            <StatusDropdownItem
-              label={t('editor.editorToolbar.draft')}
+            <DropdownMenuItem
               onClick={() => onChangeStatus('DRAFT')}
-              icon={currentStatus === status.get('DRAFT') ? 'check' : null}
-            />
-            <StatusDropdownItem
-              label={t('editor.editorToolbar.inReview')}
+              icon="edit-3"
+              selected={currentStatus === status.get('DRAFT')}
+            >
+              {t('editor.editorToolbar.draft')}
+            </DropdownMenuItem>
+
+            <DropdownMenuItem
               onClick={() => onChangeStatus('PENDING_REVIEW')}
-              icon={currentStatus === status.get('PENDING_REVIEW') ? 'check' : null}
-            />
-            {useOpenAuthoring ? (
-              ''
-            ) : (
-              <StatusDropdownItem
-                label={t('editor.editorToolbar.ready')}
+              icon="hard-drive"
+              selected={currentStatus === status.get('PENDING_REVIEW')}
+            >
+              {t('editor.editorToolbar.inReview')}
+            </DropdownMenuItem>
+
+            {!useOpenAuthoring && (
+              <DropdownMenuItem
                 onClick={() => onChangeStatus('PENDING_PUBLISH')}
-                icon={currentStatus === status.get('PENDING_PUBLISH') ? 'check' : null}
-              />
+                icon="check"
+                selected={currentStatus === status.get('PENDING_PUBLISH')}
+              >
+                {t('editor.editorToolbar.ready')}
+              </DropdownMenuItem>
             )}
           </DropdownMenu>
         </Dropdown>
@@ -322,53 +246,62 @@ function EditorToolbar({
     );
   }
 
-  function renderNewEntryWorkflowPublishControls({ canCreate, canPublish }) {
-    return canPublish ? (
-      <Dropdown>
-        <DropdownTrigger>
-          <PublishButton>
-            {isPublishing
-              ? t('editor.editorToolbar.publishing')
-              : t('editor.editorToolbar.publish')}{' '}
-          </PublishButton>
-        </DropdownTrigger>
+  function renderNewEntryWorkflowPublishControls({ canCreate, canPublish, deleteLabel }) {
+    return (
+      canPublish && (
+        <Dropdown>
+          <DropdownTrigger>
+            <Button type="success" primary icon="radio" hasMenu>
+              {isPublishing
+                ? t('editor.editorToolbar.publishing')
+                : t('editor.editorToolbar.publish')}
+            </Button>
+          </DropdownTrigger>
 
-        <DropdownMenu anchorOrigin={{ y: 'bottom', x: 'right' }}>
-          <DropdownMenuItem icon="arrow" iconDirection="right" onClick={onPublish}>
-            {t('editor.editorToolbar.publishNow')}
-          </DropdownMenuItem>
+          <DropdownMenu anchorOrigin={{ y: 'bottom', x: 'right' }}>
+            <DropdownMenuItem icon="radio" onClick={onPublish}>
+              {t('editor.editorToolbar.publishNow')}
+            </DropdownMenuItem>
 
-          {canCreate ? (
-            <>
-              <DropdownMenuItem
-                label={t('editor.editorToolbar.publishAndCreateNew')}
-                icon="add"
-                onClick={onPublishAndNew}
-              />
-              <DropdownMenuItem
-                label={t('editor.editorToolbar.publishAndDuplicate')}
-                icon="add"
-                onClick={onPublishAndDuplicate}
-              />
-            </>
-          ) : null}
-        </DropdownMenu>
-      </Dropdown>
-    ) : (
-      ''
+            {canCreate && (
+              <>
+                <DropdownMenuItem icon="plus-circle" onClick={onPublishAndNew}>
+                  {t('editor.editorToolbar.publishAndCreateNew')}
+                </DropdownMenuItem>
+
+                <DropdownMenuItem icon="copy" onClick={onPublishAndDuplicate}>
+                  {t('editor.editorToolbar.publishAndDuplicate')}
+                </DropdownMenuItem>
+              </>
+            )}
+
+            {(!showDelete || useOpenAuthoring) &&
+            !hasUnpublishedChanges &&
+            !isModification ? null : (
+              <>
+                <DropdownMenuSeparator />
+
+                <DropdownMenuItem
+                  type="danger"
+                  icon="trash-2"
+                  onClick={hasUnpublishedChanges ? onDeleteUnpublishedChanges : onDelete}
+                >
+                  {isDeleting ? t('editor.editorToolbar.deleting') : deleteLabel}
+                </DropdownMenuItem>
+              </>
+            )}
+          </DropdownMenu>
+        </Dropdown>
+      )
     );
   }
 
-  function renderExistingEntryWorkflowPublishControls({ canCreate, canPublish, canDelete }) {
-    const deleteLabel =
-      (hasUnpublishedChanges &&
-        isModification &&
-        t('editor.editorToolbar.deleteUnpublishedChanges')) ||
-      (hasUnpublishedChanges &&
-        (isNewEntry || !isModification) &&
-        t('editor.editorToolbar.deleteUnpublishedEntry')) ||
-      (!hasUnpublishedChanges && !isModification && t('editor.editorToolbar.deletePublishedEntry'));
-
+  function renderExistingEntryWorkflowPublishControls({
+    canCreate,
+    canPublish,
+    canDelete,
+    deleteLabel,
+  }) {
     return canPublish || canCreate ? (
       <Dropdown>
         <DropdownTrigger>
@@ -411,61 +344,64 @@ function EditorToolbar({
   }
 
   function renderExistingEntrySimplePublishControls({ canCreate }) {
-    return canCreate ? (
+    return (
       <Dropdown>
         <DropdownTrigger>
-          <PublishedToolbarButton>{t('editor.editorToolbar.published')}</PublishedToolbarButton>
+          <Button type="success" primary icon="radio" hasMenu={canCreate || showDelete}>
+            {t('editor.editorToolbar.published')}
+          </Button>
         </DropdownTrigger>
 
         <DropdownMenu>
-          <DropdownMenuItem
-            label={t('editor.editorToolbar.duplicate')}
-            icon="add"
-            onClick={onDuplicate}
-          />
+          {canCreate && (
+            <DropdownMenuItem icon="copy" onClick={onDuplicate}>
+              {t('editor.editorToolbar.duplicate')}
+            </DropdownMenuItem>
+          )}
+
+          {showDelete && (
+            <>
+              {canCreate && <DropdownMenuSeparator />}
+
+              <DropdownMenuItem type="danger" icon="trash-2" onClick={onDelete}>
+                {t('editor.editorToolbar.deleteEntry')}
+              </DropdownMenuItem>
+            </>
+          )}
         </DropdownMenu>
       </Dropdown>
-    ) : (
-      <PublishedButton>{t('editor.editorToolbar.published')}</PublishedButton>
     );
   }
 
   function renderNewEntrySimplePublishControls({ canCreate }) {
     return (
-      <div>
-        <Dropdown
-          dropdownTopOverlap="40px"
-          dropdownWidth="150px"
-          renderButton={() => (
-            <PublishButton>
-              {isPersisting
-                ? t('editor.editorToolbar.publishing')
-                : t('editor.editorToolbar.publish')}
-            </PublishButton>
-          )}
-        >
-          <DropdownMenuItem
-            label={t('editor.editorToolbar.publishNow')}
-            icon="arrow"
-            iconDirection="right"
-            onClick={onPersist}
-          />
-          {canCreate ? (
+      <Dropdown>
+        <DropdownTrigger>
+          <Button type="success" primary icon="radio" hasMenu>
+            {isPersisting
+              ? t('editor.editorToolbar.publishing')
+              : t('editor.editorToolbar.publish')}
+          </Button>
+        </DropdownTrigger>
+
+        <DropdownMenu anchorOrigin={{ y: 'bottom', x: 'right' }}>
+          <DropdownMenuItem icon="radio" onClick={onPersist}>
+            {t('editor.editorToolbar.publishNow')}
+          </DropdownMenuItem>
+
+          {canCreate && (
             <>
-              <DropdownMenuItem
-                label={t('editor.editorToolbar.publishAndCreateNew')}
-                icon="add"
-                onClick={onPersistAndNew}
-              />
-              <DropdownMenuItem
-                label={t('editor.editorToolbar.publishAndDuplicate')}
-                icon="add"
-                onClick={onPersistAndDuplicate}
-              />
+              <DropdownMenuItem icon="plus-circle" onClick={onPersistAndNew}>
+                {t('editor.editorToolbar.publishAndCreateNew')}
+              </DropdownMenuItem>
+
+              <DropdownMenuItem icon="copy" onClick={onPersistAndDuplicate}>
+                {t('editor.editorToolbar.publishAndDuplicate')}
+              </DropdownMenuItem>
             </>
-          ) : null}
-        </Dropdown>
-      </div>
+          )}
+        </DropdownMenu>
+      </Dropdown>
     );
   }
 
@@ -480,23 +416,31 @@ function EditorToolbar({
     const canPublish = collection.get('publish') && !useOpenAuthoring;
     const canDelete = collection.get('delete', true);
 
+    const deleteLabel =
+      (hasUnpublishedChanges &&
+        isModification &&
+        t('editor.editorToolbar.deleteUnpublishedChanges')) ||
+      (hasUnpublishedChanges &&
+        (isNewEntry || !isModification) &&
+        t('editor.editorToolbar.deleteUnpublishedEntry')) ||
+      (!hasUnpublishedChanges && !isModification && t('editor.editorToolbar.deletePublishedEntry'));
+
     return [
-      <Button
-        disabled={!hasChanged}
-        key="save-button"
-        type="success"
-        primary
-        onClick={() => hasChanged && onPersist()}
-      >
+      <Button disabled={!hasChanged} key="save-button" onClick={() => hasChanged && onPersist()}>
         {isPersisting ? t('editor.editorToolbar.saving') : t('editor.editorToolbar.save')}
       </Button>,
       currentStatus
         ? [
             renderWorkflowStatusControls(),
-            renderNewEntryWorkflowPublishControls({ canCreate, canPublish }),
+            renderNewEntryWorkflowPublishControls({ canCreate, canPublish, deleteLabel }),
           ]
         : !isNewEntry &&
-          renderExistingEntryWorkflowPublishControls({ canCreate, canPublish, canDelete }),
+          renderExistingEntryWorkflowPublishControls({
+            canCreate,
+            canPublish,
+            canDelete,
+            deleteLabel,
+          }),
     ];
   }
 
@@ -521,32 +465,32 @@ function EditorToolbar({
         </DropdownTrigger>
 
         <DropdownMenu anchorOrigin={{ y: 'bottom', x: 'right' }}>
-          <DropdownMenuItem icon="eye">
-            {t('editor.editorInterface.togglePreview')}
-          </DropdownMenuItem>
-          <DropdownMenuItem icon={<StyledScrollSyncIcon name="maximize-2" />}>
-            {t('editor.editorInterface.toggleScrollSync')}
-          </DropdownMenuItem>
-        </DropdownMenu>
+          {previewEnabled && (
+            <>
+              <DropdownMenuItem
+                icon="eye"
+                selected={previewVisible}
+                disabled={!previewEnabled}
+                onClick={handleTogglePreview}
+              >
+                {t('editor.editorInterface.togglePreview')}
+              </DropdownMenuItem>
 
-        {/* {previewEnabled && (
-          <EditorToggle
-            isActive={previewVisible}
-            onClick={this.handleTogglePreview}
-            size="large"
-            type="eye"
-            title={t('editor.editorInterface.togglePreview')}
-          />
-        )}
-        {scrollSyncVisible && (
-          <EditorToggle
-            isActive={scrollSyncEnabled}
-            onClick={this.handleToggleScrollSync}
-            size="large"
-            type="scroll"
-            title={t('editor.editorInterface.toggleScrollSync')}
-          />
-        )} */}
+              <DropdownMenuItem
+                icon={<StyledScrollSyncIcon name="maximize-2" />}
+                selected={scrollSyncVisible && scrollSyncEnabled}
+                disabled={!scrollSyncVisible}
+                onClick={handleToggleScrollSync}
+              >
+                {t('editor.editorInterface.toggleScrollSync')}
+              </DropdownMenuItem>
+            </>
+          )}
+
+          {hasWorkflow
+            ? renderWorkflowDeployPreviewControls()
+            : renderSimpleDeployPreviewControls()}
+        </DropdownMenu>
       </Dropdown>
     );
   }
@@ -600,6 +544,12 @@ EditorToolbar.propTypes = {
   onLogoutClick: PropTypes.func.isRequired,
   deployPreview: PropTypes.object,
   loadDeployPreview: PropTypes.func.isRequired,
+  previewEnabled: PropTypes.bool,
+  previewVisible: PropTypes.bool,
+  handleTogglePreview: PropTypes.func.isRequired,
+  scrollSyncEnabled: PropTypes.bool,
+  scrollSyncVisible: PropTypes.bool,
+  handleToggleScrollSync: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   editorBackLink: PropTypes.string.isRequired,
 };

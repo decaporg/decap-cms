@@ -76,6 +76,7 @@ import PlusCircle from './icons/PlusCircle';
 import Plus from './icons/Plus';
 import Quote from './icons/Quote';
 import Radio from './icons/Radio';
+import Refresh from './icons/Refresh';
 import Save from './icons/Save';
 import Search from './icons/Search';
 import Server from './icons/Server';
@@ -174,6 +175,7 @@ export const iconComponents = {
   plus: Plus,
   quote: Quote,
   radio: Radio,
+  refresh: Refresh,
   save: Save,
   search: Search,
   server: Server,

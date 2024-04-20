@@ -351,9 +351,15 @@ class EditorInterface extends Component {
           isModification={isModification}
           currentStatus={currentStatus}
           onLogoutClick={onLogoutClick}
+          editorBackLink={editorBackLink}
           loadDeployPreview={loadDeployPreview}
           deployPreview={deployPreview}
-          editorBackLink={editorBackLink}
+          previewEnabled={previewEnabled}
+          previewVisible={previewVisible}
+          handleTogglePreview={this.handleTogglePreview}
+          scrollSyncVisible={scrollSyncVisible}
+          scrollSyncEnabled={scrollSyncEnabled}
+          handleToggleScrollSync={this.handleToggleScrollSync}
         />
         <Editor key={draftKey}>
           <ViewControls>
@@ -365,24 +371,6 @@ class EditorInterface extends Component {
                 type="page"
                 title={t('editor.editorInterface.toggleI18n')}
                 marginTop="70px"
-              />
-            )}
-            {previewEnabled && (
-              <EditorToggle
-                isActive={previewVisible}
-                onClick={this.handleTogglePreview}
-                size="large"
-                type="eye"
-                title={t('editor.editorInterface.togglePreview')}
-              />
-            )}
-            {scrollSyncVisible && (
-              <EditorToggle
-                isActive={scrollSyncEnabled}
-                onClick={this.handleToggleScrollSync}
-                size="large"
-                type="scroll"
-                title={t('editor.editorInterface.toggleScrollSync')}
               />
             )}
           </ViewControls>
