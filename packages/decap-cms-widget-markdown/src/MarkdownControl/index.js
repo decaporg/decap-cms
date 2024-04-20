@@ -159,6 +159,7 @@ export default class MarkdownControl extends React.Component {
           inline={inline}
           error={error}
           errors={errors}
+          noBorder={this.state.isFullscreen}
           isFullscreen={this.state.isFullscreen}
         >
           {mode === 'rich_text' ? visualEditor : rawEditor}

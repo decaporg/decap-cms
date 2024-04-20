@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
+import { css } from '@emotion/react';
+import color from 'color';
 import { List } from 'immutable';
 import {
   Button,
@@ -16,6 +18,7 @@ import ToolbarButton from './ToolbarButton';
 
 const ToolbarContainer = styled.div`
   display: flex;
+  background-color: ${({ theme }) => theme.color.background};
 `;
 
 const ToolbarButtonsStart = styled(ButtonGroup)`
@@ -32,6 +35,23 @@ const ToolbarSeparator = styled.div`
   height: 2rem;
   margin: 0 10px;
   background-color: ${({ theme }) => theme.color.border};
+`;
+
+const ModeButtonGroup = styled(ButtonGroup)`
+  ${({ theme }) => css`
+    background-color: ${color(theme.color.neutral['700']).alpha(0.1).string()};
+    border-radius: 8px;
+    margin: initial;
+  `}
+`;
+
+const ModeButton = styled(Button)`
+  ${({ theme, type }) => css`
+    color: ${type === 'success' ? theme.color.success['900'] : theme.color.highEmphasis};
+    background-color: ${type === 'success'
+      ? color(theme.color.success['900']).alpha(0.1).string()
+      : `transparent`};
+  `}
 `;
 
 export default class Toolbar extends React.Component {
@@ -268,24 +288,22 @@ export default class Toolbar extends React.Component {
           />
 
           {isShowModeToggle && (
-            <Dropdown>
-              <DropdownTrigger>
-                <Button hasMenu>
-                  {rawMode
-                    ? t('editor.editorWidgets.markdown.markdown')
-                    : t('editor.editorWidgets.markdown.richText')}
-                </Button>
-              </DropdownTrigger>
-
-              <DropdownMenu>
-                <DropdownMenuItem selected={!rawMode} onClick={onToggleMode}>
-                  {t('editor.editorWidgets.markdown.richText')}
-                </DropdownMenuItem>
-                <DropdownMenuItem selected={rawMode} onClick={onToggleMode}>
-                  {t('editor.editorWidgets.markdown.markdown')}
-                </DropdownMenuItem>
-              </DropdownMenu>
-            </Dropdown>
+            <ModeButtonGroup>
+              <ModeButton
+                type={!rawMode ? 'success' : undefined}
+                size="sm"
+                onClick={rawMode ? onToggleMode : undefined}
+              >
+                {t('editor.editorWidgets.markdown.richText')}
+              </ModeButton>
+              <ModeButton
+                type={rawMode ? 'success' : undefined}
+                size="sm"
+                onClick={!rawMode ? onToggleMode : undefined}
+              >
+                {t('editor.editorWidgets.markdown.markdown')}
+              </ModeButton>
+            </ModeButtonGroup>
           )}
         </ToolbarButtonsEnd>
       </ToolbarContainer>
