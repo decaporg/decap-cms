@@ -35,7 +35,7 @@ TopBarProgress.config({
 });
 
 const AppMainContainer = styled.div`
-  height: 100%;
+  height: calc(100% - 80px); /* 80px is the height of the header */
 `;
 
 const AppOuter = styled.div`
@@ -58,7 +58,6 @@ const AppContent = styled.div`
   flex: 1;
   height: 100%;
   max-height: 100%;
-  overflow-y: auto;
   position: relative;
 `;
 
