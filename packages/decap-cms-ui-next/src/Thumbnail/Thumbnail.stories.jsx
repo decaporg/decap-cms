@@ -5,6 +5,7 @@ import { useArgs } from '@storybook/preview-api';
 import { action } from '@storybook/addon-actions';
 
 import { Thumbnail, ThumbnailGrid } from '.';
+import { IconButton } from '../Buttons';
 import getMockData from '../utils/getMockData';
 
 export default {
@@ -37,11 +38,17 @@ function StoryThumbnail({ theme, ...args }) {
 }
 
 function ThumbnailStory({ theme, ...args }) {
-  const { previewImgBgColor } = args;
+  const { previewImgBgColor, renderAction } = args;
 
   if (!previewImgBgColor) args.previewImgBgColor = theme.color.disabled;
 
-  return <StoryThumbnail theme={theme} {...args} />;
+  return (
+    <StoryThumbnail
+      theme={theme}
+      {...args}
+      renderAction={renderAction ? () => <IconButton icon="more-vertical" /> : null}
+    />
+  );
 }
 
 const ThemedThumbnailStory = withTheme(ThumbnailStory);
@@ -186,6 +193,7 @@ _Thumbnail.args = {
   descriptionMaxLines: 3,
   subtitleMaxLines: 1,
 
+  renderAction: true,
   selectable: false,
   selected: false,
   horizontal: false,

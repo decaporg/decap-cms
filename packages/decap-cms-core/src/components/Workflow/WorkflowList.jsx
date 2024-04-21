@@ -6,21 +6,21 @@ import styled from '@emotion/styled';
 import dayjs from 'dayjs';
 import { translate } from 'react-polyglot';
 import color from 'color';
-import { Card, Icon } from 'decap-cms-ui-next';
+import { Card, Icon, Tag } from 'decap-cms-ui-next';
 
 import { status } from '../../constants/publishModes';
 import { DragSource, DropTarget, HTML5DragDrop } from '../UI';
 import WorkflowCard from './WorkflowCard';
-import { selectEntryCollectionTitle } from '../../reducers/collections';
+import { selectInferredField } from '../../reducers/collections';
 
 const WorkflowListContainer = styled.div`
   display: flex;
   flex-direction: row;
+  flex: 1;
   gap: 1rem;
 
   position: relative;
-  min-height: 100%;
-
+  overflow: hidden;
   scroll-snap-align: center;
 `;
 
@@ -30,21 +30,13 @@ const WorkflowListContainerOpenAuthoring = styled.div`
   grid-template-columns: 50% 50% 0%;
 `;
 
-const Column = styled.div`
+const Column = styled(Card)`
   height: 100%;
 
   display: flex;
   flex-direction: column;
   flex: 1;
-  gap: 0.65rem;
-`;
-
-const ColumnHeader = styled(Card)`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-
-  padding: 0.5rem 0.75rem;
+  /* gap: 1rem; */
 
   ${props =>
     props.name === 'draft' &&
@@ -71,57 +63,64 @@ const ColumnHeader = styled(Card)`
     `}
 `;
 
-const ColumnHeaderIcon = styled(Icon)`
-  margin-right: 0.5rem;
+const ColumnHeader = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+
+  margin: 1rem;
 `;
 
 const ColumnHeaderTitle = styled.h2`
   font-size: 1rem;
   font-weight: bold;
   margin: 0;
-  flex: 1;
   color: inherit;
+`;
 
-  /* ${props =>
+const ColumnSeparator = styled.hr`
+  border: none;
+  border-radius: 20px;
+  ${props =>
     props.name === 'draft' &&
     css`
-      color: ${props.theme.darkMode ? props.theme.color.pink[400] : props.theme.color.pink[900]};
+      border-top: 2px solid ${props.theme.color.blue[900]};
     `}
 
   ${props =>
     props.name === 'pending_review' &&
     css`
-      color: ${props.theme.darkMode
-        ? props.theme.color.yellow[400]
-        : props.theme.color.yellow[900]};
+      border-top: 2px solid ${props.theme.color.yellow[900]};
     `}
 
   ${props =>
     props.name === 'pending_publish' &&
     css`
-      color: ${props.theme.darkMode ? props.theme.color.green[400] : props.theme.color.green[900]};
-    `} */
-`;
-
-const ColumnHeaderCount = styled.p`
-  font-size: 2rem;
-  font-weight: 500;
-  line-height: initial;
-  margin-bottom: 0;
+      border-top: 2px solid ${props.theme.color.green[900]};
+    `}
+  margin: 0 1rem;
 `;
 
 const WorkflowContainer = styled.div`
   ${({ theme }) => css`
     flex: 1;
 
+    overflow-y: auto;
+    scrollbar-color: ${theme.color.primary[900]} transparent;
+    scrollbar-width: thin;
+    scrollbar-gutter: stable;
+    margin: 1rem 0.25rem 1rem 1rem;
+    padding-right: 0.25rem;
+
     display: flex;
     flex-direction: column;
+    gap: 1rem;
 
-    border-radius: 0.5rem;
-    padding: 0.5rem;
-    background-color: ${color(theme.color.neutral['900'])
+    /* border-radius: 0.5rem; */
+    /* background-color: ${color(theme.color.neutral['900'])
       .alpha(theme.darkMode ? 0.35 : 0.1)
-      .string()};
+      .string()}; */
   `}
 `;
 // This is a namespace so that we can only drop these elements on a DropTarget with the same
@@ -189,7 +188,7 @@ class WorkflowList extends React.Component {
     if (!entries) return null;
 
     if (!column) {
-      return entries.entrySeq().map(([currColumn, currEntries], idx) => (
+      return entries.entrySeq().map(([currColumn, currEntries]) => (
         <DropTarget
           namespace={DNDNamespace}
           key={currColumn}
@@ -198,16 +197,31 @@ class WorkflowList extends React.Component {
           {connect =>
             connect(
               <div style={{ flexBasis: '33.33333%' }}>
-                <Column>
-                  <ColumnHeader name={currColumn}>
-                    <ColumnHeaderIcon name={getColumnHeaderIconName(currColumn)} size={'lg'} />
+                <Column name={currColumn}>
+                  <ColumnHeader>
+                    <Icon name={getColumnHeaderIconName(currColumn)} size={'lg'} />
 
                     <ColumnHeaderTitle name={currColumn}>
                       {getColumnHeaderText(currColumn, this.props.t)}
                     </ColumnHeaderTitle>
 
-                    <ColumnHeaderCount>{currEntries.size}</ColumnHeaderCount>
+                    <Tag
+                      color={
+                        currColumn === 'draft'
+                          ? 'blue'
+                          : currColumn === 'pending_review'
+                          ? 'yellow'
+                          : 'green'
+                      }
+                    >
+                      {this.props.t('workflow.workflowList.currentEntries', {
+                        smart_count: currEntries.size,
+                      })}
+                    </Tag>
                   </ColumnHeader>
+
+                  <ColumnSeparator name={currColumn} />
+
                   {this.renderColumns(currEntries, currColumn)}
                 </Column>
               </div>,
@@ -235,6 +249,15 @@ class WorkflowList extends React.Component {
           const canPublish = ownStatus === status.last() && !entry.get('isPersisting', false);
           const postAuthor = entry.get('author');
 
+          const titleField = selectInferredField(collection, 'title');
+          const imageField = selectInferredField(collection, 'image');
+
+          const title = entry.getIn(['data', titleField]);
+          let image = entry.getIn(['data', imageField]);
+          if (image) {
+            image = encodeURI(image);
+          }
+
           return (
             <DragSource
               namespace={DNDNamespace}
@@ -248,7 +271,8 @@ class WorkflowList extends React.Component {
                   <div style={{ width: '100%' }}>
                     <WorkflowCard
                       collectionLabel={collectionLabel || collectionName}
-                      title={selectEntryCollectionTitle(collection, entry)}
+                      image={image}
+                      title={title}
                       authorLastChange={entry.getIn(['metaData', 'user'])}
                       body={entry.getIn(['data', 'body'])}
                       isModification={isModification}

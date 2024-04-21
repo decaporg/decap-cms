@@ -1,12 +1,18 @@
 import PropTypes from 'prop-types';
-import React, { Component, useState } from 'react';
+import React, { Component } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import { OrderedMap } from 'immutable';
 import { translate } from 'react-polyglot';
 import { connect } from 'react-redux';
 import { Loader, components } from 'decap-cms-ui-default';
-import { Button, Menu, MenuItem } from 'decap-cms-ui-next';
+import {
+  Button,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownMenuItem,
+} from 'decap-cms-ui-next';
 
 import { createNewEntry } from '../../actions/collections';
 import {
@@ -20,15 +26,17 @@ import { EDITORIAL_WORKFLOW, status } from '../../constants/publishModes';
 import WorkflowList from './WorkflowList';
 
 const WorkflowContainer = styled.div`
-  padding: 0 2rem;
-  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  height: 100%;
+  padding: 0 2rem 2rem 2rem;
 `;
 
 const WorkflowTop = styled.div`
   display: flex;
   justify-content: space-between;
-
-  margin-bottom: 1rem;
 `;
 
 const WorkflowTopHeading = styled.h1`
@@ -78,41 +86,33 @@ class Workflow extends Component {
 
     if (!isEditorialWorkflow) return null;
     if (isFetching) return <Loader active>{t('workflow.workflow.loading')}</Loader>;
-    const reviewCount = unpublishedEntries.get('pending_review').size;
-    const readyCount = unpublishedEntries.get('pending_publish').size;
 
     return (
       <WorkflowContainer>
         <WorkflowTop>
           <WorkflowTopHeading>{t('workflow.workflow.workflowHeading')}</WorkflowTopHeading>
 
-          <Button
-            onClick={event =>
-              this.setState({ newPostMenuAnchorEl: event ? event.currentTarget : null })
-            }
-            icon={'plus'}
-            hasMenu
-          >
-            {t('workflow.workflow.newPost')}
-          </Button>
+          <Dropdown>
+            <DropdownTrigger>
+              <Button icon={'plus'} type="success" primary hasMenu>
+                {t('workflow.workflow.newPost')}
+              </Button>
+            </DropdownTrigger>
 
-          <Menu
-            anchorEl={this.state.newPostMenuAnchorEl}
-            open={!!this.state.newPostMenuAnchorEl}
-            onClose={() => this.setState({ newPostMenuAnchorEl: null })}
-          >
-            {collections
-              .filter(collection => collection.get('create'))
-              .toList()
-              .map(collection => (
-                <MenuItem
-                  key={collection.get('name')}
-                  onClick={() => createNewEntry(collection.get('name'))}
-                >
-                  {collection.get('label_singular') || collection.get('label')}
-                </MenuItem>
-              ))}
-          </Menu>
+            <DropdownMenu>
+              {collections
+                .filter(collection => collection.get('create'))
+                .toList()
+                .map(collection => (
+                  <DropdownMenuItem
+                    key={collection.get('name')}
+                    onClick={() => createNewEntry(collection.get('name'))}
+                  >
+                    {collection.get('label_singular') || collection.get('label')}
+                  </DropdownMenuItem>
+                ))}
+            </DropdownMenu>
+          </Dropdown>
         </WorkflowTop>
 
         <WorkflowList

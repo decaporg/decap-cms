@@ -258,6 +258,13 @@ SelectIcon.defaultProps = {
   size: 'sm',
 };
 
+const ActionWrap = styled.div`
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 1;
+`;
+
 function Thumbnail({
   previewImgSrc,
   previewImgOpacity,
@@ -272,6 +279,7 @@ function Thumbnail({
   horizontal,
   selectable,
   selected,
+  renderAction,
   onSelect,
   onClick,
   supertitleMaxLines,
@@ -346,6 +354,7 @@ function Thumbnail({
           <SelectIcon />
         </SelectToggle>
       )}
+      <ActionWrap>{renderAction && renderAction()}</ActionWrap>
     </ThumbnailWrap>
   );
 }

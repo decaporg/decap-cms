@@ -1,60 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled from '@emotion/styled';
-import { css } from '@emotion/react';
 import { translate } from 'react-polyglot';
 import { Link } from 'react-router-dom';
-import { Card, Button } from 'decap-cms-ui-next';
-
-const WorkflowLink = styled(Link)`
-  display: block;
-  padding: 0 18px 18px;
-  height: 200px;
-  overflow: hidden;
-`;
-
-const CardCollection = styled.div`
-  color: ${({ theme }) => theme.color.mediumEmphasis};
-  text-transform: uppercase;
-  margin-top: 12px;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-`;
-
-const CardTitle = styled.h2`
-  margin: 28px 0 0;
-`;
-
-const CardDateContainer = styled.div`
-  color: ${({ theme }) => theme.color.mediumEmphasis};
-`;
-
-const CardBody = styled.p`
-  margin: 24px 0 0;
-  overflow-wrap: break-word;
-  word-break: break-word;
-  hyphens: auto;
-`;
-
-const CardButtonContainer = styled.div`
-  display: flex;
-  padding: 12px 18px;
-`;
-
-const DeleteButton = styled(Button)`
-  margin-right: 6px;
-`;
-
-const PublishButton = styled(Button)`
-  margin-left: 6px;
-`;
-
-const WorkflowCardContainer = styled(Card)`
-  margin-bottom: 24px;
-  position: relative;
-  overflow: hidden;
-`;
+import {
+  Thumbnail,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownMenuItem,
+  IconButton,
+} from 'decap-cms-ui-next';
 
 function lastChangePhraseKey(date, author) {
   if (date && author) {
@@ -66,17 +21,16 @@ function lastChangePhraseKey(date, author) {
   }
 }
 
-const CardDate = translate()(({ t, date, author }) => {
+const formatDateAuthor = translate()(({ t, date, author }) => {
   const key = lastChangePhraseKey(date, author);
   if (key) {
-    return (
-      <CardDateContainer>{t(`workflow.workflowCard.${key}`, { date, author })}</CardDateContainer>
-    );
+    return t(`workflow.workflowCard.${key}`, { date, author });
   }
 });
 
 function WorkflowCard({
   collectionLabel,
+  image,
   title,
   authorLastChange,
   body,
@@ -91,29 +45,42 @@ function WorkflowCard({
   t,
 }) {
   return (
-    <WorkflowCardContainer>
-      <WorkflowLink to={editLink}>
-        <CardCollection>{collectionLabel}</CardCollection>
-        {postAuthor}
-        <CardTitle>{title}</CardTitle>
-        {(timestamp || authorLastChange) && <CardDate date={timestamp} author={authorLastChange} />}
-        <CardBody>{body}</CardBody>
-      </WorkflowLink>
-      <CardButtonContainer>
-        <DeleteButton onClick={onDelete} type="danger">
-          {isModification
-            ? t('workflow.workflowCard.deleteChanges')
-            : t('workflow.workflowCard.deleteNewEntry')}
-        </DeleteButton>
-        {allowPublish && (
-          <PublishButton disabled={!canPublish} onClick={onPublish} type="success" primary>
-            {isModification
-              ? t('workflow.workflowCard.publishChanges')
-              : t('workflow.workflowCard.publishNewEntry')}
-          </PublishButton>
-        )}
-      </CardButtonContainer>
-    </WorkflowCardContainer>
+    <Thumbnail
+      as={Link}
+      to={editLink}
+      selectable={false}
+      supertitle={collectionLabel}
+      previewImgSrc={image}
+      horizontal={true}
+      title={title}
+      description={body}
+      subtitle={
+        { postAuthor } &&
+        (timestamp || authorLastChange) &&
+        formatDateAuthor({ date: timestamp, author: authorLastChange })
+      }
+      renderAction={() => (
+        <Dropdown>
+          <DropdownTrigger>
+            <IconButton icon="more-vertical" />
+          </DropdownTrigger>
+          <DropdownMenu>
+            {allowPublish && (
+              <DropdownMenuItem onClick={onPublish} icon="radio" disabled={!canPublish}>
+                {isModification
+                  ? t('workflow.workflowCard.publishChanges')
+                  : t('workflow.workflowCard.publishNewEntry')}
+              </DropdownMenuItem>
+            )}
+            <DropdownMenuItem onClick={onDelete} icon="trash-2" type="danger">
+              {isModification
+                ? t('workflow.workflowCard.deleteChanges')
+                : t('workflow.workflowCard.deleteNewEntry')}
+            </DropdownMenuItem>
+          </DropdownMenu>
+        </Dropdown>
+      )}
+    />
   );
 }
 

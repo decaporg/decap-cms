@@ -12,7 +12,10 @@ function DropdownProvider({ children }) {
   const triggerRef = useRef(null);
   const [open, setOpen] = useState(false);
 
-  function onOpenToggle() {
+  function onOpenToggle(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
     setOpen(!open);
   }
 
