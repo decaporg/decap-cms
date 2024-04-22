@@ -25,6 +25,11 @@ function determineRepositoryURL(backend: any): string {
   } else if (name.startsWith('gitlab')) {
     return `https://gitlab.com/${backend.repo}.git`;
   } else if (name.startsWith('git-gateway')) {
+    if (!backend.repo) {
+      throw new Error(
+        "Repository URL mandatory for 'git-gateway' configuration (https://[...]/repoName.git)",
+      );
+    }
     return backend.repo!;
   }
   throw new Error("Can't determine repository URL");
