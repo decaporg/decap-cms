@@ -320,6 +320,7 @@ function MediaDialog({ open, onClose }) {
             <TitleWrap>{activeSource.name}</TitleWrap>
             <CloseBtn icon="cross" onClick={onClose} />
           </DialogTitlebar>
+
           <DialogToolbar>
             <MediaSearchBar
               placeholder={placeholder}

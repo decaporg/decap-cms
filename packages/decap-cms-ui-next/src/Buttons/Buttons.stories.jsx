@@ -1,7 +1,7 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
 
-import { Button, ButtonGroup, IconButton, AvatarButton } from '.';
+import { Button, ButtonGroup, IconButton, AvatarButton, FileUploadButton } from '.';
 import { iconComponents } from '../Icon';
 
 export default {
@@ -148,4 +148,39 @@ _AvatarButton.args = {
   size: 'md',
   active: false,
   onClick: action('onClick'),
+};
+
+export function _FileUploadButton(args) {
+  return <FileUploadButton {...args} />;
+}
+
+_FileUploadButton.argTypes = {
+  label: {
+    control: 'text',
+  },
+  accept: {
+    control: 'select',
+    options: ['audio/*', 'image/*', 'video/*', '*/*'],
+  },
+  size: {
+    control: 'select',
+    options: ['sm', 'md', 'lg'],
+    mapping: {
+      md: null,
+    },
+  },
+  disabled: {
+    control: 'boolean',
+    table: {
+      defaultValue: { summary: 'false' },
+    },
+  },
+};
+
+_FileUploadButton.args = {
+  label: 'Upload File',
+  accept: 'image/*',
+  size: 'md',
+  disabled: false,
+  onChange: action('onChange'),
 };

@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 
-import MediaLibrarySearch from './MediaLibrarySearch';
-import MediaLibraryHeader from './MediaLibraryHeader';
+import MediaLibrarySearch from './Common/MediaSearchBar';
+import MediaLibraryHeader from './Common/MediaTitlebar';
 import {
   UploadButton,
   DeleteButton,

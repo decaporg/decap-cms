@@ -66,10 +66,10 @@ function CardWrapper(props) {
 }
 
 function VirtualizedGrid(props) {
-  const { mediaItems, setScrollContainerRef } = props;
+  const { mediaItems, scrollContainerRef } = props;
 
   return (
-    <CardGridContainer ref={setScrollContainerRef}>
+    <CardGridContainer ref={scrollContainerRef}>
       <AutoSizer>
         {({ height, width }) => {
           const cardWidth = parseInt(props.cardWidth, 10);
@@ -99,7 +99,7 @@ function VirtualizedGrid(props) {
 }
 
 function PaginatedGrid({
-  setScrollContainerRef,
+  scrollContainerRef,
   mediaItems,
   isSelectedFile,
   onAssetClick,
@@ -116,7 +116,7 @@ function PaginatedGrid({
   paginatingMessage,
 }) {
   return (
-    <CardGridContainer ref={setScrollContainerRef}>
+    <CardGridContainer ref={scrollContainerRef}>
       <CardGrid>
         {mediaItems.map(file => (
           <MediaLibraryCard
@@ -171,7 +171,6 @@ function MediaLibraryCardGrid(props) {
 }
 
 MediaLibraryCardGrid.propTypes = {
-  setScrollContainerRef: PropTypes.func.isRequired,
   mediaItems: PropTypes.arrayOf(
     PropTypes.shape({
       displayURL: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),

@@ -14,7 +14,8 @@ import { loginUser, logoutUser } from '../../actions/auth';
 import { currentBackend } from '../../backend';
 import { createNewEntry } from '../../actions/collections';
 import { openMediaLibrary } from '../../actions/mediaLibrary';
-import MediaLibrary from '../MediaLibrary/MediaLibrary';
+import MediaPage from '../MediaLibrary/MediaPage';
+import MediaDialog from '../MediaLibrary/MediaDialog';
 import { Notifications } from '../UI';
 import { history } from '../../routing/history';
 import { SIMPLE, EDITORIAL_WORKFLOW } from '../../constants/publishModes';
@@ -248,7 +249,7 @@ function App({
                   path="/search/:searchTerm"
                   render={props => <Collection t={t} {...props} isSearchResults />}
                 />
-                <Route path="/media" render={props => <MediaLibrary {...props} />} />
+                <Route path="/media" render={props => <MediaPage {...props} />} />
                 <RouteInCollection
                   path="/edit/:name/:entryName"
                   collections={collections}
@@ -259,7 +260,7 @@ function App({
                 />
                 <Route component={NotFoundPage} />
               </Switch>
-              {useMediaLibrary ? <MediaLibrary /> : null}
+              {useMediaLibrary ? <MediaDialog /> : null}
             </AppMainContainer>
           </AppContent>
         </AppBody>
