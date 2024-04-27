@@ -1,70 +1,27 @@
 import React from 'react';
-import { List } from 'immutable';
-import { css } from '@emotion/react';
-import styled from '@emotion/styled';
-import { connect } from 'react-redux';
-import { NavLink } from 'react-router-dom';
-import { dirname, sep } from 'path';
-import { stringTemplate } from 'decap-cms-lib-widgets';
-import { Icon, colors, components } from 'decap-cms-ui-default';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import { NavLink, useLocation } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { List } from 'immutable';
 import { sortBy } from 'lodash';
+import styled from '@emotion/styled';
+import { dirname, sep } from 'path';
+import { stringTemplate } from 'decap-cms-lib-widgets';
+import { NavMenuItem, Icon } from 'decap-cms-ui-next';
 
 import { selectEntries } from '../../reducers/entries';
 import { selectEntryCollectionTitle } from '../../reducers/collections';
 
 const { addFileTemplateFields } = stringTemplate;
 
-const NodeTitleContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
+const TreeNavLink = styled(NavMenuItem)`
+  padding-left: ${({ depth }) => depth * 16 + 12}px;
 `;
 
-const NodeTitle = styled.div`
-  margin-right: 4px;
-`;
-
-const Caret = styled.div`
-  position: relative;
-  top: 2px;
-`;
-
-const CaretDown = styled(Caret)`
-  ${components.caretDown};
-  color: currentColor;
-`;
-
-const CaretRight = styled(Caret)`
-  ${components.caretRight};
-  color: currentColor;
-  left: 2px;
-`;
-
-const TreeNavLink = styled(NavLink)`
-  display: flex;
-  font-size: 14px;
-  font-weight: 500;
-  align-items: center;
-  padding: 8px;
-  padding-left: ${props => props.depth * 16 + 18}px;
-  border-left: 2px solid #fff;
-
-  ${Icon} {
-    margin-right: 4px;
-    flex-shrink: 0;
-  }
-
-  ${props => css`
-    &:hover,
-    &:active,
-    &.${props.activeClassName} {
-      color: ${colors.active};
-      background-color: ${colors.activeBackground};
-      border-left-color: #4863c6;
-    }
-  `};
+const ExpandedNavLinkIcon = styled(Icon)`
+  transform: ${({ expanded }) => (expanded ? 'rotate(90deg)' : 'rotate(0deg)')};
+  transition: 200ms;
 `;
 
 function getNodeTitle(node) {
@@ -77,6 +34,8 @@ function getNodeTitle(node) {
 function TreeNode(props) {
   const { collection, treeData, depth = 0, onToggle } = props;
   const collectionName = collection.get('name');
+  const collectionIcon = collection.get('icon');
+  const { pathname } = useLocation();
 
   const sortedData = sortBy(treeData, getNodeTitle);
   return sortedData.map(node => {
@@ -96,18 +55,22 @@ function TreeNode(props) {
       <React.Fragment key={node.path}>
         <TreeNavLink
           exact
+          as={NavLink}
           to={to}
-          activeClassName="sidebar-active"
           onClick={() => onToggle({ node, expanded: !node.expanded })}
           depth={depth}
           data-testid={node.path}
+          active={pathname === to}
+          icon={collectionIcon}
+          endIcon={
+            hasChildren ? (
+              <ExpandedNavLinkIcon name="chevron-right" expanded={node.expanded} />
+            ) : null
+          }
         >
-          <Icon type="write" />
-          <NodeTitleContainer>
-            <NodeTitle>{title}</NodeTitle>
-            {hasChildren && (node.expanded ? <CaretDown /> : <CaretRight />)}
-          </NodeTitleContainer>
+          {title}
         </TreeNavLink>
+
         {node.expanded && (
           <TreeNode
             collection={collection}
@@ -242,7 +205,6 @@ export class NestedCollection extends React.Component {
   static propTypes = {
     collection: ImmutablePropTypes.map.isRequired,
     entries: ImmutablePropTypes.list.isRequired,
-    filterTerm: PropTypes.string,
   };
 
   constructor(props) {
@@ -255,12 +217,8 @@ export class NestedCollection extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { collection, entries, filterTerm } = this.props;
-    if (
-      collection !== prevProps.collection ||
-      entries !== prevProps.entries ||
-      filterTerm !== prevProps.filterTerm
-    ) {
+    const { collection, entries } = this.props;
+    if (collection !== prevProps.collection || entries !== prevProps.entries) {
       const expanded = {};
       walk(this.state.treeData, node => {
         if (node.expanded) {
@@ -269,7 +227,7 @@ export class NestedCollection extends React.Component {
       });
       const treeData = getTreeData(collection, entries);
 
-      const path = `/${filterTerm}`;
+      const path = '/';
       walk(treeData, node => {
         if (expanded[node.path] || (this.state.useFilter && path.startsWith(node.path))) {
           node.expanded = true;

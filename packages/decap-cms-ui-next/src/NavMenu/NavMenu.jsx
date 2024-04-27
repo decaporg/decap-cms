@@ -28,7 +28,6 @@ const NavWrap = styled(Card)`
   }
   ${NavItemContents} {
     width: 13.5rem;
-    min-width: 13.5rem;
   }
   ${({ collapsed }) =>
     collapsed

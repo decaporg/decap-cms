@@ -27,6 +27,7 @@ const StyledUserMenu = styled(UserMenu)`
 
 const RenderEndWrap = styled.div`
   display: flex;
+  align-items: center;
   gap: 1rem;
   flex: 1;
 `;

@@ -86,7 +86,7 @@ export const NavItemContents = styled.span`
   width: 100%;
 `;
 
-function NavMenuItem({ icon, children, className, href, active, onClick, ...props }) {
+function NavMenuItem({ icon, endIcon, children, className, href, active, onClick, ...props }) {
   const { navCollapsed } = useUIContext();
 
   return (
@@ -111,6 +111,7 @@ function NavMenuItem({ icon, children, className, href, active, onClick, ...prop
               {icon && React.isValidElement(icon) ? icon : <Icon name={icon} />}
               <Label collapsed={navCollapsed}>{children}</Label>
               {href && <ExternalLinkIcon />}
+              {endIcon ? React.isValidElement(endIcon) ? endIcon : <Icon name={endIcon} /> : null}
             </NavItemContents>
           </NavMenuItemInside>
         </NavMenuLink>

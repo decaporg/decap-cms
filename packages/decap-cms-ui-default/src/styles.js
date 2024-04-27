@@ -316,14 +316,14 @@ const components = {
     margin-bottom: 28px;
   `,
   cardTopHeading: css`
-    font-size: 22px;
+    /* font-size: 22px; */
     font-weight: 600;
     line-height: 37px;
     margin: 0;
     padding: 0;
   `,
   cardTopDescription: css`
-    max-width: 480px;
+    /* max-width: 480px; */
     color: ${colors.text};
     font-size: 14px;
     margin-top: 8px;

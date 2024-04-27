@@ -16,7 +16,7 @@ const StyledTextarea = styled(TextareaAutoSize)`
   font-size: ${({ title }) => (title ? '2rem' : '1rem')};
   font-weight: ${({ title }) => (title ? 'bold' : 'normal')};
   letter-spacing: ${({ title }) => (title ? '-0.5px' : '0')};
-  line-height: 1rem;
+  line-height: 1.5rem;
   caret-color: ${({ theme, error }) =>
     error ? theme.color.danger['900'] : theme.color.primary['800']};
   margin: -2rem -1rem -1rem -1rem;

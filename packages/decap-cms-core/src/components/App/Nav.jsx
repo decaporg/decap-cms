@@ -10,6 +10,8 @@ import {
   DecapMark,
 } from 'decap-cms-ui-next';
 
+import NestedCollection from '../Collection/NestedCollection';
+
 const StyledCustomLogo = styled.img`
   width: 20px;
   margin: 0.375rem;
@@ -102,6 +104,14 @@ function Nav({
 
         {startCollections.map(collection => {
           const collectionName = collection.get('name');
+
+          if (collection.has('nested')) {
+            return (
+              <li key={collectionName}>
+                <NestedCollection collection={collection} data-testid={collectionName} />
+              </li>
+            );
+          }
 
           return (
             <NavMenuItem

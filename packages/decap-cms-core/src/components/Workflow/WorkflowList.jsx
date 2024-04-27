@@ -77,6 +77,8 @@ const ColumnHeaderTitle = styled.h2`
   font-weight: bold;
   margin: 0;
   color: inherit;
+
+  flex: 1;
 `;
 
 const ColumnSeparator = styled.hr`
@@ -116,11 +118,6 @@ const WorkflowContainer = styled.div`
     display: flex;
     flex-direction: column;
     gap: 1rem;
-
-    /* border-radius: 0.5rem; */
-    /* background-color: ${color(theme.color.neutral['900'])
-      .alpha(theme.darkMode ? 0.35 : 0.1)
-      .string()}; */
   `}
 `;
 // This is a namespace so that we can only drop these elements on a DropTarget with the same

@@ -3,18 +3,12 @@ import React from 'react';
 import styled from '@emotion/styled';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { translate } from 'react-polyglot';
-import { Loader, lengths } from 'decap-cms-ui-default';
+import { Loader } from 'decap-cms-ui-default';
 
 import EntryListing from './EntryListing';
 
-const PaginationMessage = styled.div`
-  width: ${lengths.topCardWidth};
-  padding: 16px;
-  text-align: center;
-`;
-
-const NoEntriesMessage = styled(PaginationMessage)`
-  margin-top: 16px;
+const PaginationMessage = styled.p`
+  margin: 0 2rem 2rem 2rem;
 `;
 
 function Entries({
@@ -56,7 +50,7 @@ function Entries({
     );
   }
 
-  return <NoEntriesMessage>{t('collection.entries.noEntries')}</NoEntriesMessage>;
+  return <PaginationMessage>{t('collection.entries.noEntries')}</PaginationMessage>;
 }
 
 Entries.propTypes = {

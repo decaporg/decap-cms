@@ -1,11 +1,10 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import { translate } from 'react-polyglot';
-import { lengths } from 'decap-cms-ui-default';
 import PropTypes from 'prop-types';
 
 const NotFoundContainer = styled.div`
-  margin: ${lengths.pageMargin};
+  margin: 0 2rem 2rem 2rem;
 `;
 
 function NotFoundPage({ t }) {
