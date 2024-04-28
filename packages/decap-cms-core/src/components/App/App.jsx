@@ -229,6 +229,8 @@ function App({
                   to={defaultPath}
                 />
                 {hasWorkflow ? <Route path="/workflow" component={Workflow} /> : null}
+                <Route path="/media" render={props => <MediaPage {...props} />} />
+
                 <RouteInCollection
                   exact
                   collections={collections}
@@ -245,11 +247,20 @@ function App({
                   collections={collections}
                   render={props => <Editor {...props} />}
                 />
+                <RouteInCollection
+                  path="/collections/:name/search/:searchTerm"
+                  collections={collections}
+                  render={props => <Collection {...props} isSearchResults isSingleSearchResult />}
+                />
+                <RouteInCollection
+                  collections={collections}
+                  path="/collections/:name/filter/:filterTerm*"
+                  render={props => <Collection {...props} />}
+                />
                 <Route
                   path="/search/:searchTerm"
                   render={props => <Collection t={t} {...props} isSearchResults />}
                 />
-                <Route path="/media" render={props => <MediaPage {...props} />} />
                 <RouteInCollection
                   path="/edit/:name/:entryName"
                   collections={collections}
