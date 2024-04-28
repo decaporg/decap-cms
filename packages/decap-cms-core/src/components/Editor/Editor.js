@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
-import { Loader } from 'decap-cms-ui-default';
+import { Loader } from 'decap-cms-ui-next';
 import { translate } from 'react-polyglot';
 import { debounce } from 'lodash';
 
@@ -371,7 +371,7 @@ export class Editor extends React.Component {
       entryDraft.get('entry') === undefined ||
       (entry && entry.get('isFetching'))
     ) {
-      return <Loader active>{t('editor.editor.loadingEntry')}</Loader>;
+      return <Loader>{t('editor.editor.loadingEntry')}</Loader>;
     }
 
     return (

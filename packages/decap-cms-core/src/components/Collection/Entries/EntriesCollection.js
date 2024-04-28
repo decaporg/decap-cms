@@ -6,7 +6,6 @@ import styled from '@emotion/styled';
 import { translate } from 'react-polyglot';
 import { partial } from 'lodash';
 import { Cursor } from 'decap-cms-lib-util';
-import { colors } from 'decap-cms-ui-default';
 
 import {
   loadEntries as actionLoadEntries,

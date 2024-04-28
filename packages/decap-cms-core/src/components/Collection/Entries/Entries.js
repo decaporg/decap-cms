@@ -3,7 +3,7 @@ import React from 'react';
 import styled from '@emotion/styled';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { translate } from 'react-polyglot';
-import { Loader } from 'decap-cms-ui-default';
+import { Loader } from 'decap-cms-ui-next';
 
 import EntryListing from './EntryListing';
 
@@ -28,7 +28,7 @@ function Entries({
   ];
 
   if (isFetching && page === undefined) {
-    return <Loader active>{loadingMessages}</Loader>;
+    return <Loader>{loadingMessages}</Loader>;
   }
 
   const hasEntries = (entries && entries.size > 0) || cursor?.actions?.has('append_next');

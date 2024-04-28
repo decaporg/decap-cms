@@ -7,7 +7,7 @@ import styled from '@emotion/styled';
 import { connect } from 'react-redux';
 import { Route, Switch, Redirect, useLocation } from 'react-router-dom';
 import TopBarProgress from 'react-topbar-progress-indicator';
-import { Loader, colors } from 'decap-cms-ui-default';
+import { Loader, lightTheme } from 'decap-cms-ui-next';
 
 import { loadConfig } from '../../actions/config';
 import { loginUser, logoutUser } from '../../actions/auth';
@@ -28,8 +28,8 @@ import Header from './Header';
 
 TopBarProgress.config({
   barColors: {
-    0: colors.active,
-    '1.0': colors.active,
+    0: lightTheme.color.primary['900'],
+    '1.0': lightTheme.color.primary['900'],
   },
   shadowBlur: 0,
   barThickness: 2,
@@ -182,7 +182,7 @@ function App({
   }
 
   if (config.isFetching) {
-    return <Loader active>{t('app.app.loadingConfig')}</Loader>;
+    return <Loader>{t('app.app.loadingConfig')}</Loader>;
   }
 
   if (user == null) {

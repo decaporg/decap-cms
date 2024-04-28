@@ -18,6 +18,7 @@ export { default as Icon, iconComponents } from './Icon';
 export { default as Label } from './Label';
 export { default as LazyLoadModule } from './LazyLoadModule';
 export { default as LinearProgress } from './LinearProgress';
+export { default as Loader } from './Loader';
 export * from './Logos';
 export { default as MediaDialog } from './MediaDialog';
 // export * from './Menu';
@@ -41,6 +42,7 @@ export { default as Tree } from './Tree';
 export * from './UIContext';
 export { default as UserMenu } from './UserMenu';
 
+export * from './AlertDialogProvider';
 export * from './hooks';
 export { isWindowDown, isWindowUp } from './utils/responsive';
 export * from './WindowDimensionsProvider';

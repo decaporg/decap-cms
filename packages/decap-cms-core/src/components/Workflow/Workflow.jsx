@@ -5,13 +5,14 @@ import styled from '@emotion/styled';
 import { OrderedMap } from 'immutable';
 import { translate } from 'react-polyglot';
 import { connect } from 'react-redux';
-import { Loader, components } from 'decap-cms-ui-default';
+import { components } from 'decap-cms-ui-default';
 import {
   Button,
   Dropdown,
   DropdownTrigger,
   DropdownMenu,
   DropdownMenuItem,
+  Loader,
 } from 'decap-cms-ui-next';
 
 import { createNewEntry } from '../../actions/collections';
@@ -85,7 +86,7 @@ class Workflow extends Component {
     } = this.props;
 
     if (!isEditorialWorkflow) return null;
-    if (isFetching) return <Loader active>{t('workflow.workflow.loading')}</Loader>;
+    if (isFetching) return <Loader>{t('workflow.workflow.loading')}</Loader>;
 
     return (
       <WorkflowContainer>

@@ -7,7 +7,6 @@ import { translate } from 'react-polyglot';
 import { lengths, components } from 'decap-cms-ui-default';
 
 import { getNewEntryUrl } from '../../lib/urlHelper';
-import Sidebar from './Sidebar';
 import CollectionTop from './CollectionTop';
 import EntriesCollection from './Entries/EntriesCollection';
 import EntriesSearch from './Entries/EntriesSearch';
@@ -110,13 +109,6 @@ export class Collection extends React.Component {
 
     return (
       <CollectionContainer>
-        {/* <Sidebar
-          collections={collections}
-          collection={(!isSearchResults || isSingleSearchResult) && collection}
-          isSearchEnabled={isSearchEnabled}
-          searchTerm={searchTerm}
-          filterTerm={filterTerm}
-        /> */}
         <CollectionMain>
           {isSearchResults ? (
             <SearchResultContainer>

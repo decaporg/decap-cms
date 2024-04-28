@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import styled from '@emotion/styled';
 import { Waypoint } from 'react-waypoint';
 import { Map } from 'immutable';
 
@@ -47,8 +46,6 @@ export default class EntryListing extends React.Component {
     const { collections, entries, viewStyle } = this.props;
     const inferredFields = this.inferFields(collections);
     const entryCardProps = { collection: collections, inferredFields };
-
-    // return entries.map((entry, idx) => <EntryCard {...entryCardProps} entry={entry} key={idx} />);
 
     if (viewStyle === VIEW_STYLE_LIST) {
       return <EntriesTable {...entryCardProps} entries={entries} />;
