@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { ClassNames } from '@emotion/react';
 import styled from '@emotion/styled';
-import { lengths, fonts } from 'decap-cms-ui-default';
+import { lengths } from 'decap-cms-ui-default';
+import { fonts } from 'decap-cms-ui-next';
 import { createEditor } from 'slate';
 import { Editable, ReactEditor, Slate, withReact } from 'slate-react';
 import { withHistory } from 'slate-history';
@@ -29,8 +30,13 @@ function rawEditorStyles({ minimal }) {
 const RawEditorContainer = styled.div`
   position: relative;
 `;
+
+const StyledEditable = styled(Editable)`
+  padding: 16px 20px 0;
+`;
+
 function RawEditor(props) {
-  const { className, field, isShowModeToggle, t, onChange } = props;
+  const { field, isShowModeToggle, t, onChange } = props;
 
   const editor = useMemo(() => withReact(withHistory(createEditor())), []);
 
@@ -70,9 +76,8 @@ function RawEditor(props) {
         </EditorControlBar>
         <ClassNames>
           {({ css, cx }) => (
-            <Editable
+            <StyledEditable
               className={cx(
-                className,
                 css`
                   ${rawEditorStyles({ minimal: field.get('minimal') })}
                 `,
