@@ -139,7 +139,7 @@ class DateTimeControl extends React.Component {
       this.onChange(formattedValue);
     }
 
-    this.setState({ value });
+    this.setState({ value: datetime });
   };
 
   onInputChange = e => {
