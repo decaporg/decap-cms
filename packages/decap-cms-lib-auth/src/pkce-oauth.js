@@ -13,7 +13,7 @@ async function sha256(text) {
 
 // based on https://github.com/auth0/auth0-spa-js/blob/9a83f698127eae7da72691b0d4b1b847567687e3/src/utils.ts#L147
 function generateVerifierCode() {
-  // characters that can be used for codeVerifer
+  // characters that can be used for codeVerifier
   // excludes _~ as if included would cause an uneven distribution as char.length would no longer be a factor of 256
   const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-.';
   const randomValues = Array.from(window.crypto.getRandomValues(new Uint8Array(128)));
@@ -53,6 +53,7 @@ export default class PkceAuthenticator {
     const authTokenEndpoint = trim(config.auth_token_endpoint, '/');
     this.auth_url = `${baseURL}/${authEndpoint}`;
     this.auth_token_url = `${baseURL}/${authTokenEndpoint}`;
+    this.auth_token_endpoint_content_type = config.auth_token_endpoint_content_type;
     this.appID = config.app_id;
   }
 
@@ -92,7 +93,13 @@ export default class PkceAuthenticator {
       return;
     }
 
-    const { nonce } = JSON.parse(params.get('state'));
+    let nonce;
+    try {
+      nonce = JSON.parse(params.get('state')).nonce;
+    } catch (SyntaxError) {
+      nonce = JSON.parse(params.get('state').replace(/\\"/g, '"')).nonce;
+    }
+
     const validNonce = validateNonce(nonce);
     if (!validNonce) {
       return cb(new Error('Invalid nonce'));
@@ -106,24 +113,27 @@ export default class PkceAuthenticator {
       const code = params.get('code');
       const authURL = new URL(this.auth_token_url);
 
+      const token_request_body_object = {
+        client_id: this.appID,
+        code,
+        grant_type: 'authorization_code',
+        redirect_uri: document.location.origin + document.location.pathname,
+        code_verifier: getCodeVerifier(),
+      };
+
       const response = await fetch(authURL.href, {
         method: 'POST',
-        body: JSON.stringify({
-          client_id: this.appID,
-          code,
-          grant_type: 'authorization_code',
-          redirect_uri: document.location.origin + document.location.pathname,
-          code_verifier: getCodeVerifier(),
-        }),
+        body: this.auth_token_endpoint_content_type.startsWith('application/x-www-form-urlencoded')
+          ? new URLSearchParams(Object.entries(token_request_body_object)).toString()
+          : JSON.stringify(token_request_body_object),
         headers: {
-          'Content-Type': 'application/json; charset=utf-8',
+          'Content-Type': this.auth_token_endpoint_content_type,
         },
       });
       const data = await response.json();
 
       //no need for verifier code so remove
       clearCodeVerifier();
-
       cb(null, { token: data.access_token, ...data });
     }
   }

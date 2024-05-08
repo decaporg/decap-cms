@@ -31,7 +31,7 @@ const SearchInput = styled.input`
   background-color: #eff0f4;
   border-radius: ${lengths.borderRadius};
   font-size: 14px;
-  padding: 10px 6px 10px 32px;
+  padding: 10px 6px 10px 34px;
   width: 100%;
   position: relative;
   z-index: ${zIndex.zIndex1};
@@ -62,7 +62,7 @@ const Suggestions = styled.ul`
 `;
 
 const SuggestionHeader = styled.li`
-  padding: 0 6px 6px 32px;
+  padding: 0 6px 6px 34px;
   font-size: 12px;
   color: ${colors.text};
 `;
@@ -71,7 +71,7 @@ const SuggestionItem = styled.li(
   ({ isActive }) => `
   color: ${isActive ? colors.active : colorsRaw.grayDark};
   background-color: ${isActive ? colors.activeBackground : 'inherit'};
-  padding: 6px 6px 6px 32px;
+  padding: 6px 6px 6px 34px;
   cursor: pointer;
   position: relative;
 

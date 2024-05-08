@@ -25,6 +25,7 @@ export default class GiteaAuthenticationPage extends React.Component {
       auth_endpoint: 'login/oauth/authorize',
       app_id,
       auth_token_endpoint: 'login/oauth/access_token',
+      auth_token_endpoint_content_type: 'application/json; charset=utf-8',
     });
     // Complete authentication if we were redirected back to from the provider.
     this.auth.completeAuth((err, data) => {
@@ -55,8 +56,8 @@ export default class GiteaAuthenticationPage extends React.Component {
         onLogin={this.handleLogin}
         loginDisabled={inProgress}
         loginErrorMessage={this.state.loginError}
-        logoUrl={config.logoUrl}
-        siteUrl={config.siteUrl}
+        logoUrl={config.logo_url}
+        siteUrl={config.site_url}
         renderButtonContent={() => (
           <React.Fragment>
             <LoginButtonIcon type="gitea" />{' '}

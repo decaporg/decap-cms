@@ -13,11 +13,30 @@ const LoginButtonIcon = styled(Icon)`
 `;
 
 const clientSideAuthenticators = {
-  pkce: ({ base_url, auth_endpoint, app_id, auth_token_endpoint }) =>
-    new PkceAuthenticator({ base_url, auth_endpoint, app_id, auth_token_endpoint }),
+  pkce: ({
+    base_url,
+    auth_endpoint,
+    app_id,
+    auth_token_endpoint}) =>
+    new PkceAuthenticator({
+      base_url,
+      auth_endpoint,
+      app_id,
+      auth_token_endpoint,
+      auth_token_endpoint_content_type: 'application/json; charset=utf-8',
+    }),
 
-  implicit: ({ base_url, auth_endpoint, app_id, clearHash }) =>
-    new ImplicitAuthenticator({ base_url, auth_endpoint, app_id, clearHash }),
+  implicit: ({
+    base_url,
+    auth_endpoint,
+    app_id,
+    clearHash }) =>
+    new ImplicitAuthenticator({
+      base_url,
+      auth_endpoint,
+      app_id,
+      clearHash,
+    }),
 };
 
 export default class GitLabAuthenticationPage extends React.Component {

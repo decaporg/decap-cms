@@ -20,7 +20,7 @@ const ListCard = styled.li`
 const ListCardLink = styled(Link)`
   display: block;
   max-width: 100%;
-  padding: 16px 22px;
+  padding: 16px 20px;
 
   &:hover {
     background-color: ${colors.foreground};
@@ -63,7 +63,7 @@ const CardHeading = styled.h2`
 `;
 
 const CardBody = styled.div`
-  padding: 16px 22px;
+  padding: 16px 20px;
   height: 90px;
   position: relative;
   margin-bottom: ${props => props.hasImage && 0};
@@ -125,11 +125,11 @@ function EntryCard({
 }
 
 function mapStateToProps(state, ownProps) {
-  const { entry, inferedFields, collection } = ownProps;
+  const { entry, inferredFields, collection } = ownProps;
   const entryData = entry.get('data');
   const summary = selectEntryCollectionTitle(collection, entry);
 
-  let image = entryData.get(inferedFields.imageField);
+  let image = entryData.get(inferredFields.imageField);
   if (image) {
     image = encodeURI(image);
   }
@@ -142,7 +142,7 @@ function mapStateToProps(state, ownProps) {
     image,
     imageFolder: collection
       .get('fields')
-      ?.find(f => f.get('name') === inferedFields.imageField && f.get('widget') === 'image'),
+      ?.find(f => f.get('name') === inferredFields.imageField && f.get('widget') === 'image'),
     isLoadingAsset,
   };
 }

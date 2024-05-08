@@ -102,7 +102,14 @@ function LabelComponent({ field, isActive, hasErrors, uniqueFieldId, isFieldOpti
   const label = `${field.get('label', field.get('name'))}`;
   const labelComponent = (
     <FieldLabel isActive={isActive} hasErrors={hasErrors} htmlFor={uniqueFieldId}>
-      {label} {`${isFieldOptional ? ` (${t('editor.editorControl.field.optional')})` : ''}`}
+      {isFieldOptional ? (
+        <>
+          {label}
+          <span>{` (${t('editor.editorControl.field.optional')})`}</span>
+        </>
+      ) : (
+        label
+      )}
     </FieldLabel>
   );
 
@@ -147,6 +154,7 @@ class EditorControl extends React.Component {
     isFieldDuplicate: PropTypes.func,
     isFieldHidden: PropTypes.func,
     locale: PropTypes.string,
+    isParentListCollapsed: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -210,6 +218,7 @@ class EditorControl extends React.Component {
       isFieldDuplicate,
       isFieldHidden,
       locale,
+      isParentListCollapsed,
     } = this.props;
 
     const widgetName = field.get('widget');
@@ -332,6 +341,7 @@ class EditorControl extends React.Component {
               isFieldHidden={isFieldHidden}
               isLoadingAsset={isLoadingAsset}
               locale={locale}
+              isParentListCollapsed={isParentListCollapsed}
             />
             {fieldHint && (
               <ControlHint active={isSelected || this.state.styleActive} error={hasErrors}>
