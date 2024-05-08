@@ -69,7 +69,6 @@ describe('ListControl', () => {
       return id++;
     });
   });
-
   it('should render empty list', () => {
     const field = fromJS({ name: 'list', label: 'List' });
     const { asFragment } = render(<ListControl {...props} field={field} />);
@@ -97,7 +96,7 @@ describe('ListControl', () => {
         fields: [{ name: 'title', widget: 'string', label: 'Title' }],
       },
     });
-    const { asFragment, getByTestId, queryByTestId } = render(
+    const { asFragment, getByTestId } = render(
       <ListControl
         {...props}
         field={field}
@@ -108,8 +107,8 @@ describe('ListControl', () => {
     expect(getByTestId('styled-list-item-top-bar-0')).toHaveAttribute('collapsed', 'true');
     expect(getByTestId('styled-list-item-top-bar-1')).toHaveAttribute('collapsed', 'true');
 
-    expect(queryByTestId('object-control-0')).toBeNull();
-    expect(queryByTestId('object-control-1')).toBeNull();
+    expect(getByTestId('object-control-0')).toHaveAttribute('collapsed', 'true');
+    expect(getByTestId('object-control-1')).toHaveAttribute('collapsed', 'true');
 
     expect(asFragment()).toMatchSnapshot();
   });
@@ -126,7 +125,7 @@ describe('ListControl', () => {
         fields: [{ name: 'title', widget: 'string', label: 'Title' }],
       },
     });
-    const { asFragment, getByTestId, queryByTestId } = render(
+    const { asFragment, getByTestId } = render(
       <ListControl
         {...props}
         field={field}
@@ -137,8 +136,8 @@ describe('ListControl', () => {
     expect(getByTestId('styled-list-item-top-bar-0')).toHaveAttribute('collapsed', 'false');
     expect(getByTestId('styled-list-item-top-bar-1')).toHaveAttribute('collapsed', 'false');
 
-    expect(queryByTestId('object-control-0')).not.toBeNull();
-    expect(queryByTestId('object-control-1')).not.toBeNull();
+    expect(getByTestId('object-control-0')).toHaveAttribute('collapsed', 'false');
+    expect(getByTestId('object-control-1')).toHaveAttribute('collapsed', 'false');
 
     expect(asFragment()).toMatchSnapshot();
   });
@@ -155,7 +154,7 @@ describe('ListControl', () => {
         fields: [{ name: 'title', widget: 'string', label: 'Title' }],
       },
     });
-    const { getByTestId, queryByTestId } = render(
+    const { getByTestId } = render(
       <ListControl
         {...props}
         field={field}
@@ -166,16 +165,16 @@ describe('ListControl', () => {
     expect(getByTestId('styled-list-item-top-bar-0')).toHaveAttribute('collapsed', 'false');
     expect(getByTestId('styled-list-item-top-bar-1')).toHaveAttribute('collapsed', 'false');
 
-    expect(queryByTestId('object-control-0')).not.toBeNull();
-    expect(queryByTestId('object-control-1')).not.toBeNull();
+    expect(getByTestId('object-control-0')).toHaveAttribute('collapsed', 'false');
+    expect(getByTestId('object-control-1')).toHaveAttribute('collapsed', 'false');
 
     fireEvent.click(getByTestId('expand-button'));
 
     expect(getByTestId('styled-list-item-top-bar-0')).toHaveAttribute('collapsed', 'true');
     expect(getByTestId('styled-list-item-top-bar-1')).toHaveAttribute('collapsed', 'true');
 
-    expect(queryByTestId('object-control-0')).toBeNull();
-    expect(queryByTestId('object-control-1')).toBeNull();
+    expect(getByTestId('object-control-0')).toHaveAttribute('collapsed', 'true');
+    expect(getByTestId('object-control-1')).toHaveAttribute('collapsed', 'true');
   });
 
   it('should collapse a single item on collapse item click', () => {
@@ -190,7 +189,7 @@ describe('ListControl', () => {
         fields: [{ name: 'title', widget: 'string', label: 'Title' }],
       },
     });
-    const { getByTestId, queryByTestId } = render(
+    const { getByTestId } = render(
       <ListControl
         {...props}
         field={field}
@@ -201,16 +200,16 @@ describe('ListControl', () => {
     expect(getByTestId('styled-list-item-top-bar-0')).toHaveAttribute('collapsed', 'false');
     expect(getByTestId('styled-list-item-top-bar-1')).toHaveAttribute('collapsed', 'false');
 
-    expect(queryByTestId('object-control-0')).not.toBeNull();
-    expect(queryByTestId('object-control-1')).not.toBeNull();
+    expect(getByTestId('object-control-0')).toHaveAttribute('collapsed', 'false');
+    expect(getByTestId('object-control-1')).toHaveAttribute('collapsed', 'false');
 
     fireEvent.click(getByTestId('styled-list-item-top-bar-0'));
 
     expect(getByTestId('styled-list-item-top-bar-0')).toHaveAttribute('collapsed', 'true');
     expect(getByTestId('styled-list-item-top-bar-1')).toHaveAttribute('collapsed', 'false');
 
-    expect(queryByTestId('object-control-0')).toBeNull();
-    expect(queryByTestId('object-control-1')).not.toBeNull();
+    expect(getByTestId('object-control-0')).toHaveAttribute('collapsed', 'true');
+    expect(getByTestId('object-control-1')).toHaveAttribute('collapsed', 'false');
   });
 
   it('should expand all items on top bar expand click', () => {
@@ -225,7 +224,7 @@ describe('ListControl', () => {
         fields: [{ name: 'title', widget: 'string', label: 'Title' }],
       },
     });
-    const { getByTestId, queryByTestId } = render(
+    const { getByTestId } = render(
       <ListControl
         {...props}
         field={field}
@@ -236,16 +235,16 @@ describe('ListControl', () => {
     expect(getByTestId('styled-list-item-top-bar-0')).toHaveAttribute('collapsed', 'true');
     expect(getByTestId('styled-list-item-top-bar-1')).toHaveAttribute('collapsed', 'true');
 
-    expect(queryByTestId('object-control-0')).toBeNull();
-    expect(queryByTestId('object-control-1')).toBeNull();
+    expect(getByTestId('object-control-0')).toHaveAttribute('collapsed', 'true');
+    expect(getByTestId('object-control-1')).toHaveAttribute('collapsed', 'true');
 
     fireEvent.click(getByTestId('expand-button'));
 
     expect(getByTestId('styled-list-item-top-bar-0')).toHaveAttribute('collapsed', 'false');
     expect(getByTestId('styled-list-item-top-bar-1')).toHaveAttribute('collapsed', 'false');
 
-    expect(queryByTestId('object-control-0')).not.toBeNull();
-    expect(queryByTestId('object-control-1')).not.toBeNull();
+    expect(getByTestId('object-control-0')).toHaveAttribute('collapsed', 'false');
+    expect(getByTestId('object-control-1')).toHaveAttribute('collapsed', 'false');
   });
 
   it('should expand a single item on expand item click', () => {
@@ -260,7 +259,7 @@ describe('ListControl', () => {
         fields: [{ name: 'title', widget: 'string', label: 'Title' }],
       },
     });
-    const { getByTestId, queryByTestId } = render(
+    const { getByTestId } = render(
       <ListControl
         {...props}
         field={field}
@@ -271,16 +270,16 @@ describe('ListControl', () => {
     expect(getByTestId('styled-list-item-top-bar-0')).toHaveAttribute('collapsed', 'true');
     expect(getByTestId('styled-list-item-top-bar-1')).toHaveAttribute('collapsed', 'true');
 
-    expect(queryByTestId('object-control-0')).toBeNull();
-    expect(queryByTestId('object-control-1')).toBeNull();
+    expect(getByTestId('object-control-0')).toHaveAttribute('collapsed', 'true');
+    expect(getByTestId('object-control-1')).toHaveAttribute('collapsed', 'true');
 
     fireEvent.click(getByTestId('styled-list-item-top-bar-0'));
 
     expect(getByTestId('styled-list-item-top-bar-0')).toHaveAttribute('collapsed', 'false');
     expect(getByTestId('styled-list-item-top-bar-1')).toHaveAttribute('collapsed', 'true');
 
-    expect(queryByTestId('object-control-0')).not.toBeNull();
-    expect(queryByTestId('object-control-1')).toBeNull();
+    expect(getByTestId('object-control-0')).toHaveAttribute('collapsed', 'false');
+    expect(getByTestId('object-control-1')).toHaveAttribute('collapsed', 'true');
   });
 
   it('should use widget name when no summary or label are configured for mixed types', () => {
@@ -470,7 +469,7 @@ describe('ListControl', () => {
       label: 'List',
       fields: [{ label: 'String', name: 'string', widget: 'string' }],
     });
-    const { asFragment, getByTestId, queryByTestId } = render(
+    const { asFragment, getByTestId } = render(
       <ListControl
         {...props}
         field={field}
@@ -481,8 +480,8 @@ describe('ListControl', () => {
     expect(getByTestId('styled-list-item-top-bar-0')).toHaveAttribute('collapsed', 'true');
     expect(getByTestId('styled-list-item-top-bar-1')).toHaveAttribute('collapsed', 'true');
 
-    expect(queryByTestId('object-control-0')).toBeNull();
-    expect(queryByTestId('object-control-0')).toBeNull();
+    expect(getByTestId('object-control-0')).toHaveAttribute('collapsed', 'true');
+    expect(getByTestId('object-control-1')).toHaveAttribute('collapsed', 'true');
 
     expect(asFragment()).toMatchSnapshot();
   });
@@ -494,7 +493,7 @@ describe('ListControl', () => {
       collapsed: false,
       fields: [{ label: 'String', name: 'string', widget: 'string' }],
     });
-    const { asFragment, getByTestId, queryByTestId } = render(
+    const { asFragment, getByTestId } = render(
       <ListControl
         {...props}
         field={field}
@@ -505,8 +504,8 @@ describe('ListControl', () => {
     expect(getByTestId('styled-list-item-top-bar-0')).toHaveAttribute('collapsed', 'false');
     expect(getByTestId('styled-list-item-top-bar-1')).toHaveAttribute('collapsed', 'false');
 
-    expect(queryByTestId('object-control-0')).not.toBeNull();
-    expect(queryByTestId('object-control-1')).not.toBeNull();
+    expect(getByTestId('object-control-0')).toHaveAttribute('collapsed', 'false');
+    expect(getByTestId('object-control-1')).toHaveAttribute('collapsed', 'false');
 
     expect(asFragment()).toMatchSnapshot();
   });
@@ -539,8 +538,8 @@ describe('ListControl', () => {
     expect(getByTestId('styled-list-item-top-bar-0')).toHaveAttribute('collapsed', 'true');
     expect(getByTestId('styled-list-item-top-bar-1')).toHaveAttribute('collapsed', 'true');
 
-    expect(queryByTestId('object-control-0')).toBeNull();
-    expect(queryByTestId('object-control-1')).toBeNull();
+    expect(getByTestId('object-control-0')).toHaveAttribute('collapsed', 'true');
+    expect(getByTestId('object-control-1')).toHaveAttribute('collapsed', 'true');
   });
 
   it('should render list with fields with collapse = "false" and default minimize_collapsed = "true"', () => {
@@ -562,8 +561,8 @@ describe('ListControl', () => {
     expect(getByTestId('styled-list-item-top-bar-0')).toHaveAttribute('collapsed', 'false');
     expect(getByTestId('styled-list-item-top-bar-1')).toHaveAttribute('collapsed', 'false');
 
-    expect(queryByTestId('object-control-0')).not.toBeNull();
-    expect(queryByTestId('object-control-1')).not.toBeNull();
+    expect(getByTestId('object-control-0')).toHaveAttribute('collapsed', 'false');
+    expect(getByTestId('object-control-1')).toHaveAttribute('collapsed', 'false');
 
     expect(asFragment()).toMatchSnapshot();
 
@@ -596,7 +595,7 @@ describe('ListControl', () => {
     rerender(<ListControl {...props} field={field} value={fromJS([{}])} />);
 
     expect(getByTestId('styled-list-item-top-bar-0')).toHaveAttribute('collapsed', 'false');
-    expect(queryByTestId('object-control-0')).not.toBeNull();
+    expect(getByTestId('object-control-0')).toHaveAttribute('collapsed', 'false');
 
     expect(asFragment()).toMatchSnapshot();
   });

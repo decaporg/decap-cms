@@ -16,6 +16,9 @@ const styleStrings = {
   objectWidgetTopBarContainer: `
     padding: ${lengths.objectWidgetTopBarContainerPadding};
   `,
+  collapsedObjectControl: `
+    display: none;
+  `,
 };
 
 export default class ObjectControl extends React.Component {
@@ -175,7 +178,15 @@ export default class ObjectControl extends React.Component {
                   t={t}
                 />
               )}
-              {!collapsed && <div>{this.renderFields(multiFields, singleField)}</div>}
+              <div
+                className={cx({
+                  [css`
+                    ${styleStrings.collapsedObjectControl}
+                  `]: collapsed,
+                })}
+              >
+                {this.renderFields(multiFields, singleField)}
+              </div>
             </div>
           )}
         </ClassNames>
