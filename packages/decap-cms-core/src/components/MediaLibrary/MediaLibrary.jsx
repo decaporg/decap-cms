@@ -22,6 +22,7 @@ import { selectMediaFiles } from '../../reducers/mediaLibrary';
 import MediaTitlebar from './Common/MediaTitlebar';
 import MediaControls from './Common/MediaControls';
 import EmptyMessage from './Common/EmptyMessage';
+import MediaToolbar from './Common/MediaToolbar';
 import MediaGallery from './Common/MediaGallery';
 import MediaLibraryCardGrid from './MediaLibraryCardGrid';
 import MediaSidebar from './Common/MediaSidebar';
@@ -51,9 +52,10 @@ const MediaBody = styled.div`
         `
       : ''};
   position: relative;
-  flex: 1;
   display: flex;
   flex-direction: column;
+  flex: 1;
+  height: 100%;
 `;
 
 const MediaHeader = styled.div`
@@ -205,10 +207,9 @@ function MediaLibrary({
   /**
    * Toggle asset selection on click.
    */
-  const handleAssetClick = asset => {
-    const selectedFile = selectedFile.key === asset.key ? {} : asset;
-    this.setState({ selectedFile });
-  };
+  function handleAssetClick(asset) {
+    setSelectedFile(selectedFile.key === asset.key ? {} : asset);
+  }
 
   /**
    * Upload a file.
@@ -267,7 +268,7 @@ function MediaLibrary({
     }
     const file = files.find(file => selectedFile.key === file.key);
     deleteMedia(file, { privateUpload }).then(() => {
-      this.setState({ selectedFile: {} });
+      setSelectedFile({});
     });
   }
 
@@ -294,7 +295,7 @@ function MediaLibrary({
     element.click();
 
     document.body.removeChild(element);
-    this.setState({ selectedFile: {} });
+    setSelectedFile({});
   }
 
   function handleLoadMore() {
@@ -328,7 +329,7 @@ function MediaLibrary({
    * Updates query state as the user types in the search field.
    */
   function handleSearchChange(event) {
-    this.setState({ query: event.target.value });
+    setQuery(event.target.value);
   }
 
   /**
@@ -375,6 +376,17 @@ function MediaLibrary({
         isPersisting={isPersisting}
       /> */}
 
+      <MediaToolbar
+        t={t}
+        onUpload={handlePersist}
+        imagesOnly={forImage}
+        isPersisting={isPersisting}
+        query={query}
+        onSearchChange={handleSearchChange}
+        onSearchKeyDown={handleSearchKeyDown}
+        searchDisabled={!dynamicSearchActive && !hasFilteredFiles}
+      />
+
       <MediaBody>
         <MediaHeader>
           <MediaTitlebar
@@ -387,14 +399,22 @@ function MediaLibrary({
             isPrivate={privateUpload}
             isDialog={isDialog}
           />
-          {/* <MediaToolbar /> */}
+
+          <MediaControls />
         </MediaHeader>
 
         {!shouldShowEmptyMessage ? null : (
           <EmptyMessage content={emptyMessage} isPrivate={privateUpload} />
         )}
 
-        <MediaLibraryCardGrid
+        <MediaGallery
+          mediaItems={tableData}
+          isSelectedFile={file => selectedFile.key === file.key}
+          onAssetClick={handleAssetClick}
+          loadDisplayURL={loadDisplayURL}
+        />
+
+        {/* <MediaLibraryCardGrid
           scrollContainerRef={scrollContainerRef}
           mediaItems={tableData}
           isSelectedFile={file => selectedFile.key === file.key}
@@ -404,14 +424,13 @@ function MediaLibrary({
           isPaginating={isPaginating}
           paginatingMessage={t('mediaLibrary.mediaLibraryModal.loading')}
           cardDraftText={t('mediaLibrary.mediaLibraryCard.draft')}
-          cardWidth="200px"
-          cardMargin="10px"
+          cardWidth={'280px'}
+          cardHeight={'240px'}
+          cardMargin={'10px'}
           isPrivate={privateUpload}
           loadDisplayURL={loadDisplayURL}
           displayURLs={displayURLs}
-        />
-
-        <MediaControls />
+        /> */}
       </MediaBody>
     </>
   );
@@ -457,6 +476,7 @@ MediaLibrary.propTypes = {
 function mapStateToProps(state) {
   const { mediaLibrary } = state;
   const field = mediaLibrary.get('field');
+
   const mediaLibraryProps = {
     isVisible: mediaLibrary.get('isVisible'),
     canInsert: mediaLibrary.get('canInsert'),

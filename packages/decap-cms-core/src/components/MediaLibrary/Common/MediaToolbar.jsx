@@ -1,24 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
-import { css } from '@emotion/react';
-import color from 'color';
-import { ButtonGroup, IconButton } from 'decap-cms-ui-next';
+import { AppBar, FileUploadButton } from 'decap-cms-ui-next';
 
 import MediaSearchBar from './MediaSearchBar';
 
-const MediaToolbarWrap = styled.div`
-  display: flex;
-  align-items: center;
-  padding: 0 1rem 1rem 1rem;
-`;
+const MediaToolbarWrap = styled(AppBar)`
+  height: 80px;
+  padding: 0 1rem;
 
-const ViewStyleControls = styled(ButtonGroup)`
-  ${({ theme }) => css`
-    background-color: ${color(theme.color.neutral['700']).alpha(0.2).string()};
-    border-radius: 8px;
-    margin: initial;
-  `}
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 1;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;
 
 function MediaToolbar({
@@ -28,6 +26,7 @@ function MediaToolbar({
   forImage,
   onDownload,
   onUpload,
+  imagesOnly,
   query,
   onSearchChange,
   onSearchKeyDown,
@@ -40,21 +39,31 @@ function MediaToolbar({
   isDeleting,
   selectedFile,
 }) {
-  return (
-    <MediaToolbarWrap>
-      <MediaSearchBar
-        value={query}
-        onChange={onSearchChange}
-        onKeyDown={onSearchKeyDown}
-        placeholder={t('mediaLibrary.mediaLibraryModal.search')}
-        disabled={searchDisabled}
-      />
+  const uploadEnabled = !isPersisting;
+  const uploadButtonLabel = isPersisting
+    ? t('mediaLibrary.mediaLibraryModal.uploading')
+    : t('mediaLibrary.mediaLibraryModal.upload');
 
-      <ViewStyleControls>
-        <IconButton icon="bulleted-list" />
-        <IconButton icon="grid" />
-      </ViewStyleControls>
-    </MediaToolbarWrap>
+  return (
+    <MediaToolbarWrap
+      renderStart={() => (
+        <MediaSearchBar
+          value={query}
+          onChange={onSearchChange}
+          onKeyDown={onSearchKeyDown}
+          placeholder={t('mediaLibrary.mediaLibraryModal.search')}
+          disabled={searchDisabled}
+        />
+      )}
+      renderEnd={() => (
+        <FileUploadButton
+          label={uploadButtonLabel}
+          accept={imagesOnly ? 'image/*' : '*/*'}
+          onChange={onUpload}
+          disabled={!uploadEnabled}
+        />
+      )}
+    />
   );
 }
 
