@@ -100,7 +100,6 @@ function App({
   isFetching,
   publishMode,
   useMediaLibrary,
-  openMediaLibrary,
   showMediaButton,
   t,
 }) {
@@ -199,7 +198,6 @@ function App({
           <Nav
             collections={collections}
             location={location}
-            openMediaLibrary={openMediaLibrary}
             showMediaButton={showMediaButton}
             hasWorkflow={hasWorkflow}
             siteUrl={config.site_url}
@@ -293,7 +291,6 @@ App.propTypes = {
   publishMode: PropTypes.oneOf([SIMPLE, EDITORIAL_WORKFLOW]),
   siteId: PropTypes.string,
   useMediaLibrary: PropTypes.bool,
-  openMediaLibrary: PropTypes.func.isRequired,
   showMediaButton: PropTypes.bool,
   t: PropTypes.func.isRequired,
 };
@@ -318,7 +315,6 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-  openMediaLibrary,
   loadConfig,
   loginUser,
   logoutUser,

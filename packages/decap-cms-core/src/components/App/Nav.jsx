@@ -17,16 +17,7 @@ const StyledCustomLogo = styled.img`
   margin: 0.375rem;
 `;
 
-function Nav({
-  collections,
-  openMediaLibrary,
-  showMediaButton,
-  hasWorkflow,
-  siteUrl,
-  displayUrl,
-  logoUrl,
-  t,
-}) {
+function Nav({ collections, showMediaButton, hasWorkflow, siteUrl, logoUrl, t }) {
   const { pathname } = useLocation();
 
   const { activeNavLinkId } = useMemo(() => {
@@ -91,7 +82,6 @@ function Nav({
             as={ReactRouterNavLink}
             to={'/media'}
             active={activeNavLinkId === 'media'}
-            onClick={openMediaLibrary}
             icon="image"
           >
             Media
