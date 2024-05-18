@@ -8,6 +8,7 @@ import MediaSearchBar from './MediaSearchBar';
 const MediaToolbarWrap = styled(AppBar)`
   height: 80px;
   padding: 0 1rem;
+  background-color: transparent;
 
   position: sticky;
   top: 0;
@@ -21,29 +22,15 @@ const MediaToolbarWrap = styled(AppBar)`
 
 function MediaToolbar({
   t,
-  onClose,
-  privateUpload,
-  forImage,
-  onDownload,
   onUpload,
   imagesOnly,
   query,
   onSearchChange,
   onSearchKeyDown,
   searchDisabled,
-  onDelete,
-  canInsert,
-  onInsert,
-  hasSelection,
-  isPersisting,
-  isDeleting,
-  selectedFile,
+  uploadEnabled,
+  uploadButtonLabel,
 }) {
-  const uploadEnabled = !isPersisting;
-  const uploadButtonLabel = isPersisting
-    ? t('mediaLibrary.mediaLibraryModal.uploading')
-    : t('mediaLibrary.mediaLibraryModal.upload');
-
   return (
     <MediaToolbarWrap
       renderStart={() => (

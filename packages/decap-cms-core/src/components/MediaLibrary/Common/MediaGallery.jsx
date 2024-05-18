@@ -1,28 +1,71 @@
 import React from 'react';
-import { ThumbnailGrid, Thumbnail } from 'decap-cms-ui-next';
+import styled from '@emotion/styled';
+import {
+  ThumbnailGrid,
+  Thumbnail,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownMenuItem,
+  Button,
+} from 'decap-cms-ui-next';
 
-function MediaGallery({ mediaItems, isSelectedFile, onAssetClick, loadDisplayURL }) {
-  console.log('mediaItems', mediaItems);
+const ActionsWrap = styled.div`
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 1;
 
+  /* display: none; */
+`;
+
+// const StyledThumbnail = styled(Thumbnail)`
+//   &:hover ${ActionsWrap} {
+//     display: block;
+//   }
+// `;
+
+function MediaGallery({
+  mediaItems,
+  isSelectedFile,
+  selectable,
+  onAssetClick,
+  loadDisplayURL,
+  draftText,
+}) {
   return (
     <ThumbnailGrid>
       {mediaItems.map(file => {
-        const { displayURL } = file;
-
-        console.log('file', file);
-
-        if (!displayURL) {
+        if (!file.displayURL) {
           loadDisplayURL(file);
         }
 
         return (
           <Thumbnail
             key={file.key}
-            previewImgSrc={displayURL}
+            previewImgSrc={file.displayURL}
+            supertitle={file.draft ? draftText : null}
             title={file.name}
-            selectable
+            selectable={selectable}
             selected={isSelectedFile(file)}
             onSelect={() => onAssetClick(file)}
+            renderActions={() => (
+              <ActionsWrap>
+                <Dropdown>
+                  <DropdownTrigger>
+                    <Button primary icon="more-vertical" />
+                  </DropdownTrigger>
+
+                  <DropdownMenu>
+                    <DropdownMenuItem icon="copy">Copy</DropdownMenuItem>
+                    <DropdownMenuItem icon="download">Download</DropdownMenuItem>
+                    <DropdownMenuItem icon="trash-2" type="danger">
+                      Delete
+                    </DropdownMenuItem>
+                  </DropdownMenu>
+                </Dropdown>
+              </ActionsWrap>
+            )}
           />
         );
       })}

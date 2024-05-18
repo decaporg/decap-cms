@@ -115,33 +115,11 @@ export const StyledButton = styled.button`
       margin: 4px;
     }
   `}
-  ${({ type, theme, iconOnly }) =>
-    iconOnly
-      ? `
-            color: ${theme.color.neutral['700']};
-            padding: 0 0.5rem;
-            &,
-            &:hover,
-            &:focus,
-            &:active,
-            &:focus:hover,
-            &:focus:active {
-              background-color: transparent;
-            }
-            &:hover {
-              color: ${type === 'danger' ? theme.color.danger['900'] : theme.color.primary['900']}
-            }
-        `
-      : ''}
 `;
-const Caret = styled.div`
+
+const StyledMenuIcon = styled(Icon)`
   display: inline-block;
   vertical-align: middle;
-  width: 0;
-  height: 0;
-  border-left: 4px solid transparent;
-  border-right: 4px solid transparent;
-  border-top: 5px solid;
   margin-left: 0.5rem;
 `;
 
@@ -166,7 +144,7 @@ function Button({ icon, children, className, hasMenu, size, disabled, ...props }
     >
       {icon && <StyledIcon hasText={!!children} name={icon} size={size === 'lg' ? 'md' : size} />}
       {children}
-      {hasMenu && <Caret />}
+      {hasMenu && <StyledMenuIcon size={size === 'lg' ? 'md' : size} name="chevron-down" />}
     </StyledButton>
   );
 }

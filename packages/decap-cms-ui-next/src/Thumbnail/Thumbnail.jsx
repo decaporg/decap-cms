@@ -59,11 +59,10 @@ const ThumbnailWrap = styled(Card)`
 `;
 const Content = styled.div`
   padding: 1rem;
-  display: flex;
+  display: ${({ noContent }) => (noContent ? 'hidden' : 'flex')};
   flex-direction: column;
   justify-content: center;
   flex: 1;
-  position: relative;
   ${({ selectable, hasPreview, horizontal }) =>
     `margin-${horizontal ? 'left' : 'top'}: ${!hasPreview && selectable ? `2.5rem` : 0};`}
   transition: 200ms;
@@ -252,18 +251,16 @@ const SelectToggle = styled.div`
   }
 `;
 
+const InvisibleLink = styled.span`
+  position: absolute;
+  inset: 0;
+`;
+
 const SelectIcon = styled(Icon)``;
 SelectIcon.defaultProps = {
   name: 'check',
   size: 'sm',
 };
-
-const ActionWrap = styled.div`
-  position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
-  z-index: 1;
-`;
 
 function Thumbnail({
   previewImgSrc,
@@ -279,7 +276,7 @@ function Thumbnail({
   horizontal,
   selectable,
   selected,
-  renderAction,
+  renderActions,
   onSelect,
   onClick,
   supertitleMaxLines,
@@ -287,6 +284,8 @@ function Thumbnail({
   descriptionMaxLines,
   subtitleMaxLines,
   theme,
+  as,
+  to,
   ...props
 }) {
   function isCached(src) {
@@ -313,7 +312,6 @@ function Thumbnail({
       selectable={selectable}
       horizontal={horizontal}
       clickable={!!onClick || !!props.to || selectable}
-      onClick={onClick ? (selectable ? onSelect : onClick) : selectable ? onSelect : null}
       {...props}
     >
       {(previewImgSrc || previewText) && (
@@ -337,11 +335,19 @@ function Thumbnail({
       )}
       {(supertitle || title || description || subtitle) && (
         <Content
+          as={as}
+          to={to}
           selectable={selectable}
           hasPreview={previewImgSrc || previewText}
           horizontal={horizontal}
           featured={featured}
+          noContent={!(supertitle || title || description || subtitle)}
         >
+          <InvisibleLink
+            aria-hidden="true"
+            onClick={onClick ? (selectable ? onSelect : onClick) : selectable ? onSelect : null}
+          />
+
           {supertitle && <Supertitle maxLines={supertitleMaxLines}>{supertitle}</Supertitle>}
           {title && <Title maxLines={titleMaxLines}>{title}</Title>}
           {description && <Description maxLines={descriptionMaxLines}>{description}</Description>}
@@ -354,7 +360,7 @@ function Thumbnail({
           <SelectIcon />
         </SelectToggle>
       )}
-      <ActionWrap>{renderAction && renderAction()}</ActionWrap>
+      {renderActions && renderActions()}
     </ThumbnailWrap>
   );
 }

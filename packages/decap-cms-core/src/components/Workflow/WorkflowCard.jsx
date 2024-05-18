@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import styled from '@emotion/styled';
 import { translate } from 'react-polyglot';
 import { Link } from 'react-router-dom';
 import {
@@ -10,6 +11,13 @@ import {
   DropdownMenuItem,
   IconButton,
 } from 'decap-cms-ui-next';
+
+const ActionsWrap = styled.div`
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 1;
+`;
 
 function lastChangePhraseKey(date, author) {
   if (date && author) {
@@ -59,26 +67,28 @@ function WorkflowCard({
         (timestamp || authorLastChange) &&
         formatDateAuthor({ date: timestamp, author: authorLastChange })
       }
-      renderAction={() => (
-        <Dropdown>
-          <DropdownTrigger>
-            <IconButton icon="more-vertical" />
-          </DropdownTrigger>
-          <DropdownMenu>
-            {allowPublish && (
-              <DropdownMenuItem onClick={onPublish} icon="radio" disabled={!canPublish}>
+      renderActions={() => (
+        <ActionsWrap>
+          <Dropdown>
+            <DropdownTrigger>
+              <IconButton icon="more-vertical" />
+            </DropdownTrigger>
+            <DropdownMenu>
+              {allowPublish && (
+                <DropdownMenuItem onClick={onPublish} icon="radio" disabled={!canPublish}>
+                  {isModification
+                    ? t('workflow.workflowCard.publishChanges')
+                    : t('workflow.workflowCard.publishNewEntry')}
+                </DropdownMenuItem>
+              )}
+              <DropdownMenuItem onClick={onDelete} icon="trash-2" type="danger">
                 {isModification
-                  ? t('workflow.workflowCard.publishChanges')
-                  : t('workflow.workflowCard.publishNewEntry')}
+                  ? t('workflow.workflowCard.deleteChanges')
+                  : t('workflow.workflowCard.deleteNewEntry')}
               </DropdownMenuItem>
-            )}
-            <DropdownMenuItem onClick={onDelete} icon="trash-2" type="danger">
-              {isModification
-                ? t('workflow.workflowCard.deleteChanges')
-                : t('workflow.workflowCard.deleteNewEntry')}
-            </DropdownMenuItem>
-          </DropdownMenu>
-        </Dropdown>
+            </DropdownMenu>
+          </Dropdown>
+        </ActionsWrap>
       )}
     />
   );

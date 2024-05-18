@@ -25,6 +25,7 @@ import Compass from './icons/Compass';
 import Copy from './icons/Copy';
 import Database from './icons/Database';
 import Decap from './icons/Decap';
+import Download from './icons/Download';
 import Edit3 from './icons/Edit3';
 import Edit from './icons/Edit';
 import ExternalLink from './icons/ExternalLink';
@@ -77,6 +78,7 @@ import Plus from './icons/Plus';
 import Quote from './icons/Quote';
 import Radio from './icons/Radio';
 import Refresh from './icons/Refresh';
+import Repeat from './icons/Repeat';
 import Save from './icons/Save';
 import Search from './icons/Search';
 import Server from './icons/Server';
@@ -124,6 +126,7 @@ export const iconComponents = {
   copy: Copy,
   database: Database,
   decap: Decap,
+  download: Download,
   'edit-3': Edit3,
   edit: Edit,
   'external-link': ExternalLink,
@@ -176,6 +179,7 @@ export const iconComponents = {
   quote: Quote,
   radio: Radio,
   refresh: Refresh,
+  repeat: Repeat,
   save: Save,
   search: Search,
   server: Server,

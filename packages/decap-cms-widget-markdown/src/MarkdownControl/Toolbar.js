@@ -18,7 +18,6 @@ import ToolbarButton from './ToolbarButton';
 
 const ToolbarContainer = styled.div`
   display: flex;
-  background-color: ${({ theme }) => theme.color.background};
 `;
 
 const ToolbarButtonsStart = styled(ButtonGroup)`

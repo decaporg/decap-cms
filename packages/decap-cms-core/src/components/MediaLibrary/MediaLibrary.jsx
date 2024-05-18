@@ -45,12 +45,6 @@ const IMAGE_EXTENSIONS_VIEWABLE = [
 const IMAGE_EXTENSIONS = [...IMAGE_EXTENSIONS_VIEWABLE];
 
 const MediaBody = styled.div`
-  ${({ theme, isDialog }) =>
-    isDialog
-      ? css`
-          background-color: ${theme.color.surface};
-        `
-      : ''};
   position: relative;
   display: flex;
   flex-direction: column;
@@ -250,19 +244,15 @@ function MediaLibrary({
    * editor field that launched the media library can retrieve it.
    */
   function handleInsert() {
-    const { selectedFile } = this.state;
     const { path } = selectedFile;
-    const { insertMedia, field } = this.props;
     insertMedia(path, field);
-    this.handleClose();
+    handleClose();
   }
 
   /**
    * Removes the selected file from the backend.
    */
   function handleDelete() {
-    const { selectedFile } = this.state;
-    const { files, deleteMedia, privateUpload, t } = this.props;
     if (!window.confirm(t('mediaLibrary.mediaLibrary.onDelete'))) {
       return;
     }
@@ -276,8 +266,6 @@ function MediaLibrary({
    * Downloads the selected file.
    */
   function handleDownload() {
-    const { selectedFile } = this.state;
-    const { displayURLs } = this.props;
     const url = displayURLs.getIn([selectedFile.id, 'url']) || selectedFile.url;
     if (!url) {
       return;
@@ -357,6 +345,7 @@ function MediaLibrary({
   const hasFilteredFiles = filteredFiles && !!filteredFiles.length;
   const hasSearchResults = queriedFiles && !!queriedFiles.length;
   const hasMedia = hasSearchResults;
+
   const shouldShowEmptyMessage = !hasMedia;
   const emptyMessage =
     (isLoading && !hasMedia && t('mediaLibrary.mediaLibraryModal.loading')) ||
@@ -366,6 +355,18 @@ function MediaLibrary({
     (!hasSearchResults && t('mediaLibrary.mediaLibraryModal.noResults'));
 
   const hasSelection = hasMedia && !isEmpty(selectedFile);
+
+  const shouldShowButtonLoader = isPersisting || isDeleting;
+  const uploadEnabled = !shouldShowButtonLoader;
+  const deleteEnabled = !shouldShowButtonLoader && hasSelection;
+
+  const uploadButtonLabel = isPersisting
+    ? t('mediaLibrary.mediaLibraryModal.uploading')
+    : t('mediaLibrary.mediaLibraryModal.upload');
+  const deleteButtonLabel = isDeleting
+    ? t('mediaLibrary.mediaLibraryModal.deleting')
+    : t('mediaLibrary.mediaLibraryModal.deleteSelected');
+  const downloadButtonLabel = t('mediaLibrary.mediaLibraryModal.download');
 
   return (
     <>
@@ -385,6 +386,8 @@ function MediaLibrary({
         onSearchChange={handleSearchChange}
         onSearchKeyDown={handleSearchKeyDown}
         searchDisabled={!dynamicSearchActive && !hasFilteredFiles}
+        uploadEnabled={uploadEnabled}
+        uploadButtonLabel={uploadButtonLabel}
       />
 
       <MediaBody>
@@ -400,7 +403,16 @@ function MediaLibrary({
             isDialog={isDialog}
           />
 
-          <MediaControls />
+          {isDialog && (
+            <MediaControls
+              onSelect={handleInsert}
+              hasSelection={hasSelection}
+              selectedButtonLabel={t('mediaLibrary.mediaLibraryModal.chooseSelected')}
+              onDelete={handleDelete}
+              deleteEnabled={deleteEnabled}
+              deleteButtonLabel={deleteButtonLabel}
+            />
+          )}
         </MediaHeader>
 
         {!shouldShowEmptyMessage ? null : (
@@ -409,26 +421,20 @@ function MediaLibrary({
 
         <MediaGallery
           mediaItems={tableData}
+          selectable={isDialog}
           isSelectedFile={file => selectedFile.key === file.key}
-          onAssetClick={handleAssetClick}
           loadDisplayURL={loadDisplayURL}
+          onAssetClick={handleAssetClick}
+          draftText={t('mediaLibrary.mediaLibraryCard.draft')}
         />
 
         {/* <MediaLibraryCardGrid
-          scrollContainerRef={scrollContainerRef}
-          mediaItems={tableData}
-          isSelectedFile={file => selectedFile.key === file.key}
-          onAssetClick={handleAssetClick}
           canLoadMore={hasNextPage}
           onLoadMore={handleLoadMore}
           isPaginating={isPaginating}
           paginatingMessage={t('mediaLibrary.mediaLibraryModal.loading')}
           cardDraftText={t('mediaLibrary.mediaLibraryCard.draft')}
-          cardWidth={'280px'}
-          cardHeight={'240px'}
-          cardMargin={'10px'}
           isPrivate={privateUpload}
-          loadDisplayURL={loadDisplayURL}
           displayURLs={displayURLs}
         /> */}
       </MediaBody>
