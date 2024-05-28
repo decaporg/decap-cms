@@ -62,7 +62,6 @@ const styleStrings = {
   disabled: `
     pointer-events: none;
     opacity: 0.5;
-    background: #ccc;
   `,
   hidden: `
     visibility: hidden;
@@ -91,7 +90,7 @@ const ControlErrorsList = styled.ul`
 
 export const ControlHint = styled.p`
   margin-bottom: 0;
-  padding: 3px 0;
+  padding: 6px 6x 0;
   font-size: 12px;
   color: ${props =>
     props.error ? colors.errorText : props.active ? colors.active : colors.controlLabel};
@@ -305,7 +304,10 @@ class EditorControl extends React.Component {
               value={value}
               mediaPaths={mediaPaths}
               metadata={metadata}
-              onChange={(newValue, newMetadata) => onChange(field, newValue, newMetadata)}
+              onChange={(newValue, newMetadata) => {
+                onChange(field, newValue, newMetadata);
+                clearFieldErrors(this.uniqueFieldId); // Видаляємо помилки лише для цього поля
+              }}
               onValidate={onValidate && partial(onValidate, this.uniqueFieldId)}
               onOpenMediaLibrary={openMediaLibrary}
               onClearMediaControl={clearMediaControl}
