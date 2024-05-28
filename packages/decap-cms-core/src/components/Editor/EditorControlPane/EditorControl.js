@@ -90,7 +90,7 @@ const ControlErrorsList = styled.ul`
 
 export const ControlHint = styled.p`
   margin-bottom: 0;
-  padding: 6px 6x 0;
+  padding: 6px 6px 0;
   font-size: 12px;
   color: ${props =>
     props.error ? colors.errorText : props.active ? colors.active : colors.controlLabel};
