@@ -76,21 +76,26 @@ const ControlContainer = styled.div`
   }
 `;
 
+const ControlTopbar = styled.div`
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: end;
+`;
 const ControlErrorsList = styled.ul`
   list-style-type: none;
   font-size: 12px;
   color: ${colors.errorText};
-  margin-bottom: 5px;
   text-align: right;
   text-transform: uppercase;
-  position: relative;
   font-weight: 600;
-  top: 20px;
+  margin: 0;
+  padding: 2px 0 3px;
 `;
 
 export const ControlHint = styled.p`
   margin-bottom: 0;
-  padding: 6px 6px 0;
+  padding: 6px 0 0;
   font-size: 12px;
   color: ${props =>
     props.error ? colors.errorText : props.active ? colors.active : colors.controlLabel};
@@ -240,28 +245,30 @@ class EditorControl extends React.Component {
               ${isHidden && styleStrings.hidden};
             `}
           >
-            {widget.globalStyles && <Global styles={coreCss`${widget.globalStyles}`} />}
-            {errors && (
-              <ControlErrorsList>
-                {errors.map(
-                  error =>
-                    error.message &&
-                    typeof error.message === 'string' && (
-                      <li key={error.message.trim().replace(/[^a-z0-9]+/gi, '-')}>
-                        {error.message}
-                      </li>
-                    ),
-                )}
-              </ControlErrorsList>
-            )}
-            <LabelComponent
-              field={field}
-              isActive={isSelected || this.state.styleActive}
-              hasErrors={hasErrors}
-              uniqueFieldId={this.uniqueFieldId}
-              isFieldOptional={isFieldOptional}
-              t={t}
-            />
+            <ControlTopbar>
+              {widget.globalStyles && <Global styles={coreCss`${widget.globalStyles}`} />}
+              <LabelComponent
+                field={field}
+                isActive={isSelected || this.state.styleActive}
+                hasErrors={hasErrors}
+                uniqueFieldId={this.uniqueFieldId}
+                isFieldOptional={isFieldOptional}
+                t={t}
+              />
+              {errors && (
+                <ControlErrorsList>
+                  {errors.map(
+                    error =>
+                      error.message &&
+                      typeof error.message === 'string' && (
+                        <li key={error.message.trim().replace(/[^a-z0-9]+/gi, '-')}>
+                          {error.message}
+                        </li>
+                      ),
+                  )}
+                </ControlErrorsList>
+              )}
+            </ControlTopbar>
             <Widget
               classNameWrapper={cx(
                 css`
