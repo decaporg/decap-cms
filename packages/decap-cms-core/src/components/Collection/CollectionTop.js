@@ -5,7 +5,7 @@ import styled from '@emotion/styled';
 import { translate } from 'react-polyglot';
 import { Link } from 'react-router-dom';
 import { components } from 'decap-cms-ui-default';
-import { Button, Card } from 'decap-cms-ui-next';
+import { Button, Card, Icon } from 'decap-cms-ui-next';
 
 const CollectionTopContainer = styled(Card)`
   padding: 1rem;
@@ -48,7 +48,16 @@ function CollectionTop({ collection, newEntryUrl, t }) {
   return (
     <CollectionTopContainer>
       <CollectionTopRow>
-        <CollectionTopHeading>{collectionLabel}</CollectionTopHeading>
+        <CollectionTopHeading>
+          <Icon
+            size="lg"
+            name={
+              collection.get('icon') ??
+              (collection.get('type') === 'file_based_collection' ? 'file' : 'folder')
+            }
+          />
+          {collectionLabel}
+        </CollectionTopHeading>
         {newEntryUrl ? (
           <Button as={Link} to={newEntryUrl} icon={'plus'} primary type="success">
             {t('collection.collectionTop.newButton', {

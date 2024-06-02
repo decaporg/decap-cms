@@ -21,6 +21,7 @@ import ChevronRight from './icons/ChevronRight';
 import Clock from './icons/Clock';
 import Code from './icons/Code';
 import CodeBlock from './icons/CodeBlock';
+import Coffee from './icons/Coffee';
 import Compass from './icons/Compass';
 import Copy from './icons/Copy';
 import Database from './icons/Database';
@@ -122,6 +123,7 @@ export const iconComponents = {
   clock: Clock,
   code: Code,
   'code-block': CodeBlock,
+  coffee: Coffee,
   compass: Compass,
   copy: Copy,
   database: Database,

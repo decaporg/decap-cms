@@ -13,6 +13,7 @@ import {
   DropdownMenu,
   DropdownMenuItem,
   Loader,
+  Icon,
 } from 'decap-cms-ui-next';
 
 import { createNewEntry } from '../../actions/collections';
@@ -91,9 +92,12 @@ class Workflow extends Component {
     return (
       <WorkflowContainer>
         <WorkflowTop>
-          <WorkflowTopHeading>{t('workflow.workflow.workflowHeading')}</WorkflowTopHeading>
+          <WorkflowTopHeading>
+            <Icon size="lg" name="workflow" />
+            {t('workflow.workflow.workflowHeading')}
+          </WorkflowTopHeading>
 
-          <Dropdown>
+          {/* <Dropdown>
             <DropdownTrigger>
               <Button icon={'plus'} type="success" primary hasMenu>
                 {t('workflow.workflow.newPost')}
@@ -108,12 +112,15 @@ class Workflow extends Component {
                   <DropdownMenuItem
                     key={collection.get('name')}
                     onClick={() => createNewEntry(collection.get('name'))}
+                    icon={collection.get('icon') || 'file-text'}
                   >
-                    {collection.get('label_singular') || collection.get('label')}
+                    {t('collection.collectionTop.newButton', {
+                      collectionLabel: collection.get('label_singular') || collection.get('label'),
+                    })}
                   </DropdownMenuItem>
                 ))}
             </DropdownMenu>
-          </Dropdown>
+          </Dropdown> */}
         </WorkflowTop>
 
         <WorkflowList

@@ -13,7 +13,6 @@ import { loadConfig } from '../../actions/config';
 import { loginUser, logoutUser } from '../../actions/auth';
 import { currentBackend } from '../../backend';
 import { createNewEntry } from '../../actions/collections';
-import { openMediaLibrary } from '../../actions/mediaLibrary';
 import MediaPage from '../MediaLibrary/MediaPage';
 import MediaDialog from '../MediaLibrary/MediaDialog';
 import { Notifications } from '../UI';

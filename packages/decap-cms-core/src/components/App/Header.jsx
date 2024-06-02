@@ -90,7 +90,13 @@ function Header({ user, collections, onLogoutClick, onCreateEntryClick, isSearch
             {isSearchEnabled && (
               <SearchWrap>
                 <SearchBar
-                  placeholder={t('collection.sidebar.searchAll')}
+                  placeholder={
+                    selectedCollectionIdx !== -1
+                      ? t('collection.sidebar.searchIn') +
+                        ' ' +
+                        collections.toIndexedSeq().get(selectedCollectionIdx).get('label')
+                      : t('collection.sidebar.searchAll')
+                  }
                   onChange={event => setSearchTerm(event.currentTarget.value)}
                   onSubmit={submitSearch}
                   renderEnd={() => (
@@ -122,6 +128,12 @@ function Header({ user, collections, onLogoutClick, onCreateEntryClick, isSearch
                               setSelectedCollectionIdx(idx);
                               setCollectionMenuAnchorEl(null);
                             }}
+                            icon={
+                              collection.get('icon') ??
+                              (collection.get('type') === 'file_based_collection'
+                                ? 'file'
+                                : 'folder')
+                            }
                           >
                             {collection.get('label')}
                           </DropdownMenuItem>
@@ -144,11 +156,14 @@ function Header({ user, collections, onLogoutClick, onCreateEntryClick, isSearch
                 {creatableCollections.map(collection => (
                   <DropdownMenuItem
                     key={collection.get('name')}
+                    icon={collection.get('icon') || 'file-text'}
                     onClick={() => {
                       handleCreatePostClick(collection.get('name'));
                     }}
                   >
-                    {collection.get('label_singular') || collection.get('label')}
+                    {t('collection.collectionTop.newButton', {
+                      collectionLabel: collection.get('label_singular') || collection.get('label'),
+                    })}
                   </DropdownMenuItem>
                 ))}
               </DropdownMenu>

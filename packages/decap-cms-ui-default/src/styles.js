@@ -321,6 +321,9 @@ const components = {
     line-height: 37px;
     margin: 0;
     padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   `,
   cardTopDescription: css`
     /* max-width: 480px; */
