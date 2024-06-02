@@ -4,11 +4,15 @@ import styled from '@emotion/styled';
 
 import { Button } from './';
 
+const StyledButton = styled(Button)`
+  margin: 0 !important;
+`;
+
 const HiddenInputFile = styled.input`
   height: 0.1px;
   width: 0.1px;
-  margin: 0px;
-  padding: 0px;
+  margin: 0;
+  padding: 0;
   opacity: 0;
   overflow: hidden;
   position: absolute;
@@ -29,7 +33,7 @@ function FileUploadButton({
 
   return (
     <label>
-      <Button
+      <StyledButton
         size={size}
         icon={icon}
         disabled={disabled}
@@ -37,7 +41,7 @@ function FileUploadButton({
         {...props}
       >
         {label}
-      </Button>
+      </StyledButton>
 
       <HiddenInputFile
         type="file"

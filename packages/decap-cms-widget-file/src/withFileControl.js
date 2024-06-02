@@ -31,6 +31,18 @@ const Image = styled(Thumbnail)`
 const AddMoreButton = styled(Button)`
   width: 10rem;
   height: 10rem;
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: end;
+
+  & > svg {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+  }
 `;
 
 const ImageGrid = styled.div`
@@ -441,7 +453,9 @@ export default function withFileControl({ forImage } = {}) {
                 enterDelay={500}
                 leaveDelay={250}
               >
-                <AddMoreButton size="lg" icon="plus" onClick={this.handleChange} />
+                <AddMoreButton size="lg" icon="plus" onClick={this.handleChange}>
+                  {t(`editor.editorWidgets.${subject}.addMore`)}
+                </AddMoreButton>
               </Tooltip>
             )}
           </div>
@@ -459,7 +473,9 @@ export default function withFileControl({ forImage } = {}) {
           enterDelay={500}
           leaveDelay={250}
         >
-          <AddMoreButton size="lg" icon="plus" onClick={this.handleChange} />
+          <AddMoreButton size="lg" icon="plus" onClick={this.handleChange}>
+            {t(`editor.editorWidgets.${subject}.choose${this.allowsMultiple() ? 'Multiple' : ''}`)}
+          </AddMoreButton>
         </Tooltip>
       );
     };

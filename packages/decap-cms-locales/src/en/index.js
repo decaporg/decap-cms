@@ -235,7 +235,7 @@ const en = {
       noImagesFound: 'No images found.',
       private: 'Private ',
       images: 'Images',
-      mediaAssets: 'Media assets',
+      mediaAssets: 'Media Library',
       search: 'Search...',
       uploading: 'Uploading...',
       upload: 'Upload',

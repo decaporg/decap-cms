@@ -1,14 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
-import { AppBar, FileUploadButton } from 'decap-cms-ui-next';
+import { AppBar } from 'decap-cms-ui-next';
 
 import MediaSearchBar from './MediaSearchBar';
+import MediaControls from './MediaControls';
 
 const MediaToolbarWrap = styled(AppBar)`
-  height: 80px;
-  padding: 0 1rem;
-  background-color: transparent;
+  height: ${({ isDialog }) => (isDialog ? 'auto' : '80px')};
+  padding: ${({ isDialog }) => (isDialog ? '0' : '2rem')};
+  background-color: ${({ isDialog }) => (isDialog ? 'transparent' : '')};
 
   position: sticky;
   top: 0;
@@ -22,6 +23,7 @@ const MediaToolbarWrap = styled(AppBar)`
 
 function MediaToolbar({
   t,
+  isDialog,
   onUpload,
   imagesOnly,
   query,
@@ -30,25 +32,42 @@ function MediaToolbar({
   searchDisabled,
   uploadEnabled,
   uploadButtonLabel,
+  onSelect,
+  hasSelection,
+  selectedButtonLabel,
+  onDelete,
+  deleteEnabled,
+  deleteButtonLabel,
 }) {
   return (
     <MediaToolbarWrap
-      renderStart={() => (
-        <MediaSearchBar
-          value={query}
-          onChange={onSearchChange}
-          onKeyDown={onSearchKeyDown}
-          placeholder={t('mediaLibrary.mediaLibraryModal.search')}
-          disabled={searchDisabled}
-        />
-      )}
+      isDialog={isDialog}
       renderEnd={() => (
-        <FileUploadButton
-          label={uploadButtonLabel}
-          accept={imagesOnly ? 'image/*' : '*/*'}
-          onChange={onUpload}
-          disabled={!uploadEnabled}
-        />
+        <>
+          <MediaSearchBar
+            value={query}
+            onChange={onSearchChange}
+            onKeyDown={onSearchKeyDown}
+            placeholder={`${t('collection.sidebar.searchIn')} ${t(
+              'mediaLibrary.mediaLibraryModal.mediaAssets',
+            )}`}
+            disabled={searchDisabled}
+          />
+
+          <MediaControls
+            isDialog={isDialog}
+            onSelect={onSelect}
+            hasSelection={hasSelection}
+            selectedButtonLabel={selectedButtonLabel}
+            onDelete={onDelete}
+            deleteEnabled={deleteEnabled}
+            deleteButtonLabel={deleteButtonLabel}
+            onUpload={onUpload}
+            uploadEnabled={uploadEnabled}
+            uploadButtonLabel={uploadButtonLabel}
+            imagesOnly={imagesOnly}
+          />
+        </>
       )}
     />
   );

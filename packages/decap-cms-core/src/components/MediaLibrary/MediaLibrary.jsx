@@ -20,7 +20,6 @@ import {
 } from '../../actions/mediaLibrary';
 import { selectMediaFiles } from '../../reducers/mediaLibrary';
 import MediaTitlebar from './Common/MediaTitlebar';
-import MediaControls from './Common/MediaControls';
 import EmptyMessage from './Common/EmptyMessage';
 import MediaToolbar from './Common/MediaToolbar';
 import MediaGallery from './Common/MediaGallery';
@@ -44,17 +43,33 @@ const IMAGE_EXTENSIONS_VIEWABLE = [
 ];
 const IMAGE_EXTENSIONS = [...IMAGE_EXTENSIONS_VIEWABLE];
 
+const MediaContainer = styled.div`
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+`;
+
 const MediaBody = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
   flex: 1;
+  gap: 1rem;
   height: 100%;
+
+  padding: ${({ isDialog }) => (isDialog ? '1rem' : '0 2rem')};
 `;
 
 const MediaHeader = styled.div`
   display: flex;
   flex-direction: column;
+  gap: 2rem;
 `;
 
 function MediaLibrary({
@@ -369,7 +384,7 @@ function MediaLibrary({
   const downloadButtonLabel = t('mediaLibrary.mediaLibraryModal.download');
 
   return (
-    <>
+    <MediaContainer>
       {/* <MediaSidebar
         t={t}
         onUpload={handlePersist}
@@ -377,20 +392,29 @@ function MediaLibrary({
         isPersisting={isPersisting}
       /> */}
 
-      <MediaToolbar
-        t={t}
-        onUpload={handlePersist}
-        imagesOnly={forImage}
-        isPersisting={isPersisting}
-        query={query}
-        onSearchChange={handleSearchChange}
-        onSearchKeyDown={handleSearchKeyDown}
-        searchDisabled={!dynamicSearchActive && !hasFilteredFiles}
-        uploadEnabled={uploadEnabled}
-        uploadButtonLabel={uploadButtonLabel}
-      />
+      {!isDialog && (
+        <MediaToolbar
+          t={t}
+          isDialog={isDialog}
+          onUpload={handlePersist}
+          imagesOnly={forImage}
+          isPersisting={isPersisting}
+          query={query}
+          onSearchChange={handleSearchChange}
+          onSearchKeyDown={handleSearchKeyDown}
+          searchDisabled={!dynamicSearchActive && !hasFilteredFiles}
+          uploadEnabled={uploadEnabled}
+          uploadButtonLabel={uploadButtonLabel}
+          onSelect={handleInsert}
+          hasSelection={hasSelection}
+          selectedButtonLabel={t('mediaLibrary.mediaLibraryModal.chooseSelected')}
+          onDelete={handleDelete}
+          deleteEnabled={deleteEnabled}
+          deleteButtonLabel={deleteButtonLabel}
+        />
+      )}
 
-      <MediaBody>
+      <MediaBody isDialog={isDialog}>
         <MediaHeader>
           <MediaTitlebar
             onClose={handleClose}
@@ -404,7 +428,18 @@ function MediaLibrary({
           />
 
           {isDialog && (
-            <MediaControls
+            <MediaToolbar
+              t={t}
+              isDialog={isDialog}
+              onUpload={handlePersist}
+              imagesOnly={forImage}
+              isPersisting={isPersisting}
+              query={query}
+              onSearchChange={handleSearchChange}
+              onSearchKeyDown={handleSearchKeyDown}
+              searchDisabled={!dynamicSearchActive && !hasFilteredFiles}
+              uploadEnabled={uploadEnabled}
+              uploadButtonLabel={uploadButtonLabel}
               onSelect={handleInsert}
               hasSelection={hasSelection}
               selectedButtonLabel={t('mediaLibrary.mediaLibraryModal.chooseSelected')}
@@ -438,7 +473,7 @@ function MediaLibrary({
           displayURLs={displayURLs}
         /> */}
       </MediaBody>
-    </>
+    </MediaContainer>
   );
 }
 
