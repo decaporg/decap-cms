@@ -8,6 +8,22 @@ display_url: https://example.com
 publish_mode: editorial_workflow
 media_folder: assets/uploads
 
+# locale: 'fr'
+
+i18n:
+  # Required and can be one of multiple_folders, multiple_files or single_file
+  # multiple_folders - persists files in `<folder>/<locale>/<slug>.<extension>`
+  # multiple_files - persists files in `<folder>/<slug>.<locale>.<extension>`
+  # single_file - persists a single file in `<folder>/<slug>.<extension>`
+  structure: multiple_files
+
+  # Required - a list of locales to show in the editor UI
+  locales: [en, de, fr]
+
+  # Optional, defaults to the first item in locales.
+  # The locale to be used for fields validation and as a baseline for the entry.
+  default_locale: en
+
 collections: # A list of collections the CMS should be able to edit
   - name: 'posts' # Used in routes, ie.: /admin/collections/:slug/edit
     label: 'Posts' # Used in the UI
@@ -62,6 +78,7 @@ collections: # A list of collections the CMS should be able to edit
       Restaurants is an entry type used for testing galleries, relations and other widgets.
       The tests must be written in such way that adding new fields does not affect previous flows.
     folder: '_restaurants'
+    icon: coffee
     slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
     summary: '{{title}} -- {{year}}/{{month}}/{{day}}'
     create: true # Allow users to create new documents in this collection
@@ -94,10 +111,34 @@ collections: # A list of collections the CMS should be able to edit
   - name: 'faq' # Used in routes, ie.: /admin/collections/:slug/edit
     label: 'FAQ' # Used in the UI
     folder: '_faqs'
+    icon: help-circle
     create: true # Allow users to create new documents in this collection
     fields: # The fields each document in this collection have
       - { label: 'Question', name: 'title', widget: 'string', tagname: 'h1' }
       - { label: 'Answer', name: 'body', widget: 'markdown' }
+
+  - name: i18n_playground
+    label: i18n Playground
+    i18n: true
+    folder: _i18n_playground
+    icon: globe
+    identifier_field: slug
+    create: true
+    fields:
+      # The slug field will be omitted from the translation.
+      - name: slug
+        label: Slug
+        widget: string
+      # same as 'i18n: translate'. Allows translation of the description field
+      - name: description
+        label: Description
+        widget: text
+        i18n: true
+      # The date field will be duplicated from the default locale.
+      - name: date
+        label: Date
+        widget: datetime
+        i18n: duplicate
 
   - name: 'analytics'
     label: 'Analytics'
