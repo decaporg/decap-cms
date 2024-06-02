@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import {
   AppBar,
   Button,
+  ButtonGroup,
   Icon,
   IconButton,
   Dropdown,
@@ -73,6 +74,37 @@ const ToolbarControls = styled.div`
   justify-content: flex-end;
   gap: 1rem;
   flex: 1;
+`;
+
+const PublishControlsGroup = styled(ButtonGroup)`
+  & > * {
+    margin: 0;
+  }
+
+  & > button:first-child {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  & button:last-child {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+
+    position: relative;
+    padding: 0 0.5rem;
+
+    &::before {
+      content: '';
+      border-left: 1px solid ${({ theme }) => theme.color.neutral['200']};
+      opacity: 0.5;
+
+      height: 75%;
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+  }
 `;
 
 const BackArrow = styled(IconButton)`
@@ -249,49 +281,49 @@ function EditorToolbar({
   function renderNewEntryWorkflowPublishControls({ canCreate, canPublish, deleteLabel }) {
     return (
       canPublish && (
-        <Dropdown>
-          <DropdownTrigger>
-            <Button type="success" primary icon="radio" hasMenu>
-              {isPublishing
-                ? t('editor.editorToolbar.publishing')
-                : t('editor.editorToolbar.publish')}
-            </Button>
-          </DropdownTrigger>
+        <PublishControlsGroup>
+          <Button type="success" primary icon="radio" onClick={onPublish}>
+            {isPublishing
+              ? t('editor.editorToolbar.publishing')
+              : t('editor.editorToolbar.publish')}
+          </Button>
 
-          <DropdownMenu anchorOrigin={{ y: 'bottom', x: 'right' }}>
-            <DropdownMenuItem icon="radio" onClick={onPublish}>
-              {t('editor.editorToolbar.publishNow')}
-            </DropdownMenuItem>
+          <Dropdown>
+            <DropdownTrigger>
+              <Button type="success" primary icon="chevron-down" />
+            </DropdownTrigger>
 
-            {canCreate && (
-              <>
-                <DropdownMenuItem icon="plus-circle" onClick={onPublishAndNew}>
-                  {t('editor.editorToolbar.publishAndCreateNew')}
-                </DropdownMenuItem>
+            <DropdownMenu anchorOrigin={{ y: 'bottom', x: 'right' }}>
+              {canCreate && (
+                <>
+                  <DropdownMenuItem icon="plus-circle" onClick={onPublishAndNew}>
+                    {t('editor.editorToolbar.publishAndCreateNew')}
+                  </DropdownMenuItem>
 
-                <DropdownMenuItem icon="copy" onClick={onPublishAndDuplicate}>
-                  {t('editor.editorToolbar.publishAndDuplicate')}
-                </DropdownMenuItem>
-              </>
-            )}
+                  <DropdownMenuItem icon="copy" onClick={onPublishAndDuplicate}>
+                    {t('editor.editorToolbar.publishAndDuplicate')}
+                  </DropdownMenuItem>
+                </>
+              )}
 
-            {(!showDelete || useOpenAuthoring) &&
-            !hasUnpublishedChanges &&
-            !isModification ? null : (
-              <>
-                <DropdownMenuSeparator />
+              {(!showDelete || useOpenAuthoring) &&
+              !hasUnpublishedChanges &&
+              !isModification ? null : (
+                <>
+                  <DropdownMenuSeparator />
 
-                <DropdownMenuItem
-                  type="danger"
-                  icon="trash-2"
-                  onClick={hasUnpublishedChanges ? onDeleteUnpublishedChanges : onDelete}
-                >
-                  {isDeleting ? t('editor.editorToolbar.deleting') : deleteLabel}
-                </DropdownMenuItem>
-              </>
-            )}
-          </DropdownMenu>
-        </Dropdown>
+                  <DropdownMenuItem
+                    type="danger"
+                    icon="trash-2"
+                    onClick={hasUnpublishedChanges ? onDeleteUnpublishedChanges : onDelete}
+                  >
+                    {isDeleting ? t('editor.editorToolbar.deleting') : deleteLabel}
+                  </DropdownMenuItem>
+                </>
+              )}
+            </DropdownMenu>
+          </Dropdown>
+        </PublishControlsGroup>
       )
     );
   }
@@ -461,7 +493,7 @@ function EditorToolbar({
     return (
       <Dropdown>
         <DropdownTrigger>
-          <Button icon="more-vertical" />
+          <IconButton icon="more-vertical" />
         </DropdownTrigger>
 
         <DropdownMenu anchorOrigin={{ y: 'bottom', x: 'right' }}>
