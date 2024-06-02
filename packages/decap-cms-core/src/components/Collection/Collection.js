@@ -4,13 +4,15 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import { connect } from 'react-redux';
 import { translate } from 'react-polyglot';
-import { lengths, components } from 'decap-cms-ui-default';
+import { components } from 'decap-cms-ui-default';
+import { Card } from 'decap-cms-ui-next';
 
 import { getNewEntryUrl } from '../../lib/urlHelper';
 import CollectionTop from './CollectionTop';
 import EntriesCollection from './Entries/EntriesCollection';
 import EntriesSearch from './Entries/EntriesSearch';
 import CollectionControls from './CollectionControls';
+import ViewStyleControl from './ViewStyleControl';
 import { sortByField, filterByField, changeViewStyle, groupByField } from '../../actions/entries';
 import {
   selectSortableFields,
@@ -25,17 +27,16 @@ import {
 } from '../../reducers/entries';
 
 const CollectionContainer = styled.div`
-  /* margin: ${lengths.pageMargin}; */
-  /* margin: 0 2rem; */
+  /* overflow: scroll; */
 `;
 
 const CollectionMain = styled.main`
   /* padding-left: 280px; */
 `;
 
-const SearchResultContainer = styled.div`
-  ${components.cardTop};
-  margin-bottom: 22px;
+const SearchResultContainer = styled(Card)`
+  padding: 1rem;
+  margin: 0 2rem 2rem 2rem;
 `;
 
 const SearchResultHeading = styled.h1`
@@ -63,11 +64,13 @@ export class Collection extends React.Component {
   };
 
   renderEntriesSearch = () => {
-    const { searchTerm, collections, collection, isSingleSearchResult } = this.props;
+    const { searchTerm, collections, collection, viewStyle, isSingleSearchResult } = this.props;
+
     return (
       <EntriesSearch
         collections={isSingleSearchResult ? collections.filter(c => c === collection) : collections}
         searchTerm={searchTerm}
+        viewStyle={viewStyle}
       />
     );
   };
@@ -117,24 +120,23 @@ export class Collection extends React.Component {
               </SearchResultHeading>
             </SearchResultContainer>
           ) : (
-            <>
-              <CollectionTop collection={collection} newEntryUrl={newEntryUrl} />
-              <CollectionControls
-                viewStyle={viewStyle}
-                onChangeViewStyle={onChangeViewStyle}
-                sortableFields={sortableFields}
-                onSortClick={onSortClick}
-                sort={sort}
-                viewFilters={viewFilters}
-                viewGroups={viewGroups}
-                t={t}
-                onFilterClick={onFilterClick}
-                onGroupClick={onGroupClick}
-                filter={filter}
-                group={group}
-              />
-            </>
+            <CollectionTop collection={collection} newEntryUrl={newEntryUrl} />
           )}
+          <CollectionControls
+            isSearchResults={isSearchResults}
+            viewStyle={viewStyle}
+            onChangeViewStyle={onChangeViewStyle}
+            sortableFields={sortableFields}
+            onSortClick={onSortClick}
+            sort={sort}
+            viewFilters={viewFilters}
+            viewGroups={viewGroups}
+            t={t}
+            onFilterClick={onFilterClick}
+            onGroupClick={onGroupClick}
+            filter={filter}
+            group={group}
+          />
           {isSearchResults ? this.renderEntriesSearch() : this.renderEntriesCollection()}
         </CollectionMain>
       </CollectionContainer>

@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { lengths } from 'decap-cms-ui-default';
 
 import ViewStyleControl from './ViewStyleControl';
 import SortControl from './SortControl';
@@ -18,6 +17,7 @@ const CollectionControlsContainer = styled.div`
 `;
 
 function CollectionControls({
+  isSearchResults,
   viewStyle,
   onChangeViewStyle,
   sortableFields,
@@ -34,19 +34,24 @@ function CollectionControls({
   return (
     <CollectionControlsContainer>
       <ViewStyleControl viewStyle={viewStyle} onChangeViewStyle={onChangeViewStyle} />
-      {viewGroups.length > 0 && (
-        <GroupControl viewGroups={viewGroups} onGroupClick={onGroupClick} t={t} group={group} />
-      )}
-      {viewFilters.length > 0 && (
-        <FilterControl
-          viewFilters={viewFilters}
-          onFilterClick={onFilterClick}
-          t={t}
-          filter={filter}
-        />
-      )}
-      {sortableFields.length > 0 && (
-        <SortControl fields={sortableFields} sort={sort} onSortClick={onSortClick} />
+
+      {!isSearchResults && (
+        <>
+          {viewGroups.length > 0 && (
+            <GroupControl viewGroups={viewGroups} onGroupClick={onGroupClick} t={t} group={group} />
+          )}
+          {viewFilters.length > 0 && (
+            <FilterControl
+              viewFilters={viewFilters}
+              onFilterClick={onFilterClick}
+              t={t}
+              filter={filter}
+            />
+          )}
+          {sortableFields.length > 0 && (
+            <SortControl fields={sortableFields} sort={sort} onSortClick={onSortClick} />
+          )}
+        </>
       )}
     </CollectionControlsContainer>
   );

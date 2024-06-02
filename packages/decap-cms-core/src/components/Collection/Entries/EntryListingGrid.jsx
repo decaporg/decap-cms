@@ -13,16 +13,14 @@ const Wrap = styled.div`
   margin: 1rem 2rem;
 `;
 
-function EntriesGrid({ collection, entries, inferredFields }) {
-  console.log('EntriesGrid', collection, entries, inferredFields);
-
+function EntryListingGrid({ entries, isSingleCollectionInList = true }) {
   return (
     <Wrap>
       <ThumbnailGrid>
         {entries.toJS().map(entry => {
-          const title = entry.data[inferredFields.titleField];
-          const description = entry.data[inferredFields.descriptionField];
-          let image = entry.data[inferredFields.imageField];
+          const title = entry.data[entry.titleFieldName];
+          const description = entry.data[entry.descriptionFieldName];
+          let image = entry.data[entry.imageFieldName];
           if (image) {
             image = encodeURI(image);
           }
@@ -30,9 +28,10 @@ function EntriesGrid({ collection, entries, inferredFields }) {
           return (
             <Thumbnail
               as={Link}
-              to={`/collections/${collection.get('name')}/entries/${entry.slug}`}
+              to={`/collections/${entry.collection}/entries/${entry.slug}`}
               selectable={false}
               key={entry.slug}
+              supertitle={!isSingleCollectionInList ? entry.collectionLabel : null}
               title={title}
               description={description}
               previewImgSrc={image}
@@ -44,4 +43,4 @@ function EntriesGrid({ collection, entries, inferredFields }) {
   );
 }
 
-export default EntriesGrid;
+export default EntryListingGrid;

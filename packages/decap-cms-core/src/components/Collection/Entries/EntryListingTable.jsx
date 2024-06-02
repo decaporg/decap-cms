@@ -22,12 +22,12 @@ const Subtitle = styled.div`
   font-size: 12px;
 `;
 
-function EntriesTable({ entries, inferredFields }) {
+function EntryListingTable({ entries, isSingleCollectionInList = true }) {
   const columns = [
     {
       id: 'image',
       cell({ row: { original: rowData } }) {
-        let image = rowData.data[inferredFields.imageField];
+        let image = rowData.data[rowData.imageFieldName];
         if (image) {
           image = encodeURI(image);
         }
@@ -41,8 +41,8 @@ function EntriesTable({ entries, inferredFields }) {
       accessorKey: 'title',
       header: 'Title',
       cell({ row: { original: rowData } }) {
-        const title = rowData.data[inferredFields.titleField];
-        const description = rowData.data[inferredFields.descriptionField];
+        const title = rowData.data[rowData.titleFieldName];
+        const description = rowData.data[rowData.descriptionFieldName];
 
         return (
           <>
@@ -53,6 +53,33 @@ function EntriesTable({ entries, inferredFields }) {
       },
     },
   ];
+
+  if (!isSingleCollectionInList) {
+    columns.splice(1, 0, {
+      id: 'collection',
+      accessorKey: 'collection',
+      header: 'Collection',
+      cell({ row: { original: rowData } }) {
+        return rowData.collectionLabel;
+      },
+      size: 126,
+    });
+  }
+
+  // if (inferredFields.imageField) {
+  //   columns.unshift({
+  //     id: 'image',
+  //     cell({ row: { original: rowData } }) {
+  //       let image = rowData.data[inferredFields.imageField];
+  //       if (image) {
+  //         image = encodeURI(image);
+  //       }
+
+  //       return <Image srcUrl={image} />;
+  //     },
+  //     size: 56,
+  //   });
+  // }
 
   const history = useHistory();
 
@@ -73,4 +100,4 @@ function EntriesTable({ entries, inferredFields }) {
   );
 }
 
-export default EntriesTable;
+export default EntryListingTable;

@@ -32,6 +32,7 @@ function Entries({
   }
 
   const hasEntries = (entries && entries.size > 0) || cursor?.actions?.has('append_next');
+
   if (hasEntries) {
     return (
       <>

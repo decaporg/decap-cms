@@ -18,6 +18,7 @@ class EntriesSearch extends React.Component {
     searchEntries: PropTypes.func.isRequired,
     clearSearch: PropTypes.func.isRequired,
     searchTerm: PropTypes.string.isRequired,
+    viewStyle: PropTypes.string,
     collections: ImmutablePropTypes.seq,
     collectionNames: PropTypes.array,
     entries: ImmutablePropTypes.list,
@@ -37,6 +38,7 @@ class EntriesSearch extends React.Component {
       return;
 
     const { searchEntries } = prevProps;
+    console.log(searchTerm, collectionNames);
     searchEntries(searchTerm, collectionNames);
   }
 
@@ -60,13 +62,15 @@ class EntriesSearch extends React.Component {
   };
 
   render() {
-    const { collections, entries, isFetching } = this.props;
+    const { collections, entries, isFetching, viewStyle } = this.props;
+
     return (
       <Entries
         cursor={this.getCursor()}
         handleCursorActions={this.handleCursorActions}
         collections={collections}
         entries={entries}
+        viewStyle={viewStyle}
         isFetching={isFetching}
       />
     );
@@ -76,7 +80,10 @@ class EntriesSearch extends React.Component {
 function mapStateToProps(state, ownProps) {
   const { searchTerm } = ownProps;
   const collections = ownProps.collections.toIndexedSeq();
-  const collectionNames = ownProps.collections.keySeq().toArray();
+  const collectionNames = ownProps.collections
+    .filter(collection => !collection.get('url'))
+    .keySeq()
+    .toArray();
   const isFetching = state.search.isFetching;
   const page = state.search.page;
   const entries = selectSearchedEntries(state, collectionNames);

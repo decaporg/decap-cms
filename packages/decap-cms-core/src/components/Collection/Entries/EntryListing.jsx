@@ -6,9 +6,8 @@ import { Map } from 'immutable';
 
 import { selectFields, selectInferredField } from '../../../reducers/collections';
 import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from '../../../constants/collectionViews';
-import EntryCard from './EntryCard';
-import EntriesGrid from './EntriesGrid';
-import EntriesTable from './EntriesTable';
+import EntryListingGrid from './EntryListingGrid';
+import EntryListingTable from './EntryListingTable';
 
 export default class EntryListing extends React.Component {
   static propTypes = {
@@ -45,28 +44,77 @@ export default class EntryListing extends React.Component {
   renderEntriesForSingleCollection = () => {
     const { collections, entries, viewStyle } = this.props;
     const inferredFields = this.inferFields(collections);
-    const entryCardProps = { collection: collections, inferredFields };
+
+    const entriesData = entries.map(entry => {
+      return {
+        ...entry.toJS(),
+        descriptionFieldName: inferredFields.descriptionField,
+        imageFieldName: inferredFields.imageField,
+        titleFieldName: inferredFields.titleField,
+      };
+    });
 
     if (viewStyle === VIEW_STYLE_LIST) {
-      return <EntriesTable {...entryCardProps} entries={entries} />;
+      return <EntryListingTable entries={entriesData} />;
     }
 
     if (viewStyle === VIEW_STYLE_GRID) {
-      return <EntriesGrid {...entryCardProps} entries={entries} />;
+      return <EntryListingGrid entries={entriesData} />;
     }
   };
 
   renderEntriesForMultipleCollections = () => {
-    const { collections, entries } = this.props;
+    const { collections, entries, viewStyle } = this.props;
     const isSingleCollectionInList = collections.size === 1;
-    return entries.map((entry, idx) => {
-      const collectionName = entry.get('collection');
-      const collection = collections.find(coll => coll.get('name') === collectionName);
-      const collectionLabel = !isSingleCollectionInList && collection.get('label');
-      const inferredFields = this.inferFields(collection);
-      const entryCardProps = { collection, entry, inferredFields, collectionLabel };
-      return <EntryCard {...entryCardProps} key={idx} />;
-    });
+    let entriesData;
+
+    if (isSingleCollectionInList) {
+      entriesData = entries.map(entry => {
+        const inferredFields = this.inferFields(collections.first());
+
+        return {
+          ...entry.toJS(),
+          descriptionFieldName: inferredFields.descriptionField,
+          imageFieldName: inferredFields.imageField,
+          titleFieldName: inferredFields.titleField,
+        };
+      });
+    } else {
+      entriesData = entries.map(entry => {
+        const collectionName = entry.get('collection');
+        const collection = collections.find(c => c.get('name') === collectionName);
+        const collectionLabel = collection.get('label_singular') || collection.get('label');
+
+        const inferredFields = this.inferFields(collection);
+
+        return {
+          collection,
+          ...entry.toJS(),
+          descriptionFieldName: inferredFields.descriptionField,
+          imageFieldName: inferredFields.imageField,
+          titleFieldName: inferredFields.titleField,
+          collectionLabel,
+        };
+      });
+    }
+
+    if (viewStyle === VIEW_STYLE_LIST) {
+      return (
+        <EntryListingTable
+          entries={entriesData}
+          isSingleCollectionInList={isSingleCollectionInList}
+        />
+      );
+    }
+
+    if (viewStyle === VIEW_STYLE_GRID) {
+      return (
+        <EntryListingGrid
+          entries={entriesData}
+          isSingleCollectionInList={isSingleCollectionInList}
+        />
+      );
+    }
   };
 
   render() {
