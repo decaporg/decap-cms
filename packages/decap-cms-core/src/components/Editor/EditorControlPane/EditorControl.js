@@ -70,14 +70,6 @@ const styleStrings = {
   `,
 };
 
-const ControlContainer = styled.div`
-  margin-top: 16px;
-
-  &:first-of-type {
-    margin-top: 36px;
-  }
-`;
-
 const ControlErrorsList = styled.ul`
   list-style-type: none;
   font-size: 12px;
@@ -260,7 +252,7 @@ class EditorControl extends React.Component {
     return (
       <ClassNames>
         {({ css, cx }) => (
-          <ControlContainer
+          <div
             className={className}
             css={css`
               ${isHidden && styleStrings.hidden};
@@ -397,7 +389,7 @@ class EditorControl extends React.Component {
                 </ReactMarkdown>
               </ControlHint>
             )} */}
-          </ControlContainer>
+          </div>
         )}
       </ClassNames>
     );

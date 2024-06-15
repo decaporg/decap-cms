@@ -25,6 +25,7 @@ import {
   lengths,
   FieldLabel,
 } from 'decap-cms-ui-default';
+import { ListField } from 'decap-cms-ui-next';
 import { stringTemplate, validations } from 'decap-cms-lib-widgets';
 
 import {
@@ -594,63 +595,34 @@ export default class ListControl extends React.Component {
     }
 
     return (
-      <SortableListItem
-        css={[styles.listControlItem, collapsed && styles.listControlItemCollapsed]}
-        index={index}
-        key={key}
-        id={key}
-        keys={keys}
-      >
-        {isVariableTypesList && (
-          <LabelComponent
+      <ClassNames>
+        {({ css, cx }) => (
+          <ObjectControl
+            classNameWrapper={cx(classNameWrapper, {
+              [css`
+                ${styleStrings.collapsedObjectControl};
+              `]: collapsed,
+            })}
+            value={item}
             field={field}
-            isActive={false}
-            hasErrors={hasError}
-            uniqueFieldId={this.uniqueFieldId}
-            isFieldOptional={field.get('required') === false}
-            t={t}
+            onChangeObject={this.handleChangeFor(index)}
+            editorControl={editorControl}
+            resolveWidget={resolveWidget}
+            metadata={metadata}
+            forList
+            onValidateObject={onValidateObject}
+            clearFieldErrors={clearFieldErrors}
+            fieldsErrors={fieldsErrors}
+            ref={this.processControlRef}
+            controlRef={controlRef}
+            validationKey={key}
+            collapsed={collapsed}
+            data-testid={`object-control-${key}`}
+            hasError={hasError}
+            parentIds={[...parentIds, forID, key]}
           />
         )}
-        <StyledListItemTopBar
-          collapsed={collapsed}
-          onCollapseToggle={partial(this.handleItemCollapseToggle, index)}
-          dragHandle={DragHandle}
-          id={key}
-          onRemove={partial(this.handleRemove, index)}
-          data-testid={`styled-list-item-top-bar-${key}`}
-        />
-        <NestedObjectLabel collapsed={collapsed} error={hasError}>
-          {this.objectLabel(item)}
-        </NestedObjectLabel>
-        <ClassNames>
-          {({ css, cx }) => (
-            <ObjectControl
-              classNameWrapper={cx(classNameWrapper, {
-                [css`
-                  ${styleStrings.collapsedObjectControl};
-                `]: collapsed,
-              })}
-              value={item}
-              field={field}
-              onChangeObject={this.handleChangeFor(index)}
-              editorControl={editorControl}
-              resolveWidget={resolveWidget}
-              metadata={metadata}
-              forList
-              onValidateObject={onValidateObject}
-              clearFieldErrors={clearFieldErrors}
-              fieldsErrors={fieldsErrors}
-              ref={this.processControlRef}
-              controlRef={controlRef}
-              validationKey={key}
-              collapsed={collapsed}
-              data-testid={`object-control-${key}`}
-              hasError={hasError}
-              parentIds={[...parentIds, forID, key]}
-            />
-          )}
-        </ClassNames>
-      </SortableListItem>
+      </ClassNames>
     );
   };
 
@@ -678,7 +650,7 @@ export default class ListControl extends React.Component {
   }
 
   renderListControl() {
-    const { value, forID, field, classNameWrapper, t } = this.props;
+    const { value, forID, field, inline, classNameWrapper, t } = this.props;
     const { itemsCollapsed, listCollapsed, keys } = this.state;
     const items = value || List();
     const label = field.get('label', field.get('name'));
@@ -691,36 +663,13 @@ export default class ListControl extends React.Component {
     const itemsArray = keys.map(key => ({ id: key }));
 
     return (
-      <ClassNames>
-        {({ cx, css }) => (
-          <div
-            id={forID}
-            className={cx(
-              classNameWrapper,
-              css`
-                ${styleStrings.objectWidgetTopBarContainer}
-              `,
-            )}
-          >
-            <ObjectWidgetTopBar
-              allowAdd={field.get('allow_add', true)}
-              onAdd={this.handleAdd}
-              types={field.get(TYPES_KEY, null)}
-              onAddType={type => this.handleAddType(type, resolveFieldKeyType(field))}
-              heading={`${items.size} ${listLabel}`}
-              label={labelSingular.toLowerCase()}
-              onCollapseToggle={this.handleCollapseAllToggle}
-              collapsed={selfCollapsed}
-              t={t}
-            />
-            {(!selfCollapsed || !minimizeCollapsedItems) && (
-              <SortableList items={itemsArray} keys={keys} onSortEnd={this.onSortEnd}>
-                {items.map(this.renderItem)}
-              </SortableList>
-            )}
-          </div>
-        )}
-      </ClassNames>
+      <ListField
+        name={forID}
+        label={label}
+        labelSingular={labelSingular}
+        inline={inline}
+        items={() => items.map(this.renderItem)}
+      />
     );
   }
 

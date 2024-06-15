@@ -34,7 +34,7 @@ const AddNewIconButton = styled(Button)`
   &:focus,
   &:active:hover,
   &:focus:hover {
-    background-color: ${({ theme }) => theme.color.surface};
+    background-color: ${({ theme }) => theme.color.background};
   }
   transition: 200ms;
   transform: scale(0);
@@ -168,7 +168,8 @@ const ListFieldItem = forwardRef(
           )}
         >
           <FieldContext.Provider value={{ inline: true }}>
-            {fields && fields(handleChange, index)}
+            {/* {items && items(handleChange, index)} */}
+            {items}
           </FieldContext.Provider>
         </Tree>
         {!last && (

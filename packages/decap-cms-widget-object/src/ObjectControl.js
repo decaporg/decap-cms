@@ -4,6 +4,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { ClassNames } from '@emotion/react';
 import { List, Map } from 'immutable';
 import { colors, lengths, ObjectWidgetTopBar } from 'decap-cms-ui-default';
+import { ObjectField } from 'decap-cms-ui-next';
 import { stringTemplate } from 'decap-cms-lib-widgets';
 
 const styleStrings = {
@@ -139,54 +140,22 @@ export default class ObjectControl extends React.Component {
   };
 
   render() {
-    const { field, forID, classNameWrapper, forList, hasError, t } = this.props;
-    const collapsed = forList ? this.props.collapsed : this.state.collapsed;
+    const { field, forID, inline, description, status, error, errors, hasError, t } = this.props;
     const multiFields = field.get('fields');
     const singleField = field.get('field');
 
     if (multiFields || singleField) {
       return (
-        <ClassNames>
-          {({ css, cx }) => (
-            <div
-              id={forID}
-              className={cx(
-                classNameWrapper,
-                css`
-                  ${styleStrings.objectWidgetTopBarContainer}
-                `,
-                {
-                  [css`
-                    ${styleStrings.nestedObjectControl}
-                  `]: forList,
-                },
-                {
-                  [css`
-                    border-color: ${colors.textFieldBorder};
-                  `]: forList ? !hasError : false,
-                },
-              )}
-            >
-              {forList ? null : (
-                <ObjectWidgetTopBar
-                  collapsed={collapsed}
-                  onCollapseToggle={this.handleCollapseToggle}
-                  heading={collapsed && this.objectLabel()}
-                  t={t}
-                />
-              )}
-              <div
-                className={cx({
-                  [css`
-                    ${styleStrings.collapsedObjectControl}
-                  `]: collapsed,
-                })}
-              >
-                {this.renderFields(multiFields, singleField)}
-              </div>
-            </div>
-          )}
-        </ClassNames>
+        <ObjectField
+          label={this.objectLabel()}
+          name={forID}
+          fields={() => this.renderFields(multiFields, singleField)}
+          description={description}
+          status={status}
+          inline={inline}
+          error={error}
+          errors={errors}
+        />
       );
     }
 

@@ -115,6 +115,24 @@ export const StyledButton = styled.button`
       margin: 4px;
     }
   `}
+  ${({ type, theme, iconOnly }) =>
+    iconOnly
+      ? `
+      color: ${theme.color.neutral['700']};
+      padding: 0 0.5rem;
+      &,
+      &:hover,
+      &:focus,
+      &:active,
+      &:focus:hover,
+      &:focus:active {
+        background-color: transparent;
+      }
+      &:hover {
+        color: ${type === 'danger' ? theme.color.danger['500'] : theme.color.primary['500']}
+      }
+  `
+      : ''}
 `;
 
 const StyledMenuIcon = styled(Icon)`

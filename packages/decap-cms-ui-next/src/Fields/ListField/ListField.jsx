@@ -125,10 +125,18 @@ const DragOverlayListFieldItem = styled(ListFieldItem)`
   }
 `;
 
-function ListField({ name, label, labelSingular, fields, className, inline, onChange }) {
+function ListField({
+  name,
+  label,
+  labelSingular,
+  items: defaultItems,
+  className,
+  inline,
+  onChange,
+}) {
   const [activeId, setActiveId] = useState(null);
   const [focus, setFocus] = useState(false);
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState(defaultItems || []);
   const [expandedItems, setExpandedItems] = useState([]);
 
   const activationConstraint = { distance: 4 };
@@ -232,6 +240,8 @@ function ListField({ name, label, labelSingular, fields, className, inline, onCh
     setActiveId(null);
   }
 
+  console.log('listField', items);
+
   return (
     <Field label={label} labelTarget={name} focus={focus} className={className} inline={inline}>
       <ActionWrap>
@@ -272,7 +282,6 @@ function ListField({ name, label, labelSingular, fields, className, inline, onCh
                     index={index}
                     item={item}
                     items={items}
-                    fields={fields}
                     onDelete={handleDelete}
                     handleChange={handleChange}
                     toggleExpand={toggleExpand}
@@ -294,7 +303,6 @@ function ListField({ name, label, labelSingular, fields, className, inline, onCh
                 index={activeId}
                 item={items[activeId]}
                 items={items}
-                fields={fields}
                 onDelete={handleDelete}
                 handleChange={handleChange}
                 toggleExpand={toggleExpand}
