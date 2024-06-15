@@ -92,6 +92,7 @@ function App({
   auth,
   config,
   collections,
+  resources,
   loginUser,
   logoutUser,
   loadConfig,
@@ -196,6 +197,7 @@ function App({
         <AppBody>
           <Nav
             collections={collections}
+            resources={resources}
             location={location}
             showMediaButton={showMediaButton}
             hasWorkflow={hasWorkflow}
@@ -295,7 +297,7 @@ App.propTypes = {
 };
 
 function mapStateToProps(state) {
-  const { auth, config, collections, globalUI, mediaLibrary } = state;
+  const { auth, config, collections, resources, globalUI, mediaLibrary } = state;
   const user = auth.user;
   const isFetching = globalUI.isFetching;
   const publishMode = config.publish_mode;
@@ -305,6 +307,7 @@ function mapStateToProps(state) {
     auth,
     config,
     collections,
+    resources,
     user,
     isFetching,
     publishMode,

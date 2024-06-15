@@ -39,12 +39,8 @@ const SearchWrap = styled.div`
 
 function Header({ user, collections, onLogoutClick, onCreateEntryClick, isSearchEnabled, t }) {
   const creatableCollections = collections.filter(collection => collection.get('create')).toList();
-  const searcheableCollections = collections.filter(collection => !collection.get('url')).toList();
-
-  const [quickAddMenuAnchorEl, setQuickAddMenuAnchorEl] = useState(null);
 
   const [searchTerm, setSearchTerm] = useState('');
-  const [collectionMenuAnchorEl, setCollectionMenuAnchorEl] = useState(null);
   const [selectedCollectionIdx, setSelectedCollectionIdx] = useState(
     getSelectedSelectionBasedOnProps(),
   );
@@ -114,19 +110,17 @@ function Header({ user, collections, onLogoutClick, onCreateEntryClick, isSearch
                           selected={selectedCollectionIdx === -1}
                           onClick={() => {
                             setSelectedCollectionIdx(-1);
-                            setCollectionMenuAnchorEl(null);
                           }}
                         >
                           {t('collection.sidebar.allCollections')}
                         </DropdownMenuItem>
 
-                        {searcheableCollections.toIndexedSeq().map((collection, idx) => (
+                        {collections.toIndexedSeq().map((collection, idx) => (
                           <DropdownMenuItem
                             key={idx}
                             selected={selectedCollectionIdx === idx}
                             onClick={() => {
                               setSelectedCollectionIdx(idx);
-                              setCollectionMenuAnchorEl(null);
                             }}
                             icon={
                               collection.get('icon') ??

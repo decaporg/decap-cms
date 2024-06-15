@@ -37,6 +37,7 @@ const en = {
     sidebar: {
       collections: 'Collections',
       allCollections: 'All Collections',
+      resources: 'Resources',
       searchAll: 'Search all',
       searchIn: 'Search in',
     },

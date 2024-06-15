@@ -198,7 +198,6 @@ function getConfigSchema() {
             label_singular: { type: 'string' },
             description: { type: 'string' },
             icon: { type: 'string', enum: Object.keys(iconComponents) },
-            position: { type: 'string', enum: ['start', 'end'], examples: ['start'] },
             folder: { type: 'string' },
             files: {
               type: 'array',
@@ -286,13 +285,9 @@ function getConfigSchema() {
             i18n: i18nCollection,
           },
           required: ['name', 'label'],
-          oneOf: [
-            { required: ['files'] },
-            { required: ['folder', 'fields'] },
-            { required: ['url'] },
-          ],
+          oneOf: [{ required: ['files'] }, { required: ['folder', 'fields'] }],
           not: {
-            required: ['sortable_fields', 'sortableFields', 'icon', 'position'],
+            required: ['sortable_fields', 'sortableFields', 'icon'],
           },
           if: { required: ['extension'] },
           then: {
@@ -314,6 +309,18 @@ function getConfigSchema() {
           },
         },
         uniqueItemProperties: ['name'],
+      },
+      resources: {
+        type: 'array',
+        items: {
+          type: 'object',
+          properties: {
+            name: { type: 'string' },
+            label: { type: 'string' },
+            url: { type: 'string' },
+            icon: { type: 'string', enum: Object.keys(iconComponents) },
+          },
+        },
       },
       editor: {
         type: 'object',

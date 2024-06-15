@@ -140,71 +140,6 @@ collections: # A list of collections the CMS should be able to edit
         widget: datetime
         i18n: duplicate
 
-  - name: 'analytics'
-    label: 'Analytics'
-    url: 'https://app.netlify.com/sites/decap-www/metrics/analytics'
-    icon: bar-chart
-    position: end
-
-  - name: 'Hosting'
-    label: 'Hosting'
-    url: 'https://app.netlify.com/sites/decap-www/overview'
-    icon: server
-    position: end
-
-  - name: 'git-repository'
-    label: 'Git Repository'
-    url: 'https://github.com/decaporg/decap-website'
-    icon: github
-    position: end
-
-  - name: 'settings'
-    label: 'Settings'
-    icon: settings
-    position: end
-    delete: false # Prevent users from deleting documents in this collection
-    editor:
-      preview: false
-    files:
-      - name: 'general'
-        label: 'Site Settings'
-        file: '_data/settings.json'
-        description: 'General Site Settings'
-        fields:
-          - { label: 'Global title', name: 'site_title', widget: 'string' }
-          - label: 'Post Settings'
-            name: posts
-            widget: 'object'
-            fields:
-              - {
-                  label: 'Number of posts on frontpage',
-                  name: front_limit,
-                  widget: number,
-                  min: 1,
-                  max: 10,
-                }
-              - { label: 'Default Author', name: author, widget: string }
-              - {
-                  label: 'Default Thumbnail',
-                  name: thumb,
-                  widget: image,
-                  class: 'thumb',
-                  required: false,
-                }
-
-      - name: 'authors'
-        label: 'Authors'
-        file: '_data/authors.yml'
-        description: 'Author descriptions'
-        fields:
-          - name: authors
-            label: Authors
-            label_singular: 'Author'
-            widget: list
-            fields:
-              - { label: 'Name', name: 'name', widget: 'string', hint: 'First and Last' }
-              - { label: 'Description', name: 'description', widget: 'markdown' }
-
   - name: 'kitchenSink' # all the things in one entry, for documentation and quick testing
     label: 'Kitchen Sink'
     folder: '_sink'
@@ -357,3 +292,65 @@ collections: # A list of collections the CMS should be able to edit
         name: title
         widget: string
     meta: { path: { widget: string, label: 'Path', index_file: 'index' } }
+
+  - name: 'settings'
+    label: 'Settings'
+    icon: settings
+    delete: false # Prevent users from deleting documents in this collection
+    editor:
+      preview: false
+    files:
+      - name: 'general'
+        label: 'Site Settings'
+        file: '_data/settings.json'
+        description: 'General Site Settings'
+        fields:
+          - { label: 'Global title', name: 'site_title', widget: 'string' }
+          - label: 'Post Settings'
+            name: posts
+            widget: 'object'
+            fields:
+              - {
+                  label: 'Number of posts on frontpage',
+                  name: front_limit,
+                  widget: number,
+                  min: 1,
+                  max: 10,
+                }
+              - { label: 'Default Author', name: author, widget: string }
+              - {
+                  label: 'Default Thumbnail',
+                  name: thumb,
+                  widget: image,
+                  class: 'thumb',
+                  required: false,
+                }
+
+      - name: 'authors'
+        label: 'Authors'
+        file: '_data/authors.yml'
+        description: 'Author descriptions'
+        fields:
+          - name: authors
+            label: Authors
+            label_singular: 'Author'
+            widget: list
+            fields:
+              - { label: 'Name', name: 'name', widget: 'string', hint: 'First and Last' }
+              - { label: 'Description', name: 'description', widget: 'markdown' }
+
+resources: # A list of resources the CMS should link to
+  - name: 'analytics'
+    label: 'Analytics'
+    url: 'https://app.netlify.com/sites/decap-www/metrics/analytics'
+    icon: bar-chart
+
+  - name: 'hosting'
+    label: 'Hosting'
+    url: 'https://app.netlify.com/sites/decap-www/overview'
+    icon: server
+
+  - name: 'git-repository'
+    label: 'Git Repository'
+    url: 'https://github.com/decaporg/decap-website'
+    icon: github

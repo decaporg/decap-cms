@@ -17,7 +17,7 @@ const StyledCustomLogo = styled.img`
   margin: 0.375rem;
 `;
 
-function Nav({ collections, showMediaButton, hasWorkflow, siteUrl, logoUrl, t }) {
+function Nav({ collections, resources, showMediaButton, hasWorkflow, siteUrl, logoUrl, t }) {
   const { pathname } = useLocation();
 
   const { activeNavLinkId } = useMemo(() => {
@@ -33,17 +33,6 @@ function Nav({ collections, showMediaButton, hasWorkflow, siteUrl, logoUrl, t })
 
     return { activeNavLinkId: pathnameArray[1] };
   }, [pathname]);
-
-  const startCollections = collections
-    .filter(collection => collection.get('position') !== 'end')
-    .toList();
-  const endCollections = collections
-    .filter(collection => collection.get('position') === 'end')
-    .toList();
-
-  function isExternalResource(collection) {
-    return collection.get('url');
-  }
 
   return (
     <NavMenu collapsable={true}>
@@ -92,51 +81,48 @@ function Nav({ collections, showMediaButton, hasWorkflow, siteUrl, logoUrl, t })
       <NavMenuGroup>
         <NavMenuGroupLabel>{t('collection.sidebar.collections')}</NavMenuGroupLabel>
 
-        {startCollections.map(collection => {
-          const collectionName = collection.get('name');
+        {collections
+          .toList()
+          .filter(collection => collection.get('hide') !== true)
+          .map(collection => {
+            const collectionName = collection.get('name');
 
-          if (collection.has('nested')) {
+            if (collection.has('nested')) {
+              return (
+                <li key={collectionName}>
+                  <NestedCollection collection={collection} data-testid={collectionName} />
+                </li>
+              );
+            }
+
             return (
-              <li key={collectionName}>
-                <NestedCollection collection={collection} data-testid={collectionName} />
-              </li>
+              <NavMenuItem
+                as={ReactRouterNavLink}
+                to={`/collections/${collectionName}`}
+                key={`collections-${collectionName}`}
+                active={activeNavLinkId === `collections-${collectionName}`}
+                icon={
+                  collection.get('icon') ??
+                  (collection.get('type') === 'file_based_collection' ? 'file' : 'folder')
+                }
+              >
+                {collection.get('label')}
+              </NavMenuItem>
             );
-          }
-
-          return (
-            <NavMenuItem
-              as={ReactRouterNavLink}
-              to={`/collections/${collectionName}`}
-              key={`collections-${collectionName}`}
-              active={activeNavLinkId === `collections-${collectionName}`}
-              icon={
-                collection.get('icon') ??
-                (collection.get('type') === 'file_based_collection' ? 'file' : 'folder')
-              }
-            >
-              {collection.get('label')}
-            </NavMenuItem>
-          );
-        })}
+          })}
       </NavMenuGroup>
 
       <NavMenuGroup end>
-        {endCollections.map(collection => {
-          const collectionName = collection.get('name');
+        <NavMenuGroupLabel>{t('collection.sidebar.resources')}</NavMenuGroupLabel>
 
+        {resources.toList().map(resource => {
           return (
             <NavMenuItem
-              as={isExternalResource(collection) ? null : ReactRouterNavLink}
-              href={isExternalResource(collection) ? collection.get('url') : null}
-              to={`/collections/${collectionName}`}
-              key={`collections-${collectionName}`}
-              active={activeNavLinkId === `collections-${collectionName}`}
-              icon={
-                collection.get('icon') ??
-                (collection.get('type') === 'file_based_collection' ? 'file' : 'folder')
-              }
+              href={resource.get('url')}
+              key={`resources-${resource.get('name')}`}
+              icon={resource.get('icon') ?? 'link'}
             >
-              {collection.get('label')}
+              {resource.get('label')}
             </NavMenuItem>
           );
         })}
