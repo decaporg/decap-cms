@@ -18,7 +18,7 @@ function EntryListingGrid({ entries, isSingleCollectionInList = true }) {
     <Wrap>
       <ThumbnailGrid>
         {entries.toJS().map(entry => {
-          const title = entry.data[entry.titleFieldName];
+          const title = entry.titleFieldName ? entry.data[entry.titleFieldName] : entry.label;
           const description = entry.data[entry.descriptionFieldName];
           let image = entry.data[entry.imageFieldName];
           if (image) {

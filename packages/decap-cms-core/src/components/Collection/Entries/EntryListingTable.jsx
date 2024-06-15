@@ -41,7 +41,7 @@ function EntryListingTable({ entries, isSingleCollectionInList = true }) {
       accessorKey: 'title',
       header: 'Title',
       cell({ row: { original: rowData } }) {
-        const title = rowData.data[rowData.titleFieldName];
+        const title = rowData.titleFieldName ? rowData.data[rowData.titleFieldName] : rowData.label;
         const description = rowData.data[rowData.descriptionFieldName];
 
         return (
@@ -65,6 +65,8 @@ function EntryListingTable({ entries, isSingleCollectionInList = true }) {
       size: 126,
     });
   }
+
+  console.log('entries', entries.toJS());
 
   // if (inferredFields.imageField) {
   //   columns.unshift({
