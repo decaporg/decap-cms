@@ -17,8 +17,8 @@ Install via script tag:
 <!-- Excluding `doctype` and `head` but you should add them -->
 <body>
   <!-- Add these scripts to the bottom of the body -->
-  <script src="https://unpkg.com/react@^16/umd/react.production.min.js"></script>
-  <script src="https://unpkg.com/react-dom@^16/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/react@^18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@^18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/decap-cms-app/dist/decap-cms-app.js"></script>
   
   <!-- Initialize the CMS -->
