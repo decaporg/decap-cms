@@ -33,6 +33,7 @@
     "decap-cms-backend-aws-cognito-github-proxy": "^3.1.2",
     "decap-cms-backend-azure": "^3.1.1",
     "decap-cms-backend-bitbucket": "^3.1.2",
+    "decap-cms-backend-git": "^3.1.1",
     "decap-cms-backend-git-gateway": "^3.1.1",
     "decap-cms-backend-github": "^3.1.2",
     "decap-cms-backend-gitlab": "^3.1.3",
