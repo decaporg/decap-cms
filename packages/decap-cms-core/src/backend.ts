@@ -1091,8 +1091,14 @@ export class Backend {
     unpublished = false,
     status,
   }: PersistArgs) {
-    const modifiedData = await this.invokePreSaveEvent(draft.get('entry'));
-    const entryDraft = (modifiedData && draft.setIn(['entry', 'data'], modifiedData)) || draft;
+    const updatedEntity = await this.invokePreSaveEvent(draft.get('entry'));
+
+    let entryDraft;
+    if (updatedEntity.get('data') === undefined) {
+      entryDraft = (updatedEntity && draft.setIn(['entry', 'data'], updatedEntity)) || draft;
+    } else {
+      entryDraft = (updatedEntity && draft.setIn(['entry'], updatedEntity)) || draft;
+    }
 
     const newEntry = entryDraft.getIn(['entry', 'newRecord']) || false;
 
