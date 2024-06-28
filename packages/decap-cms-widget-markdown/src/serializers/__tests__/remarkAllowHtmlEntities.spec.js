@@ -1,4 +1,4 @@
-import unified from 'unified';
+import { unified } from 'unified';
 import markdownToRemark from 'remark-parse';
 
 import remarkAllowHtmlEntities from '../remarkAllowHtmlEntities';

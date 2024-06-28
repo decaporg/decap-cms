@@ -1,4 +1,4 @@
-import unified from 'unified';
+import { unified } from 'unified';
 import markdownToRemark from 'remark-parse';
 import remarkToMarkdown from 'remark-stringify';
 

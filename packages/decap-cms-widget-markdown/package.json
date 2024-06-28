@@ -35,12 +35,10 @@
     "remark-slate-transformer": "^0.7.4",
     "remark-stringify": "^6.0.4",
     "slate": "^0.91.1",
-    "slate-base64-serializer": "^0.2.107",
     "slate-history": "^0.93.0",
-    "slate-plain-serializer": "^0.7.1",
     "slate-react": "^0.91.2",
     "slate-soft-break": "^0.9.0",
-    "unified": "^9.2.0",
+    "unified": "^10.1.0",
     "unist-builder": "^1.0.3",
     "unist-util-visit-parents": "^2.0.1"
   },

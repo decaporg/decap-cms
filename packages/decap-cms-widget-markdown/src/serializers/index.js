@@ -1,5 +1,5 @@
 import { trimEnd } from 'lodash';
-import unified from 'unified';
+import { unified } from 'unified';
 import u from 'unist-builder';
 import markdownToRemarkPlugin from 'remark-parse';
 import remarkToMarkdownPlugin from 'remark-stringify';
