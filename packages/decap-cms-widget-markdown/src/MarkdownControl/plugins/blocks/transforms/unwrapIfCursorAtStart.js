@@ -16,7 +16,10 @@ function unwrapIfCursorAtStart(editor, mergeWithPrevious = false) {
   }
 
   const isBlock = Editor.isBlock(editor, node);
-  const [parentBlock, parentBlockPath] = Editor.above(editor, lowestMatchedAncestor(editor, 'block'));
+  const [parentBlock, parentBlockPath] = Editor.above(
+    editor,
+    lowestMatchedAncestor(editor, 'block'),
+  );
   if (!isBlock) {
     if (!Editor.isStart(editor, path, parentBlockPath)) {
       return false;
