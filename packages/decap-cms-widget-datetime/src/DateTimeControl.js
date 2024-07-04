@@ -64,11 +64,13 @@ class DateTimeControl extends React.Component {
 
   getFormat() {
     const { field } = this.props;
-    const format = field?.get('format') || 'YYYY-MM-DDTHH:mm:ss.SSS[Z]';
-    const dateFormat = field?.get('date_format');
-    const timeFormat = field?.get('time_format');
     let inputFormat = 'YYYY-MM-DDTHH:mm';
     let inputType = 'datetime-local';
+    const format = field?.get('format') || 'YYYY-MM-DDTHH:mm:ss.SSS[Z]';
+    let dateFormat = field?.get('date_format');
+    let timeFormat = field?.get('time_format');
+    if (dateFormat === true) dateFormat = 'YYYY-MM-DD';
+    if (timeFormat === true) timeFormat = 'HH:mm';
 
     if (dateFormat && timeFormat) {
       return { format: `${dateFormat}T${timeFormat}`, inputType, inputFormat };
@@ -96,7 +98,7 @@ class DateTimeControl extends React.Component {
   }
 
   isUtc = this.props.field.get('picker_utc') || false;
-  isValidDate = datetime => dayjs(datetime).isValid() || datetime === '';
+  isValidDate = dt => dayjs(dt, this.getFormat().inputFormat).isValid() || dt === '';
   defaultValue = this.getDefaultValue();
 
   componentDidMount() {
@@ -139,8 +141,9 @@ class DateTimeControl extends React.Component {
 
   onInputChange = e => {
     const etv = e.target.value;
-    const newValue = dayjs(etv);
-    this.handleChange(etv === '' ? '' : newValue);
+    this.handleChange(etv);
+    // const newValue = dayjs(etv);
+    // this.handleChange(etv === '' ? '' : newValue);
   };
 
   render() {
