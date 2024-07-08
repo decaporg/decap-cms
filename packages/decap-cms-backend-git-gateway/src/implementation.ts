@@ -366,7 +366,7 @@ export default class GitGateway implements Implementation {
         name: userData.name,
         login: userData.email,
         avatar_url: userData.avatar_url,
-      } as User;
+      } as unknown as User;
     });
   }
   async restoreUser() {
