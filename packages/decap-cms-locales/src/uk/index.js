@@ -61,17 +61,17 @@ const uk = {
   editor: {
     editorControl: {
       field: {
-        optional: "необов’язково",
+        optional: 'необов’язково',
       },
     },
     editorControlPane: {
       widget: {
         required: "Поле %{fieldLabel} є обов'язковим.",
-        regexPattern: "%{fieldLabel} не задовільняє умові: %{pattern}.",
-        processing: "Обробляється %{fieldLabel}...",
-        range: "Значення %{fieldLabel} повинне бути від %{minValue} до %{maxValue}.",
-        min: "Значення %{fieldLabel} має бути від %{minValue}.",
-        max: "Значення %{fieldLabel} має бути %{maxValue} та менше.",
+        regexPattern: '%{fieldLabel} не задовільняє умові: %{pattern}.',
+        processing: 'Обробляється %{fieldLabel}...',
+        range: 'Значення %{fieldLabel} повинне бути від %{minValue} до %{maxValue}.',
+        min: 'Значення %{fieldLabel} має бути від %{minValue}.',
+        max: 'Значення %{fieldLabel} має бути %{maxValue} та менше.',
         rangeCount: '%{fieldLabel} повинно містити від %{minCount} до %{maxCount} елементів.',
         rangeCountExact: '%{fieldLabel} повинно містити чітко %{count} елементів.',
         rangeMin: '%{fieldLabel} повинно містити не менше %{minCount} елементів.',
@@ -210,7 +210,8 @@ const uk = {
     },
     mediaLibrary: {
       onDelete: 'Ви дійсно бажаєте видалити обрані матеріали?',
-      fileTooLarge: 'Файл занадто великий.\nНалаштування не дозволяють зберігати файли більше %{size} kB.',
+      fileTooLarge:
+        'Файл занадто великий.\nНалаштування не дозволяють зберігати файли більше %{size} kB.',
     },
     mediaLibraryModal: {
       loading: 'Завантаження...',
@@ -238,7 +239,8 @@ const uk = {
       details: 'Сталася помилка. Будь ласка, ',
       reportIt: 'повідомте про неї.',
       detailsHeading: 'Деталі',
-      privacyWarning: 'При відкритті тікету автоматично заповнюється повідомленням про помилку та відлагоджувальною інформацією.\nБудь ласка, перевірте, що дані є вірними та не містять конфіденційної інформації.',
+      privacyWarning:
+        'При відкритті тікету автоматично заповнюється повідомленням про помилку та відлагоджувальною інформацією.\nБудь ласка, перевірте, що дані є вірними та не містять конфіденційної інформації.',
       recoveredEntry: {
         heading: 'Відновлено документ',
         warning: 'Будь ласка, скопіюйте це повідомлення кудись, перед тим як залишити сторінку!',
@@ -273,7 +275,8 @@ const uk = {
       loading: 'Завантаження редакційних матеріалів',
       workflowHeading: 'Редакція',
       newPost: 'Новий запис',
-      description: '%{smart_count} запис очікує розгляду, %{readyCount} до публікації. |||| %{smart_count} записи очікують розгляду, %{readyCount} до публікації. |||| %{smart_count} записів очікують розгляду, %{readyCount} до публікації.',
+      description:
+        '%{smart_count} запис очікує розгляду, %{readyCount} до публікації. |||| %{smart_count} записи очікують розгляду, %{readyCount} до публікації. |||| %{smart_count} записів очікують розгляду, %{readyCount} до публікації.',
       dateFormat: 'MMMM D',
     },
     workflowCard: {
