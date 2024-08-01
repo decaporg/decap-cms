@@ -580,7 +580,7 @@ export default class API {
     }
 
     try {
-      const user = await this.user();
+      const user: GitHubUser = await this.request(`/users/${pullRequest.user.login}`);
       return user.name || user.login;
     } catch {
       return;
