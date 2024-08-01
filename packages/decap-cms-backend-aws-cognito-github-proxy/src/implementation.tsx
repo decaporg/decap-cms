@@ -5,6 +5,7 @@ import AuthenticationPage from './AuthenticationPage';
 
 import type { GitHubUser } from 'decap-cms-backend-github/src/implementation';
 import type { Config } from 'decap-cms-lib-util/src';
+import type { Octokit } from '@octokit/rest';
 
 export default class AwsCognitoGitHubProxyBackend extends GitHubBackend {
   constructor(config: Config, options = {}) {
@@ -43,5 +44,9 @@ export default class AwsCognitoGitHubProxyBackend extends GitHubBackend {
       });
     }
     return this._currentUserPromise;
+  }
+
+  async getPullRequestAuthor(pullRequest: Octokit.PullsListResponseItem) {
+    return pullRequest.user?.login;
   }
 }
