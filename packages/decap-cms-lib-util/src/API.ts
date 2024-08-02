@@ -183,7 +183,7 @@ async function constructRequestHeaders(headerConfig: HeaderConfig) {
   const { token, headers } = headerConfig;
   const baseHeaders: HeaderObj = { 'Content-Type': 'application/json; charset=utf-8', ...headers };
   if (token) {
-    baseHeaders['Authorization'] = `token ${token}`;
+    baseHeaders['Authorization'] = `Bearer ${token}`;
   }
   return Promise.resolve(baseHeaders);
 }
