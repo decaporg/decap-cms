@@ -289,7 +289,8 @@ const th = {
       loading: 'กำลังโหลดเนื้อหากระแสงานของบรรณาธิการ',
       workflowHeading: 'กระแสงานของบรรณาธิการ',
       newPost: 'สร้างโพสต์ใหม่',
-      description: 'เนื้อหา %{smart_count} รายการอยู่ระหว่างการตรวจสอบ, %{readyCount} รายการพร้อมที่จะเผยแพร่',
+      description:
+        'เนื้อหา %{smart_count} รายการอยู่ระหว่างการตรวจสอบ, %{readyCount} รายการพร้อมที่จะเผยแพร่',
       dateFormat: 'MMMM D',
     },
     workflowCard: {
