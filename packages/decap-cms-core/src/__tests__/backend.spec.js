@@ -327,27 +327,28 @@ describe('Backend', () => {
 
       const config = {
         backend: {
-          commit_messages:"commit-messages"
-      } };
+          commit_messages: 'commit-messages',
+        },
+      };
       const collection = Map({
         name: 'posts',
       });
       const entry = Map({
-        data: 'old_data'
+        data: 'old_data',
       });
       const newEntry = Map({
-        data: 'new_data'
+        data: 'new_data',
       });
       const entryDraft = Map({
-        entry
+        entry,
       });
       const user = { login: 'login', name: 'name' };
       const backend = new Backend(implementation, { config, backendName: 'github' });
-      
-      backend.currentUser = jest.fn().mockResolvedValue(user);      
+
+      backend.currentUser = jest.fn().mockResolvedValue(user);
       backend.entryToRaw = jest.fn().mockReturnValue('content');
       backend.invokePreSaveEvent = jest.fn().mockReturnValueOnce(newEntry);
- 
+
       await backend.persistEntry({ config, collection, entryDraft });
 
       expect(backend.entryToRaw).toHaveBeenCalledTimes(1);
@@ -362,28 +363,29 @@ describe('Backend', () => {
 
       const config = {
         backend: {
-          commit_messages:"commit-messages"
-      } };
+          commit_messages: 'commit-messages',
+        },
+      };
       const collection = Map({
         name: 'posts',
       });
       const entry = Map({
-        data: Map({})
+        data: Map({}),
       });
       const newData = Map({});
       const newEntry = Map({
-        data: newData
+        data: newData,
       });
       const entryDraft = Map({
-        entry
+        entry,
       });
       const user = { login: 'login', name: 'name' };
       const backend = new Backend(implementation, { config, backendName: 'github' });
-      
-      backend.currentUser = jest.fn().mockResolvedValue(user);      
+
+      backend.currentUser = jest.fn().mockResolvedValue(user);
       backend.entryToRaw = jest.fn().mockReturnValue('content');
       backend.invokePreSaveEvent = jest.fn().mockReturnValueOnce(newData);
- 
+
       await backend.persistEntry({ config, collection, entryDraft });
 
       expect(backend.entryToRaw).toHaveBeenCalledTimes(1);
