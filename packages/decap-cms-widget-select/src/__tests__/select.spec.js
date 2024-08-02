@@ -12,6 +12,11 @@ const options = [
   { value: 'baz', label: 'Baz' },
 ];
 const stringOptions = ['foo', 'bar', 'baz'];
+const numberOptions = [
+  { value: 0, label: 'Foo' },
+  { value: 1, label: 'Bar' },
+  { value: 2, label: 'Baz' },
+];
 
 class SelectController extends React.Component {
   state = {
@@ -134,6 +139,18 @@ describe('Select widget', () => {
     expect(getByText('baz')).toBeInTheDocument();
   });
 
+  it('should call onChange with correct selectedItem when value is number 0', () => {
+    const field = fromJS({ options: numberOptions });
+    const { getByText, input, onChangeSpy } = setup({ field });
+
+    fireEvent.focus(input);
+    fireEvent.keyDown(input, { key: 'ArrowDown' });
+    fireEvent.click(getByText('Foo'));
+
+    expect(onChangeSpy).toHaveBeenCalledTimes(1);
+    expect(onChangeSpy).toHaveBeenCalledWith(numberOptions[0].value);
+  });
+
   describe('with multiple', () => {
     it('should call onChange with correct selectedItem', () => {
       const field = fromJS({ options, multiple: true });
@@ -247,6 +264,22 @@ describe('Select widget', () => {
 
       expect(getByText('bar')).toBeInTheDocument();
       expect(getByText('baz')).toBeInTheDocument();
+    });
+
+    it('should call onChange with correct selectedItem when values are numbers including 0', () => {
+      const field = fromJS({ options: numberOptions, multiple: true });
+      const { getByText, input, onChangeSpy } = setup({ field });
+
+      fireEvent.keyDown(input, { key: 'ArrowDown' });
+      fireEvent.click(getByText('Foo'));
+      fireEvent.keyDown(input, { key: 'ArrowDown' });
+      fireEvent.click(getByText('Baz'));
+
+      expect(onChangeSpy).toHaveBeenCalledTimes(2);
+      expect(onChangeSpy).toHaveBeenCalledWith(fromJS([numberOptions[0].value]));
+      expect(onChangeSpy).toHaveBeenCalledWith(
+        fromJS([numberOptions[0].value, numberOptions[2].value]),
+      );
     });
   });
   describe('validation', () => {

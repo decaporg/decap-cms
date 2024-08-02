@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.3.7](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.3.6...decap-cms-core@3.3.7) (2024-06-27)
+
+### Bug Fixes
+
+- change AppHeaderButton style fixing [#7208](https://github.com/decaporg/decap-cms/issues/7208) ([#7209](https://github.com/decaporg/decap-cms/issues/7209)) ([7483f19](https://github.com/decaporg/decap-cms/commit/7483f191025b52af8957ea87119ac4f9490b65de))
+- change EditorToolbar position style ([#7198](https://github.com/decaporg/decap-cms/issues/7198)) ([dc71d72](https://github.com/decaporg/decap-cms/commit/dc71d728138cd322b815ae40eb297e43327105b2)), closes [#7197](https://github.com/decaporg/decap-cms/issues/7197)
+
+## [3.3.6](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.3.5...decap-cms-core@3.3.6) (2024-03-29)
+
+**Note:** Version bump only for package decap-cms-core
+
 ## [3.3.5](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.3.4...decap-cms-core@3.3.5) (2024-03-28)
 
 **Note:** Version bump only for package decap-cms-core

@@ -259,11 +259,16 @@ export default class RelationControl extends React.Component {
 
       //set metadata
       this.mounted &&
-        onChange(filteredValue.length === 1 ? filteredValue[0] : fromJS(filteredValue), {
-          [field.get('name')]: {
-            [field.get('collection')]: metadata,
+        onChange(
+          filteredValue.length === 1 && !this.isMultiple()
+            ? filteredValue[0]
+            : fromJS(filteredValue),
+          {
+            [field.get('name')]: {
+              [field.get('collection')]: metadata,
+            },
           },
-        });
+        );
     }
   }
 
@@ -346,11 +351,19 @@ export default class RelationControl extends React.Component {
 
     const options = hits.reduce((acc, hit) => {
       if (
-        filters.every(
-          filter =>
-            Object.prototype.hasOwnProperty.call(hit.data, filter.field) &&
-            filter.values.includes(hit.data[filter.field]),
-        )
+        filters.every(filter => {
+          // check if the value for the (nested) filter field is in the filter values
+          const fieldKeys = filter.field.split('.');
+          let value = hit.data;
+          for (let i = 0; i < fieldKeys.length; i++) {
+            if (Object.prototype.hasOwnProperty.call(value, fieldKeys[i])) {
+              value = value[fieldKeys[i]];
+            } else {
+              return false;
+            }
+          }
+          return filter.values.includes(value);
+        })
       ) {
         const valuesPaths = stringTemplate.expandPath({ data: hit.data, path: valueField });
         for (let i = 0; i < valuesPaths.length; i++) {
