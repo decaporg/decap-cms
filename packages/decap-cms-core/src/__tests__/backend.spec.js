@@ -339,7 +339,7 @@ describe('Backend', () => {
         data: 'new_data'
       });
       const entryDraft = Map({
-        entry: entry
+        entry
       });
       const user = { login: 'login', name: 'name' };
       const backend = new Backend(implementation, { config, backendName: 'github' });
@@ -375,7 +375,7 @@ describe('Backend', () => {
         data: newData
       });
       const entryDraft = Map({
-        entry: entry
+        entry
       });
       const user = { login: 'login', name: 'name' };
       const backend = new Backend(implementation, { config, backendName: 'github' });
