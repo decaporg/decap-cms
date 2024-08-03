@@ -1,24 +1,22 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { BooleanField } from 'decap-cms-ui-next';
+import { Switch } from 'decap-cms-ui-next';
 
 export default class BooleanControl extends React.Component {
   render() {
-    const { label, status, description, value, forID, inline, onChange, error, errors } =
+    const { value, forID, onChange, classNameWrapper, setActiveStyle, setInactiveStyle } =
       this.props;
     return (
-      <BooleanField
-        name={forID}
-        value={value}
-        label={label}
-        status={status}
-        description={description}
-        inline={inline}
-        onChange={onChange}
-        error={error}
-        errors={errors}
-      />
+      <div className={classNameWrapper}>
+        <Switch
+          name={forID}
+          checked={value}
+          onCheckedChange={onChange}
+          onFocus={setActiveStyle}
+          onBlur={setInactiveStyle}
+        />
+      </div>
     );
   }
 }
@@ -26,14 +24,11 @@ export default class BooleanControl extends React.Component {
 BooleanControl.propTypes = {
   field: ImmutablePropTypes.map.isRequired,
   onChange: PropTypes.func.isRequired,
+  classNameWrapper: PropTypes.string.isRequired,
+  setActiveStyle: PropTypes.func.isRequired,
+  setInactiveStyle: PropTypes.func.isRequired,
   forID: PropTypes.string,
-  label: PropTypes.string.isRequired,
-  description: PropTypes.string,
-  status: PropTypes.string,
   value: PropTypes.bool,
-  inline: PropTypes.bool,
-  error: PropTypes.bool,
-  errors: PropTypes.array,
 };
 
 BooleanControl.defaultProps = {

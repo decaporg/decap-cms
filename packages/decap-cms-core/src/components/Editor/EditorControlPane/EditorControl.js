@@ -3,13 +3,10 @@ import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { translate } from 'react-polyglot';
-import { ClassNames, Global, css as coreCss } from '@emotion/react';
-import styled from '@emotion/styled';
+import { ClassNames, Global, css as coreCss, withTheme } from '@emotion/react';
 import { partial, uniqueId } from 'lodash';
 import { connect } from 'react-redux';
-import { FieldLabel, colors, transitions, lengths, borders } from 'decap-cms-ui-default';
-import ReactMarkdown from 'react-markdown';
-import gfm from 'remark-gfm';
+import { Field } from 'decap-cms-ui-next';
 
 import { resolveWidget, getEditorComponents } from '../../../lib/registry';
 import { selectInferredField } from '../../../reducers/collections';
@@ -32,93 +29,44 @@ import Widget from './Widget';
  * this.
  */
 const styleStrings = {
-  widget: `
-    display: block;
-    width: 100%;
-    padding: ${lengths.inputPadding};
-    margin: 0;
-    border: ${borders.textField};
-    border-radius: ${lengths.borderRadius};
-    border-top-left-radius: 0;
-    outline: 0;
-    box-shadow: none;
-    background-color: ${colors.inputBackground};
-    color: #444a57;
-    transition: border-color ${transitions.main};
-    position: relative;
-    font-size: 15px;
-    line-height: 1.5;
+  widget: theme => coreCss`
+        color: ${theme.color.highEmphasis};
+        background: none;
+        border: none;
+        outline: none;
+        width: calc(100% + 32px);
+        font-family: inherit;
+        font-size: 1rem;
+        font-weight: normal;
+        letter-spacing: 0;
+        line-height: 1rem;
+        caret-color: ${theme.color.primary['800']};
+        margin: -2rem -1rem -1rem -1rem;
+        padding: 2rem 1rem 1rem 1rem;
+      `,
+  widgetActive: theme => coreCss`
+        border-color: ${theme.color.primary['800']};
+      `,
+  widgetTitle: coreCss`
+        font-size: 2rem;
+        font-weight: bold;
+        letter-spacing: -0.5px;
+      `,
+  widgetError: theme => coreCss`
+        caret-color: ${theme.color.danger['900']};
+        border-color: ${theme.color.danger['900']};
+      `,
+  disabled: theme => coreCss`
+        pointer-events: none;
 
-    select& {
-      text-indent: 14px;
-      height: 58px;
-    }
-  `,
-  widgetActive: `
-    border-color: ${colors.active};
-  `,
-  widgetError: `
-    border-color: ${colors.errorText};
-  `,
-  disabled: `
-    pointer-events: none;
-    opacity: 0.5;
-    background: #ccc;
-  `,
-  hidden: `
-    visibility: hidden;
-  `,
+        ::placeholder {
+          color: ${theme.color.disabled};
+        }
+      `,
+  hidden: coreCss`
+        visibility: hidden;
+      `,
 };
-
-const ControlErrorsList = styled.ul`
-  list-style-type: none;
-  font-size: 12px;
-  color: ${colors.errorText};
-  margin-bottom: 5px;
-  text-align: right;
-  text-transform: uppercase;
-  position: relative;
-  font-weight: 600;
-  top: 20px;
-`;
-
-export const ControlHint = styled.p`
-  margin-bottom: 0;
-  padding: 3px 0;
-  font-size: 12px;
-  color: ${props =>
-    props.error ? colors.errorText : props.active ? colors.active : colors.controlLabel};
-  transition: color ${transitions.main};
-`;
-
-function LabelComponent({ field, isActive, hasErrors, uniqueFieldId, isFieldOptional, t }) {
-  const label = `${field.get('label', field.get('name'))}`;
-  const labelComponent = (
-    <FieldLabel isActive={isActive} hasErrors={hasErrors} htmlFor={uniqueFieldId}>
-      {label} {`${isFieldOptional ? ` (${t('editor.editorControl.field.optional')})` : ''}`}
-    </FieldLabel>
-  );
-
-  return labelComponent;
-}
-
-function FieldHintComponent({ fieldHint }) {
-  return (
-    <ReactMarkdown
-      remarkPlugins={[gfm]}
-      allowedElements={['a', 'strong', 'em', 'del']}
-      unwrapDisallowed={true}
-      components={{
-        // eslint-disable-next-line no-unused-vars
-        a: ({ node, ...props }) => (
-          <a {...props} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit' }} />
-        ),
-      }}
-    >
-      {fieldHint}
-    </ReactMarkdown>
-  );
-}
 
 class EditorControl extends React.Component {
   static propTypes = {
@@ -148,6 +96,7 @@ class EditorControl extends React.Component {
     clearFieldErrors: PropTypes.func.isRequired,
     loadEntry: PropTypes.func.isRequired,
     t: PropTypes.func.isRequired,
+    theme: PropTypes.object.isRequired,
     isEditorComponent: PropTypes.bool,
     isNewEditorComponent: PropTypes.bool,
     parentIds: PropTypes.arrayOf(PropTypes.string),
@@ -220,6 +169,7 @@ class EditorControl extends React.Component {
       isNewEditorComponent,
       parentIds,
       t,
+      theme,
       validateMetaField,
       isLoadingAsset,
       isDisabled,
@@ -239,7 +189,6 @@ class EditorControl extends React.Component {
       t('editor.editorControl.field.placeholder', {
         fieldLabel: fieldLabel.toLowerCase(),
       });
-    const fieldInline = true;
     const isFieldOptional = field.get('required') === false;
     const fieldOptional = isFieldOptional ? t('editor.editorControl.field.optional') : '';
     const isFieldTitle = this.isFieldTitle();
@@ -252,60 +201,53 @@ class EditorControl extends React.Component {
     return (
       <ClassNames>
         {({ css, cx }) => (
-          <div
+          <Field
             className={className}
             css={css`
               ${isHidden && styleStrings.hidden};
             `}
+            filled
+            status={fieldOptional}
+            label={fieldLabel}
+            labelTarget={this.uniqueFieldId}
+            description={fieldHint}
+            error={hasErrors}
+            errors={errors}
+            focus={isSelected || this.state.styleActive}
           >
             {widget.globalStyles && <Global styles={coreCss`${widget.globalStyles}`} />}
-            {/* {errors && (
-              <ControlErrorsList>
-                {errors.map(
-                  error =>
-                    error.message &&
-                    typeof error.message === 'string' && (
-                      <li key={error.message.trim().replace(/[^a-z0-9]+/gi, '-')}>
-                        {error.message}
-                      </li>
-                    ),
-                )}
-              </ControlErrorsList>
-            )} */}
-            {/* <LabelComponent
-              field={field}
-              isActive={isSelected || this.state.styleActive}
-              hasErrors={hasErrors}
-              uniqueFieldId={this.uniqueFieldId}
-              isFieldOptional={isFieldOptional}
-              t={t}
-            /> */}
+
             <Widget
               classNameWrapper={cx(
                 css`
-                  ${styleStrings.widget};
+                  ${styleStrings.widget(theme)};
                 `,
                 {
                   [css`
-                    ${styleStrings.widgetActive};
+                    ${styleStrings.widgetActive(theme)};
                   `]: isSelected || this.state.styleActive,
                 },
                 {
                   [css`
-                    ${styleStrings.widgetError};
+                    ${styleStrings.widgetTitle};
+                  `]: isFieldTitle,
+                },
+                {
+                  [css`
+                    ${styleStrings.widgetError(theme)};
                   `]: hasErrors,
                 },
                 {
                   [css`
-                    ${styleStrings.disabled}
+                    ${styleStrings.disabled(theme)}
                   `]: isDisabled,
                 },
               )}
               classNameWidget={css`
-                ${styleStrings.widget};
+                ${styleStrings.widget(theme)};
               `}
               classNameWidgetActive={css`
-                ${styleStrings.widgetActive};
+                ${styleStrings.widgetActive(theme)};
               `}
               classNameLabel={css`
                 ${styleStrings.label};
@@ -319,15 +261,8 @@ class EditorControl extends React.Component {
               config={config}
               field={field}
               uniqueFieldId={this.uniqueFieldId}
-              isFieldTitle={isFieldTitle}
-              fieldLabel={fieldLabel}
-              fieldHint={fieldHint ? FieldHintComponent({ fieldHint }) : null}
               fieldPlaceholder={fieldPlaceholder}
-              fieldInline={fieldInline}
-              fieldOptional={fieldOptional}
               value={value}
-              error={hasErrors}
-              errors={errors}
               mediaPaths={mediaPaths}
               metadata={metadata}
               onChange={(newValue, newMetadata) => onChange(field, newValue, newMetadata)}
@@ -367,29 +302,7 @@ class EditorControl extends React.Component {
               isLoadingAsset={isLoadingAsset}
               locale={locale}
             />
-            {/* {fieldHint && (
-              <ControlHint active={isSelected || this.state.styleActive} error={hasErrors}>
-                <ReactMarkdown
-                  remarkPlugins={[gfm]}
-                  allowedElements={['a', 'strong', 'em', 'del']}
-                  unwrapDisallowed={true}
-                  components={{
-                    // eslint-disable-next-line no-unused-vars
-                    a: ({ node, ...props }) => (
-                      <a
-                        {...props}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{ color: 'inherit' }}
-                      />
-                    ),
-                  }}
-                >
-                  {fieldHint}
-                </ReactMarkdown>
-              </ControlHint>
-            )} */}
-          </div>
+          </Field>
         )}
       </ClassNames>
     );
@@ -461,4 +374,4 @@ const ConnectedEditorControl = connect(
   mergeProps,
 )(translate()(EditorControl));
 
-export default ConnectedEditorControl;
+export default withTheme(ConnectedEditorControl);

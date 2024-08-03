@@ -2,9 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { List, Map } from 'immutable';
-import styled from '@emotion/styled';
-import { css } from '@emotion/react';
-import { Fullscreen, Field } from 'decap-cms-ui-next';
+import { Fullscreen } from 'decap-cms-ui-next';
 
 import RawEditor from './RawEditor';
 import VisualEditor from './VisualEditor';
@@ -24,18 +22,6 @@ export function getEditorControl() {
 export function getEditorComponents() {
   return _getEditorComponents();
 }
-
-const StyledField = styled(Field)`
-  ${({ isFullscreen }) =>
-    isFullscreen
-      ? css`
-          @media (display-mode: standalone) {
-            padding-top: env(safe-area-inset-top);
-            padding-bottom: env(safe-area-inset-bottom);
-          }
-        `
-      : ``}
-`;
 
 export default class MarkdownControl extends React.Component {
   static propTypes = {
@@ -89,13 +75,6 @@ export default class MarkdownControl extends React.Component {
 
   render() {
     const {
-      label,
-      status,
-      placeholder,
-      description,
-      inline,
-      error,
-      errors,
       onChange,
       onAddAsset,
       getAsset,
@@ -121,6 +100,7 @@ export default class MarkdownControl extends React.Component {
           isFullscreen={this.state.isFullscreen}
           onToggleFullscreen={this.handleToggleFullscreen}
           getAsset={getAsset}
+          className={classNameWrapper}
           value={value}
           field={field}
           getEditorComponents={getEditorComponents}
@@ -151,19 +131,7 @@ export default class MarkdownControl extends React.Component {
 
     return (
       <Fullscreen isFullscreen={this.state.isFullscreen}>
-        <StyledField
-          label={label}
-          status={status}
-          placeholder={placeholder}
-          description={description}
-          inline={inline}
-          error={error}
-          errors={errors}
-          noBorder={this.state.isFullscreen}
-          isFullscreen={this.state.isFullscreen}
-        >
-          {mode === 'rich_text' ? visualEditor : rawEditor}
-        </StyledField>
+        {mode === 'rich_text' ? visualEditor : rawEditor}
       </Fullscreen>
     );
   }

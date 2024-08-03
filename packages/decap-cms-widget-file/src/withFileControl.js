@@ -6,7 +6,7 @@ import { Map, List } from 'immutable';
 import { once } from 'lodash';
 import { v4 as uuid } from 'uuid';
 import { oneLine } from 'common-tags';
-import { Field, Button, Thumbnail, Tooltip } from 'decap-cms-ui-next';
+import { Button, Thumbnail, Tooltip } from 'decap-cms-ui-next';
 import { basename } from 'decap-cms-lib-util';
 import { arrayMoveImmutable as arrayMove } from 'array-move';
 import {
@@ -481,13 +481,13 @@ export default function withFileControl({ forImage } = {}) {
     };
 
     render() {
-      const { value, label, inline, error, errors } = this.props;
+      const { value, classNameWrapper } = this.props;
       const subject = forImage ? 'image' : 'file';
 
       return (
-        <Field label={label} inline={inline} error={error} errors={errors}>
+        <div className={classNameWrapper}>
           <span>{value ? this.renderSelection(subject) : this.renderNoSelection(subject)}</span>
-        </Field>
+        </div>
       );
     }
   };

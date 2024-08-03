@@ -42,7 +42,7 @@ const TextField = forwardRef(
       type,
       password,
       className,
-      inline,
+      filled,
       error,
       errors,
     },
@@ -59,7 +59,7 @@ const TextField = forwardRef(
         status={status}
         focus={focus || inputFocus}
         className={className}
-        inline={inline}
+        filled={filled}
         error={error}
         errors={errors}
         icon={icon}

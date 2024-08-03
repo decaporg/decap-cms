@@ -1,20 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { TextField } from 'decap-cms-ui-next';
 
 export default class StringControl extends React.Component {
   static propTypes = {
     onChange: PropTypes.func.isRequired,
     forID: PropTypes.string,
-    title: PropTypes.bool,
-    label: PropTypes.string.isRequired,
-    description: PropTypes.string,
-    status: PropTypes.string,
     placeholder: PropTypes.string,
-    inline: PropTypes.bool,
     value: PropTypes.node,
-    error: PropTypes.bool,
-    errors: PropTypes.array,
     classNameWrapper: PropTypes.string.isRequired,
     setActiveStyle: PropTypes.func.isRequired,
     setInactiveStyle: PropTypes.func.isRequired,
@@ -50,25 +42,22 @@ export default class StringControl extends React.Component {
   };
 
   render() {
-    const { forID, title, label, description, status, placeholder, inline, value, error, errors } =
+    const { forID, value, placeholder, classNameWrapper, setActiveStyle, setInactiveStyle } =
       this.props;
 
     return (
-      <TextField
+      <input
         ref={el => {
           this._el = el;
         }}
-        title={title}
-        name={forID}
-        label={label}
-        description={description}
-        status={status}
-        placeholder={placeholder}
-        inline={inline}
+        type="text"
+        id={forID}
+        className={classNameWrapper}
         value={value || ''}
+        placeholder={placeholder}
         onChange={this.handleChange}
-        error={error}
-        errors={errors}
+        onFocus={setActiveStyle}
+        onBlur={setInactiveStyle}
       />
     );
   }

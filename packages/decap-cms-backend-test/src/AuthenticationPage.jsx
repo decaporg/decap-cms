@@ -308,7 +308,7 @@ function AuthenticationPage({ onLogin, inProgress, config, t, handleSubmit }) {
                     icon="mail"
                     placeholder="Type email"
                     value={email}
-                    inline
+                    filled
                     onChange={email => setEmail(email)}
                   />
                   <StyledTextField
@@ -317,7 +317,7 @@ function AuthenticationPage({ onLogin, inProgress, config, t, handleSubmit }) {
                     icon="lock"
                     placeholder="Type password"
                     value={password}
-                    inline
+                    filled
                     onChange={password => setPassword(password)}
                   />
                   <ForgotPasswordLink>Forgot your password?</ForgotPasswordLink>

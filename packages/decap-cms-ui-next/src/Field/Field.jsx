@@ -23,15 +23,15 @@ const FocusIndicator = styled.div`
 `;
 
 const FieldWrap = styled.div`
-  ${({ inline }) =>
-    inline
+  ${({ filled }) =>
+    filled
       ? css`
           padding: 0 1rem;
         `
       : ``}
   position: relative;
-  ${({ theme, noBorder, inline, error, focus, clickable }) =>
-    inline && !noBorder
+  ${({ theme, noBorder, filled, error, focus, clickable }) =>
+    filled && !noBorder
       ? css`
           box-shadow: inset 0 -1px 0 0 ${error ? theme.color.danger[900] : theme.color.border};
           transition: box-shadow 0.2s;
@@ -50,8 +50,8 @@ const FieldWrap = styled.div`
 `;
 
 const FieldInside = styled.div`
-  ${({ control }) =>
-    control
+  ${({ inline }) =>
+    inline
       ? css`
           display: flex;
           align-items: center;
@@ -67,8 +67,8 @@ const FieldInside = styled.div`
   max-width: 800px;
   margin: 0 auto;
   position: relative;
-  ${({ inline, focus, theme, error, icon, clickable }) =>
-    inline
+  ${({ filled, focus, theme, error, icon, clickable }) =>
+    filled
       ? css`
           padding: 1rem 0;
         `
@@ -98,7 +98,7 @@ const ChildrenWrap = styled.div`
 
 const StyledLabel = styled(Label)`
   font-family: ${({ theme }) => theme.fontFamily};
-  ${({ control }) => (control ? `flex: 1; margin: 0;` : ``)}
+  ${({ inline }) => (inline ? `flex: 1; margin: 0;` : ``)}
   ${({ clickable }) => (clickable ? `cursor: pointer;` : ``)};
   ${({ theme, error }) => (error ? `color: ${theme.color.danger['900']};` : ``)};
 
@@ -109,7 +109,7 @@ const StyledLabel = styled(Label)`
 
 const StyledIconButton = styled(IconButton)`
   position: absolute;
-  right: ${({ inline }) => (inline ? 0 : 0.5)}rem;
+  right: ${({ filled }) => (filled ? 0 : 0.5)}rem;
   top: 1.85rem;
 `;
 
@@ -139,8 +139,8 @@ const StyledErrorsList = styled.ul`
 
   margin-bottom: 0;
   padding-left: 0;
-  ${({ control }) =>
-    control
+  ${({ inline }) =>
+    inline
       ? css`
           padding-right: 0.5rem;
         `
@@ -161,13 +161,13 @@ const StyledErrorsList = styled.ul`
 
 function Field({
   focus,
-  inline,
+  filled,
   labelTarget,
   label,
   description,
   status,
   children,
-  control,
+  inline,
   onClick,
   className,
   noBorder,
@@ -179,10 +179,10 @@ function Field({
 }) {
   const contextValue = {
     focus,
-    inline,
+    filled,
     labelTarget,
     label,
-    control,
+    inline,
     onClick,
     className,
     noBorder,
@@ -196,8 +196,8 @@ function Field({
     <FieldContext.Provider value={contextValue}>
       <FieldWrap
         focus={focus}
-        control={control}
         inline={inline}
+        filled={filled}
         className={className}
         noBorder={noBorder}
         error={error}
@@ -205,8 +205,8 @@ function Field({
       >
         <FieldInside
           focus={focus}
-          control={control}
           inline={inline}
+          filled={filled}
           onClick={onClick}
           style={insideStyle}
           error={error}
@@ -214,8 +214,8 @@ function Field({
           clickable={clickable || !!onClick}
         >
           <StyledLabel
-            control={control}
             inline={inline}
+            filled={filled}
             htmlFor={labelTarget}
             focus={focus}
             clickable={clickable || !!onClick}
@@ -223,7 +223,7 @@ function Field({
           >
             {label} {status && <Tag color={error ? 'danger' : 'neutral'}>{status}</Tag>}
             {error && errors && (
-              <StyledErrorsList control={control} icon={icon}>
+              <StyledErrorsList inline={inline} icon={icon}>
                 <Icon name="alert-triangle" />
 
                 {errors.map(
@@ -243,12 +243,12 @@ function Field({
 
           {icon && React.isValidElement(icon)
             ? icon
-            : icon && <StyledIconButton icon={icon || null} active={focus} inline={inline} />}
+            : icon && <StyledIconButton icon={icon || null} active={focus} filled={filled} />}
 
           {description && <StyledDescription>{description}</StyledDescription>}
         </FieldInside>
 
-        {!noBorder && inline && <FocusIndicator focus={focus} error={error} />}
+        {!noBorder && filled && <FocusIndicator focus={focus} error={error} />}
       </FieldWrap>
     </FieldContext.Provider>
   );

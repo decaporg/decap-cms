@@ -95,29 +95,27 @@ class DateTimeControl extends React.Component {
   };
 
   render() {
-    const { forID, label, status, description, value, inline, error, errors, t, isDisabled } =
+    const { forID, value, classNameWrapper, setActiveStyle, setInactiveStyle, t, isDisabled } =
       this.props;
     const { inputType, inputFormat } = this.getFormat();
 
     return (
-      <DatetimeField
-        name={forID}
-        type={inputType}
-        format={inputFormat}
-        label={label}
-        status={status}
-        description={description}
-        value={dayjs(value)}
-        shortcuts={this.shortcuts({
-          t,
-          isUtc: this.isUtc,
-        })}
-        inline={inline}
-        onChange={this.onInputChange}
-        error={error}
-        errors={errors}
-        disabled={isDisabled}
-      />
+      <div className={classNameWrapper}>
+        <DatetimeField
+          name={forID}
+          type={inputType}
+          format={inputFormat}
+          value={dayjs(value)}
+          shortcuts={this.shortcuts({
+            t,
+            isUtc: this.isUtc,
+          })}
+          onChange={this.onInputChange}
+          onFocus={setActiveStyle}
+          onBlur={setInactiveStyle}
+          disabled={isDisabled}
+        />
+      </div>
     );
   }
 }
