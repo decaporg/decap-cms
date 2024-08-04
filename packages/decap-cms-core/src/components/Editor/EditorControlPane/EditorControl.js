@@ -84,13 +84,11 @@ const ControlTopbar = styled.div`
 `;
 const ControlErrorsList = styled.ul`
   list-style-type: none;
-  font-size: 12px;
-  color: ${colors.errorText};
-  text-align: right;
-  text-transform: uppercase;
-  font-weight: 600;
-  margin: 0;
-  padding: 2px 0 3px;
+   font-size: 12px;
+   color: ${colors.errorText};
+   margin-bottom: 8px;
+   text-align: right;
+   font-weight: 600;
 `;
 
 export const ControlHint = styled.p`
