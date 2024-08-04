@@ -1,6 +1,12 @@
 backend:
   name: test-repo
 
+analytics:
+  name: simple-analytics
+  config:
+    app_id: simpleanalytics.com
+    is_public: true
+
 site_url: https://example.com
 display_url: https://example.com
 # logo_url: https://avatars.githubusercontent.com/u/37912219

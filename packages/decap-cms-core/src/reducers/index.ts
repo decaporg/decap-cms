@@ -1,5 +1,6 @@
 import { List } from 'immutable';
 
+import analytics from './analytics';
 import auth from './auth';
 import config from './config';
 import integrations, * as fromIntegrations from './integrations';
@@ -21,6 +22,7 @@ import type { Status } from '../constants/publishModes';
 import type { State, Collection } from '../types/redux';
 
 const reducers = {
+  analytics,
   auth,
   config,
   collections,

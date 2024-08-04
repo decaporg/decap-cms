@@ -127,6 +127,20 @@ function getConfigSchema() {
   return {
     type: 'object',
     properties: {
+      analytics: {
+        type: 'object',
+        properties: {
+          name: { type: 'string', examples: ['plausible'] },
+          config: {
+            type: 'object',
+            properties: {
+              app_id: { type: 'string' },
+              api_key: { type: 'string' },
+            },
+          },
+        },
+        required: ['name'],
+      },
       backend: {
         type: 'object',
         properties: {

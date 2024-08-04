@@ -23,6 +23,7 @@ import { ErrorBoundary } from './components/UI';
 import App from './components/App/App';
 import './components/EditorWidgets';
 import './mediaLibrary';
+import './analytics';
 import 'what-input';
 
 const ROOT_ID = 'nc-root';

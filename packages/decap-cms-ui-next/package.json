@@ -14,7 +14,7 @@
   "scripts": {
     "develop": "npm run build:esm -- --watch",
     "build": "cross-env NODE_ENV=production webpack",
-    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward --extensions \".js,.jsx,.ts,.tsx\""
   },
   "dependencies": {
     "@fontsource/inter": "^5.0.16",
@@ -36,6 +36,7 @@
     "@emotion/styled": "^11.11.0",
     "lodash": "^4.17.11",
     "prop-types": "^15.7.2",
-    "react": "^18.2.0"
+    "react": "^18.2.0",
+    "recharts": "2.12.7"
   }
 }

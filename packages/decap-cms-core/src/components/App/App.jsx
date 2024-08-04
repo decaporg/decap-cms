@@ -24,6 +24,7 @@ import Editor from '../Editor/Editor';
 import NotFoundPage from './NotFoundPage';
 import Nav from './Nav';
 import Header from './Header';
+import Dashboard from '../Dashboard/Dashboard';
 
 TopBarProgress.config({
   barColors: {
@@ -71,8 +72,11 @@ const ErrorCodeBlock = styled.pre`
   line-height: 1.5;
 `;
 
+// TODO: Move from collection to dashboard
 function getDefaultPath(collections) {
-  return `/collections/${collections.first().get('name')}`;
+  // return `/collections/${collections.first().get('name')}`;
+
+  return '/dashboard';
 }
 
 function RouteInCollection({ collections, render, ...props }) {
@@ -227,6 +231,7 @@ function App({
                   from="/error=access_denied&error_description=Signups+not+allowed+for+this+instance"
                   to={defaultPath}
                 />
+                <Route path="/dashboard" component={Dashboard} />
                 {hasWorkflow ? <Route path="/workflow" component={Workflow} /> : null}
                 <Route path="/media" render={props => <MediaPage {...props} />} />
 

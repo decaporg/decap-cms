@@ -79,6 +79,7 @@
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "decap-cms-editor-component-image": "^3.0.0",
+    "decap-cms-lib-analytics": "^1.0.0",
     "decap-cms-lib-auth": "^3.0.0",
     "decap-cms-lib-util": "^3.0.0",
     "decap-cms-lib-widgets": "^3.0.0",
@@ -89,7 +90,8 @@
     "prop-types": "^15.7.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-immutable-proptypes": "^2.1.0"
+    "react-immutable-proptypes": "^2.1.0",
+    "recharts": "2.12.7"
   },
   "devDependencies": {
     "@types/history": "^4.7.8",

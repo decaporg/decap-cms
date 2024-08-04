@@ -11,6 +11,7 @@ import type { Search } from '../reducers/search';
 import type { GlobalUI } from '../reducers/globalUI';
 import type { NotificationsState } from '../reducers/notifications';
 import type { formatExtensions } from '../formats/formats';
+import type { Pageview, Period, Interval } from 'decap-cms-lib-analytics';
 
 export type CmsBackendType =
   | 'azure'
@@ -390,6 +391,7 @@ export interface CmsLocalBackend {
 }
 
 export interface CmsConfig {
+  analytics?: CmsAnalytics;
   backend: CmsBackend;
   collections: CmsCollection[];
   locale?: string;
@@ -428,6 +430,41 @@ export interface CmsMediaLibrary {
   config?: CmsMediaLibraryOptions;
 }
 
+export type CmsAnalyticsType = 'fathom' | 'plausible' | 'simple-analytics' | 'umami';
+
+export interface CmsAnalyticsOptions {
+  app_id?: string;
+  api_key?: string;
+}
+
+export interface CmsAnalytics {
+  name: CmsAnalyticsType;
+  config?: CmsAnalyticsOptions;
+  pageviews: Pageview[];
+  period: Period;
+  interval: Interval;
+  isLoading: boolean;
+}
+
+type AnalyticsObject = {
+  name: string;
+  implementation: AnalyticsInstance;
+  pageviews: Pageview[];
+  period: Period;
+  interval: Interval;
+  isLoading: boolean;
+};
+
+export type Analytics = StaticallyTypedRecord<Analytics> & AnalyticsObject;
+
+export interface AnalyticsInstance {
+  appId: string;
+  apiKey: string;
+  apiEndpoint: string;
+  getPageviews: (period: Period, interval: Interval) => Promise<Pageview[]>;
+  parsePageviews: (data: any) => Pageview[];
+}
+
 export type SlugConfig = StaticallyTypedRecord<{
   encoding: string;
   clean_accents: boolean;
@@ -453,6 +490,7 @@ type BackendObject = {
 type Backend = StaticallyTypedRecord<Backend> & BackendObject;
 
 export type Config = StaticallyTypedRecord<{
+  analytics: Analytics;
   backend: Backend;
   media_folder: string;
   public_folder: string;
@@ -686,6 +724,7 @@ export type Integrations = StaticallyTypedRecord<{
 export type Cursors = StaticallyTypedRecord<{}>;
 
 export interface State {
+  analytics: Analytics;
   auth: Auth;
   config: CmsConfig;
   cursors: Cursors;

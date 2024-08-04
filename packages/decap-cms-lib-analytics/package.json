@@ -1,0 +1,21 @@
+{
+  "name": "decap-cms-lib-analytics",
+  "description": "Shared analytics types and classes for Decap CMS",
+  "version": "1.0.0",
+  "repository": "https://github.com/decaporg/decap-cms/tree/master/packages/decap-cms-lib-analytics",
+  "bugs": "https://github.com/decaporg/decap-cms/issues",
+  "license": "MIT",
+  "module": "dist/esm/index.js",
+  "main": "dist/decap-cms-lib-analytics.js",
+  "keywords": [
+    "decap-cms",
+    "analytics",
+    "lib"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "develop": "npm run build:esm -- --watch",
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward --extensions \".js,.jsx,.ts,.tsx\""
+  }
+}

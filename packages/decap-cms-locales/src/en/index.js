@@ -33,6 +33,35 @@ const en = {
       header: 'Not Found',
     },
   },
+  dashboard: {
+    title: 'Dashboard',
+    siteAnalytics: {
+      title: 'Site Analytics',
+      action: 'Edit dashboard',
+      chart: {
+        visitors: 'Visitors',
+        pageviews: 'Page views',
+      },
+      periodOptions: {
+        today: 'Today',
+        yesterday: 'Yesterday',
+        '7d': 'Last 7 days',
+        '30d': 'Last 30 days',
+        thisMonth: 'This month',
+        lastMonth: 'Last month',
+        last12Months: 'Last 12 months',
+        allTime: 'All time',
+      },
+    },
+    recentActivity: {
+      title: 'Recent Activity',
+      action: 'See all',
+    },
+    workflow: {
+      title: 'Workflow',
+      action: 'See all',
+    },
+  },
   collection: {
     sidebar: {
       collections: 'Collections',

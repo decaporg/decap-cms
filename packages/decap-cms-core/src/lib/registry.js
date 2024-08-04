@@ -21,6 +21,7 @@ allowedEvents.forEach(e => {
  * Global Registry Object
  */
 const registry = {
+  analytics: {},
   backends: {},
   templates: {},
   previewStyles: [],
@@ -35,6 +36,8 @@ const registry = {
 };
 
 export default {
+  registerAnalytics,
+  getAnalytics,
   registerPreviewStyle,
   getPreviewStyles,
   registerPreviewTemplate,
@@ -192,6 +195,27 @@ export function registerWidgetValueSerializer(widgetName, serializer) {
 }
 export function getWidgetValueSerializer(widgetName) {
   return registry.widgetValueSerializers[widgetName];
+}
+
+/**
+ * Analytics
+ */
+export function registerAnalytics(name, AnalyticsClass) {
+  if (!name || !AnalyticsClass) {
+    console.error(
+      "Analytics parameters invalid. example: CMS.registerAnalytics('myAnalytics', AnalyticsClass)",
+    );
+  } else if (registry.analytics[name]) {
+    console.error(`Analytics [${name}] already registered. Please choose a different name.`);
+  } else {
+    registry.analytics[name] = {
+      init: (...args) => new AnalyticsClass(...args),
+    };
+  }
+}
+
+export function getAnalytics(name) {
+  return registry.analytics[name];
 }
 
 /**

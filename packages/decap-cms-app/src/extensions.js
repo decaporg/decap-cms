@@ -1,5 +1,10 @@
 // Core
 import { DecapCmsCore as CMS } from 'decap-cms-core';
+// Analytics
+import { PlausibleAnalytics } from 'decap-cms-analytics-plausible';
+import { SimpleAnalytics } from 'decap-cms-analytics-simple';
+import { FathomAnalytics } from 'decap-cms-analytics-fathom';
+import { UmamiAnalytics } from 'decap-cms-analytics-umami';
 // Backends
 import { AzureBackend } from 'decap-cms-backend-azure';
 import { AwsCognitoGitHubProxyBackend } from 'decap-cms-backend-aws-cognito-github-proxy';
@@ -32,6 +37,10 @@ import image from 'decap-cms-editor-component-image';
 import * as locales from 'decap-cms-locales';
 
 // Register all the things
+CMS.registerAnalytics('plausible', PlausibleAnalytics);
+CMS.registerAnalytics('simple-analytics', SimpleAnalytics);
+CMS.registerAnalytics('umami', UmamiAnalytics);
+CMS.registerAnalytics('fathom', FathomAnalytics);
 CMS.registerBackend('git-gateway', GitGatewayBackend);
 CMS.registerBackend('azure', AzureBackend);
 CMS.registerBackend('aws-cognito-github-proxy', AwsCognitoGitHubProxyBackend);
