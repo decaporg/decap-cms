@@ -91,27 +91,8 @@ class DateTimeControl extends React.Component {
     return { format, inputType, inputFormat };
   }
 
-  getDefaultValue() {
-    const { field } = this.props;
-    const defaultValue = field.get('default');
-    return defaultValue;
-  }
-
   isUtc = this.props.field.get('picker_utc') || false;
   isValidDate = dt => dayjs(dt, this.getFormat().inputFormat).isValid() || dt === '';
-  defaultValue = this.getDefaultValue();
-
-  componentDidMount() {
-    const { value } = this.props;
-    const { inputFormat } = this.getFormat();
-    if (value === undefined) {
-      setTimeout(() => {
-        this.handleChange(
-          this.defaultValue === undefined ? dayjs().format(inputFormat) : this.defaultValue,
-        );
-      }, 0);
-    }
-  }
 
   formatInputValue(value) {
     if (value === '') return value;
@@ -142,8 +123,6 @@ class DateTimeControl extends React.Component {
   onInputChange = e => {
     const etv = e.target.value;
     this.handleChange(etv);
-    // const newValue = dayjs(etv);
-    // this.handleChange(etv === '' ? '' : newValue);
   };
 
   render() {
@@ -163,7 +142,7 @@ class DateTimeControl extends React.Component {
         <input
           id={forID}
           type={inputType}
-          value={this.formatInputValue(value)}
+          value={value ? this.formatInputValue(value) : ''}
           onChange={this.onInputChange}
           onFocus={setActiveStyle}
           onBlur={setInactiveStyle}
