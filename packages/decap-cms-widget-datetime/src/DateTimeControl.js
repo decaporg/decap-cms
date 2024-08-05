@@ -97,6 +97,11 @@ class DateTimeControl extends React.Component {
   formatInputValue(value) {
     if (value === '') return value;
     const { format, inputFormat } = this.getFormat();
+
+    if (value?.replace(/\s+/g, '') === '{{now}}') {
+      return this.isUtc ? dayjs.utc().format(inputFormat) : dayjs().format(inputFormat)
+    }
+
     const inputValue = this.isUtc
       ? dayjs.utc(value, format).format(inputFormat)
       : dayjs(value, format).format(inputFormat);
