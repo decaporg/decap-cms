@@ -362,7 +362,11 @@ export default class GitGateway implements Implementation {
       if (!(await this.api!.hasWriteAccess())) {
         throw new Error("You don't have sufficient permissions to access Decap CMS");
       }
-      return { name: userData.name, login: userData.email } as User;
+      return {
+        name: userData.name,
+        login: userData.email,
+        avatar_url: userData.avatar_url,
+      } as unknown as User;
     });
   }
   async restoreUser() {
