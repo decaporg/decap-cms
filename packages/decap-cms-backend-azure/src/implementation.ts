@@ -47,7 +47,7 @@ function parseAzureRepo(config: Config) {
 
   const parts = repo.split('/');
   if (parts.length !== 3) {
-    throw new Error('The Azure backend must be in a the format of {org}/{project}/{repo}');
+    throw new Error('The Azure backend must be in the format of {org}/{project}/{repo}');
   }
 
   const [org, project, repoName] = parts;
