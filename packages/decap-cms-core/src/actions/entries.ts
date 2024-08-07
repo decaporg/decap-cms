@@ -431,8 +431,11 @@ export function changeDraftFieldValidation(
   };
 }
 
-export function clearFieldErrors() {
-  return { type: DRAFT_CLEAR_ERRORS };
+export function clearFieldErrors(uniqueFieldId: string) {
+  return {
+    type: DRAFT_CLEAR_ERRORS,
+    payload: { uniqueFieldId },
+  };
 }
 
 export function localBackupRetrieved(entry: EntryValue) {

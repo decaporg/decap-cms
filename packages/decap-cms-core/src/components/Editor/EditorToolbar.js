@@ -594,11 +594,20 @@ export class EditorToolbar extends React.Component {
       </SaveButton>,
       currentStatus
         ? [
-            this.renderWorkflowStatusControls(),
-            this.renderNewEntryWorkflowPublishControls({ canCreate, canPublish }),
+            <React.Fragment key="workflow-status-controls">
+              {this.renderWorkflowStatusControls()}
+              {!hasChanged && this.renderNewEntryWorkflowPublishControls({ canCreate, canPublish })}
+            </React.Fragment>,
           ]
-        : !isNewEntry &&
-          this.renderExistingEntryWorkflowPublishControls({ canCreate, canPublish, canDelete }),
+        : !isNewEntry && (
+            <React.Fragment key="existing-entry-workflow-publish-controls">
+              {this.renderExistingEntryWorkflowPublishControls({
+                canCreate,
+                canPublish,
+                canDelete,
+              })}
+            </React.Fragment>
+          ),
       (!showDelete || useOpenAuthoring) && !hasUnpublishedChanges && !isModification ? null : (
         <DeleteButton
           key="delete-button"
