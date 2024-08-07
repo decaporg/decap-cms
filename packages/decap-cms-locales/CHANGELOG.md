@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.2.0](https://github.com/decaporg/decap-cms/compare/decap-cms-locales@3.1.4...decap-cms-locales@3.2.0) (2024-08-07)
+
+### Bug Fixes
+
+- **i18n:** improve Thai locale ([#7248](https://github.com/decaporg/decap-cms/issues/7248)) ([65b9349](https://github.com/decaporg/decap-cms/commit/65b9349c105f2b98dd0e4d4f19ceb0d7a6ee293a))
+- update ukrainian lang ([#7252](https://github.com/decaporg/decap-cms/issues/7252)) ([9881de0](https://github.com/decaporg/decap-cms/commit/9881de0587925840cd15f3af0838284a0ca2b0ab))
+
 ## [3.1.4](https://github.com/decaporg/decap-cms/compare/decap-cms-locales@3.1.3...decap-cms-locales@3.1.4) (2024-03-21)
 
 **Note:** Version bump only for package decap-cms-locales

@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.2.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-select@3.1.1...decap-cms-widget-select@3.2.0) (2024-08-07)
+
+### Bug Fixes
+
+- **select-widget:** select widget not able to select number value `0` ([#7254](https://github.com/decaporg/decap-cms/issues/7254)) ([804b3aa](https://github.com/decaporg/decap-cms/commit/804b3aa47f8f2084fa7629d44275c40646185805)), closes [#6515](https://github.com/decaporg/decap-cms/issues/6515)
+
 ## [3.1.1](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-select@3.1.0-beta.1...decap-cms-widget-select@3.1.1) (2024-03-21)
 
 **Note:** Version bump only for package decap-cms-widget-select
