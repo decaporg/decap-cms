@@ -71,35 +71,41 @@ class DateTimeControl extends React.Component {
 
   getFormat() {
     const { field } = this.props;
-    let inputFormat = 'YYYY-MM-DDTHH:mm';
     let inputType = 'datetime-local';
-    let format = field?.get('format') || 'YYYY-MM-DDTHH:mm:ss.SSS[Z]';
+    let inputFormat = 'YYYY-MM-DDTHH:mm';
+    let format = 'YYYY-MM-DDTHH:mm:ss.SSS[Z]';
+    let userFormat = field?.get('format');
     let dateFormat = field?.get('date_format');
     let timeFormat = field?.get('time_format');
     if (dateFormat === true) dateFormat = 'YYYY-MM-DD';
     if (timeFormat === true) timeFormat = 'HH:mm';
 
     if (this.isUtc) {
-      format = this.escapeZ(format);
+      userFormat = this.escapeZ(userFormat);
       dateFormat = this.escapeZ(dateFormat);
       timeFormat = this.escapeZ(timeFormat);
     }
 
-    if (dateFormat && timeFormat) {
-      return { format: `${dateFormat}T${timeFormat}`, inputType, inputFormat };
-    }
-
-    if (timeFormat) {
+    if ((typeof dateFormat === 'string') && (typeof timeFormat === 'string')) {
+      format = `${dateFormat}T${timeFormat}`
+    } else if (typeof timeFormat === 'string') {
       inputType = 'time';
-      inputFormat = 'HH:mm';
-      return { format: timeFormat, inputType, inputFormat };
+      format = timeFormat
+    } else if (typeof dateFormat === 'string') {
+      inputType = 'date';
+      format = dateFormat
     }
 
-    if (dateFormat) {
-      inputType = 'date';
-      inputFormat = 'YYYY-MM-DD';
-      return { format: dateFormat, inputType, inputFormat };
+    if (typeof userFormat === 'string') {
+      format = userFormat
+      inputType = 'datetime-local';
     }
+
+    if (dateFormat === false) inputType = 'time';
+    if (timeFormat === false) inputType = 'date';
+    if (inputType === 'datetime-local') inputFormat = 'YYYY-MM-DDTHH:mm';
+    if (inputType === 'date') inputFormat = 'YYYY-MM-DD';
+    if (inputType === 'time') inputFormat = 'HH:mm';
 
     return { format, inputType, inputFormat };
   }
