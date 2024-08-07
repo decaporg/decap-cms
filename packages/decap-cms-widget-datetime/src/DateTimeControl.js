@@ -7,6 +7,7 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import utc from 'dayjs/plugin/utc';
 import { buttons } from 'decap-cms-ui-default';
+import { debounce } from 'lodash';
 
 dayjs.extend(customParseFormat);
 dayjs.extend(localizedFormat);
@@ -98,6 +99,7 @@ class DateTimeControl extends React.Component {
   isUtc = this.props.field.get('picker_utc') || false;
   isValidDate = datetime => dayjs(datetime).isValid() || datetime === '';
   defaultValue = this.getDefaultValue();
+  state = { value: this.defaultValue };
 
   componentDidMount() {
     const { value } = this.props;
@@ -124,17 +126,20 @@ class DateTimeControl extends React.Component {
     return this.isUtc ? dayjs.utc(value).format(inputFormat) : dayjs(value).format(inputFormat);
   }
 
+  onChange = debounce(value => this.props.onChange(value), 300);
+
   handleChange = datetime => {
     if (!this.isValidDate(datetime)) return;
-    const { onChange } = this.props;
 
     if (datetime === '') {
-      onChange('');
+      this.onChange('');
     } else {
       const { format, inputFormat } = this.getFormat();
       const formattedValue = dayjs(datetime, inputFormat).format(format);
-      onChange(formattedValue);
+      this.onChange(formattedValue);
     }
+
+    this.setState({ value: datetime });
   };
 
   onInputChange = e => {
@@ -144,8 +149,9 @@ class DateTimeControl extends React.Component {
   };
 
   render() {
-    const { forID, value, classNameWrapper, setActiveStyle, setInactiveStyle, t, isDisabled } =
+    const { forID, classNameWrapper, setActiveStyle, setInactiveStyle, t, isDisabled } =
       this.props;
+    const { value } = this.state
     const { inputType, inputFormat } = this.getFormat();
 
     return (

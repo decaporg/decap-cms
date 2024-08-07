@@ -63,6 +63,8 @@ function setup({ field, defaultValue }) {
 
   const input = helpers.container.querySelector('input');
 
+  jest.useFakeTimers();
+
   return {
     ...helpers,
     ...renderArgs,
@@ -82,6 +84,8 @@ describe('Number widget', () => {
     fireEvent.focus(input);
     fireEvent.change(input, { target: { value: String(testValue) } });
 
+    jest.runAllTimers();
+
     expect(onChangeSpy).toHaveBeenCalledTimes(1);
     expect(onChangeSpy).toHaveBeenCalledWith(testValue);
   });
@@ -93,6 +97,8 @@ describe('Number widget', () => {
     fireEvent.focus(input);
     fireEvent.change(input, { target: { value: '' } });
 
+    jest.runAllTimers();
+
     expect(onChangeSpy).toHaveBeenCalledTimes(1);
     expect(onChangeSpy).toHaveBeenCalledWith('');
   });
@@ -103,6 +109,8 @@ describe('Number widget', () => {
 
     fireEvent.focus(input);
     fireEvent.change(input, { target: { value: 'invalid' } });
+
+    jest.runAllTimers();
 
     expect(onChangeSpy).toHaveBeenCalledTimes(1);
     expect(onChangeSpy).toHaveBeenCalledWith('');
@@ -116,6 +124,8 @@ describe('Number widget', () => {
     fireEvent.focus(input);
     fireEvent.change(input, { target: { value: String(testValue) } });
 
+    jest.runAllTimers();
+
     expect(onChangeSpy).toHaveBeenCalledTimes(1);
     expect(onChangeSpy).toHaveBeenCalledWith(parseInt(testValue, 10));
   });
@@ -127,6 +137,8 @@ describe('Number widget', () => {
 
     fireEvent.focus(input);
     fireEvent.change(input, { target: { value: String(testValue) } });
+
+    jest.runAllTimers();
 
     expect(onChangeSpy).toHaveBeenCalledTimes(1);
     expect(onChangeSpy).toHaveBeenCalledWith(parseFloat(testValue));
