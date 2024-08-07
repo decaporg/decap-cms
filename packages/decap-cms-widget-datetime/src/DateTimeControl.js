@@ -153,6 +153,12 @@ class DateTimeControl extends React.Component {
           onBlur={setInactiveStyle}
           disabled={isDisabled}
         />
+        {this.isUtc && (
+          <span css={css`
+            font-size: 0.8em;
+            color: #666;
+          `}>UTC</span>
+        )}
         {!isDisabled && (
           <Buttons
             t={t}
