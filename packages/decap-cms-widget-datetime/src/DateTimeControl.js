@@ -99,7 +99,7 @@ class DateTimeControl extends React.Component {
     const { format, inputFormat } = this.getFormat();
 
     if (value?.replace(/\s+/g, '') === '{{now}}') {
-      return this.isUtc ? dayjs.utc().format(inputFormat) : dayjs().format(inputFormat)
+      return this.isUtc ? dayjs.utc().format(inputFormat) : dayjs().format(inputFormat);
     }
 
     const inputValue = this.isUtc
@@ -154,10 +154,14 @@ class DateTimeControl extends React.Component {
           disabled={isDisabled}
         />
         {this.isUtc && (
-          <span css={css`
-            font-size: 0.8em;
-            color: #666;
-          `}>UTC</span>
+          <span
+            css={css`
+              font-size: 0.8em;
+              color: #666;
+            `}
+          >
+            UTC
+          </span>
         )}
         {!isDisabled && (
           <Buttons
