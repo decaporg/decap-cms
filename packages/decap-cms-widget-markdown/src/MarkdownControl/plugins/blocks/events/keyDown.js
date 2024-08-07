@@ -1,11 +1,9 @@
 import isHotkey from 'is-hotkey';
-import { Editor, Transforms } from 'slate';
 
 import keyDownEnter from './keyDownEnter';
 import keyDownBackspace from './keyDownBackspace';
 import isCursorInNonDefaultBlock from '../locations/isCursorInNonDefaultBlock';
 import toggleBlock from './toggleBlock';
-import isCursorCollapsedAfterSoftBreak from '../locations/isCursorCollapsedAfterSoftBreak';
 
 const HEADING_HOTKEYS = {
   'mod+1': 'heading-one',
@@ -25,13 +23,6 @@ function keyDown(event, editor) {
       event.preventDefault();
       return false;
     }
-  }
-
-  if (isHotkey('backspace', event) && isCursorCollapsedAfterSoftBreak(editor)) {
-    const [, path] = Editor.previous(editor);
-    Transforms.removeNodes(editor, { at: path });
-    event.preventDefault();
-    return false;
   }
 
   if (!isCursorInNonDefaultBlock(editor)) return;
