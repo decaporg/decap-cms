@@ -27,6 +27,7 @@ function Buttons({ t, handleChange, getNow }) {
           ${buttons.widget}
         `}
         onClick={() => handleChange(getNow())}
+        data-testid="now-button"
       >
         {t('editor.editorWidgets.datetime.now')}
       </button>
@@ -36,6 +37,7 @@ function Buttons({ t, handleChange, getNow }) {
           ${buttons.widget}
         `}
         onClick={() => handleChange('')}
+        data-testid="clear-button"
       >
         {t('editor.editorWidgets.datetime.clear')}
       </button>
@@ -169,6 +171,7 @@ class DateTimeControl extends React.Component {
       >
         <input
           id={forID}
+          data-testid={forID}
           type={inputType}
           value={value ? this.formatInputValue(value) : ''}
           onChange={this.onInputChange}
