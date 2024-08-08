@@ -121,7 +121,7 @@ class DateTimeControl extends React.Component {
     if (value === '') return value;
     const { format, inputFormat } = this.getFormat();
 
-    if (value?.replace(/\s+/g, '') === '{{now}}') {
+    if (typeof value === 'string' && value?.replace(/\s+/g, '') === '{{now}}') {
       return this.getNow();
     }
 
