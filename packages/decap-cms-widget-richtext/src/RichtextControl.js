@@ -19,13 +19,14 @@ export default class MarkdownControl extends React.Component {
   };
 
   render() {
-    const { classNameWrapper, field, t, isDisabled, onChange, value } = this.props;
+    const { classNameWrapper, field, t, isDisabled, getEditorComponents, onChange, value } = this.props;
     const visualEditor = (
       <div className="cms-editor-visual" ref={this.processRef}>
         <VisualEditor
           t={t}
           field={field}
           className={classNameWrapper}
+          getEditorComponents={getEditorComponents}
           isDisabled={isDisabled}
           onChange={onChange}
           value={value}

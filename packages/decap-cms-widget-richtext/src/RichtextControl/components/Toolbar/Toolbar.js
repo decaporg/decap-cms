@@ -4,12 +4,14 @@ import styled from '@emotion/styled';
 import { List } from 'immutable';
 import { colors, transitions } from 'decap-cms-ui-default';
 import { MARK_BOLD, MARK_CODE, MARK_ITALIC } from '@udecode/plate-basic-marks';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 
 import MarkToolbarButton from './MarkToolbarButton';
 import HeadingToolbarButton from './HeadingToolbarButton';
 import ListToolbarButton from './ListToolbarButton';
 import LinkToolbarButton from './LinkToolbarButton';
 import BlockquoteToolbarButton from './BlockquoteToolbarButton';
+import EditorComponentsToolbarButton from './EditorComponentsToolbarButton';
 
 const ToolbarContainer = styled.div`
   position: relative;
@@ -23,7 +25,7 @@ const ToolbarContainer = styled.div`
 `;
 
 function Toolbar(props) {
-  const { disabled, t } = props;
+  const { disabled, t, editorComponents, allowedEditorComponents, onInsertEditorComponent } = props;
 
   function isVisible(button) {
     const { buttons } = props;
@@ -88,6 +90,14 @@ function Toolbar(props) {
           icon="list-numbered"
           disabled={disabled}
         />
+        <EditorComponentsToolbarButton
+          isVisible={isVisible}
+          disabled={disabled}
+          t={t}
+          editorComponents={editorComponents}
+          allowedEditorComponents={allowedEditorComponents}
+          onChange={onInsertEditorComponent}
+        />
       </div>
     </ToolbarContainer>
   );
@@ -96,6 +106,9 @@ function Toolbar(props) {
 Toolbar.propTypes = {
   buttons: PropTypes.array,
   disabled: PropTypes.bool,
+  editorComponents: ImmutablePropTypes.map,
+  allowedEditorComponents: ImmutablePropTypes.list,
+  onInsertEditorComponent: PropTypes.func,
   t: PropTypes.func.isRequired,
 };
 

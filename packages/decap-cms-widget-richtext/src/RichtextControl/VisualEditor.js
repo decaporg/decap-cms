@@ -26,6 +26,7 @@ import { createBlockquotePlugin, ELEMENT_BLOCKQUOTE } from '@udecode/plate-block
 import { createTrailingBlockPlugin } from '@udecode/plate-trailing-block';
 import { ClassNames } from '@emotion/react';
 import { fonts, lengths, zIndex } from 'decap-cms-ui-default';
+import { fromJS } from 'immutable';
 
 import { editorStyleVars } from '../styles';
 import withProps from './withProps';
@@ -55,6 +56,38 @@ function visualEditorStyles({ minimal }) {
 `;
 }
 
+function mergeMediaConfig(editorComponents, field) {
+  // merge editor media library config to image components
+  if (editorComponents.has('image')) {
+    const imageComponent = editorComponents.get('image');
+    const fields = imageComponent?.fields;
+
+    if (fields) {
+      imageComponent.fields = fields.update(
+        fields.findIndex(f => f.get('widget') === 'image'),
+        f => {
+          // merge `media_library` config
+          if (field.has('media_library')) {
+            f = f.set(
+              'media_library',
+              field.get('media_library').mergeDeep(f.get('media_library')),
+            );
+          }
+          // merge 'media_folder'
+          if (field.has('media_folder') && !f.has('media_folder')) {
+            f = f.set('media_folder', field.get('media_folder'));
+          }
+          // merge 'public_folder'
+          if (field.has('public_folder') && !f.has('public_folder')) {
+            f = f.set('public_folder', field.get('public_folder'));
+          }
+          return f;
+        },
+      );
+    }
+  }
+}
+
 const emptyValue = [
   {
     id: '1',
@@ -63,7 +96,27 @@ const emptyValue = [
   },
 ];
 
-export default function VisualEditor({ t, field, className, isDisabled, onChange, ...props }) {
+export default function VisualEditor(props) {
+
+  const {
+    t,
+    field,
+    className,
+    isDisabled,
+    onChange,
+    getEditorComponents,
+  } = props;
+
+  let editorComponents = getEditorComponents();
+  const codeBlockComponent = fromJS(editorComponents.find(({ type }) => type === 'code-block'));
+
+  editorComponents =
+    codeBlockComponent || editorComponents.has('code-block')
+      ? editorComponents
+      : editorComponents.set('code-block', { label: 'Code Block', type: 'code-block' });
+
+  mergeMediaConfig(editorComponents, field);
+
   const plugins = createPlugins(
     [
       createParagraphPlugin(),
@@ -148,6 +201,13 @@ export default function VisualEditor({ t, field, className, isDisabled, onChange
     console.log('handleToggleMode');
   }
 
+  function handleInsertEditorComponent(a) {
+    console.log('handleInsertEditorComponent', a);
+
+
+
+  }
+
   function handleChange(value) {
     console.log('handleChange', value);
     const mdValue = slateToMarkdown(value, {});
@@ -172,9 +232,9 @@ export default function VisualEditor({ t, field, className, isDisabled, onChange
               onBlockClick={handleBlockClick}
               onLinkClick={handleLinkClick}
               onToggleMode={handleToggleMode}
-              plugins={null}
               buttons={[]}
-              editorComponents={[]}
+              editorComponents={editorComponents}
+              allowedEditorComponents={field.get('editor_components')}
               onAddAsset={() => false}
               getAsset={() => false}
               hasInline={() => false}
@@ -183,6 +243,7 @@ export default function VisualEditor({ t, field, className, isDisabled, onChange
               hasListItems={() => false}
               isShowModeToggle={() => false}
               onChange={() => false}
+              onInsertEditorComponent={handleInsertEditorComponent}
               t={t}
               disabled={isDisabled}
             />
