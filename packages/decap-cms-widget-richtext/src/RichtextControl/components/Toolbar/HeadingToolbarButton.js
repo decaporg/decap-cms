@@ -1,9 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  findNode,
   focusEditor,
-  isBlock,
+  getBlockAbove,
   isSelectionExpanded,
   toggleNodeType,
   useEditorRef,
@@ -35,9 +34,7 @@ function HeadingToolbarButton({ disabled, isVisible, t }) {
 
   const value = useEditorSelector(editor => {
     if (!isSelectionExpanded(editor)) {
-      const entry = findNode(editor, {
-        match: n => isBlock(editor, n),
-      });
+      const entry = getBlockAbove(editor)
 
       if (entry) {
         return entry[0].type;
@@ -46,6 +43,8 @@ function HeadingToolbarButton({ disabled, isVisible, t }) {
 
     return ELEMENT_PARAGRAPH;
   }, []);
+
+
 
   function handleChange(optionKey) {
     unwrapList(editor);
