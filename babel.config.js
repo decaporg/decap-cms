@@ -10,12 +10,6 @@ console.log('Build Package:', path.basename(process.cwd()));
 
 const defaultPlugins = [
   'lodash',
-  [
-    'babel-plugin-transform-builtin-extend',
-    {
-      globals: ['Error'],
-    },
-  ],
   'transform-export-extensions',
   '@babel/plugin-proposal-class-properties',
   '@babel/plugin-proposal-object-rest-spread',
