@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.2.0](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-github@3.1.2...decap-cms-backend-github@3.2.0) (2024-08-07)
+
+### Bug Fixes
+
+- fetch GitHub PR author name, fixes [#7232](https://github.com/decaporg/decap-cms/issues/7232) ([#7253](https://github.com/decaporg/decap-cms/issues/7253)) ([0e5335d](https://github.com/decaporg/decap-cms/commit/0e5335daba1b67816b4a0c24d1a2d9a185e3b54f))
+
 ## [3.1.2](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-github@3.1.1...decap-cms-backend-github@3.1.2) (2024-04-03)
 
 **Note:** Version bump only for package decap-cms-backend-github

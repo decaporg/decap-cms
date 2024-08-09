@@ -81,12 +81,9 @@ const ControlErrorsList = styled.ul`
   list-style-type: none;
   font-size: 12px;
   color: ${colors.errorText};
-  margin-bottom: 5px;
+  margin-bottom: 8px;
   text-align: right;
-  text-transform: uppercase;
-  position: relative;
   font-weight: 600;
-  top: 20px;
 `;
 
 export const ControlHint = styled.p`

@@ -142,6 +142,7 @@ type Backend = 'github' | 'gitlab' | 'bitbucket';
 type RequestConfig = Omit<RequestInit, 'headers'> &
   HeaderConfig & {
     backend: Backend;
+    apiRoot?: string;
     params?: ParamObject;
   };
 
@@ -182,7 +183,7 @@ async function constructRequestHeaders(headerConfig: HeaderConfig) {
   const { token, headers } = headerConfig;
   const baseHeaders: HeaderObj = { 'Content-Type': 'application/json; charset=utf-8', ...headers };
   if (token) {
-    baseHeaders['Authorization'] = `token ${token}`;
+    baseHeaders['Authorization'] = `Bearer ${token}`;
   }
   return Promise.resolve(baseHeaders);
 }
@@ -199,7 +200,7 @@ export async function apiRequest(
   const { token, backend, ...props } = config;
   const options = { cache: 'no-cache', ...props };
   const headers = await constructRequestHeaders({ headers: options.headers || {}, token });
-  const baseUrl = apiRoots[backend];
+  const baseUrl = config.apiRoot ?? apiRoots[backend];
   const url = constructUrlWithParams(`${baseUrl}${path}`, options.params);
   let responseStatus = 500;
   try {
@@ -220,9 +221,10 @@ export async function getDefaultBranchName(configs: {
   backend: Backend;
   repo: string;
   token?: string;
+  apiRoot?: string;
 }) {
   let apiPath;
-  const { token, backend, repo } = configs;
+  const { token, backend, repo, apiRoot } = configs;
   switch (backend) {
     case 'gitlab': {
       apiPath = `/projects/${encodeURIComponent(repo)}`;
@@ -236,7 +238,7 @@ export async function getDefaultBranchName(configs: {
       apiPath = `/repos/${repo}`;
     }
   }
-  const repoInfo = await apiRequest(apiPath, { token, backend });
+  const repoInfo = await apiRequest(apiPath, { token, backend, apiRoot });
   let defaultBranchName;
   if (backend === 'bitbucket') {
     const {

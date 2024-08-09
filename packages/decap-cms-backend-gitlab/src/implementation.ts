@@ -158,6 +158,7 @@ export default class GitLab implements Implementation {
         backend: 'gitlab',
         repo: this.repo,
         token: this.token,
+        apiRoot: this.apiRoot,
       });
       if (defaultBranchName) {
         this.branch = defaultBranchName;
