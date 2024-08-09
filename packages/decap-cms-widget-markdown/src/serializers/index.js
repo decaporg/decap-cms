@@ -1,12 +1,12 @@
 import { trimEnd } from 'lodash';
-import unified from 'unified';
+import { unified } from 'unified';
 import u from 'unist-builder';
-import markdownToRemarkPlugin from 'remark-parse';
-import remarkToMarkdownPlugin from 'remark-stringify';
-import remarkToRehype from 'remark-rehype';
-import rehypeToHtml from 'rehype-stringify';
-import htmlToRehype from 'rehype-parse';
-import rehypeToRemark from 'rehype-remark';
+import remarkParse from 'remark-parse';
+import remarkStringify from 'remark-stringify';
+import remarkRehype from 'remark-rehype';
+import rehypeStringify from 'rehype-stringify';
+import rehypeParse from 'rehype-parse';
+import rehypeRemark from 'rehype-remark';
 
 import remarkToRehypeShortcodes from './remarkRehypeShortcodes';
 import rehypePaperEmoji from './rehypePaperEmoji';
@@ -61,7 +61,7 @@ import { getEditorComponents } from '../MarkdownControl';
  */
 export function markdownToRemark(markdown, remarkPlugins) {
   const processor = unified()
-    .use(markdownToRemarkPlugin, { fences: true, commonmark: true })
+    .use(remarkParse, { fences: true, commonmark: true })
     .use(markdownToRemarkRemoveTokenizers, { inlineTokenizers: ['url'] })
     .use(remarkParseShortcodes, { plugins: getEditorComponents() })
     .use(remarkAllowHtmlEntities)
@@ -111,7 +111,7 @@ export function remarkToMarkdown(obj, remarkPlugins) {
    */
   const mdast = obj || u('root', [u('paragraph', [u('text', '')])]);
 
-  const remarkToMarkdownPluginOpts = {
+  const remarkStringifyOpts = {
     commonmark: true,
     fences: true,
     listItemIndent: '1',
@@ -127,10 +127,10 @@ export function remarkToMarkdown(obj, remarkPlugins) {
   };
 
   const processor = unified()
-    .use({ settings: remarkToMarkdownPluginOpts })
+    .use({ settings: remarkStringifyOpts })
     .use(remarkEscapeMarkdownEntities)
     .use(remarkStripTrailingBreaks)
-    .use(remarkToMarkdownPlugin)
+    .use(remarkStringify)
     .use(remarkAllowAllText)
     .use(createRemarkShortcodeStringifier({ plugins: getEditorComponents() }))
     .use(remarkPlugins);
@@ -159,11 +159,11 @@ export function markdownToHtml(markdown, { getAsset, resolveWidget, remarkPlugin
 
   const hast = unified()
     .use(remarkToRehypeShortcodes, { plugins: getEditorComponents(), getAsset, resolveWidget })
-    .use(remarkToRehype, { allowDangerousHTML: true })
+    .use(remarkRehype, { allowDangerousHTML: true })
     .runSync(mdast);
 
   const html = unified()
-    .use(rehypeToHtml, {
+    .use(rehypeStringify, {
       allowDangerousHtml: true,
       allowDangerousCharacters: true,
       closeSelfClosing: true,
@@ -179,12 +179,9 @@ export function markdownToHtml(markdown, { getAsset, resolveWidget, remarkPlugin
  * pastes.
  */
 export function htmlToSlate(html) {
-  const hast = unified().use(htmlToRehype, { fragment: true }).parse(html);
+  const hast = unified().use(rehypeParse, { fragment: true }).parse(html);
 
-  const mdast = unified()
-    .use(rehypePaperEmoji)
-    .use(rehypeToRemark, { minify: false })
-    .runSync(hast);
+  const mdast = unified().use(rehypePaperEmoji).use(rehypeRemark, { minify: false }).runSync(hast);
 
   const slateRaw = unified()
     .use(remarkAssertParents)

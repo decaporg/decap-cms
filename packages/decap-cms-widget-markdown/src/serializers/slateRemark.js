@@ -1,6 +1,6 @@
 import { get, without, last, map, intersection, omit } from 'lodash';
 import u from 'unist-builder';
-import mdastToString from 'mdast-util-to-string';
+import { toString } from 'mdast-util-to-string';
 
 /**
  * Map of Slate node types to MDAST/Remark node types.
@@ -281,7 +281,7 @@ export default function slateToRemark(value, { voidCodeBlock }) {
 
           // Filter out empty marks, otherwise their output literally by
           // remark-stringify, eg. an empty bold node becomes "****"
-          if (mdastToString(markNode) === '') {
+          if (toString(markNode) === '') {
             remainingNodes = remainder;
             continue;
           }
@@ -384,7 +384,7 @@ export default function slateToRemark(value, { voidCodeBlock }) {
         const depthText = node.type.split('-')[1];
         const depth = depthMap[depthText];
         const mdastNode = u(typeMap[node.type], { depth }, children);
-        if (mdastToString(mdastNode)) {
+        if (toString(mdastNode)) {
           return mdastNode;
         }
         return;

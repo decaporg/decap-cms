@@ -1,6 +1,6 @@
 import { find, findLast, startsWith, endsWith, trimStart, trimEnd, flatMap } from 'lodash';
 import u from 'unist-builder';
-import toString from 'mdast-util-to-string';
+import { toString } from 'mdast-util-to-string';
 
 /**
  * Convert leading and trailing spaces in a link to single spaces outside of the

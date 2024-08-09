@@ -28,6 +28,6 @@
     "decap-cms-widget-file": "^3.0.0",
     "immutable": "^3.7.6",
     "prop-types": "^15.7.2",
-    "react": "^18.2.0"
+    "react": "17.x || 18.x"
   }
 }

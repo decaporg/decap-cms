@@ -67,8 +67,8 @@
     "uuid": "^8.3.2"
   },
   "peerDependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react": "17.x || 18.x",
+    "react-dom": "17.x || 18.x"
   },
   "incrementToForceBump": 2
 }

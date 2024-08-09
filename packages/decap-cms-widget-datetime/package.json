@@ -26,6 +26,6 @@
   },
   "peerDependencies": {
     "@emotion/react": "^11.11.1",
-    "react": "^18.2.0"
+    "react": "17.x || 18.x"
   }
 }
