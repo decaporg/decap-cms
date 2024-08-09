@@ -1,4 +1,4 @@
-import unified from 'unified';
+import { unified } from 'unified';
 import u from 'unist-builder';
 
 import remarkEscapeMarkdownEntities from '../remarkEscapeMarkdownEntities';
