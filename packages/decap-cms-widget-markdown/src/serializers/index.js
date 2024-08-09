@@ -1,9 +1,9 @@
 import { trimEnd } from 'lodash';
 import unified from 'unified';
 import u from 'unist-builder';
-import markdownToRemarkPlugin from 'remark-parse';
+import remarkParse from 'remark-parse';
 import remarkToMarkdownPlugin from 'remark-stringify';
-import remarkToRehype from 'remark-rehype';
+import remarkRehype from 'remark-rehype';
 import rehypeToHtml from 'rehype-stringify';
 import htmlToRehype from 'rehype-parse';
 import rehypeToRemark from 'rehype-remark';
@@ -61,7 +61,7 @@ import { getEditorComponents } from '../MarkdownControl';
  */
 export function markdownToRemark(markdown, remarkPlugins) {
   const processor = unified()
-    .use(markdownToRemarkPlugin, { fences: true, commonmark: true })
+    .use(remarkParse, { fences: true, commonmark: true })
     .use(markdownToRemarkRemoveTokenizers, { inlineTokenizers: ['url'] })
     .use(remarkParseShortcodes, { plugins: getEditorComponents() })
     .use(remarkAllowHtmlEntities)
@@ -159,7 +159,7 @@ export function markdownToHtml(markdown, { getAsset, resolveWidget, remarkPlugin
 
   const hast = unified()
     .use(remarkToRehypeShortcodes, { plugins: getEditorComponents(), getAsset, resolveWidget })
-    .use(remarkToRehype, { allowDangerousHTML: true })
+    .use(remarkRehype, { allowDangerousHTML: true })
     .runSync(mdast);
 
   const html = unified()
