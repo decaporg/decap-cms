@@ -31,7 +31,7 @@
     "react": "^18.2.0"
   },
   "dependencies": {
-    "react-codemirror2": "^7.0.0",
+    "react-codemirror2": "^8.0.0",
     "react-select": "^4.0.0"
   }
 }
