@@ -1,4 +1,4 @@
-import mdastToString from 'mdast-util-to-string';
+import { toString } from 'mdast-util-to-string';
 
 /**
  * Removes break nodes that are at the end of a block.
@@ -23,12 +23,12 @@ export default function remarkStripTrailingBreaks() {
             const subsequentNodes = children.slice(idx + 1);
 
             /**
-             * Create a small MDAST so that mdastToString can process all
+             * Create a small MDAST so that toString can process all
              * siblings as children of one node rather than making multiple
              * calls.
              */
             const fragment = { type: 'root', children: subsequentNodes };
-            const subsequentText = mdastToString(fragment);
+            const subsequentText = toString(fragment);
             return subsequentText.trim() ? child : null;
           }
 

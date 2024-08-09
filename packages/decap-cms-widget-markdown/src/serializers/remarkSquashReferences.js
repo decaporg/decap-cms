@@ -1,6 +1,6 @@
 import { without, flatten } from 'lodash';
 import u from 'unist-builder';
-import mdastDefinitions from 'mdast-util-definitions';
+import { definitions } from 'mdast-util-definitions';
 
 /**
  * Raw markdown may contain image references or link references. Because there
@@ -27,7 +27,7 @@ export default function remarkSquashReferences() {
   return getTransform;
 
   function getTransform(node) {
-    const getDefinition = mdastDefinitions(node);
+    const getDefinition = definitions(node);
     return transform.call(null, getDefinition, node);
   }
 
