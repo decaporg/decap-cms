@@ -4,12 +4,8 @@ import dayjs from 'dayjs';
 
 import DateTimeControl from '../DateTimeControl';
 
-describe('DateTimeControl', () => {
-  const field = {
-    get: jest.fn(),
-  };
+function setup(propsOverrides = {}) {
   const props = {
-    field,
     forID: 'test-datetime',
     onChange: jest.fn(),
     classNameWrapper: 'classNameWrapper',
@@ -18,32 +14,47 @@ describe('DateTimeControl', () => {
     value: '',
     t: key => key,
     isDisabled: false,
+    field: {
+      get: jest.fn().mockReturnValue('DD.MM.YYYY'),
+    },
+    ...propsOverrides,
   };
 
+  const utils = render(<DateTimeControl {...props} />);
+  const input = utils.getByTestId('test-datetime');
+  const nowButton = utils.getByTestId('now-button');
+  const clearButton = utils.getByTestId('clear-button');
+
+  return {
+    ...utils,
+    props,
+    input,
+    nowButton,
+    clearButton,
+  };
+}
+
+describe('DateTimeControl', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   test('renders the component with input, now button, and clear button', () => {
-    const { getByTestId } = render(<DateTimeControl {...props} />);
+    const { getByTestId } = setup();
     expect(getByTestId('test-datetime')).toBeInTheDocument();
     expect(getByTestId('now-button')).toBeInTheDocument();
     expect(getByTestId('clear-button')).toBeInTheDocument();
   });
 
-  test('set value to current time if now button is clicked', () => {
-    const { getByTestId } = render(<DateTimeControl {...props} value="" />);
-    const nowButton = getByTestId('now-button');
-    const input = getByTestId('test-datetime');
+  test('set value to current date if now button is clicked', () => {
+    const { nowButton, props } = setup();
     fireEvent.click(nowButton);
-    expect(input.value).toBe(dayjs().format('YYYY-MM-DD'));
+    expect(props.onChange).toHaveBeenCalledWith(dayjs().format('DD.MM.YYYY'));
   });
 
   test('set value to empty string if clear button is clicked', () => {
-    const { getByTestId } = render(<DateTimeControl {...props} value="1970-01-01" />);
-    const clearButton = getByTestId('clear-button');
-    const input = getByTestId('test-datetime');
+    const { clearButton, props } = setup({ value: '1970-01-01' });
     fireEvent.click(clearButton);
-    expect(input.value).toBe('');
+    expect(props.onChange).toHaveBeenCalledWith('');
   });
 });
