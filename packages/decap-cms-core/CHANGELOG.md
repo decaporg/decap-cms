@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.4.0](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.3.7...decap-cms-core@3.4.0) (2024-08-07)
+
+### Bug Fixes
+
+- **i18n:** allow to store the new entry in the draft after a pre save ([#7227](https://github.com/decaporg/decap-cms/issues/7227)) ([dc8b684](https://github.com/decaporg/decap-cms/commit/dc8b68408576a320424e226e59c95a92cb0b134f))
+- improve field error position ([#7260](https://github.com/decaporg/decap-cms/issues/7260)) ([853487b](https://github.com/decaporg/decap-cms/commit/853487b2645ec9fa8a24a829b0028c620c7b6734))
+
 ## [3.3.7](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.3.6...decap-cms-core@3.3.7) (2024-06-27)
 
 ### Bug Fixes
