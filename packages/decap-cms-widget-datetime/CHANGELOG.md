@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.2.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-datetime@3.1.5...decap-cms-widget-datetime@3.2.0) (2024-08-12)
+
+### Fix
+
+- improve datetime widget ([#7261](https://github.com/decaporg/decap-cms/issues/7261)) ([94993be](https://github.com/decaporg/decap-cms/commit/94993be8c5b206b61068487f2d751fb0aa77859a)), closes [#3679](https://github.com/decaporg/decap-cms/issues/3679) [#7250](https://github.com/decaporg/decap-cms/issues/7250)
+
+### BREAKING CHANGES
+
+- The datetime field is empty by default, from now on, but it was prefilled with the current date until now. Use `default: '{{now}}'` to prefill the field with the current date.
+
 ## [3.1.5](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-datetime@3.1.4...decap-cms-widget-datetime@3.1.5) (2024-04-16)
 
 ### Bug Fixes
