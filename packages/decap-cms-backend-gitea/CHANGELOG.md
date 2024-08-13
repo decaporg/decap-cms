@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.1.5](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-gitea@3.1.4...decap-cms-backend-gitea@3.1.5) (2024-08-13)
+
+### Reverts
+
+- Revert "Update dependencies (#7264)" ([22d483a](https://github.com/decaporg/decap-cms/commit/22d483a5b0c654071ae05735ac4f49abdc13d38c)), closes [#7264](https://github.com/decaporg/decap-cms/issues/7264)
+
+## [3.1.4](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-gitea@3.1.3...decap-cms-backend-gitea@3.1.4) (2024-08-13)
+
+**Note:** Version bump only for package decap-cms-backend-gitea
+
 ## [3.1.3](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-gitea@3.1.2...decap-cms-backend-gitea@3.1.3) (2024-03-21)
 
 **Note:** Version bump only for package decap-cms-backend-gitea
