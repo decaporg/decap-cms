@@ -22,6 +22,6 @@
     "cross-env": "^7.0.0"
   },
   "peerDependencies": {
-    "react": "17.x || 18.x"
+    "react": "^18.2.0"
   }
 }

@@ -22,6 +22,6 @@
   "peerDependencies": {
     "decap-cms-ui-default": "^3.0.0",
     "prop-types": "^15.7.2",
-    "react": "17.x || 18.x"
+    "react": "^18.2.0"
   }
 }

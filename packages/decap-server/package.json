@@ -41,7 +41,7 @@
     "@types/vfile-message": "^2.0.0",
     "decap-cms-lib-util": "^3.1.0",
     "jest": "^27.0.0",
-    "nodemon": "^3.1.4",
+    "nodemon": "^2.0.2",
     "ts-jest": "^27.0.0",
     "ts-loader": "^9.4.2",
     "ts-node": "^10.9.1",
