@@ -1,7 +1,7 @@
 {
   "name": "decap-cms-widget-text",
   "description": "Widget for editing multiline plain string values in Decap CMS.",
-  "version": "3.1.1",
+  "version": "3.1.3",
   "homepage": "https://www.decapcms.org/docs/widgets/#text",
   "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-widget-text",
   "bugs": "https://github.com/decaporg/decap-cms/issues",

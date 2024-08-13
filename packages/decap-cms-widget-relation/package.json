@@ -1,7 +1,7 @@
 {
   "name": "decap-cms-widget-relation",
   "description": "Widget for linking related entries in Decap CMS.",
-  "version": "3.3.0",
+  "version": "3.3.2",
   "homepage": "https://www.decapcms.org/docs/widgets/#relation",
   "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-widget-relation",
   "bugs": "https://github.com/decaporg/decap-cms/issues",

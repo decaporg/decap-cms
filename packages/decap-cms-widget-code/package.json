@@ -1,7 +1,7 @@
 {
   "name": "decap-cms-widget-code",
   "description": "Widget for editing code in Decap CMS",
-  "version": "3.1.2",
+  "version": "3.1.4",
   "homepage": "https://www.decapcms.org/docs/widgets/#code",
   "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-widget-code",
   "bugs": "https://github.com/decaporg/decap-cms/issues",

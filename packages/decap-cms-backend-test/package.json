@@ -1,7 +1,7 @@
 {
   "name": "decap-cms-backend-test",
   "description": "Development testing backend for Decap CMS",
-  "version": "3.1.1",
+  "version": "3.1.3",
   "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-backend-test",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
   "license": "MIT",
