@@ -2,6 +2,7 @@ import { List } from 'immutable';
 
 import analytics from './analytics';
 import auth from './auth';
+import branding from './branding';
 import config from './config';
 import integrations, * as fromIntegrations from './integrations';
 import entries, * as fromEntries from './entries';
@@ -24,6 +25,7 @@ import type { State, Collection } from '../types/redux';
 const reducers = {
   analytics,
   auth,
+  branding,
   config,
   collections,
   resources,

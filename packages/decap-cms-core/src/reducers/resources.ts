@@ -1,24 +1,26 @@
-import { fromJS, OrderedMap } from 'immutable';
+import { produce } from 'immer';
 
 import { CONFIG_SUCCESS } from '../actions/config';
 
 import type { ConfigAction } from '../actions/config';
+import type { Resources } from '../types/redux';
 
-const defaultState: Collections = fromJS({});
+const defaultState = {};
 
-function resources(state = defaultState, action: ConfigAction) {
+const resources = produce((state: Resources, action: ConfigAction) => {
   switch (action.type) {
     case CONFIG_SUCCESS: {
-      const resources = action.payload.resources;
-      let newState = OrderedMap({});
-      resources.forEach(resource => {
-        newState = newState.set(resource.name, fromJS(resource));
+      const resources = action.payload.resources || [];
+
+      resources.map(resource => {
+        state[resource.name] = resource;
       });
-      return newState;
+
+      return state;
     }
     default:
       return state;
   }
-}
+}, defaultState);
 
 export default resources;
