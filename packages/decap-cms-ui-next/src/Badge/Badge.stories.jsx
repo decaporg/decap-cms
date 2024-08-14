@@ -1,18 +1,18 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
 
-import { Tag, TagGroup } from '.';
+import { Badge, BadgeGroup } from '.';
 import color from '../utils/color';
 
 export default {
-  title: 'Components/Tag',
+  title: 'Components/Badge',
 };
 
-export function _Tag(args) {
+export function _Badge(args) {
   const { onClick, onDelete } = args;
 
   return (
-    <Tag
+    <Badge
       {...args}
       onClick={onClick ? action('onClick') : null}
       onDelete={onDelete ? action('onDelete') : null}
@@ -20,11 +20,20 @@ export function _Tag(args) {
   );
 }
 
-_Tag.argTypes = {
+_Badge.argTypes = {
   children: { control: 'text' },
   color: {
     control: 'select',
     options: Object.keys(color).reduce((acc, color) => ({ ...acc, [color]: color }), {}),
+  },
+  variant: {
+    control: 'select',
+    options: ['solid', 'soft', 'outline'],
+  },
+  radius: { control: 'select', options: ['none', 'large', 'full'] },
+  size: {
+    control: 'select',
+    options: ['sm', 'md', 'lg'],
   },
   hasMenu: { control: 'boolean' },
 
@@ -32,21 +41,24 @@ _Tag.argTypes = {
   onDelete: { control: 'boolean' },
 };
 
-_Tag.args = {
-  children: 'Tag',
+_Badge.args = {
+  children: 'Badge',
   color: 'neutral',
+  variant: 'solid',
+  radius: 'large',
+  size: 'sm',
   hasMenu: false,
 
   onClick: false,
   onDelete: false,
 };
 
-export function _TagGroup(args) {
+export function _BadgeGroup(args) {
   const { size, onClick, hasMenu, onDelete } = args;
 
   return (
-    <TagGroup {...args}>
-      <Tag
+    <BadgeGroup {...args}>
+      <Badge
         size={size}
         color="green"
         onClick={onClick ? action('onClick', event) : null}
@@ -54,72 +66,72 @@ export function _TagGroup(args) {
         onDelete={onDelete ? action('onDelete', event) : null}
       >
         Apple
-      </Tag>
-      <Tag
+      </Badge>
+      <Badge
         size={size}
         color="yellow"
-        onClick={onClick ? () => alert('Tag clicked.') : null}
+        onClick={onClick ? () => alert('Badge clicked.') : null}
         hasMenu={hasMenu}
         onDelete={onDelete ? () => alert('Deleted tag') : null}
       >
         Banana
-      </Tag>
-      <Tag
+      </Badge>
+      <Badge
         size={size}
         color="orange"
-        onClick={onClick ? () => alert('Tag clicked.') : null}
+        onClick={onClick ? () => alert('Badge clicked.') : null}
         hasMenu={hasMenu}
         onDelete={onDelete ? () => alert('Deleted tag') : null}
       >
         Orange
-      </Tag>
-      <Tag
+      </Badge>
+      <Badge
         size={size}
         color="red"
-        onClick={onClick ? () => alert('Tag clicked.') : null}
+        onClick={onClick ? () => alert('Badge clicked.') : null}
         hasMenu={hasMenu}
         onDelete={onDelete ? () => alert('Deleted tag') : null}
       >
         Cherry
-      </Tag>
-      <Tag
+      </Badge>
+      <Badge
         size={size}
         color="pink"
-        onClick={onClick ? () => alert('Tag clicked.') : null}
+        onClick={onClick ? () => alert('Badge clicked.') : null}
         hasMenu={hasMenu}
         onDelete={onDelete ? () => alert('Deleted tag') : null}
       >
         Strawberry
-      </Tag>
-      <Tag
+      </Badge>
+      <Badge
         size={size}
         color="purple"
-        onClick={onClick ? () => alert('Tag clicked.') : null}
+        onClick={onClick ? () => alert('Badge clicked.') : null}
         hasMenu={hasMenu}
         onDelete={onDelete ? () => alert('Deleted tag') : null}
       >
         Grape
-      </Tag>
-      <Tag
+      </Badge>
+      <Badge
         size={size}
         color="blue"
-        onClick={onClick ? () => alert('Tag clicked.') : null}
+        onClick={onClick ? () => alert('Badge clicked.') : null}
         hasMenu={hasMenu}
         onDelete={onDelete ? () => alert('Deleted tag') : null}
       >
         Blueberry
-      </Tag>
-    </TagGroup>
+      </Badge>
+    </BadgeGroup>
   );
 }
 
-_TagGroup.argTypes = {
+_BadgeGroup.argTypes = {
   direction: {
     control: 'select',
     options: ['horizontal', 'vertical'],
   },
 };
 
-_TagGroup.args = {
+_BadgeGroup.args = {
   direction: 'horizontal',
 };

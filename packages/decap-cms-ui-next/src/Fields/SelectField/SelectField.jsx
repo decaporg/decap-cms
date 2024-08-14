@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import TextField from '../TextField';
 import Field from '../../Field';
-import { Tag, TagGroup } from '../../Tag';
+import { Badge, BadgeGroup } from '../../Badge';
 import { Menu, MenuItem } from '../../Menu';
 
 function SelectField({
@@ -63,16 +63,16 @@ function SelectField({
           icon="chevron-down"
         >
           {value && value.length ? (
-            <TagGroup>
+            <BadgeGroup>
               {value.map(option => (
-                <Tag
+                <Badge
                   key={option.value}
                   onDelete={() => onChange(value.filter(opt => opt !== option))}
                 >
                   {options.find(opt => opt.value === option).label}
-                </Tag>
+                </Badge>
               ))}
-            </TagGroup>
+            </BadgeGroup>
           ) : (
             <span>{placeholder || `Select ${label}...`}</span>
           )}

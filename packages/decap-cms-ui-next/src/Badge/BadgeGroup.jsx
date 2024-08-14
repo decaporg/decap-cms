@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-const TagGroup = styled.div`
+const BadgeGroup = styled.div`
   margin: -4px;
   display: inline-flex;
   align-items: ${({ direction }) => (direction === 'vertical' ? 'stretch' : 'center')};
@@ -11,4 +11,4 @@ const TagGroup = styled.div`
   }
 `;
 
-export default TagGroup;
+export default BadgeGroup;

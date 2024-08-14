@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import { css } from '@emotion/react';
 
 import Label from '../Label';
-import { Tag } from '../Tag';
+import { Badge } from '../Badge';
 import Icon from '../Icon';
 import { IconButton } from '../Buttons';
 
@@ -221,7 +221,7 @@ function Field({
             clickable={clickable || !!onClick}
             error={error}
           >
-            {label} {status && <Tag color={error ? 'danger' : 'neutral'}>{status}</Tag>}
+            {label} {status && <Badge color={error ? 'danger' : 'neutral'}>{status}</Badge>}
             {error && errors && (
               <StyledErrorsList inline={inline} icon={icon}>
                 <Icon name="alert-triangle" />

@@ -5,7 +5,7 @@ import { action } from '@storybook/addon-actions';
 import Table from './Table';
 import Icon from '../Icon';
 import { Menu, MenuItem } from '../Menu';
-import { Tag } from '../Tag';
+import { Badge } from '../Badge';
 import getMockData from '../utils/getMockData';
 
 export default {
@@ -135,7 +135,7 @@ export function _Table(args) {
 
           return (
             <>
-              <Tag
+              <Badge
                 onClick={e => {
                   e.stopPropagation();
                   setMenuAnchorEl(e.currentTarget);
@@ -152,7 +152,7 @@ export function _Table(args) {
                 }
               >
                 {status}
-              </Tag>
+              </Badge>
               <Menu
                 anchorEl={menuAnchorEl}
                 open={!!menuAnchorEl}
