@@ -8,8 +8,8 @@
   <body>
     <script src="/dist/decap-cms.js"></script>
     <script>
-      var PostPreview = createClass({
-        render: function() {
+      class PostPreview extends React.Component {
+        render() {
           var entry = this.props.entry;
           return h(
             'div',
@@ -18,11 +18,11 @@
             h('p', {}, h('small', {}, 'Written ' + entry.getIn(['data', 'date']))),
             h('div', { className: 'text' }, this.props.widgetFor('body')),
           );
-        },
-      });
+        }
+      }
 
-      var PagePreview = createClass({
-        render: function() {
+      class PagePreview extends React.Component {
+        render() {
           var entry = this.props.entry;
           return h(
             'div',
@@ -31,8 +31,8 @@
             h('p', {}, h('small', {}, 'Written ' + entry.getIn(['data', 'date']))),
             h('div', { className: 'text' }, this.props.widgetFor('body')),
           );
-        },
-      });
+        }
+      }
 
       CMS.registerPreviewTemplate('posts', PostPreview);
       CMS.registerPreviewTemplate('pages', PagePreview);

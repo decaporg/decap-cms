@@ -114,8 +114,8 @@
 
   <script src="dist/decap-cms.js"></script>
   <script>
-    var PostPreview = createClass({
-      render: function() {
+    class PostPreview extends React.Component {
+      render() {
         var entry = this.props.entry;
         return h('div', {},
           h('div', {className: "cover"},
@@ -128,10 +128,10 @@
           h('div', {"className": "text"}, this.props.widgetFor('body'))
         );
       }
-    });
+    }
 
-    var GeneralPreview = createClass({
-      render: function() {
+    class GeneralPreview extends React.Component {
+      render() {
         var entry = this.props.entry;
         var title = entry.getIn(['data', 'site_title']);
         var posts = entry.getIn(['data', 'posts']);
@@ -151,10 +151,10 @@
           )
         );
       }
-    });
+    }
 
-    var AuthorsPreview = createClass({
-      render: function() {
+    class AuthorsPreview extends React.Component {
+      render() {
         return h('div', {},
           h('h1', {}, 'Authors'),
           this.props.widgetsFor('authors').map(function(author, index) {
@@ -166,10 +166,10 @@
           })
         );
       }
-    });
+    }
 
-    const RelationKitchenSinkPostPreview = createClass({
-      render: function() {
+    class RelationKitchenSinkPostPreview extends React.Component {
+      render() {
         // When a post is selected from the relation field, all of it's data
         // will be available in the field's metadata nested under the collection
         // name, and then further nested under the value specified in `value_field`.
@@ -186,7 +186,7 @@
           h('p', {}, post.get('body', '').slice(0, 100) + '...'),
         ) : null;
       }
-    });
+    }
 
     const previewStyles = `
       html,
