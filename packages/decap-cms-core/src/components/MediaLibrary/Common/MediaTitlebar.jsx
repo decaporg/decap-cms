@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import { Icon, IconButton } from 'decap-cms-ui-next';
+import { components } from 'decap-cms-ui-default';
 
 const MediaTitlebarWrap = styled.div`
   position: relative;
@@ -11,12 +12,8 @@ const MediaTitlebarWrap = styled.div`
 `;
 
 const MediaTitle = styled.h1`
-  font-weight: bold;
+  ${components.cardTopHeading};
   color: ${({ isPrivate, theme }) => (isPrivate ? theme.color.danger[900] : null)};
-  margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
 `;
 
 function MediaTitlebar({ onClose, title, isPrivate, isDialog }) {

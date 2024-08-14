@@ -150,7 +150,9 @@ export default class TestBackend implements Implementation {
   }
 
   authenticate() {
-    return Promise.resolve() as unknown as Promise<User>;
+    const user = { name: 'Test User', username: 'test-user' };
+
+    return Promise.resolve(user) as unknown as Promise<User>;
   }
 
   logout() {

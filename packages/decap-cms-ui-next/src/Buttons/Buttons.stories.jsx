@@ -25,21 +25,26 @@ _Button.argTypes = {
   },
   type: {
     control: 'select',
-    options: ['default', 'success', 'danger'],
-    mapping: {
-      default: null,
-    },
+    options: ['primary', 'success', 'danger', 'neutral'],
+
     table: {
-      defaultValue: { summary: 'default' },
+      defaultValue: { summary: 'primary' },
     },
   },
-  primary: {
+  variant: {
+    control: 'select',
+    options: ['solid', 'soft'],
+    table: {
+      defaultValue: { summary: 'solid' },
+    },
+  },
+  disabled: {
     control: 'boolean',
     table: {
       defaultValue: { summary: 'false' },
     },
   },
-  disabled: {
+  transparent: {
     control: 'boolean',
     table: {
       defaultValue: { summary: 'false' },
@@ -58,10 +63,11 @@ _Button.argTypes = {
 };
 
 _Button.args = {
-  type: 'default',
+  type: 'primary',
   size: 'md',
-  primary: false,
+  variant: 'solid',
   disabled: false,
+  transparent: false,
   icon: null,
   onClick: action('onClick'),
 };

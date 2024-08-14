@@ -36,7 +36,7 @@ function getShadeColor(colorString, pos) {
   return shade(colorString, Math.abs(pos));
 }
 
-function getColorShades(colorString, steps = 16) {
+export function getColorShades(colorString, steps = 16) {
   return Array.from({ length: steps })
     .fill()
     .map((val, idx) => getShadeValue(idx, steps))
@@ -63,11 +63,11 @@ let colors = {
     1500: '#0B181C',
     1600: '#071113',
   },
-  green: getColorShades('#89b74a'),
-  turquoise: getColorShades('#00ad9e'),
+  green: getColorShades('#3bdab4'),
+  teal: getColorShades('#00ad9e'),
   blue: getColorShades('#5091f4'),
   purple: getColorShades('#7a5ce5'),
-  pink: getColorShades('#ca5bb0'),
+  pink: getColorShades('#ff0080'),
   red: getColorShades('#e55a5a'),
   orange: getColorShades('#f68b45'),
   yellow: getColorShades('#f7ba34'),
@@ -75,9 +75,9 @@ let colors = {
 
 colors = {
   ...colors,
-  primary: colors.turquoise,
+  primary: colors.pink,
   danger: colors.red,
-  success: colors.turquoise,
+  success: colors.green,
 };
 
 export default colors;

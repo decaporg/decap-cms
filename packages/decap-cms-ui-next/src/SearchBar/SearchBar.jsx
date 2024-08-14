@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
-import color from 'color';
 
 import Icon from '../Icon';
 
@@ -11,11 +10,7 @@ const SearchContainer = styled.div`
   width: 100%;
   min-width: 200px;
   background-color: ${({ theme, focus }) =>
-    focus
-      ? color(theme.color.neutral['700'])
-          .alpha(theme.darkMode ? 0.35 : 0.1)
-          .string()
-      : color(theme.color.neutral['700']).alpha(0.2).string()};
+    focus ? theme.color.neutral['200'] : theme.color.surface};
   border-radius: 6px;
   transition: 200ms;
   ${({ theme, focus }) =>
@@ -23,10 +18,7 @@ const SearchContainer = styled.div`
       ? `box-shadow: inset 0 0 0 2px ${theme.color.primary['900']};`
       : `box-shadow: inset 0 0 0 0 ${theme.color.primary['900']};`}
   &:hover {
-    background-color: ${({ theme }) =>
-      color(theme.color.neutral['700'])
-        .alpha(theme.darkMode ? 0.35 : 0.1)
-        .string()};
+    background-color: ${({ theme }) => theme.color.neutral['200']};
   }
 `;
 const SearchIcon = styled(Icon)`
@@ -70,13 +62,18 @@ const SearchInput = styled.input`
   }
 `;
 
-function SearchBar({ placeholder, renderEnd, onChange, onSubmit, className }) {
+function SearchBar({ placeholder, renderEnd, onChange, onSubmit, onFocus, className }) {
   const [focus, setFocus] = useState();
 
   function handleKeyDown(event) {
     if (event.key === 'Enter') {
       onSubmit();
     }
+  }
+
+  function handleFocus() {
+    setFocus(true);
+    onFocus();
   }
 
   return (
@@ -88,7 +85,7 @@ function SearchBar({ placeholder, renderEnd, onChange, onSubmit, className }) {
         onChange={onChange}
         onKeyDown={handleKeyDown}
         focus={focus}
-        onFocus={() => setFocus(true)}
+        onFocus={() => handleFocus()}
         onBlur={() => setFocus(false)}
       />
       <EndWrap>{renderEnd && renderEnd(focus)}</EndWrap>

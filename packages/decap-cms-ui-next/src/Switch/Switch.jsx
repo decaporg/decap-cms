@@ -16,7 +16,7 @@ const SwitchButton = styled.button`
   position: relative;
   border: transparent;
   background-color: ${({ theme, checked }) =>
-    checked ? theme.color.success['900'] : theme.color.neutral[theme.darkMode ? '1000' : '300']};
+    checked ? theme.color.primary['900'] : theme.color.neutral[theme.darkMode ? '1000' : '300']};
   transition: 0.25s;
   cursor: pointer;
   &:after {

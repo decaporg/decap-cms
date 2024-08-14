@@ -1,10 +1,12 @@
 export { lightTheme, darkTheme } from './theme';
+export { getColorShades } from './utils/color';
 export { fonts, buttons, shadows } from './styles';
 
 export { default as AppBar } from './AppBar';
 export { default as AppWrap } from './AppWrap';
 export { default as Avatar } from './Avatar';
 export { default as Backdrop } from './Backdrop';
+export * from './Badge';
 export * from './Buttons';
 export { default as Card } from './Card';
 export * from './Chart';
@@ -32,8 +34,7 @@ export { default as ResponsiveLayout } from './ResponsiveLayout';
 export { default as RootRef } from './RootRef';
 export { default as SearchBar } from './SearchBar';
 export { default as Switch } from './Switch';
-export { default as Table } from './Table';
-export * from './Tag';
+export { defaul./BadgeTable } from './Table';
 export * from './Thumbnail';
 export * from './Toast';
 export { default as Toggle } from './Toggle';
@@ -41,7 +42,6 @@ export { default as Tooltip } from './Tooltip';
 export * from './Transitions';
 export { default as Tree } from './Tree';
 export * from './UIContext';
-export { default as UserMenu } from './UserMenu';
 
 export * from './AlertDialogProvider';
 export * from './hooks';

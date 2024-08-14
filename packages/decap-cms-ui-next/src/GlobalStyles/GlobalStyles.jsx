@@ -16,8 +16,8 @@ function getGlobalStyles(theme) {
     }
 
     *::selection {
-      background-color: ${color(theme.color.success['900']).alpha(0.3).string()};
-      color: ${theme.color.success[theme.darkMode ? '200' : '1500']};
+      background-color: ${color(theme.color.primary['900']).alpha(0.3).string()};
+      color: ${theme.color.primary[theme.darkMode ? '200' : '1500']};
     }
 
     ${interTypeface}

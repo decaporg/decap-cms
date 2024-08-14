@@ -84,17 +84,9 @@ const NoPreviewContainer = styled.div`
 `;
 
 const EditorContainer = styled.div`
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
   width: 100%;
-  /* min-width: 800px; */
   height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
   overflow: hidden;
-  /* padding-top: 80px; */
 `;
 
 const Editor = styled.div`

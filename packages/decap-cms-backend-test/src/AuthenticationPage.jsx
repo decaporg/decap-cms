@@ -212,6 +212,7 @@ const NETLIFY_IDENTITY = 'Netlify Identity';
 const backends = {
   [NETLIFY_IDENTITY]: {
     icon: 'netlify',
+    color: '#00C7B7', // New Netlify Rebrand teal color #32E6E2 (but it's too light)
   },
   Github: {
     icon: 'github',
@@ -219,7 +220,7 @@ const backends = {
   },
   Gitlab: {
     icon: 'gitlab',
-    color: '#e24328',
+    color: '#E24329',
   },
   Bitbucket: {
     icon: 'bitbucket',
@@ -334,9 +335,7 @@ function AuthenticationPage({ onLogin, inProgress, config, t, handleSubmit }) {
                 <StyledButtonGroup direction="vertical">
                   {Object.keys(backends).map(backend => (
                     <LoginButton
-                      primary
                       size="lg"
-                      type={backend === NETLIFY_IDENTITY && 'success'}
                       key={backend}
                       disabled={inProgress}
                       onClick={e => handleSignin(backend, e)}

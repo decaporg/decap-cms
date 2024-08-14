@@ -48,7 +48,7 @@ function MediaToolbar({
             value={query}
             onChange={onSearchChange}
             onKeyDown={onSearchKeyDown}
-            placeholder={`${t('collection.sidebar.searchIn')} ${t(
+            placeholder={`${t('app.header.searchIn')} ${t(
               'mediaLibrary.mediaLibraryModal.mediaAssets',
             )}`}
             disabled={searchDisabled}

@@ -9,13 +9,12 @@ import { Button, Card, Icon } from 'decap-cms-ui-next';
 
 const CollectionTopContainer = styled(Card)`
   padding: 1rem;
-  margin: 0 2rem 2rem 2rem;
 `;
 
 const CollectionTopRow = styled.div`
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
 `;
 
 const CollectionTopHeading = styled.h1`
@@ -59,7 +58,7 @@ function CollectionTop({ collection, newEntryUrl, t }) {
           {collectionLabel}
         </CollectionTopHeading>
         {newEntryUrl ? (
-          <Button as={Link} to={newEntryUrl} icon={'plus'} primary type="success">
+          <Button as={Link} to={newEntryUrl} icon={'plus'}>
             {t('collection.collectionTop.newButton', {
               collectionLabel: collectionLabelSingular || collectionLabel,
             })}

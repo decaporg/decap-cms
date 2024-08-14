@@ -108,7 +108,7 @@ export class Sidebar extends React.Component {
     const { collections, collection, isSearchEnabled, searchTerm, t, filterTerm } = this.props;
     return (
       <SidebarContainer>
-        <SidebarHeading>{t('collection.sidebar.collections')}</SidebarHeading>
+        <SidebarHeading>{t('app.header.collections')}</SidebarHeading>
         {isSearchEnabled && (
           <CollectionSearch
             searchTerm={searchTerm}

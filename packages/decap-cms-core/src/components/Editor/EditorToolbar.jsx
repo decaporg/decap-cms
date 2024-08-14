@@ -15,8 +15,6 @@ import {
   DropdownMenu,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  UserMenu,
-  NotificationCenter,
 } from 'decap-cms-ui-next';
 
 import { status } from '../../constants/publishModes';
@@ -108,11 +106,7 @@ const PublishControlsGroup = styled(ButtonGroup)`
 `;
 
 const BackArrow = styled(IconButton)`
-  margin-left: 1rem;
-`;
-
-const StyledUserMenu = styled(UserMenu)`
-  margin-left: 0.75rem;
+  /* margin-left: 1rem; */
 `;
 
 const StyledScrollSyncIcon = styled(Icon)`
@@ -136,7 +130,6 @@ function EditorToolbar({
   onDuplicate,
   onPublishAndNew,
   onPublishAndDuplicate,
-  user,
   hasChanged,
   collection,
   hasWorkflow,
@@ -145,7 +138,6 @@ function EditorToolbar({
   isNewEntry,
   isModification,
   currentStatus,
-  onLogoutClick,
   deployPreview = {},
   loadDeployPreview,
   previewEnabled,
@@ -282,7 +274,7 @@ function EditorToolbar({
     return (
       canPublish && (
         <PublishControlsGroup>
-          <Button type="success" primary icon="radio" onClick={onPublish}>
+          <Button icon="radio" onClick={onPublish}>
             {isPublishing
               ? t('editor.editorToolbar.publishing')
               : t('editor.editorToolbar.publish')}
@@ -290,7 +282,7 @@ function EditorToolbar({
 
           <Dropdown>
             <DropdownTrigger>
-              <Button type="success" primary icon="chevron-down" />
+              <Button icon="chevron-down" />
             </DropdownTrigger>
 
             <DropdownMenu anchorOrigin={{ y: 'bottom', x: 'right' }}>
@@ -337,7 +329,7 @@ function EditorToolbar({
     return canPublish || canCreate ? (
       <Dropdown>
         <DropdownTrigger>
-          <Button type="success" primary icon="radio" hasMenu>
+          <Button icon="radio" hasMenu>
             {isPersisting
               ? t('editor.editorToolbar.unpublishing')
               : t('editor.editorToolbar.published')}
@@ -379,7 +371,7 @@ function EditorToolbar({
     return (
       <Dropdown>
         <DropdownTrigger>
-          <Button type="success" primary icon="radio" hasMenu={canCreate || showDelete}>
+          <Button icon="radio" hasMenu={canCreate || showDelete}>
             {t('editor.editorToolbar.published')}
           </Button>
         </DropdownTrigger>
@@ -409,7 +401,7 @@ function EditorToolbar({
     return (
       <Dropdown>
         <DropdownTrigger>
-          <Button type="success" primary icon="radio" hasMenu>
+          <Button icon="radio" hasMenu>
             {isPersisting
               ? t('editor.editorToolbar.publishing')
               : t('editor.editorToolbar.publish')}
@@ -458,7 +450,13 @@ function EditorToolbar({
       (!hasUnpublishedChanges && !isModification && t('editor.editorToolbar.deletePublishedEntry'));
 
     return [
-      <Button disabled={!hasChanged} key="save-button" onClick={() => hasChanged && onPersist()}>
+      <Button
+        type="neutral"
+        variant="soft"
+        disabled={!hasChanged}
+        key="save-button"
+        onClick={() => hasChanged && onPersist()}
+      >
         {isPersisting ? t('editor.editorToolbar.saving') : t('editor.editorToolbar.save')}
       </Button>,
       currentStatus
@@ -535,12 +533,6 @@ function EditorToolbar({
           {hasWorkflow ? renderWorkflowControls() : renderSimpleControls()}
           {renderViewControls()}
         </ToolbarControls>
-      )}
-      renderActions={() => (
-        <>
-          <NotificationCenter />
-          <StyledUserMenu user={user} onLogoutClick={onLogoutClick} />
-        </>
       )}
     />
   );

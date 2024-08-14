@@ -55,6 +55,7 @@ import Info from './icons/Info';
 import Italic from './icons/Italic';
 import Layout from './icons/Layout';
 import Link from './icons/Link';
+import LoaderCircle from './icons/LoaderCircle';
 import Lock from './icons/Lock';
 import LogOut from './icons/LogOut';
 import Mail from './icons/Mail';
@@ -157,6 +158,7 @@ export const iconComponents = {
   italic: Italic,
   layout: Layout,
   link: Link,
+  'loader-circle': LoaderCircle,
   lock: Lock,
   'log-out': LogOut,
   mail: Mail,
@@ -204,13 +206,21 @@ export const iconComponents = {
   zap: Zap,
 };
 
-function Icon({ name, ...props }) {
+export type IconName = keyof typeof iconComponents;
+
+type IconProps = {
+  name: IconName;
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | (string & {});
+  className?: string;
+};
+
+function Icon({ name, ...props }: IconProps) {
   const IconComponent = iconComponents[name] || iconComponents.x;
 
   return <IconComponent {...props} />;
 }
 
-function SizedIcon({ size, className, ...props }) {
+function SizedIcon({ size, className = '', ...props }: IconProps) {
   return (
     <Icon
       {...props}

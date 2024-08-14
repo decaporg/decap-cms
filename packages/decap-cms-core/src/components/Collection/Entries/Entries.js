@@ -11,6 +11,15 @@ const PaginationMessage = styled.p`
   margin: 0 2rem 2rem 2rem;
 `;
 
+const StyledLoader = styled(Loader)`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  flex: 1;
+  height: 100%;
+`;
+
 function Entries({
   collections,
   entries,
@@ -28,7 +37,7 @@ function Entries({
   ];
 
   if (isFetching && page === undefined) {
-    return <Loader>{loadingMessages}</Loader>;
+    return <StyledLoader size="lg">{loadingMessages}</StyledLoader>;
   }
 
   const hasEntries = (entries && entries.size > 0) || cursor?.actions?.has('append_next');

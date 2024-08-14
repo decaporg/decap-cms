@@ -30,9 +30,9 @@ const NavMenuItemInside = styled.span`
   width: 100%;
   overflow: hidden;
   color: ${({ theme, active }) =>
-    active ? theme.color.success['900'] : theme.color.mediumEmphasis};
+    active ? theme.color.primary['900'] : theme.color.mediumEmphasis};
   background-color: ${({ theme, active }) =>
-    active ? color(theme.color.success['900']).alpha(0.1).string() : `transparent`};
+    active ? color(theme.color.primary['900']).alpha(0.1).string() : `transparent`};
   border: none;
   height: 2rem;
   border-radius: 6px;
@@ -40,10 +40,10 @@ const NavMenuItemInside = styled.span`
   transition: 200ms;
   ${NavMenuListItem}:hover & {
     color: ${({ theme, active }) =>
-      active ? theme.color.success['900'] : theme.color.highEmphasis};
+      active ? theme.color.primary['900'] : theme.color.highEmphasis};
     background-color: ${({ theme, active }) =>
       active
-        ? color(theme.color.success['900']).alpha(0.1).string()
+        ? color(theme.color.primary['900']).alpha(0.1).string()
         : color(theme.color.highEmphasis).alpha(0.05).string()};
     ${({ active }) =>
       active
@@ -54,10 +54,10 @@ const NavMenuItemInside = styled.span`
   }
   ${NavMenuListItem}:active & {
     color: ${({ theme, active }) =>
-      active ? theme.color.success['900'] : theme.color.highEmphasis};
+      active ? theme.color.primary['900'] : theme.color.highEmphasis};
     background-color: ${({ theme, active }) =>
       active
-        ? color(theme.color.success['900']).alpha(0.1).string()
+        ? color(theme.color.primary['900']).alpha(0.1).string()
         : color(theme.color.highEmphasis).alpha(0.1).string()};
   }
   ${ButtonGroup} & {

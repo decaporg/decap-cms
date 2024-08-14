@@ -4,6 +4,8 @@ import styled from '@emotion/styled';
 import { css, keyframes } from '@emotion/react';
 import { CSSTransition } from 'react-transition-group';
 
+import Icon from '../Icon';
+
 const styles = {
   disabled: css`
     display: none;
@@ -40,54 +42,24 @@ const animations = {
 };
 
 const LoaderWrap = styled.div`
-  display: block;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  padding-top: 2.75rem;
-  margin: 0;
+  display: flex;
+  flex-direction: ${({ direction }) => (direction === 'horizontal' ? 'row' : 'column')};
+  align-items: center;
 
-  text-align: center;
-  width: auto;
-  height: auto;
   z-index: 1000;
-  transform: translateX(-50%) translateY(-50%);
+`;
 
-  &:before,
-  &:after {
-    content: '';
-    position: absolute;
-    top: 0%;
-    left: 50%;
-    width: 2.2857rem;
-    height: 2.2857rem;
-    margin: 0 0 0 -1.1429rem;
-    border-radius: 500rem;
-    border-style: solid;
-    border-width: 0.2em;
-  }
-
-  /* Static Shape */
-  &:before {
-    border-color: ${({ theme }) => theme.color.neutral[theme.darkMode ? 1300 : 300]};
-  }
-
-  /* Active Shape */
-  &:after {
-    animation: ${animations.loader} 0.6s linear;
-    animation-iteration-count: infinite;
-    border-color: ${({ theme }) => theme.color.primary[900]} transparent transparent;
-    box-shadow: 0 0 0 1px transparent;
-  }
+const LoaderSpinner = styled(Icon)`
+  color: ${({ theme }) => theme.color.primary[theme.darkMode ? 1300 : 300]};
+  animation: ${animations.loader} 0.6s linear infinite;
 `;
 
 const LoaderItem = styled.div`
-  position: absolute;
+  position: relative;
   white-space: nowrap;
-  transform: translateX(-50%);
 `;
 
-function Loader({ size = 'md', direction = 'vertical', children }) {
+function Loader({ size = 'lg', direction = 'vertical', children, ...props }) {
   const [currentItem, setCurrentItem] = useState(0);
 
   function setAnimation() {
@@ -103,7 +75,9 @@ function Loader({ size = 'md', direction = 'vertical', children }) {
     return null;
   } else if (typeof children === 'string') {
     return (
-      <LoaderWrap role="status" size={size} direction={direction}>
+      <LoaderWrap role="status" size={size} direction={direction} {...props}>
+        <LoaderSpinner name="loader-circle" size={size} />
+
         {children}
       </LoaderWrap>
     );
@@ -111,7 +85,7 @@ function Loader({ size = 'md', direction = 'vertical', children }) {
     setAnimation();
 
     return (
-      <LoaderWrap role="status" size={size} direction={direction}>
+      <LoaderWrap role="status" size={size} direction={direction} {...props}>
         <CSSTransition
           className={{
             enter: styles.enter,

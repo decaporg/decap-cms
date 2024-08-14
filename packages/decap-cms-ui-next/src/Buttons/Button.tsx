@@ -6,8 +6,10 @@ import color from 'color';
 import Icon from '../Icon';
 import ButtonGroup from './ButtonGroup';
 
-export const StyledButton = styled.button`
-  ${({ theme, size, type, primary, transparent, disabled }) => css`
+import type { IconName } from '../Icon';
+
+export const StyledButton = styled.button<ButtonProps>`
+  ${({ theme, size, type, variant, transparent, disabled }) => css`
     font-family: ${theme.fontFamily};
     font-size: ${size === 'sm' ? 12 : size === 'lg' ? 14 : 14}px;
     padding: ${size === 'sm' ? `0 0.5rem` : size === 'lg' ? `0 1rem` : `0 0.75rem`};
@@ -22,24 +24,30 @@ export const StyledButton = styled.button`
     transition: 200ms;
     background-color: ${transparent
       ? 'transparent'
-      : primary
+      : variant === 'solid'
       ? type === 'success'
         ? theme.color.success['900']
         : type === 'danger'
         ? theme.color.danger['900']
-        : theme.color.neutral[theme.darkMode ? '800' : '800']
+        : type === 'neutral'
+        ? theme.color.neutral[theme.darkMode ? '800' : '800']
+        : theme.color.primary[900]
       : type === 'success'
-      ? color(theme.color.success['900']).alpha(0.2).string()
+      ? color(theme.color.success['900']).alpha(0.1).string()
       : type === 'danger'
-      ? color(theme.color.danger['900']).alpha(0.2).string()
-      : color(theme.color.neutral['700']).alpha(0.2).string()};
-    color: ${primary
+      ? color(theme.color.danger['900']).alpha(0.1).string()
+      : type === 'neutral'
+      ? color(theme.color.neutral['700']).alpha(0.1).string()
+      : color(theme.color.primary['900']).alpha(0.1).string()};
+    color: ${variant === 'solid'
       ? '#FFFFFF'
       : type === 'success'
       ? theme.color.success[theme.darkMode ? '200' : '700']
       : type === 'danger'
       ? theme.color.danger[theme.darkMode ? '200' : '700']
-      : theme.color.neutral[theme.darkMode ? '300' : '1000']};
+      : type === 'neutral'
+      ? theme.color.neutral[theme.darkMode ? '300' : '1000']
+      : theme.color.primary[theme.darkMode ? '200' : '900']};
     ${disabled
       ? 'opacity: 0.5;'
       : `
@@ -47,66 +55,84 @@ export const StyledButton = styled.button`
             background-color: ${
               transparent
                 ? 'rgba(0,0,0,0.15)'
-                : primary
+                : variant === 'solid'
                 ? type === 'success'
                   ? theme.color.success['800']
                   : type === 'danger'
                   ? theme.color.danger['800']
-                  : theme.color.neutral['700']
+                  : type === 'neutral'
+                  ? theme.color.neutral['700']
+                  : theme.color.primary['800']
                 : type === 'success'
                 ? color(theme.color.success['900'])
-                    .alpha(theme.darkMode ? 0.35 : 0.1)
+                    .alpha(theme.darkMode ? 0.35 : 0.2)
                     .string()
                 : type === 'danger'
                 ? color(theme.color.danger['900'])
-                    .alpha(theme.darkMode ? 0.35 : 0.1)
+                    .alpha(theme.darkMode ? 0.35 : 0.2)
                     .string()
-                : color(theme.color.neutral['700'])
-                    .alpha(theme.darkMode ? 0.35 : 0.1)
+                : type === 'neutral'
+                ? color(theme.color.neutral['700'])
+                    .alpha(theme.darkMode ? 0.35 : 0.2)
+                    .string()
+                : color(theme.color.primary['900'])
+                    .alpha(theme.darkMode ? 0.35 : 0.2)
                     .string()
             };
           }
           &:focus,
           &:focus:hover {
             background-color: ${
-              primary
+              variant === 'solid'
                 ? type === 'success'
                   ? theme.color.success['800']
                   : type === 'danger'
                   ? theme.color.danger['800']
-                  : theme.color.neutral['700']
+                  : type === 'neutral'
+                  ? theme.color.neutral['700']
+                  : theme.color.primary['800']
                 : type === 'success'
                 ? color(theme.color.success['900'])
-                    .alpha(theme.darkMode ? 0.35 : 0.1)
+                    .alpha(theme.darkMode ? 0.35 : 0.2)
                     .string()
                 : type === 'danger'
                 ? color(theme.color.danger['900'])
-                    .alpha(theme.darkMode ? 0.35 : 0.1)
+                    .alpha(theme.darkMode ? 0.35 : 0.2)
                     .string()
-                : color(theme.color.neutral['700'])
-                    .alpha(theme.darkMode ? 0.35 : 0.1)
+                : type === 'neutral'
+                ? color(theme.color.neutral['700'])
+                    .alpha(theme.darkMode ? 0.35 : 0.2)
+                    .string()
+                : color(theme.color.primary['900'])
+                    .alpha(theme.darkMode ? 0.35 : 0.2)
                     .string()
             };
           }
           &:active,
           &:active:focus {
             background-color: ${
-              primary
+              variant === 'solid'
                 ? type === 'success'
                   ? theme.color.success['1000']
                   : type === 'danger'
                   ? theme.color.danger['1000']
-                  : theme.color.neutral['900']
+                  : type === 'neutral'
+                  ? theme.color.neutral['900']
+                  : theme.color.primary['1000']
                 : type === 'success'
                 ? color(theme.color.success['500'])
-                    .alpha(theme.darkMode ? 0.1 : 0.35)
+                    .alpha(theme.darkMode ? 0.2 : 0.35)
                     .string()
                 : type === 'danger'
                 ? color(theme.color.danger['900'])
-                    .alpha(theme.darkMode ? 0.1 : 0.35)
+                    .alpha(theme.darkMode ? 0.2 : 0.35)
                     .string()
-                : color(theme.color.neutral['700'])
-                    .alpha(theme.darkMode ? 0.1 : 0.35)
+                : type === 'neutral'
+                ? color(theme.color.neutral['700'])
+                    .alpha(theme.darkMode ? 0.2 : 0.35)
+                    .string()
+                : color(theme.color.primary['900'])
+                    .alpha(theme.darkMode ? 0.2 : 0.35)
                     .string()
             };
           }
@@ -151,10 +177,34 @@ const StyledIcon = styled(Icon)`
   vertical-align: middle;
 `;
 
-function Button({ icon, children, className, hasMenu, size, disabled, ...props }) {
+type ButtonProps = {
+  icon?: IconName;
+  children?: React.ReactNode;
+  className?: string;
+  hasMenu?: boolean;
+  size?: 'sm' | 'md' | 'lg';
+  type?: 'primary' | 'success' | 'danger' | 'neutral';
+  variant?: 'solid' | 'soft';
+  disabled?: boolean;
+  transparent?: boolean;
+};
+
+function Button({
+  icon,
+  children,
+  className,
+  hasMenu,
+  size = 'md',
+  type = 'primary',
+  variant = 'solid',
+  disabled,
+  ...props
+}: ButtonProps) {
   return (
     <StyledButton
       size={size}
+      type={type}
+      variant={variant}
       iconOnly={!children && icon}
       className={className}
       disabled={disabled}

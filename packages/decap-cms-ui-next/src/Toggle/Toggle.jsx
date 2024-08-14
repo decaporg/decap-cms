@@ -7,19 +7,19 @@ import { Button } from '../Buttons';
 
 const StyledButton = styled(Button)`
   ${({ theme, active }) => css`
-    color: ${active ? theme.color.success['900'] : theme.color.highEmphasis};
+    color: ${active ? theme.color.primary['900'] : theme.color.highEmphasis};
     background-color: ${active
-      ? color(theme.color.success['900']).alpha(0.1).string()
+      ? color(theme.color.primary['900']).alpha(0.1).string()
       : 'transparent'} !important;
   `}
 
   &:hover,
   &:focus {
     color: ${({ theme, active }) =>
-      active ? theme.color.success['900'] : theme.color.highEmphasis};
+      active ? theme.color.primary['900'] : theme.color.highEmphasis};
     background-color: ${({ theme, active }) =>
       active
-        ? color(theme.color.success['900']).alpha(0.2).string()
+        ? color(theme.color.primary['900']).alpha(0.2).string()
         : color(theme.color.highEmphasis).alpha(0.05).string()} !important;
   }
 `;

@@ -201,20 +201,20 @@ class CollectionSearch extends React.Component {
             onChange={e => this.handleQueryChange(e.target.value)}
             onKeyDown={this.handleKeyDown}
             onClick={() => this.toggleSuggestions(true)}
-            placeholder={t('collection.sidebar.searchAll')}
+            placeholder={t('app.header.searchAll')}
             value={query}
           />
         </InputContainer>
         {suggestionsVisible && (
           <SuggestionsContainer>
             <Suggestions>
-              <SuggestionHeader>{t('collection.sidebar.searchIn')}</SuggestionHeader>
+              <SuggestionHeader>{t('app.header.searchIn')}</SuggestionHeader>
               <SuggestionItem
                 isActive={selectedCollectionIdx === -1}
                 onClick={e => this.handleSuggestionClick(e, -1)}
                 onMouseDown={e => e.preventDefault()}
               >
-                {t('collection.sidebar.allCollections')}
+                {t('app.header.allCollections')}
               </SuggestionItem>
               <SuggestionDivider />
               {collections.toIndexedSeq().map((collection, idx) => (

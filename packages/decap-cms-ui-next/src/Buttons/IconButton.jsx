@@ -7,9 +7,9 @@ import ButtonGroup from './ButtonGroup';
 
 const IconButtonWrap = styled.button`
   color: ${({ theme, active }) =>
-    active ? theme.color.success['900'] : theme.color.mediumEmphasis};
+    active ? theme.color.primary['900'] : theme.color.mediumEmphasis};
   background-color: ${({ theme, active }) =>
-    active ? color(theme.color.success['900']).alpha(0.1).string() : `transparent`};
+    active ? color(theme.color.primary['900']).alpha(0.1).string() : `transparent`};
   border: none;
   padding: 0.25rem;
   width: ${({ size }) => (size === 'lg' ? 2.5 : size === 'sm' ? 1.5 : size === 'xs' ? 1.25 : 2)}rem;
@@ -25,18 +25,18 @@ const IconButtonWrap = styled.button`
   &:hover,
   &:focus {
     color: ${({ theme, active }) =>
-      active ? theme.color.success['900'] : theme.color.highEmphasis};
+      active ? theme.color.primary['900'] : theme.color.highEmphasis};
     background-color: ${({ theme, active }) =>
       active
-        ? color(theme.color.success['900']).alpha(0.2).string()
+        ? color(theme.color.primary['900']).alpha(0.2).string()
         : color(theme.color.highEmphasis).alpha(0.05).string()};
   }
   &:active {
     color: ${({ theme, active }) =>
-      active ? theme.color.success['900'] : theme.color.highEmphasis};
+      active ? theme.color.primary['900'] : theme.color.highEmphasis};
     background-color: ${({ theme, active }) =>
       active
-        ? color(theme.color.success['900']).alpha(0.3).string()
+        ? color(theme.color.primary['900']).alpha(0.3).string()
         : color(theme.color.highEmphasis).alpha(0.1).string()};
   }
   ${ButtonGroup} & {

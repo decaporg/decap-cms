@@ -7,9 +7,7 @@ import { ExternalLinkIcon } from './NavMenuItem';
 import Card from '../Card';
 import Icon from '../Icon';
 import DecapTile from '../Logos/DecapTile';
-import UserMenu from '../UserMenu';
 import { Menu, MenuItem } from '../Menu';
-import { useUIContext } from '../hooks';
 
 const NavWrap = styled.div`
   height: 3.5rem;
@@ -128,11 +126,6 @@ const SiteName = styled.div`
   font-weight: bold;
   margin-right: 12px;
 `;
-const UserMenuWrap = styled.div`
-  padding: 0.5rem 1rem;
-  display: flex;
-  align-items: center;
-`;
 
 const MenuContent = styled.div`
   padding: 12px 0;
@@ -161,7 +154,6 @@ const MenuContent = styled.div`
 `;
 
 function MobileNavMenu({ children }) {
-  const { darkMode, setDarkMode } = useUIContext();
   const [openMenu, setOpenMenu] = useState(false);
   const [addMenuOpen, setAddMenuOpen] = useState(false);
   return (
@@ -213,9 +205,6 @@ function MobileNavMenu({ children }) {
                 <SiteName>My Website</SiteName>
                 <ExternalLinkIcon />
               </SiteNameWrap>
-              <UserMenuWrap>
-                <UserMenu darkMode={darkMode} setDarkMode={setDarkMode} />
-              </UserMenuWrap>
             </ToolbarWrap>
             <MenuContent state={state}>{children}</MenuContent>
           </MenuWrap>

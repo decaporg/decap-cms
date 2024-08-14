@@ -6,15 +6,15 @@ import Icon from '../Icon';
 
 const StylesAvatar = styled.div`
   ${({ theme, size }) => css`
-    border-radius: ${size === 'sm' ? 24 : size === 'lg' ? 40 : 32}px;
-    width: ${size === 'sm' ? 24 : size === 'lg' ? 40 : 32}px;
-    height: ${size === 'sm' ? 24 : size === 'lg' ? 40 : 32}px;
+    border-radius: ${size === 'xs' ? 20 : size === 'sm' ? 24 : size === 'lg' ? 40 : 32}px;
+    width: ${size === 'xs' ? 20 : size === 'sm' ? 24 : size === 'lg' ? 40 : 32}px;
+    height: ${size === 'xs' ? 20 : size === 'sm' ? 24 : size === 'lg' ? 40 : 32}px;
     transition: 200ms;
     background-color: ${theme.color.primary['900']};
     display: flex;
     align-items: center;
     justify-content: center;
-    color: ${theme.color.highEmphasis};
+    color: #ffffff;
   `}
 `;
 
@@ -28,18 +28,26 @@ const StylesImage = styled(StylesAvatar)`
 
 const StylesFallback = styled.span`
   ${({ size }) => css`
-    font-size: ${size === 'sm' ? 12 : size === 'lg' ? 20 : 16}px;
+    font-size: ${size === 'xs' ? 10 : size === 'sm' ? 12 : size === 'lg' ? 20 : 16}px;
     color: #ffffff;
   `}
 `;
 
 function Avatar({ size, src, fallback, ...props }) {
+  const formattedFallback = fallback
+    ? fallback
+        .toUpperCase()
+        .split(' ')
+        .map(word => word[0])
+        .join('')
+    : '';
+
   return src ? (
     <StylesImage size={size} src={src} {...props} />
   ) : fallback ? (
     <StylesAvatar size={size} {...props}>
       <StylesFallback size={size} {...props}>
-        {fallback}
+        {formattedFallback}
       </StylesFallback>
     </StylesAvatar>
   ) : (

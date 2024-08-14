@@ -14,7 +14,10 @@ export default {
   argTypes: {
     elevation: {
       control: 'select',
-      options: ['xs', 'sm', 'md', 'lg'],
+      options: ['default', 'xs', 'sm', 'md', 'lg'],
+      mapping: {
+        default: null,
+      },
     },
     direction: {
       control: 'select',

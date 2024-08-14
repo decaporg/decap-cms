@@ -11,18 +11,12 @@ import {
   DropdownMenu,
   DropdownMenuItem,
   SearchBar,
-  UserMenu,
-  NotificationCenter,
 } from 'decap-cms-ui-next';
 
 import { searchCollections } from '../../actions/collections';
 
 const StyledAppBar = styled(AppBar)`
   z-index: 1;
-`;
-
-const StyledUserMenu = styled(UserMenu)`
-  margin-left: 0.75rem;
 `;
 
 const RenderEndWrap = styled.div`
@@ -37,7 +31,7 @@ const SearchWrap = styled.div`
   padding-left: 1rem;
 `;
 
-function Header({ user, collections, onLogoutClick, onCreateEntryClick, isSearchEnabled, t }) {
+function Header({ collections, onCreateEntryClick, isSearchEnabled, t }) {
   const creatableCollections = collections.filter(collection => collection.get('create')).toList();
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -88,20 +82,20 @@ function Header({ user, collections, onLogoutClick, onCreateEntryClick, isSearch
                 <SearchBar
                   placeholder={
                     selectedCollectionIdx !== -1
-                      ? t('collection.sidebar.searchIn') +
+                      ? t('app.header.searchIn') +
                         ' ' +
                         collections.toIndexedSeq().get(selectedCollectionIdx).get('label')
-                      : t('collection.sidebar.searchAll')
+                      : t('app.header.searchAll')
                   }
                   onChange={event => setSearchTerm(event.currentTarget.value)}
                   onSubmit={submitSearch}
                   renderEnd={() => (
                     <Dropdown>
                       <DropdownTrigger>
-                        <Button size="sm" hasMenu>
+                        <Button size="sm" type="neutral" variant="soft" hasMenu>
                           {selectedCollectionIdx !== -1
                             ? collections.toIndexedSeq().get(selectedCollectionIdx).get('label')
-                            : t('collection.sidebar.allCollections')}
+                            : t('app.header.allCollections')}
                         </Button>
                       </DropdownTrigger>
 
@@ -112,7 +106,7 @@ function Header({ user, collections, onLogoutClick, onCreateEntryClick, isSearch
                             setSelectedCollectionIdx(-1);
                           }}
                         >
-                          {t('collection.sidebar.allCollections')}
+                          {t('app.header.allCollections')}
                         </DropdownMenuItem>
 
                         {collections.toIndexedSeq().map((collection, idx) => (
@@ -141,7 +135,7 @@ function Header({ user, collections, onLogoutClick, onCreateEntryClick, isSearch
 
             <Dropdown>
               <DropdownTrigger>
-                <Button icon="plus" hasMenu>
+                <Button type="neutral" variant="soft" icon="plus" hasMenu>
                   {t('app.header.quickAdd')}
                 </Button>
               </DropdownTrigger>
@@ -165,12 +159,6 @@ function Header({ user, collections, onLogoutClick, onCreateEntryClick, isSearch
           </RenderEndWrap>
         );
       }}
-      renderActions={() => (
-        <>
-          <NotificationCenter />
-          <StyledUserMenu user={user} onLogoutClick={onLogoutClick} />
-        </>
-      )}
     ></StyledAppBar>
   );
 }

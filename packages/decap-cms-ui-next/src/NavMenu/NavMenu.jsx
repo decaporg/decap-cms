@@ -12,8 +12,8 @@ import { useUIContext } from '../hooks';
 const NavWrap = styled(Card)`
   width: ${({ collapsed }) => (collapsed ? '56px' : '240px')};
   height: 100%;
-  padding: 12px 0;
-  background-color: ${({ theme }) => theme.color.elevatedSurface};
+  padding: 0.75rem 0;
+  background-color: ${({ theme }) => theme.color.background};
   display: flex;
   flex-direction: column;
   transition: width ${({ collapsed }) => (collapsed ? '200ms' : '250ms')}
@@ -39,7 +39,7 @@ const NavWrap = styled(Card)`
   `
       : ``}
 `;
-NavWrap.defaultProps = { elevation: 'xs', rounded: false, direction: 'right' };
+NavWrap.defaultProps = { rounded: false, direction: 'right' };
 
 const NavContent = styled.nav`
   display: flex;

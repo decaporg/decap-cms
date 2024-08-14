@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 
 const NavMenuGroup = styled.ul`
   padding: 0.75rem 0;
+  margin: 0;
   display: flex;
   flex-direction: column;
   &:first-child {
