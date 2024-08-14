@@ -33,12 +33,13 @@ const WorkflowContainer = styled.div`
   gap: 1rem;
 
   height: 100%;
-  padding: 0 2rem 2rem 2rem;
+  padding: 1rem;
 `;
 
 const WorkflowTop = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: center;
 `;
 
 const WorkflowTopHeading = styled.h1`
@@ -97,9 +98,9 @@ class Workflow extends Component {
             {t('workflow.workflow.workflowHeading')}
           </WorkflowTopHeading>
 
-          {/* <Dropdown>
+          <Dropdown>
             <DropdownTrigger>
-              <Button icon={'plus'} type="success" primary hasMenu>
+              <Button icon={'plus'} hasMenu>
                 {t('workflow.workflow.newPost')}
               </Button>
             </DropdownTrigger>
@@ -120,7 +121,7 @@ class Workflow extends Component {
                   </DropdownMenuItem>
                 ))}
             </DropdownMenu>
-          </Dropdown> */}
+          </Dropdown>
         </WorkflowTop>
 
         <WorkflowList

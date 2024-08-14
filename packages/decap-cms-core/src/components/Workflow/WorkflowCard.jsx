@@ -12,6 +12,15 @@ import {
   IconButton,
 } from 'decap-cms-ui-next';
 
+const StyledWorkflowCard = styled(Thumbnail)`
+  border: 1px solid ${({ theme }) => theme.color.border};
+  transition: 0.2s;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.color.elevatedSurfaceHighlight};
+  }
+`;
+
 const ActionsWrap = styled.div`
   position: absolute;
   top: 0.75rem;
@@ -53,7 +62,7 @@ function WorkflowCard({
   t,
 }) {
   return (
-    <Thumbnail
+    <StyledWorkflowCard
       as={Link}
       to={editLink}
       selectable={false}

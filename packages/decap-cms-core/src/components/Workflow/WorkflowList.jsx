@@ -5,8 +5,7 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import dayjs from 'dayjs';
 import { translate } from 'react-polyglot';
-import color from 'color';
-import { Card, Icon, Tag } from 'decap-cms-ui-next';
+import { Card, Icon, Badge } from 'decap-cms-ui-next';
 
 import { status } from '../../constants/publishModes';
 import { DragSource, DropTarget, HTML5DragDrop } from '../UI';
@@ -36,31 +35,7 @@ const Column = styled(Card)`
   display: flex;
   flex-direction: column;
   flex: 1;
-  /* gap: 1rem; */
-
-  ${props =>
-    props.name === 'draft' &&
-    css`
-      background-color: ${color(props.theme.color.blue[900]).alpha(0.15).string()};
-      box-shadow: inset 0 0 0 1.5px ${props.theme.color.blue[900]};
-      color: ${props.theme.color.blue[900]};
-    `}
-
-  ${props =>
-    props.name === 'pending_review' &&
-    css`
-      background-color: ${color(props.theme.color.yellow[900]).alpha(0.15).string()};
-      box-shadow: inset 0 0 0 1.5px ${props.theme.color.yellow[900]};
-      color: ${props.theme.color.yellow[900]};
-    `}
-
-  ${props =>
-    props.name === 'pending_publish' &&
-    css`
-      background-color: ${color(props.theme.color.green[900]).alpha(0.15).string()};
-      box-shadow: inset 0 0 0 1.5px ${props.theme.color.green[900]};
-      color: ${props.theme.color.green[900]};
-    `}
+  gap: 1rem;
 `;
 
 const ColumnHeader = styled.div`
@@ -68,40 +43,25 @@ const ColumnHeader = styled.div`
   flex-direction: row;
   align-items: center;
   gap: 0.5rem;
+`;
 
-  margin: 1rem;
+const StyledBadge = styled(Badge)`
+  ${({ theme, color }) => css`
+    background-color: ${theme.color[color]['500']} !important;
+    color: ${theme.color[color]['1400']};
+    gap: 0.5rem;
+    padding-top: 0.325rem;
+    padding-bottom: 0.325rem;
+  `}
 `;
 
 const ColumnHeaderTitle = styled.h2`
-  font-size: 1rem;
-  font-weight: bold;
-  margin: 0;
   color: inherit;
-
-  flex: 1;
+  margin: 0;
 `;
 
-const ColumnSeparator = styled.hr`
-  border: none;
-  border-radius: 20px;
-  ${props =>
-    props.name === 'draft' &&
-    css`
-      border-top: 2px solid ${props.theme.color.blue[900]};
-    `}
-
-  ${props =>
-    props.name === 'pending_review' &&
-    css`
-      border-top: 2px solid ${props.theme.color.yellow[900]};
-    `}
-
-  ${props =>
-    props.name === 'pending_publish' &&
-    css`
-      border-top: 2px solid ${props.theme.color.green[900]};
-    `}
-  margin: 0 1rem;
+const EntriesCount = styled.span`
+  font-size: 0.8rem;
 `;
 
 const WorkflowContainer = styled.div`
@@ -112,7 +72,7 @@ const WorkflowContainer = styled.div`
     scrollbar-color: ${theme.color.primary[900]} transparent;
     scrollbar-width: thin;
     scrollbar-gutter: stable;
-    margin: 1rem 0.25rem 1rem 1rem;
+    margin: 1rem 0.25rem 1rem 0.25rem;
     padding-right: 0.25rem;
 
     display: flex;
@@ -120,6 +80,7 @@ const WorkflowContainer = styled.div`
     gap: 1rem;
   `}
 `;
+
 // This is a namespace so that we can only drop these elements on a DropTarget with the same
 const DNDNamespace = 'cms-workflow';
 
@@ -142,6 +103,17 @@ function getColumnHeaderText(columnName, t) {
       return t('workflow.workflowList.inReviewHeader');
     case 'pending_publish':
       return t('workflow.workflowList.readyHeader');
+  }
+}
+
+function getColorForColumn(columnName) {
+  switch (columnName) {
+    case 'draft':
+      return 'blue';
+    case 'pending_review':
+      return 'yellow';
+    case 'pending_publish':
+      return 'green';
   }
 }
 
@@ -196,28 +168,25 @@ class WorkflowList extends React.Component {
               <div style={{ flexBasis: '33.33333%' }}>
                 <Column name={currColumn}>
                   <ColumnHeader>
-                    <Icon name={getColumnHeaderIconName(currColumn)} size={'lg'} />
-
-                    <ColumnHeaderTitle name={currColumn}>
-                      {getColumnHeaderText(currColumn, this.props.t)}
-                    </ColumnHeaderTitle>
-
-                    <Tag
-                      color={
-                        currColumn === 'draft'
-                          ? 'blue'
-                          : currColumn === 'pending_review'
-                          ? 'yellow'
-                          : 'green'
-                      }
+                    <StyledBadge
+                      color={getColorForColumn(currColumn)}
+                      variant="soft"
+                      radius="full"
+                      size="lg"
                     >
+                      <Icon name={getColumnHeaderIconName(currColumn)} size={'lg'} />
+
+                      <ColumnHeaderTitle color={getColorForColumn(currColumn)}>
+                        {getColumnHeaderText(currColumn, this.props.t)}
+                      </ColumnHeaderTitle>
+                    </StyledBadge>
+
+                    <EntriesCount>
                       {this.props.t('workflow.workflowList.currentEntries', {
                         smart_count: currEntries.size,
                       })}
-                    </Tag>
+                    </EntriesCount>
                   </ColumnHeader>
-
-                  <ColumnSeparator name={currColumn} />
 
                   {this.renderColumns(currEntries, currColumn)}
                 </Column>
