@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.1.6-beta.0](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-gitea@3.1.5...decap-cms-backend-gitea@3.1.6-beta.0) (2024-08-14)
+
+**Note:** Version bump only for package decap-cms-backend-gitea
+
 ## [3.1.5](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-gitea@3.1.4...decap-cms-backend-gitea@3.1.5) (2024-08-13)
 
 ### Reverts
