@@ -18,8 +18,8 @@
     "build": "cross-env NODE_ENV=production webpack",
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward --extensions \".js,.jsx,.ts,.tsx\""
   },
-  "dependencies": {},
   "peerDependencies": {
-    "decap-cms-lib-analytics": "^1.0.0"
+    "decap-cms-lib-analytics": "^1.0.0",
+    "dayjs": "^1.11.12"
   }
 }

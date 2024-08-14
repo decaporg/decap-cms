@@ -4,17 +4,26 @@ backend:
 analytics:
   name: simple-analytics
   config:
-    app_id: simpleanalytics.com
+    site_id: simpleanalytics.com
+    # api_key: 'test-api-key'
+    # api_endpoint: 'https://simpleanalytics.com'
     is_public: true
 
-site_url: https://example.com
-display_url: https://example.com
-# logo_url: https://avatars.githubusercontent.com/u/37912219
+# branding:
+#   logo_url: https://techhub.p-m.si/media/brand/logo.svg
+#   app_name: PM Admin
+#   theme:
+#     primary: '#E27832'
+
+# site_url: https://example.com
+# logo_url: https://techhub.p-m.si/media/brand/logo.svg
+# display_url: https://example.com
 
 publish_mode: editorial_workflow
+
 media_folder: assets/uploads
 
-# locale: 'fr'
+locale: 'en'
 
 i18n:
   # Required and can be one of multiple_folders, multiple_files or single_file
@@ -344,19 +353,18 @@ collections: # A list of collections the CMS should be able to edit
             fields:
               - { label: 'Name', name: 'name', widget: 'string', hint: 'First and Last' }
               - { label: 'Description', name: 'description', widget: 'markdown' }
+# resources: # A list of resources the CMS should link to
+#   - name: 'analytics'
+#     label: 'Analytics'
+#     url: 'https://app.netlify.com/sites/decap-www/metrics/analytics'
+#     icon: bar-chart
 
-resources: # A list of resources the CMS should link to
-  - name: 'analytics'
-    label: 'Analytics'
-    url: 'https://app.netlify.com/sites/decap-www/metrics/analytics'
-    icon: bar-chart
+#   - name: 'hosting'
+#     label: 'Hosting'
+#     url: 'https://app.netlify.com/sites/decap-www/overview'
+#     icon: server
 
-  - name: 'hosting'
-    label: 'Hosting'
-    url: 'https://app.netlify.com/sites/decap-www/overview'
-    icon: server
-
-  - name: 'git-repository'
-    label: 'Git Repository'
-    url: 'https://github.com/decaporg/decap-website'
-    icon: github
+#   - name: 'git-repository'
+#     label: 'Git Repository'
+#     url: 'https://github.com/decaporg/decap-website'
+#     icon: github

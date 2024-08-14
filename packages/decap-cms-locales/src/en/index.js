@@ -17,10 +17,18 @@ const en = {
   },
   app: {
     header: {
-      content: 'Contents',
+      dashboard: 'Dashboard',
       workflow: 'Workflow',
       media: 'Media',
       quickAdd: 'Quick add',
+      collections: 'Collections',
+      allCollections: 'All Collections',
+      resources: 'Resources',
+      search: 'Search',
+      searchAll: 'Search all',
+      searchIn: 'Search in',
+      documentation: 'Documentation',
+      help: 'Help & Feedback',
     },
     app: {
       errorHeader: 'Error loading the CMS configuration',
@@ -38,18 +46,20 @@ const en = {
     siteAnalytics: {
       title: 'Site Analytics',
       action: 'Edit dashboard',
+      loading: 'Loading chart...',
+      noAnalytics: 'No analytics provider has been configured.',
       chart: {
         visitors: 'Visitors',
         pageviews: 'Page views',
       },
       periodOptions: {
         today: 'Today',
-        yesterday: 'Yesterday',
-        '7d': 'Last 7 days',
-        '30d': 'Last 30 days',
+        last24Hours: 'Last 24 hours',
+        thisWeek: 'This week',
+        last7Days: 'Last 7 days',
         thisMonth: 'This month',
-        lastMonth: 'Last month',
-        last12Months: 'Last 12 months',
+        last30Days: 'Last 30 days',
+        thisYear: 'This year',
         allTime: 'All time',
       },
     },
@@ -63,13 +73,6 @@ const en = {
     },
   },
   collection: {
-    sidebar: {
-      collections: 'Collections',
-      allCollections: 'All Collections',
-      resources: 'Resources',
-      searchAll: 'Search all',
-      searchIn: 'Search in',
-    },
     collectionTop: {
       sortBy: 'Sort by',
       viewAs: 'View as',
@@ -293,6 +296,7 @@ const en = {
       },
     },
     settingsDropdown: {
+      darkMode: 'Dark Mode',
       logOut: 'Log Out',
     },
     toast: {

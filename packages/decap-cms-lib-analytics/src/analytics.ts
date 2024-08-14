@@ -1,54 +1,65 @@
-export type Period =
-  | 'today'
-  | 'yesterday'
-  | 'last_7_days'
-  | 'last_30_days'
-  | 'last_365_days'
-  | 'this_month'
-  | 'last_month'
-  | 'this_year'
-  | 'last_year'
-  | 'all_time';
+export const PERIODS = [
+  'today',
+  'last24Hours',
+  'thisWeek',
+  'last7Days',
+  'thisMonth',
+  'last30Days',
+  'thisYear',
+  'allTime',
+] as const;
 
-export type Interval = 'day' | 'week' | 'month' | 'year';
+export type Period = (typeof PERIODS)[number];
 
-export interface Pageview {
+export type Interval = 'hour' | 'day' | 'week' | 'month' | 'year';
+
+export interface Metric {
   date: string;
-  pageviews: number;
+  visitors: number;
 }
 
 export interface Config {
-  appId: string;
-  apiKey: string;
-  apiEndpoint: string;
+  site_id: string;
+  api_key: string;
+  api_endpoint: string;
+  is_public: boolean;
 }
 
 export interface AnalyticsService<T = any> {
-  appId: string;
-  apiKey: string;
+  siteId: string;
+  apiKey?: string;
   apiEndpoint: string;
-  getPageviews(period: Period, interval: Interval): Promise<Pageview[]>;
-  parsePageviews(data: T): Pageview[];
+  isPublic: boolean;
+
+  getMetrics(period: Period): Promise<{ metrics: Metric[]; interval: Interval }>;
 }
 
-export class BaseAnalyticsService implements AnalyticsService {
-  appId: string;
-  apiKey: string;
+export abstract class BaseAnalyticsService<T = any> implements AnalyticsService<T> {
+  siteId: string;
+  apiKey?: string;
   apiEndpoint: string;
+  isPublic: boolean;
 
   constructor(config: Config) {
-    this.appId = config.appId;
-    this.apiKey = config.apiKey;
-    this.apiEndpoint = config.apiEndpoint;
+    if (this.constructor === BaseAnalyticsService) {
+      throw new Error('Cannot instantiate an abstract class');
+    }
+
+    this.siteId = config.site_id;
+    this.apiKey = config.api_key;
+    this.apiEndpoint = config.api_endpoint;
+    this.isPublic = config.is_public;
 
     return this;
   }
 
-  async getPageviews(period: Period, interval: Interval): Promise<Pageview[]> {
-    throw new Error('Method not implemented.');
-  }
+  abstract getMetrics(period: Period): Promise<{ metrics: Metric[]; interval: Interval }>;
 
-  parsePageviews(data: any): Pageview[] {
-    throw new Error('Method not implemented.');
-  }
+  protected abstract parseMetrics(data: T): Metric[];
+
+  abstract parseDateRange(period: Period): {
+    start: string;
+    end: string;
+    interval: Interval;
+  };
 }

@@ -23,6 +23,7 @@ allowedEvents.forEach(e => {
 const registry = {
   analytics: {},
   backends: {},
+  brandings: {},
   templates: {},
   previewStyles: [],
   widgets: {},
@@ -209,7 +210,7 @@ export function registerAnalytics(name, AnalyticsClass) {
     console.error(`Analytics [${name}] already registered. Please choose a different name.`);
   } else {
     registry.analytics[name] = {
-      init: (...args) => new AnalyticsClass(...args),
+      init: ({ config }) => new AnalyticsClass(config),
     };
   }
 }

@@ -2,17 +2,17 @@ import { produce } from 'immer';
 
 import {
   ANALYTICS_CREATE,
-  ANALYTICS_PAGEVIEWS_REQUEST,
-  ANALYTICS_PAGEVIEWS_SUCCESS,
-  ANALYTICS_PAGEVIEWS_FAILURE,
+  ANALYTICS_METRICS_REQUEST,
+  ANALYTICS_METRICS_SUCCESS,
+  ANALYTICS_METRICS_FAILURE,
 } from '../actions/analytics';
 
 import type { AnalyticsAction } from '../actions/analytics';
 import type { Analytics, CmsConfig } from '../types/redux';
 
 const defaultState = {
-  pageviews: [],
-  period: '7d',
+  metrics: [],
+  period: 'today',
   interval: 'day',
   isLoading: false,
 };
@@ -22,16 +22,16 @@ const analytics = produce((state: Analytics, action: AnalyticsAction) => {
     case ANALYTICS_CREATE:
       state.implementation = action.payload.implementation;
       break;
-    case ANALYTICS_PAGEVIEWS_REQUEST:
+    case ANALYTICS_METRICS_REQUEST:
       state.isLoading = true;
       state.period = action.payload.period;
-      state.interval = action.payload.interval;
       break;
-    case ANALYTICS_PAGEVIEWS_SUCCESS:
-      state.pageviews = action.payload.pageviews;
+    case ANALYTICS_METRICS_SUCCESS:
+      state.metrics = action.payload.metrics;
+      state.interval = action.payload.interval;
       state.isLoading = false;
       break;
-    case ANALYTICS_PAGEVIEWS_FAILURE:
+    case ANALYTICS_METRICS_FAILURE:
       state.isLoading = false;
       break;
     default:
@@ -39,8 +39,8 @@ const analytics = produce((state: Analytics, action: AnalyticsAction) => {
   }
 }, defaultState);
 
-export function selectPageviews(state: CmsConfig) {
-  return state.analytics?.pageviews;
+export function selectMetrics(state: CmsConfig) {
+  return state.analytics?.metrics;
 }
 
 export function selectPeriod(state: CmsConfig) {
@@ -49,6 +49,10 @@ export function selectPeriod(state: CmsConfig) {
 
 export function selectInterval(state: CmsConfig) {
   return state.analytics?.interval;
+}
+
+export function selectIsLoading(state: CmsConfig) {
+  return state.analytics?.isLoading;
 }
 
 export default analytics;

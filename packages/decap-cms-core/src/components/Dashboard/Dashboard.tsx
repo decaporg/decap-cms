@@ -18,7 +18,7 @@ const DashboardContainer = styled.div`
   gap: 1rem;
 
   height: 100%;
-  padding: 0 2rem 2rem 2rem;
+  padding: 1rem;
 `;
 
 const DashboardHeading = styled.h1`

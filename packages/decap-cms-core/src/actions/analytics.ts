@@ -1,56 +1,57 @@
 import type { AnyAction } from 'redux';
 import type { ThunkDispatch } from 'redux-thunk';
-import type { Period, Interval, Pageview } from 'decap-cms-lib-analytics';
-import type { AnalyticsInstance, State } from '../types/redux';
+import type { AnalyticsService, Period, Metric, Interval } from 'decap-cms-lib-analytics';
+import type { State } from '../types/redux';
 
 export const ANALYTICS_CREATE = 'ANALYTICS_CREATE';
-export const ANALYTICS_PAGEVIEWS_REQUEST = 'ANALYTICS_PAGEVIEWS_REQUEST';
-export const ANALYTICS_PAGEVIEWS_SUCCESS = 'ANALYTICS_PAGEVIEWS_SUCCESS';
-export const ANALYTICS_PAGEVIEWS_FAILURE = 'ANALYTICS_PAGEVIEWS_FAILURE';
+export const ANALYTICS_METRICS_REQUEST = 'ANALYTICS_METRICS_REQUEST';
+export const ANALYTICS_METRICS_SUCCESS = 'ANALYTICS_METRICS_SUCCESS';
+export const ANALYTICS_METRICS_FAILURE = 'ANALYTICS_METRICS_FAILURE';
 
-export function createAnalytics(instance: AnalyticsInstance) {
+export function createAnalytics(instance: AnalyticsService) {
   const implementation = {
-    appId: instance.appId,
+    siteId: instance.siteId,
     apiKey: instance.apiKey,
     apiEndpoint: instance.apiEndpoint,
-    getPageviews: instance.getPageviews || (() => undefined),
-    parsePageviews: instance.parsePageviews || (() => undefined),
+    isPublic: instance.isPublic,
+    getMetrics: instance.getMetrics || (() => undefined),
+    parseMetrics: instance.parseMetrics || (() => undefined),
   };
   return { type: ANALYTICS_CREATE, payload: { implementation } } as const;
 }
 
-export function pageviewsLoading(period: Period, interval: Interval) {
-  return { type: ANALYTICS_PAGEVIEWS_REQUEST, payload: { period, interval } } as const;
+export function metricsLoading(period: Period) {
+  return { type: ANALYTICS_METRICS_REQUEST, payload: { period } } as const;
 }
 
-export function pageviewsLoaded(pageviews: Pageview[]) {
+export function metricsLoaded(metrics: Metric[], period: Period, interval: Interval) {
   return {
-    type: ANALYTICS_PAGEVIEWS_SUCCESS,
-    payload: { pageviews },
+    type: ANALYTICS_METRICS_SUCCESS,
+    payload: { metrics, period, interval },
   } as const;
 }
 
-export function pageviewsFailed(error: Error) {
-  return { type: ANALYTICS_PAGEVIEWS_FAILURE, payload: { error } } as const;
+export function metricsFailed(error: Error) {
+  return { type: ANALYTICS_METRICS_FAILURE, payload: { error } } as const;
 }
 
-export function fetchPageviews(period: Period, interval: Interval) {
+export function fetchMetrics(period: Period) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
-    dispatch(pageviewsLoading(period, interval));
+    dispatch(metricsLoading(period));
 
     const state = getState();
     const { implementation } = state.analytics;
 
     try {
-      const pageviews = await implementation.getPageviews(period, interval);
+      const { metrics, interval } = await implementation.getMetrics(period);
 
-      dispatch(pageviewsLoaded(pageviews));
+      dispatch(metricsLoaded(metrics, period, interval));
     } catch (error) {
-      dispatch(pageviewsFailed(error));
+      dispatch(metricsFailed(error));
     }
   };
 }
 
 export type AnalyticsAction = ReturnType<
-  typeof createAnalytics | typeof pageviewsLoading | typeof pageviewsLoaded | typeof pageviewsFailed
+  typeof createAnalytics | typeof metricsLoading | typeof metricsLoaded | typeof metricsFailed
 >;

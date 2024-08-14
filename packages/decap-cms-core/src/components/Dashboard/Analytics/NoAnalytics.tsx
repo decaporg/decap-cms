@@ -1,11 +1,25 @@
 import React from 'react';
+import { translate } from 'react-polyglot';
+import PropTypes from 'prop-types';
 
-function NoAnalytics() {
+type NoAnalyticsProps = {
+  t: (key: string) => string;
+};
+
+function NoAnalytics({ t }: NoAnalyticsProps) {
+  function handleHideMessage() {
+    // dispatch(hideNoAnalyticsMessage());
+  }
+
   return (
     <div>
-      <p>No analytics available.</p>
+      <p>{t('dashboard.siteAnalytics.noAnalytics')}</p>
     </div>
   );
 }
 
-export default NoAnalytics;
+NoAnalytics.propTypes = {
+  t: PropTypes.func.isRequired,
+};
+
+export default translate()(NoAnalytics);

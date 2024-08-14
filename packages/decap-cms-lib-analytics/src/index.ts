@@ -1,11 +1,10 @@
-import { BaseAnalyticsService } from './analytics';
+import { BaseAnalyticsService, PERIODS } from './analytics';
 
-import type { Period, Interval, Pageview, Config, AnalyticsService } from './analytics';
-
-export type { Period, Interval, Pageview, Config, AnalyticsService };
+export type { Period, Interval, Metric, Config, AnalyticsService } from './analytics';
 
 export const DecapCmsLibAnalytics = {
   BaseAnalyticsService,
+  PERIODS,
 };
 
-export { BaseAnalyticsService };
+export { BaseAnalyticsService, PERIODS };

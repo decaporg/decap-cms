@@ -5,7 +5,7 @@ import { store } from './redux';
 import { configFailed } from './actions/config';
 import { createAnalytics } from './actions/analytics';
 
-const initializeAnalytics = once(async function initializeAnalytics(name, options) {
+const initializeAnalytics = once(async function initializeAnalytics(name, config) {
   const analytics = getAnalytics(name);
 
   if (!analytics) {
@@ -15,7 +15,7 @@ const initializeAnalytics = once(async function initializeAnalytics(name, option
 
     store.dispatch(configFailed(err));
   } else {
-    const instance = await analytics.init({ options });
+    const instance = await analytics.init({ config });
     store.dispatch(createAnalytics(instance));
   }
 });

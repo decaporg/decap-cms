@@ -44,6 +44,7 @@
     "decap-cms-backend-test": "^3.1.0",
     "decap-cms-core": "^3.3.1",
     "decap-cms-editor-component-image": "^3.1.0",
+    "decap-cms-lib-analytics": "^1.0.0",
     "decap-cms-lib-auth": "^3.0.3",
     "decap-cms-lib-util": "^3.0.2",
     "decap-cms-lib-widgets": "^3.0.1",
@@ -69,6 +70,7 @@
     "lodash": "^4.17.11",
     "prop-types": "^15.7.2",
     "react-immutable-proptypes": "^2.1.0",
+    "recharts": "2.12.7",
     "uuid": "^8.3.2"
   },
   "peerDependencies": {
