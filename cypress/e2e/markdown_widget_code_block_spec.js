@@ -77,7 +77,8 @@ function codeBlock(content) {
     <div>
       <div></div>
       <div>
-        <div><label>Code Block</label>
+        <div>
+          <div><label>Code Block</label></div>
           <div><button><span><svg>
                   <path></path>
                 </svg></span></button>
