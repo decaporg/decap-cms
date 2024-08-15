@@ -5,7 +5,7 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import dayjs from 'dayjs';
 import { translate } from 'react-polyglot';
-import { Card, Icon, Badge } from 'decap-cms-ui-next';
+import { Card, Icon, Badge, withAlert, withConfirm } from 'decap-cms-ui-next';
 
 import { status } from '../../constants/publishModes';
 import { DragSource, DropTarget, HTML5DragDrop } from '../UI';
@@ -77,7 +77,7 @@ const WorkflowContainer = styled(Card)`
     scrollbar-color: ${theme.color.primary[900]} transparent;
     scrollbar-width: thin;
     scrollbar-gutter: stable;
-    padding-right: 0.25rem;
+    padding: 0.5rem;
 
     display: flex;
     flex-direction: column;
@@ -107,16 +107,16 @@ class WorkflowList extends React.Component {
   };
 
   requestDelete = (collection, slug, ownStatus) => {
-    if (window.confirm(this.props.t('workflow.workflowList.onDeleteEntry'))) {
+    if (confirm(this.props.t('workflow.workflowList.onDeleteEntry'))) {
       this.props.handleDelete(collection, slug, ownStatus);
     }
   };
 
   requestPublish = (collection, slug, ownStatus) => {
     if (ownStatus !== status.last()) {
-      window.alert(this.props.t('workflow.workflowList.onPublishingNotReadyEntry'));
+      alert(this.props.t('workflow.workflowList.onPublishingNotReadyEntry'));
       return;
-    } else if (!window.confirm(this.props.t('workflow.workflowList.onPublishEntry'))) {
+    } else if (!confirm(this.props.t('workflow.workflowList.onPublishEntry'))) {
       return;
     }
     this.props.handlePublish(collection, slug);
@@ -240,4 +240,4 @@ class WorkflowList extends React.Component {
   }
 }
 
-export default HTML5DragDrop(translate()(WorkflowList));
+export default HTML5DragDrop(withAlert(withConfirm(translate()(WorkflowList))));

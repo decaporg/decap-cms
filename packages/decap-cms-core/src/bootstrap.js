@@ -10,6 +10,7 @@ import {
   GlobalStyles as GlobalStylesDecapCMSUINext,
   UIProvider,
   UIContext,
+  AlertDialogProvider,
 } from 'decap-cms-ui-next';
 import { I18n } from 'react-polyglot';
 
@@ -117,7 +118,9 @@ function bootstrap(opts = {}) {
                   <GlobalStylesDecapCMSUIDefault />
                   <GlobalStylesDecapCMSUINext />
 
-                  <ConnectedTranslatedApp />
+                  <AlertDialogProvider>
+                    <ConnectedTranslatedApp />
+                  </AlertDialogProvider>
                 </ThemeProvider>
               );
             }}

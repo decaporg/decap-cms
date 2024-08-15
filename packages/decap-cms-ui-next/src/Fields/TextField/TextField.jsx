@@ -71,6 +71,7 @@ const TextField = forwardRef(
           onClick={onClick}
           readOnly={readOnly}
           type={password ? 'password' : type ? type : 'text'}
+          autoFocus={focus}
           id={name}
           name={name}
           placeholder={placeholder ? placeholder : label ? `Type ${label.toLowerCase()} here` : ''}

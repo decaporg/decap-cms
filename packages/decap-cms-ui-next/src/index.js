@@ -34,7 +34,7 @@ export { default as ResponsiveLayout } from './ResponsiveLayout';
 export { default as RootRef } from './RootRef';
 export { default as SearchBar } from './SearchBar';
 export { default as Switch } from './Switch';
-export { defaul./BadgeTable } from './Table';
+export { default as Table } from './Table';
 export * from './Thumbnail';
 export * from './Toast';
 export { default as Toggle } from './Toggle';
@@ -44,6 +44,7 @@ export { default as Tree } from './Tree';
 export * from './UIContext';
 
 export * from './AlertDialogProvider';
+export * from './HOC';
 export * from './hooks';
 export { isWindowDown, isWindowUp } from './utils/responsive';
 export * from './WindowDimensionsProvider';

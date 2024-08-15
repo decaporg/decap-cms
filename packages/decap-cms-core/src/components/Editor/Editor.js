@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
-import { Loader } from 'decap-cms-ui-next';
+import { Loader, withAlert, withConfirm } from 'decap-cms-ui-next';
 import { translate } from 'react-polyglot';
 import { debounce } from 'lodash';
 
@@ -79,6 +79,8 @@ export class Editor extends React.Component {
     loadLocalBackup: PropTypes.func,
     persistLocalBackup: PropTypes.func.isRequired,
     deleteLocalBackup: PropTypes.func,
+    alert: PropTypes.func.isRequired,
+    confirm: PropTypes.func.isRequired,
   };
 
   componentDidMount() {
@@ -205,7 +207,7 @@ export class Editor extends React.Component {
     const { entryDraft, updateUnpublishedEntryStatus, collection, slug, currentStatus, t } =
       this.props;
     if (entryDraft.get('hasChanged')) {
-      window.alert(t('editor.editor.onUpdatingWithUnsavedChanges'));
+      alert(t('editor.editor.onUpdatingWithUnsavedChanges'));
       return;
     }
     const newStatus = status.get(newStatusName);
@@ -253,14 +255,15 @@ export class Editor extends React.Component {
       slug,
       currentStatus,
       t,
+      alert,
     } = this.props;
     if (currentStatus !== status.last()) {
-      window.alert(t('editor.editor.onPublishingNotReady'));
+      alert(t('editor.editor.onPublishingNotReady'));
       return;
     } else if (entryDraft.get('hasChanged')) {
-      window.alert(t('editor.editor.onPublishingWithUnsavedChanges'));
+      alert(t('editor.editor.onPublishingWithUnsavedChanges'));
       return;
-    } else if (!window.confirm(t('editor.editor.onPublishing'))) {
+    } else if (!confirm(t('editor.editor.onPublishing'))) {
       return;
     }
 
@@ -276,8 +279,16 @@ export class Editor extends React.Component {
   };
 
   handleUnpublishEntry = async () => {
-    const { unpublishPublishedEntry, collection, slug, t } = this.props;
-    if (!window.confirm(t('editor.editor.onUnpublishing'))) return;
+    const { unpublishPublishedEntry, collection, slug, t, confirm } = this.props;
+    if (
+      !(await confirm({
+        title: 'Confirm Unpublish',
+        message: t('editor.editor.onUnpublishing'),
+        actionButton: 'Yes, Unpublish',
+        cancelButton: 'Cancel',
+      }))
+    )
+      return;
 
     await unpublishPublishedEntry(collection, slug);
 
@@ -294,10 +305,10 @@ export class Editor extends React.Component {
   handleDeleteEntry = () => {
     const { entryDraft, newEntry, collection, deleteEntry, slug, t } = this.props;
     if (entryDraft.get('hasChanged')) {
-      if (!window.confirm(t('editor.editor.onDeleteWithUnsavedChanges'))) {
+      if (!confirm(t('editor.editor.onDeleteWithUnsavedChanges'))) {
         return;
       }
-    } else if (!window.confirm(t('editor.editor.onDeletePublishedEntry'))) {
+    } else if (!confirm(t('editor.editor.onDeletePublishedEntry'))) {
       return;
     }
     if (newEntry) {
@@ -316,10 +327,10 @@ export class Editor extends React.Component {
       this.props;
     if (
       entryDraft.get('hasChanged') &&
-      !window.confirm(t('editor.editor.onDeleteUnpublishedChangesWithUnsavedChanges'))
+      !confirm(t('editor.editor.onDeleteUnpublishedChangesWithUnsavedChanges'))
     ) {
       return;
-    } else if (!window.confirm(t('editor.editor.onDeleteUnpublishedChanges'))) {
+    } else if (!confirm(t('editor.editor.onDeleteUnpublishedChanges'))) {
       return;
     }
     await deleteUnpublishedEntry(collection.get('name'), slug);
@@ -491,4 +502,7 @@ const mapDispatchToProps = {
   logoutUser,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withWorkflow(translate()(Editor)));
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(withAlert(withConfirm(withWorkflow(translate()(Editor)))));
