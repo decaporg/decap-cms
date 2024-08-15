@@ -19,6 +19,7 @@ import {
   DropdownMenuSeparator,
   Button,
   SearchBar,
+  Badge,
 } from 'decap-cms-ui-next';
 
 import { createNewEntry, searchCollections } from '../../actions/collections';
@@ -26,7 +27,11 @@ import NestedCollection from '../Collection/NestedCollection';
 
 const StyledCustomLogo = styled.img`
   width: 20px;
-  margin: 0.375rem;
+  margin-left: 0.375rem;
+`;
+
+const StyledVersionBadge = styled(Badge)`
+  margin-right: 0.375rem;
 `;
 
 const StyledAvatarButton = styled(AvatarButton)`
@@ -97,6 +102,11 @@ function Nav({
         as={ReactRouterNavLink}
         to={defaultPath}
         icon={logoUrl ? <StyledCustomLogo src={logoUrl} /> : <DecapMark size="20" />}
+        endIcon={
+          <StyledVersionBadge variant="outline" radius="full">
+            v4.0
+          </StyledVersionBadge>
+        }
       >
         {!navCollapsed && appName}
       </NavMenuItem>
