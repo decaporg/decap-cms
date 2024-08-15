@@ -11,6 +11,11 @@ import { status } from '../../constants/publishModes';
 import { DragSource, DropTarget, HTML5DragDrop } from '../UI';
 import WorkflowCard from './WorkflowCard';
 import { selectInferredField } from '../../reducers/collections';
+import {
+  getWorkflowStatusIconName,
+  getWorkflowStatusColor,
+  getWorkflowStatusTranslatedKey,
+} from '../../lib/editorialWorkflowHelper';
 
 const WorkflowListContainer = styled.div`
   display: flex;
@@ -29,7 +34,7 @@ const WorkflowListContainerOpenAuthoring = styled.div`
   grid-template-columns: 50% 50% 0%;
 `;
 
-const Column = styled(Card)`
+const Column = styled.div`
   height: 100%;
 
   display: flex;
@@ -64,7 +69,7 @@ const EntriesCount = styled.span`
   font-size: 0.8rem;
 `;
 
-const WorkflowContainer = styled.div`
+const WorkflowContainer = styled(Card)`
   ${({ theme }) => css`
     flex: 1;
 
@@ -72,7 +77,6 @@ const WorkflowContainer = styled.div`
     scrollbar-color: ${theme.color.primary[900]} transparent;
     scrollbar-width: thin;
     scrollbar-gutter: stable;
-    margin: 1rem 0.25rem 1rem 0.25rem;
     padding-right: 0.25rem;
 
     display: flex;
@@ -83,39 +87,6 @@ const WorkflowContainer = styled.div`
 
 // This is a namespace so that we can only drop these elements on a DropTarget with the same
 const DNDNamespace = 'cms-workflow';
-
-function getColumnHeaderIconName(columnName) {
-  switch (columnName) {
-    case 'draft':
-      return 'edit-3';
-    case 'pending_review':
-      return 'hard-drive';
-    case 'pending_publish':
-      return 'check';
-  }
-}
-
-function getColumnHeaderText(columnName, t) {
-  switch (columnName) {
-    case 'draft':
-      return t('workflow.workflowList.draftHeader');
-    case 'pending_review':
-      return t('workflow.workflowList.inReviewHeader');
-    case 'pending_publish':
-      return t('workflow.workflowList.readyHeader');
-  }
-}
-
-function getColorForColumn(columnName) {
-  switch (columnName) {
-    case 'draft':
-      return 'blue';
-    case 'pending_review':
-      return 'yellow';
-    case 'pending_publish':
-      return 'green';
-  }
-}
 
 class WorkflowList extends React.Component {
   static propTypes = {
@@ -169,15 +140,15 @@ class WorkflowList extends React.Component {
                 <Column name={currColumn}>
                   <ColumnHeader>
                     <StyledBadge
-                      color={getColorForColumn(currColumn)}
+                      color={getWorkflowStatusColor(currColumn)}
                       variant="soft"
                       radius="full"
                       size="lg"
                     >
-                      <Icon name={getColumnHeaderIconName(currColumn)} size={'lg'} />
+                      <Icon name={getWorkflowStatusIconName(currColumn)} size={'lg'} />
 
-                      <ColumnHeaderTitle color={getColorForColumn(currColumn)}>
-                        {getColumnHeaderText(currColumn, this.props.t)}
+                      <ColumnHeaderTitle color={getWorkflowStatusColor(currColumn)}>
+                        {t(getWorkflowStatusTranslatedKey(currColumn))}
                       </ColumnHeaderTitle>
                     </StyledBadge>
 

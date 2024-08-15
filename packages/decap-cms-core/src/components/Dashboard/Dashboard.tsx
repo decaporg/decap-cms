@@ -1,11 +1,17 @@
 import styled from '@emotion/styled';
 import { components } from 'decap-cms-ui-default';
-import { Icon } from 'decap-cms-ui-next';
+import { Button, Icon } from 'decap-cms-ui-next';
+import { OrderedMap } from 'immutable';
 import PropTypes from 'prop-types';
-import React from 'react';
+import { NavLink as ReactRouterNavLink } from 'react-router-dom';
+import ImmutablePropTypes from 'react-immutable-proptypes';
+import React, { useEffect } from 'react';
 import { translate } from 'react-polyglot';
 import { connect } from 'react-redux';
 
+import { selectUnpublishedEntriesByStatus } from '../../reducers';
+import { loadUnpublishedEntries } from '../../actions/editorialWorkflow';
+import { EDITORIAL_WORKFLOW, status } from '../../constants/publishModes';
 import WorkflowList from './Workflow/WorkflowList';
 import Analytics from './Analytics/Analytics';
 import NoAnalytics from './Analytics/NoAnalytics';
@@ -63,15 +69,31 @@ const WorkflowContainer = styled.div`
   gap: 1rem;
 `;
 
+const WorkflowHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+`;
+
 const WorkflowHeading = styled.h2`
   ${components.cardTopHeading};
 `;
 
-type DashboardProps = {
-  useAnalytics: boolean;
-};
+function Dashboard({
+  unpublishedEntries,
+  loadUnpublishedEntries,
+  collections,
+  isEditorialWorkflow,
+  useAnalytics,
+  t,
+}) {
+  useEffect(() => {
+    if (isEditorialWorkflow) {
+      loadUnpublishedEntries();
+    }
+  }, []);
 
-function Dashboard({ useAnalytics, t }: DashboardProps) {
   return (
     <DashboardContainer>
       <DashboardHeading>
@@ -91,14 +113,28 @@ function Dashboard({ useAnalytics, t }: DashboardProps) {
             <RecentActivityList />
           </RecentActivityContainer>
 
-          <WorkflowContainer>
-            <WorkflowHeading>
-              <Icon size="md" name="workflow" />
-              {t('dashboard.workflow.title')}
-            </WorkflowHeading>
+          {isEditorialWorkflow && (
+            <WorkflowContainer>
+              <WorkflowHeader>
+                <WorkflowHeading>
+                  <Icon size="md" name="workflow" />
+                  {t('dashboard.workflow.title')}
+                </WorkflowHeading>
 
-            <WorkflowList />
-          </WorkflowContainer>
+                <Button
+                  as={ReactRouterNavLink}
+                  to={'/workflow'}
+                  type="neutral"
+                  variant="soft"
+                  size="sm"
+                >
+                  {t('dashboard.workflow.action')}
+                </Button>
+              </WorkflowHeader>
+
+              <WorkflowList entries={unpublishedEntries} collections={collections} t={t} />
+            </WorkflowContainer>
+          )}
         </BottomContainer>
       </DashboardBody>
     </DashboardContainer>
@@ -108,15 +144,42 @@ function Dashboard({ useAnalytics, t }: DashboardProps) {
 Dashboard.propTypes = {
   useAnalytics: PropTypes.bool,
   t: PropTypes.func.isRequired,
+  useAnalytics: PropTypes.bool,
+  unpublishedEntries: ImmutablePropTypes.map,
+  loadUnpublishedEntries: PropTypes.func.isRequired,
+  collections: ImmutablePropTypes.map.isRequired,
+  isEditorialWorkflow: PropTypes.bool,
 };
 
 function mapStateToProps(state) {
-  const { analytics } = state;
+  const { collections, config, globalUI, analytics } = state;
   const useAnalytics = analytics.implementation;
+  const isEditorialWorkflow = config.publish_mode === EDITORIAL_WORKFLOW;
+  const isOpenAuthoring = globalUI.useOpenAuthoring;
 
-  return {
-    useAnalytics,
-  };
+  const returnObj = { collections, isEditorialWorkflow, isOpenAuthoring, useAnalytics };
+
+  if (isEditorialWorkflow) {
+    returnObj.isFetching = state.editorialWorkflow.getIn(['pages', 'isFetching'], false);
+
+    /*
+     * Generates an ordered Map of the available status as keys.
+     * Each key containing a Sequence of available unpubhlished entries
+     * Eg.: OrderedMap{'draft':Seq(), 'pending_review':Seq(), 'pending_publish':Seq()}
+     */
+    returnObj.unpublishedEntries = status.reduce((acc, currStatus) => {
+      const entries = selectUnpublishedEntriesByStatus(state, currStatus);
+      return acc.set(currStatus, entries);
+    }, OrderedMap());
+  }
+
+  return returnObj;
 }
 
-export default connect(mapStateToProps)(translate()(Dashboard));
+const mapDispatchToProps = {
+  loadUnpublishedEntries,
+};
+
+const ConnectedDashboard = connect(mapStateToProps, mapDispatchToProps)(Dashboard);
+
+export default translate()(ConnectedDashboard);

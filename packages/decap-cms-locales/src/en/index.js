@@ -342,6 +342,7 @@ const en = {
       onPublishingNotReadyEntry:
         'Only items with a "Ready" status can be published. Please drag the card to the "Ready" column to enable publishing.',
       onPublishEntry: 'Are you sure you want to publish this entry?',
+      allEntriesHeader: 'All Entries',
       draftHeader: 'Drafts',
       inReviewHeader: 'In Review',
       readyHeader: 'Ready',
