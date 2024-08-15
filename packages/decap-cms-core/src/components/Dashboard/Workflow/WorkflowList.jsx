@@ -24,7 +24,7 @@ const WorkflowListCard = styled(Badge)`
     flex-direction: column;
     align-items: flex-start;
     gap: 0.25rem;
-    color: ${theme.color[color]['1400']};
+    color: ${theme.color[color][theme.darkMode ? '300' : '1400']};
     padding: 1rem;
     border-radius: 8px;
   `}
@@ -41,7 +41,7 @@ const WorkflowCount = styled.div`
   font-size: 1.75rem;
 `;
 
-function WorkflowList({ entries, collections, t }) {
+function WorkflowList({ entries, t }) {
   const totalEntriesCount = entries.reduce(
     (total, workflowEntries) => total + workflowEntries.size,
     0,

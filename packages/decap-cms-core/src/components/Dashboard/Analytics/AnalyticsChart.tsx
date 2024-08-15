@@ -114,7 +114,11 @@ function AnalyticsChart({ data, interval, t }: Props) {
               ]}
             />
           }
-          contentStyle={{ backgroundColor: theme.color.surface, border: 'none', borderRadius: 8 }}
+          contentStyle={{
+            backgroundColor: theme.color.background,
+            border: 'none',
+            borderRadius: 8,
+          }}
         />
 
         <defs>

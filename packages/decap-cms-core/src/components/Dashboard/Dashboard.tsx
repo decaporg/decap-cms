@@ -83,7 +83,6 @@ const WorkflowHeading = styled.h2`
 function Dashboard({
   unpublishedEntries,
   loadUnpublishedEntries,
-  collections,
   isEditorialWorkflow,
   useAnalytics,
   t,
@@ -132,7 +131,7 @@ function Dashboard({
                 </Button>
               </WorkflowHeader>
 
-              <WorkflowList entries={unpublishedEntries} collections={collections} t={t} />
+              <WorkflowList entries={unpublishedEntries} t={t} />
             </WorkflowContainer>
           )}
         </BottomContainer>
@@ -147,17 +146,16 @@ Dashboard.propTypes = {
   useAnalytics: PropTypes.bool,
   unpublishedEntries: ImmutablePropTypes.map,
   loadUnpublishedEntries: PropTypes.func.isRequired,
-  collections: ImmutablePropTypes.map.isRequired,
   isEditorialWorkflow: PropTypes.bool,
 };
 
 function mapStateToProps(state) {
-  const { collections, config, globalUI, analytics } = state;
+  const { config, globalUI, analytics } = state;
   const useAnalytics = analytics.implementation;
   const isEditorialWorkflow = config.publish_mode === EDITORIAL_WORKFLOW;
   const isOpenAuthoring = globalUI.useOpenAuthoring;
 
-  const returnObj = { collections, isEditorialWorkflow, isOpenAuthoring, useAnalytics };
+  const returnObj = { isEditorialWorkflow, isOpenAuthoring, useAnalytics };
 
   if (isEditorialWorkflow) {
     returnObj.isFetching = state.editorialWorkflow.getIn(['pages', 'isFetching'], false);
