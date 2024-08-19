@@ -44,15 +44,6 @@ const ModeButtonGroup = styled(ButtonGroup)`
   `}
 `;
 
-const ModeButton = styled(Button)`
-  ${({ theme, type }) => css`
-    color: ${type === 'success' ? theme.color.success['900'] : theme.color.highEmphasis};
-    background-color: ${type === 'success'
-      ? color(theme.color.success['900']).alpha(0.1).string()
-      : `transparent`};
-  `}
-`;
-
 export default class Toolbar extends React.Component {
   static propTypes = {
     buttons: ImmutablePropTypes.list,
@@ -288,20 +279,24 @@ export default class Toolbar extends React.Component {
 
           {isShowModeToggle && (
             <ModeButtonGroup>
-              <ModeButton
-                type={!rawMode ? 'success' : undefined}
+              <Button
+                transparent={rawMode}
+                type={rawMode ? 'neutral' : 'primary'}
+                variant="soft"
                 size="sm"
                 onClick={rawMode ? onToggleMode : undefined}
               >
                 {t('editor.editorWidgets.markdown.richText')}
-              </ModeButton>
-              <ModeButton
-                type={rawMode ? 'success' : undefined}
+              </Button>
+              <Button
+                transparent={!rawMode}
+                type={rawMode ? 'primary' : 'neutral'}
+                variant="soft"
                 size="sm"
                 onClick={!rawMode ? onToggleMode : undefined}
               >
                 {t('editor.editorWidgets.markdown.markdown')}
-              </ModeButton>
+              </Button>
             </ModeButtonGroup>
           )}
         </ToolbarButtonsEnd>

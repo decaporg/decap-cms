@@ -453,7 +453,13 @@ export default function withFileControl({ forImage } = {}) {
                 enterDelay={500}
                 leaveDelay={250}
               >
-                <AddMoreButton size="lg" icon="plus" onClick={this.handleChange}>
+                <AddMoreButton
+                  type="neutral"
+                  variant="soft"
+                  size="lg"
+                  icon="plus"
+                  onClick={this.handleChange}
+                >
                   {t(`editor.editorWidgets.${subject}.addMore`)}
                 </AddMoreButton>
               </Tooltip>
@@ -473,7 +479,13 @@ export default function withFileControl({ forImage } = {}) {
           enterDelay={500}
           leaveDelay={250}
         >
-          <AddMoreButton size="lg" icon="plus" onClick={this.handleChange}>
+          <AddMoreButton
+            type="neutral"
+            variant="soft"
+            size="lg"
+            icon="plus"
+            onClick={this.handleChange}
+          >
             {t(`editor.editorWidgets.${subject}.choose${this.allowsMultiple() ? 'Multiple' : ''}`)}
           </AddMoreButton>
         </Tooltip>
