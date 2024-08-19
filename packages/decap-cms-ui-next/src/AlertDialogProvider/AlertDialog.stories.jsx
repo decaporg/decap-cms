@@ -1,5 +1,4 @@
 import React from 'react';
-import { action } from '@storybook/addon-actions';
 
 import { useAlert, useConfirm, usePrompt } from '../hooks/useAlertDialog';
 import { Button } from '../Buttons';

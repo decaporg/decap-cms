@@ -300,6 +300,8 @@ const en = {
       logOut: 'Log Out',
     },
     toast: {
+      actionButton: 'OK',
+      cancelButton: 'Cancel',
       onFailToLoadEntries: 'Failed to load entry: %{details}',
       onFailToLoadDeployPreview: 'Failed to load preview: %{details}',
       onFailToPersist: 'Failed to persist entry: %{details}',

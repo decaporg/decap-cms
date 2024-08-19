@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`hooks/useAlertDialog _useAlert smoke-test 1`] = `"<button type="primary" class="css-1xculjk-StyledButton-StyledButton e9pg3mh2">Alert Dialog</button>"`;
+
+exports[`hooks/useAlertDialog _useConfirm smoke-test 1`] = `"<button type="primary" class="css-1xculjk-StyledButton-StyledButton e9pg3mh2">Confirm Dialog</button>"`;
+
+exports[`hooks/useAlertDialog _usePrompt smoke-test 1`] = `"<button type="primary" class="css-1xculjk-StyledButton-StyledButton e9pg3mh2">Prompt Dialog</button>"`;

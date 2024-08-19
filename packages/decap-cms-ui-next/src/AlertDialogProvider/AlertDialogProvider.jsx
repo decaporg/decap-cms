@@ -1,10 +1,10 @@
 import React, { useContext, createContext, useState } from 'react';
+import { useTranslate } from 'react-polyglot';
 import styled from '@emotion/styled';
 
 import Dialog from '../Dialog';
 import { Button, ButtonGroup } from '../Buttons';
 import { TextField } from '../Fields';
-import { result } from 'lodash';
 
 const DialogContent = styled.div`
   display: flex;
@@ -25,6 +25,8 @@ export function useAlertDialogContext() {
 }
 
 export function AlertDialogProvider({ children }) {
+  const t = useTranslate();
+
   const [dialogConfig, setDialogConfig] = useState({
     open: false,
     type: '',
@@ -32,8 +34,8 @@ export function AlertDialogProvider({ children }) {
     message: '',
     defaultValue: '',
     promptInputValue: '',
-    actionButton: '',
-    cancelButton: '',
+    actionButton: t('ui.toast.actionButton'),
+    cancelButton: t('ui.toast.cancelButton'),
     onConfirm: null,
     onCancel: null,
   });
@@ -47,8 +49,8 @@ export function AlertDialogProvider({ children }) {
         message,
         defaultValue,
         promptInputValue: defaultValue || '',
-        actionButton,
-        cancelButton,
+        actionButton: actionButton || t('ui.toast.actionButton'),
+        cancelButton: cancelButton || t('ui.toast.cancelButton'),
         onConfirm: result => resolve(result),
         onCancel: () => resolve(false),
       });
