@@ -20,6 +20,6 @@
   },
   "peerDependencies": {
     "decap-cms-lib-analytics": "^1.0.0",
-    "dayjs": "^1.11.12"
+    "dayjs": "^1.11.10"
   }
 }

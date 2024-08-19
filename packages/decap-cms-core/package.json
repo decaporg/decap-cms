@@ -73,7 +73,7 @@
   "peerDependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
-    "dayjs": "^1.11.12",
+    "dayjs": "^1.11.10",
     "decap-cms-editor-component-image": "^3.0.0",
     "decap-cms-lib-analytics": "^1.0.0",
     "decap-cms-lib-auth": "^3.0.0",

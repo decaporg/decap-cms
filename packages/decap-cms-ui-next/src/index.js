@@ -9,7 +9,7 @@ export { default as Backdrop } from './Backdrop';
 export * from './Badge';
 export * from './Buttons';
 export { default as Card } from './Card';
-export * from './Chart';
+// export * from './Chart';
 export { default as Dialog } from './Dialog';
 export * from './Dropdown';
 export { default as Field } from './Field';

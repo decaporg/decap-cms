@@ -3,6 +3,7 @@ bin/
 public/
 node_modules/
 npm-debug.log
+*.tsbuildinfo
 .DS_Store
 .tern-project
 yarn-error.log

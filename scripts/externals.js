@@ -63,6 +63,13 @@ module.exports = {
       amd: 'codemirror',
       umd: 'codemirror',
     },
+    dayjs: {
+      root: 'Dayjs',
+      commonjs2: 'dayjs',
+      commonjs: 'dayjs',
+      amd: 'dayjs',
+      umd: 'dayjs',
+    },
     immutable: {
       root: ['DecapCmsDefaultExports', 'Immutable'],
       commonjs2: 'immutable',
@@ -97,6 +104,13 @@ module.exports = {
       commonjs: 'react-dom',
       amd: 'react-dom',
       umd: 'react-dom',
+    },
+    recharts: {
+      root: 'Recharts',
+      commonjs2: 'recharts',
+      commonjs: 'recharts',
+      amd: 'recharts',
+      umd: 'recharts',
     },
     uuid: {
       root: ['DecapCmsDefaultExports', 'UUId'],

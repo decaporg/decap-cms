@@ -7,7 +7,14 @@ const packages = fs
 
 module.exports = {
   parser: 'babel-eslint',
-  extends: ['eslint:recommended', 'plugin:react/recommended', 'plugin:cypress/recommended', 'prettier', 'plugin:import/recommended', 'plugin:storybook/recommended'],
+  extends: [
+    'eslint:recommended',
+    'plugin:react/recommended',
+    'plugin:cypress/recommended',
+    'prettier',
+    'plugin:import/recommended',
+    'plugin:storybook/recommended',
+  ],
   env: {
     es6: true,
     browser: true,
@@ -81,8 +88,10 @@ module.exports = {
           jsx: true,
         },
       },
+      plugins: ['@typescript-eslint', 'babel', '@emotion', 'cypress', 'unicorn'],
       rules: {
         'no-duplicate-imports': [0], // handled by @typescript-eslint
+        'react/prop-types': [0],
         '@typescript-eslint/ban-types': [0], // TODO enable in future
         '@typescript-eslint/no-non-null-assertion': [0],
         '@typescript-eslint/consistent-type-imports': 'error',
