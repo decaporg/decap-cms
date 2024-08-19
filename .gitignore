@@ -13,6 +13,7 @@ manifest.yml
 cypress/videos
 cypress/screenshots
 __diff_output__
+__image_snapshots__
 coverage/
 .cache
 *.log

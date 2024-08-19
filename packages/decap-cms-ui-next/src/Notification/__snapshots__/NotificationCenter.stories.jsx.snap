@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Components/Toast _NotificationCenter smoke-test 1`] = `"<div class="css-o7p2vo-ButtonGroup e1v5bfbh0"><button type="primary" class="css-1xculjk-StyledButton-StyledButton e9pg3mh2">Pop a Toast</button></div><button class="css-1i2o79a-IconButtonWrap e1s566520"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg></button><div class="notification-count">0</div><div class="Toastify"></div>"`;

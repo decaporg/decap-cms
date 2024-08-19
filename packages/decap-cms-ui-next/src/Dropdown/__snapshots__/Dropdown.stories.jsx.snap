@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Components/Dropdown _Dropdown smoke-test 1`] = `"<div><button type="primary" class="css-1xculjk-StyledButton-StyledButton e9pg3mh2">Open Dropdown</button></div>"`;

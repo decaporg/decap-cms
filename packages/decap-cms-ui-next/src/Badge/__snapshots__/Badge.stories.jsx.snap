@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Components/Badge _Badge smoke-test 1`] = `"<div color="neutral" radius="large" class="css-6930ng-BadgeWrap-BadgeWrap epfx4ki3">Badge</div>"`;
+
+exports[`Components/Badge _BadgeGroup smoke-test 1`] = `"<div direction="horizontal" class="css-1edslqn-BadgeGroup e154evrq0"><div color="green" radius="large" class="css-8hgyys-BadgeWrap-BadgeWrap epfx4ki3">Apple</div><div color="yellow" radius="large" class="css-h64jdo-BadgeWrap-BadgeWrap epfx4ki3">Banana</div><div color="orange" radius="large" class="css-2lm8dq-BadgeWrap-BadgeWrap epfx4ki3">Orange</div><div color="red" radius="large" class="css-11poh1o-BadgeWrap-BadgeWrap epfx4ki3">Cherry</div><div color="pink" radius="large" class="css-1txaaf-BadgeWrap-BadgeWrap epfx4ki3">Strawberry</div><div color="purple" radius="large" class="css-10l1sh1-BadgeWrap-BadgeWrap epfx4ki3">Grape</div><div color="blue" radius="large" class="css-1f2xm2u-BadgeWrap-BadgeWrap epfx4ki3">Blueberry</div></div>"`;

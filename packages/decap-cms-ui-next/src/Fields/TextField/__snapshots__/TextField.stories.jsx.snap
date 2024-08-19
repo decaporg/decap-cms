@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Fields/TextField _TextField smoke-test 1`] = `"<div class="e11i8s480 css-gzruzu-FieldWrap-StyledTextField e1x0ipyd6"><div class="css-1uqy5pq-FieldInside-FieldInside-FieldInside-FieldInside e1x0ipyd5"><label class="css-1n9k11u-Label-StyledLabel e1x0ipyd3">Text Field Label <div color="neutral" radius="large" class="css-6930ng-BadgeWrap-BadgeWrap epfx4ki3">Required</div></label><div class="css-dj548v-ChildrenWrap e1x0ipyd4"><input type="text" placeholder="Type something here" autocomplete="off" class="css-h0pblb-StyledInput e4jt8f0" value=""></div><p class="css-nalsj0-StyledDescription e1x0ipyd1">This is a description</p></div></div>"`;

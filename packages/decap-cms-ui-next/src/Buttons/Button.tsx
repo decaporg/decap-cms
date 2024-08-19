@@ -177,7 +177,7 @@ const StyledIcon = styled(Icon)`
   vertical-align: middle;
 `;
 
-type ButtonProps = {
+type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   icon?: IconName;
   children?: React.ReactNode;
   className?: string;
@@ -185,7 +185,7 @@ type ButtonProps = {
   size?: 'sm' | 'md' | 'lg';
   type?: 'primary' | 'success' | 'danger' | 'neutral';
   variant?: 'solid' | 'soft';
-  disabled?: boolean;
+  // disabled?: boolean;
   transparent?: boolean;
 };
 
@@ -199,7 +199,7 @@ function Button({
   variant = 'solid',
   disabled,
   ...props
-}: ButtonProps) {
+}: ButtonProps): React.JSX.Element {
   return (
     <StyledButton
       size={size}

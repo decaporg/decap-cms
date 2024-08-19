@@ -7,6 +7,10 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+# Note: Needs write permimission to upload __image_snapshots__ folder
+permissions:
+  contents: write
+
 jobs:
   changes:
     runs-on: ubuntu-latest
@@ -62,6 +66,7 @@ jobs:
 
   e2e-with-cypress:
     needs: [changes, build]
+    timeout-minutes: 60
     runs-on: ubuntu-latest
 
     strategy:
@@ -107,3 +112,27 @@ jobs:
           path: |
             cypress/screenshots
             cypress/videos
+
+  component-test-with-storybook:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+      fail-fast: false
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js { matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          check-latest: true
+      - name: Install dependencies
+        run: npm install
+      - name: Install Playwright
+        run: npx playwright install --with-deps
+      - name: Build Storybook
+        run: npm run build:storybook
+      - name: Run component tests
+        run: npm run test:component

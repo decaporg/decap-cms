@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Components/AppBar _AppBar smoke-test 1`] = `"<div class="css-1e7ccdf-Wrap ewfdkh51"><header class="css-1ekbbco-Card-AppBarWrap e1bfd4hf9"><div class="css-q918d2-StartWrap e1bfd4hf2"></div><div class="css-1wl1dop-EndWrap e1bfd4hf0"></div></header></div>"`;

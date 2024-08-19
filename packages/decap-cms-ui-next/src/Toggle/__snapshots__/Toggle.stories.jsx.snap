@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Components/Toggle _Toggle smoke-test 1`] = `"<button type="primary" class="eh9hc6f0 css-1xb9di3-StyledButton-StyledButton-StyledButton-StyledButton e9pg3mh2"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" class="css-wwhi30-StyledIcon e9pg3mh0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"></path><path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"></path></svg></button>"`;

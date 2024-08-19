@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Components/Menu _Menu smoke-test 1`] = `"<div class="css-o7p2vo-ButtonGroup e1v5bfbh0"><button type="primary" class="css-1xculjk-StyledButton-StyledButton e9pg3mh2">Open Menu<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" class="css-1ebphsb-StyledMenuIcon e9pg3mh1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button></div>"`;
+
+exports[`Components/Menu _MenuItem smoke-test 1`] = `""`;

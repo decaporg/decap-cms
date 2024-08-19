@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Components/SearchBar _SearchBar smoke-test 1`] = `"<div class="css-184gibv-SearchWrap emacrfx0"><div class="css-mvgbps-SearchContainer elng7wj3"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" class="css-1f1s0m8-SearchIcon elng7wj2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg><input type="search" placeholder="Search" class="css-inpp3f-SearchInput elng7wj0"><div class="css-319boy-EndWrap elng7wj1"></div></div></div>"`;

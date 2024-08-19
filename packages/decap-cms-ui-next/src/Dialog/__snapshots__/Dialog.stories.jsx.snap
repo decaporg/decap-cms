@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Components/Dialog _Dialog smoke-test 1`] = `"<div class="css-o7p2vo-ButtonGroup e1v5bfbh0"><button type="primary" class="css-1xculjk-StyledButton-StyledButton e9pg3mh2">Open Dialog</button></div>"`;

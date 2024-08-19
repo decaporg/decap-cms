@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Fields/BooleanField _BooleanField smoke-test 1`] = `"<div class="emi8uzw0 css-1l4uu3i-FieldWrap-StyledBooleanField e1x0ipyd6"><div class="css-1uqy5pq-FieldInside-FieldInside-FieldInside-FieldInside e1x0ipyd5"><label class="css-1n9k11u-Label-StyledLabel e1x0ipyd3">Boolean Field Label <div color="neutral" radius="large" class="css-6930ng-BadgeWrap-BadgeWrap epfx4ki3">Required</div></label><div class="css-dj548v-ChildrenWrap e1x0ipyd4"><input type="checkbox" class="css-1rg9wi1-StyledInput e1lye9la1"><button class="css-1407tdr-SwitchButton e1lye9la0"></button></div><p class="css-nalsj0-StyledDescription e1x0ipyd1">This is a description</p></div></div>"`;

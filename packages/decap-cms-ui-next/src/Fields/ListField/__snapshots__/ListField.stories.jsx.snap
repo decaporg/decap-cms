@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Fields/ListField _ListField smoke-test 1`] = `
+"<div class="e1y70o3o0 css-12auuey-FieldWrap-StyledListField e1x0ipyd6"><div class="css-t9hsmw-FieldInside-FieldInside e1x0ipyd5"><label for="featureLinks" class="css-r9gw8d-Label-StyledLabel e1x0ipyd3">Links </label><div class="css-dj548v-ChildrenWrap e1x0ipyd4"><div class="css-s978ft-ActionWrap eyaljbr1"></div><ul class="css-863xf9-StyledSortableContainer eyaljbr3"><div id="DndDescribedBy-0" style="display: none;">
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  </div><div id="DndLiveRegion-0" role="status" aria-live="assertive" aria-atomic="true" style="position: fixed; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip: rect(0px, 0px, 0px, 0px); clip-path: inset(100%); white-space: nowrap;"></div></ul><button type="primary" class="eyaljbr2 css-rct8bj-StyledButton-StyledButton-StyledButton e9pg3mh2"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" class="css-1yl0z6r-StyledIcon e9pg3mh0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>Add New Link</button></div></div></div>"
+`;

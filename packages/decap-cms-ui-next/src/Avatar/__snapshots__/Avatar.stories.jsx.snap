@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Components/Avatar AvatarWithFallback smoke-test 1`] = `"<div class="css-h4et6x-StylesAvatar-StylesAvatar e6popf12"><span class="css-920bz6-StylesFallback-StylesFallback e6popf10">J</span></div>"`;
+
+exports[`Components/Avatar AvatarWithImage smoke-test 1`] = `"<div src="https://randomuser.me/api/portraits/men/94.jpg" class="css-idxj5j-StylesAvatar-StylesAvatar-StylesImage-StylesImage e6popf11"></div>"`;

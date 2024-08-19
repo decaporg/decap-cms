@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Fields/TextareaField _TextareaField smoke-test 1`] = `"<div class="ete4snt0 css-1j1yhdh-FieldWrap-StyledTextareaField e1x0ipyd6"><div class="css-t9hsmw-FieldInside-FieldInside e1x0ipyd5"><label for="textarea" class="css-r9gw8d-Label-StyledLabel e1x0ipyd3">Textarea Field Label <div color="neutral" radius="large" class="css-6930ng-BadgeWrap-BadgeWrap epfx4ki3">Required</div></label><div class="css-dj548v-ChildrenWrap e1x0ipyd4"><textarea id="textarea" placeholder="Type something here" class="css-1fnrfp2-StyledTextarea e17sl9lk0" style="height: 168px !important;"></textarea></div><p class="css-nalsj0-StyledDescription e1x0ipyd1">This is a description</p></div></div>"`;

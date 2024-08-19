@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Components/Button ClickInteraction play-test 1`] = `"<button type="primary" class="css-1xculjk-StyledButton-StyledButton e9pg3mh2">Button</button>"`;
+
+exports[`Components/Button Danger smoke-test 1`] = `"<button type="danger" class="css-guei5i-StyledButton-StyledButton e9pg3mh2">Button</button>"`;
+
+exports[`Components/Button Default smoke-test 1`] = `"<button type="primary" class="css-1xculjk-StyledButton-StyledButton e9pg3mh2">Button</button>"`;
+
+exports[`Components/Button Disabled play-test 1`] = `"<button type="primary" class="css-64dfqu-StyledButton-StyledButton e9pg3mh2" disabled="">Button</button>"`;
+
+exports[`Components/Button ImageSnapshot smoke-test 1`] = `"<div class="css-o7p2vo-ButtonGroup e1v5bfbh0"><button type="primary" class="css-1xculjk-StyledButton-StyledButton e9pg3mh2">Primary Button</button><button type="success" class="css-1mqce4o-StyledButton-StyledButton e9pg3mh2">Success Button</button><button type="danger" class="css-guei5i-StyledButton-StyledButton e9pg3mh2">Danger Button</button><button type="neutral" class="css-1a8ppn3-StyledButton-StyledButton e9pg3mh2">Neutral Button</button></div>"`;
+
+exports[`Components/Button Large smoke-test 1`] = `"<button type="primary" class="css-e2gzmo-StyledButton-StyledButton e9pg3mh2">Button</button>"`;
+
+exports[`Components/Button Medium smoke-test 1`] = `"<button type="primary" class="css-1xculjk-StyledButton-StyledButton e9pg3mh2">Button</button>"`;
+
+exports[`Components/Button Neutral smoke-test 1`] = `"<button type="neutral" class="css-1a8ppn3-StyledButton-StyledButton e9pg3mh2">Button</button>"`;
+
+exports[`Components/Button Small smoke-test 1`] = `"<button type="primary" class="css-1rx6t3g-StyledButton-StyledButton e9pg3mh2">Button</button>"`;
+
+exports[`Components/Button Soft smoke-test 1`] = `"<button type="primary" class="css-1c08an4-StyledButton-StyledButton e9pg3mh2">Button</button>"`;
+
+exports[`Components/Button Solid smoke-test 1`] = `"<button type="primary" class="css-1xculjk-StyledButton-StyledButton e9pg3mh2">Button</button>"`;
+
+exports[`Components/Button Success smoke-test 1`] = `"<button type="success" class="css-1mqce4o-StyledButton-StyledButton e9pg3mh2">Button</button>"`;
+
+exports[`Components/Button Transparent smoke-test 1`] = `"<button type="primary" class="css-17sq55t-StyledButton-StyledButton e9pg3mh2">Button</button>"`;
+
+exports[`Components/Button WithIcon smoke-test 1`] = `"<button type="primary" class="css-1xculjk-StyledButton-StyledButton e9pg3mh2"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" class="css-1yl0z6r-StyledIcon e9pg3mh0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>Button</button>"`;
+
+exports[`Components/Button WithMenu smoke-test 1`] = `"<button type="primary" class="css-1xculjk-StyledButton-StyledButton e9pg3mh2">Button<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" class="css-1ebphsb-StyledMenuIcon e9pg3mh1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>"`;

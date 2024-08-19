@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Components/Card _Card smoke-test 1`] = `"<div elevation="md" direction="down" class="css-1gua2ro-Card-StyledCard e39x21t0"></div>"`;

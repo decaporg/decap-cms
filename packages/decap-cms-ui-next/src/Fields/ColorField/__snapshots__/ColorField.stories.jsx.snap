@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Fields/ColorField _ColorField smoke-test 1`] = `"<div class="eqka0b30 css-omvouz-FieldWrap-StyledColorField e1x0ipyd6"><div class="css-kuth3m-FieldInside-FieldInside-FieldInside-FieldInside e1x0ipyd5"><label class="css-1n9k11u-Label-StyledLabel e1x0ipyd3">Color Field Label <div color="neutral" radius="large" class="css-6930ng-BadgeWrap-BadgeWrap epfx4ki3">Required</div></label><div class="css-dj548v-ChildrenWrap e1x0ipyd4"><input readonly="" type="#000000" placeholder="Type color here" autocomplete="off" class="css-gfgrnx-StyledInput e4jt8f0" value="#000000"></div><div color="#000000" class="css-1o88qaz-Swatch e1eklj1j0"></div><p class="css-nalsj0-StyledDescription e1x0ipyd1">This is a description</p></div></div>"`;

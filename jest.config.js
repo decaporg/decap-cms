@@ -1,4 +1,8 @@
-module.exports = {
+const { defaults } = require('jest-config');
+
+/** @type {import('jest').Config} */
+const config = {
+  ...defaults,
   setupFilesAfterEnv: ['<rootDir>/setupTestFramework.js'],
   moduleNameMapper: {
     'decap-cms-lib-auth': '<rootDir>/packages/decap-cms-lib-auth/src/index.js',
@@ -10,10 +14,14 @@ module.exports = {
     'decap-cms-widget-object': '<rootDir>/packages/decap-cms-widget-object/src/index.js',
     '\\.(css|less)$': '<rootDir>/__mocks__/styleMock.js',
   },
-  testURL: 'http://localhost:8080',
   snapshotSerializers: ['@emotion/jest/serializer'],
   transformIgnorePatterns: [
     'node_modules/(?!copy-text-to-clipboard|clean-stack|escape-string-regexp)',
   ],
   testEnvironment: 'jsdom',
+  testEnvironmentOptions: {
+    url: 'http://localhost:8080',
+  },
 };
+
+module.exports = config;

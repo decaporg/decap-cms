@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Components/Switch _Switch smoke-test 1`] = `"<input type="checkbox" class="css-1rg9wi1-StyledInput e1lye9la1"><button class="css-1407tdr-SwitchButton e1lye9la0"></button>"`;
