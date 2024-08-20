@@ -32,11 +32,13 @@ const ROOT_ID = 'nc-root';
 function TranslatedApp({ locale, config }) {
   return (
     <I18n locale={locale} messages={getPhrases(locale)}>
-      <ErrorBoundary showBackup config={config}>
-        <Router history={history}>
-          <Route component={App} />
-        </Router>
-      </ErrorBoundary>
+      <AlertDialogProvider>
+        <ErrorBoundary showBackup config={config}>
+          <Router history={history}>
+            <Route component={App} />
+          </Router>
+        </ErrorBoundary>
+      </AlertDialogProvider>
     </I18n>
   );
 }
@@ -118,9 +120,8 @@ function bootstrap(opts = {}) {
                   <GlobalStylesDecapCMSUIDefault />
                   <GlobalStylesDecapCMSUINext />
 
-                  <AlertDialogProvider>
-                    <ConnectedTranslatedApp />
-                  </AlertDialogProvider>
+                  
+                  <ConnectedTranslatedApp />
                 </ThemeProvider>
               );
             }}
