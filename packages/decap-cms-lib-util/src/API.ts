@@ -40,6 +40,26 @@ class RateLimitError extends Error {
   }
 }
 
+async function parseJsonResponse(response: Response) {
+  const json = await response.json();
+  if (!response.ok) {
+    return Promise.reject(json);
+  }
+  return json;
+}
+
+export function parseResponse(response: Response) {
+  const contentType = response.headers.get('Content-Type');
+  if (contentType && contentType.match(/json/)) {
+    return parseJsonResponse(response);
+  }
+  const textPromise = response.text().then(text => {
+    if (!response.ok) return Promise.reject(text);
+    return text;
+  });
+  return textPromise;
+}
+
 export async function requestWithBackoff(
   api: API,
   req: ApiRequest,
@@ -94,6 +114,142 @@ export async function requestWithBackoff(
       return requestWithBackoff(api, req, attempt + 1);
     }
   }
+}
+
+// Options is an object which contains all the standard network request properties
+// for modifying HTTP requests and may contains `params` property
+
+type Param = string | number;
+
+type ParamObject = Record<string, Param>;
+
+type HeaderObj = Record<string, string>;
+
+type HeaderConfig = {
+  headers?: HeaderObj;
+  token?: string | undefined;
+};
+
+type Backend = 'github' | 'gitlab' | 'bitbucket';
+
+// RequestConfig contains all the standard properties of a Request object and
+// several custom properties:
+// - "headers" property is an object whose properties and values are string types
+// - `token` property to allow passing tokens for users using a private repo.
+// - `params` property for customizing response
+// - `backend`(compulsory) to specify which backend to be used: Github, Gitlab etc.
+
+type RequestConfig = Omit<RequestInit, 'headers'> &
+  HeaderConfig & {
+    backend: Backend;
+    apiRoot?: string;
+    params?: ParamObject;
+  };
+
+export const apiRoots = {
+  github: 'https://api.github.com',
+  gitlab: 'https://gitlab.com/api/v4',
+  bitbucket: 'https://api.bitbucket.org/2.0',
+};
+
+export const endpointConstants = {
+  singleRepo: {
+    bitbucket: '/repositories',
+    github: '/repos',
+    gitlab: '/projects',
+  },
+};
+
+const api = {
+  buildRequest(req: ApiRequest) {
+    return req;
+  },
+};
+
+function constructUrlWithParams(url: string, params?: ParamObject) {
+  if (params) {
+    const paramList = [];
+    for (const key in params) {
+      paramList.push(`${key}=${encodeURIComponent(params[key])}`);
+    }
+    if (paramList.length) {
+      url += `?${paramList.join('&')}`;
+    }
+  }
+  return url;
+}
+
+async function constructRequestHeaders(headerConfig: HeaderConfig) {
+  const { token, headers } = headerConfig;
+  const baseHeaders: HeaderObj = { 'Content-Type': 'application/json; charset=utf-8', ...headers };
+  if (token) {
+    baseHeaders['Authorization'] = `Bearer ${token}`;
+  }
+  return Promise.resolve(baseHeaders);
+}
+
+function handleRequestError(error: FetchError, responseStatus: number, backend: Backend) {
+  throw new APIError(error.message, responseStatus, backend);
+}
+
+export async function apiRequest(
+  path: string,
+  config: RequestConfig,
+  parser = (response: Response) => parseResponse(response),
+) {
+  const { token, backend, ...props } = config;
+  const options = { cache: 'no-cache', ...props };
+  const headers = await constructRequestHeaders({ headers: options.headers || {}, token });
+  const baseUrl = config.apiRoot ?? apiRoots[backend];
+  const url = constructUrlWithParams(`${baseUrl}${path}`, options.params);
+  let responseStatus = 500;
+  try {
+    const req = unsentRequest.fromFetchArguments(url, {
+      ...options,
+      headers,
+    }) as unknown as ApiRequest;
+    const response = await requestWithBackoff(api, req);
+    responseStatus = response.status;
+    const parsedResponse = await parser(response);
+    return parsedResponse;
+  } catch (error) {
+    return handleRequestError(error, responseStatus, backend);
+  }
+}
+
+export async function getDefaultBranchName(configs: {
+  backend: Backend;
+  repo: string;
+  token?: string;
+  apiRoot?: string;
+}) {
+  let apiPath;
+  const { token, backend, repo, apiRoot } = configs;
+  switch (backend) {
+    case 'gitlab': {
+      apiPath = `/projects/${encodeURIComponent(repo)}`;
+      break;
+    }
+    case 'bitbucket': {
+      apiPath = `/repositories/${repo}`;
+      break;
+    }
+    default: {
+      apiPath = `/repos/${repo}`;
+    }
+  }
+  const repoInfo = await apiRequest(apiPath, { token, backend, apiRoot });
+  let defaultBranchName;
+  if (backend === 'bitbucket') {
+    const {
+      mainbranch: { name },
+    } = repoInfo;
+    defaultBranchName = name;
+  } else {
+    const { default_branch } = repoInfo;
+    defaultBranchName = default_branch;
+  }
+  return defaultBranchName;
 }
 
 export async function readFile(

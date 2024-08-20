@@ -158,7 +158,7 @@ export function entriesFailed(collection: Collection, error: Error) {
   };
 }
 
-async function getAllEntries(state: State, collection: Collection) {
+export async function getAllEntries(state: State, collection: Collection) {
   const backend = currentBackend(state.config);
   const integration = selectIntegration(state, collection.get('name'), 'listEntries');
   const provider: Backend = integration

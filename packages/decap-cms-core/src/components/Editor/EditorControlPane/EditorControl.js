@@ -81,12 +81,9 @@ const ControlErrorsList = styled.ul`
   list-style-type: none;
   font-size: 12px;
   color: ${colors.errorText};
-  margin-bottom: 5px;
+  margin-bottom: 8px;
   text-align: right;
-  text-transform: uppercase;
-  position: relative;
   font-weight: 600;
-  top: 20px;
 `;
 
 export const ControlHint = styled.p`
@@ -102,7 +99,14 @@ function LabelComponent({ field, isActive, hasErrors, uniqueFieldId, isFieldOpti
   const label = `${field.get('label', field.get('name'))}`;
   const labelComponent = (
     <FieldLabel isActive={isActive} hasErrors={hasErrors} htmlFor={uniqueFieldId}>
-      {label} {`${isFieldOptional ? ` (${t('editor.editorControl.field.optional')})` : ''}`}
+      {isFieldOptional ? (
+        <>
+          {label}
+          <span>{` (${t('editor.editorControl.field.optional')})`}</span>
+        </>
+      ) : (
+        label
+      )}
     </FieldLabel>
   );
 

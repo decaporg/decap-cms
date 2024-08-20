@@ -8,7 +8,9 @@ import { reactSelectStyles } from 'decap-cms-ui-default';
 import { validations } from 'decap-cms-lib-widgets';
 
 function optionToString(option) {
-  return option && option.value ? option.value : null;
+  return option && (typeof option.value === 'number' || typeof option.value === 'string')
+    ? option.value
+    : null;
 }
 
 function convertToOption(raw) {
@@ -47,9 +49,10 @@ export default class SelectControl extends React.Component {
       options: ImmutablePropTypes.listOf(
         PropTypes.oneOfType([
           PropTypes.string,
+          PropTypes.number,
           ImmutablePropTypes.contains({
             label: PropTypes.string.isRequired,
-            value: PropTypes.string.isRequired,
+            value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
           }),
         ]),
       ).isRequired,
