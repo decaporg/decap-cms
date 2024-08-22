@@ -521,12 +521,12 @@ function validateNestedListFields() {
   cy.contains('label', 'City')
     .parents()
     .next()
-    .first() // Вибрати перший елемент після parents()
+    .first()
     .type('Washington DC');
   cy.contains('label', 'Number of Hotels in City')
     .parents()
     .next()
-    .first() // Вибрати перший елемент після parents()
+    .first()
     .type('5');
   cy.contains('button', 'city locations').click();
 
@@ -535,7 +535,7 @@ function validateNestedListFields() {
   cy.contains('label', 'Cities')
     .parents()
     .next()
-    .first() // Вибрати перший елемент після parents()
+    .first()
     .find('div[class*=SortableListItem]')
     .eq(2)
     .as('secondCitiesListControl');
@@ -543,7 +543,7 @@ function validateNestedListFields() {
     .contains('label', 'City')
     .parents()
     .next()
-    .first() // Вибрати перший елемент після parents()
+    .first()
     .type('Boston');
   cy.get('@secondCitiesListControl')
     .contains('button', 'city locations')
