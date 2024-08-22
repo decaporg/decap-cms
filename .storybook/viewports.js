@@ -1,4 +1,4 @@
-import { lightTheme, darkTheme } from 'decap-cms-ui-next';
+import { lightTheme } from 'decap-cms-ui-next';
 
 export default {
   sm: {

@@ -74,9 +74,8 @@ collections: # A list of collections the CMS should be able to edit
           label: 'Publish Date',
           name: 'date',
           widget: 'datetime',
-          date_format: 'YYYY-MM-DD',
-          time_format: 'HH:mm',
           format: 'YYYY-MM-DD HH:mm',
+          default: '{{now}}',
         }
       - label: 'Cover Image'
         name: 'image'
@@ -114,7 +113,7 @@ collections: # A list of collections the CMS should be able to edit
           search_fields: ['title'],
           display_fields: ['title'],
           value_field: '{{slug}}',
-        }
+          filters: [ {field: 'draft', values: [false]} ] }
       - name: authors
         label: Authors
         label_singular: 'Author'

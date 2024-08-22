@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import dayjs from 'dayjs';
-import { DatetimePicker } from 'rc-datetime-picker-dayjs';
 
 import TextField from '../TextField';
 import { Menu } from '../../Menu';
@@ -11,10 +10,10 @@ const StyledMenu = styled(Menu)`
   padding: 0;
 `;
 
-const StyledDatetimePicker = styled(DatetimePicker)`
-  width: 100%;
-  background-color: transparent;
-`;
+// const StyledDatetimePicker = styled(input)`
+//   width: 100%;
+//   background-color: transparent;
+// `;
 
 function DatetimeField({ onChange, value = dayjs(), type, format, shortcuts, ...props }) {
   const [date, setDate] = useState(value);
@@ -65,7 +64,8 @@ function DatetimeField({ onChange, value = dayjs(), type, format, shortcuts, ...
         onClose={handleClose}
         width={'300px'}
       >
-        <StyledDatetimePicker
+        <input type="datetime-local" />
+        {/* <StyledDatetimePicker
           shortcuts={shortcuts}
           showCalendarPicker={type === 'date' || type === 'datetime-local'}
           showTimePicker={type === 'time' || type === 'datetime-local'}
@@ -75,7 +75,7 @@ function DatetimeField({ onChange, value = dayjs(), type, format, shortcuts, ...
             setDate(date);
             onChange(date);
           }}
-        />
+        /> */}
       </StyledMenu>
     </>
   );

@@ -80,13 +80,14 @@ export default class Widget extends Component {
     isFieldDuplicate: PropTypes.func,
     isFieldHidden: PropTypes.func,
     locale: PropTypes.string,
+    isParentListCollapsed: PropTypes.bool,
   };
 
   shouldComponentUpdate(nextProps) {
     /**
      * Avoid unnecessary rerenders while loading assets.
      */
-    if (this.props.isLoadingAsset) return false;
+    if (this.props.isLoadingAsset && nextProps.isLoadingAsset) return false;
     /**
      * Allow widgets to provide their own `shouldComponentUpdate` method.
      */
@@ -314,6 +315,7 @@ export default class Widget extends Component {
       isFieldDuplicate,
       isFieldHidden,
       locale,
+      isParentListCollapsed,
     } = this.props;
 
     return React.createElement(controlComponent, {
@@ -374,6 +376,7 @@ export default class Widget extends Component {
       isFieldDuplicate,
       isFieldHidden,
       locale,
+      isParentListCollapsed,
     });
   }
 }

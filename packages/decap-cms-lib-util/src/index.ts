@@ -34,6 +34,7 @@ import {
   getPreviewStatus,
   PreviewState,
   requestWithBackoff,
+  getDefaultBranchName,
   throwOnConflictingBranches,
 } from './API';
 import {
@@ -148,6 +149,7 @@ export const DecapCmsLibUtil = {
   contentKeyFromBranch,
   blobToFileObj,
   requestWithBackoff,
+  getDefaultBranchName,
   allEntriesByFolder,
   AccessTokenError,
   throwOnConflictingBranches,
@@ -204,6 +206,7 @@ export {
   contentKeyFromBranch,
   blobToFileObj,
   requestWithBackoff,
+  getDefaultBranchName,
   allEntriesByFolder,
   AccessTokenError,
   throwOnConflictingBranches,

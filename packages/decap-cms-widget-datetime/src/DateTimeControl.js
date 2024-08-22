@@ -1,22 +1,58 @@
 /** @jsx jsx */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { jsx } from '@emotion/react';
+import { jsx, css } from '@emotion/react';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import utc from 'dayjs/plugin/utc';
-import { DatetimeField } from 'decap-cms-ui-next';
+import { buttons } from 'decap-cms-ui-default';
 
 dayjs.extend(customParseFormat);
 dayjs.extend(localizedFormat);
 dayjs.extend(utc);
+
+function Buttons({ t, handleChange, getNow }) {
+  return (
+    <div
+      css={css`
+        display: flex;
+        gap: 20px;
+        width: fit-content;
+      `}
+    >
+      <button
+        css={css`
+          ${buttons.button}
+          ${buttons.widget}
+        `}
+        onClick={() => handleChange(getNow())}
+        data-testid="now-button"
+      >
+        {t('editor.editorWidgets.datetime.now')}
+      </button>
+      <button
+        css={css`
+          ${buttons.button}
+          ${buttons.widget}
+        `}
+        onClick={() => handleChange('')}
+        data-testid="clear-button"
+      >
+        {t('editor.editorWidgets.datetime.clear')}
+      </button>
+    </div>
+  );
+}
 
 class DateTimeControl extends React.Component {
   static propTypes = {
     field: PropTypes.object.isRequired,
     forID: PropTypes.string,
     onChange: PropTypes.func.isRequired,
+    classNameWrapper: PropTypes.string.isRequired,
+    setActiveStyle: PropTypes.func.isRequired,
+    setInactiveStyle: PropTypes.func.isRequired,
     label: PropTypes.string.isRequired,
     status: PropTypes.string,
     description: PropTypes.string,
@@ -32,89 +68,136 @@ class DateTimeControl extends React.Component {
     isDisabled: false,
   };
 
+  isUtc = this.props.field.get('picker_utc') || false;
+
+  escapeZ(str) {
+    if (/Z(?![\]])/.test(str)) {
+      return str.replace('Z', '[Z]');
+    }
+    return str;
+  }
+
   getFormat() {
     const { field } = this.props;
-    const format = field?.get('format') || 'YYYY-MM-DDTHH:mm:ss.SSS[Z]';
-    const dateFormat = field?.get('date_format');
-    const timeFormat = field?.get('time_format');
-    let inputFormat = 'YYYY-MM-DDTHH:mm';
     let inputType = 'datetime-local';
+    let inputFormat = 'YYYY-MM-DDTHH:mm';
+    let format = 'YYYY-MM-DDTHH:mm:ss.SSS[Z]';
+    let userFormat = field?.get('format');
+    let dateFormat = field?.get('date_format');
+    let timeFormat = field?.get('time_format');
+    if (dateFormat === true) dateFormat = 'YYYY-MM-DD';
+    if (timeFormat === true) timeFormat = 'HH:mm';
 
-    if (dateFormat && timeFormat) {
-      return { format: `${dateFormat}T${timeFormat}`, inputType, inputFormat };
+    if (this.isUtc) {
+      userFormat = this.escapeZ(userFormat);
+      dateFormat = this.escapeZ(dateFormat);
+      timeFormat = this.escapeZ(timeFormat);
     }
 
-    if (timeFormat) {
+    if (typeof dateFormat === 'string' && typeof timeFormat === 'string') {
+      format = `${dateFormat}T${timeFormat}`;
+    } else if (typeof timeFormat === 'string') {
       inputType = 'time';
-      inputFormat = 'HH:mm';
-      return { format: timeFormat, inputType, inputFormat };
+      format = timeFormat;
+    } else if (typeof dateFormat === 'string') {
+      inputType = 'date';
+      format = dateFormat;
     }
 
-    if (dateFormat) {
-      inputType = 'date';
-      inputFormat = 'YYYY-MM-DD';
-      return { format: dateFormat, inputType, inputFormat };
+    if (typeof userFormat === 'string') {
+      format = userFormat;
+      inputType = 'datetime-local';
     }
+
+    if (dateFormat === false) inputType = 'time';
+    if (timeFormat === false) inputType = 'date';
+    if (inputType === 'datetime-local') inputFormat = 'YYYY-MM-DDTHH:mm';
+    if (inputType === 'date') inputFormat = 'YYYY-MM-DD';
+    if (inputType === 'time') inputFormat = 'HH:mm';
 
     return { format, inputType, inputFormat };
   }
 
-  getDefaultValue() {
-    const { field } = this.props;
-    const defaultValue = field.get('default');
-    return defaultValue;
-  }
+  isValidDate = dt => dayjs(dt, this.getFormat().inputFormat).isValid() || dt === '';
 
-  shortcuts({ t, isUtc }) {
-    return {
-      [t('editor.editorWidgets.datetime.now')]: isUtc ? dayjs.utc() : dayjs(),
-      [t('editor.editorWidgets.datetime.clear')]: '',
-    };
-  }
-
-  isUtc = this.props.field.get('picker_utc') || false;
-  isValidDate = datetime => dayjs(datetime).isValid() || datetime === '';
-  defaultValue = this.getDefaultValue();
-
-  componentDidMount() {
-    const { value } = this.props;
+  getNow() {
     const { inputFormat } = this.getFormat();
-    if (value === undefined) {
-      setTimeout(() => {
-        this.handleChange(
-          this.defaultValue === undefined ? dayjs().format(inputFormat) : this.defaultValue,
-        );
-      }, 0);
-    }
+    return this.isUtc ? dayjs.utc().format(inputFormat) : dayjs().format(inputFormat);
   }
 
-  onInputChange = date => {
+  formatInputValue(value) {
+    if (value === '') return value;
+    const { format, inputFormat } = this.getFormat();
+
+    if (typeof value === 'string' && value?.replace(/\s+/g, '') === '{{now}}') {
+      return this.getNow();
+    }
+
+    const inputValue = this.isUtc
+      ? dayjs.utc(value, format).format(inputFormat)
+      : dayjs(value, format).format(inputFormat);
+
+    if (this.isValidDate(inputValue)) {
+      return inputValue;
+    }
+    return this.isUtc ? dayjs.utc(value).format(inputFormat) : dayjs(value).format(inputFormat);
+  }
+
+  handleChange = datetime => {
+    if (!this.isValidDate(datetime)) return;
     const { onChange } = this.props;
 
-    onChange(date);
+    if (datetime === '') {
+      onChange('');
+    } else {
+      const { format, inputFormat } = this.getFormat();
+      const formattedValue = dayjs(datetime, inputFormat).format(format);
+      onChange(formattedValue);
+    }
+  };
+
+  onInputChange = e => {
+    const etv = e.target.value;
+    this.handleChange(etv);
   };
 
   render() {
     const { forID, value, classNameWrapper, setActiveStyle, setInactiveStyle, t, isDisabled } =
       this.props;
-    const { inputType, inputFormat } = this.getFormat();
+    const { inputType } = this.getFormat();
 
     return (
-      <div className={classNameWrapper}>
-        <DatetimeField
-          name={forID}
+      <div
+        className={classNameWrapper}
+        css={css`
+          display: flex !important;
+          gap: 20px;
+          align-items: center;
+        `}
+      >
+        <input
+          id={forID}
+          data-testid={forID}
           type={inputType}
-          format={inputFormat}
-          value={dayjs(value)}
-          shortcuts={this.shortcuts({
-            t,
-            isUtc: this.isUtc,
-          })}
+          value={value ? this.formatInputValue(value) : ''}
           onChange={this.onInputChange}
           onFocus={setActiveStyle}
           onBlur={setInactiveStyle}
           disabled={isDisabled}
         />
+        {this.isUtc && (
+          <span
+            css={css`
+              font-size: 0.8em;
+              color: #666;
+            `}
+          >
+            UTC
+          </span>
+        )}
+        {!isDisabled && (
+          <Buttons t={t} handleChange={v => this.handleChange(v)} getNow={() => this.getNow()} />
+        )}
       </div>
     );
   }

@@ -12,6 +12,7 @@ import {
   getPreviewStyles,
   getRemarkPlugins,
 } from '../../../lib/registry';
+import { getAllEntries, tryLoadEntry } from '../../../actions/entries';
 import { ErrorBoundary } from '../../UI';
 import {
   selectTemplateName,
@@ -193,6 +194,23 @@ export class PreviewPane extends React.Component {
     });
   };
 
+  /**
+   * This function exists entirely to expose collections from outside of this entry
+   *
+   */
+  getCollection = async (collectionName, slug) => {
+    const { state } = this.props;
+    const selectedCollection = state.collections.get(collectionName);
+
+    if (typeof slug === 'undefined') {
+      const entries = await getAllEntries(state, selectedCollection);
+      return entries.map(entry => Map().set('data', entry.data));
+    }
+
+    const entry = await tryLoadEntry(state, selectedCollection, slug);
+    return Map().set('data', entry.data);
+  };
+
   render() {
     const { entry, collection, config } = this.props;
 
@@ -209,6 +227,7 @@ export class PreviewPane extends React.Component {
       ...this.props,
       widgetFor: this.widgetFor,
       widgetsFor: this.widgetsFor,
+      getCollection: this.getCollection,
     };
 
     const styleEls = getPreviewStyles().map((style, i) => {
@@ -258,7 +277,7 @@ PreviewPane.propTypes = {
 
 function mapStateToProps(state) {
   const isLoadingAsset = selectIsLoadingAsset(state.medias);
-  return { isLoadingAsset, config: state.config };
+  return { isLoadingAsset, config: state.config, state };
 }
 
 function mapDispatchToProps(dispatch) {

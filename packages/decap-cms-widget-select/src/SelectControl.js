@@ -24,9 +24,10 @@ export default class SelectControl extends React.Component {
       options: ImmutablePropTypes.listOf(
         PropTypes.oneOfType([
           PropTypes.string,
+          PropTypes.number,
           ImmutablePropTypes.contains({
             label: PropTypes.string.isRequired,
-            value: PropTypes.string.isRequired,
+            value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
           }),
         ]),
       ).isRequired,
