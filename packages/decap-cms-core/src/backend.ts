@@ -1,4 +1,4 @@
-import { attempt, flatten, isError, uniq, trim, sortBy, get, set } from 'lodash';
+import { flatten, isError, uniq, trim, sortBy, get, set } from 'lodash';
 import { List, fromJS, Set } from 'immutable';
 import * as fuzzy from 'fuzzy';
 import {
@@ -869,7 +869,7 @@ export class Backend {
     return (entry: EntryValue): EntryValue => {
       const format = resolveFormat(collection, entry);
       if (entry && entry.raw !== undefined) {
-        const data = (format && attempt(format.fromFile.bind(format, entry.raw))) || {};
+        const data = (format && format.fromFile.bind(format, entry.raw)()) || {};
         if (isError(data)) console.error(data);
         return Object.assign(entry, { data: isError(data) ? {} : data });
       }
