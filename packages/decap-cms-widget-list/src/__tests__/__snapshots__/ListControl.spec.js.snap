@@ -1,0 +1,2370 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ListControl should add to list when add button is clicked 1`] = `
+<DocumentFragment>
+  .emotion-0 {
+  padding: 0 14px 14px;
+}
+
+.emotion-1 {
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  background-color: #dfdfe3;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+  margin: 0 -14px;
+  padding: 13px;
+}
+
+.emotion-3 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.emotion-5 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 4px;
+  background-color: transparent;
+  color: inherit;
+}
+
+.emotion-5:last-of-type {
+  margin-right: 4px;
+}
+
+.emotion-8 {
+  display: inline-block;
+  line-height: 0;
+  width: 18px;
+  height: 18px;
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -ms-transform: rotate(0deg);
+  transform: rotate(0deg);
+}
+
+.emotion-8 path:not(.no-fill),
+.emotion-8 circle:not(.no-fill),
+.emotion-8 polygon:not(.no-fill),
+.emotion-8 rect:not(.no-fill) {
+  fill: currentColor;
+}
+
+.emotion-8 path.clipped {
+  fill: transparent;
+}
+
+.emotion-8 svg {
+  width: 100%;
+  height: 100%;
+}
+
+.emotion-10 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  padding: 2px 12px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 3px;
+}
+
+.emotion-10 .emotion-7 {
+  margin-left: 6px;
+}
+
+.emotion-13 {
+  display: inline-block;
+  line-height: 0;
+  width: 12px;
+  height: 12px;
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -ms-transform: rotate(0deg);
+  transform: rotate(0deg);
+}
+
+.emotion-13 path:not(.no-fill),
+.emotion-13 circle:not(.no-fill),
+.emotion-13 polygon:not(.no-fill),
+.emotion-13 rect:not(.no-fill) {
+  fill: currentColor;
+}
+
+.emotion-13 path.clipped {
+  fill: transparent;
+}
+
+.emotion-13 svg {
+  width: 100%;
+  height: 100%;
+}
+
+.emotion-15 {
+  margin-top: 18px;
+}
+
+.emotion-15:first-of-type {
+  margin-top: 26px;
+}
+
+.emotion-17 {
+  display: none;
+  border-top: 0;
+  color: inherit;
+  background-color: #dfdfe3;
+  padding: 13px;
+  border-radius: 0 0 5px 5px;
+}
+
+<div
+    class="classNameWrapper emotion-0"
+    id="forID"
+  >
+    <div
+      class="emotion-1 emotion-2"
+    >
+      <div
+        class="emotion-3 emotion-4"
+      >
+        <button
+          class="emotion-5 emotion-6"
+          data-testid="expand-button"
+        >
+          <span
+            class="emotion-7 emotion-8 emotion-9"
+          >
+            <svg
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="m5.123 6.33-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
+              />
+            </svg>
+          </span>
+        </button>
+        1 list
+      </div>
+      <button
+        class="emotion-10 emotion-11"
+      >
+        editor.editorWidgets.list.add
+        <span
+          class="emotion-7 emotion-13 emotion-9"
+        >
+          <svg
+            height="24"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M19 14h-4a1 1 0 0 0-1 1v4a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-4a1 1 0 0 0-1-1H5a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h4a1 1 0 0 0 1-1V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h4a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1Z"
+            />
+          </svg>
+        </span>
+      </button>
+    </div>
+    <div>
+      <div
+        class="emotion-15 emotion-16"
+      >
+        <mock-list-item-top-bar
+          classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
+          collapsed="false"
+          data-testid="styled-list-item-top-bar-0"
+          id="0"
+        >
+          <button>
+            Remove
+          </button>
+        </mock-list-item-top-bar>
+        <div
+          class="emotion-17 emotion-18"
+        >
+          No string
+        </div>
+        <mock-object-control
+          classnamewrapper="classNameWrapper"
+          collapsed="false"
+          data-testid="object-control-0"
+          field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
+          fieldserrors="Map {}"
+          forlist="true"
+          parentids="forID,0"
+          validationkey="0"
+          value="Map {}"
+        />
+      </div>
+      <div
+        id="DndDescribedBy-19"
+        style="display: none;"
+      >
+        
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  
+      </div>
+      <div
+        aria-atomic="true"
+        aria-live="assertive"
+        id="DndLiveRegion-19"
+        role="status"
+        style="position: fixed; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip-path: inset(100%); white-space: nowrap;"
+      />
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`ListControl should remove from list when remove button is clicked 1`] = `
+<DocumentFragment>
+  .emotion-0 {
+  padding: 0 14px 14px;
+}
+
+.emotion-1 {
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  background-color: #dfdfe3;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+  margin: 0 -14px;
+  padding: 13px;
+}
+
+.emotion-3 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.emotion-5 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 4px;
+  background-color: transparent;
+  color: inherit;
+}
+
+.emotion-5:last-of-type {
+  margin-right: 4px;
+}
+
+.emotion-8 {
+  display: inline-block;
+  line-height: 0;
+  width: 18px;
+  height: 18px;
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -ms-transform: rotate(0deg);
+  transform: rotate(0deg);
+}
+
+.emotion-8 path:not(.no-fill),
+.emotion-8 circle:not(.no-fill),
+.emotion-8 polygon:not(.no-fill),
+.emotion-8 rect:not(.no-fill) {
+  fill: currentColor;
+}
+
+.emotion-8 path.clipped {
+  fill: transparent;
+}
+
+.emotion-8 svg {
+  width: 100%;
+  height: 100%;
+}
+
+.emotion-10 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  padding: 2px 12px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 3px;
+}
+
+.emotion-10 .emotion-7 {
+  margin-left: 6px;
+}
+
+.emotion-13 {
+  display: inline-block;
+  line-height: 0;
+  width: 12px;
+  height: 12px;
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -ms-transform: rotate(0deg);
+  transform: rotate(0deg);
+}
+
+.emotion-13 path:not(.no-fill),
+.emotion-13 circle:not(.no-fill),
+.emotion-13 polygon:not(.no-fill),
+.emotion-13 rect:not(.no-fill) {
+  fill: currentColor;
+}
+
+.emotion-13 path.clipped {
+  fill: transparent;
+}
+
+.emotion-13 svg {
+  width: 100%;
+  height: 100%;
+}
+
+.emotion-15 {
+  margin-top: 18px;
+}
+
+.emotion-15:first-of-type {
+  margin-top: 26px;
+}
+
+.emotion-17 {
+  display: none;
+  border-top: 0;
+  color: inherit;
+  background-color: #dfdfe3;
+  padding: 13px;
+  border-radius: 0 0 5px 5px;
+}
+
+<div
+    class="classNameWrapper emotion-0"
+    id="forID"
+  >
+    <div
+      class="emotion-1 emotion-2"
+    >
+      <div
+        class="emotion-3 emotion-4"
+      >
+        <button
+          class="emotion-5 emotion-6"
+          data-testid="expand-button"
+        >
+          <span
+            class="emotion-7 emotion-8 emotion-9"
+          >
+            <svg
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="m5.123 6.33-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
+              />
+            </svg>
+          </span>
+        </button>
+        2 list
+      </div>
+      <button
+        class="emotion-10 emotion-11"
+      >
+        editor.editorWidgets.list.add
+        <span
+          class="emotion-7 emotion-13 emotion-9"
+        >
+          <svg
+            height="24"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M19 14h-4a1 1 0 0 0-1 1v4a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-4a1 1 0 0 0-1-1H5a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h4a1 1 0 0 0 1-1V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h4a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1Z"
+            />
+          </svg>
+        </span>
+      </button>
+    </div>
+    <div>
+      <div
+        class="emotion-15 emotion-16"
+      >
+        <mock-list-item-top-bar
+          classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
+          collapsed="false"
+          data-testid="styled-list-item-top-bar-0"
+          id="0"
+        >
+          <button>
+            Remove
+          </button>
+        </mock-list-item-top-bar>
+        <div
+          class="emotion-17 emotion-18"
+        >
+          item 1
+        </div>
+        <mock-object-control
+          classnamewrapper="classNameWrapper"
+          collapsed="false"
+          data-testid="object-control-0"
+          field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"minimize_collapsed\\": true, \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
+          fieldserrors="Map {}"
+          forlist="true"
+          parentids="forID,0"
+          validationkey="0"
+          value="Map { \\"string\\": \\"item 1\\" }"
+        />
+      </div>
+      <div
+        class="emotion-15 emotion-16"
+      >
+        <mock-list-item-top-bar
+          classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
+          collapsed="false"
+          data-testid="styled-list-item-top-bar-1"
+          id="1"
+        >
+          <button>
+            Remove
+          </button>
+        </mock-list-item-top-bar>
+        <div
+          class="emotion-17 emotion-18"
+        >
+          item 2
+        </div>
+        <mock-object-control
+          classnamewrapper="classNameWrapper"
+          collapsed="false"
+          data-testid="object-control-1"
+          field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"minimize_collapsed\\": true, \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
+          fieldserrors="Map {}"
+          forlist="true"
+          parentids="forID,1"
+          validationkey="1"
+          value="Map { \\"string\\": \\"item 2\\" }"
+        />
+      </div>
+      <div
+        id="DndDescribedBy-20"
+        style="display: none;"
+      >
+        
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  
+      </div>
+      <div
+        aria-atomic="true"
+        aria-live="assertive"
+        id="DndLiveRegion-20"
+        role="status"
+        style="position: fixed; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip-path: inset(100%); white-space: nowrap;"
+      />
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`ListControl should remove from list when remove button is clicked 2`] = `
+<DocumentFragment>
+  .emotion-0 {
+  padding: 0 14px 14px;
+}
+
+.emotion-1 {
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  background-color: #dfdfe3;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+  margin: 0 -14px;
+  padding: 13px;
+}
+
+.emotion-3 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.emotion-5 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 4px;
+  background-color: transparent;
+  color: inherit;
+}
+
+.emotion-5:last-of-type {
+  margin-right: 4px;
+}
+
+.emotion-8 {
+  display: inline-block;
+  line-height: 0;
+  width: 18px;
+  height: 18px;
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -ms-transform: rotate(0deg);
+  transform: rotate(0deg);
+}
+
+.emotion-8 path:not(.no-fill),
+.emotion-8 circle:not(.no-fill),
+.emotion-8 polygon:not(.no-fill),
+.emotion-8 rect:not(.no-fill) {
+  fill: currentColor;
+}
+
+.emotion-8 path.clipped {
+  fill: transparent;
+}
+
+.emotion-8 svg {
+  width: 100%;
+  height: 100%;
+}
+
+.emotion-10 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  padding: 2px 12px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 3px;
+}
+
+.emotion-10 .emotion-7 {
+  margin-left: 6px;
+}
+
+.emotion-13 {
+  display: inline-block;
+  line-height: 0;
+  width: 12px;
+  height: 12px;
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -ms-transform: rotate(0deg);
+  transform: rotate(0deg);
+}
+
+.emotion-13 path:not(.no-fill),
+.emotion-13 circle:not(.no-fill),
+.emotion-13 polygon:not(.no-fill),
+.emotion-13 rect:not(.no-fill) {
+  fill: currentColor;
+}
+
+.emotion-13 path.clipped {
+  fill: transparent;
+}
+
+.emotion-13 svg {
+  width: 100%;
+  height: 100%;
+}
+
+.emotion-15 {
+  margin-top: 18px;
+}
+
+.emotion-15:first-of-type {
+  margin-top: 26px;
+}
+
+.emotion-17 {
+  display: block;
+  border-top: 0;
+  color: inherit;
+  background-color: #dfdfe3;
+  padding: 13px;
+  border-radius: 0 0 5px 5px;
+}
+
+<div
+    class="classNameWrapper emotion-0"
+    id="forID"
+  >
+    <div
+      class="emotion-1 emotion-2"
+    >
+      <div
+        class="emotion-3 emotion-4"
+      >
+        <button
+          class="emotion-5 emotion-6"
+          data-testid="expand-button"
+        >
+          <span
+            class="emotion-7 emotion-8 emotion-9"
+          >
+            <svg
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="m5.123 6.33-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
+              />
+            </svg>
+          </span>
+        </button>
+        1 list
+      </div>
+      <button
+        class="emotion-10 emotion-11"
+      >
+        editor.editorWidgets.list.add
+        <span
+          class="emotion-7 emotion-13 emotion-9"
+        >
+          <svg
+            height="24"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M19 14h-4a1 1 0 0 0-1 1v4a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-4a1 1 0 0 0-1-1H5a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h4a1 1 0 0 0 1-1V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h4a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1Z"
+            />
+          </svg>
+        </span>
+      </button>
+    </div>
+    <div>
+      <div
+        class="emotion-15 emotion-16"
+        style="transition: transform 0ms linear;"
+      >
+        <mock-list-item-top-bar
+          classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
+          collapsed="true"
+          data-testid="styled-list-item-top-bar-2"
+          id="2"
+        >
+          <button>
+            Remove
+          </button>
+        </mock-list-item-top-bar>
+        <div
+          class="emotion-17 emotion-18"
+        >
+          item 2
+        </div>
+        <mock-object-control
+          classnamewrapper="classNameWrapper css-1pznrxi"
+          collapsed="true"
+          data-testid="object-control-2"
+          field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"minimize_collapsed\\": true, \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
+          fieldserrors="Map {}"
+          forlist="true"
+          parentids="forID,2"
+          validationkey="2"
+          value="Map { \\"string\\": \\"item 2\\" }"
+        />
+      </div>
+      <div
+        id="DndDescribedBy-20"
+        style="display: none;"
+      >
+        
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  
+      </div>
+      <div
+        aria-atomic="true"
+        aria-live="assertive"
+        id="DndLiveRegion-20"
+        role="status"
+        style="position: fixed; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip-path: inset(100%); white-space: nowrap;"
+      />
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`ListControl should render empty list 1`] = `
+<DocumentFragment>
+  <input
+    class="classNameWrapper"
+    id="forID"
+    type="text"
+    value=""
+  />
+</DocumentFragment>
+`;
+
+exports[`ListControl should render list with fields with collapse = "false" and default minimize_collapsed ("false") 1`] = `
+<DocumentFragment>
+  .emotion-0 {
+  padding: 0 14px 14px;
+}
+
+.emotion-1 {
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  background-color: #dfdfe3;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+  margin: 0 -14px;
+  padding: 13px;
+}
+
+.emotion-3 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.emotion-5 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 4px;
+  background-color: transparent;
+  color: inherit;
+}
+
+.emotion-5:last-of-type {
+  margin-right: 4px;
+}
+
+.emotion-8 {
+  display: inline-block;
+  line-height: 0;
+  width: 18px;
+  height: 18px;
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -ms-transform: rotate(0deg);
+  transform: rotate(0deg);
+}
+
+.emotion-8 path:not(.no-fill),
+.emotion-8 circle:not(.no-fill),
+.emotion-8 polygon:not(.no-fill),
+.emotion-8 rect:not(.no-fill) {
+  fill: currentColor;
+}
+
+.emotion-8 path.clipped {
+  fill: transparent;
+}
+
+.emotion-8 svg {
+  width: 100%;
+  height: 100%;
+}
+
+.emotion-10 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  padding: 2px 12px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 3px;
+}
+
+.emotion-10 .emotion-7 {
+  margin-left: 6px;
+}
+
+.emotion-13 {
+  display: inline-block;
+  line-height: 0;
+  width: 12px;
+  height: 12px;
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -ms-transform: rotate(0deg);
+  transform: rotate(0deg);
+}
+
+.emotion-13 path:not(.no-fill),
+.emotion-13 circle:not(.no-fill),
+.emotion-13 polygon:not(.no-fill),
+.emotion-13 rect:not(.no-fill) {
+  fill: currentColor;
+}
+
+.emotion-13 path.clipped {
+  fill: transparent;
+}
+
+.emotion-13 svg {
+  width: 100%;
+  height: 100%;
+}
+
+.emotion-15 {
+  margin-top: 18px;
+}
+
+.emotion-15:first-of-type {
+  margin-top: 26px;
+}
+
+.emotion-17 {
+  display: none;
+  border-top: 0;
+  color: inherit;
+  background-color: #dfdfe3;
+  padding: 13px;
+  border-radius: 0 0 5px 5px;
+}
+
+<div
+    class="classNameWrapper emotion-0"
+    id="forID"
+  >
+    <div
+      class="emotion-1 emotion-2"
+    >
+      <div
+        class="emotion-3 emotion-4"
+      >
+        <button
+          class="emotion-5 emotion-6"
+          data-testid="expand-button"
+        >
+          <span
+            class="emotion-7 emotion-8 emotion-9"
+          >
+            <svg
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="m5.123 6.33-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
+              />
+            </svg>
+          </span>
+        </button>
+        2 list
+      </div>
+      <button
+        class="emotion-10 emotion-11"
+      >
+        editor.editorWidgets.list.add
+        <span
+          class="emotion-7 emotion-13 emotion-9"
+        >
+          <svg
+            height="24"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M19 14h-4a1 1 0 0 0-1 1v4a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-4a1 1 0 0 0-1-1H5a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h4a1 1 0 0 0 1-1V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h4a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1Z"
+            />
+          </svg>
+        </span>
+      </button>
+    </div>
+    <div>
+      <div
+        class="emotion-15 emotion-16"
+      >
+        <mock-list-item-top-bar
+          classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
+          collapsed="false"
+          data-testid="styled-list-item-top-bar-0"
+          id="0"
+        >
+          <button>
+            Remove
+          </button>
+        </mock-list-item-top-bar>
+        <div
+          class="emotion-17 emotion-18"
+        >
+          item 1
+        </div>
+        <mock-object-control
+          classnamewrapper="classNameWrapper"
+          collapsed="false"
+          data-testid="object-control-0"
+          field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
+          fieldserrors="Map {}"
+          forlist="true"
+          parentids="forID,0"
+          validationkey="0"
+          value="Map { \\"string\\": \\"item 1\\" }"
+        />
+      </div>
+      <div
+        class="emotion-15 emotion-16"
+      >
+        <mock-list-item-top-bar
+          classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
+          collapsed="false"
+          data-testid="styled-list-item-top-bar-1"
+          id="1"
+        >
+          <button>
+            Remove
+          </button>
+        </mock-list-item-top-bar>
+        <div
+          class="emotion-17 emotion-18"
+        >
+          item 2
+        </div>
+        <mock-object-control
+          classnamewrapper="classNameWrapper"
+          collapsed="false"
+          data-testid="object-control-1"
+          field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
+          fieldserrors="Map {}"
+          forlist="true"
+          parentids="forID,1"
+          validationkey="1"
+          value="Map { \\"string\\": \\"item 2\\" }"
+        />
+      </div>
+      <div
+        id="DndDescribedBy-16"
+        style="display: none;"
+      >
+        
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  
+      </div>
+      <div
+        aria-atomic="true"
+        aria-live="assertive"
+        id="DndLiveRegion-16"
+        role="status"
+        style="position: fixed; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip-path: inset(100%); white-space: nowrap;"
+      />
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`ListControl should render list with fields with collapse = "false" and default minimize_collapsed = "true" 1`] = `
+<DocumentFragment>
+  .emotion-0 {
+  padding: 0 14px 14px;
+}
+
+.emotion-1 {
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  background-color: #dfdfe3;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+  margin: 0 -14px;
+  padding: 13px;
+}
+
+.emotion-3 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.emotion-5 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 4px;
+  background-color: transparent;
+  color: inherit;
+}
+
+.emotion-5:last-of-type {
+  margin-right: 4px;
+}
+
+.emotion-8 {
+  display: inline-block;
+  line-height: 0;
+  width: 18px;
+  height: 18px;
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -ms-transform: rotate(0deg);
+  transform: rotate(0deg);
+}
+
+.emotion-8 path:not(.no-fill),
+.emotion-8 circle:not(.no-fill),
+.emotion-8 polygon:not(.no-fill),
+.emotion-8 rect:not(.no-fill) {
+  fill: currentColor;
+}
+
+.emotion-8 path.clipped {
+  fill: transparent;
+}
+
+.emotion-8 svg {
+  width: 100%;
+  height: 100%;
+}
+
+.emotion-10 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  padding: 2px 12px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 3px;
+}
+
+.emotion-10 .emotion-7 {
+  margin-left: 6px;
+}
+
+.emotion-13 {
+  display: inline-block;
+  line-height: 0;
+  width: 12px;
+  height: 12px;
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -ms-transform: rotate(0deg);
+  transform: rotate(0deg);
+}
+
+.emotion-13 path:not(.no-fill),
+.emotion-13 circle:not(.no-fill),
+.emotion-13 polygon:not(.no-fill),
+.emotion-13 rect:not(.no-fill) {
+  fill: currentColor;
+}
+
+.emotion-13 path.clipped {
+  fill: transparent;
+}
+
+.emotion-13 svg {
+  width: 100%;
+  height: 100%;
+}
+
+.emotion-15 {
+  margin-top: 18px;
+}
+
+.emotion-15:first-of-type {
+  margin-top: 26px;
+}
+
+.emotion-17 {
+  display: none;
+  border-top: 0;
+  color: inherit;
+  background-color: #dfdfe3;
+  padding: 13px;
+  border-radius: 0 0 5px 5px;
+}
+
+<div
+    class="classNameWrapper emotion-0"
+    id="forID"
+  >
+    <div
+      class="emotion-1 emotion-2"
+    >
+      <div
+        class="emotion-3 emotion-4"
+      >
+        <button
+          class="emotion-5 emotion-6"
+          data-testid="expand-button"
+        >
+          <span
+            class="emotion-7 emotion-8 emotion-9"
+          >
+            <svg
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="m5.123 6.33-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
+              />
+            </svg>
+          </span>
+        </button>
+        2 list
+      </div>
+      <button
+        class="emotion-10 emotion-11"
+      >
+        editor.editorWidgets.list.add
+        <span
+          class="emotion-7 emotion-13 emotion-9"
+        >
+          <svg
+            height="24"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M19 14h-4a1 1 0 0 0-1 1v4a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-4a1 1 0 0 0-1-1H5a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h4a1 1 0 0 0 1-1V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h4a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1Z"
+            />
+          </svg>
+        </span>
+      </button>
+    </div>
+    <div>
+      <div
+        class="emotion-15 emotion-16"
+      >
+        <mock-list-item-top-bar
+          classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
+          collapsed="false"
+          data-testid="styled-list-item-top-bar-0"
+          id="0"
+        >
+          <button>
+            Remove
+          </button>
+        </mock-list-item-top-bar>
+        <div
+          class="emotion-17 emotion-18"
+        >
+          item 1
+        </div>
+        <mock-object-control
+          classnamewrapper="classNameWrapper"
+          collapsed="false"
+          data-testid="object-control-0"
+          field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"minimize_collapsed\\": true, \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
+          fieldserrors="Map {}"
+          forlist="true"
+          parentids="forID,0"
+          validationkey="0"
+          value="Map { \\"string\\": \\"item 1\\" }"
+        />
+      </div>
+      <div
+        class="emotion-15 emotion-16"
+      >
+        <mock-list-item-top-bar
+          classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
+          collapsed="false"
+          data-testid="styled-list-item-top-bar-1"
+          id="1"
+        >
+          <button>
+            Remove
+          </button>
+        </mock-list-item-top-bar>
+        <div
+          class="emotion-17 emotion-18"
+        >
+          item 2
+        </div>
+        <mock-object-control
+          classnamewrapper="classNameWrapper"
+          collapsed="false"
+          data-testid="object-control-1"
+          field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"minimize_collapsed\\": true, \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
+          fieldserrors="Map {}"
+          forlist="true"
+          parentids="forID,1"
+          validationkey="1"
+          value="Map { \\"string\\": \\"item 2\\" }"
+        />
+      </div>
+      <div
+        id="DndDescribedBy-18"
+        style="display: none;"
+      >
+        
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  
+      </div>
+      <div
+        aria-atomic="true"
+        aria-live="assertive"
+        id="DndLiveRegion-18"
+        role="status"
+        style="position: fixed; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip-path: inset(100%); white-space: nowrap;"
+      />
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`ListControl should render list with fields with default collapse ("true") and minimize_collapsed ("false") 1`] = `
+<DocumentFragment>
+  .emotion-0 {
+  padding: 0 14px 14px;
+}
+
+.emotion-1 {
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  background-color: #dfdfe3;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+  margin: 0 -14px;
+  padding: 13px;
+}
+
+.emotion-3 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.emotion-5 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 4px;
+  background-color: transparent;
+  color: inherit;
+}
+
+.emotion-5:last-of-type {
+  margin-right: 4px;
+}
+
+.emotion-8 {
+  display: inline-block;
+  line-height: 0;
+  width: 18px;
+  height: 18px;
+  -webkit-transform: rotate(-90deg);
+  -moz-transform: rotate(-90deg);
+  -ms-transform: rotate(-90deg);
+  transform: rotate(-90deg);
+}
+
+.emotion-8 path:not(.no-fill),
+.emotion-8 circle:not(.no-fill),
+.emotion-8 polygon:not(.no-fill),
+.emotion-8 rect:not(.no-fill) {
+  fill: currentColor;
+}
+
+.emotion-8 path.clipped {
+  fill: transparent;
+}
+
+.emotion-8 svg {
+  width: 100%;
+  height: 100%;
+}
+
+.emotion-10 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  padding: 2px 12px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 3px;
+}
+
+.emotion-10 .emotion-7 {
+  margin-left: 6px;
+}
+
+.emotion-13 {
+  display: inline-block;
+  line-height: 0;
+  width: 12px;
+  height: 12px;
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -ms-transform: rotate(0deg);
+  transform: rotate(0deg);
+}
+
+.emotion-13 path:not(.no-fill),
+.emotion-13 circle:not(.no-fill),
+.emotion-13 polygon:not(.no-fill),
+.emotion-13 rect:not(.no-fill) {
+  fill: currentColor;
+}
+
+.emotion-13 path.clipped {
+  fill: transparent;
+}
+
+.emotion-13 svg {
+  width: 100%;
+  height: 100%;
+}
+
+.emotion-15 {
+  margin-top: 18px;
+}
+
+.emotion-15:first-of-type {
+  margin-top: 26px;
+}
+
+.emotion-17 {
+  display: block;
+  border-top: 0;
+  color: inherit;
+  background-color: #dfdfe3;
+  padding: 13px;
+  border-radius: 0 0 5px 5px;
+}
+
+<div
+    class="classNameWrapper emotion-0"
+    id="forID"
+  >
+    <div
+      class="emotion-1 emotion-2"
+    >
+      <div
+        class="emotion-3 emotion-4"
+      >
+        <button
+          class="emotion-5 emotion-6"
+          data-testid="expand-button"
+        >
+          <span
+            class="emotion-7 emotion-8 emotion-9"
+          >
+            <svg
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="m5.123 6.33-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
+              />
+            </svg>
+          </span>
+        </button>
+        2 list
+      </div>
+      <button
+        class="emotion-10 emotion-11"
+      >
+        editor.editorWidgets.list.add
+        <span
+          class="emotion-7 emotion-13 emotion-9"
+        >
+          <svg
+            height="24"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M19 14h-4a1 1 0 0 0-1 1v4a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-4a1 1 0 0 0-1-1H5a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h4a1 1 0 0 0 1-1V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h4a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1Z"
+            />
+          </svg>
+        </span>
+      </button>
+    </div>
+    <div>
+      <div
+        class="emotion-15 emotion-16"
+      >
+        <mock-list-item-top-bar
+          classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
+          collapsed="true"
+          data-testid="styled-list-item-top-bar-0"
+          id="0"
+        >
+          <button>
+            Remove
+          </button>
+        </mock-list-item-top-bar>
+        <div
+          class="emotion-17 emotion-18"
+        >
+          item 1
+        </div>
+        <mock-object-control
+          classnamewrapper="classNameWrapper css-1pznrxi"
+          collapsed="true"
+          data-testid="object-control-0"
+          field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
+          fieldserrors="Map {}"
+          forlist="true"
+          parentids="forID,0"
+          validationkey="0"
+          value="Map { \\"string\\": \\"item 1\\" }"
+        />
+      </div>
+      <div
+        class="emotion-15 emotion-16"
+      >
+        <mock-list-item-top-bar
+          classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
+          collapsed="true"
+          data-testid="styled-list-item-top-bar-1"
+          id="1"
+        >
+          <button>
+            Remove
+          </button>
+        </mock-list-item-top-bar>
+        <div
+          class="emotion-17 emotion-18"
+        >
+          item 2
+        </div>
+        <mock-object-control
+          classnamewrapper="classNameWrapper css-1pznrxi"
+          collapsed="true"
+          data-testid="object-control-1"
+          field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
+          fieldserrors="Map {}"
+          forlist="true"
+          parentids="forID,1"
+          validationkey="1"
+          value="Map { \\"string\\": \\"item 2\\" }"
+        />
+      </div>
+      <div
+        id="DndDescribedBy-15"
+        style="display: none;"
+      >
+        
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  
+      </div>
+      <div
+        aria-atomic="true"
+        aria-live="assertive"
+        id="DndLiveRegion-15"
+        role="status"
+        style="position: fixed; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip-path: inset(100%); white-space: nowrap;"
+      />
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`ListControl should render list with fields with default collapse ("true") and minimize_collapsed = "true" 1`] = `
+<DocumentFragment>
+  .emotion-0 {
+  padding: 0 14px 14px;
+}
+
+.emotion-1 {
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  background-color: #dfdfe3;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+  margin: 0 -14px;
+  padding: 13px;
+}
+
+.emotion-3 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.emotion-5 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 4px;
+  background-color: transparent;
+  color: inherit;
+}
+
+.emotion-5:last-of-type {
+  margin-right: 4px;
+}
+
+.emotion-8 {
+  display: inline-block;
+  line-height: 0;
+  width: 18px;
+  height: 18px;
+  -webkit-transform: rotate(-90deg);
+  -moz-transform: rotate(-90deg);
+  -ms-transform: rotate(-90deg);
+  transform: rotate(-90deg);
+}
+
+.emotion-8 path:not(.no-fill),
+.emotion-8 circle:not(.no-fill),
+.emotion-8 polygon:not(.no-fill),
+.emotion-8 rect:not(.no-fill) {
+  fill: currentColor;
+}
+
+.emotion-8 path.clipped {
+  fill: transparent;
+}
+
+.emotion-8 svg {
+  width: 100%;
+  height: 100%;
+}
+
+.emotion-10 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  padding: 2px 12px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 3px;
+}
+
+.emotion-10 .emotion-7 {
+  margin-left: 6px;
+}
+
+.emotion-13 {
+  display: inline-block;
+  line-height: 0;
+  width: 12px;
+  height: 12px;
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -ms-transform: rotate(0deg);
+  transform: rotate(0deg);
+}
+
+.emotion-13 path:not(.no-fill),
+.emotion-13 circle:not(.no-fill),
+.emotion-13 polygon:not(.no-fill),
+.emotion-13 rect:not(.no-fill) {
+  fill: currentColor;
+}
+
+.emotion-13 path.clipped {
+  fill: transparent;
+}
+
+.emotion-13 svg {
+  width: 100%;
+  height: 100%;
+}
+
+<div
+    class="classNameWrapper emotion-0"
+    id="forID"
+  >
+    <div
+      class="emotion-1 emotion-2"
+    >
+      <div
+        class="emotion-3 emotion-4"
+      >
+        <button
+          class="emotion-5 emotion-6"
+          data-testid="expand-button"
+        >
+          <span
+            class="emotion-7 emotion-8 emotion-9"
+          >
+            <svg
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="m5.123 6.33-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
+              />
+            </svg>
+          </span>
+        </button>
+        2 list
+      </div>
+      <button
+        class="emotion-10 emotion-11"
+      >
+        editor.editorWidgets.list.add
+        <span
+          class="emotion-7 emotion-13 emotion-9"
+        >
+          <svg
+            height="24"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M19 14h-4a1 1 0 0 0-1 1v4a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-4a1 1 0 0 0-1-1H5a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h4a1 1 0 0 0 1-1V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h4a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1Z"
+            />
+          </svg>
+        </span>
+      </button>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`ListControl should render list with nested object 1`] = `
+<DocumentFragment>
+  .emotion-0 {
+  padding: 0 14px 14px;
+}
+
+.emotion-1 {
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  background-color: #dfdfe3;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+  margin: 0 -14px;
+  padding: 13px;
+}
+
+.emotion-3 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.emotion-5 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 4px;
+  background-color: transparent;
+  color: inherit;
+}
+
+.emotion-5:last-of-type {
+  margin-right: 4px;
+}
+
+.emotion-8 {
+  display: inline-block;
+  line-height: 0;
+  width: 18px;
+  height: 18px;
+  -webkit-transform: rotate(-90deg);
+  -moz-transform: rotate(-90deg);
+  -ms-transform: rotate(-90deg);
+  transform: rotate(-90deg);
+}
+
+.emotion-8 path:not(.no-fill),
+.emotion-8 circle:not(.no-fill),
+.emotion-8 polygon:not(.no-fill),
+.emotion-8 rect:not(.no-fill) {
+  fill: currentColor;
+}
+
+.emotion-8 path.clipped {
+  fill: transparent;
+}
+
+.emotion-8 svg {
+  width: 100%;
+  height: 100%;
+}
+
+.emotion-10 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  padding: 2px 12px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 3px;
+}
+
+.emotion-10 .emotion-7 {
+  margin-left: 6px;
+}
+
+.emotion-13 {
+  display: inline-block;
+  line-height: 0;
+  width: 12px;
+  height: 12px;
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -ms-transform: rotate(0deg);
+  transform: rotate(0deg);
+}
+
+.emotion-13 path:not(.no-fill),
+.emotion-13 circle:not(.no-fill),
+.emotion-13 polygon:not(.no-fill),
+.emotion-13 rect:not(.no-fill) {
+  fill: currentColor;
+}
+
+.emotion-13 path.clipped {
+  fill: transparent;
+}
+
+.emotion-13 svg {
+  width: 100%;
+  height: 100%;
+}
+
+.emotion-15 {
+  margin-top: 18px;
+}
+
+.emotion-15:first-of-type {
+  margin-top: 26px;
+}
+
+.emotion-17 {
+  display: block;
+  border-top: 0;
+  color: inherit;
+  background-color: #dfdfe3;
+  padding: 13px;
+  border-radius: 0 0 5px 5px;
+}
+
+<div
+    class="classNameWrapper emotion-0"
+    id="forID"
+  >
+    <div
+      class="emotion-1 emotion-2"
+    >
+      <div
+        class="emotion-3 emotion-4"
+      >
+        <button
+          class="emotion-5 emotion-6"
+          data-testid="expand-button"
+        >
+          <span
+            class="emotion-7 emotion-8 emotion-9"
+          >
+            <svg
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="m5.123 6.33-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
+              />
+            </svg>
+          </span>
+        </button>
+        2 list
+      </div>
+      <button
+        class="emotion-10 emotion-11"
+      >
+        editor.editorWidgets.list.add
+        <span
+          class="emotion-7 emotion-13 emotion-9"
+        >
+          <svg
+            height="24"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M19 14h-4a1 1 0 0 0-1 1v4a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-4a1 1 0 0 0-1-1H5a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h4a1 1 0 0 0 1-1V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h4a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1Z"
+            />
+          </svg>
+        </span>
+      </button>
+    </div>
+    <div>
+      <div
+        class="emotion-15 emotion-16"
+      >
+        <mock-list-item-top-bar
+          classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
+          collapsed="true"
+          data-testid="styled-list-item-top-bar-0"
+          id="0"
+        >
+          <button>
+            Remove
+          </button>
+        </mock-list-item-top-bar>
+        <div
+          class="emotion-17 emotion-18"
+        >
+          Object
+        </div>
+        <mock-object-control
+          classnamewrapper="classNameWrapper css-1pznrxi"
+          collapsed="true"
+          data-testid="object-control-0"
+          field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"field\\": Map { \\"name\\": \\"object\\", \\"widget\\": \\"object\\", \\"label\\": \\"Object\\", \\"fields\\": List [ Map { \\"name\\": \\"title\\", \\"widget\\": \\"string\\", \\"label\\": \\"Title\\" } ] } }"
+          fieldserrors="Map {}"
+          forlist="true"
+          parentids="forID,0"
+          validationkey="0"
+          value="Map { \\"object\\": Map { \\"title\\": \\"item 1\\" } }"
+        />
+      </div>
+      <div
+        class="emotion-15 emotion-16"
+      >
+        <mock-list-item-top-bar
+          classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
+          collapsed="true"
+          data-testid="styled-list-item-top-bar-1"
+          id="1"
+        >
+          <button>
+            Remove
+          </button>
+        </mock-list-item-top-bar>
+        <div
+          class="emotion-17 emotion-18"
+        >
+          Object
+        </div>
+        <mock-object-control
+          classnamewrapper="classNameWrapper css-1pznrxi"
+          collapsed="true"
+          data-testid="object-control-1"
+          field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"field\\": Map { \\"name\\": \\"object\\", \\"widget\\": \\"object\\", \\"label\\": \\"Object\\", \\"fields\\": List [ Map { \\"name\\": \\"title\\", \\"widget\\": \\"string\\", \\"label\\": \\"Title\\" } ] } }"
+          fieldserrors="Map {}"
+          forlist="true"
+          parentids="forID,1"
+          validationkey="1"
+          value="Map { \\"object\\": Map { \\"title\\": \\"item 2\\" } }"
+        />
+      </div>
+      <div
+        id="DndDescribedBy-0"
+        style="display: none;"
+      >
+        
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  
+      </div>
+      <div
+        aria-atomic="true"
+        aria-live="assertive"
+        id="DndLiveRegion-0"
+        role="status"
+        style="position: fixed; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip-path: inset(100%); white-space: nowrap;"
+      />
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`ListControl should render list with nested object with collapse = false 1`] = `
+<DocumentFragment>
+  .emotion-0 {
+  padding: 0 14px 14px;
+}
+
+.emotion-1 {
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  background-color: #dfdfe3;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+  margin: 0 -14px;
+  padding: 13px;
+}
+
+.emotion-3 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.emotion-5 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 4px;
+  background-color: transparent;
+  color: inherit;
+}
+
+.emotion-5:last-of-type {
+  margin-right: 4px;
+}
+
+.emotion-8 {
+  display: inline-block;
+  line-height: 0;
+  width: 18px;
+  height: 18px;
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -ms-transform: rotate(0deg);
+  transform: rotate(0deg);
+}
+
+.emotion-8 path:not(.no-fill),
+.emotion-8 circle:not(.no-fill),
+.emotion-8 polygon:not(.no-fill),
+.emotion-8 rect:not(.no-fill) {
+  fill: currentColor;
+}
+
+.emotion-8 path.clipped {
+  fill: transparent;
+}
+
+.emotion-8 svg {
+  width: 100%;
+  height: 100%;
+}
+
+.emotion-10 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  padding: 2px 12px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 3px;
+}
+
+.emotion-10 .emotion-7 {
+  margin-left: 6px;
+}
+
+.emotion-13 {
+  display: inline-block;
+  line-height: 0;
+  width: 12px;
+  height: 12px;
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -ms-transform: rotate(0deg);
+  transform: rotate(0deg);
+}
+
+.emotion-13 path:not(.no-fill),
+.emotion-13 circle:not(.no-fill),
+.emotion-13 polygon:not(.no-fill),
+.emotion-13 rect:not(.no-fill) {
+  fill: currentColor;
+}
+
+.emotion-13 path.clipped {
+  fill: transparent;
+}
+
+.emotion-13 svg {
+  width: 100%;
+  height: 100%;
+}
+
+.emotion-15 {
+  margin-top: 18px;
+}
+
+.emotion-15:first-of-type {
+  margin-top: 26px;
+}
+
+.emotion-17 {
+  display: none;
+  border-top: 0;
+  color: inherit;
+  background-color: #dfdfe3;
+  padding: 13px;
+  border-radius: 0 0 5px 5px;
+}
+
+<div
+    class="classNameWrapper emotion-0"
+    id="forID"
+  >
+    <div
+      class="emotion-1 emotion-2"
+    >
+      <div
+        class="emotion-3 emotion-4"
+      >
+        <button
+          class="emotion-5 emotion-6"
+          data-testid="expand-button"
+        >
+          <span
+            class="emotion-7 emotion-8 emotion-9"
+          >
+            <svg
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="m5.123 6.33-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
+              />
+            </svg>
+          </span>
+        </button>
+        2 list
+      </div>
+      <button
+        class="emotion-10 emotion-11"
+      >
+        editor.editorWidgets.list.add
+        <span
+          class="emotion-7 emotion-13 emotion-9"
+        >
+          <svg
+            height="24"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M19 14h-4a1 1 0 0 0-1 1v4a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-4a1 1 0 0 0-1-1H5a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h4a1 1 0 0 0 1-1V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h4a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1Z"
+            />
+          </svg>
+        </span>
+      </button>
+    </div>
+    <div>
+      <div
+        class="emotion-15 emotion-16"
+      >
+        <mock-list-item-top-bar
+          classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
+          collapsed="false"
+          data-testid="styled-list-item-top-bar-0"
+          id="0"
+        >
+          <button>
+            Remove
+          </button>
+        </mock-list-item-top-bar>
+        <div
+          class="emotion-17 emotion-18"
+        >
+          Object
+        </div>
+        <mock-object-control
+          classnamewrapper="classNameWrapper"
+          collapsed="false"
+          data-testid="object-control-0"
+          field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"field\\": Map { \\"name\\": \\"object\\", \\"widget\\": \\"object\\", \\"label\\": \\"Object\\", \\"fields\\": List [ Map { \\"name\\": \\"title\\", \\"widget\\": \\"string\\", \\"label\\": \\"Title\\" } ] } }"
+          fieldserrors="Map {}"
+          forlist="true"
+          parentids="forID,0"
+          validationkey="0"
+          value="Map { \\"object\\": Map { \\"title\\": \\"item 1\\" } }"
+        />
+      </div>
+      <div
+        class="emotion-15 emotion-16"
+      >
+        <mock-list-item-top-bar
+          classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
+          collapsed="false"
+          data-testid="styled-list-item-top-bar-1"
+          id="1"
+        >
+          <button>
+            Remove
+          </button>
+        </mock-list-item-top-bar>
+        <div
+          class="emotion-17 emotion-18"
+        >
+          Object
+        </div>
+        <mock-object-control
+          classnamewrapper="classNameWrapper"
+          collapsed="false"
+          data-testid="object-control-1"
+          field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"field\\": Map { \\"name\\": \\"object\\", \\"widget\\": \\"object\\", \\"label\\": \\"Object\\", \\"fields\\": List [ Map { \\"name\\": \\"title\\", \\"widget\\": \\"string\\", \\"label\\": \\"Title\\" } ] } }"
+          fieldserrors="Map {}"
+          forlist="true"
+          parentids="forID,1"
+          validationkey="1"
+          value="Map { \\"object\\": Map { \\"title\\": \\"item 2\\" } }"
+        />
+      </div>
+      <div
+        id="DndDescribedBy-1"
+        style="display: none;"
+      >
+        
+    To pick up a draggable item, press the space bar.
+    While dragging, use the arrow keys to move the item.
+    Press space again to drop the item in its new position, or press escape to cancel.
+  
+      </div>
+      <div
+        aria-atomic="true"
+        aria-live="assertive"
+        id="DndLiveRegion-1"
+        role="status"
+        style="position: fixed; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip-path: inset(100%); white-space: nowrap;"
+      />
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`ListControl should render list with string array 1`] = `
+<DocumentFragment>
+  <input
+    class="classNameWrapper"
+    id="forID"
+    type="text"
+    value="item 1, item 2"
+  />
+</DocumentFragment>
+`;

@@ -1,6 +1,6 @@
 [
   {
-    "body": "grant_type=password&username=netlifyCMS%40netlify.com&password=12345678",
+    "body": "grant_type=password&username=decap%40p-m.si&password=12345678",
     "method": "POST",
     "url": "/.netlify/identity/token",
     "headers": {
@@ -33,7 +33,7 @@
       "Vary": "Origin,Accept-Encoding",
       "content-length": "262"
     },
-    "response": "{\"id\":\"2336c3d1-a213-4f67-ab63-4b61bb49e30a\",\"aud\":\"\",\"role\":\"\",\"email\":\"netlifyCMS@netlify.com\",\"confirmed_at\":\"2020-04-12T12:39:57Z\",\"app_metadata\":{\"provider\":\"email\"},\"user_metadata\":{},\"created_at\":\"2020-04-12T12:39:57Z\",\"updated_at\":\"2020-04-12T12:39:57Z\"}",
+    "response": "{\"id\":\"2336c3d1-a213-4f67-ab63-4b61bb49e30a\",\"aud\":\"\",\"role\":\"\",\"email\":\"decap@p-m.si\",\"confirmed_at\":\"2020-04-12T12:39:57Z\",\"app_metadata\":{\"provider\":\"email\"},\"user_metadata\":{},\"created_at\":\"2020-04-12T12:39:57Z\",\"updated_at\":\"2020-04-12T12:39:57Z\"}",
     "status": 200
   },
   {
@@ -594,7 +594,7 @@
     "status": 200
   },
   {
-    "body": "{\"content\":\"LS0tCnRlbXBsYXRlOiBwb3N0CnRpdGxlOiBmaXJzdCB0aXRsZQpkYXRlOiAxOTcwLTAxLTAxVDAwOjAwOjAwLjAwMFoKZGVzY3JpcHRpb246IGZpcnN0IGRlc2NyaXB0aW9uCmNhdGVnb3J5OiBmaXJzdCBjYXRlZ29yeQp0YWdzOgogIC0gdGFnMQotLS0KZmlyc3QgYm9keQ==\",\"encoding\":\"base64\"}",
+    "body": "{\"content\":\"LS0tCnRlbXBsYXRlOiBwb3N0CnRpdGxlOiBmaXJzdCB0aXRsZQpkYXRlOiAxOTcwLTAxLTAxVDAxOjAwCmRlc2NyaXB0aW9uOiBmaXJzdCBkZXNjcmlwdGlvbgpjYXRlZ29yeTogZmlyc3QgY2F0ZWdvcnkKdGFnczoKICAtIHRhZzEKLS0tCmZpcnN0IGJvZHkK\",\"encoding\":\"base64\"}",
     "method": "POST",
     "url": "/.netlify/git/github/git/blobs",
     "headers": {
@@ -688,7 +688,7 @@
     "status": 201
   },
   {
-    "body": "{\"message\":\"Create Post “1970-01-01-first-title”\",\"tree\":\"db0a1252e0080f515b12fa2fded1cc1521582c3b\",\"parents\":[\"3fecda1a7b7ac6af17ef29573013d32b79c41d30\"],\"author\":{\"name\":\"netlifyCMS\",\"email\":\"netlifyCMS@netlify.com\",\"date\":\"1970-01-01T00:00:00.300Z\"}}",
+    "body": "{\"message\":\"Create Post “1970-01-01-first-title”\",\"tree\":\"db0a1252e0080f515b12fa2fded1cc1521582c3b\",\"parents\":[\"3fecda1a7b7ac6af17ef29573013d32b79c41d30\"],\"author\":{\"name\":\"decap\",\"email\":\"decap@p-m.si\",\"date\":\"1970-01-01T00:00:00.300Z\"}}",
     "method": "POST",
     "url": "/.netlify/git/github/git/commits",
     "headers": {
@@ -716,7 +716,7 @@
       "Connection": "keep-alive",
       "Vary": "Origin,Accept,Authorization,Cookie,X-GitHub-OTP,Accept-Encoding,Accept,X-Requested-With"
     },
-    "response": "{\n  \"sha\": \"07b40292cadac32df8808494031ac1740382ff59\",\n  \"node_id\": \"MDY6Q29tbWl0MjU1MDc4OTEwOjA3YjQwMjkyY2FkYWMzMmRmODgwODQ5NDAzMWFjMTc0MDM4MmZmNTk=\",\n  \"url\": \"https://api.github.com/repos/owner/repo/git/commits/07b40292cadac32df8808494031ac1740382ff59\",\n  \"html_url\": \"https://github.com/owner/repo/commit/07b40292cadac32df8808494031ac1740382ff59\",\n  \"author\": {\n    \"name\": \"netlifyCMS\",\n    \"email\": \"netlifyCMS@netlify.com\",\n    \"date\": \"1970-01-01T00:00:00Z\"\n  },\n  \"committer\": {\n    \"name\": \"netlifyCMS\",\n    \"email\": \"netlifyCMS@netlify.com\",\n    \"date\": \"1970-01-01T00:00:00Z\"\n  },\n  \"tree\": {\n    \"sha\": \"db0a1252e0080f515b12fa2fded1cc1521582c3b\",\n    \"url\": \"https://api.github.com/repos/owner/repo/git/trees/db0a1252e0080f515b12fa2fded1cc1521582c3b\"\n  },\n  \"message\": \"Create Post “1970-01-01-first-title”\",\n  \"parents\": [\n    {\n      \"sha\": \"3fecda1a7b7ac6af17ef29573013d32b79c41d30\",\n      \"url\": \"https://api.github.com/repos/owner/repo/git/commits/3fecda1a7b7ac6af17ef29573013d32b79c41d30\",\n      \"html_url\": \"https://github.com/owner/repo/commit/3fecda1a7b7ac6af17ef29573013d32b79c41d30\"\n    }\n  ],\n  \"verification\": {\n    \"verified\": false,\n    \"reason\": \"unsigned\",\n    \"signature\": null,\n    \"payload\": null\n  }\n}\n",
+    "response": "{\n  \"sha\": \"07b40292cadac32df8808494031ac1740382ff59\",\n  \"node_id\": \"MDY6Q29tbWl0MjU1MDc4OTEwOjA3YjQwMjkyY2FkYWMzMmRmODgwODQ5NDAzMWFjMTc0MDM4MmZmNTk=\",\n  \"url\": \"https://api.github.com/repos/owner/repo/git/commits/07b40292cadac32df8808494031ac1740382ff59\",\n  \"html_url\": \"https://github.com/owner/repo/commit/07b40292cadac32df8808494031ac1740382ff59\",\n  \"author\": {\n    \"name\": \"decap\",\n    \"email\": \"decap@p-m.si\",\n    \"date\": \"1970-01-01T00:00:00Z\"\n  },\n  \"committer\": {\n    \"name\": \"decap\",\n    \"email\": \"decap@p-m.si\",\n    \"date\": \"1970-01-01T00:00:00Z\"\n  },\n  \"tree\": {\n    \"sha\": \"db0a1252e0080f515b12fa2fded1cc1521582c3b\",\n    \"url\": \"https://api.github.com/repos/owner/repo/git/trees/db0a1252e0080f515b12fa2fded1cc1521582c3b\"\n  },\n  \"message\": \"Create Post “1970-01-01-first-title”\",\n  \"parents\": [\n    {\n      \"sha\": \"3fecda1a7b7ac6af17ef29573013d32b79c41d30\",\n      \"url\": \"https://api.github.com/repos/owner/repo/git/commits/3fecda1a7b7ac6af17ef29573013d32b79c41d30\",\n      \"html_url\": \"https://github.com/owner/repo/commit/3fecda1a7b7ac6af17ef29573013d32b79c41d30\"\n    }\n  ],\n  \"verification\": {\n    \"verified\": false,\n    \"reason\": \"unsigned\",\n    \"signature\": null,\n    \"payload\": null\n  }\n}\n",
     "status": 201
   },
   {

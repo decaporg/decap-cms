@@ -13,13 +13,14 @@
     "allowJs": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    "useUnknownInCatchVariables": false,
     "baseUrl": "./",
     "paths": {
-      "netlify-cms-backend-github": ["packages/netlify-cms-backend-github/src"],
-      "netlify-cms-backend-gitlab": ["packages/netlify-cms-backend-gitlab/src"],
-      "netlify-cms-backend-bitbucket": ["packages/netlify-cms-backend-bitbucket/src"],
-      "netlify-cms-lib-util": ["packages/netlify-cms-lib-util/src"],
-      "netlify-cms-lib-widgets": ["packages/netlify-cms-lib-widgets/src"]
+      "decap-cms-backend-bitbucket": ["packages/decap-cms-backend-bitbucket/src"],
+      "decap-cms-backend-github": ["packages/decap-cms-backend-github/src"],
+      "decap-cms-backend-gitlab": ["packages/decap-cms-backend-gitlab/src"],
+      "decap-cms-lib-util": ["packages/decap-cms-lib-util/src"],
+      "decap-cms-lib-widgets": ["packages/decap-cms-lib-widgets/src"]
     }
   },
   "include": ["**/src/**/*"],
