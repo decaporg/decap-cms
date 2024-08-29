@@ -1,8 +1,9 @@
 const fs = require('fs-extra');
 const path = require('path');
 const { spawn } = require('child_process');
-const { updateConfig } = require('../utils/config');
 const { merge } = require('lodash');
+
+const { updateConfig } = require('../utils/config');
 const { getGitClient } = require('./common');
 
 const initRepo = async dir => {
@@ -21,7 +22,7 @@ const initRepo = async dir => {
 
 const startServer = async (repoDir, mode) => {
   const tsNode = path.join(__dirname, '..', '..', 'node_modules', '.bin', 'ts-node');
-  const serverDir = path.join(__dirname, '..', '..', 'packages', 'netlify-cms-proxy-server');
+  const serverDir = path.join(__dirname, '..', '..', 'packages', 'decap-server');
   const distIndex = path.join(serverDir, 'dist', 'index.js');
   const tsIndex = path.join(serverDir, 'src', 'index.ts');
 
@@ -44,7 +45,7 @@ const startServer = async (repoDir, mode) => {
     serverProcess.stdout.on('data', data => {
       const message = data.toString().trim();
       console.log(`server:stdout: ${message}`);
-      if (message.includes('Netlify CMS Proxy Server listening on port')) {
+      if (message.includes('Decap CMS Proxy Server listening on port')) {
         resolve(serverProcess);
       }
     });
@@ -61,7 +62,7 @@ let serverProcess;
 async function setupProxy(options) {
   const postfix = Math.random()
     .toString(32)
-    .substring(2);
+    .slice(2);
 
   const testRepoName = `proxy-test-repo-${Date.now()}-${postfix}`;
   const tempDir = path.join('.temp', testRepoName);

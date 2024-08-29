@@ -22,9 +22,9 @@ module.exports = {
     'cypress/globals': true,
   },
   globals: {
-    NETLIFY_CMS_VERSION: false,
-    NETLIFY_CMS_APP_VERSION: false,
-    NETLIFY_CMS_CORE_VERSION: false,
+    DECAP_CMS_VERSION: false,
+    DECAP_CMS_APP_VERSION: false,
+    DECAP_CMS_CORE_VERSION: false,
     CMS_ENV: false,
   },
   rules: {
@@ -40,6 +40,7 @@ module.exports = {
     ],
     'no-duplicate-imports': 'error',
     '@emotion/no-vanilla': 'error',
+    '@emotion/pkg-renaming': 'error',
     '@emotion/import-from-emotion': 'error',
     '@emotion/styled-import': 'error',
     'require-atomic-updates': [0],
@@ -51,8 +52,10 @@ module.exports = {
         destructuring: 'all',
       },
     ],
+    'unicorn/prefer-string-slice': 'error',
+    'react/no-unknown-property': ['error', { ignore: ['css', 'bold', 'italic', 'delete'] }],
   },
-  plugins: ['babel', '@emotion', 'cypress'],
+  plugins: ['babel', '@emotion', 'cypress', 'unicorn'],
   settings: {
     react: {
       version: 'detect',
@@ -62,7 +65,7 @@ module.exports = {
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
       },
     },
-    'import/core-modules': [...packages, 'netlify-cms-app/dist/esm'],
+    'import/core-modules': [...packages, 'decap-cms-app/dist/esm'],
   },
   overrides: [
     {
@@ -96,12 +99,6 @@ module.exports = {
           'error',
           { functions: false, classes: true, variables: true },
         ],
-      },
-    },
-    {
-      files: ['website/**/*'],
-      rules: {
-        'import/no-unresolved': [0],
       },
     },
   ],

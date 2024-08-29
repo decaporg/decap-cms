@@ -1,5 +1,5 @@
 const path = require('path');
-const simpleGit = require('simple-git/promise');
+const { default: simpleGit } = require('simple-git');
 
 const GIT_SSH_COMMAND = 'ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no';
 const GIT_SSL_NO_VERIFY = true;

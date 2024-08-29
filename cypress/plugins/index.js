@@ -12,7 +12,7 @@
 // the project's config changing)
 require('dotenv').config();
 const { merge } = require('lodash');
-const { addMatchImageSnapshotPlugin } = require('cypress-image-snapshot/plugin');
+const { addMatchImageSnapshotPlugin } = require('@simonsmith/cypress-image-snapshot/plugin');
 
 const {
   setupGitHub,

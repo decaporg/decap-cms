@@ -3,88 +3,98 @@ name: Node CI
 on:
   push:
     branches:
-      - master
-
-    paths-ignore:
-      - 'website/**'
-
+      - main
   pull_request:
     types: [opened, synchronize, reopened]
 
-    paths-ignore:
-      - 'website/**'
-
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      cms: ${{ steps.filter.outputs.cms }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            cms:
+              - '!website/**'
+
   build:
+    needs: changes
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [macos-latest, windows-latest, ubuntu-latest]
+        node-version: [18.x, 20.x]
+    if: ${{ needs.changes.outputs.cms == 'true' }}
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js
-        uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - name: Use Node.js {{ matrix.node-version }}
+        uses: actions/setup-node@v3
         with:
-          node-version: '*'
+          node-version: ${{ matrix.node-version }}
           check-latest: true
       - name: log versions
         run: node --version && npm --version && yarn --version
       - name: install dependecies
-        run: yarn --frozen-lockfile --network-timeout 1000000 && yarn bootstrap
+        run: npm install
       - name: run unit tests
-        run: yarn test:ci
+        run: npm run test:ci
         env:
           CI: true
           NODE_OPTIONS: --max-old-space-size=4096
       - name: build demo site
-        run: yarn build:demo
+        run: npm run build:demo
         env:
           NODE_OPTIONS: --max-old-space-size=4096
       - uses: actions/upload-artifact@master
         with:
-          name: dev-test-website-${{ runner.os }}
+          name: dev-test-website-${{ runner.os }}-${{ matrix.node-version }}
           path: dev-test
 
   e2e-with-cypress:
-    needs: build
+    needs: [changes, build]
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        machine: [1, 2, 3, 4, 5, 6, 7, 8]
+        node-version: [18.x, 20.x]
       fail-fast: false
 
+    if: ${{ needs.changes.outputs.cms == 'true' }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Use Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
-          node-version: '*'
+          node-version: ${{ matrix.node-version }}
           check-latest: true
-          cache: yarn
       - uses: actions/download-artifact@master
         with:
-          name: dev-test-website-${{ runner.os }}
+          name: dev-test-website-${{ runner.os }}-18.x
           path: dev-test
       - name: npm install
         run: |
           node --version
           npm --version
           yarn --version
-          yarn --frozen-lockfile
+          npm install
       - name: e2e test
         run: |
-          yarn test:e2e:run-ci
+          npm run test:e2e:run-ci
         env:
           IS_FORK: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == true }}
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           NODE_OPTIONS: --max-old-space-size=4096
-          MACHINE_COUNT: 8
-          MACHINE_INDEX: ${{ matrix.machine }}
-      - uses: actions/upload-artifact@v2
+          MACHINE_COUNT: 2
+          MACHINE_INDEX: ${{ matrix.node-version }}
+          TZ: Europe/Amsterdam
+      - uses: actions/upload-artifact@v3
         if: ${{ always() }}
         with:
-          name: cypress-results-${{ matrix.machine }}
+          name: cypress-results-${{ matrix.node-version }}
           path: |
             cypress/screenshots
             cypress/videos

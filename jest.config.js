@@ -1,16 +1,20 @@
 module.exports = {
   setupFilesAfterEnv: ['<rootDir>/setupTestFramework.js'],
   moduleNameMapper: {
-    'netlify-cms-lib-auth': '<rootDir>/packages/netlify-cms-lib-auth/src/index.js',
-    'netlify-cms-lib-util': '<rootDir>/packages/netlify-cms-lib-util/src/index.ts',
-    'netlify-cms-ui-default': '<rootDir>/packages/netlify-cms-ui-default/src/index.js',
-    'netlify-cms-backend-github': '<rootDir>/packages/netlify-cms-backend-github/src/index.ts',
-    'netlify-cms-lib-widgets': '<rootDir>/packages/netlify-cms-lib-widgets/src/index.ts',
-    'netlify-cms-widget-object': '<rootDir>/packages/netlify-cms-widget-object/src/index.js',
+    'decap-cms-lib-auth': '<rootDir>/packages/decap-cms-lib-auth/src/index.js',
+    'decap-cms-lib-util': '<rootDir>/packages/decap-cms-lib-util/src/index.ts',
+    'decap-cms-ui-default': '<rootDir>/packages/decap-cms-ui-default/src/index.js',
+    'decap-cms-backend-github': '<rootDir>/packages/decap-cms-backend-github/src/index.ts',
+    'decap-cms-lib-widgets': '<rootDir>/packages/decap-cms-lib-widgets/src/index.ts',
+    'decap-cms-widget-object': '<rootDir>/packages/decap-cms-widget-object/src/index.js',
     '\\.(css|less)$': '<rootDir>/__mocks__/styleMock.js',
   },
-  testURL: 'http://localhost:8080',
-  snapshotSerializers: ['jest-emotion'],
-  transformIgnorePatterns: ['node_modules/(?!copy-text-to-clipboard)'],
+  snapshotSerializers: ['@emotion/jest/serializer'],
+  transformIgnorePatterns: [
+    'node_modules/(?!copy-text-to-clipboard|clean-stack|escape-string-regexp)',
+  ],
   testEnvironment: 'jsdom',
+  testEnvironmentOptions: {
+    url: 'http://localhost:8080',
+  },
 };
