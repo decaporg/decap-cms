@@ -22,8 +22,10 @@ import { selectCollectionEntriesCursor } from '../../../reducers/cursors';
 import Entries from './Entries';
 
 const GroupHeading = styled.h2`
-  font-size: 23px;
+  font-size: 22px;
   font-weight: 600;
+  line-height: 37px;
+  padding-inline-start: 20px;
   color: ${colors.textLead};
 `;
 

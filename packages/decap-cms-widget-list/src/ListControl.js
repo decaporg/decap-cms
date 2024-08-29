@@ -671,7 +671,7 @@ export default class ListControl extends React.Component {
           id={key}
         />
         <NestedObjectLabel collapsed={true} error={true}>
-          {errorMessage}aaaasdd
+          {errorMessage}
         </NestedObjectLabel>
       </SortableListItem>
     );

@@ -1,9 +1,9 @@
 {
   "name": "decap-cms-widget-markdown",
   "description": "Widget for editing markdown in Decap CMS.",
-  "version": "3.1.0-beta.0",
+  "version": "3.1.6",
   "homepage": "https://www.decapcms.org/docs/widgets/#markdown",
-  "repository": "https://github.com/decaporg/decap-cms/tree/master/packages/decap-cms-widget-markdown",
+  "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-widget-markdown",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
   "module": "dist/esm/index.js",
   "main": "dist/decap-cms-widget-markdown.js",
@@ -16,7 +16,7 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "develop": "yarn build:esm --watch",
+    "develop": "npm run build:esm -- --watch",
     "build": "cross-env NODE_ENV=production webpack",
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
   },
@@ -40,7 +40,7 @@
     "slate-plain-serializer": "^0.7.1",
     "slate-react": "^0.91.2",
     "slate-soft-break": "^0.9.0",
-    "unified": "^7.1.0",
+    "unified": "^9.2.0",
     "unist-builder": "^1.0.3",
     "unist-util-visit-parents": "^2.0.1"
   },

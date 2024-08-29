@@ -68,6 +68,7 @@ export default class CodeControl extends React.Component {
     forID: PropTypes.string.isRequired,
     classNameWrapper: PropTypes.string.isRequired,
     widget: PropTypes.object.isRequired,
+    isParentListCollapsed: PropTypes.bool,
   };
 
   keys = this.getKeys(this.props.field);
@@ -83,9 +84,16 @@ export default class CodeControl extends React.Component {
     lastKnownValue: this.valueIsMap() ? this.props.value?.get(this.keys.code) : this.props.value,
   };
 
+  visibility = {
+    isInvisibleOnInit: this.props.isParentListCollapsed === true,
+    isRefreshedAfterInvisible: false,
+  };
+
   shouldComponentUpdate(nextProps, nextState) {
     return (
-      !isEqual(this.state, nextState) || this.props.classNameWrapper !== nextProps.classNameWrapper
+      !isEqual(this.state, nextState) ||
+      this.props.classNameWrapper !== nextProps.classNameWrapper ||
+      (this.visibility.isInvisibleOnInit && !this.visibility.isRefreshedAfterInvisible)
     );
   }
 
@@ -97,6 +105,14 @@ export default class CodeControl extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     this.updateCodeMirrorProps(prevState);
+    // when initially hidden and then shown, codeMirror content is not visible
+    if (
+      this.visibility.isInvisibleOnInit &&
+      !this.visibility.isRefreshedAfterInvisible &&
+      !this.props.isParentListCollapsed
+    ) {
+      this.refreshCodeMirrorInstance();
+    }
   }
 
   updateCodeMirrorProps(prevState) {
@@ -104,6 +120,13 @@ export default class CodeControl extends React.Component {
     const changedProps = getChangedProps(prevState, this.state, keys);
     if (changedProps) {
       this.handleChangeCodeMirrorProps(changedProps);
+    }
+  }
+
+  refreshCodeMirrorInstance() {
+    if (this.cm?.getWrapperElement().offsetHeight) {
+      this.cm.refresh();
+      this.visibility.isRefreshedAfterInvisible = true;
     }
   }
 

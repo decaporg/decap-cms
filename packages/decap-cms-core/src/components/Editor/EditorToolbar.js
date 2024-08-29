@@ -85,7 +85,7 @@ const DropdownButton = styled(StyledDropdownButton)`
 const ToolbarContainer = styled.div`
   box-shadow: 0 2px 6px 0 rgba(68, 74, 87, 0.05), 0 1px 3px 0 rgba(68, 74, 87, 0.1),
     0 2px 54px rgba(0, 0, 0, 0.1);
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
