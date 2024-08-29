@@ -1,6 +1,5 @@
 import { Map, List } from 'immutable';
 import { v4 as uuid } from 'uuid';
-import { dirname } from 'path';
 
 import {
   MEDIA_LIBRARY_OPEN,
