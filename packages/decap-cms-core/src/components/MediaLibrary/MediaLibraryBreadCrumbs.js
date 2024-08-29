@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { trim } from 'lodash';
 import styled from '@emotion/styled';
-import { Icon } from 'netlify-cms-ui-default';
+import { Icon } from 'decap-cms-ui-default';
 
 const BreadCrumbsContainer = styled.div`
   display: flex;

@@ -6,6 +6,7 @@ import { orderBy, map } from 'lodash';
 import { translate } from 'react-polyglot';
 import fuzzy from 'fuzzy';
 import { fileExtension } from 'decap-cms-lib-util';
+import { dirname } from 'path';
 
 import {
   loadMedia as loadMediaAction,
@@ -20,7 +21,6 @@ import {
   getInitialMediaFolder,
   getMediaFolderNavDisabled,
 } from '../../reducers/mediaLibrary';
-import { dirname } from 'path';
 import MediaLibraryModal, { fileShape } from './MediaLibraryModal';
 
 /**
