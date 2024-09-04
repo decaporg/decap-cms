@@ -1,4 +1,4 @@
-import { flatten, isError, uniq, trim, sortBy, get, set } from 'lodash';
+import { flatten, isError, uniq, trim, sortBy, get, set, attempt } from 'lodash';
 import { List, fromJS, Set } from 'immutable';
 import * as fuzzy from 'fuzzy';
 import {
@@ -515,6 +515,7 @@ export class Backend {
       ),
     );
     const formattedEntries = entries.map(this.entryWithFormat(collection));
+    // todo: find error somewhere here and put it to errors array
     // If this collection has a "filter" property, filter entries accordingly
     const collectionFilter = collection.get('filter');
     const filteredEntries = collectionFilter
@@ -526,7 +527,7 @@ export class Backend {
       const groupedEntries = groupEntries(collection, extension, filteredEntries);
       return groupedEntries;
     }
-
+    // todo: return object { entries, errors } + change all other processEntries uses to just take entries
     return filteredEntries;
   }
 
@@ -567,10 +568,14 @@ export class Backend {
       cursorType: 'collectionEntries',
       collection,
     });
+
     return {
       entries: this.processEntries(loadedEntries, collection),
       pagination: cursor.meta?.get('page'),
       cursor,
+      errors: [
+        'error found in process entries'
+      ]
     };
   }
 
@@ -594,14 +599,17 @@ export class Backend {
     }
 
     const response = await this.listEntries(collection);
-    const { entries } = response;
+    const { entries, errors } = response;
     let { cursor } = response;
     while (cursor && cursor.actions!.includes('next')) {
       const { entries: newEntries, cursor: newCursor } = await this.traverseCursor(cursor, 'next');
       entries.push(...newEntries);
       cursor = newCursor;
     }
-    return entries;
+    return {
+      entries,
+      errors,
+    };
   }
 
   async search(collections: Collection[], searchTerm: string) {
@@ -869,8 +877,12 @@ export class Backend {
     return (entry: EntryValue): EntryValue => {
       const format = resolveFormat(collection, entry);
       if (entry && entry.raw !== undefined) {
-        const data = (format && format.fromFile.bind(format, entry.raw)()) || {};
-        if (isError(data)) console.error(data);
+        const data = (format && attempt(format.fromFile.bind(format, entry.raw))) || {};
+        // const data = (format && format.fromFile.bind(format, entry.raw)()) || {};
+        if (isError(data)) {
+          entry = Object.assign(entry, { parseError: data.message });
+        }
+
         return Object.assign(entry, { data: isError(data) ? {} : data });
       }
       return format.fromFile(entry);

@@ -595,9 +595,10 @@ export function loadEntries(collection: Collection, page = 0) {
         cursor: Cursor;
         pagination: number;
         entries: EntryValue[];
+        errors?: string[];
       } = await (loadAllEntries
         ? // nested collections require all entries to construct the tree
-          provider.listAllEntries(collection).then((entries: EntryValue[]) => ({ entries }))
+          provider.listAllEntries(collection)
         : provider.listEntries(collection, page));
       response = {
         ...response,
@@ -615,6 +616,19 @@ export function loadEntries(collection: Collection, page = 0) {
             })
           : Cursor.create(response.cursor),
       };
+
+      response.errors?.forEach(error => {
+        dispatch(
+          addNotification({
+            message: {
+              details: error,
+              key: 'ui.toast.duplicateFrontmatterKey',
+            },
+            type: 'warning',
+            dismissAfter: 8000,
+          }),
+        );
+      });
 
       dispatch(
         entriesLoaded(
