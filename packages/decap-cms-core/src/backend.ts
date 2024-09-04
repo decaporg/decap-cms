@@ -516,7 +516,7 @@ export class Backend {
     );
 
     const formattedEntries = entries.map(this.entryWithFormat(collection));
-    const errors = formattedEntries.filter(e => e.parseError).map(e => e.path);
+    const errors = formattedEntries.filter(e => e.parseError).map(e => `${e.parseError}. In ${e.path}`);
 
     // If this collection has a "filter" property, filter entries accordingly
     const collectionFilter = collection.get('filter');
@@ -880,6 +880,7 @@ export class Backend {
       if (entry && entry.raw !== undefined) {
         const data = (format && attempt(format.fromFile.bind(format, entry.raw))) || {};
         if (isError(data)) {
+          console.warn(data.message, '\n', data.stack);
           entry = Object.assign(entry, { parseError: data.message });
         }
 
