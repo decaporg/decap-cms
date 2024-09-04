@@ -516,7 +516,9 @@ export class Backend {
     );
 
     const formattedEntries = entries.map(this.entryWithFormat(collection));
-    const errors = formattedEntries.filter(e => e.parseError).map(e => `${e.parseError}. In ${e.path}`);
+    const errors = formattedEntries
+      .filter(e => e.parseError)
+      .map(e => `${e.parseError}. In ${e.path}`);
 
     // If this collection has a "filter" property, filter entries accordingly
     const collectionFilter = collection.get('filter');

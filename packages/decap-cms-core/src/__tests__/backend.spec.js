@@ -655,15 +655,15 @@ describe('Backend', () => {
       backend = new Backend(implementation, { config: {}, backendName: 'github' });
       backend.listAllEntries = jest.fn(collection => {
         if (collection.get('name') === 'posts') {
-          return Promise.resolve({entries: posts});
+          return Promise.resolve({ entries: posts });
         }
         if (collection.get('name') === 'pages') {
-          return Promise.resolve({entries: pages});
+          return Promise.resolve({ entries: pages });
         }
         if (collection.get('name') === 'files') {
-          return Promise.resolve({entries: files});
+          return Promise.resolve({ entries: files });
         }
-        return Promise.resolve({entries: []});
+        return Promise.resolve({ entries: [] });
       });
     });
 
