@@ -164,7 +164,7 @@ export async function getAllEntries(state: State, collection: Collection) {
   const provider: Backend = integration
     ? getIntegrationProvider(state.integrations, backend.getToken, integration)
     : backend;
-  const entries = await provider.listAllEntries(collection);
+  const { entries } = await provider.listAllEntries(collection);
   return entries;
 }
 
