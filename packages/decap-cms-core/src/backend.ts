@@ -527,9 +527,9 @@ export class Backend {
     if (hasI18n(collection)) {
       const extension = selectFolderEntryExtension(collection);
       const groupedEntries = groupEntries(collection, extension, filteredEntries);
-      return {entries: groupedEntries, errors};
+      return { entries: groupedEntries, errors };
     }
-    return {entries: filteredEntries, errors};
+    return { entries: filteredEntries, errors };
   }
 
   async listEntries(collection: Collection) {
