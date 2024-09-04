@@ -515,19 +515,10 @@ export class Backend {
       ),
     );
 
-    const errors: string[] = [];
-    // const formattedEntries = entries.map(this.entryWithFormat(collection));
-    const formattedEntries = entries.map(entry => {
-      try {
-        return this.entryWithFormat(collection)(entry);
-      } catch (error) {
-        console.error(`Error processing entry at ${entry.path}`, error);
-        errors.push(entry.path);
-        return null;
-      }
-    }).filter(e => e !== null);
+    const formattedEntries = entries.map(this.entryWithFormat(collection));
+    const errors = formattedEntries.filter(e => e.parseError).map(e => e.path);
+    console.log(formattedEntries, errors);
 
-    // todo: find error somewhere here and put it to errors array
     // If this collection has a "filter" property, filter entries accordingly
     const collectionFilter = collection.get('filter');
     const filteredEntries = collectionFilter
@@ -539,7 +530,6 @@ export class Backend {
       const groupedEntries = groupEntries(collection, extension, filteredEntries);
       return {entries: groupedEntries, errors};
     }
-    // todo: return object { entries, errors } + change all other processEntries uses to just take entries
     return {entries: filteredEntries, errors};
   }
 
@@ -890,7 +880,6 @@ export class Backend {
       const format = resolveFormat(collection, entry);
       if (entry && entry.raw !== undefined) {
         const data = (format && attempt(format.fromFile.bind(format, entry.raw))) || {};
-        // const data = (format && format.fromFile.bind(format, entry.raw)()) || {};
         if (isError(data)) {
           entry = Object.assign(entry, { parseError: data.message });
         }
