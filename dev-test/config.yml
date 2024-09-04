@@ -1,280 +1,424 @@
+local_backend: true
+
 backend:
-  name: test-repo
+  name: git-gateway
+  branch: __BRANCH__
+  squash_merges: true
 
-site_url: https://example.com
+display_url: https://www.grzs.si
+logo_url: /media/brand/logo.png
+media_folder: static/media/uploads
+public_folder: /media/uploads
 
-publish_mode: editorial_workflow
-media_folder: assets/uploads
+slug:
+  encoding: ascii
+  clean_accents: true
+i18n:
+  structure: multiple_files
+  locales: [sl, en]
 
-collections: # A list of collections the CMS should be able to edit
-  - name: 'posts' # Used in routes, ie.: /admin/collections/:slug/edit
-    label: 'Posts' # Used in the UI
-    label_singular: 'Post' # Used in the UI, ie: "New Post"
-    description: >
-      The description is a great place for tone setting, high level information, and editing
-      guidelines that are specific to a collection.
-    folder: '_posts'
-    slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
-    summary: '{{title}} -- {{year}}/{{month}}/{{day}}'
-    create: true # Allow users to create new documents in this collection
-    view_filters:
-      - label: Posts With Index
-        field: title
-        pattern: 'This is post #'
-      - label: Posts Without Index
-        field: title
-        pattern: front matter post
-      - label: Drafts
-        field: draft
-        pattern: true
-    view_groups:
-      - label: Year
-        field: date
-        pattern: \d{4}
-      - label: Drafts
-        field: draft
-    fields: # The fields each document in this collection have
-      - { label: 'Title', name: 'title', widget: 'string', tagname: 'h1' }
-      - { label: 'Draft', name: 'draft', widget: 'boolean', default: false }
-      - {
-          label: 'Publish Date',
-          name: 'date',
-          widget: 'datetime',
-          format: 'YYYY-MM-DD HH:mm',
-          default: '{{now}}',
-        }
-      - label: 'Cover Image'
-        name: 'image'
-        widget: 'image'
-        required: false
-        tagname: ''
+aliases:
+  - &TITLE {name: title, label: Title, widget: string, i18n: true}
+  - &DRAFT {name: draft, label: Draft, widget: boolean, required: false, i18n: true}
+  - &SLUG {name: slug, label: Slug, widget: string, required: false, i18n: true}
+  - &URL {name: url, label: URL, widget: string, required: false, i18n: true}
+  - &DESCRIPTION {label: Description, name: description, widget: text, i18n: true}
+  - &BODY {label: Content, name: body, widget: markdown, i18n: true}
+  - &DATE {label: Date, name: date, widget: datetime, i18n: duplicate}
+  - &GRS_UNIT {label: GRS Unit, name: unit, widget: string, required: false, i18n: duplicate}
+  - &AUTHOR {label: Author, name: author, widget: string, required: false, i18n: true}
+  - &TEASER {label: Teaser, name: teaser, widget: string, i18n: true}
+  - &TAGS {name: tags, widget: hidden, default: [article], i18n: duplicate}
+  - &LAYOUT {name: layout, widget: hidden, default: article, i18n: duplicate}
+  - &SHOW_FEATURED {label: Show featured image on page, name: showFeatured, i18n: duplicate, widget: select, options: ['false', 'true']}
+  - &FEATURED_IMAGE {label: Featured image, name: image, required: false, i18n: true, widget: object, fields: [
+      {label: Source, name: src, widget: image, required: false, i18n: duplicate},
+      {label: Text, name: alt, widget: string, required: false, i18n: true},
+    ]}
+  - &BUTTON {name: button, i18n: true, widget: object, fields: [
+      {name: href, widget: string, i18n: true},
+      {name: text, widget: string, i18n: true},
+    ]}
+  - &GALLERY {name: gallery, widget: list, required: false, i18n: true, fields: [
+      {label: Image, name: src, widget: image, i18n: duplicate},
+      {name: text, widget: string, required: false, i18n: true}
+    ]}
+  - &PAGE_FIELDS [
+      *TITLE,
+      *URL,
+      *SHOW_FEATURED,
+      *FEATURED_IMAGE,
+      *BODY,
+      *GALLERY,
+    ]
+  - &HOME_FIELDS [
+      *TITLE,
+      *DESCRIPTION,
+      {label: Gallery 1, name: "swipeGalleryTop", widget: list, fields: [
+        {label: Image, name: src, widget: image},
+        {name: text, widget: string},
+      ]},
+      {label: Gallery 2, name: swipeGalleryMiddle, widget: list, fields: [
+        {label: Image, name: src, widget: image},
+        {name: text, widget: string},
+      ]},
+      {label: Gallery 3, name: swipeGalleryBottom, widget: list, fields: [
+        {label: Image, name: src, widget: image},
+        {name: text, widget: string}
+      ]},
+      {name: help, widget: object, fields: [
+        {name: supertitle, widget: string},
+        {name: title, widget: string},
+        {name: text, widget: text},
+        {name: topics, widget: list, fields: [
+          {name: title, widget: string},
+        ]},
+        *BUTTON,
+      ]},
+      {name: support, widget: object, fields: [
+        {name: supertitle, widget: string},
+        {name: title, widget: string},
+        {name: text, widget: text},
+      ]},
+      {name: responsibility, widget: object, fields: [
+        {name: title, widget: string},
+        {name: links, widget: list, fields: [
+          {name: title, widget: text},
+          {name: desc, widget: text},
+          {name: href, widget: string},
+        ]},
+      ]},
+      {name: banner, widget: object, fields: [
+        {name: href, widget: string, required: false},
+        {name: title, widget: string, required: false},
+        {name: srcMobile, label: mobile image, widget: image, required: false},
+        {name: srcDesktop, label: destop image, widget: image, required: false},
+      ]},
+      {name: news, widget: object, fields: [
+        {name: supertitle, widget: string, required: false},
+        {name: title, widget: string},
+        *BUTTON,
+      ]},
+      {label: Slider, name: exposedContent, allow_add: true, widget: list, required: true, fields: [
+        *TITLE,
+        {label: Description, name: desc, widget: string},
+        {label: Link for button more, name: href, widget: string},
+        {label: Order, name: weight, widget: number},
+      ]}
+    ]
+  - &ABOUT_FIELDS [
+      {name: foreword, widget: string},
+      {label: Title, name: titleText, widget: string},
+      *URL,
+      *DESCRIPTION,
+      *FEATURED_IMAGE,
+      *BODY,
+      {name: documents, widget: object, fields: [
+        *TITLE,
+        {name: items, widget: list, fields: [
+          *TITLE,
+          {label: Description, name: desc, widget: string},
+          {label: File, name: src, widget: file},
+        ]},
+      ]},
+    ]
+  - &CONTACT_FIELDS [
+      *TITLE,
+      *URL,
+      {name: subtitle, widget: string},
+      *DESCRIPTION,
+      {name: cards, widget: object, fields: [
+        *TITLE,
+        {name: grzs, widget: object, fields: [
+          {name: name, widget: string},
+          {name: address, widget: string},
+          {name: post, widget: string},
+          {name: map, widget: object, fields: [
+            {name: text, widget: string},
+            {name: url, widget: string},
+          ]},
+          {label: EMŠO, name: emso, widget: object, fields: [
+            {name: text, widget: string},
+            {name: value, widget: string},
+          ]},
+          {name: vat, widget: object, fields: [
+            {name: text, widget: string},
+            {name: value, widget: string},
+          ]},
+          {label: Additional info, name: info, widget: string},
+        ]},
+        {label: Open hours, name: openHours, widget: object, fields: [
+          *TITLE,
+          {name: hours, widget: list, fields: [
+            {name: name, widget: string},
+            {name: value, widget: string},
+          ]},
+        ]},
+        {name: contact, widget: object, fields: [
+            {name: phone, widget: string},
+            {name: email, widget: string},
+        ]},
+        {label: "Additional info", name: "infos", widget: list, fields: [
+            {name: name, widget: string},
+            {name: value, widget: string},
+        ]},
+        {label: Cta Contact, name: contactCta, widget: object, fields: [
+            {name: phone, widget: string},
+            {name: email, widget: string},
+        ]},
+      ]},
+      {name: documents, widget: object, fields: [
+        *TITLE,
+        {name: items, widget: list, fields: [
+          {label: Description, name: desc, widget: string},
+        ]},
+      ]},
+    ]
+  - &MEDIACENTER_FIELDS [
+      *TITLE,
+      *URL,
+      *DESCRIPTION,
+      *FEATURED_IMAGE,
+      {name: person, widget: object, fields: [
+        *TITLE,
+        {name: name, widget: string},
+        {name: position, widget: string},
+        {name: phone, widget: string},
+        {name: email, widget: string},
+      ]},
+      {name: documents, widget: object, fields: [
+        *TITLE,
+        {name: items, widget: list, fields: [
+          *TITLE,
+          {label: Description, name: desc, widget: string},
+          {label: File, name: src, widget: file},
+        ]},
+      ]},
+    ]
+  - &MENU_ITEM_FIELDS [
+      {name: name, widget: string},
+      {name: url, widget: string},
+      {name: identifier, widget: string, required: false},
+      {name: parent, widget: string, required: false},
+      {name: weight, widget: number, required: false},
+    ]
+  - &MENU_FIELDS [
+      {name: main, widget: list, label_singular: item, fields: *MENU_ITEM_FIELDS},
+      {name: upper, widget: list, label_singular: item, fields: *MENU_ITEM_FIELDS},
+      {name: donate, widget: list, label_singular: item, fields: *MENU_ITEM_FIELDS},
+    ]
+  - &CONDITIONS_FIELDS [
+      *TITLE,
+      *DRAFT,
+      *URL,
+      *DESCRIPTION,
+      {label: Description Markdown, name: descriptionHTML, widget: markdown, minimal: true},
+      *BODY,
+    ]
 
-      - { label: 'Body', name: 'body', widget: 'markdown', hint: 'Main content goes here.' }
-
-  - name: 'restaurants' # Used in routes, ie.: /admin/collections/:slug/edit
-    label: 'Restaurants' # Used in the UI
-    label_singular: 'Restaurant' # Used in the UI, ie: "New Post"
-    description: >
-      Restaurants is an entry type used for testing galleries, relations and other widgets.
-      The tests must be written in such way that adding new fields does not affect previous flows.
-    folder: '_restaurants'
-    slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
-    summary: '{{title}} -- {{year}}/{{month}}/{{day}}'
-    create: true # Allow users to create new documents in this collection
-    fields: # The fields each document in this collection have
-      - { label: 'Title', name: 'title', widget: 'string', tagname: 'h1' }
-      - { label: 'Body', name: 'body', widget: 'markdown', hint: 'Main content goes here.' }
-      - { name: 'gallery', widget: 'image', choose_url: true, media_library: {config: {multiple: true, max_files: 999}}}
-      - { name: 'post', widget: relation, collection: posts, multiple: true, search_fields: [ "title" ], display_fields: [ "title" ], value_field: "{{slug}}", filters: [ {field: "draft", values: [false]} ] }
-      - name: authors
-        label: Authors
-        label_singular: 'Author'
-        widget: list
-        fields:
-          - { label: 'Name', name: 'name', widget: 'string', hint: 'First and Last' }
-          - { label: 'Description', name: 'description', widget: 'markdown' }
-
-  - name: 'faq' # Used in routes, ie.: /admin/collections/:slug/edit
-    label: 'FAQ' # Used in the UI
-    folder: '_faqs'
-    create: true # Allow users to create new documents in this collection
-    fields: # The fields each document in this collection have
-      - { label: 'Question', name: 'title', widget: 'string', tagname: 'h1' }
-      - { label: 'Answer', name: 'body', widget: 'markdown' }
-
-  - name: 'settings'
-    label: 'Settings'
-    delete: false # Prevent users from deleting documents in this collection
+collections:
+  - name: novice
+    format: yaml-frontmatter
+    label: Novice
+    label_singular: article (novice)
+    folder: content/aktualno/novice
+    create: true
+    slug: "{{slug}}"
+    filter: {field: tags, value: article}
+    preview_path: aktualno/novice/{{slug}}
+    i18n: true
     editor:
       preview: false
-    files:
-      - name: 'general'
-        label: 'Site Settings'
-        file: '_data/settings.json'
-        description: 'General Site Settings'
-        fields:
-          - { label: 'Global title', name: 'site_title', widget: 'string' }
-          - label: 'Post Settings'
-            name: posts
-            widget: 'object'
-            fields:
-              - {
-                  label: 'Number of posts on frontpage',
-                  name: front_limit,
-                  widget: number,
-                  min: 1,
-                  max: 10,
-                }
-              - { label: 'Default Author', name: author, widget: string }
-              - {
-                  label: 'Default Thumbnail',
-                  name: thumb,
-                  widget: image,
-                  class: 'thumb',
-                  required: false,
-                }
+    fields: [
+      *TITLE,
+      *DRAFT,
+      *SLUG,
+      {label: Category, name: categories,  widget: select, multiple: true, i18n: duplicate, options: [
+        {label: Fotogalerija, value: fotogalerija},
+        {label: Novica, value: novica},
+        {label: Reševalne akcije, value: resevalne-akcije},
+        {label: Dogodki, value: dogodki},
+        {label: Video, value: video},
+        {label: V spomin, value: v-spomin},
+      ]},
+      *DATE,
+      *GRS_UNIT,
+      *AUTHOR,
+      *TEASER,
+      *DESCRIPTION,
+      *FEATURED_IMAGE,
+      *BODY,
+      *GALLERY,
+      *TAGS,
+      *LAYOUT,
+    ]
 
-      - name: 'authors'
-        label: 'Authors'
-        file: '_data/authors.yml'
-        description: 'Author descriptions'
-        fields:
-          - name: authors
-            label: Authors
-            label_singular: 'Author'
-            widget: list
-            fields:
-              - { label: 'Name', name: 'name', widget: 'string', hint: 'First and Last' }
-              - { label: 'Description', name: 'description', widget: 'markdown' }
+  - name: nasveti
+    format: yaml-frontmatter
+    label: Nasveti
+    label_singular: article (nasveti)
+    folder: content/resevanje/nasveti-grzs
+    create: true
+    slug: "{{slug}}"
+    filter: {field: tags, value: article}
+    preview_path: resevanje/nasveti/{{slug}}
+    i18n: true
+    editor:
+      preview: false
+    fields: [
+      *TITLE,
+      *DRAFT,
+      *URL,
+      {label: Category, name: tipCategories, widget: select, multiple: true, options: [
+        {label: Video, value: video},
+        {label: Varno v gore, value: Varno v gore},
+      ]},
+      *DATE,
+      *GRS_UNIT,
+      *AUTHOR,
+      *TEASER,
+      *DESCRIPTION,
+      *FEATURED_IMAGE,
+      *BODY,
+      *GALLERY,
+      *TAGS,
+      *LAYOUT,
+    ]
 
-  - name: 'kitchenSink' # all the things in one entry, for documentation and quick testing
-    label: 'Kitchen Sink'
-    folder: '_sink'
+  - name: medijsko-sredisce
+    format: yaml-frontmatter
+    label: Medijsko središče
+    label_singular: article (medijsko središče)
+    folder: "content/medijsko-sredisce"
     create: true
-    fields:
-      - label: 'Related Post'
-        name: 'post'
-        widget: 'relationKitchenSinkPost'
-        collection: 'posts'
-        display_fields: ['title', 'datetime']
-        search_fields: ['title', 'body']
-        value_field: 'title'
-      - { label: 'Title', name: 'title', widget: 'string' }
-      - { label: 'Boolean', name: 'boolean', widget: 'boolean', default: true }
-      - { label: 'Map', name: 'map', widget: 'map' }
-      - { label: 'Text', name: 'text', widget: 'text', hint: 'Plain text, not markdown' }
-      - { label: 'Number', name: 'number', widget: 'number', hint: 'To infinity and beyond!' }
-      - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
-      - { label: 'Datetime', name: 'datetime', widget: 'datetime' }
-      - { label: 'Image', name: 'image', widget: 'image' }
-      - { label: 'File', name: 'file', widget: 'file' }
-      - { label: 'Select', name: 'select', widget: 'select', options: ['a', 'b', 'c'] }
-      - {
-          label: 'Select multiple',
-          name: 'select_multiple',
-          widget: 'select',
-          options: ['a', 'b', 'c'],
-          multiple: true,
-        }
-      - { label: 'Hidden', name: 'hidden', widget: 'hidden', default: 'hidden' }
-      - { label: 'Color', name: 'color', widget: 'color' }
-      - label: 'Object'
-        name: 'object'
-        widget: 'object'
-        collapsed: true
-        fields:
-          - label: 'Related Post'
-            name: 'post'
-            widget: 'relationKitchenSinkPost'
-            collection: 'posts'
-            search_fields: ['title', 'body']
-            value_field: 'title'
-          - { label: 'String', name: 'string', widget: 'string' }
-          - { label: 'Boolean', name: 'boolean', widget: 'boolean', default: false }
-          - { label: 'Text', name: 'text', widget: 'text' }
-          - { label: 'Number', name: 'number', widget: 'number' }
-          - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
-          - { label: 'Datetime', name: 'datetime', widget: 'datetime' }
-          - { label: 'Image', name: 'image', widget: 'image' }
-          - { label: 'File', name: 'file', widget: 'file' }
-          - { label: 'Select', name: 'select', widget: 'select', options: ['a', 'b', 'c'] }
-      - label: 'List'
-        name: 'list'
-        widget: 'list'
-        fields:
-          - { label: 'String', name: 'string', widget: 'string' }
-          - { label: 'Boolean', name: 'boolean', widget: 'boolean' }
-          - { label: 'Text', name: 'text', widget: 'text' }
-          - { label: 'Number', name: 'number', widget: 'number' }
-          - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
-          - { label: 'Datetime', name: 'datetime', widget: 'datetime' }
-          - { label: 'Image', name: 'image', widget: 'image' }
-          - { label: 'File', name: 'file', widget: 'file' }
-          - { label: 'Select', name: 'select', widget: 'select', options: ['a', 'b', 'c'] }
-          - label: 'Object'
-            name: 'object'
-            widget: 'object'
-            fields:
-              - { label: 'String', name: 'string', widget: 'string' }
-              - { label: 'Boolean', name: 'boolean', widget: 'boolean' }
-              - { label: 'Text', name: 'text', widget: 'text' }
-              - { label: 'Number', name: 'number', widget: 'number' }
-              - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
-              - { label: 'Datetime', name: 'datetime', widget: 'datetime' }
-              - { label: 'Image', name: 'image', widget: 'image' }
-              - { label: 'File', name: 'file', widget: 'file' }
-              - { label: 'Select', name: 'select', widget: 'select', options: ['a', 'b', 'c'] }
-              - label: 'List'
-                name: 'list'
-                widget: 'list'
-                fields:
-                  - label: 'Related Post'
-                    name: 'post'
-                    widget: 'relationKitchenSinkPost'
-                    collection: 'posts'
-                    search_fields: ['title', 'body']
-                    value_field: 'title'
-                  - { label: 'String', name: 'string', widget: 'string' }
-                  - { label: 'Boolean', name: 'boolean', widget: 'boolean' }
-                  - { label: 'Text', name: 'text', widget: 'text' }
-                  - { label: 'Number', name: 'number', widget: 'number' }
-                  - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
-                  - { label: 'Datetime', name: 'datetime', widget: 'datetime' }
-                  - { label: 'Image', name: 'image', widget: 'image' }
-                  - { label: 'File', name: 'file', widget: 'file' }
-                  - { label: 'Select', name: 'select', widget: 'select', options: ['a', 'b', 'c'] }
-                  - { label: 'Hidden', name: 'hidden', widget: 'hidden', default: 'hidden' }
-                  - label: 'Object'
-                    name: 'object'
-                    widget: 'object'
-                    fields:
-                      - { label: 'String', name: 'string', widget: 'string' }
-                      - { label: 'Boolean', name: 'boolean', widget: 'boolean' }
-                      - { label: 'Text', name: 'text', widget: 'text' }
-                      - { label: 'Number', name: 'number', widget: 'number' }
-                      - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
-                      - { label: 'Datetime', name: 'datetime', widget: 'datetime' }
-                      - { label: 'Image', name: 'image', widget: 'image' }
-                      - { label: 'File', name: 'file', widget: 'file' }
-                      - {
-                          label: 'Select',
-                          name: 'select',
-                          widget: 'select',
-                          options: ['a', 'b', 'c'],
-                        }
-      - label: 'Typed List'
-        name: 'typed_list'
-        widget: 'list'
-        types:
-          - label: 'Type 1 Object'
-            name: 'type_1_object'
-            widget: 'object'
-            fields:
-              - { label: 'String', name: 'string', widget: 'string' }
-              - { label: 'Boolean', name: 'boolean', widget: 'boolean' }
-              - { label: 'Text', name: 'text', widget: 'text' }
-          - label: 'Type 2 Object'
-            name: 'type_2_object'
-            widget: 'object'
-            fields:
-              - { label: 'Number', name: 'number', widget: 'number' }
-              - { label: 'Select', name: 'select', widget: 'select', options: ['a', 'b', 'c'] }
-              - { label: 'Datetime', name: 'datetime', widget: 'datetime' }
-              - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
-          - label: 'Type 3 Object'
-            name: 'type_3_object'
-            widget: 'object'
-            fields:
-              - { label: 'Image', name: 'image', widget: 'image' }
-              - { label: 'File', name: 'file', widget: 'file' }
-  - name: pages # a nested collection
-    label: Pages
-    label_singular: 'Page'
-    folder: _pages
-    create: true
-    nested: { depth: 100 }
-    fields:
-      - label: Title
-        name: title
-        widget: string
-    meta: { path: { widget: string, label: 'Path', index_file: 'index' } }
+    slug: "{{slug}}"
+    filter: {field: tags, value: article}
+    preview_path: medijsko-sredisce/{{slug}}
+    i18n: true
+    editor:
+      preview: false
+    fields: [
+      *TITLE,
+      *DRAFT,
+      *SLUG,
+      *DATE,
+      *GRS_UNIT,
+      *AUTHOR,
+      *TEASER,
+      *DESCRIPTION,
+      *SHOW_FEATURED,
+      *FEATURED_IMAGE,
+      *BODY,
+      *GALLERY,
+      *TAGS,
+      *LAYOUT,
+    ]
+
+  - label: Pages
+    name: pages
+    editor:
+      preview: false
+    files: [
+      {label: Domov SL, name: home-sl, file: content/_index.sl.md, fields: *HOME_FIELDS},
+      {label: Domov EN, name: home-en, file: content/_index.en.md, fields: *HOME_FIELDS},
+      {label: Društva in postaje SL, name: drustva-in-postaje-sl, file: content/o-grzs/drustva-in-postaje.sl.md, fields: *PAGE_FIELDS},
+      {label: Društva in postaje EN, name: drustva-in-postaje-en, file: content/o-grzs/drustva-in-postaje.en.md, fields: *PAGE_FIELDS},
+      {label: IKAR SL, name: ikar-sl, file: content/o-grzs/ikar-mednarodno-resevanje.sl.md, fields: *PAGE_FIELDS},
+      {label: IKAR EN, name: ikar-en, file: content/o-grzs/ikar-mednarodno-resevanje.en.md, fields: *PAGE_FIELDS},
+      {label: Sklad Okrešelj SL, name: sklad-okreselj-sl, file: content/o-grzs/sklad-okreselj.sl.md, fields: *PAGE_FIELDS},
+      {label: Sklad Okrešelj EN, name: sklad-okreselj-en, file: content/o-grzs/sklad-okreselj.en.md, fields: *PAGE_FIELDS},
+      {label: Nameni del dohodnine SL, name: dohodnina-sl, file: content/postani-podpornik/nameni-del-dohodnine.sl.md, fields: *PAGE_FIELDS},
+      {label: Nameni del dohodnine EN, name: dohodnina-en, file: content/postani-podpornik/nameni-del-dohodnine.en.md, fields: *PAGE_FIELDS},
+      {label: Doniraj SL, name: doniraj-sl, file: content/postani-podpornik/doniraj.sl.md, fields: *PAGE_FIELDS},
+      {label: Doniraj EN, name: doniraj-en, file: content/postani-podpornik/doniraj.en.md, fields: *PAGE_FIELDS},
+      {label: Pravila in pogoji SL, name: pravila-in-pogoji-sl, file: content/pravila-in-pogoji.sl.md, fields: *PAGE_FIELDS},
+      {label: Pravila in pogoji EN, name: pravila-in-pogoji-en, file: content/pravila-in-pogoji.en.md, fields: *PAGE_FIELDS},
+      {label: Piskotki SL, name: piskotki-sl, file: content/piskotki.sl.md, fields: *PAGE_FIELDS},
+      {label: Piskotki EN, name: piskotki-en, file: content/piskotki.en.md, fields: *PAGE_FIELDS},
+      {label: Varstvo osebnih podatkov SL, name: varstvo-osebnih-podatkov-sl, file: content/varstvo-osebnih-podatkov.sl.md, fields: *PAGE_FIELDS},
+      {label: Varstvo osebnih podatkov EN, name: varstvo-osebnih-podatkov-en, file: content/varstvo-osebnih-podatkov.en.md, fields: *PAGE_FIELDS},
+      {label: Kdo je gorski reševalec SL, name: kdo-je-gorski-resevalec-sl, file: content/resevanje/kdo-je-gorski-resevalec.sl.md, fields: *PAGE_FIELDS},
+      {label: Kdo je gorski reševalec EN, name: kdo-je-gorski-resevalec-en, file: content/resevanje/kdo-je-gorski-resevalec.en.md, fields: *PAGE_FIELDS},
+      {label: Klic v sili SL, name: klic-v-sili-sl, file: content/resevanje/klic-v-sili.sl.md, fields: *PAGE_FIELDS},
+      {label: Klic v sili EN, name: klic-v-sili-en, file: content/resevanje/klic-v-sili.en.md, fields: *PAGE_FIELDS},
+      {label: Predstavitev GRZS SL, name: predstavitev-sl, file: content/o-grzs/predstavitev.sl.md, fields: *ABOUT_FIELDS},
+      {label: Predstavitev GRZS EN, name: predstavitev-en, file: content/o-grzs/predstavitev.en.md, fields: *ABOUT_FIELDS},
+      {label: Kontakt GRZS SL, name: kontakt-sl, file: content/o-grzs/kontakt.sl.md, fields: *CONTACT_FIELDS},
+      {label: Kontakt GRZS EN, name: kontakt-en, file: content/o-grzs/kontakt.en.md, fields: *CONTACT_FIELDS},
+      {label: Media center SL, name: media-center-sl, file: content/medijsko-sredisce/_index.sl.md, fields: *MEDIACENTER_FIELDS},
+      {label: Media center EN, name: media-center-en, file: content/medijsko-sredisce/_index.en.md, fields: *MEDIACENTER_FIELDS},
+      {label: Aktualne razmere SL, name: conditions-sl, file: content/aktualno/razmere.sl.md, fields: *CONDITIONS_FIELDS},
+      {label: Aktualne razmere EN, name: conditions-en, file: content/aktualno/razmere.en.md, fields: *CONDITIONS_FIELDS},
+    ]
+
+  - name: components
+    label: Components
+    i18n:
+      structure: single_file
+    editor:
+      preview: false
+    files: [
+      {label: Card 112, name: card112, file: data/card112.json, i18n: true, fields: [
+        *TITLE,
+        {label: Call Button, name: callButton, widget: object, i18n: true, fields: [
+          {name: text, widget: string, i18n: true},
+          {label: Link, name: src, widget: string, i18n: true},
+        ]},
+        {label: Foreign texts, name: "foreign", widget: object, i18n: true, fields: [
+          {label: Austria, name: at, widget: string, i18n: true},
+          {label: Italija, name: it, widget: string, i18n: true},
+          {label: Hrvaška, name: hr, widget: string, i18n: true},
+          {label: Madžarska, name: h, widget: string, i18n: true},
+        ]},
+      ]},
+      {label: Partners, name: partners, file: data/partners.json, i18n: true, fields: [
+        {name: supertitle, widget: string, i18n: true},
+        *TITLE,
+        {name: items, widget: list, i18n: true, fields: [
+          {name: title, widget: string, i18n: true},
+          {name: image, widget: image, i18n: duplicate},
+        ]},
+      ]},
+      {label: Partners Similar, name: partners-similar, file: data/partnersSimilar.json, i18n: true, fields: [
+        {name: supertitle, widget: string, i18n: true},
+        *TITLE,
+        {name: items, widget: list, i18n: true, fields: [
+          {name: title, widget: string, i18n: true},
+          {name: image, widget: image, i18n: duplicate},
+          {name: href, widget: string, i18n: duplicate},
+        ]},
+      ]},
+      {label: Newsletter, name: newsletter, file: data/newsletter.json, i18n: true, fields: [
+        {name: supertitle, widget: string, i18n: true},
+        *TITLE,
+        {name: success, widget: text, i18n: true},
+        {name: email, widget: string, i18n: true},
+        {name: submit, widget: string, i18n: true},
+        {name: error, widget: string, i18n: true},
+        {name: emailError, widget: string, i18n: true},
+        {name: terms, widget: text, i18n: true},
+        {name: required, widget: string, i18n: true},
+      ]},
+      {label: Footer, name: footer, file: data/footer.json, i18n: true, fields: [
+        {name: copyright, widget: string, i18n: true},
+        {name: social, widgets: list, i18n: true, fields: [
+          {name: href, widget: string, i18n: true},
+          {name: icon, widget: string, i18n: duplicate},
+          {name: title, widget: string, i18n: true},
+        ]},
+        *BUTTON,
+        {name: legal, widgets: list, i18n: true, fields: [
+          {name: href, widget: string, i18n: true},
+          {name: title, widget: string, i18n: true},
+        ]},
+      ]},
+    ]
+
+  - name: general
+    label: General
+    editor:
+      preview: false
+    files: [
+      {label: Menus SL, name: menus-sl, file: config/_default/menus.sl.json, fields: *MENU_FIELDS},
+      {label: Menus EN, name: menus-en, file: config/_default/menus.en.json, fields: *MENU_FIELDS},
+    ]

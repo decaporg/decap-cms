@@ -514,7 +514,19 @@ export class Backend {
         },
       ),
     );
-    const formattedEntries = entries.map(this.entryWithFormat(collection));
+
+    const errors: string[] = [];
+    // const formattedEntries = entries.map(this.entryWithFormat(collection));
+    const formattedEntries = entries.map(entry => {
+      try {
+        return this.entryWithFormat(collection)(entry);
+      } catch (error) {
+        console.error(`Error processing entry at ${entry.path}`, error);
+        errors.push(entry.path);
+        return null;
+      }
+    }).filter(e => e !== null);
+
     // todo: find error somewhere here and put it to errors array
     // If this collection has a "filter" property, filter entries accordingly
     const collectionFilter = collection.get('filter');
@@ -525,10 +537,10 @@ export class Backend {
     if (hasI18n(collection)) {
       const extension = selectFolderEntryExtension(collection);
       const groupedEntries = groupEntries(collection, extension, filteredEntries);
-      return groupedEntries;
+      return {entries: groupedEntries, errors};
     }
     // todo: return object { entries, errors } + change all other processEntries uses to just take entries
-    return filteredEntries;
+    return {entries: filteredEntries, errors};
   }
 
   async listEntries(collection: Collection) {
@@ -569,13 +581,13 @@ export class Backend {
       collection,
     });
 
+    const { entries, errors } = this.processEntries(loadedEntries, collection);
+
     return {
-      entries: this.processEntries(loadedEntries, collection),
+      entries,
       pagination: cursor.meta?.get('page'),
       cursor,
-      errors: [
-        'error found in process entries'
-      ]
+      errors,
     };
   }
 
@@ -647,7 +659,7 @@ export class Backend {
           ];
         }
         const filteredSearchFields = searchFields.filter(Boolean) as string[];
-        const collectionEntries = await this.listAllEntries(collection);
+        const collectionEntries = (await this.listAllEntries(collection)).entries;
         return fuzzy.filter(searchTerm, collectionEntries, {
           extract: extractSearchFields(uniq(filteredSearchFields)),
         });
@@ -681,7 +693,7 @@ export class Backend {
     file?: string,
     limit?: number,
   ) {
-    let entries = await this.listAllEntries(collection);
+    let { entries } = await this.listAllEntries(collection);
     if (file) {
       entries = entries.filter(e => e.slug === file);
     }
@@ -711,7 +723,7 @@ export class Backend {
     const collection = data.get('collection') as Collection;
     return this.implementation!.traverseCursor!(unwrappedCursor, action).then(
       async ({ entries, cursor: newCursor }) => ({
-        entries: this.processEntries(entries, collection),
+        entries: this.processEntries(entries, collection).entries,
         cursor: Cursor.create(newCursor).wrapData({
           cursorType: 'collectionEntries',
           collection,
