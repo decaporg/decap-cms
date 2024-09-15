@@ -68,6 +68,13 @@ class DateTimeControl extends React.Component {
     isDisabled: false,
   };
 
+  componentDidMount() {
+    const { value } = this.props;
+    if (value === '{{now}}') {
+      this.handleChange(this.getNow());
+    }
+  }
+
   isUtc = this.props.field.get('picker_utc') || false;
 
   escapeZ(str) {
@@ -128,10 +135,6 @@ class DateTimeControl extends React.Component {
   formatInputValue(value) {
     if (value === '') return value;
     const { format, inputFormat } = this.getFormat();
-
-    if (typeof value === 'string' && value?.replace(/\s+/g, '') === '{{now}}') {
-      return this.getNow();
-    }
 
     const inputValue = this.isUtc
       ? dayjs.utc(value, format).format(inputFormat)

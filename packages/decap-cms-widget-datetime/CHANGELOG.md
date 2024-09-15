@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.2.3](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-datetime@3.2.2...decap-cms-widget-datetime@3.2.3) (2024-08-30)
+
+### Bug Fixes
+
+- trigger change if default is {{now}} ([#7272](https://github.com/decaporg/decap-cms/issues/7272)) ([556e0d5](https://github.com/decaporg/decap-cms/commit/556e0d56aa623219d4f0f3be93bd2ba410e6596f))
+
 ## [3.2.2](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-datetime@3.2.1...decap-cms-widget-datetime@3.2.2) (2024-08-13)
 
 ### Reverts
