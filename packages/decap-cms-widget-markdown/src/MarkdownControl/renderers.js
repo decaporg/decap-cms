@@ -226,8 +226,8 @@ function NumberedList(props) {
 }
 
 function Link(props) {
-  const url = props.url;
-  const title = props.title || url;
+  const url = props.element.url;
+  const title = props.element.title || url;
 
   return (
     <StyledA href={url} title={title} {...props.attributes}>
