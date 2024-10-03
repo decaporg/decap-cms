@@ -38,8 +38,11 @@ const ToolbarToggle = styled.div`
   flex-shrink: 0;
   display: flex;
   align-items: center;
-  font-size: 14px;
   margin: 0 10px;
+  font-size: 8px;
+  @media (min-width: 800px) {
+    font-size: 14px;
+  }
 `;
 
 const StyledToggle = ToolbarToggle.withComponent(Toggle);

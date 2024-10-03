@@ -37,14 +37,20 @@ const AppHeaderSiteLink = styled.a`
   font-size: 14px;
   font-weight: 400;
   color: #7b8290;
-  padding: 10px 16px;
+  padding: 5px 0;
+  @media (min-width: 800px) {
+    padding: 10px 0;
+  }
 `;
 
 const AppHeaderTestRepoIndicator = styled.a`
   font-size: 14px;
   font-weight: 400;
   color: #7b8290;
-  padding: 10px 16px;
+  padding: 5px;
+  @media (min-width: 800px) {
+    padding: 10px 16px;
+  }
 `;
 
 function Avatar({ imageUrl }) {

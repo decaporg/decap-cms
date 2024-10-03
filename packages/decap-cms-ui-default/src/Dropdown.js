@@ -9,7 +9,10 @@ import Icon from './Icon';
 
 const StyledWrapper = styled(Wrapper)`
   position: relative;
-  font-size: 14px;
+  font-size: 10px;
+  @media (min-width: 800px) {
+    font-size: 14px;
+  }
   user-select: none;
 `;
 
@@ -17,9 +20,13 @@ const StyledDropdownButton = styled(DropdownButton)`
   ${buttons.button};
   ${buttons.default};
   display: block;
-  padding-left: 20px;
-  padding-right: 40px;
+  padding-left: 10px;
+  padding-right: 20px;
   position: relative;
+  @media (min-width: 800px) {
+    padding-left: 20px;
+    padding-right: 40px;
+  }
 
   &:after {
     ${components.caretDown};

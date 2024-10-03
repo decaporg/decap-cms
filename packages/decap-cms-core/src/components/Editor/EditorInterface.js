@@ -46,16 +46,12 @@ function ReactSplitPaneGlobalStyles() {
   return (
     <Global
       styles={css`
-        .Resizer.vertical {
-          width: 2px;
-          cursor: col-resize;
+        .Resizer {
           position: relative;
           background: none;
 
           &:before {
             content: '';
-            width: 2px;
-            height: 100%;
             position: relative;
             background-color: ${colors.textFieldBorder};
             display: block;
@@ -66,9 +62,44 @@ function ReactSplitPaneGlobalStyles() {
           &:hover,
           &:active {
             &:before {
-              width: 4px;
-              left: -1px;
               background-color: ${colorsRaw.blue};
+            }
+          }
+
+          &.vertical {
+            width: 2px;
+            cursor: col-resize;
+
+            &:before {
+              width: 2px;
+              height: 100%;
+            }
+
+            &:hover,
+            &:active {
+              &:before {
+                width: 4px;
+                left: -1px;
+              }
+            }
+          }
+
+          &.horizontal {
+            width: 100%;
+            height: 2px;
+            cursor: row-resize;
+
+            &:before {
+              width: 100%;
+              height: 2px;
+            }
+
+            &:hover,
+            &:active {
+              &:before {
+                width: 4px;
+                left: -1px;
+              }
             }
           }
         }
@@ -79,6 +110,7 @@ function ReactSplitPaneGlobalStyles() {
 
 const StyledSplitPane = styled(SplitPane)`
   ${styles.splitPane};
+  flex-direction: column;
 
   /**
    * Quick fix for preview pane not fully displaying in Safari
@@ -94,14 +126,20 @@ const NoPreviewContainer = styled.div`
 
 const EditorContainer = styled.div`
   width: 100%;
-  min-width: 800px;
-  height: 100%;
-  position: absolute;
+  height: 100vh;
+  position: unset;
   top: 0;
   left: 0;
   overflow: hidden;
-  padding-top: 66px;
-  background-color: ${colors.background};
+  background-color: white;
+  padding-top: 100px;
+  @media (min-width: 800px) {
+    height: 100%;
+    position: absolute;
+    min-width: 800px;
+    padding-top: 66px;
+    background-color: ${colors.background};
+  }
 `;
 
 const Editor = styled.div`
@@ -123,10 +161,14 @@ const ControlPaneContainer = styled(PreviewPaneContainer)`
 `;
 
 const ViewControls = styled.div`
+  display: none;
   position: absolute;
   top: 10px;
   right: 10px;
   z-index: ${zIndex.zIndex299};
+  @media (min-width: 800px) {
+    display: block;
+  }
 `;
 
 function EditorContent({
@@ -156,10 +198,23 @@ function isPreviewEnabled(collection, entry) {
 
 class EditorInterface extends Component {
   state = {
+    isMobile: window.innerWidth <= 800,
     showEventBlocker: false,
     previewVisible: localStorage.getItem(PREVIEW_VISIBLE) !== 'false',
     scrollSyncEnabled: localStorage.getItem(SCROLL_SYNC_ENABLED) !== 'false',
     i18nVisible: localStorage.getItem(I18N_VISIBLE) !== 'false',
+  };
+
+  componentDidMount() {
+    window.addEventListener('resize', this.handleResize);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.handleResize);
+  }
+
+  handleResize = () => {
+    this.setState({ isMobile: window.innerWidth <= 768 });
   };
 
   handleSplitPaneDragStart = () => {
@@ -239,8 +294,7 @@ class EditorInterface extends Component {
       t,
     } = this.props;
 
-    const { scrollSyncEnabled, showEventBlocker } = this.state;
-
+    const { isMobile, scrollSyncEnabled, showEventBlocker } = this.state;
     const previewEnabled = isPreviewEnabled(collection, entry);
 
     const { locales, defaultLocale } = getI18nInfo(this.props.collection);
@@ -279,13 +333,16 @@ class EditorInterface extends Component {
       : entry;
 
     const editorWithPreview = (
-      <ScrollSync enabled={this.state.scrollSyncEnabled}>
+      <ScrollSync enabled={scrollSyncEnabled}>
         <div>
           <ReactSplitPaneGlobalStyles />
           <StyledSplitPane
+            split={isMobile ? 'horizontal' : 'vertical'} // Switch to horizontal split on mobile
             maxSize={-100}
-            minSize={400}
-            defaultSize={parseInt(localStorage.getItem(SPLIT_PANE_POSITION), 10) || '50%'}
+            minSize={isMobile ? '30%' : 400}
+            defaultSize={
+              parseInt(localStorage.getItem(SPLIT_PANE_POSITION), 10) || (isMobile ? '40%' : '50%')
+            }
             onChange={size => localStorage.setItem(SPLIT_PANE_POSITION, size)}
             onDragStarted={this.handleSplitPaneDragStart}
             onDragFinished={this.handleSplitPaneDragFinished}

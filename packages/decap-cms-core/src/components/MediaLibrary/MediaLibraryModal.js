@@ -26,12 +26,14 @@ const cardMargin = `10px`;
 const cardOutsideWidth = `300px`;
 
 const StyledModal = styled(Modal)`
-  display: grid;
-  grid-template-rows: 120px auto;
-  width: calc(${cardOutsideWidth} + 20px);
+  display: flex;
+  flex-direction: column;
+  width: 95%;
   background-color: ${props => props.isPrivate && colors.grayDark};
 
   @media (min-width: 800px) {
+    display: grid;
+    grid-template-rows: 120px auto;
     width: calc(${cardOutsideWidth} * 2 + 20px);
   }
 

@@ -21,11 +21,16 @@ const CloseButton = styled.button`
 `;
 
 const LibraryTitle = styled.h1`
-  line-height: 36px;
-  font-size: 22px;
+  line-height: unset;
+  font-size: 16px;
   text-align: left;
-  margin-bottom: 25px;
+  margin-bottom: 12px;
   color: ${props => props.isPrivate && colors.textFieldBorder};
+  @media (min-width: 800px) {
+    margin-bottom: 25px;
+    line-height: 36px;
+    font-size: 22px;
+  }
 `;
 
 function MediaLibraryHeader({ onClose, title, isPrivate }) {

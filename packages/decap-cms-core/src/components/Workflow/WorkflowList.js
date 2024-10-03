@@ -55,12 +55,15 @@ const styles = {
       }
     `,
   column: css`
-    margin: 0 20px;
+    margin: 0 15px;
     transition: background-color 0.5s ease;
     border: 2px dashed transparent;
     border-radius: 4px;
     position: relative;
     height: 100%;
+    @media (min-width: 800px) {
+      margin: 0 20px;
+    }
   `,
   columnHovered: css`
     border-color: ${colors.active};
@@ -78,11 +81,15 @@ const styles = {
 };
 
 const ColumnHeader = styled.h2`
-  font-size: 20px;
+  font-size: 16px;
   font-weight: normal;
-  padding: 4px 14px;
+  padding: 4px 10px;
   border-radius: ${lengths.borderRadius};
   margin-bottom: 28px;
+  @media (min-width: 800px) {
+    padding: 4px 14px;
+    font-size: 20px;
+  }
 
   ${props =>
     props.name === 'draft' &&

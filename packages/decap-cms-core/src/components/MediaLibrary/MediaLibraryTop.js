@@ -16,6 +16,7 @@ const LibraryTop = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
+  gap: 10px;
 `;
 
 const RowContainer = styled.div`

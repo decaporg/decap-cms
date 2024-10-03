@@ -88,12 +88,14 @@ const colors = {
 
 const lengths = {
   topBarHeight: '56px',
+  topBarHeightMobile: '100%',
   inputPadding: '16px 20px',
   borderRadius: '5px',
   richTextEditorMinHeight: '300px',
   borderWidth: '2px',
   topCardWidth: '682px',
   pageMargin: '28px 18px',
+  pageMarginMobile: '10px',
   objectWidgetTopBarContainerPadding: '0 14px 14px',
 };
 
@@ -155,8 +157,11 @@ const effects = {
 };
 
 const badge = css`
-  font-size: 13px;
+  font-size: 8px;
   line-height: 1;
+  @media (min-width: 800px) {
+    font-size: 13px;
+  }
 `;
 
 const backgroundBadge = css`
@@ -190,9 +195,12 @@ const buttons = {
     height: 36px;
     line-height: 36px;
     font-weight: 500;
-    padding: 0 15px;
+    padding: 0 13px;
     background-color: ${colorsRaw.gray};
     color: ${colorsRaw.white};
+    @media (min-width: 800px) {
+      padding: 0 35px;
+    }
   `,
   widget: css`
     display: flex;
@@ -310,7 +318,9 @@ const components = {
   `,
   cardTop: css`
     ${card};
-    width: ${lengths.topCardWidth};
+    @media (min-width: 800px) {
+      width: ${lengths.topCardWidth};
+    }
     max-width: 100%;
     padding: 18px 20px;
     margin-bottom: 28px;
@@ -496,7 +506,10 @@ function GlobalStyles() {
 
         a,
         button {
-          font-size: 14px;
+          font-size: 10px;
+          @media (min-width: 800px) {
+            font-size: 14px;
+          }
           font-weight: 500;
         }
 
