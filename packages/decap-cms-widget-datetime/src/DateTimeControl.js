@@ -17,8 +17,11 @@ function Buttons({ t, handleChange, getNow }) {
     <div
       css={css`
         display: flex;
-        gap: 20px;
         width: fit-content;
+        gap: 5px;
+        @media (min-width: 800px) {
+          gap: 20px;
+        }
       `}
     >
       <button

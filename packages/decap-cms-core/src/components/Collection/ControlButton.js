@@ -7,8 +7,10 @@ const Button = styled(StyledDropdownButton)`
   ${buttons.button};
   ${buttons.medium};
   ${buttons.grayText};
-  font-size: 14px;
-
+  font-size: 10px;
+  @media (min-width: 800px) {
+    font-size: 14px;
+  }
   &:after {
     top: 11px;
   }

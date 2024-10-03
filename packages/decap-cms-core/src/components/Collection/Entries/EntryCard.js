@@ -11,7 +11,9 @@ import { selectEntryCollectionTitle } from '../../../reducers/collections';
 
 const ListCard = styled.li`
   ${components.card};
-  width: ${lengths.topCardWidth};
+  @media (min-width: 800px) {
+    width: ${lengths.topCardWidth};
+  }
   margin-left: 12px;
   margin-bottom: 10px;
   overflow: hidden;

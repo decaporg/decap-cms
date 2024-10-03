@@ -26,11 +26,16 @@ import {
 } from '../../reducers/entries';
 
 const CollectionContainer = styled.div`
-  margin: ${lengths.pageMargin};
+  margin: ${lengths.pageMarginMobile};
+  @media (min-width: 800px) {
+    margin: ${lengths.pageMargin};
+  }
 `;
 
 const CollectionMain = styled.main`
-  padding-left: 280px;
+  @media (min-width: 800px) {
+    padding-left: 280px;
+  }
 `;
 
 const SearchResultContainer = styled.div`

@@ -27,10 +27,16 @@ const styles = {
     text-overflow: ellipsis;
   `,
   buttonMargin: css`
-    margin: 0 10px;
+    margin: 0 5px;
+    @media (min-width: 800px) {
+      margin: 0 10px;
+    }
   `,
   toolbarSection: css`
-    height: 100%;
+    height: 70%;
+    @media (min-width: 800px) {
+      height: 100%;
+    }
     display: flex;
     align-items: center;
     border: 0 solid ${colors.textFieldBorder};
@@ -83,26 +89,35 @@ const DropdownButton = styled(StyledDropdownButton)`
 `;
 
 const ToolbarContainer = styled.div`
-  box-shadow: 0 2px 6px 0 rgba(68, 74, 87, 0.05), 0 1px 3px 0 rgba(68, 74, 87, 0.1),
-    0 2px 54px rgba(0, 0, 0, 0.1);
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  min-width: 800px;
   z-index: ${zIndex.zIndex300};
   background-color: #fff;
-  height: 66px;
+  height: 100px;
   display: flex;
   justify-content: space-between;
+  flex-direction: column;
+  @media (min-width: 800px) {
+    height: 66px;
+    min-width: 800px;
+    flex-direction: row;
+    box-shadow: 0 2px 6px 0 rgba(68, 74, 87, 0.05), 0 1px 3px 0 rgba(68, 74, 87, 0.1),
+      0 2px 54px rgba(0, 0, 0, 0.1);
+  }
 `;
 
 const ToolbarSectionMain = styled.div`
   ${styles.toolbarSection};
   flex: 10;
   display: flex;
-  justify-content: space-between;
-  padding: 0 10px;
+  justify-content: center;
+  background-color: #fff;
+  @media (min-width: 800px) {
+    padding: 0 10px;
+    justify-content: space-between;
+  }
 `;
 
 const ToolbarSubSectionFirst = styled.div`
@@ -116,9 +131,11 @@ const ToolbarSubSectionLast = styled(ToolbarSubSectionFirst)`
 
 const ToolbarSectionBackLink = styled(Link)`
   ${styles.toolbarSection};
-  border-right-width: 1px;
   font-weight: normal;
   padding: 0 20px;
+  @media (min-width: 800px) {
+    border-right-width: 1px;
+  }
 
   &:hover,
   &:focus {
@@ -128,8 +145,14 @@ const ToolbarSectionBackLink = styled(Link)`
 
 const ToolbarSectionMeta = styled.div`
   ${styles.toolbarSection};
-  border-left-width: 1px;
   padding: 0 7px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  @media (min-width: 800px) {
+    position: unset;
+    border-left-width: 1px;
+  }
 `;
 
 const ToolbarDropdown = styled(Dropdown)`
@@ -149,7 +172,10 @@ const BackArrow = styled.div`
 
 const BackCollection = styled.div`
   color: ${colors.textLead};
-  font-size: 14px;
+  font-size: 10px;
+  @media (min-width: 800px) {
+    font-size: 14px;
+  }
 `;
 
 const BackStatus = styled.div`
@@ -170,8 +196,8 @@ const ToolbarButton = styled.button`
   ${styles.buttonMargin};
   ${styles.noOverflow};
   display: block;
-
-  @media (max-width: 1200px) {
+  padding: 0 5px;
+  @media (min-width: 800px) {
     padding: 0 10px;
   }
 `;
