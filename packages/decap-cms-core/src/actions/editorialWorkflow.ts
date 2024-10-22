@@ -359,7 +359,7 @@ export function persistUnpublishedEntry(collection: Collection, existingUnpublis
       entry,
     });
 
-    const serializedEntry = getSerializedEntry(collection, entry);
+    const serializedEntry = getSerializedEntry(collection, entry, state.config);
     const serializedEntryDraft = entryDraft.set('entry', serializedEntry);
 
     dispatch(unpublishedEntryPersisting(collection, entry.get('slug')));

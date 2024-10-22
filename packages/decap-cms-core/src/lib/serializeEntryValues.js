@@ -3,6 +3,7 @@ import { Map, List } from 'immutable';
 
 import { getWidgetValueSerializer } from './registry';
 
+const FLAG_REMOVE_ENTRY = '!~FLAG_REMOVE_ENTRY~!';
 /**
  * Methods for serializing/deserializing entry field values. Most widgets don't
  * require this for their values, and those that do can typically serialize/
@@ -21,7 +22,7 @@ import { getWidgetValueSerializer } from './registry';
  * registered deserialization handlers run on entry load, and serialization
  * handlers run on persist.
  */
-function runSerializer(values, fields, method) {
+function runSerializer(values, fields, method, config = {}, isRecursive = false) {
   /**
    * Reduce the list of fields to a map where keys are field names and values
    * are field values, serializing the values of fields whose widgets have
@@ -38,18 +39,23 @@ function runSerializer(values, fields, method) {
     if (nestedFields && List.isList(value)) {
       return acc.set(
         fieldName,
-        value.map(val => runSerializer(val, nestedFields, method)),
+        value.map(val => runSerializer(val, nestedFields, method, config, true)),
       );
     }
 
     // Call recursively for fields within objects
     if (nestedFields && Map.isMap(value)) {
-      return acc.set(fieldName, runSerializer(value, nestedFields, method));
+      return acc.set(fieldName, runSerializer(value, nestedFields, method, config, true));
     }
 
     // Run serialization method on value if not null or undefined
     if (serializer && !isNil(value)) {
       return acc.set(fieldName, serializer[method](value));
+    }
+
+    // If widget is image with no value set, flag field for removal
+    if (config.remove_empty_image_field && !value && field.get('widget') === 'image') {
+      return acc.set(fieldName, FLAG_REMOVE_ENTRY);
     }
 
     // If no serializer is registered for the field's widget, use the field as is
@@ -60,14 +66,37 @@ function runSerializer(values, fields, method) {
     return acc;
   }, Map());
 
-  //preserve unknown fields value
+  // preserve unknown fields value
   serializedData = values.mergeDeep(serializedData);
+
+  // Remove only on the top level, otherwise `mergeDeep` will reinsert them.
+  if (config.remove_empty_image_field && !isRecursive) {
+    serializedData = serializedData.map(v => removeEntriesRecursive(v))
+      .filter(v => v !== FLAG_REMOVE_ENTRY);
+  }
 
   return serializedData;
 }
 
-export function serializeValues(values, fields) {
-  return runSerializer(values, fields, 'serialize');
+function removeEntriesRecursive(entry) {
+  if (List.isList(entry)) {
+    return entry.map(v => removeEntriesRecursive(v)).filter(v => v !== FLAG_REMOVE_ENTRY);
+  } else if (Map.isMap(entry)) {
+    let updatedEntry = entry;
+    entry.forEach((v, k) => {
+      if (Map.isMap(v) || List.isList(v)) {
+        updatedEntry = updatedEntry.set(k, removeEntriesRecursive(v));
+      } else if (v === FLAG_REMOVE_ENTRY) {
+        updatedEntry = updatedEntry.delete(k);
+      }
+    });
+    return updatedEntry;
+  }
+  return entry;
+}
+
+export function serializeValues(values, fields, config) {
+  return runSerializer(values, fields, 'serialize', config);
 }
 
 export function deserializeValues(values, fields) {
