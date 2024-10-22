@@ -3,7 +3,10 @@ import { fromJS } from 'immutable';
 import { serializeValues, deserializeValues } from '../serializeEntryValues';
 
 const values = fromJS({ title: 'New Post', unknown: 'Unknown Field', removed_image: '' });
-const fields = fromJS([{ name: 'title', widget: 'string' }, { name: 'removed_image', widget: 'image' }]);
+const fields = fromJS([
+  { name: 'title', widget: 'string' },
+  { name: 'removed_image', widget: 'image' },
+]);
 
 describe('serializeValues', () => {
   it('should retain unknown fields', () => {

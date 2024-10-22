@@ -71,7 +71,8 @@ function runSerializer(values, fields, method, config = {}, isRecursive = false)
 
   // Remove only on the top level, otherwise `mergeDeep` will reinsert them.
   if (config.remove_empty_image_field && !isRecursive) {
-    serializedData = serializedData.map(v => removeEntriesRecursive(v))
+    serializedData = serializedData
+      .map(v => removeEntriesRecursive(v))
       .filter(v => v !== FLAG_REMOVE_ENTRY);
   }
 
