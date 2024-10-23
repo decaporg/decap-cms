@@ -60,7 +60,6 @@ function ShortcodeElement(props) {
   }
 
   function handleInsertBefore() {
-    console.log('path', path);
     insertElements(
       editor,
       { type: ParagraphPlugin.key, children: [{ text: '' }] },

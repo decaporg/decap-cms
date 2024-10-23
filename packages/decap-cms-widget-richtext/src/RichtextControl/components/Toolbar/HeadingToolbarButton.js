@@ -37,9 +37,6 @@ function HeadingToolbarButton({ disabled, isVisible, t }) {
     return ParagraphPlugin.key;
   }, []);
 
-
-  console.log('HeadingToolbarButton', value);
-
   function handleChange(optionKey) {
     unwrapList(editor);
     toggleBlock(editor, { type: optionKey });

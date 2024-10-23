@@ -115,8 +115,6 @@ export default function VisualEditor(props) {
 
   const initialValue = props.value ? markdownToSlate(props.value, {}) : emptyValue;
 
-  console.log('pakaaka', ParagraphPlugin.key);
-
   const editor = usePlateEditor({
     override: {
       components: {
