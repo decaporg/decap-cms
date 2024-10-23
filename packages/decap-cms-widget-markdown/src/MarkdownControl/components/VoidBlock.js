@@ -42,6 +42,7 @@ function VoidBlock({ attributes, children, element }) {
     insertAtPath([...path.slice(0, -1), path[path.length - 1] + 1]);
   }
 
+
   const insertBefore = path[0] === 0;
   const nextElement = editor.children[path[0] + 1];
   const insertAfter = path[0] === editor.children.length - 1 || editor.isVoid(nextElement);

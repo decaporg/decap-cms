@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 
 import VisualEditor from './RichtextControl/VisualEditor';
+import { EditorProvider } from './RichtextControl/editorContext';
 
 export default class MarkdownControl extends React.Component {
   static propTypes = {
@@ -18,20 +19,25 @@ export default class MarkdownControl extends React.Component {
     isDisabled: PropTypes.bool,
   };
 
+
   render() {
-    const { classNameWrapper, field, t, isDisabled, getEditorComponents, onChange, value } = this.props;
+    const { classNameWrapper, field, t, isDisabled, getEditorComponents, editorControl, onChange, value } =
+      this.props;
+
     const visualEditor = (
-      <div className="cms-editor-visual" ref={this.processRef}>
-        <VisualEditor
-          t={t}
-          field={field}
-          className={classNameWrapper}
-          getEditorComponents={getEditorComponents}
-          isDisabled={isDisabled}
-          onChange={onChange}
-          value={value}
-        />
-      </div>
+      <EditorProvider editorControl={editorControl} editorComponents={getEditorComponents()}>
+        <div className="cms-editor-visual" ref={this.processRef}>
+          <VisualEditor
+            t={t}
+            field={field}
+            className={classNameWrapper}
+            getEditorComponents={getEditorComponents}
+            isDisabled={isDisabled}
+            onChange={onChange}
+            value={value}
+          />
+        </div>
+      </EditorProvider>
     );
     return visualEditor;
   }

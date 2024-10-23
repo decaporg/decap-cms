@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import { List } from 'immutable';
 import { colors, transitions } from 'decap-cms-ui-default';
-import { MARK_BOLD, MARK_CODE, MARK_ITALIC } from '@udecode/plate-basic-marks';
+import { BoldPlugin, ItalicPlugin, CodePlugin } from '@udecode/plate-basic-marks/react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 
 import MarkToolbarButton from './MarkToolbarButton';
@@ -25,7 +25,7 @@ const ToolbarContainer = styled.div`
 `;
 
 function Toolbar(props) {
-  const { disabled, t, editorComponents, allowedEditorComponents, onInsertEditorComponent } = props;
+  const { disabled, t, editorComponents, allowedEditorComponents } = props;
 
   function isVisible(button) {
     const { buttons } = props;
@@ -38,7 +38,7 @@ function Toolbar(props) {
         {isVisible('bold') && (
           <MarkToolbarButton
             type="bold"
-            nodeType={MARK_BOLD}
+            nodeType={BoldPlugin.key}
             label={t('editor.editorWidgets.markdown.bold')}
             icon="bold"
             disabled={disabled}
@@ -47,7 +47,7 @@ function Toolbar(props) {
         {isVisible('italic') && (
           <MarkToolbarButton
             type="italic"
-            nodeType={MARK_ITALIC}
+            nodeType={ItalicPlugin.key}
             label={t('editor.editorWidgets.markdown.italic')}
             icon="italic"
             disabled={disabled}
@@ -56,7 +56,7 @@ function Toolbar(props) {
         {isVisible('code') && (
           <MarkToolbarButton
             type="code"
-            nodeType={MARK_CODE}
+            nodeType={CodePlugin.key}
             label={t('editor.editorWidgets.markdown.code')}
             icon="code"
             disabled={disabled}
@@ -96,7 +96,6 @@ function Toolbar(props) {
           t={t}
           editorComponents={editorComponents}
           allowedEditorComponents={allowedEditorComponents}
-          onChange={onInsertEditorComponent}
         />
       </div>
     </ToolbarContainer>
@@ -108,7 +107,6 @@ Toolbar.propTypes = {
   disabled: PropTypes.bool,
   editorComponents: ImmutablePropTypes.map,
   allowedEditorComponents: ImmutablePropTypes.list,
-  onInsertEditorComponent: PropTypes.func,
   t: PropTypes.func.isRequired,
 };
 

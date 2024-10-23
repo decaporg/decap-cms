@@ -220,7 +220,10 @@ export function markdownToSlate(markdown, { voidCodeBlock, remarkPlugins = [] } 
  * trees.
  */
 export function slateToMarkdown(raw, { voidCodeBlock, remarkPlugins = [] } = {}) {
+  console.log('old raw', raw);
   const mdast = slateToRemark(raw, { voidCodeBlock });
+  console.log('old mdast', mdast);
   const markdown = remarkToMarkdown(mdast, remarkPlugins);
+  console.log('old md', markdown);
   return markdown;
 }

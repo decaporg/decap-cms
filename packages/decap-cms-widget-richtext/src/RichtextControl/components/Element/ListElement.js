@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { PlateElement } from '@udecode/plate-common';
+import { PlateElement } from '@udecode/plate-common/react';
 
 const bottomMargin = '16px';
 

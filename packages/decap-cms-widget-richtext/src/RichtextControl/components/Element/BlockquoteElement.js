@@ -1,5 +1,5 @@
 import React from 'react';
-import { PlateElement } from '@udecode/plate-common';
+import { PlateElement } from '@udecode/plate-common/react';
 import styled from '@emotion/styled';
 import { colors } from 'decap-cms-ui-default';
 

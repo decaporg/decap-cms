@@ -1,6 +1,6 @@
 import React from 'react';
-import { PlateElement, useElement } from '@udecode/plate-common';
-import { useLink } from '@udecode/plate-link';
+import { PlateElement, useElement } from '@udecode/plate-common/react';
+import { useLink } from '@udecode/plate-link/react';
 import styled from '@emotion/styled';
 
 const StyledA = styled.a`

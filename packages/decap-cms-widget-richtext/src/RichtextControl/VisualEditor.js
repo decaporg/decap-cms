@@ -1,45 +1,31 @@
 import React from 'react';
-import { createPlugins, Plate, PlateLeaf } from '@udecode/plate-common';
-import { createParagraphPlugin, ELEMENT_PARAGRAPH } from '@udecode/plate-paragraph';
-import {
-  createBoldPlugin,
-  MARK_BOLD,
-  createItalicPlugin,
-  MARK_ITALIC,
-  createCodePlugin,
-  MARK_CODE,
-} from '@udecode/plate-basic-marks';
-import {
-  createHeadingPlugin,
-  ELEMENT_H1,
-  ELEMENT_H2,
-  ELEMENT_H3,
-  ELEMENT_H4,
-  ELEMENT_H5,
-  ELEMENT_H6,
-  KEYS_HEADING,
-} from '@udecode/plate-heading';
-import { createSoftBreakPlugin, createExitBreakPlugin } from '@udecode/plate-break';
-import { createListPlugin, ELEMENT_UL, ELEMENT_OL, ELEMENT_LI } from '@udecode/plate-list';
-import { createLinkPlugin, ELEMENT_LINK } from '@udecode/plate-link';
-import { createBlockquotePlugin, ELEMENT_BLOCKQUOTE } from '@udecode/plate-block-quote';
-import { createTrailingBlockPlugin } from '@udecode/plate-trailing-block';
+import { usePlateEditor, Plate, ParagraphPlugin, PlateLeaf } from '@udecode/plate-common/react';
+import { BoldPlugin, ItalicPlugin, CodePlugin } from '@udecode/plate-basic-marks/react';
+import { HeadingPlugin } from '@udecode/plate-heading/react';
+import { HEADING_KEYS } from '@udecode/plate-heading';
+import { SoftBreakPlugin, ExitBreakPlugin } from '@udecode/plate-break/react';
+import { ListPlugin } from '@udecode/plate-list/react';
+import { LinkPlugin } from '@udecode/plate-link/react';
+import { BlockquotePlugin } from '@udecode/plate-block-quote/react';
+import { TrailingBlockPlugin } from '@udecode/plate-trailing-block';
 import { ClassNames } from '@emotion/react';
 import { fonts, lengths, zIndex } from 'decap-cms-ui-default';
 import { fromJS } from 'immutable';
 
 import { editorStyleVars } from '../styles';
-import withProps from './withProps';
+import { markdownToSlate, slateToMarkdown } from '../serializers';
 import Editor from './components/Editor';
 import Toolbar from './components/Toolbar';
-import CodeLeaf from './components/Leaf/CodeLeaf';
 import ParagraphElement from './components/Element/ParagraphElement';
+import withProps from './withProps';
+import CodeLeaf from './components/Leaf/CodeLeaf';
 import HeadingElement from './components/Element/HeadingElement';
 import ListElement from './components/Element/ListElement';
-import { markdownToSlate, slateToMarkdown } from '../serializers';
-import LinkElement from './components/Element/LinkElement';
 import BlockquoteElement from './components/Element/BlockquoteElement';
-import createBlockquoteExtPlugin from './plugins/createBlockquoteExtPlugin';
+import LinkElement from './components/Element/LinkElement';
+import BlockquoteExtPlugin from './plugins/BlockquoteExtPlugin';
+import ShortcodePlugin from './plugins/ShortcodePlugin';
+// import ShortcodeElement from './components/Element/ShortcodeElement';
 
 function visualEditorStyles({ minimal }) {
   return `
@@ -91,21 +77,13 @@ function mergeMediaConfig(editorComponents, field) {
 const emptyValue = [
   {
     id: '1',
-    type: 'p',
+    type: ParagraphPlugin.key,
     children: [{ text: '' }],
   },
 ];
 
 export default function VisualEditor(props) {
-
-  const {
-    t,
-    field,
-    className,
-    isDisabled,
-    onChange,
-    getEditorComponents,
-  } = props;
+  const { t, field, className, isDisabled, onChange, getEditorComponents } = props;
 
   let editorComponents = getEditorComponents();
   const codeBlockComponent = fromJS(editorComponents.find(({ type }) => type === 'code-block'));
@@ -117,31 +95,74 @@ export default function VisualEditor(props) {
 
   mergeMediaConfig(editorComponents, field);
 
-  const plugins = createPlugins(
-    [
-      createParagraphPlugin(),
-      createHeadingPlugin(),
-      createBoldPlugin(),
-      createItalicPlugin(),
-      createCodePlugin(),
-      createListPlugin(),
-      createLinkPlugin(),
-      createBlockquotePlugin(),
-      createBlockquoteExtPlugin(),
-      createSoftBreakPlugin({
-        options: {
-          rules: [
-            { hotkey: 'shift+enter' },
-            {
-              hotkey: 'enter',
-              query: {
-                allow: [ELEMENT_BLOCKQUOTE],
-              },
-            },
-          ],
-        },
+  function handleBlockClick() {
+    console.log('handleBlockClick');
+  }
+
+  function handleLinkClick() {
+    console.log('handleLinkClick');
+  }
+
+  function handleToggleMode() {
+    console.log('handleToggleMode');
+  }
+
+  function handleChange({ value }) {
+    console.log('handleChange', value);
+    const mdValue = slateToMarkdown(value, {}, editorComponents);
+    onChange(mdValue);
+  }
+
+  const initialValue = props.value ? markdownToSlate(props.value, {}) : emptyValue;
+
+  console.log('pakaaka', ParagraphPlugin.key);
+
+  const editor = usePlateEditor({
+    override: {
+      components: {
+        [BoldPlugin.key]: withProps(PlateLeaf, { as: 'b' }),
+        [CodePlugin.key]: CodeLeaf,
+        [ItalicPlugin.key]: withProps(PlateLeaf, { as: 'em' }),
+        [ParagraphPlugin.key]: ParagraphElement,
+        [BlockquotePlugin.key]: BlockquoteElement,
+        [LinkPlugin.key]: LinkElement,
+        [HEADING_KEYS.h1]: withProps(HeadingElement, { variant: 'h1' }),
+        [HEADING_KEYS.h2]: withProps(HeadingElement, { variant: 'h2' }),
+        [HEADING_KEYS.h3]: withProps(HeadingElement, { variant: 'h3' }),
+        [HEADING_KEYS.h4]: withProps(HeadingElement, { variant: 'h4' }),
+        [HEADING_KEYS.h5]: withProps(HeadingElement, { variant: 'h5' }),
+        [HEADING_KEYS.h6]: withProps(HeadingElement, { variant: 'h6' }),
+        ['ul']: withProps(ListElement, { variant: 'ul' }),
+        ['ol']: withProps(ListElement, { variant: 'ol' }),
+        ['li']: withProps(ListElement, { variant: 'li' }),
+      },
+    },
+    plugins: [
+      ParagraphPlugin,
+      HeadingPlugin,
+      BoldPlugin,
+      ItalicPlugin,
+      CodePlugin,
+      ListPlugin,
+      LinkPlugin,
+      BlockquotePlugin,
+      BlockquoteExtPlugin,
+      ShortcodePlugin,
+      TrailingBlockPlugin.configure({
+        options: { type: 'p' },
       }),
-      createExitBreakPlugin({
+      SoftBreakPlugin.configure({
+        rules: [
+          { hotkey: 'shift+enter' },
+          {
+            hotkey: 'enter',
+            query: {
+              allow: [BlockquotePlugin.key],
+            },
+          },
+        ],
+      }),
+      ExitBreakPlugin.configure({
         options: {
           rules: [
             {
@@ -156,7 +177,7 @@ export default function VisualEditor(props) {
               query: {
                 start: true,
                 end: true,
-                allow: KEYS_HEADING,
+                allow: Object.values(HEADING_KEYS),
               },
               relative: true,
               level: 1,
@@ -164,57 +185,9 @@ export default function VisualEditor(props) {
           ],
         },
       }),
-      createTrailingBlockPlugin({
-        options: { type: ELEMENT_PARAGRAPH },
-      }),
     ],
-    {
-      components: {
-        [MARK_BOLD]: withProps(PlateLeaf, { as: 'b' }),
-        [MARK_CODE]: CodeLeaf,
-        [MARK_ITALIC]: withProps(PlateLeaf, { as: 'em' }),
-        [ELEMENT_PARAGRAPH]: ParagraphElement,
-        [ELEMENT_BLOCKQUOTE]: BlockquoteElement,
-        [ELEMENT_LINK]: LinkElement,
-        [ELEMENT_H1]: withProps(HeadingElement, { variant: 'h1' }),
-        [ELEMENT_H2]: withProps(HeadingElement, { variant: 'h2' }),
-        [ELEMENT_H3]: withProps(HeadingElement, { variant: 'h3' }),
-        [ELEMENT_H4]: withProps(HeadingElement, { variant: 'h4' }),
-        [ELEMENT_H5]: withProps(HeadingElement, { variant: 'h5' }),
-        [ELEMENT_H6]: withProps(HeadingElement, { variant: 'h6' }),
-        [ELEMENT_UL]: withProps(ListElement, { variant: 'ul' }),
-        [ELEMENT_OL]: withProps(ListElement, { variant: 'ol' }),
-        [ELEMENT_LI]: withProps(ListElement, { variant: 'li' }),
-      },
-    },
-  );
-
-  function handleBlockClick() {
-    console.log('handleBlockClick');
-  }
-
-  function handleLinkClick() {
-    console.log('handleLinkClick');
-  }
-
-  function handleToggleMode() {
-    console.log('handleToggleMode');
-  }
-
-  function handleInsertEditorComponent(a) {
-    console.log('handleInsertEditorComponent', a);
-
-
-
-  }
-
-  function handleChange(value) {
-    console.log('handleChange', value);
-    const mdValue = slateToMarkdown(value, {});
-    onChange(mdValue);
-  }
-
-  const initialValue = props.value ? markdownToSlate(props.value, {}) : emptyValue;
+    value: initialValue,
+  });
 
   return (
     <ClassNames>
@@ -227,7 +200,7 @@ export default function VisualEditor(props) {
             `,
           )}
         >
-          <Plate plugins={plugins} initialValue={initialValue} onChange={handleChange}>
+          <Plate editor={editor} onChange={handleChange}>
             <Toolbar
               onBlockClick={handleBlockClick}
               onLinkClick={handleLinkClick}
@@ -243,7 +216,6 @@ export default function VisualEditor(props) {
               hasListItems={() => false}
               isShowModeToggle={() => false}
               onChange={() => false}
-              onInsertEditorComponent={handleInsertEditorComponent}
               t={t}
               disabled={isDisabled}
             />

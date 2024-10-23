@@ -1,5 +1,5 @@
 import React from 'react';
-import { PlateLeaf } from '@udecode/plate-common';
+import { PlateLeaf } from '@udecode/plate-common/react';
 import styled from '@emotion/styled';
 import { colors, lengths } from 'decap-cms-ui-default';
 

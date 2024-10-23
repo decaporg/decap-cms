@@ -95,7 +95,7 @@ function markdownToRemarkRemoveTokenizers({ inlineTokenizers }) {
 /**
  * Serialize an MDAST to a Markdown string.
  */
-export function remarkToMarkdown(obj, remarkPlugins) {
+export function remarkToMarkdown(obj, remarkPlugins, editorComponents) {
   /**
    * Rewrite the remark-stringify text visitor to simply return the text value,
    * without encoding or escaping any characters. This means we're completely
@@ -133,7 +133,7 @@ export function remarkToMarkdown(obj, remarkPlugins) {
     .use(remarkStripTrailingBreaks)
     .use(remarkToMarkdownPlugin)
     .use(remarkAllowAllText)
-    .use(createRemarkShortcodeStringifier({ plugins: Map() }))
+    .use(createRemarkShortcodeStringifier({ plugins: editorComponents }))
     .use(remarkPlugins);
 
   /**
@@ -220,8 +220,11 @@ export function markdownToSlate(markdown, { voidCodeBlock, remarkPlugins = [] } 
  * MDAST. The conversion is manual because Unified can only operate on Unist
  * trees.
  */
-export function slateToMarkdown(raw, { voidCodeBlock, remarkPlugins = [] } = {}) {
-  const mdast = slateToRemark(raw, { voidCodeBlock });
-  const markdown = remarkToMarkdown(mdast, remarkPlugins);
+export function slateToMarkdown(raw, { voidCodeBlock, remarkPlugins = [] } = {}, editorComponents) {
+  console.log('new raw', raw);
+  const mdast = slateToRemark(raw, { voidCodeBlock }, editorComponents);
+  console.log('new mdast', mdast);
+  const markdown = remarkToMarkdown(mdast, remarkPlugins, editorComponents);
+  console.log('new md', markdown);
   return markdown;
 }
