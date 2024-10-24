@@ -1,3 +1,4 @@
+// source: https://github.com/ianstormtaylor/slate/blob/main/site/examples/ts/paste-html.tsx
 import { jsx } from 'slate-hyperscript';
 import { Transforms } from 'slate';
 
@@ -26,7 +27,6 @@ const TEXT_TAGS = {
   I: () => ({ italic: true }),
   S: () => ({ strikethrough: true }),
   STRONG: () => ({ bold: true }),
-  B: () => ({ bold: true }),
   U: () => ({ underline: true }),
 };
 
@@ -42,7 +42,11 @@ function deserialize(el) {
   const { nodeName } = el;
   let parent = el;
 
-  if (nodeName === 'PRE' && el.childNodes[0] && el.childNodes[0].nodeName === 'CODE') {
+  if (
+    nodeName === 'PRE' &&
+    el.childNodes[0] &&
+    el.childNodes[0].nodeName === 'CODE'
+  ) {
     parent = el.childNodes[0];
   }
   let children = Array.from(parent.childNodes).map(deserialize).flat();
