@@ -42,11 +42,7 @@ function deserialize(el) {
   const { nodeName } = el;
   let parent = el;
 
-  if (
-    nodeName === 'PRE' &&
-    el.childNodes[0] &&
-    el.childNodes[0].nodeName === 'CODE'
-  ) {
+  if (nodeName === 'PRE' && el.childNodes[0] && el.childNodes[0].nodeName === 'CODE') {
     parent = el.childNodes[0];
   }
   let children = Array.from(parent.childNodes).map(deserialize).flat();
