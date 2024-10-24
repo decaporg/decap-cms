@@ -36,8 +36,8 @@ const filters = [
 ];
 
 const FIELD_PREFIX = 'fields.';
-const templateContentPattern = '([^}{|]+)';
-const filterPattern = '( \\| ([^}{]+))?';
+const templateContentPattern = ' *([^}{| ]+)';
+const filterPattern = '( \\| ([^}{]+?))? *';
 const templateVariablePattern = `{{${templateContentPattern}${filterPattern}}}`;
 
 // prepends a Zero if the date has only 1 digit
@@ -175,12 +175,6 @@ export function compileStringTemplate(
     RegExp(templateVariablePattern, 'g'),
     (_full, key: string, _part, filter: string) => {
       let replacement;
-      if (key) {
-        key = key.trim();
-      }
-      if (filter) {
-        filter = filter.trim();
-      }
       const explicitFieldReplacement = getExplicitFieldReplacement(key, data);
 
       if (explicitFieldReplacement) {
