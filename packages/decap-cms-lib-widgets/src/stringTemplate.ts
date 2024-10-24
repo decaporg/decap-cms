@@ -175,8 +175,12 @@ export function compileStringTemplate(
     RegExp(templateVariablePattern, 'g'),
     (_full, key: string, _part, filter: string) => {
       let replacement;
-      key = key.trim();
-      filter = filter.trim();
+      if (key) {
+        key = key.trim();
+      }
+      if (filter) {
+        filter = filter.trim();
+      }
       const explicitFieldReplacement = getExplicitFieldReplacement(key, data);
 
       if (explicitFieldReplacement) {
