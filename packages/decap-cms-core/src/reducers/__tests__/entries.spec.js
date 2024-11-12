@@ -576,6 +576,18 @@ describe('entries', () => {
         ),
       ).toBe('/images/image.png');
     });
+
+    it('should use full file path', () => {
+      expect(
+        selectMediaFilePublicPath(
+          { media_folder: 'static/media', public_folder: '/media' },
+          null,
+          'static/media/images/foo/image.png',
+          undefined,
+          undefined,
+        ),
+      ).toBe('/media/images/foo/image.png');
+    });
   });
 
   describe('selectEntries', () => {
