@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.5.0](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.4.2...decap-cms-core@3.5.0) (2024-11-12)
+
+### Bug Fixes
+
+- clear field error in Editor after the field value is changed ([#7216](https://github.com/decaporg/decap-cms/issues/7216)) ([d9655ea](https://github.com/decaporg/decap-cms/commit/d9655eae8cc47fb3a63815f75321710b5192c6ef))
+
 ## [3.4.2](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.4.1...decap-cms-core@3.4.2) (2024-08-13)
 
 ### Reverts
