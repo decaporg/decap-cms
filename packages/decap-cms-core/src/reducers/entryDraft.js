@@ -129,7 +129,8 @@ function entryDraftReducer(state = Map(), action) {
       }
 
     case DRAFT_CLEAR_ERRORS: {
-      return state.set('fieldsErrors', Map());
+      const { uniqueFieldId } = action.payload;
+      return state.deleteIn(['fieldsErrors', uniqueFieldId]);
     }
 
     case ENTRY_PERSIST_REQUEST:
