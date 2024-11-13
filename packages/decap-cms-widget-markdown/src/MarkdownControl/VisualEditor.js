@@ -258,7 +258,7 @@ function Editor(props) {
                 {editorValue.length !== 0 && (
                   <Editable
                     className={css`
-                      padding: 16px 20px 0;
+                      padding: clamp(8px, 1.6vw, 16px) clamp(10px, 2vw, 20px) 0;
                     `}
                     renderElement={renderElement}
                     renderLeaf={renderLeaf}

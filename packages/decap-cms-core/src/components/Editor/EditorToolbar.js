@@ -33,11 +33,8 @@ const styles = {
     }
   `,
   toolbarSection: css`
-    height: 70%;
-    @media (min-width: 800px) {
-      height: 100%;
-    }
     display: flex;
+    gap: 12px;
     align-items: center;
     border: 0 solid ${colors.textFieldBorder};
   `,
@@ -95,16 +92,15 @@ const ToolbarContainer = styled.div`
   width: 100%;
   z-index: ${zIndex.zIndex300};
   background-color: #fff;
-  height: 100px;
-  display: flex;
-  justify-content: space-between;
-  flex-direction: column;
-  @media (min-width: 800px) {
-    height: 66px;
-    min-width: 800px;
+  display: grid;
+  grid-template-areas:
+    'back-link meta'
+    'main main';
+  box-shadow: 0 2px 6px 0 rgba(68, 74, 87, 0.05), 0 1px 3px 0 rgba(68, 74, 87, 0.1), 0 2px 54px rgba(0, 0, 0, 0.1);
+
+  @media (min-width: 1000px) {
+    display: flex;
     flex-direction: row;
-    box-shadow: 0 2px 6px 0 rgba(68, 74, 87, 0.05), 0 1px 3px 0 rgba(68, 74, 87, 0.1),
-      0 2px 54px rgba(0, 0, 0, 0.1);
   }
 `;
 
@@ -112,16 +108,19 @@ const ToolbarSectionMain = styled.div`
   ${styles.toolbarSection};
   flex: 10;
   display: flex;
-  justify-content: center;
   background-color: #fff;
-  @media (min-width: 800px) {
-    padding: 0 10px;
-    justify-content: space-between;
+  padding: 0 clamp(12px, 2.4vw, 24px);
+  justify-content: space-between;
+
+  @media (max-width: 1000px) {
+    grid-area: main;
+    padding: clamp(8px, 1.6vw, 16px);
   }
 `;
 
 const ToolbarSubSectionFirst = styled.div`
   display: flex;
+  gap: clamp(12px, 2.4vw, 24px);
   align-items: center;
 `;
 
@@ -131,10 +130,12 @@ const ToolbarSubSectionLast = styled(ToolbarSubSectionFirst)`
 
 const ToolbarSectionBackLink = styled(Link)`
   ${styles.toolbarSection};
+  gap: clamp(12px, 2.4vw, 24px);
   font-weight: normal;
-  padding: 0 20px;
-  @media (min-width: 800px) {
-    border-right-width: 1px;
+  padding: 0 clamp(8px, 1.6vw, 16px);
+
+  @media (max-width: 1000px) {
+    grid-area: back-link;
   }
 
   &:hover,
@@ -145,19 +146,17 @@ const ToolbarSectionBackLink = styled(Link)`
 
 const ToolbarSectionMeta = styled.div`
   ${styles.toolbarSection};
-  padding: 0 7px;
-  position: absolute;
-  top: 0;
-  right: 0;
-  @media (min-width: 800px) {
-    position: unset;
-    border-left-width: 1px;
+  padding: 0 clamp(8px, 1.6vw, 16px);
+  border-left-width: 1px;
+  justify-content: flex-end;
+
+  @media (max-width: 1000px) {
+    grid-area: meta;
+    border: none;
   }
 `;
 
 const ToolbarDropdown = styled(Dropdown)`
-  ${styles.buttonMargin};
-
   ${Icon} {
     color: ${colorsRaw.teal};
   }
@@ -167,15 +166,11 @@ const BackArrow = styled.div`
   color: ${colors.textLead};
   font-size: 21px;
   font-weight: 600;
-  margin-right: 16px;
 `;
 
 const BackCollection = styled.div`
   color: ${colors.textLead};
-  font-size: 10px;
-  @media (min-width: 800px) {
-    font-size: 14px;
-  }
+  font-size: clamp(12px, 3.3vw, 14px);
 `;
 
 const BackStatus = styled.div`
@@ -193,13 +188,7 @@ const BackStatusChanged = styled(BackStatus)`
 const ToolbarButton = styled.button`
   ${buttons.button};
   ${buttons.default};
-  ${styles.buttonMargin};
-  ${styles.noOverflow};
   display: block;
-  padding: 0 5px;
-  @media (min-width: 800px) {
-    padding: 0 10px;
-  }
 `;
 
 const DeleteButton = styled(ToolbarButton)`
@@ -231,7 +220,6 @@ const StatusButton = styled(DropdownButton)`
 `;
 
 const PreviewButtonContainer = styled.div`
-  margin-right: 12px;
   color: ${colorsRaw.blue};
   display: flex;
   align-items: center;

@@ -40,7 +40,6 @@ const CollectionMain = styled.main`
 
 const SearchResultContainer = styled.div`
   ${components.cardTop};
-  margin-bottom: 22px;
 `;
 
 const SearchResultHeading = styled.h1`

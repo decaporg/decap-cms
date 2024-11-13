@@ -67,18 +67,17 @@ const AppHeaderButton = styled.button`
   background: none;
   color: #7b8290;
   font-family: inherit;
-  font-size: 16px;
+  font-size: clamp(14px, 1.6vw, 16px);
   font-weight: 500;
   display: inline-flex;
   align-items: center;
-  padding: 12px 16px;
-  @media (min-width: 800px) {
-    padding: 16px 20px;
-  }
+  padding: clamp(8px, 1.6vw, 16px) 0;
 
   ${Icon} {
     margin-right: 4px;
     color: #b3b9c4;
+    width: clamp(20px, 2.4vw, 24px);
+    height: clamp(20px, 2.4vw, 24px);
   }
 
   &:hover,
@@ -106,24 +105,28 @@ const AppHeaderNavLink = AppHeaderButton.withComponent(NavLink);
 
 const AppHeaderActions = styled.div`
   display: inline-flex;
-  justify-content: space-between;
   align-items: center;
+  gap: clamp(8px, 2.5vw, 20px);
 `;
 
 const AppHeaderQuickNewButton = styled(StyledDropdownButton)`
   ${buttons.button};
   ${buttons.medium};
   ${buttons.gray};
-  margin-right: 8px;
+
+  @media (max-width: 800px) {
+  font-weight: 400;
+  }
 
   &:after {
-    top: 11px;
+    top: 50%;
+    transform: translateY(-50%);
   }
 `;
 
 const AppHeaderNavList = styled.ul`
   display: flex;
-  justify-content: space-between;
+  gap: clamp(16px, 4vw, 60px);
   margin: 0;
   list-style: none;
 `;

@@ -16,7 +16,8 @@ const StyledAuthenticationPage = styled.section`
 `;
 
 const CustomIconWrapper = styled.span`
-  width: 300px;
+  width: auto;
+  max-width: 300px;
   height: auto;
 `;
 

@@ -23,10 +23,16 @@ const ToolbarContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 11px 14px;
+  padding: clamp(6px, 1.1vw, 11px) clamp(7px, 1.4vw, 14px);
   min-height: 58px;
   transition: background-color ${transitions.main}, color ${transitions.main};
   color: ${colors.text};
+
+  @media (max-width: 800px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
 `;
 
 const ToolbarDropdownWrapper = styled.div`
@@ -39,10 +45,7 @@ const ToolbarToggle = styled.div`
   display: flex;
   align-items: center;
   margin: 0 10px;
-  font-size: 8px;
-  @media (min-width: 800px) {
-    font-size: 14px;
-  }
+  font-size: clamp(12px, 1.4vw, 14px);
 `;
 
 const StyledToggle = ToolbarToggle.withComponent(Toggle);

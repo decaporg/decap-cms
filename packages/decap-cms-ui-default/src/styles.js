@@ -89,7 +89,7 @@ const colors = {
 const lengths = {
   topBarHeight: '56px',
   topBarHeightMobile: '100%',
-  inputPadding: '16px 20px',
+  inputPadding: 'clamp(8px, 1.6vw, 16px) clamp(10px, 2vw, 20px)',
   borderRadius: '5px',
   richTextEditorMinHeight: '300px',
   borderWidth: '2px',
@@ -157,11 +157,8 @@ const effects = {
 };
 
 const badge = css`
-  font-size: 8px;
+  font-size: clamp(12px, 1.3vw, 13px);
   line-height: 1;
-  @media (min-width: 800px) {
-    font-size: 13px;
-  }
 `;
 
 const backgroundBadge = css`
@@ -192,15 +189,11 @@ const buttons = {
     cursor: pointer;
   `,
   default: css`
-    height: 36px;
-    line-height: 36px;
+    line-height: 1.1;
     font-weight: 500;
-    padding: 0 13px;
+    padding: clamp(4px, 1.2vw, 12px) clamp(12px, 3.2vw, 32px);
     background-color: ${colorsRaw.gray};
     color: ${colorsRaw.white};
-    @media (min-width: 800px) {
-      padding: 0 35px;
-    }
   `,
   widget: css`
     display: flex;
@@ -212,12 +205,12 @@ const buttons = {
     border-radius: 3px;
   `,
   medium: css`
-    height: 27px;
-    line-height: 27px;
+    min-height: 27px;
+    line-height: 1.1;
     font-size: 12px;
     font-weight: 600;
     border-radius: 3px;
-    padding: 0 24px 0 14px;
+    padding-right: 24px;
   `,
   small: css`
     font-size: 13px;
@@ -318,15 +311,15 @@ const components = {
   `,
   cardTop: css`
     ${card};
+    max-width: 100%;
+    padding: clamp(12px, 1.8vw, 18px) clamp(16px, 2vw, 20px);
+
     @media (min-width: 800px) {
       width: ${lengths.topCardWidth};
     }
-    max-width: 100%;
-    padding: 18px 20px;
-    margin-bottom: 28px;
   `,
   cardTopHeading: css`
-    font-size: 22px;
+    font-size: clamp(18px, 2.2vw, 22px);
     font-weight: 600;
     line-height: 37px;
     margin: 0;
@@ -506,10 +499,7 @@ function GlobalStyles() {
 
         a,
         button {
-          font-size: 10px;
-          @media (min-width: 800px) {
-            font-size: 14px;
-          }
+          font-size: clamp(12px, 3.3vw, 14px);
           font-weight: 500;
         }
 

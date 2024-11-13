@@ -29,7 +29,7 @@ const LibraryTitle = styled.h1`
   @media (min-width: 800px) {
     margin-bottom: 25px;
     line-height: 36px;
-    font-size: 22px;
+    font-size: clamp(18px, 2.2vw, 22px);
   }
 `;
 

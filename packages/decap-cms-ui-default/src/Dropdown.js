@@ -9,10 +9,7 @@ import Icon from './Icon';
 
 const StyledWrapper = styled(Wrapper)`
   position: relative;
-  font-size: 10px;
-  @media (min-width: 800px) {
-    font-size: 14px;
-  }
+  font-size: clamp(12px, 3.3vw, 14px);
   user-select: none;
 `;
 
@@ -20,21 +17,18 @@ const StyledDropdownButton = styled(DropdownButton)`
   ${buttons.button};
   ${buttons.default};
   display: block;
-  padding-left: 10px;
-  padding-right: 20px;
+  padding-left: clamp(10px, 2vw, 20px);
+  padding-right: clamp(20px, 2vw, 40px);
   position: relative;
-  @media (min-width: 800px) {
-    padding-left: 20px;
-    padding-right: 40px;
-  }
 
   &:after {
     ${components.caretDown};
     content: '';
     display: block;
     position: absolute;
-    top: 16px;
-    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    right: clamp(5px, 1vw, 10px);
     color: currentColor;
   }
 `;

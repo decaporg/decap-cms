@@ -158,6 +158,7 @@ const ControlPaneContainer = styled(PreviewPaneContainer)`
   padding: 0 16px;
   position: relative;
   overflow-x: hidden;
+  width: 100%;
 `;
 
 const ViewControls = styled.div`

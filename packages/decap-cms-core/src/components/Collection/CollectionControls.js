@@ -13,10 +13,9 @@ const CollectionControlsContainer = styled.div`
   flex-direction: row-reverse;
   margin-top: 22px;
   max-width: 100%;
-  justify-content: space-between;
+
   @media (min-width: 800px) {
     width: ${lengths.topCardWidth};
-    justify-content: flex-start;
   }
 
   & > div {

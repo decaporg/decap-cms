@@ -34,9 +34,6 @@ TopBarProgress.config({
 const AppMainContainer = styled.div`
   max-width: 1440px;
   margin: 0 auto;
-  @media (min-width: 800px) {
-    min-width: 800px;
-  }
 `;
 
 const ErrorContainer = styled.div`
