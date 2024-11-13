@@ -749,3 +749,18 @@ export default class ListControl extends React.Component {
     }
   }
 }
+
+export class ObjectControlWrapper extends React.Component {
+  render() {
+    if (this.props.field.get('required') === false || this.props.field.get('types')) {
+      return (
+        <ListControl
+          {...this.props}
+          onChange={e => this.props.onChange(e.get(0))}
+          value={List([this.props.value].filter(Boolean))}
+        />
+      );
+    }
+    return <ObjectControl {...this.props} />;
+  }
+}
