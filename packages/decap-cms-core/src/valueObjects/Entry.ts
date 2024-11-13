@@ -35,6 +35,7 @@ export interface EntryValue {
   updatedOn: string;
   status?: string;
   meta: { path?: string };
+  parseError?: string;
   i18n?: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [locale: string]: any;
