@@ -8,7 +8,6 @@ import { components, buttons, shadows } from 'decap-cms-ui-default';
 
 const CollectionTopContainer = styled.div`
   ${components.cardTop};
-  margin-bottom: 22px;
 `;
 
 const CollectionTopRow = styled.div`
@@ -27,7 +26,7 @@ const CollectionTopNewButton = styled(Link)`
   ${buttons.default};
   ${buttons.gray};
 
-  padding: 0 30px;
+  padding: clamp(4px, 1.2vw, 12px) clamp(12px, 3.2vw, 32px);
 `;
 
 const CollectionTopDescription = styled.p`

@@ -36,7 +36,7 @@ exports[`GitGatewayAuthenticationPage should render with identity error 1`] = `
   height: 36px;
   line-height: 36px;
   font-weight: 500;
-  padding: 0 15px;
+  padding: 0 13px;
   background-color: #798291;
   color: #fff;
   background-color: #313d3e;
@@ -52,6 +52,12 @@ exports[`GitGatewayAuthenticationPage should render with identity error 1`] = `
   -ms-flex-align: center;
   align-items: center;
   position: relative;
+}
+
+@media (min-width: 800px) {
+  .emotion-4 {
+    padding: 0 35px;
+  }
 }
 
 .emotion-4:focus,
@@ -174,7 +180,7 @@ exports[`GitGatewayAuthenticationPage should render with no identity error 1`] =
   height: 36px;
   line-height: 36px;
   font-weight: 500;
-  padding: 0 15px;
+  padding: 0 13px;
   background-color: #798291;
   color: #fff;
   background-color: #313d3e;
@@ -190,6 +196,12 @@ exports[`GitGatewayAuthenticationPage should render with no identity error 1`] =
   -ms-flex-align: center;
   align-items: center;
   position: relative;
+}
+
+@media (min-width: 800px) {
+  .emotion-4 {
+    padding: 0 35px;
+  }
 }
 
 .emotion-4:focus,
