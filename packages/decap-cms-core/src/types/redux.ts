@@ -565,7 +565,7 @@ export type EntryField = StaticallyTypedRecord<{
 export type EntryFields = List<EntryField>;
 
 export type FilterRule = StaticallyTypedRecord<{
-  value: string;
+  value: string | List<string> | StaticallyTypedRecord<List<string>>;
   field: string;
 }>;
 
