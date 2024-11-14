@@ -30,5 +30,8 @@
       { "ignoreKeywords": ["dummyValue"], "camelCaseSvgKeywords": true }
     ]
   },
-  "ignoreFiles": ["packages/decap-cms-lib-auth/index.d.ts"]
+  "ignoreFiles": [
+    "packages/decap-cms-lib-auth/index.d.ts",
+    "packages/decap-cms-core/src/backend.ts"
+  ]
 }
