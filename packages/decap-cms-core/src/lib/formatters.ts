@@ -101,6 +101,27 @@ export function prepareSlug(slug: string) {
 
       // Replace periods with dashes.
       .replace(/[.]/g, '-')
+
+      // Replace á,à or ä to a
+      .replace(/[áàä]/g, 'a')
+
+      // Replace é,è or ë to e
+      .replace(/[éèë]/g, 'e')
+
+      // Replace í, ì or ï to i
+      .replace(/[íìï]/g, 'i')
+
+      // Replace ó, ò or ö to o
+      .replace(/[óòö]/g, 'o')
+
+      // Replace ú,ù or ü to u
+      .replace(/[úùü]/g, 'u')
+
+      // Replace ç to c
+      .replace(/[ç]/g, 'c')
+
+      // Remove ’
+      .replace(/[’]/g, '')
   );
 }
 

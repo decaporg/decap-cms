@@ -265,6 +265,34 @@ describe('formatters', () => {
     it('should replace periods with slashes', () => {
       expect(prepareSlug(`sl.ug`)).toBe('sl-ug');
     });
+
+    it('should replace á,à or ä to a', () => {
+      expect(prepareSlug(`áàä`)).toBe('aaa');
+    });
+
+    it('should replace é,è or ë to e', () => {
+      expect(prepareSlug(`éèë`)).toBe('eee');
+    });
+
+    it('should replace í, ì or ï to i', () => {
+      expect(prepareSlug(`íìï`)).toBe('iii');
+    });
+
+    it('should replace ó, ò or ö to o', () => {
+      expect(prepareSlug(`óòö`)).toBe('ooo');
+    });
+
+    it('should replace ú,ù or ü to u', () => {
+      expect(prepareSlug(`úùü`)).toBe('uuu');
+    });
+
+    it('should replace ç to c', () => {
+      expect(prepareSlug(`ç`)).toBe('c');
+    });
+
+    it('should remove ’', () => {
+      expect(prepareSlug(`sl’ug`)).toBe('slug');
+    });
   });
 
   const slugConfig = {
