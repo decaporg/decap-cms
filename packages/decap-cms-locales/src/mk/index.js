@@ -100,7 +100,8 @@ const mk = {
     },
     editor: {
       onLeavePage: 'Дали сте сигурни дека сакате да ја напуштите страницата?',
-      onUpdatingWithUnsavedChanges: 'Имате незачувани промени, зачувајте пред ажурирање на статусот.',
+      onUpdatingWithUnsavedChanges:
+        'Имате незачувани промени, зачувајте пред ажурирање на статусот.',
       onPublishingNotReady: 'Ажурирајте го статусот на "Спремно" пред објавување.',
       onPublishingWithUnsavedChanges: 'Имате незачувани промени, зачувајте пред објавување.',
       onPublishing: 'Дали сте сигурни дека сакате да го објавите овој запис?',
@@ -113,7 +114,8 @@ const mk = {
       onDeleteUnpublishedChanges:
         'Сите необјавени промени ќе бидат избришани. Дали сакате да продолжите?',
       loadingEntry: 'Се вчитува запис...',
-      confirmLoadBackup: 'Се пронајде локална резервна копија за овој запис. Дали сакате да ја користите?',
+      confirmLoadBackup:
+        'Се пронајде локална резервна копија за овој запис. Дали сакате да ја користите?',
     },
     editorInterface: {
       toggleI18n: 'Вклучи i18n',
@@ -225,7 +227,8 @@ const mk = {
     },
     mediaLibrary: {
       onDelete: 'Дали сте сигурни дека сакате да го избришете избраниот медиум?',
-      fileTooLarge: 'Датотеката е преголема.\nКонфигурацијата не дозволува датотеки поголеми од %{size} kB.',
+      fileTooLarge:
+        'Датотеката е преголема.\nКонфигурацијата не дозволува датотеки поголеми од %{size} kB.',
     },
     mediaLibraryModal: {
       loading: 'Се вчитува...',
@@ -270,7 +273,8 @@ const mk = {
       onFailToPersist: 'Неуспешно зачувување на запис: %{details}',
       onFailToDelete: 'Неуспешно бришење на запис: %{details}',
       onFailToUpdateStatus: 'Неуспешно ажурирање на статусот: %{details}',
-      missingRequiredField: 'Пропуштивте задолжително поле. Ве молиме пополнете го пред да зачувате.',
+      missingRequiredField:
+        'Пропуштивте задолжително поле. Ве молиме пополнете го пред да зачувате.',
       entrySaved: 'Записот е зачуван',
       entryPublished: 'Записот е објавен',
       entryUnpublished: 'Записот е необјавен',
@@ -280,8 +284,7 @@ const mk = {
       onDeleteUnpublishedChanges: 'Необјавените промени се избришани',
       onFailToAuth: '%{details}',
       onLoggedOut: 'Одјавени сте, зачувајте ги податоците и најавете се повторно.',
-      onBackendDown:
-        'Серверот има прекин. Видете %{details} за повеќе информации.',
+      onBackendDown: 'Серверот има прекин. Видете %{details} за повеќе информации.',
     },
   },
   workflow: {
