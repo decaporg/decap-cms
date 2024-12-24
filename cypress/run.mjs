@@ -15,7 +15,7 @@ async function runCypress() {
 
     await execa(
       'cypress',
-      ['run', '--browser', 'chrome', '--headless', '--spec', machineSpecs.join(',')],
+      ['run', '--browser', 'chrome', '--headless', '--bail', '--spec', machineSpecs.join(',')],
       { stdio: 'inherit', preferLocal: true },
     );
   } else {
@@ -26,6 +26,7 @@ async function runCypress() {
         '--browser',
         'chrome',
         '--headless',
+        '--bail',
         '--record',
         '--parallel',
         '--ci-build-id',

@@ -28,6 +28,7 @@ jobs:
       matrix:
         os: [macos-latest, windows-latest, ubuntu-latest]
         node-version: [18.x, 20.x]
+      fail-fast: true
     if: ${{ needs.changes.outputs.cms == 'true' }}
     steps:
       - uses: actions/checkout@v3
@@ -47,7 +48,7 @@ jobs:
         run: npm run build:demo
       - name: run e2e tests
         if: matrix.os == 'ubuntu-latest' && matrix.node-version == '20.x'
-        run: npm run test:e2e:run-ci
+        run: npm run test:e2e:run-ci -- --bail
         env:
           IS_FORK: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == true }}
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
