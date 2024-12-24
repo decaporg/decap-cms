@@ -31,7 +31,7 @@ jobs:
     if: ${{ needs.changes.outputs.cms == 'true' }}
     steps:
       - uses: actions/checkout@v3
-      - name: Use Node.js {{ matrix.node-version }}
+      - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
@@ -39,7 +39,7 @@ jobs:
           cache: 'npm'
       - name: log versions
         run: node --version && npm --version && yarn --version
-      - name: install dependecies
+      - name: install dependencies
         run: npm ci
       - name: run unit tests
         run: npm run test:ci
