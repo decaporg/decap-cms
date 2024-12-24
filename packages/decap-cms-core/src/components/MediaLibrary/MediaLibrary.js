@@ -6,6 +6,7 @@ import { orderBy, map } from 'lodash';
 import { translate } from 'react-polyglot';
 import fuzzy from 'fuzzy';
 import { fileExtension } from 'decap-cms-lib-util';
+import { dirname } from 'path';
 
 import {
   loadMedia as loadMediaAction,
@@ -15,7 +16,11 @@ import {
   loadMediaDisplayURL as loadMediaDisplayURLAction,
   closeMediaLibrary as closeMediaLibraryAction,
 } from '../../actions/mediaLibrary';
-import { selectMediaFiles } from '../../reducers/mediaLibrary';
+import {
+  selectMediaFiles,
+  getInitialMediaFolder,
+  getMediaFolderNavDisabled,
+} from '../../reducers/mediaLibrary';
 import MediaLibraryModal, { fileShape } from './MediaLibraryModal';
 
 /**
@@ -59,6 +64,7 @@ class MediaLibrary extends React.Component {
     deleteMedia: PropTypes.func.isRequired,
     insertMedia: PropTypes.func.isRequired,
     closeMediaLibrary: PropTypes.func.isRequired,
+    defaultMediaFolder: PropTypes.string.isRequired,
     t: PropTypes.func.isRequired,
   };
 
@@ -125,7 +131,7 @@ class MediaLibrary extends React.Component {
   filterImages = files => {
     return files.filter(file => {
       const ext = fileExtension(file.name).toLowerCase();
-      return IMAGE_EXTENSIONS.includes(ext);
+      return IMAGE_EXTENSIONS.includes(ext) || file.isDirectory;
     });
   };
 
@@ -135,22 +141,37 @@ class MediaLibrary extends React.Component {
   toTableData = files => {
     const tableData =
       files &&
-      files.map(({ key, name, id, size, path, queryOrder, displayURL, draft }) => {
-        const ext = fileExtension(name).toLowerCase();
-        return {
+      files.map(
+        ({
           key,
-          id,
           name,
-          path,
-          type: ext.toUpperCase(),
+          id,
           size,
+          path,
           queryOrder,
           displayURL,
           draft,
-          isImage: IMAGE_EXTENSIONS.includes(ext),
-          isViewableImage: IMAGE_EXTENSIONS_VIEWABLE.includes(ext),
-        };
-      });
+          isDirectory,
+          hasChildren,
+        }) => {
+          const ext = fileExtension(name).toLowerCase();
+          return {
+            key,
+            id,
+            name,
+            path,
+            type: ext.toUpperCase(),
+            size,
+            queryOrder,
+            displayURL,
+            draft,
+            isDirectory,
+            hasChildren,
+            isImage: IMAGE_EXTENSIONS.includes(ext),
+            isViewableImage: IMAGE_EXTENSIONS_VIEWABLE.includes(ext),
+          };
+        },
+      );
 
     /**
      * Get the sort order for use with `lodash.orderBy`, and always add the
@@ -163,15 +184,25 @@ class MediaLibrary extends React.Component {
   };
 
   handleClose = () => {
+    this.setState({ currentMediaFolder: null });
     this.props.closeMediaLibrary();
   };
 
-  /**
-   * Toggle asset selection on click.
-   */
-  handleAssetClick = asset => {
+  updateSelectedFile = asset => {
     const selectedFile = this.state.selectedFile.key === asset.key ? {} : asset;
     this.setState({ selectedFile });
+  };
+
+  handleAssetClick = asset => {
+    if (asset.isDirectory) {
+      this.setState({ currentMediaFolder: asset.path, selectedAssets: [] });
+    } else {
+      this.updateSelectedFile(asset);
+    }
+  };
+
+  handleBreadcrumbClick = currentMediaFolder => {
+    this.setState({ currentMediaFolder, selectedAssets: [] });
   };
 
   /**
@@ -186,6 +217,8 @@ class MediaLibrary extends React.Component {
     event.persist();
     event.stopPropagation();
     event.preventDefault();
+    const { initialMediaFolder } = this.props;
+    const currentMediaFolder = this.state.currentMediaFolder || initialMediaFolder;
     const { persistMedia, privateUpload, config, t, field } = this.props;
     const { files: fileList } = event.dataTransfer || event.target;
     const files = [...fileList];
@@ -199,7 +232,7 @@ class MediaLibrary extends React.Component {
         }),
       );
     } else {
-      await persistMedia(file, { privateUpload, field });
+      await persistMedia(file, { privateUpload, field, currentMediaFolder });
 
       this.setState({ isPersisted: true });
 
@@ -234,6 +267,30 @@ class MediaLibrary extends React.Component {
     deleteMedia(file, { privateUpload }).then(() => {
       this.setState({ selectedFile: {} });
     });
+  };
+
+  handleCreateFolder = dirName => {
+    this.setState({ isLoading: true });
+    function byteToHex(byte) {
+      return ('0' + byte.toString(16)).slice(-2);
+    }
+    function generateId(len = 40) {
+      var arr = new Uint8Array(len / 2);
+      window.crypto.getRandomValues(arr);
+      return Array.from(arr, byteToHex).join('');
+    }
+    const { defaultMediaFolder } = this.props;
+    const currentMediaFolder = this.state.currentMediaFolder || defaultMediaFolder;
+    this.props.files.push({
+      id: generateId(40),
+      hasChildren: false,
+      key: generateId(40),
+      name: dirName,
+      path: `${currentMediaFolder}/${dirName}`,
+      displayURL: { path: `${currentMediaFolder}/${dirName}` },
+      isDirectory: true,
+    });
+    this.setState({ isLoading: false });
   };
 
   /**
@@ -330,14 +387,24 @@ class MediaLibrary extends React.Component {
       isPaginating,
       privateUpload,
       displayURLs,
+      defaultMediaFolder,
+      initialMediaFolder,
+      mediaFolderNavDisabled,
       t,
     } = this.props;
 
+    const currentMediaFolder = this.state.currentMediaFolder || initialMediaFolder;
+    const currentDirFiles = files.filter(file => dirname(file.path) === currentMediaFolder);
+    const currentDirFolders = (currentDirFiles || []).filter(file => file.isDirectory);
+    const currentDirFilesOrderedByTreeType = currentDirFolders.concat(
+      (currentDirFiles || []).filter(file => !file.isDirectory),
+    );
     return (
       <MediaLibraryModal
         isVisible={isVisible}
         canInsert={canInsert}
-        files={files}
+        files={currentDirFilesOrderedByTreeType}
+        folders={currentDirFolders}
         dynamicSearch={dynamicSearch}
         dynamicSearchActive={dynamicSearchActive}
         forImage={forImage}
@@ -357,10 +424,15 @@ class MediaLibrary extends React.Component {
         handleSearchKeyDown={this.handleSearchKeyDown}
         handlePersist={this.handlePersist}
         handleDelete={this.handleDelete}
+        handleCreateFolder={this.handleCreateFolder}
         handleInsert={this.handleInsert}
         handleDownload={this.handleDownload}
         setScrollContainerRef={ref => (this.scrollContainerRef = ref)}
         handleAssetClick={this.handleAssetClick}
+        handleBreadcrumbClick={this.handleBreadcrumbClick}
+        currentMediaFolder={currentMediaFolder}
+        defaultMediaFolder={defaultMediaFolder}
+        mediaFolderNavDisabled={mediaFolderNavDisabled}
         handleLoadMore={this.handleLoadMore}
         displayURLs={displayURLs}
         loadDisplayURL={this.loadDisplayURL}
@@ -371,12 +443,14 @@ class MediaLibrary extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { mediaLibrary } = state;
+  const { mediaLibrary, config } = state;
   const field = mediaLibrary.get('field');
   const mediaLibraryProps = {
     isVisible: mediaLibrary.get('isVisible'),
     canInsert: mediaLibrary.get('canInsert'),
     files: selectMediaFiles(state, field),
+    initialMediaFolder: getInitialMediaFolder(state, field),
+    mediaFolderNavDisabled: getMediaFolderNavDisabled(state, field),
     displayURLs: mediaLibrary.get('displayURLs'),
     dynamicSearch: mediaLibrary.get('dynamicSearch'),
     dynamicSearchActive: mediaLibrary.get('dynamicSearchActive'),
@@ -391,6 +465,7 @@ function mapStateToProps(state) {
     hasNextPage: mediaLibrary.get('hasNextPage'),
     isPaginating: mediaLibrary.get('isPaginating'),
     field,
+    defaultMediaFolder: config.media_folder,
   };
   return { ...mediaLibraryProps };
 }
