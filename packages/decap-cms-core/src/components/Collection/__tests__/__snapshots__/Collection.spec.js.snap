@@ -3,11 +3,19 @@
 exports[`Collection should render connected component 1`] = `
 <DocumentFragment>
   .emotion-0 {
-  margin: 28px 18px;
+  margin: 10px;
 }
 
-.emotion-2 {
-  padding-left: 280px;
+@media (min-width: 800px) {
+  .emotion-0 {
+    margin: 28px 18px;
+  }
+}
+
+@media (min-width: 800px) {
+  .emotion-2 {
+    padding-left: 280px;
+  }
 }
 
 <div
@@ -45,11 +53,19 @@ exports[`Collection should render connected component 1`] = `
 exports[`Collection should render with collection with create url 1`] = `
 <DocumentFragment>
   .emotion-0 {
-  margin: 28px 18px;
+  margin: 10px;
 }
 
-.emotion-2 {
-  padding-left: 280px;
+@media (min-width: 800px) {
+  .emotion-0 {
+    margin: 28px 18px;
+  }
+}
+
+@media (min-width: 800px) {
+  .emotion-2 {
+    padding-left: 280px;
+  }
 }
 
 <div
@@ -78,11 +94,19 @@ exports[`Collection should render with collection with create url 1`] = `
 exports[`Collection should render with collection with create url and path 1`] = `
 <DocumentFragment>
   .emotion-0 {
-  margin: 28px 18px;
+  margin: 10px;
 }
 
-.emotion-2 {
-  padding-left: 280px;
+@media (min-width: 800px) {
+  .emotion-0 {
+    margin: 28px 18px;
+  }
+}
+
+@media (min-width: 800px) {
+  .emotion-2 {
+    padding-left: 280px;
+  }
 }
 
 <div
@@ -113,11 +137,19 @@ exports[`Collection should render with collection with create url and path 1`] =
 exports[`Collection should render with collection without create url 1`] = `
 <DocumentFragment>
   .emotion-0 {
-  margin: 28px 18px;
+  margin: 10px;
 }
 
-.emotion-2 {
-  padding-left: 280px;
+@media (min-width: 800px) {
+  .emotion-0 {
+    margin: 28px 18px;
+  }
+}
+
+@media (min-width: 800px) {
+  .emotion-2 {
+    padding-left: 280px;
+  }
 }
 
 <div

@@ -21,20 +21,24 @@ const styles = {
 
 const SidebarContainer = styled.aside`
   ${components.card};
-  width: 250px;
   padding: 8px 0 12px;
-  position: fixed;
   max-height: calc(100vh - 112px);
   display: flex;
   flex-direction: column;
+  margin-bottom: 10px;
+  @media (min-width: 800px) {
+    width: 250px;
+    position: fixed;
+    margin-bottom: 0;
+  }
 `;
 
 const SidebarHeading = styled.h2`
-  font-size: 22px;
+  font-size: clamp(18px, 2.2vw, 22px);
   font-weight: 600;
-  line-height: 37px;
+  line-height: 1.5;
   padding: 0;
-  margin: 10px 20px;
+  margin: clamp(6px, 1vw, 10px) clamp(12px, 2vw, 20px);
   color: ${colors.textLead};
 `;
 
@@ -49,7 +53,7 @@ const SidebarNavLink = styled(NavLink)`
   font-size: 14px;
   font-weight: 500;
   align-items: center;
-  padding: 8px 18px;
+  padding: clamp(6px, 1vw, 10px) clamp(12px, 2vw, 20px);
   border-left: 2px solid #fff;
   z-index: -1;
 
