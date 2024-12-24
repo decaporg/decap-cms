@@ -95,6 +95,33 @@ describe('Backend', () => {
       expect(result.length).toBe(1);
     });
 
+    it('filters multiple values', () => {
+      const result = backend.filterEntries(
+        {
+          entries: [
+            {
+              data: {
+                testField: 'one',
+              },
+            },
+            {
+              data: {
+                testField: 'two',
+              },
+            },
+            {
+              data: {
+                testField: 'three',
+              },
+            },
+          ],
+        },
+        Map({ field: 'testField', value: ['one', 'two'] }),
+      );
+
+      expect(result.length).toBe(2);
+    });
+
     it('filters list values', () => {
       const result = backend.filterEntries(
         {
