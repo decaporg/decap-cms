@@ -36,10 +36,11 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           check-latest: true
+          cache: 'npm'
       - name: log versions
         run: node --version && npm --version && yarn --version
       - name: install dependecies
-        run: npm install
+        run: npm ci
       - name: run unit tests
         run: npm run test:ci
         env:
@@ -71,6 +72,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           check-latest: true
+          cache: 'npm'
       - uses: actions/download-artifact@master
         with:
           name: dev-test-website-${{ runner.os }}-18.x
