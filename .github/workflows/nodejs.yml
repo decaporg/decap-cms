@@ -43,60 +43,21 @@ jobs:
         run: npm ci
       - name: run unit tests
         run: npm run test:ci
-        env:
-          CI: true
-          NODE_OPTIONS: --max-old-space-size=4096
       - name: build demo site
         run: npm run build:demo
-        env:
-          NODE_OPTIONS: --max-old-space-size=4096
-      - uses: actions/upload-artifact@master
-        with:
-          name: dev-test-website-${{ runner.os }}-${{ matrix.node-version }}
-          path: dev-test
-
-  e2e-with-cypress:
-    needs: [changes, build]
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x]
-      fail-fast: false
-
-    if: ${{ needs.changes.outputs.cms == 'true' }}
-    steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          check-latest: true
-          cache: 'npm'
-      - uses: actions/download-artifact@master
-        with:
-          name: dev-test-website-${{ runner.os }}-18.x
-          path: dev-test
-      - name: npm install
-        run: |
-          node --version
-          npm --version
-          yarn --version
-          npm install
-      - name: e2e test
-        run: |
-          npm run test:e2e:run-ci
+      - name: run e2e tests
+        if: matrix.os == 'ubuntu-latest' && matrix.node-version == '20.x'
+        run: npm run test:e2e:run-ci
         env:
           IS_FORK: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == true }}
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           NODE_OPTIONS: --max-old-space-size=4096
-          MACHINE_COUNT: 2
-          MACHINE_INDEX: ${{ matrix.node-version }}
           TZ: Europe/Amsterdam
       - uses: actions/upload-artifact@v3
-        if: ${{ always() }}
+        if: matrix.os == 'ubuntu-latest' && matrix.node-version == '20.x' && failure()
         with:
-          name: cypress-results-${{ matrix.node-version }}
+          name: cypress-results
           path: |
             cypress/screenshots
             cypress/videos
+
