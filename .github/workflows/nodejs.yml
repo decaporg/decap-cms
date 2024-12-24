@@ -46,7 +46,7 @@ jobs:
         run: npm run build:demo
       - name: run e2e tests
         if: matrix.os == 'ubuntu-latest' && matrix.node-version == '20.x'
-        run: npm run test:e2e:run-ci -- --bail
+        run: npm run test:e2e:run-ci
         env:
           IS_FORK: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == true || github.repository_owner != 'decaporg' }}
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
