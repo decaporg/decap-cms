@@ -5,6 +5,7 @@
   "homepage": "https://www.decapcms.org",
   "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-app",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
+  "module": "dist/esm/index.js",
   "main": "dist/decap-cms-app.js",
   "files": [
     "src/",
