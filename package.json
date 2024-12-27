@@ -8,7 +8,7 @@
     "build-preview": "npm run build && nx run decap-cms:build-preview --output-style=stream",
     "type-check": "tsc --noEmit",
     "type-check:watch": "npm run type-check -- --watch",
-    "clean": "rimraf \"packages/*/dist\" dev-test/dist \"packages/*/node_modules\"",
+    "clean": "rimraf \"packages/*/dist\" dev-test/dist \"packages/*/node_modules\" \".nx/cache\"",
     "reset": "npm run clean",
     "test": "npm run lint && npm run type-check && npm run test:unit",
     "test:all": "npm run test && npm run test:e2e",

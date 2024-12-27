@@ -1,10 +1,12 @@
 {
   "targetDefaults": {
     "build:esm": {
-      "cache": true
+      "cache": true,
+      "dependsOn": ["^build:esm"]
     },
     "build": {
-      "cache": true
+      "cache": true,
+      "dependsOn": ["^build"]
     }
   },
   "namedInputs": {

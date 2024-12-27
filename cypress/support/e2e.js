@@ -26,3 +26,9 @@ addMatchImageSnapshotCommand({
 Cypress.on('uncaught:exception', () => false);
 
 import './commands';
+
+afterEach(function () {
+  if (this.currentTest.state === 'failed') {
+    Cypress.runner.stop();
+  }
+});
