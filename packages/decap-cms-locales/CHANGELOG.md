@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.3.0](https://github.com/decaporg/decap-cms/compare/decap-cms-locales@3.2.0...decap-cms-locales@3.3.0) (2025-01-15)
+
+### Features
+
+- add mk (Macedonian) locale ([#7346](https://github.com/decaporg/decap-cms/issues/7346)) ([b41e43a](https://github.com/decaporg/decap-cms/commit/b41e43a73218f0950ea9c96f21dfe0a31aa173b3))
+- **locale/cs:** improve the Czech translations, add new strings from `en` ([#7326](https://github.com/decaporg/decap-cms/issues/7326)) ([76f4b74](https://github.com/decaporg/decap-cms/commit/76f4b7411684943c515a77932fcac743adce8733))
+
 # [3.2.0](https://github.com/decaporg/decap-cms/compare/decap-cms-locales@3.1.4...decap-cms-locales@3.2.0) (2024-08-07)
 
 ### Bug Fixes

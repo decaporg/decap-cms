@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.2.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-object@3.1.4...decap-cms-widget-object@3.2.0) (2025-01-15)
+
+### Bug Fixes
+
+- **object-widget:** highlight nested validation errors ([#7330](https://github.com/decaporg/decap-cms/issues/7330)) ([0bb2904](https://github.com/decaporg/decap-cms/commit/0bb290492218e710e113cadccc49cdc475328db4))
+
 ## [3.1.4](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-object@3.1.3...decap-cms-widget-object@3.1.4) (2024-08-13)
 
 ### Reverts
