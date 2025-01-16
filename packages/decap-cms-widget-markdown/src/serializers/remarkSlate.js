@@ -234,12 +234,20 @@ export default function remarkToSlate({ voidCodeBlock } = {}) {
        * Convert simple cases that only require a type and children, with no
        * additional properties.
        */
-      case 'root':
       case 'paragraph':
       case 'blockquote':
       case 'tableRow':
       case 'tableCell': {
         return createBlock(typeMap[node.type], nodes);
+      }
+
+      /**
+       * Root element
+       * If the root node is empty, we need to add a paragraph node to it.
+       */
+      case 'root': {
+        const children = isEmpty(nodes) ? [createBlock('paragraph')] : nodes;
+        return createBlock(typeMap[node.type], children);
       }
 
       /**

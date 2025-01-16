@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.1.0](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-widgets@3.0.2...decap-cms-lib-widgets@3.1.0) (2024-11-12)
+
+### Bug Fixes
+
+- summary string transformations format ([#7221](https://github.com/decaporg/decap-cms/issues/7221)) ([#7313](https://github.com/decaporg/decap-cms/issues/7313)) ([1d0cd61](https://github.com/decaporg/decap-cms/commit/1d0cd611812860450ff15b31eee7f764d6026306))
+
 ## [3.0.2](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-widgets@3.0.1...decap-cms-lib-widgets@3.0.2) (2024-03-21)
 
 **Note:** Version bump only for package decap-cms-lib-widgets

@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.1.2](https://github.com/decaporg/decap-cms/compare/decap-server@3.1.1...decap-server@3.1.2) (2024-08-13)
+
+### Reverts
+
+- Revert "Update dependencies (#7264)" ([22d483a](https://github.com/decaporg/decap-cms/commit/22d483a5b0c654071ae05735ac4f49abdc13d38c)), closes [#7264](https://github.com/decaporg/decap-cms/issues/7264)
+
+## [3.1.1](https://github.com/decaporg/decap-cms/compare/decap-server@3.1.0...decap-server@3.1.1) (2024-08-13)
+
+**Note:** Version bump only for package decap-server
+
+# [3.1.0](https://github.com/decaporg/decap-cms/compare/decap-server@3.0.4...decap-server@3.1.0) (2024-08-07)
+
+**Note:** Version bump only for package decap-server
+
+## [3.0.4](https://github.com/decaporg/decap-cms/compare/decap-server@3.0.3...decap-server@3.0.4) (2024-04-03)
+
+**Note:** Version bump only for package decap-server
+
 ## [3.0.3](https://github.com/decaporg/decap-cms/compare/decap-server@3.0.2...decap-server@3.0.3) (2024-03-21)
 
 **Note:** Version bump only for package decap-server

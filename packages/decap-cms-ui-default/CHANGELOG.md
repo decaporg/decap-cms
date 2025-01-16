@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.1.4](https://github.com/decaporg/decap-cms/compare/decap-cms-ui-default@3.1.3...decap-cms-ui-default@3.1.4) (2024-08-13)
+
+### Reverts
+
+- Revert "Update dependencies (#7264)" ([22d483a](https://github.com/decaporg/decap-cms/commit/22d483a5b0c654071ae05735ac4f49abdc13d38c)), closes [#7264](https://github.com/decaporg/decap-cms/issues/7264)
+
+## [3.1.3](https://github.com/decaporg/decap-cms/compare/decap-cms-ui-default@3.1.2...decap-cms-ui-default@3.1.3) (2024-08-13)
+
+**Note:** Version bump only for package decap-cms-ui-default
+
+## [3.1.2](https://github.com/decaporg/decap-cms/compare/decap-cms-ui-default@3.1.1...decap-cms-ui-default@3.1.2) (2024-06-27)
+
+### Bug Fixes
+
+- display custom logo when using a proxy server ([#7235](https://github.com/decaporg/decap-cms/issues/7235)) ([7feca52](https://github.com/decaporg/decap-cms/commit/7feca52605315a764dfbe1b65c6782a644191dd4))
+
 ## [3.1.1](https://github.com/decaporg/decap-cms/compare/decap-cms-ui-default@3.1.0-beta.2...decap-cms-ui-default@3.1.1) (2024-03-21)
 
 **Note:** Version bump only for package decap-cms-ui-default

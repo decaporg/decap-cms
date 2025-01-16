@@ -3,6 +3,44 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.5.0](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.4.2...decap-cms-core@3.5.0) (2024-11-12)
+
+### Bug Fixes
+
+- clear field error in Editor after the field value is changed ([#7216](https://github.com/decaporg/decap-cms/issues/7216)) ([d9655ea](https://github.com/decaporg/decap-cms/commit/d9655eae8cc47fb3a63815f75321710b5192c6ef))
+
+## [3.4.2](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.4.1...decap-cms-core@3.4.2) (2024-08-13)
+
+### Reverts
+
+- Revert "Update dependencies (#7264)" ([22d483a](https://github.com/decaporg/decap-cms/commit/22d483a5b0c654071ae05735ac4f49abdc13d38c)), closes [#7264](https://github.com/decaporg/decap-cms/issues/7264)
+
+## [3.4.1](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.4.0...decap-cms-core@3.4.1) (2024-08-13)
+
+**Note:** Version bump only for package decap-cms-core
+
+# [3.4.0](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.3.7...decap-cms-core@3.4.0) (2024-08-07)
+
+### Bug Fixes
+
+- **i18n:** allow to store the new entry in the draft after a pre save ([#7227](https://github.com/decaporg/decap-cms/issues/7227)) ([dc8b684](https://github.com/decaporg/decap-cms/commit/dc8b68408576a320424e226e59c95a92cb0b134f))
+- improve field error position ([#7260](https://github.com/decaporg/decap-cms/issues/7260)) ([853487b](https://github.com/decaporg/decap-cms/commit/853487b2645ec9fa8a24a829b0028c620c7b6734))
+
+## [3.3.7](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.3.6...decap-cms-core@3.3.7) (2024-06-27)
+
+### Bug Fixes
+
+- change AppHeaderButton style fixing [#7208](https://github.com/decaporg/decap-cms/issues/7208) ([#7209](https://github.com/decaporg/decap-cms/issues/7209)) ([7483f19](https://github.com/decaporg/decap-cms/commit/7483f191025b52af8957ea87119ac4f9490b65de))
+- change EditorToolbar position style ([#7198](https://github.com/decaporg/decap-cms/issues/7198)) ([dc71d72](https://github.com/decaporg/decap-cms/commit/dc71d728138cd322b815ae40eb297e43327105b2)), closes [#7197](https://github.com/decaporg/decap-cms/issues/7197)
+
+## [3.3.6](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.3.5...decap-cms-core@3.3.6) (2024-03-29)
+
+**Note:** Version bump only for package decap-cms-core
+
+## [3.3.5](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.3.4...decap-cms-core@3.3.5) (2024-03-28)
+
+**Note:** Version bump only for package decap-cms-core
+
 ## [3.3.4](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.3.3...decap-cms-core@3.3.4) (2024-03-21)
 
 **Note:** Version bump only for package decap-cms-core

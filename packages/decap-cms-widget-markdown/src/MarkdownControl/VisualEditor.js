@@ -26,6 +26,7 @@ import { markdownToSlate, slateToMarkdown } from '../serializers';
 import withShortcodes from './plugins/shortcodes/withShortcodes';
 import insertShortcode from './plugins/shortcodes/insertShortcode';
 import defaultEmptyBlock from './plugins/blocks/defaultEmptyBlock';
+import withHtml from './plugins/html/withHtml';
 
 function visualEditorStyles({ minimal }) {
   return `
@@ -97,7 +98,9 @@ function Editor(props) {
 
   const editor = useMemo(
     () =>
-      withReact(withHistory(withShortcodes(withBlocks(withLists(withInlines(createEditor())))))),
+      withHtml(
+        withReact(withHistory(withShortcodes(withBlocks(withLists(withInlines(createEditor())))))),
+      ),
     [],
   );
 

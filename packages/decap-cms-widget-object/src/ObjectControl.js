@@ -89,6 +89,7 @@ export default class ObjectControl extends React.Component {
       isFieldHidden,
       locale,
       collapsed,
+      forID,
     } = this.props;
 
     if (field.get('widget') === 'hidden') {
@@ -112,7 +113,7 @@ export default class ObjectControl extends React.Component {
         onValidate={onValidateObject}
         processControlRef={controlRef && controlRef.bind(this)}
         controlRef={controlRef}
-        parentIds={parentIds}
+        parentIds={[...parentIds, forID]}
         isDisabled={isDuplicate}
         isHidden={isHidden}
         isFieldDuplicate={isFieldDuplicate}

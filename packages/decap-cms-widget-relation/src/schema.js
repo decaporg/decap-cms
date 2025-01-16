@@ -9,6 +9,17 @@ export default {
     max: { type: 'integer' },
     display_fields: { type: 'array', minItems: 1, items: { type: 'string' } },
     options_length: { type: 'integer' },
+    filters: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          field: { type: 'string' },
+          values: { type: 'array', minItems: 1, items: { type: ['string', 'boolean', 'integer'] } },
+        },
+        required: ['field', 'values'],
+      },
+    },
   },
   oneOf: [
     {

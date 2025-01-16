@@ -318,6 +318,81 @@ describe('Backend', () => {
     });
   });
 
+  describe('persistEntry', () => {
+    it('should update the draft with the new entry returned by preSave event', async () => {
+      const implementation = {
+        init: jest.fn(() => implementation),
+        persistEntry: jest.fn(() => implementation),
+      };
+
+      const config = {
+        backend: {
+          commit_messages: 'commit-messages',
+        },
+      };
+      const collection = Map({
+        name: 'posts',
+      });
+      const entry = Map({
+        data: 'old_data',
+      });
+      const newEntry = Map({
+        data: 'new_data',
+      });
+      const entryDraft = Map({
+        entry,
+      });
+      const user = { login: 'login', name: 'name' };
+      const backend = new Backend(implementation, { config, backendName: 'github' });
+
+      backend.currentUser = jest.fn().mockResolvedValue(user);
+      backend.entryToRaw = jest.fn().mockReturnValue('content');
+      backend.invokePreSaveEvent = jest.fn().mockReturnValueOnce(newEntry);
+
+      await backend.persistEntry({ config, collection, entryDraft });
+
+      expect(backend.entryToRaw).toHaveBeenCalledTimes(1);
+      expect(backend.entryToRaw).toHaveBeenCalledWith(collection, newEntry);
+    });
+
+    it('should update the draft with the new data returned by preSave event', async () => {
+      const implementation = {
+        init: jest.fn(() => implementation),
+        persistEntry: jest.fn(() => implementation),
+      };
+
+      const config = {
+        backend: {
+          commit_messages: 'commit-messages',
+        },
+      };
+      const collection = Map({
+        name: 'posts',
+      });
+      const entry = Map({
+        data: Map({}),
+      });
+      const newData = Map({});
+      const newEntry = Map({
+        data: newData,
+      });
+      const entryDraft = Map({
+        entry,
+      });
+      const user = { login: 'login', name: 'name' };
+      const backend = new Backend(implementation, { config, backendName: 'github' });
+
+      backend.currentUser = jest.fn().mockResolvedValue(user);
+      backend.entryToRaw = jest.fn().mockReturnValue('content');
+      backend.invokePreSaveEvent = jest.fn().mockReturnValueOnce(newData);
+
+      await backend.persistEntry({ config, collection, entryDraft });
+
+      expect(backend.entryToRaw).toHaveBeenCalledTimes(1);
+      expect(backend.entryToRaw).toHaveBeenCalledWith(collection, newEntry);
+    });
+  });
+
   describe('persistMedia', () => {
     it('should persist media', async () => {
       const persistMediaResult = {};

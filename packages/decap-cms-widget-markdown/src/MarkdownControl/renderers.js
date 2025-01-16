@@ -205,7 +205,12 @@ function ThematicBreak(props) {
 }
 
 function Break(props) {
-  return <br {...props.attributes} />;
+  return (
+    <>
+      <br {...props.attributes} />
+      {props.children}
+    </>
+  );
 }
 
 function BulletedList(props) {
@@ -221,8 +226,8 @@ function NumberedList(props) {
 }
 
 function Link(props) {
-  const url = props.url;
-  const title = props.title || url;
+  const url = props.element.url;
+  const title = props.element.title || url;
 
   return (
     <StyledA href={url} title={title} {...props.attributes}>

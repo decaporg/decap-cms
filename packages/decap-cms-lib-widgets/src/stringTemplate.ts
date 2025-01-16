@@ -36,8 +36,8 @@ const filters = [
 ];
 
 const FIELD_PREFIX = 'fields.';
-const templateContentPattern = '([^}{|]+)';
-const filterPattern = '( \\| ([^}{]+))?';
+const templateContentPattern = ' *([^}{| ]+)';
+const filterPattern = '( \\| ([^}{]+?))? *';
 const templateVariablePattern = `{{${templateContentPattern}${filterPattern}}}`;
 
 // prepends a Zero if the date has only 1 digit

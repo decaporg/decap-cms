@@ -3,6 +3,34 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.3.2](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-relation@3.3.1...decap-cms-widget-relation@3.3.2) (2024-08-13)
+
+### Reverts
+
+- Revert "Update dependencies (#7264)" ([22d483a](https://github.com/decaporg/decap-cms/commit/22d483a5b0c654071ae05735ac4f49abdc13d38c)), closes [#7264](https://github.com/decaporg/decap-cms/issues/7264)
+
+## [3.3.1](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-relation@3.3.0...decap-cms-widget-relation@3.3.1) (2024-08-13)
+
+**Note:** Version bump only for package decap-cms-widget-relation
+
+# [3.3.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-relation@3.2.1...decap-cms-widget-relation@3.3.0) (2024-04-16)
+
+### Features
+
+- nested fields and integer values for filter relation widget ([#7177](https://github.com/decaporg/decap-cms/issues/7177)) ([0e6f93b](https://github.com/decaporg/decap-cms/commit/0e6f93b1527931ddd7167bfd0ee3c3a7654e98b3))
+
+## [3.2.1](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-relation@3.2.0...decap-cms-widget-relation@3.2.1) (2024-04-02)
+
+### Bug Fixes
+
+- handle single values in multiselect relation widget ([#7164](https://github.com/decaporg/decap-cms/issues/7164)) ([248f36f](https://github.com/decaporg/decap-cms/commit/248f36fdc8326803b8b6d7174ac21650a5c05b7c))
+
+# [3.2.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-relation@3.1.1...decap-cms-widget-relation@3.2.0) (2024-03-28)
+
+### Features
+
+- filtering for relation widget ([#2405](https://github.com/decaporg/decap-cms/issues/2405)) ([#7161](https://github.com/decaporg/decap-cms/issues/7161)) ([85c92f0](https://github.com/decaporg/decap-cms/commit/85c92f0b1a40a7d0e34efb5e9bc4955e53725aeb))
+
 ## [3.1.1](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-relation@3.1.0-beta.1...decap-cms-widget-relation@3.1.1) (2024-03-21)
 
 **Note:** Version bump only for package decap-cms-widget-relation

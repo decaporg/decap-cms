@@ -85,7 +85,7 @@ const DropdownButton = styled(StyledDropdownButton)`
 const ToolbarContainer = styled.div`
   box-shadow: 0 2px 6px 0 rgba(68, 74, 87, 0.05), 0 1px 3px 0 rgba(68, 74, 87, 0.1),
     0 2px 54px rgba(0, 0, 0, 0.1);
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
@@ -594,11 +594,20 @@ export class EditorToolbar extends React.Component {
       </SaveButton>,
       currentStatus
         ? [
-            this.renderWorkflowStatusControls(),
-            this.renderNewEntryWorkflowPublishControls({ canCreate, canPublish }),
+            <React.Fragment key="workflow-status-controls">
+              {this.renderWorkflowStatusControls()}
+              {!hasChanged && this.renderNewEntryWorkflowPublishControls({ canCreate, canPublish })}
+            </React.Fragment>,
           ]
-        : !isNewEntry &&
-          this.renderExistingEntryWorkflowPublishControls({ canCreate, canPublish, canDelete }),
+        : !isNewEntry && (
+            <React.Fragment key="existing-entry-workflow-publish-controls">
+              {this.renderExistingEntryWorkflowPublishControls({
+                canCreate,
+                canPublish,
+                canDelete,
+              })}
+            </React.Fragment>
+          ),
       (!showDelete || useOpenAuthoring) && !hasUnpublishedChanges && !isModification ? null : (
         <DeleteButton
           key="delete-button"

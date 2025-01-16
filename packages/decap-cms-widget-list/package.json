@@ -1,7 +1,7 @@
 {
   "name": "decap-cms-widget-list",
   "description": "Widget for editing lists in Decap CMS.",
-  "version": "3.1.1",
+  "version": "3.2.2",
   "homepage": "https://www.decapcms.org/docs/widgets/#list",
   "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-widget-list",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
