@@ -37,7 +37,8 @@ const LocaleButton = styled(StyledDropdownButton)`
   height: 100%;
 
   &:after {
-    top: 11px;
+    top: 50%;
+    transform: translateY(-50%);
   }
 `;
 
