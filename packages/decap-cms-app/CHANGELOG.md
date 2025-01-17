@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.5.0](https://github.com/decaporg/decap-cms/compare/decap-cms-app@3.4.0...decap-cms-app@3.5.0) (2025-01-15)
+
+### Bug Fixes
+
+- **build:** Fix ESM output ([#7357](https://github.com/decaporg/decap-cms/issues/7357)) ([#7358](https://github.com/decaporg/decap-cms/issues/7358)) ([6cd7cb3](https://github.com/decaporg/decap-cms/commit/6cd7cb3b41718e20b44acaae1e2ffd73129520c2))
+
+# [3.4.0](https://github.com/decaporg/decap-cms/compare/decap-cms-app@3.3.3...decap-cms-app@3.4.0) (2024-11-12)
+
+**Note:** Version bump only for package decap-cms-app
+
 ## [3.3.3](https://github.com/decaporg/decap-cms/compare/decap-cms-app@3.3.2...decap-cms-app@3.3.3) (2024-08-30)
 
 **Note:** Version bump only for package decap-cms-app
