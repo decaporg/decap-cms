@@ -1,4 +1,4 @@
-import { DecapCmsApp as CMS } from 'decap-cms-app/dist/esm';
+import { DecapCmsApp as CMS } from 'decap-cms-app';
 // Media libraries
 import uploadcare from 'decap-cms-media-library-uploadcare';
 import cloudinary from 'decap-cms-media-library-cloudinary';
