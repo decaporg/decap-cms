@@ -169,9 +169,28 @@ export class PreviewPane extends React.Component {
     const { fields, entry, fieldsMetaData } = this.props;
     const field = fields.find(f => f.get('name') === name);
     const nestedFields = field && field.get('fields');
+    const variableTypes = field && field.get('types');
     const value = entry.getIn(['data', field.get('name')]);
     const metadata = fieldsMetaData.get(field.get('name'), Map());
 
+    // Variable Type lists
+    if (List.isList(value) && variableTypes) {
+      return value.map(val => {
+        const valueType = variableTypes.find(t => t.get('name') === val.get('type'));
+        const typeFields = valueType && valueType.get('fields');
+        const widgets =
+          typeFields &&
+          Map(
+            typeFields.map((f, i) => [
+              f.get('name'),
+              <div key={i}>{this.getWidget(f, val, metadata.get(f.get('name')), this.props)}</div>,
+            ]),
+          );
+        return Map({ data: val, widgets });
+      });
+    }
+
+    // List widgets
     if (List.isList(value)) {
       return value.map(val => {
         const widgets =
