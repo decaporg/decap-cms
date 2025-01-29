@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.6.0](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.5.0...decap-cms-core@3.6.0) (2025-01-29)
+
+### Bug Fixes
+
+- **widgetsFor:** return widgets for variable type lists ([#7296](https://github.com/decaporg/decap-cms/issues/7296)) ([9be2693](https://github.com/decaporg/decap-cms/commit/9be2693d1b35bf56c7ef05bdece6c24a21ba7567)), closes [/github.com/decaporg/decap-cms/issues/2307#issuecomment-638326225](https://github.com//github.com/decaporg/decap-cms/issues/2307/issues/issuecomment-638326225)
+
+### Features
+
+- **nested collections:** allow non-index files ([#7359](https://github.com/decaporg/decap-cms/issues/7359)) ([47a2f70](https://github.com/decaporg/decap-cms/commit/47a2f70ef788ae8e61bbbc0ac21e00d68d0029d0)), closes [#4972](https://github.com/decaporg/decap-cms/issues/4972)
+- visual editing (click-to-edit) ([#7374](https://github.com/decaporg/decap-cms/issues/7374)) ([989c2dd](https://github.com/decaporg/decap-cms/commit/989c2dd6ed80f69b572b8b73c4e37b5106ae04fb))
+
 # [3.5.0](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.4.2...decap-cms-core@3.5.0) (2024-11-12)
 
 ### Bug Fixes
