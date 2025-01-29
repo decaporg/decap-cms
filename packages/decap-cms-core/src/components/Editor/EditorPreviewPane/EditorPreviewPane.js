@@ -6,6 +6,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import Frame, { FrameContextConsumer } from 'react-frame-component';
 import { lengths } from 'decap-cms-ui-default';
 import { connect } from 'react-redux';
+import { encodeEntry } from 'decap-cms-lib-util/src/stega';
 
 import {
   resolveWidget,
@@ -92,6 +93,7 @@ export class PreviewPane extends React.Component {
     if (field.get('meta')) {
       value = this.props.entry.getIn(['meta', field.get('name')]);
     }
+
     const nestedFields = field.get('fields');
     const singleField = field.get('field');
     const metadata = fieldsMetaData && fieldsMetaData.get(field.get('name'), Map());
@@ -226,9 +228,18 @@ export class PreviewPane extends React.Component {
 
     this.inferFields();
 
+    const visualEditing = collection.getIn(['editor', 'visualEditing'], false);
+
+    // Only encode entry data if visual editing is enabled
+    const previewEntry = visualEditing
+      ? entry.set('data', encodeEntry(entry.get('data'), this.props.fields))
+      : entry;
+
     const previewProps = {
       ...this.props,
-      widgetFor: this.widgetFor,
+      entry: previewEntry,
+      widgetFor: (name, fields, values = previewEntry.get('data'), fieldsMetaData) =>
+        this.widgetFor(name, fields, values, fieldsMetaData),
       widgetsFor: this.widgetsFor,
       getCollection: this.getCollection,
     };
@@ -260,6 +271,7 @@ export class PreviewPane extends React.Component {
               return (
                 <EditorPreviewContent
                   {...{ previewComponent, previewProps: { ...previewProps, document, window } }}
+                  onFieldClick={this.props.onFieldClick}
                 />
               );
             }}
@@ -276,6 +288,7 @@ PreviewPane.propTypes = {
   entry: ImmutablePropTypes.map.isRequired,
   fieldsMetaData: ImmutablePropTypes.map.isRequired,
   getAsset: PropTypes.func.isRequired,
+  onFieldClick: PropTypes.func,
 };
 
 function mapStateToProps(state) {

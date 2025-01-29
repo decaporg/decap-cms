@@ -135,8 +135,9 @@ function Editor(props) {
   useEffect(() => {
     if (props.pendingFocus) {
       ReactEditor.focus(editor);
+      props.pendingFocus();
     }
-  }, []);
+  }, [props.pendingFocus]);
 
   function handleMarkClick(format) {
     ReactEditor.focus(editor);

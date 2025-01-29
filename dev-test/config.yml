@@ -17,6 +17,8 @@ collections: # A list of collections the CMS should be able to edit
     slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
     summary: '{{title}} -- {{year}}/{{month}}/{{day}}'
     create: true # Allow users to create new documents in this collection
+    editor:
+      visualEditing: true
     view_filters:
       - label: Posts With Index
         field: title
@@ -60,7 +62,9 @@ collections: # A list of collections the CMS should be able to edit
     folder: '_restaurants'
     slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
     summary: '{{title}} -- {{year}}/{{month}}/{{day}}'
-    create: true # Allow users to create new documents in this collection
+    create: true # Allow users to create new documents in this collection    
+    editor:
+      visualEditing: true
     fields: # The fields each document in this collection have
       - { label: 'Title', name: 'title', widget: 'string', tagname: 'h1' }
       - { label: 'Body', name: 'body', widget: 'markdown', hint: 'Main content goes here.' }

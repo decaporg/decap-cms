@@ -162,6 +162,10 @@ class EditorInterface extends Component {
     i18nVisible: localStorage.getItem(I18N_VISIBLE) !== 'false',
   };
 
+  handleFieldClick = path => {
+    this.controlPaneRef?.focus(path);
+  };
+
   handleSplitPaneDragStart = () => {
     this.setState({ showEventBlocker: true });
   };
@@ -298,6 +302,7 @@ class EditorInterface extends Component {
                 fields={fields}
                 fieldsMetaData={fieldsMetaData}
                 locale={leftPanelLocale}
+                onFieldClick={this.handleFieldClick}
               />
             </PreviewPaneContainer>
           </StyledSplitPane>
@@ -381,7 +386,7 @@ class EditorInterface extends Component {
                 title={t('editor.editorInterface.togglePreview')}
               />
             )}
-            {scrollSyncVisible && (
+            {scrollSyncVisible && !collection.getIn(['editor', 'visualEditing']) && (
               <EditorToggle
                 isActive={scrollSyncEnabled}
                 onClick={this.handleToggleScrollSync}
