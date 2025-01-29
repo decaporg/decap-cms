@@ -607,6 +607,7 @@ type CollectionObject = {
   folder?: string;
   files?: CollectionFiles;
   fields: EntryFields;
+  index_fields?: EntryFields;
   isFetching: boolean;
   media_folder?: string;
   public_folder?: string;

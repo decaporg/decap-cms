@@ -323,6 +323,7 @@ declare module 'decap-cms-core' {
 
     frontmatter_delimiter?: string[] | string;
     fields?: CmsField[];
+    index_fields?: CmsField[];
     filter?: { field: string; value: any };
     path?: string;
     media_folder?: string;

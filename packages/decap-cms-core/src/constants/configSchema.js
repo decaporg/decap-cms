@@ -242,6 +242,7 @@ function getConfigSchema() {
               },
             },
             fields: fieldsConfig(),
+            index_fields: fieldsConfig(),
             sortable_fields: {
               type: 'array',
               items: {
