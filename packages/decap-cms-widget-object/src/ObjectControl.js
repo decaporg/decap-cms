@@ -79,7 +79,12 @@ export default class ObjectControl extends React.Component {
       if (field.get('widget') === 'hidden') return;
       const name = field.get('name');
       const control = this.childRefs[name];
-      control?.validate?.();
+
+      if (control?.innerWrappedControl?.validate) {
+        control.innerWrappedControl.validate();
+      } else {
+        control?.validate?.();
+      }
     });
   };
 
