@@ -600,6 +600,12 @@ type i18n = StaticallyTypedRecord<{
   default_locale: string;
 }>;
 
+type IndexFile = StaticallyTypedRecord<{
+  pattern: string;
+  fields?: EntryFields;
+  label?: string;
+}>;
+
 export type Format = keyof typeof formatExtensions | string;
 
 type CollectionObject = {
@@ -607,7 +613,6 @@ type CollectionObject = {
   folder?: string;
   files?: CollectionFiles;
   fields: EntryFields;
-  index_fields?: EntryFields;
   isFetching: boolean;
   media_folder?: string;
   public_folder?: string;
@@ -632,6 +637,7 @@ type CollectionObject = {
   nested?: Nested;
   meta?: Meta;
   i18n: i18n;
+  index_file?: IndexFile;
 };
 
 export type Collection = StaticallyTypedRecord<CollectionObject>;

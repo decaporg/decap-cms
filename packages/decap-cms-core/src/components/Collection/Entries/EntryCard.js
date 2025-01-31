@@ -54,6 +54,14 @@ const CollectionLabel = styled.h2`
   text-transform: uppercase;
 `;
 
+const IndexFileLabel = styled.span`
+  font-size: 12px;
+  font-weight: 600;
+  color: ${colors.textLead};
+  text-transform: uppercase;
+  margin-right: 6px;
+`;
+
 const ListCardTitle = styled.h2`
   margin-bottom: 0;
 `;
@@ -95,6 +103,7 @@ function EntryCard({
   image,
   imageField,
   collectionLabel,
+  indexFileLabel,
   viewStyle = VIEW_STYLE_LIST,
   getAsset,
 }) {
@@ -103,7 +112,10 @@ function EntryCard({
       <ListCard>
         <ListCardLink to={path}>
           {collectionLabel ? <CollectionLabel>{collectionLabel}</CollectionLabel> : null}
-          <ListCardTitle>{summary}</ListCardTitle>
+          <ListCardTitle>
+            {indexFileLabel && <IndexFileLabel>{indexFileLabel}</IndexFileLabel>}
+            {summary}
+          </ListCardTitle>
         </ListCardLink>
       </ListCard>
     );
@@ -115,7 +127,10 @@ function EntryCard({
         <GridCardLink to={path}>
           <CardBody hasImage={image}>
             {collectionLabel ? <CollectionLabel>{collectionLabel}</CollectionLabel> : null}
-            <CardHeading>{summary}</CardHeading>
+            <CardHeading>
+              {indexFileLabel && <IndexFileLabel>{indexFileLabel}</IndexFileLabel>}
+              {summary}
+            </CardHeading>
           </CardBody>
           {image ? <CardImage src={getAsset(image, imageField).toString()} /> : null}
         </GridCardLink>
@@ -136,6 +151,9 @@ function mapStateToProps(state, ownProps) {
 
   const isLoadingAsset = selectIsLoadingAsset(state.medias);
 
+  const indexFileConfig = collection.get('index_file');
+  const fileSlug = entry.get('slug')?.split('/').pop();
+
   return {
     summary,
     path: `/collections/${collection.get('name')}/entries/${entry.get('slug')}`,
@@ -144,6 +162,8 @@ function mapStateToProps(state, ownProps) {
       .get('fields')
       ?.find(f => f.get('name') === inferredFields.imageField && f.get('widget') === 'image'),
     isLoadingAsset,
+    indexFileLabel:
+      new RegExp(indexFileConfig.get('pattern')).test(fileSlug) && indexFileConfig.get('label'),
   };
 }
 

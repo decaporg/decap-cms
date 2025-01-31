@@ -242,7 +242,6 @@ function getConfigSchema() {
               },
             },
             fields: fieldsConfig(),
-            index_fields: fieldsConfig(),
             sortable_fields: {
               type: 'array',
               items: {
@@ -282,6 +281,14 @@ function getConfigSchema() {
               minProperties: 1,
             },
             i18n: i18nCollection,
+            index_file: {
+              type: 'object',
+              properties: {
+                pattern: { type: 'string' },
+                fields: fieldsConfig(),
+                label: { type: 'string' },
+              },
+            },
           },
           required: ['name', 'label'],
           oneOf: [{ required: ['files'] }, { required: ['folder', 'fields'] }],

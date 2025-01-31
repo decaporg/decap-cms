@@ -43,11 +43,9 @@ function collections(state = defaultState, action: ConfigAction) {
   }
 }
 
-function isIndexFile(filePath: string) {
+function isIndexFile(filePath: string, pattern: string) {
   const fileSlug = filePath?.split('/').pop();
-  const indexFiles = Set(['_index', 'index']);
-
-  return fileSlug && indexFiles.has(fileSlug);
+  return fileSlug && new RegExp(pattern).test(fileSlug);
 }
 
 const selectors = {
@@ -63,9 +61,15 @@ const selectors = {
       return ext.replace(/^\./, '');
     },
     fields(collection: Collection, slug: string) {
-      if (collection.get('index_fields') && isIndexFile(slug)) {
-        return collection.get('index_fields');
+      const indexFileConfig = collection.get('index_file');
+      if (
+        indexFileConfig &&
+        isIndexFile(slug, indexFileConfig.get('pattern')) &&
+        indexFileConfig.has('fields')
+      ) {
+        return indexFileConfig.get('fields');
       }
+
       return collection.get('fields');
     },
     entryPath(collection: Collection, slug: string) {

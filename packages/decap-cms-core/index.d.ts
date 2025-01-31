@@ -323,7 +323,6 @@ declare module 'decap-cms-core' {
 
     frontmatter_delimiter?: string[] | string;
     fields?: CmsField[];
-    index_fields?: CmsField[];
     filter?: { field: string; value: any };
     path?: string;
     media_folder?: string;
@@ -332,6 +331,11 @@ declare module 'decap-cms-core' {
     view_filters?: ViewFilter[];
     view_groups?: ViewGroup[];
     i18n?: boolean | CmsI18nConfig;
+    index_file?: {
+      pattern: string;
+      fields?: CmsField[];
+      label?: string;
+    };
 
     /**
      * @deprecated Use sortable_fields instead
