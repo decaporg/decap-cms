@@ -582,7 +582,7 @@ export type CollectionFile = StaticallyTypedRecord<{
 
 export type CollectionFiles = List<CollectionFile>;
 
-type NestedObject = { depth: number; subfolders?: boolean; };
+type NestedObject = { depth: number; subfolders?: boolean };
 
 type Nested = StaticallyTypedRecord<NestedObject>;
 

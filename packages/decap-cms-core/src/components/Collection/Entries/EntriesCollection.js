@@ -152,7 +152,12 @@ function mapStateToProps(state, ownProps) {
 
   if (collection.has('nested')) {
     const collectionFolder = collection.get('folder');
-    entries = filterNestedEntries(filterTerm || '', collectionFolder, entries, collection.get('nested').get('subfolders'));
+    entries = filterNestedEntries(
+      filterTerm || '',
+      collectionFolder,
+      entries,
+      collection.get('nested').get('subfolders'),
+    );
   }
   const entriesLoaded = selectEntriesLoaded(state.entries, collection.get('name'));
   const isFetching = selectIsFetching(state.entries, collection.get('name'));
