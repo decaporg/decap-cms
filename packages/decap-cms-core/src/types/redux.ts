@@ -603,7 +603,6 @@ type i18n = StaticallyTypedRecord<{
 type IndexFile = StaticallyTypedRecord<{
   pattern: string;
   fields?: EntryFields;
-  label?: string;
 }>;
 
 export type Format = keyof typeof formatExtensions | string;

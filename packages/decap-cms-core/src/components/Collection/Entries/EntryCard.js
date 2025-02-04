@@ -2,7 +2,7 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { colors, colorsRaw, components, lengths, zIndex } from 'decap-cms-ui-default';
+import { colors, colorsRaw, components, lengths, zIndex, Icon } from 'decap-cms-ui-default';
 
 import { boundGetAsset } from '../../../actions/media';
 import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from '../../../constants/collectionViews';
@@ -54,20 +54,16 @@ const CollectionLabel = styled.h2`
   text-transform: uppercase;
 `;
 
-const IndexFileLabel = styled.span`
-  font-size: 12px;
-  font-weight: 600;
-  color: ${colors.textLead};
-  text-transform: uppercase;
-  margin-right: 6px;
-`;
-
 const ListCardTitle = styled.h2`
   margin-bottom: 0;
+  display: flex;
+  justify-content: space-between;
 `;
 
 const CardHeading = styled.h2`
   margin: 0 0 2px;
+  display: flex;
+  justify-content: space-between;
 `;
 
 const CardBody = styled.div`
@@ -103,7 +99,7 @@ function EntryCard({
   image,
   imageField,
   collectionLabel,
-  indexFileLabel,
+  showIndexFileIcon,
   viewStyle = VIEW_STYLE_LIST,
   getAsset,
 }) {
@@ -113,8 +109,8 @@ function EntryCard({
         <ListCardLink to={path}>
           {collectionLabel ? <CollectionLabel>{collectionLabel}</CollectionLabel> : null}
           <ListCardTitle>
-            {indexFileLabel && <IndexFileLabel>{indexFileLabel}</IndexFileLabel>}
             {summary}
+            {showIndexFileIcon && <Icon type="home" />}
           </ListCardTitle>
         </ListCardLink>
       </ListCard>
@@ -128,8 +124,8 @@ function EntryCard({
           <CardBody hasImage={image}>
             {collectionLabel ? <CollectionLabel>{collectionLabel}</CollectionLabel> : null}
             <CardHeading>
-              {indexFileLabel && <IndexFileLabel>{indexFileLabel}</IndexFileLabel>}
               {summary}
+              {showIndexFileIcon && <Icon type="home" />}
             </CardHeading>
           </CardBody>
           {image ? <CardImage src={getAsset(image, imageField).toString()} /> : null}
@@ -162,10 +158,7 @@ function mapStateToProps(state, ownProps) {
       .get('fields')
       ?.find(f => f.get('name') === inferredFields.imageField && f.get('widget') === 'image'),
     isLoadingAsset,
-    indexFileLabel:
-      indexFileConfig &&
-      new RegExp(indexFileConfig.get('pattern')).test(fileSlug) &&
-      indexFileConfig.get('label'),
+    showIndexFileIcon: indexFileConfig && new RegExp(indexFileConfig.get('pattern')).test(fileSlug),
   };
 }
 

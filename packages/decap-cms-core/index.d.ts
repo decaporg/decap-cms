@@ -334,7 +334,6 @@ declare module 'decap-cms-core' {
     index_file?: {
       pattern: string;
       fields?: CmsField[];
-      label?: string;
     };
 
     /**

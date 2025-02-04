@@ -286,7 +286,6 @@ function getConfigSchema() {
               properties: {
                 pattern: { type: 'string' },
                 fields: fieldsConfig(),
-                label: { type: 'string' },
               },
             },
           },
