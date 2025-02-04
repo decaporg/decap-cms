@@ -148,7 +148,7 @@ function mapStateToProps(state, ownProps) {
   const isLoadingAsset = selectIsLoadingAsset(state.medias);
 
   const indexFileConfig = collection.get('index_file');
-  const fileSlug = entry.get('slug')?.split('/').pop();
+  const fileSlug = entry.get('slug');
 
   return {
     summary,

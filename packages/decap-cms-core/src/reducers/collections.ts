@@ -43,8 +43,8 @@ function collections(state = defaultState, action: ConfigAction) {
   }
 }
 
-function isIndexFile(filePath: string, pattern: string) {
-  const fileSlug = filePath?.split('/').pop();
+function isIndexFile(filePath: string, pattern: string, nested: boolean) {
+  const fileSlug = nested ? filePath?.split('/').pop() : filePath;
   return fileSlug && new RegExp(pattern).test(fileSlug);
 }
 
@@ -64,7 +64,7 @@ const selectors = {
       const indexFileConfig = collection.get('index_file');
       if (
         indexFileConfig &&
-        isIndexFile(slug, indexFileConfig.get('pattern')) &&
+        isIndexFile(slug, indexFileConfig.get('pattern'), !!collection.get('nested')) &&
         indexFileConfig.has('fields')
       ) {
         return indexFileConfig.get('fields');
