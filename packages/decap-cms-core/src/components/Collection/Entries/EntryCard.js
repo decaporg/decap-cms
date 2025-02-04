@@ -163,7 +163,9 @@ function mapStateToProps(state, ownProps) {
       ?.find(f => f.get('name') === inferredFields.imageField && f.get('widget') === 'image'),
     isLoadingAsset,
     indexFileLabel:
-      new RegExp(indexFileConfig.get('pattern')).test(fileSlug) && indexFileConfig.get('label'),
+      indexFileConfig &&
+      new RegExp(indexFileConfig.get('pattern')).test(fileSlug) &&
+      indexFileConfig.get('label'),
   };
 }
 
