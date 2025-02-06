@@ -56,7 +56,7 @@
     "react-polyglot": "^0.7.0",
     "react-redux": "^7.2.0",
     "react-router-dom": "^5.2.0",
-    "react-scroll-sync": "^0.9.0",
+    "react-scroll-sync": "^0.11.2",
     "react-split-pane": "^0.1.85",
     "react-toastify": "^9.1.1",
     "react-topbar-progress-indicator": "^4.0.0",
