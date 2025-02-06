@@ -43,6 +43,7 @@
     "js-base64": "^3.0.0",
     "jwt-decode": "^3.0.0",
     "node-polyglot": "^2.3.0",
+    "path-browserify": "^1.0.1",
     "prop-types": "^15.7.2",
     "react": "^18.2.0",
     "react-dnd": "^14.0.0",
@@ -96,5 +97,8 @@
     "@types/redux-mock-store": "^1.0.2",
     "@types/url-join": "^4.0.0",
     "redux-mock-store": "^1.5.3"
+  },
+  "browser": {
+    "path": "path-browserify"
   }
 }
