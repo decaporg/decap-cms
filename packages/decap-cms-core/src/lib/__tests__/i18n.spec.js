@@ -192,7 +192,7 @@ describe('i18n', () => {
   describe('getFilePaths', () => {
     const args = ['md', 'src/content/index.md', 'index'];
 
-    it('should return file paths for all locales with ROOT structure', () => {
+    it('should return file paths for all locales with MULTIPLE_FOLDERS_I18N_ROOT structure', () => {
       expect(
         i18n.getFilePaths(
           fromJS({
@@ -784,7 +784,7 @@ describe('i18n', () => {
 
     const args = ['md', 'src/content/index.md', 'index'];
 
-    it('should add missing locale files to diff files when structure is ROOT', () => {
+    it('should add missing locale files to diff files when structure is MULTIPLE_FOLDERS_I18N_ROOT', () => {
       expect(
         i18n.getI18nDataFiles(
           fromJS({
@@ -850,7 +850,7 @@ describe('i18n', () => {
   });
 
   describe('getI18nBackup', () => {
-    it('should return i18n with raw data with ROOT structure', () => {
+    it('should return i18n with raw data with MULTIPLE_FOLDERS_I18N_ROOT structure', () => {
       const locales = ['en', 'de', 'fr'];
       const default_locale = 'en';
 
