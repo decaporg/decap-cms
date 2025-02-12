@@ -156,7 +156,7 @@ function mapStateToProps(state, ownProps) {
       filterTerm || '',
       collectionFolder,
       entries,
-      collection.get('nested').get('subfolders'),
+      collection.get('nested').get('subfolders') !== false,
     );
   }
   const entriesLoaded = selectEntriesLoaded(state.entries, collection.get('name'));

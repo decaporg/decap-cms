@@ -79,7 +79,7 @@ function TreeNode(props) {
   const collectionName = collection.get('name');
 
   const sortedData = sortBy(treeData, getNodeTitle);
-  const subfolders = collection.get('nested')?.get('subfolders');
+  const subfolders = collection.get('nested')?.get('subfolders') !== false;
   return sortedData.map(node => {
     const leaf =
       depth > 0 &&
