@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import type { ComponentType } from 'react';
 import type { List, Map } from 'immutable';
 import type { Pluggable } from 'unified';
