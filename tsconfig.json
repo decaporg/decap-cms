@@ -1,12 +1,13 @@
 {
   "compilerOptions": {
+    "composite": true,
     "declaration": true,
+    "emitDeclarationOnly": true,
     "jsx": "react",
     "target": "esnext",
     "module": "esnext",
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "emitDeclarationOnly": true,
     "strict": true,
     "isolatedModules": true,
     "skipLibCheck": true,
