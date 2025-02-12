@@ -6,6 +6,7 @@
   "bugs": "https://github.com/decaporg/decap-cms/issues",
   "license": "MIT",
   "module": "dist/esm/index.js",
+  "types": "dist/esm/index.d.ts",
   "main": "dist/decap-cms-backend-proxy.js",
   "keywords": [
     "decap-cms",
