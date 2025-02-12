@@ -35,5 +35,8 @@
     "lodash": "^4.17.11",
     "prop-types": "^15.7.2",
     "react": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/semaphore": "^1.1.4"
   }
 }
