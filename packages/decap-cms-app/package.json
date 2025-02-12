@@ -17,8 +17,10 @@
   "scripts": {
     "develop": "npm run build:esm -- --watch",
     "webpack": "node --max_old_space_size=4096 ../../node_modules/webpack/bin/webpack.js",
-    "build": "cross-env NODE_ENV=production run-s webpack",
-    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:esm": "run-p build:types build:babel",
+    "build:babel": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward",
+    "build:types": "tsc"
   },
   "keywords": [
     "cms",
