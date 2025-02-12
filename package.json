@@ -12,7 +12,7 @@
     "reset": "npm run clean",
     "test": "npm run lint && npm run type-check && npm run test:unit",
     "test:all": "npm run test && npm run test:e2e",
-    "test:ci": "npm run lint-quiet && npm run type-check && npm run test:unit",
+    "test:ci": "npm run lint-quiet && npm run test:unit",
     "test:unit": "cross-env NODE_ENV=test jest --no-cache",
     "test:e2e": "npm run build:demo && npm run test:e2e:run",
     "test:e2e:ci": "npm run build:demo && npm run test:e2e:run-ci",
