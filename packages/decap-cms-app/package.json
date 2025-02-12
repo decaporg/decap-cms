@@ -13,7 +13,6 @@
     "dist/",
     "index.d.ts"
   ],
-  "types": "index.d.ts",
   "scripts": {
     "develop": "npm run build:esm -- --watch",
     "webpack": "node --max_old_space_size=4096 ../../node_modules/webpack/bin/webpack.js",
