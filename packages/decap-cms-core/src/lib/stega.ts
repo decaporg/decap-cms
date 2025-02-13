@@ -1,5 +1,6 @@
 import { vercelStegaEncode } from '@vercel/stega';
-import { isImmutableMap, isImmutableList } from 'decap-cms-lib-util/src/types';
+
+import { isImmutableMap, isImmutableList } from '../types/immutable';
 
 import type { Map as ImmutableMap, List } from 'immutable';
 import type { CmsField } from 'decap-cms-core';
