@@ -50,6 +50,7 @@ import {
   I18N_STRUCTURE,
 } from './lib/i18n';
 
+import type { StaticallyTypedRecord } from './types/immutable';
 import type { I18nInfo } from './lib/i18n';
 import type AssetProxy from './valueObjects/AssetProxy';
 import type {
@@ -1351,13 +1352,34 @@ export class Backend {
   }
 
   filterEntries(collection: { entries: EntryValue[] }, filterRule: FilterRule) {
+    const filterValues = this.valuesAsArray(filterRule.get('value'));
+
+    const fieldName = filterRule.get('field');
+
     return collection.entries.filter(entry => {
-      const fieldValue = entry.data[filterRule.get('field')];
-      if (Array.isArray(fieldValue)) {
-        return fieldValue.includes(filterRule.get('value'));
-      }
-      return fieldValue === filterRule.get('value');
+      const fieldValues = this.valuesAsArray(entry.data[fieldName]);
+
+      return filterValues.some(filterValue => fieldValues.includes(filterValue));
     });
+  }
+
+  //  Values can be a string, a list of strings, or statically-typed-record lists of strings
+  //  depending on context (unit test vs. actual config, single vs. multiple values, etc.)
+  //
+  //  We normalize to a simple list for easier processing above.
+  //
+  valuesAsArray(rawValue: string | List<string> | StaticallyTypedRecord<List<string>>): string[] {
+    let values: string[] = [];
+
+    if ((<StaticallyTypedRecord<List<string>>>rawValue).toJS) {
+      values = (<StaticallyTypedRecord<List<string>>>rawValue).toJS().toArray();
+    } else if (Array.isArray(rawValue)) {
+      values = <string[]>rawValue;
+    } else {
+      values = [<string>rawValue];
+    }
+
+    return values;
   }
 }
 
