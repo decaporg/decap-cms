@@ -306,6 +306,7 @@ declare module 'decap-cms-core' {
     hide?: boolean;
     editor?: {
       preview?: boolean;
+      visualEditing?: boolean;
     };
     publish?: boolean;
     nested?: {
