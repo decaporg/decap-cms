@@ -117,7 +117,7 @@ export class EntriesCollection extends React.Component {
   }
 }
 
-export function filterNestedEntries(path, collectionFolder, entries) {
+export function filterNestedEntries(path, collectionFolder, entries, subfolders) {
   const filtered = entries.filter(e => {
     let entryPath = e.get('path').slice(collectionFolder.length + 1);
     if (!entryPath.startsWith(path)) {
@@ -128,6 +128,13 @@ export function filterNestedEntries(path, collectionFolder, entries) {
     // this nested collection entry
     if (path) {
       entryPath = entryPath.slice(path.length + 1);
+    }
+
+    // if subfolders legacy mode is enabled, show only immediate subfolders
+    // also show index file in root folder
+    if (subfolders) {
+      const depth = entryPath.split('/').length;
+      return path ? depth === 2 : depth <= 2;
     }
 
     // only show immediate children
@@ -145,7 +152,12 @@ function mapStateToProps(state, ownProps) {
 
   if (collection.has('nested')) {
     const collectionFolder = collection.get('folder');
-    entries = filterNestedEntries(filterTerm || '', collectionFolder, entries);
+    entries = filterNestedEntries(
+      filterTerm || '',
+      collectionFolder,
+      entries,
+      collection.get('nested').get('subfolders') !== false,
+    );
   }
   const entriesLoaded = selectEntriesLoaded(state.entries, collection.get('name'));
   const isFetching = selectIsFetching(state.entries, collection.get('name'));

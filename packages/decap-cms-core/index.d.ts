@@ -311,6 +311,7 @@ declare module 'decap-cms-core' {
     publish?: boolean;
     nested?: {
       depth: number;
+      subfolders?: boolean;
     };
     meta?: { path?: { label: string; widget: string; index_file: string } };
 
