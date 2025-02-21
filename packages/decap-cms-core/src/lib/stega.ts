@@ -38,14 +38,20 @@ function getNestedFields(f?: CmsField): CmsField[] {
  * For markdown fields, encode each paragraph separately
  */
 function encodeString(value: string, { fields, path }: EncodeContext): string {
-  const stega = vercelStegaEncode({ decap: path });
-  const isMarkdown = fields[0]?.widget === 'markdown';
-
-  if (isMarkdown && value.includes('\n\n')) {
+  const [field] = fields;
+  if (!field) return value;
+  const { widget } = field;
+  if (widget === 'string' || widget === 'text') {
+    if ('visualEditing' in field && field.visualEditing === false) return value;
+    const stega = vercelStegaEncode({ decap: path });
+    return value + stega;
+  }
+  if (widget === 'markdown') {
+    const stega = vercelStegaEncode({ decap: path });
     const blocks = value.split(/(\n\n+)/);
     return blocks.map(block => (block.trim() ? block + stega : block)).join('');
   }
-  return value + stega;
+  return value;
 }
 
 /**
@@ -103,15 +109,20 @@ function encodeMap(
 }
 
 /**
+ * Cache for encoded values to prevent re-encoding unchanged values
+ * across keystrokes. The cache is keyed by path.
+ */
+const encodingCache = new Map();
+
+/**
  * Main entry point for encoding steganographic data into entry values
  * Uses a visitor pattern with caching to handle recursive structures
  */
 export function encodeEntry(value: unknown, fields: List<ImmutableMap<string, unknown>>) {
   const plainFields = fields.toJS() as CmsField[];
-  const cache = new Map();
 
   function visit(value: unknown, fields: CmsField[], path = '') {
-    const cached = cache.get(path);
+    const cached = encodingCache.get(path);
     if (cached === value) return value;
 
     const ctx: EncodeContext = { fields, path, visit };
@@ -126,7 +137,7 @@ export function encodeEntry(value: unknown, fields: List<ImmutableMap<string, un
       result = value;
     }
 
-    cache.set(path, result);
+    encodingCache.set(path, result);
     return result;
   }
 
