@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.3.1](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-object@3.3.0...decap-cms-widget-object@3.3.1) (2025-01-30)
+
+### Bug Fixes
+
+- **ObjectControl:** hotfix nested object validation ([#7385](https://github.com/decaporg/decap-cms/issues/7385)) ([3f5461c](https://github.com/decaporg/decap-cms/commit/3f5461c4e854ce3b9a7fb08974e270d54f5fccff))
+
+# [3.3.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-object@3.2.0...decap-cms-widget-object@3.3.0) (2025-01-29)
+
+### Features
+
+- visual editing (click-to-edit) ([#7374](https://github.com/decaporg/decap-cms/issues/7374)) ([989c2dd](https://github.com/decaporg/decap-cms/commit/989c2dd6ed80f69b572b8b73c4e37b5106ae04fb))
+
 # [3.2.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-object@3.1.4...decap-cms-widget-object@3.2.0) (2025-01-15)
 
 ### Bug Fixes

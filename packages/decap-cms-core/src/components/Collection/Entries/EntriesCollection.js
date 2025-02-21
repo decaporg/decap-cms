@@ -117,22 +117,28 @@ export class EntriesCollection extends React.Component {
   }
 }
 
-export function filterNestedEntries(path, collectionFolder, entries) {
+export function filterNestedEntries(path, collectionFolder, entries, subfolders) {
   const filtered = entries.filter(e => {
-    const entryPath = e.get('path').slice(collectionFolder.length + 1);
+    let entryPath = e.get('path').slice(collectionFolder.length + 1);
     if (!entryPath.startsWith(path)) {
       return false;
     }
 
-    // only show immediate children
+    // for subdirectories, trim off the parent folder corresponding to
+    // this nested collection entry
     if (path) {
-      // non root path
-      const trimmed = entryPath.slice(path.length + 1);
-      return trimmed.split('/').length === 2;
-    } else {
-      // root path
-      return entryPath.split('/').length <= 2;
+      entryPath = entryPath.slice(path.length + 1);
     }
+
+    // if subfolders legacy mode is enabled, show only immediate subfolders
+    // also show index file in root folder
+    if (subfolders) {
+      const depth = entryPath.split('/').length;
+      return path ? depth === 2 : depth <= 2;
+    }
+
+    // only show immediate children
+    return !entryPath.includes('/');
   });
   return filtered;
 }
@@ -146,7 +152,12 @@ function mapStateToProps(state, ownProps) {
 
   if (collection.has('nested')) {
     const collectionFolder = collection.get('folder');
-    entries = filterNestedEntries(filterTerm || '', collectionFolder, entries);
+    entries = filterNestedEntries(
+      filterTerm || '',
+      collectionFolder,
+      entries,
+      collection.get('nested').get('subfolders') !== false,
+    );
   }
   const entriesLoaded = selectEntriesLoaded(state.entries, collection.get('name'));
   const isFetching = selectIsFetching(state.entries, collection.get('name'));
