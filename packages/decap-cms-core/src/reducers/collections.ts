@@ -43,6 +43,11 @@ function collections(state = defaultState, action: ConfigAction) {
   }
 }
 
+function isIndexFile(filePath: string, pattern: string, nested: boolean) {
+  const fileSlug = nested ? filePath?.split('/').pop() : filePath;
+  return fileSlug && new RegExp(pattern).test(fileSlug);
+}
+
 const selectors = {
   [FOLDER]: {
     entryExtension(collection: Collection) {
@@ -55,7 +60,16 @@ const selectors = {
 
       return ext.replace(/^\./, '');
     },
-    fields(collection: Collection) {
+    fields(collection: Collection, slug: string) {
+      const indexFileConfig = collection.get('index_file');
+      if (
+        indexFileConfig &&
+        isIndexFile(slug, indexFileConfig.get('pattern'), !!collection.get('nested')) &&
+        indexFileConfig.has('fields')
+      ) {
+        return indexFileConfig.get('fields');
+      }
+
       return collection.get('fields');
     },
     entryPath(collection: Collection, slug: string) {
