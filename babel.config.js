@@ -70,6 +70,12 @@ function plugins() {
           svgo,
         },
       ],
+      [
+        'inline-import',
+        {
+          extensions: ['.css'],
+        },
+      ],
     ];
   }
 
