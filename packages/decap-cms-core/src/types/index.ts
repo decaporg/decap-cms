@@ -306,6 +306,7 @@ export interface CmsCollection {
   hide?: boolean;
   editor?: {
     preview?: boolean;
+    visualEditing?: boolean;
   };
   publish?: boolean;
   nested?: {
