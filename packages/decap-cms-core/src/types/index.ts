@@ -432,6 +432,9 @@ export type EditorComponentField =
 export interface EditorComponentOptions {
   id: string;
   label: string;
+  icon: string;
+  type: string;
+  widget: string;
   fields?: EditorComponentField[];
   pattern: RegExp;
   allow_add?: boolean;
@@ -473,15 +476,19 @@ export interface CmsWidgetPreviewProps<T = any> {
 
 export interface CmsWidgetParam<T = any> {
   name: string;
-  controlComponent: CmsWidgetControlProps<T>;
-  previewComponent?: CmsWidgetPreviewProps<T>;
+  controlComponent: ComponentType<CmsWidgetControlProps<T>>;
+  previewComponent?: ComponentType<CmsWidgetPreviewProps<T>>;
   globalStyles?: any;
+  schema?: Record<string, any>;
+  allowMapValue?: boolean;
 }
 
 export interface CmsWidget<T = any> {
-  control: CmsWidgetControlProps<T>;
-  preview?: CmsWidgetPreviewProps<T>;
+  control: ComponentType<CmsWidgetControlProps<T>>;
+  preview?: ComponentType<CmsWidgetPreviewProps<T>>;
   globalStyles?: any;
+  schema?: Record<string, any>;
+  allowMapValue?: boolean;
 }
 
 export type CmsWidgetValueSerializer = any; // TODO: type properly
@@ -524,7 +531,8 @@ export interface CmsRegistry {
   widgets: {
     [name: string]: CmsWidget;
   };
-  editorComponents: Map<string, ComponentType<any>>;
+  editorComponents: Map<string, EditorComponentOptions>;
+  remarkPlugins: Pluggable[];
   widgetValueSerializers: {
     [name: string]: CmsWidgetValueSerializer;
   };
@@ -533,7 +541,16 @@ export interface CmsRegistry {
     [name: string]: CmsLocalePhrases;
   };
   formats: {
-    [name: string]: Formatter;
+    [name: string]: {
+      extension: string;
+      formatter: Formatter;
+    };
+  };
+  eventHandlers: {
+    [name in CmsEventListener['name']]: Array<{
+      handler: CmsEventListener['handler'];
+      options: CmsEventListenerOptions;
+    }>;
   };
 }
 
@@ -562,7 +579,7 @@ export type PreviewTemplateComponentProps = {
 
 export interface CMS {
   getBackend: (name: string) => CmsRegistryBackend | undefined;
-  getEditorComponents: () => Map<string, ComponentType<any>>;
+  getEditorComponents: () => Map<string, EditorComponentOptions>;
   getRemarkPlugins: () => Array<Pluggable>;
   getLocale: (locale: string) => CmsLocalePhrases | undefined;
   getMediaLibrary: (name: string) => CmsMediaLibrary | undefined;
