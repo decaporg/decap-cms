@@ -3,6 +3,11 @@
 import type { ComponentType, JSX } from 'react';
 import type { List, Map } from 'immutable';
 import type { Pluggable } from 'unified';
+import type { Implementation as CmsBackendClass } from 'decap-cms-lib-util';
+import type { CmsRegistryBackend } from '../backend';
+
+export type { CmsRegistryBackend };
+export type { CmsBackendClass };
 
 export type CmsBackendType =
   | 'azure'
@@ -449,12 +454,6 @@ export interface PreviewStyleOptions {
 
 export interface PreviewStyle extends PreviewStyleOptions {
   value: string;
-}
-
-export type CmsBackendClass = any; // TODO: type properly
-
-export interface CmsRegistryBackend {
-  init: (args: any) => CmsBackendClass;
 }
 
 export interface CmsWidgetControlProps<T = any> {
