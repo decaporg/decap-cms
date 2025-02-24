@@ -499,12 +499,13 @@ export type Filter = Map<string, Map<string, FilterMap>>; // collection.field.ac
 
 export type Group = Map<string, Map<string, GroupMap>>; // collection.field.active
 
-export type GroupOfEntries = {
+export type EntryGroup = {
   id: string;
   label: string;
   value: string | boolean | undefined;
-  paths: Set<string>;
 };
+
+export type GroupOfEntries = EntryGroup & { paths: Set<string> };
 
 export type Entities = StaticallyTypedRecord<EntitiesObject>;
 
