@@ -1,9 +1,8 @@
 import { vercelStegaEncode } from '@vercel/stega';
-
-import { isImmutableMap, isImmutableList } from './types';
+import { isImmutableMap, isImmutableList } from 'decap-cms-lib-util/src/types';
 
 import type { Map as ImmutableMap, List } from 'immutable';
-import type { CmsField } from 'decap-cms-core';
+import type { CmsField } from '../types';
 
 /**
  * Context passed to encode functions, containing the current state of the encoding process
