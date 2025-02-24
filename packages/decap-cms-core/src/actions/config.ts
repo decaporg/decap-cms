@@ -118,7 +118,7 @@ function setI18nField<T extends CmsField>(field: T) {
 function getI18nDefaults(
   collectionOrFileI18n: boolean | CmsI18nConfig,
   defaultI18n: CmsI18nConfig,
-): CmsI18nConfig {
+) {
   if (typeof collectionOrFileI18n === 'boolean') {
     return defaultI18n;
   } else {
@@ -249,12 +249,13 @@ export function applyDefaults(originalConfig: CmsConfig) {
         collection.publish = true;
       }
 
-      let collectionI18n: CmsI18nConfig | undefined;
+      let collectionI18n = collection[I18N];
 
-      if (i18n && collection[I18N]) {
-        collectionI18n = getI18nDefaults(collection[I18N], i18n);
+      if (i18n && collectionI18n) {
+        collectionI18n = getI18nDefaults(collectionI18n, i18n);
         collection[I18N] = collectionI18n;
       } else {
+        collectionI18n = undefined;
         delete collection[I18N];
       }
 
@@ -312,12 +313,13 @@ export function applyDefaults(originalConfig: CmsConfig) {
             file.fields = traverseFieldsJS(file.fields, setDefaultPublicFolderForField);
           }
 
-          let fileI18n: CmsI18nConfig | undefined;
+          let fileI18n = file[I18N];
 
-          if (file[I18N] && collectionI18n) {
+          if (fileI18n && collectionI18n) {
             fileI18n = getI18nDefaults(fileI18n, collectionI18n);
             file[I18N] = fileI18n;
           } else {
+            fileI18n = undefined;
             delete file[I18N];
           }
 
