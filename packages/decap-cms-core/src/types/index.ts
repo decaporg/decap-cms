@@ -415,13 +415,19 @@ export interface InitOptions {
   config: CmsConfig;
 }
 
-export type EditorComponentField =
-  | ({
-      name: string;
-      label: string;
-    } & {
-      widget: Omit<string, 'list'>;
-    })
+export type EditorComponentField = {
+  name: string;
+  label: string;
+} & (
+  | {
+      widget?: Exclude<string, 'image' | 'list'>;
+    }
+  | {
+      widget: 'image';
+      media_library?: {
+        allow_multiple?: boolean;
+      };
+    }
   | {
       widget: 'list';
       /**
@@ -432,20 +438,21 @@ export type EditorComponentField =
        * Used if widget === "list" to create an array of objects
        */
       fields?: EditorComponentField[];
-    };
+    }
+);
 
 export interface EditorComponentOptions {
   id: string;
   label: string;
-  icon: string;
-  type: string;
-  widget: string;
+  icon?: string;
+  type?: string;
+  widget?: string;
   fields?: EditorComponentField[];
   pattern: RegExp;
   allow_add?: boolean;
   fromBlock: (match: RegExpMatchArray) => any;
   toBlock: (data: any) => string;
-  toPreview: (data: any) => string | JSX.Element;
+  toPreview: (data: any, getAsset: GetAssetFunction, fields: any) => string | JSX.Element;
 }
 
 export interface PreviewStyleOptions {
