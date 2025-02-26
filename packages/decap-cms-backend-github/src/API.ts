@@ -195,7 +195,7 @@ export default class API {
   _userPromise?: Promise<GitHubUser>;
   _metadataSemaphore?: Semaphore;
 
-  commitAuthor?: {};
+  commitAuthor?: { name: string };
 
   constructor(config: Config) {
     this.apiRoot = config.apiRoot || 'https://api.github.com';
