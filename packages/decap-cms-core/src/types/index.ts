@@ -3,11 +3,11 @@
 import type { ComponentType, JSX } from 'react';
 import type { List, Map } from 'immutable';
 import type { Pluggable } from 'unified';
-import type { Implementation as CmsBackendClass } from 'decap-cms-lib-util';
+import type { Implementation } from 'decap-cms-lib-util';
 import type { CmsRegistryBackend } from '../backend';
 
 export type { CmsRegistryBackend };
-export type { CmsBackendClass };
+export type CmsBackendClass = new (...args: any[]) => Implementation;
 
 export type CmsBackendType =
   | 'azure'
