@@ -76,7 +76,7 @@ export default class API extends GithubAPI {
   }
 
   user() {
-    return Promise.resolve({ login: '', ...this.commitAuthor });
+    return Promise.resolve({ login: '', ...this.commitAuthor! });
   }
 
   async getHeadReference(head: string) {
