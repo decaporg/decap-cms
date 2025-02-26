@@ -55,4 +55,5 @@
     {"path": "packages/decap-server"}
   ],
   "include": [],
+  "exclude": ["**/*.spec.*", "**/*.test.*"]
 }
