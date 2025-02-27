@@ -610,8 +610,8 @@ export interface CMS {
   ) => void;
   registerWidget: (
     widget: string | CmsWidgetParam | CmsWidgetParam[],
-    control?: ComponentType<Partial<CmsWidgetControlProps>> | string,
-    preview?: ComponentType<Partial<CmsWidgetPreviewProps>>,
+    control?: ComponentType<any> | string,
+    preview?: ComponentType<any>,
   ) => void;
   registerWidgetValueSerializer: (widgetName: string, serializer: CmsWidgetValueSerializer) => void;
   resolveWidget: (name: string) => CmsWidget | undefined;
