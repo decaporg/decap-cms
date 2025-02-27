@@ -134,7 +134,7 @@ export default class BitbucketBackend implements Implementation {
   }
 
   async status() {
-    const api = await fetch(BITBUCKET_STATUS_ENDPOINT)
+    const api = await fetch(BITBUCKET_STATUS_ENDPOINT, undefined)
       .then(res => res.json())
       .then(res => {
         return res['components']
@@ -272,10 +272,14 @@ export default class BitbucketBackend implements Implementation {
       this.authenticator = new NetlifyAuthenticator(cfg);
     }
 
-    this.refreshedTokenPromise = this.authenticator!.refresh({
-      provider: 'bitbucket',
-      refresh_token: this.refreshToken as string,
-    }).then(({ token, refresh_token }) => {
+    this.refreshedTokenPromise = this.authenticator!.refresh(
+      {
+        provider: 'bitbucket',
+        refresh_token: this.refreshToken as string,
+      },
+      undefined,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ).then(({ token, refresh_token }: any) => {
       this.token = token;
       this.refreshToken = refresh_token;
       this.refreshedTokenPromise = undefined;
