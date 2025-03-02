@@ -74,6 +74,18 @@ export function getDataPath(locale: string, defaultLocale: string) {
   return dataPath;
 }
 
+export function getI18nFolder(collection: Collection): string {
+  let folder = collection.get('folder') as string;
+
+  // modify folder in case we want to insert the i18n locale at the root of the file path
+  const { defaultLocale, structure } = getI18nInfo(collection) as I18nInfo;
+  if (structure === I18N_STRUCTURE.MULTIPLE_FOLDERS_I18N_ROOT) {
+    folder = insertI18nAtRoot(folder, defaultLocale);
+  }
+
+  return folder;
+}
+
 export function insertI18nAtRoot(path: string, locale: string): string {
   const parts = path.split('/');
   parts.splice(1, 0, locale);
