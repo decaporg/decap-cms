@@ -71,7 +71,14 @@ export function getLocaleDataPath(locale: string) {
 
 export function getDataPath(locale: string, defaultLocale: string) {
   const dataPath = locale !== defaultLocale ? getLocaleDataPath(locale) : ['data'];
+  console.log("dataPath", dataPath)
   return dataPath;
+}
+
+export function insertI18nAtRoot(path: string, locale: string): string {
+  const parts = path.split('/');
+  parts.splice(1, 0, locale);
+  return parts.join('/');
 }
 
 export function getFilePath(
@@ -81,11 +88,9 @@ export function getFilePath(
   slug: string,
   locale: string,
 ) {
-  const parts = path.split('/');
   switch (structure) {
     case I18N_STRUCTURE.MULTIPLE_FOLDERS_I18N_ROOT:
-      parts.splice(1, 0, locale);
-      return parts.join('/');
+      return insertI18nAtRoot(path, locale);
     case I18N_STRUCTURE.MULTIPLE_FOLDERS:
       return path.replace(`/${slug}`, `/${locale}/${slug}`);
     case I18N_STRUCTURE.MULTIPLE_FILES:
