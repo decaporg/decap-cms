@@ -71,7 +71,6 @@ export function getLocaleDataPath(locale: string) {
 
 export function getDataPath(locale: string, defaultLocale: string) {
   const dataPath = locale !== defaultLocale ? getLocaleDataPath(locale) : ['data'];
-  console.log("dataPath", dataPath)
   return dataPath;
 }
 

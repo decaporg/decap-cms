@@ -584,21 +584,16 @@ export class Backend {
     if (collection.get('folder') && this.implementation.allEntriesByFolder) {
       const depth = collectionDepth(collection);
       const extension = selectFolderEntryExtension(collection);
-      let folder = collection.get('folder') as string
+      let folder = collection.get('folder') as string;
 
       // modify folder in case we want to insert the i18n locale at the root of the file path
-      const { defaultLocale, structure } = getI18nInfo(collection) as I18nInfo
+      const { defaultLocale, structure } = getI18nInfo(collection) as I18nInfo;
       if (structure === I18N_STRUCTURE.MULTIPLE_FOLDERS_I18N_ROOT) {
-        folder = insertI18nAtRoot(folder, defaultLocale)
+        folder = insertI18nAtRoot(folder, defaultLocale);
       }
 
       return this.implementation
-        .allEntriesByFolder(
-          folder,
-          extension,
-          depth,
-          collectionRegex(collection),
-        )
+        .allEntriesByFolder(folder, extension, depth, collectionRegex(collection))
         .then(entries => this.processEntries(entries, collection));
     }
 
