@@ -47,6 +47,7 @@ import {
   getI18nBackup,
   formatI18nBackup,
   getI18nInfo,
+  getI18nFolder,
   I18N_STRUCTURE,
 } from './lib/i18n';
 
@@ -537,11 +538,7 @@ export class Backend {
     if (collectionType === FOLDER) {
       listMethod = () => {
         const depth = collectionDepth(collection);
-        return this.implementation.entriesByFolder(
-          collection.get('folder') as string,
-          extension,
-          depth,
-        );
+        return this.implementation.entriesByFolder(getI18nFolder(collection), extension, depth);
       };
     } else if (collectionType === FILES) {
       const files = collection
@@ -583,9 +580,10 @@ export class Backend {
     if (collection.get('folder') && this.implementation.allEntriesByFolder) {
       const depth = collectionDepth(collection);
       const extension = selectFolderEntryExtension(collection);
+
       return this.implementation
         .allEntriesByFolder(
-          collection.get('folder') as string,
+          getI18nFolder(collection),
           extension,
           depth,
           collectionRegex(collection),
