@@ -61,7 +61,6 @@ const selectors = {
       return ext.replace(/^\./, '');
     },
     fields(collection: Collection, slug: string, index?: boolean) {
-      console.log('inject for new files here', slug);
       const indexFileConfig = collection.get('index_file');
       if (
         indexFileConfig &&
