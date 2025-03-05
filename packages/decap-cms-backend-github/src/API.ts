@@ -1386,20 +1386,21 @@ export default class API {
 
   async updateTree(
     baseSha: string,
-    files: { path: string; sha: string | null; newPath?: string }[],
+    files: { path: string; sha: string | null; newPath?: string; isFolder?: boolean }[],
     branch = this.branch,
   ) {
-    const toMove: { from: string; to: string; sha: string }[] = [];
+    const toMove: { from: string; to: string; sha: string, isFolder?: boolean }[] = [];
     const tree = files.reduce((acc, file) => {
       const entry = {
         path: trimStart(file.path, '/'),
         mode: '100644',
         type: 'blob',
         sha: file.sha,
+        isFolder: file.isFolder,
       } as TreeEntry;
 
       if (file.newPath) {
-        toMove.push({ from: file.path, to: file.newPath, sha: file.sha as string });
+        toMove.push({ from: file.path, to: file.newPath, sha: file.sha as string, isFolder: file.isFolder });
       } else {
         acc.push(entry);
       }
@@ -1407,11 +1408,14 @@ export default class API {
       return acc;
     }, [] as TreeEntry[]);
 
-    for (const { from, to, sha } of toMove) {
+    for (const { from, to, sha, isFolder } of toMove) {
       const sourceDir = dirname(from);
       const destDir = dirname(to);
       const files = await this.listFiles(sourceDir, { branch, depth: 100 });
       for (const file of files) {
+        if (isFolder === false && file.path !== from) {
+          continue;
+        }
         // delete current path
         tree.push({
           path: file.path,
