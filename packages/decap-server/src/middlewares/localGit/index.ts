@@ -97,7 +97,7 @@ async function commitEntry(
   );
   if (dataFiles.every(dataFile => dataFile.newPath)) {
     dataFiles.forEach(async dataFile => {
-      await move(path.join(repoPath, dataFile.path), path.join(repoPath, dataFile.newPath!));
+      await move(path.join(repoPath, dataFile.path), path.join(repoPath, dataFile.newPath!), dataFile.isFolder);
     });
   }
 
