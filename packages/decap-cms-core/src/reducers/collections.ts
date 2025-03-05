@@ -60,11 +60,12 @@ const selectors = {
 
       return ext.replace(/^\./, '');
     },
-    fields(collection: Collection, slug: string) {
+    fields(collection: Collection, slug: string, index?: boolean) {
+      console.log('inject for new files here', slug);
       const indexFileConfig = collection.get('index_file');
       if (
         indexFileConfig &&
-        isIndexFile(slug, indexFileConfig.get('pattern'), !!collection.get('nested')) &&
+        (index || isIndexFile(slug, indexFileConfig.get('pattern'), !!collection.get('nested'))) &&
         indexFileConfig.has('fields')
       ) {
         return indexFileConfig.get('fields');
@@ -190,8 +191,8 @@ export function selectMediaFolders(config: CmsConfig, collection: Collection, en
   return Set(folders).toArray();
 }
 
-export function selectFields(collection: Collection, slug: string) {
-  return selectors[collection.get('type')].fields(collection, slug);
+export function selectFields(collection: Collection, slug: string, index?: boolean) {
+  return selectors[collection.get('type')].fields(collection, slug, index);
 }
 
 export function selectFolderEntryExtension(collection: Collection) {

@@ -146,6 +146,7 @@ export function getI18nFiles(
   path: string,
   slug: string,
   newPath?: string,
+  isFolder?: boolean,
 ) {
   const { structure, defaultLocale, locales } = getI18nInfo(collection) as I18nInfo;
 
@@ -169,16 +170,17 @@ export function getI18nFiles(
   }
 
   const dataFiles = locales
-    .map(locale => {
+    .map((locale, index) => {
       const dataPath = getDataPath(locale, defaultLocale);
       const draft = entryDraft.set('data', entryDraft.getIn(dataPath));
       return {
-        path: getFilePath(structure, extension, path, slug, locale),
+        path: getFilePath(structure, extension, index > 0 && newPath && isFolder !== false ? newPath : path, slug, locale),
         slug,
         raw: draft.get('data') ? entryToRaw(draft) : '',
         ...(newPath && {
           newPath: getFilePath(structure, extension, newPath, slug, locale),
         }),
+        isFolder,
       };
     })
     .filter(dataFile => dataFile.raw);

@@ -33,6 +33,7 @@ import {
 } from '../actions/editorialWorkflow';
 import { selectFolderEntryExtension, selectHasMetaPath } from './collections';
 import { getDataPath, duplicateI18nFields } from '../lib/i18n';
+import { slugFormatter } from '../lib/formatters';
 
 const initialState = Map({
   entry: Map(),
@@ -204,15 +205,17 @@ function entryDraftReducer(state = Map(), action) {
   }
 }
 
-export function selectCustomPath(collection, entryDraft) {
+export function selectCustomPath(collection, entryDraft, config) {
   if (!selectHasMetaPath(collection)) {
     return;
   }
   const meta = entryDraft.getIn(['entry', 'meta']);
   const path = meta && meta.get('path');
+  const pathType = meta && meta.get('path_type', 'index');
   const indexFile = get(collection.toJS(), ['meta', 'path', 'index_file']);
+  const fileBaseName = slugFormatter(collection, entryDraft.getIn(['entry', 'data']), config.slug );
   const extension = selectFolderEntryExtension(collection);
-  const customPath = path && join(collection.get('folder'), path, `${indexFile}.${extension}`);
+  const customPath = path && join(collection.get('folder'), path, pathType == 'index' ? `${fileBaseName}/${indexFile}.${extension}` : `${fileBaseName}.${extension}`);
   return customPath;
 }
 

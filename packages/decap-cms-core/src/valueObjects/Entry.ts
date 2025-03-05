@@ -13,7 +13,7 @@ interface Options {
   author?: string;
   updatedOn?: string;
   status?: string;
-  meta?: { path?: string };
+  meta?: { path?: string, path_type?: string };
   i18n?: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [locale: string]: any;

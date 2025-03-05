@@ -192,6 +192,7 @@ declare module 'decap-cms-core' {
     multiple?: boolean;
     min?: number;
     max?: number;
+    meta?: boolean;
   }
 
   export interface CmsFieldRelation {

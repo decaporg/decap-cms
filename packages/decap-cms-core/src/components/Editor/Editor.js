@@ -417,7 +417,7 @@ function mapStateToProps(state, ownProps) {
   const collection = collections.get(ownProps.match.params.name);
   const collectionName = collection.get('name');
   const newEntry = ownProps.newRecord === true;
-  const fields = selectFields(collection, slug);
+  const fields = selectFields(collection, slug, new URLSearchParams(ownProps.location.search).get('path_type') === 'index');
   const entry = newEntry ? null : selectEntry(state, collectionName, slug);
   const user = auth.user;
   const hasChanged = entryDraft.get('hasChanged');
