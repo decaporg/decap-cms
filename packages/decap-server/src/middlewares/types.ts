@@ -54,7 +54,13 @@ export type PublishUnpublishedEntryParams = {
   slug: string;
 };
 
-export type DataFile = { slug: string; path: string; raw: string; newPath?: string; isFolder?: boolean };
+export type DataFile = {
+  slug: string;
+  path: string;
+  raw: string;
+  newPath?: string;
+  isFolder?: boolean;
+};
 
 export type Asset = { path: string; content: string; encoding: 'base64' };
 

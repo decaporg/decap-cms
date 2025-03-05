@@ -1389,7 +1389,7 @@ export default class API {
     files: { path: string; sha: string | null; newPath?: string; isFolder?: boolean }[],
     branch = this.branch,
   ) {
-    const toMove: { from: string; to: string; sha: string, isFolder?: boolean }[] = [];
+    const toMove: { from: string; to: string; sha: string; isFolder?: boolean }[] = [];
     const tree = files.reduce((acc, file) => {
       const entry = {
         path: trimStart(file.path, '/'),
@@ -1400,7 +1400,12 @@ export default class API {
       } as TreeEntry;
 
       if (file.newPath) {
-        toMove.push({ from: file.path, to: file.newPath, sha: file.sha as string, isFolder: file.isFolder });
+        toMove.push({
+          from: file.path,
+          to: file.newPath,
+          sha: file.sha as string,
+          isFolder: file.isFolder,
+        });
       } else {
         acc.push(entry);
       }

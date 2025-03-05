@@ -311,7 +311,7 @@ export interface CmsCollectionMeta {
   path?: {
     label: string;
     widget: string;
-    index_file: string
+    index_file: string;
   };
 }
 
@@ -361,7 +361,7 @@ export interface CmsCollection {
   index_file?: {
     pattern: string;
     fields?: CmsField[];
-  }
+  };
 
   /**
    * @deprecated Use sortable_fields instead

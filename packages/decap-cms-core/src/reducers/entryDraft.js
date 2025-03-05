@@ -213,9 +213,17 @@ export function selectCustomPath(collection, entryDraft, config) {
   const path = meta && meta.get('path');
   const pathType = meta && meta.get('path_type', 'index');
   const indexFile = get(collection.toJS(), ['meta', 'path', 'index_file']);
-  const fileBaseName = slugFormatter(collection, entryDraft.getIn(['entry', 'data']), config.slug );
+  const fileBaseName = slugFormatter(collection, entryDraft.getIn(['entry', 'data']), config.slug);
   const extension = selectFolderEntryExtension(collection);
-  const customPath = path && join(collection.get('folder'), path, pathType == 'index' ? `${fileBaseName}/${indexFile}.${extension}` : `${fileBaseName}.${extension}`);
+  const customPath =
+    path &&
+    join(
+      collection.get('folder'),
+      path,
+      pathType == 'index'
+        ? `${fileBaseName}/${indexFile}.${extension}`
+        : `${fileBaseName}.${extension}`,
+    );
   return customPath;
 }
 

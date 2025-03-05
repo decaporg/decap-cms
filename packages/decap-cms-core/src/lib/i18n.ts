@@ -174,7 +174,13 @@ export function getI18nFiles(
       const dataPath = getDataPath(locale, defaultLocale);
       const draft = entryDraft.set('data', entryDraft.getIn(dataPath));
       return {
-        path: getFilePath(structure, extension, index > 0 && newPath && isFolder !== false ? newPath : path, slug, locale),
+        path: getFilePath(
+          structure,
+          extension,
+          index > 0 && newPath && isFolder !== false ? newPath : path,
+          slug,
+          locale,
+        ),
         slug,
         raw: draft.get('data') ? entryToRaw(draft) : '',
         ...(newPath && {

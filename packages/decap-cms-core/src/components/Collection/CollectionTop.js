@@ -4,7 +4,14 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { translate } from 'react-polyglot';
 import { Link } from 'react-router-dom';
-import { Dropdown, DropdownItem, StyledDropdownButton, components, buttons, shadows } from 'decap-cms-ui-default';
+import {
+  Dropdown,
+  DropdownItem,
+  StyledDropdownButton,
+  components,
+  buttons,
+  shadows,
+} from 'decap-cms-ui-default';
 import { createHashHistory } from 'history';
 
 const CollectionTopContainer = styled.div`
@@ -68,14 +75,14 @@ function CollectionTop({ collection, newEntryUrl, t }) {
   const indexFileConfig = collection.get('index_file');
   // const indexFile = get(collection.toJS(), ['meta', 'path', 'index_file'])
 
-  console.log(newEntryUrl)
+  console.log(newEntryUrl);
 
-  function handleNewIndex () {
-    history.push(newEntryUrl + "&path_type=index");
+  function handleNewIndex() {
+    history.push(newEntryUrl + '&path_type=index');
   }
 
-  function handleNewLeaf () {
-    history.push(newEntryUrl + "&path_type=slug");
+  function handleNewLeaf() {
+    history.push(newEntryUrl + '&path_type=slug');
   }
 
   return (
