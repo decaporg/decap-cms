@@ -1027,6 +1027,8 @@ export function validateMetaField(
       return getPathError(value, 'invalidPath', t);
     }
 
+    console.log(collection);
+
     // update path validation
 
     // const customPath = selectCustomPath(collection, fromJS({ entry: { meta: { path: value } } }), state.config);
