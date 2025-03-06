@@ -75,14 +75,9 @@ function CollectionTop({ collection, newEntryUrl, t }) {
   const indexFileConfig = collection.get('index_file');
   // const indexFile = get(collection.toJS(), ['meta', 'path', 'index_file'])
 
-  console.log(newEntryUrl);
-
-  function handleNewIndex() {
-    history.push(newEntryUrl + '&path_type=index');
-  }
-
-  function handleNewLeaf() {
-    history.push(newEntryUrl + '&path_type=slug');
+  function handleNew(pathType) {
+    const delimiter = newEntryUrl.includes('?') ? '&' : '?';
+    history.push(`${newEntryUrl}${delimiter}path_type=${pathType}`)
   }
 
   return (
@@ -102,8 +97,8 @@ function CollectionTop({ collection, newEntryUrl, t }) {
             dropdownWidth="160px"
             dropdownPosition="left"
           >
-            <DropdownItem key={'_index'} label={`Index page`} onClick={handleNewIndex} />
-            <DropdownItem key={'{{slug}}'} label={'Leaf page'} onClick={handleNewLeaf} />
+            <DropdownItem key={'_index'} label={`Index page`} onClick={handleNew('index')} />
+            <DropdownItem key={'{{slug}}'} label={'Leaf page'} onClick={handleNew('slug')} />
           </Dropdown>
         ) : newEntryUrl ? (
           <CollectionTopNewButton to={newEntryUrl}>
