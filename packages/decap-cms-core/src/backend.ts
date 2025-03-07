@@ -839,14 +839,14 @@ export class Backend {
 
     const getEntryValue = async (path: string) => {
       const loadedEntry = await this.implementation.getEntry(path);
-      const entryPath = loadedEntry.file.path
+      const entryPath = loadedEntry.file.path;
       const path_type = prepareMetaPathType(slug, collection);
 
-      let metaPath = entryPath
+      let metaPath = entryPath;
       if (path_type === 'index') {
-        const pathArr = dirname(entryPath).split('/').slice(0, -1)
-        pathArr.push(basename(entryPath))
-        metaPath = pathArr.join('/')
+        const pathArr = dirname(entryPath).split('/').slice(0, -1);
+        pathArr.push(basename(entryPath));
+        metaPath = pathArr.join('/');
       }
 
       let entry = createEntry(collection.get('name'), slug, entryPath, {
