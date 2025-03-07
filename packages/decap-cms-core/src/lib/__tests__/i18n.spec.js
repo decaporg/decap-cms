@@ -41,6 +41,15 @@ describe('i18n', () => {
   });
 
   describe('getI18nFilesDepth', () => {
+    it('should increase depth when i18n structure is I18N_STRUCTURE.MULTIPLE_FOLDERS_I18N_ROOT', () => {
+      expect(
+        i18n.getI18nFilesDepth(
+          fromJS({ i18n: { structure: i18n.I18N_STRUCTURE.MULTIPLE_FOLDERS_I18N_ROOT } }),
+          5,
+        ),
+      ).toBe(6);
+    });
+
     it('should increase depth when i18n structure is I18N_STRUCTURE.MULTIPLE_FOLDERS', () => {
       expect(
         i18n.getI18nFilesDepth(
@@ -131,6 +140,18 @@ describe('i18n', () => {
   });
 
   describe('getFilePath', () => {
+    it('should return directory path based on locale when structure is I18N_STRUCTURE.MULTIPLE_FOLDERS_I18N_ROOT', () => {
+      expect(
+        i18n.getFilePath(
+          i18n.I18N_STRUCTURE.MULTIPLE_FOLDERS_I18N_ROOT,
+          'md',
+          'src/content/index.md',
+          'index',
+          'de',
+        ),
+      ).toEqual('src/de/content/index.md');
+    });
+
     it('should return directory path based on locale when structure is I18N_STRUCTURE.MULTIPLE_FOLDERS', () => {
       expect(
         i18n.getFilePath(
@@ -171,7 +192,21 @@ describe('i18n', () => {
   describe('getFilePaths', () => {
     const args = ['md', 'src/content/index.md', 'index'];
 
-    it('should return file paths for all locales', () => {
+    it('should return file paths for all locales with MULTIPLE_FOLDERS_I18N_ROOT structure', () => {
+      expect(
+        i18n.getFilePaths(
+          fromJS({
+            i18n: {
+              structure: i18n.I18N_STRUCTURE.MULTIPLE_FOLDERS_I18N_ROOT,
+              locales: ['en', 'de'],
+            },
+          }),
+          ...args,
+        ),
+      ).toEqual(['src/en/content/index.md', 'src/de/content/index.md']);
+    });
+
+    it('should return file paths for all locales with MULTIPLE_FOLDERS structure', () => {
       expect(
         i18n.getFilePaths(
           fromJS({
@@ -195,6 +230,16 @@ describe('i18n', () => {
   });
 
   describe('normalizeFilePath', () => {
+    it('should remove locale folder from path when structure is I18N_STRUCTURE.MULTIPLE_FOLDERS_I18N_ROOT', () => {
+      expect(
+        i18n.normalizeFilePath(
+          i18n.I18N_STRUCTURE.MULTIPLE_FOLDERS_I18N_ROOT,
+          'src/en/content/index.md',
+          'en',
+        ),
+      ).toEqual('src/content/index.md');
+    });
+
     it('should remove locale folder from path when structure is I18N_STRUCTURE.MULTIPLE_FOLDERS', () => {
       expect(
         i18n.normalizeFilePath(
@@ -219,6 +264,16 @@ describe('i18n', () => {
   });
 
   describe('getLocaleFromPath', () => {
+    it('should return the locale from folder name in the path when structure is I18N_STRUCTURE.MULTIPLE_FOLDERS_I18N_ROOT', () => {
+      expect(
+        i18n.getLocaleFromPath(
+          i18n.I18N_STRUCTURE.MULTIPLE_FOLDERS_I18N_ROOT,
+          'md',
+          'src/en/content/index.md',
+        ),
+      ).toEqual('en');
+    });
+
     it('should return the locale from folder name in the path when structure is I18N_STRUCTURE.MULTIPLE_FOLDERS', () => {
       expect(
         i18n.getLocaleFromPath(
@@ -275,6 +330,37 @@ describe('i18n', () => {
             de: { title: 'de_title' },
             fr: { title: 'fr_title' },
           },
+          slug: 'index',
+        },
+      ]);
+    });
+
+    it('should return a folder based files when structure is I18N_STRUCTURE.MULTIPLE_FOLDERS_I18N_ROOT', () => {
+      expect(
+        i18n.getI18nFiles(
+          fromJS({
+            i18n: {
+              structure: i18n.I18N_STRUCTURE.MULTIPLE_FOLDERS_I18N_ROOT,
+              locales,
+              default_locale,
+            },
+          }),
+          ...args,
+        ),
+      ).toEqual([
+        {
+          path: 'src/en/content/index.md',
+          raw: { title: 'en_title' },
+          slug: 'index',
+        },
+        {
+          path: 'src/de/content/index.md',
+          raw: { title: 'de_title' },
+          slug: 'index',
+        },
+        {
+          path: 'src/fr/content/index.md',
+          raw: { title: 'fr_title' },
           slug: 'index',
         },
       ]);
@@ -339,6 +425,52 @@ describe('i18n', () => {
     const locales = ['en', 'de', 'fr', 'es'];
     const default_locale = 'en';
     const args = ['md', 'src/content/index.md', 'index'];
+
+    it('should return i18n entry content when structure is I18N_STRUCTURE.MULTIPLE_FOLDERS_I18N_ROOT', async () => {
+      const data = {
+        'src/en/content/index.md': {
+          slug: 'index',
+          path: 'src/en/content/index.md',
+          data: { title: 'en_title' },
+        },
+        'src/de/content/index.md': {
+          slug: 'index',
+          path: 'src/de/content/index.md',
+          data: { title: 'de_title' },
+        },
+        'src/fr/content/index.md': {
+          slug: 'index',
+          path: 'src/fr/content/index.md',
+          data: { title: 'fr_title' },
+        },
+      };
+      const getEntryValue = jest.fn(path =>
+        data[path] ? Promise.resolve(data[path]) : Promise.reject('Not found'),
+      );
+
+      await expect(
+        i18n.getI18nEntry(
+          fromJS({
+            i18n: {
+              structure: i18n.I18N_STRUCTURE.MULTIPLE_FOLDERS_I18N_ROOT,
+              locales,
+              default_locale,
+            },
+          }),
+          ...args,
+          getEntryValue,
+        ),
+      ).resolves.toEqual({
+        slug: 'index',
+        path: 'src/content/index.md',
+        data: { title: 'en_title' },
+        i18n: {
+          de: { data: { title: 'de_title' } },
+          fr: { data: { title: 'fr_title' } },
+        },
+        raw: '',
+      });
+    });
 
     it('should return i18n entry content when structure is I18N_STRUCTURE.MULTIPLE_FOLDERS', async () => {
       const data = {
@@ -493,6 +625,48 @@ describe('i18n', () => {
     const default_locale = 'en';
     const extension = 'md';
 
+    it('should group entries array when structure is I18N_STRUCTURE.MULTIPLE_FOLDERS_I18N_ROOT', () => {
+      const entries = [
+        {
+          slug: 'index',
+          path: 'src/en/content/index.md',
+          data: { title: 'en_title' },
+        },
+        {
+          slug: 'index',
+          path: 'src/de/content/index.md',
+          data: { title: 'de_title' },
+        },
+        {
+          slug: 'index',
+          path: 'src/fr/content/index.md',
+          data: { title: 'fr_title' },
+        },
+      ];
+
+      expect(
+        i18n.groupEntries(
+          fromJS({
+            i18n: {
+              structure: i18n.I18N_STRUCTURE.MULTIPLE_FOLDERS_I18N_ROOT,
+              locales,
+              default_locale,
+            },
+          }),
+          extension,
+          entries,
+        ),
+      ).toEqual([
+        {
+          slug: 'index',
+          path: 'src/content/index.md',
+          data: { title: 'en_title' },
+          i18n: { de: { data: { title: 'de_title' } }, fr: { data: { title: 'fr_title' } } },
+          raw: '',
+        },
+      ]);
+    });
+
     it('should group entries array when structure is I18N_STRUCTURE.MULTIPLE_FOLDERS', () => {
       const entries = [
         {
@@ -610,6 +784,26 @@ describe('i18n', () => {
 
     const args = ['md', 'src/content/index.md', 'index'];
 
+    it('should add missing locale files to diff files when structure is MULTIPLE_FOLDERS_I18N_ROOT', () => {
+      expect(
+        i18n.getI18nDataFiles(
+          fromJS({
+            i18n: {
+              structure: i18n.I18N_STRUCTURE.MULTIPLE_FOLDERS_I18N_ROOT,
+              locales,
+              default_locale,
+            },
+          }),
+          ...args,
+          [{ path: 'src/fr/content/index.md', id: 'id', newFile: false }],
+        ),
+      ).toEqual([
+        { path: 'src/en/content/index.md', id: '', newFile: false },
+        { path: 'src/de/content/index.md', id: '', newFile: false },
+        { path: 'src/fr/content/index.md', id: 'id', newFile: false },
+      ]);
+    });
+
     it('should add missing locale files to diff files when structure is MULTIPLE_FOLDERS', () => {
       expect(
         i18n.getI18nDataFiles(
@@ -656,7 +850,32 @@ describe('i18n', () => {
   });
 
   describe('getI18nBackup', () => {
-    it('should return i18n with raw data', () => {
+    it('should return i18n with raw data with MULTIPLE_FOLDERS_I18N_ROOT structure', () => {
+      const locales = ['en', 'de', 'fr'];
+      const default_locale = 'en';
+
+      expect(
+        i18n.getI18nBackup(
+          fromJS({
+            i18n: {
+              structure: i18n.I18N_STRUCTURE.MULTIPLE_FOLDERS_I18N_ROOT,
+              locales,
+              default_locale,
+            },
+          }),
+          fromJS({
+            data: 'raw_en',
+            i18n: {
+              de: { data: 'raw_de' },
+              fr: { data: 'raw_fr' },
+            },
+          }),
+          e => e.get('data'),
+        ),
+      ).toEqual({ de: { raw: 'raw_de' }, fr: { raw: 'raw_fr' } });
+    });
+
+    it('should return i18n with raw data with MULTIPLE FILES structure', () => {
       const locales = ['en', 'de', 'fr'];
       const default_locale = 'en';
 
