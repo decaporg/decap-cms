@@ -83,6 +83,7 @@ export function localFsMiddleware({ repoPath, logger }: FsOptions) {
               await move(
                 path.join(repoPath, dataFile.path),
                 path.join(repoPath, dataFile.newPath!),
+                dataFile.isFolder,
               );
             });
           }

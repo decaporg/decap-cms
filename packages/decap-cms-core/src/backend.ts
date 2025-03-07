@@ -298,6 +298,22 @@ function prepareMetaPath(path: string, collection: Collection) {
   return dir.slice(collection.get('folder')!.length + 1) || '/';
 }
 
+function isIndexFile(filePath: string, pattern: string, nested: boolean) {
+  const fileSlug = nested ? filePath?.split('/').pop() : filePath;
+  return fileSlug && new RegExp(pattern).test(fileSlug);
+}
+
+function prepareMetaPathType(slug: string, collection: Collection) {
+  const indexFileConfig = collection.get('index_file');
+  if (
+    indexFileConfig &&
+    isIndexFile(slug, indexFileConfig.get('pattern'), !!collection.get('nested'))
+  ) {
+    return 'index';
+  }
+  return 'slug';
+}
+
 function collectionDepth(collection: Collection) {
   let depth;
   depth =
@@ -823,11 +839,24 @@ export class Backend {
 
     const getEntryValue = async (path: string) => {
       const loadedEntry = await this.implementation.getEntry(path);
-      let entry = createEntry(collection.get('name'), slug, loadedEntry.file.path, {
+      const entryPath = loadedEntry.file.path;
+      const path_type = prepareMetaPathType(slug, collection);
+
+      let metaPath = entryPath;
+      if (path_type === 'index') {
+        const pathArr = dirname(entryPath).split('/').slice(0, -1);
+        pathArr.push(basename(entryPath));
+        metaPath = pathArr.join('/');
+      }
+
+      let entry = createEntry(collection.get('name'), slug, entryPath, {
         raw: loadedEntry.data,
         label,
         mediaFiles: [],
-        meta: { path: prepareMetaPath(loadedEntry.file.path, collection) },
+        meta: {
+          path: prepareMetaPath(metaPath, collection),
+          path_type,
+        },
       });
 
       entry = this.entryWithFormat(collection)(entry);
@@ -1104,9 +1133,12 @@ export class Backend {
 
     const useWorkflow = selectUseWorkflow(config);
 
-    const customPath = selectCustomPath(collection, entryDraft);
+    const customPath = selectCustomPath(collection, entryDraft, config);
 
     let dataFile: DataFile;
+
+    let isFolder = true;
+
     if (newEntry) {
       if (!selectAllowNewEntries(collection)) {
         throw new Error('Not allowed to create new entries in this collection');
@@ -1118,6 +1150,7 @@ export class Backend {
         usedSlugs,
         customPath,
       );
+      isFolder = prepareMetaPathType(slug, collection) === 'index';
       const path = customPath || (selectEntryPath(collection, slug) as string);
       dataFile = {
         path,
@@ -1128,6 +1161,7 @@ export class Backend {
       updateAssetProxies(assetProxies, config, collection, entryDraft, path);
     } else {
       const slug = entryDraft.getIn(['entry', 'slug']);
+      const isFolder = prepareMetaPathType(slug, collection) === 'index';
       const path = entryDraft.getIn(['entry', 'path']);
       dataFile = {
         path,
@@ -1135,6 +1169,7 @@ export class Backend {
         slug: customPath && !useWorkflow ? slugFromCustomPath(collection, customPath) : slug,
         raw: this.entryToRaw(collection, entryDraft.get('entry')),
         newPath: customPath === path ? undefined : customPath,
+        isFolder,
       };
     }
 
@@ -1151,6 +1186,7 @@ export class Backend {
         path,
         slug,
         newPath,
+        isFolder,
       );
     }
 
