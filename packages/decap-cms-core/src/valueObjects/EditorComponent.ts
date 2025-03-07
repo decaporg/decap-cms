@@ -1,13 +1,17 @@
 import { fromJS } from 'immutable';
 import { isFunction } from 'lodash';
 
+import type { EditorComponentOptions } from '../types';
+
 const catchesNothing = /.^/;
 
 function bind(fn) {
   return isFunction(fn) && fn.bind(null);
 }
 
-export default function createEditorComponent(config) {
+export default function createEditorComponent(
+  config: EditorComponentOptions,
+): EditorComponentOptions {
   const {
     id = null,
     label = 'unnamed component',

@@ -249,10 +249,11 @@ export function applyDefaults(originalConfig: CmsConfig) {
         collection.publish = true;
       }
 
-      let collectionI18n = collection[I18N];
+      const i18nConfig = collection[I18N];
+      let collectionI18n: CmsI18nConfig;
 
-      if (i18n && collectionI18n) {
-        collectionI18n = getI18nDefaults(collectionI18n, i18n);
+      if (i18n && i18nConfig) {
+        collectionI18n = getI18nDefaults(i18nConfig, i18n);
         collection[I18N] = collectionI18n;
       } else {
         collectionI18n = undefined;
@@ -313,10 +314,11 @@ export function applyDefaults(originalConfig: CmsConfig) {
             file.fields = traverseFieldsJS(file.fields, setDefaultPublicFolderForField);
           }
 
-          let fileI18n = file[I18N];
+          const fileI18nConfig = file[I18N];
+          let fileI18n: CmsI18nConfig;
 
-          if (fileI18n && collectionI18n) {
-            fileI18n = getI18nDefaults(fileI18n, collectionI18n);
+          if (fileI18nConfig && collectionI18n) {
+            fileI18n = getI18nDefaults(fileI18nConfig, collectionI18n);
             file[I18N] = fileI18n;
           } else {
             fileI18n = undefined;

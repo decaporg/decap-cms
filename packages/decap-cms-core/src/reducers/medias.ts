@@ -13,7 +13,11 @@ import type { MediasAction } from '../actions/media';
 import type AssetProxy from '../valueObjects/AssetProxy';
 
 export type Medias = {
-  [path: string]: { asset: AssetProxy | undefined; isLoading: boolean; error: Error | null };
+  [key: string]: {
+    asset?: AssetProxy;
+    isLoading?: boolean;
+    error?: Error | null;
+  };
 };
 
 const defaultState: Medias = {};
@@ -60,7 +64,7 @@ const medias = produce((state: Medias, action: MediasAction) => {
 }, defaultState);
 
 export function selectIsLoadingAsset(state: Medias) {
-  return Object.values(state).some(state => state.isLoading);
+  return Object.values(state).some(state => state?.isLoading);
 }
 
 export default medias;
