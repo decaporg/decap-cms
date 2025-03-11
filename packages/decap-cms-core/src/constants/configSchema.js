@@ -69,6 +69,14 @@ function fieldsConfig() {
         field: { $ref: `field_${id}` },
         fields: { $ref: `fields_${id}` },
         types: { $ref: `fields_${id}` },
+        condition: {
+          type: 'object',
+          properties: {
+            field: { type: 'string' },
+            value: { types: ['string', 'boolean'] },
+            operator: { type: 'string', enum: ['==', '!=', '>', '<', '>=', '<='] },
+          },
+        },
       },
       select: { $data: '0/widget' },
       selectCases: {

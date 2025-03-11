@@ -51,6 +51,12 @@ declare module 'decap-cms-core' {
     default_locale?: string;
   }
 
+  interface Condition {
+    field: string;
+    value: string | boolean | number;
+    operator?: '==' | '!=' | '>' | '<' | '>=' | '<=';
+  }
+
   export interface CmsFieldBase {
     name: string;
     label?: string;
@@ -61,6 +67,7 @@ declare module 'decap-cms-core' {
     media_folder?: string;
     public_folder?: string;
     comment?: string;
+    condition?: Condition;
   }
 
   export interface CmsFieldBoolean {

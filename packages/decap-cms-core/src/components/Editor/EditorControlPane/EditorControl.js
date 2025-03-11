@@ -154,6 +154,7 @@ class EditorControl extends React.Component {
     collection: ImmutablePropTypes.map.isRequired,
     isDisabled: PropTypes.bool,
     isHidden: PropTypes.bool,
+    isConditionMet: PropTypes.bool,
     isFieldDuplicate: PropTypes.func,
     isFieldHidden: PropTypes.func,
     locale: PropTypes.string,
@@ -217,6 +218,7 @@ class EditorControl extends React.Component {
       isLoadingAsset,
       isDisabled,
       isHidden,
+      isConditionMet,
       isFieldDuplicate,
       isFieldHidden,
       locale,
@@ -241,6 +243,7 @@ class EditorControl extends React.Component {
             className={className}
             css={css`
               ${isHidden && styleStrings.hidden};
+              ${isConditionMet === false && 'display: none;'}
             `}
           >
             <ControlTopbar>

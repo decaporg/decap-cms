@@ -94,6 +94,34 @@ function getFieldValue({ field, entry, isTranslatable, locale }) {
   return entry.getIn(['data', field.get('name')]);
 }
 
+function calculateCondition({field, fields, entry, locale, isTranslatable}) {
+  const condition = field.get('condition')
+  if (!condition) return true;
+
+  const condFieldName = condition.get('field');
+  const condValue = condition.get('value');
+  const operator = condition.get('operator') || '==';
+  const condField = fields.find(f => f.get('name') === condFieldName);
+  const condFieldValue = getFieldValue({ field: condField, entry, locale, isTranslatable, });
+
+  switch (operator) {
+    case '==':
+      return condFieldValue == condValue;
+    case '!=':
+      return condFieldValue != condValue;
+    case '<':
+      return condFieldValue < condValue;
+    case '>':
+      return condFieldValue > condValue;
+    case '<=':
+      return condFieldValue <= condValue;
+    case '>=':
+      return condFieldValue >= condValue;
+    default:
+      return condFieldValue == condValue;
+  }
+}
+
 export default class ControlPane extends React.Component {
   state = {
     selectedLocale: this.props.locale,
@@ -116,40 +144,38 @@ export default class ControlPane extends React.Component {
     this.props.onLocaleChange(val);
   };
 
-  copyFromOtherLocale =
-    ({ targetLocale, t }) =>
-    sourceLocale => {
-      if (
-        !window.confirm(
-          t('editor.editorControlPane.i18n.copyFromLocaleConfirm', {
-            locale: sourceLocale.toUpperCase(),
-          }),
-        )
-      ) {
-        return;
-      }
-      const { entry, collection } = this.props;
-      const { locales, defaultLocale } = getI18nInfo(collection);
+  copyFromOtherLocale = ({ targetLocale, t }) => sourceLocale => {
+    if (
+      !window.confirm(
+        t('editor.editorControlPane.i18n.copyFromLocaleConfirm', {
+          locale: sourceLocale.toUpperCase(),
+        }),
+      )
+    ) {
+      return;
+    }
+    const { entry, collection } = this.props;
+    const { locales, defaultLocale } = getI18nInfo(collection);
 
-      const locale = this.state.selectedLocale;
-      const i18n = locales && {
-        currentLocale: locale,
-        locales,
-        defaultLocale,
-      };
-
-      this.props.fields.forEach(field => {
-        if (isFieldTranslatable(field, targetLocale, sourceLocale)) {
-          const copyValue = getFieldValue({
-            field,
-            entry,
-            locale: sourceLocale,
-            isTranslatable: sourceLocale !== defaultLocale,
-          });
-          if (copyValue) this.props.onChange(field, copyValue, undefined, i18n);
-        }
-      });
+    const locale = this.state.selectedLocale;
+    const i18n = locales && {
+      currentLocale: locale,
+      locales,
+      defaultLocale,
     };
+
+    this.props.fields.forEach(field => {
+      if (isFieldTranslatable(field, targetLocale, sourceLocale)) {
+        const copyValue = getFieldValue({
+          field,
+          entry,
+          locale: sourceLocale,
+          isTranslatable: sourceLocale !== defaultLocale,
+        });
+        if (copyValue) this.props.onChange(field, copyValue, undefined, i18n);
+      }
+    });
+  };
 
   validate = async () => {
     this.props.fields.forEach(field => {
@@ -224,6 +250,13 @@ export default class ControlPane extends React.Component {
             const isDuplicate = isFieldDuplicate(field, locale, defaultLocale);
             const isHidden = isFieldHidden(field, locale, defaultLocale);
             const key = i18n ? `${locale}_${i}` : i;
+            const isConditionMet = calculateCondition({
+              field,
+              fields,
+              entry,
+              locale,
+              isTranslatable,
+            });
 
             return (
               <EditorControl
@@ -249,6 +282,7 @@ export default class ControlPane extends React.Component {
                 isFieldDuplicate={field => isFieldDuplicate(field, locale, defaultLocale)}
                 isFieldHidden={field => isFieldHidden(field, locale, defaultLocale)}
                 locale={locale}
+                isConditionMet={isConditionMet}
               />
             );
           })}

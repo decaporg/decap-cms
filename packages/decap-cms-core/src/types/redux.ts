@@ -67,6 +67,12 @@ export interface CmsI18nConfig {
   default_locale?: string;
 }
 
+interface Condition {
+  field: string;
+  value: string | boolean | number;
+  operator?: '==' | '!=' | '>' | '<' | '>=' | '<=';
+}
+
 export interface CmsFieldBase {
   name: string;
   label?: string;
@@ -77,6 +83,7 @@ export interface CmsFieldBase {
   media_folder?: string;
   public_folder?: string;
   comment?: string;
+  condition?: Condition;
 }
 
 export interface CmsFieldBoolean {
