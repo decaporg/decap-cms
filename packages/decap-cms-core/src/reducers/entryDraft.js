@@ -215,6 +215,7 @@ export function selectCustomPath(collection, entryDraft, config) {
   const indexFile = get(collection.toJS(), ['meta', 'path', 'index_file']);
   const fileBaseName = slugFormatter(collection, entryDraft.getIn(['entry', 'data']), config.slug);
   const extension = selectFolderEntryExtension(collection);
+  const fileSlug = entryDraft.getIn(['entry', 'slug']) ? entryDraft.getIn(['entry', 'slug']).split('/').pop() : fileBaseName;
   const customPath =
     path &&
     join(
@@ -222,7 +223,7 @@ export function selectCustomPath(collection, entryDraft, config) {
       path,
       pathType == 'index'
         ? `${fileBaseName}/${indexFile}.${extension}`
-        : `${fileBaseName}.${extension}`,
+        : `${fileSlug}.${extension}`,
     );
   return customPath;
 }

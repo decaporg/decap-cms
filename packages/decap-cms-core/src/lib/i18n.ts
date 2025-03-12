@@ -177,7 +177,7 @@ export function getI18nFiles(
         path: getFilePath(
           structure,
           extension,
-          index > 0 && newPath && isFolder !== false ? newPath : path,
+          path,
           slug,
           locale,
         ),

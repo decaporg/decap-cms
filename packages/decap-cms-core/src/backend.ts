@@ -1161,7 +1161,7 @@ export class Backend {
       updateAssetProxies(assetProxies, config, collection, entryDraft, path);
     } else {
       const slug = entryDraft.getIn(['entry', 'slug']);
-      const isFolder = prepareMetaPathType(slug, collection) === 'index';
+      isFolder = prepareMetaPathType(slug, collection) === 'index';
       const path = entryDraft.getIn(['entry', 'path']);
       dataFile = {
         path,
