@@ -444,7 +444,7 @@ function mapStateToProps(state, ownProps) {
   if (collection.has('nested') && slug) {
     const pathParts = slug.split('/');
     if (pathParts.length > 2) {
-      editorBackLink = `${editorBackLink}/filter/${pathParts.slice(0, -2).join('/')}`;
+      editorBackLink = `${editorBackLink}/filter/${pathParts.slice(0, -1).join('/')}`;
     }
   }
 
