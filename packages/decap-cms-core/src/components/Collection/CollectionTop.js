@@ -77,7 +77,7 @@ function CollectionTop({ collection, newEntryUrl, t }) {
 
   function handleNew(pathType) {
     const delimiter = newEntryUrl.includes('?') ? '&' : '?';
-    history.push(`${newEntryUrl}${delimiter}path_type=${pathType}`)
+    history.push(`${newEntryUrl}${delimiter}path_type=${pathType}`);
   }
 
   return (
