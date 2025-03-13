@@ -99,10 +99,12 @@ function calculateCondition({field, fields, entry, locale, isTranslatable}) {
   if (!condition) return true;
 
   const condFieldName = condition.get('field');
-  const condValue = condition.get('value');
   const operator = condition.get('operator') || '==';
+  const condValue = condition.get('value');
+
   const condField = fields.find(f => f.get('name') === condFieldName);
-  const condFieldValue = getFieldValue({ field: condField, entry, locale, isTranslatable, });
+  let condFieldValue = getFieldValue({ field: condField, entry, locale, isTranslatable, });
+  condFieldValue = condFieldValue?.toJS ? condFieldValue.toJS() : condFieldValue;
 
   switch (operator) {
     case '==':
@@ -178,13 +180,22 @@ export default class ControlPane extends React.Component {
   };
 
   validate = async () => {
-    this.props.fields.forEach(field => {
-      if (field.get('widget') === 'hidden') return;
+    const { fields, entry, collection } = this.props;
+
+    fields.forEach(field => {
+      const isConditionMet = calculateCondition({
+        field,
+        fields,
+        entry,
+        locale: this.state.selectedLocale,
+        isTranslatable: hasI18n(collection),
+      });
+
+      if (field.get('widget') === 'hidden' || !isConditionMet) return;
+
       const control = this.childRefs[field.get('name')];
       const validateFn = control?.innerWrappedControl?.validate ?? control?.validate;
-      if (validateFn) {
-        validateFn();
-      }
+      if (validateFn) validateFn();
     });
   };
 
@@ -257,6 +268,7 @@ export default class ControlPane extends React.Component {
               locale,
               isTranslatable,
             });
+            if (!isConditionMet) return
 
             return (
               <EditorControl
@@ -282,7 +294,6 @@ export default class ControlPane extends React.Component {
                 isFieldDuplicate={field => isFieldDuplicate(field, locale, defaultLocale)}
                 isFieldHidden={field => isFieldHidden(field, locale, defaultLocale)}
                 locale={locale}
-                isConditionMet={isConditionMet}
               />
             );
           })}
