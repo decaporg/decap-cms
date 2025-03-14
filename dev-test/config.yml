@@ -9,7 +9,7 @@ display_url: https://moc-www.netlify.app/
 logo_url: https://res.cloudinary.com/celje/image/upload/v1731056244/logo.svg
 media_folder: static/media
 public_folder: /media
-# publish_mode: editorial_workflow
+publish_mode: editorial_workflow
 editor:
   preview: false
 
@@ -28,6 +28,7 @@ slug:
   clean_accents: true
 
 aliases:
+  - &PAGE_URLS {name: urls, label: Page URLs, widget: pageUrls, i18n: duplicate, required: false}
   - &VISIBLE_IN_CMS {name: visibleInCMS, widget: hidden, default: true}
   - &LINK_TITLE {name: linkTitle, label: link title, widget: string, i18n: true, required: false, hint: 'Shown on links to this page. If empty, page title will be used'}
   - &TITLE {name: title, label: title, widget: string, i18n: true}
@@ -43,6 +44,7 @@ aliases:
   - &IS_HIDDEN {name: isHidden, label: is hidden, widget: boolean, i18n: true, required: false}
   - &PUBLISH_DATE {name: publishDate, label: publish date, widget: datetime, time_format: false, i18n: duplicate, required: false, default: '{{now}}'}
   - &DATE {name: date, widget: datetime, i18n: duplicate, time_format: false}
+  - &DATE_OPTIONAL {name: date, widget: datetime, i18n: duplicate, time_format: false, required: false}
   - &DEFAULT_EDITOR_COMPONENTS [accordions, button, content-left-right, file-link, highlight-box, media-module]
   - &BODY {name: body, label: body, widget: markdown, i18n: true, editor_components: *DEFAULT_EDITOR_COMPONENTS}
   - &BODY_OPTIONAL {name: body, label: body, widget: markdown, i18n: true, required: false, editor_components: *DEFAULT_EDITOR_COMPONENTS}
@@ -51,13 +53,13 @@ aliases:
       {name: searchFor, label: search for, widget: string, i18n: true, required: false},
       {name: placeholder, widget: string, i18n: true, required: false},
     ]}
-  - &ALL_ITEMS_TITLE {name: allItemsTitle, label: all items title, widget: string, i18n: true, required: false}
+  - &ALL_ITEMS_TITLE {name: allItemsTitle, label: all items title, widget: string, i18n: true, required: false, condition: {field: layout, value: list-filters}}
   - &IS_EXPOSED {name: isExposed, label: Is exposed, widget: boolean, i18n: duplicate, required: false}
   - &IS_EXCLUDED_FROM_RELATED {name: isExcludedFromRelated, label: is excluded from related, widget: boolean, i18n: true, required: false, default: false}
-  - &RELATED_ITEMS {name: relatedCta, label: related cta, widget: object, summary: '{{fields.title}}', collapsed: true, i18n: true, required: false, fields: [
+  - &RELATED_TABLE {name: relatedTable, label: child related table, hint: applies to table of related items on subpages of this list, widget: object, summary: '{{fields.title}}', collapsed: true, i18n: true, required: false, fields: [
       *TITLE_OPTIONAL,
-      {name: allItems, label: all items cta, widget: string, i18n: true, required: false},
       {name: nameColumn, label: name column, widget: string, i18n: true, required: false},
+      {name: buttonText, label: button text, widget: string, i18n: true, required: false},
     ]}
 
   - &IMAGE_FILE {name: image, widget: image, i18n: duplicate}
@@ -101,12 +103,12 @@ aliases:
         {name: body, widget: markdown, i18n: true, editor_components: [button, file-link, media-module]},
       ]},
     ]}
-  - &GALLERY {name: gallery, widget: object, i18n: true, collapsed: true, summary: '{{fields.title}}', fields: [
+  - &GALLERY {name: gallery, label: Gallery, widget: object, i18n: true, collapsed: true, summary: '{{fields.title}}', fields: [
       *TITLE,
       *DESCRIPTION,
       {name: items, widget: list, label_singular: item, i18n: true, fields: *IMAGE_OBJECT_FIELDS},
     ]}
-  - &MAP {name: map, widget: object, i18n: true, collapsed: true, summary: '{{fields.title}}', fields: [
+  - &MAP {name: map, label: Map, widget: object, i18n: true, collapsed: true, summary: '{{fields.title}}', fields: [
       *TITLE_OPTIONAL,
       *DESCRIPTION,
       *BUTTON,
@@ -148,8 +150,14 @@ aliases:
   - &HAS_NEWSLETTER {name: hasNewsletter, label: show newsletter module, widget: boolean, i18n: duplicate, required: false}
 
   - &THEME_COLOR {name: themeColor, label: theme color, widget: select, required: false, i18n: duplicate, options: ['blue', 'dark-blue', 'yellow', 'red', 'pink', 'light-green', 'green', 'mint']}
-  - &THEME_COLOR_CHILDREN {name: cascade, label: theme of subpages, widget: object, summary: '{{fields.title}}', collapsed: true, hint: 'all subpages will have this theme, except if otherwise defined on a specific page', fields: [
-      {name: params, widget: object, fields: [*THEME_COLOR]},
+  - &BUILD {name: build, widget: object, i18n: true, fields: [
+      {name: render, widget: select, i18n: duplicate,  options: ['always', 'link', 'never'], required: false},
+    ]}
+  - &CASCADE {name: cascade, widget: object, summary: '{{fields.title}}', collapsed: true, hint: 'these apply to all subpages, except if otherwise defined on a specific page', i18n: true, fields: [
+      {name: params, widget: object, i18n: true, fields: [
+        *THEME_COLOR,
+      ]},
+      *BUILD,
     ]}
   - &BACKGROUND {name: background, widget: select, i18n: duplicate, required: false, options: [
       {label: no background, value: 'no-bg'},
@@ -172,7 +180,7 @@ aliases:
       ]},
     ]
 
-  - &TAXONOMIES {name: taxonomies, widget: list, label_singular: taxonomy, i18n: true, fields: [
+  - &TAXONOMIES {name: taxonomies, widget: list, label_singular: taxonomy, i18n: true, condition: {field: layout, value: list-filters}, fields: [
       {name: id, widget: select, options: [tags, categories, districts, areas, content_areas, themes, target_groups, fund_types, prices, venue, years, periods, publish_date, institution, self_government, planning, communal_service, real_estate, public_finance, social_service, development], i18n: duplicate},
       {name: label, widget: string, i18n: true, required: false},
       {name: isVisible, label: is visible, widget: boolean, i18n: duplicate, required: false},
@@ -194,7 +202,7 @@ aliases:
       *IMAGE_OBJECT_COLLAPSED,
     ]}
 
-  - &QUOTE {name: quote, widget: object, i18n: true, collapsed: true, summary: '{{fields.author}}', fields: [
+  - &QUOTE {name: quote, label: Quote, widget: object, i18n: true, collapsed: true, summary: '{{fields.author}}', fields: [
       {name: text, widget: text, i18n: true},
       {name: author, widget: string, i18n: true},
       *IMAGE_OBJECT,
@@ -265,12 +273,17 @@ aliases:
       *IMAGE_OBJECT,
     ]
 
+  - &SOURCE {name: source, widget: select, i18n: duplicate, required: false, options: ['/aktualno/novice', '/aktualno/dogodki', '/aktualno/projekti', '/aktualno/razpisi', '/aktualno/vloge']}
+
+  - &TAGS_TO_FILTER {name: tagsToFilter, label: tags to filter, widget: relation, collection: tags, i18n: true, required: false, value_field: '{{slug}}', search_fields: [title], display_fields: [title], multiple: true}
+
   - &CARD_LIST_FIELDS [
       *TITLE,
       *BACKGROUND,
       *DESCRIPTION,
       *BUTTON,
-      {name: source, widget: select, i18n: true, required: false, options: ['/aktualno/novice', '/aktualno/dogodki', '/aktualno/projekti', '/aktualno/razpisi']},
+      *SOURCE,
+      *TAGS_TO_FILTER,
       {name: items, widget: list, label_singular: item, i18n: true, required: false, fields: [
         *TITLE,
         *DESCRIPTION,
@@ -285,7 +298,8 @@ aliases:
       {name: rowsOrSlider, label: rows or slider, widget: select, i18n: true, default: carousel, options: ['rows', 'slider'], required: false},
       *DESCRIPTION,
       *BUTTON,
-      {name: source, widget: select, i18n: true, required: false, options: ['/aktualno/novice', '/aktualno/dogodki', '/aktualno/projekti', '/aktualno/razpisi']},
+      *SOURCE,
+      *TAGS_TO_FILTER,
       {name: items, widget: list, label_singular: item, i18n: true, required: false, fields: [
         *TITLE,
         *DESCRIPTION,
@@ -316,12 +330,12 @@ aliases:
       *ICONS_WITH_NUMBERS,
       *QUOTE,
       {name: exposureList, label: Exposure list, widget: object, summary: '{{fields.title}}', i18n: true, fields: *EXPOSURE_LIST_FIELDS},
-      {name: textImageList, label: text image list, widget: object, i18n: true, fields: [
+      {name: textImageList, label: Text-image list, widget: object, i18n: true, fields: [
         *BACKGROUND,
         {name: items, widget: list, label_singular: item, i18n: true, fields: *TEXT_IMAGE_FIELDS},
       ]},
       {name: cardList, label: Card list, widget: object, summary: '{{fields.title}}', i18n: true, fields: *CARD_LIST_FIELDS},
-      {name: cardListText, label: Card list with side text, widget: object, summary: '{{fields.title}}', i18n: true, fields: *CARD_LIST_TEXT_FIELDS},
+      {name: cardListText, label: Card list - side text, widget: object, summary: '{{fields.title}}', i18n: true, fields: *CARD_LIST_TEXT_FIELDS},
     ]}
 
   - &HOME_FIELDS [
@@ -380,50 +394,29 @@ aliases:
       ]},
     ]
 
-  - &EVENTS_LIST_FIELDS [
-      *TITLE,
-      *DRAFT,
-      *SLUG,
-      *DESCRIPTION,
-      *IMAGE_OBJECT,
-      *PAGE_HERO,
-      {name: exposed, label: exposed list, widget: object, collapsed: true, summary: '{{fields.title}}', i18n: true, fields: [
-        *IS_HIDDEN,
+  - &MAIN_LINKS {name: mainLinks, label: main links, widget: object, i18n: true, summary: '{{fields.title}}', collapsed: true, condition: {field: layout, value: list-filters, operator: '!='}, fields: [
+      *TITLE_OPTIONAL,
+      {name: useCustomLinks, label: use custom links, widget: boolean, i18n: true, required: false, hint: 'Turn this on if you need several sections (manually add them below). If off, links will be generated from child pages (custom sections will be ignored).'},
+      {name: sections, label_singular: section, widget: list, i18n: true, condition: {field: useCustomLinks, value: true}, fields: [
         *TITLE_OPTIONAL,
-        *BUTTON,
+        {name: links, label: links, widget: list, i18n: true, label_singular: link, fields: [
+          *TITLE,
+          *DESCRIPTION,
+          {name: link, widget: string, i18n: true},
+        ]},
       ]},
-      {name: exposedEventTop, label: exposed event top, widget: object, i18n: true, collapsed: true, summary: '{{fields.title}}', fields: *EVENT_TEXT_IMAGE_FIELDS},
-      {name: sportList, label: sport list, widget: object, i18n: true, collapsed: true, summary: '{{fields.title}}', fields: [
-        *TITLE,
-        *DESCRIPTION,
-        *BUTTON,
-      ]},
-      {name: museumList, label: museum list, widget: object, i18n: true, collapsed: true, summary: '{{fields.title}}', fields: [
-        *TITLE,
-        *DESCRIPTION,
-        *BUTTON,
-      ]},
-      {name: childrenList, label: children list, widget: object, i18n: true, collapsed: true, summary: '{{fields.title}}', fields: [
-        *TITLE,
-        *DESCRIPTION,
-        *BUTTON,
-      ]},
-      {name: exposedEventMiddle, label: exposed event middle, widget: object, i18n: true, collapsed: true, summary: '{{fields.title}}', fields: *EVENT_TEXT_IMAGE_FIELDS},
-      {name: musicList, label: music list, widget: object, i18n: true, collapsed: true, summary: '{{fields.title}}', fields: [
-        *TITLE,
-        *DESCRIPTION,
-        *BUTTON,
-      ]},
-      {name: theaterList, label: theater list, widget: object, i18n: true, collapsed: true, summary: '{{fields.title}}', fields: [
-        *TITLE,
-        *DESCRIPTION,
-        *BUTTON,
-      ]},
-      {name: exposedEventBottom, label: exposed event bottom, widget: object, i18n: true, collapsed: true, summary: '{{fields.title}}', fields: *EVENT_TEXT_IMAGE_FIELDS},
-      *THEME_COLOR,
-      *HAS_NEWSLETTER,
-      *KEYWORDS,
-    ]
+    ]}
+
+  - &EXPOSED {name: exposed, widget: object, summary: '{{fields.title}}', collapsed: true, i18n: true, fields: [
+      *IS_HIDDEN,
+      *TITLE_OPTIONAL,
+      *BUTTON,
+    ]}
+
+  - &LIST_LAYOUT_SELECT {name: layout, widget: select, i18n: duplicate, required: false, options: [
+      {label: default, value: list},
+      {label: filters, value: list-filters},
+    ]}
 
   - &LIST_PAGE_FIELDS [
       *TITLE,
@@ -433,37 +426,34 @@ aliases:
       *IMAGE_OBJECT,
       *PAGE_HERO,
       *USEFUL_INFO,
-      {name: mainLinks, label: main links, widget: object, i18n: true, summary: '{{fields.title}}', collapsed: true, fields: [
-        *TITLE_OPTIONAL,
-        {name: useCustomLinks, label: use custom links, widget: boolean, i18n: true, required: false, hint: 'Turn this on if you need several sections (manually add them below). If off, links will be generated from child pages (custom sections will be ignored).'},
-        {name: sections, label_singular: section, widget: list, i18n: true, fields: [
-          *TITLE_OPTIONAL,
-          {name: links, label: links, widget: list, i18n: true, label_singular: link, fields: [
-            *TITLE,
-            *DESCRIPTION,
-            {name: link, widget: string, i18n: true},
-          ]},
-        ]},
-      ]},
-      *ICONS_WITH_NUMBERS,
+      *LIST_LAYOUT_SELECT,
+      *MAIN_LINKS,
       *BODY_OPTIONAL,
       *MODULES,
-      {name: enableMapView, label: Is map view enabled, widget: boolean, i18n: duplicate, required: false},
-      *MAP,
+      *ALL_ITEMS_TITLE,
+      *TAXONOMIES,
+      *SOURCE,
+      *TAGS_TO_FILTER,
+      {name: areasToFilter, label: areas to filter, widget: relation, collection: taxonomies, file: areas, i18n: duplicate, required: false, value_field: 'items.*.id', search_fields: ['items.*.title'], display_fields: ['items.*.title'], multiple: true},
+      {name: cardType, label: card type, widget: select, i18n: duplicate, required: false, options: [
+        {label: card, value: ''},
+        {label: card with links, value: 'links'},
+        {label: table, value: table},
+      ]},
+      {name: nameColumn, label: name column, widget: string, i18n: true, required: false, condition: {field: layout, value: list-filters}},
+      {name: columns, label: other columns, widget: list, i18n: true, required: false, condition: {field: layout, value: list-filters}, fields: [
+        {name: id, widget: string, i18n: duplicate},
+        {name: label, widget: string, i18n: true},
+        {name: type, widget: select, i18n: true, options: ['string', 'date', 'tags', 'no_sort']},
+      ]},
+      *HAS_NEWSLETTER,
       *RELATED_LINKS,
       *KEYWORDS,
       *HIDE_FROM_RELATED,
-      *HAS_NEWSLETTER,
       *HEADER_SEARCH,
       *THEME_COLOR,
-      *THEME_COLOR_CHILDREN,
-      {name: exposed, widget: object, summary: '{{fields.title}}', collapsed: true, i18n: true, fields: [
-        *IS_HIDDEN,
-        *TITLE_OPTIONAL,
-      ]},
-      *ALL_ITEMS_TITLE,
-      *TAXONOMIES,
-      *RELATED_ITEMS,
+      *BUILD,
+      *CASCADE,
     ]
 
   - &SINGLE_FIELDS [
@@ -472,9 +462,31 @@ aliases:
       *SLUG,
       *DESCRIPTION,
       *IMAGE_OBJECT,
+      *DATE_OPTIONAL,
+      {name: tags, widget: relation, collection: tags, i18n: duplicate, required: false, value_field: '{{slug}}', search_fields: [title], display_fields: [title], multiple: true, filters: [{field: section, values: [other]}]},
+      {name: externalLink, label: external link, widget: string, i18n: true, required: false},
+      {name: extra_links, label: extra links, widget: list, i18n: true, required: false, fields: [
+        {name: text, widget: string, i18n: true},
+        {name: href, widget: string, i18n: true},
+        {name: icon, widget: select, i18n: true, options: ['link-external-colored', 'mail', 'phone', 'facebook', 'instagram', 'twitter', 'arrow-right'], required: false},
+      ]},
+      {name: custom, widget: list, i18n: true, types: [
+        {name: date, widget: object, fields: [
+          {name: id, widget: string, i18n: duplicate},
+          {name: value, widget: datetime, i18n: duplicate},
+        ]},
+        {name: string, widget: object, fields: [
+          {name: id, widget: string, i18n: duplicate},
+          {name: value, widget: string, i18n: true},
+        ]},
+        {name: tag, widget: object, fields: [
+          {name: id, widget: string, i18n: duplicate},
+          {name: value, widget: relation, collection: tags, i18n: true, value_field: '{{slug}}', search_fields: [title], display_fields: [title]},
+        ]},
+      ]},
       *PAGE_HERO,
       *USEFUL_INFO,
-      *BODY,
+      *BODY_OPTIONAL,
       *MODULES,
       *RELATED_LINKS,
       *KEYWORDS,
@@ -701,12 +713,29 @@ collections:
     create: true
     i18n: true
     slug: '{{slug}}'
+    preview_path: aktualno/novice/{{slug}}
     editor:
       preview: true
     index_file:
       pattern: _index
-      fields: *LIST_PAGE_FIELDS
+      editor:
+        preview: false
+      fields: [
+        *TITLE,
+        *DRAFT,
+        *URL,
+        *DESCRIPTION,
+        *IMAGE_OBJECT,
+        *PAGE_HERO,
+        *EXPOSED,
+        *ALL_ITEMS_TITLE,
+        *LIST_LAYOUT_SELECT,
+        *TAXONOMIES,
+        *HAS_NEWSLETTER,
+        *HEADER_SEARCH,
+      ]
     fields: [
+      # *PAGE_URLS,
       *TITLE,
       *LINK_TITLE,
       *DRAFT,
@@ -730,12 +759,51 @@ collections:
     label: Dogodki
     label_singular: Dogodek
     folder: content/aktualno/dogodki
+    preview_path: aktualno/dogodki/{{slug}}
     create: true
     i18n: true
     slug: '{{slug}}'
     index_file:
       pattern: _index
-      fields: *EVENTS_LIST_FIELDS
+      fields: [
+        *TITLE,
+        *DRAFT,
+        *SLUG,
+        *DESCRIPTION,
+        *IMAGE_OBJECT,
+        *PAGE_HERO,
+        *EXPOSED,
+        {name: exposedEventTop, label: exposed event top, widget: object, i18n: true, collapsed: true, summary: '{{fields.title}}', fields: *EVENT_TEXT_IMAGE_FIELDS},
+        {name: sportList, label: sport list, widget: object, i18n: true, collapsed: true, summary: '{{fields.title}}', fields: [
+          *TITLE,
+          *DESCRIPTION,
+          *BUTTON,
+        ]},
+        {name: museumList, label: museum list, widget: object, i18n: true, collapsed: true, summary: '{{fields.title}}', fields: [
+          *TITLE,
+          *DESCRIPTION,
+          *BUTTON,
+        ]},
+        {name: childrenList, label: children list, widget: object, i18n: true, collapsed: true, summary: '{{fields.title}}', fields: [
+          *TITLE,
+          *DESCRIPTION,
+          *BUTTON,
+        ]},
+        {name: exposedEventMiddle, label: exposed event middle, widget: object, i18n: true, collapsed: true, summary: '{{fields.title}}', fields: *EVENT_TEXT_IMAGE_FIELDS},
+        {name: musicList, label: music list, widget: object, i18n: true, collapsed: true, summary: '{{fields.title}}', fields: [
+          *TITLE,
+          *DESCRIPTION,
+          *BUTTON,
+        ]},
+        {name: theaterList, label: theater list, widget: object, i18n: true, collapsed: true, summary: '{{fields.title}}', fields: [
+          *TITLE,
+          *DESCRIPTION,
+          *BUTTON,
+        ]},
+        {name: exposedEventBottom, label: exposed event bottom, widget: object, i18n: true, collapsed: true, summary: '{{fields.title}}', fields: *EVENT_TEXT_IMAGE_FIELDS},
+        *HAS_NEWSLETTER,
+        *THEME_COLOR,
+      ]
     fields: [
       *TITLE,
       *LINK_TITLE,
@@ -764,12 +832,29 @@ collections:
     label: Projekti
     label_singular: Projekt
     folder: content/aktualno/projekti
+    preview_path: aktualno/projekti/{{slug}}
     create: true
     i18n: true
     slug: '{{slug}}'
     index_file:
       pattern: _index
-      fields: *LIST_PAGE_FIELDS
+      fields: [
+        *TITLE,
+        *DRAFT,
+        *URL,
+        *DESCRIPTION,
+        *IMAGE_OBJECT,
+        *PAGE_HERO,
+        *EXPOSED,
+        *ICONS_WITH_NUMBERS,
+        *BODY_OPTIONAL,
+        *MODULES,
+        {name: enableMapView, label: Is map view enabled, widget: boolean, i18n: duplicate, required: false},
+        *MAP,
+        *ALL_ITEMS_TITLE,
+        *HAS_NEWSLETTER,
+        *HEADER_SEARCH,
+      ]
     fields: [
       *TITLE,
       *LINK_TITLE,
@@ -797,6 +882,7 @@ collections:
     label: Razpisi
     label_singular: Razpis
     folder: content/aktualno/razpisi
+    preview_path: aktualno/razpisi/{{slug}}
     create: true
     i18n: true
     slug: '{{slug}}'
@@ -812,14 +898,12 @@ collections:
         *ICONS_WITH_NUMBERS,
         *QUOTE,
         *ALL_ITEMS_TITLE,
+        *LIST_LAYOUT_SELECT,
         *TAXONOMIES,
         *FAQ,
-        *RELATED_ITEMS,
-        *KEYWORDS,
-        *HIDE_FROM_RELATED,
+        *HAS_NEWSLETTER,
         *HEADER_SEARCH,
-        *THEME_COLOR,
-        *THEME_COLOR_CHILDREN,
+        *RELATED_TABLE,
       ]
     fields: [
       *TITLE,
@@ -842,6 +926,7 @@ collections:
     label: Vloge
     label_singular: Vloga
     folder: content/aktualno/vloge
+    preview_path: aktualno/vloge/{{slug}}
     create: true
     i18n: true
     slug: '{{slug}}'
@@ -855,14 +940,12 @@ collections:
         *IMAGE_OBJECT,
         *PAGE_HERO,
         *ALL_ITEMS_TITLE,
+        *LIST_LAYOUT_SELECT,
         *TAXONOMIES,
         *FAQ,
-        *RELATED_ITEMS,
-        *KEYWORDS,
-        *HIDE_FROM_RELATED,
+        *HAS_NEWSLETTER,
         *HEADER_SEARCH,
-        *THEME_COLOR,
-        *THEME_COLOR_CHILDREN,
+        *RELATED_TABLE,
       ]
     fields: [
       *TITLE,
@@ -883,12 +966,26 @@ collections:
     label: Predpisi
     label_singular: Predpis
     folder: content/aktualno/predpisi
+    preview_path: aktualno/predpisi/{{slug}}
     create: true
     i18n: true
     slug: '{{slug}}'
     index_file:
       pattern: _index
-      fields: *LIST_PAGE_FIELDS
+      fields: [
+        *TITLE,
+        *DRAFT,
+        *URL,
+        *DESCRIPTION,
+        *IMAGE_OBJECT,
+        *PAGE_HERO,
+        *ALL_ITEMS_TITLE,
+        *LIST_LAYOUT_SELECT,
+        *TAXONOMIES,
+        *HAS_NEWSLETTER,
+        *HEADER_SEARCH,
+        *RELATED_TABLE,
+      ]
     fields: [
       *TITLE,
       *LINK_TITLE,
@@ -925,12 +1022,25 @@ collections:
     label: Publikacije
     label_singular: publication
     folder: content/aktualno/publikacije
+    preview_path: aktualno/publikacije/{{slug}}
     create: true
     i18n: true
     slug: '{{slug}}'
     index_file:
       pattern: _index
-      fields: *LIST_PAGE_FIELDS
+      fields: [
+        *TITLE,
+        *DRAFT,
+        *URL,
+        *DESCRIPTION,
+        *IMAGE_OBJECT,
+        *PAGE_HERO,
+        *ALL_ITEMS_TITLE,
+        *LIST_LAYOUT_SELECT,
+        *TAXONOMIES,
+        *HAS_NEWSLETTER,
+        *HEADER_SEARCH,
+      ]
     fields: [
       *TITLE,
       *DRAFT,
@@ -963,8 +1073,6 @@ collections:
     index_file:
       pattern: _index
       fields: *LIST_PAGE_FIELDS
-    editor:
-      preview: false
     nested:
       depth: 10
       summary: "{{title}}"
@@ -1041,8 +1149,8 @@ collections:
     files: [
       {label: Prva stran SI, name: home-si, file: content/_index.sl.md, fields: *HOME_FIELDS},
       {label: Prva stran EN, name: home-en, file: content/_index.en.md, fields: *HOME_FIELDS},
-      {label: Spored dogodkov SI, name: events-schedule-si, file: content/aktualno/dogodki/spored.sl.md, fields: *LIST_PAGE_FIELDS},
-      {label: Spored dogodkov EN, name: events-schedule-en, file: content/aktualno/dogodki/spored.en.md, fields: *LIST_PAGE_FIELDS},
+      {label: Spored dogodkov SI, name: events-schedule-si, file: content/aktualno/dogodki/spored/_index.sl.md, fields: *LIST_PAGE_FIELDS},
+      {label: Spored dogodkov EN, name: events-schedule-en, file: content/aktualno/dogodki/spored/_index.en.md, fields: *LIST_PAGE_FIELDS},
       {label: Kontakt SI, name: contact-si, file: content/kontakt-in-uradne-ure.sl.md, fields: *CONTACT_FIELDS},
       {label: Kontakt EN, name: contact-en, file: content/kontakt-in-uradne-ure.en.md, fields: *CONTACT_FIELDS},
       {label: Naročilo na sestanek SI, name: appointment-si, file: content/narocite-se-na-sestanek.sl.md, fields: *MEETING_FORM_FIELDS},
@@ -1067,9 +1175,9 @@ collections:
     ]
     fields: [
       *TITLE,
-      *LINK_TITLE,
+      {name: linkTitle, label: short title, widget: string, i18n: true, required: false},
       *COLOR,
-      {name: section, label: section, widget: select, i18n: duplicate, options: ['novice', 'dogodki', 'projekti', 'predpisi']},
+      {name: section, label: section, widget: select, i18n: duplicate, options: ['novice', 'dogodki', 'projekti', 'predpisi', 'other']},
     ]
 
   - name: categories
@@ -1089,13 +1197,10 @@ collections:
     folder: content/upravljanje/krajevne-skupnosti
     create: true
     i18n: true
-    path: '{{slug}}/_index'
     index_file:
       pattern: _index
       fields: *LIST_PAGE_FIELDS
-    fields: [
-      *TITLE,
-    ]
+    fields: *SINGLE_FIELDS
 
   - name: departments
     label: Oddelki
@@ -1186,11 +1291,6 @@ collections:
       {name: "404", label: 404 Page, file: data/page404.json, i18n: true, fields: [
         *PAGE_HERO,
         *RELATED_LINKS,
-      ]},
-      {name: relatedRegulations, label: Related regulations, file: data/relatedRegulations.json, i18n: true, fields: [
-        *TITLE,
-        {name: allTendersCta, label: all tenders cta, widget: string, i18n: true},
-        {name: isDesktopSlider, label: is desktop slider, widget: boolean, i18n: true, required: false},
       ]},
     ]
 
