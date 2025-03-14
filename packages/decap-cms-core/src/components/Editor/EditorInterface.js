@@ -160,6 +160,15 @@ function isPreviewEnabled(collection, entry) {
   }
 
   const indexFileConfig = collection.get('index_file');
+  console.log(
+    'isPreviewEnabled',
+    indexFileConfig,
+    entry.get('slug'),
+    indexFileConfig.get('pattern'),
+    !!collection.get('nested'),
+    indexFileConfig.get('editor')?.has('preview'),
+    indexFileConfig.get('editor').get('preview'),
+  );
   if (
     indexFileConfig &&
     isIndexFile(entry.get('slug'), indexFileConfig.get('pattern'), !!collection.get('nested')) &&

@@ -335,6 +335,7 @@ declare module 'decap-cms-core' {
     i18n?: boolean | CmsI18nConfig;
     index_file?: {
       pattern: string;
+      editor?: { preview?: boolean };
       fields?: CmsField[];
     };
 

@@ -361,6 +361,9 @@ export interface CmsCollection {
   index_file?: {
     pattern: string;
     fields?: CmsField[];
+    editor?: {
+      preview?: boolean;
+    };
   };
 
   /**
