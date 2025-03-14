@@ -114,6 +114,19 @@ const AppHeaderNavList = styled.ul`
   list-style: none;
 `;
 
+const AppHeaderLogo = styled.li`
+  display: flex;
+  align-items: center;
+
+  img {
+    padding: 12px 20px;
+    max-height: 56px;
+    max-width: 300px;
+    object-fit: contain;
+    object-position: center;
+  }
+`;
+
 class Header extends React.Component {
   static propTypes = {
     user: PropTypes.object.isRequired,
@@ -123,6 +136,7 @@ class Header extends React.Component {
     openMediaLibrary: PropTypes.func.isRequired,
     hasWorkflow: PropTypes.bool.isRequired,
     displayUrl: PropTypes.string,
+    logoUrl: PropTypes.string,
     isTestRepo: PropTypes.bool,
     t: PropTypes.func.isRequired,
     checkBackendStatus: PropTypes.func.isRequired,
@@ -155,6 +169,7 @@ class Header extends React.Component {
       openMediaLibrary,
       hasWorkflow,
       displayUrl,
+      logoUrl,
       isTestRepo,
       t,
       showMediaButton,
@@ -169,6 +184,9 @@ class Header extends React.Component {
         <AppHeaderContent>
           <nav>
             <AppHeaderNavList>
+              {logoUrl && <AppHeaderLogo>
+                <img src={logoUrl} alt="Logo" />
+              </AppHeaderLogo>}
               <li>
                 <AppHeaderNavLink
                   to="/"
