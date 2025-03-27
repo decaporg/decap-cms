@@ -21,6 +21,7 @@ import { BitbucketBackend, API as BitBucketAPI } from 'decap-cms-backend-bitbuck
 import GitHubAPI from './GitHubAPI';
 import GitLabAPI from './GitLabAPI';
 import AuthenticationPage from './AuthenticationPage';
+import PKCEAuthenticationPage from './PKCEAuthenticationPage';
 import { getClient } from './netlify-lfs-client';
 
 import type { Client } from './netlify-lfs-client';
@@ -144,6 +145,7 @@ export default class GitGateway implements Implementation {
   netlifyLargeMediaURL: string;
   backendType: string | null;
   apiUrl: string;
+  authType: 'pkce' | 'netlify';
   authClient?: AuthClient;
   backend: GitHubBackend | GitLabBackend | BitbucketBackend | null;
   acceptRoles?: string[];
@@ -187,7 +189,12 @@ export default class GitGateway implements Implementation {
     }
 
     this.backend = null;
-    AuthenticationPage.authClient = () => this.getAuthClient();
+    if (config.backend.auth_type === 'pkce') {
+      this.authType = 'pkce';
+    } else {
+      this.authType = 'netlify';
+      AuthenticationPage.authClient = () => this.getAuthClient();
+    }
   }
 
   isGitBackend() {
@@ -376,7 +383,7 @@ export default class GitGateway implements Implementation {
     return this.authenticate(user as Credentials);
   }
   authComponent() {
-    return AuthenticationPage;
+    return this.authType === 'pkce' ? PKCEAuthenticationPage : AuthenticationPage;
   }
 
   async logout() {
