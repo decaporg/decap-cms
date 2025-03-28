@@ -35,10 +35,12 @@ const loaders = {
 `;
 
   // Create loader functions
-  Array.from(modes).sort().forEach(mode => {
-    fileContent += `  '${mode}': () => import('codemirror/mode/${mode}/${mode}.js'),
+  Array.from(modes)
+    .sort()
+    .forEach(mode => {
+      fileContent += `  '${mode}': () => import('codemirror/mode/${mode}/${mode}.js'),
 `;
-  });
+    });
 
   fileContent += `};
 
@@ -78,7 +80,7 @@ async function process() {
   const transformedData = transform(data);
   await outputData(transformedData);
   await generateLoaders(transformedData);
-  
+
   console.log('Generated language data and loaders');
 }
 
