@@ -47,5 +47,7 @@ To use a custom Git-Gateway implementation with PKCE authentication, use a confi
         # should be "bitbucket", "gitlab", or "github", so the implementation can automatically
         # determine which backend API to use when making requests.
         gateway_url: https://your.gitgateway.host/git-gateway/bitbucket/
+        # Override the Netlify git-gateway status check
+        status_endpoint: https://your.gitgateway.host/api/v2/components.json
         # Optional: defaults to "master"
         branch: main

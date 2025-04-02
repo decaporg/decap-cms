@@ -142,6 +142,7 @@ export default class GitGateway implements Implementation {
   mediaFolder: string;
   transformImages: boolean;
   gatewayUrl: string;
+  gitGatewayStatusEndpoint: string;
   netlifyLargeMediaURL: string;
   backendType: string | null;
   apiUrl: string;
@@ -169,6 +170,7 @@ export default class GitGateway implements Implementation {
     this.squashMerges = config.backend.squash_merges || false;
     this.cmsLabelPrefix = config.backend.cms_label_prefix || '';
     this.mediaFolder = config.media_folder;
+    this.gitGatewayStatusEndpoint = config.backend.status_endpoint || GIT_GATEWAY_STATUS_ENDPOINT;
     const { use_large_media_transforms_in_media_library: transformImages = true } = config.backend;
     this.transformImages = transformImages;
 
@@ -202,7 +204,7 @@ export default class GitGateway implements Implementation {
   }
 
   async status() {
-    const api = await fetch(GIT_GATEWAY_STATUS_ENDPOINT)
+    const api = await fetch(this.gitGatewayStatusEndpoint)
       .then(res => res.json())
       .then(res => {
         return res['components']
