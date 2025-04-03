@@ -42,7 +42,7 @@ const svgo = {
 function presets() {
   return [
     '@babel/preset-react',
-    '@babel/preset-env',
+    ['@babel/preset-env', isESM ? { modules: false } : {}],
     [
       '@emotion/babel-preset-css-prop',
       {

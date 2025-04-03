@@ -450,7 +450,7 @@ export default function slateToRemark(value, { voidCodeBlock }) {
        */
       case 'link': {
         const { title, data } = node;
-        return u(typeMap[node.type], { url: data?.url, title, ...data }, children);
+        return u(typeMap[node.type], { url: node.url, title, ...data }, children);
       }
 
       /**

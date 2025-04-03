@@ -2,8 +2,6 @@ name: Node CI
 
 on:
   push:
-    branches:
-      - main
   pull_request:
     types: [opened, synchronize, reopened]
 
@@ -28,73 +26,37 @@ jobs:
       matrix:
         os: [macos-latest, windows-latest, ubuntu-latest]
         node-version: [18.x, 20.x]
+      fail-fast: true
     if: ${{ needs.changes.outputs.cms == 'true' }}
     steps:
       - uses: actions/checkout@v3
-      - name: Use Node.js {{ matrix.node-version }}
+      - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
           check-latest: true
+          cache: 'npm'
       - name: log versions
         run: node --version && npm --version && yarn --version
-      - name: install dependecies
-        run: npm install
+      - name: install dependencies
+        run: npm ci
       - name: run unit tests
         run: npm run test:ci
-        env:
-          CI: true
-          NODE_OPTIONS: --max-old-space-size=4096
       - name: build demo site
         run: npm run build:demo
+      - name: run e2e tests
+        if: matrix.os == 'ubuntu-latest' && matrix.node-version == '20.x'
+        run: npm run test:e2e:run-ci
         env:
-          NODE_OPTIONS: --max-old-space-size=4096
-      - uses: actions/upload-artifact@master
-        with:
-          name: dev-test-website-${{ runner.os }}-${{ matrix.node-version }}
-          path: dev-test
-
-  e2e-with-cypress:
-    needs: [changes, build]
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x]
-      fail-fast: false
-
-    if: ${{ needs.changes.outputs.cms == 'true' }}
-    steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          check-latest: true
-      - uses: actions/download-artifact@master
-        with:
-          name: dev-test-website-${{ runner.os }}-18.x
-          path: dev-test
-      - name: npm install
-        run: |
-          node --version
-          npm --version
-          yarn --version
-          npm install
-      - name: e2e test
-        run: |
-          npm run test:e2e:run-ci
-        env:
-          IS_FORK: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == true }}
+          IS_FORK: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == true || github.repository_owner != 'decaporg' }}
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           NODE_OPTIONS: --max-old-space-size=4096
-          MACHINE_COUNT: 2
-          MACHINE_INDEX: ${{ matrix.node-version }}
           TZ: Europe/Amsterdam
-      - uses: actions/upload-artifact@v3
-        if: ${{ always() }}
+      - uses: actions/upload-artifact@v4
+        if: matrix.os == 'ubuntu-latest' && matrix.node-version == '20.x' && failure()
         with:
-          name: cypress-results-${{ matrix.node-version }}
+          name: cypress-results
           path: |
             cypress/screenshots
             cypress/videos
+

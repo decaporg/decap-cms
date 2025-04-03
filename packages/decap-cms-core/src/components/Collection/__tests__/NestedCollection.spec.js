@@ -37,6 +37,9 @@ describe('NestedCollection', () => {
     label: 'Pages',
     folder: 'src/pages',
     fields: [{ name: 'title', widget: 'string' }],
+    nested: {
+      subfolders: false,
+    },
   });
 
   it('should render correctly with no entries', () => {

@@ -79,8 +79,13 @@ function TreeNode(props) {
   const collectionName = collection.get('name');
 
   const sortedData = sortBy(treeData, getNodeTitle);
+  const subfolders = collection.get('nested')?.get('subfolders') !== false;
   return sortedData.map(node => {
-    const leaf = node.children.length <= 1 && !node.children[0]?.isDir && depth > 0;
+    const leaf =
+      depth > 0 &&
+      (subfolders
+        ? node.children.length <= 1 && !node.children[0]?.isDir
+        : node.children.length === 0);
     if (leaf) {
       return null;
     }
@@ -90,7 +95,11 @@ function TreeNode(props) {
     }
     const title = getNodeTitle(node);
 
-    const hasChildren = depth === 0 || node.children.some(c => c.children.some(c => c.isDir));
+    const hasChildren =
+      depth === 0 ||
+      (subfolders
+        ? node.children.some(c => c.children.some(c => c.isDir))
+        : node.children.some(c => c.isDir));
 
     return (
       <React.Fragment key={node.path}>
