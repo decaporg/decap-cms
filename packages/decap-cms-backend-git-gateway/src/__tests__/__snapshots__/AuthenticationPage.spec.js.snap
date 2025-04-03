@@ -24,7 +24,8 @@ exports[`GitGatewayAuthenticationPage should render with identity error 1`] = `
 }
 
 .emotion-2 {
-  width: 300px;
+  width: auto;
+  max-width: 300px;
   height: auto;
 }
 
@@ -33,10 +34,9 @@ exports[`GitGatewayAuthenticationPage should render with identity error 1`] = `
   border-radius: 5px;
   cursor: pointer;
   box-shadow: 0 4px 12px 0 rgba(68, 74, 87, 0.15),0 1px 3px 0 rgba(68, 74, 87, 0.25);
-  height: 36px;
-  line-height: 36px;
+  line-height: 1.1;
   font-weight: 500;
-  padding: 0 13px;
+  padding: clamp(4px, 1.2vw, 12px) clamp(12px, 3.2vw, 32px);
   background-color: #798291;
   color: #fff;
   background-color: #313d3e;
@@ -52,12 +52,6 @@ exports[`GitGatewayAuthenticationPage should render with identity error 1`] = `
   -ms-flex-align: center;
   align-items: center;
   position: relative;
-}
-
-@media (min-width: 800px) {
-  .emotion-4 {
-    padding: 0 35px;
-  }
 }
 
 .emotion-4:focus,
@@ -168,7 +162,8 @@ exports[`GitGatewayAuthenticationPage should render with no identity error 1`] =
 }
 
 .emotion-2 {
-  width: 300px;
+  width: auto;
+  max-width: 300px;
   height: auto;
 }
 
@@ -177,10 +172,9 @@ exports[`GitGatewayAuthenticationPage should render with no identity error 1`] =
   border-radius: 5px;
   cursor: pointer;
   box-shadow: 0 4px 12px 0 rgba(68, 74, 87, 0.15),0 1px 3px 0 rgba(68, 74, 87, 0.25);
-  height: 36px;
-  line-height: 36px;
+  line-height: 1.1;
   font-weight: 500;
-  padding: 0 13px;
+  padding: clamp(4px, 1.2vw, 12px) clamp(12px, 3.2vw, 32px);
   background-color: #798291;
   color: #fff;
   background-color: #313d3e;
@@ -196,12 +190,6 @@ exports[`GitGatewayAuthenticationPage should render with no identity error 1`] =
   -ms-flex-align: center;
   align-items: center;
   position: relative;
-}
-
-@media (min-width: 800px) {
-  .emotion-4 {
-    padding: 0 35px;
-  }
 }
 
 .emotion-4:focus,

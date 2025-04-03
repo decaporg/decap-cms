@@ -29,9 +29,9 @@ exports[`Sidebar should render nested collection with filterTerm 1`] = `
 .emotion-2 {
   font-size: clamp(18px, 2.2vw, 22px);
   font-weight: 600;
-  line-height: 37px;
+  line-height: 1.5;
   padding: 0;
-  margin: 10px 20px;
+  margin: clamp(6px, 1vw, 10px) clamp(12px, 2vw, 20px);
   color: #313d3e;
 }
 
@@ -97,9 +97,9 @@ exports[`Sidebar should render sidebar with a nested collection 1`] = `
 .emotion-2 {
   font-size: clamp(18px, 2.2vw, 22px);
   font-weight: 600;
-  line-height: 37px;
+  line-height: 1.5;
   padding: 0;
-  margin: 10px 20px;
+  margin: clamp(6px, 1vw, 10px) clamp(12px, 2vw, 20px);
   color: #313d3e;
 }
 
@@ -164,9 +164,9 @@ exports[`Sidebar should render sidebar with a simple collection 1`] = `
 .emotion-2 {
   font-size: clamp(18px, 2.2vw, 22px);
   font-weight: 600;
-  line-height: 37px;
+  line-height: 1.5;
   padding: 0;
-  margin: 10px 20px;
+  margin: clamp(6px, 1vw, 10px) clamp(12px, 2vw, 20px);
   color: #313d3e;
 }
 
@@ -187,7 +187,7 @@ exports[`Sidebar should render sidebar with a simple collection 1`] = `
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  padding: 8px 18px;
+  padding: clamp(6px, 1vw, 10px) clamp(12px, 2vw, 20px);
   border-left: 2px solid #fff;
   z-index: -1;
 }
@@ -268,9 +268,9 @@ exports[`Sidebar should render sidebar without search 1`] = `
 .emotion-2 {
   font-size: clamp(18px, 2.2vw, 22px);
   font-weight: 600;
-  line-height: 37px;
+  line-height: 1.5;
   padding: 0;
-  margin: 10px 20px;
+  margin: clamp(6px, 1vw, 10px) clamp(12px, 2vw, 20px);
   color: #313d3e;
 }
 
@@ -291,7 +291,7 @@ exports[`Sidebar should render sidebar without search 1`] = `
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  padding: 8px 18px;
+  padding: clamp(6px, 1vw, 10px) clamp(12px, 2vw, 20px);
   border-left: 2px solid #fff;
   z-index: -1;
 }
