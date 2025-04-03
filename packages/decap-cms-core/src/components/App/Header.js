@@ -115,7 +115,7 @@ const AppHeaderQuickNewButton = styled(StyledDropdownButton)`
   ${buttons.gray};
 
   @media (max-width: 800px) {
-  font-weight: 400;
+    font-weight: 400;
   }
 
   &:after {

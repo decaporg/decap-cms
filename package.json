@@ -14,7 +14,6 @@
     "test:all": "npm run test && npm run test:e2e",
     "test:ci": "npm run lint-quiet && npm run type-check && npm run test:unit",
     "test:unit": "cross-env NODE_ENV=test jest --no-cache",
-    "test:unit-bail": "cross-env NODE_ENV=test jest --no-cache --bail --debug -e --json --maxConcurrency=1",
     "test:e2e": "npm run build:demo && npm run test:e2e:run",
     "test:e2e:ci": "npm run build:demo && npm run test:e2e:run-ci",
     "test:e2e:dev": "start-test develop 8080 test:e2e:exec-dev",
