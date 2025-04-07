@@ -17,11 +17,10 @@ import {
 import { GitHubBackend } from 'decap-cms-backend-github';
 import { GitLabBackend } from 'decap-cms-backend-gitlab';
 import { BitbucketBackend, API as BitBucketAPI } from 'decap-cms-backend-bitbucket';
+import { NetlifyAuthenticationPage, PKCEAuthenticationPage } from 'decap-cms-ui-auth';
 
 import GitHubAPI from './GitHubAPI';
 import GitLabAPI from './GitLabAPI';
-import AuthenticationPage from './AuthenticationPage';
-import PKCEAuthenticationPage from './PKCEAuthenticationPage';
 import { getClient } from './netlify-lfs-client';
 
 import type { Client } from './netlify-lfs-client';
@@ -121,7 +120,7 @@ if (window.netlifyIdentity) {
   ]);
 }
 
-interface NetlifyUser extends Credentials {
+interface GitGatewayUser extends Credentials {
   jwt: () => Promise<string>;
   email: string;
   user_metadata: { full_name: string; avatar_url: string };
@@ -195,7 +194,7 @@ export default class GitGateway implements Implementation {
       this.authType = 'pkce';
     } else {
       this.authType = 'netlify';
-      AuthenticationPage.authClient = () => this.getAuthClient();
+      NetlifyAuthenticationPage.authClient = () => this.getAuthClient();
     }
   }
 
@@ -276,16 +275,22 @@ export default class GitGateway implements Implementation {
       .then(unsentRequest.performRequest);
 
   authenticate(credentials: Credentials) {
-    const user = credentials as NetlifyUser;
-    this.tokenPromise = async () => {
-      try {
-        const func = user.jwt.bind(user);
-        const token = await func();
-        return token;
-      } catch (error) {
-        throw new AccessTokenError(`Failed getting access token: ${error.message}`);
-      }
-    };
+    const user = credentials as GitGatewayUser;
+    if (user.jwt) {
+      // Netlify auth
+      this.tokenPromise = async () => {
+        try {
+          const func = user.jwt.bind(user);
+          return await func();
+        } catch (error) {
+          throw new AccessTokenError(`Failed getting access token: ${error.message}`);
+        }
+      };
+    } else {
+      // OAuth
+      this.tokenPromise = async () => typeof user.token === 'string' ? user.token : '';
+    }
+
     return this.tokenPromise!().then(async token => {
       if (!this.backendType) {
         const {
@@ -385,7 +390,7 @@ export default class GitGateway implements Implementation {
     return this.authenticate(user as Credentials);
   }
   authComponent() {
-    return this.authType === 'pkce' ? PKCEAuthenticationPage : AuthenticationPage;
+    return this.authType === 'pkce' ? PKCEAuthenticationPage : NetlifyAuthenticationPage;
   }
 
   async logout() {
