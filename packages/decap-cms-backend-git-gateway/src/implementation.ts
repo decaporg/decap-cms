@@ -288,7 +288,7 @@ export default class GitGateway implements Implementation {
       };
     } else {
       // OAuth
-      this.tokenPromise = async () => typeof user.token === 'string' ? user.token : '';
+      this.tokenPromise = async () => (typeof user.token === 'string' ? user.token : '');
     }
 
     return this.tokenPromise!().then(async token => {

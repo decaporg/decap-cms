@@ -9,6 +9,36 @@ const LoginButtonIcon = styled(Icon)`
   margin-right: 18px;
 `;
 
+function normalizeClaimsToUser(
+  email_claim,
+  full_name_claim,
+  first_name_claim,
+  last_name_claim,
+  avatar_url_claim,
+) {
+  return (user, claims) => {
+    if (!claims) return;
+
+    if (!user.email && claims[email_claim]) {
+      user.email = claims[email_claim];
+    }
+    if (!user.user_metadata.full_name && full_name_claim && claims[full_name_claim]) {
+      user.user_metadata.full_name = claims[full_name_claim];
+    }
+    if (!user.user_metadata.full_name && (first_name_claim || last_name_claim)) {
+      const name = [];
+      if (claims[first_name_claim]) name.push(claims[first_name_claim]);
+      if (claims[last_name_claim]) name.push(claims[last_name_claim]);
+      if (name.length) {
+        user.user_metadata.full_name = name.join(' ');
+      }
+    }
+    if (!user.user_metadata.avatar_url && avatar_url_claim && claims[avatar_url_claim]) {
+      user.user_metadata.avatar_url = claims[avatar_url_claim];
+    }
+  };
+}
+
 export default class PKCEAuthenticationPage extends React.Component {
   static propTypes = {
     inProgress: PropTypes.bool,
@@ -42,27 +72,13 @@ export default class PKCEAuthenticationPage extends React.Component {
       avatar_url_claim,
     } = this.props.config.auth || {};
 
-    const normalizeClaimsToUser = (user, claims) => {
-      if (!claims) return;
-
-      if (!user.email && claims[email_claim]){
-        user.email = claims[email_claim];
-      }
-      if (!user.user_metadata.full_name && full_name_claim && claims[full_name_claim]) {
-        user.user_metadata.full_name = claims[full_name_claim];
-      }
-      if (!user.user_metadata.full_name && (first_name_claim || last_name_claim)) {
-        const name = [];
-        if (claims[first_name_claim]) name.push(claims[first_name_claim]);
-        if (claims[last_name_claim]) name.push(claims[last_name_claim]);
-        if (name.length) {
-          user.user_metadata.full_name = name.join(' ');
-        }
-      }
-      if (!user.user_metadata.avatar_url && avatar_url_claim && claims[avatar_url_claim]) {
-        user.user_metadata.avatar_url = claims[avatar_url_claim];
-      }
-    };
+    const normalizeClaims = normalizeClaimsToUser(
+      email_claim,
+      full_name_claim,
+      first_name_claim,
+      last_name_claim,
+      avatar_url_claim,
+    );
 
     this.auth = new PkceAuthenticator({
       base_url,
@@ -85,14 +101,18 @@ export default class PKCEAuthenticationPage extends React.Component {
         data.token = data.access_token;
         try {
           data.claims = jwtDecode(data.access_token);
-          normalizeClaimsToUser(data, data.claims);
-        } catch { /* Ignore */ }
+          normalizeClaims(data, data.claims);
+        } catch {
+          /* Ignore */
+        }
       }
       if (data.id_token) {
         try {
           data.idClaims = jwtDecode(data.id_token);
-          normalizeClaimsToUser(data, data.idClaims);
-        } catch { /* Ignore */ }
+          normalizeClaims(data, data.idClaims);
+        } catch {
+          /* Ignore */
+        }
       }
 
       this.props.onLogin(data);

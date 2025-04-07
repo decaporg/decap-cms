@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 
-import GitGatewayAuthenticationPage from '../AuthenticationPage';
+import NetlifyAuthenticationPage from '../NetlifyAuthenticationPage';
 
 window.netlifyIdentity = {
   currentUser: jest.fn(),
@@ -9,7 +9,7 @@ window.netlifyIdentity = {
   close: jest.fn(),
 };
 
-describe('GitGatewayAuthenticationPage', () => {
+describe('NetlifyAuthenticationPage', () => {
   const props = {
     config: { logo_url: 'logo_url' },
     t: jest.fn(key => key),
@@ -24,10 +24,10 @@ describe('GitGatewayAuthenticationPage', () => {
 
   it('should render with identity error', () => {
     // obtain mock calls
-    require('../AuthenticationPage');
+    require('../NetlifyAuthenticationPage');
 
     function TestComponent() {
-      const { asFragment } = render(<GitGatewayAuthenticationPage {...props} />);
+      const { asFragment } = render(<NetlifyAuthenticationPage {...props} />);
 
       const errorCallback = window.netlifyIdentity.on.mock.calls.find(
         call => call[0] === 'error',
@@ -45,7 +45,7 @@ describe('GitGatewayAuthenticationPage', () => {
 
   test('should render with no identity error', () => {
     function TestComponent() {
-      const { asFragment } = render(<GitGatewayAuthenticationPage {...props} />);
+      const { asFragment } = render(<NetlifyAuthenticationPage {...props} />);
       expect(asFragment()).toMatchSnapshot();
     }
 

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { GitHubBackend } from 'decap-cms-backend-github';
 import { PKCEAuthenticationPage } from 'decap-cms-ui-auth';
+
 import type { GitHubUser } from 'decap-cms-backend-github/src/implementation';
 import type { Config } from 'decap-cms-lib-util/src';
 import type { Octokit } from '@octokit/rest';
@@ -14,9 +15,10 @@ export default class AwsCognitoGitHubProxyBackend extends GitHubBackend {
   }
 
   authComponent() {
-    const wrappedAuthenticationPage = (props: Record<string, unknown>) => (
-      <PKCEAuthenticationPage {...props} backend={this} />
-    );
+    const wrappedAuthenticationPage = (props: Record<string, unknown>) => {
+      const allProps = { ...props, backend: this };
+      return <PKCEAuthenticationPage {...allProps} />;
+    };
     wrappedAuthenticationPage.displayName = 'AuthenticationPage';
     return wrappedAuthenticationPage;
   }

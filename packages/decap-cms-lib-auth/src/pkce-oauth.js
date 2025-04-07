@@ -80,13 +80,15 @@ export default class PkceAuthenticator {
     if (this.auth_url && this.auth_token_url) return;
     if (!this.oidc_url) throw new Error('Missing auth URLs');
 
-    const response = await fetch(`${this.oidc_url}/.well-known/openid-configuration`)
-      .catch(() => { throw new Error('Failed to load OIDC configuration'); });
+    const response = await fetch(`${this.oidc_url}/.well-known/openid-configuration`).catch(() => {
+      throw new Error('Failed to load OIDC configuration');
+    });
     if (!response.ok) {
       throw new Error('Bad response while getting OIDC configuration');
     }
-    const json = await response.json()
-      .catch(() => { throw new Error('Failed to parse OIDC configuration JSON'); });
+    const json = await response.json().catch(() => {
+      throw new Error('Failed to parse OIDC configuration JSON');
+    });
     if (!json.authorization_endpoint || !json.token_endpoint) {
       throw new Error('OIDC configuration missing endpoint fields');
     }

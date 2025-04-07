@@ -5,7 +5,4 @@ export const DecapCmsUiAuth = {
   NetlifyAuthenticationPage,
   PKCEAuthenticationPage,
 };
-export {
-  NetlifyAuthenticationPage,
-  PKCEAuthenticationPage,
-};
+export { NetlifyAuthenticationPage, PKCEAuthenticationPage };
