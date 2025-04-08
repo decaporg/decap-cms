@@ -48,6 +48,17 @@ function bootstrap(opts = {}) {
   }
 
   /**
+   * Create meta tag for viewport if it doesn't exist.
+   */
+  const viewportMetaTag = document.querySelector('meta[name="viewport"]');
+  if (!viewportMetaTag) {
+    const meta = document.createElement('meta');
+    meta.name = 'viewport';
+    meta.content = 'width=device-width, initial-scale=1.0';
+    document.head.appendChild(meta);
+  }
+
+  /**
    * Get DOM element where app will mount.
    */
   function getRoot() {

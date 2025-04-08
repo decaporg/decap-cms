@@ -133,10 +133,10 @@ const EditorContainer = styled.div`
   overflow: hidden;
   background-color: white;
   padding-top: 100px;
-  @media (min-width: 800px) {
+  @media (min-width: 768px) {
     height: 100%;
     position: absolute;
-    min-width: 800px;
+    min-width: 768px;
     padding-top: 66px;
     background-color: ${colors.background};
   }
@@ -199,7 +199,7 @@ function isPreviewEnabled(collection, entry) {
 
 class EditorInterface extends Component {
   state = {
-    isMobile: window.innerWidth <= 800,
+    isMobile: window.innerWidth <= 768,
     showEventBlocker: false,
     previewVisible: localStorage.getItem(PREVIEW_VISIBLE) !== 'false',
     scrollSyncEnabled: localStorage.getItem(SCROLL_SYNC_ENABLED) !== 'false',
@@ -215,7 +215,16 @@ class EditorInterface extends Component {
   }
 
   handleResize = () => {
-    this.setState({ isMobile: window.innerWidth <= 768 });
+    const isMobile = window.innerWidth <= 768;
+    if (isMobile !== this.state.isMobile) {
+      // When switching between desktop and mobile, ensure the value doesn't exceed 80% of the screen
+      const splitPanePosition = parseInt(localStorage.getItem(SPLIT_PANE_POSITION), 10);
+      const adjustedPosition = isMobile
+        ? Math.min(splitPanePosition || window.innerHeight * 0.4, window.innerHeight * 0.8)
+        : Math.min(splitPanePosition || window.innerWidth * 0.5, window.innerWidth * 0.8);
+      localStorage.setItem(SPLIT_PANE_POSITION, adjustedPosition);
+    }
+    this.setState({ isMobile });
   };
 
   handleFieldClick = path => {
@@ -342,6 +351,7 @@ class EditorInterface extends Component {
         <div>
           <ReactSplitPaneGlobalStyles />
           <StyledSplitPane
+            key={isMobile ? 'mobile' : 'desktop'} // Force reinitialization on view change
             split={isMobile ? 'horizontal' : 'vertical'} // Switch to horizontal split on mobile
             maxSize={-100}
             minSize={isMobile ? '30%' : 400}
