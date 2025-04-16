@@ -23,6 +23,7 @@ interface Options {
 export interface EntryValue {
   collection: string;
   slug: string;
+  srcSlug?: string;
   path: string;
   partial: boolean;
   raw: string;

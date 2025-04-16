@@ -324,10 +324,18 @@ export function groupEntries(collection: Collection, extension: string, entries:
 
   const groupedEntries = Object.values(grouped).reduce((acc, values) => {
     const entryValue = mergeValues(collection, structure, defaultLocale, values);
+    if (values[0]?.value?.slug !== entryValue.slug) {
+      entryValue.srcSlug = values[0]?.value?.slug;
+    }
     return [...acc, entryValue];
   }, [] as EntryValue[]);
 
   return groupedEntries;
+}
+
+function compareFilePathEndings(path1: string, path2: string, subfolders = false) {
+  const [p1, p2] = [path1, path2].map(p => p.split('/'));
+  return subfolders ? p1.slice(-2).join('/') === p2.slice(-2).join('/') : p1.at(-1) === p2.at(-1);
 }
 
 export function getI18nDataFiles(
@@ -335,15 +343,16 @@ export function getI18nDataFiles(
   extension: string,
   path: string,
   slug: string,
-  diffFiles: { path: string; id: string; newFile: boolean }[],
+  diffFiles: { path: string; id: string; newFile: boolean; prevPath?: string }[],
 ) {
   const { structure } = getI18nInfo(collection) as I18nInfo;
   if (structure === I18N_STRUCTURE.SINGLE_FILE) {
     return diffFiles;
   }
   const paths = getFilePaths(collection, extension, path, slug);
+  const subfolders = collection.get('nested')?.get('subfolders') !== false;
   const dataFiles = paths.reduce((acc, path) => {
-    const dataFile = diffFiles.find(file => file.path === path);
+    const dataFile = diffFiles.find(file => compareFilePathEndings(file.path, path, subfolders));
     if (dataFile) {
       return [...acc, dataFile];
     } else {

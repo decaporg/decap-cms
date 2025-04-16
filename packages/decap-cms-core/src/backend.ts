@@ -942,6 +942,7 @@ export class Backend {
     );
 
     const formatData = (data: string, path: string, newFile: boolean) => {
+      const path_type = prepareMetaPathType(slug, collection);
       const entry = createEntry(collection.get('name'), slug, path, {
         raw: data,
         isModification: !newFile,
@@ -950,7 +951,7 @@ export class Backend {
         updatedOn: entryData.updatedAt,
         author: entryData.pullRequestAuthor,
         status: entryData.status,
-        meta: { path: prepareMetaPath(path, collection) },
+        meta: { path: prepareMetaPath(path, collection), path_type },
       });
 
       const entryWithFormat = this.entryWithFormat(collection)(entry);
@@ -983,6 +984,9 @@ export class Backend {
       );
       entries = entries.filter(Boolean);
       const grouped = await groupEntries(collection, extension, entries as EntryValue[]);
+      if (grouped[0]?.srcSlug) {
+        grouped[0].slug = grouped[0].srcSlug;
+      }
       return grouped[0];
     } else {
       const entryWithFormat = await readAndFormatDataFile(dataFiles[0]);

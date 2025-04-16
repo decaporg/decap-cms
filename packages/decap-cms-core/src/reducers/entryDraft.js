@@ -218,6 +218,10 @@ export function selectCustomPath(collection, entryDraft, config) {
   const fileSlug = entryDraft.getIn(['entry', 'slug'])
     ? entryDraft.getIn(['entry', 'slug']).split('/').pop()
     : fileBaseName;
+  const subfolders = collection.get('nested')?.get('subfolders') !== false;
+  if (subfolders) {
+    return path && join(collection.get('folder'), path, `${indexFile}.${extension}`);
+  }
   const customPath =
     path &&
     join(

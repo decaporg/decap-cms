@@ -208,7 +208,7 @@ export function normalizeConfig(config: CmsConfig) {
 }
 
 function applyMetaFieldsToCollection(collection: CmsCollection, meta: CmsCollectionMeta) {
-  const metaFields = [
+  const metaFields: CmsFieldBase[] = [
     {
       name: 'path',
       meta: true,
@@ -216,7 +216,10 @@ function applyMetaFieldsToCollection(collection: CmsCollection, meta: CmsCollect
       i18n: 'duplicate',
       ...meta!.path,
     } as CmsFieldMeta,
-    {
+  ];
+
+  if (collection.index_file) {
+    metaFields.push({
       name: 'path_type',
       meta: true,
       required: true,
@@ -226,8 +229,8 @@ function applyMetaFieldsToCollection(collection: CmsCollection, meta: CmsCollect
       label: 'Path type',
       options: ['index', 'slug'],
       default: 'slug',
-    } as CmsFieldBase & CmsFieldSelect,
-  ];
+    } as CmsFieldBase & CmsFieldSelect)
+  }
 
   collection.fields = [...metaFields, ...(collection.fields || [])];
 
