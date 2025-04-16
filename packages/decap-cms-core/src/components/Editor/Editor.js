@@ -94,6 +94,9 @@ export class Editor extends React.Component {
       t,
     } = this.props;
 
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(Editor.propTypes, this.props, 'prop', 'Editor');
+
     retrieveLocalBackup(collection, slug);
 
     if (newEntry) {

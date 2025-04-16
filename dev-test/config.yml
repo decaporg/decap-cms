@@ -17,8 +17,6 @@ collections: # A list of collections the CMS should be able to edit
     slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
     summary: '{{title}} -- {{year}}/{{month}}/{{day}}'
     create: true # Allow users to create new documents in this collection
-    editor:
-      visualEditing: true
     view_filters:
       - label: Posts With Index
         field: title
@@ -52,31 +50,6 @@ collections: # A list of collections the CMS should be able to edit
         tagname: ''
 
       - { label: 'Body', name: 'body', widget: 'markdown', hint: 'Main content goes here.' }
-
-  - name: 'restaurants' # Used in routes, ie.: /admin/collections/:slug/edit
-    label: 'Restaurants' # Used in the UI
-    label_singular: 'Restaurant' # Used in the UI, ie: "New Post"
-    description: >
-      Restaurants is an entry type used for testing galleries, relations and other widgets.
-      The tests must be written in such way that adding new fields does not affect previous flows.
-    folder: '_restaurants'
-    slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
-    summary: '{{title}} -- {{year}}/{{month}}/{{day}}'
-    create: true # Allow users to create new documents in this collection
-    editor:
-      visualEditing: true
-    fields: # The fields each document in this collection have
-      - { label: 'Title', name: 'title', widget: 'string', tagname: 'h1' }
-      - { label: 'Body', name: 'body', widget: 'markdown', hint: 'Main content goes here.' }
-      - { name: 'gallery', widget: 'image', choose_url: true, media_library: {config: {multiple: true, max_files: 999}}}
-      - { name: 'post', widget: relation, collection: posts, multiple: true, search_fields: [ "title" ], display_fields: [ "title" ], value_field: "{{slug}}", filters: [ {field: "draft", values: [false]} ] }
-      - name: authors
-        label: Authors
-        label_singular: 'Author'
-        widget: list
-        fields:
-          - { label: 'Name', name: 'name', widget: 'string', hint: 'First and Last' }
-          - { label: 'Description', name: 'description', widget: 'markdown' }
 
   - name: 'faq' # Used in routes, ie.: /admin/collections/:slug/edit
     label: 'FAQ' # Used in the UI
@@ -161,7 +134,6 @@ collections: # A list of collections the CMS should be able to edit
           multiple: true,
         }
       - { label: 'Hidden', name: 'hidden', widget: 'hidden', default: 'hidden' }
-      - { label: 'Color', name: 'color', widget: 'color' }
       - label: 'Object'
         name: 'object'
         widget: 'object'
@@ -276,7 +248,7 @@ collections: # A list of collections the CMS should be able to edit
     label_singular: 'Page'
     folder: _pages
     create: true
-    nested: { depth: 100, subfolders: false }
+    nested: { depth: 100 }
     fields:
       - label: Title
         name: title
