@@ -161,6 +161,7 @@ collections: # A list of collections the CMS should be able to edit
           multiple: true,
         }
       - { label: 'Hidden', name: 'hidden', widget: 'hidden', default: 'hidden' }
+      - { label: 'Color', name: 'color', widget: 'color' }
       - label: 'Object'
         name: 'object'
         widget: 'object'
