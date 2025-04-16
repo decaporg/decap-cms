@@ -229,7 +229,7 @@ function applyMetaFieldsToCollection(collection: CmsCollection, meta: CmsCollect
       label: 'Path type',
       options: ['index', 'slug'],
       default: 'slug',
-    } as CmsFieldBase & CmsFieldSelect)
+    } as CmsFieldBase & CmsFieldSelect);
   }
 
   collection.fields = [...metaFields, ...(collection.fields || [])];

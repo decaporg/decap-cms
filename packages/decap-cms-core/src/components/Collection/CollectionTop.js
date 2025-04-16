@@ -99,8 +99,16 @@ function CollectionTop({ collection, newEntryUrl, t }) {
             dropdownWidth="160px"
             dropdownPosition="left"
           >
-            <DropdownItem key={'_index'} label={`Razdelilna stran`} onClick={() => handleNew('index')} />
-            <DropdownItem key={'{{slug}}'} label={'Vsebinska stran'} onClick={() => handleNew('slug')} />
+            <DropdownItem
+              key={'_index'}
+              label={`Razdelilna stran`}
+              onClick={() => handleNew('index')}
+            />
+            <DropdownItem
+              key={'{{slug}}'}
+              label={'Vsebinska stran'}
+              onClick={() => handleNew('slug')}
+            />
           </Dropdown>
         ) : newEntryUrl ? (
           <CollectionTopNewButton to={newEntryUrl}>
