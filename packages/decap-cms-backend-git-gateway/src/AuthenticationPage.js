@@ -83,7 +83,12 @@ export default class GitGatewayAuthenticationPage extends React.Component {
 
   componentDidMount() {
     // Manually validate PropTypes - React 19 breaking change
-    PropTypes.checkPropTypes(GitGatewayAuthenticationPage.propTypes, this.props, 'prop', 'GitGatewayAuthenticationPage');
+    PropTypes.checkPropTypes(
+      GitGatewayAuthenticationPage.propTypes,
+      this.props,
+      'prop',
+      'GitGatewayAuthenticationPage',
+    );
 
     if (!this.loggedIn && window.netlifyIdentity && window.netlifyIdentity.currentUser()) {
       this.props.onLogin(window.netlifyIdentity.currentUser());

@@ -105,7 +105,7 @@ class CollectionSearch extends React.Component {
   componentDidMount() {
     // Manually validate PropTypes - React 19 breaking change
     PropTypes.checkPropTypes(CollectionSearch.propTypes, this.props, 'prop', 'CollectionSearch');
-  };
+  }
 
   componentDidUpdate(prevProps) {
     if (prevProps.collection !== this.props.collection) {

@@ -89,7 +89,7 @@ class App extends React.Component {
   componentDidMount() {
     // Manually validate PropTypes - React 19 breaking change
     PropTypes.checkPropTypes(App.propTypes, this.props, 'prop', 'App');
-  };
+  }
 
   configError(config) {
     const t = this.props.t;

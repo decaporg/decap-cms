@@ -19,7 +19,7 @@ export default class TextControl extends React.Component {
   componentDidMount() {
     // Manually validate PropTypes - React 19 breaking change
     PropTypes.checkPropTypes(TextControl.propTypes, this.props, 'prop', 'TextControl');
-  };
+  }
 
   /**
    * Always update to ensure `react-textarea-autosize` properly calculates

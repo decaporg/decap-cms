@@ -24,7 +24,12 @@ export default class BitbucketAuthenticationPage extends React.Component {
 
   componentDidMount() {
     // Manually validate PropTypes - React 19 breaking change
-    PropTypes.checkPropTypes(BitbucketAuthenticationPage.propTypes, this.props, 'prop', 'BitbucketAuthenticationPage');
+    PropTypes.checkPropTypes(
+      BitbucketAuthenticationPage.propTypes,
+      this.props,
+      'prop',
+      'BitbucketAuthenticationPage',
+    );
 
     const { auth_type: authType = '' } = this.props.config.backend;
 

@@ -24,7 +24,12 @@ export default class AzureAuthenticationPage extends React.Component {
 
   componentDidMount() {
     // Manually validate PropTypes - React 19 breaking change
-    PropTypes.checkPropTypes(AzureAuthenticationPage.propTypes, this.props, 'prop', 'AzureAuthenticationPage');
+    PropTypes.checkPropTypes(
+      AzureAuthenticationPage.propTypes,
+      this.props,
+      'prop',
+      'AzureAuthenticationPage',
+    );
 
     this.auth = new ImplicitAuthenticator({
       base_url: `https://login.microsoftonline.com/${this.props.config.backend.tenant_id}`,

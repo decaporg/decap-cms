@@ -153,7 +153,7 @@ export class ErrorBoundary extends React.Component {
   componentDidMount() {
     // Manually validate PropTypes - React 19 breaking change
     PropTypes.checkPropTypes(ErrorBoundary.propTypes, this.props, 'prop', 'ErrorBoundary');
-  };
+  }
 
   shouldComponentUpdate(nextProps, nextState) {
     if (this.props.showBackup) {

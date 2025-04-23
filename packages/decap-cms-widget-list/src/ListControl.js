@@ -222,7 +222,7 @@ export default class ListControl extends React.Component {
   componentDidMount() {
     // Manually validate PropTypes - React 19 breaking change
     PropTypes.checkPropTypes(ListControl.propTypes, this.props, 'prop', 'ListControl');
-  };
+  }
 
   valueToString = value => {
     let stringValue;

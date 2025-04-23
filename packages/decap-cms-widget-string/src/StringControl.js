@@ -24,7 +24,7 @@ export default class StringControl extends React.Component {
   componentDidMount() {
     // Manually validate PropTypes - React 19 breaking change
     PropTypes.checkPropTypes(StringControl.propTypes, this.props, 'prop', 'StringControl');
-  };
+  }
 
   // NOTE: This prevents the cursor from jumping to the end of the text for
   // nested inputs. In other words, this is not an issue on top-level text

@@ -260,7 +260,7 @@ export default function withFileControl({ forImage } = {}) {
     componentDidMount() {
       // Manually validate PropTypes - React 19 breaking change
       PropTypes.checkPropTypes(FileControl.propTypes, this.props, 'prop', 'FileControl');
-    };
+    }
 
     shouldComponentUpdate(nextProps) {
       /**
