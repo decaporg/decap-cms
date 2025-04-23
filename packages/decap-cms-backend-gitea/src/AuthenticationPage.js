@@ -19,6 +19,9 @@ export default class GiteaAuthenticationPage extends React.Component {
   state = {};
 
   componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(GiteaAuthenticationPage.propTypes, this.props, 'prop', 'GiteaAuthenticationPage');
+
     const { base_url = 'https://try.gitea.io', app_id = '' } = this.props.config.backend;
     this.auth = new PkceAuthenticator({
       base_url,

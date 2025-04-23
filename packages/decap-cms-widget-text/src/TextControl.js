@@ -16,6 +16,11 @@ export default class TextControl extends React.Component {
     value: '',
   };
 
+  componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(TextControl.propTypes, this.props, 'prop', 'TextControl');
+  };
+
   /**
    * Always update to ensure `react-textarea-autosize` properly calculates
    * height. Certain situations, such as this widget being nested in a list

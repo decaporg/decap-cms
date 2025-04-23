@@ -73,6 +73,9 @@ export class EntriesCollection extends React.Component {
   };
 
   componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(EntriesCollection.propTypes, this.props, 'prop', 'EntriesCollection');
+
     const { collection, entriesLoaded, loadEntries } = this.props;
     if (collection && !entriesLoaded) {
       loadEntries(collection);

@@ -80,6 +80,11 @@ export default class Toolbar extends React.Component {
     t: PropTypes.func.isRequired,
   };
 
+  componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(Toolbar.propTypes, this.props, 'prop', 'Toolbar');
+  };
+
   isVisible = button => {
     const { buttons } = this.props;
     return !List.isList(buttons) || buttons.includes(button);

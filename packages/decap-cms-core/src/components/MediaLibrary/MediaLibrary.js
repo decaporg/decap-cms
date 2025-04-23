@@ -77,6 +77,9 @@ class MediaLibrary extends React.Component {
   };
 
   componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(MediaLibrary.propTypes, this.props, 'prop', 'MediaLibrary');
+
     this.props.loadMedia();
   }
 

@@ -93,6 +93,10 @@ export default class ColorControl extends React.Component {
   state = {
     showColorPicker: false,
   };
+  componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(ColorControl.propTypes, this.props, 'prop', 'ColorControl');
+  };
   // show/hide color picker
   handleClick = () => {
     this.setState({ showColorPicker: !this.state.showColorPicker });

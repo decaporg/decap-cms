@@ -61,6 +61,11 @@ export default class ObjectControl extends React.Component {
     };
   }
 
+  componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(ObjectControl.propTypes, this.props, 'prop', 'ObjectControl');
+  };
+
   /*
    * Always update so that each nested widget has the option to update. This is
    * required because ControlHOC provides a default `shouldComponentUpdate`

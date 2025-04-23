@@ -19,6 +19,9 @@ export default class GenericPKCEAuthenticationPage extends React.Component {
   state = {};
 
   componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(GenericPKCEAuthenticationPage.propTypes, this.props, 'prop', 'GenericPKCEAuthenticationPage');
+
     const {
       base_url = '',
       app_id = '',

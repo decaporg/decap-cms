@@ -68,6 +68,11 @@ export default class NumberControl extends React.Component {
     value: '',
   };
 
+  componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(NumberControl.propTypes, this.props, 'prop', 'NumberControl');
+  };
+
   handleChange = e => {
     const valueType = this.props.field.get('value_type');
     const { onChange } = this.props;
