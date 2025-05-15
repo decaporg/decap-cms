@@ -43,6 +43,11 @@ function collections(state = defaultState, action: ConfigAction) {
   }
 }
 
+function isIndexFile(filePath: string, pattern: string, nested: boolean) {
+  const fileSlug = nested ? filePath?.split('/').pop() : filePath;
+  return fileSlug && new RegExp(pattern).test(fileSlug);
+}
+
 const selectors = {
   [FOLDER]: {
     entryExtension(collection: Collection) {
@@ -55,7 +60,16 @@ const selectors = {
 
       return ext.replace(/^\./, '');
     },
-    fields(collection: Collection) {
+    fields(collection: Collection, slug: string, index?: boolean) {
+      const indexFileConfig = collection.get('index_file');
+      if (
+        indexFileConfig &&
+        (index || isIndexFile(slug, indexFileConfig.get('pattern'), !!collection.get('nested'))) &&
+        indexFileConfig.has('fields')
+      ) {
+        return indexFileConfig.get('fields');
+      }
+
       return collection.get('fields');
     },
     entryPath(collection: Collection, slug: string) {
@@ -176,8 +190,8 @@ export function selectMediaFolders(config: CmsConfig, collection: Collection, en
   return Set(folders).toArray();
 }
 
-export function selectFields(collection: Collection, slug: string) {
-  return selectors[collection.get('type')].fields(collection, slug);
+export function selectFields(collection: Collection, slug: string, index?: boolean) {
+  return selectors[collection.get('type')].fields(collection, slug, index);
 }
 
 export function selectFolderEntryExtension(collection: Collection) {
