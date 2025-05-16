@@ -54,6 +54,11 @@ export default class MarkdownControl extends React.Component {
     };
   }
 
+  componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(MarkdownControl.propTypes, this.props, 'prop', 'MarkdownControl');
+  }
+
   handleMode = mode => {
     this.setState({ mode, pendingFocus: true });
     localStorage.setItem(MODE_STORAGE_KEY, mode);

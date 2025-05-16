@@ -131,6 +131,9 @@ class Header extends React.Component {
   intervalId;
 
   componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(Header.propTypes, this.props, 'prop', 'Header');
+
     this.intervalId = setInterval(() => {
       this.props.checkBackendStatus();
     }, 5 * 60 * 1000);

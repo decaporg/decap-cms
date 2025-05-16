@@ -280,6 +280,9 @@ export class EditorToolbar extends React.Component {
   };
 
   componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(EditorToolbar.propTypes, this.props, 'prop', 'EditorToolbar');
+
     const { isNewEntry, loadDeployPreview } = this.props;
     if (!isNewEntry) {
       loadDeployPreview({ maxAttempts: 3 });
