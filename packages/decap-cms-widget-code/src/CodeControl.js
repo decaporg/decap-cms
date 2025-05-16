@@ -16,6 +16,7 @@ import materialTheme from 'codemirror/theme/material.css';
 import SettingsPane from './SettingsPane';
 import SettingsButton from './SettingsButton';
 import languageData from '../data/languages.json';
+import { getLanguageLoader } from './languageLoaders';
 
 // TODO: relocate as a utility function
 function getChangedProps(previous, next, keys) {
@@ -193,7 +194,10 @@ export default class CodeControl extends React.Component {
     if (changedProps.lang) {
       const { mode } = this.getLanguageByName(changedProps.lang) || {};
       if (mode) {
-        require(`codemirror/mode/${mode}/${mode}.js`);
+        const loader = getLanguageLoader(mode);
+        if (loader) {
+          await loader();
+        }
       }
     }
 
