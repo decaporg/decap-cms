@@ -559,6 +559,7 @@ export type EntryField = StaticallyTypedRecord<{
   default: string | null | boolean | List<unknown>;
   media_folder?: string;
   public_folder?: string;
+  disable_media_folder_navigation: boolean;
   comment?: string;
   meta?: boolean;
   i18n: 'translate' | 'duplicate' | 'none';
@@ -611,6 +612,7 @@ type CollectionObject = {
   fields: EntryFields;
   isFetching: boolean;
   media_folder?: string;
+  disable_media_folder_navigation: boolean;
   public_folder?: string;
   preview_path?: string;
   preview_path_date_field?: string;
