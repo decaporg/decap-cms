@@ -469,7 +469,11 @@ export default class API {
                 branch: filesBranch,
                 parseText: false,
               });
-        formData.append(file.path.replace(sourceDir, destDir), content, basename(file.path));
+        formData.append(
+          file.path.replace(sourceDir, destDir),
+          content as Blob,
+          basename(file.path),
+        );
       }
     }
 

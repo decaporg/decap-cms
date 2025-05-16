@@ -286,8 +286,8 @@ interface ImplementationInitOptions {
   initialWorkflowStatus: string;
 }
 
-type Implementation = BackendImplementation & {
-  init: (config: CmsConfig, options: ImplementationInitOptions) => Implementation;
+export type CmsRegistryBackend = {
+  init: (config: CmsConfig, options: ImplementationInitOptions) => BackendImplementation;
 };
 
 function prepareMetaPath(path: string, collection: Collection) {
@@ -340,14 +340,17 @@ function collectionRegex(collection: Collection): RegExp | undefined {
 }
 
 export class Backend {
-  implementation: Implementation;
+  implementation: BackendImplementation;
   backendName: string;
   config: CmsConfig;
   authStore?: AuthStore;
   user?: User | null;
   backupSync: AsyncLock;
 
-  constructor(implementation: Implementation, { backendName, authStore, config }: BackendOptions) {
+  constructor(
+    implementation: CmsRegistryBackend,
+    { backendName, authStore, config }: BackendOptions,
+  ) {
     // We can't reliably run this on exit, so we do cleanup on load.
     this.deleteAnonymousBackup();
     this.config = config;

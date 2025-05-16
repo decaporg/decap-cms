@@ -6,6 +6,7 @@
   "bugs": "https://github.com/decaporg/decap-cms/issues",
   "license": "MIT",
   "module": "dist/esm/index.js",
+  "types": "dist/esm/index.d.ts",
   "main": "dist/decap-cms-backend-proxy.js",
   "keywords": [
     "decap-cms",
@@ -15,7 +16,9 @@
   "scripts": {
     "develop": "npm run build:esm -- --watch",
     "build": "cross-env NODE_ENV=production webpack",
-    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward --extensions \".js,.jsx,.ts,.tsx\""
+    "build:esm": "run-p build:types build:babel",
+    "build:babel": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward --extensions \".js,.jsx,.ts,.tsx\"",
+    "build:types": "tsc"
   },
   "peerDependencies": {
     "@emotion/react": "^11.11.1",
