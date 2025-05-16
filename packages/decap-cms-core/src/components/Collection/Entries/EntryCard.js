@@ -11,7 +11,9 @@ import { selectEntryCollectionTitle } from '../../../reducers/collections';
 
 const ListCard = styled.li`
   ${components.card};
-  width: ${lengths.topCardWidth};
+  @media (min-width: 800px) {
+    width: ${lengths.topCardWidth};
+  }
   margin-left: 12px;
   margin-bottom: 10px;
   overflow: hidden;
@@ -20,7 +22,7 @@ const ListCard = styled.li`
 const ListCardLink = styled(Link)`
   display: block;
   max-width: 100%;
-  padding: 16px 20px;
+  padding: clamp(8px, 1.6vw, 16px) clamp(10px, 2vw, 20px);
 
   &:hover {
     background-color: ${colors.foreground};
@@ -63,7 +65,7 @@ const CardHeading = styled.h2`
 `;
 
 const CardBody = styled.div`
-  padding: 16px 20px;
+  padding: clamp(8px, 1.6vw, 16px) clamp(10px, 2vw, 20px);
   height: 90px;
   position: relative;
   margin-bottom: ${props => props.hasImage && 0};

@@ -47,8 +47,8 @@ const TreeNavLink = styled(NavLink)`
   font-size: 14px;
   font-weight: 500;
   align-items: center;
-  padding: 8px;
-  padding-left: ${props => props.depth * 16 + 18}px;
+  padding: clamp(6px, 1vw, 10px) clamp(12px, 2vw, 20px);
+  padding-left: calc(${props => props.depth + 1} * clamp(12px, 2vw, 20px));
   border-left: 2px solid #fff;
 
   ${Icon} {
