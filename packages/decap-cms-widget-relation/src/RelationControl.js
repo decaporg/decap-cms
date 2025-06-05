@@ -188,6 +188,7 @@ export default class RelationControl extends React.Component {
 
   state = {
     initialOptions: [],
+    queryOptions: [],
   };
 
   static propTypes = {
@@ -236,10 +237,14 @@ export default class RelationControl extends React.Component {
     // if the field has a previous value perform an initial search based on the value field
     // this is required since each search is limited by optionsLength so the selected value
     // might not show up on the search
-    const { forID, field, value, query, onChange } = this.props;
+    const { forID, field, value, query, onChange, queryHits } = this.props;
     const collection = field.get('collection');
     const file = field.get('file');
     const initialSearchValues = value && (this.isMultiple() ? getSelectedOptions(value) : [value]);
+
+    const queryOptions = this.parseHitOptions(queryHits);
+    this.setState({ queryOptions });
+
     if (initialSearchValues && initialSearchValues.length > 0) {
       const metadata = {};
       const searchFieldsArray = getFieldArray(field.get('search_fields'));
@@ -401,13 +406,11 @@ export default class RelationControl extends React.Component {
   }, 500);
 
   render() {
-    const { value, field, forID, classNameWrapper, setActiveStyle, setInactiveStyle, queryHits } =
-      this.props;
+    const { value, field, forID, classNameWrapper, setActiveStyle, setInactiveStyle } = this.props;
     const isMultiple = this.isMultiple();
     const isClearable = !field.get('required', true) || isMultiple;
 
-    const queryOptions = this.parseHitOptions(queryHits);
-    const options = uniqOptions(this.state.initialOptions, queryOptions);
+    const options = uniqOptions(this.state.initialOptions, this.state.queryOptions);
     const selectedValue = getSelectedValue({
       options,
       value,
