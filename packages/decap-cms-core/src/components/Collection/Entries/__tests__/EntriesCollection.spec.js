@@ -115,7 +115,9 @@ describe('EntriesCollection', () => {
     });
 
     const { asFragment } = renderWithRedux(
-      <ConnectedEntriesCollection collection={collection.set('nested', fromJS({ depth: 10 }))} />,
+      <ConnectedEntriesCollection
+        collection={collection.set('nested', fromJS({ depth: 10, subfolders: false }))}
+      />,
       {
         store,
       },
@@ -140,7 +142,7 @@ describe('EntriesCollection', () => {
 
     const { asFragment } = renderWithRedux(
       <ConnectedEntriesCollection
-        collection={collection.set('nested', fromJS({ depth: 10 }))}
+        collection={collection.set('nested', fromJS({ depth: 10, subfolders: false }))}
         filterTerm="dir3/dir4"
       />,
       {

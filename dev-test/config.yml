@@ -62,7 +62,7 @@ collections: # A list of collections the CMS should be able to edit
     folder: '_restaurants'
     slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
     summary: '{{title}} -- {{year}}/{{month}}/{{day}}'
-    create: true # Allow users to create new documents in this collection    
+    create: true # Allow users to create new documents in this collection
     editor:
       visualEditing: true
     fields: # The fields each document in this collection have
@@ -276,7 +276,7 @@ collections: # A list of collections the CMS should be able to edit
     label_singular: 'Page'
     folder: _pages
     create: true
-    nested: { depth: 100 }
+    nested: { depth: 100, subfolders: false }
     fields:
       - label: Title
         name: title

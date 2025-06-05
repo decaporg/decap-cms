@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.6.2](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.6.1...decap-cms-core@3.6.2) (2025-05-15)
+
+### Bug Fixes
+
+- **#7371:** Duplicate Localized Content When Duplicating Entries with i18n Enabled ([#7372](https://github.com/decaporg/decap-cms/issues/7372)) ([c5b1dfe](https://github.com/decaporg/decap-cms/commit/c5b1dfe50ae34230c735d58dd1df475fa17ee578)), closes [#7371](https://github.com/decaporg/decap-cms/issues/7371)
+- **nested-i18n:** pass newPath only when customPath differs from current path ([#7418](https://github.com/decaporg/decap-cms/issues/7418)) ([86d41d7](https://github.com/decaporg/decap-cms/commit/86d41d79b20583041570bce30b46835a36bcecf2))
+
+## [3.6.1](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.6.0...decap-cms-core@3.6.1) (2025-02-13)
+
+**Note:** Version bump only for package decap-cms-core
+
 # [3.6.0](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.5.0...decap-cms-core@3.6.0) (2025-01-29)
 
 ### Bug Fixes
