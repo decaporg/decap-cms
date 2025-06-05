@@ -2,7 +2,7 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { colors, colorsRaw, components, lengths, zIndex } from 'decap-cms-ui-default';
+import { colors, colorsRaw, components, lengths, zIndex, Icon } from 'decap-cms-ui-default';
 
 import { boundGetAsset } from '../../../actions/media';
 import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from '../../../constants/collectionViews';
@@ -56,10 +56,14 @@ const CollectionLabel = styled.h2`
 
 const ListCardTitle = styled.h2`
   margin-bottom: 0;
+  display: flex;
+  justify-content: space-between;
 `;
 
 const CardHeading = styled.h2`
   margin: 0 0 2px;
+  display: flex;
+  justify-content: space-between;
 `;
 
 const CardBody = styled.div`
@@ -89,6 +93,22 @@ const CardImage = styled.div`
   height: 150px;
 `;
 
+const TitleIcons = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+const StatusIcon = styled(Icon)`
+  color: ${props => {
+    switch (props.workflowStatus) {
+      case 'pending_review': return colors.statusReviewBackground;
+      case 'pending_publish': return colors.statusReadyBackground;
+      default: return colors.statusDraftBackground;
+    }
+  }};
+`;
+
 function EntryCard({
   path,
   summary,
@@ -96,6 +116,7 @@ function EntryCard({
   imageField,
   collectionLabel,
   viewStyle = VIEW_STYLE_LIST,
+  workflowStatus,
   getAsset,
 }) {
   if (viewStyle === VIEW_STYLE_LIST) {
@@ -103,7 +124,12 @@ function EntryCard({
       <ListCard>
         <ListCardLink to={path}>
           {collectionLabel ? <CollectionLabel>{collectionLabel}</CollectionLabel> : null}
-          <ListCardTitle>{summary}</ListCardTitle>
+          <ListCardTitle>
+            {summary}
+            <TitleIcons>
+              {workflowStatus && <StatusIcon type="circle" />}
+            </TitleIcons>
+          </ListCardTitle>
         </ListCardLink>
       </ListCard>
     );

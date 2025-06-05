@@ -4,7 +4,9 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import { Waypoint } from 'react-waypoint';
 import { Map } from 'immutable';
+import { connect } from 'react-redux';
 
+import { selectUnpublishedEntry } from '../../../reducers';
 import { selectFields, selectInferredField } from '../../../reducers/collections';
 import EntryCard from './EntryCard';
 
@@ -17,7 +19,7 @@ const CardsGrid = styled.ul`
   margin-bottom: 16px;
 `;
 
-export default class EntryListing extends React.Component {
+class EntryListing extends React.Component {
   static propTypes = {
     collections: ImmutablePropTypes.iterable.isRequired,
     entries: ImmutablePropTypes.list,
@@ -53,7 +55,20 @@ export default class EntryListing extends React.Component {
     const { collections, entries, viewStyle } = this.props;
     const inferredFields = this.inferFields(collections);
     const entryCardProps = { collection: collections, inferredFields, viewStyle };
-    return entries.map((entry, idx) => <EntryCard {...entryCardProps} entry={entry} key={idx} />);
+
+    return entries.map((entry, idx) => {
+      const workflowStatus = this.props.getWorkflowStatus(collections.get('name'), entry.get('slug'));
+      console.log('workflowStatus', workflowStatus);
+
+      return (
+        <EntryCard
+          {...entryCardProps}
+          entry={entry}
+          workflowStatus={workflowStatus}
+          key={idx}
+        />
+      );
+    });
   };
 
   renderCardsForMultipleCollections = () => {
@@ -84,3 +99,16 @@ export default class EntryListing extends React.Component {
     );
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    getWorkflowStatus: (collectionName, slug) => {
+
+      const unpublishedEntry = selectUnpublishedEntry(state, collectionName, slug);
+      console.log('getWorkflowStatus', unpublishedEntry);
+      return unpublishedEntry ? unpublishedEntry.get('status') : null;
+    }
+  };
+}
+
+export default connect(mapStateToProps)(EntryListing);
