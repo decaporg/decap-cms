@@ -232,6 +232,13 @@ export default class RelationControl extends React.Component {
     );
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.queryHits !== prevProps.queryHits) {
+      const queryOptions = this.parseHitOptions(this.props.queryHits);
+      this.setState({ queryOptions });
+    }
+  }
+
   async componentDidMount() {
     this.mounted = true;
     // if the field has a previous value perform an initial search based on the value field
