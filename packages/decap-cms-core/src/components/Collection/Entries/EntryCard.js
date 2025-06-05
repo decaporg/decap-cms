@@ -2,7 +2,8 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { colors, colorsRaw, components, lengths, zIndex, Icon } from 'decap-cms-ui-default';
+import { colors, colorsRaw, components, lengths, zIndex } from 'decap-cms-ui-default';
+import { translate } from 'react-polyglot';
 
 import { boundGetAsset } from '../../../actions/media';
 import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from '../../../constants/collectionViews';
@@ -131,17 +132,16 @@ function EntryCard({
   viewStyle = VIEW_STYLE_LIST,
   workflowStatus,
   getAsset,
+  t,
 }) {
-  const { t } = this.props;
-
-  function getStatusLabel (status) {
+  function getStatusLabel(status) {
     switch (status) {
       case 'pending_review': return t('editor.editorToolbar.inReview');
       case 'pending_publish': return t('editor.editorToolbar.ready');
       case 'draft': return t('editor.editorToolbar.draft');
       default: return status;
     }
-  };
+  }
 
   if (viewStyle === VIEW_STYLE_LIST) {
     return (
@@ -169,7 +169,16 @@ function EntryCard({
         <GridCardLink to={path}>
           <CardBody hasImage={image}>
             {collectionLabel ? <CollectionLabel>{collectionLabel}</CollectionLabel> : null}
-            <CardHeading>{summary}</CardHeading>
+            <CardHeading>
+              {summary}
+              <TitleIcons>
+                {workflowStatus && (
+                  <WorkflowBadge status={workflowStatus}>
+                    {getStatusLabel(workflowStatus)}
+                  </WorkflowBadge>
+                )}
+              </TitleIcons>
+            </CardHeading>
           </CardBody>
           {image ? <CardImage src={getAsset(image, imageField).toString()} /> : null}
         </GridCardLink>
@@ -216,6 +225,6 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
   };
 }
 
-const ConnectedEntryCard = connect(mapStateToProps, mapDispatchToProps, mergeProps)(EntryCard);
+const ConnectedEntryCard = connect(mapStateToProps, mapDispatchToProps, mergeProps)(translate()(EntryCard));
 
 export default ConnectedEntryCard;
