@@ -450,7 +450,7 @@ export class EditorToolbar extends React.Component {
     return canPublish || canCreate ? (
       <ToolbarDropdown
         dropdownTopOverlap="40px"
-        dropdownWidth="150px"
+        dropdownWidth="max-content"
         key="td-publish-create"
         renderButton={() => (
           <PublishedToolbarButton>
@@ -486,7 +486,7 @@ export class EditorToolbar extends React.Component {
     return canCreate ? (
       <ToolbarDropdown
         dropdownTopOverlap="40px"
-        dropdownWidth="150px"
+        dropdownWidth="max-content"
         renderButton={() => (
           <PublishedToolbarButton>{t('editor.editorToolbar.published')}</PublishedToolbarButton>
         )}
@@ -511,7 +511,7 @@ export class EditorToolbar extends React.Component {
       <div>
         <ToolbarDropdown
           dropdownTopOverlap="40px"
-          dropdownWidth="150px"
+          dropdownWidth="max-content"
           renderButton={() => (
             <PublishButton>
               {isPersisting
