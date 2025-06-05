@@ -4,9 +4,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import { Waypoint } from 'react-waypoint';
 import { Map, List } from 'immutable';
-import { connect } from 'react-redux';
 
-import { selectUnpublishedEntry, selectUnpublishedEntriesByStatus } from '../../../reducers';
 import { selectFields, selectInferredField } from '../../../reducers/collections';
 import EntryCard from './EntryCard';
 
@@ -28,6 +26,7 @@ class EntryListing extends React.Component {
     handleCursorActions: PropTypes.func.isRequired,
     page: PropTypes.number,
     getUnpublishedEntries: PropTypes.func.isRequired,
+    getWorkflowStatus: PropTypes.func.isRequired,
   };
 
   hasMore = () => {
@@ -84,14 +83,12 @@ class EntryListing extends React.Component {
 
     return allEntries.map((entry, idx) => {
       const workflowStatus = this.props.getWorkflowStatus(collections.get('name'), entry.get('slug'));
-      const isUnpublished = !!workflowStatus;
 
       return (
         <EntryCard
           {...entryCardProps}
           entry={entry}
           workflowStatus={workflowStatus}
-          isUnpublished={isUnpublished}
           key={idx}
         />
       );
@@ -112,7 +109,7 @@ class EntryListing extends React.Component {
         entry,
         inferredFields,
         collectionLabel,
-        workflowStatus
+        workflowStatus,
       };
       return <EntryCard {...entryCardProps} key={idx} />;
     });
@@ -134,32 +131,4 @@ class EntryListing extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    getWorkflowStatus: (collectionName, slug) => {
-      const unpublishedEntry = selectUnpublishedEntry(state, collectionName, slug);
-      return unpublishedEntry ? unpublishedEntry.get('status') : null;
-    },
-    getUnpublishedEntries: (collectionName) => {
-      const allStatuses = ['draft', 'pending_review', 'pending_publish'];
-      const unpublishedEntries = [];
-
-      allStatuses.forEach(statusKey => {
-        const entriesForStatus = selectUnpublishedEntriesByStatus(state, statusKey);
-
-        if (entriesForStatus) {
-          entriesForStatus.forEach(entry => {
-            if (entry.get('collection') === collectionName) {
-              const entryWithCollection = entry.set('collection', collectionName);
-              unpublishedEntries.push(entryWithCollection);
-            }
-          });
-        }
-      });
-
-      return unpublishedEntries;
-    }
-  };
-}
-
-export default connect(mapStateToProps)(EntryListing);
+export default EntryListing;
