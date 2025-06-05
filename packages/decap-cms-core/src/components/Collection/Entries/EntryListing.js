@@ -61,8 +61,6 @@ class EntryListing extends React.Component {
     }
 
     const unpublishedEntries = this.props.getUnpublishedEntries(collectionName);
-    console.log(`Unpublished entries for collection "${collectionName}":`, unpublishedEntries);
-
 
     if (!unpublishedEntries || unpublishedEntries.length === 0) {
       return entries;
@@ -148,7 +146,6 @@ function mapStateToProps(state) {
 
       allStatuses.forEach(statusKey => {
         const entriesForStatus = selectUnpublishedEntriesByStatus(state, statusKey);
-        console.log(`Unpublished entries for status "${statusKey}":`, entriesForStatus);
 
         if (entriesForStatus) {
           entriesForStatus.forEach(entry => {

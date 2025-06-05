@@ -99,12 +99,25 @@ const TitleIcons = styled.div`
   gap: 8px;
 `;
 
-const StatusIcon = styled(Icon)`
-  color: ${props => {
-    switch (props.workflowStatus) {
+const WorkflowBadge = styled.span`
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 11px;
+  text-transform: uppercase;
+  background-color: ${props => {
+    switch (props.status) {
+      case 'draft': return colors.statusDraftBackground;
       case 'pending_review': return colors.statusReviewBackground;
       case 'pending_publish': return colors.statusReadyBackground;
-      default: return colors.statusDraftBackground;
+      default: return colors.background;
+    }
+  }};
+  color: ${props => {
+    switch (props.status) {
+      case 'draft': return colors.statusDraftText;
+      case 'pending_review': return colors.statusReviewText;
+      case 'pending_publish': return colors.statusReadyText;
+      default: return colors.text;
     }
   }};
 `;
@@ -119,6 +132,17 @@ function EntryCard({
   workflowStatus,
   getAsset,
 }) {
+  const { t } = this.props;
+
+  function getStatusLabel (status) {
+    switch (status) {
+      case 'pending_review': return t('editor.editorToolbar.inReview');
+      case 'pending_publish': return t('editor.editorToolbar.ready');
+      case 'draft': return t('editor.editorToolbar.draft');
+      default: return status;
+    }
+  };
+
   if (viewStyle === VIEW_STYLE_LIST) {
     return (
       <ListCard>
@@ -127,7 +151,11 @@ function EntryCard({
           <ListCardTitle>
             {summary}
             <TitleIcons>
-              {workflowStatus && <StatusIcon type="circle" />}
+              {workflowStatus && (
+                <WorkflowBadge status={workflowStatus}>
+                  {getStatusLabel(workflowStatus)}
+                </WorkflowBadge>
+              )}
             </TitleIcons>
           </ListCardTitle>
         </ListCardLink>
