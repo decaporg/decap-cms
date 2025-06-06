@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.6.3](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.6.2...decap-cms-core@3.6.3) (2025-06-06)
+
+### Bug Fixes
+
+- dropdown menu with adjusts to content ([#7490](https://github.com/decaporg/decap-cms/issues/7490)) ([0a47bc4](https://github.com/decaporg/decap-cms/commit/0a47bc4dd41019e0ba5a520881b4ac2441e7250c))
+
 ## [3.6.2](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.6.1...decap-cms-core@3.6.2) (2025-05-15)
 
 ### Bug Fixes
