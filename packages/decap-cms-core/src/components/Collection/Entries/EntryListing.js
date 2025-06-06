@@ -6,6 +6,7 @@ import { Waypoint } from 'react-waypoint';
 import { Map, List } from 'immutable';
 
 import { selectFields, selectInferredField } from '../../../reducers/collections';
+import { filterNestedEntries } from './EntriesCollection';
 import EntryCard from './EntryCard';
 
 const CardsGrid = styled.ul`
@@ -27,6 +28,7 @@ class EntryListing extends React.Component {
     page: PropTypes.number,
     getUnpublishedEntries: PropTypes.func.isRequired,
     getWorkflowStatus: PropTypes.func.isRequired,
+    filterTerm: PropTypes.string,
   };
 
   hasMore = () => {
@@ -52,7 +54,7 @@ class EntryListing extends React.Component {
   };
 
   getAllEntries = () => {
-    const { entries, collections } = this.props;
+    const { entries, collections, filterTerm } = this.props;
     const collectionName = Map.isMap(collections) ? collections.get('name') : null;
 
     if (!collectionName) {
@@ -65,7 +67,19 @@ class EntryListing extends React.Component {
       return entries;
     }
 
-    const unpublishedList = List(unpublishedEntries.map(entry => entry));
+    let unpublishedList = List(unpublishedEntries.map(entry => entry));
+
+    if (collections.has('nested') && filterTerm) {
+      const collectionFolder = collections.get('folder');
+      const subfolders = collections.get('nested').get('subfolders') !== false;
+
+      unpublishedList = filterNestedEntries(
+        filterTerm,
+        collectionFolder,
+        unpublishedList,
+        subfolders
+      );
+    }
 
     const publishedSlugs = entries.map(entry => entry.get('slug')).toSet();
     const uniqueUnpublished = unpublishedList.filterNot(entry =>

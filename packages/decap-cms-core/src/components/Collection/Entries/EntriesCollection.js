@@ -140,7 +140,8 @@ export class EntriesCollection extends React.Component {
       page,
       t,
       getWorkflowStatus,
-      getUnpublishedEntries
+      getUnpublishedEntries,
+      filterTerm,
     } = this.props;
 
     const EntriesToRender = ({ entries }) => {
@@ -156,6 +157,7 @@ export class EntriesCollection extends React.Component {
           page={page}
           getWorkflowStatus={getWorkflowStatus}
           getUnpublishedEntries={getUnpublishedEntries}
+          filterTerm={filterTerm}
         />
       );
     };
