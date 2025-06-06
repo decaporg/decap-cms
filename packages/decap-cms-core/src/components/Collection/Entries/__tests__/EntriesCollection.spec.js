@@ -21,9 +21,9 @@ function createMockStore(collection, entriesArray, additionalState = {}) {
     config: fromJS({ publish_mode: 'simple' }),
     collections: fromJS({ [collection.get('name')]: collection }),
     editorialWorkflow: fromJS({
-      pages: { ids: [] }
+      pages: { ids: [] },
     }),
-    ...additionalState
+    ...additionalState,
   });
 }
 
@@ -111,7 +111,9 @@ describe('EntriesCollection', () => {
 
     const store = createMockStore(collection, entriesArray);
 
-    const { asFragment } = renderWithRedux(<ConnectedEntriesCollection collection={collection} />, { store });
+    const { asFragment } = renderWithRedux(<ConnectedEntriesCollection collection={collection} />, {
+      store,
+    });
 
     expect(asFragment()).toMatchSnapshot();
   });
