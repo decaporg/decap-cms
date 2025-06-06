@@ -31,6 +31,7 @@ exports[`EntriesCollection should render with applied filter term for nested col
     collections="Map { \\"name\\": \\"pages\\", \\"label\\": \\"Pages\\", \\"folder\\": \\"src/pages\\", \\"nested\\": Map { \\"depth\\": 10, \\"subfolders\\": false } }"
     cursor="[object Object]"
     entries="List [ Map { \\"slug\\": \\"dir3/dir4/index\\", \\"path\\": \\"src/pages/dir3/dir4/index.md\\", \\"data\\": Map { \\"title\\": \\"File 4\\" } } ]"
+    filterterm="dir3/dir4"
     isfetching="false"
   />
 </DocumentFragment>
