@@ -148,7 +148,7 @@ export function selectUnpublishedEntry(state: EditorialWorkflow, collection: str
 export function selectUnpublishedEntriesByStatus(state: EditorialWorkflow, status: string) {
   if (!state) return null;
   const entities = state.get('entities') as Entities;
-  return entities?.filter(entry => entry.get('status') === status).valueSeq();
+  return entities.filter(entry => entry.get('status') === status).valueSeq();
 }
 
 export function selectUnpublishedSlugs(state: EditorialWorkflow, collection: string) {
