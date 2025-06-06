@@ -107,18 +107,26 @@ const WorkflowBadge = styled.span`
   text-transform: uppercase;
   background-color: ${props => {
     switch (props.status) {
-      case 'draft': return colors.statusDraftBackground;
-      case 'pending_review': return colors.statusReviewBackground;
-      case 'pending_publish': return colors.statusReadyBackground;
-      default: return colors.background;
+      case 'draft':
+        return colors.statusDraftBackground;
+      case 'pending_review':
+        return colors.statusReviewBackground;
+      case 'pending_publish':
+        return colors.statusReadyBackground;
+      default:
+        return colors.background;
     }
   }};
   color: ${props => {
     switch (props.status) {
-      case 'draft': return colors.statusDraftText;
-      case 'pending_review': return colors.statusReviewText;
-      case 'pending_publish': return colors.statusReadyText;
-      default: return colors.text;
+      case 'draft':
+        return colors.statusDraftText;
+      case 'pending_review':
+        return colors.statusReviewText;
+      case 'pending_publish':
+        return colors.statusReadyText;
+      default:
+        return colors.text;
     }
   }};
 `;
@@ -136,10 +144,14 @@ function EntryCard({
 }) {
   function getStatusLabel(status) {
     switch (status) {
-      case 'pending_review': return t('editor.editorToolbar.inReview');
-      case 'pending_publish': return t('editor.editorToolbar.ready');
-      case 'draft': return t('editor.editorToolbar.draft');
-      default: return status;
+      case 'pending_review':
+        return t('editor.editorToolbar.inReview');
+      case 'pending_publish':
+        return t('editor.editorToolbar.ready');
+      case 'draft':
+        return t('editor.editorToolbar.draft');
+      default:
+        return status;
     }
   }
 
@@ -225,6 +237,10 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
   };
 }
 
-const ConnectedEntryCard = connect(mapStateToProps, mapDispatchToProps, mergeProps)(translate()(EntryCard));
+const ConnectedEntryCard = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps,
+)(translate()(EntryCard));
 
 export default ConnectedEntryCard;

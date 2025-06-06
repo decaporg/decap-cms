@@ -19,10 +19,7 @@ import {
   selectIsFetching,
   selectGroups,
 } from '../../../reducers/entries';
-import {
-  selectUnpublishedEntry,
-  selectUnpublishedEntriesByStatus,
-} from '../../../reducers';
+import { selectUnpublishedEntry, selectUnpublishedEntriesByStatus } from '../../../reducers';
 import { selectCollectionEntriesCursor } from '../../../reducers/cursors';
 import Entries from './Entries';
 
@@ -91,7 +88,7 @@ export class EntriesCollection extends React.Component {
       loadEntries,
       unpublishedEntriesLoaded,
       loadUnpublishedEntries,
-      isEditorialWorkflowEnabled
+      isEditorialWorkflowEnabled,
     } = this.props;
 
     if (collection && !entriesLoaded) {
@@ -111,15 +108,17 @@ export class EntriesCollection extends React.Component {
       loadEntries,
       unpublishedEntriesLoaded,
       loadUnpublishedEntries,
-      isEditorialWorkflowEnabled
+      isEditorialWorkflowEnabled,
     } = this.props;
 
     if (collection !== prevProps.collection && !entriesLoaded) {
       loadEntries(collection);
     }
 
-    if (isEditorialWorkflowEnabled &&
-        (!unpublishedEntriesLoaded || collection !== prevProps.collection)) {
+    if (
+      isEditorialWorkflowEnabled &&
+      (!unpublishedEntriesLoaded || collection !== prevProps.collection)
+    ) {
       loadUnpublishedEntries(collections);
     }
   }
@@ -241,7 +240,7 @@ function mapStateToProps(state, ownProps) {
       const unpublishedEntry = selectUnpublishedEntry(state, collectionName, slug);
       return unpublishedEntry ? unpublishedEntry.get('status') : null;
     },
-    getUnpublishedEntries: (collectionName) => {
+    getUnpublishedEntries: collectionName => {
       if (!isEditorialWorkflowEnabled) return [];
 
       const allStatuses = ['draft', 'pending_review', 'pending_publish'];
@@ -267,7 +266,7 @@ function mapStateToProps(state, ownProps) {
 const mapDispatchToProps = {
   loadEntries: actionLoadEntries,
   traverseCollectionCursor: actionTraverseCollectionCursor,
-  loadUnpublishedEntries: (collections) => loadUnpublishedEntries(collections),
+  loadUnpublishedEntries: collections => loadUnpublishedEntries(collections),
 };
 
 const ConnectedEntriesCollection = connect(mapStateToProps, mapDispatchToProps)(EntriesCollection);

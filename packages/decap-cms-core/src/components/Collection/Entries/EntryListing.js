@@ -77,13 +77,13 @@ class EntryListing extends React.Component {
         filterTerm,
         collectionFolder,
         unpublishedList,
-        subfolders
+        subfolders,
       );
     }
 
     const publishedSlugs = entries.map(entry => entry.get('slug')).toSet();
     const uniqueUnpublished = unpublishedList.filterNot(entry =>
-      publishedSlugs.has(entry.get('slug'))
+      publishedSlugs.has(entry.get('slug')),
     );
 
     return entries.concat(uniqueUnpublished);
@@ -96,15 +96,13 @@ class EntryListing extends React.Component {
     const entryCardProps = { collection: collections, inferredFields, viewStyle };
 
     return allEntries.map((entry, idx) => {
-      const workflowStatus = this.props.getWorkflowStatus(collections.get('name'), entry.get('slug'));
+      const workflowStatus = this.props.getWorkflowStatus(
+        collections.get('name'),
+        entry.get('slug'),
+      );
 
       return (
-        <EntryCard
-          {...entryCardProps}
-          entry={entry}
-          workflowStatus={workflowStatus}
-          key={idx}
-        />
+        <EntryCard {...entryCardProps} entry={entry} workflowStatus={workflowStatus} key={idx} />
       );
     });
   };
