@@ -61,7 +61,7 @@
     "@commitlint/config-conventional": "^16.0.0",
     "@emotion/eslint-plugin": "^11.0.0",
     "@emotion/jest": "^11.11.0",
-    "@octokit/rest": "^16.28.7",
+    "@octokit/rest": "^22.0.0",
     "@simonsmith/cypress-image-snapshot": "^8.1.2",
     "@soda/friendly-errors-webpack-plugin": "^1.8.1",
     "@storybook/addon-actions": "^7.5.1",
