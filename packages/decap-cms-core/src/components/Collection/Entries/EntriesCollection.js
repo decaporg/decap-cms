@@ -8,6 +8,7 @@ import { partial } from 'lodash';
 import { Cursor } from 'decap-cms-lib-util';
 import { colors } from 'decap-cms-ui-default';
 
+import { selectCollections } from '../../../reducers/collections';
 import {
   loadEntries as actionLoadEntries,
   traverseCollectionCursor as actionTraverseCollectionCursor,
@@ -66,6 +67,7 @@ function withGroups(groups, entries, EntriesToRender, t) {
 export class EntriesCollection extends React.Component {
   static propTypes = {
     collection: ImmutablePropTypes.map.isRequired,
+    collections: ImmutablePropTypes.iterable,
     page: PropTypes.number,
     entries: ImmutablePropTypes.list,
     groups: PropTypes.array,
@@ -85,6 +87,7 @@ export class EntriesCollection extends React.Component {
   componentDidMount() {
     const {
       collection,
+      collections,
       entriesLoaded,
       loadEntries,
       unpublishedEntriesLoaded,
@@ -97,13 +100,14 @@ export class EntriesCollection extends React.Component {
     }
 
     if (isEditorialWorkflowEnabled && !unpublishedEntriesLoaded) {
-      loadUnpublishedEntries();
+      loadUnpublishedEntries(collections);
     }
   }
 
   componentDidUpdate(prevProps) {
     const {
       collection,
+      collections,
       entriesLoaded,
       loadEntries,
       unpublishedEntriesLoaded,
@@ -117,7 +121,7 @@ export class EntriesCollection extends React.Component {
 
     if (isEditorialWorkflowEnabled &&
         (!unpublishedEntriesLoaded || collection !== prevProps.collection)) {
-      loadUnpublishedEntries();
+      loadUnpublishedEntries(collections);
     }
   }
 
@@ -194,6 +198,7 @@ export function filterNestedEntries(path, collectionFolder, entries, subfolders)
 function mapStateToProps(state, ownProps) {
   const { collection, viewStyle, filterTerm } = ownProps;
   const page = state.entries.getIn(['pages', collection.get('name'), 'page']);
+  const collections = selectCollections(state);
 
   let entries = selectEntries(state.entries, collection);
   const groups = selectGroups(state.entries, collection);
@@ -220,6 +225,7 @@ function mapStateToProps(state, ownProps) {
 
   return {
     collection,
+    collections,
     page,
     entries,
     groups,
@@ -259,7 +265,7 @@ function mapStateToProps(state, ownProps) {
 const mapDispatchToProps = {
   loadEntries: actionLoadEntries,
   traverseCollectionCursor: actionTraverseCollectionCursor,
-  loadUnpublishedEntries: () => loadUnpublishedEntries(),
+  loadUnpublishedEntries: (collections) => loadUnpublishedEntries(collections),
 };
 
 const ConnectedEntriesCollection = connect(mapStateToProps, mapDispatchToProps)(EntriesCollection);
