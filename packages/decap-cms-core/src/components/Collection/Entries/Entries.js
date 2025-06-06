@@ -26,6 +26,8 @@ function Entries({
   handleCursorActions,
   t,
   page,
+  getWorkflowStatus,
+  getUnpublishedEntries,
 }) {
   const loadingMessages = [
     t('collection.entries.loadingEntries'),
@@ -48,6 +50,8 @@ function Entries({
           cursor={cursor}
           handleCursorActions={handleCursorActions}
           page={page}
+          getWorkflowStatus={getWorkflowStatus}
+          getUnpublishedEntries={getUnpublishedEntries}
         />
         {isFetching && page !== undefined && entries.size > 0 ? (
           <PaginationMessage>{t('collection.entries.loadingEntries')}</PaginationMessage>
@@ -68,6 +72,8 @@ Entries.propTypes = {
   cursor: PropTypes.any.isRequired,
   handleCursorActions: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
+  getWorkflowStatus: PropTypes.func,
+  getUnpublishedEntries: PropTypes.func,
 };
 
 export default translate()(Entries);
