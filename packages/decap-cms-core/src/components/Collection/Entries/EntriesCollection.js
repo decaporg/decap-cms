@@ -8,7 +8,6 @@ import { partial } from 'lodash';
 import { Cursor } from 'decap-cms-lib-util';
 import { colors } from 'decap-cms-ui-default';
 
-import { selectCollections } from '../../../reducers/collections';
 import {
   loadEntries as actionLoadEntries,
   traverseCollectionCursor as actionTraverseCollectionCursor,
@@ -198,7 +197,8 @@ export function filterNestedEntries(path, collectionFolder, entries, subfolders)
 function mapStateToProps(state, ownProps) {
   const { collection, viewStyle, filterTerm } = ownProps;
   const page = state.entries.getIn(['pages', collection.get('name'), 'page']);
-  const collections = selectCollections(state);
+
+  const collections = state.collections;
 
   let entries = selectEntries(state.entries, collection);
   const groups = selectGroups(state.entries, collection);
