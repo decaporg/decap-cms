@@ -21,6 +21,8 @@ import { restrictToParentElement } from '@dnd-kit/modifiers';
 import { CSS } from '@dnd-kit/utilities';
 import { v4 as uuid } from 'uuid';
 
+import relationCache from './RelationCache';
+
 function arrayMove(array, from, to) {
   const slicedArray = array.slice();
   slicedArray.splice(to < 0 ? array.length + to : to, 0, slicedArray.splice(from, 1)[0]);
@@ -231,49 +233,126 @@ export default class RelationControl extends React.Component {
     );
   }
 
+  static batchedInitialLoads = new Map();
+  static batchPromises = new Map();
+
   async componentDidMount() {
     this.mounted = true;
-    // if the field has a previous value perform an initial search based on the value field
-    // this is required since each search is limited by optionsLength so the selected value
-    // might not show up on the search
-    const { forID, field, value, query, onChange } = this.props;
+    const { field, value } = this.props;
     const collection = field.get('collection');
     const file = field.get('file');
-    const initialSearchValues = value && (this.isMultiple() ? getSelectedOptions(value) : [value]);
-    if (initialSearchValues && initialSearchValues.length > 0) {
-      const metadata = {};
-      const searchFieldsArray = getFieldArray(field.get('search_fields'));
-      const { payload } = await query(forID, collection, searchFieldsArray, '', file);
-      const hits = payload.hits || [];
-      const options = this.parseHitOptions(hits);
-      const initialOptions = initialSearchValues
-        .map(v => {
-          const selectedOption = options.find(o => o.value === v);
-          metadata[v] = selectedOption?.data;
-          return selectedOption;
-        })
-        .filter(Boolean);
-      const filteredValue = initialOptions.map(option => option.value);
 
-      this.mounted && this.setState({ initialOptions });
+    if (value && this.hasInitialValues(value)) {
+      const batchKey = `${collection}-${file || ''}`;
 
-      //set metadata
-      this.mounted &&
-        onChange(
-          filteredValue.length === 1 && !this.isMultiple()
-            ? filteredValue[0]
-            : fromJS(filteredValue),
-          {
-            [field.get('name')]: {
-              [field.get('collection')]: metadata,
-            },
-          },
+      if (!RelationControl.batchedInitialLoads.has(batchKey)) {
+        RelationControl.batchedInitialLoads.set(batchKey, []);
+
+        RelationControl.batchPromises.set(batchKey,
+          new Promise(resolve => setTimeout(resolve, 10)).then(() => {
+            const widgets = RelationControl.batchedInitialLoads.get(batchKey);
+            if (widgets && widgets.length > 0) {
+              widgets[0].executeBatchedLoad(batchKey);
+            }
+          })
         );
+      }
+
+      RelationControl.batchedInitialLoads.get(batchKey).push(this);
+    }
+  }
+
+  hasInitialValues(value) {
+    if (this.isMultiple()) {
+      const selectedOptions = getSelectedOptions(value);
+      return selectedOptions && selectedOptions.length > 0;
+    }
+    return value && value !== '';
+  }
+
+  executeBatchedLoad(batchKey) {
+    const widgets = RelationControl.batchedInitialLoads.get(batchKey);
+    if (!widgets || widgets.length === 0) return;
+
+    // Process all widgets for this collection in a single request
+    this.processBatchedWidgets(widgets);
+    RelationControl.batchedInitialLoads.delete(batchKey);
+    RelationControl.batchPromises.delete(batchKey);
+  }
+
+  async processBatchedWidgets(widgets) {
+    if (widgets.length === 0) return;
+
+    const firstWidget = widgets[0];
+    const { field, query, forID } = firstWidget.props;
+    const collection = field.get('collection');
+    const searchFieldsArray = getFieldArray(field.get('search_fields'));
+    const file = field.get('file');
+
+    try {
+      const result = await relationCache.getOptions(
+        collection,
+        searchFieldsArray,
+        '',
+        file,
+        () => query(forID, collection, searchFieldsArray, '', file)
+      );
+
+      const hits = result.payload.hits || [];
+
+      widgets.forEach(widget => {
+        try {
+          if (widget.mounted) {
+            const options = widget.parseHitOptions(hits);
+            widget.setState({ initialOptions: options });
+          }
+        } catch (error) {
+          console.error('Failed to process options for individual widget:', error);
+        }
+      });
+    } catch (error) {
+      console.error('Failed to load batched options:', error);
+
+      widgets.forEach(widget => {
+        if (widget.mounted) {
+          widget.loadIndividualOptions();
+        }
+      });
+    }
+  }
+
+  async loadIndividualOptions() {
+    const { field, query, forID } = this.props;
+    const collection = field.get('collection');
+    const searchFieldsArray = getFieldArray(field.get('search_fields'));
+    const file = field.get('file');
+
+    try {
+      const result = await query(forID, collection, searchFieldsArray, '', file);
+      const hits = result.payload.hits || [];
+      const options = this.parseHitOptions(hits);
+
+      if (this.mounted) {
+        this.setState({ initialOptions: options });
+      }
+    } catch (error) {
+      console.error('Failed to load individual options:', error);
     }
   }
 
   componentWillUnmount() {
     this.mounted = false;
+
+    for (const [batchKey, widgets] of RelationControl.batchedInitialLoads.entries()) {
+      const index = widgets.indexOf(this);
+      if (index > -1) {
+        widgets.splice(index, 1);
+        if (widgets.length === 0) {
+          RelationControl.batchedInitialLoads.delete(batchKey);
+          RelationControl.batchPromises.delete(batchKey);
+        }
+      }
+    }
   }
 
   onSortEnd =
@@ -385,19 +464,30 @@ export default class RelationControl extends React.Component {
     return options;
   };
 
-  loadOptions = debounce((term, callback) => {
+  loadOptions = debounce(async (term, callback) => {
     const { field, query, forID } = this.props;
     const collection = field.get('collection');
-    const optionsLength = field.get('options_length') || 20;
     const searchFieldsArray = getFieldArray(field.get('search_fields'));
     const file = field.get('file');
 
-    query(forID, collection, searchFieldsArray, term, file).then(({ payload }) => {
-      const hits = payload.hits || [];
+    try {
+      const result = await relationCache.getOptions(
+        collection,
+        searchFieldsArray,
+        term,
+        file,
+        () => query(forID, collection, searchFieldsArray, term, file)
+      );
+
+      const hits = result.payload.hits || [];
       const options = this.parseHitOptions(hits);
+      const optionsLength = field.get('options_length') || 20;
       const uniq = uniqOptions(this.state.initialOptions, options).slice(0, optionsLength);
       callback(uniq);
-    });
+    } catch (error) {
+      console.error('Failed to load options:', error);
+      callback([]);
+    }
   }, 500);
 
   render() {
