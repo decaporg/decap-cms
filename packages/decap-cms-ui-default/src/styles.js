@@ -371,32 +371,43 @@ const components = {
 };
 
 const reactSelectStyles = {
-  control: styles => ({
+  control: (styles, { isFocused }) => ({
     ...styles,
     border: 0,
     boxShadow: 'none',
     padding: '9px 0 9px 12px',
+    minHeight: '32px',
+    backgroundColor: isFocused ? colors.inputBackground : 'transparent',
   }),
-  option: (styles, state) => ({
+  input: styles => ({
     ...styles,
-    backgroundColor: state.isSelected
-      ? `${colors.active}`
-      : state.isFocused
-      ? `${colors.activeBackground}`
-      : 'transparent',
-    paddingLeft: '22px',
+    margin: 0,
+    padding: 0,
   }),
-  menu: styles => ({ ...styles, right: 0, zIndex: zIndex.zIndex300 }),
-  container: styles => ({ ...styles, padding: '0 !important' }),
-  indicatorSeparator: (styles, state) =>
-    state.hasValue && state.selectProps.isClearable
-      ? { ...styles, backgroundColor: `${colors.textFieldBorder}` }
-      : { display: 'none' },
-  dropdownIndicator: styles => ({ ...styles, color: `${colors.controlLabel}` }),
-  clearIndicator: styles => ({ ...styles, color: `${colors.controlLabel}` }),
+  indicatorsContainer: styles => ({
+    ...styles,
+    paddingRight: '12px',
+  }),
+  indicatorSeparator: () => ({ display: 'none' }),
+  dropdownIndicator: styles => ({
+    ...styles,
+    color: colors.controlLabel,
+    padding: '0 4px',
+    '&:hover': {
+      color: colors.controlLabel,
+    },
+  }),
+  clearIndicator: styles => ({
+    ...styles,
+    color: colors.controlLabel,
+    padding: '0 4px',
+    '&:hover': {
+      color: colors.errorText,
+    },
+  }),
   multiValue: styles => ({
     ...styles,
-    backgroundColor: colors.background,
+    backgroundColor: colors.textFieldBorder,
   }),
   multiValueLabel: styles => ({
     ...styles,
@@ -406,7 +417,7 @@ const reactSelectStyles = {
   multiValueRemove: styles => ({
     ...styles,
     color: colors.controlLabel,
-    ':hover': {
+    '&:hover': {
       color: colors.errorText,
       backgroundColor: colors.errorBackground,
     },
