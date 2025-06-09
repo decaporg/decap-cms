@@ -248,13 +248,14 @@ export default class RelationControl extends React.Component {
       if (!RelationControl.batchedInitialLoads.has(batchKey)) {
         RelationControl.batchedInitialLoads.set(batchKey, []);
 
-        RelationControl.batchPromises.set(batchKey,
+        RelationControl.batchPromises.set(
+          batchKey,
           new Promise(resolve => setTimeout(resolve, 10)).then(() => {
             const widgets = RelationControl.batchedInitialLoads.get(batchKey);
             if (widgets && widgets.length > 0) {
               widgets[0].executeBatchedLoad(batchKey);
             }
-          })
+          }),
         );
       }
 
@@ -290,12 +291,8 @@ export default class RelationControl extends React.Component {
     const file = field.get('file');
 
     try {
-      const result = await relationCache.getOptions(
-        collection,
-        searchFieldsArray,
-        '',
-        file,
-        () => query(forID, collection, searchFieldsArray, '', file)
+      const result = await relationCache.getOptions(collection, searchFieldsArray, '', file, () =>
+        query(forID, collection, searchFieldsArray, '', file),
       );
 
       const hits = result.payload.hits || [];
@@ -471,12 +468,8 @@ export default class RelationControl extends React.Component {
     const file = field.get('file');
 
     try {
-      const result = await relationCache.getOptions(
-        collection,
-        searchFieldsArray,
-        term,
-        file,
-        () => query(forID, collection, searchFieldsArray, term, file)
+      const result = await relationCache.getOptions(collection, searchFieldsArray, term, file, () =>
+        query(forID, collection, searchFieldsArray, term, file),
       );
 
       const hits = result.payload.hits || [];
