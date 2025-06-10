@@ -193,7 +193,7 @@ class Header extends React.Component {
             <AppHeaderNavList>
               {shouldShowLogo && (
                 <AppHeaderLogo>
-                  <img src={logoUrl} alt="Logo" />
+                  <img src={logo?.src || logoUrl} alt="Logo" />
                 </AppHeaderLogo>
               )}
               <li>
