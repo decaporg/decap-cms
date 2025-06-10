@@ -298,6 +298,13 @@ export function applyDefaults(originalConfig: CmsConfig) {
         collection.fields = setI18nDefaultsForFields(collection.fields, Boolean(collectionI18n));
       }
 
+      if (collection.index_file?.fields) {
+        collection.index_file.fields = setI18nDefaultsForFields(
+          collection.index_file.fields,
+          Boolean(collectionI18n),
+        );
+      }
+
       const { folder, files, view_filters, view_groups, meta } = collection;
 
       if (folder) {
