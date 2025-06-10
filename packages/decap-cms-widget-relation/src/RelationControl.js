@@ -233,33 +233,11 @@ export default class RelationControl extends React.Component {
     );
   }
 
-  static batchedInitialLoads = new Map();
-  static batchPromises = new Map();
-
   async componentDidMount() {
     this.mounted = true;
-    const { field, value } = this.props;
-    const collection = field.get('collection');
-    const file = field.get('file');
-
+    const { value } = this.props;
     if (value && this.hasInitialValues(value)) {
-      const batchKey = `${collection}-${file || ''}`;
-
-      if (!RelationControl.batchedInitialLoads.has(batchKey)) {
-        RelationControl.batchedInitialLoads.set(batchKey, []);
-
-        RelationControl.batchPromises.set(
-          batchKey,
-          new Promise(resolve => setTimeout(resolve, 10)).then(() => {
-            const widgets = RelationControl.batchedInitialLoads.get(batchKey);
-            if (widgets && widgets.length > 0) {
-              widgets[0].executeBatchedLoad(batchKey);
-            }
-          }),
-        );
-      }
-
-      RelationControl.batchedInitialLoads.get(batchKey).push(this);
+      await this.loadInitialOptions();
     }
   }
 
@@ -271,85 +249,79 @@ export default class RelationControl extends React.Component {
     return value && value !== '';
   }
 
-  executeBatchedLoad(batchKey) {
-    const widgets = RelationControl.batchedInitialLoads.get(batchKey);
-    if (!widgets || widgets.length === 0) return;
-
-    // Process all widgets for this collection in a single request
-    this.processBatchedWidgets(widgets);
-    RelationControl.batchedInitialLoads.delete(batchKey);
-    RelationControl.batchPromises.delete(batchKey);
-  }
-
-  async processBatchedWidgets(widgets) {
-    if (widgets.length === 0) return;
-
-    const firstWidget = widgets[0];
-    const { field, query, forID } = firstWidget.props;
+  async loadInitialOptions() {
+    const { field, query, forID, value } = this.props;
     const collection = field.get('collection');
     const searchFieldsArray = getFieldArray(field.get('search_fields'));
     const file = field.get('file');
 
     try {
-      const result = await relationCache.getOptions(collection, searchFieldsArray, '', file, () =>
-        query(forID, collection, searchFieldsArray, '', file),
+      const result = await relationCache.getOptions(
+        collection,
+        searchFieldsArray,
+        '', // empty term for initial load
+        file,
+        () => query(forID, collection, searchFieldsArray, '', file),
       );
 
-      const hits = result.payload.hits || [];
-
-      widgets.forEach(widget => {
-        try {
-          if (widget.mounted) {
-            const options = widget.parseHitOptions(hits);
-            widget.setState({ initialOptions: options });
-          }
-        } catch (error) {
-          console.error('Failed to process options for individual widget:', error);
-        }
-      });
-    } catch (error) {
-      console.error('Failed to load batched options:', error);
-
-      widgets.forEach(widget => {
-        if (widget.mounted) {
-          widget.loadIndividualOptions();
-        }
-      });
-    }
-  }
-
-  async loadIndividualOptions() {
-    const { field, query, forID } = this.props;
-    const collection = field.get('collection');
-    const searchFieldsArray = getFieldArray(field.get('search_fields'));
-    const file = field.get('file');
-
-    try {
-      const result = await query(forID, collection, searchFieldsArray, '', file);
       const hits = result.payload.hits || [];
       const options = this.parseHitOptions(hits);
 
       if (this.mounted) {
         this.setState({ initialOptions: options });
+
+        // Call onChange with metadata for initial values
+        if (value && this.hasInitialValues(value)) {
+          this.triggerInitialOnChange(value, options);
+        }
       }
     } catch (error) {
-      console.error('Failed to load individual options:', error);
+      console.error('Failed to load initial options:', error);
+    }
+  }
+
+  triggerInitialOnChange(value, options) {
+    const { onChange, field } = this.props;
+
+    if (this.isMultiple()) {
+      const selectedOptions = getSelectedOptions(value);
+      if (selectedOptions && selectedOptions.length > 0) {
+        const matchedOptions = selectedOptions
+          .map(val => options.find(opt => opt.value === (val.value || val)))
+          .filter(Boolean);
+
+        if (matchedOptions.length > 0) {
+          const metadata = {
+            [field.get('name')]: {
+              [field.get('collection')]: matchedOptions.reduce(
+                (acc, option) => ({
+                  ...acc,
+                  [option.value]: option.data,
+                }),
+                {},
+              ),
+            },
+          };
+          onChange(value, metadata);
+        }
+      }
+    } else {
+      const matchedOption = options.find(opt => opt.value === value);
+      if (matchedOption) {
+        const metadata = {
+          [field.get('name')]: {
+            [field.get('collection')]: {
+              [matchedOption.value]: matchedOption.data,
+            },
+          },
+        };
+        onChange(value, metadata);
+      }
     }
   }
 
   componentWillUnmount() {
     this.mounted = false;
-
-    for (const [batchKey, widgets] of RelationControl.batchedInitialLoads.entries()) {
-      const index = widgets.indexOf(this);
-      if (index > -1) {
-        widgets.splice(index, 1);
-        if (widgets.length === 0) {
-          RelationControl.batchedInitialLoads.delete(batchKey);
-          RelationControl.batchPromises.delete(batchKey);
-        }
-      }
-    }
   }
 
   onSortEnd =
