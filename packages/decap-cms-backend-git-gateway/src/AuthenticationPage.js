@@ -163,7 +163,8 @@ export default class GitGatewayAuthenticationPage extends React.Component {
       if (errors.identity) {
         return (
           <AuthenticationPage
-            logoUrl={config.logo_url}
+            logoUrl={config.logo_url} // Deprecated, replaced by `logo.src`
+            logo={config.logo}
             siteUrl={config.site_url}
             onLogin={this.handleIdentity}
             renderPageContent={() => (
@@ -181,7 +182,8 @@ export default class GitGatewayAuthenticationPage extends React.Component {
       } else {
         return (
           <AuthenticationPage
-            logoUrl={config.logo_url}
+            logoUrl={config.logo_url} // Deprecated, replaced by `logo.src`
+            logo={config.logo}
             siteUrl={config.site_url}
             onLogin={this.handleIdentity}
             renderButtonContent={() => t('auth.loginWithNetlifyIdentity')}
@@ -193,7 +195,8 @@ export default class GitGatewayAuthenticationPage extends React.Component {
 
     return (
       <AuthenticationPage
-        logoUrl={config.logo_url}
+        logoUrl={config.logo_url} // Deprecated, replaced by `logo.src`
+        logo={config.logo}
         siteUrl={config.site_url}
         renderPageContent={() => (
           <AuthForm onSubmit={this.handleLogin}>

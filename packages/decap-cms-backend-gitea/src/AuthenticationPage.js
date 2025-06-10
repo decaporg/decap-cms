@@ -56,7 +56,8 @@ export default class GiteaAuthenticationPage extends React.Component {
         onLogin={this.handleLogin}
         loginDisabled={inProgress}
         loginErrorMessage={this.state.loginError}
-        logoUrl={config.logo_url}
+        logoUrl={config.logo_url} // Deprecated, replaced by `logo.src`
+        logo={config.logo}
         siteUrl={config.site_url}
         renderButtonContent={() => (
           <React.Fragment>

@@ -141,7 +141,8 @@ export default class GitHubAuthenticationPage extends React.Component {
         onLogin={this.handleLogin}
         loginDisabled={inProgress || findingFork || requestingFork}
         loginErrorMessage={loginError}
-        logoUrl={config.logo_url}
+        logoUrl={config.logo_url} // Deprecated, replaced by `logo.src`
+        logo={config.logo}
         siteUrl={config.site_url}
         {...this.getAuthenticationPageRenderArgs()}
         t={t}

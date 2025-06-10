@@ -136,7 +136,11 @@ class Header extends React.Component {
     openMediaLibrary: PropTypes.func.isRequired,
     hasWorkflow: PropTypes.bool.isRequired,
     displayUrl: PropTypes.string,
-    logoUrl: PropTypes.string,
+    logoUrl: PropTypes.string, // Deprecated, replaced by `logo.src`
+    logo: PropTypes.shape({
+      src: PropTypes.string.isRequired,
+      show_in_header: PropTypes.bool,
+    }),
     isTestRepo: PropTypes.bool,
     t: PropTypes.func.isRequired,
     checkBackendStatus: PropTypes.func.isRequired,
@@ -169,7 +173,8 @@ class Header extends React.Component {
       openMediaLibrary,
       hasWorkflow,
       displayUrl,
-      logoUrl,
+      logoUrl, // Deprecated, replaced by `logo.src`
+      logo,
       isTestRepo,
       t,
       showMediaButton,
@@ -179,14 +184,18 @@ class Header extends React.Component {
       .filter(collection => collection.get('create'))
       .toList();
 
+    const shouldShowLogo = logo?.show_in_header && logo?.src;
+
     return (
       <AppHeader>
         <AppHeaderContent>
           <nav>
             <AppHeaderNavList>
-              {logoUrl && <AppHeaderLogo>
-                <img src={logoUrl} alt="Logo" />
-              </AppHeaderLogo>}
+              {shouldShowLogo && (
+                <AppHeaderLogo>
+                  <img src={logoUrl} alt="Logo" />
+                </AppHeaderLogo>
+              )}
               <li>
                 <AppHeaderNavLink
                   to="/"
