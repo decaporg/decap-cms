@@ -1,7 +1,7 @@
 const it = {
   auth: {
     login: 'Accedi',
-    loggingIn: "Accesso in corso...",
+    loggingIn: 'Accesso in corso...',
     loginWithNetlifyIdentity: 'Accedi con Netlify Identity',
     loginWithBitbucket: 'Accedi con Bitbucket',
     loginWithGitHub: 'Accedi con GitHub',
@@ -35,16 +35,38 @@ const it = {
   collection: {
     sidebar: {
       collections: 'Raccolte',
+      allCollections: 'Tutte le raccolte',
       searchAll: 'Cerca su tutto',
+      searchIn: 'Cerca in',
     },
     collectionTop: {
+      sortBy: 'Ordina per',
       viewAs: 'Vedi come',
       newButton: 'Aggiungi %{collectionLabel}',
+      ascending: 'Crescente',
+      descending: 'Decrescente',
+      searchResults: 'Risultati di ricerca per "%{searchTerm}"',
+      searchResultsInCollection: 'Risultati di ricerca per "%{searchTerm}" in %{collection}',
+      filterBy: 'Filtra per',
+      groupBy: 'Raggruppa per',
     },
     entries: {
       loadingEntries: 'Caricamento delle voci in corso...',
       cachingEntries: 'Caricamento delle voci in cache...',
       longerLoading: 'Questa operazione potrebbe durare diversi minuti',
+      noEntries: 'Nessuna voce',
+    },
+    groups: {
+      other: 'Altro',
+      negateLabel: 'Non %{label}',
+    },
+    defaultFields: {
+      author: {
+        label: 'Autore',
+      },
+      updatedOn: {
+        label: 'Aggiornato il',
+      },
     },
   },
   editor: {
@@ -61,6 +83,18 @@ const it = {
         range: '%{fieldLabel} deve essere tra %{minValue} e %{maxValue}.',
         min: '%{fieldLabel} deve essere almeno %{minValue}.',
         max: '%{fieldLabel} deve essere %{maxValue} o meno.',
+        rangeCount: '%{fieldLabel} deve avere tra %{minCount} e %{maxCount} elementi.',
+        rangeCountExact: '%{fieldLabel} deve avere esattamente %{count} elementi.',
+        rangeMin: '%{fieldLabel} deve avere almeno %{minCount} elementi.',
+        rangeMax: '%{fieldLabel} deve avere al più %{maxCount} elementi.',
+        invalidPath: `'%{path}' non è un percorso valido`,
+        pathExists: `Il percorso '%{path}' esiste già`,
+      },
+      i18n: {
+        writingInLocale: 'Scrivendo in %{locale}',
+        copyFromLocale: "Compila con un'altra lingua",
+        copyFromLocaleConfirm:
+          "Vuoi compilare usando i dati in lingua %{locale}?\nL'intero contenuto verrà sovrascritto.",
       },
     },
     editor: {
@@ -82,6 +116,11 @@ const it = {
       loadingEntry: 'Caricando la voce...',
       confirmLoadBackup: 'Un backup locale è stato recuperato per questa voce, vuoi utilizzarlo?',
     },
+    editorInterface: {
+      toggleI18n: 'Alterna i18n',
+      togglePreview: 'Alterna anteprima',
+      toggleScrollSync: 'Sincronizza scorrimento',
+    },
     editorToolbar: {
       publishing: 'Pubblicazione in corso...',
       publish: 'Pubblica',
@@ -97,6 +136,10 @@ const it = {
       deleteEntry: 'Cancella voce',
       saving: 'Salvataggio...',
       save: 'Salva',
+      statusInfoTooltipDraft:
+        'La voce è una bozza. Per finalizzarla e inviarla per la revisione, imposta lo stato su ‘In revisione’.',
+      statusInfoTooltipInReview:
+        'La voce è in revisione, non sono richieste ulteriori azioni. Puoi continuare ad apportare modifiche.',
       deleting: 'Cancellazione in corso...',
       updating: 'Aggiornamento in corso...',
       status: 'Stato: %{status}',
@@ -112,14 +155,41 @@ const it = {
       deployButtonLabel: 'Guarda Live',
     },
     editorWidgets: {
+      markdown: {
+        bold: 'Grassetto',
+        italic: 'Corsivo',
+        code: 'Codice',
+        link: 'Collegamento',
+        linkPrompt: "Insersci l'URL del collegamento",
+        headings: 'Intestazioni',
+        quote: 'Citazione',
+        bulletedList: 'Elenco puntato',
+        numberedList: 'Elenco numerato',
+        addComponent: 'Aggiungi componente',
+        richText: 'Testo formattato',
+        markdown: 'Markdown',
+      },
       image: {
         choose: "Scegli un'immagine",
+        chooseMultiple: 'Scegli più immagini',
+        chooseUrl: 'Inserisci da URL',
+        replaceUrl: 'Sostituisci con URL',
+        promptUrl: "Inserisci l'URL dell'immagine",
+        chooseDifferent: "Scegli un'altra immagine",
+        addMore: 'Aggiungi altre immagini',
         remove: 'Rimuovi immagine',
+        removeAll: 'Rimuovi tutte le immagini',
       },
       file: {
         choose: 'Scegli un file',
+        chooseUrl: 'Inserisci da URL',
+        chooseMultiple: 'Scegli più file',
+        replaceUrl: 'Sostituisci con URL',
+        promptUrl: "Inserisci l'URL del file",
         chooseDifferent: 'Scegli un altro file',
+        addMore: 'Aggiungi altri file',
         remove: 'Rimuovi file',
+        removeAll: 'Rimuovi tutti i file',
       },
       unknownControl: {
         noControl: "Nessun controllo per il widget '%{widget}'.",
@@ -135,11 +205,24 @@ const it = {
         headingFive: 'Intestazione 5',
         headingSix: 'Intestazione 6',
       },
+      datetime: {
+        now: 'Adesso',
+        clear: 'Pulisci',
+      },
+      list: {
+        add: 'Aggiungi %{item}',
+        addType: 'Aggiungi %{item}',
+      },
     },
   },
   mediaLibrary: {
     mediaLibraryCard: {
       draft: 'Bozza',
+      copy: 'Copia',
+      copyUrl: 'Copia URL',
+      copyPath: 'Copia percorso',
+      copyName: 'Copia nome',
+      copied: 'Copiato',
     },
     mediaLibrary: {
       onDelete: 'Vuoi davvero cancellare il media selezionato?',
@@ -157,17 +240,23 @@ const it = {
       search: 'Cerca...',
       uploading: 'Caricamento in corso...',
       upload: 'Upload',
+      download: 'Download',
       deleting: 'Cancellazione in corso...',
       deleteSelected: 'Cancella selezionato',
       chooseSelected: 'Prendi selezionato',
     },
   },
   ui: {
+    default: {
+      goBackToSite: 'Torna al sito',
+    },
     errorBoundary: {
       title: 'Errore',
       details: 'Si è verificato un errore - per favore ',
       reportIt: 'segnalo su GitHub.',
       detailsHeading: 'Dettagli',
+      privacyWarning:
+        'La segnalazione sarà popolata automaticamente con il messaggio di errore e i dati di debug.\nPer favore, verifica che i dati siano corretti e rimuovi eventuali informazioni sensibili.',
       recoveredEntry: {
         heading: 'Documento recuperato',
         warning: 'Per favore copia/incollalo da qualche parte prima di navigare altrove!',
@@ -193,6 +282,10 @@ const it = {
       entryUpdated: 'Stato della voce aggiornato',
       onDeleteUnpublishedChanges: 'Modifiche non pubblicate cancellate',
       onFailToAuth: '%{details}',
+      onLoggedOut:
+        'È stato effettuato il logout, si prega di eseguire il backup dei dati e di effettuare nuovamente il login',
+      onBackendDown:
+        'Il servizio di backend non è raggiungibile. Consulta %{details} per maggiori informazioni',
     },
   },
   workflow: {
