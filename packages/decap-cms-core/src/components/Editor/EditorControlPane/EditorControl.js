@@ -233,6 +233,7 @@ class EditorControl extends React.Component {
     const errors = fieldsErrors && fieldsErrors.get(this.uniqueFieldId);
     const childErrors = this.isAncestorOfFieldError();
     const hasErrors = !!errors || childErrors;
+    const isReadOnly = field.get('readonly') === true;
 
     return (
       <ClassNames>
@@ -285,7 +286,7 @@ class EditorControl extends React.Component {
                 {
                   [css`
                     ${styleStrings.disabled}
-                  `]: isDisabled,
+                  `]: isDisabled || isReadOnly,
                 },
               )}
               classNameWidget={css`

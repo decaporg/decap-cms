@@ -15,8 +15,7 @@ import { addAssets, getAsset } from './media';
 import { SortDirection } from '../types/redux';
 import { waitForMediaLibraryToLoad, loadMedia } from './mediaLibrary';
 import { waitUntil } from './waitUntil';
-import { selectIsFetching, selectEntriesSortFields, selectEntryByPath } from '../reducers/entries';
-import { selectCustomPath } from '../reducers/entryDraft';
+import { selectIsFetching, selectEntriesSortFields } from '../reducers/entries';
 import { navigateToEntry } from '../routing/history';
 import { getProcessSegment } from '../lib/formatters';
 import { hasI18n, duplicateDefaultI18nFields, serializeI18n, I18N, I18N_FIELD } from '../lib/i18n';
@@ -1029,17 +1028,21 @@ export function validateMetaField(
       return getPathError(value, 'invalidPath', t);
     }
 
-    const customPath = selectCustomPath(collection, fromJS({ entry: { meta: { path: value } } }));
-    const existingEntry = customPath
-      ? selectEntryByPath(state.entries, collection.get('name'), customPath)
-      : undefined;
+    console.log(collection);
 
-    const existingEntryPath = existingEntry?.get('path');
-    const draftPath = state.entryDraft?.getIn(['entry', 'path']);
+    // update path validation
 
-    if (existingEntryPath && existingEntryPath !== draftPath) {
-      return getPathError(value, 'pathExists', t);
-    }
+    // const customPath = selectCustomPath(collection, fromJS({ entry: { meta: { path: value } } }), state.config);
+    // const existingEntry = customPath
+    //   ? selectEntryByPath(state.entries, collection.get('name'), customPath)
+    //   : undefined;
+
+    // const existingEntryPath = existingEntry?.get('path');
+    // const draftPath = state.entryDraft?.getIn(['entry', 'path']);
+
+    // if (existingEntryPath && existingEntryPath !== draftPath) {
+    //   return getPathError(value, 'pathExists', t);
+    // }
   }
   return { error: false };
 }
