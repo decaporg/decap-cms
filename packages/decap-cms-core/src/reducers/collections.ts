@@ -498,4 +498,12 @@ export function selectHasMetaPath(collection: Collection) {
   );
 }
 
+export function isNested(collection: Collection) {
+  return !!collection.get('nested');
+}
+
+export function isNestedSubfolders(collection: Collection) {
+  return isNested(collection) && collection.get('nested')?.get('subfolders') !== false;
+}
+
 export default collections;

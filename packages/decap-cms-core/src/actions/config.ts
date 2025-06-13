@@ -214,6 +214,7 @@ function applyMetaFieldsToCollection(collection: CmsCollection, meta: CmsCollect
       meta: true,
       required: true,
       i18n: 'duplicate',
+      default: '/',
       ...meta!.path,
     } as CmsFieldMeta,
   ];

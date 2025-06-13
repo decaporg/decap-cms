@@ -77,6 +77,7 @@ export interface CmsFieldBase {
   media_folder?: string;
   public_folder?: string;
   comment?: string;
+  readonly?: boolean;
 }
 
 export interface CmsFieldBoolean {

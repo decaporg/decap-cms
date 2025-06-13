@@ -1,7 +1,7 @@
 import { Map, List } from 'immutable';
 import { set, groupBy, escapeRegExp } from 'lodash';
 
-import { selectEntrySlug } from '../reducers/collections';
+import { isNestedSubfolders, selectEntrySlug } from '../reducers/collections';
 
 import type { Collection, Entry, EntryDraft, EntryField, EntryMap } from '../types/redux';
 import type { EntryValue } from '../valueObjects/Entry';
@@ -148,7 +148,7 @@ export function getI18nFiles(
   newPath?: string,
   isFolder?: boolean,
 ) {
-  const { structure, defaultLocale, locales } = getI18nInfo(collection) as I18nInfo;
+  let { structure, defaultLocale, locales } = getI18nInfo(collection) as I18nInfo;
 
   if (structure === I18N_STRUCTURE.SINGLE_FILE) {
     const data = locales.reduce((map, locale) => {
@@ -167,6 +167,11 @@ export function getI18nFiles(
         }),
       },
     ];
+  }
+
+  if (isNestedSubfolders(collection)) {
+    locales = [defaultLocale];
+    isFolder = true;
   }
 
   const dataFiles = locales
@@ -350,7 +355,7 @@ export function getI18nDataFiles(
     return diffFiles;
   }
   const paths = getFilePaths(collection, extension, path, slug);
-  const subfolders = collection.get('nested')?.get('subfolders') !== false;
+  const subfolders = isNestedSubfolders(collection);
   const dataFiles = paths.reduce((acc, path) => {
     const dataFile = diffFiles.find(file => compareFilePathEndings(file.path, path, subfolders));
     if (dataFile) {

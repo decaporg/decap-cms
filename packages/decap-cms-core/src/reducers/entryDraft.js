@@ -31,7 +31,7 @@ import {
   UNPUBLISHED_ENTRY_PUBLISH_SUCCESS,
   UNPUBLISHED_ENTRY_PUBLISH_FAILURE,
 } from '../actions/editorialWorkflow';
-import { selectFolderEntryExtension, selectHasMetaPath } from './collections';
+import { isNestedSubfolders, selectFolderEntryExtension, selectHasMetaPath } from './collections';
 import { getDataPath, duplicateI18nFields } from '../lib/i18n';
 import { slugFormatter } from '../lib/formatters';
 
@@ -209,29 +209,27 @@ export function selectCustomPath(collection, entryDraft, config) {
   if (!selectHasMetaPath(collection)) {
     return;
   }
+  const newEntry = entryDraft.getIn(['entry', 'newRecord']) || false;
   const meta = entryDraft.getIn(['entry', 'meta']);
   const path = meta && meta.get('path');
   const pathType = meta && meta.get('path_type', 'index');
   const indexFile = get(collection.toJS(), ['meta', 'path', 'index_file']);
-  const fileBaseName = slugFormatter(collection, entryDraft.getIn(['entry', 'data']), config.slug);
   const extension = selectFolderEntryExtension(collection);
-  const fileSlug = entryDraft.getIn(['entry', 'slug'])
+  const slug = entryDraft.getIn(['entry', 'slug'])
     ? entryDraft.getIn(['entry', 'slug']).split('/').pop()
-    : fileBaseName;
-  const subfolders = collection.get('nested')?.get('subfolders') !== false;
-  if (subfolders) {
-    return path && join(collection.get('folder'), path, `${indexFile}.${extension}`);
+    : slugFormatter(collection, entryDraft.getIn(['entry', 'data']), config.slug);
+  const pathSegments = path ? path.split('/') : [];
+
+  let fileName = newEntry ? slug : pathSegments.pop();
+  if (isNestedSubfolders(collection) || pathType === 'index') {
+    fileName = indexFile;
   }
-  const customPath =
-    path &&
-    join(
-      collection.get('folder'),
-      path,
-      pathType == 'index'
-        ? `${fileBaseName}/${indexFile}.${extension}`
-        : `${fileSlug}.${extension}`,
-    );
-  return customPath;
+  let filePath = newEntry ? path : pathSegments.join('/');
+  if (isNestedSubfolders(collection) || pathType === 'index') {
+    filePath = newEntry ? join(path, slug) : path;
+  }
+
+  return path && join(collection.get('folder'), filePath, `${fileName}.${extension}`);
 }
 
 export default entryDraftReducer;

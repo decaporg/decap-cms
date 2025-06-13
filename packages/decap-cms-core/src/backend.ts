@@ -28,6 +28,8 @@ import {
   selectMediaFolders,
   selectFieldsComments,
   selectHasMetaPath,
+  isNestedSubfolders,
+  isNested,
 } from './reducers/collections';
 import { createEntry } from './valueObjects/Entry';
 import { sanitizeChar } from './lib/urlHelper';
@@ -842,11 +844,11 @@ export class Backend {
       const entryPath = loadedEntry.file.path;
       const path_type = prepareMetaPathType(slug, collection);
 
-      let metaPath = entryPath;
-      if (path_type === 'index') {
-        const pathArr = dirname(entryPath).split('/').slice(0, -1);
-        pathArr.push(basename(entryPath));
-        metaPath = pathArr.join('/');
+      let metaPath = prepareMetaPath(entryPath, collection);
+      if (isNested(collection) && !isNestedSubfolders(collection) && path_type !== 'index') {
+        metaPath = slug;
+      } else {
+        metaPath = prepareMetaPath(entryPath, collection);
       }
 
       let entry = createEntry(collection.get('name'), slug, entryPath, {
@@ -854,7 +856,7 @@ export class Backend {
         label,
         mediaFiles: [],
         meta: {
-          path: prepareMetaPath(metaPath, collection),
+          path: metaPath,
           path_type,
         },
       });
@@ -1167,6 +1169,8 @@ export class Backend {
       const slug = entryDraft.getIn(['entry', 'slug']);
       isFolder = prepareMetaPathType(slug, collection) === 'index';
       const path = entryDraft.getIn(['entry', 'path']);
+      console.log('path', path, customPath);
+
       dataFile = {
         path,
         // for workflow entries we refresh the slug on publish
