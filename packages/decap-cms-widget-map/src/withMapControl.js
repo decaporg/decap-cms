@@ -49,6 +49,9 @@ export default function withMapControl({ getFormat, getMap } = {}) {
     }
 
     componentDidMount() {
+      // Manually validate PropTypes - React 19 breaking change
+      PropTypes.checkPropTypes(MapControl.propTypes, this.props, 'prop', 'MapControl');
+
       const { field, onChange, value } = this.props;
       const format = getFormat ? getFormat(field) : getDefaultFormat(field);
       const features = value ? [format.readFeature(value)] : [];

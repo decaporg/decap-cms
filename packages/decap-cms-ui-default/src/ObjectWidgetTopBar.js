@@ -62,6 +62,16 @@ class ObjectWidgetTopBar extends React.Component {
     t: PropTypes.func.isRequired,
   };
 
+  componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(
+      ObjectWidgetTopBar.propTypes,
+      this.props,
+      'prop',
+      'ObjectWidgetTopBar',
+    );
+  }
+
   renderAddUI() {
     if (!this.props.allowAdd) {
       return null;

@@ -25,6 +25,9 @@ class EntriesSearch extends React.Component {
   };
 
   componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(EntriesSearch.propTypes, this.props, 'prop', 'EntriesSearch');
+
     const { searchTerm, searchEntries, collectionNames } = this.props;
     searchEntries(searchTerm, collectionNames);
   }
