@@ -221,11 +221,9 @@ export function selectCustomPath(collection, entryDraft, config) {
   const pathSegments = path ? path.split('/') : [];
 
   let fileName = newEntry ? slug : pathSegments.pop();
-  if (isNestedSubfolders(collection) || pathType === 'index') {
-    fileName = indexFile;
-  }
   let filePath = newEntry ? path : pathSegments.join('/');
   if (isNestedSubfolders(collection) || pathType === 'index') {
+    fileName = indexFile;
     filePath = newEntry ? join(path, slug) : path;
   }
 
