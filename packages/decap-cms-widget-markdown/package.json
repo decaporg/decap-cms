@@ -37,6 +37,7 @@
     "slate": "^0.91.1",
     "slate-base64-serializer": "^0.2.107",
     "slate-history": "^0.93.0",
+    "slate-hyperscript": "^0.77.0",
     "slate-plain-serializer": "^0.7.1",
     "slate-react": "^0.91.2",
     "slate-soft-break": "^0.9.0",
@@ -57,7 +58,6 @@
   },
   "devDependencies": {
     "commonmark": "^0.30.0",
-    "commonmark-spec": "^0.30.0",
-    "slate-hyperscript": "^0.77.0"
+    "commonmark-spec": "^0.30.0"
   }
 }
