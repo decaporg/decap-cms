@@ -65,7 +65,8 @@ export default class AzureAuthenticationPage extends React.Component {
         onLogin={this.handleLogin}
         loginDisabled={inProgress}
         loginErrorMessage={this.state.loginError}
-        logoUrl={config.logo_url}
+        logoUrl={config.logo_url} // Deprecated, replaced by `logo.src`
+        logo={config.logo}
         renderButtonContent={() => (
           <React.Fragment>
             <LoginButtonIcon type="azure" />

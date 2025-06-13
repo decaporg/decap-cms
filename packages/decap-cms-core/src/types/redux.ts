@@ -395,7 +395,11 @@ export interface CmsConfig {
   locale?: string;
   site_url?: string;
   display_url?: string;
-  logo_url?: string;
+  logo_url?: string; // Deprecated, replaced by `logo.src`
+  logo?: {
+    src: string;
+    show_in_header?: boolean;
+  };
   show_preview_links?: boolean;
   media_folder?: string;
   public_folder?: string;
