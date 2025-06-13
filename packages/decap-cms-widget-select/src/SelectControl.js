@@ -133,6 +133,8 @@ export default class SelectControl extends React.Component {
         isMulti={isMultiple}
         isClearable={isClearable}
         placeholder=""
+        closeMenuOnSelect={!isMultiple}
+        hideSelectedOptions={false}
       />
     );
   }

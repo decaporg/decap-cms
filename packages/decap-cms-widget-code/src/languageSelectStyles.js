@@ -4,7 +4,7 @@ const languageSelectStyles = {
   ...reactSelectStyles,
   container: provided => ({
     ...reactSelectStyles.container(provided),
-    'margin-top': '2px',
+    marginTop: '2px',
   }),
   control: provided => ({
     ...reactSelectStyles.control(provided),
@@ -28,7 +28,7 @@ const languageSelectStyles = {
   }),
   menuList: provided => ({
     ...provided,
-    'max-height': '200px',
+    maxHeight: '200px',
   }),
 };
 

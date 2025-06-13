@@ -32,6 +32,6 @@
   },
   "dependencies": {
     "react-codemirror2": "^7.0.0",
-    "react-select": "^4.0.0"
+    "react-select": "^5.10.0"
   }
 }

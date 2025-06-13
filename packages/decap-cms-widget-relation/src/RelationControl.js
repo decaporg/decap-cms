@@ -42,9 +42,14 @@ function MultiValue(props) {
     transition,
   };
 
-  const innerProps = { ...props.innerProps, onMouseDown };
+  const innerProps = {
+    ...props.innerProps,
+    onMouseDown,
+    style: { ...props.innerProps?.style, ...style },
+  };
+
   return (
-    <div ref={setNodeRef} style={style}>
+    <div ref={setNodeRef}>
       <components.MultiValue {...props} innerProps={innerProps} />
     </div>
   );
@@ -63,10 +68,46 @@ function MultiValueLabel(props) {
 }
 
 function SortableSelect(props) {
-  const { distance, value, onSortEnd, isMulti } = props;
+  const {
+    distance,
+    value,
+    onSortEnd,
+    isMulti,
+    components,
+    inputId,
+    cacheOptions,
+    defaultOptions,
+    loadOptions,
+    onChange,
+    className,
+    onFocus,
+    onBlur,
+    styles,
+    isClearable,
+    placeholder,
+    ...otherSelectProps
+  } = props;
 
   if (!isMulti) {
-    return <AsyncSelect {...props} />;
+    return (
+      <AsyncSelect
+        components={components}
+        value={value}
+        inputId={inputId}
+        cacheOptions={cacheOptions}
+        defaultOptions={defaultOptions}
+        loadOptions={loadOptions}
+        onChange={onChange}
+        className={className}
+        onFocus={onFocus}
+        onBlur={onBlur}
+        styles={styles}
+        isMulti={isMulti}
+        isClearable={isClearable}
+        placeholder={placeholder}
+        {...otherSelectProps}
+      />
+    );
   }
 
   const keys = Array.isArray(value) ? value.map(({ data }) => data.id) : [];
@@ -78,10 +119,12 @@ function SortableSelect(props) {
   );
 
   function handleSortEnd({ active, over }) {
-    onSortEnd({
-      oldIndex: keys.indexOf(active.id),
-      newIndex: keys.indexOf(over.id),
-    });
+    if (over) {
+      onSortEnd({
+        oldIndex: keys.indexOf(active.id),
+        newIndex: keys.indexOf(over.id),
+      });
+    }
   }
 
   return (
@@ -92,7 +135,23 @@ function SortableSelect(props) {
       onDragEnd={handleSortEnd}
     >
       <SortableContext items={keys} strategy={horizontalListSortingStrategy}>
-        <AsyncSelect {...props} />
+        <AsyncSelect
+          components={components}
+          value={value}
+          inputId={inputId}
+          cacheOptions={cacheOptions}
+          defaultOptions={defaultOptions}
+          loadOptions={loadOptions}
+          onChange={onChange}
+          className={className}
+          onFocus={onFocus}
+          onBlur={onBlur}
+          styles={styles}
+          isMulti={isMulti}
+          isClearable={isClearable}
+          placeholder={placeholder}
+          {...otherSelectProps}
+        />
       </SortableContext>
     </DndContext>
   );
@@ -103,22 +162,29 @@ function Option({ index, style, data }) {
 }
 
 function MenuList(props) {
-  if (props.isLoading || props.options.length <= 0 || !Array.isArray(props.children)) {
-    return props.children;
+  const { isLoading, options, children } = props;
+
+  if (isLoading || !options || options.length <= 0 || !Array.isArray(children)) {
+    return <components.MenuList {...props}>{children}</components.MenuList>;
   }
-  const rows = props.children;
+
+  const rows = children;
   const itemSize = 30;
+  const maxHeight = Math.min(300, rows.length * itemSize + itemSize / 3);
+
   return (
-    <FixedSizeList
-      style={{ width: '100%' }}
-      width={300}
-      height={Math.min(300, rows.length * itemSize + itemSize / 3)}
-      itemCount={rows.length}
-      itemSize={itemSize}
-      itemData={{ options: rows }}
-    >
-      {Option}
-    </FixedSizeList>
+    <components.MenuList {...props}>
+      <FixedSizeList
+        style={{ width: '100%' }}
+        width="100%"
+        height={maxHeight}
+        itemCount={rows.length}
+        itemSize={itemSize}
+        itemData={{ options: rows }}
+      >
+        {Option}
+      </FixedSizeList>
+    </components.MenuList>
   );
 }
 
@@ -419,12 +485,11 @@ export default class RelationControl extends React.Component {
         useDragHandle
         onSortEnd={this.onSortEnd(selectedValue)}
         distance={4}
-        // react-select props:
         components={{ MenuList, MultiValue, MultiValueLabel }}
         value={selectedValue}
         inputId={forID}
-        cacheOptions
-        defaultOptions
+        cacheOptions={true}
+        defaultOptions={true}
         loadOptions={this.loadOptions}
         onChange={this.handleChange}
         className={classNameWrapper}
@@ -434,6 +499,9 @@ export default class RelationControl extends React.Component {
         isMulti={isMultiple}
         isClearable={isClearable}
         placeholder=""
+        closeMenuOnSelect={!isMultiple}
+        hideSelectedOptions={false}
+        menuPortalTarget={document.body}
       />
     );
   }
