@@ -57,7 +57,7 @@ function presets() {
         autoLabel: 'always',
       },
     ],
-    '@babel/typescript',
+    '@babel/preset-typescript',
   ];
 }
 
