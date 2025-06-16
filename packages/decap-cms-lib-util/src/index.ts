@@ -17,6 +17,7 @@ import {
 import loadScript from './loadScript';
 import getBlobSHA from './getBlobSHA';
 import { asyncLock } from './asyncLock';
+import { encodeEntry } from './stega';
 import {
   entriesByFiles,
   entriesByFolder,
@@ -153,6 +154,7 @@ export const DecapCmsLibUtil = {
   allEntriesByFolder,
   AccessTokenError,
   throwOnConflictingBranches,
+  encodeEntry,
 };
 export {
   APIError,
@@ -210,4 +212,5 @@ export {
   allEntriesByFolder,
   AccessTokenError,
   throwOnConflictingBranches,
+  encodeEntry,
 };
