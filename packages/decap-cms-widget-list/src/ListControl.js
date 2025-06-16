@@ -4,7 +4,9 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import { css, ClassNames } from '@emotion/react';
 import { List, Map, fromJS } from 'immutable';
-import { partial, isEmpty, uniqueId } from 'lodash';
+import partial from 'lodash/partial';
+import isEmpty from 'lodash/isEmpty';
+import uniqueId from 'lodash/uniqueId';
 import { v4 as uuid } from 'uuid';
 import DecapCmsWidgetObject from 'decap-cms-widget-object';
 import {
