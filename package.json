@@ -159,6 +159,9 @@
   "private": true,
   "dependencies": {
     "@emotion/babel-preset-css-prop": "^11.11.0",
+    "ajv": "^8.17.1",
+    "ajv-errors": "^3.0.0",
+    "ajv-keywords": "^5.1.0",
     "browserify": "^17.0.0",
     "buffer": "^6.0.3",
     "emotion": "^11.0.0",
