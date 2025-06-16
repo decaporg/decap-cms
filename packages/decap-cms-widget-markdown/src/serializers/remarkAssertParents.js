@@ -1,5 +1,5 @@
 import { concat, last, nth, isEmpty } from 'lodash';
-import visitParents from 'unist-util-visit-parents';
+import { visitParents } from 'unist-util-visit-parents';
 
 /**
  * remarkUnwrapInvalidNest

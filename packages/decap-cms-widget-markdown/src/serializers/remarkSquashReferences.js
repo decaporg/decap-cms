@@ -1,5 +1,5 @@
 import { without, flatten } from 'lodash';
-import u from 'unist-builder';
+import { u } from 'unist-builder';
 import mdastDefinitions from 'mdast-util-definitions';
 
 /**
@@ -24,50 +24,60 @@ import mdastDefinitions from 'mdast-util-definitions';
  *
  */
 export default function remarkSquashReferences() {
-  return getTransform;
+  return function transformer(tree /*, file */) {
+    const getDefinition = mdastDefinitions(tree);
 
-  function getTransform(node) {
-    const getDefinition = mdastDefinitions(node);
-    return transform.call(null, getDefinition, node);
-  }
 
-  function transform(getDefinition, node) {
-    /**
-     * Bind the `getDefinition` function to `transform` and recursively map all
-     * nodes.
-     */
-    const boundTransform = transform.bind(null, getDefinition);
-    const children = node.children ? node.children.map(boundTransform) : node.children;
+    function transform(getDefinition, node) {
+      if (!node) return null;
+      /**
+       * Bind the `getDefinition` function to `transform` and recursively map all
+       * nodes.
+       */
+      const boundTransform = transform.bind(null, getDefinition);
+      const children = node.children ? node.children.map(boundTransform) : node.children;
 
-    /**
-     * Combine reference and definition nodes into standard image and link
-     * nodes.
-     */
-    if (['imageReference', 'linkReference'].includes(node.type)) {
-      const type = node.type === 'imageReference' ? 'image' : 'link';
-      const definition = getDefinition(node.identifier);
+      /**
+       * Combine reference and definition nodes into standard image and link
+       * nodes.
+       */
+      if (['imageReference', 'linkReference'].includes(node.type)) {
+        const type = node.type === 'imageReference' ? 'image' : 'link';
+        const definition = getDefinition(node.identifier);
 
-      if (definition) {
-        const { title, url } = definition;
-        return u(type, { title, url, alt: node.alt }, children);
+        // Extract alt text for imageReference in remark-parse v9
+        let alt = undefined;
+        if (node.type === 'imageReference') {
+          // alt text is a child text node
+          if (node.children && node.children.length > 0) {
+            alt = node.children.map(child => child.value).join('');
+          }
+        }
+
+        if (definition) {
+          const { title, url } = definition;
+          return u(type, { title, url, alt }, children);
+        }
+
+        const pre = u('text', node.type === 'imageReference' ? '![' : '[');
+        const post = u('text', ']');
+        const nodes = children || [u('text', alt)];
+        return [pre, ...nodes, post];
       }
 
-      const pre = u('text', node.type === 'imageReference' ? '![' : '[');
-      const post = u('text', ']');
-      const nodes = children || [u('text', node.alt)];
-      return [pre, ...nodes, post];
+      /**
+       * Remove definition nodes and filter the resulting null values from the
+       * filtered children array.
+       */
+      if (node.type === 'definition') {
+        return null;
+      }
+
+      const filteredChildren = without(children, null);
+
+      return { ...node, children: flatten(filteredChildren) };
     }
-
-    /**
-     * Remove definition nodes and filter the resulting null values from the
-     * filtered children array.
-     */
-    if (node.type === 'definition') {
-      return null;
-    }
-
-    const filteredChildren = without(children, null);
-
-    return { ...node, children: flatten(filteredChildren) };
-  }
+    const newTree = transform(getDefinition, tree);
+    Object.assign(tree, newTree);
+  };
 }

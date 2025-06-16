@@ -1,12 +1,14 @@
 import { trimEnd } from 'lodash';
 import unified from 'unified';
-import u from 'unist-builder';
-import markdownToRemarkPlugin from 'remark-parse';
-import remarkToMarkdownPlugin from 'remark-stringify';
-import remarkToRehype from 'remark-rehype';
+import { u } from 'unist-builder';
+import remarkParse from 'remark-parse';
+import remarkStringify from 'remark-stringify';
+import remarkRehype from 'remark-rehype';
 import rehypeToHtml from 'rehype-stringify';
 import htmlToRehype from 'rehype-parse';
 import rehypeToRemark from 'rehype-remark';
+import { visit } from 'unist-util-visit';
+import remarkGfm from 'remark-gfm';
 
 import remarkToRehypeShortcodes from './remarkRehypeShortcodes';
 import rehypePaperEmoji from './rehypePaperEmoji';
@@ -61,9 +63,10 @@ import { getEditorComponents } from '../MarkdownControl';
  */
 export function markdownToRemark(markdown, remarkPlugins) {
   const processor = unified()
-    .use(markdownToRemarkPlugin, { fences: true, commonmark: true })
-    .use(markdownToRemarkRemoveTokenizers, { inlineTokenizers: ['url'] })
-    .use(remarkParseShortcodes, { plugins: getEditorComponents() })
+    .use(remarkParse, { fences: true, commonmark: true })
+    .use(remarkGfm)
+    .use(remarkRemoveAutolinks)
+    .use(remarkParseShortcodes({ plugins: getEditorComponents() }))
     .use(remarkAllowHtmlEntities)
     .use(remarkSquashReferences)
     .use(remarkPlugins);
@@ -81,14 +84,16 @@ export function markdownToRemark(markdown, remarkPlugins) {
   return result;
 }
 
-/**
- * Remove named tokenizers from the parser, effectively deactivating them.
- */
-function markdownToRemarkRemoveTokenizers({ inlineTokenizers }) {
-  inlineTokenizers &&
-    inlineTokenizers.forEach(tokenizer => {
-      delete this.Parser.prototype.inlineTokenizers[tokenizer];
+function remarkRemoveAutolinks() {
+  return (tree) => {
+    visit(tree, 'link', (node, index, parent) => {
+      // Remove links that are autolinks (e.g., <http://example.com>)
+      if (node.data && node.data.autolink) {
+        // Replace the link node with its children (the URL as text)
+        parent.children.splice(index, 1, ...node.children);
+      }
     });
+  };
 }
 
 /**
@@ -101,9 +106,12 @@ export function remarkToMarkdown(obj, remarkPlugins) {
    * trusting the markdown that we receive.
    */
   function remarkAllowAllText() {
-    const Compiler = this.Compiler;
-    const visitors = Compiler.prototype.visitors;
-    visitors.text = node => node.value;
+    return (tree, file) => {
+      file.data.handlers = {
+        ...file.data.handlers,
+        text: (h, node) => node.value,
+      };
+    };
   }
 
   /**
@@ -126,13 +134,21 @@ export function remarkToMarkdown(obj, remarkPlugins) {
     rule: '-',
   };
 
+  const remarkShortcodeHandlers = createRemarkShortcodeStringifier({ plugins: getEditorComponents() })().handlers;
+
   const processor = unified()
-    .use({ settings: remarkToMarkdownPluginOpts })
+    .use(remarkGfm)
     .use(remarkEscapeMarkdownEntities)
     .use(remarkStripTrailingBreaks)
-    .use(remarkToMarkdownPlugin)
     .use(remarkAllowAllText)
     .use(createRemarkShortcodeStringifier({ plugins: getEditorComponents() }))
+    .use(remarkStringify, {
+      ...remarkToMarkdownPluginOpts,
+      handlers: {
+        ...remarkShortcodeHandlers,
+        text: (h, node) => node.value, // preserve your custom text handler
+      },
+    })
     .use(remarkPlugins);
 
   /**
@@ -159,7 +175,7 @@ export function markdownToHtml(markdown, { getAsset, resolveWidget, remarkPlugin
 
   const hast = unified()
     .use(remarkToRehypeShortcodes, { plugins: getEditorComponents(), getAsset, resolveWidget })
-    .use(remarkToRehype, { allowDangerousHTML: true })
+    .use(remarkRehype, { allowDangerousHtml: true })
     .runSync(mdast);
 
   const html = unified()

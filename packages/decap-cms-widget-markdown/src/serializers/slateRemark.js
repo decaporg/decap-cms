@@ -1,5 +1,5 @@
 import { get, without, last, map, intersection, omit } from 'lodash';
-import u from 'unist-builder';
+import { u } from 'unist-builder';
 import mdastToString from 'mdast-util-to-string';
 
 /**

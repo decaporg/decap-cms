@@ -1,19 +1,19 @@
 import unified from 'unified';
-import markdownToRemark from 'remark-parse';
-import remarkToMarkdown from 'remark-stringify';
+import remarkParse from 'remark-parse';
+import remarkStringify from 'remark-stringify';
 
 import remarkPaddedLinks from '../remarkPaddedLinks';
 
 function input(markdown) {
   return unified()
-    .use(markdownToRemark)
+    .use(remarkParse)
     .use(remarkPaddedLinks)
-    .use(remarkToMarkdown)
+    .use(remarkStringify)
     .processSync(markdown).contents;
 }
 
 function output(markdown) {
-  return unified().use(markdownToRemark).use(remarkToMarkdown).processSync(markdown).contents;
+  return unified().use(remarkParse).use(remarkStringify).processSync(markdown).contents;
 }
 
 describe('remarkPaddedLinks', () => {

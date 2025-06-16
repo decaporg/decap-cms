@@ -1,4 +1,5 @@
-import { has, flow, partial, map } from 'lodash';
+import { flow, partial, map } from 'lodash';
+import { visit } from 'unist-util-visit';
 
 import { joinPatternSegments, combinePatterns, replaceWhen } from '../regexHelper';
 
@@ -237,33 +238,26 @@ function escape(delim) {
  * stringification.
  */
 export default function remarkEscapeMarkdownEntities() {
-  function transform(node, index) {
-    /**
-     * Shortcode nodes will intentionally inject markdown entities in text node
-     * children not be escaped.
-     */
-    if (has(node.data, 'shortcode')) return node;
+  return (tree) => {
+    visit(tree, ['text', 'html'], (node, index, parent) => {
+      /**
+       * Shortcode nodes will intentionally inject markdown entities in text node
+       * children not be escaped.
+       */
+      if (node.data && typeof node.data === 'object' && node.data.shortcode) return;
 
-    const children = node.children ? { children: node.children.map(transform) } : {};
+      // Only process nodes with a string value
+      if (typeof node.value !== 'string') return;
 
-    /**
-     * Escape characters in text and html nodes only. We store a lot of normal
-     * text in html nodes to keep Remark from escaping html entities.
-     */
-    if (['text', 'html'].includes(node.type) && node.value) {
       /**
        * Escape all characters if this is the first child node, otherwise only
        * common characters.
        */
-      const value = index === 0 ? escapeAllChars(node.value) : escapeCommonChars(node.value);
-      return { ...node, value, ...children };
-    }
-
-    /**
-     * Always return nodes with recursively mapped children.
-     */
-    return { ...node, ...children };
-  }
-
-  return transform;
+      if (parent && Array.isArray(parent.children) && parent.children[0] === node) {
+        node.value = escapeAllChars(node.value);
+      } else {
+        node.value = escapeCommonChars(node.value);
+      }
+    });
+  };
 }

@@ -1,4 +1,4 @@
-import u from 'unist-builder';
+import { u } from 'unist-builder';
 
 /**
  * Ensure that top level 'html' type nodes are wrapped in paragraphs. Html nodes
