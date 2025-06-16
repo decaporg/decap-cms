@@ -1,4 +1,4 @@
-import { flatten } from 'lodash';
+import flatten from 'lodash/flatten';
 import { unsentRequest } from 'decap-cms-lib-util';
 
 import { createEntry } from '../../../valueObjects/Entry';
