@@ -21,7 +21,7 @@
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
   },
   "dependencies": {
-    "dompurify": "^2.2.6",
+    "dompurify": "^3.2.4",
     "is-hotkey": "^0.2.0",
     "is-url": "^1.2.4",
     "mdast-util-definitions": "^1.2.3",
