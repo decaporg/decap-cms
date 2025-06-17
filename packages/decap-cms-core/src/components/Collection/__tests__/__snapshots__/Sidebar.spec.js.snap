@@ -43,7 +43,7 @@ exports[`Sidebar should render nested collection with filterTerm 1`] = `
       collection.sidebar.collections
     </h2>
     <collection-search
-      collections="OrderedMap { 0: Map { \\"name\\": \\"posts\\", \\"label\\": \\"Posts\\", \\"nested\\": Map { \\"depth\\": 10 } } }"
+      collections="OrderedMap { 0: Map { "name": "posts", "label": "Posts", "nested": Map { "depth": 10 } } }"
       searchterm=""
     />
     <ul
@@ -51,7 +51,7 @@ exports[`Sidebar should render nested collection with filterTerm 1`] = `
     >
       <li>
         <nested-collection
-          collection="Map { \\"name\\": \\"posts\\", \\"label\\": \\"Posts\\", \\"nested\\": Map { \\"depth\\": 10 } }"
+          collection="Map { "name": "posts", "label": "Posts", "nested": Map { "depth": 10 } }"
           data-testid="posts"
           filterterm="dir1/dir2"
         />
@@ -104,7 +104,7 @@ exports[`Sidebar should render sidebar with a nested collection 1`] = `
       collection.sidebar.collections
     </h2>
     <collection-search
-      collections="OrderedMap { 0: Map { \\"name\\": \\"posts\\", \\"label\\": \\"Posts\\", \\"nested\\": Map { \\"depth\\": 10 } } }"
+      collections="OrderedMap { 0: Map { "name": "posts", "label": "Posts", "nested": Map { "depth": 10 } } }"
       searchterm=""
     />
     <ul
@@ -112,7 +112,7 @@ exports[`Sidebar should render sidebar with a nested collection 1`] = `
     >
       <li>
         <nested-collection
-          collection="Map { \\"name\\": \\"posts\\", \\"label\\": \\"Posts\\", \\"nested\\": Map { \\"depth\\": 10 } }"
+          collection="Map { "name": "posts", "label": "Posts", "nested": Map { "depth": 10 } }"
           data-testid="posts"
         />
       </li>
@@ -195,7 +195,7 @@ exports[`Sidebar should render sidebar with a simple collection 1`] = `
       collection.sidebar.collections
     </h2>
     <collection-search
-      collections="OrderedMap { 0: Map { \\"name\\": \\"posts\\", \\"label\\": \\"Posts\\" } }"
+      collections="OrderedMap { 0: Map { "name": "posts", "label": "Posts" } }"
       searchterm=""
     />
     <ul

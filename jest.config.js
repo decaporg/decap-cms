@@ -9,6 +9,7 @@ module.exports = {
     'decap-cms-widget-object': '<rootDir>/packages/decap-cms-widget-object/src/index.js',
     '\\.(css|less)$': '<rootDir>/__mocks__/styleMock.js',
     '^#home-directory$': 'clean-stack/home-directory.js',
+    '^react-dom/server$': 'react-dom/server.node',
   },
   snapshotSerializers: ['@emotion/jest/serializer'],
   transformIgnorePatterns: [

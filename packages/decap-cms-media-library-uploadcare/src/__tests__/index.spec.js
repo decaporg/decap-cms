@@ -66,11 +66,11 @@ describe('uploadcare media library', () => {
 
   it('exports an object with expected properties', () => {
     expect(uploadcareMediaLibrary).toMatchInlineSnapshot(`
-Object {
-  "init": [Function],
-  "name": "uploadcare",
-}
-`);
+      {
+        "init": [Function],
+        "name": "uploadcare",
+      }
+    `);
   });
 
   describe('initialization', () => {

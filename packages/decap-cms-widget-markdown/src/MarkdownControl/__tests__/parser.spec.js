@@ -10,25 +10,25 @@ describe('Compile markdown to Slate Raw AST', () => {
 sweet body
 `;
     expect(parser(value)).toMatchInlineSnapshot(`
-Array [
-  Object {
-    "children": Array [
-      Object {
-        "text": "H1",
-      },
-    ],
-    "type": "heading-one",
-  },
-  Object {
-    "children": Array [
-      Object {
-        "text": "sweet body",
-      },
-    ],
-    "type": "paragraph",
-  },
-]
-`);
+      [
+        {
+          "children": [
+            {
+              "text": "H1",
+            },
+          ],
+          "type": "heading-one",
+        },
+        {
+          "children": [
+            {
+              "text": "sweet body",
+            },
+          ],
+          "type": "paragraph",
+        },
+      ]
+    `);
   });
 
   it('should compile a markdown ordered list', () => {
@@ -40,64 +40,64 @@ Array [
 3. fro
 `;
     expect(parser(value)).toMatchInlineSnapshot(`
-Array [
-  Object {
-    "children": Array [
-      Object {
-        "text": "H1",
-      },
-    ],
-    "type": "heading-one",
-  },
-  Object {
-    "children": Array [
-      Object {
-        "children": Array [
-          Object {
-            "children": Array [
-              Object {
-                "text": "yo",
-              },
-            ],
-            "type": "paragraph",
+      [
+        {
+          "children": [
+            {
+              "text": "H1",
+            },
+          ],
+          "type": "heading-one",
+        },
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "text": "yo",
+                    },
+                  ],
+                  "type": "paragraph",
+                },
+              ],
+              "type": "list-item",
+            },
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "text": "bro",
+                    },
+                  ],
+                  "type": "paragraph",
+                },
+              ],
+              "type": "list-item",
+            },
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "text": "fro",
+                    },
+                  ],
+                  "type": "paragraph",
+                },
+              ],
+              "type": "list-item",
+            },
+          ],
+          "data": {
+            "start": 1,
           },
-        ],
-        "type": "list-item",
-      },
-      Object {
-        "children": Array [
-          Object {
-            "children": Array [
-              Object {
-                "text": "bro",
-              },
-            ],
-            "type": "paragraph",
-          },
-        ],
-        "type": "list-item",
-      },
-      Object {
-        "children": Array [
-          Object {
-            "children": Array [
-              Object {
-                "text": "fro",
-              },
-            ],
-            "type": "paragraph",
-          },
-        ],
-        "type": "list-item",
-      },
-    ],
-    "data": Object {
-      "start": 1,
-    },
-    "type": "numbered-list",
-  },
-]
-`);
+          "type": "numbered-list",
+        },
+      ]
+    `);
   });
 
   it('should compile bulleted lists', () => {
@@ -109,64 +109,64 @@ Array [
 * fro
 `;
     expect(parser(value)).toMatchInlineSnapshot(`
-Array [
-  Object {
-    "children": Array [
-      Object {
-        "text": "H1",
-      },
-    ],
-    "type": "heading-one",
-  },
-  Object {
-    "children": Array [
-      Object {
-        "children": Array [
-          Object {
-            "children": Array [
-              Object {
-                "text": "yo",
-              },
-            ],
-            "type": "paragraph",
+      [
+        {
+          "children": [
+            {
+              "text": "H1",
+            },
+          ],
+          "type": "heading-one",
+        },
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "text": "yo",
+                    },
+                  ],
+                  "type": "paragraph",
+                },
+              ],
+              "type": "list-item",
+            },
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "text": "bro",
+                    },
+                  ],
+                  "type": "paragraph",
+                },
+              ],
+              "type": "list-item",
+            },
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "text": "fro",
+                    },
+                  ],
+                  "type": "paragraph",
+                },
+              ],
+              "type": "list-item",
+            },
+          ],
+          "data": {
+            "start": null,
           },
-        ],
-        "type": "list-item",
-      },
-      Object {
-        "children": Array [
-          Object {
-            "children": Array [
-              Object {
-                "text": "bro",
-              },
-            ],
-            "type": "paragraph",
-          },
-        ],
-        "type": "list-item",
-      },
-      Object {
-        "children": Array [
-          Object {
-            "children": Array [
-              Object {
-                "text": "fro",
-              },
-            ],
-            "type": "paragraph",
-          },
-        ],
-        "type": "list-item",
-      },
-    ],
-    "data": Object {
-      "start": null,
-    },
-    "type": "bulleted-list",
-  },
-]
-`);
+          "type": "bulleted-list",
+        },
+      ]
+    `);
   });
 
   it('should compile multiple header levels', () => {
@@ -178,33 +178,33 @@ Array [
 ### H3
 `;
     expect(parser(value)).toMatchInlineSnapshot(`
-Array [
-  Object {
-    "children": Array [
-      Object {
-        "text": "H1",
-      },
-    ],
-    "type": "heading-one",
-  },
-  Object {
-    "children": Array [
-      Object {
-        "text": "H2",
-      },
-    ],
-    "type": "heading-two",
-  },
-  Object {
-    "children": Array [
-      Object {
-        "text": "H3",
-      },
-    ],
-    "type": "heading-three",
-  },
-]
-`);
+      [
+        {
+          "children": [
+            {
+              "text": "H1",
+            },
+          ],
+          "type": "heading-one",
+        },
+        {
+          "children": [
+            {
+              "text": "H2",
+            },
+          ],
+          "type": "heading-two",
+        },
+        {
+          "children": [
+            {
+              "text": "H3",
+            },
+          ],
+          "type": "heading-three",
+        },
+      ]
+    `);
   });
 
   it('should compile horizontal rules', () => {
@@ -216,33 +216,33 @@ Array [
 blue moon
 `;
     expect(parser(value)).toMatchInlineSnapshot(`
-Array [
-  Object {
-    "children": Array [
-      Object {
-        "text": "H1",
-      },
-    ],
-    "type": "heading-one",
-  },
-  Object {
-    "children": Array [
-      Object {
-        "text": "",
-      },
-    ],
-    "type": "thematic-break",
-  },
-  Object {
-    "children": Array [
-      Object {
-        "text": "blue moon",
-      },
-    ],
-    "type": "paragraph",
-  },
-]
-`);
+      [
+        {
+          "children": [
+            {
+              "text": "H1",
+            },
+          ],
+          "type": "heading-one",
+        },
+        {
+          "children": [
+            {
+              "text": "",
+            },
+          ],
+          "type": "thematic-break",
+        },
+        {
+          "children": [
+            {
+              "text": "blue moon",
+            },
+          ],
+          "type": "paragraph",
+        },
+      ]
+    `);
   });
 
   it('should compile horizontal rules', () => {
@@ -254,33 +254,33 @@ Array [
 blue moon
 `;
     expect(parser(value)).toMatchInlineSnapshot(`
-Array [
-  Object {
-    "children": Array [
-      Object {
-        "text": "H1",
-      },
-    ],
-    "type": "heading-one",
-  },
-  Object {
-    "children": Array [
-      Object {
-        "text": "",
-      },
-    ],
-    "type": "thematic-break",
-  },
-  Object {
-    "children": Array [
-      Object {
-        "text": "blue moon",
-      },
-    ],
-    "type": "paragraph",
-  },
-]
-`);
+      [
+        {
+          "children": [
+            {
+              "text": "H1",
+            },
+          ],
+          "type": "heading-one",
+        },
+        {
+          "children": [
+            {
+              "text": "",
+            },
+          ],
+          "type": "thematic-break",
+        },
+        {
+          "children": [
+            {
+              "text": "blue moon",
+            },
+          ],
+          "type": "paragraph",
+        },
+      ]
+    `);
   });
 
   it('should compile soft breaks (double space)', () => {
@@ -289,29 +289,29 @@ blue moon
 footballs
 `;
     expect(parser(value)).toMatchInlineSnapshot(`
-Array [
-  Object {
-    "children": Array [
-      Object {
-        "text": "blue moon",
-      },
-      Object {
-        "children": Array [
-          Object {
-            "text": "",
-          },
-        ],
-        "data": undefined,
-        "type": "break",
-      },
-      Object {
-        "text": "footballs",
-      },
-    ],
-    "type": "paragraph",
-  },
-]
-`);
+      [
+        {
+          "children": [
+            {
+              "text": "blue moon",
+            },
+            {
+              "children": [
+                {
+                  "text": "",
+                },
+              ],
+              "data": undefined,
+              "type": "break",
+            },
+            {
+              "text": "footballs",
+            },
+          ],
+          "type": "paragraph",
+        },
+      ]
+    `);
   });
 
   it('should compile images', () => {
@@ -319,27 +319,27 @@ Array [
 ![super](duper.jpg)
 `;
     expect(parser(value)).toMatchInlineSnapshot(`
-Array [
-  Object {
-    "children": Array [
-      Object {
-        "children": Array [
-          Object {
-            "text": "",
-          },
-        ],
-        "data": Object {
-          "alt": "super",
-          "title": null,
-          "url": "duper.jpg",
+      [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "text": "",
+                },
+              ],
+              "data": {
+                "alt": "super",
+                "title": null,
+                "url": "duper.jpg",
+              },
+              "type": "image",
+            },
+          ],
+          "type": "paragraph",
         },
-        "type": "image",
-      },
-    ],
-    "type": "paragraph",
-  },
-]
-`);
+      ]
+    `);
   });
 
   it('should compile code blocks', () => {
@@ -349,25 +349,25 @@ var a = 1;
 \`\`\`
 `;
     expect(parser(value)).toMatchInlineSnapshot(`
-Array [
-  Object {
-    "children": Array [
-      Object {
-        "text": "var a = 1;",
-      },
-    ],
-    "data": Object {
-      "lang": "javascript",
-      "shortcode": "code-block",
-      "shortcodeData": Object {
-        "code": "var a = 1;",
-        "lang": "javascript",
-      },
-    },
-    "type": "shortcode",
-  },
-]
-`);
+      [
+        {
+          "children": [
+            {
+              "text": "var a = 1;",
+            },
+          ],
+          "data": {
+            "lang": "javascript",
+            "shortcode": "code-block",
+            "shortcodeData": {
+              "code": "var a = 1;",
+              "lang": "javascript",
+            },
+          },
+          "type": "shortcode",
+        },
+      ]
+    `);
   });
 
   it('should compile nested inline markup', () => {
@@ -379,76 +379,76 @@ This is **some *hot* content**
 perhaps **scalding** even
 `;
     expect(parser(value)).toMatchInlineSnapshot(`
-Array [
-  Object {
-    "children": Array [
-      Object {
-        "text": "Word",
-      },
-    ],
-    "type": "heading-one",
-  },
-  Object {
-    "children": Array [
-      Object {
-        "text": "This is ",
-      },
-      Object {
-        "bold": true,
-        "marks": Array [
-          Object {
-            "type": "bold",
-          },
-        ],
-        "text": "some ",
-      },
-      Object {
-        "bold": true,
-        "italic": true,
-        "marks": Array [
-          Object {
-            "type": "bold",
-          },
-          Object {
-            "type": "italic",
-          },
-        ],
-        "text": "hot",
-      },
-      Object {
-        "bold": true,
-        "marks": Array [
-          Object {
-            "type": "bold",
-          },
-        ],
-        "text": " content",
-      },
-    ],
-    "type": "paragraph",
-  },
-  Object {
-    "children": Array [
-      Object {
-        "text": "perhaps ",
-      },
-      Object {
-        "bold": true,
-        "marks": Array [
-          Object {
-            "type": "bold",
-          },
-        ],
-        "text": "scalding",
-      },
-      Object {
-        "text": " even",
-      },
-    ],
-    "type": "paragraph",
-  },
-]
-`);
+      [
+        {
+          "children": [
+            {
+              "text": "Word",
+            },
+          ],
+          "type": "heading-one",
+        },
+        {
+          "children": [
+            {
+              "text": "This is ",
+            },
+            {
+              "bold": true,
+              "marks": [
+                {
+                  "type": "bold",
+                },
+              ],
+              "text": "some ",
+            },
+            {
+              "bold": true,
+              "italic": true,
+              "marks": [
+                {
+                  "type": "bold",
+                },
+                {
+                  "type": "italic",
+                },
+              ],
+              "text": "hot",
+            },
+            {
+              "bold": true,
+              "marks": [
+                {
+                  "type": "bold",
+                },
+              ],
+              "text": " content",
+            },
+          ],
+          "type": "paragraph",
+        },
+        {
+          "children": [
+            {
+              "text": "perhaps ",
+            },
+            {
+              "bold": true,
+              "marks": [
+                {
+                  "type": "bold",
+                },
+              ],
+              "text": "scalding",
+            },
+            {
+              "text": " even",
+            },
+          ],
+          "type": "paragraph",
+        },
+      ]
+    `);
   });
 
   it('should compile inline code', () => {
@@ -458,37 +458,37 @@ Array [
 This is some sweet \`inline code\` yo!
 `;
     expect(parser(value)).toMatchInlineSnapshot(`
-Array [
-  Object {
-    "children": Array [
-      Object {
-        "text": "Word",
-      },
-    ],
-    "type": "heading-one",
-  },
-  Object {
-    "children": Array [
-      Object {
-        "text": "This is some sweet ",
-      },
-      Object {
-        "code": true,
-        "marks": Array [
-          Object {
-            "type": "code",
-          },
-        ],
-        "text": "inline code",
-      },
-      Object {
-        "text": " yo!",
-      },
-    ],
-    "type": "paragraph",
-  },
-]
-`);
+      [
+        {
+          "children": [
+            {
+              "text": "Word",
+            },
+          ],
+          "type": "heading-one",
+        },
+        {
+          "children": [
+            {
+              "text": "This is some sweet ",
+            },
+            {
+              "code": true,
+              "marks": [
+                {
+                  "type": "code",
+                },
+              ],
+              "text": "inline code",
+            },
+            {
+              "text": " yo!",
+            },
+          ],
+          "type": "paragraph",
+        },
+      ]
+    `);
   });
 
   it('should compile links', () => {
@@ -498,40 +498,40 @@ Array [
 How far is it to [Google](https://google.com) land?
 `;
     expect(parser(value)).toMatchInlineSnapshot(`
-Array [
-  Object {
-    "children": Array [
-      Object {
-        "text": "Word",
-      },
-    ],
-    "type": "heading-one",
-  },
-  Object {
-    "children": Array [
-      Object {
-        "text": "How far is it to ",
-      },
-      Object {
-        "children": Array [
-          Object {
-            "text": "Google",
-          },
-        ],
-        "data": Object {
-          "title": null,
-          "url": "https://google.com",
+      [
+        {
+          "children": [
+            {
+              "text": "Word",
+            },
+          ],
+          "type": "heading-one",
         },
-        "type": "link",
-      },
-      Object {
-        "text": " land?",
-      },
-    ],
-    "type": "paragraph",
-  },
-]
-`);
+        {
+          "children": [
+            {
+              "text": "How far is it to ",
+            },
+            {
+              "children": [
+                {
+                  "text": "Google",
+                },
+              ],
+              "data": {
+                "title": null,
+                "url": "https://google.com",
+              },
+              "type": "link",
+            },
+            {
+              "text": " land?",
+            },
+          ],
+          "type": "paragraph",
+        },
+      ]
+    `);
   });
 
   it('should compile plugins', () => {
@@ -541,35 +541,35 @@ Array [
 {{< test >}}
 `;
     expect(parser(value)).toMatchInlineSnapshot(`
-Array [
-  Object {
-    "children": Array [
-      Object {
-        "children": Array [
-          Object {
-            "text": "",
-          },
-        ],
-        "data": Object {
-          "alt": "test",
-          "title": null,
-          "url": "test.png",
+      [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "text": "",
+                },
+              ],
+              "data": {
+                "alt": "test",
+                "title": null,
+                "url": "test.png",
+              },
+              "type": "image",
+            },
+          ],
+          "type": "paragraph",
         },
-        "type": "image",
-      },
-    ],
-    "type": "paragraph",
-  },
-  Object {
-    "children": Array [
-      Object {
-        "text": "{{< test >}}",
-      },
-    ],
-    "type": "paragraph",
-  },
-]
-`);
+        {
+          "children": [
+            {
+              "text": "{{< test >}}",
+            },
+          ],
+          "type": "paragraph",
+        },
+      ]
+    `);
   });
 
   it('should compile kitchen sink example', () => {

@@ -92,31 +92,35 @@ Text with **bold** & _em_ elements
         });
 
         expect(root.toJSON()).toMatchInlineSnapshot(`
-.emotion-0 {
-  margin: 15px 2px;
-}
+          .emotion-0 {
+            margin: 15px 2px;
+          }
 
-<div
-  className="emotion-0 emotion-1"
-  dangerouslySetInnerHTML={
-    Object {
-      "__html": "<ol>
-<li>ol item 1</li>
-<li>ol item 2<ul>
-<li>Sublist 1</li>
-<li>Sublist 2</li>
-<li>Sublist 3<ol>
-<li>Sub-Sublist 1</li>
-<li>Sub-Sublist 2</li>
-<li>Sub-Sublist 3</li>
-</ol></li>
-</ul></li>
-<li>ol item 3</li>
-</ol>",
-    }
-  }
-/>
-`);
+          <div
+            className="emotion-0 emotion-1"
+            dangerouslySetInnerHTML={
+              {
+                "__html": "<ol>
+          <li>ol item 1</li>
+          <li>ol item 2
+          <ul>
+          <li>Sublist 1</li>
+          <li>Sublist 2</li>
+          <li>Sublist 3
+          <ol>
+          <li>Sub-Sublist 1</li>
+          <li>Sub-Sublist 2</li>
+          <li>Sub-Sublist 3</li>
+          </ol>
+          </li>
+          </ul>
+          </li>
+          <li>ol item 3</li>
+          </ol>",
+              }
+            }
+          />
+        `);
       });
     });
 
