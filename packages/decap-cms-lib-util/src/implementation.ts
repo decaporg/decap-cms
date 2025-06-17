@@ -1,5 +1,6 @@
 import semaphore from 'semaphore';
-import { unionBy, sortBy } from 'lodash';
+import unionBy from 'lodash/unionBy';
+import sortBy from 'lodash/sortBy';
 
 import { basename } from './path';
 
