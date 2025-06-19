@@ -25,7 +25,7 @@
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 import path from 'path';
 import rehype from 'rehype';
-import visit from 'unist-util-visit';
+import { visit } from 'unist-util-visit';
 import { oneLineTrim } from 'common-tags';
 import { escapeRegExp } from '../utils/regexp';
 

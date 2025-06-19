@@ -171,6 +171,11 @@ class EditorControl extends React.Component {
 
   uniqueFieldId = uniqueId(`${this.props.field.get('name')}-field-`);
 
+  componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(EditorControl.propTypes, this.props, 'prop', 'EditorControl');
+  }
+
   isAncestorOfFieldError = () => {
     const { fieldsErrors } = this.props;
 

@@ -41,10 +41,10 @@
     "jwt-decode": "^3.0.0",
     "node-polyglot": "^2.3.0",
     "prop-types": "^15.7.2",
-    "react": "^18.2.0",
+    "react": "^19.1.0",
     "react-dnd": "^14.0.0",
     "react-dnd-html5-backend": "^14.0.0",
-    "react-dom": "^18.2.0",
+    "react-dom": "^19.1.0",
     "react-frame-component": "^5.2.1",
     "react-immutable-proptypes": "^2.1.0",
     "react-is": "16.13.1",
@@ -84,8 +84,8 @@
     "immutable": "^3.7.6",
     "lodash": "^4.17.11",
     "prop-types": "^15.7.2",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
     "react-immutable-proptypes": "^2.1.0"
   },
   "devDependencies": {

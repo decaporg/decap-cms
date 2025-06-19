@@ -1,29 +1,29 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Compile markdown to Slate Raw AST should compile kitchen sink example 1`] = `
-Array [
-  Object {
-    "children": Array [
-      Object {
+[
+  {
+    "children": [
+      {
         "text": "An exhibit of Markdown",
       },
     ],
     "type": "heading-one",
   },
-  Object {
-    "children": Array [
-      Object {
+  {
+    "children": [
+      {
         "text": "This note demonstrates some of what Markdown is capable of doing.",
       },
     ],
     "type": "paragraph",
   },
-  Object {
-    "children": Array [
-      Object {
+  {
+    "children": [
+      {
         "italic": true,
-        "marks": Array [
-          Object {
+        "marks": [
+          {
             "type": "italic",
           },
         ],
@@ -33,17 +33,17 @@ automatically save itself.",
     ],
     "type": "paragraph",
   },
-  Object {
-    "children": Array [
-      Object {
+  {
+    "children": [
+      {
         "text": "Basic formatting",
       },
     ],
     "type": "heading-two",
   },
-  Object {
-    "children": Array [
-      Object {
+  {
+    "children": [
+      {
         "text": "Paragraphs can be written like so. A paragraph is the basic block of Markdown.
 A paragraph is what text will turn into when there is no reason it should
 become anything else.",
@@ -51,96 +51,96 @@ become anything else.",
     ],
     "type": "paragraph",
   },
-  Object {
-    "children": Array [
-      Object {
+  {
+    "children": [
+      {
         "text": "Paragraphs must be separated by a blank line. Basic formatting of ",
       },
-      Object {
+      {
         "italic": true,
-        "marks": Array [
-          Object {
+        "marks": [
+          {
             "type": "italic",
           },
         ],
         "text": "italics",
       },
-      Object {
+      {
         "text": " and
 ",
       },
-      Object {
+      {
         "bold": true,
-        "marks": Array [
-          Object {
+        "marks": [
+          {
             "type": "bold",
           },
         ],
         "text": "bold",
       },
-      Object {
+      {
         "text": " is supported. This ",
       },
-      Object {
+      {
         "italic": true,
-        "marks": Array [
-          Object {
+        "marks": [
+          {
             "type": "italic",
           },
         ],
         "text": "can be ",
       },
-      Object {
+      {
         "bold": true,
         "italic": true,
-        "marks": Array [
-          Object {
+        "marks": [
+          {
             "type": "italic",
           },
-          Object {
+          {
             "type": "bold",
           },
         ],
         "text": "nested",
       },
-      Object {
+      {
         "italic": true,
-        "marks": Array [
-          Object {
+        "marks": [
+          {
             "type": "italic",
           },
         ],
         "text": " like",
       },
-      Object {
+      {
         "text": " so.",
       },
     ],
     "type": "paragraph",
   },
-  Object {
-    "children": Array [
-      Object {
+  {
+    "children": [
+      {
         "text": "Lists",
       },
     ],
     "type": "heading-two",
   },
-  Object {
-    "children": Array [
-      Object {
+  {
+    "children": [
+      {
         "text": "Ordered list",
       },
     ],
     "type": "heading-three",
   },
-  Object {
-    "children": Array [
-      Object {
-        "children": Array [
-          Object {
-            "children": Array [
-              Object {
+  {
+    "children": [
+      {
+        "children": [
+          {
+            "children": [
+              {
                 "text": "Item 1 2. A second item 3. Number 3 4. Ⅳ",
               },
             ],
@@ -150,17 +150,17 @@ become anything else.",
         "type": "list-item",
       },
     ],
-    "data": Object {
+    "data": {
       "start": 1,
     },
     "type": "numbered-list",
   },
-  Object {
-    "children": Array [
-      Object {
+  {
+    "children": [
+      {
         "italic": true,
-        "marks": Array [
-          Object {
+        "marks": [
+          {
             "type": "italic",
           },
         ],
@@ -169,21 +169,21 @@ become anything else.",
     ],
     "type": "paragraph",
   },
-  Object {
-    "children": Array [
-      Object {
+  {
+    "children": [
+      {
         "text": "Unordered list",
       },
     ],
     "type": "heading-three",
   },
-  Object {
-    "children": Array [
-      Object {
-        "children": Array [
-          Object {
-            "children": Array [
-              Object {
+  {
+    "children": [
+      {
+        "children": [
+          {
+            "children": [
+              {
                 "text": "An item Another item Yet another item And there's more...",
               },
             ],
@@ -193,39 +193,39 @@ become anything else.",
         "type": "list-item",
       },
     ],
-    "data": Object {
+    "data": {
       "start": null,
     },
     "type": "bulleted-list",
   },
-  Object {
-    "children": Array [
-      Object {
+  {
+    "children": [
+      {
         "text": "Paragraph modifiers",
       },
     ],
     "type": "heading-two",
   },
-  Object {
-    "children": Array [
-      Object {
+  {
+    "children": [
+      {
         "text": "Code block",
       },
     ],
     "type": "heading-three",
   },
-  Object {
-    "children": Array [
-      Object {
+  {
+    "children": [
+      {
         "text": "Code blocks are very useful for developers and other people who look at
 code or other things that are written in plain text. As you can see, it
 uses a fixed-width font.",
       },
     ],
-    "data": Object {
+    "data": {
       "lang": null,
       "shortcode": "code-block",
-      "shortcodeData": Object {
+      "shortcodeData": {
         "code": "Code blocks are very useful for developers and other people who look at
 code or other things that are written in plain text. As you can see, it
 uses a fixed-width font.",
@@ -234,39 +234,39 @@ uses a fixed-width font.",
     },
     "type": "shortcode",
   },
-  Object {
-    "children": Array [
-      Object {
+  {
+    "children": [
+      {
         "text": "You can also make ",
       },
-      Object {
+      {
         "code": true,
-        "marks": Array [
-          Object {
+        "marks": [
+          {
             "type": "code",
           },
         ],
         "text": "inline code",
       },
-      Object {
+      {
         "text": " to add code into other things.",
       },
     ],
     "type": "paragraph",
   },
-  Object {
-    "children": Array [
-      Object {
+  {
+    "children": [
+      {
         "text": "Quote",
       },
     ],
     "type": "heading-three",
   },
-  Object {
-    "children": Array [
-      Object {
-        "children": Array [
-          Object {
+  {
+    "children": [
+      {
+        "children": [
+          {
             "text": "Here is a quote. What this is should be self explanatory. Quotes are
 automatically indented when they are used.",
           },
@@ -276,17 +276,17 @@ automatically indented when they are used.",
     ],
     "type": "quote",
   },
-  Object {
-    "children": Array [
-      Object {
+  {
+    "children": [
+      {
         "text": "Headings",
       },
     ],
     "type": "heading-two",
   },
-  Object {
-    "children": Array [
-      Object {
+  {
+    "children": [
+      {
         "text": "There are six levels of headings. They correspond with the six levels of HTML
 headings. You've probably noticed them already in the page. Each level down
 uses one more hash character.",
@@ -294,27 +294,27 @@ uses one more hash character.",
     ],
     "type": "paragraph",
   },
-  Object {
-    "children": Array [
-      Object {
+  {
+    "children": [
+      {
         "text": "Headings ",
       },
-      Object {
+      {
         "italic": true,
-        "marks": Array [
-          Object {
+        "marks": [
+          {
             "type": "italic",
           },
         ],
         "text": "can",
       },
-      Object {
+      {
         "text": " also contain ",
       },
-      Object {
+      {
         "bold": true,
-        "marks": Array [
-          Object {
+        "marks": [
+          {
             "type": "bold",
           },
         ],
@@ -323,15 +323,15 @@ uses one more hash character.",
     ],
     "type": "heading-three",
   },
-  Object {
-    "children": Array [
-      Object {
+  {
+    "children": [
+      {
         "text": "They can even contain ",
       },
-      Object {
+      {
         "code": true,
-        "marks": Array [
-          Object {
+        "marks": [
+          {
             "type": "code",
           },
         ],
@@ -340,18 +340,18 @@ uses one more hash character.",
     ],
     "type": "heading-three",
   },
-  Object {
-    "children": Array [
-      Object {
+  {
+    "children": [
+      {
         "text": "Of course, demonstrating what headings look like messes up the structure of the
 page.",
       },
     ],
     "type": "paragraph",
   },
-  Object {
-    "children": Array [
-      Object {
+  {
+    "children": [
+      {
         "text": "I don't recommend using more than three or four levels of headings here,
 because, when you're smallest heading isn't too small, and you're largest
 heading isn't too big, and you want each size up to look noticeably larger and
@@ -360,29 +360,29 @@ more important, there there are only so many sizes that you can use.",
     ],
     "type": "paragraph",
   },
-  Object {
-    "children": Array [
-      Object {
+  {
+    "children": [
+      {
         "text": "URLs",
       },
     ],
     "type": "heading-two",
   },
-  Object {
-    "children": Array [
-      Object {
+  {
+    "children": [
+      {
         "text": "URLs can be made in a handful of ways:",
       },
     ],
     "type": "paragraph",
   },
-  Object {
-    "children": Array [
-      Object {
-        "children": Array [
-          Object {
-            "children": Array [
-              Object {
+  {
+    "children": [
+      {
+        "children": [
+          {
+            "children": [
+              {
                 "text": "A named link to MarkItDown. The easiest way to do these is to select what you",
               },
             ],
@@ -391,23 +391,23 @@ more important, there there are only so many sizes that you can use.",
         ],
         "type": "list-item",
       },
-      Object {
-        "children": Array [
-          Object {
-            "children": Array [
-              Object {
+      {
+        "children": [
+          {
+            "children": [
+              {
                 "text": "want to make a link and hit ",
               },
-              Object {
+              {
                 "code": true,
-                "marks": Array [
-                  Object {
+                "marks": [
+                  {
                     "type": "code",
                   },
                 ],
                 "text": "Ctrl+L",
               },
-              Object {
+              {
                 "text": ".  Another named link to",
               },
             ],
@@ -416,23 +416,23 @@ more important, there there are only so many sizes that you can use.",
         ],
         "type": "list-item",
       },
-      Object {
-        "children": Array [
-          Object {
-            "children": Array [
-              Object {
-                "children": Array [
-                  Object {
+      {
+        "children": [
+          {
+            "children": [
+              {
+                "children": [
+                  {
                     "text": "MarkItDown",
                   },
                 ],
-                "data": Object {
+                "data": {
                   "title": null,
                   "url": "http://www.markitdown.net/",
                 },
                 "type": "link",
               },
-              Object {
+              {
                 "text": " Sometimes you just want a URL like",
               },
             ],
@@ -441,23 +441,23 @@ more important, there there are only so many sizes that you can use.",
         ],
         "type": "list-item",
       },
-      Object {
-        "children": Array [
-          Object {
-            "children": Array [
-              Object {
-                "children": Array [
-                  Object {
+      {
+        "children": [
+          {
+            "children": [
+              {
+                "children": [
+                  {
                     "text": "http://www.markitdown.net/",
                   },
                 ],
-                "data": Object {
+                "data": {
                   "title": null,
                   "url": "http://www.markitdown.net/",
                 },
                 "type": "link",
               },
-              Object {
+              {
                 "text": ".",
               },
             ],
@@ -467,74 +467,74 @@ more important, there there are only so many sizes that you can use.",
         "type": "list-item",
       },
     ],
-    "data": Object {
+    "data": {
       "start": null,
     },
     "type": "bulleted-list",
   },
-  Object {
-    "children": Array [
-      Object {
+  {
+    "children": [
+      {
         "text": "Horizontal rule",
       },
     ],
     "type": "heading-two",
   },
-  Object {
-    "children": Array [
-      Object {
+  {
+    "children": [
+      {
         "text": "A horizontal rule is a line that goes across the middle of the page.",
       },
     ],
     "type": "paragraph",
   },
-  Object {
-    "children": Array [
-      Object {
+  {
+    "children": [
+      {
         "text": "",
       },
     ],
     "type": "thematic-break",
   },
-  Object {
-    "children": Array [
-      Object {
+  {
+    "children": [
+      {
         "text": "It's sometimes handy for breaking things up.",
       },
     ],
     "type": "paragraph",
   },
-  Object {
-    "children": Array [
-      Object {
+  {
+    "children": [
+      {
         "text": "Images",
       },
     ],
     "type": "heading-two",
   },
-  Object {
-    "children": Array [
-      Object {
+  {
+    "children": [
+      {
         "text": "Markdown can also contain images. I'll need to add something here sometime.",
       },
     ],
     "type": "paragraph",
   },
-  Object {
-    "children": Array [
-      Object {
+  {
+    "children": [
+      {
         "text": "Finally",
       },
     ],
     "type": "heading-two",
   },
-  Object {
-    "children": Array [
-      Object {
+  {
+    "children": [
+      {
         "text": "There's actually a lot more to Markdown than this. See the official
 introduction and syntax for more information. However, be aware that this is
 not using the official implementation, and this might work subtly differently
-  in some of the little things.",
+in some of the little things.",
       },
     ],
     "type": "paragraph",

@@ -8,7 +8,7 @@ exports[`Markdown Preview renderer HTML rendering should render HTML 1`] = `
 <div
   className="emotion-0 emotion-1"
   dangerouslySetInnerHTML={
-    Object {
+    {
       "__html": "<p>Paragraph with <em>inline</em> element</p>",
     }
   }
@@ -23,8 +23,8 @@ exports[`Markdown Preview renderer HTML sanitization should not sanitize HTML 1`
 <div
   className="emotion-0 emotion-1"
   dangerouslySetInnerHTML={
-    Object {
-      "__html": "<img src=\\"foobar.png\\" onerror=\\"alert('hello')\\">",
+    {
+      "__html": "<img src="foobar.png" onerror="alert('hello')">",
     }
   }
 />
@@ -38,8 +38,8 @@ exports[`Markdown Preview renderer HTML sanitization should sanitize HTML 1`] = 
 <div
   className="emotion-0 emotion-1"
   dangerouslySetInnerHTML={
-    Object {
-      "__html": "<img src=\\"foobar.png\\">",
+    {
+      "__html": "<img src="foobar.png">",
     }
   }
 />
@@ -53,7 +53,7 @@ exports[`Markdown Preview renderer Markdown rendering Code should render code 1`
 <div
   className="emotion-0 emotion-1"
   dangerouslySetInnerHTML={
-    Object {
+    {
       "__html": "<p>Use the <code>printf()</code> function.</p>",
     }
   }
@@ -68,7 +68,7 @@ exports[`Markdown Preview renderer Markdown rendering Code should render code 2 
 <div
   className="emotion-0 emotion-1"
   dangerouslySetInnerHTML={
-    Object {
+    {
       "__html": "<p><code>There is a literal backtick (\`) here.</code></p>",
     }
   }
@@ -83,7 +83,7 @@ exports[`Markdown Preview renderer Markdown rendering General should render mark
 <div
   className="emotion-0 emotion-1"
   dangerouslySetInnerHTML={
-    Object {
+    {
       "__html": "<h1>H1</h1>
 <p>Text with <strong>bold</strong> &amp; <em>em</em> elements</p>
 <h2>H2</h2>
@@ -98,11 +98,11 @@ exports[`Markdown Preview renderer Markdown rendering General should render mark
 <li>ol item 3</li>
 </ol>
 <h4>H4</h4>
-<p><a href=\\"http://google.com\\">link title</a></p>
+<p><a href="http://google.com">link title</a></p>
 <h5>H5</h5>
-<p><img src=\\"https://pbs.twimg.com/profile_images/678903331176214528/TQTdqGwD.jpg\\" alt=\\"alt text\\" /></p>
+<p><img src="https://pbs.twimg.com/profile_images/678903331176214528/TQTdqGwD.jpg" alt="alt text" /></p>
 <h6>H6</h6>
-<p><img src=\\"https://pbs.twimg.com/profile_images/678903331176214528/TQTdqGwD.jpg\\" /></p>",
+<p><img src="https://pbs.twimg.com/profile_images/678903331176214528/TQTdqGwD.jpg" alt="" /></p>",
     }
   }
 />
@@ -116,18 +116,18 @@ exports[`Markdown Preview renderer Markdown rendering HTML should render HTML as
 <div
   className="emotion-0 emotion-1"
   dangerouslySetInnerHTML={
-    Object {
+    {
       "__html": "<h1>Title</h1>
-<form action=\\"test\\">
-  <label for=\\"input\\">
-    <input type=\\"checkbox\\" checked=\\"checked\\" id=\\"input\\"/> My label
+<form action="test">
+  <label for="input">
+    <input type="checkbox" checked="checked" id="input"/> My label
   </label>
-  <dl class=\\"test-class another-class\\" style=\\"width: 100%\\">
-      <dt data-attr=\\"test\\">Test HTML content</dt>
+  <dl class="test-class another-class" style="width: 100%">
+      <dt data-attr="test">Test HTML content</dt>
       <dt>Testing HTML in Markdown</dt>
   </dl>
 </form>
-<h1 style=\\"display: block; border: 10px solid #f00; width: 100%\\">Test</h1>",
+<h1 style="display: block; border: 10px solid #f00; width: 100%">Test</h1>",
     }
   }
 />
@@ -141,7 +141,7 @@ exports[`Markdown Preview renderer Markdown rendering Headings should render Hea
 <div
   className="emotion-0 emotion-1"
   dangerouslySetInnerHTML={
-    Object {
+    {
       "__html": "<h1>Title</h1>",
     }
   }
@@ -156,7 +156,7 @@ exports[`Markdown Preview renderer Markdown rendering Headings should render Hea
 <div
   className="emotion-0 emotion-1"
   dangerouslySetInnerHTML={
-    Object {
+    {
       "__html": "<h2>Title</h2>",
     }
   }
@@ -171,7 +171,7 @@ exports[`Markdown Preview renderer Markdown rendering Headings should render Hea
 <div
   className="emotion-0 emotion-1"
   dangerouslySetInnerHTML={
-    Object {
+    {
       "__html": "<h3>Title</h3>",
     }
   }
@@ -186,7 +186,7 @@ exports[`Markdown Preview renderer Markdown rendering Headings should render Hea
 <div
   className="emotion-0 emotion-1"
   dangerouslySetInnerHTML={
-    Object {
+    {
       "__html": "<h4>Title</h4>",
     }
   }
@@ -201,7 +201,7 @@ exports[`Markdown Preview renderer Markdown rendering Headings should render Hea
 <div
   className="emotion-0 emotion-1"
   dangerouslySetInnerHTML={
-    Object {
+    {
       "__html": "<h5>Title</h5>",
     }
   }
@@ -216,7 +216,7 @@ exports[`Markdown Preview renderer Markdown rendering Headings should render Hea
 <div
   className="emotion-0 emotion-1"
   dangerouslySetInnerHTML={
-    Object {
+    {
       "__html": "<h6>Title</h6>",
     }
   }
@@ -231,8 +231,8 @@ exports[`Markdown Preview renderer Markdown rendering Links should render links 
 <div
   className="emotion-0 emotion-1"
   dangerouslySetInnerHTML={
-    Object {
-      "__html": "<p>I get 10 times more traffic from <a href=\\"http://google.com/\\" title=\\"Google\\">Google</a> than from <a href=\\"http://search.yahoo.com/\\" title=\\"Yahoo Search\\">Yahoo</a> or <a href=\\"http://search.msn.com/\\" title=\\"MSN Search\\">MSN</a>.</p>",
+    {
+      "__html": "<p>I get 10 times more traffic from <a href="http://google.com/" title="Google">Google</a> than from <a href="http://search.yahoo.com/" title="Yahoo Search">Yahoo</a> or <a href="http://search.msn.com/" title="MSN Search">MSN</a>.</p>",
     }
   }
 />

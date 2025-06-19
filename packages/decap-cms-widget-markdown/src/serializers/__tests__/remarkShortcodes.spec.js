@@ -2,17 +2,37 @@ import { Map, OrderedMap } from 'immutable';
 
 import { remarkParseShortcodes, getLinesWithOffsets } from '../remarkShortcodes';
 
-// Stub of Remark Parser
+// Stub of Remark Parser for remark-parse v9+
 function process(value, plugins, processEat = () => {}) {
-  function eat() {
-    return processEat;
+  // Simulate the `this.data()` API for the attacher
+  const store = {};
+  function data(key, val) {
+    if (val === undefined) return store[key];
+    store[key] = val;
   }
 
-  function Parser() {}
-  Parser.prototype.blockTokenizers = {};
-  Parser.prototype.blockMethods = [];
-  remarkParseShortcodes.call({ Parser }, { plugins });
-  Parser.prototype.blockTokenizers.shortcode(eat, value);
+  // Call the attacher as remark would
+  const attacher = remarkParseShortcodes({ plugins });
+  attacher.call({ data });
+
+  // Simulate parsing: for each plugin, if its pattern matches, call fromBlock
+  plugins.forEach((component) => {
+    if (component.pattern) {
+      const match = value.match(component.pattern);
+      if (match) {
+        const shortcodeData = component.fromBlock(match);
+        if (processEat && shortcodeData !== undefined) {
+          processEat({
+            type: 'shortcode',
+            data: {
+              shortcode: component.id,
+              shortcodeData,
+            },
+          });
+        }
+      }
+    }
+  });
 }
 
 function EditorComponent({ id = 'foo', fromBlock = jest.fn(), pattern }) {

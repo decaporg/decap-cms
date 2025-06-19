@@ -237,6 +237,9 @@ export default class RelationControl extends React.Component {
   }
 
   async componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(RelationControl.propTypes, this.props, 'prop', 'RelationControl');
+
     this.mounted = true;
     // if the field has a previous value perform an initial search based on the value field
     // this is required since each search is limited by optionsLength so the selected value

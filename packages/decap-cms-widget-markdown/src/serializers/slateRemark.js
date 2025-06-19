@@ -4,7 +4,7 @@ import last from 'lodash/last';
 import map from 'lodash/map';
 import intersection from 'lodash/intersection';
 import omit from 'lodash/omit';
-import u from 'unist-builder';
+import { u } from 'unist-builder';
 import mdastToString from 'mdast-util-to-string';
 
 /**

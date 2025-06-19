@@ -257,6 +257,11 @@ export default function withFileControl({ forImage } = {}) {
       this.controlID = uuid();
     }
 
+    componentDidMount() {
+      // Manually validate PropTypes - React 19 breaking change
+      PropTypes.checkPropTypes(FileControl.propTypes, this.props, 'prop', 'FileControl');
+    }
+
     shouldComponentUpdate(nextProps) {
       /**
        * Always update if the value or getAsset changes.

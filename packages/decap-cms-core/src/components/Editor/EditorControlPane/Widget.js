@@ -75,6 +75,11 @@ export default class Widget extends Component {
     isParentListCollapsed: PropTypes.bool,
   };
 
+  componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(Widget.propTypes, this.props, 'prop', 'Widget');
+  }
+
   shouldComponentUpdate(nextProps) {
     /**
      * Avoid unnecessary rerenders while loading assets.

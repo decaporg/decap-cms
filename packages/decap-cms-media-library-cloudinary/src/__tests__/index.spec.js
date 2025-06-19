@@ -5,11 +5,11 @@ jest.mock('decap-cms-lib-util');
 describe('cloudinary exports', () => {
   it('exports an object with expected properties', () => {
     expect(cloudinary).toMatchInlineSnapshot(`
-  Object {
-    "init": [Function],
-    "name": "cloudinary",
-  }
-  `);
+      {
+        "init": [Function],
+        "name": "cloudinary",
+      }
+    `);
   });
 });
 
