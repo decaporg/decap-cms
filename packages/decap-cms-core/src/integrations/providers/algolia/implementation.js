@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import flatten from 'lodash/flatten';
 import { unsentRequest } from 'decap-cms-lib-util';
 
 import { createEntry } from '../../../valueObjects/Entry';
@@ -97,7 +97,7 @@ export default class Algolia {
         }),
       );
 
-      return { entries: _.flatten(entries), pagination: page };
+      return { entries: flatten(entries), pagination: page };
     });
   }
 

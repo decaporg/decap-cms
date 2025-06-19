@@ -1,6 +1,8 @@
 import GoTrue from 'gotrue-js';
 import jwtDecode from 'jwt-decode';
-import { get, pick, intersection } from 'lodash';
+import get from 'lodash/get';
+import pick from 'lodash/pick';
+import intersection from 'lodash/intersection';
 import ini from 'ini';
 import {
   APIError,

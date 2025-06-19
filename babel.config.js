@@ -10,7 +10,6 @@ console.log('Build Package:', path.basename(process.cwd()));
 
 // Always enabled plugins
 const basePlugins = [
-  'lodash',
   [
     'babel-plugin-transform-builtin-extend',
     {

@@ -90,7 +90,6 @@
     "babel-plugin-inline-import": "^3.0.0",
     "babel-plugin-inline-json-import": "^0.3.2",
     "babel-plugin-inline-react-svg": "^2.0.0",
-    "babel-plugin-lodash": "^3.3.4",
     "babel-plugin-transform-builtin-extend": "^1.1.2",
     "babel-plugin-transform-define": "2.0.1",
     "babel-plugin-transform-export-extensions": "^6.22.0",
@@ -161,6 +160,9 @@
   "private": true,
   "dependencies": {
     "@emotion/babel-preset-css-prop": "^11.11.0",
+    "ajv": "^8.17.1",
+    "ajv-errors": "^3.0.0",
+    "ajv-keywords": "^5.1.0",
     "browserify": "^17.0.0",
     "buffer": "^6.0.3",
     "emotion": "^11.0.0",
@@ -169,11 +171,11 @@
     "globby": "^12.0.0",
     "imports-loader": "^4.0.1",
     "lerna": "^8.0.2",
+    "lodash-es": "^4.17.21",
     "process": "^0.11.10"
   },
   "resolutions": {
-    "react-redux": "^7.2.0",
-    "babel-plugin-lodash/@babel/types": "~7.20.0"
+    "react-redux": "^7.2.0"
   },
   "version": "0.0.0"
 }

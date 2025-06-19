@@ -6,8 +6,8 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import Frame, { FrameContextConsumer } from 'react-frame-component';
 import { lengths } from 'decap-cms-ui-default';
 import { connect } from 'react-redux';
-import { encodeEntry } from 'decap-cms-lib-util';
 
+import { encodeEntry } from '../../../lib/stega';
 import {
   resolveWidget,
   getPreviewTemplate,

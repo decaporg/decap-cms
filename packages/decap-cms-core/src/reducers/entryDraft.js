@@ -1,6 +1,6 @@
 import { Map, List, fromJS } from 'immutable';
 import { v4 as uuid } from 'uuid';
-import { get } from 'lodash';
+import get from 'lodash/get';
 import { join } from 'path';
 
 import {
