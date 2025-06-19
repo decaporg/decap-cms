@@ -1,4 +1,7 @@
-import { flow, partial, map } from 'lodash';
+import has from 'lodash/has';
+import flow from 'lodash/flow';
+import partial from 'lodash/partial';
+import map from 'lodash/map';
 import { visit } from 'unist-util-visit';
 
 import { joinPatternSegments, combinePatterns, replaceWhen } from '../regexHelper';

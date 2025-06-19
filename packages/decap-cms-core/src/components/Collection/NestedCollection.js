@@ -9,7 +9,7 @@ import { stringTemplate } from 'decap-cms-lib-widgets';
 import { Icon, colors, components } from 'decap-cms-ui-default';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { sortBy } from 'lodash';
+import sortBy from 'lodash/sortBy';
 
 import { selectEntries } from '../../reducers/entries';
 import { selectEntryCollectionTitle } from '../../reducers/collections';

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
-import { isEqual } from 'lodash';
+import isEqual from 'lodash/isEqual';
 import { Cursor } from 'decap-cms-lib-util';
 
 import { selectSearchedEntries } from '../../../reducers';

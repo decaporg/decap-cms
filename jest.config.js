@@ -11,6 +11,7 @@ module.exports = {
     '^#home-directory$': 'clean-stack/home-directory.js',
     '^react-dom/server$': 'react-dom/server.node',
   },
+  modulePathIgnorePatterns: ['.nx', 'dist'],
   snapshotSerializers: ['@emotion/jest/serializer'],
   transformIgnorePatterns: [
     'node_modules/(?!copy-text-to-clipboard|clean-stack|escape-string-regexp|unist-builder|remark-stringify|remark-parse|remark-rehype|rehype-stringify|rehype-parse|rehype-remark|unist-util-visit)/',
