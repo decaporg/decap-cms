@@ -324,7 +324,7 @@ describe('gitlab backend', () => {
 
   it('throws if configuration does not include repo', () => {
     expect(() => resolveBackend({ backend: {} })).toThrowErrorMatchingInlineSnapshot(
-      `"The GitLab backend needs a \\"repo\\" in the backend configuration."`,
+      `"The GitLab backend needs a "repo" in the backend configuration."`,
     );
   });
 
