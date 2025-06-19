@@ -1,4 +1,8 @@
-import { attempt, isError, take, unset, isEmpty } from 'lodash';
+import attempt from 'lodash/attempt';
+import isError from 'lodash/isError';
+import take from 'lodash/take';
+import unset from 'lodash/unset';
+import isEmpty from 'lodash/isEmpty';
 import { v4 as uuid } from 'uuid';
 import {
   EditorialWorkflowError,
