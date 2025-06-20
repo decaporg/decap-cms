@@ -11,7 +11,7 @@ window.netlifyIdentity = {
 
 describe('GitGatewayAuthenticationPage', () => {
   const props = {
-    config: { logo_url: 'logo_url' },
+    config: { logo: { src: 'logo_url' } },
     t: jest.fn(key => key),
     onLogin: jest.fn(),
     inProgress: false,
