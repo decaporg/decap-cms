@@ -148,7 +148,7 @@ export function getI18nFiles(
   newPath?: string,
   isFolder?: boolean,
 ) {
-  let { structure, defaultLocale, locales } = getI18nInfo(collection) as I18nInfo;
+  const { structure, defaultLocale, locales } = getI18nInfo(collection) as I18nInfo;
 
   if (structure === I18N_STRUCTURE.SINGLE_FILE) {
     const data = locales.reduce((map, locale) => {
@@ -169,10 +169,11 @@ export function getI18nFiles(
     ];
   }
 
-  if (isNestedSubfolders(collection)) {
-    locales = [defaultLocale];
-    isFolder = true;
-  }
+  // if (isNestedSubfolders(collection)) {
+  // // if (isNestedSubfolders(collection)) {
+  //   locales = [defaultLocale];
+  //   isFolder = true;
+  // }
 
   const dataFiles = locales
     .map(locale => {

@@ -15,11 +15,12 @@ import { addAssets, getAsset } from './media';
 import { SortDirection } from '../types/redux';
 import { waitForMediaLibraryToLoad, loadMedia } from './mediaLibrary';
 import { waitUntil } from './waitUntil';
-import { selectIsFetching, selectEntriesSortFields } from '../reducers/entries';
+import { selectIsFetching, selectEntriesSortFields, selectEntryByPath } from '../reducers/entries';
 import { navigateToEntry } from '../routing/history';
 import { getProcessSegment } from '../lib/formatters';
 import { hasI18n, duplicateDefaultI18nFields, serializeI18n, I18N, I18N_FIELD } from '../lib/i18n';
 import { addNotification } from './notifications';
+import { selectCustomPath } from '../reducers/entryDraft';
 
 import type { ImplementationMediaFile } from 'decap-cms-lib-util';
 import type { AnyAction } from 'redux';
@@ -1027,21 +1028,22 @@ export function validateMetaField(
       return getPathError(value, 'invalidPath', t);
     }
 
-    console.log(collection);
+    const pathType = state.entryDraft?.getIn(['entry', 'meta', 'path_type']) ?? 'index';
+    const customPath = selectCustomPath(
+      collection,
+      fromJS({ entry: { meta: { path: value, path_type: pathType } } }),
+    );
 
-    // update path validation
+    const existingEntry = customPath
+      ? selectEntryByPath(state.entries, collection.get('name'), customPath)
+      : undefined;
 
-    // const customPath = selectCustomPath(collection, fromJS({ entry: { meta: { path: value } } }), state.config);
-    // const existingEntry = customPath
-    //   ? selectEntryByPath(state.entries, collection.get('name'), customPath)
-    //   : undefined;
+    const existingEntryPath = existingEntry?.get('path');
+    const draftPath = state.entryDraft?.getIn(['entry', 'path']);
 
-    // const existingEntryPath = existingEntry?.get('path');
-    // const draftPath = state.entryDraft?.getIn(['entry', 'path']);
-
-    // if (existingEntryPath && existingEntryPath !== draftPath) {
-    //   return getPathError(value, 'pathExists', t);
-    // }
+    if (existingEntryPath && existingEntryPath !== draftPath) {
+      return getPathError(value, 'pathExists', t);
+    }
   }
   return { error: false };
 }
