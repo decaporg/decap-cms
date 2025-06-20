@@ -100,6 +100,9 @@ export default class CodeControl extends React.Component {
   }
 
   componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(CodeControl.propTypes, this.props, 'prop', 'CodeControl');
+
     this.setState({
       lang: this.getInitialLang() || '',
     });
