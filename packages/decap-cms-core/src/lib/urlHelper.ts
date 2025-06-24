@@ -56,10 +56,10 @@ export function getCharReplacer(
   encoding: string,
   options: {
     replacement: NonNullable<CmsSlug['sanitize_replacement']>;
-    preserveSlash?: boolean;
+    preserveSlashes?: boolean;
   },
 ) {
-  const { replacement, preserveSlash } = options;
+  const { replacement, preserveSlashes } = options;
   let validChar: (char: string) => boolean;
 
   if (encoding === 'unicode') {
@@ -76,7 +76,7 @@ export function getCharReplacer(
   }
 
   return (char: string, i = 0, arr: string[] = [char]) => {
-    if (preserveSlash && char === '/' && i !== 0 && i !== arr.length - 1) {
+    if (preserveSlashes && char === '/' && i !== 0 && i !== arr.length - 1) {
       return char;
     }
 
@@ -89,10 +89,10 @@ export function sanitizeURI(
   options?: {
     replacement: CmsSlug['sanitize_replacement'];
     encoding: CmsSlug['encoding'];
-    preserveSlash?: boolean;
+    preserveSlashes?: boolean;
   },
 ) {
-  const { replacement = '', encoding = 'unicode', preserveSlash } = options || {};
+  const { replacement = '', encoding = 'unicode', preserveSlashes } = options || {};
 
   if (!isString(str)) {
     throw new Error('The input slug must be a string.');
@@ -103,7 +103,7 @@ export function sanitizeURI(
 
   // `Array.from` must be used instead of `String.split` because
   //   `split` converts things like emojis into UTF-16 surrogate pairs.
-  return Array.from(str).map(getCharReplacer(encoding, { replacement, preserveSlash })).join('');
+  return Array.from(str).map(getCharReplacer(encoding, { replacement, preserveSlashes })).join('');
 }
 
 export function sanitizeChar(char: string, options?: CmsSlug) {
@@ -111,7 +111,7 @@ export function sanitizeChar(char: string, options?: CmsSlug) {
   return getCharReplacer(encoding, { replacement })(char);
 }
 
-export function sanitizeSlug(str: string, options?: CmsSlug, preserveSlash?: boolean) {
+export function sanitizeSlug(str: string, options?: CmsSlug, preserveSlashes?: boolean) {
   if (!isString(str)) {
     throw new Error('The input slug must be a string.');
   }
@@ -124,8 +124,8 @@ export function sanitizeSlug(str: string, options?: CmsSlug, preserveSlash?: boo
 
   const sanitizedSlug = flow([
     ...(stripDiacritics ? [diacritics.remove] : []),
-    partialRight(sanitizeURI, { replacement, encoding, preserveSlash }),
-    preserveSlash ? identity : partialRight(sanitizeFilename, { replacement }),
+    partialRight(sanitizeURI, { replacement, encoding, preserveSlashes }),
+    preserveSlashes ? identity : partialRight(sanitizeFilename, { replacement }),
   ])(str);
 
   // Remove any doubled or leading/trailing replacement characters (that were added in the sanitizers).
