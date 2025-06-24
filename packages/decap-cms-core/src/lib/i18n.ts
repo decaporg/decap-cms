@@ -1,5 +1,7 @@
 import { Map, List } from 'immutable';
-import { set, groupBy, escapeRegExp } from 'lodash';
+import set from 'lodash/set';
+import groupBy from 'lodash/groupBy';
+import escapeRegExp from 'lodash/escapeRegExp';
 
 import { isNestedSubfolders, selectEntrySlug } from '../reducers/collections';
 

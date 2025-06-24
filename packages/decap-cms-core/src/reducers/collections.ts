@@ -1,5 +1,6 @@
 import { List, Set, fromJS, OrderedMap } from 'immutable';
-import { get, escapeRegExp } from 'lodash';
+import get from 'lodash/get';
+import escapeRegExp from 'lodash/escapeRegExp';
 import { stringTemplate } from 'decap-cms-lib-widgets';
 
 import consoleError from '../lib/consoleError';

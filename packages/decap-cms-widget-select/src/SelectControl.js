@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Map, List, fromJS } from 'immutable';
-import { find } from 'lodash';
+import find from 'lodash/find';
 import Select from 'react-select';
 import { reactSelectStyles } from 'decap-cms-ui-default';
 import { validations } from 'decap-cms-lib-widgets';
@@ -97,6 +97,9 @@ export default class SelectControl extends React.Component {
   };
 
   componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(SelectControl.propTypes, this.props, 'prop', 'SelectControl');
+
     const { field, onChange, value } = this.props;
     if (field.get('required') && field.get('multiple')) {
       if (value && !List.isList(value)) {

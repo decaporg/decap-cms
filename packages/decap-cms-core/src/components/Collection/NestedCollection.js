@@ -9,7 +9,7 @@ import { stringTemplate } from 'decap-cms-lib-widgets';
 import { Icon, colors, components } from 'decap-cms-ui-default';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { sortBy } from 'lodash';
+import sortBy from 'lodash/sortBy';
 
 import { selectEntries } from '../../reducers/entries';
 import { isNestedSubfolders, selectEntryCollectionTitle } from '../../reducers/collections';
@@ -261,6 +261,11 @@ export class NestedCollection extends React.Component {
       selected: null,
       useFilter: true,
     };
+  }
+
+  componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(NestedCollection.propTypes, this.props, 'prop', 'NestedCollection');
   }
 
   componentDidUpdate(prevProps) {

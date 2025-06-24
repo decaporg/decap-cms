@@ -4,7 +4,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import { Loader } from 'decap-cms-ui-default';
 import { translate } from 'react-polyglot';
-import { debounce } from 'lodash';
+import debounce from 'lodash/debounce';
 
 import { history, navigateToCollection, navigateToNewEntry } from '../../routing/history';
 import { logoutUser } from '../../actions/auth';
@@ -82,6 +82,9 @@ export class Editor extends React.Component {
   };
 
   componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(Editor.propTypes, this.props, 'prop', 'Editor');
+
     const {
       newEntry,
       collection,

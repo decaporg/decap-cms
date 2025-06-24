@@ -1,5 +1,5 @@
 import { fromJS, List, Map } from 'immutable';
-import { isEqual } from 'lodash';
+import isEqual from 'lodash/isEqual';
 import { Cursor } from 'decap-cms-lib-util';
 
 import { selectCollectionEntriesCursor } from '../reducers/cursors';

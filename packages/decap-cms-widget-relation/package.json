@@ -24,7 +24,7 @@
     "@dnd-kit/core": "^6.0.8",
     "@dnd-kit/modifiers": "^6.0.1",
     "@dnd-kit/sortable": "^7.0.2",
-    "react-select": "^4.0.0",
+    "react-select": "^5.10.0",
     "react-window": "^1.8.5"
   },
   "peerDependencies": {
@@ -35,7 +35,7 @@
     "immutable": "^3.7.6",
     "lodash": "^4.17.11",
     "prop-types": "^15.7.2",
-    "react": "^18.2.0",
+    "react": "^19.1.0",
     "uuid": "^8.3.2"
   }
 }
