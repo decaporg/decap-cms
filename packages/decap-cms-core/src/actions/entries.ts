@@ -389,6 +389,8 @@ export function draftDuplicateEntry(entry: EntryMap) {
     type: DRAFT_CREATE_DUPLICATE_FROM_ENTRY,
     payload: createEntry(entry.get('collection'), '', '', {
       data: entry.get('data'),
+      meta: entry.get('meta').toJS(),
+      i18n: entry.get('i18n').toJS(),
       mediaFiles: entry.get('mediaFiles').toJS(),
     }),
   };
