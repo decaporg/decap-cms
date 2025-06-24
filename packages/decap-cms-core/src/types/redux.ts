@@ -557,7 +557,7 @@ export type EntryObject = {
   status: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   i18n: any;
-  meta: StaticallyTypedRecord<{ path?: string, path_type?: string }>;
+  meta: StaticallyTypedRecord<{ path?: string; path_type?: string }>;
 };
 
 export type EntryMap = StaticallyTypedRecord<EntryObject>;
