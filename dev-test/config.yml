@@ -41,6 +41,8 @@ collections: # A list of collections the CMS should be able to edit
     slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
     summary: '{{title}} -- {{year}}/{{month}}/{{day}}'
     create: true # Allow users to create new documents in this collection
+    editor:
+      visualEditing: true
     view_filters:
       - label: Posts With Index
         field: title
@@ -64,9 +66,8 @@ collections: # A list of collections the CMS should be able to edit
           label: 'Publish Date',
           name: 'date',
           widget: 'datetime',
-          date_format: 'YYYY-MM-DD',
-          time_format: 'HH:mm',
           format: 'YYYY-MM-DD HH:mm',
+          default: '{{now}}',
         }
       - label: 'Cover Image'
         name: 'image'
@@ -75,6 +76,31 @@ collections: # A list of collections the CMS should be able to edit
         tagname: ''
 
       - { label: 'Body', name: 'body', widget: 'markdown', hint: 'Main content goes here.' }
+
+  - name: 'restaurants' # Used in routes, ie.: /admin/collections/:slug/edit
+    label: 'Restaurants' # Used in the UI
+    label_singular: 'Restaurant' # Used in the UI, ie: "New Post"
+    description: >
+      Restaurants is an entry type used for testing galleries, relations and other widgets.
+      The tests must be written in such way that adding new fields does not affect previous flows.
+    folder: '_restaurants'
+    slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
+    summary: '{{title}} -- {{year}}/{{month}}/{{day}}'
+    create: true # Allow users to create new documents in this collection
+    editor:
+      visualEditing: true
+    fields: # The fields each document in this collection have
+      - { label: 'Title', name: 'title', widget: 'string', tagname: 'h1' }
+      - { label: 'Body', name: 'body', widget: 'markdown', hint: 'Main content goes here.' }
+      - { name: 'gallery', widget: 'image', choose_url: true, media_library: {config: {multiple: true, max_files: 999}}}
+      - { name: 'post', widget: relation, collection: posts, multiple: true, search_fields: [ "title" ], display_fields: [ "title" ], value_field: "{{slug}}", filters: [ {field: "draft", values: [false]} ] }
+      - name: authors
+        label: Authors
+        label_singular: 'Author'
+        widget: list
+        fields:
+          - { label: 'Name', name: 'name', widget: 'string', hint: 'First and Last' }
+          - { label: 'Description', name: 'description', widget: 'markdown' }
 
   - name: 'faq' # Used in routes, ie.: /admin/collections/:slug/edit
     label: 'FAQ' # Used in the UI
@@ -138,7 +164,7 @@ collections: # A list of collections the CMS should be able to edit
         name: 'post'
         widget: 'relationKitchenSinkPost'
         collection: 'posts'
-        display_fields: ['title', 'date']
+        display_fields: ['title', 'datetime']
         search_fields: ['title', 'body']
         value_field: 'title'
       - { label: 'Title', name: 'title', widget: 'string' }
@@ -148,15 +174,6 @@ collections: # A list of collections the CMS should be able to edit
       - { label: 'Number', name: 'number', widget: 'number', hint: 'To infinity and beyond!' }
       - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
       - { label: 'Datetime', name: 'datetime', widget: 'datetime' }
-      - { label: 'Date', name: 'date', widget: 'date' }
-      - { label: 'Color', name: 'color', widget: 'color' }
-      - {
-          label: 'Color string editable and alpha enabled',
-          name: 'colorEditable',
-          widget: 'color',
-          enableAlpha: true,
-          allowInput: true,
-        }
       - { label: 'Image', name: 'image', widget: 'image' }
       - { label: 'File', name: 'file', widget: 'file' }
       - { label: 'Select', name: 'select', widget: 'select', options: ['a', 'b', 'c'] }
@@ -167,14 +184,8 @@ collections: # A list of collections the CMS should be able to edit
           options: ['a', 'b', 'c'],
           multiple: true,
         }
-      - {
-          label: 'Select numeric',
-          name: 'select_numeric',
-          widget: 'select',
-          options:
-            [{ label: 'One', value: 1 }, { label: 'Two', value: 2 }, { label: 'Three', value: 3 }],
-        }
       - { label: 'Hidden', name: 'hidden', widget: 'hidden', default: 'hidden' }
+      - { label: 'Color', name: 'color', widget: 'color' }
       - label: 'Object'
         name: 'object'
         widget: 'object'
@@ -192,7 +203,6 @@ collections: # A list of collections the CMS should be able to edit
           - { label: 'Number', name: 'number', widget: 'number' }
           - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
           - { label: 'Datetime', name: 'datetime', widget: 'datetime' }
-          - { label: 'Date', name: 'date', widget: 'date' }
           - { label: 'Image', name: 'image', widget: 'image' }
           - { label: 'File', name: 'file', widget: 'file' }
           - { label: 'Select', name: 'select', widget: 'select', options: ['a', 'b', 'c'] }
@@ -206,7 +216,6 @@ collections: # A list of collections the CMS should be able to edit
           - { label: 'Number', name: 'number', widget: 'number' }
           - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
           - { label: 'Datetime', name: 'datetime', widget: 'datetime' }
-          - { label: 'Date', name: 'date', widget: 'date' }
           - { label: 'Image', name: 'image', widget: 'image' }
           - { label: 'File', name: 'file', widget: 'file' }
           - { label: 'Select', name: 'select', widget: 'select', options: ['a', 'b', 'c'] }
@@ -220,7 +229,6 @@ collections: # A list of collections the CMS should be able to edit
               - { label: 'Number', name: 'number', widget: 'number' }
               - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
               - { label: 'Datetime', name: 'datetime', widget: 'datetime' }
-              - { label: 'Date', name: 'date', widget: 'date' }
               - { label: 'Image', name: 'image', widget: 'image' }
               - { label: 'File', name: 'file', widget: 'file' }
               - { label: 'Select', name: 'select', widget: 'select', options: ['a', 'b', 'c'] }
@@ -240,7 +248,6 @@ collections: # A list of collections the CMS should be able to edit
                   - { label: 'Number', name: 'number', widget: 'number' }
                   - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
                   - { label: 'Datetime', name: 'datetime', widget: 'datetime' }
-                  - { label: 'Date', name: 'date', widget: 'date' }
                   - { label: 'Image', name: 'image', widget: 'image' }
                   - { label: 'File', name: 'file', widget: 'file' }
                   - { label: 'Select', name: 'select', widget: 'select', options: ['a', 'b', 'c'] }
@@ -255,7 +262,6 @@ collections: # A list of collections the CMS should be able to edit
                       - { label: 'Number', name: 'number', widget: 'number' }
                       - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
                       - { label: 'Datetime', name: 'datetime', widget: 'datetime' }
-                      - { label: 'Date', name: 'date', widget: 'date' }
                       - { label: 'Image', name: 'image', widget: 'image' }
                       - { label: 'File', name: 'file', widget: 'file' }
                       - {
@@ -287,6 +293,16 @@ collections: # A list of collections the CMS should be able to edit
             name: 'type_3_object'
             widget: 'object'
             fields:
-              - { label: 'Date', name: 'date', widget: 'date' }
               - { label: 'Image', name: 'image', widget: 'image' }
               - { label: 'File', name: 'file', widget: 'file' }
+  - name: pages # a nested collection
+    label: Pages
+    label_singular: 'Page'
+    folder: _pages
+    create: true
+    nested: { depth: 100, subfolders: false }
+    fields:
+      - label: Title
+        name: title
+        widget: string
+    meta: { path: { widget: string, label: 'Path', index_file: 'index' } }

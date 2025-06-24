@@ -7,11 +7,11 @@ jobs:
   create-release:
     name: Create GitHub Release
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/netlify-cms@')
+    if: startsWith(github.ref, 'refs/tags/decap-cms@')
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Get semver number
         id: get_semver

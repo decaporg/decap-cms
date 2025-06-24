@@ -1,22 +1,27 @@
 const path = require('path');
-const { extendDefaultPlugins } = require('svgo');
 
-const appVersion = require('./packages/netlify-cms-app/package.json').version;
-const coreVersion = require('./packages/netlify-cms-core/package.json').version;
+const appVersion = require('./packages/decap-cms-app/package.json').version;
+const coreVersion = require('./packages/decap-cms-core/package.json').version;
 const isProduction = process.env.NODE_ENV === 'production';
 const isTest = process.env.NODE_ENV === 'test';
 const isESM = process.env.NODE_ENV === 'esm';
 
 console.log('Build Package:', path.basename(process.cwd()));
 
-const defaultPlugins = [
-  'lodash',
+// Always enabled plugins
+const basePlugins = [
   [
     'babel-plugin-transform-builtin-extend',
     {
       globals: ['Error'],
     },
   ],
+  'babel-plugin-inline-json-import',
+];
+
+// Legacy transforms for non-ESM builds
+// REVISIT: We probably don't need any of these since we use preset-env
+const legacyPlugins = [
   'transform-export-extensions',
   '@babel/plugin-proposal-class-properties',
   '@babel/plugin-proposal-object-rest-spread',
@@ -24,29 +29,34 @@ const defaultPlugins = [
   '@babel/plugin-proposal-nullish-coalescing-operator',
   '@babel/plugin-proposal-optional-chaining',
   '@babel/plugin-syntax-dynamic-import',
-  'babel-plugin-inline-json-import',
 ];
 
+const defaultPlugins = [...basePlugins, ...(isESM ? [] : legacyPlugins)];
+
 const svgo = {
-  plugins: extendDefaultPlugins([
+  plugins: [
     {
-      name: 'removeViewBox',
-      active: false,
+      name: 'preset-default',
+      params: {
+        overrides: {
+          removeViewBox: false,
+        },
+      },
     },
-  ]),
+  ],
 };
 
 function presets() {
   return [
     '@babel/preset-react',
-    '@babel/preset-env',
+    ...(!isESM ? [['@babel/preset-env', {}]] : []),
     [
       '@emotion/babel-preset-css-prop',
       {
-        autoLabel: true,
+        autoLabel: 'always',
       },
     ],
-    '@babel/typescript',
+    '@babel/preset-typescript',
   ];
 }
 
@@ -57,14 +67,20 @@ function plugins() {
       [
         'transform-define',
         {
-          NETLIFY_CMS_APP_VERSION: `${appVersion}`,
-          NETLIFY_CMS_CORE_VERSION: `${coreVersion}`,
+          DECAP_CMS_APP_VERSION: `${appVersion}`,
+          DECAP_CMS_CORE_VERSION: `${coreVersion}`,
         },
       ],
       [
         'inline-react-svg',
         {
           svgo,
+        },
+      ],
+      [
+        'inline-import',
+        {
+          extensions: ['.css'],
         },
       ],
     ];
@@ -83,7 +99,7 @@ function plugins() {
   }
 
   if (!isProduction) {
-    return [...defaultPlugins, 'react-hot-loader/babel'];
+    return [...defaultPlugins];
   }
 
   return defaultPlugins;

@@ -1,0 +1,277 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GitGatewayAuthenticationPage should render with identity error 1`] = `
+<DocumentFragment>
+  .emotion-0 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-flex-flow: column nowrap;
+  -webkit-flex-flow: column nowrap;
+  -ms-flex-flow: column nowrap;
+  flex-flow: column nowrap;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  gap: 50px;
+  height: 100vh;
+}
+
+.emotion-2 {
+  width: 300px;
+  height: auto;
+}
+
+.emotion-4 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px 0 rgba(68, 74, 87, 0.15),0 1px 3px 0 rgba(68, 74, 87, 0.25);
+  height: 36px;
+  line-height: 36px;
+  font-weight: 500;
+  padding: 0 15px;
+  background-color: #798291;
+  color: #fff;
+  background-color: #313d3e;
+  color: #fff;
+  padding: 0 12px;
+  margin-top: 0;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  position: relative;
+}
+
+.emotion-4:focus,
+.emotion-4:hover {
+  color: #fff;
+  background-color: #555a65;
+}
+
+.emotion-4[disabled] {
+  background-color: #eff0f4;
+  color: #798291;
+  cursor: default;
+}
+
+.emotion-7 {
+  display: inline-block;
+  line-height: 0;
+  width: 100px;
+  height: 100px;
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -ms-transform: rotate(0deg);
+  transform: rotate(0deg);
+  color: #c4c6d2;
+  position: absolute;
+  bottom: 10px;
+}
+
+.emotion-7 path:not(.no-fill),
+.emotion-7 circle:not(.no-fill),
+.emotion-7 polygon:not(.no-fill),
+.emotion-7 rect:not(.no-fill) {
+  fill: currentColor;
+}
+
+.emotion-7 path.clipped {
+  fill: transparent;
+}
+
+.emotion-7 svg {
+  width: 100%;
+  height: 100%;
+}
+
+<section
+    class="emotion-0 emotion-1"
+  >
+    <span
+      class="emotion-2 emotion-3"
+    >
+      <img
+        alt="Logo"
+        src="logo_url"
+      />
+    </span>
+    <button
+      class="emotion-4 emotion-5"
+    >
+      auth.loginWithNetlifyIdentity
+    </button>
+    <span
+      class="emotion-6 emotion-7 emotion-8"
+    >
+      <svg
+        fill="none"
+        height="90"
+        viewBox="0 0 335 90"
+        width="335"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          class="no-fill"
+          d="M30.73.15 0 2.95l3.67 40.21 20.03-1.83-1.99-21.86 10.71-.98c10.61-.97 19.14 7.53 20.29 20.19l19.67-1.79C70.34 14.72 51.64-1.75 30.73.15ZM73.61 49.51c0 12.72-7.73 21.95-18.37 21.95H44.49V49.47H24.38v40.42h30.86c21.02 0 38.12-18.11 38.12-40.38v-.04H73.61v.04Z"
+          fill="#FF0082"
+        />
+        <path
+          class="no-fill"
+          d="M131.65 23.71h20.01c14.41 0 24.29 9.09 24.29 23.06 0 13.97-9.88 23.06-24.29 23.06h-20.01V23.71Zm19.51 37.35c8.75 0 14.47-5.47 14.47-14.29s-5.73-14.29-14.47-14.29h-9.31v28.59h9.31v-.01ZM207.61 58.69l5.22 5.93c-3.15 3.75-7.87 5.73-13.97 5.73-11.7 0-19.32-7.71-19.32-18.25s7.68-18.25 18.12-18.25c9.56 0 17.43 6.59 17.49 17.92l-25.04 5.07c1.45 3.49 4.59 5.27 9 5.27 3.59 0 6.17-1.12 8.5-3.43v.01Zm-18.44-7.64 16.49-3.36c-.94-3.62-3.9-6.06-7.99-6.06-4.91 0-8.31 3.43-8.5 9.42ZM218.25 52.1c0-10.67 7.87-18.25 18.88-18.25 7.11 0 12.71 3.23 15.17 9.02l-7.61 4.28c-1.83-3.36-4.53-4.87-7.61-4.87-4.97 0-8.87 3.62-8.87 9.81s3.9 9.81 8.87 9.81c3.08 0 5.79-1.45 7.61-4.87l7.61 4.35c-2.45 5.67-8.05 8.96-15.17 8.96-11.01 0-18.88-7.58-18.88-18.25v.01ZM290.93 34.38v35.44h-9.38v-4.08c-2.45 3.1-6.04 4.61-10.57 4.61-9.57 0-16.93-7.11-16.93-18.25s7.36-18.25 16.93-18.25c4.15 0 7.68 1.38 10.13 4.28v-3.75h9.82ZM281.3 52.1c0-6.13-3.78-9.81-8.62-9.81S264 45.98 264 52.1c0 6.12 3.78 9.81 8.68 9.81s8.62-3.69 8.62-9.81ZM334.54 52.1c0 11.13-7.36 18.25-16.86 18.25-4.22 0-7.68-1.38-10.19-4.28V82.6h-9.82V34.38h9.38v4.08c2.45-3.1 6.1-4.61 10.63-4.61 9.5 0 16.86 7.11 16.86 18.25Zm-9.94 0c0-6.13-3.71-9.81-8.62-9.81-4.91 0-8.62 3.69-8.62 9.81 0 6.12 3.71 9.81 8.62 9.81 4.91 0 8.62-3.69 8.62-9.81Z"
+          fill="#000"
+        />
+      </svg>
+    </span>
+  </section>
+</DocumentFragment>
+`;
+
+exports[`GitGatewayAuthenticationPage should render with no identity error 1`] = `
+<DocumentFragment>
+  .emotion-0 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-flex-flow: column nowrap;
+  -webkit-flex-flow: column nowrap;
+  -ms-flex-flow: column nowrap;
+  flex-flow: column nowrap;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  gap: 50px;
+  height: 100vh;
+}
+
+.emotion-2 {
+  width: 300px;
+  height: auto;
+}
+
+.emotion-4 {
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px 0 rgba(68, 74, 87, 0.15),0 1px 3px 0 rgba(68, 74, 87, 0.25);
+  height: 36px;
+  line-height: 36px;
+  font-weight: 500;
+  padding: 0 15px;
+  background-color: #798291;
+  color: #fff;
+  background-color: #313d3e;
+  color: #fff;
+  padding: 0 12px;
+  margin-top: 0;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  position: relative;
+}
+
+.emotion-4:focus,
+.emotion-4:hover {
+  color: #fff;
+  background-color: #555a65;
+}
+
+.emotion-4[disabled] {
+  background-color: #eff0f4;
+  color: #798291;
+  cursor: default;
+}
+
+.emotion-7 {
+  display: inline-block;
+  line-height: 0;
+  width: 100px;
+  height: 100px;
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -ms-transform: rotate(0deg);
+  transform: rotate(0deg);
+  color: #c4c6d2;
+  position: absolute;
+  bottom: 10px;
+}
+
+.emotion-7 path:not(.no-fill),
+.emotion-7 circle:not(.no-fill),
+.emotion-7 polygon:not(.no-fill),
+.emotion-7 rect:not(.no-fill) {
+  fill: currentColor;
+}
+
+.emotion-7 path.clipped {
+  fill: transparent;
+}
+
+.emotion-7 svg {
+  width: 100%;
+  height: 100%;
+}
+
+<section
+    class="emotion-0 emotion-1"
+  >
+    <span
+      class="emotion-2 emotion-3"
+    >
+      <img
+        alt="Logo"
+        src="logo_url"
+      />
+    </span>
+    <button
+      class="emotion-4 emotion-5"
+    >
+      auth.loginWithNetlifyIdentity
+    </button>
+    <span
+      class="emotion-6 emotion-7 emotion-8"
+    >
+      <svg
+        fill="none"
+        height="90"
+        viewBox="0 0 335 90"
+        width="335"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          class="no-fill"
+          d="M30.73.15 0 2.95l3.67 40.21 20.03-1.83-1.99-21.86 10.71-.98c10.61-.97 19.14 7.53 20.29 20.19l19.67-1.79C70.34 14.72 51.64-1.75 30.73.15ZM73.61 49.51c0 12.72-7.73 21.95-18.37 21.95H44.49V49.47H24.38v40.42h30.86c21.02 0 38.12-18.11 38.12-40.38v-.04H73.61v.04Z"
+          fill="#FF0082"
+        />
+        <path
+          class="no-fill"
+          d="M131.65 23.71h20.01c14.41 0 24.29 9.09 24.29 23.06 0 13.97-9.88 23.06-24.29 23.06h-20.01V23.71Zm19.51 37.35c8.75 0 14.47-5.47 14.47-14.29s-5.73-14.29-14.47-14.29h-9.31v28.59h9.31v-.01ZM207.61 58.69l5.22 5.93c-3.15 3.75-7.87 5.73-13.97 5.73-11.7 0-19.32-7.71-19.32-18.25s7.68-18.25 18.12-18.25c9.56 0 17.43 6.59 17.49 17.92l-25.04 5.07c1.45 3.49 4.59 5.27 9 5.27 3.59 0 6.17-1.12 8.5-3.43v.01Zm-18.44-7.64 16.49-3.36c-.94-3.62-3.9-6.06-7.99-6.06-4.91 0-8.31 3.43-8.5 9.42ZM218.25 52.1c0-10.67 7.87-18.25 18.88-18.25 7.11 0 12.71 3.23 15.17 9.02l-7.61 4.28c-1.83-3.36-4.53-4.87-7.61-4.87-4.97 0-8.87 3.62-8.87 9.81s3.9 9.81 8.87 9.81c3.08 0 5.79-1.45 7.61-4.87l7.61 4.35c-2.45 5.67-8.05 8.96-15.17 8.96-11.01 0-18.88-7.58-18.88-18.25v.01ZM290.93 34.38v35.44h-9.38v-4.08c-2.45 3.1-6.04 4.61-10.57 4.61-9.57 0-16.93-7.11-16.93-18.25s7.36-18.25 16.93-18.25c4.15 0 7.68 1.38 10.13 4.28v-3.75h9.82ZM281.3 52.1c0-6.13-3.78-9.81-8.62-9.81S264 45.98 264 52.1c0 6.12 3.78 9.81 8.68 9.81s8.62-3.69 8.62-9.81ZM334.54 52.1c0 11.13-7.36 18.25-16.86 18.25-4.22 0-7.68-1.38-10.19-4.28V82.6h-9.82V34.38h9.38v4.08c2.45-3.1 6.1-4.61 10.63-4.61 9.5 0 16.86 7.11 16.86 18.25Zm-9.94 0c0-6.13-3.71-9.81-8.62-9.81-4.91 0-8.62 3.69-8.62 9.81 0 6.12 3.71 9.81 8.62 9.81 4.91 0 8.62-3.69 8.62-9.81Z"
+          fill="#000"
+        />
+      </svg>
+    </span>
+  </section>
+</DocumentFragment>
+`;
