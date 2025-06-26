@@ -4,7 +4,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import { css } from '@emotion/react';
 import { Map, List } from 'immutable';
-import { once } from 'lodash';
+import once from 'lodash/once';
 import { v4 as uuid } from 'uuid';
 import { oneLine } from 'common-tags';
 import {
@@ -266,6 +266,11 @@ export default function withFileControl({ forImage } = {}) {
     constructor(props) {
       super(props);
       this.controlID = uuid();
+    }
+
+    componentDidMount() {
+      // Manually validate PropTypes - React 19 breaking change
+      PropTypes.checkPropTypes(FileControl.propTypes, this.props, 'prop', 'FileControl');
     }
 
     shouldComponentUpdate(nextProps) {

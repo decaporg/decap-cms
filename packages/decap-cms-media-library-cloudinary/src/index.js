@@ -1,4 +1,4 @@
-import { pick } from 'lodash';
+import pick from 'lodash/pick';
 import { loadScript } from 'decap-cms-lib-util';
 
 const defaultOptions = {
