@@ -139,6 +139,10 @@ exports[`ListControl should add to list when add button is clicked 1`] = `
 }
 
 .emotion-17 {
+  background-color: #dfdfe3;
+}
+
+.emotion-19 {
   display: none;
   border-top: 0;
   color: inherit;
@@ -200,8 +204,7 @@ exports[`ListControl should add to list when add button is clicked 1`] = `
         class="emotion-15 emotion-16"
       >
         <mock-list-item-top-bar
-          classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
-          collapsed="false"
+          class="emotion-17 emotion-18"
           data-testid="styled-list-item-top-bar-0"
           id="0"
         >
@@ -210,17 +213,16 @@ exports[`ListControl should add to list when add button is clicked 1`] = `
           </button>
         </mock-list-item-top-bar>
         <div
-          class="emotion-17 emotion-18"
+          class="emotion-19 emotion-20"
         >
           No string
         </div>
         <mock-object-control
           classnamewrapper="classNameWrapper"
-          collapsed="false"
           data-testid="object-control-0"
           field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
           fieldserrors="Map {}"
-          forlist="true"
+          forlist=""
           parentids="forID,0"
           validationkey="0"
           value="Map {}"
@@ -241,7 +243,7 @@ exports[`ListControl should add to list when add button is clicked 1`] = `
         aria-live="assertive"
         id="DndLiveRegion-19"
         role="status"
-        style="position: fixed; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip-path: inset(100%); white-space: nowrap;"
+        style="position: fixed; top: 0px; left: 0px; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip-path: inset(100%); white-space: nowrap;"
       />
     </div>
   </div>
@@ -387,6 +389,10 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
 }
 
 .emotion-17 {
+  background-color: #dfdfe3;
+}
+
+.emotion-19 {
   display: none;
   border-top: 0;
   color: inherit;
@@ -448,8 +454,7 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
         class="emotion-15 emotion-16"
       >
         <mock-list-item-top-bar
-          classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
-          collapsed="false"
+          class="emotion-17 emotion-18"
           data-testid="styled-list-item-top-bar-0"
           id="0"
         >
@@ -458,17 +463,16 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
           </button>
         </mock-list-item-top-bar>
         <div
-          class="emotion-17 emotion-18"
+          class="emotion-19 emotion-20"
         >
           item 1
         </div>
         <mock-object-control
           classnamewrapper="classNameWrapper"
-          collapsed="false"
           data-testid="object-control-0"
           field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"minimize_collapsed\\": true, \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
           fieldserrors="Map {}"
-          forlist="true"
+          forlist=""
           parentids="forID,0"
           validationkey="0"
           value="Map { \\"string\\": \\"item 1\\" }"
@@ -478,8 +482,7 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
         class="emotion-15 emotion-16"
       >
         <mock-list-item-top-bar
-          classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
-          collapsed="false"
+          class="emotion-17 emotion-18"
           data-testid="styled-list-item-top-bar-1"
           id="1"
         >
@@ -488,17 +491,16 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
           </button>
         </mock-list-item-top-bar>
         <div
-          class="emotion-17 emotion-18"
+          class="emotion-19 emotion-20"
         >
           item 2
         </div>
         <mock-object-control
           classnamewrapper="classNameWrapper"
-          collapsed="false"
           data-testid="object-control-1"
           field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"minimize_collapsed\\": true, \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
           fieldserrors="Map {}"
-          forlist="true"
+          forlist=""
           parentids="forID,1"
           validationkey="1"
           value="Map { \\"string\\": \\"item 2\\" }"
@@ -519,7 +521,7 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
         aria-live="assertive"
         id="DndLiveRegion-20"
         role="status"
-        style="position: fixed; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip-path: inset(100%); white-space: nowrap;"
+        style="position: fixed; top: 0px; left: 0px; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip-path: inset(100%); white-space: nowrap;"
       />
     </div>
   </div>
@@ -665,6 +667,10 @@ exports[`ListControl should remove from list when remove button is clicked 2`] =
 }
 
 .emotion-17 {
+  background-color: #dfdfe3;
+}
+
+.emotion-19 {
   display: block;
   border-top: 0;
   color: inherit;
@@ -726,8 +732,8 @@ exports[`ListControl should remove from list when remove button is clicked 2`] =
         class="emotion-15 emotion-16"
       >
         <mock-list-item-top-bar
-          classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
-          collapsed="true"
+          class="emotion-17 emotion-18"
+          collapsed=""
           data-testid="styled-list-item-top-bar-1"
           id="1"
         >
@@ -736,17 +742,17 @@ exports[`ListControl should remove from list when remove button is clicked 2`] =
           </button>
         </mock-list-item-top-bar>
         <div
-          class="emotion-17 emotion-18"
+          class="emotion-19 emotion-20"
         >
           item 2
         </div>
         <mock-object-control
           classnamewrapper="classNameWrapper css-1pznrxi"
-          collapsed="true"
+          collapsed=""
           data-testid="object-control-1"
           field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"minimize_collapsed\\": true, \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
           fieldserrors="Map {}"
-          forlist="true"
+          forlist=""
           parentids="forID,1"
           validationkey="1"
           value="Map { \\"string\\": \\"item 2\\" }"
@@ -767,7 +773,7 @@ exports[`ListControl should remove from list when remove button is clicked 2`] =
         aria-live="assertive"
         id="DndLiveRegion-20"
         role="status"
-        style="position: fixed; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip-path: inset(100%); white-space: nowrap;"
+        style="position: fixed; top: 0px; left: 0px; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip-path: inset(100%); white-space: nowrap;"
       />
     </div>
   </div>
@@ -924,6 +930,10 @@ exports[`ListControl should render list with fields with collapse = "false" and 
 }
 
 .emotion-17 {
+  background-color: #dfdfe3;
+}
+
+.emotion-19 {
   display: none;
   border-top: 0;
   color: inherit;
@@ -985,8 +995,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
         class="emotion-15 emotion-16"
       >
         <mock-list-item-top-bar
-          classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
-          collapsed="false"
+          class="emotion-17 emotion-18"
           data-testid="styled-list-item-top-bar-0"
           id="0"
         >
@@ -995,17 +1004,16 @@ exports[`ListControl should render list with fields with collapse = "false" and 
           </button>
         </mock-list-item-top-bar>
         <div
-          class="emotion-17 emotion-18"
+          class="emotion-19 emotion-20"
         >
           item 1
         </div>
         <mock-object-control
           classnamewrapper="classNameWrapper"
-          collapsed="false"
           data-testid="object-control-0"
           field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
           fieldserrors="Map {}"
-          forlist="true"
+          forlist=""
           parentids="forID,0"
           validationkey="0"
           value="Map { \\"string\\": \\"item 1\\" }"
@@ -1015,8 +1023,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
         class="emotion-15 emotion-16"
       >
         <mock-list-item-top-bar
-          classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
-          collapsed="false"
+          class="emotion-17 emotion-18"
           data-testid="styled-list-item-top-bar-1"
           id="1"
         >
@@ -1025,17 +1032,16 @@ exports[`ListControl should render list with fields with collapse = "false" and 
           </button>
         </mock-list-item-top-bar>
         <div
-          class="emotion-17 emotion-18"
+          class="emotion-19 emotion-20"
         >
           item 2
         </div>
         <mock-object-control
           classnamewrapper="classNameWrapper"
-          collapsed="false"
           data-testid="object-control-1"
           field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
           fieldserrors="Map {}"
-          forlist="true"
+          forlist=""
           parentids="forID,1"
           validationkey="1"
           value="Map { \\"string\\": \\"item 2\\" }"
@@ -1056,7 +1062,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
         aria-live="assertive"
         id="DndLiveRegion-16"
         role="status"
-        style="position: fixed; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip-path: inset(100%); white-space: nowrap;"
+        style="position: fixed; top: 0px; left: 0px; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip-path: inset(100%); white-space: nowrap;"
       />
     </div>
   </div>
@@ -1202,6 +1208,10 @@ exports[`ListControl should render list with fields with collapse = "false" and 
 }
 
 .emotion-17 {
+  background-color: #dfdfe3;
+}
+
+.emotion-19 {
   display: none;
   border-top: 0;
   color: inherit;
@@ -1263,8 +1273,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
         class="emotion-15 emotion-16"
       >
         <mock-list-item-top-bar
-          classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
-          collapsed="false"
+          class="emotion-17 emotion-18"
           data-testid="styled-list-item-top-bar-0"
           id="0"
         >
@@ -1273,17 +1282,16 @@ exports[`ListControl should render list with fields with collapse = "false" and 
           </button>
         </mock-list-item-top-bar>
         <div
-          class="emotion-17 emotion-18"
+          class="emotion-19 emotion-20"
         >
           item 1
         </div>
         <mock-object-control
           classnamewrapper="classNameWrapper"
-          collapsed="false"
           data-testid="object-control-0"
           field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"minimize_collapsed\\": true, \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
           fieldserrors="Map {}"
-          forlist="true"
+          forlist=""
           parentids="forID,0"
           validationkey="0"
           value="Map { \\"string\\": \\"item 1\\" }"
@@ -1293,8 +1301,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
         class="emotion-15 emotion-16"
       >
         <mock-list-item-top-bar
-          classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
-          collapsed="false"
+          class="emotion-17 emotion-18"
           data-testid="styled-list-item-top-bar-1"
           id="1"
         >
@@ -1303,17 +1310,16 @@ exports[`ListControl should render list with fields with collapse = "false" and 
           </button>
         </mock-list-item-top-bar>
         <div
-          class="emotion-17 emotion-18"
+          class="emotion-19 emotion-20"
         >
           item 2
         </div>
         <mock-object-control
           classnamewrapper="classNameWrapper"
-          collapsed="false"
           data-testid="object-control-1"
           field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"minimize_collapsed\\": true, \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
           fieldserrors="Map {}"
-          forlist="true"
+          forlist=""
           parentids="forID,1"
           validationkey="1"
           value="Map { \\"string\\": \\"item 2\\" }"
@@ -1334,7 +1340,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
         aria-live="assertive"
         id="DndLiveRegion-18"
         role="status"
-        style="position: fixed; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip-path: inset(100%); white-space: nowrap;"
+        style="position: fixed; top: 0px; left: 0px; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip-path: inset(100%); white-space: nowrap;"
       />
     </div>
   </div>
@@ -1480,6 +1486,10 @@ exports[`ListControl should render list with fields with default collapse ("true
 }
 
 .emotion-17 {
+  background-color: #dfdfe3;
+}
+
+.emotion-19 {
   display: block;
   border-top: 0;
   color: inherit;
@@ -1541,8 +1551,8 @@ exports[`ListControl should render list with fields with default collapse ("true
         class="emotion-15 emotion-16"
       >
         <mock-list-item-top-bar
-          classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
-          collapsed="true"
+          class="emotion-17 emotion-18"
+          collapsed=""
           data-testid="styled-list-item-top-bar-0"
           id="0"
         >
@@ -1551,17 +1561,17 @@ exports[`ListControl should render list with fields with default collapse ("true
           </button>
         </mock-list-item-top-bar>
         <div
-          class="emotion-17 emotion-18"
+          class="emotion-19 emotion-20"
         >
           item 1
         </div>
         <mock-object-control
           classnamewrapper="classNameWrapper css-1pznrxi"
-          collapsed="true"
+          collapsed=""
           data-testid="object-control-0"
           field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
           fieldserrors="Map {}"
-          forlist="true"
+          forlist=""
           parentids="forID,0"
           validationkey="0"
           value="Map { \\"string\\": \\"item 1\\" }"
@@ -1571,8 +1581,8 @@ exports[`ListControl should render list with fields with default collapse ("true
         class="emotion-15 emotion-16"
       >
         <mock-list-item-top-bar
-          classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
-          collapsed="true"
+          class="emotion-17 emotion-18"
+          collapsed=""
           data-testid="styled-list-item-top-bar-1"
           id="1"
         >
@@ -1581,17 +1591,17 @@ exports[`ListControl should render list with fields with default collapse ("true
           </button>
         </mock-list-item-top-bar>
         <div
-          class="emotion-17 emotion-18"
+          class="emotion-19 emotion-20"
         >
           item 2
         </div>
         <mock-object-control
           classnamewrapper="classNameWrapper css-1pznrxi"
-          collapsed="true"
+          collapsed=""
           data-testid="object-control-1"
           field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"fields\\": List [ Map { \\"label\\": \\"String\\", \\"name\\": \\"string\\", \\"widget\\": \\"string\\" } ] }"
           fieldserrors="Map {}"
-          forlist="true"
+          forlist=""
           parentids="forID,1"
           validationkey="1"
           value="Map { \\"string\\": \\"item 2\\" }"
@@ -1612,7 +1622,7 @@ exports[`ListControl should render list with fields with default collapse ("true
         aria-live="assertive"
         id="DndLiveRegion-15"
         role="status"
-        style="position: fixed; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip-path: inset(100%); white-space: nowrap;"
+        style="position: fixed; top: 0px; left: 0px; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip-path: inset(100%); white-space: nowrap;"
       />
     </div>
   </div>
@@ -1940,6 +1950,10 @@ exports[`ListControl should render list with nested object 1`] = `
 }
 
 .emotion-17 {
+  background-color: #dfdfe3;
+}
+
+.emotion-19 {
   display: block;
   border-top: 0;
   color: inherit;
@@ -2001,8 +2015,8 @@ exports[`ListControl should render list with nested object 1`] = `
         class="emotion-15 emotion-16"
       >
         <mock-list-item-top-bar
-          classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
-          collapsed="true"
+          class="emotion-17 emotion-18"
+          collapsed=""
           data-testid="styled-list-item-top-bar-0"
           id="0"
         >
@@ -2011,17 +2025,17 @@ exports[`ListControl should render list with nested object 1`] = `
           </button>
         </mock-list-item-top-bar>
         <div
-          class="emotion-17 emotion-18"
+          class="emotion-19 emotion-20"
         >
           Object
         </div>
         <mock-object-control
           classnamewrapper="classNameWrapper css-1pznrxi"
-          collapsed="true"
+          collapsed=""
           data-testid="object-control-0"
           field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"field\\": Map { \\"name\\": \\"object\\", \\"widget\\": \\"object\\", \\"label\\": \\"Object\\", \\"fields\\": List [ Map { \\"name\\": \\"title\\", \\"widget\\": \\"string\\", \\"label\\": \\"Title\\" } ] } }"
           fieldserrors="Map {}"
-          forlist="true"
+          forlist=""
           parentids="forID,0"
           validationkey="0"
           value="Map { \\"object\\": Map { \\"title\\": \\"item 1\\" } }"
@@ -2031,8 +2045,8 @@ exports[`ListControl should render list with nested object 1`] = `
         class="emotion-15 emotion-16"
       >
         <mock-list-item-top-bar
-          classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
-          collapsed="true"
+          class="emotion-17 emotion-18"
+          collapsed=""
           data-testid="styled-list-item-top-bar-1"
           id="1"
         >
@@ -2041,17 +2055,17 @@ exports[`ListControl should render list with nested object 1`] = `
           </button>
         </mock-list-item-top-bar>
         <div
-          class="emotion-17 emotion-18"
+          class="emotion-19 emotion-20"
         >
           Object
         </div>
         <mock-object-control
           classnamewrapper="classNameWrapper css-1pznrxi"
-          collapsed="true"
+          collapsed=""
           data-testid="object-control-1"
           field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"field\\": Map { \\"name\\": \\"object\\", \\"widget\\": \\"object\\", \\"label\\": \\"Object\\", \\"fields\\": List [ Map { \\"name\\": \\"title\\", \\"widget\\": \\"string\\", \\"label\\": \\"Title\\" } ] } }"
           fieldserrors="Map {}"
-          forlist="true"
+          forlist=""
           parentids="forID,1"
           validationkey="1"
           value="Map { \\"object\\": Map { \\"title\\": \\"item 2\\" } }"
@@ -2072,7 +2086,7 @@ exports[`ListControl should render list with nested object 1`] = `
         aria-live="assertive"
         id="DndLiveRegion-0"
         role="status"
-        style="position: fixed; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip-path: inset(100%); white-space: nowrap;"
+        style="position: fixed; top: 0px; left: 0px; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip-path: inset(100%); white-space: nowrap;"
       />
     </div>
   </div>
@@ -2218,6 +2232,10 @@ exports[`ListControl should render list with nested object with collapse = false
 }
 
 .emotion-17 {
+  background-color: #dfdfe3;
+}
+
+.emotion-19 {
   display: none;
   border-top: 0;
   color: inherit;
@@ -2279,8 +2297,7 @@ exports[`ListControl should render list with nested object with collapse = false
         class="emotion-15 emotion-16"
       >
         <mock-list-item-top-bar
-          classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
-          collapsed="false"
+          class="emotion-17 emotion-18"
           data-testid="styled-list-item-top-bar-0"
           id="0"
         >
@@ -2289,17 +2306,16 @@ exports[`ListControl should render list with nested object with collapse = false
           </button>
         </mock-list-item-top-bar>
         <div
-          class="emotion-17 emotion-18"
+          class="emotion-19 emotion-20"
         >
           Object
         </div>
         <mock-object-control
           classnamewrapper="classNameWrapper"
-          collapsed="false"
           data-testid="object-control-0"
           field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"field\\": Map { \\"name\\": \\"object\\", \\"widget\\": \\"object\\", \\"label\\": \\"Object\\", \\"fields\\": List [ Map { \\"name\\": \\"title\\", \\"widget\\": \\"string\\", \\"label\\": \\"Title\\" } ] } }"
           fieldserrors="Map {}"
-          forlist="true"
+          forlist=""
           parentids="forID,0"
           validationkey="0"
           value="Map { \\"object\\": Map { \\"title\\": \\"item 1\\" } }"
@@ -2309,8 +2325,7 @@ exports[`ListControl should render list with nested object with collapse = false
         class="emotion-15 emotion-16"
       >
         <mock-list-item-top-bar
-          classname="css-1e1b0lr-StyledListItemTopBar e11zrb3c1"
-          collapsed="false"
+          class="emotion-17 emotion-18"
           data-testid="styled-list-item-top-bar-1"
           id="1"
         >
@@ -2319,17 +2334,16 @@ exports[`ListControl should render list with nested object with collapse = false
           </button>
         </mock-list-item-top-bar>
         <div
-          class="emotion-17 emotion-18"
+          class="emotion-19 emotion-20"
         >
           Object
         </div>
         <mock-object-control
           classnamewrapper="classNameWrapper"
-          collapsed="false"
           data-testid="object-control-1"
           field="Map { \\"name\\": \\"list\\", \\"label\\": \\"List\\", \\"collapsed\\": false, \\"field\\": Map { \\"name\\": \\"object\\", \\"widget\\": \\"object\\", \\"label\\": \\"Object\\", \\"fields\\": List [ Map { \\"name\\": \\"title\\", \\"widget\\": \\"string\\", \\"label\\": \\"Title\\" } ] } }"
           fieldserrors="Map {}"
-          forlist="true"
+          forlist=""
           parentids="forID,1"
           validationkey="1"
           value="Map { \\"object\\": Map { \\"title\\": \\"item 2\\" } }"
@@ -2350,7 +2364,7 @@ exports[`ListControl should render list with nested object with collapse = false
         aria-live="assertive"
         id="DndLiveRegion-1"
         role="status"
-        style="position: fixed; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip-path: inset(100%); white-space: nowrap;"
+        style="position: fixed; top: 0px; left: 0px; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip-path: inset(100%); white-space: nowrap;"
       />
     </div>
   </div>

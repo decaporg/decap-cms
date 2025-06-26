@@ -146,6 +146,11 @@ class WorkflowList extends React.Component {
     collections: ImmutablePropTypes.map.isRequired,
   };
 
+  componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(WorkflowList.propTypes, this.props, 'prop', 'WorkflowList');
+  }
+
   handleChangeStatus = (newStatus, dragProps) => {
     const slug = dragProps.slug;
     const collection = dragProps.collection;

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import styled from '@emotion/styled';
-import { partial } from 'lodash';
+import partial from 'lodash/partial';
 import {
   AuthenticationPage,
   buttons,
@@ -68,12 +68,28 @@ if (window.netlifyIdentity) {
 export default class GitGatewayAuthenticationPage extends React.Component {
   static authClient;
 
+  static propTypes = {
+    onLogin: PropTypes.func.isRequired,
+    inProgress: PropTypes.bool.isRequired,
+    error: PropTypes.node,
+    config: PropTypes.object.isRequired,
+    t: PropTypes.func.isRequired,
+  };
+
   constructor(props) {
     super(props);
     component = this;
   }
 
   componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(
+      GitGatewayAuthenticationPage.propTypes,
+      this.props,
+      'prop',
+      'GitGatewayAuthenticationPage',
+    );
+
     if (!this.loggedIn && window.netlifyIdentity && window.netlifyIdentity.currentUser()) {
       this.props.onLogin(window.netlifyIdentity.currentUser());
       window.netlifyIdentity.close();
@@ -109,14 +125,6 @@ export default class GitGatewayAuthenticationPage extends React.Component {
     } else {
       window.netlifyIdentity.open();
     }
-  };
-
-  static propTypes = {
-    onLogin: PropTypes.func.isRequired,
-    inProgress: PropTypes.bool.isRequired,
-    error: PropTypes.node,
-    config: PropTypes.object.isRequired,
-    t: PropTypes.func.isRequired,
   };
 
   state = { email: '', password: '', errors: {} };

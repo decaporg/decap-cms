@@ -70,6 +70,9 @@ class Workflow extends Component {
   };
 
   componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(Workflow.propTypes, this.props, 'prop', 'Workflow');
+
     const { loadUnpublishedEntries, isEditorialWorkflow, collections } = this.props;
     if (isEditorialWorkflow) {
       loadUnpublishedEntries(collections);

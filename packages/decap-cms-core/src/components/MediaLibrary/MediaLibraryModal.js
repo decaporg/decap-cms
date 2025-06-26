@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import { Map } from 'immutable';
-import { isEmpty } from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 import { translate } from 'react-polyglot';
 import { colors } from 'decap-cms-ui-default';
 

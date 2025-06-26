@@ -1,4 +1,5 @@
-import { trimStart, trim } from 'lodash';
+import trimStart from 'lodash/trimStart';
+import trim from 'lodash/trim';
 import semaphore from 'semaphore';
 import {
   basename,

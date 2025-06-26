@@ -81,6 +81,11 @@ export class Sidebar extends React.Component {
     t: PropTypes.func.isRequired,
   };
 
+  componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(Sidebar.propTypes, this.props, 'prop', 'Sidebar');
+  }
+
   renderLink = (collection, filterTerm) => {
     const collectionName = collection.get('name');
     if (collection.has('nested')) {

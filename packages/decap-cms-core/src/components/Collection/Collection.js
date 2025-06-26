@@ -59,6 +59,11 @@ export class Collection extends React.Component {
     onSortClick: PropTypes.func.isRequired,
   };
 
+  componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(Collection.propTypes, this.props, 'prop', 'Collection');
+  }
+
   renderEntriesCollection = () => {
     const { collection, filterTerm, viewStyle } = this.props;
     return (
