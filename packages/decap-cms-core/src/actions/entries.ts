@@ -1,5 +1,5 @@
 import { fromJS, List, Map } from 'immutable';
-import { isEqual } from 'lodash';
+import isEqual from 'lodash/isEqual';
 import { Cursor } from 'decap-cms-lib-util';
 
 import { selectCollectionEntriesCursor } from '../reducers/cursors';
@@ -389,6 +389,7 @@ export function draftDuplicateEntry(entry: EntryMap) {
     type: DRAFT_CREATE_DUPLICATE_FROM_ENTRY,
     payload: createEntry(entry.get('collection'), '', '', {
       data: entry.get('data'),
+      i18n: entry.get('i18n'),
       mediaFiles: entry.get('mediaFiles').toJS(),
     }),
   };

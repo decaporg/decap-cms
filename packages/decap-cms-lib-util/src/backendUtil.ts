@@ -1,4 +1,5 @@
-import { flow, fromPairs } from 'lodash';
+import flow from 'lodash/flow';
+import fromPairs from 'lodash/fromPairs';
 import { map } from 'lodash/fp';
 import { fromJS } from 'immutable';
 

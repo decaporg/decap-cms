@@ -2,7 +2,7 @@
  * This module is currently concerned only with external media libraries
  * registered via `registerMediaLibrary`.
  */
-import { once } from 'lodash';
+import once from 'lodash/once';
 
 import { getMediaLibrary } from './lib/registry';
 import { store } from './redux';

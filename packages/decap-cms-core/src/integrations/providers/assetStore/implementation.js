@@ -1,4 +1,5 @@
-import { pickBy, trimEnd } from 'lodash';
+import pickBy from 'lodash/pickBy';
+import trimEnd from 'lodash/trimEnd';
 import { unsentRequest } from 'decap-cms-lib-util';
 
 import { addParams } from '../../../lib/urlHelper';
