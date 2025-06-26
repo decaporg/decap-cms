@@ -66,6 +66,7 @@ import type {
   EntriesGroupRequestPayload,
   EntriesGroupFailurePayload,
   GroupOfEntries,
+  EntryGroup,
 } from '../types/redux';
 
 const { keyToPathArray } = stringTemplate;
@@ -449,7 +450,7 @@ export function selectEntries(state: Entries, collection: Collection) {
   return entries;
 }
 
-function getGroup(entry: EntryMap, selectedGroup: GroupMap) {
+function getGroup(entry: EntryMap, selectedGroup: GroupMap): EntryGroup {
   const label = selectedGroup.get('label');
   const field = selectedGroup.get('field');
 
@@ -458,7 +459,7 @@ function getGroup(entry: EntryMap, selectedGroup: GroupMap) {
     return {
       id: 'missing_value',
       label,
-      value: fieldData,
+      value: undefined,
     };
   }
 

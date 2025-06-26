@@ -26,7 +26,7 @@ import type {
   DataFile,
 } from 'decap-cms-lib-util';
 
-type RepoFile = { path: string; content: string | AssetProxy };
+type RepoFile = { path: string; content?: string | AssetProxy };
 type RepoTree = { [key: string]: RepoFile | RepoTree };
 
 type Diff = {
@@ -54,7 +54,7 @@ declare global {
 }
 
 window.repoFiles = window.repoFiles || {};
-window.repoFilesUnpublished = window.repoFilesUnpublished || [];
+window.repoFilesUnpublished = window.repoFilesUnpublished || {};
 
 function getFile(path: string, tree: RepoTree) {
   const segments = path.split('/');
@@ -358,7 +358,7 @@ export default class TestBackend implements Implementation {
         );
         toMove.forEach(f => {
           deleteFile(f.path, tree);
-          writeFile(f.path.replace(sourceDir, destDir), f.content, tree);
+          writeFile(f.path.replace(sourceDir, destDir), f.content!, tree);
         });
       }
       writeFile(d.path, d.content, tree);

@@ -5,18 +5,19 @@
   "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-core",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
   "module": "dist/esm/index.js",
+  "types": "dist/esm/index.d.ts",
   "main": "dist/decap-cms-core.js",
   "files": [
     "src/",
-    "dist/",
-    "index.d.ts"
+    "dist/"
   ],
-  "types": "index.d.ts",
   "scripts": {
     "develop": "npm run build:esm -- --watch",
     "webpack": "node --max_old_space_size=4096 ../../node_modules/webpack/bin/webpack.js",
-    "build": "cross-env NODE_ENV=production run-s webpack",
-    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward --extensions \".js,.jsx,.ts,.tsx\""
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:esm": "run-p build:types build:babel",
+    "build:babel": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward --extensions \".js,.jsx,.ts,.tsx\"",
+    "build:types": "tsc"
   },
   "keywords": [
     "cms",
@@ -76,7 +77,6 @@
   "peerDependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
-    "decap-cms-editor-component-image": "^3.0.0",
     "decap-cms-lib-auth": "^3.0.0",
     "decap-cms-lib-util": "^3.0.0",
     "decap-cms-lib-widgets": "^3.0.0",
@@ -91,6 +91,7 @@
   "devDependencies": {
     "@types/history": "^4.7.8",
     "@types/redux-mock-store": "^1.0.2",
+    "@types/semaphore": "^1.1.4",
     "@types/url-join": "^4.0.0",
     "redux-mock-store": "^1.5.3"
   }

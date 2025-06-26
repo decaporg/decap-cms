@@ -20,3 +20,4 @@ coverage/
 .temp/
 storybook-static/
 .nx
+tsconfig.tsbuildinfo

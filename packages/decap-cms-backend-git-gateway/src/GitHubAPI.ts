@@ -14,7 +14,6 @@ type Config = Omit<GitHubConfig, 'getUser'> & {
 
 export default class API extends GithubAPI {
   tokenPromise: () => Promise<string>;
-  commitAuthor: { name: string };
   isLargeMedia: (filename: string) => Promise<boolean>;
 
   constructor(config: Config) {
@@ -77,7 +76,7 @@ export default class API extends GithubAPI {
   }
 
   user() {
-    return Promise.resolve({ login: '', ...this.commitAuthor });
+    return Promise.resolve({ login: '', ...this.commitAuthor! });
   }
 
   async getHeadReference(head: string) {

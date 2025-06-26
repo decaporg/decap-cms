@@ -10,7 +10,7 @@ import type { DeploysAction } from '../actions/deploys';
 
 export type Deploys = {
   [key: string]: {
-    isFetching: boolean;
+    isFetching?: boolean;
     url?: string;
     status?: string;
   };
