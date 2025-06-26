@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Map } from 'immutable';
-import { isString } from 'lodash';
+import isString from 'lodash/isString';
 import { WidgetPreviewContainer } from 'decap-cms-ui-default';
 
 function toValue(value, field) {

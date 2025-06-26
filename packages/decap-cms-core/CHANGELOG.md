@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.7.0](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.6.3...decap-cms-core@3.7.0) (2025-06-26)
+
+### Bug Fixes
+
+- **#7375:** fix dependency issues ([#7394](https://github.com/decaporg/decap-cms/issues/7394)) ([871ee26](https://github.com/decaporg/decap-cms/commit/871ee2653bb26b500efb39b6862e8d3681ec0338))
+
 ## [3.6.3](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.6.2...decap-cms-core@3.6.3) (2025-06-06)
 
 ### Bug Fixes

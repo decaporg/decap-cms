@@ -42,6 +42,14 @@ export default class AuthenticationPage extends React.Component {
   };
 
   componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(
+      AuthenticationPage.propTypes,
+      this.props,
+      'prop',
+      'AuthenticationPage',
+    );
+
     /**
      * Allow login screen to be skipped for demo purposes.
      */
