@@ -97,6 +97,9 @@ export default class SelectControl extends React.Component {
   };
 
   componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(SelectControl.propTypes, this.props, 'prop', 'SelectControl');
+
     const { field, onChange, value } = this.props;
     if (field.get('required') && field.get('multiple')) {
       if (value && !List.isList(value)) {

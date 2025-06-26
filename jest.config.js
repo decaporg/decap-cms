@@ -10,6 +10,7 @@ module.exports = {
     '\\.(css|less)$': '<rootDir>/__mocks__/styleMock.js',
     '^#home-directory$': 'clean-stack/home-directory.js',
   },
+  modulePathIgnorePatterns: ['.nx', 'dist'],
   snapshotSerializers: ['@emotion/jest/serializer'],
   transformIgnorePatterns: [
     'node_modules/(?!copy-text-to-clipboard|clean-stack|escape-string-regexp)',

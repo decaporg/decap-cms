@@ -263,6 +263,11 @@ export class NestedCollection extends React.Component {
     };
   }
 
+  componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(NestedCollection.propTypes, this.props, 'prop', 'NestedCollection');
+  }
+
   componentDidUpdate(prevProps) {
     const { collection, entries, filterTerm } = this.props;
     if (
