@@ -2,7 +2,9 @@ import yaml from 'yaml';
 import { fromJS } from 'immutable';
 import deepmerge from 'deepmerge';
 import { produce } from 'immer';
-import { trimStart, trim, isEmpty } from 'lodash';
+import trimStart from 'lodash/trimStart';
+import trim from 'lodash/trim';
+import isEmpty from 'lodash/isEmpty';
 
 import { SIMPLE as SIMPLE_PUBLISH_MODE } from '../constants/publishModes';
 import { validateConfig } from '../constants/configSchema';

@@ -18,5 +18,5 @@ Used as backend in [cms-core](https://github.com/decaporg/decap-cms/tree/main/pa
 
 - `API` - used for Entry files
 - `git-lfs` - used for Media files
-- and over halpful utilities
+- and more helpful utilities
 

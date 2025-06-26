@@ -1,5 +1,5 @@
 import { fromJS } from 'immutable';
-import { isFunction } from 'lodash';
+import isFunction from 'lodash/isFunction';
 
 import type { EditorComponentOptions } from '../types';
 

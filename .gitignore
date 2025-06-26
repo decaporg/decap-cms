@@ -19,5 +19,5 @@ coverage/
 .env
 .temp/
 storybook-static/
-.nx/cache
+.nx
 tsconfig.tsbuildinfo

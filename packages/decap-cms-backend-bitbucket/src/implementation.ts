@@ -1,5 +1,5 @@
 import semaphore from 'semaphore';
-import { trimStart } from 'lodash';
+import trimStart from 'lodash/trimStart';
 import { stripIndent } from 'common-tags';
 import {
   CURSOR_COMPATIBILITY_SYMBOL,
