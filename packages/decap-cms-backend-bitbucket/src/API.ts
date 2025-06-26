@@ -1,4 +1,5 @@
-import { flow, get } from 'lodash';
+import flow from 'lodash/flow';
+import get from 'lodash/get';
 import {
   localForage,
   unsentRequest,

@@ -11,6 +11,11 @@ class MarkdownPreview extends React.Component {
     value: PropTypes.string,
   };
 
+  componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(MarkdownPreview.propTypes, this.props, 'prop', 'MarkdownPreview');
+  }
+
   render() {
     const { value, getAsset, resolveWidget, field, getRemarkPlugins } = this.props;
     if (value === null) {

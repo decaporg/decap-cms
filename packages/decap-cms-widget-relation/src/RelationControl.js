@@ -3,7 +3,12 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { components } from 'react-select';
 import AsyncSelect from 'react-select/async';
-import { debounce, find, get, isEmpty, last, uniqBy } from 'lodash';
+import debounce from 'lodash/debounce';
+import find from 'lodash/find';
+import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
+import last from 'lodash/last';
+import uniqBy from 'lodash/uniqBy';
 import { fromJS, List, Map } from 'immutable';
 import { reactSelectStyles } from 'decap-cms-ui-default';
 import { stringTemplate, validations } from 'decap-cms-lib-widgets';
@@ -232,6 +237,9 @@ export default class RelationControl extends React.Component {
   }
 
   async componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(RelationControl.propTypes, this.props, 'prop', 'RelationControl');
+
     this.mounted = true;
     // if the field has a previous value perform an initial search based on the value field
     // this is required since each search is limited by optionsLength so the selected value

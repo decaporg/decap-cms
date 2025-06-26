@@ -1,5 +1,5 @@
 import { Map, List, fromJS } from 'immutable';
-import { startsWith } from 'lodash';
+import startsWith from 'lodash/startsWith';
 
 import { EDITORIAL_WORKFLOW } from '../constants/publishModes';
 import {
