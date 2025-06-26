@@ -54,6 +54,9 @@ export default class GitLabAuthenticationPage extends React.Component {
   state = {};
 
   componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(GitLabAuthenticationPage.propTypes, this.props, 'prop', 'GitLabAuthenticationPage');
+
     const {
       auth_type: authType = '',
       base_url = 'https://gitlab.com',

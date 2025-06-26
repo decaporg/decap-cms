@@ -35,6 +35,16 @@ export default class GitHubAuthenticationPage extends React.Component {
 
   state = {};
 
+  componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(
+      GitHubAuthenticationPage.propTypes,
+      this.props,
+      'prop',
+      'GitHubAuthenticationPage',
+    );
+  }
+
   getPermissionToFork = () => {
     return new Promise((resolve, reject) => {
       this.setState({
