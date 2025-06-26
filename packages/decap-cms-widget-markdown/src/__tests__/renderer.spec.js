@@ -50,7 +50,10 @@ Text with **bold** & _em_ elements
         expect(screen.getByRole('heading', { level: 5 })).toHaveTextContent('H5');
         expect(screen.getByRole('heading', { level: 6 })).toHaveTextContent('H6');
         expect(container).toHaveTextContent('Text with bold & em elements');
-        expect(screen.getByRole('link', { name: 'link title' })).toHaveAttribute('href', 'http://google.com');
+        expect(screen.getByRole('link', { name: 'link title' })).toHaveAttribute(
+          'href',
+          'http://google.com',
+        );
         expect(screen.getAllByRole('img').length).toBe(2);
       });
     });
@@ -61,9 +64,7 @@ Text with **bold** & _em_ elements
           const value = padStart(' Title', heading + 7, '#');
           const html = await markdownToHtml(value);
 
-          render(
-            <MarkdownPreview value={html} getAsset={jest.fn()} resolveWidget={jest.fn()} />,
-          );
+          render(<MarkdownPreview value={html} getAsset={jest.fn()} resolveWidget={jest.fn()} />);
           expect(screen.getByRole('heading', { level: heading + 1 })).toHaveTextContent('Title');
         });
       }
@@ -107,12 +108,19 @@ I get 10 times more traffic from [Google] than from [Yahoo] or [MSN].
 `;
         const html = await markdownToHtml(value);
 
-        render(
-          <MarkdownPreview value={html} getAsset={jest.fn()} resolveWidget={jest.fn()} />,
+        render(<MarkdownPreview value={html} getAsset={jest.fn()} resolveWidget={jest.fn()} />);
+        expect(screen.getByRole('link', { name: 'Google' })).toHaveAttribute(
+          'href',
+          'http://google.com/',
         );
-        expect(screen.getByRole('link', { name: 'Google' })).toHaveAttribute('href', 'http://google.com/');
-        expect(screen.getByRole('link', { name: 'Yahoo' })).toHaveAttribute('href', 'http://search.yahoo.com/');
-        expect(screen.getByRole('link', { name: 'MSN' })).toHaveAttribute('href', 'http://search.msn.com/');
+        expect(screen.getByRole('link', { name: 'Yahoo' })).toHaveAttribute(
+          'href',
+          'http://search.yahoo.com/',
+        );
+        expect(screen.getByRole('link', { name: 'MSN' })).toHaveAttribute(
+          'href',
+          'http://search.msn.com/',
+        );
       });
     });
 
@@ -134,7 +142,9 @@ I get 10 times more traffic from [Google] than from [Yahoo] or [MSN].
         const { container } = render(
           <MarkdownPreview value={html} getAsset={jest.fn()} resolveWidget={jest.fn()} />,
         );
-        expect(container.querySelector('code')).toHaveTextContent('There is a literal backtick (`) here.');
+        expect(container.querySelector('code')).toHaveTextContent(
+          'There is a literal backtick (`) here.',
+        );
       });
     });
 
