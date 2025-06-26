@@ -1,7 +1,12 @@
 import { Map, List, fromJS, OrderedMap, Set } from 'immutable';
 import { dirname, join } from 'path';
 import { isAbsolutePath, basename } from 'decap-cms-lib-util';
-import { trim, once, sortBy, set, orderBy, groupBy } from 'lodash';
+import trim from 'lodash/trim';
+import once from 'lodash/once';
+import sortBy from 'lodash/sortBy';
+import set from 'lodash/set';
+import orderBy from 'lodash/orderBy';
+import groupBy from 'lodash/groupBy';
 import { stringTemplate } from 'decap-cms-lib-widgets';
 
 import { SortDirection } from '../types/redux';
