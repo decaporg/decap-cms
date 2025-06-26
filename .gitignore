@@ -19,4 +19,4 @@ coverage/
 .env
 .temp/
 storybook-static/
-.nx/cache
+.nx

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { translate } from 'react-polyglot';
 import styled from '@emotion/styled';
 import yaml from 'yaml';
-import { truncate } from 'lodash';
+import truncate from 'lodash/truncate';
 import copyToClipboard from 'copy-text-to-clipboard';
 import { localForage } from 'decap-cms-lib-util';
 import { buttons, colors } from 'decap-cms-ui-default';
@@ -148,6 +148,11 @@ export class ErrorBoundary extends React.Component {
       errorMessage: cleanStack(error.stack, { basePath: window.location.origin || '' }),
       errorTitle: error.toString(),
     };
+  }
+
+  componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(ErrorBoundary.propTypes, this.props, 'prop', 'ErrorBoundary');
   }
 
   shouldComponentUpdate(nextProps, nextState) {

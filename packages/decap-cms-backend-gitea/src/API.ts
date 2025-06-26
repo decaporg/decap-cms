@@ -1,5 +1,10 @@
 import { Base64 } from 'js-base64';
-import { trimStart, trim, result, partial, last, initial } from 'lodash';
+import trimStart from 'lodash/trimStart';
+import trim from 'lodash/trim';
+import result from 'lodash/result';
+import partial from 'lodash/partial';
+import last from 'lodash/last';
+import initial from 'lodash/initial';
 import {
   APIError,
   basename,

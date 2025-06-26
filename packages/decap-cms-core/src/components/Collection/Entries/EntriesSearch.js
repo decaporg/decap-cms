@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
-import { isEqual } from 'lodash';
+import isEqual from 'lodash/isEqual';
 import { Cursor } from 'decap-cms-lib-util';
 
 import { selectSearchedEntries } from '../../../reducers';
@@ -25,6 +25,9 @@ class EntriesSearch extends React.Component {
   };
 
   componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(EntriesSearch.propTypes, this.props, 'prop', 'EntriesSearch');
+
     const { searchTerm, searchEntries, collectionNames } = this.props;
     searchEntries(searchTerm, collectionNames);
   }
