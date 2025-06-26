@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 import { WidgetPreviewContainer } from 'decap-cms-ui-default';
 
 function ObjectPreview({ field }) {
@@ -11,7 +11,7 @@ function ObjectPreview({ field }) {
 }
 
 ObjectPreview.propTypes = {
-  field: PropTypes.node,
+  field: ImmutablePropTypes.map,
 };
 
 export default ObjectPreview;
