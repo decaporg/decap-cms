@@ -63,6 +63,9 @@ class DateTimeControl extends React.Component {
   };
 
   componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(DateTimeControl.propTypes, this.props, 'prop', 'DateTimeControl');
+
     const { value } = this.props;
     if (value === '{{now}}') {
       this.handleChange(this.getNow());

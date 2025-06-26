@@ -9,7 +9,7 @@ import { createEditor, Transforms, Editor as SlateEditor } from 'slate';
 import { Editable, ReactEditor, Slate, withReact } from 'slate-react';
 import { withHistory } from 'slate-history';
 import { fromJS } from 'immutable';
-import { isEqual } from 'lodash';
+import isEqual from 'lodash/isEqual';
 
 import { editorStyleVars, EditorControlBar } from '../styles';
 import Toolbar from './Toolbar';

@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { ClassNames } from '@emotion/react';
 import { Map } from 'immutable';
-import { uniq, isEqual, isEmpty } from 'lodash';
+import uniq from 'lodash/uniq';
+import isEqual from 'lodash/isEqual';
+import isEmpty from 'lodash/isEmpty';
 import { v4 as uuid } from 'uuid';
 import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
 import CodeMirror from 'codemirror';
@@ -99,6 +101,9 @@ export default class CodeControl extends React.Component {
   }
 
   componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(CodeControl.propTypes, this.props, 'prop', 'CodeControl');
+
     this.setState({
       lang: this.getInitialLang() || '',
     });
