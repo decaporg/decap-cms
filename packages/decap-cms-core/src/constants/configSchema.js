@@ -261,6 +261,7 @@ function getConfigSchema() {
               type: 'object',
               properties: {
                 depth: { type: 'number', minimum: 1, maximum: 1000 },
+                subfolders: { type: 'boolean' },
                 summary: { type: 'string' },
               },
               required: ['depth'],

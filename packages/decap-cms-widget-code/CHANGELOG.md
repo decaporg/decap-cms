@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.2.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-code@3.1.4...decap-cms-widget-code@3.2.0) (2025-06-26)
+
+**Note:** Version bump only for package decap-cms-widget-code
+
 ## [3.1.4](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-code@3.1.3...decap-cms-widget-code@3.1.4) (2024-08-13)
 
 ### Reverts

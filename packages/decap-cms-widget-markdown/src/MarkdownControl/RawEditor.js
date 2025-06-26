@@ -43,8 +43,9 @@ function RawEditor(props) {
   useEffect(() => {
     if (props.pendingFocus) {
       ReactEditor.focus(editor);
+      props.pendingFocus();
     }
-  }, []);
+  }, [props.pendingFocus]);
 
   function handleToggleMode() {
     props.onMode('rich_text');

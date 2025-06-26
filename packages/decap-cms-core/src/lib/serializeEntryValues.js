@@ -1,4 +1,4 @@
-import { isNil } from 'lodash';
+import isNil from 'lodash/isNil';
 import { Map, List } from 'immutable';
 
 import { getWidgetValueSerializer } from './registry';

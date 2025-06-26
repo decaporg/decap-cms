@@ -1,4 +1,4 @@
-import { last } from 'lodash';
+import last from 'lodash/last';
 
 /**
  * Joins an array of regular expressions into a single expression, without

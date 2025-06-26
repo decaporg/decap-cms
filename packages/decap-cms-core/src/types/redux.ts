@@ -248,6 +248,7 @@ export interface CmsFieldStringOrText {
   // This is the default widget, so declaring its type is optional.
   widget?: 'string' | 'text';
   default?: string;
+  visualEditing?: boolean;
 }
 
 export interface CmsFieldMeta {
@@ -322,6 +323,7 @@ export interface CmsCollection {
   delete?: boolean;
   editor?: {
     preview?: boolean;
+    visualEditing?: boolean;
   };
   publish?: boolean;
   nested?: {
@@ -528,6 +530,8 @@ export type EntryObject = {
   slug: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  i18n?: any;
   collection: string;
   mediaFiles: List<MediaFileMap>;
   newRecord: boolean;
@@ -583,7 +587,7 @@ export type CollectionFile = StaticallyTypedRecord<{
 
 export type CollectionFiles = List<CollectionFile>;
 
-type NestedObject = { depth: number };
+type NestedObject = { depth: number; subfolders?: boolean };
 
 type Nested = StaticallyTypedRecord<NestedObject>;
 
