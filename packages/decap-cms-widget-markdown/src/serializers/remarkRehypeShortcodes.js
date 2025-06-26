@@ -2,7 +2,7 @@ import React from 'react';
 import map from 'lodash/map';
 import has from 'lodash/has';
 import { renderToString } from 'react-dom/server';
-import u from 'unist-builder';
+import { u } from 'unist-builder';
 
 /**
  * This plugin doesn't actually transform Remark (MDAST) nodes to Rehype

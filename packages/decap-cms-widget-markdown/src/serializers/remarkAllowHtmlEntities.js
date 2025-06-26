@@ -1,58 +1,32 @@
+/**
+ * remark-parse v9+ plugin to prevent HTML entity decoding in text nodes.
+ * This disables entity decoding by providing a micromark text extension.
+ */
 export default function remarkAllowHtmlEntities() {
-  this.Parser.prototype.inlineTokenizers.text = text;
+  // Micromark text extension that disables entity decoding
+  const micromarkExtension = {
+    text: {
+      resolveAll(events/*, context*/) {
+        for (const event of events) {
+          if (
+            event[1].type === 'characterReference' ||
+            event[1].type === 'characterEscape'
+          ) {
+            event[1].type = 'data';
+          }
+        }
+        return events;
+      },
+    },
+  };
 
-  /**
-   * This is a port of the `remark-parse` text tokenizer, adapted to exclude
-   * HTML entity decoding.
-   */
-  function text(eat, value, silent) {
-    var self = this;
-    var methods;
-    var tokenizers;
-    var index;
-    var length;
-    var subvalue;
-    var position;
-    var tokenizer;
-    var name;
-    var min;
-
-    /* istanbul ignore if - never used (yet) */
-    if (silent) {
-      return true;
-    }
-
-    methods = self.inlineMethods;
-    length = methods.length;
-    tokenizers = self.inlineTokenizers;
-    index = -1;
-    min = value.length;
-
-    while (++index < length) {
-      name = methods[index];
-
-      if (name === 'text' || !tokenizers[name]) {
-        continue;
-      }
-
-      tokenizer = tokenizers[name].locator;
-
-      if (!tokenizer) {
-        eat.file.fail('Missing locator: `' + name + '`');
-      }
-
-      position = tokenizer.call(self, value, 1);
-
-      if (position !== -1 && position < min) {
-        min = position;
-      }
-    }
-
-    subvalue = value.slice(0, min);
-
-    eat(subvalue)({
-      type: 'text',
-      value: subvalue,
-    });
-  }
+  // remark-parse v9+ expects micromarkExtensions to be an object, not an array
+  const existing = this.data('micromarkExtensions') || {};
+  this.data('micromarkExtensions', {
+    ...existing,
+    text: [
+      ...(existing.text || []),
+      micromarkExtension.text,
+    ],
+  });
 }

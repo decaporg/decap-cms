@@ -9,48 +9,49 @@ import mdastToString from 'mdast-util-to-string';
  * however, may have such entities, and users of visual editors shouldn't see
  * these artifacts in resulting markdown.
  */
-export default function remarkStripTrailingBreaks() {
-  function transform(node) {
-    if (node.children) {
-      node.children = node.children
-        .map((child, idx, children) => {
+function stripTrailingBreaks(node) {
+  if (node.children) {
+    node.children = node.children
+      .map((child, idx, children) => {
+        /**
+         * Only touch break nodes. Convert all subsequent nodes to their text
+         * value and exclude the break node if no non-whitespace characters
+         * are found.
+         */
+        if (child.type === 'break') {
+          const subsequentNodes = children.slice(idx + 1);
           /**
-           * Only touch break nodes. Convert all subsequent nodes to their text
-           * value and exclude the break node if no non-whitespace characters
-           * are found.
+           * Create a small MDAST so that mdastToString can process all
+           * siblings as children of one node rather than making multiple
+           * calls.
            */
-          if (child.type === 'break') {
-            const subsequentNodes = children.slice(idx + 1);
-
-            /**
-             * Create a small MDAST so that mdastToString can process all
-             * siblings as children of one node rather than making multiple
-             * calls.
-             */
-            const fragment = { type: 'root', children: subsequentNodes };
-            const subsequentText = mdastToString(fragment);
-            return subsequentText.trim() ? child : null;
-          }
-
-          /**
-           * Always return the child if not a break.
-           */
-          return child;
-        })
+          const fragment = { type: 'root', children: subsequentNodes };
+          const subsequentText = mdastToString(fragment);
+          return subsequentText.trim() ? child : null;
+        }
 
         /**
-         * Because some break nodes may be excluded, we filter out the resulting
-         * null values.
+         * Always return the child if not a break.
          */
-        .filter(child => child)
+        return child;
+      })
 
-        /**
-         * Recurse through the MDAST by transforming each individual child node.
-         */
-        .map(transform);
-    }
-    return node;
+      /**
+       * Because some break nodes may be excluded, we filter out the resulting
+       * null values.
+       */
+      .filter(child => child)
+
+      /**
+       * Recurse through the MDAST by transforming each individual child node.
+       */
+      .map(stripTrailingBreaks);
   }
+  return node;
+}
 
-  return transform;
+export default function remarkStripTrailingBreaks() {
+  return (tree/*, file*/) => {
+    stripTrailingBreaks(tree);
+  };
 }

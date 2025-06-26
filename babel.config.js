@@ -17,6 +17,7 @@ const basePlugins = [
     },
   ],
   'babel-plugin-inline-json-import',
+  '@babel/plugin-transform-private-methods',
 ];
 
 // Legacy transforms for non-ESM builds
