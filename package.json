@@ -130,7 +130,6 @@
     "prettier": "^2.3.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-test-renderer": "^19.1.0",
     "rehype": "^7.0.0",
     "rimraf": "^3.0.0",
     "simple-git": "^3.0.0",
