@@ -29,6 +29,9 @@
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "ajv": "^8.17.1",
+    "ajv-errors": "^3.0.0",
+    "ajv-keywords": "^5.1.0",
     "codemirror": "^5.46.0",
     "dayjs": "^1.11.10",
     "decap-cms-backend-aws-cognito-github-proxy": "^3.3.0",
