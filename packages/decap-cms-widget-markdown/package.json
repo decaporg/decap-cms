@@ -1,7 +1,7 @@
 {
   "name": "decap-cms-widget-markdown",
   "description": "Widget for editing markdown in Decap CMS.",
-  "version": "3.1.6",
+  "version": "3.4.0",
   "homepage": "https://www.decapcms.org/docs/widgets/#markdown",
   "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-widget-markdown",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
@@ -37,6 +37,7 @@
     "slate": "^0.91.1",
     "slate-base64-serializer": "^0.2.107",
     "slate-history": "^0.93.0",
+    "slate-hyperscript": "^0.77.0",
     "slate-plain-serializer": "^0.7.1",
     "slate-react": "^0.91.2",
     "slate-soft-break": "^0.9.0",
@@ -51,13 +52,12 @@
     "immutable": "^3.7.6",
     "lodash": "^4.17.11",
     "prop-types": "^15.7.2",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
     "react-immutable-proptypes": "^2.1.0"
   },
   "devDependencies": {
     "commonmark": "^0.30.0",
-    "commonmark-spec": "^0.30.0",
-    "slate-hyperscript": "^0.77.0"
+    "commonmark-spec": "^0.30.0"
   }
 }

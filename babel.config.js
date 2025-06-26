@@ -8,14 +8,20 @@ const isESM = process.env.NODE_ENV === 'esm';
 
 console.log('Build Package:', path.basename(process.cwd()));
 
-const defaultPlugins = [
-  'lodash',
+// Always enabled plugins
+const basePlugins = [
   [
     'babel-plugin-transform-builtin-extend',
     {
       globals: ['Error'],
     },
   ],
+  'babel-plugin-inline-json-import',
+];
+
+// Legacy transforms for non-ESM builds
+// REVISIT: We probably don't need any of these since we use preset-env
+const legacyPlugins = [
   'transform-export-extensions',
   '@babel/plugin-proposal-class-properties',
   '@babel/plugin-proposal-object-rest-spread',
@@ -23,8 +29,9 @@ const defaultPlugins = [
   '@babel/plugin-proposal-nullish-coalescing-operator',
   '@babel/plugin-proposal-optional-chaining',
   '@babel/plugin-syntax-dynamic-import',
-  'babel-plugin-inline-json-import',
 ];
+
+const defaultPlugins = [...basePlugins, ...(isESM ? [] : legacyPlugins)];
 
 const svgo = {
   plugins: [
@@ -42,14 +49,14 @@ const svgo = {
 function presets() {
   return [
     '@babel/preset-react',
-    '@babel/preset-env',
+    ...(!isESM ? [['@babel/preset-env', {}]] : []),
     [
       '@emotion/babel-preset-css-prop',
       {
         autoLabel: 'always',
       },
     ],
-    '@babel/typescript',
+    '@babel/preset-typescript',
   ];
 }
 
@@ -68,6 +75,12 @@ function plugins() {
         'inline-react-svg',
         {
           svgo,
+        },
+      ],
+      [
+        'inline-import',
+        {
+          extensions: ['.css'],
         },
       ],
     ];

@@ -1,4 +1,7 @@
-import { concat, last, nth, isEmpty } from 'lodash';
+import concat from 'lodash/concat';
+import last from 'lodash/last';
+import nth from 'lodash/nth';
+import isEmpty from 'lodash/isEmpty';
 import visitParents from 'unist-util-visit-parents';
 
 /**

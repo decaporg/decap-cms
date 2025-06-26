@@ -1,4 +1,4 @@
-import { isBoolean } from 'lodash';
+import isBoolean from 'lodash/isBoolean';
 
 import type { MediaFile } from '../backend';
 

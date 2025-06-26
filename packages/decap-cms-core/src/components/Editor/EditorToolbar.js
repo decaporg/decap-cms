@@ -280,6 +280,9 @@ export class EditorToolbar extends React.Component {
   };
 
   componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(EditorToolbar.propTypes, this.props, 'prop', 'EditorToolbar');
+
     const { isNewEntry, loadDeployPreview } = this.props;
     if (!isNewEntry) {
       loadDeployPreview({ maxAttempts: 3 });
@@ -450,7 +453,7 @@ export class EditorToolbar extends React.Component {
     return canPublish || canCreate ? (
       <ToolbarDropdown
         dropdownTopOverlap="40px"
-        dropdownWidth="150px"
+        dropdownWidth="max-content"
         key="td-publish-create"
         renderButton={() => (
           <PublishedToolbarButton>
@@ -486,7 +489,7 @@ export class EditorToolbar extends React.Component {
     return canCreate ? (
       <ToolbarDropdown
         dropdownTopOverlap="40px"
-        dropdownWidth="150px"
+        dropdownWidth="max-content"
         renderButton={() => (
           <PublishedToolbarButton>{t('editor.editorToolbar.published')}</PublishedToolbarButton>
         )}
@@ -511,7 +514,7 @@ export class EditorToolbar extends React.Component {
       <div>
         <ToolbarDropdown
           dropdownTopOverlap="40px"
-          dropdownWidth="150px"
+          dropdownWidth="max-content"
           renderButton={() => (
             <PublishButton>
               {isPersisting
@@ -594,11 +597,20 @@ export class EditorToolbar extends React.Component {
       </SaveButton>,
       currentStatus
         ? [
-            this.renderWorkflowStatusControls(),
-            this.renderNewEntryWorkflowPublishControls({ canCreate, canPublish }),
+            <React.Fragment key="workflow-status-controls">
+              {this.renderWorkflowStatusControls()}
+              {!hasChanged && this.renderNewEntryWorkflowPublishControls({ canCreate, canPublish })}
+            </React.Fragment>,
           ]
-        : !isNewEntry &&
-          this.renderExistingEntryWorkflowPublishControls({ canCreate, canPublish, canDelete }),
+        : !isNewEntry && (
+            <React.Fragment key="existing-entry-workflow-publish-controls">
+              {this.renderExistingEntryWorkflowPublishControls({
+                canCreate,
+                canPublish,
+                canDelete,
+              })}
+            </React.Fragment>
+          ),
       (!showDelete || useOpenAuthoring) && !hasUnpublishedChanges && !isModification ? null : (
         <DeleteButton
           key="delete-button"
