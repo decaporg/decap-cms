@@ -1,0 +1,52 @@
+{
+  "name": "decap-cms-widget-richtext",
+  "description": "Widget for editing richtext in Decap CMS.",
+  "version": "3.1.0",
+  "homepage": "https://www.decapcms.org/docs/widgets/#richtext",
+  "repository": "https://github.com/decaporg/decap-cms/tree/master/packages/decap-cms-widget-richtext",
+  "bugs": "https://github.com/decaporg/decap-cms/issues",
+  "module": "dist/esm/index.js",
+  "main": "dist/decap-cms-widget-richtext.js",
+  "license": "MIT",
+  "keywords": [
+    "decap-cms",
+    "widget",
+    "richtext",
+    "editor"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "develop": "npm run build:esm -- --watch",
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\"  --root-mode upward --copy-files --extensions \".js,.jsx,.ts,.tsx\""
+  },
+  "dependencies": {
+    "@udecode/plate-basic-marks": "^39.0.0",
+    "@udecode/plate-block-quote": "^39.0.0",
+    "@udecode/plate-break": "^39.0.0",
+    "@udecode/plate-common": "^39.1.8",
+    "@udecode/plate-heading": "^39.0.0",
+    "@udecode/plate-link": "^39.1.9",
+    "@udecode/plate-list": "^39.0.0",
+    "@udecode/plate-paragraph": "^36.0.0",
+    "@udecode/plate-trailing-block": "^39.0.0",
+    "class-variance-authority": "^0.7.0",
+    "lucide-react": "^0.331.0",
+    "slate": "^0.110.2",
+    "slate-history": "^0.100.0",
+    "slate-hyperscript": "^0.100.0",
+    "slate-react": "^0.110.2",
+    "unified": "^9.0.0"
+  },
+  "peerDependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "decap-cms-ui-default": "^3.0.0",
+    "immutable": "^3.7.6",
+    "lodash": "^4.17.11",
+    "prop-types": "^15.7.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-immutable-proptypes": "^2.1.0"
+  }
+}
