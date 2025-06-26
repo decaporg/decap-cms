@@ -1,4 +1,6 @@
-import { isArray, tail, castArray } from 'lodash';
+import isArray from 'lodash/isArray';
+import tail from 'lodash/tail';
+import castArray from 'lodash/castArray';
 
 function CommandsAndQueries({ defaultType }) {
   return {

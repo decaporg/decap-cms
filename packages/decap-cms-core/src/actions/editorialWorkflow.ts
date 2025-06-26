@@ -1,4 +1,4 @@
-import { get } from 'lodash';
+import get from 'lodash/get';
 import { Map, List } from 'immutable';
 import { EDITORIAL_WORKFLOW_ERROR } from 'decap-cms-lib-util';
 
