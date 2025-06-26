@@ -3,7 +3,12 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { components } from 'react-select';
 import AsyncSelect from 'react-select/async';
-import { debounce, find, get, isEmpty, last, uniqBy } from 'lodash';
+import debounce from 'lodash/debounce';
+import find from 'lodash/find';
+import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
+import last from 'lodash/last';
+import uniqBy from 'lodash/uniqBy';
 import { fromJS, List, Map } from 'immutable';
 import { reactSelectStyles } from 'decap-cms-ui-default';
 import { stringTemplate, validations } from 'decap-cms-lib-widgets';
@@ -232,6 +237,9 @@ export default class RelationControl extends React.Component {
   }
 
   async componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(RelationControl.propTypes, this.props, 'prop', 'RelationControl');
+
     this.mounted = true;
     // if the field has a previous value perform an initial search based on the value field
     // this is required since each search is limited by optionsLength so the selected value
@@ -259,11 +267,16 @@ export default class RelationControl extends React.Component {
 
       //set metadata
       this.mounted &&
-        onChange(filteredValue.length === 1 ? filteredValue[0] : fromJS(filteredValue), {
-          [field.get('name')]: {
-            [field.get('collection')]: metadata,
+        onChange(
+          filteredValue.length === 1 && !this.isMultiple()
+            ? filteredValue[0]
+            : fromJS(filteredValue),
+          {
+            [field.get('name')]: {
+              [field.get('collection')]: metadata,
+            },
           },
-        });
+        );
     }
   }
 
@@ -346,11 +359,19 @@ export default class RelationControl extends React.Component {
 
     const options = hits.reduce((acc, hit) => {
       if (
-        filters.every(
-          filter =>
-            Object.prototype.hasOwnProperty.call(hit.data, filter.field) &&
-            filter.values.includes(hit.data[filter.field]),
-        )
+        filters.every(filter => {
+          // check if the value for the (nested) filter field is in the filter values
+          const fieldKeys = filter.field.split('.');
+          let value = hit.data;
+          for (let i = 0; i < fieldKeys.length; i++) {
+            if (Object.prototype.hasOwnProperty.call(value, fieldKeys[i])) {
+              value = value[fieldKeys[i]];
+            } else {
+              return false;
+            }
+          }
+          return filter.values.includes(value);
+        })
       ) {
         const valuesPaths = stringTemplate.expandPath({ data: hit.data, path: valueField });
         for (let i = 0; i < valuesPaths.length; i++) {

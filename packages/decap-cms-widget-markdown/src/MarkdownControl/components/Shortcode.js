@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { css } from '@emotion/react';
 import { fromJS } from 'immutable';
-import { omit } from 'lodash';
+import omit from 'lodash/omit';
 import { ReactEditor, useSlate } from 'slate-react';
 import { Range, Transforms } from 'slate';
 

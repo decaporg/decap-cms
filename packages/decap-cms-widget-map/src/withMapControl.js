@@ -45,9 +45,13 @@ export default function withMapControl({ getFormat, getMap } = {}) {
     constructor(props) {
       super(props);
       this.mapContainer = React.createRef();
+      this.resizeObserver = null;
     }
 
     componentDidMount() {
+      // Manually validate PropTypes - React 19 breaking change
+      PropTypes.checkPropTypes(MapControl.propTypes, this.props, 'prop', 'MapControl');
+
       const { field, onChange, value } = this.props;
       const format = getFormat ? getFormat(field) : getDefaultFormat(field);
       const features = value ? [format.readFeature(value)] : [];
@@ -69,6 +73,18 @@ export default function withMapControl({ getFormat, getMap } = {}) {
         featuresSource.clear();
         onChange(format.writeGeometry(feature.getGeometry(), writeOptions));
       });
+
+      this.resizeObserver = new ResizeObserver(() => {
+        map.updateSize();
+      });
+
+      this.resizeObserver.observe(target);
+    }
+
+    componentWillUnmount() {
+      if (this.resizeObserver) {
+        this.resizeObserver.disconnect();
+      }
     }
 
     render() {

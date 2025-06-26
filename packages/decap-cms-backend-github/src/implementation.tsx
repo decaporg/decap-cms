@@ -69,6 +69,7 @@ export default class GitHub implements Implementation {
     initialWorkflowStatus: string;
   };
   originRepo: string;
+  isBranchConfigured: boolean;
   repo?: string;
   openAuthoringEnabled: boolean;
   useOpenAuthoring?: boolean;
@@ -106,7 +107,7 @@ export default class GitHub implements Implementation {
     }
 
     this.api = this.options.API || null;
-
+    this.isBranchConfigured = config.backend.branch ? true : false;
     this.openAuthoringEnabled = config.backend.open_authoring || false;
     if (this.openAuthoringEnabled) {
       if (!this.options.useWorkflow) {
@@ -320,6 +321,18 @@ export default class GitHub implements Implementation {
 
   async authenticate(state: Credentials) {
     this.token = state.token as string;
+    // Query the default branch name when the `branch` property is missing
+    // in the config file
+    if (!this.isBranchConfigured) {
+      const repoInfo = await fetch(`${this.apiRoot}/repos/${this.originRepo}`, {
+        headers: { Authorization: `token ${this.token}` },
+      })
+        .then(res => res.json())
+        .catch(() => null);
+      if (repoInfo && repoInfo.default_branch) {
+        this.branch = repoInfo.default_branch;
+      }
+    }
     const apiCtor = this.useGraphql ? GraphQLAPI : API;
     this.api = new apiCtor({
       token: this.token,
@@ -353,6 +366,13 @@ export default class GitHub implements Implementation {
     if (!isCollab && !this.bypassWriteAccessCheckForAppTokens) {
       throw new Error('Your GitHub user account does not have access to this repo.');
     }
+
+    // if (!this.isBranchConfigured) {
+    //   const defaultBranchName = await this.api.getDefaultBranchName()
+    //   if (defaultBranchName) {
+    //     this.branch = defaultBranchName;
+    //   }
+    // }
 
     // Authorized user
     return { ...user, token: state.token as string, useOpenAuthoring: this.useOpenAuthoring };

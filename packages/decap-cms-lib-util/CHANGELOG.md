@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.3.0](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-util@3.2.0...decap-cms-lib-util@3.3.0) (2025-06-26)
+
+**Note:** Version bump only for package decap-cms-lib-util
+
+# [3.2.0](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-util@3.1.0...decap-cms-lib-util@3.2.0) (2025-01-29)
+
+### Features
+
+- visual editing (click-to-edit) ([#7374](https://github.com/decaporg/decap-cms/issues/7374)) ([989c2dd](https://github.com/decaporg/decap-cms/commit/989c2dd6ed80f69b572b8b73c4e37b5106ae04fb))
+
+# [3.1.0](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-util@3.0.4...decap-cms-lib-util@3.1.0) (2024-08-07)
+
+### Bug Fixes
+
+- **backend:** allow a custom API root for backend ([#7214](https://github.com/decaporg/decap-cms/issues/7214)) ([fae3e05](https://github.com/decaporg/decap-cms/commit/fae3e057f898f60fdbe80091acc833d6ac92696e)), closes [#7168](https://github.com/decaporg/decap-cms/issues/7168)
+
+## [3.0.4](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-util@3.0.3...decap-cms-lib-util@3.0.4) (2024-04-03)
+
+**Note:** Version bump only for package decap-cms-lib-util
+
 ## [3.0.3](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-util@3.0.2...decap-cms-lib-util@3.0.3) (2024-03-21)
 
 **Note:** Version bump only for package decap-cms-lib-util

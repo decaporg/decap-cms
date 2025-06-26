@@ -2,7 +2,10 @@ import url from 'url';
 import urlJoin from 'url-join';
 import diacritics from 'diacritics';
 import sanitizeFilename from 'sanitize-filename';
-import { isString, escapeRegExp, flow, partialRight } from 'lodash';
+import isString from 'lodash/isString';
+import escapeRegExp from 'lodash/escapeRegExp';
+import flow from 'lodash/flow';
+import partialRight from 'lodash/partialRight';
 
 import type { CmsSlug } from '../types/redux';
 

@@ -7,6 +7,7 @@ import Frame, { FrameContextConsumer } from 'react-frame-component';
 import { lengths } from 'decap-cms-ui-default';
 import { connect } from 'react-redux';
 
+import { encodeEntry } from '../../../lib/stega';
 import {
   resolveWidget,
   getPreviewTemplate,
@@ -92,6 +93,7 @@ export class PreviewPane extends React.Component {
     if (field.get('meta')) {
       value = this.props.entry.getIn(['meta', field.get('name')]);
     }
+
     const nestedFields = field.get('fields');
     const singleField = field.get('field');
     const metadata = fieldsMetaData && fieldsMetaData.get(field.get('name'), Map());
@@ -167,9 +169,28 @@ export class PreviewPane extends React.Component {
     const { fields, entry, fieldsMetaData } = this.props;
     const field = fields.find(f => f.get('name') === name);
     const nestedFields = field && field.get('fields');
+    const variableTypes = field && field.get('types');
     const value = entry.getIn(['data', field.get('name')]);
     const metadata = fieldsMetaData.get(field.get('name'), Map());
 
+    // Variable Type lists
+    if (List.isList(value) && variableTypes) {
+      return value.map(val => {
+        const valueType = variableTypes.find(t => t.get('name') === val.get('type'));
+        const typeFields = valueType && valueType.get('fields');
+        const widgets =
+          typeFields &&
+          Map(
+            typeFields.map((f, i) => [
+              f.get('name'),
+              <div key={i}>{this.getWidget(f, val, metadata.get(f.get('name')), this.props)}</div>,
+            ]),
+          );
+        return Map({ data: val, widgets });
+      });
+    }
+
+    // List widgets
     if (List.isList(value)) {
       return value.map(val => {
         const widgets =
@@ -226,9 +247,18 @@ export class PreviewPane extends React.Component {
 
     this.inferFields();
 
+    const visualEditing = collection.getIn(['editor', 'visualEditing'], false);
+
+    // Only encode entry data if visual editing is enabled
+    const previewEntry = visualEditing
+      ? entry.set('data', encodeEntry(entry.get('data'), this.props.fields))
+      : entry;
+
     const previewProps = {
       ...this.props,
-      widgetFor: this.widgetFor,
+      entry: previewEntry,
+      widgetFor: (name, fields, values = previewEntry.get('data'), fieldsMetaData) =>
+        this.widgetFor(name, fields, values, fieldsMetaData),
       widgetsFor: this.widgetsFor,
       getCollection: this.getCollection,
     };
@@ -260,6 +290,7 @@ export class PreviewPane extends React.Component {
               return (
                 <EditorPreviewContent
                   {...{ previewComponent, previewProps: { ...previewProps, document, window } }}
+                  onFieldClick={this.props.onFieldClick}
                 />
               );
             }}
@@ -276,6 +307,7 @@ PreviewPane.propTypes = {
   entry: ImmutablePropTypes.map.isRequired,
   fieldsMetaData: ImmutablePropTypes.map.isRequired,
   getAsset: PropTypes.func.isRequired,
+  onFieldClick: PropTypes.func,
 };
 
 function mapStateToProps(state) {

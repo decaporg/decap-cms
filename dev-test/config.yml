@@ -17,6 +17,8 @@ collections: # A list of collections the CMS should be able to edit
     slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
     summary: '{{title}} -- {{year}}/{{month}}/{{day}}'
     create: true # Allow users to create new documents in this collection
+    editor:
+      visualEditing: true
     view_filters:
       - label: Posts With Index
         field: title
@@ -40,9 +42,8 @@ collections: # A list of collections the CMS should be able to edit
           label: 'Publish Date',
           name: 'date',
           widget: 'datetime',
-          date_format: 'YYYY-MM-DD',
-          time_format: 'HH:mm',
           format: 'YYYY-MM-DD HH:mm',
+          default: '{{now}}',
         }
       - label: 'Cover Image'
         name: 'image'
@@ -62,6 +63,8 @@ collections: # A list of collections the CMS should be able to edit
     slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
     summary: '{{title}} -- {{year}}/{{month}}/{{day}}'
     create: true # Allow users to create new documents in this collection
+    editor:
+      visualEditing: true
     fields: # The fields each document in this collection have
       - { label: 'Title', name: 'title', widget: 'string', tagname: 'h1' }
       - { label: 'Body', name: 'body', widget: 'markdown', hint: 'Main content goes here.' }
@@ -293,7 +296,7 @@ collections: # A list of collections the CMS should be able to edit
     label_singular: 'Page'
     folder: _pages
     create: true
-    nested: { depth: 100 }
+    nested: { depth: 100, subfolders: false }
     fields:
       - label: Title
         name: title

@@ -77,6 +77,20 @@ const filterStringFieldConfig = {
   ],
 };
 
+const filterIntegerFieldConfig = {
+  name: 'post',
+  collection: 'posts',
+  display_fields: ['title', 'slug'],
+  search_fields: ['title', 'body'],
+  value_field: 'title',
+  filters: [
+    {
+      field: 'num',
+      values: [1, 5, 9],
+    },
+  ],
+};
+
 const multipleFiltersFieldConfig = {
   name: 'post',
   collection: 'posts',
@@ -109,13 +123,28 @@ const emptyFilterFieldConfig = {
   ],
 };
 
+const nestedFilterFieldConfig = {
+  name: 'post',
+  collection: 'posts',
+  display_fields: ['title', 'slug'],
+  search_fields: ['title', 'body'],
+  value_field: 'title',
+  filters: [
+    {
+      field: 'deeply.nested.post.field',
+      values: ['Deeply nested field'],
+    },
+  ],
+};
+
 function generateHits(length) {
   const hits = Array.from({ length }, (val, idx) => {
     const title = `Post # ${idx + 1}`;
     const slug = `post-number-${idx + 1}`;
     const draft = idx % 2 === 0;
+    const num = idx + 1;
     const path = `posts/${slug}.md`;
-    return { collection: 'posts', data: { title, slug, draft }, slug, path };
+    return { collection: 'posts', data: { title, slug, draft, num }, slug, path };
   });
 
   return [
@@ -338,7 +367,9 @@ describe('Relation widget', () => {
     const value = 'Post # 1';
     const label = 'Post # 1 post-number-1';
     const metadata = {
-      post: { posts: { 'Post # 1': { title: 'Post # 1', draft: true, slug: 'post-number-1' } } },
+      post: {
+        posts: { 'Post # 1': { title: 'Post # 1', draft: true, num: 1, slug: 'post-number-1' } },
+      },
     };
 
     fireEvent.keyDown(input, { key: 'ArrowDown' });
@@ -356,7 +387,9 @@ describe('Relation widget', () => {
     const { getByText, onChangeSpy, setQueryHitsSpy } = setup({ field, value });
     const label = 'Post # 1 post-number-1';
     const metadata = {
-      post: { posts: { 'Post # 1': { title: 'Post # 1', draft: true, slug: 'post-number-1' } } },
+      post: {
+        posts: { 'Post # 1': { title: 'Post # 1', draft: true, num: 1, slug: 'post-number-1' } },
+      },
     };
 
     setQueryHitsSpy(generateHits(1));
@@ -405,7 +438,9 @@ describe('Relation widget', () => {
     const label = 'post-number-1 post-number-1 md';
     const metadata = {
       post: {
-        posts: { 'post-number-1': { title: 'Post # 1', draft: true, slug: 'post-number-1' } },
+        posts: {
+          'post-number-1': { title: 'Post # 1', draft: true, num: 1, slug: 'post-number-1' },
+        },
       },
     };
 
@@ -462,10 +497,14 @@ describe('Relation widget', () => {
       const field = fromJS({ ...fieldConfig, multiple: true });
       const { getByText, input, onChangeSpy } = setup({ field });
       const metadata1 = {
-        post: { posts: { 'Post # 1': { title: 'Post # 1', draft: true, slug: 'post-number-1' } } },
+        post: {
+          posts: { 'Post # 1': { title: 'Post # 1', draft: true, num: 1, slug: 'post-number-1' } },
+        },
       };
       const metadata2 = {
-        post: { posts: { 'Post # 2': { title: 'Post # 2', draft: false, slug: 'post-number-2' } } },
+        post: {
+          posts: { 'Post # 2': { title: 'Post # 2', draft: false, num: 2, slug: 'post-number-2' } },
+        },
       };
 
       fireEvent.keyDown(input, { key: 'ArrowDown' });
@@ -593,6 +632,29 @@ describe('Relation widget', () => {
       });
     });
 
+    it('should list 3 option hits on initial load using a filter on integer value', async () => {
+      const field = fromJS(filterIntegerFieldConfig);
+      const { getAllByText, input } = setup({ field });
+      const expectedOptions = [
+        'Post # 1 post-number-1',
+        'Post # 5 post-number-5',
+        'Post # 9 post-number-9',
+      ];
+      fireEvent.keyDown(input, { key: 'ArrowDown' });
+
+      await waitFor(() => {
+        const displayedOptions = getAllByText(/^Post # (\d{1,2}) post-number-\1$/);
+        expect(displayedOptions).toHaveLength(expectedOptions.length);
+        for (let i = 0; i < expectedOptions.length; i++) {
+          const expectedOption = expectedOptions[i];
+          const optionFound = displayedOptions.some(
+            option => option.textContent === expectedOption,
+          );
+          expect(optionFound).toBe(true);
+        }
+      });
+    });
+
     it('should list 4 option hits on initial load using multiple filters', async () => {
       const field = fromJS(multipleFiltersFieldConfig);
       const { getAllByText, input } = setup({ field });
@@ -624,6 +686,17 @@ describe('Relation widget', () => {
 
       await waitFor(() => {
         expect(() => getAllByText(/^Post # (\d{1,2}) post-number-\1$/)).toThrow(Error);
+      });
+    });
+
+    it('should list 1 option hit on initial load on nested filter field', async () => {
+      const field = fromJS(nestedFilterFieldConfig);
+      const { getAllByText, input } = setup({ field });
+      fireEvent.keyDown(input, { key: 'ArrowDown' });
+
+      await waitFor(() => {
+        expect(() => getAllByText(/^Post # (\d{1,2}) post-number-\1$/)).toThrow(Error);
+        expect(getAllByText('Deeply nested post post-deeply-nested')).toHaveLength(1);
       });
     });
   });

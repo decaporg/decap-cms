@@ -1,7 +1,7 @@
 {
   "name": "decap-cms-widget-boolean",
   "description": "Widget for editing boolean values in Decap CMS.",
-  "version": "3.1.1",
+  "version": "3.2.0",
   "homepage": "https://www.decapcms.org/docs/widgets/#boolean",
   "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-widget-boolean",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
@@ -24,7 +24,7 @@
     "decap-cms-ui-default": "^3.0.0",
     "lodash": "^4.17.11",
     "prop-types": "^15.7.2",
-    "react": "^18.2.0",
+    "react": "^19.1.0",
     "react-immutable-proptypes": "^2.1.0"
   }
 }

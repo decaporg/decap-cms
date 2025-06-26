@@ -1,4 +1,5 @@
 import * as api from '../API';
+
 describe('Api', () => {
   describe('getPreviewStatus', () => {
     it('should return preview status on matching context', () => {

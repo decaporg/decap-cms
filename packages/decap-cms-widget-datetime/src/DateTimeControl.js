@@ -12,7 +12,7 @@ dayjs.extend(customParseFormat);
 dayjs.extend(localizedFormat);
 dayjs.extend(utc);
 
-function Buttons({ t, handleChange, inputFormat, isUtc }) {
+function Buttons({ t, handleChange, getNow }) {
   return (
     <div
       css={css`
@@ -26,9 +26,8 @@ function Buttons({ t, handleChange, inputFormat, isUtc }) {
           ${buttons.button}
           ${buttons.widget}
         `}
-        onClick={() =>
-          handleChange(isUtc ? dayjs.utc().format(inputFormat) : dayjs().format(inputFormat))
-        }
+        onClick={() => handleChange(getNow())}
+        data-testid="now-button"
       >
         {t('editor.editorWidgets.datetime.now')}
       </button>
@@ -38,6 +37,7 @@ function Buttons({ t, handleChange, inputFormat, isUtc }) {
           ${buttons.widget}
         `}
         onClick={() => handleChange('')}
+        data-testid="clear-button"
       >
         {t('editor.editorWidgets.datetime.clear')}
       </button>
@@ -62,67 +62,85 @@ class DateTimeControl extends React.Component {
     isDisabled: false,
   };
 
+  componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(DateTimeControl.propTypes, this.props, 'prop', 'DateTimeControl');
+
+    const { value } = this.props;
+    if (value === '{{now}}') {
+      this.handleChange(this.getNow());
+    }
+  }
+
+  isUtc = this.props.field.get('picker_utc') || false;
+
+  escapeZ(str) {
+    if (/Z(?![\]])/.test(str)) {
+      return str.replace('Z', '[Z]');
+    }
+    return str;
+  }
+
   getFormat() {
     const { field } = this.props;
-    const format = field?.get('format') || 'YYYY-MM-DDTHH:mm';
-    const dateFormat = field?.get('date_format');
-    const timeFormat = field?.get('time_format');
-    let inputFormat = 'YYYY-MM-DDTHH:mm';
     let inputType = 'datetime-local';
+    let inputFormat = 'YYYY-MM-DDTHH:mm';
+    let format = 'YYYY-MM-DDTHH:mm:ss.SSS[Z]';
+    let userFormat = field?.get('format');
+    let dateFormat = field?.get('date_format');
+    let timeFormat = field?.get('time_format');
+    if (dateFormat === true) dateFormat = 'YYYY-MM-DD';
+    if (timeFormat === true) timeFormat = 'HH:mm';
 
-    if (dateFormat && timeFormat) {
-      return { format: `${dateFormat}T${timeFormat}`, inputType, inputFormat };
+    if (this.isUtc) {
+      userFormat = this.escapeZ(userFormat);
+      dateFormat = this.escapeZ(dateFormat);
+      timeFormat = this.escapeZ(timeFormat);
     }
 
-    if (timeFormat) {
+    if (typeof dateFormat === 'string' && typeof timeFormat === 'string') {
+      format = `${dateFormat}T${timeFormat}`;
+    } else if (typeof timeFormat === 'string') {
       inputType = 'time';
-      inputFormat = 'HH:mm';
-      return { format: timeFormat, inputType, inputFormat };
+      format = timeFormat;
+    } else if (typeof dateFormat === 'string') {
+      inputType = 'date';
+      format = dateFormat;
     }
 
-    if (dateFormat) {
-      inputType = 'date';
-      inputFormat = 'YYYY-MM-DD';
-      return { format: dateFormat, inputType, inputFormat };
+    if (typeof userFormat === 'string') {
+      format = userFormat;
+      inputType = 'datetime-local';
     }
+
+    if (dateFormat === false) inputType = 'time';
+    if (timeFormat === false) inputType = 'date';
+    if (inputType === 'datetime-local') inputFormat = 'YYYY-MM-DDTHH:mm';
+    if (inputType === 'date') inputFormat = 'YYYY-MM-DD';
+    if (inputType === 'time') inputFormat = 'HH:mm';
 
     return { format, inputType, inputFormat };
   }
 
-  getDefaultValue() {
-    const { field } = this.props;
-    const defaultValue = field.get('default');
-    return defaultValue;
-  }
+  isValidDate = dt => dayjs(dt, this.getFormat().inputFormat).isValid() || dt === '';
 
-  isUtc = this.props.field.get('picker_utc') || false;
-  isValidDate = datetime => dayjs(datetime).isValid() || datetime === '';
-  defaultValue = this.getDefaultValue();
-
-  componentDidMount() {
-    const { value } = this.props;
+  getNow() {
     const { inputFormat } = this.getFormat();
-    if (value === undefined) {
-      setTimeout(() => {
-        this.handleChange(
-          this.defaultValue === undefined ? dayjs().format(inputFormat) : this.defaultValue,
-        );
-      }, 0);
-    }
+    return this.isUtc ? dayjs.utc().format(inputFormat) : dayjs().format(inputFormat);
   }
 
   formatInputValue(value) {
     if (value === '') return value;
     const { format, inputFormat } = this.getFormat();
-    let formattedValue = this.isUtc
-      ? dayjs.utc(value).format(inputFormat)
-      : dayjs(value).format(inputFormat);
-    if (!this.isValidDate(formattedValue)) {
-      formattedValue = this.isUtc
-        ? dayjs.utc(value, format).format(inputFormat)
-        : dayjs(value, format).format(inputFormat);
+
+    const inputValue = this.isUtc
+      ? dayjs.utc(value, format).format(inputFormat)
+      : dayjs(value, format).format(inputFormat);
+
+    if (this.isValidDate(inputValue)) {
+      return inputValue;
     }
-    return formattedValue;
+    return this.isUtc ? dayjs.utc(value).format(inputFormat) : dayjs(value).format(inputFormat);
   }
 
   handleChange = datetime => {
@@ -140,14 +158,13 @@ class DateTimeControl extends React.Component {
 
   onInputChange = e => {
     const etv = e.target.value;
-    const newValue = dayjs(etv);
-    this.handleChange(etv === '' ? '' : newValue);
+    this.handleChange(etv);
   };
 
   render() {
     const { forID, value, classNameWrapper, setActiveStyle, setInactiveStyle, t, isDisabled } =
       this.props;
-    const { inputType, inputFormat } = this.getFormat();
+    const { inputType } = this.getFormat();
 
     return (
       <div
@@ -160,20 +177,26 @@ class DateTimeControl extends React.Component {
       >
         <input
           id={forID}
+          data-testid={forID}
           type={inputType}
-          value={this.formatInputValue(value)}
+          value={value ? this.formatInputValue(value) : ''}
           onChange={this.onInputChange}
           onFocus={setActiveStyle}
           onBlur={setInactiveStyle}
           disabled={isDisabled}
         />
+        {this.isUtc && (
+          <span
+            css={css`
+              font-size: 0.8em;
+              color: #666;
+            `}
+          >
+            UTC
+          </span>
+        )}
         {!isDisabled && (
-          <Buttons
-            t={t}
-            handleChange={v => this.handleChange(v)}
-            inputFormat={inputFormat}
-            isUtc={this.isUtc}
-          />
+          <Buttons t={t} handleChange={v => this.handleChange(v)} getNow={() => this.getNow()} />
         )}
       </div>
     );

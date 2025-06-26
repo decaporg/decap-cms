@@ -1,6 +1,6 @@
 /** @jsx h */
 
-import { flow } from 'lodash';
+import flow from 'lodash/flow';
 
 import h from '../../../test-helpers/h';
 import { markdownToSlate, slateToMarkdown } from '../index';
