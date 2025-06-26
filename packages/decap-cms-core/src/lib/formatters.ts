@@ -1,4 +1,7 @@
-import { flow, partialRight, trimEnd, trimStart } from 'lodash';
+import flow from 'lodash/flow';
+import partialRight from 'lodash/partialRight';
+import trimEnd from 'lodash/trimEnd';
+import trimStart from 'lodash/trimStart';
 import { stringTemplate } from 'decap-cms-lib-widgets';
 import { stripIndent } from 'common-tags';
 

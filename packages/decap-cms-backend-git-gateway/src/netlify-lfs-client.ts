@@ -1,5 +1,6 @@
 import { flow, fromPairs, map } from 'lodash/fp';
-import { isPlainObject, isEmpty } from 'lodash';
+import isPlainObject from 'lodash/isPlainObject';
+import isEmpty from 'lodash/isEmpty';
 import minimatch from 'minimatch';
 import { unsentRequest } from 'decap-cms-lib-util';
 
