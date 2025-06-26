@@ -1,4 +1,5 @@
-import { castArray, isArray } from 'lodash';
+import castArray from 'lodash/castArray';
+import isArray from 'lodash/isArray';
 
 export function assertType(nodes, type) {
   const nodesArray = castArray(nodes);

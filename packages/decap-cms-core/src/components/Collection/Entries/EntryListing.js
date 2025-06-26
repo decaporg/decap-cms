@@ -31,6 +31,11 @@ class EntryListing extends React.Component {
     filterTerm: PropTypes.string,
   };
 
+  componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(EntryListing.propTypes, this.props, 'prop', 'EntryListing');
+  }
+
   hasMore = () => {
     const hasMore = this.props.cursor?.actions?.has('append_next');
     return hasMore;

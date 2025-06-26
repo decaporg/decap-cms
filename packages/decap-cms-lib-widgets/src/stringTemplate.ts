@@ -1,5 +1,7 @@
 import { Map } from 'immutable';
-import { get, trimEnd, truncate } from 'lodash';
+import get from 'lodash/get';
+import trimEnd from 'lodash/trimEnd';
+import truncate from 'lodash/truncate';
 import dayjs from 'dayjs';
 import { basename, dirname, extname } from 'path';
 

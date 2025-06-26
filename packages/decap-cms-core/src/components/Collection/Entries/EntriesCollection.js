@@ -4,7 +4,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import styled from '@emotion/styled';
 import { translate } from 'react-polyglot';
-import { partial } from 'lodash';
+import partial from 'lodash/partial';
 import { Cursor } from 'decap-cms-lib-util';
 import { colors } from 'decap-cms-ui-default';
 
@@ -81,6 +81,9 @@ export class EntriesCollection extends React.Component {
   };
 
   componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(EntriesCollection.propTypes, this.props, 'prop', 'EntriesCollection');
+
     const {
       collection,
       collections,
