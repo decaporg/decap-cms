@@ -77,6 +77,7 @@ export interface CmsFieldBase {
   media_folder?: string;
   public_folder?: string;
   comment?: string;
+  readonly?: boolean;
 }
 
 export interface CmsFieldBoolean {
@@ -207,6 +208,7 @@ export interface CmsFieldSelect {
   multiple?: boolean;
   min?: number;
   max?: number;
+  meta?: boolean;
 }
 
 export interface CmsFieldRelation {
@@ -307,6 +309,14 @@ export interface ViewGroup {
   id: string;
 }
 
+export interface CmsCollectionMeta {
+  path?: {
+    label: string;
+    widget: string;
+    index_file: string;
+  };
+}
+
 export interface CmsCollection {
   name: string;
   label: string;
@@ -330,7 +340,7 @@ export interface CmsCollection {
     depth: number;
   };
   type: typeof FOLDER | typeof FILES;
-  meta?: { path?: { label: string; widget: string; index_file: string } };
+  meta?: CmsCollectionMeta;
 
   /**
    * It accepts the following values: yml, yaml, toml, json, md, markdown, html
@@ -350,6 +360,14 @@ export interface CmsCollection {
   view_filters?: ViewFilter[];
   view_groups?: ViewGroup[];
   i18n?: boolean | CmsI18nConfig;
+
+  index_file?: {
+    pattern: string;
+    fields?: CmsField[];
+    editor?: {
+      preview?: boolean;
+    };
+  };
 
   /**
    * @deprecated Use sortable_fields instead
@@ -529,15 +547,15 @@ export type EntryObject = {
   slug: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  i18n?: any;
   collection: string;
   mediaFiles: List<MediaFileMap>;
   newRecord: boolean;
   author?: string;
   updatedOn?: string;
   status: string;
-  meta: StaticallyTypedRecord<{ path: string }>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  i18n: any;
+  meta: StaticallyTypedRecord<{ path?: string; path_type?: string }>;
 };
 
 export type EntryMap = StaticallyTypedRecord<EntryObject>;
@@ -604,6 +622,11 @@ type i18n = StaticallyTypedRecord<{
   default_locale: string;
 }>;
 
+type IndexFile = StaticallyTypedRecord<{
+  pattern: string;
+  fields?: EntryFields;
+}>;
+
 export type Format = keyof typeof formatExtensions | string;
 
 type CollectionObject = {
@@ -635,6 +658,7 @@ type CollectionObject = {
   nested?: Nested;
   meta?: Meta;
   i18n: i18n;
+  index_file?: IndexFile;
 };
 
 export type Collection = StaticallyTypedRecord<CollectionObject>;
