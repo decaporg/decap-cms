@@ -9,7 +9,7 @@ import { createEditor, Transforms, Editor as SlateEditor } from 'slate';
 import { Editable, ReactEditor, Slate, withReact } from 'slate-react';
 import { withHistory } from 'slate-history';
 import { fromJS } from 'immutable';
-import { isEqual } from 'lodash';
+import isEqual from 'lodash/isEqual';
 
 import { editorStyleVars, EditorControlBar } from '../styles';
 import Toolbar from './Toolbar';
@@ -26,6 +26,7 @@ import { markdownToSlate, slateToMarkdown } from '../serializers';
 import withShortcodes from './plugins/shortcodes/withShortcodes';
 import insertShortcode from './plugins/shortcodes/insertShortcode';
 import defaultEmptyBlock from './plugins/blocks/defaultEmptyBlock';
+import withHtml from './plugins/html/withHtml';
 
 function visualEditorStyles({ minimal }) {
   return `
@@ -97,7 +98,9 @@ function Editor(props) {
 
   const editor = useMemo(
     () =>
-      withReact(withHistory(withShortcodes(withBlocks(withLists(withInlines(createEditor())))))),
+      withHtml(
+        withReact(withHistory(withShortcodes(withBlocks(withLists(withInlines(createEditor())))))),
+      ),
     [],
   );
 
@@ -132,8 +135,9 @@ function Editor(props) {
   useEffect(() => {
     if (props.pendingFocus) {
       ReactEditor.focus(editor);
+      props.pendingFocus();
     }
-  }, []);
+  }, [props.pendingFocus]);
 
   function handleMarkClick(format) {
     ReactEditor.focus(editor);

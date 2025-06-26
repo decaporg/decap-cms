@@ -1,6 +1,6 @@
 import trimStart from 'lodash/trimStart';
 import semaphore from 'semaphore';
-import { trim } from 'lodash';
+import trim from 'lodash/trim';
 import { stripIndent } from 'common-tags';
 import {
   CURSOR_COMPATIBILITY_SYMBOL,
@@ -158,6 +158,7 @@ export default class GitLab implements Implementation {
         backend: 'gitlab',
         repo: this.repo,
         token: this.token,
+        apiRoot: this.apiRoot,
       });
       if (defaultBranchName) {
         this.branch = defaultBranchName;

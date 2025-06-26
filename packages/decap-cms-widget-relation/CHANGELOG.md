@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.4.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-relation@3.3.2...decap-cms-widget-relation@3.4.0) (2025-06-26)
+
+**Note:** Version bump only for package decap-cms-widget-relation
+
+## [3.3.2](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-relation@3.3.1...decap-cms-widget-relation@3.3.2) (2024-08-13)
+
+### Reverts
+
+- Revert "Update dependencies (#7264)" ([22d483a](https://github.com/decaporg/decap-cms/commit/22d483a5b0c654071ae05735ac4f49abdc13d38c)), closes [#7264](https://github.com/decaporg/decap-cms/issues/7264)
+
+## [3.3.1](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-relation@3.3.0...decap-cms-widget-relation@3.3.1) (2024-08-13)
+
+**Note:** Version bump only for package decap-cms-widget-relation
+
+# [3.3.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-relation@3.2.1...decap-cms-widget-relation@3.3.0) (2024-04-16)
+
+### Features
+
+- nested fields and integer values for filter relation widget ([#7177](https://github.com/decaporg/decap-cms/issues/7177)) ([0e6f93b](https://github.com/decaporg/decap-cms/commit/0e6f93b1527931ddd7167bfd0ee3c3a7654e98b3))
+
 ## [3.2.1](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-relation@3.2.0...decap-cms-widget-relation@3.2.1) (2024-04-02)
 
 ### Bug Fixes

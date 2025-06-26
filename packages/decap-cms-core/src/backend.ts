@@ -1,4 +1,11 @@
-import { attempt, flatten, isError, uniq, trim, sortBy, get, set } from 'lodash';
+import attempt from 'lodash/attempt';
+import flatten from 'lodash/flatten';
+import isError from 'lodash/isError';
+import uniq from 'lodash/uniq';
+import trim from 'lodash/trim';
+import sortBy from 'lodash/sortBy';
+import get from 'lodash/get';
+import set from 'lodash/set';
 import { List, fromJS, Set } from 'immutable';
 import * as fuzzy from 'fuzzy';
 import {
@@ -1091,8 +1098,14 @@ export class Backend {
     unpublished = false,
     status,
   }: PersistArgs) {
-    const modifiedData = await this.invokePreSaveEvent(draft.get('entry'));
-    const entryDraft = (modifiedData && draft.setIn(['entry', 'data'], modifiedData)) || draft;
+    const updatedEntity = await this.invokePreSaveEvent(draft.get('entry'));
+
+    let entryDraft;
+    if (updatedEntity.get('data') === undefined) {
+      entryDraft = (updatedEntity && draft.setIn(['entry', 'data'], updatedEntity)) || draft;
+    } else {
+      entryDraft = (updatedEntity && draft.setIn(['entry'], updatedEntity)) || draft;
+    }
 
     const newEntry = entryDraft.getIn(['entry', 'newRecord']) || false;
 
@@ -1122,12 +1135,13 @@ export class Backend {
       updateAssetProxies(assetProxies, config, collection, entryDraft, path);
     } else {
       const slug = entryDraft.getIn(['entry', 'slug']);
+      const path = entryDraft.getIn(['entry', 'path']);
       dataFile = {
-        path: entryDraft.getIn(['entry', 'path']),
+        path,
         // for workflow entries we refresh the slug on publish
         slug: customPath && !useWorkflow ? slugFromCustomPath(collection, customPath) : slug,
         raw: this.entryToRaw(collection, entryDraft.get('entry')),
-        newPath: customPath,
+        newPath: customPath === path ? undefined : customPath,
       };
     }
 

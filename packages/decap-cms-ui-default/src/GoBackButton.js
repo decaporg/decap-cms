@@ -26,6 +26,11 @@ export default class GoBackButton extends React.Component {
     t: PropTypes.func.isRequired,
   };
 
+  componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(GoBackButton.propTypes, this.props, 'prop', 'GoBackButton');
+  }
+
   render() {
     const { href, t } = this.props;
 

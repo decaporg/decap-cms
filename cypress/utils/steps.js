@@ -69,6 +69,7 @@ function assertColorOn(cssProperty, color, opts) {
     } else {
       (opts.scope ? opts.scope : cy)
         .contains('label', opts.label)
+        .parents()
         .next()
         .should(assertion);
     }
@@ -518,23 +519,31 @@ function validateNestedListFields() {
   cy.contains('button', 'hotel locations').click();
   cy.contains('button', 'cities').click();
   cy.contains('label', 'City')
+    .parents()
     .next()
+    .first()
     .type('Washington DC');
   cy.contains('label', 'Number of Hotels in City')
+    .parents()
     .next()
+    .first()
     .type('5');
   cy.contains('button', 'city locations').click();
 
   // add second city list item
   cy.contains('button', 'cities').click();
   cy.contains('label', 'Cities')
+    .parents()
     .next()
+    .first()
     .find('div[class*=SortableListItem]')
     .eq(2)
     .as('secondCitiesListControl');
   cy.get('@secondCitiesListControl')
     .contains('label', 'City')
+    .parents()
     .next()
+    .first()
     .type('Boston');
   cy.get('@secondCitiesListControl')
     .contains('button', 'city locations')
@@ -561,21 +570,25 @@ function validateNestedListFields() {
 
   // list control aliases
   cy.contains('label', 'Hotel Locations')
+    .parents()
     .next()
     .find('div[class*=SortableListItem]')
     .first()
     .as('hotelLocationsListControl');
   cy.contains('label', 'Cities')
+    .parents()
     .next()
     .find('div[class*=SortableListItem]')
     .eq(0)
     .as('firstCitiesListControl');
   cy.contains('label', 'City Locations')
+    .parents()
     .next()
     .find('div[class*=SortableListItem]')
     .eq(0)
     .as('firstCityLocationsListControl');
   cy.contains('label', 'Cities')
+    .parents()
     .next()
     .find('div[class*=SortableListItem]')
     .eq(3)
@@ -589,7 +602,9 @@ function validateNestedListFields() {
   assertListControlErrorStatus([colorError, colorError], '@secondCityLocationsListControl');
 
   cy.contains('label', 'Hotel Name')
+    .parents()
     .next()
+    .first()
     .type('The Ritz Carlton');
   cy.contains('button', 'Save').click();
   assertNotification(notifications.error.missingField);
@@ -598,12 +613,20 @@ function validateNestedListFields() {
   // fill out rest of form and save
   cy.get('@secondCitiesListControl')
     .contains('label', 'Number of Hotels in City')
+    .parents()
+    .next()
+    .first()
     .type(3);
   cy.get('@secondCitiesListControl')
     .contains('label', 'Hotel Name')
+    .parents()
+    .next()
+    .first()
     .type('Grand Hyatt');
   cy.contains('label', 'Country')
+    .parents()
     .next()
+    .first()
     .type('United States');
   flushClockAndSave();
   assertNotification(notifications.saved);

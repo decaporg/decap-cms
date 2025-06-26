@@ -1,6 +1,11 @@
 import { Base64 } from 'js-base64';
 import semaphore from 'semaphore';
-import { initial, last, partial, result, trimStart, trim } from 'lodash';
+import initial from 'lodash/initial';
+import last from 'lodash/last';
+import partial from 'lodash/partial';
+import result from 'lodash/result';
+import trimStart from 'lodash/trimStart';
+import trim from 'lodash/trim';
 import { oneLine } from 'common-tags';
 import {
   getAllResponses,
@@ -580,7 +585,7 @@ export default class API {
     }
 
     try {
-      const user = await this.user();
+      const user: GitHubUser = await this.request(`/users/${pullRequest.user.login}`);
       return user.name || user.login;
     } catch {
       return;
