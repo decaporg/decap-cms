@@ -15,7 +15,8 @@ import {
   CMS_BRANCH_PREFIX,
   throwOnConflictingBranches,
 } from 'decap-cms-lib-util';
-import { trim, trimStart } from 'lodash';
+import trim from 'lodash/trim';
+import trimStart from 'lodash/trimStart';
 
 import introspectionQueryResultData from './fragmentTypes';
 import API, { API_NAME, PullRequestState, MOCK_PULL_REQUEST } from './API';
