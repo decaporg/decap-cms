@@ -29,10 +29,11 @@ function CardWrapper(props) {
     },
   } = props;
   const index = rowIndex * columnCount + columnIndex;
-  if (index >= mediaItems.length) {
+  const file = mediaItems[index];
+
+  if (!file) {
     return null;
   }
-  const file = mediaItems[index];
 
   return (
     <div
@@ -164,7 +165,10 @@ const PaginatingMessage = styled.h1`
 
 function MediaLibraryCardGrid(props) {
   const { canLoadMore, isPaginating } = props;
-  if (canLoadMore || isPaginating) {
+
+  const isMobile = window.innerWidth <= 800;
+
+  if (canLoadMore || isPaginating || isMobile) {
     return <PaginatedGrid {...props} />;
   }
   return <VirtualizedGrid {...props} />;

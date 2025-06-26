@@ -147,7 +147,7 @@ exports[`ListControl should add to list when add button is clicked 1`] = `
   border-top: 0;
   color: inherit;
   background-color: #dfdfe3;
-  padding: 13px;
+  padding: clamp(10px, 1.3vw, 13px);
   border-radius: 0 0 5px 5px;
 }
 
@@ -397,7 +397,7 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
   border-top: 0;
   color: inherit;
   background-color: #dfdfe3;
-  padding: 13px;
+  padding: clamp(10px, 1.3vw, 13px);
   border-radius: 0 0 5px 5px;
 }
 
@@ -675,7 +675,7 @@ exports[`ListControl should remove from list when remove button is clicked 2`] =
   border-top: 0;
   color: inherit;
   background-color: #dfdfe3;
-  padding: 13px;
+  padding: clamp(10px, 1.3vw, 13px);
   border-radius: 0 0 5px 5px;
 }
 
@@ -938,7 +938,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
   border-top: 0;
   color: inherit;
   background-color: #dfdfe3;
-  padding: 13px;
+  padding: clamp(10px, 1.3vw, 13px);
   border-radius: 0 0 5px 5px;
 }
 
@@ -1216,7 +1216,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
   border-top: 0;
   color: inherit;
   background-color: #dfdfe3;
-  padding: 13px;
+  padding: clamp(10px, 1.3vw, 13px);
   border-radius: 0 0 5px 5px;
 }
 
@@ -1494,7 +1494,7 @@ exports[`ListControl should render list with fields with default collapse ("true
   border-top: 0;
   color: inherit;
   background-color: #dfdfe3;
-  padding: 13px;
+  padding: clamp(10px, 1.3vw, 13px);
   border-radius: 0 0 5px 5px;
 }
 
@@ -1958,7 +1958,7 @@ exports[`ListControl should render list with nested object 1`] = `
   border-top: 0;
   color: inherit;
   background-color: #dfdfe3;
-  padding: 13px;
+  padding: clamp(10px, 1.3vw, 13px);
   border-radius: 0 0 5px 5px;
 }
 
@@ -2240,7 +2240,7 @@ exports[`ListControl should render list with nested object with collapse = false
   border-top: 0;
   color: inherit;
   background-color: #dfdfe3;
-  padding: 13px;
+  padding: clamp(10px, 1.3vw, 13px);
   border-radius: 0 0 5px 5px;
 }
 
