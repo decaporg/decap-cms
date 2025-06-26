@@ -5,7 +5,8 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { translate } from 'react-polyglot';
 import { ClassNames, Global, css as coreCss } from '@emotion/react';
 import styled from '@emotion/styled';
-import { partial, uniqueId } from 'lodash';
+import partial from 'lodash/partial';
+import uniqueId from 'lodash/uniqueId';
 import { connect } from 'react-redux';
 import { FieldLabel, colors, transitions, lengths, borders } from 'decap-cms-ui-default';
 import ReactMarkdown from 'react-markdown';
@@ -169,6 +170,11 @@ class EditorControl extends React.Component {
   };
 
   uniqueFieldId = uniqueId(`${this.props.field.get('name')}-field-`);
+
+  componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(EditorControl.propTypes, this.props, 'prop', 'EditorControl');
+  }
 
   isAncestorOfFieldError = () => {
     const { fieldsErrors } = this.props;
