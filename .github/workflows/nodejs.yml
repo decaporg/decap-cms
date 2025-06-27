@@ -39,7 +39,7 @@ jobs:
       - name: log versions
         run: node --version && npm --version && yarn --version
       - name: install dependencies
-        run: npm ci
+        run: npm ci --verbose
       - name: run unit tests
         run: npm run test:ci
       - name: build demo site
