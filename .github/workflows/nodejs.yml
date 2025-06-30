@@ -40,8 +40,6 @@ jobs:
         run: node --version && npm --version && yarn --version
       - name: install dependencies
         run: npm ci --verbose
-        env:
-          HUSKY: 0
       - name: run unit tests
         run: npm run test:ci
       - name: build demo site

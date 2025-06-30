@@ -32,8 +32,7 @@
     "lint:js": "eslint --color --ignore-path .gitignore \"{{packages,scripts}/**/,}*.{js,jsx,ts,tsx}\"",
     "lint:format": "prettier \"{{packages,scripts}/**/,}*.{js,jsx,ts,tsx,css}\" --list-different",
     "format": "npm run lint:js -- --fix --quiet && npm run format:prettier -- --write",
-    "format:prettier": "prettier \"{{packages,scripts}/**/,}*.{js,jsx,ts,tsx,css}\"",
-    "prepare": "husky install"
+    "format:prettier": "prettier \"{{packages,scripts}/**/,}*.{js,jsx,ts,tsx,css}\""
   },
   "browserslist": [
     "last 2 Chrome versions",
