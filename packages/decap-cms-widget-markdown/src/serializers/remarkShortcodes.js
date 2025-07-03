@@ -33,16 +33,6 @@ export function getLinesWithOffsets(value) {
   return trimmedLines;
 }
 
-function matchFromLines({ trimmedLines, plugin }) {
-  for (const { line, start } of trimmedLines) {
-    const match = line.match(plugin.pattern);
-    if (match) {
-      match.index += start;
-      return match;
-    }
-  }
-}
-
 function createShortcodeTokenizer({ plugins }) {
   return function tokenizeShortcode(eat, value, silent) {
     // Plugin patterns may rely on `^` and `$` tokens, even if they don't
@@ -51,7 +41,7 @@ function createShortcodeTokenizer({ plugins }) {
     // newlines, if we don't initially match on a pattern. We keep track of
     // the starting position of each line so that we can sort correctly
     // across the full multiline matches.
-    const trimmedLines = getLinesWithOffsets(value);
+    // const trimmedLines = getLinesWithOffsets(value);
 
     // Attempt to find a regex match for each plugin's pattern, and then
     // select the first by its occurrence in `value`. This ensures we won't
@@ -60,7 +50,7 @@ function createShortcodeTokenizer({ plugins }) {
     const [{ plugin, match } = {}] = plugins
       .toArray()
       .map(plugin => ({
-        match: value.match(plugin.pattern) || matchFromLines({ trimmedLines, plugin }),
+        match: value.match(plugin.pattern),
         plugin,
       }))
       .filter(({ match }) => !!match)
