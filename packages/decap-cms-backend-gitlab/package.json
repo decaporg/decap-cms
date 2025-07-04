@@ -36,8 +36,5 @@
     "lodash": "^4.17.11",
     "prop-types": "^15.7.2",
     "react": "^19.1.0"
-  },
-  "browser": {
-    "path": "path-browserify"
   }
 }

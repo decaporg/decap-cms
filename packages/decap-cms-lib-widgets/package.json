@@ -22,8 +22,5 @@
   "peerDependencies": {
     "immutable": "^3.7.6",
     "lodash": "^4.17.11"
-  },
-  "browser": {
-    "path": "path-browserify"
   }
 }
