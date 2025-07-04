@@ -35,24 +35,26 @@ export function getLinesWithOffsets(value) {
 
 function createShortcodeTokenizer({ plugins }) {
   return function tokenizeShortcode(eat, value, silent) {
-    // Plugin patterns may rely on `^` and `$` tokens, even if they don't
-    // use the multiline flag. To support this, we fall back to searching
-    // through each line individually, trimming trailing whitespace and
-    // newlines, if we don't initially match on a pattern. We keep track of
-    // the starting position of each line so that we can sort correctly
-    // across the full multiline matches.
-    // const trimmedLines = getLinesWithOffsets(value);
-
     // Attempt to find a regex match for each plugin's pattern, and then
     // select the first by its occurrence in `value`. This ensures we won't
     // skip a plugin that occurs later in the plugin registry, but earlier
     // in the `value`.
     const [{ plugin, match } = {}] = plugins
       .toArray()
-      .map(plugin => ({
-        match: value.match(plugin.pattern),
-        plugin,
-      }))
+      .map(plugin => {
+        let { pattern } = plugin
+        // Plugin patterns must start with a caret (^) to match the beginning of the line.
+        // If the pattern does not start with a caret, we add it
+        // to ensure that remark consumes only the shortcode, without any leading text.
+        if (!pattern.source.startsWith('^')) {
+          pattern = new RegExp(`^${pattern.source}`, pattern.flags);
+        }
+
+        return {
+          match: value.match(pattern),
+          plugin,
+        };
+      })
       .filter(({ match }) => !!match)
       .sort((a, b) => a.match.index - b.match.index);
 
