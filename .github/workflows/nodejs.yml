@@ -40,14 +40,10 @@ jobs:
         run: node --version && npm --version && yarn --version
       - name: install dependencies
         run: npm ci --verbose
-        env:
-          CYPRESS_INSTALL_BINARY: 0
       - name: run unit tests
         run: npm run test:ci
       - name: build demo site
         run: npm run build:demo
-      - run: npx cypress install
-        if: matrix.os == 'ubuntu-latest' && matrix.node-version == '22.x'
       - name: run e2e tests
         if: matrix.os == 'ubuntu-latest' && matrix.node-version == '22.x'
         run: npm run test:e2e:run-ci

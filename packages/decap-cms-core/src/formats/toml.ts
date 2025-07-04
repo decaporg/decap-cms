@@ -1,4 +1,5 @@
-import parseToml from '@iarna/toml/parse-string';
+// import parseToml from '@iarna/toml/parse-string';
+import toml from '@iarna/toml';
 import tomlify from 'tomlify-j0.4';
 import dayjs from 'dayjs';
 
@@ -24,7 +25,8 @@ function outputReplacer(_key: string, value: unknown) {
 
 export default {
   fromFile(content: string) {
-    return parseToml(content);
+    // return parseToml(content);
+    return toml.parse(content);
   },
 
   toFile(data: object, sortedKeys: string[] = []) {
