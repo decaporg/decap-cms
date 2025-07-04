@@ -38,6 +38,8 @@ jobs:
           cache: 'npm'
       - name: log versions
         run: node --version && npm --version && yarn --version
+      - name: Clean npm cache
+        run: npm cache clean --force
       - name: install dependencies
         run: npm ci --verbose
       - name: run unit tests
