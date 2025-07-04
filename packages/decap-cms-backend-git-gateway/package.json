@@ -23,7 +23,7 @@
     "gotrue-js": "^0.9.24",
     "ini": "^2.0.0",
     "jwt-decode": "^3.0.0",
-    "minimatch": "^3.0.4"
+    "minimatch": "^7.0.0"
   },
   "peerDependencies": {
     "@emotion/react": "^11.11.1",
@@ -37,8 +37,5 @@
     "lodash": "^4.17.11",
     "prop-types": "^15.7.2",
     "react": "^19.1.0"
-  },
-  "devDependencies": {
-    "@types/minimatch": "^5.1.2"
   }
 }

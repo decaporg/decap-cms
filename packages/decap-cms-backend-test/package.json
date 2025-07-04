@@ -17,6 +17,9 @@
     "build": "cross-env NODE_ENV=production webpack",
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward --extensions \".js,.jsx,.ts,.tsx\""
   },
+  "dependencies": {
+    "path-browserify": "^1.0.1"
+  },
   "peerDependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
@@ -26,5 +29,8 @@
     "prop-types": "^15.7.2",
     "react": "^19.1.0",
     "uuid": "^8.3.2"
+  },
+  "browser": {
+    "path": "path-browserify"
   }
 }
