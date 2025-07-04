@@ -22,7 +22,6 @@
     "common-tags": "^1.8.0",
     "js-base64": "^3.0.0",
     "minimatch": "^7.0.0",
-    "path-browserify": "^1.0.1",
     "semaphore": "^1.1.0",
     "what-the-diff": "^0.6.0"
   },

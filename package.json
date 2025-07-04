@@ -134,6 +134,7 @@
     "rimraf": "^3.0.0",
     "simple-git": "^3.0.0",
     "start-server-and-test": "^1.7.11",
+    "path-browserify": "^1.0.1",
     "stream-browserify": "^3.0.0",
     "style-loader": "^3.3.3",
     "stylelint": "^14.5.3",

@@ -21,7 +21,6 @@
   },
   "dependencies": {
     "js-base64": "^3.0.0",
-    "path-browserify": "^1.0.1",
     "semaphore": "^1.1.0"
   },
   "peerDependencies": {

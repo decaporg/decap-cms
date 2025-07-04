@@ -1,4 +1,4 @@
-// import './lib/polyfill';
+import './lib/polyfill';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { Provider, connect } from 'react-redux';
