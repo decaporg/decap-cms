@@ -32,7 +32,6 @@ TopBarProgress.config({
 });
 
 const AppMainContainer = styled.div`
-  min-width: 800px;
   max-width: 1440px;
   margin: 0 auto;
 `;
@@ -156,6 +155,7 @@ class App extends React.Component {
       openMediaLibrary,
       t,
       showMediaButton,
+      location,
     } = this.props;
 
     if (config === null) {
@@ -177,20 +177,25 @@ class App extends React.Component {
     const defaultPath = getDefaultPath(collections);
     const hasWorkflow = publishMode === EDITORIAL_WORKFLOW;
 
+    const isEditorRoute =
+      location.pathname.includes('/new') || location.pathname.includes('/entries');
+
     return (
       <>
         <Notifications />
-        <Header
-          user={user}
-          collections={collections}
-          onCreateEntryClick={createNewEntry}
-          onLogoutClick={logoutUser}
-          openMediaLibrary={openMediaLibrary}
-          hasWorkflow={hasWorkflow}
-          displayUrl={config.display_url}
-          isTestRepo={config.backend.name === 'test-repo'}
-          showMediaButton={showMediaButton}
-        />
+        {!isEditorRoute && (
+          <Header
+            user={user}
+            collections={collections}
+            onCreateEntryClick={createNewEntry}
+            onLogoutClick={logoutUser}
+            openMediaLibrary={openMediaLibrary}
+            hasWorkflow={hasWorkflow}
+            displayUrl={config.display_url}
+            isTestRepo={config.backend.name === 'test-repo'}
+            showMediaButton={showMediaButton}
+          />
+        )}
         <AppMainContainer>
           {isFetching && <TopBarProgress />}
           <Switch>

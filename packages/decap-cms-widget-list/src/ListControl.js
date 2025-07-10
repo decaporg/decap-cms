@@ -49,7 +49,7 @@ const NestedObjectLabel = styled.div`
   border-top: 0;
   color: ${props => (props.error ? colors.errorText : 'inherit')};
   background-color: ${colors.textFieldBorder};
-  padding: 13px;
+  padding: clamp(10px, 1.3vw, 13px);
   border-radius: 0 0 ${lengths.borderRadius} ${lengths.borderRadius};
 `;
 

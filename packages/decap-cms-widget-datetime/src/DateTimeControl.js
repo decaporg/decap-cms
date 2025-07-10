@@ -17,8 +17,8 @@ function Buttons({ t, handleChange, getNow }) {
     <div
       css={css`
         display: flex;
-        gap: 20px;
         width: fit-content;
+        gap: clamp(10px, 2vw, 20px);
       `}
     >
       <button
@@ -171,8 +171,13 @@ class DateTimeControl extends React.Component {
         className={classNameWrapper}
         css={css`
           display: flex !important;
-          gap: 20px;
+          gap: clamp(5px, 2vw, 20px);
           align-items: center;
+
+          @media (max-width: 800px) {
+            flex-direction: column;
+            align-items: flex-start;
+          }
         `}
       >
         <input

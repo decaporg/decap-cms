@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 
 const SearchContainer = styled.div`
-  margin: 0 12px;
+  margin: 0 clamp(12px, 2vw, 20px);
   position: relative;
 
   ${Icon} {

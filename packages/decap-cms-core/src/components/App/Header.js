@@ -37,7 +37,10 @@ function AppHeader(props) {
         top: 0;
         background-color: ${colors.foreground};
         z-index: ${zIndex.zIndex300};
-        height: ${lengths.topBarHeight};
+        height: ${lengths.topBarHeightMobile};
+        @media (min-width: 800px) {
+          height: ${lengths.topBarHeight};
+        }
       `}
       {...props}
     />
@@ -47,10 +50,16 @@ function AppHeader(props) {
 const AppHeaderContent = styled.div`
   display: flex;
   justify-content: space-between;
-  min-width: 800px;
+  flex-direction: column-reverse;
+  min-width: 100%;
   max-width: 1440px;
   padding: 0 12px;
   margin: 0 auto;
+
+  @media (min-width: 800px) {
+    min-width: 800px;
+    flex-direction: row;
+  }
 `;
 
 const AppHeaderButton = styled.button`
@@ -58,15 +67,17 @@ const AppHeaderButton = styled.button`
   background: none;
   color: #7b8290;
   font-family: inherit;
-  font-size: 16px;
+  font-size: clamp(14px, 1.6vw, 16px);
   font-weight: 500;
   display: inline-flex;
-  padding: 16px 20px;
   align-items: center;
+  padding: clamp(8px, 1.6vw, 16px) 0;
 
   ${Icon} {
     margin-right: 4px;
     color: #b3b9c4;
+    width: clamp(20px, 2.4vw, 24px);
+    height: clamp(20px, 2.4vw, 24px);
   }
 
   &:hover,
@@ -95,21 +106,27 @@ const AppHeaderNavLink = AppHeaderButton.withComponent(NavLink);
 const AppHeaderActions = styled.div`
   display: inline-flex;
   align-items: center;
+  gap: clamp(8px, 2.5vw, 20px);
 `;
 
 const AppHeaderQuickNewButton = styled(StyledDropdownButton)`
   ${buttons.button};
   ${buttons.medium};
   ${buttons.gray};
-  margin-right: 8px;
+
+  @media (max-width: 800px) {
+    font-weight: 400;
+  }
 
   &:after {
-    top: 11px;
+    top: 50%;
+    transform: translateY(-50%);
   }
 `;
 
 const AppHeaderNavList = styled.ul`
   display: flex;
+  gap: clamp(16px, 4vw, 60px);
   margin: 0;
   list-style: none;
 `;
@@ -169,8 +186,8 @@ class Header extends React.Component {
 
     return (
       <AppHeader>
-        <AppHeaderContent>
-          <nav>
+        <nav>
+          <AppHeaderContent>
             <AppHeaderNavList>
               <li>
                 <AppHeaderNavLink
@@ -199,34 +216,35 @@ class Header extends React.Component {
                 </li>
               )}
             </AppHeaderNavList>
-          </nav>
-          <AppHeaderActions>
-            {creatableCollections.size > 0 && (
-              <Dropdown
-                renderButton={() => (
-                  <AppHeaderQuickNewButton> {t('app.header.quickAdd')}</AppHeaderQuickNewButton>
-                )}
-                dropdownTopOverlap="30px"
-                dropdownWidth="160px"
-                dropdownPosition="left"
-              >
-                {creatableCollections.map(collection => (
-                  <DropdownItem
-                    key={collection.get('name')}
-                    label={collection.get('label_singular') || collection.get('label')}
-                    onClick={() => this.handleCreatePostClick(collection.get('name'))}
-                  />
-                ))}
-              </Dropdown>
-            )}
-            <SettingsDropdown
-              displayUrl={displayUrl}
-              isTestRepo={isTestRepo}
-              imageUrl={user?.avatar_url}
-              onLogoutClick={onLogoutClick}
-            />
-          </AppHeaderActions>
-        </AppHeaderContent>
+
+            <AppHeaderActions>
+              {creatableCollections.size > 0 && (
+                <Dropdown
+                  renderButton={() => (
+                    <AppHeaderQuickNewButton> {t('app.header.quickAdd')}</AppHeaderQuickNewButton>
+                  )}
+                  dropdownTopOverlap="30px"
+                  dropdownWidth="160px"
+                  dropdownPosition="left"
+                >
+                  {creatableCollections.map(collection => (
+                    <DropdownItem
+                      key={collection.get('name')}
+                      label={collection.get('label_singular') || collection.get('label')}
+                      onClick={() => this.handleCreatePostClick(collection.get('name'))}
+                    />
+                  ))}
+                </Dropdown>
+              )}
+              <SettingsDropdown
+                displayUrl={displayUrl}
+                isTestRepo={isTestRepo}
+                imageUrl={user?.avatar_url}
+                onLogoutClick={onLogoutClick}
+              />
+            </AppHeaderActions>
+          </AppHeaderContent>
+        </nav>
       </AppHeader>
     );
   }

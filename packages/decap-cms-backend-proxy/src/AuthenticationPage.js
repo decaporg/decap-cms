@@ -17,7 +17,7 @@ const LoginButton = styled.button`
   ${buttons.default};
   ${buttons.gray};
 
-  padding: 0 30px;
+  padding: clamp(4px, 1.2vw, 12px) clamp(12px, 3.2vw, 32px);
   margin-top: 0;
   display: flex;
   align-items: center;

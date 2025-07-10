@@ -9,14 +9,18 @@ import { stripProtocol } from '../../lib/urlHelper';
 
 const styles = {
   avatarImage: css`
-    width: 32px;
-    border-radius: 32px;
+    border-radius: 100%;
+
+    @media (max-width: 800px) {
+      width: 28px;
+      height: 28px;
+    }
   `,
 };
 
 const AvatarDropdownButton = styled(DropdownButton)`
   display: inline-block;
-  padding: 8px;
+  padding: 8px 0;
   cursor: pointer;
   color: #1e2532;
   background-color: transparent;
@@ -28,23 +32,20 @@ const AvatarImage = styled.img`
 
 const AvatarPlaceholderIcon = styled(Icon)`
   ${styles.avatarImage};
-  height: 32px;
   color: #1e2532;
   background-color: ${colors.textFieldBorder};
 `;
 
 const AppHeaderSiteLink = styled.a`
-  font-size: 14px;
+  font-size: clamp(12px, 3.3vw, 14px);
   font-weight: 400;
   color: #7b8290;
-  padding: 10px 16px;
 `;
 
 const AppHeaderTestRepoIndicator = styled.a`
-  font-size: 14px;
+  font-size: clamp(12px, 3.3vw, 14px);
   font-weight: 400;
   color: #7b8290;
-  padding: 10px 16px;
 `;
 
 function Avatar({ imageUrl }) {
@@ -68,7 +69,7 @@ function SettingsDropdown({ displayUrl, isTestRepo, imageUrl, onLogoutClick, t }
           target="_blank"
           rel="noopener noreferrer"
         >
-          Test Backend ↗
+          Test Backend&nbsp;↗
         </AppHeaderTestRepoIndicator>
       )}
       {displayUrl ? (
