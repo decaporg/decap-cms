@@ -67,7 +67,7 @@ describe('DateTimeControl', () => {
   });
 
   test('sets value in custom format (local timezone) when input value changes', () => {
-    const { input, props } = setup({ field: new Map() })
+    const { input, props } = setup({ field: new Map() });
 
     const testDate = '2024-03-15T10:30:00';
 
