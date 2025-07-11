@@ -63,7 +63,7 @@ describe('remarkParseShortcodes', () => {
       it('should be a remark shortcode node', () => {
         const editorComponent = EditorComponent({
           pattern: /^foo (?<bar>.+)$/,
-          fromBlock: ({ groups }) => ({ bar: groups.bar })
+          fromBlock: ({ groups }) => ({ bar: groups.bar }),
         });
         const mdast = process('foo baz', Map({ [editorComponent.id]: editorComponent }));
         expect(removePositions(mdast)).toMatchSnapshot();
@@ -71,30 +71,39 @@ describe('remarkParseShortcodes', () => {
       it('should parse multiple shortcodes', () => {
         const editorComponent = EditorComponent({
           pattern: /foo (?<bar>.+)/,
-          fromBlock: ({ groups }) => ({ bar: groups.bar })
+          fromBlock: ({ groups }) => ({ bar: groups.bar }),
         });
-        const mdast = process('paragraph\n\nfoo bar\n\nfoo baz\n\nnext para', Map({ [editorComponent.id]: editorComponent }));
+        const mdast = process(
+          'paragraph\n\nfoo bar\n\nfoo baz\n\nnext para',
+          Map({ [editorComponent.id]: editorComponent }),
+        );
         expect(removePositions(mdast)).toMatchSnapshot();
       });
-    })
+    });
     describe('pattern without leading caret', () => {
       it('should handle pattern without leading caret', () => {
         const editorComponent = EditorComponent({
           pattern: /foo (?<bar>.+)/,
-          fromBlock: ({ groups }) => ({ bar: groups.bar })
+          fromBlock: ({ groups }) => ({ bar: groups.bar }),
         });
-        const mdast = process('paragraph\n\nfoo baz', Map({ [editorComponent.id]: editorComponent }));
+        const mdast = process(
+          'paragraph\n\nfoo baz',
+          Map({ [editorComponent.id]: editorComponent }),
+        );
         expect(removePositions(mdast)).toMatchSnapshot();
       });
       it('should parse multiple shortcodes', () => {
         const editorComponent = EditorComponent({
           pattern: /foo (?<bar>.+)/,
-          fromBlock: ({ groups }) => ({ bar: groups.bar })
+          fromBlock: ({ groups }) => ({ bar: groups.bar }),
         });
-        const mdast = process('paragraph\n\nfoo bar\n\nfoo baz\n\nnext para', Map({ [editorComponent.id]: editorComponent }));
+        const mdast = process(
+          'paragraph\n\nfoo bar\n\nfoo baz\n\nnext para',
+          Map({ [editorComponent.id]: editorComponent }),
+        );
         expect(removePositions(mdast)).toMatchSnapshot();
       });
-    })
+    });
   });
 
   function removePositions(obj) {

@@ -42,7 +42,7 @@ function createShortcodeTokenizer({ plugins }) {
     const [{ plugin, match } = {}] = plugins
       .toArray()
       .map(plugin => {
-        let { pattern } = plugin
+        let { pattern } = plugin;
         // Plugin patterns must start with a caret (^) to match the beginning of the line.
         // If the pattern does not start with a caret, we add it
         // to ensure that remark consumes only the shortcode, without any leading text.
