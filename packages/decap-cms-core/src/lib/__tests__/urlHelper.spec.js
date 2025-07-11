@@ -125,6 +125,13 @@ describe('sanitizeSlug', () => {
       'test_test',
     );
   });
+
+  it('preserves slashes if when requested', () => {
+    const input = '/this-is-a/nested/page';
+
+    expect(sanitizeSlug(input, slugConfig, false)).toEqual('this-is-a-nested-page');
+    expect(sanitizeSlug(input, slugConfig, true)).toEqual('this-is-a/nested/page');
+  });
 });
 
 describe('sanitizeChar', () => {
