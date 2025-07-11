@@ -143,6 +143,23 @@ describe('Backend', () => {
 
       expect(result.length).toBe(1);
     });
+
+    it('behaves when field values are absent', () => {
+      const result = backend.filterEntries(
+        {
+          entries: [
+            {
+              data: {
+                otherField: 'testValue',
+              },
+            },
+          ],
+        },
+        Map({ field: 'testField', value: 'testValue' }),
+      );
+
+      expect(result.length).toBe(0);
+    });
   });
 
   describe('getLocalDraftBackup', () => {

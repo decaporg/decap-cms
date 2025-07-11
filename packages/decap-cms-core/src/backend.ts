@@ -1376,10 +1376,14 @@ export class Backend {
   //
   //  We normalize to a simple list for easier processing above.
   //
+  //  If the value is null/undefined, return an empty array.
+  //
   valuesAsArray(rawValue: string | List<string> | StaticallyTypedRecord<List<string>>): string[] {
     let values: string[] = [];
 
-    if ((<StaticallyTypedRecord<List<string>>>rawValue).toJS) {
+    if (rawValue === null || rawValue === undefined) {
+      values = [];
+    } else if ((<StaticallyTypedRecord<List<string>>>rawValue).toJS) {
       values = (<StaticallyTypedRecord<List<string>>>rawValue).toJS().toArray();
     } else if (Array.isArray(rawValue)) {
       values = <string[]>rawValue;
