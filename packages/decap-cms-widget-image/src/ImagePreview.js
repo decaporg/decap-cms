@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import { List } from 'immutable';
@@ -11,7 +11,18 @@ const StyledImage = styled(({ src }) => <img src={src || ''} role="presentation"
 `;
 
 function StyledImageAsset({ getAsset, value, field }) {
-  return <StyledImage src={getAsset(value, field)} />;
+  const [asset, setAsset] = useState(null);
+
+  useEffect(() => {
+    if (value) {
+      const newAsset = getAsset(value, field);
+      setAsset(newAsset);
+    } else {
+      setAsset(null);
+    }
+  }, [value, field, getAsset]);
+
+  return asset ? <StyledImage role="presentation" src={asset} /> : null;
 }
 
 function ImagePreviewContent(props) {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -81,13 +81,23 @@ const CardBody = styled.div`
   }
 `;
 
-const CardImage = styled.div`
+const StyledImage = styled.div`
   background-image: url(${props => props.src});
   background-position: center center;
   background-size: cover;
   background-repeat: no-repeat;
   height: 150px;
 `;
+
+function CardImage({ getAsset, value, field }) {
+  const [asset, setAsset] = useState(null);
+
+  useEffect(() => {
+    setAsset(value ? getAsset(value, field) : null);
+  }, [value, field, getAsset]);
+
+  return asset ? <StyledImage src={asset.toString()} /> : null;
+}
 
 function EntryCard({
   path,
@@ -117,7 +127,7 @@ function EntryCard({
             {collectionLabel ? <CollectionLabel>{collectionLabel}</CollectionLabel> : null}
             <CardHeading>{summary}</CardHeading>
           </CardBody>
-          {image ? <CardImage src={getAsset(image, imageField).toString()} /> : null}
+          {image ? <CardImage getAsset={getAsset} value={image} field={imageField} /> : null}
         </GridCardLink>
       </GridCard>
     );
