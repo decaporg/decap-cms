@@ -1,18 +1,14 @@
 import { Map, OrderedMap } from 'immutable';
+import unified from 'unified';
+import markdownToRemarkPlugin from 'remark-parse';
 
 import { remarkParseShortcodes, getLinesWithOffsets } from '../remarkShortcodes';
 
-// Stub of Remark Parser
-function process(value, plugins, processEat = () => {}) {
-  function eat() {
-    return processEat;
-  }
-
-  function Parser() {}
-  Parser.prototype.blockTokenizers = {};
-  Parser.prototype.blockMethods = [];
-  remarkParseShortcodes.call({ Parser }, { plugins });
-  Parser.prototype.blockTokenizers.shortcode(eat, value);
+function process(value, plugins) {
+  return unified()
+    .use(markdownToRemarkPlugin, { fences: true, commonmark: true })
+    .use(remarkParseShortcodes, { plugins })
+    .parse(value);
 }
 
 function EditorComponent({ id = 'foo', fromBlock = jest.fn(), pattern }) {
@@ -25,16 +21,6 @@ function EditorComponent({ id = 'foo', fromBlock = jest.fn(), pattern }) {
 
 describe('remarkParseShortcodes', () => {
   describe('pattern matching', () => {
-    it('should work', () => {
-      const editorComponent = EditorComponent({ pattern: /bar/ });
-      process('foo bar', Map({ [editorComponent.id]: editorComponent }));
-      expect(editorComponent.fromBlock).toHaveBeenCalledWith(expect.arrayContaining(['bar']));
-    });
-    it('should match value surrounded in newlines', () => {
-      const editorComponent = EditorComponent({ pattern: /^bar$/ });
-      process('foo\n\nbar\n', Map({ [editorComponent.id]: editorComponent }));
-      expect(editorComponent.fromBlock).toHaveBeenCalledWith(expect.arrayContaining(['bar']));
-    });
     it('should match multiline shortcodes', () => {
       const editorComponent = EditorComponent({ pattern: /^foo\nbar$/ });
       process('foo\nbar', Map({ [editorComponent.id]: editorComponent }));
@@ -72,16 +58,69 @@ describe('remarkParseShortcodes', () => {
       expect(barEditorComponent.fromBlock).toHaveBeenCalledWith(expect.arrayContaining(['bar']));
     });
   });
-  describe('output', () => {
-    it('should be a remark shortcode node', () => {
-      const processEat = jest.fn();
-      const shortcodeData = { bar: 'baz' };
-      const expectedNode = { type: 'shortcode', data: { shortcode: 'foo', shortcodeData } };
-      const editorComponent = EditorComponent({ pattern: /bar/, fromBlock: () => shortcodeData });
-      process('foo bar', Map({ [editorComponent.id]: editorComponent }), processEat);
-      expect(processEat).toHaveBeenCalledWith(expectedNode);
+  describe('parse', () => {
+    describe('pattern with leading caret', () => {
+      it('should be a remark shortcode node', () => {
+        const editorComponent = EditorComponent({
+          pattern: /^foo (?<bar>.+)$/,
+          fromBlock: ({ groups }) => ({ bar: groups.bar }),
+        });
+        const mdast = process('foo baz', Map({ [editorComponent.id]: editorComponent }));
+        expect(removePositions(mdast)).toMatchSnapshot();
+      });
+      it('should parse multiple shortcodes', () => {
+        const editorComponent = EditorComponent({
+          pattern: /foo (?<bar>.+)/,
+          fromBlock: ({ groups }) => ({ bar: groups.bar }),
+        });
+        const mdast = process(
+          'paragraph\n\nfoo bar\n\nfoo baz\n\nnext para',
+          Map({ [editorComponent.id]: editorComponent }),
+        );
+        expect(removePositions(mdast)).toMatchSnapshot();
+      });
+    });
+    describe('pattern without leading caret', () => {
+      it('should handle pattern without leading caret', () => {
+        const editorComponent = EditorComponent({
+          pattern: /foo (?<bar>.+)/,
+          fromBlock: ({ groups }) => ({ bar: groups.bar }),
+        });
+        const mdast = process(
+          'paragraph\n\nfoo baz',
+          Map({ [editorComponent.id]: editorComponent }),
+        );
+        expect(removePositions(mdast)).toMatchSnapshot();
+      });
+      it('should parse multiple shortcodes', () => {
+        const editorComponent = EditorComponent({
+          pattern: /foo (?<bar>.+)/,
+          fromBlock: ({ groups }) => ({ bar: groups.bar }),
+        });
+        const mdast = process(
+          'paragraph\n\nfoo bar\n\nfoo baz\n\nnext para',
+          Map({ [editorComponent.id]: editorComponent }),
+        );
+        expect(removePositions(mdast)).toMatchSnapshot();
+      });
     });
   });
+
+  function removePositions(obj) {
+    if (Array.isArray(obj)) {
+      return obj.map(removePositions);
+    }
+    if (obj && typeof obj === 'object') {
+      // eslint-disable-next-line no-unused-vars
+      const { position, ...rest } = obj;
+      const result = {};
+      for (const key in rest) {
+        result[key] = removePositions(rest[key]);
+      }
+      return result;
+    }
+    return obj;
+  }
 });
 
 describe('getLinesWithOffsets', () => {
