@@ -1,22 +1,12 @@
 {
   "targetDefaults": {
-    "build:esm": {
-      "cache": true,
-      "dependsOn": ["^build:esm"]
-    },
-    "build": {
-      "cache": true,
-      "dependsOn": ["^build"]
-    }
+    "build:esm": { "cache": true, "dependsOn": ["^build:esm"] },
+    "build": { "cache": true, "dependsOn": ["^build"] }
   },
   "namedInputs": {
-    "default": [
-      "{projectRoot}/**/*",
-      "sharedGlobals"
-    ],
+    "default": ["{projectRoot}/**/*", "sharedGlobals"],
     "sharedGlobals": [],
-    "production": [
-      "default"
-    ]
-  }
+    "production": ["default"]
+  },
+  "nxCloudId": "686fa6b8c513efd2b0f1680d"
 }
