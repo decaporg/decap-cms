@@ -65,7 +65,7 @@ if (window.netlifyIdentity) {
   });
 }
 
-export default class GitGatewayAuthenticationPage extends React.Component {
+export default class NetlifyAuthenticationPage extends React.Component {
   static authClient;
 
   static propTypes = {
@@ -84,7 +84,7 @@ export default class GitGatewayAuthenticationPage extends React.Component {
   componentDidMount() {
     // Manually validate PropTypes - React 19 breaking change
     PropTypes.checkPropTypes(
-      GitGatewayAuthenticationPage.propTypes,
+      NetlifyAuthenticationPage.propTypes,
       this.props,
       'prop',
       'GitGatewayAuthenticationPage',
@@ -152,7 +152,7 @@ export default class GitGatewayAuthenticationPage extends React.Component {
     }
 
     try {
-      const client = await GitGatewayAuthenticationPage.authClient();
+      const client = await NetlifyAuthenticationPage.authClient();
       const user = await client.login(this.state.email, this.state.password, true);
       this.props.onLogin(user);
     } catch (error) {
