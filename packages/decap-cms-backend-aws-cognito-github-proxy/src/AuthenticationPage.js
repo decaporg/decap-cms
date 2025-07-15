@@ -8,7 +8,7 @@ const LoginButtonIcon = styled(Icon)`
   margin-right: 18px;
 `;
 
-export default class GiteaAuthenticationPage extends React.Component {
+export default class GenericPKCEAuthenticationPage extends React.Component {
   static propTypes = {
     inProgress: PropTypes.bool,
     config: PropTypes.object.isRequired,
@@ -21,34 +21,38 @@ export default class GiteaAuthenticationPage extends React.Component {
   componentDidMount() {
     // Manually validate PropTypes - React 19 breaking change
     PropTypes.checkPropTypes(
-      GiteaAuthenticationPage.propTypes,
+      GenericPKCEAuthenticationPage.propTypes,
       this.props,
       'prop',
-      'GiteaAuthenticationPage',
+      'GenericPKCEAuthenticationPage',
     );
 
-    const { base_url = 'https://try.gitea.io', app_id = '' } = this.props.config.backend;
+    const {
+      base_url = '',
+      app_id = '',
+      auth_endpoint = 'oauth2/authorize',
+      auth_token_endpoint = 'oauth2/token',
+    } = this.props.config.backend;
     this.auth = new PkceAuthenticator({
       base_url,
-      auth_endpoint: 'login/oauth/authorize',
+      auth_endpoint,
       app_id,
-      auth_token_endpoint: 'login/oauth/access_token',
-      auth_token_endpoint_content_type: 'application/json; charset=utf-8',
+      auth_token_endpoint,
+      auth_token_endpoint_content_type: 'application/x-www-form-urlencoded; charset=utf-8',
     });
     // Complete authentication if we were redirected back to from the provider.
     this.auth.completeAuth((err, data) => {
       if (err) {
         this.setState({ loginError: err.toString() });
         return;
-      } else if (data) {
-        this.props.onLogin(data);
       }
+      this.props.onLogin(data);
     });
   }
 
   handleLogin = e => {
     e.preventDefault();
-    this.auth.authenticate({ scope: 'repository' }, (err, data) => {
+    this.auth.authenticate({ scope: 'https://api.github.com/repo openid email' }, (err, data) => {
       if (err) {
         this.setState({ loginError: err.toString() });
         return;
@@ -69,8 +73,7 @@ export default class GiteaAuthenticationPage extends React.Component {
         siteUrl={config.site_url}
         renderButtonContent={() => (
           <React.Fragment>
-            <LoginButtonIcon type="gitea" />{' '}
-            {inProgress ? t('auth.loggingIn') : t('auth.loginWithGitea')}
+            <LoginButtonIcon type="link" /> {inProgress ? t('auth.loggingIn') : t('auth.login')}
           </React.Fragment>
         )}
         t={t}

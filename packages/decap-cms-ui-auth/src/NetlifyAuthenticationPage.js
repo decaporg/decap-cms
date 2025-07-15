@@ -84,7 +84,7 @@ export default class NetlifyAuthenticationPage extends React.Component {
   componentDidMount() {
     // Manually validate PropTypes - React 19 breaking change
     PropTypes.checkPropTypes(
-      GitGatewayAuthenticationPage.propTypes,
+      NetlifyAuthenticationPage.propTypes,
       this.props,
       'prop',
       'GitGatewayAuthenticationPage',
@@ -171,7 +171,8 @@ export default class NetlifyAuthenticationPage extends React.Component {
       if (errors.identity) {
         return (
           <AuthenticationPage
-            logoUrl={config.logo_url}
+            logoUrl={config.logo_url} // Deprecated, replaced by `logo.src`
+            logo={config.logo}
             siteUrl={config.site_url}
             onLogin={this.handleIdentity}
             renderPageContent={() => (
@@ -189,7 +190,8 @@ export default class NetlifyAuthenticationPage extends React.Component {
       } else {
         return (
           <AuthenticationPage
-            logoUrl={config.logo_url}
+            logoUrl={config.logo_url} // Deprecated, replaced by `logo.src`
+            logo={config.logo}
             siteUrl={config.site_url}
             onLogin={this.handleIdentity}
             renderButtonContent={() => t('auth.loginWithNetlifyIdentity')}
@@ -201,7 +203,8 @@ export default class NetlifyAuthenticationPage extends React.Component {
 
     return (
       <AuthenticationPage
-        logoUrl={config.logo_url}
+        logoUrl={config.logo_url} // Deprecated, replaced by `logo.src`
+        logo={config.logo}
         siteUrl={config.site_url}
         renderPageContent={() => (
           <AuthForm onSubmit={this.handleLogin}>

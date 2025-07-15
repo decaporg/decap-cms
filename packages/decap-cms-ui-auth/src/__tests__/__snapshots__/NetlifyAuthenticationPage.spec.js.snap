@@ -26,6 +26,8 @@ exports[`NetlifyAuthenticationPage should render with identity error 1`] = `
 .emotion-2 {
   width: 300px;
   height: auto;
+  text-align: center;
+  margin-bottom: 1rem;
 }
 
 .emotion-4 {
@@ -164,6 +166,8 @@ exports[`NetlifyAuthenticationPage should render with no identity error 1`] = `
 .emotion-2 {
   width: 300px;
   height: auto;
+  text-align: center;
+  margin-bottom: 1rem;
 }
 
 .emotion-4 {

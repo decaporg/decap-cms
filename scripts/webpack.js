@@ -140,11 +140,7 @@ function baseConfig({ target = isProduction ? 'umd' : 'umddir' } = {}) {
     },
     resolve: {
       extensions: ['.ts', '.tsx', '.js', '.json'],
-      fallback: {
-        path: require.resolve('path-browserify'),
-        stream: require.resolve('stream-browserify'),
-        buffer: require.resolve('buffer'),
-      },
+      fallback: { stream: require.resolve('stream-browserify') },
     },
     plugins: Object.values(plugins()).map(plugin => plugin()),
     devtool: isTest ? '' : 'source-map',
