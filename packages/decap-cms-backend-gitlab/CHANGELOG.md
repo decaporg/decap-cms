@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.4.0](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-gitlab@3.3.1...decap-cms-backend-gitlab@3.4.0) (2025-07-15)
+
+### Features
+
+- add logo to header ([#7487](https://github.com/decaporg/decap-cms/issues/7487)) ([b540ace](https://github.com/decaporg/decap-cms/commit/b540acec943eb231df6aac7b1d515d9b4b84fa5d))
+
 ## [3.3.1](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-gitlab@3.3.0...decap-cms-backend-gitlab@3.3.1) (2025-07-10)
 
 **Note:** Version bump only for package decap-cms-backend-gitlab
