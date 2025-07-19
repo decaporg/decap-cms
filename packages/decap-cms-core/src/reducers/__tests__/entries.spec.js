@@ -85,7 +85,7 @@ describe('entries', () => {
       ).toEqual('static/media');
     });
 
-    it('should return draft media folder when collection specifies media_folder and entry is undefined', () => {
+    it('should return collection folder when collection specifies media_folder and entry is undefined', () => {
       expect(
         selectMediaFolder(
           { media_folder: 'static/media' },
@@ -93,7 +93,7 @@ describe('entries', () => {
           undefined,
           undefined,
         ),
-      ).toEqual('posts/DRAFT_MEDIA_FILES');
+      ).toEqual('posts');
     });
 
     it('should return relative media folder when collection specifies media_folder and entry path is not null', () => {
@@ -364,7 +364,7 @@ describe('entries', () => {
           'image.png',
           undefined,
         ),
-      ).toBe('posts/DRAFT_MEDIA_FILES/image.png');
+      ).toBe('posts/image.png');
     });
 
     it('should handle relative media_folder', () => {
