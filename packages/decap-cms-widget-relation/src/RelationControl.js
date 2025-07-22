@@ -441,26 +441,23 @@ export default class RelationControl extends React.Component {
     return options;
   };
 
-  loadOptions = debounce(async (term, callback) => {
+  loadOptions = debounce((term, callback) => {
     const { field, query, forID } = this.props;
     const collection = field.get('collection');
     const searchFieldsArray = getFieldArray(field.get('search_fields'));
     const file = field.get('file');
 
-    try {
-      const result = await relationCache.getOptions(collection, searchFieldsArray, term, file, () =>
+    relationCache
+      .getOptions(collection, searchFieldsArray, term, file, () =>
         query(forID, collection, searchFieldsArray, term, file),
-      );
-
-      const hits = result.payload.hits || [];
-      const options = this.parseHitOptions(hits);
-      const optionsLength = field.get('options_length') || 20;
-      const uniq = uniqOptions(this.state.initialOptions, options).slice(0, optionsLength);
-      callback(uniq);
-    } catch (error) {
-      console.error('Failed to load options:', error);
-      callback([]);
-    }
+      )
+      .then(result => {
+        const hits = result.payload.hits || [];
+        const options = this.parseHitOptions(hits);
+        const optionsLength = field.get('options_length') || 20;
+        const uniq = uniqOptions(this.state.initialOptions, options).slice(0, optionsLength);
+        callback(uniq);
+      });
   }, 500);
 
   render() {
