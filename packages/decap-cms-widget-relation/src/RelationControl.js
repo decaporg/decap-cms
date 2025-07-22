@@ -457,6 +457,10 @@ export default class RelationControl extends React.Component {
         const optionsLength = field.get('options_length') || 20;
         const uniq = uniqOptions(this.state.initialOptions, options).slice(0, optionsLength);
         callback(uniq);
+      })
+      .catch(error => {
+        console.error('Failed to load options:', error);
+        callback([]);
       });
   }, 500);
 
