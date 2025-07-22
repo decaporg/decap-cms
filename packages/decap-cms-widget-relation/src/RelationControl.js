@@ -137,6 +137,7 @@ function convertToOption(raw) {
   if (typeof raw === 'string') {
     return { label: raw, value: raw };
   }
+
   return Map.isMap(raw) ? raw.toJS() : raw;
 }
 
