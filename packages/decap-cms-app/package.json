@@ -1,7 +1,7 @@
 {
   "name": "decap-cms-app",
   "description": "An extensible, open source, Git-based, React CMS for static sites. Reusable congiuration with React as peer.",
-  "version": "3.8.1",
+  "version": "3.8.2",
   "homepage": "https://www.decapcms.org",
   "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-app",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
@@ -61,7 +61,7 @@
     "decap-cms-widget-markdown": "^3.5.0",
     "decap-cms-widget-number": "^3.2.0",
     "decap-cms-widget-object": "^3.4.0",
-    "decap-cms-widget-relation": "^3.5.1",
+    "decap-cms-widget-relation": "^3.5.2",
     "decap-cms-widget-select": "^3.3.0",
     "decap-cms-widget-string": "^3.2.0",
     "decap-cms-widget-text": "^3.2.0",
