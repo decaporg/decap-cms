@@ -211,15 +211,24 @@ function createMediaFileFromAsset({
 }
 
 export function persistMedia(file: File, opts: MediaOptions = {}) {
-  const { privateUpload, field } = opts;
+  const { privateUpload, field, currentMediaFolder } = opts;
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const backend = currentBackend(state.config);
     const integration = selectIntegration(state, null, 'assetStore');
-    const files: MediaFile[] = selectMediaFiles(state, field);
+    const files: MediaFile[] = selectMediaFiles(state);
     const fileName = sanitizeSlug(file.name.toLowerCase(), state.config.slug);
-    const existingFile = files.find(existingFile => existingFile.name.toLowerCase() === fileName);
-
+    const entry = state.entryDraft.get('entry');
+    const collection = state.collections.get(entry?.get('collection'));
+    const path = selectMediaFilePath(
+      state.config,
+      collection,
+      entry,
+      fileName,
+      field,
+      currentMediaFolder,
+    );
+    const existingFile = files.find(existingFile => existingFile.path.toLowerCase() === path);
     const editingDraft = selectEditingDraft(state.entryDraft);
 
     /**
@@ -265,7 +274,14 @@ export function persistMedia(file: File, opts: MediaOptions = {}) {
       } else {
         const entry = state.entryDraft.get('entry');
         const collection = state.collections.get(entry?.get('collection'));
-        const path = selectMediaFilePath(state.config, collection, entry, fileName, field);
+        const path = selectMediaFilePath(
+          state.config,
+          collection,
+          entry,
+          fileName,
+          field,
+          currentMediaFolder,
+        );
         assetProxy = createAssetProxy({
           file,
           path,
@@ -437,6 +453,7 @@ export function mediaLoading(page: number) {
 interface MediaOptions {
   privateUpload?: boolean;
   field?: EntryField;
+  currentMediaFolder?: string;
   page?: number;
   canPaginate?: boolean;
   dynamicSearch?: boolean;
