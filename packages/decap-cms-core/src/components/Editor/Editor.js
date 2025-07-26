@@ -22,6 +22,10 @@ import {
   loadLocalBackup,
   retrieveLocalBackup,
   deleteLocalBackup,
+  loadNotesForEntry,
+  addNote,
+  updateNote,
+  deleteNote,
 } from '../../actions/entries';
 import {
   updateUnpublishedEntryStatus,
@@ -336,6 +340,22 @@ export class Editor extends React.Component {
     }
   };
 
+  handleNotesChange = (action, payload) => {
+    switch(action) {
+      case 'ADD_NOTE':
+        this.props.addNote(payload);
+        break;
+      case 'UPDATE_NOTE':
+        this.props.updateNote(payload.id, payload.updates);
+        break;
+      case 'DELETE_NOTE':
+        this.props.deleteNote(payload.id);
+        break;
+      default:
+        console.log('Unknown notes action:', action, payload)
+    }
+  }
+
   render() {
     const {
       entry,
@@ -385,7 +405,9 @@ export class Editor extends React.Component {
         fields={fields}
         fieldsMetaData={entryDraft.get('fieldsMetaData')}
         fieldsErrors={entryDraft.get('fieldsErrors')}
+        notes={entryDraft.get('notes')}
         onChange={this.handleChangeDraftField}
+        onNotesChange={this.handleNotesChange}
         onValidate={changeDraftFieldValidation}
         onPersist={this.handlePersistEntry}
         onDelete={this.handleDeleteEntry}
@@ -492,6 +514,10 @@ const mapDispatchToProps = {
   unpublishPublishedEntry,
   deleteUnpublishedEntry,
   logoutUser,
+  loadNotesForEntry,
+  addNote,
+  updateNote,
+  deleteNote,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withWorkflow(translate()(Editor)));

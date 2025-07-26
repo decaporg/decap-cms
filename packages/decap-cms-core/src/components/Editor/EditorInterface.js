@@ -232,7 +232,7 @@ class EditorInterface extends Component {
 
   handleNotesChange = (action, payload) => {
     console.log('Notes change:', action, payload);
-    // TODO: Implement with Redux actions
+    this.props.onNotesChange(action, payload)
   };
 
   handleToggleScrollSync = () => {

@@ -34,6 +34,7 @@ import type {
   ViewFilter,
   ViewGroup,
   Entry,
+  Note,
 } from '../types/redux';
 import type { EntryValue } from '../valueObjects/Entry';
 import type { Backend } from '../backend';
@@ -85,6 +86,11 @@ export const ADD_DRAFT_ENTRY_MEDIA_FILE = 'ADD_DRAFT_ENTRY_MEDIA_FILE';
 export const REMOVE_DRAFT_ENTRY_MEDIA_FILE = 'REMOVE_DRAFT_ENTRY_MEDIA_FILE';
 
 export const CHANGE_VIEW_STYLE = 'CHANGE_VIEW_STYLE';
+
+export const DRAFT_NOTES_LOAD = 'DRAFT_NOTES_LOAD';
+export const DRAFT_NOTE_ADD = 'DRAFT_NOTE_ADD';
+export const DRAFT_NOTE_UPDATE = 'DRAFT_NOTE_UPDATE';
+export const DRAFT_NOTE_DELETE = 'DRAFT_NOTE_DELETE';
 
 /*
  * Simple Action Creators (Internal)
@@ -458,6 +464,22 @@ export function addDraftEntryMediaFile(file: ImplementationMediaFile) {
 
 export function removeDraftEntryMediaFile({ id }: { id: string }) {
   return { type: REMOVE_DRAFT_ENTRY_MEDIA_FILE, payload: { id } };
+}
+
+export function loadNotesForEntry(notes: Note[]) {
+  return { type: DRAFT_NOTES_LOAD, payload: {notes}};
+}
+
+export function addNote(note: Note) { 
+  return { type: DRAFT_NOTE_ADD, payload: { note } };
+}
+
+export function updateNote(noteId: string, updates: Partial<Note>) {
+  return { type: DRAFT_NOTE_UPDATE, payload: { id: noteId, updates } };
+}
+
+export function deleteNote(noteId: string) {
+  return { type: DRAFT_NOTE_DELETE, payload: { id: noteId } };
 }
 
 export function persistLocalBackup(entry: EntryMap, collection: Collection) {

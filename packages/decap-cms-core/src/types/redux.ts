@@ -293,6 +293,36 @@ export interface CmsCollectionFile {
   public_folder?: string;
 }
 
+export interface Note {
+  id: string;
+  content: string;
+  timestamp: string;
+  author: string;
+  entrySlug: string;
+  resolved: boolean;
+}
+
+export type NoteMap = StaticallyTypedRecord<Note>
+
+export type Notes = List<NoteMap>
+
+export interface LoadNotesPayload {
+  notes: Note[]
+}
+
+export interface AddNotePayload {
+  note: Note;
+}
+
+export interface UpdateNotePayload {
+  id: string;
+  updates: Partial<Note>
+}
+
+export interface DeleteNotePayload {
+  id: string;
+}
+
 export interface ViewFilter {
   label: string;
   field: string;
@@ -554,6 +584,7 @@ export type EntryDraft = StaticallyTypedRecord<{
   entry: Entry;
   fieldsErrors: FieldsErrors;
   fieldsMetaData?: Map<string, Map<string, string>>;
+  notes: Notes;
 }>;
 
 export type EntryField = StaticallyTypedRecord<{
