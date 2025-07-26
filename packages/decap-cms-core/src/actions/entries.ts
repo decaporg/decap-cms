@@ -22,7 +22,7 @@ import { getProcessSegment } from '../lib/formatters';
 import { hasI18n, duplicateDefaultI18nFields, serializeI18n, I18N, I18N_FIELD } from '../lib/i18n';
 import { addNotification } from './notifications';
 
-import type { ImplementationMediaFile } from 'decap-cms-lib-util';
+import type { ImplementationMediaFile, Note } from 'decap-cms-lib-util';
 import type { AnyAction } from 'redux';
 import type { ThunkDispatch } from 'redux-thunk';
 import type {
@@ -34,7 +34,6 @@ import type {
   ViewFilter,
   ViewGroup,
   Entry,
-  Note,
 } from '../types/redux';
 import type { EntryValue } from '../valueObjects/Entry';
 import type { Backend } from '../backend';
@@ -558,6 +557,7 @@ export function loadEntry(collection: Collection, slug: string) {
       const loadedEntry = await tryLoadEntry(getState(), collection, slug);
       dispatch(entryLoaded(collection, loadedEntry));
       dispatch(createDraftFromEntry(loadedEntry));
+      loadNotesFromFile(dispatch, getState(), collection, slug, );
     } catch (error) {
       dispatch(
         addNotification({
@@ -963,6 +963,7 @@ export function persistEntry(collection: Collection) {
           await dispatch(loadMedia());
         }
         dispatch(entryPersisted(collection, serializedEntry, newSlug));
+        saveNotesToFile(state, collection, newSlug || entry.get('slug'));
         if (collection.has('nested')) {
           await dispatch(loadEntries(collection));
         }
@@ -1014,6 +1015,31 @@ export function deleteEntry(collection: Collection, slug: string) {
         return Promise.reject(dispatch(entryDeleteFail(collection, slug, error)));
       });
   };
+}
+
+function saveNotesToFile(state: State, collection: Collection, slug: string) {
+  const backend = currentBackend(state.config);
+  const notes = state.entryDraft.get('notes');
+
+  if (typeof backend.saveNotesFile === 'function') {
+    const notesPath = `.notes/${collection.get('name')}/${slug}.json`;
+    return backend.saveNotesFile(notesPath, notes.toJS());
+  }
+
+  console.log('Backend does not support notes persistence yet.')
+}
+
+function loadNotesFromFile(dispatch: ThunkDispatch<State, {}, AnyAction>, state: State, collection: Collection, slug: string) {
+  const backend = currentBackend(state.config);
+  if (typeof backend.getNotesFile === 'function') {
+    const notesPath = `.notes/${collection.get('name')}/${slug}.json`;
+    return backend.getNotesFile(notesPath).then(notes => {
+      dispatch(loadNotesForEntry(notes));
+    });
+  }
+  
+  console.log('Backend does not support notes persistence yet');
+  dispatch(loadNotesForEntry([])); // Start with empty notes
 }
 
 function getPathError(

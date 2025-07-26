@@ -231,7 +231,6 @@ class EditorInterface extends Component {
   };
 
   handleNotesChange = (action, payload) => {
-    console.log('Notes change:', action, payload);
     this.props.onNotesChange(action, payload)
   };
 

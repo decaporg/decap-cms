@@ -68,7 +68,7 @@ const CharCount = styled.span`
 const Hint = styled.p`
   font-size: 12px;
   color: ${colors.controlLabel};
-  margin: 4px 0 0 0;
+  margin: 4px 0 0;
   font-style: italic;
 `;
 

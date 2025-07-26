@@ -11,6 +11,7 @@ import type { Search } from '../reducers/search';
 import type { GlobalUI } from '../reducers/globalUI';
 import type { NotificationsState } from '../reducers/notifications';
 import type { formatExtensions } from '../formats/formats';
+import type { Note } from 'decap-cms-lib-util';
 
 export type CmsBackendType =
   | 'azure'
@@ -291,15 +292,6 @@ export interface CmsCollectionFile {
   i18n?: boolean | CmsI18nConfig;
   media_folder?: string;
   public_folder?: string;
-}
-
-export interface Note {
-  id: string;
-  content: string;
-  timestamp: string;
-  author: string;
-  entrySlug: string;
-  resolved: boolean;
 }
 
 export type NoteMap = StaticallyTypedRecord<Note>

@@ -16,6 +16,7 @@ import AuthenticationPage from './AuthenticationPage';
 
 import type {
   Implementation,
+  Note,
   Entry,
   ImplementationEntry,
   AssetProxy,
@@ -392,6 +393,32 @@ export default class TestBackend implements Implementation {
       file: fileObj,
       url,
     };
+  }
+
+    async saveNotesFile(path: string, notes: Note[]) {
+    try {
+      const notesData = JSON.stringify(notes, null, 2);
+      writeFile(path, notesData, window.repoFiles);
+      console.log(`✅ Notes saved to: ${path}`);
+    } catch (error) {
+      console.error('❌ Failed to save notes:', error);
+      throw error;
+    }
+  }
+
+  async getNotesFile(path: string) {
+    try {
+      const file = getFile(path, window.repoFiles);
+      if (file.content) {
+        const notes = JSON.parse(file.content as string);
+        console.log(`✅ Notes loaded from: ${path}`);
+        return notes;
+      }
+      return []; // No notes file exists
+    } catch (error) {
+      console.error('❌ Failed to load notes:', error);
+      return []; // Return empty on error
+    }
   }
 
   normalizeAsset(assetProxy: AssetProxy) {

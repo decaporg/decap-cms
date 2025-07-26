@@ -76,6 +76,7 @@ import type {
   Config as C,
   UnpublishedEntryMediaFile as UEMF,
   DataFile as DF,
+  Note as NT
 } from './implementation';
 import type { AsyncLock as AL } from './asyncLock';
 
@@ -99,6 +100,7 @@ export type Config = C;
 export type FetchError = FE;
 export type PointerFile = PF;
 export type DataFile = DF;
+export type Note = NT;
 
 export const DecapCmsLibUtil = {
   APIError,

@@ -81,6 +81,7 @@ import type {
   UnpublishedEntry,
   DataFile,
   UnpublishedEntryDiff,
+  Note,
 } from 'decap-cms-lib-util';
 import type { Map } from 'immutable';
 
@@ -562,6 +563,7 @@ export class Backend {
     } else {
       throw new Error(`Unknown collection type: ${collectionType}`);
     }
+
     const loadedEntries = await listMethod();
     /*
           Wrap cursors so we can tell which collection the cursor is
@@ -579,6 +581,26 @@ export class Backend {
       pagination: cursor.meta?.get('page'),
       cursor,
     };
+  }
+
+    async saveNotesFile(path: string, notes: Note[]) {
+    if (typeof this.implementation.saveNotesFile === 'function') {
+      return this.implementation.saveNotesFile(path, notes)
+    }
+
+    console.log ('Backend unsupported for notes yet');
+
+    }
+
+  async getNotesFile(path: string) {
+    // Check if the implementation supports notes
+    if (typeof this.implementation.getNotesFile === 'function') {
+      return this.implementation.getNotesFile(path);
+    }
+    
+    // Fallback: return empty notes for backends that don't support notes yet
+    console.log('Backend does not support notes persistence yet');
+    return [];
   }
 
   // The same as listEntries, except that if a cursor with the "next"

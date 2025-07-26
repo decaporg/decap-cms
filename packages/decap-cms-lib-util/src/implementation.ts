@@ -63,6 +63,15 @@ export type DataFile = {
   newPath?: string;
 };
 
+export interface Note {
+  id: string;
+  content: string;
+  timestamp: string;
+  author: string;
+  entrySlug: string;
+  resolved: boolean;
+}
+
 export type AssetProxy = {
   path: string;
   fileObj?: File;
@@ -158,6 +167,9 @@ export interface Implementation {
   persistEntry: (entry: Entry, opts: PersistOptions) => Promise<void>;
   persistMedia: (file: AssetProxy, opts: PersistOptions) => Promise<ImplementationMediaFile>;
   deleteFiles: (paths: string[], commitMessage: string) => Promise<void>;
+
+  saveNotesFile?: (path: string, notes: Note[]) => Promise<void>
+  getNotesFile?: (path: string) => Promise<Note[]>;
 
   unpublishedEntries: () => Promise<string[]>;
   unpublishedEntry: (args: {
