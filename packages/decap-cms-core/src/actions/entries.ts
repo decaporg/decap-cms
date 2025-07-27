@@ -90,6 +90,9 @@ export const DRAFT_NOTES_LOAD = 'DRAFT_NOTES_LOAD';
 export const DRAFT_NOTE_ADD = 'DRAFT_NOTE_ADD';
 export const DRAFT_NOTE_UPDATE = 'DRAFT_NOTE_UPDATE';
 export const DRAFT_NOTE_DELETE = 'DRAFT_NOTE_DELETE';
+export const SAVE_NOTE_REQUEST = 'SAVE_NOTE_REQUEST';
+export const SAVE_NOTE_SUCCESS = 'SAVE_NOTE_SUCCESS'
+export const SAVE_NOTE_FAILURE = 'SAVE_NOTE_FAILURE';
 
 /*
  * Simple Action Creators (Internal)
@@ -557,7 +560,7 @@ export function loadEntry(collection: Collection, slug: string) {
       const loadedEntry = await tryLoadEntry(getState(), collection, slug);
       dispatch(entryLoaded(collection, loadedEntry));
       dispatch(createDraftFromEntry(loadedEntry));
-      loadNotesFromFile(dispatch, getState(), collection, slug, );
+      loadNotesFromFile(dispatch, getState(), collection, slug);
     } catch (error) {
       dispatch(
         addNotification({
@@ -1017,12 +1020,87 @@ export function deleteEntry(collection: Collection, slug: string) {
   };
 }
 
+export function saveNoteRequest(noteId: string) {
+  return {
+    type: SAVE_NOTE_REQUEST,
+    payload: { noteId }
+  };
+}
+
+export function saveNoteSuccess(noteId: string) {
+  return {
+    type: SAVE_NOTE_SUCCESS,
+    payload: { noteId }
+  };
+}
+
+export function saveNoteFailure(noteId: string, error: Error) {
+  return {
+    type: SAVE_NOTE_FAILURE,
+    payload: { noteId, error: error.toString() }
+  };
+}
+
+// New thunk action for saving a single note
+export function saveNote(collection: Collection, slug: string, note: Note) {
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+    const state = getState();
+    const backend = currentBackend(state.config);
+    
+    console.log('🔥 saveNote called!', { collection: collection.get('name'), slug, noteId: note.id });
+    
+    dispatch(saveNoteRequest(note.id));
+    
+    try {
+      if (typeof backend.saveNotesFile === 'function') {
+        const allNotes = state.entryDraft.get('notes');
+        const notesPath = `${collection.get('folder')}/${slug}.json`;
+        await backend.saveNotesFile(notesPath, allNotes.toJS());
+        dispatch(saveNoteSuccess(note.id));       
+      } else {
+        throw new Error('Backend does not support notes persistence');
+      }
+    } catch (error) { 
+      dispatch(saveNoteFailure(note.id, error));
+    }
+  };
+}
+
+export function addNoteAndSave(collection: Collection, slug: string, note: Note, saveImmediately = true) {
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>) => {
+    dispatch(addNote(note));
+    if (saveImmediately) {
+      await dispatch(saveNote(collection, slug, note));
+    }
+  };
+}
+
+export function updateNoteAndSave(collection: Collection, slug: string, noteId: string, updates: Partial<Note>, saveImmediately = true) {
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>) => {
+    dispatch(updateNote(noteId, updates));
+    if (saveImmediately) {
+      const updatedNote = { id: noteId, ...updates } as Note;
+      await dispatch(saveNote(collection, slug, updatedNote));
+    }
+  };
+}
+
+export function deleteNoteAndSave(collection: Collection, slug: string, noteId: string, saveImmediately = true) {
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>) => {
+    dispatch(deleteNote(noteId));
+    if (saveImmediately) {
+      const dummyNote = { id: noteId } as Note;
+      await dispatch(saveNote(collection, slug, dummyNote));
+    }
+  };
+}
+
 function saveNotesToFile(state: State, collection: Collection, slug: string) {
   const backend = currentBackend(state.config);
   const notes = state.entryDraft.get('notes');
 
   if (typeof backend.saveNotesFile === 'function') {
-    const notesPath = `.notes/${collection.get('name')}/${slug}.json`;
+    const notesPath = `${collection.get('folder')}/${slug}.json`;
     return backend.saveNotesFile(notesPath, notes.toJS());
   }
 
@@ -1032,7 +1110,7 @@ function saveNotesToFile(state: State, collection: Collection, slug: string) {
 function loadNotesFromFile(dispatch: ThunkDispatch<State, {}, AnyAction>, state: State, collection: Collection, slug: string) {
   const backend = currentBackend(state.config);
   if (typeof backend.getNotesFile === 'function') {
-    const notesPath = `.notes/${collection.get('name')}/${slug}.json`;
+    const notesPath = `${collection.get('folder')}/${slug}.json`;
     return backend.getNotesFile(notesPath).then(notes => {
       dispatch(loadNotesForEntry(notes));
     });

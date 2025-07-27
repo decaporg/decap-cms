@@ -16,6 +16,7 @@ import type {
   Implementation,
   ImplementationFile,
   UnpublishedEntry,
+  Note,
 } from 'decap-cms-lib-util';
 
 async function serializeAsset(assetProxy: AssetProxy) {
@@ -245,6 +246,33 @@ export default class ProxyBackend implements Implementation {
     });
 
     return deserializeMediaFile(file);
+  }
+
+  async saveNotesFile(path: string, notes: Note[]) {
+    const response = await this.request({
+      action: 'saveNotesFile',
+      params: { 
+        branch: this.branch, 
+        path, 
+        notes 
+      },
+    });
+    return response;
+  }
+
+  async getNotesFile(path: string): Promise<Note[]> {
+    try {
+      const response = await this.request({
+        action: 'getNotesFile',
+        params: {
+          branch: this.branch,
+          path
+        },
+      });
+      return response.notes || [];
+    } catch (error) {
+      return [];
+    }
   }
 
   deleteFiles(paths: string[], commitMessage: string) {

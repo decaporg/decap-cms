@@ -21,6 +21,8 @@ const allowedActions = [
   'deleteFile',
   'deleteFiles',
   'getDeployPreview',
+  'saveNotesFile',
+  'getNotesFile',
 ];
 
 const requiredString = Joi.string().required();
@@ -219,6 +221,35 @@ export function defaultSchema({ path = requiredString } = {}) {
           .keys({
             collection,
             slug,
+          })
+          .required(),
+      },
+      {
+        is: 'saveNotesFile',
+        then: defaultParams
+          .keys({
+            path,
+            notes: Joi.array()
+              .items(
+                Joi.object({
+                  id: requiredString,
+                  content: requiredString,
+                  timestamp: requiredString,
+                  author: requiredString,
+                  entrySlug: requiredString,
+                  resolved: requiredBool,
+                })
+              )
+              .required(),
+          })
+          .required(),
+      },
+
+      {
+        is: 'getNotesFile',
+        then: defaultParams
+          .keys({
+            path,
           })
           .required(),
       },

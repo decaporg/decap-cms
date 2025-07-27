@@ -23,9 +23,9 @@ import {
   retrieveLocalBackup,
   deleteLocalBackup,
   loadNotesForEntry,
-  addNote,
-  updateNote,
-  deleteNote,
+  addNoteAndSave,
+  updateNoteAndSave,
+  deleteNoteAndSave,
 } from '../../actions/entries';
 import {
   updateUnpublishedEntryStatus,
@@ -341,15 +341,17 @@ export class Editor extends React.Component {
   };
 
   handleNotesChange = (action, payload) => {
+    const { collection, slug } = this.props;
+    
     switch(action) {
       case 'ADD_NOTE':
-        this.props.addNote(payload);
+        this.props.addNoteAndSave(collection, slug, payload);
         break;
       case 'UPDATE_NOTE':
-        this.props.updateNote(payload.id, payload.updates);
+        this.props.updateNoteAndSave(collection, slug, payload.id, payload.updates);
         break;
       case 'DELETE_NOTE':
-        this.props.deleteNote(payload.id);
+        this.props.deleteNoteAndSave(collection, slug, payload.id);
         break;
       default:
         console.log('Unknown notes action:', action, payload)
@@ -515,9 +517,9 @@ const mapDispatchToProps = {
   deleteUnpublishedEntry,
   logoutUser,
   loadNotesForEntry,
-  addNote,
-  updateNote,
-  deleteNote,
+  addNoteAndSave,
+  updateNoteAndSave,
+  deleteNoteAndSave
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withWorkflow(translate()(Editor)));
