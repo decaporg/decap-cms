@@ -409,30 +409,35 @@ export default class TestBackend implements Implementation {
       id: uuid(),
       timestamp: new Date().toISOString(),
     };
-    
+
     if (!window.repoNotes[key]) {
       window.repoNotes[key] = [];
     }
-    
+
     window.repoNotes[key].push(newNote);
     return newNote;
   }
 
-  async updateNote(collection: string, slug: string, noteId: string, updates: Partial<Note>): Promise<Note> {
+  async updateNote(
+    collection: string,
+    slug: string,
+    noteId: string,
+    updates: Partial<Note>,
+  ): Promise<Note> {
     const key = `${collection}/${slug}`;
     const notes = window.repoNotes[key] || [];
     const noteIndex = notes.findIndex(note => note.id === noteId);
-    
+
     if (noteIndex === -1) {
       throw new Error(`Note with id ${noteId} not found`);
     }
-    
+
     const updatedNote = {
       ...notes[noteIndex],
       ...updates,
       updatedAt: new Date().toISOString(),
     };
-    
+
     window.repoNotes[key][noteIndex] = updatedNote;
     return updatedNote;
   }
@@ -441,11 +446,11 @@ export default class TestBackend implements Implementation {
     const key = `${collection}/${slug}`;
     const notes = window.repoNotes[key] || [];
     const noteIndex = notes.findIndex(note => note.id === noteId);
-    
+
     if (noteIndex === -1) {
       throw new Error(`Note with id ${noteId} not found`);
     }
-    
+
     window.repoNotes[key].splice(noteIndex, 1);
   }
 
@@ -453,20 +458,20 @@ export default class TestBackend implements Implementation {
     const key = `${collection}/${slug}`;
     const notes = window.repoNotes[key] || [];
     const note = notes.find(note => note.id === noteId);
-    
+
     if (!note) {
       throw new Error(`Note with id ${noteId} not found`);
     }
-    
+
     const updatedNote = {
       ...note,
       resolved: !note.resolved,
       updatedAt: new Date().toISOString(),
     };
-    
+
     const noteIndex = notes.findIndex(n => n.id === noteId);
     window.repoNotes[key][noteIndex] = updatedNote;
-    
+
     return updatedNote;
   }
 

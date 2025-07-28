@@ -86,11 +86,11 @@ class EditorNotesPane extends Component {
     t: key => key, // Fallback translation function
   };
 
-  handleAddNote = (content) => {
+  handleAddNote = content => {
     const { onChange, user } = this.props;
     const newNote = {
       content: content.trim(),
-      author: user?.name || user?.login  || 'Anonymous',
+      author: user?.name || user?.login || 'Anonymous',
       resolved: false,
     };
 
@@ -102,12 +102,12 @@ class EditorNotesPane extends Component {
     onChange('UPDATE_NOTE', { id: noteId, updates });
   };
 
-  handleDeleteNote = (noteId) => {
+  handleDeleteNote = noteId => {
     const { onChange } = this.props;
     onChange('DELETE_NOTE', { id: noteId });
   };
 
-  handleResolveNote = (noteId) => {
+  handleResolveNote = noteId => {
     this.handleUpdateNote(noteId, { resolved: true });
   };
 
@@ -120,13 +120,9 @@ class EditorNotesPane extends Component {
     return (
       <NotesContainer>
         <NotesHeader>
-          <NotesTitle>
-            {t('editor.editorNotesPane.title')}
-          </NotesTitle>
+          <NotesTitle>{t('editor.editorNotesPane.title')}</NotesTitle>
           {notesCount > 0 && (
-            <NotesCount>
-              {unresolvedCount > 0 ? unresolvedCount : notesCount}
-            </NotesCount>
+            <NotesCount>{unresolvedCount > 0 ? unresolvedCount : notesCount}</NotesCount>
           )}
         </NotesHeader>
 
@@ -134,9 +130,7 @@ class EditorNotesPane extends Component {
           {notesCount === 0 ? (
             <EmptyState>
               <EmptyStateIcon>📝</EmptyStateIcon>
-              <EmptyStateText>
-                {t('editor.editorNotesPane.emptyState')}
-              </EmptyStateText>
+              <EmptyStateText>{t('editor.editorNotesPane.emptyState')}</EmptyStateText>
             </EmptyState>
           ) : (
             <NotesList
@@ -148,10 +142,7 @@ class EditorNotesPane extends Component {
             />
           )}
 
-          <AddNoteForm
-            onAdd={this.handleAddNote}
-            t={t}
-          />
+          <AddNoteForm onAdd={this.handleAddNote} t={t} />
         </NotesContent>
       </NotesContainer>
     );

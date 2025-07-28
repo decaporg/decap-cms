@@ -1483,12 +1483,13 @@ export default class API {
   private static readonly NOTE_STATUS_RESOLVED = 'RESOLVED';
   private static readonly NOTE_STATUS_OPEN = 'OPEN';
   // In Github we hide Decap Notes metadata in a HTML comment, that way we can track status of whether or not a note has been resolved (similar to GDocs)
-  private static readonly NOTE_REGEX = /^<!-- DecapCMS Note - Status: (RESOLVED|OPEN) -->([\s\S]+)$/;
+  private static readonly NOTE_REGEX =
+    /^<!-- DecapCMS Note - Status: (RESOLVED|OPEN) -->([\s\S]+)$/;
 
   private async getPRComments(prNumber: string | number): Promise<GitHubIssueComment[]> {
     try {
       const response: GitHubIssueComment[] = await this.request(
-        `${this.originRepoURL}/issues/${prNumber}/comments`
+        `${this.originRepoURL}/issues/${prNumber}/comments`,
       );
       return Array.isArray(response) ? response : [];
     } catch (error) {
@@ -1502,7 +1503,7 @@ export default class API {
    */
   private formatNoteForPR(note: Note): string {
     const status = note.resolved ? API.NOTE_STATUS_RESOLVED : API.NOTE_STATUS_OPEN;
-    
+
     return `<!-- DecapCMS Note - Status: ${status} -->    
 ${note.content}`;
   }
@@ -1512,17 +1513,17 @@ ${note.content}`;
    */
   private parseCommentToNote(comment: GitHubIssueComment): Note {
     const structuredMatch = comment.body.match(API.NOTE_REGEX);
-    
+
     const content = structuredMatch ? structuredMatch[2].trim() : comment.body;
     const resolved = structuredMatch ? structuredMatch[1] === API.NOTE_STATUS_RESOLVED : false;
-    
+
     return {
       id: comment.id.toString(),
       author: comment.user.login,
       timestamp: comment.created_at,
       content,
       resolved,
-      entrySlug: ''
+      entrySlug: '',
     };
   }
 
@@ -1537,11 +1538,11 @@ ${note.content}`;
       {
         method: 'POST',
         body: JSON.stringify({
-          body: this.formatNoteForPR(note)
-        })
-      }
+          body: this.formatNoteForPR(note),
+        }),
+      },
     );
-    
+
     return response.id.toString();
   }
 
@@ -1549,14 +1550,14 @@ ${note.content}`;
     await this.request(`${this.originRepoURL}/issues/comments/${commentId}`, {
       method: 'PATCH',
       body: JSON.stringify({
-        body: this.formatNoteForPR(note)
-      })
+        body: this.formatNoteForPR(note),
+      }),
     });
   }
 
   async deletePRComment(commentId: string | number): Promise<void> {
     await this.request(`${this.originRepoURL}/issues/comments/${commentId}`, {
-      method: 'DELETE'
+      method: 'DELETE',
     });
   }
 
@@ -1573,18 +1574,18 @@ ${note.content}`;
       const response: GitHubPull[] = await this.request(`${this.originRepoURL}/pulls`, {
         params: {
           head: await this.getHeadReference(branchName),
-          state: 'open'
-        }
+          state: 'open',
+        },
       });
-      
+
       const pr = response[0];
       if (!pr) return null;
-      
+
       return {
         id: pr.number.toString(),
         url: pr.html_url,
         author: pr.user?.login || 'unknown',
-        createdAt: pr.created_at
+        createdAt: pr.created_at,
       };
     } catch (error) {
       console.error('Failed to get PR metadata:', error);

@@ -181,23 +181,18 @@ export class Editor extends React.Component {
         this.deleteBackup();
       }
     }
-    if (
-    !prevProps.entry && 
-    this.props.entry && 
-    !this.props.newEntry &&
-    this.props.hasWorkflow
-  ) {
-    this.props.loadNotes(this.props.collection, this.props.slug);
-  }
+    if (!prevProps.entry && this.props.entry && !this.props.newEntry && this.props.hasWorkflow) {
+      this.props.loadNotes(this.props.collection, this.props.slug);
+    }
 
-  if (
-    prevProps.entry !== this.props.entry && 
-    this.props.entry && 
-    !this.props.newEntry &&
-    this.props.hasWorkflow
-  ) {
-    this.props.loadNotes(this.props.collection, this.props.slug);
-  }
+    if (
+      prevProps.entry !== this.props.entry &&
+      this.props.entry &&
+      !this.props.newEntry &&
+      this.props.hasWorkflow
+    ) {
+      this.props.loadNotes(this.props.collection, this.props.slug);
+    }
 
     if (this.props.hasChanged) {
       this.createBackup(this.props.entryDraft.get('entry'), this.props.collection);
@@ -361,8 +356,8 @@ export class Editor extends React.Component {
 
   handleNotesChange = (action, payload) => {
     const { collection, slug } = this.props;
-    
-    switch(action) {
+
+    switch (action) {
       case 'ADD_NOTE':
         this.props.persistNote(collection, slug, payload);
         break;
@@ -373,9 +368,9 @@ export class Editor extends React.Component {
         this.props.deleteNotePersist(collection, slug, payload.id);
         break;
       default:
-        console.log('Unknown notes action:', action, payload)
+        console.log('Unknown notes action:', action, payload);
     }
-  }
+  };
 
   render() {
     const {
@@ -540,7 +535,7 @@ const mapDispatchToProps = {
   loadNotes,
   persistNote,
   updateNotePersist,
-  deleteNotePersist
+  deleteNotePersist,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withWorkflow(translate()(Editor)));

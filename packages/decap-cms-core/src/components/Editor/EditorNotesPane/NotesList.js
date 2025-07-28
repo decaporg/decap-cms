@@ -11,17 +11,16 @@ const ListContainer = styled.div`
   padding: 8px;
 `;
 
-function NotesList ({ notes, onUpdate, onDelete, onResolve, t }) {
+function NotesList({ notes, onUpdate, onDelete, onResolve, t }) {
   // Sort notes: unresolved first, then by newest
-  const sortedNotes = notes
-    .sort((a, b) => {
-      // First sort by resolved status (unresolved first)
-      if (a.get('resolved') !== b.get('resolved')) {
-        return a.get('resolved') ? 1 : -1;
-      }
-      // Then sort by timestamp (newest first)
-      return new Date(b.get('timestamp')) - new Date(a.get('timestamp'));
-    });
+  const sortedNotes = notes.sort((a, b) => {
+    // First sort by resolved status (unresolved first)
+    if (a.get('resolved') !== b.get('resolved')) {
+      return a.get('resolved') ? 1 : -1;
+    }
+    // Then sort by timestamp (newest first)
+    return new Date(b.get('timestamp')) - new Date(a.get('timestamp'));
+  });
 
   return (
     <ListContainer>
@@ -37,7 +36,7 @@ function NotesList ({ notes, onUpdate, onDelete, onResolve, t }) {
       ))}
     </ListContainer>
   );
-};
+}
 
 NotesList.propTypes = {
   notes: ImmutablePropTypes.list.isRequired,

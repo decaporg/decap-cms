@@ -15,4 +15,4 @@ type GitHubIssueComment = {
   author_association: string;
 };
 
-export type { GitHubIssueComment }
+export type { GitHubIssueComment };

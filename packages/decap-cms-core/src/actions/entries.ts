@@ -100,7 +100,6 @@ export const NOTE_DELETE_REQUEST = 'NOTE_DELETE_REQUEST';
 export const NOTE_DELETE_SUCCESS = 'NOTE_DELETE_SUCCESS';
 export const NOTE_DELETE_FAILURE = 'NOTE_DELETE_FAILURE';
 
-
 /*
  * Simple Action Creators (Internal)
  * We still need to export them for tests
@@ -476,10 +475,10 @@ export function removeDraftEntryMediaFile({ id }: { id: string }) {
 }
 
 export function loadNotesForEntry(notes: Note[]) {
-  return { type: DRAFT_NOTES_LOAD, payload: {notes}};
+  return { type: DRAFT_NOTES_LOAD, payload: { notes } };
 }
 
-export function addNote(note: Note) { 
+export function addNote(note: Note) {
   return { type: DRAFT_NOTE_ADD, payload: { note } };
 }
 
@@ -1025,7 +1024,7 @@ export function deleteEntry(collection: Collection, slug: string) {
       });
   };
 }
-  export function notesLoading(collection: Collection, slug: string) {
+export function notesLoading(collection: Collection, slug: string) {
   return {
     type: NOTES_REQUEST,
     payload: {
@@ -1133,10 +1132,10 @@ export function loadNotes(collection: Collection, slug: string) {
       const state = getState();
       const backend = currentBackend(state.config);
       const notes = await backend.getNotes(collection.get('name'), slug);
-      
+
       // Set entrySlug for all notes
       const notesWithSlug = notes.map(note => ({ ...note, entrySlug: slug }));
-      
+
       dispatch(notesLoaded(collection, slug, notesWithSlug));
       dispatch(loadNotesForEntry(notesWithSlug));
     } catch (error) {
@@ -1150,7 +1149,7 @@ export function persistNote(collection: Collection, slug: string, note: Omit<Not
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const backend = currentBackend(getState().config);
     dispatch(notePersisting(collection, slug, note as Note));
-    
+
     try {
       const savedNote = await backend.addNote(collection.get('name'), slug, note);
       dispatch(notePersisted(collection, slug, savedNote));
@@ -1162,39 +1161,48 @@ export function persistNote(collection: Collection, slug: string, note: Omit<Not
   };
 }
 
-export function updateNotePersist(collection: Collection, slug: string, noteId: string, updates: Partial<Note>) {
+export function updateNotePersist(
+  collection: Collection,
+  slug: string,
+  noteId: string,
+  updates: Partial<Note>,
+) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const backend = currentBackend(state.config);
-    
+
     // Create a temporary note object for the persist actions
     const tempNote = { id: noteId, ...updates } as Note;
     dispatch(notePersisting(collection, slug, tempNote));
-    
+
     try {
       const updatedNote = await backend.updateNote(collection.get('name'), slug, noteId, updates);
       dispatch(notePersisted(collection, slug, updatedNote));
       dispatch(updateNote(noteId, updates));
-      
-      dispatch(addNotification({
-        message: {
-          key: 'ui.toast.noteUpdated',
-        },
-        type: 'success',
-        dismissAfter: 4000,
-      }));
-      
+
+      dispatch(
+        addNotification({
+          message: {
+            key: 'ui.toast.noteUpdated',
+          },
+          type: 'success',
+          dismissAfter: 4000,
+        }),
+      );
+
       return updatedNote;
     } catch (error) {
       dispatch(notePersistFail(collection, slug, tempNote, error));
-      dispatch(addNotification({
-        message: {
-          details: error.message,
-          key: 'ui.toast.onFailToUpdateNote',
-        },
-        type: 'error',
-        dismissAfter: 8000,
-      }));
+      dispatch(
+        addNotification({
+          message: {
+            details: error.message,
+            key: 'ui.toast.onFailToUpdateNote',
+          },
+          type: 'error',
+          dismissAfter: 8000,
+        }),
+      );
     }
   };
 }
@@ -1203,31 +1211,35 @@ export function deleteNotePersist(collection: Collection, slug: string, noteId: 
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const backend = currentBackend(state.config);
-    
+
     dispatch(noteDeleting(collection, slug, noteId));
-    
+
     try {
       await backend.deleteNote(collection.get('name'), slug, noteId);
       dispatch(noteDeleted(collection, slug, noteId));
       dispatch(deleteNote(noteId));
-      
-      dispatch(addNotification({
-        message: {
-          key: 'ui.toast.noteDeleted',
-        },
-        type: 'success',
-        dismissAfter: 4000,
-      }));
+
+      dispatch(
+        addNotification({
+          message: {
+            key: 'ui.toast.noteDeleted',
+          },
+          type: 'success',
+          dismissAfter: 4000,
+        }),
+      );
     } catch (error) {
       dispatch(noteDeleteFail(collection, slug, noteId, error));
-      dispatch(addNotification({
-        message: {
-          details: error.message,
-          key: 'ui.toast.onFailToDeleteNote',
-        },
-        type: 'error',
-        dismissAfter: 8000,
-      }));
+      dispatch(
+        addNotification({
+          message: {
+            details: error.message,
+            key: 'ui.toast.onFailToDeleteNote',
+          },
+          type: 'error',
+          dismissAfter: 8000,
+        }),
+      );
     }
   };
 }
@@ -1236,35 +1248,39 @@ export function toggleNoteResolutionPersist(collection: Collection, slug: string
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const backend = currentBackend(state.config);
-    
+
     // Create a temporary note object for the persist actions
     const tempNote = { id: noteId } as Note;
     dispatch(notePersisting(collection, slug, tempNote));
-    
+
     try {
       const updatedNote = await backend.toggleNoteResolution(collection.get('name'), slug, noteId);
       dispatch(notePersisted(collection, slug, updatedNote));
       dispatch(updateNote(noteId, { resolved: updatedNote.resolved }));
-      
-      dispatch(addNotification({
-        message: {
-          key: updatedNote.resolved ? 'ui.toast.noteResolved' : 'ui.toast.noteReopened',
-        },
-        type: 'success',
-        dismissAfter: 4000,
-      }));
-      
+
+      dispatch(
+        addNotification({
+          message: {
+            key: updatedNote.resolved ? 'ui.toast.noteResolved' : 'ui.toast.noteReopened',
+          },
+          type: 'success',
+          dismissAfter: 4000,
+        }),
+      );
+
       return updatedNote;
     } catch (error) {
       dispatch(notePersistFail(collection, slug, tempNote, error));
-      dispatch(addNotification({
-        message: {
-          details: error.message,
-          key: 'ui.toast.onFailToToggleNote',
-        },
-        type: 'error',
-        dismissAfter: 8000,
-      }));
+      dispatch(
+        addNotification({
+          message: {
+            details: error.message,
+            key: 'ui.toast.onFailToToggleNote',
+          },
+          type: 'error',
+          dismissAfter: 8000,
+        }),
+      );
     }
   };
 }

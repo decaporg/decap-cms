@@ -76,7 +76,7 @@ import type {
   Config as C,
   UnpublishedEntryMediaFile as UEMF,
   DataFile as DF,
-  Note as NT
+  Note as NT,
 } from './implementation';
 import type { AsyncLock as AL } from './asyncLock';
 

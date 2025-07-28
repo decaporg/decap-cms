@@ -128,39 +128,6 @@ export function localFsMiddleware({ repoPath, logger }: FsOptions) {
           res.json(null);
           break;
         }
-        case 'getNotesFile': {
-          const { path: notesPath } = body.params;
-          try {
-            const { promises: fs } = await import('fs');
-            const fullPath = path.join(repoPath, notesPath);
-            const data = await fs.readFile(fullPath, 'utf8');
-            const notes = JSON.parse(data);
-            res.json({ notes });
-          } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-            res.status(404).json({ error: errorMessage });
-          }
-          break;
-        }
-
-        case 'saveNotesFile': {
-          const { path: notesPath, notes } = body.params;
-          try {
-            const { promises: fs } = await import('fs');
-            const fullPath = path.join(repoPath, notesPath);
-            const dir = path.dirname(fullPath);
-            
-            await fs.mkdir(dir, { recursive: true });
-            
-            await fs.writeFile(fullPath, JSON.stringify(notes, null, 2));
-
-            res.json({ success: true });
-          } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-            res.status(500).json({ error: errorMessage });
-          }
-          break;
-        }
         default: {
           const message = `Unknown action ${body.action}`;
           res.status(422).json({ error: message });

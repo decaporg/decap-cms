@@ -294,12 +294,12 @@ export interface CmsCollectionFile {
   public_folder?: string;
 }
 
-export type NoteMap = StaticallyTypedRecord<Note>
+export type NoteMap = StaticallyTypedRecord<Note>;
 
-export type Notes = List<NoteMap>
+export type Notes = List<NoteMap>;
 
 export interface LoadNotesPayload {
-  notes: Note[]
+  notes: Note[];
 }
 
 export interface AddNotePayload {
@@ -308,7 +308,7 @@ export interface AddNotePayload {
 
 export interface UpdateNotePayload {
   id: string;
-  updates: Partial<Note>
+  updates: Partial<Note>;
 }
 
 export interface DeleteNotePayload {

@@ -168,17 +168,22 @@ export interface Implementation {
   persistMedia: (file: AssetProxy, opts: PersistOptions) => Promise<ImplementationMediaFile>;
   deleteFiles: (paths: string[], commitMessage: string) => Promise<void>;
 
-  saveNotesFile?: (path: string, notes: Note[]) => Promise<void>
-  getNotesFile?: (path: string) => Promise<Note[]>;
-
   getNotes?: (collection: string, slug: string) => Promise<Note[]>;
   addNote?: (collection: string, slug: string, note: Omit<Note, 'id'>) => Promise<Note>;
-  updateNote?: (collection: string, slug: string, noteId: string, updates: Partial<Note>) => Promise<Note>;
+  updateNote?: (
+    collection: string,
+    slug: string,
+    noteId: string,
+    updates: Partial<Note>,
+  ) => Promise<Note>;
   deleteNote?: (collection: string, slug: string, noteId: string) => Promise<void>;
   toggleNoteResolution?: (collection: string, slug: string, noteId: string) => Promise<Note>;
   syncNotes?: (collection: string, slug: string, localNotes: Note[]) => Promise<Note[]>;
 
-  getPRMetadata?: (collection: string, slug: string) => Promise<{
+  getPRMetadata?: (
+    collection: string,
+    slug: string,
+  ) => Promise<{
     id: string;
     url: string;
     author: string;

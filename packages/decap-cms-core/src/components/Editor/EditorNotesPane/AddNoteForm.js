@@ -62,7 +62,7 @@ const AddButton = styled.button`
 
 const CharCount = styled.span`
   font-size: 12px;
-  color: ${props => props.warn ? colors.errorText : colors.controlLabel};
+  color: ${props => (props.warn ? colors.errorText : colors.controlLabel)};
 `;
 
 const Hint = styled.p`
@@ -85,14 +85,14 @@ class AddNoteForm extends Component {
 
   maxLength = 1000;
 
-  handleContentChange = (e) => {
+  handleContentChange = e => {
     const content = e.target.value;
     if (content.length <= this.maxLength) {
       this.setState({ content });
     }
   };
 
-  handleSubmit = (e) => {
+  handleSubmit = e => {
     e.preventDefault();
     const { content } = this.state;
     const trimmedContent = content.trim();
@@ -103,7 +103,7 @@ class AddNoteForm extends Component {
     }
   };
 
-  handleKeyDown = (e) => {
+  handleKeyDown = e => {
     if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
       e.preventDefault();
       this.handleSubmit(e);
@@ -140,19 +140,17 @@ class AddNoteForm extends Component {
             onFocus={this.handleFocus}
             onBlur={this.handleBlur}
             placeholder={t('editor.editorNotesPane.addPlaceholder')}
-            rows='4'
+            rows="4"
           />
-              <FormActions>
-                <CharCount warn={isNearLimit}>
-                  {charCount}/{this.maxLength}
-                </CharCount>
-                <AddButton type="submit" disabled={!canSubmit}>
-                  {t('editor.editorNotesPane.addNote')}
-                </AddButton>
-              </FormActions>
-              <Hint>
-                {t('editor.editorNotesPane.shortcut')}
-              </Hint>
+          <FormActions>
+            <CharCount warn={isNearLimit}>
+              {charCount}/{this.maxLength}
+            </CharCount>
+            <AddButton type="submit" disabled={!canSubmit}>
+              {t('editor.editorNotesPane.addNote')}
+            </AddButton>
+          </FormActions>
+          <Hint>{t('editor.editorNotesPane.shortcut')}</Hint>
         </form>
       </FormContainer>
     );

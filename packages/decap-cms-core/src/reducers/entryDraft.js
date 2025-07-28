@@ -210,22 +210,20 @@ function entryDraftReducer(state = Map(), action) {
 
     case DRAFT_NOTES_LOAD:
       return state.set('notes', fromJS(action.payload.notes));
-    
+
     case DRAFT_NOTE_ADD:
       return state.update('notes', notes => notes.push(fromJS(action.payload.note)));
-    
+
     case DRAFT_NOTE_UPDATE:
-      return state.update('notes', notes => 
+      return state.update('notes', notes =>
         notes.map(note =>
-          note.get('id') === action.payload.id
-            ? note.merge(fromJS(action.payload.updates))
-            : note
-        )
-      )
-    
+          note.get('id') === action.payload.id ? note.merge(fromJS(action.payload.updates)) : note,
+        ),
+      );
+
     case DRAFT_NOTE_DELETE:
-      return state.update('notes', notes => 
-        notes.filterNot(note => note.get('id') === action.payload.id)
+      return state.update('notes', notes =>
+        notes.filterNot(note => note.get('id') === action.payload.id),
       );
 
     default:

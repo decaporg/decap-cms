@@ -166,13 +166,10 @@ function isPreviewEnabled(collection, entry) {
   return collection.getIn(['editor', 'preview'], true);
 }
 
-function isNotesEnabled(collection, entry, isPublished) {
-// Notes are only enabled on unpublished entries
-
-  if (isPublished) {
+function isNotesEnabled(collection, entry, isNewEntry, isPublished, hasWorkflow) {
+  if (isNewEntry || isPublished || !hasWorkflow) {
     return false;
   }
-  
 
   if (collection.get('type') === FILES) {
     const file = getFileFromSlug(collection, entry.get('slug'));
@@ -219,7 +216,7 @@ class EditorInterface extends Component {
 
   handleTogglePreview = () => {
     const newPreviewVisible = !this.state.previewVisible;
-    this.setState({ 
+    this.setState({
       previewVisible: newPreviewVisible,
       notesVisible: false, // Hide notes when showing preview
     });
@@ -229,7 +226,7 @@ class EditorInterface extends Component {
 
   handleToggleNotes = () => {
     const newNotesVisible = !this.state.notesVisible;
-    this.setState({ 
+    this.setState({
       notesVisible: newNotesVisible,
       previewVisible: false, // Hide preview when showing notes
     });
@@ -238,7 +235,7 @@ class EditorInterface extends Component {
   };
 
   handleNotesChange = (action, payload) => {
-    this.props.onNotesChange(action, payload)
+    this.props.onNotesChange(action, payload);
   };
 
   handleToggleScrollSync = () => {
@@ -294,7 +291,7 @@ class EditorInterface extends Component {
     const { scrollSyncEnabled, showEventBlocker } = this.state;
 
     const previewEnabled = isPreviewEnabled(collection, entry);
-    const notesEnabled = isNotesEnabled(collection, entry, isPublished);
+    const notesEnabled = isNotesEnabled(collection, entry, isNewEntry, isPublished, hasWorkflow);
 
     const { locales, defaultLocale } = getI18nInfo(this.props.collection);
     const collectionI18nEnabled = hasI18n(collection) && locales.length > 1;

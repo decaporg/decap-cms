@@ -5,13 +5,13 @@ import styled from '@emotion/styled';
 import { colors, transitions } from 'decap-cms-ui-default';
 
 const NoteCard = styled.div`
-  background-color: ${props => props.resolved ? colors.inputBackground : 'white'};
-  border: 1px solid ${props => props.resolved ? colors.textFieldBorder : colors.textFieldBorder};
+  background-color: ${props => (props.resolved ? colors.inputBackground : 'white')};
+  border: 1px solid ${props => (props.resolved ? colors.textFieldBorder : colors.textFieldBorder)};
   border-radius: 4px;
   margin-bottom: 8px;
   padding: 12px;
   transition: all ${transitions.main};
-  opacity: ${props => props.resolved ? 0.7 : 1};
+  opacity: ${props => (props.resolved ? 0.7 : 1)};
 
   &:hover {
     border-color: ${colors.active};
@@ -86,7 +86,7 @@ const ActionButton = styled.button`
 
   &:hover {
     background-color: ${colors.inputBackground};
-    color: ${props => props.danger ? colors.errorText : colors.active};
+    color: ${props => (props.danger ? colors.errorText : colors.active)};
   }
 
   &:disabled {
@@ -119,7 +119,7 @@ class NoteItem extends Component {
     editContent: '',
   };
 
-  formatTimestamp = (timestamp) => {
+  formatTimestamp = timestamp => {
     const date = new Date(timestamp);
     const now = new Date();
     const diffMs = now - date;
@@ -131,7 +131,7 @@ class NoteItem extends Component {
     if (diffMins < 60) return `${diffMins}m ago`;
     if (diffHours < 24) return `${diffHours}h ago`;
     if (diffDays < 7) return `${diffDays}d ago`;
-    
+
     return date.toLocaleDateString();
   };
 
@@ -164,7 +164,7 @@ class NoteItem extends Component {
     });
   };
 
-  handleEditKeyDown = (e) => {
+  handleEditKeyDown = e => {
     if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
       e.preventDefault();
       this.handleEditSave();
@@ -197,9 +197,7 @@ class NoteItem extends Component {
           <NoteAuthor>{note.get('author')}</NoteAuthor>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             {resolved && <ResolvedBadge>resolved</ResolvedBadge>}
-            <NoteTimestamp>
-              {this.formatTimestamp(note.get('timestamp'))}
-            </NoteTimestamp>
+            <NoteTimestamp>{this.formatTimestamp(note.get('timestamp'))}</NoteTimestamp>
           </div>
         </NoteHeader>
 
@@ -207,7 +205,7 @@ class NoteItem extends Component {
           {isEditing ? (
             <EditableText
               value={editContent}
-              onChange={(e) => this.setState({ editContent: e.target.value })}
+              onChange={e => this.setState({ editContent: e.target.value })}
               onKeyDown={this.handleEditKeyDown}
               placeholder={t('editor.editorNotesPane.editPlaceholder')}
               autoFocus
