@@ -293,6 +293,13 @@ const en = {
       onFailToUnpublishEntry: 'Failed to unpublish entry: %{details}',
       entryUpdated: 'Entry status updated',
       onDeleteUnpublishedChanges: 'Unpublished changes deleted',
+      noteUpdated: 'Note updated',
+      onFailToUpdateNote: 'Failed to update note: %{details}',
+      noteDeleted: 'Note deleted', 
+      onFailToDeleteNote: 'Failed to delete note: %{details}',
+      noteResolved: 'Note resolved',
+      noteReopened: 'Note reopened', 
+      onFailToToggleNote: 'Failed to toggle note resolution: %{details}',
       onFailToAuth: '%{details}',
       onLoggedOut: 'You have been logged out, please back up any data and login again',
       onBackendDown:
