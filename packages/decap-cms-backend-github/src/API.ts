@@ -1541,7 +1541,7 @@ ${note.content}`;
     return comments.map(comment => this.parseCommentToNote(comment));
   }
 
-async createPRComment(prNumber: string | number, note: Note): Promise<string> {
+  async createPRComment(prNumber: string | number, note: Note): Promise<string> {
     try {
       const response: GitHubIssueComment = await this.request(
         `${this.originRepoURL}/issues/${prNumber}/comments`,

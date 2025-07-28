@@ -43,7 +43,7 @@ NotesList.propTypes = {
   notes: ImmutablePropTypes.list.isRequired,
   onUpdate: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
-  onToggleResolution: PropTypes.func.isRequired, 
+  onToggleResolution: PropTypes.func.isRequired,
   user: PropTypes.object,
   t: PropTypes.func.isRequired,
 };

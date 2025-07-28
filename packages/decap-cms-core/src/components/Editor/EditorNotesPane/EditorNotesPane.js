@@ -113,7 +113,7 @@ class EditorNotesPane extends Component {
     const notesList = notes && notes.size !== undefined ? notes : List(notes || []);
     const note = notesList.find(n => n.get('id') === noteId);
     const currentResolved = note ? note.get('resolved') : false;
-    
+
     this.handleUpdateNote(noteId, { resolved: !currentResolved });
   };
 

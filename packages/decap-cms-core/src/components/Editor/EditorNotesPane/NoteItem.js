@@ -157,7 +157,7 @@ class NoteItem extends Component {
     return note.get('author') === currentUserName;
   };
 
-  getAuthorInitials = (author) => {
+  getAuthorInitials = author => {
     return author
       .split(' ')
       .map(name => name.charAt(0))
@@ -238,30 +238,30 @@ class NoteItem extends Component {
 
     return (
       <NoteCard resolved={resolved}>
-      <NoteHeader>
-        <AuthorSection>
-          <Avatar>
-            {note.get('avatarUrl') ? (
-              <AvatarImage 
-                src={note.get('avatarUrl')} 
-                alt={`${note.get('author')} avatar`}
-                onError={(e) => {
-                  e.target.style.display = 'none';
-                  e.target.nextSibling.style.display = 'flex';
-                }}
-              />
-            ) : null}
-            <AvatarInitials style={{ display: note.get('avatarUrl') ? 'none' : 'flex' }}>
-              {this.getAuthorInitials(note.get('author'))}
-            </AvatarInitials>
-          </Avatar>
-          <NoteAuthor>{note.get('author')}</NoteAuthor>
-        </AuthorSection>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          {resolved && <ResolvedBadge>resolved</ResolvedBadge>}
-          <NoteTimestamp>{this.formatTimestamp(note.get('timestamp'))}</NoteTimestamp>
-        </div>
-      </NoteHeader>
+        <NoteHeader>
+          <AuthorSection>
+            <Avatar>
+              {note.get('avatarUrl') ? (
+                <AvatarImage
+                  src={note.get('avatarUrl')}
+                  alt={`${note.get('author')} avatar`}
+                  onError={e => {
+                    e.target.style.display = 'none';
+                    e.target.nextSibling.style.display = 'flex';
+                  }}
+                />
+              ) : null}
+              <AvatarInitials style={{ display: note.get('avatarUrl') ? 'none' : 'flex' }}>
+                {this.getAuthorInitials(note.get('author'))}
+              </AvatarInitials>
+            </Avatar>
+            <NoteAuthor>{note.get('author')}</NoteAuthor>
+          </AuthorSection>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            {resolved && <ResolvedBadge>resolved</ResolvedBadge>}
+            <NoteTimestamp>{this.formatTimestamp(note.get('timestamp'))}</NoteTimestamp>
+          </div>
+        </NoteHeader>
 
         <NoteContent>
           {isEditing ? (
@@ -290,24 +290,20 @@ class NoteItem extends Component {
           ) : (
             <>
               {!resolved && (
-                <ActionButton 
-                  onClick={this.handleEditStart}
-                  disabled={!this.isCurrentUserAuthor()}
-                >
+                <ActionButton onClick={this.handleEditStart} disabled={!this.isCurrentUserAuthor()}>
                   {t('editor.editorNotesPane.edit')}
                 </ActionButton>
               )}
-              <ActionButton 
+              <ActionButton
                 onClick={this.handleToggleResolution}
                 disabled={!this.isCurrentUserAuthor()}
               >
-                {resolved 
-                  ? t('editor.editorNotesPane.unresolve') 
-                  : t('editor.editorNotesPane.resolve')
-                }
+                {resolved
+                  ? t('editor.editorNotesPane.unresolve')
+                  : t('editor.editorNotesPane.resolve')}
               </ActionButton>
-              <ActionButton 
-                onClick={this.handleDelete} 
+              <ActionButton
+                onClick={this.handleDelete}
                 danger
                 disabled={!this.isCurrentUserAuthor()}
               >
