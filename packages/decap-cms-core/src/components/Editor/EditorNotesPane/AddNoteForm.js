@@ -60,11 +60,6 @@ const AddButton = styled.button`
   }
 `;
 
-const CharCount = styled.span`
-  font-size: 12px;
-  color: ${props => (props.warn ? colors.errorText : colors.controlLabel)};
-`;
-
 const Hint = styled.p`
   font-size: 12px;
   color: ${colors.controlLabel};
@@ -83,13 +78,9 @@ class AddNoteForm extends Component {
     isFocused: false,
   };
 
-  maxLength = 1000;
-
   handleContentChange = e => {
     const content = e.target.value;
-    if (content.length <= this.maxLength) {
-      this.setState({ content });
-    }
+    this.setState({ content });
   };
 
   handleSubmit = e => {
@@ -126,9 +117,7 @@ class AddNoteForm extends Component {
   render() {
     const { t } = this.props;
     const { content } = this.state;
-    const charCount = content.length;
     const canSubmit = content.trim().length > 0;
-    const isNearLimit = charCount > this.maxLength * 0.8;
 
     return (
       <FormContainer>
@@ -143,9 +132,6 @@ class AddNoteForm extends Component {
             rows="4"
           />
           <FormActions>
-            <CharCount warn={isNearLimit}>
-              {charCount}/{this.maxLength}
-            </CharCount>
             <AddButton type="submit" disabled={!canSubmit}>
               {t('editor.editorNotesPane.addNote')}
             </AddButton>
