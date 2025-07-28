@@ -566,7 +566,7 @@ export function loadEntry(collection: Collection, slug: string) {
       const loadedEntry = await tryLoadEntry(getState(), collection, slug);
       dispatch(entryLoaded(collection, loadedEntry));
       dispatch(createDraftFromEntry(loadedEntry));
-      dispatch(loadNotes(collection, slug));
+      await dispatch(loadNotes(collection, slug));
     } catch (error) {
       dispatch(
         addNotification({
