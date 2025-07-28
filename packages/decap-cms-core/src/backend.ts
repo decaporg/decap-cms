@@ -602,6 +602,60 @@ export class Backend {
     console.log('Backend does not support notes persistence yet');
     return [];
   }
+    async getNotes(collection: string, slug: string): Promise<Note[]> {
+    if (typeof this.implementation.getNotes === 'function') {
+      return this.implementation.getNotes(collection, slug);
+    }
+    
+    // If backend doesn't support notes, return empty array
+    console.warn(`Backend '${this.backendName}' does not support notes`);
+    return [];
+  }
+
+  async addNote(collection: string, slug: string, note: Omit<Note, 'id'>): Promise<Note> {
+    if (typeof this.implementation.addNote === 'function') {
+      return this.implementation.addNote(collection, slug, note);
+    }
+    
+    throw new Error(`Backend '${this.backendName}' does not support adding notes`);
+  }
+
+  async updateNote(collection: string, slug: string, noteId: string, updates: Partial<Note>): Promise<Note> {
+    if (typeof this.implementation.updateNote === 'function') {
+      return this.implementation.updateNote(collection, slug, noteId, updates);
+    }
+    
+    throw new Error(`Backend '${this.backendName}' does not support updating notes`);
+  }
+
+  async deleteNote(collection: string, slug: string, noteId: string): Promise<void> {
+    if (typeof this.implementation.deleteNote === 'function') {
+      return this.implementation.deleteNote(collection, slug, noteId);
+    }
+    
+    throw new Error(`Backend '${this.backendName}' does not support deleting notes`);
+  }
+
+  async toggleNoteResolution(collection: string, slug: string, noteId: string): Promise<Note> {
+    if (typeof this.implementation.toggleNoteResolution === 'function') {
+      return this.implementation.toggleNoteResolution(collection, slug, noteId);
+    }
+    
+    throw new Error(`Backend '${this.backendName}' does not support toggling note resolution`);
+  }
+
+  async getPRMetadata(collection: string, slug: string): Promise<{
+    id: string;
+    url: string;
+    author: string;
+    createdAt: string;
+  } | null> {
+    if (typeof this.implementation.getPRMetadata === 'function') {
+      return this.implementation.getPRMetadata(collection, slug);
+    }
+    
+    return null;
+  }
 
   // The same as listEntries, except that if a cursor with the "next"
   // action available is returned, it calls "next" on the cursor and

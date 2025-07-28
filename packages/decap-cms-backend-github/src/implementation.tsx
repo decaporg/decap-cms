@@ -39,6 +39,7 @@ import type {
   ImplementationFile,
   UnpublishedEntryMediaFile,
   Entry,
+  Note,
 } from 'decap-cms-lib-util';
 import type { Semaphore } from 'semaphore';
 
@@ -715,5 +716,124 @@ export default class GitHub implements Implementation {
       () => this.api!.publishUnpublishedEntry(collection, slug),
       'Failed to acquire publish entry lock',
     );
+  }
+
+    // Notes implementation, which is an abstraction to Github's PR issue comments.
+
+  /**
+   * Helper method to get PR info for an entry
+   */
+  private async getPRInfo(collection: string, slug: string) {
+    const contentKey = this.api!.generateContentKey(collection, slug);
+    const branch = branchFromContentKey(contentKey);
+    const pullRequest = await this.api!.getBranchPullRequest(branch);
+    
+    return {
+      branch,
+      pullRequest,
+      hasPR: pullRequest.number !== -1
+    };
+  }
+
+  async getNotes(collection: string, slug: string): Promise<Note[]> {
+    
+    if(!this.options.useWorkflow) {
+      return []
+    }
+    try {
+      const { pullRequest, hasPR } = await this.getPRInfo(collection, slug);
+      
+      if (!hasPR) {
+        return [];
+      }
+      
+      const notes = await this.api!.getNotesFromPR(pullRequest.number);
+      return notes.map(note => ({ ...note, entrySlug: slug }));
+    } catch (error) {
+      console.error('Failed to get notes:', error);
+      return [];
+    }
+  }
+
+  async addNote(collection: string, slug: string, noteData: Omit<Note, 'id'>): Promise<Note> {
+    
+    if(!this.options.useWorkflow) {
+      throw new Error('Notes are only available when workflow is enabled.')
+    }
+
+    const { pullRequest, hasPR } = await this.getPRInfo(collection, slug);
+    
+    if (!hasPR) {
+      throw new Error('Cannot add notes to draft entries. Please submit for review first.');
+    }
+    
+    const note: Note = {
+      ...noteData,
+      id: 'temp-' + Date.now(),
+      entrySlug: slug,
+      timestamp: noteData.timestamp || new Date().toISOString(),
+      resolved: noteData.resolved || false
+    };
+    
+    const commentId = await this.api!.createPRComment(pullRequest.number, note);
+    return { ...note, id: commentId };
+  }
+
+  async updateNote(collection: string, slug: string, noteId: string, updates: Partial<Note>): Promise<Note> {
+
+    if(!this.options.useWorkflow) {
+      throw new Error('Notes are only available when workflow is enabled.')
+    }
+
+    const currentNotes = await this.getNotes(collection, slug);
+    const existingNote = currentNotes.find(note => note.id === noteId);
+    
+    if (!existingNote) {
+      throw new Error(`Note with ID ${noteId} not found`);
+    }
+    
+    const updatedNote: Note = {
+      ...existingNote,
+      ...updates,
+      id: noteId,
+      entrySlug: slug
+    };
+    
+    await this.api!.updatePRComment(noteId, updatedNote);
+    return updatedNote;
+  }
+
+  async deleteNote(collection: string, slug: string, noteId: string): Promise<void> {
+
+    if(!this.options.useWorkflow) {
+      throw new Error('Notes are only available when workflow is enabled.')
+    }
+
+    const currentNotes = await this.getNotes(collection, slug);
+    const noteExists = currentNotes.some(note => note.id === noteId);
+    
+    if (!noteExists) {
+      throw new Error(`Note with ID ${noteId} not found`);
+    }
+    
+    await this.api!.deletePRComment(noteId);
+  }
+
+  async toggleNoteResolution(collection: string, slug: string, noteId: string): Promise<Note> {
+
+    if(!this.options.useWorkflow) {
+      throw new Error('Notes are only available when workflow is enabled.')
+    }
+
+    const currentNotes = await this.getNotes(collection, slug);
+    const note = currentNotes.find(n => n.id === noteId);
+    
+    if (!note) {
+      throw new Error(`Note with ID ${noteId} not found`);
+    }
+    
+    return this.updateNote(collection, slug, noteId, {
+      resolved: !note.resolved
+    });
   }
 }

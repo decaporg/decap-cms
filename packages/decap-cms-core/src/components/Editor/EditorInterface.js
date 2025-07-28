@@ -166,7 +166,14 @@ function isPreviewEnabled(collection, entry) {
   return collection.getIn(['editor', 'preview'], true);
 }
 
-function isNotesEnabled(collection, entry) {
+function isNotesEnabled(collection, entry, isPublished) {
+// Notes are only enabled on unpublished entries
+
+  if (isPublished) {
+    return false;
+  }
+  
+
   if (collection.get('type') === FILES) {
     const file = getFileFromSlug(collection, entry.get('slug'));
     const notesEnabled = file?.getIn(['editor', 'notes']);
@@ -274,6 +281,7 @@ class EditorInterface extends Component {
       hasUnpublishedChanges,
       isNewEntry,
       isModification,
+      isPublished,
       currentStatus,
       onLogoutClick,
       loadDeployPreview,
@@ -286,7 +294,7 @@ class EditorInterface extends Component {
     const { scrollSyncEnabled, showEventBlocker } = this.state;
 
     const previewEnabled = isPreviewEnabled(collection, entry);
-    const notesEnabled = isNotesEnabled(collection, entry);
+    const notesEnabled = isNotesEnabled(collection, entry, isPublished);
 
     const { locales, defaultLocale } = getI18nInfo(this.props.collection);
     const collectionI18nEnabled = hasI18n(collection) && locales.length > 1;
@@ -370,6 +378,7 @@ class EditorInterface extends Component {
                 onChange={this.handleNotesChange}
                 entry={entry}
                 collection={collection}
+                user={user}
                 t={t}
               />
             </NotesPaneContainer>
@@ -513,6 +522,7 @@ EditorInterface.propTypes = {
   hasUnpublishedChanges: PropTypes.bool,
   isNewEntry: PropTypes.bool,
   isModification: PropTypes.bool,
+  isPublished: PropTypes.bool,
   currentStatus: PropTypes.string,
   onLogoutClick: PropTypes.func.isRequired,
   deployPreview: PropTypes.object,

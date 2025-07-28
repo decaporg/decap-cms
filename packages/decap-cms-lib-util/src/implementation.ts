@@ -171,6 +171,20 @@ export interface Implementation {
   saveNotesFile?: (path: string, notes: Note[]) => Promise<void>
   getNotesFile?: (path: string) => Promise<Note[]>;
 
+  getNotes?: (collection: string, slug: string) => Promise<Note[]>;
+  addNote?: (collection: string, slug: string, note: Omit<Note, 'id'>) => Promise<Note>;
+  updateNote?: (collection: string, slug: string, noteId: string, updates: Partial<Note>) => Promise<Note>;
+  deleteNote?: (collection: string, slug: string, noteId: string) => Promise<void>;
+  toggleNoteResolution?: (collection: string, slug: string, noteId: string) => Promise<Note>;
+  syncNotes?: (collection: string, slug: string, localNotes: Note[]) => Promise<Note[]>;
+
+  getPRMetadata?: (collection: string, slug: string) => Promise<{
+    id: string;
+    url: string;
+    author: string;
+    createdAt: string;
+  } | null>;
+
   unpublishedEntries: () => Promise<string[]>;
   unpublishedEntry: (args: {
     id?: string;

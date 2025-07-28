@@ -23,9 +23,10 @@ import {
   retrieveLocalBackup,
   deleteLocalBackup,
   loadNotesForEntry,
-  addNoteAndSave,
-  updateNoteAndSave,
-  deleteNoteAndSave,
+  loadNotes,
+  persistNote,
+  updateNotePersist,
+  deleteNotePersist,
 } from '../../actions/entries';
 import {
   updateUnpublishedEntryStatus,
@@ -51,6 +52,7 @@ export class Editor extends React.Component {
     entry: ImmutablePropTypes.map,
     entryDraft: ImmutablePropTypes.map.isRequired,
     loadEntry: PropTypes.func.isRequired,
+    loadNotes: PropTypes.func,
     persistEntry: PropTypes.func.isRequired,
     deleteEntry: PropTypes.func.isRequired,
     showDelete: PropTypes.bool.isRequired,
@@ -179,6 +181,23 @@ export class Editor extends React.Component {
         this.deleteBackup();
       }
     }
+    if (
+    !prevProps.entry && 
+    this.props.entry && 
+    !this.props.newEntry &&
+    this.props.hasWorkflow
+  ) {
+    this.props.loadNotes(this.props.collection, this.props.slug);
+  }
+
+  if (
+    prevProps.entry !== this.props.entry && 
+    this.props.entry && 
+    !this.props.newEntry &&
+    this.props.hasWorkflow
+  ) {
+    this.props.loadNotes(this.props.collection, this.props.slug);
+  }
 
     if (this.props.hasChanged) {
       this.createBackup(this.props.entryDraft.get('entry'), this.props.collection);
@@ -345,13 +364,14 @@ export class Editor extends React.Component {
     
     switch(action) {
       case 'ADD_NOTE':
-        this.props.addNoteAndSave(collection, slug, payload);
+        this.props.persistNote(collection, slug, payload);
+        console.log(payload)
         break;
       case 'UPDATE_NOTE':
-        this.props.updateNoteAndSave(collection, slug, payload.id, payload.updates);
+        this.props.updateNotePersist(collection, slug, payload.id, payload.updates);
         break;
       case 'DELETE_NOTE':
-        this.props.deleteNoteAndSave(collection, slug, payload.id);
+        this.props.deleteNotePersist(collection, slug, payload.id);
         break;
       default:
         console.log('Unknown notes action:', action, payload)
@@ -427,6 +447,7 @@ export class Editor extends React.Component {
         hasUnpublishedChanges={unpublishedEntry}
         isNewEntry={newEntry}
         isModification={isModification}
+        isPublished={isPublished}
         currentStatus={currentStatus}
         onLogoutClick={logoutUser}
         deployPreview={deployPreview}
@@ -517,9 +538,10 @@ const mapDispatchToProps = {
   deleteUnpublishedEntry,
   logoutUser,
   loadNotesForEntry,
-  addNoteAndSave,
-  updateNoteAndSave,
-  deleteNoteAndSave
+  loadNotes,
+  persistNote,
+  updateNotePersist,
+  deleteNotePersist
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withWorkflow(translate()(Editor)));

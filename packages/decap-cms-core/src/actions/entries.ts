@@ -90,9 +90,16 @@ export const DRAFT_NOTES_LOAD = 'DRAFT_NOTES_LOAD';
 export const DRAFT_NOTE_ADD = 'DRAFT_NOTE_ADD';
 export const DRAFT_NOTE_UPDATE = 'DRAFT_NOTE_UPDATE';
 export const DRAFT_NOTE_DELETE = 'DRAFT_NOTE_DELETE';
-export const SAVE_NOTE_REQUEST = 'SAVE_NOTE_REQUEST';
-export const SAVE_NOTE_SUCCESS = 'SAVE_NOTE_SUCCESS'
-export const SAVE_NOTE_FAILURE = 'SAVE_NOTE_FAILURE';
+export const NOTES_REQUEST = 'NOTES_REQUEST';
+export const NOTES_SUCCESS = 'NOTES_SUCCESS';
+export const NOTES_FAILURE = 'NOTES_FAILURE';
+export const NOTE_PERSIST_REQUEST = 'NOTE_PERSIST_REQUEST';
+export const NOTE_PERSIST_SUCCESS = 'NOTE_PERSIST_SUCCESS';
+export const NOTE_PERSIST_FAILURE = 'NOTE_PERSIST_FAILURE';
+export const NOTE_DELETE_REQUEST = 'NOTE_DELETE_REQUEST';
+export const NOTE_DELETE_SUCCESS = 'NOTE_DELETE_SUCCESS';
+export const NOTE_DELETE_FAILURE = 'NOTE_DELETE_FAILURE';
+
 
 /*
  * Simple Action Creators (Internal)
@@ -560,7 +567,7 @@ export function loadEntry(collection: Collection, slug: string) {
       const loadedEntry = await tryLoadEntry(getState(), collection, slug);
       dispatch(entryLoaded(collection, loadedEntry));
       dispatch(createDraftFromEntry(loadedEntry));
-      loadNotesFromFile(dispatch, getState(), collection, slug);
+      dispatch(loadNotes(collection, slug));
     } catch (error) {
       dispatch(
         addNotification({
@@ -966,7 +973,6 @@ export function persistEntry(collection: Collection) {
           await dispatch(loadMedia());
         }
         dispatch(entryPersisted(collection, serializedEntry, newSlug));
-        saveNotesToFile(state, collection, newSlug || entry.get('slug'));
         if (collection.has('nested')) {
           await dispatch(loadEntries(collection));
         }
@@ -1019,105 +1025,248 @@ export function deleteEntry(collection: Collection, slug: string) {
       });
   };
 }
-
-export function saveNoteRequest(noteId: string) {
+  export function notesLoading(collection: Collection, slug: string) {
   return {
-    type: SAVE_NOTE_REQUEST,
-    payload: { noteId }
+    type: NOTES_REQUEST,
+    payload: {
+      collection: collection.get('name'),
+      slug,
+    },
   };
 }
 
-export function saveNoteSuccess(noteId: string) {
+export function notesLoaded(collection: Collection, slug: string, notes: Note[]) {
   return {
-    type: SAVE_NOTE_SUCCESS,
-    payload: { noteId }
+    type: NOTES_SUCCESS,
+    payload: {
+      collection: collection.get('name'),
+      slug,
+      notes,
+    },
   };
 }
 
-export function saveNoteFailure(noteId: string, error: Error) {
+export function notesLoadError(error: Error, collection: Collection, slug: string) {
   return {
-    type: SAVE_NOTE_FAILURE,
-    payload: { noteId, error: error.toString() }
+    type: NOTES_FAILURE,
+    payload: {
+      error,
+      collection: collection.get('name'),
+      slug,
+    },
   };
 }
 
-// New thunk action for saving a single note
-export function saveNote(collection: Collection, slug: string, note: Note) {
+export function notePersisting(collection: Collection, slug: string, note: Note) {
+  return {
+    type: NOTE_PERSIST_REQUEST,
+    payload: {
+      collection: collection.get('name'),
+      slug,
+      noteId: note.id,
+    },
+  };
+}
+
+export function notePersisted(collection: Collection, slug: string, note: Note) {
+  return {
+    type: NOTE_PERSIST_SUCCESS,
+    payload: {
+      collection: collection.get('name'),
+      slug,
+      note,
+    },
+  };
+}
+
+export function notePersistFail(collection: Collection, slug: string, note: Note, error: Error) {
+  return {
+    type: NOTE_PERSIST_FAILURE,
+    error: 'Failed to persist note',
+    payload: {
+      collection: collection.get('name'),
+      slug,
+      noteId: note.id,
+      error: error.toString(),
+    },
+  };
+}
+
+export function noteDeleting(collection: Collection, slug: string, noteId: string) {
+  return {
+    type: NOTE_DELETE_REQUEST,
+    payload: {
+      collection: collection.get('name'),
+      slug,
+      noteId,
+    },
+  };
+}
+
+export function noteDeleted(collection: Collection, slug: string, noteId: string) {
+  return {
+    type: NOTE_DELETE_SUCCESS,
+    payload: {
+      collection: collection.get('name'),
+      slug,
+      noteId,
+    },
+  };
+}
+
+export function noteDeleteFail(collection: Collection, slug: string, noteId: string, error: Error) {
+  return {
+    type: NOTE_DELETE_FAILURE,
+    payload: {
+      collection: collection.get('name'),
+      slug,
+      noteId,
+      error: error.toString(),
+    },
+  };
+}
+
+export function loadNotes(collection: Collection, slug: string) {
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+    dispatch(notesLoading(collection, slug));
+    try {
+      const state = getState();
+      const backend = currentBackend(state.config);
+      const notes = await backend.getNotes(collection.get('name'), slug);
+      
+      // Set entrySlug for all notes
+      const notesWithSlug = notes.map(note => ({ ...note, entrySlug: slug }));
+      
+      dispatch(notesLoaded(collection, slug, notesWithSlug));
+      dispatch(loadNotesForEntry(notesWithSlug));
+    } catch (error) {
+      dispatch(notesLoadError(error, collection, slug));
+      dispatch(loadNotesForEntry([])); // Start with empty notes
+    }
+  };
+}
+
+export function persistNote(collection: Collection, slug: string, note: Omit<Note, 'id'>) {
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+    const backend = currentBackend(getState().config);
+    dispatch(notePersisting(collection, slug, note as Note));
+    
+    try {
+      const savedNote = await backend.addNote(collection.get('name'), slug, note);
+      dispatch(notePersisted(collection, slug, savedNote));
+      dispatch(addNote(savedNote));
+      return savedNote;
+    } catch (error) {
+      dispatch(notePersistFail(collection, slug, note as Note, error));
+    }
+  };
+}
+
+export function updateNotePersist(collection: Collection, slug: string, noteId: string, updates: Partial<Note>) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const backend = currentBackend(state.config);
     
-    console.log('🔥 saveNote called!', { collection: collection.get('name'), slug, noteId: note.id });
-    
-    dispatch(saveNoteRequest(note.id));
+    // Create a temporary note object for the persist actions
+    const tempNote = { id: noteId, ...updates } as Note;
+    dispatch(notePersisting(collection, slug, tempNote));
     
     try {
-      if (typeof backend.saveNotesFile === 'function') {
-        const allNotes = state.entryDraft.get('notes');
-        const notesPath = `${collection.get('folder')}/${slug}.json`;
-        await backend.saveNotesFile(notesPath, allNotes.toJS());
-        dispatch(saveNoteSuccess(note.id));       
-      } else {
-        throw new Error('Backend does not support notes persistence');
-      }
-    } catch (error) { 
-      dispatch(saveNoteFailure(note.id, error));
+      const updatedNote = await backend.updateNote(collection.get('name'), slug, noteId, updates);
+      dispatch(notePersisted(collection, slug, updatedNote));
+      dispatch(updateNote(noteId, updates));
+      
+      dispatch(addNotification({
+        message: {
+          key: 'ui.toast.noteUpdated',
+        },
+        type: 'success',
+        dismissAfter: 4000,
+      }));
+      
+      return updatedNote;
+    } catch (error) {
+      dispatch(notePersistFail(collection, slug, tempNote, error));
+      dispatch(addNotification({
+        message: {
+          details: error.message,
+          key: 'ui.toast.onFailToUpdateNote',
+        },
+        type: 'error',
+        dismissAfter: 8000,
+      }));
     }
   };
 }
 
-export function addNoteAndSave(collection: Collection, slug: string, note: Note, saveImmediately = true) {
-  return async (dispatch: ThunkDispatch<State, {}, AnyAction>) => {
-    dispatch(addNote(note));
-    if (saveImmediately) {
-      await dispatch(saveNote(collection, slug, note));
+export function deleteNotePersist(collection: Collection, slug: string, noteId: string) {
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+    const state = getState();
+    const backend = currentBackend(state.config);
+    
+    dispatch(noteDeleting(collection, slug, noteId));
+    
+    try {
+      await backend.deleteNote(collection.get('name'), slug, noteId);
+      dispatch(noteDeleted(collection, slug, noteId));
+      dispatch(deleteNote(noteId));
+      
+      dispatch(addNotification({
+        message: {
+          key: 'ui.toast.noteDeleted',
+        },
+        type: 'success',
+        dismissAfter: 4000,
+      }));
+    } catch (error) {
+      dispatch(noteDeleteFail(collection, slug, noteId, error));
+      dispatch(addNotification({
+        message: {
+          details: error.message,
+          key: 'ui.toast.onFailToDeleteNote',
+        },
+        type: 'error',
+        dismissAfter: 8000,
+      }));
     }
   };
 }
 
-export function updateNoteAndSave(collection: Collection, slug: string, noteId: string, updates: Partial<Note>, saveImmediately = true) {
-  return async (dispatch: ThunkDispatch<State, {}, AnyAction>) => {
-    dispatch(updateNote(noteId, updates));
-    if (saveImmediately) {
-      const updatedNote = { id: noteId, ...updates } as Note;
-      await dispatch(saveNote(collection, slug, updatedNote));
+export function toggleNoteResolutionPersist(collection: Collection, slug: string, noteId: string) {
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+    const state = getState();
+    const backend = currentBackend(state.config);
+    
+    // Create a temporary note object for the persist actions
+    const tempNote = { id: noteId } as Note;
+    dispatch(notePersisting(collection, slug, tempNote));
+    
+    try {
+      const updatedNote = await backend.toggleNoteResolution(collection.get('name'), slug, noteId);
+      dispatch(notePersisted(collection, slug, updatedNote));
+      dispatch(updateNote(noteId, { resolved: updatedNote.resolved }));
+      
+      dispatch(addNotification({
+        message: {
+          key: updatedNote.resolved ? 'ui.toast.noteResolved' : 'ui.toast.noteReopened',
+        },
+        type: 'success',
+        dismissAfter: 4000,
+      }));
+      
+      return updatedNote;
+    } catch (error) {
+      dispatch(notePersistFail(collection, slug, tempNote, error));
+      dispatch(addNotification({
+        message: {
+          details: error.message,
+          key: 'ui.toast.onFailToToggleNote',
+        },
+        type: 'error',
+        dismissAfter: 8000,
+      }));
     }
   };
-}
-
-export function deleteNoteAndSave(collection: Collection, slug: string, noteId: string, saveImmediately = true) {
-  return async (dispatch: ThunkDispatch<State, {}, AnyAction>) => {
-    dispatch(deleteNote(noteId));
-    if (saveImmediately) {
-      const dummyNote = { id: noteId } as Note;
-      await dispatch(saveNote(collection, slug, dummyNote));
-    }
-  };
-}
-
-function saveNotesToFile(state: State, collection: Collection, slug: string) {
-  const backend = currentBackend(state.config);
-  const notes = state.entryDraft.get('notes');
-
-  if (typeof backend.saveNotesFile === 'function') {
-    const notesPath = `${collection.get('folder')}/${slug}.json`;
-    return backend.saveNotesFile(notesPath, notes.toJS());
-  }
-
-  console.log('Backend does not support notes persistence yet.')
-}
-
-function loadNotesFromFile(dispatch: ThunkDispatch<State, {}, AnyAction>, state: State, collection: Collection, slug: string) {
-  const backend = currentBackend(state.config);
-  if (typeof backend.getNotesFile === 'function') {
-    const notesPath = `${collection.get('folder')}/${slug}.json`;
-    return backend.getNotesFile(notesPath).then(notes => {
-      dispatch(loadNotesForEntry(notes));
-    });
-  }
-  
-  console.log('Backend does not support notes persistence yet');
-  dispatch(loadNotesForEntry([])); // Start with empty notes
 }
 
 function getPathError(

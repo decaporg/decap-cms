@@ -87,13 +87,10 @@ class EditorNotesPane extends Component {
   };
 
   handleAddNote = (content) => {
-    const { onChange, entry } = this.props;
+    const { onChange, user } = this.props;
     const newNote = {
-      id: `note_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
       content: content.trim(),
-      timestamp: new Date().toISOString(),
-      author: 'current-user', // TODO: Get from auth state
-      entrySlug: entry.get('slug'),
+      author: user?.name || user?.login  || 'Anonymous',
       resolved: false,
     };
 
@@ -116,7 +113,7 @@ class EditorNotesPane extends Component {
 
   render() {
     const { notes, t } = this.props;
-    const notesList = notes || List();
+    const notesList = notes && notes.size !== undefined ? notes : List(notes || []);
     const notesCount = notesList.size;
     const unresolvedCount = notesList.filter(note => !note.get('resolved')).size;
 
