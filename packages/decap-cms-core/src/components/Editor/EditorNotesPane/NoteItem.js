@@ -142,12 +142,19 @@ class NoteItem extends Component {
     onUpdate: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired,
     onToggleResolution: PropTypes.func.isRequired,
+    user: PropTypes.object,
     t: PropTypes.func.isRequired,
   };
 
   state = {
     isEditing: false,
     editContent: '',
+  };
+
+  isCurrentUserAuthor = () => {
+    const { note, user } = this.props;
+    const currentUserName = user?.login || user?.name || 'Anonymous';
+    return note.get('author') === currentUserName;
   };
 
   getAuthorInitials = (author) => {
@@ -283,17 +290,27 @@ class NoteItem extends Component {
           ) : (
             <>
               {!resolved && (
-                <ActionButton onClick={this.handleEditStart}>
+                <ActionButton 
+                  onClick={this.handleEditStart}
+                  disabled={!this.isCurrentUserAuthor()}
+                >
                   {t('editor.editorNotesPane.edit')}
                 </ActionButton>
               )}
-              <ActionButton onClick={this.handleToggleResolution}>
+              <ActionButton 
+                onClick={this.handleToggleResolution}
+                disabled={!this.isCurrentUserAuthor()}
+              >
                 {resolved 
                   ? t('editor.editorNotesPane.unresolve') 
                   : t('editor.editorNotesPane.resolve')
                 }
               </ActionButton>
-              <ActionButton onClick={this.handleDelete} danger>
+              <ActionButton 
+                onClick={this.handleDelete} 
+                danger
+                disabled={!this.isCurrentUserAuthor()}
+              >
                 {t('editor.editorNotesPane.delete')}
               </ActionButton>
             </>

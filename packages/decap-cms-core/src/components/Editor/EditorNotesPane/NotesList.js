@@ -11,7 +11,7 @@ const ListContainer = styled.div`
   padding: 8px;
 `;
 
-function NotesList({ notes, onUpdate, onDelete, onToggleResolution, t }) {
+function NotesList({ notes, onUpdate, onDelete, onToggleResolution, user, t }) {
   // Sort notes: unresolved first, then by newest
   const sortedNotes = notes.sort((a, b) => {
     // First sort by resolved status (unresolved first)
@@ -31,6 +31,7 @@ function NotesList({ notes, onUpdate, onDelete, onToggleResolution, t }) {
           onUpdate={onUpdate}
           onDelete={onDelete}
           onToggleResolution={onToggleResolution}
+          user={user}
           t={t}
         />
       ))}
@@ -43,6 +44,7 @@ NotesList.propTypes = {
   onUpdate: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
   onToggleResolution: PropTypes.func.isRequired, 
+  user: PropTypes.object,
   t: PropTypes.func.isRequired,
 };
 

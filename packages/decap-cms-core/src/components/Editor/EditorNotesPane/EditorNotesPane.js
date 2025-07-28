@@ -78,6 +78,7 @@ class EditorNotesPane extends Component {
     onChange: PropTypes.func.isRequired,
     entry: ImmutablePropTypes.map.isRequired,
     collection: ImmutablePropTypes.map.isRequired,
+    user: PropTypes.object,
     t: PropTypes.func,
   };
 
@@ -90,7 +91,7 @@ class EditorNotesPane extends Component {
     const { onChange, user } = this.props;
     const newNote = {
       content: content.trim(),
-      author: user?.name || user?.login || 'Anonymous',
+      author: user?.login || user?.name || 'Anonymous',
       resolved: false,
     };
 
@@ -143,6 +144,7 @@ class EditorNotesPane extends Component {
               onUpdate={this.handleUpdateNote}
               onDelete={this.handleDeleteNote}
               onToggleResolution={this.handleToggleNoteResolution}
+              user={this.props.user}
               t={t}
             />
           )}
