@@ -294,6 +294,7 @@ const en = {
       onFailToUnpublishEntry: 'Failed to unpublish entry: %{details}',
       entryUpdated: 'Entry status updated',
       onDeleteUnpublishedChanges: 'Unpublished changes deleted',
+      noteAdded: 'Note added',
       noteUpdated: 'Note updated',
       onFailToUpdateNote: 'Failed to update note: %{details}',
       noteDeleted: 'Note deleted',

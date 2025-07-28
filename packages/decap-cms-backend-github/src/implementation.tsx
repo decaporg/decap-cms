@@ -765,9 +765,13 @@ export default class GitHub implements Implementation {
       throw new Error('Cannot add notes to draft entries. Please submit for review first.');
     }
 
+    const currentUser = await this.currentUser({ token: this.token! });
+
     const note: Note = {
       ...noteData,
       id: 'temp-' + Date.now(),
+      author: currentUser.login || currentUser.name,
+      avatarUrl: currentUser.avatar_url,
       entrySlug: slug,
       timestamp: noteData.timestamp || new Date().toISOString(),
       resolved: noteData.resolved || false,

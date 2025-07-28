@@ -1149,14 +1149,32 @@ export function persistNote(collection: Collection, slug: string, note: Omit<Not
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const backend = currentBackend(getState().config);
     dispatch(notePersisting(collection, slug, note as Note));
-
     try {
       const savedNote = await backend.addNote(collection.get('name'), slug, note);
       dispatch(notePersisted(collection, slug, savedNote));
       dispatch(addNote(savedNote));
+      dispatch(
+        addNotification({
+          message: {
+            key: 'ui.toast.noteAdded',
+          },
+          type: 'success',
+          dismissAfter: 4000,
+        }),
+      );
       return savedNote;
     } catch (error) {
       dispatch(notePersistFail(collection, slug, note as Note, error));
+      dispatch(
+        addNotification({
+          message: {
+            details: error.message,
+            key: 'ui.toast.onFailToAddNote',
+          },
+          type: 'error',
+          dismissAfter: 8000,
+        }),
+      );
     }
   };
 }
