@@ -365,7 +365,6 @@ export class Editor extends React.Component {
     switch(action) {
       case 'ADD_NOTE':
         this.props.persistNote(collection, slug, payload);
-        console.log(payload)
         break;
       case 'UPDATE_NOTE':
         this.props.updateNotePersist(collection, slug, payload.id, payload.updates);
