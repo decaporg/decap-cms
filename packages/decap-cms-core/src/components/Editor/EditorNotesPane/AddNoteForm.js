@@ -24,7 +24,7 @@ const TextArea = styled.textarea`
 
   &:focus {
     border-color: ${colors.active};
-    box-shadow: 0 0 0 2px rgba(70, 151, 218, 0.1);
+    box-shadow: 0 0 0 2px ${colors.activeBackground};
   }
 
   &::placeholder {
@@ -41,7 +41,7 @@ const FormActions = styled.div`
 
 const AddButton = styled.button`
   background-color: ${colors.active};
-  color: white;
+  color: ${colors.textLight};
   border: none;
   padding: 8px 16px;
   border-radius: 4px;
@@ -51,7 +51,7 @@ const AddButton = styled.button`
   transition: all ${transitions.main};
 
   &:hover:not(:disabled) {
-    background-color: ${colors.activeAccent};
+    background-color: ${colors.statusReadyText};
   }
 
   &:disabled {

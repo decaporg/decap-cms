@@ -1512,10 +1512,18 @@ ${note.content}`;
    * Parse a GitHub comment into a Note object
    */
   private parseCommentToNote(comment: GitHubIssueComment): Note {
+    if (!comment || !comment.body || !comment.user) {
+      throw new Error('Invalid comment structure');
+    }
+
     const structuredMatch = comment.body.match(API.NOTE_REGEX);
 
     const content = structuredMatch ? structuredMatch[2].trim() : comment.body;
     const resolved = structuredMatch ? structuredMatch[1] === API.NOTE_STATUS_RESOLVED : false;
+
+    if (!content.trim()) {
+      throw new Error('Empty note content');
+    }
 
     return {
       id: comment.id.toString(),
@@ -1533,33 +1541,48 @@ ${note.content}`;
     return comments.map(comment => this.parseCommentToNote(comment));
   }
 
-  async createPRComment(prNumber: string | number, note: Note): Promise<string> {
-    const response: GitHubIssueComment = await this.request(
-      `${this.originRepoURL}/issues/${prNumber}/comments`,
-      {
-        method: 'POST',
-        body: JSON.stringify({
-          body: this.formatNoteForPR(note),
-        }),
-      },
-    );
+async createPRComment(prNumber: string | number, note: Note): Promise<string> {
+    try {
+      const response: GitHubIssueComment = await this.request(
+        `${this.originRepoURL}/issues/${prNumber}/comments`,
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            body: this.formatNoteForPR(note),
+          }),
+        },
+      );
 
-    return response.id.toString();
+      return response.id.toString();
+    } catch (error) {
+      console.error('Failed to create PR comment:', error);
+      throw new APIError('Failed to create note', error.status || 500, API_NAME);
+    }
   }
 
   async updatePRComment(commentId: string | number, note: Note): Promise<void> {
-    await this.request(`${this.originRepoURL}/issues/comments/${commentId}`, {
-      method: 'PATCH',
-      body: JSON.stringify({
-        body: this.formatNoteForPR(note),
-      }),
-    });
+    try {
+      await this.request(`${this.originRepoURL}/issues/comments/${commentId}`, {
+        method: 'PATCH',
+        body: JSON.stringify({
+          body: this.formatNoteForPR(note),
+        }),
+      });
+    } catch (error) {
+      console.error('Failed to update PR comment:', error);
+      throw new APIError('Failed to update note', error.status || 500, API_NAME);
+    }
   }
 
   async deletePRComment(commentId: string | number): Promise<void> {
-    await this.request(`${this.originRepoURL}/issues/comments/${commentId}`, {
-      method: 'DELETE',
-    });
+    try {
+      await this.request(`${this.originRepoURL}/issues/comments/${commentId}`, {
+        method: 'DELETE',
+      });
+    } catch (error) {
+      console.error('Failed to delete PR comment:', error);
+      throw new APIError('Failed to delete note', error.status || 500, API_NAME);
+    }
   }
 
   /**
