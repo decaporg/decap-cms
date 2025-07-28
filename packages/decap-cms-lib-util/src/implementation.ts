@@ -65,6 +65,7 @@ export type DataFile = {
 
 export interface Note {
   id: string;
+  avatarUrl?: string;
   content: string;
   timestamp: string;
   author: string;

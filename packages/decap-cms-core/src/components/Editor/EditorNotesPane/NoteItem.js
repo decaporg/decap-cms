@@ -32,6 +32,37 @@ const NoteAuthor = styled.span`
   font-weight: 500;
 `;
 
+const AuthorSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+const Avatar = styled.div`
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: ${colors.inputBackground};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+`;
+
+const AvatarImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+`;
+
+const AvatarInitials = styled.span`
+  font-size: 10px;
+  font-weight: 600;
+  color: ${colors.controlLabel};
+  text-transform: uppercase;
+`;
+
 const NoteTimestamp = styled.span`
   font-size: 11px;
   color: ${colors.controlLabel};
@@ -119,6 +150,14 @@ class NoteItem extends Component {
     editContent: '',
   };
 
+  getAuthorInitials = (author) => {
+    return author
+      .split(' ')
+      .map(name => name.charAt(0))
+      .join('')
+      .slice(0, 2);
+  };
+
   formatTimestamp = timestamp => {
     const date = new Date(timestamp);
     const now = new Date();
@@ -192,13 +231,30 @@ class NoteItem extends Component {
 
     return (
       <NoteCard resolved={resolved}>
-        <NoteHeader>
+      <NoteHeader>
+        <AuthorSection>
+          <Avatar>
+            {note.get('avatarUrl') ? (
+              <AvatarImage 
+                src={note.get('avatarUrl')} 
+                alt={`${note.get('author')} avatar`}
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                  e.target.nextSibling.style.display = 'flex';
+                }}
+              />
+            ) : null}
+            <AvatarInitials style={{ display: note.get('avatarUrl') ? 'none' : 'flex' }}>
+              {this.getAuthorInitials(note.get('author'))}
+            </AvatarInitials>
+          </Avatar>
           <NoteAuthor>{note.get('author')}</NoteAuthor>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            {resolved && <ResolvedBadge>resolved</ResolvedBadge>}
-            <NoteTimestamp>{this.formatTimestamp(note.get('timestamp'))}</NoteTimestamp>
-          </div>
-        </NoteHeader>
+        </AuthorSection>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          {resolved && <ResolvedBadge>resolved</ResolvedBadge>}
+          <NoteTimestamp>{this.formatTimestamp(note.get('timestamp'))}</NoteTimestamp>
+        </div>
+      </NoteHeader>
 
         <NoteContent>
           {isEditing ? (

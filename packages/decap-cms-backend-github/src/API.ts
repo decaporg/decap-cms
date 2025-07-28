@@ -1520,6 +1520,7 @@ ${note.content}`;
     return {
       id: comment.id.toString(),
       author: comment.user.login,
+      avatarUrl: comment.user.avatar_url,
       timestamp: comment.created_at,
       content,
       resolved,
