@@ -107,8 +107,13 @@ class EditorNotesPane extends Component {
     onChange('DELETE_NOTE', { id: noteId });
   };
 
-  handleResolveNote = noteId => {
-    this.handleUpdateNote(noteId, { resolved: true });
+  handleToggleNoteResolution = noteId => {
+    const { notes } = this.props;
+    const notesList = notes && notes.size !== undefined ? notes : List(notes || []);
+    const note = notesList.find(n => n.get('id') === noteId);
+    const currentResolved = note ? note.get('resolved') : false;
+    
+    this.handleUpdateNote(noteId, { resolved: !currentResolved });
   };
 
   render() {
@@ -137,7 +142,7 @@ class EditorNotesPane extends Component {
               notes={notesList}
               onUpdate={this.handleUpdateNote}
               onDelete={this.handleDeleteNote}
-              onResolve={this.handleResolveNote}
+              onToggleResolution={this.handleToggleNoteResolution}
               t={t}
             />
           )}

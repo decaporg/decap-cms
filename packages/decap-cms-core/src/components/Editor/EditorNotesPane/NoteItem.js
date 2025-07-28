@@ -110,7 +110,7 @@ class NoteItem extends Component {
     note: ImmutablePropTypes.map.isRequired,
     onUpdate: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired,
-    onResolve: PropTypes.func.isRequired,
+    onToggleResolution: PropTypes.func.isRequired,
     t: PropTypes.func.isRequired,
   };
 
@@ -181,11 +181,10 @@ class NoteItem extends Component {
     }
   };
 
-  handleResolve = () => {
-    const { note, onResolve } = this.props;
-    onResolve(note.get('id'));
+  handleToggleResolution = () => {
+    const { note, onToggleResolution } = this.props;
+    onToggleResolution(note.get('id'));
   };
-
   render() {
     const { note, t } = this.props;
     const { isEditing, editContent } = this.state;
@@ -228,15 +227,16 @@ class NoteItem extends Component {
           ) : (
             <>
               {!resolved && (
-                <>
-                  <ActionButton onClick={this.handleEditStart}>
-                    {t('editor.editorNotesPane.edit')}
-                  </ActionButton>
-                  <ActionButton onClick={this.handleResolve}>
-                    {t('editor.editorNotesPane.resolve')}
-                  </ActionButton>
-                </>
+                <ActionButton onClick={this.handleEditStart}>
+                  {t('editor.editorNotesPane.edit')}
+                </ActionButton>
               )}
+              <ActionButton onClick={this.handleToggleResolution}>
+                {resolved 
+                  ? t('editor.editorNotesPane.unresolve') 
+                  : t('editor.editorNotesPane.resolve')
+                }
+              </ActionButton>
               <ActionButton onClick={this.handleDelete} danger>
                 {t('editor.editorNotesPane.delete')}
               </ActionButton>

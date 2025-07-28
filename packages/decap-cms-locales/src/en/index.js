@@ -132,6 +132,7 @@ const en = {
       edit: 'Edit',
       delete: 'Delete',
       resolve: 'Resolve',
+      unresolve: 'Unresolve',
       confirmDelete: 'Are you sure you want to delete this note?',
       shortcut: 'Tip: Press Ctrl+Enter to add note quickly',
     },
