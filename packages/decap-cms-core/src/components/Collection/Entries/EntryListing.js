@@ -120,7 +120,7 @@ class EntryListing extends React.Component {
       const collection = collections.find(coll => coll.get('name') === collectionName);
       const collectionLabel = !isSingleCollectionInList && collection.get('label');
       const inferredFields = this.inferFields(collection);
-      const workflowStatus = this.props.getWorkflowStatus(collectionName, entry.get('slug')) || null;
+      const workflowStatus = this.props?.getWorkflowStatus(collectionName, entry.get('slug')) || null;
       const entryCardProps = {
         collection,
         entry,
