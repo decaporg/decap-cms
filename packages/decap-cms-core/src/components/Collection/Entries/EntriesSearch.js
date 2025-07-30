@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import isEqual from 'lodash/isEqual';
 import { Cursor } from 'decap-cms-lib-util';
 
-import { selectSearchedEntries } from '../../../reducers';
+import { selectSearchedEntries, selectUnpublishedEntry } from '../../../reducers';
 import {
   searchEntries as actionSearchEntries,
   clearSearch as actionClearSearch,
