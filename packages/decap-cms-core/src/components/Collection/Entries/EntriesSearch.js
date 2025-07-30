@@ -22,7 +22,7 @@ class EntriesSearch extends React.Component {
     collectionNames: PropTypes.array,
     entries: ImmutablePropTypes.list,
     page: PropTypes.number,
-    getWorkflowStatus: PropTypes.func.isRequired,
+    getWorkflowStatus: PropTypes.func,
   };
 
   componentDidMount() {
