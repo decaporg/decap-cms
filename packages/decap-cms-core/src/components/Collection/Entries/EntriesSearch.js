@@ -86,10 +86,10 @@ function mapStateToProps(state, ownProps) {
   const page = state.search.page;
   const entries = selectSearchedEntries(state, collectionNames);
 
-  const getWorkflowStatus = (collectionName, slug) => {
+  function getWorkflowStatus(collectionName, slug) {
     const unpublishedEntry = selectUnpublishedEntry(state, collectionName, slug);
     return unpublishedEntry ? unpublishedEntry.get('status') : null;
-  };
+  }
 
   return { isFetching, page, collections, collectionNames, entries, searchTerm, getWorkflowStatus };
 }
