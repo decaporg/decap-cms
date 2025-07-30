@@ -101,10 +101,10 @@ class EntryListing extends React.Component {
     const entryCardProps = { collection: collections, inferredFields, viewStyle };
 
     return allEntries.map((entry, idx) => {
-      const workflowStatus = this.props.getWorkflowStatus(
+      const workflowStatus = this.props?.getWorkflowStatus(
         collections.get('name'),
         entry.get('slug'),
-      );
+      ) || null;
 
       return (
         <EntryCard {...entryCardProps} entry={entry} workflowStatus={workflowStatus} key={idx} />
