@@ -85,7 +85,13 @@ function mapStateToProps(state, ownProps) {
   const isFetching = state.search.isFetching;
   const page = state.search.page;
   const entries = selectSearchedEntries(state, collectionNames);
-  return { isFetching, page, collections, collectionNames, entries, searchTerm };
+  
+  const getWorkflowStatus = (collectionName, slug) => {
+    const unpublishedEntry = selectUnpublishedEntry(state, collectionName, slug);
+    return unpublishedEntry ? unpublishedEntry.get('status') : null;
+  };
+
+  return { isFetching, page, collections, collectionNames, entries, searchTerm, getWorkflowStatus };
 }
 
 const mapDispatchToProps = {
