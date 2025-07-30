@@ -64,7 +64,7 @@ class EntriesSearch extends React.Component {
   };
 
   render() {
-    const { collections, entries, isFetching } = this.props;
+    const { collections, entries, isFetching, getWorkflowStatus } = this.props;
     return (
       <Entries
         cursor={this.getCursor()}
@@ -85,7 +85,7 @@ function mapStateToProps(state, ownProps) {
   const isFetching = state.search.isFetching;
   const page = state.search.page;
   const entries = selectSearchedEntries(state, collectionNames);
-  
+
   const getWorkflowStatus = (collectionName, slug) => {
     const unpublishedEntry = selectUnpublishedEntry(state, collectionName, slug);
     return unpublishedEntry ? unpublishedEntry.get('status') : null;
