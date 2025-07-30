@@ -22,6 +22,7 @@ class EntriesSearch extends React.Component {
     collectionNames: PropTypes.array,
     entries: ImmutablePropTypes.list,
     page: PropTypes.number,
+    getWorkflowStatus: PropTypes.func.isRequired,
   };
 
   componentDidMount() {
@@ -71,6 +72,7 @@ class EntriesSearch extends React.Component {
         collections={collections}
         entries={entries}
         isFetching={isFetching}
+        getWorkflowStatus={getWorkflowStatus}
       />
     );
   }
