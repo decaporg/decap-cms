@@ -133,7 +133,8 @@ function updateWorkflowStatus({ title }, fromColumnHeading, toColumnHeading) {
 }
 
 function publishWorkflowEntry({ title }, timeout) {
-  cy.contains('h2', workflowStatus.ready, { timeout })
+  const options = timeout !== undefined ? { timeout } : {};
+  cy.contains('h2', workflowStatus.ready, options)
     .parent()
     .within(() => {
       cy.contains('a', title)
