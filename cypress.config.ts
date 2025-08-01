@@ -16,5 +16,8 @@ export default defineConfig({
     },
     baseUrl: 'http://localhost:8080',
     specPattern: 'cypress/e2e/*spec*.js',
+    // Enable document.domain injection for cross-origin navigation compatibility
+    // Required for Cypress 14 to support editorial workflow tests that navigate between origins
+    injectDocumentDomain: true,
   },
 });
