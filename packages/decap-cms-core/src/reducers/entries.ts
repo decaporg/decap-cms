@@ -532,8 +532,6 @@ export function selectIsFetching(state: Entries, collection: string) {
   return state.getIn(['pages', collection, 'isFetching'], false);
 }
 
-const DRAFT_MEDIA_FILES = 'DRAFT_MEDIA_FILES';
-
 function getFileField(collectionFiles: CollectionFiles, slug: string | undefined) {
   const file = collectionFiles.find(f => f?.get('name') === slug);
   return file;
@@ -752,7 +750,7 @@ export function selectMediaFolder(
       const entryPath = entryMap?.get('path');
       mediaFolder = entryPath
         ? join(dirname(entryPath), folder)
-        : join(collection!.get('folder') as string, DRAFT_MEDIA_FILES);
+        : (collection!.get('folder') as string);
     }
   }
 
