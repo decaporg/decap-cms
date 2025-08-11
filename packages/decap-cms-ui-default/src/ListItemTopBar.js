@@ -80,6 +80,8 @@ ListItemTopBar.propTypes = {
   collapsed: PropTypes.bool,
   onCollapseToggle: PropTypes.func,
   onRemove: PropTypes.func,
+  allowRemove: PropTypes.bool,
+  allowReorder: PropTypes.bool,
 };
 
 const StyledListItemTopBar = styled(ListItemTopBar)`
