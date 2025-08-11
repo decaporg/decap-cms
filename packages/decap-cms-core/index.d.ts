@@ -133,6 +133,8 @@ declare module 'decap-cms-core' {
     default?: any;
 
     allow_add?: boolean;
+    allow_remove?: boolean;
+    allow_reorder?: boolean;
     collapsed?: boolean;
     summary?: string;
     minimize_collapsed?: boolean;
