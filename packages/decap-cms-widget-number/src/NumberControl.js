@@ -1,12 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import { css } from '@emotion/react';
+
 const ValidationErrorTypes = {
   PRESENCE: 'PRESENCE',
   PATTERN: 'PATTERN',
   RANGE: 'RANGE',
   CUSTOM: 'CUSTOM',
 };
+
+const innerWrapper = css`
+  display: flex;
+  align-items: baseline;
+`;
 
 export function validateMinMax(value, min, max, field, t) {
   let error;
@@ -105,19 +112,31 @@ export default class NumberControl extends React.Component {
     const min = field.get('min', '');
     const max = field.get('max', '');
     const step = field.get('step', field.get('value_type') === 'int' ? 1 : '');
+
+    const prefix = field.get('prefix', false);
+    const suffix = field.get('suffix', false);
+
     return (
-      <input
-        type="number"
-        id={forID}
-        className={classNameWrapper}
-        onFocus={setActiveStyle}
-        onBlur={setInactiveStyle}
-        value={value || (value === 0 ? value : '')}
-        step={step}
-        min={min}
-        max={max}
-        onChange={this.handleChange}
-      />
+      <div className={classNameWrapper}>
+        <div css={innerWrapper}>
+          {prefix && <span>{prefix}&nbsp;</span>}
+          <input
+            type="number"
+            id={forID}
+            onFocus={setActiveStyle}
+            onBlur={setInactiveStyle}
+            value={value || (value === 0 ? value : '')}
+            step={step}
+            min={min}
+            max={max}
+            onChange={this.handleChange}
+            css={css`
+              flex-grow: 1;
+            `}
+          />
+          {suffix && <span>&nbsp;{suffix}</span>}
+        </div>
+      </div>
     );
   }
 }
