@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`GitGatewayAuthenticationPage should render with identity error 1`] = `
+exports[`NetlifyAuthenticationPage should render with identity error 1`] = `
 <DocumentFragment>
   .emotion-0 {
   display: -webkit-box;
@@ -140,7 +140,7 @@ exports[`GitGatewayAuthenticationPage should render with identity error 1`] = `
 </DocumentFragment>
 `;
 
-exports[`GitGatewayAuthenticationPage should render with no identity error 1`] = `
+exports[`NetlifyAuthenticationPage should render with no identity error 1`] = `
 <DocumentFragment>
   .emotion-0 {
   display: -webkit-box;
