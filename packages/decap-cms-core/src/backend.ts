@@ -1384,7 +1384,14 @@ export class Backend {
     if (rawValue === null || rawValue === undefined) {
       values = [];
     } else if ((<StaticallyTypedRecord<List<string>>>rawValue).toJS) {
-      values = (<StaticallyTypedRecord<List<string>>>rawValue).toJS().toArray();
+      const valueList = (<StaticallyTypedRecord<List<string>>>rawValue).toJS();
+
+      if (valueList.toArray) {
+        values = valueList.toArray();
+      }
+      else {
+        values = valueList;
+      }
     } else if (Array.isArray(rawValue)) {
       values = <string[]>rawValue;
     } else {
