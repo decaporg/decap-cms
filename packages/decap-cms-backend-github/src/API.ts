@@ -37,9 +37,11 @@ import type {
   PersistOptions,
   FetchError,
   ApiRequest,
+  Note,
 } from 'decap-cms-lib-util';
 import type { Semaphore } from 'semaphore';
 import type { Octokit } from '@octokit/rest';
+import type { GitHubIssueComment } from './types/githubPullRequests';
 
 type GitHubUser = Octokit.UsersGetAuthenticatedResponse;
 type GitCreateTreeParamsTree = Octokit.GitCreateTreeParamsTree;
@@ -1473,5 +1475,145 @@ export default class API {
     const branch = branchFromContentKey(contentKey);
     const pullRequest = await this.getBranchPullRequest(branch);
     return pullRequest.head.sha;
+  }
+
+  /**
+   * Constants for note formatting to aid with PR comment to note conversion
+   */
+  private static readonly NOTE_STATUS_RESOLVED = 'RESOLVED';
+  private static readonly NOTE_STATUS_OPEN = 'OPEN';
+  // In Github we hide Decap Notes metadata in a HTML comment, that way we can track status of whether or not a note has been resolved (similar to GDocs)
+  private static readonly NOTE_REGEX =
+    /^<!-- DecapCMS Note - Status: (RESOLVED|OPEN) -->([\s\S]+)$/;
+
+  private async getPRComments(prNumber: string | number): Promise<GitHubIssueComment[]> {
+    try {
+      const response: GitHubIssueComment[] = await this.request(
+        `${this.originRepoURL}/issues/${prNumber}/comments`,
+      );
+      return Array.isArray(response) ? response : [];
+    } catch (error) {
+      console.error('Failed to get PR comments:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Format a note for PR comment display
+   */
+  private formatNoteForPR(note: Note): string {
+    const status = note.resolved ? API.NOTE_STATUS_RESOLVED : API.NOTE_STATUS_OPEN;
+
+    return `<!-- DecapCMS Note - Status: ${status} -->    
+${note.content}`;
+  }
+
+  /**
+   * Parse a GitHub comment into a Note object
+   */
+  private parseCommentToNote(comment: GitHubIssueComment): Note {
+    if (!comment || !comment.body || !comment.user) {
+      throw new Error('Invalid comment structure');
+    }
+
+    const structuredMatch = comment.body.match(API.NOTE_REGEX);
+
+    const content = structuredMatch ? structuredMatch[2].trim() : comment.body;
+    const resolved = structuredMatch ? structuredMatch[1] === API.NOTE_STATUS_RESOLVED : false;
+
+    if (!content.trim()) {
+      throw new Error('Empty note content');
+    }
+
+    return {
+      id: comment.id.toString(),
+      author: comment.user.login,
+      avatarUrl: comment.user.avatar_url,
+      timestamp: comment.created_at,
+      content,
+      resolved,
+      entrySlug: '',
+    };
+  }
+
+  async getNotesFromPR(prNumber: string | number): Promise<Note[]> {
+    const comments = await this.getPRComments(prNumber);
+    return comments.map(comment => this.parseCommentToNote(comment));
+  }
+
+  async createPRComment(prNumber: string | number, note: Note): Promise<string> {
+    try {
+      const response: GitHubIssueComment = await this.request(
+        `${this.originRepoURL}/issues/${prNumber}/comments`,
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            body: this.formatNoteForPR(note),
+          }),
+        },
+      );
+
+      return response.id.toString();
+    } catch (error) {
+      console.error('Failed to create PR comment:', error);
+      throw new APIError('Failed to create note', error.status || 500, API_NAME);
+    }
+  }
+
+  async updatePRComment(commentId: string | number, note: Note): Promise<void> {
+    try {
+      await this.request(`${this.originRepoURL}/issues/comments/${commentId}`, {
+        method: 'PATCH',
+        body: JSON.stringify({
+          body: this.formatNoteForPR(note),
+        }),
+      });
+    } catch (error) {
+      console.error('Failed to update PR comment:', error);
+      throw new APIError('Failed to update note', error.status || 500, API_NAME);
+    }
+  }
+
+  async deletePRComment(commentId: string | number): Promise<void> {
+    try {
+      await this.request(`${this.originRepoURL}/issues/comments/${commentId}`, {
+        method: 'DELETE',
+      });
+    } catch (error) {
+      console.error('Failed to delete PR comment:', error);
+      throw new APIError('Failed to delete note', error.status || 500, API_NAME);
+    }
+  }
+
+  /**
+   * Get PR metadata from branch name
+   */
+  async getPRMetadataFromBranch(branchName: string): Promise<{
+    id: string;
+    url: string;
+    author: string;
+    createdAt: string;
+  } | null> {
+    try {
+      const response: GitHubPull[] = await this.request(`${this.originRepoURL}/pulls`, {
+        params: {
+          head: await this.getHeadReference(branchName),
+          state: 'open',
+        },
+      });
+
+      const pr = response[0];
+      if (!pr) return null;
+
+      return {
+        id: pr.number.toString(),
+        url: pr.html_url,
+        author: pr.user?.login || 'unknown',
+        createdAt: pr.created_at,
+      };
+    } catch (error) {
+      console.error('Failed to get PR metadata:', error);
+      return null;
+    }
   }
 }
