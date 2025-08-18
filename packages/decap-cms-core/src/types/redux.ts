@@ -352,6 +352,7 @@ export interface CmsCollection {
   view_filters?: ViewFilter[];
   view_groups?: ViewGroup[];
   i18n?: boolean | CmsI18nConfig;
+  limit?: number;
 
   /**
    * @deprecated Use sortable_fields instead
@@ -641,6 +642,7 @@ type CollectionObject = {
   nested?: Nested;
   meta?: Meta;
   i18n: i18n;
+  limit?: number;
 };
 
 export type Collection = StaticallyTypedRecord<CollectionObject>;
