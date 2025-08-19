@@ -38,8 +38,7 @@ const level = process.env.LOG_LEVEL || 'info';
     return app.listen(port, host, () => {
       logger.info(`Decap CMS Proxy Server listening on ${host}:${port}`);
     });
-  }
-  else {
+  } else {
     return app.listen(port, () => {
       logger.info(`Decap CMS Proxy Server listening on port ${port}`);
     });
