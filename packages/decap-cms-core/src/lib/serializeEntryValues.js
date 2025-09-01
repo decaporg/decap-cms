@@ -3,6 +3,8 @@ import { Map, List } from 'immutable';
 
 import { getWidgetValueSerializer } from './registry';
 
+const _pathsToRemove = new Set();
+
 /**
  * Methods for serializing/deserializing entry field values. Most widgets don't
  * require this for their values, and those that do can typically serialize/
@@ -21,7 +23,7 @@ import { getWidgetValueSerializer } from './registry';
  * registered deserialization handlers run on entry load, and serialization
  * handlers run on persist.
  */
-function runSerializer(values, fields, method) {
+function runSerializer(values, fields, method, config = {}, isRecursive = false, currentPath = '') {
   /**
    * Reduce the list of fields to a map where keys are field names and values
    * are field values, serializing the values of fields whose widgets have
@@ -33,23 +35,31 @@ function runSerializer(values, fields, method) {
     const value = values.get(fieldName);
     const serializer = getWidgetValueSerializer(field.get('widget'));
     const nestedFields = field.get('fields');
+    const newPath = currentPath ? `${currentPath}.${fieldName}` : fieldName;
 
     // Call recursively for fields within lists
     if (nestedFields && List.isList(value)) {
       return acc.set(
         fieldName,
-        value.map(val => runSerializer(val, nestedFields, method)),
+        value.map((val, index) =>
+          runSerializer(val, nestedFields, method, config, true, `${newPath}.${index}`),
+        ),
       );
     }
 
     // Call recursively for fields within objects
     if (nestedFields && Map.isMap(value)) {
-      return acc.set(fieldName, runSerializer(value, nestedFields, method));
+      return acc.set(fieldName, runSerializer(value, nestedFields, method, config, true, newPath));
     }
 
     // Run serialization method on value if not null or undefined
     if (serializer && !isNil(value)) {
       return acc.set(fieldName, serializer[method](value));
+    }
+
+    // If widget is image with no value set, flag field for removal
+    if (config.remove_empty_image_field && !value && field.get('widget') === 'image') {
+      _pathsToRemove.add(newPath);
     }
 
     // If no serializer is registered for the field's widget, use the field as is
@@ -60,14 +70,43 @@ function runSerializer(values, fields, method) {
     return acc;
   }, Map());
 
-  //preserve unknown fields value
+  // preserve unknown fields value
   serializedData = values.mergeDeep(serializedData);
+
+  // Remove only on the top level, otherwise `mergeDeep` will reinsert them.
+  if (config.remove_empty_image_field && !isRecursive) {
+    serializedData = removeEntriesByPaths(serializedData, _pathsToRemove);
+    _pathsToRemove.clear();
+  }
 
   return serializedData;
 }
 
-export function serializeValues(values, fields) {
-  return runSerializer(values, fields, 'serialize');
+function removeEntriesByPaths(data, paths) {
+  paths.forEach(path => {
+    data = removeEntryByPath(data, path.split('.'));
+  });
+  return data;
+}
+
+function removeEntryByPath(data, keys) {
+  if (keys.length === 1) {
+    return data.delete(keys[0]);
+  }
+
+  const [firstKey, ...restKeys] = keys;
+  const nestedData = data.get(firstKey);
+
+  if (nestedData) {
+    const updatedNestedData = removeEntryByPath(nestedData, restKeys);
+    return data.set(firstKey, updatedNestedData);
+  }
+
+  return data;
+}
+
+export function serializeValues(values, fields, config) {
+  return runSerializer(values, fields, 'serialize', config);
 }
 
 export function deserializeValues(values, fields) {
