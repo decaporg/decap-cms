@@ -79,7 +79,7 @@ describe('editorialWorkflow actions', () => {
   });
 
   describe('publishUnpublishedEntry', () => {
-    it('should publish unpublished entry and report success', () => {
+    it('should publish unpublished entry and report success', async () => {
       const { currentBackend } = require('../../backend');
 
       const entry = {};
@@ -87,6 +87,7 @@ describe('editorialWorkflow actions', () => {
         publishUnpublishedEntry: jest.fn().mockResolvedValue(),
         getEntry: jest.fn().mockResolvedValue(entry),
         getMedia: jest.fn().mockResolvedValue([]),
+        getNotes: jest.fn().mockResolvedValue([]),
       };
 
       const store = mockStore({
@@ -106,7 +107,7 @@ describe('editorialWorkflow actions', () => {
 
       return store.dispatch(actions.publishUnpublishedEntry('posts', slug)).then(() => {
         const actions = store.getActions();
-        expect(actions).toHaveLength(8);
+        expect(actions).toHaveLength(11);
 
         expect(actions[0]).toEqual({
           type: 'UNPUBLISHED_ENTRY_PUBLISH_REQUEST',
@@ -161,6 +162,28 @@ describe('editorialWorkflow actions', () => {
           type: 'DRAFT_CREATE_FROM_ENTRY',
           payload: {
             entry,
+          },
+        });
+
+        expect(actions[8]).toEqual({
+          type: 'NOTES_REQUEST',
+          payload: {
+            collection: 'posts',
+            slug,
+          },
+        });
+        expect(actions[9]).toEqual({
+          type: 'NOTES_SUCCESS',
+          payload: {
+            collection: 'posts',
+            slug,
+            notes: [],
+          },
+        });
+        expect(actions[10]).toEqual({
+          type: 'DRAFT_NOTES_LOAD',
+          payload: {
+            notes: [],
           },
         });
       });
