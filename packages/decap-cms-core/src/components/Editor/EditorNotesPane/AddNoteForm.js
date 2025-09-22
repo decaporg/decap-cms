@@ -105,14 +105,15 @@ class AddNoteForm extends Component {
     this.setState({ isFocused: true });
   };
 
-  handleBlur = () => {
-    // Delay to allow button click to register
-    setTimeout(() => {
-      if (!this.state.content.trim()) {
-        this.setState({ isFocused: false });
-      }
-    }, 150);
-  };
+  handleBlur = e => {
+    const { relatedTarget } = e;
+    if (relatedTarget && relatedTarget.type === 'submit') {
+      return; // Do not update state if blur is caused by clicking the submit button
+    }
+    if (!this.state.content.trim()) {
+      this.setState({ isFocused: false });
+    }
+  }
 
   render() {
     const { t } = this.props;
