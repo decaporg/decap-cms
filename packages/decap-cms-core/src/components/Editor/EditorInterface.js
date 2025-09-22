@@ -183,7 +183,7 @@ class EditorInterface extends Component {
   state = {
     showEventBlocker: false,
     previewVisible: localStorage.getItem(PREVIEW_VISIBLE) !== 'false',
-    notesVisible: localStorage.getItem(NOTES_VISIBLE) === 'false',
+    notesVisible: localStorage.getItem(NOTES_VISIBLE) !== 'false',
     scrollSyncEnabled: localStorage.getItem(SCROLL_SYNC_ENABLED) !== 'false',
     i18nVisible: localStorage.getItem(I18N_VISIBLE) !== 'false',
   };
