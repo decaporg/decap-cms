@@ -345,6 +345,7 @@ export interface CmsCollection {
   delete?: boolean;
   editor?: {
     preview?: boolean;
+    notes?: boolean;
     visualEditing?: boolean;
   };
   publish?: boolean;
@@ -444,6 +445,7 @@ export interface CmsConfig {
   local_backend?: boolean | CmsLocalBackend;
   editor?: {
     preview?: boolean;
+    notes?: boolean;
   };
   error: string | undefined;
   isFetching: boolean;

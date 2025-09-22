@@ -408,6 +408,7 @@ declare module 'decap-cms-core' {
     i18n?: CmsI18nConfig;
     local_backend?: boolean | CmsLocalBackend;
     editor?: {
+      notes?: boolean;
       preview?: boolean;
     };
   }

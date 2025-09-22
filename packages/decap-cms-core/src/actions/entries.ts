@@ -566,7 +566,11 @@ export function loadEntry(collection: Collection, slug: string) {
       const loadedEntry = await tryLoadEntry(getState(), collection, slug);
       dispatch(entryLoaded(collection, loadedEntry));
       dispatch(createDraftFromEntry(loadedEntry));
-      await dispatch(loadNotes(collection, slug));
+      const state = getState();
+      const isNotesEnabled = state.config.editor?.notes ?? false;
+      if (isNotesEnabled) {
+        await dispatch(loadNotes(collection, slug));
+      }
     } catch (error) {
       dispatch(
         addNotification({
