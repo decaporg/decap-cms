@@ -701,13 +701,21 @@ export default class GitHub implements Implementation {
   }
 
   deleteUnpublishedEntry(collection: string, slug: string) {
-    // deleteUnpublishedEntry is a transactional operation
-    return runWithLock(
-      this.lock,
-      () => this.api!.deleteUnpublishedEntry(collection, slug),
-      'Failed to acquire delete entry lock',
-    );
-  }
+  // deleteUnpublishedEntry is a transactional operation
+  return runWithLock(
+    this.lock,
+    async () => {
+      await this.api!.deleteUnpublishedEntry(collection, slug);
+      // Clean up associated notes issue
+      try {
+        await this.api!.closeEntryNotesIssue(collection, slug);
+      } catch (error) {
+        console.warn('Failed to close notes issue during entry deletion:', error);
+      }
+    },
+    'Failed to acquire delete entry lock',
+  );
+}
 
   publishUnpublishedEntry(collection: string, slug: string) {
     // publishUnpublishedEntry is a transactional operation
@@ -720,124 +728,87 @@ export default class GitHub implements Implementation {
 
   // Notes implementation, which is an abstraction to Github's PR issue comments.
 
-  /**
-   * Helper method to get PR info for an entry
-   */
-  private async getPRInfo(collection: string, slug: string) {
-    const contentKey = this.api!.generateContentKey(collection, slug);
-    const branch = branchFromContentKey(contentKey);
-    const pullRequest = await this.api!.getBranchPullRequest(branch);
+// Notes implementation using GitHub Issues
+async getNotes(collection: string, slug: string): Promise<Note[]> {
+  try {
+    const notes = await this.api!.getEntryNotes(collection, slug);
+    return notes.map(note => ({ ...note, entrySlug: slug }));
+  } catch (error) {
+    console.error('Failed to get notes:', error);
+    return [];
+  }
+}
 
-    return {
-      branch,
-      pullRequest,
-      hasPR: pullRequest.number !== -1,
-    };
+async addNote(collection: string, slug: string, noteData: Omit<Note, 'id'>): Promise<Note> {
+  const currentUser = await this.currentUser({ token: this.token! });
+  const note: Note = {
+    ...noteData,
+    id: 'temp-' + Date.now(),
+    author: currentUser.login || currentUser.name,
+    avatarUrl: currentUser.avatar_url,
+    entrySlug: slug,
+    timestamp: noteData.timestamp || new Date().toISOString(),
+    resolved: noteData.resolved || false,
+  };
+
+  // Get entry title for better issue naming
+  let entryTitle: string | undefined;
+  try {
+    const entryData = await this.getEntry(`${collection}/${slug}.md`); // Adjust path as needed
+    // Extract title from frontmatter if available
+    const titleMatch = entryData.data.match(/^title:\s*["']?([^"'\n]+)["']?/m);
+    entryTitle = titleMatch ? titleMatch[1] : undefined;
+  } catch (error) {
+    // Entry not found or error reading, use undefined title
   }
 
-  async getNotes(collection: string, slug: string): Promise<Note[]> {
-    if (!this.options.useWorkflow) {
-      return [];
-    }
-    try {
-      const { pullRequest, hasPR } = await this.getPRInfo(collection, slug);
+  const commentId = await this.api!.addNoteToEntry(collection, slug, note, entryTitle);
+  return { ...note, id: commentId };
+}
 
-      if (!hasPR) {
-        return [];
-      }
-
-      const notes = await this.api!.getNotesFromPR(pullRequest.number);
-      return notes.map(note => ({ ...note, entrySlug: slug }));
-    } catch (error) {
-      console.error('Failed to get notes:', error);
-      return [];
-    }
+async updateNote(
+  collection: string,
+  slug: string,
+  noteId: string,
+  updates: Partial<Note>,
+): Promise<Note> {
+  const currentNotes = await this.getNotes(collection, slug);
+  const existingNote = currentNotes.find(note => note.id === noteId);
+  if (!existingNote) {
+    throw new Error(`Note with ID ${noteId} not found`);
   }
 
-  async addNote(collection: string, slug: string, noteData: Omit<Note, 'id'>): Promise<Note> {
-    if (!this.options.useWorkflow) {
-      throw new Error('Notes are only available when workflow is enabled.');
-    }
+  const updatedNote: Note = {
+    ...existingNote,
+    ...updates,
+    id: noteId,
+    entrySlug: slug,
+  };
 
-    const { pullRequest, hasPR } = await this.getPRInfo(collection, slug);
+  await this.api!.updateEntryNote(noteId, updatedNote);
+  return updatedNote;
+}
 
-    if (!hasPR) {
-      throw new Error('Cannot add notes to draft entries. Please submit for review first.');
-    }
-
-    const currentUser = await this.currentUser({ token: this.token! });
-
-    const note: Note = {
-      ...noteData,
-      id: 'temp-' + Date.now(),
-      author: currentUser.login || currentUser.name,
-      avatarUrl: currentUser.avatar_url,
-      entrySlug: slug,
-      timestamp: noteData.timestamp || new Date().toISOString(),
-      resolved: noteData.resolved || false,
-    };
-
-    const commentId = await this.api!.createPRComment(pullRequest.number, note);
-    return { ...note, id: commentId };
+async deleteNote(collection: string, slug: string, noteId: string): Promise<void> {
+  const currentNotes = await this.getNotes(collection, slug);
+  const noteExists = currentNotes.some(note => note.id === noteId);
+  if (!noteExists) {
+    throw new Error(`Note with ID ${noteId} not found`);
   }
 
-  async updateNote(
-    collection: string,
-    slug: string,
-    noteId: string,
-    updates: Partial<Note>,
-  ): Promise<Note> {
-    if (!this.options.useWorkflow) {
-      throw new Error('Notes are only available when workflow is enabled.');
-    }
+  await this.api!.deleteEntryNote(noteId);
 
-    const currentNotes = await this.getNotes(collection, slug);
-    const existingNote = currentNotes.find(note => note.id === noteId);
+}
 
-    if (!existingNote) {
-      throw new Error(`Note with ID ${noteId} not found`);
-    }
-
-    const updatedNote: Note = {
-      ...existingNote,
-      ...updates,
-      id: noteId,
-      entrySlug: slug,
-    };
-
-    await this.api!.updatePRComment(noteId, updatedNote);
-    return updatedNote;
+async toggleNoteResolution(collection: string, slug: string, noteId: string): Promise<Note> {
+  const currentNotes = await this.getNotes(collection, slug);
+  const note = currentNotes.find(n => n.id === noteId);
+  if (!note) {
+    throw new Error(`Note with ID ${noteId} not found`);
   }
 
-  async deleteNote(collection: string, slug: string, noteId: string): Promise<void> {
-    if (!this.options.useWorkflow) {
-      throw new Error('Notes are only available when workflow is enabled.');
-    }
-
-    const currentNotes = await this.getNotes(collection, slug);
-    const noteExists = currentNotes.some(note => note.id === noteId);
-
-    if (!noteExists) {
-      throw new Error(`Note with ID ${noteId} not found`);
-    }
-
-    await this.api!.deletePRComment(noteId);
-  }
-
-  async toggleNoteResolution(collection: string, slug: string, noteId: string): Promise<Note> {
-    if (!this.options.useWorkflow) {
-      throw new Error('Notes are only available when workflow is enabled.');
-    }
-
-    const currentNotes = await this.getNotes(collection, slug);
-    const note = currentNotes.find(n => n.id === noteId);
-
-    if (!note) {
-      throw new Error(`Note with ID ${noteId} not found`);
-    }
-
-    return this.updateNote(collection, slug, noteId, {
-      resolved: !note.resolved,
-    });
-  }
+  return this.updateNote(collection, slug, noteId, {
+    resolved: !note.resolved,
+  });
+}
 }

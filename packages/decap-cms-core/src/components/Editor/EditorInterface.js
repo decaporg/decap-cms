@@ -167,7 +167,7 @@ function isPreviewEnabled(collection, entry) {
 }
 
 function isNotesEnabled(collection, entry, isNewEntry, isPublished, hasWorkflow) {
-  if (isNewEntry || isPublished || !hasWorkflow) {
+  if (isNewEntry || !hasWorkflow) {
     return false;
   }
 

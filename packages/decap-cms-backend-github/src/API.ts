@@ -41,7 +41,6 @@ import type {
 } from 'decap-cms-lib-util';
 import type { Semaphore } from 'semaphore';
 import type { Octokit } from '@octokit/rest';
-import type { GitHubIssueComment } from './types/githubPullRequests';
 
 type GitHubUser = Octokit.UsersGetAuthenticatedResponse;
 type GitCreateTreeParamsTree = Octokit.GitCreateTreeParamsTree;
@@ -74,6 +73,26 @@ interface TreeFile {
   sha: string;
   path: string;
   raw?: string;
+}
+
+interface GitHubIssue {
+  id: number;
+  number: number;
+  title: string;
+  body: string;
+  state: 'open' | 'closed';
+  comments: number;
+  html_url: string;
+  created_at: string;
+  updated_at: string;
+  user: {
+    login: string;
+    avatar_url: string;
+  } | null;
+  labels: Array<{
+    name: string;
+    color: string;
+  }>;
 }
 
 type Override<T, U> = Pick<T, Exclude<keyof T, keyof U>> & U;
@@ -1482,36 +1501,26 @@ export default class API {
    */
   private static readonly NOTE_STATUS_RESOLVED = 'RESOLVED';
   private static readonly NOTE_STATUS_OPEN = 'OPEN';
+  private static readonly NOTES_LABEL = 'decap-cms-notes';
+  private static readonly NOTE_ISSUE_PREFIX = 'Notes: ';
   // In Github we hide Decap Notes metadata in a HTML comment, that way we can track status of whether or not a note has been resolved (similar to GDocs)
   private static readonly NOTE_REGEX =
     /^<!-- DecapCMS Note - Status: (RESOLVED|OPEN) -->([\s\S]+)$/;
 
-  private async getPRComments(prNumber: string | number): Promise<GitHubIssueComment[]> {
-    try {
-      const response: GitHubIssueComment[] = await this.request(
-        `${this.originRepoURL}/issues/${prNumber}/comments`,
-      );
-      return Array.isArray(response) ? response : [];
-    } catch (error) {
-      console.error('Failed to get PR comments:', error);
-      return [];
-    }
-  }
-
   /**
    * Format a note for PR comment display
    */
-  private formatNoteForPR(note: Note): string {
+  private formatNoteForGithub(note: Note): string {
     const status = note.resolved ? API.NOTE_STATUS_RESOLVED : API.NOTE_STATUS_OPEN;
 
-    return `<!-- DecapCMS Note - Status: ${status} -->    
+    return `<!-- DecapCMS Note - Status: ${status} -->
 ${note.content}`;
   }
 
   /**
    * Parse a GitHub comment into a Note object
    */
-  private parseCommentToNote(comment: GitHubIssueComment): Note {
+  private parseCommentToNote(comment: GitHubIssue): Note {
     if (!comment || !comment.body || !comment.user) {
       throw new Error('Invalid comment structure');
     }
@@ -1536,54 +1545,231 @@ ${note.content}`;
     };
   }
 
-  async getNotesFromPR(prNumber: string | number): Promise<Note[]> {
-    const comments = await this.getPRComments(prNumber);
-    return comments.map(comment => this.parseCommentToNote(comment));
-  }
+  /**
+ * Create a GitHub issue for storing notes for a specific entry
+ */
+async createEntryIssue(
+  collectionName: string,
+  slug: string,
+  entryTitle?: string
+): Promise<GitHubIssue> {
+  const title = `${API.NOTE_ISSUE_PREFIX}${entryTitle || `${collectionName}/${slug}`}`;
+  const body = `This issue tracks notes for entry: \`${collectionName}/${slug}\`\n\n---\n*This issue was created automatically by Decap CMS for note management.*`;
 
-  async createPRComment(prNumber: string | number, note: Note): Promise<string> {
-    try {
-      const response: GitHubIssueComment = await this.request(
-        `${this.originRepoURL}/issues/${prNumber}/comments`,
-        {
-          method: 'POST',
-          body: JSON.stringify({
-            body: this.formatNoteForPR(note),
-          }),
-        },
-      );
+  const response: GitHubIssue = await this.request(`${this.repoURL}/issues`, {
+    method: 'POST',
+    body: JSON.stringify({
+      title,
+      body,
+      labels: [API.NOTES_LABEL, `collection:${collectionName}`]
+    }),
+  });
 
-      return response.id.toString();
-    } catch (error) {
-      console.error('Failed to create PR comment:', error);
-      throw new APIError('Failed to create note', error.status || 500, API_NAME);
+  return response;
+}
+
+/**
+ * Find existing issue for an entry or create a new one
+ */
+async getOrCreateEntryIssue(
+  collectionName: string,
+  slug: string,
+  entryTitle?: string
+): Promise<GitHubIssue> {
+  // Search for existing issue
+  const searchQuery = `repo:${this.repo} label:${API.NOTES_LABEL} "${collectionName}/${slug}" in:body state:open`;
+
+  try {
+    const searchResponse = await this.request('/search/issues', {
+      params: { q: searchQuery }
+    });
+
+    if (searchResponse.items && searchResponse.items.length > 0) {
+      return searchResponse.items[0];
     }
+  } catch (error) {
+    console.warn('Failed to search for existing notes issue:', error);
   }
 
-  async updatePRComment(commentId: string | number, note: Note): Promise<void> {
-    try {
-      await this.request(`${this.originRepoURL}/issues/comments/${commentId}`, {
+  // Create new issue if none exists
+  return this.createEntryIssue(collectionName, slug, entryTitle);
+}
+
+/**
+ * Get comments from a GitHub issue
+ */
+private async getIssueComments(issueNumber: number): Promise<GitHubIssue[]> {
+  try {
+    const response: GitHubIssue[] = await this.request(
+      `${this.repoURL}/issues/${issueNumber}/comments`
+    );
+    return Array.isArray(response) ? response : [];
+  } catch (error) {
+    console.error('Failed to get issue comments:', error);
+    return [];
+  }
+}
+
+/**
+ * Create a comment on a GitHub issue
+ */
+async createIssueComment(issueNumber: number, note: Note): Promise<string> {
+  try {
+    const response: GitHubIssue = await this.request(
+      `${this.repoURL}/issues/${issueNumber}/comments`,
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          body: this.formatNoteForGithub(note),
+        }),
+      }
+    );
+
+    return response.id.toString();
+  } catch (error) {
+    console.error('Failed to create issue comment:', error);
+    throw new APIError('Failed to create note', error.status || 500, API_NAME);
+  }
+}
+
+/**
+ * Update a GitHub issue comment
+ */
+async updateIssueComment(commentId: string | number, note: Note): Promise<void> {
+  try {
+    await this.request(`${this.repoURL}/issues/comments/${commentId}`, {
+      method: 'PATCH',
+      body: JSON.stringify({
+        body: this.formatNoteForGithub(note),
+      }),
+    });
+  } catch (error) {
+    console.error('Failed to update issue comment:', error);
+    throw new APIError('Failed to update note', error.status || 500, API_NAME);
+  }
+}
+
+/**
+ * Delete a GitHub issue comment
+ */
+async deleteIssueComment(commentId: string | number): Promise<void> {
+  try {
+    await this.request(`${this.repoURL}/issues/comments/${commentId}`, {
+      method: 'DELETE',
+    });
+  } catch (error) {
+    console.error('Failed to delete issue comment:', error);
+    throw new APIError('Failed to delete note', error.status || 500, API_NAME);
+  }
+}
+
+  /**
+ * Get all notes for an entry (works for all entries)
+ */
+async getEntryNotes(collectionName: string, slug: string): Promise<Note[]> {
+  try {
+    const issue = await this.getOrCreateEntryIssue(collectionName, slug);
+    const comments = await this.getIssueComments(issue.number);
+    return comments.map(comment => this.parseCommentToNote(comment));
+  } catch (error) {
+    console.error('Failed to get entry notes:', error);
+    return [];
+  }
+}
+
+/**
+ * Add a note to any entry
+ */
+async addNoteToEntry(
+  collectionName: string,
+  slug: string,
+  note: Note,
+  entryTitle?: string
+): Promise<string> {
+  try {
+    const issue = await this.getOrCreateEntryIssue(collectionName, slug, entryTitle);
+    const issueNoteId = await this.createIssueComment(issue.number, note);
+    return issueNoteId;
+  } catch (error) {
+    console.error('Failed to add note to entry:', error);
+    throw new APIError('Failed to create note', error.status || 500, API_NAME);
+  }
+}
+
+async updateEntryNote(noteId: string, note: Note): Promise<void> {
+  try {
+    await this.updateIssueComment(noteId, note);
+  } catch (error) {
+    console.error('Failed to update entry note:', error);
+    throw new APIError('Failed to update note', error.status || 500, API_NAME);
+  }
+}
+
+async deleteEntryNote(noteId: string): Promise<void> {
+  try {
+    await this.deleteIssueComment(noteId);
+  } catch (error) {
+    console.error('Failed to delete entry note:', error);
+    throw new APIError('Failed to delete note', error.status || 500, API_NAME);
+  }
+}
+
+/**
+ * Get all entries that have notes (useful for showing notes indicator in UI)
+ */
+async getEntriesWithNotes(): Promise<Array<{ collection: string; slug: string; noteCount: number }>> {
+  try {
+    const searchQuery = `repo:${this.repo} label:${API.NOTES_LABEL} state:open`;
+    const searchResponse = await this.request('/search/issues', {
+      params: { q: searchQuery, per_page: 100 }
+    });
+
+    const entriesWithNotes = [];
+
+    for (const issue of searchResponse.items || []) {
+      // Extract collection/slug from issue body
+      const match = issue.body.match(/entry: `(.+)\/(.+)`/);
+      if (match) {
+        const [, collection, slug] = match;
+        entriesWithNotes.push({
+          collection,
+          slug,
+          noteCount: issue.comments
+        });
+      }
+    }
+
+    return entriesWithNotes;
+  } catch (error) {
+    console.error('Failed to get entries with notes:', error);
+    return [];
+  }
+}
+
+/**
+ * Close notes issue when entry is deleted
+ */
+async closeEntryNotesIssue(collectionName: string, slug: string): Promise<void> {
+  try {
+    const searchQuery = `repo:${this.repo} label:${API.NOTES_LABEL} "${collectionName}/${slug}" in:body state:open`;
+    const searchResponse = await this.request('/search/issues', {
+      params: { q: searchQuery }
+    });
+
+    if (searchResponse.items && searchResponse.items.length > 0) {
+      const issue = searchResponse.items[0];
+      await this.request(`${this.repoURL}/issues/${issue.number}`, {
         method: 'PATCH',
         body: JSON.stringify({
-          body: this.formatNoteForPR(note),
-        }),
+          state: 'closed',
+          labels: [...(issue.labels || []).map((l: { name: string }) => l.name), 'entry-deleted']
+        })
       });
-    } catch (error) {
-      console.error('Failed to update PR comment:', error);
-      throw new APIError('Failed to update note', error.status || 500, API_NAME);
     }
+  } catch (error) {
+    console.warn('Failed to close notes issue:', error);
   }
-
-  async deletePRComment(commentId: string | number): Promise<void> {
-    try {
-      await this.request(`${this.originRepoURL}/issues/comments/${commentId}`, {
-        method: 'DELETE',
-      });
-    } catch (error) {
-      console.error('Failed to delete PR comment:', error);
-      throw new APIError('Failed to delete note', error.status || 500, API_NAME);
-    }
-  }
+}
 
   /**
    * Get PR metadata from branch name
