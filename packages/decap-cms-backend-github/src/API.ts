@@ -1547,285 +1547,290 @@ ${note.content}`;
   }
 
   /**
- * Create a GitHub issue for storing notes for a specific entry
- */
-async createEntryIssue(
-  collectionName: string,
-  slug: string,
-  entryTitle?: string
-): Promise<GitHubIssue> {
-  const title = `${API.NOTE_ISSUE_PREFIX}${entryTitle || `${collectionName}/${slug}`}`;
-  const body = `This issue tracks notes for entry: \`${collectionName}/${slug}\`\n\n---\n*This issue was created automatically by Decap CMS for note management.*`;
+   * Create a GitHub issue for storing notes for a specific entry
+   */
+  async createEntryIssue(
+    collectionName: string,
+    slug: string,
+    entryTitle?: string,
+  ): Promise<GitHubIssue> {
+    const title = `${API.NOTE_ISSUE_PREFIX}${entryTitle || `${collectionName}/${slug}`}`;
+    const body = `This issue tracks notes for entry: \`${collectionName}/${slug}\`\n\n---\n*This issue was created automatically by Decap CMS for note management.*`;
 
-  const response: GitHubIssue = await this.request(`${this.repoURL}/issues`, {
-    method: 'POST',
-    body: JSON.stringify({
-      title,
-      body,
-      labels: [API.NOTES_LABEL, `collection:${collectionName}`]
-    }),
-  });
-
-  return response;
-}
-
-/**
- * Find existing issue for an entry or create a new one
- */
-async getOrCreateEntryIssue(
-  collectionName: string,
-  slug: string,
-  entryTitle?: string
-): Promise<GitHubIssue> {
-  // Search for existing issue
-  const searchQuery = `repo:${this.repo} label:${API.NOTES_LABEL} "${collectionName}/${slug}" in:body`;
-
-  try {
-    const searchResponse = await this.request('/search/issues', {
-      params: { q: searchQuery }
+    const response: GitHubIssue = await this.request(`${this.repoURL}/issues`, {
+      method: 'POST',
+      body: JSON.stringify({
+        title,
+        body,
+        labels: [API.NOTES_LABEL, `collection:${collectionName}`],
+      }),
     });
 
-    if (searchResponse.items && searchResponse.items.length > 0) {
-      return searchResponse.items[0];
+    return response;
+  }
+
+  /**
+   * Find existing issue for an entry or create a new one
+   */
+  async getOrCreateEntryIssue(
+    collectionName: string,
+    slug: string,
+    entryTitle?: string,
+  ): Promise<GitHubIssue> {
+    // Search for existing issue
+    const searchQuery = `repo:${this.repo} label:${API.NOTES_LABEL} "${collectionName}/${slug}" in:body`;
+
+    try {
+      const searchResponse = await this.request('/search/issues', {
+        params: { q: searchQuery },
+      });
+
+      if (searchResponse.items && searchResponse.items.length > 0) {
+        return searchResponse.items[0];
+      }
+    } catch (error) {
+      console.warn('Failed to search for existing notes issue:', error);
     }
-  } catch (error) {
-    console.warn('Failed to search for existing notes issue:', error);
+
+    // Create new issue if none exists
+    return this.createEntryIssue(collectionName, slug, entryTitle);
   }
 
-  // Create new issue if none exists
-  return this.createEntryIssue(collectionName, slug, entryTitle);
-}
-
-/**
- * Get comments from a GitHub issue
- */
-private async getIssueComments(issueNumber: number): Promise<GitHubIssue[]> {
-  try {
-    const response: GitHubIssue[] = await this.request(
-      `${this.repoURL}/issues/${issueNumber}/comments`
-    );
-    return Array.isArray(response) ? response : [];
-  } catch (error) {
-    console.error('Failed to get issue comments:', error);
-    return [];
+  /**
+   * Get comments from a GitHub issue
+   */
+  private async getIssueComments(issueNumber: number): Promise<GitHubIssue[]> {
+    try {
+      const response: GitHubIssue[] = await this.request(
+        `${this.repoURL}/issues/${issueNumber}/comments`,
+      );
+      return Array.isArray(response) ? response : [];
+    } catch (error) {
+      console.error('Failed to get issue comments:', error);
+      return [];
+    }
   }
-}
 
-/**
- * Create a comment on a GitHub issue
- */
-async createIssueComment(issueNumber: number, note: Note): Promise<string> {
-  try {
-    const response: GitHubIssue = await this.request(
-      `${this.repoURL}/issues/${issueNumber}/comments`,
-      {
-        method: 'POST',
+  /**
+   * Create a comment on a GitHub issue
+   */
+  async createIssueComment(issueNumber: number, note: Note): Promise<string> {
+    try {
+      const response: GitHubIssue = await this.request(
+        `${this.repoURL}/issues/${issueNumber}/comments`,
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            body: this.formatNoteForGithub(note),
+          }),
+        },
+      );
+
+      return response.id.toString();
+    } catch (error) {
+      console.error('Failed to create issue comment:', error);
+      throw new APIError('Failed to create note', error.status || 500, API_NAME);
+    }
+  }
+
+  /**
+   * Update a GitHub issue comment
+   */
+  async updateIssueComment(commentId: string | number, note: Note): Promise<void> {
+    try {
+      await this.request(`${this.repoURL}/issues/comments/${commentId}`, {
+        method: 'PATCH',
         body: JSON.stringify({
           body: this.formatNoteForGithub(note),
         }),
-      }
-    );
-
-    return response.id.toString();
-  } catch (error) {
-    console.error('Failed to create issue comment:', error);
-    throw new APIError('Failed to create note', error.status || 500, API_NAME);
-  }
-}
-
-/**
- * Update a GitHub issue comment
- */
-async updateIssueComment(commentId: string | number, note: Note): Promise<void> {
-  try {
-    await this.request(`${this.repoURL}/issues/comments/${commentId}`, {
-      method: 'PATCH',
-      body: JSON.stringify({
-        body: this.formatNoteForGithub(note),
-      }),
-    });
-  } catch (error) {
-    console.error('Failed to update issue comment:', error);
-    throw new APIError('Failed to update note', error.status || 500, API_NAME);
-  }
-}
-
-/**
- * Delete a GitHub issue comment
- */
-async deleteIssueComment(commentId: string | number): Promise<void> {
-  try {
-    await this.request(`${this.repoURL}/issues/comments/${commentId}`, {
-      method: 'DELETE',
-    });
-  } catch (error) {
-    console.error('Failed to delete issue comment:', error);
-    throw new APIError('Failed to delete note', error.status || 500, API_NAME);
-  }
-}
-
-/**
- * Close the notes issue when an entry is published
- */
-async closeIssueOnPublish(collectionName: string, slug: string): Promise<void> {
-  try {
-    const searchQuery = `repo:${this.repo} label:${API.NOTES_LABEL} "${collectionName}/${slug}" in:body state:open`;
-    const searchResponse = await this.request('/search/issues', {
-      params: { q: searchQuery }
-    });
-    
-    if (searchResponse.items && searchResponse.items.length > 0) {
-      const issue = searchResponse.items[0];
-      await this.request(`${this.repoURL}/issues/${issue.number}`, {
-        method: 'PATCH',
-        body: JSON.stringify({
-          state: 'closed',
-          labels: [...(issue.labels || []).map((l: { name: string }) => l.name), 'entry-published']
-        })
       });
+    } catch (error) {
+      console.error('Failed to update issue comment:', error);
+      throw new APIError('Failed to update note', error.status || 500, API_NAME);
     }
-  } catch (error) {
-    console.warn('Failed to close notes issue on publish:', error);
   }
-}
-
-/**
- * Reopen the notes issue when an entry is unpublished
- */
-async reopenIssueOnUnpublish(collectionName: string, slug: string): Promise<void> {
-  try {
-    const searchQuery = `repo:${this.repo} label:${API.NOTES_LABEL} "${collectionName}/${slug}" in:body`;
-    const searchResponse = await this.request('/search/issues', {
-      params: { q: searchQuery }
-    });
-    
-    if (searchResponse.items && searchResponse.items.length > 0) {
-      const issue = searchResponse.items[0];
-      // Remove 'entry-published' or 'entry-deleted' labels and reopen
-      const updatedLabels = (issue.labels || [])
-        .map((l: { name: string }) => l.name)
-        .filter((name: string) => name !== 'entry-published' && name !== 'entry-deleted');
-      
-      await this.request(`${this.repoURL}/issues/${issue.number}`, {
-        method: 'PATCH',
-        body: JSON.stringify({
-          state: 'open',
-          labels: updatedLabels
-        })
-      });
-    }
-  } catch (error) {
-    console.warn('Failed to reopen notes issue on unpublish:', error);
-  }
-}
 
   /**
- * Get all notes for an entry (works for all entries)
- */
-async getEntryNotes(collectionName: string, slug: string): Promise<Note[]> {
-  try {
-    const issue = await this.getOrCreateEntryIssue(collectionName, slug);
-    const comments = await this.getIssueComments(issue.number);
-    return comments.map(comment => this.parseCommentToNote(comment));
-  } catch (error) {
-    console.error('Failed to get entry notes:', error);
-    return [];
+   * Delete a GitHub issue comment
+   */
+  async deleteIssueComment(commentId: string | number): Promise<void> {
+    try {
+      await this.request(`${this.repoURL}/issues/comments/${commentId}`, {
+        method: 'DELETE',
+      });
+    } catch (error) {
+      console.error('Failed to delete issue comment:', error);
+      throw new APIError('Failed to delete note', error.status || 500, API_NAME);
+    }
   }
-}
 
-/**
- * Add a note to any entry
- */
-async addNoteToEntry(
-  collectionName: string,
-  slug: string,
-  note: Note,
-  entryTitle?: string
-): Promise<string> {
-  try {
-    const issue = await this.getOrCreateEntryIssue(collectionName, slug, entryTitle);
-    const issueNoteId = await this.createIssueComment(issue.number, note);
-    return issueNoteId;
-  } catch (error) {
-    console.error('Failed to add note to entry:', error);
-    throw new APIError('Failed to create note', error.status || 500, API_NAME);
-  }
-}
+  /**
+   * Close the notes issue when an entry is published
+   */
+  async closeIssueOnPublish(collectionName: string, slug: string): Promise<void> {
+    try {
+      const searchQuery = `repo:${this.repo} label:${API.NOTES_LABEL} "${collectionName}/${slug}" in:body state:open`;
+      const searchResponse = await this.request('/search/issues', {
+        params: { q: searchQuery },
+      });
 
-async updateEntryNote(noteId: string, note: Note): Promise<void> {
-  try {
-    await this.updateIssueComment(noteId, note);
-  } catch (error) {
-    console.error('Failed to update entry note:', error);
-    throw new APIError('Failed to update note', error.status || 500, API_NAME);
-  }
-}
-
-async deleteEntryNote(noteId: string): Promise<void> {
-  try {
-    await this.deleteIssueComment(noteId);
-  } catch (error) {
-    console.error('Failed to delete entry note:', error);
-    throw new APIError('Failed to delete note', error.status || 500, API_NAME);
-  }
-}
-
-/**
- * Get all entries that have notes (useful for showing notes indicator in UI)
- */
-async getEntriesWithNotes(): Promise<Array<{ collection: string; slug: string; noteCount: number }>> {
-  try {
-    const searchQuery = `repo:${this.repo} label:${API.NOTES_LABEL} state:open`;
-    const searchResponse = await this.request('/search/issues', {
-      params: { q: searchQuery, per_page: 100 }
-    });
-
-    const entriesWithNotes = [];
-
-    for (const issue of searchResponse.items || []) {
-      // Extract collection/slug from issue body
-      const match = issue.body.match(/entry: `(.+)\/(.+)`/);
-      if (match) {
-        const [, collection, slug] = match;
-        entriesWithNotes.push({
-          collection,
-          slug,
-          noteCount: issue.comments
+      if (searchResponse.items && searchResponse.items.length > 0) {
+        const issue = searchResponse.items[0];
+        await this.request(`${this.repoURL}/issues/${issue.number}`, {
+          method: 'PATCH',
+          body: JSON.stringify({
+            state: 'closed',
+            labels: [
+              ...(issue.labels || []).map((l: { name: string }) => l.name),
+              'entry-published',
+            ],
+          }),
         });
       }
+    } catch (error) {
+      console.warn('Failed to close notes issue on publish:', error);
     }
-
-    return entriesWithNotes;
-  } catch (error) {
-    console.error('Failed to get entries with notes:', error);
-    return [];
   }
-}
 
-/**
- * Close notes issue when entry is deleted
- */
-async closeEntryNotesIssue(collectionName: string, slug: string): Promise<void> {
-  try {
-    const searchQuery = `repo:${this.repo} label:${API.NOTES_LABEL} "${collectionName}/${slug}" in:body state:open`;
-    const searchResponse = await this.request('/search/issues', {
-      params: { q: searchQuery }
-    });
-
-    if (searchResponse.items && searchResponse.items.length > 0) {
-      const issue = searchResponse.items[0];
-      await this.request(`${this.repoURL}/issues/${issue.number}`, {
-        method: 'PATCH',
-        body: JSON.stringify({
-          state: 'closed',
-          labels: [...(issue.labels || []).map((l: { name: string }) => l.name), 'entry-deleted']
-        })
+  /**
+   * Reopen the notes issue when an entry is unpublished
+   */
+  async reopenIssueOnUnpublish(collectionName: string, slug: string): Promise<void> {
+    try {
+      const searchQuery = `repo:${this.repo} label:${API.NOTES_LABEL} "${collectionName}/${slug}" in:body`;
+      const searchResponse = await this.request('/search/issues', {
+        params: { q: searchQuery },
       });
+
+      if (searchResponse.items && searchResponse.items.length > 0) {
+        const issue = searchResponse.items[0];
+        // Remove 'entry-published' or 'entry-deleted' labels and reopen
+        const updatedLabels = (issue.labels || [])
+          .map((l: { name: string }) => l.name)
+          .filter((name: string) => name !== 'entry-published' && name !== 'entry-deleted');
+
+        await this.request(`${this.repoURL}/issues/${issue.number}`, {
+          method: 'PATCH',
+          body: JSON.stringify({
+            state: 'open',
+            labels: updatedLabels,
+          }),
+        });
+      }
+    } catch (error) {
+      console.warn('Failed to reopen notes issue on unpublish:', error);
     }
-  } catch (error) {
-    console.warn('Failed to close notes issue:', error);
   }
-}
+
+  /**
+   * Get all notes for an entry (works for all entries)
+   */
+  async getEntryNotes(collectionName: string, slug: string): Promise<Note[]> {
+    try {
+      const issue = await this.getOrCreateEntryIssue(collectionName, slug);
+      const comments = await this.getIssueComments(issue.number);
+      return comments.map(comment => this.parseCommentToNote(comment));
+    } catch (error) {
+      console.error('Failed to get entry notes:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Add a note to any entry
+   */
+  async addNoteToEntry(
+    collectionName: string,
+    slug: string,
+    note: Note,
+    entryTitle?: string,
+  ): Promise<string> {
+    try {
+      const issue = await this.getOrCreateEntryIssue(collectionName, slug, entryTitle);
+      const issueNoteId = await this.createIssueComment(issue.number, note);
+      return issueNoteId;
+    } catch (error) {
+      console.error('Failed to add note to entry:', error);
+      throw new APIError('Failed to create note', error.status || 500, API_NAME);
+    }
+  }
+
+  async updateEntryNote(noteId: string, note: Note): Promise<void> {
+    try {
+      await this.updateIssueComment(noteId, note);
+    } catch (error) {
+      console.error('Failed to update entry note:', error);
+      throw new APIError('Failed to update note', error.status || 500, API_NAME);
+    }
+  }
+
+  async deleteEntryNote(noteId: string): Promise<void> {
+    try {
+      await this.deleteIssueComment(noteId);
+    } catch (error) {
+      console.error('Failed to delete entry note:', error);
+      throw new APIError('Failed to delete note', error.status || 500, API_NAME);
+    }
+  }
+
+  /**
+   * Get all entries that have notes (useful for showing notes indicator in UI)
+   */
+  async getEntriesWithNotes(): Promise<
+    Array<{ collection: string; slug: string; noteCount: number }>
+  > {
+    try {
+      const searchQuery = `repo:${this.repo} label:${API.NOTES_LABEL} state:open`;
+      const searchResponse = await this.request('/search/issues', {
+        params: { q: searchQuery, per_page: 100 },
+      });
+
+      const entriesWithNotes = [];
+
+      for (const issue of searchResponse.items || []) {
+        // Extract collection/slug from issue body
+        const match = issue.body.match(/entry: `(.+)\/(.+)`/);
+        if (match) {
+          const [, collection, slug] = match;
+          entriesWithNotes.push({
+            collection,
+            slug,
+            noteCount: issue.comments,
+          });
+        }
+      }
+
+      return entriesWithNotes;
+    } catch (error) {
+      console.error('Failed to get entries with notes:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Close notes issue when entry is deleted
+   */
+  async closeEntryNotesIssue(collectionName: string, slug: string): Promise<void> {
+    try {
+      const searchQuery = `repo:${this.repo} label:${API.NOTES_LABEL} "${collectionName}/${slug}" in:body state:open`;
+      const searchResponse = await this.request('/search/issues', {
+        params: { q: searchQuery },
+      });
+
+      if (searchResponse.items && searchResponse.items.length > 0) {
+        const issue = searchResponse.items[0];
+        await this.request(`${this.repoURL}/issues/${issue.number}`, {
+          method: 'PATCH',
+          body: JSON.stringify({
+            state: 'closed',
+            labels: [...(issue.labels || []).map((l: { name: string }) => l.name), 'entry-deleted'],
+          }),
+        });
+      }
+    } catch (error) {
+      console.warn('Failed to close notes issue:', error);
+    }
+  }
 
   /**
    * Get PR metadata from branch name

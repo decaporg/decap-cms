@@ -701,28 +701,29 @@ export default class GitHub implements Implementation {
   }
 
   deleteUnpublishedEntry(collection: string, slug: string) {
-  // deleteUnpublishedEntry is a transactional operation
-  return runWithLock(
-    this.lock,
-    async () => {
-      await this.api!.deleteUnpublishedEntry(collection, slug);
-      // Clean up associated notes issue
-      try {
-        await this.api!.closeEntryNotesIssue(collection, slug);
-      } catch (error) {
-        console.warn('Failed to close notes issue during entry deletion:', error);
-      }
-    },
-    'Failed to acquire delete entry lock',
-  );
-}
+    // deleteUnpublishedEntry is a transactional operation
+    return runWithLock(
+      this.lock,
+      async () => {
+        await this.api!.deleteUnpublishedEntry(collection, slug);
+        // Clean up associated notes issue
+        try {
+          await this.api!.closeEntryNotesIssue(collection, slug);
+        } catch (error) {
+          console.warn('Failed to close notes issue during entry deletion:', error);
+        }
+      },
+      'Failed to acquire delete entry lock',
+    );
+  }
 
   publishUnpublishedEntry(collection: string, slug: string) {
     // publishUnpublishedEntry is a transactional operation
     return runWithLock(
       this.lock,
-      async () =>{ this.api!.publishUnpublishedEntry(collection, slug),
-        await this.api!.closeIssueOnPublish(collection, slug);
+      async () => {
+        this.api!.publishUnpublishedEntry(collection, slug),
+          await this.api!.closeIssueOnPublish(collection, slug);
       },
       'Failed to acquire publish entry lock',
     );
@@ -730,91 +731,90 @@ export default class GitHub implements Implementation {
 
   // Notes implementation, which is an abstraction to Github's PR issue comments.
 
-// Notes implementation using GitHub Issues
-async getNotes(collection: string, slug: string): Promise<Note[]> {
-  try {
-    const notes = await this.api!.getEntryNotes(collection, slug);
-    return notes.map(note => ({ ...note, entrySlug: slug }));
-  } catch (error) {
-    console.error('Failed to get notes:', error);
-    return [];
-  }
-}
-
-async addNote(collection: string, slug: string, noteData: Omit<Note, 'id'>): Promise<Note> {
-  const currentUser = await this.currentUser({ token: this.token! });
-  const note: Note = {
-    ...noteData,
-    id: 'temp-' + Date.now(),
-    author: currentUser.login || currentUser.name,
-    avatarUrl: currentUser.avatar_url,
-    entrySlug: slug,
-    timestamp: noteData.timestamp || new Date().toISOString(),
-    resolved: noteData.resolved || false,
-  };
-
-  // Get entry title for better issue naming
-  let entryTitle: string | undefined;
-  try {
-    const entryData = await this.getEntry(`${collection}/${slug}.md`); // Adjust path as needed
-    // Extract title from frontmatter if available
-    const titleMatch = entryData.data.match(/^title:\s*["']?([^"'\n]+)["']?/m);
-    entryTitle = titleMatch ? titleMatch[1] : undefined;
-  } catch (error) {
-    // Entry not found or error reading, use undefined title
+  // Notes implementation using GitHub Issues
+  async getNotes(collection: string, slug: string): Promise<Note[]> {
+    try {
+      const notes = await this.api!.getEntryNotes(collection, slug);
+      return notes.map(note => ({ ...note, entrySlug: slug }));
+    } catch (error) {
+      console.error('Failed to get notes:', error);
+      return [];
+    }
   }
 
-  const commentId = await this.api!.addNoteToEntry(collection, slug, note, entryTitle);
-  return { ...note, id: commentId };
-}
+  async addNote(collection: string, slug: string, noteData: Omit<Note, 'id'>): Promise<Note> {
+    const currentUser = await this.currentUser({ token: this.token! });
+    const note: Note = {
+      ...noteData,
+      id: 'temp-' + Date.now(),
+      author: currentUser.login || currentUser.name,
+      avatarUrl: currentUser.avatar_url,
+      entrySlug: slug,
+      timestamp: noteData.timestamp || new Date().toISOString(),
+      resolved: noteData.resolved || false,
+    };
 
-async updateNote(
-  collection: string,
-  slug: string,
-  noteId: string,
-  updates: Partial<Note>,
-): Promise<Note> {
-  const currentNotes = await this.getNotes(collection, slug);
-  const existingNote = currentNotes.find(note => note.id === noteId);
-  if (!existingNote) {
-    throw new Error(`Note with ID ${noteId} not found`);
+    // Get entry title for better issue naming
+    let entryTitle: string | undefined;
+    try {
+      const entryData = await this.getEntry(`${collection}/${slug}.md`); // Adjust path as needed
+      // Extract title from frontmatter if available
+      const titleMatch = entryData.data.match(/^title:\s*["']?([^"'\n]+)["']?/m);
+      entryTitle = titleMatch ? titleMatch[1] : undefined;
+    } catch (error) {
+      // Entry not found or error reading, use undefined title
+    }
+
+    const commentId = await this.api!.addNoteToEntry(collection, slug, note, entryTitle);
+    return { ...note, id: commentId };
   }
 
-  const updatedNote: Note = {
-    ...existingNote,
-    ...updates,
-    id: noteId,
-    entrySlug: slug,
-  };
+  async updateNote(
+    collection: string,
+    slug: string,
+    noteId: string,
+    updates: Partial<Note>,
+  ): Promise<Note> {
+    const currentNotes = await this.getNotes(collection, slug);
+    const existingNote = currentNotes.find(note => note.id === noteId);
+    if (!existingNote) {
+      throw new Error(`Note with ID ${noteId} not found`);
+    }
 
-  await this.api!.updateEntryNote(noteId, updatedNote);
-  return updatedNote;
-}
+    const updatedNote: Note = {
+      ...existingNote,
+      ...updates,
+      id: noteId,
+      entrySlug: slug,
+    };
 
-async deleteNote(collection: string, slug: string, noteId: string): Promise<void> {
-  const currentNotes = await this.getNotes(collection, slug);
-  const noteExists = currentNotes.some(note => note.id === noteId);
-  if (!noteExists) {
-    throw new Error(`Note with ID ${noteId} not found`);
+    await this.api!.updateEntryNote(noteId, updatedNote);
+    return updatedNote;
   }
 
-  await this.api!.deleteEntryNote(noteId);
+  async deleteNote(collection: string, slug: string, noteId: string): Promise<void> {
+    const currentNotes = await this.getNotes(collection, slug);
+    const noteExists = currentNotes.some(note => note.id === noteId);
+    if (!noteExists) {
+      throw new Error(`Note with ID ${noteId} not found`);
+    }
 
-}
-
-async toggleNoteResolution(collection: string, slug: string, noteId: string): Promise<Note> {
-  const currentNotes = await this.getNotes(collection, slug);
-  const note = currentNotes.find(n => n.id === noteId);
-  if (!note) {
-    throw new Error(`Note with ID ${noteId} not found`);
+    await this.api!.deleteEntryNote(noteId);
   }
 
-  return this.updateNote(collection, slug, noteId, {
-    resolved: !note.resolved,
-  });
-}
+  async toggleNoteResolution(collection: string, slug: string, noteId: string): Promise<Note> {
+    const currentNotes = await this.getNotes(collection, slug);
+    const note = currentNotes.find(n => n.id === noteId);
+    if (!note) {
+      throw new Error(`Note with ID ${noteId} not found`);
+    }
 
-async reopenIssueForUnpublishedEntry(collection: string, slug: string) {
-  await this.api!.reopenIssueOnUnpublish(collection, slug);
-}
+    return this.updateNote(collection, slug, noteId, {
+      resolved: !note.resolved,
+    });
+  }
+
+  async reopenIssueForUnpublishedEntry(collection: string, slug: string) {
+    await this.api!.reopenIssueOnUnpublish(collection, slug);
+  }
 }

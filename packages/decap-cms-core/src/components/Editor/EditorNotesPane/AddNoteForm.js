@@ -113,7 +113,7 @@ class AddNoteForm extends Component {
     if (!this.state.content.trim()) {
       this.setState({ isFocused: false });
     }
-  }
+  };
 
   render() {
     const { t } = this.props;
