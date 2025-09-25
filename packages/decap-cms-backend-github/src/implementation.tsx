@@ -721,7 +721,9 @@ export default class GitHub implements Implementation {
     // publishUnpublishedEntry is a transactional operation
     return runWithLock(
       this.lock,
-      () => this.api!.publishUnpublishedEntry(collection, slug),
+      async () =>{ this.api!.publishUnpublishedEntry(collection, slug),
+        await this.api!.closeIssueOnPublish(collection, slug);
+      },
       'Failed to acquire publish entry lock',
     );
   }
@@ -810,5 +812,9 @@ async toggleNoteResolution(collection: string, slug: string, noteId: string): Pr
   return this.updateNote(collection, slug, noteId, {
     resolved: !note.resolved,
   });
+}
+
+async reopenIssueForUnpublishedEntry(collection: string, slug: string) {
+  await this.api!.reopenIssueOnUnpublish(collection, slug);
 }
 }

@@ -630,6 +630,14 @@ export class Backend {
     throw new Error(`Backend '${this.backendName}' does not support toggling note resolution`);
   }
 
+  reopenIssueForUnpublishedEntry(collection: string, slug: string) {
+  if (typeof this.implementation.reopenIssueForUnpublishedEntry === 'function') {
+    return this.implementation.reopenIssueForUnpublishedEntry(collection, slug);
+  }
+  // If backend doesn't support this, silently skip
+  return Promise.resolve();
+}
+
   async getPRMetadata(
     collection: string,
     slug: string,

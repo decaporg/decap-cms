@@ -541,6 +541,7 @@ export function unpublishPublishedEntry(collection: Collection, slug: string) {
           status: status.get('PENDING_PUBLISH'),
         }),
       )
+      .then(() => backend.reopenIssueForUnpublishedEntry(collection.get('name'), slug))
       .then(() => {
         dispatch(unpublishedEntryPersisted(collection, entry));
         dispatch(entryDeleted(collection, slug));

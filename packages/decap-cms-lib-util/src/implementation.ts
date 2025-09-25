@@ -180,6 +180,7 @@ export interface Implementation {
   deleteNote?: (collection: string, slug: string, noteId: string) => Promise<void>;
   toggleNoteResolution?: (collection: string, slug: string, noteId: string) => Promise<Note>;
   syncNotes?: (collection: string, slug: string, localNotes: Note[]) => Promise<Note[]>;
+  reopenIssueForUnpublishedEntry?: (collection: string, slug: string) => Promise<void>;
 
   getPRMetadata?: (
     collection: string,

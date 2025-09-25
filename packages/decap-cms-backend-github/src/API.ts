@@ -1193,6 +1193,7 @@ export default class API {
     const pullRequest = await this.getBranchPullRequest(branch);
     await this.mergePR(pullRequest);
     await this.deleteBranch(branch);
+    await this.closeIssueOnPublish(collectionName, slug);
   }
 
   async createRef(type: string, name: string, sha: string) {
@@ -1577,7 +1578,7 @@ async getOrCreateEntryIssue(
   entryTitle?: string
 ): Promise<GitHubIssue> {
   // Search for existing issue
-  const searchQuery = `repo:${this.repo} label:${API.NOTES_LABEL} "${collectionName}/${slug}" in:body state:open`;
+  const searchQuery = `repo:${this.repo} label:${API.NOTES_LABEL} "${collectionName}/${slug}" in:body`;
 
   try {
     const searchResponse = await this.request('/search/issues', {
@@ -1660,6 +1661,61 @@ async deleteIssueComment(commentId: string | number): Promise<void> {
   } catch (error) {
     console.error('Failed to delete issue comment:', error);
     throw new APIError('Failed to delete note', error.status || 500, API_NAME);
+  }
+}
+
+/**
+ * Close the notes issue when an entry is published
+ */
+async closeIssueOnPublish(collectionName: string, slug: string): Promise<void> {
+  try {
+    const searchQuery = `repo:${this.repo} label:${API.NOTES_LABEL} "${collectionName}/${slug}" in:body state:open`;
+    const searchResponse = await this.request('/search/issues', {
+      params: { q: searchQuery }
+    });
+    
+    if (searchResponse.items && searchResponse.items.length > 0) {
+      const issue = searchResponse.items[0];
+      await this.request(`${this.repoURL}/issues/${issue.number}`, {
+        method: 'PATCH',
+        body: JSON.stringify({
+          state: 'closed',
+          labels: [...(issue.labels || []).map((l: { name: string }) => l.name), 'entry-published']
+        })
+      });
+    }
+  } catch (error) {
+    console.warn('Failed to close notes issue on publish:', error);
+  }
+}
+
+/**
+ * Reopen the notes issue when an entry is unpublished
+ */
+async reopenIssueOnUnpublish(collectionName: string, slug: string): Promise<void> {
+  try {
+    const searchQuery = `repo:${this.repo} label:${API.NOTES_LABEL} "${collectionName}/${slug}" in:body`;
+    const searchResponse = await this.request('/search/issues', {
+      params: { q: searchQuery }
+    });
+    
+    if (searchResponse.items && searchResponse.items.length > 0) {
+      const issue = searchResponse.items[0];
+      // Remove 'entry-published' or 'entry-deleted' labels and reopen
+      const updatedLabels = (issue.labels || [])
+        .map((l: { name: string }) => l.name)
+        .filter((name: string) => name !== 'entry-published' && name !== 'entry-deleted');
+      
+      await this.request(`${this.repoURL}/issues/${issue.number}`, {
+        method: 'PATCH',
+        body: JSON.stringify({
+          state: 'open',
+          labels: updatedLabels
+        })
+      });
+    }
+  } catch (error) {
+    console.warn('Failed to reopen notes issue on unpublish:', error);
   }
 }
 
