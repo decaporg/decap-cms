@@ -32,7 +32,9 @@ describe('editorialWorkflow actions', () => {
       };
 
       const store = mockStore({
-        config: fromJS({}),
+        config: fromJS({
+          editor: { notes: true },
+        }),
         collections: fromJS({
           posts: { name: 'posts' },
         }),
@@ -107,7 +109,7 @@ describe('editorialWorkflow actions', () => {
 
       return store.dispatch(actions.publishUnpublishedEntry('posts', slug)).then(() => {
         const actions = store.getActions();
-        expect(actions).toHaveLength(11);
+        expect(actions).toHaveLength(8);
 
         expect(actions[0]).toEqual({
           type: 'UNPUBLISHED_ENTRY_PUBLISH_REQUEST',
@@ -162,28 +164,6 @@ describe('editorialWorkflow actions', () => {
           type: 'DRAFT_CREATE_FROM_ENTRY',
           payload: {
             entry,
-          },
-        });
-
-        expect(actions[8]).toEqual({
-          type: 'NOTES_REQUEST',
-          payload: {
-            collection: 'posts',
-            slug,
-          },
-        });
-        expect(actions[9]).toEqual({
-          type: 'NOTES_SUCCESS',
-          payload: {
-            collection: 'posts',
-            slug,
-            notes: [],
-          },
-        });
-        expect(actions[10]).toEqual({
-          type: 'DRAFT_NOTES_LOAD',
-          payload: {
-            notes: [],
           },
         });
       });
