@@ -181,9 +181,6 @@ export class Editor extends React.Component {
         this.deleteBackup();
       }
     }
-    if (!prevProps.entry && this.props.entry && !this.props.newEntry && this.props.hasWorkflow) {
-      this.props.loadNotes(this.props.collection, this.props.slug);
-    }
 
     if (
       prevProps.entry !== this.props.entry &&
