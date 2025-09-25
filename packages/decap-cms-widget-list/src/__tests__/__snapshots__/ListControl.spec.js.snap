@@ -204,6 +204,8 @@ exports[`ListControl should add to list when add button is clicked 1`] = `
         class="emotion-15 emotion-16"
       >
         <mock-list-item-top-bar
+          allowremove=""
+          allowreorder=""
           class="emotion-17 emotion-18"
           data-testid="styled-list-item-top-bar-0"
           id="0"
@@ -454,6 +456,8 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
         class="emotion-15 emotion-16"
       >
         <mock-list-item-top-bar
+          allowremove=""
+          allowreorder=""
           class="emotion-17 emotion-18"
           data-testid="styled-list-item-top-bar-0"
           id="0"
@@ -482,6 +486,8 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
         class="emotion-15 emotion-16"
       >
         <mock-list-item-top-bar
+          allowremove=""
+          allowreorder=""
           class="emotion-17 emotion-18"
           data-testid="styled-list-item-top-bar-1"
           id="1"
@@ -732,6 +738,8 @@ exports[`ListControl should remove from list when remove button is clicked 2`] =
         class="emotion-15 emotion-16"
       >
         <mock-list-item-top-bar
+          allowremove=""
+          allowreorder=""
           class="emotion-17 emotion-18"
           collapsed=""
           data-testid="styled-list-item-top-bar-1"
@@ -995,6 +1003,8 @@ exports[`ListControl should render list with fields with collapse = "false" and 
         class="emotion-15 emotion-16"
       >
         <mock-list-item-top-bar
+          allowremove=""
+          allowreorder=""
           class="emotion-17 emotion-18"
           data-testid="styled-list-item-top-bar-0"
           id="0"
@@ -1023,6 +1033,8 @@ exports[`ListControl should render list with fields with collapse = "false" and 
         class="emotion-15 emotion-16"
       >
         <mock-list-item-top-bar
+          allowremove=""
+          allowreorder=""
           class="emotion-17 emotion-18"
           data-testid="styled-list-item-top-bar-1"
           id="1"
@@ -1273,6 +1285,8 @@ exports[`ListControl should render list with fields with collapse = "false" and 
         class="emotion-15 emotion-16"
       >
         <mock-list-item-top-bar
+          allowremove=""
+          allowreorder=""
           class="emotion-17 emotion-18"
           data-testid="styled-list-item-top-bar-0"
           id="0"
@@ -1301,6 +1315,8 @@ exports[`ListControl should render list with fields with collapse = "false" and 
         class="emotion-15 emotion-16"
       >
         <mock-list-item-top-bar
+          allowremove=""
+          allowreorder=""
           class="emotion-17 emotion-18"
           data-testid="styled-list-item-top-bar-1"
           id="1"
@@ -1551,6 +1567,8 @@ exports[`ListControl should render list with fields with default collapse ("true
         class="emotion-15 emotion-16"
       >
         <mock-list-item-top-bar
+          allowremove=""
+          allowreorder=""
           class="emotion-17 emotion-18"
           collapsed=""
           data-testid="styled-list-item-top-bar-0"
@@ -1581,6 +1599,8 @@ exports[`ListControl should render list with fields with default collapse ("true
         class="emotion-15 emotion-16"
       >
         <mock-list-item-top-bar
+          allowremove=""
+          allowreorder=""
           class="emotion-17 emotion-18"
           collapsed=""
           data-testid="styled-list-item-top-bar-1"
@@ -2015,6 +2035,8 @@ exports[`ListControl should render list with nested object 1`] = `
         class="emotion-15 emotion-16"
       >
         <mock-list-item-top-bar
+          allowremove=""
+          allowreorder=""
           class="emotion-17 emotion-18"
           collapsed=""
           data-testid="styled-list-item-top-bar-0"
@@ -2045,6 +2067,8 @@ exports[`ListControl should render list with nested object 1`] = `
         class="emotion-15 emotion-16"
       >
         <mock-list-item-top-bar
+          allowremove=""
+          allowreorder=""
           class="emotion-17 emotion-18"
           collapsed=""
           data-testid="styled-list-item-top-bar-1"
@@ -2297,6 +2321,8 @@ exports[`ListControl should render list with nested object with collapse = false
         class="emotion-15 emotion-16"
       >
         <mock-list-item-top-bar
+          allowremove=""
+          allowreorder=""
           class="emotion-17 emotion-18"
           data-testid="styled-list-item-top-bar-0"
           id="0"
@@ -2325,6 +2351,8 @@ exports[`ListControl should render list with nested object with collapse = false
         class="emotion-15 emotion-16"
       >
         <mock-list-item-top-bar
+          allowremove=""
+          allowreorder=""
           class="emotion-17 emotion-18"
           data-testid="styled-list-item-top-bar-1"
           id="1"

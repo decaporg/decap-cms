@@ -149,6 +149,8 @@ export interface CmsFieldList {
   default?: unknown;
 
   allow_add?: boolean;
+  allow_remove?: boolean;
+  allow_reorder?: boolean;
   collapsed?: boolean;
   summary?: string;
   minimize_collapsed?: boolean;
