@@ -1,7 +1,7 @@
 {
   "name": "decap-cms-core",
   "description": "Decap CMS core application, see decap-cms package for the main distribution.",
-  "version": "3.8.1",
+  "version": "3.9.0",
   "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-core",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
   "module": "dist/esm/index.js",
