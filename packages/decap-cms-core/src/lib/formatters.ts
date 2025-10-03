@@ -107,11 +107,19 @@ export function prepareSlug(slug: string) {
   );
 }
 
-export function getProcessSegment(slugConfig?: CmsSlug, ignoreValues?: string[]) {
+export function getProcessSegment(
+  slugConfig?: CmsSlug,
+  ignoreValues?: string[],
+  preserveSlashes?: boolean,
+) {
   return (value: string) =>
     ignoreValues && ignoreValues.includes(value)
       ? value
-      : flow([value => String(value), prepareSlug, partialRight(sanitizeSlug, slugConfig)])(value);
+      : flow([
+          value => String(value),
+          prepareSlug,
+          partialRight(sanitizeSlug, slugConfig, preserveSlashes),
+        ])(value);
 }
 
 export function slugFormatter(
@@ -188,15 +196,17 @@ export function previewUrlFormatter(
   fields = addFileTemplateFields(entry.get('path'), fields, collection.get('folder'));
   const dateFieldName = getDateField() || selectInferredField(collection, 'date');
   const date = parseDateFromEntry(entry as unknown as Map<string, unknown>, dateFieldName);
+  const preserveSlashes =
+    collection.has('nested') || !!collection.get('preview_path_preserve_slashes');
 
   // Prepare and sanitize slug variables only, leave the rest of the
   // `preview_path` template as is.
-  const processSegment = getProcessSegment(slugConfig, [fields.get('dirname')]);
+  const processSegment = getProcessSegment(slugConfig, [fields.get('dirname')], preserveSlashes);
   let compiledPath;
 
   try {
     compiledPath = compileStringTemplate(pathTemplate, date, slug, fields, processSegment);
-  } catch (err) {
+  } catch (err: any) {
     // Print an error and ignore `preview_path` if both:
     //   1. Date is invalid (according to DayJs), and
     //   2. A date expression (eg. `{{year}}`) is used in `preview_path`
