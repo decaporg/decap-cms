@@ -409,6 +409,7 @@ declare module 'decap-cms-core' {
     slug?: CmsSlug;
     i18n?: CmsI18nConfig;
     local_backend?: boolean | CmsLocalBackend;
+    remove_empty_image_field?: boolean;
     editor?: {
       preview?: boolean;
     };
