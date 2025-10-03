@@ -50,6 +50,7 @@ const sizes = {
   small: '18px',
   medium: '24px',
   large: '32px',
+  max: '100%',
 };
 
 function Icon({ type, direction, size = 'medium', className }) {
