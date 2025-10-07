@@ -3,10 +3,18 @@ import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import { Waypoint } from 'react-waypoint';
-import { Map, List } from 'immutable';
+import { Map, List, fromJS } from 'immutable';
+import { translate } from 'react-polyglot';
+import orderBy from 'lodash/orderBy';
+import { colors } from 'decap-cms-ui-default';
 
-import { selectFields, selectInferredField } from '../../../reducers/collections';
+import {
+  selectFields,
+  selectInferredField,
+  selectSortDataPath,
+} from '../../../reducers/collections';
 import { filterNestedEntries } from './EntriesCollection';
+import { SortDirection } from '../../../types/redux';
 import EntryCard from './EntryCard';
 
 const CardsGrid = styled.ul`
@@ -16,6 +24,20 @@ const CardsGrid = styled.ul`
   margin-left: -12px;
   margin-top: 16px;
   margin-bottom: 16px;
+`;
+
+const SectionSeparator = styled.div`
+  width: 100%;
+  margin: 24px 0 16px 12px;
+  padding-top: 16px;
+  border-top: 2px solid ${colors.textFieldBorder};
+`;
+
+const SectionHeading = styled.h3`
+  font-size: 16px;
+  font-weight: 600;
+  color: ${colors.textLead};
+  margin: 0 0 8px;
 `;
 
 class EntryListing extends React.Component {
@@ -29,6 +51,8 @@ class EntryListing extends React.Component {
     getUnpublishedEntries: PropTypes.func.isRequired,
     getWorkflowStatus: PropTypes.func.isRequired,
     filterTerm: PropTypes.string,
+    sortFields: ImmutablePropTypes.list,
+    t: PropTypes.func.isRequired,
   };
 
   componentDidMount() {
@@ -58,18 +82,30 @@ class EntryListing extends React.Component {
     return { titleField, descriptionField, imageField, remainingFields };
   };
 
-  getAllEntries = () => {
-    const { entries, collections, filterTerm } = this.props;
+  sortEntries = (entries, sortFields, collections) => {
+    if (!sortFields || sortFields.size === 0) {
+      return entries;
+    }
+
+    const keys = sortFields.map(v => selectSortDataPath(collections, v.get('key')));
+    const orders = sortFields.map(v =>
+      v.get('direction') === SortDirection.Ascending ? 'asc' : 'desc',
+    );
+    return fromJS(orderBy(entries.toJS(), keys.toArray(), orders.toArray()));
+  };
+
+  getUnpublishedEntriesList = () => {
+    const { entries, collections, filterTerm, sortFields } = this.props;
     const collectionName = Map.isMap(collections) ? collections.get('name') : null;
 
     if (!collectionName) {
-      return entries;
+      return List();
     }
 
     const unpublishedEntries = this.props.getUnpublishedEntries(collectionName);
 
     if (!unpublishedEntries || unpublishedEntries.length === 0) {
-      return entries;
+      return List();
     }
 
     let unpublishedList = List(unpublishedEntries.map(entry => entry));
@@ -91,25 +127,59 @@ class EntryListing extends React.Component {
       publishedSlugs.has(entry.get('slug')),
     );
 
-    return entries.concat(uniqueUnpublished);
+    return this.sortEntries(uniqueUnpublished, sortFields, collections);
   };
 
   renderCardsForSingleCollection = () => {
-    const { collections, viewStyle } = this.props;
-    const allEntries = this.getAllEntries();
+    const { collections, viewStyle, entries, t } = this.props;
     const inferredFields = this.inferFields(collections);
     const entryCardProps = { collection: collections, inferredFields, viewStyle };
 
-    return allEntries.map((entry, idx) => {
+    const publishedCards = entries.map((entry, idx) => {
       const workflowStatus = this.props.getWorkflowStatus(
         collections.get('name'),
         entry.get('slug'),
       );
 
       return (
-        <EntryCard {...entryCardProps} entry={entry} workflowStatus={workflowStatus} key={idx} />
+        <EntryCard
+          {...entryCardProps}
+          entry={entry}
+          workflowStatus={workflowStatus}
+          key={`published-${idx}`}
+        />
       );
     });
+
+    const unpublishedEntries = this.getUnpublishedEntriesList();
+
+    if (unpublishedEntries.size === 0) {
+      return publishedCards;
+    }
+
+    const unpublishedCards = unpublishedEntries.map((entry, idx) => {
+      const workflowStatus = this.props.getWorkflowStatus(
+        collections.get('name'),
+        entry.get('slug'),
+      );
+
+      return (
+        <EntryCard
+          {...entryCardProps}
+          entry={entry}
+          workflowStatus={workflowStatus}
+          key={`unpublished-${idx}`}
+        />
+      );
+    });
+
+    return [
+      ...publishedCards.toArray(),
+      <SectionSeparator key="separator">
+        <SectionHeading>{t('collection.entries.unpublishedHeader')}</SectionHeading>
+      </SectionSeparator>,
+      ...unpublishedCards.toArray(),
+    ];
   };
 
   renderCardsForMultipleCollections = () => {
@@ -148,4 +218,4 @@ class EntryListing extends React.Component {
   }
 }
 
-export default EntryListing;
+export default translate()(EntryListing);
