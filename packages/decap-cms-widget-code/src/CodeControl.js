@@ -127,7 +127,7 @@ export default class CodeControl extends React.Component {
     if (changedProps) {
       // Check if this is the initial setting of the language prop
       const shouldIgnoreLangChange =
-        this.state.isLangInitialized === false &&
+        !this.state.isLangInitialized &&
         !!changedProps?.lang &&
         Object.keys(changedProps).length === 1;
 
