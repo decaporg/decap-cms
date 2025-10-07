@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.2.1](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-image@3.2.0...decap-cms-widget-image@3.2.1) (2025-09-30)
+
+### Bug Fixes
+
+- display image uploaded from device in preview pane ([#7608](https://github.com/decaporg/decap-cms/issues/7608)) ([304009f](https://github.com/decaporg/decap-cms/commit/304009f9704c606bc18aa6b454eaf3911a851362))
+
 # [3.2.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-image@3.1.3...decap-cms-widget-image@3.2.0) (2025-06-26)
 
 **Note:** Version bump only for package decap-cms-widget-image
