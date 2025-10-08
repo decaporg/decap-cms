@@ -1,6 +1,5 @@
 import { Map, List } from 'immutable';
 import { v4 as uuid } from 'uuid';
-import { dirname } from 'path';
 
 import {
   MEDIA_LIBRARY_OPEN,
@@ -255,12 +254,33 @@ function mediaLibrary(state = Map(defaultState), action: MediaLibraryAction) {
       return state;
   }
 }
+export function getInitialMediaFolder(state: State, field?: EntryField) {
+  const { entryDraft } = state;
+  const entry = entryDraft.get('entry');
+  const collection = state.collections.get(entry?.get('collection'));
+  const integration = selectIntegration(state, null, 'assetStore');
+  if (integration) {
+    return null;
+  }
+  return selectMediaFolder(state.config, collection, entry, field);
+}
 
+export function getMediaFolderNavDisabled(state: State, field?: EntryField) {
+  let disableMediaFolderNav = false;
+  const { entryDraft } = state;
+  const entry = entryDraft.get('entry');
+  const collection = state.collections.get(entry?.get('collection'));
+  if (field && field.has('media_folder')) {
+    disableMediaFolderNav = field.get('media_folder') ? true : false;
+  } else if (collection && collection.has('media_folder')) {
+    disableMediaFolderNav = collection.get('media_folder') ? true : false;
+  }
+  return disableMediaFolderNav;
+}
 export function selectMediaFiles(state: State, field?: EntryField) {
   const { mediaLibrary, entryDraft } = state;
   const editingDraft = selectEditingDraft(state.entryDraft);
   const integration = selectIntegration(state, null, 'assetStore');
-
   let files;
   if (editingDraft && !integration) {
     const entryFiles = entryDraft
@@ -269,13 +289,18 @@ export function selectMediaFiles(state: State, field?: EntryField) {
     const entry = entryDraft.get('entry');
     const collection = state.collections.get(entry?.get('collection'));
     const mediaFolder = selectMediaFolder(state.config, collection, entry, field);
-    files = entryFiles
-      .filter(f => dirname(f.path) === mediaFolder)
+    const uniqMediaFiles: MediaFile[] = [];
+    entryFiles.concat(mediaLibrary.get('files') || []).forEach(mediaFile => {
+      if (!uniqMediaFiles.find(uniqueMediaFile => uniqueMediaFile.id === mediaFile.id)) {
+        uniqMediaFiles.push(mediaFile);
+      }
+    });
+    files = uniqMediaFiles
+      .filter(f => f.path.startsWith(mediaFolder))
       .map(file => ({ key: file.id, ...file }));
   } else {
     files = mediaLibrary.get('files') || [];
   }
-
   return files;
 }
 

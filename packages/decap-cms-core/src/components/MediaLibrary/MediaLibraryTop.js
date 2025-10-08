@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 
 import MediaLibrarySearch from './MediaLibrarySearch';
+import MediaLibraryCreateFolder from './MediaLibraryCreateFolder';
 import MediaLibraryHeader from './MediaLibraryHeader';
+import MediaLibraryBreadcrumbs from './MediaLibraryBreadCrumbs';
 import {
   UploadButton,
   DeleteButton,
@@ -38,13 +40,19 @@ function MediaLibraryTop({
   onSearchChange,
   onSearchKeyDown,
   searchDisabled,
+  onCreateFolder,
   onDelete,
   canInsert,
   onInsert,
   hasSelection,
   isPersisting,
   isDeleting,
+  handleBreadcrumbClick,
+  currentMediaFolder,
+  defaultMediaFolder,
+  mediaFolderNavDisabled,
   selectedFile,
+  folders,
 }) {
   const shouldShowButtonLoader = isPersisting || isDeleting;
   const uploadEnabled = !shouldShowButtonLoader;
@@ -98,6 +106,13 @@ function MediaLibraryTop({
           placeholder={t('mediaLibrary.mediaLibraryModal.search')}
           disabled={searchDisabled}
         />
+        {!mediaFolderNavDisabled ? (
+          <MediaLibraryCreateFolder
+            onKeyDown={onCreateFolder}
+            placeholder={t('mediaLibrary.mediaLibraryModal.createFolder')}
+            folders={folders}
+          />
+        ) : null}
         <ButtonsContainer>
           <DeleteButton onClick={onDelete} disabled={!deleteEnabled}>
             {deleteButtonLabel}
@@ -108,6 +123,14 @@ function MediaLibraryTop({
             </InsertButton>
           )}
         </ButtonsContainer>
+      </RowContainer>
+      <RowContainer>
+        <MediaLibraryBreadcrumbs
+          handleBreadcrumbClick={handleBreadcrumbClick}
+          currentMediaFolder={currentMediaFolder}
+          defaultMediaFolder={defaultMediaFolder}
+          mediaFolderNavDisabled={mediaFolderNavDisabled}
+        />
       </RowContainer>
     </LibraryTop>
   );
@@ -123,6 +146,7 @@ MediaLibraryTop.propTypes = {
   query: PropTypes.string,
   onSearchChange: PropTypes.func.isRequired,
   onSearchKeyDown: PropTypes.func.isRequired,
+  onCreateFolder: PropTypes.func.isRequired,
   searchDisabled: PropTypes.bool.isRequired,
   onDelete: PropTypes.func.isRequired,
   canInsert: PropTypes.bool,
