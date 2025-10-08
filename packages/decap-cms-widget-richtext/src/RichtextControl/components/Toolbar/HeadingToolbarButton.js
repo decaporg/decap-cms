@@ -1,10 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
-import { unwrapList } from '@udecode/plate-list';
+import { unwrapList } from '@platejs/list-classic';
 import { Dropdown, DropdownButton, DropdownItem } from 'decap-cms-ui-default';
-import { focusEditor, ParagraphPlugin, useEditorRef, useEditorSelector } from '@udecode/plate-common/react';
-import { getBlockAbove, isSelectionExpanded, toggleBlock } from '@udecode/plate-common';
+import { ParagraphPlugin, useEditorRef, useEditorSelector } from 'platejs/react';
 
 import ToolbarButton from './ToolbarButton';
 
@@ -26,8 +25,8 @@ function HeadingToolbarButton({ disabled, isVisible, t }) {
   const editor = useEditorRef();
 
   const value = useEditorSelector(editor => {
-    if (!isSelectionExpanded(editor)) {
-      const entry = getBlockAbove(editor);
+    if (!editor.api.isExpanded()) {
+      const entry = editor.api.block();
 
       if (entry) {
         return entry[0].type;
@@ -39,8 +38,8 @@ function HeadingToolbarButton({ disabled, isVisible, t }) {
 
   function handleChange(optionKey) {
     unwrapList(editor);
-    toggleBlock(editor, { type: optionKey });
-    focusEditor(editor);
+    editor.tf.toggleBlock(optionKey);
+    editor.tf.focus();
   }
 
   return (

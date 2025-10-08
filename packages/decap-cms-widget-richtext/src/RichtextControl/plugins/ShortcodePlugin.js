@@ -1,5 +1,5 @@
-import { createSlatePlugin } from '@udecode/plate-common';
-import { toPlatePlugin } from '@udecode/plate-common/react';
+import { createSlatePlugin } from 'platejs';
+import { toPlatePlugin } from 'platejs/react';
 
 import ShortcodeElement from '../components/Element/ShortcodeElement';
 

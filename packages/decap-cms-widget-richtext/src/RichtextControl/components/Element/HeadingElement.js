@@ -1,5 +1,5 @@
 import React from 'react';
-import { PlateElement } from '@udecode/plate-common/react';
+import { PlateElement } from 'platejs/react';
 import styled from '@emotion/styled';
 
 const headingVariants = {
@@ -28,7 +28,7 @@ const headingVariants = {
   },
 };
 
-const StyledHeading = styled(PlateElement)`
+const StyledHeading = styled.h1`
   font-weight: 700;
   line-height: 1;
   margin-top: ${props => (props.isFirstBlock ? '0' : headingVariants[props.variant].marginTop)};
@@ -38,13 +38,12 @@ const StyledHeading = styled(PlateElement)`
 function HeadingElement({ variant = 'h1', children, ...props }) {
   const { element, editor } = props;
   const isFirstBlock = element === editor.children[0];
-
-  const Element = StyledHeading.withComponent(variant);
-
   return (
-    <Element {...props} isFirstBlock={isFirstBlock} variant={variant}>
-      {children}
-    </Element>
+    <PlateElement asChild {...props}>
+      <StyledHeading isFirstBlock={isFirstBlock} variant={variant} as={variant}>
+        {children}
+      </StyledHeading>
+    </PlateElement>
   );
 }
 

@@ -1,13 +1,19 @@
 import React from 'react';
-import { usePlateEditor, Plate, ParagraphPlugin, PlateLeaf } from '@udecode/plate-common/react';
-import { BoldPlugin, ItalicPlugin, CodePlugin } from '@udecode/plate-basic-marks/react';
-import { HeadingPlugin } from '@udecode/plate-heading/react';
-import { HEADING_KEYS } from '@udecode/plate-heading';
-import { SoftBreakPlugin, ExitBreakPlugin } from '@udecode/plate-break/react';
-import { ListPlugin } from '@udecode/plate-list/react';
-import { LinkPlugin } from '@udecode/plate-link/react';
-import { BlockquotePlugin } from '@udecode/plate-block-quote/react';
-import { TrailingBlockPlugin } from '@udecode/plate-trailing-block';
+import { KEYS, TrailingBlockPlugin } from 'platejs';
+import {
+  usePlateEditor,
+  Plate,
+  ParagraphPlugin,
+  PlateLeaf,
+} from 'platejs/react';
+import {
+  BoldPlugin,
+  ItalicPlugin,
+  CodePlugin,
+  HeadingPlugin,
+} from '@platejs/basic-nodes/react';
+import { ListPlugin } from '@platejs/list-classic/react';
+import { LinkPlugin } from '@platejs/link/react';
 import { ClassNames } from '@emotion/react';
 import { fonts, lengths, zIndex } from 'decap-cms-ui-default';
 import { fromJS } from 'immutable';
@@ -23,8 +29,8 @@ import HeadingElement from './components/Element/HeadingElement';
 import ListElement from './components/Element/ListElement';
 import BlockquoteElement from './components/Element/BlockquoteElement';
 import LinkElement from './components/Element/LinkElement';
-import BlockquoteExtPlugin from './plugins/BlockquoteExtPlugin';
-import ShortcodePlugin from './plugins/ShortcodePlugin';
+// import ShortcodePlugin from './plugins/ShortcodePlugin';
+import ExtendedBlockquotePlugin from './plugins/ExtendedBlockquotePlugin';
 // import ShortcodeElement from './components/Element/ShortcodeElement';
 
 function visualEditorStyles({ minimal }) {
@@ -80,6 +86,22 @@ const emptyValue = [
     type: ParagraphPlugin.key,
     children: [{ text: '' }],
   },
+  // {
+  //   children: [{ text: 'Title' }],
+  //   type: 'h3',
+  // },
+  // {
+  //   children: [{ text: 'This is a quote.' }],
+  //   type: 'blockquote',
+  // },
+  // {
+  //   children: [
+  //     { text: 'With some ' },
+  //     { bold: true, text: 'bold' },
+  //     { text: ' text for emphasis!' },
+  //   ],
+  //   type: 'p',
+  // },
 ];
 
 export default function VisualEditor(props) {
@@ -108,7 +130,7 @@ export default function VisualEditor(props) {
   }
 
   function handleChange({ value }) {
-    console.log('handleChange', value);
+    // console.log('handleChange', value);
     const mdValue = slateToMarkdown(value, {}, editorComponents);
     onChange(mdValue);
   }
@@ -122,14 +144,12 @@ export default function VisualEditor(props) {
         [CodePlugin.key]: CodeLeaf,
         [ItalicPlugin.key]: withProps(PlateLeaf, { as: 'em' }),
         [ParagraphPlugin.key]: ParagraphElement,
-        [BlockquotePlugin.key]: BlockquoteElement,
-        [LinkPlugin.key]: LinkElement,
-        [HEADING_KEYS.h1]: withProps(HeadingElement, { variant: 'h1' }),
-        [HEADING_KEYS.h2]: withProps(HeadingElement, { variant: 'h2' }),
-        [HEADING_KEYS.h3]: withProps(HeadingElement, { variant: 'h3' }),
-        [HEADING_KEYS.h4]: withProps(HeadingElement, { variant: 'h4' }),
-        [HEADING_KEYS.h5]: withProps(HeadingElement, { variant: 'h5' }),
-        [HEADING_KEYS.h6]: withProps(HeadingElement, { variant: 'h6' }),
+        [KEYS.h1]: withProps(HeadingElement, { variant: 'h1' }),
+        [KEYS.h2]: withProps(HeadingElement, { variant: 'h2' }),
+        [KEYS.h3]: withProps(HeadingElement, { variant: 'h3' }),
+        [KEYS.h4]: withProps(HeadingElement, { variant: 'h4' }),
+        [KEYS.h5]: withProps(HeadingElement, { variant: 'h5' }),
+        [KEYS.h6]: withProps(HeadingElement, { variant: 'h6' }),
         ['ul']: withProps(ListElement, { variant: 'ul' }),
         ['ol']: withProps(ListElement, { variant: 'ol' }),
         ['li']: withProps(ListElement, { variant: 'li' }),
@@ -142,46 +162,15 @@ export default function VisualEditor(props) {
       ItalicPlugin,
       CodePlugin,
       ListPlugin,
-      LinkPlugin,
-      BlockquotePlugin,
-      BlockquoteExtPlugin,
-      ShortcodePlugin,
+      LinkPlugin.configure({
+        node: { component: LinkElement },
+      }),
+      ExtendedBlockquotePlugin.configure({
+        node: { component: BlockquoteElement }
+      }),
+      // ShortcodePlugin,
       TrailingBlockPlugin.configure({
-        options: { type: 'p' },
-      }),
-      SoftBreakPlugin.configure({
-        rules: [
-          { hotkey: 'shift+enter' },
-          {
-            hotkey: 'enter',
-            query: {
-              allow: [BlockquotePlugin.key],
-            },
-          },
-        ],
-      }),
-      ExitBreakPlugin.configure({
-        options: {
-          rules: [
-            {
-              hotkey: 'mod+enter',
-            },
-            {
-              hotkey: 'mod+shift+enter',
-              before: true,
-            },
-            {
-              hotkey: 'enter',
-              query: {
-                start: true,
-                end: true,
-                allow: Object.values(HEADING_KEYS),
-              },
-              relative: true,
-              level: 1,
-            },
-          ],
-        },
+        options: { type: ParagraphPlugin.key },
       }),
     ],
     value: initialValue,

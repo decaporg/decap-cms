@@ -1,7 +1,7 @@
 import React from 'react';
-import { useLinkToolbarButton, useLinkToolbarButtonState } from '@udecode/plate-link/react';
-import { upsertLink, unwrapLink } from '@udecode/plate-link';
-import { useEditorRef } from '@udecode/plate-common/react';
+import { useEditorRef } from 'platejs/react';
+import { useLinkToolbarButton, useLinkToolbarButtonState } from '@platejs/link/react';
+import { unwrapLink, upsertLink } from '@platejs/link';
 
 import ToolbarButton from './ToolbarButton';
 

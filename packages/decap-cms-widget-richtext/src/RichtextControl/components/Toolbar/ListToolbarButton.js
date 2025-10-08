@@ -1,5 +1,5 @@
 import React from 'react';
-import { useListToolbarButton, useListToolbarButtonState } from '@udecode/plate-list/react';
+import { useListToolbarButton, useListToolbarButtonState } from '@platejs/list-classic/react';
 
 import ToolbarButton from './ToolbarButton';
 

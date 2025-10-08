@@ -1,7 +1,7 @@
 import React from 'react';
-import { PlateElement } from '@udecode/plate-common/react';
 import styled from '@emotion/styled';
 import { colors } from 'decap-cms-ui-default';
+import { PlateElement } from 'platejs/react';
 
 const bottomMargin = '16px';
 

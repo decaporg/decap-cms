@@ -1,7 +1,7 @@
 import React from 'react';
-import { PlateElement, useElement } from '@udecode/plate-common/react';
-import { useLink } from '@udecode/plate-link/react';
 import styled from '@emotion/styled';
+import { PlateLeaf, useElement } from 'platejs/react';
+import { useLink } from '@platejs/link/react';
 
 const StyledA = styled.a`
   text-decoration: underline;
@@ -12,9 +12,9 @@ function LinkElement({ children, ...rest }) {
   const element = useElement();
   const { props } = useLink({ element });
   return (
-    <PlateElement asChild {...props} {...rest}>
+    <PlateLeaf asChild {...props} {...rest}>
       <StyledA>{children}</StyledA>
-    </PlateElement>
+    </PlateLeaf>
   );
 }
 

@@ -4,8 +4,7 @@ import styled from '@emotion/styled';
 import { Dropdown, DropdownButton, DropdownItem } from 'decap-cms-ui-default';
 import { List } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { insertElements, isSelectionAtBlockEnd, isSelectionAtBlockStart, setBlockAboveNode } from '@udecode/plate-common';
-import { useEditorRef } from '@udecode/plate-common/react';
+import { useEditorRef } from 'platejs/react';
 
 import ToolbarButton from './ToolbarButton';
 
@@ -17,31 +16,29 @@ const ToolbarDropdownWrapper = styled.div`
 function EditorComponentsToolbarButton({ disabled, editorComponents, allowedEditorComponents, t }) {
   const editor = useEditorRef();
 
-
   const handleChange = useCallback(
     plugin => {
-
       const defaultValues = plugin.fields
         .toMap()
         .mapKeys((_, field) => field.get('name'))
         .filter(field => field.has('default'))
         .map(field => field.get('default'));
 
-      if (isSelectionAtBlockEnd(editor) && isSelectionAtBlockStart(editor)) {
-        setBlockAboveNode(editor, {
-          children: [{ text: '' }],
-          type: 'shortcode',
-          id: plugin.id,
-          data: {
-            shortcode: plugin.id,
-            shortcodeNew: true,
-            shortcodeData: defaultValues.toJS(),
-          },
-        })
+      if (editor.api.isAt({ end: true }) && editor.api.isAt({ start: true })) {
+        // setBlockAboveNode(editor, { // find alternative for removed setBlockAboveNode
+        //   children: [{ text: '' }],
+        //   type: 'shortcode',
+        //   id: plugin.id,
+        //   data: {
+        //     shortcode: plugin.id,
+        //     shortcodeNew: true,
+        //     shortcodeData: defaultValues.toJS(),
+        //   },
+        // })
         return;
       }
 
-      insertElements(editor, {
+      editor.tf.insertNodes({
         children: [{ text: '' }],
         type: 'shortcode',
         id: plugin.id,

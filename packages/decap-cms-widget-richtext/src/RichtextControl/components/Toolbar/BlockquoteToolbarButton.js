@@ -1,10 +1,7 @@
 import React from 'react';
-import { findNode } from '@udecode/plate-common';
-import { useEditorRef, focusEditor, useEditorSelector } from '@udecode/plate-common/react';
-import { unwrapList } from '@udecode/plate-list';
-import { toggleWrapNodes } from '@udecode/slate-utils';
-import { BlockquotePlugin } from '@udecode/plate-block-quote/react';
-
+import { useEditorRef, useEditorSelector } from 'platejs/react';
+import { BlockquotePlugin } from '@platejs/basic-nodes/react';
+import { unwrapList } from '@platejs/list-classic';
 
 import ToolbarButton from './ToolbarButton';
 
@@ -12,14 +9,14 @@ function BlockquoteToolbarButton(props) {
   const editor = useEditorRef();
 
   const pressed = useEditorSelector(
-    editor => !!findNode(editor, { match: { type: BlockquotePlugin.key } }),
+    editor => !!editor.api.node({ match: { type: BlockquotePlugin.key } }),
     [],
   );
 
   function handleClick() {
     unwrapList(editor);
-    toggleWrapNodes(editor, BlockquotePlugin.key);
-    focusEditor(editor);
+    editor.tf.toggleBlock(BlockquotePlugin.key, { wrap: true });
+    editor.tf.focus();
   }
 
   return <ToolbarButton isActive={pressed} onClick={handleClick} {...props} />;

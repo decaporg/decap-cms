@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { insertElements, setNodes } from '@udecode/plate-common';
-import { findNodePath, ParagraphPlugin, PlateElement, useEditorRef } from '@udecode/plate-common/react';
 import styled from '@emotion/styled';
 import { fromJS } from 'immutable';
 import { omit } from 'lodash';
 import { css } from '@emotion/react';
-import { Range } from 'slate';
+import { Range, setNodes } from 'slate';
 import { zIndex } from 'decap-cms-ui-default';
+import { ParagraphPlugin, PlateElement, useEditorRef } from 'platejs/react';
 
 import { useEditorContext } from '../../editorContext';
 
@@ -37,7 +36,7 @@ function ShortcodeElement(props) {
   const field = fromJS(omit(plugin, fieldKeys));
   const [value, setValue] = useState(fromJS(element?.data[dataKey] ?? { id: '' }));
 
-  const path = findNodePath(editor, element);
+  const path = editor.api.findPath(element);
   const isSelected =
     editor.selection &&
     path &&
@@ -60,8 +59,7 @@ function ShortcodeElement(props) {
   }
 
   function handleInsertBefore() {
-    insertElements(
-      editor,
+    editor.tf.insertNodes(
       { type: ParagraphPlugin.key, children: [{ text: '' }] },
       { at: path, select: true },
     );

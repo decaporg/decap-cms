@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import { List } from 'immutable';
 import { colors, transitions } from 'decap-cms-ui-default';
-import { BoldPlugin, ItalicPlugin, CodePlugin } from '@udecode/plate-basic-marks/react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import { BoldPlugin, CodePlugin, ItalicPlugin } from '@platejs/basic-nodes/react';
 
 import MarkToolbarButton from './MarkToolbarButton';
 import HeadingToolbarButton from './HeadingToolbarButton';

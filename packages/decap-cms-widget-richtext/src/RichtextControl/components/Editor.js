@@ -1,5 +1,5 @@
 import React from 'react';
-import { PlateContent } from '@udecode/plate-common/react';
+import { PlateContent } from 'platejs/react';
 import { ClassNames } from '@emotion/react';
 
 function Editor(props) {

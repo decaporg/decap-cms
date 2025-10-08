@@ -1,5 +1,5 @@
 import React from 'react';
-import { useMarkToolbarButton, useMarkToolbarButtonState } from '@udecode/plate-common/react';
+import { useMarkToolbarButton, useMarkToolbarButtonState } from 'platejs/react';
 
 import ToolbarButton from './ToolbarButton';
 
