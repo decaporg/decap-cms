@@ -173,13 +173,15 @@ class EntryListing extends React.Component {
       );
     });
 
-    return [
-      ...publishedCards.toArray(),
-      <SectionSeparator key="separator">
-        <SectionHeading>{t('collection.entries.unpublishedHeader')}</SectionHeading>
-      </SectionSeparator>,
-      ...unpublishedCards.toArray(),
-    ];
+    return (
+      <React.Fragment>
+        {publishedCards}
+        <SectionSeparator key="separator">
+          <SectionHeading>{t('collection.entries.unpublishedHeader')}</SectionHeading>
+        </SectionSeparator>
+        {unpublishedCards}
+      </React.Fragment>
+    );
   };
 
   renderCardsForMultipleCollections = () => {
