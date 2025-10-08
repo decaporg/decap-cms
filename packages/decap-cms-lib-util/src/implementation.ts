@@ -63,6 +63,16 @@ export type DataFile = {
   newPath?: string;
 };
 
+export interface Note {
+  id: string;
+  avatarUrl?: string;
+  content: string;
+  timestamp: string;
+  author: string;
+  entrySlug: string;
+  resolved: boolean;
+}
+
 export type AssetProxy = {
   path: string;
   fileObj?: File;
@@ -158,6 +168,29 @@ export interface Implementation {
   persistEntry: (entry: Entry, opts: PersistOptions) => Promise<void>;
   persistMedia: (file: AssetProxy, opts: PersistOptions) => Promise<ImplementationMediaFile>;
   deleteFiles: (paths: string[], commitMessage: string) => Promise<void>;
+
+  getNotes?: (collection: string, slug: string) => Promise<Note[]>;
+  addNote?: (collection: string, slug: string, note: Omit<Note, 'id'>) => Promise<Note>;
+  updateNote?: (
+    collection: string,
+    slug: string,
+    noteId: string,
+    updates: Partial<Note>,
+  ) => Promise<Note>;
+  deleteNote?: (collection: string, slug: string, noteId: string) => Promise<void>;
+  toggleNoteResolution?: (collection: string, slug: string, noteId: string) => Promise<Note>;
+  syncNotes?: (collection: string, slug: string, localNotes: Note[]) => Promise<Note[]>;
+  reopenIssueForUnpublishedEntry?: (collection: string, slug: string) => Promise<void>;
+
+  getPRMetadata?: (
+    collection: string,
+    slug: string,
+  ) => Promise<{
+    id: string;
+    url: string;
+    author: string;
+    createdAt: string;
+  } | null>;
 
   unpublishedEntries: () => Promise<string[]>;
   unpublishedEntry: (args: {
