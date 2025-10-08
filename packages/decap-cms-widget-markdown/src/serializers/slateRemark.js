@@ -40,6 +40,7 @@ const typeMap = {
 const markMap = {
   bold: 'strong',
   italic: 'emphasis',
+  underline: 'underline',
   delete: 'delete',
   code: 'inlineCode',
 };
@@ -275,6 +276,21 @@ export default function slateToRemark(value, { voidCodeBlock }) {
         if (markType === 'code') {
           const node = markNodes[0];
           convertedNodes.push(u(markMap[markType], node.data, node.text));
+        } else if (markType === 'underline') {
+          // Handle underline as HTML since Markdown doesn't have native underline syntax
+          const { leadingWhitespace, trailingWhitespace, centerNodes } =
+            normalizeFlankingWhitespace(markNodes);
+          const children = convertInlineAndTextChildren(centerNodes);
+          const textContent = mdastToString({ type: 'paragraph', children });
+          const htmlNode = u('html', `<u>${textContent}</u>`);
+
+          const normalizedNodes = [
+            leadingWhitespace && createText(leadingWhitespace),
+            htmlNode,
+            trailingWhitespace && createText(trailingWhitespace),
+          ].filter(val => val);
+
+          convertedNodes.push(...normalizedNodes);
         } else if (!markType && markNodes.length === 1 && isNodeInline(nextNode)) {
           const node = markNodes[0];
           convertedNodes.push(convertInlineNode(node, convertInlineAndTextChildren(node.children)));

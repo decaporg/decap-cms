@@ -43,6 +43,7 @@ import iconScroll from './scroll.svg';
 import iconSearch from './search.svg';
 import iconSettings from './settings.svg';
 import iconStrikethrough from './strikethrough.svg';
+import iconUnderline from './underline.svg';
 import iconUser from './user.svg';
 import iconWorkflow from './workflow.svg';
 import iconWrite from './write.svg';
@@ -96,6 +97,7 @@ const images = {
   search: iconSearch,
   settings: iconSettings,
   strikethrough: iconStrikethrough,
+  underline: iconUnderline,
   user: iconUser,
   workflow: iconWorkflow,
   write: iconWrite,

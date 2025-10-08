@@ -119,6 +119,10 @@ function Italic(props) {
   return <em>{props.children}</em>;
 }
 
+function Underline(props) {
+  return <u>{props.children}</u>;
+}
+
 function Strikethrough(props) {
   return <s>{props.children}</s>;
 }
@@ -265,6 +269,10 @@ export function Leaf({ attributes, children, leaf }) {
 
   if (leaf.italic) {
     children = <Italic>{children}</Italic>;
+  }
+
+  if (leaf.underline) {
+    children = <Underline>{children}</Underline>;
   }
 
   if (leaf.delete) {

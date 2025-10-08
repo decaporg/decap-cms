@@ -157,6 +157,7 @@ const en = {
       markdown: {
         bold: 'Bold',
         italic: 'Italic',
+        underline: 'Underline',
         strikethrough: 'Strikethrough',
         code: 'Code',
         link: 'Link',
