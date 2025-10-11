@@ -157,6 +157,7 @@ const en = {
       markdown: {
         bold: 'Bold',
         italic: 'Italic',
+        underline: 'Underline',
         strikethrough: 'Strikethrough',
         code: 'Code',
         link: 'Link',
@@ -165,6 +166,7 @@ const en = {
         quote: 'Quote',
         bulletedList: 'Bulleted List',
         numberedList: 'Numbered List',
+        horizontalLine: 'Horizontal Line',
         addComponent: 'Add Component',
         richText: 'Rich Text',
         markdown: 'Markdown',

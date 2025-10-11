@@ -22,6 +22,7 @@ import iconH1 from './h1.svg';
 import iconH2 from './h2.svg';
 import iconHOptions from './h-options.svg';
 import iconHome from './home.svg';
+import iconHorizontalLine from './horizontal-line.svg';
 import iconImage from './image.svg';
 import iconInfoCircle from './info-circle.svg';
 import iconItalic from './italic.svg';
@@ -43,6 +44,7 @@ import iconScroll from './scroll.svg';
 import iconSearch from './search.svg';
 import iconSettings from './settings.svg';
 import iconStrikethrough from './strikethrough.svg';
+import iconUnderline from './underline.svg';
 import iconUser from './user.svg';
 import iconWorkflow from './workflow.svg';
 import iconWrite from './write.svg';
@@ -74,6 +76,7 @@ const images = {
   h2: iconH2,
   hOptions: iconHOptions,
   home: iconHome,
+  'horizontal-line': iconHorizontalLine,
   image: iconImage,
   'info-circle': iconInfoCircle,
   italic: iconItalic,
@@ -96,6 +99,7 @@ const images = {
   search: iconSearch,
   settings: iconSettings,
   strikethrough: iconStrikethrough,
+  underline: iconUnderline,
   user: iconUser,
   workflow: iconWorkflow,
   write: iconWrite,
