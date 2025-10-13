@@ -166,6 +166,7 @@ const en = {
         quote: 'Quote',
         bulletedList: 'Bulleted List',
         numberedList: 'Numbered List',
+        horizontalRule: 'Horizontal Rule',
         addComponent: 'Add Component',
         richText: 'Rich Text',
         markdown: 'Markdown',

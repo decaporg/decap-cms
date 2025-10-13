@@ -21,6 +21,7 @@ export default {
           'quote',
           'bulleted-list',
           'numbered-list',
+          'horizontal-rule',
         ],
       },
     },

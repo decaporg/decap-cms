@@ -74,6 +74,7 @@ export default class Toolbar extends React.Component {
     onMarkClick: PropTypes.func,
     onBlockClick: PropTypes.func,
     onLinkClick: PropTypes.func,
+    onInsertHorizontalRule: PropTypes.func,
     hasMark: PropTypes.func,
     hasInline: PropTypes.func,
     hasBlock: PropTypes.func,
@@ -95,6 +96,13 @@ export default class Toolbar extends React.Component {
       event.preventDefault();
     }
     this.props.onBlockClick(type);
+  };
+
+  handleHorizontalRuleClick = event => {
+    if (event) {
+      event.preventDefault();
+    }
+    this.props.onInsertHorizontalRule();
   };
 
   handleMarkClick = (event, type) => {
@@ -260,6 +268,16 @@ export default class Toolbar extends React.Component {
               icon="list-numbered"
               onClick={this.handleBlockClick}
               isActive={hasListItems('numbered-list')}
+              disabled={disabled}
+            />
+          )}
+          {isVisible('horizontal-rule') && (
+            <ToolbarButton
+              type="thematic-break"
+              label={t('editor.editorWidgets.markdown.horizontalRule')}
+              icon="horizontal-rule"
+              onClick={this.handleHorizontalRuleClick}
+              isActive={false}
               disabled={disabled}
             />
           )}
