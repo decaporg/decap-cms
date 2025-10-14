@@ -1,5 +1,7 @@
 name: Generate Sponsors README
 on:
+  push:
+    branches: [ readme-sponsors ]
   workflow_dispatch:
   schedule:
     - cron: 13 13 * * *
