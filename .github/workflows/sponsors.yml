@@ -19,6 +19,8 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           file: 'README.md'
+          organization: true
+          active-only: false
 
       # ⚠️ Note: You can use any deployment step here to automatically push the README
       # changes back to your branch.
