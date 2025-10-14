@@ -43,7 +43,7 @@ Thanks to our amazing sponsors & backers:
 
 ![Open Collective Backers](https://opencollective.com/decap/backers.svg?limit=30&button=false&avatarHeight=48&width=400)
 
-<!-- sponsors --><!-- sponsors -->
+<!-- sponsors --><a href="https://github.com/Zwyx"><img src="https:&#x2F;&#x2F;github.com&#x2F;Zwyx.png" width="60px" alt="User avatar: Zwyx" /></a><a href="https://github.com/smolcodes"><img src="https:&#x2F;&#x2F;github.com&#x2F;smolcodes.png" width="60px" alt="User avatar: Smol Codes" /></a><a href="https://github.com/shizik"><img src="https:&#x2F;&#x2F;github.com&#x2F;shizik.png" width="60px" alt="User avatar: Marko Ilievski" /></a><a href="https://github.com/JacquesRaoult"><img src="https:&#x2F;&#x2F;github.com&#x2F;JacquesRaoult.png" width="60px" alt="User avatar: JRcode" /></a><!-- sponsors -->
 
 ## Contribute
 
