@@ -21,7 +21,7 @@ jobs:
           file: 'README.md'
           organization: true
           active-only: false
-          template: '<a href="https://github.com/{{{ login }}}"><img src="https://github.com/{{{ login }}}.png" width="48px" alt="{{{ login }}}" /></a>'
+          template: '<a href="https://github.com/{{{ login }}}"><img src="https://github.com/{{{ login }}}.png" width="48px" alt="{{{ login }}}" style="border-radius:50%" /></a> &nbsp; '
 
       # ⚠️ Note: You can use any deployment step here to automatically push the README
       # changes back to your branch.
