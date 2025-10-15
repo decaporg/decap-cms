@@ -39,7 +39,7 @@ Help support Decap CMS development by becoming a sponsor! Your contributions hel
 [![GitHub Sponsors](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=for-the-badge&logo=github)](https://github.com/sponsors/decaporg)
 [![Open Collective](https://img.shields.io/badge/Sponsor-Open%20Collective-blue?style=for-the-badge&logo=opencollective)](https://opencollective.com/decap)
 
-Thanks to our amazing sponsors & backers:
+These are our sponsors on both platforms. Thank you for your support!
 
 ![Open Collective Backers](https://opencollective.com/decap/backers.svg?limit=30&button=false&avatarHeight=48&width=400)
 
