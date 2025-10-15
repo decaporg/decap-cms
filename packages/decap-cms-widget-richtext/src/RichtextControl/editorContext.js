@@ -8,9 +8,5 @@ export function useEditorContext() {
 
 export function EditorProvider({ children, editorControl, editorComponents }) {
   const value = { editorControl, editorComponents };
-  return (
-    <EditorContext.Provider value={value}>
-      {children}
-    </EditorContext.Provider>
-  );
+  return <EditorContext.Provider value={value}>{children}</EditorContext.Provider>;
 }

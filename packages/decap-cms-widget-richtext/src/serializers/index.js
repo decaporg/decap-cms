@@ -154,9 +154,11 @@ export function remarkToMarkdown(obj, remarkPlugins, editorComponents) {
 /**
  * Convert Markdown to HTML.
  */
-export function markdownToHtml(markdown, { getAsset, resolveWidget, remarkPlugins = [], editorComponents } = {}) {
+export function markdownToHtml(
+  markdown,
+  { getAsset, resolveWidget, remarkPlugins = [], editorComponents } = {},
+) {
   const mdast = markdownToRemark(markdown, remarkPlugins, editorComponents);
-
 
   const hast = unified()
     .use(remarkToRehypeShortcodes, { plugins: editorComponents, getAsset, resolveWidget })
@@ -200,7 +202,10 @@ export function htmlToSlate(html) {
 /**
  * Convert Markdown to Slate's Raw AST.
  */
-export function markdownToSlate(markdown, { voidCodeBlock, remarkPlugins = [], editorComponents } = {}) {
+export function markdownToSlate(
+  markdown,
+  { voidCodeBlock, remarkPlugins = [], editorComponents } = {},
+) {
   const mdast = markdownToRemark(markdown, remarkPlugins, editorComponents);
 
   const slateRaw = unified()

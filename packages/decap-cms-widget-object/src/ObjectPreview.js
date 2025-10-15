@@ -5,7 +5,7 @@ import { fromJS } from 'immutable';
 
 function ObjectPreview({ field }) {
   if (field && !field.get) {
-    field = fromJS(field)
+    field = fromJS(field);
   }
   return (
     <WidgetPreviewContainer>

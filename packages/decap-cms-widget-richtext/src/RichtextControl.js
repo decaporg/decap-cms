@@ -19,10 +19,17 @@ export default class RichtextControl extends React.Component {
     isDisabled: PropTypes.bool,
   };
 
-
   render() {
-    const { classNameWrapper, field, t, isDisabled, getEditorComponents, editorControl, onChange, value } =
-      this.props;
+    const {
+      classNameWrapper,
+      field,
+      t,
+      isDisabled,
+      getEditorComponents,
+      editorControl,
+      onChange,
+      value,
+    } = this.props;
 
     const visualEditor = (
       <EditorProvider editorControl={editorControl} editorComponents={getEditorComponents()}>
