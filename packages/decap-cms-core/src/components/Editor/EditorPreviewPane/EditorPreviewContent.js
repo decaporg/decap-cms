@@ -67,6 +67,7 @@ class PreviewContent extends React.Component {
 
 PreviewContent.propTypes = {
   previewComponent: PropTypes.func.isRequired,
+  getEditorComponents: PropTypes.func,
   previewProps: PropTypes.object,
   onFieldClick: PropTypes.func,
 };

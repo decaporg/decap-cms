@@ -21,7 +21,7 @@ class MarkdownPreview extends React.Component {
     if (value === null) {
       return null;
     }
-
+    
     const html = markdownToHtml(value, { getAsset, resolveWidget }, getRemarkPlugins?.());
     const toRender = field?.get('sanitize_preview', false) ? DOMPurify.sanitize(html) : html;
 

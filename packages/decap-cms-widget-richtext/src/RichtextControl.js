@@ -5,7 +5,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import VisualEditor from './RichtextControl/VisualEditor';
 import { EditorProvider } from './RichtextControl/editorContext';
 
-export default class MarkdownControl extends React.Component {
+export default class RichtextControl extends React.Component {
   static propTypes = {
     onChange: PropTypes.func.isRequired,
     onAddAsset: PropTypes.func.isRequired,

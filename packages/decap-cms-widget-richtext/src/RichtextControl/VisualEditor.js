@@ -1,17 +1,7 @@
 import React from 'react';
-import { KEYS, TrailingBlockPlugin } from 'platejs';
-import {
-  usePlateEditor,
-  Plate,
-  ParagraphPlugin,
-  PlateLeaf,
-} from 'platejs/react';
-import {
-  BoldPlugin,
-  ItalicPlugin,
-  CodePlugin,
-  HeadingPlugin,
-} from '@platejs/basic-nodes/react';
+import { KEYS } from 'platejs';
+import { usePlateEditor, Plate, ParagraphPlugin, PlateLeaf } from 'platejs/react';
+import { BoldPlugin, ItalicPlugin, CodePlugin, HeadingPlugin } from '@platejs/basic-nodes/react';
 import { ListPlugin } from '@platejs/list-classic/react';
 import { LinkPlugin } from '@platejs/link/react';
 import { ClassNames } from '@emotion/react';
@@ -29,8 +19,8 @@ import HeadingElement from './components/Element/HeadingElement';
 import ListElement from './components/Element/ListElement';
 import BlockquoteElement from './components/Element/BlockquoteElement';
 import LinkElement from './components/Element/LinkElement';
-// import ShortcodePlugin from './plugins/ShortcodePlugin';
 import ExtendedBlockquotePlugin from './plugins/ExtendedBlockquotePlugin';
+import ShortcodePlugin from './plugins/ShortcodePlugin';
 // import ShortcodeElement from './components/Element/ShortcodeElement';
 
 function visualEditorStyles({ minimal }) {
@@ -86,22 +76,6 @@ const emptyValue = [
     type: ParagraphPlugin.key,
     children: [{ text: '' }],
   },
-  // {
-  //   children: [{ text: 'Title' }],
-  //   type: 'h3',
-  // },
-  // {
-  //   children: [{ text: 'This is a quote.' }],
-  //   type: 'blockquote',
-  // },
-  // {
-  //   children: [
-  //     { text: 'With some ' },
-  //     { bold: true, text: 'bold' },
-  //     { text: ' text for emphasis!' },
-  //   ],
-  //   type: 'p',
-  // },
 ];
 
 export default function VisualEditor(props) {
@@ -135,7 +109,9 @@ export default function VisualEditor(props) {
     onChange(mdValue);
   }
 
-  const initialValue = props.value ? markdownToSlate(props.value, {}) : emptyValue;
+  const initialValue = props.value
+    ? markdownToSlate(props.value, { editorComponents })
+    : emptyValue;
 
   const editor = usePlateEditor({
     override: {
@@ -166,12 +142,9 @@ export default function VisualEditor(props) {
         node: { component: LinkElement },
       }),
       ExtendedBlockquotePlugin.configure({
-        node: { component: BlockquoteElement }
+        node: { component: BlockquoteElement },
       }),
-      // ShortcodePlugin,
-      TrailingBlockPlugin.configure({
-        options: { type: ParagraphPlugin.key },
-      }),
+      ShortcodePlugin,
     ],
     value: initialValue,
   });

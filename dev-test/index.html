@@ -125,7 +125,10 @@
           h('p', {},
             h('small', {}, "Written " + entry.getIn(['data', 'date']))
           ),
-          h('div', {"className": "text"}, this.props.widgetFor('body'))
+          h('h2', {}, "Richtext Widget"),
+          h('div', {"className": "text"}, this.props.widgetFor('body')),
+          h('h2', {}, "Markdown Widget"),
+          h('div', {"className": "text"}, this.props.widgetFor('bodyold'))
         );
       }
     });

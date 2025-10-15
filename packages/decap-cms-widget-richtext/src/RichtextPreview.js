@@ -6,12 +6,22 @@ import DOMPurify from 'dompurify';
 
 import { markdownToHtml } from './serializers';
 
-function RichtextPreview({ value, getAsset, resolveWidget, field, getRemarkPlugins }) {
+function RichtextPreview({
+  value,
+  getAsset,
+  resolveWidget,
+  field,
+  getRemarkPlugins,
+  getEditorComponents,
+}) {
   if (value === null) {
     return null;
   }
-
-  const html = markdownToHtml(value, { getAsset, resolveWidget }, getRemarkPlugins?.());
+  const html = markdownToHtml(
+    value,
+    { getAsset, resolveWidget, editorComponents: getEditorComponents?.() },
+    getRemarkPlugins?.(),
+  );
   const toRender = field?.get('sanitize_preview', false) ? DOMPurify.sanitize(html) : html;
 
   return <WidgetPreviewContainer dangerouslySetInnerHTML={{ __html: toRender }} />;
@@ -23,6 +33,7 @@ RichtextPreview.propTypes = {
   resolveWidget: PropTypes.func.isRequired,
   field: ImmutablePropTypes.map.isRequired,
   getRemarkPlugins: PropTypes.func,
+  getEditorComponents: PropTypes.func,
 };
 
 export default RichtextPreview;

@@ -7,7 +7,6 @@ import remarkToRehype from 'remark-rehype';
 import rehypeToHtml from 'rehype-stringify';
 import htmlToRehype from 'rehype-parse';
 import rehypeToRemark from 'rehype-remark';
-import { Map } from 'immutable';
 
 import remarkToRehypeShortcodes from './remarkRehypeShortcodes';
 import rehypePaperEmoji from './rehypePaperEmoji';
@@ -60,11 +59,11 @@ import slateToRemark from './slateRemark';
 /**
  * Deserialize a Markdown string to an MDAST.
  */
-export function markdownToRemark(markdown, remarkPlugins) {
+export function markdownToRemark(markdown, remarkPlugins, editorComponents) {
   const processor = unified()
     .use(markdownToRemarkPlugin, { fences: true, commonmark: true })
     .use(markdownToRemarkRemoveTokenizers, { inlineTokenizers: ['url'] })
-    .use(remarkParseShortcodes, { plugins: Map() })
+    .use(remarkParseShortcodes, { plugins: editorComponents })
     .use(remarkAllowHtmlEntities)
     .use(remarkSquashReferences)
     .use(remarkPlugins);
@@ -155,11 +154,12 @@ export function remarkToMarkdown(obj, remarkPlugins, editorComponents) {
 /**
  * Convert Markdown to HTML.
  */
-export function markdownToHtml(markdown, { getAsset, resolveWidget, remarkPlugins = [] } = {}) {
-  const mdast = markdownToRemark(markdown, remarkPlugins);
+export function markdownToHtml(markdown, { getAsset, resolveWidget, remarkPlugins = [], editorComponents } = {}) {
+  const mdast = markdownToRemark(markdown, remarkPlugins, editorComponents);
+
 
   const hast = unified()
-    .use(remarkToRehypeShortcodes, { plugins: Map(), getAsset, resolveWidget })
+    .use(remarkToRehypeShortcodes, { plugins: editorComponents, getAsset, resolveWidget })
     .use(remarkToRehype, { allowDangerousHTML: true })
     .runSync(mdast);
 
@@ -200,8 +200,8 @@ export function htmlToSlate(html) {
 /**
  * Convert Markdown to Slate's Raw AST.
  */
-export function markdownToSlate(markdown, { voidCodeBlock, remarkPlugins = [] } = {}) {
-  const mdast = markdownToRemark(markdown, remarkPlugins);
+export function markdownToSlate(markdown, { voidCodeBlock, remarkPlugins = [], editorComponents } = {}) {
+  const mdast = markdownToRemark(markdown, remarkPlugins, editorComponents);
 
   const slateRaw = unified()
     .use(remarkWrapHtml)

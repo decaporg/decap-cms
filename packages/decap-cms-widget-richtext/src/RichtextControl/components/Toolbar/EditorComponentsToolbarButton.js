@@ -24,30 +24,22 @@ function EditorComponentsToolbarButton({ disabled, editorComponents, allowedEdit
         .filter(field => field.has('default'))
         .map(field => field.get('default'));
 
-      if (editor.api.isAt({ end: true }) && editor.api.isAt({ start: true })) {
-        // setBlockAboveNode(editor, { // find alternative for removed setBlockAboveNode
-        //   children: [{ text: '' }],
-        //   type: 'shortcode',
-        //   id: plugin.id,
-        //   data: {
-        //     shortcode: plugin.id,
-        //     shortcodeNew: true,
-        //     shortcodeData: defaultValues.toJS(),
-        //   },
-        // })
-        return;
-      }
-
-      editor.tf.insertNodes({
-        children: [{ text: '' }],
-        type: 'shortcode',
-        id: plugin.id,
-        data: {
-          shortcode: plugin.id,
-          shortcodeNew: true,
-          shortcodeData: defaultValues.toJS(),
+      editor.tf.insertNodes(
+        {
+          children: [{ text: '' }],
+          type: 'shortcode',
+          isElement: true,
+          isVoid: true,
+          data: {
+            shortcode: plugin.id,
+            shortcodeNew: true,
+            shortcodeData: defaultValues.toJS(),
+          },
         },
-      });
+        {
+          removeEmpty: true,
+        },
+      );
     },
     [editor],
   );
