@@ -1,0 +1,32 @@
+# Automatically updates the README with our GitHub Sponsors.
+# Fetches sponsor data from GitHub and adds their avatars to the README file.
+# Runs weekly on Sundays at midnight UTC and can be triggered manually.
+
+name: Generate Sponsors README
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: 0 0 * * 0
+permissions:
+  contents: write
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Generate Sponsors
+        uses: JamesIves/github-sponsors-readme-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          file: 'README.md'
+          organization: true
+          active-only: false
+          template: '<a href="https://github.com/{{{ login }}}"><img src="https://github.com/{{{ login }}}.png" width="48px" alt="{{{ login }}}" style="border-radius:50%" /></a> &nbsp; '
+
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: readme-sponsors
+          folder: '.'

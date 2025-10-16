@@ -141,7 +141,8 @@ function Editor(props) {
 
   function handleMarkClick(format) {
     ReactEditor.focus(editor);
-    toggleMark(editor, format);
+    const markFormat = format === 'strikethrough' ? 'delete' : format;
+    toggleMark(editor, markFormat);
   }
 
   function handleBlockClick(format) {
