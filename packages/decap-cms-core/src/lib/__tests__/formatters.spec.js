@@ -326,6 +326,20 @@ describe('formatters', () => {
       ).toBe('2026-10-20-post-title');
     });
 
+    it('should see date filters applied to publishDate from entry if it exists', () => {
+      const { selectInferredField } = require('../../reducers/collections');
+      selectInferredField.mockReturnValue('publishDate');
+      const entryDate = new Date('2026-10-20');
+
+      expect(
+        slugFormatter(
+          Map({ slug: '{{year}}-{{month}}-{{day}}-{{title}}' }),
+          Map({ publishDate: entryDate, title: 'post title' }),
+          slugConfig,
+        ),
+      ).toBe('2026-10-20-post-title');
+    });
+
     it('should return slug', () => {
       selectIdentifier.mockReturnValueOnce('title');
 
