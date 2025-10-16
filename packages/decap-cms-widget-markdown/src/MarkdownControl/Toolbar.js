@@ -160,6 +160,16 @@ export default class Toolbar extends React.Component {
               disabled={disabled}
             />
           )}
+          {isVisible('strikethrough') && (
+            <ToolbarButton
+              type="strikethrough"
+              label={t('editor.editorWidgets.markdown.strikethrough')}
+              icon="strikethrough"
+              onClick={this.handleMarkClick}
+              isActive={hasMark('delete')}
+              disabled={disabled}
+            />
+          )}
           {isVisible('code') && (
             <ToolbarButton
               type="code"
