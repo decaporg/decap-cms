@@ -8,6 +8,7 @@ export default {
         enum: [
           'bold',
           'italic',
+          'underline',
           'strikethrough',
           'code',
           'link',
@@ -20,6 +21,7 @@ export default {
           'quote',
           'bulleted-list',
           'numbered-list',
+          'horizontal-rule',
         ],
       },
     },

@@ -167,6 +167,14 @@ function Editor(props) {
     insertShortcode(editor, pluginConfig);
   }
 
+  function handleInsertHorizontalRule() {
+    Transforms.insertNodes(editor, {
+      type: 'thematic-break',
+      children: [{ text: '' }],
+    });
+    ReactEditor.focus(editor);
+  }
+
   function handleKeyDown(event) {
     for (const handler of editor.keyDownHandlers || []) {
       if (handler(event, editor) === false) {
@@ -231,6 +239,7 @@ function Editor(props) {
               onMarkClick={handleMarkClick}
               onBlockClick={handleBlockClick}
               onLinkClick={handleLinkClick}
+              onInsertHorizontalRule={handleInsertHorizontalRule}
               onToggleMode={handleToggleMode}
               plugins={editorComponents}
               onSubmit={handleInsertShortcode}
