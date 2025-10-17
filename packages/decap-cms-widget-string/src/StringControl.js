@@ -1,8 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import ImmutablePropTypes from 'react-immutable-proptypes';
+import { css } from '@emotion/react';
+
+const innerWrapper = css`
+  display: flex;
+  align-items: baseline;
+`;
 
 export default class StringControl extends React.Component {
   static propTypes = {
+    field: ImmutablePropTypes.map.isRequired,
     onChange: PropTypes.func.isRequired,
     forID: PropTypes.string,
     value: PropTypes.node,
@@ -46,21 +54,32 @@ export default class StringControl extends React.Component {
   };
 
   render() {
-    const { forID, value, classNameWrapper, setActiveStyle, setInactiveStyle } = this.props;
+    const { field, forID, value, classNameWrapper, setActiveStyle, setInactiveStyle } = this.props;
+
+    const prefix = field.get('prefix', false);
+    const suffix = field.get('suffix', false);
 
     return (
-      <input
-        ref={el => {
-          this._el = el;
-        }}
-        type="text"
-        id={forID}
-        className={classNameWrapper}
-        value={value || ''}
-        onChange={this.handleChange}
-        onFocus={setActiveStyle}
-        onBlur={setInactiveStyle}
-      />
+      <div className={classNameWrapper}>
+        <div css={innerWrapper}>
+          {prefix && <span>{prefix}&nbsp;</span>}
+          <input
+            ref={el => {
+              this._el = el;
+            }}
+            type="text"
+            id={forID}
+            value={value || ''}
+            onChange={this.handleChange}
+            onFocus={setActiveStyle}
+            onBlur={setInactiveStyle}
+            css={css`
+              flex-grow: 1;
+            `}
+          />
+          {suffix && <span>&nbsp;{suffix}</span>}
+        </div>
+      </div>
     );
   }
 }
