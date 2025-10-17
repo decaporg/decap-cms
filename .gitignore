@@ -20,3 +20,4 @@ coverage/
 .temp/
 storybook-static/
 .nx
+.claude/settings.local.json
