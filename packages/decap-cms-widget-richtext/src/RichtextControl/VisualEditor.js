@@ -4,11 +4,11 @@ import { usePlateEditor, Plate, ParagraphPlugin, PlateLeaf } from 'platejs/react
 import { BoldPlugin, ItalicPlugin, CodePlugin, HeadingPlugin } from '@platejs/basic-nodes/react';
 import { ListPlugin } from '@platejs/list-classic/react';
 import { LinkPlugin } from '@platejs/link/react';
-import { ClassNames } from '@emotion/react';
+import { ClassNames, css } from '@emotion/react';
 import { fonts, lengths, zIndex } from 'decap-cms-ui-default';
 import { fromJS } from 'immutable';
 
-import { editorStyleVars } from '../styles';
+import { editorContainerStyles, EditorControlBar, editorStyleVars } from '../styles';
 import { markdownToSlate, slateToMarkdown } from '../serializers';
 import Editor from './components/Editor';
 import Toolbar from './components/Toolbar';
@@ -21,21 +21,20 @@ import BlockquoteElement from './components/Element/BlockquoteElement';
 import LinkElement from './components/Element/LinkElement';
 import ExtendedBlockquotePlugin from './plugins/ExtendedBlockquotePlugin';
 import ShortcodePlugin from './plugins/ShortcodePlugin';
-// import ShortcodeElement from './components/Element/ShortcodeElement';
+import defaultEmptyBlock from './defaultEmptyBlock';
 
-function visualEditorStyles({ minimal }) {
-  return `
-  position: relative;
-  overflow: auto;
-  font-family: ${fonts.primary};
-  min-height: ${minimal ? 'auto' : lengths.richTextEditorMinHeight};
-  margin-top: -${editorStyleVars.stickyDistanceBottom};
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  z-index: ${zIndex.zIndex100};
-  white-space: pre-wrap;
-`;
+function editorStyles({ minimal }) {
+  return css`
+    position: relative;
+    font-family: ${fonts.primary};
+    min-height: ${minimal ? 'auto' : lengths.richTextEditorMinHeight};
+    margin-top: -${editorStyleVars.stickyDistanceBottom};
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    z-index: ${zIndex.zIndex100};
+    white-space: pre-wrap;
+  `;
 }
 
 function mergeMediaConfig(editorComponents, field) {
@@ -70,16 +69,19 @@ function mergeMediaConfig(editorComponents, field) {
   }
 }
 
-const emptyValue = [
-  {
-    id: '1',
-    type: ParagraphPlugin.key,
-    children: [{ text: '' }],
-  },
-];
+const emptyValue = [defaultEmptyBlock()];
 
 export default function VisualEditor(props) {
-  const { t, field, className, isDisabled, onChange, getEditorComponents } = props;
+  const {
+    t,
+    field,
+    className,
+    isDisabled,
+    onMode,
+    isShowModeToggle,
+    onChange,
+    getEditorComponents,
+  } = props;
 
   let editorComponents = getEditorComponents();
   const codeBlockComponent = fromJS(editorComponents.find(({ type }) => type === 'code-block'));
@@ -100,7 +102,7 @@ export default function VisualEditor(props) {
   }
 
   function handleToggleMode() {
-    console.log('handleToggleMode');
+    onMode('raw');
   }
 
   function handleChange({ value }) {
@@ -156,30 +158,29 @@ export default function VisualEditor(props) {
           className={cx(
             className,
             css`
-              ${visualEditorStyles({ minimal: field.get('minimal') })}
+              ${editorContainerStyles}
             `,
           )}
         >
           <Plate editor={editor} onChange={handleChange}>
-            <Toolbar
-              onBlockClick={handleBlockClick}
-              onLinkClick={handleLinkClick}
-              onToggleMode={handleToggleMode}
-              buttons={[]}
-              editorComponents={editorComponents}
-              allowedEditorComponents={field.get('editor_components')}
-              onAddAsset={() => false}
-              getAsset={() => false}
-              hasInline={() => false}
-              hasBlock={() => false}
-              hasQuote={() => false}
-              hasListItems={() => false}
-              isShowModeToggle={() => false}
-              onChange={() => false}
-              t={t}
-              disabled={isDisabled}
-            />
-            <Editor isDisabled={isDisabled} />
+            <EditorControlBar>
+              <Toolbar
+                onBlockClick={handleBlockClick}
+                onLinkClick={handleLinkClick}
+                onToggleMode={handleToggleMode}
+                buttons={[]}
+                editorComponents={editorComponents}
+                allowedEditorComponents={field.get('editor_components')}
+                onAddAsset={() => false} // investinagte
+                getAsset={() => false} // investigate
+                isShowModeToggle={isShowModeToggle}
+                t={t}
+                disabled={isDisabled}
+              />
+            </EditorControlBar>
+            <div css={editorStyles({ minimal: field.get('minimal') })}>
+              <Editor isDisabled={isDisabled} />
+            </div>
           </Plate>
         </div>
       )}

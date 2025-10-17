@@ -11,7 +11,7 @@ function Editor(props) {
         <PlateContent
           className={css`
             flex-grow: 1;
-            padding: 16px 20px 0;
+            padding: 8px 20px 0;
             outline: none;
           `}
           disableDefaultStyles
