@@ -1,0 +1,28 @@
+{
+  "name": "decap-cms-lib-auth",
+  "description": "Shared authentication functionality for Decap CMS.",
+  "version": "3.0.6",
+  "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-lib-auth",
+  "bugs": "https://github.com/decaporg/decap-cms/issues",
+  "module": "dist/esm/index.js",
+  "main": "dist/decap-cms-lib-auth.js",
+  "license": "MIT",
+  "files": [
+    "src/",
+    "dist/"
+  ],
+  "keywords": [
+    "decap-cms"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "develop": "npm run build:esm -- --watch",
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
+  },
+  "peerDependencies": {
+    "immutable": "^3.7.6",
+    "lodash": "^4.17.11",
+    "uuid": "^8.3.2"
+  }
+}

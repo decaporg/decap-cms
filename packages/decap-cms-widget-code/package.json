@@ -1,0 +1,37 @@
+{
+  "name": "decap-cms-widget-code",
+  "description": "Widget for editing code in Decap CMS",
+  "version": "3.2.0",
+  "homepage": "https://www.decapcms.org/docs/widgets/#code",
+  "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-widget-code",
+  "bugs": "https://github.com/decaporg/decap-cms/issues",
+  "module": "dist/esm/index.js",
+  "main": "dist/decap-cms-widget-code.js",
+  "license": "MIT",
+  "keywords": [
+    "decap-cms",
+    "widget",
+    "code",
+    "codemirror",
+    "editor",
+    "code editor"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "develop": "npm run build:esm -- --watch",
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward",
+    "process:languages": "node ./scripts/process-languages"
+  },
+  "peerDependencies": {
+    "@emotion/react": "^11.11.1",
+    "codemirror": "^5.46.0",
+    "decap-cms-ui-default": "^3.0.0",
+    "lodash": "^4.17.11",
+    "react": "^19.1.0"
+  },
+  "dependencies": {
+    "react-codemirror2": "^7.0.0",
+    "react-select": "^5.10.0"
+  }
+}

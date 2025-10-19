@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "jsx": "react",
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "noEmit": true,
+    "strict": true,
+    "isolatedModules": true,
+    "skipLibCheck": true,
+    "allowJs": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "useUnknownInCatchVariables": false,
+    "baseUrl": "./",
+    "paths": {
+      "decap-cms-backend-bitbucket": ["packages/decap-cms-backend-bitbucket/src"],
+      "decap-cms-backend-github": ["packages/decap-cms-backend-github/src"],
+      "decap-cms-backend-gitlab": ["packages/decap-cms-backend-gitlab/src"],
+      "decap-cms-lib-util": ["packages/decap-cms-lib-util/src"],
+      "decap-cms-lib-widgets": ["packages/decap-cms-lib-widgets/src"]
+    }
+  },
+  "include": ["**/src/**/*"],
+  "exclude": ["node_modules", "**/*.spec.ts"]
+}

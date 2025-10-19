@@ -1,0 +1,47 @@
+{
+  "name": "decap-cms-backend-github",
+  "description": "GitHub backend for Decap CMS",
+  "version": "3.4.0",
+  "license": "MIT",
+  "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-backend-github",
+  "bugs": "https://github.com/decaporg/decap-cms/issues",
+  "module": "dist/esm/index.js",
+  "main": "dist/decap-cms-backend-github.js",
+  "keywords": [
+    "decap-cms",
+    "backend",
+    "github"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "develop": "npm run build:esm -- --watch",
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward --extensions \".js,.jsx,.ts,.tsx\"",
+    "createFragmentTypes": "node scripts/createFragmentTypes.js"
+  },
+  "dependencies": {
+    "apollo-cache-inmemory": "^1.6.2",
+    "apollo-client": "^2.6.3",
+    "apollo-link-context": "^1.0.18",
+    "apollo-link-http": "^1.5.15",
+    "common-tags": "^1.8.0",
+    "graphql": "^15.0.0",
+    "graphql-tag": "^2.10.1",
+    "js-base64": "^3.0.0",
+    "path-browserify": "^1.0.1",
+    "semaphore": "^1.1.0"
+  },
+  "peerDependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "decap-cms-lib-auth": "^3.0.0",
+    "decap-cms-lib-util": "^3.0.0",
+    "decap-cms-ui-default": "^3.0.0",
+    "lodash": "^4.17.11",
+    "prop-types": "^15.7.2",
+    "react": "^19.1.0"
+  },
+  "browser": {
+    "path": "path-browserify"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "packages": ["packages/*"],
+  "version": "independent",
+  "npmClient": "npm",
+  "loglevel": "success",
+  "command": {
+    "version": {
+      "allowBranch": ["main", "release/*"],
+      "conventionalCommits": true,
+      "preid": "beta",
+      "gitRemote": "upstream",
+      "message": "chore(release): publish"
+    }
+  },
+  "ignoreChanges": ["**/__fixtures__/**", "**/__tests__/**", "**/*.md"],
+  "$schema": "node_modules/lerna/schemas/lerna-schema.json"
+}

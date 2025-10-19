@@ -1,0 +1,65 @@
+backend:
+  name: gitlab
+  branch: master
+  repo: owner/repo
+
+publish_mode: editorial_workflow
+media_folder: static/media
+public_folder: /media
+collections:
+  - name: posts
+    label: Posts
+    label_singular: 'Post'
+    folder: content/posts
+    create: true
+    slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
+    fields:
+      - label: Template
+        name: template
+        widget: hidden
+        default: post
+      - label: Title
+        name: title
+        widget: string
+      - label: 'Cover Image'
+        name: 'image'
+        widget: 'image'
+        required: false
+      - label: Publish Date
+        name: date
+        widget: datetime
+        format: 'YYYY-MM-DDTHH:mm'
+        default: 1970-01-01T01:00
+      - label: Description
+        name: description
+        widget: text
+      - label: Category
+        name: category
+        widget: string
+      - label: Body
+        name: body
+        widget: markdown
+      - label: Tags
+        name: tags
+        widget: list
+  - name: pages
+    label: Pages
+    label_singular: 'Page'
+    folder: content/pages
+    create: true
+    slug: '{{slug}}'
+    fields:
+      - label: Template
+        name: template
+        widget: hidden
+        default: page
+      - label: Title
+        name: title
+        widget: string
+      - label: Draft
+        name: draft
+        widget: boolean
+        default: true
+      - label: Body
+        name: body
+        widget: markdown

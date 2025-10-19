@@ -1,0 +1,256 @@
+backend:
+  name: test-repo
+
+site_url: https://example.com
+
+publish_mode: editorial_workflow
+media_folder: assets/uploads
+
+collections: # A list of collections the CMS should be able to edit
+  - name: 'posts' # Used in routes, ie.: /admin/collections/:slug/edit
+    label: 'Posts' # Used in the UI
+    label_singular: 'Post' # Used in the UI, ie: "New Post"
+    description: >
+      The description is a great place for tone setting, high level information, and editing
+      guidelines that are specific to a collection.
+    folder: '_posts'
+    slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
+    summary: '{{title}} -- {{year}}/{{month}}/{{day}}'
+    create: true # Allow users to create new documents in this collection
+    view_filters:
+      - label: Posts With Index
+        field: title
+        pattern: 'This is post #'
+      - label: Posts Without Index
+        field: title
+        pattern: front matter post
+      - label: Drafts
+        field: draft
+        pattern: true
+    view_groups:
+      - label: Year
+        field: date
+        pattern: \d{4}
+      - label: Drafts
+        field: draft
+    fields: # The fields each document in this collection have
+      - { label: 'Title', name: 'title', widget: 'string', tagname: 'h1' }
+      - { label: 'Draft', name: 'draft', widget: 'boolean', default: false }
+      - {
+          label: 'Publish Date',
+          name: 'date',
+          widget: 'datetime',
+          format: 'YYYY-MM-DD HH:mm',
+          default: '{{now}}',
+        }
+      - label: 'Cover Image'
+        name: 'image'
+        widget: 'image'
+        required: false
+        tagname: ''
+
+      - { label: 'Body', name: 'body', widget: 'markdown', hint: 'Main content goes here.' }
+
+  - name: 'faq' # Used in routes, ie.: /admin/collections/:slug/edit
+    label: 'FAQ' # Used in the UI
+    folder: '_faqs'
+    create: true # Allow users to create new documents in this collection
+    fields: # The fields each document in this collection have
+      - { label: 'Question', name: 'title', widget: 'string', tagname: 'h1' }
+      - { label: 'Answer', name: 'body', widget: 'markdown' }
+
+  - name: 'settings'
+    label: 'Settings'
+    delete: false # Prevent users from deleting documents in this collection
+    editor:
+      preview: false
+    files:
+      - name: 'general'
+        label: 'Site Settings'
+        file: '_data/settings.json'
+        description: 'General Site Settings'
+        fields:
+          - { label: 'Global title', name: 'site_title', widget: 'string' }
+          - label: 'Post Settings'
+            name: posts
+            widget: 'object'
+            fields:
+              - {
+                  label: 'Number of posts on frontpage',
+                  name: front_limit,
+                  widget: number,
+                  min: 1,
+                  max: 10,
+                }
+              - { label: 'Default Author', name: author, widget: string }
+              - {
+                  label: 'Default Thumbnail',
+                  name: thumb,
+                  widget: image,
+                  class: 'thumb',
+                  required: false,
+                }
+
+      - name: 'authors'
+        label: 'Authors'
+        file: '_data/authors.yml'
+        description: 'Author descriptions'
+        fields:
+          - name: authors
+            label: Authors
+            label_singular: 'Author'
+            widget: list
+            fields:
+              - { label: 'Name', name: 'name', widget: 'string', hint: 'First and Last' }
+              - { label: 'Description', name: 'description', widget: 'markdown' }
+
+  - name: 'kitchenSink' # all the things in one entry, for documentation and quick testing
+    label: 'Kitchen Sink'
+    folder: '_sink'
+    create: true
+    fields:
+      - label: 'Related Post'
+        name: 'post'
+        widget: 'relationKitchenSinkPost'
+        collection: 'posts'
+        display_fields: ['title', 'datetime']
+        search_fields: ['title', 'body']
+        value_field: 'title'
+      - { label: 'Title', name: 'title', widget: 'string' }
+      - { label: 'Boolean', name: 'boolean', widget: 'boolean', default: true }
+      - { label: 'Map', name: 'map', widget: 'map' }
+      - { label: 'Text', name: 'text', widget: 'text', hint: 'Plain text, not markdown' }
+      - { label: 'Number', name: 'number', widget: 'number', hint: 'To infinity and beyond!' }
+      - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
+      - { label: 'Datetime', name: 'datetime', widget: 'datetime' }
+      - { label: 'Image', name: 'image', widget: 'image' }
+      - { label: 'File', name: 'file', widget: 'file' }
+      - { label: 'Select', name: 'select', widget: 'select', options: ['a', 'b', 'c'] }
+      - {
+          label: 'Select multiple',
+          name: 'select_multiple',
+          widget: 'select',
+          options: ['a', 'b', 'c'],
+          multiple: true,
+        }
+      - { label: 'Hidden', name: 'hidden', widget: 'hidden', default: 'hidden' }
+      - label: 'Object'
+        name: 'object'
+        widget: 'object'
+        collapsed: true
+        fields:
+          - label: 'Related Post'
+            name: 'post'
+            widget: 'relationKitchenSinkPost'
+            collection: 'posts'
+            search_fields: ['title', 'body']
+            value_field: 'title'
+          - { label: 'String', name: 'string', widget: 'string' }
+          - { label: 'Boolean', name: 'boolean', widget: 'boolean', default: false }
+          - { label: 'Text', name: 'text', widget: 'text' }
+          - { label: 'Number', name: 'number', widget: 'number' }
+          - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
+          - { label: 'Datetime', name: 'datetime', widget: 'datetime' }
+          - { label: 'Image', name: 'image', widget: 'image' }
+          - { label: 'File', name: 'file', widget: 'file' }
+          - { label: 'Select', name: 'select', widget: 'select', options: ['a', 'b', 'c'] }
+      - label: 'List'
+        name: 'list'
+        widget: 'list'
+        fields:
+          - { label: 'String', name: 'string', widget: 'string' }
+          - { label: 'Boolean', name: 'boolean', widget: 'boolean' }
+          - { label: 'Text', name: 'text', widget: 'text' }
+          - { label: 'Number', name: 'number', widget: 'number' }
+          - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
+          - { label: 'Datetime', name: 'datetime', widget: 'datetime' }
+          - { label: 'Image', name: 'image', widget: 'image' }
+          - { label: 'File', name: 'file', widget: 'file' }
+          - { label: 'Select', name: 'select', widget: 'select', options: ['a', 'b', 'c'] }
+          - label: 'Object'
+            name: 'object'
+            widget: 'object'
+            fields:
+              - { label: 'String', name: 'string', widget: 'string' }
+              - { label: 'Boolean', name: 'boolean', widget: 'boolean' }
+              - { label: 'Text', name: 'text', widget: 'text' }
+              - { label: 'Number', name: 'number', widget: 'number' }
+              - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
+              - { label: 'Datetime', name: 'datetime', widget: 'datetime' }
+              - { label: 'Image', name: 'image', widget: 'image' }
+              - { label: 'File', name: 'file', widget: 'file' }
+              - { label: 'Select', name: 'select', widget: 'select', options: ['a', 'b', 'c'] }
+              - label: 'List'
+                name: 'list'
+                widget: 'list'
+                fields:
+                  - label: 'Related Post'
+                    name: 'post'
+                    widget: 'relationKitchenSinkPost'
+                    collection: 'posts'
+                    search_fields: ['title', 'body']
+                    value_field: 'title'
+                  - { label: 'String', name: 'string', widget: 'string' }
+                  - { label: 'Boolean', name: 'boolean', widget: 'boolean' }
+                  - { label: 'Text', name: 'text', widget: 'text' }
+                  - { label: 'Number', name: 'number', widget: 'number' }
+                  - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
+                  - { label: 'Datetime', name: 'datetime', widget: 'datetime' }
+                  - { label: 'Image', name: 'image', widget: 'image' }
+                  - { label: 'File', name: 'file', widget: 'file' }
+                  - { label: 'Select', name: 'select', widget: 'select', options: ['a', 'b', 'c'] }
+                  - { label: 'Hidden', name: 'hidden', widget: 'hidden', default: 'hidden' }
+                  - label: 'Object'
+                    name: 'object'
+                    widget: 'object'
+                    fields:
+                      - { label: 'String', name: 'string', widget: 'string' }
+                      - { label: 'Boolean', name: 'boolean', widget: 'boolean' }
+                      - { label: 'Text', name: 'text', widget: 'text' }
+                      - { label: 'Number', name: 'number', widget: 'number' }
+                      - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
+                      - { label: 'Datetime', name: 'datetime', widget: 'datetime' }
+                      - { label: 'Image', name: 'image', widget: 'image' }
+                      - { label: 'File', name: 'file', widget: 'file' }
+                      - {
+                          label: 'Select',
+                          name: 'select',
+                          widget: 'select',
+                          options: ['a', 'b', 'c'],
+                        }
+      - label: 'Typed List'
+        name: 'typed_list'
+        widget: 'list'
+        types:
+          - label: 'Type 1 Object'
+            name: 'type_1_object'
+            widget: 'object'
+            fields:
+              - { label: 'String', name: 'string', widget: 'string' }
+              - { label: 'Boolean', name: 'boolean', widget: 'boolean' }
+              - { label: 'Text', name: 'text', widget: 'text' }
+          - label: 'Type 2 Object'
+            name: 'type_2_object'
+            widget: 'object'
+            fields:
+              - { label: 'Number', name: 'number', widget: 'number' }
+              - { label: 'Select', name: 'select', widget: 'select', options: ['a', 'b', 'c'] }
+              - { label: 'Datetime', name: 'datetime', widget: 'datetime' }
+              - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
+          - label: 'Type 3 Object'
+            name: 'type_3_object'
+            widget: 'object'
+            fields:
+              - { label: 'Image', name: 'image', widget: 'image' }
+              - { label: 'File', name: 'file', widget: 'file' }
+  - name: pages # a nested collection
+    label: Pages
+    label_singular: 'Page'
+    folder: _pages
+    create: true
+    nested: { depth: 100 }
+    fields:
+      - label: Title
+        name: title
+        widget: string
+    meta: { path: { widget: string, label: 'Path', index_file: 'index' } }

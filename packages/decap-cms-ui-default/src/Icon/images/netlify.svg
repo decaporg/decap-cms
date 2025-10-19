@@ -1,0 +1,21 @@
+<svg viewBox="0 0 295 284">
+  <g transform="translate(149.500000, 142.500000) rotate(-315.000000) translate(-149.500000, -142.500000) translate(45.000000, 38.000000)">
+    <g transform="translate(4.000000, 4.000000)" fill="#3FB5A0">
+      <path d="M0,0 L200,0 L200,200 L0,200 L0,0 L0,0 Z"></path>
+    </g>
+    <g stroke="#FFFFFF" stroke-width="8">
+      <path d="M209,70 L0,209 L209,70 Z"></path>
+      <path d="M209,6 L0,93 L209,6 Z"></path>
+      <path d="M209,180 L0,145 L209,180 Z"></path>
+      <path d="M88,209 L43,0 L88,209 Z"></path>
+      <path d="M209,172 L89,0 L209,172 Z"></path>
+      <path d="M137,0 L57,209 L137,0 Z"></path>
+    </g>
+    <g transform="translate(43.000000, 33.000000)" fill="#FFFFFF">
+      <circle class="no-fill" cx="14" cy="38" r="14"></circle>
+      <circle class="no-fill" cx="77" cy="12" r="12"></circle>
+      <circle class="no-fill" cx="116" cy="70" r="12"></circle>
+      <circle class="no-fill" cx="35" cy="125" r="16"></circle>
+    </g>
+  </g>
+</svg>

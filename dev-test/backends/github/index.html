@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+
+    <title>Decap CMS Development Test</title>
+  </head>
+  <body>
+    <script src="dist/decap-cms.js"></script>
+    <script>
+      var PostPreview = createClass({
+        render: function() {
+          var entry = this.props.entry;
+          return h(
+            'div',
+            {},
+            h('div', { className: 'cover' }, h('h1', {}, entry.getIn(['data', 'title']))),
+            h('p', {}, h('small', {}, 'Written ' + entry.getIn(['data', 'date']))),
+            h('div', { className: 'text' }, this.props.widgetFor('body')),
+          );
+        },
+      });
+
+      var PagePreview = createClass({
+        render: function() {
+          var entry = this.props.entry;
+          return h(
+            'div',
+            {},
+            h('div', { className: 'cover' }, h('h1', {}, entry.getIn(['data', 'title']))),
+            h('p', {}, h('small', {}, 'Written ' + entry.getIn(['data', 'date']))),
+            h('div', { className: 'text' }, this.props.widgetFor('body')),
+          );
+        },
+      });
+
+      CMS.registerPreviewTemplate('posts', PostPreview);
+      CMS.registerPreviewTemplate('pages', PagePreview);
+    </script>
+  </body>
+</html>

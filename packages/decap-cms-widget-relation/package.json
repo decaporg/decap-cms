@@ -1,0 +1,41 @@
+{
+  "name": "decap-cms-widget-relation",
+  "description": "Widget for linking related entries in Decap CMS.",
+  "version": "3.5.2",
+  "homepage": "https://www.decapcms.org/docs/widgets/#relation",
+  "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-widget-relation",
+  "bugs": "https://github.com/decaporg/decap-cms/issues",
+  "module": "dist/esm/index.js",
+  "main": "dist/decap-cms-widget-relation.js",
+  "license": "MIT",
+  "keywords": [
+    "decap-cms",
+    "widget",
+    "relation",
+    "link"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "develop": "npm run build:esm -- --watch",
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
+  },
+  "dependencies": {
+    "@dnd-kit/core": "^6.0.8",
+    "@dnd-kit/modifiers": "^6.0.1",
+    "@dnd-kit/sortable": "^7.0.2",
+    "react-select": "^5.10.0",
+    "react-window": "^1.8.5"
+  },
+  "peerDependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "decap-cms-lib-widgets": "^3.0.0",
+    "decap-cms-ui-default": "^3.0.0",
+    "immutable": "^3.7.6",
+    "lodash": "^4.17.11",
+    "prop-types": "^15.7.2",
+    "react": "^19.1.0",
+    "uuid": "^8.3.2"
+  }
+}

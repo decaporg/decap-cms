@@ -1,0 +1,30 @@
+{
+  "name": "decap-cms-lib-widgets",
+  "description": "Shared utilities for Decap CMS.",
+  "version": "3.2.1",
+  "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-lib-widgets",
+  "bugs": "https://github.com/decaporg/decap-cms/issues",
+  "module": "dist/esm/index.js",
+  "main": "dist/decap-cms-lib-widgets.js",
+  "license": "MIT",
+  "keywords": [
+    "decap-cms"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "develop": "npm run build:esm -- --watch",
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward --extensions \".js,.jsx,.ts,.tsx\""
+  },
+  "dependencies": {
+    "dayjs": "^1.11.10",
+    "path-browserify": "^1.0.1"
+  },
+  "peerDependencies": {
+    "immutable": "^3.7.6",
+    "lodash": "^4.17.11"
+  },
+  "browser": {
+    "path": "path-browserify"
+  }
+}

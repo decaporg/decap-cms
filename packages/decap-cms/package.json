@@ -1,0 +1,34 @@
+{
+  "name": "decap-cms",
+  "description": "An extensible, open source, Git-based, React CMS for static sites.",
+  "version": "3.8.4",
+  "homepage": "https://www.decapcms.org",
+  "repository": "https://github.com/decaporg/decap-cms",
+  "bugs": "https://github.com/decaporg/decap-cms/issues",
+  "main": "dist/decap-cms.js",
+  "scripts": {
+    "webpack": "node --max_old_space_size=4096 ../../node_modules/webpack/bin/webpack.js",
+    "build": "cross-env NODE_ENV=production run-s webpack",
+    "build-preview": "cross-env NODE_ENV=production webpack serve --open",
+    "develop": "webpack serve --hot"
+  },
+  "keywords": [
+    "cms",
+    "content editing",
+    "static site generators",
+    "jamstack"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "codemirror": "^5.46.0",
+    "create-react-class": "^15.7.0",
+    "decap-cms-app": "^3.8.4",
+    "decap-cms-media-library-cloudinary": "^3.1.0",
+    "decap-cms-media-library-uploadcare": "^3.0.2",
+    "file-loader": "^6.2.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "svgo-loader": "^3.0.3"
+  },
+  "incrementToForceBump": 2
+}

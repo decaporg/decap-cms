@@ -1,0 +1,43 @@
+{
+  "name": "decap-cms-backend-bitbucket",
+  "description": "Bitbucket backend for Decap CMS",
+  "version": "3.3.0",
+  "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-backend-bitbucket",
+  "bugs": "https://github.com/decaporg/decap-cms/issues",
+  "module": "dist/esm/index.js",
+  "main": "dist/decap-cms-backend-bitbucket.js",
+  "license": "MIT",
+  "keywords": [
+    "decap-cms",
+    "backend",
+    "bitbucket"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "develop": "npm run build:esm -- --watch",
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward --extensions \".js,.jsx,.ts,.tsx\""
+  },
+  "dependencies": {
+    "common-tags": "^1.8.0",
+    "js-base64": "^3.0.0",
+    "minimatch": "^7.0.0",
+    "path-browserify": "^1.0.1",
+    "semaphore": "^1.1.0",
+    "what-the-diff": "^0.6.0"
+  },
+  "peerDependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "decap-cms-lib-auth": "^3.0.0",
+    "decap-cms-lib-util": "^3.0.0",
+    "decap-cms-ui-default": "^3.0.0",
+    "immutable": "^3.7.6",
+    "lodash": "^4.17.11",
+    "prop-types": "^15.7.2",
+    "react": "^19.1.0"
+  },
+  "browser": {
+    "path": "path-browserify"
+  }
+}

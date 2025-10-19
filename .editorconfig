@@ -1,0 +1,19 @@
+# https://editorconfig.org
+root = true
+
+[*]
+indent_style = space
+indent_size = 2
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+[*.js]
+quote_type = single
+spaces_around_operators = true
+
+[*.css]
+quote_type = single
+
+[*.md]
+trim_trailing_whitespace = false

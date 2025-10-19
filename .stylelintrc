@@ -1,0 +1,34 @@
+{
+  "processors": ["stylelint-processor-styled-components"],
+  "extends": ["stylelint-config-standard-scss", "stylelint-config-styled-components"],
+  "customSyntax": "postcss-scss",
+  "rules": {
+    "block-no-empty": null,
+    "no-duplicate-selectors": null,
+    "no-empty-source": null,
+    "no-extra-semicolons": null,
+    "declaration-empty-line-before": null,
+    "string-quotes": null,
+    "selector-class-pattern": null,
+    "selector-pseudo-element-colon-notation": null,
+    "rule-empty-line-before": null,
+    "declaration-colon-newline-after": null,
+    "at-rule-empty-line-before": null,
+    "alpha-value-notation": null,
+    "color-function-notation": null,
+    "keyframes-name-pattern": null,
+    "value-list-comma-newline-after": null,
+    "no-descending-specificity": null,
+    "selector-type-no-unknown": [
+      true,
+      {
+        "ignoreTypes": ["$dummyValue"]
+      }
+    ],
+    "value-keyword-case": [
+      "lower",
+      { "ignoreKeywords": ["dummyValue"], "camelCaseSvgKeywords": true }
+    ]
+  },
+  "ignoreFiles": ["packages/decap-cms-lib-auth/index.d.ts"]
+}
