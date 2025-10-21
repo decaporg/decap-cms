@@ -1,4 +1,4 @@
-import { ParagraphPlugin } from "platejs/react";
+import { ParagraphPlugin } from 'platejs/react';
 
 function defaultEmptyBlock(text = '') {
   return {
