@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { css, ClassNames } from '@emotion/react';
 import { lengths, fonts } from 'decap-cms-ui-default';
-import { ReactEditor } from 'slate-react';
 import { ParagraphPlugin, Plate, usePlateEditor } from 'platejs/react';
 import { SingleBlockPlugin } from 'platejs';
 
@@ -42,7 +41,7 @@ function RawEditor(props) {
 
   useEffect(() => {
     if (props.pendingFocus) {
-      ReactEditor.focus(editor);
+      editor.tf.focus({ edge: 'endEditor' });
       props.pendingFocus();
     }
   }, [props.pendingFocus]);

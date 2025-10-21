@@ -22,8 +22,6 @@ export default class RichtextControl extends React.Component {
     t: PropTypes.func.isRequired,
     isDisabled: PropTypes.bool,
   };
-  
-
   constructor(props) {
     super(props);
     const preferredMode = localStorage.getItem(MODE_STORAGE_KEY) ?? 'rich_text';
@@ -70,6 +68,7 @@ export default class RichtextControl extends React.Component {
     } = this.props;
 
     const isShowModeToggle = this.getAllowedModes().length > 1;
+    const { mode, pendingFocus } = this.state;
 
     const visualEditor = (
       <EditorProvider editorControl={editorControl} editorComponents={getEditorComponents()}>
@@ -83,6 +82,7 @@ export default class RichtextControl extends React.Component {
             onMode={this.handleMode}
             isShowModeToggle={isShowModeToggle}
             onChange={onChange}
+            pendingFocus={pendingFocus && this.setFocusReceived}
             value={value}
           />
         </div>
@@ -102,11 +102,12 @@ export default class RichtextControl extends React.Component {
           className={classNameWrapper}
           value={value}
           field={field}
-          // pendingFocus={pendingFocus && this.setFocusReceived}
+          pendingFocus={pendingFocus && this.setFocusReceived}
           t={t}
         />
-      </div>)
+      </div>
+    );
 
-    return this.state.mode === 'rich_text' ? visualEditor : rawEditor;
+    return mode === 'rich_text' ? visualEditor : rawEditor;
   }
 }

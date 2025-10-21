@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { KEYS } from 'platejs';
 import { usePlateEditor, Plate, ParagraphPlugin, PlateLeaf } from 'platejs/react';
 import { BoldPlugin, ItalicPlugin, CodePlugin, HeadingPlugin } from '@platejs/basic-nodes/react';
@@ -150,6 +150,13 @@ export default function VisualEditor(props) {
     ],
     value: initialValue,
   });
+
+  useEffect(() => {
+    if (props.pendingFocus) {
+      editor.tf.focus({ edge: 'endEditor' });
+      props.pendingFocus();
+    }
+  }, [props.pendingFocus]);
 
   return (
     <ClassNames>
