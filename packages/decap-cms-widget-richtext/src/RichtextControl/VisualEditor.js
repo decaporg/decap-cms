@@ -178,8 +178,6 @@ export default function VisualEditor(props) {
                 buttons={[]}
                 editorComponents={editorComponents}
                 allowedEditorComponents={field.get('editor_components')}
-                onAddAsset={() => false} // investinagte
-                getAsset={() => false} // investigate
                 isShowModeToggle={isShowModeToggle}
                 t={t}
                 disabled={isDisabled}
