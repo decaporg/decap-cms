@@ -8,7 +8,7 @@ import NoteItem from './NoteItem';
 const ListContainer = styled.div`
   flex: 1;
   overflow-y: auto;
-  padding: 8px;
+  padding: 8px 30px;
 `;
 
 function NotesList({ notes, onUpdate, onDelete, onToggleResolution, user, t }) {

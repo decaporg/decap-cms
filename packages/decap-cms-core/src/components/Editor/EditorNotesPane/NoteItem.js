@@ -9,7 +9,7 @@ const NoteCard = styled.div`
   border: 1px solid ${props => (props.resolved ? colors.textFieldBorder : colors.textFieldBorder)};
   border-radius: 4px;
   margin-bottom: 8px;
-  padding: 12px;
+  padding: 12px 18px;
   transition: all ${transitions.main};
   opacity: ${props => (props.resolved ? 0.7 : 1)};
 
@@ -166,9 +166,15 @@ class NoteItem extends Component {
   };
 
   formatTimestamp = timestamp => {
-    const date = new Date(timestamp);
-    return date.toLocaleString(); 
-};
+      const date = new Date(timestamp);
+      return date.toLocaleString(undefined, {
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: 'numeric'
+      });
+  };
 
   handleEditStart = () => {
     this.setState({

@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 import { colors, transitions } from 'decap-cms-ui-default';
 
 const FormContainer = styled.div`
-  padding: 16px;
+  padding: 16px 28px;
   border-top: 1px solid ${colors.textFieldBorder};
   background-color: ${colors.inputBackground};
 `;
