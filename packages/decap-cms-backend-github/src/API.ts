@@ -1570,31 +1570,29 @@ ${note.content}`;
   }
 
   /**
-   * Find existing issue for an entry or create a new one
-   */
-  async getOrCreateEntryIssue(
-    collectionName: string,
-    slug: string,
-    entryTitle?: string,
-  ): Promise<GitHubIssue> {
-    // Search for existing issue
-    const searchQuery = `repo:${this.repo} label:${API.NOTES_LABEL} "${collectionName}/${slug}" in:body`;
+     * Find existing issue for an entry (returns null if not found)
+     */
+    async findEntryIssue(
+      collectionName: string,
+      slug: string,
+    ): Promise<GitHubIssue | null> {
+      // Search for existing issue
+      const searchQuery = `repo:${this.repo} label:${API.NOTES_LABEL} "${collectionName}/${slug}" in:body`;
 
-    try {
-      const searchResponse = await this.request('/search/issues', {
-        params: { q: searchQuery },
-      });
+      try {
+        const searchResponse = await this.request('/search/issues', {
+          params: { q: searchQuery },
+        });
 
-      if (searchResponse.items && searchResponse.items.length > 0) {
-        return searchResponse.items[0];
+        if (searchResponse.items && searchResponse.items.length > 0) {
+          return searchResponse.items[0];
+        }
+        return null;
+      } catch (error) {
+        console.warn('Failed to search for existing notes issue:', error);
+        return null;
       }
-    } catch (error) {
-      console.warn('Failed to search for existing notes issue:', error);
     }
-
-    // Create new issue if none exists
-    return this.createEntryIssue(collectionName, slug, entryTitle);
-  }
 
   /**
    * Get comments from a GitHub issue
@@ -1722,19 +1720,22 @@ ${note.content}`;
     }
   }
 
-  /**
-   * Get all notes for an entry (works for all entries)
-   */
-  async getEntryNotes(collectionName: string, slug: string): Promise<Note[]> {
-    try {
-      const issue = await this.getOrCreateEntryIssue(collectionName, slug);
-      const comments = await this.getIssueComments(issue.number);
-      return comments.map(comment => this.parseCommentToNote(comment));
-    } catch (error) {
-      console.error('Failed to get entry notes:', error);
-      return [];
+    /**
+     * Get all notes for an entry 
+     */
+    async getEntryNotes(collectionName: string, slug: string): Promise<Note[]> {
+      try {
+        const issue = await this.findEntryIssue(collectionName, slug);
+        if (!issue) {
+          return []; // No issue means no notes yet
+        }
+        const comments = await this.getIssueComments(issue.number);
+        return comments.map(comment => this.parseCommentToNote(comment));
+      } catch (error) {
+        console.error('Failed to get entry notes:', error);
+        return [];
+      }
     }
-  }
 
   /**
    * Add a note to any entry
@@ -1746,7 +1747,10 @@ ${note.content}`;
     entryTitle?: string,
   ): Promise<string> {
     try {
-      const issue = await this.getOrCreateEntryIssue(collectionName, slug, entryTitle);
+      let issue = await this.findEntryIssue(collectionName, slug);
+      if (!issue) {
+        issue = await this.createEntryIssue(collectionName, slug, entryTitle);
+      }
       const issueNoteId = await this.createIssueComment(issue.number, note);
       return issueNoteId;
     } catch (error) {
