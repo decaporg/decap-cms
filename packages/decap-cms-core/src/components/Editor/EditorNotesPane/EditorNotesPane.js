@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import { List } from 'immutable';
-import { colors } from 'decap-cms-ui-default';
+import { colors, Icon } from 'decap-cms-ui-default';
 
 import NotesList from './NotesList';
 import AddNoteForm from './AddNoteForm';
@@ -17,13 +17,18 @@ const NotesContainer = styled.div`
 `;
 
 const NotesHeader = styled.div`
-  padding: 16px;
+  padding: 16px 24px;
   border-bottom: 1px solid ${colors.textFieldBorder};
   background-color: ${colors.inputBackground};
   display: flex;
-  justify-content: space-between;
   align-items: center;
   min-height: 60px;
+`;
+
+const NotesTitleGroup = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
 `;
 
 const NotesTitle = styled.h3`
@@ -40,6 +45,26 @@ const NotesCount = styled.span`
   padding: 2px 8px;
   font-size: 12px;
   font-weight: 500;
+`;
+
+const SourceLink = styled.a`
+  color: ${colors.controlLabel};
+  text-decoration: none;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  
+  &:hover {
+    color: ${colors.text};
+    text-decoration: underline;
+  }
+`;
+
+const SourceIcon = styled(Icon)`
+  width: 16px;
+  height: 16px;
+  color: currentColor;
 `;
 
 const NotesContent = styled.div`
@@ -80,6 +105,7 @@ class EditorNotesPane extends Component {
     collection: ImmutablePropTypes.map.isRequired,
     user: PropTypes.object,
     t: PropTypes.func,
+    sourceUrl: PropTypes.string, // Link to the GitHub issue or source
   };
 
   static defaultProps = {
@@ -116,20 +142,56 @@ class EditorNotesPane extends Component {
 
     this.handleUpdateNote(noteId, { resolved: !currentResolved });
   };
+  // Helper method to get the appropriate link text and icon type based on the source
+  getSourceInfo = url => {
+    // Check if URL is from GitHub
+    if (url.includes('github.com')) {
+      return {
+        text: 'View in GitHub',
+        iconType: 'github', // Using GitHub icon type
+      };
+    }
+    
+    // TODO: Add support for other Git providers
+    // Example for future contributors:
+    // if (url.includes('gitlab.com')) {
+    //   return { text: 'View in GitLab', iconType: 'gitlab' };
+    // }
+    // if (url.includes('bitbucket.org')) {
+    //   return { text: 'View in Bitbucket', iconType: 'bitbucket' };
+    // }
+    
+    // Default fallback
+    return {
+      text: 'View source',
+      iconType: 'link',
+    };
+  };
 
   render() {
     const { notes, t } = this.props;
     const notesList = notes && notes.size !== undefined ? notes : List(notes || []);
     const notesCount = notesList.size;
     const unresolvedCount = notesList.filter(note => !note.get('resolved')).size;
+    
+    const sourceUrl = notesCount > 0 ? notesList.first()?.get('issueUrl') : null;
+    const sourceInfo = sourceUrl ? this.getSourceInfo(sourceUrl) : null;
 
     return (
       <NotesContainer>
         <NotesHeader>
-          <NotesTitle>{t('editor.editorNotesPane.title')}</NotesTitle>
-          {notesCount > 0 && (
-            <NotesCount>{unresolvedCount > 0 ? unresolvedCount : notesCount}</NotesCount>
-          )}
+          <NotesTitleGroup>
+            <NotesTitle>{t('editor.editorNotesPane.title')}</NotesTitle>
+            {notesCount > 0 && (
+              <NotesCount>{unresolvedCount > 0 ? unresolvedCount : notesCount}</NotesCount>
+            )}
+            {sourceInfo && (
+              <SourceLink href={sourceUrl} target="_blank" rel="noopener noreferrer">
+                <span>{sourceInfo.text}</span>
+                <SourceIcon type={sourceInfo.iconType} />
+              </SourceLink>
+            )}
+          </NotesTitleGroup>
         </NotesHeader>
 
         <NotesContent>

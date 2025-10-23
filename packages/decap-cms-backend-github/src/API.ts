@@ -1723,19 +1723,25 @@ ${note.content}`;
     /**
      * Get all notes for an entry 
      */
-    async getEntryNotes(collectionName: string, slug: string): Promise<Note[]> {
-      try {
-        const issue = await this.findEntryIssue(collectionName, slug);
-        if (!issue) {
-          return []; // No issue means no notes yet
-        }
-        const comments = await this.getIssueComments(issue.number);
-        return comments.map(comment => this.parseCommentToNote(comment));
-      } catch (error) {
-        console.error('Failed to get entry notes:', error);
-        return [];
+  async getEntryNotes(collectionName: string, slug: string): Promise<Note[]> {
+    try {
+      const issue = await this.findEntryIssue(collectionName, slug);
+      if (!issue) {
+        return []; // No issue means no notes yet
       }
+      const comments = await this.getIssueComments(issue.number);
+      const issueUrl = issue.html_url; // Get the issue URL once
+      
+      // Add issueUrl to each note
+      return comments.map(comment => ({
+        ...this.parseCommentToNote(comment),
+        issueUrl, // Add the issue URL to each note (this info is picked up by the UI to direct users to the source of the Notes in Github)
+      }));
+    } catch (error) {
+      console.error('Failed to get entry notes:', error);
+      return [];
     }
+  }
 
   /**
    * Add a note to any entry
@@ -1745,14 +1751,17 @@ ${note.content}`;
     slug: string,
     note: Note,
     entryTitle?: string,
-  ): Promise<string> {
+  ): Promise<{ commentId: string; issueUrl: string }> {
     try {
       let issue = await this.findEntryIssue(collectionName, slug);
       if (!issue) {
         issue = await this.createEntryIssue(collectionName, slug, entryTitle);
       }
-      const issueNoteId = await this.createIssueComment(issue.number, note);
-      return issueNoteId;
+      const commentId = await this.createIssueComment(issue.number, note);
+      return { 
+        commentId, 
+        issueUrl: issue.html_url 
+      };
     } catch (error) {
       console.error('Failed to add note to entry:', error);
       throw new APIError('Failed to create note', error.status || 500, API_NAME);

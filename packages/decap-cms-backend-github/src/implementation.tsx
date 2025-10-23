@@ -744,6 +744,7 @@ export default class GitHub implements Implementation {
 
   async addNote(collection: string, slug: string, noteData: Omit<Note, 'id'>): Promise<Note> {
     const currentUser = await this.currentUser({ token: this.token! });
+    
     const note: Note = {
       ...noteData,
       id: 'temp-' + Date.now(),
@@ -752,21 +753,26 @@ export default class GitHub implements Implementation {
       entrySlug: slug,
       timestamp: noteData.timestamp || new Date().toISOString(),
       resolved: noteData.resolved || false,
+      issueUrl: undefined,
     };
 
     // Get entry title for better issue naming
     let entryTitle: string | undefined;
     try {
-      const entryData = await this.getEntry(`${collection}/${slug}.md`); // Adjust path as needed
-      // Extract title from frontmatter if available
+      const entryData = await this.getEntry(`${collection}/${slug}.md`);
       const titleMatch = entryData.data.match(/^title:\s*["']?([^"'\n]+)["']?/m);
       entryTitle = titleMatch ? titleMatch[1] : undefined;
     } catch (error) {
       // Entry not found or error reading, use undefined title
     }
 
-    const commentId = await this.api!.addNoteToEntry(collection, slug, note, entryTitle);
-    return { ...note, id: commentId };
+    const { commentId, issueUrl } = await this.api!.addNoteToEntry(collection, slug, note, entryTitle);
+    
+    return { 
+      ...note, 
+      id: commentId,
+      issueUrl 
+    };
   }
 
   async updateNote(

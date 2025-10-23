@@ -71,6 +71,7 @@ export interface Note {
   author: string;
   entrySlug: string;
   resolved: boolean;
+  issueUrl?: string;
 }
 
 export type AssetProxy = {
