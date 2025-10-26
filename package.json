@@ -31,7 +31,7 @@
     "lint:css": "stylelint --ignore-path .gitignore \"packages/**/*.{css,js,jsx,ts,tsx}\"",
     "lint:js": "eslint --color --ignore-path .gitignore \"{{packages,scripts}/**/,}*.{js,jsx,ts,tsx}\"",
     "lint:format": "prettier \"{{packages,scripts}/**/,}*.{js,jsx,ts,tsx,css}\" --list-different",
-    "format": "npm run lint:js -- --fix --quiet && npm run format:prettier -- --write",
+    "format": "pnpm run lint:js -- --fix --quiet && pnpm run format:prettier -- --write",
     "format:prettier": "prettier \"{{packages,scripts}/**/,}*.{js,jsx,ts,tsx,css}\"",
     "prepare": "husky install"
   },
@@ -178,5 +178,6 @@
   "resolutions": {
     "react-redux": "catalog:"
   },
+  "packageManager": "pnpm@10.19.0",
   "version": "0.0.0"
 }

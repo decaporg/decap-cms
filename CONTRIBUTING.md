@@ -7,20 +7,20 @@ For details on contributing to documentation, see [Website Readme](https://githu
 
 ## Setup
 
-> Install [Node.js (LTS)](https://nodejs.org/) on your system.
+> Install [Node.js (LTS)](https://nodejs.org/) and [pnpm](https://pnpm.io/) on your system.
 
 ### Install dependencies
 
 ```sh
 git clone https://github.com/decaporg/decap-cms
 cd decap-cms
-npm install
+pnpm install
 ```
 
 ### Run locally
 
 ```sh
-npm run start
+pnpm run start
 ```
 
 ## Available scripts
@@ -30,7 +30,7 @@ npm run start
 Removes all of the CMS package `dist` directories.
 
 ```sh
-npm run clean
+pnpm run clean
 ```
 
 ### reset
@@ -38,7 +38,7 @@ npm run clean
 Runs the `clean` script and removes all the `node_modules` from the CMS packages.
 
 ```sh
-npm run reset
+pnpm run reset
 ```
 
 ### build
@@ -46,7 +46,7 @@ npm run reset
 Runs the `clean` script and builds the CMS packages.
 
 ```sh
-npm run build
+pnpm run build
 ```
 
 ### build-preview
@@ -54,7 +54,7 @@ npm run build
 Runs the `build` and `build-preview` scripts in each package and serves the resulting build locally.
 
 ```sh
-npm run build-preview
+pnpm run build-preview
 ```
 
 ### test
@@ -62,7 +62,7 @@ npm run build-preview
 Runs linting and Jest tests.
 
 ```sh
-npm run test
+pnpm run test
 ```
 
 ### test:all
@@ -70,7 +70,7 @@ npm run test
 Runs linting, Jest, and Cypress tests.
 
 ```sh
-npm run test:all
+pnpm run test:all
 ```
 
 ### test:e2e
@@ -78,7 +78,7 @@ npm run test:all
 Runs Cypress e2e tests.
 
 ```sh
-npm run test:e2e
+pnpm run test:e2e
 ```
 
 ### test:e2e:dev
@@ -86,7 +86,7 @@ npm run test:e2e
 Runs Cypress e2e tests on watch mode with an open instance of Chrome.
 
 ```sh
-npm run test:e2e:dev
+pnpm run test:e2e:dev
 ```
 
 ### format
@@ -94,7 +94,7 @@ npm run test:e2e:dev
 Formats code and docs according to our style guidelines.
 
 ```sh
-npm run format
+pnpm run format
 ```
 
 ## Pull Requests
@@ -109,19 +109,19 @@ Decap CMS uses the [Forking Workflow](https://www.atlassian.com/git/tutorials/co
 2. Create a branch from `main`. If you're addressing a specific issue, prefix your branch name with the issue number.
 3. If you've added code that should be tested, add tests.
 4. If you've changed APIs, update the documentation.
-5. Run `npm run test` and ensure the test suite passes.
-6. Use `npm run format` to format and lint your code.
+5. Run `pnpm run test` and ensure the test suite passes.
+6. Use `pnpm run format` to format and lint your code.
 7. PR's must be rebased before merge (feel free to ask for help).
 8. PR should be reviewed by two maintainers prior to merging.
 
 ## Debugging
 
-`npm run start` spawns a development server and uses `dev-test/config.yml` and `dev-test/index.html` to serve the CMS.
+`pnpm run start` spawns a development server and uses `dev-test/config.yml` and `dev-test/index.html` to serve the CMS.
 In order to debug a specific issue follow the next steps:
 
 1. Replace `dev-test/config.yml` with the relevant `config.yml`. If you want to test the backend, make sure that the `backend` property of the config indicates which backend you use (GitHub, Gitlab, Bitbucket etc) and path to the repo.
 
-```js
+```yaml
 backend:
   name: github
   repo: owner-name/repo-name
@@ -145,9 +145,10 @@ backend:
   </body>
 </html>
 ```
+
 The most important thing is to make sure that Decap CMS is loaded from the `dist` folder. This way, every time you make changes to the source code, they will be compiled and reflected immediately on `localhost`.
 
-3. Run `npm run start`
+3. Run `pnpm run start`
 4. Open `http://localhost:8080/` in the browser and you should have access to the CMS
 
 ### Debugging Git Gateway
@@ -157,11 +158,11 @@ When debugging the CMS with Git Gateway you must:
 1. Have a Netlify site with [Git Gateway](https://docs.netlify.com/visitor-access/git-gateway/) and [Netlify Identity](https://docs.netlify.com/visitor-access/identity/) enabled. An easy way to create such a site is to use a [template](https://www.decapcms.org/docs/start-with-a-template/), for example the [Gatsby template](https://app.netlify.com/start/deploy?repository=https://github.com/decaporg/gatsby-starter-decap-cms&stack=cms)
 2. Tell the CMS the URL of your Netlify site using a local storage item. To do so:
 
-    1. Open `http://localhost:8080/` in the browser
-    2. Open the Developer Console. Write the below command and press enter: `localStorage.setItem('netlifySiteURL', 'https://yourwebsiteurl.netlify.app/')`
-    3. To be sure, you can run this command as well: `localStorage.getItem('netlifySiteURL')`
-    4. Refresh the page
-    5. You should be able to log in via your Netlify Identity email/password
+   1. Open `http://localhost:8080/` in the browser
+   2. Open the Developer Console. Write the below command and press enter: `localStorage.setItem('netlifySiteURL', 'https://yourwebsiteurl.netlify.app/')`
+   3. To be sure, you can run this command as well: `localStorage.getItem('netlifySiteURL')`
+   4. Refresh the page
+   5. You should be able to log in via your Netlify Identity email/password
 
 ### Fine tune the way you run unit tests
 

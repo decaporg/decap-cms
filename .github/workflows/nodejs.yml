@@ -30,23 +30,27 @@ jobs:
     if: ${{ needs.changes.outputs.cms == 'true' }}
     steps:
       - uses: actions/checkout@v3
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
           check-latest: true
-          cache: 'npm'
+          cache: 'pnpm'
       - name: log versions
-        run: node --version && npm --version && yarn --version
+        run: node --version && pnpm --version
       - name: install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
       - name: run unit tests
-        run: npm run test:ci
+        run: pnpm run test:ci
       - name: build demo site
-        run: npm run build:demo
+        run: pnpm run build:demo
       - name: run e2e tests
         if: matrix.os == 'ubuntu-latest' && matrix.node-version == '22.x'
-        run: npm run test:e2e:run-ci
+        run: pnpm run test:e2e:run-ci
         env:
           IS_FORK: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == true || github.repository_owner != 'decaporg' }}
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
@@ -59,4 +63,3 @@ jobs:
           path: |
             cypress/screenshots
             cypress/videos
-
