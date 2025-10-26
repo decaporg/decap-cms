@@ -1,4 +1,4 @@
-import React from 'react';
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
@@ -62,7 +62,7 @@ const DraftText = styled.p`
   border-radius: ${lengths.borderRadius} 0 ${lengths.borderRadius} 0;
 `;
 
-class MediaLibraryCard extends React.Component {
+class MediaLibraryCard extends Component {
   render() {
     const {
       isSelected,

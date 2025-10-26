@@ -1,10 +1,10 @@
-import React from 'react';
+// eslint-disable-next-line no-unused-vars
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { translate } from 'react-polyglot';
 import styled from '@emotion/styled';
 import yaml from 'yaml';
 import truncate from 'lodash/truncate';
-import copyToClipboard from 'copy-text-to-clipboard';
 import { localForage } from 'decap-cms-lib-util';
 import { buttons, colors } from 'decap-cms-ui-default';
 import cleanStack from 'clean-stack';
@@ -117,7 +117,7 @@ function RecoveredEntry({ entry, t }) {
       <hr />
       <h2>{t('ui.errorBoundary.recoveredEntry.heading')}</h2>
       <strong>{t('ui.errorBoundary.recoveredEntry.warning')}</strong>
-      <CopyButton onClick={() => copyToClipboard(entry)}>
+      <CopyButton onClick={() => navigator.clipboard?.writeText(entry)}>
         {t('ui.errorBoundary.recoveredEntry.copyButtonLabel')}
       </CopyButton>
       <pre>
@@ -127,7 +127,7 @@ function RecoveredEntry({ entry, t }) {
   );
 }
 
-export class ErrorBoundary extends React.Component {
+export class ErrorBoundary extends Component {
   static propTypes = {
     children: PropTypes.node,
     t: PropTypes.func.isRequired,

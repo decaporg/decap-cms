@@ -23,11 +23,11 @@ const basePlugins = [
 // REVISIT: We probably don't need any of these since we use preset-env
 const legacyPlugins = [
   'transform-export-extensions',
-  '@babel/plugin-proposal-class-properties',
-  '@babel/plugin-proposal-object-rest-spread',
+  '@babel/plugin-transform-class-properties',
+  '@babel/plugin-transform-object-rest-spread',
   '@babel/plugin-proposal-export-default-from',
-  '@babel/plugin-proposal-nullish-coalescing-operator',
-  '@babel/plugin-proposal-optional-chaining',
+  '@babel/plugin-transform-nullish-coalescing-operator',
+  '@babel/plugin-transform-optional-chaining',
   '@babel/plugin-syntax-dynamic-import',
 ];
 
@@ -48,14 +48,14 @@ const svgo = {
 
 function presets() {
   return [
-    '@babel/preset-react',
-    ...(!isESM ? [['@babel/preset-env', {}]] : []),
     [
-      '@emotion/babel-preset-css-prop',
+      '@babel/preset-react',
       {
-        autoLabel: 'always',
+        runtime: 'automatic',
+        importSource: '@emotion/react',
       },
     ],
+    ...(!isESM ? [['@babel/preset-env', {}]] : []),
     '@babel/preset-typescript',
   ];
 }
@@ -64,6 +64,7 @@ function plugins() {
   if (isESM) {
     return [
       ...defaultPlugins,
+      '@emotion/babel-plugin',
       [
         'transform-define',
         {
@@ -89,6 +90,7 @@ function plugins() {
   if (isTest) {
     return [
       ...defaultPlugins,
+      '@emotion/babel-plugin',
       [
         'inline-react-svg',
         {
@@ -99,13 +101,29 @@ function plugins() {
   }
 
   if (!isProduction) {
-    return [...defaultPlugins];
+    return [...defaultPlugins, '@emotion/babel-plugin'];
   }
 
-  return defaultPlugins;
+  return [...defaultPlugins, '@emotion/babel-plugin'];
 }
 
 module.exports = {
   presets: presets(),
   plugins: plugins(),
+  overrides: [
+    {
+      test: /slate\.spec\.js$/,
+      presets: [
+        [
+          '@babel/preset-react',
+          {
+            runtime: 'classic',
+            pragma: 'h',
+          },
+        ],
+        ...(!isESM ? [['@babel/preset-env', {}]] : []),
+        '@babel/preset-typescript',
+      ],
+    },
+  ],
 };

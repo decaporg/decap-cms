@@ -1,5 +1,5 @@
+import { Component } from 'react';
 import PropTypes from 'prop-types';
-import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import { css } from '@emotion/react';
@@ -127,7 +127,7 @@ const AppHeaderLogo = styled.li`
   }
 `;
 
-class Header extends React.Component {
+class Header extends Component {
   static propTypes = {
     user: PropTypes.object.isRequired,
     collections: ImmutablePropTypes.map.isRequired,

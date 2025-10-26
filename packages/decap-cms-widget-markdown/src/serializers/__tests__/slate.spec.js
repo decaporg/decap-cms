@@ -1,9 +1,11 @@
+/** @jsxRuntime classic */
 /** @jsx h */
 
 import flow from 'lodash/flow';
 
-import h from '../../../test-helpers/h';
 import { markdownToSlate, slateToMarkdown } from '../index';
+// eslint-disable-next-line no-unused-vars
+import h from '../../../test-helpers/h';
 
 const process = flow([markdownToSlate, slateToMarkdown]);
 

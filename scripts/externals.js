@@ -105,5 +105,12 @@ module.exports = {
       amd: 'uuid',
       umd: 'uuid',
     },
+    'common-tags': {
+      root: ['DecapCmsDefaultExports', 'CommonTags'],
+      commonjs2: 'common-tags',
+      commonjs: 'common-tags',
+      amd: 'common-tags',
+      umd: 'common-tags',
+    },
   },
 };

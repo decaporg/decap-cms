@@ -30,6 +30,9 @@ module.exports = {
   rules: {
     'no-console': [0],
     'react/prop-types': [0],
+    // With the new React JSX transform (jsx: "react-jsx"), React doesn't need to be in scope
+    'react/react-in-jsx-scope': 'off',
+    'react/jsx-uses-react': 'off',
     'import/no-named-as-default': 0,
     'import/order': [
       'error',
@@ -99,6 +102,9 @@ module.exports = {
           'error',
           { functions: false, classes: true, variables: true },
         ],
+        // With the new React JSX transform (jsx: "react-jsx"), React doesn't need to be in scope
+        'react/react-in-jsx-scope': 'off',
+        'react/jsx-uses-react': 'off',
       },
     },
   ],

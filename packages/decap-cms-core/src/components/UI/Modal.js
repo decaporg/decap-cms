@@ -1,4 +1,4 @@
-import React from 'react';
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 import { css, Global, ClassNames } from '@emotion/react';
 import ReactModal from 'react-modal';
@@ -54,7 +54,7 @@ const styleStrings = {
   `,
 };
 
-export class Modal extends React.Component {
+export class Modal extends Component {
   static propTypes = {
     children: PropTypes.node.isRequired,
     isOpen: PropTypes.bool.isRequired,

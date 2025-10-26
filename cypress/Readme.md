@@ -15,14 +15,14 @@ Tests for the other backends use previously [recorded data](fixtures) and stub `
 ## Run Tests Locally
 
 ```bash
-npm run test:e2e # builds the demo site and runs Cypress in headless mode with mock data
+pnpm run test:e2e # builds the demo site and runs Cypress in headless mode with mock data
 ```
 
 ## Debug Tests
 
 ```bash
-npm run develop # starts a local dev server with the demo site
-npm run test:e2e:exec # runs Cypress in non-headless mode with mock data
+pnpm run develop # starts a local dev server with the demo site
+pnpm run test:e2e:exec # runs Cypress in non-headless mode with mock data
 ```
 
 ## Recording Tests Data
@@ -54,10 +54,10 @@ NETLIFY_INSTALLATION_ID=netlifyGitHubInstallationId
 To start a recording run the following commands:
 
 ```bash
-npm run develop # starts a local dev server with the demo site
-npm run mock:server:start # starts the recording proxy
-npm run test:e2e:record-fixtures:dev # runs Cypress in non-headless and pass data through the recording proxy
-npm run mock:server:stop # stops the recording proxy
+pnpm run develop # starts a local dev server with the demo site
+pnpm run mock:server:start # starts the recording proxy
+pnpm run test:e2e:record-fixtures:dev # runs Cypress in non-headless and pass data through the recording proxy
+pnpm run mock:server:stop # stops the recording proxy
 ```
 
 > During the recorded process a clone of the relevant repo will be created under `.temp` and reset between tests.

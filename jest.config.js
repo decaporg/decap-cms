@@ -9,12 +9,16 @@ module.exports = {
     'decap-cms-widget-object': '<rootDir>/packages/decap-cms-widget-object/src/index.js',
     '\\.(css|less)$': '<rootDir>/__mocks__/styleMock.js',
     '^#home-directory$': 'clean-stack/home-directory.js',
+    '^clean-stack$': '<rootDir>/__mocks__/cleanStackMock.js',
+    '\\.(svg)$': '<rootDir>/__mocks__/fileMock.js',
   },
   modulePathIgnorePatterns: ['.nx', 'dist'],
   snapshotSerializers: ['@emotion/jest/serializer'],
-  transformIgnorePatterns: [
-    'node_modules/(?!copy-text-to-clipboard|clean-stack|escape-string-regexp)',
-  ],
+  transform: {
+    '^.+\\.(ts|tsx)$': 'ts-jest',
+    '^.+\\.(js|jsx)$': 'babel-jest',
+  },
+  transformIgnorePatterns: ['node_modules/(?!clean-stack|escape-string-regexp|lodash)'],
   testEnvironment: 'jsdom',
   testEnvironmentOptions: {
     url: 'http://localhost:8080',

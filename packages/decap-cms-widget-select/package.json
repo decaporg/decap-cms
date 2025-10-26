@@ -17,19 +17,21 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "develop": "npm run build:esm -- --watch",
+    "develop": "pnpm run build:esm --watch",
     "build": "cross-env NODE_ENV=production webpack",
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
   },
   "peerDependencies": {
-    "decap-cms-lib-widgets": "^3.0.0",
-    "decap-cms-ui-default": "^3.0.0",
-    "immutable": "^3.7.6",
-    "prop-types": "^15.7.2",
-    "react": "^19.1.0",
-    "react-immutable-proptypes": "^2.1.0"
+    "@emotion/react": "catalog:",
+    "decap-cms-lib-widgets": "workspace:*",
+    "decap-cms-ui-default": "workspace:*",
+    "immutable": "catalog:",
+    "lodash": "catalog:",
+    "prop-types": "catalog:",
+    "react": "catalog:",
+    "react-immutable-proptypes": "catalog:"
   },
   "dependencies": {
-    "react-select": "^5.10.0"
+    "react-select": "catalog:"
   }
 }

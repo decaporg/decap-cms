@@ -1,10 +1,10 @@
-import React from 'react';
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 import { WidgetPreviewContainer } from 'decap-cms-ui-default';
 import DOMPurify from 'dompurify';
 
 import { markdownToHtml } from './serializers';
-class MarkdownPreview extends React.Component {
+class MarkdownPreview extends Component {
   static propTypes = {
     getAsset: PropTypes.func.isRequired,
     resolveWidget: PropTypes.func.isRequired,

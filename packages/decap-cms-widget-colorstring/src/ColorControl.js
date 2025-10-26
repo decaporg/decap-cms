@@ -1,4 +1,4 @@
-import React from 'react';
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import ChromePicker from 'react-color';
@@ -76,7 +76,7 @@ const ClickOutsideDiv = styled.div`
   left: 0;
 `;
 
-export default class ColorControl extends React.Component {
+export default class ColorControl extends Component {
   static propTypes = {
     onChange: PropTypes.func.isRequired,
     forID: PropTypes.string,

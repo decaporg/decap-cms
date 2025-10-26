@@ -1,4 +1,4 @@
-import React from 'react';
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { components } from 'react-select';
@@ -191,7 +191,7 @@ function convertToSortableOption(raw) {
   };
 }
 
-export default class RelationControl extends React.Component {
+export default class RelationControl extends Component {
   mounted = false;
 
   state = {

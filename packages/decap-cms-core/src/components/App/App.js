@@ -1,5 +1,5 @@
+import { Component, createElement } from 'react';
 import PropTypes from 'prop-types';
-import React from 'react';
 import { translate } from 'react-polyglot';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
@@ -69,7 +69,7 @@ function RouteInCollection({ collections, render, ...props }) {
   );
 }
 
-class App extends React.Component {
+class App extends Component {
   static propTypes = {
     auth: PropTypes.object.isRequired,
     config: PropTypes.object.isRequired,
@@ -124,7 +124,7 @@ class App extends React.Component {
     return (
       <div>
         <Notifications />
-        {React.createElement(backend.authComponent(), {
+        {createElement(backend.authComponent(), {
           onLogin: this.handleLogin.bind(this),
           error: auth.error,
           inProgress: auth.isFetching,

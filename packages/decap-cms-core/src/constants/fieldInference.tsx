@@ -1,5 +1,3 @@
-import React from 'react';
-
 export const IDENTIFIER_FIELDS = ['title', 'path'] as const;
 
 export const SORTABLE_FIELDS = ['title', 'date', 'author', 'description'] as const;
