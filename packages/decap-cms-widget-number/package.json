@@ -22,6 +22,7 @@
   "peerDependencies": {
     "@emotion/react": "catalog:",
     "decap-cms-ui-default": "workspace:*",
+    "immutable": "catalog:",
     "prop-types": "catalog:",
     "react": "catalog:",
     "react-immutable-proptypes": "catalog:"

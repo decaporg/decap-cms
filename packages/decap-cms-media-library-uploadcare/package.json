@@ -26,6 +26,7 @@
     "uploadcare-widget-tab-effects": "catalog:"
   },
   "peerDependencies": {
-    "immutable": "catalog:"
+    "immutable": "catalog:",
+    "uuid": "catalog:"
   }
 }

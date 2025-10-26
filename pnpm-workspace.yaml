@@ -52,6 +52,9 @@ catalog:
   '@types/morgan': ^1.7.37
   '@types/node': ^16.0.0
   '@types/redux-mock-store': ^1.0.2
+  '@types/react': ^19.0.0
+  '@types/react-dom': ^19.0.0
+  '@types/react-redux': ^7.1.33
   '@types/url-join': ^4.0.0
   '@types/uuid': ^8.3.2
   '@types/vfile-message': ^2.0.0
@@ -138,6 +141,7 @@ catalog:
   jest: ^27.0.0
   jest-cli: ^27.0.0
   jest-environment-jsdom: ^27.0.0
+  jest-mock: ^27.0.0
   js-base64: ^3.0.0
   js-sha256: ^0.9.0
   js-yaml: ^4.0.0

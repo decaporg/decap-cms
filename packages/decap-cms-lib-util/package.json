@@ -25,6 +25,7 @@
     "semaphore": "catalog:"
   },
   "peerDependencies": {
+    "common-tags": "catalog:",
     "immutable": "catalog:",
     "lodash": "catalog:"
   }

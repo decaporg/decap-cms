@@ -48,7 +48,13 @@ const svgo = {
 
 function presets() {
   return [
-    '@babel/preset-react',
+    [
+      '@babel/preset-react',
+      {
+        runtime: 'automatic',
+        development: isTest || !isProduction,
+      },
+    ],
     ...(!isESM ? [['@babel/preset-env', {}]] : []),
     [
       '@emotion/babel-preset-css-prop',
