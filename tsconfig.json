@@ -2,6 +2,7 @@
   "compilerOptions": {
     "declaration": true,
     "jsx": "react-jsx",
+    "jsxImportSource": "@emotion/react",
     "target": "esnext",
     "module": "esnext",
     "moduleResolution": "node",

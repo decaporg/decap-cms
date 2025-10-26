@@ -52,15 +52,10 @@ function presets() {
       '@babel/preset-react',
       {
         runtime: 'automatic',
+        importSource: '@emotion/react',
       },
     ],
     ...(!isESM ? [['@babel/preset-env', {}]] : []),
-    [
-      '@emotion/babel-preset-css-prop',
-      {
-        autoLabel: 'always',
-      },
-    ],
     '@babel/preset-typescript',
   ];
 }
@@ -69,6 +64,7 @@ function plugins() {
   if (isESM) {
     return [
       ...defaultPlugins,
+      '@emotion/babel-plugin',
       [
         'transform-define',
         {
@@ -94,6 +90,7 @@ function plugins() {
   if (isTest) {
     return [
       ...defaultPlugins,
+      '@emotion/babel-plugin',
       [
         'inline-react-svg',
         {
@@ -104,10 +101,10 @@ function plugins() {
   }
 
   if (!isProduction) {
-    return [...defaultPlugins];
+    return [...defaultPlugins, '@emotion/babel-plugin'];
   }
 
-  return defaultPlugins;
+  return [...defaultPlugins, '@emotion/babel-plugin'];
 }
 
 module.exports = {
