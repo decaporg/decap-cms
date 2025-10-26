@@ -16,13 +16,13 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "develop": "npm run build:esm -- --watch",
+    "develop": "pnpm run build:esm --watch",
     "build": "cross-env NODE_ENV=production webpack",
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
   },
   "peerDependencies": {
-    "immutable": "^3.7.6",
-    "lodash": "^4.17.11",
-    "uuid": "^8.3.2"
+    "immutable": "catalog:",
+    "lodash": "catalog:",
+    "uuid": "catalog:"
   }
 }

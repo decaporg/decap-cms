@@ -15,17 +15,17 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "develop": "npm run build:esm -- --watch",
+    "develop": "pnpm run build:esm --watch",
     "build": "cross-env NODE_ENV=production webpack",
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward --extensions \".js,.jsx,.ts,.tsx\""
   },
   "dependencies": {
-    "js-sha256": "^0.9.0",
-    "localforage": "^1.7.3",
-    "semaphore": "^1.1.0"
+    "js-sha256": "catalog:",
+    "localforage": "catalog:",
+    "semaphore": "catalog:"
   },
   "peerDependencies": {
-    "immutable": "^3.7.6",
-    "lodash": "^4.17.11"
+    "immutable": "catalog:",
+    "lodash": "catalog:"
   }
 }

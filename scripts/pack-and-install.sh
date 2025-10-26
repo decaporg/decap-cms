@@ -14,7 +14,7 @@ if [ ! -d "$TEST_PROJECT_PATH" ]; then
 fi
 
 echo "Building all packages..."
-npm run build
+pnpm run build
 
 echo "Packing all required packages..."
 
@@ -74,4 +74,4 @@ for pkg in "${PACKAGES[@]}"; do
 done
 
 cd "$TEST_PROJECT_PATH"
-eval "npm install $INSTALL_PATHS"
+eval "pnpm install $INSTALL_PATHS"

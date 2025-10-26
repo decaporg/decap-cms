@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const FriendlyErrorsWebpackPlugin = require('@soda/friendly-errors-webpack-plugin');
+const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 const { flatMap } = require('lodash');
 
 const { toGlobalName, externals } = require('./externals');
@@ -8,10 +9,6 @@ const pkg = require(path.join(process.cwd(), 'package.json'));
 
 const isProduction = process.env.NODE_ENV === 'production';
 const isTest = process.env.NODE_ENV === 'test';
-
-function moduleNameToPath(libName) {
-  return path.resolve(__dirname, '..', 'node_modules', libName);
-}
 
 function rules() {
   return {
@@ -28,7 +25,7 @@ function rules() {
     css: () => [
       {
         test: /\.css$/,
-        include: ['ol', 'react-toastify', 'codemirror'].map(moduleNameToPath),
+        include: [/node_modules[\\/](ol|react-toastify|codemirror)[\\/]/],
         use: ['to-string-loader', 'css-loader'],
       },
     ],
@@ -60,6 +57,18 @@ function plugins() {
     buffer: () =>
       new webpack.ProvidePlugin({
         Buffer: ['buffer', 'Buffer'],
+        process: 'process/browser',
+      }),
+    nodePolyfill: () => new NodePolyfillPlugin(),
+    stripNodeProtocol: () =>
+      new webpack.NormalModuleReplacementPlugin(/^node:/, resource => {
+        const moduleName = resource.request.replace(/^node:/, '');
+        // Handle node:url specially to provide fileURLToPath polyfill
+        if (moduleName === 'url') {
+          resource.request = path.resolve(__dirname, 'shims/fileURLToPath.js');
+        } else {
+          resource.request = moduleName;
+        }
       }),
   };
 }
@@ -140,7 +149,17 @@ function baseConfig({ target = isProduction ? 'umd' : 'umddir' } = {}) {
     },
     resolve: {
       extensions: ['.ts', '.tsx', '.js', '.json'],
-      fallback: { stream: require.resolve('stream-browserify') },
+      fallback: {
+        stream: require.resolve('stream-browserify'),
+        url: require.resolve('url/'),
+        process: require.resolve('process/browser'),
+      },
+      alias: {
+        url: require.resolve('url/'),
+        'process/browser': require.resolve('process/browser'),
+        // Polyfill for fileURLToPath used by clean-stack
+        'node:url': require.resolve('url/'),
+      },
     },
     plugins: Object.values(plugins()).map(plugin => plugin()),
     devtool: isTest ? '' : 'source-map',

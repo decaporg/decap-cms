@@ -15,31 +15,31 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "develop": "npm run build:esm -- --watch",
+    "develop": "pnpm run build:esm --watch",
     "build": "cross-env NODE_ENV=production webpack",
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore **/__tests__ --root-mode upward --extensions \".js,.jsx,.ts,.tsx\""
   },
   "dependencies": {
-    "apollo-cache-inmemory": "^1.6.2",
-    "apollo-client": "^2.6.3",
-    "apollo-link-context": "^1.0.18",
-    "apollo-link-http": "^1.5.15",
-    "common-tags": "^1.8.0",
-    "graphql": "^15.0.0",
-    "graphql-tag": "^2.10.1",
-    "js-base64": "^3.0.0",
-    "semaphore": "^1.1.0"
+    "apollo-cache-inmemory": "catalog:",
+    "apollo-client": "catalog:",
+    "apollo-link-context": "catalog:",
+    "apollo-link-http": "catalog:",
+    "common-tags": "catalog:",
+    "graphql": "catalog:",
+    "graphql-tag": "catalog:",
+    "js-base64": "catalog:",
+    "semaphore": "catalog:"
   },
   "peerDependencies": {
-    "@emotion/react": "^11.11.1",
-    "@emotion/styled": "^11.11.0",
-    "decap-cms-backend-github": "^3.0.0",
-    "decap-cms-lib-auth": "^3.0.0",
-    "decap-cms-lib-util": "^3.0.0",
-    "decap-cms-ui-auth": "^3.0.0",
-    "decap-cms-ui-default": "^3.0.0",
-    "lodash": "^4.17.11",
-    "prop-types": "^15.7.2",
-    "react": "^19.1.0"
+    "@emotion/react": "catalog:",
+    "@emotion/styled": "catalog:",
+    "decap-cms-backend-github": "workspace:*",
+    "decap-cms-lib-auth": "workspace:*",
+    "decap-cms-lib-util": "workspace:*",
+    "decap-cms-ui-auth": "workspace:*",
+    "decap-cms-ui-default": "workspace:*",
+    "lodash": "catalog:",
+    "prop-types": "catalog:",
+    "react": "catalog:"
   }
 }
