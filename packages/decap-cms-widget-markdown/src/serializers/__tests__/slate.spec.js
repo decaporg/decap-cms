@@ -3,7 +3,6 @@
 
 import flow from 'lodash/flow';
 
-import h from '../../../test-helpers/h';
 import { markdownToSlate, slateToMarkdown } from '../index';
 
 const process = flow([markdownToSlate, slateToMarkdown]);

@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
@@ -60,7 +61,7 @@ Avatar.propTypes = {
 
 function SettingsDropdown({ displayUrl, isTestRepo, imageUrl, onLogoutClick, t }) {
   return (
-    <React.Fragment>
+    <Fragment>
       {isTestRepo && (
         <AppHeaderTestRepoIndicator
           href="https://www.decapcms.org/docs/test-backend"
@@ -87,7 +88,7 @@ function SettingsDropdown({ displayUrl, isTestRepo, imageUrl, onLogoutClick, t }
       >
         <DropdownItem label={t('ui.settingsDropdown.logOut')} onClick={onLogoutClick} />
       </Dropdown>
-    </React.Fragment>
+    </Fragment>
   );
 }
 

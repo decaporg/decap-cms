@@ -1,3 +1,4 @@
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
@@ -41,7 +42,7 @@ const SearchResultHeading = styled.h1`
   ${components.cardTopHeading};
 `;
 
-export class Collection extends React.Component {
+export class Collection extends Component {
   static propTypes = {
     searchTerm: PropTypes.string,
     collectionName: PropTypes.string,

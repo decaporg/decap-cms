@@ -1,3 +1,4 @@
+import { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { css } from '@emotion/react';
@@ -243,7 +244,7 @@ const StatusDropdownItem = styled(DropdownItem)`
   }
 `;
 
-export class EditorToolbar extends React.Component {
+export class EditorToolbar extends Component {
   static propTypes = {
     isPersisting: PropTypes.bool,
     isPublishing: PropTypes.bool,
@@ -596,19 +597,19 @@ export class EditorToolbar extends React.Component {
       </SaveButton>,
       currentStatus
         ? [
-            <React.Fragment key="workflow-status-controls">
+            <Fragment key="workflow-status-controls">
               {this.renderWorkflowStatusControls()}
               {!hasChanged && this.renderNewEntryWorkflowPublishControls({ canCreate, canPublish })}
-            </React.Fragment>,
+            </Fragment>,
           ]
         : !isNewEntry && (
-            <React.Fragment key="existing-entry-workflow-publish-controls">
+            <Fragment key="existing-entry-workflow-publish-controls">
               {this.renderExistingEntryWorkflowPublishControls({
                 canCreate,
                 canPublish,
                 canDelete,
               })}
-            </React.Fragment>
+            </Fragment>
           ),
       (!showDelete || useOpenAuthoring) && !hasUnpublishedChanges && !isModification ? null : (
         <DeleteButton

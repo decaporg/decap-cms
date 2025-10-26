@@ -1,3 +1,4 @@
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
@@ -58,7 +59,7 @@ const ToolbarToggleLabel = styled.span`
     `};
 `;
 
-export default class Toolbar extends React.Component {
+export default class Toolbar extends Component {
   static propTypes = {
     buttons: ImmutablePropTypes.list,
     editorComponents: ImmutablePropTypes.list,

@@ -1,3 +1,4 @@
+import { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import jwtDecode from 'jwt-decode';
@@ -38,7 +39,7 @@ function normalizeClaimsToUser(
   };
 }
 
-export default class PKCEAuthenticationPage extends React.Component {
+export default class PKCEAuthenticationPage extends Component {
   static propTypes = {
     inProgress: PropTypes.bool,
     config: PropTypes.object.isRequired,
@@ -141,9 +142,9 @@ export default class PKCEAuthenticationPage extends React.Component {
         logo={config.logo}
         siteUrl={config.site_url}
         renderButtonContent={() => (
-          <React.Fragment>
+          <Fragment>
             <LoginButtonIcon type="link" /> {inProgress ? t('auth.loggingIn') : t('auth.login')}
-          </React.Fragment>
+          </Fragment>
         )}
         t={t}
       />

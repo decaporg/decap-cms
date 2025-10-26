@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { colorsRaw, colors, Icon, lengths, zIndex } from 'decap-cms-ui-default';
 import { translate } from 'react-polyglot';
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 
@@ -85,7 +86,7 @@ const SuggestionDivider = styled.div`
   width: 100%;
 `;
 
-class CollectionSearch extends React.Component {
+class CollectionSearch extends Component {
   static propTypes = {
     collections: ImmutablePropTypes.map.isRequired,
     collection: ImmutablePropTypes.map,

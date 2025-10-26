@@ -1,5 +1,5 @@
+import { Component } from 'react';
 import PropTypes from 'prop-types';
-
 import styled from '@emotion/styled';
 import { List, Map } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
@@ -36,7 +36,7 @@ const PreviewPaneFrame = styled(Frame)`
   border-radius: ${lengths.borderRadius};
 `;
 
-export class PreviewPane extends React.Component {
+export class PreviewPane extends Component {
   getWidget = (field, value, metadata, props, idx = null) => {
     const { getAsset, entry } = props;
     const widget = resolveWidget(field.get('widget'));

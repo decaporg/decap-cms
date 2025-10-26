@@ -1,5 +1,5 @@
+import { Component } from 'react';
 import PropTypes from 'prop-types';
-
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
@@ -128,7 +128,7 @@ function getColumnHeaderText(columnName, t) {
   }
 }
 
-class WorkflowList extends React.Component {
+class WorkflowList extends Component {
   static propTypes = {
     entries: ImmutablePropTypes.orderedMap,
     handleChangeStatus: PropTypes.func.isRequired,

@@ -1,6 +1,7 @@
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 
-export default class StringControl extends React.Component {
+export default class StringControl extends Component {
   static propTypes = {
     onChange: PropTypes.func.isRequired,
     forID: PropTypes.string,

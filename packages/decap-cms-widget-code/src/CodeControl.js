@@ -1,3 +1,4 @@
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { ClassNames } from '@emotion/react';
@@ -61,7 +62,7 @@ const settingsPersistKeys = {
   keyMap: 'cms.codemirror.keymap',
 };
 
-export default class CodeControl extends React.Component {
+export default class CodeControl extends Component {
   static propTypes = {
     field: ImmutablePropTypes.map.isRequired,
     onChange: PropTypes.func.isRequired,

@@ -1,3 +1,4 @@
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
@@ -66,7 +67,7 @@ const SidebarNavLink = styled(NavLink)`
   `};
 `;
 
-export class Sidebar extends React.Component {
+export class Sidebar extends Component {
   static propTypes = {
     collections: ImmutablePropTypes.map.isRequired,
     collection: ImmutablePropTypes.map,

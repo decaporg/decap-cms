@@ -1,3 +1,4 @@
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Map, List, fromJS } from 'immutable';
@@ -36,7 +37,7 @@ function getSelectedValue({ value, options, isMultiple }) {
   }
 }
 
-export default class SelectControl extends React.Component {
+export default class SelectControl extends Component {
   static propTypes = {
     onChange: PropTypes.func.isRequired,
     value: PropTypes.node,

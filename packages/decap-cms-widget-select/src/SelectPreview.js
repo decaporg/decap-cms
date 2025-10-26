@@ -1,5 +1,4 @@
 import PropTypes from 'prop-types';
-
 import { List } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { WidgetPreviewContainer } from 'decap-cms-ui-default';

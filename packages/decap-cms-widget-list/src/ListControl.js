@@ -1,3 +1,4 @@
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
@@ -171,7 +172,7 @@ function LabelComponent({ field, isActive, hasErrors, uniqueFieldId, isFieldOpti
   );
 }
 
-export default class ListControl extends React.Component {
+export default class ListControl extends Component {
   childRefs = {};
 
   static propTypes = {

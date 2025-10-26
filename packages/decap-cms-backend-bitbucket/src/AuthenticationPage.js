@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import { NetlifyAuthenticator, ImplicitAuthenticator } from 'decap-cms-lib-auth';
@@ -91,10 +91,10 @@ export default class BitbucketAuthenticationPage extends Component {
         logo={config.logo}
         siteUrl={config.site_url}
         renderButtonContent={() => (
-          <React.Fragment>
+          <Fragment>
             <LoginButtonIcon type="bitbucket" />
             {inProgress ? t('auth.loggingIn') : t('auth.loginWithBitbucket')}
-          </React.Fragment>
+          </Fragment>
         )}
         t={t}
       />

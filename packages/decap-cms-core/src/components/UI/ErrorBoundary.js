@@ -1,3 +1,4 @@
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 import { translate } from 'react-polyglot';
 import styled from '@emotion/styled';
@@ -125,7 +126,7 @@ function RecoveredEntry({ entry, t }) {
   );
 }
 
-export class ErrorBoundary extends React.Component {
+export class ErrorBoundary extends Component {
   static propTypes = {
     children: PropTypes.node,
     t: PropTypes.func.isRequired,

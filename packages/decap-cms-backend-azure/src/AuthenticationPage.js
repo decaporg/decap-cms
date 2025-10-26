@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import { ImplicitAuthenticator } from 'decap-cms-lib-auth';
@@ -76,10 +76,10 @@ export default class AzureAuthenticationPage extends Component {
         logoUrl={config.logo_url} // Deprecated, replaced by `logo.src`
         logo={config.logo}
         renderButtonContent={() => (
-          <React.Fragment>
+          <Fragment>
             <LoginButtonIcon type="azure" />
             {inProgress ? t('auth.loggingIn') : t('auth.loginWithAzure')}
-          </React.Fragment>
+          </Fragment>
         )}
         t={t}
       />

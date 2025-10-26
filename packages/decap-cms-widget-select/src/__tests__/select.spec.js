@@ -1,3 +1,4 @@
+import { Component } from 'react';
 import { fromJS, List } from 'immutable';
 import { render, fireEvent } from '@testing-library/react';
 
@@ -17,7 +18,7 @@ const numberOptions = [
   { value: 2, label: 'Baz' },
 ];
 
-class SelectController extends React.Component {
+class SelectController extends Component {
   state = {
     value: this.props.defaultValue,
   };

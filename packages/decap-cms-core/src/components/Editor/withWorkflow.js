@@ -1,3 +1,4 @@
+import { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { EDITORIAL_WORKFLOW } from '../../constants/publishModes';
@@ -51,7 +52,7 @@ export default function withWorkflow(Editor) {
     null,
     mergeProps,
   )(
-    class WorkflowEditor extends React.Component {
+    class WorkflowEditor extends Component {
       render() {
         return <Editor {...this.props} />;
       }

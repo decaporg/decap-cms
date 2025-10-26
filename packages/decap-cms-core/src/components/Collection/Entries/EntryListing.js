@@ -1,5 +1,5 @@
+import { Component } from 'react';
 import PropTypes from 'prop-types';
-
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import { Waypoint } from 'react-waypoint';
@@ -18,7 +18,7 @@ const CardsGrid = styled.ul`
   margin-bottom: 16px;
 `;
 
-class EntryListing extends React.Component {
+class EntryListing extends Component {
   static propTypes = {
     collections: ImmutablePropTypes.iterable.isRequired,
     entries: ImmutablePropTypes.list,
