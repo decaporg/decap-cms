@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
 import padStart from 'lodash/padStart';
 import { Map } from 'immutable';

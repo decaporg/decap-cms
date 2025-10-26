@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import { WidgetPreviewContainer } from 'decap-cms-ui-default';
 import DOMPurify from 'dompurify';

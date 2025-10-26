@@ -1,5 +1,6 @@
+/** @jsxRuntime classic */
 /** @jsx jsx */
-import React from 'react';
+
 import PropTypes from 'prop-types';
 import { jsx, css } from '@emotion/react';
 import dayjs from 'dayjs';

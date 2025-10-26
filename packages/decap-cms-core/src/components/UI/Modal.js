@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import { css, Global, ClassNames } from '@emotion/react';
 import ReactModal from 'react-modal';

@@ -4,7 +4,7 @@ import {
   DragSource as ReactDNDDragSource,
   DropTarget as ReactDNDDropTarget,
 } from 'react-dnd';
-import React from 'react';
+
 import PropTypes from 'prop-types';
 
 export function DragSource({ namespace, ...props }) {

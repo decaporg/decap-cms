@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { css } from '@emotion/react';
 import { Toggle, ToggleBackground, colors } from 'decap-cms-ui-default';

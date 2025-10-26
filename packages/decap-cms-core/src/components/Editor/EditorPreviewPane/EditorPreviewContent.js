@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+
 import { isElement } from 'react-is';
 import { ScrollSyncPane } from 'react-scroll-sync';
 import { FrameContextConsumer } from 'react-frame-component';

@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import { ClassNames } from '@emotion/react';
 import olStyles from 'ol/ol.css';

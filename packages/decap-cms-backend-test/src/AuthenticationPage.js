@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import { Icon, buttons, shadows, GoBackButton } from 'decap-cms-ui-default';

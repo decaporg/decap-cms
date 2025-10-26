@@ -1,5 +1,5 @@
 // @refresh reset
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { ClassNames, css as coreCss } from '@emotion/react';

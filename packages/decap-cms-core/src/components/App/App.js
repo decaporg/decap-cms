@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+
 import { translate } from 'react-polyglot';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
