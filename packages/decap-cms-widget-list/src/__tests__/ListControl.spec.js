@@ -1,11 +1,12 @@
-import { Component } from 'react';
 import { fireEvent, render } from '@testing-library/react';
 import { fromJS } from 'immutable';
 
 import ListControl from '../ListControl';
 
 jest.mock('decap-cms-widget-object', () => {
-  class MockObjectControl extends Component {
+  const React = require('react');
+
+  class MockObjectControl extends React.Component {
     render() {
       return <mock-object-control {...this.props}>{this.props.children}</mock-object-control>;
     }

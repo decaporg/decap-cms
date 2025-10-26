@@ -1,4 +1,5 @@
-import { Component } from 'react';
+// eslint-disable-next-line no-unused-vars
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { translate } from 'react-polyglot';
 import styled from '@emotion/styled';

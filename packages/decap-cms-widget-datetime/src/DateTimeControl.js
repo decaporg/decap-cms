@@ -3,7 +3,8 @@
 
 import { Component } from 'react';
 import PropTypes from 'prop-types';
-import { css } from '@emotion/react';
+// eslint-disable-next-line no-unused-vars
+import { css, jsx } from '@emotion/react';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import localizedFormat from 'dayjs/plugin/localizedFormat';

@@ -4,6 +4,8 @@
 import flow from 'lodash/flow';
 
 import { markdownToSlate, slateToMarkdown } from '../index';
+// eslint-disable-next-line no-unused-vars
+import h from '../../../test-helpers/h';
 
 const process = flow([markdownToSlate, slateToMarkdown]);
 

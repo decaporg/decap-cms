@@ -52,7 +52,6 @@ function presets() {
       '@babel/preset-react',
       {
         runtime: 'automatic',
-        development: isTest || !isProduction,
       },
     ],
     ...(!isESM ? [['@babel/preset-env', {}]] : []),
