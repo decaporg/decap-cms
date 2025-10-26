@@ -262,7 +262,7 @@ catalogs:
       specifier: ^5.46.0
       version: 5.65.20
     common-tags:
-      specifier: ^1.8.0
+      specifier: 1.8.2
       version: 1.8.2
     commonmark:
       specifier: ^0.30.0
@@ -975,6 +975,9 @@ importers:
       cache-me-outside:
         specifier: 'catalog:'
         version: 0.0.10
+      common-tags:
+        specifier: 'catalog:'
+        version: 1.8.2
       copy-webpack-plugin:
         specifier: 'catalog:'
         version: 10.2.4(webpack@5.102.1)

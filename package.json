@@ -70,14 +70,14 @@
     "@testing-library/dom": "catalog:",
     "@testing-library/jest-dom": "catalog:",
     "@testing-library/react": "catalog:",
-    "@types/react": "catalog:",
-    "@types/react-dom": "catalog:",
-    "@types/react-redux": "catalog:",
     "@types/common-tags": "catalog:",
     "@types/jest": "catalog:",
     "@types/js-base64": "catalog:",
     "@types/jwt-decode": "catalog:",
     "@types/lodash": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@types/react-redux": "catalog:",
     "@types/uuid": "catalog:",
     "@typescript-eslint/eslint-plugin": "catalog:",
     "@typescript-eslint/parser": "catalog:",
@@ -97,6 +97,7 @@
     "babel-plugin-transform-export-extensions": "catalog:",
     "babel-plugin-transform-inline-environment-variables": "catalog:",
     "cache-me-outside": "catalog:",
+    "common-tags": "catalog:",
     "copy-webpack-plugin": "catalog:",
     "cross-env": "catalog:",
     "css-loader": "catalog:",
@@ -109,6 +110,7 @@
     "eslint-plugin-import": "catalog:",
     "eslint-plugin-prettier": "catalog:",
     "eslint-plugin-react": "catalog:",
+    "eslint-plugin-storybook": "catalog:",
     "eslint-plugin-unicorn": "catalog:",
     "execa": "catalog:",
     "fs-extra": "catalog:",
@@ -148,8 +150,7 @@
     "unist-util-visit": "catalog:",
     "webpack": "catalog:",
     "webpack-cli": "catalog:",
-    "webpack-dev-server": "catalog:",
-    "eslint-plugin-storybook": "catalog:"
+    "webpack-dev-server": "catalog:"
   },
   "workspaces": {
     "packages": [

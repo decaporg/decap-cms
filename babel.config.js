@@ -110,4 +110,20 @@ function plugins() {
 module.exports = {
   presets: presets(),
   plugins: plugins(),
+  overrides: [
+    {
+      test: /slate\.spec\.js$/,
+      presets: [
+        [
+          '@babel/preset-react',
+          {
+            runtime: 'classic',
+            pragma: 'h',
+          },
+        ],
+        ...(!isESM ? [['@babel/preset-env', {}]] : []),
+        '@babel/preset-typescript',
+      ],
+    },
+  ],
 };

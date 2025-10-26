@@ -8,7 +8,13 @@ describe('integrations', () => {
   it('should return default state when no integrations', () => {
     const result = integrations(null, {
       type: CONFIG_SUCCESS,
-      payload: { integrations: [] },
+      payload: {
+        integrations: [],
+        backend: { name: 'test-repo' },
+        collections: [],
+        error: undefined,
+        isFetching: false,
+      },
     } as ConfigAction);
     expect(result && result.toJS()).toEqual({
       providers: {},
