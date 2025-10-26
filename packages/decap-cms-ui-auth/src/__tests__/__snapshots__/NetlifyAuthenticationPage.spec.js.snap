@@ -117,13 +117,7 @@ exports[`NetlifyAuthenticationPage should render with identity error 1`] = `
     <span
       class="emotion-6 emotion-7 emotion-8"
     >
-      <svg
-        fill="none"
-        height="90"
-        viewBox="0 0 335 90"
-        width="335"
-        xmlns="http://www.w3.org/2000/svg"
-      >
+      <svg>
         <path
           class="no-fill"
           d="M30.73.15 0 2.95l3.67 40.21 20.03-1.83-1.99-21.86 10.71-.98c10.61-.97 19.14 7.53 20.29 20.19l19.67-1.79C70.34 14.72 51.64-1.75 30.73.15ZM73.61 49.51c0 12.72-7.73 21.95-18.37 21.95H44.49V49.47H24.38v40.42h30.86c21.02 0 38.12-18.11 38.12-40.38v-.04H73.61v.04Z"
@@ -257,13 +251,7 @@ exports[`NetlifyAuthenticationPage should render with no identity error 1`] = `
     <span
       class="emotion-6 emotion-7 emotion-8"
     >
-      <svg
-        fill="none"
-        height="90"
-        viewBox="0 0 335 90"
-        width="335"
-        xmlns="http://www.w3.org/2000/svg"
-      >
+      <svg>
         <path
           class="no-fill"
           d="M30.73.15 0 2.95l3.67 40.21 20.03-1.83-1.99-21.86 10.71-.98c10.61-.97 19.14 7.53 20.29 20.19l19.67-1.79C70.34 14.72 51.64-1.75 30.73.15ZM73.61 49.51c0 12.72-7.73 21.95-18.37 21.95H44.49V49.47H24.38v40.42h30.86c21.02 0 38.12-18.11 38.12-40.38v-.04H73.61v.04Z"
