@@ -27,7 +27,7 @@
     "mock:server:start": "node -e 'require(\"./cypress/utils/mock-server\").start()'",
     "mock:server:stop": "node -e 'require(\"./cypress/utils/mock-server\").stop()'",
     "lint": "run-p -c --aggregate-output \"lint:*\"",
-    "lint-quiet": "run-p -c --aggregate-output \"lint:* --quiet\"",
+    "lint-quiet": "run-p -c --aggregate-output \"lint:*\"",
     "lint:css": "stylelint --ignore-path .gitignore \"packages/**/*.{css,js,jsx,ts,tsx}\"",
     "lint:js": "eslint --color --ignore-path .gitignore \"{{packages,scripts}/**/,}*.{js,jsx,ts,tsx}\"",
     "lint:format": "prettier \"{{packages,scripts}/**/,}*.{js,jsx,ts,tsx,css}\" --list-different",
