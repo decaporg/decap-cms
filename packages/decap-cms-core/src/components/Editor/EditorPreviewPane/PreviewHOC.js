@@ -1,8 +1,8 @@
-import React from 'react';
+import { createElement, Component } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 
-class PreviewHOC extends React.Component {
+class PreviewHOC extends Component {
   /**
    * Only re-render on value change, but always re-render objects and lists.
    * Their child widgets will each also be wrapped with this component, and
@@ -20,7 +20,7 @@ class PreviewHOC extends React.Component {
 
   render() {
     const { previewComponent, ...props } = this.props;
-    return React.createElement(previewComponent, props);
+    return createElement(previewComponent, props);
   }
 }
 

@@ -48,14 +48,14 @@ const svgo = {
 
 function presets() {
   return [
-    '@babel/preset-react',
-    ...(!isESM ? [['@babel/preset-env', {}]] : []),
     [
-      '@emotion/babel-preset-css-prop',
+      '@babel/preset-react',
       {
-        autoLabel: 'always',
+        runtime: 'automatic',
+        importSource: '@emotion/react',
       },
     ],
+    ...(!isESM ? [['@babel/preset-env', {}]] : []),
     '@babel/preset-typescript',
   ];
 }
@@ -64,6 +64,7 @@ function plugins() {
   if (isESM) {
     return [
       ...defaultPlugins,
+      '@emotion/babel-plugin',
       [
         'transform-define',
         {
@@ -89,6 +90,7 @@ function plugins() {
   if (isTest) {
     return [
       ...defaultPlugins,
+      '@emotion/babel-plugin',
       [
         'inline-react-svg',
         {
@@ -99,13 +101,27 @@ function plugins() {
   }
 
   if (!isProduction) {
-    return [...defaultPlugins];
+    return [...defaultPlugins, '@emotion/babel-plugin'];
   }
 
-  return defaultPlugins;
+  return [...defaultPlugins, '@emotion/babel-plugin'];
 }
 
 module.exports = {
   presets: presets(),
   plugins: plugins(),
+  overrides: [
+    {
+      test: /slate\.spec\.js$/,
+      presets: [
+        [
+          '@babel/preset-react',
+          {
+            runtime: 'classic',
+            pragma: 'h',
+          },
+        ],
+      ],
+    },
+  ],
 };

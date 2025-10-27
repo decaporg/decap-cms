@@ -1,4 +1,4 @@
-import React from 'react';
+import { Component, Fragment } from 'react';
 import { List } from 'immutable';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
@@ -102,7 +102,7 @@ function TreeNode(props) {
         : node.children.some(c => c.isDir));
 
     return (
-      <React.Fragment key={node.path}>
+      <Fragment key={node.path}>
         <TreeNavLink
           exact
           to={to}
@@ -125,7 +125,7 @@ function TreeNode(props) {
             onToggle={onToggle}
           />
         )}
-      </React.Fragment>
+      </Fragment>
     );
   });
 }
@@ -247,7 +247,7 @@ export function updateNode(treeData, node, callback) {
   return updater([...treeData]);
 }
 
-export class NestedCollection extends React.Component {
+export class NestedCollection extends Component {
   static propTypes = {
     collection: ImmutablePropTypes.map.isRequired,
     entries: ImmutablePropTypes.list.isRequired,

@@ -1,4 +1,4 @@
-import React from 'react';
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
@@ -71,7 +71,7 @@ const ActionButton = styled.button`
 
 export const DownloadButton = ActionButton;
 
-export class CopyToClipBoardButton extends React.Component {
+export class CopyToClipBoardButton extends Component {
   mounted = false;
   timeout;
 

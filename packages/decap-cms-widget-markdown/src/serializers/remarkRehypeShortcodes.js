@@ -1,4 +1,4 @@
-import React from 'react';
+import { createElement } from 'react';
 import map from 'lodash/map';
 import has from 'lodash/has';
 import { renderToString } from 'react-dom/server';
@@ -59,7 +59,7 @@ export default function remarkToRehypeShortcodes({ plugins, getAsset, resolveWid
       return toPreview(shortcodeData, getAsset, fields);
     }
     const preview = resolveWidget(widget);
-    return React.createElement(preview.preview, {
+    return createElement(preview.preview, {
       value: shortcodeData,
       field: plugin,
       getAsset,

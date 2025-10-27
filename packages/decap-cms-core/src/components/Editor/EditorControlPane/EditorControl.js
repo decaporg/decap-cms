@@ -1,4 +1,4 @@
-import React from 'react';
+import { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
@@ -121,7 +121,7 @@ function LabelComponent({ field, isActive, hasErrors, uniqueFieldId, isFieldOpti
   return labelComponent;
 }
 
-class EditorControl extends React.Component {
+class EditorControl extends Component {
   static propTypes = {
     value: PropTypes.oneOfType([
       PropTypes.node,

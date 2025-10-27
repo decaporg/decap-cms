@@ -1,4 +1,4 @@
-import React from 'react';
+import { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import {
@@ -39,7 +39,7 @@ const clientSideAuthenticators = {
     }),
 };
 
-export default class GitLabAuthenticationPage extends React.Component {
+export default class GitLabAuthenticationPage extends Component {
   static propTypes = {
     onLogin: PropTypes.func.isRequired,
     inProgress: PropTypes.bool,
@@ -114,10 +114,10 @@ export default class GitLabAuthenticationPage extends React.Component {
         logo={config.logo}
         siteUrl={config.site_url}
         renderButtonContent={() => (
-          <React.Fragment>
+          <Fragment>
             <LoginButtonIcon type="gitlab" />{' '}
             {inProgress ? t('auth.loggingIn') : t('auth.loginWithGitLab')}
-          </React.Fragment>
+          </Fragment>
         )}
         t={t}
       />

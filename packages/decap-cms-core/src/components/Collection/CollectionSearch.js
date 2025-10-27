@@ -1,4 +1,4 @@
-import React from 'react';
+import { Component } from 'react';
 import styled from '@emotion/styled';
 import { colorsRaw, colors, Icon, lengths, zIndex } from 'decap-cms-ui-default';
 import { translate } from 'react-polyglot';
@@ -86,7 +86,7 @@ const SuggestionDivider = styled.div`
   width: 100%;
 `;
 
-class CollectionSearch extends React.Component {
+class CollectionSearch extends Component {
   static propTypes = {
     collections: ImmutablePropTypes.map.isRequired,
     collection: ImmutablePropTypes.map,

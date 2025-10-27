@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import { Component } from 'react';
 import styled from '@emotion/styled';
 import partial from 'lodash/partial';
 import {
@@ -65,7 +65,7 @@ if (window.netlifyIdentity) {
   });
 }
 
-export default class NetlifyAuthenticationPage extends React.Component {
+export default class NetlifyAuthenticationPage extends Component {
   static authClient;
 
   static propTypes = {

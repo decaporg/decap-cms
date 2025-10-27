@@ -168,9 +168,7 @@ exports[`ListControl should add to list when add button is clicked 1`] = `
           <span
             class="emotion-7 emotion-8 emotion-9"
           >
-            <svg
-              viewBox="0 0 24 24"
-            >
+            <svg>
               <path
                 d="m5.123 6.33-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
               />
@@ -186,12 +184,7 @@ exports[`ListControl should add to list when add button is clicked 1`] = `
         <span
           class="emotion-7 emotion-13 emotion-9"
         >
-          <svg
-            height="24"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
+          <svg>
             <path
               d="M19 14h-4a1 1 0 0 0-1 1v4a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-4a1 1 0 0 0-1-1H5a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h4a1 1 0 0 0 1-1V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h4a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1Z"
             />
@@ -420,9 +413,7 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
           <span
             class="emotion-7 emotion-8 emotion-9"
           >
-            <svg
-              viewBox="0 0 24 24"
-            >
+            <svg>
               <path
                 d="m5.123 6.33-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
               />
@@ -438,12 +429,7 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
         <span
           class="emotion-7 emotion-13 emotion-9"
         >
-          <svg
-            height="24"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
+          <svg>
             <path
               d="M19 14h-4a1 1 0 0 0-1 1v4a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-4a1 1 0 0 0-1-1H5a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h4a1 1 0 0 0 1-1V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h4a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1Z"
             />
@@ -702,9 +688,7 @@ exports[`ListControl should remove from list when remove button is clicked 2`] =
           <span
             class="emotion-7 emotion-8 emotion-9"
           >
-            <svg
-              viewBox="0 0 24 24"
-            >
+            <svg>
               <path
                 d="m5.123 6.33-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
               />
@@ -720,12 +704,7 @@ exports[`ListControl should remove from list when remove button is clicked 2`] =
         <span
           class="emotion-7 emotion-13 emotion-9"
         >
-          <svg
-            height="24"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
+          <svg>
             <path
               d="M19 14h-4a1 1 0 0 0-1 1v4a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-4a1 1 0 0 0-1-1H5a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h4a1 1 0 0 0 1-1V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h4a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1Z"
             />
@@ -967,9 +946,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
           <span
             class="emotion-7 emotion-8 emotion-9"
           >
-            <svg
-              viewBox="0 0 24 24"
-            >
+            <svg>
               <path
                 d="m5.123 6.33-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
               />
@@ -985,12 +962,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
         <span
           class="emotion-7 emotion-13 emotion-9"
         >
-          <svg
-            height="24"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
+          <svg>
             <path
               d="M19 14h-4a1 1 0 0 0-1 1v4a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-4a1 1 0 0 0-1-1H5a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h4a1 1 0 0 0 1-1V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h4a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1Z"
             />
@@ -1249,9 +1221,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
           <span
             class="emotion-7 emotion-8 emotion-9"
           >
-            <svg
-              viewBox="0 0 24 24"
-            >
+            <svg>
               <path
                 d="m5.123 6.33-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
               />
@@ -1267,12 +1237,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
         <span
           class="emotion-7 emotion-13 emotion-9"
         >
-          <svg
-            height="24"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
+          <svg>
             <path
               d="M19 14h-4a1 1 0 0 0-1 1v4a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-4a1 1 0 0 0-1-1H5a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h4a1 1 0 0 0 1-1V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h4a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1Z"
             />
@@ -1531,9 +1496,7 @@ exports[`ListControl should render list with fields with default collapse ("true
           <span
             class="emotion-7 emotion-8 emotion-9"
           >
-            <svg
-              viewBox="0 0 24 24"
-            >
+            <svg>
               <path
                 d="m5.123 6.33-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
               />
@@ -1549,12 +1512,7 @@ exports[`ListControl should render list with fields with default collapse ("true
         <span
           class="emotion-7 emotion-13 emotion-9"
         >
-          <svg
-            height="24"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
+          <svg>
             <path
               d="M19 14h-4a1 1 0 0 0-1 1v4a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-4a1 1 0 0 0-1-1H5a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h4a1 1 0 0 0 1-1V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h4a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1Z"
             />
@@ -1796,9 +1754,7 @@ exports[`ListControl should render list with fields with default collapse ("true
           <span
             class="emotion-7 emotion-8 emotion-9"
           >
-            <svg
-              viewBox="0 0 24 24"
-            >
+            <svg>
               <path
                 d="m5.123 6.33-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
               />
@@ -1814,12 +1770,7 @@ exports[`ListControl should render list with fields with default collapse ("true
         <span
           class="emotion-7 emotion-13 emotion-9"
         >
-          <svg
-            height="24"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
+          <svg>
             <path
               d="M19 14h-4a1 1 0 0 0-1 1v4a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-4a1 1 0 0 0-1-1H5a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h4a1 1 0 0 0 1-1V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h4a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1Z"
             />
@@ -1999,9 +1950,7 @@ exports[`ListControl should render list with nested object 1`] = `
           <span
             class="emotion-7 emotion-8 emotion-9"
           >
-            <svg
-              viewBox="0 0 24 24"
-            >
+            <svg>
               <path
                 d="m5.123 6.33-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
               />
@@ -2017,12 +1966,7 @@ exports[`ListControl should render list with nested object 1`] = `
         <span
           class="emotion-7 emotion-13 emotion-9"
         >
-          <svg
-            height="24"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
+          <svg>
             <path
               d="M19 14h-4a1 1 0 0 0-1 1v4a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-4a1 1 0 0 0-1-1H5a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h4a1 1 0 0 0 1-1V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h4a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1Z"
             />
@@ -2285,9 +2229,7 @@ exports[`ListControl should render list with nested object with collapse = false
           <span
             class="emotion-7 emotion-8 emotion-9"
           >
-            <svg
-              viewBox="0 0 24 24"
-            >
+            <svg>
               <path
                 d="m5.123 6.33-2.26 2.137 8.656 9.15 9.344-9.105-2.17-2.228-7.084 6.902z"
               />
@@ -2303,12 +2245,7 @@ exports[`ListControl should render list with nested object with collapse = false
         <span
           class="emotion-7 emotion-13 emotion-9"
         >
-          <svg
-            height="24"
-            viewBox="0 0 24 24"
-            width="24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
+          <svg>
             <path
               d="M19 14h-4a1 1 0 0 0-1 1v4a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-4a1 1 0 0 0-1-1H5a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1h4a1 1 0 0 0 1-1V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h4a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1Z"
             />
