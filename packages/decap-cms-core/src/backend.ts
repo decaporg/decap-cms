@@ -82,6 +82,7 @@ import type {
   DataFile,
   UnpublishedEntryDiff,
   Note,
+  IssueChange
 } from 'decap-cms-lib-util';
 import type { Map } from 'immutable';
 
@@ -296,6 +297,17 @@ interface ImplementationInitOptions {
 
 type Implementation = BackendImplementation & {
   init: (config: CmsConfig, options: ImplementationInitOptions) => Implementation;
+
+  startNotesPolling?: (
+    collection: string,
+    slug: string,
+    callbacks: {
+      onUpdate?: (notes: Note[], changes: IssueChange[]) => void;
+      onChange?: (change: IssueChange) => void;
+    }
+  ) => Promise <void>;
+  stopNotesPolling?: (collection: string, slug: string) => Promise<void>;
+  refreshNotesNow?: (collection: string, slug: string) => Promise<void>;
 };
 
 function prepareMetaPath(path: string, collection: Collection) {
@@ -628,6 +640,35 @@ export class Backend {
     }
 
     throw new Error(`Backend '${this.backendName}' does not support toggling note resolution`);
+  }
+
+  async startNotesPolling(
+    collection: string,
+    slug: string,
+    callbacks: {
+      onUpdate?: (notes: Note[], changes: IssueChange[]) => void;
+      onChange?: (change: IssueChange) => void;
+    }
+  ): Promise<void> {
+    if (!this.implementation.startNotesPolling) {
+      console.warn('Backend does not support notes polling');
+      return;
+    }
+    return this.implementation.startNotesPolling(collection, slug, callbacks);
+  }
+
+  async stopNotesPolling(collection: string, slug: string): Promise<void> {
+    if (typeof this.implementation.stopNotesPolling === 'function') {
+      return this.implementation.stopNotesPolling(collection, slug);
+    }
+  }
+
+  async refreshNotesNow(collection: string, slug: string): Promise<void> {
+    if (typeof this.implementation.refreshNotesNow === 'function') {
+      return this.implementation.refreshNotesNow(collection, slug);
+    }
+    // Fallback: just reload notes without polling
+    console.warn(`Backend '${this.backendName}' does not support manual refresh`);
   }
 
   reopenIssueForUnpublishedEntry(collection: string, slug: string) {

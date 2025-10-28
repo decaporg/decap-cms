@@ -22,7 +22,7 @@ import { getProcessSegment } from '../lib/formatters';
 import { hasI18n, duplicateDefaultI18nFields, serializeI18n, I18N, I18N_FIELD } from '../lib/i18n';
 import { addNotification } from './notifications';
 
-import type { ImplementationMediaFile, Note } from 'decap-cms-lib-util';
+import type { ImplementationMediaFile, Note, IssueChange } from 'decap-cms-lib-util';
 import type { AnyAction } from 'redux';
 import type { ThunkDispatch } from 'redux-thunk';
 import type {
@@ -99,6 +99,10 @@ export const NOTE_PERSIST_FAILURE = 'NOTE_PERSIST_FAILURE';
 export const NOTE_DELETE_REQUEST = 'NOTE_DELETE_REQUEST';
 export const NOTE_DELETE_SUCCESS = 'NOTE_DELETE_SUCCESS';
 export const NOTE_DELETE_FAILURE = 'NOTE_DELETE_FAILURE';
+export const NOTES_POLLING_START = 'NOTES_POLLING_START';
+export const NOTES_POLLING_STOP = 'NOTES_POLLING_STOP';
+export const NOTES_POLLING_UPDATE = 'NOTES_POLLING_UPDATE';
+export const NOTES_CHANGE_DETECTED = 'NOTES_CHANGE_DETECTED';
 
 /*
  * Simple Action Creators (Internal)
@@ -1142,12 +1146,134 @@ export function loadNotes(collection: Collection, slug: string) {
 
       dispatch(notesLoaded(collection, slug, notesWithSlug));
       dispatch(loadNotesForEntry(notesWithSlug));
+      dispatch(startNotesPolling(collection, slug));
     } catch (error) {
       dispatch(notesLoadError(error, collection, slug));
       dispatch(loadNotesForEntry([])); // Start with empty notes
     }
   };
 }
+
+export function pollingStarted(collection: Collection, slug: string) {
+  return {
+    type: NOTES_POLLING_START,
+    payload: {
+      collection: collection.get('name'),
+      slug,
+    },
+  };
+}
+
+export function pollingStopped(collection: Collection, slug: string) {
+  return {
+    type: NOTES_POLLING_STOP,
+    payload: {
+      collection: collection.get('name'),
+      slug,
+    },
+  };
+}
+
+export function notesUpdatedFromPolling(
+  collection: Collection,
+  slug: string,
+  notes: Note[],
+  changes: IssueChange[]
+) {
+  return {
+    type: NOTES_POLLING_UPDATE,
+    payload: {
+      collection: collection.get('name'),
+      slug,
+      notes,
+      changes,
+    },
+  };
+}
+
+export function changeDetected(collection: Collection, slug: string, change: IssueChange) {
+  return {
+    type: NOTES_CHANGE_DETECTED,
+    payload: {
+      collection: collection.get('name'),
+      slug,
+      change,
+    },
+  };
+}
+
+  export function startNotesPolling(collection: Collection, slug: string) {
+    return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+      try {
+        const state = getState();
+        const backend = currentBackend(state.config);
+        
+        if (!backend.startNotesPolling) { 
+          console.warn('[Polling] Backend does not support notes polling');
+          return;
+        }
+
+        const callbacks = {
+          onUpdate: (notes: Note[], changes: IssueChange[]) => {
+            dispatch(notesUpdatedFromPolling(collection, slug, notes, changes));
+            dispatch(loadNotesForEntry(notes));
+          },
+          onChange: (change: IssueChange) => {
+            // Dispatch action for individual change notifications
+            dispatch(changeDetected(collection, slug, change));
+          },
+        };
+
+        await backend.startNotesPolling(collection.get('name'), slug, callbacks);
+        
+        dispatch(pollingStarted(collection, slug));
+      } catch (error) {
+        console.error('[Polling] Failed to start notes polling:', error);
+      }
+    };
+  }
+/**
+ * Stop watching notes for an entry
+ */
+export function stopNotesPolling(collection: Collection, slug: string) {
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+    try {
+      const state = getState();
+      const backend = currentBackend(state.config);
+
+      if (!backend.stopNotesPolling) {  
+        return;
+      }
+
+      await backend.stopNotesPolling(collection.get('name'), slug); 
+
+      dispatch(pollingStopped(collection, slug));
+    } catch (error) {
+      console.error('[Polling] Failed to stop notes polling:', error);
+    }
+  };
+}
+
+/**
+ * Manually refresh notes 
+ */
+export function refreshNotesNow(collection: Collection, slug: string) {
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+    try {
+      const state = getState();
+      const backend = currentBackend(state.config);
+
+      if (!backend.refreshNotesNow) {
+        return dispatch(loadNotes(collection, slug));
+      }
+
+      await backend.refreshNotesNow(collection.get('name'), slug);
+    } catch (error) {
+      console.error('[Polling] Failed to refresh notes:', error);
+    }
+  };
+}
+
 
 export function persistNote(collection: Collection, slug: string, note: Omit<Note, 'id'>) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {

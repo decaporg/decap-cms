@@ -74,6 +74,47 @@ export interface Note {
   issueUrl?: string;
 }
 
+export interface IssueState {
+  number: number;
+  title: string;
+  body: string;
+  state: 'open' | 'closed';
+  updated_at: string;
+  comments: CommentData[];
+  labels: Array<{ name: string; color: string }>;
+  html_url: string;
+}
+
+export interface CommentData {
+  id: number | string;
+  body: string;
+  user: {
+    login: string;
+    avatar_url: string;
+  } | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export type ChangeType =
+  | 'comment_added'
+  | 'comment_updated'
+  | 'comment_deleted'
+  | 'issue_state_changed'
+  | 'issue_labels_changed';
+
+export type IssueChangeData =
+  | CommentData
+  | { from: 'open' | 'closed'; to: 'open' | 'closed' }
+  | { from: Array<{ name: string; color: string }>; to: Array<{ name: string; color: string }> };
+
+export interface IssueChange {
+  type: ChangeType;
+  data: IssueChangeData;
+  previousData?: CommentData;
+  timestamp: string;
+}
+
 export type AssetProxy = {
   path: string;
   fileObj?: File;

@@ -38,6 +38,8 @@ import type {
   FetchError,
   ApiRequest,
   Note,
+  IssueState, 
+  CommentData
 } from 'decap-cms-lib-util';
 import type { Semaphore } from 'semaphore';
 import type { Octokit } from '@octokit/rest';
@@ -50,6 +52,8 @@ type GitHubCommitter = Octokit.GitCreateCommitResponseCommitter;
 type GitHubPull = Octokit.PullsListResponseItem;
 
 export const API_NAME = 'GitHub';
+
+const { fetchWithTimeout: fetch } = unsentRequest;
 
 export const MOCK_PULL_REQUEST = -1;
 
@@ -1521,7 +1525,7 @@ ${note.content}`;
   /**
    * Parse a GitHub comment into a Note object
    */
-  private parseCommentToNote(comment: GitHubIssue): Note {
+  parseCommentToNote(comment: GitHubIssue): Note {
     if (!comment || !comment.body || !comment.user) {
       throw new Error('Invalid comment structure');
     }
@@ -1593,7 +1597,90 @@ ${note.content}`;
         return null;
       }
     }
+  /**
+     * Get issue with ETag support for conditional requests
+     * Returns { status: 304 } if not modified, or { status: 200, data, etag } if modified
+     */
+    async getIssueWithETag(
+      issueNumber: number,
+      etag: string | null
+    ): Promise<
+      | { status: 304; data?: never; etag?: never }
+      | { status: 200; data: IssueState; etag: string | null }
+    > {
+      try {
+        const headers: Record<string, string> = {
+          Authorization: `${this.tokenKeyword} ${this.token}`,
+        };
 
+        if (etag) {
+          headers['If-None-Match'] = etag;
+        }
+
+        const response = await fetch(
+          `${this.apiRoot}${this.repoURL}/issues/${issueNumber}`,
+          { headers }
+        );
+
+        if (response.status === 304) {
+          return { status: 304 };
+        }
+
+        if (response.status === 200) {
+          const issue = await response.json();
+          const newETag = response.headers.get('ETag');
+
+          const commentsResponse = await fetch(
+            `${this.apiRoot}${this.repoURL}/issues/${issueNumber}/comments`,
+            { headers }
+          );
+          const commentsRaw: GitHubIssue[] = await commentsResponse.json();
+
+          const comments: CommentData[] = commentsRaw.map((comment) => ({
+            id: comment.id,
+            body: comment.body,
+            user: comment.user,
+            created_at: comment.created_at,
+            updated_at: comment.updated_at,
+          }));
+
+          const issueState: IssueState = {
+            number: issue.number,
+            title: issue.title,
+            body: issue.body,
+            state: issue.state,
+            updated_at: issue.updated_at,
+            comments,
+            labels: issue.labels,
+            html_url: issue.html_url,
+          };
+
+          return {
+            status: 200,
+            data: issueState,
+            etag: newETag, 
+          };
+        }
+
+        throw new Error(`Unexpected status: ${response.status}`);
+      } catch (error) {
+        if (error.status === 304) {
+          return { status: 304 };
+        }
+        throw error;
+      }
+    }
+
+    /**
+     * Get the current state of an issue (without ETag)
+     */
+    async getIssueState(issueNumber: number): Promise<IssueState> {
+      const response = await this.getIssueWithETag(issueNumber, null);
+      if (response.status === 200 && response.data) {
+        return response.data;
+      }
+      throw new Error('Failed to get issue state');
+    }
   /**
    * Get comments from a GitHub issue
    */

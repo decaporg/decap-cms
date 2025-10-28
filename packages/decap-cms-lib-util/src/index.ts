@@ -77,6 +77,11 @@ import type {
   UnpublishedEntryMediaFile as UEMF,
   DataFile as DF,
   Note as NT,
+  IssueState as IS,
+  CommentData as CD,
+  ChangeType as CT,
+  IssueChangeData as ICD,
+  IssueChange as IC,
 } from './implementation';
 import type { AsyncLock as AL } from './asyncLock';
 
@@ -101,6 +106,11 @@ export type FetchError = FE;
 export type PointerFile = PF;
 export type DataFile = DF;
 export type Note = NT;
+export type IssueState = IS;
+export type CommentData = CD;
+export type IssueChangeData = ICD;
+export type IssueChange = IC;
+export type ChangeType = CT;
 
 export const DecapCmsLibUtil = {
   APIError,

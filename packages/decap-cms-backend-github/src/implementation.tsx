@@ -24,6 +24,7 @@ import {
 
 import AuthenticationPage from './AuthenticationPage';
 import API, { API_NAME } from './API';
+import { ETagPollingManager } from './polling'
 import GraphQLAPI from './GraphQLAPI';
 
 import type { Octokit } from '@octokit/rest';
@@ -40,6 +41,7 @@ import type {
   UnpublishedEntryMediaFile,
   Entry,
   Note,
+  IssueChange
 } from 'decap-cms-lib-util';
 import type { Semaphore } from 'semaphore';
 
@@ -91,6 +93,8 @@ export default class GitHub implements Implementation {
     [key: string]: Promise<boolean>;
   };
   _mediaDisplayURLSem?: Semaphore;
+  pollingManager?: ETagPollingManager;
+  unwatchFunctions: Map<string, () => void> = new Map();
 
   constructor(config: Config, options = {}) {
     this.options = {
@@ -375,12 +379,22 @@ export default class GitHub implements Implementation {
     //   }
     // }
 
+    if (this.api && !this.pollingManager) {
+      this.pollingManager = new ETagPollingManager(this.api, 15000);
+    }
     // Authorized user
     return { ...user, token: state.token as string, useOpenAuthoring: this.useOpenAuthoring };
   }
 
   logout() {
     this.token = null;
+    // Clean up polling
+    if (this.pollingManager) {
+      this.pollingManager.destroy();
+      this.pollingManager = undefined;
+    }
+    this.unwatchFunctions.clear();
+
     if (this.api && this.api.reset && typeof this.api.reset === 'function') {
       return this.api.reset();
     }
@@ -822,5 +836,74 @@ export default class GitHub implements Implementation {
 
   async reopenIssueForUnpublishedEntry(collection: string, slug: string) {
     await this.api!.reopenIssueOnUnpublish(collection, slug);
+  }
+  /**
+   * Start watching notes for changes
+   * Called from Redux action
+   */
+  async startNotesPolling(
+    collection: string,
+    slug: string,
+    callbacks: {
+      onUpdate: (notes: Note[], changes: IssueChange[]) => void;
+      onChange?: (change: IssueChange) => void;
+    }
+  ): Promise<void> {
+    if (!this.pollingManager) {
+      console.warn('[Polling] Polling manager not initialized');
+      return;
+    }
+
+    try {
+      // Find the issue for this entry
+      const issue = await this.api!.findEntryIssue(collection, slug);
+      if (!issue) {
+        console.log('[Polling] No issue found for this entry');
+        return;
+      }
+
+      // Get initial state
+      const initialState = await this.api!.getIssueState(issue.number);
+
+      // Start watching with callbacks and store unwatch function
+      const issueKey = `${collection}/${slug}`;
+      const unwatchFn = await this.pollingManager.watchIssue(
+        issue.number,
+        collection,
+        slug,
+        callbacks,
+        initialState
+      );
+
+      // Store unwatch function so we can call it later
+      this.unwatchFunctions.set(issueKey, unwatchFn);
+    } catch (error) {
+      console.error('[Polling] Failed to start polling:', error);
+    }
+  }
+
+  /**
+   * Stop watching notes for changes
+   * Called from Redux action: dispatch(stopNotesPolling(collection, slug))
+   */
+  async stopNotesPolling(collection: string, slug: string): Promise<void> {
+    const issueKey = `${collection}/${slug}`;
+    const unwatchFn = this.unwatchFunctions.get(issueKey);
+    
+    if (unwatchFn) {
+      unwatchFn(); // Stop watching
+      this.unwatchFunctions.delete(issueKey);
+    }
+  }
+
+  /**
+   * Manually refresh notes (force check now)
+   * Called from Redux action: dispatch(refreshNotesNow(collection, slug))
+   */
+  async refreshNotesNow(collection: string, slug: string): Promise<void> {
+    if (!this.pollingManager) {
+      throw new Error('Polling manager not initialized');
+    }
+    await this.pollingManager.checkIssueNow(collection, slug);
   }
 }

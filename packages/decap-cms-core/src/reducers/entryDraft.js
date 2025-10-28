@@ -23,6 +23,7 @@ import {
   DRAFT_NOTE_ADD,
   DRAFT_NOTE_UPDATE,
   DRAFT_NOTE_DELETE,
+  NOTES_POLLING_UPDATE,
 } from '../actions/entries';
 import {
   UNPUBLISHED_ENTRY_PERSIST_REQUEST,
@@ -225,6 +226,9 @@ function entryDraftReducer(state = Map(), action) {
       return state.update('notes', notes =>
         notes.filterNot(note => note.get('id') === action.payload.id),
       );
+    
+    case NOTES_POLLING_UPDATE:  
+      return state.set('notes', fromJS(action.payload.notes));
 
     default:
       return state;
