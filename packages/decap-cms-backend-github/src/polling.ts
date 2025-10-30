@@ -179,7 +179,7 @@ export class ETagPollingManager {
           });
         }
         
-        console.log(`[DecapNotes Polling] No issue found for ${issueKey} after ${maxRetries} attempts`);
+        console.log(`[DecapNotes Polling] No issue found for ${issueKey} after ${maxRetries} attempts. This is expected if there are no notes for this entry yet.`);
         // Return a no-op unwatch function
         return () => { /* no-op */ };
         
