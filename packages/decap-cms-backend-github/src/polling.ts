@@ -17,6 +17,8 @@ interface WatchedIssue {
   lastState: IssueState | null;
   onUpdate?: (notes: Note[], changes: IssueChange[]) => void;
   onChange?: (change: IssueChange) => void;
+  retryCount?: number;
+  maxRetries?: number;
 }
 
 export interface GitHubNotesAPI {
@@ -29,6 +31,7 @@ export interface GitHubNotesAPI {
     | { status: 200; data: IssueState; etag: string | null }
   >;
   parseCommentToNote(comment: CommentData): Note;
+  findEntryIssue(collection: string, slug: string): Promise<{ number: number } | null>;
 }
 
 // Redux action types
@@ -38,12 +41,14 @@ export const NOTES_POLLING_UPDATE = 'NOTES_POLLING_UPDATE';
 export const NOTES_CHANGE_DETECTED = 'NOTES_CHANGE_DETECTED';
 
 export class ETagPollingManager {
-  private watchedIssues: Map<string, WatchedIssue> = new Map();
+  private currentWatch: WatchedIssue | null = null;
+  private currentIssueKey: string | null = null;
   private pollingInterval = 15000;
   private intervalId: NodeJS.Timeout | null = null;
   private isDocumentVisible = true;
   private api: GitHubNotesAPI;
   private isPolling = false;
+  private pendingRetryTimeout: NodeJS.Timeout | null = null;
 
   constructor(api: GitHubNotesAPI, pollingInterval = 15000) {
     this.api = api;
@@ -61,11 +66,9 @@ export class ETagPollingManager {
         this.isDocumentVisible = !document.hidden;
         
         if (this.isDocumentVisible) {
-          console.log('[Polling] Tab visible, resuming polling');
           this.startPolling();
           this.checkAllIssuesNow();
         } else {
-          console.log('[Polling] Tab hidden, pausing polling');
           this.stopPolling();
         }
       });
@@ -74,11 +77,11 @@ export class ETagPollingManager {
 
   /**
    * Start watching an issue for changes
+   * This will automatically stop watching any previously watched issue
    * 
    * @param issueNumber - GitHub issue number
    * @param collection - Collection name
    * @param slug - Entry slug
-   * @param initialState - Initial issue state (optional)
    * @returns Function to stop watching
    */
   async watchIssue(
@@ -93,18 +96,21 @@ export class ETagPollingManager {
   ): Promise<() => void> {
     const issueKey = this.getIssueKey(collection, slug);
 
-    console.log(`[Polling] Starting to watch issue #${issueNumber} for ${issueKey}`);
+    // STOP ANY EXISTING WATCH FIRST
+    if (this.currentWatch) {
+      this.stopCurrentWatch();
+    }
 
     // Get initial state if not provided
     if (!initialState) {
       try {
         initialState = await this.api.getIssueState(issueNumber);
       } catch (error) {
-        console.error('[Polling] Failed to get initial state:', error);
+        console.error('[DecapNotes Polling] Failed to get initial state:', error);
       }
     }
 
-    this.watchedIssues.set(issueKey, {
+    this.currentWatch = {
       issueNumber,
       collection,
       slug,
@@ -112,7 +118,11 @@ export class ETagPollingManager {
       lastState: initialState,
       onUpdate: callbacks.onUpdate,
       onChange: callbacks.onChange,
-    });
+      retryCount: 0,
+      maxRetries: 5,
+    };
+
+    this.currentIssueKey = issueKey;
 
     // Start polling if not already running
     if (!this.intervalId && this.isDocumentVisible) {
@@ -120,32 +130,112 @@ export class ETagPollingManager {
     }
 
     // Do an immediate check
-    this.checkIssue(issueKey);
+    this.checkCurrentIssue();
 
     // Return unwatch function
-    return () => this.unwatchIssue(issueKey);
+    return () => this.stopCurrentWatch();
   }
 
   /**
-   * Stop watching an issue
+   * Watch issue with retry logic for newly created issues
    */
-  private unwatchIssue(issueKey: string) {
-    console.log(`[Polling] Stopped watching issue ${issueKey}`);
-    // REMOVE all dispatch-related code
-    this.watchedIssues.delete(issueKey);
-
-    if (this.watchedIssues.size === 0) {
-      this.stopPolling();
+  async watchIssueWithRetry(
+    collection: string,
+    slug: string,
+    callbacks: {
+      onUpdate?: (notes: Note[], changes: IssueChange[]) => void;
+      onChange?: (change: IssueChange) => void;
+    },
+    maxRetries = 5,
+    retryDelay = 2000
+  ): Promise<() => void> {
+    const issueKey = this.getIssueKey(collection, slug);
+    
+    // STOP ANY EXISTING WATCH FIRST
+    if (this.currentWatch) {
+      this.stopCurrentWatch();
     }
+
+    const attemptWatch = async (attempt: number): Promise<() => void> => {
+      try {
+        const issue = await this.api.findEntryIssue(collection, slug);
+        
+        if (issue) {
+          return await this.watchIssue(issue.number, collection, slug, callbacks);
+        }
+        
+        if (attempt < maxRetries) {
+        
+          return new Promise((resolve, reject) => {
+            this.pendingRetryTimeout = setTimeout(async () => {
+              this.pendingRetryTimeout = null;
+              try {
+                const unwatchFn = await attemptWatch(attempt + 1);
+                resolve(unwatchFn);
+              } catch (error) {
+                reject(error);
+              }
+            }, retryDelay);
+          });
+        }
+        
+        console.log(`[DecapNotes Polling] No issue found for ${issueKey} after ${maxRetries} attempts`);
+        // Return a no-op unwatch function
+        return () => { /* no-op */ };
+        
+      } catch (error) {
+        console.error(`[DecapNotes Polling] Error finding issue for ${issueKey}:`, error);
+        
+        if (attempt < maxRetries) {
+          return new Promise((resolve, reject) => {
+            this.pendingRetryTimeout = setTimeout(async () => {
+              this.pendingRetryTimeout = null;
+              try {
+                const unwatchFn = await attemptWatch(attempt + 1);
+                resolve(unwatchFn);
+              } catch (err) {
+                reject(err);
+              }
+            }, retryDelay);
+          });
+        }
+        
+        throw error;
+      }
+    };
+
+    return attemptWatch(1);
+  }
+
+  /**
+   * Stop watching the current issue - complete cleanup
+   */
+  private stopCurrentWatch() {
+    if (!this.currentWatch) {
+      return;
+    }
+    
+    // Clear any pending retry timeout
+    if (this.pendingRetryTimeout) {
+      clearTimeout(this.pendingRetryTimeout);
+      this.pendingRetryTimeout = null;
+    }
+    
+    // Clear current watch
+    this.currentWatch = null;
+    this.currentIssueKey = null;
+
+    // Stop polling since there's nothing to watch
+    this.stopPolling();
   }
 
   /**
    * Start the polling loop
    */
   private startPolling() {
-    if (this.intervalId || !this.isDocumentVisible) return;
+    if (this.intervalId || !this.isDocumentVisible || !this.currentWatch) return;
 
-    console.log(`[Polling] Starting polling loop (${this.pollingInterval}ms interval)`);
+    console.log(`[DecapNotes Polling] Starting polling loop (${this.pollingInterval}ms interval) for ${this.currentIssueKey}`);
     
     this.intervalId = setInterval(() => {
       this.pollAllIssues();
@@ -157,53 +247,42 @@ export class ETagPollingManager {
    */
   private stopPolling() {
     if (this.intervalId) {
-      console.log('[Polling] Stopping polling loop');
+      console.log('[DecapNotes Polling] Stopping polling loop');
       clearInterval(this.intervalId);
       this.intervalId = null;
     }
   }
 
   /**
-   * Poll all watched issues
+   * Poll current watched issue
    */
   private async pollAllIssues() {
+    await this.checkCurrentIssue();
+  }
+
+  /**
+   * Check current issue for changes using ETag
+   */
+  private async checkCurrentIssue() {
+    if (!this.currentWatch) {
+      return;
+    }
+
     if (this.isPolling) {
-      console.log('[Polling] Already polling, skipping cycle');
       return;
     }
 
     this.isPolling = true;
 
     try {
-      const issues = Array.from(this.watchedIssues.keys());
-      
-      for (const issueKey of issues) {
-        await this.checkIssue(issueKey);
-        // Small delay between checks
-        await this.delay(500);
-      }
-    } finally {
-      this.isPolling = false;
-    }
-  }
-
-  /**
-   * Check a single issue for changes using ETag
-   */
-  private async checkIssue(issueKey: string) {
-    const watched = this.watchedIssues.get(issueKey);
-    if (!watched) return;
-
-    try {
-      console.log(`[Polling] Checking ${issueKey} (ETag: ${watched.etag ? 'yes' : 'no'})`);
+      const watch = this.currentWatch;
 
       const response = await this.api.getIssueWithETag(
-        watched.issueNumber,
-        watched.etag
+        watch.issueNumber,
+        watch.etag
       );
 
       if (response.status === 304) {
-        console.log(`[Polling] ${issueKey} - No changes (304)`);
         return;
       }
 
@@ -211,62 +290,61 @@ export class ETagPollingManager {
         const newState: IssueState = response.data;
         const newETag = response.etag;
 
-        console.log(`[Polling] ${issueKey} - Changes detected!`);
-
         // Update ETag
-        watched.etag = newETag || null;
+        watch.etag = newETag || null;
 
         // Detect specific changes
-        const changes = this.detectChanges(watched.lastState, newState);
+        const changes = this.detectChanges(watch.lastState, newState);
 
         if (changes.length > 0) {
           // Convert comments to notes
           const newNotes = newState.comments.map(comment => ({
             ...this.api.parseCommentToNote(comment),
             issueUrl: newState.html_url, 
-            }));
+          }));
 
-          if (watched.onUpdate) {
-            watched.onUpdate(newNotes, changes)
+          if (watch.onUpdate) {
+            watch.onUpdate(newNotes, changes);
           }
           
-          if (watched.onChange) {
+          if (watch.onChange) {
             changes.forEach(change => {
-              watched.onChange!(change);
-            })
+              watch.onChange!(change);
+            });
           }
         }
 
         // Update stored state
-        watched.lastState = newState;
+        watch.lastState = newState;
       }
     } catch (error) {
       if (error && typeof error === 'object' && 'status' in error && error.status !== 304) {
-        console.error(`[Polling] Error checking ${issueKey}:`, error);
+        console.error(`[DecapNotes Polling] Error checking ${this.currentIssueKey}:`, error);
       }
+    } finally {
+      this.isPolling = false;
     }
   }
 
   /**
-   * Immediately check all issues
+   * Immediately check current issue
    */
   private async checkAllIssuesNow() {
-    console.log('[Polling] Checking all issues immediately');
-    const issues = Array.from(this.watchedIssues.keys());
-    
-    for (const issueKey of issues) {
-      await this.checkIssue(issueKey);
-      await this.delay(500);
-    }
+    await this.checkCurrentIssue();
   }
 
   /**
-   * Manually trigger a check for a specific issue
+   * Manually trigger a check - only works if this is the current entry
    */
   async checkIssueNow(collection: string, slug: string) {
     const issueKey = this.getIssueKey(collection, slug);
-    console.log(`[Polling] Manual check requested for ${issueKey}`);
-    await this.checkIssue(issueKey);
+    
+    if (this.currentIssueKey !== issueKey) {
+      console.warn(`[DecapNotes Polling] Cannot check ${issueKey} - currently watching ${this.currentIssueKey}`);
+      return;
+    }
+    
+    await this.checkCurrentIssue();
   }
 
   /**
@@ -361,21 +439,16 @@ export class ETagPollingManager {
   }
 
   /**
-   * Utility delay function
-   */
-  private delay(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-
-  /**
    * Get polling status
    */
   getStatus() {
     return {
       isPolling: this.intervalId !== null,
-      watchedCount: this.watchedIssues.size,
+      currentWatch: this.currentIssueKey,
+      watchedCount: this.currentWatch ? 1 : 0,
       pollingInterval: this.pollingInterval,
       isDocumentVisible: this.isDocumentVisible,
+      hasPendingRetry: this.pendingRetryTimeout !== null,
     };
   }
 
@@ -383,9 +456,16 @@ export class ETagPollingManager {
    * Clean up - stop all polling
    */
   destroy() {
-    console.log('[Polling] Destroying polling manager');
-    this.stopPolling();
-    this.watchedIssues.clear();
+    console.log('[DecapNotes Polling] Destroying polling manager');
+    
+    // Clear pending retry
+    if (this.pendingRetryTimeout) {
+      clearTimeout(this.pendingRetryTimeout);
+      this.pendingRetryTimeout = null;
+    }
+    
+    // Stop current watch
+    this.stopCurrentWatch();
   }
 }
 

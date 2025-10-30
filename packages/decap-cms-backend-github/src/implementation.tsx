@@ -841,7 +841,7 @@ export default class GitHub implements Implementation {
    * Start watching notes for changes
    * Called from Redux action
    */
-  async startNotesPolling(
+ async startNotesPolling(
     collection: string,
     slug: string,
     callbacks: {
@@ -850,49 +850,55 @@ export default class GitHub implements Implementation {
     }
   ): Promise<void> {
     if (!this.pollingManager) {
-      console.warn('[Polling] Polling manager not initialized');
+      console.warn('[DecapNotes Polling] Polling manager not initialized');
       return;
     }
 
+    const issueKey = `${collection}/${slug}`;
+
+    // Check if already watching this exact entry - if so, skip
+    if (this.pollingManager.getStatus().currentWatch === issueKey) {
+      return;
+    }
+    
+    // First, ensure any previous polling for this entry is completely stopped
+    const existingUnwatch = this.unwatchFunctions.get(issueKey);
+    if (existingUnwatch) {
+      existingUnwatch();
+      this.unwatchFunctions.delete(issueKey);
+    }
+
     try {
-      // Find the issue for this entry
-      const issue = await this.api!.findEntryIssue(collection, slug);
-      if (!issue) {
-        console.log('[Polling] No issue found for this entry');
-        return;
-      }
-
-      // Get initial state
-      const initialState = await this.api!.getIssueState(issue.number);
-
-      // Start watching with callbacks and store unwatch function
-      const issueKey = `${collection}/${slug}`;
-      const unwatchFn = await this.pollingManager.watchIssue(
-        issue.number,
+      const unwatchFn = await this.pollingManager.watchIssueWithRetry(
         collection,
         slug,
         callbacks,
-        initialState
+        5, // maxRetries - will try up to 5 times
+        2000 // retryDelay - 2 seconds between attempts
       );
 
-      // Store unwatch function so we can call it later
+      // Store the new unwatch function
       this.unwatchFunctions.set(issueKey, unwatchFn);
     } catch (error) {
-      console.error('[Polling] Failed to start polling:', error);
+      console.error('[DecapNotes Polling] Failed to start polling after retries:', error);
     }
   }
 
   /**
-   * Stop watching notes for changes
+   * Stop watching notes for changes 
    * Called from Redux action: dispatch(stopNotesPolling(collection, slug))
+   * 
+   * Ensures complete cleanup of polling for this entry
    */
   async stopNotesPolling(collection: string, slug: string): Promise<void> {
     const issueKey = `${collection}/${slug}`;
     const unwatchFn = this.unwatchFunctions.get(issueKey);
     
     if (unwatchFn) {
-      unwatchFn(); // Stop watching
+      unwatchFn(); 
       this.unwatchFunctions.delete(issueKey);
+    } else {
+      console.log(`[DecapNotes Polling] No active polling found for ${issueKey}`);
     }
   }
 

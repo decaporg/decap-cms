@@ -571,7 +571,7 @@ export function loadEntry(collection: Collection, slug: string) {
       dispatch(entryLoaded(collection, loadedEntry));
       dispatch(createDraftFromEntry(loadedEntry));
       const state = getState();
-      const isNotesEnabled = state.config.editor?.notes ?? false;
+      const isNotesEnabled = state.config.editor?.notes ?? false; 
       if (isNotesEnabled) {
         await dispatch(loadNotes(collection, slug));
       }
@@ -1209,7 +1209,7 @@ export function changeDetected(collection: Collection, slug: string, change: Iss
         const backend = currentBackend(state.config);
         
         if (!backend.startNotesPolling) { 
-          console.warn('[Polling] Backend does not support notes polling');
+          console.warn('[DecapNotes Polling] Backend does not support notes polling');
           return;
         }
 
@@ -1228,7 +1228,7 @@ export function changeDetected(collection: Collection, slug: string, change: Iss
         
         dispatch(pollingStarted(collection, slug));
       } catch (error) {
-        console.error('[Polling] Failed to start notes polling:', error);
+        console.error('[DecapNotes Polling] Failed to start notes polling:', error);
       }
     };
   }
@@ -1249,7 +1249,7 @@ export function stopNotesPolling(collection: Collection, slug: string) {
 
       dispatch(pollingStopped(collection, slug));
     } catch (error) {
-      console.error('[Polling] Failed to stop notes polling:', error);
+      console.error('[Redux] Failed to stop notes polling:', error);
     }
   };
 }
@@ -1269,7 +1269,7 @@ export function refreshNotesNow(collection: Collection, slug: string) {
 
       await backend.refreshNotesNow(collection.get('name'), slug);
     } catch (error) {
-      console.error('[Polling] Failed to refresh notes:', error);
+      console.error('[DecapNotes Polling] Failed to refresh notes:', error);
     }
   };
 }
@@ -1282,7 +1282,7 @@ export function persistNote(collection: Collection, slug: string, note: Omit<Not
     try {
       const savedNote = await backend.addNote(collection.get('name'), slug, note);
       dispatch(notePersisted(collection, slug, savedNote));
-      dispatch(addNote(savedNote));
+      dispatch(addNote(savedNote)); 
       dispatch(
         addNotification({
           message: {
@@ -1292,6 +1292,15 @@ export function persistNote(collection: Collection, slug: string, note: Omit<Not
           dismissAfter: 4000,
         }),
       );
+      // After adding a note, polling gets restarted. In case the note is the first ever note persisted (which is the moment a Github Issue is created for example) this will help the Polling system to pickup the source of the Notes.
+      const state = getState();
+      const isNotesEnabled = state.config.editor?.notes ?? false;
+      
+      if (isNotesEnabled) {
+        // Small delay to let the issue creation propagate
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        await dispatch(startNotesPolling(collection, slug));
+      }
       return savedNote;
     } catch (error) {
       dispatch(notePersistFail(collection, slug, note as Note, error));
