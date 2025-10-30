@@ -1,9 +1,9 @@
 /**
  * GitHub Notes Polling System
- * 
+ *
  * ETag-based polling manager that efficiently checks for changes in GitHub Issues
  * Used for a real-time feel of notes updates without excessive API calls leveraging conditional requests (304) that don't count on Github rate limits.
- * 
+ *
  * @module polling
  */
 
@@ -25,7 +25,7 @@ export interface GitHubNotesAPI {
   getIssueState(issueNumber: number): Promise<IssueState>;
   getIssueWithETag(
     issueNumber: number,
-    etag: string | null
+    etag: string | null,
   ): Promise<
     | { status: 304; data?: never; etag?: never }
     | { status: 200; data: IssueState; etag: string | null }
@@ -58,13 +58,13 @@ export class ETagPollingManager {
 
   /**
    * Setup Page Visibility API listener
-   * Pauses polling when tab is hidden 
+   * Pauses polling when tab is hidden
    */
   private setupVisibilityListener() {
     if (typeof document !== 'undefined') {
       document.addEventListener('visibilitychange', () => {
         this.isDocumentVisible = !document.hidden;
-        
+
         if (this.isDocumentVisible) {
           this.startPolling();
           this.checkAllIssuesNow();
@@ -78,7 +78,7 @@ export class ETagPollingManager {
   /**
    * Start watching an issue for changes
    * This will automatically stop watching any previously watched issue
-   * 
+   *
    * @param issueNumber - GitHub issue number
    * @param collection - Collection name
    * @param slug - Entry slug
@@ -92,7 +92,7 @@ export class ETagPollingManager {
       onUpdate?: (notes: Note[], changes: IssueChange[]) => void;
       onChange?: (change: IssueChange) => void;
     },
-    initialState: IssueState | null = null
+    initialState: IssueState | null = null,
   ): Promise<() => void> {
     const issueKey = this.getIssueKey(collection, slug);
 
@@ -147,10 +147,10 @@ export class ETagPollingManager {
       onChange?: (change: IssueChange) => void;
     },
     maxRetries = 5,
-    retryDelay = 2000
+    retryDelay = 2000,
   ): Promise<() => void> {
     const issueKey = this.getIssueKey(collection, slug);
-    
+
     // STOP ANY EXISTING WATCH FIRST
     if (this.currentWatch) {
       this.stopCurrentWatch();
@@ -159,13 +159,12 @@ export class ETagPollingManager {
     const attemptWatch = async (attempt: number): Promise<() => void> => {
       try {
         const issue = await this.api.findEntryIssue(collection, slug);
-        
+
         if (issue) {
           return await this.watchIssue(issue.number, collection, slug, callbacks);
         }
-        
+
         if (attempt < maxRetries) {
-        
           return new Promise((resolve, reject) => {
             this.pendingRetryTimeout = setTimeout(async () => {
               this.pendingRetryTimeout = null;
@@ -178,14 +177,17 @@ export class ETagPollingManager {
             }, retryDelay);
           });
         }
-        
-        console.log(`[DecapNotes Polling] No issue found for ${issueKey} after ${maxRetries} attempts. This is expected if there are no notes for this entry yet.`);
+
+        console.log(
+          `[DecapNotes Polling] No issue found for ${issueKey} after ${maxRetries} attempts. This is expected if there are no notes for this entry yet.`,
+        );
         // Return a no-op unwatch function
-        return () => { /* no-op */ };
-        
+        return () => {
+          /* no-op */
+        };
       } catch (error) {
         console.error(`[DecapNotes Polling] Error finding issue for ${issueKey}:`, error);
-        
+
         if (attempt < maxRetries) {
           return new Promise((resolve, reject) => {
             this.pendingRetryTimeout = setTimeout(async () => {
@@ -199,7 +201,7 @@ export class ETagPollingManager {
             }, retryDelay);
           });
         }
-        
+
         throw error;
       }
     };
@@ -214,13 +216,13 @@ export class ETagPollingManager {
     if (!this.currentWatch) {
       return;
     }
-    
+
     // Clear any pending retry timeout
     if (this.pendingRetryTimeout) {
       clearTimeout(this.pendingRetryTimeout);
       this.pendingRetryTimeout = null;
     }
-    
+
     // Clear current watch
     this.currentWatch = null;
     this.currentIssueKey = null;
@@ -235,8 +237,10 @@ export class ETagPollingManager {
   private startPolling() {
     if (this.intervalId || !this.isDocumentVisible || !this.currentWatch) return;
 
-    console.log(`[DecapNotes Polling] Starting polling loop (${this.pollingInterval}ms interval) for ${this.currentIssueKey}`);
-    
+    console.log(
+      `[DecapNotes Polling] Starting polling loop (${this.pollingInterval}ms interval) for ${this.currentIssueKey}`,
+    );
+
     this.intervalId = setInterval(() => {
       this.pollAllIssues();
     }, this.pollingInterval);
@@ -277,10 +281,7 @@ export class ETagPollingManager {
     try {
       const watch = this.currentWatch;
 
-      const response = await this.api.getIssueWithETag(
-        watch.issueNumber,
-        watch.etag
-      );
+      const response = await this.api.getIssueWithETag(watch.issueNumber, watch.etag);
 
       if (response.status === 304) {
         return;
@@ -300,13 +301,13 @@ export class ETagPollingManager {
           // Convert comments to notes
           const newNotes = newState.comments.map(comment => ({
             ...this.api.parseCommentToNote(comment),
-            issueUrl: newState.html_url, 
+            issueUrl: newState.html_url,
           }));
 
           if (watch.onUpdate) {
             watch.onUpdate(newNotes, changes);
           }
-          
+
           if (watch.onChange) {
             changes.forEach(change => {
               watch.onChange!(change);
@@ -338,22 +339,21 @@ export class ETagPollingManager {
    */
   async checkIssueNow(collection: string, slug: string) {
     const issueKey = this.getIssueKey(collection, slug);
-    
+
     if (this.currentIssueKey !== issueKey) {
-      console.warn(`[DecapNotes Polling] Cannot check ${issueKey} - currently watching ${this.currentIssueKey}`);
+      console.warn(
+        `[DecapNotes Polling] Cannot check ${issueKey} - currently watching ${this.currentIssueKey}`,
+      );
       return;
     }
-    
+
     await this.checkCurrentIssue();
   }
 
   /**
    * Detect what changed between two states
    */
-  private detectChanges(
-    previous: IssueState | null,
-    current: IssueState
-  ): IssueChange[] {
+  private detectChanges(previous: IssueState | null, current: IssueState): IssueChange[] {
     if (!previous) {
       return [];
     }
@@ -362,7 +362,7 @@ export class ETagPollingManager {
 
     // New comments
     const newComments = current.comments.filter(
-      comment => !previous.comments.some(prev => prev.id === comment.id)
+      comment => !previous.comments.some(prev => prev.id === comment.id),
     );
     newComments.forEach(comment => {
       changes.push({
@@ -387,7 +387,7 @@ export class ETagPollingManager {
 
     // Deleted comments
     const deletedComments = previous.comments.filter(
-      prevComment => !current.comments.some(comment => comment.id === prevComment.id)
+      prevComment => !current.comments.some(comment => comment.id === prevComment.id),
     );
     deletedComments.forEach(comment => {
       changes.push({
@@ -423,7 +423,7 @@ export class ETagPollingManager {
    */
   private hasLabelsChanged(
     previous: Array<{ name: string }>,
-    current: Array<{ name: string }>
+    current: Array<{ name: string }>,
   ): boolean {
     if (previous.length !== current.length) return true;
     const prevNames = previous.map(l => l.name).sort();
@@ -457,13 +457,13 @@ export class ETagPollingManager {
    */
   destroy() {
     console.log('[DecapNotes Polling] Destroying polling manager');
-    
+
     // Clear pending retry
     if (this.pendingRetryTimeout) {
       clearTimeout(this.pendingRetryTimeout);
       this.pendingRetryTimeout = null;
     }
-    
+
     // Stop current watch
     this.stopCurrentWatch();
   }

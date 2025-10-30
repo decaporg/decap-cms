@@ -166,14 +166,14 @@ class NoteItem extends Component {
   };
 
   formatTimestamp = timestamp => {
-      const date = new Date(timestamp);
-      return date.toLocaleString(undefined, {
-          year: 'numeric',
-          month: 'numeric',
-          day: 'numeric',
-          hour: 'numeric',
-          minute: 'numeric'
-      });
+    const date = new Date(timestamp);
+    return date.toLocaleString(undefined, {
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+    });
   };
 
   handleEditStart = () => {

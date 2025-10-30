@@ -82,7 +82,7 @@ import type {
   DataFile,
   UnpublishedEntryDiff,
   Note,
-  IssueChange
+  IssueChange,
 } from 'decap-cms-lib-util';
 import type { Map } from 'immutable';
 
@@ -304,8 +304,8 @@ type Implementation = BackendImplementation & {
     callbacks: {
       onUpdate?: (notes: Note[], changes: IssueChange[]) => void;
       onChange?: (change: IssueChange) => void;
-    }
-  ) => Promise <void>;
+    },
+  ) => Promise<void>;
   stopNotesPolling?: (collection: string, slug: string) => Promise<void>;
   refreshNotesNow?: (collection: string, slug: string) => Promise<void>;
 };
@@ -648,7 +648,7 @@ export class Backend {
     callbacks: {
       onUpdate?: (notes: Note[], changes: IssueChange[]) => void;
       onChange?: (change: IssueChange) => void;
-    }
+    },
   ): Promise<void> {
     if (!this.implementation.startNotesPolling) {
       console.warn('Backend does not support notes polling');

@@ -54,7 +54,7 @@ const SourceLink = styled.a`
   display: flex;
   align-items: center;
   gap: 6px;
-  
+
   &:hover {
     color: ${colors.text};
     text-decoration: underline;
@@ -151,7 +151,7 @@ class EditorNotesPane extends Component {
         iconType: 'github', // Using GitHub icon type
       };
     }
-    
+
     // TODO: Add support for other Git providers
     // Example for future contributors:
     // if (url.includes('gitlab.com')) {
@@ -160,7 +160,7 @@ class EditorNotesPane extends Component {
     // if (url.includes('bitbucket.org')) {
     //   return { text: 'View in Bitbucket', iconType: 'bitbucket' };
     // }
-    
+
     // Default fallback
     return {
       text: 'View source',
@@ -173,7 +173,7 @@ class EditorNotesPane extends Component {
     const notesList = notes && notes.size !== undefined ? notes : List(notes || []);
     const notesCount = notesList.size;
     const unresolvedCount = notesList.filter(note => !note.get('resolved')).size;
-    
+
     const sourceUrl = notesCount > 0 ? notesList.first()?.get('issueUrl') : null;
     const sourceInfo = sourceUrl ? this.getSourceInfo(sourceUrl) : null;
 

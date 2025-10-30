@@ -226,8 +226,8 @@ function entryDraftReducer(state = Map(), action) {
       return state.update('notes', notes =>
         notes.filterNot(note => note.get('id') === action.payload.id),
       );
-    
-    case NOTES_POLLING_UPDATE:  
+
+    case NOTES_POLLING_UPDATE:
       return state.set('notes', fromJS(action.payload.notes));
 
     default:

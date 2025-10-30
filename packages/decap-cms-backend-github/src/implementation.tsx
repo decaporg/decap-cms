@@ -24,7 +24,7 @@ import {
 
 import AuthenticationPage from './AuthenticationPage';
 import API, { API_NAME } from './API';
-import { ETagPollingManager } from './polling'
+import { ETagPollingManager } from './polling';
 import GraphQLAPI from './GraphQLAPI';
 
 import type { Octokit } from '@octokit/rest';
@@ -41,7 +41,7 @@ import type {
   UnpublishedEntryMediaFile,
   Entry,
   Note,
-  IssueChange
+  IssueChange,
 } from 'decap-cms-lib-util';
 import type { Semaphore } from 'semaphore';
 
@@ -758,7 +758,7 @@ export default class GitHub implements Implementation {
 
   async addNote(collection: string, slug: string, noteData: Omit<Note, 'id'>): Promise<Note> {
     const currentUser = await this.currentUser({ token: this.token! });
-    
+
     const note: Note = {
       ...noteData,
       id: 'temp-' + Date.now(),
@@ -780,12 +780,17 @@ export default class GitHub implements Implementation {
       // Entry not found or error reading, use undefined title
     }
 
-    const { commentId, issueUrl } = await this.api!.addNoteToEntry(collection, slug, note, entryTitle);
-    
-    return { 
-      ...note, 
+    const { commentId, issueUrl } = await this.api!.addNoteToEntry(
+      collection,
+      slug,
+      note,
+      entryTitle,
+    );
+
+    return {
+      ...note,
       id: commentId,
-      issueUrl 
+      issueUrl,
     };
   }
 
@@ -841,13 +846,13 @@ export default class GitHub implements Implementation {
    * Start watching notes for changes
    * Called from Redux action
    */
- async startNotesPolling(
+  async startNotesPolling(
     collection: string,
     slug: string,
     callbacks: {
       onUpdate: (notes: Note[], changes: IssueChange[]) => void;
       onChange?: (change: IssueChange) => void;
-    }
+    },
   ): Promise<void> {
     if (!this.pollingManager) {
       console.warn('[DecapNotes Polling] Polling manager not initialized');
@@ -860,7 +865,7 @@ export default class GitHub implements Implementation {
     if (this.pollingManager.getStatus().currentWatch === issueKey) {
       return;
     }
-    
+
     // First, ensure any previous polling for this entry is completely stopped
     const existingUnwatch = this.unwatchFunctions.get(issueKey);
     if (existingUnwatch) {
@@ -874,7 +879,7 @@ export default class GitHub implements Implementation {
         slug,
         callbacks,
         5, // maxRetries - will try up to 5 times
-        2000 // retryDelay - 2 seconds between attempts
+        2000, // retryDelay - 2 seconds between attempts
       );
 
       // Store the new unwatch function
@@ -885,17 +890,17 @@ export default class GitHub implements Implementation {
   }
 
   /**
-   * Stop watching notes for changes 
+   * Stop watching notes for changes
    * Called from Redux action: dispatch(stopNotesPolling(collection, slug))
-   * 
+   *
    * Ensures complete cleanup of polling for this entry
    */
   async stopNotesPolling(collection: string, slug: string): Promise<void> {
     const issueKey = `${collection}/${slug}`;
     const unwatchFn = this.unwatchFunctions.get(issueKey);
-    
+
     if (unwatchFn) {
-      unwatchFn(); 
+      unwatchFn();
       this.unwatchFunctions.delete(issueKey);
     } else {
       console.log(`[DecapNotes Polling] No active polling found for ${issueKey}`);

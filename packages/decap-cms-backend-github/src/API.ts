@@ -38,8 +38,8 @@ import type {
   FetchError,
   ApiRequest,
   Note,
-  IssueState, 
-  CommentData
+  IssueState,
+  CommentData,
 } from 'decap-cms-lib-util';
 import type { Semaphore } from 'semaphore';
 import type { Octokit } from '@octokit/rest';
@@ -1574,113 +1574,109 @@ ${note.content}`;
   }
 
   /**
-     * Find existing issue for an entry (returns null if not found)
-     */
-    async findEntryIssue(
-      collectionName: string,
-      slug: string,
-    ): Promise<GitHubIssue | null> {
-      // Search for existing issue
-      const searchQuery = `repo:${this.repo} label:${API.NOTES_LABEL} "${collectionName}/${slug}" in:body`;
+   * Find existing issue for an entry (returns null if not found)
+   */
+  async findEntryIssue(collectionName: string, slug: string): Promise<GitHubIssue | null> {
+    // Search for existing issue
+    const searchQuery = `repo:${this.repo} label:${API.NOTES_LABEL} "${collectionName}/${slug}" in:body`;
 
-      try {
-        const searchResponse = await this.request('/search/issues', {
-          params: { q: searchQuery },
-        });
+    try {
+      const searchResponse = await this.request('/search/issues', {
+        params: { q: searchQuery },
+      });
 
-        if (searchResponse.items && searchResponse.items.length > 0) {
-          return searchResponse.items[0];
-        }
-        return null;
-      } catch (error) {
-        console.warn('Failed to search for existing notes issue:', error);
-        return null;
+      if (searchResponse.items && searchResponse.items.length > 0) {
+        return searchResponse.items[0];
       }
+      return null;
+    } catch (error) {
+      console.warn('Failed to search for existing notes issue:', error);
+      return null;
     }
+  }
   /**
-     * Get issue with ETag support for conditional requests
-     * Returns { status: 304 } if not modified, or { status: 200, data, etag } if modified
-     */
-    async getIssueWithETag(
-      issueNumber: number,
-      etag: string | null
-    ): Promise<
-      | { status: 304; data?: never; etag?: never }
-      | { status: 200; data: IssueState; etag: string | null }
-    > {
-      try {
-        const headers: Record<string, string> = {
-          Authorization: `${this.tokenKeyword} ${this.token}`,
+   * Get issue with ETag support for conditional requests
+   * Returns { status: 304 } if not modified, or { status: 200, data, etag } if modified
+   */
+  async getIssueWithETag(
+    issueNumber: number,
+    etag: string | null,
+  ): Promise<
+    | { status: 304; data?: never; etag?: never }
+    | { status: 200; data: IssueState; etag: string | null }
+  > {
+    try {
+      const headers: Record<string, string> = {
+        Authorization: `${this.tokenKeyword} ${this.token}`,
+      };
+
+      if (etag) {
+        headers['If-None-Match'] = etag;
+      }
+
+      const response = await fetch(`${this.apiRoot}${this.repoURL}/issues/${issueNumber}`, {
+        headers,
+      });
+
+      if (response.status === 304) {
+        return { status: 304 };
+      }
+
+      if (response.status === 200) {
+        const issue = await response.json();
+        const newETag = response.headers.get('ETag');
+
+        const commentsResponse = await fetch(
+          `${this.apiRoot}${this.repoURL}/issues/${issueNumber}/comments`,
+          { headers },
+        );
+        const commentsRaw: GitHubIssue[] = await commentsResponse.json();
+
+        const comments: CommentData[] = commentsRaw.map(comment => ({
+          id: comment.id,
+          body: comment.body,
+          user: comment.user,
+          created_at: comment.created_at,
+          updated_at: comment.updated_at,
+        }));
+
+        const issueState: IssueState = {
+          number: issue.number,
+          title: issue.title,
+          body: issue.body,
+          state: issue.state,
+          updated_at: issue.updated_at,
+          comments,
+          labels: issue.labels,
+          html_url: issue.html_url,
         };
 
-        if (etag) {
-          headers['If-None-Match'] = etag;
-        }
-
-        const response = await fetch(
-          `${this.apiRoot}${this.repoURL}/issues/${issueNumber}`,
-          { headers }
-        );
-
-        if (response.status === 304) {
-          return { status: 304 };
-        }
-
-        if (response.status === 200) {
-          const issue = await response.json();
-          const newETag = response.headers.get('ETag');
-
-          const commentsResponse = await fetch(
-            `${this.apiRoot}${this.repoURL}/issues/${issueNumber}/comments`,
-            { headers }
-          );
-          const commentsRaw: GitHubIssue[] = await commentsResponse.json();
-
-          const comments: CommentData[] = commentsRaw.map((comment) => ({
-            id: comment.id,
-            body: comment.body,
-            user: comment.user,
-            created_at: comment.created_at,
-            updated_at: comment.updated_at,
-          }));
-
-          const issueState: IssueState = {
-            number: issue.number,
-            title: issue.title,
-            body: issue.body,
-            state: issue.state,
-            updated_at: issue.updated_at,
-            comments,
-            labels: issue.labels,
-            html_url: issue.html_url,
-          };
-
-          return {
-            status: 200,
-            data: issueState,
-            etag: newETag, 
-          };
-        }
-
-        throw new Error(`Unexpected status: ${response.status}`);
-      } catch (error) {
-        if (error.status === 304) {
-          return { status: 304 };
-        }
-        throw error;
+        return {
+          status: 200,
+          data: issueState,
+          etag: newETag,
+        };
       }
-    }
 
-    /**
-     * Get the current state of an issue (without ETag)
-     */
-    async getIssueState(issueNumber: number): Promise<IssueState> {
-      const response = await this.getIssueWithETag(issueNumber, null);
-      if (response.status === 200 && response.data) {
-        return response.data;
+      throw new Error(`Unexpected status: ${response.status}`);
+    } catch (error) {
+      if (error.status === 304) {
+        return { status: 304 };
       }
-      throw new Error('Failed to get issue state');
+      throw error;
     }
+  }
+
+  /**
+   * Get the current state of an issue (without ETag)
+   */
+  async getIssueState(issueNumber: number): Promise<IssueState> {
+    const response = await this.getIssueWithETag(issueNumber, null);
+    if (response.status === 200 && response.data) {
+      return response.data;
+    }
+    throw new Error('Failed to get issue state');
+  }
   /**
    * Get comments from a GitHub issue
    */
@@ -1807,9 +1803,9 @@ ${note.content}`;
     }
   }
 
-    /**
-     * Get all notes for an entry 
-     */
+  /**
+   * Get all notes for an entry
+   */
   async getEntryNotes(collectionName: string, slug: string): Promise<Note[]> {
     try {
       const issue = await this.findEntryIssue(collectionName, slug);
@@ -1818,7 +1814,7 @@ ${note.content}`;
       }
       const comments = await this.getIssueComments(issue.number);
       const issueUrl = issue.html_url; // Get the issue URL once
-      
+
       // Add issueUrl to each note
       return comments.map(comment => ({
         ...this.parseCommentToNote(comment),
@@ -1845,9 +1841,9 @@ ${note.content}`;
         issue = await this.createEntryIssue(collectionName, slug, entryTitle);
       }
       const commentId = await this.createIssueComment(issue.number, note);
-      return { 
-        commentId, 
-        issueUrl: issue.html_url 
+      return {
+        commentId,
+        issueUrl: issue.html_url,
       };
     } catch (error) {
       console.error('Failed to add note to entry:', error);

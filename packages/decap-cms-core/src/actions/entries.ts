@@ -571,7 +571,7 @@ export function loadEntry(collection: Collection, slug: string) {
       dispatch(entryLoaded(collection, loadedEntry));
       dispatch(createDraftFromEntry(loadedEntry));
       const state = getState();
-      const isNotesEnabled = state.config.editor?.notes ?? false; 
+      const isNotesEnabled = state.config.editor?.notes ?? false;
       if (isNotesEnabled) {
         await dispatch(loadNotes(collection, slug));
       }
@@ -1178,7 +1178,7 @@ export function notesUpdatedFromPolling(
   collection: Collection,
   slug: string,
   notes: Note[],
-  changes: IssueChange[]
+  changes: IssueChange[],
 ) {
   return {
     type: NOTES_POLLING_UPDATE,
@@ -1202,36 +1202,36 @@ export function changeDetected(collection: Collection, slug: string, change: Iss
   };
 }
 
-  export function startNotesPolling(collection: Collection, slug: string) {
-    return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
-      try {
-        const state = getState();
-        const backend = currentBackend(state.config);
-        
-        if (!backend.startNotesPolling) { 
-          console.warn('[DecapNotes Polling] Backend does not support notes polling');
-          return;
-        }
+export function startNotesPolling(collection: Collection, slug: string) {
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+    try {
+      const state = getState();
+      const backend = currentBackend(state.config);
 
-        const callbacks = {
-          onUpdate: (notes: Note[], changes: IssueChange[]) => {
-            dispatch(notesUpdatedFromPolling(collection, slug, notes, changes));
-            dispatch(loadNotesForEntry(notes));
-          },
-          onChange: (change: IssueChange) => {
-            // Dispatch action for individual change notifications
-            dispatch(changeDetected(collection, slug, change));
-          },
-        };
-
-        await backend.startNotesPolling(collection.get('name'), slug, callbacks);
-        
-        dispatch(pollingStarted(collection, slug));
-      } catch (error) {
-        console.error('[DecapNotes Polling] Failed to start notes polling:', error);
+      if (!backend.startNotesPolling) {
+        console.warn('[DecapNotes Polling] Backend does not support notes polling');
+        return;
       }
-    };
-  }
+
+      const callbacks = {
+        onUpdate: (notes: Note[], changes: IssueChange[]) => {
+          dispatch(notesUpdatedFromPolling(collection, slug, notes, changes));
+          dispatch(loadNotesForEntry(notes));
+        },
+        onChange: (change: IssueChange) => {
+          // Dispatch action for individual change notifications
+          dispatch(changeDetected(collection, slug, change));
+        },
+      };
+
+      await backend.startNotesPolling(collection.get('name'), slug, callbacks);
+
+      dispatch(pollingStarted(collection, slug));
+    } catch (error) {
+      console.error('[DecapNotes Polling] Failed to start notes polling:', error);
+    }
+  };
+}
 /**
  * Stop watching notes for an entry
  */
@@ -1241,11 +1241,11 @@ export function stopNotesPolling(collection: Collection, slug: string) {
       const state = getState();
       const backend = currentBackend(state.config);
 
-      if (!backend.stopNotesPolling) {  
+      if (!backend.stopNotesPolling) {
         return;
       }
 
-      await backend.stopNotesPolling(collection.get('name'), slug); 
+      await backend.stopNotesPolling(collection.get('name'), slug);
 
       dispatch(pollingStopped(collection, slug));
     } catch (error) {
@@ -1255,7 +1255,7 @@ export function stopNotesPolling(collection: Collection, slug: string) {
 }
 
 /**
- * Manually refresh notes 
+ * Manually refresh notes
  */
 export function refreshNotesNow(collection: Collection, slug: string) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
@@ -1274,7 +1274,6 @@ export function refreshNotesNow(collection: Collection, slug: string) {
   };
 }
 
-
 export function persistNote(collection: Collection, slug: string, note: Omit<Note, 'id'>) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const backend = currentBackend(getState().config);
@@ -1282,7 +1281,7 @@ export function persistNote(collection: Collection, slug: string, note: Omit<Not
     try {
       const savedNote = await backend.addNote(collection.get('name'), slug, note);
       dispatch(notePersisted(collection, slug, savedNote));
-      dispatch(addNote(savedNote)); 
+      dispatch(addNote(savedNote));
       dispatch(
         addNotification({
           message: {
@@ -1295,7 +1294,7 @@ export function persistNote(collection: Collection, slug: string, note: Omit<Not
       // After adding a note, polling gets restarted. In case the note is the first ever note persisted (which is the moment a Github Issue is created for example) this will help the Polling system to pickup the source of the Notes.
       const state = getState();
       const isNotesEnabled = state.config.editor?.notes ?? false;
-      
+
       if (isNotesEnabled) {
         // Small delay to let the issue creation propagate
         await new Promise(resolve => setTimeout(resolve, 1000));
