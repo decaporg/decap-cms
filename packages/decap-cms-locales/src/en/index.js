@@ -173,6 +173,7 @@ const en = {
       markdown: {
         bold: 'Bold',
         italic: 'Italic',
+        strikethrough: 'Strikethrough',
         code: 'Code',
         link: 'Link',
         linkPrompt: 'Enter the URL of the link',

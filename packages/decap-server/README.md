@@ -27,4 +27,8 @@ backend:
 GIT_REPO_DIRECTORY=FULL_PATH_TO_LOCAL_GIT_REPO
 # optional, defaults to 8081
 PORT=CUSTOM_PORT
+# optional, only listen for incoming connections on a specific IP address
+BIND_HOST=127.0.0.1
+# optional, restrict API requests to a specific origin
+ORIGIN=https://example.com
 ```
