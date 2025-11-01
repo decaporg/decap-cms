@@ -697,5 +697,152 @@ describe('github backend implementation', () => {
         expect(mockAPI.closeIssueOnPublish).toHaveBeenCalledWith('posts', 'my-post');
       });
     });
+    describe('notes polling', () => {
+      beforeEach(() => {
+        jest.clearAllMocks();
+      });
+
+      it('should start notes polling', async () => {
+        const gitHubImplementation = new GitHubImplementation(config);
+        gitHubImplementation.pollingManager = {
+          watchIssueWithRetry: jest.fn().mockResolvedValue(() => {}),
+          getStatus: jest.fn().mockReturnValue({ currentWatch: null }),
+        };
+
+        const callbacks = {
+          onUpdate: jest.fn(),
+          onChange: jest.fn(),
+        };
+
+        await gitHubImplementation.startNotesPolling('posts', 'my-post', callbacks);
+
+        expect(gitHubImplementation.pollingManager.watchIssueWithRetry).toHaveBeenCalledWith(
+          'posts',
+          'my-post',
+          callbacks,
+          5,
+          2000,
+        );
+      });
+
+      it('should not start polling if already watching same entry', async () => {
+        const gitHubImplementation = new GitHubImplementation(config);
+        gitHubImplementation.pollingManager = {
+          watchIssueWithRetry: jest.fn().mockResolvedValue(() => {}),
+          getStatus: jest.fn().mockReturnValue({ currentWatch: 'posts/my-post' }),
+        };
+
+        const callbacks = { onUpdate: jest.fn() };
+
+        await gitHubImplementation.startNotesPolling('posts', 'my-post', callbacks);
+
+        expect(gitHubImplementation.pollingManager.watchIssueWithRetry).not.toHaveBeenCalled();
+      });
+
+      it('should stop notes polling', async () => {
+        const gitHubImplementation = new GitHubImplementation(config);
+        const unwatchFn = jest.fn();
+        gitHubImplementation.unwatchFunctions.set('posts/my-post', unwatchFn);
+
+        await gitHubImplementation.stopNotesPolling('posts', 'my-post');
+
+        expect(unwatchFn).toHaveBeenCalledTimes(1);
+        expect(gitHubImplementation.unwatchFunctions.has('posts/my-post')).toBe(false);
+      });
+
+      it('should handle stopping polling when not active', async () => {
+        const gitHubImplementation = new GitHubImplementation(config);
+
+        await expect(
+          gitHubImplementation.stopNotesPolling('posts', 'my-post'),
+        ).resolves.not.toThrow();
+      });
+
+      it('should refresh notes immediately', async () => {
+        const gitHubImplementation = new GitHubImplementation(config);
+        gitHubImplementation.pollingManager = {
+          checkIssueNow: jest.fn().mockResolvedValue(undefined),
+        };
+
+        await gitHubImplementation.refreshNotesNow('posts', 'my-post');
+
+        expect(gitHubImplementation.pollingManager.checkIssueNow).toHaveBeenCalledWith(
+          'posts',
+          'my-post',
+        );
+      });
+
+      it('should throw error when refreshing without polling manager', async () => {
+        const gitHubImplementation = new GitHubImplementation(config);
+        gitHubImplementation.pollingManager = undefined;
+
+        await expect(gitHubImplementation.refreshNotesNow('posts', 'my-post')).rejects.toThrow(
+          'Polling manager not initialized',
+        );
+      });
+      it('should start polling and store unwatch function', async () => {
+        const gitHubImplementation = new GitHubImplementation(config);
+        const unwatchFn = jest.fn();
+
+        gitHubImplementation.pollingManager = {
+          watchIssueWithRetry: jest.fn().mockResolvedValue(unwatchFn),
+          getStatus: jest.fn().mockReturnValue({ currentWatch: null }),
+        };
+
+        const callbacks = {
+          onUpdate: jest.fn(),
+          onChange: jest.fn(),
+        };
+
+        await gitHubImplementation.startNotesPolling('posts', 'my-post', callbacks);
+
+        expect(gitHubImplementation.pollingManager.watchIssueWithRetry).toHaveBeenCalledWith(
+          'posts',
+          'my-post',
+          callbacks,
+          5,
+          2000,
+        );
+        expect(gitHubImplementation.unwatchFunctions.get('posts/my-post')).toBe(unwatchFn);
+      });
+
+      it('should stop existing polling before starting new one', async () => {
+        const gitHubImplementation = new GitHubImplementation(config);
+        const oldUnwatchFn = jest.fn();
+        const newUnwatchFn = jest.fn();
+
+        gitHubImplementation.unwatchFunctions.set('posts/my-post', oldUnwatchFn);
+        gitHubImplementation.pollingManager = {
+          watchIssueWithRetry: jest.fn().mockResolvedValue(newUnwatchFn),
+          getStatus: jest.fn().mockReturnValue({ currentWatch: 'posts/other-post' }),
+        };
+
+        const callbacks = { onUpdate: jest.fn() };
+
+        await gitHubImplementation.startNotesPolling('posts', 'my-post', callbacks);
+
+        expect(oldUnwatchFn).toHaveBeenCalledTimes(1);
+        expect(gitHubImplementation.unwatchFunctions.get('posts/my-post')).toBe(newUnwatchFn);
+      });
+
+      it('should handle polling manager error gracefully', async () => {
+        const gitHubImplementation = new GitHubImplementation(config);
+
+        gitHubImplementation.pollingManager = {
+          watchIssueWithRetry: jest.fn().mockRejectedValue(new Error('Failed to find issue')),
+          getStatus: jest.fn().mockReturnValue({ currentWatch: null }),
+        };
+
+        const callbacks = { onUpdate: jest.fn() };
+
+        await gitHubImplementation.startNotesPolling('posts', 'my-post', callbacks);
+
+        // Should not throw, just log error
+        expect(console.error).toHaveBeenCalledWith(
+          '[DecapNotes Polling] Failed to start polling after retries:',
+          expect.any(Error),
+        );
+      });
+    });
   });
 });
