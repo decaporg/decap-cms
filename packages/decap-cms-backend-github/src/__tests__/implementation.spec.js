@@ -446,7 +446,10 @@ describe('github backend implementation', () => {
           resolved: false,
         };
 
-        mockAPI.addNoteToEntry.mockResolvedValue('comment-123');
+        mockAPI.addNoteToEntry.mockResolvedValue({
+          commentId: 'comment-123',
+          issueUrl: 'https://github.com/owner/repo/issues/1',
+        });
         mockAPI.readFile.mockResolvedValue('title: My Post Title\n\nContent');
 
         const result = await gitHubImplementation.addNote('posts', 'my-post', noteData);
@@ -484,7 +487,10 @@ describe('github backend implementation', () => {
           timestamp: '2025-01-01T00:00:00Z',
         };
 
-        mockAPI.addNoteToEntry.mockResolvedValue('comment-123');
+        mockAPI.addNoteToEntry.mockResolvedValue({
+          commentId: 'comment-123',
+          issueUrl: 'https://github.com/owner/repo/issues/1',
+        });
         mockAPI.readFile.mockRejectedValue(new Error('Not found'));
 
         const result = await gitHubImplementation.addNote('posts', 'my-post', noteData);
