@@ -111,10 +111,19 @@ export default class ProxyBackend implements Implementation {
     }
   }
 
-  entriesByFolder(folder: string, extension: string, depth: number) {
+  entriesByFolder(
+    folder: string,
+    extension: string,
+    depth: number,
+    options?: {
+      page?: number;
+      pageSize?: number;
+      pagination?: boolean;
+    },
+  ) {
     return this.request({
       action: 'entriesByFolder',
-      params: { branch: this.branch, folder, extension, depth },
+      params: { branch: this.branch, folder, extension, depth, options },
     });
   }
 
