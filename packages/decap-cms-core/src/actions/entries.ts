@@ -86,6 +86,9 @@ export const REMOVE_DRAFT_ENTRY_MEDIA_FILE = 'REMOVE_DRAFT_ENTRY_MEDIA_FILE';
 
 export const CHANGE_VIEW_STYLE = 'CHANGE_VIEW_STYLE';
 
+export const SET_ENTRIES_PAGE_SIZE = 'SET_ENTRIES_PAGE_SIZE';
+export const LOAD_ENTRIES_PAGE = 'LOAD_ENTRIES_PAGE';
+
 /*
  * Simple Action Creators (Internal)
  * We still need to export them for tests
@@ -155,6 +158,23 @@ export function entriesFailed(collection: Collection, error: Error) {
     error: 'Failed to load entries',
     payload: error.toString(),
     meta: { collection: collection.get('name') },
+  };
+}
+
+export function setEntriesPageSize(collection: Collection, pageSize: number) {
+  return {
+    type: SET_ENTRIES_PAGE_SIZE,
+    payload: {
+      collection: collection.get('name'),
+      pageSize,
+    },
+  };
+}
+
+export function loadEntriesPage(collection: Collection, page: number) {
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>) => {
+    // Load the specified page
+    dispatch(loadEntries(collection, page));
   };
 }
 
