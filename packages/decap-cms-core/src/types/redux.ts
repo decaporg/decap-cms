@@ -309,6 +309,12 @@ export interface ViewGroup {
   id: string;
 }
 
+export interface PaginationConfig {
+  enabled?: boolean;
+  per_page: number;
+  user_options: number[] | false;
+}
+
 export interface CmsCollection {
   name: string;
   label: string;
@@ -352,6 +358,7 @@ export interface CmsCollection {
   view_filters?: ViewFilter[];
   view_groups?: ViewGroup[];
   i18n?: boolean | CmsI18nConfig;
+  pagination?: boolean | PaginationConfig;
 
   /**
    * @deprecated Use sortable_fields instead
@@ -421,6 +428,7 @@ export interface CmsConfig {
   }[];
   slug?: CmsSlug;
   i18n?: CmsI18nConfig;
+  pagination?: boolean | PaginationConfig;
   local_backend?: boolean | CmsLocalBackend;
   editor?: {
     preview?: boolean;
