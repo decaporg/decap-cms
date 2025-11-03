@@ -29,6 +29,7 @@ class EntryListing extends React.Component {
     getUnpublishedEntries: PropTypes.func.isRequired,
     getWorkflowStatus: PropTypes.func.isRequired,
     filterTerm: PropTypes.string,
+    paginationEnabled: PropTypes.bool,
   };
 
   componentDidMount() {
@@ -133,7 +134,7 @@ class EntryListing extends React.Component {
   };
 
   render() {
-    const { collections, page } = this.props;
+    const { collections, page, paginationEnabled } = this.props;
 
     return (
       <div>
@@ -141,7 +142,7 @@ class EntryListing extends React.Component {
           {Map.isMap(collections)
             ? this.renderCardsForSingleCollection()
             : this.renderCardsForMultipleCollections()}
-          {this.hasMore() && <Waypoint key={page} onEnter={this.handleLoadMore} />}
+          {!paginationEnabled && this.hasMore() && <Waypoint key={page} onEnter={this.handleLoadMore} />}
         </CardsGrid>
       </div>
     );

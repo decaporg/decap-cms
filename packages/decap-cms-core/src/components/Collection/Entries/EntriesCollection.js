@@ -11,6 +11,8 @@ import { colors } from 'decap-cms-ui-default';
 import {
   loadEntries as actionLoadEntries,
   traverseCollectionCursor as actionTraverseCollectionCursor,
+  setEntriesPageSize as actionSetEntriesPageSize,
+  loadEntriesPage as actionLoadEntriesPage,
 } from '../../../actions/entries';
 import { loadUnpublishedEntries } from '../../../actions/editorialWorkflow';
 import {
@@ -18,7 +20,11 @@ import {
   selectEntriesLoaded,
   selectIsFetching,
   selectGroups,
+  selectEntriesPageSize,
+  selectEntriesCurrentPage,
+  selectEntriesTotalCount,
 } from '../../../reducers/entries';
+import { isPaginationEnabled, getPaginationConfig } from '../../../lib/pagination';
 import { selectUnpublishedEntry, selectUnpublishedEntriesByStatus } from '../../../reducers';
 import { selectCollectionEntriesCursor } from '../../../reducers/cursors';
 import Entries from './Entries';
@@ -78,6 +84,13 @@ export class EntriesCollection extends React.Component {
     isEditorialWorkflowEnabled: PropTypes.bool,
     getWorkflowStatus: PropTypes.func.isRequired,
     getUnpublishedEntries: PropTypes.func.isRequired,
+    paginationEnabled: PropTypes.bool,
+    paginationConfig: PropTypes.object,
+    currentPage: PropTypes.number,
+    pageSize: PropTypes.number,
+    totalCount: PropTypes.number,
+    setEntriesPageSize: PropTypes.func.isRequired,
+    loadEntriesPage: PropTypes.func.isRequired,
   };
 
   componentDidMount() {
@@ -144,6 +157,13 @@ export class EntriesCollection extends React.Component {
       getWorkflowStatus,
       getUnpublishedEntries,
       filterTerm,
+      paginationEnabled,
+      paginationConfig,
+      currentPage,
+      pageSize,
+      totalCount,
+      setEntriesPageSize,
+      loadEntriesPage,
     } = this.props;
 
     const EntriesToRender = ({ entries }) => {
@@ -160,6 +180,13 @@ export class EntriesCollection extends React.Component {
           getWorkflowStatus={getWorkflowStatus}
           getUnpublishedEntries={getUnpublishedEntries}
           filterTerm={filterTerm}
+          paginationEnabled={paginationEnabled}
+          paginationConfig={paginationConfig}
+          currentPage={currentPage}
+          pageSize={pageSize}
+          totalCount={totalCount}
+          onPageChange={page => loadEntriesPage(collection, page)}
+          onPageSizeChange={pageSize => setEntriesPageSize(collection, pageSize)}
         />
       );
     };
@@ -227,6 +254,13 @@ function mapStateToProps(state, ownProps) {
     ? !!state.editorialWorkflow?.getIn(['pages', 'ids'], false)
     : true;
 
+  // Pagination state
+  const paginationEnabled = isPaginationEnabled(collection, state.config);
+  const paginationConfig = paginationEnabled ? getPaginationConfig(collection, state.config) : null;
+  const currentPage = selectEntriesCurrentPage(state.entries, collection.get('name'));
+  const pageSize = selectEntriesPageSize(state.entries, collection.get('name'));
+  const totalCount = selectEntriesTotalCount(state.entries, collection.get('name'));
+
   return {
     collection,
     collections,
@@ -239,6 +273,11 @@ function mapStateToProps(state, ownProps) {
     cursor,
     unpublishedEntriesLoaded,
     isEditorialWorkflowEnabled,
+    paginationEnabled,
+    paginationConfig,
+    currentPage,
+    pageSize,
+    totalCount,
     getWorkflowStatus: (collectionName, slug) => {
       const unpublishedEntry = selectUnpublishedEntry(state, collectionName, slug);
       return unpublishedEntry ? unpublishedEntry.get('status') : null;
@@ -270,6 +309,8 @@ const mapDispatchToProps = {
   loadEntries: actionLoadEntries,
   traverseCollectionCursor: actionTraverseCollectionCursor,
   loadUnpublishedEntries: collections => loadUnpublishedEntries(collections),
+  setEntriesPageSize: actionSetEntriesPageSize,
+  loadEntriesPage: actionLoadEntriesPage,
 };
 
 const ConnectedEntriesCollection = connect(mapStateToProps, mapDispatchToProps)(EntriesCollection);
