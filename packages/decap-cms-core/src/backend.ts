@@ -40,6 +40,7 @@ import { createEntry } from './valueObjects/Entry';
 import { sanitizeChar } from './lib/urlHelper';
 import { getBackend, invokeEvent } from './lib/registry';
 import { commitMessageFormatter, slugFormatter, previewUrlFormatter } from './lib/formatters';
+import { isPaginationEnabled, getPaginationConfig } from './lib/pagination';
 import { status } from './constants/publishModes';
 import { FOLDER, FILES } from './constants/collectionTypes';
 import { selectCustomPath } from './reducers/entryDraft';
@@ -537,17 +538,31 @@ export class Backend {
     return filteredEntries;
   }
 
-  async listEntries(collection: Collection) {
+  async listEntries(collection: Collection, page = 0) {
     const extension = selectFolderEntryExtension(collection);
     let listMethod: () => Promise<ImplementationEntry[]>;
     const collectionType = collection.get('type');
+    
+    // Check if pagination is enabled for this collection
+    const paginationEnabled = isPaginationEnabled(collection, this.config);
+    const paginationConfig = paginationEnabled ? getPaginationConfig(collection, this.config) : null;
+    
     if (collectionType === FOLDER) {
       listMethod = () => {
         const depth = collectionDepth(collection);
+        
+        // Pass pagination options to backend implementation
+        const options = paginationEnabled && paginationConfig ? {
+          page: page || 1,
+          pageSize: paginationConfig.per_page,
+          pagination: true,
+        } : undefined;
+        
         return this.implementation.entriesByFolder(
           collection.get('folder') as string,
           extension,
           depth,
+          options,
         );
       };
     } else if (collectionType === FILES) {

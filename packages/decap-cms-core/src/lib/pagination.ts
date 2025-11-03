@@ -1,19 +1,28 @@
 // Pagination utilities for Decap CMS
-import type { CmsCollection, CmsConfig, PaginationConfig } from '../types/redux';
+import type { CmsCollection, CmsConfig, PaginationConfig, Collection } from '../types/redux';
 
 const DEFAULT_PER_PAGE = 100;
 const DEFAULT_USER_OPTIONS = [25, 50, 100, 250, 500];
 
+type CollectionLike = CmsCollection | Collection;
+
 /**
  * Check if pagination is enabled for a collection
- * @param collection - The collection to check
+ * @param collection - The collection to check (CmsCollection or immutable Collection)
  * @param globalConfig - Optional global config
  * @returns true if pagination is enabled
  */
-export function isPaginationEnabled(collection: CmsCollection, globalConfig?: CmsConfig): boolean {
+export function isPaginationEnabled(collection: CollectionLike, globalConfig?: CmsConfig): boolean {
+  // Handle immutable Collection
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const pagination = typeof (collection as any).get === 'function'
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ? (collection as any).get('pagination')
+    : (collection as CmsCollection).pagination;
+  
   // Check collection-level pagination setting
-  if (typeof collection.pagination !== 'undefined') {
-    return !!collection.pagination;
+  if (typeof pagination !== 'undefined') {
+    return !!pagination;
   }
   
   // Check global pagination setting
@@ -30,11 +39,11 @@ export function isPaginationEnabled(collection: CmsCollection, globalConfig?: Cm
 /**
  * Get the pagination configuration for a collection
  * Merges collection-level and global settings with defaults
- * @param collection - The collection
+ * @param collection - The collection (CmsCollection or immutable Collection)
  * @param globalConfig - Optional global config
  * @returns Pagination configuration with all settings
  */
-export function getPaginationConfig(collection: CmsCollection, globalConfig?: CmsConfig): PaginationConfig {
+export function getPaginationConfig(collection: CollectionLike, globalConfig?: CmsConfig): PaginationConfig {
   const defaults: PaginationConfig = {
     enabled: false,
     per_page: DEFAULT_PER_PAGE,
@@ -52,20 +61,27 @@ export function getPaginationConfig(collection: CmsCollection, globalConfig?: Cm
     }
   }
 
+  // Handle immutable Collection
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const pagination = typeof (collection as any).get === 'function'
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ? (collection as any).get('pagination')
+    : (collection as CmsCollection).pagination;
+
   // Override with collection-specific config
-  if (collection.pagination === true) {
+  if (pagination === true) {
     // Simple boolean enables pagination with defaults
     return {
       enabled: true,
       per_page: defaults.per_page,
       user_options: defaults.user_options,
     };
-  } else if (typeof collection.pagination === 'object') {
+  } else if (typeof pagination === 'object' && pagination !== null) {
     // Detailed config overrides defaults
     return {
       enabled: true,
-      per_page: collection.pagination.per_page ?? defaults.per_page,
-      user_options: collection.pagination.user_options ?? defaults.user_options,
+      per_page: pagination.per_page ?? defaults.per_page,
+      user_options: pagination.user_options ?? defaults.user_options,
     };
   }
 

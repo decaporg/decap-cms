@@ -148,6 +148,11 @@ export interface Implementation {
     folder: string,
     extension: string,
     depth: number,
+    options?: {
+      page?: number;
+      pageSize?: number;
+      pagination?: boolean;
+    },
   ) => Promise<ImplementationEntry[]>;
   entriesByFiles: (files: ImplementationFile[]) => Promise<ImplementationEntry[]>;
 
