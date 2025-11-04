@@ -91,13 +91,13 @@ function getCursor(
   pageSize = DEFAULT_PAGE_SIZE,
 ) {
   const count = entries.length;
-  const pageCount = Math.floor(count / pageSize);
+  const pageCount = Math.ceil(count / pageSize);
   return Cursor.create({
     actions: [
       ...(index < pageCount ? ['next', 'last'] : []),
       ...(index > 0 ? ['prev', 'first'] : []),
     ],
-    meta: { index, count, pageSize, pageCount },
+    meta: { index, page: index + 1, count, pageSize, pageCount },
     data: { folder, extension, index, pageCount, depth },
   });
 }

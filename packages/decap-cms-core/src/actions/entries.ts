@@ -20,6 +20,7 @@ import { selectCustomPath } from '../reducers/entryDraft';
 import { navigateToEntry } from '../routing/history';
 import { getProcessSegment } from '../lib/formatters';
 import { hasI18n, duplicateDefaultI18nFields, serializeI18n, I18N, I18N_FIELD } from '../lib/i18n';
+import { isPaginationEnabled } from '../lib/pagination';
 import { addNotification } from './notifications';
 
 import type { ImplementationMediaFile } from 'decap-cms-lib-util';
@@ -609,7 +610,9 @@ export function loadEntries(collection: Collection, page = 0) {
     const provider = integration
       ? getIntegrationProvider(state.integrations, backend.getToken, integration)
       : backend;
-    const append = !!(page && !isNaN(page) && page > 0);
+    // In new pagination mode, page navigation replaces items; append applies only to old/infinite modes
+    const paginationEnabled = isPaginationEnabled(collection, state.config);
+    const append = paginationEnabled ? false : !!(page && !isNaN(page) && page > 0);
     dispatch(entriesLoading(collection));
 
     try {

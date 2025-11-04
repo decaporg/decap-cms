@@ -5,6 +5,8 @@ site_url: https://example.com
 
 publish_mode: editorial_workflow
 media_folder: assets/uploads
+pagination: 
+  per_page: 5
 
 collections: # A list of collections the CMS should be able to edit
   - name: 'posts' # Used in routes, ie.: /admin/collections/:slug/edit
@@ -20,8 +22,7 @@ collections: # A list of collections the CMS should be able to edit
     editor:
       visualEditing: true
     pagination:
-      enabled: true
-      per_page: 5
+      per_page: 10
     view_filters:
       - label: Posts With Index
         field: title

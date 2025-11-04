@@ -22,7 +22,16 @@ export function isPaginationEnabled(collection: CollectionLike, globalConfig?: C
   
   // Check collection-level pagination setting
   if (typeof pagination !== 'undefined') {
-    return !!pagination;
+    if (typeof pagination === 'boolean') {
+      return pagination;
+    }
+    if (pagination && typeof pagination === 'object') {
+      // enabled defaults to true when an object is provided unless explicitly set to false
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const enabled = (pagination as any).enabled;
+      return typeof enabled === 'boolean' ? enabled : true;
+    }
+    return false;
   }
   
   // Check global pagination setting
@@ -78,10 +87,12 @@ export function getPaginationConfig(collection: CollectionLike, globalConfig?: C
     };
   } else if (typeof pagination === 'object' && pagination !== null) {
     // Detailed config overrides defaults
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const cfg = pagination as any;
     return {
-      enabled: true,
-      per_page: pagination.per_page ?? defaults.per_page,
-      user_options: pagination.user_options ?? defaults.user_options,
+      enabled: typeof cfg.enabled === 'boolean' ? cfg.enabled : true,
+      per_page: cfg.per_page ?? defaults.per_page,
+      user_options: cfg.user_options ?? defaults.user_options,
     };
   }
 
