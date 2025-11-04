@@ -6,6 +6,16 @@ const DEFAULT_USER_OPTIONS: number[] = [];
 
 type CollectionLike = CmsCollection | Collection;
 
+// Helper to read values from plain objects or Immutable Maps
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function getCfg<T = unknown>(obj: any, key: string): T | undefined {
+  if (!obj) {
+    return undefined;
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return typeof (obj as any).get === 'function' ? (obj as any).get(key) : (obj as any)[key];
+}
+
 /**
  * Check if pagination is enabled for a collection
  * @param collection - The collection to check (CmsCollection or immutable Collection)
@@ -27,8 +37,7 @@ export function isPaginationEnabled(collection: CollectionLike, globalConfig?: C
     }
     if (pagination && typeof pagination === 'object') {
       // enabled defaults to true when an object is provided unless explicitly set to false
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const enabled = (pagination as any).enabled;
+      const enabled = getCfg<boolean>(pagination, 'enabled');
       return typeof enabled === 'boolean' ? enabled : true;
     }
     return false;
@@ -39,7 +48,11 @@ export function isPaginationEnabled(collection: CollectionLike, globalConfig?: C
     if (typeof globalConfig.pagination === 'boolean') {
       return globalConfig.pagination;
     }
-    return !!globalConfig.pagination.enabled;
+    if (typeof globalConfig.pagination === 'object') {
+      // If enabled is missing, default to true
+      const enabled = getCfg<boolean>(globalConfig.pagination, 'enabled');
+      return typeof enabled === 'boolean' ? enabled : true;
+    }
   }
   
   return false;
@@ -63,10 +76,13 @@ export function getPaginationConfig(collection: CollectionLike, globalConfig?: C
   if (globalConfig?.pagination) {
     if (typeof globalConfig.pagination === 'boolean') {
       defaults.enabled = globalConfig.pagination;
-    } else {
-      defaults.enabled = globalConfig.pagination.enabled ?? defaults.enabled;
-      defaults.per_page = globalConfig.pagination.per_page ?? defaults.per_page;
-      defaults.user_options = globalConfig.pagination.user_options ?? defaults.user_options;
+    } else if (typeof globalConfig.pagination === 'object') {
+      const enabled = getCfg<boolean>(globalConfig.pagination, 'enabled');
+      defaults.enabled = typeof enabled === 'boolean' ? enabled : true;
+      const perPage = getCfg<number>(globalConfig.pagination, 'per_page');
+      const userOptions = getCfg<number[] | false>(globalConfig.pagination, 'user_options');
+      defaults.per_page = typeof perPage === 'number' ? perPage : defaults.per_page;
+      defaults.user_options = typeof userOptions !== 'undefined' ? userOptions : defaults.user_options;
     }
   }
 
@@ -87,12 +103,13 @@ export function getPaginationConfig(collection: CollectionLike, globalConfig?: C
     };
   } else if (typeof pagination === 'object' && pagination !== null) {
     // Detailed config overrides defaults
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const cfg = pagination as any;
+    const perPage = getCfg<number>(pagination, 'per_page');
+    const enabled = getCfg<boolean>(pagination, 'enabled');
+    const userOptions = getCfg<number[] | false>(pagination, 'user_options');
     return {
-      enabled: typeof cfg.enabled === 'boolean' ? cfg.enabled : true,
-      per_page: cfg.per_page ?? defaults.per_page,
-      user_options: cfg.user_options ?? defaults.user_options,
+      enabled: typeof enabled === 'boolean' ? enabled : true,
+      per_page: typeof perPage === 'number' ? perPage : defaults.per_page,
+      user_options: typeof userOptions !== 'undefined' ? userOptions : defaults.user_options,
     };
   }
 
