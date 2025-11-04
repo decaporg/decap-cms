@@ -442,10 +442,10 @@ export default class GitHub implements Implementation {
           cursor = result.cursor;
           return result.files;
         } else {
-          // Non-paginated: return all files with a cursor for the first page
+          // Non-paginated: return all files (no slicing)
           const result = this.getCursorAndFiles(filtered, 1, pageSize);
           cursor = result.cursor;
-          return result.files;
+          return filtered;
         }
       });
 

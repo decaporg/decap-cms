@@ -2,7 +2,7 @@
 import type { CmsCollection, CmsConfig, PaginationConfig, Collection } from '../types/redux';
 
 const DEFAULT_PER_PAGE = 100;
-const DEFAULT_USER_OPTIONS = [25, 50, 100, 250, 500];
+const DEFAULT_USER_OPTIONS: number[] = [];
 
 type CollectionLike = CmsCollection | Collection;
 

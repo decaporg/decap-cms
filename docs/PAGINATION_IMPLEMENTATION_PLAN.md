@@ -4,7 +4,7 @@
 https://github.com/decaporg/decap-cms/issues/3714
 
 ## Overview
-Add pagination support to large collections in Decap CMS. Pagination will be opt-in per collection or globally configurable, starting with GitHub and Git Gateway backends.
+Add pagination support to large collections in Decap CMS. Pagination will be opt-in per collection or globally. It will work local, GitHub, and Git Gateway backends.
 
 ## Current State Analysis
 
@@ -80,8 +80,8 @@ collections:
     folder: content/products
     # Detailed configuration
     pagination:
-      per_page: 50
-      user_options: [25, 50, 100, 200]
+      per_page: 50 # default
+      user_options: [25, 50, 100, 200] # default is empty array, means no user options
 ```
 
 ### Global Configuration
@@ -103,20 +103,11 @@ collections:
 
 ### TypeScript Types
 ```typescript
-// In CmsCollection interface
+// In CmsCollection interface and Global config
 pagination?: boolean | {
+  enabled?: boolean;  // Enable pagination (default: true)
   per_page?: number;  // Default items per page (default: 100)
-  user_options?: number[] | false;  // User-selectable options (default: [25, 50, 100, 200])
-}
-
-// Global config
-interface CmsConfig {
-  // ... existing fields
-  pagination?: {
-    enabled?: boolean;
-    per_page?: number;
-    user_options?: number[] | false;
-  }
+  user_options?: number[] | false;  // User-selectable options (default: [])
 }
 ```
 
@@ -131,11 +122,10 @@ interface CmsConfig {
 3. Create configuration parser/normalizer:
    - Merge global and per-collection settings
    - Normalize boolean to full config object
-   - Set defaults: `per_page: 100`, `user_options: [25, 50, 100, 200]`
+   - Set defaults: `per_page: 50`, `user_options: []`
 4. Add helper functions:
    - `isPaginationEnabled(collection, globalConfig): boolean`
    - `getPaginationConfig(collection, globalConfig): PaginationConfig`
-5. Add unit tests for configuration parsing
 
 **Files to Create:**
 - `/packages/decap-cms-core/src/lib/pagination.ts` - Pagination utilities
@@ -144,8 +134,8 @@ interface CmsConfig {
 - `/packages/decap-cms-core/src/types/redux.ts`
 - `/packages/decap-cms-core/src/reducers/config.ts` (if needed for validation)
 
-### Phase 2: Backend Implementation (GitHub)
-**Goal:** Make GitHub backend return paginated results based on config
+### Phase 2: Backend Implementation (local, GitHub)
+**Goal:** Make GitHub and local backend return paginated results based on config
 
 **Tasks:**
 1. Modify `GitHub.entriesByFolder()` to:
@@ -168,7 +158,7 @@ interface CmsConfig {
 **Tasks:**
 1. Update `GitGateway.entriesByFolder()` to pass pagination params
 2. Ensure cursor is properly forwarded
-3. Test with both GitHub and GitLab backends
+3. Test with local, GitHub and GitLab backends
 
 **Files to Modify:**
 - `/packages/decap-cms-backend-git-gateway/src/implementation.ts`
@@ -208,10 +198,9 @@ interface CmsConfig {
    - Page number display (e.g., "Page 2 of 45")
    - Previous/Next buttons
    - First/Last buttons (optional)
-   - Items per page selector (if `user_options` is not false)
-   - Jump to page input (optional for later)
+   - Items per page selector (if `user_options` is not false or empty)
 2. Integrate pagination into `EntriesCollection`:
-   - Show pagination at top and/or bottom
+   - Show pagination at the bottom
    - Handle page change events
    - Show loading state during page transitions
 3. Update `Entries` component:
@@ -223,7 +212,7 @@ interface CmsConfig {
    - Sorting
    - Filtering  
    - Search
-7. Add localization strings
+7. Add localization strings (only English for now)
 
 **Files to Modify:**
 - `/packages/decap-cms-core/src/components/Collection/Entries/EntriesCollection.js`
