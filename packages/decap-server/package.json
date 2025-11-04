@@ -1,7 +1,7 @@
 {
   "name": "decap-server",
   "description": "Proxy server to be used with Decap CMS proxy backend",
-  "version": "3.3.1",
+  "version": "3.4.0",
   "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-server",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
   "license": "MIT",
