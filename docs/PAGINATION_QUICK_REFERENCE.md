@@ -11,7 +11,7 @@ collections:
   - name: posts
     label: Posts
     folder: content/posts
-    pagination: true  # Uses default: 100 per page with user options [25, 50, 100, 200]
+    pagination: true  # Uses default: 100 per page
 ```
 
 ### Advanced
@@ -22,7 +22,6 @@ collections:
     folder: content/products
     pagination:
       per_page: 50              # Default items per page
-      user_options: [25, 50, 100]  # Options for user to choose from
 ```
 
 ### Disable User Control
@@ -31,7 +30,6 @@ collections:
   - name: articles
     pagination:
       per_page: 100
-      user_options: false  # User cannot change items per page
 ```
 
 ### Global Configuration
@@ -40,7 +38,6 @@ collections:
 pagination:
   enabled: true
   per_page: 100
-  user_options: [50, 100, 200]
 
 collections:
   - name: posts
@@ -155,7 +152,6 @@ export function normalizePaginationConfig(
 
 // Default values
 export const DEFAULT_PAGE_SIZE = 100;
-export const DEFAULT_USER_OPTIONS = [25, 50, 100, 200];
 ```
 
 ## Backend API Change

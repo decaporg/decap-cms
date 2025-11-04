@@ -313,7 +313,6 @@ export interface ViewGroup {
 export interface PaginationConfig {
   enabled?: boolean;
   per_page: number;
-  user_options: number[] | false;
 }
 
 export interface CmsCollection {

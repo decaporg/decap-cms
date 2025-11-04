@@ -38,37 +38,13 @@ const PaginationButton = styled.button`
   }
 `;
 
-const PageSizeSelect = styled.select`
-  padding: 6px 10px;
-  border: 1px solid ${colors.textFieldBorder};
-  border-radius: 4px;
-  background-color: ${colors.inputBackground};
-  color: ${colors.text};
-  font-size: 14px;
-  cursor: pointer;
-  outline: none;
-
-  &:focus {
-    border-color: ${colors.active};
-  }
-`;
-
-const PageSizeLabel = styled.label`
-  color: ${colors.text};
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-`;
 
 function Pagination({
   currentPage,
   pageCount,
   pageSize,
   totalCount,
-  userOptions,
   onPageChange,
-  onPageSizeChange,
   t,
 }) {
   const hasPrevPage = currentPage > 1;
@@ -123,21 +99,6 @@ function Pagination({
             total: totalCount,
           })}
         </span>
-        {userOptions && userOptions.length > 0 && (
-          <PageSizeLabel>
-            {t('collection.pagination.itemsPerPage')}:
-            <PageSizeSelect
-              value={pageSize}
-              onChange={e => onPageSizeChange(Number(e.target.value))}
-            >
-              {userOptions.map(option => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </PageSizeSelect>
-          </PageSizeLabel>
-        )}
       </PaginationInfo>
     </div>
   );
@@ -148,9 +109,7 @@ Pagination.propTypes = {
   pageCount: PropTypes.number.isRequired,
   pageSize: PropTypes.number.isRequired,
   totalCount: PropTypes.number.isRequired,
-  userOptions: PropTypes.arrayOf(PropTypes.number),
   onPageChange: PropTypes.func.isRequired,
-  onPageSizeChange: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
 };
 

@@ -2,7 +2,6 @@
 import type { CmsCollection, CmsConfig, PaginationConfig, Collection } from '../types/redux';
 
 const DEFAULT_PER_PAGE = 100;
-const DEFAULT_USER_OPTIONS: number[] = [];
 
 type CollectionLike = CmsCollection | Collection;
 
@@ -69,7 +68,6 @@ export function getPaginationConfig(collection: CollectionLike, globalConfig?: C
   const defaults: PaginationConfig = {
     enabled: false,
     per_page: DEFAULT_PER_PAGE,
-    user_options: DEFAULT_USER_OPTIONS,
   };
 
   // Start with global config if available
@@ -80,9 +78,7 @@ export function getPaginationConfig(collection: CollectionLike, globalConfig?: C
       const enabled = getCfg<boolean>(globalConfig.pagination, 'enabled');
       defaults.enabled = typeof enabled === 'boolean' ? enabled : true;
       const perPage = getCfg<number>(globalConfig.pagination, 'per_page');
-      const userOptions = getCfg<number[] | false>(globalConfig.pagination, 'user_options');
       defaults.per_page = typeof perPage === 'number' ? perPage : defaults.per_page;
-      defaults.user_options = typeof userOptions !== 'undefined' ? userOptions : defaults.user_options;
     }
   }
 
@@ -99,17 +95,14 @@ export function getPaginationConfig(collection: CollectionLike, globalConfig?: C
     return {
       enabled: true,
       per_page: defaults.per_page,
-      user_options: defaults.user_options,
     };
   } else if (typeof pagination === 'object' && pagination !== null) {
     // Detailed config overrides defaults
     const perPage = getCfg<number>(pagination, 'per_page');
     const enabled = getCfg<boolean>(pagination, 'enabled');
-    const userOptions = getCfg<number[] | false>(pagination, 'user_options');
     return {
       enabled: typeof enabled === 'boolean' ? enabled : true,
       per_page: typeof perPage === 'number' ? perPage : defaults.per_page,
-      user_options: typeof userOptions !== 'undefined' ? userOptions : defaults.user_options,
     };
   }
 

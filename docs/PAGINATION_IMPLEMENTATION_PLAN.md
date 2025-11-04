@@ -81,7 +81,6 @@ collections:
     # Detailed configuration
     pagination:
       per_page: 50 # default
-      user_options: [25, 50, 100, 200] # default is empty array, means no user options
 ```
 
 ### Global Configuration
@@ -90,7 +89,6 @@ collections:
 pagination:
   enabled: true
   per_page: 100
-  user_options: [50, 100, 200]
   
 collections:
   - name: posts
@@ -107,7 +105,6 @@ collections:
 pagination?: boolean | {
   enabled?: boolean;  // Enable pagination (default: true)
   per_page?: number;  // Default items per page (default: 100)
-  user_options?: number[] | false;  // User-selectable options (default: [])
 }
 ```
 
@@ -122,7 +119,7 @@ pagination?: boolean | {
 3. Create configuration parser/normalizer:
    - Merge global and per-collection settings
    - Normalize boolean to full config object
-   - Set defaults: `per_page: 50`, `user_options: []`
+   - Set defaults: `per_page: 50`
 4. Add helper functions:
    - `isPaginationEnabled(collection, globalConfig): boolean`
    - `getPaginationConfig(collection, globalConfig): PaginationConfig`
@@ -198,7 +195,6 @@ pagination?: boolean | {
    - Page number display (e.g., "Page 2 of 45")
    - Previous/Next buttons
    - First/Last buttons (optional)
-   - Items per page selector (if `user_options` is not false or empty)
 2. Integrate pagination into `EntriesCollection`:
    - Show pagination at the bottom
    - Handle page change events

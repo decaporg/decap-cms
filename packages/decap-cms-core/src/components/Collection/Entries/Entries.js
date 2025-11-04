@@ -31,12 +31,10 @@ function Entries({
   getUnpublishedEntries,
   filterTerm,
   paginationEnabled,
-  paginationConfig,
   currentPage,
   pageSize,
   totalCount,
   onPageChange,
-  onPageSizeChange,
 }) {
   const loadingMessages = [
     t('collection.entries.loadingEntries'),
@@ -80,9 +78,8 @@ function Entries({
             pageCount={pageCount}
             pageSize={pageSize}
             totalCount={totalCount}
-            userOptions={paginationConfig?.user_options || null}
             onPageChange={onPageChange}
-            onPageSizeChange={onPageSizeChange}
+            t={t}
           />
         )}
       </>

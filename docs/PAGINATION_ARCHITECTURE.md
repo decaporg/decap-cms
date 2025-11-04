@@ -95,7 +95,6 @@
 │      name: "posts",                                              │
 │      pagination: {                 // ← NEW                      │
 │        per_page: 100,                                            │
-│        user_options: [25, 50, 100, 200]                          │
 │      }                                                           │
 │    }]                                                            │
 │  }                                                               │
@@ -188,7 +187,6 @@ Global Config:
   pagination:
     enabled: true
     per_page: 100
-    user_options: [50, 100, 200]
           │
           ▼
 Collection Config:
@@ -199,7 +197,6 @@ Collection Config:
     - name: products            │
       pagination:               │ Merge with
         per_page: 50           ─┤ global config
-        user_options: [25, 50] ─┤
                                 │
     - name: pages               │
       pagination: false        ─┘
@@ -208,11 +205,9 @@ Collection Config:
 Resolved Config:
   posts:
     per_page: 100              (from global)
-    user_options: [50, 100, 200]  (from global)
   
   products:
     per_page: 50               (from collection, overrides global)
-    user_options: [25, 50]     (from collection, overrides global)
   
   pages:
     pagination: disabled       (explicitly disabled)
