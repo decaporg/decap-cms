@@ -425,7 +425,7 @@ export default class GitHub implements Implementation {
     const repoURL = this.api!.originRepoURL;
     const page = options?.page ?? 1;
     const pageSize = options?.pageSize ?? 20;
-    const usePagination = options?.pagination ?? false;
+    const usePagination = options?.pagination ?? true;
 
     let cursor: Cursor;
 

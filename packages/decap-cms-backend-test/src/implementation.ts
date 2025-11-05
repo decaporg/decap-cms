@@ -223,7 +223,7 @@ export default class TestBackend implements Implementation {
     }));
     const pageSize = options?.pageSize ?? DEFAULT_PAGE_SIZE;
     const page = options?.page ?? 1;
-    const usePagination = options?.pagination ?? false;
+    const usePagination = options?.pagination ?? true;
 
     const cursor = getCursor(folder, extension, entries, page - 1, depth, pageSize);
 
