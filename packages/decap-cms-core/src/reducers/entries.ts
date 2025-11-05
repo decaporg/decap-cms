@@ -337,15 +337,12 @@ function entries(
       return newState;
     }
 
-    case GROUP_ENTRIES_SUCCESS:
     case FILTER_ENTRIES_SUCCESS:
     case SORT_ENTRIES_SUCCESS: {
       const payload = action.payload as { collection: string; entries: EntryObject[] };
       const { collection, entries } = payload;
       loadedEntries = entries;
-      const actionName = action.type === SORT_ENTRIES_SUCCESS ? 'SORT_ENTRIES_SUCCESS' : 
-                         action.type === FILTER_ENTRIES_SUCCESS ? 'FILTER_ENTRIES_SUCCESS' : 
-                         'GROUP_ENTRIES_SUCCESS';
+      const actionName = action.type === SORT_ENTRIES_SUCCESS ? 'SORT_ENTRIES_SUCCESS' : 'FILTER_ENTRIES_SUCCESS';
       console.log(`[Reducer] ${actionName}`, { collection, entriesCount: loadedEntries.length });
       
       const newState = state.withMutations(map => {
@@ -356,7 +353,7 @@ function entries(
           ),
         );
         map.setIn(['pages', collection, 'isFetching'], false);
-        // Store sorted entry slugs in a special key for client-side pagination
+        // Store sorted/filtered entry slugs in a special key for client-side pagination
         const sortedIds = List(loadedEntries.map(entry => entry.slug));
         console.log('[Reducer] Storing sortedIds', { collection, sortedIdsCount: sortedIds.size });
         map.setIn(['pages', collection, 'sortedIds'], sortedIds);
@@ -369,6 +366,37 @@ function entries(
             existingPagination.set('currentPage', 1).set('totalCount', sortedIds.size)
           );
         }
+      });
+      return newState;
+    }
+
+    case GROUP_ENTRIES_SUCCESS: {
+      const payload = action.payload as { collection: string; entries: EntryObject[] };
+      const { collection, entries } = payload;
+      loadedEntries = entries;
+      console.log('[Reducer] GROUP_ENTRIES_SUCCESS', { collection, entriesCount: loadedEntries.length });
+      
+      const newState = state.withMutations(map => {
+        loadedEntries.forEach(entry =>
+          map.setIn(
+            ['entities', `${entry.collection}.${entry.slug}`],
+            fromJS(entry).set('isFetching', false),
+          ),
+        );
+        
+        const ids = List(loadedEntries.map(entry => entry.slug));
+        map.setIn(
+          ['pages', collection],
+          Map({
+            page: 1,
+            ids,
+            isFetching: false,
+          }),
+        );
+        
+        // Clear sortedIds so pagination doesn't limit results
+        map.deleteIn(['pages', collection, 'sortedIds']);
+        console.log('[Reducer] Stored all entries for grouping, cleared sortedIds', { collection, idsCount: ids.size });
       });
       return newState;
     }

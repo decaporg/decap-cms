@@ -308,15 +308,33 @@ export function sortByField(
         lastEntry: sortedEntries[sortedEntries.length - 1]?.slug
       });
       
-      dispatch({
-        type: SORT_ENTRIES_SUCCESS,
-        payload: {
-          collection: collectionName,
-          key,
-          direction,
-          entries: sortedEntries,
-        },
-      });
+      // Check if grouping is active - if so, use GROUP_ENTRIES_SUCCESS to avoid pagination
+      const activeGroups = state.entries.getIn(['group', collectionName]);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const hasActiveGroups = activeGroups && typeof (activeGroups as any).some === 'function' && 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (activeGroups as any).some((g: any) => g.get('active') === true);
+      
+      if (hasActiveGroups) {
+        console.log('[sortByField] Grouping is active, dispatching as GROUP_ENTRIES_SUCCESS to show all entries');
+        dispatch({
+          type: GROUP_ENTRIES_SUCCESS,
+          payload: {
+            collection: collectionName,
+            entries: sortedEntries,
+          },
+        });
+      } else {
+        dispatch({
+          type: SORT_ENTRIES_SUCCESS,
+          payload: {
+            collection: collectionName,
+            key,
+            direction,
+            entries: sortedEntries,
+          },
+        });
+      }
     } catch (error) {
       dispatch({
         type: SORT_ENTRIES_FAILURE,
@@ -450,14 +468,32 @@ export function filterByField(collection: Collection, filter: ViewFilter) {
         console.log('[filterByField] After sorting', { count: finalEntries.length });
       }
       
-      dispatch({
-        type: FILTER_ENTRIES_SUCCESS,
-        payload: {
-          collection: collection.get('name'),
-          filter,
-          entries: finalEntries,
-        },
-      });
+      // Check if grouping is active - if so, use GROUP_ENTRIES_SUCCESS to avoid pagination
+      const activeGroups = updatedState.entries.getIn(['group', collection.get('name')]);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const hasActiveGroups = activeGroups && typeof (activeGroups as any).some === 'function' && 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (activeGroups as any).some((g: any) => g.get('active') === true);
+      
+      if (hasActiveGroups) {
+        console.log('[filterByField] Grouping is active, dispatching as GROUP_ENTRIES_SUCCESS to show all entries');
+        dispatch({
+          type: GROUP_ENTRIES_SUCCESS,
+          payload: {
+            collection: collection.get('name'),
+            entries: finalEntries,
+          },
+        });
+      } else {
+        dispatch({
+          type: FILTER_ENTRIES_SUCCESS,
+          payload: {
+            collection: collection.get('name'),
+            filter,
+            entries: finalEntries,
+          },
+        });
+      }
     } catch (error) {
       dispatch({
         type: FILTER_ENTRIES_FAILURE,
@@ -509,11 +545,90 @@ export function groupByField(collection: Collection, group: ViewGroup) {
       
       if (isCurrentlyActive && !hasOtherActiveGroups) {
         // Disabling grouping - reload entries with pagination
+        console.log('[groupByField] Disabling last group, reloading entries');
         return dispatch(loadEntries(collection));
       }
       
       // Enabling grouping or switching groups - load all entries
-      const entries = await getAllEntries(state, collection);
+      console.log('[groupByField] Applying group', { groupId: group.id, field: group.field });
+      let entries = await getAllEntries(state, collection);
+      console.log('[groupByField] Got all entries', { count: entries.length });
+      
+      // Get the updated state after GROUP_ENTRIES_REQUEST
+      const updatedState = getState();
+      
+      // Check if filtering is active - if so, apply filters
+      const activeFilters = updatedState.entries.getIn(['filter', collection.get('name')]);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const hasActiveFilters = activeFilters && typeof (activeFilters as any).some === 'function' && 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (activeFilters as any).some((f: any) => f.get('active') === true);
+      
+      if (hasActiveFilters) {
+        console.log('[groupByField] Active filters detected, applying filters');
+        entries = entries.filter(entry => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const filters: any[] = [];
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (activeFilters as any).forEach((f: any) => {
+            if (f.get('active') === true) {
+              filters.push({
+                pattern: f.get('pattern'),
+                field: f.get('field'),
+              });
+            }
+          });
+          
+          return filters.every(({ pattern, field }) => {
+            const data = entry.data || {};
+            const fieldParts = field.split('.');
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            let value: any = data;
+            for (const part of fieldParts) {
+              value = value?.[part];
+            }
+            return value !== undefined && new RegExp(String(pattern)).test(String(value));
+          });
+        });
+        console.log('[groupByField] After filtering', { count: entries.length });
+      }
+      
+      // Check if sorting is active - if so, apply sort
+      const activeSorts = updatedState.entries.getIn(['sort', collection.get('name')]);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const hasActiveSort = activeSorts && typeof (activeSorts as any).size === 'number' && (activeSorts as any).size > 0;
+      
+      if (hasActiveSort) {
+        console.log('[groupByField] Active sort detected, applying sort');
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const sortField = (activeSorts as any).valueSeq().first();
+        const sortKey = sortField.get('key');
+        const sortDirection = sortField.get('direction');
+        const dataPath = selectSortDataPath(collection, sortKey);
+        const order = sortDirection === SortDirection.Ascending ? 'asc' : 'desc';
+        
+        entries = orderBy(
+          entries,
+          [entry => {
+            const pathParts = dataPath.split('.');
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            let value: any = entry;
+            for (const part of pathParts) {
+              value = value?.[part];
+            }
+            return typeof value === 'string' ? value.toLowerCase() : value;
+          }],
+          [order]
+        );
+        console.log('[groupByField] After sorting', { count: entries.length });
+      }
+      
+      console.log('[groupByField] Final grouped entries', { 
+        count: entries.length,
+        groupId: group.id,
+        groupField: group.field
+      });
+      
       dispatch({
         type: GROUP_ENTRIES_SUCCESS,
         payload: {
