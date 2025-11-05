@@ -113,25 +113,15 @@ export class EntriesCollection extends React.Component {
       sortByField,
     } = this.props;
 
-    console.log('[EntriesCollection] componentDidMount', {
-      collectionName: collection.get('name'),
-      sortExists: !!sort,
-      sortSize: sort ? sort.size : 0,
-      entriesLoaded,
-    });
-
     // If sort state exists on mount, re-trigger sort to populate sortedIds
     if (sort && sort.size > 0) {
-      console.log('[EntriesCollection] Re-triggering sort on mount', sort.toJS());
       sort.forEach((value, key) => {
         const direction = value.get('direction');
-        console.log('[EntriesCollection] Triggering sortByField', { key, direction });
         sortByField(collection, key, direction);
       });
     }
 
     if (collection && !entriesLoaded) {
-      console.log('[EntriesCollection] Loading entries (not loaded yet)');
       loadEntries(collection);
     }
 
@@ -292,14 +282,6 @@ function mapStateToProps(state, ownProps) {
     ? paginationConfig.per_page
     : selectEntriesPageSize(state.entries, collection.get('name'));
   const totalCount = selectEntriesTotalCount(state.entries, collection.get('name'));
-
-  console.log('[mapStateToProps] Pagination', {
-    collectionName: collection.get('name'),
-    paginationEnabled,
-    configPageSize: paginationConfig?.per_page,
-    reduxPageSize: selectEntriesPageSize(state.entries, collection.get('name')),
-    finalPageSize: pageSize,
-  });
 
   // Sort state
   const sort = selectEntriesSort(state.entries, collection.get('name'));

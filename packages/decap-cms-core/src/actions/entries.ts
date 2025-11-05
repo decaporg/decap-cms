@@ -22,6 +22,14 @@ import { navigateToEntry } from '../routing/history';
 import { getProcessSegment } from '../lib/formatters';
 import { hasI18n, duplicateDefaultI18nFields, serializeI18n, I18N, I18N_FIELD } from '../lib/i18n';
 import { isPaginationEnabled } from '../lib/pagination';
+import {
+  hasActiveFilters,
+  hasActiveGroups,
+  hasActiveSorts,
+  extractActiveFilters,
+  matchesFilters,
+  getFieldValue,
+} from '../lib/entryHelpers';
 import { addNotification } from './notifications';
 
 import type { ImplementationMediaFile } from 'decap-cms-lib-util';
@@ -240,38 +248,9 @@ export function sortByField(
 
       // Check if filtering is active - if so, apply filters first
       const activeFilters = state.entries.getIn(['filter', collectionName]);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const hasActiveFilters =
-        activeFilters &&
-        typeof (activeFilters as any).some === 'function' &&
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (activeFilters as any).some((f: any) => f.get('active') === true);
-
-      if (hasActiveFilters) {
-        entries = entries.filter(entry => {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const filters: any[] = [];
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (activeFilters as any).forEach((f: any) => {
-            if (f.get('active') === true) {
-              filters.push({
-                pattern: f.get('pattern'),
-                field: f.get('field'),
-              });
-            }
-          });
-
-          return filters.every(({ pattern, field }) => {
-            const data = entry.data || {};
-            const fieldParts = field.split('.');
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            let value: any = data;
-            for (const part of fieldParts) {
-              value = value?.[part];
-            }
-            return value !== undefined && new RegExp(String(pattern)).test(String(value));
-          });
-        });
+      if (hasActiveFilters(activeFilters)) {
+        const filters = extractActiveFilters(activeFilters);
+        entries = entries.filter(entry => matchesFilters(entry, filters));
       }
 
       // Sort entries by the specified field
@@ -282,13 +261,7 @@ export function sortByField(
         entries,
         [
           entry => {
-            // dataPath is a string like "data.title" or "updatedOn"
-            const pathParts = dataPath.split('.');
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            let value: any = entry;
-            for (const part of pathParts) {
-              value = value?.[part];
-            }
+            const value = getFieldValue(entry, dataPath);
             // Handle case-insensitive string sorting
             return typeof value === 'string' ? value.toLowerCase() : value;
           },
@@ -298,14 +271,8 @@ export function sortByField(
 
       // Check if grouping is active - if so, use GROUP_ENTRIES_SUCCESS to avoid pagination
       const activeGroups = state.entries.getIn(['group', collectionName]);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const hasActiveGroups =
-        activeGroups &&
-        typeof (activeGroups as any).some === 'function' &&
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (activeGroups as any).some((g: any) => g.get('active') === true);
 
-      if (hasActiveGroups) {
+      if (hasActiveGroups(activeGroups)) {
         dispatch({
           type: GROUP_ENTRIES_SUCCESS,
           payload: {
@@ -421,14 +388,9 @@ export function filterByField(collection: Collection, filter: ViewFilter) {
 
       // Check if sorting is active - if so, apply sort after filtering
       const activeSorts = updatedState.entries.getIn(['sort', collection.get('name')]);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const hasActiveSort =
-        activeSorts &&
-        typeof (activeSorts as any).size === 'number' &&
-        (activeSorts as any).size > 0;
 
       let finalEntries = filteredEntries;
-      if (hasActiveSort) {
+      if (hasActiveSorts(activeSorts)) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const sortField = (activeSorts as any).valueSeq().first();
         const sortKey = sortField.get('key');
@@ -440,12 +402,7 @@ export function filterByField(collection: Collection, filter: ViewFilter) {
           filteredEntries,
           [
             entry => {
-              const pathParts = dataPath.split('.');
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              let value: any = entry;
-              for (const part of pathParts) {
-                value = value?.[part];
-              }
+              const value = getFieldValue(entry, dataPath);
               return typeof value === 'string' ? value.toLowerCase() : value;
             },
           ],
@@ -455,14 +412,8 @@ export function filterByField(collection: Collection, filter: ViewFilter) {
 
       // Check if grouping is active - if so, use GROUP_ENTRIES_SUCCESS to avoid pagination
       const activeGroups = updatedState.entries.getIn(['group', collection.get('name')]);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const hasActiveGroups =
-        activeGroups &&
-        typeof (activeGroups as any).some === 'function' &&
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (activeGroups as any).some((g: any) => g.get('active') === true);
 
-      if (hasActiveGroups) {
+      if (hasActiveGroups(activeGroups)) {
         dispatch({
           type: GROUP_ENTRIES_SUCCESS,
           payload: {
@@ -543,49 +494,16 @@ export function groupByField(collection: Collection, group: ViewGroup) {
 
       // Check if filtering is active - if so, apply filters
       const activeFilters = updatedState.entries.getIn(['filter', collection.get('name')]);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const hasActiveFilters =
-        activeFilters &&
-        typeof (activeFilters as any).some === 'function' &&
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (activeFilters as any).some((f: any) => f.get('active') === true);
 
-      if (hasActiveFilters) {
-        entries = entries.filter(entry => {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const filters: any[] = [];
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (activeFilters as any).forEach((f: any) => {
-            if (f.get('active') === true) {
-              filters.push({
-                pattern: f.get('pattern'),
-                field: f.get('field'),
-              });
-            }
-          });
-
-          return filters.every(({ pattern, field }) => {
-            const data = entry.data || {};
-            const fieldParts = field.split('.');
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            let value: any = data;
-            for (const part of fieldParts) {
-              value = value?.[part];
-            }
-            return value !== undefined && new RegExp(String(pattern)).test(String(value));
-          });
-        });
+      if (hasActiveFilters(activeFilters)) {
+        const filters = extractActiveFilters(activeFilters);
+        entries = entries.filter(entry => matchesFilters(entry, filters));
       }
 
       // Check if sorting is active - if so, apply sort
       const activeSorts = updatedState.entries.getIn(['sort', collection.get('name')]);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const hasActiveSort =
-        activeSorts &&
-        typeof (activeSorts as any).size === 'number' &&
-        (activeSorts as any).size > 0;
 
-      if (hasActiveSort) {
+      if (hasActiveSorts(activeSorts)) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const sortField = (activeSorts as any).valueSeq().first();
         const sortKey = sortField.get('key');
@@ -597,12 +515,7 @@ export function groupByField(collection: Collection, group: ViewGroup) {
           entries,
           [
             entry => {
-              const pathParts = dataPath.split('.');
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              let value: any = entry;
-              for (const part of pathParts) {
-                value = value?.[part];
-              }
+              const value = getFieldValue(entry, dataPath);
               return typeof value === 'string' ? value.toLowerCase() : value;
             },
           ],
