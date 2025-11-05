@@ -240,6 +240,15 @@ export function filterByField(collection: Collection, filter: ViewFilter) {
     const state = getState();
     // if we're already fetching we update the filter key, but skip loading entries
     const isFetching = selectIsFetching(state.entries, collection.get('name'));
+    
+    // Check if this filter is currently active (to detect if we're disabling it)
+    const currentFilter = state.entries.getIn(['filter', collection.get('name'), filter.id]);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const isCurrentlyActive = currentFilter && typeof (currentFilter as any).get === 'function' 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ? (currentFilter as any).get('active') === true 
+      : false;
+    
     dispatch({
       type: FILTER_ENTRIES_REQUEST,
       payload: {
@@ -252,6 +261,23 @@ export function filterByField(collection: Collection, filter: ViewFilter) {
     }
 
     try {
+      // If we're disabling the last active filter, reload with pagination
+      const allFilters = state.entries.getIn(['filter', collection.get('name')]);
+      let hasOtherActiveFilters = false;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if (allFilters && typeof (allFilters as any).some === 'function') {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        hasOtherActiveFilters = (allFilters as any).some((f: any) => 
+          f.get('id') !== filter.id && f.get('active') === true
+        );
+      }
+      
+      if (isCurrentlyActive && !hasOtherActiveFilters) {
+        // Disabling filtering - reload entries with pagination
+        return dispatch(loadEntries(collection));
+      }
+      
+      // Enabling filtering or switching filters - load all entries
       const entries = await getAllEntries(state, collection);
       dispatch({
         type: FILTER_ENTRIES_SUCCESS,
@@ -278,6 +304,15 @@ export function groupByField(collection: Collection, group: ViewGroup) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const isFetching = selectIsFetching(state.entries, collection.get('name'));
+    
+    // Check if this group is currently active (to detect if we're disabling it)
+    const currentGroup = state.entries.getIn(['group', collection.get('name'), group.id]);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const isCurrentlyActive = currentGroup && typeof (currentGroup as any).get === 'function' 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ? (currentGroup as any).get('active') === true 
+      : false;
+    
     dispatch({
       type: GROUP_ENTRIES_REQUEST,
       payload: {
@@ -290,6 +325,23 @@ export function groupByField(collection: Collection, group: ViewGroup) {
     }
 
     try {
+      // If we're disabling the last active group, reload with pagination
+      const allGroups = state.entries.getIn(['group', collection.get('name')]);
+      let hasOtherActiveGroups = false;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if (allGroups && typeof (allGroups as any).some === 'function') {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        hasOtherActiveGroups = (allGroups as any).some((g: any) => 
+          g.get('id') !== group.id && g.get('active') === true
+        );
+      }
+      
+      if (isCurrentlyActive && !hasOtherActiveGroups) {
+        // Disabling grouping - reload entries with pagination
+        return dispatch(loadEntries(collection));
+      }
+      
+      // Enabling grouping or switching groups - load all entries
       const entries = await getAllEntries(state, collection);
       dispatch({
         type: GROUP_ENTRIES_SUCCESS,

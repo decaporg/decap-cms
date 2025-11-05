@@ -166,6 +166,8 @@ export class EntriesCollection extends React.Component {
       loadEntriesPage,
     } = this.props;
 
+    const hasActiveGroups = groups && groups.length > 0;
+    
     const EntriesToRender = ({ entries }) => {
       return (
         <Entries
@@ -180,7 +182,7 @@ export class EntriesCollection extends React.Component {
           getWorkflowStatus={getWorkflowStatus}
           getUnpublishedEntries={getUnpublishedEntries}
           filterTerm={filterTerm}
-          paginationEnabled={paginationEnabled}
+          paginationEnabled={paginationEnabled && !hasActiveGroups}
           paginationConfig={paginationConfig}
           currentPage={currentPage}
           pageSize={pageSize}
@@ -191,7 +193,7 @@ export class EntriesCollection extends React.Component {
       );
     };
 
-    if (groups && groups.length > 0) {
+    if (hasActiveGroups) {
       return withGroups(groups, entries, EntriesToRender, t);
     }
 

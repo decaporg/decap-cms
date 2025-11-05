@@ -309,6 +309,14 @@ function entries(
         map.setIn(['sort', collection], sort);
         map.setIn(['pages', collection, 'isFetching'], true);
         map.deleteIn(['pages', collection, 'page']);
+        // Reset pagination to page 1 when sort changes
+        const existingPagination = map.getIn(['pagination', collection]);
+        if (existingPagination) {
+          map.setIn(
+            ['pagination', collection],
+            existingPagination.set('currentPage', 1)
+          );
+        }
       });
       persistSort(newState.get('sort') as Sort);
       return newState;
@@ -336,6 +344,14 @@ function entries(
             ids,
           }),
         );
+        // Reset pagination to page 1 when sort/filter/group changes
+        const existingPagination = map.getIn(['pagination', collection]);
+        if (existingPagination) {
+          map.setIn(
+            ['pagination', collection],
+            existingPagination.set('currentPage', 1)
+          );
+        }
       });
       return newState;
     }
@@ -360,6 +376,14 @@ function entries(
           ['filter', collection, current.get('id')],
           current.set('active', !current.get('active')),
         );
+        // Reset pagination to page 1 when filter changes
+        const existingPagination = map.getIn(['pagination', collection]);
+        if (existingPagination) {
+          map.setIn(
+            ['pagination', collection],
+            existingPagination.set('currentPage', 1)
+          );
+        }
       });
       return newState;
     }
@@ -384,6 +408,14 @@ function entries(
           ['group', collection, current.get('id')],
           current.set('active', !current.get('active')),
         );
+        // Reset pagination to page 1 when group changes
+        const existingPagination = map.getIn(['pagination', collection]);
+        if (existingPagination) {
+          map.setIn(
+            ['pagination', collection],
+            existingPagination.set('currentPage', 1)
+          );
+        }
       });
       return newState;
     }
