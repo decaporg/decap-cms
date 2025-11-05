@@ -1,9 +1,10 @@
 import { fromJS, List, Map } from 'immutable';
 import isEqual from 'lodash/isEqual';
+import orderBy from 'lodash/orderBy';
 import { Cursor } from 'decap-cms-lib-util';
 
 import { selectCollectionEntriesCursor } from '../reducers/cursors';
-import { selectFields, updateFieldByKey } from '../reducers/collections';
+import { selectFields, updateFieldByKey, selectSortDataPath } from '../reducers/collections';
 import { selectIntegration, selectPublishedSlugs } from '../reducers';
 import { getIntegrationProvider } from '../integrations';
 import { currentBackend } from '../backend';
@@ -244,13 +245,40 @@ export function sortByField(
       const entries = await getAllEntries(state, collection);
       console.log('[sortByField] Got entries', { count: entries.length });
       
+      // Sort entries by the specified field
+      const dataPath = selectSortDataPath(collection, key);
+      const order = direction === SortDirection.Ascending ? 'asc' : 'desc';
+      console.log('[sortByField] Sorting by', { key, dataPath, order });
+      
+      const sortedEntries = orderBy(
+        entries,
+        [entry => {
+          // dataPath is a string like "data.title" or "updatedOn"
+          const pathParts = dataPath.split('.');
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          let value: any = entry;
+          for (const part of pathParts) {
+            value = value?.[part];
+          }
+          // Handle case-insensitive string sorting
+          return typeof value === 'string' ? value.toLowerCase() : value;
+        }],
+        [order]
+      );
+      
+      console.log('[sortByField] Sorted entries', { 
+        count: sortedEntries.length,
+        firstEntry: sortedEntries[0]?.slug,
+        lastEntry: sortedEntries[sortedEntries.length - 1]?.slug
+      });
+      
       dispatch({
         type: SORT_ENTRIES_SUCCESS,
         payload: {
           collection: collectionName,
           key,
           direction,
-          entries,
+          entries: sortedEntries,
         },
       });
     } catch (error) {
