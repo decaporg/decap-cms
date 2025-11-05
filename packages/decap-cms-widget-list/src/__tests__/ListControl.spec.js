@@ -789,4 +789,117 @@ describe('ListControl', () => {
     listControl.validate();
     expect(props.onValidateObject).toHaveBeenCalledWith('forID', []);
   });
+
+  it('should prevent duplicate relation entries', () => {
+    const field = fromJS({
+      name: 'featured_posts',
+      label: 'Featured Posts',
+      widget: 'list',
+      field: {
+        name: 'featured_entries',
+        widget: 'relation',
+        collection: 'posts',
+      },
+    });
+
+    const { getByTestId } = render(
+      <ListControl
+        {...props}
+        field={field}
+        value={fromJS([
+          { featured_entries: 'post-1' },
+          { featured_entries: 'post-2' },
+        ])}
+      />,
+    );
+
+    const listControl = new ListControl({
+      ...props,
+      field,
+      value: fromJS([
+        { featured_entries: 'post-1' },
+        { featured_entries: 'post-2' },
+      ]),
+    });
+
+    const handleChange = listControl.handleChangeFor(0);
+    const relationField = fromJS({
+      widget: 'relation',
+      name: 'featured_entries',
+    });
+
+    handleChange(relationField, 'post-2');
+
+    expect(props.onChange).not.toHaveBeenCalled();
+    
+    expect(listControl.duplicateErrorIndex).toBe(0);
+  });
+
+  it('should allow non-duplicate relation entries', () => {
+    const field = fromJS({
+      name: 'featured_posts',
+      label: 'Featured Posts',
+      widget: 'list',
+      field: {
+        name: 'featured_entries',
+        widget: 'relation',
+        collection: 'posts',
+      },
+    });
+
+    const listControl = new ListControl({
+      ...props,
+      field,
+      value: fromJS([
+        { featured_entries: 'post-1' },
+        { featured_entries: 'post-2' },
+      ]),
+    });
+
+    const handleChange = listControl.handleChangeFor(0);
+    const relationField = fromJS({
+      widget: 'relation',
+      name: 'featured_entries',
+    });
+
+    handleChange(relationField, 'post-new');
+
+    expect(props.onChange).toHaveBeenCalled();
+    
+    expect(listControl.duplicateErrorIndex).toBeNull();
+  });
+
+  it('should clear duplicate error when value changes', () => {
+    const field = fromJS({
+      name: 'featured_posts',
+      label: 'Featured Posts',
+      widget: 'list',
+      field: {
+        name: 'featured_entries',
+        widget: 'relation',
+        collection: 'posts',
+      },
+    });
+
+    const listControl = new ListControl({
+      ...props,
+      field,
+      value: fromJS([
+        { featured_entries: 'post-1' },
+        { featured_entries: 'post-2' },
+      ]),
+    });
+
+    listControl.duplicateErrorIndex = 0;
+
+    const handleChange = listControl.handleChangeFor(0);
+    const relationField = fromJS({
+      widget: 'relation',
+      name: 'featured_entries',
+    });
+
+    handleChange(relationField, 'post-new');
+
+    expect(listControl.duplicateErrorIndex).toBeNull();
+  });
 });
