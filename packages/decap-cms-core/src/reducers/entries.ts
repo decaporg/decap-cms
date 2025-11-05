@@ -32,6 +32,7 @@ import {
   GROUP_ENTRIES_FAILURE,
   CHANGE_VIEW_STYLE,
   SET_ENTRIES_PAGE_SIZE,
+  SET_ENTRIES_PAGE,
 } from '../actions/entries';
 import { VIEW_STYLE_LIST } from '../constants/collectionViews';
 import { joinUrlPath } from '../lib/urlHelper';
@@ -254,9 +255,23 @@ function entries(
           const cursorMeta = payload.cursor.meta;
           const currentPage = cursorMeta.get('page') || 1;
           const totalCount = cursorMeta.get('count') || 0;
-          const pageSize = cursorMeta.get('pageSize') || 100;
+          const cursorPageSize = cursorMeta.get('pageSize') || 100;
           
           const existingPagination = map.getIn(['pagination', collection], fromJS({ currentPage: 1, totalCount: 0, pageSize: 100 }));
+          // Only update pageSize if it hasn't been set yet (on first load)
+          // After that, the config-driven pageSize should be preserved
+          const currentPageSize = existingPagination.get('pageSize');
+          const pageSize = currentPageSize && currentPageSize !== 100 ? currentPageSize : cursorPageSize;
+          
+          console.log('[Reducer] ENTRIES_SUCCESS pagination', { 
+            collection, 
+            currentPageSize, 
+            cursorPageSize, 
+            finalPageSize: pageSize,
+            currentPage,
+            totalCount
+          });
+          
           map.setIn(
             ['pagination', collection],
             existingPagination.merge({ currentPage, totalCount, pageSize })
@@ -328,6 +343,8 @@ function entries(
       const payload = action.payload as { collection: string; entries: EntryObject[] };
       const { collection, entries } = payload;
       loadedEntries = entries;
+      console.log('[Reducer] SORT_ENTRIES_SUCCESS', { collection, entriesCount: loadedEntries.length });
+      
       const newState = state.withMutations(map => {
         loadedEntries.forEach(entry =>
           map.setIn(
@@ -336,20 +353,17 @@ function entries(
           ),
         );
         map.setIn(['pages', collection, 'isFetching'], false);
-        const ids = List(loadedEntries.map(entry => entry.slug));
-        map.setIn(
-          ['pages', collection],
-          Map({
-            page: 1,
-            ids,
-          }),
-        );
-        // Reset pagination to page 1 when sort/filter/group changes
+        // Store sorted entry slugs in a special key for client-side pagination
+        const sortedIds = List(loadedEntries.map(entry => entry.slug));
+        console.log('[Reducer] Storing sortedIds', { collection, sortedIdsCount: sortedIds.size });
+        map.setIn(['pages', collection, 'sortedIds'], sortedIds);
+        map.setIn(['pages', collection, 'page'], 1);
+        // Reset pagination to page 1 and update totalCount
         const existingPagination = map.getIn(['pagination', collection]);
         if (existingPagination) {
           map.setIn(
             ['pagination', collection],
-            existingPagination.set('currentPage', 1)
+            existingPagination.set('currentPage', 1).set('totalCount', sortedIds.size)
           );
         }
       });
@@ -451,6 +465,24 @@ function entries(
       return newState;
     }
 
+    case SET_ENTRIES_PAGE: {
+      const payload = action.payload as { collection: string; page: number };
+      const { collection, page } = payload;
+      console.log('[Reducer] SET_ENTRIES_PAGE', { collection, page });
+      const newState = state.withMutations(map => {
+        const existingPagination = map.getIn(['pagination', collection]);
+        if (existingPagination) {
+          console.log('[Reducer] Updating currentPage', { 
+            collection, 
+            newPage: page,
+            oldPage: existingPagination.get('currentPage')
+          });
+          map.setIn(['pagination', collection], existingPagination.set('currentPage', page));
+        }
+      });
+      return newState;
+    }
+
     default:
       return state;
   }
@@ -518,10 +550,51 @@ function getPublishedEntries(state: Entries, collectionName: string) {
   return entries;
 }
 
-export function selectEntries(state: Entries, collection: Collection) {
+export function selectEntries(state: Entries, collection: Collection, configPageSize?: number) {
   const collectionName = collection.get('name');
   let entries = getPublishedEntries(state, collectionName);
 
+  // If sortedIds is present, use it for client-side pagination
+  const sortedIdsRaw = state.getIn(['pages', collectionName, 'sortedIds']);
+  const pagination = selectEntriesPagination(state, collectionName);
+  
+  // Use provided config page size, or fall back to Redux state
+  const pageSize = configPageSize || (pagination ? pagination.get('pageSize', 100) : 100);
+  const currentPage = pagination ? pagination.get('currentPage', 1) : 1;
+  
+  const sortedIdsSize = sortedIdsRaw && List.isList(sortedIdsRaw) ? (sortedIdsRaw as List<string>).size : 0;
+  console.log('[selectEntries]', { 
+    collectionName, 
+    hasSortedIds: !!sortedIdsRaw, 
+    sortedIdsCount: sortedIdsSize,
+    pageSize, 
+    currentPage,
+    totalEntriesCount: entries ? entries.size : 0,
+    configPageSize
+  });
+  
+  if (sortedIdsRaw && List.isList(sortedIdsRaw)) {
+    const sortedIds = sortedIdsRaw as List<string>;
+    const start = (currentPage - 1) * pageSize;
+    const end = start + pageSize;
+    const pagedIds = sortedIds.slice(start, end);
+    console.log('[selectEntries] Using sortedIds', { start, end, pagedIdsCount: pagedIds.size });
+    
+    // Always look up entries from the global entities map to ensure correct order
+    const entitiesMap = state.get('entities');
+    const pagedEntries = pagedIds
+      .map((slug: string | undefined) => {
+        if (!slug) return null;
+        const entry = entitiesMap.get(`${collectionName}.${slug}`);
+        return entry || null;
+      })
+      .filter((e): e is EntryMap => !!e)
+      .toList();
+    console.log('[selectEntries] Returning paged entries', { count: pagedEntries.size });
+    return pagedEntries;
+  }
+
+  // Fallback: legacy sort/filter logic
   const sortFields = selectEntriesSortFields(state, collectionName);
   if (sortFields && sortFields.length > 0) {
     const keys = sortFields.map(v => selectSortDataPath(collection, v.get('key')));

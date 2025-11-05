@@ -13,6 +13,7 @@ import {
   traverseCollectionCursor as actionTraverseCollectionCursor,
   setEntriesPageSize as actionSetEntriesPageSize,
   loadEntriesPage as actionLoadEntriesPage,
+  sortByField as actionSortByField,
 } from '../../../actions/entries';
 import { loadUnpublishedEntries } from '../../../actions/editorialWorkflow';
 import {
@@ -23,6 +24,7 @@ import {
   selectEntriesPageSize,
   selectEntriesCurrentPage,
   selectEntriesTotalCount,
+  selectEntriesSort,
 } from '../../../reducers/entries';
 import { isPaginationEnabled, getPaginationConfig } from '../../../lib/pagination';
 import { selectUnpublishedEntry, selectUnpublishedEntriesByStatus } from '../../../reducers';
@@ -91,6 +93,8 @@ export class EntriesCollection extends React.Component {
     totalCount: PropTypes.number,
     setEntriesPageSize: PropTypes.func.isRequired,
     loadEntriesPage: PropTypes.func.isRequired,
+    sortByField: PropTypes.func.isRequired,
+    sort: ImmutablePropTypes.orderedMap,
   };
 
   componentDidMount() {
@@ -105,9 +109,29 @@ export class EntriesCollection extends React.Component {
       unpublishedEntriesLoaded,
       loadUnpublishedEntries,
       isEditorialWorkflowEnabled,
+      sort,
+      sortByField,
     } = this.props;
 
+    console.log('[EntriesCollection] componentDidMount', {
+      collectionName: collection.get('name'),
+      sortExists: !!sort,
+      sortSize: sort ? sort.size : 0,
+      entriesLoaded,
+    });
+
+    // If sort state exists on mount, re-trigger sort to populate sortedIds
+    if (sort && sort.size > 0) {
+      console.log('[EntriesCollection] Re-triggering sort on mount', sort.toJS());
+      sort.forEach((value, key) => {
+        const direction = value.get('direction');
+        console.log('[EntriesCollection] Triggering sortByField', { key, direction });
+        sortByField(collection, key, direction);
+      });
+    }
+
     if (collection && !entriesLoaded) {
+      console.log('[EntriesCollection] Loading entries (not loaded yet)');
       loadEntries(collection);
     }
 
@@ -233,7 +257,12 @@ function mapStateToProps(state, ownProps) {
 
   const collections = state.collections;
 
-  let entries = selectEntries(state.entries, collection);
+  // Calculate config-based page size first
+  const paginationEnabled = isPaginationEnabled(collection, state.config);
+  const paginationConfig = paginationEnabled ? getPaginationConfig(collection, state.config) : null;
+  const configPageSize = paginationConfig ? paginationConfig.per_page : undefined;
+
+  let entries = selectEntries(state.entries, collection, configPageSize);
   const groups = selectGroups(state.entries, collection);
 
   if (collection.has('nested')) {
@@ -256,12 +285,22 @@ function mapStateToProps(state, ownProps) {
     ? !!state.editorialWorkflow?.getIn(['pages', 'ids'], false)
     : true;
 
-  // Pagination state
-  const paginationEnabled = isPaginationEnabled(collection, state.config);
-  const paginationConfig = paginationEnabled ? getPaginationConfig(collection, state.config) : null;
+  // Pagination state (already calculated above)
   const currentPage = selectEntriesCurrentPage(state.entries, collection.get('name'));
-  const pageSize = selectEntriesPageSize(state.entries, collection.get('name'));
+  // Use config's page size if pagination is enabled, otherwise use Redux state
+  const pageSize = paginationConfig ? paginationConfig.per_page : selectEntriesPageSize(state.entries, collection.get('name'));
   const totalCount = selectEntriesTotalCount(state.entries, collection.get('name'));
+  
+  console.log('[mapStateToProps] Pagination', {
+    collectionName: collection.get('name'),
+    paginationEnabled,
+    configPageSize: paginationConfig?.per_page,
+    reduxPageSize: selectEntriesPageSize(state.entries, collection.get('name')),
+    finalPageSize: pageSize,
+  });
+  
+  // Sort state
+  const sort = selectEntriesSort(state.entries, collection.get('name'));
 
   return {
     collection,
@@ -280,6 +319,7 @@ function mapStateToProps(state, ownProps) {
     currentPage,
     pageSize,
     totalCount,
+    sort,
     getWorkflowStatus: (collectionName, slug) => {
       const unpublishedEntry = selectUnpublishedEntry(state, collectionName, slug);
       return unpublishedEntry ? unpublishedEntry.get('status') : null;
@@ -313,6 +353,7 @@ const mapDispatchToProps = {
   loadUnpublishedEntries: collections => loadUnpublishedEntries(collections),
   setEntriesPageSize: actionSetEntriesPageSize,
   loadEntriesPage: actionLoadEntriesPage,
+  sortByField: actionSortByField,
 };
 
 const ConnectedEntriesCollection = connect(mapStateToProps, mapDispatchToProps)(EntriesCollection);

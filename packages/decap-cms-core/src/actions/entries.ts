@@ -89,6 +89,7 @@ export const CHANGE_VIEW_STYLE = 'CHANGE_VIEW_STYLE';
 
 export const SET_ENTRIES_PAGE_SIZE = 'SET_ENTRIES_PAGE_SIZE';
 export const LOAD_ENTRIES_PAGE = 'LOAD_ENTRIES_PAGE';
+export const SET_ENTRIES_PAGE = 'SET_ENTRIES_PAGE';
 
 /*
  * Simple Action Creators (Internal)
@@ -172,10 +173,34 @@ export function setEntriesPageSize(collection: Collection, pageSize: number) {
   };
 }
 
+export function setEntriesPage(collection: Collection, page: number) {
+  return {
+    type: SET_ENTRIES_PAGE,
+    payload: {
+      collection: collection.get('name'),
+      page,
+    },
+  };
+}
+
 export function loadEntriesPage(collection: Collection, page: number) {
-  return async (dispatch: ThunkDispatch<State, {}, AnyAction>) => {
-    // Load the specified page
-    dispatch(loadEntries(collection, page));
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+    const state = getState();
+    const collectionName = collection.get('name');
+    
+    // Check if sorting is active (sortedIds exists)
+    const sortedIds = state.entries.getIn(['pages', collectionName, 'sortedIds']);
+    console.log('[loadEntriesPage]', { collectionName, page, hasSortedIds: !!sortedIds });
+    
+    if (sortedIds) {
+      // Client-side pagination: just update the page index
+      console.log('[loadEntriesPage] Client-side pagination, updating page index');
+      dispatch(setEntriesPage(collection, page));
+    } else {
+      // Server-side pagination: load new entries from backend
+      console.log('[loadEntriesPage] Server-side pagination, loading entries from backend');
+      dispatch(loadEntries(collection, page));
+    }
   };
 }
 
@@ -196,26 +221,33 @@ export function sortByField(
 ) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
+    const collectionName = collection.get('name');
     // if we're already fetching we update the sort key, but skip loading entries
-    const isFetching = selectIsFetching(state.entries, collection.get('name'));
+    const isFetching = selectIsFetching(state.entries, collectionName);
+    console.log('[sortByField] Called', { collectionName, key, direction, isFetching });
+    
     dispatch({
       type: SORT_ENTRIES_REQUEST,
       payload: {
-        collection: collection.get('name'),
+        collection: collectionName,
         key,
         direction,
       },
     });
     if (isFetching) {
+      console.log('[sortByField] Already fetching, skipping');
       return;
     }
 
     try {
+      console.log('[sortByField] Loading all entries for sorting');
       const entries = await getAllEntries(state, collection);
+      console.log('[sortByField] Got entries', { count: entries.length });
+      
       dispatch({
         type: SORT_ENTRIES_SUCCESS,
         payload: {
-          collection: collection.get('name'),
+          collection: collectionName,
           key,
           direction,
           entries,
