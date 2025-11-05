@@ -343,7 +343,10 @@ function entries(
       const payload = action.payload as { collection: string; entries: EntryObject[] };
       const { collection, entries } = payload;
       loadedEntries = entries;
-      console.log('[Reducer] SORT_ENTRIES_SUCCESS', { collection, entriesCount: loadedEntries.length });
+      const actionName = action.type === SORT_ENTRIES_SUCCESS ? 'SORT_ENTRIES_SUCCESS' : 
+                         action.type === FILTER_ENTRIES_SUCCESS ? 'FILTER_ENTRIES_SUCCESS' : 
+                         'GROUP_ENTRIES_SUCCESS';
+      console.log(`[Reducer] ${actionName}`, { collection, entriesCount: loadedEntries.length });
       
       const newState = state.withMutations(map => {
         loadedEntries.forEach(entry =>

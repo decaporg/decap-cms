@@ -242,8 +242,44 @@ export function sortByField(
 
     try {
       console.log('[sortByField] Loading all entries for sorting');
-      const entries = await getAllEntries(state, collection);
+      let entries = await getAllEntries(state, collection);
       console.log('[sortByField] Got entries', { count: entries.length });
+      
+      // Check if filtering is active - if so, apply filters first
+      const activeFilters = state.entries.getIn(['filter', collectionName]);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const hasActiveFilters = activeFilters && typeof (activeFilters as any).some === 'function' && 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (activeFilters as any).some((f: any) => f.get('active') === true);
+      
+      if (hasActiveFilters) {
+        console.log('[sortByField] Active filters detected, applying filters before sorting');
+        entries = entries.filter(entry => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const filters: any[] = [];
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (activeFilters as any).forEach((f: any) => {
+            if (f.get('active') === true) {
+              filters.push({
+                pattern: f.get('pattern'),
+                field: f.get('field'),
+              });
+            }
+          });
+          
+          return filters.every(({ pattern, field }) => {
+            const data = entry.data || {};
+            const fieldParts = field.split('.');
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            let value: any = data;
+            for (const part of fieldParts) {
+              value = value?.[part];
+            }
+            return value !== undefined && new RegExp(String(pattern)).test(String(value));
+          });
+        });
+        console.log('[sortByField] After filtering', { count: entries.length });
+      }
       
       // Sort entries by the specified field
       const dataPath = selectSortDataPath(collection, key);
@@ -334,17 +370,92 @@ export function filterByField(collection: Collection, filter: ViewFilter) {
       
       if (isCurrentlyActive && !hasOtherActiveFilters) {
         // Disabling filtering - reload entries with pagination
+        console.log('[filterByField] Disabling last filter, reloading entries');
         return dispatch(loadEntries(collection));
       }
       
-      // Enabling filtering or switching filters - load all entries
-      const entries = await getAllEntries(state, collection);
+      // Enabling filtering or switching filters - load all entries and filter them
+      console.log('[filterByField] Applying filter', { filterId: filter.id, pattern: filter.pattern, field: filter.field });
+      const allEntries = await getAllEntries(state, collection);
+      console.log('[filterByField] Got all entries', { count: allEntries.length });
+      
+      // Get the new filter state (it was toggled in FILTER_ENTRIES_REQUEST)
+      const updatedState = getState();
+      const updatedFilters = updatedState.entries.getIn(['filter', collection.get('name')]);
+      
+      // Apply all active filters
+      const filteredEntries = allEntries.filter(entry => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const activeFilters: any[] = [];
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        if (updatedFilters && typeof (updatedFilters as any).forEach === 'function') {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (updatedFilters as any).forEach((f: any) => {
+            if (f.get('active') === true) {
+              activeFilters.push({
+                pattern: f.get('pattern'),
+                field: f.get('field'),
+              });
+            }
+          });
+        }
+        
+        // Entry must match all active filters
+        return activeFilters.every(({ pattern, field }) => {
+          const data = entry.data || {};
+          const fieldParts = field.split('.');
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          let value: any = data;
+          for (const part of fieldParts) {
+            value = value?.[part];
+          }
+          const matched = value !== undefined && new RegExp(String(pattern)).test(String(value));
+          return matched;
+        });
+      });
+      
+      console.log('[filterByField] Filtered entries', { 
+        originalCount: allEntries.length,
+        filteredCount: filteredEntries.length
+      });
+      
+      // Check if sorting is active - if so, apply sort after filtering
+      const activeSorts = updatedState.entries.getIn(['sort', collection.get('name')]);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const hasActiveSort = activeSorts && typeof (activeSorts as any).size === 'number' && (activeSorts as any).size > 0;
+      
+      let finalEntries = filteredEntries;
+      if (hasActiveSort) {
+        console.log('[filterByField] Active sort detected, applying sort after filtering');
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const sortField = (activeSorts as any).valueSeq().first();
+        const sortKey = sortField.get('key');
+        const sortDirection = sortField.get('direction');
+        const dataPath = selectSortDataPath(collection, sortKey);
+        const order = sortDirection === SortDirection.Ascending ? 'asc' : 'desc';
+        
+        finalEntries = orderBy(
+          filteredEntries,
+          [entry => {
+            const pathParts = dataPath.split('.');
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            let value: any = entry;
+            for (const part of pathParts) {
+              value = value?.[part];
+            }
+            return typeof value === 'string' ? value.toLowerCase() : value;
+          }],
+          [order]
+        );
+        console.log('[filterByField] After sorting', { count: finalEntries.length });
+      }
+      
       dispatch({
         type: FILTER_ENTRIES_SUCCESS,
         payload: {
           collection: collection.get('name'),
           filter,
-          entries,
+          entries: finalEntries,
         },
       });
     } catch (error) {
