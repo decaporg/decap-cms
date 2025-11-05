@@ -47,13 +47,13 @@ function Entries({
   }
 
   const hasEntries = (entries && entries.size > 0) || cursor?.actions?.has('append_next');
-  
+
   // Calculate page count for pagination
   const pageCount = paginationEnabled && totalCount > 0 ? Math.ceil(totalCount / pageSize) : 1;
-  
+
   // Show pagination controls only if pagination is enabled and we have entries
   const showPagination = paginationEnabled && totalCount > 0 && pageCount > 1;
-  
+
   if (hasEntries) {
     return (
       <>

@@ -176,7 +176,7 @@ export default class TestBackend implements Implementation {
     };
     const meta = cursor.meta!;
     const currentPageSize = meta.get('pageSize', DEFAULT_PAGE_SIZE);
-    
+
     const newIndex = (() => {
       if (action === 'next') {
         return (index as number) + 1;
@@ -198,7 +198,10 @@ export default class TestBackend implements Implementation {
       data: f.content as string,
       file: { path: f.path, id: f.path },
     }));
-    const entries = allEntries.slice(newIndex * currentPageSize, newIndex * currentPageSize + currentPageSize);
+    const entries = allEntries.slice(
+      newIndex * currentPageSize,
+      newIndex * currentPageSize + currentPageSize,
+    );
     const newCursor = getCursor(folder, extension, allEntries, newIndex, depth, currentPageSize);
     return Promise.resolve({ entries, cursor: newCursor });
   }
@@ -221,14 +224,12 @@ export default class TestBackend implements Implementation {
     const pageSize = options?.pageSize ?? DEFAULT_PAGE_SIZE;
     const page = options?.page ?? 1;
     const usePagination = options?.pagination ?? false;
-    
+
     const cursor = getCursor(folder, extension, entries, page - 1, depth, pageSize);
-    
+
     // If pagination is enabled, return only the requested page
     // Otherwise, return all entries (for backward compatibility)
-    const ret = usePagination 
-      ? take(entries.slice((page - 1) * pageSize), pageSize)
-      : entries;
+    const ret = usePagination ? take(entries.slice((page - 1) * pageSize), pageSize) : entries;
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     ret[CURSOR_COMPATIBILITY_SYMBOL] = cursor;

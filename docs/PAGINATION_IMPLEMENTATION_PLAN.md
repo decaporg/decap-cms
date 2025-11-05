@@ -251,8 +251,9 @@ pagination?: boolean | {
 **Files to Modify:**
 - `/packages/decap-cms-core/src/actions/entries.ts` - All entry action creators
 - `/packages/decap-cms-core/src/backend.ts` - Check for incompatible features
-### Phase 8: Testing & Documentation
-**Goal:** Ensure quality and provide documentation
+
+### Phase 8: Testing
+**Goal:** Ensure quality
 
 **Tasks:**
 1. Unit tests:
@@ -271,17 +272,9 @@ pagination?: boolean | {
    - User workflows with pagination
    - Large collections (1000+ entries)
    - i18n collections with many locales/entries
-4. Documentation:
-   - Configuration guide
-   - Backend implementation guide for other backends
-   - Migration guide for users
 5. Performance testing:
    - Measure improvement with large collections
    - Memory usage comparison
-
-**Files to Create:**
-- `/docs/pagination.md` - User documentation
-- `/docs/pagination-backend-implementation.md` - Developer guide
 
 ### Phase 7: User Preferences & Polish
 **Goal:** Make pagination user-friendly and persistent

@@ -191,7 +191,7 @@ export class EntriesCollection extends React.Component {
     } = this.props;
 
     const hasActiveGroups = groups && groups.length > 0;
-    
+
     const EntriesToRender = ({ entries }) => {
       return (
         <Entries
@@ -288,9 +288,11 @@ function mapStateToProps(state, ownProps) {
   // Pagination state (already calculated above)
   const currentPage = selectEntriesCurrentPage(state.entries, collection.get('name'));
   // Use config's page size if pagination is enabled, otherwise use Redux state
-  const pageSize = paginationConfig ? paginationConfig.per_page : selectEntriesPageSize(state.entries, collection.get('name'));
+  const pageSize = paginationConfig
+    ? paginationConfig.per_page
+    : selectEntriesPageSize(state.entries, collection.get('name'));
   const totalCount = selectEntriesTotalCount(state.entries, collection.get('name'));
-  
+
   console.log('[mapStateToProps] Pagination', {
     collectionName: collection.get('name'),
     paginationEnabled,
@@ -298,7 +300,7 @@ function mapStateToProps(state, ownProps) {
     reduxPageSize: selectEntriesPageSize(state.entries, collection.get('name')),
     finalPageSize: pageSize,
   });
-  
+
   // Sort state
   const sort = selectEntriesSort(state.entries, collection.get('name'));
 

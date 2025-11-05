@@ -20,7 +20,7 @@ const PaginationInfo = styled.div`
 `;
 
 const PaginationButton = styled.button`
-  padding: 6px 6px 4px 6px;
+  padding: 6px 6px 4px;
   background-color: ${colors.button};
   color: ${colors.buttonText};
   border: none;
@@ -38,15 +38,7 @@ const PaginationButton = styled.button`
   }
 `;
 
-
-function Pagination({
-  currentPage,
-  pageCount,
-  pageSize,
-  totalCount,
-  onPageChange,
-  t,
-}) {
+function Pagination({ currentPage, pageCount, pageSize, totalCount, onPageChange, t }) {
   const hasPrevPage = currentPage > 1;
   const hasNextPage = currentPage < pageCount;
 

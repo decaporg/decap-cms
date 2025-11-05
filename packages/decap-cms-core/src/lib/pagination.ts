@@ -1,4 +1,3 @@
-
 import type { CmsCollection, CmsConfig, PaginationConfig, Collection } from '../types/redux';
 
 const DEFAULT_PER_PAGE = 100;
@@ -7,20 +6,24 @@ type CollectionLike = CmsCollection | Collection;
 // Helper to read values from plain objects or Immutable Maps
 function getCfg<T = unknown>(obj: unknown, key: string): T | undefined {
   if (!obj) return undefined;
-    if (typeof obj === 'object' && obj !== null) {
-      // Immutable.js Map
-      if (typeof (obj as { get?: unknown }).get === 'function') {
-        return (obj as { get: (k: string) => T }).get(key);
-      }
-      // Plain object
-      return (obj as Record<string, unknown>)[key] as T;
+  if (typeof obj === 'object' && obj !== null) {
+    // Immutable.js Map
+    if (typeof (obj as { get?: unknown }).get === 'function') {
+      return (obj as { get: (k: string) => T }).get(key);
     }
-    return undefined;
+    // Plain object
+    return (obj as Record<string, unknown>)[key] as T;
+  }
+  return undefined;
 }
 
 export function isPaginationEnabled(collection: CollectionLike, globalConfig?: CmsConfig): boolean {
   let pagination: unknown;
-  if (typeof collection === 'object' && collection !== null && typeof (collection as { get?: unknown }).get === 'function') {
+  if (
+    typeof collection === 'object' &&
+    collection !== null &&
+    typeof (collection as { get?: unknown }).get === 'function'
+  ) {
     pagination = (collection as { get: (k: string) => unknown }).get('pagination');
   } else {
     pagination = (collection as CmsCollection).pagination;
@@ -45,7 +48,10 @@ export function isPaginationEnabled(collection: CollectionLike, globalConfig?: C
   return false;
 }
 
-export function getPaginationConfig(collection: CollectionLike, globalConfig?: CmsConfig): PaginationConfig {
+export function getPaginationConfig(
+  collection: CollectionLike,
+  globalConfig?: CmsConfig,
+): PaginationConfig {
   const defaults: PaginationConfig = {
     enabled: false,
     per_page: DEFAULT_PER_PAGE,
@@ -63,7 +69,11 @@ export function getPaginationConfig(collection: CollectionLike, globalConfig?: C
   }
 
   let pagination: unknown;
-  if (typeof collection === 'object' && collection !== null && typeof (collection as { get?: unknown }).get === 'function') {
+  if (
+    typeof collection === 'object' &&
+    collection !== null &&
+    typeof (collection as { get?: unknown }).get === 'function'
+  ) {
     pagination = (collection as { get: (k: string) => unknown }).get('pagination');
   } else {
     pagination = (collection as CmsCollection).pagination;

@@ -435,7 +435,7 @@ export default class GitHub implements Implementation {
         depth,
       }).then(files => {
         const filtered = files.filter(file => filterByExtension(file, extension));
-        
+
         if (usePagination) {
           // Paginated: return only the requested page
           const result = this.getCursorAndFiles(filtered, page, pageSize);

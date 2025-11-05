@@ -523,11 +523,14 @@ export type GroupOfEntries = {
 
 export type Entities = StaticallyTypedRecord<EntitiesObject>;
 
-export type PaginationState = Map<string, StaticallyTypedRecord<{
-  pageSize: number;
-  currentPage: number;
-  totalCount: number;
-}>>;
+export type PaginationState = Map<
+  string,
+  StaticallyTypedRecord<{
+    pageSize: number;
+    currentPage: number;
+    totalCount: number;
+  }>
+>;
 
 export type Entries = StaticallyTypedRecord<{
   pages: Pages & PagesObject;

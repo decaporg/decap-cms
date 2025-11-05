@@ -142,7 +142,9 @@ class EntryListing extends React.Component {
           {Map.isMap(collections)
             ? this.renderCardsForSingleCollection()
             : this.renderCardsForMultipleCollections()}
-          {!paginationEnabled && this.hasMore() && <Waypoint key={page} onEnter={this.handleLoadMore} />}
+          {!paginationEnabled && this.hasMore() && (
+            <Waypoint key={page} onEnter={this.handleLoadMore} />
+          )}
         </CardsGrid>
       </div>
     );

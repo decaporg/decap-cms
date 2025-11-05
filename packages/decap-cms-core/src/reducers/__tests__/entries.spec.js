@@ -48,6 +48,13 @@ describe('entries', () => {
                 ids: ['a', 'b'],
               },
             },
+            pagination: {
+              posts: {
+                currentPage: 1,
+                totalCount: 0,
+                pageSize: 100,
+              },
+            },
           }),
         ),
       );
@@ -596,6 +603,220 @@ describe('entries', () => {
       expect(selectEntries(state, collection)).toEqual(
         fromJS([{ slug: '1' }, { slug: '2' }, { slug: '3' }, { slug: '4' }]),
       );
+    });
+
+    describe('pagination', () => {
+      it('should return paginated entries based on config page size', () => {
+        const state = fromJS({
+          entities: {
+            'posts.1': { slug: '1', data: { title: '1' } },
+            'posts.2': { slug: '2', data: { title: '2' } },
+            'posts.3': { slug: '3', data: { title: '3' } },
+            'posts.4': { slug: '4', data: { title: '4' } },
+            'posts.5': { slug: '5', data: { title: '5' } },
+            'posts.6': { slug: '6', data: { title: '6' } },
+            'posts.7': { slug: '7', data: { title: '7' } },
+            'posts.8': { slug: '8', data: { title: '8' } },
+            'posts.9': { slug: '9', data: { title: '9' } },
+            'posts.10': { slug: '10', data: { title: '10' } },
+          },
+          pages: {
+            posts: {
+              ids: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
+              sortedIds: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
+            },
+          },
+          pagination: {
+            posts: {
+              currentPage: 1, // Page 1 (first page)
+            },
+          },
+        });
+        const collection = fromJS({
+          name: 'posts',
+        });
+        const configPageSize = 3; // Config specifies 3 items per page
+
+        const result = selectEntries(state, collection, configPageSize);
+
+        expect(result.size).toBe(3);
+        expect(result).toEqual(
+          fromJS([
+            { slug: '1', data: { title: '1' } },
+            { slug: '2', data: { title: '2' } },
+            { slug: '3', data: { title: '3' } },
+          ]),
+        );
+      });
+
+      it('should return correct page of entries when currentPage is set', () => {
+        const state = fromJS({
+          entities: {
+            'posts.1': { slug: '1', data: { title: '1' } },
+            'posts.2': { slug: '2', data: { title: '2' } },
+            'posts.3': { slug: '3', data: { title: '3' } },
+            'posts.4': { slug: '4', data: { title: '4' } },
+            'posts.5': { slug: '5', data: { title: '5' } },
+            'posts.6': { slug: '6', data: { title: '6' } },
+            'posts.7': { slug: '7', data: { title: '7' } },
+            'posts.8': { slug: '8', data: { title: '8' } },
+          },
+          pages: {
+            posts: {
+              ids: ['1', '2', '3', '4', '5', '6', '7', '8'],
+              sortedIds: ['1', '2', '3', '4', '5', '6', '7', '8'],
+            },
+          },
+          pagination: {
+            posts: {
+              currentPage: 2, // Page 2 (second page)
+            },
+          },
+        });
+        const collection = fromJS({
+          name: 'posts',
+        });
+        const configPageSize = 3;
+
+        const result = selectEntries(state, collection, configPageSize);
+
+        expect(result.size).toBe(3);
+        expect(result).toEqual(
+          fromJS([
+            { slug: '4', data: { title: '4' } },
+            { slug: '5', data: { title: '5' } },
+            { slug: '6', data: { title: '6' } },
+          ]),
+        );
+      });
+
+      it('should return remaining entries on last page', () => {
+        const state = fromJS({
+          entities: {
+            'posts.1': { slug: '1', data: { title: '1' } },
+            'posts.2': { slug: '2', data: { title: '2' } },
+            'posts.3': { slug: '3', data: { title: '3' } },
+            'posts.4': { slug: '4', data: { title: '4' } },
+            'posts.5': { slug: '5', data: { title: '5' } },
+          },
+          pages: {
+            posts: {
+              ids: ['1', '2', '3', '4', '5'],
+              sortedIds: ['1', '2', '3', '4', '5'],
+            },
+          },
+          pagination: {
+            posts: {
+              currentPage: 2, // Page 2 (last page)
+            },
+          },
+        });
+        const collection = fromJS({
+          name: 'posts',
+        });
+        const configPageSize = 3;
+
+        const result = selectEntries(state, collection, configPageSize);
+
+        expect(result.size).toBe(2); // Only 2 items on last page
+        expect(result).toEqual(
+          fromJS([
+            { slug: '4', data: { title: '4' } },
+            { slug: '5', data: { title: '5' } },
+          ]),
+        );
+      });
+
+      it('should work with filtering - return paginated filtered results', () => {
+        const state = fromJS({
+          entities: {
+            'posts.1': { slug: '1', data: { title: 'apple' } },
+            'posts.2': { slug: '2', data: { title: 'banana' } },
+            'posts.3': { slug: '3', data: { title: 'apricot' } },
+            'posts.4': { slug: '4', data: { title: 'cherry' } },
+            'posts.5': { slug: '5', data: { title: 'avocado' } },
+            'posts.6': { slug: '6', data: { title: 'grape' } },
+          },
+          pages: {
+            posts: {
+              ids: ['1', '2', '3', '4', '5', '6'],
+              sortedIds: ['1', '3', '5'], // Filtered to entries starting with 'a'
+            },
+          },
+          filter: {
+            posts: { title__a: { field: 'title', pattern: '^a', active: true } },
+          },
+          pagination: {
+            posts: {
+              currentPage: 1, // Page 1 (first page)
+            },
+          },
+        });
+        const collection = fromJS({
+          name: 'posts',
+        });
+        const configPageSize = 2;
+
+        const result = selectEntries(state, collection, configPageSize);
+
+        expect(result.size).toBe(2);
+        expect(result).toEqual(
+          fromJS([
+            { slug: '1', data: { title: 'apple' } },
+            { slug: '3', data: { title: 'apricot' } },
+          ]),
+        );
+      });
+
+      it('should ignore pagination when grouping is active', () => {
+        const state = fromJS({
+          entities: {
+            'posts.1': { slug: '1', data: { title: '1' } },
+            'posts.2': { slug: '2', data: { title: '2' } },
+            'posts.3': { slug: '3', data: { title: '3' } },
+            'posts.4': { slug: '4', data: { title: '4' } },
+            'posts.5': { slug: '5', data: { title: '5' } },
+            'posts.6': { slug: '6', data: { title: '6' } },
+            'posts.7': { slug: '7', data: { title: '7' } },
+            'posts.8': { slug: '8', data: { title: '8' } },
+          },
+          pages: {
+            posts: {
+              ids: ['1', '2', '3', '4', '5', '6', '7', '8'],
+              // No sortedIds when grouping is active
+            },
+          },
+          group: {
+            posts: { category: { field: 'category', active: true } },
+          },
+          pagination: {
+            posts: {
+              currentPage: 1,
+            },
+          },
+        });
+        const collection = fromJS({
+          name: 'posts',
+        });
+        const configPageSize = 3;
+
+        const result = selectEntries(state, collection, configPageSize);
+
+        // Should return all entries, ignoring pagination
+        expect(result.size).toBe(8);
+        expect(result).toEqual(
+          fromJS([
+            { slug: '1', data: { title: '1' } },
+            { slug: '2', data: { title: '2' } },
+            { slug: '3', data: { title: '3' } },
+            { slug: '4', data: { title: '4' } },
+            { slug: '5', data: { title: '5' } },
+            { slug: '6', data: { title: '6' } },
+            { slug: '7', data: { title: '7' } },
+            { slug: '8', data: { title: '8' } },
+          ]),
+        );
+      });
     });
   });
 
