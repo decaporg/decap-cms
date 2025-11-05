@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.5.0](https://github.com/decaporg/decap-cms/compare/decap-cms-ui-default@3.4.0...decap-cms-ui-default@3.5.0) (2025-11-04)
+
+### Bug Fixes
+
+- prevent select dropdown item text wrapping ([#7618](https://github.com/decaporg/decap-cms/issues/7618)) ([986e4aa](https://github.com/decaporg/decap-cms/commit/986e4aa1371cce3cd0bc87a0f546b9fed4a6a9da))
+
+### Features
+
+- implement strikethrough functionality to markdown editor ([#7625](https://github.com/decaporg/decap-cms/issues/7625)) ([0c7d327](https://github.com/decaporg/decap-cms/commit/0c7d327341f785940da4fa88e5c2ed755215f010))
+
 # [3.4.0](https://github.com/decaporg/decap-cms/compare/decap-cms-ui-default@3.3.0...decap-cms-ui-default@3.4.0) (2025-09-30)
 
 ### Features

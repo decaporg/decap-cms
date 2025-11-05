@@ -1,7 +1,7 @@
 {
   "name": "decap-cms-widget-markdown",
   "description": "Widget for editing markdown in Decap CMS.",
-  "version": "3.5.0",
+  "version": "3.6.0",
   "homepage": "https://www.decapcms.org/docs/widgets/#markdown",
   "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-widget-markdown",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
