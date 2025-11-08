@@ -1,9 +1,7 @@
 name: Security Gateway                                # общий гейт
 
 on:
-  pull_request:                                       # срабатывает в PR
-    types: [opened, synchronize, reopened]
-  workflow_run:                                       # или после завершения зависимых CI
+  workflow_run:                                       
     workflows:
       - "SAST - CodeQL"
       - "SAST - Semgrep"
