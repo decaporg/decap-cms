@@ -1,53 +1,39 @@
 name: Security Summary
 
 on:
-  # для тестовых запусков прямо в PR
-  pull_request:
-    types: [opened, synchronize, reopened]
-
-  # для «боевого» запуска уже ПОСЛЕ Security Gateway (когда файл будет в main)
+  # Запускать ТОЛЬКО после окончания Security Gateway
   workflow_run:
     workflows: ["Security Gateway"]
     types: [completed]
 
-  # ручной запуск из Actions
+  # Ручной запуск из Actions (удобно для тестов)
   workflow_dispatch:
 
 permissions:
   actions: read
   checks: read
   contents: read
-  pull-requests: write   # обязательно: пишем комментарий в PR
+  pull-requests: write   # пишем комментарий в PR
 
-# один прогон на коммит (и в PR, и после gateway)
 concurrency:
-  group: security-summary-${{ github.event.pull_request.head.sha || github.sha }}
+  # один прогон на один и тот же коммит
+  group: security-summary-${{ github.event.workflow_run.head_sha || github.sha }}
   cancel-in-progress: true
 
 jobs:
   summarize:
-    # Если вызвали через workflow_run — требуем успех Gateway.
-    # Если через pull_request/dispatch — запускаем без этого условия.
-    if: >
-      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
-      || (github.event_name != 'workflow_run')
-
+    # бежим только если Gateway завершился УСПЕШНО
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
-      - name: Build summary table & comment to PR
+      - name: Build summary & comment to PR
         uses: actions/github-script@v7
         with:
           script: |
             const owner = context.repo.owner;
             const repo  = context.repo.repo;
+            const sha   = context.payload.workflow_run.head_sha;
 
-            // SHA коммита: из workflow_run или из PR
-            const sha =
-              context.eventName === 'workflow_run'
-                ? context.payload.workflow_run.head_sha
-                : (context.payload.pull_request?.head?.sha || context.sha);
-
-            // Список проверок, которые хотим свести
             const required = [
               "SAST - CodeQL",
               "SAST - Semgrep",
@@ -60,7 +46,6 @@ jobs:
               "Security Gateway"
             ];
 
-            // Берём последние прогоны именно по этому коммиту
             const { data } = await github.rest.actions.listWorkflowRunsForRepo({
               owner, repo, per_page: 100, head_sha: sha
             });
@@ -71,10 +56,7 @@ jobs:
               if (!latest[r.name]) latest[r.name] = r.conclusion; // первый — самый свежий
             }
 
-            const rows = required
-              .map(n => `| ${n} | ${latest[n] ?? "—"} |`)
-              .join("\n");
-
+            const rows = required.map(n => `| ${n} | ${latest[n] ?? "—"} |`).join("\n");
             const body = [
               "### Security Summary",
               "",
@@ -83,12 +65,7 @@ jobs:
               rows
             ].join("\n");
 
-            // Ищем номер PR: из pull_request или из workflow_run
-            const prNumber =
-              context.eventName === 'pull_request'
-                ? context.payload.number
-                : (context.payload.workflow_run?.pull_requests?.[0]?.number);
-
+            const prNumber = context.payload.workflow_run?.pull_requests?.[0]?.number;
             if (prNumber) {
               await github.rest.issues.createComment({ owner, repo, issue_number: prNumber, body });
             } else {
