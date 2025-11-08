@@ -8,16 +8,42 @@ on:
 jobs:
   zap:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
+      # 1) Запускаем ZAP; если внутренний upload упадет — НЕ роняем job
       - name: ZAP Baseline scan (demo target, do not fail)
+        id: zap
         uses: zaproxy/action-baseline@v0.11.0
+        continue-on-error: true              # ← ключ: не проваливать job из-за артефакта
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}      
+          token: ${{ secrets.GITHUB_TOKEN }} # на всякий случай
           target: "https://example.com"
-          fail_action: false
+          fail_action: false                 # находки (WARN/INFO) не роняют job
           cmd_options: "-a -m 0"
           allow_issue_writing: false
-          artifact_name: "zapreport${{ github.run_id }}"   
+          artifact_name: zapreport           # простое имя; всё равно держим «на всякий»
 
+      # 2) Покажем, что именно создал ZAP
+      - name: List reports
+        if: always()
+        run: |
+          echo "::group::ZAP output"
+          ls -la
+          echo "--- try to find likely reports ---"
+          find . -maxdepth 3 -type f \( -iname "*zap*.html" -o -iname "*report*.html" -o -iname "*.json" -o -name "zap.out" \)
+          echo "::endgroup::"
+
+      # 3) Забираем отчёты вручную — стабильный способ
+      - name: Upload ZAP artifacts (fallback)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: zap_report_${{ github.run_id }}
+          path: |
+            zap.out
+            **/*zap*.html
+            **/*report*.html
+            **/*.json
+          if-no-files-found: warn
