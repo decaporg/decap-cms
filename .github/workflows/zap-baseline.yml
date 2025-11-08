@@ -28,4 +28,4 @@ jobs:
           artifact_name: "zap-report"
 
           # НЕ пытаться создавать GitHub Issues
-          allow_issue_warnings: false
+          allow_issue_writing: false
