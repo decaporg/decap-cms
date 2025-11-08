@@ -3,10 +3,9 @@ name: Security Gateway
 on:
   workflow_run:
     workflows:
-      - "Node CI"                # ← теперь триггерим gateway только после Node CI
+      - "Node CI"                     # якорь
     types: [completed]
 
-# Один запуск на один и тот же коммит; дубли отменяем
 concurrency:
   group: security-gateway-${{ github.event.workflow_run.head_sha }}
   cancel-in-progress: true
@@ -19,14 +18,18 @@ permissions:
 
 jobs:
   gate:
-    # Запускать gateway только если Node CI завершился успешно
     if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.name == 'Node CI' }}
     runs-on: ubuntu-latest
     steps:
-      - name: Evaluate required checks for the same commit
+      - name: Wait & evaluate all checks for this commit
         uses: actions/github-script@v7
         with:
           script: |
+            const owner = context.repo.owner;
+            const repo  = context.repo.repo;
+            const sha   = context.payload.workflow_run.head_sha;
+            const runId = context.payload.workflow_run.id;
+
             const required = [
               "SAST - CodeQL",
               "SAST - Semgrep",
@@ -39,39 +42,57 @@ jobs:
               "Node CI"
             ];
 
-            const owner = context.repo.owner;
-            const repo  = context.repo.repo;
-            const sha   = context.payload.workflow_run.head_sha;
+            // 1) ГАРАНТИЯ: реагируем только на САМЫЙ СВЕЖИЙ Node CI по этому SHA
+            const { data: allRuns } = await github.rest.actions.listWorkflowRunsForRepo({
+              owner, repo, per_page: 100, head_sha: sha, status: 'completed'
+            });
+            const nodeCiRuns = allRuns.workflow_runs.filter(r => r.name === 'Node CI');
+            if (!nodeCiRuns.length) {
+              core.setFailed('No Node CI runs found for this commit');
+              return;
+            }
+            const latestNodeCi = nodeCiRuns[0]; // API возвращает уже отсортированным по дате
+            if (latestNodeCi.id !== runId) {
+              core.notice(`Skip: this event is not the latest Node CI (event=${runId}, latest=${latestNodeCi.id}).`);
+              return; // выходим тихо, ждём событие от самого свежего прогона
+            }
 
-            try {
+            // 2) ЖДЕМ, пока ВСЕ required перейдут в completed для этого SHA
+            const timeoutMs  = 15 * 60 * 1000;
+            const intervalMs = 20 * 1000;
+            const deadline   = Date.now() + timeoutMs;
+
+            async function getLatestCompletedMap() {
               const { data } = await github.rest.actions.listWorkflowRunsForRepo({
-                owner,
-                repo,
-                per_page: 100,
-                head_sha: sha,
+                owner, repo, per_page: 100, head_sha: sha, status: 'completed'
               });
-
-              const latest = {};
+              const map = {};
               for (const r of data.workflow_runs) {
                 if (!required.includes(r.name)) continue;
-                if (!latest[r.name]) latest[r.name] = r.conclusion;
+                if (!map[r.name]) map[r.name] = r.conclusion; // самый свежий
               }
+              return map;
+            }
 
+            while (true) {
+              const latest = await getLatestCompletedMap();
               const missing = required.filter(n => latest[n] === undefined);
-              const failed  = Object.entries(latest)
-                                    .filter(([_, c]) => c !== "success")
-                                    .map(([n, c]) => `${n}=${c}`);
-
-              if (missing.length) {
-                core.setFailed(`Missing runs for this commit: ${missing.join(", ")}`);
+              if (missing.length === 0) {
+                // 3) ОЦЕНКА
+                const failed = Object.entries(latest)
+                                     .filter(([_, c]) => c !== 'success')
+                                     .map(([n, c]) => `${n}=${c}`);
+                if (failed.length) {
+                  core.setFailed(`Failed checks: ${failed.join(', ')}`);
+                } else {
+                  core.info(`Security gate passed ✅ for ${sha.substring(0,7)}`);
+                }
                 return;
               }
-              if (failed.length) {
-                core.setFailed(`Failed checks for this commit: ${failed.join(", ")}`);
+              if (Date.now() > deadline) {
+                core.setFailed(`Timeout waiting for: ${missing.join(', ')}`);
                 return;
               }
-
-              core.info(`Security gate passed ✅ for ${sha.substring(0,7)}`);
-            } catch (e) {
-              core.setFailed(`Gateway script error: ${e.message}`);
+              core.info(`Waiting for: ${missing.join(', ')} ...`);
+              await new Promise(r => setTimeout(r, intervalMs));
             }
