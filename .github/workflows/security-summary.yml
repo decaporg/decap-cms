@@ -1,24 +1,28 @@
 name: Security Summary
 
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]   # при любом обновлении PR
-
-permissions:
-  pull-requests: write        # чтобы оставить комментарий в PR
-  actions: read               # чтобы читать статусы других workflow
-  contents: read
+  workflow_run:
+    workflows: ["Security Gateway"]
+    types: [completed]
 
 jobs:
   summarize:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
+      actions: read
     steps:
-      - name: Собрать статусы проверок и посчитать оценку
-        id: build
+      - name: Build markdown summary & publish
         uses: actions/github-script@v7
         with:
           script: |
-            // Какие проверки считаем обязательными
+            const owner = context.repo.owner;
+            const repo  = context.repo.repo;
+            const sha   = context.payload.workflow_run.head_sha;
+
             const required = [
               "SAST - CodeQL",
               "SAST - Semgrep",
@@ -27,47 +31,57 @@ jobs:
               "Secrets Scan - Gitleaks",
               "DAST - OWASP ZAP Baseline",
               "Lint - GitHub Actions",
-              "CI - Build & Test"
+              "CI - Build & Test",
+              "Node CI"
             ];
 
-            const owner = context.repo.owner;
-            const repo = context.repo.repo;
-
-            // Берём последние рансы workflow по событию pull_request
-            const { data } = await github.actions.listWorkflowRunsForRepo({
-              owner, repo, per_page: 100, event: "pull_request"
+            // Забираем завершенные рансы для этого коммита
+            const { data } = await github.rest.actions.listWorkflowRunsForRepo({
+              owner, repo, per_page: 100, head_sha: sha, status: 'completed'
             });
 
             const latest = {};
             for (const r of data.workflow_runs) {
               if (!required.includes(r.name)) continue;
-              // сохраняем первый встреченный как самый свежий
-              if (!latest[r.name]) latest[r.name] = r;
+              if (!latest[r.name]) latest[r.name] = r.conclusion;
             }
 
-            let ok = 0;
-            const lines = ["| Проверка | Статус |", "|---|---|"];
-            for (const name of required) {
-              const r = latest[name];
-              const status = r ? (r.conclusion || r.status) : "missing";
-              const emoji = status === "success" ? "✅"
-                          : status === "failure" ? "❌"
-                          : status === "cancelled" ? "🚫"
-                          : "⏳";
-              if (status === "success") ok++;
-              lines.push(`| ${name} | ${emoji} ${status} |`);
+            function badge(c) {
+              return c === 'success' ? '✅' :
+                     c === 'failure' ? '❌' :
+                     c === 'cancelled' ? '⏹️' : '⚠️';
             }
-            const score = Math.round((ok / required.length) * 100);
 
-            core.setOutput("table", lines.join("\n"));
-            core.setOutput("score", String(score));
+            let ok = true;
+            const lines = required.map(n => {
+              const c = latest[n] || 'missing';
+              if (c !== 'success') ok = false;
+              return `- ${badge(c)} **${n}** — \`${c}\``;
+            });
 
-      - name: Опубликовать сводку в PR
-        uses: marocchino/sticky-pull-request-comment@v2
-        with:
-          header: security-summary
-          message: |
-            ## Итоговая сводка проверок безопасности
-            Процент пройденных проверок: **${{ steps.build.outputs.score }}%**
+            const md = [
+              `### Security Summary for \`${sha.slice(0,7)}\``,
+              '',
+              ...lines,
+              '',
+              ok ? '**Overall:** ✅ All required checks passed.' :
+                   '**Overall:** ❌ Some checks failed or missing.'
+            ].join('\n');
 
-            ${{ steps.build.outputs.table }}
+            // Комментарий в PR (если есть связанный PR)
+            const prs = await github.rest.repos.listPullRequestsAssociatedWithCommit({ owner, repo, commit_sha: sha });
+            if (prs.data.length) {
+              await github.rest.issues.createComment({
+                owner, repo, issue_number: prs.data[0].number, body: md
+              });
+            }
+
+            // Check Run «Security Summary»
+            await github.rest.checks.create({
+              owner, repo,
+              name: 'Security Summary',
+              head_sha: sha,
+              status: 'completed',
+              conclusion: ok ? 'success' : 'failure',
+              output: { title: 'Security Summary', summary: md }
+            });
