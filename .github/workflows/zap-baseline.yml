@@ -25,7 +25,7 @@ jobs:
           cmd_options: "-a -m 0"
 
           # Имя артефакта без пробелов и спецсимволов
-          artifact_name: "zap-report"
+          artifact_name: "zap_report_${{ github.run_id }}"
 
           # НЕ пытаться создавать GitHub Issues
           allow_issue_writing: false
