@@ -27,5 +27,5 @@ jobs:
           # Имя артефакта без пробелов и спецсимволов
           artifact_name: "zap-report"
 
-          # (опционально) Разрешить предупреждения при создании Issue
-          allow_issue_warnings: true
+          # НЕ пытаться создавать GitHub Issues
+          allow_issue_warnings: false
