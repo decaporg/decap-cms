@@ -3,14 +3,7 @@ name: Security Gateway
 on:
   workflow_run:
     workflows:
-      - "SAST - CodeQL"
-      - "SAST - Semgrep"
-      - "Lint - ESLint"
-      - "Dependency Audit"
-      - "Secrets Scan - Gitleaks"
-      - "DAST - OWASP ZAP Baseline"
-      - "Lint - GitHub Actions"
-      - "CI - Build & Test"      
+      - "Node CI"                # ← теперь триггерим gateway только после Node CI
     types: [completed]
 
 # Один запуск на один и тот же коммит; дубли отменяем
@@ -26,8 +19,8 @@ permissions:
 
 jobs:
   gate:
-    # запускать только если завершившийся workflow сам завершился успешно
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    # Запускать gateway только если Node CI завершился успешно
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.name == 'Node CI' }}
     runs-on: ubuntu-latest
     steps:
       - name: Evaluate required checks for the same commit
@@ -42,7 +35,8 @@ jobs:
               "Secrets Scan - Gitleaks",
               "DAST - OWASP ZAP Baseline",
               "Lint - GitHub Actions",
-              "CI - Build & Test"
+              "CI - Build & Test",
+              "Node CI"
             ];
 
             const owner = context.repo.owner;
@@ -50,18 +44,16 @@ jobs:
             const sha   = context.payload.workflow_run.head_sha;
 
             try {
-              // ВАЖНО: используем github.rest.actions
               const { data } = await github.rest.actions.listWorkflowRunsForRepo({
                 owner,
                 repo,
                 per_page: 100,
-                head_sha: sha,   // рассматриваем РАНСЫ ИМЕННО этого коммита
+                head_sha: sha,
               });
 
               const latest = {};
               for (const r of data.workflow_runs) {
                 if (!required.includes(r.name)) continue;
-                // первый элемент уже самый свежий
                 if (!latest[r.name]) latest[r.name] = r.conclusion;
               }
 
