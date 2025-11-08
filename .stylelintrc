@@ -1,6 +1,5 @@
 {
-  "processors": ["stylelint-processor-styled-components"],
-  "extends": ["stylelint-config-standard-scss", "stylelint-config-styled-components"],
+  "extends": ["stylelint-config-standard-scss"],
   "customSyntax": "postcss-scss",
   "rules": {
     "block-no-empty": null,
