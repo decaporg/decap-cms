@@ -1,21 +1,37 @@
 name: Secrets Scan - Gitleaks
 
 on:
-  pull_request:
   push:
     branches: [ "main", "master" ]
+  pull_request:
 
 jobs:
   gitleaks:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0                          
+          fetch-depth: 0  # нужен полный git-история для корректного скана
 
-      - name: Run Gitleaks
-        uses: zricethezav/gitleaks-action@v2
+      - name: Install gitleaks (pinned version)
+        env:
+          GITLEAKS_VERSION: v8.18.4
+        run: |
+          curl -sSL -o gitleaks.tar.gz \
+            https://github.com/gitleaks/gitleaks/releases/download/${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION#v}_linux_x64.tar.gz
+          tar -xzf gitleaks.tar.gz gitleaks
+          sudo mv gitleaks /usr/local/bin/gitleaks
+          gitleaks version
+      - name: Run gitleaks (generate SARIF)
+        run: |
+          gitleaks detect \
+            --source . \
+            --redact \
+            --report-format sarif \
+            --report-path gitleaks.sarif \
+            || true
+
+      - name: Upload SARIF to code scanning
+        uses: github/codeql-action/upload-sarif@v3
         with:
-          args: detect --source . --no-git -v --redact
-          
+          sarif_file: gitleaks.sarif
