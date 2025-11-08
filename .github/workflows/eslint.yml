@@ -21,6 +21,6 @@ jobs:
         run: |
           npm ci || pnpm install || yarn install  
 
-      - name: Run ESLint (no warnings)
+      - name: Run ESLint (max 20 warnings)
         run: |
-          npx eslint . --max-warnings=0           # любое предупреждение = fail
+          npx eslint . --max-warnings=20

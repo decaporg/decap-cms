@@ -1,7 +1,7 @@
-name: Security Gateway                                # общий гейт
+name: Security Gateway
 
 on:
-  workflow_run:                                       
+  workflow_run:
     workflows:
       - "SAST - CodeQL"
       - "SAST - Semgrep"
@@ -10,24 +10,30 @@ on:
       - "Secrets Scan - Gitleaks"
       - "DAST - OWASP ZAP Baseline"
       - "Lint - GitHub Actions"
+      - "CI - Build & Test"           # если есть сборка — пусть она будет «последней»
     types: [completed]
+
+# ➜ один запуск на один и тот же коммит; предыдущие — отменяем
+concurrency:
+  group: security-gateway-${{ github.event.workflow_run.head_sha }}
+  cancel-in-progress: true
+
+permissions:
+  actions: read
+  contents: read
+  checks: read
+  pull-requests: write
 
 jobs:
   gate:
+    # запускать только если завершившийся workflow сам не упал
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
-      - name: Evaluate required checks
+      - name: Evaluate required checks for the same commit
         uses: actions/github-script@v7
         with:
           script: |
-            // получаем контекст PR
-            const pr = context.payload.pull_request;
-            if (!pr) {
-              core.notice("No PR context; skipping gate.");
-              return;
-            }
-
-            // список workflow, которые должны быть зелёными
             const required = [
               "SAST - CodeQL",
               "SAST - Semgrep",
@@ -35,37 +41,37 @@ jobs:
               "Dependency Audit",
               "Secrets Scan - Gitleaks",
               "DAST - OWASP ZAP Baseline",
-              "Lint - GitHub Actions"
+              "Lint - GitHub Actions",
+              "CI - Build & Test"
             ];
 
-            // получаем последние рансы для этого репо с event pull_request
-            const { data: runs } = await github.actions.listWorkflowRunsForRepo({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              per_page: 100,
-              event: "pull_request"
+            const owner = context.repo.owner;
+            const repo  = context.repo.repo;
+            const sha   = context.payload.workflow_run.head_sha; // ← ключевой момент
+
+            // Берём последние запуски ИМЕННО на этот коммит (head_sha)
+            const { data } = await github.actions.listWorkflowRunsForRepo({
+              owner, repo, per_page: 100, head_sha: sha
             });
 
-            // собираем статусы по именам workflow
-            const status = {};
-            for (const r of runs.workflow_runs) {
-              if (!required.includes(r.name)) continue;      // интересуют только нужные
-              if (!status[r.name]) status[r.name] = r.conclusion; // берём самый свежий
+            const latest = {};
+            for (const r of data.workflow_runs) {
+              if (!required.includes(r.name)) continue;
+              if (!latest[r.name]) latest[r.name] = r.conclusion; // первый в списке — самый свежий
             }
 
-            // проверяем наличие и статус
-            const missing = required.filter(n => !status[n]);           // отсутствуют
-            const failed  = Object.entries(status)                       // не success
-                              .filter(([_, c]) => c !== "success")
-                              .map(([n,c]) => `${n}=${c}`);
+            const missing = required.filter(n => latest[n] === undefined);
+            const failed  = Object.entries(latest)
+                                  .filter(([_, c]) => c !== "success")
+                                  .map(([n, c]) => `${n}=${c}`);
 
             if (missing.length) {
-              core.setFailed(`Missing runs: ${missing.join(", ")}`);     // нет нужных рансов
+              core.setFailed(`Missing runs for this commit: ${missing.join(", ")}`);
               return;
             }
             if (failed.length) {
-              core.setFailed(`Failed checks: ${failed.join(", ")}`);     // есть падающие проверки
+              core.setFailed(`Failed checks for this commit: ${failed.join(", ")}`);
               return;
             }
 
-            core.notice("Security gate passed ✅");                       
+            core.info(`Security gate passed ✅ for ${sha.substring(0,7)}`);

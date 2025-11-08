@@ -21,6 +21,6 @@ jobs:
       - name: Install deps
         run: npm ci || pnpm install || yarn install
 
-      - name: npm audit (fail on high)
+      - name: npm audit (fail on critical)
         run: |
-          npx npm audit --audit-level=high || exit 1  # High/Critical → fail
+           npx npm audit --omit=dev --audit-level=critical

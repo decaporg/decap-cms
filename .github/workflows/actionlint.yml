@@ -3,7 +3,7 @@ name: Lint - GitHub Actions
 on:
   pull_request:
     paths:
-      - ".github/workflows/**"                    # запускать, когда меняются workflows
+      - ".github/workflows/**"
   push:
     branches: [ "main", "master" ]
     paths:
@@ -14,7 +14,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      # Проверка YAML-файлов GitHub Actions
       - name: Run actionlint
-        uses: rhysd/actionlint@v1
+        uses: reviewdog/action-actionlint@v1
         with:
-          args: -color                            # цветной вывод ошибок
+          github_token: ${{ secrets.GITHUB_TOKEN }}   # чтобы печатать результаты в лог/PR
+          actionlint_flags: "-color"                  
