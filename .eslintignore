@@ -3,3 +3,4 @@ cypress/**
 **/*.spec.*
 **/*.test.*
 **/__snapshots__/**
+functions/**   
