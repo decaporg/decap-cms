@@ -1,0 +1,73 @@
+name: Security Gateway                                # общий гейт
+
+on:
+  pull_request:                                       # срабатывает в PR
+    types: [opened, synchronize, reopened]
+  workflow_run:                                       # или после завершения зависимых CI
+    workflows:
+      - "SAST - CodeQL"
+      - "SAST - Semgrep"
+      - "Lint - ESLint"
+      - "Dependency Audit"
+      - "Secrets Scan - Gitleaks"
+      - "DAST - OWASP ZAP Baseline"
+      - "Lint - GitHub Actions"
+    types: [completed]
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Evaluate required checks
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // получаем контекст PR
+            const pr = context.payload.pull_request;
+            if (!pr) {
+              core.notice("No PR context; skipping gate.");
+              return;
+            }
+
+            // список workflow, которые должны быть зелёными
+            const required = [
+              "SAST - CodeQL",
+              "SAST - Semgrep",
+              "Lint - ESLint",
+              "Dependency Audit",
+              "Secrets Scan - Gitleaks",
+              "DAST - OWASP ZAP Baseline",
+              "Lint - GitHub Actions"
+            ];
+
+            // получаем последние рансы для этого репо с event pull_request
+            const { data: runs } = await github.actions.listWorkflowRunsForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              per_page: 100,
+              event: "pull_request"
+            });
+
+            // собираем статусы по именам workflow
+            const status = {};
+            for (const r of runs.workflow_runs) {
+              if (!required.includes(r.name)) continue;      // интересуют только нужные
+              if (!status[r.name]) status[r.name] = r.conclusion; // берём самый свежий
+            }
+
+            // проверяем наличие и статус
+            const missing = required.filter(n => !status[n]);           // отсутствуют
+            const failed  = Object.entries(status)                       // не success
+                              .filter(([_, c]) => c !== "success")
+                              .map(([n,c]) => `${n}=${c}`);
+
+            if (missing.length) {
+              core.setFailed(`Missing runs: ${missing.join(", ")}`);     // нет нужных рансов
+              return;
+            }
+            if (failed.length) {
+              core.setFailed(`Failed checks: ${failed.join(", ")}`);     // есть падающие проверки
+              return;
+            }
+
+            core.notice("Security gate passed ✅");                       

@@ -1,0 +1,38 @@
+name: CI - Build & Test
+
+on:
+  pull_request:
+  push:
+    branches: [ "main", "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"                                  
+
+      - name: Install
+        run: npm ci || pnpm install || yarn install
+
+      - name: Test (if present)
+        run: |
+          npm test --if-present || pnpm test --if-present || yarn test --if-present
+
+      - name: Build
+        run: npm run build || pnpm build || yarn build
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-output                            # имя артефакта
+          path: |                                       # куда сложить результаты
+            dist
+            build
+            packages/**/dist
+          if-no-files-found: ignore                     # не падать, если путь пуст

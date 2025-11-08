@@ -1,0 +1,36 @@
+name: DAST - OWASP ZAP Baseline
+
+on:
+  pull_request:
+  push:
+    branches: [ "main", "master" ]
+
+jobs:
+  zap:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Install, Build and Serve
+        run: |
+          npm ci || pnpm install || yarn install            # зависимости
+          npm run build || pnpm build || yarn build         # сборка
+          npx http-server ./packages -p 8080 -s &           # простой сервер из папки packages 
+          for i in {1..60}; do                               # ждём поднятия порта
+            nc -z 127.0.0.1 8080 && echo 'server up' && break
+            sleep 2
+          done
+
+      - name: ZAP Baseline Scan
+        uses: zaproxy/action-baseline@v0.11.0
+        with:
+          target: "http://127.0.0.1:8080"                   # что сканировать
+          cmd_options: "-a"                                  # активные low-intensity проверки
+          fail_action: true                                  # падать при Medium/High
+          allow_issue_writing: false                         # без автосоздания issue

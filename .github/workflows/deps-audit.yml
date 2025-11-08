@@ -1,0 +1,26 @@
+name: Dependency Audit
+
+on:
+  pull_request:
+  push:
+    branches: [ "main", "master" ]
+  schedule:
+    - cron: "0 2 * * *"                           # ночной аудит зависимостей
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Install deps
+        run: npm ci || pnpm install || yarn install
+
+      - name: npm audit (fail on high)
+        run: |
+          npx npm audit --audit-level=high || exit 1  # High/Critical → fail

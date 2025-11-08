@@ -1,0 +1,36 @@
+name: SAST - Semgrep                              
+
+on:                                               # триггеры
+  pull_request:                                  
+  push:                                           
+    branches: [ "main", "master" ]
+
+permissions:
+  contents: read
+  security-events: write                          # публикуем SARIF в Security
+
+jobs:
+  semgrep:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4                 # забираем код
+
+      - name: Run Semgrep OSS
+        uses: returntocorp/semgrep-action@v1      # официальный action
+        with:
+          config: >-                              # набор правил
+            p/ci                                  # быстрый CI-набор
+            p/javascript                          # JS правила безопасности
+            p/typescript                          # TS правила безопасности
+          generateSarif: "1"                      # генерировать SARIF файл
+          publishSarif: "1"                       # публиковать в GitHub Security
+          auditOn: push                           # помечать как аудит для push
+          severity: "ERROR,WARNING"               # считать ERROR/WARNING блокирующими
+        env:
+          SEMGREP_TIMEOUT: "300"                  # таймаут на всякий случай
+
+      - name: Fail if semgrep failed
+        if: failure()                             # если предыдущий шаг упал
+        run: exit 1                               # валим job явно (гейт)

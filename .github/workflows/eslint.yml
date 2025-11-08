@@ -1,0 +1,26 @@
+name: Lint - ESLint
+
+on:
+  pull_request:
+  push:
+    branches: [ "main", "master" ]
+
+jobs:
+  eslint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4                 # получаем код
+
+      - name: Use Node 18
+        uses: actions/setup-node@v4               # ставим Node LTS
+        with:
+          node-version: "18"
+
+      - name: Install dependencies
+        run: |
+          npm ci || pnpm install || yarn install  
+
+      - name: Run ESLint (no warnings)
+        run: |
+          npx eslint . --max-warnings=0           # любое предупреждение = fail

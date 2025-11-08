@@ -1,0 +1,73 @@
+name: Security Summary
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]   # при любом обновлении PR
+
+permissions:
+  pull-requests: write        # чтобы оставить комментарий в PR
+  actions: read               # чтобы читать статусы других workflow
+  contents: read
+
+jobs:
+  summarize:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Собрать статусы проверок и посчитать оценку
+        id: build
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Какие проверки считаем обязательными
+            const required = [
+              "SAST - CodeQL",
+              "SAST - Semgrep",
+              "Lint - ESLint",
+              "Dependency Audit",
+              "Secrets Scan - Gitleaks",
+              "DAST - OWASP ZAP Baseline",
+              "Lint - GitHub Actions",
+              "CI - Build & Test"
+            ];
+
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+
+            // Берём последние рансы workflow по событию pull_request
+            const { data } = await github.actions.listWorkflowRunsForRepo({
+              owner, repo, per_page: 100, event: "pull_request"
+            });
+
+            const latest = {};
+            for (const r of data.workflow_runs) {
+              if (!required.includes(r.name)) continue;
+              // сохраняем первый встреченный как самый свежий
+              if (!latest[r.name]) latest[r.name] = r;
+            }
+
+            let ok = 0;
+            const lines = ["| Проверка | Статус |", "|---|---|"];
+            for (const name of required) {
+              const r = latest[name];
+              const status = r ? (r.conclusion || r.status) : "missing";
+              const emoji = status === "success" ? "✅"
+                          : status === "failure" ? "❌"
+                          : status === "cancelled" ? "🚫"
+                          : "⏳";
+              if (status === "success") ok++;
+              lines.push(`| ${name} | ${emoji} ${status} |`);
+            }
+            const score = Math.round((ok / required.length) * 100);
+
+            core.setOutput("table", lines.join("\n"));
+            core.setOutput("score", String(score));
+
+      - name: Опубликовать сводку в PR
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: security-summary
+          message: |
+            ## Итоговая сводка проверок безопасности
+            Процент пройденных проверок: **${{ steps.build.outputs.score }}%**
+
+            ${{ steps.build.outputs.table }}

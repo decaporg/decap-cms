@@ -1,0 +1,20 @@
+name: Lint - GitHub Actions
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/**"                    # запускать, когда меняются workflows
+  push:
+    branches: [ "main", "master" ]
+    paths:
+      - ".github/workflows/**"
+
+jobs:
+  actionlint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run actionlint
+        uses: rhysd/actionlint@v1
+        with:
+          args: -color                            # цветной вывод ошибок
