@@ -8,24 +8,31 @@ on:
 jobs:
   zap:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
+      # 1) Запускаем ZAP без загрузки артефактов и без создания Issues
       - name: ZAP Baseline scan (demo target, do not fail)
         uses: zaproxy/action-baseline@v0.11.0
         with:
-          # ВРЕМЕННАЯ цель, пока нет VPS (страница гарантированно доступна)
           target: "https://example.com"
-
-          # Не проваливать job, даже если ZAP найдёт предупреждения/находки
           fail_action: false
-
-          # Чуть более строгий, но безопасный режим: -a = сгенерировать отчет.
-          # -m 0 = не считать количество алертов критерием фейла (иначе exit 2)
           cmd_options: "-a -m 0"
-
-          # Имя артефакта без пробелов и спецсимволов
-          artifact_name: "zap_report_${{ github.run_id }}"
-
-          # НЕ пытаться создавать GitHub Issues
           allow_issue_writing: false
+          
+      # 2) Посмотрим, какие файлы сгенерировались 
+      - name: List reports
+        run: ls -la
+
+      # 3) Загружаем отчёты сами (надёжно)
+      - name: Upload ZAP artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: zap_report_${{ github.run_id }}
+          path: |
+            zap.out
+            **/*zap*.html
+            **/*report*.html
+            **/*.json
+          if-no-files-found: warn
