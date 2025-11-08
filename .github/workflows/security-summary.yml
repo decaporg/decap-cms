@@ -1,24 +1,53 @@
 name: Security Summary
 
 on:
+  # для тестовых запусков прямо в PR
   pull_request:
-    types: [opened, synchronize, reopened]   # при любом обновлении PR
+    types: [opened, synchronize, reopened]
+
+  # для «боевого» запуска уже ПОСЛЕ Security Gateway (когда файл будет в main)
+  workflow_run:
+    workflows: ["Security Gateway"]
+    types: [completed]
+
+  # ручной запуск из Actions
+  workflow_dispatch:
 
 permissions:
-  pull-requests: write        # чтобы оставить комментарий в PR
-  actions: read               # чтобы читать статусы других workflow
+  actions: read
+  checks: read
   contents: read
+  pull-requests: write   # обязательно: пишем комментарий в PR
+
+# один прогон на коммит (и в PR, и после gateway)
+concurrency:
+  group: security-summary-${{ github.event.pull_request.head.sha || github.sha }}
+  cancel-in-progress: true
 
 jobs:
   summarize:
+    # Если вызвали через workflow_run — требуем успех Gateway.
+    # Если через pull_request/dispatch — запускаем без этого условия.
+    if: >
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
+      || (github.event_name != 'workflow_run')
+
     runs-on: ubuntu-latest
     steps:
-      - name: Собрать статусы проверок и посчитать оценку
-        id: build
+      - name: Build summary table & comment to PR
         uses: actions/github-script@v7
         with:
           script: |
-            // Какие проверки считаем обязательными
+            const owner = context.repo.owner;
+            const repo  = context.repo.repo;
+
+            // SHA коммита: из workflow_run или из PR
+            const sha =
+              context.eventName === 'workflow_run'
+                ? context.payload.workflow_run.head_sha
+                : (context.payload.pull_request?.head?.sha || context.sha);
+
+            // Список проверок, которые хотим свести
             const required = [
               "SAST - CodeQL",
               "SAST - Semgrep",
@@ -27,47 +56,42 @@ jobs:
               "Secrets Scan - Gitleaks",
               "DAST - OWASP ZAP Baseline",
               "Lint - GitHub Actions",
-              "CI - Build & Test"
+              "CI - Build & Test",
+              "Security Gateway"
             ];
 
-            const owner = context.repo.owner;
-            const repo = context.repo.repo;
-
-            // Берём последние рансы workflow по событию pull_request
-            const { data } = await github.actions.listWorkflowRunsForRepo({
-              owner, repo, per_page: 100, event: "pull_request"
+            // Берём последние прогоны именно по этому коммиту
+            const { data } = await github.rest.actions.listWorkflowRunsForRepo({
+              owner, repo, per_page: 100, head_sha: sha
             });
 
             const latest = {};
             for (const r of data.workflow_runs) {
               if (!required.includes(r.name)) continue;
-              // сохраняем первый встреченный как самый свежий
-              if (!latest[r.name]) latest[r.name] = r;
+              if (!latest[r.name]) latest[r.name] = r.conclusion; // первый — самый свежий
             }
 
-            let ok = 0;
-            const lines = ["| Проверка | Статус |", "|---|---|"];
-            for (const name of required) {
-              const r = latest[name];
-              const status = r ? (r.conclusion || r.status) : "missing";
-              const emoji = status === "success" ? "✅"
-                          : status === "failure" ? "❌"
-                          : status === "cancelled" ? "🚫"
-                          : "⏳";
-              if (status === "success") ok++;
-              lines.push(`| ${name} | ${emoji} ${status} |`);
+            const rows = required
+              .map(n => `| ${n} | ${latest[n] ?? "—"} |`)
+              .join("\n");
+
+            const body = [
+              "### Security Summary",
+              "",
+              "| Проверка | Статус |",
+              "|---|---|",
+              rows
+            ].join("\n");
+
+            // Ищем номер PR: из pull_request или из workflow_run
+            const prNumber =
+              context.eventName === 'pull_request'
+                ? context.payload.number
+                : (context.payload.workflow_run?.pull_requests?.[0]?.number);
+
+            if (prNumber) {
+              await github.rest.issues.createComment({ owner, repo, issue_number: prNumber, body });
+            } else {
+              core.notice("PR not found for this run; printed to logs only.");
+              console.log(body);
             }
-            const score = Math.round((ok / required.length) * 100);
-
-            core.setOutput("table", lines.join("\n"));
-            core.setOutput("score", String(score));
-
-      - name: Опубликовать сводку в PR
-        uses: marocchino/sticky-pull-request-comment@v2
-        with:
-          header: security-summary
-          message: |
-            ## Итоговая сводка проверок безопасности
-            Процент пройденных проверок: **${{ steps.build.outputs.score }}%**
-
-            ${{ steps.build.outputs.table }}
