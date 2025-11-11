@@ -267,10 +267,8 @@ function entries(
           const pageSize =
             currentPageSize && currentPageSize !== 100 ? currentPageSize : cursorPageSize;
 
-          map.setIn(
-            ['pagination', collection],
-            existingPagination.merge({ currentPage, totalCount, pageSize }),
-          );
+          const updated = existingPagination.merge({ currentPage, totalCount, pageSize });
+          map.setIn(['pagination', collection], updated);
         } else {
           // For i18n or client-side pagination (no cursor metadata), use actual loaded entry count
           // This will be updated correctly when SORT_ENTRIES_SUCCESS sets sortedIds
