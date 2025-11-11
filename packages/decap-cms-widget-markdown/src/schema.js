@@ -8,6 +8,7 @@ export default {
         enum: [
           'bold',
           'italic',
+          'strikethrough',
           'code',
           'link',
           'heading-one',

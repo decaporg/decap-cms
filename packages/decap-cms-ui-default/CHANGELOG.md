@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.5.0](https://github.com/decaporg/decap-cms/compare/decap-cms-ui-default@3.4.0...decap-cms-ui-default@3.5.0) (2025-11-04)
+
+### Bug Fixes
+
+- prevent select dropdown item text wrapping ([#7618](https://github.com/decaporg/decap-cms/issues/7618)) ([986e4aa](https://github.com/decaporg/decap-cms/commit/986e4aa1371cce3cd0bc87a0f546b9fed4a6a9da))
+
+### Features
+
+- implement strikethrough functionality to markdown editor ([#7625](https://github.com/decaporg/decap-cms/issues/7625)) ([0c7d327](https://github.com/decaporg/decap-cms/commit/0c7d327341f785940da4fa88e5c2ed755215f010))
+
+# [3.4.0](https://github.com/decaporg/decap-cms/compare/decap-cms-ui-default@3.3.0...decap-cms-ui-default@3.4.0) (2025-09-30)
+
+### Features
+
+- add allow_remove and allow_reorder flags ([#7573](https://github.com/decaporg/decap-cms/issues/7573)) ([ff961f4](https://github.com/decaporg/decap-cms/commit/ff961f4bfe7c0a8970451d9b21645738b6cb1560))
+
 # [3.3.0](https://github.com/decaporg/decap-cms/compare/decap-cms-ui-default@3.1.4...decap-cms-ui-default@3.3.0) (2025-07-15)
 
 ### Features
