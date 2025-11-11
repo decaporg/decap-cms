@@ -4,7 +4,7 @@ import {
   DragSource as ReactDNDDragSource,
   DropTarget as ReactDNDDropTarget,
 } from 'react-dnd';
-import React from 'react';
+import { createElement, Component } from 'react';
 import PropTypes from 'prop-types';
 
 export function DragSource({ namespace, ...props }) {
@@ -22,7 +22,7 @@ export function DragSource({ namespace, ...props }) {
     }),
   )(({ children, connectDragComponent }) => children(connectDragComponent));
 
-  return React.createElement(DragComponent, props, props.children);
+  return createElement(DragComponent, props, props.children);
 }
 
 DragSource.propTypes = {
@@ -44,7 +44,7 @@ export function DropTarget({ onDrop, namespace, ...props }) {
     }),
   )(({ children, connectDropTarget, isHovered }) => children(connectDropTarget, { isHovered }));
 
-  return React.createElement(DropComponent, props, props.children);
+  return createElement(DropComponent, props, props.children);
 }
 
 DropTarget.propTypes = {
@@ -54,7 +54,7 @@ DropTarget.propTypes = {
 };
 
 export function HTML5DragDrop(WrappedComponent) {
-  return class HTML5DragDrop extends React.Component {
+  return class HTML5DragDrop extends Component {
     render() {
       return (
         <ReactDNDProvider backend={ReactDNDHTML5Backend}>

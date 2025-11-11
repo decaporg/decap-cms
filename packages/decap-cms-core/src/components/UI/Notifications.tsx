@@ -1,5 +1,4 @@
-// eslint-disable-next-line no-unused-vars
-import React, { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 // import { translate } from 'react-polyglot';
 import { injectStyle } from 'react-toastify/dist/inject-style';
 import { toast, ToastContainer } from 'react-toastify';
@@ -25,7 +24,7 @@ type IdMap = {
 function Notifications({ notifications }: Props) {
   const t = useTranslate();
   const dispatch = useDispatch();
-  const [idMap, setIdMap] = React.useState<IdMap>({});
+  const [idMap, setIdMap] = useState<IdMap>({});
 
   useEffect(() => {
     notifications

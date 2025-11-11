@@ -1,4 +1,4 @@
-import React from 'react';
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { ClassNames } from '@emotion/react';
@@ -21,7 +21,7 @@ const styleStrings = {
   `,
 };
 
-export default class ObjectControl extends React.Component {
+export default class ObjectControl extends Component {
   childRefs = {};
 
   processControlRef = ref => {

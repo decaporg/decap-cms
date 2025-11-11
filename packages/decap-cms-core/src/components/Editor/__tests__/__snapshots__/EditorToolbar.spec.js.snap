@@ -1436,14 +1436,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=true 1`]
             <span
               class="tooltip emotion-25 emotion-26 emotion-27"
             >
-              <svg
-                class="bi bi-info-circle"
-                fill="currentColor"
-                height="16"
-                viewBox="0 0 16 16"
-                width="16"
-                xmlns="http://www.w3.org/2000/svg"
-              >
+              <svg>
                 <path
                   d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
                 />
@@ -2101,14 +2094,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
             <span
               class="tooltip emotion-25 emotion-26 emotion-27"
             >
-              <svg
-                class="bi bi-info-circle"
-                fill="currentColor"
-                height="16"
-                viewBox="0 0 16 16"
-                width="16"
-                xmlns="http://www.w3.org/2000/svg"
-              >
+              <svg>
                 <path
                   d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
                 />
@@ -2779,14 +2765,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
             <span
               class="tooltip emotion-25 emotion-26 emotion-27"
             >
-              <svg
-                class="bi bi-info-circle"
-                fill="currentColor"
-                height="16"
-                viewBox="0 0 16 16"
-                width="16"
-                xmlns="http://www.w3.org/2000/svg"
-              >
+              <svg>
                 <path
                   d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
                 />
