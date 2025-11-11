@@ -232,7 +232,7 @@ export default class TestBackend implements Implementation {
 
     // If pagination is enabled, return only the requested page
     // Otherwise, return all entries (for backward compatibility)
-    const ret = usePagination ? take(entries.slice((page - 1) * pageSize), pageSize) : entries;
+    const ret = usePagination ? entries.slice((page - 1) * pageSize, page * pageSize) : entries;
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     ret[CURSOR_COMPATIBILITY_SYMBOL] = cursor;
