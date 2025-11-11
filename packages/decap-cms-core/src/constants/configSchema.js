@@ -160,7 +160,15 @@ function getConfigSchema() {
       i18n: i18nRoot,
       site_url: { type: 'string', examples: ['https://example.com'] },
       display_url: { type: 'string', examples: ['https://example.com'] },
-      logo_url: { type: 'string', examples: ['https://example.com/images/logo.svg'] },
+      logo_url: { type: 'string', examples: ['https://example.com/images/logo.svg'] }, // Deprecated, replaced by `logo.src`
+      logo: {
+        type: 'object',
+        properties: {
+          src: { type: 'string', examples: ['https://example.com/images/logo.svg'] },
+          show_in_header: { type: 'boolean' },
+        },
+        required: ['src'],
+      },
       show_preview_links: { type: 'boolean' },
       media_folder: { type: 'string', examples: ['assets/uploads'] },
       public_folder: { type: 'string', examples: ['/uploads'] },
@@ -260,6 +268,7 @@ function getConfigSchema() {
               type: 'object',
               properties: {
                 depth: { type: 'number', minimum: 1, maximum: 1000 },
+                subfolders: { type: 'boolean' },
                 summary: { type: 'string' },
               },
               required: ['depth'],

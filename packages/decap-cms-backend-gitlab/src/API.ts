@@ -28,7 +28,10 @@ import {
 } from 'decap-cms-lib-util';
 import { Base64 } from 'js-base64';
 import { Map } from 'immutable';
-import { flow, partial, result, trimStart } from 'lodash';
+import flow from 'lodash/flow';
+import partial from 'lodash/partial';
+import result from 'lodash/result';
+import trimStart from 'lodash/trimStart';
 import { dirname } from 'path';
 
 const NO_CACHE = 'no-cache';

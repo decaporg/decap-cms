@@ -23,6 +23,14 @@ export default class BitbucketAuthenticationPage extends React.Component {
   state = {};
 
   componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(
+      BitbucketAuthenticationPage.propTypes,
+      this.props,
+      'prop',
+      'BitbucketAuthenticationPage',
+    );
+
     const { auth_type: authType = '' } = this.props.config.backend;
 
     if (authType === 'implicit') {
@@ -79,7 +87,8 @@ export default class BitbucketAuthenticationPage extends React.Component {
         onLogin={this.handleLogin}
         loginDisabled={inProgress}
         loginErrorMessage={this.state.loginError}
-        logoUrl={config.logo_url}
+        logoUrl={config.logo_url} // Deprecated, replaced by `logo.src`
+        logo={config.logo}
         siteUrl={config.site_url}
         renderButtonContent={() => (
           <React.Fragment>

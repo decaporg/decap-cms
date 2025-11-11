@@ -3,6 +3,76 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.9.0](https://github.com/decaporg/decap-cms/compare/decap-cms@3.8.4...decap-cms@3.9.0) (2025-11-04)
+
+**Note:** Version bump only for package decap-cms
+
+## [3.8.4](https://github.com/decaporg/decap-cms/compare/decap-cms@3.8.3...decap-cms@3.8.4) (2025-09-30)
+
+**Note:** Version bump only for package decap-cms
+
+## [3.8.3](https://github.com/decaporg/decap-cms/compare/decap-cms@3.8.2...decap-cms@3.8.3) (2025-07-31)
+
+**Note:** Version bump only for package decap-cms
+
+## [3.8.2](https://github.com/decaporg/decap-cms/compare/decap-cms@3.8.1...decap-cms@3.8.2) (2025-07-22)
+
+**Note:** Version bump only for package decap-cms
+
+## [3.8.1](https://github.com/decaporg/decap-cms/compare/decap-cms@3.8.0...decap-cms@3.8.1) (2025-07-22)
+
+**Note:** Version bump only for package decap-cms
+
+# [3.8.0](https://github.com/decaporg/decap-cms/compare/decap-cms@3.7.2...decap-cms@3.8.0) (2025-07-15)
+
+**Note:** Version bump only for package decap-cms
+
+## [3.7.2](https://github.com/decaporg/decap-cms/compare/decap-cms@3.7.1...decap-cms@3.7.2) (2025-07-10)
+
+**Note:** Version bump only for package decap-cms
+
+## [3.7.1](https://github.com/decaporg/decap-cms/compare/decap-cms@3.7.0...decap-cms@3.7.1) (2025-06-26)
+
+**Note:** Version bump only for package decap-cms
+
+# [3.7.0](https://github.com/decaporg/decap-cms/compare/decap-cms@3.6.4...decap-cms@3.7.0) (2025-06-26)
+
+**Note:** Version bump only for package decap-cms
+
+## [3.6.4](https://github.com/decaporg/decap-cms/compare/decap-cms@3.6.3...decap-cms@3.6.4) (2025-06-06)
+
+**Note:** Version bump only for package decap-cms
+
+## [3.6.3](https://github.com/decaporg/decap-cms/compare/decap-cms@3.6.2...decap-cms@3.6.3) (2025-05-15)
+
+**Note:** Version bump only for package decap-cms
+
+## [3.6.2](https://github.com/decaporg/decap-cms/compare/decap-cms@3.6.1...decap-cms@3.6.2) (2025-02-13)
+
+**Note:** Version bump only for package decap-cms
+
+## [3.6.1](https://github.com/decaporg/decap-cms/compare/decap-cms@3.6.0...decap-cms@3.6.1) (2025-01-30)
+
+**Note:** Version bump only for package decap-cms
+
+# [3.6.0](https://github.com/decaporg/decap-cms/compare/decap-cms@3.5.0...decap-cms@3.6.0) (2025-01-29)
+
+**Note:** Version bump only for package decap-cms
+
+# [3.5.0](https://github.com/decaporg/decap-cms/compare/decap-cms@3.4.0...decap-cms@3.5.0) (2025-01-15)
+
+### Bug Fixes
+
+- **build:** Fix ESM output ([#7357](https://github.com/decaporg/decap-cms/issues/7357)) ([#7358](https://github.com/decaporg/decap-cms/issues/7358)) ([6cd7cb3](https://github.com/decaporg/decap-cms/commit/6cd7cb3b41718e20b44acaae1e2ffd73129520c2))
+
+# [3.4.0](https://github.com/decaporg/decap-cms/compare/decap-cms@3.3.3...decap-cms@3.4.0) (2024-11-12)
+
+**Note:** Version bump only for package decap-cms
+
+## [3.3.3](https://github.com/decaporg/decap-cms/compare/decap-cms@3.3.2...decap-cms@3.3.3) (2024-08-30)
+
+**Note:** Version bump only for package decap-cms
+
 ## [3.3.2](https://github.com/decaporg/decap-cms/compare/decap-cms@3.3.1...decap-cms@3.3.2) (2024-08-13)
 
 ### Reverts

@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.5.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-list@3.4.0...decap-cms-widget-list@3.5.0) (2025-09-30)
+
+### Features
+
+- add allow_remove and allow_reorder flags ([#7573](https://github.com/decaporg/decap-cms/issues/7573)) ([ff961f4](https://github.com/decaporg/decap-cms/commit/ff961f4bfe7c0a8970451d9b21645738b6cb1560))
+
+# [3.4.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-list@3.3.0...decap-cms-widget-list@3.4.0) (2025-06-26)
+
+**Note:** Version bump only for package decap-cms-widget-list
+
+# [3.3.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-list@3.2.2...decap-cms-widget-list@3.3.0) (2025-01-29)
+
+### Features
+
+- visual editing (click-to-edit) ([#7374](https://github.com/decaporg/decap-cms/issues/7374)) ([989c2dd](https://github.com/decaporg/decap-cms/commit/989c2dd6ed80f69b572b8b73c4e37b5106ae04fb))
+
 ## [3.2.2](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-list@3.2.1...decap-cms-widget-list@3.2.2) (2024-08-13)
 
 ### Reverts

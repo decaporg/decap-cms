@@ -1,6 +1,6 @@
 import createReactClass from 'create-react-class';
 import React from 'react';
-import { DecapCmsApp as CMS } from 'decap-cms-app/dist/esm';
+import { DecapCmsApp as CMS } from 'decap-cms-app';
 import './extensions';
 
 /**

@@ -1,4 +1,4 @@
-import { flow } from 'lodash';
+import flow from 'lodash/flow';
 import { tests as commonmarkSpec } from 'commonmark-spec';
 import * as commonmark from 'commonmark';
 

@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { ClassNames } from '@emotion/react';
 import { Map } from 'immutable';
-import { uniq, isEqual, isEmpty } from 'lodash';
+import uniq from 'lodash/uniq';
+import isEqual from 'lodash/isEqual';
+import isEmpty from 'lodash/isEmpty';
 import { v4 as uuid } from 'uuid';
 import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
 import CodeMirror from 'codemirror';
@@ -75,6 +77,7 @@ export default class CodeControl extends React.Component {
 
   state = {
     isActive: false,
+    isLangInitialized: false,
     unknownLang: null,
     lang: '',
     keyMap: localStorage.getItem(settingsPersistKeys['keyMap']) || 'default',
@@ -98,6 +101,9 @@ export default class CodeControl extends React.Component {
   }
 
   componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(CodeControl.propTypes, this.props, 'prop', 'CodeControl');
+
     this.setState({
       lang: this.getInitialLang() || '',
     });
@@ -119,7 +125,15 @@ export default class CodeControl extends React.Component {
     const keys = ['lang', 'theme', 'keyMap'];
     const changedProps = getChangedProps(prevState, this.state, keys);
     if (changedProps) {
-      this.handleChangeCodeMirrorProps(changedProps);
+      // Check if this is the initial setting of the language prop
+      const shouldIgnoreLangChange =
+        !this.state.isLangInitialized &&
+        !!changedProps?.lang &&
+        Object.keys(changedProps).length === 1;
+
+      this.setState({ isLangInitialized: true });
+
+      this.handleChangeCodeMirrorProps(changedProps, shouldIgnoreLangChange);
     }
   }
 
@@ -187,7 +201,7 @@ export default class CodeControl extends React.Component {
     return !field.get('output_code_only') || isEditorComponent;
   }
 
-  async handleChangeCodeMirrorProps(changedProps) {
+  async handleChangeCodeMirrorProps(changedProps, ignoreLangChange = false) {
     const { onChange } = this.props;
 
     if (changedProps.lang) {
@@ -217,7 +231,7 @@ export default class CodeControl extends React.Component {
 
     // Only persist the language change if supported - requires the value to be
     // a map rather than just a code string.
-    if (changedProps.lang && this.valueIsMap()) {
+    if (changedProps.lang && !ignoreLangChange && this.valueIsMap()) {
       onChange(this.toValue('lang', changedProps.lang));
     }
   }

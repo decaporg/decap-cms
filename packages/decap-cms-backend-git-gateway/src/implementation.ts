@@ -1,6 +1,8 @@
 import GoTrue from 'gotrue-js';
 import jwtDecode from 'jwt-decode';
-import { get, pick, intersection } from 'lodash';
+import get from 'lodash/get';
+import pick from 'lodash/pick';
+import intersection from 'lodash/intersection';
 import ini from 'ini';
 import {
   APIError,
@@ -17,10 +19,10 @@ import {
 import { GitHubBackend } from 'decap-cms-backend-github';
 import { GitLabBackend } from 'decap-cms-backend-gitlab';
 import { BitbucketBackend, API as BitBucketAPI } from 'decap-cms-backend-bitbucket';
+import { NetlifyAuthenticationPage, PKCEAuthenticationPage } from 'decap-cms-ui-auth';
 
 import GitHubAPI from './GitHubAPI';
 import GitLabAPI from './GitLabAPI';
-import AuthenticationPage from './AuthenticationPage';
 import { getClient } from './netlify-lfs-client';
 
 import type { Client } from './netlify-lfs-client';
@@ -120,7 +122,7 @@ if (window.netlifyIdentity) {
   ]);
 }
 
-interface NetlifyUser extends Credentials {
+interface GitGatewayUser extends Credentials {
   jwt: () => Promise<string>;
   email: string;
   user_metadata: { full_name: string; avatar_url: string };
@@ -141,9 +143,11 @@ export default class GitGateway implements Implementation {
   mediaFolder: string;
   transformImages: boolean;
   gatewayUrl: string;
+  gitGatewayStatusEndpoint: string;
   netlifyLargeMediaURL: string;
   backendType: string | null;
   apiUrl: string;
+  authType: 'pkce' | 'netlify';
   authClient?: AuthClient;
   backend: GitHubBackend | GitLabBackend | BitbucketBackend | null;
   acceptRoles?: string[];
@@ -167,6 +171,7 @@ export default class GitGateway implements Implementation {
     this.squashMerges = config.backend.squash_merges || false;
     this.cmsLabelPrefix = config.backend.cms_label_prefix || '';
     this.mediaFolder = config.media_folder;
+    this.gitGatewayStatusEndpoint = config.backend.status_endpoint || GIT_GATEWAY_STATUS_ENDPOINT;
     const { use_large_media_transforms_in_media_library: transformImages = true } = config.backend;
     this.transformImages = transformImages;
 
@@ -187,7 +192,12 @@ export default class GitGateway implements Implementation {
     }
 
     this.backend = null;
-    AuthenticationPage.authClient = () => this.getAuthClient();
+    if (config.backend.auth_type === 'pkce') {
+      this.authType = 'pkce';
+    } else {
+      this.authType = 'netlify';
+      NetlifyAuthenticationPage.authClient = () => this.getAuthClient();
+    }
   }
 
   isGitBackend() {
@@ -195,7 +205,7 @@ export default class GitGateway implements Implementation {
   }
 
   async status() {
-    const api = await fetch(GIT_GATEWAY_STATUS_ENDPOINT)
+    const api = await fetch(this.gitGatewayStatusEndpoint)
       .then(res => res.json())
       .then(res => {
         return res['components']
@@ -267,16 +277,22 @@ export default class GitGateway implements Implementation {
       .then(unsentRequest.performRequest);
 
   authenticate(credentials: Credentials) {
-    const user = credentials as NetlifyUser;
-    this.tokenPromise = async () => {
-      try {
-        const func = user.jwt.bind(user);
-        const token = await func();
-        return token;
-      } catch (error) {
-        throw new AccessTokenError(`Failed getting access token: ${error.message}`);
-      }
-    };
+    const user = credentials as GitGatewayUser;
+    if (user.jwt) {
+      // Netlify auth
+      this.tokenPromise = async () => {
+        try {
+          const func = user.jwt.bind(user);
+          return await func();
+        } catch (error) {
+          throw new AccessTokenError(`Failed getting access token: ${error.message}`);
+        }
+      };
+    } else {
+      // OAuth
+      this.tokenPromise = async () => (typeof user.token === 'string' ? user.token : '');
+    }
+
     return this.tokenPromise!().then(async token => {
       if (!this.backendType) {
         const {
@@ -376,7 +392,7 @@ export default class GitGateway implements Implementation {
     return this.authenticate(user as Credentials);
   }
   authComponent() {
-    return AuthenticationPage;
+    return this.authType === 'pkce' ? PKCEAuthenticationPage : NetlifyAuthenticationPage;
   }
 
   async logout() {

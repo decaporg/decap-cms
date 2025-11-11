@@ -3,6 +3,46 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.6.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-markdown@3.5.0...decap-cms-widget-markdown@3.6.0) (2025-11-04)
+
+### Bug Fixes
+
+- **widget-markdown:** add initialValue prop to Slate editor ([#7636](https://github.com/decaporg/decap-cms/issues/7636)) ([73f338f](https://github.com/decaporg/decap-cms/commit/73f338f420fd5123d316fabddf540c9d132ec4f9))
+
+### Features
+
+- implement strikethrough functionality to markdown editor ([#7625](https://github.com/decaporg/decap-cms/issues/7625)) ([0c7d327](https://github.com/decaporg/decap-cms/commit/0c7d327341f785940da4fa88e5c2ed755215f010))
+
+# [3.5.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-markdown@3.4.1...decap-cms-widget-markdown@3.5.0) (2025-07-15)
+
+**Note:** Version bump only for package decap-cms-widget-markdown
+
+## [3.4.1](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-markdown@3.4.0...decap-cms-widget-markdown@3.4.1) (2025-07-10)
+
+**Note:** Version bump only for package decap-cms-widget-markdown
+
+# [3.4.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-markdown@3.3.0...decap-cms-widget-markdown@3.4.0) (2025-06-26)
+
+### Bug Fixes
+
+- **#7375:** fix dependency issues ([#7394](https://github.com/decaporg/decap-cms/issues/7394)) ([871ee26](https://github.com/decaporg/decap-cms/commit/871ee2653bb26b500efb39b6862e8d3681ec0338))
+
+# [3.3.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-markdown@3.2.0...decap-cms-widget-markdown@3.3.0) (2025-01-29)
+
+### Bug Fixes
+
+- **markdown:** convert inline CSS from Google Docs to Markdown ([#7351](https://github.com/decaporg/decap-cms/issues/7351)) ([8b8e873](https://github.com/decaporg/decap-cms/commit/8b8e873af9a0749720ec03cadbc4b0d391ad84e1))
+
+### Features
+
+- visual editing (click-to-edit) ([#7374](https://github.com/decaporg/decap-cms/issues/7374)) ([989c2dd](https://github.com/decaporg/decap-cms/commit/989c2dd6ed80f69b572b8b73c4e37b5106ae04fb))
+
+# [3.2.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-markdown@3.1.6...decap-cms-widget-markdown@3.2.0) (2024-11-12)
+
+### Bug Fixes
+
+- **markdown:** copying html into markdown ([#7290](https://github.com/decaporg/decap-cms/issues/7290)) ([f6959e2](https://github.com/decaporg/decap-cms/commit/f6959e2b5983a1d9ad8a3ad4f8d16d9f7a9e5225))
+
 ## [3.1.6](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-markdown@3.1.5...decap-cms-widget-markdown@3.1.6) (2024-08-13)
 
 ### Reverts

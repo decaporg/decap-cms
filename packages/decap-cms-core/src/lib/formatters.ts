@@ -1,4 +1,7 @@
-import { flow, partialRight, trimEnd, trimStart } from 'lodash';
+import flow from 'lodash/flow';
+import partialRight from 'lodash/partialRight';
+import trimEnd from 'lodash/trimEnd';
+import trimStart from 'lodash/trimStart';
 import { stringTemplate } from 'decap-cms-lib-widgets';
 import { stripIndent } from 'common-tags';
 
@@ -18,6 +21,7 @@ import type { Map } from 'immutable';
 const {
   compileStringTemplate,
   parseDateFromEntry,
+  parseDateFromEntryData,
   SLUG_MISSING_REQUIRED_DATE,
   keyToPathArray,
   addFileTemplateFields,
@@ -126,7 +130,11 @@ export function slugFormatter(
   }
 
   const processSegment = getProcessSegment(slugConfig);
-  const date = new Date();
+  const date =
+    parseDateFromEntryData(
+      entryData as unknown as Map<string, unknown>,
+      selectInferredField(collection, 'date'),
+    ) || new Date(Date.now());
   const slug = compileStringTemplate(slugTemplate, date, identifier, entryData, processSegment);
 
   if (!collection.has('path')) {

@@ -133,6 +133,8 @@ declare module 'decap-cms-core' {
     default?: any;
 
     allow_add?: boolean;
+    allow_remove?: boolean;
+    allow_reorder?: boolean;
     collapsed?: boolean;
     summary?: string;
     minimize_collapsed?: boolean;
@@ -233,6 +235,7 @@ declare module 'decap-cms-core' {
     // This is the default widget, so declaring its type is optional.
     widget?: 'string' | 'text';
     default?: string;
+    visualEditing?: boolean;
   }
 
   export interface CmsFieldMeta {
@@ -306,10 +309,12 @@ declare module 'decap-cms-core' {
     hide?: boolean;
     editor?: {
       preview?: boolean;
+      visualEditing?: boolean;
     };
     publish?: boolean;
     nested?: {
       depth: number;
+      subfolders?: boolean;
     };
     meta?: { path?: { label: string; widget: string; index_file: string } };
 
@@ -381,7 +386,11 @@ declare module 'decap-cms-core' {
     locale?: string;
     site_url?: string;
     display_url?: string;
-    logo_url?: string;
+    logo_url?: string; // Deprecated, replaced by `logo.src`
+    logo?: {
+      src: string;
+      show_in_header?: boolean;
+    };
     show_preview_links?: boolean;
     media_folder?: string;
     public_folder?: string;

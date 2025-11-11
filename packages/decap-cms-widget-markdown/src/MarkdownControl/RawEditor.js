@@ -43,8 +43,9 @@ function RawEditor(props) {
   useEffect(() => {
     if (props.pendingFocus) {
       ReactEditor.focus(editor);
+      props.pendingFocus();
     }
-  }, []);
+  }, [props.pendingFocus]);
 
   function handleToggleMode() {
     props.onMode('rich_text');
@@ -56,7 +57,7 @@ function RawEditor(props) {
   }
 
   return (
-    <Slate editor={editor} value={value} onChange={handleChange}>
+    <Slate editor={editor} value={value} initialValue={value} onChange={handleChange}>
       <RawEditorContainer>
         <EditorControlBar>
           <Toolbar

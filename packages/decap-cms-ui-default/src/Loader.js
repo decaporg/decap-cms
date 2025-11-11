@@ -66,6 +66,11 @@ export class Loader extends React.Component {
     currentItem: 0,
   };
 
+  componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(Loader.propTypes, this.props, 'prop', 'Loader');
+  }
+
   componentWillUnmount() {
     if (this.interval) {
       clearInterval(this.interval);

@@ -80,6 +80,11 @@ export default class Toolbar extends React.Component {
     t: PropTypes.func.isRequired,
   };
 
+  componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(Toolbar.propTypes, this.props, 'prop', 'Toolbar');
+  }
+
   isVisible = button => {
     const { buttons } = this.props;
     return !List.isList(buttons) || buttons.includes(button);
@@ -152,6 +157,16 @@ export default class Toolbar extends React.Component {
               icon="italic"
               onClick={this.handleMarkClick}
               isActive={hasMark('italic')}
+              disabled={disabled}
+            />
+          )}
+          {isVisible('strikethrough') && (
+            <ToolbarButton
+              type="strikethrough"
+              label={t('editor.editorWidgets.markdown.strikethrough')}
+              icon="strikethrough"
+              onClick={this.handleMarkClick}
+              isActive={hasMark('delete')}
               disabled={disabled}
             />
           )}
