@@ -63,6 +63,9 @@ class DateTimeControl extends React.Component {
   };
 
   componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(DateTimeControl.propTypes, this.props, 'prop', 'DateTimeControl');
+
     const { value } = this.props;
     if (value === '{{now}}') {
       this.handleChange(this.getNow());
@@ -82,7 +85,7 @@ class DateTimeControl extends React.Component {
     const { field } = this.props;
     let inputType = 'datetime-local';
     let inputFormat = 'YYYY-MM-DDTHH:mm';
-    let format = 'YYYY-MM-DDTHH:mm:ss.SSS[Z]';
+    let format = `YYYY-MM-DDTHH:mm:ss.SSS${this.isUtc ? '[Z]' : 'Z'}`;
     let userFormat = field?.get('format');
     let dateFormat = field?.get('date_format');
     let timeFormat = field?.get('time_format');

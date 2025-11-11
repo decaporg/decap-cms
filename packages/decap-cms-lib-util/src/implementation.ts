@@ -1,5 +1,6 @@
 import semaphore from 'semaphore';
-import { unionBy, sortBy } from 'lodash';
+import unionBy from 'lodash/unionBy';
+import sortBy from 'lodash/sortBy';
 
 import { basename } from './path';
 
@@ -114,6 +115,20 @@ export type Config = {
     base_url?: string;
     cms_label_prefix?: string;
     api_version?: string;
+    status_endpoint?: string;
+  };
+  auth: {
+    use_oidc?: boolean;
+    base_url?: string;
+    auth_endpoint?: string;
+    auth_token_endpoint?: string;
+    app_id?: string;
+    auth_token_endpoint_content_type?: string;
+    email_claim?: string;
+    full_name_claim?: string;
+    first_name_claim?: string;
+    last_name_claim?: string;
+    avatar_url_claim?: string;
   };
   media_folder: string;
   base_url?: string;

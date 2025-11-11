@@ -86,6 +86,11 @@ class App extends React.Component {
     t: PropTypes.func.isRequired,
   };
 
+  componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(App.propTypes, this.props, 'prop', 'App');
+  }
+
   configError(config) {
     const t = this.props.t;
     return (
@@ -183,6 +188,8 @@ class App extends React.Component {
           openMediaLibrary={openMediaLibrary}
           hasWorkflow={hasWorkflow}
           displayUrl={config.display_url}
+          logoUrl={config.logo_url} // Deprecated, replaced by `logo.src`
+          logo={config.logo}
           isTestRepo={config.backend.name === 'test-repo'}
           showMediaButton={showMediaButton}
         />

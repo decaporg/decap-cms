@@ -1,5 +1,5 @@
 import { stripIndent } from 'common-tags';
-import yaml from 'js-yaml';
+import { dump } from 'js-yaml';
 
 import {
   loadConfig,
@@ -934,7 +934,7 @@ describe('config', () => {
 
       global.fetch.mockResolvedValue({
         status: 200,
-        text: () => Promise.resolve(yaml.dump({ backend: { repo: 'test-repo' } })),
+        text: () => Promise.resolve(dump({ backend: { repo: 'test-repo' } })),
         headers: new Headers(),
       });
       await loadConfig()(dispatch);
@@ -962,7 +962,7 @@ describe('config', () => {
       document.querySelector.mockReturnValue({ type: 'text/yaml', href: 'custom-config.yml' });
       global.fetch.mockResolvedValue({
         status: 200,
-        text: () => Promise.resolve(yaml.dump({ backend: { repo: 'github' } })),
+        text: () => Promise.resolve(dump({ backend: { repo: 'github' } })),
         headers: new Headers(),
       });
       await loadConfig()(dispatch);

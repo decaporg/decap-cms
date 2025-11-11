@@ -19,6 +19,14 @@ export default class GenericPKCEAuthenticationPage extends React.Component {
   state = {};
 
   componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(
+      GenericPKCEAuthenticationPage.propTypes,
+      this.props,
+      'prop',
+      'GenericPKCEAuthenticationPage',
+    );
+
     const {
       base_url = '',
       app_id = '',
@@ -60,7 +68,8 @@ export default class GenericPKCEAuthenticationPage extends React.Component {
         onLogin={this.handleLogin}
         loginDisabled={inProgress}
         loginErrorMessage={this.state.loginError}
-        logoUrl={config.logo_url}
+        logoUrl={config.logo_url} // Deprecated, replaced by `logo.src`
+        logo={config.logo}
         siteUrl={config.site_url}
         renderButtonContent={() => (
           <React.Fragment>

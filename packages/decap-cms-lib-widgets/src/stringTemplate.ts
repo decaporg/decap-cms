@@ -1,5 +1,7 @@
 import { Map } from 'immutable';
-import { get, trimEnd, truncate } from 'lodash';
+import get from 'lodash/get';
+import trimEnd from 'lodash/trimEnd';
+import truncate from 'lodash/truncate';
 import dayjs from 'dayjs';
 import { basename, dirname, extname } from 'path';
 
@@ -59,7 +61,18 @@ export function parseDateFromEntry(entry: Map<string, unknown>, dateFieldName?: 
     return;
   }
 
-  const dateValue = entry.getIn(['data', dateFieldName]);
+  const entryData = entry.getIn(['data']);
+  return parseDateFromEntryData(entryData, dateFieldName);
+}
+
+export function parseDateFromEntryData(
+  entryData: Map<string, unknown>,
+  dateFieldName?: string | null,
+) {
+  if (!dateFieldName) {
+    return;
+  }
+  const dateValue = entryData.getIn([dateFieldName]);
   const dateDayjs = dateValue && dayjs(dateValue);
   if (dateDayjs && dateDayjs.isValid()) {
     return dateDayjs.toDate();

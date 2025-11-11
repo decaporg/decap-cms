@@ -3,7 +3,12 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { components } from 'react-select';
 import AsyncSelect from 'react-select/async';
-import { debounce, find, get, isEmpty, last, uniqBy } from 'lodash';
+import debounce from 'lodash/debounce';
+import find from 'lodash/find';
+import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
+import last from 'lodash/last';
+import uniqBy from 'lodash/uniqBy';
 import { fromJS, List, Map } from 'immutable';
 import { reactSelectStyles } from 'decap-cms-ui-default';
 import { stringTemplate, validations } from 'decap-cms-lib-widgets';
@@ -20,6 +25,8 @@ import { SortableContext, horizontalListSortingStrategy, useSortable } from '@dn
 import { restrictToParentElement } from '@dnd-kit/modifiers';
 import { CSS } from '@dnd-kit/utilities';
 import { v4 as uuid } from 'uuid';
+
+import relationCache from './RelationCache';
 
 function arrayMove(array, from, to) {
   const slicedArray = array.slice();
@@ -130,6 +137,7 @@ function convertToOption(raw) {
   if (typeof raw === 'string') {
     return { label: raw, value: raw };
   }
+
   return Map.isMap(raw) ? raw.toJS() : raw;
 }
 
@@ -232,43 +240,92 @@ export default class RelationControl extends React.Component {
   }
 
   async componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(RelationControl.propTypes, this.props, 'prop', 'RelationControl');
+
     this.mounted = true;
-    // if the field has a previous value perform an initial search based on the value field
-    // this is required since each search is limited by optionsLength so the selected value
-    // might not show up on the search
-    const { forID, field, value, query, onChange } = this.props;
+    const { value } = this.props;
+    if (value && this.hasInitialValues(value)) {
+      await this.loadInitialOptions();
+    }
+  }
+
+  hasInitialValues(value) {
+    if (this.isMultiple()) {
+      const selectedOptions = getSelectedOptions(value);
+      return selectedOptions && selectedOptions.length > 0;
+    }
+    return value && value !== '';
+  }
+
+  async loadInitialOptions() {
+    const { field, query, forID, value } = this.props;
     const collection = field.get('collection');
+    const searchFieldsArray = getFieldArray(field.get('search_fields'));
     const file = field.get('file');
-    const initialSearchValues = value && (this.isMultiple() ? getSelectedOptions(value) : [value]);
-    if (initialSearchValues && initialSearchValues.length > 0) {
-      const metadata = {};
-      const searchFieldsArray = getFieldArray(field.get('search_fields'));
-      const { payload } = await query(forID, collection, searchFieldsArray, '', file);
-      const hits = payload.hits || [];
+
+    try {
+      const result = await relationCache.getOptions(
+        collection,
+        searchFieldsArray,
+        '', // empty term for initial load
+        file,
+        () => query(forID, collection, searchFieldsArray, '', file),
+      );
+
+      const hits = result.payload.hits || [];
       const options = this.parseHitOptions(hits);
-      const initialOptions = initialSearchValues
-        .map(v => {
-          const selectedOption = options.find(o => o.value === v);
-          metadata[v] = selectedOption?.data;
-          return selectedOption;
-        })
-        .filter(Boolean);
-      const filteredValue = initialOptions.map(option => option.value);
 
-      this.mounted && this.setState({ initialOptions });
+      if (this.mounted) {
+        this.setState({ initialOptions: options });
 
-      //set metadata
-      this.mounted &&
-        onChange(
-          filteredValue.length === 1 && !this.isMultiple()
-            ? filteredValue[0]
-            : fromJS(filteredValue),
-          {
+        // Call onChange with metadata for initial values
+        if (value && this.hasInitialValues(value)) {
+          this.triggerInitialOnChange(value, options);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load initial options:', error);
+    }
+  }
+
+  triggerInitialOnChange(value, options) {
+    const { onChange, field } = this.props;
+
+    if (this.isMultiple()) {
+      const selectedOptions = getSelectedOptions(value);
+      if (selectedOptions && selectedOptions.length > 0) {
+        const matchedOptions = selectedOptions
+          .map(val => options.find(opt => opt.value === (val.value || val)))
+          .filter(Boolean);
+
+        if (matchedOptions.length > 0) {
+          const metadata = {
             [field.get('name')]: {
-              [field.get('collection')]: metadata,
+              [field.get('collection')]: matchedOptions.reduce(
+                (acc, option) => ({
+                  ...acc,
+                  [option.value]: option.data,
+                }),
+                {},
+              ),
+            },
+          };
+          onChange(value, metadata);
+        }
+      }
+    } else {
+      const matchedOption = options.find(opt => opt.value === value);
+      if (matchedOption) {
+        const metadata = {
+          [field.get('name')]: {
+            [field.get('collection')]: {
+              [matchedOption.value]: matchedOption.data,
             },
           },
-        );
+        };
+        onChange(value, metadata);
+      }
     }
   }
 
@@ -388,16 +445,24 @@ export default class RelationControl extends React.Component {
   loadOptions = debounce((term, callback) => {
     const { field, query, forID } = this.props;
     const collection = field.get('collection');
-    const optionsLength = field.get('options_length') || 20;
     const searchFieldsArray = getFieldArray(field.get('search_fields'));
     const file = field.get('file');
 
-    query(forID, collection, searchFieldsArray, term, file).then(({ payload }) => {
-      const hits = payload.hits || [];
-      const options = this.parseHitOptions(hits);
-      const uniq = uniqOptions(this.state.initialOptions, options).slice(0, optionsLength);
-      callback(uniq);
-    });
+    relationCache
+      .getOptions(collection, searchFieldsArray, term, file, () =>
+        query(forID, collection, searchFieldsArray, term, file),
+      )
+      .then(result => {
+        const hits = result.payload.hits || [];
+        const options = this.parseHitOptions(hits);
+        const optionsLength = field.get('options_length') || 20;
+        const uniq = uniqOptions(this.state.initialOptions, options).slice(0, optionsLength);
+        callback(uniq);
+      })
+      .catch(error => {
+        console.error('Failed to load options:', error);
+        callback([]);
+      });
   }, 500);
 
   render() {

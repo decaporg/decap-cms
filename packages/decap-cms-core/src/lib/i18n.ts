@@ -1,5 +1,7 @@
 import { Map, List } from 'immutable';
-import { set, groupBy, escapeRegExp } from 'lodash';
+import set from 'lodash/set';
+import groupBy from 'lodash/groupBy';
+import escapeRegExp from 'lodash/escapeRegExp';
 
 import { selectEntrySlug } from '../reducers/collections';
 
@@ -219,6 +221,24 @@ export function formatI18nBackup(
   return i18n;
 }
 
+function applyDefaultI18nValues(
+  collection: Collection,
+  value: EntryValue,
+  defaultLocaleValue: EntryValue,
+) {
+  if (collection.get('fields') === undefined) {
+    return;
+  }
+  collection.get('fields').forEach(field => {
+    if (field && field.get(I18N) === I18N_FIELD.DUPLICATE) {
+      const data = value.data[field.get('name')];
+      if (!data) {
+        value.data[field.get('name')] = defaultLocaleValue.data[field.get('name')];
+      }
+    }
+  });
+}
+
 function mergeValues(
   collection: Collection,
   structure: I18N_STRUCTURE,
@@ -234,6 +254,9 @@ function mergeValues(
     .filter(e => e.locale !== defaultEntry!.locale)
     .reduce((acc, { locale, value }) => {
       const dataPath = getLocaleDataPath(locale);
+      if (defaultEntry) {
+        applyDefaultI18nValues(collection, value, defaultEntry.value);
+      }
       return set(acc, dataPath, value.data);
     }, {});
 

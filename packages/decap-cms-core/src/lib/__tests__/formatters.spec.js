@@ -274,8 +274,8 @@ describe('formatters', () => {
   };
 
   describe('slugFormatter', () => {
-    const date = new Date('2020-01-01');
-    jest.spyOn(global, 'Date').mockImplementation(() => date);
+    const date = new Date('2020-01-01').valueOf();
+    Date.now = jest.spyOn(Date, 'now').mockImplementation(() => date);
 
     const { selectIdentifier } = require('../../reducers/collections');
 
@@ -310,6 +310,34 @@ describe('formatters', () => {
           slugConfig,
         ),
       ).toBe('entry-slug');
+    });
+
+    it('should see date filters applied to date from entry if it exists', () => {
+      const { selectInferredField } = require('../../reducers/collections');
+      selectInferredField.mockReturnValue('date');
+      const entryDate = new Date('2026-10-20');
+
+      expect(
+        slugFormatter(
+          Map({ slug: '{{year}}-{{month}}-{{day}}-{{title}}' }),
+          Map({ date: entryDate, title: 'post title' }),
+          slugConfig,
+        ),
+      ).toBe('2026-10-20-post-title');
+    });
+
+    it('should see date filters applied to publishDate from entry if it exists', () => {
+      const { selectInferredField } = require('../../reducers/collections');
+      selectInferredField.mockReturnValue('publishDate');
+      const entryDate = new Date('2026-10-20');
+
+      expect(
+        slugFormatter(
+          Map({ slug: '{{year}}-{{month}}-{{day}}-{{title}}' }),
+          Map({ publishDate: entryDate, title: 'post title' }),
+          slugConfig,
+        ),
+      ).toBe('2026-10-20-post-title');
     });
 
     it('should return slug', () => {

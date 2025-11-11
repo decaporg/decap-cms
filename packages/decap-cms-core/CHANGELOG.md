@@ -3,6 +3,53 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.9.0](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.8.1...decap-cms-core@3.9.0) (2025-09-30)
+
+### Bug Fixes
+
+- **7281:** remove the string "DRAFT_MEDIA_FILES" ([#7432](https://github.com/decaporg/decap-cms/issues/7432)) ([cbde141](https://github.com/decaporg/decap-cms/commit/cbde14160a41f27c22e686f65461272f9ba4fa1f))
+
+### Features
+
+- add allow_remove and allow_reorder flags ([#7573](https://github.com/decaporg/decap-cms/issues/7573)) ([ff961f4](https://github.com/decaporg/decap-cms/commit/ff961f4bfe7c0a8970451d9b21645738b6cb1560))
+
+## [3.8.1](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.8.0...decap-cms-core@3.8.1) (2025-07-31)
+
+**Note:** Version bump only for package decap-cms-core
+
+# [3.8.0](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.7.1...decap-cms-core@3.8.0) (2025-07-15)
+
+### Bug Fixes
+
+- apply duplicate i18n values on entry load ([#7145](https://github.com/decaporg/decap-cms/issues/7145)) ([fc88f4f](https://github.com/decaporg/decap-cms/commit/fc88f4fecfb698ff2456f2cafcf757078773d999))
+
+### Features
+
+- add logo to header ([#7487](https://github.com/decaporg/decap-cms/issues/7487)) ([b540ace](https://github.com/decaporg/decap-cms/commit/b540acec943eb231df6aac7b1d515d9b4b84fa5d))
+
+## [3.7.1](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.7.0...decap-cms-core@3.7.1) (2025-07-10)
+
+**Note:** Version bump only for package decap-cms-core
+
+# [3.7.0](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.6.3...decap-cms-core@3.7.0) (2025-06-26)
+
+### Bug Fixes
+
+- **#7375:** fix dependency issues ([#7394](https://github.com/decaporg/decap-cms/issues/7394)) ([871ee26](https://github.com/decaporg/decap-cms/commit/871ee2653bb26b500efb39b6862e8d3681ec0338))
+
+## [3.6.3](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.6.2...decap-cms-core@3.6.3) (2025-06-06)
+
+### Bug Fixes
+
+- dropdown menu with adjusts to content ([#7490](https://github.com/decaporg/decap-cms/issues/7490)) ([0a47bc4](https://github.com/decaporg/decap-cms/commit/0a47bc4dd41019e0ba5a520881b4ac2441e7250c))
+
+## [3.6.2](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.6.1...decap-cms-core@3.6.2) (2025-05-15)
+
+### Bug Fixes
+
+- **#7371:** Duplicate Localized Content When Duplicating Entries with i18n Enabled ([#7372](https://github.com/decaporg/decap-cms/issues/7372)) ([c5b1dfe](https://github.com/decaporg/decap-cms/commit/c5b1dfe50ae34230c735d58dd1df475fa17ee578)), closes [#7371](https://github.com/decaporg/decap-cms/issues/7371)
+- **nested-i18n:** pass newPath only when customPath differs from current path ([#7418](https://github.com/decaporg/decap-cms/issues/7418)) ([86d41d7](https://github.com/decaporg/decap-cms/commit/86d41d79b20583041570bce30b46835a36bcecf2))
+
 ## [3.6.1](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.6.0...decap-cms-core@3.6.1) (2025-02-13)
 
 **Note:** Version bump only for package decap-cms-core

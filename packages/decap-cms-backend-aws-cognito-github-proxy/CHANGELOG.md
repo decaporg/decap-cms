@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.4.1](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-aws-cognito-github-proxy@3.4.0...decap-cms-backend-aws-cognito-github-proxy@3.4.1) (2025-07-31)
+
+**Note:** Version bump only for package decap-cms-backend-aws-cognito-github-proxy
+
+# [3.4.0](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-aws-cognito-github-proxy@3.2.2...decap-cms-backend-aws-cognito-github-proxy@3.4.0) (2025-07-15)
+
+### Features
+
+- add logo to header ([#7487](https://github.com/decaporg/decap-cms/issues/7487)) ([b540ace](https://github.com/decaporg/decap-cms/commit/b540acec943eb231df6aac7b1d515d9b4b84fa5d))
+
+# [3.3.0](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-aws-cognito-github-proxy@3.2.2...decap-cms-backend-aws-cognito-github-proxy@3.3.0) (2025-06-26)
+
+**Note:** Version bump only for package decap-cms-backend-aws-cognito-github-proxy
+
 ## [3.2.2](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-aws-cognito-github-proxy@3.2.1...decap-cms-backend-aws-cognito-github-proxy@3.2.2) (2024-08-13)
 
 ### Reverts

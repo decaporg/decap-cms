@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
-import { isEqual } from 'lodash';
+import isEqual from 'lodash/isEqual';
 import { Cursor } from 'decap-cms-lib-util';
 
-import { selectSearchedEntries } from '../../../reducers';
+import { selectSearchedEntries, selectUnpublishedEntry } from '../../../reducers';
 import {
   searchEntries as actionSearchEntries,
   clearSearch as actionClearSearch,
@@ -22,9 +22,13 @@ class EntriesSearch extends React.Component {
     collectionNames: PropTypes.array,
     entries: ImmutablePropTypes.list,
     page: PropTypes.number,
+    getWorkflowStatus: PropTypes.func,
   };
 
   componentDidMount() {
+    // Manually validate PropTypes - React 19 breaking change
+    PropTypes.checkPropTypes(EntriesSearch.propTypes, this.props, 'prop', 'EntriesSearch');
+
     const { searchTerm, searchEntries, collectionNames } = this.props;
     searchEntries(searchTerm, collectionNames);
   }
@@ -60,7 +64,7 @@ class EntriesSearch extends React.Component {
   };
 
   render() {
-    const { collections, entries, isFetching } = this.props;
+    const { collections, entries, isFetching, getWorkflowStatus } = this.props;
     return (
       <Entries
         cursor={this.getCursor()}
@@ -68,6 +72,7 @@ class EntriesSearch extends React.Component {
         collections={collections}
         entries={entries}
         isFetching={isFetching}
+        getWorkflowStatus={getWorkflowStatus}
       />
     );
   }
@@ -80,7 +85,13 @@ function mapStateToProps(state, ownProps) {
   const isFetching = state.search.isFetching;
   const page = state.search.page;
   const entries = selectSearchedEntries(state, collectionNames);
-  return { isFetching, page, collections, collectionNames, entries, searchTerm };
+
+  function getWorkflowStatus(collectionName, slug) {
+    const unpublishedEntry = selectUnpublishedEntry(state, collectionName, slug);
+    return unpublishedEntry ? unpublishedEntry.get('status') : null;
+  }
+
+  return { isFetching, page, collections, collectionNames, entries, searchTerm, getWorkflowStatus };
 }
 
 const mapDispatchToProps = {
