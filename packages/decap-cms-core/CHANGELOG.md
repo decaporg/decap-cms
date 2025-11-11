@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.9.0](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.8.1...decap-cms-core@3.9.0) (2025-09-30)
+
+### Bug Fixes
+
+- **7281:** remove the string "DRAFT_MEDIA_FILES" ([#7432](https://github.com/decaporg/decap-cms/issues/7432)) ([cbde141](https://github.com/decaporg/decap-cms/commit/cbde14160a41f27c22e686f65461272f9ba4fa1f))
+
+### Features
+
+- add allow_remove and allow_reorder flags ([#7573](https://github.com/decaporg/decap-cms/issues/7573)) ([ff961f4](https://github.com/decaporg/decap-cms/commit/ff961f4bfe7c0a8970451d9b21645738b6cb1560))
+
 ## [3.8.1](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.8.0...decap-cms-core@3.8.1) (2025-07-31)
 
 **Note:** Version bump only for package decap-cms-core

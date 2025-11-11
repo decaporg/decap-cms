@@ -11,7 +11,13 @@ const StyledImage = styled(({ src }) => <img src={src || ''} role="presentation"
 `;
 
 function StyledImageAsset({ getAsset, value, field }) {
-  return <StyledImage src={getAsset(value, field)} />;
+  let src = '';
+  if (value instanceof File) {
+    src = URL.createObjectURL(value);
+  } else {
+    src = getAsset(value, field);
+  }
+  return <StyledImage src={src} />;
 }
 
 function ImagePreviewContent(props) {
