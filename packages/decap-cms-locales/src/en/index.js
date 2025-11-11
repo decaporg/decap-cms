@@ -58,6 +58,7 @@ const en = {
       noEntries: 'No Entries',
     },
     pagination: {
+      navigation: 'Entries pagination',
       showing: 'Showing %{start}-%{end} of %{total}',
       itemsPerPage: 'Items per page',
       page: 'Page %{current} of %{total}',

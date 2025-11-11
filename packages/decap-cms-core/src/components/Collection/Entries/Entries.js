@@ -18,6 +18,20 @@ const NoEntriesMessage = styled(PaginationMessage)`
   margin-top: 16px;
 `;
 
+/**
+ * Entries component - Renders the list of entries with optional pagination.
+ *
+ * This component orchestrates the display of entry cards and pagination controls.
+ * It handles three main states:
+ * 1. Loading - Shows loader with progressive messages
+ * 2. Empty - Shows "No Entries" message
+ * 3. Loaded - Shows EntryListing with optional Pagination
+ *
+ * Pagination behavior:
+ * - Only shown when pagination is enabled AND entries exist AND pageCount > 1
+ * - Uses hybrid approach: server-side by default, client-side when sorting/filtering active
+ * - Integrates with cursor-based infinite scroll (disabled when pagination active)
+ */
 function Entries({
   collections,
   entries,
@@ -102,7 +116,6 @@ Entries.propTypes = {
   getUnpublishedEntries: PropTypes.func,
   filterTerm: PropTypes.string,
   paginationEnabled: PropTypes.bool,
-  paginationConfig: PropTypes.object,
   currentPage: PropTypes.number,
   pageSize: PropTypes.number,
   totalCount: PropTypes.number,

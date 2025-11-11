@@ -56,6 +56,13 @@ function getGroupTitle(group, t) {
   return `${label} ${value}`.trim();
 }
 
+/**
+ * Renders entries with grouping support.
+ *
+ * Groups are created by the groupByField action and represent entries
+ * organized by a field value (e.g., by author, category, etc.).
+ * Each group is rendered as a separate section with a heading.
+ */
 function withGroups(groups, entries, EntriesToRender, t) {
   return groups.map(group => {
     const title = getGroupTitle(group, t);
@@ -68,6 +75,24 @@ function withGroups(groups, entries, EntriesToRender, t) {
   });
 }
 
+/**
+ * EntriesCollection - Container component for entry collections.
+ *
+ * This component manages the lifecycle of entry loading, pagination, sorting,
+ * and grouping. It connects Redux state to the presentational Entries component.
+ *
+ * Key behaviors:
+ * - Loads entries on mount if not already loaded
+ * - Re-triggers sorting on mount to populate sortedIds (for client-side pagination)
+ * - Disables pagination when grouping is active (groups are client-side only)
+ * - Supports both published and unpublished entries (editorial workflow)
+ * - Handles nested collections with folder filtering
+ *
+ * Pagination behavior:
+ * - Uses config-based page size if pagination enabled in config
+ * - Falls back to Redux state page size otherwise
+ * - Pagination and grouping are mutually exclusive (grouping disables pagination)
+ */
 export class EntriesCollection extends React.Component {
   static propTypes = {
     collection: ImmutablePropTypes.map.isRequired,
@@ -172,7 +197,6 @@ export class EntriesCollection extends React.Component {
       getUnpublishedEntries,
       filterTerm,
       paginationEnabled,
-      paginationConfig,
       currentPage,
       pageSize,
       totalCount,
@@ -196,8 +220,11 @@ export class EntriesCollection extends React.Component {
           getWorkflowStatus={getWorkflowStatus}
           getUnpublishedEntries={getUnpublishedEntries}
           filterTerm={filterTerm}
+          // Pagination is disabled when groups are active because grouping
+          // requires all entries to be loaded client-side for organization.
+          // Server-side pagination would only return a subset of entries,
+          // making grouping incomplete.
           paginationEnabled={paginationEnabled && !hasActiveGroups}
-          paginationConfig={paginationConfig}
           currentPage={currentPage}
           pageSize={pageSize}
           totalCount={totalCount}

@@ -188,7 +188,16 @@ export default class GitLab implements Implementation {
     return filterByExtension(file, extension) && fileFolder.split('/').length <= depth;
   }
 
-  async entriesByFolder(folder: string, extension: string, depth: number) {
+  async entriesByFolder(
+    folder: string,
+    extension: string,
+    depth: number,
+    options?: {
+      page?: number;
+      pageSize?: number;
+      pagination?: boolean;
+    },
+  ) {
     let cursor: Cursor;
 
     const listFiles = () =>
@@ -202,6 +211,7 @@ export default class GitLab implements Implementation {
       this.api!.readFile.bind(this.api!),
       this.api!.readFileMetadata.bind(this.api),
       API_NAME,
+      options,
     );
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore

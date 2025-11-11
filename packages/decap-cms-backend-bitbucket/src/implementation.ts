@@ -323,7 +323,16 @@ export default class BitbucketBackend implements Implementation {
     return response;
   };
 
-  async entriesByFolder(folder: string, extension: string, depth: number) {
+  async entriesByFolder(
+    folder: string,
+    extension: string,
+    depth: number,
+    options?: {
+      page?: number;
+      pageSize?: number;
+      pagination?: boolean;
+    },
+  ) {
     let cursor: Cursor;
 
     const listFiles = () =>
@@ -342,6 +351,7 @@ export default class BitbucketBackend implements Implementation {
       readFile,
       this.api!.readFileMetadata.bind(this.api),
       API_NAME,
+      options,
     );
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment

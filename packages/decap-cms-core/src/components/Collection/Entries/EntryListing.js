@@ -18,6 +18,20 @@ const CardsGrid = styled.ul`
   margin-bottom: 16px;
 `;
 
+/**
+ * EntryListing - Renders a grid of entry cards.
+ *
+ * This component handles:
+ * - Rendering entry cards in a responsive grid
+ * - Merging published and unpublished entries (editorial workflow)
+ * - Infinite scroll with cursor-based pagination (via Waypoint)
+ * - Supporting both single collection and multiple collections
+ *
+ * Pagination integration:
+ * - Disables cursor-based infinite scroll when pagination is enabled
+ * - When pagination is active, all navigation happens via Pagination component
+ * - Waypoint is only rendered when pagination is disabled
+ */
 class EntryListing extends React.Component {
   static propTypes = {
     collections: ImmutablePropTypes.iterable.isRequired,
