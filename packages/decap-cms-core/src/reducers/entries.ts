@@ -587,12 +587,13 @@ export function selectEntries(state: Entries, collection: Collection, configPage
 
   if (sortedIdsRaw && List.isList(sortedIdsRaw)) {
     const sortedIds = sortedIdsRaw as List<string>;
-    
+
     // Only apply pagination if configPageSize is explicitly provided (meaning pagination is enabled)
     // If configPageSize is undefined, show all sorted entries
-    const pagedIds = configPageSize !== undefined 
-      ? sortedIds.slice((currentPage - 1) * pageSize, (currentPage - 1) * pageSize + pageSize)
-      : sortedIds;
+    const pagedIds =
+      configPageSize !== undefined
+        ? sortedIds.slice((currentPage - 1) * pageSize, (currentPage - 1) * pageSize + pageSize)
+        : sortedIds;
 
     // Always look up entries from the global entities map to ensure correct order
     const entitiesMap = state.get('entities');

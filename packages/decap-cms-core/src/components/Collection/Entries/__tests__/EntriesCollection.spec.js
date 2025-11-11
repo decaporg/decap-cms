@@ -93,6 +93,9 @@ describe('EntriesCollection', () => {
     isEditorialWorkflowEnabled: false,
     getWorkflowStatus: jest.fn(),
     getUnpublishedEntries: jest.fn(() => []),
+    setEntriesPageSize: jest.fn(),
+    loadEntriesPage: jest.fn(),
+    sortByField: jest.fn(),
   };
 
   it('should render with entries', () => {

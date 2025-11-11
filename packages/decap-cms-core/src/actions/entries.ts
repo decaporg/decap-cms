@@ -44,6 +44,8 @@ import type {
   ViewFilter,
   ViewGroup,
   Entry,
+  FilterMap,
+  GroupMap,
 } from '../types/redux';
 import type { EntryValue } from '../valueObjects/Entry';
 import type { Backend } from '../backend';
@@ -313,11 +315,9 @@ export function filterByField(collection: Collection, filter: ViewFilter) {
 
     // Check if this filter is currently active (to detect if we're disabling it)
     const currentFilter = state.entries.getIn(['filter', collection.get('name'), filter.id]);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const isCurrentlyActive =
-      currentFilter && typeof (currentFilter as any).get === 'function'
-        ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (currentFilter as any).get('active') === true
+      currentFilter && typeof (currentFilter as Map<string, unknown>).get === 'function'
+        ? (currentFilter as Map<string, unknown>).get('active') === true
         : false;
 
     dispatch({
@@ -335,11 +335,9 @@ export function filterByField(collection: Collection, filter: ViewFilter) {
       // If we're disabling the last active filter, reload with pagination
       const allFilters = state.entries.getIn(['filter', collection.get('name')]);
       let hasOtherActiveFilters = false;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      if (allFilters && typeof (allFilters as any).some === 'function') {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        hasOtherActiveFilters = (allFilters as any).some(
-          (f: any) => f.get('id') !== filter.id && f.get('active') === true,
+      if (allFilters && typeof (allFilters as Map<string, FilterMap>).some === 'function') {
+        hasOtherActiveFilters = (allFilters as Map<string, FilterMap>).some(
+          (f?: FilterMap) => f?.get('id') !== filter.id && f?.get('active') === true,
         );
       }
 
@@ -451,11 +449,9 @@ export function groupByField(collection: Collection, group: ViewGroup) {
 
     // Check if this group is currently active (to detect if we're disabling it)
     const currentGroup = state.entries.getIn(['group', collection.get('name'), group.id]);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const isCurrentlyActive =
-      currentGroup && typeof (currentGroup as any).get === 'function'
-        ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (currentGroup as any).get('active') === true
+      currentGroup && typeof (currentGroup as Map<string, unknown>).get === 'function'
+        ? (currentGroup as Map<string, unknown>).get('active') === true
         : false;
 
     dispatch({
@@ -473,11 +469,9 @@ export function groupByField(collection: Collection, group: ViewGroup) {
       // If we're disabling the last active group, reload with pagination
       const allGroups = state.entries.getIn(['group', collection.get('name')]);
       let hasOtherActiveGroups = false;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      if (allGroups && typeof (allGroups as any).some === 'function') {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        hasOtherActiveGroups = (allGroups as any).some(
-          (g: any) => g.get('id') !== group.id && g.get('active') === true,
+      if (allGroups && typeof (allGroups as Map<string, GroupMap>).some === 'function') {
+        hasOtherActiveGroups = (allGroups as Map<string, GroupMap>).some(
+          (g?: GroupMap) => g?.get('id') !== group.id && g?.get('active') === true,
         );
       }
 
