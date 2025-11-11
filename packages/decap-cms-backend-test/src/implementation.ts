@@ -90,6 +90,9 @@ function getCursor(
   depth: number,
   pageSize = DEFAULT_PAGE_SIZE,
 ) {
+  if (pageSize <= 0) {
+    throw new Error('pageSize must be positive');
+  }
   const count = entries.length;
   const pageCount = Math.ceil(count / pageSize);
   return Cursor.create({
