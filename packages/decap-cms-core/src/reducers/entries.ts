@@ -82,6 +82,14 @@ let slug: string;
 const storageSortKey = 'decap-cms.entries.sort';
 const viewStyleKey = 'decap-cms.entries.viewStyle';
 const paginationKey = 'decap-cms.entries.pagination';
+
+function normalizeDoubleSlashes(path: string) {
+  if (!path) {
+    return path;
+  }
+
+  return path.replace(/([^:]\/)\/+/g, '$1');
+}
 type StorageSortObject = SortObject & { index: number };
 type StorageSort = { [collection: string]: { [key: string]: StorageSortObject } };
 
@@ -996,12 +1004,14 @@ export function selectMediaFilePublicPath(
   }
 
   const name = 'public_folder';
-  let publicFolder = config[name]!;
+  let publicFolder = normalizeDoubleSlashes(config[name]!);
 
   const customFolder = hasCustomFolder(name, collection, entryMap?.get('slug'), field);
 
   if (customFolder) {
-    publicFolder = evaluateFolder(name, config, collection!, entryMap, field);
+    publicFolder = normalizeDoubleSlashes(
+      evaluateFolder(name, config, collection!, entryMap, field),
+    );
   }
 
   if (isAbsolutePath(publicFolder)) {
