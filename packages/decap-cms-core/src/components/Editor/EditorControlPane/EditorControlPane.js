@@ -94,8 +94,8 @@ function getFieldValue({ field, entry, isTranslatable, locale }) {
   return entry.getIn(['data', field.get('name')]);
 }
 
-function calculateCondition({field, fields, entry, locale, isTranslatable}) {
-  const condition = field.get('condition')
+function calculateCondition({ field, fields, entry, locale, isTranslatable }) {
+  const condition = field.get('condition');
   if (!condition) return true;
 
   const condFieldName = condition.get('field');
@@ -103,7 +103,7 @@ function calculateCondition({field, fields, entry, locale, isTranslatable}) {
   const condValue = condition.get('value');
 
   const condField = fields.find(f => f.get('name') === condFieldName);
-  let condFieldValue = getFieldValue({ field: condField, entry, locale, isTranslatable, });
+  let condFieldValue = getFieldValue({ field: condField, entry, locale, isTranslatable });
   condFieldValue = condFieldValue?.toJS ? condFieldValue.toJS() : condFieldValue;
 
   switch (operator) {
@@ -146,38 +146,40 @@ export default class ControlPane extends React.Component {
     this.props.onLocaleChange(val);
   };
 
-  copyFromOtherLocale = ({ targetLocale, t }) => sourceLocale => {
-    if (
-      !window.confirm(
-        t('editor.editorControlPane.i18n.copyFromLocaleConfirm', {
-          locale: sourceLocale.toUpperCase(),
-        }),
-      )
-    ) {
-      return;
-    }
-    const { entry, collection } = this.props;
-    const { locales, defaultLocale } = getI18nInfo(collection);
-
-    const locale = this.state.selectedLocale;
-    const i18n = locales && {
-      currentLocale: locale,
-      locales,
-      defaultLocale,
-    };
-
-    this.props.fields.forEach(field => {
-      if (isFieldTranslatable(field, targetLocale, sourceLocale)) {
-        const copyValue = getFieldValue({
-          field,
-          entry,
-          locale: sourceLocale,
-          isTranslatable: sourceLocale !== defaultLocale,
-        });
-        if (copyValue) this.props.onChange(field, copyValue, undefined, i18n);
+  copyFromOtherLocale =
+    ({ targetLocale, t }) =>
+    sourceLocale => {
+      if (
+        !window.confirm(
+          t('editor.editorControlPane.i18n.copyFromLocaleConfirm', {
+            locale: sourceLocale.toUpperCase(),
+          }),
+        )
+      ) {
+        return;
       }
-    });
-  };
+      const { entry, collection } = this.props;
+      const { locales, defaultLocale } = getI18nInfo(collection);
+
+      const locale = this.state.selectedLocale;
+      const i18n = locales && {
+        currentLocale: locale,
+        locales,
+        defaultLocale,
+      };
+
+      this.props.fields.forEach(field => {
+        if (isFieldTranslatable(field, targetLocale, sourceLocale)) {
+          const copyValue = getFieldValue({
+            field,
+            entry,
+            locale: sourceLocale,
+            isTranslatable: sourceLocale !== defaultLocale,
+          });
+          if (copyValue) this.props.onChange(field, copyValue, undefined, i18n);
+        }
+      });
+    };
 
   validate = async () => {
     const { fields, entry, collection } = this.props;
@@ -268,7 +270,7 @@ export default class ControlPane extends React.Component {
               locale,
               isTranslatable,
             });
-            if (!isConditionMet) return
+            if (!isConditionMet) return;
 
             return (
               <EditorControl
