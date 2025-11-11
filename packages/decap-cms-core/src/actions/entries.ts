@@ -849,13 +849,14 @@ export function loadEntries(collection: Collection, page = 0) {
 
     try {
       const loadAllEntries = collection.has('nested') || hasI18n(collection);
+      const isI18nCollection = hasI18n(collection);
 
       let response: {
         cursor: Cursor;
         pagination: number;
         entries: EntryValue[];
       } = await (loadAllEntries
-        ? // nested collections require all entries to construct the tree
+        ? // nested collections and i18n collections require all entries to construct the tree/group
           provider.listAllEntries(collection).then((entries: EntryValue[]) => ({ entries }))
         : provider.listEntries(collection, page));
       response = {
@@ -875,17 +876,30 @@ export function loadEntries(collection: Collection, page = 0) {
           : Cursor.create(response.cursor),
       };
 
+      const entries = response.cursor.meta!.get('usingOldPaginationAPI')
+        ? response.entries.reverse()
+        : response.entries;
+
       dispatch(
         entriesLoaded(
           collection,
-          response.cursor.meta!.get('usingOldPaginationAPI')
-            ? response.entries.reverse()
-            : response.entries,
+          entries,
           response.pagination,
           addAppendActionsToCursor(response.cursor),
           append,
         ),
       );
+
+      // For i18n collections with pagination enabled, set up client-side pagination using sortedIds
+      if (isI18nCollection && paginationEnabled) {
+        dispatch({
+          type: SORT_ENTRIES_SUCCESS,
+          payload: {
+            collection: collection.get('name'),
+            entries,
+          },
+        });
+      }
     } catch (err) {
       dispatch(
         addNotification({

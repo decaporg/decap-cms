@@ -251,7 +251,7 @@ function entries(
         );
 
         // Update pagination metadata from cursor if available
-        if (payload.cursor && payload.cursor.meta) {
+        if (payload.cursor && payload.cursor.meta && payload.cursor.meta.get('count')) {
           const cursorMeta = payload.cursor.meta;
           const currentPage = cursorMeta.get('page') || 1;
           const totalCount = cursorMeta.get('count') || 0;
@@ -271,6 +271,19 @@ function entries(
             ['pagination', collection],
             existingPagination.merge({ currentPage, totalCount, pageSize }),
           );
+        } else {
+          // For i18n or client-side pagination (no cursor metadata), use actual loaded entry count
+          // This will be updated correctly when SORT_ENTRIES_SUCCESS sets sortedIds
+          const existingPagination = map.getIn(
+            ['pagination', collection],
+            fromJS({ currentPage: 1, totalCount: 0, pageSize: 100 }),
+          );
+          // Don't override totalCount if it's already been set (e.g., by SORT_ENTRIES_SUCCESS)
+          const updates: { currentPage: number; totalCount?: number } = { currentPage: 1 };
+          if (!existingPagination.get('totalCount')) {
+            updates.totalCount = loadedEntries.length;
+          }
+          map.setIn(['pagination', collection], existingPagination.merge(updates));
         }
       });
     }

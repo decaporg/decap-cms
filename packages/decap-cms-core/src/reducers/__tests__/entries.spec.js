@@ -51,7 +51,7 @@ describe('entries', () => {
             pagination: {
               posts: {
                 currentPage: 1,
-                totalCount: 0,
+                totalCount: 2,
                 pageSize: 100,
               },
             },
