@@ -42,8 +42,8 @@ function Pagination({ currentPage, pageCount, pageSize, totalCount, onPageChange
   const hasPrevPage = currentPage > 1;
   const hasNextPage = currentPage < pageCount;
 
-  const startEntry = (currentPage - 1) * pageSize + 1;
-  const endEntry = Math.min(currentPage * pageSize, totalCount);
+  const startEntry = totalCount === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+  const endEntry = totalCount === 0 ? 0 : Math.min(currentPage * pageSize, totalCount);
 
   return (
     <div>
