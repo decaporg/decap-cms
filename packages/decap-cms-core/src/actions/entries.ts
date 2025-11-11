@@ -22,6 +22,7 @@ import { navigateToEntry } from '../routing/history';
 import { getProcessSegment } from '../lib/formatters';
 import { hasI18n, duplicateDefaultI18nFields, serializeI18n, I18N, I18N_FIELD } from '../lib/i18n';
 import { isPaginationEnabled } from '../lib/pagination';
+import { getCachedEntries, setCachedEntries, invalidateCollectionCache } from '../lib/entryCache';
 import {
   hasActiveFilters,
   hasActiveGroups,
@@ -825,14 +826,15 @@ export function loadEntries(collection: Collection, page = 0) {
       return;
     }
     const state = getState();
-    const sortFields = selectEntriesSortFields(state.entries, collection.get('name'));
+    const collectionName = collection.get('name');
+    const sortFields = selectEntriesSortFields(state.entries, collectionName);
     if (sortFields && sortFields.length > 0) {
       const field = sortFields[0];
       return dispatch(sortByField(collection, field.get('key'), field.get('direction')));
     }
 
     const backend = currentBackend(state.config);
-    const integration = selectIntegration(state, collection.get('name'), 'listEntries');
+    const integration = selectIntegration(state, collectionName, 'listEntries');
     const provider = integration
       ? getIntegrationProvider(state.integrations, backend.getToken, integration)
       : backend;
@@ -845,14 +847,39 @@ export function loadEntries(collection: Collection, page = 0) {
       const loadAllEntries = collection.has('nested') || hasI18n(collection);
       const isI18nCollection = hasI18n(collection);
 
+      // Try cache first for collections that load all entries
+      let cachedEntries: EntryValue[] | null = null;
+      if (loadAllEntries) {
+        cachedEntries = await getCachedEntries(collectionName);
+      }
+
       let response: {
         cursor: Cursor;
         pagination: number;
         entries: EntryValue[];
-      } = await (loadAllEntries
-        ? // nested collections and i18n collections require all entries to construct the tree/group
-          provider.listAllEntries(collection).then((entries: EntryValue[]) => ({ entries }))
-        : provider.listEntries(collection, page));
+      };
+
+      if (cachedEntries) {
+        // Use cached entries
+        console.log(`[loadEntries] Using cached entries for ${collectionName}`);
+        response = {
+          entries: cachedEntries,
+          cursor: Cursor.create({}),
+          pagination: 0,
+        };
+      } else {
+        // Fetch from backend
+        response = await (loadAllEntries
+          ? // nested collections and i18n collections require all entries to construct the tree/group
+            provider.listAllEntries(collection).then((entries: EntryValue[]) => ({ entries }))
+          : provider.listEntries(collection, page));
+
+        // Cache entries if we loaded all of them
+        if (loadAllEntries && response.entries) {
+          await setCachedEntries(collectionName, response.entries);
+        }
+      }
+
       response = {
         ...response,
         // The only existing backend using the pagination system is the
@@ -889,7 +916,7 @@ export function loadEntries(collection: Collection, page = 0) {
         dispatch({
           type: SORT_ENTRIES_SUCCESS,
           payload: {
-            collection: collection.get('name'),
+            collection: collectionName,
             entries,
           },
         });
@@ -1189,6 +1216,9 @@ export function persistEntry(collection: Collection) {
         usedSlugs,
       })
       .then(async (newSlug: string) => {
+        // Invalidate cache for this collection
+        await invalidateCollectionCache(collection.get('name'));
+
         dispatch(
           addNotification({
             message: {
@@ -1237,7 +1267,10 @@ export function deleteEntry(collection: Collection, slug: string) {
     dispatch(entryDeleting(collection, slug));
     return backend
       .deleteEntry(state, collection, slug)
-      .then(() => {
+      .then(async () => {
+        // Invalidate cache for this collection
+        await invalidateCollectionCache(collection.get('name'));
+
         return dispatch(entryDeleted(collection, slug));
       })
       .catch((error: Error) => {

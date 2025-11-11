@@ -145,6 +145,84 @@ Use the pagination controls at the bottom of the entry list:
 4. **Consider performance** when enabling features that trigger client-side mode
 5. **Test with realistic data volumes** to ensure good user experience
 
+### Performance Optimization
+
+#### Caching
+
+Decap CMS automatically caches fetched entries to improve performance.
+
+- **What's cached:** All entries loaded for i18n or nested collections
+- **Cache duration:** 5 minutes (automatically expired)
+- **Invalidation:** Automatic on entry create/update/delete
+- **Storage:** Browser localStorage (IndexedDB)
+
+**Benefits:**
+- Faster subsequent loads when navigating between collections
+- Reduced API calls to your Git provider
+- Improved UX for sorting and filtering
+
+**Note:** Cache is collection-specific and automatically managed. No configuration needed.
+
+#### Collection Size Recommendations
+
+| Collection Size | Recommended Setup | Expected Performance |
+|----------------|-------------------|---------------------|
+| < 50 entries | Server or client pagination | Excellent |
+| 50-200 entries | Client pagination with caching | Very good |
+| 200-500 entries | Server pagination, avoid sorting | Good |
+| 500-1000 entries | Server pagination only | Acceptable |
+| 1000+ entries | Consider splitting collections | Variable |
+
+#### i18n Collections
+
+i18n collections have special performance considerations:
+
+**File count multiplication:**
+- 300 entries × 3 locales = 900 files to fetch
+- Initial load will be slower than non-i18n collections
+
+**Recommendations:**
+- Keep i18n collections under 500 entries
+- Use caching (automatic in v3.9+)
+- Consider separate collections per locale for very large datasets
+
+#### Large Collections Best Practices
+
+For collections with 500+ entries:
+
+1. **Disable client-side features:**
+   ```yaml
+   collections:
+     - name: posts
+       pagination:
+         enabled: true
+         per_page: 20
+       # Avoid view_filters and view_groups for large collections
+   ```
+
+2. **Split into multiple collections:**
+   ```yaml
+   collections:
+     - name: posts-2024
+       folder: content/posts/2024
+     - name: posts-2023
+       folder: content/posts/2023
+   ```
+
+3. **Use folder structures:**
+   ```yaml
+   collections:
+     - name: posts
+       folder: content/posts
+       # Organize by year/month
+       # content/posts/2024/01/post.md
+   ```
+
+4. **Monitor performance:**
+   - Check browser console for cache hit/miss logs
+   - Monitor network tab for API call frequency
+   - Test with realistic data volumes
+
 ## Accessibility
 
 Pagination controls are fully accessible:
