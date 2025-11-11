@@ -1,10 +1,9 @@
+import { Map } from 'immutable';
 /**
  * Type guard to check if an object is an Immutable.js Map
  */
 export function isImmutableMap(obj: unknown): boolean {
-  return (
-    typeof obj === 'object' && obj !== null && typeof (obj as { get?: unknown }).get === 'function'
-  );
+  return Map.isMap(obj);
 }
 
 /**
