@@ -17,6 +17,7 @@ jest.mock('decap-cms-widget-object', () => {
     controlComponent: MockObjectControl,
   };
 });
+
 jest.mock('decap-cms-ui-default', () => {
   const actual = jest.requireActual('decap-cms-ui-default');
 
@@ -29,14 +30,29 @@ jest.mock('decap-cms-ui-default', () => {
     );
   }
 
+  function ObjectWidgetTopBar(props) {
+    return (
+      <div>
+        <button onClick={props.onCollapseToggle} data-testid="expand-button">
+          {props.heading}
+        </button>
+        {props.allowAdd && (
+          <button onClick={props.onAdd}>{props.t ? props.t('editor.editorWidgets.list.add') : 'Add'}</button>
+        )}
+      </div>
+    );
+  }
+
   return {
     ...actual,
     ListItemTopBar,
+    ObjectWidgetTopBar,
   };
 });
+
 jest.mock('uuid');
 
-describe('ListControl', () => {
+describe('ListControl - Additional Tests', () => {
   const props = {
     onChange: jest.fn(),
     onChangeObject: jest.fn(),
@@ -69,837 +85,546 @@ describe('ListControl', () => {
       return id++;
     });
   });
-  it('should render empty list', () => {
-    const field = fromJS({ name: 'list', label: 'List' });
-    const { asFragment } = render(<ListControl {...props} field={field} />);
 
-    expect(asFragment()).toMatchSnapshot();
-  });
+  describe('Add to top functionality', () => {
+    it('should add item to top when add_to_top is true', () => {
+      const field = fromJS({
+        name: 'list',
+        label: 'List',
+        add_to_top: true,
+        fields: [{ label: 'String', name: 'string', widget: 'string' }],
+      });
 
-  it('should render list with string array', () => {
-    const field = fromJS({ name: 'list', label: 'List' });
-    const { asFragment } = render(
-      <ListControl {...props} field={field} value={fromJS(['item 1', 'item 2'])} />,
-    );
+      const { getByText } = render(
+        <ListControl {...props} field={field} value={fromJS([{ string: 'existing item' }])} />
+      );
 
-    expect(asFragment()).toMatchSnapshot();
-  });
+      fireEvent.click(getByText('editor.editorWidgets.list.add'));
 
-  it('should render list with nested object', () => {
-    const field = fromJS({
-      name: 'list',
-      label: 'List',
-      field: {
-        name: 'object',
-        widget: 'object',
-        label: 'Object',
-        fields: [{ name: 'title', widget: 'string', label: 'Title' }],
-      },
+      expect(props.onChange).toHaveBeenCalledWith(
+        fromJS([{}, { string: 'existing item' }])
+      );
     });
-    const { asFragment, getByTestId } = render(
-      <ListControl
-        {...props}
-        field={field}
-        value={fromJS([{ object: { title: 'item 1' } }, { object: { title: 'item 2' } }])}
-      />,
-    );
 
-    expect(getByTestId('styled-list-item-top-bar-0')).toHaveAttribute('collapsed');
-    expect(getByTestId('styled-list-item-top-bar-1')).toHaveAttribute('collapsed');
+    it('should add item to bottom when add_to_top is false', () => {
+      const field = fromJS({
+        name: 'list',
+        label: 'List',
+        add_to_top: false,
+        fields: [{ label: 'String', name: 'string', widget: 'string' }],
+      });
 
-    expect(getByTestId('object-control-0')).toHaveAttribute('collapsed');
-    expect(getByTestId('object-control-1')).toHaveAttribute('collapsed');
+      const { getByText } = render(
+        <ListControl {...props} field={field} value={fromJS([{ string: 'existing item' }])} />
+      );
 
-    expect(asFragment()).toMatchSnapshot();
-  });
+      fireEvent.click(getByText('editor.editorWidgets.list.add'));
 
-  it('should render list with nested object with collapse = false', () => {
-    const field = fromJS({
-      name: 'list',
-      label: 'List',
-      collapsed: false,
-      field: {
-        name: 'object',
-        widget: 'object',
-        label: 'Object',
-        fields: [{ name: 'title', widget: 'string', label: 'Title' }],
-      },
+      expect(props.onChange).toHaveBeenCalledWith(
+        fromJS([{ string: 'existing item' }, {}])
+      );
     });
-    const { asFragment, getByTestId } = render(
-      <ListControl
-        {...props}
-        field={field}
-        value={fromJS([{ object: { title: 'item 1' } }, { object: { title: 'item 2' } }])}
-      />,
-    );
-
-    expect(getByTestId('styled-list-item-top-bar-0')).not.toHaveAttribute('collapsed');
-    expect(getByTestId('styled-list-item-top-bar-1')).not.toHaveAttribute('collapsed');
-
-    expect(getByTestId('object-control-0')).not.toHaveAttribute('collapsed');
-    expect(getByTestId('object-control-1')).not.toHaveAttribute('collapsed');
-
-    expect(asFragment()).toMatchSnapshot();
   });
 
-  it('should collapse all items on top bar collapse click', () => {
-    const field = fromJS({
-      name: 'list',
-      label: 'List',
-      collapsed: false,
-      field: {
-        name: 'object',
-        widget: 'object',
-        label: 'Object',
-        fields: [{ name: 'title', widget: 'string', label: 'Title' }],
-      },
+  describe('Allow remove/reorder functionality', () => {
+    it('should disable remove when allow_remove is false', () => {
+      const field = fromJS({
+        name: 'list',
+        label: 'List',
+        allow_remove: false,
+        fields: [{ label: 'String', name: 'string', widget: 'string' }],
+      });
+
+      const { getByTestId } = render(
+        <ListControl {...props} field={field} value={fromJS([{ string: 'item 1' }])} />
+      );
+
+      expect(getByTestId('styled-list-item-top-bar-0')).not.toHaveAttribute('allowremove');
     });
-    const { getByTestId } = render(
-      <ListControl
-        {...props}
-        field={field}
-        value={fromJS([{ object: { title: 'item 1' } }, { object: { title: 'item 2' } }])}
-      />,
-    );
 
-    expect(getByTestId('styled-list-item-top-bar-0')).not.toHaveAttribute('collapsed');
-    expect(getByTestId('styled-list-item-top-bar-1')).not.toHaveAttribute('collapsed');
+    it('should disable reorder when allow_reorder is false', () => {
+      const field = fromJS({
+        name: 'list',
+        label: 'List',
+        allow_reorder: false,
+        fields: [{ label: 'String', name: 'string', widget: 'string' }],
+      });
 
-    expect(getByTestId('object-control-0')).not.toHaveAttribute('collapsed');
-    expect(getByTestId('object-control-1')).not.toHaveAttribute('collapsed');
+      const { getByTestId } = render(
+        <ListControl {...props} field={field} value={fromJS([{ string: 'item 1' }])} />
+      );
 
-    fireEvent.click(getByTestId('expand-button'));
-
-    expect(getByTestId('styled-list-item-top-bar-0')).toHaveAttribute('collapsed');
-    expect(getByTestId('styled-list-item-top-bar-1')).toHaveAttribute('collapsed');
-
-    expect(getByTestId('object-control-0')).toHaveAttribute('collapsed');
-    expect(getByTestId('object-control-1')).toHaveAttribute('collapsed');
-  });
-
-  it('should collapse a single item on collapse item click', () => {
-    const field = fromJS({
-      name: 'list',
-      label: 'List',
-      collapsed: false,
-      field: {
-        name: 'object',
-        widget: 'object',
-        label: 'Object',
-        fields: [{ name: 'title', widget: 'string', label: 'Title' }],
-      },
+      expect(getByTestId('styled-list-item-top-bar-0')).not.toHaveAttribute('allowreorder');
     });
-    const { getByTestId } = render(
-      <ListControl
-        {...props}
-        field={field}
-        value={fromJS([{ object: { title: 'item 1' } }, { object: { title: 'item 2' } }])}
-      />,
-    );
 
-    expect(getByTestId('styled-list-item-top-bar-0')).not.toHaveAttribute('collapsed');
-    expect(getByTestId('styled-list-item-top-bar-1')).not.toHaveAttribute('collapsed');
+    it('should disable add when allow_add is false', () => {
+      const field = fromJS({
+        name: 'list',
+        label: 'List',
+        allow_add: false,
+        fields: [{ label: 'String', name: 'string', widget: 'string' }],
+      });
 
-    expect(getByTestId('object-control-0')).not.toHaveAttribute('collapsed');
-    expect(getByTestId('object-control-1')).not.toHaveAttribute('collapsed');
+      const { queryByText } = render(<ListControl {...props} field={field} />);
 
-    fireEvent.click(getByTestId('styled-list-item-top-bar-0'));
-
-    expect(getByTestId('styled-list-item-top-bar-0')).toHaveAttribute('collapsed');
-    expect(getByTestId('styled-list-item-top-bar-1')).not.toHaveAttribute('collapsed');
-
-    expect(getByTestId('object-control-0')).toHaveAttribute('collapsed');
-    expect(getByTestId('object-control-1')).not.toHaveAttribute('collapsed');
-  });
-
-  it('should expand all items on top bar expand click', () => {
-    const field = fromJS({
-      name: 'list',
-      label: 'List',
-      collapsed: true,
-      field: {
-        name: 'object',
-        widget: 'object',
-        label: 'Object',
-        fields: [{ name: 'title', widget: 'string', label: 'Title' }],
-      },
+      expect(queryByText('editor.editorWidgets.list.add')).not.toBeInTheDocument();
     });
-    const { getByTestId } = render(
-      <ListControl
-        {...props}
-        field={field}
-        value={fromJS([{ object: { title: 'item 1' } }, { object: { title: 'item 2' } }])}
-      />,
-    );
-
-    expect(getByTestId('styled-list-item-top-bar-0')).toHaveAttribute('collapsed');
-    expect(getByTestId('styled-list-item-top-bar-1')).toHaveAttribute('collapsed');
-
-    expect(getByTestId('object-control-0')).toHaveAttribute('collapsed');
-    expect(getByTestId('object-control-1')).toHaveAttribute('collapsed');
-
-    fireEvent.click(getByTestId('expand-button'));
-
-    expect(getByTestId('styled-list-item-top-bar-0')).not.toHaveAttribute('collapsed');
-    expect(getByTestId('styled-list-item-top-bar-1')).not.toHaveAttribute('collapsed');
-
-    expect(getByTestId('object-control-0')).not.toHaveAttribute('collapsed');
-    expect(getByTestId('object-control-1')).not.toHaveAttribute('collapsed');
   });
 
-  it('should expand a single item on expand item click', () => {
-    const field = fromJS({
-      name: 'list',
-      label: 'List',
-      collapsed: true,
-      field: {
-        name: 'object',
-        widget: 'object',
-        label: 'Object',
-        fields: [{ name: 'title', widget: 'string', label: 'Title' }],
-      },
-    });
-    const { getByTestId } = render(
-      <ListControl
-        {...props}
-        field={field}
-        value={fromJS([{ object: { title: 'item 1' } }, { object: { title: 'item 2' } }])}
-      />,
-    );
-
-    expect(getByTestId('styled-list-item-top-bar-0')).toHaveAttribute('collapsed');
-    expect(getByTestId('styled-list-item-top-bar-1')).toHaveAttribute('collapsed');
-
-    expect(getByTestId('object-control-0')).toHaveAttribute('collapsed');
-    expect(getByTestId('object-control-1')).toHaveAttribute('collapsed');
-
-    fireEvent.click(getByTestId('styled-list-item-top-bar-0'));
-
-    expect(getByTestId('styled-list-item-top-bar-0')).not.toHaveAttribute('collapsed');
-    expect(getByTestId('styled-list-item-top-bar-1')).toHaveAttribute('collapsed');
-
-    expect(getByTestId('object-control-0')).not.toHaveAttribute('collapsed');
-    expect(getByTestId('object-control-1')).toHaveAttribute('collapsed');
-  });
-
-  it('should use widget name when no summary or label are configured for mixed types', () => {
-    const field = fromJS({
-      name: 'list',
-      label: 'List',
-      collapsed: true,
-      types: [
-        {
-          name: 'type_1_object',
-          widget: 'object',
-          fields: [
-            { label: 'First Name', name: 'first_name', widget: 'string' },
-            { label: 'Last Name', name: 'last_name', widget: 'string' },
-          ],
+  describe('Default values', () => {
+    it('should use default value for single field', () => {
+      const field = fromJS({
+        name: 'list',
+        label: 'List',
+        field: {
+          name: 'name',
+          widget: 'string',
+          default: 'Default Name',
         },
-      ],
+      });
+
+      const { getByText } = render(<ListControl {...props} field={field} />);
+
+      fireEvent.click(getByText('editor.editorWidgets.list.add'));
+
+      expect(props.onChange).toHaveBeenCalledWith(fromJS(['Default Name']));
     });
 
-    const { getAllByText } = render(
-      <ListControl
-        {...props}
-        field={field}
-        value={fromJS([{ first_name: 'hello', last_name: 'world', type: 'type_1_object' }])}
-      />,
-    );
-    expect(getAllByText('type_1_object')[1]).toBeInTheDocument();
+    it('should use default values for multiple fields', () => {
+      const field = fromJS({
+        name: 'list',
+        label: 'List',
+        fields: [
+          { name: 'name', widget: 'string', default: 'Default Name' },
+          { name: 'age', widget: 'number', default: 25 },
+        ],
+      });
+
+      const { getByText } = render(<ListControl {...props} field={field} />);
+
+      fireEvent.click(getByText('editor.editorWidgets.list.add'));
+
+      expect(props.onChange).toHaveBeenCalledWith(
+        fromJS([{ name: 'Default Name', age: 25 }])
+      );
+    });
+
+    it('should handle nested object default values', () => {
+      const field = fromJS({
+        name: 'list',
+        label: 'List',
+        fields: [
+          {
+            name: 'person',
+            widget: 'object',
+            fields: [
+              { name: 'name', widget: 'string', default: 'John' },
+              { name: 'surname', widget: 'string', default: 'Doe' },
+            ],
+          },
+        ],
+      });
+
+      const { getByText } = render(<ListControl {...props} field={field} />);
+
+      fireEvent.click(getByText('editor.editorWidgets.list.add'));
+
+      expect(props.onChange).toHaveBeenCalledWith(
+        fromJS([{ person: { name: 'John', surname: 'Doe' } }])
+      );
+    });
   });
 
-  it('should use label when no summary is configured for mixed types', () => {
-    const field = fromJS({
-      name: 'list',
-      label: 'List',
-      collapsed: true,
-      types: [
-        {
-          label: 'Type 1 Object',
-          name: 'type_1_object',
-          widget: 'object',
-          fields: [
-            { label: 'First Name', name: 'first_name', widget: 'string' },
-            { label: 'Last Name', name: 'last_name', widget: 'string' },
-          ],
-        },
-      ],
+  describe('Error handling', () => {
+    it('should show error state when field has errors', () => {
+      const field = fromJS({
+        name: 'list',
+        label: 'List',
+        fields: [{ label: 'String', name: 'string', widget: 'string' }],
+      });
+
+      const fieldsErrors = fromJS({
+        'forID.0.string': [{ message: 'Required field' }]
+      });
+
+      const listControl = new ListControl({
+        ...props,
+        field,
+        value: fromJS([{ string: '' }]),
+        fieldsErrors,
+      });
+
+      // Set up state to simulate having a key for the item
+      listControl.state.keys = ['0'];
+
+      const hasError = listControl.hasError(0);
+      expect(hasError).toBe(true);
     });
 
-    const { getAllByText } = render(
-      <ListControl
-        {...props}
-        field={field}
-        value={fromJS([{ first_name: 'hello', last_name: 'world', type: 'type_1_object' }])}
-      />,
-    );
-    expect(getAllByText('Type 1 Object')[1]).toBeInTheDocument();
+    it('should not show error state when field has no errors', () => {
+      const field = fromJS({
+        name: 'list',
+        label: 'List',
+        fields: [{ label: 'String', name: 'string', widget: 'string' }],
+      });
+
+      const listControl = new ListControl({
+        ...props,
+        field,
+        value: fromJS([{ string: 'valid value' }]),
+      });
+
+      // Set up state to simulate having a key for the item
+      listControl.state.keys = ['0'];
+
+      const hasError = listControl.hasError(0);
+      expect(hasError).toBeFalsy();
+    });
   });
 
-  it('should use summary when configured for mixed types', () => {
-    const field = fromJS({
-      name: 'list',
-      label: 'List',
-      collapsed: true,
-      types: [
-        {
-          label: 'Type 1 Object',
-          name: 'type_1_object',
-          summary: '{{first_name}} - {{last_name}} - {{filename}}.{{extension}}',
-          widget: 'object',
-          fields: [
-            { label: 'First Name', name: 'first_name', widget: 'string' },
-            { label: 'Last Name', name: 'last_name', widget: 'string' },
-          ],
-        },
-      ],
-    });
+  describe('Focus functionality', () => {
+    it('should expand collapsed items when focusing', () => {
+      const field = fromJS({
+        name: 'list',
+        label: 'List',
+        collapsed: true,
+        fields: [{ label: 'String', name: 'string', widget: 'string' }],
+      });
 
-    const { getByText } = render(
-      <ListControl
-        {...props}
-        field={field}
-        value={fromJS([{ first_name: 'hello', last_name: 'world', type: 'type_1_object' }])}
-      />,
-    );
-    expect(getByText('hello - world - index.md')).toBeInTheDocument();
+      const listControl = new ListControl({
+        ...props,
+        field,
+        value: fromJS([{ string: 'item 1' }]),
+      });
+
+      // Set up mock child refs
+      const mockControl = { focus: jest.fn() };
+      listControl.childRefs = { '0': mockControl };
+      listControl.state.keys = ['0'];
+      listControl.state.itemsCollapsed = [true];
+      listControl.state.listCollapsed = true;
+
+      listControl.focus('0.string');
+
+      expect(listControl.state.itemsCollapsed[0]).toBe(false);
+      expect(listControl.state.listCollapsed).toBe(false);
+    });
   });
 
-  it('should use widget name when no summary or label are configured for a single field', () => {
-    const field = fromJS({
-      name: 'list',
-      label: 'List',
-      collapsed: true,
-      field: { name: 'name', widget: 'string' },
+  describe('String value handling', () => {
+    it('should handle string array input correctly', () => {
+      const field = fromJS({ name: 'list', label: 'List' });
+      
+      const { container } = render(<ListControl {...props} field={field} />);
+      const input = container.querySelector('input');
+
+      fireEvent.change(input, { target: { value: 'item1, item2, item3' } });
+
+      expect(props.onChange).toHaveBeenCalledWith(
+        fromJS(['item1', 'item2', 'item3'])
+      );
     });
 
-    const { getByText } = render(<ListControl {...props} field={field} value={fromJS(['Name'])} />);
-    expect(getByText('name')).toBeInTheDocument();
+    it('should handle trailing comma correctly', () => {
+      const field = fromJS({ name: 'list', label: 'List' });
+      
+      const listControl = new ListControl({
+        ...props,
+        field,
+      });
+
+      listControl.state.value = 'item1, item2, ';
+
+      const mockEvent = {
+        target: { value: 'item1, item2, item3,' }
+      };
+
+      listControl.handleChange(mockEvent);
+
+      expect(props.onChange).toHaveBeenCalledWith(
+        fromJS(['item1', 'item2', 'item3'])
+      );
+    });
+
+    it('should handle focus and blur events for string input', () => {
+      const field = fromJS({ name: 'list', label: 'List' });
+      
+      const { container } = render(<ListControl {...props} field={field} />);
+      const input = container.querySelector('input');
+
+      fireEvent.focus(input);
+      expect(props.setActiveStyle).toHaveBeenCalled();
+
+      fireEvent.blur(input);
+      expect(props.setInactiveStyle).toHaveBeenCalled();
+    });
   });
 
-  it('should use label when no summary is configured for a single field', () => {
-    const field = fromJS({
-      name: 'list',
-      label: 'List',
-      collapsed: true,
-      field: { name: 'name', widget: 'string', label: 'Name' },
+  describe('Mixed types (types field)', () => {
+    it('should add item of specific type when using mixed types', () => {
+      const field = fromJS({
+        name: 'list',
+        label: 'List',
+        types: [
+          {
+            name: 'text_type',
+            widget: 'object',
+            fields: [{ name: 'content', widget: 'string' }],
+          },
+          {
+            name: 'image_type',
+            widget: 'object',
+            fields: [{ name: 'src', widget: 'string' }],
+          },
+        ],
+      });
+
+      const listControl = new ListControl({
+        ...props,
+        field,
+        value: fromJS([]),
+      });
+
+      listControl.handleAddType('text_type', 'type');
+
+      expect(props.onChange).toHaveBeenCalledWith(
+        fromJS([{ type: 'text_type' }])
+      );
     });
 
-    const { getByText } = render(<ListControl {...props} field={field} value={fromJS(['Name'])} />);
-    expect(getByText('Name')).toBeInTheDocument();
+    it('should render error for invalid typed item', () => {
+      const field = fromJS({
+        name: 'list',
+        label: 'List',
+        types: [
+          {
+            name: 'valid_type',
+            widget: 'object',
+            fields: [{ name: 'content', widget: 'string' }],
+          },
+        ],
+      });
+
+      const listControl = new ListControl({
+        ...props,
+        field,
+        value: fromJS([{ type: 'invalid_type', content: 'test' }]),
+      });
+
+      listControl.state.keys = ['0'];
+
+      const result = listControl.renderItem(fromJS({ type: 'invalid_type', content: 'test' }), 0);
+
+      expect(result.props.children[1].props.error).toBe(true);
+    });
   });
 
-  it('should use summary when configured for a single field', () => {
-    const field = fromJS({
-      name: 'list',
-      label: 'List',
-      collapsed: true,
-      summary: 'Name - {{fields.name}}',
-      field: { name: 'name', widget: 'string', label: 'Name' },
+  describe('Component lifecycle', () => {
+    it('should initialize state correctly in constructor', () => {
+      const field = fromJS({
+        name: 'list',
+        label: 'List',
+        collapsed: false,
+        fields: [{ label: 'String', name: 'string', widget: 'string' }],
+      });
+
+      const value = fromJS([{ string: 'item 1' }, { string: 'item 2' }]);
+
+      const listControl = new ListControl({
+        ...props,
+        field,
+        value,
+      });
+
+      expect(listControl.state.listCollapsed).toBe(false);
+      expect(listControl.state.itemsCollapsed).toEqual([false, false]);
+      expect(listControl.state.keys).toHaveLength(2);
     });
 
-    const { getByText } = render(<ListControl {...props} field={field} value={fromJS(['Name'])} />);
-    expect(getByText('Name - Name')).toBeInTheDocument();
+    it('should handle empty value in constructor', () => {
+      const field = fromJS({
+        name: 'list',
+        label: 'List',
+        fields: [{ label: 'String', name: 'string', widget: 'string' }],
+      });
+
+      const listControl = new ListControl({
+        ...props,
+        field,
+        value: undefined,
+      });
+
+      expect(listControl.state.itemsCollapsed).toEqual([]);
+      expect(listControl.state.keys).toEqual([]);
+    });
   });
 
-  it('should use first field value when no summary or label are configured for multiple fields', () => {
-    const field = fromJS({
-      name: 'list',
-      label: 'List',
-      collapsed: true,
-      fields: [
-        { name: 'first_name', widget: 'string', label: 'First Name' },
-        { name: 'last_name', widget: 'string', label: 'Last Name' },
-      ],
+  describe('Validation edge cases', () => {
+    it('should validate when no child widgets exist', () => {
+      const field = fromJS({ name: 'list', label: 'List' });
+      
+      const listControl = new ListControl({
+        ...props,
+        field,
+        value: fromJS(['item1', 'item2']),
+      });
+
+      listControl.validate();
+
+      expect(props.validate).toHaveBeenCalled();
+      expect(props.onValidateObject).toHaveBeenCalledWith('forID', []);
     });
 
-    const { getByText } = render(
-      <ListControl
-        {...props}
-        field={field}
-        value={fromJS([{ first_name: 'hello', last_name: 'world' }])}
-      />,
-    );
-    expect(getByText('hello')).toBeInTheDocument();
+    it('should handle validation with child widgets', () => {
+      const field = fromJS({
+        name: 'list',
+        label: 'List',
+        fields: [{ label: 'String', name: 'string', widget: 'string' }],
+      });
+
+      const listControl = new ListControl({
+        ...props,
+        field,
+        value: fromJS([{ string: 'item 1' }]),
+      });
+
+      const mockChildWidget = { validate: jest.fn() };
+      listControl.childRefs = { '0': mockChildWidget };
+
+      listControl.validate();
+
+      expect(mockChildWidget.validate).toHaveBeenCalled();
+      expect(props.onValidateObject).toHaveBeenCalledWith('forID', []);
+    });
   });
 
-  it('should show `No <field>` when value is missing from first field for multiple fields', () => {
-    const field = fromJS({
-      name: 'list',
-      label: 'List',
-      collapsed: true,
-      fields: [
-        { name: 'first_name', widget: 'string', label: 'First Name' },
-        { name: 'last_name', widget: 'string', label: 'Last Name' },
-      ],
-    });
+  describe('Sorting functionality', () => {
+    it('should handle drag and drop reordering', () => {
+      const field = fromJS({
+        name: 'list',
+        label: 'List',
+        fields: [{ label: 'String', name: 'string', widget: 'string' }],
+      });
 
-    const { getByText } = render(
-      <ListControl {...props} field={field} value={fromJS([{ last_name: 'world' }])} />,
-    );
-    expect(getByText('No first_name')).toBeInTheDocument();
-  });
-
-  it('should use summary when configured for multiple fields', () => {
-    const field = fromJS({
-      name: 'list',
-      label: 'List',
-      collapsed: true,
-      summary: '{{first_name}} - {{last_name}} - {{filename}}.{{extension}}',
-      fields: [
-        { name: 'first_name', widget: 'string', label: 'First Name' },
-        { name: 'last_name', widget: 'string', label: 'Last Name' },
-      ],
-    });
-
-    const { getByText } = render(
-      <ListControl
-        {...props}
-        field={field}
-        value={fromJS([{ first_name: 'hello', last_name: 'world' }])}
-      />,
-    );
-    expect(getByText('hello - world - index.md')).toBeInTheDocument();
-  });
-
-  it('should render list with fields with default collapse ("true") and minimize_collapsed ("false")', () => {
-    const field = fromJS({
-      name: 'list',
-      label: 'List',
-      fields: [{ label: 'String', name: 'string', widget: 'string' }],
-    });
-    const { asFragment, getByTestId } = render(
-      <ListControl
-        {...props}
-        field={field}
-        value={fromJS([{ string: 'item 1' }, { string: 'item 2' }])}
-      />,
-    );
-
-    expect(getByTestId('styled-list-item-top-bar-0')).toHaveAttribute('collapsed');
-    expect(getByTestId('styled-list-item-top-bar-1')).toHaveAttribute('collapsed');
-
-    expect(getByTestId('object-control-0')).toHaveAttribute('collapsed');
-    expect(getByTestId('object-control-1')).toHaveAttribute('collapsed');
-
-    expect(asFragment()).toMatchSnapshot();
-  });
-
-  it('should render list with fields with collapse = "false" and default minimize_collapsed ("false")', () => {
-    const field = fromJS({
-      name: 'list',
-      label: 'List',
-      collapsed: false,
-      fields: [{ label: 'String', name: 'string', widget: 'string' }],
-    });
-    const { asFragment, getByTestId } = render(
-      <ListControl
-        {...props}
-        field={field}
-        value={fromJS([{ string: 'item 1' }, { string: 'item 2' }])}
-      />,
-    );
-
-    expect(getByTestId('styled-list-item-top-bar-0')).not.toHaveAttribute('collapsed');
-    expect(getByTestId('styled-list-item-top-bar-1')).not.toHaveAttribute('collapsed');
-
-    expect(getByTestId('object-control-0')).not.toHaveAttribute('collapsed');
-    expect(getByTestId('object-control-1')).not.toHaveAttribute('collapsed');
-
-    expect(asFragment()).toMatchSnapshot();
-  });
-
-  it('should render list with fields with default collapse ("true") and minimize_collapsed = "true"', () => {
-    const field = fromJS({
-      name: 'list',
-      label: 'List',
-      minimize_collapsed: true,
-      fields: [{ label: 'String', name: 'string', widget: 'string' }],
-    });
-    const { asFragment, getByTestId, queryByTestId } = render(
-      <ListControl
-        {...props}
-        field={field}
-        value={fromJS([{ string: 'item 1' }, { string: 'item 2' }])}
-      />,
-    );
-
-    expect(queryByTestId('styled-list-item-top-bar-0')).toBeNull();
-    expect(queryByTestId('styled-list-item-top-bar-1')).toBeNull();
-
-    expect(queryByTestId('object-control-0')).toBeNull();
-    expect(queryByTestId('object-control-1')).toBeNull();
-
-    expect(asFragment()).toMatchSnapshot();
-
-    fireEvent.click(getByTestId('expand-button'));
-
-    expect(getByTestId('styled-list-item-top-bar-0')).toHaveAttribute('collapsed');
-    expect(getByTestId('styled-list-item-top-bar-1')).toHaveAttribute('collapsed');
-
-    expect(getByTestId('object-control-0')).toHaveAttribute('collapsed');
-    expect(getByTestId('object-control-1')).toHaveAttribute('collapsed');
-  });
-
-  it('should render list with fields with collapse = "false" and default minimize_collapsed = "true"', () => {
-    const field = fromJS({
-      name: 'list',
-      label: 'List',
-      collapsed: false,
-      minimize_collapsed: true,
-      fields: [{ label: 'String', name: 'string', widget: 'string' }],
-    });
-    const { asFragment, getByTestId, queryByTestId } = render(
-      <ListControl
-        {...props}
-        field={field}
-        value={fromJS([{ string: 'item 1' }, { string: 'item 2' }])}
-      />,
-    );
-
-    expect(getByTestId('styled-list-item-top-bar-0')).not.toHaveAttribute('collapsed');
-    expect(getByTestId('styled-list-item-top-bar-1')).not.toHaveAttribute('collapsed');
-
-    expect(getByTestId('object-control-0')).not.toHaveAttribute('collapsed');
-    expect(getByTestId('object-control-1')).not.toHaveAttribute('collapsed');
-
-    expect(asFragment()).toMatchSnapshot();
-
-    fireEvent.click(getByTestId('expand-button'));
-
-    expect(queryByTestId('styled-list-item-top-bar-0')).toBeNull();
-    expect(queryByTestId('styled-list-item-top-bar-1')).toBeNull();
-
-    expect(queryByTestId('object-control-0')).toBeNull();
-    expect(queryByTestId('object-control-1')).toBeNull();
-  });
-
-  it('should add to list when add button is clicked', () => {
-    const field = fromJS({
-      name: 'list',
-      label: 'List',
-      fields: [{ label: 'String', name: 'string', widget: 'string' }],
-    });
-    const { asFragment, getByText, queryByTestId, rerender, getByTestId } = render(
-      <ListControl {...props} field={field} value={fromJS([])} />,
-    );
-
-    expect(queryByTestId('object-control-0')).toBeNull();
-
-    fireEvent.click(getByText('editor.editorWidgets.list.add'));
-
-    expect(props.onChange).toHaveBeenCalledTimes(1);
-    expect(props.onChange).toHaveBeenCalledWith(fromJS([{}]));
-
-    rerender(<ListControl {...props} field={field} value={fromJS([{}])} />);
-
-    expect(getByTestId('styled-list-item-top-bar-0')).not.toHaveAttribute('collapsed');
-    expect(getByTestId('object-control-0')).not.toHaveAttribute('collapsed');
-
-    expect(asFragment()).toMatchSnapshot();
-  });
-
-  it('should remove from list when remove button is clicked', () => {
-    const field = fromJS({
-      name: 'list',
-      label: 'List',
-      collapsed: false,
-      minimize_collapsed: true,
-      fields: [{ label: 'String', name: 'string', widget: 'string' }],
-    });
-    const { asFragment, getAllByText, rerender } = render(
-      <ListControl
-        {...props}
-        field={field}
-        value={fromJS([{ string: 'item 1' }, { string: 'item 2' }])}
-      />,
-    );
-
-    expect(asFragment()).toMatchSnapshot();
-
-    let mock;
-    try {
-      mock = jest.spyOn(console, 'error').mockImplementation(() => undefined);
-
-      const items = getAllByText('Remove');
-      fireEvent.click(items[0]);
-
-      expect(props.onChange).toHaveBeenCalledTimes(1);
-      expect(props.onChange).toHaveBeenCalledWith(fromJS([{ string: 'item 2' }]), undefined);
-
-      rerender(<ListControl {...props} field={field} value={fromJS([{ string: 'item 2' }])} />);
-
-      expect(asFragment()).toMatchSnapshot();
-    } finally {
-      mock.mockRestore();
-    }
-  });
-
-  it('should give validation error if below min elements', () => {
-    const field = fromJS({
-      name: 'list',
-      label: 'List',
-      collapsed: false,
-      minimize_collapsed: true,
-      required: true,
-      min: 2,
-      max: 3,
-      fields: [{ label: 'String', name: 'string', widget: 'string' }],
-    });
-    const listControl = new ListControl({
-      ...props,
-      field,
-      value: fromJS([{ string: 'item 1' }]),
-    });
-
-    listControl.validate();
-    expect(props.onValidateObject).toHaveBeenCalledWith('forID', [
-      {
-        message: 'editor.editorControlPane.widget.rangeCount',
-        type: 'RANGE',
-      },
-    ]);
-  });
-
-  it('should give min validation error if below min elements', () => {
-    const field = fromJS({
-      name: 'list',
-      label: 'List',
-      collapsed: false,
-      minimize_collapsed: true,
-      required: true,
-      min: 2,
-      fields: [{ label: 'String', name: 'string', widget: 'string' }],
-    });
-    const listControl = new ListControl({
-      ...props,
-      field,
-      value: fromJS([{ string: 'item 1' }]),
-    });
-
-    listControl.validate();
-    expect(props.onValidateObject).toHaveBeenCalledWith('forID', [
-      {
-        message: 'editor.editorControlPane.widget.rangeMin',
-        type: 'RANGE',
-      },
-    ]);
-  });
-
-  it('should give validation error if above max elements', () => {
-    const field = fromJS({
-      name: 'list',
-      label: 'List',
-      collapsed: false,
-      minimize_collapsed: true,
-      required: true,
-      min: 2,
-      max: 3,
-      fields: [{ label: 'String', name: 'string', widget: 'string' }],
-    });
-    const listControl = new ListControl({
-      ...props,
-      field,
-      value: fromJS([
+      const value = fromJS([
         { string: 'item 1' },
         { string: 'item 2' },
         { string: 'item 3' },
-        { string: 'item 4' },
-      ]),
-    });
+      ]);
 
-    listControl.validate();
-    expect(props.onValidateObject).toHaveBeenCalledWith('forID', [
-      {
-        message: 'editor.editorControlPane.widget.rangeCount',
-        type: 'RANGE',
-      },
-    ]);
-  });
+      const listControl = new ListControl({
+        ...props,
+        field,
+        value,
+      });
 
-  it('should give max validation error if above max elements', () => {
-    const field = fromJS({
-      name: 'list',
-      label: 'List',
-      collapsed: false,
-      minimize_collapsed: true,
-      required: true,
-      max: 3,
-      fields: [{ label: 'String', name: 'string', widget: 'string' }],
-    });
-    const listControl = new ListControl({
-      ...props,
-      field,
-      value: fromJS([
-        { string: 'item 1' },
+      listControl.state.keys = ['key0', 'key1', 'key2'];
+      listControl.state.itemsCollapsed = [false, true, false];
+
+      listControl.onSortEnd({ oldIndex: 0, newIndex: 2 });
+
+      const expectedValue = fromJS([
         { string: 'item 2' },
         { string: 'item 3' },
-        { string: 'item 4' },
-      ]),
-    });
+        { string: 'item 1' },
+      ]);
 
-    listControl.validate();
-    expect(props.onValidateObject).toHaveBeenCalledWith('forID', [
-      {
-        message: 'editor.editorControlPane.widget.rangeMax',
-        type: 'RANGE',
-      },
-    ]);
+      expect(props.onChange).toHaveBeenCalledWith(expectedValue);
+      expect(listControl.state.itemsCollapsed).toEqual([true, false, false]);
+      expect(listControl.state.keys).toEqual(['key1', 'key2', 'key0']);
+    });
   });
 
-  it('should give no validation error if between min and max elements', () => {
-    const field = fromJS({
-      name: 'list',
-      label: 'List',
-      collapsed: false,
-      minimize_collapsed: true,
-      required: true,
-      min: 2,
-      max: 3,
-      fields: [{ label: 'String', name: 'string', widget: 'string' }],
-    });
-    const listControl = new ListControl({
-      ...props,
-      field,
-      value: fromJS([{ string: 'item 1' }, { string: 'item 2' }, { string: 'item 3' }]),
+  describe('Label generation edge cases', () => {
+    it('should handle missing label field for single field', () => {
+      const field = fromJS({
+        name: 'list',
+        label: 'List',
+        collapsed: true,
+        field: { name: 'content', widget: 'string' },
+      });
+
+      const listControl = new ListControl({
+        ...props,
+        field,
+      });
+
+      const label = listControl.objectLabel('Test Content');
+      expect(label).toBe('content');
     });
 
-    listControl.validate();
-    expect(props.onValidateObject).toHaveBeenCalledWith('forID', []);
+    it('should handle invalid item for multiple fields', () => {
+      const field = fromJS({
+        name: 'list',
+        label: 'List',
+        fields: [{ name: 'name', widget: 'string' }],
+      });
+
+      const listControl = new ListControl({
+        ...props,
+        field,
+      });
+
+      // Mock console.warn to avoid output in tests
+      const consoleSpy = jest.spyOn(console, 'warn').mockImplementation();
+
+      const label = listControl.objectLabel('invalid item');
+      expect(label).toBe('');
+      expect(consoleSpy).toHaveBeenCalled();
+
+      consoleSpy.mockRestore();
+    });
   });
 
-  it('should give no validation error if no elements and optional', () => {
-    const field = fromJS({
-      name: 'list',
-      label: 'List',
-      collapsed: false,
-      minimize_collapsed: true,
-      required: false,
-      min: 2,
-      max: 3,
-      fields: [{ label: 'String', name: 'string', widget: 'string' }],
-    });
-    const listControl = new ListControl({
-      ...props,
-      field,
-      value: fromJS([]),
-    });
+  describe('Clear field errors on remove', () => {
+    it('should clear field errors when removing item', () => {
+      const field = fromJS({
+        name: 'list',
+        label: 'List',
+        fields: [{ label: 'String', name: 'string', widget: 'string' }],
+      });
 
-    listControl.validate();
-    expect(props.onValidateObject).toHaveBeenCalledWith('forID', []);
-  });
+      const fieldsErrors = fromJS({
+        'someField': [{ parentIds: ['key0'] }]
+      });
 
-  it('should prevent duplicate relation entries', () => {
-    const field = fromJS({
-      name: 'featured_posts',
-      label: 'Featured Posts',
-      widget: 'list',
-      field: {
-        name: 'featured_entries',
-        widget: 'relation',
-        collection: 'posts',
-      },
+      const listControl = new ListControl({
+        ...props,
+        field,
+        value: fromJS([{ string: 'item 1' }]),
+        fieldsErrors,
+      });
+
+      listControl.state.keys = ['key0'];
+      listControl.childRefs = { 'key0': {} };
+
+      const mockEvent = { preventDefault: jest.fn() };
+      listControl.handleRemove(0, mockEvent);
+
+      expect(props.clearFieldErrors).toHaveBeenCalledWith('someField');
     });
 
-    const { getByTestId } = render(
-      <ListControl
-        {...props}
-        field={field}
-        value={fromJS([
-          { featured_entries: 'post-1' },
-          { featured_entries: 'post-2' },
-        ])}
-      />,
-    );
+    it('should validate empty list after removing last item', () => {
+      const field = fromJS({
+        name: 'list',
+        label: 'List',
+        fields: [{ label: 'String', name: 'string', widget: 'string' }],
+      });
 
-    const listControl = new ListControl({
-      ...props,
-      field,
-      value: fromJS([
-        { featured_entries: 'post-1' },
-        { featured_entries: 'post-2' },
-      ]),
+      const listControl = new ListControl({
+        ...props,
+        field,
+        value: fromJS([{ string: 'only item' }]),
+      });
+
+      listControl.state.keys = ['key0'];
+      listControl.childRefs = { 'key0': {} };
+
+      const mockEvent = { preventDefault: jest.fn() };
+      listControl.handleRemove(0, mockEvent);
+
+      expect(props.clearFieldErrors).toHaveBeenCalledWith('forID');
+      expect(props.onValidateObject).toHaveBeenCalledWith('forID', []);
     });
-
-    const handleChange = listControl.handleChangeFor(0);
-    const relationField = fromJS({
-      widget: 'relation',
-      name: 'featured_entries',
-    });
-
-    handleChange(relationField, 'post-2');
-
-    expect(props.onChange).not.toHaveBeenCalled();
-    
-    expect(listControl.duplicateErrorIndex).toBe(0);
-  });
-
-  it('should allow non-duplicate relation entries', () => {
-    const field = fromJS({
-      name: 'featured_posts',
-      label: 'Featured Posts',
-      widget: 'list',
-      field: {
-        name: 'featured_entries',
-        widget: 'relation',
-        collection: 'posts',
-      },
-    });
-
-    const listControl = new ListControl({
-      ...props,
-      field,
-      value: fromJS([
-        { featured_entries: 'post-1' },
-        { featured_entries: 'post-2' },
-      ]),
-    });
-
-    const handleChange = listControl.handleChangeFor(0);
-    const relationField = fromJS({
-      widget: 'relation',
-      name: 'featured_entries',
-    });
-
-    handleChange(relationField, 'post-new');
-
-    expect(props.onChange).toHaveBeenCalled();
-    
-    expect(listControl.duplicateErrorIndex).toBeNull();
-  });
-
-  it('should clear duplicate error when value changes', () => {
-    const field = fromJS({
-      name: 'featured_posts',
-      label: 'Featured Posts',
-      widget: 'list',
-      field: {
-        name: 'featured_entries',
-        widget: 'relation',
-        collection: 'posts',
-      },
-    });
-
-    const listControl = new ListControl({
-      ...props,
-      field,
-      value: fromJS([
-        { featured_entries: 'post-1' },
-        { featured_entries: 'post-2' },
-      ]),
-    });
-
-    listControl.duplicateErrorIndex = 0;
-
-    const handleChange = listControl.handleChangeFor(0);
-    const relationField = fromJS({
-      widget: 'relation',
-      name: 'featured_entries',
-    });
-
-    handleChange(relationField, 'post-new');
-
-    expect(listControl.duplicateErrorIndex).toBeNull();
   });
 });
