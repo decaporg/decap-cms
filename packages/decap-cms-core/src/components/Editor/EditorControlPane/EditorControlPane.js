@@ -94,31 +94,103 @@ function getFieldValue({ field, entry, isTranslatable, locale }) {
   return entry.getIn(['data', field.get('name')]);
 }
 
-function calculateCondition({ field, fields, entry, locale, isTranslatable }) {
+function calculateCondition({ field, fields, entry, locale, isTranslatable, listIndexes = [] }) {
   const condition = field.get('condition');
   if (!condition) return true;
 
-  const condFieldName = condition.get('field');
-  const operator = condition.get('operator') || '==';
+  // Get field name - supports simple names, dot-notated paths, and wildcards
+  let condFieldName = condition.get('field');
+  if (!condFieldName) return true;
+
+  // Operators are descriptive (equal, notEqual, greaterThan, etc.)
+  const operator = condition.get('operator') || 'equal';
   const condValue = condition.get('value');
 
-  const condField = fields.find(f => f.get('name') === condFieldName);
-  let condFieldValue = getFieldValue({ field: condField, entry, locale, isTranslatable });
+  // Handle wildcard paths (e.g., 'structure.*.type')
+  if (condFieldName.includes('*')) {
+    condFieldName = condFieldName.split('*').reduce((acc, item, i) => {
+      return `${acc}${item}${listIndexes[i] >= 0 ? listIndexes[i] : ''}`;
+    }, '');
+  }
+
+  // Get the field value - all field references are treated as potentially nested paths
+  let condFieldValue;
+  if (condFieldName.includes('.')) {
+    // For dot-notated paths, traverse the entry data directly
+    const dataPath = condFieldName.split('.');
+    const entryData = entry.get('data');
+    condFieldValue = entryData ? entryData.getIn(dataPath) : undefined;
+  } else {
+    // For simple field names, use the existing getFieldValue logic
+    const condField = fields.find(f => f.get('name') === condFieldName);
+    if (condField) {
+      condFieldValue = getFieldValue({ field: condField, entry, locale, isTranslatable });
+    }
+  }
+
+  // Convert Immutable to JS if needed
   condFieldValue = condFieldValue?.toJS ? condFieldValue.toJS() : condFieldValue;
 
+  // Handle different operators
   switch (operator) {
-    case '==':
+    case 'equal':
       return condFieldValue == condValue;
-    case '!=':
+    case 'notEqual':
       return condFieldValue != condValue;
-    case '<':
-      return condFieldValue < condValue;
-    case '>':
+    case 'greaterThan':
       return condFieldValue > condValue;
-    case '<=':
-      return condFieldValue <= condValue;
-    case '>=':
+    case 'lessThan':
+      return condFieldValue < condValue;
+    case 'greaterThanOrEqual':
       return condFieldValue >= condValue;
+    case 'lessThanOrEqual':
+      return condFieldValue <= condValue;
+    case 'oneOf': {
+      const valueArray = condValue?.toJS ? condValue.toJS() : condValue;
+      return Array.isArray(valueArray) && valueArray.includes(condFieldValue);
+    }
+    case 'includes': {
+      const rawValue = condValue?.toJS ? condValue.toJS() : condValue;
+      // If field value is array, check inclusion; if string, check substring
+      if (Array.isArray(condFieldValue)) return condFieldValue.includes(rawValue);
+      const target = condFieldValue == null ? '' : String(condFieldValue);
+      return String(rawValue) !== undefined && target.includes(String(rawValue));
+    }
+    case 'matches': {
+      const rawCondValue = condValue?.toJS ? condValue.toJS() : condValue;
+
+      // Determine regex pattern/flags from value
+      let pattern;
+      let flags;
+
+      if (rawCondValue instanceof RegExp) {
+        pattern = rawCondValue.source;
+        flags = rawCondValue.flags;
+      } else if (typeof rawCondValue === 'string') {
+        const match = rawCondValue.match(/^\/(.*)\/([gimsuy]*)$/);
+        if (match) {
+          pattern = match[1];
+          flags = match[2] || undefined;
+        } else {
+          // if plain string, fallback to substring match semantics
+          const target = condFieldValue == null ? '' : String(condFieldValue);
+          return target.includes(rawCondValue);
+        }
+      } else if (rawCondValue && typeof rawCondValue === 'object' && rawCondValue.regex) {
+        pattern = rawCondValue.regex;
+        flags = rawCondValue.flags;
+      } else {
+        return false;
+      }
+
+      try {
+        const re = new RegExp(pattern, flags);
+        const target = condFieldValue == null ? '' : String(condFieldValue);
+        return re.test(target);
+      } catch (e) {
+        return false;
+      }
+    }
     default:
       return condFieldValue == condValue;
   }
@@ -139,6 +211,21 @@ export default class ControlPane extends React.Component {
 
   getControlRef = field => wrappedControl => {
     this.controlRef(field, wrappedControl);
+  };
+
+  fieldCondition = (field, listIndexes = []) => {
+    const { entry, collection, fields } = this.props;
+    const locale = this.state.selectedLocale;
+    const isTranslatable = hasI18n(collection);
+
+    return calculateCondition({
+      field,
+      fields,
+      entry,
+      locale,
+      isTranslatable,
+      listIndexes,
+    });
   };
 
   handleLocaleChange = val => {
@@ -296,6 +383,8 @@ export default class ControlPane extends React.Component {
                 isFieldDuplicate={field => isFieldDuplicate(field, locale, defaultLocale)}
                 isFieldHidden={field => isFieldHidden(field, locale, defaultLocale)}
                 locale={locale}
+                listIndexes={[]}
+                fieldCondition={this.fieldCondition}
               />
             );
           })}

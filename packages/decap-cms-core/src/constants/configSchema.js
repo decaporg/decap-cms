@@ -73,9 +73,42 @@ function fieldsConfig() {
           type: 'object',
           properties: {
             field: { type: 'string' },
-            value: { types: ['string', 'boolean'] },
-            operator: { type: 'string', enum: ['==', '!=', '>', '<', '>=', '<='] },
+            value: {
+              oneOf: [
+                { type: 'string' },
+                // Allow regex as a string like '/pattern/flags' or as an object { regex, flags }
+                {
+                  type: 'object',
+                  properties: { regex: { type: 'string' }, flags: { type: 'string' } },
+                  required: ['regex'],
+                  additionalProperties: false,
+                },
+                { type: 'boolean' },
+                { type: 'number' },
+                {
+                  type: 'array',
+                  items: {
+                    oneOf: [{ type: 'string' }, { type: 'boolean' }, { type: 'number' }],
+                  },
+                },
+              ],
+            },
+            operator: {
+              type: 'string',
+              enum: [
+                'equal',
+                'notEqual',
+                'greaterThan',
+                'lessThan',
+                'greaterThanOrEqual',
+                'lessThanOrEqual',
+                'oneOf',
+                'includes',
+                'matches',
+              ],
+            },
           },
+          required: ['field'],
         },
       },
       select: { $data: '0/widget' },

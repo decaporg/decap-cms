@@ -326,6 +326,8 @@ export default class Widget extends Component {
       isFieldHidden,
       locale,
       isParentListCollapsed,
+      listIndexes,
+      fieldCondition,
     } = this.props;
 
     return React.createElement(controlComponent, {
@@ -379,6 +381,8 @@ export default class Widget extends Component {
       isFieldHidden,
       locale,
       isParentListCollapsed,
+      listIndexes,
+      fieldCondition,
     });
   }
 }

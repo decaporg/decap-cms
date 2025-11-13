@@ -69,8 +69,23 @@ export interface CmsI18nConfig {
 
 interface Condition {
   field: string;
-  value: string | boolean | number;
-  operator?: '==' | '!=' | '>' | '<' | '>=' | '<=';
+  value:
+    | string
+    | boolean
+    | number
+    | RegExp
+    | { regex: string; flags?: string }
+    | (string | boolean | number)[];
+  operator?:
+    | 'equal'
+    | 'notEqual'
+    | 'greaterThan'
+    | 'lessThan'
+    | 'greaterThanOrEqual'
+    | 'lessThanOrEqual'
+    | 'oneOf'
+    | 'includes'
+    | 'matches';
 }
 
 export interface CmsFieldBase {
