@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
+import memoize from 'lodash/memoize';
 import {
   buttons,
   colors,
@@ -196,12 +197,170 @@ function calculateCondition({ field, fields, entry, locale, isTranslatable, list
   }
 }
 
+/**
+ * Memoized version of calculateCondition to improve performance.
+ *
+ * PERFORMANCE OPTIMIZATION:
+ * Without memoization, calculateCondition is called on every render for every field,
+ * creating an O(n²) performance problem. When a user types in a field, the entry
+ * object changes, causing all fields to re-render and recalculate their conditions.
+ *
+ * This memoization caches results based on:
+ * 1. The field name being checked
+ * 2. The actual VALUE of the condition field (not the entire entry object)
+ * 3. List indexes for wildcard paths
+ *
+ * This means:
+ * - Typing in field A only recalculates conditions that depend on field A
+ * - Typing in field B doesn't trigger recalculation for fields that depend on A
+ * - Cache is automatically cleared when switching entries (see componentDidUpdate)
+ *
+ * This reduces O(n²) to O(n) complexity for conditional field evaluation.
+ */
+const memoizedCalculateCondition = memoize(
+  ({ field, fields, entry, locale, isTranslatable, listIndexes = [] }) => {
+    return calculateCondition({ field, fields, entry, locale, isTranslatable, listIndexes });
+  },
+  // Custom resolver: create cache key from field name, condition field value, and listIndexes
+  ({ field, entry, listIndexes = [] }) => {
+    const condition = field.get('condition');
+    if (!condition) return `${field.get('name')}-no-condition`;
+
+    let condFieldName = condition.get('field');
+    if (!condFieldName) return `${field.get('name')}-no-field`;
+
+    // Handle wildcard paths
+    if (condFieldName.includes('*')) {
+      condFieldName = condFieldName.split('*').reduce((acc, item, i) => {
+        return `${acc}${item}${listIndexes[i] >= 0 ? listIndexes[i] : ''}`;
+      }, '');
+    }
+
+    // Get the actual value of the condition field to use in cache key
+    let condFieldValue;
+    if (condFieldName.includes('.')) {
+      const dataPath = condFieldName.split('.');
+      const entryData = entry.get('data');
+      condFieldValue = entryData ? entryData.getIn(dataPath) : undefined;
+    } else {
+      const entryData = entry.get('data');
+      condFieldValue = entryData ? entryData.get(condFieldName) : undefined;
+    }
+
+    // Create cache key from field name, condition field name, condition field value, and list indexes
+    // This ensures we only recalculate when the condition field's value actually changes
+    const valueKey = condFieldValue?.toJS
+      ? JSON.stringify(condFieldValue.toJS())
+      : String(condFieldValue);
+    return `${field.get('name')}-${condFieldName}-${valueKey}-${listIndexes.join(',')}`;
+  },
+);
+
 export default class ControlPane extends React.Component {
   state = {
     selectedLocale: this.props.locale,
+    // Track which fields are currently visible based on conditions
+    // This allows us to update visibility asynchronously without blocking input
+    fieldVisibility: {},
   };
 
   childRefs = {};
+  visibilityUpdateTimer = null;
+
+  componentDidMount() {
+    // Calculate initial visibility
+    this.scheduleVisibilityUpdate();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    // Clear memoization cache when switching to a different entry
+    // This ensures we don't use stale cached condition calculations
+    if (prevProps.entry !== this.props.entry) {
+      memoizedCalculateCondition.cache.clear();
+      // Force immediate recalculation for new entry
+      this.setState({ fieldVisibility: {} });
+      this.scheduleVisibilityUpdate(true);
+    } else if (
+      prevProps.entry !== this.props.entry ||
+      prevState.selectedLocale !== this.state.selectedLocale
+    ) {
+      // Schedule async visibility update when data changes
+      this.scheduleVisibilityUpdate();
+    }
+  }
+
+  componentWillUnmount() {
+    // Clean up any pending visibility updates
+    if (this.visibilityUpdateTimer) {
+      clearTimeout(this.visibilityUpdateTimer);
+    }
+  }
+
+  /**
+   * Schedule an asynchronous update of field visibility.
+   * This allows user input to remain smooth while conditional field
+   * visibility is recalculated in the background.
+   *
+   * @param {boolean} immediate - If true, update immediately without debouncing
+   */
+  scheduleVisibilityUpdate = (immediate = false) => {
+    // Clear any pending update
+    if (this.visibilityUpdateTimer) {
+      clearTimeout(this.visibilityUpdateTimer);
+    }
+
+    const updateVisibility = () => {
+      const { entry, collection, fields } = this.props;
+      const locale = this.state.selectedLocale;
+      const isTranslatable = hasI18n(collection);
+
+      // Calculate visibility for all fields with conditions
+      const newVisibility = {};
+      fields.forEach(field => {
+        const fieldName = field.get('name');
+        const condition = field.get('condition');
+
+        if (condition) {
+          // Use memoized calculation
+          newVisibility[fieldName] = memoizedCalculateCondition({
+            field,
+            fields,
+            entry,
+            locale,
+            isTranslatable,
+            listIndexes: [],
+          });
+        } else {
+          // Fields without conditions are always visible
+          newVisibility[fieldName] = true;
+        }
+      });
+
+      this.setState({ fieldVisibility: newVisibility });
+    };
+
+    if (immediate) {
+      // Update immediately (e.g., when switching entries)
+      updateVisibility();
+    } else {
+      // Debounce updates to avoid excessive recalculation during rapid typing
+      // Use requestIdleCallback if available, otherwise setTimeout
+      if (typeof requestIdleCallback !== 'undefined') {
+        this.visibilityUpdateTimer = requestIdleCallback(
+          () => {
+            updateVisibility();
+            this.visibilityUpdateTimer = null;
+          },
+          { timeout: 150 }, // Max delay of 150ms
+        );
+      } else {
+        this.visibilityUpdateTimer = setTimeout(() => {
+          updateVisibility();
+          this.visibilityUpdateTimer = null;
+        }, 50); // Small delay to batch updates
+      }
+    }
+  };
 
   controlRef = (field, wrappedControl) => {
     if (!wrappedControl) return;
@@ -218,7 +377,7 @@ export default class ControlPane extends React.Component {
     const locale = this.state.selectedLocale;
     const isTranslatable = hasI18n(collection);
 
-    return calculateCondition({
+    return memoizedCalculateCondition({
       field,
       fields,
       entry,
@@ -272,7 +431,7 @@ export default class ControlPane extends React.Component {
     const { fields, entry, collection } = this.props;
 
     fields.forEach(field => {
-      const isConditionMet = calculateCondition({
+      const isConditionMet = memoizedCalculateCondition({
         field,
         fields,
         entry,
@@ -346,18 +505,20 @@ export default class ControlPane extends React.Component {
         {fields
           .filter(f => f.get('widget') !== 'hidden')
           .map((field, i) => {
+            const fieldName = field.get('name');
             const isTranslatable = isFieldTranslatable(field, locale, defaultLocale);
             const isDuplicate = isFieldDuplicate(field, locale, defaultLocale);
             const isHidden = isFieldHidden(field, locale, defaultLocale);
             const key = i18n ? `${locale}_${i}` : i;
-            const isConditionMet = calculateCondition({
-              field,
-              fields,
-              entry,
-              locale,
-              isTranslatable,
-            });
-            if (!isConditionMet) return;
+
+            // Use cached visibility state for smooth performance
+            // If visibility hasn't been calculated yet, default to visible to avoid hiding fields
+            const hasCondition = !!field.get('condition');
+            const isConditionMet = hasCondition
+              ? this.state.fieldVisibility[fieldName] !== false // Default to true if not yet calculated
+              : true;
+
+            if (!isConditionMet) return null;
 
             return (
               <EditorControl
@@ -372,7 +533,10 @@ export default class ControlPane extends React.Component {
                 fieldsMetaData={fieldsMetaData}
                 fieldsErrors={fieldsErrors}
                 onChange={(field, newValue, newMetadata) => {
+                  // Call parent onChange
                   onChange(field, newValue, newMetadata, i18n);
+                  // Schedule async visibility update to reflect condition changes
+                  this.scheduleVisibilityUpdate();
                 }}
                 onValidate={onValidate}
                 controlRef={this.getControlRef(field)}
