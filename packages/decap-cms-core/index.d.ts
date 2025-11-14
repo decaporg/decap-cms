@@ -133,6 +133,8 @@ declare module 'decap-cms-core' {
     default?: any;
 
     allow_add?: boolean;
+    allow_remove?: boolean;
+    allow_reorder?: boolean;
     collapsed?: boolean;
     summary?: string;
     minimize_collapsed?: boolean;
@@ -390,7 +392,11 @@ declare module 'decap-cms-core' {
     locale?: string;
     site_url?: string;
     display_url?: string;
-    logo_url?: string;
+    logo_url?: string; // Deprecated, replaced by `logo.src`
+    logo?: {
+      src: string;
+      show_in_header?: boolean;
+    };
     show_preview_links?: boolean;
     media_folder?: string;
     public_folder?: string;

@@ -3,6 +3,40 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.9.0](https://github.com/decaporg/decap-cms/compare/decap-cms-app@3.8.4...decap-cms-app@3.9.0) (2025-11-04)
+
+**Note:** Version bump only for package decap-cms-app
+
+## [3.8.4](https://github.com/decaporg/decap-cms/compare/decap-cms-app@3.8.3...decap-cms-app@3.8.4) (2025-09-30)
+
+**Note:** Version bump only for package decap-cms-app
+
+## [3.8.3](https://github.com/decaporg/decap-cms/compare/decap-cms-app@3.8.2...decap-cms-app@3.8.3) (2025-07-31)
+
+**Note:** Version bump only for package decap-cms-app
+
+## [3.8.2](https://github.com/decaporg/decap-cms/compare/decap-cms-app@3.8.1...decap-cms-app@3.8.2) (2025-07-22)
+
+**Note:** Version bump only for package decap-cms-app
+
+## [3.8.1](https://github.com/decaporg/decap-cms/compare/decap-cms-app@3.8.0...decap-cms-app@3.8.1) (2025-07-22)
+
+**Note:** Version bump only for package decap-cms-app
+
+# [3.8.0](https://github.com/decaporg/decap-cms/compare/decap-cms-app@3.7.2...decap-cms-app@3.8.0) (2025-07-15)
+
+**Note:** Version bump only for package decap-cms-app
+
+## [3.7.2](https://github.com/decaporg/decap-cms/compare/decap-cms-app@3.7.1...decap-cms-app@3.7.2) (2025-07-10)
+
+**Note:** Version bump only for package decap-cms-app
+
+## [3.7.1](https://github.com/decaporg/decap-cms/compare/decap-cms-app@3.7.0...decap-cms-app@3.7.1) (2025-06-26)
+
+### Bug Fixes
+
+- could not resolve "ajv" ([#7520](https://github.com/decaporg/decap-cms/issues/7520)) ([93a369d](https://github.com/decaporg/decap-cms/commit/93a369d9b6299d891bf0338a09a2d5a503176018))
+
 # [3.7.0](https://github.com/decaporg/decap-cms/compare/decap-cms-app@3.6.4...decap-cms-app@3.7.0) (2025-06-26)
 
 **Note:** Version bump only for package decap-cms-app

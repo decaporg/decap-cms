@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.0.6](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-auth@3.0.5...decap-cms-lib-auth@3.0.6) (2025-07-31)
+
+**Note:** Version bump only for package decap-cms-lib-auth
+
 ## [3.0.5](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-auth@3.0.4...decap-cms-lib-auth@3.0.5) (2024-03-21)
 
 **Note:** Version bump only for package decap-cms-lib-auth

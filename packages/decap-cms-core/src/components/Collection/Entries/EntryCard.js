@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { colors, colorsRaw, components, lengths, zIndex, Icon } from 'decap-cms-ui-default';
+import { translate } from 'react-polyglot';
 
 import { boundGetAsset } from '../../../actions/media';
 import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from '../../../constants/collectionViews';
@@ -93,6 +94,43 @@ const CardImage = styled.div`
   height: 150px;
 `;
 
+const TitleIcons = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+const WorkflowBadge = styled.span`
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 11px;
+  text-transform: uppercase;
+  background-color: ${props => {
+    switch (props.status) {
+      case 'draft':
+        return colors.statusDraftBackground;
+      case 'pending_review':
+        return colors.statusReviewBackground;
+      case 'pending_publish':
+        return colors.statusReadyBackground;
+      default:
+        return colors.background;
+    }
+  }};
+  color: ${props => {
+    switch (props.status) {
+      case 'draft':
+        return colors.statusDraftText;
+      case 'pending_review':
+        return colors.statusReviewText;
+      case 'pending_publish':
+        return colors.statusReadyText;
+      default:
+        return colors.text;
+    }
+  }};
+`;
+
 function EntryCard({
   path,
   summary,
@@ -101,8 +139,23 @@ function EntryCard({
   collectionLabel,
   showIndexFileIcon,
   viewStyle = VIEW_STYLE_LIST,
+  workflowStatus,
   getAsset,
+  t,
 }) {
+  function getStatusLabel(status) {
+    switch (status) {
+      case 'pending_review':
+        return t('editor.editorToolbar.inReview');
+      case 'pending_publish':
+        return t('editor.editorToolbar.ready');
+      case 'draft':
+        return t('editor.editorToolbar.draft');
+      default:
+        return status;
+    }
+  }
+
   if (viewStyle === VIEW_STYLE_LIST) {
     return (
       <ListCard>
@@ -110,7 +163,14 @@ function EntryCard({
           {collectionLabel ? <CollectionLabel>{collectionLabel}</CollectionLabel> : null}
           <ListCardTitle>
             {summary}
-            {showIndexFileIcon && <Icon type="home" />}
+            <TitleIcons>
+              {showIndexFileIcon && <Icon type="home" />}
+              {workflowStatus && (
+                <WorkflowBadge status={workflowStatus}>
+                  {getStatusLabel(workflowStatus)}
+                </WorkflowBadge>
+              )}
+            </TitleIcons>
           </ListCardTitle>
         </ListCardLink>
       </ListCard>
@@ -125,7 +185,14 @@ function EntryCard({
             {collectionLabel ? <CollectionLabel>{collectionLabel}</CollectionLabel> : null}
             <CardHeading>
               {summary}
-              {showIndexFileIcon && <Icon type="home" />}
+              <TitleIcons>
+                {showIndexFileIcon && <Icon type="home" />}
+                {workflowStatus && (
+                  <WorkflowBadge status={workflowStatus}>
+                    {getStatusLabel(workflowStatus)}
+                  </WorkflowBadge>
+                )}
+              </TitleIcons>
             </CardHeading>
           </CardBody>
           {image ? <CardImage src={getAsset(image, imageField).toString()} /> : null}
@@ -177,6 +244,10 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
   };
 }
 
-const ConnectedEntryCard = connect(mapStateToProps, mapDispatchToProps, mergeProps)(EntryCard);
+const ConnectedEntryCard = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps,
+)(translate()(EntryCard));
 
 export default ConnectedEntryCard;
