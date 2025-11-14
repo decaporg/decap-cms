@@ -12,7 +12,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import sortBy from 'lodash/sortBy';
 
 import { selectEntries } from '../../reducers/entries';
-import { selectEntryCollectionTitle } from '../../reducers/collections';
+import { isNestedSubfolders, selectEntryCollectionTitle } from '../../reducers/collections';
 
 const { addFileTemplateFields } = stringTemplate;
 
@@ -79,7 +79,7 @@ function TreeNode(props) {
   const collectionName = collection.get('name');
 
   const sortedData = sortBy(treeData, getNodeTitle);
-  const subfolders = collection.get('nested')?.get('subfolders') !== false;
+  const subfolders = isNestedSubfolders(collection);
   return sortedData.map(node => {
     const leaf =
       depth > 0 &&
