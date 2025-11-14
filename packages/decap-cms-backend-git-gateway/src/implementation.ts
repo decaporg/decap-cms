@@ -409,8 +409,17 @@ export default class GitGateway implements Implementation {
     return this.tokenPromise!();
   }
 
-  async entriesByFolder(folder: string, extension: string, depth: number) {
-    return this.backend!.entriesByFolder(folder, extension, depth);
+  async entriesByFolder(
+    folder: string,
+    extension: string,
+    depth: number,
+    options?: {
+      page?: number;
+      pageSize?: number;
+      pagination?: boolean;
+    },
+  ) {
+    return this.backend!.entriesByFolder(folder, extension, depth, options);
   }
   allEntriesByFolder(folder: string, extension: string, depth: number, pathRegex?: RegExp) {
     return this.backend!.allEntriesByFolder(folder, extension, depth, pathRegex);

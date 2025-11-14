@@ -6,6 +6,11 @@ export type EntriesByFolderParams = {
   folder: string;
   extension: string;
   depth: 1;
+  options?: {
+    page?: number;
+    pageSize?: number;
+    pagination?: boolean;
+  };
 };
 
 export type EntriesByFilesParams = {

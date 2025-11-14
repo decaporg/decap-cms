@@ -1,6 +1,5 @@
 import attempt from 'lodash/attempt';
 import isError from 'lodash/isError';
-import take from 'lodash/take';
 import unset from 'lodash/unset';
 import isEmpty from 'lodash/isEmpty';
 import { v4 as uuid } from 'uuid';
@@ -80,7 +79,7 @@ function deleteFile(path: string, tree: RepoTree) {
   unset(tree, path.split('/'));
 }
 
-const pageSize = 10;
+const DEFAULT_PAGE_SIZE = 10;
 
 function getCursor(
   folder: string,
@@ -88,15 +87,19 @@ function getCursor(
   entries: ImplementationEntry[],
   index: number,
   depth: number,
+  pageSize = DEFAULT_PAGE_SIZE,
 ) {
+  if (pageSize <= 0) {
+    throw new Error('pageSize must be positive');
+  }
   const count = entries.length;
-  const pageCount = Math.floor(count / pageSize);
+  const pageCount = Math.ceil(count / pageSize);
   return Cursor.create({
     actions: [
       ...(index < pageCount ? ['next', 'last'] : []),
       ...(index > 0 ? ['prev', 'first'] : []),
     ],
-    meta: { index, count, pageSize, pageCount },
+    meta: { index, page: index + 1, count, pageSize, pageCount },
     data: { folder, extension, index, pageCount, depth },
   });
 }
@@ -173,6 +176,9 @@ export default class TestBackend implements Implementation {
       pageCount: number;
       depth: number;
     };
+    const meta = cursor.meta!;
+    const currentPageSize = meta.get('pageSize', DEFAULT_PAGE_SIZE);
+
     const newIndex = (() => {
       if (action === 'next') {
         return (index as number) + 1;
@@ -194,19 +200,38 @@ export default class TestBackend implements Implementation {
       data: f.content as string,
       file: { path: f.path, id: f.path },
     }));
-    const entries = allEntries.slice(newIndex * pageSize, newIndex * pageSize + pageSize);
-    const newCursor = getCursor(folder, extension, allEntries, newIndex, depth);
+    const entries = allEntries.slice(
+      newIndex * currentPageSize,
+      newIndex * currentPageSize + currentPageSize,
+    );
+    const newCursor = getCursor(folder, extension, allEntries, newIndex, depth, currentPageSize);
     return Promise.resolve({ entries, cursor: newCursor });
   }
 
-  entriesByFolder(folder: string, extension: string, depth: number) {
+  entriesByFolder(
+    folder: string,
+    extension: string,
+    depth: number,
+    options?: {
+      page?: number;
+      pageSize?: number;
+      pagination?: boolean;
+    },
+  ) {
     const files = folder ? getFolderFiles(window.repoFiles, folder, extension, depth) : [];
     const entries = files.map(f => ({
       data: f.content as string,
       file: { path: f.path, id: f.path },
     }));
-    const cursor = getCursor(folder, extension, entries, 0, depth);
-    const ret = take(entries, pageSize);
+    const pageSize = options?.pageSize ?? DEFAULT_PAGE_SIZE;
+    const page = options?.page ?? 1;
+    const usePagination = options?.pagination ?? true;
+
+    const cursor = getCursor(folder, extension, entries, page - 1, depth, pageSize);
+
+    // If pagination is enabled, return only the requested page
+    // Otherwise, return all entries (for backward compatibility)
+    const ret = usePagination ? entries.slice((page - 1) * pageSize, page * pageSize) : entries;
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     ret[CURSOR_COMPATIBILITY_SYMBOL] = cursor;

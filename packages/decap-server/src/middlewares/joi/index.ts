@@ -61,6 +61,11 @@ export function defaultSchema({ path = requiredString } = {}) {
             folder: path,
             extension: requiredString,
             depth: requiredNumber,
+            options: Joi.object({
+              page: Joi.number().optional(),
+              pageSize: Joi.number().optional(),
+              pagination: Joi.boolean().optional(),
+            }).optional(),
           })
           .required(),
       },

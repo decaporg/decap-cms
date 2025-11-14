@@ -156,7 +156,16 @@ export default class Azure implements Implementation {
     return Promise.resolve(this.token);
   }
 
-  async entriesByFolder(folder: string, extension: string, depth: number) {
+  async entriesByFolder(
+    folder: string,
+    extension: string,
+    depth: number,
+    options?: {
+      page?: number;
+      pageSize?: number;
+      pagination?: boolean;
+    },
+  ) {
     const listFiles = async () => {
       const files = await this.api!.listFiles(folder, depth > 1);
       const filtered = files.filter(file => filterByExtension({ path: file.path }, extension));
@@ -171,6 +180,7 @@ export default class Azure implements Implementation {
       this.api!.readFile.bind(this.api!),
       this.api!.readFileMetadata.bind(this.api),
       API_NAME,
+      options,
     );
     return entries;
   }
