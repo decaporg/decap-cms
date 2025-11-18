@@ -6,7 +6,13 @@ const packages = fs
   .map(dirent => dirent.name);
 
 module.exports = {
-  parser: 'babel-eslint',
+  parser: '@babel/eslint-parser',
+  parserOptions: {
+    requireConfigFile: false,
+    babelOptions: {
+      presets: ['@babel/preset-react'],
+    },
+  },
   extends: [
     'eslint:recommended',
     'plugin:react/recommended',
