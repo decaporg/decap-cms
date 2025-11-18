@@ -7,6 +7,7 @@ import remarkToRehype from 'remark-rehype';
 import rehypeToHtml from 'rehype-stringify';
 import htmlToRehype from 'rehype-parse';
 import rehypeToRemark from 'rehype-remark';
+import { Map } from 'immutable';
 
 import remarkToRehypeShortcodes from './remarkRehypeShortcodes';
 import rehypePaperEmoji from './rehypePaperEmoji';
@@ -156,7 +157,7 @@ export function remarkToMarkdown(obj, remarkPlugins, editorComponents) {
  */
 export function markdownToHtml(
   markdown,
-  { getAsset, resolveWidget, remarkPlugins = [], editorComponents } = {},
+  { getAsset, resolveWidget, remarkPlugins = [], editorComponents = Map() } = {},
 ) {
   const mdast = markdownToRemark(markdown, remarkPlugins, editorComponents);
 
