@@ -70,6 +70,7 @@ module.exports = {
       node: {
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
       },
+      exports: {},
     },
     'import/core-modules': [...packages, 'decap-cms-app/dist/esm'],
   },
