@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.4.0](https://github.com/decaporg/decap-cms/compare/decap-server@3.3.1...decap-server@3.4.0) (2025-11-04)
+
+### Features
+
+- **decap-server:** Allow the server to be run securely ([#7579](https://github.com/decaporg/decap-cms/issues/7579)) ([eb9e8c5](https://github.com/decaporg/decap-cms/commit/eb9e8c514b1783842953e6b1e5fd05377e000dae))
+
 ## [3.3.1](https://github.com/decaporg/decap-cms/compare/decap-server@3.3.0...decap-server@3.3.1) (2025-07-31)
 
 **Note:** Version bump only for package decap-server
