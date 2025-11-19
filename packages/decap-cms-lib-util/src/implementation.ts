@@ -103,6 +103,7 @@ export type Config = {
     api_root?: string;
     squash_merges?: boolean;
     use_graphql?: boolean;
+    use_github_search?: boolean;
     graphql_api_root?: string;
     preview_context?: string;
     identity_url?: string;

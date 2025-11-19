@@ -321,3 +321,24 @@ export function fileCommits(paths: string[]) {
     ${fragments.repository}
   `;
 }
+
+export const codeSearch = gql`
+  query codeSearch($query: String!, $first: Int!, $after: String) {
+    search(query: $query, type: CODE, first: $first, after: $after) {
+      codeCount
+      edges {
+        node {
+          ... on Blob {
+            oid
+            name
+            path
+          }
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+`;

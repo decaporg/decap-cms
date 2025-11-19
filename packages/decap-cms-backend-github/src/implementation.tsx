@@ -20,6 +20,7 @@ import {
   contentKeyFromBranch,
   unsentRequest,
   branchFromContentKey,
+  localForage,
 } from 'decap-cms-lib-util';
 
 import AuthenticationPage from './AuthenticationPage';
@@ -84,6 +85,7 @@ export default class GitHub implements Implementation {
   squashMerges: boolean;
   cmsLabelPrefix: string;
   useGraphql: boolean;
+  useGitHubSearch: boolean;
   baseUrl?: string;
   bypassWriteAccessCheckForAppTokens = false;
   _currentUserPromise?: Promise<GitHubUser>;
@@ -129,6 +131,7 @@ export default class GitHub implements Implementation {
     this.squashMerges = config.backend.squash_merges || false;
     this.cmsLabelPrefix = config.backend.cms_label_prefix || '';
     this.useGraphql = config.backend.use_graphql || false;
+    this.useGitHubSearch = config.backend.use_github_search || false;
     this.mediaFolder = config.media_folder;
     this.previewContext = config.backend.preview_context || '';
     this.lock = asyncLock();
@@ -681,6 +684,119 @@ export default class GitHub implements Implementation {
       this.api!.readFile(path, id, { repoURL }).catch(() => '') as Promise<string>;
 
     return entriesByFiles(files, readFile, this.api!.readFileMetadata.bind(this.api), API_NAME);
+  }
+
+  // Search entries using GitHub Code Search API or default fuzzy search
+  async search(
+    collections: { get: (key: string) => string | undefined }[],
+    searchTerm: string,
+  ): Promise<{ entries: { slug: string; collection: string; path: string; data: string }[] }> {
+    // Use GitHub Code Search if enabled and GraphQL is available
+    if (
+      this.useGitHubSearch &&
+      this.useGraphql &&
+      this.api &&
+      'searchCode' in this.api &&
+      typeof this.api.searchCode === 'function'
+    ) {
+      return this.searchViaGitHubAPI(collections, searchTerm);
+    }
+
+    // Fallback: this shouldn't be called as the base Backend class handles fuzzy search
+    // But included for type safety
+    throw new Error('Search method should be called on Backend class, not implementation');
+  }
+
+  private async searchViaGitHubAPI(
+    collections: { get: (key: string) => string | undefined }[],
+    searchTerm: string,
+  ) {
+    const SEARCH_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+    const cacheKey = `search:${searchTerm}:${collections.map(c => c.get('name')).join(',')}`;
+
+    // Check cache first
+    try {
+      const cached = await localForage.getItem<{
+        results: { slug: string; collection: string; path: string; data: string }[];
+        timestamp: number;
+      }>(cacheKey);
+
+      if (cached && Date.now() - cached.timestamp < SEARCH_CACHE_TTL) {
+        console.log('[GitHub Backend] Using cached search results');
+        return { entries: cached.results };
+      }
+    } catch (error) {
+      // Cache read failed, continue with fresh search
+      console.warn('[GitHub Backend] Cache read failed:', error);
+    }
+
+    const results: { slug: string; collection: string; path: string; data: string }[] = [];
+
+    for (const collection of collections) {
+      const folder = collection.get('folder');
+      const extension = collection.get('extension') || 'md';
+
+      if (!folder) continue;
+
+      try {
+        // Use GitHub Code Search
+        const searchResult = await (this.api as GraphQLAPI).searchCode(searchTerm, {
+          path: folder,
+          extension,
+          limit: 100,
+        });
+
+        // Convert search results to entries
+        const entries = await Promise.all(
+          searchResult.files.map(async (file: { path: string; oid: string; name: string }) => {
+            try {
+              // Read file content
+              const data = await this.api!.readFile(file.path, file.oid, {
+                repoURL: this.api!.originRepoURL,
+              });
+
+              return {
+                slug: basename(file.path, `.${extension}`),
+                collection: collection.get('name') || '',
+                path: file.path,
+                data: data as string,
+              };
+            } catch (error) {
+              console.error(`[GitHub Backend] Failed to load file: ${file.path}`, error);
+              return null;
+            }
+          }),
+        );
+
+        // Filter out failed entries
+        results.push(
+          ...(entries.filter((e): e is NonNullable<typeof e> => e !== null) as typeof results),
+        );
+      } catch (error) {
+        // Handle rate limiting
+        if ((error as { status?: number }).status === 403) {
+          throw new Error(
+            'GitHub Search rate limit exceeded. Please try again in a minute or disable use_github_search in your configuration.',
+          );
+        }
+        console.error(
+          `[GitHub Backend] Search failed for collection ${collection.get('name')}:`,
+          error,
+        );
+      }
+    }
+
+    // Cache the results
+    try {
+      await localForage.setItem(cacheKey, {
+        results,
+        timestamp: Date.now(),
+      });
+    } catch (error) {
+      console.warn('[GitHub Backend] Failed to cache search results:', error);
+    }
+
+    return { entries: results };
   }
 
   // Fetches a single entry.

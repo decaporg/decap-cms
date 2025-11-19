@@ -414,4 +414,99 @@ describe('github GraphQL API', () => {
       consoleWarn.mockRestore();
     });
   });
+
+  describe('searchCode', () => {
+    it('should search code via GitHub API', async () => {
+      const api = new GraphQLAPI({ branch: 'main', repo: 'owner/my-repo' });
+
+      api.query = jest.fn().mockResolvedValue({
+        data: {
+          search: {
+            codeCount: 42,
+            edges: [
+              { node: { path: 'content/post1.md', oid: 'sha1', name: 'post1.md' } },
+              { node: { path: 'content/post2.md', oid: 'sha2', name: 'post2.md' } },
+            ],
+            pageInfo: {
+              hasNextPage: true,
+              endCursor: 'cursor123',
+            },
+          },
+        },
+      });
+
+      const results = await api.searchCode('keyword', {
+        path: 'content',
+        extension: 'md',
+      });
+
+      expect(results.files).toHaveLength(2);
+      expect(results.files[0]).toEqual({ path: 'content/post1.md', oid: 'sha1', name: 'post1.md' });
+      expect(results.totalCount).toBe(42);
+      expect(results.hasMore).toBe(true);
+
+      expect(api.query).toHaveBeenCalledWith({
+        query: expect.anything(),
+        variables: {
+          query: 'repo:owner/my-repo path:content extension:md keyword',
+          first: 100,
+        },
+        fetchPolicy: 'no-cache',
+      });
+    });
+
+    it('should build correct search query with multiple filters', async () => {
+      const api = new GraphQLAPI({ branch: 'main', repo: 'owner/my-repo' });
+
+      api.query = jest.fn().mockResolvedValue({
+        data: {
+          search: {
+            codeCount: 10,
+            edges: [{ node: { path: 'src/index.js', oid: 'sha1', name: 'index.js' } }],
+            pageInfo: { hasNextPage: false },
+          },
+        },
+      });
+
+      await api.searchCode('react', {
+        path: 'src',
+        extension: 'js',
+        language: 'javascript',
+        limit: 50,
+      });
+
+      expect(api.query).toHaveBeenCalledWith({
+        query: expect.anything(),
+        variables: {
+          query: 'repo:owner/my-repo path:src extension:js language:javascript react',
+          first: 50,
+        },
+        fetchPolicy: 'no-cache',
+      });
+    });
+
+    it('should limit results to maximum of 100', async () => {
+      const api = new GraphQLAPI({ branch: 'main', repo: 'owner/my-repo' });
+
+      api.query = jest.fn().mockResolvedValue({
+        data: {
+          search: {
+            codeCount: 500,
+            edges: [],
+            pageInfo: { hasNextPage: true },
+          },
+        },
+      });
+
+      await api.searchCode('test', { limit: 200 });
+
+      expect(api.query).toHaveBeenCalledWith(
+        expect.objectContaining({
+          variables: expect.objectContaining({
+            first: 100, // Should cap at 100, not use 200
+          }),
+        }),
+      );
+    });
+  });
 });

@@ -924,5 +924,50 @@ export default class GraphQLAPI extends API {
 
     return results;
   }
-}
 
+  /**
+   * Search code using GitHub's Code Search API
+   * Returns file paths matching the search query
+   */
+  async searchCode(
+    searchTerm: string,
+    options: {
+      path?: string;
+      extension?: string;
+      language?: string;
+      limit?: number;
+      repoURL?: string;
+    } = {},
+  ): Promise<{
+    files: Array<{ path: string; oid: string; name: string }>;
+    totalCount: number;
+    hasMore: boolean;
+  }> {
+    const { path, extension, language, limit = 100, repoURL = this.repoURL } = options;
+    const { owner, name } = this.getOwnerAndNameFromRepoUrl(repoURL);
+
+    // Build GitHub Code Search query
+    let query = `repo:${owner}/${name}`;
+    if (path) query += ` path:${path}`;
+    if (extension) query += ` extension:${extension}`;
+    if (language) query += ` language:${language}`;
+    query += ` ${searchTerm}`;
+
+    const { data } = await this.query({
+      query: queries.codeSearch,
+      variables: {
+        query,
+        first: Math.min(limit, 100), // GitHub max is 100 per page
+      },
+      fetchPolicy: NO_CACHE, // Search results should always be fresh
+    });
+
+    return {
+      files: data.search.edges.map(
+        (edge: { node: { path: string; oid: string; name: string } }) => edge.node,
+      ),
+      totalCount: data.search.codeCount,
+      hasMore: data.search.pageInfo.hasNextPage,
+    };
+  }
+}
