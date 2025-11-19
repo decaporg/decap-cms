@@ -113,9 +113,9 @@ export default class GraphQLAPI extends API {
         },
       };
     });
-    // Use baseUrl proxy if configured (for CORS), otherwise use direct API access
-    const graphqlEndpoint = this.baseUrl ? `${this.baseUrl}/graphql` : `${this.apiRoot}/graphql`;
-    const httpLink = createHttpLink({ uri: graphqlEndpoint });
+    // Always use direct GitHub API access for GraphQL
+    // base_url is for OAuth endpoints only, not API requests
+    const httpLink = createHttpLink({ uri: `${this.apiRoot}/graphql` });
 
     // Implement intelligent cache with custom dataIdFromObject for better cache keys
     const cache = new InMemoryCache({

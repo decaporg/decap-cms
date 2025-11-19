@@ -545,29 +545,4 @@ describe('github GraphQL API', () => {
       );
     });
   });
-
-  describe('proxy configuration', () => {
-    it('should use apiRoot when no baseUrl is configured', () => {
-      const api = new GraphQLAPI({ branch: 'main', repo: 'owner/my-repo' });
-      const client = api.getApolloClient();
-
-      // The httpLink should be configured with the direct API endpoint
-      expect(client.link).toBeDefined();
-    });
-
-    it('should use baseUrl proxy when configured', () => {
-      const api = new GraphQLAPI({
-        branch: 'main',
-        repo: 'owner/my-repo',
-        baseUrl: 'https://my-proxy.example.com',
-        apiRoot: 'https://api.github.com',
-      });
-      const client = api.getApolloClient();
-
-      // The httpLink should be configured with the proxy endpoint
-      expect(client.link).toBeDefined();
-      // Note: The actual endpoint URL is internal to apollo-link-http
-      // We're testing that the client is created successfully with the proxy config
-    });
-  });
 });
