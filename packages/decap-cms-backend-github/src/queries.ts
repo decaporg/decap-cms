@@ -310,7 +310,9 @@ export function fileCommits(paths: string[]) {
     .join('\n');
 
   return gql`
-    query fileCommits($owner: String!, $name: String!, $branch: String!, ${paths.map((_, i) => `$expression${i}: String!`).join(', ')}) {
+    query fileCommits($owner: String!, $name: String!, $branch: String!, ${paths
+      .map((_, i) => `$expression${i}: String!`)
+      .join(', ')}) {
       repository(owner: $owner, name: $name) {
         ...RepositoryParts
         ${queries}

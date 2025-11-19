@@ -358,4 +358,115 @@ describe('github backend implementation', () => {
       });
     });
   });
+
+  describe('progressive loading', () => {
+    it('should load entries in batches with progress logging', async () => {
+      // Mock console.log to capture progress messages
+      const originalConsoleLog = console.log;
+      const logSpy = jest.fn();
+      console.log = logSpy;
+
+      const gitHubImplementation = new GitHubImplementation({
+        ...config,
+        backend: {
+          ...config.backend,
+          use_graphql: true,
+        },
+      });
+
+      // Create test data: 150 files (should load in 3 batches of 50)
+      const files = Array.from({ length: 150 }, (_, i) => ({
+        id: `sha-${i}`,
+        type: 'blob',
+        name: `file-${i}.md`,
+        path: `content/posts/file-${i}.md`,
+        size: 1000,
+      }));
+
+      const mockMetadata = { author: 'Test Author', updatedOn: '2024-01-01' };
+
+      // Mock the API methods
+      gitHubImplementation.api = {
+        originRepoURL: 'owner/repo',
+        listFiles: jest.fn().mockResolvedValue(files),
+        batchReadFileMetadata: jest
+          .fn()
+          .mockImplementation(batch => Promise.resolve(Array(batch.length).fill(mockMetadata))),
+        readFile: jest
+          .fn()
+          .mockImplementation(path => Promise.resolve(`# ${path}\n\nContent for ${path}`)),
+      };
+
+      // Call allEntriesByFolder
+      const result = await gitHubImplementation.allEntriesByFolder('content/posts', 'md', 1);
+
+      // Verify results
+      expect(result).toHaveLength(150);
+      expect(gitHubImplementation.api.listFiles).toHaveBeenCalledTimes(1);
+
+      // Should have called batchReadFileMetadata 3 times (150 / 50 = 3 batches)
+      // But actually it will be called 8 times because batch size for metadata is 20
+      // and we process 50 entries at a time for loading
+      // Batch 1: 50 files = 3 metadata batches (50/20 = 2.5 → 3)
+      // Batch 2: 50 files = 3 metadata batches
+      // Batch 3: 50 files = 3 metadata batches
+      // Total: 8-9 calls
+      expect(gitHubImplementation.api.batchReadFileMetadata).toHaveBeenCalled();
+
+      // Verify progress logging (should log for first 2 batches, not the last)
+      const progressLogs = logSpy.mock.calls.filter(call =>
+        call[0]?.includes('[GitHub Backend] Loaded'),
+      );
+      expect(progressLogs.length).toBeGreaterThan(0);
+      expect(progressLogs[0][0]).toContain('50/150');
+      expect(progressLogs[1][0]).toContain('100/150');
+
+      // Restore console.log
+      console.log = originalConsoleLog;
+    });
+
+    it('should not log progress for small collections', async () => {
+      const originalConsoleLog = console.log;
+      const logSpy = jest.fn();
+      console.log = logSpy;
+
+      const gitHubImplementation = new GitHubImplementation({
+        ...config,
+        backend: {
+          ...config.backend,
+          use_graphql: true,
+        },
+      });
+
+      // Create small collection: 25 files (only 1 batch)
+      const files = Array.from({ length: 25 }, (_, i) => ({
+        id: `sha-${i}`,
+        type: 'blob',
+        name: `file-${i}.md`,
+        path: `content/file-${i}.md`,
+        size: 1000,
+      }));
+
+      const mockMetadata = { author: 'Test Author', updatedOn: '2024-01-01' };
+
+      gitHubImplementation.api = {
+        originRepoURL: 'owner/repo',
+        listFiles: jest.fn().mockResolvedValue(files),
+        batchReadFileMetadata: jest
+          .fn()
+          .mockImplementation(batch => Promise.resolve(Array(batch.length).fill(mockMetadata))),
+        readFile: jest.fn().mockImplementation(path => Promise.resolve(`# ${path}\n\nContent`)),
+      };
+
+      await gitHubImplementation.allEntriesByFolder('content', 'md', 1);
+
+      // Should not have any progress logs (only 1 batch)
+      const progressLogs = logSpy.mock.calls.filter(call =>
+        call[0]?.includes('[GitHub Backend] Loaded'),
+      );
+      expect(progressLogs.length).toBe(0);
+
+      console.log = originalConsoleLog;
+    });
+  });
 });

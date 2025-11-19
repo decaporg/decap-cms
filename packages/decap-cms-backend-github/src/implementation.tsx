@@ -615,34 +615,54 @@ export default class GitHub implements Implementation {
     ) {
       const files = await listFiles();
       const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
-      const promises = [] as Promise<ImplementationEntry | { error: boolean }>[];
+      const LOAD_BATCH_SIZE = 50; // Load 50 entries at a time for better perceived performance
+      const allEntries: ImplementationEntry[] = [];
 
-      // Fetch all metadata in batch first
-      const metadataList = await this.api.batchReadFileMetadata(files, { repoURL });
+      // Process files in batches for progressive loading
+      for (let i = 0; i < files.length; i += LOAD_BATCH_SIZE) {
+        const batch = files.slice(i, i + LOAD_BATCH_SIZE);
+        const promises = [] as Promise<ImplementationEntry | { error: boolean }>[];
 
-      files.forEach((file: ImplementationFile, index: number) => {
-        promises.push(
-          new Promise(resolve =>
-            sem.take(async () => {
-              try {
-                const data = await readFile(file.path, file.id);
-                const metadata = metadataList[index] || { author: '', updatedOn: '' };
-                resolve({ file: { ...file, ...metadata }, data: data as string });
-                sem.leave();
-              } catch (error) {
-                sem.leave();
-                console.error(`failed to load file from ${API_NAME}: ${file.path}`);
-                resolve({ error: true });
-              }
-            }),
-          ),
+        // Fetch metadata for this batch
+        const metadataList = await this.api.batchReadFileMetadata(batch, { repoURL });
+
+        batch.forEach((file: ImplementationFile, index: number) => {
+          promises.push(
+            new Promise(resolve =>
+              sem.take(async () => {
+                try {
+                  const data = await readFile(file.path, file.id);
+                  const metadata = metadataList[index] || { author: '', updatedOn: '' };
+                  resolve({ file: { ...file, ...metadata }, data: data as string });
+                  sem.leave();
+                } catch (error) {
+                  sem.leave();
+                  console.error(`failed to load file from ${API_NAME}: ${file.path}`);
+                  resolve({ error: true });
+                }
+              }),
+            ),
+          );
+        });
+
+        const loadedEntries = await Promise.all(promises);
+        const filteredEntries = loadedEntries.filter(
+          (entry): entry is ImplementationEntry => !(entry as { error: boolean }).error,
         );
-      });
 
-      const loadedEntries = await Promise.all(promises);
-      return loadedEntries.filter(
-        (entry): entry is ImplementationEntry => !(entry as { error: boolean }).error,
-      );
+        allEntries.push(...filteredEntries);
+
+        // Log progress for debugging
+        if (i + LOAD_BATCH_SIZE < files.length) {
+          console.log(
+            `[GitHub Backend] Loaded ${allEntries.length}/${files.length} entries (${Math.round(
+              (allEntries.length / files.length) * 100,
+            )}%)`,
+          );
+        }
+      }
+
+      return allEntries;
     } else {
       // Fallback to individual metadata calls
       return await entriesByFolder(
