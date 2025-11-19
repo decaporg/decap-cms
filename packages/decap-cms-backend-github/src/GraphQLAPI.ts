@@ -431,8 +431,18 @@ export default class GraphQLAPI extends API {
   async listFiles(path: string, { repoURL = this.repoURL, branch = this.branch, depth = 1 } = {}) {
     const { owner, name } = this.getOwnerAndNameFromRepoUrl(repoURL);
     const folder = trim(path, '/');
+
+    // Cap depth at 3 to prevent overly complex GraphQL queries that cause 502 errors
+    // For deeper traversals, use listFilesRecursive instead
+    const maxDepth = Math.min(depth, 3);
+
+    // For depths > 3, use the recursive approach which handles it better
+    if (depth > 3) {
+      return this.listFilesRecursive(path, { repoURL, branch, maxDepth: depth });
+    }
+
     const { data } = await this.query({
-      query: queries.files(depth),
+      query: queries.files(maxDepth),
       variables: { owner, name, expression: `${branch}:${folder}` },
       fetchPolicy: NO_CACHE, // Directory contents can change
     });

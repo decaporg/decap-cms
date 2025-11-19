@@ -248,6 +248,42 @@ describe('github GraphQL API', () => {
       // Should only query once for depth 1
       expect(api.query).toHaveBeenCalledTimes(1);
     });
+
+    it('should automatically use listFilesRecursive for depth > 3 to avoid 502 errors', async () => {
+      const api = new GraphQLAPI({ branch: 'main', repo: 'owner/my-repo' });
+
+      // Spy on listFilesRecursive to verify it's called
+      const listFilesRecursiveSpy = jest.spyOn(api, 'listFilesRecursive');
+
+      api.query = jest.fn().mockResolvedValue({
+        data: {
+          repository: {
+            object: {
+              entries: [
+                {
+                  name: 'file.md',
+                  sha: 'sha-1',
+                  type: 'blob',
+                  blob: { size: 100 },
+                },
+              ],
+            },
+          },
+        },
+      });
+
+      // Call listFiles with large depth (e.g., 100 which would cause 502)
+      await api.listFiles('posts', { depth: 100 });
+
+      // Should have delegated to listFilesRecursive
+      expect(listFilesRecursiveSpy).toHaveBeenCalledWith('posts', {
+        repoURL: api.repoURL,
+        branch: 'main',
+        maxDepth: 100,
+      });
+
+      listFilesRecursiveSpy.mockRestore();
+    });
   });
 
   describe('batch metadata loading', () => {
