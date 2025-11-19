@@ -249,4 +249,169 @@ describe('github GraphQL API', () => {
       expect(api.query).toHaveBeenCalledTimes(1);
     });
   });
+
+  describe('batch metadata loading', () => {
+    it('should batch fetch commit metadata for multiple files', async () => {
+      const api = new GraphQLAPI({ branch: 'main', repo: 'owner/my-repo' });
+
+      const files = [
+        { path: 'posts/post1.md', sha: 'sha1' },
+        { path: 'posts/post2.md', sha: 'sha2' },
+        { path: 'posts/post3.md', sha: 'sha3' },
+      ];
+
+      api.query = jest.fn().mockResolvedValue({
+        data: {
+          repository: {
+            commits0: {
+              target: {
+                history: {
+                  nodes: [
+                    {
+                      author: { name: 'John Doe', email: 'john@example.com', date: '2024-01-01' },
+                      authoredDate: '2024-01-01T00:00:00Z',
+                    },
+                  ],
+                },
+              },
+            },
+            commits1: {
+              target: {
+                history: {
+                  nodes: [
+                    {
+                      author: { name: 'Jane Smith', email: 'jane@example.com', date: '2024-01-02' },
+                      authoredDate: '2024-01-02T00:00:00Z',
+                    },
+                  ],
+                },
+              },
+            },
+            commits2: {
+              target: {
+                history: {
+                  nodes: [
+                    {
+                      author: { name: 'Bob Wilson', email: 'bob@example.com', date: '2024-01-03' },
+                      authoredDate: '2024-01-03T00:00:00Z',
+                    },
+                  ],
+                },
+              },
+            },
+          },
+        },
+      });
+
+      const results = await api.batchReadFileMetadata(files);
+
+      expect(results).toHaveLength(3);
+      expect(results[0]).toEqual({
+        author: 'John Doe',
+        updatedOn: '2024-01-01T00:00:00Z',
+      });
+      expect(results[1]).toEqual({
+        author: 'Jane Smith',
+        updatedOn: '2024-01-02T00:00:00Z',
+      });
+      expect(results[2]).toEqual({
+        author: 'Bob Wilson',
+        updatedOn: '2024-01-03T00:00:00Z',
+      });
+
+      // Should make only one batched request for 3 files
+      expect(api.query).toHaveBeenCalledTimes(1);
+      expect(api.query).toHaveBeenCalledWith(
+        expect.objectContaining({
+          fetchPolicy: 'cache-first',
+        }),
+      );
+    });
+
+    it('should batch requests in chunks for large file sets', async () => {
+      const api = new GraphQLAPI({ branch: 'main', repo: 'owner/my-repo' });
+
+      // Create 50 files (should be split into 3 batches: 20, 20, 10)
+      const files = Array.from({ length: 50 }, (_, i) => ({
+        path: `posts/post${i}.md`,
+        sha: `sha${i}`,
+      }));
+
+      api.query = jest.fn().mockImplementation(() => {
+        const mockData = { repository: {} };
+        // Generate mock data for each file in the batch
+        for (let i = 0; i < 20; i++) {
+          mockData.repository[`commits${i}`] = {
+            target: {
+              history: {
+                nodes: [
+                  {
+                    author: { name: `Author ${i}`, email: `author${i}@example.com` },
+                    authoredDate: `2024-01-${i + 1}T00:00:00Z`,
+                  },
+                ],
+              },
+            },
+          };
+        }
+        return Promise.resolve({ data: mockData });
+      });
+
+      await api.batchReadFileMetadata(files);
+
+      // Should make 3 requests (batches of 20, 20, 10)
+      expect(api.query).toHaveBeenCalledTimes(3);
+    });
+
+    it('should handle missing commit data gracefully', async () => {
+      const api = new GraphQLAPI({ branch: 'main', repo: 'owner/my-repo' });
+
+      const files = [
+        { path: 'posts/post1.md', sha: 'sha1' },
+        { path: 'posts/post2.md', sha: 'sha2' },
+      ];
+
+      api.query = jest.fn().mockResolvedValue({
+        data: {
+          repository: {
+            commits0: {
+              target: {
+                history: {
+                  nodes: [],
+                },
+              },
+            },
+            commits1: null, // Missing data
+          },
+        },
+      });
+
+      const results = await api.batchReadFileMetadata(files);
+
+      expect(results).toHaveLength(2);
+      expect(results[0]).toEqual({ author: '', updatedOn: '' });
+      expect(results[1]).toEqual({ author: '', updatedOn: '' });
+    });
+
+    it('should handle batch query errors', async () => {
+      const api = new GraphQLAPI({ branch: 'main', repo: 'owner/my-repo' });
+
+      const files = [
+        { path: 'posts/post1.md', sha: 'sha1' },
+        { path: 'posts/post2.md', sha: 'sha2' },
+      ];
+
+      const consoleWarn = jest.spyOn(console, 'warn').mockImplementation(() => {});
+      api.query = jest.fn().mockRejectedValue(new Error('GraphQL error'));
+
+      const results = await api.batchReadFileMetadata(files);
+
+      expect(results).toHaveLength(2);
+      expect(results[0]).toEqual({ author: '', updatedOn: '' });
+      expect(results[1]).toEqual({ author: '', updatedOn: '' });
+      expect(consoleWarn).toHaveBeenCalled();
+
+      consoleWarn.mockRestore();
+    });
+  });
 });

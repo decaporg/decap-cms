@@ -37,6 +37,7 @@ import type {
   Credentials,
   Config,
   ImplementationFile,
+  ImplementationEntry,
   UnpublishedEntryMediaFile,
   Entry,
 } from 'decap-cms-lib-util';
@@ -512,16 +513,60 @@ export default class GitHub implements Implementation {
     const readFile = (path: string, id: string | null | undefined) =>
       this.api!.readFile(path, id, { repoURL }) as Promise<string>;
 
-    const files = await entriesByFolder(
-      listFiles,
-      readFile,
-      this.api!.readFileMetadata.bind(this.api),
-      API_NAME,
-    );
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    files[CURSOR_COMPATIBILITY_SYMBOL] = cursor;
-    return files;
+    // Use batch metadata loading if GraphQL API supports it
+    if (
+      this.useGraphql &&
+      this.api &&
+      'batchReadFileMetadata' in this.api &&
+      typeof this.api.batchReadFileMetadata === 'function'
+    ) {
+      const files = await listFiles();
+      const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
+      const promises = [] as Promise<ImplementationEntry | { error: boolean }>[];
+
+      // Fetch all metadata in batch first
+      const metadataList = await this.api.batchReadFileMetadata(files, { repoURL });
+
+      files.forEach((file: ImplementationFile, index: number) => {
+        promises.push(
+          new Promise(resolve =>
+            sem.take(async () => {
+              try {
+                const data = await readFile(file.path, file.id);
+                const metadata = metadataList[index] || { author: '', updatedOn: '' };
+                resolve({ file: { ...file, ...metadata }, data: data as string });
+                sem.leave();
+              } catch (error) {
+                sem.leave();
+                console.error(`failed to load file from ${API_NAME}: ${file.path}`);
+                resolve({ error: true });
+              }
+            }),
+          ),
+        );
+      });
+
+      const loadedEntries = await Promise.all(promises);
+      const filteredEntries = loadedEntries.filter(
+        (entry): entry is ImplementationEntry => !(entry as { error: boolean }).error,
+      );
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      filteredEntries[CURSOR_COMPATIBILITY_SYMBOL] = cursor;
+      return filteredEntries;
+    } else {
+      // Fallback to individual metadata calls
+      const files = await entriesByFolder(
+        listFiles,
+        readFile,
+        this.api!.readFileMetadata.bind(this.api),
+        API_NAME,
+      );
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      files[CURSOR_COMPATIBILITY_SYMBOL] = cursor;
+      return files;
+    }
   }
 
   async allEntriesByFolder(folder: string, extension: string, depth: number, pathRegex?: RegExp) {
@@ -561,13 +606,52 @@ export default class GitHub implements Implementation {
       return this.api!.readFile(path, id, { repoURL }) as Promise<string>;
     };
 
-    const files = await entriesByFolder(
-      listFiles,
-      readFile,
-      this.api!.readFileMetadata.bind(this.api),
-      API_NAME,
-    );
-    return files;
+    // Use batch metadata loading if GraphQL API supports it
+    if (
+      this.useGraphql &&
+      this.api &&
+      'batchReadFileMetadata' in this.api &&
+      typeof this.api.batchReadFileMetadata === 'function'
+    ) {
+      const files = await listFiles();
+      const sem = semaphore(MAX_CONCURRENT_DOWNLOADS);
+      const promises = [] as Promise<ImplementationEntry | { error: boolean }>[];
+
+      // Fetch all metadata in batch first
+      const metadataList = await this.api.batchReadFileMetadata(files, { repoURL });
+
+      files.forEach((file: ImplementationFile, index: number) => {
+        promises.push(
+          new Promise(resolve =>
+            sem.take(async () => {
+              try {
+                const data = await readFile(file.path, file.id);
+                const metadata = metadataList[index] || { author: '', updatedOn: '' };
+                resolve({ file: { ...file, ...metadata }, data: data as string });
+                sem.leave();
+              } catch (error) {
+                sem.leave();
+                console.error(`failed to load file from ${API_NAME}: ${file.path}`);
+                resolve({ error: true });
+              }
+            }),
+          ),
+        );
+      });
+
+      const loadedEntries = await Promise.all(promises);
+      return loadedEntries.filter(
+        (entry): entry is ImplementationEntry => !(entry as { error: boolean }).error,
+      );
+    } else {
+      // Fallback to individual metadata calls
+      return await entriesByFolder(
+        listFiles,
+        readFile,
+        this.api!.readFileMetadata.bind(this.api),
+        API_NAME,
+      );
+    }
   }
 
   entriesByFiles(files: ImplementationFile[]) {

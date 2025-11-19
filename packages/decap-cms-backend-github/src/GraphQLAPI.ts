@@ -865,4 +865,64 @@ export default class GraphQLAPI extends API {
     }
     throw new APIError('Not Found', 404, API_NAME);
   }
+
+  /**
+   * Batch fetch commit metadata for multiple files using GraphQL
+   * Much more efficient than making individual REST API calls per file
+   */
+  async batchReadFileMetadata(
+    files: Array<{ path: string; sha?: string | null }>,
+    options: { branch?: string; repoURL?: string } = {},
+  ): Promise<Array<{ author: string; updatedOn: string }>> {
+    const { branch = this.branch, repoURL = this.repoURL } = options;
+    const { owner, name } = this.getOwnerAndNameFromRepoUrl(repoURL);
+
+    // GitHub GraphQL has query complexity limits, so batch in chunks
+    const BATCH_SIZE = 20;
+    const results: Array<{ author: string; updatedOn: string }> = [];
+
+    for (let i = 0; i < files.length; i += BATCH_SIZE) {
+      const batch = files.slice(i, i + BATCH_SIZE);
+
+      // Build variables for the batch query
+      const variables: Record<string, string> = {
+        owner,
+        name,
+        branch,
+      };
+      batch.forEach((file, index) => {
+        variables[`expression${index}`] = `${branch}:${file.path}`;
+      });
+
+      try {
+        const { data } = await this.query({
+          query: queries.fileCommits(batch.map(f => f.path)),
+          variables,
+          fetchPolicy: CACHE_FIRST, // Commit history is immutable
+        });
+
+        // Extract metadata from each file's commit history
+        batch.forEach((_file, index) => {
+          const commitData = data.repository[`commits${index}`];
+          if (commitData?.target?.history?.nodes?.[0]) {
+            const commit = commitData.target.history.nodes[0];
+            results.push({
+              author: commit.author.name || commit.author.email || '',
+              updatedOn: commit.authoredDate || commit.author.date || '',
+            });
+          } else {
+            // Fallback if no commit found
+            results.push({ author: '', updatedOn: '' });
+          }
+        });
+      } catch (error) {
+        // If batch query fails, provide empty metadata for the batch
+        console.warn(`Failed to fetch metadata batch for ${batch.length} files:`, error);
+        batch.forEach(() => results.push({ author: '', updatedOn: '' }));
+      }
+    }
+
+    return results;
+  }
 }
+

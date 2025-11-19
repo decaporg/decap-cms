@@ -278,3 +278,44 @@ export const fileSha = gql`
   ${fragments.repository}
   ${fragments.object}
 `;
+
+// Query to batch fetch commit metadata for multiple files
+export function fileCommits(paths: string[]) {
+  const queries = paths
+    .map(
+      (path, index) => oneLine`
+    file${index}: object(expression: $expression${index}) {
+      ... on Blob {
+        id
+      }
+    }
+    commits${index}: ref(qualifiedName: $branch) {
+      target {
+        ... on Commit {
+          history(first: 1, path: "${path}") {
+            nodes {
+              author {
+                name
+                email
+                date
+              }
+              authoredDate
+            }
+          }
+        }
+      }
+    }
+  `,
+    )
+    .join('\n');
+
+  return gql`
+    query fileCommits($owner: String!, $name: String!, $branch: String!, ${paths.map((_, i) => `$expression${i}: String!`).join(', ')}) {
+      repository(owner: $owner, name: $name) {
+        ...RepositoryParts
+        ${queries}
+      }
+    }
+    ${fragments.repository}
+  `;
+}
