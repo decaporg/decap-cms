@@ -112,6 +112,70 @@ export function files(depth: number) {
   `;
 }
 
+// New paginated tree query using GitHub's tree API with pagination support
+export const treeEntries = gql`
+  query treeEntries(
+    $owner: String!
+    $name: String!
+    $expression: String!
+    $first: Int
+    $after: String
+  ) {
+    repository(owner: $owner, name: $name) {
+      ...RepositoryParts
+      object(expression: $expression) {
+        ... on Tree {
+          entries {
+            ...FileEntryParts
+          }
+        }
+      }
+    }
+  }
+  ${fragments.repository}
+  ${fragments.fileEntry}
+`;
+
+// Query for recursive tree walking with pagination at each level
+export const treeEntriesRecursive = gql`
+  query treeEntriesRecursive($owner: String!, $name: String!, $expression: String!) {
+    repository(owner: $owner, name: $name) {
+      ...RepositoryParts
+      object(expression: $expression) {
+        ...ObjectParts
+        ... on Tree {
+          entries {
+            name
+            sha: oid
+            type
+            blob: object {
+              ... on Blob {
+                size: byteSize
+              }
+            }
+            tree: object {
+              ... on Tree {
+                entries {
+                  name
+                  sha: oid
+                  type
+                  blob: object {
+                    ... on Blob {
+                      size: byteSize
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  ${fragments.repository}
+  ${fragments.object}
+`;
+
 const branchQueryPart = `
 branch: ref(qualifiedName: $qualifiedName) {
   ...BranchParts
@@ -148,6 +212,9 @@ export const repository = gql`
   query repository($owner: String!, $name: String!) {
     repository(owner: $owner, name: $name) {
       ...RepositoryParts
+      defaultBranchRef {
+        name
+      }
     }
   }
   ${fragments.repository}

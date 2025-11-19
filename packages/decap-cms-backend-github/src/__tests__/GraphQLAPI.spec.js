@@ -66,4 +66,187 @@ describe('github GraphQL API', () => {
       ]);
     });
   });
+
+  describe('pagination', () => {
+    it('should return paginated results with correct metadata', async () => {
+      const api = new GraphQLAPI({ branch: 'main', repo: 'owner/my-repo' });
+
+      // Mock the query method to return files
+      const mockFiles = Array.from({ length: 50 }, (_, i) => ({
+        name: `file-${i}.md`,
+        sha: `sha-${i}`,
+        type: 'blob',
+        blob: { size: 100 },
+      }));
+
+      api.query = jest.fn().mockResolvedValue({
+        data: {
+          repository: {
+            object: {
+              entries: mockFiles,
+            },
+          },
+        },
+      });
+
+      const result = await api.listFilesPaginated('posts', { pageSize: 20, page: 1 });
+
+      expect(result.files.length).toBe(20);
+      expect(result.totalCount).toBe(50);
+      expect(result.pageCount).toBe(3);
+      expect(result.page).toBe(1);
+      expect(result.hasMore).toBe(true);
+    });
+
+    it('should return last page correctly', async () => {
+      const api = new GraphQLAPI({ branch: 'main', repo: 'owner/my-repo' });
+
+      const mockFiles = Array.from({ length: 50 }, (_, i) => ({
+        name: `file-${i}.md`,
+        sha: `sha-${i}`,
+        type: 'blob',
+        blob: { size: 100 },
+      }));
+
+      api.query = jest.fn().mockResolvedValue({
+        data: {
+          repository: {
+            object: {
+              entries: mockFiles,
+            },
+          },
+        },
+      });
+
+      const result = await api.listFilesPaginated('posts', { pageSize: 20, page: 3 });
+
+      expect(result.files.length).toBe(10);
+      expect(result.page).toBe(3);
+      expect(result.hasMore).toBe(false);
+    });
+  });
+
+  describe('caching', () => {
+    it('should use CACHE_FIRST for immutable blob content', async () => {
+      const api = new GraphQLAPI({ branch: 'main', repo: 'owner/my-repo', token: 'test-token' });
+
+      const mockQuery = jest.fn().mockResolvedValue({
+        data: {
+          repository: {
+            object: {
+              is_binary: false,
+              text: 'file content',
+            },
+          },
+        },
+      });
+
+      api.query = mockQuery;
+
+      await api.retrieveBlobObject('owner', 'repo', 'test-sha', { fetchPolicy: 'cache-first' });
+
+      expect(mockQuery).toHaveBeenCalledWith(
+        expect.objectContaining({
+          fetchPolicy: 'cache-first',
+        }),
+      );
+    });
+
+    it('should invalidate cache for specific types', () => {
+      const api = new GraphQLAPI({ branch: 'main', repo: 'owner/my-repo' });
+
+      // Mock cache structure
+      api.client.cache.data = {
+        delete: jest.fn(),
+        data: {
+          ROOT_QUERY: {
+            'repository({"owner":"test"})': {},
+            'pullRequest({"number":1})': {},
+          },
+        },
+      };
+
+      api.invalidateCache('PullRequest', '123');
+
+      expect(api.client.cache.data.delete).toHaveBeenCalledWith('PullRequest:123');
+    });
+  });
+
+  describe('recursive file loading', () => {
+    it('should handle large directory trees with chunked loading', async () => {
+      const api = new GraphQLAPI({ branch: 'main', repo: 'owner/my-repo' });
+
+      // Mock nested directory structure
+      const mockRootEntries = Array.from({ length: 5 }, (_, i) => ({
+        name: `dir-${i}`,
+        sha: `dir-sha-${i}`,
+        type: 'tree',
+        tree: {
+          entries: Array.from({ length: 10 }, (_, j) => ({
+            name: `file-${i}-${j}.md`,
+            sha: `sha-${i}-${j}`,
+            type: 'blob',
+            blob: { size: 100 },
+          })),
+        },
+      }));
+
+      let callCount = 0;
+      api.query = jest.fn().mockImplementation(() => {
+        callCount++;
+        if (callCount === 1) {
+          return Promise.resolve({
+            data: {
+              repository: {
+                object: {
+                  entries: mockRootEntries,
+                },
+              },
+            },
+          });
+        }
+        return Promise.resolve({
+          data: {
+            repository: {
+              object: {
+                entries: [],
+              },
+            },
+          },
+        });
+      });
+
+      const result = await api.listFilesRecursive('posts', { maxDepth: 2, chunkSize: 10 });
+
+      // Should process directories and find files
+      expect(api.query).toHaveBeenCalled();
+      expect(result).toBeInstanceOf(Array);
+    });
+
+    it('should respect maxDepth parameter', async () => {
+      const api = new GraphQLAPI({ branch: 'main', repo: 'owner/my-repo' });
+
+      api.query = jest.fn().mockResolvedValue({
+        data: {
+          repository: {
+            object: {
+              entries: [
+                {
+                  name: 'file.md',
+                  sha: 'sha-1',
+                  type: 'blob',
+                  blob: { size: 100 },
+                },
+              ],
+            },
+          },
+        },
+      });
+
+      await api.listFilesRecursive('posts', { maxDepth: 1 });
+
+      // Should only query once for depth 1
+      expect(api.query).toHaveBeenCalledTimes(1);
+    });
+  });
 });

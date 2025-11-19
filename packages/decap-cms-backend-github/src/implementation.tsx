@@ -210,13 +210,19 @@ export default class GitHub implements Implementation {
     return Promise.resolve();
   }
 
-  async currentUser({ token }: { token: string }) {
+  async currentUser({ token }: { token: string }): Promise<GitHubUser> {
     if (!this._currentUserPromise) {
-      this._currentUserPromise = fetch(`${this.apiRoot}/user`, {
-        headers: {
-          Authorization: `${this.tokenKeyword} ${token}`,
-        },
-      }).then(res => res.json());
+      if (this.useGraphql && this.api) {
+        // Use GraphQL viewer query
+        this._currentUserPromise = this.api.user().then(viewer => viewer as GitHubUser);
+      } else {
+        // Fallback to REST API
+        this._currentUserPromise = fetch(`${this.apiRoot}/user`, {
+          headers: {
+            Authorization: `${this.tokenKeyword} ${token}`,
+          },
+        }).then(res => res.json());
+      }
     }
     return this._currentUserPromise;
   }
@@ -228,7 +234,8 @@ export default class GitHub implements Implementation {
     username?: string;
     token: string;
   }) {
-    const username = usernameArg || (await this.currentUser({ token })).login;
+    const currentUser = await this.currentUser({ token });
+    const username = usernameArg || currentUser.login;
     this._userIsOriginMaintainerPromises = this._userIsOriginMaintainerPromises || {};
     if (!this._userIsOriginMaintainerPromises[username]) {
       this._userIsOriginMaintainerPromises[username] = fetch(
@@ -248,6 +255,9 @@ export default class GitHub implements Implementation {
   async forkExists({ token }: { token: string }) {
     try {
       const currentUser = await this.currentUser({ token });
+      if (!currentUser) {
+        return false;
+      }
       const repoName = this.originRepo.split('/')[1];
       const repo = await fetch(`${this.apiRoot}/repos/${currentUser.login}/${repoName}`, {
         method: 'GET',
@@ -292,6 +302,9 @@ export default class GitHub implements Implementation {
     // If a fork exists merge it with upstream
     // otherwise create a new fork.
     const currentUser = await this.currentUser({ token });
+    if (!currentUser) {
+      throw new Error('Failed to get current user');
+    }
     const repoName = this.originRepo.split('/')[1];
     this.repo = `${currentUser.login}/${repoName}`;
     this.useOpenAuthoring = true;
@@ -324,13 +337,50 @@ export default class GitHub implements Implementation {
     // Query the default branch name when the `branch` property is missing
     // in the config file
     if (!this.isBranchConfigured) {
-      const repoInfo = await fetch(`${this.apiRoot}/repos/${this.originRepo}`, {
-        headers: { Authorization: `token ${this.token}` },
-      })
-        .then(res => res.json())
-        .catch(() => null);
-      if (repoInfo && repoInfo.default_branch) {
-        this.branch = repoInfo.default_branch;
+      if (this.useGraphql) {
+        // Use GraphQL to get default branch
+        const apiCtor = GraphQLAPI;
+        const tempApi = new apiCtor({
+          token: this.token,
+          tokenKeyword: this.tokenKeyword,
+          branch: 'main', // temporary, will be updated
+          repo: this.repo,
+          originRepo: this.originRepo,
+          apiRoot: this.apiRoot,
+          squashMerges: this.squashMerges,
+          cmsLabelPrefix: this.cmsLabelPrefix,
+          useOpenAuthoring: this.useOpenAuthoring,
+          initialWorkflowStatus: this.options.initialWorkflowStatus,
+          baseUrl: this.baseUrl,
+          getUser: this.currentUser,
+        });
+        try {
+          const [owner, name] = this.originRepo.split('/');
+          const repoData = await tempApi.getRepository(owner, name);
+          if (repoData.defaultBranchRef && repoData.defaultBranchRef.name) {
+            this.branch = repoData.defaultBranchRef.name;
+          }
+        } catch (error) {
+          console.warn('Failed to get default branch via GraphQL, using REST fallback');
+          const repoInfo = await fetch(`${this.apiRoot}/repos/${this.originRepo}`, {
+            headers: { Authorization: `token ${this.token}` },
+          })
+            .then(res => res.json())
+            .catch(() => null);
+          if (repoInfo && repoInfo.default_branch) {
+            this.branch = repoInfo.default_branch;
+          }
+        }
+      } else {
+        // Use REST API
+        const repoInfo = await fetch(`${this.apiRoot}/repos/${this.originRepo}`, {
+          headers: { Authorization: `token ${this.token}` },
+        })
+          .then(res => res.json())
+          .catch(() => null);
+        if (repoInfo && repoInfo.default_branch) {
+          this.branch = repoInfo.default_branch;
+        }
       }
     }
     const apiCtor = this.useGraphql ? GraphQLAPI : API;
@@ -418,16 +468,46 @@ export default class GitHub implements Implementation {
 
     let cursor: Cursor;
 
-    const listFiles = () =>
-      this.api!.listFiles(folder, {
-        repoURL,
-        depth,
-      }).then(files => {
+    const listFiles = async () => {
+      // Use paginated API if available and GraphQL is enabled
+      if (
+        this.useGraphql &&
+        this.api &&
+        'listFilesPaginated' in this.api &&
+        typeof this.api.listFilesPaginated === 'function'
+      ) {
+        const result = await this.api.listFilesPaginated(folder, {
+          repoURL,
+          pageSize: 20,
+          page: 1,
+        });
+
+        const filtered = result.files.filter((file: ApiFile) => filterByExtension(file, extension));
+
+        cursor = Cursor.create({
+          actions: result.hasMore ? ['next', 'last'] : [],
+          meta: {
+            page: result.page,
+            count: result.totalCount,
+            pageSize: 20,
+            pageCount: result.pageCount,
+          },
+          data: { folder, extension, repoURL },
+        });
+
+        return filtered;
+      } else {
+        // Fallback to original implementation
+        const files = await this.api!.listFiles(folder, {
+          repoURL,
+          depth,
+        });
         const filtered = files.filter(file => filterByExtension(file, extension));
         const result = this.getCursorAndFiles(filtered, 1);
         cursor = result.cursor;
         return result.files;
-      });
+      }
+    };
 
     const readFile = (path: string, id: string | null | undefined) =>
       this.api!.readFile(path, id, { repoURL }) as Promise<string>;
@@ -447,15 +527,35 @@ export default class GitHub implements Implementation {
   async allEntriesByFolder(folder: string, extension: string, depth: number, pathRegex?: RegExp) {
     const repoURL = this.api!.originRepoURL;
 
-    const listFiles = () =>
-      this.api!.listFiles(folder, {
-        repoURL,
-        depth,
-      }).then(files =>
-        files.filter(
+    const listFiles = async () => {
+      // Use recursive chunked loading for large collections with GraphQL
+      if (
+        this.useGraphql &&
+        depth > 1 &&
+        this.api &&
+        'listFilesRecursive' in this.api &&
+        typeof this.api.listFilesRecursive === 'function'
+      ) {
+        const files = await this.api.listFilesRecursive(folder, {
+          repoURL,
+          maxDepth: depth,
+          chunkSize: 50, // Process 50 directories at a time
+        });
+        return files.filter(
+          (file: ApiFile) =>
+            (!pathRegex || pathRegex.test(file.path)) && filterByExtension(file, extension),
+        );
+      } else {
+        // Fallback to original implementation
+        const files = await this.api!.listFiles(folder, {
+          repoURL,
+          depth,
+        });
+        return files.filter(
           file => (!pathRegex || pathRegex.test(file.path)) && filterByExtension(file, extension),
-        ),
-      );
+        );
+      }
+    };
 
     const readFile = (path: string, id: string | null | undefined) => {
       return this.api!.readFile(path, id, { repoURL }) as Promise<string>;
