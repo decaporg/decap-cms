@@ -210,10 +210,15 @@ function entries(
             ids: append ? map.getIn(['pages', collection, 'ids'], List()).concat(ids) : ids,
           }),
         );
+        // Clear any previous errors
+        map.deleteIn(['pages', collection, 'error']);
       });
     }
     case ENTRIES_FAILURE:
-      return state.setIn(['pages', action.meta.collection, 'isFetching'], false);
+      return state.withMutations(map => {
+        map.setIn(['pages', action.meta.collection, 'isFetching'], false);
+        map.setIn(['pages', action.meta.collection, 'error'], action.payload);
+      });
 
     case ENTRY_FAILURE: {
       const payload = action.payload as EntryFailurePayload;

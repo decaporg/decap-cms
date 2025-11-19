@@ -56,6 +56,7 @@ const en = {
       cachingEntries: 'Caching Entries...',
       longerLoading: 'This might take several minutes',
       noEntries: 'No Entries',
+      loadingError: 'Error loading entries',
     },
     groups: {
       other: 'Other',

@@ -29,6 +29,7 @@ function Entries({
   getWorkflowStatus,
   getUnpublishedEntries,
   filterTerm,
+  error,
 }) {
   const loadingMessages = [
     t('collection.entries.loadingEntries'),
@@ -62,6 +63,17 @@ function Entries({
     );
   }
 
+  // Show error message if there was an error loading entries
+  if (error) {
+    return (
+      <NoEntriesMessage>
+        <strong>{t('collection.entries.loadingError')}</strong>
+        <br />
+        {error}
+      </NoEntriesMessage>
+    );
+  }
+
   return <NoEntriesMessage>{t('collection.entries.noEntries')}</NoEntriesMessage>;
 }
 
@@ -77,6 +89,7 @@ Entries.propTypes = {
   getWorkflowStatus: PropTypes.func,
   getUnpublishedEntries: PropTypes.func,
   filterTerm: PropTypes.string,
+  error: PropTypes.string,
 };
 
 export default translate()(Entries);

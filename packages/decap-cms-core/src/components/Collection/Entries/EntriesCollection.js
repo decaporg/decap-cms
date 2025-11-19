@@ -78,6 +78,7 @@ export class EntriesCollection extends React.Component {
     isEditorialWorkflowEnabled: PropTypes.bool,
     getWorkflowStatus: PropTypes.func.isRequired,
     getUnpublishedEntries: PropTypes.func.isRequired,
+    error: PropTypes.string,
   };
 
   componentDidMount() {
@@ -144,6 +145,7 @@ export class EntriesCollection extends React.Component {
       getWorkflowStatus,
       getUnpublishedEntries,
       filterTerm,
+      error,
     } = this.props;
 
     const EntriesToRender = ({ entries }) => {
@@ -160,6 +162,7 @@ export class EntriesCollection extends React.Component {
           getWorkflowStatus={getWorkflowStatus}
           getUnpublishedEntries={getUnpublishedEntries}
           filterTerm={filterTerm}
+          error={error}
         />
       );
     };
@@ -227,6 +230,8 @@ function mapStateToProps(state, ownProps) {
     ? !!state.editorialWorkflow?.getIn(['pages', 'ids'], false)
     : true;
 
+  const error = state.entries.getIn(['pages', collection.get('name'), 'error']);
+
   return {
     collection,
     collections,
@@ -239,6 +244,7 @@ function mapStateToProps(state, ownProps) {
     cursor,
     unpublishedEntriesLoaded,
     isEditorialWorkflowEnabled,
+    error,
     getWorkflowStatus: (collectionName, slug) => {
       const unpublishedEntry = selectUnpublishedEntry(state, collectionName, slug);
       return unpublishedEntry ? unpublishedEntry.get('status') : null;

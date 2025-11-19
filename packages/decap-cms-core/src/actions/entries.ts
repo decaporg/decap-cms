@@ -632,6 +632,7 @@ export function loadEntries(collection: Collection, page = 0) {
         ),
       );
     } catch (err) {
+      const error = err instanceof Error ? err : new Error(String(err));
       dispatch(
         addNotification({
           message: {
@@ -642,7 +643,7 @@ export function loadEntries(collection: Collection, page = 0) {
           dismissAfter: 8000,
         }),
       );
-      return Promise.reject(dispatch(entriesFailed(collection, err)));
+      return Promise.reject(dispatch(entriesFailed(collection, error)));
     }
   };
 }
