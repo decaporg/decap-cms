@@ -33,23 +33,34 @@ function CollectionControls({
   t,
   filter,
   group,
+  disabled = false,
 }) {
   return (
-    <CollectionControlsContainer>
+    <CollectionControlsContainer className={disabled ? 'disabled' : ''}>
       <ViewStyleControl viewStyle={viewStyle} onChangeViewStyle={onChangeViewStyle} />
       {viewGroups.length > 0 && (
-        <GroupControl viewGroups={viewGroups} onGroupClick={onGroupClick} t={t} group={group} />
+        <GroupControl
+          viewGroups={viewGroups}
+          onGroupClick={disabled ? () => {} : onGroupClick}
+          t={t}
+          group={group}
+        />
       )}
       {viewFilters.length > 0 && (
         <FilterControl
           viewFilters={viewFilters}
-          onFilterClick={onFilterClick}
+          onFilterClick={disabled ? () => {} : onFilterClick}
           t={t}
           filter={filter}
         />
       )}
       {sortableFields.length > 0 && (
-        <SortControl fields={sortableFields} sort={sort} onSortClick={onSortClick} />
+        <SortControl
+          fields={sortableFields}
+          sort={sort}
+          onSortClick={disabled ? () => {} : onSortClick}
+          disabled={disabled}
+        />
       )}
     </CollectionControlsContainer>
   );

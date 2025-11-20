@@ -99,6 +99,7 @@ export class Collection extends React.Component {
       group,
       onChangeViewStyle,
       viewStyle,
+      isFetchingEntries,
     } = this.props;
 
     let newEntryUrl = collection.get('create') ? getNewEntryUrl(collectionName) : '';
@@ -144,6 +145,7 @@ export class Collection extends React.Component {
                 onGroupClick={onGroupClick}
                 filter={filter}
                 group={group}
+                disabled={isFetchingEntries}
               />
             </>
           )}
@@ -167,6 +169,7 @@ function mapStateToProps(state, ownProps) {
   const filter = selectEntriesFilter(state.entries, collection.get('name'));
   const group = selectEntriesGroup(state.entries, collection.get('name'));
   const viewStyle = selectViewStyle(state.entries);
+  const isFetchingEntries = state.entries.getIn(['pages', collection.get('name'), 'isFetching']);
 
   return {
     collection,
@@ -183,6 +186,7 @@ function mapStateToProps(state, ownProps) {
     filter,
     group,
     viewStyle,
+    isFetchingEntries,
   };
 }
 

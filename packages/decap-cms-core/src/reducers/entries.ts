@@ -189,11 +189,12 @@ function entries(
     }
 
     case ENTRIES_SUCCESS: {
-      const payload = action.payload as EntriesSuccessPayload;
+      const payload = action.payload as EntriesSuccessPayload & { hasMore?: boolean };
       collection = payload.collection;
       loadedEntries = payload.entries;
       append = payload.append;
       page = payload.page;
+      const hasMore = payload.hasMore === true;
       return state.withMutations(map => {
         loadedEntries.forEach(entry =>
           map.setIn(
@@ -208,6 +209,7 @@ function entries(
           Map({
             page,
             ids: append ? map.getIn(['pages', collection, 'ids'], List()).concat(ids) : ids,
+            isFetching: hasMore, // keep fetching flag true until last page
           }),
         );
         // Clear any previous errors

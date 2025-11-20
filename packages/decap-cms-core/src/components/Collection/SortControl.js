@@ -29,7 +29,7 @@ const sortIconDirections = {
   [SortDirection.Descending]: 'down',
 };
 
-function SortControl({ t, fields, onSortClick, sort }) {
+function SortControl({ t, fields, onSortClick, sort, disabled }) {
   const hasActiveSort = sort
     ?.valueSeq()
     .toJS()
@@ -37,9 +37,14 @@ function SortControl({ t, fields, onSortClick, sort }) {
 
   return (
     <Dropdown
+      disabled={disabled}
       renderButton={() => {
         return (
-          <ControlButton active={hasActiveSort} title={t('collection.collectionTop.sortBy')} />
+          <ControlButton
+            active={hasActiveSort}
+            title={t('collection.collectionTop.sortBy')}
+            disabled={disabled}
+          />
         );
       }}
       closeOnSelection={false}
@@ -55,7 +60,7 @@ function SortControl({ t, fields, onSortClick, sort }) {
           <DropdownItem
             key={field.key}
             label={field.label}
-            onClick={() => onSortClick(field.key, nextSortDir)}
+            onClick={() => !disabled && onSortClick(field.key, nextSortDir)}
             isActive={isActive}
             {...(isActive && sortIconProps(sortDir))}
           />

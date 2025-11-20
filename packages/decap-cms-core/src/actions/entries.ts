@@ -136,6 +136,7 @@ export function entriesLoaded(
   pagination: number | null,
   cursor: Cursor,
   append = true,
+  hasMore = false,
 ) {
   return {
     type: ENTRIES_SUCCESS,
@@ -145,6 +146,7 @@ export function entriesLoaded(
       page: pagination,
       cursor: Cursor.create(cursor),
       append,
+      hasMore,
     },
   };
 }
@@ -595,42 +597,72 @@ export function loadEntries(collection: Collection, page = 0) {
     try {
       const loadAllEntries = collection.has('nested') || hasI18n(collection);
 
-      let response: {
-        cursor: Cursor;
-        pagination: number;
-        entries: EntryValue[];
-      } = await (loadAllEntries
-        ? // nested collections require all entries to construct the tree
-          provider.listAllEntries(collection).then((entries: EntryValue[]) => ({ entries }))
-        : provider.listEntries(collection, page));
-      response = {
-        ...response,
-        // The only existing backend using the pagination system is the
-        // Algolia integration, which is also the only integration used
-        // to list entries. Thus, this checking for an integration can
-        // determine whether or not this is using the old integer-based
-        // pagination API. Other backends will simply store an empty
-        // cursor, which behaves identically to no cursor at all.
-        cursor: integration
-          ? Cursor.create({
-              actions: ['next'],
-              meta: { usingOldPaginationAPI: true },
-              data: { nextPage: page + 1 },
-            })
-          : Cursor.create(response.cursor),
-      };
-
-      dispatch(
-        entriesLoaded(
-          collection,
-          response.cursor.meta!.get('usingOldPaginationAPI')
-            ? response.entries.reverse()
-            : response.entries,
-          response.pagination,
-          addAppendActionsToCursor(response.cursor),
-          append,
-        ),
-      );
+      if (loadAllEntries) {
+        // Progressive loading for collections that previously loaded everything at once.
+        // We iterate cursor pages and dispatch partial successes so entries appear early.
+        const initial = await provider.listEntries(collection, 0);
+        const cursor: Cursor = Cursor.create(initial.cursor);
+        const usingOld = cursor.meta!.get('usingOldPaginationAPI');
+        const entries = usingOld ? initial.entries.reverse() : initial.entries;
+        const hasMore = cursor.actions!.has('next');
+        dispatch(
+          entriesLoaded(
+            collection,
+            entries,
+            initial.pagination,
+            addAppendActionsToCursor(cursor),
+            false,
+            hasMore,
+          ),
+        );
+        // Stream subsequent pages
+        let currentCursor = cursor;
+        while (currentCursor.actions!.has('next')) {
+          const { entries: moreEntries, cursor: newCursor } = await traverseCursor(
+            provider as unknown as Backend,
+            currentCursor,
+            'next',
+          );
+          const usingOldMore = newCursor.meta!.get('usingOldPaginationAPI');
+          const pageEntries = usingOldMore ? moreEntries.reverse() : moreEntries;
+          const more = newCursor.actions!.has('next');
+          dispatch(
+            entriesLoaded(
+              collection,
+              pageEntries,
+              newCursor.meta?.get('page'),
+              addAppendActionsToCursor(newCursor),
+              true,
+              more,
+            ),
+          );
+          currentCursor = newCursor;
+        }
+      } else {
+        let response = await provider.listEntries(collection, page);
+        response = {
+          ...response,
+          cursor: integration
+            ? Cursor.create({
+                actions: ['next'],
+                meta: { usingOldPaginationAPI: true },
+                data: { nextPage: page + 1 },
+              })
+            : Cursor.create(response.cursor),
+        };
+        const usingOld = response.cursor.meta!.get('usingOldPaginationAPI');
+        const hasMore = response.cursor.actions!.has('next');
+        dispatch(
+          entriesLoaded(
+            collection,
+            usingOld ? response.entries.reverse() : response.entries,
+            response.pagination,
+            addAppendActionsToCursor(response.cursor),
+            append,
+            hasMore,
+          ),
+        );
+      }
     } catch (err) {
       const error = err instanceof Error ? err : new Error(String(err));
       dispatch(
