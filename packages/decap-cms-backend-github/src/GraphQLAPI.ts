@@ -115,7 +115,17 @@ export default class GraphQLAPI extends API {
     });
     // Always use direct GitHub API access for GraphQL
     // base_url is for OAuth endpoints only, not API requests
-    const httpLink = createHttpLink({ uri: `${this.apiRoot}/graphql` });
+    // Ensure apiRoot is always the GitHub API endpoint
+    const graphqlEndpoint = this.apiRoot.includes('api.github.com')
+      ? `${this.apiRoot}/graphql`
+      : 'https://api.github.com/graphql';
+
+    console.log('[GraphQLAPI] Using GraphQL endpoint:', graphqlEndpoint);
+
+    const httpLink = createHttpLink({
+      uri: graphqlEndpoint,
+      fetch, // Use global fetch
+    });
 
     // Implement intelligent cache with custom dataIdFromObject for better cache keys
     const cache = new InMemoryCache({

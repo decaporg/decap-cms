@@ -881,30 +881,90 @@ export default class GitHub implements Implementation {
 
   async traverseCursor(cursor: Cursor, action: string) {
     const meta = cursor.meta!;
-    const files = cursor.data!.get('files')!.toJS() as ApiFile[];
+    
+    // Check if this is a GraphQL paginated cursor (has folder/extension) or old-style (has files array)
+    const hasFiles = cursor.data!.has('files');
+    const hasFolder = cursor.data!.has('folder');
 
     let result: { cursor: Cursor; files: ApiFile[] };
-    switch (action) {
-      case 'first': {
-        result = this.getCursorAndFiles(files, 1);
-        break;
+
+    if (hasFolder && !hasFiles) {
+      // GraphQL pagination: re-fetch from API for the requested page
+      const folder = cursor.data!.get('folder') as string;
+      const extension = cursor.data!.get('extension') as string;
+      const repoURL = cursor.data!.get('repoURL') as string;
+      const currentPage = meta.get('page') as number;
+      const pageCount = meta.get('pageCount') as number;
+
+      let targetPage: number;
+      switch (action) {
+        case 'first':
+          targetPage = 1;
+          break;
+        case 'last':
+          targetPage = pageCount;
+          break;
+        case 'next':
+          targetPage = currentPage + 1;
+          break;
+        case 'prev':
+          targetPage = currentPage - 1;
+          break;
+        default:
+          targetPage = 1;
       }
-      case 'last': {
-        result = this.getCursorAndFiles(files, meta.get('pageCount'));
-        break;
+
+      // Fetch the requested page from GraphQL API
+      const pageResult = await (this.api as GraphQLAPI).listFilesPaginated(folder, {
+        repoURL,
+        pageSize: 20,
+        page: targetPage,
+      });
+
+      const filteredFiles = pageResult.files.filter((file: ApiFile) =>
+        filterByExtension(file, extension),
+      );
+
+      const newCursor = Cursor.create({
+        actions: pageResult.hasMore ? ['prev', 'first', 'next', 'last'] : ['prev', 'first'],
+        meta: {
+          page: pageResult.page,
+          count: pageResult.totalCount,
+          pageSize: 20,
+          pageCount: pageResult.pageCount,
+        },
+        data: { folder, extension, repoURL },
+      });
+
+      result = { cursor: newCursor, files: filteredFiles };
+    } else if (hasFiles) {
+      // Old-style pagination: all files in cursor, slice by page
+      const files = cursor.data!.get('files')!.toJS() as ApiFile[];
+
+      switch (action) {
+        case 'first': {
+          result = this.getCursorAndFiles(files, 1);
+          break;
+        }
+        case 'last': {
+          result = this.getCursorAndFiles(files, meta.get('pageCount'));
+          break;
+        }
+        case 'next': {
+          result = this.getCursorAndFiles(files, meta.get('page') + 1);
+          break;
+        }
+        case 'prev': {
+          result = this.getCursorAndFiles(files, meta.get('page') - 1);
+          break;
+        }
+        default: {
+          result = this.getCursorAndFiles(files, 1);
+          break;
+        }
       }
-      case 'next': {
-        result = this.getCursorAndFiles(files, meta.get('page') + 1);
-        break;
-      }
-      case 'prev': {
-        result = this.getCursorAndFiles(files, meta.get('page') - 1);
-        break;
-      }
-      default: {
-        result = this.getCursorAndFiles(files, 1);
-        break;
-      }
+    } else {
+      throw new Error('Invalid cursor: missing both files and folder data');
     }
 
     const readFile = (path: string, id: string | null | undefined) =>
