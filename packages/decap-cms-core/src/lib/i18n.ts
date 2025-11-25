@@ -140,6 +140,18 @@ export function normalizeFilePath(structure: I18N_STRUCTURE, path: string, local
   }
 }
 
+// Remove meta fields that should not be serialized to frontmatter
+function removeMetaFields(data: unknown) {
+  if (!data || typeof data !== 'object' || !('delete' in data)) {
+    return data;
+  }
+  return (data as Map<string, unknown>).delete('path').delete('path_type');
+}
+
+function getNonDefaultLocales(locales: string[], defaultLocale: string) {
+  return locales.filter(locale => locale !== defaultLocale);
+}
+
 export function getI18nFiles(
   collection: Collection,
   extension: string,
@@ -155,7 +167,8 @@ export function getI18nFiles(
   if (structure === I18N_STRUCTURE.SINGLE_FILE) {
     const data = locales.reduce((map, locale) => {
       const dataPath = getDataPath(locale, defaultLocale);
-      return map.set(locale, entryDraft.getIn(dataPath));
+      const localeData = removeMetaFields(entryDraft.getIn(dataPath));
+      return map.set(locale, localeData);
     }, Map<string, unknown>({}));
     const draft = entryDraft.set('data', data);
 
@@ -171,16 +184,11 @@ export function getI18nFiles(
     ];
   }
 
-  // if (isNestedSubfolders(collection)) {
-  // // if (isNestedSubfolders(collection)) {
-  //   locales = [defaultLocale];
-  //   isFolder = true;
-  // }
-
   const dataFiles = locales
     .map(locale => {
       const dataPath = getDataPath(locale, defaultLocale);
-      const draft = entryDraft.set('data', entryDraft.getIn(dataPath));
+      const data = removeMetaFields(entryDraft.getIn(dataPath));
+      const draft = entryDraft.set('data', data);
       return {
         path: getFilePath(structure, extension, path, slug, locale),
         slug,
@@ -202,17 +210,15 @@ export function getI18nBackup(
 ) {
   const { locales, defaultLocale } = getI18nInfo(collection) as I18nInfo;
 
-  const i18nBackup = locales
-    .filter(l => l !== defaultLocale)
-    .reduce((acc, locale) => {
-      const dataPath = getDataPath(locale, defaultLocale);
-      const data = entry.getIn(dataPath);
-      if (!data) {
-        return acc;
-      }
-      const draft = entry.set('data', data);
-      return { ...acc, [locale]: { raw: entryToRaw(draft) } };
-    }, {} as Record<string, { raw: string }>);
+  const i18nBackup = getNonDefaultLocales(locales, defaultLocale).reduce((acc, locale) => {
+    const dataPath = getDataPath(locale, defaultLocale);
+    const data = removeMetaFields(entry.getIn(dataPath));
+    if (!data) {
+      return acc;
+    }
+    const draft = entry.set('data', data);
+    return { ...acc, [locale]: { raw: entryToRaw(draft) } };
+  }, {} as Record<string, { raw: string }>);
 
   return i18nBackup;
 }
@@ -287,13 +293,10 @@ function mergeSingleFileValue(
   locales: string[],
 ): EntryValue {
   const data = entryValue.data[defaultLocale] || {};
-  const i18n = locales
-    .filter(l => l !== defaultLocale)
-    .map(l => ({ locale: l, value: entryValue.data[l] }))
-    .filter(e => e.value)
-    .reduce((acc, e) => {
-      return { ...acc, [e.locale]: { data: e.value } };
-    }, {});
+  const i18n = getNonDefaultLocales(locales, defaultLocale).reduce((acc, locale) => {
+    const value = entryValue.data[locale];
+    return value ? { ...acc, [locale]: { data: value } } : acc;
+  }, {});
 
   return {
     ...entryValue,
@@ -362,9 +365,11 @@ export function groupEntries(collection: Collection, extension: string, entries:
   return groupedEntries;
 }
 
-function compareFilePathEndings(path1: string, path2: string, subfolders = false) {
+function compareFilePathEndings(path1: string, path2: string, hasSubfolders = false) {
   const [p1, p2] = [path1, path2].map(p => p.split('/'));
-  return subfolders ? p1.slice(-2).join('/') === p2.slice(-2).join('/') : p1.at(-1) === p2.at(-1);
+  return hasSubfolders
+    ? p1.slice(-2).join('/') === p2.slice(-2).join('/')
+    : p1.at(-1) === p2.at(-1);
 }
 
 export function getI18nDataFiles(
@@ -379,9 +384,10 @@ export function getI18nDataFiles(
     return diffFiles;
   }
   const paths = getFilePaths(collection, extension, path, slug);
-  const subfolders = isNestedSubfolders(collection);
+  const hasSubfolders =
+    structure === I18N_STRUCTURE.MULTIPLE_FOLDERS || isNestedSubfolders(collection);
   const dataFiles = paths.reduce((acc, path) => {
-    const dataFile = diffFiles.find(file => compareFilePathEndings(file.path, path, subfolders));
+    const dataFile = diffFiles.find(file => compareFilePathEndings(file.path, path, hasSubfolders));
     if (dataFile) {
       return [...acc, dataFile];
     } else {
@@ -396,13 +402,9 @@ export function getI18nDataFiles(
 export function duplicateDefaultI18nFields(collection: Collection, dataFields: any) {
   const { locales, defaultLocale } = getI18nInfo(collection) as I18nInfo;
 
-  const i18nFields = Object.fromEntries(
-    locales
-      .filter(locale => locale !== defaultLocale)
-      .map(locale => [locale, { data: dataFields }]),
+  return Object.fromEntries(
+    getNonDefaultLocales(locales, defaultLocale).map(locale => [locale, { data: dataFields }]),
   );
-
-  return i18nFields;
 }
 
 export function duplicateI18nFields(
@@ -413,15 +415,14 @@ export function duplicateI18nFields(
   fieldPath: string[] = [field.get('name')],
 ) {
   const value = entryDraft.getIn(['entry', 'data', ...fieldPath]);
+
   if (field.get(I18N) === I18N_FIELD.DUPLICATE) {
-    locales
-      .filter(l => l !== defaultLocale)
-      .forEach(l => {
-        entryDraft = entryDraft.setIn(
-          ['entry', ...getDataPath(l, defaultLocale), ...fieldPath],
-          value,
-        );
-      });
+    getNonDefaultLocales(locales, defaultLocale).forEach(locale => {
+      entryDraft = entryDraft.setIn(
+        ['entry', ...getDataPath(locale, defaultLocale), ...fieldPath],
+        value,
+      );
+    });
   }
 
   if (field.has('field') && !List.isList(value)) {
@@ -460,12 +461,10 @@ export function serializeI18n(
 ) {
   const { locales, defaultLocale } = getI18nInfo(collection) as I18nInfo;
 
-  locales
-    .filter(locale => locale !== defaultLocale)
-    .forEach(locale => {
-      const dataPath = getLocaleDataPath(locale);
-      entry = entry.setIn(dataPath, serializeValues(entry.getIn(dataPath)));
-    });
+  getNonDefaultLocales(locales, defaultLocale).forEach(locale => {
+    const dataPath = getLocaleDataPath(locale);
+    entry = entry.setIn(dataPath, serializeValues(entry.getIn(dataPath)));
+  });
 
   return entry;
 }
