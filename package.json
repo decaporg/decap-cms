@@ -34,7 +34,7 @@
     "format": "npm run lint:js -- --fix --quiet && npm run format:prettier -- --write",
     "format:prettier": "prettier \"{{packages,scripts}/**/,}*.{js,jsx,ts,tsx,css}\"",
     "prepare": "husky install",
-    "check-package-integrity": "node scripts/check-package-integrity.js"
+    "check-package-integrity": "rimraf dev-test-npm && node scripts/check-package-integrity.cjs"
   },
   "browserslist": [
     "last 2 Chrome versions",
