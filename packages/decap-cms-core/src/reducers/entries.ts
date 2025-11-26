@@ -373,6 +373,11 @@ function entries(
             ['pagination', collection],
             existingPagination.set('currentPage', 1).set('totalCount', sortedIds.size),
           );
+        } else {
+          map.setIn(
+            ['pagination', collection],
+            fromJS({ currentPage: 1, totalCount: sortedIds.size, pageSize: 100 }),
+          );
         }
       });
       return newState;
