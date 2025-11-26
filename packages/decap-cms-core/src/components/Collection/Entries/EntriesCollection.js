@@ -224,7 +224,11 @@ export class EntriesCollection extends React.Component {
           // requires all entries to be loaded client-side for organization.
           // Server-side pagination would only return a subset of entries,
           // making grouping incomplete.
-          paginationEnabled={paginationEnabled && !hasActiveGroups}
+          // Pagination is also disabled for nested collections because:
+          // 1. Nested collections load all entries client-side to build the tree structure
+          // 2. The totalCount would include all nested files, not just the current folder level
+          // 3. Filtering by folder path happens after pagination, causing count mismatches
+          paginationEnabled={paginationEnabled && !hasActiveGroups && !collection.has('nested')}
           currentPage={currentPage}
           pageSize={pageSize}
           totalCount={totalCount}
