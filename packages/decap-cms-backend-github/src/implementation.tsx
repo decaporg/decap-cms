@@ -579,7 +579,7 @@ export default class GitHub implements Implementation {
       // Use recursive chunked loading for large collections with GraphQL
       if (
         this.useGraphql &&
-        depth > 1 &&
+        depth >= 1 &&
         this.api &&
         'listFilesRecursive' in this.api &&
         typeof this.api.listFilesRecursive === 'function'
