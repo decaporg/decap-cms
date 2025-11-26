@@ -46,6 +46,7 @@ describe('entries', () => {
               posts: {
                 page: 0,
                 ids: ['a', 'b'],
+                isFetching: false,
               },
             },
           }),

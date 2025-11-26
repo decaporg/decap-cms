@@ -20,6 +20,7 @@ import {
   ENTRIES_REQUEST,
   ENTRIES_SUCCESS,
   ENTRIES_FAILURE,
+  ENTRIES_PROGRESS,
   ENTRY_DELETE_SUCCESS,
   SORT_ENTRIES_REQUEST,
   SORT_ENTRIES_SUCCESS,
@@ -221,6 +222,22 @@ function entries(
         map.setIn(['pages', action.meta.collection, 'isFetching'], false);
         map.setIn(['pages', action.meta.collection, 'error'], action.payload);
       });
+
+    case ENTRIES_PROGRESS: {
+      const payload = action.payload as {
+        collection: string;
+        loadedCount: number;
+        totalCount: number;
+        percentage: number;
+      };
+      return state.withMutations(map => {
+        map.setIn(['pages', payload.collection, 'progress'], {
+          loadedCount: payload.loadedCount,
+          totalCount: payload.totalCount,
+          percentage: payload.percentage,
+        });
+      });
+    }
 
     case ENTRY_FAILURE: {
       const payload = action.payload as EntryFailurePayload;

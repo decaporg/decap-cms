@@ -881,7 +881,7 @@ export default class GitHub implements Implementation {
 
   async traverseCursor(cursor: Cursor, action: string) {
     const meta = cursor.meta!;
-    
+
     // Check if this is a GraphQL paginated cursor (has folder/extension) or old-style (has files array)
     const hasFiles = cursor.data!.has('files');
     const hasFolder = cursor.data!.has('folder');

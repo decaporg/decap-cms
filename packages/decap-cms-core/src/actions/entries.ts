@@ -50,6 +50,7 @@ export const ENTRY_FAILURE = 'ENTRY_FAILURE';
 export const ENTRIES_REQUEST = 'ENTRIES_REQUEST';
 export const ENTRIES_SUCCESS = 'ENTRIES_SUCCESS';
 export const ENTRIES_FAILURE = 'ENTRIES_FAILURE';
+export const ENTRIES_PROGRESS = 'ENTRIES_PROGRESS';
 
 export const SORT_ENTRIES_REQUEST = 'SORT_ENTRIES_REQUEST';
 export const SORT_ENTRIES_SUCCESS = 'SORT_ENTRIES_SUCCESS';
@@ -157,6 +158,18 @@ export function entriesFailed(collection: Collection, error: Error) {
     error: 'Failed to load entries',
     payload: error.toString(),
     meta: { collection: collection.get('name') },
+  };
+}
+
+export function entriesProgress(collection: Collection, loadedCount: number, totalCount: number) {
+  return {
+    type: ENTRIES_PROGRESS,
+    payload: {
+      collection: collection.get('name'),
+      loadedCount,
+      totalCount,
+      percentage: totalCount > 0 ? Math.round((loadedCount / totalCount) * 100) : 0,
+    },
   };
 }
 
@@ -605,6 +618,9 @@ export function loadEntries(collection: Collection, page = 0) {
         const usingOld = cursor.meta!.get('usingOldPaginationAPI');
         const entries = usingOld ? initial.entries.reverse() : initial.entries;
         const hasMore = cursor.actions!.has('next');
+        const totalCount = cursor.meta?.get('count') || 0;
+
+        // Dispatch initial entries
         dispatch(
           entriesLoaded(
             collection,
@@ -615,8 +631,15 @@ export function loadEntries(collection: Collection, page = 0) {
             hasMore,
           ),
         );
+
+        // Dispatch progress if we know the total
+        if (totalCount > 0) {
+          dispatch(entriesProgress(collection, entries.length, totalCount));
+        }
+
         // Stream subsequent pages
         let currentCursor = cursor;
+        let loadedCount = entries.length;
         while (currentCursor.actions!.has('next')) {
           const { entries: moreEntries, cursor: newCursor } = await traverseCursor(
             provider as unknown as Backend,
@@ -626,6 +649,8 @@ export function loadEntries(collection: Collection, page = 0) {
           const usingOldMore = newCursor.meta!.get('usingOldPaginationAPI');
           const pageEntries = usingOldMore ? moreEntries.reverse() : moreEntries;
           const more = newCursor.actions!.has('next');
+          loadedCount += pageEntries.length;
+
           dispatch(
             entriesLoaded(
               collection,
@@ -636,6 +661,12 @@ export function loadEntries(collection: Collection, page = 0) {
               more,
             ),
           );
+
+          // Dispatch progress update
+          if (totalCount > 0) {
+            dispatch(entriesProgress(collection, loadedCount, totalCount));
+          }
+
           currentCursor = newCursor;
         }
       } else {

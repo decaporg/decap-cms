@@ -3,7 +3,7 @@ import React from 'react';
 import styled from '@emotion/styled';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { translate } from 'react-polyglot';
-import { Loader, lengths } from 'decap-cms-ui-default';
+import { Loader, lengths, ProgressBar } from 'decap-cms-ui-default';
 
 import EntryListing from './EntryListing';
 
@@ -30,6 +30,7 @@ function Entries({
   getUnpublishedEntries,
   filterTerm,
   error,
+  progress,
 }) {
   const loadingMessages = [
     t('collection.entries.loadingEntries'),
@@ -57,7 +58,16 @@ function Entries({
           filterTerm={filterTerm}
         />
         {isFetching && page !== undefined && entries.size > 0 ? (
-          <PaginationMessage>{t('collection.entries.loadingEntries')}</PaginationMessage>
+          progress && progress.totalCount > 0 ? (
+            <ProgressBar
+              loadedCount={progress.loadedCount}
+              totalCount={progress.totalCount}
+              percentage={progress.percentage}
+              message={t('collection.entries.loadingEntries')}
+            />
+          ) : (
+            <PaginationMessage>{t('collection.entries.loadingEntries')}</PaginationMessage>
+          )
         ) : null}
       </>
     );
@@ -90,6 +100,11 @@ Entries.propTypes = {
   getUnpublishedEntries: PropTypes.func,
   filterTerm: PropTypes.string,
   error: PropTypes.string,
+  progress: PropTypes.shape({
+    loadedCount: PropTypes.number,
+    totalCount: PropTypes.number,
+    percentage: PropTypes.number,
+  }),
 };
 
 export default translate()(Entries);

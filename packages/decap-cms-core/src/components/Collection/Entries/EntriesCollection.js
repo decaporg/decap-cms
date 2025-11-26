@@ -146,6 +146,7 @@ export class EntriesCollection extends React.Component {
       getUnpublishedEntries,
       filterTerm,
       error,
+      progress,
     } = this.props;
 
     const EntriesToRender = ({ entries }) => {
@@ -163,6 +164,7 @@ export class EntriesCollection extends React.Component {
           getUnpublishedEntries={getUnpublishedEntries}
           filterTerm={filterTerm}
           error={error}
+          progress={progress}
         />
       );
     };
@@ -231,6 +233,7 @@ function mapStateToProps(state, ownProps) {
     : true;
 
   const error = state.entries.getIn(['pages', collection.get('name'), 'error']);
+  const progress = state.entries.getIn(['pages', collection.get('name'), 'progress']);
 
   return {
     collection,
@@ -245,6 +248,7 @@ function mapStateToProps(state, ownProps) {
     unpublishedEntriesLoaded,
     isEditorialWorkflowEnabled,
     error,
+    progress,
     getWorkflowStatus: (collectionName, slug) => {
       const unpublishedEntry = selectUnpublishedEntry(state, collectionName, slug);
       return unpublishedEntry ? unpublishedEntry.get('status') : null;
