@@ -432,6 +432,7 @@ describe('gitlab backend', () => {
       expect(entries).toEqual({
         cursor: expect.any(Cursor),
         pagination: 1,
+        errors: [],
         entries: expect.arrayContaining(
           tree.map(file => expect.objectContaining({ path: file.path })),
         ),
@@ -445,7 +446,7 @@ describe('gitlab backend', () => {
       tree.forEach(file => interceptFiles(backend, file.path));
 
       interceptCollection(backend, collectionManyEntriesConfig, { repeat: 5 });
-      const entries = await backend.listAllEntries(fromJS(collectionManyEntriesConfig));
+      const { entries } = await backend.listAllEntries(fromJS(collectionManyEntriesConfig));
 
       expect(entries).toEqual(
         expect.arrayContaining(tree.map(file => expect.objectContaining({ path: file.path }))),
@@ -463,6 +464,7 @@ describe('gitlab backend', () => {
         entries: expect.arrayContaining(
           files.map(file => expect.objectContaining({ path: file.file })),
         ),
+        errors: [],
       });
       expect(entries.entries).toHaveLength(2);
     });
