@@ -11,6 +11,9 @@ import { colors } from 'decap-cms-ui-default';
 import {
   loadEntries as actionLoadEntries,
   traverseCollectionCursor as actionTraverseCollectionCursor,
+  setEntriesPageSize as actionSetEntriesPageSize,
+  loadEntriesPage as actionLoadEntriesPage,
+  sortByField as actionSortByField,
 } from '../../../actions/entries';
 import { loadUnpublishedEntries } from '../../../actions/editorialWorkflow';
 import {
@@ -18,7 +21,12 @@ import {
   selectEntriesLoaded,
   selectIsFetching,
   selectGroups,
+  selectEntriesPageSize,
+  selectEntriesCurrentPage,
+  selectEntriesTotalCount,
+  selectEntriesSort,
 } from '../../../reducers/entries';
+import { isPaginationEnabled, getPaginationConfig } from '../../../lib/pagination';
 import { selectUnpublishedEntry, selectUnpublishedEntriesByStatus } from '../../../reducers';
 import { selectCollectionEntriesCursor } from '../../../reducers/cursors';
 import Entries from './Entries';
@@ -48,6 +56,13 @@ function getGroupTitle(group, t) {
   return `${label} ${value}`.trim();
 }
 
+/**
+ * Renders entries with grouping support.
+ *
+ * Groups are created by the groupByField action and represent entries
+ * organized by a field value (e.g., by author, category, etc.).
+ * Each group is rendered as a separate section with a heading.
+ */
 function withGroups(groups, entries, EntriesToRender, t) {
   return groups.map(group => {
     const title = getGroupTitle(group, t);
@@ -60,6 +75,24 @@ function withGroups(groups, entries, EntriesToRender, t) {
   });
 }
 
+/**
+ * EntriesCollection - Container component for entry collections.
+ *
+ * This component manages the lifecycle of entry loading, pagination, sorting,
+ * and grouping. It connects Redux state to the presentational Entries component.
+ *
+ * Key behaviors:
+ * - Loads entries on mount if not already loaded
+ * - Re-triggers sorting on mount to populate sortedIds (for client-side pagination)
+ * - Disables pagination when grouping is active (groups are client-side only)
+ * - Supports both published and unpublished entries (editorial workflow)
+ * - Handles nested collections with folder filtering
+ *
+ * Pagination behavior:
+ * - Uses config-based page size if pagination enabled in config
+ * - Falls back to Redux state page size otherwise
+ * - Pagination and grouping are mutually exclusive (grouping disables pagination)
+ */
 export class EntriesCollection extends React.Component {
   static propTypes = {
     collection: ImmutablePropTypes.map.isRequired,
@@ -78,6 +111,15 @@ export class EntriesCollection extends React.Component {
     isEditorialWorkflowEnabled: PropTypes.bool,
     getWorkflowStatus: PropTypes.func.isRequired,
     getUnpublishedEntries: PropTypes.func.isRequired,
+    paginationEnabled: PropTypes.bool,
+    paginationConfig: PropTypes.object,
+    currentPage: PropTypes.number,
+    pageSize: PropTypes.number,
+    totalCount: PropTypes.number,
+    setEntriesPageSize: PropTypes.func.isRequired,
+    loadEntriesPage: PropTypes.func.isRequired,
+    sortByField: PropTypes.func.isRequired,
+    sort: ImmutablePropTypes.orderedMap,
   };
 
   componentDidMount() {
@@ -92,7 +134,17 @@ export class EntriesCollection extends React.Component {
       unpublishedEntriesLoaded,
       loadUnpublishedEntries,
       isEditorialWorkflowEnabled,
+      sort,
+      sortByField,
     } = this.props;
+
+    // If sort state exists on mount, re-trigger sort to populate sortedIds
+    if (sort && sort.size > 0) {
+      sort.forEach((value, key) => {
+        const direction = value.get('direction');
+        sortByField(collection, key, direction);
+      });
+    }
 
     if (collection && !entriesLoaded) {
       loadEntries(collection);
@@ -144,7 +196,15 @@ export class EntriesCollection extends React.Component {
       getWorkflowStatus,
       getUnpublishedEntries,
       filterTerm,
+      paginationEnabled,
+      currentPage,
+      pageSize,
+      totalCount,
+      setEntriesPageSize,
+      loadEntriesPage,
     } = this.props;
+
+    const hasActiveGroups = groups && groups.length > 0;
 
     const EntriesToRender = ({ entries }) => {
       return (
@@ -160,11 +220,25 @@ export class EntriesCollection extends React.Component {
           getWorkflowStatus={getWorkflowStatus}
           getUnpublishedEntries={getUnpublishedEntries}
           filterTerm={filterTerm}
+          // Pagination is disabled when groups are active because grouping
+          // requires all entries to be loaded client-side for organization.
+          // Server-side pagination would only return a subset of entries,
+          // making grouping incomplete.
+          // Pagination is also disabled for nested collections because:
+          // 1. Nested collections load all entries client-side to build the tree structure
+          // 2. The totalCount would include all nested files, not just the current folder level
+          // 3. Filtering by folder path happens after pagination, causing count mismatches
+          paginationEnabled={paginationEnabled && !hasActiveGroups && !collection.has('nested')}
+          currentPage={currentPage}
+          pageSize={pageSize}
+          totalCount={totalCount}
+          onPageChange={page => loadEntriesPage(collection, page)}
+          onPageSizeChange={pageSize => setEntriesPageSize(collection, pageSize)}
         />
       );
     };
 
-    if (groups && groups.length > 0) {
+    if (hasActiveGroups) {
       return withGroups(groups, entries, EntriesToRender, t);
     }
 
@@ -204,7 +278,12 @@ function mapStateToProps(state, ownProps) {
 
   const collections = state.collections;
 
-  let entries = selectEntries(state.entries, collection);
+  // Calculate config-based page size first
+  const paginationEnabled = isPaginationEnabled(collection, state.config);
+  const paginationConfig = paginationEnabled ? getPaginationConfig(collection, state.config) : null;
+  const configPageSize = paginationConfig ? paginationConfig.per_page : undefined;
+
+  let entries = selectEntries(state.entries, collection, configPageSize);
   const groups = selectGroups(state.entries, collection);
 
   if (collection.has('nested')) {
@@ -227,6 +306,17 @@ function mapStateToProps(state, ownProps) {
     ? !!state.editorialWorkflow?.getIn(['pages', 'ids'], false)
     : true;
 
+  // Pagination state (already calculated above)
+  const currentPage = selectEntriesCurrentPage(state.entries, collection.get('name'));
+  // Use config's page size if pagination is enabled, otherwise use Redux state
+  const pageSize = paginationConfig
+    ? paginationConfig.per_page
+    : selectEntriesPageSize(state.entries, collection.get('name'));
+  const totalCount = selectEntriesTotalCount(state.entries, collection.get('name'));
+
+  // Sort state
+  const sort = selectEntriesSort(state.entries, collection.get('name'));
+
   return {
     collection,
     collections,
@@ -239,6 +329,12 @@ function mapStateToProps(state, ownProps) {
     cursor,
     unpublishedEntriesLoaded,
     isEditorialWorkflowEnabled,
+    paginationEnabled,
+    paginationConfig,
+    currentPage,
+    pageSize,
+    totalCount,
+    sort,
     getWorkflowStatus: (collectionName, slug) => {
       const unpublishedEntry = selectUnpublishedEntry(state, collectionName, slug);
       return unpublishedEntry ? unpublishedEntry.get('status') : null;
@@ -270,6 +366,9 @@ const mapDispatchToProps = {
   loadEntries: actionLoadEntries,
   traverseCollectionCursor: actionTraverseCollectionCursor,
   loadUnpublishedEntries: collections => loadUnpublishedEntries(collections),
+  setEntriesPageSize: actionSetEntriesPageSize,
+  loadEntriesPage: actionLoadEntriesPage,
+  sortByField: actionSortByField,
 };
 
 const ConnectedEntriesCollection = connect(mapStateToProps, mapDispatchToProps)(EntriesCollection);

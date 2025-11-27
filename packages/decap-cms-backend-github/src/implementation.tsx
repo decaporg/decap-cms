@@ -389,8 +389,7 @@ export default class GitHub implements Implementation {
     return Promise.resolve(this.token);
   }
 
-  getCursorAndFiles = (files: ApiFile[], page: number) => {
-    const pageSize = 20;
+  getCursorAndFiles = (files: ApiFile[], page: number, pageSize = 20) => {
     const count = files.length;
     const pageCount = Math.ceil(files.length / pageSize);
 
@@ -413,8 +412,20 @@ export default class GitHub implements Implementation {
     return { cursor, files: pageFiles };
   };
 
-  async entriesByFolder(folder: string, extension: string, depth: number) {
+  async entriesByFolder(
+    folder: string,
+    extension: string,
+    depth: number,
+    options?: {
+      page?: number;
+      pageSize?: number;
+      pagination?: boolean;
+    },
+  ) {
     const repoURL = this.api!.originRepoURL;
+    const page = options?.page ?? 1;
+    const pageSize = options?.pageSize ?? 20;
+    const usePagination = options?.pagination ?? true;
 
     let cursor: Cursor;
 
@@ -424,9 +435,18 @@ export default class GitHub implements Implementation {
         depth,
       }).then(files => {
         const filtered = files.filter(file => filterByExtension(file, extension));
-        const result = this.getCursorAndFiles(filtered, 1);
-        cursor = result.cursor;
-        return result.files;
+
+        if (usePagination) {
+          // Paginated: return only the requested page
+          const result = this.getCursorAndFiles(filtered, page, pageSize);
+          cursor = result.cursor;
+          return result.files;
+        } else {
+          // Non-paginated: return all files (no slicing)
+          const result = this.getCursorAndFiles(filtered, 1, pageSize);
+          cursor = result.cursor;
+          return filtered;
+        }
       });
 
     const readFile = (path: string, id: string | null | undefined) =>
@@ -562,27 +582,28 @@ export default class GitHub implements Implementation {
   async traverseCursor(cursor: Cursor, action: string) {
     const meta = cursor.meta!;
     const files = cursor.data!.get('files')!.toJS() as ApiFile[];
+    const pageSize = meta.get('pageSize') || 20;
 
     let result: { cursor: Cursor; files: ApiFile[] };
     switch (action) {
       case 'first': {
-        result = this.getCursorAndFiles(files, 1);
+        result = this.getCursorAndFiles(files, 1, pageSize);
         break;
       }
       case 'last': {
-        result = this.getCursorAndFiles(files, meta.get('pageCount'));
+        result = this.getCursorAndFiles(files, meta.get('pageCount'), pageSize);
         break;
       }
       case 'next': {
-        result = this.getCursorAndFiles(files, meta.get('page') + 1);
+        result = this.getCursorAndFiles(files, meta.get('page') + 1, pageSize);
         break;
       }
       case 'prev': {
-        result = this.getCursorAndFiles(files, meta.get('page') - 1);
+        result = this.getCursorAndFiles(files, meta.get('page') - 1, pageSize);
         break;
       }
       default: {
-        result = this.getCursorAndFiles(files, 1);
+        result = this.getCursorAndFiles(files, 1, pageSize);
         break;
       }
     }

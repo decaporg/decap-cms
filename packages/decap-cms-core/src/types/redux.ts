@@ -1,6 +1,7 @@
 import type { Action } from 'redux';
 import type { StaticallyTypedRecord } from './immutable';
 import type { Map, List, OrderedMap, Set } from 'immutable';
+import type { Cursor } from 'decap-cms-lib-util';
 import type { FILES, FOLDER } from '../constants/collectionTypes';
 import type { MediaFile as BackendMediaFile } from '../backend';
 import type { Auth } from '../reducers/auth';
@@ -309,6 +310,11 @@ export interface ViewGroup {
   id: string;
 }
 
+export interface PaginationConfig {
+  enabled?: boolean;
+  per_page: number;
+}
+
 export interface CmsCollection {
   name: string;
   label: string;
@@ -352,6 +358,7 @@ export interface CmsCollection {
   view_filters?: ViewFilter[];
   view_groups?: ViewGroup[];
   i18n?: boolean | CmsI18nConfig;
+  pagination?: boolean | PaginationConfig;
 
   /**
    * @deprecated Use sortable_fields instead
@@ -421,6 +428,7 @@ export interface CmsConfig {
   }[];
   slug?: CmsSlug;
   i18n?: CmsI18nConfig;
+  pagination?: boolean | PaginationConfig;
   local_backend?: boolean | CmsLocalBackend;
   editor?: {
     preview?: boolean;
@@ -515,6 +523,15 @@ export type GroupOfEntries = {
 
 export type Entities = StaticallyTypedRecord<EntitiesObject>;
 
+export type PaginationState = Map<
+  string,
+  StaticallyTypedRecord<{
+    pageSize: number;
+    currentPage: number;
+    totalCount: number;
+  }>
+>;
+
 export type Entries = StaticallyTypedRecord<{
   pages: Pages & PagesObject;
   entities: Entities & EntitiesObject;
@@ -522,6 +539,7 @@ export type Entries = StaticallyTypedRecord<{
   filter: Filter;
   group: Group;
   viewStyle: string;
+  pagination: PaginationState;
 }>;
 
 export type EditorialWorkflow = StaticallyTypedRecord<{
@@ -747,6 +765,7 @@ export interface EntriesSuccessPayload extends EntryPayload {
   entries: EntryObject[];
   append: boolean;
   page: number;
+  cursor?: Cursor;
 }
 export interface EntriesSortRequestPayload extends EntryPayload {
   key: string;
@@ -781,6 +800,16 @@ export interface EntriesGroupFailurePayload {
 
 export interface ChangeViewStylePayload {
   style: string;
+}
+
+export interface SetEntriesPageSizePayload {
+  collection: string;
+  pageSize: number;
+}
+
+export interface LoadEntriesPagePayload {
+  collection: string;
+  page: number;
 }
 
 export interface EntriesMoveSuccessPayload extends EntryPayload {

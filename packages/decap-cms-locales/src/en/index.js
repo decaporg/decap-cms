@@ -57,6 +57,16 @@ const en = {
       longerLoading: 'This might take several minutes',
       noEntries: 'No Entries',
     },
+    pagination: {
+      navigation: 'Entries pagination',
+      showing: 'Showing %{start}-%{end} of %{total}',
+      itemsPerPage: 'Items per page',
+      page: 'Page %{current} of %{total}',
+      first: 'First',
+      previous: 'Previous',
+      next: 'Next',
+      last: 'Last',
+    },
     groups: {
       other: 'Other',
       negateLabel: 'Not %{label}',

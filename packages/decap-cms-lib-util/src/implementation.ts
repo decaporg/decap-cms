@@ -148,6 +148,11 @@ export interface Implementation {
     folder: string,
     extension: string,
     depth: number,
+    options?: {
+      page?: number;
+      pageSize?: number;
+      pagination?: boolean;
+    },
   ) => Promise<ImplementationEntry[]>;
   entriesByFiles: (files: ImplementationFile[]) => Promise<ImplementationEntry[]>;
 
@@ -258,13 +263,69 @@ async function fetchFiles(
   ) as Promise<ImplementationEntry[]>;
 }
 
+/**
+ * Fetches entries from a folder with optional pagination support.
+ *
+ * This helper function is used by backend implementations to load entries from a repository folder.
+ * It supports both paginated and non-paginated modes:
+ *
+ * - **Without pagination:** Returns all entries (default behavior, backward compatible)
+ * - **With pagination:** Returns only the requested page of entries
+ *
+ * @param listFiles - Function that returns list of files in the folder
+ * @param readFile - Function to read file content
+ * @param readFileMetadata - Function to read file metadata
+ * @param apiName - Name of the backend API (for error messages)
+ * @param options - Optional pagination configuration
+ * @param options.page - 1-based page number (default: 1)
+ * @param options.pageSize - Number of entries per page (default: 100)
+ * @param options.pagination - Enable pagination (default: false for backward compatibility)
+ *
+ * @returns Promise resolving to array of entries
+ *
+ * @example
+ * // Without pagination (returns all entries)
+ * const entries = await entriesByFolder(
+ *   listFiles,
+ *   readFile,
+ *   readFileMetadata,
+ *   'GitHub'
+ * );
+ *
+ * @example
+ * // With pagination (returns page 2, 20 entries per page)
+ * const entries = await entriesByFolder(
+ *   listFiles,
+ *   readFile,
+ *   readFileMetadata,
+ *   'GitHub',
+ *   { page: 2, pageSize: 20, pagination: true }
+ * );
+ */
 export async function entriesByFolder(
   listFiles: () => Promise<ImplementationFile[]>,
   readFile: ReadFile,
   readFileMetadata: ReadFileMetadata,
   apiName: string,
+  options?: {
+    page?: number;
+    pageSize?: number;
+    pagination?: boolean;
+  },
 ) {
   const files = await listFiles();
+
+  // Apply pagination if enabled
+  if (options?.pagination) {
+    const page = options.page ?? 1;
+    const pageSize = options.pageSize ?? 100;
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const paginatedFiles = files.slice(startIndex, endIndex);
+    return fetchFiles(paginatedFiles, readFile, readFileMetadata, apiName);
+  }
+
+  // Default: return all files (backward compatible)
   return fetchFiles(files, readFile, readFileMetadata, apiName);
 }
 

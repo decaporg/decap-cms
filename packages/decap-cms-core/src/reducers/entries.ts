@@ -31,6 +31,8 @@ import {
   GROUP_ENTRIES_SUCCESS,
   GROUP_ENTRIES_FAILURE,
   CHANGE_VIEW_STYLE,
+  SET_ENTRIES_PAGE_SIZE,
+  SET_ENTRIES_PAGE,
 } from '../actions/entries';
 import { VIEW_STYLE_LIST } from '../constants/collectionViews';
 import { joinUrlPath } from '../lib/urlHelper';
@@ -66,6 +68,7 @@ import type {
   EntriesGroupRequestPayload,
   EntriesGroupFailurePayload,
   GroupOfEntries,
+  SetEntriesPageSizePayload,
 } from '../types/redux';
 
 const { keyToPathArray } = stringTemplate;
@@ -78,6 +81,7 @@ let slug: string;
 
 const storageSortKey = 'decap-cms.entries.sort';
 const viewStyleKey = 'decap-cms.entries.viewStyle';
+const paginationKey = 'decap-cms.entries.pagination';
 
 function normalizeDoubleSlashes(path: string) {
   if (!path) {
@@ -156,8 +160,51 @@ function persistViewStyle(viewStyle: string | undefined) {
   }
 }
 
+type PaginationStorage = { [collection: string]: number };
+
+const loadPagination = once(() => {
+  const paginationString = localStorage.getItem(paginationKey);
+  if (paginationString) {
+    try {
+      const pagination: PaginationStorage = JSON.parse(paginationString);
+      return Map(
+        Object.entries(pagination).map(([collection, pageSize]) => [
+          collection,
+          fromJS({ pageSize, currentPage: 1, totalCount: 0 }),
+        ]),
+      );
+    } catch (e) {
+      return Map();
+    }
+  }
+  return Map();
+});
+
+function clearPagination() {
+  localStorage.removeItem(paginationKey);
+}
+
+function persistPagination(pagination: Map<string, unknown> | undefined) {
+  if (pagination && pagination.size > 0) {
+    const storageData: PaginationStorage = {};
+    pagination.forEach((value, key) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      storageData[key as string] = (value as any).get('pageSize');
+    });
+    localStorage.setItem(paginationKey, JSON.stringify(storageData));
+  } else {
+    clearPagination();
+  }
+}
+
 function entries(
-  state = Map({ entities: Map(), pages: Map(), sort: loadSort(), viewStyle: loadViewStyle() }),
+  state = Map({
+    entities: Map(),
+    pages: Map(),
+    sort: loadSort(),
+    viewStyle: loadViewStyle(),
+    pagination: loadPagination(),
+  }),
   action: EntriesAction,
 ) {
   switch (action.type) {
@@ -210,6 +257,40 @@ function entries(
             ids: append ? map.getIn(['pages', collection, 'ids'], List()).concat(ids) : ids,
           }),
         );
+
+        // Update pagination metadata from cursor if available
+        if (payload.cursor && payload.cursor.meta && payload.cursor.meta.get('count')) {
+          const cursorMeta = payload.cursor.meta;
+          const currentPage = cursorMeta.get('page') || 1;
+          const totalCount = cursorMeta.get('count') || 0;
+          const cursorPageSize = cursorMeta.get('pageSize') || 100;
+
+          const existingPagination = map.getIn(
+            ['pagination', collection],
+            fromJS({ currentPage: 1, totalCount: 0, pageSize: 100 }),
+          );
+          // Only update pageSize if it hasn't been set yet (on first load)
+          // After that, the config-driven pageSize should be preserved
+          const currentPageSize = existingPagination.get('pageSize');
+          const pageSize =
+            currentPageSize && currentPageSize !== 100 ? currentPageSize : cursorPageSize;
+
+          const updated = existingPagination.merge({ currentPage, totalCount, pageSize });
+          map.setIn(['pagination', collection], updated);
+        } else {
+          // For i18n or client-side pagination (no cursor metadata), use actual loaded entry count
+          // This will be updated correctly when SORT_ENTRIES_SUCCESS sets sortedIds
+          const existingPagination = map.getIn(
+            ['pagination', collection],
+            fromJS({ currentPage: 1, totalCount: 0, pageSize: 100 }),
+          );
+          // Don't override totalCount if it's already been set (e.g., by SORT_ENTRIES_SUCCESS)
+          const updates: { currentPage: number; totalCount?: number } = { currentPage: 1 };
+          if (!existingPagination.get('totalCount')) {
+            updates.totalCount = loadedEntries.length;
+          }
+          map.setIn(['pagination', collection], existingPagination.merge(updates));
+        }
       });
     }
     case ENTRIES_FAILURE:
@@ -257,17 +338,22 @@ function entries(
         map.setIn(['sort', collection], sort);
         map.setIn(['pages', collection, 'isFetching'], true);
         map.deleteIn(['pages', collection, 'page']);
+        // Reset pagination to page 1 when sort changes
+        const existingPagination = map.getIn(['pagination', collection]);
+        if (existingPagination) {
+          map.setIn(['pagination', collection], existingPagination.set('currentPage', 1));
+        }
       });
       persistSort(newState.get('sort') as Sort);
       return newState;
     }
 
-    case GROUP_ENTRIES_SUCCESS:
     case FILTER_ENTRIES_SUCCESS:
     case SORT_ENTRIES_SUCCESS: {
       const payload = action.payload as { collection: string; entries: EntryObject[] };
       const { collection, entries } = payload;
       loadedEntries = entries;
+
       const newState = state.withMutations(map => {
         loadedEntries.forEach(entry =>
           map.setIn(
@@ -276,14 +362,52 @@ function entries(
           ),
         );
         map.setIn(['pages', collection, 'isFetching'], false);
+        // Store sorted/filtered entry slugs in a special key for client-side pagination
+        const sortedIds = List(loadedEntries.map(entry => entry.slug));
+        map.setIn(['pages', collection, 'sortedIds'], sortedIds);
+        map.setIn(['pages', collection, 'page'], 1);
+        // Reset pagination to page 1 and update totalCount
+        const existingPagination = map.getIn(['pagination', collection]);
+        if (existingPagination) {
+          map.setIn(
+            ['pagination', collection],
+            existingPagination.set('currentPage', 1).set('totalCount', sortedIds.size),
+          );
+        } else {
+          map.setIn(
+            ['pagination', collection],
+            fromJS({ currentPage: 1, totalCount: sortedIds.size, pageSize: 100 }),
+          );
+        }
+      });
+      return newState;
+    }
+
+    case GROUP_ENTRIES_SUCCESS: {
+      const payload = action.payload as { collection: string; entries: EntryObject[] };
+      const { collection, entries } = payload;
+      loadedEntries = entries;
+
+      const newState = state.withMutations(map => {
+        loadedEntries.forEach(entry =>
+          map.setIn(
+            ['entities', `${entry.collection}.${entry.slug}`],
+            fromJS(entry).set('isFetching', false),
+          ),
+        );
+
         const ids = List(loadedEntries.map(entry => entry.slug));
         map.setIn(
           ['pages', collection],
           Map({
             page: 1,
             ids,
+            isFetching: false,
           }),
         );
+
+        // Clear sortedIds so pagination doesn't limit results
+        map.deleteIn(['pages', collection, 'sortedIds']);
       });
       return newState;
     }
@@ -308,6 +432,11 @@ function entries(
           ['filter', collection, current.get('id')],
           current.set('active', !current.get('active')),
         );
+        // Reset pagination to page 1 when filter changes
+        const existingPagination = map.getIn(['pagination', collection]);
+        if (existingPagination) {
+          map.setIn(['pagination', collection], existingPagination.set('currentPage', 1));
+        }
       });
       return newState;
     }
@@ -332,6 +461,11 @@ function entries(
           ['group', collection, current.get('id')],
           current.set('active', !current.get('active')),
         );
+        // Reset pagination to page 1 when group changes
+        const existingPagination = map.getIn(['pagination', collection]);
+        if (existingPagination) {
+          map.setIn(['pagination', collection], existingPagination.set('currentPage', 1));
+        }
       });
       return newState;
     }
@@ -353,6 +487,35 @@ function entries(
         map.setIn(['viewStyle'], style);
       });
       persistViewStyle(newState.get('viewStyle') as string);
+      return newState;
+    }
+
+    case SET_ENTRIES_PAGE_SIZE: {
+      const payload = action.payload as unknown as SetEntriesPageSizePayload;
+      const { collection, pageSize } = payload;
+      const newState = state.withMutations(map => {
+        const current = map.getIn(
+          ['pagination', collection],
+          fromJS({ currentPage: 1, totalCount: 0, pageSize: 100 }),
+        );
+        map.setIn(
+          ['pagination', collection],
+          current.set('pageSize', pageSize).set('currentPage', 1),
+        );
+      });
+      persistPagination(newState.get('pagination') as Map<string, unknown>);
+      return newState;
+    }
+
+    case SET_ENTRIES_PAGE: {
+      const payload = action.payload as { collection: string; page: number };
+      const { collection, page } = payload;
+      const newState = state.withMutations(map => {
+        const existingPagination = map.getIn(['pagination', collection]);
+        if (existingPagination) {
+          map.setIn(['pagination', collection], existingPagination.set('currentPage', page));
+        }
+      });
       return newState;
     }
 
@@ -423,10 +586,42 @@ function getPublishedEntries(state: Entries, collectionName: string) {
   return entries;
 }
 
-export function selectEntries(state: Entries, collection: Collection) {
+export function selectEntries(state: Entries, collection: Collection, configPageSize?: number) {
   const collectionName = collection.get('name');
   let entries = getPublishedEntries(state, collectionName);
 
+  // If sortedIds is present, use it for client-side pagination
+  const sortedIdsRaw = state.getIn(['pages', collectionName, 'sortedIds']);
+  const pagination = selectEntriesPagination(state, collectionName);
+
+  // Use provided config page size, or fall back to Redux state
+  const pageSize = configPageSize || (pagination ? pagination.get('pageSize', 100) : 100);
+  const currentPage = pagination ? pagination.get('currentPage', 1) : 1;
+
+  if (sortedIdsRaw && List.isList(sortedIdsRaw)) {
+    const sortedIds = sortedIdsRaw as List<string>;
+
+    // Only apply pagination if configPageSize is explicitly provided (meaning pagination is enabled)
+    // If configPageSize is undefined, show all sorted entries
+    const pagedIds =
+      configPageSize !== undefined
+        ? sortedIds.slice((currentPage - 1) * pageSize, (currentPage - 1) * pageSize + pageSize)
+        : sortedIds;
+
+    // Always look up entries from the global entities map to ensure correct order
+    const entitiesMap = state.get('entities');
+    const pagedEntries = pagedIds
+      .map((slug: string | undefined) => {
+        if (!slug) return null;
+        const entry = entitiesMap.get(`${collectionName}.${slug}`);
+        return entry || null;
+      })
+      .filter((e): e is EntryMap => !!e)
+      .toList();
+    return pagedEntries;
+  }
+
+  // Fallback: legacy sort/filter logic
   const sortFields = selectEntriesSortFields(state, collectionName);
   if (sortFields && sortFields.length > 0) {
     const keys = sortFields.map(v => selectSortDataPath(collection, v.get('key')));
@@ -538,6 +733,27 @@ export function selectEntriesLoaded(state: Entries, collection: string) {
 
 export function selectIsFetching(state: Entries, collection: string) {
   return state.getIn(['pages', collection, 'isFetching'], false);
+}
+
+export function selectEntriesPagination(state: Entries, collectionName: string) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const pagination: any = state.get('pagination');
+  return pagination ? pagination.get(collectionName) : undefined;
+}
+
+export function selectEntriesPageSize(state: Entries, collectionName: string) {
+  const pagination = selectEntriesPagination(state, collectionName);
+  return pagination ? pagination.get('pageSize', 100) : 100;
+}
+
+export function selectEntriesCurrentPage(state: Entries, collectionName: string) {
+  const pagination = selectEntriesPagination(state, collectionName);
+  return pagination ? pagination.get('currentPage', 1) : 1;
+}
+
+export function selectEntriesTotalCount(state: Entries, collectionName: string) {
+  const pagination = selectEntriesPagination(state, collectionName);
+  return pagination ? pagination.get('totalCount', 0) : 0;
 }
 
 function getFileField(collectionFiles: CollectionFiles, slug: string | undefined) {

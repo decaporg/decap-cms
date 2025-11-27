@@ -41,13 +41,52 @@ export function localFsMiddleware({ repoPath, logger }: FsOptions) {
         }
         case 'entriesByFolder': {
           const payload = body.params as EntriesByFolderParams;
-          const { folder, extension, depth } = payload;
-          const entries = await listRepoFiles(repoPath, folder, extension, depth).then(files =>
-            entriesFromFiles(
-              repoPath,
-              files.map(file => ({ path: file })),
-            ),
+          const { folder, extension, depth, options } = payload;
+
+          const allFiles = await listRepoFiles(repoPath, folder, extension, depth);
+
+          // Handle pagination if options are provided
+          let files = allFiles;
+          let cursor = undefined;
+
+          if (options?.pagination && options.page && options.pageSize) {
+            const page = options.page;
+            const pageSize = options.pageSize;
+            const count = allFiles.length;
+            const pageCount = Math.ceil(count / pageSize);
+
+            // Slice files for current page
+            const startIndex = (page - 1) * pageSize;
+            const endIndex = page * pageSize;
+            files = allFiles.slice(startIndex, endIndex);
+
+            // Create cursor metadata
+            const actions = [];
+            if (page > 1) {
+              actions.push('prev', 'first');
+            }
+            if (page < pageCount) {
+              actions.push('next', 'last');
+            }
+
+            cursor = {
+              actions,
+              meta: { page, count, pageSize, pageCount },
+              data: { files: allFiles },
+            };
+          }
+
+          const entries = await entriesFromFiles(
+            repoPath,
+            files.map(file => ({ path: file })),
           );
+
+          // Attach cursor if pagination is enabled
+          if (cursor) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (entries as any)[Symbol.for('cursor')] = cursor;
+          }
+
           res.json(entries);
           break;
         }

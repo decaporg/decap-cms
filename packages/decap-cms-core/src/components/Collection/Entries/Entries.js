@@ -6,6 +6,7 @@ import { translate } from 'react-polyglot';
 import { Loader, lengths } from 'decap-cms-ui-default';
 
 import EntryListing from './EntryListing';
+import Pagination from './Pagination';
 
 const PaginationMessage = styled.div`
   width: ${lengths.topCardWidth};
@@ -17,6 +18,20 @@ const NoEntriesMessage = styled(PaginationMessage)`
   margin-top: 16px;
 `;
 
+/**
+ * Entries component - Renders the list of entries with optional pagination.
+ *
+ * This component orchestrates the display of entry cards and pagination controls.
+ * It handles three main states:
+ * 1. Loading - Shows loader with progressive messages
+ * 2. Empty - Shows "No Entries" message
+ * 3. Loaded - Shows EntryListing with optional Pagination
+ *
+ * Pagination behavior:
+ * - Only shown when pagination is enabled AND entries exist AND pageCount > 1
+ * - Uses hybrid approach: server-side by default, client-side when sorting/filtering active
+ * - Integrates with cursor-based infinite scroll (disabled when pagination active)
+ */
 function Entries({
   collections,
   entries,
@@ -29,6 +44,11 @@ function Entries({
   getWorkflowStatus,
   getUnpublishedEntries,
   filterTerm,
+  paginationEnabled,
+  currentPage,
+  pageSize,
+  totalCount,
+  onPageChange,
 }) {
   const loadingMessages = [
     t('collection.entries.loadingEntries'),
@@ -41,6 +61,13 @@ function Entries({
   }
 
   const hasEntries = (entries && entries.size > 0) || cursor?.actions?.has('append_next');
+
+  // Calculate page count for pagination
+  const pageCount = paginationEnabled && totalCount > 0 ? Math.ceil(totalCount / pageSize) : 1;
+
+  // Show pagination controls only if pagination is enabled and we have entries
+  const showPagination = paginationEnabled && totalCount > 0 && pageCount > 1;
+
   if (hasEntries) {
     return (
       <>
@@ -54,10 +81,21 @@ function Entries({
           getWorkflowStatus={getWorkflowStatus}
           getUnpublishedEntries={getUnpublishedEntries}
           filterTerm={filterTerm}
+          paginationEnabled={paginationEnabled}
         />
         {isFetching && page !== undefined && entries.size > 0 ? (
           <PaginationMessage>{t('collection.entries.loadingEntries')}</PaginationMessage>
         ) : null}
+        {showPagination && !isFetching && (
+          <Pagination
+            currentPage={currentPage}
+            pageCount={pageCount}
+            pageSize={pageSize}
+            totalCount={totalCount}
+            onPageChange={onPageChange}
+            t={t}
+          />
+        )}
       </>
     );
   }
@@ -77,6 +115,12 @@ Entries.propTypes = {
   getWorkflowStatus: PropTypes.func,
   getUnpublishedEntries: PropTypes.func,
   filterTerm: PropTypes.string,
+  paginationEnabled: PropTypes.bool,
+  currentPage: PropTypes.number,
+  pageSize: PropTypes.number,
+  totalCount: PropTypes.number,
+  onPageChange: PropTypes.func,
+  onPageSizeChange: PropTypes.func,
 };
 
 export default translate()(Entries);

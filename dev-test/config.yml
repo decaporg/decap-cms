@@ -17,6 +17,9 @@ collections: # A list of collections the CMS should be able to edit
     slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
     summary: '{{title}} -- {{year}}/{{month}}/{{day}}'
     create: true # Allow users to create new documents in this collection
+    pagination:
+      enabled: true
+      per_page: 10
     editor:
       visualEditing: true
     view_filters:
