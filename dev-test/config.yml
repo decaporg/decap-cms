@@ -19,6 +19,10 @@ collections: # A list of collections the CMS should be able to edit
     create: true # Allow users to create new documents in this collection
     editor:
       visualEditing: true
+    sortable_fields:
+      - title
+      - { field: date, default_sort: desc }
+      - draft
     view_filters:
       - label: Posts With Index
         field: title
