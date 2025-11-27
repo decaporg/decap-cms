@@ -34,6 +34,7 @@ import iconMedia from './media.svg';
 import iconMediaAlt from './media-alt.svg';
 import iconDecap from './decap.svg';
 import iconNewTab from './new-tab.svg';
+import iconNotAllowed from './not-allowed.svg';
 import iconPage from './page.svg';
 import iconPages from './pages.svg';
 import iconPagesAlt from './pages-alt.svg';
@@ -87,6 +88,7 @@ const images = {
   decap: iconDecap,
   'decap-cms': iconDecap,
   'new-tab': iconNewTab,
+  'not-allowed': iconNotAllowed,
   page: iconPage,
   pages: iconPages,
   'pages-alt': iconPagesAlt,
