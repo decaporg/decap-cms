@@ -21,3 +21,5 @@ coverage/
 .temp/
 storybook-static/
 .nx
+dev-test-npm/
+packages/*/*.tgz

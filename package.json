@@ -3,7 +3,7 @@
     "start": "npm run develop",
     "develop": "nx run-many -t develop --parallel=999 --output-style=stream --exclude=decap-server",
     "build": "npm run build:esm && nx run-many -t build",
-    "build:esm": "nx run-many -t build:esm",
+    "build:esm": "nx run-many -t build:esm --output-style=stream",
     "build:demo": "npm run build && ncp packages/decap-cms/dist dev-test/dist/",
     "build-preview": "npm run build && nx run decap-cms:build-preview --output-style=stream",
     "type-check": "tsc --noEmit",
@@ -33,7 +33,8 @@
     "lint:format": "prettier \"{{packages,scripts}/**/,}*.{js,jsx,ts,tsx,css}\" --list-different",
     "format": "npm run lint:js -- --fix --quiet && npm run format:prettier -- --write",
     "format:prettier": "prettier \"{{packages,scripts}/**/,}*.{js,jsx,ts,tsx,css}\"",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "check-package-integrity": "rimraf dev-test-npm && node scripts/check-package-integrity.cjs"
   },
   "browserslist": [
     "last 2 Chrome versions",
