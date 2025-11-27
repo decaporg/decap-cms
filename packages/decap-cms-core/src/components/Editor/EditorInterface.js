@@ -145,12 +145,29 @@ function EditorContent({
   }
 }
 
+// now we need need a common location for this one
+function isIndexFile(filePath, pattern, nested) {
+  const fileSlug = nested ? filePath?.split('/').pop() : filePath;
+  return fileSlug && new RegExp(pattern).test(fileSlug);
+}
+
 function isPreviewEnabled(collection, entry) {
   if (collection.get('type') === FILES) {
     const file = getFileFromSlug(collection, entry.get('slug'));
     const previewEnabled = file?.getIn(['editor', 'preview']);
+
     if (previewEnabled != null) return previewEnabled;
   }
+
+  const indexFileConfig = collection.get('index_file');
+  if (
+    indexFileConfig &&
+    isIndexFile(entry.get('slug'), indexFileConfig.get('pattern'), !!collection.get('nested')) &&
+    indexFileConfig.get('editor')?.has('preview')
+  ) {
+    return indexFileConfig.get('editor').get('preview');
+  }
+
   return collection.getIn(['editor', 'preview'], true);
 }
 
