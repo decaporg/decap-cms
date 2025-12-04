@@ -1329,7 +1329,20 @@ export class Backend {
     await this.invokePreUnpublishEvent(entry);
     let paths = [path];
     if (hasI18n(collection)) {
-      paths = getFilePaths(collection, extension, path, slug);
+      const allPaths = getFilePaths(collection, extension, path, slug);
+      // Filter out non-existent files to prevent deletion errors
+      const existingPaths = await Promise.all(
+        allPaths.map(async filePath => {
+          try {
+            await this.implementation.getEntry(filePath);
+            return filePath;
+          } catch (error) {
+            // File doesn't exist, skip it
+            return null;
+          }
+        }),
+      );
+      paths = existingPaths.filter((p): p is string => p !== null);
     }
     await this.implementation.deleteFiles(paths, commitMessage);
 
