@@ -50,6 +50,10 @@ const en = {
       searchResultsInCollection: 'Search Results for "%{searchTerm}" in %{collection}',
       filterBy: 'Filter by',
       groupBy: 'Group by',
+      pathTypes: {
+        index: 'Index Page',
+        content: 'Content Page',
+      },
     },
     entries: {
       loadingEntries: 'Loading Entries...',

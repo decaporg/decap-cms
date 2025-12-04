@@ -73,14 +73,11 @@ function CollectionTop({ collection, newEntryUrl, t }) {
   );
 
   const indexFileConfig = collection.get('index_file');
-  // const indexFile = get(collection.toJS(), ['meta', 'path', 'index_file'])
 
   function handleNew(pathType) {
     const delimiter = newEntryUrl.includes('?') ? '&' : '?';
     history.push(`${newEntryUrl}${delimiter}path_type=${pathType}`);
   }
-
-  // TODO: find some nice names for the path types, translate and consolidate
 
   return (
     <CollectionTopContainer>
@@ -101,12 +98,12 @@ function CollectionTop({ collection, newEntryUrl, t }) {
           >
             <DropdownItem
               key={'_index'}
-              label={`Razdelilna stran`}
+              label={t('collection.collectionTop.pathTypes.index')}
               onClick={() => handleNew('index')}
             />
             <DropdownItem
               key={'{{slug}}'}
-              label={'Vsebinska stran'}
+              label={t('collection.collectionTop.pathTypes.content')}
               onClick={() => handleNew('slug')}
             />
           </Dropdown>
