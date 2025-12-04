@@ -4,6 +4,7 @@ import escapeRegExp from 'lodash/escapeRegExp';
 import { stringTemplate } from 'decap-cms-lib-widgets';
 
 import consoleError from '../lib/consoleError';
+import { isIndexFile } from '../lib/indexFileHelper';
 import { CONFIG_SUCCESS } from '../actions/config';
 import { FILES, FOLDER } from '../constants/collectionTypes';
 import { COMMIT_DATE, COMMIT_AUTHOR } from '../constants/commitProps';
@@ -42,11 +43,6 @@ function collections(state = defaultState, action: ConfigAction) {
     default:
       return state;
   }
-}
-
-function isIndexFile(filePath: string, pattern: string, nested: boolean) {
-  const fileSlug = nested ? filePath?.split('/').pop() : filePath;
-  return fileSlug && new RegExp(pattern).test(fileSlug);
 }
 
 const selectors = {

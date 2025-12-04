@@ -18,6 +18,7 @@ import EditorControlPane from './EditorControlPane/EditorControlPane';
 import EditorPreviewPane from './EditorPreviewPane/EditorPreviewPane';
 import EditorToolbar from './EditorToolbar';
 import { hasI18n, getI18nInfo, getPreviewEntry } from '../../lib/i18n';
+import { isIndexFile } from '../../lib/indexFileHelper';
 import { FILES } from '../../constants/collectionTypes';
 import { getFileFromSlug } from '../../reducers/collections';
 
@@ -143,12 +144,6 @@ function EditorContent({
   } else {
     return <NoPreviewContainer>{editor}</NoPreviewContainer>;
   }
-}
-
-// now we need need a common location for this one
-function isIndexFile(filePath, pattern, nested) {
-  const fileSlug = nested ? filePath?.split('/').pop() : filePath;
-  return fileSlug && new RegExp(pattern).test(fileSlug);
 }
 
 function isPreviewEnabled(collection, entry) {

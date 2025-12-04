@@ -42,6 +42,7 @@ import { createEntry } from './valueObjects/Entry';
 import { sanitizeChar } from './lib/urlHelper';
 import { getBackend, invokeEvent } from './lib/registry';
 import { commitMessageFormatter, slugFormatter, previewUrlFormatter } from './lib/formatters';
+import { isIndexFile } from './lib/indexFileHelper';
 import { status } from './constants/publishModes';
 import { FOLDER, FILES } from './constants/collectionTypes';
 import { selectCustomPath } from './reducers/entryDraft';
@@ -315,11 +316,6 @@ function prepareMetaPath(path: string, collection: Collection, slug?: string) {
 
   const dir = dirname(path);
   return dir.slice(collection.get('folder')!.length + 1) || '/';
-}
-
-function isIndexFile(filePath: string, pattern: string, nested: boolean) {
-  const fileSlug = nested ? filePath?.split('/').pop() : filePath;
-  return fileSlug && new RegExp(pattern).test(fileSlug);
 }
 
 function prepareMetaPathType(slug: string, collection: Collection) {
