@@ -377,8 +377,8 @@ class ConfigError extends Error {
  */
 function validateIndexFileConfig(collection, collectionIndex) {
   const errors = [];
-  
-  if (!collection.index_file) {
+
+  if (!collection || !collection.index_file) {
     return errors;
   }
 
@@ -418,10 +418,10 @@ export function validateConfig(config) {
   ajvErrors(ajv);
 
   const valid = ajv.validate(getConfigSchema(), config);
-  
+
   // Collect all validation errors
   let errors = [];
-  
+
   if (!valid) {
     errors = ajv.errors.map(e => {
       switch (e.keyword) {
