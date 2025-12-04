@@ -35,11 +35,14 @@ import {
   selectMediaFolders,
   selectFieldsComments,
   selectHasMetaPath,
+  isNestedSubfolders,
+  isNested,
 } from './reducers/collections';
 import { createEntry } from './valueObjects/Entry';
 import { sanitizeChar } from './lib/urlHelper';
 import { getBackend, invokeEvent } from './lib/registry';
 import { commitMessageFormatter, slugFormatter, previewUrlFormatter } from './lib/formatters';
+import { isIndexFile } from './lib/indexFileHelper';
 import { status } from './constants/publishModes';
 import { FOLDER, FILES } from './constants/collectionTypes';
 import { selectCustomPath } from './reducers/entryDraft';
@@ -297,12 +300,33 @@ type Implementation = BackendImplementation & {
   init: (config: CmsConfig, options: ImplementationInitOptions) => Implementation;
 };
 
-function prepareMetaPath(path: string, collection: Collection) {
+function prepareMetaPath(path: string, collection: Collection, slug?: string) {
   if (!selectHasMetaPath(collection)) {
     return path;
   }
+
+  if (
+    slug &&
+    isNested(collection) &&
+    !isNestedSubfolders(collection) &&
+    prepareMetaPathType(slug, collection) !== 'index'
+  ) {
+    return slug;
+  }
+
   const dir = dirname(path);
   return dir.slice(collection.get('folder')!.length + 1) || '/';
+}
+
+function prepareMetaPathType(slug: string, collection: Collection) {
+  const indexFileConfig = collection.get('index_file');
+  if (
+    indexFileConfig &&
+    isIndexFile(slug, indexFileConfig.get('pattern'), !!collection.get('nested'))
+  ) {
+    return 'index';
+  }
+  return 'slug';
 }
 
 function collectionDepth(collection: Collection) {
@@ -517,7 +541,13 @@ export class Backend {
           label: loadedEntry.file.label,
           author: loadedEntry.file.author,
           updatedOn: loadedEntry.file.updatedOn,
-          meta: { path: prepareMetaPath(loadedEntry.file.path, collection) },
+          meta: {
+            path: prepareMetaPath(
+              loadedEntry.file.path,
+              collection,
+              selectEntrySlug(collection, loadedEntry.file.path),
+            ),
+          },
         },
       ),
     );
@@ -744,7 +774,7 @@ export class Backend {
           raw,
           label,
           mediaFiles,
-          meta: { path: prepareMetaPath(path, collection) },
+          meta: { path: prepareMetaPath(path, collection, slug) },
         }),
       );
     };
@@ -830,11 +860,16 @@ export class Backend {
 
     const getEntryValue = async (path: string) => {
       const loadedEntry = await this.implementation.getEntry(path);
-      let entry = createEntry(collection.get('name'), slug, loadedEntry.file.path, {
+      const entryPath = loadedEntry.file.path;
+
+      let entry = createEntry(collection.get('name'), slug, entryPath, {
         raw: loadedEntry.data,
         label,
         mediaFiles: [],
-        meta: { path: prepareMetaPath(loadedEntry.file.path, collection) },
+        meta: {
+          path: prepareMetaPath(entryPath, collection, slug),
+          path_type: prepareMetaPathType(slug, collection),
+        },
       });
 
       entry = this.entryWithFormat(collection)(entry);
@@ -928,7 +963,10 @@ export class Backend {
         updatedOn: entryData.updatedAt,
         author: entryData.pullRequestAuthor,
         status: entryData.status,
-        meta: { path: prepareMetaPath(path, collection) },
+        meta: {
+          path: prepareMetaPath(path, collection, slug),
+          path_type: prepareMetaPathType(slug, collection),
+        },
       });
 
       const entryWithFormat = this.entryWithFormat(collection)(entry);
@@ -961,6 +999,9 @@ export class Backend {
       );
       entries = entries.filter(Boolean);
       const grouped = await groupEntries(collection, extension, entries as EntryValue[]);
+      if (grouped[0]?.srcSlug) {
+        grouped[0].slug = grouped[0].srcSlug;
+      }
       return grouped[0];
     } else {
       const entryWithFormat = await readAndFormatDataFile(dataFiles[0]);
@@ -1114,6 +1155,9 @@ export class Backend {
     const customPath = selectCustomPath(collection, entryDraft);
 
     let dataFile: DataFile;
+
+    let isFolder = true;
+
     if (newEntry) {
       if (!selectAllowNewEntries(collection)) {
         throw new Error('Not allowed to create new entries in this collection');
@@ -1125,6 +1169,7 @@ export class Backend {
         usedSlugs,
         customPath,
       );
+      isFolder = prepareMetaPathType(slug, collection) === 'index';
       const path = customPath || (selectEntryPath(collection, slug) as string);
       dataFile = {
         path,
@@ -1135,13 +1180,16 @@ export class Backend {
       updateAssetProxies(assetProxies, config, collection, entryDraft, path);
     } else {
       const slug = entryDraft.getIn(['entry', 'slug']);
+      isFolder = prepareMetaPathType(slug, collection) === 'index';
       const path = entryDraft.getIn(['entry', 'path']);
+
       dataFile = {
         path,
         // for workflow entries we refresh the slug on publish
         slug: customPath && !useWorkflow ? slugFromCustomPath(collection, customPath) : slug,
         raw: this.entryToRaw(collection, entryDraft.get('entry')),
         newPath: customPath === path ? undefined : customPath,
+        isFolder,
       };
     }
 
@@ -1158,6 +1206,7 @@ export class Backend {
         path,
         slug,
         newPath,
+        isFolder,
       );
     }
 
@@ -1280,7 +1329,20 @@ export class Backend {
     await this.invokePreUnpublishEvent(entry);
     let paths = [path];
     if (hasI18n(collection)) {
-      paths = getFilePaths(collection, extension, path, slug);
+      const allPaths = getFilePaths(collection, extension, path, slug);
+      // Filter out non-existent files to prevent deletion errors
+      const existingPaths = await Promise.all(
+        allPaths.map(async filePath => {
+          try {
+            await this.implementation.getEntry(filePath);
+            return filePath;
+          } catch (error) {
+            // File doesn't exist, skip it
+            return null;
+          }
+        }),
+      );
+      paths = existingPaths.filter((p): p is string => p !== null);
     }
     await this.implementation.deleteFiles(paths, commitMessage);
 

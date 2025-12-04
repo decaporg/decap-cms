@@ -520,5 +520,142 @@ describe('config', () => {
         }).not.toThrow();
       });
     });
+
+    describe('index_file', () => {
+      it('should allow index_file with valid pattern', () => {
+        expect(() => {
+          validateConfig(
+            merge({}, validConfig, {
+              collections: [
+                {
+                  index_file: {
+                    pattern: '_index',
+                  },
+                },
+              ],
+            }),
+          );
+        }).not.toThrowError();
+      });
+
+      it('should require index_file pattern field', () => {
+        expect(() => {
+          validateConfig(
+            merge({}, validConfig, {
+              collections: [
+                {
+                  index_file: {},
+                },
+              ],
+            }),
+          );
+        }).toThrowError("'collections[0].index_file' must have required property 'pattern'");
+      });
+
+      it('should reject index_file with invalid regex pattern', () => {
+        expect(() => {
+          validateConfig(
+            merge({}, validConfig, {
+              collections: [
+                {
+                  index_file: {
+                    pattern: '[invalid(regex',
+                  },
+                },
+              ],
+            }),
+          );
+        }).toThrowError('must be a valid regular expression');
+      });
+
+      it('should reject index_file on file collections', () => {
+        expect(() => {
+          validateConfig(
+            merge({}, validConfig, {
+              collections: [
+                {
+                  files: [{ file: 'path/to/file.md', label: 'File', name: 'file' }],
+                  index_file: {
+                    pattern: '_index',
+                  },
+                },
+              ],
+            }),
+          );
+        }).toThrowError('cannot be used with file collections');
+      });
+
+      it('should allow index_file with optional fields configuration', () => {
+        expect(() => {
+          validateConfig(
+            merge({}, validConfig, {
+              collections: [
+                {
+                  index_file: {
+                    pattern: '_index',
+                    fields: [{ name: 'title', label: 'Title', widget: 'string' }],
+                  },
+                },
+              ],
+            }),
+          );
+        }).not.toThrowError();
+      });
+
+      it('should allow index_file with editor.preview configuration', () => {
+        expect(() => {
+          validateConfig(
+            merge({}, validConfig, {
+              collections: [
+                {
+                  index_file: {
+                    pattern: '_index',
+                    editor: {
+                      preview: false,
+                    },
+                  },
+                },
+              ],
+            }),
+          );
+        }).not.toThrowError();
+      });
+
+      it('should allow index_file with both pattern and fields', () => {
+        expect(() => {
+          validateConfig(
+            merge({}, validConfig, {
+              collections: [
+                {
+                  index_file: {
+                    pattern: 'index\\.md$',
+                    fields: [
+                      { name: 'title', label: 'Title', widget: 'string' },
+                      { name: 'description', label: 'Description', widget: 'text' },
+                    ],
+                  },
+                },
+              ],
+            }),
+          );
+        }).not.toThrowError();
+      });
+
+      it('should reject index_file pattern that is not a string', () => {
+        expect(() => {
+          validateConfig(
+            merge({}, validConfig, {
+              collections: [
+                {
+                  index_file: {
+                    pattern: 123,
+                  },
+                },
+              ],
+            }),
+          );
+        }).toThrowError("'collections[0].index_file.pattern' must be string");
+      });
+    });
   });
 });
