@@ -1,6 +1,7 @@
 import { flow, fromPairs, map } from 'lodash/fp';
 import isPlainObject from 'lodash/isPlainObject';
 import isEmpty from 'lodash/isEmpty';
+// eslint-disable-next-line import/no-named-as-default
 import minimatch from 'minimatch';
 import { unsentRequest } from 'decap-cms-lib-util';
 
