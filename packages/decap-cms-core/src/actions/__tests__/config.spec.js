@@ -480,7 +480,7 @@ describe('config', () => {
       ).toEqual({
         collections: [
           {
-            sortable_fields: ['title'],
+            sortable_fields: [{ field: 'title', default_sort: undefined }],
             folder: 'src',
             type: 'folder_based_collection',
             view_filters: [],
