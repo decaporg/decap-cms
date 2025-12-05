@@ -108,6 +108,8 @@ export default class ObjectControl extends React.Component {
       locale,
       collapsed,
       forID,
+      listIndexes,
+      fieldCondition,
     } = this.props;
 
     if (field.get('widget') === 'hidden') {
@@ -118,6 +120,15 @@ export default class ObjectControl extends React.Component {
 
     const isDuplicate = isFieldDuplicate && isFieldDuplicate(field);
     const isHidden = isFieldHidden && isFieldHidden(field);
+
+    // Check if field should be hidden based on conditions
+    const hideField =
+      field.get('condition') && fieldCondition && !fieldCondition(field, listIndexes);
+
+    // Skip rendering if field should be hidden
+    if (hideField) {
+      return null;
+    }
 
     return (
       <EditorControl
@@ -137,6 +148,8 @@ export default class ObjectControl extends React.Component {
         isFieldHidden={isFieldHidden}
         locale={locale}
         isParentListCollapsed={collapsed}
+        listIndexes={listIndexes}
+        fieldCondition={fieldCondition}
       />
     );
   }
