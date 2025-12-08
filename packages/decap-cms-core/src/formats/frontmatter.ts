@@ -98,7 +98,7 @@ export class FrontmatterFormatter {
     this.format = getFormatOpts(format, customDelimiter);
   }
 
-  fromFile(content: string) {
+  fromFile(content: string, filePath?: string) {
     const format = this.format || inferFrontmatterFormat(content);
 
     // Duplicate key detection for yaml frontmatter
@@ -118,8 +118,10 @@ export class FrontmatterFormatter {
           const key = match[1];
           keyCounts[key] = (keyCounts[key] || 0) + 1;
 
+          const source = filePath ?? 'unknown file';
+
           if (keyCounts[key] > 1) {
-            throw new Error(`Duplicate frontmatter key "${key}" found on line ${i + 1}.`);
+            console.warn(`Duplicate frontmatter key "${key}" in ${source} at line ${i + 1}`);
           }
         }
       }
