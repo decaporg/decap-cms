@@ -100,6 +100,31 @@ export class FrontmatterFormatter {
 
   fromFile(content: string) {
     const format = this.format || inferFrontmatterFormat(content);
+
+    // Duplicate key detection for yaml frontmatter
+    {
+      const lines = content.split('\n');
+      // Detect duplicate keys in frontmatter (YAML only)
+      if (!this.format || this.format.language === 'yaml') {
+        const keyCounts: Record<string, number> = {};
+
+        for (let i = 0; i < lines.length; i++) {
+          const line = lines[i].trim();
+
+          // Match YAML key: value pattern
+          const match = line.match(/^([A-Za-z0-9_\-]+):/);
+          if (!match) continue;
+
+          const key = match[1];
+          keyCounts[key] = (keyCounts[key] || 0) + 1;
+
+          if (keyCounts[key] > 1) {
+            throw new Error(`Duplicate frontmatter key "${key}" found on line ${i + 1}.`);
+          }
+        }
+      }
+    }
+
     const result = matter(content, { engines: parsers, ...format });
     // in the absent of a body when serializing an entry we use an empty one
     // when calling `toFile`, so we don't want to add it when parsing.
