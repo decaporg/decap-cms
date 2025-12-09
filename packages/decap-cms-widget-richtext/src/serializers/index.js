@@ -60,7 +60,7 @@ import slateToRemark from './slateRemark';
 /**
  * Deserialize a Markdown string to an MDAST.
  */
-export function markdownToRemark(markdown, remarkPlugins, editorComponents) {
+export function markdownToRemark(markdown, remarkPlugins = [], editorComponents = Map()) {
   const processor = unified()
     .use(markdownToRemarkPlugin, { fences: true, commonmark: true })
     .use(markdownToRemarkRemoveTokenizers, { inlineTokenizers: ['url'] })
@@ -205,7 +205,7 @@ export function htmlToSlate(html) {
  */
 export function markdownToSlate(
   markdown,
-  { voidCodeBlock, remarkPlugins = [], editorComponents } = {},
+  { voidCodeBlock, remarkPlugins = [], editorComponents = Map() } = {},
 ) {
   const mdast = markdownToRemark(markdown, remarkPlugins, editorComponents);
 
