@@ -37,7 +37,6 @@ describe('NestedCollection', () => {
     label: 'Pages',
     folder: 'src/pages',
     fields: [{ name: 'title', widget: 'string' }],
-    meta: { path: { label: 'Path', widget: 'string', index_file: 'index' } },
     nested: {
       subfolders: true,
     },
