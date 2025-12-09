@@ -7,6 +7,7 @@ import result from 'lodash/result';
 import trimStart from 'lodash/trimStart';
 import trim from 'lodash/trim';
 import { oneLine } from 'common-tags';
+import { dirname } from 'path';
 import {
   getAllResponses,
   APIError,
@@ -29,7 +30,6 @@ import {
   unsentRequest,
   throwOnConflictingBranches,
 } from 'decap-cms-lib-util';
-import { dirname } from 'path';
 
 import type {
   AssetProxy,
@@ -984,9 +984,15 @@ export default class API {
     const contentKey = this.generateContentKey(options.collectionName as string, slug);
     const branch = branchFromContentKey(contentKey);
     const unpublished = options.unpublished || false;
+    const hasSubfolders = options.hasSubfolders !== false; // default to true
     if (!unpublished) {
       const branchData = await this.getDefaultBranch();
-      const changeTree = await this.updateTree(branchData.commit.sha, files);
+      const changeTree = await this.updateTree(
+        branchData.commit.sha,
+        files,
+        this.branch,
+        hasSubfolders,
+      );
       const commitResponse = await this.commit(options.commitMessage, changeTree);
 
       if (this.useOpenAuthoring) {
@@ -1018,7 +1024,7 @@ export default class API {
       // rebase the branch before applying new changes
       const rebasedHead = await this.rebaseBranch(branch);
       const treeFiles = mediaFilesToRemove.concat(files);
-      const changeTree = await this.updateTree(rebasedHead.sha, treeFiles, branch);
+      const changeTree = await this.updateTree(rebasedHead.sha, treeFiles, branch, hasSubfolders);
       const commit = await this.commit(options.commitMessage, changeTree);
 
       return this.patchBranch(branch, commit.sha, { force: true });
@@ -1393,6 +1399,7 @@ export default class API {
     baseSha: string,
     files: { path: string; sha: string | null; newPath?: string }[],
     branch = this.branch,
+    hasSubfolders = true,
   ) {
     const toMove: { from: string; to: string; sha: string }[] = [];
     const tree = files.reduce((acc, file) => {
@@ -1413,24 +1420,44 @@ export default class API {
     }, [] as TreeEntry[]);
 
     for (const { from, to, sha } of toMove) {
-      const sourceDir = dirname(from);
-      const destDir = dirname(to);
-      const files = await this.listFiles(sourceDir, { branch, depth: 100 });
-      for (const file of files) {
-        // delete current path
+      if (!hasSubfolders) {
+        // New behavior (subfolders: false): Only move the specific file
+        // Delete the file at the old path
         tree.push({
-          path: file.path,
+          path: trimStart(from, '/'),
           mode: '100644',
           type: 'blob',
           sha: null,
         });
-        // create in new path
+        // Create the file at the new path
         tree.push({
-          path: file.path.replace(sourceDir, destDir),
+          path: trimStart(to, '/'),
           mode: '100644',
           type: 'blob',
-          sha: file.path === from ? sha : file.id,
+          sha,
         });
+      } else {
+        // Legacy behavior (subfolders: true, default): Move all files in the directory
+        // This is for collections where all files in a folder represent a single entry
+        const sourceDir = dirname(from);
+        const destDir = dirname(to);
+        const files = await this.listFiles(sourceDir, { branch, depth: 100 });
+        for (const file of files) {
+          // delete current path
+          tree.push({
+            path: file.path,
+            mode: '100644',
+            type: 'blob',
+            sha: null,
+          });
+          // create in new path
+          tree.push({
+            path: file.path.replace(sourceDir, destDir),
+            mode: '100644',
+            type: 'blob',
+            sha: file.path === from ? sha : file.id,
+          });
+        }
       }
     }
 

@@ -338,7 +338,7 @@ export interface CmsCollection {
     depth: number;
   };
   type: typeof FOLDER | typeof FILES;
-  meta?: { path?: { label: string; widget: string; index_file: string } };
+  meta?: { path?: { label: string; widget: string; index_file?: string } };
 
   /**
    * It accepts the following values: yml, yaml, toml, json, md, markdown, html
