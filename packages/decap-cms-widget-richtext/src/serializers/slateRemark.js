@@ -25,7 +25,7 @@ const typeMap = {
   'table-cell': 'tableCell',
   break: 'break',
   'thematic-break': 'thematicBreak',
-  link: 'link',
+  a: 'link',
   image: 'image',
   shortcode: 'shortcode',
 };
@@ -59,7 +59,7 @@ const blockTypes = [
   'table-cell',
 ];
 
-const inlineTypes = ['link', 'image', 'break'];
+const inlineTypes = ['a', 'image', 'break'];
 
 const leadingWhitespaceExp = /^\s+\S/;
 const trailingWhitespaceExp = /(?!\S)\s+$/;
@@ -102,7 +102,7 @@ export default function slateToRemark(value, { voidCodeBlock }) {
     return nodes.map(node => {
       const newNode = { ...node };
       switch (node.type) {
-        case 'link': {
+        case 'a': {
           const updatedNodes = removeMarkFromNodes(node.children, markType);
           return {
             ...node,
@@ -132,7 +132,7 @@ export default function slateToRemark(value, { voidCodeBlock }) {
 
   function getNodeMarks(node) {
     switch (node.type) {
-      case 'link': {
+      case 'a': {
         // Code marks can't always be condensed together. If all text in a link
         // is wrapped in a mark, this function returns that mark and the node
         // ends up nested inside of that mark. Code marks sometimes can't do
@@ -447,9 +447,9 @@ export default function slateToRemark(value, { voidCodeBlock }) {
        *
        * Url is now stored in data for slate, so we need to pull it out.
        */
-      case 'link': {
-        const { title, data } = node;
-        return u(typeMap[node.type], { url: data?.url, title, ...data }, children);
+      case 'a': {
+        const { title, url, data } = node;
+        return u(typeMap[node.type], { url, title, ...data }, children);
       }
 
       /**

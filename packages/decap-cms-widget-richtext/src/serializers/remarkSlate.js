@@ -13,7 +13,7 @@ const typeMap = {
   tableRow: 'table-row',
   tableCell: 'table-cell',
   thematicBreak: 'thematic-break',
-  link: 'link',
+  link: 'a',
   image: 'image',
   shortcode: 'shortcode',
 };
