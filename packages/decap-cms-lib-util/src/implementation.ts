@@ -81,6 +81,7 @@ export type PersistOptions = {
   useWorkflow?: boolean;
   unpublished?: boolean;
   status?: string;
+  hasSubfolders?: boolean;
 };
 
 export type DeleteOptions = {};

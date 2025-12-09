@@ -1006,4 +1006,156 @@ describe('Backend', () => {
       ]);
     });
   });
+
+  describe('persistEntry with nested collections', () => {
+    it('should pass hasSubfolders=true when subfolders is true (default)', async () => {
+      const implementation = {
+        init: jest.fn(() => implementation),
+        persistEntry: jest.fn(),
+      };
+
+      const config = {
+        backend: { commit_messages: {} },
+      };
+      const collection = Map({
+        name: 'pages',
+        type: FOLDER,
+        folder: '_pages',
+        create: true,
+        fields: List([Map({ name: 'title', widget: 'string' })]),
+        nested: Map({ depth: 10, subfolders: true }),
+        meta: Map({ path: Map({ label: 'Path', widget: 'string' }) }),
+      });
+      const entryDraft = Map({
+        entry: Map({
+          data: Map({ title: 'Test' }),
+          meta: Map({ path: 'blog' }),
+          newRecord: true,
+        }),
+      });
+      const user = { login: 'user', name: 'User' };
+      const backend = new Backend(implementation, { config, backendName: 'test' });
+
+      backend.currentUser = jest.fn().mockResolvedValue(user);
+      backend.entryToRaw = jest.fn().mockReturnValue('content');
+      backend.generateUniqueSlug = jest.fn().mockResolvedValue('test-slug');
+      backend.invokePreSaveEvent = jest.fn().mockResolvedValue(entryDraft.get('entry'));
+      backend.invokePostSaveEvent = jest.fn().mockResolvedValue();
+
+      await backend.persistEntry({
+        config,
+        collection,
+        entryDraft,
+        assetProxies: [],
+        usedSlugs: List(),
+      });
+
+      expect(implementation.persistEntry).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({
+          hasSubfolders: true,
+        }),
+      );
+    });
+
+    it('should pass hasSubfolders=false when subfolders is false', async () => {
+      const implementation = {
+        init: jest.fn(() => implementation),
+        persistEntry: jest.fn(),
+      };
+
+      const config = {
+        backend: { commit_messages: {} },
+      };
+      const collection = Map({
+        name: 'pages',
+        type: FOLDER,
+        folder: '_pages',
+        create: true,
+        fields: List([Map({ name: 'title', widget: 'string' })]),
+        nested: Map({ depth: 10, subfolders: false }),
+        meta: Map({ path: Map({ label: 'Path', widget: 'string' }) }),
+      });
+      const entryDraft = Map({
+        entry: Map({
+          data: Map({ title: 'Test' }),
+          meta: Map({ path: 'blog' }),
+          newRecord: true,
+        }),
+      });
+      const user = { login: 'user', name: 'User' };
+      const backend = new Backend(implementation, { config, backendName: 'test' });
+
+      backend.currentUser = jest.fn().mockResolvedValue(user);
+      backend.entryToRaw = jest.fn().mockReturnValue('content');
+      backend.generateUniqueSlug = jest.fn().mockResolvedValue('test-slug');
+      backend.invokePreSaveEvent = jest.fn().mockResolvedValue(entryDraft.get('entry'));
+      backend.invokePostSaveEvent = jest.fn().mockResolvedValue();
+
+      await backend.persistEntry({
+        config,
+        collection,
+        entryDraft,
+        assetProxies: [],
+        usedSlugs: List(),
+      });
+
+      expect(implementation.persistEntry).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({
+          hasSubfolders: false,
+        }),
+      );
+    });
+
+    it('should default to hasSubfolders=true when subfolders is not specified', async () => {
+      const implementation = {
+        init: jest.fn(() => implementation),
+        persistEntry: jest.fn(),
+      };
+
+      const config = {
+        backend: { commit_messages: {} },
+      };
+      const collection = Map({
+        name: 'pages',
+        type: FOLDER,
+        folder: '_pages',
+        create: true,
+        fields: List([Map({ name: 'title', widget: 'string' })]),
+        nested: Map({ depth: 10 }),
+        meta: Map({ path: Map({ label: 'Path', widget: 'string' }) }),
+      });
+      const entryDraft = Map({
+        entry: Map({
+          data: Map({ title: 'Test' }),
+          meta: Map({ path: 'blog' }),
+          newRecord: true,
+        }),
+      });
+      const user = { login: 'user', name: 'User' };
+      const backend = new Backend(implementation, { config, backendName: 'test' });
+
+      backend.currentUser = jest.fn().mockResolvedValue(user);
+      backend.entryToRaw = jest.fn().mockReturnValue('content');
+      backend.generateUniqueSlug = jest.fn().mockResolvedValue('test-slug');
+      backend.invokePreSaveEvent = jest.fn().mockResolvedValue(entryDraft.get('entry'));
+      backend.invokePostSaveEvent = jest.fn().mockResolvedValue();
+
+      await backend.persistEntry({
+        config,
+        collection,
+        entryDraft,
+        assetProxies: [],
+        usedSlugs: List(),
+      });
+
+      expect(implementation.persistEntry).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({
+          hasSubfolders: true,
+        }),
+      );
+    });
+  });
 });

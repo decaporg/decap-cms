@@ -477,22 +477,25 @@ describe('config', () => {
           merge({}, validConfig, { collections: [{ meta: { path: { label: 'Label' } } }] }),
         );
       }).toThrowError("'collections[0].meta.path' must have required property 'widget'");
-      expect(() => {
-        validateConfig(
-          merge({}, validConfig, {
-            collections: [{ meta: { path: { label: 'Label', widget: 'widget' } } }],
-          }),
-        );
-      }).toThrowError("'collections[0].meta.path' must have required property 'index_file'");
     });
 
-    it('should allow collection meta to have a path configuration', () => {
+    it('should allow collection meta to have a path configuration with index_file', () => {
       expect(() => {
         validateConfig(
           merge({}, validConfig, {
             collections: [
               { meta: { path: { label: 'Path', widget: 'string', index_file: 'index' } } },
             ],
+          }),
+        );
+      }).not.toThrow();
+    });
+
+    it('should allow collection meta to have a path configuration without index_file', () => {
+      expect(() => {
+        validateConfig(
+          merge({}, validConfig, {
+            collections: [{ meta: { path: { label: 'Path', widget: 'string' } } }],
           }),
         );
       }).not.toThrow();
