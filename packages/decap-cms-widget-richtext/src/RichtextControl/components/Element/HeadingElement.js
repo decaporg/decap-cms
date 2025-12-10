@@ -1,5 +1,4 @@
 import React from 'react';
-import { PlateElement } from 'platejs/react';
 import styled from '@emotion/styled';
 
 const headingVariants = {
@@ -39,11 +38,9 @@ function HeadingElement({ variant = 'h1', children, ...props }) {
   const { element, editor } = props;
   const isFirstBlock = element === editor.children[0];
   return (
-    <PlateElement asChild {...props}>
-      <StyledHeading isFirstBlock={isFirstBlock} variant={variant} as={variant}>
-        {children}
-      </StyledHeading>
-    </PlateElement>
+    <StyledHeading asChild {...props} isFirstBlock={isFirstBlock} variant={variant} as={variant}>
+      {children}
+    </StyledHeading>
   );
 }
 

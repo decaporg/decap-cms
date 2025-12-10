@@ -76,12 +76,16 @@ export default function VisualEditor(props) {
 
   function handleChange({ value }) {
     // console.log('handleChange', value);
-    const mdValue = slateToMarkdown(value, {}, editorComponents);
+    const mdValue = slateToMarkdown(
+      value,
+      { voidCodeBlock: !!codeBlockComponent },
+      editorComponents,
+    );
     onChange(mdValue);
   }
 
   const initialValue = props.value
-    ? markdownToSlate(props.value, { editorComponents })
+    ? markdownToSlate(props.value, { editorComponents, voidCodeBlock: !!codeBlockComponent })
     : emptyValue;
 
   const editor = usePlateEditor({
@@ -90,7 +94,7 @@ export default function VisualEditor(props) {
         [BoldPlugin.key]: withProps(PlateLeaf, { as: 'b' }),
         [CodePlugin.key]: CodeLeaf,
         [ItalicPlugin.key]: withProps(PlateLeaf, { as: 'em' }),
-        [ParagraphPlugin.key]: ParagraphElement,
+        [ParagraphPlugin.key]: withProps(ParagraphElement, { as: 'p' }),
         [KEYS.h1]: withProps(HeadingElement, { variant: 'h1' }),
         [KEYS.h2]: withProps(HeadingElement, { variant: 'h2' }),
         [KEYS.h3]: withProps(HeadingElement, { variant: 'h3' }),
