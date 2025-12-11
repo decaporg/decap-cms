@@ -119,7 +119,7 @@ export default function VisualEditor(props) {
           h3: { keys: 'mod+3', handler: () => editor.tf.toggleBlock('h3') },
           h4: { keys: 'mod+4', handler: () => editor.tf.toggleBlock('h4') },
           h5: { keys: 'mod+5', handler: () => editor.tf.toggleBlock('h5') },
-          h6: { keys: 'mod+6', handler: () => editor.tf.toggleBlock('h6')},
+          h6: { keys: 'mod+6', handler: () => editor.tf.toggleBlock('h6') },
         },
       }),
       BoldPlugin,

@@ -11,7 +11,9 @@ const StyledCode = styled.code`
 
 function CodeLeaf({ children, ...props }) {
   return (
-    <StyledCode asChild {...props}>{children}</StyledCode>
+    <StyledCode asChild {...props}>
+      {children}
+    </StyledCode>
   );
 }
 
