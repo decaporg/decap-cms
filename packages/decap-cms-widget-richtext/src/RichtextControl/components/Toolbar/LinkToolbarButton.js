@@ -1,9 +1,9 @@
 import React from 'react';
 import { useEditorRef } from 'platejs/react';
 import { useLinkToolbarButton, useLinkToolbarButtonState } from '@platejs/link/react';
-import { unwrapLink, upsertLink } from '@platejs/link';
 
 import ToolbarButton from './ToolbarButton';
+import { handleLinkClick } from '../../linkHandler';
 
 function LinkToolbarButton({ t, ...rest }) {
   const state = useLinkToolbarButtonState();
@@ -14,13 +14,7 @@ function LinkToolbarButton({ t, ...rest }) {
   const editor = useEditorRef();
 
   function handleClick() {
-    const url = window.prompt(t('editor.editorWidgets.markdown.linkPrompt'), '');
-
-    if (url) {
-      upsertLink(editor, { url, skipValidation: true });
-    } else if (url == '') {
-      unwrapLink(editor);
-    }
+    handleLinkClick({ editor, t });
   }
 
   return <ToolbarButton isActive={pressed} onClick={handleClick} {...rest} />;

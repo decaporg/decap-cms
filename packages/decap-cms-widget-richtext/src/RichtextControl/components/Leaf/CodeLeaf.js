@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import { colors, lengths } from 'decap-cms-ui-default';
-import { PlateLeaf } from 'platejs/react';
 
 const StyledCode = styled.code`
   background-color: ${colors.background};
@@ -12,9 +11,7 @@ const StyledCode = styled.code`
 
 function CodeLeaf({ children, ...props }) {
   return (
-    <PlateLeaf asChild {...props}>
-      <StyledCode>{children}</StyledCode>
-    </PlateLeaf>
+    <StyledCode asChild {...props}>{children}</StyledCode>
   );
 }
 

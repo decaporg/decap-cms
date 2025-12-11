@@ -1,7 +1,13 @@
 import React, { useEffect } from 'react';
 import { KEYS } from 'platejs';
 import { usePlateEditor, Plate, ParagraphPlugin, PlateLeaf } from 'platejs/react';
-import { BoldPlugin, ItalicPlugin, CodePlugin, HeadingPlugin } from '@platejs/basic-nodes/react';
+import {
+  BoldPlugin,
+  ItalicPlugin,
+  CodePlugin,
+  HeadingPlugin,
+  StrikethroughPlugin,
+} from '@platejs/basic-nodes/react';
 import { ListPlugin } from '@platejs/list-classic/react';
 import { LinkPlugin } from '@platejs/link/react';
 import { ClassNames, css } from '@emotion/react';
@@ -23,6 +29,7 @@ import ExtendedBlockquotePlugin from './plugins/ExtendedBlockquotePlugin';
 import ShortcodePlugin from './plugins/ShortcodePlugin';
 import defaultEmptyBlock from './defaultEmptyBlock';
 import { mergeMediaConfig } from './mergeMediaConfig';
+import { handleLinkClick } from './linkHandler';
 
 function editorStyles({ minimal }) {
   return css`
@@ -66,10 +73,6 @@ export default function VisualEditor(props) {
     console.log('handleBlockClick');
   }
 
-  function handleLinkClick() {
-    console.log('handleLinkClick');
-  }
-
   function handleToggleMode() {
     onMode('raw');
   }
@@ -94,6 +97,7 @@ export default function VisualEditor(props) {
         [BoldPlugin.key]: withProps(PlateLeaf, { as: 'b' }),
         [CodePlugin.key]: CodeLeaf,
         [ItalicPlugin.key]: withProps(PlateLeaf, { as: 'em' }),
+        [StrikethroughPlugin.key]: withProps(PlateLeaf, { as: 's' }),
         [ParagraphPlugin.key]: withProps(ParagraphElement, { as: 'p' }),
         [KEYS.h1]: withProps(HeadingElement, { variant: 'h1' }),
         [KEYS.h2]: withProps(HeadingElement, { variant: 'h2' }),
@@ -108,13 +112,35 @@ export default function VisualEditor(props) {
     },
     plugins: [
       ParagraphPlugin,
-      HeadingPlugin,
+      HeadingPlugin.configure({
+        shortcuts: {
+          h1: { keys: 'mod+1', handler: () => editor.tf.toggleBlock('h1') },
+          h2: { keys: 'mod+2', handler: () => editor.tf.toggleBlock('h2') },
+          h3: { keys: 'mod+3', handler: () => editor.tf.toggleBlock('h3') },
+          h4: { keys: 'mod+4', handler: () => editor.tf.toggleBlock('h4') },
+          h5: { keys: 'mod+5', handler: () => editor.tf.toggleBlock('h5') },
+          h6: { keys: 'mod+6', handler: () => editor.tf.toggleBlock('h6')},
+        },
+      }),
       BoldPlugin,
       ItalicPlugin,
-      CodePlugin,
+      StrikethroughPlugin.configure({
+        shortcuts: { toggle: { keys: 'mod+shift+s' } },
+      }),
+      CodePlugin.configure({
+        shortcuts: { toggle: { keys: 'mod+shift+c' } },
+      }),
       ListPlugin,
       LinkPlugin.configure({
         node: { component: LinkElement },
+        shortcuts: {
+          toggleLink: {
+            keys: 'mod+k',
+            handler: () => {
+              handleLinkClick({ editor, t });
+            },
+          },
+        },
       }),
       ExtendedBlockquotePlugin.configure({
         node: { component: BlockquoteElement },
