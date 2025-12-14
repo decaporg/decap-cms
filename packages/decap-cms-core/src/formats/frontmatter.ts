@@ -102,27 +102,43 @@ export class FrontmatterFormatter {
     const format = this.format || inferFrontmatterFormat(content);
 
     // Duplicate key detection for yaml frontmatter
+
     {
-      const lines = content.split('\n');
-      // Detect duplicate keys in frontmatter (YAML only)
       if (!this.format || this.format.language === 'yaml') {
-        const keyCounts: Record<string, number> = {};
+        const lines = content.split('\n');
+        const seenPaths = new Set<string>();
+        const pathStack: { indent: number; key: string }[] = [];
 
         for (let i = 0; i < lines.length; i++) {
-          const line = lines[i].trim();
+          const rawLine = lines[i];
+          const line = rawLine.trim();
 
-          // Match YAML key: value pattern
-          const match = line.match(/^([A-Za-z0-9_\-]+):/);
+          // Skip empty lines and comments
+          if (!line || line.startsWith('#')) continue;
+
+          const match = rawLine.match(/^(\s*)([A-Za-z0-9_\-]+):/);
           if (!match) continue;
 
-          const key = match[1];
-          keyCounts[key] = (keyCounts[key] || 0) + 1;
+          const indent = match[1].length;
+          const key = match[2];
+
+          // Pop stack until current indent level is valid
+          while (pathStack.length > 0 && pathStack[pathStack.length - 1].indent >= indent) {
+            pathStack.pop();
+          }
+
+          const fullPath = [...pathStack.map(p => p.key), key].join('.');
 
           const source = filePath ?? 'unknown file';
 
-          if (keyCounts[key] > 1) {
-            console.warn(`Duplicate frontmatter key "${key}" in ${source} at line ${i + 1}`);
+          if (seenPaths.has(fullPath)) {
+            console.warn(`Duplicate frontmatter key "${fullPath}" in ${source} at line ${i + 1}`);
+          } else {
+            seenPaths.add(fullPath);
           }
+
+          // Push current key for nested children
+          pathStack.push({ indent, key });
         }
       }
     }
