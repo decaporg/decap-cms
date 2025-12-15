@@ -116,7 +116,7 @@ export class FrontmatterFormatter {
           // Skip empty lines and comments
           if (!line || line.startsWith('#')) continue;
 
-          const match = rawLine.match(/^(\s*)([A-Za-z0-9_\-]+):/);
+          const match = rawLine.match(/^(\s*)([A-Za-z0-9_-]+):/);
           if (!match) continue;
 
           const indent = match[1].length;
