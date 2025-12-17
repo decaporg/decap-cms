@@ -1,6 +1,6 @@
 const fs = require('fs-extra');
 const path = require('path');
-const { parse, stringify } = require('yaml')
+const { parse, stringify } = require('yaml');
 
 const devTestDirectory = path.join(__dirname, '..', '..', 'dev-test');
 const backendsDirectory = path.join(devTestDirectory, 'backends');
@@ -18,10 +18,10 @@ async function copyBackendFiles(backend) {
 
 async function updateConfig(configModifier) {
   const configFile = path.join(devTestDirectory, 'config.yml');
-  const configContent = await fs.readFile(configFile);
+  const configContent = await fs.readFile(configFile, 'utf8');
   const config = parse(configContent);
   await configModifier(config);
-  await fs.writeFileSync(configFile, stringify(config));
+  await fs.writeFile(configFile, stringify(config));
 }
 
 async function switchVersion(version) {
