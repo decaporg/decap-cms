@@ -25,7 +25,7 @@ jobs:
     strategy:
       matrix:
         os: [macos-latest, windows-latest, ubuntu-latest]
-        node-version: [20.x, 22.x]
+        node-version: [22.x, 24.x]
       fail-fast: true
     if: ${{ needs.changes.outputs.cms == 'true' }}
     steps:
@@ -45,7 +45,7 @@ jobs:
       - name: build demo site
         run: npm run build:demo
       - name: run e2e tests
-        if: matrix.os == 'ubuntu-latest' && matrix.node-version == '22.x'
+        if: matrix.os == 'ubuntu-latest' && matrix.node-version == '24.x'
         run: npm run test:e2e:run-ci
         env:
           IS_FORK: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == true || github.repository_owner != 'decaporg' }}
@@ -53,7 +53,7 @@ jobs:
           NODE_OPTIONS: --max-old-space-size=4096
           TZ: Europe/Amsterdam
       - uses: actions/upload-artifact@v4
-        if: matrix.os == 'ubuntu-latest' && matrix.node-version == '22.x' && failure()
+        if: matrix.os == 'ubuntu-latest' && matrix.node-version == '24.x' && failure()
         with:
           name: cypress-results
           path: |
