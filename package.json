@@ -108,7 +108,6 @@
     "jest": "^27.0.0",
     "jest-cli": "^27.0.0",
     "jest-environment-jsdom": "^27.0.0",
-    "js-yaml": "^4.0.0",
     "mockserver-client": "^5.8.0",
     "mockserver-node": "^5.8.0",
     "ncp": "^2.0.0",
@@ -163,7 +162,8 @@
     "lerna": "^8.0.2",
     "lodash-es": "^4.17.21",
     "process": "^0.11.10",
-    "stream-browserify": "^3.0.0"
+    "stream-browserify": "^3.0.0",
+    "yaml": "^2.8.2"
   },
   "resolutions": {
     "react-redux": "^7.2.0"
