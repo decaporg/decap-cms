@@ -1,5 +1,9 @@
 name: Node CI
 
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
   push:
   pull_request:
@@ -11,7 +15,7 @@ jobs:
     outputs:
       cms: ${{ steps.filter.outputs.cms }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v2
         id: filter
         with:
@@ -19,43 +23,82 @@ jobs:
             cms:
               - '!website/**'
 
-  build:
+  build-unit:
     needs: changes
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-latest, windows-latest, ubuntu-latest]
-        node-version: [22.x, 24.x]
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        node-version: [24.x]
+        include:
+          - os: ubuntu-latest
+            node-version: 22.x
       fail-fast: true
     if: ${{ needs.changes.outputs.cms == 'true' }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           check-latest: true
           cache: 'npm'
       - name: log versions
-        run: node --version && npm --version && yarn --version
+        run: node --version && npm --version
+      - name: install dependencies (skip Cypress binary)
+        run: npm ci
+        env:
+          CYPRESS_INSTALL_BINARY: 0
+      - name: run lint + types + unit tests
+        run: npm run test:ci
+
+  e2e:
+    needs: changes
+    if: ${{ needs.changes.outputs.cms == 'true' }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        machine: [1, 2, 3, 4]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js 24.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.x
+          check-latest: true
+          cache: 'npm'
+      - name: Cache Nx local cache
+        uses: actions/cache@v4
+        with:
+          path: .nx/cache
+          key: nx-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            nx-${{ runner.os }}-
+      - name: Cache Cypress binary
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/Cypress
+          key: cypress-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            cypress-${{ runner.os }}-
       - name: install dependencies
         run: npm ci
-      - name: run unit tests
-        run: npm run test:ci
       - name: build demo site
         run: npm run build:demo
-      - name: run e2e tests
-        if: matrix.os == 'ubuntu-latest' && matrix.node-version == '24.x'
+      - name: run e2e tests (parallel)
         run: npm run test:e2e:run-ci
         env:
           IS_FORK: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == true || github.repository_owner != 'decaporg' }}
+          MACHINE_INDEX: ${{ matrix.machine }}
+          MACHINE_COUNT: 4
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           NODE_OPTIONS: --max-old-space-size=4096
           TZ: Europe/Amsterdam
       - uses: actions/upload-artifact@v4
-        if: matrix.os == 'ubuntu-latest' && matrix.node-version == '24.x' && failure()
+        if: failure()
         with:
-          name: cypress-results
+          name: cypress-results-${{ matrix.machine }}
           path: |
             cypress/screenshots
             cypress/videos
