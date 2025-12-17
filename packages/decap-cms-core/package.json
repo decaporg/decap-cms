@@ -28,7 +28,7 @@
     "@reduxjs/toolkit": "^1.9.1",
     "@vercel/stega": "^0.1.2",
     "buffer": "^6.0.3",
-    "clean-stack": "^5.2.0",
+    "clean-stack": "^6.0.0",
     "copy-text-to-clipboard": "^3.0.0",
     "dayjs": "^1.11.10",
     "deepmerge": "^4.2.2",
