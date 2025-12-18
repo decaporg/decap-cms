@@ -60,6 +60,11 @@ export const InsertButton = styled.button`
   ${buttons.green};
 `;
 
+export const CreateFolderButton = styled.button`
+  ${styles.button};
+  ${buttons.gray};
+`;
+
 const ActionButton = styled.button`
   ${styles.button};
   ${props =>

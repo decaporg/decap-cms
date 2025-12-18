@@ -224,7 +224,7 @@ exports[`MediaLibraryCard should match snapshot for non viewable image 1`] = `
 .emotion-4 {
   width: 100%;
   height: 160px;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: 2px 2px 0 0;
   padding: 1em;
   font-size: 3em;

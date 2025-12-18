@@ -243,6 +243,7 @@ const en = {
       deleting: 'Deleting...',
       deleteSelected: 'Delete selected',
       chooseSelected: 'Choose selected',
+      createFolder: 'Create folder',
     },
   },
   ui: {
