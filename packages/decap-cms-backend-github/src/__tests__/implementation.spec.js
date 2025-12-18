@@ -13,6 +13,17 @@ describe('github backend implementation', () => {
     },
   };
 
+  const configWithNotes = {
+    backend: {
+      repo: 'owner/repo',
+      open_authoring: false,
+      api_root: 'https://api.github.com',
+    },
+    editor: {
+      notes: true,
+    },
+  };
+
   const createObjectURL = jest.fn();
   global.URL = {
     createObjectURL,
@@ -355,6 +366,482 @@ describe('github backend implementation', () => {
       expect(result).toEqual({
         entries: expectedEntries,
         cursor: expectedCursor,
+      });
+    });
+  });
+  describe('notes implementation', () => {
+    const mockAPI = {
+      getEntryNotes: jest.fn(),
+      addNoteToEntry: jest.fn(),
+      updateEntryNote: jest.fn(),
+      deleteEntryNote: jest.fn(),
+      closeEntryNotesIssue: jest.fn(),
+      closeIssueOnPublish: jest.fn(),
+      reopenIssueOnUnpublish: jest.fn(),
+      readFile: jest.fn(),
+      deleteUnpublishedEntry: jest.fn().mockResolvedValue(undefined),
+      publishUnpublishedEntry: jest.fn().mockResolvedValue(undefined),
+    };
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    describe('getNotes', () => {
+      it('should retrieve notes for an entry', async () => {
+        const gitHubImplementation = new GitHubImplementation(configWithNotes);
+        gitHubImplementation.api = mockAPI;
+
+        const mockNotes = [
+          {
+            id: '1',
+            author: 'user1',
+            avatarUrl: 'https://avatar.url',
+            text: 'Test note',
+            timestamp: '2025-01-01T00:00:00Z',
+            resolved: false,
+          },
+        ];
+
+        mockAPI.getEntryNotes.mockResolvedValue(mockNotes);
+
+        const result = await gitHubImplementation.getNotes('posts', 'my-post');
+
+        expect(result).toEqual([
+          {
+            ...mockNotes[0],
+            entrySlug: 'my-post',
+          },
+        ]);
+        expect(mockAPI.getEntryNotes).toHaveBeenCalledWith('posts', 'my-post');
+      });
+
+      it('should return empty array on error', async () => {
+        const gitHubImplementation = new GitHubImplementation(config);
+        gitHubImplementation.api = mockAPI;
+
+        mockAPI.getEntryNotes.mockRejectedValue(new Error('API Error'));
+
+        const result = await gitHubImplementation.getNotes('posts', 'my-post');
+
+        expect(result).toEqual([]);
+        expect(console.error).toHaveBeenCalledWith('Failed to get notes:', expect.any(Error));
+      });
+    });
+
+    describe('addNote', () => {
+      it('should add a note to an entry', async () => {
+        const gitHubImplementation = new GitHubImplementation(config);
+        gitHubImplementation.api = mockAPI;
+        gitHubImplementation.token = 'test-token';
+        gitHubImplementation.currentUser = jest.fn().mockResolvedValue({
+          login: 'testuser',
+          name: 'Test User',
+          avatar_url: 'https://avatar.url',
+        });
+
+        const noteData = {
+          text: 'New note',
+          timestamp: '2025-01-01T00:00:00Z',
+          resolved: false,
+        };
+
+        mockAPI.addNoteToEntry.mockResolvedValue({
+          commentId: 'comment-123',
+          issueUrl: 'https://github.com/owner/repo/issues/1',
+        });
+        mockAPI.readFile.mockResolvedValue('title: My Post Title\n\nContent');
+
+        const result = await gitHubImplementation.addNote('posts', 'my-post', noteData);
+
+        expect(result).toMatchObject({
+          text: 'New note',
+          author: 'testuser',
+          avatarUrl: 'https://avatar.url',
+          entrySlug: 'my-post',
+          resolved: false,
+          id: 'comment-123',
+        });
+        expect(mockAPI.addNoteToEntry).toHaveBeenCalledWith(
+          'posts',
+          'my-post',
+          expect.objectContaining({
+            text: 'New note',
+            author: 'testuser',
+          }),
+          'My Post Title',
+        );
+      });
+
+      it('should handle missing entry title gracefully', async () => {
+        const gitHubImplementation = new GitHubImplementation(config);
+        gitHubImplementation.api = mockAPI;
+        gitHubImplementation.token = 'test-token';
+        gitHubImplementation.currentUser = jest.fn().mockResolvedValue({
+          login: 'testuser',
+          avatar_url: 'https://avatar.url',
+        });
+
+        const noteData = {
+          text: 'New note',
+          timestamp: '2025-01-01T00:00:00Z',
+        };
+
+        mockAPI.addNoteToEntry.mockResolvedValue({
+          commentId: 'comment-123',
+          issueUrl: 'https://github.com/owner/repo/issues/1',
+        });
+        mockAPI.readFile.mockRejectedValue(new Error('Not found'));
+
+        const result = await gitHubImplementation.addNote('posts', 'my-post', noteData);
+
+        expect(mockAPI.addNoteToEntry).toHaveBeenCalledWith(
+          'posts',
+          'my-post',
+          expect.any(Object),
+          undefined,
+        );
+        expect(result.id).toBe('comment-123');
+      });
+    });
+
+    describe('updateNote', () => {
+      it('should update an existing note', async () => {
+        const gitHubImplementation = new GitHubImplementation(config);
+        gitHubImplementation.api = mockAPI;
+
+        const existingNotes = [
+          {
+            id: 'note-1',
+            author: 'user1',
+            avatarUrl: 'https://avatar.url',
+            text: 'Original text',
+            timestamp: '2025-01-01T00:00:00Z',
+            resolved: false,
+            entrySlug: 'my-post',
+          },
+        ];
+
+        mockAPI.getEntryNotes.mockResolvedValue(existingNotes);
+        mockAPI.updateEntryNote.mockResolvedValue(undefined);
+
+        const updates = { text: 'Updated text', resolved: true };
+        const result = await gitHubImplementation.updateNote('posts', 'my-post', 'note-1', updates);
+
+        expect(result).toEqual({
+          ...existingNotes[0],
+          text: 'Updated text',
+          resolved: true,
+        });
+        expect(mockAPI.updateEntryNote).toHaveBeenCalledWith('note-1', result);
+      });
+
+      it('should throw error if note not found', async () => {
+        const gitHubImplementation = new GitHubImplementation(config);
+        gitHubImplementation.api = mockAPI;
+
+        mockAPI.getEntryNotes.mockResolvedValue([]);
+
+        await expect(
+          gitHubImplementation.updateNote('posts', 'my-post', 'non-existent', {}),
+        ).rejects.toThrow('Note with ID non-existent not found');
+      });
+    });
+
+    describe('deleteNote', () => {
+      it('should delete an existing note', async () => {
+        const gitHubImplementation = new GitHubImplementation(config);
+        gitHubImplementation.api = mockAPI;
+
+        const existingNotes = [
+          {
+            id: 'note-1',
+            author: 'user1',
+            text: 'Test note',
+            entrySlug: 'my-post',
+          },
+        ];
+
+        mockAPI.getEntryNotes.mockResolvedValue(existingNotes);
+        mockAPI.deleteEntryNote.mockResolvedValue(undefined);
+
+        await gitHubImplementation.deleteNote('posts', 'my-post', 'note-1');
+
+        expect(mockAPI.deleteEntryNote).toHaveBeenCalledWith('note-1');
+      });
+
+      it('should throw error if note not found', async () => {
+        const gitHubImplementation = new GitHubImplementation(config);
+        gitHubImplementation.api = mockAPI;
+
+        mockAPI.getEntryNotes.mockResolvedValue([]);
+
+        await expect(
+          gitHubImplementation.deleteNote('posts', 'my-post', 'non-existent'),
+        ).rejects.toThrow('Note with ID non-existent not found');
+      });
+    });
+
+    describe('toggleNoteResolution', () => {
+      it('should toggle note resolved status from false to true', async () => {
+        const gitHubImplementation = new GitHubImplementation(config);
+        gitHubImplementation.api = mockAPI;
+
+        const existingNotes = [
+          {
+            id: 'note-1',
+            author: 'user1',
+            avatarUrl: 'https://avatar.url',
+            text: 'Test note',
+            timestamp: '2025-01-01T00:00:00Z',
+            resolved: false,
+            entrySlug: 'my-post',
+          },
+        ];
+
+        mockAPI.getEntryNotes.mockResolvedValue(existingNotes);
+        mockAPI.updateEntryNote.mockResolvedValue(undefined);
+
+        const result = await gitHubImplementation.toggleNoteResolution(
+          'posts',
+          'my-post',
+          'note-1',
+        );
+
+        expect(result.resolved).toBe(true);
+        expect(mockAPI.updateEntryNote).toHaveBeenCalledWith(
+          'note-1',
+          expect.objectContaining({ resolved: true }),
+        );
+      });
+
+      it('should toggle note resolved status from true to false', async () => {
+        const gitHubImplementation = new GitHubImplementation(config);
+        gitHubImplementation.api = mockAPI;
+
+        const existingNotes = [
+          {
+            id: 'note-1',
+            resolved: true,
+            entrySlug: 'my-post',
+          },
+        ];
+
+        mockAPI.getEntryNotes.mockResolvedValue(existingNotes);
+        mockAPI.updateEntryNote.mockResolvedValue(undefined);
+
+        const result = await gitHubImplementation.toggleNoteResolution(
+          'posts',
+          'my-post',
+          'note-1',
+        );
+
+        expect(result.resolved).toBe(false);
+      });
+
+      it('should throw error if note not found', async () => {
+        const gitHubImplementation = new GitHubImplementation(config);
+        gitHubImplementation.api = mockAPI;
+
+        mockAPI.getEntryNotes.mockResolvedValue([]);
+
+        await expect(
+          gitHubImplementation.toggleNoteResolution('posts', 'my-post', 'non-existent'),
+        ).rejects.toThrow('Note with ID non-existent not found');
+      });
+    });
+
+    describe('reopenIssueForUnpublishedEntry', () => {
+      it('should reopen issue for unpublished entry', async () => {
+        const gitHubImplementation = new GitHubImplementation(config);
+        gitHubImplementation.api = mockAPI;
+
+        mockAPI.reopenIssueOnUnpublish.mockResolvedValue(undefined);
+
+        await gitHubImplementation.reopenIssueForUnpublishedEntry('posts', 'my-post');
+
+        expect(mockAPI.reopenIssueOnUnpublish).toHaveBeenCalledWith('posts', 'my-post');
+      });
+    });
+
+    describe('deleteUnpublishedEntry with notes cleanup', () => {
+      it('should delete entry and close associated notes issue', async () => {
+        const gitHubImplementation = new GitHubImplementation(config);
+        gitHubImplementation.api = mockAPI; // Just use mockAPI directly
+
+        await gitHubImplementation.deleteUnpublishedEntry('posts', 'my-post');
+
+        expect(mockAPI.deleteUnpublishedEntry).toHaveBeenCalledWith('posts', 'my-post');
+        expect(mockAPI.closeEntryNotesIssue).toHaveBeenCalledWith('posts', 'my-post');
+      });
+
+      it('should continue deletion even if closing issue fails', async () => {
+        const gitHubImplementation = new GitHubImplementation(config);
+        gitHubImplementation.api = mockAPI;
+        mockAPI.closeEntryNotesIssue.mockRejectedValue(new Error('Issue close failed'));
+
+        await gitHubImplementation.deleteUnpublishedEntry('posts', 'my-post');
+
+        expect(mockAPI.deleteUnpublishedEntry).toHaveBeenCalledWith('posts', 'my-post');
+      });
+    });
+
+    describe('publishUnpublishedEntry with issue cleanup', () => {
+      it('should publish entry and close issue', async () => {
+        const gitHubImplementation = new GitHubImplementation(config);
+        gitHubImplementation.api = mockAPI;
+
+        await gitHubImplementation.publishUnpublishedEntry('posts', 'my-post');
+
+        expect(mockAPI.publishUnpublishedEntry).toHaveBeenCalledWith('posts', 'my-post');
+        expect(mockAPI.closeIssueOnPublish).toHaveBeenCalledWith('posts', 'my-post');
+      });
+    });
+    describe('notes polling', () => {
+      beforeEach(() => {
+        jest.clearAllMocks();
+      });
+
+      it('should start notes polling', async () => {
+        const gitHubImplementation = new GitHubImplementation(config);
+        gitHubImplementation.pollingManager = {
+          watchIssueWithRetry: jest.fn().mockResolvedValue(() => {}),
+          getStatus: jest.fn().mockReturnValue({ currentWatch: null }),
+        };
+
+        const callbacks = {
+          onUpdate: jest.fn(),
+          onChange: jest.fn(),
+        };
+
+        await gitHubImplementation.startNotesPolling('posts', 'my-post', callbacks);
+
+        expect(gitHubImplementation.pollingManager.watchIssueWithRetry).toHaveBeenCalledWith(
+          'posts',
+          'my-post',
+          callbacks,
+          5,
+          2000,
+        );
+      });
+
+      it('should not start polling if already watching same entry', async () => {
+        const gitHubImplementation = new GitHubImplementation(config);
+        gitHubImplementation.pollingManager = {
+          watchIssueWithRetry: jest.fn().mockResolvedValue(() => {}),
+          getStatus: jest.fn().mockReturnValue({ currentWatch: 'posts/my-post' }),
+        };
+
+        const callbacks = { onUpdate: jest.fn() };
+
+        await gitHubImplementation.startNotesPolling('posts', 'my-post', callbacks);
+
+        expect(gitHubImplementation.pollingManager.watchIssueWithRetry).not.toHaveBeenCalled();
+      });
+
+      it('should stop notes polling', async () => {
+        const gitHubImplementation = new GitHubImplementation(config);
+        const unwatchFn = jest.fn();
+        gitHubImplementation.unwatchFunctions.set('posts/my-post', unwatchFn);
+
+        await gitHubImplementation.stopNotesPolling('posts', 'my-post');
+
+        expect(unwatchFn).toHaveBeenCalledTimes(1);
+        expect(gitHubImplementation.unwatchFunctions.has('posts/my-post')).toBe(false);
+      });
+
+      it('should handle stopping polling when not active', async () => {
+        const gitHubImplementation = new GitHubImplementation(config);
+
+        await expect(
+          gitHubImplementation.stopNotesPolling('posts', 'my-post'),
+        ).resolves.not.toThrow();
+      });
+
+      it('should refresh notes immediately', async () => {
+        const gitHubImplementation = new GitHubImplementation(config);
+        gitHubImplementation.pollingManager = {
+          checkIssueNow: jest.fn().mockResolvedValue(undefined),
+        };
+
+        await gitHubImplementation.refreshNotesNow('posts', 'my-post');
+
+        expect(gitHubImplementation.pollingManager.checkIssueNow).toHaveBeenCalledWith(
+          'posts',
+          'my-post',
+        );
+      });
+
+      it('should throw error when refreshing without polling manager', async () => {
+        const gitHubImplementation = new GitHubImplementation(config);
+        gitHubImplementation.pollingManager = undefined;
+
+        await expect(gitHubImplementation.refreshNotesNow('posts', 'my-post')).rejects.toThrow(
+          'Polling manager not initialized',
+        );
+      });
+      it('should start polling and store unwatch function', async () => {
+        const gitHubImplementation = new GitHubImplementation(config);
+        const unwatchFn = jest.fn();
+
+        gitHubImplementation.pollingManager = {
+          watchIssueWithRetry: jest.fn().mockResolvedValue(unwatchFn),
+          getStatus: jest.fn().mockReturnValue({ currentWatch: null }),
+        };
+
+        const callbacks = {
+          onUpdate: jest.fn(),
+          onChange: jest.fn(),
+        };
+
+        await gitHubImplementation.startNotesPolling('posts', 'my-post', callbacks);
+
+        expect(gitHubImplementation.pollingManager.watchIssueWithRetry).toHaveBeenCalledWith(
+          'posts',
+          'my-post',
+          callbacks,
+          5,
+          2000,
+        );
+        expect(gitHubImplementation.unwatchFunctions.get('posts/my-post')).toBe(unwatchFn);
+      });
+
+      it('should stop existing polling before starting new one', async () => {
+        const gitHubImplementation = new GitHubImplementation(config);
+        const oldUnwatchFn = jest.fn();
+        const newUnwatchFn = jest.fn();
+
+        gitHubImplementation.unwatchFunctions.set('posts/my-post', oldUnwatchFn);
+        gitHubImplementation.pollingManager = {
+          watchIssueWithRetry: jest.fn().mockResolvedValue(newUnwatchFn),
+          getStatus: jest.fn().mockReturnValue({ currentWatch: 'posts/other-post' }),
+        };
+
+        const callbacks = { onUpdate: jest.fn() };
+
+        await gitHubImplementation.startNotesPolling('posts', 'my-post', callbacks);
+
+        expect(oldUnwatchFn).toHaveBeenCalledTimes(1);
+        expect(gitHubImplementation.unwatchFunctions.get('posts/my-post')).toBe(newUnwatchFn);
+      });
+
+      it('should handle polling manager error gracefully', async () => {
+        const gitHubImplementation = new GitHubImplementation(config);
+
+        gitHubImplementation.pollingManager = {
+          watchIssueWithRetry: jest.fn().mockRejectedValue(new Error('Failed to find issue')),
+          getStatus: jest.fn().mockReturnValue({ currentWatch: null }),
+        };
+
+        const callbacks = { onUpdate: jest.fn() };
+
+        await gitHubImplementation.startNotesPolling('posts', 'my-post', callbacks);
+
+        // Should not throw, just log error
+        expect(console.error).toHaveBeenCalledWith(
+          '[DecapNotes Polling] Failed to start polling after retries:',
+          expect.any(Error),
+        );
       });
     });
   });
