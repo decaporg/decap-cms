@@ -9,15 +9,7 @@ const isESM = process.env.NODE_ENV === 'esm';
 console.log('Build Package:', path.basename(process.cwd()));
 
 // Always enabled plugins
-const basePlugins = [
-  [
-    'babel-plugin-transform-builtin-extend',
-    {
-      globals: ['Error'],
-    },
-  ],
-  'babel-plugin-inline-json-import',
-];
+const basePlugins = ['babel-plugin-inline-json-import'];
 
 // All legacy transforms have been removed as they are now included in @babel/preset-env
 // Features like class properties, optional chaining, nullish coalescing are now standard in modern JS
