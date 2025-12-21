@@ -1,6 +1,6 @@
 const fs = require('fs-extra');
 const path = require('path');
-const yaml = require('js-yaml');
+const yaml = require('yaml');
 const uniq = require('lodash/uniq');
 
 const rawDataPath = '../data/languages-raw.yml';
@@ -9,7 +9,7 @@ const outputPath = '../data/languages.json';
 async function fetchData() {
   const filePath = path.resolve(__dirname, rawDataPath);
   const fileContent = await fs.readFile(filePath);
-  return yaml.load(fileContent);
+  return yaml.parse(fileContent);
 }
 
 function outputData(data) {
