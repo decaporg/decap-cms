@@ -92,6 +92,7 @@ jobs:
       - name: run e2e tests (parallel)
         run: npm run test:e2e:run-ci
         env:
+          CI_BUILD_ID: ${{ github.run_id }}-${{ github.run_attempt }}
           IS_FORK: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == true || github.repository_owner != 'decaporg' }}
           MACHINE_INDEX: ${{ matrix.machine }}
           MACHINE_COUNT: 4
