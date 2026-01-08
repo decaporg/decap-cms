@@ -102,7 +102,7 @@ export function defaultSchema({ path = requiredString } = {}) {
             collection,
             slug,
             id: requiredString,
-            path: requiredString,
+            path,
           })
           .required(),
       },
@@ -113,7 +113,7 @@ export function defaultSchema({ path = requiredString } = {}) {
             collection,
             slug,
             id: requiredString,
-            path: requiredString,
+            path,
           })
           .required(),
       },
