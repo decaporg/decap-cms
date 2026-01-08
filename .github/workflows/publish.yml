@@ -1,0 +1,39 @@
+name: Publish Packages
+
+on:
+  push:
+    tags:
+      - 'decap-*@*'
+
+permissions:
+  contents: read
+  id-token: write  # Required for OIDC trusted publishers
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: production  # Optional: adds approval requirements and deployment protection
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Required for Lerna to detect changes
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build packages
+        run: npm run build
+
+      - name: Run tests
+        run: npm run test:ci
+
+      - name: Publish to npm
+        run: npm run lerna:publish
+        # No NODE_AUTH_TOKEN needed - uses OIDC automatically via trusted publishers
