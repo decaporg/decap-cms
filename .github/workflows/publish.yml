@@ -34,6 +34,37 @@ jobs:
       - name: Run tests
         run: npm run test:ci
 
+      - name: Debug
+        run: |
+          echo "::group::Node & npm versions"
+          node -v
+          npm -v
+          echo "::endgroup::"
+
+          echo "::group::npm config (redacted)"
+          npm config get registry || true
+          npm config list -l | sed 's/_authToken.*/_authToken=[REDACTED]/' || true
+          echo "::endgroup::"
+
+          echo "::group::Env checks"
+          if [ -n "${NODE_AUTH_TOKEN}" ]; then echo "NODE_AUTH_TOKEN set? yes"; else echo "NODE_AUTH_TOKEN set? no"; fi
+          if [ -n "${NPM_CONFIG_USERCONFIG}" ]; then echo "NPM_CONFIG_USERCONFIG set? yes"; else echo "NPM_CONFIG_USERCONFIG set? no"; fi
+          echo "::endgroup::"
+
+          echo "::group::Git state"
+          git status --porcelain || true
+          git tag --list --points-at HEAD || true
+          echo "::endgroup::"
+
+          echo "::group::Registry package info"
+          npm view decap-server version || true
+          npm view decap-server versions --json || true
+          echo "::endgroup::"
+
+          echo "::group::Lerna packages"
+          npx lerna ls --json || true
+          echo "::endgroup::"
+
       - name: Publish to npm
-        run: npm run lerna:publish
+        run: npm run lerna:publish -- --loglevel silly
         # No NODE_AUTH_TOKEN needed - uses OIDC automatically via trusted publishers
