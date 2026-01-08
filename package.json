@@ -33,6 +33,7 @@
     "lint:format": "prettier \"{{packages,scripts}/**/,}*.{js,jsx,ts,tsx,css}\" --list-different",
     "format": "npm run lint:js -- --fix --quiet && npm run format:prettier -- --write",
     "format:prettier": "prettier \"{{packages,scripts}/**/,}*.{js,jsx,ts,tsx,css}\"",
+    "lerna:publish": "lerna publish from-package --yes --no-private",
     "prepare": "husky install"
   },
   "browserslist": [
