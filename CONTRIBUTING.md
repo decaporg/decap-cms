@@ -215,7 +215,7 @@ Decap CMS uses NPM trusted publishers with OIDC for secure, automated package pu
   npm run test
 
   # Bump versions for changed packages
-  npx lerna version --conventional-commits
+  npx lerna version
 
   # This will:
   # - Detect changed packages since last release
