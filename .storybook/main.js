@@ -1,11 +1,6 @@
-import type { StorybookConfig } from '@storybook/react-webpack5';
-import { join } from 'path';
-import { fileURLToPath } from 'url';
+const path = require('path');
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = join(__filename, '..');
-
-const config: StorybookConfig = {
+module.exports = {
   stories: ['../packages/**/src/**/?(*.)(story|stories).(js|jsx|ts|tsx|mdx)'],
 
   addons: [
@@ -36,10 +31,9 @@ const config: StorybookConfig = {
     }
     config.resolve.alias = {
       ...config.resolve.alias,
-      'decap-cms-ui-next': join(__dirname, '../packages/decap-cms-ui-next/src'),
-      'decap-cms-locales': join(__dirname, '../packages/decap-cms-locales/src'),
+      'decap-cms-ui-next': path.resolve(__dirname, '../packages/decap-cms-ui-next/src'),
+      'decap-cms-locales': path.resolve(__dirname, '../packages/decap-cms-locales/src'),
     };
     return config;
   },
 };
-export default config;
