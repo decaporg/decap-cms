@@ -427,6 +427,30 @@ export default class ListControl extends React.Component {
       const withNameKey =
         this.getValueType() !== valueTypes.SINGLE ||
         (this.getValueType() === valueTypes.SINGLE && listFieldObjectWidget);
+
+      if (f.get('widget') === 'relation') {
+        const isDuplicate =
+          value &&
+          value.some((item, idx) => {
+            if (idx === index) return false;
+            const itemValue = withNameKey ? item.get(f.get('name')) : item;
+            return itemValue === newValue;
+          });
+
+        if (isDuplicate) {
+          console.warn(`⚠️ Duplicate: "${newValue}" already selected`);
+
+          this.duplicateErrorIndex = index;
+          this.forceUpdate();
+
+          return;
+        }
+      }
+
+      if (this.duplicateErrorIndex === index) {
+        this.duplicateErrorIndex = null;
+      }
+
       const newObjectValue = withNameKey
         ? this.getObjectValue(index).set(f.get('name'), newValue)
         : newValue;
@@ -652,6 +676,9 @@ export default class ListControl extends React.Component {
     let field = this.props.field;
     const hasError = this.hasError(index);
     const isVariableTypesList = this.getValueType() === valueTypes.MIXED;
+
+    const hasDuplicateError = this.duplicateErrorIndex === index;
+
     if (isVariableTypesList) {
       field = getTypedFieldForValue(field, item);
       if (!field) {
@@ -667,6 +694,22 @@ export default class ListControl extends React.Component {
         id={key}
         keys={keys}
       >
+        {hasDuplicateError && (
+          <div
+            style={{
+              background: '#fee',
+              color: '#c33',
+              padding: '12px',
+              marginBottom: '12px',
+              borderRadius: '4px',
+              border: '1px solid #fcc',
+              fontSize: '14px',
+              fontWeight: 'bold',
+            }}
+          >
+            ❌ This entry is already selected in this list
+          </div>
+        )}
         {isVariableTypesList && (
           <LabelComponent
             field={field}
@@ -810,10 +853,8 @@ export default class ListControl extends React.Component {
   }
 
   render() {
-    if (this.getValueType() !== null) {
-      return this.renderListControl();
-    } else {
-      return this.renderInput();
-    }
+    return (
+      <div>{this.getValueType() !== null ? this.renderListControl() : this.renderInput()}</div>
+    );
   }
 }
