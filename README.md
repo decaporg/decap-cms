@@ -43,7 +43,7 @@ These are our sponsors on both platforms. Thank you for your support!
 
 ![Open Collective Backers](https://opencollective.com/decap/backers.svg?limit=30&button=false&avatarHeight=48&width=400)
 
-<!-- sponsors --><a href="https://github.com/Zwyx"><img src="https://github.com/Zwyx.png" width="48px" alt="Zwyx" style="border-radius:50%" /></a> &nbsp;<a href="https://github.com/smolcodes"><img src="https://github.com/smolcodes.png" width="48px" alt="smolcodes" style="border-radius:50%" /></a> &nbsp;<a href="https://github.com/shizik"><img src="https://github.com/shizik.png" width="48px" alt="shizik" style="border-radius:50%" /></a> &nbsp;<a href="https://github.com/JacquesRaoult"><img src="https://github.com/JacquesRaoult.png" width="48px" alt="JacquesRaoult" style="border-radius:50%" /></a> &nbsp;<!-- sponsors -->
+<!-- sponsors --><a href="https://github.com/Zwyx"><img src="https://github.com/Zwyx.png" width="48px" alt="Zwyx" style="border-radius:50%" /></a> &nbsp;<a href="https://github.com/smolcodes"><img src="https://github.com/smolcodes.png" width="48px" alt="smolcodes" style="border-radius:50%" /></a> &nbsp;<a href="https://github.com/shizik"><img src="https://github.com/shizik.png" width="48px" alt="shizik" style="border-radius:50%" /></a> &nbsp;<a href="https://github.com/jrc0de"><img src="https://github.com/jrc0de.png" width="48px" alt="jrc0de" style="border-radius:50%" /></a> &nbsp;<a href="https://github.com/LITUATUI"><img src="https://github.com/LITUATUI.png" width="48px" alt="LITUATUI" style="border-radius:50%" /></a> &nbsp;<!-- sponsors -->
 
 ## Contribute
 
