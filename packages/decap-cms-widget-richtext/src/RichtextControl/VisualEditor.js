@@ -27,6 +27,7 @@ import BlockquoteElement from './components/Element/BlockquoteElement';
 import LinkElement from './components/Element/LinkElement';
 import ExtendedBlockquotePlugin from './plugins/ExtendedBlockquotePlugin';
 import ShortcodePlugin from './plugins/ShortcodePlugin';
+import { TablePlugin, TableRowPlugin, TableCellPlugin } from './plugins/TablePlugin';
 import defaultEmptyBlock from './defaultEmptyBlock';
 import { mergeMediaConfig } from './mergeMediaConfig';
 import { handleLinkClick } from './linkHandler';
@@ -146,6 +147,9 @@ export default function VisualEditor(props) {
         node: { component: BlockquoteElement },
       }),
       ShortcodePlugin,
+      TablePlugin,
+      TableRowPlugin,
+      TableCellPlugin,
     ],
     value: initialValue,
   });
