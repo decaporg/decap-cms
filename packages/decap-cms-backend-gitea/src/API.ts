@@ -15,6 +15,13 @@ import {
   readFileMetadata,
   requestWithBackoff,
   unsentRequest,
+  CMS_BRANCH_PREFIX,
+  branchFromContentKey,
+  isCMSLabel,
+  labelToStatus,
+  statusToLabel,
+  DEFAULT_PR_BODY,
+  MERGE_COMMIT_MESSAGE,
 } from 'decap-cms-lib-util';
 
 import type {
@@ -32,6 +39,10 @@ import type {
   GiteaUser,
   GiteaRepository,
   ReposListCommitsResponse,
+  GiteaPullRequest,
+  GiteaBranch,
+  GiteaLabel,
+  GiteaChangedFile,
 } from './types';
 
 export const API_NAME = 'Gitea';
@@ -464,5 +475,291 @@ export default class API {
 
   toBase64(str: string) {
     return Promise.resolve(Base64.encode(str));
+  }
+
+  async getBranch(branchName: string): Promise<GiteaBranch> {
+    return this.request(`${this.repoURL}/branches/${encodeURIComponent(branchName)}`);
+  }
+
+  async getDefaultBranch(): Promise<GiteaBranch> {
+    return this.getBranch(this.branch);
+  }
+
+  async createBranch(
+    branchName: string,
+    oldBranchName: string = this.branch,
+  ): Promise<GiteaBranch> {
+    return this.request(`${this.repoURL}/branches`, {
+      method: 'POST',
+      body: JSON.stringify({
+        new_branch_name: branchName,
+        old_ref_name: oldBranchName,
+      }),
+    });
+  }
+
+  async deleteBranch(branchName: string): Promise<void> {
+    await this.request(`${this.repoURL}/branches/${encodeURIComponent(branchName)}`, {
+      method: 'DELETE',
+    });
+  }
+
+  async getPullRequests(
+    state: 'open' | 'closed' | 'all' = 'open',
+    head?: string,
+  ): Promise<GiteaPullRequest[]> {
+    const params: Record<string, string> = { state };
+    if (head) {
+      params.head = head;
+    }
+    return this.request(`${this.originRepoURL}/pulls`, { params });
+  }
+
+  async getBranchPullRequest(branchName: string): Promise<GiteaPullRequest> {
+    const pullRequests = await this.getPullRequests('open', `${this.repoOwner}:${branchName}`);
+    if (pullRequests.length > 0) {
+      return pullRequests[0];
+    }
+    // Check closed PRs as fallback
+    const closedPRs = await this.getPullRequests('closed', `${this.repoOwner}:${branchName}`);
+    if (closedPRs.length > 0) {
+      return closedPRs[0];
+    }
+    throw new APIError('Pull request not found', 404, API_NAME);
+  }
+
+  async createPR(
+    title: string,
+    head: string,
+    body: string = DEFAULT_PR_BODY,
+  ): Promise<GiteaPullRequest> {
+    return this.request(`${this.originRepoURL}/pulls`, {
+      method: 'POST',
+      body: JSON.stringify({
+        title,
+        head,
+        base: this.branch,
+        body,
+      }),
+    });
+  }
+
+  async updatePR(number: number, state: 'open' | 'closed'): Promise<GiteaPullRequest> {
+    return this.request(`${this.originRepoURL}/pulls/${number}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ state }),
+    });
+  }
+
+  async closePR(number: number): Promise<GiteaPullRequest> {
+    return this.updatePR(number, 'closed');
+  }
+
+  async mergePR(pullRequest: GiteaPullRequest): Promise<void> {
+    await this.request(`${this.originRepoURL}/pulls/${pullRequest.number}/merge`, {
+      method: 'POST',
+      body: JSON.stringify({
+        do: 'merge',
+        merge_message_field: MERGE_COMMIT_MESSAGE,
+      }),
+    });
+  }
+
+  async getPullRequestFiles(number: number): Promise<GiteaChangedFile[]> {
+    return this.request(`${this.originRepoURL}/pulls/${number}/files`);
+  }
+
+  async updatePullRequestLabels(number: number, labels: number[]): Promise<GiteaLabel[]> {
+    return this.request(`${this.originRepoURL}/issues/${number}/labels`, {
+      method: 'PUT',
+      body: JSON.stringify({ labels }),
+    });
+  }
+
+  async getLabels(): Promise<GiteaLabel[]> {
+    return this.request(`${this.originRepoURL}/labels`);
+  }
+
+  async createLabel(name: string, color = '0052cc'): Promise<GiteaLabel> {
+    return this.request(`${this.originRepoURL}/labels`, {
+      method: 'POST',
+      body: JSON.stringify({ name, color }),
+    });
+  }
+
+  async getOrCreateLabel(name: string): Promise<GiteaLabel> {
+    const labels = await this.getLabels();
+    const existing = labels.find(l => l.name === name);
+    if (existing) {
+      return existing;
+    }
+    return this.createLabel(name);
+  }
+
+  async setPullRequestStatus(pullRequest: GiteaPullRequest, status: string): Promise<void> {
+    const cmsLabelPrefix = 'decap-cms/';
+    const newLabel = statusToLabel(status, cmsLabelPrefix);
+
+    // Get or create the new status label
+    const label = await this.getOrCreateLabel(newLabel);
+
+    // Get current labels and filter out old CMS labels
+    const currentLabels = pullRequest.labels
+      .filter(l => !isCMSLabel(l.name, cmsLabelPrefix))
+      .map(l => l.id);
+
+    // Add the new status label
+    await this.updatePullRequestLabels(pullRequest.number, [...currentLabels, label.id]);
+  }
+
+  async listUnpublishedBranches(): Promise<string[]> {
+    const pullRequests = await this.getPullRequests('open');
+    const cmsBranches = pullRequests
+      .filter(pr => pr.head.ref.startsWith(`${CMS_BRANCH_PREFIX}/`))
+      .map(pr => pr.head.ref);
+
+    return cmsBranches;
+  }
+
+  async retrieveUnpublishedEntryData(contentKey: string) {
+    const branch = branchFromContentKey(contentKey);
+    const pullRequest = await this.getBranchPullRequest(branch);
+    const files = await this.getPullRequestFiles(pullRequest.number);
+
+    const cmsLabelPrefix = 'decap-cms/';
+    const statusLabel = pullRequest.labels.find(l => isCMSLabel(l.name, cmsLabelPrefix));
+    const status = statusLabel ? labelToStatus(statusLabel.name, cmsLabelPrefix) : 'draft';
+
+    const { collection, slug } = this.parseContentKey(contentKey);
+
+    return {
+      collection,
+      slug,
+      status,
+      diffs: files.map(file => ({
+        path: file.filename,
+        newFile: file.status === 'added',
+        id: '', // SHA not directly available from files endpoint
+      })),
+      updatedAt: pullRequest.updated_at,
+      pullRequestAuthor: pullRequest.user.login,
+    };
+  }
+
+  async updateUnpublishedEntryStatus(collection: string, slug: string, newStatus: string) {
+    const contentKey = this.generateContentKey(collection, slug);
+    const branch = branchFromContentKey(contentKey);
+    const pullRequest = await this.getBranchPullRequest(branch);
+    await this.setPullRequestStatus(pullRequest, newStatus);
+  }
+
+  async deleteUnpublishedEntry(collection: string, slug: string) {
+    const contentKey = this.generateContentKey(collection, slug);
+    const branch = branchFromContentKey(contentKey);
+
+    try {
+      const pullRequest = await this.getBranchPullRequest(branch);
+      await this.closePR(pullRequest.number);
+    } catch (e) {
+      // PR might not exist, continue to delete branch
+    }
+
+    await this.deleteBranch(branch);
+  }
+
+  async publishUnpublishedEntry(collection: string, slug: string) {
+    const contentKey = this.generateContentKey(collection, slug);
+    const branch = branchFromContentKey(contentKey);
+
+    const pullRequest = await this.getBranchPullRequest(branch);
+    await this.mergePR(pullRequest);
+    await this.deleteBranch(branch);
+  }
+
+  async editorialWorkflowGit(
+    files: { path: string; newPath?: string }[],
+    slug: string,
+    collection: string,
+    options: PersistOptions,
+  ) {
+    const contentKey = this.generateContentKey(collection, slug);
+    const branch = branchFromContentKey(contentKey);
+
+    let branchExists = false;
+    try {
+      await this.getBranch(branch);
+      branchExists = true;
+    } catch (e) {
+      // Branch doesn't exist
+    }
+
+    if (!branchExists) {
+      // Create the branch from the default branch
+      await this.createBranch(branch, this.branch);
+    }
+
+    // Persist files to the branch
+    const operations = await this.getChangeFileOperationsForBranch(files, branch);
+    await this.changeFilesOnBranch(operations, options, branch);
+
+    // Create PR if it doesn't exist
+    if (!branchExists) {
+      const pr = await this.createPR(options.commitMessage, branch);
+      // Set initial status
+      const status = options.status || 'draft';
+      await this.setPullRequestStatus(pr, status);
+    }
+  }
+
+  async getChangeFileOperationsForBranch(
+    files: { path: string; newPath?: string }[],
+    branch: string,
+  ) {
+    const items: ChangeFileOperation[] = await Promise.all(
+      files.map(async file => {
+        const content = await result(
+          file,
+          'toBase64',
+          partial(this.toBase64, (file as DataFile).raw),
+        );
+        let sha;
+        let operation;
+        let from_path;
+        let path = trimStart(file.path, '/');
+        try {
+          sha = await this.getFileSha(file.path, { branch });
+          operation = FileOperation.UPDATE;
+          from_path = file.newPath && path;
+          path = file.newPath ? trimStart(file.newPath, '/') : path;
+        } catch {
+          sha = undefined;
+          operation = FileOperation.CREATE;
+        }
+
+        return {
+          operation,
+          content,
+          path,
+          from_path,
+          sha,
+        } as ChangeFileOperation;
+      }),
+    );
+    return items;
+  }
+
+  async changeFilesOnBranch(
+    operations: ChangeFileOperation[],
+    options: PersistOptions,
+    branch: string,
+  ) {
+    return (await this.request(`${this.repoURL}/contents`, {
+      method: 'POST',
+      body: JSON.stringify({
+        branch,
+        files: operations,
+        message: options.commitMessage,
+      }),
+    })) as FilesResponse;
   }
 }

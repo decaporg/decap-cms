@@ -258,3 +258,64 @@ export type FilesResponse = {
   content: Array<ContentsResponse>;
   verification: PayloadCommitVerification;
 };
+
+// Editorial Workflow Types
+
+export type GiteaLabel = {
+  id: number;
+  name: string;
+  color: string;
+  description: string;
+  url: string;
+};
+
+export type GiteaBranch = {
+  commit: {
+    id: string;
+    message: string;
+    url: string;
+    author: CommitUser;
+    committer: CommitUser;
+  };
+  name: string;
+  protected: boolean;
+};
+
+export type GiteaPullRequestHead = {
+  label: string;
+  ref: string;
+  sha: string;
+  repo: GiteaRepository;
+};
+
+export type GiteaPullRequestBase = {
+  label: string;
+  ref: string;
+  sha: string;
+  repo: GiteaRepository;
+};
+
+export type GiteaPullRequest = {
+  id: number;
+  number: number;
+  state: 'open' | 'closed';
+  title: string;
+  body: string;
+  user: GiteaUser;
+  labels: GiteaLabel[];
+  head: GiteaPullRequestHead;
+  base: GiteaPullRequestBase;
+  merged: boolean;
+  merged_at: string | null;
+  updated_at: string;
+  created_at: string;
+};
+
+export type GiteaChangedFile = {
+  filename: string;
+  status: 'added' | 'removed' | 'modified' | 'renamed';
+  additions: number;
+  deletions: number;
+  changes: number;
+  previous_filename?: string;
+};

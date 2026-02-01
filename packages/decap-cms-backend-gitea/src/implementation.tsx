@@ -15,6 +15,9 @@ import {
   getMediaDisplayURL,
   runWithLock,
   unsentRequest,
+  unpublishedEntries,
+  contentKeyFromBranch,
+  branchFromContentKey,
 } from 'decap-cms-lib-util';
 
 import API, { API_NAME } from './API';
@@ -74,10 +77,6 @@ export default class Gitea implements Implementation {
       (config.backend.repo === null || config.backend.repo === undefined)
     ) {
       throw new Error('The Gitea backend needs a "repo" in the backend configuration.');
-    }
-
-    if (this.options.useWorkflow) {
-      throw new Error('The Gitea backend does not support editorial workflow.');
     }
 
     this.api = this.options.API || null;
@@ -339,7 +338,18 @@ export default class Gitea implements Implementation {
     // persistEntry is a transactional operation
     return runWithLock(
       this.lock,
-      () => this.api!.persistFiles(entry.dataFiles, entry.assets, options),
+      () => {
+        if (options.useWorkflow) {
+          const slug = entry.dataFiles[0].slug;
+          const collection = options.collectionName as string;
+          const files = [
+            ...entry.dataFiles.map(f => ({ path: f.path, newPath: f.newPath })),
+            ...entry.assets.map(a => ({ path: a.path })),
+          ];
+          return this.api!.editorialWorkflowGit(files, slug, collection, options);
+        }
+        return this.api!.persistFiles(entry.dataFiles, entry.assets, options);
+      },
       'Failed to acquire persist entry lock',
     );
   }
@@ -413,34 +423,81 @@ export default class Gitea implements Implementation {
   }
 
   async unpublishedEntries() {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return {} as any;
+    const listEntriesKeys = () =>
+      this.api!.listUnpublishedBranches().then(branches =>
+        branches.map(branch => contentKeyFromBranch(branch)),
+      );
+
+    const ids = await unpublishedEntries(listEntriesKeys);
+    return ids;
   }
 
-  async unpublishedEntry() {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return {} as any;
+  async unpublishedEntry({
+    id,
+    collection,
+    slug,
+  }: {
+    id?: string;
+    collection?: string;
+    slug?: string;
+  }) {
+    if (id) {
+      const data = await this.api!.retrieveUnpublishedEntryData(id);
+      return data;
+    } else if (collection && slug) {
+      const contentKey = this.api!.generateContentKey(collection, slug);
+      const data = await this.api!.retrieveUnpublishedEntryData(contentKey);
+      return data;
+    } else {
+      throw new Error('Missing unpublished entry id or collection and slug');
+    }
   }
 
-  async unpublishedEntryDataFile() {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return {} as any;
+  async unpublishedEntryDataFile(collection: string, slug: string, path: string, id: string) {
+    const contentKey = this.api!.generateContentKey(collection, slug);
+    const branch = branchFromContentKey(contentKey);
+    const data = (await this.api!.readFile(path, id, { branch })) as string;
+    return data;
   }
 
-  async unpublishedEntryMediaFile() {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return {} as any;
+  async unpublishedEntryMediaFile(collection: string, slug: string, path: string, id: string) {
+    const contentKey = this.api!.generateContentKey(collection, slug);
+    const branch = branchFromContentKey(contentKey);
+    const blob = (await this.api!.readFile(path, id, { branch, parseText: false })) as Blob;
+    const name = basename(path);
+    const fileObj = blobToFileObj(name, blob);
+    return {
+      id: path,
+      name,
+      path,
+      size: fileObj.size,
+      displayURL: URL.createObjectURL(fileObj),
+      file: fileObj,
+    };
   }
 
-  async updateUnpublishedEntryStatus() {
-    return;
+  updateUnpublishedEntryStatus(collection: string, slug: string, newStatus: string) {
+    return runWithLock(
+      this.lock,
+      () => this.api!.updateUnpublishedEntryStatus(collection, slug, newStatus),
+      'Failed to acquire update entry status lock',
+    );
   }
 
-  async publishUnpublishedEntry() {
-    return;
+  publishUnpublishedEntry(collection: string, slug: string) {
+    return runWithLock(
+      this.lock,
+      () => this.api!.publishUnpublishedEntry(collection, slug),
+      'Failed to acquire publish entry lock',
+    );
   }
-  async deleteUnpublishedEntry() {
-    return;
+
+  deleteUnpublishedEntry(collection: string, slug: string) {
+    return runWithLock(
+      this.lock,
+      () => this.api!.deleteUnpublishedEntry(collection, slug),
+      'Failed to acquire delete entry lock',
+    );
   }
 
   async getDeployPreview() {

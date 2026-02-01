@@ -20,6 +20,71 @@ describe('gitea API', () => {
     });
   }
 
+  describe('editorialWorkflowGit', () => {
+    it('should create PR with correct branch when publishing with editorial workflow', async () => {
+      const api = new API({
+        branch: 'master',
+        repo: 'owner/my-repo',
+      });
+
+      // Mock getBranch to indicate branch doesn't exist yet
+      api.getBranch = jest.fn().mockRejectedValue(new Error('Branch not found'));
+      api.createBranch = jest.fn().mockResolvedValue({ name: 'cms/posts/entry' });
+
+      const changeOperations = [{ operation: 'create', path: 'content.md', content: 'test' }];
+      api.getChangeFileOperationsForBranch = jest.fn().mockResolvedValue(changeOperations);
+      api.changeFilesOnBranch = jest.fn().mockResolvedValue({});
+
+      const newPr = { number: 1, labels: [], head: { ref: 'cms/posts/entry' } };
+      api.createPR = jest.fn().mockResolvedValue(newPr);
+      api.setPullRequestStatus = jest.fn().mockResolvedValue();
+
+      const files = [{ path: 'content.md', raw: 'test content' }];
+      const options = { commitMessage: 'Add entry', status: 'draft' };
+
+      await api.editorialWorkflowGit(files, 'entry', 'posts', options);
+
+      expect(api.getBranch).toHaveBeenCalledWith('cms/posts/entry');
+      expect(api.createBranch).toHaveBeenCalledWith('cms/posts/entry', 'master');
+      expect(api.getChangeFileOperationsForBranch).toHaveBeenCalledWith(files, 'cms/posts/entry');
+      expect(api.changeFilesOnBranch).toHaveBeenCalledWith(
+        changeOperations,
+        options,
+        'cms/posts/entry',
+      );
+      expect(api.createPR).toHaveBeenCalledWith('Add entry', 'cms/posts/entry');
+      expect(api.setPullRequestStatus).toHaveBeenCalledWith(newPr, 'draft');
+    });
+
+    it('should not create branch if it already exists', async () => {
+      const api = new API({
+        branch: 'master',
+        repo: 'owner/my-repo',
+      });
+
+      // Mock getBranch to indicate branch already exists
+      api.getBranch = jest.fn().mockResolvedValue({ name: 'cms/posts/entry' });
+      api.createBranch = jest.fn();
+
+      const changeOperations = [{ operation: 'update', path: 'content.md', content: 'updated' }];
+      api.getChangeFileOperationsForBranch = jest.fn().mockResolvedValue(changeOperations);
+      api.changeFilesOnBranch = jest.fn().mockResolvedValue({});
+
+      api.createPR = jest.fn();
+      api.setPullRequestStatus = jest.fn();
+
+      const files = [{ path: 'content.md', raw: 'updated content' }];
+      const options = { commitMessage: 'Update entry' };
+
+      await api.editorialWorkflowGit(files, 'entry', 'posts', options);
+
+      expect(api.getBranch).toHaveBeenCalledWith('cms/posts/entry');
+      expect(api.createBranch).not.toHaveBeenCalled();
+      expect(api.createPR).not.toHaveBeenCalled();
+      expect(api.setPullRequestStatus).not.toHaveBeenCalled();
+    });
+  });
+
   describe('request', () => {
     const fetch = jest.fn();
     beforeEach(() => {
@@ -382,6 +447,354 @@ describe('gitea API', () => {
       expect(api.request).toHaveBeenCalledTimes(1);
       expect(api.request).toHaveBeenCalledWith('/repos/owner/repo/git/trees/master:media', {
         params: {},
+      });
+    });
+    it('should create branch', async () => {
+      const api = new API({ branch: 'gh-pages', repo: 'my-repo', token: 'token' });
+      api.request = jest.fn().mockResolvedValue({ name: 'cms/new-branch' });
+
+      await expect(api.createBranch('cms/new-branch', 'master')).resolves.toEqual({
+        name: 'cms/new-branch',
+      });
+      expect(api.request).toHaveBeenCalledWith('/repos/my-repo/branches', {
+        method: 'POST',
+        body: JSON.stringify({
+          new_branch_name: 'cms/new-branch',
+          old_ref_name: 'master',
+        }),
+      });
+    });
+
+    it('should create pull request', async () => {
+      const api = new API({ branch: 'gh-pages', repo: 'my-repo', token: 'token' });
+      api.request = jest.fn().mockResolvedValue({ number: 1 });
+
+      await expect(
+        api.createPR('title', 'cms/new-branch', 'Check out the changes!'),
+      ).resolves.toEqual({ number: 1 });
+      expect(api.request).toHaveBeenCalledWith('/repos/my-repo/pulls', {
+        method: 'POST',
+        body: JSON.stringify({
+          title: 'title',
+          head: 'cms/new-branch',
+          base: 'gh-pages',
+          body: 'Check out the changes!',
+        }),
+      });
+    });
+
+    it('should get pull requests', async () => {
+      const api = new API({ branch: 'gh-pages', repo: 'my-repo', token: 'token' });
+      api.request = jest.fn().mockResolvedValue([{ number: 1 }]);
+
+      await expect(api.getPullRequests('open', 'head')).resolves.toEqual([{ number: 1 }]);
+      expect(api.request).toHaveBeenCalledWith('/repos/my-repo/pulls', {
+        params: { state: 'open', head: 'head' },
+      });
+    });
+
+    it('should list unpublished branches', async () => {
+      const api = new API({ branch: 'gh-pages', repo: 'my-repo', token: 'token' });
+      api.request = jest
+        .fn()
+        .mockResolvedValue([
+          { head: { ref: 'cms/branch1' } },
+          { head: { ref: 'other/branch' } },
+          { head: { ref: 'cms/branch2' } },
+        ]);
+
+      await expect(api.listUnpublishedBranches()).resolves.toEqual(['cms/branch1', 'cms/branch2']);
+      expect(api.request).toHaveBeenCalledWith('/repos/my-repo/pulls', {
+        params: { state: 'open' },
+      });
+    });
+
+    it('should update pull request labels', async () => {
+      const api = new API({ branch: 'gh-pages', repo: 'my-repo', token: 'token' });
+      api.request = jest.fn().mockResolvedValue([{ id: 1, name: 'label' }]);
+
+      await expect(api.updatePullRequestLabels(1, [1])).resolves.toEqual([
+        { id: 1, name: 'label' },
+      ]);
+      expect(api.request).toHaveBeenCalledWith('/repos/my-repo/issues/1/labels', {
+        method: 'PUT',
+        body: JSON.stringify({ labels: [1] }),
+      });
+    });
+
+    it('should get labels', async () => {
+      const api = new API({ branch: 'gh-pages', repo: 'my-repo', token: 'token' });
+      api.request = jest.fn().mockResolvedValue([
+        { id: 1, name: 'label1' },
+        { id: 2, name: 'label2' },
+      ]);
+
+      await expect(api.getLabels()).resolves.toEqual([
+        { id: 1, name: 'label1' },
+        { id: 2, name: 'label2' },
+      ]);
+      expect(api.request).toHaveBeenCalledWith('/repos/my-repo/labels');
+    });
+
+    it('should create label', async () => {
+      const api = new API({ branch: 'gh-pages', repo: 'my-repo', token: 'token' });
+      api.request = jest.fn().mockResolvedValue({ id: 1, name: 'new-label', color: '0052cc' });
+
+      await expect(api.createLabel('new-label', '0052cc')).resolves.toEqual({
+        id: 1,
+        name: 'new-label',
+        color: '0052cc',
+      });
+      expect(api.request).toHaveBeenCalledWith('/repos/my-repo/labels', {
+        method: 'POST',
+        body: JSON.stringify({ name: 'new-label', color: '0052cc' }),
+      });
+    });
+
+    it('should get or create label when label exists', async () => {
+      const api = new API({ branch: 'gh-pages', repo: 'my-repo', token: 'token' });
+      const existingLabel = { id: 1, name: 'existing-label', color: '0052cc' };
+      api.getLabels = jest.fn().mockResolvedValue([existingLabel]);
+      api.createLabel = jest.fn();
+
+      await expect(api.getOrCreateLabel('existing-label')).resolves.toEqual(existingLabel);
+      expect(api.getLabels).toHaveBeenCalledTimes(1);
+      expect(api.createLabel).not.toHaveBeenCalled();
+    });
+
+    it('should get or create label when label does not exist', async () => {
+      const api = new API({ branch: 'gh-pages', repo: 'my-repo', token: 'token' });
+      const newLabel = { id: 2, name: 'new-label', color: '0052cc' };
+      api.getLabels = jest.fn().mockResolvedValue([{ id: 1, name: 'other-label' }]);
+      api.createLabel = jest.fn().mockResolvedValue(newLabel);
+
+      await expect(api.getOrCreateLabel('new-label')).resolves.toEqual(newLabel);
+      expect(api.getLabels).toHaveBeenCalledTimes(1);
+      expect(api.createLabel).toHaveBeenCalledTimes(1);
+      expect(api.createLabel).toHaveBeenCalledWith('new-label');
+    });
+
+    it('should set pull request status', async () => {
+      const api = new API({ branch: 'gh-pages', repo: 'my-repo', token: 'token' });
+      const pullRequest = {
+        number: 1,
+        labels: [
+          { id: 1, name: 'decap-cms/draft' },
+          { id: 2, name: 'other-label' },
+        ],
+      };
+
+      const newLabel = { id: 3, name: 'decap-cms/pending_review' };
+      api.getOrCreateLabel = jest.fn().mockResolvedValue(newLabel);
+      api.updatePullRequestLabels = jest
+        .fn()
+        .mockResolvedValue([newLabel, { id: 2, name: 'other-label' }]);
+
+      await api.setPullRequestStatus(pullRequest, 'pending_review');
+
+      expect(api.getOrCreateLabel).toHaveBeenCalledTimes(1);
+      expect(api.getOrCreateLabel).toHaveBeenCalledWith('decap-cms/pending_review');
+
+      expect(api.updatePullRequestLabels).toHaveBeenCalledTimes(1);
+      expect(api.updatePullRequestLabels).toHaveBeenCalledWith(1, [2, 3]);
+    });
+  });
+
+  describe('retrieveUnpublishedEntryData', () => {
+    it('should retrieve unpublished entry data', async () => {
+      const api = new API({ branch: 'master', repo: 'owner/repo', token: 'token' });
+
+      const pullRequest = {
+        number: 1,
+        updated_at: '2024-01-01T00:00:00Z',
+        user: { login: 'testuser' },
+        labels: [{ id: 1, name: 'decap-cms/pending_review' }],
+      };
+      api.getBranchPullRequest = jest.fn().mockResolvedValue(pullRequest);
+
+      const files = [
+        { filename: 'content/posts/test.md', status: 'added' },
+        { filename: 'static/img/test.jpg', status: 'modified' },
+      ];
+      api.getPullRequestFiles = jest.fn().mockResolvedValue(files);
+
+      const result = await api.retrieveUnpublishedEntryData('posts.test');
+
+      expect(api.getBranchPullRequest).toHaveBeenCalledWith('cms/posts/test');
+      expect(api.getPullRequestFiles).toHaveBeenCalledWith(1);
+      expect(result).toEqual({
+        collection: 'posts',
+        slug: 'test',
+        status: 'pending_review',
+        diffs: [
+          { path: 'content/posts/test.md', newFile: true, id: '' },
+          { path: 'static/img/test.jpg', newFile: false, id: '' },
+        ],
+        updatedAt: '2024-01-01T00:00:00Z',
+        pullRequestAuthor: 'testuser',
+      });
+    });
+
+    it('should default to draft status when no CMS label found', async () => {
+      const api = new API({ branch: 'master', repo: 'owner/repo', token: 'token' });
+
+      const pullRequest = {
+        number: 1,
+        updated_at: '2024-01-01T00:00:00Z',
+        user: { login: 'testuser' },
+        labels: [{ id: 2, name: 'other-label' }],
+      };
+      api.getBranchPullRequest = jest.fn().mockResolvedValue(pullRequest);
+      api.getPullRequestFiles = jest.fn().mockResolvedValue([]);
+
+      const result = await api.retrieveUnpublishedEntryData('posts.test');
+
+      expect(result.status).toEqual('draft');
+    });
+  });
+
+  describe('updateUnpublishedEntryStatus', () => {
+    it('should update unpublished entry status', async () => {
+      const api = new API({ branch: 'master', repo: 'owner/repo', token: 'token' });
+
+      const pullRequest = {
+        number: 1,
+        labels: [{ id: 1, name: 'decap-cms/draft' }],
+      };
+      api.getBranchPullRequest = jest.fn().mockResolvedValue(pullRequest);
+      api.setPullRequestStatus = jest.fn().mockResolvedValue();
+
+      await api.updateUnpublishedEntryStatus('posts', 'test', 'pending_review');
+
+      expect(api.getBranchPullRequest).toHaveBeenCalledWith('cms/posts/test');
+      expect(api.setPullRequestStatus).toHaveBeenCalledWith(pullRequest, 'pending_review');
+    });
+  });
+
+  describe('deleteUnpublishedEntry', () => {
+    it('should delete unpublished entry by closing PR and deleting branch', async () => {
+      const api = new API({ branch: 'master', repo: 'owner/repo', token: 'token' });
+
+      const pullRequest = { number: 1 };
+      api.getBranchPullRequest = jest.fn().mockResolvedValue(pullRequest);
+      api.closePR = jest.fn().mockResolvedValue();
+      api.deleteBranch = jest.fn().mockResolvedValue();
+
+      await api.deleteUnpublishedEntry('posts', 'test');
+
+      expect(api.getBranchPullRequest).toHaveBeenCalledWith('cms/posts/test');
+      expect(api.closePR).toHaveBeenCalledWith(1);
+      expect(api.deleteBranch).toHaveBeenCalledWith('cms/posts/test');
+    });
+
+    it('should delete branch even if PR does not exist', async () => {
+      const api = new API({ branch: 'master', repo: 'owner/repo', token: 'token' });
+
+      api.getBranchPullRequest = jest.fn().mockRejectedValue(new Error('PR not found'));
+      api.closePR = jest.fn();
+      api.deleteBranch = jest.fn().mockResolvedValue();
+
+      await api.deleteUnpublishedEntry('posts', 'test');
+
+      expect(api.closePR).not.toHaveBeenCalled();
+      expect(api.deleteBranch).toHaveBeenCalledWith('cms/posts/test');
+    });
+  });
+
+  describe('publishUnpublishedEntry', () => {
+    it('should publish unpublished entry by merging PR and deleting branch', async () => {
+      const api = new API({ branch: 'master', repo: 'owner/repo', token: 'token' });
+
+      const pullRequest = { number: 1 };
+      api.getBranchPullRequest = jest.fn().mockResolvedValue(pullRequest);
+      api.mergePR = jest.fn().mockResolvedValue();
+      api.deleteBranch = jest.fn().mockResolvedValue();
+
+      await api.publishUnpublishedEntry('posts', 'test');
+
+      expect(api.getBranchPullRequest).toHaveBeenCalledWith('cms/posts/test');
+      expect(api.mergePR).toHaveBeenCalledWith(pullRequest);
+      expect(api.deleteBranch).toHaveBeenCalledWith('cms/posts/test');
+    });
+  });
+
+  describe('getBranchPullRequest', () => {
+    it('should get open pull request for branch', async () => {
+      const api = new API({ branch: 'master', repo: 'owner/my-repo', token: 'token' });
+
+      const openPR = { number: 1, head: { ref: 'cms/posts/test' }, state: 'open' };
+      api.getPullRequests = jest.fn().mockResolvedValue([openPR]);
+
+      const result = await api.getBranchPullRequest('cms/posts/test');
+
+      expect(result).toEqual(openPR);
+      expect(api.getPullRequests).toHaveBeenCalledWith('open', 'owner:cms/posts/test');
+    });
+
+    it('should check closed PRs if no open PR found', async () => {
+      const api = new API({ branch: 'master', repo: 'owner/my-repo', token: 'token' });
+
+      const closedPR = { number: 2, head: { ref: 'cms/posts/test' }, state: 'closed' };
+      api.getPullRequests = jest.fn().mockResolvedValueOnce([]).mockResolvedValueOnce([closedPR]);
+
+      const result = await api.getBranchPullRequest('cms/posts/test');
+
+      expect(result).toEqual(closedPR);
+      expect(api.getPullRequests).toHaveBeenCalledTimes(2);
+      expect(api.getPullRequests).toHaveBeenNthCalledWith(1, 'open', 'owner:cms/posts/test');
+      expect(api.getPullRequests).toHaveBeenNthCalledWith(2, 'closed', 'owner:cms/posts/test');
+    });
+
+    it('should throw error if no PR found', async () => {
+      const api = new API({ branch: 'master', repo: 'owner/my-repo', token: 'token' });
+
+      api.getPullRequests = jest.fn().mockResolvedValue([]);
+
+      await expect(api.getBranchPullRequest('cms/posts/test')).rejects.toThrow(
+        'Pull request not found',
+      );
+    });
+  });
+
+  describe('mergePR', () => {
+    it('should merge pull request', async () => {
+      const api = new API({ branch: 'master', repo: 'owner/my-repo', token: 'token' });
+      api.request = jest.fn().mockResolvedValue({});
+
+      const pullRequest = { number: 1 };
+      await api.mergePR(pullRequest);
+
+      expect(api.request).toHaveBeenCalledWith('/repos/owner/my-repo/pulls/1/merge', {
+        method: 'POST',
+        body: JSON.stringify({
+          do: 'merge',
+          merge_message_field: 'Automatically generated by Decap CMS',
+        }),
+      });
+    });
+  });
+
+  describe('closePR', () => {
+    it('should close pull request', async () => {
+      const api = new API({ branch: 'master', repo: 'owner/my-repo', token: 'token' });
+      api.updatePR = jest.fn().mockResolvedValue({ number: 1, state: 'closed' });
+
+      const result = await api.closePR(1);
+
+      expect(api.updatePR).toHaveBeenCalledWith(1, 'closed');
+      expect(result).toEqual({ number: 1, state: 'closed' });
+    });
+  });
+
+  describe('deleteBranch', () => {
+    it('should delete branch', async () => {
+      const api = new API({ branch: 'master', repo: 'owner/my-repo', token: 'token' });
+      api.request = jest.fn().mockResolvedValue({});
+
+      await api.deleteBranch('cms/posts/test');
+
+      expect(api.request).toHaveBeenCalledWith('/repos/owner/my-repo/branches/cms%2Fposts%2Ftest', {
+        method: 'DELETE',
       });
     });
   });
