@@ -152,7 +152,7 @@ export type GiteaRepository = {
   open_pr_counter: number;
   original_url: string;
   owner: GiteaUser;
-  parent: null;
+  parent?: GiteaRepository | null;
   permissions: GiteaRepositoryPermissions;
   private: boolean;
   release_counter: number;
@@ -298,7 +298,7 @@ export type GiteaPullRequestBase = {
 export type GiteaPullRequest = {
   id: number;
   number: number;
-  state: 'open' | 'closed';
+  state: "open" | "closed";
   title: string;
   body: string;
   user: GiteaUser;
@@ -313,7 +313,7 @@ export type GiteaPullRequest = {
 
 export type GiteaChangedFile = {
   filename: string;
-  status: 'added' | 'removed' | 'modified' | 'renamed';
+  status: "added" | "removed" | "modified" | "renamed";
   additions: number;
   deletions: number;
   changes: number;

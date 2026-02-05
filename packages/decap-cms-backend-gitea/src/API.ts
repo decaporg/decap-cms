@@ -53,6 +53,7 @@ export interface Config {
   branch?: string;
   repo?: string;
   originRepo?: string;
+  useOpenAuthoring?: boolean;
 }
 
 enum FileOperation {
@@ -117,9 +118,13 @@ export default class API {
   originRepoName: string;
   repoURL: string;
   originRepoURL: string;
+  useOpenAuthoring: boolean;
 
   _userPromise?: Promise<GiteaUser>;
   _metadataSemaphore?: Semaphore;
+  _userIsOriginMaintainerPromises?: {
+    [key: string]: Promise<boolean>;
+  };
 
   commitAuthor?: {};
 
@@ -129,6 +134,7 @@ export default class API {
     this.branch = config.branch || 'master';
     this.repo = config.repo || '';
     this.originRepo = config.originRepo || this.repo;
+    this.useOpenAuthoring = config.useOpenAuthoring ? true : false;
     this.repoURL = `/repos/${this.repo}`;
     this.originRepoURL = `/repos/${this.originRepo}`;
 
@@ -515,6 +521,45 @@ export default class API {
     return this.request(`${this.originRepoURL}/pulls`, { params });
   }
 
+  async getOpenAuthoringPullRequest(branch: string, pullRequests: GiteaPullRequest[]) {
+    // we can't use labels when using open authoring
+    // since the contributor doesn't have access to set labels
+    // a branch without a pr (or a closed pr) means a 'draft' entry
+    // a branch with an opened pr means a 'pending_review' entry
+    const data = await this.getBranch(branch).catch(() => {
+      throw new APIError('content is not under editorial workflow', 400, API_NAME);
+    });
+    // since we get all (open and closed) pull requests by branch name, make sure to filter by head sha
+    const pullRequest = pullRequests.filter(pr => pr.head.sha === data.commit.id)[0];
+    // if no pull request is found for the branch we return a mocked one
+    if (!pullRequest) {
+      try {
+        return {
+          id: -1,
+          number: -1,
+          state: 'open' as const,
+          title: 'Draft',
+          body: '',
+          user: { login: 'unknown' } as GiteaUser,
+          labels: [],
+          head: { sha: data.commit.id, ref: branch, label: branch, repo: {} as GiteaRepository },
+          base: { sha: '', ref: '', label: '', repo: {} as GiteaRepository },
+          merged: false,
+          merged_at: null,
+          updated_at: new Date().toISOString(),
+          created_at: new Date().toISOString(),
+        } as GiteaPullRequest;
+      } catch (e) {
+        throw new APIError('content is not under editorial workflow', 400, API_NAME);
+      }
+    } else {
+      // Filter out CMS labels for open authoring
+      const cmsLabelPrefix = 'decap-cms/';
+      pullRequest.labels = pullRequest.labels.filter(l => !isCMSLabel(l.name, cmsLabelPrefix));
+      return pullRequest;
+    }
+  }
+
   async getBranchPullRequest(branchName: string): Promise<GiteaPullRequest> {
     const pullRequests = await this.getPullRequests('open', `${this.repoOwner}:${branchName}`);
     if (pullRequests.length > 0) {
@@ -597,6 +642,11 @@ export default class API {
   }
 
   async setPullRequestStatus(pullRequest: GiteaPullRequest, status: string): Promise<void> {
+    // Skip label updates for open authoring as contributors don't have permission
+    if (this.useOpenAuthoring) {
+      return;
+    }
+
     const cmsLabelPrefix = 'decap-cms/';
     const newLabel = statusToLabel(status, cmsLabelPrefix);
 
@@ -623,12 +673,27 @@ export default class API {
 
   async retrieveUnpublishedEntryData(contentKey: string) {
     const branch = branchFromContentKey(contentKey);
-    const pullRequest = await this.getBranchPullRequest(branch);
+    let pullRequest: GiteaPullRequest;
+
+    if (this.useOpenAuthoring) {
+      const pullRequests = await this.getPullRequests('all');
+      pullRequest = await this.getOpenAuthoringPullRequest(branch, pullRequests);
+    } else {
+      pullRequest = await this.getBranchPullRequest(branch);
+    }
+
     const files = await this.getPullRequestFiles(pullRequest.number);
 
     const cmsLabelPrefix = 'decap-cms/';
-    const statusLabel = pullRequest.labels.find(l => isCMSLabel(l.name, cmsLabelPrefix));
-    const status = statusLabel ? labelToStatus(statusLabel.name, cmsLabelPrefix) : 'draft';
+    let status = 'draft';
+
+    if (this.useOpenAuthoring) {
+      // For open authoring, status is based on PR state, not labels
+      status = pullRequest.state === 'open' ? 'pending_review' : 'draft';
+    } else {
+      const statusLabel = pullRequest.labels.find(l => isCMSLabel(l.name, cmsLabelPrefix));
+      status = statusLabel ? labelToStatus(statusLabel.name, cmsLabelPrefix) : 'draft';
+    }
 
     const { collection, slug } = this.parseContentKey(contentKey);
 
@@ -642,7 +707,7 @@ export default class API {
         id: '', // SHA not directly available from files endpoint
       })),
       updatedAt: pullRequest.updated_at,
-      pullRequestAuthor: pullRequest.user.login,
+      pullRequestAuthor: pullRequest.user?.login || 'Unknown',
     };
   }
 
@@ -761,5 +826,43 @@ export default class API {
         message: options.commitMessage,
       }),
     })) as FilesResponse;
+  }
+
+  // Open Authoring (Fork) Support
+  async forkExists(): Promise<boolean> {
+    try {
+      const repoName = this.originRepo.split('/')[1];
+      const userRepoPath = `/repos/${this.repoOwner}/${repoName}`;
+      const repo = (await this.request(userRepoPath)) as GiteaRepository;
+
+      // Check if it's a fork and the parent is the origin repo
+      const forkExists: boolean =
+        repo.fork === true &&
+        !!repo.parent &&
+        repo.parent.full_name.toLowerCase() === this.originRepo.toLowerCase();
+      return forkExists;
+    } catch {
+      return false;
+    }
+  }
+
+  async createFork(): Promise<GiteaRepository> {
+    return this.request(`${this.originRepoURL}/forks`, {
+      method: 'POST',
+    }) as Promise<GiteaRepository>;
+  }
+
+  async mergeUpstream(): Promise<void> {
+    // Sync fork with upstream repository using Gitea's sync_fork endpoint
+    // Available in Gitea 1.17+
+    try {
+      await this.request(`${this.repoURL}/sync_fork`, {
+        method: 'POST',
+      });
+    } catch (error) {
+      // If sync fails (e.g., on older Gitea versions or conflicts),
+      // continue without syncing - user will need to sync manually
+      console.warn('Failed to sync fork with upstream:', error);
+    }
   }
 }

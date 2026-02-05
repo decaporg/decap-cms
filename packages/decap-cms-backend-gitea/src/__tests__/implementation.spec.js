@@ -351,4 +351,90 @@ describe('gitea backend implementation', () => {
       expect(result.file).toEqual(expect.any(File));
     });
   });
+
+  describe('open authoring', () => {
+    describe('authenticateWithFork', () => {
+      it('should use origin repo if user is maintainer', async () => {
+        const giteaImplementation = new GiteaImplementation(
+          {
+            ...config,
+            backend: { ...config.backend, open_authoring: true },
+          },
+          { useWorkflow: true },
+        );
+
+        giteaImplementation.userIsOriginMaintainer = jest.fn().mockResolvedValue(true);
+        giteaImplementation.currentUser = jest.fn().mockResolvedValue({ login: 'user' });
+        giteaImplementation.api = {
+          forkExists: jest.fn(),
+          mergeUpstream: jest.fn(),
+          createFork: jest.fn(),
+        };
+
+        await giteaImplementation.authenticateWithFork({
+          userData: { token: 'token' },
+          getPermissionToFork: jest.fn(),
+        });
+
+        expect(giteaImplementation.repo).toBe('owner/repo');
+        expect(giteaImplementation.useOpenAuthoring).toBe(false);
+      });
+
+      it('should create fork if user is contributor', async () => {
+        const giteaImplementation = new GiteaImplementation(
+          {
+            ...config,
+            backend: { ...config.backend, open_authoring: true },
+          },
+          { useWorkflow: true },
+        );
+
+        giteaImplementation.userIsOriginMaintainer = jest.fn().mockResolvedValue(false);
+        giteaImplementation.currentUser = jest.fn().mockResolvedValue({ login: 'contributor' });
+        giteaImplementation.pollUntilForkExists = jest.fn().mockResolvedValue(undefined);
+        giteaImplementation.api = {
+          forkExists: jest.fn().mockResolvedValue(false),
+          createFork: jest.fn().mockResolvedValue({ full_name: 'contributor/repo' }),
+          mergeUpstream: jest.fn(),
+        };
+
+        await giteaImplementation.authenticateWithFork({
+          userData: { token: 'token' },
+          getPermissionToFork: jest.fn().mockResolvedValue(true),
+        });
+
+        expect(giteaImplementation.repo).toBe('contributor/repo');
+        expect(giteaImplementation.useOpenAuthoring).toBe(true);
+        expect(giteaImplementation.api.createFork).toHaveBeenCalled();
+      });
+
+      it('should sync existing fork if one exists', async () => {
+        const giteaImplementation = new GiteaImplementation(
+          {
+            ...config,
+            backend: { ...config.backend, open_authoring: true },
+          },
+          { useWorkflow: true },
+        );
+
+        giteaImplementation.userIsOriginMaintainer = jest.fn().mockResolvedValue(false);
+        giteaImplementation.currentUser = jest.fn().mockResolvedValue({ login: 'contributor' });
+        giteaImplementation.api = {
+          forkExists: jest.fn().mockResolvedValue(true),
+          mergeUpstream: jest.fn().mockResolvedValue(undefined),
+          createFork: jest.fn(),
+        };
+
+        await giteaImplementation.authenticateWithFork({
+          userData: { token: 'token' },
+          getPermissionToFork: jest.fn(),
+        });
+
+        expect(giteaImplementation.repo).toBe('contributor/repo');
+        expect(giteaImplementation.useOpenAuthoring).toBe(true);
+        expect(giteaImplementation.api.mergeUpstream).toHaveBeenCalled();
+        expect(giteaImplementation.api.createFork).not.toHaveBeenCalled();
+      });
+    });
+  });
 });

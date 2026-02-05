@@ -58,6 +58,9 @@ export default class Gitea implements Implementation {
   apiRoot: string;
   mediaFolder?: string;
   token: string | null;
+  openAuthoringEnabled: boolean;
+  useOpenAuthoring?: boolean;
+  alwaysForkEnabled: boolean;
   _currentUserPromise?: Promise<GiteaUser>;
   _userIsOriginMaintainerPromises?: {
     [key: string]: Promise<boolean>;
@@ -80,7 +83,18 @@ export default class Gitea implements Implementation {
     }
 
     this.api = this.options.API || null;
-    this.repo = this.originRepo = config.backend.repo || '';
+    this.openAuthoringEnabled = config.backend.open_authoring || false;
+    if (this.openAuthoringEnabled) {
+      if (!this.options.useWorkflow) {
+        throw new Error(
+          'backend.open_authoring is true but publish_mode is not set to editorial_workflow.',
+        );
+      }
+      this.originRepo = config.backend.repo || '';
+    } else {
+      this.repo = this.originRepo = config.backend.repo || '';
+    }
+    this.alwaysForkEnabled = config.backend.always_fork || false;
     this.branch = config.backend.branch?.trim() || 'master';
     this.apiRoot = config.backend.api_root || 'https://try.gitea.io/api/v1';
     this.token = '';
@@ -107,10 +121,6 @@ export default class Gitea implements Implementation {
 
   authComponent() {
     return AuthenticationPage;
-  }
-
-  restoreUser(user: User) {
-    return this.authenticate(user);
   }
 
   async currentUser({ token }: { token: string }) {
@@ -148,6 +158,72 @@ export default class Gitea implements Implementation {
     return this._userIsOriginMaintainerPromises[username];
   }
 
+  async pollUntilForkExists({ repo, token }: { repo: string; token: string }) {
+    const pollDelay = 250; // milliseconds
+    let repoExists = false;
+    while (!repoExists) {
+      try {
+        const response = await fetch(`${this.apiRoot}${repo}`, {
+          headers: { Authorization: `token ${token}` },
+        });
+        repoExists = response.ok;
+      } catch (err) {
+        repoExists = false;
+      }
+      // wait between polls
+      if (!repoExists) {
+        await new Promise(resolve => setTimeout(resolve, pollDelay));
+      }
+    }
+    return Promise.resolve();
+  }
+
+  async authenticateWithFork({
+    userData,
+    getPermissionToFork,
+  }: {
+    userData: User;
+    getPermissionToFork: () => Promise<boolean> | boolean;
+  }) {
+    if (!this.openAuthoringEnabled) {
+      throw new Error('Cannot authenticate with fork; Open Authoring is turned off.');
+    }
+    const token = userData.token as string;
+
+    // Origin maintainers should be able to use the CMS normally. If alwaysFork
+    // is enabled we always fork (and avoid the origin maintainer check)
+    if (!this.alwaysForkEnabled && (await this.userIsOriginMaintainer({ token }))) {
+      this.repo = this.originRepo;
+      this.useOpenAuthoring = false;
+      return Promise.resolve();
+    }
+
+    // If a fork exists merge it with upstream
+    // otherwise create a new fork.
+    const currentUser = await this.currentUser({ token });
+    const repoName = this.originRepo.split('/')[1];
+    this.repo = `${currentUser.login}/${repoName}`;
+    this.useOpenAuthoring = true;
+
+    if (await this.api!.forkExists()) {
+      await this.api!.mergeUpstream();
+      return Promise.resolve();
+    } else {
+      await getPermissionToFork();
+
+      const fork = await this.api!.createFork();
+      return this.pollUntilForkExists({ repo: `/repos/${fork.full_name}`, token });
+    }
+  }
+
+  restoreUser(user: User) {
+    return this.openAuthoringEnabled
+      ? this.authenticateWithFork({ userData: user, getPermissionToFork: () => true }).then(() =>
+          this.authenticate(user),
+        )
+      : this.authenticate(user);
+  }
+
   async authenticate(state: Credentials) {
     this.token = state.token as string;
     const apiCtor = API;
@@ -157,6 +233,7 @@ export default class Gitea implements Implementation {
       repo: this.repo,
       originRepo: this.originRepo,
       apiRoot: this.apiRoot,
+      useOpenAuthoring: this.useOpenAuthoring,
     });
     const user = await this.api!.user();
     const isCollab = await this.api!.hasWriteAccess().catch(error => {
