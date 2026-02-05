@@ -853,14 +853,15 @@ export default class API {
   }
 
   async mergeUpstream(): Promise<void> {
-    // Sync fork with upstream repository using Gitea's sync_fork endpoint
-    // Available in Gitea 1.17+
     try {
-      await this.request(`${this.repoURL}/sync_fork`, {
+      await this.request(`${this.repoURL}/merge-upstream`, {
         method: 'POST',
+        body: JSON.stringify({
+          branch: this.branch,
+        }),
       });
     } catch (error) {
-      // If sync fails (e.g., on older Gitea versions or conflicts),
+      // If sync fails (e.g., conflicts or permissions),
       // continue without syncing - user will need to sync manually
       console.warn('Failed to sync fork with upstream:', error);
     }
