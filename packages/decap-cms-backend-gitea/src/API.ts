@@ -3,8 +3,6 @@ import trimStart from 'lodash/trimStart';
 import trim from 'lodash/trim';
 import result from 'lodash/result';
 import partial from 'lodash/partial';
-import last from 'lodash/last';
-import initial from 'lodash/initial';
 import {
   APIError,
   basename,
@@ -354,13 +352,15 @@ export default class API {
     folderSupport?: boolean,
   ): Promise<{ type: string; id: string; name: string; path: string; size: number }[]> {
     const folder = trim(path, '/');
+    const hasFolder = Boolean(folder);
+    const prefix = hasFolder ? `${folder}/` : '';
     try {
       const result: GitGetTreeResponse = await this.request(
-        `${repoURL}/git/trees/${branch}:${encodeURIComponent(folder)}`,
+        `${repoURL}/git/trees/${branch}`,
         {
           // Gitea API supports recursive=1 for getting the entire recursive tree
           // or omitting it to get the non-recursive tree
-          params: depth > 1 ? { recursive: 1 } : {},
+          params: depth > 1 || hasFolder ? { recursive: 1 } : {},
         },
       );
       return (
@@ -368,14 +368,17 @@ export default class API {
           // filter only files and/or folders up to the required depth
           .filter(
             file =>
+              (!hasFolder || file.path.startsWith(prefix)) &&
               (!folderSupport ? file.type === 'blob' : true) &&
-              decodeURIComponent(file.path).split('/').length <= depth,
+              decodeURIComponent(hasFolder ? file.path.slice(prefix.length) : file.path).split(
+                '/',
+              ).length <= depth,
           )
           .map(file => ({
             type: file.type,
             id: file.sha,
-            name: basename(file.path),
-            path: `${folder}/${file.path}`,
+            name: basename(hasFolder ? file.path.slice(prefix.length) : file.path),
+            path: hasFolder ? `${folder}/${file.path.slice(prefix.length)}` : file.path,
             size: file.size!,
           }))
       );
@@ -443,25 +446,19 @@ export default class API {
   }
 
   async getFileSha(path: string, { repoURL = this.repoURL, branch = this.branch } = {}) {
-    /**
-     * We need to request the tree first to get the SHA. We use extended SHA-1
-     * syntax (<rev>:<path>) to get a blob from a tree without having to recurse
-     * through the tree.
-     */
+    const encodedPath = path
+      .split('/')
+      .map(segment => encodeURIComponent(segment))
+      .join('/');
+    const result = (await this.request(`${repoURL}/contents/${encodedPath}`, {
+      params: { ref: branch },
+    })) as { sha?: string };
 
-    const pathArray = path.split('/');
-    const filename = last(pathArray);
-    const directory = initial(pathArray).join('/');
-    const fileDataPath = encodeURIComponent(directory);
-    const fileDataURL = `${repoURL}/git/trees/${branch}:${fileDataPath}`;
-
-    const result: GitGetTreeResponse = await this.request(fileDataURL);
-    const file = result.tree.find(file => file.path === filename);
-    if (file) {
-      return file.sha;
-    } else {
-      throw new APIError('Not Found', 404, API_NAME);
+    if (result?.sha) {
+      return result.sha;
     }
+
+    throw new APIError('Not Found', 404, API_NAME);
   }
 
   async deleteFiles(paths: string[], message: string) {

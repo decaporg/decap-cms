@@ -330,23 +330,23 @@ describe('gitea API', () => {
 
       const tree = [
         {
-          path: 'post.md',
+          path: 'posts/post.md',
           type: 'blob',
         },
         {
-          path: 'dir1',
+          path: 'posts/dir1',
           type: 'tree',
         },
         {
-          path: 'dir1/nested-post.md',
+          path: 'posts/dir1/nested-post.md',
           type: 'blob',
         },
         {
-          path: 'dir1/dir2',
+          path: 'posts/dir1/dir2',
           type: 'tree',
         },
         {
-          path: 'dir1/dir2/nested-post.md',
+          path: 'posts/dir1/dir2/nested-post.md',
           type: 'blob',
         },
       ];
@@ -360,8 +360,8 @@ describe('gitea API', () => {
         },
       ]);
       expect(api.request).toHaveBeenCalledTimes(1);
-      expect(api.request).toHaveBeenCalledWith('/repos/owner/repo/git/trees/master:posts', {
-        params: {},
+      expect(api.request).toHaveBeenCalledWith('/repos/owner/repo/git/trees/master', {
+        params: { recursive: 1 },
       });
 
       jest.clearAllMocks();
@@ -378,7 +378,7 @@ describe('gitea API', () => {
         },
       ]);
       expect(api.request).toHaveBeenCalledTimes(1);
-      expect(api.request).toHaveBeenCalledWith('/repos/owner/repo/git/trees/master:posts', {
+      expect(api.request).toHaveBeenCalledWith('/repos/owner/repo/git/trees/master', {
         params: { recursive: 1 },
       });
 
@@ -401,7 +401,7 @@ describe('gitea API', () => {
         },
       ]);
       expect(api.request).toHaveBeenCalledTimes(1);
-      expect(api.request).toHaveBeenCalledWith('/repos/owner/repo/git/trees/master:posts', {
+      expect(api.request).toHaveBeenCalledWith('/repos/owner/repo/git/trees/master', {
         params: { recursive: 1 },
       });
     });
@@ -410,23 +410,23 @@ describe('gitea API', () => {
 
       const tree = [
         {
-          path: 'image.png',
+          path: 'media/image.png',
           type: 'blob',
         },
         {
-          path: 'dir1',
+          path: 'media/dir1',
           type: 'tree',
         },
         {
-          path: 'dir1/nested-image.png',
+          path: 'media/dir1/nested-image.png',
           type: 'blob',
         },
         {
-          path: 'dir1/dir2',
+          path: 'media/dir1/dir2',
           type: 'tree',
         },
         {
-          path: 'dir1/dir2/nested-image.png',
+          path: 'media/dir1/dir2/nested-image.png',
           type: 'blob',
         },
       ];
@@ -445,8 +445,8 @@ describe('gitea API', () => {
         },
       ]);
       expect(api.request).toHaveBeenCalledTimes(1);
-      expect(api.request).toHaveBeenCalledWith('/repos/owner/repo/git/trees/master:media', {
-        params: {},
+      expect(api.request).toHaveBeenCalledWith('/repos/owner/repo/git/trees/master', {
+        params: { recursive: 1 },
       });
     });
     it('should create branch', async () => {
