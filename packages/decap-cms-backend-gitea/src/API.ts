@@ -521,7 +521,10 @@ export default class API {
     return this.request(`${this.originRepoURL}/pulls`, { params });
   }
 
-  async getOpenAuthoringPullRequest(branch: string, pullRequests: GiteaPullRequest[]) {
+  async getOpenAuthoringPullRequest(
+    branch: string,
+    pullRequests: GiteaPullRequest[],
+  ): Promise<{ pullRequest: GiteaPullRequest | null; branch: GiteaBranch }> {
     // we can't use labels when using open authoring
     // since the contributor doesn't have access to set labels
     // a branch without a pr (or a closed pr) means a 'draft' entry
@@ -531,33 +534,14 @@ export default class API {
     });
     // since we get all (open and closed) pull requests by branch name, make sure to filter by head sha
     const pullRequest = pullRequests.filter(pr => pr.head.sha === data.commit.id)[0];
-    // if no pull request is found for the branch we return a mocked one
     if (!pullRequest) {
-      try {
-        return {
-          id: -1,
-          number: -1,
-          state: 'open' as const,
-          title: 'Draft',
-          body: '',
-          user: { login: 'unknown' } as GiteaUser,
-          labels: [],
-          head: { sha: data.commit.id, ref: branch, label: branch, repo: {} as GiteaRepository },
-          base: { sha: '', ref: '', label: '', repo: {} as GiteaRepository },
-          merged: false,
-          merged_at: null,
-          updated_at: new Date().toISOString(),
-          created_at: new Date().toISOString(),
-        } as GiteaPullRequest;
-      } catch (e) {
-        throw new APIError('content is not under editorial workflow', 400, API_NAME);
-      }
-    } else {
-      // Filter out CMS labels for open authoring
-      const cmsLabelPrefix = 'decap-cms/';
-      pullRequest.labels = pullRequest.labels.filter(l => !isCMSLabel(l.name, cmsLabelPrefix));
-      return pullRequest;
+      return { pullRequest: null, branch: data };
     }
+
+    // Filter out CMS labels for open authoring
+    const cmsLabelPrefix = 'decap-cms/';
+    pullRequest.labels = pullRequest.labels.filter(l => !isCMSLabel(l.name, cmsLabelPrefix));
+    return { pullRequest, branch: data };
   }
 
   async getBranchPullRequest(branchName: string): Promise<GiteaPullRequest> {
@@ -673,23 +657,26 @@ export default class API {
 
   async retrieveUnpublishedEntryData(contentKey: string) {
     const branch = branchFromContentKey(contentKey);
-    let pullRequest: GiteaPullRequest;
+    let pullRequest: GiteaPullRequest | null;
+    let branchData: GiteaBranch | null = null;
 
     if (this.useOpenAuthoring) {
       const pullRequests = await this.getPullRequests('all');
-      pullRequest = await this.getOpenAuthoringPullRequest(branch, pullRequests);
+      const openAuthoringResult = await this.getOpenAuthoringPullRequest(branch, pullRequests);
+      pullRequest = openAuthoringResult.pullRequest;
+      branchData = openAuthoringResult.branch;
     } else {
       pullRequest = await this.getBranchPullRequest(branch);
     }
 
-    const files = await this.getPullRequestFiles(pullRequest.number);
+    const files = pullRequest ? await this.getPullRequestFiles(pullRequest.number) : [];
 
     const cmsLabelPrefix = 'decap-cms/';
     let status = 'draft';
 
     if (this.useOpenAuthoring) {
       // For open authoring, status is based on PR state, not labels
-      status = pullRequest.state === 'open' ? 'pending_review' : 'draft';
+      status = pullRequest && pullRequest.state === 'open' ? 'pending_review' : 'draft';
     } else {
       const statusLabel = pullRequest.labels.find(l => isCMSLabel(l.name, cmsLabelPrefix));
       status = statusLabel ? labelToStatus(statusLabel.name, cmsLabelPrefix) : 'draft';
@@ -706,8 +693,13 @@ export default class API {
         newFile: file.status === 'added',
         id: '', // SHA not directly available from files endpoint
       })),
-      updatedAt: pullRequest.updated_at,
-      pullRequestAuthor: pullRequest.user?.login || 'Unknown',
+      updatedAt:
+        pullRequest?.updated_at ||
+        branchData?.commit?.author?.date ||
+        branchData?.commit?.committer?.date ||
+        new Date().toISOString(),
+      pullRequestAuthor:
+        pullRequest?.user?.login || branchData?.commit?.author?.name || 'Unknown',
     };
   }
 

@@ -863,7 +863,7 @@ describe('gitea API', () => {
   });
 
   describe('getOpenAuthoringPullRequest', () => {
-    it('should return mock PR when no PR exists', async () => {
+    it('should return null when no PR exists', async () => {
       const api = new API({ branch: 'master', repo: 'user/repo' });
       api.getBranch = jest.fn().mockResolvedValue({
         commit: { id: 'sha123' },
@@ -871,10 +871,8 @@ describe('gitea API', () => {
 
       const result = await api.getOpenAuthoringPullRequest('cms/test', []);
 
-      expect(result.number).toBe(-1);
-      expect(result.state).toBe('open');
-      expect(result.labels).toEqual([]);
-      expect(result.head.sha).toBe('sha123');
+      expect(result.pullRequest).toBeNull();
+      expect(result.branch.commit.id).toBe('sha123');
     });
 
     it('should filter CMS labels from PR', async () => {
@@ -894,8 +892,8 @@ describe('gitea API', () => {
 
       const result = await api.getOpenAuthoringPullRequest('cms/test', [pullRequest]);
 
-      expect(result.number).toBe(1);
-      expect(result.labels).toEqual([{ id: 2, name: 'bug' }]);
+      expect(result.pullRequest.number).toBe(1);
+      expect(result.pullRequest.labels).toEqual([{ id: 2, name: 'bug' }]);
     });
   });
 });
