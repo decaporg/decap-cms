@@ -169,5 +169,6 @@
   "resolutions": {
     "react-redux": "^7.2.0"
   },
-  "version": "0.0.0"
+  "version": "0.0.0",
+  "packageManager": "npm@10.8.1+sha1.1f1cb1305cd9246b9efe07d8629874df23157a2f"
 }
