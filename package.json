@@ -167,7 +167,11 @@
     "yaml": "^2.8.2"
   },
   "resolutions": {
-    "react-redux": "^7.2.0"
+    "react-redux": "^7.2.0",
+    "clean-stack": "5.2.0"
+  },
+  "overrides": {
+    "clean-stack": "5.2.0"
   },
   "version": "0.0.0"
 }
