@@ -5,6 +5,7 @@ import result from 'lodash/result';
 import partial from 'lodash/partial';
 import {
   APIError,
+  EditorialWorkflowError,
   basename,
   generateContentKey,
   getAllResponses,
@@ -41,9 +42,12 @@ import type {
   GiteaBranch,
   GiteaLabel,
   GiteaChangedFile,
+  GiteaCompareResponse,
 } from './types';
 
 export const API_NAME = 'Gitea';
+
+export const MOCK_PULL_REQUEST = -1;
 
 export interface Config {
   apiRoot?: string;
@@ -52,6 +56,8 @@ export interface Config {
   repo?: string;
   originRepo?: string;
   useOpenAuthoring?: boolean;
+  cmsLabelPrefix?: string;
+  initialWorkflowStatus?: string;
 }
 
 enum FileOperation {
@@ -117,6 +123,8 @@ export default class API {
   repoURL: string;
   originRepoURL: string;
   useOpenAuthoring: boolean;
+  cmsLabelPrefix: string;
+  initialWorkflowStatus: string;
 
   _userPromise?: Promise<GiteaUser>;
   _metadataSemaphore?: Semaphore;
@@ -133,6 +141,8 @@ export default class API {
     this.repo = config.repo || '';
     this.originRepo = config.originRepo || this.repo;
     this.useOpenAuthoring = config.useOpenAuthoring ? true : false;
+    this.cmsLabelPrefix = config.cmsLabelPrefix || '';
+    this.initialWorkflowStatus = config.initialWorkflowStatus || 'draft';
     this.repoURL = `/repos/${this.repo}`;
     this.originRepoURL = `/repos/${this.originRepo}`;
 
@@ -276,11 +286,18 @@ export default class API {
   }
 
   generateContentKey(collectionName: string, slug: string) {
-    return generateContentKey(collectionName, slug);
+    const contentKey = generateContentKey(collectionName, slug);
+    if (!this.useOpenAuthoring) {
+      return contentKey;
+    }
+    return `${this.repo}/${contentKey}`;
   }
 
   parseContentKey(contentKey: string) {
-    return parseContentKey(contentKey);
+    if (!this.useOpenAuthoring) {
+      return parseContentKey(contentKey);
+    }
+    return parseContentKey(contentKey.slice(this.repo.length + 1));
   }
 
   async readFile(
@@ -462,6 +479,10 @@ export default class API {
   }
 
   async deleteFiles(paths: string[], message: string) {
+    if (this.useOpenAuthoring) {
+      return Promise.reject('Cannot delete published entries as an Open Authoring user!');
+    }
+
     const operations: ChangeFileOperation[] = await Promise.all(
       paths.map(async path => {
         const sha = await this.getFileSha(path);
@@ -521,37 +542,64 @@ export default class API {
   async getOpenAuthoringPullRequest(
     branch: string,
     pullRequests: GiteaPullRequest[],
-  ): Promise<{ pullRequest: GiteaPullRequest | null; branch: GiteaBranch }> {
+  ): Promise<{ pullRequest: GiteaPullRequest; branch: GiteaBranch }> {
     // we can't use labels when using open authoring
     // since the contributor doesn't have access to set labels
     // a branch without a pr (or a closed pr) means a 'draft' entry
     // a branch with an opened pr means a 'pending_review' entry
     const data = await this.getBranch(branch).catch(() => {
-      throw new APIError('content is not under editorial workflow', 400, API_NAME);
+      throw new EditorialWorkflowError('content is not under editorial workflow', true);
     });
     // since we get all (open and closed) pull requests by branch name, make sure to filter by head sha
     const pullRequest = pullRequests.filter(pr => pr.head.sha === data.commit.id)[0];
     if (!pullRequest) {
-      return { pullRequest: null, branch: data };
+      // if no pull request is found for the branch we return a mocked one
+      return {
+        pullRequest: {
+          number: MOCK_PULL_REQUEST,
+          state: 'open',
+          labels: [
+            { name: statusToLabel(this.initialWorkflowStatus, this.cmsLabelPrefix) } as GiteaLabel,
+          ],
+          head: { ref: branch, sha: data.commit.id },
+        } as unknown as GiteaPullRequest,
+        branch: data,
+      };
     }
 
     // Filter out CMS labels for open authoring
-    const cmsLabelPrefix = 'decap-cms/';
-    pullRequest.labels = pullRequest.labels.filter(l => !isCMSLabel(l.name, cmsLabelPrefix));
+    pullRequest.labels = pullRequest.labels.filter(l => !isCMSLabel(l.name, this.cmsLabelPrefix));
+
+    // Add synthetic CMS label based on PR state
+    const cmsLabel =
+      pullRequest.state === 'closed'
+        ? { name: statusToLabel(this.initialWorkflowStatus, this.cmsLabelPrefix) }
+        : { name: statusToLabel('pending_review', this.cmsLabelPrefix) };
+    pullRequest.labels.push(cmsLabel as GiteaLabel);
+
     return { pullRequest, branch: data };
   }
 
   async getBranchPullRequest(branchName: string): Promise<GiteaPullRequest> {
+    if (this.useOpenAuthoring) {
+      const headRef = await this.getHeadReference(branchName);
+      const pullRequests = await this.getPullRequests('all', headRef);
+      const result = await this.getOpenAuthoringPullRequest(branchName, pullRequests);
+      return result.pullRequest;
+    }
+
     const pullRequests = await this.getPullRequests('open', `${this.repoOwner}:${branchName}`);
-    if (pullRequests.length > 0) {
-      return pullRequests[0];
+    const cmsPullRequests = pullRequests.filter(pr =>
+      pr.labels.some(l => isCMSLabel(l.name, this.cmsLabelPrefix)),
+    );
+    if (cmsPullRequests.length > 0) {
+      return cmsPullRequests[0];
     }
-    // Check closed PRs as fallback
-    const closedPRs = await this.getPullRequests('closed', `${this.repoOwner}:${branchName}`);
-    if (closedPRs.length > 0) {
-      return closedPRs[0];
-    }
-    throw new APIError('Pull request not found', 404, API_NAME);
+    throw new EditorialWorkflowError('content is not under editorial workflow', true);
+  }
+
+  async getHeadReference(head: string) {
+    return `${this.repoOwner}:${head}`;
   }
 
   async createPR(
@@ -563,7 +611,7 @@ export default class API {
       method: 'POST',
       body: JSON.stringify({
         title,
-        head,
+        head: await this.getHeadReference(head),
         base: this.branch,
         body,
       }),
@@ -592,7 +640,28 @@ export default class API {
   }
 
   async getPullRequestFiles(number: number): Promise<GiteaChangedFile[]> {
+    if (number === MOCK_PULL_REQUEST) {
+      return [];
+    }
     return this.request(`${this.originRepoURL}/pulls/${number}/files`);
+  }
+
+  async getDifferences(from: string, to: string): Promise<GiteaCompareResponse> {
+    // For OA, try the fork repo first, then fall back to origin
+    const repoURL = this.useOpenAuthoring ? this.repoURL : this.originRepoURL;
+    try {
+      return await this.request(
+        `${repoURL}/compare/${encodeURIComponent(from)}...${encodeURIComponent(to)}`,
+      );
+    } catch (e) {
+      if (this.useOpenAuthoring) {
+        // Retry with origin repo
+        return this.request(
+          `${this.originRepoURL}/compare/${encodeURIComponent(from)}...${encodeURIComponent(to)}`,
+        );
+      }
+      throw e;
+    }
   }
 
   async updatePullRequestLabels(number: number, labels: number[]): Promise<GiteaLabel[]> {
@@ -624,29 +693,73 @@ export default class API {
 
   async setPullRequestStatus(pullRequest: GiteaPullRequest, status: string): Promise<void> {
     // Skip label updates for open authoring as contributors don't have permission
-    if (this.useOpenAuthoring) {
+    // Also skip for mock PRs (no real PR exists yet)
+    if (this.useOpenAuthoring || pullRequest.number === MOCK_PULL_REQUEST) {
       return;
     }
 
-    const cmsLabelPrefix = 'decap-cms/';
-    const newLabel = statusToLabel(status, cmsLabelPrefix);
+    const newLabel = statusToLabel(status, this.cmsLabelPrefix);
 
     // Get or create the new status label
     const label = await this.getOrCreateLabel(newLabel);
 
     // Get current labels and filter out old CMS labels
     const currentLabels = pullRequest.labels
-      .filter(l => !isCMSLabel(l.name, cmsLabelPrefix))
+      .filter(l => !isCMSLabel(l.name, this.cmsLabelPrefix))
       .map(l => l.id);
 
     // Add the new status label
     await this.updatePullRequestLabels(pullRequest.number, [...currentLabels, label.id]);
   }
 
+  async getOpenAuthoringBranches(): Promise<GiteaBranch[]> {
+    const branches: GiteaBranch[] = await this.requestAllPages(
+      `${this.repoURL}/branches`,
+    );
+    const prefix = `${CMS_BRANCH_PREFIX}/${this.repo}/`;
+    return branches.filter(b => b.name.startsWith(prefix));
+  }
+
+  filterOpenAuthoringBranches = async (branch: string) => {
+    try {
+      const pullRequest = await this.getBranchPullRequest(branch);
+      const { state: currentState, merged_at: mergedAt } = pullRequest as GiteaPullRequest;
+      if (
+        pullRequest.number !== MOCK_PULL_REQUEST &&
+        currentState === 'closed' &&
+        mergedAt
+      ) {
+        // PR was merged, delete the branch
+        await this.deleteBranch(branch);
+        return { branch, filter: false };
+      } else {
+        return { branch, filter: true };
+      }
+    } catch (e) {
+      return { branch, filter: false };
+    }
+  };
+
   async listUnpublishedBranches(): Promise<string[]> {
+    if (this.useOpenAuthoring) {
+      // OA branches can exist without a PR
+      const cmsBranches = await this.getOpenAuthoringBranches();
+      let branches = cmsBranches.map(b => b.name);
+      const branchesWithFilter = await Promise.all(
+        branches.map(b => this.filterOpenAuthoringBranches(b)),
+      );
+      branches = branchesWithFilter.filter(b => b.filter).map(b => b.branch);
+      return branches;
+    }
+
+    // Standard mode: filter PRs by CMS labels
     const pullRequests = await this.getPullRequests('open');
     const cmsBranches = pullRequests
-      .filter(pr => pr.head.ref.startsWith(`${CMS_BRANCH_PREFIX}/`))
+      .filter(
+        pr =>
+          pr.head.ref.startsWith(`${CMS_BRANCH_PREFIX}/`) &&
+          pr.labels.some(l => isCMSLabel(l.name, this.cmsLabelPrefix)),
+      )
       .map(pr => pr.head.ref);
 
     return cmsBranches;
@@ -654,7 +767,7 @@ export default class API {
 
   async retrieveUnpublishedEntryData(contentKey: string) {
     const branch = branchFromContentKey(contentKey);
-    let pullRequest: GiteaPullRequest | null;
+    let pullRequest: GiteaPullRequest;
     let branchData: GiteaBranch | null = null;
 
     if (this.useOpenAuthoring) {
@@ -666,18 +779,30 @@ export default class API {
       pullRequest = await this.getBranchPullRequest(branch);
     }
 
-    const files = pullRequest ? await this.getPullRequestFiles(pullRequest.number) : [];
-
-    const cmsLabelPrefix = 'decap-cms/';
-    let status = 'draft';
-
-    if (this.useOpenAuthoring) {
-      // For open authoring, status is based on PR state, not labels
-      status = pullRequest && pullRequest.state === 'open' ? 'pending_review' : 'draft';
-    } else {
-      const statusLabel = pullRequest?.labels.find(l => isCMSLabel(l.name, cmsLabelPrefix));
-      status = statusLabel ? labelToStatus(statusLabel.name, cmsLabelPrefix) : 'draft';
+    // Try getDifferences first (provides SHAs), fall back to getPullRequestFiles
+    let diffs: { path: string; newFile: boolean; id: string }[];
+    try {
+      const headRef = await this.getHeadReference(branch);
+      const compareResult = await this.getDifferences(this.branch, headRef);
+      diffs = compareResult.files.map(file => ({
+        path: file.filename,
+        newFile: file.status === 'added',
+        id: file.sha || '',
+      }));
+    } catch (e) {
+      const files = await this.getPullRequestFiles(pullRequest.number);
+      diffs = files.map(file => ({
+        path: file.filename,
+        newFile: file.status === 'added',
+        id: '',
+      }));
     }
+
+    // Both OA and standard PRs now have synthetic CMS labels, so use unified label-based lookup
+    const statusLabel = pullRequest.labels.find(l => isCMSLabel(l.name, this.cmsLabelPrefix));
+    const status = statusLabel
+      ? labelToStatus(statusLabel.name, this.cmsLabelPrefix)
+      : this.initialWorkflowStatus;
 
     const { collection, slug } = this.parseContentKey(contentKey);
 
@@ -685,11 +810,7 @@ export default class API {
       collection,
       slug,
       status,
-      diffs: files.map(file => ({
-        path: file.filename,
-        newFile: file.status === 'added',
-        id: '', // SHA not directly available from files endpoint
-      })),
+      diffs,
       updatedAt:
         pullRequest?.updated_at ||
         branchData?.commit?.author?.date ||
@@ -704,7 +825,31 @@ export default class API {
     const contentKey = this.generateContentKey(collection, slug);
     const branch = branchFromContentKey(contentKey);
     const pullRequest = await this.getBranchPullRequest(branch);
-    await this.setPullRequestStatus(pullRequest, newStatus);
+
+    if (!this.useOpenAuthoring) {
+      await this.setPullRequestStatus(pullRequest, newStatus);
+      return;
+    }
+
+    // Open authoring path
+    if (newStatus === 'pending_publish') {
+      throw new Error('Open Authoring entries may not be set to the status "pending_publish".');
+    }
+
+    if (pullRequest.number !== MOCK_PULL_REQUEST) {
+      const { state } = pullRequest;
+      if (state === 'open' && newStatus === 'draft') {
+        await this.closePR(pullRequest.number);
+      }
+      if (state === 'closed' && newStatus === 'pending_review') {
+        await this.updatePR(pullRequest.number, 'open');
+      }
+    } else if (newStatus === 'pending_review') {
+      // Mock PR: create a real PR
+      const diff = await this.getDifferences(this.branch, await this.getHeadReference(branch));
+      const title = diff.commits[0]?.commit?.message || API.DEFAULT_COMMIT_MESSAGE;
+      await this.createPR(title, branch);
+    }
   }
 
   async deleteUnpublishedEntry(collection: string, slug: string) {
@@ -713,7 +858,9 @@ export default class API {
 
     try {
       const pullRequest = await this.getBranchPullRequest(branch);
-      await this.closePR(pullRequest.number);
+      if (pullRequest.number !== MOCK_PULL_REQUEST) {
+        await this.closePR(pullRequest.number);
+      }
     } catch (e) {
       // PR might not exist, continue to delete branch
     }
@@ -726,6 +873,9 @@ export default class API {
     const branch = branchFromContentKey(contentKey);
 
     const pullRequest = await this.getBranchPullRequest(branch);
+    if (pullRequest.number === MOCK_PULL_REQUEST) {
+      throw new APIError('Cannot publish entry without a pull request', 400, API_NAME);
+    }
     await this.mergePR(pullRequest);
     await this.deleteBranch(branch);
   }
@@ -756,11 +906,11 @@ export default class API {
     const operations = await this.getChangeFileOperationsForBranch(files, branch);
     await this.changeFilesOnBranch(operations, options, branch);
 
-    // Create PR if it doesn't exist
-    if (!branchExists) {
+    // For open authoring, don't create a PR - entries start as branch-only (draft).
+    // PRs are created later via updateUnpublishedEntryStatus when moving to pending_review.
+    if (!branchExists && !this.useOpenAuthoring) {
       const pr = await this.createPR(options.commitMessage, branch);
-      // Set initial status
-      const status = options.status || 'draft';
+      const status = options.status || this.initialWorkflowStatus;
       await this.setPullRequestStatus(pr, status);
     }
   }

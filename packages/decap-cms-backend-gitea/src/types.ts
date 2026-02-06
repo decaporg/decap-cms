@@ -318,4 +318,23 @@ export type GiteaChangedFile = {
   deletions: number;
   changes: number;
   previous_filename?: string;
+  sha?: string;
+};
+
+export type GiteaCompareCommit = {
+  sha: string;
+  commit: {
+    message: string;
+    author: {
+      name: string;
+      email: string;
+      date: string;
+    };
+  };
+};
+
+export type GiteaCompareResponse = {
+  commits: GiteaCompareCommit[];
+  files: GiteaChangedFile[];
+  total_commits: number;
 };

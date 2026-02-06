@@ -1,6 +1,6 @@
 import { Base64 } from 'js-base64';
 
-import API from '../API';
+import API, { MOCK_PULL_REQUEST } from '../API';
 
 global.fetch = jest.fn().mockRejectedValue(new Error('should not call fetch inside tests'));
 
@@ -19,6 +19,50 @@ describe('gitea API', () => {
         : Promise.reject(new Error(`No response for path '${normalizedPath}'`));
     });
   }
+
+  describe('generateContentKey and parseContentKey', () => {
+    it('should generate standard content key without OA', () => {
+      const api = new API({ branch: 'master', repo: 'owner/repo' });
+      const key = api.generateContentKey('posts', 'my-post');
+      expect(key).toEqual('posts/my-post');
+    });
+
+    it('should generate OA content key with repo prefix', () => {
+      const api = new API({
+        branch: 'master',
+        repo: 'contributor/repo',
+        originRepo: 'owner/repo',
+        useOpenAuthoring: true,
+      });
+      const key = api.generateContentKey('posts', 'my-post');
+      expect(key).toEqual('contributor/repo/posts/my-post');
+    });
+
+    it('should parse standard content key without OA', () => {
+      const api = new API({ branch: 'master', repo: 'owner/repo' });
+      const result = api.parseContentKey('posts/my-post');
+      expect(result).toEqual({ collection: 'posts', slug: 'my-post' });
+    });
+
+    it('should parse OA content key by stripping repo prefix', () => {
+      const api = new API({
+        branch: 'master',
+        repo: 'contributor/repo',
+        originRepo: 'owner/repo',
+        useOpenAuthoring: true,
+      });
+      const result = api.parseContentKey('contributor/repo/posts/my-post');
+      expect(result).toEqual({ collection: 'posts', slug: 'my-post' });
+    });
+  });
+
+  describe('getHeadReference', () => {
+    it('should return owner:branch format', async () => {
+      const api = new API({ branch: 'master', repo: 'owner/repo' });
+      const ref = await api.getHeadReference('cms/posts/test');
+      expect(ref).toEqual('owner:cms/posts/test');
+    });
+  });
 
   describe('editorialWorkflowGit', () => {
     it('should create PR with correct branch when publishing with editorial workflow', async () => {
@@ -80,6 +124,34 @@ describe('gitea API', () => {
 
       expect(api.getBranch).toHaveBeenCalledWith('cms/posts/entry');
       expect(api.createBranch).not.toHaveBeenCalled();
+      expect(api.createPR).not.toHaveBeenCalled();
+      expect(api.setPullRequestStatus).not.toHaveBeenCalled();
+    });
+
+    it('should not create PR for open authoring (branch-only draft)', async () => {
+      const api = new API({
+        branch: 'master',
+        repo: 'contributor/repo',
+        originRepo: 'owner/repo',
+        useOpenAuthoring: true,
+      });
+
+      api.getBranch = jest.fn().mockRejectedValue(new Error('Branch not found'));
+      api.createBranch = jest.fn().mockResolvedValue({ name: 'cms/contributor/repo/posts/entry' });
+
+      const changeOperations = [{ operation: 'create', path: 'content.md', content: 'test' }];
+      api.getChangeFileOperationsForBranch = jest.fn().mockResolvedValue(changeOperations);
+      api.changeFilesOnBranch = jest.fn().mockResolvedValue({});
+
+      api.createPR = jest.fn();
+      api.setPullRequestStatus = jest.fn();
+
+      const files = [{ path: 'content.md', raw: 'test content' }];
+      const options = { commitMessage: 'Add entry', status: 'draft' };
+
+      await api.editorialWorkflowGit(files, 'entry', 'posts', options);
+
+      expect(api.createBranch).toHaveBeenCalled();
       expect(api.createPR).not.toHaveBeenCalled();
       expect(api.setPullRequestStatus).not.toHaveBeenCalled();
     });
@@ -324,6 +396,19 @@ describe('gitea API', () => {
         },
       ]);
     });
+
+    it('should reject delete for open authoring users', async () => {
+      const api = new API({
+        branch: 'master',
+        repo: 'contributor/repo',
+        originRepo: 'owner/repo',
+        useOpenAuthoring: true,
+      });
+
+      await expect(
+        api.deleteFiles(['content/posts/post.md'], 'delete post'),
+      ).rejects.toEqual('Cannot delete published entries as an Open Authoring user!');
+    });
   });
 
   describe('listFiles', () => {
@@ -467,7 +552,7 @@ describe('gitea API', () => {
       });
     });
 
-    it('should create pull request', async () => {
+    it('should create pull request with owner:branch head format', async () => {
       const api = new API({ branch: 'gh-pages', repo: 'my-repo', token: 'token' });
       api.request = jest.fn().mockResolvedValue({ number: 1 });
 
@@ -478,7 +563,7 @@ describe('gitea API', () => {
         method: 'POST',
         body: JSON.stringify({
           title: 'title',
-          head: 'cms/new-branch',
+          head: 'my-repo:cms/new-branch',
           base: 'gh-pages',
           body: 'Check out the changes!',
         }),
@@ -495,20 +580,58 @@ describe('gitea API', () => {
       });
     });
 
-    it('should list unpublished branches', async () => {
-      const api = new API({ branch: 'gh-pages', repo: 'my-repo', token: 'token' });
+    it('should list unpublished branches (standard mode)', async () => {
+      const api = new API({
+        branch: 'gh-pages',
+        repo: 'my-repo',
+        token: 'token',
+        cmsLabelPrefix: 'decap-cms/',
+      });
       api.request = jest
         .fn()
         .mockResolvedValue([
-          { head: { ref: 'cms/branch1' } },
-          { head: { ref: 'other/branch' } },
-          { head: { ref: 'cms/branch2' } },
+          { head: { ref: 'cms/branch1' }, labels: [{ name: 'decap-cms/draft' }] },
+          { head: { ref: 'other/branch' }, labels: [{ name: 'decap-cms/draft' }] },
+          { head: { ref: 'cms/branch2' }, labels: [{ name: 'decap-cms/pending_review' }] },
+          { head: { ref: 'cms/branch3' }, labels: [{ name: 'other-label' }] },
         ]);
 
-      await expect(api.listUnpublishedBranches()).resolves.toEqual(['cms/branch1', 'cms/branch2']);
+      await expect(api.listUnpublishedBranches()).resolves.toEqual([
+        'cms/branch1',
+        'cms/branch2',
+      ]);
       expect(api.request).toHaveBeenCalledWith('/repos/my-repo/pulls', {
         params: { state: 'open' },
       });
+    });
+
+    it('should list unpublished branches (OA mode) from fork branches', async () => {
+      const api = new API({
+        branch: 'master',
+        repo: 'contributor/repo',
+        originRepo: 'owner/repo',
+        token: 'token',
+        useOpenAuthoring: true,
+      });
+
+      // Mock getOpenAuthoringBranches
+      api.getOpenAuthoringBranches = jest.fn().mockResolvedValue([
+        { name: 'cms/contributor/repo/posts/entry1' },
+        { name: 'cms/contributor/repo/posts/entry2' },
+      ]);
+
+      // Mock filterOpenAuthoringBranches to allow all
+      api.filterOpenAuthoringBranches = jest.fn().mockImplementation(branch =>
+        Promise.resolve({ branch, filter: true }),
+      );
+
+      const result = await api.listUnpublishedBranches();
+
+      expect(result).toEqual([
+        'cms/contributor/repo/posts/entry1',
+        'cms/contributor/repo/posts/entry2',
+      ]);
+      expect(api.getOpenAuthoringBranches).toHaveBeenCalled();
     });
 
     it('should update pull request labels', async () => {
@@ -577,7 +700,12 @@ describe('gitea API', () => {
     });
 
     it('should set pull request status', async () => {
-      const api = new API({ branch: 'gh-pages', repo: 'my-repo', token: 'token' });
+      const api = new API({
+        branch: 'gh-pages',
+        repo: 'my-repo',
+        token: 'token',
+        cmsLabelPrefix: 'decap-cms/',
+      });
       const pullRequest = {
         number: 1,
         labels: [
@@ -604,7 +732,12 @@ describe('gitea API', () => {
 
   describe('retrieveUnpublishedEntryData', () => {
     it('should retrieve unpublished entry data', async () => {
-      const api = new API({ branch: 'master', repo: 'owner/repo', token: 'token' });
+      const api = new API({
+        branch: 'master',
+        repo: 'owner/repo',
+        token: 'token',
+        cmsLabelPrefix: 'decap-cms/',
+      });
 
       const pullRequest = {
         number: 1,
@@ -614,31 +747,68 @@ describe('gitea API', () => {
       };
       api.getBranchPullRequest = jest.fn().mockResolvedValue(pullRequest);
 
-      const files = [
-        { filename: 'content/posts/test.md', status: 'added' },
-        { filename: 'static/img/test.jpg', status: 'modified' },
-      ];
-      api.getPullRequestFiles = jest.fn().mockResolvedValue(files);
+      const compareResult = {
+        files: [
+          { filename: 'content/posts/test.md', status: 'added', sha: 'sha1' },
+          { filename: 'static/img/test.jpg', status: 'modified', sha: 'sha2' },
+        ],
+        commits: [],
+        total_commits: 1,
+      };
+      api.getDifferences = jest.fn().mockResolvedValue(compareResult);
 
       const result = await api.retrieveUnpublishedEntryData('posts/test');
 
       expect(api.getBranchPullRequest).toHaveBeenCalledWith('cms/posts/test');
-      expect(api.getPullRequestFiles).toHaveBeenCalledWith(1);
       expect(result).toEqual({
         collection: 'posts',
         slug: 'test',
         status: 'pending_review',
         diffs: [
-          { path: 'content/posts/test.md', newFile: true, id: '' },
-          { path: 'static/img/test.jpg', newFile: false, id: '' },
+          { path: 'content/posts/test.md', newFile: true, id: 'sha1' },
+          { path: 'static/img/test.jpg', newFile: false, id: 'sha2' },
         ],
         updatedAt: '2024-01-01T00:00:00Z',
         pullRequestAuthor: 'testuser',
       });
     });
 
-    it('should default to draft status when no CMS label found', async () => {
-      const api = new API({ branch: 'master', repo: 'owner/repo', token: 'token' });
+    it('should fall back to getPullRequestFiles when getDifferences fails', async () => {
+      const api = new API({
+        branch: 'master',
+        repo: 'owner/repo',
+        token: 'token',
+        cmsLabelPrefix: 'decap-cms/',
+      });
+
+      const pullRequest = {
+        number: 1,
+        updated_at: '2024-01-01T00:00:00Z',
+        user: { login: 'testuser' },
+        labels: [{ id: 1, name: 'decap-cms/pending_review' }],
+      };
+      api.getBranchPullRequest = jest.fn().mockResolvedValue(pullRequest);
+      api.getDifferences = jest.fn().mockRejectedValue(new Error('compare failed'));
+
+      const files = [
+        { filename: 'content/posts/test.md', status: 'added' },
+      ];
+      api.getPullRequestFiles = jest.fn().mockResolvedValue(files);
+
+      const result = await api.retrieveUnpublishedEntryData('posts/test');
+
+      expect(result.diffs).toEqual([
+        { path: 'content/posts/test.md', newFile: true, id: '' },
+      ]);
+    });
+
+    it('should default to initialWorkflowStatus when no CMS label found', async () => {
+      const api = new API({
+        branch: 'master',
+        repo: 'owner/repo',
+        token: 'token',
+        cmsLabelPrefix: 'decap-cms/',
+      });
 
       const pullRequest = {
         number: 1,
@@ -647,7 +817,7 @@ describe('gitea API', () => {
         labels: [{ id: 2, name: 'other-label' }],
       };
       api.getBranchPullRequest = jest.fn().mockResolvedValue(pullRequest);
-      api.getPullRequestFiles = jest.fn().mockResolvedValue([]);
+      api.getDifferences = jest.fn().mockResolvedValue({ files: [], commits: [], total_commits: 0 });
 
       const result = await api.retrieveUnpublishedEntryData('posts.test');
 
@@ -656,7 +826,7 @@ describe('gitea API', () => {
   });
 
   describe('updateUnpublishedEntryStatus', () => {
-    it('should update unpublished entry status', async () => {
+    it('should update unpublished entry status (standard mode)', async () => {
       const api = new API({ branch: 'master', repo: 'owner/repo', token: 'token' });
 
       const pullRequest = {
@@ -670,6 +840,82 @@ describe('gitea API', () => {
 
       expect(api.getBranchPullRequest).toHaveBeenCalledWith('cms/posts/test');
       expect(api.setPullRequestStatus).toHaveBeenCalledWith(pullRequest, 'pending_review');
+    });
+
+    it('should reject pending_publish for open authoring', async () => {
+      const api = new API({
+        branch: 'master',
+        repo: 'contributor/repo',
+        originRepo: 'owner/repo',
+        useOpenAuthoring: true,
+      });
+
+      const pullRequest = { number: 1, state: 'open', labels: [] };
+      api.getBranchPullRequest = jest.fn().mockResolvedValue(pullRequest);
+
+      await expect(
+        api.updateUnpublishedEntryStatus('posts', 'test', 'pending_publish'),
+      ).rejects.toThrow('Open Authoring entries may not be set to the status "pending_publish".');
+    });
+
+    it('should close PR when OA entry moves to draft', async () => {
+      const api = new API({
+        branch: 'master',
+        repo: 'contributor/repo',
+        originRepo: 'owner/repo',
+        useOpenAuthoring: true,
+      });
+
+      const pullRequest = { number: 5, state: 'open', labels: [] };
+      api.getBranchPullRequest = jest.fn().mockResolvedValue(pullRequest);
+      api.closePR = jest.fn().mockResolvedValue({});
+
+      await api.updateUnpublishedEntryStatus('posts', 'test', 'draft');
+
+      expect(api.closePR).toHaveBeenCalledWith(5);
+    });
+
+    it('should re-open PR when OA entry moves to pending_review', async () => {
+      const api = new API({
+        branch: 'master',
+        repo: 'contributor/repo',
+        originRepo: 'owner/repo',
+        useOpenAuthoring: true,
+      });
+
+      const pullRequest = { number: 5, state: 'closed', labels: [] };
+      api.getBranchPullRequest = jest.fn().mockResolvedValue(pullRequest);
+      api.updatePR = jest.fn().mockResolvedValue({});
+
+      await api.updateUnpublishedEntryStatus('posts', 'test', 'pending_review');
+
+      expect(api.updatePR).toHaveBeenCalledWith(5, 'open');
+    });
+
+    it('should create PR from mock PR when OA entry moves to pending_review', async () => {
+      const api = new API({
+        branch: 'master',
+        repo: 'contributor/repo',
+        originRepo: 'owner/repo',
+        useOpenAuthoring: true,
+      });
+
+      const mockPR = { number: MOCK_PULL_REQUEST, state: 'open', labels: [] };
+      api.getBranchPullRequest = jest.fn().mockResolvedValue(mockPR);
+      api.getDifferences = jest.fn().mockResolvedValue({
+        commits: [{ commit: { message: 'Add new post' } }],
+        files: [],
+        total_commits: 1,
+      });
+      api.createPR = jest.fn().mockResolvedValue({ number: 10 });
+
+      await api.updateUnpublishedEntryStatus('posts', 'test', 'pending_review');
+
+      expect(api.getDifferences).toHaveBeenCalled();
+      expect(api.createPR).toHaveBeenCalledWith(
+        'Add new post',
+        expect.stringContaining('cms/'),
+      );
     });
   });
 
@@ -721,10 +967,20 @@ describe('gitea API', () => {
   });
 
   describe('getBranchPullRequest', () => {
-    it('should get open pull request for branch', async () => {
-      const api = new API({ branch: 'master', repo: 'owner/my-repo', token: 'token' });
+    it('should get open pull request with CMS labels for branch (standard mode)', async () => {
+      const api = new API({
+        branch: 'master',
+        repo: 'owner/my-repo',
+        token: 'token',
+        cmsLabelPrefix: 'decap-cms/',
+      });
 
-      const openPR = { number: 1, head: { ref: 'cms/posts/test' }, state: 'open' };
+      const openPR = {
+        number: 1,
+        head: { ref: 'cms/posts/test' },
+        state: 'open',
+        labels: [{ name: 'decap-cms/draft' }],
+      };
       api.getPullRequests = jest.fn().mockResolvedValue([openPR]);
 
       const result = await api.getBranchPullRequest('cms/posts/test');
@@ -733,28 +989,48 @@ describe('gitea API', () => {
       expect(api.getPullRequests).toHaveBeenCalledWith('open', 'owner:cms/posts/test');
     });
 
-    it('should check closed PRs if no open PR found', async () => {
-      const api = new API({ branch: 'master', repo: 'owner/my-repo', token: 'token' });
+    it('should throw EditorialWorkflowError if no CMS-labeled PR found (standard mode)', async () => {
+      const api = new API({
+        branch: 'master',
+        repo: 'owner/my-repo',
+        token: 'token',
+        cmsLabelPrefix: 'decap-cms/',
+      });
 
-      const closedPR = { number: 2, head: { ref: 'cms/posts/test' }, state: 'closed' };
-      api.getPullRequests = jest.fn().mockResolvedValueOnce([]).mockResolvedValueOnce([closedPR]);
-
-      const result = await api.getBranchPullRequest('cms/posts/test');
-
-      expect(result).toEqual(closedPR);
-      expect(api.getPullRequests).toHaveBeenCalledTimes(2);
-      expect(api.getPullRequests).toHaveBeenNthCalledWith(1, 'open', 'owner:cms/posts/test');
-      expect(api.getPullRequests).toHaveBeenNthCalledWith(2, 'closed', 'owner:cms/posts/test');
-    });
-
-    it('should throw error if no PR found', async () => {
-      const api = new API({ branch: 'master', repo: 'owner/my-repo', token: 'token' });
-
-      api.getPullRequests = jest.fn().mockResolvedValue([]);
+      // PR exists but has no CMS label
+      const pr = {
+        number: 1,
+        head: { ref: 'cms/posts/test' },
+        state: 'open',
+        labels: [{ name: 'other-label' }],
+      };
+      api.getPullRequests = jest.fn().mockResolvedValue([pr]);
 
       await expect(api.getBranchPullRequest('cms/posts/test')).rejects.toThrow(
-        'Pull request not found',
+        'content is not under editorial workflow',
       );
+    });
+
+    it('should delegate to getOpenAuthoringPullRequest for OA mode', async () => {
+      const api = new API({
+        branch: 'master',
+        repo: 'contributor/repo',
+        originRepo: 'owner/repo',
+        token: 'token',
+        useOpenAuthoring: true,
+      });
+
+      const mockPR = { number: MOCK_PULL_REQUEST, state: 'open', labels: [], head: { ref: 'cms/test', sha: 'sha123' } };
+      api.getPullRequests = jest.fn().mockResolvedValue([]);
+      api.getOpenAuthoringPullRequest = jest.fn().mockResolvedValue({
+        pullRequest: mockPR,
+        branch: { commit: { id: 'sha123' } },
+      });
+
+      const result = await api.getBranchPullRequest('cms/test');
+
+      expect(result).toEqual(mockPR);
+      expect(api.getPullRequests).toHaveBeenCalledWith('all', 'contributor:cms/test');
     });
   });
 
@@ -865,7 +1141,7 @@ describe('gitea API', () => {
   });
 
   describe('getOpenAuthoringPullRequest', () => {
-    it('should return null when no PR exists', async () => {
+    it('should return mock PR with initial status label when no PR exists', async () => {
       const api = new API({ branch: 'master', repo: 'user/repo' });
       api.getBranch = jest.fn().mockResolvedValue({
         commit: { id: 'sha123' },
@@ -873,18 +1149,27 @@ describe('gitea API', () => {
 
       const result = await api.getOpenAuthoringPullRequest('cms/test', []);
 
-      expect(result.pullRequest).toBeNull();
+      expect(result.pullRequest.number).toBe(-1);
+      expect(result.pullRequest.head.sha).toBe('sha123');
+      // Default cmsLabelPrefix is '' which maps to 'decap-cms/' via getLabelPrefix
+      expect(result.pullRequest.labels).toEqual(
+        expect.arrayContaining([expect.objectContaining({ name: 'decap-cms/draft' })]),
+      );
       expect(result.branch.commit.id).toBe('sha123');
     });
 
-    it('should filter CMS labels from PR', async () => {
-      const api = new API({ branch: 'master', repo: 'user/repo' });
+    it('should add synthetic pending_review label for open PR', async () => {
+      const api = new API({
+        branch: 'master',
+        repo: 'user/repo',
+        cmsLabelPrefix: 'decap-cms/',
+      });
       const pullRequest = {
         number: 1,
         head: { sha: 'sha123' },
         state: 'open',
         labels: [
-          { id: 1, name: 'decap-cms/pending_review' },
+          { id: 1, name: 'decap-cms/draft' },
           { id: 2, name: 'bug' },
         ],
       };
@@ -895,7 +1180,129 @@ describe('gitea API', () => {
       const result = await api.getOpenAuthoringPullRequest('cms/test', [pullRequest]);
 
       expect(result.pullRequest.number).toBe(1);
-      expect(result.pullRequest.labels).toEqual([{ id: 2, name: 'bug' }]);
+      // CMS labels filtered out, synthetic pending_review added, plus non-CMS labels kept
+      expect(result.pullRequest.labels).toEqual([
+        { id: 2, name: 'bug' },
+        { name: 'decap-cms/pending_review' },
+      ]);
+    });
+
+    it('should add synthetic draft label for closed PR', async () => {
+      const api = new API({
+        branch: 'master',
+        repo: 'user/repo',
+        cmsLabelPrefix: 'decap-cms/',
+      });
+      const pullRequest = {
+        number: 1,
+        head: { sha: 'sha123' },
+        state: 'closed',
+        labels: [],
+      };
+      api.getBranch = jest.fn().mockResolvedValue({
+        commit: { id: 'sha123' },
+      });
+
+      const result = await api.getOpenAuthoringPullRequest('cms/test', [pullRequest]);
+
+      expect(result.pullRequest.labels).toEqual([
+        { name: 'decap-cms/draft' },
+      ]);
+    });
+  });
+
+  describe('getDifferences', () => {
+    it('should call compare endpoint', async () => {
+      const api = new API({ branch: 'master', repo: 'owner/repo', token: 'token' });
+      const compareResult = { files: [], commits: [], total_commits: 0 };
+      api.request = jest.fn().mockResolvedValue(compareResult);
+
+      const result = await api.getDifferences('master', 'owner:cms/posts/test');
+
+      expect(result).toEqual(compareResult);
+      expect(api.request).toHaveBeenCalledWith(
+        '/repos/owner/repo/compare/master...owner%3Acms%2Fposts%2Ftest',
+      );
+    });
+
+    it('should retry with origin repo for OA on failure', async () => {
+      const api = new API({
+        branch: 'master',
+        repo: 'contributor/repo',
+        originRepo: 'owner/repo',
+        useOpenAuthoring: true,
+        token: 'token',
+      });
+      const compareResult = { files: [], commits: [], total_commits: 0 };
+      api.request = jest.fn()
+        .mockRejectedValueOnce(new Error('not found'))
+        .mockResolvedValueOnce(compareResult);
+
+      const result = await api.getDifferences('master', 'contributor:cms/test');
+
+      expect(result).toEqual(compareResult);
+      expect(api.request).toHaveBeenCalledTimes(2);
+      // First call to fork repo
+      expect(api.request.mock.calls[0][0]).toContain('/repos/contributor/repo/compare/');
+      // Second call to origin repo
+      expect(api.request.mock.calls[1][0]).toContain('/repos/owner/repo/compare/');
+    });
+  });
+
+  describe('filterOpenAuthoringBranches', () => {
+    it('should filter out merged PRs and delete their branches', async () => {
+      const api = new API({
+        branch: 'master',
+        repo: 'contributor/repo',
+        originRepo: 'owner/repo',
+        useOpenAuthoring: true,
+      });
+
+      const mergedPR = {
+        number: 1,
+        state: 'closed',
+        merged_at: '2024-01-01T00:00:00Z',
+        labels: [],
+      };
+      api.getBranchPullRequest = jest.fn().mockResolvedValue(mergedPR);
+      api.deleteBranch = jest.fn().mockResolvedValue();
+
+      const result = await api.filterOpenAuthoringBranches('cms/contributor/repo/posts/entry');
+
+      expect(result).toEqual({ branch: 'cms/contributor/repo/posts/entry', filter: false });
+      expect(api.deleteBranch).toHaveBeenCalledWith('cms/contributor/repo/posts/entry');
+    });
+
+    it('should keep branches with unmerged PRs', async () => {
+      const api = new API({
+        branch: 'master',
+        repo: 'contributor/repo',
+        originRepo: 'owner/repo',
+        useOpenAuthoring: true,
+      });
+
+      const openPR = { number: 1, state: 'open', merged_at: null, labels: [] };
+      api.getBranchPullRequest = jest.fn().mockResolvedValue(openPR);
+
+      const result = await api.filterOpenAuthoringBranches('cms/contributor/repo/posts/entry');
+
+      expect(result).toEqual({ branch: 'cms/contributor/repo/posts/entry', filter: true });
+    });
+
+    it('should keep branches with mock PRs (no real PR)', async () => {
+      const api = new API({
+        branch: 'master',
+        repo: 'contributor/repo',
+        originRepo: 'owner/repo',
+        useOpenAuthoring: true,
+      });
+
+      const mockPR = { number: MOCK_PULL_REQUEST, state: 'open', merged_at: null, labels: [] };
+      api.getBranchPullRequest = jest.fn().mockResolvedValue(mockPR);
+
+      const result = await api.filterOpenAuthoringBranches('cms/contributor/repo/posts/entry');
+
+      expect(result).toEqual({ branch: 'cms/contributor/repo/posts/entry', filter: true });
     });
   });
 });
