@@ -675,7 +675,7 @@ export default class API {
       // For open authoring, status is based on PR state, not labels
       status = pullRequest && pullRequest.state === 'open' ? 'pending_review' : 'draft';
     } else {
-      const statusLabel = pullRequest.labels.find(l => isCMSLabel(l.name, cmsLabelPrefix));
+      const statusLabel = pullRequest?.labels.find(l => isCMSLabel(l.name, cmsLabelPrefix));
       status = statusLabel ? labelToStatus(statusLabel.name, cmsLabelPrefix) : 'draft';
     }
 

@@ -1,3 +1,10 @@
-export { default as GiteaBackend } from './implementation';
-export { default as API } from './API';
-export { default as AuthenticationPage } from './AuthenticationPage';
+import GiteaBackend from './implementation';
+import API from './API';
+import AuthenticationPage from './AuthenticationPage';
+
+export const DecapCmsBackendGitea = {
+  GiteaBackend,
+  API,
+  AuthenticationPage,
+};
+export { GiteaBackend, API, AuthenticationPage };

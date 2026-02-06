@@ -170,8 +170,8 @@ describe('gitea API', () => {
       const api = new API({ branch: 'master', repo: 'owner/repo' });
 
       const responses = {
-        '/repos/owner/repo/git/trees/master:content%2Fposts': () => {
-          return { tree: [{ path: 'update-post.md', sha: 'old-sha' }] };
+        '/repos/owner/repo/contents/content/posts/update-post.md': () => {
+          return { sha: 'old-sha' };
         },
 
         '/repos/owner/repo/contents': () => ({
@@ -224,11 +224,13 @@ describe('gitea API', () => {
       expect(api.request).toHaveBeenCalledTimes(3);
 
       expect(api.request.mock.calls[0]).toEqual([
-        '/repos/owner/repo/git/trees/master:content%2Fposts',
+        '/repos/owner/repo/contents/content/posts/new-post.md',
+        { params: { ref: 'master' } },
       ]);
 
       expect(api.request.mock.calls[1]).toEqual([
-        '/repos/owner/repo/git/trees/master:content%2Fposts',
+        '/repos/owner/repo/contents/content/posts/update-post.md',
+        { params: { ref: 'master' } },
       ]);
 
       expect(api.request.mock.calls[2]).toEqual([
@@ -262,13 +264,11 @@ describe('gitea API', () => {
       const api = new API({ branch: 'master', repo: 'owner/repo' });
 
       const responses = {
-        '/repos/owner/repo/git/trees/master:content%2Fposts': () => {
-          return {
-            tree: [
-              { path: 'delete-post-1.md', sha: 'old-sha-1' },
-              { path: 'delete-post-2.md', sha: 'old-sha-2' },
-            ],
-          };
+        '/repos/owner/repo/contents/content/posts/delete-post-1.md': () => {
+          return { sha: 'old-sha-1' };
+        },
+        '/repos/owner/repo/contents/content/posts/delete-post-2.md': () => {
+          return { sha: 'old-sha-2' };
         },
 
         '/repos/owner/repo/contents': () => ({
@@ -292,11 +292,13 @@ describe('gitea API', () => {
       expect(api.request).toHaveBeenCalledTimes(3);
 
       expect(api.request.mock.calls[0]).toEqual([
-        '/repos/owner/repo/git/trees/master:content%2Fposts',
+        '/repos/owner/repo/contents/content/posts/delete-post-1.md',
+        { params: { ref: 'master' } },
       ]);
 
       expect(api.request.mock.calls[1]).toEqual([
-        '/repos/owner/repo/git/trees/master:content%2Fposts',
+        '/repos/owner/repo/contents/content/posts/delete-post-2.md',
+        { params: { ref: 'master' } },
       ]);
 
       expect(api.request.mock.calls[2]).toEqual([
