@@ -92,13 +92,10 @@ export default class Gitea implements Implementation {
           'backend.open_authoring is true but publish_mode is not set to editorial_workflow.',
         );
       }
-      this.originRepo = config.backend.repo || '';
-      // Initialize repo to originRepo so authenticate() works before authenticateWithFork()
-      // authenticateWithFork() will update this.repo to the fork repo
-      this.repo = this.originRepo;
-    } else {
-      this.repo = this.originRepo = config.backend.repo || '';
     }
+    // Initialize repo to originRepo even in openAuthoring mode so authenticate() works before
+    // authenticateWithFork(). authenticateWithFork() will update this.repo to the fork repo
+    this.repo = this.originRepo = config.backend.repo || '';
     this.alwaysForkEnabled = config.backend.always_fork || false;
     this.branch = config.backend.branch?.trim() || 'master';
     this.apiRoot = config.backend.api_root || 'https://try.gitea.io/api/v1';
@@ -604,3 +601,4 @@ export default class Gitea implements Implementation {
     return {} as any;
   }
 }
+

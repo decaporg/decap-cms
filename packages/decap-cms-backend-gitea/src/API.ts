@@ -140,7 +140,7 @@ export default class API {
     this.branch = config.branch || 'master';
     this.repo = config.repo || '';
     this.originRepo = config.originRepo || this.repo;
-    this.useOpenAuthoring = config.useOpenAuthoring ? true : false;
+    this.useOpenAuthoring = !!config.useOpenAuthoring;
     this.cmsLabelPrefix = config.cmsLabelPrefix || '';
     this.initialWorkflowStatus = config.initialWorkflowStatus || 'draft';
     this.repoURL = `/repos/${this.repo}`;
@@ -903,7 +903,7 @@ export default class API {
     }
 
     // Persist files to the branch
-    const operations = await this.getChangeFileOperationsForBranch(files, branch);
+    const operations = await this.getChangeFileOperations(files, branch);
     await this.changeFilesOnBranch(operations, options, branch);
 
     // For open authoring, don't create a PR - entries start as branch-only (draft).
@@ -913,43 +913,6 @@ export default class API {
       const status = options.status || this.initialWorkflowStatus;
       await this.setPullRequestStatus(pr, status);
     }
-  }
-
-  async getChangeFileOperationsForBranch(
-    files: { path: string; newPath?: string }[],
-    branch: string,
-  ) {
-    const items: ChangeFileOperation[] = await Promise.all(
-      files.map(async file => {
-        const content = await result(
-          file,
-          'toBase64',
-          partial(this.toBase64, (file as DataFile).raw),
-        );
-        let sha;
-        let operation;
-        let from_path;
-        let path = trimStart(file.path, '/');
-        try {
-          sha = await this.getFileSha(file.path, { branch });
-          operation = FileOperation.UPDATE;
-          from_path = file.newPath && path;
-          path = file.newPath ? trimStart(file.newPath, '/') : path;
-        } catch {
-          sha = undefined;
-          operation = FileOperation.CREATE;
-        }
-
-        return {
-          operation,
-          content,
-          path,
-          from_path,
-          sha,
-        } as ChangeFileOperation;
-      }),
-    );
-    return items;
   }
 
   async changeFilesOnBranch(
