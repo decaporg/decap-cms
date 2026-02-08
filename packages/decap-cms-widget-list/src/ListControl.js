@@ -258,14 +258,14 @@ export default class ListControl extends Component {
   uniqueFieldId = uniqueId(`${this.props.field.get('name')}-field-`);
   /**
    * Old comment:
-   * 
+   *
    * Always update so that each nested widget has the option to update. This is
    * required because ControlHOC provides a default `shouldComponentUpdate`
    * which only updates if the value changes, but every widget must be allowed
    * to override this.
-   * 
+   *
    * New comment:
-   * 
+   *
    * Each Widget is wrapped with EditorControl which already tries to update every time.
    * Is there a specific reason we need to always rerender the list?
    * This seems overkill.
@@ -654,7 +654,10 @@ export default class ListControl extends Component {
     }
   }
 
-  getStableParentIds = memoize((parentIds, forID) => [...parentIds, forID], JSON.stringify /* Fast enough for only ids */);
+  getStableParentIds = memoize(
+    (parentIds, forID) => [...parentIds, forID],
+    JSON.stringify /* Fast enough for only ids */,
+  );
 
   // eslint-disable-next-line react/display-name
   renderItem = (item, index) => {

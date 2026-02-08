@@ -19,20 +19,23 @@ function Shortcode(props) {
   const field = useMemo(() => fromJS(omit(plugin, fieldKeys)), [plugin]);
   const [value, setValue] = useState(fromJS(element.data[dataKey]));
 
-  const handleChange = useCallback((fieldName, value, metadata) => {
-    const path = ReactEditor.findPath(editor, element);
-    const newProperties = {
-      data: {
-        ...element.data,
-        [dataKey]: value.toJS(),
-        metadata,
-      },
-    };
-    Transforms.setNodes(editor, newProperties, {
-      at: path,
-    });
-    setValue(value);
-  }, [editor, element, dataKey]);
+  const handleChange = useCallback(
+    (fieldName, value, metadata) => {
+      const path = ReactEditor.findPath(editor, element);
+      const newProperties = {
+        data: {
+          ...element.data,
+          [dataKey]: value.toJS(),
+          metadata,
+        },
+      };
+      Transforms.setNodes(editor, newProperties, {
+        at: path,
+      });
+      setValue(value);
+    },
+    [editor, element, dataKey],
+  );
 
   function handleFocus() {
     const path = ReactEditor.findPath(editor, element);
