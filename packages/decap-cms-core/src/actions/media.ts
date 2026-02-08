@@ -1,4 +1,5 @@
 import { isAbsolutePath } from 'decap-cms-lib-util';
+import memoize from 'lodash/memoize'
 
 import { createAssetProxy } from '../valueObjects/AssetProxy';
 import { selectMediaFilePath } from '../reducers/entries';
@@ -80,18 +81,22 @@ const emptyAsset = createAssetProxy({
   }),
 });
 
-export function boundGetAsset(
+export const boundGetAsset = memoize((
   dispatch: ThunkDispatch<State, {}, AnyAction>,
   collection: Collection,
   entry: EntryMap,
-) {
+) => {
   function bound(path: string, field: EntryField) {
     const asset = dispatch(getAsset({ collection, entry, path, field }));
     return asset;
   }
 
   return bound;
-}
+}, function resolveCacheKey(_dispatch, collection, entry) {
+  // Generate a unique cache key based on the collection name and entry slug
+  // The dispatch function is not included in the cache key since it is stable and does not change between calls
+  return `${collection?.get('name')}$$${entry?.get('slug')}`;
+});
 
 export function getAsset({ collection, entry, path, field }: GetAssetArgs) {
   return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
