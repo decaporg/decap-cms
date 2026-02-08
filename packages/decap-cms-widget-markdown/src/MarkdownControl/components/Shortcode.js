@@ -1,8 +1,9 @@
 /* eslint-disable react/prop-types */
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { css } from '@emotion/react';
 import { fromJS } from 'immutable';
 import omit from 'lodash/omit';
+import noop from 'lodash/noop';
 import { ReactEditor, useSlate } from 'slate-react';
 import { Range, Transforms } from 'slate';
 
@@ -15,10 +16,10 @@ function Shortcode(props) {
   const plugin = getEditorComponents().get(element.data.shortcode);
   const fieldKeys = ['id', 'fromBlock', 'toBlock', 'toPreview', 'pattern', 'icon'];
 
-  const field = fromJS(omit(plugin, fieldKeys));
+  const field = useMemo(() => fromJS(omit(plugin, fieldKeys)), [plugin]);
   const [value, setValue] = useState(fromJS(element.data[dataKey]));
 
-  function handleChange(fieldName, value, metadata) {
+  const handleChange = useCallback((fieldName, value, metadata) => {
     const path = ReactEditor.findPath(editor, element);
     const newProperties = {
       data: {
@@ -31,7 +32,11 @@ function Shortcode(props) {
       at: path,
     });
     setValue(value);
-  }
+  }, [editor, element, dataKey]);
+
+  useEffect(() => {
+    console.log('editor or element or dataKey changed, updating value');
+  }, [editor, element, dataKey]);
 
   function handleFocus() {
     const path = ReactEditor.findPath(editor, element);
@@ -61,7 +66,7 @@ function Shortcode(props) {
           field={field}
           onChange={handleChange}
           isEditorComponent={true}
-          onValidateObject={() => {}}
+          onValidateObject={noop}
           isNewEditorComponent={element.data.shortcodeNew}
           isSelected={isSelected}
         />
