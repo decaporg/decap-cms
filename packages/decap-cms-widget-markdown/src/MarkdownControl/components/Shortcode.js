@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { css } from '@emotion/react';
 import { fromJS } from 'immutable';
 import omit from 'lodash/omit';
@@ -32,10 +32,6 @@ function Shortcode(props) {
       at: path,
     });
     setValue(value);
-  }, [editor, element, dataKey]);
-
-  useEffect(() => {
-    console.log('editor or element or dataKey changed, updating value');
   }, [editor, element, dataKey]);
 
   function handleFocus() {
