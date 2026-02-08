@@ -178,29 +178,6 @@ class EditorControl extends React.Component {
     PropTypes.checkPropTypes(EditorControl.propTypes, this.props, 'prop', 'EditorControl');
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    const valuesThatWhereUpdated = []
-    for (const key in nextProps) {
-      if (this.props[key] !== nextProps[key]) {
-        valuesThatWhereUpdated.push(key)
-      }
-    }
-
-    const stateValuesThatWhereUpdated = []
-    for (const key in nextState) {
-      if (this.state[key] !== nextState[key]) {
-        stateValuesThatWhereUpdated.push(key)
-      }
-    }
-
-    console.log('EditorControl shouldComponentUpdate', {
-      valuesThatWhereUpdated,
-      stateValuesThatWhereUpdated,
-    })
-
-    return true;
-  }
-
   isAncestorOfFieldError = () => {
     const { fieldsErrors } = this.props;
 
