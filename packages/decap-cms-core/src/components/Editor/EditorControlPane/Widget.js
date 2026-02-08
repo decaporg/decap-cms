@@ -67,7 +67,11 @@ export default class Widget extends Component {
     onValidateObject: PropTypes.func,
     isEditorComponent: PropTypes.bool,
     isNewEditorComponent: PropTypes.bool,
+    /**
+     * @deprecated Every update creates a new entry, passing a live value down is too expensive. Use the getEntry callback instead or get the value from the store directly in the widget via `useSelector` or `connect`. See
+     */
     entry: ImmutablePropTypes.map.isRequired,
+    getEntry: PropTypes.func.isRequired,
     isDisabled: PropTypes.bool,
     isFieldDuplicate: PropTypes.func,
     isFieldHidden: PropTypes.func,
@@ -281,7 +285,8 @@ export default class Widget extends Component {
   render() {
     const {
       controlComponent,
-      entry,
+      entry, // TODO: Remove this prop in favor of getEntry
+      getEntry,
       collection,
       config,
       field,
@@ -329,7 +334,8 @@ export default class Widget extends Component {
     } = this.props;
 
     return React.createElement(controlComponent, {
-      entry,
+      entry, // TODO: Remove this deprecated prop in favor of getEntry
+      getEntry,
       collection,
       config,
       field,
