@@ -836,8 +836,6 @@ export default class ListControl extends Component {
   }
 
   render() {
-    console.log('Rerendering ListControl');
-
     if (this.getValueType() !== null) {
       return this.renderListControl();
     } else {
