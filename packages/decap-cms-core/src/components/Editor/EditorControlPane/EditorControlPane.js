@@ -195,23 +195,22 @@ export default class ControlPane extends React.Component {
 
   onChange = (field, newValue, newMetadata) => {
     this.props.onChange(field, newValue, newMetadata, this.getI18n());
-  }
+  };
 
   isFieldDuplicate = field => {
     const locale = this.state.selectedLocale;
     const { defaultLocale } = getI18nInfo(this.props.collection);
     return isFieldDuplicate(field, locale, defaultLocale);
-  }
+  };
 
   isFieldHidden = field => {
     const locale = this.state.selectedLocale;
     const { defaultLocale } = getI18nInfo(this.props.collection);
     return isFieldHidden(field, locale, defaultLocale);
-  }
+  };
 
   render() {
-    const { collection, entry, fields, fieldsMetaData, fieldsErrors, onValidate, t } =
-      this.props;
+    const { collection, entry, fields, fieldsMetaData, fieldsErrors, onValidate, t } = this.props;
 
     if (!collection || !fields) {
       return null;

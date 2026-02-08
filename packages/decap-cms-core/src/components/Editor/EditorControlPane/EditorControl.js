@@ -190,14 +190,14 @@ class EditorControl extends React.Component {
   };
 
   getEntry = () => {
-     // This will have the latest value even if the component doest rerender
+    // This will have the latest value even if the component doest rerender
     return this.props.entry;
-  }
+  };
 
   onChange = (newValue, newMetadata) => {
     this.props.onChange(this.props.field, newValue, newMetadata);
     this.props.clearFieldErrors(this.uniqueFieldId); // We are deleting errors for this field only.
-  }
+  };
 
   render() {
     const {
@@ -407,7 +407,7 @@ const stable = {
   },
 
   // Will return the same function instance for the same collection.
-  validateMetaField: memoize((collection) => {
+  validateMetaField: memoize(collection => {
     const state = store.getState();
     return (field, value, t) => validateMetaField(state, collection, field, value, t);
   }),
@@ -420,26 +420,26 @@ const stable = {
   getBoundedAsset(collection, entry) {
     const dispatch = store.dispatch;
     return boundGetAsset(dispatch, collection, entry);
-  }
-}
+  },
+};
 
 function mapStateToProps(state) {
-    const { collections, entryDraft } = state;
-    const collection = collections.get(entryDraft.getIn(['entry', 'collection']));
-    const isLoadingAsset = selectIsLoadingAsset(state.medias);
+  const { collections, entryDraft } = state;
+  const collection = collections.get(entryDraft.getIn(['entry', 'collection']));
+  const isLoadingAsset = selectIsLoadingAsset(state.medias);
 
-    return {
-      mediaPaths: state.mediaLibrary.get('controlMedia'),
-      isFetching: state.search.isFetching,
-      queryHits: state.search.queryHits,
-      config: state.config,
-      collection,
-      isLoadingAsset,
-      getEntry: stable.getEntry,
-      loadEntry: stable.loadEntry,
-      validateMetaField: stable.validateMetaField(collection),
-    };
-  }
+  return {
+    mediaPaths: state.mediaLibrary.get('controlMedia'),
+    isFetching: state.search.isFetching,
+    queryHits: state.search.queryHits,
+    config: state.config,
+    collection,
+    isLoadingAsset,
+    getEntry: stable.getEntry,
+    loadEntry: stable.loadEntry,
+    validateMetaField: stable.validateMetaField(collection),
+  };
+}
 
 function mapDispatchToProps(dispatch) {
   const creators = bindActionCreators(
