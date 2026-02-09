@@ -245,6 +245,7 @@ class EditorControl extends React.Component {
         {({ css, cx }) => (
           <ControlContainer
             className={className}
+            aria-label={`${widgetName} field`}
             css={css`
               ${isHidden && styleStrings.hidden};
             `}
