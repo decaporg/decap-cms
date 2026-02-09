@@ -189,11 +189,6 @@ class EditorControl extends React.Component {
     return false;
   };
 
-  getEntry = () => {
-    // This will have the latest value even if the component doest rerender
-    return this.props.entry;
-  };
-
   onChange = (newValue, newMetadata) => {
     this.props.onChange(this.props.field, newValue, newMetadata);
     this.props.clearFieldErrors(this.uniqueFieldId); // We are deleting errors for this field only.
@@ -345,7 +340,7 @@ class EditorControl extends React.Component {
               editorControl={ConnectedEditorControl}
               query={query}
               loadEntry={loadEntry}
-              getEntry={this.getEntry}
+              getEntry={getEntry}
               queryHits={queryHits[this.uniqueFieldId] || []}
               clearSearch={clearSearch}
               clearFieldErrors={clearFieldErrors}
@@ -408,8 +403,10 @@ const stable = {
 
   // Will return the same function instance for the same collection.
   validateMetaField: memoize(collection => {
-    const state = store.getState();
-    return (field, value, t) => validateMetaField(state, collection, field, value, t);
+    return (field, value, t) => {
+      const state = store.getState();
+      validateMetaField(state, collection, field, value, t);
+    };
   }),
 
   getEntry() {
@@ -467,7 +464,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     ...stateProps,
     ...dispatchProps,
     ...ownProps,
-    boundGetAsset: dispatchProps.boundGetAsset(stateProps.collection, stateProps.entry),
+    boundGetAsset: dispatchProps.boundGetAsset(stateProps.collection, stateProps.getEntry()),
   };
 }
 
