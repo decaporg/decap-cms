@@ -656,7 +656,7 @@ export default class ListControl extends Component {
 
   getStableParentIds = memoize(
     (parentIds, forID) => [...parentIds, forID],
-    JSON.stringify /* Fast enough for only ids */,
+    (parentIds, forID) => JSON.stringify({ parentIds, forID }),
   );
 
   // eslint-disable-next-line react/display-name
