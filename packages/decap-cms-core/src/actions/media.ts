@@ -89,13 +89,10 @@ export const boundGetAsset = memoize(
     }
 
     return bound;
-  },
-  function resolveCacheKey(_dispatch, collection, entry) {
-    // Generate a unique cache key based on the collection name and entry slug
-    // The dispatch function is not included in the cache key since it is stable and does not change between calls
-    return `${collection?.get('name')}$$${entry?.get('slug')}`;
-  },
+  }, (_, entry) => entry
 );
+
+boundGetAsset.cache = new WeakMap();
 
 export function getAsset({ collection, entry, path, field }: GetAssetArgs) {
   return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
