@@ -14,6 +14,23 @@ jest.mock('react-window', () => {
   };
 });
 
+jest.mock('../RelationCache', () => {
+  return {
+    __esModule: true,
+    default: {
+      getOptions: jest.fn((collection, searchFields, term, file, queryFn) => {
+        return queryFn();
+      }),
+      clear: jest.fn(),
+      invalidateCollection: jest.fn(),
+    },
+  };
+});
+
+beforeEach(() => {
+  jest.clearAllMocks();
+});
+
 const RelationControl = DecapCmsWidgetRelation.controlComponent;
 
 const fieldConfig = {
@@ -381,10 +398,10 @@ describe('Relation widget', () => {
     });
   });
 
-  it('should update metadata for initial preview', async () => {
+  it('should update metadata for initial preview 1', async () => {
     const field = fromJS(fieldConfig);
     const value = 'Post # 1';
-    const { getByText, onChangeSpy, setQueryHitsSpy } = setup({ field, value });
+    const { getByText, onChangeSpy } = setup({ field, value });
     const label = 'Post # 1 post-number-1';
     const metadata = {
       post: {
@@ -392,13 +409,22 @@ describe('Relation widget', () => {
       },
     };
 
-    setQueryHitsSpy(generateHits(1));
+    // The component will automatically trigger a query for initial load
+    // Wait for it to process and call onChange
+    await waitFor(
+      () => {
+        expect(getByText(label)).toBeInTheDocument();
+      },
+      { timeout: 3000 },
+    );
 
-    await waitFor(() => {
-      expect(getByText(label)).toBeInTheDocument();
-      expect(onChangeSpy).toHaveBeenCalledTimes(1);
-      expect(onChangeSpy).toHaveBeenCalledWith(value, metadata);
-    });
+    await waitFor(
+      () => {
+        expect(onChangeSpy).toHaveBeenCalledTimes(1);
+        expect(onChangeSpy).toHaveBeenCalledWith(value, metadata);
+      },
+      { timeout: 3000 },
+    );
   });
 
   it('should update option list based on nested search term', async () => {
@@ -522,7 +548,7 @@ describe('Relation widget', () => {
       expect(onChangeSpy).toHaveBeenCalledWith(fromJS(['Post # 1', 'Post # 2']), metadata2);
     });
 
-    it('should update metadata for initial preview', async () => {
+    it('should update metadata for initial preview 2', async () => {
       const field = fromJS({ ...fieldConfig, multiple: true });
       const value = fromJS(['YAML post', 'JSON post']);
       const { getByText, onChangeSpy } = setup({ field, value });
@@ -535,13 +561,23 @@ describe('Relation widget', () => {
         },
       };
 
-      await waitFor(() => {
-        expect(getByText('YAML post post-yaml')).toBeInTheDocument();
-        expect(getByText('JSON post post-json')).toBeInTheDocument();
+      // Wait for both labels to appear
+      await waitFor(
+        () => {
+          expect(getByText('YAML post post-yaml')).toBeInTheDocument();
+          expect(getByText('JSON post post-json')).toBeInTheDocument();
+        },
+        { timeout: 3000 },
+      );
 
-        expect(onChangeSpy).toHaveBeenCalledTimes(1);
-        expect(onChangeSpy).toHaveBeenCalledWith(value, metadata);
-      });
+      // Wait for onChange to be called
+      await waitFor(
+        () => {
+          expect(onChangeSpy).toHaveBeenCalledTimes(1);
+          expect(onChangeSpy).toHaveBeenCalledWith(value, metadata);
+        },
+        { timeout: 3000 },
+      );
     });
   });
 

@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.3.0](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-widgets@3.2.1...decap-cms-lib-widgets@3.3.0) (2025-12-18)
+
+### Bug Fixes
+
+- slugFormatter populates date template variables using date from entry if it exists ([#7633](https://github.com/decaporg/decap-cms/issues/7633)) ([b5a7de0](https://github.com/decaporg/decap-cms/commit/b5a7de02c8fa47faab3a7ef2389439d7552c68ac))
+
+## [3.2.1](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-widgets@3.2.0...decap-cms-lib-widgets@3.2.1) (2025-07-10)
+
+**Note:** Version bump only for package decap-cms-lib-widgets
+
+# [3.2.0](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-widgets@3.1.0...decap-cms-lib-widgets@3.2.0) (2025-06-26)
+
+**Note:** Version bump only for package decap-cms-lib-widgets
+
 # [3.1.0](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-widgets@3.0.2...decap-cms-lib-widgets@3.1.0) (2024-11-12)
 
 ### Bug Fixes

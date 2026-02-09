@@ -1,5 +1,5 @@
 import { stripIndent } from 'common-tags';
-import yaml from 'js-yaml';
+import { stringify } from 'yaml';
 
 import {
   loadConfig,
@@ -480,7 +480,7 @@ describe('config', () => {
       ).toEqual({
         collections: [
           {
-            sortable_fields: ['title'],
+            sortable_fields: [{ field: 'title', default_sort: undefined }],
             folder: 'src',
             type: 'folder_based_collection',
             view_filters: [],
@@ -934,7 +934,7 @@ describe('config', () => {
 
       global.fetch.mockResolvedValue({
         status: 200,
-        text: () => Promise.resolve(yaml.dump({ backend: { repo: 'test-repo' } })),
+        text: () => Promise.resolve(stringify({ backend: { repo: 'test-repo' } })),
         headers: new Headers(),
       });
       await loadConfig()(dispatch);
@@ -962,7 +962,7 @@ describe('config', () => {
       document.querySelector.mockReturnValue({ type: 'text/yaml', href: 'custom-config.yml' });
       global.fetch.mockResolvedValue({
         status: 200,
-        text: () => Promise.resolve(yaml.dump({ backend: { repo: 'github' } })),
+        text: () => Promise.resolve(stringify({ backend: { repo: 'github' } })),
         headers: new Headers(),
       });
       await loadConfig()(dispatch);
