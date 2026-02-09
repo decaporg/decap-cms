@@ -61,6 +61,8 @@ export default class Gitea implements Implementation {
   openAuthoringEnabled: boolean;
   useOpenAuthoring?: boolean;
   alwaysForkEnabled: boolean;
+  cmsLabelPrefix: string;
+  initialWorkflowStatus: string;
   _currentUserPromise?: Promise<GiteaUser>;
   _userIsOriginMaintainerPromises?: {
     [key: string]: Promise<boolean>;
@@ -90,15 +92,17 @@ export default class Gitea implements Implementation {
           'backend.open_authoring is true but publish_mode is not set to editorial_workflow.',
         );
       }
-      this.originRepo = config.backend.repo || '';
-    } else {
-      this.repo = this.originRepo = config.backend.repo || '';
     }
+    // Initialize repo to originRepo even in openAuthoring mode so authenticate() works before
+    // authenticateWithFork(). authenticateWithFork() will update this.repo to the fork repo
+    this.repo = this.originRepo = config.backend.repo || '';
     this.alwaysForkEnabled = config.backend.always_fork || false;
     this.branch = config.backend.branch?.trim() || 'master';
     this.apiRoot = config.backend.api_root || 'https://try.gitea.io/api/v1';
     this.token = '';
     this.mediaFolder = config.media_folder;
+    this.cmsLabelPrefix = config.backend.cms_label_prefix || '';
+    this.initialWorkflowStatus = 'draft';
     this.lock = asyncLock();
   }
 
@@ -215,6 +219,8 @@ export default class Gitea implements Implementation {
         originRepo: this.originRepo,
         apiRoot: this.apiRoot,
         useOpenAuthoring: this.useOpenAuthoring,
+        cmsLabelPrefix: this.cmsLabelPrefix,
+        initialWorkflowStatus: this.initialWorkflowStatus,
       });
     }
 
@@ -247,6 +253,8 @@ export default class Gitea implements Implementation {
       originRepo: this.originRepo,
       apiRoot: this.apiRoot,
       useOpenAuthoring: this.useOpenAuthoring,
+      cmsLabelPrefix: this.cmsLabelPrefix,
+      initialWorkflowStatus: this.initialWorkflowStatus,
     });
     const user = await this.api!.user();
     const isCollab = await this.api!.hasWriteAccess().catch(error => {
@@ -432,10 +440,8 @@ export default class Gitea implements Implementation {
         if (options.useWorkflow) {
           const slug = entry.dataFiles[0].slug;
           const collection = options.collectionName as string;
-          const files = [
-            ...entry.dataFiles.map(f => ({ path: f.path, newPath: f.newPath })),
-            ...entry.assets.map(a => ({ path: a.path })),
-          ];
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const files: any[] = [...entry.dataFiles, ...entry.assets];
           return this.api!.editorialWorkflowGit(files, slug, collection, options);
         }
         return this.api!.persistFiles(entry.dataFiles, entry.assets, options);
@@ -595,3 +601,4 @@ export default class Gitea implements Implementation {
     return {} as any;
   }
 }
+
