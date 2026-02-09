@@ -1,4 +1,4 @@
-import minimatch from 'minimatch';
+import { minimatch } from 'minimatch';
 import { unsentRequest } from 'decap-cms-lib-util';
 
 import type { ApiRequest, PointerFile } from 'decap-cms-lib-util';
@@ -47,7 +47,7 @@ export class GitLfsClient {
     public rootURL: string,
     public patterns: string[],
     private makeAuthorizedRequest: MakeAuthorizedRequest,
-  ) {}
+  ) { }
 
   matchPath(path: string) {
     return this.patterns.some(pattern => minimatch(path, pattern, { matchBase: true }));
