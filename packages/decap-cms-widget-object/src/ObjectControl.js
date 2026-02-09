@@ -96,7 +96,7 @@ export default class ObjectControl extends React.Component {
 
   getStableParentIds = memoize(
     (parentIds, forID) => [...parentIds, forID],
-    JSON.stringify /* Fast enough for only ids */,
+    (parentIds, forID) => JSON.stringify([parentIds, forID]) /* Fast enough for only ids */,
   );
 
   controlFor(field, key) {
