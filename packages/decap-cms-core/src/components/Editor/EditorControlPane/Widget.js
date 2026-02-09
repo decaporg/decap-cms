@@ -68,7 +68,7 @@ export default class Widget extends Component {
     isEditorComponent: PropTypes.bool,
     isNewEditorComponent: PropTypes.bool,
     /**
-     * @deprecated Every update creates a new entry, passing a live value down is too expensive. Use the getEntry callback instead or get the value from the store directly in the widget via `useSelector` or `connect`. See
+     * @deprecated Every update creates a new entry, passing a live value down is too expensive. Use the getEntry callback instead or get the value from the store directly in the widget via `useSelector` or `connect`.
      */
     entry: ImmutablePropTypes.map.isRequired,
     getEntry: PropTypes.func.isRequired,
