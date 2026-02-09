@@ -126,7 +126,7 @@ describe('sanitizeSlug', () => {
     );
   });
 
-  it('preserves slashes if when requested', () => {
+  it('preserves slashes when requested', () => {
     const input = '/this-is-a/nested/page';
 
     expect(sanitizeSlug(input, slugConfig, false)).toEqual('this-is-a-nested-page');
