@@ -217,7 +217,6 @@ export default class ListControl extends Component {
       listCollapsed,
       itemsCollapsed,
       value: this.valueToString(value),
-      valueReference: value,
       keys,
     };
   }
@@ -655,8 +654,8 @@ export default class ListControl extends Component {
   }
 
   getStableParentIds = memoize(
-    (parentIds, forID) => [...parentIds, forID],
-    (parentIds, forID) => JSON.stringify({ parentIds, forID }),
+    (parentIds, forID, key) => [...parentIds, forID, key],
+    (parentIds, forID, key) => JSON.stringify([ ...parentIds, forID, key ]),
   );
 
   // eslint-disable-next-line react/display-name
@@ -743,7 +742,7 @@ export default class ListControl extends Component {
               collapsed={collapsed}
               data-testid={`object-control-${key}`}
               hasError={hasError}
-              parentIds={this.getStableParentIds(parentIds, forID)}
+              parentIds={this.getStableParentIds(parentIds, forID, key)}
             />
           )}
         </ClassNames>
