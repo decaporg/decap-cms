@@ -47,7 +47,7 @@ export class GitLfsClient {
     public rootURL: string,
     public patterns: string[],
     private makeAuthorizedRequest: MakeAuthorizedRequest,
-  ) { }
+  ) {}
 
   matchPath(path: string) {
     return this.patterns.some(pattern => minimatch(path, pattern, { matchBase: true }));
