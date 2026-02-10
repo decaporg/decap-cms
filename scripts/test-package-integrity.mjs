@@ -92,6 +92,7 @@ function testPackagePack(packageName) {
     cwd: packageDir,
     encoding: 'utf8',
     stdio: 'pipe',
+    shell: true,
   });
 
   if (result.status !== 0) {
