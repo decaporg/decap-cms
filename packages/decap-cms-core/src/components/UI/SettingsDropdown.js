@@ -81,7 +81,7 @@ function SettingsDropdown({ displayUrl, isTestRepo, imageUrl, onLogoutClick, t }
         dropdownWidth="100px"
         dropdownPosition="right"
         renderButton={() => (
-          <AvatarDropdownButton aria-label="account options dropdown">
+          <AvatarDropdownButton aria-label={t('ui.settingsDropdown.account')}>
             <Avatar imageUrl={imageUrl} />
           </AvatarDropdownButton>
         )}

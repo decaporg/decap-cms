@@ -113,12 +113,20 @@ class ObjectWidgetTopBar extends React.Component {
   }
 
   render() {
-    const { onCollapseToggle, collapsed, heading = null } = this.props;
+    const { onCollapseToggle, collapsed, heading = null, t } = this.props;
 
     return (
       <TopBarContainer>
         <ExpandButtonContainer hasHeading={!!heading}>
-          <ExpandButton onClick={onCollapseToggle} data-testid="expand-button" aria-label={collapsed ? 'expand' : 'collapse'}>
+          <ExpandButton
+            onClick={onCollapseToggle}
+            data-testid="expand-button"
+            aria-label={
+              collapsed
+                ? t('editor.editorWidgets.object.expand')
+                : t('editor.editorWidgets.object.collapse')
+            }
+          >
             <Icon type="chevron" direction={collapsed ? 'right' : 'down'} size="small" />
           </ExpandButton>
           {heading}
