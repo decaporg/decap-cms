@@ -3,7 +3,7 @@ import { APIError } from 'decap-cms-lib-util';
 
 import type { Config as GitHubConfig, Diff } from 'decap-cms-backend-github/src/API';
 import type { FetchError } from 'decap-cms-lib-util';
-import type { Octokit } from '@octokit/rest';
+import type { Endpoints } from '@octokit/types';
 
 type Config = Omit<GitHubConfig, 'getUser'> & {
   apiRoot: string;
@@ -123,7 +123,11 @@ export default class API extends GithubAPI {
     return (url: string) => url.replace(/^(?:[a-z]+:\/\/.+?\/.+?\/.+?\/)/, `${this.apiRoot}/`);
   }
 
-  async diffFromFile(file: Octokit.ReposCompareCommitsResponseFilesItem): Promise<Diff> {
+  async diffFromFile(
+    file: NonNullable<
+      Endpoints['GET /repos/{owner}/{repo}/compare/{base}...{head}']['response']['data']['files']
+    >[0],
+  ): Promise<Diff> {
     const diff = await super.diffFromFile(file);
     return {
       ...diff,
