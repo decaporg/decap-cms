@@ -1,7 +1,7 @@
 {
   "name": "decap-cms-core",
   "description": "Decap CMS core application, see decap-cms package for the main distribution.",
-  "version": "3.9.0",
+  "version": "3.10.0",
   "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-core",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
   "module": "dist/esm/index.js",
@@ -28,7 +28,6 @@
     "@reduxjs/toolkit": "^1.9.1",
     "@vercel/stega": "^0.1.2",
     "buffer": "^6.0.3",
-    "clean-stack": "^5.2.0",
     "copy-text-to-clipboard": "^3.0.0",
     "dayjs": "^1.11.10",
     "deepmerge": "^4.2.2",

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.10.0](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.9.0...decap-cms-core@3.10.0) (2025-12-18)
+
+### Bug Fixes
+
+- **lib-util:** treat root-relative media paths as absolute ([#7650](https://github.com/decaporg/decap-cms/issues/7650)) ([5d0e417](https://github.com/decaporg/decap-cms/commit/5d0e4175f042f43b2e63cc57b631d6b684fea0fc))
+- slugFormatter populates date template variables using date from entry if it exists ([#7633](https://github.com/decaporg/decap-cms/issues/7633)) ([b5a7de0](https://github.com/decaporg/decap-cms/commit/b5a7de02c8fa47faab3a7ef2389439d7552c68ac))
+
+### Features
+
+- add default_sort option to sortable fields ([#7665](https://github.com/decaporg/decap-cms/issues/7665)) ([5e782ee](https://github.com/decaporg/decap-cms/commit/5e782ee33ab7b7f144fd34ed817b2a93caa4f942))
+
 # [3.9.0](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.8.1...decap-cms-core@3.9.0) (2025-09-30)
 
 ### Bug Fixes

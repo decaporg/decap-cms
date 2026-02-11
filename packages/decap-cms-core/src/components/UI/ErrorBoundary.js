@@ -7,7 +7,6 @@ import truncate from 'lodash/truncate';
 import copyToClipboard from 'copy-text-to-clipboard';
 import { localForage } from 'decap-cms-lib-util';
 import { buttons, colors } from 'decap-cms-ui-default';
-import cleanStack from 'clean-stack';
 
 const ISSUE_URL = 'https://github.com/decaporg/decap-cms/issues/new?';
 
@@ -145,7 +144,7 @@ export class ErrorBoundary extends React.Component {
     console.error(error);
     return {
       hasError: true,
-      errorMessage: cleanStack(error.stack, { basePath: window.location.origin || '' }),
+      errorMessage: error.stack || error.toString(),
       errorTitle: error.toString(),
     };
   }

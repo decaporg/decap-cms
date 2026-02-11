@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.5.1](https://github.com/decaporg/decap-cms/compare/decap-server@3.5.0...decap-server@3.5.1) (2026-01-08)
+
+### Bug Fixes
+
+- improve path validation ([#7696](https://github.com/decaporg/decap-cms/issues/7696)) ([1fdf962](https://github.com/decaporg/decap-cms/commit/1fdf96212954e27a9f589765c128dbc9ad39a646))
+
+# [3.5.0](https://github.com/decaporg/decap-cms/compare/decap-server@3.4.0...decap-server@3.5.0) (2025-12-18)
+
+**Note:** Version bump only for package decap-server
+
 # [3.4.0](https://github.com/decaporg/decap-cms/compare/decap-server@3.3.1...decap-server@3.4.0) (2025-11-04)
 
 ### Features
