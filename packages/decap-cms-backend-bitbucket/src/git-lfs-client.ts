@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-named-as-default
 import minimatch from 'minimatch';
 import { unsentRequest } from 'decap-cms-lib-util';
 
