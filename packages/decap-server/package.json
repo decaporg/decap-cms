@@ -13,12 +13,12 @@
   "sideEffects": false,
   "scripts": {
     "build": "webpack",
-    "prestart": "yarn build",
+    "prestart": "npm run build",
     "start": "node dist/index.js",
     "develop": "nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' --exec 'ts-node' --files src/index.ts",
     "test": "jest",
-    "test:watch": "yarn test --watch",
-    "test:coverage": "yarn test --coverage"
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "dependencies": {
     "@hapi/joi": "^17.0.2",
