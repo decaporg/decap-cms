@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.5.0](https://github.com/decaporg/decap-cms/compare/decap-cms-locales@3.4.0...decap-cms-locales@3.5.0) (2025-11-04)
+
+### Features
+
+- implement strikethrough functionality to markdown editor ([#7625](https://github.com/decaporg/decap-cms/issues/7625)) ([0c7d327](https://github.com/decaporg/decap-cms/commit/0c7d327341f785940da4fa88e5c2ed755215f010))
+
 # [3.4.0](https://github.com/decaporg/decap-cms/compare/decap-cms-locales@3.3.0...decap-cms-locales@3.4.0) (2025-06-26)
 
 ### Features
