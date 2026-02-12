@@ -125,7 +125,13 @@ export function sanitizeSlug(str: string, options?: CmsSlug, preserveSlashes?: b
   const sanitizedSlug = flow([
     ...(stripDiacritics ? [diacritics.remove] : []),
     partialRight(sanitizeURI, { replacement, encoding, preserveSlashes }),
-    preserveSlashes ? identity : partialRight(sanitizeFilename, { replacement }),
+    preserveSlashes
+      ? (slug: string) =>
+          slug
+            .split('/')
+            .map(part => sanitizeFilename(part, { replacement }))
+            .join('/')
+      : partialRight(sanitizeFilename, { replacement }),
   ])(str);
 
   // Remove any doubled or leading/trailing replacement characters (that were added in the sanitizers).
