@@ -6,7 +6,6 @@ import isString from 'lodash/isString';
 import escapeRegExp from 'lodash/escapeRegExp';
 import flow from 'lodash/flow';
 import partialRight from 'lodash/partialRight';
-import identity from 'lodash/identity';
 
 import type { CmsSlug } from '../types/redux';
 
