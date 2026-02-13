@@ -1,3 +1,4 @@
+import React from 'react';
 import { stripIndent } from 'common-tags';
 import trimStart from 'lodash/trimStart';
 import semaphore from 'semaphore';
@@ -15,6 +16,9 @@ import {
   getMediaDisplayURL,
   runWithLock,
   unsentRequest,
+  unpublishedEntries,
+  contentKeyFromBranch,
+  branchFromContentKey,
 } from 'decap-cms-lib-util';
 
 import API, { API_NAME } from './API';
@@ -33,7 +37,7 @@ import type {
   User,
 } from 'decap-cms-lib-util';
 import type { Semaphore } from 'semaphore';
-import type { GiteaUser } from './types';
+import type { ForgejoUser } from './types';
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
 
@@ -41,13 +45,14 @@ type ApiFile = { id: string; type: string; name: string; path: string; size: num
 
 const { fetchWithTimeout: fetch } = unsentRequest;
 
-export default class Gitea implements Implementation {
+export default class Forgejo implements Implementation {
   lock: AsyncLock;
   api: API | null;
   options: {
     proxied: boolean;
     API: API | null;
     useWorkflow?: boolean;
+    initialWorkflowStatus: string;
   };
   originRepo: string;
   repo?: string;
@@ -55,7 +60,12 @@ export default class Gitea implements Implementation {
   apiRoot: string;
   mediaFolder?: string;
   token: string | null;
-  _currentUserPromise?: Promise<GiteaUser>;
+  openAuthoringEnabled: boolean;
+  useOpenAuthoring?: boolean;
+  alwaysForkEnabled: boolean;
+  cmsLabelPrefix: string;
+  initialWorkflowStatus: string;
+  _currentUserPromise?: Promise<ForgejoUser>;
   _userIsOriginMaintainerPromises?: {
     [key: string]: Promise<boolean>;
   };
@@ -66,6 +76,7 @@ export default class Gitea implements Implementation {
       proxied: false,
       API: null,
       useWorkflow: false,
+      initialWorkflowStatus: '',
       ...options,
     };
 
@@ -73,19 +84,29 @@ export default class Gitea implements Implementation {
       !this.options.proxied &&
       (config.backend.repo === null || config.backend.repo === undefined)
     ) {
-      throw new Error('The Gitea backend needs a "repo" in the backend configuration.');
-    }
-
-    if (this.options.useWorkflow) {
-      throw new Error('The Gitea backend does not support editorial workflow.');
+      throw new Error('The Forgejo backend needs a "repo" in the backend configuration.');
     }
 
     this.api = this.options.API || null;
-    this.repo = this.originRepo = config.backend.repo || '';
+    this.openAuthoringEnabled = config.backend.open_authoring || false;
+    if (this.openAuthoringEnabled) {
+      if (!this.options.useWorkflow) {
+        throw new Error(
+          'backend.open_authoring is true but publish_mode is not set to editorial_workflow.',
+        );
+      }
+      // In open authoring mode, defer setting this.repo until after fork selection
+      this.originRepo = config.backend.repo || '';
+    } else {
+      this.repo = this.originRepo = config.backend.repo || '';
+    }
+    this.alwaysForkEnabled = config.backend.always_fork || false;
     this.branch = config.backend.branch?.trim() || 'master';
-    this.apiRoot = config.backend.api_root || 'https://try.gitea.io/api/v1';
+    this.apiRoot = config.backend.api_root || 'https://v14.next.forgejo.org/api/v1';
     this.token = '';
     this.mediaFolder = config.media_folder;
+    this.cmsLabelPrefix = config.backend.cms_label_prefix || '';
+    this.initialWorkflowStatus = this.options.initialWorkflowStatus || 'draft';
     this.lock = asyncLock();
   }
 
@@ -99,7 +120,7 @@ export default class Gitea implements Implementation {
         ?.user()
         .then(user => !!user)
         .catch(e => {
-          console.warn('[StaticCMS] Failed getting Gitea user', e);
+          console.warn('[StaticCMS] Failed getting Forgejo user', e);
           return false;
         })) || false;
 
@@ -107,11 +128,11 @@ export default class Gitea implements Implementation {
   }
 
   authComponent() {
-    return AuthenticationPage;
-  }
-
-  restoreUser(user: User) {
-    return this.authenticate(user);
+    const wrappedAuthenticationPage = (props: Record<string, unknown>) => (
+      <AuthenticationPage {...props} backend={this} />
+    );
+    wrappedAuthenticationPage.displayName = 'AuthenticationPage';
+    return wrappedAuthenticationPage;
   }
 
   async currentUser({ token }: { token: string }) {
@@ -149,8 +170,120 @@ export default class Gitea implements Implementation {
     return this._userIsOriginMaintainerPromises[username];
   }
 
+  async pollUntilForkExists({ repo, token }: { repo: string; token: string }) {
+    const initialPollDelay = 250; // milliseconds
+    const maxPollDelay = 2000; // milliseconds
+    const maxWaitMs = 60000; // overall timeout in milliseconds
+    const startTime = Date.now();
+
+    let pollDelay = initialPollDelay;
+    let repoExists = false;
+
+    while (!repoExists && Date.now() - startTime < maxWaitMs) {
+      const response = await fetch(`${this.apiRoot}${repo}`, {
+        headers: { Authorization: `token ${token}` },
+      });
+
+      if (response.ok) {
+        repoExists = true;
+      } else if (response.status === 404) {
+        repoExists = false;
+      } else {
+        // For non-404, non-OK responses, fail fast instead of looping indefinitely.
+        throw new Error(
+          `Error while checking for fork existence: ${response.status} ${response.statusText}`,
+        );
+      }
+
+      // wait between polls if the repo does not yet exist
+      if (!repoExists) {
+        await new Promise(resolve => setTimeout(resolve, pollDelay));
+        // simple backoff up to a maximum delay
+        pollDelay = Math.min(pollDelay * 2, maxPollDelay);
+      }
+    }
+
+    if (!repoExists) {
+      throw new Error('Timed out waiting for fork to be created.');
+    }
+  }
+
+  async authenticateWithFork({
+    userData,
+    getPermissionToFork,
+  }: {
+    userData: User;
+    getPermissionToFork: () => Promise<void> | void;
+  }) {
+    if (!this.openAuthoringEnabled) {
+      throw new Error('Cannot authenticate with fork; Open Authoring is turned off.');
+    }
+    const token = userData.token as string;
+
+    // Clear cached user data when token changes to prevent stale data across logins
+    this._currentUserPromise = undefined;
+    this._userIsOriginMaintainerPromises = {};
+
+    // Origin maintainers should be able to use the CMS normally. If alwaysFork
+    // is enabled we always fork (and avoid the origin maintainer check)
+    if (!this.alwaysForkEnabled && (await this.userIsOriginMaintainer({ token }))) {
+      this.repo = this.originRepo;
+      this.useOpenAuthoring = false;
+      return Promise.resolve();
+    }
+
+    // If a fork exists merge it with upstream
+    // otherwise create a new fork.
+    const currentUser = await this.currentUser({ token });
+    const repoName = this.originRepo.split('/')[1];
+    this.repo = `${currentUser.login}/${repoName}`;
+    this.useOpenAuthoring = true;
+
+    // Initialize or update API for fork operations
+    // Always recreate to ensure token and repo are up to date (unless a mock was injected for testing)
+    if (!this.options.API) {
+      const apiCtor = API;
+      this.api = new apiCtor({
+        token,
+        branch: this.branch,
+        repo: this.repo,
+        originRepo: this.originRepo,
+        apiRoot: this.apiRoot,
+        useOpenAuthoring: this.useOpenAuthoring,
+        cmsLabelPrefix: this.cmsLabelPrefix,
+        initialWorkflowStatus: this.initialWorkflowStatus,
+      });
+    }
+
+    if (await this.api!.forkExists()) {
+      await this.api!.mergeUpstream();
+      return Promise.resolve();
+    } else {
+      await getPermissionToFork();
+
+      const fork = await this.api!.createFork();
+      return this.pollUntilForkExists({ repo: `/repos/${fork.full_name}`, token });
+    }
+  }
+
+  restoreUser(user: User) {
+    return this.openAuthoringEnabled
+      ? this.authenticateWithFork({
+          userData: user,
+          // no-op: restoreUser doesn't need fork approval UX
+          // eslint-disable-next-line @typescript-eslint/no-empty-function
+          getPermissionToFork: () => {},
+        }).then(() => this.authenticate(user))
+      : this.authenticate(user);
+  }
+
   async authenticate(state: Credentials) {
     this.token = state.token as string;
+
+    // Clear cached user data when token changes to prevent stale data across logins
+    this._currentUserPromise = undefined;
+    this._userIsOriginMaintainerPromises = {};
+
     const apiCtor = API;
     this.api = new apiCtor({
       token: this.token,
@@ -158,6 +291,9 @@ export default class Gitea implements Implementation {
       repo: this.repo,
       originRepo: this.originRepo,
       apiRoot: this.apiRoot,
+      useOpenAuthoring: this.useOpenAuthoring,
+      cmsLabelPrefix: this.cmsLabelPrefix,
+      initialWorkflowStatus: this.initialWorkflowStatus,
     });
     const user = await this.api!.user();
     const isCollab = await this.api!.hasWriteAccess().catch(error => {
@@ -166,7 +302,7 @@ export default class Gitea implements Implementation {
 
         Please ensure the repo information is spelled correctly.
 
-        If the repo is private, make sure you're logged into a Gitea account with access.
+        If the repo is private, make sure you're logged into a Forgejo account with access.
 
         If your repo is under an organization, ensure the organization has granted access to Static
         CMS.
@@ -176,7 +312,7 @@ export default class Gitea implements Implementation {
 
     // Unauthorized user
     if (!isCollab) {
-      throw new Error('Your Gitea user account does not have access to this repo.');
+      throw new Error('Your Forgejo user account does not have access to this repo.');
     }
 
     // Authorized user
@@ -190,6 +326,11 @@ export default class Gitea implements Implementation {
 
   logout() {
     this.token = null;
+
+    // Clear cached user data on logout
+    this._currentUserPromise = undefined;
+    this._userIsOriginMaintainerPromises = {};
+
     if (this.api && this.api.reset && typeof this.api.reset === 'function') {
       return this.api.reset();
     }
@@ -339,7 +480,15 @@ export default class Gitea implements Implementation {
     // persistEntry is a transactional operation
     return runWithLock(
       this.lock,
-      () => this.api!.persistFiles(entry.dataFiles, entry.assets, options),
+      () => {
+        if (options.useWorkflow) {
+          const slug = entry.dataFiles[0].slug;
+          const collection = options.collectionName as string;
+          const files = [...entry.dataFiles, ...entry.assets];
+          return this.api!.editorialWorkflowGit(files, slug, collection, options);
+        }
+        return this.api!.persistFiles(entry.dataFiles, entry.assets, options);
+      },
       'Failed to acquire persist entry lock',
     );
   }
@@ -362,8 +511,8 @@ export default class Gitea implements Implementation {
     }
   }
 
-  deleteFiles(paths: string[], commitMessage: string) {
-    return this.api!.deleteFiles(paths, commitMessage);
+  async deleteFiles(paths: string[], commitMessage: string): Promise<void> {
+    await this.api!.deleteFiles(paths, commitMessage);
   }
 
   async traverseCursor(cursor: Cursor, action: string) {
@@ -413,34 +562,81 @@ export default class Gitea implements Implementation {
   }
 
   async unpublishedEntries() {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return {} as any;
+    const listEntriesKeys = () =>
+      this.api!.listUnpublishedBranches().then(branches =>
+        branches.map(branch => contentKeyFromBranch(branch)),
+      );
+
+    const ids = await unpublishedEntries(listEntriesKeys);
+    return ids;
   }
 
-  async unpublishedEntry() {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return {} as any;
+  async unpublishedEntry({
+    id,
+    collection,
+    slug,
+  }: {
+    id?: string;
+    collection?: string;
+    slug?: string;
+  }) {
+    if (id) {
+      const data = await this.api!.retrieveUnpublishedEntryData(id);
+      return data;
+    } else if (collection && slug) {
+      const contentKey = this.api!.generateContentKey(collection, slug);
+      const data = await this.api!.retrieveUnpublishedEntryData(contentKey);
+      return data;
+    } else {
+      throw new Error('Missing unpublished entry id or collection and slug');
+    }
   }
 
-  async unpublishedEntryDataFile() {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return {} as any;
+  async unpublishedEntryDataFile(collection: string, slug: string, path: string, id: string) {
+    const contentKey = this.api!.generateContentKey(collection, slug);
+    const branch = branchFromContentKey(contentKey);
+    const data = (await this.api!.readFile(path, id, { branch })) as string;
+    return data;
   }
 
-  async unpublishedEntryMediaFile() {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return {} as any;
+  async unpublishedEntryMediaFile(collection: string, slug: string, path: string, id: string) {
+    const contentKey = this.api!.generateContentKey(collection, slug);
+    const branch = branchFromContentKey(contentKey);
+    const blob = (await this.api!.readFile(path, id, { branch, parseText: false })) as Blob;
+    const name = basename(path);
+    const fileObj = blobToFileObj(name, blob);
+    return {
+      id,
+      name,
+      path,
+      size: fileObj.size,
+      displayURL: URL.createObjectURL(fileObj),
+      file: fileObj,
+    };
   }
 
-  async updateUnpublishedEntryStatus() {
-    return;
+  updateUnpublishedEntryStatus(collection: string, slug: string, newStatus: string) {
+    return runWithLock(
+      this.lock,
+      () => this.api!.updateUnpublishedEntryStatus(collection, slug, newStatus),
+      'Failed to acquire update entry status lock',
+    );
   }
 
-  async publishUnpublishedEntry() {
-    return;
+  publishUnpublishedEntry(collection: string, slug: string) {
+    return runWithLock(
+      this.lock,
+      () => this.api!.publishUnpublishedEntry(collection, slug),
+      'Failed to acquire publish entry lock',
+    );
   }
-  async deleteUnpublishedEntry() {
-    return;
+
+  deleteUnpublishedEntry(collection: string, slug: string) {
+    return runWithLock(
+      this.lock,
+      () => this.api!.deleteUnpublishedEntry(collection, slug),
+      'Failed to acquire delete entry lock',
+    );
   }
 
   async getDeployPreview() {

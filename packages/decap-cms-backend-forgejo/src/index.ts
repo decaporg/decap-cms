@@ -1,3 +1,10 @@
-export { default as GiteaBackend } from './implementation';
-export { default as API } from './API';
-export { default as AuthenticationPage } from './AuthenticationPage';
+import ForgejoBackend from './implementation';
+import API from './API';
+import AuthenticationPage from './AuthenticationPage';
+
+export const DecapCmsBackendForgejo = {
+  ForgejoBackend,
+  API,
+  AuthenticationPage,
+};
+export { API, AuthenticationPage, ForgejoBackend };

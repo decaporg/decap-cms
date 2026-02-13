@@ -3,38 +3,51 @@ import trimStart from 'lodash/trimStart';
 import trim from 'lodash/trim';
 import result from 'lodash/result';
 import partial from 'lodash/partial';
-import last from 'lodash/last';
-import initial from 'lodash/initial';
 import {
   APIError,
   basename,
+  branchFromContentKey,
+  CMS_BRANCH_PREFIX,
+  DEFAULT_PR_BODY,
+  EditorialWorkflowError,
   generateContentKey,
   getAllResponses,
+  isCMSLabel,
+  labelToStatus,
   localForage,
+  MERGE_COMMIT_MESSAGE,
   parseContentKey,
   readFileMetadata,
   requestWithBackoff,
+  statusToLabel,
   unsentRequest,
 } from 'decap-cms-lib-util';
 
 import type {
-  DataFile,
-  PersistOptions,
-  AssetProxy,
   ApiRequest,
+  AssetProxy,
+  DataFile,
   FetchError,
+  PersistOptions,
 } from 'decap-cms-lib-util';
 import type { Semaphore } from 'semaphore';
 import type {
   FilesResponse,
+  ForgejoBranch,
+  ForgejoChangedFile,
+  ForgejoCompareResponse,
+  ForgejoLabel,
+  ForgejoPullRequest,
+  ForgejoRepository,
+  ForgejoUser,
   GitGetBlobResponse,
   GitGetTreeResponse,
-  GiteaUser,
-  GiteaRepository,
   ReposListCommitsResponse,
 } from './types';
 
-export const API_NAME = 'Gitea';
+export const API_NAME = 'Forgejo';
+
+export const MOCK_PULL_REQUEST = -1;
 
 export interface Config {
   apiRoot?: string;
@@ -42,6 +55,9 @@ export interface Config {
   branch?: string;
   repo?: string;
   originRepo?: string;
+  useOpenAuthoring?: boolean;
+  cmsLabelPrefix?: string;
+  initialWorkflowStatus?: string;
 }
 
 enum FileOperation {
@@ -106,18 +122,24 @@ export default class API {
   originRepoName: string;
   repoURL: string;
   originRepoURL: string;
+  useOpenAuthoring: boolean;
+  cmsLabelPrefix: string;
+  initialWorkflowStatus: string;
 
-  _userPromise?: Promise<GiteaUser>;
+  _userPromise?: Promise<ForgejoUser>;
   _metadataSemaphore?: Semaphore;
 
   commitAuthor?: {};
 
   constructor(config: Config) {
-    this.apiRoot = config.apiRoot || 'https://try.gitea.io/api/v1';
+    this.apiRoot = config.apiRoot || 'https://v14.next.forgejo.org/api/v1';
     this.token = config.token || '';
     this.branch = config.branch || 'master';
     this.repo = config.repo || '';
     this.originRepo = config.originRepo || this.repo;
+    this.useOpenAuthoring = !!config.useOpenAuthoring;
+    this.cmsLabelPrefix = config.cmsLabelPrefix || '';
+    this.initialWorkflowStatus = config.initialWorkflowStatus || 'draft';
     this.repoURL = `/repos/${this.repo}`;
     this.originRepoURL = `/repos/${this.originRepo}`;
 
@@ -139,17 +161,17 @@ export default class API {
   }
 
   getUser() {
-    return this.request('/user') as Promise<GiteaUser>;
+    return this.request('/user') as Promise<ForgejoUser>;
   }
 
   async hasWriteAccess() {
     try {
-      const result: GiteaRepository = await this.request(this.repoURL);
-      // update config repoOwner to avoid case sensitivity issues with Gitea
+      const result: ForgejoRepository = await this.request(this.repoURL);
+      // update config repoOwner to avoid case sensitivity issues with Forgejo
       this.repoOwner = result.owner.login;
       return result.permissions.push;
     } catch (error) {
-      console.error('Problem fetching repo data from Gitea');
+      console.error('Problem fetching repo data from Forgejo');
       throw error;
     }
   }
@@ -261,11 +283,31 @@ export default class API {
   }
 
   generateContentKey(collectionName: string, slug: string) {
-    return generateContentKey(collectionName, slug);
+    const contentKey = generateContentKey(collectionName, slug);
+    if (!this.useOpenAuthoring) {
+      return contentKey;
+    }
+    return `${this.repo}/${contentKey}`;
   }
 
   parseContentKey(contentKey: string) {
-    return parseContentKey(contentKey);
+    if (!this.useOpenAuthoring) {
+      return parseContentKey(contentKey);
+    }
+
+    const repoPrefix = `${this.repo}/`;
+    // Some content keys may be prefixed with the origin repo instead of the fork repo.
+    const originRepoPrefix = this.originRepo ? `${this.originRepo}/` : null;
+
+    let keyToParse = contentKey;
+
+    if (contentKey.startsWith(repoPrefix)) {
+      keyToParse = contentKey.slice(repoPrefix.length);
+    } else if (originRepoPrefix && contentKey.startsWith(originRepoPrefix)) {
+      keyToParse = contentKey.slice(originRepoPrefix.length);
+    }
+
+    return parseContentKey(keyToParse);
   }
 
   async readFile(
@@ -284,7 +326,11 @@ export default class API {
     if (!sha) {
       sha = await this.getFileSha(path, { repoURL, branch });
     }
-    const content = await this.fetchBlobContent({ sha: sha as string, repoURL, parseText });
+    const content = await this.fetchBlobContent({
+      sha: sha as string,
+      repoURL,
+      parseText,
+    });
     return content;
   }
 
@@ -337,30 +383,52 @@ export default class API {
     folderSupport?: boolean,
   ): Promise<{ type: string; id: string; name: string; path: string; size: number }[]> {
     const folder = trim(path, '/');
+    const hasFolder = Boolean(folder);
     try {
+      const branchInfo = (await this.request(
+        `${repoURL}/branches/${encodeURIComponent(branch)}`,
+      )) as ForgejoBranch;
+      const treeSha = branchInfo.commit.id;
+      const useRecursive = depth > 1 || hasFolder;
       const result: GitGetTreeResponse = await this.request(
-        `${repoURL}/git/trees/${branch}:${encodeURIComponent(folder)}`,
+        `${repoURL}/git/trees/${encodeURIComponent(treeSha)}`,
         {
-          // Gitea API supports recursive=1 for getting the entire recursive tree
-          // or omitting it to get the non-recursive tree
-          params: depth > 1 ? { recursive: 1 } : {},
+          // Use recursive tree when we need to filter by folder or deeper depth.
+          params: useRecursive ? { recursive: 1 } : {},
         },
       );
       return (
         result.tree
           // filter only files and/or folders up to the required depth
-          .filter(
-            file =>
-              (!folderSupport ? file.type === 'blob' : true) &&
-              decodeURIComponent(file.path).split('/').length <= depth,
-          )
-          .map(file => ({
-            type: file.type,
-            id: file.sha,
-            name: basename(file.path),
-            path: `${folder}/${file.path}`,
-            size: file.size!,
-          }))
+          .filter(file => {
+            if ((!folderSupport ? file.type === 'blob' : true) && file.path) {
+              if (!hasFolder) {
+                return file.path.split('/').length <= depth;
+              }
+
+              const relativePath = file.path.startsWith(`${folder}/`)
+                ? file.path.slice(folder.length + 1)
+                : file.path;
+              if (!relativePath) {
+                return false;
+              }
+              return relativePath.split('/').length <= depth;
+            }
+            return false;
+          })
+          .map(file => {
+            const relativePath =
+              hasFolder && file.path.startsWith(`${folder}/`)
+                ? file.path.slice(folder.length + 1)
+                : file.path;
+            return {
+              type: file.type,
+              id: file.sha,
+              name: basename(file.path),
+              path: hasFolder ? `${folder}/${relativePath}` : file.path,
+              size: file.size!,
+            };
+          })
       );
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
@@ -391,7 +459,7 @@ export default class API {
     })) as FilesResponse;
   }
 
-  async getChangeFileOperations(files: { path: string; newPath?: string }[], branch: string) {
+  async getChangeFileOperations(files: (DataFile | AssetProxy)[], branch: string) {
     const items: ChangeFileOperation[] = await Promise.all(
       files.map(async file => {
         const content = await result(
@@ -406,8 +474,9 @@ export default class API {
         try {
           sha = await this.getFileSha(file.path, { branch });
           operation = FileOperation.UPDATE;
-          from_path = file.newPath && path;
-          path = file.newPath ? trimStart(file.newPath, '/') : path;
+          const newPath = 'newPath' in file ? (file as DataFile).newPath : undefined;
+          from_path = newPath && path;
+          path = newPath ? trimStart(newPath, '/') : path;
         } catch {
           sha = undefined;
           operation = FileOperation.CREATE;
@@ -426,28 +495,32 @@ export default class API {
   }
 
   async getFileSha(path: string, { repoURL = this.repoURL, branch = this.branch } = {}) {
-    /**
-     * We need to request the tree first to get the SHA. We use extended SHA-1
-     * syntax (<rev>:<path>) to get a blob from a tree without having to recurse
-     * through the tree.
-     */
+    // Normalize path by removing leading slash if present
+    const normalizedPath = path.startsWith('/') ? path.slice(1) : path;
+    const encodedPath = normalizedPath
+      .split('/')
+      .map(segment => encodeURIComponent(segment))
+      .join('/');
+    const result = (await this.request(`${repoURL}/contents/${encodedPath}`, {
+      params: { ref: branch },
+    })) as { sha?: string };
 
-    const pathArray = path.split('/');
-    const filename = last(pathArray);
-    const directory = initial(pathArray).join('/');
-    const fileDataPath = encodeURIComponent(directory);
-    const fileDataURL = `${repoURL}/git/trees/${branch}:${fileDataPath}`;
-
-    const result: GitGetTreeResponse = await this.request(fileDataURL);
-    const file = result.tree.find(file => file.path === filename);
-    if (file) {
-      return file.sha;
-    } else {
-      throw new APIError('Not Found', 404, API_NAME);
+    if (result?.sha) {
+      return result.sha;
     }
+
+    throw new APIError('Not Found', 404, API_NAME);
   }
 
   async deleteFiles(paths: string[], message: string) {
+    if (this.useOpenAuthoring) {
+      throw new APIError(
+        'Cannot delete published entries as an Open Authoring user!',
+        403,
+        API_NAME,
+      );
+    }
+
     const operations: ChangeFileOperation[] = await Promise.all(
       paths.map(async path => {
         const sha = await this.getFileSha(path);
@@ -459,10 +532,514 @@ export default class API {
         } as ChangeFileOperation;
       }),
     );
-    this.changeFiles(operations, { commitMessage: message });
+    return this.changeFiles(operations, { commitMessage: message });
   }
 
   toBase64(str: string) {
     return Promise.resolve(Base64.encode(str));
+  }
+
+  async getBranch(branchName: string): Promise<ForgejoBranch> {
+    return this.request(`${this.repoURL}/branches/${encodeURIComponent(branchName)}`);
+  }
+
+  async getDefaultBranch(): Promise<ForgejoBranch> {
+    return this.getBranch(this.branch);
+  }
+
+  async createBranch(
+    branchName: string,
+    oldBranchName: string = this.branch,
+  ): Promise<ForgejoBranch> {
+    return this.request(`${this.repoURL}/branches`, {
+      method: 'POST',
+      body: JSON.stringify({
+        new_branch_name: branchName,
+        old_ref_name: oldBranchName,
+      }),
+    });
+  }
+
+  async deleteBranch(branchName: string): Promise<void> {
+    await this.request(`${this.repoURL}/branches/${encodeURIComponent(branchName)}`, {
+      method: 'DELETE',
+    });
+  }
+
+  async getPullRequests(
+    state: 'open' | 'closed' | 'all' = 'open',
+    head?: string,
+  ): Promise<ForgejoPullRequest[]> {
+    const params: Record<string, string> = { state };
+    const pullRequests = (await this.request(`${this.originRepoURL}/pulls`, {
+      params,
+    })) as ForgejoPullRequest[];
+    if (!head) {
+      return pullRequests;
+    }
+
+    return pullRequests.filter(pr => {
+      const label = pr.head?.label;
+      if (label) {
+        return label === head;
+      }
+      const repoOwner = pr.head?.repo?.owner?.login;
+      const ref = pr.head?.ref;
+      if (repoOwner && ref) {
+        return `${repoOwner}:${ref}` === head;
+      }
+      return false;
+    });
+  }
+
+  async getOpenAuthoringPullRequest(
+    branch: string,
+    pullRequests: ForgejoPullRequest[],
+  ): Promise<{ pullRequest: ForgejoPullRequest; branch: ForgejoBranch }> {
+    // we can't use labels when using open authoring
+    // since the contributor doesn't have access to set labels
+    // a branch without a pr (or a closed pr) means a 'draft' entry
+    // a branch with an opened pr means a 'pending_review' entry
+    const data = await this.getBranch(branch).catch(() => {
+      throw new EditorialWorkflowError('content is not under editorial workflow', true);
+    });
+    // since we get all (open and closed) pull requests by branch name, make sure to filter by head sha
+    const pullRequest = pullRequests.filter(pr => pr.head.sha === data.commit.id)[0];
+    if (!pullRequest) {
+      // if no pull request is found for the branch we return a mocked one
+      const mockPR: ForgejoPullRequest = {
+        number: MOCK_PULL_REQUEST,
+        state: 'open',
+        labels: [
+          {
+            name: statusToLabel(this.initialWorkflowStatus, this.cmsLabelPrefix),
+          } as ForgejoLabel,
+        ],
+        head: { ref: branch, sha: data.commit.id },
+      };
+      return {
+        pullRequest: mockPR,
+        branch: data,
+      };
+    }
+
+    // Filter out CMS labels for open authoring
+    const nonCmsLabels = pullRequest.labels.filter(l => !isCMSLabel(l.name, this.cmsLabelPrefix));
+
+    // Add synthetic CMS label based on PR state
+    const cmsLabel =
+      pullRequest.state === 'closed'
+        ? { name: statusToLabel(this.initialWorkflowStatus, this.cmsLabelPrefix) }
+        : { name: statusToLabel('pending_review', this.cmsLabelPrefix) };
+
+    const updatedPullRequest: ForgejoPullRequest = {
+      ...pullRequest,
+      labels: [...nonCmsLabels, cmsLabel as ForgejoLabel],
+    };
+
+    return { pullRequest: updatedPullRequest, branch: data };
+  }
+
+  async getBranchPullRequest(branchName: string): Promise<ForgejoPullRequest> {
+    if (this.useOpenAuthoring) {
+      const headRef = await this.getHeadReference(branchName);
+      const pullRequests = await this.getPullRequests('all', headRef);
+      const result = await this.getOpenAuthoringPullRequest(branchName, pullRequests);
+      return result.pullRequest;
+    }
+
+    const pullRequests = await this.getPullRequests('open', `${this.repoOwner}:${branchName}`);
+    const cmsPullRequests = pullRequests.filter(pr =>
+      pr.labels.some(l => isCMSLabel(l.name, this.cmsLabelPrefix)),
+    );
+    if (cmsPullRequests.length > 0) {
+      return cmsPullRequests[0];
+    }
+    throw new EditorialWorkflowError('content is not under editorial workflow', true);
+  }
+
+  async getHeadReference(head: string) {
+    return `${this.repoOwner}:${head}`;
+  }
+
+  async createPR(
+    title: string,
+    head: string,
+    body: string = DEFAULT_PR_BODY,
+  ): Promise<ForgejoPullRequest> {
+    return this.request(`${this.originRepoURL}/pulls`, {
+      method: 'POST',
+      body: JSON.stringify({
+        title,
+        head: await this.getHeadReference(head),
+        base: this.branch,
+        body,
+      }),
+    });
+  }
+
+  async updatePR(number: number, state: 'open' | 'closed'): Promise<ForgejoPullRequest> {
+    return this.request(`${this.originRepoURL}/pulls/${number}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ state }),
+    });
+  }
+
+  async closePR(number: number): Promise<ForgejoPullRequest> {
+    return this.updatePR(number, 'closed');
+  }
+
+  async mergePR(pullRequest: ForgejoPullRequest): Promise<void> {
+    await this.request(`${this.originRepoURL}/pulls/${pullRequest.number}/merge`, {
+      method: 'POST',
+      body: JSON.stringify({
+        Do: 'merge',
+        MergeMessageField: MERGE_COMMIT_MESSAGE,
+      }),
+    });
+  }
+
+  async getPullRequestFiles(number: number): Promise<ForgejoChangedFile[]> {
+    if (number === MOCK_PULL_REQUEST) {
+      return [];
+    }
+    return this.request(`${this.originRepoURL}/pulls/${number}/files`);
+  }
+
+  async getDifferences(from: string, to: string): Promise<ForgejoCompareResponse> {
+    // For OA, try the fork repo first, then fall back to origin
+    const repoURL = this.useOpenAuthoring ? this.repoURL : this.originRepoURL;
+    try {
+      return await this.request(
+        `${repoURL}/compare/${encodeURIComponent(from)}...${encodeURIComponent(to)}`,
+      );
+    } catch (e) {
+      if (this.useOpenAuthoring) {
+        // Retry with origin repo
+        return this.request(
+          `${this.originRepoURL}/compare/${encodeURIComponent(from)}...${encodeURIComponent(to)}`,
+        );
+      }
+      throw e;
+    }
+  }
+
+  async updatePullRequestLabels(number: number, labels: number[]): Promise<ForgejoLabel[]> {
+    return this.request(`${this.originRepoURL}/issues/${number}/labels`, {
+      method: 'PUT',
+      body: JSON.stringify({ labels }),
+    });
+  }
+
+  async getLabels(): Promise<ForgejoLabel[]> {
+    return this.request(`${this.originRepoURL}/labels`);
+  }
+
+  async createLabel(name: string, color = '0052cc'): Promise<ForgejoLabel> {
+    return this.request(`${this.originRepoURL}/labels`, {
+      method: 'POST',
+      body: JSON.stringify({ name, color }),
+    });
+  }
+
+  async getOrCreateLabel(name: string): Promise<ForgejoLabel> {
+    const labels = await this.getLabels();
+    const existing = labels.find(l => l.name === name);
+    if (existing) {
+      return existing;
+    }
+    return this.createLabel(name);
+  }
+
+  async setPullRequestStatus(pullRequest: ForgejoPullRequest, status: string): Promise<void> {
+    // Skip label updates for open authoring as contributors don't have permission
+    // Also skip for mock PRs (no real PR exists yet)
+    if (this.useOpenAuthoring || pullRequest.number === MOCK_PULL_REQUEST) {
+      return;
+    }
+
+    const newLabel = statusToLabel(status, this.cmsLabelPrefix);
+
+    // Get or create the new status label
+    const label = await this.getOrCreateLabel(newLabel);
+
+    if (typeof label.id !== 'number') {
+      throw new Error(
+        `Status label "${label.name}" returned from getOrCreateLabel is missing a numeric id`,
+      );
+    }
+
+    // Get current labels and filter out old CMS labels and labels without ids
+    const currentLabels = pullRequest.labels
+      .filter(l => !isCMSLabel(l.name, this.cmsLabelPrefix))
+      .filter(l => typeof l.id === 'number')
+      .map(l => l.id as number);
+
+    // Add the new status label
+    await this.updatePullRequestLabels(pullRequest.number, [...currentLabels, label.id]);
+  }
+
+  async getOpenAuthoringBranches(): Promise<ForgejoBranch[]> {
+    const branches: ForgejoBranch[] = await this.requestAllPages(`${this.repoURL}/branches`);
+    const prefix = `${CMS_BRANCH_PREFIX}/${this.repo}/`;
+    return branches.filter(b => b.name.startsWith(prefix));
+  }
+
+  filterOpenAuthoringBranches = async (branch: string) => {
+    try {
+      const pullRequest = await this.getBranchPullRequest(branch);
+      const { state: currentState, merged_at: mergedAt } = pullRequest as ForgejoPullRequest;
+      if (pullRequest.number !== MOCK_PULL_REQUEST && currentState === 'closed' && mergedAt) {
+        // PR was merged, delete the branch
+        await this.deleteBranch(branch);
+        return { branch, filter: false };
+      } else {
+        return { branch, filter: true };
+      }
+    } catch (e) {
+      // Only filter out branches for expected "not found / not under workflow" errors.
+      // For other errors (e.g. transient network/API issues), keep the branch.
+      if (e instanceof APIError && e.status === 404) {
+        return { branch, filter: false };
+      }
+      if (e instanceof EditorialWorkflowError) {
+        return { branch, filter: false };
+      }
+      return { branch, filter: true };
+    }
+  };
+
+  async listUnpublishedBranches(): Promise<string[]> {
+    if (this.useOpenAuthoring) {
+      // OA branches can exist without a PR
+      const cmsBranches = await this.getOpenAuthoringBranches();
+      let branches = cmsBranches.map(b => b.name);
+      const branchesWithFilter = await Promise.all(
+        branches.map(b => this.filterOpenAuthoringBranches(b)),
+      );
+      branches = branchesWithFilter.filter(b => b.filter).map(b => b.branch);
+      return branches;
+    }
+
+    // Standard mode: filter PRs by CMS labels
+    const pullRequests = await this.getPullRequests('open');
+    const cmsBranches = pullRequests
+      .filter(
+        pr =>
+          pr.head.ref.startsWith(`${CMS_BRANCH_PREFIX}/`) &&
+          pr.labels.some(l => isCMSLabel(l.name, this.cmsLabelPrefix)),
+      )
+      .map(pr => pr.head.ref);
+
+    return cmsBranches;
+  }
+
+  async retrieveUnpublishedEntryData(contentKey: string) {
+    const branch = branchFromContentKey(contentKey);
+    let pullRequest: ForgejoPullRequest;
+    let branchData: ForgejoBranch | null = null;
+
+    if (this.useOpenAuthoring) {
+      const headRef = await this.getHeadReference(branch);
+      const pullRequests = await this.getPullRequests('all', headRef);
+      const openAuthoringResult = await this.getOpenAuthoringPullRequest(branch, pullRequests);
+      pullRequest = openAuthoringResult.pullRequest;
+      branchData = openAuthoringResult.branch;
+    } else {
+      pullRequest = await this.getBranchPullRequest(branch);
+    }
+
+    // Try getDifferences first (provides SHAs), fall back to getPullRequestFiles
+    let diffs: { path: string; newFile: boolean; id: string }[];
+    try {
+      const headRef = await this.getHeadReference(branch);
+      const compareResult = await this.getDifferences(this.branch, headRef);
+      diffs = compareResult.files.map(file => ({
+        path: file.filename,
+        newFile: file.status === 'added',
+        id: file.sha || '',
+      }));
+    } catch (e) {
+      const files = await this.getPullRequestFiles(pullRequest.number);
+      diffs = files.map(file => ({
+        path: file.filename,
+        newFile: file.status === 'added',
+        id: '',
+      }));
+    }
+
+    // Both OA and standard PRs now have synthetic CMS labels, so use unified label-based lookup
+    const statusLabel = pullRequest.labels.find(l => isCMSLabel(l.name, this.cmsLabelPrefix));
+    const status = statusLabel
+      ? labelToStatus(statusLabel.name, this.cmsLabelPrefix)
+      : this.initialWorkflowStatus;
+
+    const { collection, slug } = this.parseContentKey(contentKey);
+
+    return {
+      collection,
+      slug,
+      status,
+      diffs,
+      updatedAt:
+        pullRequest?.updated_at ||
+        branchData?.commit?.author?.date ||
+        branchData?.commit?.committer?.date ||
+        new Date().toISOString(),
+      pullRequestAuthor: pullRequest?.user?.login || branchData?.commit?.author?.name || 'Unknown',
+    };
+  }
+
+  async updateUnpublishedEntryStatus(collection: string, slug: string, newStatus: string) {
+    const contentKey = this.generateContentKey(collection, slug);
+    const branch = branchFromContentKey(contentKey);
+    const pullRequest = await this.getBranchPullRequest(branch);
+
+    if (!this.useOpenAuthoring) {
+      await this.setPullRequestStatus(pullRequest, newStatus);
+      return;
+    }
+
+    // Open authoring path
+    if (newStatus === 'pending_publish') {
+      throw new Error('Open Authoring entries may not be set to the status "pending_publish".');
+    }
+
+    if (pullRequest.number !== MOCK_PULL_REQUEST) {
+      const { state } = pullRequest;
+      if (state === 'open' && newStatus === 'draft') {
+        await this.closePR(pullRequest.number);
+      }
+      if (state === 'closed' && newStatus === 'pending_review') {
+        await this.updatePR(pullRequest.number, 'open');
+      }
+    } else if (newStatus === 'pending_review') {
+      // Mock PR: create a real PR
+      const diff = await this.getDifferences(this.branch, await this.getHeadReference(branch));
+      const title = diff.commits[0]?.commit?.message || API.DEFAULT_COMMIT_MESSAGE;
+      await this.createPR(title, branch);
+    }
+  }
+
+  async deleteUnpublishedEntry(collection: string, slug: string) {
+    const contentKey = this.generateContentKey(collection, slug);
+    const branch = branchFromContentKey(contentKey);
+
+    try {
+      const pullRequest = await this.getBranchPullRequest(branch);
+      if (pullRequest.number !== MOCK_PULL_REQUEST) {
+        await this.closePR(pullRequest.number);
+      }
+    } catch (e) {
+      // Only ignore expected errors (e.g. no PR / not under editorial workflow).
+      if (e instanceof EditorialWorkflowError || (e instanceof APIError && e.status === 404)) {
+        // PR might not exist or entry is not under editorial workflow; continue to delete branch.
+      } else {
+        // Unexpected error: rethrow so we don't delete the branch in an unknown state.
+        throw e;
+      }
+    }
+
+    await this.deleteBranch(branch);
+  }
+
+  async publishUnpublishedEntry(collection: string, slug: string) {
+    const contentKey = this.generateContentKey(collection, slug);
+    const branch = branchFromContentKey(contentKey);
+
+    const pullRequest = await this.getBranchPullRequest(branch);
+    if (pullRequest.number === MOCK_PULL_REQUEST) {
+      throw new APIError('Cannot publish entry without a pull request', 400, API_NAME);
+    }
+    await this.mergePR(pullRequest);
+    await this.deleteBranch(branch);
+  }
+
+  async editorialWorkflowGit(
+    files: (DataFile | AssetProxy)[],
+    slug: string,
+    collection: string,
+    options: PersistOptions,
+  ) {
+    const contentKey = this.generateContentKey(collection, slug);
+    const branch = branchFromContentKey(contentKey);
+
+    let branchExists = false;
+    try {
+      await this.getBranch(branch);
+      branchExists = true;
+    } catch (e) {
+      // Only treat a 404 "not found" as the branch not existing; rethrow other errors.
+      if (!(e instanceof APIError && e.status === 404)) {
+        throw e;
+      }
+    }
+
+    if (!branchExists) {
+      // Create the branch from the default branch
+      await this.createBranch(branch, this.branch);
+    }
+
+    // Persist files to the branch
+    const operations = await this.getChangeFileOperations(files, branch);
+    await this.changeFilesOnBranch(operations, options, branch);
+
+    // For open authoring, don't create a PR - entries start as branch-only (draft).
+    // PRs are created later via updateUnpublishedEntryStatus when moving to pending_review.
+    if (!branchExists && !this.useOpenAuthoring) {
+      const pr = await this.createPR(options.commitMessage, branch);
+      const status = options.status || this.initialWorkflowStatus;
+      await this.setPullRequestStatus(pr, status);
+    }
+  }
+
+  async changeFilesOnBranch(
+    operations: ChangeFileOperation[],
+    options: PersistOptions,
+    branch: string,
+  ) {
+    return (await this.request(`${this.repoURL}/contents`, {
+      method: 'POST',
+      body: JSON.stringify({
+        branch,
+        files: operations,
+        message: options.commitMessage,
+      }),
+    })) as FilesResponse;
+  }
+
+  // Open Authoring (Fork) Support
+  async forkExists(): Promise<boolean> {
+    try {
+      const repoName = this.originRepo.split('/')[1];
+      const userRepoPath = `/repos/${this.repoOwner}/${repoName}`;
+      const repo = (await this.request(userRepoPath)) as ForgejoRepository;
+
+      // Check if it's a fork and the parent is the origin repo
+      const forkExists: boolean =
+        repo.fork === true &&
+        !!repo.parent &&
+        repo.parent.full_name.toLowerCase() === this.originRepo.toLowerCase();
+      return forkExists;
+    } catch {
+      return false;
+    }
+  }
+
+  async createFork(): Promise<ForgejoRepository> {
+    return this.request(`${this.originRepoURL}/forks`, {
+      method: 'POST',
+    }) as Promise<ForgejoRepository>;
+  }
+
+  async mergeUpstream(): Promise<void> {
+    try {
+      await this.request(`${this.repoURL}/sync_fork`, {
+        method: 'POST',
+      });
+    } catch (error) {
+      // continue without syncing - user will need to sync manually
+      console.warn('Failed to sync fork with upstream:', error);
+    }
   }
 }

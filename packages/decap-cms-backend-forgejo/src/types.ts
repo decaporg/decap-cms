@@ -1,4 +1,4 @@
-export type GiteaUser = {
+export type ForgejoUser = {
   active: boolean;
   avatar_url: string;
   created: string;
@@ -21,19 +21,19 @@ export type GiteaUser = {
   website: string;
 };
 
-export type GiteaTeam = {
+export type ForgejoTeam = {
   can_create_org_repo: boolean;
   description: string;
   id: number;
   includes_all_repositories: boolean;
   name: string;
-  organization: GiteaOrganization;
+  organization: ForgejoOrganization;
   permission: string;
   units: Array<string>;
   units_map: Map<string, string>;
 };
 
-export type GiteaOrganization = {
+export type ForgejoOrganization = {
   avatar_url: string;
   description: string;
   full_name: string;
@@ -81,39 +81,39 @@ type ReposListCommitsResponseItemCommit = {
   verification: PayloadCommitVerification;
 };
 
-type GiteaRepositoryPermissions = {
+type ForgejoRepositoryPermissions = {
   admin: boolean;
   pull: boolean;
   push: boolean;
 };
 
-type GiteaRepositoryExternalTracker = {
+type ForgejoRepositoryExternalTracker = {
   external_tracker_format: string;
   external_tracker_regexp_pattern: string;
   external_tracker_style: string;
   external_tracker_url: string;
 };
 
-type GiteaRepositoryExternalWiki = {
+type ForgejoRepositoryExternalWiki = {
   external_wiki_url: string;
 };
 
-type GiteaRepositoryInternalTracker = {
+type ForgejoRepositoryInternalTracker = {
   allow_only_contributors_to_track_time: boolean;
   enable_issue_dependencies: boolean;
   enable_time_tracker: boolean;
 };
 
-type GiteaRepositoryRepoTransfer = {
+type ForgejoRepositoryRepoTransfer = {
   description: string;
-  doer: GiteaUser;
-  recipient: GiteaUser;
-  teams: Array<GiteaTeam>;
+  doer: ForgejoUser;
+  recipient: ForgejoUser;
+  teams: Array<ForgejoTeam>;
   enable_issue_dependencies: boolean;
   enable_time_tracker: boolean;
 };
 
-export type GiteaRepository = {
+export type ForgejoRepository = {
   allow_merge_commits: boolean;
   allow_rebase: boolean;
   allow_rebase_explicit: boolean;
@@ -128,8 +128,8 @@ export type GiteaRepository = {
   default_merge_style: boolean;
   description: string;
   empty: boolean;
-  external_tracker: GiteaRepositoryExternalTracker;
-  external_wiki: GiteaRepositoryExternalWiki;
+  external_tracker: ForgejoRepositoryExternalTracker;
+  external_wiki: ForgejoRepositoryExternalWiki;
   fork: boolean;
   forks_count: number;
   full_name: string;
@@ -141,7 +141,7 @@ export type GiteaRepository = {
   id: number;
   ignore_whitespace_conflicts: boolean;
   internal: boolean;
-  internal_tracker: GiteaRepositoryInternalTracker;
+  internal_tracker: ForgejoRepositoryInternalTracker;
   language: string;
   languages_url: string;
   mirror: boolean;
@@ -151,12 +151,12 @@ export type GiteaRepository = {
   open_issues_count: number;
   open_pr_counter: number;
   original_url: string;
-  owner: GiteaUser;
-  parent: null;
-  permissions: GiteaRepositoryPermissions;
+  owner: ForgejoUser;
+  parent?: { full_name: string } | null;
+  permissions: ForgejoRepositoryPermissions;
   private: boolean;
   release_counter: number;
-  repo_transfer: GiteaRepositoryRepoTransfer;
+  repo_transfer: ForgejoRepositoryRepoTransfer;
   size: number;
   ssh_url: string;
   stars_count: number;
@@ -177,9 +177,9 @@ type ReposListCommitsResponseItemCommitStats = {
 };
 
 type ReposListCommitsResponseItem = {
-  author: GiteaUser;
+  author: ForgejoUser;
   commit: ReposListCommitsResponseItemCommit;
-  committer: GiteaUser;
+  committer: ForgejoUser;
   created: string;
   files: Array<ReposListCommitsResponseItemCommitAffectedFiles>;
   html_url: string;
@@ -257,4 +257,88 @@ export type FilesResponse = {
   commit: FileCommitResponse;
   content: Array<ContentsResponse>;
   verification: PayloadCommitVerification;
+};
+
+// Editorial Workflow Types
+
+export type ForgejoLabel = {
+  id?: number;
+  name: string;
+  color?: string;
+  description?: string;
+  url?: string;
+};
+
+export type ForgejoBranch = {
+  commit: {
+    id: string;
+    message: string;
+    url: string;
+    author: CommitUser;
+    committer: CommitUser;
+  };
+  name: string;
+  protected: boolean;
+};
+
+export type ForgejoPullRequestHead = {
+  label?: string;
+  ref: string;
+  sha: string;
+  repo?: ForgejoRepository;
+};
+
+export type ForgejoPullRequestBase = {
+  label?: string;
+  ref?: string;
+  sha?: string;
+  repo?: ForgejoRepository;
+};
+
+// ForgejoPullRequest represents a pull request from the Forgejo API.
+// Many fields are optional to accommodate:
+// 1. Mock PRs used for open authoring branch-only drafts (MOCK_PULL_REQUEST)
+// 2. Partial API responses that may not include all fields
+export type ForgejoPullRequest = {
+  id?: number;
+  number: number;
+  state: 'open' | 'closed';
+  title?: string;
+  body?: string;
+  user?: ForgejoUser;
+  labels: ForgejoLabel[];
+  head: ForgejoPullRequestHead;
+  base?: ForgejoPullRequestBase;
+  merged?: boolean;
+  merged_at?: string | null;
+  updated_at?: string;
+  created_at?: string;
+};
+
+export type ForgejoChangedFile = {
+  filename: string;
+  status: 'added' | 'removed' | 'modified' | 'renamed';
+  additions: number;
+  deletions: number;
+  changes: number;
+  previous_filename?: string;
+  sha?: string;
+};
+
+export type ForgejoCompareCommit = {
+  sha: string;
+  commit: {
+    message: string;
+    author: {
+      name: string;
+      email: string;
+      date: string;
+    };
+  };
+};
+
+export type ForgejoCompareResponse = {
+  commits: ForgejoCompareCommit[];
+  files: ForgejoChangedFile[];
+  total_commits: number;
 };

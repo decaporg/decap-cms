@@ -1,14 +1,14 @@
 import { Cursor, CURSOR_COMPATIBILITY_SYMBOL } from 'decap-cms-lib-util';
 
-import GiteaImplementation from '../implementation';
+import ForgejoImplementation from '../implementation';
 
 jest.spyOn(console, 'error').mockImplementation(() => {});
 
-describe('gitea backend implementation', () => {
+describe('forgejo backend implementation', () => {
   const config = {
     backend: {
       repo: 'owner/repo',
-      api_root: 'https://try.gitea.io/api/v1',
+      api_root: 'https://v14.next.forgejo.org/api/v1',
     },
   };
 
@@ -44,8 +44,8 @@ describe('gitea backend implementation', () => {
     });
 
     it('should persist media file', async () => {
-      const giteaImplementation = new GiteaImplementation(config);
-      giteaImplementation.api = mockAPI;
+      const forgejoImplementation = new ForgejoImplementation(config);
+      forgejoImplementation.api = mockAPI;
 
       const mediaFile = {
         fileObj: { size: 100, name: 'image.png' },
@@ -54,7 +54,7 @@ describe('gitea backend implementation', () => {
 
       expect.assertions(5);
       await expect(
-        giteaImplementation.persistMedia(mediaFile, { commitMessage: 'Persisting media' }),
+        forgejoImplementation.persistMedia(mediaFile, { commitMessage: 'Persisting media' }),
       ).resolves.toEqual({
         id: 0,
         name: 'image.png',
@@ -72,8 +72,8 @@ describe('gitea backend implementation', () => {
     });
 
     it('should log and throw error on "persistFiles" error', async () => {
-      const giteaImplementation = new GiteaImplementation(config);
-      giteaImplementation.api = mockAPI;
+      const forgejoImplementation = new ForgejoImplementation(config);
+      forgejoImplementation.api = mockAPI;
 
       const error = new Error('failed to persist files');
       persistFiles.mockRejectedValue(error);
@@ -85,7 +85,7 @@ describe('gitea backend implementation', () => {
 
       expect.assertions(5);
       await expect(
-        giteaImplementation.persistMedia(mediaFile, { commitMessage: 'Persisting media' }),
+        forgejoImplementation.persistMedia(mediaFile, { commitMessage: 'Persisting media' }),
       ).rejects.toThrowError(error);
 
       expect(persistFiles).toHaveBeenCalledTimes(1);
@@ -108,8 +108,8 @@ describe('gitea backend implementation', () => {
     };
 
     it('should return entries and cursor', async () => {
-      const giteaImplementation = new GiteaImplementation(config);
-      giteaImplementation.api = mockAPI;
+      const forgejoImplementation = new ForgejoImplementation(config);
+      forgejoImplementation.api = mockAPI;
 
       const files = [];
       const count = 1501;
@@ -137,7 +137,7 @@ describe('gitea backend implementation', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       expectedEntries[CURSOR_COMPATIBILITY_SYMBOL] = expectedCursor;
 
-      const result = await giteaImplementation.entriesByFolder('posts', 'md', 1);
+      const result = await forgejoImplementation.entriesByFolder('posts', 'md', 1);
 
       expect(result).toEqual(expectedEntries);
       expect(listFiles).toHaveBeenCalledTimes(1);
@@ -170,8 +170,8 @@ describe('gitea backend implementation', () => {
     }
 
     it('should handle next action', async () => {
-      const giteaImplementation = new GiteaImplementation(config);
-      giteaImplementation.api = mockAPI;
+      const forgejoImplementation = new ForgejoImplementation(config);
+      forgejoImplementation.api = mockAPI;
 
       const cursor = Cursor.create({
         actions: ['next', 'last'],
@@ -189,7 +189,7 @@ describe('gitea backend implementation', () => {
         data: { files },
       });
 
-      const result = await giteaImplementation.traverseCursor(cursor, 'next');
+      const result = await forgejoImplementation.traverseCursor(cursor, 'next');
 
       expect(result).toEqual({
         entries: expectedEntries,
@@ -198,8 +198,8 @@ describe('gitea backend implementation', () => {
     });
 
     it('should handle prev action', async () => {
-      const giteaImplementation = new GiteaImplementation(config);
-      giteaImplementation.api = mockAPI;
+      const forgejoImplementation = new ForgejoImplementation(config);
+      forgejoImplementation.api = mockAPI;
 
       const cursor = Cursor.create({
         actions: ['prev', 'first', 'next', 'last'],
@@ -217,7 +217,7 @@ describe('gitea backend implementation', () => {
         data: { files },
       });
 
-      const result = await giteaImplementation.traverseCursor(cursor, 'prev');
+      const result = await forgejoImplementation.traverseCursor(cursor, 'prev');
 
       expect(result).toEqual({
         entries: expectedEntries,
@@ -226,8 +226,8 @@ describe('gitea backend implementation', () => {
     });
 
     it('should handle last action', async () => {
-      const giteaImplementation = new GiteaImplementation(config);
-      giteaImplementation.api = mockAPI;
+      const forgejoImplementation = new ForgejoImplementation(config);
+      forgejoImplementation.api = mockAPI;
 
       const cursor = Cursor.create({
         actions: ['next', 'last'],
@@ -245,7 +245,7 @@ describe('gitea backend implementation', () => {
         data: { files },
       });
 
-      const result = await giteaImplementation.traverseCursor(cursor, 'last');
+      const result = await forgejoImplementation.traverseCursor(cursor, 'last');
 
       expect(result).toEqual({
         entries: expectedEntries,
@@ -254,8 +254,8 @@ describe('gitea backend implementation', () => {
     });
 
     it('should handle first action', async () => {
-      const giteaImplementation = new GiteaImplementation(config);
-      giteaImplementation.api = mockAPI;
+      const forgejoImplementation = new ForgejoImplementation(config);
+      forgejoImplementation.api = mockAPI;
 
       const cursor = Cursor.create({
         actions: ['prev', 'first'],
@@ -273,11 +273,179 @@ describe('gitea backend implementation', () => {
         data: { files },
       });
 
-      const result = await giteaImplementation.traverseCursor(cursor, 'first');
+      const result = await forgejoImplementation.traverseCursor(cursor, 'first');
 
       expect(result).toEqual({
         entries: expectedEntries,
         cursor: expectedCursor,
+      });
+    });
+  });
+
+  describe('editorial workflow', () => {
+    it('should list unpublished entries', async () => {
+      const forgejoImplementation = new ForgejoImplementation(config);
+      forgejoImplementation.api = {
+        listUnpublishedBranches: jest.fn().mockResolvedValue(['cms/branch1', 'cms/branch2']),
+      };
+
+      await expect(forgejoImplementation.unpublishedEntries()).resolves.toEqual([
+        'branch1',
+        'branch2',
+      ]);
+    });
+
+    it('should get unpublished entry', async () => {
+      const forgejoImplementation = new ForgejoImplementation(config);
+      forgejoImplementation.api = {
+        generateContentKey: jest.fn().mockReturnValue('collection/slug'),
+        retrieveUnpublishedEntryData: jest
+          .fn()
+          .mockResolvedValue({ slug: 'slug', status: 'draft' }),
+      };
+
+      await expect(
+        forgejoImplementation.unpublishedEntry({ collection: 'collection', slug: 'slug' }),
+      ).resolves.toEqual({
+        slug: 'slug',
+        status: 'draft',
+      });
+      expect(forgejoImplementation.api.retrieveUnpublishedEntryData).toHaveBeenCalledWith(
+        'collection/slug',
+      );
+    });
+
+    it('should get unpublished entry data file', async () => {
+      const forgejoImplementation = new ForgejoImplementation(config);
+      forgejoImplementation.api = {
+        generateContentKey: jest.fn().mockReturnValue('collection/slug'),
+        readFile: jest.fn().mockResolvedValue('file-content'),
+      };
+
+      await expect(
+        forgejoImplementation.unpublishedEntryDataFile(
+          'collection',
+          'slug',
+          'path/to/file',
+          'sha-123',
+        ),
+      ).resolves.toEqual('file-content');
+    });
+
+    it('should get unpublished entry media file', async () => {
+      const forgejoImplementation = new ForgejoImplementation(config);
+      const blob = new Blob(['content']);
+      forgejoImplementation.api = {
+        generateContentKey: jest.fn().mockReturnValue('collection/slug'),
+        readFile: jest.fn().mockResolvedValue(blob),
+      };
+
+      const result = await forgejoImplementation.unpublishedEntryMediaFile(
+        'collection',
+        'slug',
+        'path/to/image.png',
+        'sha-456',
+      );
+
+      expect(result.name).toBe('image.png');
+      expect(result.file).toEqual(expect.any(File));
+    });
+  });
+
+  describe('open authoring', () => {
+    describe('authenticateWithFork', () => {
+      it('should use origin repo if user is maintainer', async () => {
+        const forgejoImplementation = new ForgejoImplementation(
+          {
+            ...config,
+            backend: { ...config.backend, open_authoring: true },
+          },
+          { useWorkflow: true },
+        );
+
+        forgejoImplementation.userIsOriginMaintainer = jest.fn().mockResolvedValue(true);
+        forgejoImplementation.currentUser = jest.fn().mockResolvedValue({ login: 'user' });
+        forgejoImplementation.api = {
+          forkExists: jest.fn(),
+          mergeUpstream: jest.fn(),
+          createFork: jest.fn(),
+        };
+
+        await forgejoImplementation.authenticateWithFork({
+          userData: { token: 'token' },
+          getPermissionToFork: jest.fn(),
+        });
+
+        expect(forgejoImplementation.repo).toBe('owner/repo');
+        expect(forgejoImplementation.useOpenAuthoring).toBe(false);
+      });
+
+      it('should create fork if user is contributor', async () => {
+        const mockForkExists = jest.fn().mockResolvedValue(false);
+        const mockCreateFork = jest.fn().mockResolvedValue({ full_name: 'contributor/repo' });
+        const mockMergeUpstream = jest.fn();
+
+        const forgejoImplementation = new ForgejoImplementation(
+          {
+            ...config,
+            backend: { ...config.backend, open_authoring: true },
+          },
+          {
+            useWorkflow: true,
+            API: {
+              forkExists: mockForkExists,
+              createFork: mockCreateFork,
+              mergeUpstream: mockMergeUpstream,
+            },
+          },
+        );
+
+        forgejoImplementation.userIsOriginMaintainer = jest.fn().mockResolvedValue(false);
+        forgejoImplementation.currentUser = jest.fn().mockResolvedValue({ login: 'contributor' });
+        forgejoImplementation.pollUntilForkExists = jest.fn().mockResolvedValue(undefined);
+
+        await forgejoImplementation.authenticateWithFork({
+          userData: { token: 'token' },
+          getPermissionToFork: jest.fn().mockResolvedValue(),
+        });
+
+        expect(forgejoImplementation.repo).toBe('contributor/repo');
+        expect(forgejoImplementation.useOpenAuthoring).toBe(true);
+        expect(mockCreateFork).toHaveBeenCalled();
+      });
+
+      it('should sync existing fork if one exists', async () => {
+        const mockForkExists = jest.fn().mockResolvedValue(true);
+        const mockMergeUpstream = jest.fn().mockResolvedValue(undefined);
+        const mockCreateFork = jest.fn();
+
+        const forgejoImplementation = new ForgejoImplementation(
+          {
+            ...config,
+            backend: { ...config.backend, open_authoring: true },
+          },
+          {
+            useWorkflow: true,
+            API: {
+              forkExists: mockForkExists,
+              mergeUpstream: mockMergeUpstream,
+              createFork: mockCreateFork,
+            },
+          },
+        );
+
+        forgejoImplementation.userIsOriginMaintainer = jest.fn().mockResolvedValue(false);
+        forgejoImplementation.currentUser = jest.fn().mockResolvedValue({ login: 'contributor' });
+
+        await forgejoImplementation.authenticateWithFork({
+          userData: { token: 'token' },
+          getPermissionToFork: jest.fn(),
+        });
+
+        expect(forgejoImplementation.repo).toBe('contributor/repo');
+        expect(forgejoImplementation.useOpenAuthoring).toBe(true);
+        expect(mockMergeUpstream).toHaveBeenCalled();
+        expect(mockCreateFork).not.toHaveBeenCalled();
       });
     });
   });
