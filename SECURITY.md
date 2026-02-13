@@ -40,7 +40,7 @@ Please include the following information:
 
 ## Response Timeline
 
-This project follows a 90 day disclosure timeline.
+This project follows a 90-day disclosure timeline.
 
 ## Coordinated Disclosure
 
