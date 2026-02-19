@@ -16,20 +16,9 @@ Security updates are provided for:
 
 ## Reporting a Vulnerability
 
-If you discover a security vulnerability in Decap CMS, please report it **confidentially** through our dedicated reporting process.
+If you discover a security vulnerability in Decap CMS, please report it **confidentially** through GitHub Security Advisories. This allows us to investigate and address the issue without exposing it to the public until a fix is ready.
 
-**Submit your report at:** https://decapcms.org/report-vulnerability
-
-Please include the following information:
-
-- **Vulnerability Title**: Brief summary of the issue
-- **Description**: Detailed explanation of the vulnerability
-- **Affected Version(s)**: Which version(s) of Decap CMS are affected
-- **Steps to Reproduce**: Clear steps to demonstrate the vulnerability (if applicable)
-- **Impact Assessment**: Potential impact on users (e.g., data exposure, unauthorized access, content integrity)
-- **Your Name**: For attribution and follow-up communication
-- **Your Email**: Primary contact method
-- **Publish Credit**: Would you like to be credited publicly when this is disclosed?
+**Submit your report at:** https://github.com/decaporg/decap-cms/security/advisories/new
 
 ### What NOT to Do
 
@@ -42,20 +31,7 @@ Please include the following information:
 
 This project follows a 90-day disclosure timeline.
 
-## Coordinated Disclosure
-
-We follow responsible disclosure practices:
-
-1. You submit a vulnerability report via our form
-2. Our security team acknowledges receipt
-3. We investigate and determine the severity and scope
-4. We develop a fix and prepare a security release
-5. We notify you of the resolution and next steps
-6. We release the security update to users
-7. We publish a security advisory (with your attribution, if approved)
-
 ## Security Practices
-
 
 - Dependabot is enabled for automated security update checks
 - All code changes are tested in CI, including linting
