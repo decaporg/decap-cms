@@ -48,9 +48,9 @@ We follow responsible disclosure practices:
 
 1. You submit a vulnerability report via our form
 2. Our security team acknowledges receipt
-3. We investigate and determine severity and scope
+3. We investigate and determine the severity and scope
 4. We develop a fix and prepare a security release
-5. We notify you of resolution and next steps
+5. We notify you of the resolution and next steps
 6. We release the security update to users
 7. We publish a security advisory (with your attribution, if approved)
 
@@ -58,7 +58,7 @@ We follow responsible disclosure practices:
 
 
 - Dependabot is enabled for automated security update checks
-- All code changes are tested in CI including linting
+- All code changes are tested in CI, including linting
 - End-to-end tests provide coverage of critical functionality
 - All pull requests require code review before merging
 - Passwords are not stored by Decap CMS; authentication is delegated to providers
@@ -68,4 +68,4 @@ We follow responsible disclosure practices:
 - This is a **community-maintained open-source project**, not a commercial product with dedicated security resources
 - Security depends on the stability and practices of underlying dependencies and backend providers
 - Some vulnerabilities in dependencies may not be immediately patchable if they break backwards compatibility
-- This is a project with a long history and many legacy dependencies can't be updated without significant refactoring
+- This is a project with a long history, and many legacy dependencies can't be updated without significant refactoring
