@@ -39,6 +39,7 @@
     "decap-cms-backend-bitbucket": "^3.3.0",
     "decap-cms-backend-git-gateway": "^3.5.0",
     "decap-cms-backend-gitea": "^3.3.0",
+    "decap-cms-backend-forgejo": "^3.3.0",
     "decap-cms-backend-github": "^3.5.0",
     "decap-cms-backend-gitlab": "^3.4.0",
     "decap-cms-backend-proxy": "^3.3.0",

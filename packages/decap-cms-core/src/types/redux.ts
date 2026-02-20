@@ -1,6 +1,6 @@
 import type { Action } from 'redux';
 import type { StaticallyTypedRecord } from './immutable';
-import type { Map, List, OrderedMap, Set } from 'immutable';
+import type { List, Map, OrderedMap, Set } from 'immutable';
 import type { FILES, FOLDER } from '../constants/collectionTypes';
 import type { MediaFile as BackendMediaFile } from '../backend';
 import type { Auth } from '../reducers/auth';
@@ -18,6 +18,7 @@ export type CmsBackendType =
   | 'github'
   | 'gitlab'
   | 'gitea'
+  | 'forgejo'
   | 'bitbucket'
   | 'test-repo'
   | 'proxy';
@@ -485,7 +486,11 @@ export type Config = StaticallyTypedRecord<{
 }>;
 
 type PagesObject = {
-  [collection: string]: { isFetching: boolean; page: number; ids: List<string> };
+  [collection: string]: {
+    isFetching: boolean;
+    page: number;
+    ids: List<string>;
+  };
 };
 
 type Pages = StaticallyTypedRecord<PagesObject>;
