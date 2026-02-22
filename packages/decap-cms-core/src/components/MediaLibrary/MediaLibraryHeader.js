@@ -28,10 +28,10 @@ const LibraryTitle = styled.h1`
   color: ${props => props.isPrivate && colors.textFieldBorder};
 `;
 
-function MediaLibraryHeader({ onClose, title, isPrivate }) {
+function MediaLibraryHeader({ onClose, title, isPrivate, t }) {
   return (
     <div>
-      <CloseButton onClick={onClose}>
+      <CloseButton aria-label={t('mediaLibrary.mediaLibraryModal.close')} onClick={onClose}>
         <Icon type="close" />
       </CloseButton>
       <LibraryTitle isPrivate={isPrivate}>{title}</LibraryTitle>
