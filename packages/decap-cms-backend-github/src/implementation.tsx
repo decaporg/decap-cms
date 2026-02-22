@@ -27,7 +27,7 @@ import API, { API_NAME } from './API';
 import { ETagPollingManager } from './polling';
 import GraphQLAPI from './GraphQLAPI';
 
-import type { Octokit } from '@octokit/rest';
+import type { Endpoints } from '@octokit/types';
 import type {
   AsyncLock,
   Implementation,
@@ -45,7 +45,7 @@ import type {
 } from 'decap-cms-lib-util';
 import type { Semaphore } from 'semaphore';
 
-export type GitHubUser = Octokit.UsersGetAuthenticatedResponse;
+export type GitHubUser = Endpoints['GET /user']['response']['data'];
 
 const MAX_CONCURRENT_DOWNLOADS = 10;
 
@@ -215,13 +215,20 @@ export default class GitHub implements Implementation {
     return Promise.resolve();
   }
 
-  async currentUser({ token }: { token: string }) {
+  async currentUser({ token }: { token: string }): Promise<GitHubUser> {
     if (!this._currentUserPromise) {
-      this._currentUserPromise = fetch(`${this.apiRoot}/user`, {
-        headers: {
-          Authorization: `${this.tokenKeyword} ${token}`,
-        },
-      }).then(res => res.json());
+      this._currentUserPromise = (async () => {
+        const res = await fetch(`${this.apiRoot}/user`, {
+          headers: {
+            Authorization: `${this.tokenKeyword} ${token}`,
+          },
+        });
+        const user = await res.json();
+        return {
+          ...user,
+          name: user.name || 'Unknown',
+        } as GitHubUser;
+      })();
     }
     return this._currentUserPromise;
   }
@@ -351,7 +358,7 @@ export default class GitHub implements Implementation {
       useOpenAuthoring: this.useOpenAuthoring,
       initialWorkflowStatus: this.options.initialWorkflowStatus,
       baseUrl: this.baseUrl,
-      getUser: this.currentUser,
+      getUser: args => this.currentUser(args),
     });
     const user = await this.api!.user();
     const isCollab = await this.api!.hasWriteAccess().catch(error => {

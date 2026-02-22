@@ -10,9 +10,10 @@ async function runCypress() {
     process.exit(1);
   }
 
-  if (process.env.IS_FORK === 'true') {
-    const machineIndex = parseInt(process.env.MACHINE_INDEX);
-    const machineCount = parseInt(process.env.MACHINE_COUNT);
+  const machineIndex = Number(process.env.MACHINE_INDEX || 0);
+  const machineCount = Number(process.env.MACHINE_COUNT || 0);
+
+  if (machineIndex && machineCount) {
     const specsPerMachine = Math.floor(specs.length / machineCount);
     const start = (machineIndex - 1) * specsPerMachine;
     const machineSpecs =
@@ -20,13 +21,19 @@ async function runCypress() {
         ? specs.slice(start)
         : specs.slice(start, start + specsPerMachine);
 
+    console.log(
+      `Sharding specs manually: machine ${machineIndex}/${machineCount} running ${machineSpecs.length} specs`,
+    );
     args.push('--spec', machineSpecs.join(','));
   } else {
+    const ciBuildId =
+      process.env.CI_BUILD_ID || process.env.GITHUB_RUN_ID || process.env.GITHUB_SHA;
+
     args.push(
       '--record',
       '--parallel',
       '--ci-build-id',
-      process.env.GITHUB_SHA,
+      ciBuildId,
       '--group',
       'GitHub CI',
       '--spec',
@@ -35,7 +42,11 @@ async function runCypress() {
   }
 
   console.log('Running Cypress with args:', args.join(' '));
-  await execa('cypress', args, { stdio: 'inherit', preferLocal: true });
+  await execa('cypress', args, {
+    stdio: 'inherit',
+    preferLocal: true,
+    timeout: 60 * 60 * 1000, // 1 hour
+  });
 }
 
 runCypress();
