@@ -466,7 +466,7 @@ class EditorInterface extends Component {
                 isActive={notesVisible}
                 onClick={this.handleToggleNotes}
                 size="large"
-                type="quote"
+                type="write"
                 title={t('editor.editorInterface.toggleNotes')}
               />
             )}
