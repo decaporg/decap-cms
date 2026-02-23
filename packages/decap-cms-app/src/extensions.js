@@ -6,6 +6,7 @@ import { AwsCognitoGitHubProxyBackend } from 'decap-cms-backend-aws-cognito-gith
 import { GitHubBackend } from 'decap-cms-backend-github';
 import { GitLabBackend } from 'decap-cms-backend-gitlab';
 import { GiteaBackend } from 'decap-cms-backend-gitea';
+import { ForgejoBackend } from 'decap-cms-backend-forgejo';
 import { GitGatewayBackend } from 'decap-cms-backend-git-gateway';
 import { BitbucketBackend } from 'decap-cms-backend-bitbucket';
 import { TestBackend } from 'decap-cms-backend-test';
@@ -38,6 +39,7 @@ CMS.registerBackend('aws-cognito-github-proxy', AwsCognitoGitHubProxyBackend);
 CMS.registerBackend('github', GitHubBackend);
 CMS.registerBackend('gitlab', GitLabBackend);
 CMS.registerBackend('gitea', GiteaBackend);
+CMS.registerBackend('forgejo', ForgejoBackend);
 CMS.registerBackend('bitbucket', BitbucketBackend);
 CMS.registerBackend('test-repo', TestBackend);
 CMS.registerBackend('proxy', ProxyBackend);
