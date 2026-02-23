@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.5.1](https://github.com/decaporg/decap-cms/compare/decap-cms-ui-default@3.5.0...decap-cms-ui-default@3.5.1) (2026-02-23)
+
+### Bug Fixes
+
+- **a11y:** aria-labels ([#7720](https://github.com/decaporg/decap-cms/issues/7720)) ([cc92370](https://github.com/decaporg/decap-cms/commit/cc92370595a85590ffede50a99259d52ba3eb76b))
+
 # [3.5.0](https://github.com/decaporg/decap-cms/compare/decap-cms-ui-default@3.4.0...decap-cms-ui-default@3.5.0) (2025-11-04)
 
 ### Bug Fixes
