@@ -769,7 +769,7 @@ export default class GitHub implements Implementation {
     const note: Note = {
       ...noteData,
       id: 'temp-' + Date.now(),
-      author: currentUser.login || currentUser.name,
+      author: currentUser.login || currentUser.name || '',
       avatarUrl: currentUser.avatar_url,
       entrySlug: slug,
       timestamp: noteData.timestamp || new Date().toISOString(),
