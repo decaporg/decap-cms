@@ -1,7 +1,7 @@
 import { flow, fromPairs, map } from 'lodash/fp';
 import isPlainObject from 'lodash/isPlainObject';
 import isEmpty from 'lodash/isEmpty';
-import minimatch from 'minimatch';
+import { minimatch } from 'minimatch';
 import { unsentRequest } from 'decap-cms-lib-util';
 
 import type { ApiRequest, PointerFile } from 'decap-cms-lib-util';
