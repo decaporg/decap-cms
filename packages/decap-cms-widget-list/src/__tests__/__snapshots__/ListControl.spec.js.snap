@@ -162,6 +162,7 @@ exports[`ListControl should add to list when add button is clicked 1`] = `
         class="emotion-3 emotion-4"
       >
         <button
+          aria-label="editor.editorWidgets.object.collapse"
           class="emotion-5 emotion-6"
           data-testid="expand-button"
         >
@@ -414,6 +415,7 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
         class="emotion-3 emotion-4"
       >
         <button
+          aria-label="editor.editorWidgets.object.collapse"
           class="emotion-5 emotion-6"
           data-testid="expand-button"
         >
@@ -696,6 +698,7 @@ exports[`ListControl should remove from list when remove button is clicked 2`] =
         class="emotion-3 emotion-4"
       >
         <button
+          aria-label="editor.editorWidgets.object.collapse"
           class="emotion-5 emotion-6"
           data-testid="expand-button"
         >
@@ -961,6 +964,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
         class="emotion-3 emotion-4"
       >
         <button
+          aria-label="editor.editorWidgets.object.collapse"
           class="emotion-5 emotion-6"
           data-testid="expand-button"
         >
@@ -1243,6 +1247,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
         class="emotion-3 emotion-4"
       >
         <button
+          aria-label="editor.editorWidgets.object.collapse"
           class="emotion-5 emotion-6"
           data-testid="expand-button"
         >
@@ -1525,6 +1530,7 @@ exports[`ListControl should render list with fields with default collapse ("true
         class="emotion-3 emotion-4"
       >
         <button
+          aria-label="editor.editorWidgets.object.expand"
           class="emotion-5 emotion-6"
           data-testid="expand-button"
         >
@@ -1790,6 +1796,7 @@ exports[`ListControl should render list with fields with default collapse ("true
         class="emotion-3 emotion-4"
       >
         <button
+          aria-label="editor.editorWidgets.object.expand"
           class="emotion-5 emotion-6"
           data-testid="expand-button"
         >
@@ -1993,6 +2000,7 @@ exports[`ListControl should render list with nested object 1`] = `
         class="emotion-3 emotion-4"
       >
         <button
+          aria-label="editor.editorWidgets.object.expand"
           class="emotion-5 emotion-6"
           data-testid="expand-button"
         >
@@ -2279,6 +2287,7 @@ exports[`ListControl should render list with nested object with collapse = false
         class="emotion-3 emotion-4"
       >
         <button
+          aria-label="editor.editorWidgets.object.collapse"
           class="emotion-5 emotion-6"
           data-testid="expand-button"
         >

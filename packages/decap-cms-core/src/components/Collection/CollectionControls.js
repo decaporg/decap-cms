@@ -36,7 +36,7 @@ function CollectionControls({
 }) {
   return (
     <CollectionControlsContainer>
-      <ViewStyleControl viewStyle={viewStyle} onChangeViewStyle={onChangeViewStyle} />
+      <ViewStyleControl viewStyle={viewStyle} onChangeViewStyle={onChangeViewStyle} t={t} />
       {viewGroups.length > 0 && (
         <GroupControl viewGroups={viewGroups} onGroupClick={onGroupClick} t={t} group={group} />
       )}
