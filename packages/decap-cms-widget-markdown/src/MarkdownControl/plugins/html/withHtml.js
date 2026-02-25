@@ -37,7 +37,7 @@ const INLINE_STYLES = {
 
 function deserialize(el) {
   if (el.nodeType === 3) {
-    return el.textContent;
+    return el.textContent.replace(/(\r)?\n/g, '');
   } else if (el.nodeType !== 1) {
     return null;
   } else if (el.nodeName === 'BR') {
