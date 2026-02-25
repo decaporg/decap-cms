@@ -51,7 +51,14 @@ function validIRIChar(char: string) {
   return uriChars.test(char) || ucsChars.test(char);
 }
 
-export function getCharReplacer(encoding: string, replacement: string) {
+export function getCharReplacer(
+  encoding: string,
+  options: {
+    replacement: NonNullable<CmsSlug['sanitize_replacement']>;
+    preserveSlashes?: boolean;
+  },
+) {
+  const { replacement, preserveSlashes } = options;
   let validChar: (char: string) => boolean;
 
   if (encoding === 'unicode') {
@@ -67,14 +74,24 @@ export function getCharReplacer(encoding: string, replacement: string) {
     throw new Error('The replacement character(s) (options.replacement) is itself unsafe.');
   }
 
-  return (char: string) => (validChar(char) ? char : replacement);
+  return (char: string, i = 0, arr: string[] = [char]) => {
+    if (preserveSlashes && char === '/' && i !== 0 && i !== arr.length - 1) {
+      return char;
+    }
+
+    return validChar(char) ? char : replacement;
+  };
 }
 // `sanitizeURI` does not actually URI-encode the chars (that is the browser's and server's job), just removes the ones that are not allowed.
 export function sanitizeURI(
   str: string,
-  options?: { replacement: CmsSlug['sanitize_replacement']; encoding: CmsSlug['encoding'] },
+  options?: {
+    replacement: CmsSlug['sanitize_replacement'];
+    encoding: CmsSlug['encoding'];
+    preserveSlashes?: boolean;
+  },
 ) {
-  const { replacement = '', encoding = 'unicode' } = options || {};
+  const { replacement = '', encoding = 'unicode', preserveSlashes } = options || {};
 
   if (!isString(str)) {
     throw new Error('The input slug must be a string.');
@@ -85,15 +102,15 @@ export function sanitizeURI(
 
   // `Array.from` must be used instead of `String.split` because
   //   `split` converts things like emojis into UTF-16 surrogate pairs.
-  return Array.from(str).map(getCharReplacer(encoding, replacement)).join('');
+  return Array.from(str).map(getCharReplacer(encoding, { replacement, preserveSlashes })).join('');
 }
 
 export function sanitizeChar(char: string, options?: CmsSlug) {
   const { encoding = 'unicode', sanitize_replacement: replacement = '' } = options || {};
-  return getCharReplacer(encoding, replacement)(char);
+  return getCharReplacer(encoding, { replacement })(char);
 }
 
-export function sanitizeSlug(str: string, options?: CmsSlug) {
+export function sanitizeSlug(str: string, options?: CmsSlug, preserveSlashes?: boolean) {
   if (!isString(str)) {
     throw new Error('The input slug must be a string.');
   }
@@ -106,8 +123,14 @@ export function sanitizeSlug(str: string, options?: CmsSlug) {
 
   const sanitizedSlug = flow([
     ...(stripDiacritics ? [diacritics.remove] : []),
-    partialRight(sanitizeURI, { replacement, encoding }),
-    partialRight(sanitizeFilename, { replacement }),
+    partialRight(sanitizeURI, { replacement, encoding, preserveSlashes }),
+    preserveSlashes
+      ? (slug: string) =>
+          slug
+            .split('/')
+            .map(part => sanitizeFilename(part, { replacement }))
+            .join('/')
+      : partialRight(sanitizeFilename, { replacement }),
   ])(str);
 
   // Remove any doubled or leading/trailing replacement characters (that were added in the sanitizers).

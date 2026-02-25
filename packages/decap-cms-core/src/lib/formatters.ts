@@ -108,11 +108,19 @@ export function prepareSlug(slug: string) {
   );
 }
 
-export function getProcessSegment(slugConfig?: CmsSlug, ignoreValues?: string[]) {
+export function getProcessSegment(
+  slugConfig?: CmsSlug,
+  ignoreValues?: string[],
+  preserveSlashes?: boolean,
+) {
   return (value: string) =>
     ignoreValues && ignoreValues.includes(value)
       ? value
-      : flow([value => String(value), prepareSlug, partialRight(sanitizeSlug, slugConfig)])(value);
+      : flow([
+          value => String(value),
+          prepareSlug,
+          partialRight(sanitizeSlug, slugConfig, preserveSlashes),
+        ])(value);
 }
 
 export function slugFormatter(
@@ -193,19 +201,21 @@ export function previewUrlFormatter(
   fields = addFileTemplateFields(entry.get('path'), fields, collection.get('folder'));
   const dateFieldName = getDateField() || selectInferredField(collection, 'date');
   const date = parseDateFromEntry(entry as unknown as Map<string, unknown>, dateFieldName);
+  const previewPathPreserveSlashes = collection.get('preview_path_preserve_slashes');
+  const preserveSlashes = !!(previewPathPreserveSlashes ?? collection.has('nested'));
 
   // Prepare and sanitize slug variables only, leave the rest of the
   // `preview_path` template as is.
-  const processSegment = getProcessSegment(slugConfig, [fields.get('dirname')]);
+  const processSegment = getProcessSegment(slugConfig, [fields.get('dirname')], preserveSlashes);
   let compiledPath;
 
   try {
     compiledPath = compileStringTemplate(pathTemplate, date, slug, fields, processSegment);
-  } catch (err) {
+  } catch (err: unknown) {
     // Print an error and ignore `preview_path` if both:
     //   1. Date is invalid (according to DayJs), and
     //   2. A date expression (eg. `{{year}}`) is used in `preview_path`
-    if (err.name === SLUG_MISSING_REQUIRED_DATE) {
+    if (err instanceof Error && err.name === SLUG_MISSING_REQUIRED_DATE) {
       console.error(stripIndent`
         Collection "${collection.get('name')}" configuration error:
           \`preview_path_date_field\` must be a field with a valid date. Ignoring \`preview_path\`.
