@@ -1,0 +1,1296 @@
+{
+    "$id": "https://netlify-cms/object.json",
+    "type": "object",
+    "properties": {
+        "backend": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "examples": [
+                        "test-repo"
+                    ]
+                },
+                "auth_scope": {
+                    "type": "string",
+                    "examples": [
+                        "repo",
+                        "public_repo"
+                    ],
+                    "enum": [
+                        "repo",
+                        "public_repo"
+                    ]
+                },
+                "cms_label_prefix": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "open_authoring": {
+                    "type": "boolean",
+                    "examples": [
+                        true
+                    ]
+                }
+            },
+            "required": [
+                "name"
+            ]
+        },
+        "local_backend": {
+            "oneOf": [
+                {
+                    "type": "boolean"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "url": {
+                            "type": "string",
+                            "examples": [
+                                "http://localhost:8081/api/v1"
+                            ]
+                        },
+                        "allowed_hosts": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "additionalProperties": false
+                }
+            ]
+        },
+        "locale": {
+            "type": "string",
+            "examples": [
+                "en",
+                "fr",
+                "de"
+            ]
+        },
+        "i18n": {
+            "type": "object",
+            "properties": {
+                "structure": {
+                    "type": "string",
+                    "enum": [
+                        "multiple_folders",
+                        "multiple_files",
+                        "single_file"
+                    ]
+                },
+                "locales": {
+                    "type": "array",
+                    "minItems": 2,
+                    "items": {
+                        "type": "string",
+                        "minLength": 2,
+                        "maxLength": 10,
+                        "pattern": "^[a-zA-Z-_]+$"
+                    },
+                    "uniqueItems": true
+                },
+                "default_locale": {
+                    "type": "string",
+                    "minLength": 2,
+                    "maxLength": 10,
+                    "pattern": "^[a-zA-Z-_]+$"
+                }
+            },
+            "required": [
+                "structure",
+                "locales"
+            ]
+        },
+        "site_url": {
+            "type": "string",
+            "examples": [
+                "https://example.com"
+            ]
+        },
+        "display_url": {
+            "type": "string",
+            "examples": [
+                "https://example.com"
+            ]
+        },
+        "logo_url": {
+            "type": "string",
+            "examples": [
+                "https://example.com/images/logo.svg"
+            ]
+        },
+        "show_preview_links": {
+            "type": "boolean"
+        },
+        "media_folder": {
+            "type": "string",
+            "examples": [
+                "assets/uploads"
+            ]
+        },
+        "public_folder": {
+            "type": "string",
+            "examples": [
+                "/uploads"
+            ]
+        },
+        "media_folder_relative": {
+            "type": "boolean"
+        },
+        "media_library": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "examples": [
+                        "uploadcare"
+                    ]
+                },
+                "config": {
+                    "type": "object"
+                }
+            },
+            "required": [
+                "name"
+            ]
+        },
+        "publish_mode": {
+            "type": "string",
+            "enum": [
+                "simple",
+                "editorial_workflow"
+            ],
+            "examples": [
+                "editorial_workflow"
+            ]
+        },
+        "slug": {
+            "type": "object",
+            "properties": {
+                "encoding": {
+                    "type": "string",
+                    "enum": [
+                        "unicode",
+                        "ascii"
+                    ]
+                },
+                "clean_accents": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "collections": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "label": {
+                        "type": "string"
+                    },
+                    "label_singular": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "folder": {
+                        "type": "string"
+                    },
+                    "files": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                },
+                                "label": {
+                                    "type": "string"
+                                },
+                                "label_singular": {
+                                    "type": "string"
+                                },
+                                "description": {
+                                    "type": "string"
+                                },
+                                "file": {
+                                    "type": "string"
+                                },
+                                "preview_path": {
+                                    "type": "string"
+                                },
+                                "preview_path_date_field": {
+                                    "type": "string"
+                                },
+                                "fields": {
+                                    "$id": "fields_4be0cf9d-cc93-4d38-9c75-3fd30b602e1d",
+                                    "type": "array",
+                                    "minItems": 1,
+                                    "items": {
+                                        "$id": "field_4be0cf9d-cc93-4d38-9c75-3fd30b602e1d",
+                                        "type": "object",
+                                        "properties": {
+                                            "name": {
+                                                "type": "string"
+                                            },
+                                            "label": {
+                                                "type": "string"
+                                            },
+                                            "widget": {
+                                                "type": "string"
+                                            },
+                                            "required": {
+                                                "type": "boolean"
+                                            },
+                                            "i18n": {
+                                                "oneOf": [
+                                                    {
+                                                        "type": "boolean"
+                                                    },
+                                                    {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "translate",
+                                                            "duplicate",
+                                                            "none"
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            "hint": {
+                                                "type": "string"
+                                            },
+                                            "pattern": {
+                                                "type": "array",
+                                                "minItems": 2,
+                                                "items": [
+                                                    {
+                                                        "oneOf": [
+                                                            {
+                                                                "type": "string"
+                                                            },
+                                                            {
+                                                                "instanceof": "RegExp"
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "type": "string"
+                                                    }
+                                                ]
+                                            },
+                                            "field": {
+                                                "$ref": "field_4be0cf9d-cc93-4d38-9c75-3fd30b602e1d"
+                                            },
+                                            "fields": {
+                                                "$ref": "fields_4be0cf9d-cc93-4d38-9c75-3fd30b602e1d"
+                                            },
+                                            "types": {
+                                                "$ref": "fields_4be0cf9d-cc93-4d38-9c75-3fd30b602e1d"
+                                            }
+                                        },
+                                        "select": {
+                                            "$data": "0/widget"
+                                        },
+                                        "selectCases": {
+                                            "unknown": {},
+                                            "string": {},
+                                            "number": {
+                                                "properties": {
+                                                    "step": {
+                                                        "type": "number"
+                                                    },
+                                                    "value_type": {
+                                                        "type": "string"
+                                                    },
+                                                    "min": {
+                                                        "type": "number"
+                                                    },
+                                                    "max": {
+                                                        "type": "number"
+                                                    }
+                                                }
+                                            },
+                                            "text": {},
+                                            "image": {
+                                                "properties": {
+                                                    "allow_multiple": {
+                                                        "type": "boolean"
+                                                    }
+                                                }
+                                            },
+                                            "file": {
+                                                "properties": {
+                                                    "allow_multiple": {
+                                                        "type": "boolean"
+                                                    }
+                                                }
+                                            },
+                                            "select": {
+                                                "properties": {
+                                                    "multiple": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "min": {
+                                                        "type": "integer"
+                                                    },
+                                                    "max": {
+                                                        "type": "integer"
+                                                    },
+                                                    "options": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "oneOf": [
+                                                                {
+                                                                    "type": "string"
+                                                                },
+                                                                {
+                                                                    "type": "number"
+                                                                },
+                                                                {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "label": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "value": {
+                                                                            "oneOf": [
+                                                                                {
+                                                                                    "type": "string"
+                                                                                },
+                                                                                {
+                                                                                    "type": "number"
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "label",
+                                                                        "value"
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    }
+                                                },
+                                                "required": [
+                                                    "options"
+                                                ]
+                                            },
+                                            "markdown": {
+                                                "properties": {
+                                                    "minimal": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "buttons": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "string",
+                                                            "enum": [
+                                                                "bold",
+                                                                "italic",
+                                                                "code",
+                                                                "link",
+                                                                "heading-one",
+                                                                "heading-two",
+                                                                "heading-three",
+                                                                "heading-four",
+                                                                "heading-five",
+                                                                "heading-six",
+                                                                "quote",
+                                                                "bulleted-list",
+                                                                "numbered-list"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "editor_components": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "modes": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "string",
+                                                            "enum": [
+                                                                "raw",
+                                                                "rich_text"
+                                                            ]
+                                                        },
+                                                        "minItems": 1
+                                                    }
+                                                }
+                                            },
+                                            "list": {
+                                                "properties": {
+                                                    "allow_add": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "collapsed": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "summary": {
+                                                        "type": "string"
+                                                    },
+                                                    "minimize_collapsed": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "label_singular": {
+                                                        "type": "string"
+                                                    },
+                                                    "i18n": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "min": {
+                                                        "type": "number"
+                                                    },
+                                                    "max": {
+                                                        "type": "number"
+                                                    }
+                                                }
+                                            },
+                                            "object": {
+                                                "properties": {
+                                                    "collapsed": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "i18n": {
+                                                        "type": "boolean"
+                                                    }
+                                                }
+                                            },
+                                            "relation": {
+                                                "properties": {
+                                                    "collection": {
+                                                        "type": "string"
+                                                    },
+                                                    "value_field": {
+                                                        "type": "string"
+                                                    },
+                                                    "search_fields": {
+                                                        "type": "array",
+                                                        "minItems": 1,
+                                                        "items": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "file": {
+                                                        "type": "string"
+                                                    },
+                                                    "multiple": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "min": {
+                                                        "type": "integer"
+                                                    },
+                                                    "max": {
+                                                        "type": "integer"
+                                                    },
+                                                    "display_fields": {
+                                                        "type": "array",
+                                                        "minItems": 1,
+                                                        "items": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "options_length": {
+                                                        "type": "integer"
+                                                    }
+                                                },
+                                                "oneOf": [
+                                                    {
+                                                        "required": [
+                                                            "collection",
+                                                            "value_field",
+                                                            "search_fields"
+                                                        ]
+                                                    },
+                                                    {
+                                                        "required": [
+                                                            "collection",
+                                                            "valueField",
+                                                            "searchFields"
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            "boolean": {},
+                                            "map": {
+                                                "properties": {
+                                                    "decimals": {
+                                                        "type": "integer"
+                                                    },
+                                                    "type": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "Point",
+                                                            "LineString",
+                                                            "Polygon"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "date": {},
+                                            "datetime": {
+                                                "properties": {
+                                                    "format": {
+                                                        "type": "string"
+                                                    },
+                                                    "date_format": {
+                                                        "oneOf": [
+                                                            {
+                                                                "type": "string"
+                                                            },
+                                                            {
+                                                                "type": "boolean"
+                                                            }
+                                                        ]
+                                                    },
+                                                    "time_format": {
+                                                        "oneOf": [
+                                                            {
+                                                                "type": "string"
+                                                            },
+                                                            {
+                                                                "type": "boolean"
+                                                            }
+                                                        ]
+                                                    },
+                                                    "picker_utc": {
+                                                        "type": "boolean"
+                                                    }
+                                                }
+                                            },
+                                            "code": {
+                                                "properties": {
+                                                    "default_language": {
+                                                        "type": "string"
+                                                    },
+                                                    "allow_language_selection": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "output_code_only": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "keys": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "code": {
+                                                                "type": "string"
+                                                            },
+                                                            "lang": {
+                                                                "type": "string"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "color": {}
+                                        },
+                                        "required": [
+                                            "name"
+                                        ]
+                                    },
+                                    "uniqueItemProperties": [
+                                        "name"
+                                    ]
+                                }
+                            },
+                            "required": [
+                                "name",
+                                "label",
+                                "file",
+                                "fields"
+                            ]
+                        },
+                        "uniqueItemProperties": [
+                            "name"
+                        ]
+                    },
+                    "identifier_field": {
+                        "type": "string"
+                    },
+                    "summary": {
+                        "type": "string"
+                    },
+                    "slug": {
+                        "type": "string"
+                    },
+                    "path": {
+                        "type": "string"
+                    },
+                    "preview_path": {
+                        "type": "string"
+                    },
+                    "preview_path_date_field": {
+                        "type": "string"
+                    },
+                    "create": {
+                        "type": "boolean"
+                    },
+                    "publish": {
+                        "type": "boolean"
+                    },
+                    "hide": {
+                        "type": "boolean"
+                    },
+                    "editor": {
+                        "type": "object",
+                        "properties": {
+                            "preview": {
+                                "type": "boolean"
+                            }
+                        }
+                    },
+                    "format": {
+                        "type": "string",
+                        "enum": [
+                            "yml",
+                            "yaml",
+                            "toml",
+                            "json",
+                            "frontmatter",
+                            "json-frontmatter",
+                            "toml-frontmatter",
+                            "yaml-frontmatter"
+                        ]
+                    },
+                    "extension": {
+                        "type": "string"
+                    },
+                    "frontmatter_delimiter": {
+                        "type": [
+                            "string",
+                            "array"
+                        ],
+                        "minItems": 2,
+                        "maxItems": 2,
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "fields": {
+                        "$id": "fields_2adbd682-fad2-4d92-a8a2-d5235f5f6a9e",
+                        "type": "array",
+                        "minItems": 1,
+                        "items": {
+                            "$id": "field_2adbd682-fad2-4d92-a8a2-d5235f5f6a9e",
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                },
+                                "label": {
+                                    "type": "string"
+                                },
+                                "widget": {
+                                    "type": "string"
+                                },
+                                "required": {
+                                    "type": "boolean"
+                                },
+                                "i18n": {
+                                    "oneOf": [
+                                        {
+                                            "type": "boolean"
+                                        },
+                                        {
+                                            "type": "string",
+                                            "enum": [
+                                                "translate",
+                                                "duplicate",
+                                                "none"
+                                            ]
+                                        }
+                                    ]
+                                },
+                                "hint": {
+                                    "type": "string"
+                                },
+                                "pattern": {
+                                    "type": "array",
+                                    "minItems": 2,
+                                    "items": [
+                                        {
+                                            "oneOf": [
+                                                {
+                                                    "type": "string"
+                                                },
+                                                {
+                                                    "instanceof": "RegExp"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "field": {
+                                    "$ref": "field_2adbd682-fad2-4d92-a8a2-d5235f5f6a9e"
+                                },
+                                "fields": {
+                                    "$ref": "fields_2adbd682-fad2-4d92-a8a2-d5235f5f6a9e"
+                                },
+                                "types": {
+                                    "$ref": "fields_2adbd682-fad2-4d92-a8a2-d5235f5f6a9e"
+                                }
+                            },
+                            "select": {
+                                "$data": "0/widget"
+                            },
+                            "selectCases": {
+                                "unknown": {},
+                                "string": {},
+                                "number": {
+                                    "properties": {
+                                        "step": {
+                                            "type": "number"
+                                        },
+                                        "value_type": {
+                                            "type": "string"
+                                        },
+                                        "min": {
+                                            "type": "number"
+                                        },
+                                        "max": {
+                                            "type": "number"
+                                        }
+                                    }
+                                },
+                                "text": {},
+                                "image": {
+                                    "properties": {
+                                        "allow_multiple": {
+                                            "type": "boolean"
+                                        }
+                                    }
+                                },
+                                "file": {
+                                    "properties": {
+                                        "allow_multiple": {
+                                            "type": "boolean"
+                                        }
+                                    }
+                                },
+                                "select": {
+                                    "properties": {
+                                        "multiple": {
+                                            "type": "boolean"
+                                        },
+                                        "min": {
+                                            "type": "integer"
+                                        },
+                                        "max": {
+                                            "type": "integer"
+                                        },
+                                        "options": {
+                                            "type": "array",
+                                            "items": {
+                                                "oneOf": [
+                                                    {
+                                                        "type": "string"
+                                                    },
+                                                    {
+                                                        "type": "number"
+                                                    },
+                                                    {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "value": {
+                                                                "oneOf": [
+                                                                    {
+                                                                        "type": "string"
+                                                                    },
+                                                                    {
+                                                                        "type": "number"
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "label",
+                                                            "value"
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "options"
+                                    ]
+                                },
+                                "markdown": {
+                                    "properties": {
+                                        "minimal": {
+                                            "type": "boolean"
+                                        },
+                                        "buttons": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string",
+                                                "enum": [
+                                                    "bold",
+                                                    "italic",
+                                                    "code",
+                                                    "link",
+                                                    "heading-one",
+                                                    "heading-two",
+                                                    "heading-three",
+                                                    "heading-four",
+                                                    "heading-five",
+                                                    "heading-six",
+                                                    "quote",
+                                                    "bulleted-list",
+                                                    "numbered-list"
+                                                ]
+                                            }
+                                        },
+                                        "editor_components": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "modes": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string",
+                                                "enum": [
+                                                    "raw",
+                                                    "rich_text"
+                                                ]
+                                            },
+                                            "minItems": 1
+                                        }
+                                    }
+                                },
+                                "list": {
+                                    "properties": {
+                                        "allow_add": {
+                                            "type": "boolean"
+                                        },
+                                        "collapsed": {
+                                            "type": "boolean"
+                                        },
+                                        "summary": {
+                                            "type": "string"
+                                        },
+                                        "minimize_collapsed": {
+                                            "type": "boolean"
+                                        },
+                                        "label_singular": {
+                                            "type": "string"
+                                        },
+                                        "i18n": {
+                                            "type": "boolean"
+                                        },
+                                        "min": {
+                                            "type": "number"
+                                        },
+                                        "max": {
+                                            "type": "number"
+                                        }
+                                    }
+                                },
+                                "object": {
+                                    "properties": {
+                                        "collapsed": {
+                                            "type": "boolean"
+                                        },
+                                        "i18n": {
+                                            "type": "boolean"
+                                        }
+                                    }
+                                },
+                                "relation": {
+                                    "properties": {
+                                        "collection": {
+                                            "type": "string"
+                                        },
+                                        "value_field": {
+                                            "type": "string"
+                                        },
+                                        "search_fields": {
+                                            "type": "array",
+                                            "minItems": 1,
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "file": {
+                                            "type": "string"
+                                        },
+                                        "multiple": {
+                                            "type": "boolean"
+                                        },
+                                        "min": {
+                                            "type": "integer"
+                                        },
+                                        "max": {
+                                            "type": "integer"
+                                        },
+                                        "display_fields": {
+                                            "type": "array",
+                                            "minItems": 1,
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "options_length": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "oneOf": [
+                                        {
+                                            "required": [
+                                                "collection",
+                                                "value_field",
+                                                "search_fields"
+                                            ]
+                                        },
+                                        {
+                                            "required": [
+                                                "collection",
+                                                "valueField",
+                                                "searchFields"
+                                            ]
+                                        }
+                                    ]
+                                },
+                                "boolean": {},
+                                "map": {
+                                    "properties": {
+                                        "decimals": {
+                                            "type": "integer"
+                                        },
+                                        "type": {
+                                            "type": "string",
+                                            "enum": [
+                                                "Point",
+                                                "LineString",
+                                                "Polygon"
+                                            ]
+                                        }
+                                    }
+                                },
+                                "date": {},
+                                "datetime": {
+                                    "properties": {
+                                        "format": {
+                                            "type": "string"
+                                        },
+                                        "date_format": {
+                                            "oneOf": [
+                                                {
+                                                    "type": "string"
+                                                },
+                                                {
+                                                    "type": "boolean"
+                                                }
+                                            ]
+                                        },
+                                        "time_format": {
+                                            "oneOf": [
+                                                {
+                                                    "type": "string"
+                                                },
+                                                {
+                                                    "type": "boolean"
+                                                }
+                                            ]
+                                        },
+                                        "picker_utc": {
+                                            "type": "boolean"
+                                        }
+                                    }
+                                },
+                                "code": {
+                                    "properties": {
+                                        "default_language": {
+                                            "type": "string"
+                                        },
+                                        "allow_language_selection": {
+                                            "type": "boolean"
+                                        },
+                                        "output_code_only": {
+                                            "type": "boolean"
+                                        },
+                                        "keys": {
+                                            "type": "object",
+                                            "properties": {
+                                                "code": {
+                                                    "type": "string"
+                                                },
+                                                "lang": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "color": {}
+                            },
+                            "required": [
+                                "name"
+                            ]
+                        },
+                        "uniqueItemProperties": [
+                            "name"
+                        ]
+                    },
+                    "sortable_fields": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "sortableFields": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "view_filters": {
+                        "type": "array",
+                        "minItems": 1,
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "label": {
+                                    "type": "string"
+                                },
+                                "field": {
+                                    "type": "string"
+                                },
+                                "pattern": {
+                                    "oneOf": [
+                                        {
+                                            "type": "boolean"
+                                        },
+                                        {
+                                            "type": "string"
+                                        }
+                                    ]
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "label",
+                                "field",
+                                "pattern"
+                            ]
+                        }
+                    },
+                    "view_groups": {
+                        "type": "array",
+                        "minItems": 1,
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "label": {
+                                    "type": "string"
+                                },
+                                "field": {
+                                    "type": "string"
+                                },
+                                "pattern": {
+                                    "type": "string"
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "label",
+                                "field"
+                            ]
+                        }
+                    },
+                    "nested": {
+                        "type": "object",
+                        "properties": {
+                            "depth": {
+                                "type": "number",
+                                "minimum": 1,
+                                "maximum": 1000
+                            },
+                            "summary": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "depth"
+                        ]
+                    },
+                    "meta": {
+                        "type": "object",
+                        "properties": {
+                            "path": {
+                                "type": "object",
+                                "properties": {
+                                    "label": {
+                                        "type": "string"
+                                    },
+                                    "widget": {
+                                        "type": "string"
+                                    },
+                                    "index_file": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "label",
+                                    "widget",
+                                    "index_file"
+                                ]
+                            }
+                        },
+                        "additionalProperties": false,
+                        "minProperties": 1
+                    },
+                    "i18n": {
+                        "oneOf": [
+                            {
+                                "type": "boolean"
+                            },
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "structure": {
+                                        "type": "string",
+                                        "enum": [
+                                            "multiple_folders",
+                                            "multiple_files",
+                                            "single_file"
+                                        ]
+                                    },
+                                    "locales": {
+                                        "type": "array",
+                                        "minItems": 2,
+                                        "items": {
+                                            "type": "string",
+                                            "minLength": 2,
+                                            "maxLength": 10,
+                                            "pattern": "^[a-zA-Z-_]+$"
+                                        },
+                                        "uniqueItems": true
+                                    },
+                                    "default_locale": {
+                                        "type": "string",
+                                        "minLength": 2,
+                                        "maxLength": 10,
+                                        "pattern": "^[a-zA-Z-_]+$"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                },
+                "required": [
+                    "name",
+                    "label"
+                ],
+                "oneOf": [
+                    {
+                        "required": [
+                            "files"
+                        ]
+                    },
+                    {
+                        "required": [
+                            "folder",
+                            "fields"
+                        ]
+                    }
+                ],
+                "not": {
+                    "required": [
+                        "sortable_fields",
+                        "sortableFields"
+                    ]
+                },
+                "if": {
+                    "required": [
+                        "extension"
+                    ]
+                },
+                "then": {
+                    "if": {
+                        "properties": {
+                            "extension": {
+                                "enum": [
+                                    "yml",
+                                    "yaml",
+                                    "toml",
+                                    "json",
+                                    "md",
+                                    "markdown",
+                                    "html"
+                                ]
+                            }
+                        }
+                    },
+                    "else": {
+                        "required": [
+                            "format"
+                        ]
+                    }
+                },
+                "dependencies": {
+                    "frontmatter_delimiter": {
+                        "properties": {
+                            "format": {
+                                "enum": [
+                                    "yaml-frontmatter",
+                                    "toml-frontmatter",
+                                    "json-frontmatter"
+                                ]
+                            }
+                        },
+                        "required": [
+                            "format"
+                        ]
+                    }
+                }
+            },
+            "uniqueItemProperties": [
+                "name"
+            ]
+        },
+        "editor": {
+            "type": "object",
+            "properties": {
+                "preview": {
+                    "type": "boolean"
+                }
+            }
+        }
+    },
+    "required": [
+        "backend",
+        "collections"
+    ],
+    "anyOf": [
+        {
+            "required": [
+                "media_folder"
+            ]
+        },
+        {
+            "required": [
+                "media_library"
+            ]
+        }
+    ]
+}
