@@ -98,8 +98,51 @@ export class FrontmatterFormatter {
     this.format = getFormatOpts(format, customDelimiter);
   }
 
-  fromFile(content: string) {
+  fromFile(content: string, filePath?: string) {
     const format = this.format || inferFrontmatterFormat(content);
+
+    // Duplicate key detection for yaml frontmatter
+
+    {
+      if (!this.format || this.format.language === 'yaml') {
+        const lines = content.split('\n');
+        const seenPaths = new Set<string>();
+        const pathStack: { indent: number; key: string }[] = [];
+
+        for (let i = 0; i < lines.length; i++) {
+          const rawLine = lines[i];
+          const line = rawLine.trim();
+
+          // Skip empty lines and comments
+          if (!line || line.startsWith('#')) continue;
+
+          const match = rawLine.match(/^(\s*)([A-Za-z0-9_-]+):/);
+          if (!match) continue;
+
+          const indent = match[1].length;
+          const key = match[2];
+
+          // Pop stack until current indent level is valid
+          while (pathStack.length > 0 && pathStack[pathStack.length - 1].indent >= indent) {
+            pathStack.pop();
+          }
+
+          const fullPath = [...pathStack.map(p => p.key), key].join('.');
+
+          const source = filePath ?? 'unknown file';
+
+          if (seenPaths.has(fullPath)) {
+            console.warn(`Duplicate frontmatter key "${fullPath}" in ${source} at line ${i + 1}`);
+          } else {
+            seenPaths.add(fullPath);
+          }
+
+          // Push current key for nested children
+          pathStack.push({ indent, key });
+        }
+      }
+    }
+
     const result = matter(content, { engines: parsers, ...format });
     // in the absent of a body when serializing an entry we use an empty one
     // when calling `toFile`, so we don't want to add it when parsing.
