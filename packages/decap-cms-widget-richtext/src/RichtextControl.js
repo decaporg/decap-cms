@@ -70,7 +70,7 @@ export default class RichtextControl extends React.Component {
 
     const visualEditor = (
       <EditorProvider editorControl={editorControl} editorComponents={getEditorComponents()}>
-        <div className="cms-editor-visual" ref={this.processRef}>
+        <div className="cms-editor-visual">
           <VisualEditor
             t={t}
             field={field}
@@ -88,7 +88,7 @@ export default class RichtextControl extends React.Component {
     );
 
     const rawEditor = (
-      <div className="cms-editor-raw" ref={this.processRef}>
+      <div className="cms-editor-raw">
         <RawEditor
           onChange={onChange}
           isShowModeToggle={isShowModeToggle}
