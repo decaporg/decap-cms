@@ -1,0 +1,52 @@
+{
+  "name": "decap-cms-widget-richtext",
+  "description": "Widget for editing richtext in Decap CMS.",
+  "version": "3.1.0",
+  "homepage": "https://www.decapcms.org/docs/widgets/#richtext",
+  "repository": "https://github.com/decaporg/decap-cms/tree/master/packages/decap-cms-widget-richtext",
+  "bugs": "https://github.com/decaporg/decap-cms/issues",
+  "module": "dist/esm/index.js",
+  "main": "dist/decap-cms-widget-richtext.js",
+  "license": "MIT",
+  "keywords": [
+    "decap-cms",
+    "widget",
+    "richtext",
+    "editor"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "develop": "npm run build:esm -- --watch",
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\"  --root-mode upward --copy-files --extensions \".js,.jsx,.ts,.tsx\""
+  },
+  "dependencies": {
+    "@platejs/basic-nodes": "^49.0.0",
+    "@platejs/link": "^50.2.7",
+    "@platejs/list": "^50.2.0",
+    "@platejs/list-classic": "^49.1.0",
+    "class-variance-authority": "^0.7.0",
+    "lucide-react": "^0.331.0",
+    "platejs": "^49.2.21",
+    "rehype-parse": "^6.0.0",
+    "rehype-remark": "^8.0.0",
+    "rehype-stringify": "^7.0.0",
+    "remark-parse": "^6.0.3",
+    "remark-rehype": "^4.0.0",
+    "remark-slate": "^1.8.6",
+    "remark-slate-transformer": "^0.7.4",
+    "remark-stringify": "^6.0.4",
+    "unified": "^9.0.0"
+  },
+  "peerDependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "decap-cms-ui-default": "^3.0.0",
+    "immutable": "^3.7.6",
+    "lodash": "^4.17.11",
+    "prop-types": "^15.7.2",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-immutable-proptypes": "^2.1.0"
+  }
+}

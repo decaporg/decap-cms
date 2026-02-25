@@ -131,7 +131,10 @@
           h('p', {},
             h('small', {}, "Written " + entry.getIn(['data', 'date']))
           ),
-          h('div', {"className": "text"}, this.props.widgetFor('body'))
+          h('h2', {}, "Richtext Widget"),
+          h('div', {"className": "text"}, this.props.widgetFor('body')),
+          h('h2', {}, "Markdown Widget"),
+          h('div', {"className": "text"}, this.props.widgetFor('bodyold'))
         );
       }
     });
@@ -243,6 +246,39 @@
         );
       }
     });
+    CMS.registerEditorComponent({
+      id: 'container-markdown',
+      label: 'Container Markdown',
+      fields: [
+        { name: 'inner', label: 'Body', widget: 'markdown', editor_components: [] },
+      ],
+      pattern: /^{{< container-markdown >}}(.*?){{< \/container-markdown >}}/s,
+      fromBlock (match) {
+        return {
+          inner: match[1] || '',
+        }
+      },
+      toBlock (obj) {
+        return `{{< container-markdown >}}${obj.inner}{{< /container-markdown >}}`
+      },
+    })
+    CMS.registerEditorComponent({
+      id: 'container-richtext',
+      label: 'Container Richtext',
+      fields: [
+        { name: 'inner', label: 'Body', widget: 'richtext', editor_components: ['container-richtext'] },
+      ],
+      pattern: /^{{< container-richtext >}}(.*?){{< \/container-richtext >}}/s,
+      fromBlock (match) {
+        return {
+          inner: match[1] || '',
+        }
+      },
+      toBlock (obj) {
+        return `{{< container-richtext >}}${obj.inner}{{< /container-richtext >}}`
+      },
+    })
+
   </script>
 </body>
 </html>

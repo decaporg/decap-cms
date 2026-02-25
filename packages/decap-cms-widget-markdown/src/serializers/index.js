@@ -222,5 +222,6 @@ export function markdownToSlate(markdown, { voidCodeBlock, remarkPlugins = [] } 
 export function slateToMarkdown(raw, { voidCodeBlock, remarkPlugins = [] } = {}) {
   const mdast = slateToRemark(raw, { voidCodeBlock });
   const markdown = remarkToMarkdown(mdast, remarkPlugins);
+
   return markdown;
 }
