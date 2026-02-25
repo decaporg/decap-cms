@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { ClassNames } from '@emotion/react';
+import memoize from 'lodash/memoize';
 import { List, Map } from 'immutable';
 import { colors, lengths, ObjectWidgetTopBar } from 'decap-cms-ui-default';
 import { stringTemplate } from 'decap-cms-lib-widgets';
@@ -93,6 +94,11 @@ export default class ObjectControl extends React.Component {
     });
   };
 
+  getStableParentIds = memoize(
+    (parentIds, forID) => [...parentIds, forID],
+    (parentIds, forID) => JSON.stringify([parentIds, forID]) /* Fast enough for only ids */,
+  );
+
   controlFor(field, key) {
     const {
       value,
@@ -130,7 +136,7 @@ export default class ObjectControl extends React.Component {
         fieldsErrors={fieldsErrors}
         onValidate={onValidateObject}
         controlRef={this.processControlRef}
-        parentIds={[...parentIds, forID]}
+        parentIds={this.getStableParentIds(parentIds, forID)}
         isDisabled={isDuplicate}
         isHidden={isHidden}
         isFieldDuplicate={isFieldDuplicate}

@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import memoize from 'lodash/memoize';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
@@ -107,9 +108,9 @@ export default class ControlPane extends React.Component {
     this.childRefs[name] = wrappedControl;
   };
 
-  getControlRef = field => wrappedControl => {
+  getControlRef = memoize(field => wrappedControl => {
     this.controlRef(field, wrappedControl);
-  };
+  });
 
   handleLocaleChange = val => {
     this.setState({ selectedLocale: val });
@@ -179,9 +180,37 @@ export default class ControlPane extends React.Component {
     }
   }
 
+  getI18n() {
+    const { collection } = this.props;
+    const { locales, defaultLocale } = getI18nInfo(collection);
+    const locale = this.state.selectedLocale;
+    return (
+      locales && {
+        currentLocale: locale,
+        locales,
+        defaultLocale,
+      }
+    );
+  }
+
+  onChange = (field, newValue, newMetadata) => {
+    this.props.onChange(field, newValue, newMetadata, this.getI18n());
+  };
+
+  isFieldDuplicate = field => {
+    const locale = this.state.selectedLocale;
+    const { defaultLocale } = getI18nInfo(this.props.collection);
+    return isFieldDuplicate(field, locale, defaultLocale);
+  };
+
+  isFieldHidden = field => {
+    const locale = this.state.selectedLocale;
+    const { defaultLocale } = getI18nInfo(this.props.collection);
+    return isFieldHidden(field, locale, defaultLocale);
+  };
+
   render() {
-    const { collection, entry, fields, fieldsMetaData, fieldsErrors, onChange, onValidate, t } =
-      this.props;
+    const { collection, entry, fields, fieldsMetaData, fieldsErrors, onValidate, t } = this.props;
 
     if (!collection || !fields) {
       return null;
@@ -237,17 +266,15 @@ export default class ControlPane extends React.Component {
                 })}
                 fieldsMetaData={fieldsMetaData}
                 fieldsErrors={fieldsErrors}
-                onChange={(field, newValue, newMetadata) => {
-                  onChange(field, newValue, newMetadata, i18n);
-                }}
+                onChange={this.onChange}
                 onValidate={onValidate}
                 controlRef={this.getControlRef(field)}
-                entry={entry}
+                // entry={entry} For compatibility with existing controls, we pass the (stale) entry down to the widget.
                 collection={collection}
                 isDisabled={isDuplicate}
                 isHidden={isHidden}
-                isFieldDuplicate={field => isFieldDuplicate(field, locale, defaultLocale)}
-                isFieldHidden={field => isFieldHidden(field, locale, defaultLocale)}
+                isFieldDuplicate={this.isFieldDuplicate}
+                isFieldHidden={this.isFieldHidden}
                 locale={locale}
               />
             );

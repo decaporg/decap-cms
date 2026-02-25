@@ -7,6 +7,7 @@ import { ClassNames, Global, css as coreCss } from '@emotion/react';
 import styled from '@emotion/styled';
 import partial from 'lodash/partial';
 import uniqueId from 'lodash/uniqueId';
+import memoize from 'lodash/memoize';
 import { connect } from 'react-redux';
 import { FieldLabel, colors, transitions, lengths, borders } from 'decap-cms-ui-default';
 import ReactMarkdown from 'react-markdown';
@@ -17,6 +18,7 @@ import { clearFieldErrors, tryLoadEntry, validateMetaField } from '../../../acti
 import { addAsset, boundGetAsset } from '../../../actions/media';
 import { selectIsLoadingAsset } from '../../../reducers/medias';
 import { query, clearSearch } from '../../../actions/search';
+import { store } from '../../../redux';
 import {
   openMediaLibrary,
   removeInsertedMedia,
@@ -147,11 +149,11 @@ class EditorControl extends React.Component {
     clearSearch: PropTypes.func.isRequired,
     clearFieldErrors: PropTypes.func.isRequired,
     loadEntry: PropTypes.func.isRequired,
+    getEntry: PropTypes.func.isRequired,
     t: PropTypes.func.isRequired,
     isEditorComponent: PropTypes.bool,
     isNewEditorComponent: PropTypes.bool,
     parentIds: PropTypes.arrayOf(PropTypes.string),
-    entry: ImmutablePropTypes.map.isRequired,
     collection: ImmutablePropTypes.map.isRequired,
     isDisabled: PropTypes.bool,
     isHidden: PropTypes.bool,
@@ -187,10 +189,15 @@ class EditorControl extends React.Component {
     return false;
   };
 
+  onChange = (newValue, newMetadata) => {
+    this.props.onChange(this.props.field, newValue, newMetadata);
+    this.props.clearFieldErrors(this.uniqueFieldId); // We are deleting errors for this field only.
+  };
+
   render() {
     const {
       value,
-      entry,
+      getEntry,
       collection,
       config,
       field,
@@ -198,7 +205,6 @@ class EditorControl extends React.Component {
       fieldsErrors,
       mediaPaths,
       boundGetAsset,
-      onChange,
       openMediaLibrary,
       clearMediaControl,
       removeMediaControl,
@@ -308,7 +314,7 @@ class EditorControl extends React.Component {
                 ${styleStrings.labelActive};
               `}
               controlComponent={widget.control}
-              entry={entry}
+              entry={getEntry()} // This field has been deprecated and can contain stale data, do not use it in widgets
               collection={collection}
               config={config}
               field={field}
@@ -316,10 +322,7 @@ class EditorControl extends React.Component {
               value={value}
               mediaPaths={mediaPaths}
               metadata={metadata}
-              onChange={(newValue, newMetadata) => {
-                onChange(field, newValue, newMetadata);
-                clearFieldErrors(this.uniqueFieldId); // Видаляємо помилки лише для цього поля
-              }}
+              onChange={this.onChange}
               onValidate={onValidate && partial(onValidate, this.uniqueFieldId)}
               onOpenMediaLibrary={openMediaLibrary}
               onClearMediaControl={clearMediaControl}
@@ -338,6 +341,7 @@ class EditorControl extends React.Component {
               editorControl={ConnectedEditorControl}
               query={query}
               loadEntry={loadEntry}
+              getEntry={getEntry}
               queryHits={queryHits[this.uniqueFieldId] || []}
               clearSearch={clearSearch}
               clearFieldErrors={clearFieldErrors}
@@ -385,13 +389,10 @@ class EditorControl extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
-  const { collections, entryDraft } = state;
-  const entry = entryDraft.get('entry');
-  const collection = collections.get(entryDraft.getIn(['entry', 'collection']));
-  const isLoadingAsset = selectIsLoadingAsset(state.medias);
-
-  async function loadEntry(collectionName, slug) {
+const stable = {
+  loadEntry: async function stable_loadEntry(collectionName, slug) {
+    const state = store.getState();
+    const { collections } = state;
     const targetCollection = collections.get(collectionName);
     if (targetCollection) {
       const loadedEntry = await tryLoadEntry(state, targetCollection, slug);
@@ -399,18 +400,42 @@ function mapStateToProps(state) {
     } else {
       throw new Error(`Can't find collection '${collectionName}'`);
     }
-  }
+  },
+
+  // Will return the same function instance for the same collection.
+  validateMetaField: memoize(collection => {
+    return (field, value, t) => {
+      const state = store.getState();
+      validateMetaField(state, collection, field, value, t);
+    };
+  }),
+
+  getEntry() {
+    const state = store.getState();
+    return state.entryDraft.get('entry');
+  },
+
+  getBoundedAsset(collection, entry) {
+    const dispatch = store.dispatch;
+    return boundGetAsset(dispatch, collection, entry);
+  },
+};
+
+function mapStateToProps(state) {
+  const { collections, entryDraft } = state;
+  const collection = collections.get(entryDraft.getIn(['entry', 'collection']));
+  const isLoadingAsset = selectIsLoadingAsset(state.medias);
 
   return {
     mediaPaths: state.mediaLibrary.get('controlMedia'),
     isFetching: state.search.isFetching,
     queryHits: state.search.queryHits,
     config: state.config,
-    entry,
     collection,
     isLoadingAsset,
-    loadEntry,
-    validateMetaField: (field, value, t) => validateMetaField(state, collection, field, value, t),
+    getEntry: stable.getEntry,
+    loadEntry: stable.loadEntry,
+    validateMetaField: stable.validateMetaField(collection),
   };
 }
 
@@ -431,7 +456,7 @@ function mapDispatchToProps(dispatch) {
   );
   return {
     ...creators,
-    boundGetAsset: (collection, entry) => boundGetAsset(dispatch, collection, entry),
+    boundGetAsset: stable.getBoundedAsset,
   };
 }
 
@@ -440,7 +465,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     ...stateProps,
     ...dispatchProps,
     ...ownProps,
-    boundGetAsset: dispatchProps.boundGetAsset(stateProps.collection, stateProps.entry),
+    boundGetAsset: dispatchProps.boundGetAsset(stateProps.collection, stateProps.getEntry()),
   };
 }
 
