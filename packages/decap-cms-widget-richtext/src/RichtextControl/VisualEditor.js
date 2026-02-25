@@ -79,7 +79,7 @@ export default function VisualEditor(props) {
   }
 
   function handleChange({ value }) {
-    // console.log('handleChange', value);
+
     const mdValue = slateToMarkdown(
       value,
       { voidCodeBlock: !!codeBlockComponent },

@@ -8,7 +8,7 @@ function isWithinBlockquote(editor, entry) {
 }
 
 function queryNode(editor, entry, { empty, first, start, collapsed }) {
-  console.log('collapsed', editor.api.isCollapsed());
+
   return (
     (!empty || editor.api.isEmpty(entry[1])) &&
     (!first || !PathApi.hasPrevious(entry[1])) &&

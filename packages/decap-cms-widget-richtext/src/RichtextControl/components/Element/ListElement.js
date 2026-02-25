@@ -2,10 +2,8 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { PlateElement } from 'platejs/react';
 
-const bottomMargin = '16px';
-
 const StyledList = styled.li`
-  margin-bottom: ${bottomMargin};
+  margin-bottom: 16px;
   padding-left: 30px;
 `;
 

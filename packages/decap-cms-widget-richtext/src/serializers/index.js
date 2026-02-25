@@ -227,10 +227,8 @@ export function markdownToSlate(
  * trees.
  */
 export function slateToMarkdown(raw, { voidCodeBlock, remarkPlugins = [] } = {}, editorComponents) {
-  console.log('new raw', raw);
   const mdast = slateToRemark(raw, { voidCodeBlock }, editorComponents);
-  console.log('new mdast', mdast);
   const markdown = remarkToMarkdown(mdast, remarkPlugins, editorComponents);
-  console.log('new md', markdown);
+
   return markdown;
 }

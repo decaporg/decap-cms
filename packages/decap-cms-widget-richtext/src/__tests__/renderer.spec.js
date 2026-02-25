@@ -191,7 +191,7 @@ I get 10 times more traffic from [Google] than from [Yahoo] or [MSN].
   });
 
   describe('HTML sanitization', () => {
-    it('should sanitize HTML', async () => {
+    it('should sanitize HTML', () => {
       const value = `<img src="foobar.png" onerror="alert('hello')">`;
       const field = Map({ sanitize_preview: true });
 
@@ -208,7 +208,7 @@ I get 10 times more traffic from [Google] than from [Yahoo] or [MSN].
       expect(img).not.toHaveAttribute('onerror');
     });
 
-    it('should not sanitize HTML', async () => {
+    it('should not sanitize HTML', () => {
       const value = `<img src="foobar.png" onerror="alert('hello')">`;
       const field = Map({ sanitize_preview: false });
 
