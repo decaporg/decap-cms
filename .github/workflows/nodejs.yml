@@ -89,6 +89,8 @@ jobs:
         run: npm ci
       - name: build demo site
         run: npm run build:demo
+      - name: test package integrity
+        run: npm run test:package-integrity
       - name: run e2e tests (parallel)
         run: npm run test:e2e:run-ci
         env:

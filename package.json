@@ -34,7 +34,8 @@
     "format": "npm run lint:js -- --fix --quiet && npm run format:prettier -- --write",
     "format:prettier": "prettier \"{{packages,scripts}/**/,}*.{js,jsx,ts,tsx,css}\"",
     "lerna:publish": "lerna publish from-package --yes --no-private",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "test:package-integrity": "node scripts/test-package-integrity.mjs"
   },
   "browserslist": [
     "last 2 Chrome versions",
