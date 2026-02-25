@@ -391,6 +391,68 @@ describe('Backend', () => {
       expect(backend.entryToRaw).toHaveBeenCalledTimes(1);
       expect(backend.entryToRaw).toHaveBeenCalledWith(collection, newEntry);
     });
+
+    it('should preserve slug when preSave event handler modifies file collection entry', async () => {
+      const implementation = {
+        init: jest.fn(() => implementation),
+        persistEntry: jest.fn(() => implementation),
+      };
+
+      const config = {
+        backend: {
+          commit_messages: 'commit-messages',
+        },
+      };
+
+      // File collection with a single file
+      const collection = Map({
+        name: 'settings',
+        type: FILES,
+        files: List([
+          Map({
+            name: 'config',
+            file: 'data/config.json',
+            fields: List([Map({ name: 'title', widget: 'string' })]),
+          }),
+        ]),
+      });
+
+      const originalEntry = Map({
+        slug: 'config',
+        path: 'data/config.json',
+        data: Map({ title: 'original' }),
+        meta: Map({ path: 'data/config.json' }),
+      });
+
+      const entryDraft = Map({
+        entry: originalEntry,
+      });
+
+      const user = { login: 'login', name: 'name' };
+      const backend = new Backend(implementation, { config, backendName: 'github' });
+
+      backend.currentUser = jest.fn().mockResolvedValue(user);
+      backend.entryToRaw = jest.fn().mockReturnValue('content');
+
+      // Mock invokePreSaveEvent to simulate a preSave handler that modifies data
+      // This is what happens when custom widgets or event handlers modify entry data
+      // The key is that it returns the FULL entry with slug, not just the data
+      backend.invokePreSaveEvent = jest.fn().mockImplementation(async entry => {
+        // Simulate a preSave handler modifying the data field
+        return entry.setIn(['data', 'title'], 'modified');
+      });
+
+      await backend.persistEntry({ config, collection, entryDraft });
+
+      // Verify entryToRaw was called with an entry that has the slug
+      expect(backend.entryToRaw).toHaveBeenCalledTimes(1);
+      const entryPassedToRaw = backend.entryToRaw.mock.calls[0][1];
+
+      // Critical assertion: slug must be preserved
+      expect(entryPassedToRaw.get('slug')).toBe('config');
+      expect(entryPassedToRaw.get('path')).toBe('data/config.json');
+      expect(entryPassedToRaw.getIn(['data', 'title'])).toBe('modified');
+    });
   });
 
   describe('persistMedia', () => {
