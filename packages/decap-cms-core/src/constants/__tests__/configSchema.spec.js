@@ -172,6 +172,18 @@ describe('config', () => {
       }).not.toThrowError();
     });
 
+    it('should throw if remove_empty_image_field is not a boolean', () => {
+      expect(() => {
+        validateConfig(merge({}, validConfig, { remove_empty_image_field: 'false' }));
+      }).toThrowError("'remove_empty_image_field' must be boolean");
+    });
+
+    it('should not throw if remove_empty_image_field is a boolean', () => {
+      expect(() => {
+        validateConfig(merge({}, validConfig, { remove_empty_image_field: false }));
+      }).not.toThrowError();
+    });
+
     it('should throw if collection publish is not a boolean', () => {
       expect(() => {
         validateConfig(merge({}, validConfig, { collections: [{ publish: 'false' }] }));
