@@ -70,10 +70,6 @@ export default function VisualEditor(props) {
 
   mergeMediaConfig(editorComponents, field);
 
-  function handleBlockClick() {
-    console.log('handleBlockClick');
-  }
-
   function handleToggleMode() {
     onMode('raw');
   }
@@ -175,7 +171,6 @@ export default function VisualEditor(props) {
           <Plate editor={editor} onChange={handleChange}>
             <EditorControlBar>
               <Toolbar
-                onBlockClick={handleBlockClick}
                 onLinkClick={handleLinkClick}
                 onToggleMode={handleToggleMode}
                 buttons={[]}
