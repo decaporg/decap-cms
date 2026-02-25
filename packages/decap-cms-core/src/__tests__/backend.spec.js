@@ -460,7 +460,7 @@ describe('Backend', () => {
         partial: false,
         raw: '---\ntitle: "Hello World"\n---\n',
         data: { title: 'Hello World' },
-        meta: { path: 'src/posts/index.md' },
+        meta: { path: 'src/posts/index.md', path_type: 'slug' },
         i18n: {},
         label: null,
         isModification: true,

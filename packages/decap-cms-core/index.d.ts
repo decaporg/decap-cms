@@ -194,6 +194,7 @@ declare module 'decap-cms-core' {
     multiple?: boolean;
     min?: number;
     max?: number;
+    meta?: boolean;
   }
 
   export interface CmsFieldRelation {
@@ -342,6 +343,11 @@ declare module 'decap-cms-core' {
     view_filters?: ViewFilter[];
     view_groups?: ViewGroup[];
     i18n?: boolean | CmsI18nConfig;
+    index_file?: {
+      pattern: string;
+      editor?: { preview?: boolean };
+      fields?: CmsField[];
+    };
 
     /**
      * @deprecated Use sortable_fields instead

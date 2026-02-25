@@ -46,9 +46,13 @@ async function moveFile(from: string, to: string) {
   await fs.rename(from, to);
 }
 
-export async function move(from: string, to: string) {
+export async function move(from: string, to: string, isFolder?: boolean) {
   // move file
   await moveFile(from, to);
+
+  if (isFolder === false) {
+    return;
+  }
 
   // move children
   const sourceDir = path.dirname(from);

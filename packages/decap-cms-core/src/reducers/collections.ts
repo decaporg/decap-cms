@@ -4,6 +4,7 @@ import escapeRegExp from 'lodash/escapeRegExp';
 import { stringTemplate } from 'decap-cms-lib-widgets';
 
 import consoleError from '../lib/consoleError';
+import { isIndexFile } from '../lib/indexFileHelper';
 import { CONFIG_SUCCESS } from '../actions/config';
 import { FILES, FOLDER } from '../constants/collectionTypes';
 import { COMMIT_DATE, COMMIT_AUTHOR } from '../constants/commitProps';
@@ -56,7 +57,16 @@ const selectors = {
 
       return ext.replace(/^\./, '');
     },
-    fields(collection: Collection) {
+    fields(collection: Collection, slug: string, index?: boolean) {
+      const indexFileConfig = collection.get('index_file');
+      if (
+        indexFileConfig &&
+        (index || isIndexFile(slug, indexFileConfig.get('pattern'), !!collection.get('nested'))) &&
+        indexFileConfig.has('fields')
+      ) {
+        return indexFileConfig.get('fields');
+      }
+
       return collection.get('fields');
     },
     entryPath(collection: Collection, slug: string) {
@@ -177,8 +187,8 @@ export function selectMediaFolders(config: CmsConfig, collection: Collection, en
   return Set(folders).toArray();
 }
 
-export function selectFields(collection: Collection, slug: string) {
-  return selectors[collection.get('type')].fields(collection, slug);
+export function selectFields(collection: Collection, slug: string, index?: boolean) {
+  return selectors[collection.get('type')].fields(collection, slug, index);
 }
 
 export function selectFolderEntryExtension(collection: Collection) {
@@ -530,6 +540,14 @@ export function selectHasMetaPath(collection: Collection) {
     collection.has('meta') &&
     collection.get('meta')?.has('path')
   );
+}
+
+export function isNested(collection: Collection) {
+  return !!collection.get('nested');
+}
+
+export function isNestedSubfolders(collection: Collection) {
+  return isNested(collection) && collection.get('nested')?.get('subfolders') !== false;
 }
 
 export default collections;

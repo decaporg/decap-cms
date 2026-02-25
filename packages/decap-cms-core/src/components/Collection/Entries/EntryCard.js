@@ -2,7 +2,7 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { colors, colorsRaw, components, lengths, zIndex } from 'decap-cms-ui-default';
+import { colors, colorsRaw, components, lengths, zIndex, Icon } from 'decap-cms-ui-default';
 import { translate } from 'react-polyglot';
 
 import { boundGetAsset } from '../../../actions/media';
@@ -137,6 +137,7 @@ function EntryCard({
   image,
   imageField,
   collectionLabel,
+  showIndexFileIcon,
   viewStyle = VIEW_STYLE_LIST,
   workflowStatus,
   getAsset,
@@ -163,6 +164,7 @@ function EntryCard({
           <ListCardTitle>
             {summary}
             <TitleIcons>
+              {showIndexFileIcon && <Icon type="home" />}
               {workflowStatus && (
                 <WorkflowBadge status={workflowStatus}>
                   {getStatusLabel(workflowStatus)}
@@ -184,6 +186,7 @@ function EntryCard({
             <CardHeading>
               {summary}
               <TitleIcons>
+                {showIndexFileIcon && <Icon type="home" />}
                 {workflowStatus && (
                   <WorkflowBadge status={workflowStatus}>
                     {getStatusLabel(workflowStatus)}
@@ -211,6 +214,9 @@ function mapStateToProps(state, ownProps) {
 
   const isLoadingAsset = selectIsLoadingAsset(state.medias);
 
+  const indexFileConfig = collection.get('index_file');
+  const fileSlug = entry.get('slug');
+
   return {
     summary,
     path: `/collections/${collection.get('name')}/entries/${entry.get('slug')}`,
@@ -219,6 +225,7 @@ function mapStateToProps(state, ownProps) {
       .get('fields')
       ?.find(f => f.get('name') === inferredFields.imageField && f.get('widget') === 'image'),
     isLoadingAsset,
+    showIndexFileIcon: indexFileConfig && new RegExp(indexFileConfig.get('pattern')).test(fileSlug),
   };
 }
 
