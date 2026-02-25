@@ -147,11 +147,31 @@ collections: # A list of collections the CMS should be able to edit
         display_fields: ['title', 'datetime']
         search_fields: ['title', 'body']
         value_field: 'title'
-      - { label: 'Title', name: 'title', widget: 'string' }
-      - { label: 'Boolean', name: 'boolean', widget: 'boolean', default: true }
+      - {
+          label: 'Title',
+          name: 'title',
+          widget: 'string',
+          prefix: 'This string:',
+          suffix: 'is a title'
+        }
+      - {
+          label: 'Boolean',
+          name: 'boolean',
+          widget: 'boolean',
+          prefix: 'OFF',
+          suffix: 'ON',
+          hint: 'Toggle this to switch on/off',
+          default: true
+        }
       - { label: 'Map', name: 'map', widget: 'map' }
       - { label: 'Text', name: 'text', widget: 'text', hint: 'Plain text, not markdown' }
-      - { label: 'Number', name: 'number', widget: 'number', hint: 'To infinity and beyond!' }
+      - {
+          label: 'Number',
+          name: 'number',
+          widget: 'number',
+          suffix: 'px',
+          hint: 'To infinity and beyond!'
+        }
       - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
       - { label: 'Datetime', name: 'datetime', widget: 'datetime' }
       - { label: 'Image', name: 'image', widget: 'image' }
