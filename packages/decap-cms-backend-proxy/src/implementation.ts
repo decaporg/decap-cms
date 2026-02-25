@@ -16,6 +16,7 @@ import type {
   Implementation,
   ImplementationFile,
   UnpublishedEntry,
+  Note,
 } from 'decap-cms-lib-util';
 
 async function serializeAsset(assetProxy: AssetProxy) {
@@ -245,6 +246,97 @@ export default class ProxyBackend implements Implementation {
     });
 
     return deserializeMediaFile(file);
+  }
+
+  async getNotes(collection: string, slug: string): Promise<Note[]> {
+    try {
+      const response = await this.request({
+        action: 'getNotes',
+        params: {
+          branch: this.branch,
+          collection,
+          slug
+        },
+      });
+      return response.notes || [];
+    } catch (error) {
+      console.warn('Failed to get notes:', error);
+      return [];
+    }
+  }
+
+  async addNote(collection: string, slug: string, note: Omit<Note, 'id'>): Promise<Note> {
+    const response = await this.request({
+      action: 'addNote',
+      params: {
+        branch: this.branch,
+        collection,
+        slug,
+        note
+      },
+    });
+    return response.note;
+  }
+
+  async updateNote(collection: string, slug: string, noteId: string, updates: Partial<Note>): Promise<Note> {
+    const response = await this.request({
+      action: 'updateNote',
+      params: {
+        branch: this.branch,
+        collection,
+        slug,
+        noteId,
+        updates
+      },
+    });
+    return response.note;
+  }
+
+  async deleteNote(collection: string, slug: string, noteId: string): Promise<void> {
+    await this.request({
+      action: 'deleteNote',
+      params: {
+        branch: this.branch,
+        collection,
+        slug,
+        noteId
+      },
+    });
+  }
+
+  async toggleNoteResolution(collection: string, slug: string, noteId: string): Promise<Note> {
+    const response = await this.request({
+      action: 'toggleNoteResolution',
+      params: {
+        branch: this.branch,
+        collection,
+        slug,
+        noteId
+      },
+    });
+    return response.note;
+  }
+
+  async getPRMetadata(collection: string, slug: string): Promise<{
+    id: string;
+    url: string;
+    author: string;
+    createdAt: string;
+  } | null> {
+    try {
+      const response = await this.request({
+        action: 'getPRMetadata',
+        params: {
+          branch: this.branch,
+          collection,
+          slug
+        },
+      });
+      return response.metadata || null;
+    } catch (error) {
+      console.warn('Failed to get PR metadata:', error);
+      return null;
+    }
   }
 
   deleteFiles(paths: string[], commitMessage: string) {

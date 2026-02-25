@@ -22,7 +22,7 @@ import { getProcessSegment } from '../lib/formatters';
 import { hasI18n, duplicateDefaultI18nFields, serializeI18n, I18N, I18N_FIELD } from '../lib/i18n';
 import { addNotification } from './notifications';
 
-import type { ImplementationMediaFile } from 'decap-cms-lib-util';
+import type { ImplementationMediaFile, Note, IssueChange } from 'decap-cms-lib-util';
 import type { AnyAction } from 'redux';
 import type { ThunkDispatch } from 'redux-thunk';
 import type {
@@ -85,6 +85,24 @@ export const ADD_DRAFT_ENTRY_MEDIA_FILE = 'ADD_DRAFT_ENTRY_MEDIA_FILE';
 export const REMOVE_DRAFT_ENTRY_MEDIA_FILE = 'REMOVE_DRAFT_ENTRY_MEDIA_FILE';
 
 export const CHANGE_VIEW_STYLE = 'CHANGE_VIEW_STYLE';
+
+export const DRAFT_NOTES_LOAD = 'DRAFT_NOTES_LOAD';
+export const DRAFT_NOTE_ADD = 'DRAFT_NOTE_ADD';
+export const DRAFT_NOTE_UPDATE = 'DRAFT_NOTE_UPDATE';
+export const DRAFT_NOTE_DELETE = 'DRAFT_NOTE_DELETE';
+export const NOTES_REQUEST = 'NOTES_REQUEST';
+export const NOTES_SUCCESS = 'NOTES_SUCCESS';
+export const NOTES_FAILURE = 'NOTES_FAILURE';
+export const NOTE_PERSIST_REQUEST = 'NOTE_PERSIST_REQUEST';
+export const NOTE_PERSIST_SUCCESS = 'NOTE_PERSIST_SUCCESS';
+export const NOTE_PERSIST_FAILURE = 'NOTE_PERSIST_FAILURE';
+export const NOTE_DELETE_REQUEST = 'NOTE_DELETE_REQUEST';
+export const NOTE_DELETE_SUCCESS = 'NOTE_DELETE_SUCCESS';
+export const NOTE_DELETE_FAILURE = 'NOTE_DELETE_FAILURE';
+export const NOTES_POLLING_START = 'NOTES_POLLING_START';
+export const NOTES_POLLING_STOP = 'NOTES_POLLING_STOP';
+export const NOTES_POLLING_UPDATE = 'NOTES_POLLING_UPDATE';
+export const NOTES_CHANGE_DETECTED = 'NOTES_CHANGE_DETECTED';
 
 /*
  * Simple Action Creators (Internal)
@@ -460,6 +478,22 @@ export function removeDraftEntryMediaFile({ id }: { id: string }) {
   return { type: REMOVE_DRAFT_ENTRY_MEDIA_FILE, payload: { id } };
 }
 
+export function loadNotesForEntry(notes: Note[]) {
+  return { type: DRAFT_NOTES_LOAD, payload: { notes } };
+}
+
+export function addNote(note: Note) {
+  return { type: DRAFT_NOTE_ADD, payload: { note } };
+}
+
+export function updateNote(noteId: string, updates: Partial<Note>) {
+  return { type: DRAFT_NOTE_UPDATE, payload: { id: noteId, updates } };
+}
+
+export function deleteNote(noteId: string) {
+  return { type: DRAFT_NOTE_DELETE, payload: { id: noteId } };
+}
+
 export function persistLocalBackup(entry: EntryMap, collection: Collection) {
   return (_dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
@@ -536,6 +570,11 @@ export function loadEntry(collection: Collection, slug: string) {
       const loadedEntry = await tryLoadEntry(getState(), collection, slug);
       dispatch(entryLoaded(collection, loadedEntry));
       dispatch(createDraftFromEntry(loadedEntry));
+      const state = getState();
+      const isNotesEnabled = state.config.editor?.notes ?? false;
+      if (isNotesEnabled) {
+        await dispatch(loadNotes(collection, slug));
+      }
     } catch (error) {
       dispatch(
         addNotification({
@@ -1001,6 +1040,414 @@ export function deleteEntry(collection: Collection, slug: string) {
         console.error(error);
         return Promise.reject(dispatch(entryDeleteFail(collection, slug, error)));
       });
+  };
+}
+export function notesLoading(collection: Collection, slug: string) {
+  return {
+    type: NOTES_REQUEST,
+    payload: {
+      collection: collection.get('name'),
+      slug,
+    },
+  };
+}
+
+export function notesLoaded(collection: Collection, slug: string, notes: Note[]) {
+  return {
+    type: NOTES_SUCCESS,
+    payload: {
+      collection: collection.get('name'),
+      slug,
+      notes,
+    },
+  };
+}
+
+export function notesLoadError(error: Error, collection: Collection, slug: string) {
+  return {
+    type: NOTES_FAILURE,
+    payload: {
+      error,
+      collection: collection.get('name'),
+      slug,
+    },
+  };
+}
+
+export function notePersisting(collection: Collection, slug: string, note: Note) {
+  return {
+    type: NOTE_PERSIST_REQUEST,
+    payload: {
+      collection: collection.get('name'),
+      slug,
+      noteId: note.id,
+    },
+  };
+}
+
+export function notePersisted(collection: Collection, slug: string, note: Note) {
+  return {
+    type: NOTE_PERSIST_SUCCESS,
+    payload: {
+      collection: collection.get('name'),
+      slug,
+      note,
+    },
+  };
+}
+
+export function notePersistFail(collection: Collection, slug: string, note: Note, error: Error) {
+  return {
+    type: NOTE_PERSIST_FAILURE,
+    error: 'Failed to persist note',
+    payload: {
+      collection: collection.get('name'),
+      slug,
+      noteId: note.id,
+      error: error.toString(),
+    },
+  };
+}
+
+export function noteDeleting(collection: Collection, slug: string, noteId: string) {
+  return {
+    type: NOTE_DELETE_REQUEST,
+    payload: {
+      collection: collection.get('name'),
+      slug,
+      noteId,
+    },
+  };
+}
+
+export function noteDeleted(collection: Collection, slug: string, noteId: string) {
+  return {
+    type: NOTE_DELETE_SUCCESS,
+    payload: {
+      collection: collection.get('name'),
+      slug,
+      noteId,
+    },
+  };
+}
+
+export function noteDeleteFail(collection: Collection, slug: string, noteId: string, error: Error) {
+  return {
+    type: NOTE_DELETE_FAILURE,
+    payload: {
+      collection: collection.get('name'),
+      slug,
+      noteId,
+      error: error.toString(),
+    },
+  };
+}
+
+export function loadNotes(collection: Collection, slug: string) {
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+    dispatch(notesLoading(collection, slug));
+    try {
+      const state = getState();
+      const backend = currentBackend(state.config);
+      const notes = await backend.getNotes(collection.get('name'), slug);
+
+      // Set entrySlug for all notes
+      const notesWithSlug = notes.map(note => ({ ...note, entrySlug: slug }));
+
+      dispatch(notesLoaded(collection, slug, notesWithSlug));
+      dispatch(loadNotesForEntry(notesWithSlug));
+      dispatch(startNotesPolling(collection, slug));
+    } catch (error) {
+      dispatch(notesLoadError(error, collection, slug));
+      dispatch(loadNotesForEntry([])); // Start with empty notes
+    }
+  };
+}
+
+export function pollingStarted(collection: Collection, slug: string) {
+  return {
+    type: NOTES_POLLING_START,
+    payload: {
+      collection: collection.get('name'),
+      slug,
+    },
+  };
+}
+
+export function pollingStopped(collection: Collection, slug: string) {
+  return {
+    type: NOTES_POLLING_STOP,
+    payload: {
+      collection: collection.get('name'),
+      slug,
+    },
+  };
+}
+
+export function notesUpdatedFromPolling(
+  collection: Collection,
+  slug: string,
+  notes: Note[],
+  changes: IssueChange[],
+) {
+  return {
+    type: NOTES_POLLING_UPDATE,
+    payload: {
+      collection: collection.get('name'),
+      slug,
+      notes,
+      changes,
+    },
+  };
+}
+
+export function changeDetected(collection: Collection, slug: string, change: IssueChange) {
+  return {
+    type: NOTES_CHANGE_DETECTED,
+    payload: {
+      collection: collection.get('name'),
+      slug,
+      change,
+    },
+  };
+}
+
+export function startNotesPolling(collection: Collection, slug: string) {
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+    try {
+      const state = getState();
+      const backend = currentBackend(state.config);
+
+      if (!backend.startNotesPolling) {
+        console.warn('[DecapNotes Polling] Backend does not support notes polling');
+        return;
+      }
+
+      const callbacks = {
+        onUpdate: (notes: Note[], changes: IssueChange[]) => {
+          dispatch(notesUpdatedFromPolling(collection, slug, notes, changes));
+          dispatch(loadNotesForEntry(notes));
+        },
+        onChange: (change: IssueChange) => {
+          // Dispatch action for individual change notifications
+          dispatch(changeDetected(collection, slug, change));
+        },
+      };
+
+      await backend.startNotesPolling(collection.get('name'), slug, callbacks);
+
+      dispatch(pollingStarted(collection, slug));
+    } catch (error) {
+      console.error('[DecapNotes Polling] Failed to start notes polling:', error);
+    }
+  };
+}
+/**
+ * Stop watching notes for an entry
+ */
+export function stopNotesPolling(collection: Collection, slug: string) {
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+    try {
+      const state = getState();
+      const backend = currentBackend(state.config);
+
+      if (!backend.stopNotesPolling) {
+        return;
+      }
+
+      await backend.stopNotesPolling(collection.get('name'), slug);
+
+      dispatch(pollingStopped(collection, slug));
+    } catch (error) {
+      console.error('[Redux] Failed to stop notes polling:', error);
+    }
+  };
+}
+
+/**
+ * Manually refresh notes
+ */
+export function refreshNotesNow(collection: Collection, slug: string) {
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+    try {
+      const state = getState();
+      const backend = currentBackend(state.config);
+
+      if (!backend.refreshNotesNow) {
+        return dispatch(loadNotes(collection, slug));
+      }
+
+      await backend.refreshNotesNow(collection.get('name'), slug);
+    } catch (error) {
+      console.error('[DecapNotes Polling] Failed to refresh notes:', error);
+    }
+  };
+}
+
+export function persistNote(collection: Collection, slug: string, note: Omit<Note, 'id'>) {
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+    const backend = currentBackend(getState().config);
+    dispatch(notePersisting(collection, slug, note as Note));
+    try {
+      const savedNote = await backend.addNote(collection.get('name'), slug, note);
+      dispatch(notePersisted(collection, slug, savedNote));
+      dispatch(addNote(savedNote));
+      dispatch(
+        addNotification({
+          message: {
+            key: 'ui.toast.noteAdded',
+          },
+          type: 'success',
+          dismissAfter: 4000,
+        }),
+      );
+      // After adding a note, polling gets restarted. In case the note is the first ever note persisted (which is the moment a Github Issue is created for example) this will help the Polling system to pickup the source of the Notes.
+      const state = getState();
+      const isNotesEnabled = state.config.editor?.notes ?? false;
+
+      if (isNotesEnabled) {
+        // Small delay to let the issue creation propagate
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        await dispatch(startNotesPolling(collection, slug));
+      }
+      return savedNote;
+    } catch (error) {
+      dispatch(notePersistFail(collection, slug, note as Note, error));
+      dispatch(
+        addNotification({
+          message: {
+            details: error.message,
+            key: 'ui.toast.onFailToAddNote',
+          },
+          type: 'error',
+          dismissAfter: 8000,
+        }),
+      );
+    }
+  };
+}
+
+export function updateNotePersist(
+  collection: Collection,
+  slug: string,
+  noteId: string,
+  updates: Partial<Note>,
+) {
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+    const state = getState();
+    const backend = currentBackend(state.config);
+
+    // Create a temporary note object for the persist actions
+    const tempNote = { id: noteId, ...updates } as Note;
+    dispatch(notePersisting(collection, slug, tempNote));
+
+    try {
+      const updatedNote = await backend.updateNote(collection.get('name'), slug, noteId, updates);
+      dispatch(notePersisted(collection, slug, updatedNote));
+      dispatch(updateNote(noteId, updates));
+
+      dispatch(
+        addNotification({
+          message: {
+            key: 'ui.toast.noteUpdated',
+          },
+          type: 'success',
+          dismissAfter: 4000,
+        }),
+      );
+
+      return updatedNote;
+    } catch (error) {
+      dispatch(notePersistFail(collection, slug, tempNote, error));
+      dispatch(
+        addNotification({
+          message: {
+            details: error.message,
+            key: 'ui.toast.onFailToUpdateNote',
+          },
+          type: 'error',
+          dismissAfter: 8000,
+        }),
+      );
+    }
+  };
+}
+
+export function deleteNotePersist(collection: Collection, slug: string, noteId: string) {
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+    const state = getState();
+    const backend = currentBackend(state.config);
+
+    dispatch(noteDeleting(collection, slug, noteId));
+
+    try {
+      await backend.deleteNote(collection.get('name'), slug, noteId);
+      dispatch(noteDeleted(collection, slug, noteId));
+      dispatch(deleteNote(noteId));
+
+      dispatch(
+        addNotification({
+          message: {
+            key: 'ui.toast.noteDeleted',
+          },
+          type: 'success',
+          dismissAfter: 4000,
+        }),
+      );
+    } catch (error) {
+      dispatch(noteDeleteFail(collection, slug, noteId, error));
+      dispatch(
+        addNotification({
+          message: {
+            details: error.message,
+            key: 'ui.toast.onFailToDeleteNote',
+          },
+          type: 'error',
+          dismissAfter: 8000,
+        }),
+      );
+    }
+  };
+}
+
+export function toggleNoteResolutionPersist(collection: Collection, slug: string, noteId: string) {
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+    const state = getState();
+    const backend = currentBackend(state.config);
+
+    // Create a temporary note object for the persist actions
+    const tempNote = { id: noteId } as Note;
+    dispatch(notePersisting(collection, slug, tempNote));
+
+    try {
+      const updatedNote = await backend.toggleNoteResolution(collection.get('name'), slug, noteId);
+      dispatch(notePersisted(collection, slug, updatedNote));
+      dispatch(updateNote(noteId, { resolved: updatedNote.resolved }));
+
+      dispatch(
+        addNotification({
+          message: {
+            key: updatedNote.resolved ? 'ui.toast.noteResolved' : 'ui.toast.noteReopened',
+          },
+          type: 'success',
+          dismissAfter: 4000,
+        }),
+      );
+
+      return updatedNote;
+    } catch (error) {
+      dispatch(notePersistFail(collection, slug, tempNote, error));
+      dispatch(
+        addNotification({
+          message: {
+            details: error.message,
+            key: 'ui.toast.onFailToToggleNote',
+          },
+          type: 'error',
+          dismissAfter: 8000,
+        }),
+      );
+    }
   };
 }
 

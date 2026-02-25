@@ -22,6 +22,11 @@ import {
   loadLocalBackup,
   retrieveLocalBackup,
   deleteLocalBackup,
+  loadNotesForEntry,
+  loadNotes,
+  persistNote,
+  updateNotePersist,
+  deleteNotePersist,
 } from '../../actions/entries';
 import {
   updateUnpublishedEntryStatus,
@@ -47,6 +52,7 @@ export class Editor extends React.Component {
     entry: ImmutablePropTypes.map,
     entryDraft: ImmutablePropTypes.map.isRequired,
     loadEntry: PropTypes.func.isRequired,
+    loadNotes: PropTypes.func,
     persistEntry: PropTypes.func.isRequired,
     deleteEntry: PropTypes.func.isRequired,
     showDelete: PropTypes.bool.isRequired,
@@ -174,6 +180,15 @@ export class Editor extends React.Component {
       } else {
         this.deleteBackup();
       }
+    }
+
+    if (
+      prevProps.entry !== this.props.entry &&
+      this.props.entry &&
+      !this.props.newEntry &&
+      this.props.hasWorkflow
+    ) {
+      this.props.loadNotes(this.props.collection, this.props.slug);
     }
 
     if (this.props.hasChanged) {
@@ -336,6 +351,24 @@ export class Editor extends React.Component {
     }
   };
 
+  handleNotesChange = (action, payload) => {
+    const { collection, slug } = this.props;
+
+    switch (action) {
+      case 'ADD_NOTE':
+        this.props.persistNote(collection, slug, payload);
+        break;
+      case 'UPDATE_NOTE':
+        this.props.updateNotePersist(collection, slug, payload.id, payload.updates);
+        break;
+      case 'DELETE_NOTE':
+        this.props.deleteNotePersist(collection, slug, payload.id);
+        break;
+      default:
+        console.log('Unknown notes action:', action, payload);
+    }
+  };
+
   render() {
     const {
       entry,
@@ -385,7 +418,9 @@ export class Editor extends React.Component {
         fields={fields}
         fieldsMetaData={entryDraft.get('fieldsMetaData')}
         fieldsErrors={entryDraft.get('fieldsErrors')}
+        notes={entryDraft.get('notes')}
         onChange={this.handleChangeDraftField}
+        onNotesChange={this.handleNotesChange}
         onValidate={changeDraftFieldValidation}
         onPersist={this.handlePersistEntry}
         onDelete={this.handleDeleteEntry}
@@ -403,6 +438,7 @@ export class Editor extends React.Component {
         hasUnpublishedChanges={unpublishedEntry}
         isNewEntry={newEntry}
         isModification={isModification}
+        isPublished={isPublished}
         currentStatus={currentStatus}
         onLogoutClick={logoutUser}
         deployPreview={deployPreview}
@@ -492,6 +528,11 @@ const mapDispatchToProps = {
   unpublishPublishedEntry,
   deleteUnpublishedEntry,
   logoutUser,
+  loadNotesForEntry,
+  loadNotes,
+  persistNote,
+  updateNotePersist,
+  deleteNotePersist,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withWorkflow(translate()(Editor)));

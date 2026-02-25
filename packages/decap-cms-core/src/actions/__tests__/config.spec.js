@@ -406,6 +406,7 @@ describe('config', () => {
         it('should set editor preview honoring global config before and specific config after', () => {
           const config = applyDefaults({
             editor: {
+              notes: false,
               preview: false,
             },
             collections: [
@@ -415,6 +416,7 @@ describe('config', () => {
               },
               {
                 editor: {
+                  notes: false,
                   preview: true,
                 },
                 fields: [{ name: 'title' }],
@@ -486,6 +488,10 @@ describe('config', () => {
             view_filters: [],
             view_groups: [],
             identifier_field: 'datetime',
+            editor: {
+              notes: false,
+              preview: true,
+            },
             fields: [
               {
                 name: 'datetime',
@@ -507,6 +513,10 @@ describe('config', () => {
           },
           {
             sortable_fields: [],
+            editor: {
+              notes: false,
+              preview: true,
+            },
             files: [
               {
                 name: 'file',
@@ -537,6 +547,10 @@ describe('config', () => {
             publish: true,
           },
         ],
+        editor: {
+          notes: false,
+          preview: true,
+        },
         public_folder: '/',
         publish_mode: 'simple',
         slug: { clean_accents: false, encoding: 'unicode', sanitize_replacement: '-' },
@@ -947,6 +961,10 @@ describe('config', () => {
       expect(dispatch).toHaveBeenCalledWith({
         type: 'CONFIG_SUCCESS',
         payload: {
+          editor: {
+            notes: false,
+            preview: true,
+          },
           backend: { repo: 'test-repo' },
           collections: [],
           publish_mode: 'simple',
@@ -981,6 +999,10 @@ describe('config', () => {
         type: 'CONFIG_SUCCESS',
         payload: {
           backend: { repo: 'github' },
+          editor: {
+            notes: false,
+            preview: true,
+          },
           collections: [],
           publish_mode: 'simple',
           slug: { encoding: 'unicode', clean_accents: false, sanitize_replacement: '-' },

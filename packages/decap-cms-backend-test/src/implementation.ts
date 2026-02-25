@@ -16,6 +16,7 @@ import AuthenticationPage from './AuthenticationPage';
 
 import type {
   Implementation,
+  Note,
   Entry,
   ImplementationEntry,
   AssetProxy,
@@ -50,11 +51,13 @@ declare global {
   interface Window {
     repoFiles: RepoTree;
     repoFilesUnpublished: { [key: string]: UnpublishedRepoEntry };
+    repoNotes: { [key: string]: Note[] };
   }
 }
 
 window.repoFiles = window.repoFiles || {};
 window.repoFilesUnpublished = window.repoFilesUnpublished || [];
+window.repoNotes = window.repoNotes || {};
 
 function getFile(path: string, tree: RepoTree) {
   const segments = path.split('/');
@@ -392,6 +395,84 @@ export default class TestBackend implements Implementation {
       file: fileObj,
       url,
     };
+  }
+
+  async getNotes(collection: string, slug: string): Promise<Note[]> {
+    const key = `${collection}/${slug}`;
+    return window.repoNotes[key] || [];
+  }
+
+  async addNote(collection: string, slug: string, note: Omit<Note, 'id'>): Promise<Note> {
+    const key = `${collection}/${slug}`;
+    const newNote: Note = {
+      ...note,
+      id: uuid(),
+      timestamp: new Date().toISOString(),
+    };
+
+    if (!window.repoNotes[key]) {
+      window.repoNotes[key] = [];
+    }
+
+    window.repoNotes[key].push(newNote);
+    return newNote;
+  }
+
+  async updateNote(
+    collection: string,
+    slug: string,
+    noteId: string,
+    updates: Partial<Note>,
+  ): Promise<Note> {
+    const key = `${collection}/${slug}`;
+    const notes = window.repoNotes[key] || [];
+    const noteIndex = notes.findIndex(note => note.id === noteId);
+
+    if (noteIndex === -1) {
+      throw new Error(`Note with id ${noteId} not found`);
+    }
+
+    const updatedNote = {
+      ...notes[noteIndex],
+      ...updates,
+      updatedAt: new Date().toISOString(),
+    };
+
+    window.repoNotes[key][noteIndex] = updatedNote;
+    return updatedNote;
+  }
+
+  async deleteNote(collection: string, slug: string, noteId: string): Promise<void> {
+    const key = `${collection}/${slug}`;
+    const notes = window.repoNotes[key] || [];
+    const noteIndex = notes.findIndex(note => note.id === noteId);
+
+    if (noteIndex === -1) {
+      throw new Error(`Note with id ${noteId} not found`);
+    }
+
+    window.repoNotes[key].splice(noteIndex, 1);
+  }
+
+  async toggleNoteResolution(collection: string, slug: string, noteId: string): Promise<Note> {
+    const key = `${collection}/${slug}`;
+    const notes = window.repoNotes[key] || [];
+    const note = notes.find(note => note.id === noteId);
+
+    if (!note) {
+      throw new Error(`Note with id ${noteId} not found`);
+    }
+
+    const updatedNote = {
+      ...note,
+      resolved: !note.resolved,
+      updatedAt: new Date().toISOString(),
+    };
+
+    const noteIndex = notes.findIndex(n => n.id === noteId);
+    window.repoNotes[key][noteIndex] = updatedNote;
+
+    return updatedNote;
   }
 
   normalizeAsset(assetProxy: AssetProxy) {

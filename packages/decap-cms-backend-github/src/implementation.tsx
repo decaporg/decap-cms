@@ -24,6 +24,7 @@ import {
 
 import AuthenticationPage from './AuthenticationPage';
 import API, { API_NAME } from './API';
+import { ETagPollingManager } from './polling';
 import GraphQLAPI from './GraphQLAPI';
 
 import type { Endpoints } from '@octokit/types';
@@ -39,6 +40,8 @@ import type {
   ImplementationFile,
   UnpublishedEntryMediaFile,
   Entry,
+  Note,
+  IssueChange,
 } from 'decap-cms-lib-util';
 import type { Semaphore } from 'semaphore';
 
@@ -90,6 +93,8 @@ export default class GitHub implements Implementation {
     [key: string]: Promise<boolean>;
   };
   _mediaDisplayURLSem?: Semaphore;
+  pollingManager?: ETagPollingManager;
+  unwatchFunctions: Map<string, () => void> = new Map();
 
   constructor(config: Config, options = {}) {
     this.options = {
@@ -381,12 +386,22 @@ export default class GitHub implements Implementation {
     //   }
     // }
 
+    if (this.api && !this.pollingManager) {
+      this.pollingManager = new ETagPollingManager(this.api, 15000);
+    }
     // Authorized user
     return { ...user, token: state.token as string, useOpenAuthoring: this.useOpenAuthoring };
   }
 
   logout() {
     this.token = null;
+    // Clean up polling
+    if (this.pollingManager) {
+      this.pollingManager.destroy();
+      this.pollingManager = undefined;
+    }
+    this.unwatchFunctions.clear();
+
     if (this.api && this.api.reset && typeof this.api.reset === 'function') {
       return this.api.reset();
     }
@@ -710,7 +725,15 @@ export default class GitHub implements Implementation {
     // deleteUnpublishedEntry is a transactional operation
     return runWithLock(
       this.lock,
-      () => this.api!.deleteUnpublishedEntry(collection, slug),
+      async () => {
+        await this.api!.deleteUnpublishedEntry(collection, slug);
+        // Clean up associated notes issue
+        try {
+          await this.api!.closeEntryNotesIssue(collection, slug);
+        } catch (error) {
+          console.warn('Failed to close notes issue during entry deletion:', error);
+        }
+      },
       'Failed to acquire delete entry lock',
     );
   }
@@ -719,8 +742,186 @@ export default class GitHub implements Implementation {
     // publishUnpublishedEntry is a transactional operation
     return runWithLock(
       this.lock,
-      () => this.api!.publishUnpublishedEntry(collection, slug),
+      async () => {
+        this.api!.publishUnpublishedEntry(collection, slug),
+          await this.api!.closeIssueOnPublish(collection, slug);
+      },
       'Failed to acquire publish entry lock',
     );
+  }
+
+  // Notes implementation, which is an abstraction to Github's PR issue comments.
+
+  // Notes implementation using GitHub Issues
+  async getNotes(collection: string, slug: string): Promise<Note[]> {
+    try {
+      const notes = await this.api!.getEntryNotes(collection, slug);
+      return notes.map(note => ({ ...note, entrySlug: slug }));
+    } catch (error) {
+      console.error('Failed to get notes:', error);
+      return [];
+    }
+  }
+
+  async addNote(collection: string, slug: string, noteData: Omit<Note, 'id'>): Promise<Note> {
+    const currentUser = await this.currentUser({ token: this.token! });
+
+    const note: Note = {
+      ...noteData,
+      id: 'temp-' + Date.now(),
+      author: currentUser.login || currentUser.name || '',
+      avatarUrl: currentUser.avatar_url,
+      entrySlug: slug,
+      timestamp: noteData.timestamp || new Date().toISOString(),
+      resolved: noteData.resolved || false,
+      issueUrl: undefined,
+    };
+
+    // Get entry title for better issue naming
+    let entryTitle: string | undefined;
+    try {
+      const entryData = await this.getEntry(`${collection}/${slug}.md`);
+      const titleMatch = entryData.data.match(/^title:\s*["']?([^"'\n]+)["']?/m);
+      entryTitle = titleMatch ? titleMatch[1] : undefined;
+    } catch (error) {
+      // Entry not found or error reading, use undefined title
+    }
+
+    const { commentId, issueUrl } = await this.api!.addNoteToEntry(
+      collection,
+      slug,
+      note,
+      entryTitle,
+    );
+
+    return {
+      ...note,
+      id: commentId,
+      issueUrl,
+    };
+  }
+
+  async updateNote(
+    collection: string,
+    slug: string,
+    noteId: string,
+    updates: Partial<Note>,
+  ): Promise<Note> {
+    const currentNotes = await this.getNotes(collection, slug);
+    const existingNote = currentNotes.find(note => note.id === noteId);
+    if (!existingNote) {
+      throw new Error(`Note with ID ${noteId} not found`);
+    }
+
+    const updatedNote: Note = {
+      ...existingNote,
+      ...updates,
+      id: noteId,
+      entrySlug: slug,
+    };
+
+    await this.api!.updateEntryNote(noteId, updatedNote);
+    return updatedNote;
+  }
+
+  async deleteNote(collection: string, slug: string, noteId: string): Promise<void> {
+    const currentNotes = await this.getNotes(collection, slug);
+    const noteExists = currentNotes.some(note => note.id === noteId);
+    if (!noteExists) {
+      throw new Error(`Note with ID ${noteId} not found`);
+    }
+
+    await this.api!.deleteEntryNote(noteId);
+  }
+
+  async toggleNoteResolution(collection: string, slug: string, noteId: string): Promise<Note> {
+    const currentNotes = await this.getNotes(collection, slug);
+    const note = currentNotes.find(n => n.id === noteId);
+    if (!note) {
+      throw new Error(`Note with ID ${noteId} not found`);
+    }
+
+    return this.updateNote(collection, slug, noteId, {
+      resolved: !note.resolved,
+    });
+  }
+
+  async reopenIssueForUnpublishedEntry(collection: string, slug: string) {
+    await this.api!.reopenIssueOnUnpublish(collection, slug);
+  }
+  /**
+   * Start watching notes for changes
+   * Called from Redux action
+   */
+  async startNotesPolling(
+    collection: string,
+    slug: string,
+    callbacks: {
+      onUpdate: (notes: Note[], changes: IssueChange[]) => void;
+      onChange?: (change: IssueChange) => void;
+    },
+  ): Promise<void> {
+    if (!this.pollingManager) {
+      console.warn('[DecapNotes Polling] Polling manager not initialized');
+      return;
+    }
+
+    const issueKey = `${collection}/${slug}`;
+
+    // Check if already watching this exact entry - if so, skip
+    if (this.pollingManager.getStatus().currentWatch === issueKey) {
+      return;
+    }
+
+    // First, ensure any previous polling for this entry is completely stopped
+    const existingUnwatch = this.unwatchFunctions.get(issueKey);
+    if (existingUnwatch) {
+      existingUnwatch();
+      this.unwatchFunctions.delete(issueKey);
+    }
+
+    try {
+      const unwatchFn = await this.pollingManager.watchIssueWithRetry(
+        collection,
+        slug,
+        callbacks,
+        5, // maxRetries - will try up to 5 times
+        2000, // retryDelay - 2 seconds between attempts
+      );
+
+      // Store the new unwatch function
+      this.unwatchFunctions.set(issueKey, unwatchFn);
+    } catch (error) {
+      console.error('[DecapNotes Polling] Failed to start polling after retries:', error);
+    }
+  }
+
+  /**
+   * Stop watching notes for changes
+   * Called from Redux action: dispatch(stopNotesPolling(collection, slug))
+   *
+   * Ensures complete cleanup of polling for this entry
+   */
+  async stopNotesPolling(collection: string, slug: string): Promise<void> {
+    const issueKey = `${collection}/${slug}`;
+    const unwatchFn = this.unwatchFunctions.get(issueKey);
+
+    if (unwatchFn) {
+      unwatchFn();
+      this.unwatchFunctions.delete(issueKey);
+    } else {
+      console.log(`[DecapNotes Polling] No active polling found for ${issueKey}`);
+    }
+  }
+
+  /**
+   * Manually refresh notes (force check now)
+   * Called from Redux action: dispatch(refreshNotesNow(collection, slug))
+   */
+  async refreshNotesNow(collection: string, slug: string): Promise<void> {
+    if (!this.pollingManager) {
+      throw new Error('Polling manager not initialized');
+    }
+    await this.pollingManager.checkIssueNow(collection, slug);
   }
 }
