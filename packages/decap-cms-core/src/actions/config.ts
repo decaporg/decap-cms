@@ -174,6 +174,20 @@ function hasIntegration(config: CmsConfig, collection: CmsCollection) {
   return !!integration;
 }
 
+function normalizeSortableFields(
+  sortableFields: (
+    | string
+    | { field: string; label?: string; default_sort?: boolean | 'asc' | 'desc' }
+  )[],
+) {
+  return sortableFields.map(field => {
+    if (typeof field === 'string') {
+      return { field, default_sort: undefined };
+    }
+    return field;
+  });
+}
+
 export function normalizeConfig(config: CmsConfig) {
   const { collections = [] } = config;
 
@@ -201,6 +215,14 @@ export function normalizeConfig(config: CmsConfig) {
       console.warn(
         `Collection ${collection.name} is using a deprecated configuration 'sortableFields'. Please use 'sortable_fields'`,
       );
+    }
+
+    // Normalize sortable_fields to consistent object format
+    if (normalizedCollection.sortable_fields) {
+      normalizedCollection = {
+        ...normalizedCollection,
+        sortable_fields: normalizeSortableFields(normalizedCollection.sortable_fields),
+      };
     }
 
     return normalizedCollection;

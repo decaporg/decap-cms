@@ -319,6 +319,12 @@ export interface CmsCollectionMeta {
   };
 }
 
+export interface SortableField {
+  field: string;
+  label?: string;
+  default_sort?: boolean | 'asc' | 'desc';
+}
+
 export interface CmsCollection {
   name: string;
   label: string;
@@ -358,7 +364,7 @@ export interface CmsCollection {
   path?: string;
   media_folder?: string;
   public_folder?: string;
-  sortable_fields?: string[];
+  sortable_fields?: (string | SortableField)[];
   view_filters?: ViewFilter[];
   view_groups?: ViewGroup[];
   i18n?: boolean | CmsI18nConfig;
@@ -374,7 +380,7 @@ export interface CmsCollection {
   /**
    * @deprecated Use sortable_fields instead
    */
-  sortableFields?: string[];
+  sortableFields?: (string | SortableField)[];
 }
 
 export interface CmsBackend {
@@ -658,7 +664,7 @@ type CollectionObject = {
   slug?: string;
   label_singular?: string;
   label: string;
-  sortable_fields: List<string>;
+  sortable_fields: List<StaticallyTypedRecord<SortableField>>;
   view_filters: List<StaticallyTypedRecord<ViewFilter>>;
   view_groups: List<StaticallyTypedRecord<ViewGroup>>;
   nested?: Nested;

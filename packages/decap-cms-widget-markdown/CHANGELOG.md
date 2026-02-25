@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.6.1](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-markdown@3.6.0...decap-cms-widget-markdown@3.6.1) (2026-02-23)
+
+### Bug Fixes
+
+- **a11y:** aria-labels ([#7720](https://github.com/decaporg/decap-cms/issues/7720)) ([cc92370](https://github.com/decaporg/decap-cms/commit/cc92370595a85590ffede50a99259d52ba3eb76b))
+- **markdown:** remove empty links when text is deleted ([#7702](https://github.com/decaporg/decap-cms/issues/7702)) ([f1f1d13](https://github.com/decaporg/decap-cms/commit/f1f1d13e9c3f4b6909371c6fc2e74fe0204d7029)), closes [#7640](https://github.com/decaporg/decap-cms/issues/7640)
+
 # [3.6.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-markdown@3.5.0...decap-cms-widget-markdown@3.6.0) (2025-11-04)
 
 ### Bug Fixes
