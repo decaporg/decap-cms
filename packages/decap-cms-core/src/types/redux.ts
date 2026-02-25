@@ -67,6 +67,27 @@ export interface CmsI18nConfig {
   default_locale?: string;
 }
 
+interface Condition {
+  field: string;
+  value:
+    | string
+    | boolean
+    | number
+    | RegExp
+    | { regex: string; flags?: string }
+    | (string | boolean | number)[];
+  operator?:
+    | 'equal'
+    | 'notEqual'
+    | 'greaterThan'
+    | 'lessThan'
+    | 'greaterThanOrEqual'
+    | 'lessThanOrEqual'
+    | 'oneOf'
+    | 'includes'
+    | 'matches';
+}
+
 export interface CmsFieldBase {
   name: string;
   label?: string;
@@ -77,6 +98,7 @@ export interface CmsFieldBase {
   media_folder?: string;
   public_folder?: string;
   comment?: string;
+  condition?: Condition;
 }
 
 export interface CmsFieldBoolean {
