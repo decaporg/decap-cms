@@ -327,6 +327,17 @@ const en = {
       readyHeader: 'Ready',
       currentEntries: '%{smart_count} entry |||| %{smart_count} entries',
     },
+    collection: {
+      sidebar: {
+        collections: 'Collections',
+        allCollections: 'All Collections',
+        searchAll: 'Search all',
+        searchIn: 'Search in',
+      },
+      entries: {
+        unpublishedHeader: 'Unpublished Entries',
+      },
+    },
   },
 };
 

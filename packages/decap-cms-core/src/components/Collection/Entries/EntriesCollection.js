@@ -18,6 +18,7 @@ import {
   selectEntriesLoaded,
   selectIsFetching,
   selectGroups,
+  selectEntriesSortFields,
 } from '../../../reducers/entries';
 import { selectUnpublishedEntry, selectUnpublishedEntriesByStatus } from '../../../reducers';
 import { selectCollectionEntriesCursor } from '../../../reducers/cursors';
@@ -144,6 +145,7 @@ export class EntriesCollection extends React.Component {
       getWorkflowStatus,
       getUnpublishedEntries,
       filterTerm,
+      sortFields,
     } = this.props;
 
     const EntriesToRender = ({ entries }) => {
@@ -160,6 +162,7 @@ export class EntriesCollection extends React.Component {
           getWorkflowStatus={getWorkflowStatus}
           getUnpublishedEntries={getUnpublishedEntries}
           filterTerm={filterTerm}
+          sortFields={sortFields}
         />
       );
     };
@@ -206,6 +209,7 @@ function mapStateToProps(state, ownProps) {
 
   let entries = selectEntries(state.entries, collection);
   const groups = selectGroups(state.entries, collection);
+  const sortFields = selectEntriesSortFields(state.entries, collection.get('name'));
 
   if (collection.has('nested')) {
     const collectionFolder = collection.get('folder');
@@ -233,6 +237,7 @@ function mapStateToProps(state, ownProps) {
     page,
     entries,
     groups,
+    sortFields,
     entriesLoaded,
     isFetching,
     viewStyle,
