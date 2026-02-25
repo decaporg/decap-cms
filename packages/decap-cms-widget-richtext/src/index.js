@@ -12,5 +12,5 @@ function Widget(opts = {}) {
   };
 }
 
-export const DecapCmsWidgetMarkdown = { Widget, controlComponent, previewComponent };
-export default DecapCmsWidgetMarkdown;
+export const DecapCmsWidgetRichtext = { Widget, controlComponent, previewComponent };
+export default DecapCmsWidgetRichtext;
