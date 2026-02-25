@@ -12,6 +12,8 @@ const MODE_STORAGE_KEY = 'cms.md-mode';
 export default class RichtextControl extends React.Component {
   static propTypes = {
     onChange: PropTypes.func.isRequired,
+    onAddAsset: PropTypes.func.isRequired,
+    getAsset: PropTypes.func.isRequired,
     classNameWrapper: PropTypes.string.isRequired,
     editorControl: PropTypes.elementType.isRequired,
     value: PropTypes.string,
@@ -19,6 +21,10 @@ export default class RichtextControl extends React.Component {
     getEditorComponents: PropTypes.func,
     t: PropTypes.func.isRequired,
     isDisabled: PropTypes.bool,
+  };
+
+  static defaultProps = {
+    value: '',
   };
   constructor(props) {
     super(props);
@@ -62,6 +68,8 @@ export default class RichtextControl extends React.Component {
       getEditorComponents,
       editorControl,
       onChange,
+      onAddAsset,
+      getAsset,
       value,
     } = this.props;
 
@@ -80,6 +88,8 @@ export default class RichtextControl extends React.Component {
             onMode={this.handleMode}
             isShowModeToggle={isShowModeToggle}
             onChange={onChange}
+            onAddAsset={onAddAsset}
+            getAsset={getAsset}
             pendingFocus={pendingFocus && this.setFocusReceived}
             value={value}
           />
@@ -91,6 +101,8 @@ export default class RichtextControl extends React.Component {
       <div className="cms-editor-raw">
         <RawEditor
           onChange={onChange}
+          onAddAsset={onAddAsset}
+          getAsset={getAsset}
           isShowModeToggle={isShowModeToggle}
           onMode={this.handleMode}
           className={classNameWrapper}
