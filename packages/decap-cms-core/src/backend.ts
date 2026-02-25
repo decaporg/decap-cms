@@ -21,7 +21,7 @@ import { basename, join, extname, dirname } from 'path';
 import { stringTemplate } from 'decap-cms-lib-widgets';
 
 import { resolveFormat } from './formats/formats';
-import { selectUseWorkflow } from './reducers/config';
+import { selectUseWorkflow, selectDefaultWorkflowStatus } from './reducers/config';
 import { selectMediaFilePath, selectEntry } from './reducers/entries';
 import { selectIntegration } from './reducers/integrations';
 import {
@@ -40,7 +40,6 @@ import { createEntry } from './valueObjects/Entry';
 import { sanitizeChar } from './lib/urlHelper';
 import { getBackend, invokeEvent } from './lib/registry';
 import { commitMessageFormatter, slugFormatter, previewUrlFormatter } from './lib/formatters';
-import { status } from './constants/publishModes';
 import { FOLDER, FILES } from './constants/collectionTypes';
 import { selectCustomPath } from './reducers/entryDraft';
 import {
@@ -361,7 +360,7 @@ export class Backend {
     this.implementation = implementation.init(this.config, {
       useWorkflow: selectUseWorkflow(this.config),
       updateUserCredentials: this.updateUserCredentials,
-      initialWorkflowStatus: status.first(),
+      initialWorkflowStatus: selectDefaultWorkflowStatus(this.config),
     });
     this.backendName = backendName;
     this.authStore = authStore;

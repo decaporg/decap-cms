@@ -6,7 +6,11 @@ import trimStart from 'lodash/trimStart';
 import trim from 'lodash/trim';
 import isEmpty from 'lodash/isEmpty';
 
-import { SIMPLE as SIMPLE_PUBLISH_MODE } from '../constants/publishModes';
+import {
+  EDITORIAL_WORKFLOW,
+  SIMPLE as SIMPLE_PUBLISH_MODE,
+  Statues,
+} from '../constants/publishModes';
 import { validateConfig } from '../constants/configSchema';
 import { selectDefaultSortableFields } from '../reducers/collections';
 import { getIntegrations, selectIntegration } from '../reducers/integrations';
@@ -233,6 +237,14 @@ export function applyDefaults(originalConfig: CmsConfig) {
     config.publish_mode = config.publish_mode || SIMPLE_PUBLISH_MODE;
     config.slug = config.slug || {};
     config.collections = config.collections || [];
+
+    if (config.publish_mode === EDITORIAL_WORKFLOW) {
+      config.default_workflow_status =
+        config.default_workflow_status &&
+        Object.values(Statues).includes(config.default_workflow_status)
+          ? config.default_workflow_status
+          : Statues.DRAFT;
+    }
 
     // Use `site_url` as default `display_url`.
     if (!config.display_url && config.site_url) {

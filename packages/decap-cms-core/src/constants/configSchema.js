@@ -8,6 +8,7 @@ import {
 import ajvErrors from 'ajv-errors';
 import { v4 as uuid } from 'uuid';
 
+import { Statues } from './publishModes';
 import { frontmatterFormats, extensionFormatters } from '../formats/formats';
 import { getWidgets } from '../lib/registry';
 import { I18N_STRUCTURE, I18N_FIELD } from '../lib/i18n';
@@ -185,6 +186,11 @@ function getConfigSchema() {
         type: 'string',
         enum: ['simple', 'editorial_workflow', ''],
         examples: ['editorial_workflow'],
+      },
+      default_workflow_status: {
+        type: 'string',
+        enum: Object.values(Statues),
+        examples: [Statues.PENDING_PUBLISH],
       },
       slug: {
         type: 'object',
