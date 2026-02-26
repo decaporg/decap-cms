@@ -399,6 +399,10 @@ export interface CmsLocalBackend {
   allowed_hosts?: string[];
 }
 
+export interface CmsIssueReports {
+  url?: string;
+}
+
 export interface CmsConfig {
   backend: CmsBackend;
   collections: CmsCollection[];
@@ -427,6 +431,7 @@ export interface CmsConfig {
   }[];
   slug?: CmsSlug;
   i18n?: CmsI18nConfig;
+  issue_reports?: CmsIssueReports;
   local_backend?: boolean | CmsLocalBackend;
   editor?: {
     preview?: boolean;

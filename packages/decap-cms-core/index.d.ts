@@ -386,6 +386,10 @@ declare module 'decap-cms-core' {
     allowed_hosts?: string[];
   }
 
+  export interface CmsIssueReports {
+    url?: string;
+  }
+
   export interface CmsConfig {
     backend: CmsBackend;
     collections: CmsCollection[];
@@ -403,6 +407,7 @@ declare module 'decap-cms-core' {
     media_folder_relative?: boolean;
     media_library?: CmsMediaLibrary;
     publish_mode?: CmsPublishMode;
+    issue_reports?: CmsIssueReports;
     load_config_file?: boolean;
     integrations?: {
       hooks: string[];
