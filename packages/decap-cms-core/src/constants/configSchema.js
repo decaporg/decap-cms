@@ -193,6 +193,12 @@ function getConfigSchema() {
           clean_accents: { type: 'boolean' },
         },
       },
+      issue_reports: {
+        type: 'object',
+        properties: {
+          url: { type: 'string', examples: ['https://example.com/report-issue'] },
+        }
+      },
       collections: {
         type: 'array',
         minItems: 1,
