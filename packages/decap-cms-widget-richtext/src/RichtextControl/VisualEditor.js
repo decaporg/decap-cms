@@ -4,9 +4,9 @@ import { usePlateEditor, Plate, ParagraphPlugin, PlateLeaf } from 'platejs/react
 import {
   BoldPlugin,
   ItalicPlugin,
+  StrikethroughPlugin,
   CodePlugin,
   HeadingPlugin,
-  StrikethroughPlugin,
 } from '@platejs/basic-nodes/react';
 import { ListPlugin } from '@platejs/list-classic/react';
 import { LinkPlugin } from '@platejs/link/react';
@@ -170,9 +170,8 @@ export default function VisualEditor(props) {
           <Plate editor={editor} onChange={handleChange}>
             <EditorControlBar>
               <Toolbar
-                onLinkClick={handleLinkClick}
                 onToggleMode={handleToggleMode}
-                buttons={[]}
+                buttons={field.get('buttons')}
                 editorComponents={editorComponents}
                 allowedEditorComponents={field.get('editor_components')}
                 isShowModeToggle={isShowModeToggle}

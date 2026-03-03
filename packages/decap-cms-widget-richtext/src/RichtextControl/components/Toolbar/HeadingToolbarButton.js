@@ -14,12 +14,31 @@ const ToolbarDropdownWrapper = styled.div`
 
 function HeadingToolbarButton({ disabled, isVisible, t }) {
   const headingOptions = {
-    h1: t('editor.editorWidgets.headingOptions.headingOne'),
-    h2: t('editor.editorWidgets.headingOptions.headingTwo'),
-    h3: t('editor.editorWidgets.headingOptions.headingThree'),
-    h4: t('editor.editorWidgets.headingOptions.headingFour'),
-    h5: t('editor.editorWidgets.headingOptions.headingFive'),
-    h6: t('editor.editorWidgets.headingOptions.headingSix'),
+    'heading-one': t('editor.editorWidgets.headingOptions.headingOne'),
+    'heading-two': t('editor.editorWidgets.headingOptions.headingTwo'),
+    'heading-three': t('editor.editorWidgets.headingOptions.headingThree'),
+    'heading-four': t('editor.editorWidgets.headingOptions.headingFour'),
+    'heading-five': t('editor.editorWidgets.headingOptions.headingFive'),
+    'heading-six': t('editor.editorWidgets.headingOptions.headingSix'),
+  };
+
+  // Map schema button names to Plate block types
+  const buttonToBlockType = {
+    'heading-one': 'h1',
+    'heading-two': 'h2',
+    'heading-three': 'h3',
+    'heading-four': 'h4',
+    'heading-five': 'h5',
+    'heading-six': 'h6',
+  };
+
+  const blockTypeToButton = {
+    h1: 'heading-one',
+    h2: 'heading-two',
+    h3: 'heading-three',
+    h4: 'heading-four',
+    h5: 'heading-five',
+    h6: 'heading-six',
   };
 
   const editor = useEditorRef();
@@ -36,9 +55,10 @@ function HeadingToolbarButton({ disabled, isVisible, t }) {
     return ParagraphPlugin.key;
   }, []);
 
-  function handleChange(optionKey) {
+  function handleChange(buttonName) {
+    const blockType = buttonToBlockType[buttonName];
     unwrapList(editor);
-    editor.tf.toggleBlock(optionKey);
+    editor.tf.toggleBlock(blockType);
     editor.tf.focus();
   }
 
@@ -56,7 +76,7 @@ function HeadingToolbarButton({ disabled, isVisible, t }) {
                   label={t('editor.editorWidgets.markdown.headings')}
                   icon="hOptions"
                   disabled={disabled}
-                  isActive={!disabled && Object.keys(headingOptions).some(key => key == value)}
+                  isActive={!disabled && blockTypeToButton[value] !== undefined}
                 />
               </DropdownButton>
             )}
@@ -68,7 +88,7 @@ function HeadingToolbarButton({ disabled, isVisible, t }) {
                     <DropdownItem
                       key={idx}
                       label={headingOptions[optionKey]}
-                      className={optionKey == value ? 'active' : ''}
+                      className={blockTypeToButton[value] === optionKey ? 'active' : ''}
                       onMouseDown={e => e.preventDefault()}
                       onClick={() => handleChange(optionKey)}
                     />

@@ -4,7 +4,12 @@ import styled from '@emotion/styled';
 import { List } from 'immutable';
 import { colors, transitions, Toggle } from 'decap-cms-ui-default';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { BoldPlugin, CodePlugin, ItalicPlugin } from '@platejs/basic-nodes/react';
+import {
+  BoldPlugin,
+  CodePlugin,
+  ItalicPlugin,
+  StrikethroughPlugin,
+} from '@platejs/basic-nodes/react';
 import { css } from '@emotion/react';
 
 import MarkToolbarButton from './MarkToolbarButton';
@@ -87,6 +92,15 @@ function Toolbar(props) {
             disabled={disabled}
           />
         )}
+        {isVisible('strikethrough') && (
+          <MarkToolbarButton
+            type="strikethrough"
+            nodeType={StrikethroughPlugin.key}
+            label={t('editor.editorWidgets.markdown.strikethrough')}
+            icon="strikethrough"
+            disabled={disabled}
+          />
+        )}
         {isVisible('code') && (
           <MarkToolbarButton
             type="code"
@@ -96,15 +110,17 @@ function Toolbar(props) {
             disabled={disabled}
           />
         )}
-        <LinkToolbarButton
-          type="link"
-          label={t('editor.editorWidgets.markdown.link')}
-          icon="link"
-          disabled={disabled}
-          t={t}
-        />
+        {isVisible('link') && (
+          <LinkToolbarButton
+            type="link"
+            label={t('editor.editorWidgets.markdown.link')}
+            icon="link"
+            disabled={disabled}
+            t={t}
+          />
+        )}
         <HeadingToolbarButton isVisible={isVisible} disabled={disabled} t={t} />
-        {isVisible('blockquote') && (
+        {isVisible('quote') && (
           <BlockquoteToolbarButton
             type="quote"
             label={t('editor.editorWidgets.markdown.quote')}
@@ -112,18 +128,22 @@ function Toolbar(props) {
             disabled={disabled}
           />
         )}
-        <ListToolbarButton
-          type="ul"
-          label={t('editor.editorWidgets.markdown.bulletedList')}
-          icon="list-bulleted"
-          disabled={disabled}
-        />
-        <ListToolbarButton
-          type="ol"
-          label={t('editor.editorWidgets.markdown.numberedList')}
-          icon="list-numbered"
-          disabled={disabled}
-        />
+        {isVisible('bulleted-list') && (
+          <ListToolbarButton
+            type="ul"
+            label={t('editor.editorWidgets.markdown.bulletedList')}
+            icon="list-bulleted"
+            disabled={disabled}
+          />
+        )}
+        {isVisible('numbered-list') && (
+          <ListToolbarButton
+            type="ol"
+            label={t('editor.editorWidgets.markdown.numberedList')}
+            icon="list-numbered"
+            disabled={disabled}
+          />
+        )}
         <EditorComponentsToolbarButton
           isVisible={isVisible}
           disabled={disabled}
