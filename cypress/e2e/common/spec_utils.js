@@ -1,5 +1,5 @@
 export const before = (taskResult, options, backend) => {
-  Cypress.config('taskTimeout', 7 * 60 * 1000);
+  Cypress.config('taskTimeout', 5 * 60 * 1000); // 5 minutes
   cy.task('setupBackend', { backend, options }).then(data => {
     taskResult.data = data;
     Cypress.config('defaultCommandTimeout', data.mockResponses ? 5 * 1000 : 1 * 60 * 1000);
@@ -36,11 +36,17 @@ export const afterEach = (taskResult, backend) => {
   const spec = Cypress.mocha.getRunner().suite.ctx.currentTest.parent.title;
   const testName = Cypress.mocha.getRunner().suite.ctx.currentTest.title;
 
+  console.log(`Starting teardown for: ${spec} - ${testName}`);
+  const startTime = Date.now();
+
   cy.task('teardownBackendTest', {
     backend,
     ...taskResult.data,
     spec,
     testName,
+  }).then(() => {
+    const duration = Date.now() - startTime;
+    console.log(`Teardown completed in ${duration}ms for: ${spec} - ${testName}`);
   });
 
   if (!process.env.RECORD_FIXTURES) {

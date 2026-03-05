@@ -94,6 +94,7 @@ jobs:
         env:
           CI_BUILD_ID: ${{ github.run_id }}-${{ github.run_attempt }}
           IS_FORK: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == true || github.repository_owner != 'decaporg' }}
+          # Only used for fork PRs (can't access CYPRESS_RECORD_KEY)
           MACHINE_INDEX: ${{ matrix.machine }}
           MACHINE_COUNT: 4
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
