@@ -60,7 +60,7 @@ jobs:
     if: ${{ needs.changes.outputs.cms == 'true' }}
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: true
+      fail-fast: false # Let Cypress Cloud auto-cancellation handle failures
       matrix:
         machine: [1, 2, 3, 4]
     steps:
@@ -99,6 +99,8 @@ jobs:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           NODE_OPTIONS: --max-old-space-size=4096
           TZ: Europe/Amsterdam
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_BASE_REF: ${{ github.base_ref }}
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
