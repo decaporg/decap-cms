@@ -60,7 +60,7 @@ jobs:
     if: ${{ needs.changes.outputs.cms == 'true' }}
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: false # Let Cypress Cloud auto-cancellation handle failures
+      fail-fast: true
       matrix:
         machine: [1, 2, 3, 4]
     steps:

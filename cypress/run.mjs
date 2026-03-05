@@ -52,9 +52,6 @@ async function runCypress() {
     if (tags.length > 0) {
       args.push('--tag', tags.join(','));
     }
-    
-    // Enable auto-cancellation to save CI time on failures
-    args.push('--auto-cancel-after-failures', '3');
   }
 
   console.log('Running Cypress with args:', args.join(' '));
