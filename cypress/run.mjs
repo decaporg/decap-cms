@@ -12,8 +12,9 @@ async function runCypress() {
 
   const machineIndex = Number(process.env.MACHINE_INDEX || 0);
   const machineCount = Number(process.env.MACHINE_COUNT || 0);
+  const isFork = process.env.IS_FORK === 'true';
 
-  if (machineIndex && machineCount) {
+  if (isFork && machineIndex && machineCount) {
     const specsPerMachine = Math.floor(specs.length / machineCount);
     const start = (machineIndex - 1) * specsPerMachine;
     const machineSpecs =
@@ -22,7 +23,7 @@ async function runCypress() {
         : specs.slice(start, start + specsPerMachine);
 
     console.log(
-      `Sharding specs manually: machine ${machineIndex}/${machineCount} running ${machineSpecs.length} specs`,
+      `Sharding specs manually for fork: machine ${machineIndex}/${machineCount} running ${machineSpecs.length} specs`,
     );
     args.push('--spec', machineSpecs.join(','));
   } else {
