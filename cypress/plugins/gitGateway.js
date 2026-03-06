@@ -65,20 +65,16 @@ async function fetchWithTimeout(netlifyApiToken, path, method = 'GET', payload =
   }
 }
 
-async function post(netlifyApiToken, path, payload) {
-  return fetchWithTimeout(netlifyApiToken, path, 'POST', payload, 'json');
-}
-
 async function createSite(netlifyApiToken, payload) {
-  return post(netlifyApiToken, 'sites', payload);
+  return fetchWithTimeout(netlifyApiToken, 'sites', 'POST', payload);
 }
 
 async function enableIdentity(netlifyApiToken, siteId) {
-  return post(netlifyApiToken, `sites/${siteId}/identity`, {});
+  return fetchWithTimeout(netlifyApiToken, `sites/${siteId}/identity`, 'POST', {});
 }
 
 async function enableGitGateway(netlifyApiToken, siteId, provider, token, repo) {
-  return post(netlifyApiToken, `sites/${siteId}/services/git/instances`, {
+  return fetchWithTimeout(netlifyApiToken, `sites/${siteId}/services/git/instances`, 'POST', {
     [provider]: {
       repo,
       access_token: token,
@@ -87,7 +83,7 @@ async function enableGitGateway(netlifyApiToken, siteId, provider, token, repo) 
 }
 
 async function enableLargeMedia(netlifyApiToken, siteId) {
-  return post(netlifyApiToken, `sites/${siteId}/services/large-media/instances`, {});
+  return fetchWithTimeout(netlifyApiToken, `sites/${siteId}/services/large-media/instances`, 'POST', {});
 }
 
 async function waitForDeploys(netlifyApiToken, siteId) {
@@ -96,7 +92,7 @@ async function waitForDeploys(netlifyApiToken, siteId) {
   
   for (let i = 0; i < maxRetries; i++) {
     try {
-      const deploys = await fetchWithTimeout(netlifyApiToken, `sites/${siteId}/deploys`, 'GET', null, 'json');
+      const deploys = await fetchWithTimeout(netlifyApiToken, `sites/${siteId}/deploys`);
       
       if (deploys && deploys.some(deploy => deploy.state === 'ready')) {
         return;
@@ -164,7 +160,7 @@ const methods = {
     teardownTest: teardownGitLabTest,
     transformData: transformGitLab,
     createSite: async (netlifyApiToken, result) => {
-      const { id, public_key } = await post(netlifyApiToken, 'deploy_keys');
+      const { id, public_key } = await fetchWithTimeout(netlifyApiToken, 'deploy_keys', 'POST');
       const { gitlabToken } = getEnvs();
       const project = `${result.owner}/${result.repo}`;
       await fetch(`https://gitlab.com/api/v4/projects/${encodeURIComponent(project)}/deploy_keys`, {
