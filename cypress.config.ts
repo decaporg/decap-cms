@@ -3,7 +3,7 @@ import { defineConfig } from 'cypress';
 export default defineConfig({
   projectId: '1c35bs',
   retries: {
-    runMode: 4,
+    runMode: 2, // Reduced from 4 - Cypress Cloud helps identify flaky tests
     openMode: 0,
   },
   e2e: {
