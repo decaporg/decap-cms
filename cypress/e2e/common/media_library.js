@@ -102,14 +102,18 @@ function assertGridEntryImage(entry) {
 
 export default function({ entries, getUser }) {
   beforeEach(() => {
+    console.log(`[${new Date().toISOString()}] [media_library beforeEach] Starting, about to call login`);
     login(getUser && getUser());
+    console.log(`[${new Date().toISOString()}] [media_library beforeEach] login completed`);
   });
 
   it('can upload image from global media library', () => {
+    console.log(`[${new Date().toISOString()}] [TEST] Starting: can upload image from global media library`);
     goToMediaLibrary();
     uploadMediaFile();
     matchImageSnapshot();
     closeMediaLibrary();
+    console.log(`[${new Date().toISOString()}] [TEST] Completed: can upload image from global media library`);
   });
 
   it('can delete image from global media library', () => {

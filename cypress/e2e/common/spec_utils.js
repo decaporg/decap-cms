@@ -17,6 +17,9 @@ export function beforeEach(taskResult, backend) {
   const spec = Cypress.mocha.getRunner().suite.ctx.currentTest.parent.title;
   const testName = Cypress.mocha.getRunner().suite.ctx.currentTest.title;
   
+  console.log(`[${new Date().toISOString()}] [beforeEach] Starting for backend: ${backend}`);
+  console.log(`[${new Date().toISOString()}] [beforeEach] mockResponses:`, taskResult.data.mockResponses);
+  
   cy.task('setupBackendTest', {
     backend,
     ...taskResult.data,
@@ -34,8 +37,11 @@ export function beforeEach(taskResult, backend) {
   // Hypothesis: freezing time to 0 breaks app initialization during cy.visit()
   // Temporary fix: skip cy.clock for git-gateway, use default clock for others
   if (backend !== 'git-gateway') {
+    console.log(`[${new Date().toISOString()}] [beforeEach] Setting clock to epoch 0 for non-git-gateway`);
     return cy.clock(0, ['Date']);
   }
+  
+  console.log(`[${new Date().toISOString()}] [beforeEach] Skipped clock for git-gateway`);
 }
 
 export function afterEach(taskResult, backend) {

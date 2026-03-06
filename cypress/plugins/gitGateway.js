@@ -269,6 +269,7 @@ async function setupGitGateway(options) {
       provider,
     };
   } else {
+    console.log('Running tests in "playback" mode - local data will be used');
     return {
       ...result,
       user: {
@@ -279,6 +280,7 @@ async function setupGitGateway(options) {
         password,
       },
       provider,
+      mockResponses: true,
     };
   }
 }
