@@ -197,7 +197,7 @@ function getConfigSchema() {
         type: 'object',
         properties: {
           url: { type: 'string', examples: ['https://example.com/report-issue'] },
-        }
+        },
       },
       collections: {
         type: 'array',
