@@ -17,8 +17,6 @@ export const beforeEach = (taskResult, backend) => {
   const spec = Cypress.mocha.getRunner().suite.ctx.currentTest.parent.title;
   const testName = Cypress.mocha.getRunner().suite.ctx.currentTest.title;
   
-  console.log(`[${new Date().toISOString()}] ⏱️  beforeEach: Setting up test ${testName}`);
-  
   cy.task('setupBackendTest', {
     backend,
     ...taskResult.data,
@@ -32,10 +30,12 @@ export const beforeEach = (taskResult, backend) => {
     cy.stubFetch({ fixture });
   }
 
-  console.log(`[${new Date().toISOString()}] ⏱️  beforeEach: About to initialize clock`);
-  return cy.clock(0, ['Date']).then(() => {
-    console.log(`[${new Date().toISOString()}] ⏱️  beforeEach: Clock initialized`);
-  });
+  // cy.clock(0, ['Date']) was hanging git-gateway tests after page load
+  // Hypothesis: freezing time to 0 breaks app initialization during cy.visit()
+  // Temporary fix: skip cy.clock for git-gateway, use default clock for others
+  if (backend !== 'git-gateway') {
+    return cy.clock(0, ['Date']);
+  }
 };
 
 export const afterEach = (taskResult, backend) => {

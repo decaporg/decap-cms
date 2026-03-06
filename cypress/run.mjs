@@ -60,7 +60,7 @@ async function runCypress() {
   await execa('cypress', args, {
     stdio: 'inherit',
     preferLocal: true,
-    timeout: 30 * 60 * 1000, // 30 minutes
+    timeout: 10 * 60 * 1000, // 10 minutes
   });
 }
 
