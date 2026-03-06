@@ -88,7 +88,7 @@ async function enableLargeMedia(netlifyApiToken, siteId) {
 
 async function waitForDeploys(netlifyApiToken, siteId) {
   const maxRetries = 5;
-  const retryDelayMs = 10 * 1000; // 10 seconds
+  const retryDelayMs = 15 * 1000; // 15 seconds between retries
   
   for (let i = 0; i < maxRetries; i++) {
     try {
@@ -109,7 +109,7 @@ async function waitForDeploys(netlifyApiToken, siteId) {
     }
   }
   
-  console.error(`Timed out waiting on deploy of site: ${siteId}`);
+  throw new Error(`Timed out waiting for deploy of site ${siteId} after ${maxRetries * retryDelayMs / 1000}s`);
 }
 
 async function createUser(netlifyApiToken, siteUrl, email, password) {
