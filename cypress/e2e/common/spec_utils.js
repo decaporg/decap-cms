@@ -17,7 +17,7 @@ export const beforeEach = (taskResult, backend) => {
   const spec = Cypress.mocha.getRunner().suite.ctx.currentTest.parent.title;
   const testName = Cypress.mocha.getRunner().suite.ctx.currentTest.title;
   
-  console.log(`🧪 Starting test: ${testName} (${backend})`);
+  console.log(`[${new Date().toISOString()}] ⏱️  beforeEach: Setting up test ${testName}`);
   
   cy.task('setupBackendTest', {
     backend,
@@ -32,7 +32,10 @@ export const beforeEach = (taskResult, backend) => {
     cy.stubFetch({ fixture });
   }
 
-  return cy.clock(0, ['Date']);
+  console.log(`[${new Date().toISOString()}] ⏱️  beforeEach: About to initialize clock`);
+  return cy.clock(0, ['Date']).then(() => {
+    console.log(`[${new Date().toISOString()}] ⏱️  beforeEach: Clock initialized`);
+  });
 };
 
 export const afterEach = (taskResult, backend) => {

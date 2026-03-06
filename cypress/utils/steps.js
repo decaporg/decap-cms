@@ -10,7 +10,9 @@ const {
 
 function login(user) {
   cy.viewport(1200, 1200);
+  console.log(`[${new Date().toISOString()}] 🔐 login() called with user: ${user?.email || 'null'}`);
   if (user) {
+    console.log(`[${new Date().toISOString()}] 🔐 cy.visit("/") starting`);
     cy.visit('/', {
       onBeforeLoad: () => {
         // https://github.com/cypress-io/cypress/issues/1208
@@ -21,7 +23,9 @@ function login(user) {
         }
       },
     });
+    console.log(`[${new Date().toISOString()}] 🔐 cy.visit("/") complete`);
     if (user.netlifySiteURL && user.email && user.password) {
+      console.log(`[${new Date().toISOString()}] 🔐 entering credentials`);
       cy.get('input[name="email"]')
         .clear()
         .type(user.email);
@@ -29,12 +33,17 @@ function login(user) {
         .clear()
         .type(user.password);
       cy.contains('button', 'Login').click();
+      console.log(`[${new Date().toISOString()}] 🔐 credentials submitted`);
     }
   } else {
+    console.log(`[${new Date().toISOString()}] 🔐 cy.visit("/") starting (no user)`);
     cy.visit('/');
+    console.log(`[${new Date().toISOString()}] 🔐 cy.visit("/") complete (no user)`);
     cy.contains('button', 'Login').click();
   }
+  console.log(`[${new Date().toISOString()}] 🔐 waiting for "New Post" link`);
   cy.contains('a', 'New Post');
+  console.log(`[${new Date().toISOString()}] 🔐 login() complete`);
 }
 
 function assertNotification(message) {
@@ -93,7 +102,9 @@ function goToCollections() {
 }
 
 function goToMediaLibrary() {
+  console.log(`[${new Date().toISOString()}] 📚 goToMediaLibrary() called`);
   cy.contains('button', 'Media').click();
+  console.log(`[${new Date().toISOString()}] 📚 Media button clicked`);
 }
 
 function assertUnpublishedEntryInEditor() {
