@@ -83,7 +83,9 @@ function publishPostWithImage(entry) {
 }
 
 function closeMediaLibrary() {
+  console.log('❌ Closing media library');
   cy.get('button[class*="CloseButton"]').click();
+  console.log('❌ Media library closed');
 }
 
 function switchToGridView() {

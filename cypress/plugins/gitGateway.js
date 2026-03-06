@@ -1,4 +1,5 @@
 const fetch = require('node-fetch');
+
 const {
   transformRecordedData: transformGitHub,
   setupGitHub,
@@ -33,39 +34,78 @@ function getEnvs() {
 const apiRoot = 'https://api.netlify.com/api/v1/';
 
 async function get(netlifyApiToken, path) {
-  const response = await fetch(`${apiRoot}${path}`, {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${netlifyApiToken}`,
-    },
-  }).then(res => res.json());
-
-  return response;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+  
+  try {
+    const response = await fetch(`${apiRoot}${path}`, {
+      signal: controller.signal,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${netlifyApiToken}`,
+      },
+    }).then(res => res.json());
+    clearTimeout(timeout);
+    return response;
+  } catch (error) {
+    clearTimeout(timeout);
+    if (error.name === 'AbortError') {
+      console.error(`Netlify API GET timeout after 10s: ${path}`);
+      throw new Error(`Netlify API GET request timeout: ${path}`);
+    }
+    throw error;
+  }
 }
 
 async function post(netlifyApiToken, path, payload) {
-  const response = await fetch(`${apiRoot}${path}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${netlifyApiToken}`,
-    },
-    ...(payload ? { body: JSON.stringify(payload) } : {}),
-  }).then(res => res.json());
-
-  return response;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+  
+  try {
+    const response = await fetch(`${apiRoot}${path}`, {
+      signal: controller.signal,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${netlifyApiToken}`,
+      },
+      ...(payload ? { body: JSON.stringify(payload) } : {}),
+    }).then(res => res.json());
+    clearTimeout(timeout);
+    return response;
+  } catch (error) {
+    clearTimeout(timeout);
+    if (error.name === 'AbortError') {
+      console.error(`Netlify API POST timeout after 10s: ${path}`);
+      throw new Error(`Netlify API POST request timeout: ${path}`);
+    }
+    throw error;
+  }
 }
 
 async function del(netlifyApiToken, path) {
-  const response = await fetch(`${apiRoot}${path}`, {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${netlifyApiToken}`,
-    },
-  }).then(res => res.text());
-
-  return response;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+  
+  try {
+    const response = await fetch(`${apiRoot}${path}`, {
+      signal: controller.signal,
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${netlifyApiToken}`,
+      },
+    }).then(res => res.text());
+    clearTimeout(timeout);
+    return response;
+  } catch (error) {
+    clearTimeout(timeout);
+    if (error.name === 'AbortError') {
+      console.error(`Netlify API DELETE timeout after 10s: ${path}`);
+      throw new Error(`Netlify API DELETE request timeout: ${path}`);
+    }
+    throw error;
+  }
 }
 
 async function createSite(netlifyApiToken, payload) {
@@ -90,16 +130,29 @@ async function enableLargeMedia(netlifyApiToken, siteId) {
 }
 
 async function waitForDeploys(netlifyApiToken, siteId) {
-  for (let i = 0; i < 10; i++) {
-    const deploys = await get(netlifyApiToken, `sites/${siteId}/deploys`);
-    if (deploys.some(deploy => deploy.state === 'ready')) {
-      console.log('Deploy finished for site:', siteId);
-      return;
+  const maxRetries = 5; // Reduced from 10 to 5
+  const retryDelayMs = 10 * 1000; // Reduced from 30s to 10s
+  
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      const deploys = await get(netlifyApiToken, `sites/${siteId}/deploys`);
+      
+      if (deploys && deploys.some(deploy => deploy.state === 'ready')) {
+        return;
+      }
+      
+      if (i < maxRetries - 1) {
+        await new Promise(resolve => setTimeout(resolve, retryDelayMs));
+      }
+    } catch (error) {
+      console.error(`Error checking deploy status: ${error.message}`);
+      if (i < maxRetries - 1) {
+        await new Promise(resolve => setTimeout(resolve, retryDelayMs));
+      }
     }
-    console.log('Waiting on deploy of site:', siteId);
-    await new Promise(resolve => setTimeout(resolve, 30 * 1000));
   }
-  console.log('Timed out waiting on deploy of site:', siteId);
+  
+  console.error(`Timed out waiting on deploy of site: ${siteId}`);
 }
 
 async function createUser(netlifyApiToken, siteUrl, email, password) {

@@ -16,6 +16,9 @@ export const after = (taskResult, backend) => {
 export const beforeEach = (taskResult, backend) => {
   const spec = Cypress.mocha.getRunner().suite.ctx.currentTest.parent.title;
   const testName = Cypress.mocha.getRunner().suite.ctx.currentTest.title;
+  
+  console.log(`🧪 Starting test: ${testName} (${backend})`);
+  
   cy.task('setupBackendTest', {
     backend,
     ...taskResult.data,
