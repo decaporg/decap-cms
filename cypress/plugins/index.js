@@ -42,8 +42,7 @@ module.exports = async (on, config) => {
   // `on` is used to hook into various events Cypress emits
   on('task', {
     async setupBackend({ backend, options }) {
-      console.log(`\n⏱️  [${new Date().toISOString()}] Preparing environment for backend ${backend}`);
-      const setupStart = Date.now();
+      console.log('Preparing environment for backend', backend);
       await copyBackendFiles(backend);
 
       let result = null;
@@ -52,9 +51,7 @@ module.exports = async (on, config) => {
           result = await setupGitHub(options);
           break;
         case 'git-gateway':
-          console.log(`⏱️  Starting git-gateway setup: ${new Date().toISOString()}`);
           result = await setupGitGateway(options);
-          console.log(`✅ Git-gateway setup completed in ${Date.now() - setupStart}ms`);
           break;
         case 'gitlab':
           result = await setupGitLab(options);
@@ -70,22 +67,17 @@ module.exports = async (on, config) => {
           break;
       }
 
-      console.log(`✅ Backend setup completed in ${Date.now() - setupStart}ms\n`);
       return result;
     },
     async teardownBackend(taskData) {
       const { backend } = taskData;
-      console.log(`\n⏱️  [${new Date().toISOString()}] Tearing down backend ${backend}`);
-      const teardownStart = Date.now();
 
       switch (backend) {
         case 'github':
           await teardownGitHub(taskData);
           break;
         case 'git-gateway':
-          console.log(`⏱️  Starting git-gateway backend teardown`);
           await teardownGitGateway(taskData);
-          console.log(`✅ Git-gateway backend teardown completed in ${Date.now() - teardownStart}ms`);
           break;
         case 'gitlab':
           await teardownGitLab(taskData);
@@ -101,21 +93,18 @@ module.exports = async (on, config) => {
       console.log('Restoring defaults');
       await copyBackendFiles('test');
 
-      console.log(`✅ Backend teardown completed in ${Date.now() - teardownStart}ms\n`);
       return null;
     },
     async setupBackendTest(taskData) {
       const { backend, testName } = taskData;
-      console.log(`Setting up test: ${testName} (${backend})`);
+      console.log(`Setting up single test '${testName}' for backend`, backend);
 
       switch (backend) {
         case 'github':
           await setupGitHubTest(taskData);
           break;
         case 'git-gateway':
-          const setupStart = Date.now();
           await setupGitGatewayTest(taskData);
-          console.log(`git-gateway setup took ${Date.now() - setupStart}ms`);
           break;
         case 'gitlab':
           await setupGitLabTest(taskData);
@@ -131,7 +120,9 @@ module.exports = async (on, config) => {
       return null;
     },
     async teardownBackendTest(taskData) {
-      const { backend } = taskData;
+      const { backend, testName } = taskData;
+
+      console.log(`Tearing down single test '${testName}' for backend`, backend);
 
       switch (backend) {
         case 'github':

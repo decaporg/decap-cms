@@ -1,19 +1,19 @@
-export const before = (taskResult, options, backend) => {
+export function before(taskResult, options, backend) {
   Cypress.config('taskTimeout', 5 * 60 * 1000); // 5 minutes
   cy.task('setupBackend', { backend, options }).then(data => {
     taskResult.data = data;
     Cypress.config('defaultCommandTimeout', data.mockResponses ? 5 * 1000 : 1 * 60 * 1000);
   });
-};
+}
 
-export const after = (taskResult, backend) => {
+export function after(taskResult, backend) {
   cy.task('teardownBackend', {
     backend,
     ...taskResult.data,
   });
-};
+}
 
-export const beforeEach = (taskResult, backend) => {
+export function beforeEach(taskResult, backend) {
   const spec = Cypress.mocha.getRunner().suite.ctx.currentTest.parent.title;
   const testName = Cypress.mocha.getRunner().suite.ctx.currentTest.title;
   
@@ -36,26 +36,17 @@ export const beforeEach = (taskResult, backend) => {
   if (backend !== 'git-gateway') {
     return cy.clock(0, ['Date']);
   }
-};
+}
 
-export const afterEach = (taskResult, backend) => {
+export function afterEach(taskResult, backend) {
   const spec = Cypress.mocha.getRunner().suite.ctx.currentTest.parent.title;
   const testName = Cypress.mocha.getRunner().suite.ctx.currentTest.title;
-
-  let startTime;
-  cy.then(() => {
-    startTime = Date.now();
-    console.log(`Starting teardown for: ${spec} - ${testName}`);
-  });
 
   cy.task('teardownBackendTest', {
     backend,
     ...taskResult.data,
     spec,
     testName,
-  }).then(() => {
-    const duration = Date.now() - startTime;
-    console.log(`Teardown completed in ${duration}ms for: ${spec} - ${testName}`);
   });
 
   if (!process.env.RECORD_FIXTURES) {
@@ -70,11 +61,11 @@ export const afterEach = (taskResult, backend) => {
       Cypress.runner.stop();
     }
   }
-};
+}
 
-export const seedRepo = (taskResult, backend) => {
+export function seedRepo(taskResult, backend) {
   cy.task('seedRepo', {
     backend,
     ...taskResult.data,
   });
-};
+}

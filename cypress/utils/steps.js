@@ -10,9 +10,7 @@ const {
 
 function login(user) {
   cy.viewport(1200, 1200);
-  console.log(`[${new Date().toISOString()}] 🔐 login() called with user: ${user?.email || 'null'}`);
   if (user) {
-    console.log(`[${new Date().toISOString()}] 🔐 cy.visit("/") starting`);
     cy.visit('/', {
       onBeforeLoad: () => {
         // https://github.com/cypress-io/cypress/issues/1208
@@ -23,27 +21,18 @@ function login(user) {
         }
       },
     });
-    console.log(`[${new Date().toISOString()}] 🔐 cy.visit("/") complete`);
     if (user.netlifySiteURL && user.email && user.password) {
-      console.log(`[${new Date().toISOString()}] 🔐 entering credentials`);
-      cy.get('input[name="email"]')
-        .clear()
-        .type(user.email);
-      cy.get('input[name="password"]')
-        .clear()
-        .type(user.password);
+      cy.get('input[name="email"]').clear();
+      cy.get('input[name="email"]').type(user.email);
+      cy.get('input[name="password"]').clear();
+      cy.get('input[name="password"]').type(user.password);
       cy.contains('button', 'Login').click();
-      console.log(`[${new Date().toISOString()}] 🔐 credentials submitted`);
     }
   } else {
-    console.log(`[${new Date().toISOString()}] 🔐 cy.visit("/") starting (no user)`);
     cy.visit('/');
-    console.log(`[${new Date().toISOString()}] 🔐 cy.visit("/") complete (no user)`);
     cy.contains('button', 'Login').click();
   }
-  console.log(`[${new Date().toISOString()}] 🔐 waiting for "New Post" link`);
   cy.contains('a', 'New Post');
-  console.log(`[${new Date().toISOString()}] 🔐 login() complete`);
 }
 
 function assertNotification(message) {
@@ -60,12 +49,15 @@ function assertNotification(message) {
 }
 
 function assertColorOn(cssProperty, color, opts) {
+  function assertion($el) {
+    return expect($el).to.have.css(cssProperty, color);
+  }
+
   if (opts.type && opts.type === 'label') {
     (opts.scope ? opts.scope : cy).contains('label', opts.label).should($el => {
       expect($el).to.have.css(cssProperty, color);
     });
   } else if (opts.type && opts.type === 'field') {
-    const assertion = $el => expect($el).to.have.css(cssProperty, color);
     if (opts.isMarkdown) {
       (opts.scope ? opts.scope : cy)
         .contains('label', opts.label)
@@ -102,9 +94,7 @@ function goToCollections() {
 }
 
 function goToMediaLibrary() {
-  console.log(`[${new Date().toISOString()}] 📚 goToMediaLibrary() called`);
   cy.contains('button', 'Media').click();
-  console.log(`[${new Date().toISOString()}] 📚 Media button clicked`);
 }
 
 function assertUnpublishedEntryInEditor() {
@@ -281,11 +271,9 @@ function populateEntry(entry, onDone = flushClockAndSave) {
   for (const key of keys) {
     const value = entry[key];
     if (key === 'body') {
-      cy.getMarkdownEditor()
-        .first()
-        .click()
-        .clear({ force: true })
-        .type(value, { force: true });
+      cy.getMarkdownEditor().first().click();
+      cy.getMarkdownEditor().first().clear({ force: true });
+      cy.getMarkdownEditor().first().type(value, { force: true });
     } else {
       cy.get(`[id^="${key}-field"]`)
         .first()
@@ -481,14 +469,12 @@ function validateNestedObjectFields({ limit, author }) {
   cy.get('input[type=number]').type(limit + 1);
   cy.contains('button', 'Save').click();
   assertFieldValidationError(notifications.validation.range);
-  cy.get('input[type=number]')
-    .clear()
-    .type(-1);
+  cy.get('input[type=number]').clear();
+  cy.get('input[type=number]').type(-1);
   cy.contains('button', 'Save').click();
   assertFieldValidationError(notifications.validation.range);
-  cy.get('input[type=number]')
-    .clear()
-    .type(limit);
+  cy.get('input[type=number]').clear();
+  cy.get('input[type=number]').type(limit);
   cy.contains('button', 'Save').click();
   assertNotification(notifications.saved);
 }
