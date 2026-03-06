@@ -104,6 +104,7 @@ export default function VisualEditor(props) {
         ['ul']: withProps(ListElement, { variant: 'ul' }),
         ['ol']: withProps(ListElement, { variant: 'ol' }),
         ['li']: withProps(ListElement, { variant: 'li' }),
+        ['blockquote']: BlockquoteElement,
       },
     },
     plugins: [

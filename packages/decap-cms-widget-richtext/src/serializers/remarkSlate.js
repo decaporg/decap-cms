@@ -6,7 +6,7 @@ import { isEmpty, isArray, flatMap, map, flatten, isEqual } from 'lodash';
 const typeMap = {
   root: 'root',
   paragraph: 'p',
-  blockquote: 'quote',
+  blockquote: 'blockquote',
   code: 'code-block',
   listItem: 'li',
   table: 'table',
@@ -24,7 +24,7 @@ const typeMap = {
 const markMap = {
   strong: 'bold',
   emphasis: 'italic',
-  delete: 'delete',
+  delete: 'strikethrough',
   inlineCode: 'code',
 };
 

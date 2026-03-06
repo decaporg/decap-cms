@@ -14,7 +14,7 @@ const typeMap = {
   h4: 'heading',
   h5: 'heading',
   h6: 'heading',
-  quote: 'blockquote',
+  blockquote: 'blockquote',
   'code-block': 'code',
   ol: 'list',
   ul: 'list',
@@ -36,13 +36,13 @@ const typeMap = {
 const markMap = {
   bold: 'strong',
   italic: 'emphasis',
-  delete: 'delete',
+  strikethrough: 'delete',
   code: 'inlineCode',
 };
 
 const blockTypes = [
   'p',
-  'quote',
+  'blockquote',
   'h1',
   'h2',
   'h3',
@@ -333,7 +333,7 @@ export default function slateToRemark(value, { voidCodeBlock }) {
        */
       case 'root':
       case 'p':
-      case 'quote':
+      case 'blockquote':
       case 'li':
       case 'lic':
       case 'table':

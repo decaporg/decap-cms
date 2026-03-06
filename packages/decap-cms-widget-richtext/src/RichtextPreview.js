@@ -24,7 +24,24 @@ function RichtextPreview({
   );
   const toRender = field?.get('sanitize_preview', false) ? DOMPurify.sanitize(html) : html;
 
-  return <WidgetPreviewContainer dangerouslySetInnerHTML={{ __html: toRender }} />;
+  // Inject block-specific styles into the iframe
+  const previewStyles = `
+    blockquote {
+      padding-left: 16px;
+      border-left: 3px solid #eff0f4;
+      margin-left: 0;
+      margin-right: 0;
+      margin-bottom: 16px;
+    }
+  `;
+  
+
+    return (
+    <WidgetPreviewContainer>
+      <style>{previewStyles}</style>
+      <div dangerouslySetInnerHTML={{ __html: toRender }} />
+    </WidgetPreviewContainer>
+  );
 }
 
 RichtextPreview.propTypes = {
