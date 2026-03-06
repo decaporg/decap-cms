@@ -36,8 +36,11 @@ export const afterEach = (taskResult, backend) => {
   const spec = Cypress.mocha.getRunner().suite.ctx.currentTest.parent.title;
   const testName = Cypress.mocha.getRunner().suite.ctx.currentTest.title;
 
-  console.log(`Starting teardown for: ${spec} - ${testName}`);
-  const startTime = Date.now();
+  let startTime;
+  cy.then(() => {
+    startTime = Date.now();
+    console.log(`Starting teardown for: ${spec} - ${testName}`);
+  });
 
   cy.task('teardownBackendTest', {
     backend,
