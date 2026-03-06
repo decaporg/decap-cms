@@ -269,9 +269,10 @@ function populateEntry(entry, onDone = flushClockAndSave) {
   for (const key of keys) {
     const value = entry[key];
     if (key === 'body') {
-      cy.getMarkdownEditor().first().click();
-      cy.getMarkdownEditor().first().clear({ force: true });
-      cy.getMarkdownEditor().first().type(value, { force: true });
+      cy.getMarkdownEditor().first().as('bodyEditor');
+      cy.get('@bodyEditor').click();
+      cy.get('@bodyEditor').clear({ force: true });
+      cy.get('@bodyEditor').type(value, { force: true });
     } else {
       cy.get(`[id^="${key}-field"]`)
         .first()
@@ -464,15 +465,16 @@ function validateNestedObjectFields({ limit, author }) {
   cy.focused().type(author);
   cy.contains('button', 'Save').click();
   assertNotification(notifications.error.missingField);
-  cy.get('input[type=number]').type(limit + 1);
+  cy.get('input[type=number]').as('limitInput');
+  cy.get('@limitInput').type(limit + 1);
   cy.contains('button', 'Save').click();
   assertFieldValidationError(notifications.validation.range);
-  cy.get('input[type=number]').clear();
-  cy.get('input[type=number]').type(-1);
+  cy.get('@limitInput').clear();
+  cy.get('@limitInput').type(-1);
   cy.contains('button', 'Save').click();
   assertFieldValidationError(notifications.validation.range);
-  cy.get('input[type=number]').clear();
-  cy.get('input[type=number]').type(limit);
+  cy.get('@limitInput').clear();
+  cy.get('@limitInput').type(limit);
   cy.contains('button', 'Save').click();
   assertNotification(notifications.saved);
 }
