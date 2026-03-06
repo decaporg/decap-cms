@@ -71,6 +71,7 @@ module.exports = async (on, config) => {
     },
     async teardownBackend(taskData) {
       const { backend } = taskData;
+      console.log('Tearing down backend', backend);
 
       switch (backend) {
         case 'github':

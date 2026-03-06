@@ -49,15 +49,13 @@ function assertNotification(message) {
 }
 
 function assertColorOn(cssProperty, color, opts) {
-  function assertion($el) {
-    return expect($el).to.have.css(cssProperty, color);
-  }
-
   if (opts.type && opts.type === 'label') {
     (opts.scope ? opts.scope : cy).contains('label', opts.label).should($el => {
       expect($el).to.have.css(cssProperty, color);
     });
   } else if (opts.type && opts.type === 'field') {
+    // eslint-disable-next-line func-style
+    const assertion = $el => expect($el).to.have.css(cssProperty, color);
     if (opts.isMarkdown) {
       (opts.scope ? opts.scope : cy)
         .contains('label', opts.label)

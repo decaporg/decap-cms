@@ -33,79 +33,40 @@ function getEnvs() {
 
 const apiRoot = 'https://api.netlify.com/api/v1/';
 
-async function get(netlifyApiToken, path) {
+async function fetchWithTimeout(netlifyApiToken, path, method = 'GET', payload = null, parseAs = 'json') {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 10000); // 10 second timeout
   
   try {
-    const response = await fetch(`${apiRoot}${path}`, {
+    const options = {
       signal: controller.signal,
+      method,
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${netlifyApiToken}`,
       },
-    }).then(res => res.json());
+    };
+    
+    if (payload) {
+      options.body = JSON.stringify(payload);
+    }
+    
+    const response = await fetch(`${apiRoot}${path}`, options);
     clearTimeout(timeout);
-    return response;
+    
+    return parseAs === 'json' ? response.json() : response.text();
   } catch (error) {
     clearTimeout(timeout);
     if (error.name === 'AbortError') {
-      console.error(`Netlify API GET timeout after 10s: ${path}`);
-      throw new Error(`Netlify API GET request timeout: ${path}`);
+      console.error(`Netlify API ${method} timeout after 10s: ${path}`);
+      throw new Error(`Netlify API ${method} request timeout: ${path}`);
     }
     throw error;
   }
 }
 
 async function post(netlifyApiToken, path, payload) {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 10000); // 10 second timeout
-  
-  try {
-    const response = await fetch(`${apiRoot}${path}`, {
-      signal: controller.signal,
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${netlifyApiToken}`,
-      },
-      ...(payload ? { body: JSON.stringify(payload) } : {}),
-    }).then(res => res.json());
-    clearTimeout(timeout);
-    return response;
-  } catch (error) {
-    clearTimeout(timeout);
-    if (error.name === 'AbortError') {
-      console.error(`Netlify API POST timeout after 10s: ${path}`);
-      throw new Error(`Netlify API POST request timeout: ${path}`);
-    }
-    throw error;
-  }
-}
-
-async function del(netlifyApiToken, path) {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 10000); // 10 second timeout
-  
-  try {
-    const response = await fetch(`${apiRoot}${path}`, {
-      signal: controller.signal,
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${netlifyApiToken}`,
-      },
-    }).then(res => res.text());
-    clearTimeout(timeout);
-    return response;
-  } catch (error) {
-    clearTimeout(timeout);
-    if (error.name === 'AbortError') {
-      console.error(`Netlify API DELETE timeout after 10s: ${path}`);
-      throw new Error(`Netlify API DELETE request timeout: ${path}`);
-    }
-    throw error;
-  }
+  return fetchWithTimeout(netlifyApiToken, path, 'POST', payload, 'json');
 }
 
 async function createSite(netlifyApiToken, payload) {
@@ -130,12 +91,12 @@ async function enableLargeMedia(netlifyApiToken, siteId) {
 }
 
 async function waitForDeploys(netlifyApiToken, siteId) {
-  const maxRetries = 5; // Reduced from 10 to 5
-  const retryDelayMs = 10 * 1000; // Reduced from 30s to 10s
+  const maxRetries = 5;
+  const retryDelayMs = 10 * 1000; // 10 seconds
   
   for (let i = 0; i < maxRetries; i++) {
     try {
-      const deploys = await get(netlifyApiToken, `sites/${siteId}/deploys`);
+      const deploys = await fetchWithTimeout(netlifyApiToken, `sites/${siteId}/deploys`, 'GET', null, 'json');
       
       if (deploys && deploys.some(deploy => deploy.state === 'ready')) {
         return;
@@ -331,7 +292,7 @@ async function teardownGitGateway(taskData) {
     const { netlifyApiToken } = getEnvs();
     const { site_id } = taskData;
     console.log('Deleting Netlify site:', site_id);
-    await del(netlifyApiToken, `sites/${site_id}`);
+    await fetchWithTimeout(netlifyApiToken, `sites/${site_id}`, 'DELETE', null, 'text');
 
     const result = await methods[taskData.provider].teardown(taskData);
     return result;
