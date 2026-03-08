@@ -12,8 +12,9 @@ async function runCypress() {
 
   const machineIndex = Number(process.env.MACHINE_INDEX || 0);
   const machineCount = Number(process.env.MACHINE_COUNT || 0);
+  const isFork = process.env.IS_FORK === 'true';
 
-  if (machineIndex && machineCount) {
+  if (isFork && machineIndex && machineCount) {
     const specsPerMachine = Math.floor(specs.length / machineCount);
     const start = (machineIndex - 1) * specsPerMachine;
     const machineSpecs =
@@ -22,23 +23,35 @@ async function runCypress() {
         : specs.slice(start, start + specsPerMachine);
 
     console.log(
-      `Sharding specs manually: machine ${machineIndex}/${machineCount} running ${machineSpecs.length} specs`,
+      `Sharding specs manually for fork: machine ${machineIndex}/${machineCount} running ${machineSpecs.length} specs`,
     );
     args.push('--spec', machineSpecs.join(','));
   } else {
     const ciBuildId =
       process.env.CI_BUILD_ID || process.env.GITHUB_RUN_ID || process.env.GITHUB_SHA;
-
+    
+    // Determine group name based on context
+    const isPR = process.env.GITHUB_EVENT_NAME === 'pull_request';
+    const groupName = isPR ? 'PR Checks' : 'GitHub CI';
+    
+    // Add tags for better organization in Cypress Cloud
+    const tags = [];
+    if (isPR) tags.push('pr');
+    if (process.env.GITHUB_BASE_REF) tags.push(`base:${process.env.GITHUB_BASE_REF}`);
+    
     args.push(
       '--record',
       '--parallel',
       '--ci-build-id',
       ciBuildId,
       '--group',
-      'GitHub CI',
-      '--spec',
-      specs.join(','),
+      groupName,
     );
+    
+    // Add tags if present
+    if (tags.length > 0) {
+      args.push('--tag', tags.join(','));
+    }
   }
 
   console.log('Running Cypress with args:', args.join(' '));
