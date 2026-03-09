@@ -65,24 +65,13 @@ export function afterEach(taskResult, backend) {
     const {
       suite: {
         ctx: {
-          currentTest: { state, _retries: retries, _currentRetry: currentRetry, err },
+          currentTest: { state, _retries: retries, _currentRetry: currentRetry },
         },
       },
     } = Cypress.mocha.getRunner();
 
-    cy.task(
-      'log',
-      `[afterEach] backend=${backend} test="${testName}" state=${state} retry=${currentRetry}/${retries}`,
-    );
-    if (state === 'failed' && err?.message) {
-      cy.task('log', `[afterEach] failure: ${err.message}`);
-    }
-
     if (state === 'failed' && retries === currentRetry) {
-      // Avoid deadlock in headless CI: runner.stop can leave recorded parallel runs hanging.
-      if (Cypress.config('isInteractive')) {
-        Cypress.runner.stop();
-      }
+      Cypress.runner.stop();
     }
   }
 }
