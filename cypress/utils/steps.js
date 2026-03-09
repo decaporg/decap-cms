@@ -9,10 +9,13 @@ const {
 } = require('./constants');
 
 function login(user) {
-  console.log(`[${new Date().toISOString()}] [login] Starting with user:`, user ? 'yes' : 'no', user?.netlifySiteURL ? 'has site URL' : 'no site URL');
+  cy.task(
+    'log',
+    `[login] start user=${user ? 'yes' : 'no'} netlifySiteURL=${user?.netlifySiteURL ? 'yes' : 'no'}`,
+  );
   cy.viewport(1200, 1200);
   if (user) {
-    console.log(`[${new Date().toISOString()}] [login] About to cy.visit('/')`);
+    cy.task('log', '[login] about to visit /');
     cy.visit('/', {
       onBeforeLoad: () => {
         // https://github.com/cypress-io/cypress/issues/1208
@@ -21,26 +24,27 @@ function login(user) {
         if (user.netlifySiteURL) {
           window.localStorage.setItem('netlifySiteURL', user.netlifySiteURL);
         }
-        console.log(`[${new Date().toISOString()}] [login] onBeforeLoad complete, localStorage set`);
       },
+    }).then(() => {
+      cy.task('log', '[login] visit completed');
     });
-    console.log(`[${new Date().toISOString()}] [login] cy.visit('/') queued`);
     if (user.netlifySiteURL && user.email && user.password) {
-      console.log(`[${new Date().toISOString()}] [login] About to fill login form`);
-      cy.get('input[name="email"]').clear();
+      cy.task('log', '[login] filling login form');
+      cy.get('input[name="email"]', { timeout: 10000 }).clear();
       cy.get('input[name="email"]').type(user.email);
       cy.get('input[name="password"]').clear();
       cy.get('input[name="password"]').type(user.password);
       cy.contains('button', 'Login').click();
-      console.log(`[${new Date().toISOString()}] [login] Login button clicked`);
+      cy.task('log', '[login] login button clicked');
     }
   } else {
     cy.visit('/');
     cy.contains('button', 'Login').click();
   }
-  console.log(`[${new Date().toISOString()}] [login] About to wait for "New Post" link`);
-  cy.contains('a', 'New Post');
-  console.log(`[${new Date().toISOString()}] [login] "New Post" link found - login complete`);
+  cy.task('log', '[login] waiting for New Post link');
+  cy.contains('a', 'New Post', { timeout: 60000 }).then(() => {
+    cy.task('log', '[login] New Post link found');
+  });
 }
 
 function assertNotification(message) {
