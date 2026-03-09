@@ -34,9 +34,8 @@ function RichtextPreview({
       margin-bottom: 16px;
     }
   `;
-  
 
-    return (
+  return (
     <WidgetPreviewContainer>
       <style>{previewStyles}</style>
       <div dangerouslySetInnerHTML={{ __html: toRender }} />
