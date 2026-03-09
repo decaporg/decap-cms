@@ -14,6 +14,8 @@ async function runCypress() {
   const machineCount = Number(process.env.MACHINE_COUNT || 0);
   const isFork = process.env.IS_FORK === 'true';
 
+  console.log(`IS_FORK: ${isFork}, MACHINE_INDEX: ${machineIndex}, MACHINE_COUNT: ${machineCount}`);
+
   if (isFork && machineIndex && machineCount) {
     const specsPerMachine = Math.floor(specs.length / machineCount);
     const start = (machineIndex - 1) * specsPerMachine;
@@ -58,7 +60,7 @@ async function runCypress() {
   await execa('cypress', args, {
     stdio: 'inherit',
     preferLocal: true,
-    timeout: 60 * 60 * 1000, // 1 hour
+    timeout: 15 * 60 * 1000, // 15 minutes
   });
 }
 
