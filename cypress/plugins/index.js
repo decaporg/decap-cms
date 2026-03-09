@@ -41,10 +41,6 @@ const { copyBackendFiles, switchVersion, updateConfig } = require('../utils/conf
 module.exports = async (on, config) => {
   // `on` is used to hook into various events Cypress emits
   on('task', {
-    log(message) {
-      console.log(message);
-      return null;
-    },
     async setupBackend({ backend, options }) {
       console.log('Preparing environment for backend', backend);
       await copyBackendFiles(backend);

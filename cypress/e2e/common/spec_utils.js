@@ -17,37 +17,25 @@ export function beforeEach(taskResult, backend) {
   const spec = Cypress.mocha.getRunner().suite.ctx.currentTest.parent.title;
   const testName = Cypress.mocha.getRunner().suite.ctx.currentTest.title;
 
-  cy.task('log', `[beforeEach] backend=${backend} spec="${spec}" test="${testName}"`);
-  cy.task('log', `[beforeEach] mockResponses=${String(taskResult.data.mockResponses)}`);
-
   cy.task('setupBackendTest', {
     backend,
     ...taskResult.data,
     spec,
     testName,
-  }).then(() => {
-    cy.task('log', '[beforeEach] setupBackendTest completed');
   });
 
   if (taskResult.data.mockResponses) {
     const fixture = `${spec}__${testName}.json`;
-    cy.task('log', `[beforeEach] Loading fixture: "${fixture}"`);
-    cy.stubFetch({ fixture }).then(() => {
-      cy.task('log', '[beforeEach] stubFetch completed');
-    });
-  } else {
-    cy.task('log', '[beforeEach] Skipping fixture load - mockResponses is false/undefined');
+    console.log('loading fixture:', fixture);
+    cy.stubFetch({ fixture });
   }
 
   // cy.clock(0, ['Date']) was hanging git-gateway tests after page load
   // Hypothesis: freezing time to 0 breaks app initialization during cy.visit()
   // Temporary fix: skip cy.clock for git-gateway, use default clock for others
   if (backend !== 'git-gateway') {
-    cy.task('log', '[beforeEach] Setting clock to epoch 0 for non-git-gateway');
     return cy.clock(0, ['Date']);
   }
-
-  cy.task('log', '[beforeEach] Skipped clock for git-gateway');
 }
 
 export function afterEach(taskResult, backend) {
