@@ -33,6 +33,17 @@ import './commands';
 
 afterEach(function () {
   if (this.currentTest.state === 'failed') {
-    Cypress.runner.stop();
+    const titlePath = this.currentTest.titlePath ? this.currentTest.titlePath().join(' > ') : '';
+    // In headless CI, stopping the runner can leave the Cypress process hanging.
+    if (Cypress.config('isInteractive')) {
+      Cypress.runner.stop();
+    } else {
+      // eslint-disable-next-line no-console
+      console.error(`[afterEach] Test failed in CI: ${titlePath || this.currentTest.title}`);
+      if (this.currentTest.err?.message) {
+        // eslint-disable-next-line no-console
+        console.error(`[afterEach] Failure: ${this.currentTest.err.message}`);
+      }
+    }
   }
 });

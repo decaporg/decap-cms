@@ -14,13 +14,18 @@ import {
 import { workflowStatus } from '../../utils/constants';
 
 function uploadMediaFile() {
+  cy.task('log', '[media_library] uploadMediaFile: start');
   assertNoImagesInLibrary();
+  cy.task('log', '[media_library] uploadMediaFile: library empty confirmed');
 
   const fixture = 'cypress/fixtures/media/netlify.png';
   cy.get('input[type="file"]').selectFile(fixture, { force: true });
+  cy.task('log', '[media_library] uploadMediaFile: file selected');
   cy.contains('span', 'Uploading...').should('not.exist');
+  cy.task('log', '[media_library] uploadMediaFile: upload finished');
 
   assertImagesInLibrary();
+  cy.task('log', '[media_library] uploadMediaFile: image present');
 }
 
 function assertImagesInLibrary() {
@@ -102,18 +107,19 @@ function assertGridEntryImage(entry) {
 
 export default function({ entries, getUser }) {
   beforeEach(() => {
-    console.log(`[${new Date().toISOString()}] [media_library beforeEach] Starting, about to call login`);
+    cy.task('log', '[media_library beforeEach] start login');
     login(getUser && getUser());
-    console.log(`[${new Date().toISOString()}] [media_library beforeEach] login completed`);
+    cy.task('log', '[media_library beforeEach] login completed');
   });
 
   it('can upload image from global media library', () => {
-    console.log(`[${new Date().toISOString()}] [TEST] Starting: can upload image from global media library`);
+    cy.task('log', '[TEST] can upload image from global media library: start');
     goToMediaLibrary();
+    cy.task('log', '[TEST] can upload image from global media library: media library opened');
     uploadMediaFile();
     matchImageSnapshot();
     closeMediaLibrary();
-    console.log(`[${new Date().toISOString()}] [TEST] Completed: can upload image from global media library`);
+    cy.task('log', '[TEST] can upload image from global media library: end');
   });
 
   it('can delete image from global media library', () => {
