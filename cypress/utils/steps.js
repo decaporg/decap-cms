@@ -9,8 +9,10 @@ const {
 } = require('./constants');
 
 function login(user) {
+  console.log('[login] START user=', user ? 'yes' : 'no', 'netlifySiteURL=', user?.netlifySiteURL || 'none');
   cy.viewport(1200, 1200);
   if (user) {
+    console.log('[login] About to cy.visit("/")');
     cy.visit('/', {
       onBeforeLoad: () => {
         // https://github.com/cypress-io/cypress/issues/1208
@@ -19,20 +21,28 @@ function login(user) {
         if (user.netlifySiteURL) {
           window.localStorage.setItem('netlifySiteURL', user.netlifySiteURL);
         }
+        console.log('[login] onBeforeLoad complete');
       },
+    }).then(() => {
+      console.log('[login] cy.visit completed');
     });
     if (user.netlifySiteURL && user.email && user.password) {
+      console.log('[login] Filling login form');
       cy.get('input[name="email"]', { timeout: 10000 }).clear();
       cy.get('input[name="email"]').type(user.email);
       cy.get('input[name="password"]').clear();
       cy.get('input[name="password"]').type(user.password);
       cy.contains('button', 'Login').click();
+      console.log('[login] Login button clicked');
     }
   } else {
     cy.visit('/');
     cy.contains('button', 'Login').click();
   }
-  cy.contains('a', 'New Post');
+  console.log('[login] Waiting for New Post link');
+  cy.contains('a', 'New Post', { timeout: 60000 }).then(() => {
+    console.log('[login] New Post link found - COMPLETE');
+  });
 }
 
 function assertNotification(message) {
