@@ -304,6 +304,20 @@ function getConfigSchema() {
               minProperties: 1,
             },
             i18n: i18nCollection,
+            index_file: {
+              type: 'object',
+              properties: {
+                pattern: { type: 'string' },
+                fields: fieldsConfig(),
+                editor: {
+                  type: 'object',
+                  properties: {
+                    preview: { type: 'boolean' },
+                  },
+                },
+              },
+              required: ['pattern'],
+            },
           },
           required: ['name', 'label'],
           oneOf: [{ required: ['files'] }, { required: ['folder', 'fields'] }],
@@ -373,6 +387,39 @@ class ConfigError extends Error {
 }
 
 /**
+ * Validates index_file configuration for a collection
+ */
+function validateIndexFileConfig(collection, collectionIndex) {
+  const errors = [];
+
+  if (!collection || !collection.index_file) {
+    return errors;
+  }
+
+  const { pattern } = collection.index_file;
+
+  // Validate that pattern is a valid regex
+  try {
+    new RegExp(pattern);
+  } catch (e) {
+    errors.push({
+      instancePath: `/collections/${collectionIndex}/index_file/pattern`,
+      message: `must be a valid regular expression. Error: ${e.message}`,
+    });
+  }
+
+  // Validate that index_file is only used with folder collections
+  if (collection.files) {
+    errors.push({
+      instancePath: `/collections/${collectionIndex}/index_file`,
+      message: `cannot be used with file collections. Use 'index_file' only with folder collections.`,
+    });
+  }
+
+  return errors;
+}
+
+/**
  * `validateConfig` is a pure function. It does not mutate
  * the config that is passed in.
  */
@@ -385,8 +432,12 @@ export function validateConfig(config) {
   ajvErrors(ajv);
 
   const valid = ajv.validate(getConfigSchema(), config);
+
+  // Collect all validation errors
+  let errors = [];
+
   if (!valid) {
-    const errors = ajv.errors.map(e => {
+    errors = ajv.errors.map(e => {
       switch (e.keyword) {
         // TODO: remove after https://github.com/ajv-validator/ajv-keywords/pull/123 is merged
         case 'uniqueItemProperties': {
@@ -416,6 +467,17 @@ export function validateConfig(config) {
           return e;
       }
     });
+  }
+
+  // Run custom validation for index_file configurations
+  if (config.collections && Array.isArray(config.collections)) {
+    config.collections.forEach((collection, index) => {
+      const customErrors = validateIndexFileConfig(collection, index);
+      errors.push(...customErrors);
+    });
+  }
+
+  if (errors.length > 0) {
     console.error('Config Errors', errors);
     throw new ConfigError(errors);
   }

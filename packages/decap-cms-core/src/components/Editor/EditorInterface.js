@@ -18,6 +18,7 @@ import EditorControlPane from './EditorControlPane/EditorControlPane';
 import EditorPreviewPane from './EditorPreviewPane/EditorPreviewPane';
 import EditorToolbar from './EditorToolbar';
 import { hasI18n, getI18nInfo, getPreviewEntry } from '../../lib/i18n';
+import { isIndexFile } from '../../lib/indexFileHelper';
 import { FILES } from '../../constants/collectionTypes';
 import { getFileFromSlug } from '../../reducers/collections';
 
@@ -149,8 +150,19 @@ function isPreviewEnabled(collection, entry) {
   if (collection.get('type') === FILES) {
     const file = getFileFromSlug(collection, entry.get('slug'));
     const previewEnabled = file?.getIn(['editor', 'preview']);
+
     if (previewEnabled != null) return previewEnabled;
   }
+
+  const indexFileConfig = collection.get('index_file');
+  if (
+    indexFileConfig &&
+    isIndexFile(entry.get('slug'), indexFileConfig.get('pattern'), !!collection.get('nested')) &&
+    indexFileConfig.get('editor')?.has('preview')
+  ) {
+    return indexFileConfig.get('editor').get('preview');
+  }
+
   return collection.getIn(['editor', 'preview'], true);
 }
 
