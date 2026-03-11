@@ -8,7 +8,7 @@ export const Statues = {
   DRAFT: 'draft',
   PENDING_REVIEW: 'pending_review',
   PENDING_PUBLISH: 'pending_publish',
-};
+} as const;
 
 // Available status
 export const status = OrderedMap(Statues);
@@ -20,3 +20,4 @@ export const statusDescriptions = Map({
 });
 
 export type Status = keyof typeof Statues;
+export type StatusValues = (typeof Statues)[Status];

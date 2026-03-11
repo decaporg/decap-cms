@@ -43,6 +43,8 @@ declare module 'decap-cms-core' {
 
   export type CmsPublishMode = 'simple' | 'editorial_workflow' | '';
 
+  export type CmsPublishWorkflowStatus = 'draft' | 'pending_review' | 'pending_publish';
+
   export type CmsSlugEncoding = 'unicode' | 'ascii';
 
   export interface CmsI18nConfig {
@@ -403,6 +405,7 @@ declare module 'decap-cms-core' {
     media_folder_relative?: boolean;
     media_library?: CmsMediaLibrary;
     publish_mode?: CmsPublishMode;
+    default_workflow_status?: CmsPublishWorkflowStatus;
     load_config_file?: boolean;
     integrations?: {
       hooks: string[];
