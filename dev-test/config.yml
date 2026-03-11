@@ -148,15 +148,13 @@ collections: # A list of collections the CMS should be able to edit
         search_fields: ['title', 'body']
         value_field: 'title'
       - { label: 'Title', name: 'title', widget: 'string' }
-      - { label: 'Boolean', name: 'boolean', widget: 'boolean', default: true }
       - { label: 'Map', name: 'map', widget: 'map' }
       - { label: 'Text', name: 'text', widget: 'text', hint: 'Plain text, not markdown' }
       - { label: 'Number', name: 'number', widget: 'number', hint: 'To infinity and beyond!' }
-      - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
       - { label: 'Datetime', name: 'datetime', widget: 'datetime' }
       - { label: 'Image', name: 'image', widget: 'image' }
       - { label: 'File', name: 'file', widget: 'file' }
-      - { label: 'Select', name: 'select', widget: 'select', options: ['a', 'b', 'c'] }
+      - { label: 'Color', name: 'color', widget: 'color' }
       - {
           label: 'Select multiple',
           name: 'select_multiple',
@@ -165,7 +163,25 @@ collections: # A list of collections the CMS should be able to edit
           multiple: true,
         }
       - { label: 'Hidden', name: 'hidden', widget: 'hidden', default: 'hidden' }
-      - { label: 'Color', name: 'color', widget: 'color' }
+      - { label: 'Boolean', name: 'boolean', widget: 'boolean', default: true, hint: 'Controls visibility of "Conditional Object" below' }
+      - { label: 'Select', name: 'select', widget: 'select', options: ['a', 'b', 'c'], hint: 'Controls multiple conditional fields below (try different values)' }
+      - { label: 'String', name: 'string', widget: 'string', hint: 'Type "foo" or "123-456" to test regex conditionals below' }
+      - { label: 'Conditional String (notEqual)', name: 'conditional_string', widget: 'string', hint: 'Visible when Select ≠ "a"', condition: { field: 'select', value: 'a', operator: 'notEqual' } }
+      - label: 'Conditional Object (equal)'
+        name: 'conditional_object'
+        widget: 'object'
+        hint: 'Visible when Boolean = true'
+        condition: { field: 'boolean', value: true }
+        fields:
+          - { label: 'Title', name: 'title', widget: 'string' }
+      - label: 'Conditional OneOf'
+        name: 'conditional_oneof'
+        widget: 'string'
+        hint: 'Visible when Select is "a" OR "b"'
+        condition: { field: 'select', value: ['a', 'b'], operator: 'oneOf' }
+      - { label: 'Conditional Regex (matches)', name: 'conditional_regex', widget: 'string', hint: 'Visible when Select matches /^(a|b)$/', condition: { field: 'select', value: '/^(a|b)$/', operator: 'matches' } }
+      - { label: 'Conditional Regex CI', name: 'conditional_regex_ci', widget: 'string', hint: 'Visible when String contains "foo" (case-insensitive)', condition: { field: 'string', value: '/foo/i', operator: 'matches' } }
+      - { label: 'Conditional Negated Regex', name: 'conditional_not_regex', widget: 'string', hint: 'Visible when String does NOT match pattern ###-### (e.g., 123-456)', condition: { field: 'string', value: '/^(?!\\d{3}-\\d{3}$).*$/', operator: 'matches' } }
       - label: 'Object'
         name: 'object'
         widget: 'object'
@@ -186,6 +202,7 @@ collections: # A list of collections the CMS should be able to edit
           - { label: 'Image', name: 'image', widget: 'image' }
           - { label: 'File', name: 'file', widget: 'file' }
           - { label: 'Select', name: 'select', widget: 'select', options: ['a', 'b', 'c'] }
+          - { label: 'Nested Conditional', name: 'nested_conditional', widget: 'string', condition: { field: 'object.select', value: 'a' } }
       - label: 'List'
         name: 'list'
         widget: 'list'
@@ -199,6 +216,7 @@ collections: # A list of collections the CMS should be able to edit
           - { label: 'Image', name: 'image', widget: 'image' }
           - { label: 'File', name: 'file', widget: 'file' }
           - { label: 'Select', name: 'select', widget: 'select', options: ['a', 'b', 'c'] }
+          - { label: 'List Wildcard Conditional', name: 'wildcard_cond', widget: 'string', condition: { field: 'list.*.select', value: 'b' } }
           - label: 'Object'
             name: 'object'
             widget: 'object'
@@ -275,6 +293,45 @@ collections: # A list of collections the CMS should be able to edit
             fields:
               - { label: 'Image', name: 'image', widget: 'image' }
               - { label: 'File', name: 'file', widget: 'file' }
+      - label: 'Structure List with Wildcard Conditionals'
+        name: 'structure'
+        widget: 'list'
+        types:
+          - label: 'Image Block'
+            name: 'image'
+            widget: 'object'
+            fields:
+              - { label: 'Image', name: 'image', widget: 'image' }
+              - { label: 'Caption', name: 'caption', widget: 'string' }
+              - { label: 'Alt Text', name: 'alt', widget: 'string' }
+          - label: 'Text Block'
+            name: 'text'
+            widget: 'object'
+            fields:
+              - { label: 'Content', name: 'content', widget: 'markdown' }
+              - { label: 'Alignment', name: 'alignment', widget: 'select', options: ['left', 'center', 'right'] }
+          - label: 'Video Block'
+            name: 'video'
+            widget: 'object'
+            fields:
+              - { label: 'Video URL', name: 'url', widget: 'string' }
+              - { label: 'Thumbnail', name: 'thumbnail', widget: 'image' }
+              - { label: 'Autoplay', name: 'autoplay', widget: 'boolean', default: false }
+      - label: 'Image Options'
+        name: 'image_options'
+        widget: 'object'
+        condition: { field: 'structure.*.type', value: 'image' }
+        fields:
+          - { label: 'Image Quality', name: 'quality', widget: 'number', min: 1, max: 100, default: 80 }
+          - { label: 'Image Format', name: 'format', widget: 'select', options: ['jpg', 'png', 'webp'] }
+      - label: 'Video Options'
+        name: 'video_options'
+        widget: 'object'
+        condition: { field: 'structure.*.type', value: 'video' }
+        fields:
+          - { label: 'Video Quality', name: 'quality', widget: 'select', options: ['360p', '720p', '1080p'] }
+          - { label: 'Captions', name: 'captions', widget: 'boolean', default: true }
+      - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
   - name: pages # a nested collection
     label: Pages
     label_singular: 'Page'
