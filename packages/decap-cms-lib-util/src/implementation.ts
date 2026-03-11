@@ -63,6 +63,58 @@ export type DataFile = {
   newPath?: string;
 };
 
+export interface Note {
+  id: string;
+  avatarUrl?: string;
+  content: string;
+  timestamp: string;
+  author: string;
+  entrySlug: string;
+  resolved: boolean;
+  issueUrl?: string;
+}
+
+export interface IssueState {
+  number: number;
+  title: string;
+  body: string;
+  state: 'open' | 'closed';
+  updated_at: string;
+  comments: CommentData[];
+  labels: Array<{ name: string; color: string }>;
+  html_url: string;
+}
+
+export interface CommentData {
+  id: number | string;
+  body: string;
+  user: {
+    login: string;
+    avatar_url: string;
+  } | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export type ChangeType =
+  | 'comment_added'
+  | 'comment_updated'
+  | 'comment_deleted'
+  | 'issue_state_changed'
+  | 'issue_labels_changed';
+
+export type IssueChangeData =
+  | CommentData
+  | { from: 'open' | 'closed'; to: 'open' | 'closed' }
+  | { from: Array<{ name: string; color: string }>; to: Array<{ name: string; color: string }> };
+
+export interface IssueChange {
+  type: ChangeType;
+  data: IssueChangeData;
+  previousData?: CommentData;
+  timestamp: string;
+}
+
 export type AssetProxy = {
   path: string;
   fileObj?: File;
@@ -158,6 +210,29 @@ export interface Implementation {
   persistEntry: (entry: Entry, opts: PersistOptions) => Promise<void>;
   persistMedia: (file: AssetProxy, opts: PersistOptions) => Promise<ImplementationMediaFile>;
   deleteFiles: (paths: string[], commitMessage: string) => Promise<void>;
+
+  getNotes?: (collection: string, slug: string) => Promise<Note[]>;
+  addNote?: (collection: string, slug: string, note: Omit<Note, 'id'>) => Promise<Note>;
+  updateNote?: (
+    collection: string,
+    slug: string,
+    noteId: string,
+    updates: Partial<Note>,
+  ) => Promise<Note>;
+  deleteNote?: (collection: string, slug: string, noteId: string) => Promise<void>;
+  toggleNoteResolution?: (collection: string, slug: string, noteId: string) => Promise<Note>;
+  syncNotes?: (collection: string, slug: string, localNotes: Note[]) => Promise<Note[]>;
+  reopenIssueForUnpublishedEntry?: (collection: string, slug: string) => Promise<void>;
+
+  getPRMetadata?: (
+    collection: string,
+    slug: string,
+  ) => Promise<{
+    id: string;
+    url: string;
+    author: string;
+    createdAt: string;
+  } | null>;
 
   unpublishedEntries: () => Promise<string[]>;
   unpublishedEntry: (args: {
