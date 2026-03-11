@@ -280,6 +280,8 @@ collections: # A list of collections the CMS should be able to edit
     label_singular: 'Page'
     folder: _pages
     create: true
+    preview_path: 'pages/{{slug}}'
+    preview_path_preserve_slashes: true
     nested: { depth: 100, subfolders: false }
     fields:
       - label: Title

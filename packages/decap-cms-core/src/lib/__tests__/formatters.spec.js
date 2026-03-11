@@ -566,6 +566,66 @@ describe('formatters', () => {
         'Collection "posts" configuration error:\n  `preview_path_date_field` must be a field with a valid date. Ignoring `preview_path`.',
       );
     });
+
+    it('should preserve slashes in value when configured', () => {
+      expect(
+        previewUrlFormatter(
+          'https://www.example.com',
+          Map({
+            preview_path: 'prefix/{{value}}',
+            preview_path_preserve_slashes: true,
+          }),
+          'backendSlug',
+          Map({ data: Map({ value: 'nested/value' }) }),
+          slugConfig,
+        ),
+      ).toBe('https://www.example.com/prefix/nested/value');
+    });
+
+    it('should sanitize slashes in value when not configured', () => {
+      expect(
+        previewUrlFormatter(
+          'https://www.example.com',
+          Map({
+            preview_path: 'prefix/{{value}}',
+          }),
+          'backendSlug',
+          Map({ data: Map({ value: 'nested/value' }) }),
+          slugConfig,
+        ),
+      ).toBe('https://www.example.com/prefix/nested-value');
+    });
+
+    it('should preserve slashes in value for nested collections by default', () => {
+      expect(
+        previewUrlFormatter(
+          'https://www.example.com',
+          Map({
+            preview_path: 'prefix/{{value}}',
+            nested: { depth: 10 },
+          }),
+          'backendSlug',
+          Map({ data: Map({ value: 'nested/value' }) }),
+          slugConfig,
+        ),
+      ).toBe('https://www.example.com/prefix/nested/value');
+    });
+
+    it('should sanitize slashes in value for nested collections when explicitly disabled', () => {
+      expect(
+        previewUrlFormatter(
+          'https://www.example.com',
+          Map({
+            preview_path: 'prefix/{{value}}',
+            nested: { depth: 10 },
+            preview_path_preserve_slashes: false,
+          }),
+          'backendSlug',
+          Map({ data: Map({ value: 'nested/value' }) }),
+          slugConfig,
+        ),
+      ).toBe('https://www.example.com/prefix/nested-value');
+    });
   });
 
   describe('summaryFormatter', () => {
