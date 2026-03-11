@@ -286,6 +286,7 @@ const en = {
       onFailToDelete: 'Failed to delete entry: %{details}',
       onFailToUpdateStatus: 'Failed to update status: %{details}',
       missingRequiredField: "Oops, you've missed a required field. Please complete before saving.",
+      duplicateFrontmatterKey: 'Duplicate key in frontmatter. %{details}',
       entrySaved: 'Entry saved',
       entryPublished: 'Entry published',
       entryUnpublished: 'Entry unpublished',
