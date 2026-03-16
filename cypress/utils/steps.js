@@ -9,8 +9,10 @@ const {
 } = require('./constants');
 
 function login(user) {
+  console.log('[login] START user=', user ? 'yes' : 'no', 'netlifySiteURL=', user?.netlifySiteURL || 'none');
   cy.viewport(1200, 1200);
   if (user) {
+    console.log('[login] About to cy.visit("/")');
     cy.visit('/', {
       onBeforeLoad: () => {
         // https://github.com/cypress-io/cypress/issues/1208
@@ -19,22 +21,28 @@ function login(user) {
         if (user.netlifySiteURL) {
           window.localStorage.setItem('netlifySiteURL', user.netlifySiteURL);
         }
+        console.log('[login] onBeforeLoad complete');
       },
+    }).then(() => {
+      console.log('[login] cy.visit completed');
     });
     if (user.netlifySiteURL && user.email && user.password) {
-      cy.get('input[name="email"]')
-        .clear()
-        .type(user.email);
-      cy.get('input[name="password"]')
-        .clear()
-        .type(user.password);
+      console.log('[login] Filling login form');
+      cy.get('input[name="email"]', { timeout: 10000 }).clear();
+      cy.get('input[name="email"]').type(user.email);
+      cy.get('input[name="password"]').clear();
+      cy.get('input[name="password"]').type(user.password);
       cy.contains('button', 'Login').click();
+      console.log('[login] Login button clicked');
     }
   } else {
     cy.visit('/');
     cy.contains('button', 'Login').click();
   }
-  cy.contains('a', 'New Post');
+  console.log('[login] Waiting for New Post link');
+  cy.contains('a', 'New Post', { timeout: 60000 }).then(() => {
+    console.log('[login] New Post link found - COMPLETE');
+  });
 }
 
 function assertNotification(message) {
@@ -56,6 +64,7 @@ function assertColorOn(cssProperty, color, opts) {
       expect($el).to.have.css(cssProperty, color);
     });
   } else if (opts.type && opts.type === 'field') {
+    // eslint-disable-next-line func-style
     const assertion = $el => expect($el).to.have.css(cssProperty, color);
     if (opts.isMarkdown) {
       (opts.scope ? opts.scope : cy)
@@ -270,11 +279,10 @@ function populateEntry(entry, onDone = flushClockAndSave) {
   for (const key of keys) {
     const value = entry[key];
     if (key === 'body') {
-      cy.getMarkdownEditor()
-        .first()
-        .click()
-        .clear({ force: true })
-        .type(value, { force: true });
+      cy.getMarkdownEditor().first().as('bodyEditor');
+      cy.get('@bodyEditor').click();
+      cy.get('@bodyEditor').clear({ force: true });
+      cy.get('@bodyEditor').type(value, { force: true });
     } else {
       cy.get(`[id^="${key}-field"]`)
         .first()
@@ -467,17 +475,16 @@ function validateNestedObjectFields({ limit, author }) {
   cy.focused().type(author);
   cy.contains('button', 'Save').click();
   assertNotification(notifications.error.missingField);
-  cy.get('input[type=number]').type(limit + 1);
+  cy.get('input[type=number]').as('limitInput');
+  cy.get('@limitInput').type(limit + 1);
   cy.contains('button', 'Save').click();
   assertFieldValidationError(notifications.validation.range);
-  cy.get('input[type=number]')
-    .clear()
-    .type(-1);
+  cy.get('@limitInput').clear();
+  cy.get('@limitInput').type(-1);
   cy.contains('button', 'Save').click();
   assertFieldValidationError(notifications.validation.range);
-  cy.get('input[type=number]')
-    .clear()
-    .type(limit);
+  cy.get('@limitInput').clear();
+  cy.get('@limitInput').type(limit);
   cy.contains('button', 'Save').click();
   assertNotification(notifications.saved);
 }
