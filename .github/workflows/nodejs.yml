@@ -14,7 +14,7 @@ on:
 
 jobs:
   changes:
-    runs-on: ubuntu-latest
+    runs-on: depot-ubuntu-latest
     outputs:
       cms: ${{ steps.filter.outputs.cms }}
     steps:
@@ -31,10 +31,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [depot-ubuntu-latest, depot-macos-latest, depot-windows-latest]
         node-version: [24.x]
         include:
-          - os: ubuntu-latest
+          - os: depot-ubuntu-latest
             node-version: 22.x
       fail-fast: true
     if: ${{ needs.changes.outputs.cms == 'true' }}
@@ -58,7 +58,7 @@ jobs:
   e2e:
     needs: changes
     if: ${{ needs.changes.outputs.cms == 'true' }}
-    runs-on: ubuntu-latest
+    runs-on: depot-ubuntu-latest
     strategy:
       fail-fast: true
       matrix:
