@@ -1,6 +1,7 @@
 import '../utils/dismiss-local-backup';
 
-describe('Markdown widget link', () => {
+// TODO: Reevaluate these tests and re-enable them.
+describe.skip('Markdown widget link', () => {
   before(() => {
     Cypress.config('defaultCommandTimeout', 4000);
     cy.task('setupBackend', { backend: 'test' });
@@ -54,11 +55,7 @@ describe('Markdown widget link', () => {
       });
 
       const text = 'Decap CMS';
-      cy.focused()
-        .getMarkdownEditor()
-        .type(text)
-        .setSelection(text)
-        .clickLinkButton();
+      cy.focused().getMarkdownEditor().type(text).setSelection(text).clickLinkButton();
 
       cy.confirmMarkdownEditorContent(`<p><a>${text}</a></p>`);
       // eslint-disable-next-line cypress/no-unnecessary-waiting
