@@ -1,7 +1,6 @@
 import '../utils/dismiss-local-backup';
 
-// TODO: Reevaluate these tests and re-enable them.
-describe.skip('Markdown widget', () => {
+describe('Markdown widget', () => {
   describe('code mark', () => {
     before(() => {
       Cypress.config('defaultCommandTimeout', 4000);
@@ -20,7 +19,10 @@ describe.skip('Markdown widget', () => {
 
     describe('toolbar button', () => {
       it('can combine code mark with other marks', () => {
-        cy.clickItalicButton().type('foo').setSelection('oo').clickCodeButton()
+        cy.clickItalicButton()
+          .type('foo')
+          .setSelection('oo')
+          .clickCodeButton()
           .confirmMarkdownEditorContent(`
             <p>
               <em>f</em>
