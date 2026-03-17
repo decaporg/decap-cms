@@ -59,7 +59,10 @@ module.exports = {
       },
     ],
     'unicorn/prefer-string-slice': 'error',
-    'react/no-unknown-property': ['error', { ignore: ['css', 'bold', 'italic', 'delete'] }],
+    'react/no-unknown-property': [
+      'error',
+      { ignore: ['css', 'bold', 'italic', 'delete', 'strikethrough'] },
+    ],
   },
   plugins: ['babel', '@emotion', 'cypress', 'unicorn'],
   settings: {

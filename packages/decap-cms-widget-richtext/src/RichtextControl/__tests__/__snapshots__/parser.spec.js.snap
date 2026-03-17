@@ -274,7 +274,7 @@ automatically indented when they are used.",
         "type": "p",
       },
     ],
-    "type": "quote",
+    "type": "blockquote",
   },
   Object {
     "children": Array [
