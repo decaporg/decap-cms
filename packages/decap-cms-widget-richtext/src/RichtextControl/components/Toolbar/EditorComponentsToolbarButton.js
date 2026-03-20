@@ -21,8 +21,7 @@ function EditorComponentsToolbarButton({ disabled, editorComponents, allowedEdit
       const defaultValues = plugin.fields
         .toMap()
         .mapKeys((_, field) => field.get('name'))
-        .filter(field => field.has('default'))
-        .map(field => field.get('default'));
+        .map(field => field.get('default', ''));
 
       editor.tf.insertNodes(
         {
