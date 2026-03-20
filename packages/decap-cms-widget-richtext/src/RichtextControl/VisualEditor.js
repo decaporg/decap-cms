@@ -54,6 +54,7 @@ export default function VisualEditor(props) {
     field,
     className,
     isDisabled,
+    isEditorComponent,
     onMode,
     isShowModeToggle,
     onChange,
@@ -176,6 +177,7 @@ export default function VisualEditor(props) {
                 editorComponents={editorComponents}
                 allowedEditorComponents={field.get('editor_components')}
                 isShowModeToggle={isShowModeToggle}
+                isEditorComponent={isEditorComponent}
                 t={t}
                 disabled={isDisabled}
               />

@@ -157,8 +157,21 @@ export function remarkToMarkdown(obj, remarkPlugins) {
 export function markdownToHtml(markdown, { getAsset, resolveWidget, remarkPlugins = [] } = {}) {
   const mdast = markdownToRemark(markdown, remarkPlugins);
 
+  const editorComponents = getEditorComponents();
+
+  /**
+   * Provide a `toHtml` callback so `remarkToRehypeShortcodes` can recursively
+   * render markdown/richtext sub-fields of container editor components.
+   */
+  const toHtml = md => markdownToHtml(md, { getAsset, resolveWidget });
+
   const hast = unified()
-    .use(remarkToRehypeShortcodes, { plugins: getEditorComponents(), getAsset, resolveWidget })
+    .use(remarkToRehypeShortcodes, {
+      plugins: editorComponents,
+      getAsset,
+      resolveWidget,
+      toHtml,
+    })
     .use(remarkToRehype, { allowDangerousHTML: true })
     .runSync(mdast);
 

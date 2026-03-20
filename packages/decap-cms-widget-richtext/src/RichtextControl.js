@@ -32,7 +32,11 @@ export default class RichtextControl extends React.Component {
 
     this.state = {
       mode:
-        this.getAllowedModes().indexOf(preferredMode) !== -1
+        // When used inside a container/shortcode editor component, default to
+        // rich text mode — the widget type already implies the editing surface.
+        props.isEditorComponent
+          ? 'rich_text'
+          : this.getAllowedModes().indexOf(preferredMode) !== -1
           ? preferredMode
           : this.getAllowedModes()[0],
       pendingFocus: false,
@@ -42,6 +46,12 @@ export default class RichtextControl extends React.Component {
   componentDidMount() {
     // Manually validate PropTypes - React 19 breaking change
     PropTypes.checkPropTypes(RichtextControl.propTypes, this.props, 'prop', 'RichtextControl');
+
+    // Ensure containerised widgets start in the correct mode even if the
+    // constructor ran before the prop was available (e.g. HMR / late prop).
+    if (this.props.isEditorComponent && this.state.mode !== 'rich_text') {
+      this.setState({ mode: 'rich_text' });
+    }
   }
 
   handleMode = mode => {
@@ -73,7 +83,8 @@ export default class RichtextControl extends React.Component {
       value,
     } = this.props;
 
-    const isShowModeToggle = this.getAllowedModes().length > 1;
+    const isEditorComponent = this.props.isEditorComponent;
+    const isShowModeToggle = this.getAllowedModes().length > 1 && !isEditorComponent;
     const { mode, pendingFocus } = this.state;
 
     const visualEditor = (
@@ -85,6 +96,7 @@ export default class RichtextControl extends React.Component {
             className={classNameWrapper}
             getEditorComponents={getEditorComponents}
             isDisabled={isDisabled}
+            isEditorComponent={isEditorComponent}
             onMode={this.handleMode}
             isShowModeToggle={isShowModeToggle}
             onChange={onChange}

@@ -62,6 +62,7 @@ function Toolbar(props) {
     rawMode,
     onToggleMode,
     isShowModeToggle,
+    isEditorComponent,
     editorComponents,
     allowedEditorComponents,
   } = props;
@@ -146,7 +147,7 @@ function Toolbar(props) {
         )}
         <EditorComponentsToolbarButton
           isVisible={isVisible}
-          disabled={disabled}
+          disabled={disabled || isEditorComponent}
           t={t}
           editorComponents={editorComponents}
           allowedEditorComponents={allowedEditorComponents}
