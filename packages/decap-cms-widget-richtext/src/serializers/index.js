@@ -167,14 +167,15 @@ export function markdownToHtml(
    * of container editor components). This avoids a circular import while
    * letting the shortcode preview pipeline recursively render nested markdown.
    */
-  const toHtml = md => markdownToHtml(md, { getAsset, resolveWidget, editorComponents });
+  function toHtml(md) {
+    return markdownToHtml(md, { getAsset, resolveWidget, editorComponents });
+  }
 
   const hast = unified()
     .use(remarkToRehypeShortcodes, {
       plugins: editorComponents,
       getAsset,
       resolveWidget,
-      editorComponents,
       toHtml,
     })
     .use(remarkToRehype, { allowDangerousHTML: true })

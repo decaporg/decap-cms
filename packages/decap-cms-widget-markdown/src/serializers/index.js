@@ -163,7 +163,9 @@ export function markdownToHtml(markdown, { getAsset, resolveWidget, remarkPlugin
    * Provide a `toHtml` callback so `remarkToRehypeShortcodes` can recursively
    * render markdown/richtext sub-fields of container editor components.
    */
-  const toHtml = md => markdownToHtml(md, { getAsset, resolveWidget });
+  function toHtml(md) {
+    return markdownToHtml(md, { getAsset, resolveWidget });
+  }
 
   const hast = unified()
     .use(remarkToRehypeShortcodes, {

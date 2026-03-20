@@ -9,13 +9,7 @@ import u from 'unist-builder';
  * conversion by replacing the shortcode text with stringified HTML for
  * previewing the shortcode output.
  */
-export default function remarkToRehypeShortcodes({
-  plugins,
-  getAsset,
-  resolveWidget,
-  editorComponents,
-  toHtml,
-}) {
+export default function remarkToRehypeShortcodes({ plugins, getAsset, resolveWidget, toHtml }) {
   return transform;
 
   function transform(root) {
