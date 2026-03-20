@@ -33,6 +33,29 @@ function RichtextPreview({
       margin-right: 0;
       margin-bottom: 16px;
     }
+    
+    code {
+      background-color: #eff0f4;
+      border-radius: 5px;
+      padding: 0 2px;
+      font-size: 85%;
+      
+    }
+    
+    pre {
+      background-color: #eff0f4;
+      border-radius: 5px;
+      padding: 12px 16px;
+      overflow-x: auto;
+      margin-bottom: 16px;
+    }
+    
+    pre code {
+      background-color: transparent;
+      padding: 0;
+      font-size: 85%;
+      border-radius: 0;
+    }
   `;
 
   return (
