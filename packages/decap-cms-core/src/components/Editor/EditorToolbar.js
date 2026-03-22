@@ -230,6 +230,24 @@ const RefreshPreviewButton = styled.button`
   span {
     margin-right: 6px;
   }
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.6;
+  }
+
+  ${Icon} {
+    ${props => props.$spinning && `animation: spin 1s linear infinite;`}
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
 `;
 
 const PreviewLink = RefreshPreviewButton.withComponent('a');
@@ -331,7 +349,11 @@ export class EditorToolbar extends React.Component {
             <Icon type="new-tab" size="xsmall" />
           </PreviewLink>
         ) : (
-          <RefreshPreviewButton onClick={loadDeployPreview}>
+          <RefreshPreviewButton
+            onClick={loadDeployPreview}
+            disabled={isFetching}
+            $spinning={isFetching}
+          >
             <span>{t('editor.editorToolbar.deployPreviewPendingButtonLabel')}</span>
             <Icon type="refresh" size="xsmall" />
           </RefreshPreviewButton>
