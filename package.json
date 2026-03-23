@@ -181,5 +181,5 @@
     }
   },
   "version": "0.0.0",
-  "packageManager": "npm@10.8.1+sha1.1f1cb1305cd9246b9efe07d8629874df23157a2f"
+  "packageManager": "npm@11.12.0+sha512.c4f84e6a9e196c95b277b0c03ae90fe7ae161703521aeff615e4d114786288ab6171abb1847fcda64240426db8c43f9c027f1abf9b50d34a618bdf03aad7cbb2"
 }
