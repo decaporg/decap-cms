@@ -115,7 +115,7 @@
     "ncp": "^2.0.0",
     "nock": "^13.0.0",
     "node-fetch": "^2.3.0",
-    "npm": "^9.9.2",
+    "npm": "^11.12.0",
     "npm-run-all": "^4.1.5",
     "nx": "^21.1.0",
     "postcss": "^8.4.7",
@@ -172,7 +172,16 @@
     "clean-stack": "5.2.0"
   },
   "overrides": {
-    "clean-stack": "5.2.0"
+    "clean-stack": "5.2.0",
+    "copy-webpack-plugin": {
+      "serialize-javascript": "7.0.4"
+    },
+    "nx": {
+      "minimatch": "9.0.9"
+    },
+    "@nx/devkit": {
+      "minimatch": "9.0.9"
+    }
   },
   "version": "0.0.0",
   "packageManager": "npm@10.8.1+sha1.1f1cb1305cd9246b9efe07d8629874df23157a2f"
