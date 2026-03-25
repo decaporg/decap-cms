@@ -20,6 +20,7 @@ import BlockquoteToolbarButton from './BlockquoteToolbarButton';
 import EditorComponentsToolbarButton from './EditorComponentsToolbarButton';
 
 const ToolbarContainer = styled.div`
+  background-color: ${colors.foreground};
   position: relative;
   display: flex;
   justify-content: space-between;
@@ -74,7 +75,7 @@ function Toolbar(props) {
 
   return (
     <ToolbarContainer>
-      <div style={{ background: colors.foreground }}>
+      <div>
         {isVisible('bold') && (
           <MarkToolbarButton
             type="bold"
