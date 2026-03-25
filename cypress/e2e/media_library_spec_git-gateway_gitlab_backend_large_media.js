@@ -5,8 +5,7 @@ import * as specUtils from './common/spec_utils';
 const backend = 'git-gateway';
 const provider = 'gitlab';
 
-// TODO: Reevaluate these tests and re-enable them.
-describe.skip('Git Gateway (GitLab) Backend Media Library - Large Media', () => {
+describe('Git Gateway (GitLab) Backend Media Library - Large Media', () => {
   const taskResult = { data: {} };
 
   before(() => {
