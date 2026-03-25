@@ -46,13 +46,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
           check-latest: true
           cache: 'npm'
-        - name: Setup Chrome 146
-          id: chrome
-          uses: browser-actions/setup-chrome@v1
-          with:
-            chrome-version: 146
-        - name: log chrome version
-          run: ${{ steps.chrome.outputs.chrome-path }} --version
       - name: log versions
         run: node --version && npm --version
       - name: install dependencies (skip Cypress binary)
