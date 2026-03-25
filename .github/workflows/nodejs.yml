@@ -71,6 +71,12 @@ jobs:
           node-version: 24.x
           check-latest: true
           cache: 'npm'
+      - name: Setup Chrome 145
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: 145
+      - name: log chrome version
+        run: google-chrome --version || chrome --version
       - name: Cache Nx local cache
         uses: actions/cache@v4
         with:
