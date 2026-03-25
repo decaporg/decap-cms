@@ -103,7 +103,6 @@ export default class ObjectControl extends React.Component {
       fieldsErrors,
       editorControl: EditorControl,
       parentIds,
-      isEditorComponent,
       isFieldDuplicate,
       isFieldHidden,
       locale,
@@ -132,7 +131,6 @@ export default class ObjectControl extends React.Component {
         onValidate={onValidateObject}
         controlRef={this.processControlRef}
         parentIds={[...parentIds, forID]}
-        isEditorComponent={isEditorComponent}
         isDisabled={isDuplicate}
         isHidden={isHidden}
         isFieldDuplicate={isFieldDuplicate}

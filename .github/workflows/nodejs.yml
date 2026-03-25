@@ -58,11 +58,7 @@ jobs:
   e2e:
     needs: changes
     if: ${{ needs.changes.outputs.cms == 'true' }}
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: true
-      matrix:
-        machine: [1, 2, 3, 4]
+    runs-on: depot-ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js 24.x
@@ -91,14 +87,9 @@ jobs:
         run: npm run build:demo
       - name: test package integrity
         run: npm run test:package-integrity
-      - name: run e2e tests (parallel)
+      - name: run e2e tests
         run: npm run test:e2e:run-ci
         env:
-          CI_BUILD_ID: ${{ github.run_id }}-${{ github.run_attempt }}
-          IS_FORK: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == true || github.repository_owner != 'decaporg' }}
-          # Only used for fork PRs (can't access CYPRESS_RECORD_KEY)
-          MACHINE_INDEX: ${{ matrix.machine }}
-          MACHINE_COUNT: 4
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           NODE_OPTIONS: --max-old-space-size=4096
           TZ: Europe/Amsterdam
@@ -107,7 +98,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: cypress-results-${{ matrix.machine }}
+          name: cypress-results
           path: |
             cypress/screenshots
             cypress/videos
