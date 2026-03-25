@@ -46,6 +46,13 @@ jobs:
           node-version: ${{ matrix.node-version }}
           check-latest: true
           cache: 'npm'
+        - name: Setup Chrome 146
+          id: chrome
+          uses: browser-actions/setup-chrome@v1
+          with:
+            chrome-version: 146
+        - name: log chrome version
+          run: ${{ steps.chrome.outputs.chrome-path }} --version
       - name: log versions
         run: node --version && npm --version
       - name: install dependencies (skip Cypress binary)
@@ -71,6 +78,13 @@ jobs:
           node-version: 24.x
           check-latest: true
           cache: 'npm'
+      - name: Setup Chrome 146
+        id: chrome
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: 146
+      - name: log chrome version
+        run: ${{ steps.chrome.outputs.chrome-path }} --version
       - name: Cache Nx local cache
         uses: actions/cache@v4
         with:
@@ -104,6 +118,7 @@ jobs:
           TZ: Europe/Amsterdam
           GITHUB_EVENT_NAME: ${{ github.event_name }}
           GITHUB_BASE_REF: ${{ github.base_ref }}
+          BROWSER: ${{ steps.chrome.outputs.chrome-path }}
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
