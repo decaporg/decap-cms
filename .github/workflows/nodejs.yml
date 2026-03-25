@@ -71,12 +71,6 @@ jobs:
           node-version: 24.x
           check-latest: true
           cache: 'npm'
-      - name: Setup Chrome 145
-        uses: browser-actions/setup-chrome@v1
-        with:
-          chrome-version: 145
-      - name: log chrome version
-        run: google-chrome --version || chrome --version
       - name: Cache Nx local cache
         uses: actions/cache@v4
         with:
@@ -110,7 +104,6 @@ jobs:
           TZ: Europe/Amsterdam
           GITHUB_EVENT_NAME: ${{ github.event_name }}
           GITHUB_BASE_REF: ${{ github.base_ref }}
-          BROWSER: /opt/hostedtoolcache/setup-chrome/chromium/145.0.7632.117/x64/chrome
       - uses: actions/upload-artifact@v4
         if: failure()
         with:

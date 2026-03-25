@@ -2,7 +2,7 @@ import execa from 'execa';
 import { globby } from 'globby';
 
 async function runCypress() {
-  const args = ['run', '--browser', 'chrome', '--headless'];
+  const args = ['run', '--browser', 'chromium', '--headless'];
 
   const specs = await globby(['cypress/e2e/*spec*.js']);
   if (specs.length === 0) {
