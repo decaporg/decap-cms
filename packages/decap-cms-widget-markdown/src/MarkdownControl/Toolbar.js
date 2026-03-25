@@ -122,11 +122,11 @@ export default class Toolbar extends React.Component {
     const isVisible = this.isVisible;
     const showEditorComponents = !editorComponents || editorComponents.size >= 1;
 
-    function showPlugin({ id }) {
-      return editorComponents ? editorComponents.includes(id) : true;
-    }
+    const allPlugins = plugins ? plugins.toList().sortBy(plugin => plugin.label) : List();
 
-    const pluginsList = plugins ? plugins.toList().filter(showPlugin) : List();
+    const pluginsList = editorComponents
+      ? editorComponents.map(id => plugins.get(id)).filter(plugin => !!plugin)
+      : allPlugins;
 
     const headingOptions = {
       'heading-one': t('editor.editorWidgets.headingOptions.headingOne'),
