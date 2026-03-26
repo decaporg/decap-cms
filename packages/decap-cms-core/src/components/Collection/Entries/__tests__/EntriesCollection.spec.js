@@ -48,32 +48,90 @@ function toEntriesState(collection, entriesArray) {
 }
 
 describe('filterNestedEntries', () => {
-  it('should return only immediate children for non root path', () => {
-    const entriesArray = [
-      { slug: 'index', path: 'src/pages/index.md', data: { title: 'Root' } },
-      { slug: 'dir1/index', path: 'src/pages/dir1/index.md', data: { title: 'File 1' } },
-      { slug: 'dir1/dir2/index', path: 'src/pages/dir1/dir2/index.md', data: { title: 'File 2' } },
-      { slug: 'dir3/index', path: 'src/pages/dir3/index.md', data: { title: 'File 3' } },
-      { slug: 'dir3/dir4/index', path: 'src/pages/dir3/dir4/index.md', data: { title: 'File 4' } },
-    ];
-    const entries = fromJS(entriesArray);
-    expect(filterNestedEntries('dir3', 'src/pages', entries).toJS()).toEqual([
-      { slug: 'dir3/index', path: 'src/pages/dir3/index.md', data: { title: 'File 3' } },
-    ]);
+  const entriesArray = [
+    { slug: 'index', path: 'src/pages/index.md', data: { title: 'Root' } },
+    { slug: 'dir1/index', path: 'src/pages/dir1/index.md', data: { title: 'File 1' } },
+    { slug: 'dir1/dir2/index', path: 'src/pages/dir1/dir2/index.md', data: { title: 'File 2' } },
+    { slug: 'dir3/index', path: 'src/pages/dir3/index.md', data: { title: 'File 3' } },
+    { slug: 'dir3/dir4/index', path: 'src/pages/dir3/dir4/index.md', data: { title: 'File 4' } },
+  ];
+
+  describe('with subfolders disabled (subfolders=false)', () => {
+    it('should return only immediate children for non root path', () => {
+      const entries = fromJS(entriesArray);
+      expect(filterNestedEntries('dir3', 'src/pages', entries).toJS()).toEqual([
+        { slug: 'dir3/index', path: 'src/pages/dir3/index.md', data: { title: 'File 3' } },
+      ]);
+    });
+
+    it('should return only immediate children for root path', () => {
+      const entries = fromJS(entriesArray);
+      expect(filterNestedEntries('', 'src/pages', entries).toJS()).toEqual([
+        { slug: 'index', path: 'src/pages/index.md', data: { title: 'Root' } },
+      ]);
+    });
+
+    it('should exclude entries from non-matching paths', () => {
+      const entries = fromJS(entriesArray);
+      expect(filterNestedEntries('dir1/dir2', 'src/pages', entries).toJS()).toEqual([
+        {
+          slug: 'dir1/dir2/index',
+          path: 'src/pages/dir1/dir2/index.md',
+          data: { title: 'File 2' },
+        },
+      ]);
+    });
   });
 
-  it('should return only immediate children for root path', () => {
-    const entriesArray = [
-      { slug: 'index', path: 'src/pages/index.md', data: { title: 'Root' } },
-      { slug: 'dir1/index', path: 'src/pages/dir1/index.md', data: { title: 'File 1' } },
-      { slug: 'dir1/dir2/index', path: 'src/pages/dir1/dir2/index.md', data: { title: 'File 2' } },
-      { slug: 'dir3/index', path: 'src/pages/dir3/index.md', data: { title: 'File 3' } },
-      { slug: 'dir3/dir4/index', path: 'src/pages/dir3/dir4/index.md', data: { title: 'File 4' } },
-    ];
-    const entries = fromJS(entriesArray);
-    expect(filterNestedEntries('', 'src/pages', entries).toJS()).toEqual([
-      { slug: 'index', path: 'src/pages/index.md', data: { title: 'Root' } },
-    ]);
+  describe('with subfolders enabled (subfolders=true)', () => {
+    it('should return root file and immediate subfolder entries at root', () => {
+      const entries = fromJS(entriesArray);
+      // depth <= 2: index.md (depth 1) and dir1/index.md, dir3/index.md (depth 2)
+      expect(filterNestedEntries('', 'src/pages', entries, true).toJS()).toEqual([
+        { slug: 'index', path: 'src/pages/index.md', data: { title: 'Root' } },
+        { slug: 'dir1/index', path: 'src/pages/dir1/index.md', data: { title: 'File 1' } },
+        { slug: 'dir3/index', path: 'src/pages/dir3/index.md', data: { title: 'File 3' } },
+      ]);
+    });
+
+    it('should exclude deeply nested entries at root', () => {
+      const entries = fromJS(entriesArray);
+      const result = filterNestedEntries('', 'src/pages', entries, true);
+      const slugs = result.map(e => e.get('slug')).toJS();
+      // depth 3 entries should be excluded
+      expect(slugs).not.toContain('dir1/dir2/index');
+      expect(slugs).not.toContain('dir3/dir4/index');
+    });
+
+    it('should return only immediate subfolder entries for non-root path', () => {
+      const entries = fromJS(entriesArray);
+      // At dir1: depth === 2 means dir2/index.md passes, but index.md (depth 1) does not
+      expect(filterNestedEntries('dir1', 'src/pages', entries, true).toJS()).toEqual([
+        {
+          slug: 'dir1/dir2/index',
+          path: 'src/pages/dir1/dir2/index.md',
+          data: { title: 'File 2' },
+        },
+      ]);
+    });
+
+    it('should return subfolder entries for non-root path with multiple children', () => {
+      const entries = fromJS(entriesArray);
+      // At dir3: dir4/index.md (depth 2) passes
+      expect(filterNestedEntries('dir3', 'src/pages', entries, true).toJS()).toEqual([
+        {
+          slug: 'dir3/dir4/index',
+          path: 'src/pages/dir3/dir4/index.md',
+          data: { title: 'File 4' },
+        },
+      ]);
+    });
+
+    it('should return empty list for leaf path with no deeper children', () => {
+      const entries = fromJS(entriesArray);
+      // dir3/dir4 has only dir3/dir4/index.md (depth 1 after trimming), no depth-2 children
+      expect(filterNestedEntries('dir3/dir4', 'src/pages', entries, true).toJS()).toEqual([]);
+    });
   });
 });
 
