@@ -1,7 +1,8 @@
 import { Map, fromJS } from 'immutable';
 
 import * as actions from '../../actions/entries';
-import reducer from '../entryDraft';
+import reducer, { selectCustomPath } from '../entryDraft';
+import { FOLDER } from '../../constants/collectionTypes';
 
 jest.mock('uuid', () => ({ v4: jest.fn(() => '1') }));
 
@@ -194,5 +195,97 @@ describe('entryDraft reducer', () => {
         key: '',
       });
     });
+  });
+});
+
+describe('selectCustomPath', () => {
+  function makeCollection(overrides = {}) {
+    return fromJS({
+      name: 'pages',
+      type: FOLDER,
+      folder: 'content/pages',
+      fields: [{ name: 'title', widget: 'string' }],
+      meta: {
+        path: {
+          widget: 'string',
+          label: 'Path',
+          index_file: 'index',
+        },
+      },
+      nested: { depth: 100, summary: '{{title}}' },
+      ...overrides,
+    });
+  }
+
+  function makeEntryDraft(meta = {}) {
+    return fromJS({
+      entry: {
+        meta: {
+          path: 'about/team',
+          ...meta,
+        },
+      },
+    });
+  }
+
+  it('should return undefined when collection has no meta.path', () => {
+    const collection = fromJS({
+      name: 'posts',
+      type: FOLDER,
+      folder: 'content/posts',
+      fields: [{ name: 'title' }],
+    });
+    const draft = makeEntryDraft();
+    expect(selectCustomPath(collection, draft)).toBeUndefined();
+  });
+
+  it('should use index file name for nested subfolders collection', () => {
+    const collection = makeCollection();
+    const draft = makeEntryDraft({ path: 'about/team' });
+    const result = selectCustomPath(collection, draft);
+    expect(result).toBe('content/pages/about/team/index.md');
+  });
+
+  it('should default path_type to "slug"', () => {
+    const collection = makeCollection({
+      nested: undefined, // Remove nested so isNestedSubfolders returns false
+    });
+    const draft = makeEntryDraft({
+      path: 'about/team',
+      // path_type is NOT set, should default to 'slug'
+    });
+    const result = selectCustomPath(collection, draft);
+    // With path_type defaulting to 'slug' and not nested, fileName = 'team', filePath = 'about'
+    expect(result).toBe('content/pages/about/team.md');
+  });
+
+  it('should use index file name when path_type is explicitly "index"', () => {
+    const collection = makeCollection({
+      nested: undefined,
+    });
+    const draft = makeEntryDraft({
+      path: 'about/team',
+      path_type: 'index',
+    });
+    const result = selectCustomPath(collection, draft);
+    expect(result).toBe('content/pages/about/team/index.md');
+  });
+
+  it('should use slug path when path_type is explicitly "slug"', () => {
+    const collection = makeCollection({
+      nested: undefined,
+    });
+    const draft = makeEntryDraft({
+      path: 'about/team',
+      path_type: 'slug',
+    });
+    const result = selectCustomPath(collection, draft);
+    expect(result).toBe('content/pages/about/team.md');
+  });
+
+  it('should return undefined when meta.path is empty', () => {
+    const collection = makeCollection();
+    const draft = makeEntryDraft({ path: '' });
+    expect(selectCustomPath(collection, draft)).toBeFalsy();
   });
 });
