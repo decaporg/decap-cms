@@ -637,6 +637,7 @@ type i18n = StaticallyTypedRecord<{
 type IndexFile = StaticallyTypedRecord<{
   pattern: string;
   fields?: EntryFields;
+  editor?: StaticallyTypedRecord<{ preview?: boolean }>;
 }>;
 
 export type Format = keyof typeof formatExtensions | string;
