@@ -9,6 +9,7 @@ import { boundGetAsset } from '../../../actions/media';
 import { VIEW_STYLE_LIST, VIEW_STYLE_GRID } from '../../../constants/collectionViews';
 import { selectIsLoadingAsset } from '../../../reducers/medias';
 import { selectEntryCollectionTitle } from '../../../reducers/collections';
+import { isIndexFileEntry } from '../../../lib/indexFileHelper';
 
 const ListCard = styled.li`
   ${components.card};
@@ -214,9 +215,6 @@ function mapStateToProps(state, ownProps) {
 
   const isLoadingAsset = selectIsLoadingAsset(state.medias);
 
-  const indexFileConfig = collection.get('index_file');
-  const fileSlug = entry.get('slug');
-
   return {
     summary,
     path: `/collections/${collection.get('name')}/entries/${entry.get('slug')}`,
@@ -225,7 +223,7 @@ function mapStateToProps(state, ownProps) {
       .get('fields')
       ?.find(f => f.get('name') === inferredFields.imageField && f.get('widget') === 'image'),
     isLoadingAsset,
-    showIndexFileIcon: indexFileConfig && new RegExp(indexFileConfig.get('pattern')).test(fileSlug),
+    showIndexFileIcon: isIndexFileEntry(entry, collection),
   };
 }
 
