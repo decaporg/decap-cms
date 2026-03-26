@@ -210,7 +210,7 @@ export function selectCustomPath(collection, entryDraft) {
   }
   const meta = entryDraft.getIn(['entry', 'meta']);
   const path = meta && meta.get('path');
-  const pathType = meta && meta.get('path_type', 'index');
+  const pathType = meta && meta.get('path_type', 'slug');
   const indexFile = get(collection.toJS(), ['meta', 'path', 'index_file']);
   const extension = selectFolderEntryExtension(collection);
   const pathSegments = path ? path.split('/') : [];
