@@ -531,26 +531,19 @@ export class Backend {
   }
 
   processEntries(loadedEntries: ImplementationEntry[], collection: Collection) {
-    const entries = loadedEntries.map(loadedEntry =>
-      createEntry(
-        collection.get('name'),
-        selectEntrySlug(collection, loadedEntry.file.path),
-        loadedEntry.file.path,
-        {
-          raw: loadedEntry.data || '',
-          label: loadedEntry.file.label,
-          author: loadedEntry.file.author,
-          updatedOn: loadedEntry.file.updatedOn,
-          meta: {
-            path: prepareMetaPath(
-              loadedEntry.file.path,
-              collection,
-              selectEntrySlug(collection, loadedEntry.file.path),
-            ),
-          },
+    const entries = loadedEntries.map(loadedEntry => {
+      const slug = selectEntrySlug(collection, loadedEntry.file.path) as string;
+      return createEntry(collection.get('name'), slug, loadedEntry.file.path, {
+        raw: loadedEntry.data || '',
+        label: loadedEntry.file.label,
+        author: loadedEntry.file.author,
+        updatedOn: loadedEntry.file.updatedOn,
+        meta: {
+          path: prepareMetaPath(loadedEntry.file.path, collection, slug),
+          path_type: prepareMetaPathType(slug, collection),
         },
-      ),
-    );
+      });
+    });
     const formattedEntries = entries.map(this.entryWithFormat(collection));
     // If this collection has a "filter" property, filter entries accordingly
     const collectionFilter = collection.get('filter');
