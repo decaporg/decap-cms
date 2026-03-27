@@ -11,6 +11,7 @@ import { stringTemplate } from 'decap-cms-lib-widgets';
 
 import { SortDirection } from '../types/redux';
 import { folderFormatter } from '../lib/formatters';
+import { isIndexFileEntry } from '../lib/indexFileHelper';
 import { selectSortDataPath } from './collections';
 import { SEARCH_ENTRIES_SUCCESS } from '../actions/search';
 import {
@@ -454,7 +455,27 @@ export function selectEntries(state: Entries, collection: Collection) {
       .toList();
   }
 
-  return entries;
+  // Ensure index file is first
+  const indexFileConfig = collection.get('index_file');
+  if (!indexFileConfig) {
+    return entries;
+  }
+
+  const indexEntryIndex = entries.findIndex(entry => isIndexFileEntry(entry, collection));
+
+  if (indexEntryIndex === -1 || indexEntryIndex === 0) {
+    return entries;
+  }
+
+  const entriesArray = entries.toArray();
+  const indexEntry = entriesArray[indexEntryIndex];
+  const reorderedEntries = [
+    indexEntry,
+    ...entriesArray.slice(0, indexEntryIndex),
+    ...entriesArray.slice(indexEntryIndex + 1),
+  ];
+
+  return fromJS(reorderedEntries);
 }
 
 function getGroup(entry: EntryMap, selectedGroup: GroupMap) {
