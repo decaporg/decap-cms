@@ -1,4 +1,5 @@
 import { isAbsolutePath } from 'decap-cms-lib-util';
+import memoize from 'lodash/memoize';
 
 import { createAssetProxy } from '../valueObjects/AssetProxy';
 import { selectMediaFilePath } from '../reducers/entries';
@@ -80,18 +81,19 @@ const emptyAsset = createAssetProxy({
   }),
 });
 
-export function boundGetAsset(
-  dispatch: ThunkDispatch<State, {}, AnyAction>,
-  collection: Collection,
-  entry: EntryMap,
-) {
-  function bound(path: string, field: EntryField) {
-    const asset = dispatch(getAsset({ collection, entry, path, field }));
-    return asset;
-  }
+export const boundGetAsset = memoize(
+  (dispatch: ThunkDispatch<State, {}, AnyAction>, collection: Collection, entry: EntryMap) => {
+    function bound(path: string, field: EntryField) {
+      const asset = dispatch(getAsset({ collection, entry, path, field }));
+      return asset;
+    }
 
-  return bound;
-}
+    return bound;
+  },
+  (_, entry) => entry,
+);
+
+boundGetAsset.cache = new WeakMap();
 
 export function getAsset({ collection, entry, path, field }: GetAssetArgs) {
   return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
