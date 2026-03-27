@@ -79,6 +79,7 @@ type CommitItem = {
   path: string;
   oldPath?: string;
   action: CommitAction;
+  isFolder?: boolean;
 };
 
 type FileEntry = { id: string; type: string; path: string; name: string };
@@ -619,7 +620,10 @@ export default class API {
     }
   }
 
-  async getCommitItems(files: { path: string; newPath?: string }[], branch: string) {
+  async getCommitItems(
+    files: { path: string; newPath?: string; isFolder?: boolean }[],
+    branch: string,
+  ) {
     const items: CommitItem[] = await Promise.all(
       files.map(async file => {
         const [base64Content, fileExists] = await Promise.all([
@@ -642,12 +646,17 @@ export default class API {
           base64Content,
           path,
           oldPath,
+          isFolder: file.isFolder,
         };
       }),
     );
 
-    // move children
+    // move children for folder-type (index) entries
     for (const item of items.filter(i => i.oldPath && i.action === CommitAction.MOVE)) {
+      // skip moving children for non-folder (slug) type entries
+      if (item.isFolder === false) {
+        continue;
+      }
       const sourceDir = dirname(item.oldPath as string);
       const destDir = dirname(item.path);
       const children = await this.listAllFiles(sourceDir, true, branch);
