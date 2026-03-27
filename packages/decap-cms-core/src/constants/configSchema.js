@@ -156,6 +156,7 @@ function getConfigSchema() {
           },
         ],
       },
+      remove_empty_image_field: { type: 'boolean' },
       locale: { type: 'string', examples: ['en', 'fr', 'de'] },
       i18n: i18nRoot,
       site_url: { type: 'string', examples: ['https://example.com'] },
