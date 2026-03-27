@@ -117,4 +117,50 @@ describe('EditorToolbar', () => {
       expect(asFragment()).toMatchSnapshot();
     });
   });
+
+  describe('deploy preview polling', () => {
+    it('should poll with maxAttempts: 24 and an AbortSignal on mount for existing entries', () => {
+      render(<EditorToolbar {...props} isNewEntry={false} />);
+      expect(props.loadDeployPreview).toHaveBeenCalledTimes(1);
+      const opts = props.loadDeployPreview.mock.calls[0][0];
+      expect(opts.maxAttempts).toBe(24);
+      expect(opts.signal).toBeInstanceOf(AbortSignal);
+    });
+
+    it('should not poll on mount for new entries', () => {
+      render(<EditorToolbar {...props} isNewEntry={true} />);
+      expect(props.loadDeployPreview).not.toHaveBeenCalled();
+    });
+
+    it('should poll with maxAttempts: 3 after a save completes', () => {
+      const { rerender } = render(<EditorToolbar {...props} isPersisting={true} />);
+      props.loadDeployPreview.mockClear();
+      rerender(<EditorToolbar {...props} isPersisting={false} />);
+      expect(props.loadDeployPreview).toHaveBeenCalledTimes(1);
+      const opts = props.loadDeployPreview.mock.calls[0][0];
+      expect(opts.maxAttempts).toBe(3);
+      expect(opts.signal).toBeInstanceOf(AbortSignal);
+    });
+
+    it('should abort polling on unmount', () => {
+      const { unmount } = render(<EditorToolbar {...props} isNewEntry={false} />);
+      const signal = props.loadDeployPreview.mock.calls[0][0].signal;
+      expect(signal.aborted).toBe(false);
+      unmount();
+      expect(signal.aborted).toBe(true);
+    });
+
+    it('should abort previous poll when a new save triggers a new poll', () => {
+      const { rerender } = render(<EditorToolbar {...props} isPersisting={false} />);
+      const firstSignal = props.loadDeployPreview.mock.calls[0][0].signal;
+
+      // Simulate save completing
+      rerender(<EditorToolbar {...props} isPersisting={true} />);
+      rerender(<EditorToolbar {...props} isPersisting={false} />);
+
+      expect(firstSignal.aborted).toBe(true);
+      const secondSignal = props.loadDeployPreview.mock.calls[1][0].signal;
+      expect(secondSignal.aborted).toBe(false);
+    });
+  });
 });
