@@ -303,15 +303,30 @@ export class EditorToolbar extends React.Component {
 
     const { isNewEntry, loadDeployPreview } = this.props;
     if (!isNewEntry) {
-      loadDeployPreview({ maxAttempts: 3 });
+      // 24 attempts × 5s interval = ~2 min polling window.
+      // With editorial workflow, saving remounts the component (navigates to
+      // the unpublished entry view), so componentDidMount is the primary
+      // polling trigger — not componentDidUpdate.
+      this._pollController = new AbortController();
+      loadDeployPreview({ maxAttempts: 24, signal: this._pollController.signal });
     }
   }
 
   componentDidUpdate(prevProps) {
     const { isNewEntry, isPersisting, loadDeployPreview } = this.props;
     if (!isNewEntry && prevProps.isPersisting && !isPersisting) {
-      loadDeployPreview({ maxAttempts: 3 });
+      // Abort any in-flight poll before starting a new one.
+      this._pollController?.abort();
+      this._pollController = new AbortController();
+      // Fires on subsequent saves when the component survives (no remount).
+      // In editorial workflow the first save remounts, so this mainly
+      // covers the second-save-and-beyond case.
+      loadDeployPreview({ maxAttempts: 3, signal: this._pollController.signal });
     }
+  }
+
+  componentWillUnmount() {
+    this._pollController?.abort();
   }
 
   renderSimpleControls = () => {
