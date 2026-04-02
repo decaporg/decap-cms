@@ -45,16 +45,23 @@ function login(user) {
   });
 }
 
+function withExistingClock(callback) {
+  return cy.then(() => {
+    const clock = cy.state('clock');
+    if (clock) {
+      callback(clock);
+    }
+  });
+}
+
 function assertNotification(message) {
   // if clock is use, a tick is needed for toastify to show the notifications
-  cy.clock().then(clock => {
-    if (clock) {
-      advanceClock(clock);
-    }
-    cy.get('.notif__container').within(() => {
-      cy.contains(message);
-      cy.contains(message).invoke('hide');
-    });
+  withExistingClock(clock => {
+    advanceClock(clock);
+  });
+  cy.get('.notif__container').within(() => {
+    cy.contains(message);
+    cy.contains(message).invoke('hide');
   });
 }
 
@@ -133,12 +140,7 @@ function updateWorkflowStatus({ title }, fromColumnHeading, toColumnHeading) {
   cy.contains('h2', toColumnHeading)
     .parent()
     .drop();
-  cy.clock().then(clock => {
-    if (clock) {
-      advanceClock(clock);
-    }
-    assertNotification(notifications.updated);
-  });
+  assertNotification(notifications.updated);
 }
 
 function publishWorkflowEntry({ title }, timeout) {
@@ -264,14 +266,12 @@ function selectDropdownItem(label, item) {
 }
 
 function flushClockAndSave() {
-  cy.clock().then(clock => {
+  withExistingClock(clock => {
     // some input fields are de-bounced thus require advancing the clock
-    if (clock) {
-      advanceClock(clock);
-    }
-
-    cy.contains('button', 'Save').click();
+    advanceClock(clock);
   });
+
+  cy.contains('button', 'Save').click();
 }
 
 function populateEntry(entry, onDone = flushClockAndSave) {
@@ -308,7 +308,9 @@ function createPost(entry) {
 
 function createPostAndExit(entry) {
   createPost(entry);
-  cy.clock().then(clock => { advanceClock(clock); });
+  withExistingClock(clock => {
+    advanceClock(clock);
+  });
   exitEditor();
 }
 
@@ -323,7 +325,9 @@ function advanceClock(clock) {
 }
 
 function publishEntry({ createNew = false, duplicate = false } = {}) {
-  cy.clock().then(clock => {
+  cy.then(() => {
+    const clock = cy.state('clock');
+
     // some input fields are de-bounced thus require advancing the clock
     advanceClock(clock);
 
