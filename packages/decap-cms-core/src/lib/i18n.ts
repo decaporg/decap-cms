@@ -316,13 +316,15 @@ export async function getI18nEntry(
       }),
     );
 
-    const nonNullValues = entryValuesResults.filter(e => e.status === 'fulfilled').map(e => e.value);
+    const nonNullValues = entryValuesResults
+      .filter(e => e.status === 'fulfilled')
+      .map(e => e.value);
 
     if (nonNullValues.length === 0) {
       // mergeValues will throw on an empty list, and show the error messages.
-      const [
-        error = new Error('No entry values found for any locale'),
-      ] = entryValuesResults.filter(e => e.status === 'rejected').map(e => e.reason);
+      const [error = new Error('No entry values found for any locale')] = entryValuesResults
+        .filter(e => e.status === 'rejected')
+        .map(e => e.reason);
 
       throw error;
     }
