@@ -317,14 +317,14 @@ export async function getI18nEntry(
     );
 
     const nonNullValues = entryValuesResults
-      .filter(e => e.status === 'fulfilled')
-      .map(e => e.value);
+      .map(e => (e.status === 'fulfilled' ? e.value : undefined))
+      .filter(e => e !== undefined);
 
     if (nonNullValues.length === 0) {
       // mergeValues will throw on an empty list, and show the error messages.
       const [error = new Error('No entry values found for any locale')] = entryValuesResults
-        .filter(e => e.status === 'rejected')
-        .map(e => e.reason);
+        .map(e => (e.status === 'rejected' ? e.reason : undefined))
+        .filter(e => e !== undefined);
 
       throw error;
     }
