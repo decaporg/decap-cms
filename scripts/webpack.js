@@ -54,8 +54,7 @@ function rules() {
 
 function plugins() {
   return {
-    ignoreEsprima: () =>
-      new webpack.IgnorePlugin({ resourceRegExp: /^esprima$/, contextRegExp: /js-yaml/ }),
+    ignoreEsprima: () => new webpack.IgnorePlugin({ resourceRegExp: /^esprima$/ }),
     friendlyErrors: () => new FriendlyErrorsWebpackPlugin(),
     buffer: () =>
       new webpack.ProvidePlugin({
@@ -140,11 +139,7 @@ function baseConfig({ target = isProduction ? 'umd' : 'umddir' } = {}) {
     },
     resolve: {
       extensions: ['.ts', '.tsx', '.js', '.json'],
-      fallback: {
-        path: require.resolve('path-browserify'),
-        stream: require.resolve('stream-browserify'),
-        buffer: require.resolve('buffer'),
-      },
+      fallback: { stream: require.resolve('stream-browserify') },
     },
     plugins: Object.values(plugins()).map(plugin => plugin()),
     devtool: isTest ? '' : 'source-map',

@@ -133,6 +133,8 @@ declare module 'decap-cms-core' {
     default?: any;
 
     allow_add?: boolean;
+    allow_remove?: boolean;
+    allow_reorder?: boolean;
     collapsed?: boolean;
     summary?: string;
     minimize_collapsed?: boolean;
@@ -290,6 +292,12 @@ declare module 'decap-cms-core' {
     pattern?: string;
   }
 
+  export interface SortableField {
+    field: string;
+    label?: string;
+    default_sort?: boolean | 'asc' | 'desc';
+  }
+
   export interface CmsCollection {
     name: string;
     label: string;
@@ -330,7 +338,7 @@ declare module 'decap-cms-core' {
     path?: string;
     media_folder?: string;
     public_folder?: string;
-    sortable_fields?: string[];
+    sortable_fields?: (string | SortableField)[];
     view_filters?: ViewFilter[];
     view_groups?: ViewGroup[];
     i18n?: boolean | CmsI18nConfig;
@@ -338,7 +346,7 @@ declare module 'decap-cms-core' {
     /**
      * @deprecated Use sortable_fields instead
      */
-    sortableFields?: string[];
+    sortableFields?: (string | SortableField)[];
   }
 
   export interface CmsBackend {
@@ -378,19 +386,28 @@ declare module 'decap-cms-core' {
     allowed_hosts?: string[];
   }
 
+  export interface CmsIssueReports {
+    url?: string;
+  }
+
   export interface CmsConfig {
     backend: CmsBackend;
     collections: CmsCollection[];
     locale?: string;
     site_url?: string;
     display_url?: string;
-    logo_url?: string;
+    logo_url?: string; // Deprecated, replaced by `logo.src`
+    logo?: {
+      src: string;
+      show_in_header?: boolean;
+    };
     show_preview_links?: boolean;
     media_folder?: string;
     public_folder?: string;
     media_folder_relative?: boolean;
     media_library?: CmsMediaLibrary;
     publish_mode?: CmsPublishMode;
+    issue_reports?: CmsIssueReports;
     load_config_file?: boolean;
     integrations?: {
       hooks: string[];
