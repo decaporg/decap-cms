@@ -114,6 +114,19 @@ const AppHeaderNavList = styled.ul`
   list-style: none;
 `;
 
+const AppHeaderLogo = styled.li`
+  display: flex;
+  align-items: center;
+
+  img {
+    padding: 12px 20px;
+    max-height: 56px;
+    max-width: 300px;
+    object-fit: contain;
+    object-position: center;
+  }
+`;
+
 class Header extends React.Component {
   static propTypes = {
     user: PropTypes.object.isRequired,
@@ -123,6 +136,11 @@ class Header extends React.Component {
     openMediaLibrary: PropTypes.func.isRequired,
     hasWorkflow: PropTypes.bool.isRequired,
     displayUrl: PropTypes.string,
+    logoUrl: PropTypes.string, // Deprecated, replaced by `logo.src`
+    logo: PropTypes.shape({
+      src: PropTypes.string.isRequired,
+      show_in_header: PropTypes.bool,
+    }),
     isTestRepo: PropTypes.bool,
     t: PropTypes.func.isRequired,
     checkBackendStatus: PropTypes.func.isRequired,
@@ -158,6 +176,8 @@ class Header extends React.Component {
       openMediaLibrary,
       hasWorkflow,
       displayUrl,
+      logoUrl, // Deprecated, replaced by `logo.src`
+      logo,
       isTestRepo,
       t,
       showMediaButton,
@@ -167,11 +187,18 @@ class Header extends React.Component {
       .filter(collection => collection.get('create'))
       .toList();
 
+    const shouldShowLogo = logo?.show_in_header && logo?.src;
+
     return (
       <AppHeader>
         <AppHeaderContent>
           <nav>
             <AppHeaderNavList>
+              {shouldShowLogo && (
+                <AppHeaderLogo>
+                  <img src={logo?.src || logoUrl} alt="Logo" />
+                </AppHeaderLogo>
+              )}
               <li>
                 <AppHeaderNavLink
                   to="/"

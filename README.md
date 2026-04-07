@@ -4,14 +4,11 @@
 
 [decapcms.org](https://www.decapcms.org/)
 
-A CMS for static site generators. Give users a simple way to edit
-and add content to any site built with a static site generator.
+A CMS for static site generators. Give users a simple way to edit and add content to any site built with a static site generator.
 
 _Decap CMS is the new name of Netlify CMS [since February 2023](https://www.netlify.com/blog/netlify-cms-to-become-decap-cms/)._
 
-## Community Chat
-
-<a href="https://decapcms.org/chat">Join us on Discord</a>
+<a href="https://decapcms.org/chat">Join us on Discord</a> for community chat.
 
 ## How It Works
 
@@ -35,7 +32,20 @@ The Decap CMS can be used in two different ways.
   To learn more about this installation method, refer to the [Quick Start Guide](https://www.decapcms.org/docs/quick-start/)
 * A complete, more complex install, that gives you more flexibility but requires that you use a static site builder with a build system that supports npm packages.
 
-## Contributing
+## Sponsor
+
+Help support Decap CMS development by becoming a sponsor! Your contributions help us maintain and improve this open-source project.
+
+[![GitHub Sponsors](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=for-the-badge&logo=github)](https://github.com/sponsors/decaporg)
+[![Open Collective](https://img.shields.io/badge/Sponsor-Open%20Collective-blue?style=for-the-badge&logo=opencollective)](https://opencollective.com/decap)
+
+These are our sponsors on both platforms. Thank you for your support!
+
+![Open Collective Backers](https://opencollective.com/decap/backers.svg?limit=30&button=false&avatarHeight=48&width=400)
+
+<!-- sponsors --><a href="https://github.com/Zwyx"><img src="https://github.com/Zwyx.png" width="48px" alt="Zwyx" style="border-radius:50%" /></a> &nbsp;<a href="https://github.com/smolcodes"><img src="https://github.com/smolcodes.png" width="48px" alt="smolcodes" style="border-radius:50%" /></a> &nbsp;<a href="https://github.com/shizik"><img src="https://github.com/shizik.png" width="48px" alt="shizik" style="border-radius:50%" /></a> &nbsp;<a href="https://github.com/JacquesRaoult"><img src="https://github.com/JacquesRaoult.png" width="48px" alt="JacquesRaoult" style="border-radius:50%" /></a> &nbsp;<!-- sponsors -->
+
+## Contribute
 
 New contributors are always welcome! Check out [CONTRIBUTING.md](https://github.com/decaporg/decap-cms/blob/main/CONTRIBUTING.md) to get involved.
 

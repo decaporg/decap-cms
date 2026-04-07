@@ -3,6 +3,37 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.6.0](https://github.com/decaporg/decap-cms/compare/decap-server@3.5.2...decap-server@3.6.0) (2026-03-24)
+
+**Note:** Version bump only for package decap-server
+
+## [3.5.2](https://github.com/decaporg/decap-cms/compare/decap-server@3.5.0...decap-server@3.5.2) (2026-02-23)
+
+### Bug Fixes
+
+- improve path validation ([#7696](https://github.com/decaporg/decap-cms/issues/7696)) ([1fdf962](https://github.com/decaporg/decap-cms/commit/1fdf96212954e27a9f589765c128dbc9ad39a646))
+- remove leftover yarn references ([#7723](https://github.com/decaporg/decap-cms/issues/7723)) ([2c352af](https://github.com/decaporg/decap-cms/commit/2c352af4b4650150a9af84347cf3b8240ad83bda))
+
+## [3.5.1](https://github.com/decaporg/decap-cms/compare/decap-server@3.5.0...decap-server@3.5.1) (2026-01-08)
+
+### Bug Fixes
+
+- improve path validation ([#7696](https://github.com/decaporg/decap-cms/issues/7696)) ([1fdf962](https://github.com/decaporg/decap-cms/commit/1fdf96212954e27a9f589765c128dbc9ad39a646))
+
+# [3.5.0](https://github.com/decaporg/decap-cms/compare/decap-server@3.4.0...decap-server@3.5.0) (2025-12-18)
+
+**Note:** Version bump only for package decap-server
+
+# [3.4.0](https://github.com/decaporg/decap-cms/compare/decap-server@3.3.1...decap-server@3.4.0) (2025-11-04)
+
+### Features
+
+- **decap-server:** Allow the server to be run securely ([#7579](https://github.com/decaporg/decap-cms/issues/7579)) ([eb9e8c5](https://github.com/decaporg/decap-cms/commit/eb9e8c514b1783842953e6b1e5fd05377e000dae))
+
+## [3.3.1](https://github.com/decaporg/decap-cms/compare/decap-server@3.3.0...decap-server@3.3.1) (2025-07-31)
+
+**Note:** Version bump only for package decap-server
+
 # [3.3.0](https://github.com/decaporg/decap-cms/compare/decap-server@3.2.0...decap-server@3.3.0) (2025-06-26)
 
 **Note:** Version bump only for package decap-server

@@ -592,7 +592,8 @@ export default class API {
     });
 
     const filtered = pullRequests.filter(pr => {
-      return pr.labels.some(label => isCMSLabel(label.name, this.cmsLabelPrefix));
+      const labels = pr.labels ?? [];
+      return labels.some(label => isCMSLabel(label.name, this.cmsLabelPrefix));
     });
     return filtered;
   }

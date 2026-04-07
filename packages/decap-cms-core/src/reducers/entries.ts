@@ -78,6 +78,14 @@ let slug: string;
 
 const storageSortKey = 'decap-cms.entries.sort';
 const viewStyleKey = 'decap-cms.entries.viewStyle';
+
+function normalizeDoubleSlashes(path: string) {
+  if (!path) {
+    return path;
+  }
+
+  return path.replace(/([^:]\/)\/+/g, '$1');
+}
 type StorageSortObject = SortObject & { index: number };
 type StorageSort = { [collection: string]: { [key: string]: StorageSortObject } };
 
@@ -532,8 +540,6 @@ export function selectIsFetching(state: Entries, collection: string) {
   return state.getIn(['pages', collection, 'isFetching'], false);
 }
 
-const DRAFT_MEDIA_FILES = 'DRAFT_MEDIA_FILES';
-
 function getFileField(collectionFiles: CollectionFiles, slug: string | undefined) {
   const file = collectionFiles.find(f => f?.get('name') === slug);
   return file;
@@ -752,7 +758,7 @@ export function selectMediaFolder(
       const entryPath = entryMap?.get('path');
       mediaFolder = entryPath
         ? join(dirname(entryPath), folder)
-        : join(collection!.get('folder') as string, DRAFT_MEDIA_FILES);
+        : (collection!.get('folder') as string);
     }
   }
 
@@ -787,12 +793,14 @@ export function selectMediaFilePublicPath(
   }
 
   const name = 'public_folder';
-  let publicFolder = config[name]!;
+  let publicFolder = normalizeDoubleSlashes(config[name]!);
 
   const customFolder = hasCustomFolder(name, collection, entryMap?.get('slug'), field);
 
   if (customFolder) {
-    publicFolder = evaluateFolder(name, config, collection!, entryMap, field);
+    publicFolder = normalizeDoubleSlashes(
+      evaluateFolder(name, config, collection!, entryMap, field),
+    );
   }
 
   if (isAbsolutePath(publicFolder)) {

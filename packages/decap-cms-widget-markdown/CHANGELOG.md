@@ -3,6 +3,37 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.7.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-markdown@3.6.1...decap-cms-widget-markdown@3.7.0) (2026-03-24)
+
+### Bug Fixes
+
+- **markdown:** list editor components alphabetically in toolbar ([#7759](https://github.com/decaporg/decap-cms/issues/7759)) ([81cc055](https://github.com/decaporg/decap-cms/commit/81cc05578a88d338361581533845eca4c4eed3a6))
+
+## [3.6.1](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-markdown@3.6.0...decap-cms-widget-markdown@3.6.1) (2026-02-23)
+
+### Bug Fixes
+
+- **a11y:** aria-labels ([#7720](https://github.com/decaporg/decap-cms/issues/7720)) ([cc92370](https://github.com/decaporg/decap-cms/commit/cc92370595a85590ffede50a99259d52ba3eb76b))
+- **markdown:** remove empty links when text is deleted ([#7702](https://github.com/decaporg/decap-cms/issues/7702)) ([f1f1d13](https://github.com/decaporg/decap-cms/commit/f1f1d13e9c3f4b6909371c6fc2e74fe0204d7029)), closes [#7640](https://github.com/decaporg/decap-cms/issues/7640)
+
+# [3.6.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-markdown@3.5.0...decap-cms-widget-markdown@3.6.0) (2025-11-04)
+
+### Bug Fixes
+
+- **widget-markdown:** add initialValue prop to Slate editor ([#7636](https://github.com/decaporg/decap-cms/issues/7636)) ([73f338f](https://github.com/decaporg/decap-cms/commit/73f338f420fd5123d316fabddf540c9d132ec4f9))
+
+### Features
+
+- implement strikethrough functionality to markdown editor ([#7625](https://github.com/decaporg/decap-cms/issues/7625)) ([0c7d327](https://github.com/decaporg/decap-cms/commit/0c7d327341f785940da4fa88e5c2ed755215f010))
+
+# [3.5.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-markdown@3.4.1...decap-cms-widget-markdown@3.5.0) (2025-07-15)
+
+**Note:** Version bump only for package decap-cms-widget-markdown
+
+## [3.4.1](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-markdown@3.4.0...decap-cms-widget-markdown@3.4.1) (2025-07-10)
+
+**Note:** Version bump only for package decap-cms-widget-markdown
+
 # [3.4.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-markdown@3.3.0...decap-cms-widget-markdown@3.4.0) (2025-06-26)
 
 ### Bug Fixes
