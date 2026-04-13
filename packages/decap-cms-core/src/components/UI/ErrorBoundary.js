@@ -4,7 +4,6 @@ import { translate } from 'react-polyglot';
 import styled from '@emotion/styled';
 import yaml from 'yaml';
 import truncate from 'lodash/truncate';
-import copyToClipboard from 'copy-text-to-clipboard';
 import { localForage } from 'decap-cms-lib-util';
 import { buttons, colors } from 'decap-cms-ui-default';
 
@@ -117,7 +116,7 @@ function RecoveredEntry({ entry, t }) {
       <hr />
       <h2>{t('ui.errorBoundary.recoveredEntry.heading')}</h2>
       <strong>{t('ui.errorBoundary.recoveredEntry.warning')}</strong>
-      <CopyButton onClick={() => copyToClipboard(entry)}>
+      <CopyButton onClick={() => navigator.clipboard.writeText(entry)}>
         {t('ui.errorBoundary.recoveredEntry.copyButtonLabel')}
       </CopyButton>
       <pre>
