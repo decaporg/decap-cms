@@ -318,7 +318,7 @@ export async function getI18nEntry(
 
     const nonNullValues = entryValuesResults
       .map(e => (e.status === 'fulfilled' ? e.value : undefined))
-      .filter(e => e !== undefined);
+      .filter((e): e is { value: EntryValue; locale: string } => e !== undefined);
 
     if (nonNullValues.length === 0) {
       // mergeValues will throw on an empty list, and show the error messages.
