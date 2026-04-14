@@ -25,7 +25,9 @@ import HeadingElement from './components/Element/HeadingElement';
 import ListElement from './components/Element/ListElement';
 import BlockquoteElement from './components/Element/BlockquoteElement';
 import LinkElement from './components/Element/LinkElement';
+import ImageElement from './components/Element/ImageElement';
 import ExtendedBlockquotePlugin from './plugins/ExtendedBlockquotePlugin';
+import ImagePlugin from './plugins/ImagePlugin';
 import ShortcodePlugin from './plugins/ShortcodePlugin';
 import { TablePlugin, TableRowPlugin, TableCellPlugin } from './plugins/TablePlugin';
 import defaultEmptyBlock from './defaultEmptyBlock';
@@ -59,6 +61,7 @@ export default function VisualEditor(props) {
     isShowModeToggle,
     onChange,
     getEditorComponents,
+    getAsset,
   } = props;
 
   let editorComponents = getEditorComponents();
@@ -106,6 +109,7 @@ export default function VisualEditor(props) {
         ['ol']: withProps(ListElement, { variant: 'ol' }),
         ['li']: withProps(ListElement, { variant: 'li' }),
         ['blockquote']: BlockquoteElement,
+        ['image']: withProps(ImageElement, { getAsset, field }),
       },
     },
     plugins: [
@@ -129,6 +133,7 @@ export default function VisualEditor(props) {
         shortcuts: { toggle: { keys: 'mod+shift+c' } },
       }),
       ListPlugin,
+      ImagePlugin,
       LinkPlugin.configure({
         node: { component: LinkElement },
         shortcuts: {
