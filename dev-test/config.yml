@@ -1,290 +1,456 @@
+local_backend: true
+
 backend:
-  name: test-repo
+  name: git-gateway
+  branch: __BRANCH__
+  squash_merges: true
 
-site_url: https://example.com
+display_url: https://posao.maistra.com
+site_url: https://posao.maistra.com
+logo_url: /media/logo.svg
+media_folder: static/media
 
-publish_mode: editorial_workflow
-media_folder: assets/uploads
+media_library:
+  name: cloudinary
+  config:
+    cloud_name: maistra
+    api_key: 347155131462234
 
-collections: # A list of collections the CMS should be able to edit
-  - name: 'posts' # Used in routes, ie.: /admin/collections/:slug/edit
-    label: 'Posts' # Used in the UI
-    label_singular: 'Post' # Used in the UI, ie: "New Post"
-    description: >
-      The description is a great place for tone setting, high level information, and editing
-      guidelines that are specific to a collection.
-    folder: '_posts'
-    slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
-    summary: '{{title}} -- {{year}}/{{month}}/{{day}}'
-    create: true # Allow users to create new documents in this collection
+i18n:
+  structure: multiple_files
+  locales: [hr, en]
+
+slug:
+  encoding: ascii
+  clean_accents: true
+
+aliases:
+  - &VISIBLE_IN_CMS {name: visibleInCMS, widget: hidden, default: true}
+
+  - &HEADER_CLASS {name: headerClass, label: Header style, widget: select, i18n: duplicate, required: false, options: [
+      {label: light, value: header--light},
+      {label: dark, value: header--dark},
+    ]}
+
+  - &BUTTON {name: button, widget: object, collapsed: true, summary: '{{fields.text}} ({{fields.href}})', i18n: true, fields: [
+      {name: text, widget: string, i18n: true, required: false},
+      {name: href, widget: string, i18n: true, required: false}
+    ]}
+
+  - &HERO {name: hero, label: Hero, widget: object, collapsed: true, summary: '{{fields.slides[0].title}}', i18n: true, fields: [
+      {name: slideDuration, label: Slide duration in seconds, hint: 'default: 5', required: false, widget: number, i18n: true},
+      {name: slides, widget: list, label_singular: slide, summary: '{{fields.title}}', i18n: true, fields: [
+        {name: supertitle, label: Supertitle, widget: string, i18n: true, required: false},
+        {name: title, pattern: ['^.{5,35}$', Must have 5 - 35 characters], widget: string, i18n: true},
+        {name: description, pattern: ['^.{0,85}$', Max 85 characters], widget: text, i18n: true, required: false},
+        {name: image, widget: image, i18n: true},
+        {name: video, widget: file, i18n: true, required: false},
+        *BUTTON,
+      ]},
+    ]}
+
+  - &SIMPLE_HERO {name: simpleHero, label: content, widget: object, fields: [
+      {name: title, widget: string, required: false},
+      {name: description, widget: text, required: false},
+      {name: image, widget: image, required: false},
+    ]}
+
+  - &BANNERS {name: banners, widget: list, label_singular: banner, fields: [
+      {name: title, widget: string},
+      {name: description, widget: text},
+      {name: image, widget: image},
+      *BUTTON,
+    ]}
+
+  - &GALLERY {name: gallery, widget: object, collapsed: true, summary: '{{fields.title}}', i18n: true, fields: [
+      {name: title, widget: string, required: false},
+      {name: subtitle, widget: text, required: false},
+      {name: items, widget: image, i18n: duplicate, hint: Select at leat 3 images, required: false, choose_url: false, media_library: {config: {multiple: true, max_files: 999}}}
+    ]}
+
+  - &ICON {name: icon, widget: select, i18n: duplicate, hint: 'list of icons: https://maistra.com/icons/list.html', options: [arrow-down-curved, arrow-left-long, arrow-right-long, calendar, caret-left, caret-right, document, error, hourglass, mail, moon, pdf, people, call, pin-camping, pin-collection, pin-select, pin, rocket, star-outline, tick, warning, mail-icon, area, list, map, money, arrow-down, arrow-left, arrow-right, arrow-up, beach, caret-down, check, close, fee, foodie, globe, heart, hearts, language, menu, safety, sailboat, search, sports, star, user, wellness, bed, rotate, lamp, adult, child, gallery, extend, slider-arrow-left, slider-arrow-right, facebook, instagram, twitter, youtube, pinterest]}
+
+  - &SECTION_HEADING_FIELDS [
+      {name: title, widget: string, i18n: true},
+      {name: subtitle, widget: text, i18n: true, required: false},
+      *BUTTON,
+    ]
+
+  - &COUNTER {name: counter, widget: list, label_singular: item, fields: [
+      {name: number, widget: number, value_type: float},
+      {name: extra, widget: string, required: false},
+      *ICON,
+      {name: text, widget: string},
+    ]}
+
+  - &HOME_FIELDS [
+      {name: title, widget: string},
+      {name: description, widget: text},
+      {name: image, widget: image, required: false},
+      *HERO,
+      {name: sectionHeading, widget: object, fields: [
+        {name: title, widget: string},
+        {name: subtitle, widget: text},
+      ]},
+      *BANNERS,
+      *COUNTER,
+      {name: videos, widget: object, fields: [
+        {name: title, widget: string},
+        {name: items, widget: list, label_singular: item, fields: [
+          {name: title, widget: string},
+          {name: image, widget: image},
+          {name: video, widget: string},
+        ]},
+      ]},
+    ]
+
+  - &JOB_LIST_FIELDS [
+      {name: title, widget: string},
+      {name: url, widget: string, required: false},
+      {name: description, widget: text},
+      {name: image, widget: image},
+      *HEADER_CLASS,
+      *HERO,
+      {name: banner, widget: object, fields: [
+        {name: title, widget: string},
+        {name: description, widget: text},
+        {name: image, widget: image},
+        *BUTTON,
+      ]},
+    ]
+
+  - &JOB_FORM_FIELDS [
+      {name: title, widget: string},
+      {name: description, widget: text},
+      {name: image, widget: image},
+      {name: draft, label: Draft, hint: "if enabled, page will not be visible", widget: boolean, i18n: true, required: false, default: true},
+    ]
+
+  - &NEWS_FIELDS [
+      {name: title, widget: string},
+      {name: description, widget: text},
+      {name: image, widget: image},
+      {name: draft, label: Draft, hint: "if enabled, page will not be visible", widget: boolean, i18n: true, required: false, default: true},
+    ]
+
+  - &ABOUT_FIELDS [
+      {name: title, widget: string},
+      {name: slug, widget: string, required: false},
+      {name: description, widget: text},
+      {name: image, widget: image},
+      *HEADER_CLASS,
+      *HERO,
+      {name: body, widget: markdown},
+      {name: brands, widget: object, collapsed: true, summary: '{{fields.title}}', fields: [
+        {name: heading, widget: object, i18n: true, fields: *SECTION_HEADING_FIELDS},
+        {name: items, widget: list, label_singular: item, fields: [
+          {name: Description, widget: text},
+          {name: RelPermalink, label: link, widget: string},
+          {name: Params, widget: object, fields: [
+            {name: image, widget: image},
+            {name: logo, widget: object, fields: [
+              {name: src, widget: image},
+              {name: alt, widget: string},
+            ]},
+          ]},
+        ]},
+      ]},
+      {name: goals, widget: object, collapsed: true, summary: 'Goals', fields: [
+        {name: title, widget: string, required: false},
+        {name: items, widget: list, label_singular: item, fields: [
+          {name: title, widget: string},
+          {name: content, widget: text},
+        ]},
+      ]},
+      {name: values, widget: object, collapsed: true, summary: '{{fields.title}}', fields: [
+        {name: title, widget: string},
+        {name: description, widget: text},
+        {name: items, widget: list, label_singular: item, fields: [
+          {name: title, widget: string},
+          {name: description, widget: text},
+          {name: image, widget: image},
+        ]},
+      ]},
+      *BANNERS,
+    ]
+
+  - &TRANSLATION_FIELDS [
+      {name: scroll-down, widget: object, summary: '{{fields.other}}', fields: [
+        {name: other, widget: string}
+      ]},
+      {name: call, widget: object, summary: '{{fields.other}}', fields: [
+        {name: other, widget: string}
+      ]},
+      {name: search, widget: object, summary: '{{fields.other}}', fields: [
+        {name: other, widget: string}
+      ]},
+      {name: open-menu, widget: object, summary: '{{fields.other}}', fields: [
+        {name: other, widget: string}
+      ]},
+      {name: read-more, widget: object, summary: '{{fields.other}}', fields: [
+        {name: other, widget: string}
+      ]},
+      {name: 404-message, widget: object, summary: '{{fields.other}}', fields: [
+        {name: other, widget: string}
+      ]},
+    ]
+
+  - &LANGUAGE_FIELDS [
+      {name: title, widget: string},
+      {name: languageName, label: Language name, widget: string},
+      {name: weight, widget: number},
+      {name: params, label: Params, widget: object, fields: [
+        {name: description, widget: string},
+      ]},
+      {name: permalinks, label: Permalinks, widget: object, collapsed: true, summary: 'WARNING: changing this will change all URLs', fields: [
+        {name: jobs, widget: string, required: false},
+      ]},
+    ]
+
+
+collections:
+  - name: jobs
+    label: Jobs
+    label_singular: job
+    folder: content/jobs
+    create: true
+    slug: '{{slug}}'
+    filter: {field: visibleInCMS, value: true}
+    i18n: true
+    summary: '{{title}} || {{fields.currentJobId}}'
+    sortable_fields: ['title', 'currentJobId']
     editor:
-      visualEditing: true
-    sortable_fields:
-      - title
-      - { field: date, default_sort: desc }
-      - draft
-    view_filters:
-      - label: Posts With Index
-        field: title
-        pattern: 'This is post #'
-      - label: Posts Without Index
-        field: title
-        pattern: front matter post
-      - label: Drafts
-        field: draft
-        pattern: true
-    view_groups:
-      - label: Year
-        field: date
-        pattern: \d{4}
-      - label: Drafts
-        field: draft
-    fields: # The fields each document in this collection have
-      - { label: 'Title', name: 'title', widget: 'string', tagname: 'h1' }
-      - { label: 'Draft', name: 'draft', widget: 'boolean', default: false }
-      - {
-          label: 'Publish Date',
-          name: 'date',
-          widget: 'datetime',
-          format: 'YYYY-MM-DD HH:mm',
-          default: '{{now}}',
-        }
-      - label: 'Cover Image'
-        name: 'image'
-        widget: 'image'
-        required: false
-        tagname: ''
+      preview: false
+    fields: [
+      {name: title, label: Title, widget: string, i18n: true},
+      {name: slug, widget: string, i18n: true, required: false},
+      {name: draft, label: Draft, hint: "if enabled, page will not be visible", widget: boolean, i18n: true, required: false, default: true},
+      {name: description, widget: text, i18n: true},
+      {name: image, widget: image, i18n: duplicate},
+      {name: locations, widget: relation, collection: locations, search_fields: ['title'], display_fields: ['title'], value_field: '{{slug}}', i18n: duplicate, multiple: true},
+      {name: formtype, label: Form Type, widget: select, i18n: duplicate, options: [
+        { label: Otvorena molba, value: a },
+        { label: Mala forma, value: b },
+        { label: Velika forma, value: c },
+      ]},
+      {name: expiryDate, label: Deadline, widget: datetime, picker_utc: true, i18n: duplicate},
+      {name: largeText, label: large text, widget: text, i18n: true, required: false},
+      {name: body, widget: richtext, i18n: true},
+      *VISIBLE_IN_CMS,
+      {name: jobCode, label: Job Type, widget: jobTypeSelect, i18n: duplicate},
+      {name: currentJobId, label: Sifra natecaja, widget: autoIncrement, start_from: 1000, i18n: duplicate},
+      {name: urls, label: Share URLs, widget: shareURLs, i18n: duplicate, required: false},
+    ]
 
-      - { label: 'Body', name: 'body', widget: 'richtext', hint: 'Main content goes here.' }
-      - { label: 'Body', name: 'bodyold', widget: 'markdown', hint: 'Main content goes here.' }
-      - { label: 'Body', name: 'bodyold2', widget: 'markdown', hint: 'Main content goes here 2.' }
-
-  - name: 'restaurants' # Used in routes, ie.: /admin/collections/:slug/edit
-    label: 'Restaurants' # Used in the UI
-    label_singular: 'Restaurant' # Used in the UI, ie: "New Post"
-    description: >
-      Restaurants is an entry type used for testing galleries, relations and other widgets.
-      The tests must be written in such way that adding new fields does not affect previous flows.
-    folder: '_restaurants'
-    slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
-    summary: '{{title}} -- {{year}}/{{month}}/{{day}}'
-    create: true # Allow users to create new documents in this collection
+  - name: news
+    label: News
+    folder: content/news
+    create: true
+    slug: '{{slug}}'
+    filter: {field: visibleInCMS, value: true}
+    i18n: true
     editor:
-      visualEditing: true
-    fields: # The fields each document in this collection have
-      - { label: 'Title', name: 'title', widget: 'string', tagname: 'h1' }
-      - { label: 'Body', name: 'body', widget: 'markdown', hint: 'Main content goes here.' }
-      - { name: 'gallery', widget: 'image', choose_url: true, media_library: {config: {multiple: true, max_files: 999}}}
-      - { name: 'post', widget: relation, collection: posts, multiple: true, search_fields: [ "title" ], display_fields: [ "title" ], value_field: "{{slug}}", filters: [ {field: "draft", values: [false]} ] }
-      - name: authors
-        label: Authors
-        label_singular: 'Author'
-        widget: list
-        fields:
-          - { label: 'Name', name: 'name', widget: 'string', hint: 'First and Last' }
-          - { label: 'Description', name: 'description', widget: 'markdown' }
+      preview: false
+    fields: [
+      *VISIBLE_IN_CMS,
+      {name: title, label: Title, widget: string, i18n: true},
+      {name: slug, widget: string, i18n: true, required: false},
+      {name: draft, label: Draft, hint: "if enabled, page will not be visible", widget: boolean, i18n: true, required: false, default: true},
+      {name: description, widget: text, i18n: true},
+      {name: publishDate, label: Publish date, widget: datetime, picker_utc: true, hint: UTC timezone, i18n: duplicate},
+      {name: image, widget: image, i18n: duplicate},
+      {name: body, widget: richtext, i18n: true },
+    ]
 
-  - name: 'faq' # Used in routes, ie.: /admin/collections/:slug/edit
-    label: 'FAQ' # Used in the UI
-    folder: '_faqs'
-    create: true # Allow users to create new documents in this collection
-    fields: # The fields each document in this collection have
-      - { label: 'Question', name: 'title', widget: 'string', tagname: 'h1' }
-      - { label: 'Answer', name: 'body', widget: 'markdown' }
+  - name: education
+    label: Education
+    label_singular: education page
+    folder: content/edukacije-i-razvoj-karijere
+    create: true
+    slug: '{{slug}}'
+    filter: {field: visibleInCMS, value: true}
+    i18n: true
+    editor:
+      preview: false
+    fields: [
+      {name: title, label: Title, widget: string, i18n: true},
+      {name: slug, widget: string, i18n: true, required: false},
+      {name: draft, label: Draft, hint: "if enabled, page will not be visible", widget: boolean, i18n: true, required: false, default: true},
+      {name: description, widget: text, i18n: true, required: false},
+      {name: image, widget: image, i18n: duplicate},
+      *HERO,
+      *SIMPLE_HERO,
+      *VISIBLE_IN_CMS,
+      {name: body, widget: richtext, i18n: true},
+      *GALLERY,
+      *COUNTER,
+      {name: services, label: Services, widget: object, i18n: true, collapsed: true, summary: '{{fields.title}}', fields: [
+        {name: title, label: Title, widget: string, i18n: true, required: false},
+        {name: items, label: Additional items, widget: list, label_singular: item, i18n: true, summary: '{{fields.item}}', field: {
+          name: item, widget: string, i18n: true
+        }},
+        {label: Extra text, name: extraText, widget: richtext, editor_components: [], minimal: true, i18n: true, required: false},
+      ]},
+    ]
 
-  - name: 'settings'
-    label: 'Settings'
-    delete: false # Prevent users from deleting documents in this collection
+  - name: about-us
+    label: About us
+    editor:
+      preview: false
+    files: [
+      {label: About us EN, name: about-en, file: content/about-us.en.md, fields: *ABOUT_FIELDS},
+      {label: About us HR, name: abour-hr, file: content/about-us.hr.md, fields: *ABOUT_FIELDS},
+    ]
+
+  - name: list-pages
+    label: List pages
+    editor:
+      preview: false
+    files: [
+      {label: Home EN, name: home-en, file: content/_index.en.md, fields: *HOME_FIELDS},
+      {label: Home HR, name: home-hr, file: content/_index.hr.md, fields: *HOME_FIELDS},
+      {label: Jobs list EN, name: jobs-en, file: content/jobs/_index.en.md, fields: *JOB_LIST_FIELDS},
+      {label: Jobs list HR, name: jobs-hr, file: content/jobs/_index.hr.md, fields: *JOB_LIST_FIELDS},
+      {label: Job referral EN, name: job-referral-en, file: content/job-referral/_index.en.md, fields: *JOB_FORM_FIELDS},
+      {label: Job referral HR, name: job-referral-hr, file: content/job-referral/_index.hr.md, fields: *JOB_FORM_FIELDS},
+      {label: Edukacije i razvoj karijere, name: education-en, file: content/edukacije-i-razvoj-karijere/_index.hr.md, fields: [
+        {name: title, widget: string},
+        {name: description, widget: text},
+        {name: image, widget: image, required: false},
+        *HERO,
+        *SIMPLE_HERO,
+        {name: sliders, widget: list, summary: '{{fields.heading.title}}', label_singular: slider, fields: [
+          {name: heading, widget: object, i18n: true, fields: *SECTION_HEADING_FIELDS},
+          {name: items, widget: list, label_singular: item, fields: [
+            {name: title, widget: string},
+            {name: description, widget: text},
+            {name: image, widget: image},
+            *BUTTON,
+          ]},
+        ]},
+        *GALLERY,
+      ]},
+      {label: News EN, name: news-en, file: content/news/_index.en.md, fields: *NEWS_FIELDS},
+      {label: News HR, name: news-hr, file: content/news/_index.hr.md, fields: *NEWS_FIELDS},
+    ]
+
+  - name: single-pages
+    label: Single pages
+    label_singular: page
+    folder: content
+    create: true
+    slug: '{{slug}}'
+    filter: {field: visibleInCMS, value: true}
+    i18n: true
+    editor:
+      preview: false
+    fields: [
+      {name: title, widget: string, i18n: true},
+      {name: slug, widget: string, i18n: true, required: false},
+      {name: description, widget: text, i18n: true},
+      {name: image, widget: image, i18n: duplicate},
+      *HEADER_CLASS,
+      *HERO,
+      {name: body, widget: richtext, i18n: true},
+      *VISIBLE_IN_CMS,
+    ]
+
+  - name: components
+    label: Components
+    i18n:
+      structure: single_file
+      locales: [en, hr]
+    editor:
+      preview: false
+    files: [
+      {label: Cookies, name: cookies, i18n: true, file: data/cookies.json, fields: [
+        {name: text, widget: string, i18n: true},
+        {name: confirm, widget: string, i18n: true},
+        {name: more, widget: object, i18n: true, fields: [
+          {name: text, widget: string, i18n: true},
+          {name: href, widget: string, i18n: true},
+        ]},
+      ]},
+      {label: Job types, name: job-types, i18n: true, file: data/fixedOpenedJobs.json, fields: [
+        {name: groups, widget: list, i18n: true, fields: [
+          {name: label, widget: string, i18n: true},
+          {name: jobs, widget: list, i18n: true, fields: [
+            {name: title, widget: string, i18n: true},
+            {name: code, widget: string, i18n: true},
+          ]},
+        ]},
+      ]},
+      {label: Footer, name: footer, i18n: true, file: data/footer.json, fields: [
+        {name: socialMedia, label: Social, widget: object, i18n: true, fields: [
+          {name: title, widget: string, i18n: true},
+          {name: posao, label: Links, widget: list, label_singular: link, i18n: true, fields: [
+            {name: title, widget: string, i18n: true},
+            {name: href, widget: string, i18n: true},
+          ]},
+        ]},
+        {name: bottomFooter, label: bottom footer, widget: object, i18n: true, fields: [
+          {name: logo, widget: object, i18n: true, fields: [
+            {name: src, widget: image, i18n: duplicate},
+            {name: alt, widget: string, i18n: true}
+          ]},
+          {name: copyright, widget: string, i18n: true},
+          {name: links, widget: list, i18n: true, label_singular: link, fields: [
+            {name: title, widget: string, i18n: true},
+            {name: href, widget: string, i18n: true}
+          ]},
+        ]},
+        {name: extraLogos, label: Extra logos, label_singular: logo, widget: list, i18n: true, fields: [
+          {name: src, widget: string, i18n: true},
+          {name: alt, widget: string, i18n: true},
+          {name: href, widget: string, i18n: true, required: false},
+        ]},
+      ]},
+    ]
+
+  - name: translations
+    label: Translations
+    editor:
+      preview: false
+    files: [
+      {label: EN, name: en, file: i18n/en.toml, fields: *TRANSLATION_FIELDS},
+      {label: HR, name: hr, file: i18n/hr.toml, fields: *TRANSLATION_FIELDS},
+    ]
+
+  - name: locations
+    label: Locations
+    label_singular: location
+    folder: content/locations
+    path: '{{slug}}/_index'
+    filter: {field: visibleInCMS, value: true}
+    i18n: true
+    delete: false
+    editor:
+      preview: false
+    fields: [
+      {name: title, widget: string, i18n: true},
+      {name: laserlineid, widget: string, required: false, i18n: duplicate},
+      {name: weight, widget: number, required: false, i18n: duplicate},
+      {name: hide_from_applications, label: hide from applications, widget: boolean, required: false, i18n: duplicate, hint: 'if enabled, location will not be available in job application form'},
+      *VISIBLE_IN_CMS,
+    ]
+
+  - name: general
+    label: General
     editor:
       preview: false
     files:
-      - name: 'general'
-        label: 'Site Settings'
-        file: '_data/settings.json'
-        description: 'General Site Settings'
-        fields:
-          - { label: 'Global title', name: 'site_title', widget: 'string' }
-          - label: 'Post Settings'
-            name: posts
-            widget: 'object'
-            fields:
-              - {
-                  label: 'Number of posts on frontpage',
-                  name: front_limit,
-                  widget: number,
-                  min: 1,
-                  max: 10,
-                }
-              - { label: 'Default Author', name: author, widget: string }
-              - {
-                  label: 'Default Thumbnail',
-                  name: thumb,
-                  widget: image,
-                  class: 'thumb',
-                  required: false,
-                }
-
-      - name: 'authors'
-        label: 'Authors'
-        file: '_data/authors.yml'
-        description: 'Author descriptions'
-        fields:
-          - name: authors
-            label: Authors
-            label_singular: 'Author'
-            widget: list
-            fields:
-              - { label: 'Name', name: 'name', widget: 'string', hint: 'First and Last' }
-              - { label: 'Description', name: 'description', widget: 'markdown' }
-
-  - name: 'kitchenSink' # all the things in one entry, for documentation and quick testing
-    label: 'Kitchen Sink'
-    folder: '_sink'
-    create: true
-    fields:
-      - label: 'Related Post'
-        name: 'post'
-        widget: 'relationKitchenSinkPost'
-        collection: 'posts'
-        display_fields: ['title', 'datetime']
-        search_fields: ['title', 'body']
-        value_field: 'title'
-      - { label: 'Title', name: 'title', widget: 'string' }
-      - { label: 'Boolean', name: 'boolean', widget: 'boolean', default: true }
-      - { label: 'Map', name: 'map', widget: 'map' }
-      - { label: 'Text', name: 'text', widget: 'text', hint: 'Plain text, not markdown' }
-      - { label: 'Number', name: 'number', widget: 'number', hint: 'To infinity and beyond!' }
-      - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
-      - { label: 'Datetime', name: 'datetime', widget: 'datetime' }
-      - { label: 'Image', name: 'image', widget: 'image' }
-      - { label: 'File', name: 'file', widget: 'file' }
-      - { label: 'Select', name: 'select', widget: 'select', options: ['a', 'b', 'c'] }
-      - {
-          label: 'Select multiple',
-          name: 'select_multiple',
-          widget: 'select',
-          options: ['a', 'b', 'c'],
-          multiple: true,
-        }
-      - { label: 'Hidden', name: 'hidden', widget: 'hidden', default: 'hidden' }
-      - { label: 'Color', name: 'color', widget: 'color' }
-      - label: 'Object'
-        name: 'object'
-        widget: 'object'
-        collapsed: true
-        fields:
-          - label: 'Related Post'
-            name: 'post'
-            widget: 'relationKitchenSinkPost'
-            collection: 'posts'
-            search_fields: ['title', 'body']
-            value_field: 'title'
-          - { label: 'String', name: 'string', widget: 'string' }
-          - { label: 'Boolean', name: 'boolean', widget: 'boolean', default: false }
-          - { label: 'Text', name: 'text', widget: 'text' }
-          - { label: 'Number', name: 'number', widget: 'number' }
-          - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
-          - { label: 'Datetime', name: 'datetime', widget: 'datetime' }
-          - { label: 'Image', name: 'image', widget: 'image' }
-          - { label: 'File', name: 'file', widget: 'file' }
-          - { label: 'Select', name: 'select', widget: 'select', options: ['a', 'b', 'c'] }
-      - label: 'List'
-        name: 'list'
-        widget: 'list'
-        fields:
-          - { label: 'String', name: 'string', widget: 'string' }
-          - { label: 'Boolean', name: 'boolean', widget: 'boolean' }
-          - { label: 'Text', name: 'text', widget: 'text' }
-          - { label: 'Number', name: 'number', widget: 'number' }
-          - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
-          - { label: 'Datetime', name: 'datetime', widget: 'datetime' }
-          - { label: 'Image', name: 'image', widget: 'image' }
-          - { label: 'File', name: 'file', widget: 'file' }
-          - { label: 'Select', name: 'select', widget: 'select', options: ['a', 'b', 'c'] }
-          - label: 'Object'
-            name: 'object'
-            widget: 'object'
-            fields:
-              - { label: 'String', name: 'string', widget: 'string' }
-              - { label: 'Boolean', name: 'boolean', widget: 'boolean' }
-              - { label: 'Text', name: 'text', widget: 'text' }
-              - { label: 'Number', name: 'number', widget: 'number' }
-              - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
-              - { label: 'Datetime', name: 'datetime', widget: 'datetime' }
-              - { label: 'Image', name: 'image', widget: 'image' }
-              - { label: 'File', name: 'file', widget: 'file' }
-              - { label: 'Select', name: 'select', widget: 'select', options: ['a', 'b', 'c'] }
-              - label: 'List'
-                name: 'list'
-                widget: 'list'
-                fields:
-                  - label: 'Related Post'
-                    name: 'post'
-                    widget: 'relationKitchenSinkPost'
-                    collection: 'posts'
-                    search_fields: ['title', 'body']
-                    value_field: 'title'
-                  - { label: 'String', name: 'string', widget: 'string' }
-                  - { label: 'Boolean', name: 'boolean', widget: 'boolean' }
-                  - { label: 'Text', name: 'text', widget: 'text' }
-                  - { label: 'Number', name: 'number', widget: 'number' }
-                  - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
-                  - { label: 'Datetime', name: 'datetime', widget: 'datetime' }
-                  - { label: 'Image', name: 'image', widget: 'image' }
-                  - { label: 'File', name: 'file', widget: 'file' }
-                  - { label: 'Select', name: 'select', widget: 'select', options: ['a', 'b', 'c'] }
-                  - { label: 'Hidden', name: 'hidden', widget: 'hidden', default: 'hidden' }
-                  - label: 'Object'
-                    name: 'object'
-                    widget: 'object'
-                    fields:
-                      - { label: 'String', name: 'string', widget: 'string' }
-                      - { label: 'Boolean', name: 'boolean', widget: 'boolean' }
-                      - { label: 'Text', name: 'text', widget: 'text' }
-                      - { label: 'Number', name: 'number', widget: 'number' }
-                      - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
-                      - { label: 'Datetime', name: 'datetime', widget: 'datetime' }
-                      - { label: 'Image', name: 'image', widget: 'image' }
-                      - { label: 'File', name: 'file', widget: 'file' }
-                      - {
-                          label: 'Select',
-                          name: 'select',
-                          widget: 'select',
-                          options: ['a', 'b', 'c'],
-                        }
-      - label: 'Typed List'
-        name: 'typed_list'
-        widget: 'list'
-        types:
-          - label: 'Type 1 Object'
-            name: 'type_1_object'
-            widget: 'object'
-            fields:
-              - { label: 'String', name: 'string', widget: 'string' }
-              - { label: 'Boolean', name: 'boolean', widget: 'boolean' }
-              - { label: 'Text', name: 'text', widget: 'text' }
-          - label: 'Type 2 Object'
-            name: 'type_2_object'
-            widget: 'object'
-            fields:
-              - { label: 'Number', name: 'number', widget: 'number' }
-              - { label: 'Select', name: 'select', widget: 'select', options: ['a', 'b', 'c'] }
-              - { label: 'Datetime', name: 'datetime', widget: 'datetime' }
-              - { label: 'Markdown', name: 'markdown', widget: 'markdown' }
-          - label: 'Type 3 Object'
-            name: 'type_3_object'
-            widget: 'object'
-            fields:
-              - { label: 'Image', name: 'image', widget: 'image' }
-              - { label: 'File', name: 'file', widget: 'file' }
-  - name: pages # a nested collection
-    label: Pages
-    label_singular: 'Page'
-    folder: _pages
-    create: true
-    nested: { depth: 100, subfolders: false }
-    fields:
-      - label: Title
-        name: title
-        widget: string
-    meta: { path: { widget: string, label: 'Path', index_file: 'index' } }
+    - label: Site settings
+      name: site-settings
+      format: toml
+      file: config.toml
+      fields: [
+        {name: title, widget: string},
+        {name: disableLanguages, label: Disable languages, widget: select, options: ['en', 'hr'], multiple: true, max: 1, required: false},
+        {name: params, widget: object, fields: [
+          {name: image, widget: image},
+        ]},
+        {name: languages, widget: object, fields: [
+          {name: hr, widget: object, collapsed: true, summary: '{{fields.languageName}}', fields: *LANGUAGE_FIELDS},
+          {name: en, widget: object, collapsed: true, summary: '{{fields.languageName}}', fields: *LANGUAGE_FIELDS},
+        ]},
+      ]
