@@ -39,8 +39,8 @@ export default class BooleanControl extends React.Component {
     const { value, forID, onChange, classNameWrapper, setActiveStyle, setInactiveStyle, field } =
       this.props;
 
-    const prefix = field.get('prefix', false);
-    const suffix = field.get('suffix', false);
+    const prefix = field.get('prefix', '');
+    const suffix = field.get('suffix', '');
 
     return (
       <div className={classNameWrapper}>

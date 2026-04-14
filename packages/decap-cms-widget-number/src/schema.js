@@ -4,5 +4,7 @@ export default {
     value_type: { type: 'string' },
     min: { type: 'number' },
     max: { type: 'number' },
+    prefix: { type: 'string' },
+    suffix: { type: 'string' },
   },
 };

@@ -113,8 +113,8 @@ export default class NumberControl extends React.Component {
     const max = field.get('max', '');
     const step = field.get('step', field.get('value_type') === 'int' ? 1 : '');
 
-    const prefix = field.get('prefix', false);
-    const suffix = field.get('suffix', false);
+    const prefix = field.get('prefix', '');
+    const suffix = field.get('suffix', '');
 
     return (
       <div className={classNameWrapper}>
