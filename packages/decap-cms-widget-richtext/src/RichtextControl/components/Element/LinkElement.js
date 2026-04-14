@@ -8,7 +8,12 @@ function LinkElement({ children, element, ...rest }) {
     <PlateElement
       as="a"
       element={element}
-      style={{ textDecoration: 'underline', fontSize: 'inherit', maxWidth: '100%', fontWeight: 'inherit' }}
+      style={{
+        textDecoration: 'underline',
+        fontSize: 'inherit',
+        maxWidth: '100%',
+        fontWeight: 'inherit',
+      }}
       {...linkProps}
       {...rest}
     >
