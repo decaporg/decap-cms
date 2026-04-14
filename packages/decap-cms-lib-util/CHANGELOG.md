@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.4.0](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-util@3.3.1...decap-cms-lib-util@3.4.0) (2025-12-18)
+
+### Bug Fixes
+
+- **lib-util:** treat root-relative media paths as absolute ([#7650](https://github.com/decaporg/decap-cms/issues/7650)) ([5d0e417](https://github.com/decaporg/decap-cms/commit/5d0e4175f042f43b2e63cc57b631d6b684fea0fc))
+
 ## [3.3.1](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-util@3.3.0...decap-cms-lib-util@3.3.1) (2025-07-31)
 
 **Note:** Version bump only for package decap-cms-lib-util

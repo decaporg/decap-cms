@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.4.0](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-azure@3.3.0...decap-cms-backend-azure@3.4.0) (2025-12-18)
+
+### Bug Fixes
+
+- handle potential null labels in pull request filtering ([#7678](https://github.com/decaporg/decap-cms/issues/7678)) ([fce2a69](https://github.com/decaporg/decap-cms/commit/fce2a69a217298771fa4f01b985de8116ed94e1a))
+
 # [3.3.0](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-azure@3.2.1...decap-cms-backend-azure@3.3.0) (2025-07-15)
 
 ### Features

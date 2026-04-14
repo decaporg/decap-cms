@@ -3,6 +3,35 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.11.0](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.10.1...decap-cms-core@3.11.0) (2026-03-24)
+
+### Bug Fixes
+
+- increase deploy preview polling and cancel on unmount ([#7758](https://github.com/decaporg/decap-cms/issues/7758)) ([a814f95](https://github.com/decaporg/decap-cms/commit/a814f953af4723a38e99ec0cd066f6000229b978))
+- set PENDING status on deploy preview request and failure ([#7756](https://github.com/decaporg/decap-cms/issues/7756)) ([d9e4292](https://github.com/decaporg/decap-cms/commit/d9e4292a14a722bd8e1c5a8da2337c9bf3fec814)), closes [#7755](https://github.com/decaporg/decap-cms/issues/7755)
+
+### Features
+
+- add configurable issue url ([#7734](https://github.com/decaporg/decap-cms/issues/7734)) ([56e057b](https://github.com/decaporg/decap-cms/commit/56e057b9332d69663e7b52b22938d463497161e2))
+- add loading feedback to deploy preview button ([#7757](https://github.com/decaporg/decap-cms/issues/7757)) ([61d8b8b](https://github.com/decaporg/decap-cms/commit/61d8b8bdc0a89a29e546cd3ac58ce0f67936f551))
+
+## [3.10.1](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.10.0...decap-cms-core@3.10.1) (2026-02-23)
+
+### Bug Fixes
+
+- **a11y:** aria-labels ([#7720](https://github.com/decaporg/decap-cms/issues/7720)) ([cc92370](https://github.com/decaporg/decap-cms/commit/cc92370595a85590ffede50a99259d52ba3eb76b))
+
+# [3.10.0](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.9.0...decap-cms-core@3.10.0) (2025-12-18)
+
+### Bug Fixes
+
+- **lib-util:** treat root-relative media paths as absolute ([#7650](https://github.com/decaporg/decap-cms/issues/7650)) ([5d0e417](https://github.com/decaporg/decap-cms/commit/5d0e4175f042f43b2e63cc57b631d6b684fea0fc))
+- slugFormatter populates date template variables using date from entry if it exists ([#7633](https://github.com/decaporg/decap-cms/issues/7633)) ([b5a7de0](https://github.com/decaporg/decap-cms/commit/b5a7de02c8fa47faab3a7ef2389439d7552c68ac))
+
+### Features
+
+- add default_sort option to sortable fields ([#7665](https://github.com/decaporg/decap-cms/issues/7665)) ([5e782ee](https://github.com/decaporg/decap-cms/commit/5e782ee33ab7b7f144fd34ed817b2a93caa4f942))
+
 # [3.9.0](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.8.1...decap-cms-core@3.9.0) (2025-09-30)
 
 ### Bug Fixes
