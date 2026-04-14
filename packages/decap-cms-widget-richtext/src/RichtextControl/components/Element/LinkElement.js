@@ -1,5 +1,5 @@
 import React from 'react';
-import { PlateElement, useElement } from 'platejs/react';
+import { PlateElement } from 'platejs/react';
 import { useLink } from '@platejs/link/react';
 
 function LinkElement({ children, element, ...rest }) {
