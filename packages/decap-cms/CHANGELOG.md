@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.11.0](https://github.com/decaporg/decap-cms/compare/decap-cms@3.10.1...decap-cms@3.11.0) (2026-03-24)
+
+### Features
+
+- **ci:** add npm package integrity test before publish ([#7703](https://github.com/decaporg/decap-cms/issues/7703)) ([96f2eab](https://github.com/decaporg/decap-cms/commit/96f2eabd1c10ea7361d58427935f37629bf901d6)), closes [#7616](https://github.com/decaporg/decap-cms/issues/7616) [#7623](https://github.com/decaporg/decap-cms/issues/7623)
+
+## [3.10.1](https://github.com/decaporg/decap-cms/compare/decap-cms@3.10.0...decap-cms@3.10.1) (2026-02-23)
+
+**Note:** Version bump only for package decap-cms
+
 # [3.10.0](https://github.com/decaporg/decap-cms/compare/decap-cms@3.9.0...decap-cms@3.10.0) (2025-12-18)
 
 **Note:** Version bump only for package decap-cms
