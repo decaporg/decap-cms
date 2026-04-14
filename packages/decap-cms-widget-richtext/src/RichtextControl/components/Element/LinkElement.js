@@ -3,8 +3,7 @@ import { PlateElement, useElement } from 'platejs/react';
 import { useLink } from '@platejs/link/react';
 
 function LinkElement({ children, element, ...rest }) {
-  const el = useElement();
-  const { props: linkProps } = useLink({ element: el });
+  const { props: linkProps } = useLink({ element });  
   return (
     <PlateElement
       as="a"
