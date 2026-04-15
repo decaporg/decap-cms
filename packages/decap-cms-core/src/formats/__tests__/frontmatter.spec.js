@@ -72,6 +72,27 @@ describe('Frontmatter', () => {
       });
     });
 
+    it('should throw on duplicate frontmatter keys', () => {
+      expect(() =>
+        FrontmatterInfer.fromFile('---\ntitle: Hello\ntitle: World\n---\nContent'),
+      ).toThrow(/Map keys must be unique/);
+    });
+
+    it('should throw on duplicate frontmatter keys with explicit YAML format', () => {
+      expect(() =>
+        frontmatterYAML().fromFile('---\ntitle: Hello\ntitle: World\n---\nContent'),
+      ).toThrow(/Map keys must be unique/);
+    });
+
+    it('should not throw when body contains YAML-like patterns', () => {
+      expect(
+        FrontmatterInfer.fromFile('---\ntitle: Hello\n---\ntitle: this is not a duplicate'),
+      ).toEqual({
+        title: 'Hello',
+        body: 'title: this is not a duplicate',
+      });
+    });
+
     it('should stringify YAML with --- delimiters', () => {
       expect(
         FrontmatterInfer.toFile({
