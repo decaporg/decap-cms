@@ -101,7 +101,7 @@ export default class Forgejo implements Implementation {
       this.repo = this.originRepo = config.backend.repo || '';
     }
     this.alwaysForkEnabled = config.backend.always_fork || false;
-    this.branch = config.backend.branch?.trim() || 'master';
+    this.branch = config.backend.branch?.trim() || 'main';
     this.apiRoot = config.backend.api_root || 'https://v14.next.forgejo.org/api/v1';
     this.token = '';
     this.mediaFolder = config.media_folder;
