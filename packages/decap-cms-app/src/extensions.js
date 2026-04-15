@@ -19,6 +19,7 @@ import DecapCmsWidgetImage from 'decap-cms-widget-image';
 import DecapCmsWidgetFile from 'decap-cms-widget-file';
 import DecapCmsWidgetSelect from 'decap-cms-widget-select';
 import DecapCmsWidgetMarkdown from 'decap-cms-widget-markdown';
+import DecapCmsWidgetRichtext from 'decap-cms-widget-richtext';
 import DecapCmsWidgetList from 'decap-cms-widget-list';
 import DecapCmsWidgetObject from 'decap-cms-widget-object';
 import DecapCmsWidgetRelation from 'decap-cms-widget-relation';
@@ -51,6 +52,7 @@ CMS.registerWidget([
   DecapCmsWidgetFile.Widget(),
   DecapCmsWidgetSelect.Widget(),
   DecapCmsWidgetMarkdown.Widget(),
+  DecapCmsWidgetRichtext.Widget(),
   DecapCmsWidgetList.Widget(),
   DecapCmsWidgetObject.Widget(),
   DecapCmsWidgetRelation.Widget(),

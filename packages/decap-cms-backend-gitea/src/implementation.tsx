@@ -183,6 +183,7 @@ export default class Gitea implements Implementation {
     return {
       name: user.full_name,
       login: user.login,
+      email: user.email,
       avatar_url: user.avatar_url,
       token: state.token as string,
     };

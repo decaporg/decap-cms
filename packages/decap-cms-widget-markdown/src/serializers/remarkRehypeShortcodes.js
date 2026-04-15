@@ -10,7 +10,7 @@ import u from 'unist-builder';
  * conversion by replacing the shortcode text with stringified HTML for
  * previewing the shortcode output.
  */
-export default function remarkToRehypeShortcodes({ plugins, getAsset, resolveWidget }) {
+export default function remarkToRehypeShortcodes({ plugins, getAsset, resolveWidget, toHtml }) {
   return transform;
 
   function transform(root) {
@@ -54,11 +54,40 @@ export default function remarkToRehypeShortcodes({ plugins, getAsset, resolveWid
    * Retrieve the shortcode preview component.
    */
   function getPreview(plugin, shortcodeData) {
-    const { toPreview, widget, fields } = plugin;
+    const { toPreview, fields } = plugin;
     if (toPreview) {
       return toPreview(shortcodeData, getAsset, fields);
     }
-    const preview = resolveWidget(widget);
+
+    /**
+     * For editor components without a custom `toPreview` (e.g. container
+     * components with nested markdown/richtext fields), render each sub-field
+     * value using the appropriate widget preview.
+     */
+    if (fields && fields.size > 0 && toHtml) {
+      const htmlParts = fields
+        .map(field => {
+          const name = field.get('name');
+          const widget = field.get('widget') || 'string';
+          const fieldValue = shortcodeData ? shortcodeData[name] : '';
+
+          if (!fieldValue) return '';
+
+          if (widget === 'markdown' || widget === 'richtext') {
+            return toHtml(fieldValue);
+          }
+
+          return `<p>${fieldValue}</p>`;
+        })
+        .toArray();
+
+      return htmlParts.join('');
+    }
+
+    /**
+     * Last resort fallback: try resolving the widget and rendering its preview.
+     */
+    const preview = resolveWidget(plugin.widget);
     return React.createElement(preview.preview, {
       value: shortcodeData,
       field: plugin,
