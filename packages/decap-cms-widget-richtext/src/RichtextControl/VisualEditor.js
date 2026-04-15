@@ -28,6 +28,7 @@ import LinkElement from './components/Element/LinkElement';
 import ImageElement from './components/Element/ImageElement';
 import ExtendedBlockquotePlugin from './plugins/ExtendedBlockquotePlugin';
 import ImagePlugin from './plugins/ImagePlugin';
+import BreakPlugin from './plugins/BreakPlugin';
 import ShortcodePlugin from './plugins/ShortcodePlugin';
 import { TablePlugin, TableRowPlugin, TableCellPlugin } from './plugins/TablePlugin';
 import defaultEmptyBlock from './defaultEmptyBlock';
@@ -133,6 +134,7 @@ export default function VisualEditor(props) {
         shortcuts: { toggle: { keys: 'mod+shift+c' } },
       }),
       ListPlugin,
+      BreakPlugin,
       ImagePlugin,
       LinkPlugin.configure({
         node: { component: LinkElement },
