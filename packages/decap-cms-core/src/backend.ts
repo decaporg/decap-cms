@@ -1178,6 +1178,7 @@ export class Backend {
         path,
         authorLogin: user.login,
         authorName: user.name,
+        authorEmail: user.email,
       },
       user.useOpenAuthoring,
     );
@@ -1253,6 +1254,7 @@ export class Backend {
           path: file.path,
           authorLogin: user.login,
           authorName: user.name,
+          authorEmail: user.email,
         },
         user.useOpenAuthoring,
       ),
@@ -1279,6 +1281,7 @@ export class Backend {
         path,
         authorLogin: user.login,
         authorName: user.name,
+        authorEmail: user.email,
       },
       user.useOpenAuthoring,
     );
@@ -1303,6 +1306,7 @@ export class Backend {
         path,
         authorLogin: user.login,
         authorName: user.name,
+        authorEmail: user.email,
       },
       user.useOpenAuthoring,
     );

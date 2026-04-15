@@ -381,6 +381,7 @@ export default class GitGateway implements Implementation {
       return {
         name: userData.name,
         login: userData.email,
+        email: userData.email,
         avatar_url: userData.avatar_url,
       } as unknown as User;
     });

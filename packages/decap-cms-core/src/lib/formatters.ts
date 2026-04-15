@@ -44,15 +44,27 @@ type Options = {
   collection?: Collection;
   authorLogin?: string;
   authorName?: string;
+  authorEmail?: string;
 };
 
 export function commitMessageFormatter(
   type: keyof typeof commitMessageTemplates,
   config: CmsConfig,
-  { slug, path, collection, authorLogin, authorName }: Options,
+  { slug, path, collection, authorLogin, authorName, authorEmail }: Options,
   isOpenAuthoring?: boolean,
 ) {
   const templates = { ...commitMessageTemplates, ...(config.backend.commit_messages || {}) };
+
+  let trailers = '';
+  if (config.backend.signoff_commits) {
+    if (!authorName) {
+      console.warn('Option signoff_commits is enabled, but author name is unknown');
+    } else if (!authorEmail) {
+      console.warn('Option signoff_commits is enabled, but author email is unknown');
+    } else {
+      trailers = `\n\nSigned-off-by: ${authorName} <${authorEmail}>\n`;
+    }
+  }
 
   const commitMessage = templates[type].replace(variableRegex, (_, variable) => {
     switch (variable) {
@@ -73,7 +85,7 @@ export function commitMessageFormatter(
   });
 
   if (!isOpenAuthoring) {
-    return commitMessage;
+    return commitMessage + trailers;
   }
 
   const message = templates.openAuthoring.replace(variableRegex, (_, variable) => {
@@ -90,7 +102,7 @@ export function commitMessageFormatter(
     }
   });
 
-  return message;
+  return message + trailers;
 }
 
 export function prepareSlug(slug: string) {

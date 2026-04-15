@@ -364,6 +364,7 @@ declare module 'decap-cms-core' {
     auth_type?: 'implicit' | 'pkce';
     cms_label_prefix?: string;
     squash_merges?: boolean;
+    signoff_commits?: boolean;
     proxy_url?: string;
     commit_messages?: {
       create?: string;
