@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "detab": "^2.0.4",
-    "dompurify": "^3.3.3",
+    "dompurify": "^3.4.0",
     "is-hotkey": "^0.2.0",
     "is-url": "^1.2.4",
     "mdast-util-definitions": "^1.2.3",
