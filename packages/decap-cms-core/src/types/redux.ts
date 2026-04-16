@@ -379,6 +379,7 @@ export interface CmsBackend {
   auth_endpoint?: string;
   cms_label_prefix?: string;
   squash_merges?: boolean;
+  signoff_commits?: boolean;
   proxy_url?: string;
   commit_messages?: {
     create?: string;
@@ -399,6 +400,10 @@ export interface CmsSlug {
 export interface CmsLocalBackend {
   url?: string;
   allowed_hosts?: string[];
+}
+
+export interface CmsIssueReports {
+  url?: string;
 }
 
 export interface CmsConfig {
@@ -429,6 +434,7 @@ export interface CmsConfig {
   }[];
   slug?: CmsSlug;
   i18n?: CmsI18nConfig;
+  issue_reports?: CmsIssueReports;
   local_backend?: boolean | CmsLocalBackend;
   editor?: {
     preview?: boolean;

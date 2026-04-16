@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.12.1](https://github.com/decaporg/decap-cms/compare/decap-cms-app@3.12.0...decap-cms-app@3.12.1) (2026-04-16)
+
+### Bug Fixes
+
+- add decap-cms-widget-richtext dependency ([be8cf6b](https://github.com/decaporg/decap-cms/commit/be8cf6bf18f832d1e8664b2604467872a5e8d83e)), closes [#7787](https://github.com/decaporg/decap-cms/issues/7787)
+
+# [3.12.0](https://github.com/decaporg/decap-cms/compare/decap-cms-app@3.11.0...decap-cms-app@3.12.0) (2026-04-16)
+
+**Note:** Version bump only for package decap-cms-app
+
+# [3.11.0](https://github.com/decaporg/decap-cms/compare/decap-cms-app@3.10.1...decap-cms-app@3.11.0) (2026-03-24)
+
+**Note:** Version bump only for package decap-cms-app
+
+## [3.10.1](https://github.com/decaporg/decap-cms/compare/decap-cms-app@3.10.0...decap-cms-app@3.10.1) (2026-02-23)
+
+**Note:** Version bump only for package decap-cms-app
+
 # [3.10.0](https://github.com/decaporg/decap-cms/compare/decap-cms-app@3.9.0...decap-cms-app@3.10.0) (2025-12-18)
 
 **Note:** Version bump only for package decap-cms-app
