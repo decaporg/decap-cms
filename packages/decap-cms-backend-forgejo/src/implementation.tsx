@@ -87,6 +87,12 @@ export default class Forgejo implements Implementation {
       throw new Error('The Forgejo backend needs a "repo" in the backend configuration.');
     }
 
+    if (!config.backend.api_root) {
+      throw new Error(
+        'The Forgejo backend needs an "api_root" in the backend configuration when not proxied.',
+      );
+    }
+
     this.api = this.options.API || null;
     this.openAuthoringEnabled = config.backend.open_authoring || false;
     if (this.openAuthoringEnabled) {
@@ -102,7 +108,7 @@ export default class Forgejo implements Implementation {
     }
     this.alwaysForkEnabled = config.backend.always_fork || false;
     this.branch = config.backend.branch?.trim() || 'main';
-    this.apiRoot = config.backend.api_root || 'https://v14.next.forgejo.org/api/v1';
+    this.apiRoot = config.backend.api_root;
     this.token = '';
     this.mediaFolder = config.media_folder;
     this.cmsLabelPrefix = config.backend.cms_label_prefix || '';
