@@ -128,6 +128,7 @@ export function sanitizeSlug(str: string, options?: CmsSlug, preserveSlashes?: b
       ? (slug: string) =>
           slug
             .split('/')
+            .filter(Boolean)
             .map(part => sanitizeFilename(part, { replacement }))
             .join('/')
       : partialRight(sanitizeFilename, { replacement }),
