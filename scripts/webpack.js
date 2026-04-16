@@ -54,8 +54,7 @@ function rules() {
 
 function plugins() {
   return {
-    ignoreEsprima: () =>
-      new webpack.IgnorePlugin({ resourceRegExp: /^esprima$/, contextRegExp: /js-yaml/ }),
+    ignoreEsprima: () => new webpack.IgnorePlugin({ resourceRegExp: /^esprima$/ }),
     friendlyErrors: () => new FriendlyErrorsWebpackPlugin(),
     buffer: () =>
       new webpack.ProvidePlugin({

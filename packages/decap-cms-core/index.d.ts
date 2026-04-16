@@ -364,6 +364,7 @@ declare module 'decap-cms-core' {
     auth_type?: 'implicit' | 'pkce';
     cms_label_prefix?: string;
     squash_merges?: boolean;
+    signoff_commits?: boolean;
     proxy_url?: string;
     commit_messages?: {
       create?: string;
@@ -386,6 +387,10 @@ declare module 'decap-cms-core' {
     allowed_hosts?: string[];
   }
 
+  export interface CmsIssueReports {
+    url?: string;
+  }
+
   export interface CmsConfig {
     backend: CmsBackend;
     collections: CmsCollection[];
@@ -403,6 +408,7 @@ declare module 'decap-cms-core' {
     media_folder_relative?: boolean;
     media_library?: CmsMediaLibrary;
     publish_mode?: CmsPublishMode;
+    issue_reports?: CmsIssueReports;
     load_config_file?: boolean;
     integrations?: {
       hooks: string[];

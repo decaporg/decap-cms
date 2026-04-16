@@ -247,6 +247,27 @@ describe('formatters', () => {
         'Ignoring unknown variable “author-email” in open authoring message template.',
       );
     });
+
+    it('should return commit with trailer when signoff_commits is enabled', () => {
+      const collection = Map({ label_singular: 'Collection' });
+      const config = {
+        backend: {
+          signoff_commits: true,
+        },
+      };
+
+      expect(
+        commitMessageFormatter('create', config, {
+          slug: 'doc-slug',
+          path: 'file-path',
+          collection,
+          authorName: 'Test User',
+          authorEmail: 'test-user@example.org',
+        }),
+      ).toEqual(
+        'Create Collection “doc-slug”\n\nSigned-off-by: Test User <test-user@example.org>\n',
+      );
+    });
   });
 
   describe('prepareSlug', () => {
