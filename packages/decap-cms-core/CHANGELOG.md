@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.12.0](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.11.0...decap-cms-core@3.12.0) (2026-04-16)
+
+### Bug Fixes
+
+- **frontmatter:** improve duplicate frontmatter key error handling ([#7679](https://github.com/decaporg/decap-cms/issues/7679)) ([cbe162d](https://github.com/decaporg/decap-cms/commit/cbe162d740bcbfafc4e76a77ac49e2029bc3a4c4))
+
+### Features
+
+- add config option to enable Signed-off-by in commit messages ([#7766](https://github.com/decaporg/decap-cms/issues/7766)) ([4b9ea40](https://github.com/decaporg/decap-cms/commit/4b9ea4040f3b858793052cee287caa3cce2f3af3))
+
+### Performance Improvements
+
+- use Clipboard API ([#7780](https://github.com/decaporg/decap-cms/issues/7780)) ([c90804f](https://github.com/decaporg/decap-cms/commit/c90804fa623020dd7246cc8154c6992a1bc2a79e))
+
 # [3.11.0](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.10.1...decap-cms-core@3.11.0) (2026-03-24)
 
 ### Bug Fixes
