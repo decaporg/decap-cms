@@ -122,7 +122,7 @@ export default class CodeControl extends React.Component {
     }
   }
 
-  updateCodeMirrorProps(prevState) {
+  async updateCodeMirrorProps(prevState) {
     const keys = ['lang', 'theme', 'keyMap'];
     const changedProps = getChangedProps(prevState, this.state, keys);
     if (changedProps) {
@@ -134,7 +134,7 @@ export default class CodeControl extends React.Component {
 
       this.setState({ isLangInitialized: true });
 
-      this.handleChangeCodeMirrorProps(changedProps, shouldIgnoreLangChange);
+      await this.handleChangeCodeMirrorProps(changedProps, shouldIgnoreLangChange);
     }
   }
 
@@ -210,7 +210,11 @@ export default class CodeControl extends React.Component {
       if (mode) {
         const loader = getLanguageLoader(mode);
         if (loader) {
-          await loader();
+          try {
+            await loader();
+          } catch (e) {
+            console.warn(`Failed to load CodeMirror mode: ${mode}`, e);
+          }
         }
       }
     }
