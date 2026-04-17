@@ -193,6 +193,12 @@ function getConfigSchema() {
           clean_accents: { type: 'boolean' },
         },
       },
+      issue_reports: {
+        type: 'object',
+        properties: {
+          url: { type: 'string', examples: ['https://example.com/report-issue'] },
+        },
+      },
       collections: {
         type: 'array',
         minItems: 1,
@@ -218,6 +224,7 @@ function getConfigSchema() {
                   file: { type: 'string' },
                   preview_path: { type: 'string' },
                   preview_path_date_field: { type: 'string' },
+                  preview_path_preserve_slashes: { type: 'boolean' },
                   fields: fieldsConfig(),
                 },
                 required: ['name', 'label', 'file', 'fields'],
@@ -230,6 +237,7 @@ function getConfigSchema() {
             path: { type: 'string' },
             preview_path: { type: 'string' },
             preview_path_date_field: { type: 'string' },
+            preview_path_preserve_slashes: { type: 'boolean' },
             create: { type: 'boolean' },
             publish: { type: 'boolean' },
             hide: { type: 'boolean' },

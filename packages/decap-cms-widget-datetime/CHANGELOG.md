@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.4.1](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-datetime@3.4.0...decap-cms-widget-datetime@3.4.1) (2026-02-23)
+
+### Bug Fixes
+
+- **a11y:** aria-labels ([#7720](https://github.com/decaporg/decap-cms/issues/7720)) ([cc92370](https://github.com/decaporg/decap-cms/commit/cc92370595a85590ffede50a99259d52ba3eb76b))
+
 # [3.4.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-datetime@3.2.3...decap-cms-widget-datetime@3.4.0) (2025-07-15)
 
 **Note:** Version bump only for package decap-cms-widget-datetime

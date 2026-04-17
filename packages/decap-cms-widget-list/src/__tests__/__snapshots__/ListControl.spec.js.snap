@@ -181,7 +181,9 @@ exports[`ListControl should add to list when add button is clicked 1`] = `
           1 list
         </div>
         <button
-          class="emotion-10 emotion-11"
+          aria-label="editor.editorWidgets.object.collapse"
+          class="emotion-5 emotion-6"
+          data-testid="expand-button"
         >
           editor.editorWidgets.list.add
           <span
@@ -435,7 +437,9 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
           2 list
         </div>
         <button
-          class="emotion-10 emotion-11"
+          aria-label="editor.editorWidgets.object.collapse"
+          class="emotion-5 emotion-6"
+          data-testid="expand-button"
         >
           editor.editorWidgets.list.add
           <span
@@ -719,7 +723,9 @@ exports[`ListControl should remove from list when remove button is clicked 2`] =
           1 list
         </div>
         <button
-          class="emotion-10 emotion-11"
+          aria-label="editor.editorWidgets.object.collapse"
+          class="emotion-5 emotion-6"
+          data-testid="expand-button"
         >
           editor.editorWidgets.list.add
           <span
@@ -988,7 +994,9 @@ exports[`ListControl should render list with fields with collapse = "false" and 
           2 list
         </div>
         <button
-          class="emotion-10 emotion-11"
+          aria-label="editor.editorWidgets.object.collapse"
+          class="emotion-5 emotion-6"
+          data-testid="expand-button"
         >
           editor.editorWidgets.list.add
           <span
@@ -1272,7 +1280,9 @@ exports[`ListControl should render list with fields with collapse = "false" and 
           2 list
         </div>
         <button
-          class="emotion-10 emotion-11"
+          aria-label="editor.editorWidgets.object.collapse"
+          class="emotion-5 emotion-6"
+          data-testid="expand-button"
         >
           editor.editorWidgets.list.add
           <span
@@ -1556,7 +1566,9 @@ exports[`ListControl should render list with fields with default collapse ("true
           2 list
         </div>
         <button
-          class="emotion-10 emotion-11"
+          aria-label="editor.editorWidgets.object.expand"
+          class="emotion-5 emotion-6"
+          data-testid="expand-button"
         >
           editor.editorWidgets.list.add
           <span
@@ -1823,7 +1835,9 @@ exports[`ListControl should render list with fields with default collapse ("true
           2 list
         </div>
         <button
-          class="emotion-10 emotion-11"
+          aria-label="editor.editorWidgets.object.expand"
+          class="emotion-5 emotion-6"
+          data-testid="expand-button"
         >
           editor.editorWidgets.list.add
           <span
@@ -2028,7 +2042,9 @@ exports[`ListControl should render list with nested object 1`] = `
           2 list
         </div>
         <button
-          class="emotion-10 emotion-11"
+          aria-label="editor.editorWidgets.object.expand"
+          class="emotion-5 emotion-6"
+          data-testid="expand-button"
         >
           editor.editorWidgets.list.add
           <span
@@ -2316,7 +2332,9 @@ exports[`ListControl should render list with nested object with collapse = false
           2 list
         </div>
         <button
-          class="emotion-10 emotion-11"
+          aria-label="editor.editorWidgets.object.collapse"
+          class="emotion-5 emotion-6"
+          data-testid="expand-button"
         >
           editor.editorWidgets.list.add
           <span
