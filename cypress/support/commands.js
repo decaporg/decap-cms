@@ -271,6 +271,7 @@ Cypress.Commands.add('insertEditorComponent', title => {
   ['clickUnorderedListButton', 'Bulleted List'],
   ['clickCodeButton', 'Code'],
   ['clickItalicButton', 'Italic'],
+  ['clickStrikethroughButton', 'Strikethrough'],
   ['clickQuoteButton', 'Quote'],
   ['clickLinkButton', 'Link'],
 ].forEach(([commandName, toolbarButtonName]) => {

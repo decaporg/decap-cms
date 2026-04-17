@@ -35,8 +35,16 @@ function setup(propsOverrides = {}) {
 }
 
 describe('DateTimeControl', () => {
+  const mockDate = '2025-01-01T12:00:00.000Z';
+
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.useFakeTimers();
+    jest.setSystemTime(new Date(mockDate));
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
   });
 
   test('renders the component with input, now button, and clear button', () => {
@@ -56,5 +64,27 @@ describe('DateTimeControl', () => {
     const { clearButton, props } = setup({ value: '1970-01-01' });
     fireEvent.click(clearButton);
     expect(props.onChange).toHaveBeenCalledWith('');
+  });
+
+  test('sets value in custom format (local timezone) when input value changes', () => {
+    const { input, props } = setup({ field: new Map() });
+
+    const testDate = '2024-03-15T10:30:00';
+
+    fireEvent.change(input, { target: { value: testDate } });
+
+    const expectedValue = dayjs(testDate).format('YYYY-MM-DDTHH:mm:ss.SSSZ');
+    expect(props.onChange).toHaveBeenCalledWith(expectedValue);
+  });
+
+  test('sets value in custom format (UTC) when input value changes', () => {
+    const { input, props } = setup({ field: new Map([['picker_utc', true]]) });
+
+    const testDate = '2024-03-15T10:30:00';
+
+    fireEvent.change(input, { target: { value: testDate } });
+
+    const expectedValue = dayjs(testDate).format('YYYY-MM-DDTHH:mm:ss.SSS[Z]');
+    expect(props.onChange).toHaveBeenCalledWith(expectedValue);
   });
 });

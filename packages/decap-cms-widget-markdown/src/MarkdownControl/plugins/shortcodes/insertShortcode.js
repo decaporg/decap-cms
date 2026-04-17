@@ -6,8 +6,7 @@ function insertShortcode(editor, pluginConfig) {
   const defaultValues = pluginConfig.fields
     .toMap()
     .mapKeys((_, field) => field.get('name'))
-    .filter(field => field.has('default'))
-    .map(field => field.get('default'));
+    .map(field => field.get('default', ''));
 
   const nodeData = {
     type: 'shortcode',
