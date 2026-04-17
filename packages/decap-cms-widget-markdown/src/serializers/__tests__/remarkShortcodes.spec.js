@@ -33,16 +33,31 @@ describe('remarkParseShortcodes', () => {
         expect.arrayContaining(['foo\n\nbar']),
       );
     });
+    it('should match shortcodes by first matching plugin', () => {
+      const fooEditorComponent = EditorComponent({ id: 'foo', pattern: /^foo/ });
+      const barEditorComponent = EditorComponent({ id: 'bar', pattern: /^bar/ });
+      process(
+        'bar\n\nfoo',
+        OrderedMap([
+          [fooEditorComponent.id, fooEditorComponent],
+          [barEditorComponent.id, barEditorComponent],
+        ]),
+      );
+      // 'bar' is the first block, but 'foo' plugin is first in registry,
+      // so 'foo' doesn't match 'bar'. 'bar' plugin matches 'bar'.
+      expect(barEditorComponent.fromBlock).toHaveBeenCalledWith(expect.arrayContaining(['bar']));
+    });
+    it('should warn when pattern uses multiline flag', () => {
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+      const editorComponent = EditorComponent({ pattern: /^foo$/m });
+      process('foo', Map({ [editorComponent.id]: editorComponent }));
+      expect(warnSpy).toHaveBeenCalledWith(
+        expect.stringContaining('must not use the multiline flag'),
+      );
+      warnSpy.mockRestore();
+    });
   });
   describe('parse', () => {
-    it('should be a remark shortcode node', () => {
-        const processEat = jest.fn();
-        const shortcodeData = { bar: 'baz' };
-        const expectedNode = { type: 'shortcode', data: { shortcode: 'foo', shortcodeData } };
-        const editorComponent = EditorComponent({ pattern: /^foo/, fromBlock: () => shortcodeData });
-        process('foo bar', Map({ [editorComponent.id]: editorComponent }), processEat);
-        expect(processEat).toHaveBeenCalledWith(expectedNode);
-      });
     describe('pattern with leading caret', () => {
       it('should be a remark shortcode node', () => {
         const editorComponent = EditorComponent({
