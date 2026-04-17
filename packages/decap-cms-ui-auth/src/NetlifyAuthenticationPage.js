@@ -65,7 +65,7 @@ if (window.netlifyIdentity) {
   });
 }
 
-export default class GitGatewayAuthenticationPage extends React.Component {
+export default class NetlifyAuthenticationPage extends React.Component {
   static authClient;
 
   static propTypes = {
@@ -84,7 +84,7 @@ export default class GitGatewayAuthenticationPage extends React.Component {
   componentDidMount() {
     // Manually validate PropTypes - React 19 breaking change
     PropTypes.checkPropTypes(
-      GitGatewayAuthenticationPage.propTypes,
+      NetlifyAuthenticationPage.propTypes,
       this.props,
       'prop',
       'GitGatewayAuthenticationPage',
@@ -152,7 +152,7 @@ export default class GitGatewayAuthenticationPage extends React.Component {
     }
 
     try {
-      const client = await GitGatewayAuthenticationPage.authClient();
+      const client = await NetlifyAuthenticationPage.authClient();
       const user = await client.login(this.state.email, this.state.password, true);
       this.props.onLogin(user);
     } catch (error) {
@@ -171,7 +171,8 @@ export default class GitGatewayAuthenticationPage extends React.Component {
       if (errors.identity) {
         return (
           <AuthenticationPage
-            logoUrl={config.logo_url}
+            logoUrl={config.logo_url} // Deprecated, replaced by `logo.src`
+            logo={config.logo}
             siteUrl={config.site_url}
             onLogin={this.handleIdentity}
             renderPageContent={() => (
@@ -189,7 +190,8 @@ export default class GitGatewayAuthenticationPage extends React.Component {
       } else {
         return (
           <AuthenticationPage
-            logoUrl={config.logo_url}
+            logoUrl={config.logo_url} // Deprecated, replaced by `logo.src`
+            logo={config.logo}
             siteUrl={config.site_url}
             onLogin={this.handleIdentity}
             renderButtonContent={() => t('auth.loginWithNetlifyIdentity')}
@@ -201,7 +203,8 @@ export default class GitGatewayAuthenticationPage extends React.Component {
 
     return (
       <AuthenticationPage
-        logoUrl={config.logo_url}
+        logoUrl={config.logo_url} // Deprecated, replaced by `logo.src`
+        logo={config.logo}
         siteUrl={config.site_url}
         renderPageContent={() => (
           <AuthForm onSubmit={this.handleLogin}>

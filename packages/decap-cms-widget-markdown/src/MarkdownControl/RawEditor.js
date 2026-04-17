@@ -57,7 +57,7 @@ function RawEditor(props) {
   }
 
   return (
-    <Slate editor={editor} value={value} onChange={handleChange}>
+    <Slate editor={editor} value={value} initialValue={value} onChange={handleChange}>
       <RawEditorContainer>
         <EditorControlBar>
           <Toolbar

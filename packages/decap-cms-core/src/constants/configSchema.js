@@ -160,7 +160,15 @@ function getConfigSchema() {
       i18n: i18nRoot,
       site_url: { type: 'string', examples: ['https://example.com'] },
       display_url: { type: 'string', examples: ['https://example.com'] },
-      logo_url: { type: 'string', examples: ['https://example.com/images/logo.svg'] },
+      logo_url: { type: 'string', examples: ['https://example.com/images/logo.svg'] }, // Deprecated, replaced by `logo.src`
+      logo: {
+        type: 'object',
+        properties: {
+          src: { type: 'string', examples: ['https://example.com/images/logo.svg'] },
+          show_in_header: { type: 'boolean' },
+        },
+        required: ['src'],
+      },
       show_preview_links: { type: 'boolean' },
       media_folder: { type: 'string', examples: ['assets/uploads'] },
       public_folder: { type: 'string', examples: ['/uploads'] },
@@ -183,6 +191,12 @@ function getConfigSchema() {
         properties: {
           encoding: { type: 'string', enum: ['unicode', 'ascii'] },
           clean_accents: { type: 'boolean' },
+        },
+      },
+      issue_reports: {
+        type: 'object',
+        properties: {
+          url: { type: 'string', examples: ['https://example.com/report-issue'] },
         },
       },
       collections: {
@@ -210,6 +224,7 @@ function getConfigSchema() {
                   file: { type: 'string' },
                   preview_path: { type: 'string' },
                   preview_path_date_field: { type: 'string' },
+                  preview_path_preserve_slashes: { type: 'boolean' },
                   fields: fieldsConfig(),
                 },
                 required: ['name', 'label', 'file', 'fields'],
@@ -222,6 +237,7 @@ function getConfigSchema() {
             path: { type: 'string' },
             preview_path: { type: 'string' },
             preview_path_date_field: { type: 'string' },
+            preview_path_preserve_slashes: { type: 'boolean' },
             create: { type: 'boolean' },
             publish: { type: 'boolean' },
             hide: { type: 'boolean' },
@@ -245,7 +261,21 @@ function getConfigSchema() {
             sortable_fields: {
               type: 'array',
               items: {
-                type: 'string',
+                oneOf: [
+                  { type: 'string' },
+                  {
+                    type: 'object',
+                    properties: {
+                      field: { type: 'string' },
+                      label: { type: 'string' },
+                      default_sort: {
+                        oneOf: [{ type: 'boolean' }, { type: 'string', enum: ['asc', 'desc'] }],
+                      },
+                    },
+                    required: ['field'],
+                    additionalProperties: false,
+                  },
+                ],
               },
             },
             sortableFields: {
@@ -396,5 +426,24 @@ export function validateConfig(config) {
     });
     console.error('Config Errors', errors);
     throw new ConfigError(errors);
+  }
+
+  // Custom validation: only one sortable field can have default_sort property
+  if (config.collections) {
+    config.collections.forEach((collection, index) => {
+      if (collection.sortable_fields) {
+        const defaultFields = collection.sortable_fields.filter(
+          field => typeof field === 'object' && field.default_sort !== undefined,
+        );
+        if (defaultFields.length > 1) {
+          const error = {
+            instancePath: `/collections/${index}/sortable_fields`,
+            message: 'only one sortable field can have the default_sort property',
+          };
+          console.error('Config Errors', [error]);
+          throw new ConfigError([error]);
+        }
+      }
+    });
   }
 }

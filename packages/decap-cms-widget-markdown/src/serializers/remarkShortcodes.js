@@ -8,6 +8,31 @@ export function remarkParseShortcodes({ plugins }) {
   methods.unshift('shortcode');
 }
 
+export function getLinesWithOffsets(value) {
+  const SEPARATOR = '\n\n';
+  const splitted = value.split(SEPARATOR);
+  const trimmedLines = splitted
+    .reduce(
+      (acc, line) => {
+        const { start: previousLineStart, originalLength: previousLineOriginalLength } =
+          acc[acc.length - 1];
+
+        return [
+          ...acc,
+          {
+            line: line.trimEnd(),
+            start: previousLineStart + previousLineOriginalLength + SEPARATOR.length,
+            originalLength: line.length,
+          },
+        ];
+      },
+      [{ start: -SEPARATOR.length, originalLength: 0 }],
+    )
+    .slice(1)
+    .map(({ line, start }) => ({ line, start }));
+  return trimmedLines;
+}
+
 function createShortcodeTokenizer({ plugins }) {
   plugins.forEach(plugin => {
     if (plugin.pattern.flags.includes('m')) {
@@ -27,6 +52,28 @@ function createShortcodeTokenizer({ plugins }) {
 
       return !!match;
     });
+    // Attempt to find a regex match for each plugin's pattern, and then
+    // select the first by its occurrence in `value`. This ensures we won't
+    // skip a plugin that occurs later in the plugin registry, but earlier
+    // in the `value`.
+    const [{ plugin, match } = {}] = plugins
+      .toArray()
+      .map(plugin => {
+        let { pattern } = plugin;
+        // Plugin patterns must start with a caret (^) to match the beginning of the line.
+        // If the pattern does not start with a caret, we add it
+        // to ensure that remark consumes only the shortcode, without any leading text.
+        if (!pattern.source.startsWith('^')) {
+          pattern = new RegExp(`^${pattern.source}`, pattern.flags);
+        }
+
+        return {
+          match: value.match(pattern),
+          plugin,
+        };
+      })
+      .filter(({ match }) => !!match)
+      .sort((a, b) => a.match.index - b.match.index);
 
     if (match) {
       if (match.index > 0) {

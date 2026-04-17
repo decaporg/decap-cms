@@ -216,6 +216,90 @@ describe('config', () => {
       }).toThrowError("'collections[0]' must NOT be valid");
     });
 
+    it('should allow sortable_fields to have object format with field property', () => {
+      expect(() => {
+        validateConfig(
+          merge({}, validConfig, {
+            collections: [{ sortable_fields: [{ field: 'title' }] }],
+          }),
+        );
+      }).not.toThrow();
+    });
+
+    it('should allow sortable_fields with default_sort as boolean', () => {
+      expect(() => {
+        validateConfig(
+          merge({}, validConfig, {
+            collections: [{ sortable_fields: [{ field: 'title', default_sort: true }] }],
+          }),
+        );
+      }).not.toThrow();
+    });
+
+    it('should allow sortable_fields with default_sort as asc/desc', () => {
+      expect(() => {
+        validateConfig(
+          merge({}, validConfig, {
+            collections: [{ sortable_fields: ['title', { field: 'date', default_sort: 'desc' }] }],
+          }),
+        );
+      }).not.toThrow();
+    });
+
+    it('should allow sortable_fields with custom label', () => {
+      expect(() => {
+        validateConfig(
+          merge({}, validConfig, {
+            collections: [{ sortable_fields: [{ field: 'date', label: 'Publish Date' }] }],
+          }),
+        );
+      }).not.toThrow();
+    });
+
+    it('should allow sortable_fields with label and default_sort', () => {
+      expect(() => {
+        validateConfig(
+          merge({}, validConfig, {
+            collections: [
+              {
+                sortable_fields: [
+                  'title',
+                  { field: 'date', label: 'Publish Date', default_sort: 'desc' },
+                ],
+              },
+            ],
+          }),
+        );
+      }).not.toThrow();
+    });
+
+    it('should allow mixed string and object format in sortable_fields', () => {
+      expect(() => {
+        validateConfig(
+          merge({}, validConfig, {
+            collections: [{ sortable_fields: ['title', { field: 'date', default_sort: true }] }],
+          }),
+        );
+      }).not.toThrow();
+    });
+
+    it('should throw if more than one sortable field has default_sort property', () => {
+      expect(() => {
+        validateConfig(
+          merge({}, validConfig, {
+            collections: [
+              {
+                sortable_fields: [
+                  { field: 'title', default_sort: true },
+                  { field: 'date', default_sort: true },
+                ],
+              },
+            ],
+          }),
+        );
+      }).toThrowError('only one sortable field can have the default_sort property');
+    });
+
     it('should throw if collection names are not unique', () => {
       expect(() => {
         validateConfig(

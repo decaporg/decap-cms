@@ -1,11 +1,12 @@
-const absolutePath = new RegExp('^(?:[a-z]+:)?//', 'i');
+const absolutePath = new RegExp('^(?:[a-z]+:)?//|^/', 'i');
 
 function normalizePath(path: string) {
   return path.replace(/[\\/]+/g, '/');
 }
 
 export function isAbsolutePath(path: string) {
-  return absolutePath.test(path);
+  const result = absolutePath.test(path);
+  return result;
 }
 
 /**
