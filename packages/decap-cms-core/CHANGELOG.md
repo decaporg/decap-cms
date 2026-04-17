@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.13.0](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.12.0...decap-cms-core@3.13.0) (2026-04-17)
+
+### Features
+
+- allow special characters to pass through slugification ([#6220](https://github.com/decaporg/decap-cms/issues/6220)) ([074354d](https://github.com/decaporg/decap-cms/commit/074354d9a83d63d87818ff1c527c38262a421426))
+
 # [3.12.0](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.11.0...decap-cms-core@3.12.0) (2026-04-16)
 
 ### Bug Fixes
