@@ -73,6 +73,13 @@ function createShortcodeTokenizer({ plugins }) {
 
       const shortcodeData = plugin.fromBlock(match);
 
+      // Only eat if the match starts at the beginning of the remaining text.
+      // If it's further in (e.g. found via matchFromLines inside a paragraph),
+      // fall through silently so remark's inline parsers can handle it.
+      if (value.slice(0, match[0].length) !== match[0]) {
+        return;
+      }
+
       try {
         return eat(match[0])({
           type: 'shortcode',

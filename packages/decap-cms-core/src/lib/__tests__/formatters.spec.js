@@ -247,6 +247,27 @@ describe('formatters', () => {
         'Ignoring unknown variable “author-email” in open authoring message template.',
       );
     });
+
+    it('should return commit with trailer when signoff_commits is enabled', () => {
+      const collection = Map({ label_singular: 'Collection' });
+      const config = {
+        backend: {
+          signoff_commits: true,
+        },
+      };
+
+      expect(
+        commitMessageFormatter('create', config, {
+          slug: 'doc-slug',
+          path: 'file-path',
+          collection,
+          authorName: 'Test User',
+          authorEmail: 'test-user@example.org',
+        }),
+      ).toEqual(
+        'Create Collection “doc-slug”\n\nSigned-off-by: Test User <test-user@example.org>\n',
+      );
+    });
   });
 
   describe('prepareSlug', () => {
@@ -565,6 +586,66 @@ describe('formatters', () => {
       expect(console.error).toHaveBeenCalledWith(
         'Collection "posts" configuration error:\n  `preview_path_date_field` must be a field with a valid date. Ignoring `preview_path`.',
       );
+    });
+
+    it('should preserve slashes in value when configured', () => {
+      expect(
+        previewUrlFormatter(
+          'https://www.example.com',
+          Map({
+            preview_path: 'prefix/{{value}}',
+            preview_path_preserve_slashes: true,
+          }),
+          'backendSlug',
+          Map({ data: Map({ value: 'nested/value' }) }),
+          slugConfig,
+        ),
+      ).toBe('https://www.example.com/prefix/nested/value');
+    });
+
+    it('should sanitize slashes in value when not configured', () => {
+      expect(
+        previewUrlFormatter(
+          'https://www.example.com',
+          Map({
+            preview_path: 'prefix/{{value}}',
+          }),
+          'backendSlug',
+          Map({ data: Map({ value: 'nested/value' }) }),
+          slugConfig,
+        ),
+      ).toBe('https://www.example.com/prefix/nested-value');
+    });
+
+    it('should preserve slashes in value for nested collections by default', () => {
+      expect(
+        previewUrlFormatter(
+          'https://www.example.com',
+          Map({
+            preview_path: 'prefix/{{value}}',
+            nested: { depth: 10 },
+          }),
+          'backendSlug',
+          Map({ data: Map({ value: 'nested/value' }) }),
+          slugConfig,
+        ),
+      ).toBe('https://www.example.com/prefix/nested/value');
+    });
+
+    it('should sanitize slashes in value for nested collections when explicitly disabled', () => {
+      expect(
+        previewUrlFormatter(
+          'https://www.example.com',
+          Map({
+            preview_path: 'prefix/{{value}}',
+            nested: { depth: 10 },
+            preview_path_preserve_slashes: false,
+          }),
+          'backendSlug',
+          Map({ data: Map({ value: 'nested/value' }) }),
+          slugConfig,
+        ),
+      ).toBe('https://www.example.com/prefix/nested-value');
     });
   });
 
