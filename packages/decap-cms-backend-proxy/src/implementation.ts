@@ -31,16 +31,26 @@ type MediaFile = {
   path: string;
 };
 
-function isValidProxyUrl(proxyUrl: string) {
-  if (proxyUrl.startsWith('/')) {
-    return true;
+function normalizeProxyUrl(proxyUrl: string) {
+  const normalizedProxyUrl = proxyUrl.trim();
+
+  if (!normalizedProxyUrl) {
+    return null;
+  }
+
+  if (normalizedProxyUrl.startsWith('/') && !normalizedProxyUrl.startsWith('//')) {
+    return normalizedProxyUrl;
   }
 
   try {
-    const parsed = new URL(proxyUrl);
-    return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+    const parsed = new URL(normalizedProxyUrl);
+    if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
+      return normalizedProxyUrl;
+    }
+
+    return null;
   } catch {
-    return false;
+    return null;
   }
 }
 
@@ -73,12 +83,14 @@ export default class ProxyBackend implements Implementation {
       throw new Error('The Proxy backend needs a "proxy_url" in the backend configuration.');
     }
 
-    if (!isValidProxyUrl(config.backend.proxy_url)) {
+    const normalizedProxyUrl = normalizeProxyUrl(config.backend.proxy_url);
+
+    if (!normalizedProxyUrl) {
       throw new Error('The Proxy backend requires an http(s) or root-relative "proxy_url".');
     }
 
     this.branch = config.backend.branch || 'master';
-    this.proxyUrl = config.backend.proxy_url;
+    this.proxyUrl = normalizedProxyUrl;
     this.mediaFolder = config.media_folder;
     this.options = options;
     this.cmsLabelPrefix = config.backend.cms_label_prefix;
