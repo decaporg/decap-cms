@@ -55,7 +55,7 @@ collections: # A list of collections the CMS should be able to edit
         required: false
         tagname: ''
 
-      - { label: 'Body', name: 'body', widget: 'richtext', hint: 'Main content goes here.', sanitize_preview: false }
+      - { label: 'Body', name: 'body', widget: 'richtext', hint: 'Main content goes here.' }
       - { label: 'Body', name: 'bodyold', widget: 'markdown', hint: 'Main content goes here.' }
       - { label: 'Body', name: 'bodyold2', widget: 'markdown', hint: 'Main content goes here 2.' }
 
