@@ -31,6 +31,19 @@ type MediaFile = {
   path: string;
 };
 
+function isValidProxyUrl(proxyUrl: string) {
+  if (proxyUrl.startsWith('/')) {
+    return true;
+  }
+
+  try {
+    const parsed = new URL(proxyUrl);
+    return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
 function deserializeMediaFile({ id, content, encoding, path, name }: MediaFile) {
   let byteArray = new Uint8Array(0);
   if (encoding !== 'base64') {
@@ -58,6 +71,10 @@ export default class ProxyBackend implements Implementation {
   constructor(config: Config, options = {}) {
     if (!config.backend.proxy_url) {
       throw new Error('The Proxy backend needs a "proxy_url" in the backend configuration.');
+    }
+
+    if (!isValidProxyUrl(config.backend.proxy_url)) {
+      throw new Error('The Proxy backend requires an http(s) or root-relative "proxy_url".');
     }
 
     this.branch = config.backend.branch || 'master';
