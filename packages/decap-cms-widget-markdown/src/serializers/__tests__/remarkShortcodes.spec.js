@@ -2,7 +2,7 @@ import { Map, OrderedMap } from 'immutable';
 import unified from 'unified';
 import markdownToRemarkPlugin from 'remark-parse';
 
-import { remarkParseShortcodes, getLinesWithOffsets } from '../remarkShortcodes';
+import { remarkParseShortcodes } from '../remarkShortcodes';
 
 function process(value, plugins) {
   return unified()
@@ -33,29 +33,28 @@ describe('remarkParseShortcodes', () => {
         expect.arrayContaining(['foo\n\nbar']),
       );
     });
-    it('should match shortcodes based on order of occurrence in value', () => {
-      const fooEditorComponent = EditorComponent({ id: 'foo', pattern: /foo/ });
-      const barEditorComponent = EditorComponent({ id: 'bar', pattern: /bar/ });
+    it('should match shortcodes by first matching plugin', () => {
+      const fooEditorComponent = EditorComponent({ id: 'foo', pattern: /^foo/ });
+      const barEditorComponent = EditorComponent({ id: 'bar', pattern: /^bar/ });
       process(
-        'foo\n\nbar',
+        'bar\n\nfoo',
         OrderedMap([
-          [barEditorComponent.id, barEditorComponent],
           [fooEditorComponent.id, fooEditorComponent],
-        ]),
-      );
-      expect(fooEditorComponent.fromBlock).toHaveBeenCalledWith(expect.arrayContaining(['foo']));
-    });
-    it('should match shortcodes based on order of occurrence in value even when some use line anchors', () => {
-      const barEditorComponent = EditorComponent({ id: 'bar', pattern: /bar/ });
-      const bazEditorComponent = EditorComponent({ id: 'baz', pattern: /^baz$/ });
-      process(
-        'foo\n\nbar\n\nbaz',
-        OrderedMap([
-          [bazEditorComponent.id, bazEditorComponent],
           [barEditorComponent.id, barEditorComponent],
         ]),
       );
+      // 'bar' is the first block, but 'foo' plugin is first in registry,
+      // so 'foo' doesn't match 'bar'. 'bar' plugin matches 'bar'.
       expect(barEditorComponent.fromBlock).toHaveBeenCalledWith(expect.arrayContaining(['bar']));
+    });
+    it('should warn when pattern uses multiline flag', () => {
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+      const editorComponent = EditorComponent({ pattern: /^foo$/m });
+      process('foo', Map({ [editorComponent.id]: editorComponent }));
+      expect(warnSpy).toHaveBeenCalledWith(
+        expect.stringContaining('must not use the multiline flag'),
+      );
+      warnSpy.mockRestore();
     });
   });
   describe('parse', () => {
@@ -121,25 +120,4 @@ describe('remarkParseShortcodes', () => {
     }
     return obj;
   }
-});
-
-describe('getLinesWithOffsets', () => {
-  test('should split into lines', () => {
-    const value = ' line1\n\nline2 \n\n    line3   \n\n';
-
-    const lines = getLinesWithOffsets(value);
-    expect(lines).toEqual([
-      { line: ' line1', start: 0 },
-      { line: 'line2', start: 8 },
-      { line: '    line3', start: 16 },
-      { line: '', start: 30 },
-    ]);
-  });
-
-  test('should return single item on no match', () => {
-    const value = ' line1    ';
-
-    const lines = getLinesWithOffsets(value);
-    expect(lines).toEqual([{ line: ' line1', start: 0 }]);
-  });
 });

@@ -290,6 +290,7 @@ export interface CmsCollectionFile {
   description?: string;
   preview_path?: string;
   preview_path_date_field?: string;
+  preview_path_preserve_slashes?: boolean;
   i18n?: boolean | CmsI18nConfig;
   media_folder?: string;
   public_folder?: string;
@@ -327,6 +328,7 @@ export interface CmsCollection {
   slug?: string;
   preview_path?: string;
   preview_path_date_field?: string;
+  preview_path_preserve_slashes?: boolean;
   create?: boolean;
   delete?: boolean;
   editor?: {
@@ -377,6 +379,7 @@ export interface CmsBackend {
   auth_endpoint?: string;
   cms_label_prefix?: string;
   squash_merges?: boolean;
+  signoff_commits?: boolean;
   proxy_url?: string;
   commit_messages?: {
     create?: string;
@@ -633,6 +636,7 @@ type CollectionObject = {
   public_folder?: string;
   preview_path?: string;
   preview_path_date_field?: string;
+  preview_path_preserve_slashes?: boolean;
   summary?: string;
   filter?: FilterRule;
   type: 'file_based_collection' | 'folder_based_collection';

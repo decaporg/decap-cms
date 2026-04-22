@@ -310,6 +310,7 @@ declare module 'decap-cms-core' {
     slug?: string;
     preview_path?: string;
     preview_path_date_field?: string;
+    preview_path_preserve_slashes?: boolean;
     create?: boolean;
     delete?: boolean;
     hide?: boolean;
@@ -364,6 +365,7 @@ declare module 'decap-cms-core' {
     auth_type?: 'implicit' | 'pkce';
     cms_label_prefix?: string;
     squash_merges?: boolean;
+    signoff_commits?: boolean;
     proxy_url?: string;
     commit_messages?: {
       create?: string;
