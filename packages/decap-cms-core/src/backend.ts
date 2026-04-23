@@ -521,9 +521,32 @@ export class Backend {
         },
       ),
     );
-    const formattedEntries = entries.map(this.entryWithFormat(collection));
-    // If this collection has a "filter" property, filter entries accordingly
+
+    let formattedEntries = entries.map(this.entryWithFormat(collection));
     const collectionFilter = collection.get('filter');
+    const i18nInfo = getI18nInfo(collection) as I18nInfo;
+    const isSingleFileI18n = i18nInfo && i18nInfo.structure === I18N_STRUCTURE.SINGLE_FILE;
+
+    if (isSingleFileI18n && collectionFilter) {
+      // For each entry, dig into the default locale and copy the filter key to root level for filtering
+      const currentLocale = i18nInfo.defaultLocale;
+      const filterField = collectionFilter.get('field');
+
+      formattedEntries = formattedEntries.map(entry => {
+        if (!entry.data || typeof entry.data !== 'object') return entry;
+        const localeData = entry.data[currentLocale];
+        if (!localeData || !(filterField in localeData)) return entry;
+        // Copy the filter field from localeData to root level
+        return {
+          ...entry,
+          data: {
+            ...entry.data,
+            [filterField]: localeData[filterField],
+          },
+        };
+      });
+    }
+
     const filteredEntries = collectionFilter
       ? this.filterEntries({ entries: formattedEntries }, collectionFilter)
       : formattedEntries;
