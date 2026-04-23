@@ -312,6 +312,9 @@ function getConfigSchema() {
               minProperties: 1,
             },
             i18n: i18nCollection,
+            limit: {
+              type: 'number',
+            },
           },
           required: ['name', 'label'],
           oneOf: [{ required: ['files'] }, { required: ['folder', 'fields'] }],
