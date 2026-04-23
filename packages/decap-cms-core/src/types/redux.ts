@@ -436,6 +436,7 @@ export interface CmsConfig {
   i18n?: CmsI18nConfig;
   issue_reports?: CmsIssueReports;
   local_backend?: boolean | CmsLocalBackend;
+  remove_empty_image_field?: boolean;
   editor?: {
     preview?: boolean;
   };
