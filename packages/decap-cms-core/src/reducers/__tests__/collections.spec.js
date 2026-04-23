@@ -5,6 +5,7 @@ import collections, {
   selectAllowDeletion,
   selectEntryPath,
   selectEntrySlug,
+  selectFields,
   selectFieldsWithMediaFolders,
   selectMediaFolders,
   selectEntryCollectionTitle,
@@ -567,6 +568,95 @@ describe('collections', () => {
           ],
         }),
       );
+    });
+  });
+
+  describe('selectFields', () => {
+    it('should return regular fields when no index_file config', () => {
+      const collection = fromJS({
+        type: FOLDER,
+        fields: [{ name: 'title' }, { name: 'body' }],
+      });
+      expect(selectFields(collection, 'my-post')).toBe(collection.get('fields'));
+    });
+
+    it('should return regular fields when slug does not match index_file pattern', () => {
+      const collection = fromJS({
+        type: FOLDER,
+        fields: [{ name: 'title' }, { name: 'body' }],
+        index_file: {
+          pattern: '^_index$',
+          fields: [{ name: 'description' }, { name: 'featured_image' }],
+        },
+      });
+      expect(selectFields(collection, 'my-post')).toBe(collection.get('fields'));
+    });
+
+    it('should return index_file fields when slug matches pattern', () => {
+      const collection = fromJS({
+        type: FOLDER,
+        fields: [{ name: 'title' }, { name: 'body' }],
+        index_file: {
+          pattern: '^_index$',
+          fields: [{ name: 'description' }, { name: 'featured_image' }],
+        },
+      });
+      const result = selectFields(collection, '_index');
+      expect(result).toBe(collection.get('index_file').get('fields'));
+      expect(result.toJS()).toEqual([{ name: 'description' }, { name: 'featured_image' }]);
+    });
+
+    it('should return regular fields when index_file has no fields property', () => {
+      const collection = fromJS({
+        type: FOLDER,
+        fields: [{ name: 'title' }, { name: 'body' }],
+        index_file: {
+          pattern: '^_index$',
+          // no fields key
+        },
+      });
+      expect(selectFields(collection, '_index')).toBe(collection.get('fields'));
+    });
+
+    it('should return index_file fields when index=true is passed explicitly', () => {
+      const collection = fromJS({
+        type: FOLDER,
+        fields: [{ name: 'title' }, { name: 'body' }],
+        index_file: {
+          pattern: '^_index$',
+          fields: [{ name: 'description' }],
+        },
+      });
+      // slug doesn't match but index=true overrides
+      const result = selectFields(collection, 'any-slug', true);
+      expect(result).toBe(collection.get('index_file').get('fields'));
+    });
+
+    it('should return index_file fields for nested collection with matching last segment', () => {
+      const collection = fromJS({
+        type: FOLDER,
+        nested: { depth: 100 },
+        fields: [{ name: 'title' }, { name: 'body' }],
+        index_file: {
+          pattern: '^index$',
+          fields: [{ name: 'nav_order' }, { name: 'description' }],
+        },
+      });
+      const result = selectFields(collection, 'about/team/index');
+      expect(result).toBe(collection.get('index_file').get('fields'));
+    });
+
+    it('should return regular fields for nested collection when last segment does not match', () => {
+      const collection = fromJS({
+        type: FOLDER,
+        nested: { depth: 100 },
+        fields: [{ name: 'title' }, { name: 'body' }],
+        index_file: {
+          pattern: '^index$',
+          fields: [{ name: 'nav_order' }],
+        },
+      });
+      expect(selectFields(collection, 'about/team/page')).toBe(collection.get('fields'));
     });
   });
 

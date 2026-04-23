@@ -519,7 +519,7 @@ describe('entries', () => {
       expect(selectCustomPath).toHaveBeenCalledTimes(1);
       expect(selectCustomPath).toHaveBeenCalledWith(
         collection,
-        fromJS({ entry: { meta: { path: 'existing-path' } } }),
+        fromJS({ entry: { meta: { path: 'existing-path', path_type: 'index' } } }),
       );
 
       expect(selectEntryByPath).toHaveBeenCalledTimes(1);
