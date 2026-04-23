@@ -211,4 +211,44 @@ describe('Number widget', () => {
       expect(error).toBeNull();
     });
   });
+
+  describe('prefix and suffix', () => {
+    it('should not render prefix or suffix by default', () => {
+      const field = fromJS(fieldSettings);
+      const { queryByText } = setup({ field });
+
+      expect(queryByText('$')).toBeNull();
+      expect(queryByText('px')).toBeNull();
+    });
+
+    it('should render prefix text when prefix is configured', () => {
+      const field = fromJS({ ...fieldSettings, prefix: '$' });
+      const { getByText } = setup({ field });
+
+      expect(getByText(/\$/)).toBeInTheDocument();
+    });
+
+    it('should render suffix text when suffix is configured', () => {
+      const field = fromJS({ ...fieldSettings, suffix: 'px' });
+      const { getByText } = setup({ field });
+
+      expect(getByText(/px/)).toBeInTheDocument();
+    });
+
+    it('should render both prefix and suffix when both are configured', () => {
+      const field = fromJS({ ...fieldSettings, prefix: '$', suffix: 'USD' });
+      const { getByText } = setup({ field });
+
+      expect(getByText(/\$/)).toBeInTheDocument();
+      expect(getByText(/USD/)).toBeInTheDocument();
+    });
+
+    it('should not render prefix or suffix for empty strings', () => {
+      const field = fromJS({ ...fieldSettings, prefix: '', suffix: '' });
+      const { queryByText } = setup({ field });
+
+      expect(queryByText('$')).toBeNull();
+      expect(queryByText('USD')).toBeNull();
+    });
+  });
 });
