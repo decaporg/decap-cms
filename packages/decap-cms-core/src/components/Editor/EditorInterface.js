@@ -16,12 +16,14 @@ import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
 
 import EditorControlPane from './EditorControlPane/EditorControlPane';
 import EditorPreviewPane from './EditorPreviewPane/EditorPreviewPane';
+import EditorNotesPane from './EditorNotesPane/EditorNotesPane';
 import EditorToolbar from './EditorToolbar';
 import { hasI18n, getI18nInfo, getPreviewEntry } from '../../lib/i18n';
 import { FILES } from '../../constants/collectionTypes';
 import { getFileFromSlug } from '../../reducers/collections';
 
 const PREVIEW_VISIBLE = 'cms.preview-visible';
+const NOTES_VISIBLE = 'cms.notes-visible';
 const SCROLL_SYNC_ENABLED = 'cms.scroll-sync-enabled';
 const SPLIT_PANE_POSITION = 'cms.split-pane-position';
 const I18N_VISIBLE = 'cms.i18n-visible';
@@ -122,6 +124,12 @@ const ControlPaneContainer = styled(PreviewPaneContainer)`
   overflow-x: hidden;
 `;
 
+const NotesPaneContainer = styled.div`
+  height: 100%;
+  pointer-events: ${props => (props.blockEntry ? 'none' : 'auto')};
+  overflow: hidden;
+`;
+
 const ViewControls = styled.div`
   position: absolute;
   top: 10px;
@@ -132,12 +140,16 @@ const ViewControls = styled.div`
 function EditorContent({
   i18nVisible,
   previewVisible,
+  notesVisible,
   editor,
   editorWithEditor,
   editorWithPreview,
+  editorWithNotes,
 }) {
   if (i18nVisible) {
     return editorWithEditor;
+  } else if (notesVisible) {
+    return editorWithNotes;
   } else if (previewVisible) {
     return editorWithPreview;
   } else {
@@ -154,10 +166,24 @@ function isPreviewEnabled(collection, entry) {
   return collection.getIn(['editor', 'preview'], true);
 }
 
+function isNotesEnabled(collection, entry, isNewEntry, isPublished, hasWorkflow) {
+  if (isNewEntry || !hasWorkflow) {
+    return false;
+  }
+
+  if (collection.get('type') === FILES) {
+    const file = getFileFromSlug(collection, entry.get('slug'));
+    const notesEnabled = file?.getIn(['editor', 'notes']);
+    if (notesEnabled != null) return notesEnabled;
+  }
+  return collection.getIn(['editor', 'notes'], true);
+}
+
 class EditorInterface extends Component {
   state = {
     showEventBlocker: false,
     previewVisible: localStorage.getItem(PREVIEW_VISIBLE) !== 'false',
+    notesVisible: localStorage.getItem(NOTES_VISIBLE) !== 'false',
     scrollSyncEnabled: localStorage.getItem(SCROLL_SYNC_ENABLED) !== 'false',
     i18nVisible: localStorage.getItem(I18N_VISIBLE) !== 'false',
   };
@@ -190,8 +216,26 @@ class EditorInterface extends Component {
 
   handleTogglePreview = () => {
     const newPreviewVisible = !this.state.previewVisible;
-    this.setState({ previewVisible: newPreviewVisible });
+    this.setState({
+      previewVisible: newPreviewVisible,
+      notesVisible: false, // Hide notes when showing preview
+    });
     localStorage.setItem(PREVIEW_VISIBLE, newPreviewVisible);
+    localStorage.setItem(NOTES_VISIBLE, 'false');
+  };
+
+  handleToggleNotes = () => {
+    const newNotesVisible = !this.state.notesVisible;
+    this.setState({
+      notesVisible: newNotesVisible,
+      previewVisible: false, // Hide preview when showing notes
+    });
+    localStorage.setItem(NOTES_VISIBLE, newNotesVisible);
+    localStorage.setItem(PREVIEW_VISIBLE, 'false');
+  };
+
+  handleNotesChange = (action, payload) => {
+    this.props.onNotesChange(action, payload);
   };
 
   handleToggleScrollSync = () => {
@@ -234,6 +278,7 @@ class EditorInterface extends Component {
       hasUnpublishedChanges,
       isNewEntry,
       isModification,
+      isPublished,
       currentStatus,
       onLogoutClick,
       loadDeployPreview,
@@ -246,6 +291,7 @@ class EditorInterface extends Component {
     const { scrollSyncEnabled, showEventBlocker } = this.state;
 
     const previewEnabled = isPreviewEnabled(collection, entry);
+    const notesEnabled = isNotesEnabled(collection, entry, isNewEntry, isPublished, hasWorkflow);
 
     const { locales, defaultLocale } = getI18nInfo(this.props.collection);
     const collectionI18nEnabled = hasI18n(collection) && locales.length > 1;
@@ -310,6 +356,34 @@ class EditorInterface extends Component {
       </ScrollSync>
     );
 
+    const editorWithNotes = (
+      <ScrollSync enabled={this.state.scrollSyncEnabled}>
+        <div>
+          <ReactSplitPaneGlobalStyles />
+          <StyledSplitPane
+            maxSize={-100}
+            minSize={400}
+            defaultSize={parseInt(localStorage.getItem(SPLIT_PANE_POSITION), 10) || '50%'}
+            onChange={size => localStorage.setItem(SPLIT_PANE_POSITION, size)}
+            onDragStarted={this.handleSplitPaneDragStart}
+            onDragFinished={this.handleSplitPaneDragFinished}
+          >
+            <ScrollSyncPane>{editor}</ScrollSyncPane>
+            <NotesPaneContainer blockEntry={showEventBlocker}>
+              <EditorNotesPane
+                notes={this.props.notes}
+                onChange={this.handleNotesChange}
+                entry={entry}
+                collection={collection}
+                user={user}
+                t={t}
+              />
+            </NotesPaneContainer>
+          </StyledSplitPane>
+        </div>
+      </ScrollSync>
+    );
+
     const editorWithEditor = (
       <ScrollSync enabled={this.state.scrollSyncEnabled}>
         <div>
@@ -329,7 +403,8 @@ class EditorInterface extends Component {
 
     const i18nVisible = collectionI18nEnabled && this.state.i18nVisible;
     const previewVisible = previewEnabled && this.state.previewVisible;
-    const scrollSyncVisible = i18nVisible || previewVisible;
+    const notesVisible = notesEnabled && this.state.notesVisible;
+    const scrollSyncVisible = i18nVisible || previewVisible || notesVisible;
 
     return (
       <EditorContainer>
@@ -386,6 +461,15 @@ class EditorInterface extends Component {
                 title={t('editor.editorInterface.togglePreview')}
               />
             )}
+            {notesEnabled && (
+              <EditorToggle
+                isActive={notesVisible}
+                onClick={this.handleToggleNotes}
+                size="large"
+                type="write"
+                title={t('editor.editorInterface.toggleNotes')}
+              />
+            )}
             {scrollSyncVisible && !collection.getIn(['editor', 'visualEditing']) && (
               <EditorToggle
                 isActive={scrollSyncEnabled}
@@ -399,9 +483,11 @@ class EditorInterface extends Component {
           <EditorContent
             i18nVisible={i18nVisible}
             previewVisible={previewVisible}
+            notesVisible={notesVisible}
             editor={editor}
             editorWithEditor={editorWithEditor}
             editorWithPreview={editorWithPreview}
+            editorWithNotes={editorWithNotes}
           />
         </Editor>
       </EditorContainer>
@@ -433,12 +519,15 @@ EditorInterface.propTypes = {
   hasUnpublishedChanges: PropTypes.bool,
   isNewEntry: PropTypes.bool,
   isModification: PropTypes.bool,
+  isPublished: PropTypes.bool,
   currentStatus: PropTypes.string,
   onLogoutClick: PropTypes.func.isRequired,
   deployPreview: PropTypes.object,
   loadDeployPreview: PropTypes.func.isRequired,
   draftKey: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,
+  notes: ImmutablePropTypes.list,
+  onNotesChange: PropTypes.func,
 };
 
 export default EditorInterface;
