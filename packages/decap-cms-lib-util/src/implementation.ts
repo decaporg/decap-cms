@@ -142,6 +142,7 @@ export type Credentials = { token: string | {}; refresh_token?: string };
 export type User = Credentials & {
   backendName?: string;
   login?: string;
+  email?: string;
   name: string;
   useOpenAuthoring?: boolean;
 };

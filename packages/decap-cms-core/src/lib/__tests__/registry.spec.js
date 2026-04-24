@@ -200,7 +200,7 @@ describe('registry', () => {
         });
       });
 
-      it(`should return an updated entry's DataMap`, async () => {
+      it(`should return the complete updated entry object`, async () => {
         const { registerEventListener, invokeEvent } = require('../registry');
 
         const event = 'preSave';
@@ -233,7 +233,7 @@ describe('registry', () => {
         expect(handler1).toHaveBeenCalledWith(data, options);
         expect(handler2).toHaveBeenCalledWith(dataAfterFirstHandlerExecution, options);
 
-        expect(result).toEqual(dataAfterSecondHandlerExecution.entry.get('data'));
+        expect(result).toEqual(dataAfterSecondHandlerExecution.entry);
       });
 
       it('should allow multiple events to not return a value', async () => {
@@ -254,7 +254,7 @@ describe('registry', () => {
 
         expect(handler1).toHaveBeenCalledWith(data, options);
         expect(handler2).toHaveBeenCalledWith(data, options);
-        expect(result).toEqual(data.entry.get('data'));
+        expect(result).toEqual(data.entry);
       });
     });
   });

@@ -55,7 +55,9 @@ collections: # A list of collections the CMS should be able to edit
         required: false
         tagname: ''
 
-      - { label: 'Body', name: 'body', widget: 'markdown', hint: 'Main content goes here.' }
+      - { label: 'Body', name: 'body', widget: 'richtext', hint: 'Main content goes here.' }
+      - { label: 'Body', name: 'bodyold', widget: 'markdown', hint: 'Main content goes here.' }
+      - { label: 'Body', name: 'bodyold2', widget: 'markdown', hint: 'Main content goes here 2.' }
 
   - name: 'restaurants' # Used in routes, ie.: /admin/collections/:slug/edit
     label: 'Restaurants' # Used in the UI
@@ -280,6 +282,8 @@ collections: # A list of collections the CMS should be able to edit
     label_singular: 'Page'
     folder: _pages
     create: true
+    preview_path: 'pages/{{slug}}'
+    preview_path_preserve_slashes: true
     nested: { depth: 100, subfolders: false }
     fields:
       - label: Title
