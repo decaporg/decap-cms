@@ -314,8 +314,6 @@ export function applyDefaults(originalConfig: CmsConfig) {
             meta: true,
             required: true,
             ...metaPath,
-            // Ensure index_file is a string to satisfy CmsFieldMeta
-            index_file: metaPath.index_file ?? '',
           };
           collection.fields = [metaField, ...(collection.fields || [])];
         }

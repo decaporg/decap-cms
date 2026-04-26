@@ -258,7 +258,7 @@ export interface CmsFieldMeta {
   label: string;
   widget: string;
   required: boolean;
-  index_file: string;
+  index_file?: string;
   meta: boolean;
 }
 

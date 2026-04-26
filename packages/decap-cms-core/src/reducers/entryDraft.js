@@ -1,7 +1,7 @@
 import { Map, List, fromJS } from 'immutable';
 import { v4 as uuid } from 'uuid';
 import get from 'lodash/get';
-import { join } from 'path';
+import { join, basename } from 'path';
 
 import {
   DRAFT_CREATE_FROM_ENTRY,
@@ -250,8 +250,7 @@ export function selectCustomPath(collection, entryDraft) {
     filename = cleanTitleForFilename(title);
   } else {
     // For existing entries, preserve the current filename
-    const { basename: basenameFunc } = require('path');
-    const currentFilename = basenameFunc(currentPath, `.${extension}`);
+    const currentFilename = basename(currentPath, `.${extension}`);
     filename = currentFilename;
   }
 
