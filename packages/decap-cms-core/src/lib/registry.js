@@ -257,7 +257,10 @@ export async function invokeEvent({ name, data }) {
       _data = { ...data, entry };
     }
   }
-  return _data.entry.get('data');
+  // Return the full entry object with all metadata (slug, path, meta, etc.)
+  // rather than just the data payload. Callers like invokePreSaveEvent expect
+  // the complete entry object to be preserved through the event handler chain.
+  return _data.entry;
 }
 
 export function removeEventListener({ name, handler }) {
