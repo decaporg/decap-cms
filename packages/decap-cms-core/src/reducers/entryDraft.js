@@ -1,7 +1,7 @@
 import { Map, List, fromJS } from 'immutable';
 import { v4 as uuid } from 'uuid';
 import get from 'lodash/get';
-import { join } from 'path';
+import { join, basename } from 'path';
 
 import {
   DRAFT_CREATE_FROM_ENTRY,
@@ -204,15 +204,57 @@ function entryDraftReducer(state = Map(), action) {
   }
 }
 
+function cleanTitleForFilename(title) {
+  if (!title) return 'untitled';
+  // Convert to lowercase, replace spaces and special chars with hyphens
+  const cleanedTitle = title
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '') // Remove special characters (note: strips non-Latin chars)
+    .replace(/[\s_]+/g, '-') // Replace spaces and underscores with hyphens
+    .replace(/^-+|-+$/g, ''); // Remove leading/trailing hyphens
+
+  return cleanedTitle || 'untitled';
+}
+
 export function selectCustomPath(collection, entryDraft) {
   if (!selectHasMetaPath(collection)) {
     return;
   }
   const meta = entryDraft.getIn(['entry', 'meta']);
   const path = meta && meta.get('path');
-  const indexFile = get(collection.toJS(), ['meta', 'path', 'index_file']);
+
+  if (!path) {
+    return;
+  }
+
   const extension = selectFolderEntryExtension(collection);
-  const customPath = path && join(collection.get('folder'), path, `${indexFile}.${extension}`);
+  const indexFile = get(collection.toJS(), ['meta', 'path', 'index_file']);
+
+  // If index_file is specified, use the old behavior for backward compatibility
+  if (indexFile) {
+    const customPath = join(collection.get('folder'), path, `${indexFile}.${extension}`);
+    return customPath;
+  }
+
+  // New behavior: generate filename from entry title
+  const isNewEntry = entryDraft.getIn(['entry', 'newRecord']);
+  const currentPath = entryDraft.getIn(['entry', 'path']);
+
+  let filename;
+  if (isNewEntry || !currentPath) {
+    // For new entries, generate filename from title
+    const entryData = entryDraft.getIn(['entry', 'data']);
+    const title = entryData && entryData.get('title');
+    filename = cleanTitleForFilename(title);
+  } else {
+    // For existing entries, preserve the current filename
+    const currentFilename = basename(currentPath, `.${extension}`);
+    filename = currentFilename;
+  }
+
+  const customPath = join(collection.get('folder'), path, `${filename}.${extension}`);
   return customPath;
 }
 

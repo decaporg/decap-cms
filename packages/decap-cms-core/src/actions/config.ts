@@ -308,11 +308,12 @@ export function applyDefaults(originalConfig: CmsConfig) {
         collection.folder = trim(folder, '/');
 
         if (meta && meta.path) {
+          const metaPath = meta.path;
           const metaField = {
             name: 'path',
             meta: true,
             required: true,
-            ...meta.path,
+            ...metaPath,
           };
           collection.fields = [metaField, ...(collection.fields || [])];
         }
