@@ -214,7 +214,7 @@ function cleanTitleForFilename(title) {
     .replace(/[^\w\s-]/g, '') // Remove special characters (note: strips non-Latin chars)
     .replace(/[\s_]+/g, '-') // Replace spaces and underscores with hyphens
     .replace(/^-+|-+$/g, ''); // Remove leading/trailing hyphens
-  
+
   return cleanedTitle || 'untitled';
 }
 
