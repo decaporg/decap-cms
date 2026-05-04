@@ -2,6 +2,7 @@ import { Map, List, fromJS } from 'immutable';
 import { v4 as uuid } from 'uuid';
 import get from 'lodash/get';
 import { join, basename } from 'path';
+import { sanitizeSlug } from '../lib/urlHelper';
 
 import {
   DRAFT_CREATE_FROM_ENTRY,
@@ -206,14 +207,11 @@ function entryDraftReducer(state = Map(), action) {
 
 function cleanTitleForFilename(title) {
   if (!title) return 'untitled';
-  // Convert to lowercase, replace spaces and special chars with hyphens
-  const cleanedTitle = title
-    .toString()
-    .toLowerCase()
-    .trim()
-    .replace(/[^\w\s-]/g, '') // Remove special characters (note: strips non-Latin chars)
-    .replace(/[\s_]+/g, '-') // Replace spaces and underscores with hyphens
-    .replace(/^-+|-+$/g, ''); // Remove leading/trailing hyphens
+
+  const cleanedTitle = sanitizeSlug(title.toString().toLowerCase().trim(), {
+    sanitize_replacement: '-',
+    encoding: 'unicode',
+  });
 
   return cleanedTitle || 'untitled';
 }

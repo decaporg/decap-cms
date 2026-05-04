@@ -293,5 +293,23 @@ describe('entryDraft reducer', () => {
       const result = selectCustomPath(collection, entryDraft);
       expect(result).toBeUndefined();
     });
+
+    it('should preserve non-latin characters in generated filename', () => {
+      const collection = fromJS({
+        folder: '_pages',
+        extension: 'md',
+        meta: { path: { label: 'Path', widget: 'string' } },
+      });
+      const entryDraft = fromJS({
+        entry: {
+          newRecord: true,
+          data: { title: '日本語のタイトル' },
+          meta: { path: 'blog' },
+        },
+      });
+
+      const result = selectCustomPath(collection, entryDraft);
+      expect(result).toBe('_pages/blog/日本語のタイトル.md');
+    });
   });
 });
