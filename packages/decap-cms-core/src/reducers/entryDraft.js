@@ -2,8 +2,8 @@ import { Map, List, fromJS } from 'immutable';
 import { v4 as uuid } from 'uuid';
 import get from 'lodash/get';
 import { join, basename } from 'path';
-import { sanitizeSlug } from '../lib/urlHelper';
 
+import { sanitizeSlug } from '../lib/urlHelper';
 import {
   DRAFT_CREATE_FROM_ENTRY,
   DRAFT_CREATE_EMPTY,
