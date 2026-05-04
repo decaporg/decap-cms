@@ -34,6 +34,7 @@ import { TablePlugin, TableRowPlugin, TableCellPlugin } from './plugins/TablePlu
 import defaultEmptyBlock from './defaultEmptyBlock';
 import { mergeMediaConfig } from './mergeMediaConfig';
 import { handleLinkClick } from './linkHandler';
+import { handlePasteHtml } from './pasteHandler';
 
 function editorStyles({ minimal }) {
   return css`
@@ -86,6 +87,10 @@ export default function VisualEditor(props) {
       editorComponents,
     );
     onChange(mdValue);
+  }
+
+  function handlePaste(event) {
+    handlePasteHtml({ event, editor, isDisabled });
   }
 
   const initialValue = props.value
@@ -190,7 +195,7 @@ export default function VisualEditor(props) {
               />
             </EditorControlBar>
             <div css={editorStyles({ minimal: field.get('minimal') })}>
-              <Editor isDisabled={isDisabled} />
+              <Editor isDisabled={isDisabled} onPaste={handlePaste} />
             </div>
           </Plate>
         </div>
