@@ -72,7 +72,9 @@ describe('pasteHandler', () => {
 
       expect(handlePasteHtml({ event, editor, isDisabled: false, deserialize })).toBe(true);
       expect(event.preventDefault).toHaveBeenCalled();
-      expect(editor.tf.insertNodes).toHaveBeenCalledWith([{ type: 'p', children: [{ text: 'value' }] }]);
+      expect(editor.tf.insertNodes).toHaveBeenCalledWith([
+        { type: 'p', children: [{ text: 'value' }] },
+      ]);
     });
   });
 });
