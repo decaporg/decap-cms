@@ -68,6 +68,7 @@ export type PersistEntryParams = {
     commitMessage: string;
     useWorkflow: boolean;
     status: string;
+    hasSubfolders?: boolean;
   };
 };
 
