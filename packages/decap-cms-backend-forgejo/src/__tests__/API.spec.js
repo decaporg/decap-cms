@@ -1,7 +1,13 @@
 import { Base64 } from 'js-base64';
 import { APIError, EditorialWorkflowError } from 'decap-cms-lib-util';
 
-import API, { MOCK_PULL_REQUEST } from '../API';
+import APIClass, { MOCK_PULL_REQUEST } from '../API';
+
+const TEST_API_ROOT = 'https://v14.next.forgejo.org/api/v1';
+
+function API(config) {
+  return new APIClass({ apiRoot: TEST_API_ROOT, ...config });
+}
 
 global.fetch = jest.fn().mockRejectedValue(new Error('should not call fetch inside tests'));
 
