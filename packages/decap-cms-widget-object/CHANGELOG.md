@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.5.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-object@3.4.0...decap-cms-widget-object@3.5.0) (2026-04-16)
+
+### Bug Fixes
+
+- **widget-object:** don't propagate isEditorComponent to nested fields ([#7762](https://github.com/decaporg/decap-cms/issues/7762)) ([bdd5d1c](https://github.com/decaporg/decap-cms/commit/bdd5d1cd01bfa1afc320065aca20035006b19cd7))
+
 # [3.4.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-object@3.3.1...decap-cms-widget-object@3.4.0) (2025-06-26)
 
 **Note:** Version bump only for package decap-cms-widget-object

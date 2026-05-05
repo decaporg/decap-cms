@@ -1,5 +1,8 @@
 import { concat, last, nth, isEmpty } from 'lodash';
-import visitParents from 'unist-util-visit-parents';
+import * as visitParentsModule from 'unist-util-visit-parents';
+
+const visitParents =
+  visitParentsModule.visitParents || visitParentsModule.default || visitParentsModule;
 
 /**
  * remarkUnwrapInvalidNest

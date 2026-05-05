@@ -186,6 +186,21 @@ export interface CmsFieldMarkdown {
   editorComponents?: string[];
 }
 
+export interface CmsFieldRichText {
+  widget: 'richtext';
+  default?: string;
+
+  minimal?: boolean;
+  buttons?: CmsMarkdownWidgetButton[];
+  editor_components?: string[];
+  modes?: ('raw' | 'rich_text')[];
+
+  /**
+   * @deprecated Use editor_components instead
+   */
+  editorComponents?: string[];
+}
+
 export interface CmsFieldNumber {
   widget: 'number';
   default?: string | number;
@@ -273,6 +288,7 @@ export type CmsField = CmsFieldBase &
     | CmsFieldList
     | CmsFieldMap
     | CmsFieldMarkdown
+    | CmsFieldRichText
     | CmsFieldNumber
     | CmsFieldObject
     | CmsFieldRelation
@@ -291,6 +307,7 @@ export interface CmsCollectionFile {
   description?: string;
   preview_path?: string;
   preview_path_date_field?: string;
+  preview_path_preserve_slashes?: boolean;
   i18n?: boolean | CmsI18nConfig;
   media_folder?: string;
   public_folder?: string;
@@ -328,6 +345,7 @@ export interface CmsCollection {
   slug?: string;
   preview_path?: string;
   preview_path_date_field?: string;
+  preview_path_preserve_slashes?: boolean;
   create?: boolean;
   delete?: boolean;
   editor?: {
@@ -639,6 +657,7 @@ type CollectionObject = {
   public_folder?: string;
   preview_path?: string;
   preview_path_date_field?: string;
+  preview_path_preserve_slashes?: boolean;
   summary?: string;
   filter?: FilterRule;
   type: 'file_based_collection' | 'folder_based_collection';
