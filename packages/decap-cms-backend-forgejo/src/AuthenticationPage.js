@@ -41,7 +41,17 @@ export default class ForgejoAuthenticationPage extends React.Component {
       'ForgejoAuthenticationPage',
     );
 
-    const { base_url = 'https://v14.next.forgejo.org', app_id = '' } = this.props.config.backend;
+    const { api_root, app_id = '' } = this.props.config.backend;
+    // Derive base_url from api_root by stripping the trailing /api/<version> path.
+    // Expected api_root format: https://<host>/api/v1
+    const base_url = api_root ? api_root.replace(/\/api\/[^/]+\/?$/, '') : '';
+    if (!base_url) {
+      this.setState({
+        loginError:
+        'Forgejo backend requires "api_root" to be set in the backend configuration.',
+      });
+      return;
+    }
     this.auth = new PkceAuthenticator({
       base_url,
       auth_endpoint: 'login/oauth/authorize',
@@ -115,6 +125,9 @@ export default class ForgejoAuthenticationPage extends React.Component {
 
   handleLogin = e => {
     e.preventDefault();
+    if (!this.auth) {
+      return;
+    }
     const { open_authoring: openAuthoring = false } = this.props.config.backend;
     this.auth.authenticate({ scope: 'repository' }, (err, data) => {
       if (err) {

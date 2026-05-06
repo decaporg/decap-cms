@@ -1,6 +1,7 @@
 backend:
   name: forgejo
   app_id: a582de8c-2459-4e5f-b671-80f99a0592cc
+  api_root: https://your-forgejo-instance.example.com/api/v1
   branch: main
   repo: owner/repo
 
