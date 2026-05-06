@@ -1,7 +1,7 @@
 backend:
   name: forgejo
   app_id: a582de8c-2459-4e5f-b671-80f99a0592cc
-  branch: master
+  branch: main
   repo: owner/repo
 
 media_folder: static/media
