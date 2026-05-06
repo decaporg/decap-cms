@@ -573,10 +573,12 @@ export default class API {
     state: 'open' | 'closed' | 'all' = 'open',
     head?: string,
   ): Promise<ForgejoPullRequest[]> {
-    const params: Record<string, string> = { state };
-    const pullRequests = (await this.request(`${this.originRepoURL}/pulls`, {
-      params,
-    })) as ForgejoPullRequest[];
+    const pullRequests = await this.requestAllPages<ForgejoPullRequest>(
+      `${this.originRepoURL}/pulls`,
+      {
+        params: { state, base_branch: this.branch, limit: 100 },
+      },
+    );
     if (!head) {
       return pullRequests;
     }
