@@ -1,5 +1,6 @@
 import { Cursor, CURSOR_COMPATIBILITY_SYMBOL } from 'decap-cms-lib-util';
 
+import API from '../API';
 import ForgejoImplementation from '../implementation';
 
 jest.spyOn(console, 'error').mockImplementation(() => {});
@@ -349,6 +350,83 @@ describe('forgejo backend implementation', () => {
 
       expect(result.name).toBe('image.png');
       expect(result.file).toEqual(expect.any(File));
+    });
+  });
+
+  describe('authenticate', () => {
+    it('should include useOpenAuthoring in authenticated user data', async () => {
+      const forgejoImplementation = new ForgejoImplementation(
+        {
+          ...config,
+          backend: { ...config.backend, open_authoring: true },
+        },
+        { useWorkflow: true },
+      );
+
+      forgejoImplementation.repo = 'contributor/repo';
+      forgejoImplementation.useOpenAuthoring = true;
+
+      const userSpy = jest.spyOn(API.prototype, 'user').mockResolvedValue({
+        full_name: 'Test User',
+        login: 'contributor',
+        email: 'user@example.com',
+      });
+      const accessSpy = jest.spyOn(API.prototype, 'hasWriteAccess').mockResolvedValue(true);
+
+      await expect(forgejoImplementation.authenticate({ token: 'token' })).resolves.toEqual({
+        name: 'Test User',
+        login: 'contributor',
+        email: 'user@example.com',
+        avatar_url: undefined,
+        token: 'token',
+        useOpenAuthoring: true,
+      });
+
+      expect(userSpy).toHaveBeenCalledTimes(1);
+      expect(accessSpy).toHaveBeenCalledTimes(1);
+
+      userSpy.mockRestore();
+      accessSpy.mockRestore();
+    });
+  });
+
+  describe('entriesByFiles', () => {
+    it('should read file-based entries from the origin repo in open authoring', async () => {
+      const forgejoImplementation = new ForgejoImplementation(
+        {
+          ...config,
+          backend: { ...config.backend, open_authoring: true },
+        },
+        { useWorkflow: true },
+      );
+
+      const mockAPI = {
+        repoURL: 'repoURL',
+        originRepoURL: 'originRepoURL',
+        readFile: jest.fn().mockResolvedValue('file contents'),
+        readFileMetadata: jest.fn().mockResolvedValue({ author: '', updatedOn: '' }),
+      };
+
+      forgejoImplementation.api = mockAPI;
+      forgejoImplementation.useOpenAuthoring = true;
+
+      await expect(
+        forgejoImplementation.entriesByFiles([{ path: 'content/posts/post.md', id: 'sha-123' }]),
+      ).resolves.toEqual([
+        {
+          data: 'file contents',
+          file: {
+            path: 'content/posts/post.md',
+            id: 'sha-123',
+            author: '',
+            updatedOn: '',
+          },
+        },
+      ]);
+
+      expect(mockAPI.readFile).toHaveBeenCalledWith('content/posts/post.md', 'sha-123', {
+        repoURL: 'originRepoURL',
+      });
     });
   });
 

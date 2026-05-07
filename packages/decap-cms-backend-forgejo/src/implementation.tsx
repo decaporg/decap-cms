@@ -328,6 +328,7 @@ export default class Forgejo implements Implementation {
       email: user.email,
       avatar_url: user.avatar_url,
       token: state.token as string,
+      useOpenAuthoring: this.useOpenAuthoring,
     };
   }
 
@@ -425,7 +426,7 @@ export default class Forgejo implements Implementation {
   }
 
   entriesByFiles(files: ImplementationFile[]) {
-    const repoURL = this.api!.repoURL;
+    const repoURL = this.useOpenAuthoring ? this.api!.originRepoURL : this.api!.repoURL;
 
     const readFile = (path: string, id: string | null | undefined) =>
       this.api!.readFile(path, id, { repoURL }).catch(() => '') as Promise<string>;

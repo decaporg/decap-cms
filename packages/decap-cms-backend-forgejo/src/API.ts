@@ -410,9 +410,11 @@ export default class API {
                 return file.path.split('/').length <= depth;
               }
 
-              const relativePath = file.path.startsWith(`${folder}/`)
-                ? file.path.slice(folder.length + 1)
-                : file.path;
+              if (!file.path.startsWith(`${folder}/`)) {
+                return false;
+              }
+
+              const relativePath = file.path.slice(folder.length + 1);
               if (!relativePath) {
                 return false;
               }
