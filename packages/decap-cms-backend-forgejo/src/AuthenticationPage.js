@@ -47,8 +47,7 @@ export default class ForgejoAuthenticationPage extends React.Component {
     const base_url = api_root ? api_root.replace(/\/api\/[^/]+\/?$/, '') : '';
     if (!base_url) {
       this.setState({
-        loginError:
-        'Forgejo backend requires "api_root" to be set in the backend configuration.',
+        loginError: 'Forgejo backend requires "api_root" to be set in the backend configuration.',
       });
       return;
     }
