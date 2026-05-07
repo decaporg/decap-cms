@@ -542,6 +542,40 @@ describe('forgejo API', () => {
         params: { recursive: 1 },
       });
     });
+
+    it('should exclude files outside the requested folder', async () => {
+      const api = new API({ branch: 'master', repo: 'owner/repo' });
+
+      const tree = [
+        {
+          path: 'README.md',
+          sha: 'sha-readme',
+          size: 10,
+          type: 'blob',
+        },
+        {
+          path: 'posts/post.md',
+          sha: 'sha-post',
+          size: 20,
+          type: 'blob',
+        },
+      ];
+      api.request = jest
+        .fn()
+        .mockResolvedValueOnce({ commit: { id: 'sha123' } })
+        .mockResolvedValueOnce({ tree });
+
+      await expect(api.listFiles('posts', { depth: 1 })).resolves.toEqual([
+        {
+          id: 'sha-post',
+          size: 20,
+          path: 'posts/post.md',
+          type: 'blob',
+          name: 'post.md',
+        },
+      ]);
+    });
+
     it('should get files and folders', async () => {
       const api = new API({ branch: 'master', repo: 'owner/repo' });
 
@@ -641,13 +675,13 @@ describe('forgejo API', () => {
 
     it('should get pull requests', async () => {
       const api = new API({ branch: 'gh-pages', repo: 'owner/my-repo', token: 'token' });
-      api.request = jest.fn().mockResolvedValue([{ number: 1, head: { label: 'head' } }]);
+      api.requestAllPages = jest.fn().mockResolvedValue([{ number: 1, head: { label: 'head' } }]);
 
       await expect(api.getPullRequests('open', 'head')).resolves.toEqual([
         { number: 1, head: { label: 'head' } },
       ]);
-      expect(api.request).toHaveBeenCalledWith('/repos/owner/my-repo/pulls', {
-        params: { state: 'open' },
+      expect(api.requestAllPages).toHaveBeenCalledWith('/repos/owner/my-repo/pulls', {
+        params: { state: 'open', base_branch: 'gh-pages', limit: 100 },
       });
     });
 
@@ -658,16 +692,28 @@ describe('forgejo API', () => {
         token: 'token',
         cmsLabelPrefix: 'decap-cms/',
       });
-      api.request = jest.fn().mockResolvedValue([
-        { head: { ref: 'cms/branch1' }, labels: [{ name: 'decap-cms/draft' }] },
-        { head: { ref: 'other/branch' }, labels: [{ name: 'decap-cms/draft' }] },
-        { head: { ref: 'cms/branch2' }, labels: [{ name: 'decap-cms/pending_review' }] },
-        { head: { ref: 'cms/branch3' }, labels: [{ name: 'other-label' }] },
+      api.requestAllPages = jest.fn().mockResolvedValue([
+        {
+          head: { ref: 'cms/branch1', repo: { owner: { login: 'owner' } } },
+          labels: [{ name: 'decap-cms/draft' }],
+        },
+        {
+          head: { ref: 'other/branch', repo: { owner: { login: 'owner' } } },
+          labels: [{ name: 'decap-cms/draft' }],
+        },
+        {
+          head: { ref: 'cms/branch2', repo: { owner: { login: 'owner' } } },
+          labels: [{ name: 'decap-cms/pending_review' }],
+        },
+        {
+          head: { ref: 'cms/branch3', repo: { owner: { login: 'owner' } } },
+          labels: [{ name: 'other-label' }],
+        },
       ]);
 
       await expect(api.listUnpublishedBranches()).resolves.toEqual(['cms/branch1', 'cms/branch2']);
-      expect(api.request).toHaveBeenCalledWith('/repos/owner/my-repo/pulls', {
-        params: { state: 'open' },
+      expect(api.requestAllPages).toHaveBeenCalledWith('/repos/owner/my-repo/pulls', {
+        params: { state: 'open', base_branch: 'gh-pages', limit: 100 },
       });
     });
 
