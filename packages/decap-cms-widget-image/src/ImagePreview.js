@@ -14,15 +14,23 @@ function StyledImageAsset({ getAsset, value, field }) {
   const [asset, setAsset] = useState(null);
 
   useEffect(() => {
-    if (value) {
-      const newAsset = getAsset(value, field);
-      setAsset(newAsset);
-    } else {
+    if (!value) {
       setAsset(null);
+      return;
     }
+
+    if (typeof File !== 'undefined' && value instanceof File) {
+      const objectUrl = URL.createObjectURL(value);
+      setAsset(objectUrl);
+
+      return () => URL.revokeObjectURL(objectUrl);
+    }
+
+    const newAsset = getAsset(value, field);
+    setAsset(newAsset);
   }, [value, field, getAsset]);
 
-  return asset ? <StyledImage role="presentation" src={asset} /> : null;
+  return asset ? <StyledImage src={asset} /> : null;
 }
 
 function ImagePreviewContent(props) {
