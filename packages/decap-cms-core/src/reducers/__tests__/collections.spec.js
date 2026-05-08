@@ -11,6 +11,7 @@ import collections, {
   getFieldsNames,
   selectField,
   updateFieldByKey,
+  selectInferredField,
 } from '../collections';
 import { FILES, FOLDER } from '../../constants/collectionTypes';
 
@@ -566,6 +567,44 @@ describe('collections', () => {
           ],
         }),
       );
+    });
+  });
+
+  describe("selectInferredField(collection, 'date')", () => {
+    it('should return publishDate if set', () => {
+      const collection = fromJS({
+        fields: [{ name: 'title' }, { name: 'publishDate', widget: 'datetime' }],
+      });
+
+      expect(selectInferredField(collection, 'date')).toEqual('publishDate');
+    });
+
+    it('should return publish_date if set', () => {
+      const collection = fromJS({
+        fields: [{ name: 'title' }, { name: 'publish_date', widget: 'datetime' }],
+      });
+
+      expect(selectInferredField(collection, 'date')).toEqual('publish_date');
+    });
+
+    it('should return date if set', () => {
+      const collection = fromJS({
+        fields: [{ name: 'title' }, { name: 'date', widget: 'datetime' }],
+      });
+
+      expect(selectInferredField(collection, 'date')).toEqual('date');
+    });
+
+    it('should return first date field if multiple synonyms are present', () => {
+      const collection = fromJS({
+        fields: [
+          { name: 'title' },
+          { name: 'publishDate', widget: 'datetime' },
+          { name: 'date', widget: 'datetime' },
+        ],
+      });
+
+      expect(selectInferredField(collection, 'date')).toEqual('publishDate');
     });
   });
 });

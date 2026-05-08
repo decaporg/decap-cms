@@ -70,6 +70,7 @@ function MediaLibraryTop({
               : t('mediaLibrary.mediaLibraryModal.mediaAssets')
           }`}
           isPrivate={privateUpload}
+          t={t}
         />
         <ButtonsContainer>
           <CopyToClipBoardButton

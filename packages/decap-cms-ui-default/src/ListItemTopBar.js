@@ -46,7 +46,16 @@ function DragHandle({ Wrapper, id }) {
 }
 
 function ListItemTopBar(props) {
-  const { className, collapsed, onCollapseToggle, onRemove, dragHandle, id } = props;
+  const {
+    className,
+    collapsed,
+    onCollapseToggle,
+    onRemove,
+    allowRemove,
+    dragHandle,
+    allowReorder,
+    id,
+  } = props;
   return (
     <TopBar className={className}>
       {onCollapseToggle ? (
@@ -54,12 +63,14 @@ function ListItemTopBar(props) {
           <Icon type="chevron" size="small" direction={collapsed ? 'right' : 'down'} />
         </TopBarButton>
       ) : null}
-      {dragHandle ? <DragHandle Wrapper={dragHandle} id={id} /> : null}
-      {onRemove ? (
+      {dragHandle && allowReorder ? <DragHandle Wrapper={dragHandle} id={id} /> : <span></span>}
+      {onRemove && allowRemove ? (
         <TopBarButton onClick={onRemove}>
           <Icon type="close" size="small" />
         </TopBarButton>
-      ) : null}
+      ) : (
+        <span></span>
+      )}
     </TopBar>
   );
 }
@@ -69,6 +80,8 @@ ListItemTopBar.propTypes = {
   collapsed: PropTypes.bool,
   onCollapseToggle: PropTypes.func,
   onRemove: PropTypes.func,
+  allowRemove: PropTypes.bool,
+  allowReorder: PropTypes.bool,
 };
 
 const StyledListItemTopBar = styled(ListItemTopBar)`

@@ -122,11 +122,11 @@ export default class Toolbar extends React.Component {
     const isVisible = this.isVisible;
     const showEditorComponents = !editorComponents || editorComponents.size >= 1;
 
-    function showPlugin({ id }) {
-      return editorComponents ? editorComponents.includes(id) : true;
-    }
+    const allPlugins = plugins ? plugins.toList().sortBy(plugin => plugin.label) : List();
 
-    const pluginsList = plugins ? plugins.toList().filter(showPlugin) : List();
+    const pluginsList = editorComponents
+      ? editorComponents.map(id => plugins.get(id)).filter(plugin => !!plugin)
+      : allPlugins;
 
     const headingOptions = {
       'heading-one': t('editor.editorWidgets.headingOptions.headingOne'),
@@ -157,6 +157,16 @@ export default class Toolbar extends React.Component {
               icon="italic"
               onClick={this.handleMarkClick}
               isActive={hasMark('italic')}
+              disabled={disabled}
+            />
+          )}
+          {isVisible('strikethrough') && (
+            <ToolbarButton
+              type="strikethrough"
+              label={t('editor.editorWidgets.markdown.strikethrough')}
+              icon="strikethrough"
+              onClick={this.handleMarkClick}
+              isActive={hasMark('delete')}
               disabled={disabled}
             />
           )}
@@ -271,7 +281,15 @@ export default class Toolbar extends React.Component {
             <ToolbarToggleLabel isActive={!rawMode} offPosition>
               {t('editor.editorWidgets.markdown.richText')}
             </ToolbarToggleLabel>
-            <StyledToggle active={rawMode} onChange={onToggleMode} />
+            <StyledToggle
+              active={rawMode}
+              onChange={onToggleMode}
+              aria-label={
+                rawMode
+                  ? t('editor.editorWidgets.markdown.toggleMode.rich')
+                  : t('editor.editorWidgets.markdown.toggleMode.markdown')
+              }
+            />
             <ToolbarToggleLabel isActive={rawMode}>
               {t('editor.editorWidgets.markdown.markdown')}
             </ToolbarToggleLabel>

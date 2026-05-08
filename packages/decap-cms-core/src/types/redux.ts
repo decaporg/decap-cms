@@ -148,6 +148,8 @@ export interface CmsFieldList {
   default?: unknown;
 
   allow_add?: boolean;
+  allow_remove?: boolean;
+  allow_reorder?: boolean;
   collapsed?: boolean;
   summary?: string;
   minimize_collapsed?: boolean;
@@ -170,6 +172,21 @@ export interface CmsFieldMap {
 
 export interface CmsFieldMarkdown {
   widget: 'markdown';
+  default?: string;
+
+  minimal?: boolean;
+  buttons?: CmsMarkdownWidgetButton[];
+  editor_components?: string[];
+  modes?: ('raw' | 'rich_text')[];
+
+  /**
+   * @deprecated Use editor_components instead
+   */
+  editorComponents?: string[];
+}
+
+export interface CmsFieldRichText {
+  widget: 'richtext';
   default?: string;
 
   minimal?: boolean;
@@ -270,6 +287,7 @@ export type CmsField = CmsFieldBase &
     | CmsFieldList
     | CmsFieldMap
     | CmsFieldMarkdown
+    | CmsFieldRichText
     | CmsFieldNumber
     | CmsFieldObject
     | CmsFieldRelation
@@ -288,6 +306,7 @@ export interface CmsCollectionFile {
   description?: string;
   preview_path?: string;
   preview_path_date_field?: string;
+  preview_path_preserve_slashes?: boolean;
   i18n?: boolean | CmsI18nConfig;
   media_folder?: string;
   public_folder?: string;
@@ -307,6 +326,12 @@ export interface ViewGroup {
   id: string;
 }
 
+export interface SortableField {
+  field: string;
+  label?: string;
+  default_sort?: boolean | 'asc' | 'desc';
+}
+
 export interface CmsCollection {
   name: string;
   label: string;
@@ -319,6 +344,7 @@ export interface CmsCollection {
   slug?: string;
   preview_path?: string;
   preview_path_date_field?: string;
+  preview_path_preserve_slashes?: boolean;
   create?: boolean;
   delete?: boolean;
   editor?: {
@@ -346,7 +372,7 @@ export interface CmsCollection {
   path?: string;
   media_folder?: string;
   public_folder?: string;
-  sortable_fields?: string[];
+  sortable_fields?: (string | SortableField)[];
   view_filters?: ViewFilter[];
   view_groups?: ViewGroup[];
   i18n?: boolean | CmsI18nConfig;
@@ -354,7 +380,7 @@ export interface CmsCollection {
   /**
    * @deprecated Use sortable_fields instead
    */
-  sortableFields?: string[];
+  sortableFields?: (string | SortableField)[];
 }
 
 export interface CmsBackend {
@@ -369,6 +395,7 @@ export interface CmsBackend {
   auth_endpoint?: string;
   cms_label_prefix?: string;
   squash_merges?: boolean;
+  signoff_commits?: boolean;
   proxy_url?: string;
   commit_messages?: {
     create?: string;
@@ -391,13 +418,21 @@ export interface CmsLocalBackend {
   allowed_hosts?: string[];
 }
 
+export interface CmsIssueReports {
+  url?: string;
+}
+
 export interface CmsConfig {
   backend: CmsBackend;
   collections: CmsCollection[];
   locale?: string;
   site_url?: string;
   display_url?: string;
-  logo_url?: string;
+  logo_url?: string; // Deprecated, replaced by `logo.src`
+  logo?: {
+    src: string;
+    show_in_header?: boolean;
+  };
   show_preview_links?: boolean;
   media_folder?: string;
   public_folder?: string;
@@ -415,6 +450,7 @@ export interface CmsConfig {
   }[];
   slug?: CmsSlug;
   i18n?: CmsI18nConfig;
+  issue_reports?: CmsIssueReports;
   local_backend?: boolean | CmsLocalBackend;
   editor?: {
     preview?: boolean;
@@ -616,6 +652,7 @@ type CollectionObject = {
   public_folder?: string;
   preview_path?: string;
   preview_path_date_field?: string;
+  preview_path_preserve_slashes?: boolean;
   summary?: string;
   filter?: FilterRule;
   type: 'file_based_collection' | 'folder_based_collection';
@@ -629,7 +666,7 @@ type CollectionObject = {
   slug?: string;
   label_singular?: string;
   label: string;
-  sortable_fields: List<string>;
+  sortable_fields: List<StaticallyTypedRecord<SortableField>>;
   view_filters: List<StaticallyTypedRecord<ViewFilter>>;
   view_groups: List<StaticallyTypedRecord<ViewGroup>>;
   nested?: Nested;

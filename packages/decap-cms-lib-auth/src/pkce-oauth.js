@@ -47,19 +47,63 @@ function clearCodeVerifier() {
 }
 
 export default class PkceAuthenticator {
+  /**
+   *  @typedef {Object} PkceConfig
+   *  @prop {boolean} [use_oidc]
+   *  @prop {string} base_url
+   *  @prop {string} [auth_endpoint]
+   *  @prop {string} [auth_token_endpoint]
+   *  @prop {string} [auth_token_endpoint_content_type]
+   *  @prop {string} app_id
+   */
+
+  /**
+   * @param {PkceConfig} config
+   */
   constructor(config = {}) {
+    const useOidc = config.use_oidc;
     const baseURL = trimEnd(config.base_url, '/');
     const authEndpoint = trim(config.auth_endpoint, '/');
     const authTokenEndpoint = trim(config.auth_token_endpoint, '/');
-    this.auth_url = `${baseURL}/${authEndpoint}`;
-    this.auth_token_url = `${baseURL}/${authTokenEndpoint}`;
+    if (useOidc) {
+      // The code will try to auto-find the correct token/auth endpoints using OIDC standards
+      this.oidc_url = baseURL;
+    } else {
+      this.auth_url = `${baseURL}/${authEndpoint}`;
+      this.auth_token_url = `${baseURL}/${authTokenEndpoint}`;
+    }
     this.auth_token_endpoint_content_type = config.auth_token_endpoint_content_type;
     this.appID = config.app_id;
+  }
+
+  async _loadOidcConfig() {
+    if (this.auth_url && this.auth_token_url) return;
+    if (!this.oidc_url) throw new Error('Missing auth URLs');
+
+    const response = await fetch(`${this.oidc_url}/.well-known/openid-configuration`).catch(() => {
+      throw new Error('Failed to load OIDC configuration');
+    });
+    if (!response.ok) {
+      throw new Error('Bad response while getting OIDC configuration');
+    }
+    const json = await response.json().catch(() => {
+      throw new Error('Failed to parse OIDC configuration JSON');
+    });
+    if (!json.authorization_endpoint || !json.token_endpoint) {
+      throw new Error('OIDC configuration missing endpoint fields');
+    }
+    this.auth_url = json.authorization_endpoint;
+    this.auth_token_url = json.token_endpoint;
   }
 
   async authenticate(options, cb) {
     if (isInsecureProtocol()) {
       return cb(new Error('Cannot authenticate over insecure protocol!'));
+    }
+    try {
+      await this._loadOidcConfig();
+    } catch (err) {
+      return cb(err);
     }
 
     const authURL = new URL(this.auth_url);
@@ -110,6 +154,12 @@ export default class PkceAuthenticator {
     }
 
     if (params.has('code')) {
+      try {
+        await this._loadOidcConfig();
+      } catch (err) {
+        return cb(err);
+      }
+
       const code = params.get('code');
       const authURL = new URL(this.auth_token_url);
 

@@ -13,6 +13,7 @@ import {
   getPreviewTemplate,
   getPreviewStyles,
   getRemarkPlugins,
+  getEditorComponents,
 } from '../../../lib/registry';
 import { getAllEntries, tryLoadEntry } from '../../../actions/entries';
 import { ErrorBoundary } from '../../UI';
@@ -57,6 +58,7 @@ export class PreviewPane extends React.Component {
         fieldsMetaData={metadata}
         resolveWidget={resolveWidget}
         getRemarkPlugins={getRemarkPlugins}
+        getEditorComponents={getEditorComponents}
       />
     );
   };
@@ -261,6 +263,7 @@ export class PreviewPane extends React.Component {
         this.widgetFor(name, fields, values, fieldsMetaData),
       widgetsFor: this.widgetsFor,
       getCollection: this.getCollection,
+      getEditorComponents,
     };
 
     const styleEls = getPreviewStyles().map((style, i) => {
