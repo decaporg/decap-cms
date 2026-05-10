@@ -185,6 +185,21 @@ export interface CmsFieldMarkdown {
   editorComponents?: string[];
 }
 
+export interface CmsFieldRichText {
+  widget: 'richtext';
+  default?: string;
+
+  minimal?: boolean;
+  buttons?: CmsMarkdownWidgetButton[];
+  editor_components?: string[];
+  modes?: ('raw' | 'rich_text')[];
+
+  /**
+   * @deprecated Use editor_components instead
+   */
+  editorComponents?: string[];
+}
+
 export interface CmsFieldNumber {
   widget: 'number';
   default?: string | number;
@@ -272,6 +287,7 @@ export type CmsField = CmsFieldBase &
     | CmsFieldList
     | CmsFieldMap
     | CmsFieldMarkdown
+    | CmsFieldRichText
     | CmsFieldNumber
     | CmsFieldObject
     | CmsFieldRelation
