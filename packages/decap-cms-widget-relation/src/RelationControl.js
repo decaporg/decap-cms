@@ -273,7 +273,11 @@ export default class RelationControl extends React.Component {
       );
 
       const hits = result.payload.hits || [];
-      const options = this.parseHitOptions(hits);
+      let options = this.parseHitOptions(hits);
+      if (this.isMultiple()) {
+        const selectedOptions = getSelectedOptions(value);
+        options = options.filter(o => selectedOptions.includes(o.value));
+      }
 
       if (this.mounted) {
         this.setState({ initialOptions: options });
