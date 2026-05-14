@@ -2,7 +2,10 @@ import { Map } from 'immutable';
 import { produce } from 'immer';
 import { oneLine } from 'common-tags';
 
-import EditorComponent from '../valueObjects/EditorComponent';
+import createEditorComponent from '../valueObjects/EditorComponent';
+
+import type { ComponentType } from 'react';
+import type { CmsRegistry, CmsWidgetParam, EditorComponentOptions } from '../types';
 
 const allowedEvents = [
   'prePublish',
@@ -12,7 +15,7 @@ const allowedEvents = [
   'preSave',
   'postSave',
 ];
-const eventHandlers = {};
+const eventHandlers: any = {};
 allowedEvents.forEach(e => {
   eventHandlers[e] = [];
 });
@@ -20,7 +23,7 @@ allowedEvents.forEach(e => {
 /**
  * Global Registry Object
  */
-const registry = {
+const registry: CmsRegistry = {
   backends: {},
   templates: {},
   previewStyles: [],
@@ -91,7 +94,12 @@ export function getPreviewTemplate(name) {
 /**
  * Editor Widgets
  */
-export function registerWidget(name, control, preview, schema = {}) {
+export function registerWidget(
+  name: string | CmsWidgetParam | CmsWidgetParam[],
+  control?: ComponentType<any> | string,
+  preview?: ComponentType<any>,
+  schema = {},
+) {
   if (Array.isArray(name)) {
     name.forEach(widget => {
       if (typeof widget !== 'object') {
@@ -140,7 +148,7 @@ export function getWidget(name) {
   return registry.widgets[name];
 }
 export function getWidgets() {
-  return produce(Object.entries(registry.widgets), draft => {
+  return produce(Object.entries(registry.widgets), (draft: any) => {
     return draft.map(([key, value]) => ({ name: key, ...value }));
   });
 }
@@ -151,8 +159,8 @@ export function resolveWidget(name) {
 /**
  * Markdown Editor Custom Components
  */
-export function registerEditorComponent(component) {
-  const plugin = EditorComponent(component);
+export function registerEditorComponent(component: EditorComponentOptions) {
+  const plugin = createEditorComponent(component);
   if (plugin.type === 'code-block') {
     const codeBlock = registry.editorComponents.find(c => c.type === 'code-block');
 

@@ -1,6 +1,8 @@
 import React from 'react';
 
-const image = {
+import type { EditorComponentOptions } from 'decap-cms-core';
+
+const image: EditorComponentOptions = {
   label: 'Image',
   id: 'image',
   fromBlock: match =>
@@ -9,11 +11,11 @@ const image = {
       alt: match[1],
       title: match[4],
     },
-  toBlock: ({ alt, image, title }) =>
+  toBlock: ({ alt, image, title }: any) =>
     `![${alt || ''}](${image || ''}${title ? ` "${title.replace(/"/g, '\\"')}"` : ''})`,
   // eslint-disable-next-line react/display-name
-  toPreview: ({ alt, image, title }, getAsset, fields) => {
-    const imageField = fields?.find(f => f.get('widget') === 'image');
+  toPreview: ({ alt, image, title }: any, getAsset: any, fields: any) => {
+    const imageField = fields?.find((f: any) => f.get('widget') === 'image');
     const src = getAsset(image, imageField);
     return <img src={src || ''} alt={alt || ''} title={title || ''} />;
   },

@@ -5,6 +5,7 @@
   "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-editor-component-image",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
   "module": "dist/esm/index.js",
+  "types": "dist/esm/index.d.ts",
   "main": "dist/decap-cms-editor-component-image.js",
   "license": "MIT",
   "keywords": [
@@ -16,10 +17,13 @@
   "scripts": {
     "develop": "npm run build:esm -- --watch",
     "build": "cross-env NODE_ENV=production webpack",
-    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
+    "build:esm": "run-p build:types build:babel",
+    "build:babel": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward --extensions \".js,.jsx,.ts,.tsx\"",
+    "build:types": "tsc"
   },
   "devDependencies": {
-    "cross-env": "^7.0.0"
+    "cross-env": "^7.0.0",
+    "decap-cms-core": "^3.0.0"
   },
   "peerDependencies": {
     "react": "^19.1.0"
