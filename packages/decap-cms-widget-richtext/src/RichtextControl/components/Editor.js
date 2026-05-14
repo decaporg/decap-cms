@@ -3,7 +3,7 @@ import { PlateContent } from 'platejs/react';
 import { ClassNames } from '@emotion/react';
 
 function Editor(props) {
-  const { isDisabled } = props;
+  const { isDisabled, onPaste } = props;
 
   return (
     <ClassNames>
@@ -17,6 +17,7 @@ function Editor(props) {
           disableDefaultStyles
           readOnly={isDisabled}
           aria-disabled={isDisabled}
+          onPaste={onPaste}
         />
       )}
     </ClassNames>
