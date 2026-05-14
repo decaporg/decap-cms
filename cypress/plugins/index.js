@@ -174,6 +174,25 @@ module.exports = async (on, config) => {
 
       return null;
     },
+    async useRichTextWidget() {
+      console.log('Updating config to use richtext widget');
+      await updateConfig(current => {
+        if (current.collections) {
+          current.collections = current.collections.map(collection => {
+            if (collection.fields) {
+              collection.fields = collection.fields.map(field => {
+                if (field.widget === 'markdown') {
+                  return { ...field, widget: 'richtext' };
+                }
+                return field;
+              });
+            }
+            return collection;
+          });
+        }
+      });
+      return null;
+    },
   });
 
   addMatchImageSnapshotPlugin(on, config);

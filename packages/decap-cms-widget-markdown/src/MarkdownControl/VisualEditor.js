@@ -141,7 +141,8 @@ function Editor(props) {
 
   function handleMarkClick(format) {
     ReactEditor.focus(editor);
-    toggleMark(editor, format);
+    const markFormat = format === 'strikethrough' ? 'delete' : format;
+    toggleMark(editor, markFormat);
   }
 
   function handleBlockClick(format) {
@@ -222,7 +223,7 @@ function Editor(props) {
         position: relative;
       `}
     >
-      <Slate editor={editor} value={editorValue} onChange={handleChange}>
+      <Slate editor={editor} value={editorValue} initialValue={editorValue} onChange={handleChange}>
         <EditorControlBar>
           {
             <Toolbar

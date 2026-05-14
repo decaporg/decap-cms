@@ -1049,7 +1049,11 @@ export class Backend {
     collection: Collection,
     slug: string,
     entry: EntryMap,
-    { maxAttempts = 1, interval = 5000 } = {},
+    {
+      maxAttempts = 1,
+      interval = 5000,
+      signal,
+    }: { maxAttempts?: number; interval?: number; signal?: AbortSignal } = {},
   ) {
     /**
      * If the registered backend does not provide a `getDeployPreview` method, or
@@ -1066,6 +1070,9 @@ export class Backend {
     let deployPreview,
       count = 0;
     while (!deployPreview && count < maxAttempts) {
+      if (signal?.aborted) {
+        return;
+      }
       count++;
       deployPreview = await this.implementation.getDeployPreview(collection.get('name'), slug);
       if (!deployPreview) {
@@ -1174,6 +1181,7 @@ export class Backend {
         path,
         authorLogin: user.login,
         authorName: user.name,
+        authorEmail: user.email,
       },
       user.useOpenAuthoring,
     );
@@ -1249,6 +1257,7 @@ export class Backend {
           path: file.path,
           authorLogin: user.login,
           authorName: user.name,
+          authorEmail: user.email,
         },
         user.useOpenAuthoring,
       ),
@@ -1275,6 +1284,7 @@ export class Backend {
         path,
         authorLogin: user.login,
         authorName: user.name,
+        authorEmail: user.email,
       },
       user.useOpenAuthoring,
     );
@@ -1299,6 +1309,7 @@ export class Backend {
         path,
         authorLogin: user.login,
         authorName: user.name,
+        authorEmail: user.email,
       },
       user.useOpenAuthoring,
     );

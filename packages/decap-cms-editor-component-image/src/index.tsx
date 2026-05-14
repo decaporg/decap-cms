@@ -19,7 +19,7 @@ const image: EditorComponentOptions = {
     const src = getAsset(image, imageField);
     return <img src={src || ''} alt={alt || ''} title={title || ''} />;
   },
-  pattern: /^!\[(.*)\]\((.*?)(\s"(.*)")?\)$/,
+  pattern: /^!\[([^\]]*)\]\((.*?)(\s"([^"]*)")?\)/,
   fields: [
     {
       label: 'Image',

@@ -8,7 +8,7 @@ cache({
     {
       path: path.join(os.homedir(), '.cache', 'Cypress'),
       invalidateOn: __filename,
-      command: 'echo noop',
+      command: 'echo "No operation needed — cache intact"',
     },
   ],
   ignoreIfFolderExists: false,

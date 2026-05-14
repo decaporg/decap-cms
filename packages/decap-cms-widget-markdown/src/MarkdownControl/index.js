@@ -47,7 +47,11 @@ export default class MarkdownControl extends React.Component {
     _getEditorComponents = props.getEditorComponents;
     this.state = {
       mode:
-        this.getAllowedModes().indexOf(preferredMode) !== -1
+        // When used inside a container/shortcode editor component, default to
+        // raw mode — the widget type already implies the editing surface.
+        props.isEditorComponent
+          ? 'raw'
+          : this.getAllowedModes().indexOf(preferredMode) !== -1
           ? preferredMode
           : this.getAllowedModes()[0],
       pendingFocus: false,
@@ -57,6 +61,12 @@ export default class MarkdownControl extends React.Component {
   componentDidMount() {
     // Manually validate PropTypes - React 19 breaking change
     PropTypes.checkPropTypes(MarkdownControl.propTypes, this.props, 'prop', 'MarkdownControl');
+
+    // Ensure containerised widgets start in the correct mode even if the
+    // constructor ran before the prop was available (e.g. HMR / late prop).
+    if (this.props.isEditorComponent && this.state.mode !== 'raw') {
+      this.setState({ mode: 'raw' });
+    }
   }
 
   handleMode = mode => {
@@ -92,7 +102,8 @@ export default class MarkdownControl extends React.Component {
     } = this.props;
 
     const { mode, pendingFocus } = this.state;
-    const isShowModeToggle = this.getAllowedModes().length > 1;
+    const isEditorComponent = this.props.isEditorComponent;
+    const isShowModeToggle = this.getAllowedModes().length > 1 && !isEditorComponent;
     const visualEditor = (
       <div className="cms-editor-visual" ref={this.processRef}>
         <VisualEditor

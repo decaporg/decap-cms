@@ -5,8 +5,8 @@
     "emitDeclarationOnly": true,
     "jsx": "react",
     "target": "esnext",
-    "module": "esnext",
-    "moduleResolution": "node",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "esModuleInterop": true,
     "strict": true,
     "isolatedModules": true,
@@ -14,8 +14,17 @@
     "allowJs": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "useUnknownInCatchVariables": false,    
-  },    
+    "useUnknownInCatchVariables": false,
+    "baseUrl": "./",
+    "paths": {
+      "decap-cms-backend-bitbucket": ["packages/decap-cms-backend-bitbucket/src"],
+      "decap-cms-backend-github": ["packages/decap-cms-backend-github/src"],
+      "decap-cms-backend-gitlab": ["packages/decap-cms-backend-gitlab/src"],
+      "decap-cms-lib-util": ["packages/decap-cms-lib-util/src"],
+      "decap-cms-lib-widgets": ["packages/decap-cms-lib-widgets/src"],
+      "decap-cms-ui-default": ["packages/decap-cms-ui-default/src"]
+    }
+  },
   "references": [
     {"path": "packages/decap-cms-app"},
     {"path": "packages/decap-cms-backend-aws-cognito-github-proxy"},
@@ -55,5 +64,5 @@
     {"path": "packages/decap-server"}
   ],
   "include": [],
-  "exclude": ["**/*.spec.*", "**/*.test.*"]
+  "exclude": ["node_modules", "**/*.spec.*", "**/*.test.*"]
 }
