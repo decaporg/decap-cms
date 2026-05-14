@@ -1,8 +1,0 @@
-[build]
-  base = "website/"
-  command = "yarn install && yarn lint && yarn build"
-  publish = "dist/"
-
-  [build.environment]
-    YARN_FLAGS = "--frozen-lockfile"
-    YARN_VERSION = "1.22.4"

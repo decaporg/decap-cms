@@ -1,30 +1,20 @@
 const path = require('path');
 
-const appVersion = require('./packages/netlify-cms-app/package.json').version;
-const coreVersion = require('./packages/netlify-cms-core/package.json').version;
+const appVersion = require('./packages/decap-cms-app/package.json').version;
+const coreVersion = require('./packages/decap-cms-core/package.json').version;
 const isProduction = process.env.NODE_ENV === 'production';
 const isTest = process.env.NODE_ENV === 'test';
 const isESM = process.env.NODE_ENV === 'esm';
 
 console.log('Build Package:', path.basename(process.cwd()));
 
-const defaultPlugins = [
-  'lodash',
-  [
-    'babel-plugin-transform-builtin-extend',
-    {
-      globals: ['Error'],
-    },
-  ],
-  'transform-export-extensions',
-  '@babel/plugin-proposal-class-properties',
-  '@babel/plugin-proposal-object-rest-spread',
-  '@babel/plugin-proposal-export-default-from',
-  '@babel/plugin-proposal-nullish-coalescing-operator',
-  '@babel/plugin-proposal-optional-chaining',
-  '@babel/plugin-syntax-dynamic-import',
-  'babel-plugin-inline-json-import',
-];
+// Always enabled plugins
+const basePlugins = ['babel-plugin-inline-json-import'];
+
+// All legacy transforms have been removed as they are now included in @babel/preset-env
+// Features like class properties, optional chaining, nullish coalescing are now standard in modern JS
+
+const defaultPlugins = [...basePlugins];
 
 const svgo = {
   plugins: [
@@ -42,14 +32,14 @@ const svgo = {
 function presets() {
   return [
     '@babel/preset-react',
-    '@babel/preset-env',
+    ...(!isESM ? [['@babel/preset-env', {}]] : []),
     [
       '@emotion/babel-preset-css-prop',
       {
-        autoLabel: true,
+        autoLabel: 'always',
       },
     ],
-    '@babel/typescript',
+    '@babel/preset-typescript',
   ];
 }
 
@@ -60,14 +50,20 @@ function plugins() {
       [
         'transform-define',
         {
-          NETLIFY_CMS_APP_VERSION: `${appVersion}`,
-          NETLIFY_CMS_CORE_VERSION: `${coreVersion}`,
+          DECAP_CMS_APP_VERSION: `${appVersion}`,
+          DECAP_CMS_CORE_VERSION: `${coreVersion}`,
         },
       ],
       [
         'inline-react-svg',
         {
           svgo,
+        },
+      ],
+      [
+        'inline-import',
+        {
+          extensions: ['.css'],
         },
       ],
     ];

@@ -6,7 +6,13 @@ const packages = fs
   .map(dirent => dirent.name);
 
 module.exports = {
-  parser: 'babel-eslint',
+  parser: '@babel/eslint-parser',
+  parserOptions: {
+    requireConfigFile: false,
+    babelOptions: {
+      presets: ['@babel/preset-react'],
+    },
+  },
   extends: [
     'eslint:recommended',
     'plugin:react/recommended',
@@ -22,9 +28,9 @@ module.exports = {
     'cypress/globals': true,
   },
   globals: {
-    NETLIFY_CMS_VERSION: false,
-    NETLIFY_CMS_APP_VERSION: false,
-    NETLIFY_CMS_CORE_VERSION: false,
+    DECAP_CMS_VERSION: false,
+    DECAP_CMS_APP_VERSION: false,
+    DECAP_CMS_CORE_VERSION: false,
     CMS_ENV: false,
   },
   rules: {
@@ -40,6 +46,7 @@ module.exports = {
     ],
     'no-duplicate-imports': 'error',
     '@emotion/no-vanilla': 'error',
+    '@emotion/pkg-renaming': 'error',
     '@emotion/import-from-emotion': 'error',
     '@emotion/styled-import': 'error',
     'require-atomic-updates': [0],
@@ -52,7 +59,10 @@ module.exports = {
       },
     ],
     'unicorn/prefer-string-slice': 'error',
-    'react/no-unknown-property': ['error', { ignore: ['css', 'bold', 'italic', 'delete'] }],
+    'react/no-unknown-property': [
+      'error',
+      { ignore: ['css', 'bold', 'italic', 'delete', 'strikethrough'] },
+    ],
   },
   plugins: ['babel', '@emotion', 'cypress', 'unicorn'],
   settings: {
@@ -63,8 +73,9 @@ module.exports = {
       node: {
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
       },
+      exports: {},
     },
-    'import/core-modules': [...packages, 'netlify-cms-app/dist/esm'],
+    'import/core-modules': [...packages, 'decap-cms-app/dist/esm'],
   },
   overrides: [
     {
@@ -98,12 +109,6 @@ module.exports = {
           'error',
           { functions: false, classes: true, variables: true },
         ],
-      },
-    },
-    {
-      files: ['website/**/*'],
-      rules: {
-        'import/no-unresolved': [0],
       },
     },
   ],

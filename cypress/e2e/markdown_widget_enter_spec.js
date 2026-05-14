@@ -89,7 +89,7 @@ describe('Markdown widget breaks', () => {
         .enter({ shift: true })
         .confirmMarkdownEditorContent(`
           <p>
-
+            <br>
           </p>
         `);
     });
@@ -98,7 +98,10 @@ describe('Markdown widget breaks', () => {
         .enter({ shift: true, times: 4 })
         .confirmMarkdownEditorContent(`
           <p>
-
+            <br>
+            <br>
+            <br>
+            <br>
           </p>
         `);
     });

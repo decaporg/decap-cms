@@ -8,9 +8,9 @@ npm-debug.log
 yarn-error.log
 .vscode/
 .idea/
+.claude/
 manifest.yml
 .imdone/
-website/data/contributors.json
 cypress/videos
 cypress/screenshots
 __diff_output__
@@ -20,3 +20,4 @@ coverage/
 .env
 .temp/
 storybook-static/
+.nx

@@ -1,0 +1,33 @@
+{
+  "name": "decap-cms-widget-image",
+  "description": "Widget for uploading images in Decap CMS.",
+  "version": "3.2.1",
+  "homepage": "https://www.decapcms.org/docs/widgets/#image",
+  "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-widget-image",
+  "bugs": "https://github.com/decaporg/decap-cms/issues",
+  "module": "dist/esm/index.js",
+  "main": "dist/decap-cms-widget-image.js",
+  "license": "MIT",
+  "keywords": [
+    "decap-cms",
+    "widget",
+    "image",
+    "upload",
+    "image-upload"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "develop": "npm run build:esm -- --watch",
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
+  },
+  "peerDependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "decap-cms-ui-default": "^3.0.0",
+    "decap-cms-widget-file": "^3.0.0",
+    "immutable": "^3.7.6",
+    "prop-types": "^15.7.2",
+    "react": "^19.1.0"
+  }
+}

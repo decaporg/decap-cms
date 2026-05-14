@@ -337,7 +337,7 @@ describe('Markdown widget', () => {
           });
       });
 
-      // while this works on dev environemnt, it will always fail in cypress - has something to do with text selection
+      // while this works on dev environment, it will always fail in cypress - has something to do with text selection
       // it('affects only selected list items', () => {
       //   cy
       //     .clickUnorderedListButton()

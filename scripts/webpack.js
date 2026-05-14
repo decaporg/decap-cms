@@ -28,7 +28,7 @@ function rules() {
     css: () => [
       {
         test: /\.css$/,
-        include: ['ol', 'react-toastify', 'react-datetime', 'codemirror'].map(moduleNameToPath),
+        include: ['ol', 'react-toastify', 'codemirror'].map(moduleNameToPath),
         use: ['to-string-loader', 'css-loader'],
       },
     ],
@@ -54,10 +54,7 @@ function rules() {
 
 function plugins() {
   return {
-    ignoreEsprima: () =>
-      new webpack.IgnorePlugin({ resourceRegExp: /^esprima$/, contextRegExp: /js-yaml/ }),
-    ignoreMomentOptionalDeps: () =>
-      new webpack.IgnorePlugin({ resourceRegExp: /^\.\/locale$/, contextRegExp: /moment$/ }),
+    ignoreEsprima: () => new webpack.IgnorePlugin({ resourceRegExp: /^esprima$/ }),
     friendlyErrors: () => new FriendlyErrorsWebpackPlugin(),
     buffer: () =>
       new webpack.ProvidePlugin({
@@ -142,14 +139,7 @@ function baseConfig({ target = isProduction ? 'umd' : 'umddir' } = {}) {
     },
     resolve: {
       extensions: ['.ts', '.tsx', '.js', '.json'],
-      alias: {
-        moment$: 'moment/moment.js',
-      },
-      fallback: {
-        path: require.resolve('path-browserify'),
-        stream: require.resolve('stream-browserify'),
-        buffer: require.resolve('buffer'),
-      },
+      fallback: { stream: require.resolve('stream-browserify') },
     },
     plugins: Object.values(plugins()).map(plugin => plugin()),
     devtool: isTest ? '' : 'source-map',
@@ -176,7 +166,7 @@ function baseConfig({ target = isProduction ? 'umd' : 'umddir' } = {}) {
 
 function getConfig({ baseOnly = false } = {}) {
   if (baseOnly) {
-    // netlify-cms build
+    // decap-cms build
     return baseConfig({ target: 'umd' });
   }
   return [baseConfig({ target: 'umd' })];

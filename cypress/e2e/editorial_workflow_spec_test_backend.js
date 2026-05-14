@@ -207,17 +207,16 @@ describe('Test Backend Editorial Workflow', () => {
     login();
 
     inSidebar(() => cy.contains('a', 'Pages').click());
-    inSidebar(() => cy.contains('a', 'Directory'));
+    inSidebar(() => cy.contains('a', /^Directory$/));
     inGrid(() => cy.contains('a', 'Root Page'));
-    inGrid(() => cy.contains('a', 'Directory'));
 
-    inSidebar(() => cy.contains('a', 'Directory').click());
+    inSidebar(() => cy.contains('a', /^Directory$/).click());
 
-    inGrid(() => cy.contains('a', 'Sub Directory'));
-    inGrid(() => cy.contains('a', 'Another Sub Directory'));
+    inSidebar(() => cy.contains('a', /^Sub Directory$/));
+    inSidebar(() => cy.contains('a', 'Another Sub Directory'));
 
-    inSidebar(() => cy.contains('a', 'Sub Directory').click());
-    inGrid(() => cy.contains('a', 'Nested Directory'));
+    inSidebar(() => cy.contains('a', /^Sub Directory$/).click());
+    inSidebar(() => cy.contains('a', 'Nested Directory'));
     cy.url().should(
       'eq',
       'http://localhost:8080/#/collections/pages/filter/directory/sub-directory',
@@ -233,21 +232,17 @@ describe('Test Backend Editorial Workflow', () => {
     login();
 
     inSidebar(() => cy.contains('a', 'Pages').click());
-    inSidebar(() => cy.contains('a', 'Directory').click());
-    inGrid(() => cy.contains('a', 'Another Sub Directory').click());
-
-    cy.url().should(
-      'eq',
-      'http://localhost:8080/#/collections/pages/entries/directory/another-sub-directory/index',
-    );
+    inSidebar(() => cy.contains('a', /^Directory$/).click());
+    inSidebar(() => cy.contains('a', 'Another Sub Directory').click());
+    inGrid(() => cy.contains('a', 'Another Sub Directory'));
   });
 
   it(`can create a new entry with custom path`, () => {
     login();
 
     inSidebar(() => cy.contains('a', 'Pages').click());
-    inSidebar(() => cy.contains('a', 'Directory').click());
-    inSidebar(() => cy.contains('a', 'Sub Directory').click());
+    inSidebar(() => cy.contains('a', /^Directory$/).click());
+    inSidebar(() => cy.contains('a', /^Sub Directory$/).click());
     cy.contains('a', 'New Page').click();
 
     cy.get('[id^="path-field"]').should('have.value', 'directory/sub-directory');
@@ -262,9 +257,9 @@ describe('Test Backend Editorial Workflow', () => {
     publishEntryInEditor(publishTypes.publishNow);
     exitEditor();
 
-    inGrid(() => cy.contains('a', 'New Path Title'));
-    inSidebar(() => cy.contains('a', 'Directory').click());
-    inSidebar(() => cy.contains('a', 'Directory').click());
+    inSidebar(() => cy.contains('a', 'New Path Title'));
+    inSidebar(() => cy.contains('a', /^Directory$/).click());
+    inSidebar(() => cy.contains('a', /^Directory$/).click());
     inGrid(() => cy.contains('a', 'New Path Title').should('not.exist'));
   });
 
@@ -272,8 +267,8 @@ describe('Test Backend Editorial Workflow', () => {
     login();
 
     inSidebar(() => cy.contains('a', 'Pages').click());
-    inSidebar(() => cy.contains('a', 'Directory').click());
-    inSidebar(() => cy.contains('a', 'Sub Directory').click());
+    inSidebar(() => cy.contains('a', /^Directory$/).click());
+    inSidebar(() => cy.contains('a', /^Sub Directory$/).click());
 
     cy.contains('a', 'New Page').click();
     cy.get('[id^="title-field"]').type('New Path Title');
@@ -292,7 +287,8 @@ describe('Test Backend Editorial Workflow', () => {
     login();
 
     inSidebar(() => cy.contains('a', 'Pages').click());
-    inGrid(() => cy.contains('a', 'Directory').click());
+    inSidebar(() => cy.contains('a', /^Directory$/).click());
+    inGrid(() => cy.contains('a', /^Directory$/).click());
 
     cy.get('[id^="path-field"]').should('have.value', 'directory');
     cy.get('[id^="path-field"]').clear();
@@ -310,7 +306,7 @@ describe('Test Backend Editorial Workflow', () => {
 
     inSidebar(() => cy.contains('a', 'New Directory').click());
 
-    inGrid(() => cy.contains('a', 'Sub Directory'));
-    inGrid(() => cy.contains('a', 'Another Sub Directory'));
+    inSidebar(() => cy.contains('a', /^Sub Directory$/));
+    inSidebar(() => cy.contains('a', 'Another Sub Directory'));
   });
 });

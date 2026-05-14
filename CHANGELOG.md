@@ -1,47 +1,47 @@
 # Changelog
-Netlify CMS is a collection of npm packages with their own versions and changelogs, each listed
+Decap CMS is a collection of npm packages with their own versions and changelogs, each listed
 below. The legacy pre-2.0 changelog is below as well.
 
 ## Core and distributions
-- [netlify-cms](https://github.com/decaporg/decap-cms/blob/master/packages/netlify-cms/CHANGELOG.md)
-- [netlify-cms-core](https://github.com/decaporg/decap-cms/blob/master/packages/netlify-cms-core/CHANGELOG.md)
+- [decap-cms](https://github.com/decaporg/decap-cms/blob/main/packages/decap-cms/CHANGELOG.md)
+- [decap-cms-core](https://github.com/decaporg/decap-cms/blob/main/packages/decap-cms-core/CHANGELOG.md)
 
 ## Shared libraries
-- [netlify-cms-lib-auth](https://github.com/decaporg/decap-cms/blob/master/packages/netlify-cms-lib-auth/CHANGELOG.md)
-- [netlify-cms-lib-util](https://github.com/decaporg/decap-cms/blob/master/packages/netlify-cms-lib-util/CHANGELOG.md)
-- [netlify-cms-ui-default](https://github.com/decaporg/decap-cms/blob/master/packages/netlify-cms-ui-default/CHANGELOG.md)
+- [decap-cms-lib-auth](https://github.com/decaporg/decap-cms/blob/main/packages/decap-cms-lib-auth/CHANGELOG.md)
+- [decap-cms-lib-util](https://github.com/decaporg/decap-cms/blob/main/packages/decap-cms-lib-util/CHANGELOG.md)
+- [decap-cms-ui-default](https://github.com/decaporg/decap-cms/blob/main/packages/decap-cms-ui-default/CHANGELOG.md)
 
 ## Backends
-- [netlify-cms-backend-bitbucket](https://github.com/decaporg/decap-cms/blob/master/packages/netlify-cms-backend-bitbucket/CHANGELOG.md)
-- [netlify-cms-backend-git-gateway](https://github.com/decaporg/decap-cms/blob/master/packages/netlify-cms-backend-git-gateway/CHANGELOG.md)
-- [netlify-cms-backend-github](https://github.com/decaporg/decap-cms/blob/master/packages/netlify-cms-backend-github/CHANGELOG.md)
-- [netlify-cms-backend-gitlab](https://github.com/decaporg/decap-cms/blob/master/packages/netlify-cms-backend-gitlab/CHANGELOG.md)
-- [netlify-cms-backend-test](https://github.com/decaporg/decap-cms/blob/master/packages/netlify-cms-backend-test/CHANGELOG.md)
+- [decap-cms-backend-bitbucket](https://github.com/decaporg/decap-cms/blob/main/packages/decap-cms-backend-bitbucket/CHANGELOG.md)
+- [decap-cms-backend-git-gateway](https://github.com/decaporg/decap-cms/blob/main/packages/decap-cms-backend-git-gateway/CHANGELOG.md)
+- [decap-cms-backend-github](https://github.com/decaporg/decap-cms/blob/main/packages/decap-cms-backend-github/CHANGELOG.md)
+- [decap-cms-backend-gitlab](https://github.com/decaporg/decap-cms/blob/main/packages/decap-cms-backend-gitlab/CHANGELOG.md)
+- [decap-cms-backend-test](https://github.com/decaporg/decap-cms/blob/main/packages/decap-cms-backend-test/CHANGELOG.md)
 
 ## Editor Components
-- [netlify-cms-editor-component-image](https://github.com/decaporg/decap-cms/blob/master/packages/netlify-cms-editor-component-image/CHANGELOG.md)
+- [decap-cms-editor-component-image](https://github.com/decaporg/decap-cms/blob/main/packages/decap-cms-editor-component-image/CHANGELOG.md)
 
 ## Widgets
-- [netlify-cms-widget-boolean](https://github.com/decaporg/decap-cms/blob/master/packages/netlify-cms-widget-boolean/CHANGELOG.md)
-- [netlify-cms-widget-date](https://github.com/decaporg/decap-cms/blob/master/packages/netlify-cms-widget-date/CHANGELOG.md)
-- [netlify-cms-widget-datetime](https://github.com/decaporg/decap-cms/blob/master/packages/netlify-cms-widget-datetime/CHANGELOG.md)
-- [netlify-cms-widget-file](https://github.com/decaporg/decap-cms/blob/master/packages/netlify-cms-widget-file/CHANGELOG.md)
-- [netlify-cms-widget-image](https://github.com/decaporg/decap-cms/blob/master/packages/netlify-cms-widget-image/CHANGELOG.md)
-- [netlify-cms-widget-list](https://github.com/decaporg/decap-cms/blob/master/packages/netlify-cms-widget-list/CHANGELOG.md)
-- [netlify-cms-widget-markdown](https://github.com/decaporg/decap-cms/blob/master/packages/netlify-cms-widget-markdown/CHANGELOG.md)
-- [netlify-cms-widget-number](https://github.com/decaporg/decap-cms/blob/master/packages/netlify-cms-widget-number/CHANGELOG.md)
-- [netlify-cms-widget-object](https://github.com/decaporg/decap-cms/blob/master/packages/netlify-cms-widget-object/CHANGELOG.md)
-- [netlify-cms-widget-relation](https://github.com/decaporg/decap-cms/blob/master/packages/netlify-cms-widget-relation/CHANGELOG.md)
-- [netlify-cms-widget-select](https://github.com/decaporg/decap-cms/blob/master/packages/netlify-cms-widget-select/CHANGELOG.md)
-- [netlify-cms-widget-string](https://github.com/decaporg/decap-cms/blob/master/packages/netlify-cms-widget-string/CHANGELOG.md)
-- [netlify-cms-widget-text](https://github.com/decaporg/decap-cms/blob/master/packages/netlify-cms-widget-text/CHANGELOG.md)
+- [decap-cms-widget-boolean](https://github.com/decaporg/decap-cms/blob/main/packages/decap-cms-widget-boolean/CHANGELOG.md)
+- [decap-cms-widget-date](https://github.com/decaporg/decap-cms/blob/main/packages/decap-cms-widget-date/CHANGELOG.md)
+- [decap-cms-widget-datetime](https://github.com/decaporg/decap-cms/blob/main/packages/decap-cms-widget-datetime/CHANGELOG.md)
+- [decap-cms-widget-file](https://github.com/decaporg/decap-cms/blob/main/packages/decap-cms-widget-file/CHANGELOG.md)
+- [decap-cms-widget-image](https://github.com/decaporg/decap-cms/blob/main/packages/decap-cms-widget-image/CHANGELOG.md)
+- [decap-cms-widget-list](https://github.com/decaporg/decap-cms/blob/main/packages/decap-cms-widget-list/CHANGELOG.md)
+- [decap-cms-widget-markdown](https://github.com/decaporg/decap-cms/blob/main/packages/decap-cms-widget-markdown/CHANGELOG.md)
+- [decap-cms-widget-number](https://github.com/decaporg/decap-cms/blob/main/packages/decap-cms-widget-number/CHANGELOG.md)
+- [decap-cms-widget-object](https://github.com/decaporg/decap-cms/blob/main/packages/decap-cms-widget-object/CHANGELOG.md)
+- [decap-cms-widget-relation](https://github.com/decaporg/decap-cms/blob/main/packages/decap-cms-widget-relation/CHANGELOG.md)
+- [decap-cms-widget-select](https://github.com/decaporg/decap-cms/blob/main/packages/decap-cms-widget-select/CHANGELOG.md)
+- [decap-cms-widget-string](https://github.com/decaporg/decap-cms/blob/main/packages/decap-cms-widget-string/CHANGELOG.md)
+- [decap-cms-widget-text](https://github.com/decaporg/decap-cms/blob/main/packages/decap-cms-widget-text/CHANGELOG.md)
 
 ## Legacy Changelog
 
 ## [Unreleased] ([demo](https://cms-demo.netlify.com/))
 <details>
   <summary>
-    Changes that have landed in master but are not yet released.
+    Changes that have landed in main but are not yet released.
     Click to see more.
   </summary>
 
@@ -236,7 +236,7 @@ Fixes date widget default format, collection load failure when entry fails
 ## 1.3.1 (March 3, 2018) ([demo](https://1-3-1--cms-demo.netlify.com/))
 Fixes editorial workflow failure for unknown collections.
 
-* Report editorial workflow load errors, ignore entries with unkown collections ([@erquhart](https://github.com/erquhart) in [#1153](https://github.com/decaporg/decap-cms/pull/1153))
+* Report editorial workflow load errors, ignore entries with unknown collections ([@erquhart](https://github.com/erquhart) in [#1153](https://github.com/decaporg/decap-cms/pull/1153))
 
 
 ## 1.3.0 (February 27, 2018) ([demo](https://1-3-0--cms-demo.netlify.com/))

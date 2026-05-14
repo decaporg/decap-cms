@@ -8,7 +8,7 @@ const mode = 'fs';
 const expectedEnContent = `---
 template: post
 title: first title
-date: 1970-01-01T00:00:00.000Z
+date: 1970-01-01T01:00
 description: first description
 category: first category
 tags:
@@ -18,20 +18,20 @@ tags:
 
 const expectedDeContent = `---
 title: de
-date: 1970-01-01T00:00:00.000Z
+date: 1970-01-01T01:00
 ---
 `;
 
 const expectedFrContent = `---
 title: fr
-date: 1970-01-01T00:00:00.000Z
+date: 1970-01-01T01:00
 ---
 `;
 
 const contentSingleFile = `---
 en:
   template: post
-  date: 1970-01-01T00:00:00.000Z
+  date: 1970-01-01T01:00
   title: first title
   body: first body
   description: first description
@@ -39,10 +39,10 @@ en:
   tags:
     - tag1
 de:
-  date: 1970-01-01T00:00:00.000Z
+  date: 1970-01-01T01:00
   title: de
 fr:
-  date: 1970-01-01T00:00:00.000Z
+  date: 1970-01-01T01:00
   title: fr
 ---
 `;
