@@ -29,6 +29,6 @@ GIT_REPO_DIRECTORY=FULL_PATH_TO_LOCAL_GIT_REPO
 PORT=CUSTOM_PORT
 # optional, only listen for incoming connections on a specific IP address
 BIND_HOST=127.0.0.1
-# optional, restrict API requests to a specific origin
+# optional, restrict API requests to a specific origin. Default is /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/ to allow requests from localhost and 127.0.0.1.
 ORIGIN=https://example.com
 ```
