@@ -376,6 +376,9 @@ const reactSelectStyles = {
     border: 0,
     boxShadow: 'none',
     padding: '9px 0 9px 12px',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
   }),
   option: (styles, state) => ({
     ...styles,

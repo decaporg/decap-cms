@@ -3,8 +3,8 @@
     "declaration": true,
     "jsx": "react",
     "target": "esnext",
-    "module": "esnext",
-    "moduleResolution": "node",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "esModuleInterop": true,
     "noEmit": true,
     "strict": true,
@@ -20,7 +20,8 @@
       "decap-cms-backend-github": ["packages/decap-cms-backend-github/src"],
       "decap-cms-backend-gitlab": ["packages/decap-cms-backend-gitlab/src"],
       "decap-cms-lib-util": ["packages/decap-cms-lib-util/src"],
-      "decap-cms-lib-widgets": ["packages/decap-cms-lib-widgets/src"]
+      "decap-cms-lib-widgets": ["packages/decap-cms-lib-widgets/src"],
+      "decap-cms-ui-default": ["packages/decap-cms-ui-default/src"],
     }
   },
   "include": ["**/src/**/*"],

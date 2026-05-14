@@ -50,11 +50,17 @@
   }
 
   var ONE_DAY = 60 * 60 * 24 * 1000;
+  var ONE_WEEK = ONE_DAY * 7;
 
   for (var i=1; i<=20; i++) {
     var date = new Date();
 
-    date.setTime(date.getTime() + ONE_DAY);
+    if (i % 2 === 0) {
+      date.setTime(date.getTime() + ONE_DAY);
+    } else {
+      date.setTime(date.getTime() - ONE_WEEK);
+    }
+
     var month = ('0' + (date.getMonth()+1)).slice(-2)
     var day = ('0' + (date.getDate())).slice(-2)
     var dateString = '' + date.getFullYear() + '-' + month + '-' + day;
@@ -125,7 +131,10 @@
           h('p', {},
             h('small', {}, "Written " + entry.getIn(['data', 'date']))
           ),
-          h('div', {"className": "text"}, this.props.widgetFor('body'))
+          h('h2', {}, "Richtext Widget"),
+          h('div', {"className": "text"}, this.props.widgetFor('body')),
+          h('h2', {}, "Markdown Widget"),
+          h('div', {"className": "text"}, this.props.widgetFor('bodyold'))
         );
       }
     });
@@ -237,6 +246,39 @@
         );
       }
     });
+    CMS.registerEditorComponent({
+      id: 'container-markdown',
+      label: 'Container Markdown',
+      fields: [
+        { name: 'inner', label: 'Body', widget: 'markdown', editor_components: [] },
+      ],
+      pattern: /^{{< container-markdown >}}(.*?){{< \/container-markdown >}}/s,
+      fromBlock (match) {
+        return {
+          inner: match[1] || '',
+        }
+      },
+      toBlock (obj) {
+        return `{{< container-markdown >}}${obj.inner}{{< /container-markdown >}}`
+      },
+    })
+    CMS.registerEditorComponent({
+      id: 'container-richtext',
+      label: 'Container Richtext',
+      fields: [
+        { name: 'inner', label: 'Body', widget: 'richtext', editor_components: ['container-richtext'] },
+      ],
+      pattern: /^{{< container-richtext >}}(.*?){{< \/container-richtext >}}/s,
+      fromBlock (match) {
+        return {
+          inner: match[1] || '',
+        }
+      },
+      toBlock (obj) {
+        return `{{< container-richtext >}}${obj.inner}{{< /container-richtext >}}`
+      },
+    })
+
   </script>
 </body>
 </html>

@@ -18,6 +18,7 @@ import materialTheme from 'codemirror/theme/material.css';
 import SettingsPane from './SettingsPane';
 import SettingsButton from './SettingsButton';
 import languageData from '../data/languages.json';
+import { getLanguageLoader } from './languageLoaders';
 
 // TODO: relocate as a utility function
 function getChangedProps(previous, next, keys) {
@@ -77,6 +78,7 @@ export default class CodeControl extends React.Component {
 
   state = {
     isActive: false,
+    isLangInitialized: false,
     unknownLang: null,
     lang: '',
     keyMap: localStorage.getItem(settingsPersistKeys['keyMap']) || 'default',
@@ -120,11 +122,19 @@ export default class CodeControl extends React.Component {
     }
   }
 
-  updateCodeMirrorProps(prevState) {
+  async updateCodeMirrorProps(prevState) {
     const keys = ['lang', 'theme', 'keyMap'];
     const changedProps = getChangedProps(prevState, this.state, keys);
     if (changedProps) {
-      this.handleChangeCodeMirrorProps(changedProps);
+      // Check if this is the initial setting of the language prop
+      const shouldIgnoreLangChange =
+        !this.state.isLangInitialized &&
+        !!changedProps?.lang &&
+        Object.keys(changedProps).length === 1;
+
+      this.setState({ isLangInitialized: true });
+
+      await this.handleChangeCodeMirrorProps(changedProps, shouldIgnoreLangChange);
     }
   }
 
@@ -192,13 +202,20 @@ export default class CodeControl extends React.Component {
     return !field.get('output_code_only') || isEditorComponent;
   }
 
-  async handleChangeCodeMirrorProps(changedProps) {
+  async handleChangeCodeMirrorProps(changedProps, ignoreLangChange = false) {
     const { onChange } = this.props;
 
     if (changedProps.lang) {
       const { mode } = this.getLanguageByName(changedProps.lang) || {};
       if (mode) {
-        require(`codemirror/mode/${mode}/${mode}.js`);
+        const loader = getLanguageLoader(mode);
+        if (loader) {
+          try {
+            await loader();
+          } catch (e) {
+            console.warn(`Failed to load CodeMirror mode: ${mode}`, e);
+          }
+        }
       }
     }
 
@@ -222,7 +239,7 @@ export default class CodeControl extends React.Component {
 
     // Only persist the language change if supported - requires the value to be
     // a map rather than just a code string.
-    if (changedProps.lang && this.valueIsMap()) {
+    if (changedProps.lang && !ignoreLangChange && this.valueIsMap()) {
       onChange(this.toValue('lang', changedProps.lang));
     }
   }
