@@ -459,6 +459,17 @@ export async function detectProxyServer(localBackend?: boolean | CmsLocalBackend
       : localBackend.url || defaultUrl.replace('localhost', location.hostname);
 
   try {
+    const { protocol } = new URL(proxyUrl);
+    if (protocol !== 'http:' && protocol !== 'https:') {
+      console.log(`Decap CMS local_backend url must use http or https, ignoring '${proxyUrl}'`);
+      return {};
+    }
+  } catch {
+    console.log(`Decap CMS local_backend url '${proxyUrl}' is not a valid URL`);
+    return {};
+  }
+
+  try {
     console.log(`Looking for Decap CMS Proxy Server at '${proxyUrl}'`);
     const res = await fetch(`${proxyUrl}`, {
       method: 'POST',

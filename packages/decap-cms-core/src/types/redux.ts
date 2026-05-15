@@ -596,6 +596,7 @@ export type EntryField = StaticallyTypedRecord<{
   name: string;
   default: string | null | boolean | List<unknown>;
   media_folder?: string;
+  multiple?: boolean;
   public_folder?: string;
   comment?: string;
   meta?: boolean;
