@@ -691,4 +691,37 @@ describe('entries', () => {
       ]),
     );
   });
+
+  describe('selectEntries with index_file', () => {
+    it('should load entries collection with index_file configuration', () => {
+      const entries = [
+        { slug: 'post-1', path: '' },
+        { slug: '_index', path: '', meta: { path_type: 'index' } },
+      ];
+      const result = reducer(
+        initialState,
+        actions.entriesLoaded(fromJS({ name: 'posts' }), entries, 0),
+      );
+      const state = result;
+      const collection = fromJS({
+        name: 'posts',
+        index_file: {
+          pattern: '_index',
+        },
+      });
+
+      const loadedEntries = selectEntries(state, collection);
+      expect(loadedEntries.size).toBe(2);
+    });
+
+    it('should handle entries with path_type meta field', () => {
+      const entries = [{ slug: '_index', path: '', meta: { path_type: 'index' } }];
+      const result = reducer(
+        initialState,
+        actions.entriesLoaded(fromJS({ name: 'posts' }), entries, 0),
+      );
+      const indexEntry = result.getIn(['entities', 'posts._index']);
+      expect(indexEntry.getIn(['meta', 'path_type'])).toBe('index');
+    });
+  });
 });

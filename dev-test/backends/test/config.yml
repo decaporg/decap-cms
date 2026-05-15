@@ -33,6 +33,13 @@ collections: # A list of collections the CMS should be able to edit
         pattern: \d{4}
       - label: Drafts
         field: draft
+    index_file:
+      pattern: _index
+      editor:
+        preview: false
+      fields: 
+        - { label: 'Title', name: 'title', widget: 'string', tagname: 'h1' }
+        - { label: 'Body', name: 'body', widget: 'markdown', hint: 'Main content goes here.' }
     fields: # The fields each document in this collection have
       - { label: 'Title', name: 'title', widget: 'string', tagname: 'h1' }
       - { label: 'Draft', name: 'draft', widget: 'boolean', default: false }

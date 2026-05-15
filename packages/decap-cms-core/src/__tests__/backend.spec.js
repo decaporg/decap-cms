@@ -522,7 +522,7 @@ describe('Backend', () => {
         partial: false,
         raw: '---\ntitle: "Hello World"\n---\n',
         data: { title: 'Hello World' },
-        meta: { path: 'src/posts/index.md' },
+        meta: { path: 'src/posts/index.md', path_type: 'slug' },
         i18n: {},
         label: null,
         isModification: true,
@@ -530,6 +530,101 @@ describe('Backend', () => {
         status: '',
         updatedOn: '',
       });
+    });
+  });
+
+  describe('processEntries', () => {
+    it('should include path_type "slug" in meta for regular entries', () => {
+      const implementation = {
+        init: jest.fn(() => implementation),
+      };
+      const backend = new Backend(implementation, { config: {}, backendName: 'github' });
+
+      const collection = fromJS({
+        name: 'posts',
+        type: FOLDER,
+        folder: 'src/posts',
+        fields: [{ name: 'title' }],
+      });
+
+      const loadedEntries = [
+        {
+          data: '---\ntitle: "My Post"\n---\n',
+          file: { path: 'src/posts/my-post.md' },
+        },
+      ];
+
+      const result = backend.processEntries(loadedEntries, collection);
+      expect(result[0].meta).toEqual(
+        expect.objectContaining({
+          path_type: 'slug',
+        }),
+      );
+    });
+
+    it('should include path_type "index" in meta for index file entries', () => {
+      const implementation = {
+        init: jest.fn(() => implementation),
+      };
+      const backend = new Backend(implementation, { config: {}, backendName: 'github' });
+
+      const collection = fromJS({
+        name: 'posts',
+        type: FOLDER,
+        folder: 'src/posts',
+        fields: [{ name: 'title' }],
+        index_file: {
+          pattern: '^_index$',
+          fields: [{ name: 'description' }],
+        },
+      });
+
+      const loadedEntries = [
+        {
+          data: '---\ntitle: "Index"\n---\n',
+          file: { path: 'src/posts/_index.md' },
+        },
+      ];
+
+      const result = backend.processEntries(loadedEntries, collection);
+      expect(result[0].meta).toEqual(
+        expect.objectContaining({
+          path_type: 'index',
+        }),
+      );
+    });
+
+    it('should process multiple entries with correct path_type for each', () => {
+      const implementation = {
+        init: jest.fn(() => implementation),
+      };
+      const backend = new Backend(implementation, { config: {}, backendName: 'github' });
+
+      const collection = fromJS({
+        name: 'posts',
+        type: FOLDER,
+        folder: 'src/posts',
+        fields: [{ name: 'title' }],
+        index_file: {
+          pattern: '^_index$',
+          fields: [{ name: 'description' }],
+        },
+      });
+
+      const loadedEntries = [
+        {
+          data: '---\ntitle: "Index"\n---\n',
+          file: { path: 'src/posts/_index.md' },
+        },
+        {
+          data: '---\ntitle: "Regular Post"\n---\n',
+          file: { path: 'src/posts/my-post.md' },
+        },
+      ];
+
+      const result = backend.processEntries(loadedEntries, collection);
+      expect(result[0].meta.path_type).toBe('index');
+      expect(result[1].meta.path_type).toBe('slug');
     });
   });
 

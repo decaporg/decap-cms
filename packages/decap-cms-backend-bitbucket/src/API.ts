@@ -427,7 +427,7 @@ export default class API {
   };
 
   async uploadFiles(
-    files: { path: string; newPath?: string; delete?: boolean }[],
+    files: { path: string; newPath?: string; delete?: boolean; isFolder?: boolean }[],
     {
       commitMessage,
       branch,
@@ -435,14 +435,14 @@ export default class API {
     }: { commitMessage: string; branch: string; parentSha?: string },
   ) {
     const formData = new FormData();
-    const toMove: { from: string; to: string; contentBlob: Blob }[] = [];
+    const toMove: { from: string; to: string; contentBlob: Blob; isFolder?: boolean }[] = [];
     files.forEach(file => {
       if (file.delete) {
         // delete the file
         formData.append('files', file.path);
       } else if (file.newPath) {
         const contentBlob = get(file, 'fileObj', new Blob([(file as DataFile).raw]));
-        toMove.push({ from: file.path, to: file.newPath, contentBlob });
+        toMove.push({ from: file.path, to: file.newPath, contentBlob, isFolder: file.isFolder });
       } else {
         // add/modify the file
         const contentBlob = get(file, 'fileObj', new Blob([(file as DataFile).raw]));
@@ -450,12 +450,16 @@ export default class API {
         formData.append(file.path, contentBlob, basename(file.path));
       }
     });
-    for (const { from, to, contentBlob } of toMove) {
+    for (const { from, to, contentBlob, isFolder } of toMove) {
       const sourceDir = dirname(from);
       const destDir = dirname(to);
       const filesBranch = parentSha ? this.branch : branch;
       const files = await this.listAllFiles(sourceDir, 100, filesBranch);
       for (const file of files) {
+        // skip moving children for non-folder (slug) type entries
+        if (isFolder === false && file.path !== from) {
+          continue;
+        }
         // to move a file in Bitbucket we need to delete the old path
         // and upload the file content to the new path
         // NOTE: this is very wasteful, and also the Bitbucket `diff` API

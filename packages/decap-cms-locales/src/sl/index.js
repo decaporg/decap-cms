@@ -49,6 +49,10 @@ const sl = {
       searchResultsInCollection: 'Rezultati iskanja za "%{searchTerm}" v %{collection}',
       filterBy: 'Filtriraj po',
       groupBy: 'Grupiraj po',
+      pathTypes: {
+        index: 'Razdelilna stran',
+        content: 'Vsebinska stran',
+      },
     },
     entries: {
       loadingEntries: 'Nalaganje vnosov ...',

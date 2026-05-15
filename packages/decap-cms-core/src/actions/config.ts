@@ -23,10 +23,13 @@ import type {
   CmsFieldBase,
   CmsFieldObject,
   CmsFieldList,
+  CmsFieldSelect,
+  CmsFieldMeta,
   CmsI18nConfig,
   CmsPublishMode,
   CmsLocalBackend,
   State,
+  CmsCollectionMeta,
 } from '../types/redux';
 
 export const CONFIG_REQUEST = 'CONFIG_REQUEST';
@@ -228,6 +231,39 @@ export function normalizeConfig(config: CmsConfig) {
   return { ...config, collections: normalizedCollections };
 }
 
+function applyMetaFieldsToCollection(collection: CmsCollection, meta: CmsCollectionMeta) {
+  const metaFields: CmsFieldBase[] = [
+    {
+      name: 'path',
+      meta: true,
+      required: true,
+      i18n: 'duplicate',
+      default: '/',
+      ...meta!.path,
+    } as CmsFieldMeta,
+  ];
+
+  if (collection.index_file) {
+    metaFields.push({
+      name: 'path_type',
+      meta: true,
+      required: true,
+      widget: 'select',
+      readonly: true,
+      i18n: 'duplicate',
+      label: 'Path type',
+      options: ['index', 'slug'],
+      default: 'slug',
+    } as CmsFieldBase & CmsFieldSelect);
+  }
+
+  collection.fields = [...metaFields, ...(collection.fields || [])];
+
+  if (collection.index_file?.fields) {
+    collection.index_file.fields = [...metaFields, ...(collection.index_file.fields || [])];
+  }
+}
+
 export function applyDefaults(originalConfig: CmsConfig) {
   return produce(originalConfig, config => {
     config.publish_mode = config.publish_mode || SIMPLE_PUBLISH_MODE;
@@ -287,6 +323,13 @@ export function applyDefaults(originalConfig: CmsConfig) {
         collection.fields = setI18nDefaultsForFields(collection.fields, Boolean(collectionI18n));
       }
 
+      if (collection.index_file?.fields) {
+        collection.index_file.fields = setI18nDefaultsForFields(
+          collection.index_file.fields,
+          Boolean(collectionI18n),
+        );
+      }
+
       const { folder, files, view_filters, view_groups, meta } = collection;
 
       if (folder) {
@@ -308,13 +351,7 @@ export function applyDefaults(originalConfig: CmsConfig) {
         collection.folder = trim(folder, '/');
 
         if (meta && meta.path) {
-          const metaField = {
-            name: 'path',
-            meta: true,
-            required: true,
-            ...meta.path,
-          };
-          collection.fields = [metaField, ...(collection.fields || [])];
+          applyMetaFieldsToCollection(collection, meta);
         }
       }
 

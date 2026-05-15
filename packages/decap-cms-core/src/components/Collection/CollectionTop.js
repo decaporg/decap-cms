@@ -4,7 +4,15 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { translate } from 'react-polyglot';
 import { Link } from 'react-router-dom';
-import { components, buttons, shadows } from 'decap-cms-ui-default';
+import {
+  Dropdown,
+  DropdownItem,
+  StyledDropdownButton,
+  components,
+  buttons,
+  shadows,
+} from 'decap-cms-ui-default';
+import { createHashHistory } from 'history';
 
 const CollectionTopContainer = styled.div`
   ${components.cardTop};
@@ -30,6 +38,15 @@ const CollectionTopNewButton = styled(Link)`
   padding: 0 30px;
 `;
 
+const CollectionTopDropdownButton = styled(StyledDropdownButton)`
+  ${buttons.button};
+  ${shadows.dropDeep};
+  ${buttons.default};
+  ${buttons.gray};
+
+  padding: 0 30px 0 15px;
+`;
+
 const CollectionTopDescription = styled.p`
   ${components.cardTopDescription};
   margin-bottom: 0;
@@ -47,17 +64,50 @@ function getCollectionProps(collection) {
   };
 }
 
+const history = createHashHistory();
+
 function CollectionTop({ collection, newEntryUrl, t }) {
   const { collectionLabel, collectionLabelSingular, collectionDescription } = getCollectionProps(
     collection,
     t,
   );
 
+  const indexFileConfig = collection.get('index_file');
+
+  function handleNew(pathType) {
+    const delimiter = newEntryUrl.includes('?') ? '&' : '?';
+    history.push(`${newEntryUrl}${delimiter}path_type=${pathType}`);
+  }
+
   return (
     <CollectionTopContainer>
       <CollectionTopRow>
         <CollectionTopHeading>{collectionLabel}</CollectionTopHeading>
-        {newEntryUrl ? (
+        {indexFileConfig && collection.get('nested') ? (
+          <Dropdown
+            renderButton={() => (
+              <CollectionTopDropdownButton>
+                {t('collection.collectionTop.newButton', {
+                  collectionLabel: collectionLabelSingular || collectionLabel,
+                })}
+              </CollectionTopDropdownButton>
+            )}
+            dropdownTopOverlap="30px"
+            dropdownWidth="160px"
+            dropdownPosition="left"
+          >
+            <DropdownItem
+              key={'_index'}
+              label={t('collection.collectionTop.pathTypes.index')}
+              onClick={() => handleNew('index')}
+            />
+            <DropdownItem
+              key={'{{slug}}'}
+              label={t('collection.collectionTop.pathTypes.content')}
+              onClick={() => handleNew('slug')}
+            />
+          </Dropdown>
+        ) : newEntryUrl ? (
           <CollectionTopNewButton to={newEntryUrl}>
             {t('collection.collectionTop.newButton', {
               collectionLabel: collectionLabelSingular || collectionLabel,

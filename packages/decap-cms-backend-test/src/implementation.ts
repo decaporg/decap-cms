@@ -36,6 +36,7 @@ type Diff = {
   newFile: boolean;
   status: string;
   content: string | AssetProxy;
+  isFolder?: boolean;
 };
 
 type UnpublishedRepoEntry = {
@@ -276,7 +277,7 @@ export default class TestBackend implements Implementation {
   ) {
     const diffs: Diff[] = [];
     dataFiles.forEach(dataFile => {
-      const { path, newPath, raw } = dataFile;
+      const { path, newPath, raw, isFolder } = dataFile;
       const currentDataFile = window.repoFilesUnpublished[key]?.diffs.find(d => d.path === path);
       const originalPath = currentDataFile ? currentDataFile.originalPath : path;
       diffs.push({
@@ -286,6 +287,7 @@ export default class TestBackend implements Implementation {
         newFile: isEmpty(getFile(originalPath as string, window.repoFiles)),
         status: 'added',
         content: raw,
+        isFolder,
       });
     });
     assetProxies.forEach(a => {
@@ -327,8 +329,35 @@ export default class TestBackend implements Implementation {
     }
 
     entry.dataFiles.forEach(dataFile => {
-      const { path, raw } = dataFile;
-      writeFile(path, raw, window.repoFiles);
+      const { path, newPath, raw, isFolder } = dataFile;
+      if (newPath && newPath !== path) {
+        const sourceDir = dirname(path);
+        const destDir = dirname(newPath);
+        if (sourceDir !== destDir) {
+          if (isFolder !== false) {
+            // move all children in the directory for folder-type (index) entries
+            const rootFolder = path.split('/')[0];
+            const toMove = getFolderFiles(window.repoFiles, rootFolder, '', 100).filter(f =>
+              f.path.startsWith(sourceDir + '/'),
+            );
+            toMove.forEach(f => {
+              deleteFile(f.path, window.repoFiles);
+              if (f.path !== path) {
+                writeFile(f.path.replace(sourceDir, destDir), f.content, window.repoFiles);
+              }
+            });
+          } else {
+            // only move the single file for slug-type entries
+            deleteFile(path, window.repoFiles);
+          }
+        } else {
+          // same directory, just rename the file
+          deleteFile(path, window.repoFiles);
+        }
+        writeFile(newPath, raw, window.repoFiles);
+      } else {
+        writeFile(path, raw, window.repoFiles);
+      }
     });
     entry.assets.forEach(a => {
       writeFile(a.path, a, window.repoFiles);
@@ -353,13 +382,26 @@ export default class TestBackend implements Implementation {
         const originalPath = d.originalPath;
         const sourceDir = dirname(originalPath);
         const destDir = dirname(d.path);
-        const toMove = getFolderFiles(tree, originalPath.split('/')[0], '', 100).filter(f =>
-          f.path.startsWith(sourceDir),
-        );
-        toMove.forEach(f => {
-          deleteFile(f.path, tree);
-          writeFile(f.path.replace(sourceDir, destDir), f.content, tree);
-        });
+        if (sourceDir !== destDir) {
+          if (d.isFolder !== false) {
+            // move all children in the directory for folder-type (index) entries
+            const toMove = getFolderFiles(tree, originalPath.split('/')[0], '', 100).filter(f =>
+              f.path.startsWith(sourceDir + '/'),
+            );
+            toMove.forEach(f => {
+              deleteFile(f.path, tree);
+              if (f.path !== originalPath) {
+                writeFile(f.path.replace(sourceDir, destDir), f.content, tree);
+              }
+            });
+          } else {
+            // only move the single file for slug-type entries
+            deleteFile(originalPath, tree);
+          }
+        } else {
+          // same directory, just rename the file
+          deleteFile(originalPath, tree);
+        }
       }
       writeFile(d.path, d.content, tree);
     });

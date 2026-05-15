@@ -4,7 +4,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 
 function isVisible(field) {
-  return field.get('widget') !== 'hidden';
+  return field.get('widget') !== 'hidden' && !field.get('meta');
 }
 
 const PreviewContainer = styled.div`

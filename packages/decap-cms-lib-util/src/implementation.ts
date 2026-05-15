@@ -61,6 +61,7 @@ export type DataFile = {
   slug: string;
   raw: string;
   newPath?: string;
+  isFolder?: boolean;
 };
 
 export type AssetProxy = {
