@@ -273,7 +273,7 @@ export interface CmsFieldMeta {
   label: string;
   widget: string;
   required: boolean;
-  index_file: string;
+  index_file?: string;
   meta: boolean;
 }
 
@@ -356,7 +356,7 @@ export interface CmsCollection {
     depth: number;
   };
   type: typeof FOLDER | typeof FILES;
-  meta?: { path?: { label: string; widget: string; index_file: string } };
+  meta?: { path?: { label: string; widget: string; index_file?: string } };
 
   /**
    * It accepts the following values: yml, yaml, toml, json, md, markdown, html
@@ -596,6 +596,7 @@ export type EntryField = StaticallyTypedRecord<{
   name: string;
   default: string | null | boolean | List<unknown>;
   media_folder?: string;
+  multiple?: boolean;
   public_folder?: string;
   comment?: string;
   meta?: boolean;
