@@ -299,7 +299,7 @@ declare module 'decap-cms-core' {
   export interface ViewFilter {
     label: string;
     field: string;
-    pattern: string;
+    pattern: string | boolean;
   }
 
   export interface ViewGroup {

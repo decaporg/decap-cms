@@ -72,7 +72,7 @@ export interface CmsFieldBase {
   label?: string;
   required?: boolean;
   hint?: string;
-  pattern?: [string, string];
+  pattern?: [string | RegExp, string];
   i18n?: boolean | 'translate' | 'duplicate' | 'none';
   media_folder?: string;
   public_folder?: string;
@@ -315,14 +315,14 @@ export interface CmsCollectionFile {
 export interface ViewFilter {
   label: string;
   field: string;
-  pattern: string;
+  pattern: string | boolean;
   id: string;
 }
 
 export interface ViewGroup {
   label: string;
   field: string;
-  pattern: string;
+  pattern?: string;
   id: string;
 }
 
