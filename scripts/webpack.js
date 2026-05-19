@@ -1,6 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
-const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
+const FriendlyErrorsWebpackPlugin = require('@soda/friendly-errors-webpack-plugin');
 const { flatMap } = require('lodash');
 
 const { toGlobalName, externals } = require('./externals');
@@ -28,9 +28,7 @@ function rules() {
     css: () => [
       {
         test: /\.css$/,
-        include: ['ol', 'redux-notifications', 'react-datetime', 'codemirror'].map(
-          moduleNameToPath,
-        ),
+        include: ['ol', 'react-toastify', 'codemirror'].map(moduleNameToPath),
         use: ['to-string-loader', 'css-loader'],
       },
     ],
@@ -39,14 +37,29 @@ function rules() {
       exclude: [/node_modules/],
       use: 'svg-inline-loader',
     }),
+    vfile: () => ({
+      test: /node_modules\/vfile\/core\.js/,
+      use: [
+        {
+          loader: 'imports-loader',
+          options: {
+            type: 'commonjs',
+            imports: ['single process/browser process'],
+          },
+        },
+      ],
+    }),
   };
 }
 
 function plugins() {
   return {
-    ignoreEsprima: () => new webpack.IgnorePlugin(/^esprima$/, /js-yaml/),
-    ignoreMomentOptionalDeps: () => new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+    ignoreEsprima: () => new webpack.IgnorePlugin({ resourceRegExp: /^esprima$/ }),
     friendlyErrors: () => new FriendlyErrorsWebpackPlugin(),
+    buffer: () =>
+      new webpack.ProvidePlugin({
+        Buffer: ['buffer', 'Buffer'],
+      }),
   };
 }
 
@@ -126,9 +139,7 @@ function baseConfig({ target = isProduction ? 'umd' : 'umddir' } = {}) {
     },
     resolve: {
       extensions: ['.ts', '.tsx', '.js', '.json'],
-      alias: {
-        moment$: 'moment/moment.js',
-      },
+      fallback: { stream: require.resolve('stream-browserify') },
     },
     plugins: Object.values(plugins()).map(plugin => plugin()),
     devtool: isTest ? '' : 'source-map',
@@ -155,7 +166,7 @@ function baseConfig({ target = isProduction ? 'umd' : 'umddir' } = {}) {
 
 function getConfig({ baseOnly = false } = {}) {
   if (baseOnly) {
-    // netlify-cms build
+    // decap-cms build
     return baseConfig({ target: 'umd' });
   }
   return [baseConfig({ target: 'umd' })];

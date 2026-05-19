@@ -1,0 +1,41 @@
+{
+  "name": "decap-cms-widget-file",
+  "description": "Widget for uploading files in Decap CMS.",
+  "version": "3.2.0",
+  "homepage": "https://www.decapcms.org/docs/widgets/#file",
+  "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-widget-file",
+  "bugs": "https://github.com/decaporg/decap-cms/issues",
+  "module": "dist/esm/index.js",
+  "main": "dist/decap-cms-widget-file.js",
+  "license": "MIT",
+  "keywords": [
+    "decap-cms",
+    "widget",
+    "file",
+    "upload",
+    "file-upload"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "develop": "npm run build:esm -- --watch",
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
+  },
+  "dependencies": {
+    "@dnd-kit/core": "^6.0.8",
+    "@dnd-kit/modifiers": "^6.0.1",
+    "@dnd-kit/sortable": "^7.0.2",
+    "array-move": "4.0.0",
+    "common-tags": "^1.8.0"
+  },
+  "peerDependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "decap-cms-ui-default": "^3.0.0",
+    "immutable": "^3.7.6",
+    "prop-types": "^15.7.2",
+    "react": "^19.1.0",
+    "react-immutable-proptypes": "^2.1.0",
+    "uuid": "^8.3.2"
+  }
+}

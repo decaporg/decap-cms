@@ -1,0 +1,27 @@
+{
+  "name": "decap-cms-widget-number",
+  "description": "Widget for editing numeric values in Decap CMS.",
+  "version": "3.2.0",
+  "homepage": "https://www.decapcms.org/docs/widgets/#number",
+  "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-widget-number",
+  "bugs": "https://github.com/decaporg/decap-cms/issues",
+  "module": "dist/esm/index.js",
+  "main": "dist/decap-cms-widget-number.js",
+  "license": "MIT",
+  "keywords": [
+    "decap-cms",
+    "widget",
+    "number"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "develop": "npm run build:esm -- --watch",
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
+  },
+  "peerDependencies": {
+    "decap-cms-ui-default": "^3.0.0",
+    "prop-types": "^15.7.2",
+    "react": "^19.1.0"
+  }
+}

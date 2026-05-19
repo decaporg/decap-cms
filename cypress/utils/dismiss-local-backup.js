@@ -1,4 +1,4 @@
-import { en } from '../../packages/netlify-cms-locales/src';
+import { en } from '../../packages/decap-cms-locales/src';
 
 // Prevents unsaved changes in dev local storage from being used
 Cypress.on('window:confirm', message => {

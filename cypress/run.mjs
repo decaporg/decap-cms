@@ -1,41 +1,29 @@
 import execa from 'execa';
-import { globby } from 'globby';
 
 async function runCypress() {
-  if (process.env.IS_FORK === 'true') {
-    const machineIndex = parseInt(process.env.MACHINE_INDEX);
-    const machineCount = parseInt(process.env.MACHINE_COUNT);
-    const specs = await globby(['cypress/integration/*spec*.js']);
-    const specsPerMachine = Math.floor(specs.length / machineCount);
-    const start = (machineIndex - 1) * specsPerMachine;
-    const machineSpecs =
-      machineIndex === machineCount
-        ? specs.slice(start)
-        : specs.slice(start, start + specsPerMachine);
+  const args = ['run', '--browser', 'chrome', '--headless'];
 
-    await execa(
-      'cypress',
-      ['run', '--browser', 'chrome', '--headless', '--spec', machineSpecs.join(',')],
-      { stdio: 'inherit', preferLocal: true },
-    );
-  } else {
-    await execa(
-      'cypress',
-      [
-        'run',
-        '--browser',
-        'chrome',
-        '--headless',
-        '--record',
-        '--parallel',
-        '--ci-build-id',
-        process.env.GITHUB_SHA,
-        '--group',
-        'GitHub CI',
-      ],
-      { stdio: 'inherit', preferLocal: true },
+  if (process.env.CYPRESS_RECORD_KEY) {
+    const isPR = process.env.GITHUB_EVENT_NAME === 'pull_request';
+    const tags = ['ci'];
+    if (isPR) tags.push('pr');
+    if (process.env.GITHUB_BASE_REF) tags.push(`base:${process.env.GITHUB_BASE_REF}`);
+
+    args.push(
+      '--record',
+      '--group',
+      isPR ? 'PR Checks' : 'GitHub CI',
+      '--tag',
+      tags.join(','),
     );
   }
+
+  console.log('Running Cypress with args:', args.join(' '));
+  await execa('cypress', args, {
+    stdio: 'inherit',
+    preferLocal: true,
+    timeout: 30 * 60 * 1000, // 30 minutes for full suite on single machine
+  });
 }
 
 runCypress();
