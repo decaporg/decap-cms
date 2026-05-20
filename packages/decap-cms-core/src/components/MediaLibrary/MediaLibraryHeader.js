@@ -34,6 +34,7 @@ const CloseButton = styled.button`
 const LibraryTitle = styled.h1`
   font-size: 18px;
   line-height: 28px;
+  text-align: left;
   @media (min-width: 500px) {
     font-size: 22px;
     line-height: 36px;
