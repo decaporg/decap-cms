@@ -21,10 +21,13 @@ const CloseButton = styled.button`
 `;
 
 const LibraryTitle = styled.h1`
-  line-height: 36px;
-  font-size: 22px;
-  text-align: left;
-  margin-bottom: 25px;
+  font-size: 18px;
+  line-height: 28px;
+  @media (min-width: 800px) {
+    font-size: 22px;
+    line-height: 36px;
+  }
+  margin-bottom: 0;
   color: ${props => props.isPrivate && colors.textFieldBorder};
 `;
 

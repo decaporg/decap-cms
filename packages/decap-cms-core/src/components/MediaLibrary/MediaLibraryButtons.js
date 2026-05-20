@@ -12,8 +12,6 @@ const styles = {
     ${buttons.button};
     ${buttons.default};
     display: inline-block;
-    margin-left: 15px;
-    margin-right: 2px;
 
     &[disabled] {
       ${buttons.disabled};
