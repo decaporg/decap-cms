@@ -30,10 +30,14 @@ const minimumCardWidth = `calc(100% - 40px)`;
 
 const StyledModal = styled(Modal)`
   display: grid;
-  width: min(${minimumCardWidth}, calc(${cardOutsideWidth} * 2 + 20px));
+  width: 100%;
   grid-template-rows: auto 1fr;
   gap: 20px;
   background-color: ${props => props.isPrivate && colors.grayDark};
+
+  @media (min-width: 500px) {
+    width: min(${minimumCardWidth}, calc(${cardOutsideWidth} * 2 + 20px));
+  }
 
   @media (min-width: 1120px) {
     width: calc(${cardOutsideWidth} * 3 + 20px);
