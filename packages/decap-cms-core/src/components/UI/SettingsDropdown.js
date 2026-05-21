@@ -3,7 +3,14 @@ import PropTypes from 'prop-types';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { translate } from 'react-polyglot';
-import { Icon, Dropdown, DropdownItem, DropdownButton, colors } from 'decap-cms-ui-default';
+import {
+  Icon,
+  Dropdown,
+  DropdownItem,
+  DropdownButton,
+  colors,
+  shadows,
+} from 'decap-cms-ui-default';
 
 import { stripProtocol } from '../../lib/urlHelper';
 
@@ -33,21 +40,32 @@ const AvatarPlaceholderIcon = styled(Icon)`
   background-color: ${colors.textFieldBorder};
 `;
 
-const AppHeaderSiteLink = styled.a`
+const AppHeaderLink = css`
   font-size: 14px;
   font-weight: 400;
-  color: #7b8290;
+  color: ${colors.text};
   padding: 10px 16px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 `;
 
+const AppHeaderSiteLink = styled.a(AppHeaderLink);
+
 const AppHeaderTestRepoIndicator = styled.a`
-  font-size: 14px;
-  font-weight: 400;
-  color: #7b8290;
-  padding: 10px 16px;
+  ${AppHeaderLink};
+
+  @media (max-width: 399px) {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
+    background-color: ${colors.background};
+    padding: 4px 12px;
+    border-radius: 0 0 4px 4px;
+    ${shadows.drop}
+  }
 `;
 
 function Avatar({ imageUrl }) {
