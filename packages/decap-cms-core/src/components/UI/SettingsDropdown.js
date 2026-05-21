@@ -38,6 +38,9 @@ const AppHeaderSiteLink = styled.a`
   font-weight: 400;
   color: #7b8290;
   padding: 10px 16px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 const AppHeaderTestRepoIndicator = styled.a`
@@ -59,9 +62,15 @@ Avatar.propTypes = {
   imageUrl: PropTypes.string,
 };
 
+const SettingsWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  min-width: 0;
+`;
+
 function SettingsDropdown({ displayUrl, isTestRepo, imageUrl, onLogoutClick, t }) {
   return (
-    <React.Fragment>
+    <SettingsWrapper>
       {isTestRepo && (
         <AppHeaderTestRepoIndicator
           href="https://www.decapcms.org/docs/test-backend"
@@ -88,7 +97,7 @@ function SettingsDropdown({ displayUrl, isTestRepo, imageUrl, onLogoutClick, t }
       >
         <DropdownItem label={t('ui.settingsDropdown.logOut')} onClick={onLogoutClick} />
       </Dropdown>
-    </React.Fragment>
+    </SettingsWrapper>
   );
 }
 
