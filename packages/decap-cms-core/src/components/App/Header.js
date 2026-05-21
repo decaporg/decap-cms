@@ -32,12 +32,15 @@ function AppHeader(props) {
     <header
       css={css`
         ${shadows.dropMain};
-        position: sticky;
         width: 100%;
-        top: 0;
         background-color: ${colors.foreground};
         z-index: ${zIndex.zIndex300};
         height: ${lengths.topBarHeight};
+
+        @media (min-height: 500px) {
+          position: sticky;
+          top: 0;
+        }
       `}
       {...props}
     />
