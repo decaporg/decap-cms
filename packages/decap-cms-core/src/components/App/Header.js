@@ -11,7 +11,6 @@ import {
   DropdownItem,
   StyledDropdownButton,
   colors,
-  lengths,
   shadows,
   buttons,
   zIndex,
@@ -35,7 +34,6 @@ function AppHeader(props) {
         width: 100%;
         background-color: ${colors.foreground};
         z-index: ${zIndex.zIndex300};
-        height: ${lengths.topBarHeight};
 
         @media (min-height: 500px) {
           position: sticky;
