@@ -78,13 +78,6 @@ const styles = {
   hiddenColumn: css`
     display: none;
   `,
-  hiddenRightBorder: css`
-    &:not(:first-child):not(:last-child) {
-      &:after {
-        display: none;
-      }
-    }
-  `,
 };
 
 const ColumnHeader = styled.h2`
@@ -215,7 +208,6 @@ class WorkflowList extends React.Component {
                     styles.columnPosition(idx),
                     isHovered && styles.columnHovered,
                     isOpenAuthoring && currColumn === 'pending_publish' && styles.hiddenColumn,
-                    isOpenAuthoring && currColumn === 'pending_review' && styles.hiddenRightBorder,
                   ]}
                 >
                   <ColumnHeader name={currColumn}>
