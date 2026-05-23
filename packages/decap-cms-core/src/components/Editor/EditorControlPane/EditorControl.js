@@ -465,7 +465,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     ...stateProps,
     ...dispatchProps,
     ...ownProps,
-    boundGetAsset: dispatchProps.boundGetAsset(stateProps.collection, stateProps.getEntry()),
+    boundGetAsset: dispatchProps.boundGetAsset(stateProps.collection),
   };
 }
 
