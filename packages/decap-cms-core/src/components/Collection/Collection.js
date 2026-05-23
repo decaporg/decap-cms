@@ -26,7 +26,10 @@ import {
 } from '../../reducers/entries';
 
 const CollectionContainer = styled.div`
-  margin: ${lengths.pageMargin};
+  margin: ${lengths.pageMarginMobile};
+  @media (min-width: 500px) {
+    margin: ${lengths.pageMargin};
+  }
 `;
 
 const CollectionMain = styled.main`

@@ -27,8 +27,11 @@ import { EDITORIAL_WORKFLOW, status } from '../../constants/publishModes';
 import WorkflowList from './WorkflowList';
 
 const WorkflowContainer = styled.div`
-  padding: ${lengths.pageMargin} 0;
   height: 100vh;
+  margin: ${lengths.pageMarginMobile};
+  @media (min-width: 500px) {
+    margin: ${lengths.pageMargin};
+  }
 `;
 
 const WorkflowTop = styled.div`

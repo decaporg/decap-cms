@@ -94,6 +94,7 @@ const lengths = {
   borderWidth: '2px',
   topCardWidth: '682px',
   pageMargin: '28px 18px',
+  pageMarginMobile: '12px 8px',
   objectWidgetTopBarContainerPadding: '0 14px 14px',
 };
 
