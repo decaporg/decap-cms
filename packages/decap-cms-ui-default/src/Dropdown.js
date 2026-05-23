@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
@@ -93,7 +93,7 @@ function Dropdown({
   className,
   children,
 }) {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const { coords, refs } = useDropDownCoords({ dropdownPosition, open });
   return (
     <StyledWrapper
