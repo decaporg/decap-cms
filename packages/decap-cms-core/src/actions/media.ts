@@ -89,7 +89,7 @@ export const boundGetAsset = memoize(
     }
 
     return bound;
-  }, (_, entry) => entry
+  }, (_, _, entry) => entry
 );
 
 boundGetAsset.cache = new WeakMap();
