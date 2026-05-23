@@ -9,9 +9,8 @@ import GroupControl from './GroupControl';
 
 const CollectionControlsContainer = styled.div`
   display: flex;
-  flex-wrap: wrap;
+  flex-flow: row-reverse wrap;
   align-items: center;
-  flex-direction: row-reverse;
   gap: 6px 0;
   margin-top: 22px;
   width: ${lengths.topCardWidth};
