@@ -98,6 +98,10 @@ const CardButtonContainer = styled.div`
     flex-direction: row;
     gap: 12px;
   }
+
+  @media (hover: hover) {
+    opacity: 0;
+  }
 `;
 
 const DeleteButton = styled.button`
