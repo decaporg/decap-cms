@@ -40,6 +40,9 @@ const WorkflowTop = styled.div`
 
 const WorkflowTopRow = styled.div`
   display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
   justify-content: space-between;
 
   span[role='button'] {

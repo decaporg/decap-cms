@@ -314,12 +314,16 @@ const components = {
     width: ${lengths.topCardWidth};
     max-width: 100%;
     padding: 18px 20px;
-    margin-bottom: 28px;
+    margin-bottom: 22px;
   `,
   cardTopHeading: css`
-    font-size: 22px;
+    font-size: 20px;
+    line-height: 24px;
+    @media (min-width: 500px) {
+      font-size: 22px;
+      line-height: 26px;
+    }
     font-weight: 600;
-    line-height: 37px;
     margin: 0;
     padding: 0;
   `,
@@ -328,6 +332,7 @@ const components = {
     color: ${colors.text};
     font-size: 14px;
     margin-top: 8px;
+    margin-bottom: 0;
   `,
   objectWidgetTopBarContainer: css`
     padding: ${lengths.objectWidgetTopBarContainerPadding};
