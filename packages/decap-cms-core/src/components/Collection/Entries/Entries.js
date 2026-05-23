@@ -9,6 +9,7 @@ import EntryListing from './EntryListing';
 
 const PaginationMessage = styled.div`
   width: ${lengths.topCardWidth};
+  max-width: 100%;
   padding: 16px;
   text-align: center;
 `;
