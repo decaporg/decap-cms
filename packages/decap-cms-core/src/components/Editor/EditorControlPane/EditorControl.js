@@ -415,10 +415,13 @@ const stable = {
     return state.entryDraft.get('entry');
   },
 
-  getBoundedAsset(collection, entry) {
-    const dispatch = store.dispatch;
-    return boundGetAsset(dispatch, collection, entry);
-  },
+  getBoundedAsset: memoize(collection => {
+    return (path, field) => {
+      const state = store.getState();
+      const entry = state.entryDraft.get('entry');
+      return store.dispatch(getAsset({ collection, entry, path, field }));
+    };
+  }),
 };
 
 function mapStateToProps(state) {
