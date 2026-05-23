@@ -21,7 +21,7 @@ function onResize([entry]) {
  * We cache this single observer to avoid the overhead of creating a new one for every dropdown.
  */
 function initObserver() {
-  if (!viewportState.observer) {
+  if (!viewportState.observer && typeof ResizeObserver !== 'undefined') {
     viewportState.observer = new ResizeObserver(onResize);
     viewportState.observer.observe(document.documentElement);
   }
