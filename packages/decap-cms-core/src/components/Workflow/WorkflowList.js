@@ -88,11 +88,18 @@ const styles = {
 };
 
 const ColumnHeader = styled.h2`
-  font-size: 20px;
+  font-size: 16px;
   font-weight: normal;
-  padding: 4px 14px;
+  padding: 2px 6px;
   border-radius: ${lengths.borderRadius};
-  margin-bottom: 28px;
+  white-space: nowrap;
+  margin-bottom: 6px;
+
+  @media (min-width: 800px) {
+    font-size: 20px;
+    padding: 4px 12px;
+    margin-bottom: 28px;
+  }
 
   ${props =>
     props.name === 'draft' &&
@@ -117,11 +124,21 @@ const ColumnHeader = styled.h2`
 `;
 
 const ColumnCount = styled.p`
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 500;
   color: ${colors.text};
   text-transform: uppercase;
   margin-bottom: 6px;
+  padding-inline: 6px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  min-width: 0;
+
+  @media (min-width: 800px) {
+    font-size: 13px;
+    padding-inline: 12px;
+  }
 `;
 
 // This is a namespace so that we can only drop these elements on a DropTarget with the same
