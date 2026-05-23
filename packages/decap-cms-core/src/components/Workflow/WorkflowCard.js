@@ -82,12 +82,16 @@ const CardButtonContainer = styled.div`
   position: absolute;
   bottom: 0;
   width: 100%;
-  display: flex;
+  display: none;
   padding: 8px;
   flex-direction: column;
   gap: 6px;
   transition: opacity ${transitions.main};
   cursor: pointer;
+
+  @media (min-width: 500px) {
+    display: flex;
+  }
 
   @media (min-width: 800px) {
     padding: 12px 18px;
