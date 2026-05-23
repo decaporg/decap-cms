@@ -15,7 +15,7 @@ import gfm from 'remark-gfm';
 
 import { resolveWidget, getEditorComponents } from '../../../lib/registry';
 import { clearFieldErrors, tryLoadEntry, validateMetaField } from '../../../actions/entries';
-import { addAsset, boundGetAsset } from '../../../actions/media';
+import { addAsset, getAsset } from '../../../actions/media';
 import { selectIsLoadingAsset } from '../../../reducers/medias';
 import { query, clearSearch } from '../../../actions/search';
 import { store } from '../../../redux';

@@ -87,9 +87,9 @@ export const boundGetAsset = memoize(
       const asset = dispatch(getAsset({ collection, entry, path, field }));
       return asset;
     }
-
     return bound;
-  }, (_, _, entry) => entry
+  },
+  (_dispatch, _collection, entry) => entry,
 );
 
 boundGetAsset.cache = new WeakMap();
