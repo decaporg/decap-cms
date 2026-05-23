@@ -1,9 +1,43 @@
 // source: https://github.com/ianstormtaylor/slate/blob/main/site/examples/ts/paste-html.tsx
+import DOMPurify from 'dompurify';
 import { jsx } from 'slate-hyperscript';
 import { Transforms } from 'slate';
 
+function sanitizeElementUrl(url, { allowDataImage = false } = {}) {
+  if (!url) {
+    return null;
+  }
+
+  const trimmed = url.trim();
+
+  if (!trimmed) {
+    return null;
+  }
+
+  const normalized = trimmed.replace(/\s+/g, '').toLowerCase();
+
+  if (
+    normalized.startsWith('javascript:') ||
+    normalized.startsWith('vbscript:') ||
+    normalized.startsWith('file:')
+  ) {
+    return null;
+  }
+
+  if (normalized.startsWith('data:')) {
+    return allowDataImage && /^data:image\/(?!svg\+xml)[a-z0-9.+-]+[;,]/i.test(normalized)
+      ? trimmed
+      : null;
+  }
+
+  return trimmed;
+}
+
 const ELEMENT_TAGS = {
-  A: el => ({ type: 'link', url: el.getAttribute('href') }),
+  A: el => {
+    const url = sanitizeElementUrl(el.getAttribute('href'));
+    return url ? { type: 'link', url } : undefined;
+  },
   BLOCKQUOTE: () => ({ type: 'quote' }),
   H1: () => ({ type: 'heading-one' }),
   H2: () => ({ type: 'heading-two' }),
@@ -11,7 +45,10 @@ const ELEMENT_TAGS = {
   H4: () => ({ type: 'heading-four' }),
   H5: () => ({ type: 'heading-five' }),
   H6: () => ({ type: 'heading-six' }),
-  IMG: el => ({ type: 'image', url: el.getAttribute('src') }),
+  IMG: el => {
+    const url = sanitizeElementUrl(el.getAttribute('src'), { allowDataImage: true });
+    return url ? { type: 'image', url } : null;
+  },
   LI: () => ({ type: 'list-item' }),
   OL: () => ({ type: 'numbered-list' }),
   P: () => ({ type: 'paragraph' }),
@@ -62,6 +99,15 @@ function deserialize(el) {
 
   if (ELEMENT_TAGS[nodeName]) {
     const attrs = ELEMENT_TAGS[nodeName](el);
+
+    if (attrs === undefined) {
+      return children;
+    }
+
+    if (attrs === null) {
+      return null;
+    }
+
     return jsx('element', attrs, children);
   }
 
@@ -102,7 +148,8 @@ function withHtml(editor) {
     const html = data.getData('text/html');
 
     if (html) {
-      const parsed = new DOMParser().parseFromString(html, 'text/html');
+      const sanitizedHtml = DOMPurify.sanitize(html);
+      const parsed = new DOMParser().parseFromString(sanitizedHtml, 'text/html');
       const fragment = deserialize(parsed.body);
       Transforms.insertFragment(editor, fragment);
       return;

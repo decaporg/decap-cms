@@ -146,10 +146,12 @@ export default class PkceAuthenticator {
 
     const validNonce = validateNonce(nonce);
     if (!validNonce) {
+      clearCodeVerifier();
       return cb(new Error('Invalid nonce'));
     }
 
     if (params.has('error')) {
+      clearCodeVerifier();
       return cb(new Error(`${params.get('error')}: ${params.get('error_description')}`));
     }
 
@@ -157,6 +159,7 @@ export default class PkceAuthenticator {
       try {
         await this._loadOidcConfig();
       } catch (err) {
+        clearCodeVerifier();
         return cb(err);
       }
 

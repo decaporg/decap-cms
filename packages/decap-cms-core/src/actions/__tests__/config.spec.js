@@ -862,6 +862,20 @@ describe('config', () => {
 
       assetFetchCalled('http://192.168.0.1:8081/api/v1');
     });
+
+    it('should return empty object when local_backend url has an unsafe scheme', async () => {
+      window.location = { hostname: 'localhost' };
+      global.fetch = jest.fn();
+      await expect(detectProxyServer({ url: 'file:///etc/passwd' })).resolves.toEqual({});
+      expect(global.fetch).not.toHaveBeenCalled();
+    });
+
+    it('should return empty object when local_backend url is not a valid URL', async () => {
+      window.location = { hostname: 'localhost' };
+      global.fetch = jest.fn();
+      await expect(detectProxyServer({ url: 'not a url' })).resolves.toEqual({});
+      expect(global.fetch).not.toHaveBeenCalled();
+    });
   });
 
   describe('handleLocalBackend', () => {
