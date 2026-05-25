@@ -79,7 +79,7 @@ Entries.propTypes = {
   getWorkflowStatus: PropTypes.func,
   getUnpublishedEntries: PropTypes.func,
   filterTerm: PropTypes.string,
-  sortFields: ImmutablePropTypes.list,
+  sortFields: PropTypes.array,
 };
 
 export default translate()(Entries);

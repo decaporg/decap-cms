@@ -56,6 +56,7 @@ const en = {
       cachingEntries: 'Caching Entries...',
       longerLoading: 'This might take several minutes',
       noEntries: 'No Entries',
+      unpublishedHeader: 'Unpublished Entries',
     },
     groups: {
       other: 'Other',
@@ -312,17 +313,6 @@ const en = {
       inReviewHeader: 'In Review',
       readyHeader: 'Ready',
       currentEntries: '%{smart_count} entry |||| %{smart_count} entries',
-    },
-    collection: {
-      sidebar: {
-        collections: 'Collections',
-        allCollections: 'All Collections',
-        searchAll: 'Search all',
-        searchIn: 'Search in',
-      },
-      entries: {
-        unpublishedHeader: 'Unpublished Entries',
-      },
     },
   },
 };

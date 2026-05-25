@@ -26,11 +26,12 @@ const CardsGrid = styled.ul`
   margin-bottom: 16px;
 `;
 
-const SectionSeparator = styled.div`
+const SectionSeparator = styled.li`
   width: 100%;
   margin: 24px 0 16px 12px;
   padding-top: 16px;
   border-top: 2px solid ${colors.textFieldBorder};
+  list-style: none;
 `;
 
 const SectionHeading = styled.h3`
@@ -51,7 +52,7 @@ class EntryListing extends React.Component {
     getUnpublishedEntries: PropTypes.func.isRequired,
     getWorkflowStatus: PropTypes.func.isRequired,
     filterTerm: PropTypes.string,
-    sortFields: ImmutablePropTypes.list,
+    sortFields: PropTypes.array,
     t: PropTypes.func.isRequired,
   };
 
@@ -83,7 +84,7 @@ class EntryListing extends React.Component {
   };
 
   sortEntries = (entries, sortFields, collections) => {
-    if (!sortFields || sortFields.size === 0) {
+    if (!sortFields || sortFields.length === 0) {
       return entries;
     }
 
@@ -91,7 +92,7 @@ class EntryListing extends React.Component {
     const orders = sortFields.map(v =>
       v.get('direction') === SortDirection.Ascending ? 'asc' : 'desc',
     );
-    return fromJS(orderBy(entries.toJS(), keys.toArray(), orders.toArray()));
+    return fromJS(orderBy(entries.toJS(), keys, orders));
   };
 
   getUnpublishedEntriesList = () => {
