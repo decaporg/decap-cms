@@ -81,6 +81,7 @@ export type PersistOptions = {
   useWorkflow?: boolean;
   unpublished?: boolean;
   status?: string;
+  hasSubfolders?: boolean;
 };
 
 export type DeleteOptions = {};
@@ -90,6 +91,7 @@ export type Credentials = { token: string | {}; refresh_token?: string };
 export type User = Credentials & {
   backendName?: string;
   login?: string;
+  email?: string;
   name: string;
   useOpenAuthoring?: boolean;
 };

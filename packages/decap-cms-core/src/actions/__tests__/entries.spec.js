@@ -1,4 +1,4 @@
-import { fromJS, Map } from 'immutable';
+import { fromJS, List, Map } from 'immutable';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
@@ -97,6 +97,41 @@ describe('entries', () => {
           type: 'DRAFT_CREATE_EMPTY',
         });
       });
+    });
+
+    it('should populate draft entry from repeated URL param', () => {
+      const store = mockStore({ mediaLibrary: fromJS({ files: [] }) });
+
+      const collection = fromJS({
+        fields: [{ name: 'post', multiple: true }],
+      });
+
+      return store
+        .dispatch(createEmptyDraft(collection, '?post=2026-05-07-test&post=2026-05-08-test'))
+        .then(() => {
+          const actions = store.getActions();
+          expect(actions).toHaveLength(1);
+
+          expect(actions[0]).toEqual({
+            payload: {
+              author: '',
+              collection: undefined,
+              data: { post: List(['2026-05-07-test', '2026-05-08-test']) },
+              meta: {},
+              i18n: {},
+              isModification: null,
+              label: null,
+              mediaFiles: [],
+              partial: false,
+              path: '',
+              raw: '',
+              slug: '',
+              status: '',
+              updatedOn: '',
+            },
+            type: 'DRAFT_CREATE_EMPTY',
+          });
+        });
     });
 
     it('should html escape URL params', () => {

@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.3.1](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-bitbucket@3.3.0...decap-cms-backend-bitbucket@3.3.1) (2026-02-23)
+
+### Bug Fixes
+
+- `import/no-named-as-default` warning ([#7721](https://github.com/decaporg/decap-cms/issues/7721)) ([f7ef707](https://github.com/decaporg/decap-cms/commit/f7ef70717aeaa449ef32624c493f340e14501b68))
+
 # [3.3.0](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-bitbucket@3.2.1...decap-cms-backend-bitbucket@3.3.0) (2025-07-15)
 
 ### Features

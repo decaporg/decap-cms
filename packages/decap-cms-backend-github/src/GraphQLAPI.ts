@@ -27,7 +27,7 @@ import type { Config, BlobArgs } from './API';
 import type { NormalizedCacheObject } from 'apollo-cache-inmemory';
 import type { QueryOptions, MutationOptions, OperationVariables } from 'apollo-client';
 import type { GraphQLError } from 'graphql';
-import type { Octokit } from '@octokit/rest';
+import type { Endpoints } from '@octokit/types';
 
 const NO_CACHE = 'no-cache';
 const CACHE_FIRST = 'cache-first';
@@ -93,6 +93,7 @@ function transformPullRequest(pr: GraphQLPullRequest) {
 }
 
 type Error = GraphQLError & { type: string };
+type GitHubPull = Endpoints['GET /repos/{owner}/{repo}/pulls']['response']['data'][0];
 
 export default class GraphQLAPI extends API {
   client: ApolloClient<NormalizedCacheObject>;
@@ -281,7 +282,7 @@ export default class GraphQLAPI extends API {
     }
   }
 
-  async getPullRequestAuthor(pullRequest: Octokit.PullsListResponseItem) {
+  async getPullRequestAuthor(pullRequest: GitHubPull) {
     const user = pullRequest.user as unknown as GraphQLPullsListResponseItemUser;
     return user?.name || user?.login;
   }
@@ -289,7 +290,7 @@ export default class GraphQLAPI extends API {
   async getPullRequests(
     head: string | undefined,
     state: PullRequestState,
-    predicate: (pr: Octokit.PullsListResponseItem) => boolean,
+    predicate: (pr: GitHubPull) => boolean,
   ) {
     const { originRepoOwner: owner, originRepoName: name } = this;
     let states;
@@ -319,7 +320,7 @@ export default class GraphQLAPI extends API {
 
     const mapped = pullRequests.nodes.map(transformPullRequest);
 
-    return (mapped as unknown as Octokit.PullsListResponseItem[]).filter(
+    return (mapped as unknown as GitHubPull[]).filter(
       pr => pr.head.ref.startsWith(`${CMS_BRANCH_PREFIX}/`) && predicate(pr),
     );
   }
@@ -692,7 +693,9 @@ export default class GraphQLAPI extends API {
       },
     });
     const { pullRequest } = data!.createPullRequest;
-    return transformPullRequest(pullRequest) as unknown as Octokit.PullsCreateResponse;
+    return transformPullRequest(
+      pullRequest,
+    ) as unknown as Endpoints['POST /repos/{owner}/{repo}/pulls']['response']['data'];
   }
 
   async getFileSha(path: string, { repoURL = this.repoURL, branch = this.branch } = {}) {
