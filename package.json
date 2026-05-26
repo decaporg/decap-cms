@@ -77,7 +77,6 @@
     "@types/uuid": "^8.3.2",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
-    "ajv": "^8.12.0",
     "all-contributors-cli": "^6.0.0",
     "axios": "^1.7.7",
     "babel-core": "^7.0.0-bridge.0",
@@ -152,9 +151,6 @@
   "private": true,
   "dependencies": {
     "@emotion/babel-preset-css-prop": "^11.11.0",
-    "ajv": "^8.17.1",
-    "ajv-errors": "^3.0.0",
-    "ajv-keywords": "^5.1.0",
     "browserify": "^17.0.0",
     "buffer": "^6.0.3",
     "emotion": "^11.0.0",
