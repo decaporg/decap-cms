@@ -1094,7 +1094,7 @@ export class Backend {
     collection,
     entryDraft: draft,
     assetProxies,
-    usedSlugs,
+    usedSlugs = List<string>(),
     unpublished = false,
     status,
   }: PersistArgs) {
@@ -1117,6 +1117,15 @@ export class Backend {
     if (newEntry) {
       if (!selectAllowNewEntries(collection)) {
         throw new Error('Not allowed to create new entries in this collection');
+      }
+      const limit = collection.get('limit') as number | undefined;
+      if (
+        collection.get('type') === FOLDER &&
+        limit !== undefined &&
+        limit !== null &&
+        usedSlugs.size >= limit
+      ) {
+        throw new Error(`Entry limit of ${limit} reached for collection ${collection.get('name')}`);
       }
       const slug = await this.generateUniqueSlug(
         collection,
