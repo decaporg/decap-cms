@@ -95,8 +95,7 @@ export function selectCanCreateNewEntry(state: State, collectionName: string) {
     return true;
   }
 
-  const entries = fromEntries.selectEntries(state.entries, collection);
-  const entryCount = entries ? entries.size : 0;
+  const entryCount = fromEntries.selectPublishedSlugs(state.entries, collectionName).size;
 
   return entryCount < limit;
 }
