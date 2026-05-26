@@ -24,6 +24,7 @@
   },
   "peerDependencies": {
     "decap-cms-ui-default": "^3.0.0",
+    "immutable": "^3.7.6",
     "prop-types": "^15.7.2",
     "react": "^19.1.0"
   }

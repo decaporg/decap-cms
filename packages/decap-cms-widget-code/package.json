@@ -25,9 +25,11 @@
   },
   "peerDependencies": {
     "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
     "codemirror": "^5.46.0",
     "decap-cms-ui-default": "^3.0.0",
     "lodash": "^4.17.11",
+    "prop-types": "^15.7.2",
     "react": "^19.1.0"
   },
   "dependencies": {
