@@ -133,6 +133,8 @@ declare module 'decap-cms-core' {
     default?: any;
 
     allow_add?: boolean;
+    allow_remove?: boolean;
+    allow_reorder?: boolean;
     collapsed?: boolean;
     summary?: string;
     minimize_collapsed?: boolean;
@@ -155,6 +157,21 @@ declare module 'decap-cms-core' {
 
   export interface CmsFieldMarkdown {
     widget: 'markdown';
+    default?: string;
+
+    minimal?: boolean;
+    buttons?: CmsMarkdownWidgetButton[];
+    editor_components?: string[];
+    modes?: ('raw' | 'rich_text')[];
+
+    /**
+     * @deprecated Use editor_components instead
+     */
+    editorComponents?: string[];
+  }
+
+  export interface CmsFieldRichText {
+    widget: 'richtext';
     default?: string;
 
     minimal?: boolean;
@@ -255,6 +272,7 @@ declare module 'decap-cms-core' {
       | CmsFieldList
       | CmsFieldMap
       | CmsFieldMarkdown
+      | CmsFieldRichText
       | CmsFieldNumber
       | CmsFieldObject
       | CmsFieldRelation
@@ -290,6 +308,12 @@ declare module 'decap-cms-core' {
     pattern?: string;
   }
 
+  export interface SortableField {
+    field: string;
+    label?: string;
+    default_sort?: boolean | 'asc' | 'desc';
+  }
+
   export interface CmsCollection {
     name: string;
     label: string;
@@ -302,6 +326,7 @@ declare module 'decap-cms-core' {
     slug?: string;
     preview_path?: string;
     preview_path_date_field?: string;
+    preview_path_preserve_slashes?: boolean;
     create?: boolean;
     delete?: boolean;
     hide?: boolean;
@@ -314,7 +339,7 @@ declare module 'decap-cms-core' {
       depth: number;
       subfolders?: boolean;
     };
-    meta?: { path?: { label: string; widget: string; index_file: string } };
+    meta?: { path?: { label: string; widget: string; index_file?: string } };
 
     /**
      * It accepts the following values: yml, yaml, toml, json, md, markdown, html
@@ -330,7 +355,7 @@ declare module 'decap-cms-core' {
     path?: string;
     media_folder?: string;
     public_folder?: string;
-    sortable_fields?: string[];
+    sortable_fields?: (string | SortableField)[];
     view_filters?: ViewFilter[];
     view_groups?: ViewGroup[];
     i18n?: boolean | CmsI18nConfig;
@@ -338,7 +363,7 @@ declare module 'decap-cms-core' {
     /**
      * @deprecated Use sortable_fields instead
      */
-    sortableFields?: string[];
+    sortableFields?: (string | SortableField)[];
   }
 
   export interface CmsBackend {
@@ -356,6 +381,7 @@ declare module 'decap-cms-core' {
     auth_type?: 'implicit' | 'pkce';
     cms_label_prefix?: string;
     squash_merges?: boolean;
+    signoff_commits?: boolean;
     proxy_url?: string;
     commit_messages?: {
       create?: string;
@@ -378,6 +404,10 @@ declare module 'decap-cms-core' {
     allowed_hosts?: string[];
   }
 
+  export interface CmsIssueReports {
+    url?: string;
+  }
+
   export interface CmsConfig {
     backend: CmsBackend;
     collections: CmsCollection[];
@@ -395,6 +425,7 @@ declare module 'decap-cms-core' {
     media_folder_relative?: boolean;
     media_library?: CmsMediaLibrary;
     publish_mode?: CmsPublishMode;
+    issue_reports?: CmsIssueReports;
     load_config_file?: boolean;
     integrations?: {
       hooks: string[];

@@ -13,6 +13,22 @@ import {
 } from '../../utils/steps';
 import { workflowStatus } from '../../utils/constants';
 
+function logFailPoint(label) {
+  cy.then(() => {
+    const currentWindow = Cypress.state('window');
+    const href = currentWindow?.location?.href;
+    const body = currentWindow?.document?.body;
+    const bodyText = body?.innerText || '';
+    const loadingVisible = bodyText.includes('Loading...');
+    const uploadingVisible = bodyText.includes('Uploading...');
+    const cardImageCount = currentWindow?.document?.querySelectorAll('img[class*="CardImage"]').length || 0;
+
+    console.log(
+      `[FAIL-POINT] ${label} href=${href} loading=${loadingVisible} uploading=${uploadingVisible} cardImages=${cardImageCount}`,
+    );
+  });
+}
+
 function uploadMediaFile() {
   assertNoImagesInLibrary();
 
@@ -51,7 +67,12 @@ function chooseAnImage() {
 
 function waitForEntryToLoad() {
   cy.contains('button', 'Saving...').should('not.exist');
-  cy.clock().tick(5000);
+  cy.then(() => {
+    const clock = cy.state('clock');
+    if (clock) {
+      clock.tick(5000);
+    }
+  });
   cy.contains('div', 'Loading entry...').should('not.exist');
 }
 
@@ -102,14 +123,42 @@ function assertGridEntryImage(entry) {
 
 export default function({ entries, getUser }) {
   beforeEach(() => {
-    login(getUser && getUser());
+    console.log('[media_library.beforeEach] START');
+    const user = getUser && getUser();
+    console.log('[media_library.beforeEach] user=', user ? JSON.stringify(user) : 'none');
+    login(user);
+    console.log('[media_library.beforeEach] login() returned');
   });
 
   it('can upload image from global media library', () => {
+    Cypress.once('fail', error => {
+      const currentWindow = Cypress.state('window');
+      const href = currentWindow?.location?.href;
+      const body = currentWindow?.document?.body;
+      const snippet = (body?.innerText || '').slice(0, 1200);
+      const cardImageCount = currentWindow?.document?.querySelectorAll('img[class*="CardImage"]').length || 0;
+
+      console.error('[FAIL-POINT] can upload image from global media library - FAILED');
+      console.error(`[FAIL-POINT] href=${href} cardImages=${cardImageCount}`);
+      console.error(`[FAIL-POINT] bodySnippet=${snippet}`);
+
+      throw error;
+    });
+
+    console.log('[TEST] can upload image from global media library - START');
+    logFailPoint('before-goToMediaLibrary');
     goToMediaLibrary();
+    logFailPoint('after-goToMediaLibrary');
+    console.log('[TEST] goToMediaLibrary() completed');
+    logFailPoint('before-uploadMediaFile');
     uploadMediaFile();
+    logFailPoint('after-uploadMediaFile');
+    console.log('[TEST] uploadMediaFile() completed');
     matchImageSnapshot();
+    logFailPoint('before-closeMediaLibrary');
     closeMediaLibrary();
+    logFailPoint('after-closeMediaLibrary');
+    console.log('[TEST] can upload image from global media library - END');
   });
 
   it('can delete image from global media library', () => {
@@ -144,7 +193,8 @@ export default function({ entries, getUser }) {
 
   it('should not show draft entry image in global media library', () => {
     newPostWithImage(entries[0]);
-    cy.clock().then(clock => {
+    cy.then(() => {
+      const clock = cy.state('clock');
       if (clock) {
         clock.tick(150);
         clock.tick(150);
@@ -160,7 +210,12 @@ export default function({ entries, getUser }) {
 
   it('should show published entry image in global media library', () => {
     publishPostWithImage(entries[0]);
-    cy.clock().tick();
+    cy.then(() => {
+      const clock = cy.state('clock');
+      if (clock) {
+        clock.tick();
+      }
+    });
     goToMediaLibrary();
     assertImagesInLibrary();
     matchImageSnapshot();

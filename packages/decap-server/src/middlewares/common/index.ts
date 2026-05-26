@@ -16,6 +16,10 @@ export function registerCommonMiddlewares(app: express.Express, options: Options
     },
   };
   app.use(morgan('combined', { stream }));
-  app.use(cors());
+  app.use(
+    cors({
+      origin: process.env.ORIGIN || /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/,
+    }),
+  );
   app.use(express.json({ limit: '50mb' }));
 }

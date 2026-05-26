@@ -148,6 +148,8 @@ export interface CmsFieldList {
   default?: unknown;
 
   allow_add?: boolean;
+  allow_remove?: boolean;
+  allow_reorder?: boolean;
   collapsed?: boolean;
   summary?: string;
   minimize_collapsed?: boolean;
@@ -170,6 +172,21 @@ export interface CmsFieldMap {
 
 export interface CmsFieldMarkdown {
   widget: 'markdown';
+  default?: string;
+
+  minimal?: boolean;
+  buttons?: CmsMarkdownWidgetButton[];
+  editor_components?: string[];
+  modes?: ('raw' | 'rich_text')[];
+
+  /**
+   * @deprecated Use editor_components instead
+   */
+  editorComponents?: string[];
+}
+
+export interface CmsFieldRichText {
+  widget: 'richtext';
   default?: string;
 
   minimal?: boolean;
@@ -256,7 +273,7 @@ export interface CmsFieldMeta {
   label: string;
   widget: string;
   required: boolean;
-  index_file: string;
+  index_file?: string;
   meta: boolean;
 }
 
@@ -270,6 +287,7 @@ export type CmsField = CmsFieldBase &
     | CmsFieldList
     | CmsFieldMap
     | CmsFieldMarkdown
+    | CmsFieldRichText
     | CmsFieldNumber
     | CmsFieldObject
     | CmsFieldRelation
@@ -288,6 +306,7 @@ export interface CmsCollectionFile {
   description?: string;
   preview_path?: string;
   preview_path_date_field?: string;
+  preview_path_preserve_slashes?: boolean;
   i18n?: boolean | CmsI18nConfig;
   media_folder?: string;
   public_folder?: string;
@@ -307,6 +326,12 @@ export interface ViewGroup {
   id: string;
 }
 
+export interface SortableField {
+  field: string;
+  label?: string;
+  default_sort?: boolean | 'asc' | 'desc';
+}
+
 export interface CmsCollection {
   name: string;
   label: string;
@@ -319,6 +344,7 @@ export interface CmsCollection {
   slug?: string;
   preview_path?: string;
   preview_path_date_field?: string;
+  preview_path_preserve_slashes?: boolean;
   create?: boolean;
   delete?: boolean;
   editor?: {
@@ -330,7 +356,7 @@ export interface CmsCollection {
     depth: number;
   };
   type: typeof FOLDER | typeof FILES;
-  meta?: { path?: { label: string; widget: string; index_file: string } };
+  meta?: { path?: { label: string; widget: string; index_file?: string } };
 
   /**
    * It accepts the following values: yml, yaml, toml, json, md, markdown, html
@@ -346,7 +372,7 @@ export interface CmsCollection {
   path?: string;
   media_folder?: string;
   public_folder?: string;
-  sortable_fields?: string[];
+  sortable_fields?: (string | SortableField)[];
   view_filters?: ViewFilter[];
   view_groups?: ViewGroup[];
   i18n?: boolean | CmsI18nConfig;
@@ -355,7 +381,7 @@ export interface CmsCollection {
   /**
    * @deprecated Use sortable_fields instead
    */
-  sortableFields?: string[];
+  sortableFields?: (string | SortableField)[];
 }
 
 export interface CmsBackend {
@@ -370,6 +396,7 @@ export interface CmsBackend {
   auth_endpoint?: string;
   cms_label_prefix?: string;
   squash_merges?: boolean;
+  signoff_commits?: boolean;
   proxy_url?: string;
   commit_messages?: {
     create?: string;
@@ -390,6 +417,10 @@ export interface CmsSlug {
 export interface CmsLocalBackend {
   url?: string;
   allowed_hosts?: string[];
+}
+
+export interface CmsIssueReports {
+  url?: string;
 }
 
 export interface CmsConfig {
@@ -420,6 +451,7 @@ export interface CmsConfig {
   }[];
   slug?: CmsSlug;
   i18n?: CmsI18nConfig;
+  issue_reports?: CmsIssueReports;
   local_backend?: boolean | CmsLocalBackend;
   editor?: {
     preview?: boolean;
@@ -565,6 +597,7 @@ export type EntryField = StaticallyTypedRecord<{
   name: string;
   default: string | null | boolean | List<unknown>;
   media_folder?: string;
+  multiple?: boolean;
   public_folder?: string;
   comment?: string;
   meta?: boolean;
@@ -621,6 +654,7 @@ type CollectionObject = {
   public_folder?: string;
   preview_path?: string;
   preview_path_date_field?: string;
+  preview_path_preserve_slashes?: boolean;
   summary?: string;
   filter?: FilterRule;
   type: 'file_based_collection' | 'folder_based_collection';
@@ -634,7 +668,7 @@ type CollectionObject = {
   slug?: string;
   label_singular?: string;
   label: string;
-  sortable_fields: List<string>;
+  sortable_fields: List<StaticallyTypedRecord<SortableField>>;
   view_filters: List<StaticallyTypedRecord<ViewFilter>>;
   view_groups: List<StaticallyTypedRecord<ViewGroup>>;
   nested?: Nested;

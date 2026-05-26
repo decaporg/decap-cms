@@ -68,7 +68,9 @@ export function localFsMiddleware({ repoPath, logger }: FsOptions) {
             entry,
             dataFiles = [entry as DataFile],
             assets,
+            options,
           } = body.params as PersistEntryParams;
+          const hasSubfolders = options?.hasSubfolders !== false;
           await Promise.all(
             dataFiles.map(dataFile => writeFile(path.join(repoPath, dataFile.path), dataFile.raw)),
           );
@@ -83,6 +85,7 @@ export function localFsMiddleware({ repoPath, logger }: FsOptions) {
               await move(
                 path.join(repoPath, dataFile.path),
                 path.join(repoPath, dataFile.newPath!),
+                hasSubfolders,
               );
             });
           }

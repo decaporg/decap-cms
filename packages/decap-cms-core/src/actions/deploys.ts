@@ -55,16 +55,17 @@ export function loadDeployPreview(
   slug: string,
   entry: Entry,
   published: boolean,
-  opts?: { maxAttempts?: number; interval?: number },
+  opts?: { maxAttempts?: number; interval?: number; signal?: AbortSignal },
 ) {
   return async (dispatch: ThunkDispatch<State, undefined, AnyAction>, getState: () => State) => {
     const state = getState();
     const backend = currentBackend(state.config);
     const collectionName = collection.get('name');
 
-    // Exit if currently fetching
+    // Exit if currently fetching, unless the caller provides a signal
+    // (indicating it manages cancellation of the previous poll externally).
     const deployState = selectDeployPreview(state, collectionName, slug);
-    if (deployState && deployState.isFetching) {
+    if (deployState && deployState.isFetching && !opts?.signal) {
       return;
     }
 

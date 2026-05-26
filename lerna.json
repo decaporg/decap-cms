@@ -8,7 +8,7 @@
       "allowBranch": ["main", "release/*"],
       "conventionalCommits": true,
       "preid": "beta",
-      "gitRemote": "upstream",
+      "gitRemote": "origin",
       "message": "chore(release): publish"
     }
   },

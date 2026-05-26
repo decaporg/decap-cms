@@ -682,6 +682,8 @@ export default class ListControl extends React.Component {
           onCollapseToggle={partial(this.handleItemCollapseToggle, index)}
           dragHandle={DragHandle}
           id={key}
+          allowRemove={field.get('allow_remove', true)}
+          allowReorder={field.get('allow_reorder', true)}
           onRemove={partial(this.handleRemove, index)}
           data-testid={`styled-list-item-top-bar-${key}`}
         />
