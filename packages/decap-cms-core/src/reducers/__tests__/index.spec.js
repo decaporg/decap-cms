@@ -5,6 +5,27 @@ import { selectCanCreateNewEntry } from '../index';
 
 describe('reducers', () => {
   describe('selectCanCreateNewEntry', () => {
+    it('does not allow limited folder collection creation before entries load', () => {
+      const collection = fromJS({
+        name: 'posts',
+        type: FOLDER,
+        create: true,
+        limit: 3,
+      });
+      const state = {
+        collections: Map({ posts: collection }),
+        entries: fromJS({
+          pages: {
+            posts: {
+              isFetching: true,
+            },
+          },
+        }),
+      };
+
+      expect(selectCanCreateNewEntry(state, 'posts')).toBe(false);
+    });
+
     it('counts all loaded entries instead of the active filtered view', () => {
       const collection = fromJS({
         name: 'posts',

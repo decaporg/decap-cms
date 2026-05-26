@@ -95,6 +95,10 @@ export function selectCanCreateNewEntry(state: State, collectionName: string) {
     return true;
   }
 
+  if (!state.entries.hasIn(['pages', collectionName, 'ids'])) {
+    return false;
+  }
+
   const entryCount = fromEntries.selectPublishedSlugs(state.entries, collectionName).size;
 
   return entryCount < limit;
