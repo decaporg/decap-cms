@@ -95,7 +95,7 @@ export function selectCanCreateNewEntry(state: State, collectionName: string) {
     return true;
   }
 
-  if (!state.entries.hasIn(['pages', collectionName, 'ids'])) {
+  if (!state.entries.getIn(['pages', collectionName, 'ids'])) {
     return false;
   }
 
