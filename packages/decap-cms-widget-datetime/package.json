@@ -26,6 +26,7 @@
   },
   "peerDependencies": {
     "@emotion/react": "^11.11.1",
+    "prop-types": "^15.7.2",
     "react": "^19.1.0"
   }
 }

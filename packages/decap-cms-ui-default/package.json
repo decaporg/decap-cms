@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "react-aria-menubutton": "^7.0.0",
+    "react-immutable-proptypes": "^2.1.0",
     "react-transition-group": "^4.4.5"
   },
   "peerDependencies": {
