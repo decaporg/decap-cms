@@ -6,7 +6,7 @@ import { Waypoint } from 'react-waypoint';
 import { Map, List, fromJS } from 'immutable';
 import { translate } from 'react-polyglot';
 import orderBy from 'lodash/orderBy';
-import { colors } from 'decap-cms-ui-default';
+import { colors, lengths } from 'decap-cms-ui-default';
 
 import {
   selectFields,
@@ -26,15 +26,14 @@ const CardsGrid = styled.ul`
   margin-bottom: 16px;
 `;
 
-const SectionSeparator = styled.li`
-  width: 100%;
+const SectionSeparator = styled.div`
+  width: ${lengths.topCardWidth};
   margin: 24px 0 16px 12px;
   padding-top: 16px;
   border-top: 2px solid ${colors.textFieldBorder};
-  list-style: none;
 `;
 
-const SectionHeading = styled.h3`
+const SectionHeading = styled.p`
   font-size: 16px;
   font-weight: 600;
   color: ${colors.textLead};
@@ -132,7 +131,7 @@ class EntryListing extends React.Component {
   };
 
   renderCardsForSingleCollection = () => {
-    const { collections, viewStyle, entries, t } = this.props;
+    const { collections, viewStyle, entries, page, t } = this.props;
     const inferredFields = this.inferFields(collections);
     const entryCardProps = { collection: collections, inferredFields, viewStyle };
 
@@ -155,7 +154,12 @@ class EntryListing extends React.Component {
     const unpublishedEntries = this.getUnpublishedEntriesList();
 
     if (unpublishedEntries.size === 0) {
-      return publishedCards;
+      return (
+        <CardsGrid>
+          {publishedCards}
+          {this.hasMore() && <Waypoint key={page} onEnter={this.handleLoadMore} />}
+        </CardsGrid>
+      );
     }
 
     const unpublishedCards = unpublishedEntries.map((entry, idx) => {
@@ -176,19 +180,22 @@ class EntryListing extends React.Component {
 
     return (
       <React.Fragment>
-        {publishedCards}
-        <SectionSeparator key="separator">
+        <CardsGrid>
+          {publishedCards}
+          {this.hasMore() && <Waypoint key={page} onEnter={this.handleLoadMore} />}
+        </CardsGrid>
+        <SectionSeparator>
           <SectionHeading>{t('collection.entries.unpublishedHeader')}</SectionHeading>
         </SectionSeparator>
-        {unpublishedCards}
+        <CardsGrid>{unpublishedCards}</CardsGrid>
       </React.Fragment>
     );
   };
 
   renderCardsForMultipleCollections = () => {
-    const { collections, entries } = this.props;
+    const { collections, entries, page } = this.props;
     const isSingleCollectionInList = collections.size === 1;
-    return entries.map((entry, idx) => {
+    const entryCards = entries.map((entry, idx) => {
       const collectionName = entry.get('collection');
       const collection = collections.find(coll => coll.get('name') === collectionName);
       const collectionLabel = !isSingleCollectionInList && collection.get('label');
@@ -203,19 +210,23 @@ class EntryListing extends React.Component {
       };
       return <EntryCard {...entryCardProps} key={idx} />;
     });
+
+    return (
+      <CardsGrid>
+        {entryCards}
+        {this.hasMore() && <Waypoint key={page} onEnter={this.handleLoadMore} />}
+      </CardsGrid>
+    );
   };
 
   render() {
-    const { collections, page } = this.props;
+    const { collections } = this.props;
 
     return (
       <div>
-        <CardsGrid>
-          {Map.isMap(collections)
-            ? this.renderCardsForSingleCollection()
-            : this.renderCardsForMultipleCollections()}
-          {this.hasMore() && <Waypoint key={page} onEnter={this.handleLoadMore} />}
-        </CardsGrid>
+        {Map.isMap(collections)
+          ? this.renderCardsForSingleCollection()
+          : this.renderCardsForMultipleCollections()}
       </div>
     );
   }
