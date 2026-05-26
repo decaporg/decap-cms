@@ -27,8 +27,8 @@ const LoginButton = styled.button`
 `;
 
 const AuthForm = styled.form`
-  width: 350px;
-  margin-top: -80px;
+  max-width: 350px;
+  width: 100%;
 `;
 
 const AuthInput = styled.input`
@@ -123,6 +123,13 @@ export default class SupabaseAuthenticationPage extends React.Component {
         refresh_token: data.session.refresh_token,
         expires_at: data.session.expires_at,
         provider_token: data.session.access_token,
+        user_email: data.user?.email,
+        email: data.user?.email,
+        user_name:
+          data.user?.user_metadata?.display_name ||
+          data.user?.user_metadata?.full_name ||
+          data.user?.user_metadata?.name,
+        user_metadata: data.user?.user_metadata,
       });
     } catch (error) {
       this.setState({

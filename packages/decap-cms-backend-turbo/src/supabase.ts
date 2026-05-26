@@ -17,6 +17,7 @@ type File = {
 export class SupabaseClient {
   supabaseUrl: string;
   supabaseAnonKey: string;
+  supabaseAccessToken: string | null;
   branch: string;
   repo: string;
   siteId: string;
@@ -27,12 +28,18 @@ export class SupabaseClient {
     branch: string,
     repo: string,
     siteId: string,
+    supabaseAccessToken: string | null = null,
   ) {
     this.supabaseUrl = supabaseUrl;
     this.supabaseAnonKey = supabaseAnonKey;
     this.branch = branch;
     this.repo = repo;
     this.siteId = siteId;
+    this.supabaseAccessToken = supabaseAccessToken;
+  }
+
+  setAccessToken(token: string | null) {
+    this.supabaseAccessToken = token;
   }
 
   buildUrl(query = '') {
@@ -60,7 +67,7 @@ export class SupabaseClient {
         method: method || 'POST',
         headers: {
           apikey: this.supabaseAnonKey,
-          Authorization: 'Bearer ' + this.supabaseAnonKey,
+          Authorization: `Bearer ${this.supabaseAccessToken || this.supabaseAnonKey}`,
           'Content-Type': 'application/json',
         },
         body: body ? JSON.stringify(body) : undefined,
@@ -93,7 +100,7 @@ export class SupabaseClient {
           method: 'GET',
           headers: {
             apikey: this.supabaseAnonKey,
-            Authorization: 'Bearer ' + this.supabaseAnonKey,
+            Authorization: `Bearer ${this.supabaseAccessToken || this.supabaseAnonKey}`,
             'Content-Type': 'application/json',
             Range: `${rangeStart}-${rangeEnd}`,
           },
@@ -122,6 +129,22 @@ export class SupabaseClient {
     // return [];
 
     return allResults;
+  }
+
+  async fetchEntryByPath(path: string) {
+    const params = new URLSearchParams({
+      repo: `eq.${this.repo}`,
+      site_id: `eq.${this.siteId}`,
+      branch: `eq.${this.branch}`,
+      file_path: `eq.${path}`,
+    });
+    const results = await this.fetchDbPaginated(`?${params.toString()}`);
+    if (results.length === 0) return null;
+    const data = results[0];
+    return {
+      file: data.file_meta,
+      data: data.file_data,
+    };
   }
 
   async fetchEntries(collection: string, searchTerm?: string) {
@@ -191,7 +214,7 @@ export class SupabaseClient {
     const seen = new Map();
     const deduplicatedBatch = [];
     for (const item of batch) {
-      const key = `${item.repo}|${item.branch}|${item.collection}|${item.file_id}`;
+      const key = `${item.site_id}|${item.repo}|${item.branch}|${item.file_path}`;
       if (!seen.has(key)) {
         seen.set(key, true);
         deduplicatedBatch.push(item);
@@ -200,12 +223,12 @@ export class SupabaseClient {
 
     try {
       const response = await fetch(
-        this.buildUrl('?on_conflict=repo,site_id,branch,collection,file_id'),
+        this.buildUrl('?on_conflict=site_id,repo,branch,file_path'),
         {
           method: 'POST',
           headers: {
             apikey: this.supabaseAnonKey,
-            Authorization: 'Bearer ' + this.supabaseAnonKey,
+            Authorization: `Bearer ${this.supabaseAccessToken || this.supabaseAnonKey}`,
             'Content-Type': 'application/json',
             Prefer: 'resolution=merge-duplicates',
           },
@@ -289,5 +312,52 @@ export class SupabaseClient {
     }
 
     return;
+  }
+
+  async updateEntriesAfterSave(files: Array<{ path: string; raw: string; id: string }>) {
+    console.log('Updating cache for persisted entries:', files.map(f => f.path));
+
+    const batch: Array<{
+      collection: string;
+      fileId: string;
+      filePath: string;
+      fileMeta: any;
+      fileData: string;
+    }> = [];
+
+    for (const file of files) {
+      const params = new URLSearchParams({
+        repo: `eq.${this.repo}`,
+        site_id: `eq.${this.siteId}`,
+        branch: `eq.${this.branch}`,
+        file_path: `eq.${file.path}`,
+      });
+
+      const existingRows = await this.fetchDbPaginated(`?${params.toString()}`);
+      if (existingRows.length === 0) {
+        continue;
+      }
+
+      for (const row of existingRows) {
+        batch.push({
+          collection: row.collection,
+          fileId: file.id,
+          filePath: file.path,
+          fileMeta: {
+            ...(row.file_meta || {}),
+            id: file.id,
+            path: file.path,
+            name: file.path.split('/').pop() || '',
+            size: file.raw.length,
+            type: 'blob',
+          },
+          fileData: file.raw,
+        });
+      }
+    }
+
+    if (batch.length > 0) {
+      await this.insertDbFilesBatch(batch);
+    }
   }
 }
