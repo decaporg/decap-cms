@@ -28,6 +28,7 @@ PACKAGES=(
   "decap-cms-backend-bitbucket"
   "decap-cms-backend-git-gateway"
   "decap-cms-backend-gitea"
+  "decap-cms-backend-forgejo"
   "decap-cms-backend-github"
   "decap-cms-backend-gitlab"
   "decap-cms-backend-proxy"

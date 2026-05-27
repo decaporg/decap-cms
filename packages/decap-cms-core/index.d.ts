@@ -10,6 +10,7 @@ declare module 'decap-cms-core' {
     | 'github'
     | 'gitlab'
     | 'gitea'
+    | 'forgejo'
     | 'bitbucket'
     | 'test-repo'
     | 'proxy';
