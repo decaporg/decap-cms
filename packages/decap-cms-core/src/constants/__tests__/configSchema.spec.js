@@ -94,6 +94,39 @@ describe('config', () => {
       }).toThrowError("'media_folder' must be string");
     });
 
+    it('should not throw for image transformations shorthand', () => {
+      expect(() => {
+        validateConfig({
+          ...validConfig,
+          image_transformations: [
+            { name: 'small', width: 100, format: 'jpg', quality: 60 },
+            { name: 'medium', width: 400, default: true },
+          ],
+        });
+      }).not.toThrowError();
+    });
+
+    it('should not throw for image transformations with keep_original disabled', () => {
+      expect(() => {
+        validateConfig({
+          ...validConfig,
+          image_transformations: {
+            keep_original: false,
+            variants: [{ name: 'compressed', quality: 70, keep_original_size: true }],
+          },
+        });
+      }).not.toThrowError();
+    });
+
+    it('should throw if image transformation format is unsupported', () => {
+      expect(() => {
+        validateConfig({
+          ...validConfig,
+          image_transformations: [{ name: 'small', format: 'gif' }],
+        });
+      }).toThrowError("'image_transformations' must match exactly one schema in oneOf");
+    });
+
     it('should throw if collections is not defined in config', () => {
       expect(() => {
         validateConfig({ foo: 'bar', backend: { name: 'bar' }, media_folder: 'baz' });

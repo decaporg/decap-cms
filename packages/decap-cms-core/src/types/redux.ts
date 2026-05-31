@@ -76,6 +76,7 @@ export interface CmsFieldBase {
   i18n?: boolean | 'translate' | 'duplicate' | 'none';
   media_folder?: string;
   public_folder?: string;
+  image_transformations?: CmsImageTransformations;
   comment?: string;
 }
 
@@ -422,6 +423,25 @@ export interface CmsIssueReports {
   url?: string;
 }
 
+export type CmsImageTransformationFormat = 'jpg' | 'jpeg' | 'png' | 'webp';
+
+export interface CmsImageTransformationVariant {
+  name: string;
+  width?: number;
+  height?: number;
+  format?: CmsImageTransformationFormat;
+  quality?: number;
+  default?: boolean;
+  keep_original_size?: boolean;
+}
+
+export type CmsImageTransformations =
+  | CmsImageTransformationVariant[]
+  | {
+      keep_original?: boolean;
+      variants: CmsImageTransformationVariant[];
+    };
+
 export interface CmsConfig {
   backend: CmsBackend;
   collections: CmsCollection[];
@@ -437,6 +457,7 @@ export interface CmsConfig {
   media_folder?: string;
   public_folder?: string;
   media_folder_relative?: boolean;
+  image_transformations?: CmsImageTransformations;
   media_library?: CmsMediaLibrary;
   publish_mode?: CmsPublishMode;
   load_config_file?: boolean;
@@ -598,6 +619,7 @@ export type EntryField = StaticallyTypedRecord<{
   media_folder?: string;
   multiple?: boolean;
   public_folder?: string;
+  image_transformations?: CmsImageTransformations;
   comment?: string;
   meta?: boolean;
   i18n: 'translate' | 'duplicate' | 'none';

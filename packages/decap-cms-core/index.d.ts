@@ -60,6 +60,7 @@ declare module 'decap-cms-core' {
     i18n?: boolean | 'translate' | 'duplicate' | 'none';
     media_folder?: string;
     public_folder?: string;
+    image_transformations?: CmsImageTransformations;
     comment?: string;
   }
 
@@ -408,6 +409,25 @@ declare module 'decap-cms-core' {
     url?: string;
   }
 
+  export type CmsImageTransformationFormat = 'jpg' | 'jpeg' | 'png' | 'webp';
+
+  export interface CmsImageTransformationVariant {
+    name: string;
+    width?: number;
+    height?: number;
+    format?: CmsImageTransformationFormat;
+    quality?: number;
+    default?: boolean;
+    keep_original_size?: boolean;
+  }
+
+  export type CmsImageTransformations =
+    | CmsImageTransformationVariant[]
+    | {
+        keep_original?: boolean;
+        variants: CmsImageTransformationVariant[];
+      };
+
   export interface CmsConfig {
     backend: CmsBackend;
     collections: CmsCollection[];
@@ -423,6 +443,7 @@ declare module 'decap-cms-core' {
     media_folder?: string;
     public_folder?: string;
     media_folder_relative?: boolean;
+    image_transformations?: CmsImageTransformations;
     media_library?: CmsMediaLibrary;
     publish_mode?: CmsPublishMode;
     issue_reports?: CmsIssueReports;
