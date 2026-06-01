@@ -8,11 +8,12 @@ import { components, buttons, shadows } from 'decap-cms-ui-default';
 
 const CollectionTopContainer = styled.div`
   ${components.cardTop};
-  margin-bottom: 22px;
 `;
 
 const CollectionTopRow = styled.div`
   display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
   align-items: center;
   justify-content: space-between;
 `;
@@ -26,13 +27,13 @@ const CollectionTopNewButton = styled(Link)`
   ${shadows.dropDeep};
   ${buttons.default};
   ${buttons.gray};
+  white-space: nowrap;
 
   padding: 0 30px;
 `;
 
 const CollectionTopDescription = styled.p`
   ${components.cardTopDescription};
-  margin-bottom: 0;
 `;
 
 function getCollectionProps(collection) {
