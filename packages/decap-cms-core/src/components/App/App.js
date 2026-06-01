@@ -155,6 +155,7 @@ class App extends React.Component {
       openMediaLibrary,
       t,
       showMediaButton,
+      location,
     } = this.props;
 
     if (config === null) {
@@ -176,22 +177,30 @@ class App extends React.Component {
     const defaultPath = getDefaultPath(collections);
     const hasWorkflow = publishMode === EDITORIAL_WORKFLOW;
 
+    // Work out if this is an editor route, following the same URL matching as the router.
+    // - /collections/:name/entries/*
+    // - /collections/:name/new
+    const [, base, , view] = location.pathname.split('/');
+    const isEditorRoute = base === 'collections' && (view === 'entries' || view === 'new');
+
     return (
       <>
         <Notifications />
-        <Header
-          user={user}
-          collections={collections}
-          onCreateEntryClick={createNewEntry}
-          onLogoutClick={logoutUser}
-          openMediaLibrary={openMediaLibrary}
-          hasWorkflow={hasWorkflow}
-          displayUrl={config.display_url}
-          logoUrl={config.logo_url} // Deprecated, replaced by `logo.src`
-          logo={config.logo}
-          isTestRepo={config.backend.name === 'test-repo'}
-          showMediaButton={showMediaButton}
-        />
+        {!isEditorRoute && (
+          <Header
+            user={user}
+            collections={collections}
+            onCreateEntryClick={createNewEntry}
+            onLogoutClick={logoutUser}
+            openMediaLibrary={openMediaLibrary}
+            hasWorkflow={hasWorkflow}
+            displayUrl={config.display_url}
+            logoUrl={config.logo_url} // Deprecated, replaced by `logo.src`
+            logo={config.logo}
+            isTestRepo={config.backend.name === 'test-repo'}
+            showMediaButton={showMediaButton}
+          />
+        )}
         <AppMainContainer>
           {isFetching && <TopBarProgress />}
           <Switch>
