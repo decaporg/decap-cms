@@ -42,7 +42,7 @@ const zh_Hant = {
     collectionTop: {
       sortBy: '排序方式',
       viewAs: '瀏覽方式',
-      newButton: '新增 %{collectionLabel}',
+      newButton: '＋ %{collectionLabel}',
       ascending: '由小到大',
       descending: '由大到小',
       searchResults: '搜尋 "%{searchTerm}" 的結果',

@@ -43,7 +43,7 @@ const pl = {
     collectionTop: {
       sortBy: 'Sortuj po',
       viewAs: 'Wyświetl jako',
-      newButton: 'Nowy %{collectionLabel}',
+      newButton: '＋ %{collectionLabel}',
       ascending: 'Rosnąco',
       descending: 'Malejąco',
       searchResults: 'Wyszukaj wyniki dla %{searchTerm}',

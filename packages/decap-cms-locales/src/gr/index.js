@@ -39,7 +39,7 @@ const gr = {
     },
     collectionTop: {
       viewAs: 'Προβολή ως',
-      newButton: 'Νέο %{collectionLabel}',
+      newButton: '＋ %{collectionLabel}',
     },
     entries: {
       loadingEntries: 'Εγγραφές φόρτωσης',

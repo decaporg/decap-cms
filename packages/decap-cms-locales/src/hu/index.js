@@ -24,7 +24,7 @@ const hu = {
     },
     collectionTop: {
       viewAs: 'Nézet mint',
-      newButton: 'Új %{collectionLabel}',
+      newButton: '＋ %{collectionLabel}',
     },
     entries: {
       loadingEntries: 'Bejegyzések betöltése',

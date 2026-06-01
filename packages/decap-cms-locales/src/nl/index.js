@@ -43,7 +43,7 @@ const nl = {
     collectionTop: {
       sortBy: 'Sorteer op',
       viewAs: 'Bekijk als',
-      newButton: 'Voeg %{collectionLabel} toe',
+      newButton: '＋ %{collectionLabel}',
       ascending: 'Oplopend',
       descending: 'Aflopend',
       searchResults: 'Zoekresultaten voor "%{searchTerm}"',

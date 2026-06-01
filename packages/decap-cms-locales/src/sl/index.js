@@ -42,7 +42,7 @@ const sl = {
     collectionTop: {
       sortBy: 'Razvrsti po',
       viewAs: 'Poglej kot',
-      newButton: 'Nov %{collectionLabel}',
+      newButton: '＋ %{collectionLabel}',
       ascending: 'Naraščajoče',
       descending: 'Padajoče',
       searchResults: 'Rezultati iskanja za "%{searchTerm}"',

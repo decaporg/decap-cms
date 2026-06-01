@@ -43,7 +43,7 @@ const mk = {
     collectionTop: {
       sortBy: 'Подреди според',
       viewAs: 'Прикажи како',
-      newButton: 'Креирај %{collectionLabel}',
+      newButton: '＋ %{collectionLabel}',
       ascending: 'Растечки',
       descending: 'Опаѓачки',
       searchResults: 'Резултати од пребарувањето за "%{searchTerm}"',

@@ -45,7 +45,7 @@ const sr_Cyrl = {
       viewAs: 'Погледај као',
       viewAsList: 'Приказ као листа',
       viewAsGrid: 'Приказ као мрежа',
-      newButton: 'Ново(и/а) %{collectionLabel}',
+      newButton: '＋ %{collectionLabel}',
       ascending: 'Растуће',
       descending: 'Опадајуће',
       searchResults: 'Резултати претраге за "%{searchTerm}"',
