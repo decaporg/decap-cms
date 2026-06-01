@@ -40,7 +40,7 @@ const nb_no = {
     collectionTop: {
       sortBy: 'Sorter etter',
       viewAs: 'Vis som',
-      newButton: 'Ny %{collectionLabel}',
+      newButton: '＋ %{collectionLabel}',
       ascending: 'Stigende',
       descending: 'Synkende',
     },

@@ -58,7 +58,7 @@ function CollectionTop({ collection, newEntryUrl, t }) {
       <CollectionTopRow>
         <CollectionTopHeading>{collectionLabel}</CollectionTopHeading>
         {newEntryUrl ? (
-          <CollectionTopNewButton to={newEntryUrl}>
+          <CollectionTopNewButton to={newEntryUrl} dir="auto">
             {t('collection.collectionTop.newButton', {
               collectionLabel: collectionLabelSingular || collectionLabel,
             })}

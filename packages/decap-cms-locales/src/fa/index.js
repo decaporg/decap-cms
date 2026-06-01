@@ -41,7 +41,7 @@ const fa = {
     collectionTop: {
       sortBy: 'مرتب سازی بر اساس',
       viewAs: 'نمایش به صورت',
-      newButton: '%{collectionLabel} جدید',
+      newButton: '＋ %{collectionLabel}',
       ascending: 'صعودی',
       descending: 'نزولی',
       searchResults: 'نتایج جستجو برای "%{searchTerm}"',

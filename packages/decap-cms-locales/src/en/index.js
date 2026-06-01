@@ -45,7 +45,7 @@ const en = {
       viewAs: 'View as',
       viewAsList: 'List view option',
       viewAsGrid: 'Grid view option',
-      newButton: 'New %{collectionLabel}',
+      newButton: '＋ %{collectionLabel}',
       ascending: 'Ascending',
       descending: 'Descending',
       searchResults: 'Search Results for "%{searchTerm}"',

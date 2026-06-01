@@ -43,7 +43,7 @@ const lt = {
     collectionTop: {
       sortBy: 'Rikiavimo tvarka',
       viewAs: 'Peržiūrėti kaip',
-      newButton: 'Nauja(s) %{collectionLabel}',
+      newButton: '＋ %{collectionLabel}',
       ascending: 'Didėjimo tvarka (A-Z)',
       descending: 'Mažėjimo tvarka (Z-A)',
       searchResults: 'Paieškos rezultatai: „%{searchTerm}“',

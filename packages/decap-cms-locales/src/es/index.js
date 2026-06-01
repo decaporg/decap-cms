@@ -40,7 +40,7 @@ const es = {
     collectionTop: {
       sortBy: 'Ordenar por',
       viewAs: 'Ver como',
-      newButton: 'Nuevo %{collectionLabel}',
+      newButton: '＋ %{collectionLabel}',
       ascending: 'Ascendente',
       descending: 'Descendente',
     },

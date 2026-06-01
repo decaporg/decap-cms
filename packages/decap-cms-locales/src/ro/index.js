@@ -43,7 +43,7 @@ const ro = {
     collectionTop: {
       sortBy: 'Sortează',
       viewAs: 'Vizualizează ca',
-      newButton: 'Adaugă %{collectionLabel}',
+      newButton: '＋ %{collectionLabel}',
       ascending: 'Ascendent',
       descending: 'Descendent',
       searchResults: 'Rezultatele căutării pentru "%{searchTerm}"',

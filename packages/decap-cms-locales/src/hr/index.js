@@ -45,7 +45,7 @@ const hr = {
       viewAs: 'Pogledaj kao',
       viewAsList: 'Popis',
       viewAsGrid: 'Mreža',
-      newButton: 'Novo(i/a) %{collectionLabel}',
+      newButton: '＋ %{collectionLabel}',
       ascending: 'Uzlazno',
       descending: 'Silazno',
       searchResults: 'Rezultati pretraživanja za "%{searchTerm}"',

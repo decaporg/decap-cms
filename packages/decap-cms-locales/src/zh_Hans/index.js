@@ -43,7 +43,7 @@ const zh_Hans = {
     collectionTop: {
       sortBy: '排序',
       viewAs: '查看',
-      newButton: '新建%{collectionLabel}',
+      newButton: '＋ %{collectionLabel}',
       ascending: '升序',
       descending: '降序',
       searchResults: '有关“%{searchTerm}”的搜索结果',

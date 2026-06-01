@@ -42,7 +42,7 @@ const ca = {
     collectionTop: {
       sortBy: 'Ordenar per',
       viewAs: 'Veure com',
-      newButton: 'Nou %{collectionLabel}',
+      newButton: '＋ %{collectionLabel}',
       ascending: 'Ascendent',
       descending: 'Descendent',
       searchResults: 'Buscar resultats per "%{searchTerm}"',
