@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.7.0](https://github.com/decaporg/decap-cms/compare/decap-cms-ui-default@3.6.0...decap-cms-ui-default@3.7.0) (2026-06-01)
+
+### Features
+
+- **ui:** make dropdown positioning responsive ([#7828](https://github.com/decaporg/decap-cms/issues/7828)) ([2fdf798](https://github.com/decaporg/decap-cms/commit/2fdf798412188559738c5bbd5f593c3f352d24fc))
+
 # [3.6.0](https://github.com/decaporg/decap-cms/compare/decap-cms-ui-default@3.5.1...decap-cms-ui-default@3.6.0) (2026-04-16)
 
 **Note:** Version bump only for package decap-cms-ui-default
