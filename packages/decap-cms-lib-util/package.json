@@ -27,5 +27,8 @@
   "peerDependencies": {
     "immutable": "^3.7.6",
     "lodash": "^4.17.11"
+  },
+  "devDependencies": {
+    "common-tags": "^1.8.0"
   }
 }

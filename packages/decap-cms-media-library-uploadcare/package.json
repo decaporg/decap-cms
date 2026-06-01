@@ -22,7 +22,11 @@
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
   },
   "dependencies": {
+    "immutable": "^3.7.6",
     "uploadcare-widget": "^3.7.0",
     "uploadcare-widget-tab-effects": "^1.4.0"
+  },
+  "devDependencies": {
+    "uuid": "^8.3.2"
   }
 }
