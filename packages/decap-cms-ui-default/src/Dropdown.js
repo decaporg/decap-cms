@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Wrapper, Button as DropdownButton, Menu, MenuItem } from 'react-aria-menubutton';
 
+import { useDropDownCoords } from './DropDown/useDropDownCoords';
 import { colors, buttons, components, zIndex } from './styles';
 import Icon from './Icon';
 
@@ -11,6 +12,7 @@ const StyledWrapper = styled(Wrapper)`
   position: relative;
   font-size: 14px;
   user-select: none;
+  touch-action: manipulation;
 `;
 
 const StyledDropdownButton = styled(DropdownButton)`
@@ -20,6 +22,7 @@ const StyledDropdownButton = styled(DropdownButton)`
   padding-left: 20px;
   padding-right: 40px;
   position: relative;
+  white-space: nowrap;
 
   &:after {
     ${components.caretDown};
@@ -44,8 +47,7 @@ const DropdownList = styled.ul`
   ${props => css`
     width: ${props.width};
     top: ${props.top};
-    left: ${props.position === 'left' ? 0 : 'auto'};
-    right: ${props.position === 'right' ? 0 : 'auto'};
+    left: ${props.left};
   `};
 `;
 
@@ -91,15 +93,23 @@ function Dropdown({
   className,
   children,
 }) {
+  const [open, setOpen] = useState(false);
+  const { coords, refs } = useDropDownCoords({ dropdownPosition, open });
   return (
     <StyledWrapper
       closeOnSelection={closeOnSelection}
       onSelection={handler => handler()}
+      onMenuToggle={({ isOpen }) => setOpen(isOpen)}
       className={className}
     >
-      {renderButton()}
+      <div ref={refs.source}>{renderButton()}</div>
       <Menu>
-        <DropdownList width={dropdownWidth} top={dropdownTopOverlap} position={dropdownPosition}>
+        <DropdownList
+          ref={refs.dropdown}
+          width={dropdownWidth}
+          top={dropdownTopOverlap}
+          left={coords.x + 'px'}
+        >
           {children}
         </DropdownList>
       </Menu>
