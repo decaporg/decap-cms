@@ -184,4 +184,37 @@ describe('GitLab API', () => {
       expect(getMaxAccess(groups)).toBe(groups[2]);
     });
   });
+
+  describe('readFile', () => {
+    it('should request Git LFS content from GitLab raw file responses by default', async () => {
+      const api = new API({ repo: 'repo' });
+      const response = {};
+      api.request = jest.fn().mockResolvedValue(response);
+      api.responseToText = jest.fn().mockReturnValue('file content');
+
+      await expect(api.readFile('static/image.png')).resolves.toBe('file content');
+
+      expect(api.request).toHaveBeenCalledTimes(1);
+      expect(api.request).toHaveBeenCalledWith({
+        url: '/projects/repo/repository/files/static%2Fimage.png/raw',
+        params: { ref: 'master', lfs: true },
+        cache: 'no-store',
+      });
+      expect(api.responseToText).toHaveBeenCalledWith(response);
+    });
+
+    it('should allow callers to disable Git LFS content requests', async () => {
+      const api = new API({ repo: 'repo' });
+      api.request = jest.fn().mockResolvedValue({});
+      api.responseToText = jest.fn().mockReturnValue('pointer content');
+
+      await api.readFile('static/image.png', null, { lfs: false });
+
+      expect(api.request).toHaveBeenCalledWith({
+        url: '/projects/repo/repository/files/static%2Fimage.png/raw',
+        params: { ref: 'master' },
+        cache: 'no-store',
+      });
+    });
+  });
 });

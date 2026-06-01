@@ -346,12 +346,12 @@ export default class API {
   readFile = async (
     path: string,
     sha?: string | null,
-    { parseText = true, branch = this.branch } = {},
+    { parseText = true, branch = this.branch, lfs = true } = {},
   ): Promise<string | Blob> => {
     const fetchContent = async () => {
       const content = await this.request({
         url: `${this.repoURL}/repository/files/${encodeURIComponent(path)}/raw`,
-        params: { ref: branch },
+        params: { ref: branch, ...(lfs ? { lfs: true } : {}) },
         cache: 'no-store',
       }).then<Blob | string>(parseText ? this.responseToText : this.responseToBlob);
       return content;
