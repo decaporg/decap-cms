@@ -419,6 +419,77 @@ describe('gitlab backend', () => {
     });
   });
 
+  describe('media files', () => {
+    it('requests GitLab LFS content for media display files', async () => {
+      backend = resolveBackend(defaultConfig);
+      const blob = new Blob(['image content']);
+      const readFile = jest.fn().mockResolvedValue(blob);
+      backend.implementation.api = { readFile };
+      global.URL.createObjectURL = jest.fn().mockReturnValue('blob:http://localhost/image');
+
+      await expect(
+        backend.implementation.getMediaDisplayURL({
+          id: 'image-sha',
+          path: 'static/uploads/image.png',
+        }),
+      ).resolves.toBe('blob:http://localhost/image');
+
+      expect(readFile).toHaveBeenCalledWith('static/uploads/image.png', 'image-sha', {
+        parseText: false,
+        lfs: true,
+      });
+    });
+
+    it('requests GitLab LFS content when downloading media files', async () => {
+      backend = resolveBackend(defaultConfig);
+      const blob = new Blob(['image content']);
+      const readFile = jest.fn().mockResolvedValue(blob);
+      backend.implementation.api = { readFile };
+      global.URL.createObjectURL = jest.fn().mockReturnValue('blob:http://localhost/image');
+
+      await expect(
+        backend.implementation.getMediaFile('static/uploads/image.png'),
+      ).resolves.toEqual(
+        expect.objectContaining({
+          displayURL: 'blob:http://localhost/image',
+          path: 'static/uploads/image.png',
+          name: 'image.png',
+        }),
+      );
+
+      expect(readFile).toHaveBeenCalledWith('static/uploads/image.png', null, {
+        parseText: false,
+        lfs: true,
+      });
+    });
+
+    it('requests GitLab LFS content when loading unpublished entry media files', async () => {
+      backend = resolveBackend(defaultConfig);
+      const blob = new Blob(['image content']);
+      const readFile = jest.fn().mockResolvedValue(blob);
+      backend.implementation.api = { readFile };
+      global.URL.createObjectURL = jest.fn().mockReturnValue('blob:http://localhost/image');
+
+      await expect(
+        backend.implementation.loadMediaFile('cms/posts/example', {
+          path: 'static/uploads/image.png',
+        }),
+      ).resolves.toEqual(
+        expect.objectContaining({
+          displayURL: 'blob:http://localhost/image',
+          path: 'static/uploads/image.png',
+          name: 'image.png',
+        }),
+      );
+
+      expect(readFile).toHaveBeenCalledWith('static/uploads/image.png', null, {
+        branch: 'cms/posts/example',
+        parseText: false,
+        lfs: true,
+      });
+    });
+  });
+
   describe('listEntries', () => {
     sharedSetup();
 
