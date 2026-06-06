@@ -174,6 +174,19 @@ function getImageBytes(image: PhotonImage, format: string, quality = 75) {
   return image.get_bytes();
 }
 
+async function getFileBytes(file: File) {
+  if (typeof file.arrayBuffer === 'function') {
+    return new Uint8Array(await file.arrayBuffer());
+  }
+
+  return new Promise<Uint8Array>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(new Uint8Array(reader.result as ArrayBuffer));
+    reader.onerror = () => reject(reader.error);
+    reader.readAsArrayBuffer(file);
+  });
+}
+
 export async function transformImage(
   file: File,
   originalPath: string,
@@ -183,7 +196,8 @@ export async function transformImage(
   const initPhoton = (photon as unknown as { default: () => Promise<unknown> }).default;
   await initPhoton();
 
-  const originalImage = photon.PhotonImage.new_from_blob(file);
+  const imageBytes = await getFileBytes(file);
+  const originalImage = photon.PhotonImage.new_from_byteslice(imageBytes);
 
   try {
     const transformedFiles = config.variants.map(variant => {

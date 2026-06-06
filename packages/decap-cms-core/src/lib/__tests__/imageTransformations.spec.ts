@@ -4,9 +4,41 @@ import {
   getImageTransformationsConfig,
   shouldTransformImage,
   sortTransformationFilesForSelection,
+  transformImage,
 } from '../imageTransformations';
 
+const mockPhotonImage = {
+  get_width: jest.fn(() => 100),
+  get_height: jest.fn(() => 50),
+  get_bytes_webp: jest.fn(() => new Uint8Array([1, 2, 3])),
+  get_bytes_jpeg: jest.fn(() => new Uint8Array([4, 5, 6])),
+  get_bytes: jest.fn(() => new Uint8Array([7, 8, 9])),
+  free: jest.fn(),
+};
+
+const mockNewFromByteslice = jest.fn(() => mockPhotonImage);
+const mockNewFromBlob = jest.fn();
+
+jest.mock(
+  '@silvia-odwyer/photon',
+  () => ({
+    __esModule: true,
+    default: jest.fn(() => Promise.resolve()),
+    PhotonImage: {
+      new_from_byteslice: mockNewFromByteslice,
+      new_from_blob: mockNewFromBlob,
+    },
+    resize: jest.fn(),
+    SamplingFilter: { Lanczos3: 'Lanczos3' },
+  }),
+  { virtual: true },
+);
+
 describe('imageTransformations', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   describe('getImageTransformationsConfig', () => {
     it('normalizes array shorthand and keeps the original by default', () => {
       expect(
@@ -103,6 +135,27 @@ describe('imageTransformations', () => {
       const small = { file: new File([], 'image.jpg'), path: 'small/image.jpg' };
 
       expect(sortTransformationFilesForSelection([original, small])).toEqual([small, original]);
+    });
+  });
+
+  describe('transformImage', () => {
+    it('creates the Photon image from file bytes instead of blob', async () => {
+      const file = new File([new Uint8Array([255, 216, 255])], 'image.jpg', {
+        type: 'image/jpeg',
+      });
+
+      const files = await transformImage(file, 'uploads/image.jpg', {
+        keepOriginal: false,
+        variants: [{ name: 'webp', format: 'webp', keep_original_size: true }],
+      });
+
+      expect(mockNewFromByteslice).toHaveBeenCalledTimes(1);
+      expect(mockNewFromByteslice.mock.calls[0][0]).toEqual(new Uint8Array([255, 216, 255]));
+      expect(mockNewFromBlob).not.toHaveBeenCalled();
+      expect(files).toHaveLength(1);
+      expect(files[0].file.name).toBe('image.webp');
+      expect(files[0].path).toBe('uploads/_transformations/webp/image.webp');
+      expect(mockPhotonImage.free).toHaveBeenCalledTimes(1);
     });
   });
 });
