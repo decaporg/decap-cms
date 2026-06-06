@@ -28,11 +28,29 @@ export type ImageTransformationFile = {
   original?: boolean;
 };
 
+type PlainFieldImageTransformations = {
+  image_transformations?: CmsImageTransformations;
+};
+
+type FieldImageTransformationsGetter = {
+  get: (key: 'image_transformations') => CmsImageTransformations | undefined;
+};
+
 const TRANSFORMATIONS_FOLDER = '_transformations';
 const SUPPORTED_OUTPUT_FORMATS = ['jpg', 'jpeg', 'png', 'webp'];
 
-function getFieldImageTransformations(field?: EntryField) {
-  const imageTransformations = field?.get('image_transformations') as
+function hasImageTransformationsGetter(
+  field: EntryField | PlainFieldImageTransformations | undefined,
+): field is EntryField & FieldImageTransformationsGetter {
+  return typeof (field as FieldImageTransformationsGetter | undefined)?.get === 'function';
+}
+
+function getFieldImageTransformations(field?: EntryField | PlainFieldImageTransformations) {
+  const imageTransformations = (
+    hasImageTransformationsGetter(field)
+      ? field.get('image_transformations')
+      : (field as PlainFieldImageTransformations | undefined)?.image_transformations
+  ) as
     | (CmsImageTransformations & { toJS?: () => CmsImageTransformations })
     | undefined;
 

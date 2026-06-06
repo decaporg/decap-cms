@@ -50,6 +50,17 @@ describe('imageTransformations', () => {
         variants: [{ name: 'field', width: 200 }],
       });
     });
+
+    it('supports plain object field config from media upload options', () => {
+      const field = {
+        image_transformations: [{ name: 'field', width: 200 }],
+      };
+
+      expect(getImageTransformationsConfig({}, field)).toEqual({
+        keepOriginal: true,
+        variants: [{ name: 'field', width: 200 }],
+      });
+    });
   });
 
   describe('shouldTransformImage', () => {
