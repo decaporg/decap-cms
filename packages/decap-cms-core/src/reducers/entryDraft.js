@@ -1,5 +1,4 @@
 import { Map, List, fromJS } from 'immutable';
-import { v4 as uuid } from 'uuid';
 import get from 'lodash/get';
 import { join, basename } from 'path';
 
@@ -53,7 +52,7 @@ function entryDraftReducer(state = Map(), action) {
         state.set('fieldsMetaData', Map());
         state.set('fieldsErrors', Map());
         state.set('hasChanged', false);
-        state.set('key', uuid());
+        state.set('key', crypto.randomUUID());
       });
     case DRAFT_CREATE_EMPTY:
       // New Entry
@@ -63,7 +62,7 @@ function entryDraftReducer(state = Map(), action) {
         state.set('fieldsMetaData', Map());
         state.set('fieldsErrors', Map());
         state.set('hasChanged', false);
-        state.set('key', uuid());
+        state.set('key', crypto.randomUUID());
       });
     case DRAFT_CREATE_FROM_LOCAL_BACKUP:
       // Local Backup
@@ -76,7 +75,7 @@ function entryDraftReducer(state = Map(), action) {
         state.set('fieldsMetaData', Map());
         state.set('fieldsErrors', Map());
         state.set('hasChanged', true);
-        state.set('key', uuid());
+        state.set('key', crypto.randomUUID());
       });
     case DRAFT_CREATE_DUPLICATE_FROM_ENTRY:
       // Duplicate Entry
