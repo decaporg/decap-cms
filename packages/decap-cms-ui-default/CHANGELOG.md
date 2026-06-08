@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.8.0](https://github.com/decaporg/decap-cms/compare/decap-cms-ui-default@3.7.0...decap-cms-ui-default@3.8.0) (2026-06-08)
+
+### Bug Fixes
+
+- remove unused dependencies and specify missing dependencies ([#7833](https://github.com/decaporg/decap-cms/issues/7833)) ([e324a14](https://github.com/decaporg/decap-cms/commit/e324a142f7f0ba63c760b2e8524d971c35200f87))
+
+### Features
+
+- **ui:** make collections and workflow views responsive ([#7827](https://github.com/decaporg/decap-cms/issues/7827)) ([11f3540](https://github.com/decaporg/decap-cms/commit/11f35405cd1a1d1216e97b890173f46436752019))
+- **ui:** make media library responsive ([#7820](https://github.com/decaporg/decap-cms/issues/7820)) ([3c3fd81](https://github.com/decaporg/decap-cms/commit/3c3fd819fbdbff08e6a0a4d2df15857a8d03c983))
+
 # [3.7.0](https://github.com/decaporg/decap-cms/compare/decap-cms-ui-default@3.6.0...decap-cms-ui-default@3.7.0) (2026-06-01)
 
 ### Features
