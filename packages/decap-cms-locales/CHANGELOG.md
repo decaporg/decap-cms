@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.6.0](https://github.com/decaporg/decap-cms/compare/decap-cms-locales@3.5.1...decap-cms-locales@3.6.0) (2026-06-08)
+
+### Features
+
+- Croatian and serbian locale ([#7829](https://github.com/decaporg/decap-cms/issues/7829)) ([0a5e6f9](https://github.com/decaporg/decap-cms/commit/0a5e6f9331ca9d00689c90cf288a53ccface9987))
+
 ## [3.5.1](https://github.com/decaporg/decap-cms/compare/decap-cms-locales@3.5.0...decap-cms-locales@3.5.1) (2026-02-23)
 
 ### Bug Fixes

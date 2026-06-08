@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.4.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-richtext@3.3.0...decap-cms-widget-richtext@3.4.0) (2026-06-08)
+
+### Bug Fixes
+
+- remove unused dependencies and specify missing dependencies ([#7833](https://github.com/decaporg/decap-cms/issues/7833)) ([e324a14](https://github.com/decaporg/decap-cms/commit/e324a142f7f0ba63c760b2e8524d971c35200f87))
+- **richtext:** create break nodes on shift + enter ([#7817](https://github.com/decaporg/decap-cms/issues/7817)) ([f8c947c](https://github.com/decaporg/decap-cms/commit/f8c947c902bedeadd9e2bc425881b3328838b42b))
+
 # [3.3.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-richtext@3.2.1...decap-cms-widget-richtext@3.3.0) (2026-06-01)
 
 ### Bug Fixes
