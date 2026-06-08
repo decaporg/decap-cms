@@ -3,7 +3,6 @@ import isError from 'lodash/isError';
 import take from 'lodash/take';
 import unset from 'lodash/unset';
 import isEmpty from 'lodash/isEmpty';
-import { v4 as uuid } from 'uuid';
 import {
   EditorialWorkflowError,
   Cursor,
@@ -400,7 +399,7 @@ export default class TestBackend implements Implementation {
     const objectUrl = attempt(window.URL.createObjectURL, fileObj);
     const url = isError(objectUrl) ? '' : objectUrl;
     const normalizedAsset = {
-      id: uuid(),
+      id: crypto.randomUUID(),
       name,
       size,
       path: assetProxy.path,
