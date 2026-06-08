@@ -56,7 +56,7 @@ declare module 'decap-cms-core' {
     label?: string;
     required?: boolean;
     hint?: string;
-    pattern?: [string, string];
+    pattern?: [string | RegExp, string];
     i18n?: boolean | 'translate' | 'duplicate' | 'none';
     media_folder?: string;
     public_folder?: string;
@@ -299,7 +299,7 @@ declare module 'decap-cms-core' {
   export interface ViewFilter {
     label: string;
     field: string;
-    pattern: string;
+    pattern: string | boolean;
   }
 
   export interface ViewGroup {
