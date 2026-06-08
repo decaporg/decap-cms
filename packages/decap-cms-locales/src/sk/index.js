@@ -103,7 +103,8 @@ const sk = {
     },
     editor: {
       onLeavePage: 'Naozaj chcete opustiť túto stránku?',
-      onUpdatingWithUnsavedChanges: 'Máte neuložené zmeny, pred aktualizáciou stavu ich prosím uložte.',
+      onUpdatingWithUnsavedChanges:
+        'Máte neuložené zmeny, pred aktualizáciou stavu ich prosím uložte.',
       onPublishingNotReady: 'Pred publikovaním aktualizujte stav na „Pripravené“.',
       onPublishingWithUnsavedChanges: 'Máte neuložené zmeny, pred publikovaním ich prosím uložte.',
       onPublishing: 'Naozaj chcete publikovať tento záznam?',
@@ -325,7 +326,8 @@ const sk = {
       draftHeader: 'Koncepty',
       inReviewHeader: 'Na posúdenie',
       readyHeader: 'Pripravené',
-      currentEntries: '%{smart_count} záznam |||| %{smart_count} záznamy |||| %{smart_count} záznamov',
+      currentEntries:
+        '%{smart_count} záznam |||| %{smart_count} záznamy |||| %{smart_count} záznamov',
     },
   },
 };
