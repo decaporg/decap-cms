@@ -33,3 +33,4 @@ export { default as zh_Hans } from './zh_Hans';
 export { default as he } from './he';
 export { default as ua } from './ua';
 export { default as sr_Cyrl } from './sr_Cyrl';
+export { default as sk } from './sk';
