@@ -43,6 +43,7 @@ const sl = {
       sortBy: 'Razvrsti po',
       viewAs: 'Poglej kot',
       newButton: '＋ %{collectionLabel}',
+      newButtonAriaLabel: 'Ustvari vnos vrste %{collectionLabel}',
       ascending: 'Naraščajoče',
       descending: 'Padajoče',
       searchResults: 'Rezultati iskanja za "%{searchTerm}"',

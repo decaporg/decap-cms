@@ -44,6 +44,7 @@ const zh_Hans = {
       sortBy: '排序',
       viewAs: '查看',
       newButton: '＋ %{collectionLabel}',
+      newButtonAriaLabel: '创建“%{collectionLabel}”类型的内容',
       ascending: '升序',
       descending: '降序',
       searchResults: '有关“%{searchTerm}”的搜索结果',

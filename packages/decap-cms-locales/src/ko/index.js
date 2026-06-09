@@ -44,6 +44,7 @@ const ko = {
       sortBy: '정렬 기준',
       viewAs: '다음으로 보기',
       newButton: '＋ %{collectionLabel}',
+      newButtonAriaLabel: '%{collectionLabel} 유형의 항목 만들기',
       ascending: '오름차순',
       descending: '내림차순',
       searchResults: '"%{searchTerm}"에 대한 검색결과',

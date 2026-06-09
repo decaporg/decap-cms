@@ -44,6 +44,7 @@ const th = {
       sortBy: 'จัดเรียงตาม',
       viewAs: 'ดูในฐานะ',
       newButton: '＋ %{collectionLabel}',
+      newButtonAriaLabel: 'สร้างเนื้อหาประเภท %{collectionLabel}',
       ascending: 'น้อยไปมาก',
       descending: 'มากไปน้อย',
       searchResults: 'ผลลัพธ์การค้นหา "%{searchTerm}"',

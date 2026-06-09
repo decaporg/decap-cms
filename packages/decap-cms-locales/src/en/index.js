@@ -46,6 +46,7 @@ const en = {
       viewAsList: 'List view option',
       viewAsGrid: 'Grid view option',
       newButton: '＋ %{collectionLabel}',
+      newButtonAriaLabel: 'Create entry of type %{collectionLabel}',
       ascending: 'Ascending',
       descending: 'Descending',
       searchResults: 'Search Results for "%{searchTerm}"',

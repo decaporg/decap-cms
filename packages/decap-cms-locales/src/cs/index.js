@@ -45,6 +45,7 @@ const cs = {
       sortBy: 'Seřadit podle',
       viewAs: 'Zobrazit jako',
       newButton: '＋ %{collectionLabel}',
+      newButtonAriaLabel: 'Vytvořit položku typu %{collectionLabel}',
       ascending: 'Vzestupné',
       descending: 'Sestupné',
       searchResults: 'Výsledky vyhledávání pro "%{searchTerm}"',

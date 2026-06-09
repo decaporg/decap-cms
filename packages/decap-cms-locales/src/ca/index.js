@@ -43,6 +43,7 @@ const ca = {
       sortBy: 'Ordenar per',
       viewAs: 'Veure com',
       newButton: '＋ %{collectionLabel}',
+      newButtonAriaLabel: 'Crear una entrada de tipus %{collectionLabel}',
       ascending: 'Ascendent',
       descending: 'Descendent',
       searchResults: 'Buscar resultats per "%{searchTerm}"',

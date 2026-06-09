@@ -43,6 +43,7 @@ const zh_Hant = {
       sortBy: '排序方式',
       viewAs: '瀏覽方式',
       newButton: '＋ %{collectionLabel}',
+      newButtonAriaLabel: '建立「%{collectionLabel}」類型的內容',
       ascending: '由小到大',
       descending: '由大到小',
       searchResults: '搜尋 "%{searchTerm}" 的結果',

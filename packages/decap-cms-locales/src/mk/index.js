@@ -44,6 +44,7 @@ const mk = {
       sortBy: 'Подреди според',
       viewAs: 'Прикажи како',
       newButton: '＋ %{collectionLabel}',
+      newButtonAriaLabel: 'Креирај запис од тип %{collectionLabel}',
       ascending: 'Растечки',
       descending: 'Опаѓачки',
       searchResults: 'Резултати од пребарувањето за "%{searchTerm}"',

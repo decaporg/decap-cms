@@ -43,6 +43,7 @@ const vi = {
       sortBy: 'Sắp xếp theo',
       viewAs: 'View as',
       newButton: '＋ %{collectionLabel}',
+      newButtonAriaLabel: 'Tạo bài thuộc loại %{collectionLabel}',
       ascending: 'Tăng dần',
       descending: 'Giảm dần',
       searchResults: 'Kết quả tìm kiếm cho "%{searchTerm}"',

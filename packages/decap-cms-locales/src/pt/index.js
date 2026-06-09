@@ -44,6 +44,7 @@ const pt = {
       sortBy: 'Ordenar por',
       viewAs: 'Visualizar como',
       newButton: '＋ %{collectionLabel}',
+      newButtonAriaLabel: 'Criar uma entrada do tipo %{collectionLabel}',
       ascending: 'Ascendente',
       descending: 'Descendente',
       searchResults: 'Resultados da busca por "%{searchTerm}"',

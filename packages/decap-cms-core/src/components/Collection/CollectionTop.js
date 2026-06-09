@@ -59,7 +59,13 @@ function CollectionTop({ collection, newEntryUrl, t }) {
       <CollectionTopRow>
         <CollectionTopHeading>{collectionLabel}</CollectionTopHeading>
         {newEntryUrl ? (
-          <CollectionTopNewButton to={newEntryUrl} dir="auto">
+          <CollectionTopNewButton
+            to={newEntryUrl}
+            dir="auto"
+            aria-label={t('collection.collectionTop.newButtonAriaLabel', {
+              collectionLabel: collectionLabelSingular || collectionLabel,
+            })}
+          >
             {t('collection.collectionTop.newButton', {
               collectionLabel: collectionLabelSingular || collectionLabel,
             })}

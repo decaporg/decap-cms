@@ -44,6 +44,7 @@ const de = {
       sortBy: 'Sortieren nach',
       viewAs: 'Anzeigen als',
       newButton: '＋ %{collectionLabel}',
+      newButtonAriaLabel: 'Beitrag vom Typ %{collectionLabel} erstellen',
       ascending: 'Aufsteigend',
       descending: 'Absteigend',
       searchResults: 'Suchergebnisse für "%{searchTerm}"',

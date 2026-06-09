@@ -41,6 +41,7 @@ const es = {
       sortBy: 'Ordenar por',
       viewAs: 'Ver como',
       newButton: '＋ %{collectionLabel}',
+      newButtonAriaLabel: 'Crear una entrada de tipo %{collectionLabel}',
       ascending: 'Ascendente',
       descending: 'Descendente',
     },

@@ -40,6 +40,7 @@ const gr = {
     collectionTop: {
       viewAs: 'Προβολή ως',
       newButton: '＋ %{collectionLabel}',
+      newButtonAriaLabel: 'Δημιουργία καταχώρησης τύπου %{collectionLabel}',
     },
     entries: {
       loadingEntries: 'Εγγραφές φόρτωσης',

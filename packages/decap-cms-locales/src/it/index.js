@@ -43,6 +43,7 @@ const it = {
       sortBy: 'Ordina per',
       viewAs: 'Vedi come',
       newButton: '＋ %{collectionLabel}',
+      newButtonAriaLabel: 'Crea una voce di tipo %{collectionLabel}',
       ascending: 'Crescente',
       descending: 'Decrescente',
       searchResults: 'Risultati di ricerca per "%{searchTerm}"',

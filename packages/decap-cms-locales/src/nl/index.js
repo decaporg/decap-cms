@@ -44,6 +44,7 @@ const nl = {
       sortBy: 'Sorteer op',
       viewAs: 'Bekijk als',
       newButton: '＋ %{collectionLabel}',
+      newButtonAriaLabel: 'Item van type %{collectionLabel} maken',
       ascending: 'Oplopend',
       descending: 'Aflopend',
       searchResults: 'Zoekresultaten voor "%{searchTerm}"',

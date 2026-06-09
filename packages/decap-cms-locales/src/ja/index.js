@@ -44,6 +44,7 @@ const ja = {
       sortBy: 'ソート',
       viewAs: '表示モード',
       newButton: '＋ %{collectionLabel}',
+      newButtonAriaLabel: '%{collectionLabel}タイプのエントリを作成',
       ascending: '昇順',
       descending: '降順',
       searchResults: '「%{searchTerm}」の検索結果',

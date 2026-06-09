@@ -25,6 +25,7 @@ const hu = {
     collectionTop: {
       viewAs: 'Nézet mint',
       newButton: '＋ %{collectionLabel}',
+      newButtonAriaLabel: '%{collectionLabel} típusú bejegyzés létrehozása',
     },
     entries: {
       loadingEntries: 'Bejegyzések betöltése',

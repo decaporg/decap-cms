@@ -41,6 +41,7 @@ const nb_no = {
       sortBy: 'Sorter etter',
       viewAs: 'Vis som',
       newButton: '＋ %{collectionLabel}',
+      newButtonAriaLabel: 'Opprett innlegg av typen %{collectionLabel}',
       ascending: 'Stigende',
       descending: 'Synkende',
     },

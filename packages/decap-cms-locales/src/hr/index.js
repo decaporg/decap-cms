@@ -46,6 +46,7 @@ const hr = {
       viewAsList: 'Popis',
       viewAsGrid: 'Mreža',
       newButton: '＋ %{collectionLabel}',
+      newButtonAriaLabel: 'Stvori unos vrste %{collectionLabel}',
       ascending: 'Uzlazno',
       descending: 'Silazno',
       searchResults: 'Rezultati pretraživanja za "%{searchTerm}"',

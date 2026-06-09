@@ -46,6 +46,7 @@ const sr_Cyrl = {
       viewAsList: 'Приказ као листа',
       viewAsGrid: 'Приказ као мрежа',
       newButton: '＋ %{collectionLabel}',
+      newButtonAriaLabel: 'Креирај унос врсте %{collectionLabel}',
       ascending: 'Растуће',
       descending: 'Опадајуће',
       searchResults: 'Резултати претраге за "%{searchTerm}"',

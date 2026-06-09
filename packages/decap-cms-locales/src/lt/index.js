@@ -44,6 +44,7 @@ const lt = {
       sortBy: 'Rikiavimo tvarka',
       viewAs: 'Peržiūrėti kaip',
       newButton: '＋ %{collectionLabel}',
+      newButtonAriaLabel: 'Sukurti %{collectionLabel} tipo įrašą',
       ascending: 'Didėjimo tvarka (A-Z)',
       descending: 'Mažėjimo tvarka (Z-A)',
       searchResults: 'Paieškos rezultatai: „%{searchTerm}“',

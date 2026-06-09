@@ -44,6 +44,7 @@ const fr = {
       sortBy: 'Trier par',
       viewAs: 'Voir comme',
       newButton: '＋ %{collectionLabel}',
+      newButtonAriaLabel: 'Créer une entrée de type %{collectionLabel}',
       ascending: 'Croissant',
       descending: 'Décroissant',
       searchResults: 'Résultats de la recherche pour "%{searchTerm}"',

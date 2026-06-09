@@ -44,6 +44,7 @@ const he = {
       sortBy: 'מיון לפי',
       viewAs: 'תצוגה לפי',
       newButton: '＋ %{collectionLabel}',
+      newButtonAriaLabel: 'יצירת אייטם מסוג %{collectionLabel}',
       ascending: 'בסדר עולה',
       descending: 'בסדר יורד',
       searchResults: 'תוצאות חיפוש עבור "%{searchTerm}"',
