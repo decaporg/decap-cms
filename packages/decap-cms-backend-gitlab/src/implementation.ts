@@ -22,7 +22,10 @@ import {
   filterByExtension,
   branchFromContentKey,
   getDefaultBranchName,
+  unsentRequest,
+  AccessTokenError,
 } from 'decap-cms-lib-util';
+import { PkceAuthenticator } from 'decap-cms-lib-auth';
 
 import AuthenticationPage from './AuthenticationPage';
 import API, { API_NAME } from './API';
@@ -40,6 +43,7 @@ import type {
   ImplementationFile,
   UnpublishedEntryMediaFile,
   AsyncLock,
+  ApiRequest,
 } from 'decap-cms-lib-util';
 import type { Semaphore } from 'semaphore';
 
@@ -48,9 +52,11 @@ const MAX_CONCURRENT_DOWNLOADS = 10;
 export default class GitLab implements Implementation {
   lock: AsyncLock;
   api: API | null;
+  updateUserCredentials: (args: { token: string; refresh_token?: string }) => Promise<null>;
   options: {
     proxied: boolean;
     API: API | null;
+    updateUserCredentials: (args: { token: string; refresh_token?: string }) => Promise<null>;
     initialWorkflowStatus: string;
   };
   repo: string;
@@ -64,6 +70,13 @@ export default class GitLab implements Implementation {
   previewContext: string;
   useGraphQL: boolean;
   graphQLAPIRoot: string;
+  authType: string;
+  baseUrl: string;
+  authEndpoint: string;
+  appID: string;
+  refreshToken?: string;
+  refreshedTokenPromise?: Promise<string>;
+  authenticator?: PkceAuthenticator;
 
   _mediaDisplayURLSem?: Semaphore;
 
@@ -71,6 +84,7 @@ export default class GitLab implements Implementation {
     this.options = {
       proxied: false,
       API: null,
+      updateUserCredentials: async () => null,
       initialWorkflowStatus: '',
       ...options,
     };
@@ -84,6 +98,8 @@ export default class GitLab implements Implementation {
 
     this.api = this.options.API || null;
 
+    this.updateUserCredentials = this.options.updateUserCredentials;
+
     this.repo = config.backend.repo || '';
     this.branch = config.backend.branch || 'master';
     this.isBranchConfigured = config.backend.branch ? true : false;
@@ -95,6 +111,10 @@ export default class GitLab implements Implementation {
     this.previewContext = config.backend.preview_context || '';
     this.useGraphQL = config.backend.use_graphql || false;
     this.graphQLAPIRoot = config.backend.graphql_api_root || 'https://gitlab.com/api/graphql';
+    this.authType = config.backend.auth_type || '';
+    this.baseUrl = config.backend.base_url || 'https://gitlab.com';
+    this.authEndpoint = config.backend.auth_endpoint || 'oauth/authorize';
+    this.appID = config.backend.app_id || '';
     this.lock = asyncLock();
   }
 
@@ -125,6 +145,7 @@ export default class GitLab implements Implementation {
 
   async authenticate(state: Credentials) {
     this.token = state.token as string;
+    this.refreshToken = state.refresh_token;
     this.api = new API({
       token: this.token,
       branch: this.branch,
@@ -135,6 +156,7 @@ export default class GitLab implements Implementation {
       initialWorkflowStatus: this.options.initialWorkflowStatus,
       useGraphQL: this.useGraphQL,
       graphQLAPIRoot: this.graphQLAPIRoot,
+      requestFunction: this.apiRequestFunction,
     });
     const user = await this.api.user();
     const isCollab = await this.api.hasWriteAccess().catch((error: Error) => {
@@ -165,7 +187,47 @@ export default class GitLab implements Implementation {
       }
     }
     // Authorized user
-    return { ...user, login: user.username, token: state.token as string };
+    return {
+      ...user,
+      login: user.username,
+      token: state.token as string,
+      refresh_token: state.refresh_token,
+    };
+  }
+
+  getRefreshedAccessToken() {
+    if (this.authType !== 'pkce' || !this.refreshToken) {
+      throw new AccessTokenError(`Can't refresh access token when using implicit auth`);
+    }
+    if (this.refreshedTokenPromise) {
+      return this.refreshedTokenPromise;
+    }
+
+    if (!this.authenticator) {
+      this.authenticator = new PkceAuthenticator({
+        base_url: this.baseUrl,
+        auth_endpoint: this.authEndpoint,
+        app_id: this.appID,
+        auth_token_endpoint: 'oauth/token',
+        auth_token_endpoint_content_type: 'application/json; charset=utf-8',
+      });
+    }
+
+    this.refreshedTokenPromise = this.authenticator!.refresh({
+      refresh_token: this.refreshToken,
+    }).then(({ token, refresh_token }) => {
+      this.token = token;
+      this.refreshToken = refresh_token;
+      this.refreshedTokenPromise = undefined;
+
+      this.updateUserCredentials({ token, refresh_token });
+      if (this.api) {
+        this.api.token = token;
+      }
+      return token;
+    });
+
+    return this.refreshedTokenPromise;
   }
 
   async logout() {
@@ -174,8 +236,38 @@ export default class GitLab implements Implementation {
   }
 
   getToken() {
+    if (this.refreshedTokenPromise) {
+      return this.refreshedTokenPromise;
+    }
+
     return Promise.resolve(this.token);
   }
+
+  apiRequestFunction = async (req: ApiRequest) => {
+    const token = (
+      this.refreshedTokenPromise ? await this.refreshedTokenPromise : this.token
+    ) as string;
+
+    const authorizedRequest = unsentRequest.withHeaders({ Authorization: `Bearer ${token}` }, req);
+    const response: Response = await unsentRequest.performRequest(authorizedRequest);
+    if (response.status === 401) {
+      const json = await response
+        .clone()
+        .json()
+        .catch(() => null);
+      if (json && json.error === 'invalid_token') {
+        const newToken = await this.getRefreshedAccessToken();
+        const reqWithNewToken = unsentRequest.withHeaders(
+          {
+            Authorization: `Bearer ${newToken}`,
+          },
+          req,
+        ) as ApiRequest;
+        return unsentRequest.performRequest(reqWithNewToken);
+      }
+    }
+    return response;
+  };
 
   filterFile(
     folder: string,
