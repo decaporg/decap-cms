@@ -64,7 +64,6 @@
     "@storybook/addon-actions": "^7.5.1",
     "@storybook/addon-links": "^7.5.1",
     "@storybook/react": "^7.5.1",
-    "@stylelint/postcss-css-in-js": "^0.37.2",
     "@testing-library/dom": "^10.0.0",
     "@testing-library/jest-dom": "^5.11.1",
     "@testing-library/react": "^16.3.0",
