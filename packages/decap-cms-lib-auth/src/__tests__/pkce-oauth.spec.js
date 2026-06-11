@@ -118,6 +118,7 @@ describe('PkceAuthenticator', () => {
           body: JSON.stringify({
             client_id: 'app-id',
             grant_type: 'refresh_token',
+            redirect_uri: document.location.origin + document.location.pathname,
             refresh_token: 'old-refresh-token',
           }),
           headers: { 'Content-Type': 'application/json' },
@@ -150,7 +151,14 @@ describe('PkceAuthenticator', () => {
       expect(global.fetch).toHaveBeenCalledWith(
         'https://example.com/oauth/token',
         expect.objectContaining({
-          body: 'client_id=app-id&grant_type=refresh_token&refresh_token=old-refresh-token',
+          body: new URLSearchParams(
+            Object.entries({
+              client_id: 'app-id',
+              grant_type: 'refresh_token',
+              redirect_uri: document.location.origin + document.location.pathname,
+              refresh_token: 'old-refresh-token',
+            }),
+          ).toString(),
         }),
       );
     });

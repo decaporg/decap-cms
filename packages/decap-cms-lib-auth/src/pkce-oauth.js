@@ -198,6 +198,7 @@ export default class PkceAuthenticator {
     const data = await this._requestToken({
       client_id: this.appID,
       grant_type: 'refresh_token',
+      redirect_uri: document.location.origin + document.location.pathname,
       refresh_token,
     });
 

@@ -440,6 +440,41 @@ describe('gitlab backend', () => {
       );
     });
 
+    it('returns and persists the refreshed credentials when the token is refreshed during login', async () => {
+      backend = resolveBackend(pkceConfig);
+
+      backend.implementation.authenticator = {
+        refresh: jest
+          .fn()
+          .mockResolvedValue({ token: 'NEW_TOKEN', refresh_token: 'NEW_REFRESH_TOKEN' }),
+      };
+
+      const api = mockApi(backend);
+      api
+        .get('/user')
+        .matchHeader('authorization', 'Bearer EXPIRED_TOKEN')
+        .query(true)
+        .reply(401, expiredTokenResponse);
+      api
+        .get('/user')
+        .matchHeader('authorization', 'Bearer NEW_TOKEN')
+        .query(true)
+        .reply(200, resp.user.success);
+      api.get(expectedRepoUrl).times(2).query(true).reply(200, resp.project.success);
+
+      const user = await backend.authenticate(pkceCredentials);
+
+      expect(backend.implementation.authenticator.refresh).toHaveBeenCalledWith({
+        refresh_token: 'REFRESH_TOKEN',
+      });
+      expect(user).toEqual(
+        expect.objectContaining({ token: 'NEW_TOKEN', refresh_token: 'NEW_REFRESH_TOKEN' }),
+      );
+      expect(authStore.retrieve()).toEqual(
+        expect.objectContaining({ token: 'NEW_TOKEN', refresh_token: 'NEW_REFRESH_TOKEN' }),
+      );
+    });
+
     it('does not try to refresh when not using pkce auth', async () => {
       backend = resolveBackend(defaultConfig);
       interceptAuth(backend);

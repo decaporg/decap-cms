@@ -190,8 +190,8 @@ export default class GitLab implements Implementation {
     return {
       ...user,
       login: user.username,
-      token: state.token as string,
-      refresh_token: state.refresh_token,
+      token: this.token as string,
+      refresh_token: this.refreshToken,
     };
   }
 
