@@ -146,7 +146,6 @@
   "private": true,
   "dependencies": {
     "@emotion/babel-preset-css-prop": "^11.11.0",
-    "browserify": "^17.0.0",
     "buffer": "^6.0.3",
     "emotion": "^11.0.0",
     "eslint-config-prettier": "^8.0.0",
