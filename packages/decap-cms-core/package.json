@@ -25,6 +25,7 @@
   "license": "MIT",
   "dependencies": {
     "@iarna/toml": "2.2.5",
+    "@silvia-odwyer/photon": "0.3.3",
     "@vercel/stega": "^0.1.2",
     "ajv": "^8.17.1",
     "ajv-errors": "^3.0.0",

@@ -6,6 +6,13 @@ import { insertMedia, persistMedia, deleteMedia } from '../mediaLibrary';
 
 jest.mock('../../backend');
 jest.mock('../waitUntil');
+jest.mock('../../lib/imageTransformations', () => {
+  const actual = jest.requireActual('../../lib/imageTransformations');
+  return {
+    ...actual,
+    transformImage: jest.fn(),
+  };
+});
 jest.mock('decap-cms-lib-util', () => {
   const lib = jest.requireActual('decap-cms-lib-util');
   return {
@@ -74,6 +81,7 @@ describe('mediaLibrary', () => {
 
     beforeEach(() => {
       jest.clearAllMocks();
+      window.confirm = jest.fn(() => true);
     });
 
     it('should not persist media when editing draft', () => {
@@ -146,7 +154,7 @@ describe('mediaLibrary', () => {
         }),
         integrations: Map(),
         mediaLibrary: Map({
-          files: List(),
+          files: List([{ name: 'kittens.jpg' }]),
         }),
         entryDraft: Map({
           entry: Map(),
@@ -237,6 +245,133 @@ describe('mediaLibrary', () => {
             path: 'static/media/abc_def_eaco_.png',
           }),
         );
+      });
+    });
+
+    it('should persist image transformations and select default transformation', () => {
+      const { transformImage } = require('../../lib/imageTransformations');
+      backend.persistMedia.mockImplementation((_config, assetProxy) => ({
+        id: assetProxy.path,
+        path: assetProxy.path,
+      }));
+
+      const store = mockStore({
+        config: {
+          media_folder: 'static/media',
+          image_transformations: {
+            keep_original: true,
+            variants: [
+              { name: 'small', width: 100 },
+              { name: 'medium', width: 400, default: true },
+            ],
+          },
+          slug: {
+            encoding: 'unicode',
+            clean_accents: false,
+            sanitize_replacement: '-',
+          },
+        },
+        collections: Map({
+          posts: Map({ name: 'posts' }),
+        }),
+        integrations: Map(),
+        mediaLibrary: Map({
+          files: List(),
+        }),
+        entryDraft: Map({
+          entry: Map(),
+        }),
+      });
+
+      const file = new File(['original'], 'kittens.jpg', { type: 'image/jpeg' });
+      const small = new File(['small'], 'kittens.jpg', { type: 'image/jpeg' });
+      const medium = new File(['medium'], 'kittens.jpg', { type: 'image/jpeg' });
+
+      transformImage.mockResolvedValue([
+        { file, path: 'static/media/kittens.jpg', original: true },
+        { file: small, path: 'static/media/_transformations/small/kittens.jpg' },
+        { file: medium, path: 'static/media/_transformations/medium/kittens.jpg', default: true },
+      ]);
+
+      return store.dispatch(persistMedia(file)).then(() => {
+        const actions = store.getActions();
+        const addAssetActions = actions.filter(action => action.type === 'ADD_ASSET');
+        const persistedActions = actions.filter(action => action.type === 'MEDIA_PERSIST_SUCCESS');
+
+        expect(transformImage).toHaveBeenCalledWith(file, 'static/media/kittens.jpg', {
+          keepOriginal: true,
+          variants: [
+            { name: 'small', width: 100 },
+            { name: 'medium', width: 400, default: true },
+          ],
+        });
+        expect(addAssetActions.map(action => action.payload.path)).toEqual([
+          'static/media/kittens.jpg',
+          'static/media/_transformations/small/kittens.jpg',
+          'static/media/_transformations/medium/kittens.jpg',
+        ]);
+        expect(persistedActions.map(action => action.payload.file.path)).toEqual([
+          'static/media/kittens.jpg',
+          'static/media/_transformations/small/kittens.jpg',
+          'static/media/_transformations/medium/kittens.jpg',
+        ]);
+        expect(persistedActions[persistedActions.length - 1].payload.file.path).toBe(
+          'static/media/_transformations/medium/kittens.jpg',
+        );
+      });
+    });
+
+    it('should skip the original image when keep_original is false', () => {
+      const { transformImage } = require('../../lib/imageTransformations');
+      backend.persistMedia.mockImplementation((_config, assetProxy) => ({
+        id: assetProxy.path,
+        path: assetProxy.path,
+      }));
+
+      const store = mockStore({
+        config: {
+          media_folder: 'static/media',
+          image_transformations: {
+            keep_original: false,
+            variants: [{ name: 'compressed', quality: 70, keep_original_size: true }],
+          },
+          slug: {
+            encoding: 'unicode',
+            clean_accents: false,
+            sanitize_replacement: '-',
+          },
+        },
+        collections: Map({
+          posts: Map({ name: 'posts' }),
+        }),
+        integrations: Map(),
+        mediaLibrary: Map({
+          files: List(),
+        }),
+        entryDraft: Map({
+          entry: Map(),
+        }),
+      });
+
+      const file = new File(['original'], 'kittens.jpg', { type: 'image/jpeg' });
+      const compressed = new File(['compressed'], 'kittens.jpg', { type: 'image/jpeg' });
+
+      transformImage.mockResolvedValue([
+        { file: compressed, path: 'static/media/_transformations/compressed/kittens.jpg' },
+      ]);
+
+      return store.dispatch(persistMedia(file)).then(() => {
+        const addAssetActions = store.getActions().filter(action => action.type === 'ADD_ASSET');
+
+        expect(transformImage).toHaveBeenCalledWith(file, 'static/media/kittens.jpg', {
+          keepOriginal: false,
+          variants: [{ name: 'compressed', quality: 70, keep_original_size: true }],
+        });
+        expect(addAssetActions.map(action => action.payload.path)).toEqual([
+          'static/media/_transformations/compressed/kittens.jpg',
+        ]);
+        expect(window.confirm).not.toHaveBeenCalled();
+        expect(backend.persistMedia).toHaveBeenCalledTimes(1);
       });
     });
   });

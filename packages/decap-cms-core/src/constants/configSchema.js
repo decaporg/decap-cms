@@ -40,6 +40,44 @@ const i18nField = {
   oneOf: [{ type: 'boolean' }, { type: 'string', enum: Object.values(I18N_FIELD) }],
 };
 
+const imageTransformationVariant = {
+  type: 'object',
+  properties: {
+    name: { type: 'string', minLength: 1 },
+    width: { type: 'number', minimum: 1 },
+    height: { type: 'number', minimum: 1 },
+    format: { type: 'string', enum: ['jpg', 'jpeg', 'png', 'webp'] },
+    quality: { type: 'number', minimum: 1, maximum: 100 },
+    default: { type: 'boolean' },
+    keep_original_size: { type: 'boolean' },
+  },
+  required: ['name'],
+  additionalProperties: false,
+};
+
+const imageTransformations = {
+  oneOf: [
+    {
+      type: 'array',
+      minItems: 1,
+      items: imageTransformationVariant,
+    },
+    {
+      type: 'object',
+      properties: {
+        keep_original: { type: 'boolean' },
+        variants: {
+          type: 'array',
+          minItems: 1,
+          items: imageTransformationVariant,
+        },
+      },
+      required: ['variants'],
+      additionalProperties: false,
+    },
+  ],
+};
+
 /**
  * Config for fields in both file and folder collections.
  */
@@ -60,6 +98,7 @@ function fieldsConfig() {
         required: { type: 'boolean' },
         i18n: i18nField,
         hint: { type: 'string' },
+        image_transformations: imageTransformations,
         pattern: {
           type: 'array',
           minItems: 2,
@@ -172,6 +211,7 @@ function getConfigSchema() {
       media_folder: { type: 'string', examples: ['assets/uploads'] },
       public_folder: { type: 'string', examples: ['/uploads'] },
       media_folder_relative: { type: 'boolean' },
+      image_transformations: imageTransformations,
       media_library: {
         type: 'object',
         properties: {
