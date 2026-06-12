@@ -11,6 +11,7 @@ import type { Search } from '../reducers/search';
 import type { GlobalUI } from '../reducers/globalUI';
 import type { NotificationsState } from '../reducers/notifications';
 import type { formatExtensions } from '../formats/formats';
+import type { Note } from 'decap-cms-lib-util';
 
 export type CmsBackendType =
   | 'azure'
@@ -312,6 +313,27 @@ export interface CmsCollectionFile {
   public_folder?: string;
 }
 
+export type NoteMap = StaticallyTypedRecord<Note>;
+
+export type Notes = List<NoteMap>;
+
+export interface LoadNotesPayload {
+  notes: Note[];
+}
+
+export interface AddNotePayload {
+  note: Note;
+}
+
+export interface UpdateNotePayload {
+  id: string;
+  updates: Partial<Note>;
+}
+
+export interface DeleteNotePayload {
+  id: string;
+}
+
 export interface ViewFilter {
   label: string;
   field: string;
@@ -349,6 +371,7 @@ export interface CmsCollection {
   delete?: boolean;
   editor?: {
     preview?: boolean;
+    notes?: boolean;
     visualEditing?: boolean;
   };
   publish?: boolean;
@@ -454,6 +477,7 @@ export interface CmsConfig {
   local_backend?: boolean | CmsLocalBackend;
   editor?: {
     preview?: boolean;
+    notes?: boolean;
   };
   error: string | undefined;
   isFetching: boolean;
@@ -586,6 +610,7 @@ export type EntryDraft = StaticallyTypedRecord<{
   entry: Entry;
   fieldsErrors: FieldsErrors;
   fieldsMetaData?: Map<string, Map<string, string>>;
+  notes: Notes;
 }>;
 
 export type EntryField = StaticallyTypedRecord<{
