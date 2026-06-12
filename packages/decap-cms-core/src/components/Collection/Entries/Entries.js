@@ -30,6 +30,7 @@ function Entries({
   getWorkflowStatus,
   getUnpublishedEntries,
   filterTerm,
+  sortFields,
 }) {
   const loadingMessages = [
     t('collection.entries.loadingEntries'),
@@ -55,6 +56,7 @@ function Entries({
           getWorkflowStatus={getWorkflowStatus}
           getUnpublishedEntries={getUnpublishedEntries}
           filterTerm={filterTerm}
+          sortFields={sortFields}
         />
         {isFetching && page !== undefined && entries.size > 0 ? (
           <PaginationMessage>{t('collection.entries.loadingEntries')}</PaginationMessage>
@@ -78,6 +80,7 @@ Entries.propTypes = {
   getWorkflowStatus: PropTypes.func,
   getUnpublishedEntries: PropTypes.func,
   filterTerm: PropTypes.string,
+  sortFields: PropTypes.array,
 };
 
 export default translate()(Entries);
