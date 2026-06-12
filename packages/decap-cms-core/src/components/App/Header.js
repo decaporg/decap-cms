@@ -19,6 +19,7 @@ import { connect } from 'react-redux';
 
 import { SettingsDropdown } from '../UI';
 import { checkBackendStatus } from '../../actions/status';
+import { selectCanCreateNewEntry } from '../../reducers';
 
 const styles = {
   buttonActive: css`
@@ -156,6 +157,7 @@ class Header extends React.Component {
   static propTypes = {
     user: PropTypes.object.isRequired,
     collections: ImmutablePropTypes.map.isRequired,
+    creatableCollections: ImmutablePropTypes.list.isRequired,
     onCreateEntryClick: PropTypes.func.isRequired,
     onLogoutClick: PropTypes.func.isRequired,
     openMediaLibrary: PropTypes.func.isRequired,
@@ -196,7 +198,7 @@ class Header extends React.Component {
   render() {
     const {
       user,
-      collections,
+      creatableCollections,
       onLogoutClick,
       openMediaLibrary,
       hasWorkflow,
@@ -207,10 +209,6 @@ class Header extends React.Component {
       t,
       showMediaButton,
     } = this.props;
-
-    const creatableCollections = collections
-      .filter(collection => collection.get('create'))
-      .toList();
 
     const shouldShowLogo = logo?.show_in_header && logo?.src;
 
@@ -288,4 +286,12 @@ const mapDispatchToProps = {
   checkBackendStatus,
 };
 
-export default connect(null, mapDispatchToProps)(translate()(Header));
+function mapStateToProps(state, ownProps) {
+  return {
+    creatableCollections: ownProps.collections
+      .filter(collection => selectCanCreateNewEntry(state, collection.get('name')))
+      .toList(),
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(translate()(Header));

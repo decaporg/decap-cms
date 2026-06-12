@@ -392,6 +392,50 @@ describe('Backend', () => {
       expect(backend.entryToRaw).toHaveBeenCalledWith(collection, newEntry);
     });
 
+    it('should reject new entries when collection limit is reached', async () => {
+      const implementation = {
+        init: jest.fn(() => implementation),
+        persistEntry: jest.fn(() => implementation),
+      };
+
+      const config = {
+        backend: {
+          commit_messages: 'commit-messages',
+        },
+      };
+      const collection = Map({
+        name: 'posts',
+        type: FOLDER,
+        create: true,
+        limit: 1,
+      });
+      const entry = Map({
+        data: Map({}),
+        newRecord: true,
+      });
+      const entryDraft = Map({
+        entry,
+      });
+
+      const user = { login: 'login', name: 'name' };
+      const backend = new Backend(implementation, { config, backendName: 'github' });
+
+      backend.currentUser = jest.fn().mockResolvedValue(user);
+      backend.invokePreSaveEvent = jest.fn().mockReturnValueOnce(entry);
+
+      await expect(
+        backend.persistEntry({
+          config,
+          collection,
+          entryDraft,
+          assetProxies: [],
+          usedSlugs: List(['existing']),
+        }),
+      ).rejects.toThrow('Entry limit of 1 reached for collection posts');
+
+      expect(implementation.persistEntry).toHaveBeenCalledTimes(0);
+    });
+
     it('should preserve slug when preSave event handler modifies file collection entry', async () => {
       const implementation = {
         init: jest.fn(() => implementation),
