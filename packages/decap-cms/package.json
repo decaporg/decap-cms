@@ -28,10 +28,8 @@
     "decap-cms-app": "^3.14.0",
     "decap-cms-media-library-cloudinary": "^3.1.0",
     "decap-cms-media-library-uploadcare": "^3.1.0",
-    "file-loader": "^6.2.0",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0",
-    "svgo-loader": "^3.0.3"
+    "react-dom": "^19.1.0"
   },
   "incrementToForceBump": 2
 }
