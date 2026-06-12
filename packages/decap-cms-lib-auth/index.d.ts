@@ -7,5 +7,12 @@ declare module 'decap-cms-lib-auth' {
       refresh_token: string;
     }) => Promise<{ token: string; refresh_token: string }>;
   }
-  export { NetlifyAuthenticator };
+
+  class PkceAuthenticator {
+    constructor(config = {});
+
+    refresh: (args: { refresh_token: string }) => Promise<{ token: string; refresh_token: string }>;
+  }
+
+  export { NetlifyAuthenticator, PkceAuthenticator };
 }

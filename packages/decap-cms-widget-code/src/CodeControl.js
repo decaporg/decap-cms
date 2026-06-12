@@ -6,7 +6,6 @@ import { Map } from 'immutable';
 import uniq from 'lodash/uniq';
 import isEqual from 'lodash/isEqual';
 import isEmpty from 'lodash/isEmpty';
-import { v4 as uuid } from 'uuid';
 import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
 import CodeMirror from 'codemirror';
 import 'codemirror/keymap/vim';
@@ -18,6 +17,7 @@ import materialTheme from 'codemirror/theme/material.css';
 import SettingsPane from './SettingsPane';
 import SettingsButton from './SettingsButton';
 import languageData from '../data/languages.json';
+import { getLanguageLoader } from './languageLoaders';
 
 // TODO: relocate as a utility function
 function getChangedProps(previous, next, keys) {
@@ -82,7 +82,7 @@ export default class CodeControl extends React.Component {
     lang: '',
     keyMap: localStorage.getItem(settingsPersistKeys['keyMap']) || 'default',
     settingsVisible: false,
-    codeMirrorKey: uuid(),
+    codeMirrorKey: crypto.randomUUID(),
     theme: localStorage.getItem(settingsPersistKeys['theme']) || themes[themes.length - 1],
     lastKnownValue: this.valueIsMap() ? this.props.value?.get(this.keys.code) : this.props.value,
   };
@@ -121,7 +121,7 @@ export default class CodeControl extends React.Component {
     }
   }
 
-  updateCodeMirrorProps(prevState) {
+  async updateCodeMirrorProps(prevState) {
     const keys = ['lang', 'theme', 'keyMap'];
     const changedProps = getChangedProps(prevState, this.state, keys);
     if (changedProps) {
@@ -133,7 +133,7 @@ export default class CodeControl extends React.Component {
 
       this.setState({ isLangInitialized: true });
 
-      this.handleChangeCodeMirrorProps(changedProps, shouldIgnoreLangChange);
+      await this.handleChangeCodeMirrorProps(changedProps, shouldIgnoreLangChange);
     }
   }
 
@@ -207,7 +207,14 @@ export default class CodeControl extends React.Component {
     if (changedProps.lang) {
       const { mode } = this.getLanguageByName(changedProps.lang) || {};
       if (mode) {
-        require(`codemirror/mode/${mode}/${mode}.js`);
+        const loader = getLanguageLoader(mode);
+        if (loader) {
+          try {
+            await loader();
+          } catch (e) {
+            console.warn(`Failed to load CodeMirror mode: ${mode}`, e);
+          }
+        }
       }
     }
 
@@ -217,7 +224,7 @@ export default class CodeControl extends React.Component {
     if (this.cm) {
       const cursor = this.cm.doc.getCursor();
       const selections = this.cm.doc.listSelections();
-      this.setState({ codeMirrorKey: uuid() }, () => {
+      this.setState({ codeMirrorKey: crypto.randomUUID() }, () => {
         this.cm.doc.setCursor(cursor);
         this.cm.doc.setSelections(selections);
       });

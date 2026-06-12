@@ -3,7 +3,7 @@ import { Map, fromJS } from 'immutable';
 import * as actions from '../../actions/entries';
 import reducer from '../entryDraft';
 
-jest.mock('uuid', () => ({ v4: jest.fn(() => '1') }));
+global.crypto.randomUUID = jest.fn(() => '1');
 
 const initialState = Map({
   entry: Map(),
@@ -193,6 +193,123 @@ describe('entryDraft reducer', () => {
         },
         key: '',
       });
+    });
+  });
+
+  describe('selectCustomPath', () => {
+    let selectCustomPath;
+    let selectHasMetaPath;
+    let selectFolderEntryExtension;
+
+    beforeEach(() => {
+      jest.resetModules();
+      selectHasMetaPath = jest.fn(
+        collection => collection.has('meta') && collection.get('meta').has('path'),
+      );
+      selectFolderEntryExtension = jest.fn(collection => collection.get('extension') || 'md');
+
+      jest.doMock('../collections', () => ({
+        selectHasMetaPath,
+        selectFolderEntryExtension,
+      }));
+
+      const entryDraftModule = require('../entryDraft');
+      selectCustomPath = entryDraftModule.selectCustomPath;
+    });
+
+    afterEach(() => {
+      jest.unmock('../collections');
+    });
+
+    it('should generate dynamic filename for new entries without index_file', () => {
+      const collection = fromJS({
+        folder: '_pages',
+        extension: 'md',
+        meta: { path: { label: 'Path', widget: 'string' } },
+      });
+      const entryDraft = fromJS({
+        entry: {
+          newRecord: true,
+          data: { title: 'My Great Article' },
+          meta: { path: 'blog' },
+        },
+      });
+
+      const result = selectCustomPath(collection, entryDraft);
+      expect(result).toBe('_pages/blog/my-great-article.md');
+    });
+
+    it('should preserve filename for existing entries without index_file', () => {
+      const collection = fromJS({
+        folder: '_pages',
+        extension: 'md',
+        meta: { path: { label: 'Path', widget: 'string' } },
+      });
+      const entryDraft = fromJS({
+        entry: {
+          newRecord: false,
+          path: '_pages/old-folder/existing-file.md',
+          data: { title: 'Updated Title' },
+          meta: { path: 'new-folder' },
+        },
+      });
+
+      const result = selectCustomPath(collection, entryDraft);
+      expect(result).toBe('_pages/new-folder/existing-file.md');
+    });
+
+    it('should use index_file when specified (backward compatibility)', () => {
+      const collection = fromJS({
+        folder: '_pages',
+        extension: 'md',
+        meta: { path: { label: 'Path', widget: 'string', index_file: 'index' } },
+      });
+      const entryDraft = fromJS({
+        entry: {
+          newRecord: true,
+          data: { title: 'My Article' },
+          meta: { path: 'blog' },
+        },
+      });
+
+      const result = selectCustomPath(collection, entryDraft);
+      expect(result).toBe('_pages/blog/index.md');
+    });
+
+    it('should return undefined when path is not set', () => {
+      const collection = fromJS({
+        folder: '_pages',
+        extension: 'md',
+        meta: { path: { label: 'Path', widget: 'string' } },
+      });
+      const entryDraft = fromJS({
+        entry: {
+          newRecord: true,
+          data: { title: 'My Article' },
+          meta: {},
+        },
+      });
+
+      const result = selectCustomPath(collection, entryDraft);
+      expect(result).toBeUndefined();
+    });
+
+    it('should preserve non-latin characters in generated filename', () => {
+      const collection = fromJS({
+        folder: '_pages',
+        extension: 'md',
+        meta: { path: { label: 'Path', widget: 'string' } },
+      });
+      const entryDraft = fromJS({
+        entry: {
+          newRecord: true,
+          data: { title: '日本語のタイトル' },
+          meta: { path: 'blog' },
+        },
+      });
+
+      const result = selectCustomPath(collection, entryDraft);
+      expect(result).toBe('_pages/blog/日本語のタイトル.md');
     });
   });
 });

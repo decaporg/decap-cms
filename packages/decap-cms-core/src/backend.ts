@@ -1178,11 +1178,13 @@ export class Backend {
         path,
         authorLogin: user.login,
         authorName: user.name,
+        authorEmail: user.email,
       },
       user.useOpenAuthoring,
     );
 
     const collectionName = collection.get('name');
+    const hasSubfolders = collection.get('nested')?.get('subfolders') !== false;
 
     const updatedOptions = { unpublished, status };
     const opts = {
@@ -1190,6 +1192,7 @@ export class Backend {
       commitMessage,
       collectionName,
       useWorkflow,
+      hasSubfolders,
       ...updatedOptions,
     };
 
@@ -1253,6 +1256,7 @@ export class Backend {
           path: file.path,
           authorLogin: user.login,
           authorName: user.name,
+          authorEmail: user.email,
         },
         user.useOpenAuthoring,
       ),
@@ -1279,6 +1283,7 @@ export class Backend {
         path,
         authorLogin: user.login,
         authorName: user.name,
+        authorEmail: user.email,
       },
       user.useOpenAuthoring,
     );
@@ -1303,6 +1308,7 @@ export class Backend {
         path,
         authorLogin: user.login,
         authorName: user.name,
+        authorEmail: user.email,
       },
       user.useOpenAuthoring,
     );

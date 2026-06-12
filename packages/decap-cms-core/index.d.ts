@@ -56,7 +56,7 @@ declare module 'decap-cms-core' {
     label?: string;
     required?: boolean;
     hint?: string;
-    pattern?: [string, string];
+    pattern?: [string | RegExp, string];
     i18n?: boolean | 'translate' | 'duplicate' | 'none';
     media_folder?: string;
     public_folder?: string;
@@ -170,6 +170,21 @@ declare module 'decap-cms-core' {
     editorComponents?: string[];
   }
 
+  export interface CmsFieldRichText {
+    widget: 'richtext';
+    default?: string;
+
+    minimal?: boolean;
+    buttons?: CmsMarkdownWidgetButton[];
+    editor_components?: string[];
+    modes?: ('raw' | 'rich_text')[];
+
+    /**
+     * @deprecated Use editor_components instead
+     */
+    editorComponents?: string[];
+  }
+
   export interface CmsFieldNumber {
     widget: 'number';
     default?: string | number;
@@ -257,6 +272,7 @@ declare module 'decap-cms-core' {
       | CmsFieldList
       | CmsFieldMap
       | CmsFieldMarkdown
+      | CmsFieldRichText
       | CmsFieldNumber
       | CmsFieldObject
       | CmsFieldRelation
@@ -283,7 +299,7 @@ declare module 'decap-cms-core' {
   export interface ViewFilter {
     label: string;
     field: string;
-    pattern: string;
+    pattern: string | boolean;
   }
 
   export interface ViewGroup {
@@ -310,6 +326,7 @@ declare module 'decap-cms-core' {
     slug?: string;
     preview_path?: string;
     preview_path_date_field?: string;
+    preview_path_preserve_slashes?: boolean;
     create?: boolean;
     delete?: boolean;
     hide?: boolean;
@@ -322,7 +339,7 @@ declare module 'decap-cms-core' {
       depth: number;
       subfolders?: boolean;
     };
-    meta?: { path?: { label: string; widget: string; index_file: string } };
+    meta?: { path?: { label: string; widget: string; index_file?: string } };
 
     /**
      * It accepts the following values: yml, yaml, toml, json, md, markdown, html
@@ -364,6 +381,7 @@ declare module 'decap-cms-core' {
     auth_type?: 'implicit' | 'pkce';
     cms_label_prefix?: string;
     squash_merges?: boolean;
+    signoff_commits?: boolean;
     proxy_url?: string;
     commit_messages?: {
       create?: string;

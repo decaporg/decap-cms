@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.5.0](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-gitea@3.4.0...decap-cms-backend-gitea@3.5.0) (2026-06-08)
+
+### Bug Fixes
+
+- remove unused dependencies and specify missing dependencies ([#7833](https://github.com/decaporg/decap-cms/issues/7833)) ([e324a14](https://github.com/decaporg/decap-cms/commit/e324a142f7f0ba63c760b2e8524d971c35200f87))
+
+# [3.4.0](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-gitea@3.3.0...decap-cms-backend-gitea@3.4.0) (2026-04-16)
+
+### Features
+
+- add config option to enable Signed-off-by in commit messages ([#7766](https://github.com/decaporg/decap-cms/issues/7766)) ([4b9ea40](https://github.com/decaporg/decap-cms/commit/4b9ea4040f3b858793052cee287caa3cce2f3af3))
+
 # [3.3.0](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-gitea@3.1.5...decap-cms-backend-gitea@3.3.0) (2025-07-15)
 
 ### Features

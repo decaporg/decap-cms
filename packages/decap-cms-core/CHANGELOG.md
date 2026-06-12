@@ -3,6 +3,52 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.15.0](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.14.0...decap-cms-core@3.15.0) (2026-06-08)
+
+### Bug Fixes
+
+- remove unused dependencies and specify missing dependencies ([#7833](https://github.com/decaporg/decap-cms/issues/7833)) ([e324a14](https://github.com/decaporg/decap-cms/commit/e324a142f7f0ba63c760b2e8524d971c35200f87))
+
+### Features
+
+- **ui:** make collections and workflow views responsive ([#7827](https://github.com/decaporg/decap-cms/issues/7827)) ([11f3540](https://github.com/decaporg/decap-cms/commit/11f35405cd1a1d1216e97b890173f46436752019))
+- **ui:** make media library responsive ([#7820](https://github.com/decaporg/decap-cms/issues/7820)) ([3c3fd81](https://github.com/decaporg/decap-cms/commit/3c3fd819fbdbff08e6a0a4d2df15857a8d03c983))
+
+# [3.14.0](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.13.0...decap-cms-core@3.14.0) (2026-06-01)
+
+### Bug Fixes
+
+- **#7794:** populate relation widget from url ([#7806](https://github.com/decaporg/decap-cms/issues/7806)) ([f8de615](https://github.com/decaporg/decap-cms/commit/f8de615a52860e06848a4ff9d2da2fee653a552a)), closes [#7794](https://github.com/decaporg/decap-cms/issues/7794)
+- **core:** return full entry object from invokeEvent instead of just data ([#7667](https://github.com/decaporg/decap-cms/issues/7667)) ([6ef2f9b](https://github.com/decaporg/decap-cms/commit/6ef2f9bdf81ce9df55642fe1414e5e687cff95fd))
+- **richtext:** invalid imports, rich text widget types, improve paste handling ([#7803](https://github.com/decaporg/decap-cms/issues/7803)) ([9db5e1e](https://github.com/decaporg/decap-cms/commit/9db5e1ed29bfa7e1500e5374aea13796d31f1021)), closes [#7796](https://github.com/decaporg/decap-cms/issues/7796) [#7797](https://github.com/decaporg/decap-cms/issues/7797) [#7802](https://github.com/decaporg/decap-cms/issues/7802)
+
+### Features
+
+- include slug and path in result ([#7436](https://github.com/decaporg/decap-cms/issues/7436)) ([17fb630](https://github.com/decaporg/decap-cms/commit/17fb6306d7e5001df75e8d5b832838fbdf61c4a6))
+- **slugs:** allow filters in template strings ([#6690](https://github.com/decaporg/decap-cms/issues/6690)) ([25db74b](https://github.com/decaporg/decap-cms/commit/25db74b710b351258d2d39385d1f8254821544e3)), closes [#4783](https://github.com/decaporg/decap-cms/issues/4783)
+- **ui:** make app header responsive ([#7825](https://github.com/decaporg/decap-cms/issues/7825)) ([64118e4](https://github.com/decaporg/decap-cms/commit/64118e404b47c2efbb1b1842f3da87dfae23767b)), closes [#7298](https://github.com/decaporg/decap-cms/issues/7298)
+- **ui:** make dropdown positioning responsive ([#7828](https://github.com/decaporg/decap-cms/issues/7828)) ([2fdf798](https://github.com/decaporg/decap-cms/commit/2fdf798412188559738c5bbd5f593c3f352d24fc))
+
+# [3.13.0](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.12.0...decap-cms-core@3.13.0) (2026-04-17)
+
+### Features
+
+- allow special characters to pass through slugification ([#6220](https://github.com/decaporg/decap-cms/issues/6220)) ([074354d](https://github.com/decaporg/decap-cms/commit/074354d9a83d63d87818ff1c527c38262a421426))
+
+# [3.12.0](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.11.0...decap-cms-core@3.12.0) (2026-04-16)
+
+### Bug Fixes
+
+- **frontmatter:** improve duplicate frontmatter key error handling ([#7679](https://github.com/decaporg/decap-cms/issues/7679)) ([cbe162d](https://github.com/decaporg/decap-cms/commit/cbe162d740bcbfafc4e76a77ac49e2029bc3a4c4))
+
+### Features
+
+- add config option to enable Signed-off-by in commit messages ([#7766](https://github.com/decaporg/decap-cms/issues/7766)) ([4b9ea40](https://github.com/decaporg/decap-cms/commit/4b9ea4040f3b858793052cee287caa3cce2f3af3))
+
+### Performance Improvements
+
+- use Clipboard API ([#7780](https://github.com/decaporg/decap-cms/issues/7780)) ([c90804f](https://github.com/decaporg/decap-cms/commit/c90804fa623020dd7246cc8154c6992a1bc2a79e))
+
 # [3.11.0](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.10.1...decap-cms-core@3.11.0) (2026-03-24)
 
 ### Bug Fixes

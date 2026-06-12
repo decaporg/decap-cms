@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.6.0](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-gitlab@3.5.0...decap-cms-backend-gitlab@3.6.0) (2026-06-08)
+
+### Bug Fixes
+
+- **gitlab:** load lfs media content ([#7815](https://github.com/decaporg/decap-cms/issues/7815)) ([c76586b](https://github.com/decaporg/decap-cms/commit/c76586b151f83c805012d1a19ae3e0188faf963e))
+- remove unused dependencies and specify missing dependencies ([#7833](https://github.com/decaporg/decap-cms/issues/7833)) ([e324a14](https://github.com/decaporg/decap-cms/commit/e324a142f7f0ba63c760b2e8524d971c35200f87))
+
+# [3.5.0](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-gitlab@3.4.0...decap-cms-backend-gitlab@3.5.0) (2026-06-01)
+
+**Note:** Version bump only for package decap-cms-backend-gitlab
+
 # [3.4.0](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-gitlab@3.3.1...decap-cms-backend-gitlab@3.4.0) (2025-07-15)
 
 ### Features

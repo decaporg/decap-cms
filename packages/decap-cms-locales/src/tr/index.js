@@ -43,7 +43,8 @@ const tr = {
     collectionTop: {
       sortBy: 'Sırala ...',
       viewAs: 'Görüntüle',
-      newButton: 'Yeni %{collectionLabel}',
+      newButton: '＋ %{collectionLabel}',
+      newButtonAriaLabel: '%{collectionLabel} türünde girdi oluştur',
       ascending: 'Artan',
       descending: 'Azalan',
       searchResults: '"%{searchTerm}" için Arama Sonuçları',

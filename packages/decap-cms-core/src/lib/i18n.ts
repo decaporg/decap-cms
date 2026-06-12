@@ -308,18 +308,26 @@ export async function getI18nEntry(
   if (structure === I18N_STRUCTURE.SINGLE_FILE) {
     entryValue = mergeSingleFileValue(await getEntryValue(path), defaultLocale, locales);
   } else {
-    const entryValues = await Promise.all(
+    const entryValuesResults = await Promise.allSettled(
       locales.map(async locale => {
         const entryPath = getFilePath(structure, extension, path, slug, locale);
-        const value = await getEntryValue(entryPath).catch(() => null);
+        const value = await getEntryValue(entryPath);
         return { value, locale };
       }),
     );
 
-    const nonNullValues = entryValues.filter(e => e.value !== null) as {
-      value: EntryValue;
-      locale: string;
-    }[];
+    const nonNullValues = entryValuesResults
+      .map(e => (e.status === 'fulfilled' ? e.value : undefined))
+      .filter((e): e is { value: EntryValue; locale: string } => e !== undefined);
+
+    if (nonNullValues.length === 0) {
+      // mergeValues will throw on an empty list, and show the error messages.
+      const [error = new Error('No entry values found for any locale')] = entryValuesResults
+        .map(e => (e.status === 'rejected' ? e.reason : undefined))
+        .filter(e => e !== undefined);
+
+      throw error;
+    }
 
     entryValue = mergeValues(collection, structure, defaultLocale, nonNullValues);
   }

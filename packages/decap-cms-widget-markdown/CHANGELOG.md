@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.10.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-markdown@3.9.0...decap-cms-widget-markdown@3.10.0) (2026-06-08)
+
+### Bug Fixes
+
+- remove unused dependencies and specify missing dependencies ([#7833](https://github.com/decaporg/decap-cms/issues/7833)) ([e324a14](https://github.com/decaporg/decap-cms/commit/e324a142f7f0ba63c760b2e8524d971c35200f87))
+
+# [3.9.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-markdown@3.8.0...decap-cms-widget-markdown@3.9.0) (2026-06-01)
+
+### Bug Fixes
+
+- adhere to remark's tokenizer rules [#7315](https://github.com/decaporg/decap-cms/issues/7315) ([#7444](https://github.com/decaporg/decap-cms/issues/7444)) ([50986a0](https://github.com/decaporg/decap-cms/commit/50986a0042d36554cc1f87244b5bcc109539cd8d))
+
+# [3.8.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-markdown@3.7.0...decap-cms-widget-markdown@3.8.0) (2026-04-16)
+
+### Bug Fixes
+
+- **markdown:** extra whitespace before and after pasted content [#7364](https://github.com/decaporg/decap-cms/issues/7364) ([#7440](https://github.com/decaporg/decap-cms/issues/7440)) ([fc16ff3](https://github.com/decaporg/decap-cms/commit/fc16ff3d303ddf0840c3dacea7f34449bb69f2f3))
+
+### Features
+
+- remove HTML comments from pasted content ([#7775](https://github.com/decaporg/decap-cms/issues/7775)) ([b7cf396](https://github.com/decaporg/decap-cms/commit/b7cf3968b157f13da9ca6c9448ab8e8bc51a4afa))
+
 # [3.7.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-markdown@3.6.1...decap-cms-widget-markdown@3.7.0) (2026-03-24)
 
 ### Bug Fixes
