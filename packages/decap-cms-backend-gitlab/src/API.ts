@@ -243,7 +243,7 @@ export default class API {
         headers: {
           'Content-Type': 'application/json; charset=utf-8',
           ...headers,
-          authorization: this.token ? `token ${this.token}` : '',
+          authorization: this.token ? `Bearer ${this.token}` : '',
         },
       };
     });
