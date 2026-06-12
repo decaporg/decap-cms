@@ -60,6 +60,7 @@ export interface Config {
   initialWorkflowStatus: string;
   cmsLabelPrefix: string;
   useGraphQL?: boolean;
+  requestFunction?: (req: ApiRequest) => Promise<Response>;
 }
 
 export interface CommitAuthor {
@@ -219,6 +220,7 @@ export default class API {
   squashMerges: boolean;
   initialWorkflowStatus: string;
   cmsLabelPrefix: string;
+  requestFunction?: (req: ApiRequest) => Promise<Response>;
 
   graphQLClient?: ApolloClient<NormalizedCacheObject>;
 
@@ -226,6 +228,7 @@ export default class API {
     this.apiRoot = config.apiRoot || 'https://gitlab.com/api/v4';
     this.graphQLAPIRoot = config.graphQLAPIRoot || 'https://gitlab.com/api/graphql';
     this.token = config.token || false;
+    this.requestFunction = config.requestFunction;
     this.branch = config.branch || 'master';
     this.repo = config.repo || '';
     this.repoURL = `/projects/${encodeURIComponent(this.repo)}`;
@@ -243,7 +246,7 @@ export default class API {
         headers: {
           'Content-Type': 'application/json; charset=utf-8',
           ...headers,
-          authorization: this.token ? `token ${this.token}` : '',
+          authorization: this.token ? `Bearer ${this.token}` : '',
         },
       };
     });
