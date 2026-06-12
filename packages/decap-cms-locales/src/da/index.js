@@ -43,7 +43,8 @@ const da = {
     collectionTop: {
       sortBy: 'Sorter efter',
       viewAs: 'Vis som',
-      newButton: 'Ny %{collectionLabel}',
+      newButton: '＋ %{collectionLabel}',
+      newButtonAriaLabel: 'Opret dokument af typen %{collectionLabel}',
       ascending: 'Stigende',
       descending: 'Faldende',
       searchResults: 'Søgeresultater for "%{searchTerm}"',

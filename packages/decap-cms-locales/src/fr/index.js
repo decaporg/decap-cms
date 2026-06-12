@@ -43,7 +43,8 @@ const fr = {
     collectionTop: {
       sortBy: 'Trier par',
       viewAs: 'Voir comme',
-      newButton: 'Créer une entrée de type %{collectionLabel}',
+      newButton: '＋ %{collectionLabel}',
+      newButtonAriaLabel: 'Créer une entrée de type %{collectionLabel}',
       ascending: 'Croissant',
       descending: 'Décroissant',
       searchResults: 'Résultats de la recherche pour "%{searchTerm}"',
