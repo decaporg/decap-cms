@@ -5,7 +5,6 @@ import styled from '@emotion/styled';
 import { css } from '@emotion/react';
 import { Map, List } from 'immutable';
 import once from 'lodash/once';
-import { v4 as uuid } from 'uuid';
 import { oneLine } from 'common-tags';
 import {
   lengths,
@@ -222,7 +221,7 @@ function valueListToSortableArray(value) {
   }
 
   const valueArray = valueListToArray(value).map(value => ({
-    id: uuid(),
+    id: crypto.randomUUID(),
     value,
   }));
 
@@ -265,7 +264,7 @@ export default function withFileControl({ forImage } = {}) {
 
     constructor(props) {
       super(props);
-      this.controlID = uuid();
+      this.controlID = crypto.randomUUID();
     }
 
     componentDidMount() {

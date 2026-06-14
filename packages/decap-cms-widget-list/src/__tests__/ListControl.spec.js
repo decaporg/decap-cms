@@ -34,7 +34,6 @@ jest.mock('decap-cms-ui-default', () => {
     ListItemTopBar,
   };
 });
-jest.mock('uuid');
 
 describe('ListControl', () => {
   const props = {
@@ -63,9 +62,8 @@ describe('ListControl', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    const uuid = require('uuid');
     let id = 0;
-    uuid.v4.mockImplementation(() => {
+    global.crypto.randomUUID = jest.fn(() => {
       return id++;
     });
   });
