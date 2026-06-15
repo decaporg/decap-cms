@@ -743,8 +743,8 @@ export default class GitHub implements Implementation {
     return runWithLock(
       this.lock,
       async () => {
-        this.api!.publishUnpublishedEntry(collection, slug),
-          await this.api!.closeIssueOnPublish(collection, slug);
+        await this.api!.publishUnpublishedEntry(collection, slug);
+        await this.api!.closeIssueOnPublish(collection, slug);
       },
       'Failed to acquire publish entry lock',
     );
