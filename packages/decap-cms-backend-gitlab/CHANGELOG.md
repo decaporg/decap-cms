@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.6.1](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-gitlab@3.6.0...decap-cms-backend-gitlab@3.6.1) (2026-06-15)
+
+### Bug Fixes
+
+- **gitlab:** refresh expired PKCE access tokens ([#7854](https://github.com/decaporg/decap-cms/issues/7854)) ([18be93a](https://github.com/decaporg/decap-cms/commit/18be93a85804bb49058cbbc1a18f128c1cee14da))
+- **gitlab:** use Bearer auth scheme for GraphQL requests ([#7855](https://github.com/decaporg/decap-cms/issues/7855)) ([d7bef89](https://github.com/decaporg/decap-cms/commit/d7bef898443b4dbe17bafd940412a8e81db6d904))
+
 # [3.6.0](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-gitlab@3.5.0...decap-cms-backend-gitlab@3.6.0) (2026-06-08)
 
 ### Bug Fixes
