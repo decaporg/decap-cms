@@ -24,6 +24,7 @@ import {
   deleteLocalBackup,
   loadNotesForEntry,
   loadNotes,
+  stopNotesPolling,
   persistNote,
   updateNotePersist,
   deleteNotePersist,
@@ -64,6 +65,7 @@ export class Editor extends React.Component {
     entryDraft: ImmutablePropTypes.map.isRequired,
     loadEntry: PropTypes.func.isRequired,
     loadNotes: PropTypes.func,
+    stopNotesPolling: PropTypes.func,
     persistEntry: PropTypes.func.isRequired,
     deleteEntry: PropTypes.func.isRequired,
     showDelete: PropTypes.bool.isRequired,
@@ -218,6 +220,14 @@ export class Editor extends React.Component {
   }
 
   componentWillUnmount() {
+    if (
+      !this.props.newEntry &&
+      this.props.hasWorkflow &&
+      isNotesEnabled(this.props.collection, this.props.slug)
+    ) {
+      this.props.stopNotesPolling(this.props.collection, this.props.slug);
+    }
+
     this.createBackup.flush();
     this.props.discardDraft();
     window.removeEventListener('beforeunload', this.exitBlocker);
@@ -543,6 +553,7 @@ const mapDispatchToProps = {
   logoutUser,
   loadNotesForEntry,
   loadNotes,
+  stopNotesPolling,
   persistNote,
   updateNotePersist,
   deleteNotePersist,
