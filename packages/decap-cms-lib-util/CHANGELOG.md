@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.7.1](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-util@3.7.0...decap-cms-lib-util@3.7.1) (2026-06-15)
+
+### Bug Fixes
+
+- **gitlab:** refresh expired PKCE access tokens ([#7854](https://github.com/decaporg/decap-cms/issues/7854)) ([18be93a](https://github.com/decaporg/decap-cms/commit/18be93a85804bb49058cbbc1a18f128c1cee14da))
+
+# [3.7.0](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-util@3.6.0...decap-cms-lib-util@3.7.0) (2026-06-08)
+
+### Bug Fixes
+
+- remove unused dependencies and specify missing dependencies ([#7833](https://github.com/decaporg/decap-cms/issues/7833)) ([e324a14](https://github.com/decaporg/decap-cms/commit/e324a142f7f0ba63c760b2e8524d971c35200f87))
+
+# [3.6.0](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-util@3.5.0...decap-cms-lib-util@3.6.0) (2026-06-01)
+
+**Note:** Version bump only for package decap-cms-lib-util
+
 # [3.5.0](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-util@3.4.0...decap-cms-lib-util@3.5.0) (2026-04-16)
 
 ### Features

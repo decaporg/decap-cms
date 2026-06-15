@@ -1298,6 +1298,7 @@ export class Backend {
     );
 
     const collectionName = collection.get('name');
+    const hasSubfolders = collection.get('nested')?.get('subfolders') !== false;
 
     const updatedOptions = { unpublished, status };
     const opts = {
@@ -1305,6 +1306,7 @@ export class Backend {
       commitMessage,
       collectionName,
       useWorkflow,
+      hasSubfolders,
       ...updatedOptions,
     };
 

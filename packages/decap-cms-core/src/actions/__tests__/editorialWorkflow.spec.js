@@ -8,9 +8,7 @@ import * as actions from '../editorialWorkflow';
 jest.mock('../../backend');
 jest.mock('../../valueObjects/AssetProxy');
 jest.mock('decap-cms-lib-util');
-jest.mock('uuid', () => {
-  return { v4: jest.fn().mockReturnValue('000000000000000000000') };
-});
+global.crypto.randomUUID = jest.fn().mockReturnValue('000000000000000000000');
 
 const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);

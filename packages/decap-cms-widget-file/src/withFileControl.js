@@ -1,11 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import { css } from '@emotion/react';
 import { Map, List } from 'immutable';
 import once from 'lodash/once';
-import { v4 as uuid } from 'uuid';
 import { oneLine } from 'common-tags';
 import {
   lengths,
@@ -61,8 +60,19 @@ const StyledImage = styled.img`
   object-fit: contain;
 `;
 
-function Image(props) {
-  return <StyledImage role="presentation" {...props} />;
+function Image({ value, field, getAsset }) {
+  const [asset, setAsset] = useState(null);
+
+  useEffect(() => {
+    if (value) {
+      const newAsset = getAsset(value, field);
+      setAsset(newAsset);
+    } else {
+      setAsset(null);
+    }
+  }, [value, field, getAsset]);
+
+  return asset ? <StyledImage role="presentation" src={asset} /> : null;
 }
 
 function SortableImageButtons({ onRemove, onReplace }) {
@@ -89,7 +99,7 @@ function SortableImage(props) {
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
       <ImageWrapper sortable>
-        <Image src={getAsset(itemValue, field) || ''} />
+        <Image value={itemValue} field={field} getAsset={getAsset} />
       </ImageWrapper>
       <SortableImageButtons
         item={itemValue}
@@ -211,7 +221,7 @@ function valueListToSortableArray(value) {
   }
 
   const valueArray = valueListToArray(value).map(value => ({
-    id: uuid(),
+    id: crypto.randomUUID(),
     value,
   }));
 
@@ -254,7 +264,7 @@ export default function withFileControl({ forImage } = {}) {
 
     constructor(props) {
       super(props);
-      this.controlID = uuid();
+      this.controlID = crypto.randomUUID();
     }
 
     componentDidMount() {
@@ -417,6 +427,7 @@ export default function withFileControl({ forImage } = {}) {
     renderImages = () => {
       const { getAsset, value, field } = this.props;
       const items = valueListToSortableArray(value);
+
       if (isMultiple(value)) {
         return (
           <SortableMultiImageWrapper
@@ -433,10 +444,9 @@ export default function withFileControl({ forImage } = {}) {
         );
       }
 
-      const src = getAsset(value, field);
       return (
         <ImageWrapper>
-          <Image src={src || ''} />
+          <Image value={value} field={field} getAsset={getAsset} />
         </ImageWrapper>
       );
     };

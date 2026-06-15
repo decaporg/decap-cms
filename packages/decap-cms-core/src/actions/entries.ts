@@ -1,9 +1,14 @@
-import { fromJS, List, Map } from 'immutable';
+import { fromJS, List, Map, Set } from 'immutable';
 import isEqual from 'lodash/isEqual';
 import { Cursor } from 'decap-cms-lib-util';
 
 import { selectCollectionEntriesCursor } from '../reducers/cursors';
-import { selectFields, updateFieldByKey, selectDefaultSortField } from '../reducers/collections';
+import {
+  selectFields,
+  selectField,
+  updateFieldByKey,
+  selectDefaultSortField,
+} from '../reducers/collections';
 import { selectIntegration, selectPublishedSlugs } from '../reducers';
 import { getIntegrationProvider } from '../integrations';
 import { currentBackend } from '../backend';
@@ -38,7 +43,6 @@ import type {
 import type { EntryValue } from '../valueObjects/Entry';
 import type { Backend } from '../backend';
 import type AssetProxy from '../valueObjects/AssetProxy';
-import type { Set } from 'immutable';
 
 /*
  * Constant Declarations
@@ -779,10 +783,21 @@ function getMetaFields(fields: EntryFields) {
 export function createEmptyDraft(collection: Collection, search: string) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const params = new URLSearchParams(search);
-    params.forEach((value, key) => {
-      collection = updateFieldByKey(collection, key, field =>
-        field.set('default', processValue(value)),
-      );
+    const uniqueKeys = Set([...params.keys()]).toArray();
+
+    uniqueKeys.forEach(key => {
+      const field = selectField(collection, key);
+      const isMultiple = field?.get('multiple', false);
+      const values = params.getAll(key);
+
+      collection = updateFieldByKey(collection, key, field => {
+        if (isMultiple) {
+          const allValues = values.flatMap(v => v.split(',')).map(processValue);
+          return field.set('default', List(allValues));
+        } else {
+          return field.set('default', processValue(values[values.length - 1]));
+        }
+      });
     });
 
     const fields = collection.get('fields', List());

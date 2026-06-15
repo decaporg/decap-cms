@@ -73,7 +73,7 @@ export interface CmsFieldBase {
   label?: string;
   required?: boolean;
   hint?: string;
-  pattern?: [string, string];
+  pattern?: [string | RegExp, string];
   i18n?: boolean | 'translate' | 'duplicate' | 'none';
   media_folder?: string;
   public_folder?: string;
@@ -186,6 +186,21 @@ export interface CmsFieldMarkdown {
   editorComponents?: string[];
 }
 
+export interface CmsFieldRichText {
+  widget: 'richtext';
+  default?: string;
+
+  minimal?: boolean;
+  buttons?: CmsMarkdownWidgetButton[];
+  editor_components?: string[];
+  modes?: ('raw' | 'rich_text')[];
+
+  /**
+   * @deprecated Use editor_components instead
+   */
+  editorComponents?: string[];
+}
+
 export interface CmsFieldNumber {
   widget: 'number';
   default?: string | number;
@@ -259,7 +274,7 @@ export interface CmsFieldMeta {
   label: string;
   widget: string;
   required: boolean;
-  index_file: string;
+  index_file?: string;
   meta: boolean;
 }
 
@@ -273,6 +288,7 @@ export type CmsField = CmsFieldBase &
     | CmsFieldList
     | CmsFieldMap
     | CmsFieldMarkdown
+    | CmsFieldRichText
     | CmsFieldNumber
     | CmsFieldObject
     | CmsFieldRelation
@@ -321,14 +337,14 @@ export interface DeleteNotePayload {
 export interface ViewFilter {
   label: string;
   field: string;
-  pattern: string;
+  pattern: string | boolean;
   id: string;
 }
 
 export interface ViewGroup {
   label: string;
   field: string;
-  pattern: string;
+  pattern?: string;
   id: string;
 }
 
@@ -363,7 +379,7 @@ export interface CmsCollection {
     depth: number;
   };
   type: typeof FOLDER | typeof FILES;
-  meta?: { path?: { label: string; widget: string; index_file: string } };
+  meta?: { path?: { label: string; widget: string; index_file?: string } };
 
   /**
    * It accepts the following values: yml, yaml, toml, json, md, markdown, html
@@ -605,6 +621,7 @@ export type EntryField = StaticallyTypedRecord<{
   name: string;
   default: string | null | boolean | List<unknown>;
   media_folder?: string;
+  multiple?: boolean;
   public_folder?: string;
   comment?: string;
   meta?: boolean;
