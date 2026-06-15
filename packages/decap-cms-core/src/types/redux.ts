@@ -635,6 +635,12 @@ export type FilterRule = StaticallyTypedRecord<{
   field: string;
 }>;
 
+type CollectionEditor = StaticallyTypedRecord<{
+  preview?: boolean;
+  notes?: boolean;
+  visualEditing?: boolean;
+}>;
+
 export type CollectionFile = StaticallyTypedRecord<{
   file: string;
   name: string;
@@ -644,6 +650,7 @@ export type CollectionFile = StaticallyTypedRecord<{
   public_folder?: string;
   preview_path?: string;
   preview_path_date_field?: string;
+  editor?: CollectionEditor;
 }>;
 
 export type CollectionFiles = List<CollectionFile>;
@@ -687,6 +694,7 @@ type CollectionObject = {
   frontmatter_delimiter?: List<string> | string | [string, string];
   create?: boolean;
   delete?: boolean;
+  editor?: CollectionEditor;
   identifier_field?: string;
   path?: string;
   slug?: string;

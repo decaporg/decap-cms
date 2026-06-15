@@ -36,10 +36,21 @@ import {
 } from '../../actions/editorialWorkflow';
 import { loadDeployPreview } from '../../actions/deploys';
 import { selectEntry, selectUnpublishedEntry, selectDeployPreview } from '../../reducers';
-import { selectFields } from '../../reducers/collections';
+import { selectFields, getFileFromSlug } from '../../reducers/collections';
 import { status, EDITORIAL_WORKFLOW } from '../../constants/publishModes';
+import { FILES } from '../../constants/collectionTypes';
 import EditorInterface from './EditorInterface';
 import withWorkflow from './withWorkflow';
+
+function isNotesEnabled(collection, slug) {
+  if (collection.get('type') === FILES) {
+    const file = getFileFromSlug(collection, slug);
+    const notesEnabled = file?.getIn(['editor', 'notes']);
+    if (notesEnabled != null) return notesEnabled;
+  }
+
+  return collection.getIn(['editor', 'notes'], false);
+}
 
 export class Editor extends React.Component {
   static propTypes = {
@@ -185,8 +196,10 @@ export class Editor extends React.Component {
     if (
       prevProps.entry !== this.props.entry &&
       this.props.entry &&
+      !this.props.entry.get('isFetching') &&
       !this.props.newEntry &&
-      this.props.hasWorkflow
+      this.props.hasWorkflow &&
+      isNotesEnabled(this.props.collection, this.props.slug)
     ) {
       this.props.loadNotes(this.props.collection, this.props.slug);
     }

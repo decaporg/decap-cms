@@ -176,7 +176,7 @@ function isNotesEnabled(collection, entry, isNewEntry, isPublished, hasWorkflow)
     const notesEnabled = file?.getIn(['editor', 'notes']);
     if (notesEnabled != null) return notesEnabled;
   }
-  return collection.getIn(['editor', 'notes'], true);
+  return collection.getIn(['editor', 'notes'], false);
 }
 
 class EditorInterface extends Component {

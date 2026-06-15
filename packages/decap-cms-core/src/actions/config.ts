@@ -390,12 +390,11 @@ export function applyDefaults(originalConfig: CmsConfig) {
         };
       });
 
-      if (config.editor && !collection.editor) {
-        collection.editor = {
-          preview: config.editor.preview,
-          notes: config.editor.notes,
-        };
-      }
+      collection.editor = {
+        preview: config.editor.preview,
+        notes: config.editor.notes,
+        ...collection.editor,
+      };
     }
   });
 }

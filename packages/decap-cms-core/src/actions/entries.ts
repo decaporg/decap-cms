@@ -8,6 +8,7 @@ import {
   selectField,
   updateFieldByKey,
   selectDefaultSortField,
+  getFileFromSlug,
 } from '../reducers/collections';
 import { selectIntegration, selectPublishedSlugs } from '../reducers';
 import { getIntegrationProvider } from '../integrations';
@@ -26,6 +27,7 @@ import { navigateToEntry } from '../routing/history';
 import { getProcessSegment } from '../lib/formatters';
 import { hasI18n, duplicateDefaultI18nFields, serializeI18n, I18N, I18N_FIELD } from '../lib/i18n';
 import { addNotification } from './notifications';
+import { FILES } from '../constants/collectionTypes';
 
 import type { ImplementationMediaFile, Note, IssueChange } from 'decap-cms-lib-util';
 import type { AnyAction } from 'redux';
@@ -43,6 +45,16 @@ import type {
 import type { EntryValue } from '../valueObjects/Entry';
 import type { Backend } from '../backend';
 import type AssetProxy from '../valueObjects/AssetProxy';
+
+function isNotesEnabled(collection: Collection, slug: string) {
+  if (collection.get('type') === FILES) {
+    const file = getFileFromSlug(collection, slug);
+    const notesEnabled = file?.get('editor')?.get('notes');
+    if (notesEnabled != null) return notesEnabled;
+  }
+
+  return collection.get('editor')?.get('notes') ?? false;
+}
 
 /*
  * Constant Declarations
@@ -574,11 +586,6 @@ export function loadEntry(collection: Collection, slug: string) {
       const loadedEntry = await tryLoadEntry(getState(), collection, slug);
       dispatch(entryLoaded(collection, loadedEntry));
       dispatch(createDraftFromEntry(loadedEntry));
-      const state = getState();
-      const isNotesEnabled = state.config.editor?.notes ?? false;
-      if (isNotesEnabled) {
-        await dispatch(loadNotes(collection, slug));
-      }
     } catch (error) {
       dispatch(
         addNotification({
@@ -1317,10 +1324,7 @@ export function persistNote(collection: Collection, slug: string, note: Omit<Not
         }),
       );
       // After adding a note, polling gets restarted. In case the note is the first ever note persisted (which is the moment a Github Issue is created for example) this will help the Polling system to pickup the source of the Notes.
-      const state = getState();
-      const isNotesEnabled = state.config.editor?.notes ?? false;
-
-      if (isNotesEnabled) {
+      if (isNotesEnabled(collection, slug)) {
         // Small delay to let the issue creation propagate
         await new Promise(resolve => setTimeout(resolve, 1000));
         await dispatch(startNotesPolling(collection, slug));
