@@ -405,7 +405,7 @@ export default class TestBackend implements Implementation {
     const key = `${collection}/${slug}`;
     const newNote: Note = {
       ...note,
-      id: uuid(),
+      id: crypto.randomUUID(),
       timestamp: new Date().toISOString(),
     };
 
