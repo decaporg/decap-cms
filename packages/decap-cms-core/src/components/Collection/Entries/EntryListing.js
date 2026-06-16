@@ -52,7 +52,14 @@ class EntryListing extends React.Component {
     getWorkflowStatus: PropTypes.func.isRequired,
     filterTerm: PropTypes.string,
     sortFields: PropTypes.array,
+    showPublishedEntries: PropTypes.bool,
+    showUnpublishedEntries: PropTypes.bool,
     t: PropTypes.func.isRequired,
+  };
+
+  static defaultProps = {
+    showPublishedEntries: true,
+    showUnpublishedEntries: true,
   };
 
   componentDidMount() {
@@ -131,29 +138,43 @@ class EntryListing extends React.Component {
   };
 
   renderCardsForSingleCollection = () => {
-    const { collections, viewStyle, entries, page, t } = this.props;
+    const {
+      collections,
+      viewStyle,
+      entries,
+      page,
+      t,
+      showPublishedEntries,
+      showUnpublishedEntries,
+    } = this.props;
     const inferredFields = this.inferFields(collections);
     const entryCardProps = { collection: collections, inferredFields, viewStyle };
 
-    const publishedCards = entries.map((entry, idx) => {
-      const workflowStatus = this.props.getWorkflowStatus(
-        collections.get('name'),
-        entry.get('slug'),
-      );
+    const publishedCards = showPublishedEntries
+      ? entries.map((entry, idx) => {
+          const workflowStatus = this.props.getWorkflowStatus(
+            collections.get('name'),
+            entry.get('slug'),
+          );
 
-      return (
-        <EntryCard
-          {...entryCardProps}
-          entry={entry}
-          workflowStatus={workflowStatus}
-          key={`published-${idx}`}
-        />
-      );
-    });
+          return (
+            <EntryCard
+              {...entryCardProps}
+              entry={entry}
+              workflowStatus={workflowStatus}
+              key={`published-${idx}`}
+            />
+          );
+        })
+      : List();
 
-    const unpublishedEntries = this.getUnpublishedEntriesList();
+    const unpublishedEntries = showUnpublishedEntries ? this.getUnpublishedEntriesList() : List();
 
     if (unpublishedEntries.size === 0) {
+      if (!showPublishedEntries) {
+        return null;
+      }
+
       return (
         <CardsGrid>
           {publishedCards}
@@ -180,10 +201,12 @@ class EntryListing extends React.Component {
 
     return (
       <React.Fragment>
-        <CardsGrid>
-          {publishedCards}
-          {this.hasMore() && <Waypoint key={page} onEnter={this.handleLoadMore} />}
-        </CardsGrid>
+        {showPublishedEntries && (
+          <CardsGrid>
+            {publishedCards}
+            {this.hasMore() && <Waypoint key={page} onEnter={this.handleLoadMore} />}
+          </CardsGrid>
+        )}
         <SectionSeparator>
           <SectionHeading>{t('collection.entries.unpublishedHeader')}</SectionHeading>
         </SectionSeparator>

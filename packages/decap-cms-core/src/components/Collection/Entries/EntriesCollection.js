@@ -55,7 +55,10 @@ function withGroups(groups, entries, EntriesToRender, t) {
     return (
       <GroupContainer key={group.id} id={group.id}>
         <GroupHeading>{title}</GroupHeading>
-        <EntriesToRender entries={getGroupEntries(entries, group.paths)} />
+        <EntriesToRender
+          entries={getGroupEntries(entries, group.paths)}
+          showUnpublishedEntries={false}
+        />
       </GroupContainer>
     );
   });
@@ -148,7 +151,15 @@ export class EntriesCollection extends React.Component {
       sortFields,
     } = this.props;
 
-    const EntriesToRender = ({ entries }) => {
+    const EntriesToRender = ({ entries, showPublishedEntries, showUnpublishedEntries }) => {
+      const visibilityProps = {};
+      if (showPublishedEntries !== undefined) {
+        visibilityProps.showPublishedEntries = showPublishedEntries;
+      }
+      if (showUnpublishedEntries !== undefined) {
+        visibilityProps.showUnpublishedEntries = showUnpublishedEntries;
+      }
+
       return (
         <Entries
           collections={collection}
@@ -163,12 +174,18 @@ export class EntriesCollection extends React.Component {
           getUnpublishedEntries={getUnpublishedEntries}
           filterTerm={filterTerm}
           sortFields={sortFields}
+          {...visibilityProps}
         />
       );
     };
 
     if (groups && groups.length > 0) {
-      return withGroups(groups, entries, EntriesToRender, t);
+      return (
+        <React.Fragment>
+          {withGroups(groups, entries, EntriesToRender, t)}
+          <EntriesToRender entries={entries} showPublishedEntries={false} />
+        </React.Fragment>
+      );
     }
 
     return <EntriesToRender entries={entries} />;
