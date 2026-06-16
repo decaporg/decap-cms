@@ -107,6 +107,35 @@ describe('mediaLibrary', () => {
     expect(selectMediaFolder).toHaveBeenCalledWith(state.config, collection, entry, imageField);
   });
 
+  it('should select draft transformation media files from collection when editing a draft', () => {
+    const { selectEditingDraft, selectMediaFolder } = require('../../reducers/entries');
+
+    selectEditingDraft.mockReturnValue(true);
+    selectMediaFolder.mockReturnValue('static/images/posts');
+
+    const imageField = fromJS({ name: 'image' });
+    const collection = fromJS({ fields: [imageField] });
+    const entry = fromJS({
+      collection: 'posts',
+      mediaFiles: [
+        { id: 1, path: 'static/images/posts/_transformations/webp/logo.webp' },
+        { id: 2, path: 'static/images/other/_transformations/webp/image.webp' },
+      ],
+      data: {},
+    });
+    const state = {
+      config: {},
+      collections: fromJS({ posts: collection }),
+      entryDraft: fromJS({
+        entry,
+      }),
+    };
+
+    expect(selectMediaFiles(state, imageField)).toEqual([
+      { id: 1, key: 1, path: 'static/images/posts/_transformations/webp/logo.webp' },
+    ]);
+  });
+
   it('should select global media files when not editing a draft', () => {
     const { selectEditingDraft } = require('../../reducers/entries');
 
