@@ -60,6 +60,7 @@ export interface Config {
   initialWorkflowStatus: string;
   cmsLabelPrefix: string;
   useGraphQL?: boolean;
+  requestFunction?: (req: ApiRequest) => Promise<Response>;
 }
 
 export interface CommitAuthor {
@@ -219,6 +220,7 @@ export default class API {
   squashMerges: boolean;
   initialWorkflowStatus: string;
   cmsLabelPrefix: string;
+  requestFunction?: (req: ApiRequest) => Promise<Response>;
 
   graphQLClient?: ApolloClient<NormalizedCacheObject>;
 
@@ -226,6 +228,7 @@ export default class API {
     this.apiRoot = config.apiRoot || 'https://gitlab.com/api/v4';
     this.graphQLAPIRoot = config.graphQLAPIRoot || 'https://gitlab.com/api/graphql';
     this.token = config.token || false;
+    this.requestFunction = config.requestFunction;
     this.branch = config.branch || 'master';
     this.repo = config.repo || '';
     this.repoURL = `/projects/${encodeURIComponent(this.repo)}`;
@@ -243,7 +246,7 @@ export default class API {
         headers: {
           'Content-Type': 'application/json; charset=utf-8',
           ...headers,
-          authorization: this.token ? `token ${this.token}` : '',
+          authorization: this.token ? `Bearer ${this.token}` : '',
         },
       };
     });
@@ -346,18 +349,19 @@ export default class API {
   readFile = async (
     path: string,
     sha?: string | null,
-    { parseText = true, branch = this.branch } = {},
+    { parseText = true, branch = this.branch, lfs = false } = {},
   ): Promise<string | Blob> => {
     const fetchContent = async () => {
       const content = await this.request({
         url: `${this.repoURL}/repository/files/${encodeURIComponent(path)}/raw`,
-        params: { ref: branch },
+        params: { ref: branch, ...(lfs ? { lfs: true } : {}) },
         cache: 'no-store',
       }).then<Blob | string>(parseText ? this.responseToText : this.responseToBlob);
       return content;
     };
 
-    const content = await readFile(sha, fetchContent, localForage, parseText);
+    const cacheKey = sha && lfs ? `${sha}.lfs` : sha;
+    const content = await readFile(cacheKey, fetchContent, localForage, parseText);
     return content;
   };
 

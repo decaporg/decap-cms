@@ -145,6 +145,41 @@ describe('GitLab API', () => {
     });
   });
 
+  describe('readFile', () => {
+    test('does not request GitLab LFS content by default', async () => {
+      const api = new API({ repo: 'foo/bar' });
+
+      api.request = jest.fn().mockResolvedValue({});
+      api.responseToText = jest.fn().mockReturnValue('file content');
+
+      await expect(api.readFile('static/uploads/image.png', null)).resolves.toBe('file content');
+
+      expect(api.request).toHaveBeenCalledWith({
+        url: '/projects/foo%2Fbar/repository/files/static%2Fuploads%2Fimage.png/raw',
+        params: { ref: 'master' },
+        cache: 'no-store',
+      });
+    });
+
+    test('requests GitLab LFS content when requested', async () => {
+      const api = new API({ repo: 'foo/bar' });
+      const blob = new Blob(['image content']);
+
+      api.request = jest.fn().mockResolvedValue({});
+      api.responseToBlob = jest.fn().mockReturnValue(blob);
+
+      await expect(
+        api.readFile('static/uploads/image.png', null, { parseText: false, lfs: true }),
+      ).resolves.toBe(blob);
+
+      expect(api.request).toHaveBeenCalledWith({
+        url: '/projects/foo%2Fbar/repository/files/static%2Fuploads%2Fimage.png/raw',
+        params: { ref: 'master', lfs: true },
+        cache: 'no-store',
+      });
+    });
+  });
+
   describe('getStatuses', () => {
     test('should get preview statuses', async () => {
       const api = new API({ repo: 'repo' });

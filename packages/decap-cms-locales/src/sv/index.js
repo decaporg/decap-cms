@@ -43,7 +43,8 @@ const sv = {
     collectionTop: {
       sortBy: 'Sortera efter',
       viewAs: 'Visa som',
-      newButton: 'Ny %{collectionLabel}',
+      newButton: '＋ %{collectionLabel}',
+      newButtonAriaLabel: 'Skapa ett inlägg av typen %{collectionLabel}',
       ascending: 'Stigande',
       descending: 'Fallande',
       searchResults: 'Sökresultat för "%{searchTerm}"',

@@ -1,5 +1,4 @@
 const crypto = require('crypto');
-const axios = require('axios');
 
 const verifySignature = event => {
   const timestamp = Number(event.headers['x-slack-request-timestamp']);
@@ -64,11 +63,10 @@ exports.handler = async function(event) {
     if (expectedCommand && expectedCommand === command) {
       const githubToken = process.env.GITHUB_TOKEN;
       const repo = process.env.GITHUB_REPO;
-      await axios({
+      await fetch(`https://api.github.com/repos/${repo}/dispatches`, {
         headers: { Authorization: `token ${githubToken}` },
-        method: 'post',
-        url: `https://api.github.com/repos/${repo}/dispatches`,
-        data: { event_type: 'on-demand-github-action' },
+        method: 'POST',
+        body: JSON.stringify({ event_type: 'on-demand-github-action' }),
       });
       const message = 'Dispatched event to GitHub';
       return { status: 200, body: message };

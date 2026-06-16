@@ -1,7 +1,7 @@
 {
   "name": "decap-cms-media-library-uploadcare",
   "description": "Uploadcare integration for Decap CMS",
-  "version": "3.0.2",
+  "version": "3.1.0",
   "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-media-library-uploadcare",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
   "module": "dist/esm/index.js",
@@ -22,6 +22,7 @@
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
   },
   "dependencies": {
+    "immutable": "^3.7.6",
     "uploadcare-widget": "^3.7.0",
     "uploadcare-widget-tab-effects": "^1.4.0"
   }
