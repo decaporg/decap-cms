@@ -236,6 +236,21 @@ async function getMediaFilesForUpload({
   return transformImage(file, path, mediaProcessing!);
 }
 
+async function getMediaFileForUpload({
+  file,
+  path,
+  config,
+  field,
+}: {
+  file: File;
+  path: string;
+  config: State['config'];
+  field?: EntryField;
+}) {
+  const [mediaFile] = await getMediaFilesForUpload({ file, path, config, field });
+  return mediaFile;
+}
+
 function getUploadFileName(
   fileName: string,
   file: File,
@@ -284,16 +299,22 @@ export function persistMedia(file: File, opts: MediaOptions = {}) {
     try {
       let assetProxies: { file: File; assetProxy: AssetProxy }[];
       if (integration) {
+        const mediaFile = await getMediaFileForUpload({
+          file,
+          path: fileName,
+          config: state.config,
+          field,
+        });
         try {
           const provider = getIntegrationProvider(
             state.integrations,
             backend.getToken,
             integration,
           );
-          const response = await provider.upload(file, privateUpload);
+          const response = await provider.upload(mediaFile.file, privateUpload);
           assetProxies = [
             {
-              file,
+              file: mediaFile.file,
               assetProxy: createAssetProxy({
                 url: response.asset.url,
                 path: response.asset.url,
@@ -303,10 +324,10 @@ export function persistMedia(file: File, opts: MediaOptions = {}) {
         } catch (error) {
           assetProxies = [
             {
-              file,
+              file: mediaFile.file,
               assetProxy: createAssetProxy({
-                file,
-                path: fileName,
+                file: mediaFile.file,
+                path: mediaFile.path,
               }),
             },
           ];

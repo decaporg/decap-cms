@@ -119,15 +119,27 @@ describe('imageTransformations', () => {
   });
 
   describe('shouldTransformImage', () => {
-    it('requires config and a non-svg image', () => {
+    it('requires config and a supported image format', () => {
       const config = { format: 'jpeg' as const, width: null, height: null, aspectRatio: null };
 
       expect(shouldTransformImage(new File([], 'image.jpg', { type: 'image/jpeg' }), config)).toBe(
         true,
       );
+      expect(shouldTransformImage(new File([], 'image.png', { type: 'image/png' }), config)).toBe(
+        true,
+      );
+      expect(shouldTransformImage(new File([], 'image.webp', { type: 'image/webp' }), config)).toBe(
+        true,
+      );
       expect(
         shouldTransformImage(new File([], 'image.svg', { type: 'image/svg+xml' }), config),
       ).toBe(false);
+      expect(shouldTransformImage(new File([], 'image.gif', { type: 'image/gif' }), config)).toBe(
+        false,
+      );
+      expect(shouldTransformImage(new File([], 'image.avif', { type: 'image/avif' }), config)).toBe(
+        false,
+      );
       expect(
         shouldTransformImage(new File([], 'file.pdf', { type: 'application/pdf' }), config),
       ).toBe(false);
@@ -171,8 +183,8 @@ describe('imageTransformations', () => {
 
   describe('transformImage', () => {
     it('encodes webp with jSquash and strips metadata by re-encoding', async () => {
-      const file = new File(['original'], 'kittens.jpg', { type: 'image/jpeg' });
-      const files = await transformImage(file, 'static/media/kittens.jpg', {
+      const file = new File(['original'], 'Kitten Photo.JPG', { type: 'image/jpeg' });
+      const files = await transformImage(file, 'static/media/kitten-photo.jpg', {
         format: 'webp',
         quality: 0.8,
         width: 160,
@@ -181,9 +193,9 @@ describe('imageTransformations', () => {
       });
 
       expect(files).toHaveLength(1);
-      expect(files[0].file.name).toBe('kittens.webp');
+      expect(files[0].file.name).toBe('kitten-photo.webp');
       expect(files[0].file.type).toBe('image/webp');
-      expect(files[0].path).toBe('static/media/kittens.webp');
+      expect(files[0].path).toBe('static/media/kitten-photo.webp');
       expect(mockDrawImage).toHaveBeenCalledWith(
         expect.any(Object),
         0,

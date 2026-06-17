@@ -23,6 +23,8 @@ type FieldMediaProcessingGetter = {
   get: (key: 'media_processing') => CmsMediaProcessing | undefined;
 };
 
+const SUPPORTED_INPUT_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
+
 function hasMediaProcessingGetter(
   field: EntryField | PlainFieldMediaProcessing | undefined,
 ): field is EntryField & FieldMediaProcessingGetter {
@@ -85,7 +87,7 @@ export function getMediaProcessingConfig(
 }
 
 export function shouldTransformImage(file: File, config: MediaProcessingConfig | undefined) {
-  return !!config && file.type.startsWith('image/') && file.type !== 'image/svg+xml';
+  return !!config && SUPPORTED_INPUT_TYPES.has(file.type.toLowerCase());
 }
 
 function getMimeType(format: string) {
@@ -238,7 +240,8 @@ export async function transformImage(
   originalPath: string,
   config: MediaProcessingConfig,
 ): Promise<ImageTransformationFile[]> {
-  const outputFormat = getOutputFormat(file.name, config);
+  const originalFileName = basename(originalPath);
+  const outputFormat = getOutputFormat(originalFileName, config);
   const mimeType = getMimeType(outputFormat);
   const image = await loadImage(file);
   const crop = getSourceCrop(image.width, image.height, config.aspectRatio);
@@ -266,7 +269,7 @@ export async function transformImage(
           config.quality,
         )
       : await encodeCanvas(canvas, outputFormat, config.quality);
-  const fileName = getMediaProcessingFileName(file.name, config);
+  const fileName = getMediaProcessingFileName(originalFileName, config);
   const transformedFile = new File([encoded], fileName, { type: mimeType });
 
   return [{ file: transformedFile, path: getProcessedPath(originalPath, fileName) }];
