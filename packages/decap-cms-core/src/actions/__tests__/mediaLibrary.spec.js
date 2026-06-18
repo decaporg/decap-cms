@@ -301,6 +301,7 @@ describe('mediaLibrary', () => {
         expect(transformImage).toHaveBeenCalledWith(file, 'static/media/kittens.jpg', {
           format: 'webp',
           quality: 0.8,
+          stripMetadata: true,
           width: 400,
           height: null,
           aspectRatio: 16 / 9,
@@ -327,6 +328,7 @@ describe('mediaLibrary', () => {
           media_processing: {
             enabled: true,
             format: { enabled: false, default: 'webp' },
+            strip_metadata: true,
           },
           slug: {
             encoding: 'unicode',
@@ -357,6 +359,7 @@ describe('mediaLibrary', () => {
         expect(transformImage).toHaveBeenCalledWith(file, 'static/media/kittens.jpg', {
           format: undefined,
           quality: undefined,
+          stripMetadata: true,
           width: null,
           height: null,
           aspectRatio: null,
@@ -426,6 +429,7 @@ describe('mediaLibrary', () => {
         expect(transformImage).toHaveBeenCalledWith(file, 'kittens.jpg', {
           format: 'webp',
           quality: 0.8,
+          stripMetadata: true,
           width: 400,
           height: null,
           aspectRatio: 16 / 9,

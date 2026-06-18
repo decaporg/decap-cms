@@ -5,6 +5,7 @@ import type { CmsMediaProcessing, EntryField } from '../types/redux';
 export type MediaProcessingConfig = {
   format?: 'jpeg' | 'webp';
   quality?: number;
+  stripMetadata?: boolean;
   width?: number | null;
   height?: number | null;
   aspectRatio?: number | null;
@@ -80,6 +81,7 @@ export function getMediaProcessingConfig(
       ? (normalizeFormat(mediaProcessing.format.default) as MediaProcessingConfig['format'])
       : undefined,
     quality: mediaProcessing.quality ? mediaProcessing.quality / 100 : undefined,
+    stripMetadata: mediaProcessing.strip_metadata ?? false,
     width: mediaProcessing.width ?? null,
     height: mediaProcessing.height ?? null,
     aspectRatio: parseAspectRatio(mediaProcessing.aspect_ratio),
@@ -87,7 +89,18 @@ export function getMediaProcessingConfig(
 }
 
 export function shouldTransformImage(file: File, config: MediaProcessingConfig | undefined) {
-  return !!config && SUPPORTED_INPUT_TYPES.has(file.type.toLowerCase());
+  if (!config || !SUPPORTED_INPUT_TYPES.has(file.type.toLowerCase())) {
+    return false;
+  }
+
+  return !!(
+    config.format ||
+    config.quality ||
+    config.stripMetadata ||
+    config.width ||
+    config.height ||
+    config.aspectRatio
+  );
 }
 
 function getMimeType(format: string) {

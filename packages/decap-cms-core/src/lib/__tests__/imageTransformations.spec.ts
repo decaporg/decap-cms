@@ -67,6 +67,7 @@ describe('imageTransformations', () => {
       ).toEqual({
         format: 'jpeg',
         quality: 0.9,
+        stripMetadata: true,
         width: 1600,
         height: null,
         aspectRatio: 16 / 9,
@@ -94,6 +95,7 @@ describe('imageTransformations', () => {
       ).toEqual({
         format: 'webp',
         quality: undefined,
+        stripMetadata: false,
         width: null,
         height: null,
         aspectRatio: null,
@@ -111,6 +113,7 @@ describe('imageTransformations', () => {
       expect(getMediaProcessingConfig({}, field)).toEqual({
         format: undefined,
         quality: undefined,
+        stripMetadata: false,
         width: null,
         height: null,
         aspectRatio: null,
@@ -146,6 +149,39 @@ describe('imageTransformations', () => {
       expect(
         shouldTransformImage(new File([], 'image.jpg', { type: 'image/jpeg' }), undefined),
       ).toBe(false);
+    });
+
+    it('requires at least one processing operation', () => {
+      const noProcessing = {
+        format: undefined,
+        quality: undefined,
+        stripMetadata: false,
+        width: null,
+        height: null,
+        aspectRatio: null,
+      };
+
+      expect(
+        shouldTransformImage(new File([], 'image.jpg', { type: 'image/jpeg' }), noProcessing),
+      ).toBe(false);
+      expect(
+        shouldTransformImage(new File([], 'image.jpg', { type: 'image/jpeg' }), {
+          ...noProcessing,
+          stripMetadata: true,
+        }),
+      ).toBe(true);
+      expect(
+        shouldTransformImage(new File([], 'image.jpg', { type: 'image/jpeg' }), {
+          ...noProcessing,
+          quality: 0.8,
+        }),
+      ).toBe(true);
+      expect(
+        shouldTransformImage(new File([], 'image.jpg', { type: 'image/jpeg' }), {
+          ...noProcessing,
+          width: 400,
+        }),
+      ).toBe(true);
     });
   });
 
