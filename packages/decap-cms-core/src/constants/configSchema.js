@@ -64,7 +64,7 @@ const mediaProcessing = {
     aspect_ratio: {
       oneOf: [
         { type: 'number', exclusiveMinimum: 0 },
-        { type: 'string', pattern: '^\\d+(?:\\.\\d+)?[_:]\\d+(?:\\.\\d+)?$' },
+        { type: 'string', pattern: '^\\d+(?:\\.\\d+)?[_:x]\\d+(?:\\.\\d+)?$' },
         { type: 'null' },
       ],
     },

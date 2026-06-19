@@ -111,6 +111,19 @@ describe('config', () => {
       }).not.toThrowError();
     });
 
+    it('should not throw for x-delimited media processing aspect ratio', () => {
+      expect(() => {
+        validateConfig({
+          ...validConfig,
+          media_processing: {
+            enabled: true,
+            width: 1600,
+            aspect_ratio: '16x9',
+          },
+        });
+      }).not.toThrowError();
+    });
+
     it('should not throw for media processing with explicit dimensions and format', () => {
       expect(() => {
         validateConfig({

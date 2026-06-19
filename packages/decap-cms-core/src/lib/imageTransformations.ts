@@ -56,7 +56,7 @@ function parseAspectRatio(aspectRatio: CmsMediaProcessing['aspect_ratio']) {
     return null;
   }
 
-  const match = aspectRatio.match(/^(\d+(?:\.\d+)?)[_:](\d+(?:\.\d+)?)$/);
+  const match = aspectRatio.match(/^(\d+(?:\.\d+)?)[_:x](\d+(?:\.\d+)?)$/);
   if (!match) {
     return null;
   }

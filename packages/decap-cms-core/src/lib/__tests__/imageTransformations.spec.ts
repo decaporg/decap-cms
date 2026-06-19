@@ -74,6 +74,21 @@ describe('imageTransformations', () => {
       });
     });
 
+    it('normalizes x-delimited aspect ratio config', () => {
+      expect(
+        getMediaProcessingConfig({
+          media_processing: {
+            enabled: true,
+            width: 1600,
+            aspect_ratio: '16x9',
+          },
+        }),
+      ).toMatchObject({
+        width: 1600,
+        aspectRatio: 16 / 9,
+      });
+    });
+
     it('uses field config over root config', () => {
       const field = fromJS({
         media_processing: {
