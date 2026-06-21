@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.7.0](https://github.com/decaporg/decap-cms/compare/decap-cms-locales@3.6.0...decap-cms-locales@3.7.0) (2026-06-15)
+
+### Features
+
+- **locales:** add Slovak locale support ([#7844](https://github.com/decaporg/decap-cms/issues/7844)) ([eaace64](https://github.com/decaporg/decap-cms/commit/eaace64271801c0496fc95175802ae66565348f6))
+- **locales:** unify "New entry" button label to "＋ %{collectionLabel}" across all locales ([#7842](https://github.com/decaporg/decap-cms/issues/7842)) ([0e82bc5](https://github.com/decaporg/decap-cms/commit/0e82bc5fbf4670cf64a933e9abda89e7ac3a0637))
+
 # [3.6.0](https://github.com/decaporg/decap-cms/compare/decap-cms-locales@3.5.1...decap-cms-locales@3.6.0) (2026-06-08)
 
 ### Features

@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.7.1](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-util@3.7.0...decap-cms-lib-util@3.7.1) (2026-06-15)
+
+### Bug Fixes
+
+- **gitlab:** refresh expired PKCE access tokens ([#7854](https://github.com/decaporg/decap-cms/issues/7854)) ([18be93a](https://github.com/decaporg/decap-cms/commit/18be93a85804bb49058cbbc1a18f128c1cee14da))
+
 # [3.7.0](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-util@3.6.0...decap-cms-lib-util@3.7.0) (2026-06-08)
 
 ### Bug Fixes

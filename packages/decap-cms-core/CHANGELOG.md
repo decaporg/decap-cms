@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.16.0](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.15.0...decap-cms-core@3.16.0) (2026-06-15)
+
+### Features
+
+- **locales:** unify "New entry" button label to "＋ %{collectionLabel}" across all locales ([#7842](https://github.com/decaporg/decap-cms/issues/7842)) ([0e82bc5](https://github.com/decaporg/decap-cms/commit/0e82bc5fbf4670cf64a933e9abda89e7ac3a0637))
+
 # [3.15.0](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.14.0...decap-cms-core@3.15.0) (2026-06-08)
 
 ### Bug Fixes
