@@ -11,7 +11,6 @@ import {
   DropdownItem,
   StyledDropdownButton,
   colors,
-  lengths,
   shadows,
   buttons,
   zIndex,
@@ -33,12 +32,14 @@ function AppHeader(props) {
     <header
       css={css`
         ${shadows.dropMain};
-        position: sticky;
         width: 100%;
-        top: 0;
         background-color: ${colors.foreground};
         z-index: ${zIndex.zIndex300};
-        height: ${lengths.topBarHeight};
+
+        @media (min-height: 500px) {
+          position: sticky;
+          top: 0;
+        }
       `}
       {...props}
     />
@@ -47,11 +48,15 @@ function AppHeader(props) {
 
 const AppHeaderContent = styled.div`
   display: flex;
-  justify-content: space-between;
-  min-width: 800px;
-  max-width: 1440px;
+  flex-direction: column-reverse;
   padding: 0 12px;
   margin: 0 auto;
+
+  @media (min-width: 800px) {
+    max-width: 1440px;
+    flex-direction: row;
+    justify-content: space-between;
+  }
 `;
 
 const AppHeaderButton = styled.button`
@@ -59,14 +64,27 @@ const AppHeaderButton = styled.button`
   background: none;
   color: #7b8290;
   font-family: inherit;
-  font-size: 16px;
+  font-size: 13px;
+  line-height: 1;
   font-weight: 500;
   display: inline-flex;
-  padding: 16px 20px;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0 10px 10px;
   align-items: center;
+  text-align: center;
+
+  @media (min-width: 400px) {
+    flex-direction: row;
+    gap: 4px;
+  }
+
+  @media (min-width: 500px) {
+    font-size: 16px;
+    padding: 16px 20px;
+  }
 
   ${Icon} {
-    margin-right: 4px;
     color: #b3b9c4;
   }
 
@@ -94,14 +112,16 @@ const AppHeaderButton = styled.button`
 const AppHeaderNavLink = AppHeaderButton.withComponent(NavLink);
 
 const AppHeaderActions = styled.div`
-  display: inline-flex;
+  display: flex;
   align-items: center;
+  justify-content: space-between;
 `;
 
 const AppHeaderQuickNewButton = styled(StyledDropdownButton)`
   ${buttons.button};
   ${buttons.medium};
   ${buttons.gray};
+  white-space: nowrap;
   margin-right: 8px;
 
   &:after {
@@ -113,6 +133,11 @@ const AppHeaderNavList = styled.ul`
   display: flex;
   margin: 0;
   list-style: none;
+  justify-content: space-around;
+
+  @media (min-width: 800px) {
+    justify-content: flex-start;
+  }
 `;
 
 const AppHeaderLogo = styled.li`

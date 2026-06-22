@@ -3,11 +3,27 @@
 exports[`Collection should render connected component 1`] = `
 <DocumentFragment>
   .emotion-0 {
-  margin: 28px 18px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  gap: 20px;
+  margin: 12px 8px;
 }
 
-.emotion-2 {
-  padding-left: 280px;
+@media (min-width: 500px) {
+  .emotion-0 {
+    margin: 28px 18px;
+  }
+}
+
+@media (min-width: 800px) {
+  .emotion-2 {
+    padding-left: 280px;
+  }
 }
 
 <div
@@ -45,11 +61,27 @@ exports[`Collection should render connected component 1`] = `
 exports[`Collection should render with collection with create url 1`] = `
 <DocumentFragment>
   .emotion-0 {
-  margin: 28px 18px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  gap: 20px;
+  margin: 12px 8px;
 }
 
-.emotion-2 {
-  padding-left: 280px;
+@media (min-width: 500px) {
+  .emotion-0 {
+    margin: 28px 18px;
+  }
+}
+
+@media (min-width: 800px) {
+  .emotion-2 {
+    padding-left: 280px;
+  }
 }
 
 <div
@@ -81,11 +113,27 @@ exports[`Collection should render with collection with create url 1`] = `
 exports[`Collection should render with collection with create url and path 1`] = `
 <DocumentFragment>
   .emotion-0 {
-  margin: 28px 18px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  gap: 20px;
+  margin: 12px 8px;
 }
 
-.emotion-2 {
-  padding-left: 280px;
+@media (min-width: 500px) {
+  .emotion-0 {
+    margin: 28px 18px;
+  }
+}
+
+@media (min-width: 800px) {
+  .emotion-2 {
+    padding-left: 280px;
+  }
 }
 
 <div
@@ -119,11 +167,27 @@ exports[`Collection should render with collection with create url and path 1`] =
 exports[`Collection should render with collection without create url 1`] = `
 <DocumentFragment>
   .emotion-0 {
-  margin: 28px 18px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  gap: 20px;
+  margin: 12px 8px;
 }
 
-.emotion-2 {
-  padding-left: 280px;
+@media (min-width: 500px) {
+  .emotion-0 {
+    margin: 28px 18px;
+  }
+}
+
+@media (min-width: 800px) {
+  .emotion-2 {
+    padding-left: 280px;
+  }
 }
 
 <div

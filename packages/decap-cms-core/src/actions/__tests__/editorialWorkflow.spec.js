@@ -8,9 +8,7 @@ import * as actions from '../editorialWorkflow';
 jest.mock('../../backend');
 jest.mock('../../valueObjects/AssetProxy');
 jest.mock('decap-cms-lib-util');
-jest.mock('uuid', () => {
-  return { v4: jest.fn().mockReturnValue('000000000000000000000') };
-});
+global.crypto.randomUUID = jest.fn().mockReturnValue('000000000000000000000');
 
 const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);
@@ -32,7 +30,9 @@ describe('editorialWorkflow actions', () => {
       };
 
       const store = mockStore({
-        config: fromJS({}),
+        config: fromJS({
+          editor: { notes: true },
+        }),
         collections: fromJS({
           posts: { name: 'posts' },
         }),
@@ -79,7 +79,7 @@ describe('editorialWorkflow actions', () => {
   });
 
   describe('publishUnpublishedEntry', () => {
-    it('should publish unpublished entry and report success', () => {
+    it('should publish unpublished entry and report success', async () => {
       const { currentBackend } = require('../../backend');
 
       const entry = {};
@@ -87,6 +87,7 @@ describe('editorialWorkflow actions', () => {
         publishUnpublishedEntry: jest.fn().mockResolvedValue(),
         getEntry: jest.fn().mockResolvedValue(entry),
         getMedia: jest.fn().mockResolvedValue([]),
+        getNotes: jest.fn().mockResolvedValue([]),
       };
 
       const store = mockStore({

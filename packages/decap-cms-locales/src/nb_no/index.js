@@ -40,7 +40,8 @@ const nb_no = {
     collectionTop: {
       sortBy: 'Sorter etter',
       viewAs: 'Vis som',
-      newButton: 'Ny %{collectionLabel}',
+      newButton: '＋ %{collectionLabel}',
+      newButtonAriaLabel: 'Opprett innlegg av typen %{collectionLabel}',
       ascending: 'Stigende',
       descending: 'Synkende',
     },

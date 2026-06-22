@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.6.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-relation@3.5.2...decap-cms-widget-relation@3.6.0) (2026-06-08)
+
+### Bug Fixes
+
+- remove unused dependencies and specify missing dependencies ([#7833](https://github.com/decaporg/decap-cms/issues/7833)) ([e324a14](https://github.com/decaporg/decap-cms/commit/e324a142f7f0ba63c760b2e8524d971c35200f87))
+
 ## [3.5.2](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-relation@3.5.1...decap-cms-widget-relation@3.5.2) (2025-07-22)
 
 **Note:** Version bump only for package decap-cms-widget-relation

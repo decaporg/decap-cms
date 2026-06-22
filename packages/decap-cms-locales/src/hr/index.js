@@ -2,15 +2,15 @@ const hr = {
   auth: {
     login: 'Prijava',
     loggingIn: 'Prijava u tijeku...',
-    loginWithNetlifyIdentity: 'Prijava sa Netlify računom',
-    loginWithAzure: 'Prijava za Azure računom',
-    loginWithBitbucket: 'Prijava sa Bitbucket računom',
-    loginWithGitHub: 'Prijava sa GitHub računom',
-    loginWithGitLab: 'Prijava sa GitLab računom',
-    loginWithGitea: 'Prijava sa Gitea računom',
+    loginWithNetlifyIdentity: 'Prijava s Netlify računom',
+    loginWithAzure: 'Prijava s Azure računom',
+    loginWithBitbucket: 'Prijava s Bitbucket računom',
+    loginWithGitHub: 'Prijava s GitHub računom',
+    loginWithGitLab: 'Prijava s GitLab računom',
+    loginWithGitea: 'Prijava s Gitea računom',
     errors: {
       email: 'Unesite email.',
-      password: 'Molimo unisite lozinku.',
+      password: 'Molimo unesite lozinku.',
       identitySettings:
         'Nemoguće pristupiti postavkama identita. Kod korištenja git-gateway backenda morate uključiti "Identity service" te "Git Gateway"',
     },
@@ -41,13 +41,16 @@ const hr = {
       searchIn: 'Pretraži u',
     },
     collectionTop: {
-      sortBy: 'Sortiraj',
+      sortBy: 'Sortiraj po',
       viewAs: 'Pogledaj kao',
-      newButton: 'Nova %{collectionLabel}',
+      viewAsList: 'Popis',
+      viewAsGrid: 'Mreža',
+      newButton: '＋ %{collectionLabel}',
+      newButtonAriaLabel: 'Stvori unos vrste %{collectionLabel}',
       ascending: 'Uzlazno',
-      descending: 'Silzano',
-      searchResults: 'Rezulatati pretraživanja za "%{searchTerm}"',
-      searchResultsInCollection: 'Rezulatati pretraživanja za "%{searchTerm}" u %{collection}',
+      descending: 'Silazno',
+      searchResults: 'Rezultati pretraživanja za "%{searchTerm}"',
+      searchResultsInCollection: 'Rezultati pretraživanja za "%{searchTerm}" u %{collection}',
       filterBy: 'Filtriraj po',
       groupBy: 'Grupiraj po',
     },
@@ -74,6 +77,7 @@ const hr = {
     editorControl: {
       field: {
         optional: 'opcionalno',
+        widgetLabel: '%{widgetLabel} polje',
       },
     },
     editorControlPane: {
@@ -93,6 +97,9 @@ const hr = {
       },
       i18n: {
         writingInLocale: 'Pisanje na %{locale}',
+        copyFromLocale: 'Popuni iz drugog jezika',
+        copyFromLocaleConfirm:
+          'Želite li popuniti podatke iz %{locale} jezika?\nSav postojeći sadržaj bit će prepisan.',
       },
     },
     editor: {
@@ -114,6 +121,11 @@ const hr = {
       loadingEntry: 'Učitavanje unosa...',
       confirmLoadBackup: 'Lokalna kopija je dohvaćena za ovaj unos, želite li ju koristiti?',
     },
+    editorInterface: {
+      toggleI18n: 'Prebaci i18n',
+      togglePreview: 'Prebaci pregled',
+      toggleScrollSync: 'Sinkroniziraj pomicanje',
+    },
     editorToolbar: {
       publishing: 'Objavljivanje...',
       publish: 'Objavi',
@@ -129,6 +141,10 @@ const hr = {
       deleteEntry: 'Obriši unos',
       saving: 'Spremanje...',
       save: 'Spremi',
+      statusInfoTooltipDraft:
+        'Status unosa je postavljen na skicu. Da biste ga finalizirali i poslali na pregled, postavite status na „U pregledu“',
+      statusInfoTooltipInReview:
+        'Unos je u pregledu, nisu potrebne daljnje radnje. Međutim, još uvijek možete napraviti dodatne promjene dok je u pregledu.',
       deleting: 'Brisanje...',
       updating: 'Ažuriranje...',
       status: 'Status: %{status}',
@@ -147,6 +163,7 @@ const hr = {
       markdown: {
         bold: 'Podebljano',
         italic: 'Kurziv',
+        strikethrough: 'Precrtano',
         code: 'Kod',
         link: 'Link',
         linkPrompt: 'Unesi URL linka',
@@ -157,16 +174,32 @@ const hr = {
         addComponent: 'Dodaj komponentu',
         richText: 'Bogati tekst',
         markdown: 'Markdown',
+        toggleMode: {
+          rich: 'Prebaci na način bogatog teksta',
+          markdown: 'Prebaci na način Markdown',
+        },
       },
       image: {
         choose: 'Odaberi sliku',
+        chooseMultiple: 'Odaberi više slika',
+        chooseUrl: 'Unesi URL',
+        replaceUrl: 'Zamijeni s URL-om',
+        promptUrl: 'Unesi URL slike',
         chooseDifferent: 'Odaberi drugu sliku',
-        remove: 'Izbriši sliku',
+        addMore: 'Dodaj više slika',
+        remove: 'Ukloni sliku',
+        removeAll: 'Ukloni sve slike',
       },
       file: {
         choose: 'Odaberi datoteku',
+        chooseUrl: 'Unesi URL',
+        chooseMultiple: 'Odaberi više datoteka',
+        replaceUrl: 'Zamijeni s URL-om',
+        promptUrl: 'Unesi URL datoteke',
         chooseDifferent: 'Odaberi drugu datoteku',
+        addMore: 'Dodaj više datoteka',
         remove: 'Obriši datoteku',
+        removeAll: 'Obriši sve datoteke',
       },
       unknownControl: {
         noControl: "Kontrola nije pronađena za widget '%{widget}'.",
@@ -185,12 +218,26 @@ const hr = {
       datetime: {
         now: 'Sad',
         clear: 'Očisti',
+        setToNow: 'Postavi %{fieldLabel} na upravosada',
+      },
+      list: {
+        add: 'Dodaj %{item}',
+        addType: 'Dodaj %{item}',
+      },
+      object: {
+        expand: 'Proširi',
+        collapse: 'Sažmi',
       },
     },
   },
   mediaLibrary: {
     mediaLibraryCard: {
       draft: 'Skica',
+      copy: 'Kopiraj',
+      copyUrl: 'Kopiraj URL',
+      copyPath: 'Kopiraj put',
+      copyName: 'Kopiraj naziv',
+      copied: 'Kopirano',
     },
     mediaLibrary: {
       onDelete: 'Jeste li sigurni da želite obrisati odabrane medijske datoteke?',
@@ -199,8 +246,9 @@ const hr = {
     },
     mediaLibraryModal: {
       loading: 'Učitavanje...',
+      close: 'Zatvori',
       noResults: 'Nema rezultata.',
-      noAssetsFound: 'Sredstva nisu pronađena.',
+      noAssetsFound: 'Medijska sredstva nisu pronađena.',
       noImagesFound: 'Slike nisu pronađene.',
       private: 'Privatno ',
       images: 'Slike',
@@ -233,6 +281,7 @@ const hr = {
     },
     settingsDropdown: {
       logOut: 'Odjava',
+      account: 'Opcije računa',
     },
     toast: {
       onFailToLoadEntries: 'Neuspjelo dohvaćanje unosa: %{details}',

@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.4.0](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-widgets@3.3.0...decap-cms-lib-widgets@3.4.0) (2026-06-01)
+
+### Features
+
+- **slugs:** allow filters in template strings ([#6690](https://github.com/decaporg/decap-cms/issues/6690)) ([25db74b](https://github.com/decaporg/decap-cms/commit/25db74b710b351258d2d39385d1f8254821544e3)), closes [#4783](https://github.com/decaporg/decap-cms/issues/4783)
+
 # [3.3.0](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-widgets@3.2.1...decap-cms-lib-widgets@3.3.0) (2025-12-18)
 
 ### Bug Fixes

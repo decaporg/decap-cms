@@ -43,7 +43,8 @@ const bg = {
     collectionTop: {
       sortBy: 'Сортирай по',
       viewAs: 'Виж като',
-      newButton: 'Създай %{collectionLabel}',
+      newButton: '＋ %{collectionLabel}',
+      newButtonAriaLabel: 'Създаване на запис от тип %{collectionLabel}',
       ascending: 'Възходящ',
       descending: 'Низходящ',
       searchResults: 'Ресултати от търсенето за "%{searchTerm}"',
