@@ -9,6 +9,7 @@ import {
 } from '../backend';
 import { getBackend } from '../lib/registry';
 import { FOLDER, FILES } from '../constants/collectionTypes';
+import { EDITORIAL_WORKFLOW } from '../constants/publishModes';
 
 jest.mock('../lib/registry');
 jest.mock('decap-cms-lib-util');
@@ -422,6 +423,7 @@ describe('Backend', () => {
 
       backend.currentUser = jest.fn().mockResolvedValue(user);
       backend.invokePreSaveEvent = jest.fn().mockReturnValueOnce(entry);
+      backend.listAllEntries = jest.fn().mockResolvedValue([{ slug: 'existing' }]);
 
       await expect(
         backend.persistEntry({
@@ -429,9 +431,106 @@ describe('Backend', () => {
           collection,
           entryDraft,
           assetProxies: [],
-          usedSlugs: List(['existing']),
+          usedSlugs: List(),
         }),
       ).rejects.toThrow('Entry limit of 1 reached for collection posts');
+
+      expect(backend.listAllEntries).toHaveBeenCalledWith(collection);
+      expect(implementation.persistEntry).toHaveBeenCalledTimes(0);
+    });
+
+    it('should include unpublished workflow entries when checking collection limits', async () => {
+      const implementation = {
+        init: jest.fn(() => implementation),
+        persistEntry: jest.fn(() => implementation),
+        unpublishedEntries: jest.fn().mockResolvedValue(['posts/draft']),
+        unpublishedEntry: jest.fn().mockResolvedValue({
+          collection: 'posts',
+          slug: 'draft',
+          status: 'draft',
+          diffs: [],
+          updatedAt: '',
+        }),
+      };
+
+      const config = {
+        backend: {
+          commit_messages: 'commit-messages',
+        },
+        publish_mode: EDITORIAL_WORKFLOW,
+      };
+      const collection = Map({
+        name: 'posts',
+        type: FOLDER,
+        create: true,
+        limit: 1,
+      });
+      const entry = Map({
+        data: Map({}),
+        newRecord: true,
+      });
+      const entryDraft = Map({
+        entry,
+      });
+
+      const backend = new Backend(implementation, { config, backendName: 'github' });
+
+      backend.invokePreSaveEvent = jest.fn().mockReturnValueOnce(entry);
+      backend.listAllEntries = jest.fn().mockResolvedValue([]);
+
+      await expect(
+        backend.persistEntry({
+          config,
+          collection,
+          entryDraft,
+          assetProxies: [],
+          usedSlugs: List(),
+        }),
+      ).rejects.toThrow('Entry limit of 1 reached for collection posts');
+
+      expect(implementation.unpublishedEntries).toHaveBeenCalledTimes(1);
+      expect(implementation.persistEntry).toHaveBeenCalledTimes(0);
+    });
+
+    it('should use complete published entries instead of loaded slugs when checking limits', async () => {
+      const implementation = {
+        init: jest.fn(() => implementation),
+        persistEntry: jest.fn(() => implementation),
+      };
+
+      const config = {
+        backend: {
+          commit_messages: 'commit-messages',
+        },
+      };
+      const collection = Map({
+        name: 'posts',
+        type: FOLDER,
+        create: true,
+        limit: 2,
+      });
+      const entry = Map({
+        data: Map({}),
+        newRecord: true,
+      });
+      const entryDraft = Map({
+        entry,
+      });
+
+      const backend = new Backend(implementation, { config, backendName: 'github' });
+
+      backend.invokePreSaveEvent = jest.fn().mockReturnValueOnce(entry);
+      backend.listAllEntries = jest.fn().mockResolvedValue([{ slug: 'one' }, { slug: 'two' }]);
+
+      await expect(
+        backend.persistEntry({
+          config,
+          collection,
+          entryDraft,
+          assetProxies: [],
+          usedSlugs: List(['one']),
+        }),
+      ).rejects.toThrow('Entry limit of 2 reached for collection posts');
 
       expect(implementation.persistEntry).toHaveBeenCalledTimes(0);
     });

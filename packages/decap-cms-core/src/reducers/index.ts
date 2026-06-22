@@ -1,4 +1,4 @@
-import { List } from 'immutable';
+import { List, Set } from 'immutable';
 
 import auth from './auth';
 import config from './config';
@@ -16,6 +16,7 @@ import search from './search';
 import status from './status';
 import notifications from './notifications';
 import { FOLDER } from '../constants/collectionTypes';
+import { EDITORIAL_WORKFLOW } from '../constants/publishModes';
 
 import type { Status } from '../constants/publishModes';
 import type { State, Collection } from '../types/redux';
@@ -95,13 +96,23 @@ export function selectCanCreateNewEntry(state: State, collectionName: string) {
     return true;
   }
 
-  if (!state.entries.getIn(['pages', collectionName, 'ids'])) {
+  const isFetching = state.entries.getIn(['pages', collectionName, 'isFetching'], false);
+  const publishedIds = state.entries.getIn(['pages', collectionName, 'ids']);
+  if (isFetching && !publishedIds) {
     return false;
   }
 
-  const entryCount = fromEntries.selectPublishedSlugs(state.entries, collectionName).size;
+  let entrySlugs = Set<string>(fromEntries.selectPublishedSlugs(state.entries, collectionName));
+  const unpublishedSlugs =
+    state.config?.publish_mode === EDITORIAL_WORKFLOW && state.editorialWorkflow
+      ? fromEditorialWorkflow.selectUnpublishedSlugs(state.editorialWorkflow, collectionName)
+      : null;
 
-  return entryCount < limit;
+  if (unpublishedSlugs) {
+    entrySlugs = entrySlugs.union((unpublishedSlugs as { toArray: () => string[] }).toArray());
+  }
+
+  return entrySlugs.size < limit;
 }
 
 export function selectIntegration(state: State, collection: string | null, hook: string) {
