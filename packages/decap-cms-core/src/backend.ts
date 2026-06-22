@@ -519,6 +519,31 @@ export class Backend {
     return uniqueSlug;
   }
 
+  async entrySlugsForCollectionLimit(
+    collection: Collection,
+    config: CmsConfig,
+    usedSlugs: List<string>,
+  ) {
+    const publishedEntries = await this.listAllEntries(collection);
+    let entrySlugs = Set<string>(publishedEntries.map(entry => entry.slug)).union(usedSlugs);
+
+    if (selectUseWorkflow(config)) {
+      const unpublishedEntryIds = await this.implementation.unpublishedEntries();
+      const unpublishedEntries = await Promise.all(
+        unpublishedEntryIds.map(id => this.implementation.unpublishedEntry({ id })),
+      );
+      const collectionName = collection.get('name');
+
+      unpublishedEntries.forEach(entry => {
+        if (entry.collection === collectionName) {
+          entrySlugs = entrySlugs.add(entry.slug);
+        }
+      });
+    }
+
+    return entrySlugs;
+  }
+
   processEntries(loadedEntries: ImplementationEntry[], collection: Collection) {
     const entries = loadedEntries.map(loadedEntry =>
       createEntry(
@@ -1244,7 +1269,7 @@ export class Backend {
         collection.get('type') === FOLDER &&
         limit !== undefined &&
         limit !== null &&
-        usedSlugs.size >= limit
+        (await this.entrySlugsForCollectionLimit(collection, config, usedSlugs)).size >= limit
       ) {
         throw new Error(`Entry limit of ${limit} reached for collection ${collection.get('name')}`);
       }

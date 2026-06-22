@@ -1,11 +1,29 @@
 import { Map, fromJS } from 'immutable';
 
 import { FOLDER } from '../../constants/collectionTypes';
+import { EDITORIAL_WORKFLOW } from '../../constants/publishModes';
 import { selectCanCreateNewEntry } from '../index';
 
 describe('reducers', () => {
   describe('selectCanCreateNewEntry', () => {
-    it('does not allow limited folder collection creation before entries load', () => {
+    it('allows limited folder collection creation before entries load', () => {
+      const collection = fromJS({
+        name: 'posts',
+        type: FOLDER,
+        create: true,
+        limit: 3,
+      });
+      const state = {
+        collections: Map({ posts: collection }),
+        entries: fromJS({
+          pages: {},
+        }),
+      };
+
+      expect(selectCanCreateNewEntry(state, 'posts')).toBe(true);
+    });
+
+    it('does not allow limited folder collection creation while entries are loading', () => {
       const collection = fromJS({
         name: 'posts',
         type: FOLDER,
@@ -54,6 +72,38 @@ describe('reducers', () => {
                 pattern: 'news',
               },
             },
+          },
+        }),
+      };
+
+      expect(selectCanCreateNewEntry(state, 'posts')).toBe(false);
+    });
+
+    it('counts unpublished workflow entries against collection limits', () => {
+      const collection = fromJS({
+        name: 'posts',
+        type: FOLDER,
+        create: true,
+        limit: 3,
+      });
+      const state = {
+        config: {
+          publish_mode: EDITORIAL_WORKFLOW,
+        },
+        collections: Map({ posts: collection }),
+        entries: fromJS({
+          pages: {
+            posts: {
+              ids: ['one', 'two'],
+            },
+          },
+        }),
+        editorialWorkflow: fromJS({
+          entities: {
+            'posts.three': { slug: 'three' },
+          },
+          pages: {
+            ids: ['three'],
           },
         }),
       };
