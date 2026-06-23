@@ -7,6 +7,7 @@ exports[`EntriesCollection should render connected component 1`] = `
     collections="Map { \\"name\\": \\"pages\\", \\"label\\": \\"Pages\\", \\"folder\\": \\"src/pages\\" }"
     cursor="[object Object]"
     entries="List [ Map { \\"slug\\": \\"index\\", \\"path\\": \\"src/pages/index.md\\", \\"data\\": Map { \\"title\\": \\"Root\\" } }, Map { \\"slug\\": \\"dir1/index\\", \\"path\\": \\"src/pages/dir1/index.md\\", \\"data\\": Map { \\"title\\": \\"File 1\\" } }, Map { \\"slug\\": \\"dir2/index\\", \\"path\\": \\"src/pages/dir2/index.md\\", \\"data\\": Map { \\"title\\": \\"File 2\\" } } ]"
+    sortfields=""
   />
 </DocumentFragment>
 `;
@@ -18,6 +19,7 @@ exports[`EntriesCollection should render show only immediate children for nested
     collections="Map { \\"name\\": \\"pages\\", \\"label\\": \\"Pages\\", \\"folder\\": \\"src/pages\\", \\"nested\\": Map { \\"depth\\": 10, \\"subfolders\\": false } }"
     cursor="[object Object]"
     entries="List [ Map { \\"slug\\": \\"index\\", \\"path\\": \\"src/pages/index.md\\", \\"data\\": Map { \\"title\\": \\"Root\\" } } ]"
+    sortfields=""
   />
 </DocumentFragment>
 `;
@@ -30,6 +32,7 @@ exports[`EntriesCollection should render with applied filter term for nested col
     cursor="[object Object]"
     entries="List [ Map { \\"slug\\": \\"dir3/dir4/index\\", \\"path\\": \\"src/pages/dir3/dir4/index.md\\", \\"data\\": Map { \\"title\\": \\"File 4\\" } } ]"
     filterterm="dir3/dir4"
+    sortfields=""
   />
 </DocumentFragment>
 `;

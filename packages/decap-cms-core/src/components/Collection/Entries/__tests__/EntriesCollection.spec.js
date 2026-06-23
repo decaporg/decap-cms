@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import { fromJS } from 'immutable';
+import { Set, fromJS } from 'immutable';
 import configureStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
 
@@ -8,8 +8,12 @@ import ConnectedEntriesCollection, {
   EntriesCollection,
   filterNestedEntries,
 } from '../EntriesCollection';
+import Entries from '../Entries';
 
-jest.mock('../Entries', () => 'mock-entries');
+jest.mock('../Entries', () => {
+  const React = require('react');
+  return jest.fn(props => <mock-entries {...props} />);
+});
 
 const middlewares = [];
 const mockStore = configureStore(middlewares);
@@ -100,6 +104,31 @@ describe('EntriesCollection', () => {
     const { asFragment } = render(<EntriesCollection {...props} entries={entries} />);
 
     expect(asFragment()).toMatchSnapshot();
+  });
+
+  it('should render unpublished entries once when entries are grouped', () => {
+    Entries.mockClear();
+
+    const entries = fromJS([
+      { slug: 'one', path: 'src/pages/one.md' },
+      { slug: 'two', path: 'src/pages/two.md' },
+    ]);
+    const groups = [
+      { id: 'Groupone', label: 'Group', value: 'one', paths: Set(['src/pages/one.md']) },
+      { id: 'Grouptwo', label: 'Group', value: 'two', paths: Set(['src/pages/two.md']) },
+    ];
+
+    const { container } = render(
+      <EntriesCollection {...props} entries={entries} groups={groups} />,
+    );
+    const renderedEntries = container.querySelectorAll('mock-entries');
+
+    expect(renderedEntries).toHaveLength(3);
+    expect(Entries).toHaveBeenCalledTimes(3);
+    expect(Entries.mock.calls[0][0].showUnpublishedEntries).toBe(false);
+    expect(Entries.mock.calls[1][0].showUnpublishedEntries).toBe(false);
+    expect(Entries.mock.calls[2][0].showPublishedEntries).toBe(false);
+    expect(Entries.mock.calls[2][0].entries).toBe(entries);
   });
 
   it('should render connected component', () => {
