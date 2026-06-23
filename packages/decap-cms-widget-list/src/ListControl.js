@@ -643,6 +643,8 @@ export default class ListControl extends React.Component {
       parentIds,
       forID,
       t,
+      listIndexes: indexes,
+      fieldCondition,
     } = this.props;
 
     const { itemsCollapsed, keys } = this.state;
@@ -650,6 +652,7 @@ export default class ListControl extends React.Component {
     const key = keys[index];
     let field = this.props.field;
     const hasError = this.hasError(index);
+    const listIndexes = indexes?.length ? indexes.concat(index) : [index];
     const isVariableTypesList = this.getValueType() === valueTypes.MIXED;
     if (isVariableTypesList) {
       field = getTypedFieldForValue(field, item);
@@ -714,6 +717,8 @@ export default class ListControl extends React.Component {
               data-testid={`object-control-${key}`}
               hasError={hasError}
               parentIds={[...parentIds, forID, key]}
+              listIndexes={listIndexes}
+              fieldCondition={fieldCondition}
             />
           )}
         </ClassNames>
