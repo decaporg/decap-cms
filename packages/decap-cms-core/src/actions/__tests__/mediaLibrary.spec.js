@@ -6,6 +6,16 @@ import { insertMedia, persistMedia, deleteMedia } from '../mediaLibrary';
 
 jest.mock('../../backend');
 jest.mock('../waitUntil');
+jest.mock('../../integrations', () => ({
+  getIntegrationProvider: jest.fn(),
+}));
+jest.mock('../../lib/imageTransformations', () => {
+  const actual = jest.requireActual('../../lib/imageTransformations');
+  return {
+    ...actual,
+    transformImage: jest.fn(),
+  };
+});
 jest.mock('decap-cms-lib-util', () => {
   const lib = jest.requireActual('decap-cms-lib-util');
   return {
@@ -74,6 +84,7 @@ describe('mediaLibrary', () => {
 
     beforeEach(() => {
       jest.clearAllMocks();
+      window.confirm = jest.fn(() => true);
     });
 
     it('should not persist media when editing draft', () => {
@@ -146,7 +157,7 @@ describe('mediaLibrary', () => {
         }),
         integrations: Map(),
         mediaLibrary: Map({
-          files: List(),
+          files: List([{ name: 'kittens.jpg' }]),
         }),
         entryDraft: Map({
           entry: Map(),
@@ -237,6 +248,208 @@ describe('mediaLibrary', () => {
             path: 'static/media/abc_def_eaco_.png',
           }),
         );
+      });
+    });
+
+    it('should persist a processed image as the selected media', () => {
+      const { transformImage } = require('../../lib/imageTransformations');
+      backend.persistMedia.mockImplementation((_config, assetProxy) => ({
+        id: assetProxy.path,
+        path: assetProxy.path,
+      }));
+
+      const store = mockStore({
+        config: {
+          media_folder: 'static/media',
+          media_processing: {
+            enabled: true,
+            format: { enabled: true, default: 'webp' },
+            quality: 80,
+            strip_metadata: true,
+            width: 400,
+            height: null,
+            aspect_ratio: '16_9',
+          },
+          slug: {
+            encoding: 'unicode',
+            clean_accents: false,
+            sanitize_replacement: '-',
+          },
+        },
+        collections: Map({
+          posts: Map({ name: 'posts' }),
+        }),
+        integrations: Map(),
+        mediaLibrary: Map({
+          files: List(),
+        }),
+        entryDraft: Map({
+          entry: Map(),
+        }),
+      });
+
+      const file = new File(['original'], 'kittens.jpg', { type: 'image/jpeg' });
+      const processed = new File(['processed'], 'kittens.webp', { type: 'image/webp' });
+
+      transformImage.mockResolvedValue([{ file: processed, path: 'static/media/kittens.webp' }]);
+
+      return store.dispatch(persistMedia(file)).then(() => {
+        const actions = store.getActions();
+        const addAssetActions = actions.filter(action => action.type === 'ADD_ASSET');
+        const persistedActions = actions.filter(action => action.type === 'MEDIA_PERSIST_SUCCESS');
+
+        expect(transformImage).toHaveBeenCalledWith(file, 'static/media/kittens.jpg', {
+          format: 'webp',
+          quality: 0.8,
+          stripMetadata: true,
+          width: 400,
+          height: null,
+          aspectRatio: 16 / 9,
+        });
+        expect(addAssetActions.map(action => action.payload.path)).toEqual([
+          'static/media/kittens.webp',
+        ]);
+        expect(persistedActions.map(action => action.payload.file.path)).toEqual([
+          'static/media/kittens.webp',
+        ]);
+      });
+    });
+
+    it('should confirm before replacing the original output file when format conversion is disabled', () => {
+      const { transformImage } = require('../../lib/imageTransformations');
+      backend.persistMedia.mockImplementation((_config, assetProxy) => ({
+        id: assetProxy.path,
+        path: assetProxy.path,
+      }));
+
+      const store = mockStore({
+        config: {
+          media_folder: 'static/media',
+          media_processing: {
+            enabled: true,
+            format: { enabled: false, default: 'webp' },
+            strip_metadata: true,
+          },
+          slug: {
+            encoding: 'unicode',
+            clean_accents: false,
+            sanitize_replacement: '-',
+          },
+        },
+        collections: Map({
+          posts: Map({ name: 'posts' }),
+        }),
+        integrations: Map(),
+        mediaLibrary: Map({
+          files: List([{ name: 'kittens.jpg', path: 'static/media/kittens.jpg' }]),
+        }),
+        entryDraft: Map({
+          entry: Map(),
+        }),
+      });
+
+      const file = new File(['original'], 'kittens.jpg', { type: 'image/jpeg' });
+      const processed = new File(['processed'], 'kittens.jpg', { type: 'image/jpeg' });
+
+      transformImage.mockResolvedValue([{ file: processed, path: 'static/media/kittens.jpg' }]);
+
+      return store.dispatch(persistMedia(file)).then(() => {
+        const addAssetActions = store.getActions().filter(action => action.type === 'ADD_ASSET');
+
+        expect(transformImage).toHaveBeenCalledWith(file, 'static/media/kittens.jpg', {
+          format: undefined,
+          quality: undefined,
+          stripMetadata: true,
+          width: null,
+          height: null,
+          aspectRatio: null,
+        });
+        expect(addAssetActions.map(action => action.payload.path)).toEqual([
+          'static/media/kittens.jpg',
+        ]);
+        expect(window.confirm).toHaveBeenCalledWith(
+          'kittens.jpg already exists. Do you want to replace it?',
+        );
+        expect(backend.persistMedia).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    it('should upload a processed image when an asset store integration is configured', () => {
+      const { transformImage } = require('../../lib/imageTransformations');
+      const { getBlobSHA } = require('decap-cms-lib-util');
+      const { getIntegrationProvider } = require('../../integrations');
+      const upload = jest.fn(() =>
+        Promise.resolve({ asset: { url: 'https://assets.example.com/kittens.webp' } }),
+      );
+
+      getBlobSHA.mockReturnValue('000000000000001');
+      getIntegrationProvider.mockReturnValue({ upload });
+
+      const store = mockStore({
+        config: {
+          media_folder: 'static/media',
+          media_processing: {
+            enabled: true,
+            format: { enabled: true, default: 'webp' },
+            quality: 80,
+            strip_metadata: true,
+            width: 400,
+            height: null,
+            aspect_ratio: '16_9',
+          },
+          slug: {
+            encoding: 'unicode',
+            clean_accents: false,
+            sanitize_replacement: '-',
+          },
+        },
+        collections: Map({
+          posts: Map({ name: 'posts' }),
+        }),
+        integrations: Map({
+          hooks: Map({ assetStore: 'assetStore' }),
+          providers: Map({ assetStore: Map() }),
+        }),
+        mediaLibrary: Map({
+          files: List(),
+        }),
+        entryDraft: Map({
+          entry: Map(),
+        }),
+      });
+
+      const file = new File(['original'], 'kittens.jpg', { type: 'image/jpeg' });
+      const processed = new File(['processed'], 'kittens.webp', { type: 'image/webp' });
+
+      transformImage.mockResolvedValue([{ file: processed, path: 'kittens.webp' }]);
+
+      return store.dispatch(persistMedia(file)).then(() => {
+        const actions = store.getActions();
+
+        expect(transformImage).toHaveBeenCalledWith(file, 'kittens.jpg', {
+          format: 'webp',
+          quality: 0.8,
+          stripMetadata: true,
+          width: 400,
+          height: null,
+          aspectRatio: 16 / 9,
+        });
+        expect(upload).toHaveBeenCalledWith(processed, undefined);
+        expect(getBlobSHA).toHaveBeenCalledWith(processed);
+        expect(actions).toContainEqual({
+          type: 'MEDIA_PERSIST_SUCCESS',
+          payload: {
+            file: expect.objectContaining({
+              id: '000000000000001',
+              name: 'kittens.webp',
+              url: 'https://assets.example.com/kittens.webp',
+              path: 'https://assets.example.com/kittens.webp',
+              file: processed,
+              size: processed.size,
+            }),
+            privateUpload: undefined,
+          },
+        });
       });
     });
   });

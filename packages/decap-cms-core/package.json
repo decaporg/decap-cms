@@ -25,6 +25,7 @@
   "license": "MIT",
   "dependencies": {
     "@iarna/toml": "2.2.5",
+    "@jsquash/webp": "1.5.0",
     "@vercel/stega": "^0.1.2",
     "ajv": "^8.17.1",
     "ajv-errors": "^3.0.0",
