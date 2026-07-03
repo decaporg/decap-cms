@@ -60,6 +60,12 @@
       "decap-cms-widget-text": ["packages/decap-cms-widget-text/src"]
     }
   },
+  "ts-node": {
+    "compilerOptions": {
+      "module": "CommonJS",
+      "moduleResolution": "Node"
+    }
+  },
   "references": [
     {"path": "packages/decap-cms-app"},
     {"path": "packages/decap-cms-backend-aws-cognito-github-proxy"},
