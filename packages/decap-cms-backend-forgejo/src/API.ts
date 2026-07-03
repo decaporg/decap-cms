@@ -578,7 +578,7 @@ export default class API {
     const pullRequests = await this.requestAllPages<ForgejoPullRequest>(
       `${this.originRepoURL}/pulls`,
       {
-        params: { state, base_branch: this.branch, limit: 100 },
+        params: { state, base: this.branch, limit: 100 },
       },
     );
     if (!head) {
@@ -739,7 +739,9 @@ export default class API {
   }
 
   async getLabels(): Promise<ForgejoLabel[]> {
-    return this.request(`${this.originRepoURL}/labels`);
+    return this.requestAllPages<ForgejoLabel>(`${this.originRepoURL}/labels`, {
+      params: { limit: 100 },
+    });
   }
 
   async createLabel(name: string, color = '0052cc'): Promise<ForgejoLabel> {

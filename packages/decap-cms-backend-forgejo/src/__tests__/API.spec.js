@@ -675,13 +675,16 @@ describe('forgejo API', () => {
 
     it('should get pull requests', async () => {
       const api = new API({ branch: 'gh-pages', repo: 'owner/my-repo', token: 'token' });
-      api.requestAllPages = jest.fn().mockResolvedValue([{ number: 1, head: { label: 'head' } }]);
+      api.requestAllPages = jest.fn().mockResolvedValue([
+        { number: 1, head: { label: 'head' } },
+        { number: 2, head: { label: 'other-head' } },
+      ]);
 
       await expect(api.getPullRequests('open', 'head')).resolves.toEqual([
         { number: 1, head: { label: 'head' } },
       ]);
       expect(api.requestAllPages).toHaveBeenCalledWith('/repos/owner/my-repo/pulls', {
-        params: { state: 'open', base_branch: 'gh-pages', limit: 100 },
+        params: { state: 'open', base: 'gh-pages', limit: 100 },
       });
     });
 
@@ -713,7 +716,7 @@ describe('forgejo API', () => {
 
       await expect(api.listUnpublishedBranches()).resolves.toEqual(['cms/branch1', 'cms/branch2']);
       expect(api.requestAllPages).toHaveBeenCalledWith('/repos/owner/my-repo/pulls', {
-        params: { state: 'open', base_branch: 'gh-pages', limit: 100 },
+        params: { state: 'open', base: 'gh-pages', limit: 100 },
       });
     });
 
@@ -763,7 +766,7 @@ describe('forgejo API', () => {
 
     it('should get labels', async () => {
       const api = new API({ branch: 'gh-pages', repo: 'owner/my-repo', token: 'token' });
-      api.request = jest.fn().mockResolvedValue([
+      api.requestAllPages = jest.fn().mockResolvedValue([
         { id: 1, name: 'label1' },
         { id: 2, name: 'label2' },
       ]);
@@ -772,7 +775,9 @@ describe('forgejo API', () => {
         { id: 1, name: 'label1' },
         { id: 2, name: 'label2' },
       ]);
-      expect(api.request).toHaveBeenCalledWith('/repos/owner/my-repo/labels');
+      expect(api.requestAllPages).toHaveBeenCalledWith('/repos/owner/my-repo/labels', {
+        params: { limit: 100 },
+      });
     });
 
     it('should create label', async () => {
