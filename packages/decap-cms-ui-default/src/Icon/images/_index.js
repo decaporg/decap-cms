@@ -11,6 +11,8 @@ import iconCircle from './circle.svg';
 import iconClose from './close.svg';
 import iconCode from './code.svg';
 import iconCodeBlock from './code-block.svg';
+import iconCopy from './copy.svg';
+import iconDownload from './download.svg';
 import iconDragHandle from './drag-handle.svg';
 import iconEye from './eye.svg';
 import iconFolder from './folder.svg';
@@ -64,6 +66,8 @@ const images = {
   close: iconClose,
   code: iconCode,
   'code-block': iconCodeBlock,
+  copy: iconCopy,
+  download: iconDownload,
   'drag-handle': iconDragHandle,
   eye: iconEye,
   folder: iconFolder,

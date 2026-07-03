@@ -26,13 +26,13 @@ import {
   readFileMetadata,
   throwOnConflictingBranches,
 } from 'decap-cms-lib-util';
+import { dirname } from 'path';
 import { Base64 } from 'js-base64';
 import { Map } from 'immutable';
 import flow from 'lodash/flow';
 import partial from 'lodash/partial';
 import result from 'lodash/result';
 import trimStart from 'lodash/trimStart';
-import { dirname } from 'path';
 
 const NO_CACHE = 'no-cache';
 import * as queries from './queries';
@@ -60,6 +60,7 @@ export interface Config {
   initialWorkflowStatus: string;
   cmsLabelPrefix: string;
   useGraphQL?: boolean;
+  requestFunction?: (req: ApiRequest) => Promise<Response>;
 }
 
 export interface CommitAuthor {
@@ -219,6 +220,7 @@ export default class API {
   squashMerges: boolean;
   initialWorkflowStatus: string;
   cmsLabelPrefix: string;
+  requestFunction?: (req: ApiRequest) => Promise<Response>;
 
   graphQLClient?: ApolloClient<NormalizedCacheObject>;
 
@@ -226,6 +228,7 @@ export default class API {
     this.apiRoot = config.apiRoot || 'https://gitlab.com/api/v4';
     this.graphQLAPIRoot = config.graphQLAPIRoot || 'https://gitlab.com/api/graphql';
     this.token = config.token || false;
+    this.requestFunction = config.requestFunction;
     this.branch = config.branch || 'master';
     this.repo = config.repo || '';
     this.repoURL = `/projects/${encodeURIComponent(this.repo)}`;
@@ -243,7 +246,7 @@ export default class API {
         headers: {
           'Content-Type': 'application/json; charset=utf-8',
           ...headers,
-          authorization: this.token ? `token ${this.token}` : '',
+          authorization: this.token ? `Bearer ${this.token}` : '',
         },
       };
     });
@@ -346,18 +349,19 @@ export default class API {
   readFile = async (
     path: string,
     sha?: string | null,
-    { parseText = true, branch = this.branch } = {},
+    { parseText = true, branch = this.branch, lfs = false } = {},
   ): Promise<string | Blob> => {
     const fetchContent = async () => {
       const content = await this.request({
         url: `${this.repoURL}/repository/files/${encodeURIComponent(path)}/raw`,
-        params: { ref: branch },
+        params: { ref: branch, ...(lfs ? { lfs: true } : {}) },
         cache: 'no-store',
       }).then<Blob | string>(parseText ? this.responseToText : this.responseToBlob);
       return content;
     };
 
-    const content = await readFile(sha, fetchContent, localForage, parseText);
+    const cacheKey = sha && lfs ? `${sha}.lfs` : sha;
+    const content = await readFile(cacheKey, fetchContent, localForage, parseText);
     return content;
   };
 
@@ -619,7 +623,11 @@ export default class API {
     }
   }
 
-  async getCommitItems(files: { path: string; newPath?: string }[], branch: string) {
+  async getCommitItems(
+    files: { path: string; newPath?: string }[],
+    branch: string,
+    hasSubfolders = true,
+  ) {
     const items: CommitItem[] = await Promise.all(
       files.map(async file => {
         const [base64Content, fileExists] = await Promise.all([
@@ -646,20 +654,22 @@ export default class API {
       }),
     );
 
-    // move children
-    for (const item of items.filter(i => i.oldPath && i.action === CommitAction.MOVE)) {
-      const sourceDir = dirname(item.oldPath as string);
-      const destDir = dirname(item.path);
-      const children = await this.listAllFiles(sourceDir, true, branch);
-      children
-        .filter(f => f.path !== item.oldPath)
-        .forEach(file => {
-          items.push({
-            action: CommitAction.MOVE,
-            path: file.path.replace(sourceDir, destDir),
-            oldPath: file.path,
+    // Move children if subfolders is true (legacy/default behavior)
+    if (hasSubfolders) {
+      for (const item of items.filter(i => i.oldPath && i.action === CommitAction.MOVE)) {
+        const sourceDir = dirname(item.oldPath as string);
+        const destDir = dirname(item.path);
+        const children = await this.listAllFiles(sourceDir, true, branch);
+        children
+          .filter(f => f.path !== item.oldPath)
+          .forEach(file => {
+            items.push({
+              action: CommitAction.MOVE,
+              path: file.path.replace(sourceDir, destDir),
+              oldPath: file.path,
+            });
           });
-        });
+      }
     }
 
     return items;
@@ -667,11 +677,12 @@ export default class API {
 
   async persistFiles(dataFiles: DataFile[], mediaFiles: AssetProxy[], options: PersistOptions) {
     const files = [...dataFiles, ...mediaFiles];
+    const hasSubfolders = options.hasSubfolders !== false; // default to true
     if (options.useWorkflow) {
       const slug = dataFiles[0].slug;
       return this.editorialWorkflowGit(files, slug, options);
     } else {
-      const items = await this.getCommitItems(files, this.branch);
+      const items = await this.getCommitItems(files, this.branch, hasSubfolders);
       return this.uploadAndCommit(items, {
         commitMessage: options.commitMessage,
       });
@@ -875,8 +886,9 @@ export default class API {
     const contentKey = generateContentKey(options.collectionName as string, slug);
     const branch = branchFromContentKey(contentKey);
     const unpublished = options.unpublished || false;
+    const hasSubfolders = options.hasSubfolders !== false; // default to true
     if (!unpublished) {
-      const items = await this.getCommitItems(files, this.branch);
+      const items = await this.getCommitItems(files, this.branch, hasSubfolders);
       await this.uploadAndCommit(items, {
         commitMessage: options.commitMessage,
         branch,
@@ -891,7 +903,7 @@ export default class API {
       const mergeRequest = await this.getBranchMergeRequest(branch);
       await this.rebaseMergeRequest(mergeRequest);
       const [items, diffs] = await Promise.all([
-        this.getCommitItems(files, branch),
+        this.getCommitItems(files, branch, hasSubfolders),
         this.getDifferences(branch),
       ]);
       // mark files for deletion

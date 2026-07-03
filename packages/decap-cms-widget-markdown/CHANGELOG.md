@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.10.1](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-markdown@3.10.0...decap-cms-widget-markdown@3.10.1) (2026-06-15)
+
+**Note:** Version bump only for package decap-cms-widget-markdown
+
+# [3.10.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-markdown@3.9.0...decap-cms-widget-markdown@3.10.0) (2026-06-08)
+
+### Bug Fixes
+
+- remove unused dependencies and specify missing dependencies ([#7833](https://github.com/decaporg/decap-cms/issues/7833)) ([e324a14](https://github.com/decaporg/decap-cms/commit/e324a142f7f0ba63c760b2e8524d971c35200f87))
+
+# [3.9.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-markdown@3.8.0...decap-cms-widget-markdown@3.9.0) (2026-06-01)
+
+### Bug Fixes
+
+- adhere to remark's tokenizer rules [#7315](https://github.com/decaporg/decap-cms/issues/7315) ([#7444](https://github.com/decaporg/decap-cms/issues/7444)) ([50986a0](https://github.com/decaporg/decap-cms/commit/50986a0042d36554cc1f87244b5bcc109539cd8d))
+
 # [3.8.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-markdown@3.7.0...decap-cms-widget-markdown@3.8.0) (2026-04-16)
 
 ### Bug Fixes

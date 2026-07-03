@@ -1,4 +1,3 @@
-import { v4 as uuid } from 'uuid';
 import uploadcare from 'uploadcare-widget';
 import uploadcareTabEffects from 'uploadcare-widget-tab-effects';
 
@@ -6,7 +5,7 @@ import uploadcareMediaLibrary from '../index';
 
 function generateMockUrl({ count = 1, cdnUrl } = {}) {
   const baseUrl = 'https://ucarecdn.com';
-  const url = `${baseUrl}/${uuid()}~${count}/`;
+  const url = `${baseUrl}/${crypto.randomUUID()}~${count}/`;
   const result =
     count === 1 ? `${url}nth/0/` : Array.from({ length: count }, (val, idx) => `${url}nth/${idx}/`);
   if (cdnUrl) {

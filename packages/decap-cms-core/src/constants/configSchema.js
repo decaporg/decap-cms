@@ -6,7 +6,6 @@ import {
   prohibited,
 } from 'ajv-keywords/dist/keywords';
 import ajvErrors from 'ajv-errors';
-import { v4 as uuid } from 'uuid';
 
 import { frontmatterFormats, extensionFormatters } from '../formats/formats';
 import { getWidgets } from '../lib/registry';
@@ -45,7 +44,7 @@ const i18nField = {
  * Config for fields in both file and folder collections.
  */
 function fieldsConfig() {
-  const id = uuid();
+  const id = crypto.randomUUID();
   return {
     $id: `fields_${id}`,
     type: 'array',
@@ -305,7 +304,7 @@ function getConfigSchema() {
                     widget: { type: 'string' },
                     index_file: { type: 'string' },
                   },
-                  required: ['label', 'widget', 'index_file'],
+                  required: ['label', 'widget'],
                 },
               },
               additionalProperties: false,

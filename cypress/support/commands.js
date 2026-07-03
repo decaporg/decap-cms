@@ -163,10 +163,7 @@ Cypress.Commands.add('tabkey', { prevSubject: true }, (subject, { shift, times }
 });
 
 Cypress.Commands.add('selection', { prevSubject: true }, (subject, fn) => {
-  cy.wrap(subject)
-    .trigger('mousedown')
-    .then(fn)
-    .trigger('mouseup');
+  cy.wrap(subject).trigger('mousedown').then(fn).trigger('mouseup');
 
   cy.document().trigger('selectionchange');
   return cy.wrap(subject);
@@ -227,7 +224,7 @@ Cypress.Commands.add('login', () => {
 
 Cypress.Commands.add('loginAndNewPost', () => {
   cy.login();
-  cy.contains('a', 'New Post').click();
+  cy.contains('a', '＋ Post').click();
 });
 
 Cypress.Commands.add('drag', { prevSubject: true }, subject => {
@@ -259,9 +256,7 @@ Cypress.Commands.add('clickToolbarButton', (title, { times } = {}) => {
 
 Cypress.Commands.add('insertEditorComponent', title => {
   cy.get('button[title="Add Component"]').click();
-  cy.contains('div', title)
-    .click()
-    .focused();
+  cy.contains('div', title).click().focused();
 });
 
 [
@@ -282,9 +277,7 @@ Cypress.Commands.add('insertEditorComponent', title => {
 
 Cypress.Commands.add('clickModeToggle', () => {
   cy.get('.cms-editor-visual').within(() => {
-    cy.get('button[role="switch"]')
-      .click()
-      .focused();
+    cy.get('button[role="switch"]').click().focused();
   });
 });
 
@@ -316,10 +309,7 @@ Cypress.Commands.add('confirmMarkdownEditorContent', expectedDomString => {
 });
 
 Cypress.Commands.add('clearMarkdownEditorContent', () => {
-  return cy
-    .getMarkdownEditor()
-    .selectAll()
-    .backspace({ times: 2 });
+  return cy.getMarkdownEditor().selectAll().backspace({ times: 2 });
 });
 
 Cypress.Commands.add('confirmRawEditorContent', expectedDomString => {
