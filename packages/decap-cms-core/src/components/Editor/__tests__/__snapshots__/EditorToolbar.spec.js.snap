@@ -106,6 +106,7 @@ exports[`EditorToolbar should render normal save button 1`] = `
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  touch-action: manipulation;
   margin: 0 10px;
 }
 
@@ -127,6 +128,7 @@ exports[`EditorToolbar should render normal save button 1`] = `
   padding-left: 20px;
   padding-right: 40px;
   position: relative;
+  white-space: nowrap;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -245,15 +247,17 @@ exports[`EditorToolbar should render normal save button 1`] = `
           <div
             class="emotion-14 emotion-15 emotion-16"
           >
-            <span
-              aria-expanded="false"
-              aria-haspopup="true"
-              class="emotion-17 emotion-18"
-              role="button"
-              tabindex="0"
-            >
-              editor.editorToolbar.publish
-            </span>
+            <div>
+              <span
+                aria-expanded="false"
+                aria-haspopup="true"
+                class="emotion-17 emotion-18"
+                role="button"
+                tabindex="0"
+              >
+                editor.editorToolbar.publish
+              </span>
+            </div>
           </div>
         </div>
         <div>
@@ -383,6 +387,7 @@ exports[`EditorToolbar should render normal save button 2`] = `
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  touch-action: manipulation;
   margin: 0 10px;
 }
 
@@ -404,6 +409,7 @@ exports[`EditorToolbar should render normal save button 2`] = `
   padding-left: 20px;
   padding-right: 40px;
   position: relative;
+  white-space: nowrap;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -522,15 +528,17 @@ exports[`EditorToolbar should render normal save button 2`] = `
           <div
             class="emotion-14 emotion-15 emotion-16"
           >
-            <span
-              aria-expanded="false"
-              aria-haspopup="true"
-              class="emotion-17 emotion-18"
-              role="button"
-              tabindex="0"
-            >
-              editor.editorToolbar.publish
-            </span>
+            <div>
+              <span
+                aria-expanded="false"
+                aria-haspopup="true"
+                class="emotion-17 emotion-18"
+                role="button"
+                tabindex="0"
+              >
+                editor.editorToolbar.publish
+              </span>
+            </div>
           </div>
         </div>
         <div>
@@ -927,6 +935,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=false 1`
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  touch-action: manipulation;
   margin: 0 10px;
 }
 
@@ -948,6 +957,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=false 1`
   padding-left: 20px;
   padding-right: 40px;
   position: relative;
+  white-space: nowrap;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -1072,15 +1082,17 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=false 1`
         <div
           class="emotion-16 emotion-17 emotion-18"
         >
-          <span
-            aria-expanded="false"
-            aria-haspopup="true"
-            class="emotion-19 emotion-20"
-            role="button"
-            tabindex="0"
-          >
-            editor.editorToolbar.status
-          </span>
+          <div>
+            <span
+              aria-expanded="false"
+              aria-haspopup="true"
+              class="emotion-19 emotion-20"
+              role="button"
+              tabindex="0"
+            >
+              editor.editorToolbar.status
+            </span>
+          </div>
         </div>
         <button
           class="emotion-21 emotion-22"
@@ -1238,6 +1250,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=true 1`]
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  touch-action: manipulation;
   margin: 0 10px;
 }
 
@@ -1259,6 +1272,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=true 1`]
   padding-left: 20px;
   padding-right: 40px;
   position: relative;
+  white-space: nowrap;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -1417,15 +1431,17 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=true 1`]
         <div
           class="emotion-16 emotion-17 emotion-18"
         >
-          <span
-            aria-expanded="false"
-            aria-haspopup="true"
-            class="emotion-19 emotion-20"
-            role="button"
-            tabindex="0"
-          >
-            editor.editorToolbar.status
-          </span>
+          <div>
+            <span
+              aria-expanded="false"
+              aria-haspopup="true"
+              class="emotion-19 emotion-20"
+              role="button"
+              tabindex="0"
+            >
+              editor.editorToolbar.status
+            </span>
+          </div>
         </div>
         <div
           class="emotion-21 emotion-22"
@@ -1610,6 +1626,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  touch-action: manipulation;
   margin: 0 10px;
 }
 
@@ -1631,6 +1648,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
   padding-left: 20px;
   padding-right: 40px;
   position: relative;
+  white-space: nowrap;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -1755,15 +1773,17 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
         <div
           class="emotion-16 emotion-17 emotion-18"
         >
-          <span
-            aria-expanded="false"
-            aria-haspopup="true"
-            class="emotion-19 emotion-20"
-            role="button"
-            tabindex="0"
-          >
-            editor.editorToolbar.status
-          </span>
+          <div>
+            <span
+              aria-expanded="false"
+              aria-haspopup="true"
+              class="emotion-19 emotion-20"
+              role="button"
+              tabindex="0"
+            >
+              editor.editorToolbar.status
+            </span>
+          </div>
         </div>
         <button
           class="emotion-21 emotion-22"
@@ -1921,6 +1941,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  touch-action: manipulation;
   margin: 0 10px;
 }
 
@@ -1942,6 +1963,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
   padding-left: 20px;
   padding-right: 40px;
   position: relative;
+  white-space: nowrap;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -2082,15 +2104,17 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
         <div
           class="emotion-16 emotion-17 emotion-18"
         >
-          <span
-            aria-expanded="false"
-            aria-haspopup="true"
-            class="emotion-19 emotion-20"
-            role="button"
-            tabindex="0"
-          >
-            editor.editorToolbar.status
-          </span>
+          <div>
+            <span
+              aria-expanded="false"
+              aria-haspopup="true"
+              class="emotion-19 emotion-20"
+              role="button"
+              tabindex="0"
+            >
+              editor.editorToolbar.status
+            </span>
+          </div>
         </div>
         <div
           class="emotion-21 emotion-22"
@@ -2270,6 +2294,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  touch-action: manipulation;
   margin: 0 10px;
 }
 
@@ -2291,6 +2316,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
   padding-left: 20px;
   padding-right: 40px;
   position: relative;
+  white-space: nowrap;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -2415,15 +2441,17 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
         <div
           class="emotion-16 emotion-17 emotion-18"
         >
-          <span
-            aria-expanded="false"
-            aria-haspopup="true"
-            class="emotion-19 emotion-20"
-            role="button"
-            tabindex="0"
-          >
-            editor.editorToolbar.status
-          </span>
+          <div>
+            <span
+              aria-expanded="false"
+              aria-haspopup="true"
+              class="emotion-19 emotion-20"
+              role="button"
+              tabindex="0"
+            >
+              editor.editorToolbar.status
+            </span>
+          </div>
         </div>
         <button
           class="emotion-21 emotion-22"
@@ -2581,6 +2609,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  touch-action: manipulation;
   margin: 0 10px;
 }
 
@@ -2602,6 +2631,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
   padding-left: 20px;
   padding-right: 40px;
   position: relative;
+  white-space: nowrap;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -2760,15 +2790,17 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
         <div
           class="emotion-16 emotion-17 emotion-18"
         >
-          <span
-            aria-expanded="false"
-            aria-haspopup="true"
-            class="emotion-19 emotion-20"
-            role="button"
-            tabindex="0"
-          >
-            editor.editorToolbar.status
-          </span>
+          <div>
+            <span
+              aria-expanded="false"
+              aria-haspopup="true"
+              class="emotion-19 emotion-20"
+              role="button"
+              tabindex="0"
+            >
+              editor.editorToolbar.status
+            </span>
+          </div>
         </div>
         <div
           class="emotion-21 emotion-22"

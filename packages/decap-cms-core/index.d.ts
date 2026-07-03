@@ -56,7 +56,7 @@ declare module 'decap-cms-core' {
     label?: string;
     required?: boolean;
     hint?: string;
-    pattern?: [string, string];
+    pattern?: [string | RegExp, string];
     i18n?: boolean | 'translate' | 'duplicate' | 'none';
     media_folder?: string;
     public_folder?: string;
@@ -299,7 +299,7 @@ declare module 'decap-cms-core' {
   export interface ViewFilter {
     label: string;
     field: string;
-    pattern: string;
+    pattern: string | boolean;
   }
 
   export interface ViewGroup {
@@ -339,7 +339,7 @@ declare module 'decap-cms-core' {
       depth: number;
       subfolders?: boolean;
     };
-    meta?: { path?: { label: string; widget: string; index_file: string } };
+    meta?: { path?: { label: string; widget: string; index_file?: string } };
 
     /**
      * It accepts the following values: yml, yaml, toml, json, md, markdown, html
@@ -439,6 +439,7 @@ declare module 'decap-cms-core' {
     i18n?: CmsI18nConfig;
     local_backend?: boolean | CmsLocalBackend;
     editor?: {
+      notes?: boolean;
       preview?: boolean;
     };
   }

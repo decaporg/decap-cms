@@ -22,3 +22,4 @@ coverage/
 storybook-static/
 .nx
 tsconfig.tsbuildinfo
+.claude/settings.local.json

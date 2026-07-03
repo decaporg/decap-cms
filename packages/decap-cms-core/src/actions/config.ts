@@ -234,6 +234,17 @@ export function applyDefaults(originalConfig: CmsConfig) {
     config.slug = config.slug || {};
     config.collections = config.collections || [];
 
+    if (!config.editor) {
+      config.editor = {};
+    }
+
+    if (!('preview' in config.editor)) {
+      config.editor.preview = true;
+    }
+    if (!('notes' in config.editor)) {
+      config.editor.notes = false;
+    }
+
     // Use `site_url` as default `display_url`.
     if (!config.display_url && config.site_url) {
       config.display_url = config.site_url;
@@ -309,11 +320,12 @@ export function applyDefaults(originalConfig: CmsConfig) {
         collection.folder = trim(folder, '/');
 
         if (meta && meta.path) {
+          const metaPath = meta.path;
           const metaField = {
             name: 'path',
             meta: true,
             required: true,
-            ...meta.path,
+            ...metaPath,
           };
           collection.fields = [metaField, ...(collection.fields || [])];
         }
@@ -380,9 +392,11 @@ export function applyDefaults(originalConfig: CmsConfig) {
         };
       });
 
-      if (config.editor && !collection.editor) {
-        collection.editor = { preview: config.editor.preview };
-      }
+      collection.editor = {
+        preview: config.editor.preview,
+        notes: config.editor.notes,
+        ...collection.editor,
+      };
     }
   });
 }

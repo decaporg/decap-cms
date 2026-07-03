@@ -43,7 +43,8 @@ const ru = {
     collectionTop: {
       sortBy: 'Сортировать по',
       viewAs: 'Вид',
-      newButton: 'Создать %{collectionLabel}',
+      newButton: '＋ %{collectionLabel}',
+      newButtonAriaLabel: 'Создать запись типа %{collectionLabel}',
       ascending: 'По возрастанию',
       descending: 'По убывания',
       searchResults: 'Результаты по запросу "%{searchTerm}"',

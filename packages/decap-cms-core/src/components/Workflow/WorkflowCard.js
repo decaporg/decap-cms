@@ -17,30 +17,46 @@ const styles = {
     width: auto;
     flex: 1 0 0;
     font-size: 13px;
-    padding: 6px 0;
+    padding: 6px;
   `,
 };
 
 const WorkflowLink = styled(Link)`
   display: block;
-  padding: 0 18px 18px;
-  height: 200px;
+  padding: 8px;
+  height: 140px;
   overflow: hidden;
+
+  @media (min-width: 800px) {
+    height: 200px;
+    padding: 12px 18px 18px;
+  }
 `;
 
 const CardCollection = styled.div`
-  font-size: 14px;
+  font-size: 12px;
   color: ${colors.textLead};
   text-transform: uppercase;
-  margin-top: 12px;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+  @media (min-width: 800px) {
+    font-size: 14px;
+  }
 `;
 
 const CardTitle = styled.h2`
-  margin: 28px 0 0;
+  font-size: 14px;
+  line-height: 17px;
+  margin: 10px 0 0;
   color: ${colors.textLead};
+  word-break: break-word;
+
+  @media (min-width: 800px) {
+    font-size: 15px;
+    line-height: 18px;
+    margin-top: 28px;
+  }
 `;
 
 const CardDateContainer = styled.div`
@@ -49,11 +65,16 @@ const CardDateContainer = styled.div`
 
 const CardBody = styled.p`
   ${styles.text};
+  line-height: 17px;
   color: ${colors.text};
-  margin: 24px 0 0;
+  margin: 10px 0 0;
   overflow-wrap: break-word;
   word-break: break-word;
   hyphens: auto;
+
+  @media (min-width: 800px) {
+    margin-top: 24px;
+  }
 `;
 
 const CardButtonContainer = styled.div`
@@ -61,25 +82,38 @@ const CardButtonContainer = styled.div`
   position: absolute;
   bottom: 0;
   width: 100%;
-  padding: 12px 18px;
-  display: flex;
-  opacity: 0;
+  display: none;
+  padding: 8px;
+  flex-direction: column;
+  gap: 6px;
   transition: opacity ${transitions.main};
   cursor: pointer;
+
+  @media (min-width: 500px) {
+    display: flex;
+  }
+
+  @media (min-width: 800px) {
+    padding: 12px 18px;
+    flex-direction: row;
+    gap: 12px;
+  }
+
+  @media (hover: hover) {
+    opacity: 0;
+  }
 `;
 
 const DeleteButton = styled.button`
   ${styles.button};
   background-color: ${colorsRaw.redLight};
   color: ${colorsRaw.red};
-  margin-right: 6px;
 `;
 
 const PublishButton = styled.button`
   ${styles.button};
   background-color: ${colorsRaw.teal};
   color: ${colors.textLight};
-  margin-left: 6px;
 
   &[disabled] {
     ${buttons.disabled};
@@ -88,12 +122,16 @@ const PublishButton = styled.button`
 
 const WorkflowCardContainer = styled.div`
   ${components.card};
-  margin-bottom: 24px;
+  margin-bottom: 10px;
   position: relative;
   overflow: hidden;
 
-  &:hover ${CardButtonContainer} {
+  &:hover ${CardButtonContainer}, &:has(:focus-visible) ${CardButtonContainer} {
     opacity: 1;
+  }
+
+  @media (min-width: 800px) {
+    margin-bottom: 24px;
   }
 `;
 

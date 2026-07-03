@@ -1,7 +1,5 @@
-import { v4 as uuid } from 'uuid';
-
 export function createNonce() {
-  const nonce = uuid();
+  const nonce = crypto.randomUUID();
   window.sessionStorage.setItem('decap-cms-auth', JSON.stringify({ nonce }));
   return nonce;
 }

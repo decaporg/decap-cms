@@ -1,9 +1,8 @@
-import { createSlatePlugin } from 'platejs';
-import { toPlatePlugin } from 'platejs/react';
+import { createPlatePlugin, Key } from 'platejs/react';
 
 import BreakElement from '../components/Element/BreakElement';
 
-const plugin = createSlatePlugin({
+const BreakPlugin = createPlatePlugin({
   key: 'break',
   node: {
     isElement: true,
@@ -11,8 +10,18 @@ const plugin = createSlatePlugin({
     isVoid: true,
     component: BreakElement,
   },
-});
+  handlers: {
+    onKeyDown: ({ editor, event }) => {
+      // Handle shift+enter an only when there's a selection.
+      if (event.key !== Key.Enter || !event.shiftKey || !editor.selection) {
+        return;
+      }
 
-const BreakPlugin = toPlatePlugin(plugin);
+      editor.tf.insertNodes([{ type: 'break', children: [{ text: '' }] }, { text: '' }]);
+      event.preventDefault();
+      event.stopPropagation();
+    },
+  },
+});
 
 export default BreakPlugin;

@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.5.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-datetime@3.4.1...decap-cms-widget-datetime@3.5.0) (2026-06-08)
+
+### Bug Fixes
+
+- remove unused dependencies and specify missing dependencies ([#7833](https://github.com/decaporg/decap-cms/issues/7833)) ([e324a14](https://github.com/decaporg/decap-cms/commit/e324a142f7f0ba63c760b2e8524d971c35200f87))
+
 ## [3.4.1](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-datetime@3.4.0...decap-cms-widget-datetime@3.4.1) (2026-02-23)
 
 ### Bug Fixes

@@ -1,4 +1,3 @@
-import url from 'url';
 import urlJoin from 'url-join';
 import diacritics from 'diacritics';
 import sanitizeFilename from 'sanitize-filename';
@@ -22,9 +21,9 @@ export function getNewEntryUrl(collectionName: string, direct?: boolean) {
 }
 
 export function addParams(urlString: string, params: Record<string, string>) {
-  const parsedUrl = url.parse(urlString, true);
-  parsedUrl.query = { ...parsedUrl.query, ...params };
-  return url.format(parsedUrl);
+  const url = new URL(urlString);
+  Object.keys(params).forEach(key => url.searchParams.set(key, params[key]));
+  return url.toString();
 }
 
 export function stripProtocol(urlString: string) {

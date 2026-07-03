@@ -295,8 +295,8 @@ describe('formatters', () => {
   };
 
   describe('slugFormatter', () => {
-    const date = new Date('2020-01-01').valueOf();
-    Date.now = jest.spyOn(Date, 'now').mockImplementation(() => date);
+    const date = new Date('2020-01-01T13:28:27.679Z').valueOf();
+    jest.spyOn(Date, 'now').mockImplementation(() => date);
 
     const { selectIdentifier } = require('../../reducers/collections');
 
@@ -333,10 +333,22 @@ describe('formatters', () => {
       ).toBe('entry-slug');
     });
 
+    it('should allow filters in slug templates', () => {
+      selectIdentifier.mockReturnValueOnce('published');
+
+      expect(
+        slugFormatter(
+          Map({ slug: "{{published | date('MM-DD')}}" }),
+          Map({ title: 'Post Title', published: new Date(date) }),
+          slugConfig,
+        ),
+      ).toBe('01-01');
+    });
+
     it('should see date filters applied to date from entry if it exists', () => {
       const { selectInferredField } = require('../../reducers/collections');
       selectInferredField.mockReturnValue('date');
-      const entryDate = new Date('2026-10-20');
+      const entryDate = new Date('2026-10-20T13:28:27.679Z');
 
       expect(
         slugFormatter(
@@ -350,7 +362,7 @@ describe('formatters', () => {
     it('should see date filters applied to publishDate from entry if it exists', () => {
       const { selectInferredField } = require('../../reducers/collections');
       selectInferredField.mockReturnValue('publishDate');
-      const entryDate = new Date('2026-10-20');
+      const entryDate = new Date('2026-10-20T13:28:27.679Z');
 
       expect(
         slugFormatter(
