@@ -22,7 +22,8 @@ function RichtextPreview({
     { getAsset, resolveWidget, editorComponents: getEditorComponents?.() },
     getRemarkPlugins?.(),
   );
-  const toRender = field?.get('sanitize_preview', false) ? DOMPurify.sanitize(html) : html;
+  const shouldSanitizePreview = field?.get('sanitize_preview') ?? true;
+  const toRender = shouldSanitizePreview ? DOMPurify.sanitize(html) : html;
 
   // Inject block-specific styles into the iframe
   const previewStyles = `

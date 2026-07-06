@@ -98,12 +98,5 @@ module.exports = {
       amd: 'react-dom',
       umd: 'react-dom',
     },
-    uuid: {
-      root: ['DecapCmsDefaultExports', 'UUId'],
-      commonjs2: 'uuid',
-      commonjs: 'uuid',
-      amd: 'uuid',
-      umd: 'uuid',
-    },
   },
 };

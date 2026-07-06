@@ -67,18 +67,25 @@ const TreeNavLink = styled(NavLink)`
   `};
 `;
 
-function getNodeTitle(node) {
-  const title = node.isRoot
-    ? node.title
-    : node.children.find(c => !c.isDir && c.title)?.title || node.title;
-  return title;
+function getNodeTitle(node, collection) {
+  // Backward compatibility: when `nested.subfolders` is true(default) or undefined,
+  // directory nodes should use the title of their index entry.
+  // Otherwise, use the folder name already stored in `node.title`.
+  const subfolders = collection.getIn(['nested', 'subfolders']) !== false;
+  if (!node.isRoot && node.isDir && subfolders) {
+    const indexChild = node.children.find(child => !child.isDir);
+    if (indexChild && indexChild.title) {
+      return indexChild.title;
+    }
+  }
+  return node.title;
 }
 
 function TreeNode(props) {
   const { collection, treeData, depth = 0, onToggle } = props;
   const collectionName = collection.get('name');
 
-  const sortedData = sortBy(treeData, getNodeTitle);
+  const sortedData = sortBy(treeData, node => getNodeTitle(node, collection));
   const subfolders = collection.get('nested')?.get('subfolders') !== false;
   return sortedData.map(node => {
     const leaf =
@@ -93,7 +100,7 @@ function TreeNode(props) {
     if (depth > 0) {
       to = `${to}/filter${node.path}`;
     }
-    const title = getNodeTitle(node);
+    const title = getNodeTitle(node, collection);
 
     const hasChildren =
       depth === 0 ||

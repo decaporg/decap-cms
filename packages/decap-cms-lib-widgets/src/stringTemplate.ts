@@ -203,13 +203,13 @@ export function compileStringTemplate(
         replacement = data.getIn(keyToPathArray(key), '') as string;
       }
 
+      const filterFunction = getFilterFunction(filter);
+      if (filterFunction) {
+        replacement = filterFunction(replacement);
+      }
+
       if (processor) {
-        return processor(replacement);
-      } else {
-        const filterFunction = getFilterFunction(filter);
-        if (filterFunction) {
-          replacement = filterFunction(replacement);
-        }
+        replacement = processor(replacement);
       }
 
       return replacement;

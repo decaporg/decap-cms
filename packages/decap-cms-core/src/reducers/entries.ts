@@ -474,14 +474,16 @@ function getGroup(entry: EntryMap, selectedGroup: GroupMap) {
   if (selectedGroup.has('pattern')) {
     const pattern = selectedGroup.get('pattern');
     let value = '';
-    try {
-      const regex = new RegExp(pattern);
-      const matched = dataAsString.match(regex);
-      if (matched) {
-        value = matched[0];
+    if (pattern !== undefined) {
+      try {
+        const regex = new RegExp(pattern);
+        const matched = dataAsString.match(regex);
+        if (matched) {
+          value = matched[0];
+        }
+      } catch (e) {
+        console.warn(`Invalid view group pattern '${pattern}' for field '${field}'`, e);
       }
-    } catch (e) {
-      console.warn(`Invalid view group pattern '${pattern}' for field '${field}'`, e);
     }
     return {
       id: `${label}${value}`,
