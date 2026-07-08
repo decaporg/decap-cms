@@ -22,6 +22,7 @@
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
   },
   "peerDependencies": {
+    "@emotion/react": "^11.11.1",
     "decap-cms-lib-widgets": "^3.0.0",
     "decap-cms-ui-default": "^3.0.0",
     "immutable": "^3.7.6",

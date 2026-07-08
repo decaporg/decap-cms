@@ -10,12 +10,13 @@ module.exports = {
   parserOptions: {
     requireConfigFile: false,
     babelOptions: {
-      presets: ['@babel/preset-react'],
+      presets: [['@babel/preset-react', { runtime: 'automatic', importSource: '@emotion/react' }]],
     },
   },
   extends: [
     'eslint:recommended',
     'plugin:react/recommended',
+    'plugin:react/jsx-runtime',
     'plugin:cypress/recommended',
     'prettier',
     'plugin:import/recommended',
@@ -84,6 +85,7 @@ module.exports = {
       extends: [
         'eslint:recommended',
         'plugin:react/recommended',
+        'plugin:react/jsx-runtime',
         'plugin:cypress/recommended',
         'plugin:@typescript-eslint/recommended',
         'prettier',
