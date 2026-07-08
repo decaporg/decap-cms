@@ -1,4 +1,3 @@
-import React from 'react';
 
 function TableRowElement({ children, attributes, nodeProps }) {
   return (

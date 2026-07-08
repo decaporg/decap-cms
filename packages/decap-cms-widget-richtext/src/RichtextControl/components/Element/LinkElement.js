@@ -1,4 +1,3 @@
-import React from 'react';
 import { PlateElement } from 'platejs/react';
 import { useLink } from '@platejs/link/react';
 

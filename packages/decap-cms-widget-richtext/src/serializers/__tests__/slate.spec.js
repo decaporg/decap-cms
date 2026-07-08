@@ -2,6 +2,7 @@
 
 import flow from 'lodash/flow';
 
+// eslint-disable-next-line no-unused-vars
 import h from '../../../test-helpers/h';
 import { markdownToSlate, slateToMarkdown } from '../index';
 

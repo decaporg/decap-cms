@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
@@ -181,10 +181,10 @@ export class EntriesCollection extends Component {
 
     if (groups && groups.length > 0) {
       return (
-        <React.Fragment>
+        <Fragment>
           {withGroups(groups, entries, EntriesToRender, t)}
           <EntriesToRender entries={entries} showPublishedEntries={false} />
-        </React.Fragment>
+        </Fragment>
       );
     }
 
