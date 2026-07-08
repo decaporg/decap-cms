@@ -6,7 +6,13 @@ const packages = fs
   .map(dirent => dirent.name);
 
 module.exports = {
-  parser: 'babel-eslint',
+  parser: '@babel/eslint-parser',
+  parserOptions: {
+    requireConfigFile: false,
+    babelOptions: {
+      presets: ['@babel/preset-react'],
+    },
+  },
   extends: [
     'eslint:recommended',
     'plugin:react/recommended',
@@ -56,7 +62,10 @@ module.exports = {
       },
     ],
     'unicorn/prefer-string-slice': 'error',
-    'react/no-unknown-property': ['error', { ignore: ['css', 'bold', 'italic', 'delete'] }],
+    'react/no-unknown-property': [
+      'error',
+      { ignore: ['css', 'bold', 'italic', 'delete', 'strikethrough'] },
+    ],
   },
   plugins: ['babel', '@emotion', 'cypress', 'unicorn'],
   settings: {
@@ -67,6 +76,7 @@ module.exports = {
       node: {
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
       },
+      exports: {},
     },
     'import/core-modules': [...packages, 'decap-cms-app/dist/esm'],
   },

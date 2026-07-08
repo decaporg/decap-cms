@@ -1,5 +1,4 @@
 import { Map, List } from 'immutable';
-import { v4 as uuid } from 'uuid';
 import { dirname } from 'path';
 
 import {
@@ -150,7 +149,7 @@ function mediaLibrary(state = Map(defaultState), action: MediaLibraryAction) {
         return state;
       }
 
-      const filesWithKeys = files.map(file => ({ ...file, key: uuid() }));
+      const filesWithKeys = files.map(file => ({ ...file, key: crypto.randomUUID() }));
       return state.withMutations(map => {
         map.set('isLoading', false);
         map.set('isPaginating', false);
@@ -186,7 +185,7 @@ function mediaLibrary(state = Map(defaultState), action: MediaLibraryAction) {
         return state;
       }
       return state.withMutations(map => {
-        const fileWithKey = { ...file, key: uuid() };
+        const fileWithKey = { ...file, key: crypto.randomUUID() };
         const files = map.get('files') as MediaFile[];
         const updatedFiles = [fileWithKey, ...files];
         map.set('files', updatedFiles);

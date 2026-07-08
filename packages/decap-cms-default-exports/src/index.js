@@ -16,7 +16,6 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import Lodash from 'lodash/lodash';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
-import * as UUId from 'uuid';
 
 const EmotionCore = {
   css,
@@ -37,5 +36,4 @@ export const DecapCmsDefaultExports = {
   PropTypes,
   React,
   ReactDOM,
-  UUId,
 };

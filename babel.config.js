@@ -9,29 +9,12 @@ const isESM = process.env.NODE_ENV === 'esm';
 console.log('Build Package:', path.basename(process.cwd()));
 
 // Always enabled plugins
-const basePlugins = [
-  [
-    'babel-plugin-transform-builtin-extend',
-    {
-      globals: ['Error'],
-    },
-  ],
-  'babel-plugin-inline-json-import',
-];
+const basePlugins = ['babel-plugin-inline-json-import'];
 
-// Legacy transforms for non-ESM builds
-// REVISIT: We probably don't need any of these since we use preset-env
-const legacyPlugins = [
-  'transform-export-extensions',
-  '@babel/plugin-transform-class-properties',
-  '@babel/plugin-transform-object-rest-spread',
-  '@babel/plugin-proposal-export-default-from',
-  '@babel/plugin-transform-nullish-coalescing-operator',
-  '@babel/plugin-transform-optional-chaining',
-  '@babel/plugin-syntax-dynamic-import',
-];
+// All legacy transforms have been removed as they are now included in @babel/preset-env
+// Features like class properties, optional chaining, nullish coalescing are now standard in modern JS
 
-const defaultPlugins = [...basePlugins, ...(isESM ? [] : legacyPlugins)];
+const defaultPlugins = [...basePlugins];
 
 const svgo = {
   plugins: [

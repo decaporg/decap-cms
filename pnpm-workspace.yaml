@@ -4,6 +4,7 @@ packages:
 catalog:
   '@babel/cli': ^7.11.6
   '@babel/core': ^7.23.9
+  '@babel/eslint-parser': ^7.28.5
   '@babel/plugin-proposal-export-default-from': ^7.10.4
   '@babel/plugin-proposal-numeric-separator': ^7.10.4
   '@babel/plugin-syntax-dynamic-import': ^7.8.3
@@ -30,10 +31,11 @@ catalog:
   '@hapi/joi': ^17.0.2
   '@iarna/toml': 2.2.5
   '@octokit/rest': ^16.28.7
+  '@octokit/types': ^16.0.0
   '@reduxjs/toolkit': ^1.9.1
   '@simonsmith/cypress-image-snapshot': ^8.1.2
   '@soda/friendly-errors-webpack-plugin': ^1.8.1
-  '@storybook/addon-actions': ^9.1.15
+  '@storybook/addon-actions': ^7.5.1
   '@storybook/addon-links': ^9.1.15
   '@storybook/react': ^9.1.15
   '@stylelint/postcss-css-in-js': ^0.37.2
@@ -111,6 +113,7 @@ catalog:
   dotenv: ^10.0.0
   emotion: ^11.0.0
   eslint: ^8.12.0
+  eslint-import-resolver-exports: ^1.0.0-beta.5
   eslint-config-prettier: ^8.0.0
   eslint-plugin-babel: ^5.3.0
   eslint-plugin-cypress: ^2.6.0
@@ -171,6 +174,7 @@ catalog:
   path-browserify: ^1.0.1
   postcss: ^8.4.7
   postcss-scss: ^4.0.3
+  postcss-styled-syntax: ^0.7.1
   prettier: ^2.3.0
   process: ^0.11.10
   prop-types: ^15.7.2
@@ -208,6 +212,7 @@ catalog:
   rehype: ^7.0.0
   rehype-parse: ^6.0.0
   rehype-remark: ^8.0.0
+  rehype-remove-comments: ^4.0.2
   rehype-stringify: ^7.0.0
   remark-gfm: 1.0.0
   remark-parse: ^6.0.3

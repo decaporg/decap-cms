@@ -49,4 +49,19 @@ describe('htmlToSlate', () => {
       ],
     });
   });
+
+  it('should remove HTML comments', () => {
+    const html = `<!--[if gte mso 9]><xml><o:OfficeDocumentSettings><o:AllowPNG/></o:OfficeDocumentSettings></xml><![endif]--><span>regular text</span>`;
+
+    const actual = htmlToSlate(html);
+    expect(actual).toEqual({
+      type: 'root',
+      children: [
+        {
+          type: 'paragraph',
+          children: [{ text: 'regular text' }],
+        },
+      ],
+    });
+  });
 });

@@ -43,7 +43,8 @@ const pt = {
     collectionTop: {
       sortBy: 'Ordenar por',
       viewAs: 'Visualizar como',
-      newButton: 'Novo(a) %{collectionLabel}',
+      newButton: '＋ %{collectionLabel}',
+      newButtonAriaLabel: 'Criar uma entrada do tipo %{collectionLabel}',
       ascending: 'Ascendente',
       descending: 'Descendente',
       searchResults: 'Resultados da busca por "%{searchTerm}"',

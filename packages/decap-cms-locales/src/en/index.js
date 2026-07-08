@@ -43,7 +43,10 @@ const en = {
     collectionTop: {
       sortBy: 'Sort by',
       viewAs: 'View as',
-      newButton: 'New %{collectionLabel}',
+      viewAsList: 'List view option',
+      viewAsGrid: 'Grid view option',
+      newButton: '＋ %{collectionLabel}',
+      newButtonAriaLabel: 'Create entry of type %{collectionLabel}',
       ascending: 'Ascending',
       descending: 'Descending',
       searchResults: 'Search Results for "%{searchTerm}"',
@@ -56,6 +59,7 @@ const en = {
       cachingEntries: 'Caching Entries...',
       longerLoading: 'This might take several minutes',
       noEntries: 'No Entries',
+      unpublishedHeader: 'Unpublished Entries',
     },
     groups: {
       other: 'Other',
@@ -74,6 +78,7 @@ const en = {
     editorControl: {
       field: {
         optional: 'optional',
+        widgetLabel: '%{widgetLabel} field',
       },
     },
     editorControlPane: {
@@ -119,6 +124,22 @@ const en = {
       toggleI18n: 'Toggle i18n',
       togglePreview: 'Toggle preview',
       toggleScrollSync: 'Sync scrolling',
+      toggleNotes: 'Toggle notes',
+    },
+    editorNotesPane: {
+      title: 'Notes',
+      emptyState: 'No notes yet. Add your first note below to start collaborating.',
+      addNote: 'Add Note',
+      addPlaceholder: 'Add a note...',
+      editPlaceholder: 'Edit your note...',
+      save: 'Save',
+      cancel: 'Cancel',
+      edit: 'Edit',
+      delete: 'Delete',
+      resolve: 'Resolve',
+      unresolve: 'Unresolve',
+      confirmDelete: 'Are you sure you want to delete this note?',
+      shortcut: 'Tip: Press Ctrl+Enter to add note quickly',
     },
     editorToolbar: {
       publishing: 'Publishing...',
@@ -168,6 +189,10 @@ const en = {
         addComponent: 'Add Component',
         richText: 'Rich Text',
         markdown: 'Markdown',
+        toggleMode: {
+          rich: 'Toggle to rich text mode',
+          markdown: 'Toggle to markdown mode',
+        },
       },
       image: {
         choose: 'Choose an image',
@@ -208,10 +233,15 @@ const en = {
       datetime: {
         now: 'Now',
         clear: 'Clear',
+        setToNow: 'Set %{fieldLabel} to now',
       },
       list: {
         add: 'Add %{item}',
         addType: 'Add %{item}',
+      },
+      object: {
+        expand: 'Expand',
+        collapse: 'Collapse',
       },
     },
   },
@@ -230,6 +260,7 @@ const en = {
     },
     mediaLibraryModal: {
       loading: 'Loading...',
+      close: 'Close',
       noResults: 'No results.',
       noAssetsFound: 'No assets found.',
       noImagesFound: 'No images found.',
@@ -264,6 +295,7 @@ const en = {
     },
     settingsDropdown: {
       logOut: 'Log Out',
+      account: 'Account options dropdown',
     },
     toast: {
       onFailToLoadEntries: 'Failed to load entry: %{details}',
@@ -279,6 +311,15 @@ const en = {
       onFailToUnpublishEntry: 'Failed to unpublish entry: %{details}',
       entryUpdated: 'Entry status updated',
       onDeleteUnpublishedChanges: 'Unpublished changes deleted',
+      noteAdded: 'Note added',
+      onFailToAddNote: 'Failed to add note: %{details}',
+      noteUpdated: 'Note updated',
+      onFailToUpdateNote: 'Failed to update note: %{details}',
+      noteDeleted: 'Note deleted',
+      onFailToDeleteNote: 'Failed to delete note: %{details}',
+      noteResolved: 'Note resolved',
+      noteReopened: 'Note reopened',
+      onFailToToggleNote: 'Failed to toggle note resolution: %{details}',
       onFailToAuth: '%{details}',
       onLoggedOut: 'You have been logged out, please back up any data and login again',
       onBackendDown:

@@ -717,8 +717,8 @@ describe('github API', () => {
         'message',
         newTree.sha,
         [baseCommit.sha],
-        { name: 'author' },
-        { name: 'committer' },
+        { name: 'author', email: '', date: undefined },
+        { name: 'committer', email: '', date: undefined },
       );
     });
   });
@@ -756,6 +756,8 @@ describe('github API', () => {
           path: 'posts/post.md',
           type: 'blob',
           name: 'post.md',
+          id: undefined,
+          size: 0,
         },
       ]);
       expect(api.request).toHaveBeenCalledTimes(1);
@@ -769,11 +771,15 @@ describe('github API', () => {
           path: 'posts/post.md',
           type: 'blob',
           name: 'post.md',
+          id: undefined,
+          size: 0,
         },
         {
           path: 'posts/dir1/nested-post.md',
           type: 'blob',
           name: 'nested-post.md',
+          id: undefined,
+          size: 0,
         },
       ]);
       expect(api.request).toHaveBeenCalledTimes(1);
@@ -787,16 +793,22 @@ describe('github API', () => {
           path: 'posts/post.md',
           type: 'blob',
           name: 'post.md',
+          id: undefined,
+          size: 0,
         },
         {
           path: 'posts/dir1/nested-post.md',
           type: 'blob',
           name: 'nested-post.md',
+          id: undefined,
+          size: 0,
         },
         {
           path: 'posts/dir1/dir2/nested-post.md',
           type: 'blob',
           name: 'nested-post.md',
+          id: undefined,
+          size: 0,
         },
       ]);
       expect(api.request).toHaveBeenCalledTimes(1);
@@ -822,7 +834,7 @@ describe('github API', () => {
     const slug = 'slug';
     await expect(api.getStatuses(collection, slug)).resolves.toEqual([
       { context: 'deploy', state: 'success', target_url: 'deploy-url' },
-      { context: 'build', state: 'other' },
+      { context: 'build', state: 'other', target_url: '' },
     ]);
 
     expect(api.getBranchPullRequest).toHaveBeenCalledTimes(1);

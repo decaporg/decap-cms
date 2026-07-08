@@ -1,7 +1,7 @@
 {
   "name": "decap-cms",
   "description": "An extensible, open source, Git-based, React CMS for static sites.",
-  "version": "3.8.4",
+  "version": "3.14.1",
   "homepage": "https://www.decapcms.org",
   "repository": "https://github.com/decaporg/decap-cms",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
@@ -30,5 +30,8 @@
     "react-dom": "catalog:",
     "svgo-loader": "catalog:"
   },
-  "incrementToForceBump": 2
+  "incrementToForceBump": 2,
+  "files": [
+    "dist"
+  ]
 }

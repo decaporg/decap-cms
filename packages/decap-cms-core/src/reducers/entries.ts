@@ -78,6 +78,14 @@ let slug: string;
 
 const storageSortKey = 'decap-cms.entries.sort';
 const viewStyleKey = 'decap-cms.entries.viewStyle';
+
+function normalizeDoubleSlashes(path: string) {
+  if (!path) {
+    return path;
+  }
+
+  return path.replace(/([^:]\/)\/+/g, '$1');
+}
 type StorageSortObject = SortObject & { index: number };
 type StorageSort = { [collection: string]: { [key: string]: StorageSortObject } };
 
@@ -466,14 +474,16 @@ function getGroup(entry: EntryMap, selectedGroup: GroupMap) {
   if (selectedGroup.has('pattern')) {
     const pattern = selectedGroup.get('pattern');
     let value = '';
-    try {
-      const regex = new RegExp(pattern);
-      const matched = dataAsString.match(regex);
-      if (matched) {
-        value = matched[0];
+    if (pattern !== undefined) {
+      try {
+        const regex = new RegExp(pattern);
+        const matched = dataAsString.match(regex);
+        if (matched) {
+          value = matched[0];
+        }
+      } catch (e) {
+        console.warn(`Invalid view group pattern '${pattern}' for field '${field}'`, e);
       }
-    } catch (e) {
-      console.warn(`Invalid view group pattern '${pattern}' for field '${field}'`, e);
     }
     return {
       id: `${label}${value}`,
@@ -785,12 +795,14 @@ export function selectMediaFilePublicPath(
   }
 
   const name = 'public_folder';
-  let publicFolder = config[name]!;
+  let publicFolder = normalizeDoubleSlashes(config[name]!);
 
   const customFolder = hasCustomFolder(name, collection, entryMap?.get('slug'), field);
 
   if (customFolder) {
-    publicFolder = evaluateFolder(name, config, collection!, entryMap, field);
+    publicFolder = normalizeDoubleSlashes(
+      evaluateFolder(name, config, collection!, entryMap, field),
+    );
   }
 
   if (isAbsolutePath(publicFolder)) {

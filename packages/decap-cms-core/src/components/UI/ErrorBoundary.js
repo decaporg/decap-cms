@@ -7,9 +7,8 @@ import yaml from 'yaml';
 import truncate from 'lodash/truncate';
 import { localForage } from 'decap-cms-lib-util';
 import { buttons, colors } from 'decap-cms-ui-default';
-import cleanStack from 'clean-stack';
 
-const ISSUE_URL = 'https://github.com/decaporg/decap-cms/issues/new?';
+const ISSUE_URL = 'https://github.com/decaporg/decap-cms/issues/new';
 
 function getIssueTemplate({ version, provider, browser, config }) {
   return `
@@ -53,6 +52,7 @@ function buildIssueTemplate({ config }) {
 }
 
 function buildIssueUrl({ title, config }) {
+  const issueUrl = config?.issue_reports?.url ?? ISSUE_URL;
   try {
     const body = buildIssueTemplate({ config });
 
@@ -61,10 +61,10 @@ function buildIssueUrl({ title, config }) {
     params.append('body', truncate(body, { length: 4000, omission: '\n...' }));
     params.append('labels', 'type: bug');
 
-    return `${ISSUE_URL}${params.toString()}`;
+    return `${issueUrl}?${params.toString()}`;
   } catch (e) {
     console.log(e);
-    return `${ISSUE_URL}template=bug_report.md`;
+    return `${issueUrl}?template=bug_report.md`;
   }
 }
 
@@ -145,7 +145,7 @@ export class ErrorBoundary extends Component {
     console.error(error);
     return {
       hasError: true,
-      errorMessage: cleanStack(error.stack, { basePath: window.location.origin || '' }),
+      errorMessage: error.stack || error.toString(),
       errorTitle: error.toString(),
     };
   }

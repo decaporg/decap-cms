@@ -23,7 +23,8 @@ class MarkdownPreview extends Component {
     }
 
     const html = markdownToHtml(value, { getAsset, resolveWidget }, getRemarkPlugins?.());
-    const toRender = field?.get('sanitize_preview', false) ? DOMPurify.sanitize(html) : html;
+    const shouldSanitizePreview = field?.get('sanitize_preview') ?? true;
+    const toRender = shouldSanitizePreview ? DOMPurify.sanitize(html) : html;
 
     return <WidgetPreviewContainer dangerouslySetInnerHTML={{ __html: toRender }} />;
   }

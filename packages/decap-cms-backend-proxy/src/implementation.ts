@@ -16,6 +16,7 @@ import type {
   Implementation,
   ImplementationFile,
   UnpublishedEntry,
+  Note,
 } from 'decap-cms-lib-util';
 
 async function serializeAsset(assetProxy: AssetProxy) {
@@ -30,6 +31,29 @@ type MediaFile = {
   name: string;
   path: string;
 };
+
+function normalizeProxyUrl(proxyUrl: string) {
+  const normalizedProxyUrl = proxyUrl.trim();
+
+  if (!normalizedProxyUrl) {
+    return null;
+  }
+
+  if (normalizedProxyUrl.startsWith('/') && !normalizedProxyUrl.startsWith('//')) {
+    return normalizedProxyUrl;
+  }
+
+  try {
+    const parsed = new URL(normalizedProxyUrl);
+    if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
+      return normalizedProxyUrl;
+    }
+
+    return null;
+  } catch {
+    return null;
+  }
+}
 
 function deserializeMediaFile({ id, content, encoding, path, name }: MediaFile) {
   let byteArray = new Uint8Array(0);
@@ -60,8 +84,14 @@ export default class ProxyBackend implements Implementation {
       throw new Error('The Proxy backend needs a "proxy_url" in the backend configuration.');
     }
 
+    const normalizedProxyUrl = normalizeProxyUrl(config.backend.proxy_url);
+
+    if (!normalizedProxyUrl) {
+      throw new Error('The Proxy backend requires an http(s) or root-relative "proxy_url".');
+    }
+
     this.branch = config.backend.branch || 'master';
-    this.proxyUrl = config.backend.proxy_url;
+    this.proxyUrl = normalizedProxyUrl;
     this.mediaFolder = config.media_folder;
     this.options = options;
     this.cmsLabelPrefix = config.backend.cms_label_prefix;
@@ -245,6 +275,97 @@ export default class ProxyBackend implements Implementation {
     });
 
     return deserializeMediaFile(file);
+  }
+
+  async getNotes(collection: string, slug: string): Promise<Note[]> {
+    try {
+      const response = await this.request({
+        action: 'getNotes',
+        params: {
+          branch: this.branch,
+          collection,
+          slug
+        },
+      });
+      return response.notes || [];
+    } catch (error) {
+      console.warn('Failed to get notes:', error);
+      return [];
+    }
+  }
+
+  async addNote(collection: string, slug: string, note: Omit<Note, 'id'>): Promise<Note> {
+    const response = await this.request({
+      action: 'addNote',
+      params: {
+        branch: this.branch,
+        collection,
+        slug,
+        note
+      },
+    });
+    return response.note;
+  }
+
+  async updateNote(collection: string, slug: string, noteId: string, updates: Partial<Note>): Promise<Note> {
+    const response = await this.request({
+      action: 'updateNote',
+      params: {
+        branch: this.branch,
+        collection,
+        slug,
+        noteId,
+        updates
+      },
+    });
+    return response.note;
+  }
+
+  async deleteNote(collection: string, slug: string, noteId: string): Promise<void> {
+    await this.request({
+      action: 'deleteNote',
+      params: {
+        branch: this.branch,
+        collection,
+        slug,
+        noteId
+      },
+    });
+  }
+
+  async toggleNoteResolution(collection: string, slug: string, noteId: string): Promise<Note> {
+    const response = await this.request({
+      action: 'toggleNoteResolution',
+      params: {
+        branch: this.branch,
+        collection,
+        slug,
+        noteId
+      },
+    });
+    return response.note;
+  }
+
+  async getPRMetadata(collection: string, slug: string): Promise<{
+    id: string;
+    url: string;
+    author: string;
+    createdAt: string;
+  } | null> {
+    try {
+      const response = await this.request({
+        action: 'getPRMetadata',
+        params: {
+          branch: this.branch,
+          collection,
+          slug
+        },
+      });
+      return response.metadata || null;
+    } catch (error) {
+      console.warn('Failed to get PR metadata:', error);
+      return null;
+    }
   }
 
   deleteFiles(paths: string[], commitMessage: string) {

@@ -13,7 +13,7 @@ dayjs.extend(customParseFormat);
 dayjs.extend(localizedFormat);
 dayjs.extend(utc);
 
-function Buttons({ t, handleChange, getNow }) {
+function Buttons({ t, fieldName, handleChange, getNow }) {
   return (
     <div
       css={css`
@@ -23,6 +23,7 @@ function Buttons({ t, handleChange, getNow }) {
       `}
     >
       <button
+        aria-label={t('editor.editorWidgets.datetime.setToNow', { fieldLabel: fieldName })}
         css={css`
           ${buttons.button}
           ${buttons.widget}
@@ -163,8 +164,16 @@ class DateTimeControl extends Component {
   };
 
   render() {
-    const { forID, value, classNameWrapper, setActiveStyle, setInactiveStyle, t, isDisabled } =
-      this.props;
+    const {
+      forID,
+      field,
+      value,
+      classNameWrapper,
+      setActiveStyle,
+      setInactiveStyle,
+      t,
+      isDisabled,
+    } = this.props;
     const { inputType } = this.getFormat();
 
     return (
@@ -197,7 +206,12 @@ class DateTimeControl extends Component {
           </span>
         )}
         {!isDisabled && (
-          <Buttons t={t} handleChange={v => this.handleChange(v)} getNow={() => this.getNow()} />
+          <Buttons
+            t={t}
+            fieldName={field.get('name')}
+            handleChange={v => this.handleChange(v)}
+            getNow={() => this.getNow()}
+          />
         )}
       </div>
     );

@@ -3,7 +3,7 @@ import { PKCEAuthenticationPage } from 'decap-cms-ui-auth';
 
 import type { GitHubUser } from 'decap-cms-backend-github/src/implementation';
 import type { Config } from 'decap-cms-lib-util/src';
-import type { Octokit } from '@octokit/rest';
+import type { Endpoints } from '@octokit/types';
 
 export default class AwsCognitoGitHubProxyBackend extends GitHubBackend {
   constructor(config: Config, options = {}) {
@@ -45,7 +45,9 @@ export default class AwsCognitoGitHubProxyBackend extends GitHubBackend {
     return this._currentUserPromise;
   }
 
-  async getPullRequestAuthor(pullRequest: Octokit.PullsListResponseItem) {
+  async getPullRequestAuthor(
+    pullRequest: Endpoints['GET /repos/{owner}/{repo}/pulls']['response']['data'][0],
+  ) {
     return pullRequest.user?.login;
   }
 }
