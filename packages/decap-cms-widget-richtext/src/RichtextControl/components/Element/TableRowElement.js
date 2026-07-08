@@ -1,4 +1,3 @@
-
 function TableRowElement({ children, attributes, nodeProps }) {
   return (
     <tr {...attributes} {...nodeProps}>
