@@ -211,12 +211,11 @@ Decap CMS uses NPM trusted publishers with OIDC for secure, automated package pu
 1. **Prepare the release:**
   ```sh
   # Ensure your local `main` branch is up to date
-  npm prune
-  npm install
-  npm run test
+  pnpm install --frozen-lockfile
+  pnpm run test
 
   # Bump versions for changed packages
-  npx lerna version
+  pnpm exec lerna version
 
   # This will:
   # - Detect changed packages since last release
@@ -246,7 +245,7 @@ If automated publishing fails and you need to publish manually:
 npm login
 
 # Publish changed packages
-npm run lerna:publish
+pnpm run publish:packages
 ```
 
 Note: Manual publishing still requires 2FA. Use recovery codes if you don't have access to your 2FA device.

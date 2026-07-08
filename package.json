@@ -34,7 +34,7 @@
     "format": "pnpm run lint:js -- --fix --quiet && pnpm run format:prettier -- --write",
     "format:prettier": "prettier \"{{packages,scripts}/**/,}*.{js,jsx,ts,tsx,css}\"",
     "prepare": "husky install",
-    "lerna:publish": "lerna publish from-package --yes --no-private",
+    "publish:packages": "pnpm publish -r --no-git-checks --report-summary",
     "test:package-integrity": "node scripts/test-package-integrity.mjs"
   },
   "browserslist": [
@@ -195,13 +195,12 @@
   },
   "packageManager": "pnpm@10.19.0",
   "version": "0.0.0",
-  "overrides": {
-    "clean-stack": "5.2.0",
-    "copy-webpack-plugin": {
-      "serialize-javascript": "7.0.4"
-    },
-    "nx": {
-      "minimatch": "9.0.9"
+  "pnpm": {
+    "overrides": {
+      "clean-stack": "5.2.0",
+      "copy-webpack-plugin@10.2.4>serialize-javascript": "7.0.4",
+      "nx@17.3.0>minimatch": "9.0.9",
+      "nx@21.6.6>minimatch": "9.0.9"
     }
   }
 }
