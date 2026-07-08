@@ -78,12 +78,17 @@ module.exports = {
       },
       exports: {},
     },
-    // PlateJS re-exports named APIs through package export subpaths that eslint-plugin-import
-    // does not resolve reliably, even though Node resolves them at runtime.
-    'import/ignore': ['^platejs(?:/react)?$'],
     'import/core-modules': [...packages, 'decap-cms-app/dist/esm'],
   },
   overrides: [
+    {
+      files: ['packages/decap-cms-widget-richtext/src/**/*.js'],
+      rules: {
+        // PlateJS re-exports named APIs through package export subpaths that
+        // eslint-plugin-import does not reliably trace, even though Node resolves them.
+        'import/named': 'off',
+      },
+    },
     {
       files: ['*.ts', '*.tsx'],
       parser: '@typescript-eslint/parser',
