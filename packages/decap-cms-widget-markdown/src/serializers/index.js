@@ -7,6 +7,7 @@ import remarkToRehype from 'remark-rehype';
 import rehypeToHtml from 'rehype-stringify';
 import htmlToRehype from 'rehype-parse';
 import rehypeToRemark from 'rehype-remark';
+import rehypeRemoveComments from 'rehype-remove-comments';
 
 import remarkToRehypeShortcodes from './remarkRehypeShortcodes';
 import rehypePaperEmoji from './rehypePaperEmoji';
@@ -198,6 +199,7 @@ export function htmlToSlate(html) {
 
   const mdast = unified()
     .use(rehypePaperEmoji)
+    .use(rehypeRemoveComments, { removeConditional: true })
     .use(rehypeToRemark, { minify: false })
     .runSync(hast);
 

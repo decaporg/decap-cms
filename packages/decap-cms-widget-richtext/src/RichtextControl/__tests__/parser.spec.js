@@ -534,6 +534,43 @@ Array [
 `);
   });
 
+  it('should compile linked images', () => {
+    const value = `
+[![Project logo](https://raw.githubusercontent.com/decaporg/decap-cms/main/img/decap.svg)](https://decapcms.org)
+`;
+    expect(parser(value)).toMatchInlineSnapshot(`
+Array [
+  Object {
+    "children": Array [
+      Object {
+        "children": Array [
+          Object {
+            "children": Array [
+              Object {
+                "text": "",
+              },
+            ],
+            "data": Object {
+              "alt": "Project logo",
+              "title": null,
+              "url": "https://raw.githubusercontent.com/decaporg/decap-cms/main/img/decap.svg",
+            },
+            "type": "image",
+          },
+        ],
+        "data": Object {
+          "title": null,
+          "url": "https://decapcms.org",
+        },
+        "type": "a",
+      },
+    ],
+    "type": "p",
+  },
+]
+`);
+  });
+
   it('should compile plugins', () => {
     const value = `
 ![test](test.png)

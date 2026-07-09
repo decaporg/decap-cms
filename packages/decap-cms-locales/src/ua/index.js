@@ -43,7 +43,8 @@ const ua = {
     collectionTop: {
       sortBy: 'Сортувати за',
       viewAs: 'Вигляд',
-      newButton: 'Створити %{collectionLabel}',
+      newButton: '＋ %{collectionLabel}',
+      newButtonAriaLabel: 'Створити запис типу %{collectionLabel}',
       ascending: 'За зростанням',
       descending: 'За спаданням',
       searchResults: 'Результати по запиту "%{searchTerm}"',

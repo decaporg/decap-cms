@@ -43,7 +43,8 @@ const de = {
     collectionTop: {
       sortBy: 'Sortieren nach',
       viewAs: 'Anzeigen als',
-      newButton: 'Neue(r/s) %{collectionLabel}',
+      newButton: '＋ %{collectionLabel}',
+      newButtonAriaLabel: 'Beitrag vom Typ %{collectionLabel} erstellen',
       ascending: 'Aufsteigend',
       descending: 'Absteigend',
       searchResults: 'Suchergebnisse für "%{searchTerm}"',

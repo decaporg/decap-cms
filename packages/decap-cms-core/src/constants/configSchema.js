@@ -6,7 +6,6 @@ import {
   prohibited,
 } from 'ajv-keywords/dist/keywords';
 import ajvErrors from 'ajv-errors';
-import { v4 as uuid } from 'uuid';
 
 import { frontmatterFormats, extensionFormatters } from '../formats/formats';
 import { getWidgets } from '../lib/registry';
@@ -45,7 +44,7 @@ const i18nField = {
  * Config for fields in both file and folder collections.
  */
 function fieldsConfig() {
-  const id = uuid();
+  const id = crypto.randomUUID();
   return {
     $id: `fields_${id}`,
     type: 'array',
@@ -224,6 +223,7 @@ function getConfigSchema() {
                   file: { type: 'string' },
                   preview_path: { type: 'string' },
                   preview_path_date_field: { type: 'string' },
+                  preview_path_preserve_slashes: { type: 'boolean' },
                   fields: fieldsConfig(),
                 },
                 required: ['name', 'label', 'file', 'fields'],
@@ -236,6 +236,7 @@ function getConfigSchema() {
             path: { type: 'string' },
             preview_path: { type: 'string' },
             preview_path_date_field: { type: 'string' },
+            preview_path_preserve_slashes: { type: 'boolean' },
             create: { type: 'boolean' },
             publish: { type: 'boolean' },
             hide: { type: 'boolean' },
@@ -303,7 +304,7 @@ function getConfigSchema() {
                     widget: { type: 'string' },
                     index_file: { type: 'string' },
                   },
-                  required: ['label', 'widget', 'index_file'],
+                  required: ['label', 'widget'],
                 },
               },
               additionalProperties: false,

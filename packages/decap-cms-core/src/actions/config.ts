@@ -270,6 +270,17 @@ export function applyDefaults(originalConfig: CmsConfig) {
     config.slug = config.slug || {};
     config.collections = config.collections || [];
 
+    if (!config.editor) {
+      config.editor = {};
+    }
+
+    if (!('preview' in config.editor)) {
+      config.editor.preview = true;
+    }
+    if (!('notes' in config.editor)) {
+      config.editor.notes = false;
+    }
+
     // Use `site_url` as default `display_url`.
     if (!config.display_url && config.site_url) {
       config.display_url = config.site_url;
@@ -415,9 +426,11 @@ export function applyDefaults(originalConfig: CmsConfig) {
         };
       });
 
-      if (config.editor && !collection.editor) {
-        collection.editor = { preview: config.editor.preview };
-      }
+      collection.editor = {
+        preview: config.editor.preview,
+        notes: config.editor.notes,
+        ...collection.editor,
+      };
     }
   });
 }
@@ -494,6 +507,17 @@ export async function detectProxyServer(localBackend?: boolean | CmsLocalBackend
     localBackend === true
       ? defaultUrl
       : localBackend.url || defaultUrl.replace('localhost', location.hostname);
+
+  try {
+    const { protocol } = new URL(proxyUrl);
+    if (protocol !== 'http:' && protocol !== 'https:') {
+      console.log(`Decap CMS local_backend url must use http or https, ignoring '${proxyUrl}'`);
+      return {};
+    }
+  } catch {
+    console.log(`Decap CMS local_backend url '${proxyUrl}' is not a valid URL`);
+    return {};
+  }
 
   try {
     console.log(`Looking for Decap CMS Proxy Server at '${proxyUrl}'`);

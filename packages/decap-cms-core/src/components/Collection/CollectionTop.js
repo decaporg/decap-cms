@@ -16,11 +16,12 @@ import { createHashHistory } from 'history';
 
 const CollectionTopContainer = styled.div`
   ${components.cardTop};
-  margin-bottom: 22px;
 `;
 
 const CollectionTopRow = styled.div`
   display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
   align-items: center;
   justify-content: space-between;
 `;
@@ -34,6 +35,7 @@ const CollectionTopNewButton = styled(Link)`
   ${shadows.dropDeep};
   ${buttons.default};
   ${buttons.gray};
+  white-space: nowrap;
 
   padding: 0 30px;
 `;
@@ -49,7 +51,6 @@ const CollectionTopDropdownButton = styled(StyledDropdownButton)`
 
 const CollectionTopDescription = styled.p`
   ${components.cardTopDescription};
-  margin-bottom: 0;
 `;
 
 function getCollectionProps(collection) {
@@ -83,10 +84,15 @@ function CollectionTop({ collection, newEntryUrl, t }) {
     <CollectionTopContainer>
       <CollectionTopRow>
         <CollectionTopHeading>{collectionLabel}</CollectionTopHeading>
-        {indexFileConfig && collection.get('nested') ? (
+        {indexFileConfig && collection.get('nested') && newEntryUrl ? (
           <Dropdown
             renderButton={() => (
-              <CollectionTopDropdownButton>
+              <CollectionTopDropdownButton
+                dir="auto"
+                aria-label={t('collection.collectionTop.newButtonAriaLabel', {
+                  collectionLabel: collectionLabelSingular || collectionLabel,
+                })}
+              >
                 {t('collection.collectionTop.newButton', {
                   collectionLabel: collectionLabelSingular || collectionLabel,
                 })}
@@ -108,7 +114,13 @@ function CollectionTop({ collection, newEntryUrl, t }) {
             />
           </Dropdown>
         ) : newEntryUrl ? (
-          <CollectionTopNewButton to={newEntryUrl}>
+          <CollectionTopNewButton
+            to={newEntryUrl}
+            dir="auto"
+            aria-label={t('collection.collectionTop.newButtonAriaLabel', {
+              collectionLabel: collectionLabelSingular || collectionLabel,
+            })}
+          >
             {t('collection.collectionTop.newButton', {
               collectionLabel: collectionLabelSingular || collectionLabel,
             })}

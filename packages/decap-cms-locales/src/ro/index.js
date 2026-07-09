@@ -43,7 +43,8 @@ const ro = {
     collectionTop: {
       sortBy: 'Sortează',
       viewAs: 'Vizualizează ca',
-      newButton: 'Adaugă %{collectionLabel}',
+      newButton: '＋ %{collectionLabel}',
+      newButtonAriaLabel: 'Creează o intrare de tip %{collectionLabel}',
       ascending: 'Ascendent',
       descending: 'Descendent',
       searchResults: 'Rezultatele căutării pentru "%{searchTerm}"',

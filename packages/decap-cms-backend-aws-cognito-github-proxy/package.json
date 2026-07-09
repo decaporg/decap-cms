@@ -1,7 +1,7 @@
 {
   "name": "decap-cms-backend-aws-cognito-github-proxy",
   "description": "GitHub backend for Decap CMS proxied through AWS Cognito",
-  "version": "3.5.0",
+  "version": "3.6.0",
   "license": "MIT",
   "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-backend-aws-cognito-github-proxy",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
@@ -18,17 +18,6 @@
     "develop": "npm run build:esm -- --watch",
     "build": "cross-env NODE_ENV=production webpack",
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore **/__tests__ --root-mode upward --extensions \".js,.jsx,.ts,.tsx\""
-  },
-  "dependencies": {
-    "apollo-cache-inmemory": "^1.6.2",
-    "apollo-client": "^2.6.3",
-    "apollo-link-context": "^1.0.18",
-    "apollo-link-http": "^1.5.15",
-    "common-tags": "^1.8.0",
-    "graphql": "^15.0.0",
-    "graphql-tag": "^2.10.1",
-    "js-base64": "^3.0.0",
-    "semaphore": "^1.1.0"
   },
   "peerDependencies": {
     "@emotion/react": "^11.11.1",

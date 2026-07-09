@@ -1,10 +1,10 @@
-import { Map, fromJS } from 'immutable';
+import { Map, fromJS, List } from 'immutable';
 
 import * as actions from '../../actions/entries';
 import reducer, { selectCustomPath } from '../entryDraft';
 import { FOLDER } from '../../constants/collectionTypes';
 
-jest.mock('uuid', () => ({ v4: jest.fn(() => '1') }));
+global.crypto.randomUUID = jest.fn(() => '1');
 
 const initialState = Map({
   entry: Map(),
@@ -12,6 +12,7 @@ const initialState = Map({
   fieldsErrors: Map(),
   hasChanged: false,
   key: '',
+  notes: List([]),
 });
 
 const entry = {
@@ -38,6 +39,7 @@ describe('entryDraft reducer', () => {
           fieldsErrors: Map(),
           hasChanged: false,
           key: '1',
+          notes: List([]),
         }),
       );
     });
@@ -56,6 +58,7 @@ describe('entryDraft reducer', () => {
           fieldsErrors: Map(),
           hasChanged: false,
           key: '1',
+          notes: List([]),
         }),
       );
     });
@@ -133,6 +136,7 @@ describe('entryDraft reducer', () => {
         fieldsErrors: {},
         hasChanged: true,
         key: '',
+        notes: [], // This stays as regular array in .toJS() output
       });
     });
   });
@@ -150,6 +154,7 @@ describe('entryDraft reducer', () => {
         fieldsErrors: {},
         hasChanged: true,
         key: '',
+        notes: [], // This stays as regular array in .toJS() output
       });
     });
   });
@@ -171,6 +176,7 @@ describe('entryDraft reducer', () => {
         fieldsErrors: {},
         hasChanged: true,
         key: '1',
+        notes: [], // This stays as regular array in .toJS() output
       });
     });
   });
@@ -193,7 +199,128 @@ describe('entryDraft reducer', () => {
           entry: { ...entry, mediaFiles: [{ id: '1' }] },
         },
         key: '',
+        notes: [], // This stays as regular array in .toJS() output
       });
+    });
+  });
+
+  describe('selectCustomPath', () => {
+    let selectCustomPath;
+    let selectHasMetaPath;
+    let selectFolderEntryExtension;
+    let isNestedSubfolders;
+
+    beforeEach(() => {
+      jest.resetModules();
+      selectHasMetaPath = jest.fn(
+        collection => collection.has('meta') && collection.get('meta').has('path'),
+      );
+      selectFolderEntryExtension = jest.fn(collection => collection.get('extension') || 'md');
+      isNestedSubfolders = jest.fn(() => false);
+
+      jest.doMock('../collections', () => ({
+        selectHasMetaPath,
+        selectFolderEntryExtension,
+        isNestedSubfolders,
+      }));
+
+      const entryDraftModule = require('../entryDraft');
+      selectCustomPath = entryDraftModule.selectCustomPath;
+    });
+
+    afterEach(() => {
+      jest.unmock('../collections');
+    });
+
+    it('should generate dynamic filename for new entries without index_file', () => {
+      const collection = fromJS({
+        folder: '_pages',
+        extension: 'md',
+        meta: { path: { label: 'Path', widget: 'string' } },
+      });
+      const entryDraft = fromJS({
+        entry: {
+          newRecord: true,
+          data: { title: 'My Great Article' },
+          meta: { path: 'blog' },
+        },
+      });
+
+      const result = selectCustomPath(collection, entryDraft);
+      expect(result).toBe('_pages/blog/my-great-article.md');
+    });
+
+    it('should preserve filename for existing entries without index_file', () => {
+      const collection = fromJS({
+        folder: '_pages',
+        extension: 'md',
+        meta: { path: { label: 'Path', widget: 'string' } },
+      });
+      const entryDraft = fromJS({
+        entry: {
+          newRecord: false,
+          path: '_pages/old-folder/existing-file.md',
+          data: { title: 'Updated Title' },
+          meta: { path: 'new-folder' },
+        },
+      });
+
+      const result = selectCustomPath(collection, entryDraft);
+      expect(result).toBe('_pages/new-folder/existing-file.md');
+    });
+
+    it('should use index_file when specified (backward compatibility)', () => {
+      const collection = fromJS({
+        folder: '_pages',
+        extension: 'md',
+        meta: { path: { label: 'Path', widget: 'string', index_file: 'index' } },
+      });
+      const entryDraft = fromJS({
+        entry: {
+          newRecord: true,
+          data: { title: 'My Article' },
+          meta: { path: 'blog' },
+        },
+      });
+
+      const result = selectCustomPath(collection, entryDraft);
+      expect(result).toBe('_pages/blog/index.md');
+    });
+
+    it('should return undefined when path is not set', () => {
+      const collection = fromJS({
+        folder: '_pages',
+        extension: 'md',
+        meta: { path: { label: 'Path', widget: 'string' } },
+      });
+      const entryDraft = fromJS({
+        entry: {
+          newRecord: true,
+          data: { title: 'My Article' },
+          meta: {},
+        },
+      });
+
+      const result = selectCustomPath(collection, entryDraft);
+      expect(result).toBeUndefined();
+    });
+
+    it('should preserve non-latin characters in generated filename', () => {
+      const collection = fromJS({
+        folder: '_pages',
+        extension: 'md',
+        meta: { path: { label: 'Path', widget: 'string' } },
+      });
+      const entryDraft = fromJS({
+        entry: {
+          newRecord: true,
+          data: { title: '日本語のタイトル' },
+          meta: { path: 'blog' },
+        },
+      });
+
+      const result = selectCustomPath(collection, entryDraft);
+      expect(result).toBe('_pages/blog/日本語のタイトル.md');
     });
   });
 });

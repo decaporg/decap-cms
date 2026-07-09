@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 
 import MediaLibrarySearch from './MediaLibrarySearch';
@@ -12,19 +13,36 @@ import {
   InsertButton,
 } from './MediaLibraryButtons';
 
+const styles = {
+  flexSpacing: css`
+    gap: 8px;
+    @media (min-width: 500px) {
+      gap: 15px;
+    }
+  `,
+};
+
 const LibraryTop = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
+  ${styles.flexSpacing};
 `;
 
 const RowContainer = styled.div`
   display: flex;
+  align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  ${styles.flexSpacing};
 `;
 
 const ButtonsContainer = styled.div`
-  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: stretch;
+  flex-wrap: wrap;
+  ${styles.flexSpacing};
 `;
 
 function MediaLibraryTop({

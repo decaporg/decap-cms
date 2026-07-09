@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import { List } from 'immutable';
@@ -11,13 +11,26 @@ const StyledImage = styled(({ src }) => <img src={src || ''} role="presentation"
 `;
 
 function StyledImageAsset({ getAsset, value, field }) {
-  let src = '';
-  if (value instanceof File) {
-    src = URL.createObjectURL(value);
-  } else {
-    src = getAsset(value, field);
-  }
-  return <StyledImage src={src} />;
+  const [asset, setAsset] = useState(null);
+
+  useEffect(() => {
+    if (!value) {
+      setAsset(null);
+      return;
+    }
+
+    if (typeof File !== 'undefined' && value instanceof File) {
+      const objectUrl = URL.createObjectURL(value);
+      setAsset(objectUrl);
+
+      return () => URL.revokeObjectURL(objectUrl);
+    }
+
+    const newAsset = getAsset(value, field);
+    setAsset(newAsset);
+  }, [value, field, getAsset]);
+
+  return asset ? <StyledImage src={asset} /> : null;
 }
 
 function ImagePreviewContent(props) {

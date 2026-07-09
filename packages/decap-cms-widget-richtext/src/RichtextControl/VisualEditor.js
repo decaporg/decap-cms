@@ -25,12 +25,16 @@ import HeadingElement from './components/Element/HeadingElement';
 import ListElement from './components/Element/ListElement';
 import BlockquoteElement from './components/Element/BlockquoteElement';
 import LinkElement from './components/Element/LinkElement';
+import ImageElement from './components/Element/ImageElement';
 import ExtendedBlockquotePlugin from './plugins/ExtendedBlockquotePlugin';
+import ImagePlugin from './plugins/ImagePlugin';
+import BreakPlugin from './plugins/BreakPlugin';
 import ShortcodePlugin from './plugins/ShortcodePlugin';
 import { TablePlugin, TableRowPlugin, TableCellPlugin } from './plugins/TablePlugin';
 import defaultEmptyBlock from './defaultEmptyBlock';
 import { mergeMediaConfig } from './mergeMediaConfig';
 import { handleLinkClick } from './linkHandler';
+import { handlePasteHtml } from './pasteHandler';
 
 function editorStyles({ minimal }) {
   return css`
@@ -59,6 +63,7 @@ export default function VisualEditor(props) {
     isShowModeToggle,
     onChange,
     getEditorComponents,
+    getAsset,
   } = props;
 
   let editorComponents = getEditorComponents();
@@ -84,6 +89,10 @@ export default function VisualEditor(props) {
     onChange(mdValue);
   }
 
+  function handlePaste(event) {
+    handlePasteHtml({ event, editor, isDisabled });
+  }
+
   const initialValue = props.value
     ? markdownToSlate(props.value, { editorComponents, voidCodeBlock: !!codeBlockComponent })
     : emptyValue;
@@ -106,6 +115,7 @@ export default function VisualEditor(props) {
         ['ol']: withProps(ListElement, { variant: 'ol' }),
         ['li']: withProps(ListElement, { variant: 'li' }),
         ['blockquote']: BlockquoteElement,
+        ['image']: withProps(ImageElement, { getAsset, field }),
       },
     },
     plugins: [
@@ -129,6 +139,8 @@ export default function VisualEditor(props) {
         shortcuts: { toggle: { keys: 'mod+shift+c' } },
       }),
       ListPlugin,
+      BreakPlugin,
+      ImagePlugin,
       LinkPlugin.configure({
         node: { component: LinkElement },
         shortcuts: {
@@ -183,7 +195,7 @@ export default function VisualEditor(props) {
               />
             </EditorControlBar>
             <div css={editorStyles({ minimal: field.get('minimal') })}>
-              <Editor isDisabled={isDisabled} />
+              <Editor isDisabled={isDisabled} onPaste={handlePaste} />
             </div>
           </Plate>
         </div>

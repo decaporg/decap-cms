@@ -24,9 +24,9 @@ import {
   readFileMetadata,
   throwOnConflictingBranches,
 } from 'decap-cms-lib-util';
-import { dirname } from 'path';
 import { oneLine } from 'common-tags';
 import { parse } from 'what-the-diff';
+import { dirname } from 'path';
 
 import type {
   ApiRequest,
@@ -432,17 +432,30 @@ export default class API {
       commitMessage,
       branch,
       parentSha,
-    }: { commitMessage: string; branch: string; parentSha?: string },
+      hasSubfolders = true,
+    }: { commitMessage: string; branch: string; parentSha?: string; hasSubfolders?: boolean },
   ) {
     const formData = new FormData();
-    const toMove: { from: string; to: string; contentBlob: Blob; isFolder?: boolean }[] = [];
+    const toMove: {
+      from: string;
+      to: string;
+      contentBlob: Blob;
+      hasSubfolders: boolean;
+      isFolder?: boolean;
+    }[] = [];
     files.forEach(file => {
       if (file.delete) {
         // delete the file
         formData.append('files', file.path);
       } else if (file.newPath) {
         const contentBlob = get(file, 'fileObj', new Blob([(file as DataFile).raw]));
-        toMove.push({ from: file.path, to: file.newPath, contentBlob, isFolder: file.isFolder });
+        toMove.push({
+          from: file.path,
+          to: file.newPath,
+          contentBlob,
+          hasSubfolders,
+          isFolder: file.isFolder,
+        });
       } else {
         // add/modify the file
         const contentBlob = get(file, 'fileObj', new Blob([(file as DataFile).raw]));
@@ -450,31 +463,43 @@ export default class API {
         formData.append(file.path, contentBlob, basename(file.path));
       }
     });
-    for (const { from, to, contentBlob, isFolder } of toMove) {
-      const sourceDir = dirname(from);
-      const destDir = dirname(to);
-      const filesBranch = parentSha ? this.branch : branch;
-      const files = await this.listAllFiles(sourceDir, 100, filesBranch);
-      for (const file of files) {
-        // skip moving children for non-folder (slug) type entries
-        if (isFolder === false && file.path !== from) {
-          continue;
-        }
+    for (const { from, to, contentBlob, hasSubfolders, isFolder } of toMove) {
+      if (!hasSubfolders || isFolder === false) {
         // to move a file in Bitbucket we need to delete the old path
         // and upload the file content to the new path
         // NOTE: this is very wasteful, and also the Bitbucket `diff` API
         // reports these files as deleted+added instead of renamed
         // delete current path
-        formData.append('files', file.path);
+        formData.append('files', from);
         // create in new path
-        const content =
-          file.path === from
-            ? contentBlob
-            : await this.readFile(file.path, null, {
-                branch: filesBranch,
-                parseText: false,
-              });
-        formData.append(file.path.replace(sourceDir, destDir), content, basename(file.path));
+        formData.append(to, contentBlob, basename(to));
+      } else {
+        // Legacy behavior (subfolders: true, default): Move all files in the directory
+        const sourceDir = dirname(from);
+        const destDir = dirname(to);
+        const filesBranch = parentSha ? this.branch : branch;
+        const files = await this.listAllFiles(sourceDir, 100, filesBranch);
+        for (const file of files) {
+          // to move a file in Bitbucket we need to delete the old path
+          // and upload the file content to the new path
+          // NOTE: this is very wasteful, and also the Bitbucket `diff` API
+          // reports these files as deleted+added instead of renamed
+          // delete current path
+          formData.append('files', file.path);
+          // create in new path
+          const content =
+            file.path === from
+              ? contentBlob
+              : await this.readFile(file.path, null, {
+                  branch: filesBranch,
+                  parseText: false,
+                });
+          formData.append(
+            file.path.replace(sourceDir, destDir),
+            content as Blob,
+            basename(file.path),
+          );
+        }
       }
     }
 
@@ -512,11 +537,16 @@ export default class API {
 
   async persistFiles(dataFiles: DataFile[], mediaFiles: AssetProxy[], options: PersistOptions) {
     const files = [...dataFiles, ...mediaFiles];
+    const hasSubfolders = options.hasSubfolders !== false; // default to true
     if (options.useWorkflow) {
       const slug = dataFiles[0].slug;
       return this.editorialWorkflowGit(files, slug, options);
     } else {
-      return this.uploadFiles(files, { commitMessage: options.commitMessage, branch: this.branch });
+      return this.uploadFiles(files, {
+        commitMessage: options.commitMessage,
+        branch: this.branch,
+        hasSubfolders,
+      });
     }
   }
 
@@ -603,12 +633,14 @@ export default class API {
     const contentKey = generateContentKey(options.collectionName as string, slug);
     const branch = branchFromContentKey(contentKey);
     const unpublished = options.unpublished || false;
+    const hasSubfolders = options.hasSubfolders !== false; // default to true
     if (!unpublished) {
       const defaultBranchSha = await this.branchCommitSha(this.branch);
       await this.uploadFiles(files, {
         commitMessage: options.commitMessage,
         branch,
         parentSha: defaultBranchSha,
+        hasSubfolders,
       });
       await this.createPullRequest(
         branch,
@@ -628,6 +660,7 @@ export default class API {
       await this.uploadFiles([...files, ...toDelete], {
         commitMessage: options.commitMessage,
         branch,
+        hasSubfolders,
       });
     }
   }

@@ -42,7 +42,8 @@ const it = {
     collectionTop: {
       sortBy: 'Ordina per',
       viewAs: 'Vedi come',
-      newButton: 'Aggiungi %{collectionLabel}',
+      newButton: '＋ %{collectionLabel}',
+      newButtonAriaLabel: 'Crea una voce di tipo %{collectionLabel}',
       ascending: 'Crescente',
       descending: 'Decrescente',
       searchResults: 'Risultati di ricerca per "%{searchTerm}"',
