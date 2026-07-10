@@ -6,5 +6,5 @@ git push --delete origin $ref
 echo "reverting commit $publishCommit"
 git revert --no-edit $publishCommit
 echo "pushing changes"
-git push origin master
+git push origin main
 echo "done reverting publish"

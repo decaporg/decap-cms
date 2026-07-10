@@ -1,0 +1,729 @@
+jest.mock('decap-cms-core/src/backend');
+import { fromJS } from 'immutable';
+import { oneLine, stripIndent } from 'common-tags';
+import nock from 'nock';
+import { Cursor } from 'decap-cms-lib-util';
+
+import Gitlab from '../implementation';
+import AuthenticationPage from '../AuthenticationPage';
+
+const { Backend, LocalStorageAuthStore } = jest.requireActual('decap-cms-core/src/backend');
+
+function generateEntries(path, length) {
+  const entries = Array.from({ length }, (val, idx) => {
+    const count = idx + 1;
+    const id = `00${count}`.slice(-3);
+    const fileName = `test${id}.md`;
+    return { id, fileName, filePath: `${path}/${fileName}` };
+  });
+
+  return {
+    tree: entries.map(({ id, fileName, filePath }) => ({
+      id: `d8345753a1d935fa47a26317a503e73e1192d${id}`,
+      name: fileName,
+      type: 'blob',
+      path: filePath,
+      mode: '100644',
+    })),
+    files: entries.reduce(
+      (acc, { id, filePath }) => ({
+        ...acc,
+        [filePath]: stripIndent`
+        ---
+        title: test ${id}
+        ---
+        # test ${id}
+      `,
+      }),
+      {},
+    ),
+  };
+}
+
+const manyEntries = generateEntries('many-entries', 500);
+
+const mockRepo = {
+  tree: {
+    '/': [
+      {
+        id: '5d0620ebdbc92068a3e866866e928cc373f18429',
+        name: 'content',
+        type: 'tree',
+        path: 'content',
+        mode: '040000',
+      },
+    ],
+    content: [
+      {
+        id: 'b1a200e48be54fde12b636f9563d659d44c206a5',
+        name: 'test1.md',
+        type: 'blob',
+        path: 'content/test1.md',
+        mode: '100644',
+      },
+      {
+        id: 'd8345753a1d935fa47a26317a503e73e1192d623',
+        name: 'test2.md',
+        type: 'blob',
+        path: 'content/test2.md',
+        mode: '100644',
+      },
+    ],
+    'many-entries': manyEntries.tree,
+  },
+  files: {
+    'content/test1.md': stripIndent`
+      ---
+      title: test
+      ---
+      # test
+    `,
+    'content/test2.md': stripIndent`
+      ---
+      title: test2
+      ---
+      # test 2
+    `,
+    ...manyEntries.files,
+  },
+};
+
+const resp = {
+  user: {
+    success: {
+      id: 1,
+    },
+  },
+  branch: {
+    success: {
+      name: 'master',
+      commit: {
+        id: 1,
+      },
+    },
+  },
+  project: {
+    success: {
+      permissions: {
+        project_access: {
+          access_level: 30,
+        },
+      },
+      default_branch: 'main',
+    },
+    readOnly: {
+      permissions: {
+        project_access: {
+          access_level: 10,
+        },
+      },
+    },
+  },
+};
+
+describe('gitlab backend', () => {
+  let authStore;
+  let backend;
+  const repo = 'foo/bar';
+  const defaultConfig = {
+    backend: {
+      name: 'gitlab',
+      repo,
+    },
+  };
+  const collectionContentConfig = {
+    name: 'foo',
+    folder: 'content',
+    fields: [{ name: 'title' }],
+    // TODO: folder_based_collection is an internal string, we should not
+    // be depending on it here
+    type: 'folder_based_collection',
+  };
+  const collectionManyEntriesConfig = {
+    name: 'foo',
+    folder: 'many-entries',
+    fields: [{ name: 'title' }],
+    // TODO: folder_based_collection is an internal string, we should not
+    // be depending on it here
+    type: 'folder_based_collection',
+  };
+  const collectionFilesConfig = {
+    name: 'foo',
+    files: [
+      {
+        label: 'foo',
+        name: 'foo',
+        file: 'content/test1.md',
+        fields: [{ name: 'title' }],
+      },
+      {
+        label: 'bar',
+        name: 'bar',
+        file: 'content/test2.md',
+        fields: [{ name: 'title' }],
+      },
+    ],
+    type: 'file_based_collection',
+  };
+  const mockCredentials = { token: 'MOCK_TOKEN' };
+  const expectedRepo = encodeURIComponent(repo);
+  const expectedRepoUrl = `/projects/${expectedRepo}`;
+
+  function resolveBackend(config = {}) {
+    authStore = new LocalStorageAuthStore();
+    return new Backend(
+      {
+        init: (...args) => new Gitlab(...args),
+      },
+      {
+        backendName: 'gitlab',
+        config,
+        authStore,
+      },
+    );
+  }
+
+  function mockApi(backend) {
+    return nock(backend.implementation.apiRoot);
+  }
+
+  function interceptAuth(backend, { userResponse, projectResponse } = {}) {
+    const api = mockApi(backend);
+    api
+      .get('/user')
+      .query(true)
+      .reply(200, userResponse || resp.user.success);
+
+    api
+      // The `authenticate` method of the API class from netlify-cms-backend-gitlab
+      // calls the same endpoint twice for gettng a single project.
+      // First time through `this.api.hasWriteAccess()
+      // Second time through the method `getDefaultBranchName` from lib-util
+      // As a result, we need to repeat the same response twice.
+      // Otherwise, we'll get an error: "No match for request to
+      // https://gitlab.com/api/v4"
+
+      .get(expectedRepoUrl)
+      .times(2)
+      .query(true)
+      .reply(200, projectResponse || resp.project.success);
+  }
+
+  function interceptBranch(backend, { branch = 'master' } = {}) {
+    const api = mockApi(backend);
+    api
+      .get(`${expectedRepoUrl}/repository/branches/${encodeURIComponent(branch)}`)
+      .query(true)
+      .reply(200, resp.branch.success);
+  }
+
+  function parseQuery(uri) {
+    const query = uri.split('?')[1];
+    if (!query) {
+      return {};
+    }
+    return query.split('&').reduce((acc, q) => {
+      const [key, value] = q.split('=');
+      acc[key] = value;
+      return acc;
+    }, {});
+  }
+
+  function createHeaders(backend, { basePath, path, page, perPage, pageCount, totalCount }) {
+    const pageNum = parseInt(page, 10);
+    const pageCountNum = parseInt(pageCount, 10);
+    const url = `${backend.implementation.apiRoot}${basePath}`;
+
+    function link(linkPage) {
+      return `<${url}?id=${expectedRepo}&page=${linkPage}&path=${path}&per_page=${perPage}&recursive=false>`;
+    }
+
+    const linkHeader = oneLine`
+      ${link(1)}; rel="first",
+      ${link(pageCount)}; rel="last",
+      ${pageNum === 1 ? '' : `${link(pageNum - 1)}; rel="prev",`}
+      ${pageNum === pageCountNum ? '' : `${link(pageNum + 1)}; rel="next",`}
+    `.slice(0, -1);
+
+    return {
+      'X-Page': page,
+      'X-Total-Pages': pageCount,
+      'X-Per-Page': perPage,
+      'X-Total': totalCount,
+      Link: linkHeader,
+    };
+  }
+
+  function interceptCollection(
+    backend,
+    collection,
+    { verb = 'get', repeat = 1, page: expectedPage } = {},
+  ) {
+    const api = mockApi(backend);
+    const url = `${expectedRepoUrl}/repository/tree`;
+    const { folder } = collection;
+    const tree = mockRepo.tree[folder];
+    api[verb](url)
+      .query(({ path, page }) => {
+        if (path !== folder) {
+          return false;
+        }
+        if (expectedPage && page && parseInt(page, 10) !== parseInt(expectedPage, 10)) {
+          return false;
+        }
+        return true;
+      })
+      .times(repeat)
+      .reply(uri => {
+        const { page = 1, per_page = 20 } = parseQuery(uri);
+        const pageCount = tree.length <= per_page ? 1 : Math.round(tree.length / per_page);
+        const pageLastIndex = page * per_page;
+        const pageFirstIndex = pageLastIndex - per_page;
+        const resp = tree.slice(pageFirstIndex, pageLastIndex);
+        return [
+          200,
+          verb === 'head' ? null : resp,
+          createHeaders(backend, {
+            basePath: url,
+            path: folder,
+            page,
+            perPage: per_page,
+            pageCount,
+            totalCount: tree.length,
+          }),
+        ];
+      });
+  }
+
+  function interceptFiles(backend, path) {
+    const api = mockApi(backend);
+    const url = `${expectedRepoUrl}/repository/files/${encodeURIComponent(path)}/raw`;
+    api.get(url).query(true).reply(200, mockRepo.files[path]);
+
+    api
+      .get(`${expectedRepoUrl}/repository/commits`)
+      .query(({ path }) => path === path)
+      .reply(200, [
+        {
+          author_name: 'author_name',
+          author_email: 'author_email',
+          authored_date: 'authored_date',
+        },
+      ]);
+  }
+
+  function sharedSetup() {
+    beforeEach(async () => {
+      backend = resolveBackend(defaultConfig);
+      interceptAuth(backend);
+      await backend.authenticate(mockCredentials);
+      interceptCollection(backend, collectionManyEntriesConfig, { verb: 'head' });
+      interceptCollection(backend, collectionContentConfig, { verb: 'head' });
+    });
+  }
+
+  it('throws if configuration does not include repo', () => {
+    expect(() => resolveBackend({ backend: {} })).toThrowErrorMatchingInlineSnapshot(
+      `"The GitLab backend needs a \\"repo\\" in the backend configuration."`,
+    );
+  });
+
+  describe('authComponent', () => {
+    it('returns authentication page component', () => {
+      backend = resolveBackend(defaultConfig);
+      expect(backend.authComponent()).toEqual(AuthenticationPage);
+    });
+  });
+
+  describe('authenticate', () => {
+    it('throws if user does not have access to project', async () => {
+      backend = resolveBackend(defaultConfig);
+      interceptAuth(backend, { projectResponse: resp.project.readOnly });
+      await expect(
+        backend.authenticate(mockCredentials),
+      ).rejects.toThrowErrorMatchingInlineSnapshot(
+        `"Your GitLab user account does not have access to this repo."`,
+      );
+    });
+
+    it('stores and returns user object on success', async () => {
+      const backendName = defaultConfig.backend.name;
+      backend = resolveBackend(defaultConfig);
+      interceptAuth(backend);
+      const user = await backend.authenticate(mockCredentials);
+      expect(authStore.retrieve()).toEqual(user);
+      expect(user).toEqual({ ...resp.user.success, ...mockCredentials, backendName });
+    });
+  });
+
+  describe('currentUser', () => {
+    it('returns null if no user', async () => {
+      backend = resolveBackend(defaultConfig);
+      const user = await backend.currentUser();
+      expect(user).toEqual(null);
+    });
+
+    it('returns the stored user if exists', async () => {
+      const backendName = defaultConfig.backend.name;
+      backend = resolveBackend(defaultConfig);
+      interceptAuth(backend);
+      await backend.authenticate(mockCredentials);
+      const user = await backend.currentUser();
+      expect(user).toEqual({ ...resp.user.success, ...mockCredentials, backendName });
+    });
+  });
+
+  describe('getToken', () => {
+    it('returns the token for the current user', async () => {
+      backend = resolveBackend(defaultConfig);
+      interceptAuth(backend);
+      await backend.authenticate(mockCredentials);
+      const token = await backend.getToken();
+      expect(token).toEqual(mockCredentials.token);
+    });
+  });
+
+  describe('token refresh', () => {
+    const pkceConfig = {
+      backend: {
+        name: 'gitlab',
+        repo,
+        auth_type: 'pkce',
+        app_id: 'app-id',
+      },
+    };
+    const pkceCredentials = { token: 'EXPIRED_TOKEN', refresh_token: 'REFRESH_TOKEN' };
+    const expiredTokenResponse = {
+      error: 'invalid_token',
+      error_description: 'Token is expired. You can either do re-authorization or token refresh.',
+    };
+
+    it('stores the refresh token on login', async () => {
+      backend = resolveBackend(pkceConfig);
+      interceptAuth(backend);
+      await backend.authenticate(pkceCredentials);
+      expect(authStore.retrieve()).toEqual(expect.objectContaining(pkceCredentials));
+    });
+
+    it('refreshes the access token and retries the request on 401', async () => {
+      backend = resolveBackend(pkceConfig);
+      interceptAuth(backend);
+      await backend.authenticate(pkceCredentials);
+
+      backend.implementation.authenticator = {
+        refresh: jest
+          .fn()
+          .mockResolvedValue({ token: 'NEW_TOKEN', refresh_token: 'NEW_REFRESH_TOKEN' }),
+      };
+
+      const api = mockApi(backend);
+      api
+        .get('/user')
+        .matchHeader('authorization', 'Bearer EXPIRED_TOKEN')
+        .query(true)
+        .reply(401, expiredTokenResponse);
+      api
+        .get('/user')
+        .matchHeader('authorization', 'Bearer NEW_TOKEN')
+        .query(true)
+        .reply(200, resp.user.success);
+
+      const user = await backend.implementation.api.user();
+
+      expect(user).toEqual(resp.user.success);
+      expect(backend.implementation.authenticator.refresh).toHaveBeenCalledWith({
+        refresh_token: 'REFRESH_TOKEN',
+      });
+      expect(await backend.getToken()).toEqual('NEW_TOKEN');
+      expect(authStore.retrieve()).toEqual(
+        expect.objectContaining({ token: 'NEW_TOKEN', refresh_token: 'NEW_REFRESH_TOKEN' }),
+      );
+    });
+
+    it('returns and persists the refreshed credentials when the token is refreshed during login', async () => {
+      backend = resolveBackend(pkceConfig);
+
+      backend.implementation.authenticator = {
+        refresh: jest
+          .fn()
+          .mockResolvedValue({ token: 'NEW_TOKEN', refresh_token: 'NEW_REFRESH_TOKEN' }),
+      };
+
+      const api = mockApi(backend);
+      api
+        .get('/user')
+        .matchHeader('authorization', 'Bearer EXPIRED_TOKEN')
+        .query(true)
+        .reply(401, expiredTokenResponse);
+      api
+        .get('/user')
+        .matchHeader('authorization', 'Bearer NEW_TOKEN')
+        .query(true)
+        .reply(200, resp.user.success);
+      api.get(expectedRepoUrl).times(2).query(true).reply(200, resp.project.success);
+
+      const user = await backend.authenticate(pkceCredentials);
+
+      expect(backend.implementation.authenticator.refresh).toHaveBeenCalledWith({
+        refresh_token: 'REFRESH_TOKEN',
+      });
+      expect(user).toEqual(
+        expect.objectContaining({ token: 'NEW_TOKEN', refresh_token: 'NEW_REFRESH_TOKEN' }),
+      );
+      expect(authStore.retrieve()).toEqual(
+        expect.objectContaining({ token: 'NEW_TOKEN', refresh_token: 'NEW_REFRESH_TOKEN' }),
+      );
+    });
+
+    it('does not try to refresh when not using pkce auth', async () => {
+      backend = resolveBackend(defaultConfig);
+      interceptAuth(backend);
+      await backend.authenticate(mockCredentials);
+
+      const api = mockApi(backend);
+      api.get('/user').query(true).reply(401, expiredTokenResponse);
+
+      await expect(backend.implementation.api.user()).rejects.toThrow(
+        "Can't refresh access token when using implicit auth",
+      );
+    });
+  });
+
+  describe('logout', () => {
+    it('sets token to null', async () => {
+      backend = resolveBackend(defaultConfig);
+      interceptAuth(backend);
+      await backend.authenticate(mockCredentials);
+      await backend.logout();
+      const token = await backend.getToken();
+      expect(token).toEqual(null);
+    });
+  });
+
+  describe('getEntry', () => {
+    sharedSetup();
+
+    it('returns an entry from folder collection', async () => {
+      const entryTree = mockRepo.tree[collectionContentConfig.folder][0];
+      const slug = entryTree.path.split('/').pop().replace('.md', '');
+
+      interceptFiles(backend, entryTree.path);
+      interceptCollection(backend, collectionContentConfig);
+
+      const entry = await backend.getEntry(
+        {
+          config: {},
+          integrations: fromJS([]),
+          entryDraft: fromJS({}),
+          mediaLibrary: fromJS({}),
+        },
+        fromJS(collectionContentConfig),
+        slug,
+      );
+
+      expect(entry).toEqual(expect.objectContaining({ path: entryTree.path }));
+    });
+  });
+
+  describe('media files', () => {
+    it('requests GitLab LFS content for media display files', async () => {
+      backend = resolveBackend(defaultConfig);
+      const blob = new Blob(['image content']);
+      const readFile = jest.fn().mockResolvedValue(blob);
+      backend.implementation.api = { readFile };
+      global.URL.createObjectURL = jest.fn().mockReturnValue('blob:http://localhost/image');
+
+      await expect(
+        backend.implementation.getMediaDisplayURL({
+          id: 'image-sha',
+          path: 'static/uploads/image.png',
+        }),
+      ).resolves.toBe('blob:http://localhost/image');
+
+      expect(readFile).toHaveBeenCalledWith('static/uploads/image.png', 'image-sha', {
+        parseText: false,
+        lfs: true,
+      });
+    });
+
+    it('requests GitLab LFS content when downloading media files', async () => {
+      backend = resolveBackend(defaultConfig);
+      const blob = new Blob(['image content']);
+      const readFile = jest.fn().mockResolvedValue(blob);
+      backend.implementation.api = { readFile };
+      global.URL.createObjectURL = jest.fn().mockReturnValue('blob:http://localhost/image');
+
+      await expect(
+        backend.implementation.getMediaFile('static/uploads/image.png'),
+      ).resolves.toEqual(
+        expect.objectContaining({
+          displayURL: 'blob:http://localhost/image',
+          path: 'static/uploads/image.png',
+          name: 'image.png',
+        }),
+      );
+
+      expect(readFile).toHaveBeenCalledWith('static/uploads/image.png', null, {
+        parseText: false,
+        lfs: true,
+      });
+    });
+
+    it('requests GitLab LFS content when loading unpublished entry media files', async () => {
+      backend = resolveBackend(defaultConfig);
+      const blob = new Blob(['image content']);
+      const readFile = jest.fn().mockResolvedValue(blob);
+      backend.implementation.api = { readFile };
+      global.URL.createObjectURL = jest.fn().mockReturnValue('blob:http://localhost/image');
+
+      await expect(
+        backend.implementation.loadMediaFile('cms/posts/example', {
+          path: 'static/uploads/image.png',
+        }),
+      ).resolves.toEqual(
+        expect.objectContaining({
+          displayURL: 'blob:http://localhost/image',
+          path: 'static/uploads/image.png',
+          name: 'image.png',
+        }),
+      );
+
+      expect(readFile).toHaveBeenCalledWith('static/uploads/image.png', null, {
+        branch: 'cms/posts/example',
+        parseText: false,
+        lfs: true,
+      });
+    });
+  });
+
+  describe('listEntries', () => {
+    sharedSetup();
+
+    it('returns entries from folder collection', async () => {
+      const tree = mockRepo.tree[collectionContentConfig.folder];
+      tree.forEach(file => interceptFiles(backend, file.path));
+
+      interceptCollection(backend, collectionContentConfig);
+      const entries = await backend.listEntries(fromJS(collectionContentConfig));
+
+      expect(entries).toEqual({
+        cursor: expect.any(Cursor),
+        pagination: 1,
+        entries: expect.arrayContaining(
+          tree.map(file => expect.objectContaining({ path: file.path })),
+        ),
+      });
+      expect(entries.entries).toHaveLength(2);
+    });
+
+    it('returns all entries from folder collection', async () => {
+      const tree = mockRepo.tree[collectionManyEntriesConfig.folder];
+      interceptBranch(backend);
+      tree.forEach(file => interceptFiles(backend, file.path));
+
+      interceptCollection(backend, collectionManyEntriesConfig, { repeat: 5 });
+      const entries = await backend.listAllEntries(fromJS(collectionManyEntriesConfig));
+
+      expect(entries).toEqual(
+        expect.arrayContaining(tree.map(file => expect.objectContaining({ path: file.path }))),
+      );
+      expect(entries).toHaveLength(500);
+    }, 7000);
+
+    it('returns entries from file collection', async () => {
+      const { files } = collectionFilesConfig;
+      files.forEach(file => interceptFiles(backend, file.file));
+      const entries = await backend.listEntries(fromJS(collectionFilesConfig));
+
+      expect(entries).toEqual({
+        cursor: expect.any(Cursor),
+        entries: expect.arrayContaining(
+          files.map(file => expect.objectContaining({ path: file.file })),
+        ),
+      });
+      expect(entries.entries).toHaveLength(2);
+    });
+
+    it('returns first page from paginated folder collection tree', async () => {
+      const tree = mockRepo.tree[collectionManyEntriesConfig.folder];
+      const pageTree = tree.slice(0, 20);
+      pageTree.forEach(file => interceptFiles(backend, file.path));
+      interceptCollection(backend, collectionManyEntriesConfig, { page: 1 });
+      const entries = await backend.listEntries(fromJS(collectionManyEntriesConfig));
+
+      expect(entries.entries).toEqual(
+        expect.arrayContaining(pageTree.map(file => expect.objectContaining({ path: file.path }))),
+      );
+      expect(entries.entries).toHaveLength(20);
+    });
+  });
+
+  describe('traverseCursor', () => {
+    sharedSetup();
+
+    it('returns complete last page of paginated tree', async () => {
+      const tree = mockRepo.tree[collectionManyEntriesConfig.folder];
+      tree.slice(0, 20).forEach(file => interceptFiles(backend, file.path));
+      interceptCollection(backend, collectionManyEntriesConfig, { page: 1 });
+      const entries = await backend.listEntries(fromJS(collectionManyEntriesConfig));
+
+      const nextPageTree = tree.slice(20, 40);
+      nextPageTree.forEach(file => interceptFiles(backend, file.path));
+      interceptCollection(backend, collectionManyEntriesConfig, { page: 2 });
+      const nextPage = await backend.traverseCursor(entries.cursor, 'next');
+
+      expect(nextPage.entries).toEqual(
+        expect.arrayContaining(
+          nextPageTree.map(file => expect.objectContaining({ path: file.path })),
+        ),
+      );
+      expect(nextPage.entries).toHaveLength(20);
+
+      const lastPageTree = tree.slice(-20);
+      lastPageTree.forEach(file => interceptFiles(backend, file.path));
+      interceptCollection(backend, collectionManyEntriesConfig, { page: 25 });
+      const lastPage = await backend.traverseCursor(nextPage.cursor, 'last');
+      expect(lastPage.entries).toEqual(
+        expect.arrayContaining(
+          lastPageTree.map(file => expect.objectContaining({ path: file.path })),
+        ),
+      );
+      expect(lastPage.entries).toHaveLength(20);
+    });
+  });
+
+  describe('filterFile', () => {
+    it('should return true for nested file with matching depth', () => {
+      backend = resolveBackend(defaultConfig);
+
+      expect(
+        backend.implementation.filterFile(
+          'content/posts',
+          { name: 'index.md', path: 'content/posts/dir1/dir2/index.md' },
+          'md',
+          3,
+        ),
+      ).toBe(true);
+    });
+
+    it('should return false for nested file with non matching depth', () => {
+      backend = resolveBackend(defaultConfig);
+
+      expect(
+        backend.implementation.filterFile(
+          'content/posts',
+          { name: 'index.md', path: 'content/posts/dir1/dir2/index.md' },
+          'md',
+          2,
+        ),
+      ).toBe(false);
+    });
+  });
+
+  afterEach(() => {
+    nock.cleanAll();
+    authStore.logout();
+    backend = null;
+    expect(authStore.retrieve()).toEqual(null);
+  });
+});

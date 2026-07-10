@@ -28,6 +28,8 @@ collections:
       - label: Publish Date
         name: date
         widget: datetime
+        format: 'YYYY-MM-DDTHH:mm'
+        default: 1970-01-01T01:00
       - label: Description
         name: description
         widget: text

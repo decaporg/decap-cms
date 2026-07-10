@@ -12,7 +12,7 @@
 // the project's config changing)
 require('dotenv').config();
 const { merge } = require('lodash');
-const { addMatchImageSnapshotPlugin } = require('cypress-image-snapshot/plugin');
+const { addMatchImageSnapshotPlugin } = require('@simonsmith/cypress-image-snapshot/plugin');
 
 const {
   setupGitHub,
@@ -172,6 +172,25 @@ module.exports = async (on, config) => {
         merge(current, config);
       });
 
+      return null;
+    },
+    async useRichTextWidget() {
+      console.log('Updating config to use richtext widget');
+      await updateConfig(current => {
+        if (current.collections) {
+          current.collections = current.collections.map(collection => {
+            if (collection.fields) {
+              collection.fields = collection.fields.map(field => {
+                if (field.widget === 'markdown') {
+                  return { ...field, widget: 'richtext' };
+                }
+                return field;
+              });
+            }
+            return collection;
+          });
+        }
+      });
       return null;
     },
   });

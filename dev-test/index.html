@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
 
-  <title>Netlify CMS Development Test</title>
+  <title>Decap CMS Development Test</title>
   <script>
   window.repoFiles = {
     _posts: {
@@ -21,8 +21,8 @@
       }
     },
     _faqs: {
-      "what-is-netlify-cms.md": {
-        content: "---\ntitle: What is netlify CMS?\ndate: 2015-11-02T00:00.000Z\n---\n\n# Netlify CMS is Content Manager for Static Site Generators\n\nStatic sites are many times faster, cheaper and safer and traditional dynamic websites.\n\nModern static site generators like Jekyll, Middleman, Roots or Hugo are powerful publishing and development systems, but when we build sites for non-technical users, we need a layer on top of them.\n\nNetlify CMS is there to let your marketing team push new content to your public site, or to let technical writers work on your documentation.\n\nNetlify CMS integrates with Git and turns normal content editors into git comitters.\n\n"
+      "what-is-decap-cms.md": {
+        content: "---\ntitle: What is Decap CMS?\ndate: 2015-11-02T00:00.000Z\n---\n\n# Decap CMS is Content Manager for Static Site Generators\n\nStatic sites are many times faster, cheaper and safer and traditional dynamic websites.\n\nModern static site generators like Jekyll, Middleman, Roots or Hugo are powerful publishing and development systems, but when we build sites for non-technical users, we need a layer on top of them.\n\nDecap CMS is there to let your marketing team push new content to your public site, or to let technical writers work on your documentation.\n\nDecap CMS integrates with Git and turns normal content editors into git committers.\n\n"
       },
       "what-is-jam-stack.md": {
         content: "---\ntitle: What is the “JAM Stack”?\ndate: 2015-11-02T00:00.000Z\n---\n\n# The JAM stack is a new way of building websites and apps that are fast, secure and simple to work with.\n\nJAM stands for JavaScript, APIs and Markup. It's the fastest growing new stack for building websites and apps: no more servers, host all your front-end on a CDN and use APIs for any moving parts.\n\n"
@@ -50,11 +50,17 @@
   }
 
   var ONE_DAY = 60 * 60 * 24 * 1000;
+  var ONE_WEEK = ONE_DAY * 7;
 
   for (var i=1; i<=20; i++) {
     var date = new Date();
 
-    date.setTime(date.getTime() + ONE_DAY);
+    if (i % 2 === 0) {
+      date.setTime(date.getTime() + ONE_DAY);
+    } else {
+      date.setTime(date.getTime() - ONE_WEEK);
+    }
+
     var month = ('0' + (date.getMonth()+1)).slice(-2)
     var day = ('0' + (date.getDate())).slice(-2)
     var dateString = '' + date.getFullYear() + '-' + month + '-' + day;
@@ -112,7 +118,7 @@
 </head>
 <body>
 
-  <script src="dist/netlify-cms.js"></script>
+  <script src="dist/decap-cms.js"></script>
   <script>
     var PostPreview = createClass({
       render: function() {
@@ -125,7 +131,10 @@
           h('p', {},
             h('small', {}, "Written " + entry.getIn(['data', 'date']))
           ),
-          h('div', {"className": "text"}, this.props.widgetFor('body'))
+          h('h2', {}, "Richtext Widget"),
+          h('div', {"className": "text"}, this.props.widgetFor('body')),
+          h('h2', {}, "Markdown Widget"),
+          h('div', {"className": "text"}, this.props.widgetFor('bodyold'))
         );
       }
     });
@@ -237,6 +246,39 @@
         );
       }
     });
+    CMS.registerEditorComponent({
+      id: 'container-markdown',
+      label: 'Container Markdown',
+      fields: [
+        { name: 'inner', label: 'Body', widget: 'markdown', editor_components: [] },
+      ],
+      pattern: /^{{< container-markdown >}}(.*?){{< \/container-markdown >}}/s,
+      fromBlock (match) {
+        return {
+          inner: match[1] || '',
+        }
+      },
+      toBlock (obj) {
+        return `{{< container-markdown >}}${obj.inner}{{< /container-markdown >}}`
+      },
+    })
+    CMS.registerEditorComponent({
+      id: 'container-richtext',
+      label: 'Container Richtext',
+      fields: [
+        { name: 'inner', label: 'Body', widget: 'richtext', editor_components: ['container-richtext'] },
+      ],
+      pattern: /^{{< container-richtext >}}(.*?){{< \/container-richtext >}}/s,
+      fromBlock (match) {
+        return {
+          inner: match[1] || '',
+        }
+      },
+      toBlock (obj) {
+        return `{{< container-richtext >}}${obj.inner}{{< /container-richtext >}}`
+      },
+    })
+
   </script>
 </body>
 </html>

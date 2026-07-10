@@ -7,7 +7,7 @@ jobs:
   create-release:
     name: Create GitHub Release
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/netlify-cms@')
+    if: startsWith(github.ref, 'refs/tags/decap-cms@')
 
     steps:
       - name: Checkout
