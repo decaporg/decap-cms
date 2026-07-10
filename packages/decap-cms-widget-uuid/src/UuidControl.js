@@ -35,12 +35,16 @@ export default class UuidControl extends React.Component {
 
   // componentDidMount is used for generate a UUID when the page loads for the first time
   componentDidMount() {
-    const { value, field, onChange } = this.props;
-    if (!value) {
+    const { value, field, onChange, collection, locale } = this.props;
+    const defaultLocale = collection?.getIn(['i18n', 'default_locale']);
+    const isTranslatable = field.get('i18n') === 'translate';
+    const shouldGenerate = !locale || !defaultLocale || locale === defaultLocale || isTranslatable;
+
+    if (!value && shouldGenerate) {
       const prefix = field.get('prefix', '');
-      const useB32Encode = field.get('use_b32_encode', false);
+      const useB32Encoding = field.get('use_b32_encoding', false);
       const uuid = crypto.randomUUID();
-      const uuidFormatted = useB32Encode ? this.uuidToB32(uuid) : uuid;
+      const uuidFormatted = useB32Encoding ? this.uuidToB32(uuid) : uuid;
       onChange(prefix + uuidFormatted);
     }
   }
