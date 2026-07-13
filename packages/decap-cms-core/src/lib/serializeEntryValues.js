@@ -3,8 +3,6 @@ import { Map, List } from 'immutable';
 
 import { getWidgetValueSerializer } from './registry';
 
-const _pathsToRemove = new Set();
-
 /**
  * Methods for serializing/deserializing entry field values. Most widgets don't
  * require this for their values, and those that do can typically serialize/
@@ -23,43 +21,57 @@ const _pathsToRemove = new Set();
  * registered deserialization handlers run on entry load, and serialization
  * handlers run on persist.
  */
-function runSerializer(values, fields, method, config = {}, isRecursive = false, currentPath = '') {
+function runSerializer(
+  values,
+  fields,
+  method,
+  removeEmptyFields = [],
+  pathsToRemove = [],
+  currentPath = [],
+) {
   /**
    * Reduce the list of fields to a map where keys are field names and values
    * are field values, serializing the values of fields whose widgets have
    * registered serializers.  If the field is a list or object, call recursively
    * for nested fields.
    */
-  let serializedData = fields.reduce((acc, field) => {
+  const serializedData = fields.reduce((acc, field) => {
     const fieldName = field.get('name');
     const value = values.get(fieldName);
-    const serializer = getWidgetValueSerializer(field.get('widget'));
+    const widget = field.get('widget', 'string');
+    const serializer = getWidgetValueSerializer(widget);
     const nestedFields = field.get('fields');
-    const newPath = currentPath ? `${currentPath}.${fieldName}` : fieldName;
+    const newPath = [...currentPath, fieldName];
 
     // Call recursively for fields within lists
     if (nestedFields && List.isList(value)) {
       return acc.set(
         fieldName,
         value.map((val, index) =>
-          runSerializer(val, nestedFields, method, config, true, `${newPath}.${index}`),
+          runSerializer(val, nestedFields, method, removeEmptyFields, pathsToRemove, [
+            ...newPath,
+            index,
+          ]),
         ),
       );
     }
 
     // Call recursively for fields within objects
     if (nestedFields && Map.isMap(value)) {
-      return acc.set(fieldName, runSerializer(value, nestedFields, method, config, true, newPath));
+      return acc.set(
+        fieldName,
+        runSerializer(value, nestedFields, method, removeEmptyFields, pathsToRemove, newPath),
+      );
+    }
+
+    if (removeEmptyFields.includes(widget) && (isNil(value) || value === '')) {
+      pathsToRemove.push(newPath);
+      return acc;
     }
 
     // Run serialization method on value if not null or undefined
     if (serializer && !isNil(value)) {
       return acc.set(fieldName, serializer[method](value));
-    }
-
-    // If widget is image with no value set, flag field for removal
-    if (config.remove_empty_image_field && !value && field.get('widget') === 'image') {
-      _pathsToRemove.add(newPath);
     }
 
     // If no serializer is registered for the field's widget, use the field as is
@@ -71,20 +83,12 @@ function runSerializer(values, fields, method, config = {}, isRecursive = false,
   }, Map());
 
   // preserve unknown fields value
-  serializedData = values.mergeDeep(serializedData);
-
-  // Remove only on the top level, otherwise `mergeDeep` will reinsert them.
-  if (config.remove_empty_image_field && !isRecursive) {
-    serializedData = removeEntriesByPaths(serializedData, _pathsToRemove);
-    _pathsToRemove.clear();
-  }
-
-  return serializedData;
+  return values.mergeDeep(serializedData);
 }
 
 function removeEntriesByPaths(data, paths) {
   paths.forEach(path => {
-    data = removeEntryByPath(data, path.split('.'));
+    data = removeEntryByPath(data, path);
   });
   return data;
 }
@@ -106,7 +110,15 @@ function removeEntryByPath(data, keys) {
 }
 
 export function serializeValues(values, fields, config) {
-  return runSerializer(values, fields, 'serialize', config);
+  const pathsToRemove = [];
+  const serializedValues = runSerializer(
+    values,
+    fields,
+    'serialize',
+    config?.remove_empty_fields,
+    pathsToRemove,
+  );
+  return removeEntriesByPaths(serializedValues, pathsToRemove);
 }
 
 export function deserializeValues(values, fields) {

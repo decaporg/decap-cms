@@ -172,15 +172,21 @@ describe('config', () => {
       }).not.toThrowError();
     });
 
-    it('should throw if remove_empty_image_field is not a boolean', () => {
+    it('should throw if remove_empty_fields is not an array', () => {
       expect(() => {
-        validateConfig(merge({}, validConfig, { remove_empty_image_field: 'false' }));
-      }).toThrowError("'remove_empty_image_field' must be boolean");
+        validateConfig(merge({}, validConfig, { remove_empty_fields: 'image' }));
+      }).toThrowError("'remove_empty_fields' must be array");
     });
 
-    it('should not throw if remove_empty_image_field is a boolean', () => {
+    it('should throw if remove_empty_fields contains a non-string value', () => {
       expect(() => {
-        validateConfig(merge({}, validConfig, { remove_empty_image_field: false }));
+        validateConfig(merge({}, validConfig, { remove_empty_fields: ['image', false] }));
+      }).toThrowError("'remove_empty_fields[1]' must be string");
+    });
+
+    it('should not throw if remove_empty_fields is a string array', () => {
+      expect(() => {
+        validateConfig(merge({}, validConfig, { remove_empty_fields: ['image', 'string'] }));
       }).not.toThrowError();
     });
 
