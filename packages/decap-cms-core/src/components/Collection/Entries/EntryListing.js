@@ -3,9 +3,18 @@ import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import { Waypoint } from 'react-waypoint';
-import { Map } from 'immutable';
+import { Map, List, fromJS } from 'immutable';
+import { translate } from 'react-polyglot';
+import orderBy from 'lodash/orderBy';
+import { colors, lengths } from 'decap-cms-ui-default';
 
-import { selectFields, selectInferredField } from '../../../reducers/collections';
+import {
+  selectFields,
+  selectInferredField,
+  selectSortDataPath,
+} from '../../../reducers/collections';
+import { filterNestedEntries } from './EntriesCollection';
+import { SortDirection } from '../../../types/redux';
 import EntryCard from './EntryCard';
 
 const CardsGrid = styled.ul`
@@ -17,7 +26,21 @@ const CardsGrid = styled.ul`
   margin-bottom: 16px;
 `;
 
-export default class EntryListing extends React.Component {
+const SectionSeparator = styled.div`
+  width: ${lengths.topCardWidth};
+  margin: 24px 0 16px 12px;
+  padding-top: 16px;
+  border-top: 2px solid ${colors.textFieldBorder};
+`;
+
+const SectionHeading = styled.p`
+  font-size: 16px;
+  font-weight: 600;
+  color: ${colors.textLead};
+  margin: 0 0 8px;
+`;
+
+class EntryListing extends React.Component {
   static propTypes = {
     collections: ImmutablePropTypes.iterable.isRequired,
     entries: ImmutablePropTypes.list,
@@ -25,6 +48,18 @@ export default class EntryListing extends React.Component {
     cursor: PropTypes.any.isRequired,
     handleCursorActions: PropTypes.func.isRequired,
     page: PropTypes.number,
+    getUnpublishedEntries: PropTypes.func.isRequired,
+    getWorkflowStatus: PropTypes.func.isRequired,
+    filterTerm: PropTypes.string,
+    sortFields: PropTypes.array,
+    showPublishedEntries: PropTypes.bool,
+    showUnpublishedEntries: PropTypes.bool,
+    t: PropTypes.func.isRequired,
+  };
+
+  static defaultProps = {
+    showPublishedEntries: true,
+    showUnpublishedEntries: true,
   };
 
   componentDidMount() {
@@ -54,38 +89,170 @@ export default class EntryListing extends React.Component {
     return { titleField, descriptionField, imageField, remainingFields };
   };
 
+  sortEntries = (entries, sortFields, collections) => {
+    if (!sortFields || sortFields.length === 0) {
+      return entries;
+    }
+
+    const keys = sortFields.map(v => selectSortDataPath(collections, v.get('key')));
+    const orders = sortFields.map(v =>
+      v.get('direction') === SortDirection.Ascending ? 'asc' : 'desc',
+    );
+    return fromJS(orderBy(entries.toJS(), keys, orders));
+  };
+
+  getUnpublishedEntriesList = () => {
+    const { entries, collections, filterTerm, sortFields } = this.props;
+    const collectionName = Map.isMap(collections) ? collections.get('name') : null;
+
+    if (!collectionName) {
+      return List();
+    }
+
+    const unpublishedEntries = this.props.getUnpublishedEntries(collectionName);
+
+    if (!unpublishedEntries || unpublishedEntries.length === 0) {
+      return List();
+    }
+
+    let unpublishedList = List(unpublishedEntries.map(entry => entry));
+
+    if (collections.has('nested') && filterTerm) {
+      const collectionFolder = collections.get('folder');
+      const subfolders = collections.get('nested').get('subfolders') !== false;
+
+      unpublishedList = filterNestedEntries(
+        filterTerm,
+        collectionFolder,
+        unpublishedList,
+        subfolders,
+      );
+    }
+
+    const publishedSlugs = entries.map(entry => entry.get('slug')).toSet();
+    const uniqueUnpublished = unpublishedList.filterNot(entry =>
+      publishedSlugs.has(entry.get('slug')),
+    );
+
+    return this.sortEntries(uniqueUnpublished, sortFields, collections);
+  };
+
   renderCardsForSingleCollection = () => {
-    const { collections, entries, viewStyle } = this.props;
+    const {
+      collections,
+      viewStyle,
+      entries,
+      page,
+      t,
+      showPublishedEntries,
+      showUnpublishedEntries,
+    } = this.props;
     const inferredFields = this.inferFields(collections);
     const entryCardProps = { collection: collections, inferredFields, viewStyle };
-    return entries.map((entry, idx) => <EntryCard {...entryCardProps} entry={entry} key={idx} />);
+
+    const publishedCards = showPublishedEntries
+      ? entries.map((entry, idx) => {
+          const workflowStatus = this.props.getWorkflowStatus(
+            collections.get('name'),
+            entry.get('slug'),
+          );
+
+          return (
+            <EntryCard
+              {...entryCardProps}
+              entry={entry}
+              workflowStatus={workflowStatus}
+              key={`published-${idx}`}
+            />
+          );
+        })
+      : List();
+
+    const unpublishedEntries = showUnpublishedEntries ? this.getUnpublishedEntriesList() : List();
+
+    if (unpublishedEntries.size === 0) {
+      if (!showPublishedEntries) {
+        return null;
+      }
+
+      return (
+        <CardsGrid>
+          {publishedCards}
+          {this.hasMore() && <Waypoint key={page} onEnter={this.handleLoadMore} />}
+        </CardsGrid>
+      );
+    }
+
+    const unpublishedCards = unpublishedEntries.map((entry, idx) => {
+      const workflowStatus = this.props.getWorkflowStatus(
+        collections.get('name'),
+        entry.get('slug'),
+      );
+
+      return (
+        <EntryCard
+          {...entryCardProps}
+          entry={entry}
+          workflowStatus={workflowStatus}
+          key={`unpublished-${idx}`}
+        />
+      );
+    });
+
+    return (
+      <React.Fragment>
+        {showPublishedEntries && (
+          <CardsGrid>
+            {publishedCards}
+            {this.hasMore() && <Waypoint key={page} onEnter={this.handleLoadMore} />}
+          </CardsGrid>
+        )}
+        <SectionSeparator>
+          <SectionHeading>{t('collection.entries.unpublishedHeader')}</SectionHeading>
+        </SectionSeparator>
+        <CardsGrid>{unpublishedCards}</CardsGrid>
+      </React.Fragment>
+    );
   };
 
   renderCardsForMultipleCollections = () => {
-    const { collections, entries } = this.props;
+    const { collections, entries, page } = this.props;
     const isSingleCollectionInList = collections.size === 1;
-    return entries.map((entry, idx) => {
+    const entryCards = entries.map((entry, idx) => {
       const collectionName = entry.get('collection');
       const collection = collections.find(coll => coll.get('name') === collectionName);
       const collectionLabel = !isSingleCollectionInList && collection.get('label');
       const inferredFields = this.inferFields(collection);
-      const entryCardProps = { collection, entry, inferredFields, collectionLabel };
+      const workflowStatus = this.props.getWorkflowStatus(collectionName, entry.get('slug'));
+      const entryCardProps = {
+        collection,
+        entry,
+        inferredFields,
+        collectionLabel,
+        workflowStatus,
+      };
       return <EntryCard {...entryCardProps} key={idx} />;
     });
+
+    return (
+      <CardsGrid>
+        {entryCards}
+        {this.hasMore() && <Waypoint key={page} onEnter={this.handleLoadMore} />}
+      </CardsGrid>
+    );
   };
 
   render() {
-    const { collections, page } = this.props;
+    const { collections } = this.props;
 
     return (
       <div>
-        <CardsGrid>
-          {Map.isMap(collections)
-            ? this.renderCardsForSingleCollection()
-            : this.renderCardsForMultipleCollections()}
-          {this.hasMore() && <Waypoint key={page} onEnter={this.handleLoadMore} />}
-        </CardsGrid>
+        {Map.isMap(collections)
+          ? this.renderCardsForSingleCollection()
+          : this.renderCardsForMultipleCollections()}
       </div>
     );
   }
 }
+
+export default translate()(EntryListing);

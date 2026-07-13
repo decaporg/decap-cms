@@ -2,9 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import copyToClipboard from 'copy-text-to-clipboard';
 import { isAbsolutePath } from 'decap-cms-lib-util';
-import { buttons, shadows, zIndex } from 'decap-cms-ui-default';
+import { buttons, Icon, shadows, zIndex } from 'decap-cms-ui-default';
 
 import { FileUploadButton } from '../UI';
 
@@ -12,14 +11,24 @@ const styles = {
   button: css`
     ${buttons.button};
     ${buttons.default};
-    display: inline-block;
-    margin-left: 15px;
-    margin-right: 2px;
+    display: inline-flex;
+    align-items: center;
 
     &[disabled] {
       ${buttons.disabled};
       cursor: default;
     }
+  `,
+  // Hides an element without removing it from the accessibility tree.
+  visuallyHidden: css`
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
   `,
 };
 
@@ -69,7 +78,27 @@ const ActionButton = styled.button`
     `}
 `;
 
-export const DownloadButton = ActionButton;
+function ResponsiveActionButton({ children, icon, ...props }) {
+  return (
+    <ActionButton {...props}>
+      <Icon
+        type={icon}
+        size="small"
+        aria-hidden="true"
+        css={{ '@media (min-width: 600px)': styles.visuallyHidden }}
+      />
+      <span css={{ '@media (max-width: 599px)': styles.visuallyHidden }}>{children}</span>
+    </ActionButton>
+  );
+}
+
+export function DownloadButton({ children, ...props }) {
+  return (
+    <ResponsiveActionButton {...props} icon="download">
+      {children}
+    </ResponsiveActionButton>
+  );
+}
 
 export class CopyToClipBoardButton extends React.Component {
   mounted = false;
@@ -87,10 +116,10 @@ export class CopyToClipBoardButton extends React.Component {
     this.mounted = false;
   }
 
-  handleCopy = () => {
+  handleCopy = async () => {
     clearTimeout(this.timeout);
     const { path, draft, name } = this.props;
-    copyToClipboard(isAbsolutePath(path) || !draft ? path : name);
+    await navigator.clipboard.writeText(isAbsolutePath(path) || !draft ? path : name);
     this.setState({ copied: true });
     this.timeout = setTimeout(() => this.mounted && this.setState({ copied: false }), 1500);
   };
@@ -116,13 +145,15 @@ export class CopyToClipBoardButton extends React.Component {
     return t('mediaLibrary.mediaLibraryCard.copyPath');
   };
 
+  getIcon = () => (this.state.copied ? 'check' : 'copy');
+
   render() {
     const { disabled } = this.props;
 
     return (
-      <ActionButton disabled={disabled} onClick={this.handleCopy}>
+      <ResponsiveActionButton disabled={disabled} onClick={this.handleCopy} icon={this.getIcon()}>
         {this.getTitle()}
-      </ActionButton>
+      </ResponsiveActionButton>
     );
   }
 }

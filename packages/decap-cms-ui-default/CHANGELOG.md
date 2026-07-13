@@ -3,6 +3,55 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.8.0](https://github.com/decaporg/decap-cms/compare/decap-cms-ui-default@3.7.0...decap-cms-ui-default@3.8.0) (2026-06-08)
+
+### Bug Fixes
+
+- remove unused dependencies and specify missing dependencies ([#7833](https://github.com/decaporg/decap-cms/issues/7833)) ([e324a14](https://github.com/decaporg/decap-cms/commit/e324a142f7f0ba63c760b2e8524d971c35200f87))
+
+### Features
+
+- **ui:** make collections and workflow views responsive ([#7827](https://github.com/decaporg/decap-cms/issues/7827)) ([11f3540](https://github.com/decaporg/decap-cms/commit/11f35405cd1a1d1216e97b890173f46436752019))
+- **ui:** make media library responsive ([#7820](https://github.com/decaporg/decap-cms/issues/7820)) ([3c3fd81](https://github.com/decaporg/decap-cms/commit/3c3fd819fbdbff08e6a0a4d2df15857a8d03c983))
+
+# [3.7.0](https://github.com/decaporg/decap-cms/compare/decap-cms-ui-default@3.6.0...decap-cms-ui-default@3.7.0) (2026-06-01)
+
+### Features
+
+- **ui:** make dropdown positioning responsive ([#7828](https://github.com/decaporg/decap-cms/issues/7828)) ([2fdf798](https://github.com/decaporg/decap-cms/commit/2fdf798412188559738c5bbd5f593c3f352d24fc))
+
+# [3.6.0](https://github.com/decaporg/decap-cms/compare/decap-cms-ui-default@3.5.1...decap-cms-ui-default@3.6.0) (2026-04-16)
+
+**Note:** Version bump only for package decap-cms-ui-default
+
+## [3.5.1](https://github.com/decaporg/decap-cms/compare/decap-cms-ui-default@3.5.0...decap-cms-ui-default@3.5.1) (2026-02-23)
+
+### Bug Fixes
+
+- **a11y:** aria-labels ([#7720](https://github.com/decaporg/decap-cms/issues/7720)) ([cc92370](https://github.com/decaporg/decap-cms/commit/cc92370595a85590ffede50a99259d52ba3eb76b))
+
+# [3.5.0](https://github.com/decaporg/decap-cms/compare/decap-cms-ui-default@3.4.0...decap-cms-ui-default@3.5.0) (2025-11-04)
+
+### Bug Fixes
+
+- prevent select dropdown item text wrapping ([#7618](https://github.com/decaporg/decap-cms/issues/7618)) ([986e4aa](https://github.com/decaporg/decap-cms/commit/986e4aa1371cce3cd0bc87a0f546b9fed4a6a9da))
+
+### Features
+
+- implement strikethrough functionality to markdown editor ([#7625](https://github.com/decaporg/decap-cms/issues/7625)) ([0c7d327](https://github.com/decaporg/decap-cms/commit/0c7d327341f785940da4fa88e5c2ed755215f010))
+
+# [3.4.0](https://github.com/decaporg/decap-cms/compare/decap-cms-ui-default@3.3.0...decap-cms-ui-default@3.4.0) (2025-09-30)
+
+### Features
+
+- add allow_remove and allow_reorder flags ([#7573](https://github.com/decaporg/decap-cms/issues/7573)) ([ff961f4](https://github.com/decaporg/decap-cms/commit/ff961f4bfe7c0a8970451d9b21645738b6cb1560))
+
+# [3.3.0](https://github.com/decaporg/decap-cms/compare/decap-cms-ui-default@3.1.4...decap-cms-ui-default@3.3.0) (2025-07-15)
+
+### Features
+
+- add logo to header ([#7487](https://github.com/decaporg/decap-cms/issues/7487)) ([b540ace](https://github.com/decaporg/decap-cms/commit/b540acec943eb231df6aac7b1d515d9b4b84fa5d))
+
 # [3.2.0](https://github.com/decaporg/decap-cms/compare/decap-cms-ui-default@3.1.4...decap-cms-ui-default@3.2.0) (2025-06-26)
 
 **Note:** Version bump only for package decap-cms-ui-default

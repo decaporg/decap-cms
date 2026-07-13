@@ -39,7 +39,8 @@ const gr = {
     },
     collectionTop: {
       viewAs: 'Προβολή ως',
-      newButton: 'Νέο %{collectionLabel}',
+      newButton: '＋ %{collectionLabel}',
+      newButtonAriaLabel: 'Δημιουργία καταχώρησης τύπου %{collectionLabel}',
     },
     entries: {
       loadingEntries: 'Εγγραφές φόρτωσης',

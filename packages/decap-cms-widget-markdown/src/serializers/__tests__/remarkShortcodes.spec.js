@@ -1,18 +1,14 @@
 import { Map, OrderedMap } from 'immutable';
+import unified from 'unified';
+import markdownToRemarkPlugin from 'remark-parse';
 
-import { remarkParseShortcodes, getLinesWithOffsets } from '../remarkShortcodes';
+import { remarkParseShortcodes } from '../remarkShortcodes';
 
-// Stub of Remark Parser
-function process(value, plugins, processEat = () => {}) {
-  function eat() {
-    return processEat;
-  }
-
-  function Parser() {}
-  Parser.prototype.blockTokenizers = {};
-  Parser.prototype.blockMethods = [];
-  remarkParseShortcodes.call({ Parser }, { plugins });
-  Parser.prototype.blockTokenizers.shortcode(eat, value);
+function process(value, plugins) {
+  return unified()
+    .use(markdownToRemarkPlugin, { fences: true, commonmark: true })
+    .use(remarkParseShortcodes, { plugins })
+    .parse(value);
 }
 
 function EditorComponent({ id = 'foo', fromBlock = jest.fn(), pattern }) {
@@ -25,16 +21,6 @@ function EditorComponent({ id = 'foo', fromBlock = jest.fn(), pattern }) {
 
 describe('remarkParseShortcodes', () => {
   describe('pattern matching', () => {
-    it('should work', () => {
-      const editorComponent = EditorComponent({ pattern: /bar/ });
-      process('foo bar', Map({ [editorComponent.id]: editorComponent }));
-      expect(editorComponent.fromBlock).toHaveBeenCalledWith(expect.arrayContaining(['bar']));
-    });
-    it('should match value surrounded in newlines', () => {
-      const editorComponent = EditorComponent({ pattern: /^bar$/ });
-      process('foo\n\nbar\n', Map({ [editorComponent.id]: editorComponent }));
-      expect(editorComponent.fromBlock).toHaveBeenCalledWith(expect.arrayContaining(['bar']));
-    });
     it('should match multiline shortcodes', () => {
       const editorComponent = EditorComponent({ pattern: /^foo\nbar$/ });
       process('foo\nbar', Map({ [editorComponent.id]: editorComponent }));
@@ -47,60 +33,91 @@ describe('remarkParseShortcodes', () => {
         expect.arrayContaining(['foo\n\nbar']),
       );
     });
-    it('should match shortcodes based on order of occurrence in value', () => {
-      const fooEditorComponent = EditorComponent({ id: 'foo', pattern: /foo/ });
-      const barEditorComponent = EditorComponent({ id: 'bar', pattern: /bar/ });
+    it('should match shortcodes by first matching plugin', () => {
+      const fooEditorComponent = EditorComponent({ id: 'foo', pattern: /^foo/ });
+      const barEditorComponent = EditorComponent({ id: 'bar', pattern: /^bar/ });
       process(
-        'foo\n\nbar',
+        'bar\n\nfoo',
         OrderedMap([
-          [barEditorComponent.id, barEditorComponent],
           [fooEditorComponent.id, fooEditorComponent],
-        ]),
-      );
-      expect(fooEditorComponent.fromBlock).toHaveBeenCalledWith(expect.arrayContaining(['foo']));
-    });
-    it('should match shortcodes based on order of occurrence in value even when some use line anchors', () => {
-      const barEditorComponent = EditorComponent({ id: 'bar', pattern: /bar/ });
-      const bazEditorComponent = EditorComponent({ id: 'baz', pattern: /^baz$/ });
-      process(
-        'foo\n\nbar\n\nbaz',
-        OrderedMap([
-          [bazEditorComponent.id, bazEditorComponent],
           [barEditorComponent.id, barEditorComponent],
         ]),
       );
+      // 'bar' is the first block, but 'foo' plugin is first in registry,
+      // so 'foo' doesn't match 'bar'. 'bar' plugin matches 'bar'.
       expect(barEditorComponent.fromBlock).toHaveBeenCalledWith(expect.arrayContaining(['bar']));
     });
-  });
-  describe('output', () => {
-    it('should be a remark shortcode node', () => {
-      const processEat = jest.fn();
-      const shortcodeData = { bar: 'baz' };
-      const expectedNode = { type: 'shortcode', data: { shortcode: 'foo', shortcodeData } };
-      const editorComponent = EditorComponent({ pattern: /bar/, fromBlock: () => shortcodeData });
-      process('foo bar', Map({ [editorComponent.id]: editorComponent }), processEat);
-      expect(processEat).toHaveBeenCalledWith(expectedNode);
+    it('should warn when pattern uses multiline flag', () => {
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+      const editorComponent = EditorComponent({ pattern: /^foo$/m });
+      process('foo', Map({ [editorComponent.id]: editorComponent }));
+      expect(warnSpy).toHaveBeenCalledWith(
+        expect.stringContaining('must not use the multiline flag'),
+      );
+      warnSpy.mockRestore();
     });
   });
-});
-
-describe('getLinesWithOffsets', () => {
-  test('should split into lines', () => {
-    const value = ' line1\n\nline2 \n\n    line3   \n\n';
-
-    const lines = getLinesWithOffsets(value);
-    expect(lines).toEqual([
-      { line: ' line1', start: 0 },
-      { line: 'line2', start: 8 },
-      { line: '    line3', start: 16 },
-      { line: '', start: 30 },
-    ]);
+  describe('parse', () => {
+    describe('pattern with leading caret', () => {
+      it('should be a remark shortcode node', () => {
+        const editorComponent = EditorComponent({
+          pattern: /^foo (?<bar>.+)$/,
+          fromBlock: ({ groups }) => ({ bar: groups.bar }),
+        });
+        const mdast = process('foo baz', Map({ [editorComponent.id]: editorComponent }));
+        expect(removePositions(mdast)).toMatchSnapshot();
+      });
+      it('should parse multiple shortcodes', () => {
+        const editorComponent = EditorComponent({
+          pattern: /foo (?<bar>.+)/,
+          fromBlock: ({ groups }) => ({ bar: groups.bar }),
+        });
+        const mdast = process(
+          'paragraph\n\nfoo bar\n\nfoo baz\n\nnext para',
+          Map({ [editorComponent.id]: editorComponent }),
+        );
+        expect(removePositions(mdast)).toMatchSnapshot();
+      });
+    });
+    describe('pattern without leading caret', () => {
+      it('should handle pattern without leading caret', () => {
+        const editorComponent = EditorComponent({
+          pattern: /foo (?<bar>.+)/,
+          fromBlock: ({ groups }) => ({ bar: groups.bar }),
+        });
+        const mdast = process(
+          'paragraph\n\nfoo baz',
+          Map({ [editorComponent.id]: editorComponent }),
+        );
+        expect(removePositions(mdast)).toMatchSnapshot();
+      });
+      it('should parse multiple shortcodes', () => {
+        const editorComponent = EditorComponent({
+          pattern: /foo (?<bar>.+)/,
+          fromBlock: ({ groups }) => ({ bar: groups.bar }),
+        });
+        const mdast = process(
+          'paragraph\n\nfoo bar\n\nfoo baz\n\nnext para',
+          Map({ [editorComponent.id]: editorComponent }),
+        );
+        expect(removePositions(mdast)).toMatchSnapshot();
+      });
+    });
   });
 
-  test('should return single item on no match', () => {
-    const value = ' line1    ';
-
-    const lines = getLinesWithOffsets(value);
-    expect(lines).toEqual([{ line: ' line1', start: 0 }]);
-  });
+  function removePositions(obj) {
+    if (Array.isArray(obj)) {
+      return obj.map(removePositions);
+    }
+    if (obj && typeof obj === 'object') {
+      // eslint-disable-next-line no-unused-vars
+      const { position, ...rest } = obj;
+      const result = {};
+      for (const key in rest) {
+        result[key] = removePositions(rest[key]);
+      }
+      return result;
+    }
+    return obj;
+  }
 });

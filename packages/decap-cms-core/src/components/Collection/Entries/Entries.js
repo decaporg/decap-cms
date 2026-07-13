@@ -9,6 +9,7 @@ import EntryListing from './EntryListing';
 
 const PaginationMessage = styled.div`
   width: ${lengths.topCardWidth};
+  max-width: 100%;
   padding: 16px;
   text-align: center;
 `;
@@ -26,6 +27,12 @@ function Entries({
   handleCursorActions,
   t,
   page,
+  getWorkflowStatus,
+  getUnpublishedEntries,
+  filterTerm,
+  sortFields,
+  showPublishedEntries = true,
+  showUnpublishedEntries = true,
 }) {
   const loadingMessages = [
     t('collection.entries.loadingEntries'),
@@ -33,12 +40,13 @@ function Entries({
     t('collection.entries.longerLoading'),
   ];
 
-  if (isFetching && page === undefined) {
+  if (showPublishedEntries && isFetching && page === undefined) {
     return <Loader active>{loadingMessages}</Loader>;
   }
 
-  const hasEntries = (entries && entries.size > 0) || cursor?.actions?.has('append_next');
-  if (hasEntries) {
+  const hasEntries =
+    showPublishedEntries && ((entries && entries.size > 0) || cursor?.actions?.has('append_next'));
+  if (hasEntries || !showPublishedEntries) {
     return (
       <>
         <EntryListing
@@ -48,8 +56,14 @@ function Entries({
           cursor={cursor}
           handleCursorActions={handleCursorActions}
           page={page}
+          getWorkflowStatus={getWorkflowStatus}
+          getUnpublishedEntries={getUnpublishedEntries}
+          filterTerm={filterTerm}
+          sortFields={sortFields}
+          showPublishedEntries={showPublishedEntries}
+          showUnpublishedEntries={showUnpublishedEntries}
         />
-        {isFetching && page !== undefined && entries.size > 0 ? (
+        {showPublishedEntries && isFetching && page !== undefined && entries.size > 0 ? (
           <PaginationMessage>{t('collection.entries.loadingEntries')}</PaginationMessage>
         ) : null}
       </>
@@ -68,6 +82,12 @@ Entries.propTypes = {
   cursor: PropTypes.any.isRequired,
   handleCursorActions: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
+  getWorkflowStatus: PropTypes.func,
+  getUnpublishedEntries: PropTypes.func,
+  filterTerm: PropTypes.string,
+  sortFields: PropTypes.array,
+  showPublishedEntries: PropTypes.bool,
+  showUnpublishedEntries: PropTypes.bool,
 };
 
 export default translate()(Entries);

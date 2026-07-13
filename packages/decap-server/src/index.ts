@@ -8,7 +8,8 @@ import { registerMiddleware as registerLocalFs } from './middlewares/localFs';
 import { createLogger } from './logger';
 
 const app = express();
-const port = process.env.PORT || 8081;
+const port = parseInt(process.env.PORT || '8081', 10);
+const host = process.env.BIND_HOST;
 const level = process.env.LOG_LEVEL || 'info';
 
 (async () => {
@@ -33,7 +34,13 @@ const level = process.env.LOG_LEVEL || 'info';
     process.exit(1);
   }
 
-  return app.listen(port, () => {
-    logger.info(`Decap CMS Proxy Server listening on port ${port}`);
-  });
+  if (host) {
+    return app.listen(port, host, () => {
+      logger.info(`Decap CMS Proxy Server listening on ${host}:${port}`);
+    });
+  } else {
+    return app.listen(port, () => {
+      logger.info(`Decap CMS Proxy Server listening on port ${port}`);
+    });
+  }
 })();

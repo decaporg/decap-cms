@@ -18,6 +18,7 @@ import DecapCmsWidgetImage from 'decap-cms-widget-image';
 import DecapCmsWidgetFile from 'decap-cms-widget-file';
 import DecapCmsWidgetSelect from 'decap-cms-widget-select';
 import DecapCmsWidgetMarkdown from 'decap-cms-widget-markdown';
+import DecapCmsWidgetRichtext from 'decap-cms-widget-richtext';
 import DecapCmsWidgetList from 'decap-cms-widget-list';
 import DecapCmsWidgetObject from 'decap-cms-widget-object';
 import DecapCmsWidgetRelation from 'decap-cms-widget-relation';
@@ -26,6 +27,7 @@ import DecapCmsWidgetMap from 'decap-cms-widget-map';
 import DecapCmsWidgetDatetime from 'decap-cms-widget-datetime';
 import DecapCmsWidgetCode from 'decap-cms-widget-code';
 import DecapCmsWidgetColorString from 'decap-cms-widget-colorstring';
+import DecapCmsWidgetUuid from 'decap-cms-widget-uuid';
 // Editor Components
 import image from 'decap-cms-editor-component-image';
 // Locales
@@ -49,6 +51,7 @@ CMS.registerWidget([
   DecapCmsWidgetFile.Widget(),
   DecapCmsWidgetSelect.Widget(),
   DecapCmsWidgetMarkdown.Widget(),
+  DecapCmsWidgetRichtext.Widget(),
   DecapCmsWidgetList.Widget(),
   DecapCmsWidgetObject.Widget(),
   DecapCmsWidgetRelation.Widget(),
@@ -57,6 +60,7 @@ CMS.registerWidget([
   DecapCmsWidgetDatetime.Widget(),
   DecapCmsWidgetCode.Widget(),
   DecapCmsWidgetColorString.Widget(),
+  DecapCmsWidgetUuid.Widget(),
 ]);
 CMS.registerEditorComponent(image);
 CMS.registerEditorComponent({

@@ -11,6 +11,8 @@ import iconCircle from './circle.svg';
 import iconClose from './close.svg';
 import iconCode from './code.svg';
 import iconCodeBlock from './code-block.svg';
+import iconCopy from './copy.svg';
+import iconDownload from './download.svg';
 import iconDragHandle from './drag-handle.svg';
 import iconEye from './eye.svg';
 import iconFolder from './folder.svg';
@@ -42,6 +44,7 @@ import iconRefresh from './refresh.svg';
 import iconScroll from './scroll.svg';
 import iconSearch from './search.svg';
 import iconSettings from './settings.svg';
+import iconStrikethrough from './strikethrough.svg';
 import iconUser from './user.svg';
 import iconWorkflow from './workflow.svg';
 import iconWrite from './write.svg';
@@ -62,6 +65,8 @@ const images = {
   close: iconClose,
   code: iconCode,
   'code-block': iconCodeBlock,
+  copy: iconCopy,
+  download: iconDownload,
   'drag-handle': iconDragHandle,
   eye: iconEye,
   folder: iconFolder,
@@ -94,6 +99,7 @@ const images = {
   scroll: iconScroll,
   search: iconSearch,
   settings: iconSettings,
+  strikethrough: iconStrikethrough,
   user: iconUser,
   workflow: iconWorkflow,
   write: iconWrite,

@@ -412,28 +412,75 @@ export function selectDefaultSortableFields(
     defaultSortable = [COMMIT_DATE, ...defaultSortable];
   }
 
-  return defaultSortable as string[];
+  // Return as objects with field property
+  return defaultSortable.map(field => ({ field })) as {
+    field: string;
+    label?: string;
+    default_sort?: boolean | 'asc' | 'desc';
+  }[];
 }
 
 export function selectSortableFields(collection: Collection, t: (key: string) => string) {
   const fields = collection
     .get('sortable_fields')
     .toArray()
-    .map(key => {
+    .map(sortableField => {
+      // Extract the field name and custom label from the sortable field object
+      const key = sortableField.get('field');
+      const customLabel = sortableField.get('label');
+
       if (key === COMMIT_DATE) {
-        return { key, field: { name: key, label: t('collection.defaultFields.updatedOn.label') } };
+        const label = customLabel || t('collection.defaultFields.updatedOn.label');
+        return { key, field: { name: key, label } };
       }
       const field = selectField(collection, key);
       if (key === COMMIT_AUTHOR && !field) {
-        return { key, field: { name: key, label: t('collection.defaultFields.author.label') } };
+        const label = customLabel || t('collection.defaultFields.author.label');
+        return { key, field: { name: key, label } };
       }
 
-      return { key, field: field?.toJS() };
+      let fieldObj: Record<string, unknown> | undefined = field?.toJS();
+
+      // If custom label is provided, override the field's label
+      if (fieldObj && customLabel) {
+        fieldObj = { ...fieldObj, label: customLabel };
+      }
+
+      // If no label exists at all, use the field name
+      if (fieldObj && !fieldObj.label) {
+        fieldObj = { ...fieldObj, label: (fieldObj.name as string) || key };
+      }
+
+      return { key, field: fieldObj };
     })
     .filter(item => !!item.field)
     .map(item => ({ ...item.field, key: item.key }));
 
   return fields;
+}
+
+export function selectDefaultSortField(collection: Collection) {
+  const sortableFields = collection.get('sortable_fields').toArray();
+  const defaultField = sortableFields.find(field => field.get('default_sort') !== undefined);
+
+  if (!defaultField) {
+    return null;
+  }
+
+  const fieldName = defaultField.get('field');
+  const defaultSortValue = defaultField.get('default_sort');
+
+  // Determine direction based on default_sort value
+  let direction;
+  if (defaultSortValue === true || defaultSortValue === 'asc') {
+    direction = 'asc';
+  } else if (defaultSortValue === 'desc') {
+    direction = 'desc';
+  } else {
+    direction = 'asc'; // fallback
+  }
+
+  return { field: fieldName, direction };
 }
 
 export function selectSortDataPath(collection: Collection, key: string) {

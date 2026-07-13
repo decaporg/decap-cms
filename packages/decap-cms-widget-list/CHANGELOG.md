@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.6.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-list@3.5.0...decap-cms-widget-list@3.6.0) (2026-06-08)
+
+### Bug Fixes
+
+- **a11y:** aria-labels ([#7720](https://github.com/decaporg/decap-cms/issues/7720)) ([cc92370](https://github.com/decaporg/decap-cms/commit/cc92370595a85590ffede50a99259d52ba3eb76b))
+- remove unused dependencies and specify missing dependencies ([#7833](https://github.com/decaporg/decap-cms/issues/7833)) ([e324a14](https://github.com/decaporg/decap-cms/commit/e324a142f7f0ba63c760b2e8524d971c35200f87))
+
+# [3.5.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-list@3.4.0...decap-cms-widget-list@3.5.0) (2025-09-30)
+
+### Features
+
+- add allow_remove and allow_reorder flags ([#7573](https://github.com/decaporg/decap-cms/issues/7573)) ([ff961f4](https://github.com/decaporg/decap-cms/commit/ff961f4bfe7c0a8970451d9b21645738b6cb1560))
+
 # [3.4.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-list@3.3.0...decap-cms-widget-list@3.4.0) (2025-06-26)
 
 **Note:** Version bump only for package decap-cms-widget-list

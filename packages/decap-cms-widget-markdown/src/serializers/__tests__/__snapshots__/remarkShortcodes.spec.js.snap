@@ -1,0 +1,132 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`remarkParseShortcodes parse pattern with leading caret should be a remark shortcode node 1`] = `
+Object {
+  "children": Array [
+    Object {
+      "data": Object {
+        "shortcode": "foo",
+        "shortcodeData": Object {
+          "bar": "baz",
+        },
+      },
+      "type": "shortcode",
+    },
+  ],
+  "type": "root",
+}
+`;
+
+exports[`remarkParseShortcodes parse pattern with leading caret should parse multiple shortcodes 1`] = `
+Object {
+  "children": Array [
+    Object {
+      "children": Array [
+        Object {
+          "type": "text",
+          "value": "paragraph",
+        },
+      ],
+      "type": "paragraph",
+    },
+    Object {
+      "data": Object {
+        "shortcode": "foo",
+        "shortcodeData": Object {
+          "bar": "bar",
+        },
+      },
+      "type": "shortcode",
+    },
+    Object {
+      "data": Object {
+        "shortcode": "foo",
+        "shortcodeData": Object {
+          "bar": "baz",
+        },
+      },
+      "type": "shortcode",
+    },
+    Object {
+      "children": Array [
+        Object {
+          "type": "text",
+          "value": "next para",
+        },
+      ],
+      "type": "paragraph",
+    },
+  ],
+  "type": "root",
+}
+`;
+
+exports[`remarkParseShortcodes parse pattern without leading caret should handle pattern without leading caret 1`] = `
+Object {
+  "children": Array [
+    Object {
+      "children": Array [
+        Object {
+          "type": "text",
+          "value": "paragraph",
+        },
+      ],
+      "type": "paragraph",
+    },
+    Object {
+      "data": Object {
+        "shortcode": "foo",
+        "shortcodeData": Object {
+          "bar": "baz",
+        },
+      },
+      "type": "shortcode",
+    },
+  ],
+  "type": "root",
+}
+`;
+
+exports[`remarkParseShortcodes parse pattern without leading caret should parse multiple shortcodes 1`] = `
+Object {
+  "children": Array [
+    Object {
+      "children": Array [
+        Object {
+          "type": "text",
+          "value": "paragraph",
+        },
+      ],
+      "type": "paragraph",
+    },
+    Object {
+      "data": Object {
+        "shortcode": "foo",
+        "shortcodeData": Object {
+          "bar": "bar",
+        },
+      },
+      "type": "shortcode",
+    },
+    Object {
+      "data": Object {
+        "shortcode": "foo",
+        "shortcodeData": Object {
+          "bar": "baz",
+        },
+      },
+      "type": "shortcode",
+    },
+    Object {
+      "children": Array [
+        Object {
+          "type": "text",
+          "value": "next para",
+        },
+      ],
+      "type": "paragraph",
+    },
+  ],
+  "type": "root",
+}
+`;

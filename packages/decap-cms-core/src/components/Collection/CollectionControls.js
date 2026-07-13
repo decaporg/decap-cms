@@ -9,14 +9,15 @@ import GroupControl from './GroupControl';
 
 const CollectionControlsContainer = styled.div`
   display: flex;
+  flex-flow: row-reverse wrap;
   align-items: center;
-  flex-direction: row-reverse;
+  gap: 6px 0;
   margin-top: 22px;
   width: ${lengths.topCardWidth};
   max-width: 100%;
 
-  & > div {
-    margin-left: 6px;
+  @media (min-width: 500px) {
+    gap: 6px;
   }
 `;
 
@@ -36,7 +37,7 @@ function CollectionControls({
 }) {
   return (
     <CollectionControlsContainer>
-      <ViewStyleControl viewStyle={viewStyle} onChangeViewStyle={onChangeViewStyle} />
+      <ViewStyleControl viewStyle={viewStyle} onChangeViewStyle={onChangeViewStyle} t={t} />
       {viewGroups.length > 0 && (
         <GroupControl viewGroups={viewGroups} onGroupClick={onGroupClick} t={t} group={group} />
       )}

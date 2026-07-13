@@ -13,6 +13,7 @@ import {
   getPreviewTemplate,
   getPreviewStyles,
   getRemarkPlugins,
+  getEditorComponents,
 } from '../../../lib/registry';
 import { getAllEntries, tryLoadEntry } from '../../../actions/entries';
 import { ErrorBoundary } from '../../UI';
@@ -57,6 +58,7 @@ export class PreviewPane extends React.Component {
         fieldsMetaData={metadata}
         resolveWidget={resolveWidget}
         getRemarkPlugins={getRemarkPlugins}
+        getEditorComponents={getEditorComponents}
       />
     );
   };
@@ -222,17 +224,18 @@ export class PreviewPane extends React.Component {
    * This function exists entirely to expose collections from outside of this entry
    *
    */
-  getCollection = async (collectionName, slug) => {
+  getCollection = async (collectionName, slugToLoad) => {
     const { state } = this.props;
     const selectedCollection = state.collections.get(collectionName);
 
-    if (typeof slug === 'undefined') {
+    if (typeof slugToLoad === 'undefined') {
       const entries = await getAllEntries(state, selectedCollection);
-      return entries.map(entry => Map().set('data', entry.data));
+
+      return entries.map(({ data, slug, path }) => Map({ data, slug, path }));
     }
 
-    const entry = await tryLoadEntry(state, selectedCollection, slug);
-    return Map().set('data', entry.data);
+    const { data, slug, path } = await tryLoadEntry(state, selectedCollection, slugToLoad);
+    return Map({ data, slug, path });
   };
 
   render() {
@@ -261,6 +264,7 @@ export class PreviewPane extends React.Component {
         this.widgetFor(name, fields, values, fieldsMetaData),
       widgetsFor: this.widgetsFor,
       getCollection: this.getCollection,
+      getEditorComponents,
     };
 
     const styleEls = getPreviewStyles().map((style, i) => {
