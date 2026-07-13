@@ -272,12 +272,18 @@ catalog:
   winston: ^3.3.3
   yaml: ^1.8.3
 
-onlyBuiltDependencies:
-  - '@swc/core'
-  - bufferutil
-  - core-js
-  - cypress
-  - es5-ext
-  - esbuild
-  - nx
-  - utf-8-validate
+overrides:
+  clean-stack: 5.2.0
+  'copy-webpack-plugin@10.2.4>serialize-javascript': 7.0.4
+  'nx@17.3.0>minimatch': 9.0.9
+  'nx@21.6.6>minimatch': 9.0.9
+
+allowBuilds:
+  '@swc/core': true
+  bufferutil: true
+  core-js: true
+  cypress: true
+  es5-ext: true
+  esbuild: true
+  nx: true
+  utf-8-validate: true

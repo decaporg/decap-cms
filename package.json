@@ -193,14 +193,6 @@
     "react-redux": "catalog:",
     "clean-stack": "5.2.0"
   },
-  "packageManager": "pnpm@10.19.0",
-  "version": "0.0.0",
-  "pnpm": {
-    "overrides": {
-      "clean-stack": "5.2.0",
-      "copy-webpack-plugin@10.2.4>serialize-javascript": "7.0.4",
-      "nx@17.3.0>minimatch": "9.0.9",
-      "nx@21.6.6>minimatch": "9.0.9"
-    }
-  }
+  "packageManager": "pnpm@11.12.0",
+  "version": "0.0.0"
 }
