@@ -2789,6 +2789,9 @@ importers:
       hex-to-array-buffer:
         specifier: 'catalog:'
         version: 2.0.0
+      immutable:
+        specifier: 'catalog:'
+        version: 3.8.2
       prop-types:
         specifier: 'catalog:'
         version: 15.8.1
