@@ -2782,6 +2782,9 @@ importers:
 
   packages/decap-cms-widget-uuid:
     dependencies:
+      '@emotion/react':
+        specifier: 'catalog:'
+        version: 11.14.0(@types/react@19.2.2)(react@19.2.0)
       base32-encode:
         specifier: 'catalog:'
         version: 2.0.0

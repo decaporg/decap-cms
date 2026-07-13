@@ -24,6 +24,7 @@
     "hex-to-array-buffer": "catalog:"
   },
   "peerDependencies": {
+    "@emotion/react": "catalog:",
     "decap-cms-ui-default": "workspace:*",
     "immutable": "catalog:",
     "prop-types": "catalog:",
