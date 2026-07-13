@@ -63,15 +63,16 @@
     "decap-cms-widget-number": "workspace:*",
     "decap-cms-widget-object": "workspace:*",
     "decap-cms-widget-relation": "workspace:*",
+    "decap-cms-widget-richtext": "workspace:*",
     "decap-cms-widget-select": "workspace:*",
     "decap-cms-widget-string": "workspace:*",
     "decap-cms-widget-text": "workspace:*",
+    "decap-cms-widget-uuid": "workspace:*",
     "immutable": "catalog:",
     "lodash": "catalog:",
     "prop-types": "catalog:",
     "react-immutable-proptypes": "catalog:",
-    "uuid": "catalog:",
-    "decap-cms-widget-richtext": "workspace:*"
+    "uuid": "catalog:"
   },
   "peerDependencies": {
     "react": "catalog:",

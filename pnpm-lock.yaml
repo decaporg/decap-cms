@@ -255,6 +255,9 @@ catalogs:
     babel-plugin-transform-inline-environment-variables:
       specifier: ^0.4.3
       version: 0.4.4
+    base32-encode:
+      specifier: ^2.0.0
+      version: 2.0.0
     browserify:
       specifier: ^17.0.0
       version: 17.0.1
@@ -387,6 +390,9 @@ catalogs:
     gray-matter:
       specifier: ^4.0.2
       version: 4.0.3
+    hex-to-array-buffer:
+      specifier: ^2.0.0
+      version: 2.0.0
     history:
       specifier: ^4.7.2
       version: 4.10.1
@@ -1330,6 +1336,9 @@ importers:
       decap-cms-widget-text:
         specifier: workspace:*
         version: link:../decap-cms-widget-text
+      decap-cms-widget-uuid:
+        specifier: workspace:*
+        version: link:../decap-cms-widget-uuid
       immutable:
         specifier: 'catalog:'
         version: 3.8.2
@@ -2768,6 +2777,24 @@ importers:
       react-textarea-autosize:
         specifier: 'catalog:'
         version: 8.5.9(@types/react@19.2.2)(react@19.2.0)
+
+  packages/decap-cms-widget-uuid:
+    dependencies:
+      base32-encode:
+        specifier: 'catalog:'
+        version: 2.0.0
+      decap-cms-ui-default:
+        specifier: workspace:*
+        version: link:../decap-cms-ui-default
+      hex-to-array-buffer:
+        specifier: 'catalog:'
+        version: 2.0.0
+      prop-types:
+        specifier: 'catalog:'
+        version: 15.8.1
+      react:
+        specifier: 'catalog:'
+        version: 19.2.0
 
   packages/decap-server:
     dependencies:
@@ -5798,6 +5825,10 @@ packages:
   balanced-match@2.0.0:
     resolution: {integrity: sha512-1ugUSr8BHXRnK23KfuYS+gVMC3LB8QGH9W1iGtDPsNWoQbgtXSExkBu2aDR4epiGWZOjZsj6lDl/N/AqqTC3UA==}
 
+  base32-encode@2.0.0:
+    resolution: {integrity: sha512-mlmkfc2WqdDtMl/id4qm3A7RjW6jxcbAoMjdRmsPiwQP0ufD4oXItYMnPgVHe80lnAIy+1xwzhHE1s4FoIceSw==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+
   base64-js@1.5.1:
     resolution: {integrity: sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==}
 
@@ -7871,6 +7902,10 @@ packages:
   he@1.2.0:
     resolution: {integrity: sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==}
     hasBin: true
+
+  hex-to-array-buffer@2.0.0:
+    resolution: {integrity: sha512-svtomp6qK6DL7TgteiPmImS/FQFb5yJSt17zseS8qBcYrJLkieFJKn2a2FBjRG9BYpy9uq2VeEBh6rRc16xh8w==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
   history@4.10.1:
     resolution: {integrity: sha512-36nwAD620w12kuzPAsyINPWJqlNbij+hpK1k9XRloDtym8mxzGYl2c17LnV6IAGB2Dmg4tEa7G7DlawS0+qjew==}
@@ -11793,6 +11828,10 @@ packages:
   to-buffer@1.2.2:
     resolution: {integrity: sha512-db0E3UJjcFhpDhAF4tLo03oli3pwl3dbnzXOUIlRKrp+ldk/VUxzpWYZENsw2SZiuBjHAk7DfB0VU7NKdpb6sw==}
     engines: {node: '>= 0.4'}
+
+  to-data-view@2.0.0:
+    resolution: {integrity: sha512-RGEM5KqlPHr+WVTPmGNAXNeFEmsBnlkxXaIfEpUYV0AST2Z5W1EGq9L/MENFrMMmL2WQr1wjkmZy/M92eKhjYA==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
   to-fast-properties@1.0.3:
     resolution: {integrity: sha512-lxrWP8ejsq+7E3nNjwYmUBMAgjMTZoTI+sdBOpvNyijeDLa29LUn9QaoXAHv4+Z578hbmHHJKZknzxVtvo77og==}
@@ -16428,6 +16467,10 @@ snapshots:
 
   balanced-match@2.0.0: {}
 
+  base32-encode@2.0.0:
+    dependencies:
+      to-data-view: 2.0.0
+
   base64-js@1.5.1: {}
 
   base@0.11.2:
@@ -19024,6 +19067,8 @@ snapshots:
       space-separated-tokens: 1.1.5
 
   he@1.2.0: {}
+
+  hex-to-array-buffer@2.0.0: {}
 
   history@4.10.1:
     dependencies:
@@ -23915,6 +23960,8 @@ snapshots:
       isarray: 2.0.5
       safe-buffer: 5.2.1
       typed-array-buffer: 1.0.3
+
+  to-data-view@2.0.0: {}
 
   to-fast-properties@1.0.3: {}
 
