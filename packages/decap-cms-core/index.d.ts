@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 declare module 'decap-cms-core' {
-  import type { ComponentType } from 'react';
+  import type { ComponentType, JSX } from 'react';
   import type { List, Map } from 'immutable';
   import type { Pluggable } from 'unified';
 
@@ -490,7 +490,7 @@ declare module 'decap-cms-core' {
   export type CmsBackendClass = any; // TODO: type properly
 
   export interface CmsRegistryBackend {
-    init: (args: any) => CmsBackendClass;
+    init: (...args: any[]) => any;
   }
 
   export interface CmsWidgetControlProps<T = any> {
@@ -625,7 +625,7 @@ declare module 'decap-cms-core' {
       component: ComponentType<PreviewTemplateComponentProps>,
     ) => void;
     registerWidget: (
-      widget: string | CmsWidgetParam,
+      widget: string | CmsWidgetParam | CmsWidgetParam[],
       control?: ComponentType<CmsWidgetControlProps> | string,
       preview?: ComponentType<CmsWidgetPreviewProps>,
     ) => void;

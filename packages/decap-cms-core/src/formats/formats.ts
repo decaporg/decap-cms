@@ -10,7 +10,7 @@ import { getCustomFormatsExtensions, getCustomFormatsFormatters } from '../lib/r
 import type { Delimiter } from './frontmatter';
 import type { Collection, EntryObject, Format } from '../types/redux';
 import type { EntryValue } from '../valueObjects/Entry';
-import type { Formatter } from 'decap-cms-core';
+import type { Formatter } from '../types';
 
 export const frontmatterFormats = ['yaml-frontmatter', 'toml-frontmatter', 'json-frontmatter'];
 

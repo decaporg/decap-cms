@@ -1,0 +1,18 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "strictFunctionTypes": false,
+    "outDir": "./dist/esm",
+    "rootDir": "./src"
+  },
+  "include": ["src/**/*"],
+  "references": [
+    {"path": "../decap-cms-lib-auth"},
+    {"path": "../decap-cms-lib-util"},
+    {"path": "../decap-cms-lib-widgets"},
+    {"path": "../decap-cms-ui-default"}
+  ]
+}

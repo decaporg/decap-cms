@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+    "outDir": "./dist/esm",
+    "rootDir": "./src"
+  },
+  "include": ["src/**/*"],
+  "references": [
+    {"path": "../decap-cms-ui-default"}
+  ]
+}

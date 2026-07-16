@@ -143,7 +143,7 @@ export default class GitHub implements Implementation {
   }
 
   async status() {
-    const api = await fetch(GITHUB_STATUS_ENDPOINT)
+    const api = await fetch(GITHUB_STATUS_ENDPOINT, undefined)
       .then(res => res.json())
       .then(res => {
         return res['components']

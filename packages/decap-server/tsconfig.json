@@ -12,6 +12,7 @@
     "noImplicitAny": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    "skipLibCheck": true,
     "sourceMap": true
   },
   "include": ["src/**/*"],

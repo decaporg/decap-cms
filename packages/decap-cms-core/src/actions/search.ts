@@ -111,7 +111,7 @@ export function searchEntries(searchTerm: string, searchCollections: string[], p
     const state = getState();
     const { search } = state;
     const backend = currentBackend(state.config);
-    const allCollections = searchCollections || state.collections.keySeq().toArray();
+    const allCollections = searchCollections || (state.collections.keySeq().toArray() as string[]);
     const collections = allCollections.filter(collection =>
       selectIntegration(state, collection, 'search'),
     );

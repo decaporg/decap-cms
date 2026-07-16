@@ -296,8 +296,6 @@ interface ImplementationInitOptions {
 }
 
 type Implementation = BackendImplementation & {
-  init: (config: CmsConfig, options: ImplementationInitOptions) => Implementation;
-
   startNotesPolling?: (
     collection: string,
     slug: string,
@@ -308,6 +306,10 @@ type Implementation = BackendImplementation & {
   ) => Promise<void>;
   stopNotesPolling?: (collection: string, slug: string) => Promise<void>;
   refreshNotesNow?: (collection: string, slug: string) => Promise<void>;
+};
+
+export type CmsRegistryBackend = {
+  init: (config: CmsConfig, options: ImplementationInitOptions) => Implementation;
 };
 
 function prepareMetaPath(path: string, collection: Collection) {
@@ -367,7 +369,10 @@ export class Backend {
   user?: User | null;
   backupSync: AsyncLock;
 
-  constructor(implementation: Implementation, { backendName, authStore, config }: BackendOptions) {
+  constructor(
+    implementation: CmsRegistryBackend,
+    { backendName, authStore, config }: BackendOptions,
+  ) {
     // We can't reliably run this on exit, so we do cleanup on load.
     this.deleteAnonymousBackup();
     this.config = config;
