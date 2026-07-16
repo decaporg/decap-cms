@@ -22,7 +22,6 @@ collections: # A list of collections the CMS should be able to edit
     sortable_fields:
       - title
       - { field: date, default_sort: desc }
-      - draft
     view_filters:
       - label: Posts With Index
         field: title
@@ -30,18 +29,18 @@ collections: # A list of collections the CMS should be able to edit
       - label: Posts Without Index
         field: title
         pattern: front matter post
-      - label: Drafts
-        field: draft
+      - label: Relation Test
+        field: relation_test
         pattern: true
     view_groups:
       - label: Year
         field: date
         pattern: \d{4}
-      - label: Drafts
-        field: draft
+      - label: Relation Test
+        field: relation_test
     fields: # The fields each document in this collection have
       - { label: 'Title', name: 'title', widget: 'string', tagname: 'h1' }
-      - { label: 'Draft', name: 'draft', widget: 'boolean', default: false }
+      - { label: 'Relation Test', name: 'relation_test', widget: 'hidden', default: true }
       - {
           label: 'Publish Date',
           name: 'date',
@@ -75,7 +74,16 @@ collections: # A list of collections the CMS should be able to edit
       - { label: 'Title', name: 'title', widget: 'string', tagname: 'h1' }
       - { label: 'Body', name: 'body', widget: 'markdown', hint: 'Main content goes here.' }
       - { name: 'gallery', widget: 'image', choose_url: true, media_library: {config: {multiple: true, max_files: 999}}}
-      - { name: 'post', widget: relation, collection: posts, multiple: true, search_fields: [ "title" ], display_fields: [ "title" ], value_field: "{{slug}}", filters: [ {field: "draft", values: [false]} ] }
+      - name: post
+        widget: relation
+        collection: posts
+        multiple: true
+        search_fields: ['title']
+        display_fields: ['title']
+        value_field: '{{slug}}'
+        filters:
+          - field: relation_test
+            values: [true]
       - name: authors
         label: Authors
         label_singular: 'Author'
