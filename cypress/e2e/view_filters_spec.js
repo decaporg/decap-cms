@@ -55,34 +55,6 @@ describe('View Filter', () => {
     assertInEntries('This is a TOML front matter post');
   });
 
-  it('can apply boolean filter', () => {
-    // enable filter
-    filter('Drafts');
-
-    assertEntriesCount(10);
-    for (let i = 1; i <= 20; i++) {
-      const draft = i % 2 === 0;
-      if (draft) {
-        assertInEntries(`This is post # ${i} --`);
-      } else {
-        assertNotInEntries(`This is post # ${i} --`);
-      }
-    }
-    assertNotInEntries('This is a YAML front matter post');
-    assertNotInEntries('This is a JSON front matter post');
-    assertNotInEntries('This is a TOML front matter post');
-
-    // disable filter
-    filter('Drafts');
-    assertEntriesCount(23);
-    for (let i = 1; i <= 20; i++) {
-      assertInEntries(`This is post # ${i} --`);
-    }
-    assertInEntries('This is a YAML front matter post');
-    assertInEntries('This is a JSON front matter post');
-    assertInEntries('This is a TOML front matter post');
-  });
-
   it('can apply multiple filters', () => {
     // enable filter
     filter('Posts Without Index');
@@ -93,10 +65,38 @@ describe('View Filter', () => {
     assertInEntries('This is a JSON front matter post');
     assertInEntries('This is a TOML front matter post');
 
-    filter('Drafts');
+    filter('Posts With Index');
 
     assertEntriesCount(0);
 
     cy.contains('div', 'No Entries');
+  });
+
+  it('can apply boolean filter', () => {
+    // enable filter
+    filter('Relation Test');
+
+    assertEntriesCount(10);
+    for (let i = 1; i <= 20; i++) {
+      const inRelationTest = i % 2 !== 0;
+      if (inRelationTest) {
+        assertInEntries(`This is post # ${i} --`);
+      } else {
+        assertNotInEntries(`This is post # ${i} --`);
+      }
+    }
+    assertNotInEntries('This is a YAML front matter post');
+    assertNotInEntries('This is a JSON front matter post');
+    assertNotInEntries('This is a TOML front matter post');
+
+    // disable filter
+    filter('Relation Test');
+    assertEntriesCount(23);
+    for (let i = 1; i <= 20; i++) {
+      assertInEntries(`This is post # ${i} --`);
+    }
+    assertInEntries('This is a YAML front matter post');
+    assertInEntries('This is a JSON front matter post');
+    assertInEntries('This is a TOML front matter post');
   });
 });
