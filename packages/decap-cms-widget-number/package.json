@@ -23,6 +23,7 @@
     "react-immutable-proptypes": "^2.1.0"
   },
   "peerDependencies": {
+    "@emotion/react": "^11.11.1",
     "decap-cms-ui-default": "^3.0.0",
     "immutable": "^3.7.6",
     "prop-types": "^15.7.2",

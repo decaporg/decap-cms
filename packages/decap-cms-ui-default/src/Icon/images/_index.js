@@ -19,6 +19,7 @@ import iconFolder from './folder.svg';
 import iconGithub from './github.svg';
 import iconGitlab from './gitlab.svg';
 import iconGitea from './gitea.svg';
+import iconForgejo from './forgejo.svg';
 import iconGrid from './grid.svg';
 import iconH1 from './h1.svg';
 import iconH2 from './h2.svg';
@@ -73,6 +74,7 @@ const images = {
   github: iconGithub,
   gitlab: iconGitlab,
   gitea: iconGitea,
+  forgejo: iconForgejo,
   grid: iconGrid,
   h1: iconH1,
   h2: iconH2,
