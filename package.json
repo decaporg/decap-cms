@@ -60,6 +60,7 @@
     "@emotion/jest": "^11.11.0",
     "@octokit/rest": "^21.1.1",
     "@octokit/types": "^16.0.0",
+    "@types/node": "25.0.3",
     "@simonsmith/cypress-image-snapshot": "^8.1.2",
     "@soda/friendly-errors-webpack-plugin": "^1.8.1",
     "@storybook/addon-actions": "^7.5.1",
