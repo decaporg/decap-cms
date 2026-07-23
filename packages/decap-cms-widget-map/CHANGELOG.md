@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.3.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-map@3.2.0...decap-cms-widget-map@3.3.0) (2026-07-23)
+
+**Note:** Version bump only for package decap-cms-widget-map
+
 # [3.2.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-map@3.1.4...decap-cms-widget-map@3.2.0) (2025-06-26)
 
 **Note:** Version bump only for package decap-cms-widget-map
