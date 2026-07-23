@@ -1,4 +1,4 @@
-import React from 'react';
+import type { ReactNode } from 'react';
 
 export const IDENTIFIER_FIELDS = ['title', 'path'] as const;
 
@@ -9,7 +9,7 @@ export const INFERABLE_FIELDS = {
     type: 'string',
     secondaryTypes: [],
     synonyms: ['title', 'name', 'label', 'headline', 'header'],
-    defaultPreview: (value: React.ReactNode) => <h1>{value}</h1>, // eslint-disable-line react/display-name
+    defaultPreview: (value: ReactNode) => <h1>{value}</h1>, // eslint-disable-line react/display-name
     fallbackToFirstField: true,
     showError: true,
   },
@@ -17,7 +17,7 @@ export const INFERABLE_FIELDS = {
     type: 'string',
     secondaryTypes: [],
     synonyms: ['short_title', 'shortTitle', 'short'],
-    defaultPreview: (value: React.ReactNode) => <h2>{value}</h2>, // eslint-disable-line react/display-name
+    defaultPreview: (value: ReactNode) => <h2>{value}</h2>, // eslint-disable-line react/display-name
     fallbackToFirstField: false,
     showError: false,
   },
@@ -25,7 +25,7 @@ export const INFERABLE_FIELDS = {
     type: 'string',
     secondaryTypes: [],
     synonyms: ['author', 'name', 'by', 'byline', 'owner'],
-    defaultPreview: (value: React.ReactNode) => <strong>{value}</strong>, // eslint-disable-line react/display-name
+    defaultPreview: (value: ReactNode) => <strong>{value}</strong>, // eslint-disable-line react/display-name
     fallbackToFirstField: false,
     showError: false,
   },
@@ -33,7 +33,7 @@ export const INFERABLE_FIELDS = {
     type: 'datetime',
     secondaryTypes: ['date'],
     synonyms: ['date', 'publishDate', 'publish_date'],
-    defaultPreview: (value: React.ReactNode) => value,
+    defaultPreview: (value: ReactNode) => value,
     fallbackToFirstField: false,
     showError: false,
   },
@@ -53,7 +53,7 @@ export const INFERABLE_FIELDS = {
       'bio',
       'summary',
     ],
-    defaultPreview: (value: React.ReactNode) => value,
+    defaultPreview: (value: ReactNode) => value,
     fallbackToFirstField: false,
     showError: false,
   },
@@ -71,7 +71,7 @@ export const INFERABLE_FIELDS = {
       'hero',
       'logo',
     ],
-    defaultPreview: (value: React.ReactNode) => value,
+    defaultPreview: (value: ReactNode) => value,
     fallbackToFirstField: false,
     showError: false,
   },

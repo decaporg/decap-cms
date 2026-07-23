@@ -9,7 +9,15 @@ const isESM = process.env.NODE_ENV === 'esm';
 console.log('Build Package:', path.basename(process.cwd()));
 
 // Always enabled plugins
-const basePlugins = ['babel-plugin-inline-json-import'];
+const basePlugins = [
+  'babel-plugin-inline-json-import',
+  [
+    '@emotion/babel-plugin',
+    {
+      autoLabel: 'always',
+    },
+  ],
+];
 
 // All legacy transforms have been removed as they are now included in @babel/preset-env
 // Features like class properties, optional chaining, nullish coalescing are now standard in modern JS
@@ -29,17 +37,31 @@ const svgo = {
   ],
 };
 
+const slateSerializerSpec =
+  /packages[\\/]decap-cms-widget-(markdown|richtext)[\\/]src[\\/]serializers[\\/]__tests__[\\/]slate\.spec\.js$/;
+
+const automaticReactPreset = [
+  '@babel/preset-react',
+  {
+    runtime: 'automatic',
+    importSource: '@emotion/react',
+  },
+];
+
 function presets() {
+  return [...(!isESM ? [['@babel/preset-env', {}]] : []), '@babel/preset-typescript'];
+}
+
+function overrides() {
   return [
-    '@babel/preset-react',
-    ...(!isESM ? [['@babel/preset-env', {}]] : []),
-    [
-      '@emotion/babel-preset-css-prop',
-      {
-        autoLabel: 'always',
-      },
-    ],
-    '@babel/preset-typescript',
+    {
+      exclude: slateSerializerSpec,
+      presets: [automaticReactPreset],
+    },
+    {
+      test: slateSerializerSpec,
+      presets: [['@babel/preset-react', { runtime: 'classic', pragma: 'h' }]],
+    },
   ];
 }
 
@@ -91,4 +113,5 @@ function plugins() {
 module.exports = {
   presets: presets(),
   plugins: plugins(),
+  overrides: overrides(),
 };
