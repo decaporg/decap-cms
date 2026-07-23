@@ -1,8 +1,29 @@
 import { Map, fromJS } from 'immutable';
+import { createPlateEditor, ParagraphPlugin } from 'platejs/react';
 
+import image from '../../../../decap-cms-editor-component-image/src';
+import { markdownToSlate, slateToMarkdown } from '../../serializers';
 import { mergeMediaConfig } from '../mergeMediaConfig';
+import ListPlugin from '../plugins/ListPlugin';
+import ShortcodePlugin from '../plugins/ShortcodePlugin';
 
 describe('VisualEditor', () => {
+  it('should preserve block images inside list items', () => {
+    const markdown = `1. First step.
+2. Last step.
+
+   ![Screenshot](/img/screenshot.png)`;
+    const editorComponents = Map({ image });
+    const value = markdownToSlate(markdown, { editorComponents });
+    const editor = createPlateEditor({
+      plugins: [ParagraphPlugin, ListPlugin, ShortcodePlugin],
+      shouldNormalizeEditor: true,
+      value,
+    });
+
+    expect(slateToMarkdown(editor.children, {}, editorComponents)).toEqual(markdown);
+  });
+
   describe('mergeMediaConfig', () => {
     it('should copy editor media settings to image component', () => {
       const editorComponents = Map({

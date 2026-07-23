@@ -1,4 +1,3 @@
-import React from 'react';
 import { render } from '@testing-library/react';
 import { fromJS } from 'immutable';
 import configureStore from 'redux-mock-store';
