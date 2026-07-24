@@ -55,7 +55,7 @@
     "react-router-dom": "^5.2.0",
     "react-scroll-sync": "^0.11.2",
     "react-split-pane": "^0.1.85",
-    "react-toastify": "^9.1.1",
+    "react-toastify": "^10.0.6",
     "react-topbar-progress-indicator": "^4.0.0",
     "react-virtualized-auto-sizer": "^1.0.2",
     "react-waypoint": "^10.0.0",
