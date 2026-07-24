@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.17.1](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.17.0...decap-cms-core@3.17.1) (2026-07-24)
+
+### Bug Fixes
+
+- bump incompatible react-tostify version ([#7914](https://github.com/decaporg/decap-cms/issues/7914)) ([d8436e6](https://github.com/decaporg/decap-cms/commit/d8436e6a2536c57f200448d10ede5aa87f0a65f8))
+
 # [3.17.0](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.16.0...decap-cms-core@3.17.0) (2026-07-23)
 
 ### Bug Fixes
