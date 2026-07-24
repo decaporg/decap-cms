@@ -63,7 +63,7 @@
     "@types/node": "25.0.3",
     "@simonsmith/cypress-image-snapshot": "^8.1.2",
     "@soda/friendly-errors-webpack-plugin": "^1.8.1",
-    "@storybook/addon-actions": "^7.5.1",
+    "@storybook/addon-actions": "^9.0.8",
     "@storybook/addon-links": "^7.5.1",
     "@storybook/react": "^10.4.6",
     "@testing-library/dom": "^10.0.0",
@@ -89,7 +89,7 @@
     "copy-webpack-plugin": "^10.2.4",
     "cross-env": "^7.0.0",
     "css-loader": "^7.1.2",
-    "cypress": "^12.17.4",
+    "cypress": "^15.19.0",
     "cypress-jest-adapter": "^0.1.1",
     "cypress-plugin-tab": "^1.0.0",
     "dotenv": "^10.0.0",
@@ -134,7 +134,7 @@
     "unist-util-visit": "^1.4.0",
     "webpack": "^5.75.0",
     "webpack-cli": "^5.0.1",
-    "webpack-dev-server": "^5.2.2"
+    "webpack-dev-server": "^6.0.0"
   },
   "workspaces": {
     "packages": [
