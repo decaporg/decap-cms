@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.5.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-richtext@3.4.1...decap-cms-widget-richtext@3.5.0) (2026-07-23)
+
+### Bug Fixes
+
+- **richtext:** preserve block images in list items ([#7896](https://github.com/decaporg/decap-cms/issues/7896)) ([8f23db0](https://github.com/decaporg/decap-cms/commit/8f23db0f91a97dca3a600175d5e0de4be778dae0))
+
 ## [3.4.1](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-richtext@3.4.0...decap-cms-widget-richtext@3.4.1) (2026-06-15)
 
 **Note:** Version bump only for package decap-cms-widget-richtext

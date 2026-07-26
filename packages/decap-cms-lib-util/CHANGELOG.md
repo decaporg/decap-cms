@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.8.0](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-util@3.7.1...decap-cms-lib-util@3.8.0) (2026-07-23)
+
+**Note:** Version bump only for package decap-cms-lib-util
+
 ## [3.7.1](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-util@3.7.0...decap-cms-lib-util@3.7.1) (2026-06-15)
 
 ### Bug Fixes
