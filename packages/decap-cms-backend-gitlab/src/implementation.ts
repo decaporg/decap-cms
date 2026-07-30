@@ -258,6 +258,7 @@ export default class GitLab implements Implementation {
       const isInvalidToken =
         json &&
         (json.error === 'invalid_token' ||
+          json.message === '401 Unauthorized' ||
           (Array.isArray(json.errors) &&
             json.errors.some(({ message }: { message?: string }) => message === 'Invalid token')));
       if (isInvalidToken) {

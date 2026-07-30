@@ -397,6 +397,11 @@ describe('gitlab backend', () => {
       error: 'invalid_token',
       error_description: 'Token is expired. You can either do re-authorization or token refresh.',
     };
+    const unauthorizedTokenResponse = { message: '401 Unauthorized' };
+    const restInvalidTokenResponses = [
+      ['OAuth invalid_token', expiredTokenResponse],
+      ['GitLab REST 401', unauthorizedTokenResponse],
+    ];
 
     it('stores the refresh token on login', async () => {
       backend = resolveBackend(pkceConfig);
@@ -405,40 +410,43 @@ describe('gitlab backend', () => {
       expect(authStore.retrieve()).toEqual(expect.objectContaining(pkceCredentials));
     });
 
-    it('refreshes the access token and retries the request on 401', async () => {
-      backend = resolveBackend(pkceConfig);
-      interceptAuth(backend);
-      await backend.authenticate(pkceCredentials);
+    it.each(restInvalidTokenResponses)(
+      'refreshes the access token and retries the request on %s response',
+      async (_responseType, invalidTokenResponse) => {
+        backend = resolveBackend(pkceConfig);
+        interceptAuth(backend);
+        await backend.authenticate(pkceCredentials);
 
-      backend.implementation.authenticator = {
-        refresh: jest
-          .fn()
-          .mockResolvedValue({ token: 'NEW_TOKEN', refresh_token: 'NEW_REFRESH_TOKEN' }),
-      };
+        backend.implementation.authenticator = {
+          refresh: jest
+            .fn()
+            .mockResolvedValue({ token: 'NEW_TOKEN', refresh_token: 'NEW_REFRESH_TOKEN' }),
+        };
 
-      const api = mockApi(backend);
-      api
-        .get('/user')
-        .matchHeader('authorization', 'Bearer EXPIRED_TOKEN')
-        .query(true)
-        .reply(401, expiredTokenResponse);
-      api
-        .get('/user')
-        .matchHeader('authorization', 'Bearer NEW_TOKEN')
-        .query(true)
-        .reply(200, resp.user.success);
+        const api = mockApi(backend);
+        api
+          .get('/user')
+          .matchHeader('authorization', 'Bearer EXPIRED_TOKEN')
+          .query(true)
+          .reply(401, invalidTokenResponse);
+        api
+          .get('/user')
+          .matchHeader('authorization', 'Bearer NEW_TOKEN')
+          .query(true)
+          .reply(200, resp.user.success);
 
-      const user = await backend.implementation.api.user();
+        const user = await backend.implementation.api.user();
 
-      expect(user).toEqual(resp.user.success);
-      expect(backend.implementation.authenticator.refresh).toHaveBeenCalledWith({
-        refresh_token: 'REFRESH_TOKEN',
-      });
-      expect(await backend.getToken()).toEqual('NEW_TOKEN');
-      expect(authStore.retrieve()).toEqual(
-        expect.objectContaining({ token: 'NEW_TOKEN', refresh_token: 'NEW_REFRESH_TOKEN' }),
-      );
-    });
+        expect(user).toEqual(resp.user.success);
+        expect(backend.implementation.authenticator.refresh).toHaveBeenCalledWith({
+          refresh_token: 'REFRESH_TOKEN',
+        });
+        expect(await backend.getToken()).toEqual('NEW_TOKEN');
+        expect(authStore.retrieve()).toEqual(
+          expect.objectContaining({ token: 'NEW_TOKEN', refresh_token: 'NEW_REFRESH_TOKEN' }),
+        );
+      },
+    );
 
     it('refreshes the access token and retries a GraphQL request on 401', async () => {
       backend = resolveBackend({
@@ -504,7 +512,7 @@ describe('gitlab backend', () => {
         .get('/user')
         .matchHeader('authorization', 'Bearer EXPIRED_TOKEN')
         .query(true)
-        .reply(401, expiredTokenResponse);
+        .reply(401, unauthorizedTokenResponse);
       api
         .get('/user')
         .matchHeader('authorization', 'Bearer NEW_TOKEN')
