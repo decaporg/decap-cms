@@ -255,7 +255,12 @@ export default class GitLab implements Implementation {
         .clone()
         .json()
         .catch(() => null);
-      if (json && json.error === 'invalid_token') {
+      const isInvalidToken =
+        json &&
+        (json.error === 'invalid_token' ||
+          (Array.isArray(json.errors) &&
+            json.errors.some(({ message }: { message?: string }) => message === 'Invalid token')));
+      if (isInvalidToken) {
         const newToken = await this.getRefreshedAccessToken();
         const reqWithNewToken = unsentRequest.withHeaders(
           {

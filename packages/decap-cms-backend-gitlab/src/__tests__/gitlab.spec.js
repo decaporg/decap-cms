@@ -440,6 +440,56 @@ describe('gitlab backend', () => {
       );
     });
 
+    it('refreshes the access token and retries a GraphQL request on 401', async () => {
+      backend = resolveBackend({
+        backend: {
+          ...pkceConfig.backend,
+          use_graphql: true,
+        },
+      });
+      interceptAuth(backend);
+      await backend.authenticate(pkceCredentials);
+
+      backend.implementation.authenticator = {
+        refresh: jest
+          .fn()
+          .mockResolvedValue({ token: 'NEW_TOKEN', refresh_token: 'NEW_REFRESH_TOKEN' }),
+      };
+
+      const graphQLApi = nock('https://gitlab.com');
+      graphQLApi
+        .post('/api/graphql')
+        .matchHeader('authorization', 'Bearer EXPIRED_TOKEN')
+        .reply(401, { errors: [{ message: 'Invalid token' }] });
+      graphQLApi
+        .post('/api/graphql')
+        .matchHeader('authorization', 'Bearer NEW_TOKEN')
+        .reply(200, {
+          data: {
+            project: {
+              repository: {
+                tree: {
+                  blobs: {
+                    nodes: [],
+                    pageInfo: { endCursor: null, hasNextPage: false },
+                  },
+                },
+              },
+            },
+          },
+        });
+
+      await expect(backend.implementation.api.listAllFiles('content', false)).resolves.toEqual([]);
+
+      expect(backend.implementation.authenticator.refresh).toHaveBeenCalledWith({
+        refresh_token: 'REFRESH_TOKEN',
+      });
+      expect(await backend.getToken()).toEqual('NEW_TOKEN');
+      expect(authStore.retrieve()).toEqual(
+        expect.objectContaining({ token: 'NEW_TOKEN', refresh_token: 'NEW_REFRESH_TOKEN' }),
+      );
+    });
+
     it('returns and persists the refreshed credentials when the token is refreshed during login', async () => {
       backend = resolveBackend(pkceConfig);
 
