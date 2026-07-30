@@ -4,8 +4,8 @@ describe('turbo backend supabase session refresh', () => {
   const config = {
     backend: {
       repo: 'owner/repo',
-      app_id: 'supabase-project-id',
-      anon_key: 'supabase-anon-key',
+      supabase_app_id: 'supabase-project-id',
+      supabase_anon_key: 'supabase-anon-key',
     },
     media_folder: 'static/media',
   };
@@ -92,7 +92,7 @@ describe('turbo backend supabase session refresh', () => {
       backend: {
         ...config.backend,
         api_root: 'https://supabase.example/functions/v1/gh',
-        site_id: 'site-123',
+        turbo_site_id: 'site-123',
       },
     });
     backend.supabaseAccessToken = 'access-123';

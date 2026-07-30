@@ -42,7 +42,40 @@ type SupabaseRefreshError = Error & {
 const REFRESH_BUFFER_SECONDS = 300;
 const REFRESH_RETRY_ATTEMPTS = 3;
 
+// Shared control-plane values (supabase_app_id, supabase_anon_key, base_url,
+// api_root) are identical across every site, so a site's config.yml only
+// needs `turbo_site_id`. This is resolved here, in this backend's own code,
+// rather than in decap-cms-core — core has no knowledge of Supabase or
+// Turbo at all; it just awaits this static `preloadConfig` hook (a generic
+// extension point) before constructing the backend.
+const DEFAULT_CONFIG_ENDPOINT = 'https://sb.decapcms.org/functions/v1/config';
+
 export default class DecapTurboBackend extends GitHubBackend {
+  static async preloadConfig(config: Config): Promise<Config> {
+    const backend = config.backend as Record<string, unknown>;
+    if (backend.supabase_app_id || !backend.turbo_site_id) {
+      // Either fully manually configured already, or nothing to resolve.
+      return config;
+    }
+
+    const endpoint = (backend.turbo_config_url as string) || DEFAULT_CONFIG_ENDPOINT;
+    const response = await fetch(
+      `${endpoint}?site_id=${encodeURIComponent(backend.turbo_site_id as string)}`,
+    );
+
+    if (!response.ok) {
+      const body = (await response.json().catch(() => ({}))) as { error?: string };
+      throw new Error(`Failed to load decap-turbo site defaults: ${body.error || response.status}`);
+    }
+
+    const defaults = await response.json();
+
+    return {
+      ...config,
+      backend: { ...defaults, ...config.backend },
+    };
+  }
+
   supabaseAccessToken: string | null = null;
   supabaseRefreshToken: string | null = null;
   supabaseExpiresAt: number | null = null;
@@ -57,9 +90,11 @@ export default class DecapTurboBackend extends GitHubBackend {
 
   constructor(config: Config, options: any = {}) {
     super(config, options);
-    this.supabaseAnonKey = (config.backend.anon_key || config.backend.app_id || '') as string;
-    this.supabaseId = (config.backend.app_id || '') as string;
-    this.siteId = (config.backend.site_id || '') as string;
+    this.supabaseAnonKey = (config.backend.supabase_anon_key ||
+      config.backend.supabase_app_id ||
+      '') as string;
+    this.supabaseId = (config.backend.supabase_app_id || '') as string;
+    this.siteId = (config.backend.turbo_site_id || '') as string;
     this.commitAuthorEmailFallback =
       ((config.backend as Record<string, unknown>).commit_author_email as string | undefined) ||
       ((config.backend as Record<string, unknown>).noreply_email as string | undefined);

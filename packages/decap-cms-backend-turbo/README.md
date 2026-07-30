@@ -41,21 +41,58 @@ backend:
   repo: owner/repo
   branch: main
 
+  # Stable identifier for this site.
+  turbo_site_id: your-site-id
+```
+
+`supabase_app_id`, `supabase_anon_key`, `base_url`, and `api_root` are
+identical across every site on the shared control plane, so they don't
+need to be copied into each site's `config.yml` by hand. This package's
+`DecapTurboBackend` class implements a static `preloadConfig(config)` hook
+— a generic extension point in Decap CMS core
+(`packages/decap-cms-core/src/actions/config.ts`): core has no built-in
+knowledge of Turbo or Supabase, it just awaits whatever `preloadConfig`
+the registered backend class provides, before constructing the backend.
+Here, `preloadConfig` fetches the site's config from the control plane's
+`config` endpoint (`site_id` in the query string) and merges the response
+into `backend`.
+
+An optional `turbo_config_url` field can override which endpoint is
+queried, for a control plane other than the default shared one:
+
+```yaml
+backend:
+  name: decap-turbo
+  repo: owner/repo
+  branch: main
+  turbo_site_id: your-site-id
+  turbo_config_url: https://your-control-plane.example/functions/v1/config
+```
+
+To skip the fetch entirely — e.g. for local/offline development — specify
+`supabase_app_id` (or all of the fields) explicitly instead:
+
+```yaml
+backend:
+  name: decap-turbo
+  repo: owner/repo
+  branch: main
+
   # Full Supabase project URL — used by the auth page and token refresh.
   base_url: https://your-project-ref.supabase.co
   api_root: https://your-project-ref.supabase.co/functions/v1/gh
-  auth_endpoint: auth/v1/authorize
-  auth_token_endpoint: auth/v1/token
 
   # Supabase project ref — used to build the PostgREST endpoint for the cache.
-  app_id: your-project-ref
+  supabase_app_id: your-project-ref
 
   # Supabase anon key — used for both auth API calls and cache queries.
-  anon_key: your-supabase-anon-key
+  supabase_anon_key: your-supabase-anon-key
 
   # Stable identifier for this site.
-  site_id: your-site-id
+  turbo_site_id: your-site-id
 ```
+
+Any field present in `config.yml` always wins over a fetched default.
 
 ## Supabase setup
 

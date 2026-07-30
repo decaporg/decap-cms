@@ -77,8 +77,8 @@ export default class SupabaseAuthenticationPage extends React.Component {
       'SupabaseAuthenticationPage',
     );
 
-    const { base_url = '', anon_key = '' } = this.props.config.backend;
-    this.supabase = createClient(base_url, anon_key);
+    const { base_url = '', supabase_anon_key = '' } = this.props.config.backend;
+    this.supabase = createClient(base_url, supabase_anon_key);
   }
 
   state = { email: '', password: '', errors: {} };

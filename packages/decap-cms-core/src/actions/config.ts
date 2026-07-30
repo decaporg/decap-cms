@@ -11,6 +11,7 @@ import { validateConfig } from '../constants/configSchema';
 import { selectDefaultSortableFields } from '../reducers/collections';
 import { getIntegrations, selectIntegration } from '../reducers/integrations';
 import { resolveBackend } from '../backend';
+import { getBackend } from '../lib/registry';
 import { I18N, I18N_FIELD, I18N_STRUCTURE } from '../lib/i18n';
 import { FILES, FOLDER } from '../constants/collectionTypes';
 
@@ -520,6 +521,24 @@ export async function handleLocalBackend(originalConfig: CmsConfig) {
   });
 }
 
+// Generic extension point: if the backend class registered under
+// `config.backend.name` exposes a static async `preloadConfig(config)`,
+// it's awaited here before the backend is constructed, and its returned
+// config is used from then on. This lets a backend implementation resolve
+// its own config (e.g. fetch remaining fields from a remote endpoint)
+// however it likes, with zero backend-specific knowledge in core.
+export async function applyBackendPreloadConfig(originalConfig: CmsConfig) {
+  const backendName = originalConfig.backend?.name;
+  const registered = backendName && getBackend(backendName);
+  const preloadConfig = registered?.BackendClass?.preloadConfig;
+
+  if (typeof preloadConfig !== 'function') {
+    return originalConfig;
+  }
+
+  return preloadConfig(originalConfig);
+}
+
 export function loadConfig(manualConfig: Partial<CmsConfig> = {}, onLoad: () => unknown) {
   if (window.CMS_CONFIG) {
     return configLoaded(window.CMS_CONFIG);
@@ -541,7 +560,8 @@ export function loadConfig(manualConfig: Partial<CmsConfig> = {}, onLoad: () => 
       validateConfig(mergedConfig);
 
       const withLocalBackend = await handleLocalBackend(mergedConfig);
-      const normalizedConfig = normalizeConfig(withLocalBackend);
+      const withPreloadedBackend = await applyBackendPreloadConfig(withLocalBackend);
+      const normalizedConfig = normalizeConfig(withPreloadedBackend);
 
       const config = applyDefaults(normalizedConfig);
 
