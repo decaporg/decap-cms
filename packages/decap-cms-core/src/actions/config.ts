@@ -501,6 +501,12 @@ export async function handleLocalBackend(originalConfig: CmsConfig) {
     return originalConfig;
   }
 
+  const backendName = originalConfig.backend?.name;
+  const registered = backendName && getBackend(backendName);
+  if (registered?.BackendClass?.preloadConfig) {
+    return originalConfig;
+  }
+
   const {
     proxyUrl,
     publish_modes: publishModes,
