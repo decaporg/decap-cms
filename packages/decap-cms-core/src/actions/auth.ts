@@ -1,10 +1,27 @@
 import { currentBackend } from '../backend';
 import { addNotification, clearNotifications } from './notifications';
+import { refilterConfigForPermissions, type BackendPermissions } from './config';
 
 import type { Credentials, User } from 'decap-cms-lib-util';
 import type { ThunkDispatch } from 'redux-thunk';
 import type { AnyAction } from 'redux';
 import type { State } from '../types/redux';
+
+// Generic, backend-agnostic hook: any backend's resolved user may carry a
+// `permissions` field describing what the just-authenticated user is allowed
+// to access (decap-cms-backend-turbo is the first backend to set it, but the
+// field name itself must stay backend-neutral — core doesn't know or care
+// which backend it came from, it just re-filters the loaded config once
+// it's present).
+function dispatchPermissionsRefilterIfPresent(
+  dispatch: ThunkDispatch<State, {}, AnyAction>,
+  user: User,
+) {
+  const permissions = (user as unknown as { permissions?: BackendPermissions }).permissions;
+  if (permissions) {
+    dispatch(refilterConfigForPermissions(permissions));
+  }
+}
 
 export const AUTH_REQUEST = 'AUTH_REQUEST';
 export const AUTH_SUCCESS = 'AUTH_SUCCESS';
@@ -65,6 +82,7 @@ export function authenticateUser() {
             dispatch(useOpenAuthoring());
           }
           dispatch(authenticate(user));
+          dispatchPermissionsRefilterIfPresent(dispatch, user);
         } else {
           dispatch(doneAuthenticating());
         }
@@ -89,6 +107,7 @@ export function loginUser(credentials: Credentials) {
           dispatch(useOpenAuthoring());
         }
         dispatch(authenticate(user));
+        dispatchPermissionsRefilterIfPresent(dispatch, user);
       })
       .catch((error: Error) => {
         console.error(error);

@@ -299,6 +299,14 @@ export default class DecapTurboBackend extends GitHubBackend {
       this.commitAuthorEmailFallback,
     );
 
+    // Only knowable post-auth (the `config` bootstrap endpoint's static
+    // preloadConfig hook runs before a user JWT exists), so it's fetched
+    // here and attached to the returned user rather than resolved earlier.
+    // decap-cms-core's actions/auth.ts picks up `permissions` off this object
+    // generically (the field name is backend-neutral by design — any backend
+    // could set it) and re-filters the loaded config against it.
+    const turboPermissions = await this.fetchTurboPermissions();
+
     // Include access_token in the returned user object so it gets stored in auth store
     return {
       ...user,
@@ -311,7 +319,34 @@ export default class DecapTurboBackend extends GitHubBackend {
       ...('user_email' in state && { user_email: (state as SupabaseUser).user_email }),
       ...('email' in state && { email: (state as SupabaseUser).email }),
       ...('user_metadata' in state && { user_metadata: (state as SupabaseUser).user_metadata }),
+      ...(turboPermissions && { permissions: turboPermissions }),
     };
+  }
+
+  async fetchTurboPermissions(): Promise<{ collections?: Record<string, string> } | undefined> {
+    if (!this.supabaseAccessToken || !this.siteId) {
+      return undefined;
+    }
+
+    try {
+      const res = await fetch(
+        `${this.baseUrl}/functions/v1/permissions?site_id=${encodeURIComponent(this.siteId)}`,
+        {
+          headers: {
+            Authorization: `Bearer ${this.supabaseAccessToken}`,
+            apikey: this.supabaseAnonKey,
+          },
+        },
+      );
+      if (!res.ok) {
+        console.warn('Failed to fetch Turbo site permissions', res.status);
+        return undefined;
+      }
+      return await res.json();
+    } catch (error) {
+      console.warn('Failed to fetch Turbo site permissions', error);
+      return undefined;
+    }
   }
 
   async pollUntilForkExists({ repo }: { repo: string; token: string }) {
