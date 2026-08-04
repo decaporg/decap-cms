@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.3.0](https://github.com/decaporg/decap-cms/compare/decap-cms-default-exports@3.2.0...decap-cms-default-exports@3.3.0) (2026-06-08)
+
+**Note:** Version bump only for package decap-cms-default-exports
+
 # [3.2.0](https://github.com/decaporg/decap-cms/compare/decap-cms-default-exports@3.1.3...decap-cms-default-exports@3.2.0) (2025-06-26)
 
 **Note:** Version bump only for package decap-cms-default-exports

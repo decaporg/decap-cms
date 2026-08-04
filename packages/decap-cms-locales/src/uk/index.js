@@ -42,7 +42,8 @@ const uk = {
     },
     collectionTop: {
       viewAs: 'Змінити вигляд',
-      newButton: 'Створити %{collectionLabel}',
+      newButton: '＋ %{collectionLabel}',
+      newButtonAriaLabel: 'Створити запис типу %{collectionLabel}',
       ascending: 'За зростанням',
       descending: 'За спаданням',
       searchResults: 'Результати по запиту "%{searchTerm}"',

@@ -193,6 +193,63 @@ npx jest -t "true on p" ".+backend-gitlab/.+/API.spec.js"
 
 For more information about running tests exactly the way you want, check out the official documentation for [Jest CLI](https://jestjs.io/docs/cli).
 
+## Releasing
+
+Decap CMS uses NPM trusted publishers with OIDC for secure, automated package publishing.
+
+### How It Works
+
+- Publishing is automated via GitHub Actions when version tags are pushed
+- Uses OpenID Connect (OIDC) for authentication. No NPM tokens required
+- Each package has a trusted publisher configured on npmjs.com
+- Workflow generates short-lived, cryptographically-signed tokens automatically
+- Publishes all changed packages in the monorepo via Lerna
+
+### Release Process
+
+1. **Prepare the release:**
+  ```sh
+  # Ensure your local `main` branch is up to date
+  npm prune
+  npm install
+  npm run test
+
+  # Bump versions for changed packages
+  npx lerna version
+
+  # This will:
+  # - Detect changed packages since last release
+  # - Bump versions according to conventional commits
+  # - Update CHANGELOG.md
+  # - Create git commit and tags
+  # - Push to upstream
+  ```
+
+2. **Automated publishing:**
+   - Tags pushed to `main` trigger the publish workflow automatically
+   - GitHub Actions runs tests and builds packages
+   - Lerna publishes changed packages to npm using OIDC
+   - Provenance attestations are generated automatically
+
+3. **Create GitHub release:**
+   - Go to [Releases](https://github.com/decaporg/decap-cms/releases)
+   - Draft a new release from the tag
+   - Add release notes highlighting changes
+
+### Manual Publishing (Emergency Only)
+
+If automated publishing fails and you need to publish manually:
+
+```sh
+# Authenticate with npm (uses session-based auth with 2FA)
+npm login
+
+# Publish changed packages
+npm run lerna:publish
+```
+
+Note: Manual publishing still requires 2FA. Use recovery codes if you don't have access to your 2FA device.
+
 ## License
 
 By contributing to Decap CMS, you agree that your contributions will be licensed

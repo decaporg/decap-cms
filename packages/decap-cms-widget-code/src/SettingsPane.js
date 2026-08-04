@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from '@emotion/styled';
 import Select from 'react-select';
 import isHotkey from 'is-hotkey';

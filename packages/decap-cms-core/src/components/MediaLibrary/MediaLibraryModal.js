@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import { Map } from 'immutable';
@@ -25,14 +24,18 @@ const cardMargin = `10px`;
  */
 const cardOutsideWidth = `300px`;
 
+/** Calculated to be as wide as possible without cutting off the 40px-wide close button. */
+const minimumCardWidth = `calc(100% - 40px)`;
+
 const StyledModal = styled(Modal)`
   display: grid;
-  grid-template-rows: 120px auto;
-  width: calc(${cardOutsideWidth} + 20px);
+  width: 100%;
+  grid-template-rows: auto 1fr;
+  gap: 20px;
   background-color: ${props => props.isPrivate && colors.grayDark};
 
-  @media (min-width: 800px) {
-    width: calc(${cardOutsideWidth} * 2 + 20px);
+  @media (min-width: 500px) {
+    width: min(${minimumCardWidth}, calc(${cardOutsideWidth} * 2 + 20px));
   }
 
   @media (min-width: 1120px) {

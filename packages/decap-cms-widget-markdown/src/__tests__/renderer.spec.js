@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
 import padStart from 'lodash/padStart';
 import { Map } from 'immutable';
@@ -206,6 +205,16 @@ I get 10 times more traffic from [Google] than from [Yahoo] or [MSN].
       const img = container.querySelector('img');
       expect(img).toHaveAttribute('src', 'foobar.png');
       expect(img).not.toHaveAttribute('onerror');
+    });
+
+    it('should sanitize dangerous link protocols', () => {
+      const value = '<a href="javascript:alert(1)">click</a>';
+
+      const { container } = render(
+        <MarkdownPreview value={value} getAsset={jest.fn()} resolveWidget={jest.fn()} />,
+      );
+      const link = container.querySelector('a');
+      expect(link).not.toHaveAttribute('href');
     });
 
     it('should not sanitize HTML', async () => {

@@ -8,6 +8,7 @@ const de = {
     loginWithGitHub: 'Mit GitHub einloggen',
     loginWithGitLab: 'Mit GitLab einloggen',
     loginWithGitea: 'Mit Gitea einloggen',
+    loginWithForgejo: 'Mit Forgejo einloggen',
     errors: {
       email: 'Stellen Sie sicher, Ihre E-Mail-Adresse einzugeben.',
       password: 'Bitte geben Sie Ihr Passwort ein.',
@@ -43,7 +44,8 @@ const de = {
     collectionTop: {
       sortBy: 'Sortieren nach',
       viewAs: 'Anzeigen als',
-      newButton: 'Neue(r/s) %{collectionLabel}',
+      newButton: '＋ %{collectionLabel}',
+      newButtonAriaLabel: 'Beitrag vom Typ %{collectionLabel} erstellen',
       ascending: 'Aufsteigend',
       descending: 'Absteigend',
       searchResults: 'Suchergebnisse für "%{searchTerm}"',

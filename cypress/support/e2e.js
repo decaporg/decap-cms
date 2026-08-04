@@ -23,7 +23,11 @@ addMatchImageSnapshotCommand({
   capture: 'viewport',
 });
 
-Cypress.on('uncaught:exception', () => false);
+Cypress.on('uncaught:exception', (err) => {
+  console.error('[UNCAUGHT EXCEPTION]', err.message);
+  console.error('[UNCAUGHT EXCEPTION] Stack:', err.stack);
+  return false; // Prevent Cypress from failing the test
+});
 
 import './commands';
 

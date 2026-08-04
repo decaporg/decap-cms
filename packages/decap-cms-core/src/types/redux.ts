@@ -1,6 +1,6 @@
 import type { Action } from 'redux';
 import type { StaticallyTypedRecord } from './immutable';
-import type { Map, List, OrderedMap, Set } from 'immutable';
+import type { List, Map, OrderedMap, Set } from 'immutable';
 import type { FILES, FOLDER } from '../constants/collectionTypes';
 import type { MediaFile as BackendMediaFile } from '../backend';
 import type { Auth } from '../reducers/auth';
@@ -11,6 +11,7 @@ import type { Search } from '../reducers/search';
 import type { GlobalUI } from '../reducers/globalUI';
 import type { NotificationsState } from '../reducers/notifications';
 import type { formatExtensions } from '../formats/formats';
+import type { Note } from 'decap-cms-lib-util';
 
 export type CmsBackendType =
   | 'azure'
@@ -19,6 +20,7 @@ export type CmsBackendType =
   | 'decap-turbo'
   | 'gitlab'
   | 'gitea'
+  | 'forgejo'
   | 'bitbucket'
   | 'test-repo'
   | 'proxy';
@@ -73,7 +75,7 @@ export interface CmsFieldBase {
   label?: string;
   required?: boolean;
   hint?: string;
-  pattern?: [string, string];
+  pattern?: [string | RegExp, string];
   i18n?: boolean | 'translate' | 'duplicate' | 'none';
   media_folder?: string;
   public_folder?: string;
@@ -186,6 +188,21 @@ export interface CmsFieldMarkdown {
   editorComponents?: string[];
 }
 
+export interface CmsFieldRichText {
+  widget: 'richtext';
+  default?: string;
+
+  minimal?: boolean;
+  buttons?: CmsMarkdownWidgetButton[];
+  editor_components?: string[];
+  modes?: ('raw' | 'rich_text')[];
+
+  /**
+   * @deprecated Use editor_components instead
+   */
+  editorComponents?: string[];
+}
+
 export interface CmsFieldNumber {
   widget: 'number';
   default?: string | number;
@@ -259,7 +276,7 @@ export interface CmsFieldMeta {
   label: string;
   widget: string;
   required: boolean;
-  index_file: string;
+  index_file?: string;
   meta: boolean;
 }
 
@@ -273,6 +290,7 @@ export type CmsField = CmsFieldBase &
     | CmsFieldList
     | CmsFieldMap
     | CmsFieldMarkdown
+    | CmsFieldRichText
     | CmsFieldNumber
     | CmsFieldObject
     | CmsFieldRelation
@@ -291,22 +309,44 @@ export interface CmsCollectionFile {
   description?: string;
   preview_path?: string;
   preview_path_date_field?: string;
+  preview_path_preserve_slashes?: boolean;
   i18n?: boolean | CmsI18nConfig;
   media_folder?: string;
   public_folder?: string;
 }
 
+export type NoteMap = StaticallyTypedRecord<Note>;
+
+export type Notes = List<NoteMap>;
+
+export interface LoadNotesPayload {
+  notes: Note[];
+}
+
+export interface AddNotePayload {
+  note: Note;
+}
+
+export interface UpdateNotePayload {
+  id: string;
+  updates: Partial<Note>;
+}
+
+export interface DeleteNotePayload {
+  id: string;
+}
+
 export interface ViewFilter {
   label: string;
   field: string;
-  pattern: string;
+  pattern: string | boolean;
   id: string;
 }
 
 export interface ViewGroup {
   label: string;
   field: string;
-  pattern: string;
+  pattern?: string;
   id: string;
 }
 
@@ -328,10 +368,12 @@ export interface CmsCollection {
   slug?: string;
   preview_path?: string;
   preview_path_date_field?: string;
+  preview_path_preserve_slashes?: boolean;
   create?: boolean;
   delete?: boolean;
   editor?: {
     preview?: boolean;
+    notes?: boolean;
     visualEditing?: boolean;
   };
   publish?: boolean;
@@ -339,7 +381,7 @@ export interface CmsCollection {
     depth: number;
   };
   type: typeof FOLDER | typeof FILES;
-  meta?: { path?: { label: string; widget: string; index_file: string } };
+  meta?: { path?: { label: string; widget: string; index_file?: string } };
 
   /**
    * It accepts the following values: yml, yaml, toml, json, md, markdown, html
@@ -359,6 +401,7 @@ export interface CmsCollection {
   view_filters?: ViewFilter[];
   view_groups?: ViewGroup[];
   i18n?: boolean | CmsI18nConfig;
+  limit?: number;
 
   /**
    * @deprecated Use sortable_fields instead
@@ -378,6 +421,7 @@ export interface CmsBackend {
   auth_endpoint?: string;
   cms_label_prefix?: string;
   squash_merges?: boolean;
+  signoff_commits?: boolean;
   proxy_url?: string;
   commit_messages?: {
     create?: string;
@@ -398,6 +442,10 @@ export interface CmsSlug {
 export interface CmsLocalBackend {
   url?: string;
   allowed_hosts?: string[];
+}
+
+export interface CmsIssueReports {
+  url?: string;
 }
 
 export interface CmsConfig {
@@ -428,9 +476,11 @@ export interface CmsConfig {
   }[];
   slug?: CmsSlug;
   i18n?: CmsI18nConfig;
+  issue_reports?: CmsIssueReports;
   local_backend?: boolean | CmsLocalBackend;
   editor?: {
     preview?: boolean;
+    notes?: boolean;
   };
   error: string | undefined;
   isFetching: boolean;
@@ -486,7 +536,11 @@ export type Config = StaticallyTypedRecord<{
 }>;
 
 type PagesObject = {
-  [collection: string]: { isFetching: boolean; page: number; ids: List<string> };
+  [collection: string]: {
+    isFetching: boolean;
+    page: number;
+    ids: List<string>;
+  };
 };
 
 type Pages = StaticallyTypedRecord<PagesObject>;
@@ -563,6 +617,7 @@ export type EntryDraft = StaticallyTypedRecord<{
   entry: Entry;
   fieldsErrors: FieldsErrors;
   fieldsMetaData?: Map<string, Map<string, string>>;
+  notes: Notes;
 }>;
 
 export type EntryField = StaticallyTypedRecord<{
@@ -573,6 +628,7 @@ export type EntryField = StaticallyTypedRecord<{
   name: string;
   default: string | null | boolean | List<unknown>;
   media_folder?: string;
+  multiple?: boolean;
   public_folder?: string;
   comment?: string;
   meta?: boolean;
@@ -586,6 +642,12 @@ export type FilterRule = StaticallyTypedRecord<{
   field: string;
 }>;
 
+type CollectionEditor = StaticallyTypedRecord<{
+  preview?: boolean;
+  notes?: boolean;
+  visualEditing?: boolean;
+}>;
+
 export type CollectionFile = StaticallyTypedRecord<{
   file: string;
   name: string;
@@ -595,6 +657,7 @@ export type CollectionFile = StaticallyTypedRecord<{
   public_folder?: string;
   preview_path?: string;
   preview_path_date_field?: string;
+  editor?: CollectionEditor;
 }>;
 
 export type CollectionFiles = List<CollectionFile>;
@@ -629,6 +692,7 @@ type CollectionObject = {
   public_folder?: string;
   preview_path?: string;
   preview_path_date_field?: string;
+  preview_path_preserve_slashes?: boolean;
   summary?: string;
   filter?: FilterRule;
   type: 'file_based_collection' | 'folder_based_collection';
@@ -637,6 +701,7 @@ type CollectionObject = {
   frontmatter_delimiter?: List<string> | string | [string, string];
   create?: boolean;
   delete?: boolean;
+  editor?: CollectionEditor;
   identifier_field?: string;
   path?: string;
   slug?: string;
@@ -648,6 +713,7 @@ type CollectionObject = {
   nested?: Nested;
   meta?: Meta;
   i18n: i18n;
+  limit?: number;
 };
 
 export type Collection = StaticallyTypedRecord<CollectionObject>;

@@ -24,18 +24,18 @@ collections: # A list of collections the CMS should be able to edit
       - label: Posts Without Index
         field: title
         pattern: front matter post
-      - label: Drafts
-        field: draft
+      - label: Relation Test
+        field: relation_test
         pattern: true
     view_groups:
       - label: Year
         field: date
         pattern: \d{4}
-      - label: Drafts
-        field: draft
+      - label: Relation Test
+        field: relation_test
     fields: # The fields each document in this collection have
       - { label: 'Title', name: 'title', widget: 'string', tagname: 'h1' }
-      - { label: 'Draft', name: 'draft', widget: 'boolean', default: false }
+      - { label: 'Relation Test', name: 'relation_test', widget: 'hidden', default: true }
       - {
           label: 'Publish Date',
           name: 'date',
@@ -117,6 +117,7 @@ collections: # A list of collections the CMS should be able to edit
         search_fields: ['title', 'body']
         value_field: 'title'
       - { label: 'Title', name: 'title', widget: 'string' }
+      - { label: 'ID', name: 'uuid', widget: 'uuid', read_only: true, prefix: '', use_b32_encoding: false }
       - { label: 'Boolean', name: 'boolean', widget: 'boolean', default: true }
       - { label: 'Map', name: 'map', widget: 'map' }
       - { label: 'Text', name: 'text', widget: 'text', hint: 'Plain text, not markdown' }
@@ -253,4 +254,4 @@ collections: # A list of collections the CMS should be able to edit
       - label: Title
         name: title
         widget: string
-    meta: { path: { widget: string, label: 'Path', index_file: 'index' } }
+    meta: { path: { widget: string, label: 'Path' } }

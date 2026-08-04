@@ -1,4 +1,3 @@
-import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import { render, fireEvent } from '@testing-library/react';
 import { fromJS } from 'immutable';
@@ -38,7 +37,7 @@ describe('NestedCollection', () => {
     folder: 'src/pages',
     fields: [{ name: 'title', widget: 'string' }],
     nested: {
-      subfolders: false,
+      subfolders: true,
     },
   });
 

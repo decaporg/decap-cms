@@ -406,6 +406,7 @@ describe('config', () => {
         it('should set editor preview honoring global config before and specific config after', () => {
           const config = applyDefaults({
             editor: {
+              notes: false,
               preview: false,
             },
             collections: [
@@ -415,6 +416,7 @@ describe('config', () => {
               },
               {
                 editor: {
+                  notes: false,
                   preview: true,
                 },
                 fields: [{ name: 'title' }],
@@ -486,6 +488,10 @@ describe('config', () => {
             view_filters: [],
             view_groups: [],
             identifier_field: 'datetime',
+            editor: {
+              notes: false,
+              preview: true,
+            },
             fields: [
               {
                 name: 'datetime',
@@ -507,6 +513,10 @@ describe('config', () => {
           },
           {
             sortable_fields: [],
+            editor: {
+              notes: false,
+              preview: true,
+            },
             files: [
               {
                 name: 'file',
@@ -537,6 +547,10 @@ describe('config', () => {
             publish: true,
           },
         ],
+        editor: {
+          notes: false,
+          preview: true,
+        },
         public_folder: '/',
         publish_mode: 'simple',
         slug: { clean_accents: false, encoding: 'unicode', sanitize_replacement: '-' },
@@ -862,6 +876,20 @@ describe('config', () => {
 
       assetFetchCalled('http://192.168.0.1:8081/api/v1');
     });
+
+    it('should return empty object when local_backend url has an unsafe scheme', async () => {
+      window.location = { hostname: 'localhost' };
+      global.fetch = jest.fn();
+      await expect(detectProxyServer({ url: 'file:///etc/passwd' })).resolves.toEqual({});
+      expect(global.fetch).not.toHaveBeenCalled();
+    });
+
+    it('should return empty object when local_backend url is not a valid URL', async () => {
+      window.location = { hostname: 'localhost' };
+      global.fetch = jest.fn();
+      await expect(detectProxyServer({ url: 'not a url' })).resolves.toEqual({});
+      expect(global.fetch).not.toHaveBeenCalled();
+    });
   });
 
   describe('handleLocalBackend', () => {
@@ -947,6 +975,10 @@ describe('config', () => {
       expect(dispatch).toHaveBeenCalledWith({
         type: 'CONFIG_SUCCESS',
         payload: {
+          editor: {
+            notes: false,
+            preview: true,
+          },
           backend: { repo: 'test-repo' },
           collections: [],
           publish_mode: 'simple',
@@ -981,6 +1013,10 @@ describe('config', () => {
         type: 'CONFIG_SUCCESS',
         payload: {
           backend: { repo: 'github' },
+          editor: {
+            notes: false,
+            preview: true,
+          },
           collections: [],
           publish_mode: 'simple',
           slug: { encoding: 'unicode', clean_accents: false, sanitize_replacement: '-' },
