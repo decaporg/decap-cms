@@ -24,6 +24,7 @@ import {
   selectEntriesGroup,
   selectViewStyle,
 } from '../../reducers/entries';
+import { selectCanCreateNewEntry } from '../../reducers';
 
 const CollectionContainer = styled.div`
   display: flex;
@@ -60,6 +61,9 @@ export class Collection extends React.Component {
     sortableFields: PropTypes.array,
     sort: ImmutablePropTypes.orderedMap,
     onSortClick: PropTypes.func.isRequired,
+    canCreate: PropTypes.bool.isRequired,
+    filterTerm: PropTypes.string,
+    viewStyle: PropTypes.string,
   };
 
   componentDidMount() {
@@ -106,9 +110,10 @@ export class Collection extends React.Component {
       group,
       onChangeViewStyle,
       viewStyle,
+      canCreate,
     } = this.props;
 
-    let newEntryUrl = collection.get('create') ? getNewEntryUrl(collectionName) : '';
+    let newEntryUrl = canCreate ? getNewEntryUrl(collectionName) : '';
     if (newEntryUrl && filterTerm) {
       newEntryUrl = getNewEntryUrl(collectionName);
       if (filterTerm) {
@@ -174,6 +179,7 @@ function mapStateToProps(state, ownProps) {
   const filter = selectEntriesFilter(state.entries, collection.get('name'));
   const group = selectEntriesGroup(state.entries, collection.get('name'));
   const viewStyle = selectViewStyle(state.entries);
+  const canCreate = selectCanCreateNewEntry(state, name);
 
   return {
     collection,
@@ -190,6 +196,7 @@ function mapStateToProps(state, ownProps) {
     filter,
     group,
     viewStyle,
+    canCreate,
   };
 }
 

@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.8.0](https://github.com/decaporg/decap-cms/compare/decap-cms-locales@3.7.0...decap-cms-locales@3.8.0) (2026-07-23)
+
+### Bug Fixes
+
+- add separator and sorting for unpublished entries ([#7624](https://github.com/decaporg/decap-cms/issues/7624)) ([2f5c54d](https://github.com/decaporg/decap-cms/commit/2f5c54d96d3eaf657d0b75a0a2578073731907a7)), closes [#7542](https://github.com/decaporg/decap-cms/issues/7542)
+
 # [3.7.0](https://github.com/decaporg/decap-cms/compare/decap-cms-locales@3.6.0...decap-cms-locales@3.7.0) (2026-06-15)
 
 ### Features

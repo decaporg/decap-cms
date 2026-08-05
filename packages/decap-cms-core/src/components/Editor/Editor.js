@@ -36,7 +36,12 @@ import {
   deleteUnpublishedEntry,
 } from '../../actions/editorialWorkflow';
 import { loadDeployPreview } from '../../actions/deploys';
-import { selectEntry, selectUnpublishedEntry, selectDeployPreview } from '../../reducers';
+import {
+  selectCanCreateNewEntry,
+  selectEntry,
+  selectUnpublishedEntry,
+  selectDeployPreview,
+} from '../../reducers';
 import { selectFields, getFileFromSlug } from '../../reducers/collections';
 import { status, EDITORIAL_WORKFLOW } from '../../constants/publishModes';
 import { FILES } from '../../constants/collectionTypes';
@@ -92,6 +97,7 @@ export class Editor extends React.Component {
       search: PropTypes.string,
     }),
     hasChanged: PropTypes.bool,
+    canCreateNewEntry: PropTypes.bool,
     t: PropTypes.func.isRequired,
     retrieveLocalBackup: PropTypes.func.isRequired,
     localBackup: ImmutablePropTypes.map,
@@ -401,6 +407,7 @@ export class Editor extends React.Component {
       changeDraftFieldValidation,
       user,
       hasChanged,
+      canCreateNewEntry,
       displayUrl,
       hasWorkflow,
       useOpenAuthoring,
@@ -455,6 +462,7 @@ export class Editor extends React.Component {
         showDelete={this.props.showDelete}
         user={user}
         hasChanged={hasChanged}
+        canCreateNewEntry={canCreateNewEntry}
         displayUrl={displayUrl}
         hasWorkflow={hasWorkflow}
         useOpenAuthoring={useOpenAuthoring}
@@ -483,6 +491,7 @@ function mapStateToProps(state, ownProps) {
   const entry = newEntry ? null : selectEntry(state, collectionName, slug);
   const user = auth.user;
   const hasChanged = entryDraft.get('hasChanged');
+  const canCreateNewEntry = selectCanCreateNewEntry(state, collectionName);
   const displayUrl = config.display_url;
   const hasWorkflow = config.publish_mode === EDITORIAL_WORKFLOW;
   const useOpenAuthoring = globalUI.useOpenAuthoring;
@@ -516,6 +525,7 @@ function mapStateToProps(state, ownProps) {
     entry,
     user,
     hasChanged,
+    canCreateNewEntry,
     displayUrl,
     hasWorkflow,
     useOpenAuthoring,
