@@ -1,20 +1,13 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import styled from '@emotion/styled';
-import partial from 'lodash/partial';
-import {
-  AuthenticationPage,
-  buttons,
-  shadows,
-  colors,
-  colorsRaw,
-  lengths,
-  zIndex,
-  Loader,
-} from 'decap-cms-ui-default';
-import { createClient } from '@supabase/supabase-js';
+import { AuthenticationPage, buttons, shadows, colors, Loader } from 'decap-cms-ui-default';
 
-const LoginButton = styled.button`
+const ErrorMessage = styled.p`
+  color: ${colors.errorText};
+`;
+
+const TurboLoginButton = styled.button`
   ${buttons.button};
   ${shadows.dropDeep};
   ${buttons.default};
@@ -22,40 +15,44 @@ const LoginButton = styled.button`
 
   padding: 0 30px;
   display: block;
-  margin-top: 20px;
-  margin-left: auto;
-`;
-
-const AuthForm = styled.form`
+  width: 100%;
   max-width: 350px;
-  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
 `;
 
-const AuthInput = styled.input`
-  background-color: ${colorsRaw.white};
-  border-radius: ${lengths.borderRadius};
+const DEFAULT_TURBO_ADMIN_URL = 'https://turbo.decapcms.org';
 
-  font-size: 14px;
-  padding: 10px;
-  margin-bottom: 15px;
-  margin-top: 6px;
-  width: 100%;
-  position: relative;
-  z-index: ${zIndex.zIndex1};
+const POPUP_MESSAGE_SOURCE = 'decap-turbo-login';
 
-  &:focus {
-    outline: none;
-    box-shadow: inset 0 0 0 2px ${colors.active};
+function credentialsFromPostMessageData(data) {
+  if (!data || data.source !== POPUP_MESSAGE_SOURCE) return null;
+  const { credentials } = data;
+  if (!credentials || !credentials.access_token || !credentials.refresh_token) return null;
+
+  let userMetadata = {};
+  if (credentials.user_metadata) {
+    try {
+      userMetadata = JSON.parse(atob(credentials.user_metadata));
+    } catch {
+      userMetadata = {};
+    }
   }
-`;
 
-const ErrorMessage = styled.p`
-  color: ${colors.errorText};
-`;
+  return {
+    token: credentials.access_token,
+    access_token: credentials.access_token,
+    refresh_token: credentials.refresh_token,
+    expires_at: Number(credentials.expires_at) || undefined,
+    provider_token: credentials.access_token,
+    user_email: credentials.user_email || undefined,
+    email: credentials.user_email || undefined,
+    user_name: credentials.user_name || undefined,
+    user_metadata: userMetadata,
+  };
+}
 
 export default class SupabaseAuthenticationPage extends React.Component {
-  static authClient;
-
   static propTypes = {
     onLogin: PropTypes.func.isRequired,
     inProgress: PropTypes.bool.isRequired,
@@ -68,7 +65,9 @@ export default class SupabaseAuthenticationPage extends React.Component {
     super(props);
   }
 
-  async componentDidMount() {
+  state = { popupError: null, popupBlocked: false };
+
+  componentDidMount() {
     // Manually validate PropTypes - React 19 breaking change
     PropTypes.checkPropTypes(
       SupabaseAuthenticationPage.propTypes,
@@ -77,70 +76,69 @@ export default class SupabaseAuthenticationPage extends React.Component {
       'SupabaseAuthenticationPage',
     );
 
-    const { base_url = '', supabase_anon_key = '' } = this.props.config.backend;
-    this.supabase = createClient(base_url, supabase_anon_key);
+    window.addEventListener('message', this.handlePopupMessage);
   }
 
-  state = { email: '', password: '', errors: {} };
+  componentWillUnmount() {
+    window.removeEventListener('message', this.handlePopupMessage);
+    this.stopWatchingPopup();
+  }
 
-  handleChange = (name, e) => {
-    this.setState({ ...this.state, [name]: e.target.value });
+  getTurboAdminOrigin = () => {
+    const { turbo_admin_url: turboAdminUrl = DEFAULT_TURBO_ADMIN_URL } = this.props.config.backend;
+    return new URL(turboAdminUrl).origin;
   };
 
-  handleLogin = async e => {
-    e.preventDefault();
+  getTurboLoginUrl = () => {
+    const { turbo_admin_url: turboAdminUrl = DEFAULT_TURBO_ADMIN_URL } = this.props.config.backend;
+    const redirectTo = `${window.location.origin}${window.location.pathname}?popup=1`;
+    return `${turboAdminUrl.replace(/\/$/, '')}/login?redirect_to=${encodeURIComponent(redirectTo)}`;
+  };
 
-    const { email, password } = this.state;
-    const { t } = this.props;
-    const errors = {};
-    if (!email) {
-      errors.email = t('auth.errors.email');
-    }
-    if (!password) {
-      errors.password = t('auth.errors.password');
-    }
+  handlePopupMessage = event => {
+    if (event.origin !== this.getTurboAdminOrigin()) return;
 
-    if (Object.keys(errors).length > 0) {
-      this.setState({ errors });
+    const credentials = credentialsFromPostMessageData(event.data);
+    if (!credentials) return;
+
+    this.stopWatchingPopup();
+    this.setState({ popupError: null, popupBlocked: false });
+    this.props.onLogin(credentials);
+  };
+
+  stopWatchingPopup = () => {
+    if (this.popupWatcher) {
+      clearInterval(this.popupWatcher);
+      this.popupWatcher = null;
+    }
+  };
+
+  handleTurboLogin = () => {
+    this.setState({ popupError: null, popupBlocked: false });
+
+    const popup = window.open(this.getTurboLoginUrl(), 'decap-turbo-login', 'width=480,height=640');
+    if (!popup) {
+      this.setState({ popupBlocked: true });
       return;
     }
 
-    try {
-      const { data, error } = await this.supabase.auth.signInWithPassword({
-        email: this.state.email,
-        password: this.state.password,
-      });
-
-      if (error) {
-        throw error;
+    this.stopWatchingPopup();
+    // No message is guaranteed if the user just closes the popup without
+    // completing login — watch for that so the UI doesn't hang silently.
+    this.popupWatcher = setInterval(() => {
+      if (popup.closed) {
+        this.stopWatchingPopup();
+        this.setState(current =>
+          current.popupError || current.popupBlocked
+            ? current
+            : { popupError: 'Login was cancelled.' },
+        );
       }
-
-      console.log('Supabase login data:', data);
-
-      this.props.onLogin({
-        token: data.session.access_token,
-        access_token: data.session.access_token,
-        refresh_token: data.session.refresh_token,
-        expires_at: data.session.expires_at,
-        provider_token: data.session.access_token,
-        user_email: data.user?.email,
-        email: data.user?.email,
-        user_name:
-          data.user?.user_metadata?.display_name ||
-          data.user?.user_metadata?.full_name ||
-          data.user?.user_metadata?.name,
-        user_metadata: data.user?.user_metadata,
-      });
-    } catch (error) {
-      this.setState({
-        errors: { server: error.description || error.msg || error },
-        loggingIn: false,
-      });
-    }
+    }, 500);
   };
 
   render() {
-    const { errors } = this.state;
+    const { popupError, popupBlocked } = this.state;
     const { error, inProgress, config, t } = this.props;
 
     if (inProgress) {
@@ -153,29 +151,16 @@ export default class SupabaseAuthenticationPage extends React.Component {
         logo={config.logo}
         siteUrl={config.site_url}
         renderPageContent={() => (
-          <AuthForm onSubmit={this.handleLogin}>
+          <>
             {!error ? null : <ErrorMessage>{error}</ErrorMessage>}
-            {!errors.server ? null : <ErrorMessage>{String(errors.server)}</ErrorMessage>}
-            <ErrorMessage>{errors.email || null}</ErrorMessage>
-            <AuthInput
-              type="text"
-              name="email"
-              placeholder="Email"
-              value={this.state.email}
-              onChange={partial(this.handleChange, 'email')}
-            />
-            <ErrorMessage>{errors.password || null}</ErrorMessage>
-            <AuthInput
-              type="password"
-              name="password"
-              placeholder="Password"
-              value={this.state.password}
-              onChange={partial(this.handleChange, 'password')}
-            />
-            <LoginButton disabled={inProgress}>
-              {inProgress ? t('auth.loggingIn') : t('auth.login')}
-            </LoginButton>
-          </AuthForm>
+            {!popupError ? null : <ErrorMessage>{popupError}</ErrorMessage>}
+            {!popupBlocked ? null : (
+              <ErrorMessage>
+                Your browser blocked the login popup. Please allow popups for this site and try again.
+              </ErrorMessage>
+            )}
+            <TurboLoginButton onClick={this.handleTurboLogin}>Login with Turbo</TurboLoginButton>
+          </>
         )}
         t={t}
       />
