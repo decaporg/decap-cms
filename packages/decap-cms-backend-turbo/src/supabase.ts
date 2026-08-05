@@ -102,6 +102,7 @@ export class SupabaseClient {
             apikey: this.supabaseAnonKey,
             Authorization: `Bearer ${this.supabaseAccessToken || this.supabaseAnonKey}`,
             'Content-Type': 'application/json',
+            'Range-Unit': 'items',
             Range: `${rangeStart}-${rangeEnd}`,
           },
         });
@@ -117,7 +118,6 @@ export class SupabaseClient {
 
         allResults.push(...results);
 
-        // Check if we got fewer results than requested, meaning we're done
         hasMore = results.length === batchSize;
         rangeStart += batchSize;
       } catch (error) {
@@ -125,8 +125,6 @@ export class SupabaseClient {
         throw error;
       }
     }
-
-    // return [];
 
     return allResults;
   }
@@ -210,11 +208,15 @@ export class SupabaseClient {
       file_data: file.fileData,
     }));
 
-    // Deduplicate batch to avoid "cannot affect row a second time" error
+    // Deduplicate batch to avoid "cannot affect row a second time" error.
+    // Key must match the on_conflict target below and the DB's unique index
+    // (see README) — rows are scoped per collection, so collection has to be
+    // part of the identity or same-path rows from different collections can
+    // clobber each other.
     const seen = new Map();
     const deduplicatedBatch = [];
     for (const item of batch) {
-      const key = `${item.site_id}|${item.repo}|${item.branch}|${item.file_path}`;
+      const key = `${item.site_id}|${item.repo}|${item.branch}|${item.collection}|${item.file_path}`;
       if (!seen.has(key)) {
         seen.set(key, true);
         deduplicatedBatch.push(item);
@@ -223,7 +225,7 @@ export class SupabaseClient {
 
     try {
       const response = await fetch(
-        this.buildUrl('?on_conflict=site_id,repo,branch,file_path'),
+        this.buildUrl('?on_conflict=site_id,repo,branch,collection,file_path'),
         {
           method: 'POST',
           headers: {

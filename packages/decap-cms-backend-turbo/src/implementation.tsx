@@ -51,8 +51,24 @@ const DEFAULT_CONFIG_ENDPOINT = 'https://sb.decapcms.org/functions/v1/config';
 export default class DecapTurboBackend extends GitHubBackend {
   static async preloadConfig(config: Config): Promise<Config> {
     const backend = config.backend as Record<string, unknown>;
-    if (backend.supabase_app_id || !backend.turbo_site_id) {
-      // Either fully manually configured already, or nothing to resolve.
+    const isFullyManuallyConfigured = Boolean(backend.supabase_app_id && backend.supabase_anon_key);
+    if (isFullyManuallyConfigured) {
+      return config;
+    }
+
+    if (backend.supabase_app_id && !backend.supabase_anon_key) {
+      // Half-manual config: `supabase_app_id` alone is not a usable anon key,
+      // so failing loudly here beats the constructor silently falling back
+      // to treating the project ref as the anon key.
+      throw new Error(
+        "decap-turbo config error: 'supabase_app_id' is set without 'supabase_anon_key'. " +
+          "Provide both to configure manually, or provide only 'turbo_site_id' to fetch " +
+          'both from the control plane.',
+      );
+    }
+
+    if (!backend.turbo_site_id) {
+      // Nothing to resolve and nothing manually configured.
       return config;
     }
 

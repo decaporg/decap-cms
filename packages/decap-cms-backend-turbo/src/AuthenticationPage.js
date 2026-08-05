@@ -25,6 +25,11 @@ const DEFAULT_TURBO_ADMIN_URL = 'https://turbo.decapcms.org';
 
 const POPUP_MESSAGE_SOURCE = 'decap-turbo-login';
 
+// Login happens in a popup pointed at the Turbo admin app, which posts the
+// resulting Supabase session back via `window.postMessage`. Only messages
+// whose `event.origin` matches the configured `turbo_admin_url` origin are
+// accepted (see `handlePopupMessage`) — this is the security boundary for the
+// whole flow, so it must never be relaxed (e.g. to `*`) when changing this.
 function credentialsFromPostMessageData(data) {
   if (!data || data.source !== POPUP_MESSAGE_SOURCE) return null;
   const { credentials } = data;

@@ -1,5 +1,3 @@
-local_backend: true
-
 backend:
   name: test-repo
 
