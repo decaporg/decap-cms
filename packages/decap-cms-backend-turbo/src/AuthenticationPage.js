@@ -97,7 +97,9 @@ export default class SupabaseAuthenticationPage extends React.Component {
   getTurboLoginUrl = () => {
     const { turbo_admin_url: turboAdminUrl = DEFAULT_TURBO_ADMIN_URL } = this.props.config.backend;
     const redirectTo = `${window.location.origin}${window.location.pathname}?popup=1`;
-    return `${turboAdminUrl.replace(/\/$/, '')}/login?redirect_to=${encodeURIComponent(redirectTo)}`;
+    return `${turboAdminUrl.replace(/\/$/, '')}/login?redirect_to=${encodeURIComponent(
+      redirectTo,
+    )}`;
   };
 
   handlePopupMessage = event => {
@@ -161,7 +163,8 @@ export default class SupabaseAuthenticationPage extends React.Component {
             {!popupError ? null : <ErrorMessage>{popupError}</ErrorMessage>}
             {!popupBlocked ? null : (
               <ErrorMessage>
-                Your browser blocked the login popup. Please allow popups for this site and try again.
+                Your browser blocked the login popup. Please allow popups for this site and try
+                again.
               </ErrorMessage>
             )}
             <TurboLoginButton onClick={this.handleTurboLogin}>Login with Turbo</TurboLoginButton>

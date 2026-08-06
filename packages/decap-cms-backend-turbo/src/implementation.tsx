@@ -1,11 +1,5 @@
 import { GitHubBackend } from 'decap-cms-backend-github';
-import {
-  type Config,
-  type User,
-  type Credentials,
-  filterByExtension,
-} from 'decap-cms-lib-util';
-import React from 'react';
+import { type Config, type User, type Credentials, filterByExtension } from 'decap-cms-lib-util';
 import API from 'decap-cms-backend-github/src/API';
 import GraphQLAPI from 'decap-cms-backend-github/src/GraphQLAPI';
 import { stripIndent } from 'common-tags';

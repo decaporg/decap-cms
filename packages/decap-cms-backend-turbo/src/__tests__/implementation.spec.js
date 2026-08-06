@@ -107,5 +107,4 @@ describe('turbo backend supabase session refresh', () => {
     expect(init.headers.Authorization).toBe('Bearer access-123');
     expect(init.headers['x-site-id']).toBe('site-123');
   });
-
 });

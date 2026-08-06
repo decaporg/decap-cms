@@ -1,4 +1,7 @@
-import type { CommitAuthor } from 'decap-cms-backend-github/src/API';
+type CommitAuthor = {
+  name: string;
+  email: string;
+};
 
 type SupabaseUserMetadata = {
   display_name?: string;

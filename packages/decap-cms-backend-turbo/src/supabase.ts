@@ -159,14 +159,19 @@ export class SupabaseClient {
 
   async fetchDbFiles(collection: string) {
     console.log('Fetching file list from supabase for collection:', collection);
-    const response = await this.fetchDbPaginated(this.buildScopedQuery(collection, { select: 'file_id' }));
+    const response = await this.fetchDbPaginated(
+      this.buildScopedQuery(collection, { select: 'file_id' }),
+    );
     return response;
   }
 
   async removeDbFiles(collection: string, fileIds: string[]) {
     console.log('Removing files from supabase with IDs:', fileIds);
     const fileIdsParam = fileIds.map(id => `"${id}"`).join(',');
-    await this.fetchDb(this.buildScopedQuery(collection, { file_id: `in.(${fileIdsParam})` }), 'DELETE');
+    await this.fetchDb(
+      this.buildScopedQuery(collection, { file_id: `in.(${fileIdsParam})` }),
+      'DELETE',
+    );
   }
 
   async insertDbFile(
@@ -317,7 +322,10 @@ export class SupabaseClient {
   }
 
   async updateEntriesAfterSave(files: Array<{ path: string; raw: string; id: string }>) {
-    console.log('Updating cache for persisted entries:', files.map(f => f.path));
+    console.log(
+      'Updating cache for persisted entries:',
+      files.map(f => f.path),
+    );
 
     const batch: Array<{
       collection: string;
