@@ -113,7 +113,7 @@ export default class DecapTurboBackend extends GitHubBackend {
       ((config.backend as Record<string, unknown>).commit_author_email as string | undefined) ||
       ((config.backend as Record<string, unknown>).noreply_email as string | undefined);
 
-    this.updateUserCredentials = options.updateUserCredentials || (() => {});
+    this.updateUserCredentials = options.updateUserCredentials || (() => undefined);
 
     this.bypassWriteAccessCheckForAppTokens = true;
     this.tokenKeyword = 'Bearer';
