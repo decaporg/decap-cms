@@ -32,7 +32,10 @@ Cypress.on('uncaught:exception', (err) => {
 import './commands';
 
 afterEach(function () {
-  if (this.currentTest.state === 'failed') {
-    Cypress.runner.stop();
+  if (
+    this.currentTest.state === 'failed' &&
+    this.currentTest.currentRetry() === this.currentTest.retries()
+  ) {
+    Cypress.stop();
   }
 });

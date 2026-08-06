@@ -67,20 +67,6 @@ export function afterEach(taskResult, backend) {
     spec,
     testName,
   });
-
-  if (!process.env.RECORD_FIXTURES) {
-    const {
-      suite: {
-        ctx: {
-          currentTest: { state, _retries: retries, _currentRetry: currentRetry },
-        },
-      },
-    } = Cypress.mocha.getRunner();
-
-    if (state === 'failed' && retries === currentRetry) {
-      Cypress.runner.stop();
-    }
-  }
 }
 
 export function seedRepo(taskResult, backend) {
