@@ -298,12 +298,13 @@ Cypress.Commands.add('confirmMarkdownEditorContent', expectedDomString => {
     // - blank element (placed inside empty elements): 1 BOM + <br>
     // - inline element (e.g. link tag <a>) are wrapped with BOM characters (https://github.com/ianstormtaylor/slate/issues/2722)
     // We replace to represent a blank line as a single <br>, remove the
-    // contents of elements that are actually empty, and remove BOM characters wrapping <a> tags
+    // contents of elements that are actually empty, and remove Slate padding around <a> tags
     const actualDomString = toPlainTree(element.innerHTML)
       .replace(/\uFEFF\uFEFF<br>/g, '<br>')
       .replace(/\uFEFF<br>/g, '')
-      .replace(/\uFEFF<a>/g, '<a>')
-      .replace(/<\/a>\uFEFF/g, '</a>');
+      .replace(/[\uFEFF\u00A0]+<a>/g, '<a>')
+      .replace(/[\uFEFF\u00A0]+<\/a>/g, '</a>')
+      .replace(/<\/a>[\uFEFF\u00A0]+/g, '</a>');
     expect(actualDomString).toEqual(oneLineTrim(expectedDomString));
   });
 });

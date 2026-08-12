@@ -35,6 +35,10 @@ describe('Test Backend Simple Workflow', () => {
     cy.task('teardownBackend', { backend });
   });
 
+  beforeEach(() => {
+    cy.clock(0, ['Date']);
+  });
+
   it('successfully loads', () => {
     login();
   });

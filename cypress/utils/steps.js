@@ -168,17 +168,13 @@ const STATUS_BUTTON_TEXT = 'Status:';
 
 function assertWorkflowStatusInEditor(status) {
   cy.contains('[role="button"]', STATUS_BUTTON_TEXT).as('setStatusButton');
-  cy.get('@setStatusButton')
+  cy.get('@setStatusButton').click();
+  cy.contains('[role="menuitem"] span', status)
     .parent()
     .within(() => {
-      cy.get('@setStatusButton').click();
-      cy.contains('[role="menuitem"] span', status)
-        .parent()
-        .within(() => {
-          cy.get('svg');
-        });
-      cy.get('@setStatusButton').click();
+      cy.get('svg');
     });
+  cy.get('@setStatusButton').click();
 }
 
 function assertPublishedEntry(entry) {
@@ -251,12 +247,8 @@ function publishAndDuplicateEntryInEditor(entry) {
 
 function selectDropdownItem(label, item) {
   cy.contains('[role="button"]', label).as('dropDownButton');
-  cy.get('@dropDownButton')
-    .parent()
-    .within(() => {
-      cy.get('@dropDownButton').click();
-      cy.contains('[role="menuitem"] span', item).click();
-    });
+  cy.get('@dropDownButton').click();
+  cy.contains('[role="menuitem"] span', item).click();
 }
 
 function flushClockAndSave() {

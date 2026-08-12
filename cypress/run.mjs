@@ -1,7 +1,7 @@
 import execa from 'execa';
 
 async function runCypress() {
-  const args = ['run', '--browser', 'chrome', '--headless'];
+  const args = ['run', '--browser', 'electron', '--headless'];
 
   if (process.env.CYPRESS_RECORD_KEY) {
     const isPR = process.env.GITHUB_EVENT_NAME === 'pull_request';
@@ -9,13 +9,7 @@ async function runCypress() {
     if (isPR) tags.push('pr');
     if (process.env.GITHUB_BASE_REF) tags.push(`base:${process.env.GITHUB_BASE_REF}`);
 
-    args.push(
-      '--record',
-      '--group',
-      isPR ? 'PR Checks' : 'GitHub CI',
-      '--tag',
-      tags.join(','),
-    );
+    args.push('--record', '--group', isPR ? 'PR Checks' : 'GitHub CI', '--tag', tags.join(','));
   }
 
   console.log('Running Cypress with args:', args.join(' '));
