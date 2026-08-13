@@ -107,4 +107,159 @@ describe('turbo backend supabase session refresh', () => {
     expect(init.headers.Authorization).toBe('Bearer access-123');
     expect(init.headers['x-site-id']).toBe('site-123');
   });
+
+  it('throws on a non-2xx ghFetch response instead of resolving', async () => {
+    const backend = new DecapTurboBackend(config);
+
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: false,
+      status: 404,
+      statusText: 'Not Found',
+      text: () => Promise.resolve('{"message":"Not Found"}'),
+    });
+
+    await expect(backend.ghFetch('https://api.example/repos/owner/repo')).rejects.toMatchObject({
+      status: 404,
+    });
+  });
+
+  describe('pollUntilForkExists', () => {
+    it('keeps polling while the fork 404s, then resolves once it exists', async () => {
+      const backend = new DecapTurboBackend(config);
+
+      global.fetch = jest
+        .fn()
+        .mockResolvedValueOnce({ ok: false, status: 404, text: () => Promise.resolve('') })
+        .mockResolvedValueOnce({ ok: true, status: 200, text: () => Promise.resolve('') });
+
+      await backend.pollUntilForkExists({ repo: 'owner/repo-fork', token: 'token' });
+
+      expect(global.fetch).toHaveBeenCalledTimes(2);
+    });
+
+    it('propagates a non-404 failure instead of retrying forever', async () => {
+      const backend = new DecapTurboBackend(config);
+
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: false,
+        status: 500,
+        text: () => Promise.resolve(''),
+      });
+
+      await expect(
+        backend.pollUntilForkExists({ repo: 'owner/repo-fork', token: 'token' }),
+      ).rejects.toMatchObject({ status: 500 });
+      expect(global.fetch).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('fetchTurboPermissions', () => {
+    it('returns undefined when there is no active session', async () => {
+      const backend = new DecapTurboBackend(config);
+      global.fetch = jest.fn();
+
+      const result = await backend.fetchTurboPermissions();
+
+      expect(result).toBeUndefined();
+      expect(global.fetch).not.toHaveBeenCalled();
+    });
+
+    it('fetches and returns permissions scoped to the current site', async () => {
+      const backend = new DecapTurboBackend({
+        ...config,
+        backend: { ...config.backend, turbo_site_id: 'site-123' },
+      });
+      backend.supabaseAccessToken = 'access-123';
+
+      const permissions = { collections: { posts: 'view', drafts: 'none' } };
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve(permissions),
+      });
+
+      const result = await backend.fetchTurboPermissions();
+
+      expect(result).toEqual(permissions);
+      const [url, init] = global.fetch.mock.calls[0];
+      expect(url).toContain('site_id=site-123');
+      expect(init.headers.Authorization).toBe('Bearer access-123');
+    });
+
+    it('returns undefined and warns when the permissions endpoint fails', async () => {
+      const backend = new DecapTurboBackend({
+        ...config,
+        backend: { ...config.backend, turbo_site_id: 'site-123' },
+      });
+      backend.supabaseAccessToken = 'access-123';
+
+      global.fetch = jest.fn().mockResolvedValue({ ok: false, status: 500 });
+
+      const result = await backend.fetchTurboPermissions();
+
+      expect(result).toBeUndefined();
+    });
+  });
+});
+
+describe('turbo backend preloadConfig', () => {
+  afterEach(() => {
+    delete global.fetch;
+  });
+
+  it('returns the config unchanged when fully manually configured', async () => {
+    const config = {
+      backend: { supabase_app_id: 'app-id', supabase_anon_key: 'anon-key' },
+    };
+
+    const actual = await DecapTurboBackend.preloadConfig(config);
+
+    expect(actual).toBe(config);
+  });
+
+  it('throws when supabase_app_id is set without supabase_anon_key', async () => {
+    const config = { backend: { supabase_app_id: 'app-id' } };
+
+    await expect(DecapTurboBackend.preloadConfig(config)).rejects.toThrow(
+      /supabase_app_id.*without.*supabase_anon_key/,
+    );
+  });
+
+  it('returns the config unchanged when nothing is configured at all', async () => {
+    const config = { backend: {} };
+
+    const actual = await DecapTurboBackend.preloadConfig(config);
+
+    expect(actual).toBe(config);
+  });
+
+  it('fetches and merges control-plane defaults when only turbo_site_id is set', async () => {
+    const config = { backend: { turbo_site_id: 'site-123', repo: 'owner/repo' } };
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      json: () =>
+        Promise.resolve({ supabase_app_id: 'resolved-app-id', supabase_anon_key: 'resolved-key' }),
+    });
+
+    const actual = await DecapTurboBackend.preloadConfig(config);
+
+    expect(actual.backend).toEqual({
+      supabase_app_id: 'resolved-app-id',
+      supabase_anon_key: 'resolved-key',
+      turbo_site_id: 'site-123',
+      repo: 'owner/repo',
+    });
+    const [url] = global.fetch.mock.calls[0];
+    expect(url).toContain('site_id=site-123');
+  });
+
+  it('throws when the control-plane config endpoint fails', async () => {
+    const config = { backend: { turbo_site_id: 'site-123' } };
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: false,
+      status: 404,
+      json: () => Promise.resolve({ error: 'site not found' }),
+    });
+
+    await expect(DecapTurboBackend.preloadConfig(config)).rejects.toThrow('site not found');
+  });
 });

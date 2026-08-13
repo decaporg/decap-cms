@@ -1,5 +1,11 @@
 import { GitHubBackend } from 'decap-cms-backend-github';
-import { type Config, type User, type Credentials, filterByExtension } from 'decap-cms-lib-util';
+import {
+  type Config,
+  type User,
+  type Credentials,
+  filterByExtension,
+  APIError,
+} from 'decap-cms-lib-util';
 import API from 'decap-cms-backend-github/src/API';
 import GraphQLAPI from 'decap-cms-backend-github/src/GraphQLAPI';
 import { stripIndent } from 'common-tags';
@@ -142,10 +148,17 @@ export default class DecapTurboBackend extends GitHubBackend {
       scopedUrl = urlObj.toString();
     }
 
-    return fetch(scopedUrl, {
+    const response = await fetch(scopedUrl, {
       ...init,
       headers,
     });
+
+    if (!response.ok) {
+      const body = await response.text().catch(() => '');
+      throw new APIError(body || response.statusText, response.status, 'Decap Turbo');
+    }
+
+    return response;
   }
 
   setScopedApiRequestBuilder() {
@@ -367,7 +380,6 @@ export default class DecapTurboBackend extends GitHubBackend {
         .then(() => true)
         .catch(err => {
           if (err && err.status === 404) {
-            console.log('This 404 was expected and handled appropriately.');
             return false;
           } else {
             return Promise.reject(err);

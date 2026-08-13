@@ -8,7 +8,12 @@ import {
   applyDefaults,
   detectProxyServer,
   handleLocalBackend,
+  applyBackendPreloadConfig,
+  applyBackendPermissionFilter,
+  refilterConfigForPermissions,
+  configLoaded,
 } from '../config';
+import { getBackend } from '../../lib/registry';
 
 jest.spyOn(console, 'log').mockImplementation(() => {});
 jest.spyOn(console, 'warn').mockImplementation(() => {});
@@ -18,6 +23,9 @@ jest.mock('../../backend', () => {
   };
 });
 jest.mock('../../constants/configSchema');
+jest.mock('../../lib/registry', () => ({
+  getBackend: jest.fn(),
+}));
 
 describe('config', () => {
   describe('parseConfig', () => {
@@ -948,6 +956,99 @@ describe('config', () => {
         publish_mode: 'simple',
         backend: { name: 'proxy', proxy_url: 'http://localhost:8081/api/v1' },
       });
+    });
+
+    it('should skip the local proxy when the backend defines a static preloadConfig', async () => {
+      window.location = { hostname: 'localhost' };
+      global.fetch = jest.fn();
+      getBackend.mockReturnValue({ BackendClass: { preloadConfig: jest.fn() } });
+
+      const config = { local_backend: true, backend: { name: 'decap-turbo' } };
+      const actual = await handleLocalBackend(config);
+
+      expect(actual).toEqual(config);
+      expect(global.fetch).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('applyBackendPreloadConfig', () => {
+    afterEach(() => {
+      getBackend.mockReset();
+    });
+
+    it('returns the original config when the backend has no preloadConfig', async () => {
+      getBackend.mockReturnValue(undefined);
+
+      const config = { backend: { name: 'github' } };
+      const actual = await applyBackendPreloadConfig(config);
+
+      expect(actual).toBe(config);
+    });
+
+    it('awaits and returns the backend-supplied config when preloadConfig is defined', async () => {
+      const resolvedConfig = { backend: { name: 'decap-turbo', repo: 'owner/repo' } };
+      const preloadConfig = jest.fn().mockResolvedValue(resolvedConfig);
+      getBackend.mockReturnValue({ BackendClass: { preloadConfig } });
+
+      const config = { backend: { name: 'decap-turbo', turbo_site_id: 'site-123' } };
+      const actual = await applyBackendPreloadConfig(config);
+
+      expect(preloadConfig).toHaveBeenCalledWith(config);
+      expect(actual).toBe(resolvedConfig);
+    });
+  });
+
+  describe('applyBackendPermissionFilter', () => {
+    const config = {
+      collections: [{ name: 'posts' }, { name: 'pages' }, { name: 'settings' }],
+    };
+
+    it('returns the original config when permissions are absent', () => {
+      expect(applyBackendPermissionFilter(config)).toBe(config);
+    });
+
+    it('returns the original config when permissions.collections is empty', () => {
+      expect(applyBackendPermissionFilter(config, { collections: {} })).toBe(config);
+    });
+
+    it('drops collections resolved to access "none"', () => {
+      const actual = applyBackendPermissionFilter(config, {
+        collections: { pages: 'none', settings: 'view' },
+      });
+
+      expect(actual.collections.map(c => c.name)).toEqual(['posts', 'settings']);
+    });
+
+    it('keeps a collection absent from the permission map at full access', () => {
+      const actual = applyBackendPermissionFilter(config, {
+        collections: { pages: 'none' },
+      });
+
+      expect(actual.collections.map(c => c.name)).toEqual(['posts', 'settings']);
+    });
+
+    it('returns the original config reference when nothing is filtered out', () => {
+      const actual = applyBackendPermissionFilter(config, {
+        collections: { posts: 'edit', pages: 'view' },
+      });
+
+      expect(actual).toBe(config);
+    });
+  });
+
+  describe('refilterConfigForPermissions', () => {
+    it('re-filters the config already in state and dispatches it narrowed', () => {
+      const config = {
+        collections: [{ name: 'posts' }, { name: 'pages' }],
+      };
+      const getState = jest.fn().mockReturnValue({ config });
+      const dispatch = jest.fn();
+
+      refilterConfigForPermissions({ collections: { pages: 'none' } })(dispatch, getState);
+
+      expect(dispatch).toHaveBeenCalledWith(
+        configLoaded({ collections: [{ name: 'posts' }] }),
+      );
     });
   });
 

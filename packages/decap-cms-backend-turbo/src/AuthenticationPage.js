@@ -87,6 +87,7 @@ export default class SupabaseAuthenticationPage extends React.Component {
   componentWillUnmount() {
     window.removeEventListener('message', this.handlePopupMessage);
     this.stopWatchingPopup();
+    this.closePopup();
   }
 
   getTurboAdminOrigin = () => {
@@ -110,6 +111,7 @@ export default class SupabaseAuthenticationPage extends React.Component {
     if (!credentials) return;
 
     this.stopWatchingPopup();
+    this.closePopup();
     this.setState({ popupError: null, popupBlocked: false });
     this.props.onLogin(credentials);
   };
@@ -119,6 +121,13 @@ export default class SupabaseAuthenticationPage extends React.Component {
       clearInterval(this.popupWatcher);
       this.popupWatcher = null;
     }
+  };
+
+  closePopup = () => {
+    if (this.popup && !this.popup.closed) {
+      this.popup.close();
+    }
+    this.popup = null;
   };
 
   handleTurboLogin = () => {
@@ -131,11 +140,13 @@ export default class SupabaseAuthenticationPage extends React.Component {
     }
 
     this.stopWatchingPopup();
+    this.popup = popup;
     // No message is guaranteed if the user just closes the popup without
     // completing login — watch for that so the UI doesn't hang silently.
     this.popupWatcher = setInterval(() => {
       if (popup.closed) {
         this.stopWatchingPopup();
+        this.popup = null;
         this.setState(current =>
           current.popupError || current.popupBlocked
             ? current
