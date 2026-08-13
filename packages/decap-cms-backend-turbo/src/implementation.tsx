@@ -13,6 +13,7 @@ import { stripIndent } from 'common-tags';
 import { SupabaseClient } from './supabase';
 import SupabaseAuthenticationPage from './AuthenticationPage';
 import { resolveCommitAuthorFromSupabaseUser } from './commitAuthor';
+import { recordCmsEvent } from './telemetry';
 
 import type { GitHubUser } from 'decap-cms-backend-github/src/implementation';
 
@@ -329,6 +330,8 @@ export default class DecapTurboBackend extends GitHubBackend {
     // generically (the field name is backend-neutral by design — any backend
     // could set it) and re-filters the loaded config against it.
     const turboPermissions = await this.fetchTurboPermissions();
+
+    recordCmsEvent(this.baseUrl!, this.supabaseAnonKey, this.supabaseAccessToken, 'cms_session_started', this.siteId);
 
     // Include access_token in the returned user object so it gets stored in auth store
     return {
@@ -698,6 +701,14 @@ export default class DecapTurboBackend extends GitHubBackend {
       } catch (error) {
         console.warn('Failed to update cache:', error);
       }
+      recordCmsEvent(
+        this.baseUrl!,
+        this.supabaseAnonKey,
+        this.supabaseAccessToken,
+        'cms_entry_saved',
+        this.siteId,
+        { collection: options.collectionName },
+      );
     }
     return result;
   }
