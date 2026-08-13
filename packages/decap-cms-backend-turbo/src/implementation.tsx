@@ -105,6 +105,22 @@ export default class DecapTurboBackend extends GitHubBackend {
 
   constructor(config: Config, options: any = {}) {
     super(config, options);
+
+    // GraphQLAPI (used when use_graphql is set) builds its own Apollo
+    // transport directly off the constructor config and never goes through
+    // setScopedApiRequestBuilder's patched urlFor/requestHeaders below — so
+    // every GraphQL request would silently skip the x-site-id/site_id
+    // scoping the shared `gh` Edge Function relies on to know which
+    // tenant a request belongs to. Rather than retrofit Apollo's transport
+    // with scoping, reject the combination outright: nothing currently
+    // configures use_graphql for this backend, so this can't regress an
+    // existing site.
+    if (this.useGraphql) {
+      throw new Error(
+        "Decap Turbo backend does not support 'use_graphql: true' — GraphQL requests would bypass per-site tenant scoping. Remove use_graphql from your config.",
+      );
+    }
+
     this.supabaseAnonKey = (config.backend.supabase_anon_key ||
       config.backend.supabase_app_id ||
       '') as string;

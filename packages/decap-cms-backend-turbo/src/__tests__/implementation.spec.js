@@ -263,3 +263,23 @@ describe('turbo backend preloadConfig', () => {
     await expect(DecapTurboBackend.preloadConfig(config)).rejects.toThrow('site not found');
   });
 });
+
+describe('turbo backend use_graphql rejection', () => {
+  // GraphQLAPI builds its own Apollo transport straight off the constructor
+  // config and never goes through setScopedApiRequestBuilder's patched
+  // urlFor/requestHeaders — so a GraphQL-mode site would silently bypass the
+  // x-site-id/site_id tenant scoping the shared `gh` Edge Function relies on.
+  it('throws in the constructor when use_graphql is set', () => {
+    const config = {
+      backend: {
+        repo: 'owner/repo',
+        supabase_app_id: 'supabase-project-id',
+        supabase_anon_key: 'supabase-anon-key',
+        use_graphql: true,
+      },
+      media_folder: 'static/media',
+    };
+
+    expect(() => new DecapTurboBackend(config)).toThrow(/use_graphql/);
+  });
+});

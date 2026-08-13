@@ -52,6 +52,16 @@ After authentication, the backend fetches per-collection permissions for the sig
 
 This is a UX / defense-in-depth layer only — it hides collections the user shouldn't see, nothing more. The real enforcement boundary is server-side, in the `gh` Edge Function that proxies writes; nothing client-side should be relied on as the sole access control.
 
+### 4. Usage telemetry (`telemetry.ts`)
+
+After a session starts and after each entry save, the backend fires a
+best-effort, non-blocking event (`cms_session_started` / `cms_entry_saved`) to
+the control plane's `telemetry` Edge Function. This call is never awaited by
+its callers and swallows its own errors — a failed or slow telemetry request
+can never disrupt the editing experience.
+
+Users can opt out from the Turbo admin app's Profile page.
+
 ## Decap CMS config
 
 ```yaml
@@ -114,6 +124,13 @@ backend:
 ```
 
 Any field present in `config.yml` always wins over a fetched default.
+
+`use_graphql: true` (inherited from the base GitHub backend) is not
+supported and throws in the constructor: `GraphQLAPI` builds its own Apollo
+transport directly from the constructor config, bypassing the
+`x-site-id`/`site_id` scoping this backend adds on top of every REST
+request, which the shared `gh` Edge Function relies on to know which
+tenant a request belongs to.
 
 ## Supabase setup
 

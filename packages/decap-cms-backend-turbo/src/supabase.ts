@@ -146,7 +146,6 @@ export class SupabaseClient {
   }
 
   async fetchEntries(collection: string, searchTerm?: string) {
-    console.log('Fetching entries from supabase for collection:', collection);
     const response = await this.fetchDbPaginated(
       this.buildScopedQuery(collection, searchTerm ? { file_data: `ilike.%${searchTerm}%` } : {}),
     );
@@ -158,7 +157,6 @@ export class SupabaseClient {
   }
 
   async fetchDbFiles(collection: string) {
-    console.log('Fetching file list from supabase for collection:', collection);
     const response = await this.fetchDbPaginated(
       this.buildScopedQuery(collection, { select: 'file_id' }),
     );
@@ -166,7 +164,6 @@ export class SupabaseClient {
   }
 
   async removeDbFiles(collection: string, fileIds: string[]) {
-    console.log('Removing files from supabase with IDs:', fileIds);
     const fileIdsParam = fileIds.map(id => `"${id}"`).join(',');
     await this.fetchDb(
       this.buildScopedQuery(collection, { file_id: `in.(${fileIdsParam})` }),
@@ -277,7 +274,6 @@ export class SupabaseClient {
 
     const filesToAdd = files.filter(f => !dbFileIds.includes(f.id));
     if (filesToAdd.length > 0) {
-      console.log('Files to add:', filesToAdd.length);
       cacheOk = false;
     }
 
@@ -285,11 +281,6 @@ export class SupabaseClient {
     const batchSize = 500;
     for (let i = 0; i < filesToAdd.length; i += batchSize) {
       const batch = filesToAdd.slice(i, i + batchSize);
-      console.log(
-        `Processing batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(
-          filesToAdd.length / batchSize,
-        )}`,
-      );
 
       // Read all files in the batch in parallel
       const loadedEntries = await Promise.all(
@@ -314,7 +305,6 @@ export class SupabaseClient {
     }
 
     if (cacheOk) {
-      console.log('Cache is up to date for collection:', collection);
       return;
     }
 
@@ -322,11 +312,6 @@ export class SupabaseClient {
   }
 
   async updateEntriesAfterSave(files: Array<{ path: string; raw: string; id: string }>) {
-    console.log(
-      'Updating cache for persisted entries:',
-      files.map(f => f.path),
-    );
-
     const batch: Array<{
       collection: string;
       fileId: string;
