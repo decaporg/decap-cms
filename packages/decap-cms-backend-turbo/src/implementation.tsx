@@ -100,6 +100,7 @@ export default class DecapTurboBackend extends GitHubBackend {
   commitAuthorEmailFallback?: string;
   updateUserCredentials: (credentials: Credentials) => void;
   refreshedTokenPromise?: Promise<string>;
+  reloadEntriesAfterPersist?: boolean;
 
   supabase: SupabaseClient;
 
@@ -134,6 +135,7 @@ export default class DecapTurboBackend extends GitHubBackend {
 
     this.bypassWriteAccessCheckForAppTokens = true;
     this.tokenKeyword = 'Bearer';
+    this.reloadEntriesAfterPersist = true;
 
     this.supabase = new SupabaseClient(
       `https://${this.supabaseId}.supabase.co/rest/v1/data`,

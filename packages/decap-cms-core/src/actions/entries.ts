@@ -1012,7 +1012,7 @@ export function persistEntry(collection: Collection) {
           await dispatch(loadMedia());
         }
         dispatch(entryPersisted(collection, serializedEntry, newSlug));
-        if (collection.has('nested') || state.config.backend.name === 'decap-turbo') {
+        if (collection.has('nested') || backend.implementation.reloadEntriesAfterPersist) {
           await dispatch(loadEntries(collection));
         }
         if (entry.get('slug') !== newSlug) {
