@@ -438,8 +438,8 @@ async function getConfigYaml(file: string, hasManualConfig: boolean) {
 export type CollectionAccess = 'edit' | 'view' | 'none';
 
 // A backend-agnostic permission set a backend can resolve however it likes
-// (e.g. decap-cms-backend-turbo fetching it from its own control plane after
-// auth) and attach to the user object it resolves from `authenticate()`/
+// (e.g. decap-cms-backend-turbo-github/-gitlab fetching it from their shared
+// control plane after auth) and attach to the user object it resolves from `authenticate()`/
 // `currentUser()` as `permissions` (see actions/auth.ts) — the field name is
 // deliberately not backend-specific, since any backend may set it. Core has
 // no opinion on where this comes from; `collections` only ever lists
@@ -458,8 +458,8 @@ export interface BackendPermissions {
  *
  * This is a UX/defense-in-depth layer only. The real enforcement boundary
  * lives server-side, in whichever backend proxies writes (for
- * decap-cms-backend-turbo, that's the `gh` Supabase edge function) — nothing
- * here should be relied on as the sole security check.
+ * decap-cms-backend-turbo-github/-gitlab, that's the `gh`/`gl` Supabase edge
+ * function) — nothing here should be relied on as the sole security check.
  */
 export function applyBackendPermissionFilter(
   config: CmsConfig,

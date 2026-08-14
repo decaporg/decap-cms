@@ -963,7 +963,7 @@ describe('config', () => {
       global.fetch = jest.fn();
       getBackend.mockReturnValue({ BackendClass: { preloadConfig: jest.fn() } });
 
-      const config = { local_backend: true, backend: { name: 'decap-turbo' } };
+      const config = { local_backend: true, backend: { name: 'turbo-github' } };
       const actual = await handleLocalBackend(config);
 
       expect(actual).toEqual(config);
@@ -986,11 +986,11 @@ describe('config', () => {
     });
 
     it('awaits and returns the backend-supplied config when preloadConfig is defined', async () => {
-      const resolvedConfig = { backend: { name: 'decap-turbo', repo: 'owner/repo' } };
+      const resolvedConfig = { backend: { name: 'turbo-github', repo: 'owner/repo' } };
       const preloadConfig = jest.fn().mockResolvedValue(resolvedConfig);
       getBackend.mockReturnValue({ BackendClass: { preloadConfig } });
 
-      const config = { backend: { name: 'decap-turbo', turbo_site_id: 'site-123' } };
+      const config = { backend: { name: 'turbo-github', turbo_site_id: 'site-123' } };
       const actual = await applyBackendPreloadConfig(config);
 
       expect(preloadConfig).toHaveBeenCalledWith(config);

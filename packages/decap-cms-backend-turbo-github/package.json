@@ -1,12 +1,12 @@
 {
-  "name": "decap-cms-backend-turbo",
+  "name": "decap-cms-backend-turbo-github",
   "description": "GitHub backend for Decap CMS proxied through Supabase Auth",
   "version": "3.4.1",
   "license": "MIT",
-  "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-backend-turbo",
+  "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-backend-turbo-github",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
   "module": "dist/esm/index.js",
-  "main": "dist/decap-cms-backend-turbo.js",
+  "main": "dist/decap-cms-backend-turbo-github.js",
   "keywords": [
     "decap-cms",
     "backend",

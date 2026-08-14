@@ -1,4 +1,4 @@
-import DecapTurboBackend from '../implementation';
+import DecapTurboGitHubBackend from '../implementation';
 
 describe('turbo backend supabase session refresh', () => {
   const config = {
@@ -15,7 +15,7 @@ describe('turbo backend supabase session refresh', () => {
   });
 
   it('does not logout on non-terminal refresh failure in currentUser', async () => {
-    const backend = new DecapTurboBackend(config);
+    const backend = new DecapTurboGitHubBackend(config);
     backend.supabaseExpiresAt = Math.floor(Date.now() / 1000) + 10;
 
     const refreshError = new Error('network down');
@@ -31,7 +31,7 @@ describe('turbo backend supabase session refresh', () => {
   });
 
   it('logs out on terminal refresh failure in currentUser', async () => {
-    const backend = new DecapTurboBackend(config);
+    const backend = new DecapTurboGitHubBackend(config);
     backend.supabaseExpiresAt = Math.floor(Date.now() / 1000) + 10;
 
     const refreshError = new Error('invalid refresh token');
@@ -48,7 +48,7 @@ describe('turbo backend supabase session refresh', () => {
 
   it('retries refresh for transient failures and updates credentials', async () => {
     const updateUserCredentials = jest.fn();
-    const backend = new DecapTurboBackend(config, { updateUserCredentials });
+    const backend = new DecapTurboGitHubBackend(config, { updateUserCredentials });
     backend.supabaseRefreshToken = 'refresh-token';
     backend.delay = jest.fn().mockResolvedValue(undefined);
 
@@ -73,7 +73,7 @@ describe('turbo backend supabase session refresh', () => {
   });
 
   it('marks invalid_grant as terminal and avoids retries', async () => {
-    const backend = new DecapTurboBackend(config);
+    const backend = new DecapTurboGitHubBackend(config);
     backend.supabaseRefreshToken = 'refresh-token';
 
     global.fetch = jest.fn().mockResolvedValue({
@@ -87,7 +87,7 @@ describe('turbo backend supabase session refresh', () => {
   });
 
   it('scopes gh proxy requests with auth header, x-site-id, and site_id query param', async () => {
-    const backend = new DecapTurboBackend({
+    const backend = new DecapTurboGitHubBackend({
       ...config,
       backend: {
         ...config.backend,
@@ -109,7 +109,7 @@ describe('turbo backend supabase session refresh', () => {
   });
 
   it('throws on a non-2xx ghFetch response instead of resolving', async () => {
-    const backend = new DecapTurboBackend(config);
+    const backend = new DecapTurboGitHubBackend(config);
 
     global.fetch = jest.fn().mockResolvedValue({
       ok: false,
@@ -125,7 +125,7 @@ describe('turbo backend supabase session refresh', () => {
 
   describe('pollUntilForkExists', () => {
     it('keeps polling while the fork 404s, then resolves once it exists', async () => {
-      const backend = new DecapTurboBackend(config);
+      const backend = new DecapTurboGitHubBackend(config);
 
       global.fetch = jest
         .fn()
@@ -138,7 +138,7 @@ describe('turbo backend supabase session refresh', () => {
     });
 
     it('propagates a non-404 failure instead of retrying forever', async () => {
-      const backend = new DecapTurboBackend(config);
+      const backend = new DecapTurboGitHubBackend(config);
 
       global.fetch = jest.fn().mockResolvedValue({
         ok: false,
@@ -155,7 +155,7 @@ describe('turbo backend supabase session refresh', () => {
 
   describe('fetchTurboPermissions', () => {
     it('returns undefined when there is no active session', async () => {
-      const backend = new DecapTurboBackend(config);
+      const backend = new DecapTurboGitHubBackend(config);
       global.fetch = jest.fn();
 
       const result = await backend.fetchTurboPermissions();
@@ -165,7 +165,7 @@ describe('turbo backend supabase session refresh', () => {
     });
 
     it('fetches and returns permissions scoped to the current site', async () => {
-      const backend = new DecapTurboBackend({
+      const backend = new DecapTurboGitHubBackend({
         ...config,
         backend: { ...config.backend, turbo_site_id: 'site-123' },
       });
@@ -186,7 +186,7 @@ describe('turbo backend supabase session refresh', () => {
     });
 
     it('returns undefined and warns when the permissions endpoint fails', async () => {
-      const backend = new DecapTurboBackend({
+      const backend = new DecapTurboGitHubBackend({
         ...config,
         backend: { ...config.backend, turbo_site_id: 'site-123' },
       });
@@ -211,7 +211,7 @@ describe('turbo backend preloadConfig', () => {
       backend: { supabase_app_id: 'app-id', supabase_anon_key: 'anon-key' },
     };
 
-    const actual = await DecapTurboBackend.preloadConfig(config);
+    const actual = await DecapTurboGitHubBackend.preloadConfig(config);
 
     expect(actual).toBe(config);
   });
@@ -219,7 +219,7 @@ describe('turbo backend preloadConfig', () => {
   it('throws when supabase_app_id is set without supabase_anon_key', async () => {
     const config = { backend: { supabase_app_id: 'app-id' } };
 
-    await expect(DecapTurboBackend.preloadConfig(config)).rejects.toThrow(
+    await expect(DecapTurboGitHubBackend.preloadConfig(config)).rejects.toThrow(
       /supabase_app_id.*without.*supabase_anon_key/,
     );
   });
@@ -227,7 +227,7 @@ describe('turbo backend preloadConfig', () => {
   it('returns the config unchanged when nothing is configured at all', async () => {
     const config = { backend: {} };
 
-    const actual = await DecapTurboBackend.preloadConfig(config);
+    const actual = await DecapTurboGitHubBackend.preloadConfig(config);
 
     expect(actual).toBe(config);
   });
@@ -240,7 +240,7 @@ describe('turbo backend preloadConfig', () => {
         Promise.resolve({ supabase_app_id: 'resolved-app-id', supabase_anon_key: 'resolved-key' }),
     });
 
-    const actual = await DecapTurboBackend.preloadConfig(config);
+    const actual = await DecapTurboGitHubBackend.preloadConfig(config);
 
     expect(actual.backend).toEqual({
       supabase_app_id: 'resolved-app-id',
@@ -260,7 +260,7 @@ describe('turbo backend preloadConfig', () => {
       json: () => Promise.resolve({ error: 'site not found' }),
     });
 
-    await expect(DecapTurboBackend.preloadConfig(config)).rejects.toThrow('site not found');
+    await expect(DecapTurboGitHubBackend.preloadConfig(config)).rejects.toThrow('site not found');
   });
 });
 
@@ -280,6 +280,6 @@ describe('turbo backend use_graphql rejection', () => {
       media_folder: 'static/media',
     };
 
-    expect(() => new DecapTurboBackend(config)).toThrow(/use_graphql/);
+    expect(() => new DecapTurboGitHubBackend(config)).toThrow(/use_graphql/);
   });
 });

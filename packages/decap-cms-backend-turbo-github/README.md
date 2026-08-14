@@ -1,8 +1,8 @@
-# Decap CMS — Turbo Backend
+# Decap CMS — Turbo GitHub Backend
 
 **This backend is under active development.**
 
-`decap-turbo` is a Decap CMS backend that still stores content as files in a GitHub repo (like `decap-cms-backend-github`), but changes two things about how the CMS talks to GitHub:
+`turbo-github` is a Decap CMS backend that still stores content as files in a GitHub repo (like `decap-cms-backend-github`), but changes two things about how the CMS talks to GitHub:
 
 1. **Auth**: instead of a GitHub OAuth app or personal access token, users sign in through a hosted Supabase-backed login flow. No GitHub account is required for CMS users at all — GitHub API calls are made by a Supabase Edge Function on their behalf, using their Supabase session as the credential.
 2. **Speed for large folder collections**: instead of listing and reading every file in a folder collection from the GitHub API on every load, entries are mirrored into a Postgres table (via Supabase's PostgREST API) and served from there. This is the difference between a few GitHub API calls and hundreds/thousands of them for a collection with many entries.
@@ -66,7 +66,7 @@ Users can opt out from the Turbo admin app's Profile page.
 
 ```yaml
 backend:
-  name: decap-turbo
+  name: turbo-github
   repo: owner/repo
   branch: main
 
@@ -77,7 +77,7 @@ backend:
 `supabase_app_id`, `supabase_anon_key`, `base_url`, and `api_root` are
 identical across every site on the shared control plane, so they don't
 need to be copied into each site's `config.yml` by hand. This package's
-`DecapTurboBackend` class implements a static `preloadConfig(config)` hook
+`DecapTurboGitHubBackend` class implements a static `preloadConfig(config)` hook
 — a generic extension point in Decap CMS core
 (`packages/decap-cms-core/src/actions/config.ts`): core has no built-in
 knowledge of Turbo or Supabase, it just awaits whatever `preloadConfig`
@@ -91,7 +91,7 @@ queried, for a control plane other than the default shared one:
 
 ```yaml
 backend:
-  name: decap-turbo
+  name: turbo-github
   repo: owner/repo
   branch: main
   turbo_site_id: your-site-id
@@ -105,7 +105,7 @@ than silently running with a broken key:
 
 ```yaml
 backend:
-  name: decap-turbo
+  name: turbo-github
   repo: owner/repo
   branch: main
 
