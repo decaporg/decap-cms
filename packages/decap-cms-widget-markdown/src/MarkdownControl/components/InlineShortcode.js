@@ -1,5 +1,4 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
 import { css } from '@emotion/react';
 import { useSelected, ReactEditor, useSlate } from 'slate-react';
 import { Transforms } from 'slate';
@@ -35,7 +34,10 @@ function InlineShortcode(props) {
           );
         }
       } catch (err) {
-        console.error(`Error executing onEdit for inline component '${element.data?.shortcode}':`, err);
+        console.error(
+          `Error executing onEdit for inline component '${element.data?.shortcode}':`,
+          err,
+        );
       }
     }
   }

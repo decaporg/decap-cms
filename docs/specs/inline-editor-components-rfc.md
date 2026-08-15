@@ -69,15 +69,15 @@ Rich Text Visual DOM (Rendered via `toPreview`)
 
 ## 4. Implementation Phases
 
-- [ ] **Phase 1: Tokenizer & MDAST**
-  - [ ] Implement Remark `inlineTokenizer` supporting custom patterns.
-  - [ ] Validate bidirectional round-trip conversions (`Markdown <-> MDAST`) without character escaping or whitespace loss.
-- [ ] **Phase 2: Slate Integration**
-  - [ ] Register Slate Inline Node types (`isVoid: true/false`).
-  - [ ] Implement Slate element renderer with `contentEditable={false}` for void nodes.
-- [ ] **Phase 3: Interactive Events & Toolbar**
-  - [ ] Toolbar button click -> capture selection -> invoke `onInsert`.
-  - [ ] Support double-click/click on existing inline nodes to trigger `onEdit`.
-- [ ] **Phase 4: Tests & Documentation**
-  - [ ] Add unit tests for CJK characters and punctuation adjacent to inline elements.
-  - [ ] Add regex validation warning in development mode.
+- [x] **Phase 1: Tokenizer & MDAST**
+  - [x] Implement Remark `inlineTokenizer` supporting custom patterns.
+  - [x] Validate bidirectional round-trip conversions (`Markdown <-> MDAST`) without character escaping or whitespace loss.
+- [x] **Phase 2: Slate Integration**
+  - [x] Register Slate Inline Node types (`isVoid: true/false`).
+  - [x] Implement Slate element renderer with `contentEditable={false}` for void nodes.
+- [x] **Phase 3: Interactive Events & Toolbar**
+  - [x] Toolbar button click -> capture selection -> invoke `onInsert`.
+  - [x] Support double-click/click on existing inline nodes to trigger `onEdit`.
+- [x] **Phase 4: Tests & Documentation**
+  - [x] Add unit tests for CJK characters and punctuation adjacent to inline elements.
+  - [x] Add regex validation warning in development mode.

@@ -1,9 +1,12 @@
 import { createEditor } from 'slate';
 import { withReact } from 'slate-react';
+
 import withShortcodes from '../withShortcodes';
 import insertShortcode from '../insertShortcode';
 
-function makeEditor(initialChildren = [{ type: 'paragraph', children: [{ text: 'Sample text' }] }]) {
+function makeEditor(
+  initialChildren = [{ type: 'paragraph', children: [{ text: 'Sample text' }] }],
+) {
   const editor = withReact(withShortcodes(createEditor()));
   editor.children = initialChildren;
   return editor;
@@ -32,7 +35,9 @@ describe('insertShortcode', () => {
       cmsContext: { contextKey: 'val' },
     });
 
-    const insertedNode = editor.children[0].children.find(child => child.type === 'inline-shortcode');
+    const insertedNode = editor.children[0].children.find(
+      child => child.type === 'inline-shortcode',
+    );
     expect(insertedNode).toBeDefined();
     expect(insertedNode.data).toEqual({
       shortcode: 'wikilink',
@@ -60,7 +65,9 @@ describe('insertShortcode', () => {
     await insertShortcode(editor, pluginConfig);
 
     expect(onInsertMock).toHaveBeenCalled();
-    const insertedNode = editor.children[0].children.find(child => child.type === 'inline-shortcode');
+    const insertedNode = editor.children[0].children.find(
+      child => child.type === 'inline-shortcode',
+    );
     expect(insertedNode).toBeUndefined();
   });
 });

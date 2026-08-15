@@ -495,9 +495,7 @@ declare module 'decap-cms-core' {
       selectedText: string;
       cmsContext: any;
     }) => Promise<Record<string, any> | null>;
-    onEdit?: (context: {
-      data: Record<string, any>;
-    }) => Promise<Record<string, any> | null>;
+    onEdit?: (context: { data: Record<string, any> }) => Promise<Record<string, any> | null>;
   }
 
   export type EditorComponentOptions = BlockEditorComponentOptions | InlineEditorComponentOptions;

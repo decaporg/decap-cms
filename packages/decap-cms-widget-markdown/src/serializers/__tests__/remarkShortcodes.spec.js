@@ -239,6 +239,51 @@ describe('remarkParseShortcodes', () => {
 
         expect(output).toEqual(input);
       });
+
+      it('should warn when inline component pattern has greedy quantifier', () => {
+        const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+        const inlineComponent = {
+          id: 'greedy-ref',
+          type: 'inline',
+          pattern: /\{\{< ref (.+) >\}\}/,
+          fromInline: match => ({ target: match[1] }),
+          toInline: data => `{{< ref ${data.target} >}}`,
+        };
+
+        process('text', Map({ [inlineComponent.id]: inlineComponent }));
+        expect(warnSpy).toHaveBeenCalledWith(
+          expect.stringContaining('Potentially greedy RegExp in inline component'),
+        );
+        warnSpy.mockRestore();
+      });
+
+      it('should handle inline shortcodes nested inside bold text', () => {
+        const badgeComponent = {
+          id: 'badge',
+          type: 'inline',
+          pattern: /\[badge:(?<text>[^\]]+)\]/,
+          fromInline: match => ({ text: match.groups.text }),
+          toInline: data => `[badge:${data.text}]`,
+        };
+
+        const input = '**Important [badge:NEW] Note**';
+        const plugins = Map({ [badgeComponent.id]: badgeComponent });
+        const mdast = process(input, plugins);
+        const stripped = removePositions(mdast);
+
+        expect(stripped.children[0].children[0].type).toBe('strong');
+        const strongChildren = stripped.children[0].children[0].children;
+        expect(strongChildren[0]).toEqual({ type: 'text', value: 'Important ' });
+        expect(strongChildren[1]).toEqual({
+          type: 'inline-shortcode',
+          data: {
+            shortcode: 'badge',
+            shortcodeData: { text: 'NEW' },
+            isVoid: true,
+          },
+        });
+        expect(strongChildren[2]).toEqual({ type: 'text', value: ' Note' });
+      });
     });
   });
 

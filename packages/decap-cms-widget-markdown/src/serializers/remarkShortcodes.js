@@ -78,10 +78,17 @@ function createShortcodeTokenizer({ plugins }) {
 
 function createInlineShortcodeTokenizer({ plugins }) {
   plugins.forEach(plugin => {
-    if (plugin.type === 'inline' && plugin.pattern && plugin.pattern.flags.includes('m')) {
-      console.warn(
-        `Invalid RegExp: inline editor component '${plugin.id}' must not use the multiline flag in its pattern.`,
-      );
+    if (plugin.type === 'inline' && plugin.pattern) {
+      if (plugin.pattern.flags.includes('m')) {
+        console.warn(
+          `Invalid RegExp: inline editor component '${plugin.id}' must not use the multiline flag in its pattern.`,
+        );
+      }
+      if (/(\.\*|\.\+)(?!\?)/.test(plugin.pattern.source)) {
+        console.warn(
+          `Potentially greedy RegExp in inline component '${plugin.id}': consider using non-greedy quantifier (e.g. .*? or .+?) or specific character classes to prevent overmatching within paragraphs.`,
+        );
+      }
     }
   });
 
@@ -177,14 +184,22 @@ export function createRemarkShortcodeStringifier({ plugins }) {
       const { data } = node;
       const plugin = plugins.find(plugin => data.shortcode === plugin.id);
       if (!plugin) return '';
-      return plugin.toBlock ? plugin.toBlock(data.shortcodeData) : plugin.toInline ? plugin.toInline(data.shortcodeData) : '';
+      return plugin.toBlock
+        ? plugin.toBlock(data.shortcodeData)
+        : plugin.toInline
+        ? plugin.toInline(data.shortcodeData)
+        : '';
     }
 
     function inlineShortcode(node) {
       const { data } = node;
       const plugin = plugins.find(plugin => data.shortcode === plugin.id);
       if (!plugin) return '';
-      return plugin.toInline ? plugin.toInline(data.shortcodeData) : plugin.toBlock ? plugin.toBlock(data.shortcodeData) : '';
+      return plugin.toInline
+        ? plugin.toInline(data.shortcodeData)
+        : plugin.toBlock
+        ? plugin.toBlock(data.shortcodeData)
+        : '';
     }
   };
 }
