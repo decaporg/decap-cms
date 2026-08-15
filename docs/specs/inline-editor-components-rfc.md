@@ -81,3 +81,11 @@ Rich Text Visual DOM (Rendered via `toPreview`)
 - [x] **Phase 4: Tests & Documentation**
   - [x] Add unit tests for CJK characters and punctuation adjacent to inline elements.
   - [x] Add regex validation warning in development mode.
+
+---
+
+## 5. Scope & Future Work
+
+- **Scope of this PR**: This implementation specifically targets `packages/decap-cms-widget-markdown`, the primary and default Markdown editor across Decap CMS.
+- **Future Work**: Support for `packages/decap-cms-widget-richtext` (based on Plate.js) will be tracked and implemented in a separate follow-up PR to keep PR review focused and risk-contained.
+
