@@ -299,4 +299,45 @@ describe('slate', () => {
       expect(slateToMarkdown(slateAst.children)).toMatchInlineSnapshot(`"*h~~e**l**l~~o*"`);
     });
   });
+
+  describe('inline-shortcode', () => {
+    it('should convert inline-shortcode between Slate and MDAST', () => {
+      const slateAst = (
+        <editor>
+          <element type="paragraph">
+            <text>Hello </text>
+            <element
+              type="inline-shortcode"
+              data={{
+                shortcode: 'ref',
+                shortcodeData: { target: 'about' },
+              }}
+            >
+              <text></text>
+            </element>
+            <text> world</text>
+          </element>
+        </editor>
+      );
+
+      const refPlugin = {
+        id: 'ref',
+        type: 'inline',
+        pattern: /\{\{<\s*ref\s+"(?<target>[^"]+)"\s*>\}\}/,
+        fromInline: match => ({ target: match.groups.target }),
+        toInline: data => `{{< ref "${data.target}" >}}`,
+      };
+
+      const markdown = slateToMarkdown(slateAst.children, {
+        remarkPlugins: [
+          function () {
+            this.Compiler.prototype.visitors['inline-shortcode'] = node =>
+              refPlugin.toInline(node.data.shortcodeData);
+          },
+        ],
+      });
+
+      expect(markdown).toEqual('Hello {{< ref "about" >}} world');
+    });
+  });
 });
