@@ -48,6 +48,9 @@ function login(user) {
   cy.contains('a', '＋ Post', { timeout: 60000 }).then(() => {
     console.log('[login] New Post link found - COMPLETE');
   });
+  if (user?.netlifySiteURL) {
+    cy.clock(0, ['Date']);
+  }
 }
 
 function withExistingClock(callback) {
@@ -528,22 +531,6 @@ function validateNestedListFields() {
   cy.contains('button', 'Save').click();
   assertNotification(notifications.error.missingField);
 
-  // assert on fields
-  assertFieldErrorStatus('Hotel Locations', colorError);
-  assertFieldErrorStatus('Cities', colorError);
-  assertFieldErrorStatus('City', colorNormal);
-  assertFieldErrorStatus('City', colorNormal, { scope: cy.get('@secondCitiesListControl') });
-  assertFieldErrorStatus('Number of Hotels in City', colorNormal);
-  assertFieldErrorStatus('Number of Hotels in City', colorError, {
-    scope: cy.get('@secondCitiesListControl'),
-  });
-  assertFieldErrorStatus('City Locations', colorError);
-  assertFieldErrorStatus('City Locations', colorError, {
-    scope: cy.get('@secondCitiesListControl'),
-  });
-  assertFieldErrorStatus('Hotel Name', colorError);
-  assertFieldErrorStatus('Hotel Name', colorError, { scope: cy.get('@secondCitiesListControl') });
-
   // list control aliases
   cy.contains('label', 'Hotel Locations')
     .parents()
@@ -557,24 +544,47 @@ function validateNestedListFields() {
     .find('div[class*=SortableListItem]')
     .eq(0)
     .as('firstCitiesListControl');
-  cy.contains('label', 'City Locations')
+  cy.get('@firstCitiesListControl')
+    .contains('label', 'City Locations')
     .parents()
     .next()
     .find('div[class*=SortableListItem]')
-    .eq(0)
+    .first()
     .as('firstCityLocationsListControl');
-  cy.contains('label', 'Cities')
+  cy.get('@secondCitiesListControl')
+    .contains('label', 'City Locations')
     .parents()
     .next()
     .find('div[class*=SortableListItem]')
-    .eq(3)
+    .first()
     .as('secondCityLocationsListControl');
+
+  // assert on fields
+  assertFieldErrorStatus('Hotel Locations', colorError);
+  assertFieldErrorStatus('Cities', colorError);
+  assertFieldErrorStatus('City', colorNormal);
+  assertFieldErrorStatus('City', colorNormal, { scope: cy.get('@secondCitiesListControl') });
+  assertFieldErrorStatus('Number of Hotels in City', colorNormal);
+  assertFieldErrorStatus('Number of Hotels in City', colorNormal, {
+    scope: cy.get('@secondCitiesListControl'),
+  });
+  assertFieldErrorStatus('City Locations', colorNormal, {
+    scope: cy.get('@firstCitiesListControl'),
+  });
+  assertFieldErrorStatus('City Locations', colorError, {
+    scope: cy.get('@secondCitiesListControl'),
+  });
+  assertFieldErrorStatus('Hotel Name', colorNormal, { scope: cy.get('@firstCitiesListControl') });
+  assertFieldErrorStatus('Hotel Name', colorError, { scope: cy.get('@secondCitiesListControl') });
 
   // assert on list controls
   assertListControlErrorStatus([colorError, colorError], '@hotelLocationsListControl');
-  assertListControlErrorStatus([colorError, colorError], '@firstCitiesListControl');
+  assertListControlErrorStatus([colorNormal, textColorNormal], '@firstCitiesListControl');
   assertListControlErrorStatus([colorError, colorError], '@secondCitiesListControl');
-  assertListControlErrorStatus([colorError, colorError], '@firstCityLocationsListControl');
+  assertListControlErrorStatus(
+    [colorNormal, textColorNormal],
+    '@firstCityLocationsListControl',
+  );
   assertListControlErrorStatus([colorError, colorError], '@secondCityLocationsListControl');
 
   cy.contains('label', 'Hotel Name').parents().next().first().type('The Ritz Carlton');

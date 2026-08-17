@@ -67,10 +67,32 @@ const matchRoute = (route, fetchArgs) => {
 
 const stubFetch = (win, routes) => {
   const fetch = win.fetch;
+  const matchedGetRoutes = [];
+
+  const createResponse = route => {
+    let blob;
+    if (route.response && route.response.encoding === 'base64') {
+      const buffer = Buffer.from(route.response.content, 'base64');
+      blob = new Blob([buffer]);
+    } else {
+      blob = new Blob([route.response || '']);
+    }
+
+    return {
+      status: route.status,
+      headers: new Headers(route.headers),
+      blob: () => Promise.resolve(blob),
+      text: () => Promise.resolve(route.response),
+      json: () => Promise.resolve(JSON.parse(route.response)),
+      ok: route.status >= 200 && route.status <= 299,
+    };
+  };
+
   cy.stub(win, 'fetch').callsFake((...args) => {
     let routeIndex = routes.findIndex(r => matchRoute(r, args));
     if (routeIndex >= 0) {
       let route = routes.splice(routeIndex, 1)[0];
+      const requestRoute = route;
       const message = `matched ${args[0]} to ${route.url} ${route.method} ${route.status}`;
       console.log(message);
       if (route.status === 302) {
@@ -79,23 +101,23 @@ const stubFetch = (win, routes) => {
         route = routes.splice(routeIndex, 1)[0];
       }
 
-      let blob;
-      if (route.response && route.response.encoding === 'base64') {
-        const buffer = Buffer.from(route.response.content, 'base64');
-        blob = new Blob([buffer]);
-      } else {
-        blob = new Blob([route.response || '']);
+      if (requestRoute.method === 'GET') {
+        matchedGetRoutes.push({ requestRoute, responseRoute: route });
       }
-      const fetchResponse = {
-        status: route.status,
-        headers: new Headers(route.headers),
-        blob: () => Promise.resolve(blob),
-        text: () => Promise.resolve(route.response),
-        json: () => Promise.resolve(JSON.parse(route.response)),
-        ok: route.status >= 200 && route.status <= 299,
-      };
-      return Promise.resolve(fetchResponse);
-    } else if (
+
+      return Promise.resolve(createResponse(route));
+    }
+
+    if ((args[1]?.method || 'GET') === 'GET') {
+      const matchedRoute = [...matchedGetRoutes]
+        .reverse()
+        .find(({ requestRoute }) => matchRoute(requestRoute, args));
+      if (matchedRoute) {
+        return Promise.resolve(createResponse(matchedRoute.responseRoute));
+      }
+    }
+
+    if (
       args[0].includes('api.github.com') ||
       args[0].includes('api.bitbucket.org') ||
       args[0].includes('bitbucket.org') ||
@@ -116,10 +138,10 @@ const stubFetch = (win, routes) => {
         ok: false,
       };
       return Promise.resolve(fetchResponse);
-    } else {
-      console.log(`No route match for fetch args: ${JSON.stringify(args)}`);
-      return fetch(...args);
     }
+
+    console.log(`No route match for fetch args: ${JSON.stringify(args)}`);
+    return fetch(...args);
   });
 };
 
