@@ -586,16 +586,6 @@ export async function handleLocalBackend(originalConfig: CmsConfig) {
     return originalConfig;
   }
 
-  const backendName = originalConfig.backend?.name;
-  const registered = backendName && getBackend(backendName);
-  if (registered?.BackendClass?.preloadConfig) {
-    console.warn(
-      `Decap CMS 'local_backend' is ignored: backend '${backendName}' resolves its own config via ` +
-        `'preloadConfig' and does not support the local proxy server.`,
-    );
-    return originalConfig;
-  }
-
   const {
     proxyUrl,
     publish_modes: publishModes,

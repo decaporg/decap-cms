@@ -958,16 +958,35 @@ describe('config', () => {
       });
     });
 
-    it('should skip the local proxy when the backend defines a static preloadConfig', async () => {
+    it('should replace backend config even when the backend defines a static preloadConfig', async () => {
       window.location = { hostname: 'localhost' };
-      global.fetch = jest.fn();
+      global.fetch = jest.fn().mockResolvedValue({
+        json: jest.fn().mockResolvedValue({
+          repo: 'test-repo',
+          publish_modes: ['simple', 'editorial_workflow'],
+          type: 'local_git',
+        }),
+      });
+      getBackend.mockReturnValue({ BackendClass: { preloadConfig: jest.fn() } });
+
+      const config = { local_backend: true, backend: { name: 'turbo-github' } };
+      const actual = await handleLocalBackend(config);
+
+      expect(actual).toEqual({
+        local_backend: true,
+        backend: { name: 'proxy', proxy_url: 'http://localhost:8081/api/v1' },
+      });
+    });
+
+    it('should not replace backend config when preloadConfig is defined but no proxy is detected', async () => {
+      window.location = { hostname: 'localhost' };
+      global.fetch = jest.fn().mockRejectedValue(new Error());
       getBackend.mockReturnValue({ BackendClass: { preloadConfig: jest.fn() } });
 
       const config = { local_backend: true, backend: { name: 'turbo-github' } };
       const actual = await handleLocalBackend(config);
 
       expect(actual).toEqual(config);
-      expect(global.fetch).not.toHaveBeenCalled();
     });
   });
 
