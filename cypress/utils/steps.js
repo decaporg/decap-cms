@@ -102,15 +102,18 @@ function assertColorOn(cssProperty, color, opts) {
 }
 
 function exitEditor() {
-  cy.contains('a', 'Writing in').click();
+  cy.contains('a', 'Writing in').as('exitEditorLink');
+  cy.get('@exitEditorLink').click();
 }
 
 function goToWorkflow() {
-  cy.contains('a', 'Workflow').click();
+  cy.contains('a', 'Workflow').as('workflowLink');
+  cy.get('@workflowLink').click();
 }
 
 function goToCollections() {
-  cy.contains('a', 'Content').click();
+  cy.contains('a', 'Content').as('collectionsLink');
+  cy.get('@collectionsLink').click();
 }
 
 function goToMediaLibrary() {
