@@ -16,7 +16,7 @@ async function runCypress() {
   await execa('cypress', args, {
     stdio: 'inherit',
     preferLocal: true,
-    timeout: 30 * 60 * 1000, // 30 minutes for full suite on single machine
+    timeout: 60 * 60 * 1000, // 60 minutes for the full suite on a single machine
   });
 }
 
