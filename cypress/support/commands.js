@@ -29,6 +29,11 @@ import visit from 'unist-util-visit';
 import { oneLineTrim } from 'common-tags';
 import { escapeRegExp } from '../utils/regexp';
 
+function normalizeUrl(url) {
+  const [pathname, query] = url.split('?');
+  return query ? `${pathname}?${query.split('&').sort().join('&')}` : pathname;
+}
+
 const matchRoute = (route, fetchArgs) => {
   const url = fetchArgs[0];
   const options = fetchArgs[1];
@@ -54,14 +59,16 @@ const matchRoute = (route, fetchArgs) => {
     bodyMatch = body === routeBody;
   }
 
-  // use pattern matching for the timestamp parameter
-  const urlRegex = escapeRegExp(decodeURIComponent(route.url)).replace(
+  // Ignore query parameter order and use pattern matching for the timestamp parameter.
+  const urlRegex = escapeRegExp(decodeURIComponent(normalizeUrl(route.url))).replace(
     /ts=\d{1,15}/,
     'ts=\\d{1,15}',
   );
 
   return (
-    method === route.method && bodyMatch && decodeURIComponent(url).match(new RegExp(`${urlRegex}`))
+    method === route.method &&
+    bodyMatch &&
+    decodeURIComponent(normalizeUrl(url)).match(new RegExp(`${urlRegex}`))
   );
 };
 
