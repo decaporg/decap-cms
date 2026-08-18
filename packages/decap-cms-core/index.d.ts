@@ -10,6 +10,7 @@ declare module 'decap-cms-core' {
     | 'github'
     | 'gitlab'
     | 'gitea'
+    | 'forgejo'
     | 'bitbucket'
     | 'test-repo'
     | 'proxy';
@@ -359,6 +360,7 @@ declare module 'decap-cms-core' {
     view_filters?: ViewFilter[];
     view_groups?: ViewGroup[];
     i18n?: boolean | CmsI18nConfig;
+    limit?: number;
 
     /**
      * @deprecated Use sortable_fields instead

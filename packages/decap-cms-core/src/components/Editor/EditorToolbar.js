@@ -283,6 +283,7 @@ export class EditorToolbar extends Component {
     onPublishAndDuplicate: PropTypes.func.isRequired,
     user: PropTypes.object,
     hasChanged: PropTypes.bool,
+    canCreateNewEntry: PropTypes.bool,
     displayUrl: PropTypes.string,
     collection: ImmutablePropTypes.map.isRequired,
     hasWorkflow: PropTypes.bool,
@@ -331,8 +332,9 @@ export class EditorToolbar extends Component {
   }
 
   renderSimpleControls = () => {
-    const { collection, hasChanged, isNewEntry, showDelete, onDelete, t } = this.props;
-    const canCreate = collection.get('create');
+    const { collection, canCreateNewEntry, hasChanged, isNewEntry, showDelete, onDelete, t } =
+      this.props;
+    const canCreate = canCreateNewEntry ?? collection.get('create');
 
     return (
       <>
@@ -609,10 +611,11 @@ export class EditorToolbar extends Component {
       isModification,
       currentStatus,
       collection,
+      canCreateNewEntry,
       t,
     } = this.props;
 
-    const canCreate = collection.get('create');
+    const canCreate = canCreateNewEntry ?? collection.get('create');
     const canPublish = collection.get('publish') && !useOpenAuthoring;
     const canDelete = collection.get('delete', true);
 

@@ -24,18 +24,18 @@ collections: # A list of collections the CMS should be able to edit
       - label: Posts Without Index
         field: title
         pattern: front matter post
-      - label: Drafts
-        field: draft
+      - label: Relation Test
+        field: relation_test
         pattern: true
     view_groups:
       - label: Year
         field: date
         pattern: \d{4}
-      - label: Drafts
-        field: draft
+      - label: Relation Test
+        field: relation_test
     fields: # The fields each document in this collection have
       - { label: 'Title', name: 'title', widget: 'string', tagname: 'h1' }
-      - { label: 'Draft', name: 'draft', widget: 'boolean', default: false }
+      - { label: 'Relation Test', name: 'relation_test', widget: 'hidden', default: true }
       - {
           label: 'Publish Date',
           name: 'date',

@@ -1,3 +1,4 @@
+/** @jsxRuntime classic */
 /** @jsx h */
 
 import flow from 'lodash/flow';

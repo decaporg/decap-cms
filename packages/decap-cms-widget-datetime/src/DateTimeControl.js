@@ -1,6 +1,4 @@
-/** @jsxImportSource @emotion/react */
-
-import { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { css } from '@emotion/react';
 import dayjs from 'dayjs';
@@ -47,7 +45,7 @@ function Buttons({ t, fieldName, handleChange, getNow }) {
   );
 }
 
-class DateTimeControl extends Component {
+class DateTimeControl extends React.Component {
   static propTypes = {
     field: PropTypes.object.isRequired,
     forID: PropTypes.string,

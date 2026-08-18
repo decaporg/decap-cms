@@ -74,7 +74,7 @@ const filterBooleanFieldConfig = {
   value_field: 'title',
   filters: [
     {
-      field: 'draft',
+      field: 'featured',
       values: [false],
     },
   ],
@@ -120,7 +120,7 @@ const multipleFiltersFieldConfig = {
       values: ['Post # 1', 'Post # 2', 'Post # 7', 'Post # 9', 'Post # 15'],
     },
     {
-      field: 'draft',
+      field: 'featured',
       values: [true],
     },
   ],
@@ -134,7 +134,7 @@ const emptyFilterFieldConfig = {
   value_field: 'title',
   filters: [
     {
-      field: 'draft',
+      field: 'featured',
       values: [],
     },
   ],
@@ -158,10 +158,10 @@ function generateHits(length) {
   const hits = Array.from({ length }, (val, idx) => {
     const title = `Post # ${idx + 1}`;
     const slug = `post-number-${idx + 1}`;
-    const draft = idx % 2 === 0;
+    const featured = idx % 2 === 0;
     const num = idx + 1;
     const path = `posts/${slug}.md`;
-    return { collection: 'posts', data: { title, slug, draft, num }, slug, path };
+    return { collection: 'posts', data: { title, slug, featured, num }, slug, path };
   });
 
   return [
@@ -385,7 +385,7 @@ describe('Relation widget', () => {
     const label = 'Post # 1 post-number-1';
     const metadata = {
       post: {
-        posts: { 'Post # 1': { title: 'Post # 1', draft: true, num: 1, slug: 'post-number-1' } },
+        posts: { 'Post # 1': { title: 'Post # 1', featured: true, num: 1, slug: 'post-number-1' } },
       },
     };
 
@@ -405,7 +405,7 @@ describe('Relation widget', () => {
     const label = 'Post # 1 post-number-1';
     const metadata = {
       post: {
-        posts: { 'Post # 1': { title: 'Post # 1', draft: true, num: 1, slug: 'post-number-1' } },
+        posts: { 'Post # 1': { title: 'Post # 1', featured: true, num: 1, slug: 'post-number-1' } },
       },
     };
 
@@ -465,7 +465,7 @@ describe('Relation widget', () => {
     const metadata = {
       post: {
         posts: {
-          'post-number-1': { title: 'Post # 1', draft: true, num: 1, slug: 'post-number-1' },
+          'post-number-1': { title: 'Post # 1', featured: true, num: 1, slug: 'post-number-1' },
         },
       },
     };
@@ -524,12 +524,16 @@ describe('Relation widget', () => {
       const { getByText, input, onChangeSpy } = setup({ field });
       const metadata1 = {
         post: {
-          posts: { 'Post # 1': { title: 'Post # 1', draft: true, num: 1, slug: 'post-number-1' } },
+          posts: {
+            'Post # 1': { title: 'Post # 1', featured: true, num: 1, slug: 'post-number-1' },
+          },
         },
       };
       const metadata2 = {
         post: {
-          posts: { 'Post # 2': { title: 'Post # 2', draft: false, num: 2, slug: 'post-number-2' } },
+          posts: {
+            'Post # 2': { title: 'Post # 2', featured: false, num: 2, slug: 'post-number-2' },
+          },
         },
       };
 

@@ -61,6 +61,7 @@
     "@babel/preset-typescript": "catalog:",
     "@commitlint/cli": "catalog:",
     "@commitlint/config-conventional": "catalog:",
+    "@emotion/babel-plugin": "catalog:",
     "@emotion/eslint-plugin": "catalog:",
     "@emotion/jest": "catalog:",
     "@octokit/rest": "catalog:",
@@ -77,6 +78,7 @@
     "@types/js-base64": "catalog:",
     "@types/jwt-decode": "catalog:",
     "@types/lodash": "catalog:",
+    "@types/node": "25.0.3",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "@types/react-redux": "catalog:",
@@ -171,7 +173,6 @@
   },
   "private": true,
   "dependencies": {
-    "@emotion/babel-preset-css-prop": "catalog:",
     "ajv": "catalog:",
     "ajv-errors": "catalog:",
     "ajv-keywords": "catalog:",
