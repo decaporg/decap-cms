@@ -171,7 +171,7 @@ catalog:
   nodemon: ^2.0.2
   npm: ^9.9.2
   npm-run-all: ^4.1.5
-  nx: ^21.1.0
+  nx: ^23.1.1
   ol: ^6.9.0
   path-browserify: ^1.0.1
   postcss: ^8.4.7
