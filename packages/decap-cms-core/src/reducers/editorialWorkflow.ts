@@ -8,6 +8,7 @@ import {
   UNPUBLISHED_ENTRY_SUCCESS,
   UNPUBLISHED_ENTRIES_REQUEST,
   UNPUBLISHED_ENTRIES_SUCCESS,
+  UNPUBLISHED_ENTRIES_FAILURE,
   UNPUBLISHED_ENTRY_PERSIST_REQUEST,
   UNPUBLISHED_ENTRY_PERSIST_SUCCESS,
   UNPUBLISHED_ENTRY_PERSIST_FAILURE,
@@ -67,6 +68,9 @@ function unpublishedEntries(state = Map(), action: EditorialWorkflowAction) {
           }),
         );
       });
+
+    case UNPUBLISHED_ENTRIES_FAILURE:
+      return state.setIn(['pages', 'isFetching'], false);
 
     case UNPUBLISHED_ENTRY_PERSIST_REQUEST: {
       return state.setIn(

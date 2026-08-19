@@ -55,7 +55,7 @@ jobs:
       - name: run lint + types + unit tests
         run: npm run test:ci
 
-  e2e:
+  e2e-build:
     needs: changes
     if: ${{ needs.changes.outputs.cms == 'true' }}
     runs-on: depot-ubuntu-24.04
@@ -74,6 +74,39 @@ jobs:
           key: nx-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             nx-${{ runner.os }}-
+      - name: install dependencies
+        run: npm ci
+        env:
+          CYPRESS_INSTALL_BINARY: 0
+      - name: build demo site
+        run: npm run build:demo
+      - name: test package integrity
+        run: npm run test:package-integrity
+      - name: upload demo site
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-demo
+          path: dev-test/dist
+          if-no-files-found: error
+          retention-days: 1
+
+  e2e:
+    needs: [changes, e2e-build]
+    if: ${{ needs.changes.outputs.cms == 'true' }}
+    runs-on: depot-ubuntu-24.04
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        machine: [1, 2, 3, 4]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js 24.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.x
+          check-latest: true
+          cache: 'npm'
       - name: Cache Cypress binary
         uses: actions/cache@v4
         with:
@@ -83,13 +116,17 @@ jobs:
             cypress-${{ runner.os }}-
       - name: install dependencies
         run: npm ci
-      - name: build demo site
-        run: npm run build:demo
-      - name: test package integrity
-        run: npm run test:package-integrity
-      - name: run e2e tests
+      - name: download demo site
+        uses: actions/download-artifact@v4
+        with:
+          name: e2e-demo
+          path: dev-test/dist
+      - name: run e2e tests (parallel)
         run: npm run test:e2e:run-ci
         env:
+          CI_BUILD_ID: ${{ github.run_id }}-${{ github.run_attempt }}
+          MACHINE_INDEX: ${{ matrix.machine }}
+          MACHINE_COUNT: 4
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           NODE_OPTIONS: --max-old-space-size=4096
           TZ: Europe/Amsterdam
@@ -98,8 +135,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: cypress-results
+          name: cypress-results-${{ matrix.machine }}
           path: |
             cypress/screenshots
             cypress/videos
-
