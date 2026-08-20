@@ -18,6 +18,7 @@ import {
   selectEntriesLoaded,
   selectIsFetching,
   selectGroups,
+  selectEntriesSortFields,
 } from '../../../reducers/entries';
 import { selectUnpublishedEntry, selectUnpublishedEntriesByStatus } from '../../../reducers';
 import { selectCollectionEntriesCursor } from '../../../reducers/cursors';
@@ -27,7 +28,6 @@ const GroupHeading = styled.h2`
   font-size: 22px;
   font-weight: 600;
   line-height: 37px;
-  padding-inline-start: 20px;
   color: ${colors.textLead};
 `;
 
@@ -54,7 +54,10 @@ function withGroups(groups, entries, EntriesToRender, t) {
     return (
       <GroupContainer key={group.id} id={group.id}>
         <GroupHeading>{title}</GroupHeading>
-        <EntriesToRender entries={getGroupEntries(entries, group.paths)} />
+        <EntriesToRender
+          entries={getGroupEntries(entries, group.paths)}
+          showUnpublishedEntries={false}
+        />
       </GroupContainer>
     );
   });
@@ -144,9 +147,18 @@ export class EntriesCollection extends React.Component {
       getWorkflowStatus,
       getUnpublishedEntries,
       filterTerm,
+      sortFields,
     } = this.props;
 
-    const EntriesToRender = ({ entries }) => {
+    const EntriesToRender = ({ entries, showPublishedEntries, showUnpublishedEntries }) => {
+      const visibilityProps = {};
+      if (showPublishedEntries !== undefined) {
+        visibilityProps.showPublishedEntries = showPublishedEntries;
+      }
+      if (showUnpublishedEntries !== undefined) {
+        visibilityProps.showUnpublishedEntries = showUnpublishedEntries;
+      }
+
       return (
         <Entries
           collections={collection}
@@ -160,12 +172,19 @@ export class EntriesCollection extends React.Component {
           getWorkflowStatus={getWorkflowStatus}
           getUnpublishedEntries={getUnpublishedEntries}
           filterTerm={filterTerm}
+          sortFields={sortFields}
+          {...visibilityProps}
         />
       );
     };
 
     if (groups && groups.length > 0) {
-      return withGroups(groups, entries, EntriesToRender, t);
+      return (
+        <React.Fragment>
+          {withGroups(groups, entries, EntriesToRender, t)}
+          <EntriesToRender entries={entries} showPublishedEntries={false} />
+        </React.Fragment>
+      );
     }
 
     return <EntriesToRender entries={entries} />;
@@ -206,6 +225,7 @@ function mapStateToProps(state, ownProps) {
 
   let entries = selectEntries(state.entries, collection);
   const groups = selectGroups(state.entries, collection);
+  const sortFields = selectEntriesSortFields(state.entries, collection.get('name'));
 
   if (collection.has('nested')) {
     const collectionFolder = collection.get('folder');
@@ -233,6 +253,7 @@ function mapStateToProps(state, ownProps) {
     page,
     entries,
     groups,
+    sortFields,
     entriesLoaded,
     isFetching,
     viewStyle,

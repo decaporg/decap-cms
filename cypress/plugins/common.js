@@ -67,7 +67,9 @@ const transformRecordedData = (expectation, requestBodySanitizer, responseBodySa
 };
 
 function getGitClient(repoDir) {
-  const git = simpleGit(repoDir).env({ ...process.env, GIT_SSH_COMMAND, GIT_SSL_NO_VERIFY });
+  const env = { ...process.env, GIT_SSH_COMMAND, GIT_SSL_NO_VERIFY };
+  delete env.EDITOR;
+  const git = simpleGit(repoDir, { unsafe: { allowUnsafeSshCommand: true } }).env(env);
   return git;
 }
 

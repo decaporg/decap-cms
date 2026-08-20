@@ -1,4 +1,3 @@
-import React from 'react';
 import { render } from '@testing-library/react';
 import { fromJS } from 'immutable';
 import configureStore from 'redux-mock-store';
@@ -29,22 +28,26 @@ describe('Collection', () => {
     view_filters: [],
     view_groups: [],
   });
-  const props = {
+  const baseProps = {
     collections: fromJS([collection]).toOrderedMap(),
     collection,
     collectionName: collection.get('name'),
     t: jest.fn(key => key),
     onSortClick: jest.fn(),
+    viewStyle: 'list',
   };
 
   it('should render with collection without create url', () => {
+    const props = { ...baseProps, canCreate: false };
     const { asFragment } = render(
       <Collection {...props} collection={collection.set('create', false)} />,
     );
 
     expect(asFragment()).toMatchSnapshot();
   });
+
   it('should render with collection with create url', () => {
+    const props = { ...baseProps, canCreate: false };
     const { asFragment } = render(
       <Collection {...props} collection={collection.set('create', true)} />,
     );
@@ -53,8 +56,9 @@ describe('Collection', () => {
   });
 
   it('should render with collection with create url and path', () => {
+    const props = { ...baseProps, canCreate: false, filterTerm: 'dir1/dir2' };
     const { asFragment } = render(
-      <Collection {...props} collection={collection.set('create', true)} filterTerm="dir1/dir2" />,
+      <Collection {...props} collection={collection.set('create', true)} />,
     );
 
     expect(asFragment()).toMatchSnapshot();
@@ -62,8 +66,8 @@ describe('Collection', () => {
 
   it('should render connected component', () => {
     const store = mockStore({
-      collections: props.collections,
-      entries: fromJS({}),
+      collections: baseProps.collections,
+      entries: fromJS({ pages: { entries: fromJS([]) } }),
     });
 
     const { asFragment } = renderWithRedux(<ConnectedCollection match={{ params: {} }} />, {

@@ -96,11 +96,14 @@ exports[`Collection should render with collection with create url 1`] = `
     >
       <mock-collection-top
         collection="Map { \\"name\\": \\"pages\\", \\"sortable_fields\\": List [], \\"view_filters\\": List [], \\"view_groups\\": List [], \\"create\\": true }"
-        newentryurl="/collections/pages/new"
+        newentryurl=""
       />
-      <mock-collection-controls />
+      <mock-collection-controls
+        viewstyle="list"
+      />
       <mock-entries-collection
         collection="Map { \\"name\\": \\"pages\\", \\"sortable_fields\\": List [], \\"view_filters\\": List [], \\"view_groups\\": List [], \\"create\\": true }"
+        viewstyle="list"
       />
     </main>
   </div>
@@ -146,12 +149,15 @@ exports[`Collection should render with collection with create url and path 1`] =
     >
       <mock-collection-top
         collection="Map { \\"name\\": \\"pages\\", \\"sortable_fields\\": List [], \\"view_filters\\": List [], \\"view_groups\\": List [], \\"create\\": true }"
-        newentryurl="/collections/pages/new?path=dir1/dir2"
+        newentryurl=""
       />
-      <mock-collection-controls />
+      <mock-collection-controls
+        viewstyle="list"
+      />
       <mock-entries-collection
         collection="Map { \\"name\\": \\"pages\\", \\"sortable_fields\\": List [], \\"view_filters\\": List [], \\"view_groups\\": List [], \\"create\\": true }"
         filterterm="dir1/dir2"
+        viewstyle="list"
       />
     </main>
   </div>
@@ -198,9 +204,12 @@ exports[`Collection should render with collection without create url 1`] = `
         collection="Map { \\"name\\": \\"pages\\", \\"sortable_fields\\": List [], \\"view_filters\\": List [], \\"view_groups\\": List [], \\"create\\": false }"
         newentryurl=""
       />
-      <mock-collection-controls />
+      <mock-collection-controls
+        viewstyle="list"
+      />
       <mock-entries-collection
         collection="Map { \\"name\\": \\"pages\\", \\"sortable_fields\\": List [], \\"view_filters\\": List [], \\"view_groups\\": List [], \\"create\\": false }"
+        viewstyle="list"
       />
     </main>
   </div>
