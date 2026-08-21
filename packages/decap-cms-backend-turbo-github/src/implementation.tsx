@@ -677,6 +677,11 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
     }
   }
 
+  async getToken(): Promise<string | null> {
+    await this.refreshSessionIfNeeded();
+    return this.supabaseAccessToken || this.token || null;
+  }
+
   async currentUser({ token }: { token: string }): Promise<GitHubUser> {
     if (!this._currentUserPromise) {
       this._currentUserPromise = (async () => {

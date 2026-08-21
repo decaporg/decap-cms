@@ -540,6 +540,11 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
     }
   }
 
+  async getToken(): Promise<string | null> {
+    await this.refreshSessionIfNeeded();
+    return this.supabaseAccessToken || this.token || null;
+  }
+
   async currentUser({ token }: { token: string } = { token: this.token || '' }): Promise<GitLabUser> {
     if (!this._currentUserPromise) {
       this._currentUserPromise = (async () => {
