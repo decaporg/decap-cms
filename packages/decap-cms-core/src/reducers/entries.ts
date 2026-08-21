@@ -547,6 +547,17 @@ function getFileField(collectionFiles: CollectionFiles, slug: string | undefined
   return file;
 }
 
+function getMediaPublicPathSegment(mediaPath: string) {
+  const normalizedPath = trim(mediaPath, '/');
+  const transformationIndex = normalizedPath.indexOf('_transformations/');
+
+  if (transformationIndex >= 0) {
+    return normalizedPath.slice(transformationIndex);
+  }
+
+  return basename(mediaPath);
+}
+
 function hasCustomFolder(
   folderKey: 'media_folder' | 'public_folder',
   collection: Collection | null,
@@ -806,10 +817,10 @@ export function selectMediaFilePublicPath(
   }
 
   if (isAbsolutePath(publicFolder)) {
-    return joinUrlPath(publicFolder, basename(mediaPath));
+    return joinUrlPath(publicFolder, getMediaPublicPathSegment(mediaPath));
   }
 
-  return join(publicFolder, basename(mediaPath));
+  return join(publicFolder, getMediaPublicPathSegment(mediaPath));
 }
 
 export function selectEditingDraft(state: EntryDraft) {
