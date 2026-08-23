@@ -5,7 +5,11 @@ export function before(taskResult, options, backend) {
     console.log('[spec_utils.before] setupBackend completed, data=', data);
     taskResult.data = data;
     Cypress.config('defaultCommandTimeout', data.mockResponses ? 5 * 1000 : 1 * 60 * 1000);
-    console.log(`[spec_utils.before] COMPLETE mockResponses=${data.mockResponses} timeout=${data.mockResponses ? 5000 : 60000}ms`);
+    console.log(
+      `[spec_utils.before] COMPLETE mockResponses=${data.mockResponses} timeout=${
+        data.mockResponses ? 5000 : 60000
+      }ms`,
+    );
   });
 }
 
@@ -43,18 +47,14 @@ export function beforeEach(taskResult, backend) {
       console.log('[spec_utils.beforeEach] stubFetch completed');
     });
   } else {
-    console.log('[spec_utils.beforeEach] WARNING: mockResponses is false/undefined - no fixture loaded');
+    console.log(
+      '[spec_utils.beforeEach] WARNING: mockResponses is false/undefined - no fixture loaded',
+    );
   }
 
-  // cy.clock(0, ['Date']) was hanging git-gateway tests after page load
-  // Hypothesis: freezing time to 0 breaks app initialization during cy.visit()
-  // Temporary fix: skip cy.clock for git-gateway, use default clock for others
   if (backend !== 'git-gateway') {
-    console.log('[spec_utils.beforeEach] Setting clock to epoch 0');
     return cy.clock(0, ['Date']);
   }
-
-  console.log('[spec_utils.beforeEach] COMPLETE - skipped clock for git-gateway');
 }
 
 export function afterEach(taskResult, backend) {
@@ -67,20 +67,6 @@ export function afterEach(taskResult, backend) {
     spec,
     testName,
   });
-
-  if (!process.env.RECORD_FIXTURES) {
-    const {
-      suite: {
-        ctx: {
-          currentTest: { state, _retries: retries, _currentRetry: currentRetry },
-        },
-      },
-    } = Cypress.mocha.getRunner();
-
-    if (state === 'failed' && retries === currentRetry) {
-      Cypress.runner.stop();
-    }
-  }
 }
 
 export function seedRepo(taskResult, backend) {

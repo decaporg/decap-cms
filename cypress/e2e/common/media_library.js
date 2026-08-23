@@ -117,7 +117,7 @@ function switchToGridView() {
 
 function assertGridEntryImage(entry) {
   cy.contains('li', entry.title).within(() => {
-    cy.get('div[class*="CardImage"]').should('be.visible');
+    cy.get('[data-testid="entry-card-image"]').should('be.visible');
   });
 }
 
