@@ -34,6 +34,10 @@ function rules() {
       exclude: [/node_modules/],
       use: 'svg-inline-loader',
     }),
+    wasm: () => ({
+      test: /\.wasm$/,
+      type: 'asset/resource',
+    }),
     vfile: () => ({
       test: /node_modules\/vfile\/core\.js/,
       use: [

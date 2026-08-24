@@ -84,6 +84,9 @@ catalogs:
     '@iarna/toml':
       specifier: 2.2.5
       version: 2.2.5
+    '@jsquash/webp':
+      specifier: 1.5.0
+      version: 1.5.0
     '@octokit/rest':
       specifier: ^16.28.7
       version: 16.43.2
@@ -1821,6 +1824,9 @@ importers:
       '@iarna/toml':
         specifier: 'catalog:'
         version: 2.2.5
+      '@jsquash/webp':
+        specifier: 'catalog:'
+        version: 1.5.0
       '@reduxjs/toolkit':
         specifier: 'catalog:'
         version: 1.9.7(react-redux@7.2.9(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)
@@ -4454,6 +4460,9 @@ packages:
     engines: {node: '>=10.0'}
     peerDependencies:
       tslib: '2'
+
+  '@jsquash/webp@1.5.0':
+    resolution: {integrity: sha512-KggLoj2MnRSfIqTeKe1EmbljTX2vuV7mh79k89PCL1pyqiDULcPM1L47twxXt0hkb68F70bXiL31MxsuoZtKFw==}
 
   '@juggle/resize-observer@3.4.0':
     resolution: {integrity: sha512-dfLbk+PwWvFzSxwk3n5ySL0hfBog779o8h68wK/7/APo/7cgyWp5jcXockbxdk5kFRkbeXWm4Fbi9FrdN381sA==}
@@ -12983,6 +12992,9 @@ packages:
   warning@4.0.3:
     resolution: {integrity: sha512-rpJyN222KWIvHJ/F53XSZv0Zl/accqHR8et1kpaMTD/fLCRxtV8iX8czMzY7sVZupTI3zcUTg8eycS2kNF9l6w==}
 
+  wasm-feature-detect@1.9.0:
+    resolution: {integrity: sha512-zonE+xlIIYtxPy++L24ow0hAD8CICb4+FgPyROd3buyXIqsJvUEDkBgfCCoXOd1Hu3DUr0GOfnPIdcGV+YpNaA==}
+
   watchpack@2.4.4:
     resolution: {integrity: sha512-c5EGNOiyxxV5qmTtAB7rbiXxi1ooX1pQKMLX/MIabJjRA0SJBQOjKF+KSVfHkr9U1cADPon0mRiVe/riyaiDUA==}
     engines: {node: '>=10.13.0'}
@@ -15221,6 +15233,10 @@ snapshots:
       '@jsonjoy.com/buffers': 17.67.0(tslib@2.8.1)
       '@jsonjoy.com/codegen': 17.67.0(tslib@2.8.1)
       tslib: 2.8.1
+
+  '@jsquash/webp@1.5.0':
+    dependencies:
+      wasm-feature-detect: 1.9.0
 
   '@juggle/resize-observer@3.4.0': {}
 
@@ -25724,6 +25740,8 @@ snapshots:
   warning@4.0.3:
     dependencies:
       loose-envify: 1.4.0
+
+  wasm-feature-detect@1.9.0: {}
 
   watchpack@2.4.4:
     dependencies:

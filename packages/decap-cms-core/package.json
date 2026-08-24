@@ -25,6 +25,7 @@
   "license": "MIT",
   "dependencies": {
     "@iarna/toml": "catalog:",
+    "@jsquash/webp": "catalog:",
     "@reduxjs/toolkit": "catalog:",
     "@vercel/stega": "catalog:",
     "buffer": "catalog:",

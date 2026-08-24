@@ -30,6 +30,7 @@ catalog:
   '@emotion/styled': ^11.11.0
   '@hapi/joi': ^17.0.2
   '@iarna/toml': 2.2.5
+  '@jsquash/webp': 1.5.0
   '@octokit/rest': ^16.28.7
   '@octokit/types': ^16.0.0
   '@reduxjs/toolkit': ^1.9.1
