@@ -33,6 +33,11 @@ import type {
   EntryField,
 } from '../types/redux';
 
+function isMediaFileInFolder(filePath: string, mediaFolder: string) {
+  const fileFolder = dirname(filePath);
+  return fileFolder === mediaFolder || fileFolder.startsWith(`${mediaFolder}/_transformations/`);
+}
+
 const defaultState: {
   isVisible: boolean;
   showMediaButton: boolean;
@@ -269,7 +274,7 @@ export function selectMediaFiles(state: State, field?: EntryField) {
     const collection = state.collections.get(entry?.get('collection'));
     const mediaFolder = selectMediaFolder(state.config, collection, entry, field);
     files = entryFiles
-      .filter(f => dirname(f.path) === mediaFolder)
+      .filter(f => isMediaFileInFolder(f.path, mediaFolder))
       .map(file => ({ key: file.id, ...file }));
   } else {
     files = mediaLibrary.get('files') || [];
