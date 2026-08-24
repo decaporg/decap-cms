@@ -122,6 +122,7 @@ export function loginUser(credentials: Credentials) {
           }),
         );
         dispatch(authError(error));
+        dispatch(doneAuthenticating());
       });
   };
 }
