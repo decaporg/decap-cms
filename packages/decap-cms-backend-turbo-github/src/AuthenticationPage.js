@@ -124,7 +124,11 @@ export default class SupabaseAuthenticationPage extends React.Component {
   // never the URL itself. See decap-redirect.astro / auth/exchange.ts.
   exchangeCodeForCredentials = async ({ code, siteId }) => {
     const { turbo_admin_url: turboAdminUrl = DEFAULT_TURBO_ADMIN_URL } = this.props.config.backend;
-    const exchangeUrl = `${turboAdminUrl.replace(/\/$/, '')}/auth/exchange`;
+    // site_id is repeated as a query param (in addition to the POST body)
+    // because the CORS preflight (OPTIONS) carries no body — the server needs
+    // it there to decide which site's admin_interface_url to check the
+    // request's Origin against before allowing the real POST through.
+    const exchangeUrl = `${turboAdminUrl.replace(/\/$/, '')}/auth/exchange?site_id=${encodeURIComponent(siteId)}`;
 
     try {
       const response = await fetch(exchangeUrl, {
