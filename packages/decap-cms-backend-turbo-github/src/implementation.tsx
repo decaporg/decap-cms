@@ -147,6 +147,7 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
   }
 
   async ghFetch(url: string, init: RequestInit = {}) {
+    await this.refreshSessionIfNeeded();
     const accessToken = this.supabaseAccessToken || this.token || '';
     const headers: Record<string, string> = Object.fromEntries(
       new Headers(init.headers || {}).entries(),
@@ -186,6 +187,7 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
     }
 
     const isGhProxyApiRoot = this.apiRoot.includes('/functions/v1/gh');
+    const api = this.api;
 
     const originalUrlFor = this.api.urlFor.bind(this.api);
     this.api.urlFor = (path: string, options: any) => {
@@ -202,6 +204,10 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
 
     const originalRequestHeaders = this.api.requestHeaders.bind(this.api);
     this.api.requestHeaders = async (headers: Record<string, string> = {}) => {
+      if (isGhProxyApiRoot) {
+        await this.refreshSessionIfNeeded();
+        api.token = this.supabaseAccessToken || this.token || '';
+      }
       const builtHeaders = await originalRequestHeaders(headers);
       if (!this.siteId || !isGhProxyApiRoot) {
         return builtHeaders;

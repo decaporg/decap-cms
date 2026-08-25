@@ -154,6 +154,7 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
   // requestFunction runs (see API.buildRequest), so scoping is added here
   // rather than at URL-construction time.
   apiRequestFunction = async (req: any) => {
+    await this.refreshSessionIfNeeded();
     const accessToken = this.supabaseAccessToken || this.token || '';
     const isGlProxyRequest = this.apiRoot.includes('/functions/v1/gl');
 
