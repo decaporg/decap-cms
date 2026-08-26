@@ -708,11 +708,47 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
     return this._currentUserPromise!;
   }
 
+  /**
+   * Reads one entry, verifying the cached row is current before trusting it.
+   *
+   * The check is not cosmetic. Collection loads revalidate the branch head on
+   * every sync, but this path is reached directly — core's loadEntry when an
+   * editor deep-links to an entry, and once per non-default locale for
+   * multiple_files/multiple_folders i18n — and used to return whatever was in
+   * the cache with no freshness check at all.
+   *
+   * A stale read here is a lost update, not just stale display: persistFiles
+   * rebases onto the branch's current head and rewrites the edited path, so
+   * saving stale content is a fast-forward commit that silently reverts
+   * whoever committed in between.
+   *
+   * Server-side this costs one conditional request against the shared
+   * per-branch ETag, which GitHub does not charge against the rate limit when
+   * it 304s. A negative answer falls through to GitHubBackend.getEntry, which
+   * reads the file straight from GitHub.
+   */
   async getEntry(path: string) {
     const cached = await this.supabase.fetchEntryByPath(path);
-    if (cached) {
-      return cached;
+    if (!cached) {
+      return super.getEntry(path);
     }
+
+    try {
+      const response = await this.ghFetch(`${this.apiRoot}/_content/entry`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ path, branch: this.branch }),
+      });
+      const { fresh } = await response.json();
+      if (fresh) {
+        return cached;
+      }
+    } catch (error) {
+      // Falling through to GitHub on an unreachable check is the safe
+      // direction: it costs requests, where trusting the cache costs edits.
+      console.warn('Turbo entry freshness check failed, reading from GitHub', error);
+    }
+
     return super.getEntry(path);
   }
 
