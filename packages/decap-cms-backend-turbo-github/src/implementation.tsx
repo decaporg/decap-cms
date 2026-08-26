@@ -48,6 +48,27 @@ const REFRESH_RETRY_ATTEMPTS = 3;
 // extension point) before constructing the backend.
 const DEFAULT_CONFIG_ENDPOINT = 'https://sb.decapcms.org/functions/v1/config';
 
+/**
+ * Stable cache key for a files collection.
+ *
+ * decap-cms-core's entriesByFiles receives only the file list, never the
+ * collection name, so the key is derived from the paths. Sorted first so key
+ * identity does not depend on config ordering, and hashed so a collection of
+ * 77 paths does not become a 2 KB array element in every row's `collections`.
+ *
+ * FNV-1a rather than a crypto digest: this needs to be deterministic and
+ * short, not unforgeable, and it must run identically in every browser without
+ * pulling in SubtleCrypto's async API.
+ */
+export function collectionKeyForFiles(paths: string[]) {
+  let hash = 0x811c9dc5;
+  for (const char of [...paths].sort().join('\n')) {
+    hash ^= char.charCodeAt(0);
+    hash = Math.imul(hash, 0x01000193) >>> 0;
+  }
+  return `files:${paths.length}:${hash.toString(36)}`;
+}
+
 export default class DecapTurboGitHubBackend extends GitHubBackend {
   static async preloadConfig(config: Config): Promise<Config> {
     const backend = config.backend as Record<string, unknown>;
@@ -789,23 +810,60 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
     depth: number,
     pathRegex?: RegExp,
   ) {
+    return this.postCollectionSync({
+      name: collection,
+      folder,
+      extension,
+      depth,
+      // Sent as source + flags rather than a stringified literal so the server
+      // can rebuild the exact RegExp without parsing `/.../flags`.
+      ...(pathRegex && { pathRegexSource: pathRegex.source, pathRegexFlags: pathRegex.flags }),
+    });
+  }
+
+  async postCollectionSync(collection: Record<string, unknown>) {
     const response = await this.ghFetch(`${this.apiRoot}/_content/sync`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        collection: {
-          name: collection,
-          folder,
-          extension,
-          depth,
-          // Sent as source + flags rather than a stringified literal so the
-          // server can rebuild the exact RegExp without parsing `/.../flags`.
-          ...(pathRegex && { pathRegexSource: pathRegex.source, pathRegexFlags: pathRegex.flags }),
-        },
-        branch: this.branch,
-      }),
+      body: JSON.stringify({ collection, branch: this.branch }),
     });
     return response.json();
+  }
+
+  /**
+   * Files collections (`type: files` in config.yml) were the last read path
+   * still going straight to GitHub: GitHubBackend.entriesByFiles fetches a blob
+   * AND a commits lookup per file on every single load, with no cache at all.
+   * Across the live beta that is 77 configured file paths, so ~154 GitHub
+   * requests per full CMS load, forever.
+   *
+   * They share the whole sync pipeline with folder collections — tree read,
+   * sha-addressed blob store, batched metadata, atomic reconcile,
+   * single-flight — differing only in how paths are selected, so the server
+   * takes an explicit path list instead of a folder selector.
+   */
+  async entriesByFiles(files: { path: string; label?: string }[]) {
+    const paths = files.map(file => file.path);
+    if (paths.length === 0) {
+      return [];
+    }
+
+    const collection = collectionKeyForFiles(paths);
+    await this.postCollectionSync({ name: collection, files: paths });
+
+    const entries = await this.supabase.fetchEntries(collection);
+
+    // Unlike a folder collection, config order is meaningful here — it is the
+    // order the editor listed the files in — so restore it rather than sorting
+    // by path.
+    const order = new Map(paths.map((path, index) => [path, index]));
+    entries.sort(
+      (a, b) =>
+        (order.get(String(a.file?.path)) ?? Number.MAX_SAFE_INTEGER) -
+        (order.get(String(b.file?.path)) ?? Number.MAX_SAFE_INTEGER),
+    );
+
+    return entries;
   }
 
   async allEntriesByFolder(
