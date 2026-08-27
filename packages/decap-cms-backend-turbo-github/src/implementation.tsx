@@ -852,18 +852,19 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
     await this.postCollectionSync({ name: collection, files: paths });
 
     const entries = await this.supabase.fetchEntries(collection);
+    const byPath = new Map(entries.map(entry => [String(entry.file?.path), entry]));
 
-    // Unlike a folder collection, config order is meaningful here — it is the
-    // order the editor listed the files in — so restore it rather than sorting
-    // by path.
-    const order = new Map(paths.map((path, index) => [path, index]));
-    entries.sort(
-      (a, b) =>
-        (order.get(String(a.file?.path)) ?? Number.MAX_SAFE_INTEGER) -
-        (order.get(String(b.file?.path)) ?? Number.MAX_SAFE_INTEGER),
-    );
-
-    return entries;
+    // Every configured file must produce an entry, including ones that do not
+    // exist in the repo yet. A files collection is a fixed list of documents
+    // the editor declared, and an entry that has never been saved is how you
+    // create it — dropping it removes the only way to add the file at all.
+    // GitHubBackend.entriesByFiles gets this for free by catching the read
+    // error and yielding empty content; syncing from a tree has to reinstate
+    // it explicitly, because a path with no blob simply is not in the tree.
+    //
+    // Order follows the config, not the path: for a files collection that
+    // ordering is the author's choice, not an accident of the filesystem.
+    return files.map(file => byPath.get(file.path) ?? { file: { ...file, id: null }, data: '' });
   }
 
   async allEntriesByFolder(
