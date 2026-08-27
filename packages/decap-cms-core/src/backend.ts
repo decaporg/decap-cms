@@ -47,6 +47,7 @@ import {
   getI18nFilesDepth,
   getI18nFiles,
   hasI18n,
+  getFilePath,
   getFilePaths,
   getI18nEntry,
   groupEntries,
@@ -477,11 +478,38 @@ export class Backend {
 
     if (unpublishedEntry) return unpublishedEntry;
 
+    // For multiple_files/multiple_folders i18n the entry does not live at
+    // `path` itself but at the localised variants of it, so probing `path`
+    // always misses — and a miss here licenses reusing the slug, which
+    // overwrites the existing entry's files. The default locale is written for
+    // every entry, so one probe still answers the question.
+    let entryPath = path;
+    if (hasI18n(collection)) {
+      const { structure, defaultLocale } = getI18nInfo(collection) as I18nInfo;
+      entryPath = getFilePath(
+        structure as I18N_STRUCTURE,
+        selectFolderEntryExtension(collection),
+        path,
+        slug,
+        defaultLocale,
+      );
+    }
+
     const publishedEntry = await this.implementation
-      .getEntry(path)
-      .then(({ data }) => data)
-      .catch(() => {
-        return Promise.resolve(false);
+      .getEntry(entryPath)
+      // A backend that resolves nothing is saying "no such entry"; only a
+      // rejection is ambiguous.
+      .then(result => result?.data)
+      .catch((error: Error & { status?: number }) => {
+        // A 404 is the only answer that means "absent". Anything else means we
+        // could not tell, and both available answers are wrong: "absent" lets
+        // the caller reuse a slug that is taken and overwrite live content,
+        // while "present" spins generateUniqueSlug's loop forever. Fail the
+        // save instead — the editor retries, rather than losing an entry.
+        if (error?.status === 404) {
+          return false;
+        }
+        throw error;
       });
 
     return publishedEntry;

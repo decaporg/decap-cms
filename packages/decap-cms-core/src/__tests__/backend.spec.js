@@ -750,6 +750,72 @@ describe('Backend', () => {
         'sub_dir/some-post-title-1',
       );
     });
+
+    it('should probe the localised path for multiple_files i18n collections', async () => {
+      const { sanitizeSlug, sanitizeChar } = require('../lib/urlHelper');
+      sanitizeSlug.mockReturnValue('some-post-title');
+      sanitizeChar.mockReturnValue('-');
+
+      const notFound = () =>
+        Promise.reject(Object.assign(new Error('Not Found'), { status: 404 }));
+
+      const implementation = {
+        init: jest.fn(() => implementation),
+        // Only the localised file exists, which is the real shape on disk.
+        getEntry: jest.fn(p =>
+          p === 'posts/some-post-title.en.md' ? Promise.resolve({ data: 'data' }) : notFound(),
+        ),
+      };
+
+      const collection = fromJS({
+        name: 'posts',
+        fields: [{ name: 'title' }],
+        type: FOLDER,
+        folder: 'posts',
+        slug: '{{slug}}',
+        i18n: { structure: 'multiple_files', locales: ['en', 'de'], default_locale: 'en' },
+      });
+
+      const backend = new Backend(implementation, { config: {}, backendName: 'github' });
+
+      // Probing the unlocalised 'posts/some-post-title.md' would miss, and the
+      // caller would reuse the slug and overwrite the existing entry.
+      await expect(
+        backend.generateUniqueSlug(collection, Map({ title: 'some post title' }), Map({}), []),
+      ).resolves.toBe('some-post-title-1');
+
+      expect(implementation.getEntry).toHaveBeenCalledWith('posts/some-post-title.en.md');
+    });
+
+    it('should fail the save when it cannot tell whether the entry exists', async () => {
+      const { sanitizeSlug, sanitizeChar } = require('../lib/urlHelper');
+      sanitizeSlug.mockReturnValue('some-post-title');
+      sanitizeChar.mockReturnValue('-');
+
+      const implementation = {
+        init: jest.fn(() => implementation),
+        // Not a 404 — the answer is unknown, not "absent".
+        getEntry: jest
+          .fn()
+          .mockRejectedValue(Object.assign(new Error('API rate limit exceeded'), { status: 403 })),
+      };
+
+      const collection = fromJS({
+        name: 'posts',
+        fields: [{ name: 'title' }],
+        type: FOLDER,
+        folder: 'posts',
+        slug: '{{slug}}',
+      });
+
+      const backend = new Backend(implementation, { config: {}, backendName: 'github' });
+
+      // Reporting "absent" would overwrite; reporting "present" would spin the
+      // uniqueness loop forever. Rejecting is the only safe answer.
+      await expect(
+        backend.generateUniqueSlug(collection, Map({ title: 'some post title' }), Map({}), []),
+      ).rejects.toThrow('API rate limit exceeded');
+    });
   });
 
   describe('extractSearchFields', () => {
