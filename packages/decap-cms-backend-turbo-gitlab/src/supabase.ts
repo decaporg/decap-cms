@@ -1,22 +1,29 @@
-type ReadFile = (
-  path: string,
-  id: string | null | undefined,
-  options: { parseText: boolean },
-) => Promise<string | Blob>;
-
-type ReadFileMetadata = (path: string, id: string | null | undefined) => Promise<any>;
-
-type File = {
-  type: string;
-  id: string;
-  name: string;
-  path: string;
-  // GitLab's repository/tree listing (unlike GitHub's) doesn't return a file
-  // size — this is only ever spread into cache metadata for display, never
-  // read directly by validateFiles itself, so it's safe to omit.
-  size?: number;
-};
-
+/**
+ * Read-only view of Turbo's content cache.
+ *
+ * NOTE: byte-for-byte the same as decap-cms-backend-turbo-github's copy. The
+ * two should collapse into one shared module — see
+ * decap-turbo/docs/caching-project-breaking-changes.md. They are duplicated
+ * for now rather than moved into decap-cms-lib-util, because the `data` table
+ * is Turbo's schema and not something generic Decap infrastructure should know
+ * about; a dedicated shared package is the right home and is follow-up work.
+ * Until then, changes here must be mirrored.
+ *
+ * Every write method that used to live here — validateFiles,
+ * insertDbFilesBatch, insertDbFile, removeDbFiles, updateEntriesAfterSave —
+ * was deleted when the `gh` function's `_content/sync` endpoint took over
+ * ownership of the cache. That move deleted, rather than fixed, four defects
+ * at once: the unbounded 500-wide Promise.all that tripped GitHub's
+ * 100-concurrent secondary limit, the missing per-file error isolation that
+ * discarded up to 500 files of fetched work on a single failure, the
+ * `file_id: undefined` drift that left every saved row carrying its pre-save
+ * blob sha, and the rename bug that cached new content under the old path.
+ *
+ * The browser now has no write access to `public.data` at all — the INSERT,
+ * UPDATE and DELETE policies were dropped server-side.
+ *
+ * See decap-turbo/docs/caching-and-github-api-strategy.md §3.4.
+ */
 export class SupabaseClient {
   supabaseUrl: string;
   supabaseAnonKey: string;
@@ -50,11 +57,16 @@ export class SupabaseClient {
   }
 
   buildScopedQuery(collection: string, extraParams: Record<string, string> = {}) {
+    // `collections` is a set, not a column in the row's identity: one path is
+    // one row, tagged with every collection that contains it. This is what
+    // removed the 623 duplicate rows a nested parent/child pair used to
+    // produce on moc-www, and with them the duplicate GitHub fetches.
+    // PostgREST spells array-contains `cs.{a,b}`; the braces are literal.
     const params = new URLSearchParams({
       repo: `eq.${this.repo}`,
       site_id: `eq.${this.siteId}`,
       branch: `eq.${this.branch}`,
-      collection: `eq.${collection}`,
+      collections: `cs.{${JSON.stringify(collection)}}`,
     });
 
     Object.entries(extraParams).forEach(([key, value]) => {
@@ -62,32 +74,6 @@ export class SupabaseClient {
     });
 
     return `?${params.toString()}`;
-  }
-
-  async fetchDb(uri: string, method: string, body: any = null) {
-    try {
-      const response = await fetch(this.buildUrl(uri), {
-        method: method || 'POST',
-        headers: {
-          apikey: this.supabaseAnonKey,
-          Authorization: `Bearer ${this.supabaseAccessToken || this.supabaseAnonKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: body ? JSON.stringify(body) : undefined,
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        console.error('Supabase error:', error);
-        throw new Error(`Supabase request failed: ${error.message || response.statusText}`);
-      }
-
-      const text = await response.text();
-      return text ? JSON.parse(text) : null;
-    } catch (error) {
-      console.error('Failed to fetch from Supabase:', error);
-      throw error;
-    }
   }
 
   async fetchDbPaginated(uri: string, batchSize = 500) {
@@ -157,205 +143,5 @@ export class SupabaseClient {
       file: data.file_meta,
       data: data.file_data,
     }));
-  }
-
-  async fetchDbFiles(collection: string) {
-    const response = await this.fetchDbPaginated(
-      this.buildScopedQuery(collection, { select: 'file_id' }),
-    );
-    return response;
-  }
-
-  async removeDbFiles(collection: string, fileIds: string[]) {
-    const fileIdsParam = fileIds.map(id => `"${id}"`).join(',');
-    await this.fetchDb(
-      this.buildScopedQuery(collection, { file_id: `in.(${fileIdsParam})` }),
-      'DELETE',
-    );
-  }
-
-  async insertDbFile(
-    collection: string,
-    fileId: string,
-    filePath: string,
-    fileMeta: any,
-    fileData: string | Blob,
-  ) {
-    await this.fetchDb('', 'POST', {
-      repo: this.repo,
-      site_id: this.siteId,
-      branch: this.branch,
-      collection,
-      file_id: fileId,
-      file_path: filePath,
-      file_meta: fileMeta,
-      file_data: fileData,
-    });
-  }
-
-  async insertDbFilesBatch(
-    files: Array<{
-      collection: string;
-      fileId: string;
-      filePath: string;
-      fileMeta: any;
-      fileData: string | Blob;
-    }>,
-  ) {
-    const batch = files.map(file => ({
-      repo: this.repo,
-      site_id: this.siteId,
-      branch: this.branch,
-      collection: file.collection,
-      file_id: file.fileId,
-      file_path: file.filePath,
-      file_meta: file.fileMeta,
-      file_data: file.fileData,
-    }));
-
-    // Deduplicate batch to avoid "cannot affect row a second time" error.
-    // Key must match the on_conflict target below and the DB's unique index
-    // (see README) — rows are scoped per collection, so collection has to be
-    // part of the identity or same-path rows from different collections can
-    // clobber each other.
-    const seen = new Map();
-    const deduplicatedBatch = [];
-    for (const item of batch) {
-      const key = `${item.site_id}|${item.repo}|${item.branch}|${item.collection}|${item.file_path}`;
-      if (!seen.has(key)) {
-        seen.set(key, true);
-        deduplicatedBatch.push(item);
-      }
-    }
-
-    try {
-      const response = await fetch(
-        this.buildUrl('?on_conflict=site_id,repo,branch,collection,file_path'),
-        {
-          method: 'POST',
-          headers: {
-            apikey: this.supabaseAnonKey,
-            Authorization: `Bearer ${this.supabaseAccessToken || this.supabaseAnonKey}`,
-            'Content-Type': 'application/json',
-            Prefer: 'resolution=merge-duplicates',
-          },
-          body: JSON.stringify(deduplicatedBatch),
-        },
-      );
-
-      if (!response.ok) {
-        const error = await response.json();
-        console.error('Supabase error:', error);
-        throw new Error(`Supabase request failed: ${error.message || response.statusText}`);
-      }
-
-      const text = await response.text();
-      return text ? JSON.parse(text) : null;
-    } catch (error) {
-      console.error('Failed to insert batch to Supabase:', error);
-      throw error;
-    }
-  }
-
-  async validateFiles(
-    collection: string,
-    files: File[],
-    readFile: ReadFile,
-    readFileMetadata: ReadFileMetadata,
-  ) {
-    let cacheOk = true;
-
-    const dbFiles = await this.fetchDbFiles(collection);
-    const fileIds = files.map(f => f.id);
-
-    const dbFileIds = dbFiles.map((f: any) => f.file_id);
-    const filesToRemove = dbFileIds.filter((id: string) => !fileIds.includes(id));
-    if (filesToRemove.length > 0) {
-      cacheOk = false;
-      await this.removeDbFiles(collection, filesToRemove);
-    }
-
-    const filesToAdd = files.filter(f => !dbFileIds.includes(f.id));
-    if (filesToAdd.length > 0) {
-      cacheOk = false;
-    }
-
-    // Process files in batches of 500
-    const batchSize = 500;
-    for (let i = 0; i < filesToAdd.length; i += batchSize) {
-      const batch = filesToAdd.slice(i, i + batchSize);
-
-      // Read all files in the batch in parallel
-      const loadedEntries = await Promise.all(
-        batch.map(async file => {
-          const [content, metadata] = await Promise.all([
-            readFile(file.path, file.id, { parseText: true }),
-            readFileMetadata(file.path, file.id),
-          ]);
-
-          return {
-            collection,
-            fileId: file.id,
-            filePath: file.path,
-            fileMeta: { ...file, ...metadata },
-            fileData: content,
-          };
-        }),
-      );
-
-      // Insert entire batch in a single request
-      await this.insertDbFilesBatch(loadedEntries);
-    }
-
-    if (cacheOk) {
-      return;
-    }
-
-    return;
-  }
-
-  async updateEntriesAfterSave(files: Array<{ path: string; raw: string; id: string }>) {
-    const batch: Array<{
-      collection: string;
-      fileId: string;
-      filePath: string;
-      fileMeta: any;
-      fileData: string;
-    }> = [];
-
-    for (const file of files) {
-      const params = new URLSearchParams({
-        repo: `eq.${this.repo}`,
-        site_id: `eq.${this.siteId}`,
-        branch: `eq.${this.branch}`,
-        file_path: `eq.${file.path}`,
-      });
-
-      const existingRows = await this.fetchDbPaginated(`?${params.toString()}`);
-      if (existingRows.length === 0) {
-        continue;
-      }
-
-      for (const row of existingRows) {
-        batch.push({
-          collection: row.collection,
-          fileId: file.id,
-          filePath: file.path,
-          fileMeta: {
-            ...(row.file_meta || {}),
-            id: file.id,
-            path: file.path,
-            name: file.path.split('/').pop() || '',
-            size: file.raw.length,
-            type: 'blob',
-          },
-          fileData: file.raw,
-        });
-      }
-    }
-
-    if (batch.length > 0) {
-      await this.insertDbFilesBatch(batch);
-    }
   }
 }

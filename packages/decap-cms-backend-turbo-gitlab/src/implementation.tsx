@@ -1,6 +1,12 @@
 import { GitLabBackend } from 'decap-cms-backend-gitlab';
 import API from 'decap-cms-backend-gitlab/src/API';
-import { unsentRequest, type Config, type User, type Credentials, filterByExtension } from 'decap-cms-lib-util';
+import {
+  unsentRequest,
+  type Config,
+  type User,
+  type Credentials,
+  collectionKeyForFiles,
+} from 'decap-cms-lib-util';
 import { stripIndent } from 'common-tags';
 
 import { SupabaseClient } from './supabase';
@@ -170,6 +176,47 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
     const response: Response = await unsentRequest.performRequest(scopedReq);
     return response;
   };
+
+  /**
+   * Plain-fetch counterpart to apiRequestFunction, for Turbo's own `_content/*`
+   * routes.
+   *
+   * Those are not GitLab API calls, so they never pass through
+   * decap-cms-backend-gitlab's API client and never reach the interceptor
+   * above — but they need the same Supabase bearer token and the same
+   * x-site-id / site_id scoping the `gl` Edge Function relies on to know which
+   * tenant is calling.
+   */
+  async glFetch(url: string, init: RequestInit = {}) {
+    await this.refreshSessionIfNeeded();
+    const accessToken = this.supabaseAccessToken || this.token || '';
+    const headers: Record<string, string> = Object.fromEntries(
+      new Headers(init.headers || {}).entries(),
+    );
+
+    if (accessToken) {
+      headers.Authorization = `Bearer ${accessToken}`;
+    }
+
+    let scopedUrl = url;
+    if (this.siteId && scopedUrl.includes('/functions/v1/gl')) {
+      headers['x-site-id'] = this.siteId;
+      const urlObj = new URL(scopedUrl);
+      if (!urlObj.searchParams.has('site_id')) {
+        urlObj.searchParams.set('site_id', this.siteId);
+      }
+      scopedUrl = urlObj.toString();
+    }
+
+    const response = await fetch(scopedUrl, { ...init, headers });
+
+    if (!response.ok) {
+      const body = await response.text().catch(() => '');
+      throw new Error(body || response.statusText);
+    }
+
+    return response;
+  }
 
   async status() {
     let auth = false;
@@ -568,28 +615,53 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
     return this._currentUserPromise;
   }
 
-  getEntry(path: string) {
-    return this.supabase.fetchEntryByPath(path).then(cached => {
-      if (cached) {
+  /**
+   * Reads one entry, verifying the cached row is current before trusting it.
+   *
+   * Collection loads revalidate the branch head on every sync, but this path is
+   * reached directly — core's loadEntry on a deep link, and once per
+   * non-default locale for multiple_files/multiple_folders i18n — and used to
+   * return whatever was cached with no check at all.
+   *
+   * A stale read here is a lost update, not stale display: a save rebases onto
+   * the branch's current head and rewrites the edited path, so saving stale
+   * content silently reverts whoever committed in between.
+   */
+  async getEntry(path: string) {
+    const cached = await this.supabase.fetchEntryByPath(path);
+    if (!cached) {
+      return super.getEntry(path);
+    }
+
+    try {
+      const response = await this.glFetch(`${this.apiRoot}/_content/entry`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ path, branch: this.branch }),
+      });
+      const { fresh } = await response.json();
+      if (fresh) {
         return cached;
       }
-      return super.getEntry(path);
-    });
+    } catch (error) {
+      // Falling through to GitLab on an unreachable check is the safe
+      // direction: it costs requests, where trusting the cache costs edits.
+      console.warn('Turbo entry freshness check failed, reading from GitLab', error);
+    }
+
+    return super.getEntry(path);
   }
 
   async persistEntry(entry: any, options: any = {}) {
     const result = await super.persistEntry(entry, options);
     if (result && entry.dataFiles && entry.dataFiles.length > 0) {
-      try {
-        const filesToCache = entry.dataFiles.map((file: any) => ({
-          path: file.path || file.newPath || file.slug,
-          raw: file.raw,
-          id: file.id,
-        }));
-        await this.supabase.updateEntriesAfterSave(filesToCache);
-      } catch (error) {
-        console.warn('Failed to update cache:', error);
-      }
+      // The cache is no longer written from here — the server owns it. The
+      // commit moves the branch head and reloadEntriesAfterPersist makes core
+      // re-list immediately, so the next sync materialises the saved entry.
+      //
+      // The old write-back was close to useless anyway: core's dataFiles carry
+      // no `id`, so every row it wrote kept its pre-save blob sha and was
+      // deleted and re-fetched by the next listing.
       recordCmsEvent(
         this.baseUrl!,
         this.supabaseAnonKey,
@@ -602,11 +674,6 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
     return result;
   }
 
-  filterFile(folder: string, file: { path: string; name: string }, extension: string, depth: number) {
-    const fileFolder = file.path.split(folder)[1]?.replace(/^\/+/, '').replace(/\/+$/, '') || '';
-    return filterByExtension(file, extension) && fileFolder.split('/').length <= depth;
-  }
-
   async allEntriesByFolder(
     folder: string,
     extension: string,
@@ -616,49 +683,74 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
   ) {
     const collection = `${folder}:${extension}:${depth}:${pathRegex?.toString() || 'all'}`;
 
-    const { files: rawFiles } = await this.api!.listFiles(folder, depth > 1);
-    const files = rawFiles.filter(
-      file =>
-        this.filterFile(folder, file, extension, depth) && (!pathRegex || pathRegex.test(file.path)),
-    );
-
-    const readFile = (path: string, id: string | null | undefined) =>
-      this.api!.readFile(path, id, { parseText: true }) as Promise<string>;
-
-    await this.supabase.validateFiles(collection, files, readFile, this.readFileMetadata.bind(this));
+    // One request replaces what used to be a tree listing plus a file read and
+    // a commits lookup per entry, driven from the browser.
+    await this.syncCollection(collection, folder, extension, depth, pathRegex);
 
     const entries = await this.supabase.fetchEntries(collection, searchTerm);
-    const fileIdToIndex = new Map(files.map((file, index) => [file.id, index]));
-    entries.sort((a: any, b: any) => {
-      const indexA = fileIdToIndex.get(a.file.id) ?? Number.MAX_SAFE_INTEGER;
-      const indexB = fileIdToIndex.get(b.file.id) ?? Number.MAX_SAFE_INTEGER;
-      return indexA - indexB;
-    });
+
+    // Ordering used to come from the tree the client had just listed. It no
+    // longer has one, and path order is what that gave anyway, so sort by path
+    // to keep entry order stable across loads.
+    entries.sort((a: any, b: any) =>
+      String(a.file?.path ?? '').localeCompare(String(b.file?.path ?? '')),
+    );
 
     return entries;
   }
 
-  async entriesByFolder(folder: string, extension: string, depth: number) {
-    return this.allEntriesByFolder(folder, extension, depth);
+  async syncCollection(
+    collection: string,
+    folder: string,
+    extension: string,
+    depth: number,
+    pathRegex?: RegExp,
+  ) {
+    return this.postCollectionSync({
+      name: collection,
+      folder,
+      extension,
+      depth,
+      // Source + flags rather than a stringified literal, so the server can
+      // rebuild the exact RegExp without parsing `/.../flags`.
+      ...(pathRegex && { pathRegexSource: pathRegex.source, pathRegexFlags: pathRegex.flags }),
+    });
   }
 
-  // GitLab's API client has no equivalent of GitHub's readFileMetadata — this
-  // fills the same {author, updatedOn} shape via GitLab's Commits API,
-  // failing open (empty strings) exactly like GitHub's version does, since
-  // this is display-only metadata and must never block a folder listing.
-  async readFileMetadata(path: string): Promise<{ author: string; updatedOn: string }> {
-    try {
-      const commits = await this.api!.requestJSON({
-        url: `${this.api!.repoURL}/repository/commits`,
-        params: { path, ref_name: this.branch },
-      });
-      const commit = commits?.[0];
-      return {
-        author: commit?.author_name || commit?.author_email || '',
-        updatedOn: commit?.authored_date || '',
-      };
-    } catch {
-      return { author: '', updatedOn: '' };
+  async postCollectionSync(collection: Record<string, unknown>) {
+    const response = await this.glFetch(`${this.apiRoot}/_content/sync`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ collection, branch: this.branch }),
+    });
+    return response.json();
+  }
+
+  /**
+   * Files collections were the last read path still going straight to GitLab —
+   * a read plus a commits lookup per file on every load, uncached. They share
+   * the whole sync pipeline with folder collections, differing only in how
+   * paths are selected.
+   */
+  async entriesByFiles(files: { path: string; label?: string }[]) {
+    const paths = files.map(file => file.path);
+    if (paths.length === 0) {
+      return [];
     }
+
+    const collection = collectionKeyForFiles(paths);
+    await this.postCollectionSync({ name: collection, files: paths });
+
+    const entries = await this.supabase.fetchEntries(collection);
+    const byPath = new Map(entries.map((entry: any) => [String(entry.file?.path), entry]));
+
+    // Every configured file must produce an entry, including ones that do not
+    // exist in the repo yet — an unsaved entry is how the editor creates them.
+    // Syncing from a tree drops them, so they are reinstated here.
+    return files.map(file => byPath.get(file.path) ?? { file: { ...file, id: null }, data: '' });
+  }
+
+  async entriesByFolder(folder: string, extension: string, depth: number) {
+    return this.allEntriesByFolder(folder, extension, depth);
   }
 }

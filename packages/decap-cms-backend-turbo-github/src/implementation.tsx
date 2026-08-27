@@ -4,6 +4,7 @@ import {
   type User,
   type Credentials,
   APIError,
+  collectionKeyForFiles,
 } from 'decap-cms-lib-util';
 import API from 'decap-cms-backend-github/src/API';
 import GraphQLAPI from 'decap-cms-backend-github/src/GraphQLAPI';
@@ -47,27 +48,6 @@ const REFRESH_RETRY_ATTEMPTS = 3;
 // Turbo at all; it just awaits this static `preloadConfig` hook (a generic
 // extension point) before constructing the backend.
 const DEFAULT_CONFIG_ENDPOINT = 'https://sb.decapcms.org/functions/v1/config';
-
-/**
- * Stable cache key for a files collection.
- *
- * decap-cms-core's entriesByFiles receives only the file list, never the
- * collection name, so the key is derived from the paths. Sorted first so key
- * identity does not depend on config ordering, and hashed so a collection of
- * 77 paths does not become a 2 KB array element in every row's `collections`.
- *
- * FNV-1a rather than a crypto digest: this needs to be deterministic and
- * short, not unforgeable, and it must run identically in every browser without
- * pulling in SubtleCrypto's async API.
- */
-export function collectionKeyForFiles(paths: string[]) {
-  let hash = 0x811c9dc5;
-  for (const char of [...paths].sort().join('\n')) {
-    hash ^= char.charCodeAt(0);
-    hash = Math.imul(hash, 0x01000193) >>> 0;
-  }
-  return `files:${paths.length}:${hash.toString(36)}`;
-}
 
 export default class DecapTurboGitHubBackend extends GitHubBackend {
   static async preloadConfig(config: Config): Promise<Config> {

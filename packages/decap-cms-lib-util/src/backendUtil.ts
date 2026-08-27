@@ -119,3 +119,28 @@ export function getPathDepth(path: string) {
   const depth = path.split('/').length;
   return depth;
 }
+
+/**
+ * Stable cache key for a files collection.
+ *
+ * decap-cms-core's `entriesByFiles` receives only the file list, never the
+ * collection name, so a backend that caches such a collection has to derive an
+ * identity from the paths themselves.
+ *
+ * Sorted before hashing so key identity does not depend on the order files
+ * happen to be listed in config.yml — reordering them must not orphan the
+ * cached rows. Hashed so a collection of many paths does not become a
+ * multi-kilobyte value repeated on every cached row.
+ *
+ * FNV-1a rather than a crypto digest: this needs to be deterministic, short and
+ * synchronous, not unforgeable. It lives here rather than in one backend
+ * because both Turbo backends need exactly the same key.
+ */
+export function collectionKeyForFiles(paths: string[]) {
+  let hash = 0x811c9dc5;
+  for (const char of [...paths].sort().join('\n')) {
+    hash ^= char.charCodeAt(0);
+    hash = Math.imul(hash, 0x01000193) >>> 0;
+  }
+  return `files:${paths.length}:${hash.toString(36)}`;
+}
