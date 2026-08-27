@@ -406,7 +406,7 @@ const stable = {
   validateMetaField: memoize(collection => {
     return (field, value, t) => {
       const state = store.getState();
-      validateMetaField(state, collection, field, value, t);
+      return validateMetaField(state, collection, field, value, t);
     };
   }),
 
