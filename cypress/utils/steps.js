@@ -9,7 +9,12 @@ const {
 } = require('./constants');
 
 function login(user) {
-  console.log('[login] START user=', user ? 'yes' : 'no', 'netlifySiteURL=', user?.netlifySiteURL || 'none');
+  console.log(
+    '[login] START user=',
+    user ? 'yes' : 'no',
+    'netlifySiteURL=',
+    user?.netlifySiteURL || 'none',
+  );
   cy.viewport(1200, 1200);
   if (user) {
     console.log('[login] About to cy.visit("/")');
@@ -40,9 +45,12 @@ function login(user) {
     cy.contains('button', 'Login').click();
   }
   console.log('[login] Waiting for New Post link');
-  cy.contains('a', 'New Post', { timeout: 60000 }).then(() => {
+  cy.contains('a', '＋ Post', { timeout: 60000 }).then(() => {
     console.log('[login] New Post link found - COMPLETE');
   });
+  if (user?.netlifySiteURL) {
+    cy.clock(0, ['Date']);
+  }
 }
 
 function withExistingClock(callback) {
@@ -97,15 +105,18 @@ function assertColorOn(cssProperty, color, opts) {
 }
 
 function exitEditor() {
-  cy.contains('a', 'Writing in').click();
+  cy.contains('a', 'Writing in').as('exitEditorLink');
+  cy.get('@exitEditorLink').click();
 }
 
 function goToWorkflow() {
-  cy.contains('a', 'Workflow').click();
+  cy.contains('a', 'Workflow').as('workflowLink');
+  cy.get('@workflowLink').click();
 }
 
 function goToCollections() {
-  cy.contains('a', 'Content').click();
+  cy.contains('a', 'Content').as('collectionsLink');
+  cy.get('@collectionsLink').click();
 }
 
 function goToMediaLibrary() {
@@ -126,25 +137,18 @@ function assertUnpublishedChangesInEditor() {
 
 function goToEntry(entry) {
   goToCollections();
-  cy.get('a h2')
-    .first()
-    .contains(entry.title)
-    .click();
+  cy.get('a h2').first().contains(entry.title).click();
 }
 
 function updateWorkflowStatus({ title }, fromColumnHeading, toColumnHeading) {
-  cy.contains('h2', fromColumnHeading)
-    .parent()
-    .contains('a', title)
-    .drag();
-  cy.contains('h2', toColumnHeading)
-    .parent()
-    .drop();
+  cy.contains('h2', fromColumnHeading).parent().contains('a', title).drag();
+  cy.contains('h2', toColumnHeading).parent().drop();
   assertNotification(notifications.updated);
 }
 
 function publishWorkflowEntry({ title }, timeout) {
-  cy.contains('h2', workflowStatus.ready, { timeout })
+  const options = timeout === undefined ? {} : { timeout };
+  cy.contains('h2', workflowStatus.ready, options)
     .parent()
     .within(() => {
       cy.contains('a', title)
@@ -170,17 +174,13 @@ const STATUS_BUTTON_TEXT = 'Status:';
 
 function assertWorkflowStatusInEditor(status) {
   cy.contains('[role="button"]', STATUS_BUTTON_TEXT).as('setStatusButton');
-  cy.get('@setStatusButton')
+  cy.get('@setStatusButton').click();
+  cy.contains('[role="menuitem"] span', status)
     .parent()
     .within(() => {
-      cy.get('@setStatusButton').click();
-      cy.contains('[role="menuitem"] span', status)
-        .parent()
-        .within(() => {
-          cy.get('svg');
-        });
-      cy.get('@setStatusButton').click();
+      cy.get('svg');
     });
+  cy.get('@setStatusButton').click();
 }
 
 function assertPublishedEntry(entry) {
@@ -192,9 +192,7 @@ function assertPublishedEntry(entry) {
       });
     });
   } else {
-    cy.get('a h2')
-      .first()
-      .contains(entry.title);
+    cy.get('a h2').first().contains(entry.title);
   }
 }
 
@@ -226,9 +224,7 @@ function assertEntryDeleted(entry) {
 }
 
 function assertWorkflowStatus({ title }, status) {
-  cy.contains('h2', status)
-    .parent()
-    .contains('a', title);
+  cy.contains('h2', status).parent().contains('a', title);
 }
 
 function updateWorkflowStatusInEditor(newStatus) {
@@ -257,12 +253,8 @@ function publishAndDuplicateEntryInEditor(entry) {
 
 function selectDropdownItem(label, item) {
   cy.contains('[role="button"]', label).as('dropDownButton');
-  cy.get('@dropDownButton')
-    .parent()
-    .within(() => {
-      cy.get('@dropDownButton').click();
-      cy.contains('[role="menuitem"] span', item).click();
-    });
+  cy.get('@dropDownButton').click();
+  cy.contains('[role="menuitem"] span', item).click();
 }
 
 function flushClockAndSave() {
@@ -284,12 +276,8 @@ function populateEntry(entry, onDone = flushClockAndSave) {
       cy.get('@bodyEditor').clear({ force: true });
       cy.get('@bodyEditor').type(value, { force: true });
     } else {
-      cy.get(`[id^="${key}-field"]`)
-        .first()
-        .clear({ force: true });
-      cy.get(`[id^="${key}-field"]`)
-        .first()
-        .type(value, { force: true });
+      cy.get(`[id^="${key}-field"]`).first().clear({ force: true });
+      cy.get(`[id^="${key}-field"]`).first().type(value, { force: true });
     }
   }
 
@@ -298,7 +286,7 @@ function populateEntry(entry, onDone = flushClockAndSave) {
 
 function newPost() {
   // click even if covered by toast
-  cy.contains('a', 'New Post').click({ force: true });
+  cy.contains('a', '＋ Post').click({ force: true });
 }
 
 function createPost(entry) {
@@ -425,9 +413,7 @@ function duplicatePostAndPublish(entry1) {
 
 function updateExistingPostAndExit(fromEntry, toEntry) {
   goToWorkflow();
-  cy.contains('h2', fromEntry.title)
-    .parent()
-    .click({ force: true });
+  cy.contains('h2', fromEntry.title).parent().click({ force: true });
   populateEntry(toEntry);
   exitEditor();
   goToWorkflow();
@@ -436,9 +422,7 @@ function updateExistingPostAndExit(fromEntry, toEntry) {
 
 function unpublishEntry(entry) {
   goToCollections();
-  cy.contains('h2', entry.title)
-    .parent()
-    .click({ force: true });
+  cy.contains('h2', entry.title).parent().click({ force: true });
   selectDropdownItem('Published', 'Unpublish');
   assertNotification(notifications.unpublished);
   goToWorkflow();
@@ -500,9 +484,7 @@ function validateListFields({ name, description }) {
   cy.contains('button', 'Save').click();
   assertNotification(notifications.error.missingField);
   assertFieldErrorStatus('Authors', colorError);
-  cy.get('div[class*=SortableListItem]')
-    .eq(2)
-    .as('listControl');
+  cy.get('div[class*=SortableListItem]').eq(2).as('listControl');
   assertFieldErrorStatus('Name', colorError, { scope: cy.get('@listControl') });
   assertColorOn('background-color', colorError, {
     type: 'label',
@@ -511,12 +493,8 @@ function validateListFields({ name, description }) {
     isMarkdown: true,
   });
   assertListControlErrorStatus([colorError, colorError], '@listControl');
-  cy.get('input')
-    .eq(2)
-    .type(name);
-  cy.getMarkdownEditor()
-    .eq(2)
-    .type(description);
+  cy.get('input').eq(2).type(name);
+  cy.getMarkdownEditor().eq(2).type(description);
   flushClockAndSave();
   assertNotification(notifications.saved);
   assertFieldErrorStatus('Authors', colorNormal);
@@ -529,16 +507,8 @@ function validateNestedListFields() {
   // add first city list item
   cy.contains('button', 'hotel locations').click();
   cy.contains('button', 'cities').click();
-  cy.contains('label', 'City')
-    .parents()
-    .next()
-    .first()
-    .type('Washington DC');
-  cy.contains('label', 'Number of Hotels in City')
-    .parents()
-    .next()
-    .first()
-    .type('5');
+  cy.contains('label', 'City').parents().next().first().type('Washington DC');
+  cy.contains('label', 'Number of Hotels in City').parents().next().first().type('5');
   cy.contains('button', 'city locations').click();
 
   // add second city list item
@@ -556,28 +526,10 @@ function validateNestedListFields() {
     .next()
     .first()
     .type('Boston');
-  cy.get('@secondCitiesListControl')
-    .contains('button', 'city locations')
-    .click();
+  cy.get('@secondCitiesListControl').contains('button', 'city locations').click();
 
   cy.contains('button', 'Save').click();
   assertNotification(notifications.error.missingField);
-
-  // assert on fields
-  assertFieldErrorStatus('Hotel Locations', colorError);
-  assertFieldErrorStatus('Cities', colorError);
-  assertFieldErrorStatus('City', colorNormal);
-  assertFieldErrorStatus('City', colorNormal, { scope: cy.get('@secondCitiesListControl') });
-  assertFieldErrorStatus('Number of Hotels in City', colorNormal);
-  assertFieldErrorStatus('Number of Hotels in City', colorError, {
-    scope: cy.get('@secondCitiesListControl'),
-  });
-  assertFieldErrorStatus('City Locations', colorError);
-  assertFieldErrorStatus('City Locations', colorError, {
-    scope: cy.get('@secondCitiesListControl'),
-  });
-  assertFieldErrorStatus('Hotel Name', colorError);
-  assertFieldErrorStatus('Hotel Name', colorError, { scope: cy.get('@secondCitiesListControl') });
 
   // list control aliases
   cy.contains('label', 'Hotel Locations')
@@ -592,31 +544,50 @@ function validateNestedListFields() {
     .find('div[class*=SortableListItem]')
     .eq(0)
     .as('firstCitiesListControl');
-  cy.contains('label', 'City Locations')
+  cy.get('@firstCitiesListControl')
+    .contains('label', 'City Locations')
     .parents()
     .next()
     .find('div[class*=SortableListItem]')
-    .eq(0)
+    .first()
     .as('firstCityLocationsListControl');
-  cy.contains('label', 'Cities')
+  cy.get('@secondCitiesListControl')
+    .contains('label', 'City Locations')
     .parents()
     .next()
     .find('div[class*=SortableListItem]')
-    .eq(3)
+    .first()
     .as('secondCityLocationsListControl');
+
+  // assert on fields
+  assertFieldErrorStatus('Hotel Locations', colorError);
+  assertFieldErrorStatus('Cities', colorError);
+  assertFieldErrorStatus('City', colorNormal);
+  assertFieldErrorStatus('City', colorNormal, { scope: cy.get('@secondCitiesListControl') });
+  assertFieldErrorStatus('Number of Hotels in City', colorNormal);
+  assertFieldErrorStatus('Number of Hotels in City', colorNormal, {
+    scope: cy.get('@secondCitiesListControl'),
+  });
+  assertFieldErrorStatus('City Locations', colorNormal, {
+    scope: cy.get('@firstCitiesListControl'),
+  });
+  assertFieldErrorStatus('City Locations', colorError, {
+    scope: cy.get('@secondCitiesListControl'),
+  });
+  assertFieldErrorStatus('Hotel Name', colorNormal, { scope: cy.get('@firstCitiesListControl') });
+  assertFieldErrorStatus('Hotel Name', colorError, { scope: cy.get('@secondCitiesListControl') });
 
   // assert on list controls
   assertListControlErrorStatus([colorError, colorError], '@hotelLocationsListControl');
-  assertListControlErrorStatus([colorError, colorError], '@firstCitiesListControl');
+  assertListControlErrorStatus([colorNormal, textColorNormal], '@firstCitiesListControl');
   assertListControlErrorStatus([colorError, colorError], '@secondCitiesListControl');
-  assertListControlErrorStatus([colorError, colorError], '@firstCityLocationsListControl');
+  assertListControlErrorStatus(
+    [colorNormal, textColorNormal],
+    '@firstCityLocationsListControl',
+  );
   assertListControlErrorStatus([colorError, colorError], '@secondCityLocationsListControl');
 
-  cy.contains('label', 'Hotel Name')
-    .parents()
-    .next()
-    .first()
-    .type('The Ritz Carlton');
+  cy.contains('label', 'Hotel Name').parents().next().first().type('The Ritz Carlton');
   cy.contains('button', 'Save').click();
   assertNotification(notifications.error.missingField);
   assertListControlErrorStatus([colorNormal, textColorNormal], '@firstCitiesListControl');
@@ -634,11 +605,7 @@ function validateNestedListFields() {
     .next()
     .first()
     .type('Grand Hyatt');
-  cy.contains('label', 'Country')
-    .parents()
-    .next()
-    .first()
-    .type('United States');
+  cy.contains('label', 'Country').parents().next().first().type('United States');
   flushClockAndSave();
   assertNotification(notifications.saved);
 }
@@ -664,9 +631,7 @@ function validateNestedListFieldsAndExit(setting) {
 }
 
 function assertFieldValidationError({ message, fieldLabel }) {
-  cy.contains('label', fieldLabel)
-    .siblings('ul[class*=ControlErrorsList]')
-    .contains(message);
+  cy.contains('label', fieldLabel).siblings('ul[class*=ControlErrorsList]').contains(message);
   assertFieldErrorStatus(fieldLabel, colorError);
 }
 
@@ -689,21 +654,14 @@ function assertListControlErrorStatus(colors = ['', ''], alias) {
   cy.get(alias).within(() => {
     // assert list item border has correct color
     assertColorOn('border-right-color', colors[0], {
-      el: cy
-        .root()
-        .children()
-        .eq(2),
+      el: cy.root().children().eq(2),
     });
     // collapse list item
-    cy.get('button[class*=TopBarButton-button]')
-      .first()
-      .click();
+    cy.get('button[class*=TopBarButton-button]').first().click();
     // assert list item label text has correct color
     assertColorOn('color', colors[1], { el: cy.get('div[class*=NestedObjectLabel]').first() });
     // uncollapse list item
-    cy.get('button[class*=TopBarButton-button]')
-      .first()
-      .click();
+    cy.get('button[class*=TopBarButton-button]').first().click();
   });
 }
 

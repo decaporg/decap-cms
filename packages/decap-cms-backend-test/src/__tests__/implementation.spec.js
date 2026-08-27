@@ -165,6 +165,80 @@ describe('test backend implementation', () => {
         },
       });
     });
+
+    it('should move only the entry when subfolders are disabled', async () => {
+      window.repoFiles = {
+        pages: {
+          directory: {
+            'index.md': { content: 'old content' },
+            child: {
+              'index.md': { content: 'child content' },
+            },
+          },
+        },
+      };
+
+      const backend = new TestBackend({});
+      const entry = {
+        dataFiles: [
+          {
+            path: 'pages/directory/index.md',
+            newPath: 'pages/new-directory/index.md',
+            raw: 'new content',
+            slug: 'new-directory/index.md',
+          },
+        ],
+        assets: [],
+      };
+      await backend.persistEntry(entry, { newEntry: false, hasSubfolders: false });
+
+      await expect(backend.getEntry('pages/new-directory/index.md')).resolves.toMatchObject({
+        data: 'new content',
+      });
+      await expect(backend.getEntry('pages/directory/child/index.md')).resolves.toMatchObject({
+        data: 'child content',
+      });
+      await expect(backend.getEntry('pages/directory/index.md')).resolves.toMatchObject({
+        data: undefined,
+      });
+    });
+
+    it('should move child entries when subfolders are enabled', async () => {
+      window.repoFiles = {
+        pages: {
+          directory: {
+            'index.md': { content: 'old content' },
+            child: {
+              'index.md': { content: 'child content' },
+            },
+          },
+        },
+      };
+
+      const backend = new TestBackend({});
+      const entry = {
+        dataFiles: [
+          {
+            path: 'pages/directory/index.md',
+            newPath: 'pages/new-directory/index.md',
+            raw: 'new content',
+            slug: 'new-directory/index.md',
+          },
+        ],
+        assets: [],
+      };
+      await backend.persistEntry(entry, { newEntry: false, hasSubfolders: true });
+
+      await expect(backend.getEntry('pages/new-directory/index.md')).resolves.toMatchObject({
+        data: 'new content',
+      });
+      await expect(backend.getEntry('pages/new-directory/child/index.md')).resolves.toMatchObject({
+        data: 'child content',
+      });
+      await expect(backend.getEntry('pages/directory/child/index.md')).resolves.toMatchObject({
+        data: undefined,
+      });
+    });
   });
 
   describe('deleteFiles', () => {

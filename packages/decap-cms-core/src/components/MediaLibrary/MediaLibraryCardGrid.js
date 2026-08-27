@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import { Waypoint } from 'react-waypoint';
@@ -75,9 +74,9 @@ function VirtualizedGrid(props) {
           const cardWidth = parseInt(props.cardWidth, 10);
           const cardHeight = parseInt(props.cardHeight, 10);
           const gutter = parseInt(props.cardMargin, 10);
-          const columnWidth = cardWidth + gutter;
+          const columnWidth = Math.min(width, cardWidth + gutter);
           const rowHeight = cardHeight + gutter;
-          const columnCount = Math.floor(width / columnWidth);
+          const columnCount = Math.max(1, Math.floor(width / columnWidth));
           const rowCount = Math.ceil(mediaItems.length / columnCount);
           return (
             <Grid

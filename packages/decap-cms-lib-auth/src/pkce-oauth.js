@@ -164,30 +164,65 @@ export default class PkceAuthenticator {
       }
 
       const code = params.get('code');
-      const authURL = new URL(this.auth_token_url);
 
-      const token_request_body_object = {
-        client_id: this.appID,
-        code,
-        grant_type: 'authorization_code',
-        redirect_uri: document.location.origin + document.location.pathname,
-        code_verifier: getCodeVerifier(),
-      };
-
-      const response = await fetch(authURL.href, {
-        method: 'POST',
-        body: this.auth_token_endpoint_content_type.startsWith('application/x-www-form-urlencoded')
-          ? new URLSearchParams(Object.entries(token_request_body_object)).toString()
-          : JSON.stringify(token_request_body_object),
-        headers: {
-          'Content-Type': this.auth_token_endpoint_content_type,
-        },
-      });
-      const data = await response.json();
+      let data;
+      try {
+        data = await this._requestToken({
+          client_id: this.appID,
+          code,
+          grant_type: 'authorization_code',
+          redirect_uri: document.location.origin + document.location.pathname,
+          code_verifier: getCodeVerifier(),
+        });
+      } catch (err) {
+        clearCodeVerifier();
+        return cb(err);
+      }
 
       //no need for verifier code so remove
       clearCodeVerifier();
       cb(null, { token: data.access_token, ...data });
     }
+  }
+
+  /**
+   * Exchange a refresh token for a new access token.
+   * Returns the new credentials so callers can persist them.
+   */
+  async refresh({ refresh_token }) {
+    if (!refresh_token) {
+      throw new Error('Missing refresh token');
+    }
+    await this._loadOidcConfig();
+
+    const data = await this._requestToken({
+      client_id: this.appID,
+      grant_type: 'refresh_token',
+      redirect_uri: document.location.origin + document.location.pathname,
+      refresh_token,
+    });
+
+    return { token: data.access_token, ...data };
+  }
+
+  async _requestToken(token_request_body_object) {
+    const authURL = new URL(this.auth_token_url);
+
+    const response = await fetch(authURL.href, {
+      method: 'POST',
+      body: this.auth_token_endpoint_content_type.startsWith('application/x-www-form-urlencoded')
+        ? new URLSearchParams(Object.entries(token_request_body_object)).toString()
+        : JSON.stringify(token_request_body_object),
+      headers: {
+        'Content-Type': this.auth_token_endpoint_content_type,
+      },
+    });
+    const data = await response.json();
+    if (!response.ok || data.error) {
+      throw new Error(
+        data.error_description || data.error || `Failed to get token: ${response.status}`,
+      );
+    }
+    return data;
   }
 }

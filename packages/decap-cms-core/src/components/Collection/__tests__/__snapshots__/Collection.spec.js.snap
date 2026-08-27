@@ -3,11 +3,27 @@
 exports[`Collection should render connected component 1`] = `
 <DocumentFragment>
   .emotion-0 {
-  margin: 28px 18px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  gap: 20px;
+  margin: 12px 8px;
 }
 
-.emotion-2 {
-  padding-left: 280px;
+@media (min-width: 500px) {
+  .emotion-0 {
+    margin: 28px 18px;
+  }
+}
+
+@media (min-width: 800px) {
+  .emotion-2 {
+    padding-left: 280px;
+  }
 }
 
 <div
@@ -45,11 +61,27 @@ exports[`Collection should render connected component 1`] = `
 exports[`Collection should render with collection with create url 1`] = `
 <DocumentFragment>
   .emotion-0 {
-  margin: 28px 18px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  gap: 20px;
+  margin: 12px 8px;
 }
 
-.emotion-2 {
-  padding-left: 280px;
+@media (min-width: 500px) {
+  .emotion-0 {
+    margin: 28px 18px;
+  }
+}
+
+@media (min-width: 800px) {
+  .emotion-2 {
+    padding-left: 280px;
+  }
 }
 
 <div
@@ -64,11 +96,14 @@ exports[`Collection should render with collection with create url 1`] = `
     >
       <mock-collection-top
         collection="Map { \\"name\\": \\"pages\\", \\"sortable_fields\\": List [], \\"view_filters\\": List [], \\"view_groups\\": List [], \\"create\\": true }"
-        newentryurl="/collections/pages/new"
+        newentryurl=""
       />
-      <mock-collection-controls />
+      <mock-collection-controls
+        viewstyle="list"
+      />
       <mock-entries-collection
         collection="Map { \\"name\\": \\"pages\\", \\"sortable_fields\\": List [], \\"view_filters\\": List [], \\"view_groups\\": List [], \\"create\\": true }"
+        viewstyle="list"
       />
     </main>
   </div>
@@ -78,11 +113,27 @@ exports[`Collection should render with collection with create url 1`] = `
 exports[`Collection should render with collection with create url and path 1`] = `
 <DocumentFragment>
   .emotion-0 {
-  margin: 28px 18px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  gap: 20px;
+  margin: 12px 8px;
 }
 
-.emotion-2 {
-  padding-left: 280px;
+@media (min-width: 500px) {
+  .emotion-0 {
+    margin: 28px 18px;
+  }
+}
+
+@media (min-width: 800px) {
+  .emotion-2 {
+    padding-left: 280px;
+  }
 }
 
 <div
@@ -98,12 +149,15 @@ exports[`Collection should render with collection with create url and path 1`] =
     >
       <mock-collection-top
         collection="Map { \\"name\\": \\"pages\\", \\"sortable_fields\\": List [], \\"view_filters\\": List [], \\"view_groups\\": List [], \\"create\\": true }"
-        newentryurl="/collections/pages/new?path=dir1/dir2"
+        newentryurl=""
       />
-      <mock-collection-controls />
+      <mock-collection-controls
+        viewstyle="list"
+      />
       <mock-entries-collection
         collection="Map { \\"name\\": \\"pages\\", \\"sortable_fields\\": List [], \\"view_filters\\": List [], \\"view_groups\\": List [], \\"create\\": true }"
         filterterm="dir1/dir2"
+        viewstyle="list"
       />
     </main>
   </div>
@@ -113,11 +167,27 @@ exports[`Collection should render with collection with create url and path 1`] =
 exports[`Collection should render with collection without create url 1`] = `
 <DocumentFragment>
   .emotion-0 {
-  margin: 28px 18px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  gap: 20px;
+  margin: 12px 8px;
 }
 
-.emotion-2 {
-  padding-left: 280px;
+@media (min-width: 500px) {
+  .emotion-0 {
+    margin: 28px 18px;
+  }
+}
+
+@media (min-width: 800px) {
+  .emotion-2 {
+    padding-left: 280px;
+  }
 }
 
 <div
@@ -134,9 +204,12 @@ exports[`Collection should render with collection without create url 1`] = `
         collection="Map { \\"name\\": \\"pages\\", \\"sortable_fields\\": List [], \\"view_filters\\": List [], \\"view_groups\\": List [], \\"create\\": false }"
         newentryurl=""
       />
-      <mock-collection-controls />
+      <mock-collection-controls
+        viewstyle="list"
+      />
       <mock-entries-collection
         collection="Map { \\"name\\": \\"pages\\", \\"sortable_fields\\": List [], \\"view_filters\\": List [], \\"view_groups\\": List [], \\"create\\": false }"
+        viewstyle="list"
       />
     </main>
   </div>

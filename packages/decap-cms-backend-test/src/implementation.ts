@@ -3,7 +3,6 @@ import isError from 'lodash/isError';
 import take from 'lodash/take';
 import unset from 'lodash/unset';
 import isEmpty from 'lodash/isEmpty';
-import { v4 as uuid } from 'uuid';
 import {
   EditorialWorkflowError,
   Cursor,
@@ -16,6 +15,7 @@ import AuthenticationPage from './AuthenticationPage';
 
 import type {
   Implementation,
+  Note,
   Entry,
   ImplementationEntry,
   AssetProxy,
@@ -42,6 +42,7 @@ type UnpublishedRepoEntry = {
   slug: string;
   collection: string;
   status: string;
+  hasSubfolders: boolean;
   diffs: Diff[];
   updatedAt: string;
 };
@@ -50,11 +51,13 @@ declare global {
   interface Window {
     repoFiles: RepoTree;
     repoFilesUnpublished: { [key: string]: UnpublishedRepoEntry };
+    repoNotes: { [key: string]: Note[] };
   }
 }
 
 window.repoFiles = window.repoFiles || {};
 window.repoFilesUnpublished = window.repoFilesUnpublished || [];
+window.repoNotes = window.repoNotes || {};
 
 function getFile(path: string, tree: RepoTree) {
   const segments = path.split('/');
@@ -78,6 +81,24 @@ function writeFile(path: string, content: string | AssetProxy, tree: RepoTree) {
 
 function deleteFile(path: string, tree: RepoTree) {
   unset(tree, path.split('/'));
+}
+
+function moveFile(path: string, newPath: string, tree: RepoTree, hasSubfolders: boolean) {
+  const sourceDir = dirname(path);
+  const destDir = dirname(newPath);
+
+  if (!hasSubfolders || sourceDir === destDir) {
+    deleteFile(path, tree);
+    return;
+  }
+
+  const files = getFolderFiles(tree, path.split('/')[0], '', 100).filter(file =>
+    file.path.startsWith(`${sourceDir}/`),
+  );
+  files.forEach(file => {
+    deleteFile(file.path, tree);
+    writeFile(file.path.replace(sourceDir, destDir), file.content, tree);
+  });
 }
 
 const pageSize = 10;
@@ -273,6 +294,7 @@ export default class TestBackend implements Implementation {
     slug: string,
     collection: string,
     status: string,
+    hasSubfolders: boolean,
   ) {
     const diffs: Diff[] = [];
     dataFiles.forEach(dataFile => {
@@ -302,6 +324,7 @@ export default class TestBackend implements Implementation {
       slug,
       collection,
       status,
+      hasSubfolders,
       diffs,
       updatedAt: new Date().toISOString(),
     };
@@ -322,13 +345,17 @@ export default class TestBackend implements Implementation {
         slug,
         options.collectionName as string,
         status,
+        options.hasSubfolders !== false,
       );
       return Promise.resolve();
     }
 
     entry.dataFiles.forEach(dataFile => {
-      const { path, raw } = dataFile;
-      writeFile(path, raw, window.repoFiles);
+      const { path, newPath, raw } = dataFile;
+      if (newPath) {
+        moveFile(path, newPath, window.repoFiles, options.hasSubfolders !== false);
+      }
+      writeFile(newPath || path, raw, window.repoFiles);
     });
     entry.assets.forEach(a => {
       writeFile(a.path, a, window.repoFiles);
@@ -351,15 +378,7 @@ export default class TestBackend implements Implementation {
     unpubEntry.diffs.forEach(d => {
       if (d.originalPath && !d.newFile) {
         const originalPath = d.originalPath;
-        const sourceDir = dirname(originalPath);
-        const destDir = dirname(d.path);
-        const toMove = getFolderFiles(tree, originalPath.split('/')[0], '', 100).filter(f =>
-          f.path.startsWith(sourceDir),
-        );
-        toMove.forEach(f => {
-          deleteFile(f.path, tree);
-          writeFile(f.path.replace(sourceDir, destDir), f.content, tree);
-        });
+        moveFile(originalPath, d.path, tree, unpubEntry.hasSubfolders);
       }
       writeFile(d.path, d.content, tree);
     });
@@ -394,13 +413,91 @@ export default class TestBackend implements Implementation {
     };
   }
 
+  async getNotes(collection: string, slug: string): Promise<Note[]> {
+    const key = `${collection}/${slug}`;
+    return window.repoNotes[key] || [];
+  }
+
+  async addNote(collection: string, slug: string, note: Omit<Note, 'id'>): Promise<Note> {
+    const key = `${collection}/${slug}`;
+    const newNote: Note = {
+      ...note,
+      id: crypto.randomUUID(),
+      timestamp: new Date().toISOString(),
+    };
+
+    if (!window.repoNotes[key]) {
+      window.repoNotes[key] = [];
+    }
+
+    window.repoNotes[key].push(newNote);
+    return newNote;
+  }
+
+  async updateNote(
+    collection: string,
+    slug: string,
+    noteId: string,
+    updates: Partial<Note>,
+  ): Promise<Note> {
+    const key = `${collection}/${slug}`;
+    const notes = window.repoNotes[key] || [];
+    const noteIndex = notes.findIndex(note => note.id === noteId);
+
+    if (noteIndex === -1) {
+      throw new Error(`Note with id ${noteId} not found`);
+    }
+
+    const updatedNote = {
+      ...notes[noteIndex],
+      ...updates,
+      updatedAt: new Date().toISOString(),
+    };
+
+    window.repoNotes[key][noteIndex] = updatedNote;
+    return updatedNote;
+  }
+
+  async deleteNote(collection: string, slug: string, noteId: string): Promise<void> {
+    const key = `${collection}/${slug}`;
+    const notes = window.repoNotes[key] || [];
+    const noteIndex = notes.findIndex(note => note.id === noteId);
+
+    if (noteIndex === -1) {
+      throw new Error(`Note with id ${noteId} not found`);
+    }
+
+    window.repoNotes[key].splice(noteIndex, 1);
+  }
+
+  async toggleNoteResolution(collection: string, slug: string, noteId: string): Promise<Note> {
+    const key = `${collection}/${slug}`;
+    const notes = window.repoNotes[key] || [];
+    const note = notes.find(note => note.id === noteId);
+
+    if (!note) {
+      throw new Error(`Note with id ${noteId} not found`);
+    }
+
+    const updatedNote = {
+      ...note,
+      resolved: !note.resolved,
+      updatedAt: new Date().toISOString(),
+    };
+
+    const noteIndex = notes.findIndex(n => n.id === noteId);
+    window.repoNotes[key][noteIndex] = updatedNote;
+
+    return updatedNote;
+  }
+
   normalizeAsset(assetProxy: AssetProxy) {
     const fileObj = assetProxy.fileObj as File;
     const { name, size } = fileObj;
     const objectUrl = attempt(window.URL.createObjectURL, fileObj);
     const url = isError(objectUrl) ? '' : objectUrl;
     const normalizedAsset = {
-      id: uuid(),
+      id: crypto.randomUUID(),
       name,
       size,
       path: assetProxy.path,

@@ -8,7 +8,6 @@ import partial from 'lodash/partial';
 import isEmpty from 'lodash/isEmpty';
 import memoize from 'lodash/memoize';
 import uniqueId from 'lodash/uniqueId';
-import { v4 as uuid } from 'uuid';
 import DecapCmsWidgetObject from 'decap-cms-widget-object';
 import {
   DndContext,
@@ -212,7 +211,7 @@ export default class ListControl extends React.Component {
     const { field, value } = props;
     const listCollapsed = field.get('collapsed', true);
     const itemsCollapsed = (value && Array(value.size).fill(listCollapsed)) || [];
-    const keys = (value && Array.from({ length: value.size }, () => uuid())) || [];
+    const keys = (value && Array.from({ length: value.size }, () => crypto.randomUUID())) || [];
 
     this.state = {
       listCollapsed,
@@ -362,7 +361,7 @@ export default class ListControl extends React.Component {
     const { value, onChange, field } = this.props;
     const addToTop = field.get('add_to_top', false);
 
-    const itemKey = uuid();
+    const itemKey = crypto.randomUUID();
     this.setState({
       itemsCollapsed: addToTop
         ? [false, ...this.state.itemsCollapsed]

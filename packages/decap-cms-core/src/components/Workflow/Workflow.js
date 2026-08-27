@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import { Component } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import { OrderedMap } from 'immutable';
@@ -22,13 +22,16 @@ import {
   publishUnpublishedEntry,
   deleteUnpublishedEntry,
 } from '../../actions/editorialWorkflow';
-import { selectUnpublishedEntriesByStatus } from '../../reducers';
+import { selectCanCreateNewEntry, selectUnpublishedEntriesByStatus } from '../../reducers';
 import { EDITORIAL_WORKFLOW, status } from '../../constants/publishModes';
 import WorkflowList from './WorkflowList';
 
 const WorkflowContainer = styled.div`
-  padding: ${lengths.pageMargin} 0;
   height: 100vh;
+  margin: ${lengths.pageMarginMobile};
+  @media (min-width: 500px) {
+    margin: ${lengths.pageMargin};
+  }
 `;
 
 const WorkflowTop = styled.div`
@@ -37,6 +40,9 @@ const WorkflowTop = styled.div`
 
 const WorkflowTopRow = styled.div`
   display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
   justify-content: space-between;
 
   span[role='button'] {
@@ -55,6 +61,7 @@ const WorkflowTopDescription = styled.p`
 class Workflow extends Component {
   static propTypes = {
     collections: ImmutablePropTypes.map.isRequired,
+    creatableCollections: ImmutablePropTypes.list.isRequired,
     isEditorialWorkflow: PropTypes.bool.isRequired,
     isOpenAuthoring: PropTypes.bool,
     isFetching: PropTypes.bool,
@@ -86,6 +93,7 @@ class Workflow extends Component {
       publishUnpublishedEntry,
       deleteUnpublishedEntry,
       collections,
+      creatableCollections,
       t,
     } = this.props;
 
@@ -107,16 +115,13 @@ class Workflow extends Component {
                 <StyledDropdownButton>{t('workflow.workflow.newPost')}</StyledDropdownButton>
               )}
             >
-              {collections
-                .filter(collection => collection.get('create'))
-                .toList()
-                .map(collection => (
-                  <DropdownItem
-                    key={collection.get('name')}
-                    label={collection.get('label')}
-                    onClick={() => createNewEntry(collection.get('name'))}
-                  />
-                ))}
+              {creatableCollections.map(collection => (
+                <DropdownItem
+                  key={collection.get('name')}
+                  label={collection.get('label')}
+                  onClick={() => createNewEntry(collection.get('name'))}
+                />
+              ))}
             </Dropdown>
           </WorkflowTopRow>
           <WorkflowTopDescription>
@@ -143,7 +148,10 @@ function mapStateToProps(state) {
   const { collections, config, globalUI } = state;
   const isEditorialWorkflow = config.publish_mode === EDITORIAL_WORKFLOW;
   const isOpenAuthoring = globalUI.useOpenAuthoring;
-  const returnObj = { collections, isEditorialWorkflow, isOpenAuthoring };
+  const creatableCollections = collections
+    .filter(collection => selectCanCreateNewEntry(state, collection.get('name')))
+    .toList();
+  const returnObj = { collections, creatableCollections, isEditorialWorkflow, isOpenAuthoring };
 
   if (isEditorialWorkflow) {
     returnObj.isFetching = state.editorialWorkflow.getIn(['pages', 'isFetching'], false);

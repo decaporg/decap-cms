@@ -6,7 +6,6 @@ import {
   prohibited,
 } from 'ajv-keywords/dist/keywords';
 import ajvErrors from 'ajv-errors';
-import { v4 as uuid } from 'uuid';
 
 import { frontmatterFormats, extensionFormatters } from '../formats/formats';
 import { getWidgets } from '../lib/registry';
@@ -41,11 +40,44 @@ const i18nField = {
   oneOf: [{ type: 'boolean' }, { type: 'string', enum: Object.values(I18N_FIELD) }],
 };
 
+const mediaProcessing = {
+  type: 'object',
+  properties: {
+    enabled: { type: 'boolean' },
+    format: {
+      type: 'object',
+      properties: {
+        enabled: { type: 'boolean' },
+        default: { type: 'string', enum: ['jpeg', 'webp'] },
+      },
+      required: ['enabled', 'default'],
+      additionalProperties: false,
+    },
+    quality: {
+      type: 'number',
+      minimum: 1,
+      maximum: 100,
+    },
+    strip_metadata: { type: 'boolean' },
+    width: { oneOf: [{ type: 'number', minimum: 1 }, { type: 'null' }] },
+    height: { oneOf: [{ type: 'number', minimum: 1 }, { type: 'null' }] },
+    aspect_ratio: {
+      oneOf: [
+        { type: 'number', exclusiveMinimum: 0 },
+        { type: 'string', pattern: '^\\d+(?:\\.\\d+)?[_:x]\\d+(?:\\.\\d+)?$' },
+        { type: 'null' },
+      ],
+    },
+  },
+  required: ['enabled'],
+  additionalProperties: false,
+};
+
 /**
  * Config for fields in both file and folder collections.
  */
 function fieldsConfig() {
-  const id = uuid();
+  const id = crypto.randomUUID();
   return {
     $id: `fields_${id}`,
     type: 'array',
@@ -61,6 +93,7 @@ function fieldsConfig() {
         required: { type: 'boolean' },
         i18n: i18nField,
         hint: { type: 'string' },
+        media_processing: mediaProcessing,
         pattern: {
           type: 'array',
           minItems: 2,
@@ -173,6 +206,7 @@ function getConfigSchema() {
       media_folder: { type: 'string', examples: ['assets/uploads'] },
       public_folder: { type: 'string', examples: ['/uploads'] },
       media_folder_relative: { type: 'boolean' },
+      media_processing: mediaProcessing,
       media_library: {
         type: 'object',
         properties: {
@@ -312,6 +346,9 @@ function getConfigSchema() {
               minProperties: 1,
             },
             i18n: i18nCollection,
+            limit: {
+              type: 'number',
+            },
           },
           required: ['name', 'label'],
           oneOf: [{ required: ['files'] }, { required: ['folder', 'fields'] }],

@@ -1,5 +1,4 @@
 import { Map, List, fromJS } from 'immutable';
-import { v4 as uuid } from 'uuid';
 import get from 'lodash/get';
 import { join, basename } from 'path';
 
@@ -20,6 +19,11 @@ import {
   ENTRY_DELETE_SUCCESS,
   ADD_DRAFT_ENTRY_MEDIA_FILE,
   REMOVE_DRAFT_ENTRY_MEDIA_FILE,
+  DRAFT_NOTES_LOAD,
+  DRAFT_NOTE_ADD,
+  DRAFT_NOTE_UPDATE,
+  DRAFT_NOTE_DELETE,
+  NOTES_POLLING_UPDATE,
 } from '../actions/entries';
 import {
   UNPUBLISHED_ENTRY_PERSIST_REQUEST,
@@ -39,6 +43,7 @@ const initialState = Map({
   entry: Map(),
   fieldsMetaData: Map(),
   fieldsErrors: Map(),
+  notes: List(),
   hasChanged: false,
   key: '',
 });
@@ -52,8 +57,9 @@ function entryDraftReducer(state = Map(), action) {
         state.setIn(['entry', 'newRecord'], false);
         state.set('fieldsMetaData', Map());
         state.set('fieldsErrors', Map());
+        state.set('notes', List());
         state.set('hasChanged', false);
-        state.set('key', uuid());
+        state.set('key', crypto.randomUUID());
       });
     case DRAFT_CREATE_EMPTY:
       // New Entry
@@ -62,8 +68,9 @@ function entryDraftReducer(state = Map(), action) {
         state.setIn(['entry', 'newRecord'], true);
         state.set('fieldsMetaData', Map());
         state.set('fieldsErrors', Map());
+        state.set('notes', List());
         state.set('hasChanged', false);
-        state.set('key', uuid());
+        state.set('key', crypto.randomUUID());
       });
     case DRAFT_CREATE_FROM_LOCAL_BACKUP:
       // Local Backup
@@ -75,8 +82,9 @@ function entryDraftReducer(state = Map(), action) {
         state.setIn(['entry', 'newRecord'], !backupEntry.get('path'));
         state.set('fieldsMetaData', Map());
         state.set('fieldsErrors', Map());
+        state.set('notes', List());
         state.set('hasChanged', true);
-        state.set('key', uuid());
+        state.set('key', crypto.randomUUID());
       });
     case DRAFT_CREATE_DUPLICATE_FROM_ENTRY:
       // Duplicate Entry
@@ -85,6 +93,7 @@ function entryDraftReducer(state = Map(), action) {
         state.setIn(['entry', 'newRecord'], true);
         state.set('mediaFiles', List());
         state.set('fieldsMetaData', Map());
+        state.set('notes', List());
         state.set('fieldsErrors', Map());
         state.set('hasChanged', true);
       });
@@ -199,6 +208,27 @@ function entryDraftReducer(state = Map(), action) {
         state.set('hasChanged', true);
       });
     }
+
+    case DRAFT_NOTES_LOAD:
+      return state.set('notes', fromJS(action.payload.notes));
+
+    case DRAFT_NOTE_ADD:
+      return state.update('notes', notes => notes.push(fromJS(action.payload.note)));
+
+    case DRAFT_NOTE_UPDATE:
+      return state.update('notes', notes =>
+        notes.map(note =>
+          note.get('id') === action.payload.id ? note.merge(fromJS(action.payload.updates)) : note,
+        ),
+      );
+
+    case DRAFT_NOTE_DELETE:
+      return state.update('notes', notes =>
+        notes.filterNot(note => note.get('id') === action.payload.id),
+      );
+
+    case NOTES_POLLING_UPDATE:
+      return state.set('notes', fromJS(action.payload.notes));
 
     default:
       return state;

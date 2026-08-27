@@ -1,9 +1,9 @@
-import { Map, fromJS } from 'immutable';
+import { Map, fromJS, List } from 'immutable';
 
 import * as actions from '../../actions/entries';
 import reducer from '../entryDraft';
 
-jest.mock('uuid', () => ({ v4: jest.fn(() => '1') }));
+global.crypto.randomUUID = jest.fn(() => '1');
 
 const initialState = Map({
   entry: Map(),
@@ -11,6 +11,7 @@ const initialState = Map({
   fieldsErrors: Map(),
   hasChanged: false,
   key: '',
+  notes: List([]),
 });
 
 const entry = {
@@ -37,6 +38,7 @@ describe('entryDraft reducer', () => {
           fieldsErrors: Map(),
           hasChanged: false,
           key: '1',
+          notes: List([]),
         }),
       );
     });
@@ -55,6 +57,7 @@ describe('entryDraft reducer', () => {
           fieldsErrors: Map(),
           hasChanged: false,
           key: '1',
+          notes: List([]),
         }),
       );
     });
@@ -132,6 +135,7 @@ describe('entryDraft reducer', () => {
         fieldsErrors: {},
         hasChanged: true,
         key: '',
+        notes: [], // This stays as regular array in .toJS() output
       });
     });
   });
@@ -149,6 +153,7 @@ describe('entryDraft reducer', () => {
         fieldsErrors: {},
         hasChanged: true,
         key: '',
+        notes: [], // This stays as regular array in .toJS() output
       });
     });
   });
@@ -170,6 +175,7 @@ describe('entryDraft reducer', () => {
         fieldsErrors: {},
         hasChanged: true,
         key: '1',
+        notes: [], // This stays as regular array in .toJS() output
       });
     });
   });
@@ -192,6 +198,7 @@ describe('entryDraft reducer', () => {
           entry: { ...entry, mediaFiles: [{ id: '1' }] },
         },
         key: '',
+        notes: [], // This stays as regular array in .toJS() output
       });
     });
   });

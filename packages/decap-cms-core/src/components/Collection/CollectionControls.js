@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from '@emotion/styled';
 import { lengths } from 'decap-cms-ui-default';
 
@@ -9,14 +8,15 @@ import GroupControl from './GroupControl';
 
 const CollectionControlsContainer = styled.div`
   display: flex;
+  flex-flow: row-reverse wrap;
   align-items: center;
-  flex-direction: row-reverse;
+  gap: 6px 0;
   margin-top: 22px;
   width: ${lengths.topCardWidth};
   max-width: 100%;
 
-  & > div {
-    margin-left: 6px;
+  @media (min-width: 500px) {
+    gap: 6px;
   }
 `;
 
