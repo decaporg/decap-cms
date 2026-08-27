@@ -1,28 +1,17 @@
 /**
  * Read-only view of Turbo's content cache.
  *
- * NOTE: byte-for-byte the same as decap-cms-backend-turbo-github's copy. The
- * two should collapse into one shared module — see
- * decap-turbo/docs/caching-project-breaking-changes.md. They are duplicated
- * for now rather than moved into decap-cms-lib-util, because the `data` table
- * is Turbo's schema and not something generic Decap infrastructure should know
- * about; a dedicated shared package is the right home and is follow-up work.
- * Until then, changes here must be mirrored.
+ * NOTE: byte-for-byte the same as decap-cms-backend-turbo-github's copy.
+ * The two are duplicated rather than moved into decap-cms-lib-util, because
+ * the `data` table is Turbo's schema and not something generic Decap
+ * infrastructure should know about; a dedicated shared package is the right
+ * home and is follow-up work. Until then, changes here must be mirrored.
  *
- * Every write method that used to live here — validateFiles,
- * insertDbFilesBatch, insertDbFile, removeDbFiles, updateEntriesAfterSave —
- * was deleted when the `gh` function's `_content/sync` endpoint took over
- * ownership of the cache. That move deleted, rather than fixed, four defects
- * at once: the unbounded 500-wide Promise.all that tripped GitHub's
- * 100-concurrent secondary limit, the missing per-file error isolation that
- * discarded up to 500 files of fetched work on a single failure, the
- * `file_id: undefined` drift that left every saved row carrying its pre-save
- * blob sha, and the rename bug that cached new content under the old path.
+ * The server owns the cache: the `_content/sync` endpoint is the only writer,
+ * and the browser has no INSERT, UPDATE or DELETE access to `public.data` at
+ * all.
  *
- * The browser now has no write access to `public.data` at all — the INSERT,
- * UPDATE and DELETE policies were dropped server-side.
- *
- * See decap-turbo/docs/caching-and-github-api-strategy.md §3.4.
+ * See decap-turbo/docs/caching-and-github-api-strategy.md §4.
  */
 export class SupabaseClient {
   supabaseUrl: string;

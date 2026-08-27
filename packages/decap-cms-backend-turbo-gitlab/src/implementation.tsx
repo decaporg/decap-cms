@@ -620,8 +620,8 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
    *
    * Collection loads revalidate the branch head on every sync, but this path is
    * reached directly — core's loadEntry on a deep link, and once per
-   * non-default locale for multiple_files/multiple_folders i18n — and used to
-   * return whatever was cached with no check at all.
+   * non-default locale for multiple_files/multiple_folders i18n — so without
+   * it the cache is trusted unconditionally.
    *
    * A stale read here is a lost update, not stale display: a save rebases onto
    * the branch's current head and rewrites the edited path, so saving stale
@@ -655,13 +655,11 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
   async persistEntry(entry: any, options: any = {}) {
     const result = await super.persistEntry(entry, options);
     if (result && entry.dataFiles && entry.dataFiles.length > 0) {
-      // The cache is no longer written from here — the server owns it. The
-      // commit moves the branch head and reloadEntriesAfterPersist makes core
-      // re-list immediately, so the next sync materialises the saved entry.
-      //
-      // The old write-back was close to useless anyway: core's dataFiles carry
-      // no `id`, so every row it wrote kept its pre-save blob sha and was
-      // deleted and re-fetched by the next listing.
+      // Deliberately does not write the cache — the server owns it. The commit
+      // moves the branch head and reloadEntriesAfterPersist makes core re-list
+      // immediately, so the next sync materialises the saved entry. Writing
+      // from here cannot work anyway: core's dataFiles carry no `id`, so any
+      // row written would keep its pre-save blob sha.
       recordCmsEvent(
         this.baseUrl!,
         this.supabaseAnonKey,
@@ -683,15 +681,14 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
   ) {
     const collection = `${folder}:${extension}:${depth}:${pathRegex?.toString() || 'all'}`;
 
-    // One request replaces what used to be a tree listing plus a file read and
-    // a commits lookup per entry, driven from the browser.
+    // One request, in place of a tree listing plus a file read and a commits
+    // lookup per entry, driven from the browser.
     await this.syncCollection(collection, folder, extension, depth, pathRegex);
 
     const entries = await this.supabase.fetchEntries(collection, searchTerm);
 
-    // Ordering used to come from the tree the client had just listed. It no
-    // longer has one, and path order is what that gave anyway, so sort by path
-    // to keep entry order stable across loads.
+    // The client no longer lists a tree, so sort by path to keep entry order
+    // stable across loads. Path order is what the tree gave anyway.
     entries.sort((a: any, b: any) =>
       String(a.file?.path ?? '').localeCompare(String(b.file?.path ?? '')),
     );

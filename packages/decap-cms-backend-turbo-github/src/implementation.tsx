@@ -715,8 +715,8 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
    * The check is not cosmetic. Collection loads revalidate the branch head on
    * every sync, but this path is reached directly — core's loadEntry when an
    * editor deep-links to an entry, and once per non-default locale for
-   * multiple_files/multiple_folders i18n — and used to return whatever was in
-   * the cache with no freshness check at all.
+   * multiple_files/multiple_folders i18n — so without it the cache is trusted
+   * unconditionally.
    *
    * A stale read here is a lost update, not just stale display: persistFiles
    * rebases onto the branch's current head and rewrites the edited path, so
@@ -724,9 +724,8 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
    * whoever committed in between.
    *
    * Server-side this costs one conditional request against the shared
-   * per-branch ETag, which GitHub does not charge against the rate limit when
-   * it 304s. A negative answer falls through to GitHubBackend.getEntry, which
-   * reads the file straight from GitHub.
+   * per-branch ETag. A negative answer falls through to GitHubBackend.getEntry,
+   * which reads the file straight from GitHub.
    */
   async getEntry(path: string) {
     const cached = await this.supabase.fetchEntryByPath(path);
@@ -756,15 +755,12 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
   async persistEntry(entry: any, options: any = {}) {
     const result = await super.persistEntry(entry, options);
     if (result && entry.dataFiles && entry.dataFiles.length > 0) {
-      // The cache is no longer written from here. The commit moves the branch
+      // Deliberately does not write the cache. The commit moves the branch
       // HEAD, and `reloadEntriesAfterPersist` makes core re-run loadEntries
       // immediately after a save, so the very next allEntriesByFolder syncs
       // against the new HEAD and materialises the saved entry server-side.
-      //
-      // The old write-back was close to useless anyway: core's dataFiles carry
-      // no `id`, so every row it wrote kept its pre-save blob sha and was
-      // deleted and re-fetched by the next listing (see
-      // decap-turbo/docs/caching-and-github-api-strategy.md §1.6).
+      // Writing from here cannot work anyway: core's dataFiles carry no `id`,
+      // so any row written would keep its pre-save blob sha.
       recordCmsEvent(
         this.baseUrl!,
         this.supabaseAnonKey,
@@ -856,17 +852,16 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
   ) {
     const collection = `${folder}:${extension}:${depth}:${pathRegex?.toString() || 'all'}`;
 
-    // One request replaces what used to be a tree listing plus two GitHub
-    // calls per entry driven from the browser — 2,001 requests for a
-    // 1,000-entry collection, against a 5,000/hour installation budget.
+    // One request, in place of a tree listing plus two GitHub calls per entry
+    // driven from the browser — which cost 2,001 requests for a 1,000-entry
+    // collection, against an installation budget of 5,000/hour.
     await this.syncCollection(collection, folder, extension, depth, pathRegex);
 
     const entries = await this.supabase.fetchEntries(collection, searchTerm);
 
-    // Ordering used to come from the GitHub tree the client had just fetched.
-    // It no longer has one, and path order is what the tree gave anyway
-    // (GitHub returns tree entries sorted by path), so sort by path here to
-    // keep entry order stable across loads.
+    // The client no longer fetches a tree, so sort by path here to keep entry
+    // order stable across loads. Path order is what the tree gave anyway —
+    // GitHub returns tree entries sorted by path.
     entries.sort((a, b) => String(a.file?.path ?? '').localeCompare(String(b.file?.path ?? '')));
 
     return entries;
