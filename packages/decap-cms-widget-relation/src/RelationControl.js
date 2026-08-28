@@ -455,7 +455,15 @@ export default class RelationControl extends React.Component {
         const hits = result.payload.hits || [];
         const options = this.parseHitOptions(hits);
         const optionsLength = field.get('options_length') || 20;
-        const uniq = uniqOptions(this.state.initialOptions, options).slice(0, optionsLength);
+        // With a search term, real matches must occupy the front of the
+        // list before truncation — otherwise a large initialOptions (every
+        // currently-selected option) can fill the slice on its own and bury
+        // every match. uniqOptions keeps the first occurrence of each value,
+        // so putting `options` first also means a match's fresh data wins
+        // over a stale initialOptions entry for the same value.
+        const uniq = term
+          ? uniqOptions(options, this.state.initialOptions).slice(0, optionsLength)
+          : uniqOptions(this.state.initialOptions, options).slice(0, optionsLength);
         callback(uniq);
       })
       .catch(error => {

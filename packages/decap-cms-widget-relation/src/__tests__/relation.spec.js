@@ -378,6 +378,28 @@ describe('Relation widget', () => {
     });
   });
 
+  it('should surface a search match even when the unfiltered initial load already fills options_length', async () => {
+    // Loading an initial value (e.g. a previously-saved entry) triggers an
+    // empty-term "load everything" query that populates initialOptions with
+    // every hit, unfiltered — on a collection larger than options_length,
+    // that alone can already exceed the cap. 'YAML post' sits past position
+    // 10 in file order, so it only surfaces if a real search match is put
+    // ahead of the stale initialOptions before truncating to options_length.
+    const field = fromJS(customizedOptionsLengthConfig);
+    const value = 'Post # 1';
+    const { getByText, input } = setup({ field, value });
+
+    await waitFor(() => {
+      expect(input).toBeInTheDocument();
+    });
+
+    fireEvent.change(input, { target: { value: 'YAML' } });
+
+    await waitFor(() => {
+      expect(getByText('YAML post post-yaml')).toBeInTheDocument();
+    });
+  });
+
   it('should call onChange with correct selectedItem value and metadata', async () => {
     const field = fromJS(fieldConfig);
     const { getByText, input, onChangeSpy } = setup({ field });
