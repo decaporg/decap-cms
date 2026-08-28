@@ -803,7 +803,22 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ collection, branch: this.branch }),
     });
-    return response.json();
+    const result = await response.json();
+
+    // The server declines to fan out when the organization's GitHub budget is
+    // near its floor, so an editor's own requests keep working. The read below
+    // still happens and serves whatever is cached — the same outcome as losing
+    // the single-flight race — but a silently short collection is worth saying
+    // out loud, because otherwise the only symptom is missing entries.
+    if (result?.deferred) {
+      console.warn(
+        `Turbo deferred the sync for "${collection.name}": the GitHub API budget is low ` +
+          `(${result.rate_limited?.remaining} left). Showing cached content; it will catch up ` +
+          'once the budget recovers.',
+      );
+    }
+
+    return result;
   }
 
   /**
