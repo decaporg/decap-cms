@@ -118,6 +118,130 @@ describe('turbo gitlab backend supabase session refresh', () => {
     expect(init.headers.Authorization).toBe('Bearer access-123');
     expect(init.headers['x-site-id']).toBe('site-123');
   });
+
+  describe('setActiveSiteAndRefresh', () => {
+    it('refreshes an expired token before sending it, instead of PUTting a stale one', async () => {
+      const backend = new DecapTurboGitLabBackend(config);
+      backend.siteId = 'site-123';
+      backend.supabaseAccessToken = 'stale-token';
+      backend.supabaseRefreshToken = 'refresh-token';
+      backend.supabaseExpiresAt = Math.floor(Date.now() / 1000) - 100;
+
+      global.fetch = jest.fn((url: string) => {
+        if (url.includes('/auth/v1/token')) {
+          return Promise.resolve({
+            ok: true,
+            json: () =>
+              Promise.resolve({
+                access_token: 'fresh-token',
+                refresh_token: 'refresh-token',
+                expires_at: Math.floor(Date.now() / 1000) + 3600,
+              }),
+          });
+        }
+        return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
+      }) as any;
+
+      await backend.setActiveSiteAndRefresh();
+
+      const putCall = (global.fetch as jest.Mock).mock.calls.find(([url]) =>
+        url.includes('/auth/v1/user'),
+      );
+      expect(putCall[1].headers.Authorization).toBe('Bearer fresh-token');
+    });
+
+    it('retries once after a 401, refreshing the token in between', async () => {
+      const backend = new DecapTurboGitLabBackend(config);
+      backend.siteId = 'site-123';
+      backend.supabaseAccessToken = 'stale-token';
+      backend.supabaseRefreshToken = 'refresh-token';
+      backend.supabaseExpiresAt = Math.floor(Date.now() / 1000) + 3600;
+
+      let putCallCount = 0;
+      global.fetch = jest.fn((url: string) => {
+        if (url.includes('/auth/v1/token')) {
+          return Promise.resolve({
+            ok: true,
+            json: () =>
+              Promise.resolve({
+                access_token: 'fresh-token',
+                refresh_token: 'refresh-token',
+                expires_at: Math.floor(Date.now() / 1000) + 3600,
+              }),
+          });
+        }
+        putCallCount += 1;
+        return Promise.resolve({ ok: putCallCount > 1, status: 401 });
+      }) as any;
+
+      await backend.setActiveSiteAndRefresh();
+
+      const putCalls = (global.fetch as jest.Mock).mock.calls.filter(([url]) =>
+        url.includes('/auth/v1/user'),
+      );
+      expect(putCalls).toHaveLength(2);
+      expect(putCalls[1][1].headers.Authorization).toBe('Bearer fresh-token');
+    });
+
+    it('throws a friendly session-expired error instead of the raw response when the retry also fails', async () => {
+      const backend = new DecapTurboGitLabBackend(config);
+      backend.siteId = 'site-123';
+      backend.supabaseAccessToken = 'stale-token';
+      backend.supabaseRefreshToken = 'refresh-token';
+      backend.supabaseExpiresAt = Math.floor(Date.now() / 1000) + 3600;
+
+      global.fetch = jest.fn((url: string) => {
+        if (url.includes('/auth/v1/token')) {
+          return Promise.resolve({
+            ok: true,
+            json: () =>
+              Promise.resolve({
+                access_token: 'fresh-token',
+                refresh_token: 'refresh-token',
+                expires_at: Math.floor(Date.now() / 1000) + 3600,
+              }),
+          });
+        }
+        return Promise.resolve({ ok: false, status: 403 });
+      }) as any;
+
+      await expect(backend.setActiveSiteAndRefresh()).rejects.toThrow(
+        'Session expired. Please log in again.',
+      );
+    });
+
+    it('throws the friendly error without retrying the PUT when the reactive refresh itself is terminal', async () => {
+      const backend = new DecapTurboGitLabBackend(config);
+      backend.siteId = 'site-123';
+      backend.supabaseAccessToken = 'stale-token';
+      backend.supabaseRefreshToken = 'refresh-token';
+      backend.supabaseExpiresAt = Math.floor(Date.now() / 1000) + 3600;
+
+      global.fetch = jest.fn((url: string) => {
+        if (url.includes('/auth/v1/token')) {
+          return Promise.resolve({ ok: false, status: 401 });
+        }
+        return Promise.resolve({ ok: false, status: 401 });
+      }) as any;
+
+      await expect(backend.setActiveSiteAndRefresh()).rejects.toThrow(
+        'Session expired. Please log in again.',
+      );
+      const putCalls = (global.fetch as jest.Mock).mock.calls.filter(([url]) =>
+        url.includes('/auth/v1/user'),
+      );
+      expect(putCalls).toHaveLength(1);
+    });
+
+    it('does nothing when there is no access token or site id', async () => {
+      const backend = new DecapTurboGitLabBackend(config);
+      global.fetch = jest.fn() as any;
+
+      await backend.setActiveSiteAndRefresh();
+
+      expect(global.fetch).not.toHaveBeenCalled();
+    });
+  });
 });
 
 describe('turbo gitlab backend preloadConfig', () => {

@@ -398,22 +398,45 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
       return;
     }
 
-    const updateResponse = await fetch(`https://${this.supabaseId}.supabase.co/auth/v1/user`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        apikey: this.supabaseAnonKey,
-        Authorization: `Bearer ${this.supabaseAccessToken}`,
-      },
-      body: JSON.stringify({
-        data: {
-          active_site_id: this.siteId,
+    // Proactive: a restored session's access token is commonly past `exp` by
+    // the time this runs (it's checked before any other request), so refresh
+    // it first using the same buffer/backoff/terminal-detection every other
+    // call site in this class already applies, instead of handing a stale
+    // token straight to Supabase.
+    await this.refreshSessionIfNeeded();
+
+    const putActiveSiteId = () =>
+      fetch(`https://${this.supabaseId}.supabase.co/auth/v1/user`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          apikey: this.supabaseAnonKey,
+          Authorization: `Bearer ${this.supabaseAccessToken}`,
         },
-      }),
-    });
+        body: JSON.stringify({
+          data: {
+            active_site_id: this.siteId,
+          },
+        }),
+      });
+
+    let updateResponse = await putActiveSiteId();
+
+    if (!updateResponse.ok && (updateResponse.status === 401 || updateResponse.status === 403)) {
+      // Reactive fallback: covers a stored session with no `expires_at` (so
+      // the proactive check above was a no-op) or a token invalidated after
+      // that check ran. One refresh-then-retry, same as everywhere else.
+      const refreshed = await this.getRefreshedAccessToken().then(
+        () => true,
+        () => false,
+      );
+      if (refreshed) {
+        updateResponse = await putActiveSiteId();
+      }
+    }
 
     if (!updateResponse.ok) {
-      throw new Error('Failed to set active_site_id in Supabase user metadata');
+      throw new Error('Session expired. Please log in again.');
     }
 
     await this.getRefreshedAccessToken();
