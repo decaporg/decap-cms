@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { css } from '@emotion/react';
 import { fromJS } from 'immutable';
 import omit from 'lodash/omit';
