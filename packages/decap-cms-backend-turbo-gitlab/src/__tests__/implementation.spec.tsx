@@ -241,6 +241,27 @@ describe('turbo gitlab backend supabase session refresh', () => {
 
       expect(global.fetch).not.toHaveBeenCalled();
     });
+
+    it('does not throw when the PUT succeeds but the trailing opportunistic refresh fails', async () => {
+      const backend = new DecapTurboGitLabBackend(config);
+      backend.siteId = 'site-123';
+      backend.supabaseAccessToken = 'still-valid-token';
+      backend.supabaseRefreshToken = 'already-rotated-refresh-token';
+      backend.supabaseExpiresAt = Math.floor(Date.now() / 1000) + 3600;
+
+      global.fetch = jest.fn((url: string) => {
+        if (url.includes('/auth/v1/token')) {
+          return Promise.resolve({
+            ok: false,
+            status: 400,
+            json: () => Promise.resolve({ error_code: 'refresh_token_not_found' }),
+          });
+        }
+        return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
+      }) as any;
+
+      await expect(backend.setActiveSiteAndRefresh()).resolves.toBeUndefined();
+    });
   });
 });
 

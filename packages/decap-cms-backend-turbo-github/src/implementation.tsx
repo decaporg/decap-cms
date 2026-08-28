@@ -538,7 +538,14 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
       throw new Error('Session expired. Please log in again.');
     }
 
-    await this.getRefreshedAccessToken();
+    // The metadata is already set server-side at this point; refreshing now
+    // only opportunistically rolls the new active_site_id into a fresh JWT's
+    // claims. A failure here (e.g. a refresh token already rotated by another
+    // tab) shouldn't undo an otherwise-successful login on a still-valid
+    // access token.
+    await this.getRefreshedAccessToken().catch(error => {
+      console.warn('Failed to refresh Supabase token after setting active_site_id', error);
+    });
   }
 
   isOffline() {
