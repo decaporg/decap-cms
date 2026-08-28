@@ -84,10 +84,22 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
     }
 
     const defaults = await response.json();
+    const { repo, branch, ...otherDefaults } = defaults as Record<string, unknown>;
 
     return {
       ...config,
-      backend: { ...defaults, ...config.backend },
+      backend: {
+        ...otherDefaults,
+        ...config.backend,
+        // repo/branch are authoritative from the sites row, not config.yml:
+        // permissions and the content cache already resolve from
+        // sites.repo@sites.branch, so a stale local value here is exactly
+        // what makes checkRepoScope 403 with "requested repo does not
+        // match". A site's config.yml only needs turbo_site_id — see
+        // docs/site-integration.md in decap-turbo.
+        ...(repo ? { repo } : {}),
+        ...(branch ? { branch } : {}),
+      },
     };
   }
 

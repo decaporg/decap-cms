@@ -401,6 +401,62 @@ describe('turbo backend preloadConfig', () => {
 
     await expect(DecapTurboGitHubBackend.preloadConfig(config)).rejects.toThrow('site not found');
   });
+
+  it('overrides a stale local repo/branch with the control plane\'s values', async () => {
+    const config = {
+      backend: { turbo_site_id: 'site-123', repo: 'stale/repo', branch: 'stale-branch' },
+    };
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      json: () =>
+        Promise.resolve({
+          supabase_app_id: 'resolved-app-id',
+          supabase_anon_key: 'resolved-key',
+          repo: 'owner/repo',
+          branch: 'main',
+        }),
+    });
+
+    const actual = await DecapTurboGitHubBackend.preloadConfig(config);
+
+    expect(actual.backend.repo).toBe('owner/repo');
+    expect(actual.backend.branch).toBe('main');
+  });
+
+  it('fills in repo/branch from the control plane when config.yml omits them', async () => {
+    const config = { backend: { turbo_site_id: 'site-123' } };
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      json: () =>
+        Promise.resolve({
+          supabase_app_id: 'resolved-app-id',
+          supabase_anon_key: 'resolved-key',
+          repo: 'owner/repo',
+          branch: 'main',
+        }),
+    });
+
+    const actual = await DecapTurboGitHubBackend.preloadConfig(config);
+
+    expect(actual.backend.repo).toBe('owner/repo');
+    expect(actual.backend.branch).toBe('main');
+  });
+
+  it('leaves local repo/branch alone when the control plane does not return them', async () => {
+    const config = {
+      backend: { turbo_site_id: 'site-123', repo: 'owner/repo', branch: 'main' },
+    };
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      json: () =>
+        Promise.resolve({ supabase_app_id: 'resolved-app-id', supabase_anon_key: 'resolved-key' }),
+    });
+
+    const actual = await DecapTurboGitHubBackend.preloadConfig(config);
+
+    expect(actual.backend.repo).toBe('owner/repo');
+    expect(actual.backend.branch).toBe('main');
+  });
 });
 
 describe('turbo backend use_graphql rejection', () => {

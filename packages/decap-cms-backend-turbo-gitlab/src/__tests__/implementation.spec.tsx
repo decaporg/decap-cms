@@ -326,6 +326,62 @@ describe('turbo gitlab backend preloadConfig', () => {
 
     await expect(DecapTurboGitLabBackend.preloadConfig(config)).rejects.toThrow('site not found');
   });
+
+  it('overrides a stale local repo/branch with the control plane\'s values', async () => {
+    const config = {
+      backend: { turbo_site_id: 'site-123', repo: 'stale/project', branch: 'stale-branch' },
+    } as any;
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      json: () =>
+        Promise.resolve({
+          supabase_app_id: 'resolved-app-id',
+          supabase_anon_key: 'resolved-key',
+          repo: 'group/project',
+          branch: 'main',
+        }),
+    } as any);
+
+    const actual = await DecapTurboGitLabBackend.preloadConfig(config);
+
+    expect(actual.backend.repo).toBe('group/project');
+    expect(actual.backend.branch).toBe('main');
+  });
+
+  it('fills in repo/branch from the control plane when config.yml omits them', async () => {
+    const config = { backend: { turbo_site_id: 'site-123' } } as any;
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      json: () =>
+        Promise.resolve({
+          supabase_app_id: 'resolved-app-id',
+          supabase_anon_key: 'resolved-key',
+          repo: 'group/project',
+          branch: 'main',
+        }),
+    } as any);
+
+    const actual = await DecapTurboGitLabBackend.preloadConfig(config);
+
+    expect(actual.backend.repo).toBe('group/project');
+    expect(actual.backend.branch).toBe('main');
+  });
+
+  it('leaves local repo/branch alone when the control plane does not return them', async () => {
+    const config = {
+      backend: { turbo_site_id: 'site-123', repo: 'group/project', branch: 'main' },
+    } as any;
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      json: () =>
+        Promise.resolve({ supabase_app_id: 'resolved-app-id', supabase_anon_key: 'resolved-key' }),
+    } as any);
+
+    const actual = await DecapTurboGitLabBackend.preloadConfig(config);
+
+    expect(actual.backend.repo).toBe('group/project');
+    expect(actual.backend.branch).toBe('main');
+  });
 });
 
 describe('turbo gitlab backend use_graphql rejection', () => {

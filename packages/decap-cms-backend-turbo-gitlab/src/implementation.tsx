@@ -89,10 +89,18 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
     }
 
     const defaults = await response.json();
+    const { repo, branch, ...otherDefaults } = defaults as Record<string, unknown>;
 
     return {
       ...config,
-      backend: { ...defaults, ...config.backend },
+      backend: {
+        ...otherDefaults,
+        ...config.backend,
+        // repo/branch are authoritative from the sites row, not config.yml —
+        // see decap-cms-backend-turbo-github's implementation.tsx for why.
+        ...(repo ? { repo } : {}),
+        ...(branch ? { branch } : {}),
+      },
     };
   }
 
