@@ -111,6 +111,9 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
   supabaseId: string;
   siteId: string;
   commitAuthorEmailFallback?: string;
+  // API.commitAuthor is typed as an untyped `{}`, so this mirrors its email
+  // in a typed field for callers (e.g. telemetry) that need to read it back.
+  commitAuthorEmail?: string;
   updateUserCredentialsFn: (credentials: Credentials) => void;
   // refreshedTokenPromise is already declared (and typed identically) on the
   // GitLabBackend base class — redeclaring it here would need TypeScript's
@@ -345,10 +348,12 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
       }
     }
 
-    this.api.commitAuthor = resolveCommitAuthorFromSupabaseUser(
+    const commitAuthor = resolveCommitAuthorFromSupabaseUser(
       state as SupabaseUser,
       this.commitAuthorEmailFallback,
     );
+    this.api.commitAuthor = commitAuthor;
+    this.commitAuthorEmail = commitAuthor?.email;
 
     // Only knowable post-auth (the `config` bootstrap endpoint's static
     // preloadConfig hook runs before a user JWT exists), so it's fetched
@@ -704,7 +709,15 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
         this.supabaseAccessToken,
         'cms_entry_saved',
         this.siteId,
-        { collection: options.collectionName },
+        {
+          collection: options.collectionName,
+          slug: entry.dataFiles[0].slug,
+          path: entry.dataFiles[0].path,
+          branch: this.branch,
+          // Redundant with the server-derived user_id (from the auth JWT) —
+          // a fallback for the activity feed when that lookup misses.
+          authorEmail: this.commitAuthorEmail,
+        },
       );
     }
     return result;
