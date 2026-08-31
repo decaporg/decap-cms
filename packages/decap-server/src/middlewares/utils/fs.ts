@@ -36,8 +36,6 @@ export async function listRepoFiles(
   try {
     resolvedFolder = await resolveExistingRepoPath(repoRoot, folder);
   } catch (e) {
-    // The folder may not exist yet (e.g. no content or media has been
-    // created), which just means there are no files to list.
     if ((e as NodeJS.ErrnoException).code === 'ENOENT') {
       return [];
     }
