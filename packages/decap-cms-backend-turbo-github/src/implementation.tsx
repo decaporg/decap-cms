@@ -5,6 +5,7 @@ import {
   type Credentials,
   APIError,
   collectionKeyForFiles,
+  unsentRequest,
 } from 'decap-cms-lib-util';
 import API from 'decap-cms-backend-github/src/API';
 import GraphQLAPI from 'decap-cms-backend-github/src/GraphQLAPI';
@@ -14,6 +15,12 @@ import { SupabaseClient } from './supabase';
 import SupabaseAuthenticationPage from './AuthenticationPage';
 import { resolveCommitAuthorFromSupabaseUser } from './commitAuthor';
 import { recordCmsEvent } from './telemetry';
+import {
+  createProxyMeter,
+  measurePayloadBytes,
+  recordProxyResponse,
+  type ProxyMeter,
+} from './saveMetrics';
 
 import type { GitHubUser } from 'decap-cms-backend-github/src/implementation';
 
@@ -116,6 +123,13 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
   updateUserCredentials: (credentials: Credentials) => void;
   refreshedTokenPromise?: Promise<string>;
   reloadEntriesAfterPersist?: boolean;
+  /**
+   * Non-null only while a save is in flight. Every proxied response is folded
+   * into it, so `cms_entry_saved` can report how many round trips that one save
+   * cost and how much of the wait was GitHub's own time. Null the rest of the
+   * time, so ordinary reads are not counted.
+   */
+  proxyMeter: ProxyMeter | null = null;
 
   supabase: SupabaseClient;
 
@@ -188,6 +202,11 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
       headers,
     });
 
+    // Before the ok-check: a request that failed still cost the editor the
+    // wait, and a save that is slow *because* it is retrying is exactly the
+    // case the measurement exists to catch.
+    recordProxyResponse(this.proxyMeter, response);
+
     if (!response.ok) {
       const body = await response.text().catch(() => '');
       throw new APIError(body || response.statusText, response.status, 'Decap Turbo');
@@ -229,6 +248,22 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
       }
       return { ...builtHeaders, 'x-site-id': this.siteId };
     };
+
+    // lib-util's requestWithBackoff reads `api.requestFunction` off the
+    // instance and falls back to unsentRequest.performRequest, so this is the
+    // one place every API request's Response passes through — urlFor and
+    // requestHeaders above only see the request side. Scoping is already
+    // applied by the time this runs; the wrapper only observes.
+    //
+    // Cast because the hook is declared on lib-util's API interface (and read
+    // there) but not redeclared on decap-cms-backend-github's own API class —
+    // the same reason turbo-gitlab can assign it directly and this cannot.
+    (api as unknown as { requestFunction?: (req: unknown) => Promise<Response> }).requestFunction =
+      req =>
+        (unsentRequest.performRequest(req as never) as Promise<Response>).then(response => {
+          recordProxyResponse(this.proxyMeter, response);
+          return response;
+        });
   }
 
   async status() {
@@ -800,7 +835,22 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
   }
 
   async persistEntry(entry: any, options: any = {}) {
-    const result = await super.persistEntry(entry, options);
+    // Timed around super.persistEntry rather than around the network calls
+    // themselves, so the number includes lock acquisition — which is time the
+    // editor waits with the save spinner up, whatever it is spent on.
+    const meter = createProxyMeter();
+    this.proxyMeter = meter;
+    const startedAt = Date.now();
+
+    let result;
+    try {
+      result = await super.persistEntry(entry, options);
+    } finally {
+      this.proxyMeter = null;
+    }
+
+    const durationMs = Date.now() - startedAt;
+
     if (result && entry.dataFiles && entry.dataFiles.length > 0) {
       // Deliberately does not write the cache. The commit moves the branch
       // HEAD, and `reloadEntriesAfterPersist` makes core re-run loadEntries
@@ -822,6 +872,17 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
           // Redundant with the server-derived user_id (from the auth JWT) —
           // a fallback for the activity feed when that lookup misses.
           authorEmail: this.commitAuthorEmail,
+          // Baseline for the one-call commit endpoint (decap-turbo
+          // docs/deploy-status-plan.md B5 -> B1). `requests` is the headline
+          // — one save is N+4 round trips today — and durationMs minus
+          // upstreamMs is the share of the wait that collapsing them removes.
+          durationMs,
+          requests: meter.requests,
+          // Omitted rather than sent as 0 when no response carried a readable
+          // Server-Timing, so "not measured" never averages in as "instant".
+          ...(meter.upstreamMeasured && { upstreamMs: Math.round(meter.upstreamMs) }),
+          files: entry.dataFiles.length + (entry.assets?.length ?? 0),
+          bytes: measurePayloadBytes(entry.dataFiles, entry.assets),
         },
       );
     }

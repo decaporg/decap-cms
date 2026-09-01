@@ -13,6 +13,12 @@ import { SupabaseClient } from './supabase';
 import SupabaseAuthenticationPage from './AuthenticationPage';
 import { resolveCommitAuthorFromSupabaseUser } from './commitAuthor';
 import { recordCmsEvent } from './telemetry';
+import {
+  createProxyMeter,
+  measurePayloadBytes,
+  recordProxyResponse,
+  type ProxyMeter,
+} from './saveMetrics';
 
 interface SupabaseUser extends User {
   access_token?: string;
@@ -122,6 +128,13 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
   // re-declared.
   reloadEntriesAfterPersist?: boolean;
   _currentUserPromise?: Promise<GitLabUser>;
+  /**
+   * Non-null only while a save is in flight. Every proxied response is folded
+   * into it, so `cms_entry_saved` can report how many round trips that one save
+   * cost and how much of the wait was GitLab's own time. Null the rest of the
+   * time, so ordinary reads are not counted.
+   */
+  proxyMeter: ProxyMeter | null = null;
 
   supabase: SupabaseClient;
 
@@ -185,6 +198,12 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
     }
 
     const response: Response = await unsentRequest.performRequest(scopedReq);
+
+    // Recorded here because this is the one place every API response passes
+    // through — including failures, since a request that failed still cost the
+    // editor the wait.
+    recordProxyResponse(this.proxyMeter, response);
+
     return response;
   };
 
@@ -220,6 +239,8 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
     }
 
     const response = await fetch(scopedUrl, { ...init, headers });
+
+    recordProxyResponse(this.proxyMeter, response);
 
     if (!response.ok) {
       const body = await response.text().catch(() => '');
@@ -696,7 +717,22 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
   }
 
   async persistEntry(entry: any, options: any = {}) {
-    const result = await super.persistEntry(entry, options);
+    // Timed around super.persistEntry rather than around the network calls
+    // themselves, so the number includes lock acquisition — which is time the
+    // editor waits with the save spinner up, whatever it is spent on.
+    const meter = createProxyMeter();
+    this.proxyMeter = meter;
+    const startedAt = Date.now();
+
+    let result;
+    try {
+      result = await super.persistEntry(entry, options);
+    } finally {
+      this.proxyMeter = null;
+    }
+
+    const durationMs = Date.now() - startedAt;
+
     if (result && entry.dataFiles && entry.dataFiles.length > 0) {
       // Deliberately does not write the cache — the server owns it. The commit
       // moves the branch head and reloadEntriesAfterPersist makes core re-list
@@ -717,6 +753,17 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
           // Redundant with the server-derived user_id (from the auth JWT) —
           // a fallback for the activity feed when that lookup misses.
           authorEmail: this.commitAuthorEmail,
+          // Baseline for the one-call commit endpoint (decap-turbo
+          // docs/deploy-status-plan.md B5 -> B1). GitLab already commits in a
+          // single API call, so `requests` here is expected to be far lower
+          // than GitHub's — which is itself the comparison worth having.
+          durationMs,
+          requests: meter.requests,
+          // Omitted rather than sent as 0 when no response carried a readable
+          // Server-Timing, so "not measured" never averages in as "instant".
+          ...(meter.upstreamMeasured && { upstreamMs: Math.round(meter.upstreamMs) }),
+          files: entry.dataFiles.length + (entry.assets?.length ?? 0),
+          bytes: measurePayloadBytes(entry.dataFiles, entry.assets),
         },
       );
     }

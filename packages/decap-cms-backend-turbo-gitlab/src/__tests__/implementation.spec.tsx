@@ -1,4 +1,8 @@
 import DecapTurboGitLabBackend from '../implementation';
+import { recordCmsEvent } from '../telemetry';
+import { recordProxyResponse } from '../saveMetrics';
+
+jest.mock('../telemetry', () => ({ recordCmsEvent: jest.fn() }));
 
 describe('turbo gitlab backend supabase session refresh', () => {
   // Loosely typed on purpose — these are minimal fixtures, not full Config
@@ -401,5 +405,97 @@ describe('turbo gitlab backend use_graphql rejection', () => {
     } as any;
 
     expect(() => new DecapTurboGitLabBackend(config)).toThrow(/use_graphql/);
+  });
+});
+
+describe('turbo gitlab backend persistEntry save metrics', () => {
+  const config: any = {
+    backend: {
+      repo: 'group/project',
+      supabase_app_id: 'supabase-project-id',
+      supabase_anon_key: 'supabase-anon-key',
+    },
+    media_folder: 'static/media',
+  };
+
+  // super.persistEntry — the real one drives the GitLab API client, which this
+  // suite has no business standing up. Stubbing the prototype lets each test
+  // decide what the save "cost" in proxied requests.
+  const superPersistEntry = Object.getPrototypeOf(DecapTurboGitLabBackend.prototype);
+
+  function makeBackend() {
+    const backend: any = new DecapTurboGitLabBackend(config);
+    backend.baseUrl = 'https://sb.example.com';
+    backend.supabaseAccessToken = 'access-token';
+    backend.siteId = 'site-id';
+    return backend;
+  }
+
+  function responseWith(serverTiming: string | null) {
+    return {
+      headers: { get: (name: string) => (name === 'Server-Timing' ? serverTiming : null) },
+    } as unknown as Response;
+  }
+
+  const entry = {
+    dataFiles: [{ slug: 'post', path: 'content/post.md', raw: 'hello' }],
+    assets: [{ fileObj: { size: 2048 } }],
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  it('reports duration, round trips, upstream time and payload size', async () => {
+    jest.spyOn(superPersistEntry, 'persistEntry').mockImplementation(async function (this: any) {
+      recordProxyResponse(this.proxyMeter, responseWith('preamble;dur=20, upstream;dur=120'));
+      return 'post';
+    });
+
+    const backend = makeBackend();
+    await backend.persistEntry(entry, { collectionName: 'posts' });
+
+    expect(recordCmsEvent).toHaveBeenCalledTimes(1);
+    const props = (recordCmsEvent as jest.Mock).mock.calls[0][5];
+
+    expect(props.requests).toBe(1);
+    expect(props.upstreamMs).toBe(120);
+    expect(props.files).toBe(2);
+    expect(props.bytes).toBe(2053);
+    expect(typeof props.durationMs).toBe('number');
+  });
+
+  // Zero would read as "GitLab answered instantly", which is the one
+  // conclusion the data must never support.
+  it('omits upstreamMs entirely when no response carried a Server-Timing', async () => {
+    jest.spyOn(superPersistEntry, 'persistEntry').mockImplementation(async function (this: any) {
+      recordProxyResponse(this.proxyMeter, responseWith(null));
+      return 'post';
+    });
+
+    const backend = makeBackend();
+    await backend.persistEntry(entry, { collectionName: 'posts' });
+
+    const props = (recordCmsEvent as jest.Mock).mock.calls[0][5];
+    expect(props.requests).toBe(1);
+    expect('upstreamMs' in props).toBe(false);
+  });
+
+  // A meter left active would silently attribute every subsequent read to the
+  // next save.
+  it('clears the meter even when the save throws', async () => {
+    jest.spyOn(superPersistEntry, 'persistEntry').mockRejectedValue(new Error('conflict'));
+
+    const backend = makeBackend();
+
+    await expect(backend.persistEntry(entry, { collectionName: 'posts' })).rejects.toThrow(
+      'conflict',
+    );
+    expect(backend.proxyMeter).toBeNull();
+    expect(recordCmsEvent).not.toHaveBeenCalled();
   });
 });
