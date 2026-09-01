@@ -6,6 +6,30 @@ site_url: https://example.com
 publish_mode: editorial_workflow
 media_folder: assets/uploads
 
+i18n:
+  structure: multiple_folders
+  locales: [en, es, fr]
+  default_locale: en
+
+media_processing:
+  enabled: true
+  format:
+    enabled: true
+    default: webp
+  quality: 82
+  strip_metadata: true
+  width: 2000
+  height: null
+  aspect_ratio: null
+
+logo:
+  src: /nf-logo.png
+  show_in_header: true
+
+slug:
+  encoding: unicode
+  clean_accents: true
+
 collections: # A list of collections the CMS should be able to edit
   - name: 'posts' # Used in routes, ie.: /admin/collections/:slug/edit
     label: 'Posts' # Used in the UI
@@ -58,39 +82,93 @@ collections: # A list of collections the CMS should be able to edit
       - { label: 'Body', name: 'bodyold', widget: 'markdown', hint: 'Main content goes here.' }
       - { label: 'Body', name: 'bodyold2', widget: 'markdown', hint: 'Main content goes here 2.' }
 
-  - name: 'restaurants' # Used in routes, ie.: /admin/collections/:slug/edit
-    label: 'Restaurants' # Used in the UI
-    label_singular: 'Restaurant' # Used in the UI, ie: "New Post"
+  - name: 'artists'
+    label: 'Artists'
+    label_singular: 'Artist'
     description: >
-      Restaurants is an entry type used for testing galleries, relations and other widgets.
-      The tests must be written in such way that adding new fields does not affect previous flows.
-    folder: '_restaurants'
-    slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
-    summary: '{{title}} -- {{year}}/{{month}}/{{day}}'
-    create: true # Allow users to create new documents in this collection
-    editor:
-      visualEditing: true
-    fields: # The fields each document in this collection have
-      - { label: 'Title', name: 'title', widget: 'string', tagname: 'h1' }
-      - { label: 'Body', name: 'body', widget: 'markdown', hint: 'Main content goes here.' }
-      - { name: 'gallery', widget: 'image', choose_url: true, media_library: {config: {multiple: true, max_files: 999}}}
-      - name: post
+      Bands and musicians referenced by Albums below — demonstrates the relation widget's
+      "many albums to one artist" side, identifier_field (entries are titled by "Name", not
+      "Title"), and a square-cropped photo via media_processing.
+    folder: '_artists'
+    create: true
+    identifier_field: name
+    fields:
+      - { label: 'Name', name: 'name', widget: 'string' }
+      - { label: 'Country', name: 'country', widget: 'string', required: false }
+      - { label: 'Formed', name: 'formed_year', widget: 'number', required: false }
+      - label: 'Photo'
+        name: 'photo'
+        widget: 'image'
+        required: false
+        media_processing:
+          enabled: true
+          format: { enabled: true, default: webp }
+          quality: 85
+          width: 500
+          height: 500
+          aspect_ratio: '1:1'
+      - { label: 'Bio', name: 'bio', widget: 'markdown', required: false }
+
+  - name: 'albums'
+    label: 'Albums'
+    label_singular: 'Album'
+    description: >
+      55 landmark metal albums (10 per decade, 1970s-2010s, plus 5 so far from the 2020s),
+      seeded as sample data. Demonstrates the relation widget (Artist), a per-collection
+      media_folder/public_folder override, sortable_fields/view_filters/view_groups, a
+      regex-validated field (Catalog Number), a summary string transform, a plain list
+      widget (Tracklist), and a media_processing override on the cover art.
+    folder: '_albums'
+    media_folder: 'assets/uploads/albums'
+    public_folder: '/assets/uploads/albums'
+    create: true
+    summary: "{{title}} ({{release_date | date('YYYY')}}) — {{genre}}"
+    sortable_fields: [title, release_date]
+    view_filters:
+      - { label: 'Thrash Metal', field: genre, pattern: 'Thrash Metal' }
+      - { label: 'Death Metal', field: genre, pattern: 'Death Metal' }
+      - { label: 'Black Metal', field: genre, pattern: 'Black Metal' }
+    view_groups:
+      - { label: 'Genre', field: genre }
+      - { label: 'Artist', field: artist }
+    fields:
+      - { label: 'Title', name: 'title', widget: 'string' }
+      - name: artist
+        label: 'Artist'
         widget: relation
-        collection: posts
-        multiple: true
-        search_fields: ['title']
-        display_fields: ['title']
+        collection: artists
+        search_fields: ['name']
+        display_fields: ['name']
         value_field: '{{slug}}'
-        filters:
-          - field: relation_test
-            values: [true]
-      - name: authors
-        label: Authors
-        label_singular: 'Author'
-        widget: list
-        fields:
-          - { label: 'Name', name: 'name', widget: 'string', hint: 'First and Last' }
-          - { label: 'Description', name: 'description', widget: 'markdown' }
+      - { label: 'Release Date', name: 'release_date', widget: 'datetime', format: 'YYYY-MM-DD' }
+      - label: 'Genre'
+        name: 'genre'
+        widget: 'select'
+        options:
+          [
+            'Heavy Metal', 'Hard Rock', 'Progressive Rock', 'Thrash Metal', 'Black Metal',
+            'Death Metal', 'Melodic Death Metal', 'Groove Metal', 'Power Metal', 'Gothic Metal',
+            'Industrial Metal', 'Symphonic Metal', 'Symphonic Black Metal', 'Blackened Death Metal',
+            'Progressive Metal', 'Blackgaze', 'Sludge Metal', 'Kawaii Metal', 'Grindcore', 'Deathcore',
+          ]
+      - label: 'Catalog Number'
+        name: 'catalog_number'
+        widget: 'string'
+        required: false
+        hint: 'Record-label catalog number, e.g. SST-027'
+        pattern: ['^[A-Z0-9]{2,6}-\d{2,6}$', 'Must look like a catalog number, e.g. SST-027']
+      - label: 'Cover Art'
+        name: 'cover'
+        widget: 'image'
+        required: false
+        media_processing:
+          enabled: true
+          format: { enabled: true, default: webp }
+          quality: 85
+          width: 1000
+          height: 1000
+          aspect_ratio: '1:1'
+      - { label: 'Tracklist', name: 'tracklist', widget: 'list', required: false }
 
   - name: 'faq' # Used in routes, ie.: /admin/collections/:slug/edit
     label: 'FAQ' # Used in the UI
@@ -177,6 +255,7 @@ collections: # A list of collections the CMS should be able to edit
         }
       - { label: 'Hidden', name: 'hidden', widget: 'hidden', default: 'hidden' }
       - { label: 'Color', name: 'color', widget: 'color' }
+      - { label: 'Code', name: 'code', widget: 'code', default_language: 'yaml' }
       - label: 'Object'
         name: 'object'
         widget: 'object'
@@ -294,8 +373,14 @@ collections: # A list of collections the CMS should be able to edit
     preview_path: 'pages/{{slug}}'
     preview_path_preserve_slashes: true
     nested: { depth: 100, subfolders: false }
+    i18n: true
     fields:
       - label: Title
         name: title
         widget: string
+        i18n: translate
+      - label: Body
+        name: body
+        widget: markdown
+        i18n: translate
     meta: { path: { widget: string, label: 'Path' } }
