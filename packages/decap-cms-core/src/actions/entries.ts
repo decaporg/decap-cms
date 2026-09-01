@@ -1007,11 +1007,32 @@ export function persistEntry(collection: Collection) {
           }),
         );
 
-        // re-load media library if entry had media files
-        if (assetProxies.length > 0) {
-          await dispatch(loadMedia());
-        }
+        /**
+         * Release the editor as soon as the entry is committed.
+         *
+         * `entryPersisted` is what clears `isPersisting` — the save button's
+         * spinner and the unsaved-changes guard. It used to be dispatched
+         * *after* the media-library reload below, so saving an entry with
+         * images held the editor busy through a refresh of a panel that isn't
+         * even on screen. A save felt as slow as its slowest follow-up rather
+         * than as slow as the write itself.
+         *
+         * Everything after this point is a background refresh of views the
+         * editor is not waiting on.
+         */
         dispatch(entryPersisted(collection, serializedEntry, newSlug));
+
+        // Deliberately not awaited, for the same reason. loadMedia already
+        // handles its own failures internally (it dispatches mediaLoadFailed
+        // rather than rejecting); the catch is there so that if it ever does
+        // reject, it surfaces as a logged error rather than an unhandled
+        // rejection — and never as a failed save, because the save succeeded.
+        if (assetProxies.length > 0) {
+          Promise.resolve(dispatch(loadMedia())).catch(error => {
+            console.error('Failed to reload the media library after saving', error);
+          });
+        }
+
         if (collection.has('nested') || backend.implementation.reloadEntriesAfterPersist) {
           await dispatch(loadEntries(collection));
         }
