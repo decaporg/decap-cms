@@ -57,6 +57,10 @@ describe('TurboAPI.persistFiles', () => {
       message: 'Update Posts "hello"',
       additions: [{ path: 'content/posts/hello.md', contents: 'aGVsbG8=' }],
     });
+    // No `asset` flag on a data file — it is what the server counts toward
+    // "every content path was already cached", which is what lets it advance
+    // the collection's ingest marker.
+    expect('asset' in JSON.parse(init.body).additions[0]).toBe(false);
   });
 
   it('uses an asset proxy\'s own toBase64 rather than re-encoding raw', async () => {
@@ -67,10 +71,11 @@ describe('TurboAPI.persistFiles', () => {
     await makeApi(turboFetch).persistFiles([dataFile] as any, [asset] as any, options as any);
 
     expect(asset.toBase64).toHaveBeenCalled();
-    // Media first, matching the REST path's mediaFiles.concat(dataFiles), and
-    // the leading slash stripped.
+    // Media first, matching the REST path's mediaFiles.concat(dataFiles), the
+    // leading slash stripped, and media flagged so the server keeps it out of
+    // the content cache.
     expect(JSON.parse(turboFetch.mock.calls[0][1].body).additions).toEqual([
-      { path: 'static/img/a.png', contents: 'QUJD' },
+      { path: 'static/img/a.png', contents: 'QUJD', asset: true },
       { path: 'content/posts/hello.md', contents: 'aGVsbG8=' },
     ]);
   });

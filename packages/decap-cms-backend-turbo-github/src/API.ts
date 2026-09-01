@@ -80,13 +80,23 @@ export default class TurboAPI extends API {
     return !dataFiles.some(file => (file as CommitFile).newPath);
   }
 
-  private async toCommitAddition(file: CommitFile) {
+  /**
+   * `asset` tells the server to keep this file out of the content cache — media
+   * is served by the media library, and a base64 image stored as cache text
+   * would bloat it for a row nothing reads. Only the client knows the split:
+   * it is the data-file / asset-proxy distinction Decap already draws, and the
+   * server cannot re-derive it (collection keys are opaque to it).
+   *
+   * Cache bookkeeping only. The server checks permissions on every path in the
+   * commit regardless of this flag.
+   */
+  private async toCommitAddition(file: CommitFile, asset: boolean) {
     const contents =
       typeof file.toBase64 === 'function'
         ? await file.toBase64()
         : await this.toBase64(file.raw as string);
 
-    return { path: file.path.replace(/^\/+/, ''), contents };
+    return { path: file.path.replace(/^\/+/, ''), contents, ...(asset && { asset: true }) };
   }
 
   private async turboCommit(body: Record<string, unknown>) {
@@ -116,10 +126,11 @@ export default class TurboAPI extends API {
     // Media first, matching the REST path's `mediaFiles.concat(dataFiles)` —
     // one commit either way, but keeping the order identical means a reviewer
     // comparing the two paths sees the same tree.
-    const files = [...mediaFiles, ...dataFiles] as unknown as CommitFile[];
-
     try {
-      const additions = await Promise.all(files.map(file => this.toCommitAddition(file)));
+      const additions = await Promise.all([
+        ...(mediaFiles as unknown as CommitFile[]).map(file => this.toCommitAddition(file, true)),
+        ...(dataFiles as unknown as CommitFile[]).map(file => this.toCommitAddition(file, false)),
+      ]);
 
       const commit = await this.turboCommit({
         branch: this.branch,
