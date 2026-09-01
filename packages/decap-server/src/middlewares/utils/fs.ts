@@ -31,7 +31,18 @@ export async function listRepoFiles(
   depth: number,
 ) {
   const repoRoot = await fs.realpath(path.resolve(repoPath));
-  const files = await listFiles(await resolveExistingRepoPath(repoRoot, folder), extension, depth);
+
+  let resolvedFolder: string;
+  try {
+    resolvedFolder = await resolveExistingRepoPath(repoRoot, folder);
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code === 'ENOENT') {
+      return [];
+    }
+    throw e;
+  }
+
+  const files = await listFiles(resolvedFolder, extension, depth);
   return files.map(f => path.relative(repoRoot, f));
 }
 
