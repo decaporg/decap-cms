@@ -7,10 +7,10 @@ import {
   collectionKeyForFiles,
   unsentRequest,
 } from 'decap-cms-lib-util';
-import API from 'decap-cms-backend-github/src/API';
 import GraphQLAPI from 'decap-cms-backend-github/src/GraphQLAPI';
 import { stripIndent } from 'common-tags';
 
+import TurboAPI from './API';
 import { SupabaseClient } from './supabase';
 import SupabaseAuthenticationPage from './AuthenticationPage';
 import { resolveCommitAuthorFromSupabaseUser } from './commitAuthor';
@@ -357,8 +357,17 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
       }
     }
 
-    const apiCtor = this.useGraphql ? GraphQLAPI : API;
+    // TurboAPI in place of decap-cms-backend-github's API: it commits through
+    // `_content/commit` (one request instead of N+4) and falls back to the
+    // inherited REST sequence for renames, editorial workflow, oversized
+    // payloads, and edge functions that predate the endpoint. See
+    // decap-turbo/docs/deploy-status-plan.md §B1.
+    const apiCtor = this.useGraphql ? GraphQLAPI : TurboAPI;
     this.api = new apiCtor({
+      // Bound so the commit request inherits the session refresh, the
+      // x-site-id scoping and the save meter that every other Turbo request
+      // already goes through.
+      turboFetch: this.ghFetch.bind(this),
       token: this.token,
       tokenKeyword: this.tokenKeyword,
       branch: this.branch,
