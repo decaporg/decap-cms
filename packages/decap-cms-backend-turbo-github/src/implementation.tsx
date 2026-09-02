@@ -110,7 +110,12 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
     }
 
     const defaults = await response.json();
-    const { repo, branch, ...otherDefaults } = defaults as Record<string, unknown>;
+    // The config endpoint returns them as JSON strings; typing them here keeps
+    // the spread below assignable to the backend config's `repo`/`branch`.
+    const { repo, branch, ...otherDefaults } = defaults as Record<string, unknown> & {
+      repo?: string;
+      branch?: string;
+    };
 
     return {
       ...config,

@@ -2,7 +2,7 @@ import { coalesceKey, createRequestCoalescer } from '../requestCoalescer';
 
 /** A stand-in for a real Response: cloneable, and its body readable once. */
 function cloneableResponse(body: string) {
-  const make = (): Response => {
+  function make(): Response {
     let used = false;
     const response = {
       body,
@@ -16,7 +16,7 @@ function cloneableResponse(body: string) {
       },
     };
     return response as unknown as Response;
-  };
+  }
   return make();
 }
 

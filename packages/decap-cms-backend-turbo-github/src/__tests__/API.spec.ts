@@ -17,7 +17,8 @@ function makeApi(turboFetch: jest.Mock) {
 
 function committed(sha = 'a'.repeat(40)) {
   return jest.fn().mockResolvedValue({
-    json: () => Promise.resolve({ sha, url: `https://github.com/acme/site/commit/${sha}`, branch: 'main' }),
+    json: () =>
+      Promise.resolve({ sha, url: `https://github.com/acme/site/commit/${sha}`, branch: 'main' }),
   });
 }
 
@@ -63,7 +64,7 @@ describe('TurboAPI.persistFiles', () => {
     expect('asset' in JSON.parse(init.body).additions[0]).toBe(false);
   });
 
-  it('uses an asset proxy\'s own toBase64 rather than re-encoding raw', async () => {
+  it("uses an asset proxy's own toBase64 rather than re-encoding raw", async () => {
     const turboFetch = committed();
     const asset = { path: '/static/img/a.png', toBase64: jest.fn().mockResolvedValue('QUJD') };
 

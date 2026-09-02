@@ -104,9 +104,7 @@ export default class TurboAPI extends API {
    * everywhere else, so the server's branch and the client's agree.
    */
   private workflowBranchFor(options: PersistOptions, slug: string) {
-    return branchFromContentKey(
-      this.generateContentKey(options.collectionName as string, slug),
-    );
+    return branchFromContentKey(this.generateContentKey(options.collectionName as string, slug));
   }
 
   /**
