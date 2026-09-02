@@ -344,6 +344,57 @@ describe('turbo backend supabase session refresh', () => {
   });
 });
 
+describe('turbo backend authenticate', () => {
+  const config = {
+    backend: {
+      repo: 'owner/repo',
+      // Always present in practice: `preloadConfig` takes repo and branch from
+      // the authoritative `sites` row, so `isBranchConfigured` is true and the
+      // default-branch lookup never runs.
+      branch: 'main',
+      supabase_app_id: 'supabase-project-id',
+      supabase_anon_key: 'supabase-anon-key',
+      turbo_site_id: 'site-123',
+    },
+    media_folder: 'static/media',
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('does not read repo metadata, because Turbo commits as the App and never reads the answer', async () => {
+    const backend = new DecapTurboGitHubBackend(config);
+
+    global.fetch = jest.fn().mockImplementation(url => {
+      if (String(url).includes('/functions/v1/permissions')) {
+        return Promise.resolve({ ok: true, json: () => Promise.resolve({ collections: {} }) });
+      }
+      return Promise.reject(new Error(`unexpected request: ${url}`));
+    });
+
+    const user = await backend.authenticate({
+      token: 'gh-token',
+      access_token: 'access-123',
+      expires_at: Math.floor(Date.now() / 1000) + 3600,
+      email: 'editor@example.com',
+      // Already the active site, so authenticate skips the one-off
+      // active_site_id write and this test sees only the steady-state requests.
+      user_metadata: { active_site_id: 'site-123' },
+    });
+
+    expect(user.login).toBe('owner');
+
+    // GitHubBackend.authenticate would call hasWriteAccess() here, a
+    // `GET /repos/{owner}/{repo}` whose result Turbo discards
+    // (bypassWriteAccessCheckForAppTokens). It sat on the critical path of
+    // every CMS load, so it must stay gone.
+    const requested = global.fetch.mock.calls.map(([url]) => String(url));
+    expect(requested.some(url => /\/repos\/owner\/repo(\?|$)/.test(url))).toBe(false);
+    expect(requested.some(url => url.includes('/functions/v1/permissions'))).toBe(true);
+  });
+});
+
 describe('turbo backend preloadConfig', () => {
   afterEach(() => {
     delete global.fetch;

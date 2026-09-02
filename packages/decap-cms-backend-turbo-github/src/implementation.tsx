@@ -8,12 +8,12 @@ import {
   unsentRequest,
 } from 'decap-cms-lib-util';
 import GraphQLAPI from 'decap-cms-backend-github/src/GraphQLAPI';
-import { stripIndent } from 'common-tags';
 
 import TurboAPI from './API';
 import { SupabaseClient } from './supabase';
 import SupabaseAuthenticationPage from './AuthenticationPage';
 import { resolveCommitAuthorFromSupabaseUser } from './commitAuthor';
+import { coalesceKey, createRequestCoalescer, type RequestCoalescer } from './requestCoalescer';
 import { recordCmsEvent } from './telemetry';
 import {
   createProxyMeter,
@@ -158,6 +158,13 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
    */
   proxyMeter: ProxyMeter | null = null;
 
+  /**
+   * Joins concurrent identical reads. One per backend instance, so every read
+   * path — the proxied GitHub API via `requestFunction` and this backend's own
+   * `ghFetch` — shares a single view of what is already in flight.
+   */
+  protected coalesceRequest: RequestCoalescer = createRequestCoalescer();
+
   supabase: SupabaseClient;
 
   /**
@@ -245,15 +252,18 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
       scopedUrl = urlObj.toString();
     }
 
-    const response = await fetch(scopedUrl, {
-      ...init,
-      headers,
-    });
-
-    // Before the ok-check: a request that failed still cost the editor the
-    // wait, and a save that is slow *because* it is retrying is exactly the
-    // case the measurement exists to catch.
-    recordProxyResponse(this.proxyMeter, response);
+    const response = await this.coalesceRequest(coalesceKey(init.method, scopedUrl), () =>
+      fetch(scopedUrl, {
+        ...init,
+        headers,
+      }).then(res => {
+        // Before the ok-check: a request that failed still cost the editor the
+        // wait, and a save that is slow *because* it is retrying is exactly the
+        // case the measurement exists to catch.
+        recordProxyResponse(this.proxyMeter, res);
+        return res;
+      }),
+    );
 
     if (!response.ok) {
       const body = await response.text().catch(() => '');
@@ -301,17 +311,32 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
     // instance and falls back to unsentRequest.performRequest, so this is the
     // one place every API request's Response passes through — urlFor and
     // requestHeaders above only see the request side. Scoping is already
-    // applied by the time this runs; the wrapper only observes.
+    // applied by the time this runs.
+    //
+    // Two things hang off that: the save meter observes every response, and
+    // concurrent identical reads are folded into one round trip. Both belong
+    // here rather than further out because this is the only funnel that sees
+    // the final, fully scoped URL.
+    //
+    // `recordProxyResponse` sits inside the coalesced work, not outside it, so
+    // the meter counts round trips actually made — a joined duplicate should
+    // not inflate a save's request count.
     //
     // Cast because the hook is declared on lib-util's API interface (and read
     // there) but not redeclared on decap-cms-backend-github's own API class —
     // the same reason turbo-gitlab can assign it directly and this cannot.
     (api as unknown as { requestFunction?: (req: unknown) => Promise<Response> }).requestFunction =
-      req =>
-        (unsentRequest.performRequest(req as never) as Promise<Response>).then(response => {
-          recordProxyResponse(this.proxyMeter, response);
-          return response;
-        });
+      req => {
+        const request = req as { get: (key: string) => string | undefined };
+        return this.coalesceRequest(
+          coalesceKey(request.get('method'), unsentRequest.toURL(req as never)),
+          () =>
+            (unsentRequest.performRequest(req as never) as Promise<Response>).then(response => {
+              recordProxyResponse(this.proxyMeter, response);
+              return response;
+            }),
+        );
+      };
   }
 
   async status() {
@@ -459,23 +484,35 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
     });
     this.setScopedApiRequestBuilder();
 
-    const user = await this.api!.user();
-    const isCollab = await this.api!.hasWriteAccess().catch(error => {
-      error.message = stripIndent`
-        Repo "${this.repo}" not found.
-
-        Please ensure the repo information is spelled correctly.
-
-        If the repo is private, make sure you're logged into a GitHub account with access.
-
-        If your repo is under an organization, ensure the organization has granted access to Decap CMS.
-      `;
-      throw error;
-    });
-
-    if (!isCollab && !this.bypassWriteAccessCheckForAppTokens) {
-      throw new Error('Your GitHub user account does not have access to this repo.');
-    }
+    // GitHubBackend.authenticate calls `api.hasWriteAccess()` here, which is a
+    // `GET /repos/{owner}/{repo}` read of `permissions.push` for the signed-in
+    // GitHub user. Turbo has no signed-in GitHub user: it commits with the
+    // organization's App installation token, which is exactly why
+    // `bypassWriteAccessCheckForAppTokens` is set in the constructor — the
+    // answer was already being thrown away. `fetchTurboPermissions` below is
+    // what actually decides what this editor may touch.
+    //
+    // So it was a round trip whose result nothing read, sitting on the critical
+    // path of every CMS load, ahead of the first content request: measured at
+    // 1.8s through the gh proxy on the tester site. Its other upstream side
+    // effect — normalising `repoOwner` to GitHub's casing — Turbo does not need
+    // either, because `preloadConfig` takes repo from the authoritative `sites`
+    // row rather than from a hand-written config.yml.
+    //
+    // `currentUser` is local (session identity, no fetch), so pairing it with
+    // the permissions read costs nothing and overlaps their latency.
+    //
+    // Permissions are only knowable post-auth (the `config` bootstrap
+    // endpoint's static preloadConfig hook runs before a user JWT exists), so
+    // they are fetched here and attached to the returned user rather than
+    // resolved earlier. decap-cms-core's actions/auth.ts picks `permissions`
+    // up off this object generically (the field name is backend-neutral by
+    // design — any backend could set it) and re-filters the loaded config
+    // against it.
+    const [user, turboPermissions] = await Promise.all([
+      this.api!.user(),
+      this.fetchTurboPermissions(),
+    ]);
 
     const commitAuthor = resolveCommitAuthorFromSupabaseUser(
       state as SupabaseUser,
@@ -483,14 +520,6 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
     );
     this.api!.commitAuthor = commitAuthor;
     this.commitAuthorEmail = commitAuthor?.email;
-
-    // Only knowable post-auth (the `config` bootstrap endpoint's static
-    // preloadConfig hook runs before a user JWT exists), so it's fetched
-    // here and attached to the returned user rather than resolved earlier.
-    // decap-cms-core's actions/auth.ts picks up `permissions` off this object
-    // generically (the field name is backend-neutral by design — any backend
-    // could set it) and re-filters the loaded config against it.
-    const turboPermissions = await this.fetchTurboPermissions();
 
     recordCmsEvent(
       this.baseUrl!,

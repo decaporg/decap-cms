@@ -12,6 +12,7 @@ import { stripIndent } from 'common-tags';
 import { SupabaseClient } from './supabase';
 import SupabaseAuthenticationPage from './AuthenticationPage';
 import { resolveCommitAuthorFromSupabaseUser } from './commitAuthor';
+import { coalesceKey, createRequestCoalescer, type RequestCoalescer } from './requestCoalescer';
 import { recordCmsEvent } from './telemetry';
 import {
   createProxyMeter,
@@ -148,6 +149,13 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
    */
   proxyMeter: ProxyMeter | null = null;
 
+  /**
+   * Joins concurrent identical reads. One per backend instance, so every read
+   * path — the proxied GitLab API via `apiRequestFunction` and this backend's
+   * own `glFetch` — shares a single view of what is already in flight.
+   */
+  protected coalesceRequest: RequestCoalescer = createRequestCoalescer();
+
   supabase: SupabaseClient;
 
   constructor(config: Config, options: any = {}) {
@@ -209,12 +217,21 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
       scopedReq = unsentRequest.withParams({ site_id: this.siteId }, scopedReq);
     }
 
-    const response: Response = await unsentRequest.performRequest(scopedReq);
-
-    // Recorded here because this is the one place every API response passes
-    // through — including failures, since a request that failed still cost the
-    // editor the wait.
-    recordProxyResponse(this.proxyMeter, response);
+    // Coalescing and metering both hang off this one funnel — it is the only
+    // place that sees the final, fully scoped request. `recordProxyResponse`
+    // sits inside the coalesced work so the save meter counts round trips
+    // actually made, rather than letting a joined duplicate inflate the count.
+    const response: Response = await this.coalesceRequest(
+      coalesceKey(scopedReq.get('method'), unsentRequest.toURL(scopedReq)),
+      () =>
+        unsentRequest.performRequest(scopedReq).then((res: Response) => {
+          // Recorded here because this is the one place every API response
+          // passes through — including failures, since a request that failed
+          // still cost the editor the wait.
+          recordProxyResponse(this.proxyMeter, res);
+          return res;
+        }),
+    );
 
     return response;
   };
@@ -250,9 +267,12 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
       scopedUrl = urlObj.toString();
     }
 
-    const response = await fetch(scopedUrl, { ...init, headers });
-
-    recordProxyResponse(this.proxyMeter, response);
+    const response = await this.coalesceRequest(coalesceKey(init.method, scopedUrl), () =>
+      fetch(scopedUrl, { ...init, headers }).then(res => {
+        recordProxyResponse(this.proxyMeter, res);
+        return res;
+      }),
+    );
 
     if (!response.ok) {
       const body = await response.text().catch(() => '');
@@ -385,7 +405,23 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
       requestFunction: this.apiRequestFunction,
     });
 
-    const user = await this.api.user();
+    // Permissions are only knowable post-auth (the `config` bootstrap
+    // endpoint's static preloadConfig hook runs before a user JWT exists), so
+    // they are fetched here rather than resolved earlier — but nothing below
+    // the write-access check needs them, so the two round trips overlap
+    // instead of queueing. `currentUser` is local (session identity, no
+    // fetch), so it joins them for free.
+    //
+    // Unlike the GitHub twin, `hasWriteAccess` is NOT redundant here: this
+    // backend commits with the organization's GitLab group token, and whether
+    // that token can write to this project is a real question with a real
+    // answer, enforced below. On GitHub the equivalent check was asking about
+    // a signed-in GitHub user that Turbo does not have.
+    const [user, turboPermissions] = await Promise.all([
+      this.api.user(),
+      this.fetchTurboPermissions(),
+    ]);
+
     const isCollab = await this.api.hasWriteAccess().catch((error: Error) => {
       error.message = stripIndent`
         Repo "${this.repo}" not found.
@@ -415,13 +451,11 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
     this.api.commitAuthor = commitAuthor;
     this.commitAuthorEmail = commitAuthor?.email;
 
-    // Only knowable post-auth (the `config` bootstrap endpoint's static
-    // preloadConfig hook runs before a user JWT exists), so it's fetched
-    // here and attached to the returned user rather than resolved earlier.
-    // decap-cms-core's actions/auth.ts picks up `permissions` off this object
-    // generically (the field name is backend-neutral by design — any backend
-    // could set it) and re-filters the loaded config against it.
-    const turboPermissions = await this.fetchTurboPermissions();
+    // `turboPermissions` was resolved above, alongside the user. It is attached
+    // to the returned user object because decap-cms-core's actions/auth.ts
+    // picks `permissions` up off it generically (the field name is
+    // backend-neutral by design — any backend could set it) and re-filters the
+    // loaded config against it.
 
     recordCmsEvent(this.baseUrl!, this.supabaseAnonKey, this.supabaseAccessToken, 'cms_session_started', this.siteId);
 
