@@ -71,7 +71,7 @@ function RouteInCollection({ collections, render, ...props }) {
   );
 }
 
-class App extends React.Component {
+export class App extends React.Component {
   static propTypes = {
     auth: PropTypes.object.isRequired,
     config: PropTypes.object.isRequired,
@@ -95,6 +95,26 @@ class App extends React.Component {
     // Manually validate PropTypes - React 19 breaking change
     PropTypes.checkPropTypes(App.propTypes, this.props, 'prop', 'App');
 
+    this.startDeployWatching();
+  }
+
+  componentDidUpdate(prevProps) {
+    // Both deploy thunks need a constructed backend and a live session, and at
+    // mount there is neither — the config is still loading, so `currentBackend`
+    // throws and both calls quietly do nothing.
+    //
+    // Measured, not theorised: the Deploys nav item never appeared on a real
+    // site because the one mount read never ran. The same gap meant a ledger
+    // left over from before a page reload only resumed once the editor
+    // happened to save again, since that path re-dispatches the subscription
+    // itself. Retrying when the user arrives fixes both; the thunks are
+    // idempotent, so a repeat is free.
+    if (!prevProps.user && this.props.user) {
+      this.startDeployWatching();
+    }
+  }
+
+  startDeployWatching() {
     // Deploy outcomes are announced for the whole session, from here rather
     // than from the editor: a build outlives the screen the save was made on,
     // and the editor should hear that their change went live wherever they
@@ -102,7 +122,7 @@ class App extends React.Component {
     // no-op. See decap-turbo/docs/deploy-status-plan.md §A4b.
     this.props.startDeployNotifications();
 
-    // The header pill and the Deploys page, plus the single read that
+    // The header indicator and the Deploys page, plus the single read that
     // establishes the site's current state for an editor who has saved
     // nothing this session. See §A8.
     this.props.startDeployStatus();
