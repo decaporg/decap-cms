@@ -1,5 +1,5 @@
+import { Component, cloneElement, createElement } from 'react';
 import PropTypes from 'prop-types';
-import React from 'react';
 import { isElement } from 'react-is';
 import { ScrollSyncPane } from 'react-scroll-sync';
 import { FrameContextConsumer } from 'react-frame-component';
@@ -9,7 +9,7 @@ import { vercelStegaDecode } from '@vercel/stega';
  * PreviewContent renders the preview component and optionally handles visual editing interactions.
  * By default it uses scroll sync, but can be configured to use visual editing instead.
  */
-class PreviewContent extends React.Component {
+class PreviewContent extends Component {
   handleClick = e => {
     const { previewProps, onFieldClick } = this.props;
     const visualEditing = previewProps?.collection?.getIn(['editor', 'visualEditing'], false);
@@ -36,8 +36,8 @@ class PreviewContent extends React.Component {
     return (
       <div onClick={this.handleClick}>
         {isElement(previewComponent)
-          ? React.cloneElement(previewComponent, previewProps)
-          : React.createElement(previewComponent, previewProps)}
+          ? cloneElement(previewComponent, previewProps)
+          : createElement(previewComponent, previewProps)}
       </div>
     );
   }

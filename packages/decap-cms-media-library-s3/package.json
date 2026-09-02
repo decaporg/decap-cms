@@ -23,18 +23,18 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "develop": "npm run build:esm -- --watch",
+    "develop": "pnpm run build:esm --watch",
     "build": "cross-env NODE_ENV=production webpack",
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --extensions \".js,.jsx,.ts,.tsx\" --ignore \"**/__tests__\" --root-mode upward",
     "test": "jest"
   },
   "peerDependencies": {
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
-    "decap-cms-lib-util": "^3.0.0"
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "decap-cms-lib-util": "workspace:*"
   },
   "dependencies": {
-    "@emotion/react": "^11.11.1",
-    "@emotion/styled": "^11.11.0"
+    "@emotion/react": "catalog:",
+    "@emotion/styled": "catalog:"
   }
 }

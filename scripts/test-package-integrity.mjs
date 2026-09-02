@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
 /**
- * npm Package Integrity Test
+ * pnpm Package Integrity Test
  *
  * This script verifies that the built npm packages work correctly before publishing.
  * It tests:
- * 1. Package can be packed (npm pack)
+ * 1. Package can be packed (pnpm pack)
  * 2. Package doesn't have Node.js-only dependencies that break browser bundlers
  * 3. Package.json has required fields
  *
@@ -13,18 +13,22 @@
  */
 
 import { spawnSync } from 'child_process';
-import { readFileSync, existsSync, readdirSync, statSync } from 'fs';
+import { readFileSync, existsSync, readdirSync, statSync, mkdtempSync, rmSync } from 'fs';
+import { tmpdir } from 'os';
 import { join } from 'path';
+import { gunzipSync } from 'zlib';
 
 const ROOT_DIR = process.cwd();
 const PACKAGES_TO_TEST = ['decap-cms', 'decap-cms-core', 'decap-cms-app'];
+const DEPENDENCY_FIELDS = [
+  'dependencies',
+  'devDependencies',
+  'peerDependencies',
+  'optionalDependencies',
+];
 
 // Known Node.js protocol imports that break browser bundlers
-const BROWSER_INCOMPATIBLE_PATTERNS = [
-  /from ['"]node:/,
-  /require\(['"]node:/,
-  /import ['"]node:/,
-];
+const BROWSER_INCOMPATIBLE_PATTERNS = [/from ['"]node:/, /require\(['"]node:/, /import ['"]node:/];
 
 function log(msg) {
   console.log(`[test-package-integrity] ${msg}`);
@@ -32,6 +36,55 @@ function log(msg) {
 
 function error(msg) {
   console.error(`[test-package-integrity] ERROR: ${msg}`);
+}
+
+function readTarString(buffer, offset, length) {
+  const end = buffer.indexOf(0, offset);
+  const stringEnd = end === -1 || end > offset + length ? offset + length : end;
+  return buffer.toString('utf8', offset, stringEnd);
+}
+
+function readFileFromTarball(tarballPath, targetPath) {
+  const buffer = gunzipSync(readFileSync(tarballPath));
+
+  for (let offset = 0; offset < buffer.length; ) {
+    const name = readTarString(buffer, offset, 100);
+    if (!name) {
+      break;
+    }
+
+    const prefix = readTarString(buffer, offset + 345, 155);
+    const path = prefix ? `${prefix}/${name}` : name;
+    const size = parseInt(readTarString(buffer, offset + 124, 12).trim() || '0', 8);
+    const contentOffset = offset + 512;
+
+    if (path === targetPath) {
+      return buffer.toString('utf8', contentOffset, contentOffset + size);
+    }
+
+    offset = contentOffset + Math.ceil(size / 512) * 512;
+  }
+
+  throw new Error(`Missing ${targetPath} in ${tarballPath}`);
+}
+
+function findPublishProtocolDependencies(manifest) {
+  const dependenciesWithPublishProtocols = [];
+
+  for (const field of DEPENDENCY_FIELDS) {
+    const dependencies = manifest[field];
+    if (!dependencies) {
+      continue;
+    }
+
+    for (const [dependencyName, specifier] of Object.entries(dependencies)) {
+      if (typeof specifier === 'string' && /^(catalog|workspace):/.test(specifier)) {
+        dependenciesWithPublishProtocols.push(`${field}.${dependencyName}: ${specifier}`);
+      }
+    }
+  }
+
+  return dependenciesWithPublishProtocols;
 }
 
 /**
@@ -86,23 +139,41 @@ function checkDistForNodeProtocol(packageDir) {
 function testPackagePack(packageName) {
   const packageDir = join(ROOT_DIR, 'packages', packageName);
 
-  log(`Testing npm pack for ${packageName}...`);
+  log(`Testing pnpm pack for ${packageName}...`);
 
-  const result = spawnSync('npm', ['pack', '--dry-run'], {
-    cwd: packageDir,
-    encoding: 'utf8',
-    stdio: 'pipe',
-    shell: true,
-  });
+  const packDir = mkdtempSync(join(tmpdir(), `decap-pack-${packageName}-`));
 
-  if (result.status !== 0) {
-    error(`npm pack failed for ${packageName}`);
-    error(result.stderr);
-    return false;
+  try {
+    const result = spawnSync('pnpm', ['pack', '--json', '--pack-destination', packDir], {
+      cwd: packageDir,
+      encoding: 'utf8',
+      stdio: 'pipe',
+      shell: true,
+    });
+
+    if (result.status !== 0) {
+      error(`pnpm pack failed for ${packageName}`);
+      error(result.stderr || result.stdout);
+      return false;
+    }
+
+    const packOutput = JSON.parse(result.stdout);
+    const tarballPath = Array.isArray(packOutput) ? packOutput[0].filename : packOutput.filename;
+    const packedPackageJson = JSON.parse(readFileFromTarball(tarballPath, 'package/package.json'));
+    const publishProtocolDependencies = findPublishProtocolDependencies(packedPackageJson);
+    if (publishProtocolDependencies.length > 0) {
+      error(`pnpm pack left unresolved pnpm protocols in ${packageName}:`);
+      for (const dependency of publishProtocolDependencies) {
+        error(`  ${dependency}`);
+      }
+      return false;
+    }
+
+    log(`  pnpm pack OK for ${packageName}`);
+    return true;
+  } finally {
+    rmSync(packDir, { recursive: true, force: true });
   }
-
-  log(`  npm pack OK for ${packageName}`);
-  return true;
 }
 
 /**
@@ -176,7 +247,7 @@ function testPackageJson(packageName) {
 }
 
 async function main() {
-  log('Starting npm package integrity tests...');
+  log('Starting pnpm package integrity tests...');
   log(`Root directory: ${ROOT_DIR}`);
 
   let allPassed = true;

@@ -1,5 +1,5 @@
+import { Component } from 'react';
 import styled from '@emotion/styled';
-import React from 'react';
 import PropTypes from 'prop-types';
 
 import { colorsRaw } from './styles.js';
@@ -20,7 +20,7 @@ const ButtonText = styled.p`
   margin: 0 10px;
 `;
 
-export default class GoBackButton extends React.Component {
+export default class GoBackButton extends Component {
   static propTypes = {
     href: PropTypes.string.isRequired,
     t: PropTypes.func.isRequired,
