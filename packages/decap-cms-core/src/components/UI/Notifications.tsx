@@ -22,8 +22,15 @@ type Entry = {
   toastId: Id;
   /** What was last rendered, so an unchanged notification is left alone. */
   signature: string;
-  /** Whether a dismissal is already queued, so an update cannot queue a second. */
-  dismissScheduled: boolean;
+  /**
+   * The queued dismissal, if any. Held rather than merely flagged because an
+   * update may need to CANCEL it: a notification created with a timeout and
+   * later updated to be held open (a save that turns into a failed build)
+   * would otherwise still vanish on the timer armed for the first message.
+   */
+  dismissTimer: ReturnType<typeof setTimeout> | null;
+  /** The timeout that timer was armed for, so an unchanged one is left alone. */
+  dismissAfter: number | false | undefined;
 };
 
 type IdMap = {
@@ -75,11 +82,21 @@ function Notifications({ notifications }: Props) {
 
   useEffect(() => {
     function scheduleDismiss(entry: Entry, notification: Notification) {
-      if (entry.dismissScheduled || !notification.dismissAfter) {
+      if (entry.dismissTimer !== null && entry.dismissAfter === notification.dismissAfter) {
         return;
       }
-      entry.dismissScheduled = true;
-      setTimeout(() => {
+
+      if (entry.dismissTimer !== null) {
+        clearTimeout(entry.dismissTimer);
+        entry.dismissTimer = null;
+      }
+
+      entry.dismissAfter = notification.dismissAfter;
+      if (!notification.dismissAfter) {
+        return;
+      }
+
+      entry.dismissTimer = setTimeout(() => {
         dispatch(dismissNotification(notification.id));
       }, notification.dismissAfter as number);
     }
@@ -96,7 +113,8 @@ function Notifications({ notifications }: Props) {
         const entry: Entry = {
           toastId,
           signature: signatureOf(notification),
-          dismissScheduled: false,
+          dismissTimer: null,
+          dismissAfter: undefined,
         };
         idMap[notification.id] = entry;
         setIdMap(idMap);
@@ -129,6 +147,9 @@ function Notifications({ notifications }: Props) {
     Object.entries(idMap).forEach(([id, entry]) => {
       if (!notifications.find(notification => notification.id === id)) {
         toast.dismiss(entry.toastId);
+        if (entry.dismissTimer !== null) {
+          clearTimeout(entry.dismissTimer);
+        }
         delete idMap[id];
         setIdMap(idMap);
       }

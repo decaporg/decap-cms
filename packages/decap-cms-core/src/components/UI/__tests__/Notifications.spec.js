@@ -58,6 +58,40 @@ describe('Notifications', () => {
     expect(link).toHaveAttribute('target', '_blank');
   });
 
+  // A notification created with a timeout and then updated to be held open
+  // must not still vanish on the timer armed for its first message — a save
+  // toast that turns into a failed build is exactly that case.
+  it('cancels a queued dismissal when an update holds the toast open', async () => {
+    jest.useFakeTimers();
+    let notifications = [
+      { id: '1', message: 'Saved · Publishing…', type: 'success', dismissAfter: 4000 },
+    ];
+    const store = mockStore(() => ({ notifications: { notifications } }));
+
+    render(
+      <Provider store={store}>
+        <I18n locale="en" messages={{}}>
+          <Notifications />
+        </I18n>
+      </Provider>,
+    );
+
+    notifications = [
+      { id: '1', message: 'Your site failed to build', type: 'error', dismissAfter: false },
+    ];
+    act(() => {
+      store.dispatch({ type: 'REPAINT' });
+    });
+
+    act(() => {
+      jest.advanceTimersByTime(10000);
+    });
+
+    // The dismissal for the 4s message must not have fired for the held-open one.
+    expect(store.getActions().filter(a => a.type === 'NOTIFICATION_DISMISS')).toHaveLength(0);
+    jest.useRealTimers();
+  });
+
   // The capability §A4 needs: one toast that follows a job through its stages,
   // rather than a new toast stacked next to it per stage.
   it('updates a notification in place instead of stacking a second toast', async () => {
