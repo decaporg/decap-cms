@@ -342,6 +342,60 @@ describe('DeployWatcher giving up', () => {
     expect(watcher.isWatching).toBe(false);
   });
 
+  // A save made just before the window closes must not be thrown away with it.
+  it('restarts the silent-watch window when another save arrives', async () => {
+    const { watcher, transport, timers, resolutions } = makeWatcher();
+
+    watcher.record({ entryPath: 'posts/a.md', commitSha: 'sha-1' });
+    timers.advanceClock(FIRST_SIGN_TIMEOUT_MS - 1000);
+    watcher.record({ entryPath: 'posts/b.md', commitSha: 'sha-2' });
+
+    timers.advanceClock(2000);
+    transport.deliver([]);
+    await flush();
+
+    expect(watcher.isWatching).toBe(true);
+
+    transport.deliver([row({ commit_sha: 'sha-2' })]);
+    await flush();
+    expect(resolutions[0]).toMatchObject({ status: 'live' });
+  });
+
+  // Same reason: a ledger restored after a reload has not had its chance yet.
+  it('gives a resumed ledger a fresh window rather than discarding it', async () => {
+    const ledger = createMemoryLedger();
+    const first = makeWatcher({ ledger });
+    first.watcher.record({ entryPath: 'posts/a.md', commitSha: 'sha-1' });
+    first.timers.advanceClock(FIRST_SIGN_TIMEOUT_MS + 1000);
+
+    const second = makeWatcher({ ledger });
+    second.transport.deliver([]);
+    await flush();
+
+    expect(second.watcher.isWatching).toBe(true);
+  });
+
+  it('stops polling when the last listener goes away, keeping the ledger', () => {
+    const ledger = createMemoryLedger();
+    const timers = fakeClock();
+    const transport = manualTransport();
+    const watcher = new DeployWatcher({
+      transport: transport.transport,
+      isCommitContained: jest.fn(),
+      ledger,
+      clock: timers.clock,
+    });
+
+    const unsubscribe = watcher.subscribe(() => undefined);
+    watcher.record({ entryPath: 'posts/a.md', commitSha: 'sha-1' });
+    expect(watcher.isWatching).toBe(true);
+
+    unsubscribe();
+
+    expect(watcher.isWatching).toBe(false);
+    expect(ledger.load()).toHaveLength(1);
+  });
+
   it('gives up after repeated transport failures, leaving the ledger to be resumed', () => {
     const ledger = createMemoryLedger();
     const { watcher, transport } = makeWatcher({ ledger });

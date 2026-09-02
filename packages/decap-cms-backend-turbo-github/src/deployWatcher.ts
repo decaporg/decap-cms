@@ -299,6 +299,11 @@ export class DeployWatcher {
     }
     return () => {
       this.listeners.delete(listener);
+      if (this.listeners.size === 0) {
+        // Nothing left to report to, so nothing to poll for. The ledger stays
+        // in storage, so a later subscribe picks the watch back up.
+        this.stop();
+      }
     };
   }
 
@@ -312,6 +317,11 @@ export class DeployWatcher {
       { ...save, savedAt: now },
     ];
     this.persist();
+    // Restart the "has anything reported yet" window. Without this, a save
+    // made 119s into a silent watch would be thrown away one second later,
+    // together with the ledger — and a ledger resumed after a reload would be
+    // discarded before its first poll.
+    this.startedAt = now;
     this.ensureRunning();
   }
 
@@ -405,9 +415,13 @@ export class DeployWatcher {
       return;
     }
     this.resolving = true;
-    this.resolve(rows).finally(() => {
-      this.resolving = false;
-    });
+    this.resolve(rows)
+      .catch(error => {
+        console.warn('Deploy resolution failed', error);
+      })
+      .finally(() => {
+        this.resolving = false;
+      });
   }
 
   private async resolve(rows: DeploymentRow[]) {
