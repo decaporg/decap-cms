@@ -520,6 +520,7 @@ export default class RelationControl extends React.Component {
         cacheOptions
         defaultOptions
         loadOptions={this.loadOptions}
+        loadingMessage={() => 'Loading options…'}
         onChange={this.handleChange}
         className={classNameWrapper}
         onFocus={setActiveStyle}
