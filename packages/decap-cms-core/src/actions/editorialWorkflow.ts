@@ -237,13 +237,38 @@ function unpublishedEntryDeleteError(collection: string, slug: string) {
  * Exported Thunk Action Creators
  */
 
+/**
+ * How long the unpublished-entry list may be reused as proof that a given slug
+ * is NOT under editorial workflow. Short enough that a colleague's new draft is
+ * noticed within one navigation or two, long enough that browsing a collection
+ * does not refetch per entry opened.
+ */
+const UNPUBLISHED_LIST_MAX_AGE = 30 * 1000;
+
 export function loadUnpublishedEntry(collection: Collection, slug: string) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const backend = currentBackend(state.config);
-    const entriesLoaded = get(state.editorialWorkflow.toJS(), 'pages.ids', false);
+    const workflowState = state.editorialWorkflow.toJS();
+    const entriesLoaded = get(workflowState, 'pages.ids', false);
+    const loadedAt = get(workflowState, 'pages.loadedAt', 0) as number;
+    // The list is only ever fetched once per page load — loadUnpublishedEntries
+    // early-returns while `pages.ids` is set, and nothing clears it after
+    // CONFIG_SUCCESS. So without a freshness window the shortcut below would
+    // answer "not under editorial workflow" from a snapshot taken when the
+    // session started, which is wrong the moment a COLLEAGUE creates a draft:
+    // the entry opens as the published version with no workflow bar, and
+    // saving it takes the `!unpublished` path, calls createBranch on the
+    // `cms/...` branch that already exists, and 422s. Editorial workflow
+    // exists for multi-editor use, so that is the ordinary case, not an edge.
+    //
+    // Refreshing the LIST rather than falling back to a per-slug
+    // `unpublishedEntry` keeps the optimisation: one request covers every
+    // entry opened in the next window, where the old code paid a round trip
+    // per published entry opened.
+    const listIsStale = !entriesLoaded || Date.now() - loadedAt > UNPUBLISHED_LIST_MAX_AGE;
     //run possible unpublishedEntries migration
-    if (!entriesLoaded) {
+    if (listIsStale) {
       try {
         const { entries, pagination } = await backend.unpublishedEntries(state.collections);
         dispatch(unpublishedEntriesLoaded(entries, pagination));
@@ -260,11 +285,9 @@ export function loadUnpublishedEntry(collection: Collection, slug: string) {
     // published entry, which is the common case.
     //
     // The list is kept current locally as this session works: persisting adds
-    // the entity, publishing and deleting remove it. What it does not see is a
-    // draft another editor created since the list loaded — but neither does
-    // the collection list nor the Workflow tab, both of which render from this
-    // same state, so the staleness is not new here, and navigating to either
-    // reloads it.
+    // the entity, publishing and deleting remove it. A draft another editor
+    // created is picked up by the staleness refresh above, which is what makes
+    // "absent from the list" safe to treat as "not under editorial workflow".
     //
     // Read from a fresh getState(), because the load above may have just
     // populated it.

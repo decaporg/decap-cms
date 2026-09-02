@@ -65,6 +65,11 @@ function unpublishedEntries(state = Map(), action: EditorialWorkflowAction) {
           Map({
             ...action.payload!.pages,
             ids: List(action.payload!.entries.map(entry => entry.slug)),
+            // When this list was last known to match the backend. Read by
+            // loadUnpublishedEntry, which treats "this slug is absent from the
+            // list" as proof the entry is not under editorial workflow and
+            // therefore must know how old that proof is.
+            loadedAt: Date.now(),
           }),
         );
       });

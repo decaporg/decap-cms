@@ -87,6 +87,7 @@ describe('editorialWorkflow actions', () => {
 
       const backend = {
         unpublishedEntry: jest.fn(),
+        unpublishedEntries: jest.fn(),
       };
 
       const store = mockStore({
@@ -95,8 +96,10 @@ describe('editorialWorkflow actions', () => {
         mediaLibrary: fromJS({ isLoading: false }),
         entries: fromJS({}),
         editorialWorkflow: fromJS({
-          // Loaded, and this slug is not in it.
-          pages: { ids: ['other'] },
+          // Loaded, FRESH, and this slug is not in it. Without loadedAt the
+          // list counts as stale and the assertions below would pass only
+          // because the refresh threw into a swallowing catch.
+          pages: { ids: ['other'], loadedAt: Date.now() },
           entities: { 'posts.other': { collection: 'posts', slug: 'other' } },
         }),
       });
@@ -109,6 +112,7 @@ describe('editorialWorkflow actions', () => {
         // The open-pull-request set the backend would consult is the same one
         // the list came from, so the request is pure latency.
         expect(backend.unpublishedEntry).not.toHaveBeenCalled();
+        expect(backend.unpublishedEntries).not.toHaveBeenCalled();
 
         const dispatched = store.getActions();
         expect(dispatched[0]).toEqual({
@@ -116,6 +120,83 @@ describe('editorialWorkflow actions', () => {
           payload: { collection: 'posts', slug: 'slug' },
         });
         expect(dispatched.map(a => a.type)).not.toContain('UNPUBLISHED_ENTRY_REQUEST');
+      });
+    });
+
+    // These two cover the freshness window on `pages.loadedAt`. Without it the
+    // list is fetched once per page load and never again, so "this slug is not
+    // in the list" — which the shortcut above treats as proof the entry is not
+    // under editorial workflow — is answered from a snapshot that can be an
+    // entire session old. A colleague's draft created in between then opens as
+    // the published entry and saving it 422s on the existing cms/ branch.
+    //
+    // Note redux-mock-store never runs reducers, so getState() cannot reflect
+    // the refresh; what is asserted is that the refresh HAPPENS and that the
+    // subsequent decision reads state. The two branches of that decision are
+    // covered by the fresh-list tests above and by the absent case below.
+    it('refreshes a stale list rather than trusting a session-old snapshot', () => {
+      const { currentBackend } = require('../../backend');
+
+      const draft = { collection: 'posts', slug: 'slug', mediaFiles: [] };
+      const backend = {
+        unpublishedEntries: jest.fn().mockResolvedValue({ entries: [draft], pagination: 0 }),
+        unpublishedEntry: jest.fn().mockResolvedValue(draft),
+      };
+
+      const store = mockStore({
+        config: fromJS({ editor: { notes: true } }),
+        collections: fromJS({ posts: { name: 'posts' } }),
+        mediaLibrary: fromJS({ isLoading: false }),
+        entries: fromJS({}),
+        editorialWorkflow: fromJS({
+          // Loaded at the start of a long-lived session, well past the window.
+          pages: { ids: ['slug'], loadedAt: Date.now() - 10 * 60 * 1000 },
+          entities: { 'posts.slug': { collection: 'posts', slug: 'slug' } },
+        }),
+      });
+
+      currentBackend.mockReturnValue(backend);
+      const collection = store.getState().collections.get('posts');
+
+      return store.dispatch(actions.loadUnpublishedEntry(collection, 'slug')).then(() => {
+        expect(backend.unpublishedEntries).toHaveBeenCalled();
+
+        const types = store.getActions().map(a => a.type);
+        expect(types).toContain('UNPUBLISHED_ENTRIES_SUCCESS');
+        // Known unpublished, so it opens through the workflow path.
+        expect(types).toContain('UNPUBLISHED_ENTRY_REQUEST');
+        expect(types).not.toContain('UNPUBLISHED_ENTRY_REDIRECT');
+      });
+    });
+
+    it('still redirects to the published entry when a refreshed list confirms the slug is absent', () => {
+      const { currentBackend } = require('../../backend');
+
+      const backend = {
+        unpublishedEntries: jest.fn().mockResolvedValue({ entries: [], pagination: 0 }),
+        unpublishedEntry: jest.fn(),
+      };
+
+      const store = mockStore({
+        config: fromJS({ editor: { notes: true } }),
+        collections: fromJS({ posts: { name: 'posts' } }),
+        mediaLibrary: fromJS({ isLoading: false }),
+        entries: fromJS({}),
+        editorialWorkflow: fromJS({
+          pages: { ids: ['other'], loadedAt: Date.now() - 10 * 60 * 1000 },
+          entities: { 'posts.other': { collection: 'posts', slug: 'other' } },
+        }),
+      });
+
+      currentBackend.mockReturnValue(backend);
+      const collection = store.getState().collections.get('posts');
+
+      return store.dispatch(actions.loadUnpublishedEntry(collection, 'slug')).then(() => {
+        expect(backend.unpublishedEntries).toHaveBeenCalled();
+        // One list request, not a per-slug one: that is what keeps the
+        // optimisation this window protects.
+        expect(backend.unpublishedEntry).not.toHaveBeenCalled();
+        expect(store.getActions().map(a => a.type)).toContain('UNPUBLISHED_ENTRY_REDIRECT');
       });
     });
 
