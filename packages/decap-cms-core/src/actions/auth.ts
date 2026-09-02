@@ -1,6 +1,7 @@
 import { currentBackend } from '../backend';
 import { addNotification, clearNotifications } from './notifications';
 import { refilterConfigForPermissions, type BackendPermissions } from './config';
+import { stopDeployNotifications } from './deployStatus';
 
 import type { Credentials, User } from 'decap-cms-lib-util';
 import type { ThunkDispatch } from 'redux-thunk';
@@ -131,6 +132,16 @@ export function logoutUser() {
   return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const backend = currentBackend(state.config);
+    // Before backend.logout(), which discards the backend's deploy watcher.
+    // The deploy-notification subscriptions are module-level singletons, so
+    // leaving them set means startDeployNotifications() early-returns on the
+    // next sign-in — and signing straight back in is the ordinary flow, since
+    // Turbo's dashboard session outlives CMS logout — while the surviving
+    // unsubscribe closures still point at the discarded watcher. The next save
+    // then builds a fresh watcher with no listeners: it polls
+    // site_deployments for up to the ledger's 20 minutes with nobody to tell,
+    // and the editor gets a "Publishing…" toast that can never resolve.
+    stopDeployNotifications();
     Promise.resolve(backend.logout()).then(() => {
       dispatch(logout());
       dispatch(clearNotifications());

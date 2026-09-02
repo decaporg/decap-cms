@@ -133,6 +133,44 @@ describe('pollIntervalFor', () => {
 });
 
 describe('DeployWatcher ledger', () => {
+  it('does not resolve a save made while the ancestry check was in flight', async () => {
+    // resolve() awaits one compare per pending entry, and record() replaces
+    // this.pending wholesale. A re-save landing inside that window used to be
+    // removed from the ledger by PATH along with the older save it replaced —
+    // so the still-building commit was dropped and the editor was told the
+    // entry was live.
+    let release: ((contained: boolean) => void) | null = null;
+    const contained = jest.fn().mockImplementation(
+      (from: string) =>
+        new Promise<boolean>(resolve => {
+          if (from === 'c1') {
+            release = resolve;
+          } else {
+            resolve(from === 'c2');
+          }
+        }),
+    );
+
+    const { watcher, transport, resolutions } = makeWatcher({ contained });
+
+    watcher.record({ entryPath: 'posts/a.md', entryLabel: 'A', commitSha: 'c1' });
+    watcher.record({ entryPath: 'posts/b.md', entryLabel: 'B', commitSha: 'c2' });
+
+    transport.deliver([row({ commit_sha: 'c2', state: 'success' })]);
+    await flush();
+
+    // The editor re-saves A while the compare for c1 is still outstanding.
+    watcher.record({ entryPath: 'posts/a.md', entryLabel: 'A', commitSha: 'c3' });
+    release!(true);
+    await flush();
+
+    // B shipped and is announced; A's newer commit is untouched.
+    expect(resolutions).toHaveLength(1);
+    expect(resolutions[0].status).toBe('live');
+    expect(resolutions[0].entries.map(e => e.entryPath)).toEqual(['posts/b.md']);
+    expect(watcher.isWatching).toBe(true);
+  });
+
   it('keeps one row per entry, at the newest commit', () => {
     const { watcher, transport, resolutions, isCommitContained } = makeWatcher();
 

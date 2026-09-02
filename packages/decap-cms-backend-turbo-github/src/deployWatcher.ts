@@ -49,6 +49,16 @@ export interface DeploymentRow {
 }
 
 /** One save of one entry, waiting to be seen live. */
+/**
+ * Identity of one pending save. `record` keeps at most one entry per path, so
+ * a path alone does not distinguish "this save" from "the re-save that
+ * replaced it" — and resolution runs across awaits during which exactly that
+ * replacement can happen.
+ */
+function saveKey(save: { entryPath: string; commitSha: string }): string {
+  return `${save.entryPath}@${save.commitSha}`;
+}
+
 export interface PendingSave {
   entryPath: string;
   /** Human title for the notification; the path is the fallback. */
@@ -494,7 +504,17 @@ export class DeployWatcher {
 
   private prune(entries: PendingSave[]) {
     const now = this.clock.now();
-    return entries.filter(entry => now - entry.savedAt < LEDGER_TTL_MS);
+    // Bounded on BOTH sides. The ledger lives in localStorage and survives
+    // reloads, so a save stamped while the machine's clock was fast — then
+    // corrected backward by NTP — carries a savedAt in the future. A one-sided
+    // filter never expires that entry: `now - savedAt` stays negative, so
+    // nothing ever empties `pending` and nothing calls stop(), and `waited()`
+    // is negative too, which pins pollIntervalFor at its first 5s step for the
+    // rest of the session. This is the only way the poll can genuinely run
+    // forever.
+    return entries.filter(
+      entry => now - entry.savedAt < LEDGER_TTL_MS && entry.savedAt <= now + SINCE_SKEW_MS,
+    );
   }
 
   private persist() {
@@ -625,12 +645,24 @@ export class DeployWatcher {
       if (contained.length === 0) {
         continue;
       }
-      const paths = new Set(contained.map(entry => entry.entryPath));
-      this.pending = this.pending.filter(entry => !paths.has(entry.entryPath));
+      // `containedIn` awaits a compare call per entry, and `record()` replaces
+      // `this.pending` wholesale — so by the time we get here the editor may
+      // have re-saved one of these entries at a NEWER commit. Matching on
+      // identity (path + sha) rather than path alone is what keeps that
+      // re-save out of both the removal and the announcement: filtering by
+      // path would delete the still-building save from the ledger and tell
+      // the editor the entry is live, which is precisely what `record`'s own
+      // "newest commit per path wins" comment exists to prevent.
+      const resolved = new Set(contained.map(saveKey));
+      const stillPending = this.pending.filter(entry => resolved.has(saveKey(entry)));
+      if (stillPending.length === 0) {
+        continue;
+      }
+      this.pending = this.pending.filter(entry => !resolved.has(saveKey(entry)));
       this.persist();
       this.emit({
         status: 'live',
-        entries: contained.map(({ entryPath, entryLabel, entryUrlPath }) => ({
+        entries: stillPending.map(({ entryPath, entryLabel, entryUrlPath }) => ({
           entryPath,
           entryLabel,
           entryUrlPath,
@@ -645,16 +677,23 @@ export class DeployWatcher {
       if (contained.length === 0) {
         continue;
       }
+      // Same identity match as above. Stamping `failureReported` by path would
+      // mark a newer save as already-reported, silently swallowing its own
+      // build failure later.
+      const resolved = new Set(contained.map(saveKey));
+      const stillPending = this.pending.filter(entry => resolved.has(saveKey(entry)));
+      if (stillPending.length === 0) {
+        continue;
+      }
       // Reported, but kept: a later deploy may still carry these changes live,
       // and the editor should hear about that too.
-      const paths = new Set(contained.map(entry => entry.entryPath));
       this.pending = this.pending.map(entry =>
-        paths.has(entry.entryPath) ? { ...entry, failureReported: true } : entry,
+        resolved.has(saveKey(entry)) ? { ...entry, failureReported: true } : entry,
       );
       this.persist();
       this.emit({
         status: 'failed',
-        entries: contained.map(({ entryPath, entryLabel, entryUrlPath }) => ({
+        entries: stillPending.map(({ entryPath, entryLabel, entryUrlPath }) => ({
           entryPath,
           entryLabel,
           entryUrlPath,
