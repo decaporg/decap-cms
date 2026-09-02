@@ -499,3 +499,85 @@ describe('turbo gitlab backend persistEntry save metrics', () => {
     expect(recordCmsEvent).not.toHaveBeenCalled();
   });
 });
+
+describe('turbo gitlab backend logout', () => {
+  const config: any = {
+    backend: {
+      repo: 'group/project',
+      supabase_app_id: 'supabase-project-id',
+      supabase_anon_key: 'supabase-anon-key',
+    },
+    media_folder: 'static/media',
+  };
+
+  function loggedInBackend() {
+    const backend: any = new DecapTurboGitLabBackend(config);
+    backend.supabaseAccessToken = 'access-token';
+    backend.supabaseRefreshToken = 'refresh-token';
+    backend.supabaseExpiresAt = Math.floor(Date.now() / 1000) + 3600;
+    backend.supabaseIdentity = { user_email: 'editor@example.com' };
+    backend.supabase.setAccessToken('access-token');
+    return backend;
+  }
+
+  it('clears the Supabase session the auth store does not know about', async () => {
+    const backend = loggedInBackend();
+    await backend.currentUser({ token: 'access-token' });
+
+    await backend.logout();
+
+    expect(backend.supabaseAccessToken).toBeNull();
+    expect(backend.supabaseRefreshToken).toBeNull();
+    expect(backend.supabaseExpiresAt).toBeNull();
+    expect(backend.supabaseIdentity).toBeNull();
+    expect(backend.supabase.supabaseAccessToken).toBeNull();
+    expect(backend._currentUserPromise).toBeUndefined();
+  });
+
+  it('reports unauthenticated status after logout', async () => {
+    const backend = loggedInBackend();
+    expect((await backend.status()).auth.status).toBe(true);
+
+    await backend.logout();
+
+    expect((await backend.status()).auth.status).toBe(false);
+  });
+});
+
+describe('turbo gitlab backend user identity', () => {
+  const config: any = {
+    backend: {
+      repo: 'group/project',
+      supabase_app_id: 'supabase-project-id',
+      supabase_anon_key: 'supabase-anon-key',
+    },
+    media_folder: 'static/media',
+  };
+
+  it('reports the signed-in Turbo user, not the project owner', async () => {
+    const backend: any = new DecapTurboGitLabBackend(config);
+    backend.supabaseIdentity = {
+      user_email: 'editor@example.com',
+      user_metadata: { full_name: 'Ed Editor', picture: 'https://cdn.example.com/ed.png' },
+    };
+
+    const user = await backend.currentUser({ token: 'token' });
+
+    expect(user.name).toBe('Ed Editor');
+    expect(user.email).toBe('editor@example.com');
+    expect(user.avatar_url).toBe('https://cdn.example.com/ed.png');
+    // `username` stays the project owner: other GitLab code paths use it as an
+    // identifier, not as a display name.
+    expect(user.username).toBe('group');
+  });
+
+  it('falls back to the project owner when no session identity is known', async () => {
+    const backend: any = new DecapTurboGitLabBackend(config);
+
+    const user = await backend.currentUser({ token: 'token' });
+
+    expect(user.name).toBe('group');
+    expect(user.email).toBeUndefined();
+    expect(user.avatar_url).toBeNull();
+  });
+});

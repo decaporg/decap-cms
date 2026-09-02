@@ -49,6 +49,10 @@ interface SupabaseUser extends User {
     display_name?: string;
     full_name?: string;
     name?: string;
+    // Set by Supabase for OAuth sign-ins (Google spells it `picture`); absent
+    // for email/password users, who fall back to the generic avatar icon.
+    avatar_url?: string;
+    picture?: string;
   };
 }
 
@@ -128,6 +132,14 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
   supabaseAccessToken: string | null = null;
   supabaseRefreshToken: string | null = null;
   supabaseExpiresAt: number | null = null;
+  /**
+   * The signed-in person, as opposed to the repo being edited: email, display
+   * name and (for OAuth sign-ins) avatar, straight off the Turbo session.
+   * `currentUser` reports these to the header. Survives a reload because
+   * `authenticate` returns the same fields on the stored user object, which
+   * `restoreUser` hands straight back. Cleared by `logout`.
+   */
+  supabaseIdentity: SupabaseUser | null = null;
   supabaseAnonKey: string;
   supabaseId: string;
   siteId: string;
@@ -340,6 +352,33 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
     };
   }
 
+  /**
+   * The Turbo session lives on this instance, not only in the auth store core
+   * clears — GitHubBackend.logout knows nothing about Supabase. Without this,
+   * a logged-out CMS kept a usable access token (`status()` would keep
+   * reporting `auth: true`), a Supabase client still sending it, a memoised
+   * `currentUser`, and a live deploy subscription.
+   *
+   * This deliberately does NOT end the Turbo session itself: that cookie
+   * belongs to the dashboard's origin, and one site's CMS logout must not sign
+   * the user out of the dashboard and every other site's CMS. Signing out of
+   * Turbo is the dashboard's own logout button.
+   */
+  logout() {
+    this.supabaseAccessToken = null;
+    this.supabaseRefreshToken = null;
+    this.supabaseExpiresAt = null;
+    this.supabaseIdentity = null;
+    this.supabase.setAccessToken(null);
+    this._currentUserPromise = undefined;
+    this.refreshedTokenPromise = undefined;
+    if (this.deployWatcherInstance) {
+      this.deployWatcherInstance.stop();
+      this.deployWatcherInstance = null;
+    }
+    return super.logout();
+  }
+
   authComponent() {
     const wrappedAuthenticationPage = (props: Record<string, unknown>) => {
       const allProps = { ...props, backend: this };
@@ -377,6 +416,7 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
     }
 
     const supabaseState = state as SupabaseUser;
+    this.supabaseIdentity = supabaseState;
     const activeSiteFromState = supabaseState.user_metadata?.active_site_id;
     if (this.siteId && this.supabaseAccessToken && activeSiteFromState !== this.siteId) {
       await this.setActiveSiteAndRefresh();
@@ -463,6 +503,10 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
     // Include access_token in the returned user object so it gets stored in auth store
     return {
       ...user,
+      // API.user() narrows currentUser's result to { name, login, email } and
+      // drops the avatar — but this object is what core stores and the header
+      // renders, so put it back.
+      avatar_url: this.sessionIdentity().avatarUrl,
       token: state.token as string,
       useOpenAuthoring: this.useOpenAuthoring,
       ...('access_token' in state && { access_token: state.access_token }),
@@ -821,17 +865,45 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
     return this.supabaseAccessToken || this.token || null;
   }
 
+  /**
+   * Who is signed in, as the CMS header should show them: display name, email
+   * and (for OAuth sign-ins) avatar, taken from the Turbo session rather than
+   * from the repo. Until this existed the header could only name the org,
+   * which made a silent re-login — the Turbo dashboard session outlives a CMS
+   * logout by design, so "Login with Turbo" completes without a prompt —
+   * indistinguishable from a login as somebody else.
+   *
+   * Deliberately does not consult `commitAuthorEmailFallback`: a site-level
+   * noreply address is a reasonable commit author, but it is not a person who
+   * logged in.
+   */
+  sessionIdentity() {
+    const author = resolveCommitAuthorFromSupabaseUser(this.supabaseIdentity ?? {});
+    const metadata = this.supabaseIdentity?.user_metadata;
+    return {
+      name: author?.name,
+      email: author?.email,
+      avatarUrl: metadata?.avatar_url || metadata?.picture || null,
+    };
+  }
+
   async currentUser({ token }: { token: string }): Promise<GitHubUser> {
     if (!this._currentUserPromise) {
       this._currentUserPromise = (async () => {
         await this.refreshSessionIfNeeded();
 
         const owner = this.originRepo.split('/')[0];
+        const identity = this.sessionIdentity();
 
+        // `login` stays the repo owner: other GitHub code paths treat it as an
+        // identifier (fork lookups, unpublished-entry authors), not as a
+        // display name. `name`, `email` and the avatar are the human-facing
+        // fields, and they now name the person rather than the org.
         return {
-          name: owner,
+          name: identity.name || owner,
           login: owner,
-          avatar_url: `https://github.com/${owner}.png`,
+          email: identity.email,
+          avatar_url: identity.avatarUrl,
           token,
           access_token: this.supabaseAccessToken || undefined,
           refresh_token: this.supabaseRefreshToken || undefined,

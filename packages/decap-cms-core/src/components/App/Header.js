@@ -22,6 +22,7 @@ import { StatusDot, deployIndicator } from './deployStatusIndicator';
 import { checkBackendStatus } from '../../actions/status';
 import { selectCanCreateNewEntry } from '../../reducers';
 import { selectDeployStatusVisible } from '../../reducers/deployStatus';
+import { selectUserIdentity } from '../../lib/userHelper';
 
 const styles = {
   buttonActive: css`
@@ -294,6 +295,7 @@ class Header extends React.Component {
               displayUrl={displayUrl}
               isTestRepo={isTestRepo}
               imageUrl={user?.avatar_url}
+              identity={selectUserIdentity(user)}
               onLogoutClick={onLogoutClick}
             />
           </AppHeaderActions>

@@ -32,6 +32,10 @@ interface SupabaseUser extends User {
     display_name?: string;
     full_name?: string;
     name?: string;
+    // Set by Supabase for OAuth sign-ins (Google spells it `picture`); absent
+    // for email/password users, who fall back to the generic avatar icon.
+    avatar_url?: string;
+    picture?: string;
   };
 }
 
@@ -113,6 +117,14 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
   supabaseAccessToken: string | null = null;
   supabaseRefreshToken: string | null = null;
   supabaseExpiresAt: number | null = null;
+  /**
+   * The signed-in person, as opposed to the project being edited: email,
+   * display name and (for OAuth sign-ins) avatar, straight off the Turbo
+   * session. `currentUser` reports these to the header. Survives a reload
+   * because `authenticate` returns the same fields on the stored user object,
+   * which `restoreUser` hands straight back. Cleared by `logout`.
+   */
+  supabaseIdentity: SupabaseUser | null = null;
   supabaseAnonKey: string;
   supabaseId: string;
   siteId: string;
@@ -282,6 +294,32 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
     };
   }
 
+  /**
+   * The Turbo session lives on this instance, not only in the auth store core
+   * clears — GitLabBackend.logout only nulls `token` and knows nothing about
+   * Supabase. Without this, a logged-out CMS kept a usable access token
+   * (`status()` would keep reporting `auth: true`), a Supabase client still
+   * sending it, and a memoised `currentUser`.
+   *
+   * This deliberately does NOT end the Turbo session itself: that cookie
+   * belongs to the dashboard's origin, and one site's CMS logout must not sign
+   * the user out of the dashboard and every other site's CMS. Signing out of
+   * Turbo is the dashboard's own logout button.
+   *
+   * Mirrors decap-cms-backend-turbo-github's override, minus the deploy
+   * watcher this backend has no equivalent of.
+   */
+  async logout() {
+    this.supabaseAccessToken = null;
+    this.supabaseRefreshToken = null;
+    this.supabaseExpiresAt = null;
+    this.supabaseIdentity = null;
+    this.supabase.setAccessToken(null);
+    this._currentUserPromise = undefined;
+    this.refreshedTokenPromise = undefined;
+    return super.logout();
+  }
+
   // Widened to `any`: decap-cms-core only ever forwards whatever this
   // returns to React unchanged (see Backend.authComponent in
   // decap-cms-core/src/backend.ts) — the concrete return type GitLabBackend
@@ -326,6 +364,7 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
     }
 
     const supabaseState = state as SupabaseUser;
+    this.supabaseIdentity = supabaseState;
     const activeSiteFromState = supabaseState.user_metadata?.active_site_id;
     if (this.siteId && this.supabaseAccessToken && activeSiteFromState !== this.siteId) {
       await this.setActiveSiteAndRefresh();
@@ -386,9 +425,19 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
 
     recordCmsEvent(this.baseUrl!, this.supabaseAnonKey, this.supabaseAccessToken, 'cms_session_started', this.siteId);
 
+    const displayIdentity = this.sessionIdentity();
+
     return {
       ...user,
       login: user.username,
+      // The `gl` proxy synthesizes /user itself (the CMS user has no real
+      // GitLab identity), and falls back to the literal name "CMS Editor"
+      // when Supabase knows no full name — so prefer what the session says
+      // about the person. This object is what core stores and the header
+      // renders.
+      ...(displayIdentity.name && { name: displayIdentity.name }),
+      ...(displayIdentity.email && { email: displayIdentity.email }),
+      avatar_url: displayIdentity.avatarUrl ?? user.avatar_url ?? null,
       token: state.token as string,
       ...('access_token' in state && { access_token: state.access_token }),
       ...('refresh_token' in state && { refresh_token: state.refresh_token }),
@@ -657,18 +706,46 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
     return this.supabaseAccessToken || this.token || null;
   }
 
+  /**
+   * Who is signed in, as the CMS header should show them: display name, email
+   * and (for OAuth sign-ins) avatar, taken from the Turbo session rather than
+   * from the project. Until this existed the header could only name the group,
+   * which made a silent re-login — the Turbo dashboard session outlives a CMS
+   * logout by design, so "Login with Turbo" completes without a prompt —
+   * indistinguishable from a login as somebody else.
+   *
+   * Deliberately does not consult `commitAuthorEmailFallback`: a site-level
+   * noreply address is a reasonable commit author, but it is not a person who
+   * logged in.
+   */
+  sessionIdentity() {
+    const author = resolveCommitAuthorFromSupabaseUser(this.supabaseIdentity ?? {});
+    const metadata = this.supabaseIdentity?.user_metadata;
+    return {
+      name: author?.name,
+      email: author?.email,
+      avatarUrl: metadata?.avatar_url || metadata?.picture || null,
+    };
+  }
+
   async currentUser({ token }: { token: string } = { token: this.token || '' }): Promise<GitLabUser> {
     if (!this._currentUserPromise) {
       this._currentUserPromise = (async () => {
         await this.refreshSessionIfNeeded();
 
         const owner = this.repo.split('/')[0];
+        const identity = this.sessionIdentity();
 
+        // `username` stays the project owner: other GitLab code paths treat it
+        // as an identifier, not as a display name. `name`, `email` and the
+        // avatar are the human-facing fields, and they now name the person
+        // rather than the group.
         return {
           id: 0,
-          name: owner,
+          name: identity.name || owner,
           username: owner,
-          avatar_url: null,
+          email: identity.email,
+          avatar_url: identity.avatarUrl,
           token,
           access_token: this.supabaseAccessToken || undefined,
           refresh_token: this.supabaseRefreshToken || undefined,

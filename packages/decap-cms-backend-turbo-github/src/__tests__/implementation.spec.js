@@ -754,3 +754,105 @@ describe('turbo backend deploy status config', () => {
     expect(backend.deployStatusConfig().branch).toBe('master');
   });
 });
+
+describe('turbo backend logout', () => {
+  const config = {
+    backend: {
+      repo: 'owner/repo',
+      supabase_app_id: 'supabase-project-id',
+      supabase_anon_key: 'supabase-anon-key',
+    },
+    media_folder: 'static/media',
+  };
+
+  function loggedInBackend() {
+    const backend = new DecapTurboGitHubBackend(config);
+    backend.supabaseAccessToken = 'access-token';
+    backend.supabaseRefreshToken = 'refresh-token';
+    backend.supabaseExpiresAt = Math.floor(Date.now() / 1000) + 3600;
+    backend.supabaseIdentity = { user_email: 'editor@example.com' };
+    backend.supabase.setAccessToken('access-token');
+    return backend;
+  }
+
+  it('clears the Supabase session the auth store does not know about', async () => {
+    const backend = loggedInBackend();
+    await backend.currentUser({ token: 'access-token' });
+
+    backend.logout();
+
+    expect(backend.supabaseAccessToken).toBeNull();
+    expect(backend.supabaseRefreshToken).toBeNull();
+    expect(backend.supabaseExpiresAt).toBeNull();
+    expect(backend.supabaseIdentity).toBeNull();
+    expect(backend.supabase.supabaseAccessToken).toBeNull();
+    expect(backend._currentUserPromise).toBeUndefined();
+  });
+
+  it('reports unauthenticated status after logout', async () => {
+    const backend = loggedInBackend();
+    expect((await backend.status()).auth.status).toBe(true);
+
+    backend.logout();
+
+    expect((await backend.status()).auth.status).toBe(false);
+  });
+
+  it('stops and drops the deploy watcher', () => {
+    const backend = loggedInBackend();
+    const stop = jest.fn();
+    backend.deployWatcherInstance = { stop };
+
+    backend.logout();
+
+    expect(stop).toHaveBeenCalledTimes(1);
+    expect(backend.deployWatcherInstance).toBeNull();
+  });
+});
+
+describe('turbo backend user identity', () => {
+  const config = {
+    backend: {
+      repo: 'owner/repo',
+      supabase_app_id: 'supabase-project-id',
+      supabase_anon_key: 'supabase-anon-key',
+    },
+    media_folder: 'static/media',
+  };
+
+  it('reports the signed-in Turbo user, not the repo owner', async () => {
+    const backend = new DecapTurboGitHubBackend(config);
+    backend.supabaseIdentity = {
+      user_email: 'editor@example.com',
+      user_metadata: { full_name: 'Ed Editor', avatar_url: 'https://cdn.example.com/ed.png' },
+    };
+
+    const user = await backend.currentUser({ token: 'token' });
+
+    expect(user.name).toBe('Ed Editor');
+    expect(user.email).toBe('editor@example.com');
+    expect(user.avatar_url).toBe('https://cdn.example.com/ed.png');
+    // `login` stays the repo owner: other GitHub code paths use it as an
+    // identifier, not as a display name.
+    expect(user.login).toBe('owner');
+  });
+
+  it('falls back to the email local part and no avatar when the account has neither', async () => {
+    const backend = new DecapTurboGitHubBackend(config);
+    backend.supabaseIdentity = { user_email: 'editor@example.com' };
+
+    const user = await backend.currentUser({ token: 'token' });
+
+    expect(user.name).toBe('editor');
+    expect(user.avatar_url).toBeNull();
+  });
+
+  it('falls back to the repo owner when no session identity is known', async () => {
+    const backend = new DecapTurboGitHubBackend(config);
+
+    const user = await backend.currentUser({ token: 'token' });
+
+    expect(user.name).toBe('owner');
+    expect(user.email).toBeUndefined();
+  });
+});

@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { fromJS } from 'immutable';
 import { I18n } from 'react-polyglot';
 import { Provider } from 'react-redux';
@@ -11,7 +11,7 @@ import en from '../../../../../decap-cms-locales/src/en';
 
 const mockStore = configureStore([thunk]);
 
-function renderHeader(deployStatus) {
+function renderHeader(deployStatus, user = { login: 'editor' }) {
   const store = mockStore({
     deployStatus: {
       pendingCount: 0,
@@ -32,7 +32,7 @@ function renderHeader(deployStatus) {
       <MemoryRouter>
         <I18n locale="en" messages={en}>
           <Header
-            user={{ login: 'editor' }}
+            user={user}
             collections={fromJS({})}
             onCreateEntryClick={jest.fn()}
             onLogoutClick={jest.fn()}
@@ -111,5 +111,35 @@ describe('Header deploy indicator', () => {
 
     const items = [...document.querySelectorAll('header nav li')].map(li => li.textContent.trim());
     expect(items[items.length - 1]).toBe('Deployed');
+  });
+});
+
+describe('Header account dropdown', () => {
+  function openAccountDropdown() {
+    fireEvent.click(screen.getByLabelText('Account options dropdown'));
+  }
+
+  // Backends can sign you back in without asking — Decap Turbo's dashboard
+  // session deliberately outlives a CMS logout — so the menu has to say which
+  // account you are in as.
+  it('names the signed-in user', () => {
+    renderHeader(undefined, {
+      login: 'editor',
+      name: 'Ed Editor',
+      email: 'editor@example.com',
+    });
+
+    openAccountDropdown();
+
+    expect(screen.getByText('Ed Editor')).toBeInTheDocument();
+    expect(screen.getByText('editor@example.com')).toBeInTheDocument();
+  });
+
+  it('says nothing when the backend knows no name or email', () => {
+    renderHeader(undefined, { login: '' });
+
+    openAccountDropdown();
+
+    expect(screen.getByText('Log Out').closest('ul').textContent).toBe('Log Out');
   });
 });
