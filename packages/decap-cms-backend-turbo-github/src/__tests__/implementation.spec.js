@@ -577,3 +577,129 @@ describe('turbo backend persistEntry save metrics', () => {
     expect(recordCmsEvent).not.toHaveBeenCalled();
   });
 });
+
+// The contract §A4's toast is built on: which commit to watch, and when there
+// is nothing to watch at all. See decap-turbo/docs/deploy-status-plan.md §A3.
+describe('turbo backend deploy watch', () => {
+  const config = {
+    backend: {
+      repo: 'owner/repo',
+      supabase_app_id: 'supabase-project-id',
+      supabase_anon_key: 'supabase-anon-key',
+    },
+    media_folder: 'static/media',
+  };
+
+  const superPersistEntry = Object.getPrototypeOf(DecapTurboGitHubBackend.prototype);
+
+  const entry = {
+    dataFiles: [{ slug: 'post', path: 'content/post.md', raw: 'hello' }],
+    assets: [],
+  };
+
+  function makeBackend() {
+    const backend = new DecapTurboGitHubBackend(config);
+    backend.baseUrl = 'https://sb.example.com';
+    backend.supabaseAccessToken = 'access-token';
+    backend.siteId = 'site-id';
+    return backend;
+  }
+
+  function deploymentRow(state) {
+    return {
+      commit_sha: 'sha-1',
+      source: 'github_deployment',
+      external_id: '42',
+      provider_label: 'Netlify',
+      state,
+      target_url: 'https://site.example',
+      error_message: null,
+      started_at: '2026-09-02T10:00:00Z',
+      finished_at: '2026-09-02T10:01:00Z',
+      updated_at: '2026-09-02T10:01:00Z',
+    };
+  }
+
+  async function flush() {
+    for (let tick = 0; tick < 5; tick += 1) {
+      await Promise.resolve();
+    }
+  }
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  it('remembers the commit a save produced, and the entry it saved', async () => {
+    jest
+      .spyOn(superPersistEntry, 'persistEntry')
+      .mockResolvedValue({ sha: 'sha-1', branch: 'main', url: 'https://github.example' });
+
+    const backend = makeBackend();
+    await backend.persistEntry(entry, { collectionName: 'posts' });
+
+    expect(backend.lastSavedCommit).toEqual({ sha: 'sha-1', entryPath: 'content/post.md' });
+  });
+
+  // Only the one-call commit endpoint returns a sha. Keeping the previous
+  // one would make a fallback save watch the deploy of the save before it.
+  it('forgets the commit when a save returns no sha', async () => {
+    jest.spyOn(superPersistEntry, 'persistEntry').mockResolvedValue({ sha: 'sha-1' });
+    const backend = makeBackend();
+    await backend.persistEntry(entry, { collectionName: 'posts' });
+
+    jest.spyOn(superPersistEntry, 'persistEntry').mockResolvedValue('post');
+    await backend.persistEntry(entry, { collectionName: 'posts' });
+
+    expect(backend.lastSavedCommit).toBeNull();
+  });
+
+  it('declines to watch when no save has produced a commit', () => {
+    expect(makeBackend().watchDeploy(jest.fn())).toBeNull();
+  });
+
+  it('declines to watch when the backend has no Supabase project to read', () => {
+    const backend = makeBackend();
+    backend.baseUrl = undefined;
+    backend.supabaseId = '';
+    backend.lastSavedCommit = { sha: 'sha-1' };
+
+    expect(backend.watchDeploy(jest.fn())).toBeNull();
+  });
+
+  it('polls site_deployments for the saved commit and reports it live', async () => {
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      text: () => Promise.resolve(JSON.stringify([deploymentRow('success')])),
+    });
+
+    const backend = makeBackend();
+    backend.lastSavedCommit = { sha: 'sha-1', entryPath: 'content/post.md' };
+    const listener = jest.fn();
+
+    const stop = backend.watchDeploy(listener);
+    await flush();
+
+    const [url, init] = global.fetch.mock.calls[0];
+    expect(url).toContain('https://sb.example.com/rest/v1/site_deployments?');
+    expect(url).toContain('commit_sha=eq.sha-1');
+    expect(url).toContain('site_id=eq.site-id');
+    expect(init.headers.Authorization).toBe('Bearer access-token');
+
+    expect(listener).toHaveBeenCalledWith(
+      expect.objectContaining({
+        status: 'success',
+        commitSha: 'sha-1',
+        entryPath: 'content/post.md',
+      }),
+    );
+
+    // Terminal, so it stopped itself — the caller need not hold the handle.
+    expect(typeof stop).toBe('function');
+    stop();
+  });
+});

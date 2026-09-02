@@ -21,6 +21,7 @@ import {
   recordProxyResponse,
   type ProxyMeter,
 } from './saveMetrics';
+import { createDeployWatcher, type DeployWatcher, type DeployWatchUpdate } from './deployWatcher';
 
 import type { GitHubUser } from 'decap-cms-backend-github/src/implementation';
 
@@ -132,6 +133,21 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
   proxyMeter: ProxyMeter | null = null;
 
   supabase: SupabaseClient;
+
+  /**
+   * Lazily built, because most of a session never saves anything and a site
+   * with no deploy hook never needs one at all.
+   */
+  private deployWatcherInstance: DeployWatcher | null = null;
+
+  /**
+   * The commit the last save produced, and the entry it saved. Core awaits
+   * `persistEntry` without reading its return value, so this is the only place
+   * the new sha can be captured — and the sha is the key the deploy watch
+   * subscribes on. Null after a save that produced no sha (the REST fallback
+   * path), so a watch can never attach to a previous save's commit.
+   */
+  lastSavedCommit: { sha: string; entryPath?: string } | null = null;
 
   constructor(config: Config, options: any = {}) {
     super(config, options);
@@ -860,6 +876,15 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
 
     const durationMs = Date.now() - startedAt;
 
+    // Assigned on every save, including to null: only the one-call commit
+    // endpoint (§B1) returns a sha, and leaving the previous one in place
+    // would have a REST-fallback save watch the deploy of the save before it.
+    const sha = (result as { sha?: unknown } | undefined)?.sha;
+    this.lastSavedCommit =
+      typeof sha === 'string' && sha
+        ? { sha, entryPath: entry.dataFiles?.[0]?.path as string | undefined }
+        : null;
+
     if (result && entry.dataFiles && entry.dataFiles.length > 0) {
       // Deliberately does not write the cache. The commit moves the branch
       // HEAD, and `reloadEntriesAfterPersist` makes core re-run loadEntries
@@ -896,6 +921,47 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
       );
     }
     return result;
+  }
+
+  /**
+   * Watches the deploy of a saved commit and reports what happens to it. See
+   * decap-turbo/docs/deploy-status-plan.md §A3.
+   *
+   * Returns a stop function, or null when there is nothing to watch — no
+   * commit sha (the REST fallback path, or no save yet) or a backend without
+   * the Supabase config the read needs. A null return is the caller's cue to
+   * leave today's plain "Entry saved" in place, and it is the common case:
+   * most sites never produce a deploy row at all (§A0).
+   *
+   * The watcher stops itself on a terminal state, and again on the absent and
+   * timeout ceilings, so a caller that only wants the notification need not
+   * hold the returned function.
+   */
+  watchDeploy(
+    listener: (update: DeployWatchUpdate) => void,
+    options: { commitSha?: string; entryPath?: string } = {},
+  ): (() => void) | null {
+    const commitSha = options.commitSha ?? this.lastSavedCommit?.sha;
+    const baseUrl = this.baseUrl || (this.supabaseId && `https://${this.supabaseId}.supabase.co`);
+
+    if (!commitSha || !baseUrl || !this.siteId || !this.supabaseAnonKey) {
+      return null;
+    }
+
+    if (!this.deployWatcherInstance) {
+      this.deployWatcherInstance = createDeployWatcher({
+        baseUrl,
+        anonKey: this.supabaseAnonKey,
+        siteId: this.siteId,
+        // A watch outlives several session refreshes, so the token is read per
+        // request rather than captured here.
+        getAccessToken: () => this.supabaseAccessToken,
+      });
+    }
+
+    return this.deployWatcherInstance.watch(commitSha, listener, {
+      entryPath: options.entryPath ?? this.lastSavedCommit?.entryPath,
+    });
   }
 
   /**
