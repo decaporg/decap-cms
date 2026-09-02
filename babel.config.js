@@ -104,7 +104,7 @@ function plugins() {
   }
 
   if (!isProduction) {
-    return [...defaultPlugins];
+    return defaultPlugins;
   }
 
   return defaultPlugins;
