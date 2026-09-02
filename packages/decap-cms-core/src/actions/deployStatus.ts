@@ -1,208 +1,180 @@
 import { currentBackend } from '../backend';
-import { addNotification, dismissNotification, updateNotification } from './notifications';
+import { addNotification, updateNotification } from './notifications';
 
 import type { ThunkDispatch } from 'redux-thunk';
 import type { AnyAction } from 'redux';
 import type { State } from '../types/redux';
+import type { NotificationPayload } from './notifications';
 
 /**
- * Post-save deploy notifications. See decap-turbo/docs/deploy-status-plan.md §A4.
+ * Post-save deploy notifications. See decap-turbo/docs/deploy-status-plan.md
+ * §A4b.
  *
  * A save tells the editor their entry was committed; it does not tell them
- * whether the site they publish has actually rebuilt. This turns the one-shot
- * "Entry saved" toast into a single toast that follows the deploy — but only
- * where a backend can report one, and only for as long as it keeps reporting.
+ * whether the site they publish has actually rebuilt. This adds the second
+ * half — but asynchronously: the save toast is short-lived, the editor carries
+ * on working, and a notification arrives when a deploy accounts for the
+ * change. A build can run for many minutes, and a toast that dwells for all of
+ * them informs nobody.
  *
  * The watching itself belongs to the backend (Turbo polls its own
- * `site_deployments` table), so this is deliberately duck-typed: a backend
- * that has no `watchDeploy` gets exactly today's behaviour, with no import
- * relationship between core and any particular backend.
+ * `site_deployments` table and asks git about ancestry), so this is
+ * deliberately duck-typed: a backend without these methods gets exactly
+ * today's behaviour, with no import relationship between core and any
+ * particular backend.
  */
 
-type DeployWatchStatus =
-  | 'pending'
-  | 'building'
-  | 'success'
-  | 'failed'
-  | 'canceled'
-  /** No deploy was ever reported — the ordinary case for a site with no hook. */
-  | 'absent'
-  /** One was reported and then never finished. */
-  | 'timeout';
-
-interface DeployWatchUpdate {
-  status: DeployWatchStatus;
-  deployment: {
-    target_url: string | null;
-    provider_label: string | null;
-    error_message: string | null;
-  } | null;
-  commitSha: string;
-  entryPath?: string;
+interface DeployResolution {
+  /** `live` — a deploy containing the change succeeded. `failed` — one containing it failed. */
+  status: 'live' | 'failed';
+  entries: Array<{ entryPath: string; entryLabel?: string }>;
+  targetUrl: string | null;
 }
 
 interface DeployWatchingBackend {
-  watchDeploy?: (
-    listener: (update: DeployWatchUpdate) => void,
-    options?: { commitSha?: string; entryPath?: string },
+  subscribeDeployResolutions?: (
+    listener: (resolution: DeployResolution) => void,
   ) => (() => void) | null;
+  recordSaveForDeployWatch?: (entryLabel?: string) => boolean;
 }
 
 /**
- * The toast the last save's deploy is being reported through, so a new save
- * replaces it instead of stacking beside it.
- *
- * Held past the end of the watch on purpose. The `failed` toast is deliberately
- * held open (it carries the build log link), so it is precisely the one still
- * on screen when the editor saves again — usually *because* it failed. Clearing
- * this on the last update left a red "Your site failed to build" sitting next
- * to a fresh "Publishing…", which reads as though the new save had failed too.
- * Measured in the browser on 2026-09-02; two toasts is exactly what §A4 exists
- * to avoid.
- *
- * Dismissing an id whose toast is already gone is a no-op, so keeping a stale
- * one here costs nothing.
- *
- * Module state rather than store state on purpose: the watcher it mirrors is
- * itself a single backend-held object, and a reducer entry would have to be
- * kept in step with something the store cannot see.
+ * One subscription for the session, so a resolution reaches the editor
+ * wherever they are in the CMS — including on an entry they are no longer
+ * looking at, or a collection they have navigated away from.
  */
-let activeDeployNotificationId: string | null = null;
+let unsubscribe: (() => void) | null = null;
 
 /**
- * Announces a completed save, and follows its deploy when the backend can
- * report one.
+ * The save toast currently on screen, if any. A deploy usually resolves long
+ * after it has gone, in which case the resolution is a new notification; when
+ * the deploy is quick enough to beat it, the toast is updated in place instead
+ * of a second one stacking beside it.
+ */
+let saveNotificationId: string | null = null;
+
+function backendFor(getState: () => State): DeployWatchingBackend | null {
+  try {
+    return currentBackend(getState().config).implementation as unknown as DeployWatchingBackend;
+  } catch {
+    // Called before the config resolves, or by a backend that cannot be
+    // constructed yet. There is nothing to subscribe to either way.
+    return null;
+  }
+}
+
+/**
+ * Starts listening for deploy outcomes. Dispatched once when the CMS mounts,
+ * which is also what lets a watch survive a page reload: the backend restores
+ * its ledger of unpublished saves when something subscribes.
+ */
+export function startDeployNotifications() {
+  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+    if (unsubscribe) {
+      return;
+    }
+    const implementation = backendFor(getState);
+    if (typeof implementation?.subscribeDeployResolutions !== 'function') {
+      return;
+    }
+    unsubscribe =
+      implementation.subscribeDeployResolutions(resolution =>
+        dispatch(announceDeployResolution(resolution)),
+      ) ?? null;
+  };
+}
+
+/** Test seam, and the teardown counterpart of the above. */
+export function stopDeployNotifications() {
+  unsubscribe?.();
+  unsubscribe = null;
+  saveNotificationId = null;
+}
+
+/**
+ * Announces a completed save, and asks the backend to watch for the deploy
+ * that carries it.
  *
  * Replaces the plain `Entry saved` toast at the one call site that publishes
  * directly. Editorial workflow keeps the plain toast: saving there creates an
  * unpublished change, which by definition has not deployed.
  */
-export function notifyEntrySaved() {
+export function notifyEntrySaved(entryLabel?: string) {
   return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
-    const backend = currentBackend(getState().config);
-    const implementation = backend.implementation as unknown as DeployWatchingBackend;
+    const implementation = backendFor(getState);
 
-    const notificationId = crypto.randomUUID();
+    // Idempotent, and here as well as at mount so a backend that becomes
+    // available later still gets subscribed.
+    dispatch(startDeployNotifications());
 
-    // Started before the toast exists, and safely so: the first read is a
-    // network round trip, so no update can arrive until well after this
-    // function returns. Starting it second would mean either showing a
-    // "Publishing…" toast we may have to retract, or asking the backend the
-    // same question twice.
-    const stopWatch =
-      typeof implementation?.watchDeploy === 'function'
-        ? implementation.watchDeploy(update => dispatch(applyDeployUpdate(notificationId, update)))
-        : null;
+    const watching =
+      typeof implementation?.recordSaveForDeployWatch === 'function' &&
+      implementation.recordSaveForDeployWatch(entryLabel);
 
-    if (!stopWatch) {
-      dispatch(
-        addNotification({
-          message: { key: 'ui.toast.entrySaved' },
-          type: 'success',
-          dismissAfter: 4000,
-        }),
-      );
-      return;
-    }
-
-    if (activeDeployNotificationId) {
-      dispatch(dismissNotification(activeDeployNotificationId));
-    }
-    activeDeployNotificationId = notificationId;
+    const id = crypto.randomUUID();
+    saveNotificationId = watching ? id : null;
 
     dispatch(
       addNotification({
-        id: notificationId,
-        message: { key: 'ui.toast.entryPublishing' },
-        type: 'info',
-        // Held open, not timed: this toast is going to be updated, and a
-        // deploy takes longer than any dismissal we could pick for it.
-        dismissAfter: false,
-        spinner: true,
+        id,
+        // "Publishing…" only where a deploy will actually be reported;
+        // promising a follow-up that cannot come would be worse than silence.
+        message: { key: watching ? 'ui.toast.entryPublishing' : 'ui.toast.entrySaved' },
+        type: 'success',
+        // Short either way. The editor is not made to watch a build.
+        dismissAfter: 4000,
       }),
     );
   };
 }
 
-function applyDeployUpdate(notificationId: string, update: DeployWatchUpdate) {
+function announceDeployResolution(resolution: DeployResolution) {
   return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
-    const deployment = update.deployment;
+    const state = getState();
+    const entries = resolution.entries ?? [];
+    const only = entries.length === 1 ? entries[0] : null;
 
-    switch (update.status) {
-      // "Saved · Publishing…" already says exactly this.
-      case 'pending':
-        return;
-
-      case 'building':
-        dispatch(
-          updateNotification(notificationId, {
-            message: { key: 'ui.toast.entryBuilding' },
-            type: 'info',
+    const payload: Partial<NotificationPayload> =
+      resolution.status === 'live'
+        ? {
+            // Named when it is one entry, counted when it is several — one
+            // notification either way, never a stack of them.
+            message: only
+              ? { key: 'ui.toast.entryLive', entry: only.entryLabel || only.entryPath }
+              : { key: 'ui.toast.entriesLive', count: entries.length },
+            type: 'success',
+            dismissAfter: 8000,
+            // The deploy's own URL is the live site (§A2 — it is
+            // `environment_url`, not the build log). `site_url` is the
+            // fallback for a host that reports no URL; without either, no link
+            // is shown rather than one that goes nowhere.
+            link: linkTo(resolution.targetUrl || state.config.site_url, 'ui.toast.viewSite'),
+          }
+        : {
+            message: { key: 'ui.toast.entryDeployFailed' },
+            type: 'error',
+            // Held open: this is the one outcome the editor has to act on, and
+            // the action is the link inside the toast. Dismissible by click.
             dismissAfter: false,
-            spinner: true,
-          }),
-        );
-        return;
+            link: linkTo(resolution.targetUrl, 'ui.toast.viewBuildLog'),
+          };
 
-      case 'success': {
-        // The deploy's own URL is the live site (verified in §A2 — it is
-        // `environment_url`, not the build log). `site_url` is the fallback for
-        // a host that reports no URL at all; without either, no link is shown
-        // rather than a link that goes nowhere.
-        const url = deployment?.target_url || getState().config.site_url;
-        finish(dispatch, notificationId, {
-          message: { key: 'ui.toast.entryLive' },
-          type: 'success',
-          dismissAfter: 8000,
-          spinner: false,
-          link: url ? { url, label: { key: 'ui.toast.viewSite' } } : undefined,
-        });
-        return;
-      }
+    const saveToastStillUp =
+      saveNotificationId !== null &&
+      state.notifications.notifications.some(
+        notification => notification.id === saveNotificationId,
+      );
 
-      case 'failed':
-        finish(dispatch, notificationId, {
-          message: { key: 'ui.toast.entryDeployFailed' },
-          type: 'error',
-          // Held open: this is the one outcome the editor has to act on, and
-          // the action is the link inside the toast. Dismissible by click.
-          dismissAfter: false,
-          spinner: false,
-          link: deployment?.target_url
-            ? { url: deployment.target_url, label: { key: 'ui.toast.viewBuildLog' } }
-            : undefined,
-        });
-        return;
-
-      // absent, timeout, canceled: nothing true can be said about a deploy, so
-      // collapse to what is certainly true — the entry was saved. A canceled
-      // deploy belongs here rather than with failures: nobody's change broke,
-      // someone stopped a build.
-      default:
-        finish(dispatch, notificationId, {
-          message: { key: 'ui.toast.entrySaved' },
-          type: 'success',
-          dismissAfter: 4000,
-          spinner: false,
-          link: undefined,
-        });
+    if (saveToastStillUp) {
+      dispatch(updateNotification(saveNotificationId as string, payload));
+      saveNotificationId = null;
+      return;
     }
+
+    dispatch(addNotification(payload as NotificationPayload));
   };
 }
 
-/**
- * The watch's last word. It stays the active deploy toast afterwards — see
- * `activeDeployNotificationId` — so the next save clears it.
- */
-function finish(
-  dispatch: ThunkDispatch<State, {}, AnyAction>,
-  notificationId: string,
-  payload: Parameters<typeof updateNotification>[1],
-) {
-  dispatch(updateNotification(notificationId, payload));
-}
-
-/** Test seam — module state must not leak between cases. */
-export function resetDeployNotificationState() {
-  activeDeployNotificationId = null;
+function linkTo(url: string | null | undefined, labelKey: string) {
+  return url ? { url, label: { key: labelKey } } : undefined;
 }

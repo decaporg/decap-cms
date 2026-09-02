@@ -2,38 +2,51 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
 import { currentBackend } from '../../backend';
-import { notifyEntrySaved, resetDeployNotificationState } from '../deployStatus';
-import { NOTIFICATION_DISMISS, NOTIFICATION_SEND, NOTIFICATION_UPDATE } from '../notifications';
+import {
+  notifyEntrySaved,
+  startDeployNotifications,
+  stopDeployNotifications,
+} from '../deployStatus';
+import { NOTIFICATION_SEND, NOTIFICATION_UPDATE } from '../notifications';
 
 jest.mock('../../backend');
 
 const mockStore = configureMockStore([thunk]);
+const mockedCurrentBackend = currentBackend as unknown as jest.Mock;
 
-type DeployListener = (update: unknown) => void;
+type Resolution = {
+  status: 'live' | 'failed';
+  entries: Array<{ entryPath: string; entryLabel?: string }>;
+  targetUrl: string | null;
+};
 
-/** Stands in for the backend's own watcher — the test drives it by hand. */
-function backendWithWatch(canWatch = true) {
-  let listener: DeployListener | null = null;
-  const stop = jest.fn();
-  const watchDeploy = jest.fn((cb: DeployListener) => {
+/** Stands in for the backend's ledger-watcher; the test resolves by hand. */
+function backendWithWatch({ canWatch = true, canRecord = true } = {}) {
+  let listener: ((resolution: Resolution) => void) | null = null;
+  const unsubscribe = jest.fn();
+  const subscribeDeployResolutions = jest.fn(cb => {
     listener = cb;
-    return canWatch ? stop : null;
+    return canWatch ? unsubscribe : null;
   });
+  const recordSaveForDeployWatch = jest.fn(() => canRecord);
 
   return {
-    backend: { implementation: { watchDeploy } },
-    watchDeploy,
-    stop,
-    deliver: (update: unknown) => listener!(update),
+    backend: { implementation: { subscribeDeployResolutions, recordSaveForDeployWatch } },
+    subscribeDeployResolutions,
+    recordSaveForDeployWatch,
+    unsubscribe,
+    resolve: (resolution: Resolution) => listener!(resolution),
   };
 }
 
-function deployment(overrides: Record<string, unknown> = {}) {
-  return { target_url: null, provider_label: 'Netlify', error_message: null, ...overrides };
-}
-
-function storeWith(siteUrl?: string) {
-  return mockStore({ config: siteUrl ? { site_url: siteUrl } : {} });
+function storeWith({
+  siteUrl,
+  notifications = [],
+}: { siteUrl?: string; notifications?: unknown[] } = {}) {
+  return mockStore({
+    config: siteUrl ? { site_url: siteUrl } : {},
+    notifications: { notifications },
+  });
 }
 
 function sent(store: ReturnType<typeof mockStore>) {
@@ -44,12 +57,10 @@ function updates(store: ReturnType<typeof mockStore>) {
   return store.getActions().filter(action => action.type === NOTIFICATION_UPDATE);
 }
 
-const mockedCurrentBackend = currentBackend as unknown as jest.Mock;
-
-describe('notifyEntrySaved', () => {
+describe('deploy notifications', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    resetDeployNotificationState();
+    stopDeployNotifications();
   });
 
   // Every backend that is not Turbo, and this must stay exactly as it was.
@@ -57,113 +68,146 @@ describe('notifyEntrySaved', () => {
     mockedCurrentBackend.mockReturnValue({ implementation: {} });
     const store = storeWith();
 
-    store.dispatch(notifyEntrySaved());
+    store.dispatch(notifyEntrySaved('A post'));
 
     expect(sent(store)).toHaveLength(1);
-    expect(sent(store)[0].payload).toEqual({
+    expect(sent(store)[0].payload).toMatchObject({
       message: { key: 'ui.toast.entrySaved' },
       type: 'success',
       dismissAfter: 4000,
     });
   });
 
-  // A save with no commit sha, or a backend missing its Supabase config.
-  it('falls back to the plain saved toast when the backend declines to watch', () => {
-    const { backend } = backendWithWatch(false);
+  // Promising a follow-up that cannot come is worse than silence.
+  it('does not promise publishing when the save could not be recorded', () => {
+    const { backend } = backendWithWatch({ canRecord: false });
     mockedCurrentBackend.mockReturnValue(backend);
     const store = storeWith();
 
-    store.dispatch(notifyEntrySaved());
+    store.dispatch(notifyEntrySaved('A post'));
 
     expect(sent(store)[0].payload.message).toEqual({ key: 'ui.toast.entrySaved' });
+  });
+
+  // The heart of §A4b: the save toast must not outlive the save.
+  it('says "Publishing…" briefly and does not hold the toast open for the build', () => {
+    const { backend, recordSaveForDeployWatch } = backendWithWatch();
+    mockedCurrentBackend.mockReturnValue(backend);
+    const store = storeWith();
+
+    store.dispatch(notifyEntrySaved('A post'));
+
+    expect(recordSaveForDeployWatch).toHaveBeenCalledWith('A post');
+    expect(sent(store)[0].payload).toMatchObject({
+      message: { key: 'ui.toast.entryPublishing' },
+      dismissAfter: 4000,
+    });
     expect(sent(store)[0].payload.spinner).toBeUndefined();
   });
 
-  it('opens one held-open toast and follows the deploy through it', () => {
-    const { backend, deliver } = backendWithWatch();
+  it('subscribes once for the whole session, however many saves happen', () => {
+    const { backend, subscribeDeployResolutions } = backendWithWatch();
     mockedCurrentBackend.mockReturnValue(backend);
     const store = storeWith();
 
-    store.dispatch(notifyEntrySaved());
+    store.dispatch(startDeployNotifications());
+    store.dispatch(notifyEntrySaved('A'));
+    store.dispatch(notifyEntrySaved('B'));
 
-    const opened = sent(store)[0].payload;
-    expect(opened.message).toEqual({ key: 'ui.toast.entryPublishing' });
-    expect(opened.dismissAfter).toBe(false);
-    expect(opened.spinner).toBe(true);
-    expect(typeof opened.id).toBe('string');
+    expect(subscribeDeployResolutions).toHaveBeenCalledTimes(1);
+  });
 
-    deliver({ status: 'building', deployment: deployment(), commitSha: 'sha' });
-    deliver({
-      status: 'success',
-      deployment: deployment({ target_url: 'https://site.example' }),
-      commitSha: 'sha',
+  it('survives being started before the config resolves', () => {
+    mockedCurrentBackend.mockImplementation(() => {
+      throw new Error('config not loaded');
+    });
+    const store = storeWith();
+
+    expect(() => store.dispatch(startDeployNotifications())).not.toThrow();
+  });
+
+  it('names the entry when one change goes live, and links to the site', () => {
+    const { backend, resolve } = backendWithWatch();
+    mockedCurrentBackend.mockReturnValue(backend);
+    const store = storeWith();
+    store.dispatch(startDeployNotifications());
+
+    resolve({
+      status: 'live',
+      entries: [{ entryPath: 'posts/a.md', entryLabel: 'A post' }],
+      targetUrl: 'https://site.example',
     });
 
-    // One toast, updated twice — not three toasts.
-    expect(sent(store)).toHaveLength(1);
-    expect(updates(store)).toHaveLength(2);
-    expect(updates(store).every(action => action.id === opened.id)).toBe(true);
-
-    expect(updates(store)[0].payload.message).toEqual({ key: 'ui.toast.entryBuilding' });
-    expect(updates(store)[1].payload).toMatchObject({
-      message: { key: 'ui.toast.entryLive' },
+    expect(sent(store)[0].payload).toMatchObject({
+      message: { key: 'ui.toast.entryLive', entry: 'A post' },
       type: 'success',
-      spinner: false,
+      dismissAfter: 8000,
       link: { url: 'https://site.example', label: { key: 'ui.toast.viewSite' } },
     });
   });
 
-  // "Saved · Publishing…" already says this; re-rendering it would restart the
-  // toast for no new information.
-  it('says nothing new for a pending deploy', () => {
-    const { backend, deliver } = backendWithWatch();
+  it('counts them when one deploy carries several changes', () => {
+    const { backend, resolve } = backendWithWatch();
     mockedCurrentBackend.mockReturnValue(backend);
     const store = storeWith();
+    store.dispatch(startDeployNotifications());
 
-    store.dispatch(notifyEntrySaved());
-    deliver({ status: 'pending', deployment: deployment(), commitSha: 'sha' });
+    resolve({
+      status: 'live',
+      entries: [{ entryPath: 'posts/a.md' }, { entryPath: 'posts/b.md' }],
+      targetUrl: 'https://site.example',
+    });
 
-    expect(updates(store)).toHaveLength(0);
+    expect(sent(store)).toHaveLength(1);
+    expect(sent(store)[0].payload.message).toEqual({ key: 'ui.toast.entriesLive', count: 2 });
   });
 
-  it('falls back to the configured site_url when the deploy reports no URL', () => {
-    const { backend, deliver } = backendWithWatch();
+  it('falls back to the entry path when the save carried no title', () => {
+    const { backend, resolve } = backendWithWatch();
     mockedCurrentBackend.mockReturnValue(backend);
-    const store = storeWith('https://configured.example');
+    const store = storeWith();
+    store.dispatch(startDeployNotifications());
 
-    store.dispatch(notifyEntrySaved());
-    deliver({ status: 'success', deployment: deployment(), commitSha: 'sha' });
+    resolve({ status: 'live', entries: [{ entryPath: 'posts/a.md' }], targetUrl: null });
 
-    expect(updates(store)[0].payload.link).toEqual({
+    expect(sent(store)[0].payload.message).toEqual({
+      key: 'ui.toast.entryLive',
+      entry: 'posts/a.md',
+    });
+  });
+
+  it('falls back to the configured site_url, and offers no link at all without one', () => {
+    const { backend, resolve } = backendWithWatch();
+    mockedCurrentBackend.mockReturnValue(backend);
+
+    const configured = storeWith({ siteUrl: 'https://configured.example' });
+    configured.dispatch(startDeployNotifications());
+    resolve({ status: 'live', entries: [{ entryPath: 'a.md' }], targetUrl: null });
+    expect(sent(configured)[0].payload.link).toEqual({
       url: 'https://configured.example',
       label: { key: 'ui.toast.viewSite' },
     });
-  });
 
-  it('offers no link at all rather than one that goes nowhere', () => {
-    const { backend, deliver } = backendWithWatch();
-    mockedCurrentBackend.mockReturnValue(backend);
-    const store = storeWith();
-
-    store.dispatch(notifyEntrySaved());
-    deliver({ status: 'success', deployment: deployment(), commitSha: 'sha' });
-
-    expect(updates(store)[0].payload.link).toBeUndefined();
+    stopDeployNotifications();
+    const bare = storeWith();
+    bare.dispatch(startDeployNotifications());
+    resolve({ status: 'live', entries: [{ entryPath: 'a.md' }], targetUrl: null });
+    expect(sent(bare)[0].payload.link).toBeUndefined();
   });
 
   it('reports a failed build as an error the editor can act on', () => {
-    const { backend, deliver } = backendWithWatch();
+    const { backend, resolve } = backendWithWatch();
     mockedCurrentBackend.mockReturnValue(backend);
     const store = storeWith();
+    store.dispatch(startDeployNotifications());
 
-    store.dispatch(notifyEntrySaved());
-    deliver({
+    resolve({
       status: 'failed',
-      deployment: deployment({ target_url: 'https://logs.example/build/1' }),
-      commitSha: 'sha',
+      entries: [{ entryPath: 'posts/a.md', entryLabel: 'A post' }],
+      targetUrl: 'https://logs.example/build/1',
     });
 
-    expect(updates(store)[0].payload).toMatchObject({
+    expect(sent(store)[0].payload).toMatchObject({
       message: { key: 'ui.toast.entryDeployFailed' },
       type: 'error',
       dismissAfter: false,
@@ -171,56 +215,46 @@ describe('notifyEntrySaved', () => {
     });
   });
 
-  // The common case per §A0: no deploy hook, so nothing true can be said about
-  // a deploy and the toast must collapse to what is certainly true.
-  it.each(['absent', 'timeout', 'canceled'])('collapses to the plain saved toast on %s', status => {
-    const { backend, deliver } = backendWithWatch();
+  // A deploy quick enough to beat the save toast should update it, not stack
+  // a second toast beside it.
+  it('updates the save toast in place when it is still on screen', () => {
+    const { backend, resolve } = backendWithWatch();
     mockedCurrentBackend.mockReturnValue(backend);
-    const store = storeWith('https://configured.example');
 
-    store.dispatch(notifyEntrySaved());
-    deliver({ status, deployment: null, commitSha: 'sha' });
+    let pending: unknown[] = [];
+    const store = mockStore(() => ({
+      config: {},
+      notifications: { notifications: pending },
+    }));
 
-    expect(updates(store)[0].payload).toEqual({
-      message: { key: 'ui.toast.entrySaved' },
-      type: 'success',
-      dismissAfter: 4000,
-      spinner: false,
-      link: undefined,
+    store.dispatch(notifyEntrySaved('A post'));
+    const saveToastId = sent(store)[0].payload.id;
+    pending = [{ id: saveToastId, message: { key: 'ui.toast.entryPublishing' }, type: 'success' }];
+
+    resolve({
+      status: 'live',
+      entries: [{ entryPath: 'a.md' }],
+      targetUrl: 'https://site.example',
     });
+
+    expect(updates(store)).toHaveLength(1);
+    expect(updates(store)[0].id).toBe(saveToastId);
+    expect(sent(store)).toHaveLength(1);
   });
 
-  it("replaces the previous save's toast instead of leaving it spinning", () => {
-    const { backend } = backendWithWatch();
+  it('adds a new notification when the save toast has already gone', () => {
+    const { backend, resolve } = backendWithWatch();
     mockedCurrentBackend.mockReturnValue(backend);
     const store = storeWith();
 
-    store.dispatch(notifyEntrySaved());
-    const first = sent(store)[0].payload.id;
-    store.dispatch(notifyEntrySaved());
+    store.dispatch(notifyEntrySaved('A post'));
+    resolve({
+      status: 'live',
+      entries: [{ entryPath: 'a.md' }],
+      targetUrl: 'https://site.example',
+    });
 
-    const dismissed = store.getActions().filter(action => action.type === NOTIFICATION_DISMISS);
-    expect(dismissed).toHaveLength(1);
-    expect(dismissed[0].id).toBe(first);
+    expect(updates(store)).toHaveLength(0);
     expect(sent(store)).toHaveLength(2);
-  });
-
-  // The failed toast is held open, so it is the one still on screen when the
-  // editor saves again — usually because it failed. Leaving it there put a red
-  // "failed" next to a fresh "Publishing…", which reads as the new save having
-  // failed too. Found in the browser, 2026-09-02.
-  it('replaces a finished toast too, so a stale failure cannot sit beside a fresh save', () => {
-    const { backend, deliver } = backendWithWatch();
-    mockedCurrentBackend.mockReturnValue(backend);
-    const store = storeWith();
-
-    store.dispatch(notifyEntrySaved());
-    const first = sent(store)[0].payload.id;
-    deliver({ status: 'failed', deployment: deployment(), commitSha: 'sha' });
-    store.dispatch(notifyEntrySaved());
-
-    const dismissed = store.getActions().filter(action => action.type === NOTIFICATION_DISMISS);
-    expect(dismissed).toHaveLength(1);
-    expect(dismissed[0].id).toBe(first);
   });
 });

@@ -12,6 +12,7 @@ import { loginUser, logoutUser } from '../../actions/auth';
 import { currentBackend } from '../../backend';
 import { createNewEntry } from '../../actions/collections';
 import { openMediaLibrary } from '../../actions/mediaLibrary';
+import { startDeployNotifications } from '../../actions/deployStatus';
 import MediaLibrary from '../MediaLibrary/MediaLibrary';
 import { Notifications } from '../UI';
 import { history } from '../../routing/history';
@@ -82,12 +83,20 @@ class App extends React.Component {
     useMediaLibrary: PropTypes.bool,
     openMediaLibrary: PropTypes.func.isRequired,
     showMediaButton: PropTypes.bool,
+    startDeployNotifications: PropTypes.func.isRequired,
     t: PropTypes.func.isRequired,
   };
 
   componentDidMount() {
     // Manually validate PropTypes - React 19 breaking change
     PropTypes.checkPropTypes(App.propTypes, this.props, 'prop', 'App');
+
+    // Deploy outcomes are announced for the whole session, from here rather
+    // than from the editor: a build outlives the screen the save was made on,
+    // and the editor should hear that their change went live wherever they
+    // have navigated to. Backends that cannot report deploys make this a
+    // no-op. See decap-turbo/docs/deploy-status-plan.md §A4b.
+    this.props.startDeployNotifications();
   }
 
   configError(config) {
@@ -289,6 +298,7 @@ const mapDispatchToProps = {
   openMediaLibrary,
   loginUser,
   logoutUser,
+  startDeployNotifications,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(translate()(App));

@@ -1,41 +1,44 @@
 import {
-  ABSENT_AFTER_MS,
   createDeploymentFetcher,
+  createLocalStorageLedger,
+  createMemoryLedger,
   createPollingTransport,
   DeployWatcher,
-  MAX_WATCH_MS,
-  pickDeployment,
-  POLL_INTERVAL_MS,
+  FIRST_SIGN_TIMEOUT_MS,
+  LEDGER_TTL_MS,
+  MAX_CONSECUTIVE_ERRORS,
+  pollIntervalFor,
 } from '../deployWatcher';
 
-import type { DeploymentRow, DeployTransport, DeployWatchUpdate } from '../deployWatcher';
+import type {
+  DeploymentRow,
+  DeployResolution,
+  DeployTransport,
+  LedgerStore,
+} from '../deployWatcher';
 
 function row(overrides: Partial<DeploymentRow> = {}): DeploymentRow {
   return {
-    commit_sha: 'abc123',
+    commit_sha: 'sha-1',
     source: 'github_deployment',
     external_id: '1',
     provider_label: 'Netlify',
-    state: 'building',
-    target_url: null,
+    state: 'success',
+    target_url: 'https://site.example',
     error_message: null,
     started_at: '2026-09-02T10:00:00Z',
-    finished_at: null,
-    updated_at: '2026-09-02T10:00:00Z',
+    finished_at: '2026-09-02T10:01:00Z',
+    updated_at: '2026-09-02T10:01:00Z',
     ...overrides,
   };
 }
 
-/**
- * Timers the test drives by hand. The watcher's whole job is deciding when to
- * give up, so those decisions have to be observable without waiting 15 real
- * minutes — and injecting the clock keeps the assertions about elapsed time
- * rather than about jest internals.
- */
+/** Timers and `now` the test drives by hand — the watcher's decisions are all
+ *  about elapsed time, and none of them should need real seconds to observe. */
 function fakeClock() {
   let nextHandle = 1;
+  let now = 1_000_000;
   const pending = new Map<number, { at: number; handler: () => void }>();
-  let now = 0;
 
   return {
     clock: {
@@ -47,20 +50,11 @@ function fakeClock() {
       clearTimeout: (handle: unknown) => {
         pending.delete(handle as number);
       },
+      now: () => now,
     },
-    /** Runs every timer due within `ms`, in due order, as real time would. */
-    advance(ms: number) {
-      const until = now + ms;
-      for (;;) {
-        const due = [...pending.entries()]
-          .filter(([, timer]) => timer.at <= until)
-          .sort((a, b) => a[1].at - b[1].at)[0];
-        if (!due) break;
-        pending.delete(due[0]);
-        now = due[1].at;
-        due[1].handler();
-      }
-      now = until;
+    /** Moves the clock without firing timers — for "time passed between polls". */
+    advanceClock(ms: number) {
+      now += ms;
     },
     get pendingCount() {
       return pending.size;
@@ -68,311 +62,379 @@ function fakeClock() {
   };
 }
 
-/** Lets a test push rows in as if the transport had learned them. */
+/** Lets a test deliver rows as if the transport had read them. */
 function manualTransport() {
   let push: ((rows: DeploymentRow[]) => void) | null = null;
   let fail: ((error: unknown) => void) | null = null;
+  let since: (() => string) | null = null;
   const stop = jest.fn();
-
-  const transport: DeployTransport = {
-    start(_commitSha, onRows, onError) {
-      push = onRows;
-      fail = onError;
-      return stop;
-    },
-  };
+  const start = jest.fn((getSince, onRows, onError) => {
+    since = getSince;
+    push = onRows;
+    fail = onError;
+    return stop;
+  });
 
   return {
-    transport,
+    transport: { start } as unknown as DeployTransport,
+    start,
     stop,
+    since: () => since!(),
     deliver: (rows: DeploymentRow[]) => push!(rows),
     error: (error: unknown = new Error('offline')) => fail!(error),
   };
 }
 
-/** Drains the microtask queue — jsdom has no setImmediate, and the polling
- *  chain is a few awaits deep. */
 async function flush() {
-  for (let tick = 0; tick < 5; tick += 1) {
+  for (let tick = 0; tick < 10; tick += 1) {
     await Promise.resolve();
   }
 }
 
-describe('pickDeployment', () => {
-  it('returns null when the commit has produced nothing yet', () => {
-    expect(pickDeployment([])).toBeNull();
+function makeWatcher(
+  overrides: {
+    contained?: jest.Mock;
+    ledger?: LedgerStore;
+  } = {},
+) {
+  const timers = fakeClock();
+  const transport = manualTransport();
+  const isCommitContained = overrides.contained ?? jest.fn().mockResolvedValue(false);
+  const resolutions: DeployResolution[] = [];
+
+  const watcher = new DeployWatcher({
+    transport: transport.transport,
+    isCommitContained,
+    ledger: overrides.ledger ?? createMemoryLedger(),
+    clock: timers.clock,
   });
+  watcher.subscribe(resolution => resolutions.push(resolution));
 
-  // The change IS live somewhere; sending the editor to debug an unrelated
-  // build would be worse than saying nothing.
-  it('prefers a success over a sibling that failed', () => {
-    const picked = pickDeployment([
-      row({ external_id: 'a', state: 'failed', updated_at: '2026-09-02T10:05:00Z' }),
-      row({ external_id: 'b', state: 'success', finished_at: '2026-09-02T10:01:00Z' }),
-    ]);
+  return { watcher, transport, timers, isCommitContained, resolutions };
+}
 
-    expect(picked?.external_id).toBe('b');
-  });
-
-  it('takes the first success when several succeeded', () => {
-    const picked = pickDeployment([
-      row({ external_id: 'late', state: 'success', finished_at: '2026-09-02T10:09:00Z' }),
-      row({ external_id: 'early', state: 'success', finished_at: '2026-09-02T10:02:00Z' }),
-    ]);
-
-    expect(picked?.external_id).toBe('early');
-  });
-
-  // "failed" is not recoverable from once shown, so a deploy that may still
-  // succeed outranks one that already didn't.
-  it('prefers a still-running deploy over a failed one', () => {
-    const picked = pickDeployment([
-      row({ external_id: 'a', state: 'failed', updated_at: '2026-09-02T10:05:00Z' }),
-      row({ external_id: 'b', state: 'pending', updated_at: '2026-09-02T10:01:00Z' }),
-    ]);
-
-    expect(picked?.external_id).toBe('b');
-  });
-
-  it('prefers a failure over a cancellation', () => {
-    const picked = pickDeployment([
-      row({ external_id: 'a', state: 'canceled', updated_at: '2026-09-02T10:09:00Z' }),
-      row({ external_id: 'b', state: 'failed', updated_at: '2026-09-02T10:01:00Z' }),
-    ]);
-
-    expect(picked?.external_id).toBe('b');
-  });
-
-  it('takes the most recently updated of several running deploys', () => {
-    const picked = pickDeployment([
-      row({ external_id: 'stale', state: 'building', updated_at: '2026-09-02T10:01:00Z' }),
-      row({ external_id: 'fresh', state: 'building', updated_at: '2026-09-02T10:06:00Z' }),
-    ]);
-
-    expect(picked?.external_id).toBe('fresh');
-  });
-
-  it('does not throw on unparseable timestamps', () => {
-    const picked = pickDeployment([
-      row({ external_id: 'a', state: 'success', finished_at: 'not a date', updated_at: '' }),
-    ]);
-
-    expect(picked?.external_id).toBe('a');
+describe('pollIntervalFor', () => {
+  // Flat 5s polling was fine for a 20s watch. Across a real build it is 240
+  // requests for one save; this is ~54 for the same window.
+  it('backs off as the wait grows', () => {
+    expect(pollIntervalFor(0)).toBe(5000);
+    expect(pollIntervalFor(59_000)).toBe(5000);
+    expect(pollIntervalFor(60_000)).toBe(15_000);
+    expect(pollIntervalFor(179_000)).toBe(15_000);
+    expect(pollIntervalFor(180_000)).toBe(30_000);
+    expect(pollIntervalFor(60 * 60_000)).toBe(30_000);
   });
 });
 
-describe('DeployWatcher', () => {
-  it('reports each new state and stops itself once the deploy is live', () => {
-    const { transport, stop, deliver } = manualTransport();
-    const watcher = new DeployWatcher(transport, { clock: fakeClock().clock });
-    const updates: DeployWatchUpdate[] = [];
+describe('DeployWatcher ledger', () => {
+  it('keeps one row per entry, at the newest commit', () => {
+    const { watcher, transport, resolutions, isCommitContained } = makeWatcher();
 
-    watcher.watch('abc123', update => updates.push(update), { entryPath: 'posts/hello.md' });
+    watcher.record({ entryPath: 'posts/a.md', entryLabel: 'A', commitSha: 'old' });
+    watcher.record({ entryPath: 'posts/a.md', entryLabel: 'A', commitSha: 'new' });
 
-    deliver([row({ state: 'building' })]);
-    deliver([row({ state: 'success', target_url: 'https://site.example', finished_at: 'x' })]);
+    // A deploy of the superseded commit must not announce the entry as live:
+    // the version the editor is waiting on is the newer one.
+    transport.deliver([row({ commit_sha: 'old' })]);
 
-    expect(updates.map(u => u.status)).toEqual(['building', 'success']);
-    expect(updates[1].deployment?.target_url).toBe('https://site.example');
-    expect(updates[1].commitSha).toBe('abc123');
-    expect(updates[1].entryPath).toBe('posts/hello.md');
-    expect(stop).toHaveBeenCalled();
+    expect(resolutions).toHaveLength(0);
+    expect(isCommitContained).toHaveBeenCalledWith('new', 'old');
   });
 
-  // A host re-reporting the same state must not make the toast flicker.
-  it('does not re-emit an unchanged row', () => {
-    const { transport, deliver } = manualTransport();
-    const watcher = new DeployWatcher(transport, { clock: fakeClock().clock });
-    const listener = jest.fn();
+  it('announces the entry when the deploy is of its own commit', async () => {
+    const { watcher, transport, resolutions, isCommitContained } = makeWatcher();
 
-    watcher.watch('abc123', listener);
-    deliver([row({ state: 'building', updated_at: '2026-09-02T10:00:00Z' })]);
-    deliver([row({ state: 'building', updated_at: '2026-09-02T10:00:05Z' })]);
+    watcher.record({ entryPath: 'posts/a.md', entryLabel: 'A', commitSha: 'sha-1' });
+    transport.deliver([row({ commit_sha: 'sha-1' })]);
+    await flush();
 
-    expect(listener).toHaveBeenCalledTimes(1);
-  });
-
-  // The case most Decap sites are in: no deploy hook at all (§A0).
-  it('gives up as `absent` when no row ever arrives', () => {
-    const { clock, advance } = fakeClock();
-    const { transport, stop } = manualTransport();
-    const watcher = new DeployWatcher(transport, { clock });
-    const listener = jest.fn();
-
-    watcher.watch('abc123', listener);
-    advance(ABSENT_AFTER_MS - 1);
-    expect(listener).not.toHaveBeenCalled();
-
-    advance(1);
-
-    expect(listener).toHaveBeenCalledWith(
-      expect.objectContaining({ status: 'absent', deployment: null }),
-    );
-    expect(stop).toHaveBeenCalled();
-  });
-
-  it('an empty read is not "absent" — it is just early', () => {
-    const { clock, advance } = fakeClock();
-    const { transport, deliver } = manualTransport();
-    const watcher = new DeployWatcher(transport, { clock });
-    const listener = jest.fn();
-
-    watcher.watch('abc123', listener);
-    deliver([]);
-    advance(ABSENT_AFTER_MS - 1);
-
-    expect(listener).not.toHaveBeenCalled();
-  });
-
-  it('stops watching for "absent" once a deploy has been seen', () => {
-    const { clock, advance } = fakeClock();
-    const { transport, deliver } = manualTransport();
-    const watcher = new DeployWatcher(transport, { clock });
-    const listener = jest.fn();
-
-    watcher.watch('abc123', listener);
-    deliver([row({ state: 'building' })]);
-    advance(ABSENT_AFTER_MS * 2);
-
-    expect(listener).toHaveBeenCalledTimes(1);
-    expect(listener).toHaveBeenCalledWith(expect.objectContaining({ status: 'building' }));
-  });
-
-  it('gives up as `timeout` on a deploy that never finishes', () => {
-    const { clock, advance } = fakeClock();
-    const { transport, stop, deliver } = manualTransport();
-    const watcher = new DeployWatcher(transport, { clock });
-    const listener = jest.fn();
-
-    watcher.watch('abc123', listener);
-    deliver([row({ state: 'building' })]);
-    advance(MAX_WATCH_MS);
-
-    expect(listener).toHaveBeenLastCalledWith(
+    expect(resolutions).toEqual([
       expect.objectContaining({
-        status: 'timeout',
-        deployment: expect.objectContaining({ state: 'building' }),
+        status: 'live',
+        entries: [{ entryPath: 'posts/a.md', entryLabel: 'A' }],
+        targetUrl: 'https://site.example',
       }),
-    );
-    expect(stop).toHaveBeenCalled();
+    ]);
+    // An exact match is answered without asking git anything.
+    expect(isCommitContained).not.toHaveBeenCalled();
   });
 
-  it('a second save supersedes the first watch and silences it', () => {
-    const first = manualTransport();
-    const watcher = new DeployWatcher(first.transport, { clock: fakeClock().clock });
-    const firstListener = jest.fn();
-    const secondListener = jest.fn();
+  it('announces several entries carried by one deploy as one resolution', async () => {
+    const contained = jest.fn().mockResolvedValue(true);
+    const { watcher, transport, resolutions } = makeWatcher({ contained });
 
-    watcher.watch('old-sha', firstListener);
-    watcher.watch('new-sha', secondListener);
+    watcher.record({ entryPath: 'posts/a.md', entryLabel: 'A', commitSha: 'sha-a' });
+    watcher.record({ entryPath: 'posts/b.md', entryLabel: 'B', commitSha: 'sha-b' });
+    transport.deliver([row({ commit_sha: 'sha-b' })]);
+    await flush();
 
-    expect(first.stop).toHaveBeenCalledTimes(1);
+    expect(resolutions).toHaveLength(1);
+    expect(resolutions[0].entries.map(e => e.entryPath)).toEqual(['posts/a.md', 'posts/b.md']);
+  });
+});
 
-    first.deliver([row({ state: 'success', commit_sha: 'new-sha' })]);
+describe('DeployWatcher ancestry', () => {
+  // The whole point of §A4b: a build cancelled in favour of a newer commit
+  // still ships the change, inside that newer deploy.
+  it("announces a change carried live by a later deploy of someone else's commit", async () => {
+    const contained = jest.fn().mockResolvedValue(true);
+    const { watcher, transport, resolutions } = makeWatcher({ contained });
 
-    expect(firstListener).not.toHaveBeenCalled();
-    expect(secondListener).toHaveBeenCalledWith(
-      expect.objectContaining({ status: 'success', commitSha: 'new-sha' }),
-    );
+    watcher.record({ entryPath: 'posts/a.md', entryLabel: 'A', commitSha: 'mine' });
+    transport.deliver([row({ commit_sha: 'theirs' })]);
+    await flush();
+
+    expect(contained).toHaveBeenCalledWith('mine', 'theirs');
+    expect(resolutions[0]).toMatchObject({ status: 'live' });
   });
 
-  // §A4 mounts this in the app shell, which will hold the handle across saves.
-  it('a stop handle from a superseded watch does not stop the current one', () => {
-    const first = manualTransport();
-    const watcher = new DeployWatcher(first.transport, { clock: fakeClock().clock });
-    const secondListener = jest.fn();
+  it('says nothing about a deploy that does not contain the change', async () => {
+    const contained = jest.fn().mockResolvedValue(false);
+    const { watcher, transport, resolutions } = makeWatcher({ contained });
 
-    const stopFirst = watcher.watch('old-sha', jest.fn());
-    watcher.watch('new-sha', secondListener);
-    stopFirst();
+    watcher.record({ entryPath: 'posts/a.md', commitSha: 'mine' });
+    transport.deliver([row({ commit_sha: 'unrelated' })]);
+    await flush();
 
-    first.deliver([row({ state: 'success' })]);
-
-    expect(secondListener).toHaveBeenCalledWith(expect.objectContaining({ status: 'success' }));
+    expect(resolutions).toHaveLength(0);
   });
 
-  // A poll crossing a token refresh must not end the watch.
-  it('tolerates transient failures and degrades only after three in a row', () => {
-    const { transport, deliver } = manualTransport();
-    const watcher = new DeployWatcher(transport, { clock: fakeClock().clock });
-    const listener = jest.fn();
+  it('asks git once per commit pair, not once per poll', async () => {
+    const contained = jest.fn().mockResolvedValue(false);
+    const { watcher, transport } = makeWatcher({ contained });
+
+    watcher.record({ entryPath: 'posts/a.md', commitSha: 'mine' });
+    transport.deliver([row({ commit_sha: 'theirs' })]);
+    await flush();
+    transport.deliver([row({ commit_sha: 'theirs' })]);
+    await flush();
+
+    expect(contained).toHaveBeenCalledTimes(1);
+  });
+
+  // "Your change is live" is the one claim this feature exists to make
+  // trustworthy, so an unanswerable ancestry question resolves nothing.
+  it('leaves the save pending when the ancestry check fails, and never guesses', async () => {
+    const contained = jest.fn().mockRejectedValue(new Error('rate limited'));
+    const { watcher, transport, resolutions } = makeWatcher({ contained });
     jest.spyOn(console, 'warn').mockImplementation(() => undefined);
 
-    watcher.watch('abc123', listener);
-    watcher['onError'](new Error('offline'));
-    watcher['onError'](new Error('offline'));
-    deliver([]);
-    watcher['onError'](new Error('offline'));
-    watcher['onError'](new Error('offline'));
-    expect(listener).not.toHaveBeenCalled();
+    watcher.record({ entryPath: 'posts/a.md', commitSha: 'mine' });
+    transport.deliver([row({ commit_sha: 'theirs' })]);
+    await flush();
 
-    watcher['onError'](new Error('offline'));
+    expect(resolutions).toHaveLength(0);
 
-    expect(listener).toHaveBeenCalledWith(
-      expect.objectContaining({ status: 'absent', deployment: null }),
-    );
+    // Asked again next poll rather than written off.
+    contained.mockResolvedValue(true);
+    transport.deliver([row({ commit_sha: 'theirs' })]);
+    await flush();
+
+    expect(resolutions[0]).toMatchObject({ status: 'live' });
+  });
+});
+
+describe('DeployWatcher outcomes', () => {
+  it('reports a failure but keeps waiting, so a later deploy can still say it is live', async () => {
+    const { watcher, transport, resolutions } = makeWatcher();
+
+    watcher.record({ entryPath: 'posts/a.md', entryLabel: 'A', commitSha: 'sha-1' });
+    transport.deliver([
+      row({ commit_sha: 'sha-1', state: 'failed', target_url: 'https://logs.example' }),
+    ]);
+    await flush();
+
+    expect(resolutions[0]).toMatchObject({ status: 'failed', targetUrl: 'https://logs.example' });
+
+    // Same failure again on the next poll: reported once, not on repeat.
+    transport.deliver([row({ commit_sha: 'sha-1', state: 'failed' })]);
+    await flush();
+    expect(resolutions).toHaveLength(1);
+
+    // Someone fixes the build; the change ships after all.
+    transport.deliver([row({ commit_sha: 'sha-1', state: 'success', external_id: '2' })]);
+    await flush();
+
+    expect(resolutions).toHaveLength(2);
+    expect(resolutions[1]).toMatchObject({ status: 'live' });
   });
 
-  it('stop() tears down without emitting anything', () => {
-    const timers = fakeClock();
-    const { transport, stop } = manualTransport();
-    const watcher = new DeployWatcher(transport, { clock: timers.clock });
-    const listener = jest.fn();
+  // Netlify's "skip in favour of a newer commit", and GitHub's `inactive`.
+  it('says nothing at all about a cancelled deploy and keeps the save pending', async () => {
+    const { watcher, transport, resolutions } = makeWatcher();
 
-    watcher.watch('abc123', listener);
-    expect(timers.pendingCount).toBe(2);
+    watcher.record({ entryPath: 'posts/a.md', commitSha: 'sha-1' });
+    transport.deliver([row({ commit_sha: 'sha-1', state: 'canceled' })]);
+    await flush();
 
-    watcher.stop();
-    timers.advance(MAX_WATCH_MS);
+    expect(resolutions).toHaveLength(0);
+    expect(watcher.isWatching).toBe(true);
+  });
 
-    expect(stop).toHaveBeenCalled();
-    expect(listener).not.toHaveBeenCalled();
-    // Both the grace and the ceiling timer are gone — a watcher that leaked
-    // either would fire into a torn-down listener minutes later.
-    expect(timers.pendingCount).toBe(0);
+  it('says nothing while a deploy is still running', async () => {
+    const { watcher, transport, resolutions } = makeWatcher();
+
+    watcher.record({ entryPath: 'posts/a.md', commitSha: 'sha-1' });
+    transport.deliver([row({ commit_sha: 'sha-1', state: 'building' })]);
+    transport.deliver([row({ commit_sha: 'sha-1', state: 'pending' })]);
+    await flush();
+
+    expect(resolutions).toHaveLength(0);
+  });
+
+  it('stops once every save has been accounted for', async () => {
+    const { watcher, transport } = makeWatcher();
+
+    watcher.record({ entryPath: 'posts/a.md', commitSha: 'sha-1' });
+    transport.deliver([row({ commit_sha: 'sha-1' })]);
+    await flush();
+
+    expect(transport.stop).toHaveBeenCalled();
+    expect(watcher.isWatching).toBe(false);
+  });
+});
+
+describe('DeployWatcher giving up', () => {
+  // The common case per §A0: no deploy hook reports to us at all. It must
+  // produce no notification whatsoever — the save already had its own toast.
+  it('stops silently when no deployment is ever reported', async () => {
+    const { watcher, transport, timers, resolutions } = makeWatcher();
+
+    watcher.record({ entryPath: 'posts/a.md', commitSha: 'sha-1' });
+    transport.deliver([]);
+    expect(watcher.isWatching).toBe(true);
+
+    timers.advanceClock(FIRST_SIGN_TIMEOUT_MS + 1000);
+    transport.deliver([]);
+    await flush();
+
+    expect(resolutions).toHaveLength(0);
+    expect(transport.stop).toHaveBeenCalled();
+  });
+
+  it('keeps waiting past that window once any deploy has been seen', async () => {
+    const contained = jest.fn().mockResolvedValue(false);
+    const { watcher, transport, timers } = makeWatcher({ contained });
+
+    watcher.record({ entryPath: 'posts/a.md', commitSha: 'sha-1' });
+    transport.deliver([row({ commit_sha: 'other', state: 'building' })]);
+    await flush();
+
+    timers.advanceClock(FIRST_SIGN_TIMEOUT_MS + 1000);
+    transport.deliver([]);
+    await flush();
+
+    expect(watcher.isWatching).toBe(true);
+  });
+
+  it('forgets a save nobody ever reported on, rather than watching forever', async () => {
+    const { watcher, transport, timers, resolutions } = makeWatcher();
+
+    watcher.record({ entryPath: 'posts/a.md', commitSha: 'sha-1' });
+    transport.deliver([row({ commit_sha: 'other', state: 'building' })]);
+    await flush();
+
+    timers.advanceClock(LEDGER_TTL_MS + 1000);
+    transport.deliver([row({ commit_sha: 'sha-1' })]);
+    await flush();
+
+    expect(resolutions).toHaveLength(0);
+    expect(watcher.isWatching).toBe(false);
+  });
+
+  it('gives up after repeated transport failures, leaving the ledger to be resumed', () => {
+    const ledger = createMemoryLedger();
+    const { watcher, transport } = makeWatcher({ ledger });
+    jest.spyOn(console, 'warn').mockImplementation(() => undefined);
+
+    watcher.record({ entryPath: 'posts/a.md', commitSha: 'sha-1' });
+    for (let i = 0; i < MAX_CONSECUTIVE_ERRORS - 1; i += 1) {
+      transport.error();
+    }
+    expect(transport.stop).not.toHaveBeenCalled();
+
+    transport.error();
+
+    expect(transport.stop).toHaveBeenCalled();
+    expect(ledger.load()).toHaveLength(1);
+  });
+});
+
+describe('DeployWatcher persistence', () => {
+  it('resumes a ledger left by a previous page load when something subscribes', () => {
+    const ledger = createMemoryLedger();
+    const first = makeWatcher({ ledger });
+    first.watcher.record({ entryPath: 'posts/a.md', entryLabel: 'A', commitSha: 'sha-1' });
+    first.watcher.stop();
+
+    const second = makeWatcher({ ledger });
+
+    expect(second.transport.start).toHaveBeenCalled();
+    expect(second.watcher.isWatching).toBe(true);
+  });
+
+  it('does not read the deploy window from before the oldest pending save', () => {
+    const { watcher, transport, timers } = makeWatcher();
+
+    watcher.record({ entryPath: 'posts/a.md', commitSha: 'sha-1' });
+    const since = Date.parse(transport.since());
+
+    expect(since).toBeLessThanOrEqual(timers.clock.now());
+    expect(since).toBeGreaterThan(timers.clock.now() - 120_000);
+  });
+});
+
+describe('createLocalStorageLedger', () => {
+  const key = 'decap-turbo:deploys:test';
+
+  beforeEach(() => localStorage.clear());
+
+  it('round-trips the ledger', () => {
+    const ledger = createLocalStorageLedger(key);
+    const entries = [{ entryPath: 'posts/a.md', commitSha: 'sha-1', savedAt: 1 }];
+
+    ledger.save(entries);
+
+    expect(createLocalStorageLedger(key).load()).toEqual(entries);
+  });
+
+  it('clears the key rather than storing an empty list', () => {
+    const ledger = createLocalStorageLedger(key);
+    ledger.save([{ entryPath: 'posts/a.md', commitSha: 'sha-1', savedAt: 1 }]);
+
+    ledger.save([]);
+
+    expect(localStorage.getItem(key)).toBeNull();
+  });
+
+  // Losing a notification is a far smaller problem than a save path that throws.
+  it('survives unreadable storage', () => {
+    localStorage.setItem(key, 'not json');
+
+    expect(createLocalStorageLedger(key).load()).toEqual([]);
   });
 });
 
 describe('createPollingTransport', () => {
-  it('reads once immediately, then on the interval', async () => {
-    const { clock, advance } = fakeClock();
+  it('reads immediately, then on the interval the watcher asks for', async () => {
+    const timers = fakeClock();
     const fetchRows = jest.fn().mockResolvedValue([]);
-    const onRows = jest.fn();
+    let interval = 5000;
 
-    createPollingTransport(fetchRows, { clock }).start('abc123', onRows, jest.fn());
+    createPollingTransport(fetchRows, {
+      intervalMs: () => interval,
+      clock: timers.clock,
+    }).start(() => '2026-09-02T10:00:00Z', jest.fn(), jest.fn());
     await flush();
 
     expect(fetchRows).toHaveBeenCalledTimes(1);
-    expect(fetchRows).toHaveBeenCalledWith('abc123');
+    expect(fetchRows).toHaveBeenCalledWith('2026-09-02T10:00:00Z');
+    expect(timers.pendingCount).toBe(1);
 
-    advance(POLL_INTERVAL_MS);
+    interval = 30_000;
     await flush();
-
-    expect(fetchRows).toHaveBeenCalledTimes(2);
   });
 
-  it('keeps polling after a failed read', async () => {
-    const { clock, advance } = fakeClock();
-    const fetchRows = jest
-      .fn()
-      .mockRejectedValueOnce(new Error('offline'))
-      .mockResolvedValue([row()]);
-    const onError = jest.fn();
-    const onRows = jest.fn();
-
-    createPollingTransport(fetchRows, { clock }).start('abc123', onRows, onError);
-    await flush();
-
-    expect(onError).toHaveBeenCalledTimes(1);
-
-    advance(POLL_INTERVAL_MS);
-    await flush();
-
-    expect(onRows).toHaveBeenCalledWith([row()]);
-  });
-
-  // A read in flight when the watch ends must not reach a listener that has
-  // already been torn down, nor schedule the next poll.
   it('drops an in-flight read once stopped, and schedules nothing further', async () => {
     const timers = fakeClock();
     let resolveFetch: ((rows: DeploymentRow[]) => void) | null = null;
@@ -381,22 +443,16 @@ describe('createPollingTransport', () => {
     );
     const onRows = jest.fn();
 
-    const stop = createPollingTransport(fetchRows, { clock: timers.clock }).start(
-      'abc123',
-      onRows,
-      jest.fn(),
-    );
+    const stop = createPollingTransport(fetchRows, {
+      intervalMs: () => 5000,
+      clock: timers.clock,
+    }).start(() => 'since', onRows, jest.fn());
     stop();
     resolveFetch!([row()]);
     await flush();
 
     expect(onRows).not.toHaveBeenCalled();
-    // Read off the object, not a destructured copy: it is a getter, and a
-    // snapshot taken before the stop would pass no matter what.
     expect(timers.pendingCount).toBe(0);
-
-    timers.advance(POLL_INTERVAL_MS * 3);
-    expect(fetchRows).toHaveBeenCalledTimes(1);
   });
 });
 
@@ -405,51 +461,39 @@ describe('createDeploymentFetcher', () => {
     baseUrl: 'https://project.supabase.co',
     anonKey: 'anon-key',
     siteId: 'site-1',
+    branch: 'main',
     getAccessToken: () => 'jwt-token',
   };
 
-  it("asks PostgREST for this site's rows for one commit, with the user JWT", async () => {
+  // Filtered by branch, not by commit: the deploy that carries a change live
+  // is not always the deploy of that commit.
+  it('reads the branch window with the user JWT', async () => {
     const fetchImpl = jest.fn().mockResolvedValue({
       ok: true,
       text: () => Promise.resolve(JSON.stringify([row()])),
     });
 
-    const rows = await createDeploymentFetcher({ ...config, fetchImpl } as never)('abc123');
+    const rows = await createDeploymentFetcher({ ...config, fetchImpl } as never)(
+      '2026-09-02T10:00:00.000Z',
+    );
 
     const [url, init] = fetchImpl.mock.calls[0];
     expect(url).toContain('/rest/v1/site_deployments?');
     expect(url).toContain('site_id=eq.site-1');
-    expect(url).toContain('commit_sha=eq.abc123');
-    expect(init.headers.apikey).toBe('anon-key');
+    expect(url).toContain('branch=eq.main');
+    expect(url).toContain('updated_at=gte.2026-09-02T10');
+    expect(url).not.toContain('commit_sha=');
     expect(init.headers.Authorization).toBe('Bearer jwt-token');
     expect(rows).toEqual([row()]);
   });
 
-  // The anon key cannot satisfy the select policy, so a request without a
-  // session would be a guaranteed empty read that reads as "no deploy".
   it('refuses to read without a session rather than reporting a false absence', async () => {
     const fetchImpl = jest.fn();
 
     await expect(
-      createDeploymentFetcher({ ...config, getAccessToken: () => null, fetchImpl } as never)('abc'),
+      createDeploymentFetcher({ ...config, getAccessToken: () => null, fetchImpl } as never)('t'),
     ).rejects.toThrow(/session/);
     expect(fetchImpl).not.toHaveBeenCalled();
-  });
-
-  it('reads the token per request, so a session refresh mid-watch is picked up', async () => {
-    const tokens = ['first', 'second'];
-    const fetchImpl = jest.fn().mockResolvedValue({ ok: true, text: () => Promise.resolve('[]') });
-    const fetchRows = createDeploymentFetcher({
-      ...config,
-      getAccessToken: () => tokens.shift() ?? null,
-      fetchImpl,
-    } as never);
-
-    await fetchRows('abc');
-    await fetchRows('abc');
-
-    expect(fetchImpl.mock.calls[0][1].headers.Authorization).toBe('Bearer first');
-    expect(fetchImpl.mock.calls[1][1].headers.Authorization).toBe('Bearer second');
   });
 
   it('throws on a non-ok response', async () => {
@@ -457,7 +501,7 @@ describe('createDeploymentFetcher', () => {
       .fn()
       .mockResolvedValue({ ok: false, status: 403, statusText: 'Forbidden' });
 
-    await expect(createDeploymentFetcher({ ...config, fetchImpl } as never)('abc')).rejects.toThrow(
+    await expect(createDeploymentFetcher({ ...config, fetchImpl } as never)('t')).rejects.toThrow(
       /403/,
     );
   });
@@ -465,8 +509,8 @@ describe('createDeploymentFetcher', () => {
   it('treats an empty body as no deployments', async () => {
     const fetchImpl = jest.fn().mockResolvedValue({ ok: true, text: () => Promise.resolve('') });
 
-    await expect(
-      createDeploymentFetcher({ ...config, fetchImpl } as never)('abc'),
-    ).resolves.toEqual([]);
+    await expect(createDeploymentFetcher({ ...config, fetchImpl } as never)('t')).resolves.toEqual(
+      [],
+    );
   });
 });

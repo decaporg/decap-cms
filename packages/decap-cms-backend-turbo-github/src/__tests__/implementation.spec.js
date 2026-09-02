@@ -406,7 +406,7 @@ describe('turbo backend preloadConfig', () => {
     await expect(DecapTurboGitHubBackend.preloadConfig(config)).rejects.toThrow('site not found');
   });
 
-  it('overrides a stale local repo/branch with the control plane\'s values', async () => {
+  it("overrides a stale local repo/branch with the control plane's values", async () => {
     const config = {
       backend: { turbo_site_id: 'site-123', repo: 'stale/repo', branch: 'stale-branch' },
     };
@@ -564,9 +564,7 @@ describe('turbo backend persistEntry save metrics', () => {
   // A meter left active would silently attribute every subsequent read to the
   // next save.
   it('clears the meter even when the save throws', async () => {
-    jest
-      .spyOn(superPersistEntry, 'persistEntry')
-      .mockRejectedValue(new Error('conflict'));
+    jest.spyOn(superPersistEntry, 'persistEntry').mockRejectedValue(new Error('conflict'));
 
     const backend = makeBackend();
 
@@ -628,6 +626,7 @@ describe('turbo backend deploy watch', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    localStorage.clear();
   });
 
   afterEach(() => {
@@ -658,20 +657,20 @@ describe('turbo backend deploy watch', () => {
     expect(backend.lastSavedCommit).toBeNull();
   });
 
-  it('declines to watch when no save has produced a commit', () => {
-    expect(makeBackend().watchDeploy(jest.fn())).toBeNull();
+  it('declines to record a save when none has produced a commit', () => {
+    expect(makeBackend().recordSaveForDeployWatch('A post')).toBe(false);
   });
 
-  it('declines to watch when the backend has no Supabase project to read', () => {
+  it('declines to record when the backend has no Supabase project to read', () => {
     const backend = makeBackend();
     backend.baseUrl = undefined;
     backend.supabaseId = '';
-    backend.lastSavedCommit = { sha: 'sha-1' };
+    backend.lastSavedCommit = { sha: 'sha-1', entryPath: 'content/post.md' };
 
-    expect(backend.watchDeploy(jest.fn())).toBeNull();
+    expect(backend.recordSaveForDeployWatch('A post')).toBe(false);
   });
 
-  it('polls site_deployments for the saved commit and reports it live', async () => {
+  it('records the save and announces it live when a deploy carries it', async () => {
     global.fetch = jest.fn().mockResolvedValue({
       ok: true,
       text: () => Promise.resolve(JSON.stringify([deploymentRow('success')])),
@@ -679,27 +678,44 @@ describe('turbo backend deploy watch', () => {
 
     const backend = makeBackend();
     backend.lastSavedCommit = { sha: 'sha-1', entryPath: 'content/post.md' };
-    const listener = jest.fn();
+    const resolutions = [];
+    backend.subscribeDeployResolutions(resolution => resolutions.push(resolution));
 
-    const stop = backend.watchDeploy(listener);
+    expect(backend.recordSaveForDeployWatch('A post')).toBe(true);
     await flush();
 
     const [url, init] = global.fetch.mock.calls[0];
     expect(url).toContain('https://sb.example.com/rest/v1/site_deployments?');
-    expect(url).toContain('commit_sha=eq.sha-1');
     expect(url).toContain('site_id=eq.site-id');
+    expect(url).toContain('branch=eq.');
     expect(init.headers.Authorization).toBe('Bearer access-token');
 
-    expect(listener).toHaveBeenCalledWith(
+    expect(resolutions).toEqual([
       expect.objectContaining({
-        status: 'success',
-        commitSha: 'sha-1',
-        entryPath: 'content/post.md',
+        status: 'live',
+        entries: [{ entryPath: 'content/post.md', entryLabel: 'A post' }],
+        targetUrl: 'https://site.example',
       }),
-    );
+    ]);
+  });
 
-    // Terminal, so it stopped itself — the caller need not hold the handle.
-    expect(typeof stop).toBe('function');
-    stop();
+  // Ancestry is asked of git, not of two clocks — see §A4b.
+  it('answers "is my change in this deploy" with GitHub compare', async () => {
+    const backend = makeBackend();
+    backend.ghFetch = jest
+      .fn()
+      .mockResolvedValue({ json: () => Promise.resolve({ status: 'ahead' }) });
+
+    await expect(backend.isCommitContained('mine', 'theirs')).resolves.toBe(true);
+    expect(backend.ghFetch.mock.calls[0][0]).toContain('/compare/mine...theirs');
+
+    backend.ghFetch.mockResolvedValue({ json: () => Promise.resolve({ status: 'identical' }) });
+    await expect(backend.isCommitContained('mine', 'mine')).resolves.toBe(true);
+
+    backend.ghFetch.mockResolvedValue({ json: () => Promise.resolve({ status: 'behind' }) });
+    await expect(backend.isCommitContained('mine', 'older')).resolves.toBe(false);
+
+    backend.ghFetch.mockResolvedValue({ json: () => Promise.resolve({ status: 'diverged' }) });
+    await expect(backend.isCommitContained('mine', 'other-branch')).resolves.toBe(false);
   });
 });

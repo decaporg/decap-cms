@@ -21,7 +21,7 @@ import {
   recordProxyResponse,
   type ProxyMeter,
 } from './saveMetrics';
-import { createDeployWatcher, type DeployWatcher, type DeployWatchUpdate } from './deployWatcher';
+import { createDeployWatcher, type DeployWatcher, type DeployResolution } from './deployWatcher';
 
 import type { GitHubUser } from 'decap-cms-backend-github/src/implementation';
 
@@ -88,7 +88,9 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
 
     if (!response.ok) {
       const body = (await response.json().catch(() => ({}))) as { error?: string };
-      throw new Error(`Failed to load turbo-github site defaults: ${body.error || response.status}`);
+      throw new Error(
+        `Failed to load turbo-github site defaults: ${body.error || response.status}`,
+      );
     }
 
     const defaults = await response.json();
@@ -143,9 +145,9 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
   /**
    * The commit the last save produced, and the entry it saved. Core awaits
    * `persistEntry` without reading its return value, so this is the only place
-   * the new sha can be captured — and the sha is the key the deploy watch
-   * subscribes on. Null after a save that produced no sha (the REST fallback
-   * path), so a watch can never attach to a previous save's commit.
+   * the new sha can be captured — and the sha is what the deploy ledger keys
+   * on. Null after a save that produced no sha (the REST fallback path), so a
+   * save can never be recorded against a previous save's commit.
    */
   lastSavedCommit: { sha: string; entryPath?: string } | null = null;
 
@@ -432,7 +434,13 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
     // could set it) and re-filters the loaded config against it.
     const turboPermissions = await this.fetchTurboPermissions();
 
-    recordCmsEvent(this.baseUrl!, this.supabaseAnonKey, this.supabaseAccessToken, 'cms_session_started', this.siteId);
+    recordCmsEvent(
+      this.baseUrl!,
+      this.supabaseAnonKey,
+      this.supabaseAccessToken,
+      'cms_session_started',
+      this.siteId,
+    );
 
     // Include access_token in the returned user object so it gets stored in auth store
     return {
@@ -924,27 +932,34 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
   }
 
   /**
-   * Watches the deploy of a saved commit and reports what happens to it. See
-   * decap-turbo/docs/deploy-status-plan.md §A3.
+   * Whether `head` contains `base` — the question "is my change in this
+   * deploy?", asked of git rather than of two clocks. See
+   * decap-turbo/docs/deploy-status-plan.md §A4b.
    *
-   * Returns a stop function, or null when there is nothing to watch — no
-   * commit sha (the REST fallback path, or no save yet) or a backend without
-   * the Supabase config the read needs. A null return is the caller's cue to
-   * leave today's plain "Entry saved" in place, and it is the common case:
-   * most sites never produce a deploy row at all (§A0).
-   *
-   * The watcher stops itself on a terminal state, and again on the absent and
-   * timeout ceilings, so a caller that only wants the notification need not
-   * hold the returned function.
+   * Only reached when a successful deploy names a commit that is not one of
+   * ours, which is exactly the case where a host cancelled our build in
+   * favour of a newer commit and shipped our change inside it.
    */
-  watchDeploy(
-    listener: (update: DeployWatchUpdate) => void,
-    options: { commitSha?: string; entryPath?: string } = {},
-  ): (() => void) | null {
-    const commitSha = options.commitSha ?? this.lastSavedCommit?.sha;
-    const baseUrl = this.baseUrl || (this.supabaseId && `https://${this.supabaseId}.supabase.co`);
+  private async isCommitContained(base: string, head: string) {
+    const response = await this.ghFetch(
+      `${this.apiRoot}/repos/${this.originRepo}/compare/${encodeURIComponent(
+        base,
+      )}...${encodeURIComponent(head)}`,
+    );
+    const comparison = (await response.json()) as { status?: string };
+    return comparison.status === 'ahead' || comparison.status === 'identical';
+  }
 
-    if (!commitSha || !baseUrl || !this.siteId || !this.supabaseAnonKey) {
+  /**
+   * The site's deploy watcher, or null when this backend cannot read
+   * deployments at all (no Supabase project or site id configured).
+   *
+   * Built once and shared: it holds one ledger of this editor's unpublished
+   * saves for the whole session, not one watch per save.
+   */
+  private deployWatcher(): DeployWatcher | null {
+    const baseUrl = this.baseUrl || (this.supabaseId && `https://${this.supabaseId}.supabase.co`);
+    if (!baseUrl || !this.siteId || !this.supabaseAnonKey) {
       return null;
     }
 
@@ -953,15 +968,52 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
         baseUrl,
         anonKey: this.supabaseAnonKey,
         siteId: this.siteId,
+        branch: this.branch,
         // A watch outlives several session refreshes, so the token is read per
         // request rather than captured here.
         getAccessToken: () => this.supabaseAccessToken,
+        isCommitContained: (base, head) => this.isCommitContained(base, head),
       });
     }
 
-    return this.deployWatcherInstance.watch(commitSha, listener, {
-      entryPath: options.entryPath ?? this.lastSavedCommit?.entryPath,
+    return this.deployWatcherInstance;
+  }
+
+  /**
+   * Subscribes to "this change is live / this build failed" for the whole
+   * session, and resumes any ledger left over from a previous page load.
+   *
+   * Returns an unsubscribe function, or null when this backend cannot watch
+   * deploys — the caller's cue that no deploy notification will ever arrive.
+   */
+  subscribeDeployResolutions(
+    listener: (resolution: DeployResolution) => void,
+  ): (() => void) | null {
+    return this.deployWatcher()?.subscribe(listener) ?? null;
+  }
+
+  /**
+   * Records the save just made, so the deploy that carries it can be reported.
+   *
+   * Returns false when there is nothing to record — no commit sha (the REST
+   * fallback path) or a backend that cannot read deployments. That is the
+   * caller's cue to leave today's plain "Entry saved" in place, and it is the
+   * common case: most sites never produce a deploy row at all (§A0).
+   */
+  recordSaveForDeployWatch(entryLabel?: string): boolean {
+    const saved = this.lastSavedCommit;
+    const watcher = this.deployWatcher();
+
+    if (!saved || !saved.entryPath || !watcher) {
+      return false;
+    }
+
+    watcher.record({
+      entryPath: saved.entryPath,
+      entryLabel,
+      commitSha: saved.sha,
     });
+    return true;
   }
 
   /**

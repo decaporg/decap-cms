@@ -9,6 +9,7 @@ import {
   updateFieldByKey,
   selectDefaultSortField,
   getFileFromSlug,
+  selectEntryCollectionTitle,
 } from '../reducers/collections';
 import { selectIntegration, selectPublishedSlugs } from '../reducers';
 import { getIntegrationProvider } from '../integrations';
@@ -998,10 +999,12 @@ export function persistEntry(collection: Collection) {
         usedSlugs,
       })
       .then(async (newSlug: string) => {
-        // "Entry saved" plus, where the backend can report one, the deploy
-        // that follows it — see actions/deployStatus.ts and §A4. Falls back to
-        // exactly the previous toast when it cannot.
-        dispatch(notifyEntrySaved());
+        // "Entry saved" plus, where the backend can report one, a later
+        // notification when a deploy carries this change live — see
+        // actions/deployStatus.ts and §A4b. Falls back to exactly the previous
+        // toast when it cannot. The title is passed so that notification can
+        // name the entry rather than its path.
+        dispatch(notifyEntrySaved(selectEntryCollectionTitle(collection, serializedEntry)));
 
         /**
          * Release the editor as soon as the entry is committed.

@@ -3,6 +3,12 @@ import type { TypeOptions } from 'react-toastify';
 export interface NotificationMessage {
   details?: unknown;
   key: string;
+  /**
+   * Any further values are handed to the translator as interpolations, so a
+   * phrase can say `%{entry}` or `%{count}`. The component already spreads the
+   * whole message into `t()`; this only makes that contract expressible.
+   */
+  [interpolation: string]: unknown;
 }
 
 /** An action the notification offers, rendered as a link in the toast. */

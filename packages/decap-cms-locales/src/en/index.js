@@ -306,11 +306,12 @@ const en = {
       onFailToUpdateStatus: 'Failed to update status: %{details}',
       missingRequiredField: "Oops, you've missed a required field. Please complete before saving.",
       entrySaved: 'Entry saved',
-      // Deploy status. One toast follows the save through its stages rather
-      // than stacking one per stage — see decap-turbo docs/deploy-status-plan.md.
+      // Deploy status. The save toast is short-lived; a deploy outcome arrives
+      // later as its own notification, wherever the editor happens to be.
+      // See decap-turbo docs/deploy-status-plan.md §A4b.
       entryPublishing: 'Saved · Publishing…',
-      entryBuilding: 'Building your site…',
-      entryLive: 'Your change is live',
+      entryLive: 'Your change to “%{entry}” is live',
+      entriesLive: '%{count} changes are live',
       entryDeployFailed: 'Your site failed to build',
       viewSite: 'View',
       viewBuildLog: 'View build log',
