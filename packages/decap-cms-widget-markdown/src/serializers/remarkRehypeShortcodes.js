@@ -1,8 +1,8 @@
-import React from 'react';
 import map from 'lodash/map';
 import has from 'lodash/has';
 import { renderToString } from 'react-dom/server';
 import u from 'unist-builder';
+import { createElement } from 'react';
 
 /**
  * This plugin doesn't actually transform Remark (MDAST) nodes to Rehype
@@ -58,7 +58,6 @@ export default function remarkToRehypeShortcodes({ plugins, getAsset, resolveWid
     if (toPreview) {
       return toPreview(shortcodeData, getAsset, fields);
     }
-
     /**
      * For editor components without a custom `toPreview` (e.g. container
      * components with nested markdown/richtext fields), render each sub-field
@@ -88,7 +87,7 @@ export default function remarkToRehypeShortcodes({ plugins, getAsset, resolveWid
      * Last resort fallback: try resolving the widget and rendering its preview.
      */
     const preview = resolveWidget(plugin.widget);
-    return React.createElement(preview.preview, {
+    return createElement(preview.preview, {
       value: shortcodeData,
       field: plugin,
       getAsset,

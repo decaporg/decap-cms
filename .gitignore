@@ -22,3 +22,4 @@ coverage/
 storybook-static/
 .nx
 .claude/settings.local.json
+pnpm-publish-summary.json
