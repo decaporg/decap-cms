@@ -24,6 +24,39 @@ import type { NotificationPayload } from './notifications';
  * particular backend.
  */
 
+export const DEPLOY_STATUS_UPDATE = 'DEPLOY_STATUS_UPDATE';
+export const DEPLOY_HISTORY_REQUEST = 'DEPLOY_HISTORY_REQUEST';
+export const DEPLOY_HISTORY_SUCCESS = 'DEPLOY_HISTORY_SUCCESS';
+export const DEPLOY_HISTORY_FAILURE = 'DEPLOY_HISTORY_FAILURE';
+
+/** One row of `site_deployments`, as the backend hands it over. */
+export interface DeploymentRow {
+  commit_sha: string;
+  source: string;
+  external_id: string;
+  provider_label: string | null;
+  state: 'pending' | 'building' | 'success' | 'failed' | 'canceled';
+  target_url: string | null;
+  error_message: string | null;
+  started_at: string | null;
+  finished_at: string | null;
+  updated_at: string;
+}
+
+export type DeployStatusAction =
+  | {
+      type: typeof DEPLOY_STATUS_UPDATE;
+      payload: {
+        pendingCount: number;
+        latest: DeploymentRow | null;
+        supported?: boolean;
+        pageEnabled?: boolean;
+      };
+    }
+  | { type: typeof DEPLOY_HISTORY_REQUEST }
+  | { type: typeof DEPLOY_HISTORY_SUCCESS; payload: { deployments: DeploymentRow[] } }
+  | { type: typeof DEPLOY_HISTORY_FAILURE; payload: { error: string } };
+
 interface DeployResolution {
   /** `live` — a deploy containing the change succeeded. `failed` — one containing it failed. */
   status: 'live' | 'failed';
@@ -36,6 +69,11 @@ interface DeployWatchingBackend {
     listener: (resolution: DeployResolution) => void,
   ) => (() => void) | null;
   recordSaveForDeployWatch?: (entryLabel?: string) => boolean;
+  subscribeDeployStatus?: (
+    listener: (status: { pendingCount: number; latest: DeploymentRow | null }) => void,
+  ) => (() => void) | null;
+  listDeployments?: (limit?: number) => Promise<DeploymentRow[]>;
+  deployStatusConfig?: () => { enabled: boolean; page: boolean; primaryTarget: string | null };
 }
 
 /**
@@ -52,6 +90,13 @@ let unsubscribe: (() => void) | null = null;
  * of a second one stacking beside it.
  */
 let saveNotificationId: string | null = null;
+
+/**
+ * The status subscription behind the header pill. Held separately from
+ * `unsubscribe` because it has different lifecycle rules: it never causes a
+ * poll, so it can outlive the notification subscription harmlessly.
+ */
+let unsubscribeStatus: (() => void) | null = null;
 
 function backendFor(getState: () => State): DeployWatchingBackend | null {
   try {
@@ -88,7 +133,84 @@ export function startDeployNotifications() {
 export function stopDeployNotifications() {
   unsubscribe?.();
   unsubscribe = null;
+  unsubscribeStatus?.();
+  unsubscribeStatus = null;
   saveNotificationId = null;
+}
+
+/**
+ * Wires the header pill, and takes the ONE read this feature makes on mount.
+ *
+ * That single read is what lets an editor who has saved nothing this session
+ * still see whether the site is live or its last build failed. Everything
+ * after it is driven by the watcher, which polls only while a save is
+ * outstanding — a pill that polled to stay current would undo the whole point
+ * of §A4b. See §A8.
+ */
+export function startDeployStatus() {
+  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+    if (unsubscribeStatus) {
+      return;
+    }
+
+    const implementation = backendFor(getState);
+    if (typeof implementation?.subscribeDeployStatus !== 'function') {
+      return;
+    }
+
+    const config = implementation.deployStatusConfig?.() ?? {
+      enabled: true,
+      page: true,
+      primaryTarget: null,
+    };
+
+    if (!config.enabled) {
+      return;
+    }
+
+    unsubscribeStatus =
+      implementation.subscribeDeployStatus(status =>
+        dispatch({
+          type: DEPLOY_STATUS_UPDATE,
+          payload: {
+            pendingCount: status.pendingCount,
+            latest: status.latest,
+            supported: true,
+            pageEnabled: config.page,
+          },
+        }),
+      ) ?? null;
+
+    if (unsubscribeStatus) {
+      dispatch(loadDeployHistory());
+    }
+  };
+}
+
+/**
+ * Reads the site's recent deploys. Dispatched once at mount and again by the
+ * Deploys page's Refresh — the same affordance Decap already offers for deploy
+ * preview links, so a manual check does not read as an admission that the
+ * automatic path is unreliable.
+ */
+export function loadDeployHistory(limit?: number) {
+  return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+    const implementation = backendFor(getState);
+    if (typeof implementation?.listDeployments !== 'function') {
+      return;
+    }
+
+    dispatch({ type: DEPLOY_HISTORY_REQUEST });
+    try {
+      const deployments = await implementation.listDeployments(limit);
+      dispatch({ type: DEPLOY_HISTORY_SUCCESS, payload: { deployments } });
+    } catch (error) {
+      dispatch({
+        type: DEPLOY_HISTORY_FAILURE,
+        payload: { error: error instanceof Error ? error.message : String(error) },
+      });
+    }
+  };
 }
 
 /**

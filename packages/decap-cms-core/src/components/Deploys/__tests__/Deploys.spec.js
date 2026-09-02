@@ -1,0 +1,196 @@
+import { fireEvent, render, screen } from '@testing-library/react';
+import { I18n } from 'react-polyglot';
+import { Provider } from 'react-redux';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+
+import Deploys, { Deploys as UnconnectedDeploys } from '../Deploys';
+import { deployIndicator } from '../../App/deployStatusIndicator';
+import en from '../../../../../decap-cms-locales/src/en';
+
+const mockStore = configureStore([thunk]);
+
+function row(overrides = {}) {
+  return {
+    commit_sha: 'abc1234def5678',
+    source: 'webhook',
+    external_id: 'deploy-1',
+    provider_label: 'Netlify',
+    state: 'success',
+    target_url: 'https://site.example',
+    error_message: null,
+    started_at: null,
+    finished_at: '2026-09-02T10:00:00.000Z',
+    updated_at: '2026-09-02T10:00:00.000Z',
+    ...overrides,
+  };
+}
+
+function renderPage(deployStatus) {
+  const store = mockStore({
+    deployStatus: {
+      deployments: [],
+      pendingCount: 0,
+      latest: null,
+      isFetching: false,
+      error: null,
+      supported: true,
+      pageEnabled: true,
+      loaded: true,
+      ...deployStatus,
+    },
+  });
+
+  render(
+    <Provider store={store}>
+      <I18n locale="en" messages={en}>
+        <Deploys />
+      </I18n>
+    </Provider>,
+  );
+
+  return store;
+}
+
+describe('Deploys page', () => {
+  it('answers the editor question first, in a sentence', () => {
+    renderPage({ latest: row(), deployments: [row()] });
+
+    expect(screen.getByText(/Your latest change is live/)).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'View site' })).toHaveAttribute(
+      'href',
+      'https://site.example',
+    );
+  });
+
+  // An editor with a save in flight is asking about that save, not about a
+  // build that finished before it.
+  it('reports publishing ahead of a finished deploy', () => {
+    renderPage({ pendingCount: 2, latest: row(), deployments: [row()] });
+
+    expect(screen.getByText(/Publishing 2 change/)).toBeInTheDocument();
+  });
+
+  it('says the last build failed', () => {
+    renderPage({ latest: row({ state: 'failed' }), deployments: [row({ state: 'failed' })] });
+
+    expect(screen.getByText(/The last build failed/)).toBeInTheDocument();
+  });
+
+  it('lists deploys with their host, commit and state', () => {
+    renderPage({
+      latest: row(),
+      deployments: [row(), row({ external_id: 'deploy-2', state: 'failed', error_message: 'Build script failed' })],
+    });
+
+    expect(screen.getAllByText('abc1234')).toHaveLength(2);
+    expect(screen.getAllByText('Netlify')).toHaveLength(2);
+    expect(screen.getByText('Build script failed')).toBeInTheDocument();
+  });
+
+  // Not a failure — the change ships inside a newer deploy.
+  it('calls a cancelled deploy superseded, not failed', () => {
+    renderPage({ deployments: [row({ state: 'canceled' })], latest: row({ state: 'canceled' }) });
+
+    expect(screen.getByText('Superseded')).toBeInTheDocument();
+    expect(screen.queryByText('Failed')).not.toBeInTheDocument();
+  });
+
+  // The single most likely reason someone opens this page.
+  it('explains an empty page instead of shrugging at it', () => {
+    renderPage({ deployments: [], loaded: true });
+
+    expect(screen.getByText(/Netlify does not report branch or production deploys/)).toBeInTheDocument();
+  });
+
+  it('names the sources when a site reports from more than one', () => {
+    renderPage({
+      deployments: [row(), row({ external_id: 'd2', source: 'github_deployment', provider_label: 'Vercel' })],
+    });
+
+    expect(screen.getByText(/Netlify, Vercel/)).toBeInTheDocument();
+  });
+
+  it('does not claim a single source is several', () => {
+    renderPage({ deployments: [row(), row({ external_id: 'd2' })] });
+
+    expect(screen.queryByText(/reported from more than one place/)).not.toBeInTheDocument();
+  });
+
+  it('reads deploys on mount and again on Refresh', () => {
+    // Opening the page and pressing Refresh are two of only three things that
+    // may cause a read — see §A8 on why nothing else may poll.
+    const loadDeployHistory = jest.fn();
+
+    render(
+      <I18n locale="en" messages={en}>
+        <UnconnectedDeploys
+          deployments={[row()]}
+          pendingCount={0}
+          latest={row()}
+          isFetching={false}
+          loaded
+          loadDeployHistory={loadDeployHistory}
+          t={key => key}
+        />
+      </I18n>,
+    );
+
+    expect(loadDeployHistory).toHaveBeenCalledTimes(1);
+
+    fireEvent.click(screen.getByRole('button', { name: /ui.deploys.refresh/ }));
+
+    expect(loadDeployHistory).toHaveBeenCalledTimes(2);
+  });
+
+  it('does not let Refresh stack reads while one is in flight', () => {
+    const loadDeployHistory = jest.fn();
+
+    render(
+      <I18n locale="en" messages={en}>
+        <UnconnectedDeploys
+          deployments={[row()]}
+          pendingCount={0}
+          latest={row()}
+          isFetching
+          loaded
+          loadDeployHistory={loadDeployHistory}
+          t={key => key}
+        />
+      </I18n>,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: /ui.deploys.refreshing/ }));
+
+    expect(loadDeployHistory).toHaveBeenCalledTimes(1);
+  });
+
+  it('surfaces a read failure rather than showing an empty history', () => {
+    renderPage({ error: 'Deploy status requires a signed-in session', loaded: false });
+
+    expect(screen.getByText(/requires a signed-in session/)).toBeInTheDocument();
+  });
+});
+
+describe('deployIndicator', () => {
+  it('shows publishing ahead of everything else', () => {
+    expect(deployIndicator(1, row()).key).toBe('app.header.deploysPublishing');
+  });
+
+  it('names a failed build', () => {
+    expect(deployIndicator(0, row({ state: 'failed' })).key).toBe('app.header.deploysFailed');
+  });
+
+  it('is plain when the site is live', () => {
+    expect(deployIndicator(0, row()).key).toBe('app.header.deploys');
+  });
+
+  it('is plain when nothing is known yet', () => {
+    expect(deployIndicator(0, null).key).toBe('app.header.deploys');
+  });
+
+  // 'canceled' alone says nothing an editor can act on.
+  it('says nothing special about a superseded deploy', () => {
+    expect(deployIndicator(0, row({ state: 'canceled' })).key).toBe('app.header.deploys');
+  });
+});

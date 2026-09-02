@@ -55,6 +55,21 @@ export interface DeployResolution {
   deployment: DeploymentRow;
 }
 
+/**
+ * What the header pill renders — see docs/deploy-status-plan.md §A8.
+ *
+ * Separate from `DeployResolution` because the two answer different questions.
+ * A resolution is an event ("this change just went live") and belongs in a
+ * toast; a status is a condition ("two changes are still publishing") and
+ * belongs in a place on screen that does not go away.
+ */
+export interface WatchStatus {
+  /** Saves this browser has made that no deploy has accounted for yet. */
+  pendingCount: number;
+  /** Most recently updated deployment this watcher has seen, in any state. */
+  latest: DeploymentRow | null;
+}
+
 export interface DeployTransport {
   /**
    * Starts delivering deployment rows for the watched branch, as often as it
@@ -80,6 +95,68 @@ export interface DeployTransport {
  * save. This is ~54 for the same window, still quick where it matters — the
  * first minute, when most sites finish.
  */
+/**
+ * Whether an editor sees any of this, and which host's success counts as
+ * "live". See docs/deploy-status-plan.md §A7.
+ *
+ * `deploy_status: false` turns it off entirely; an object turns parts off. The
+ * default is on, because the surfaces auto-hide anyway when no deploy has ever
+ * been reported for the site — a CMS whose host says nothing should look like
+ * a CMS without the feature, not like one with a broken one.
+ */
+export interface DeployStatusOptions {
+  enabled: boolean;
+  /** The toasts — "your change is live". */
+  notifications: boolean;
+  /** The /deploys route and its nav item. */
+  page: boolean;
+  /**
+   * `provider_label` whose success means live, for a site published to several
+   * hosts at once. Null lets the first success win, which keeps the claim true
+   * (it IS live, somewhere) and is why the toast names the host when a site has
+   * more than one.
+   */
+  primaryTarget: string | null;
+}
+
+export const DEFAULT_DEPLOY_STATUS_OPTIONS: DeployStatusOptions = {
+  enabled: true,
+  notifications: true,
+  page: true,
+  primaryTarget: null,
+};
+
+export function parseDeployStatusOptions(raw: unknown): DeployStatusOptions {
+  if (raw === false) {
+    return { enabled: false, notifications: false, page: false, primaryTarget: null };
+  }
+
+  if (raw === undefined || raw === null || raw === true) {
+    return DEFAULT_DEPLOY_STATUS_OPTIONS;
+  }
+
+  if (typeof raw !== 'object') {
+    return DEFAULT_DEPLOY_STATUS_OPTIONS;
+  }
+
+  const options = raw as Record<string, unknown>;
+  const enabled = options.enabled !== false;
+  const primaryTarget =
+    typeof options.primary_target === 'string' && options.primary_target.trim()
+      ? options.primary_target.trim()
+      : null;
+
+  return {
+    enabled,
+    // A disabled feature disables both surfaces, whatever the sub-keys say —
+    // otherwise `{ enabled: false, page: true }` would leave a nav item that
+    // can never show anything.
+    notifications: enabled && options.notifications !== false,
+    page: enabled && options.page !== false,
+    primaryTarget,
+  };
+}
+
 export const POLL_STEPS: ReadonlyArray<{ untilMs: number; everyMs: number }> = [
   { untilMs: 60_000, everyMs: 5_000 },
   { untilMs: 180_000, everyMs: 15_000 },
@@ -271,8 +348,10 @@ export class DeployWatcher {
   private clock: Clock;
   private stopTransport: (() => void) | null = null;
   private listeners = new Set<(resolution: DeployResolution) => void>();
+  private statusListeners = new Set<(status: WatchStatus) => void>();
   private pending: PendingSave[] = [];
   private sawAnyRow = false;
+  private latestRow: DeploymentRow | null = null;
   private startedAt = 0;
   private consecutiveErrors = 0;
   private resolving = false;
@@ -305,6 +384,35 @@ export class DeployWatcher {
         this.stop();
       }
     };
+  }
+
+  /**
+   * Attaches a status listener. Unlike `subscribe`, this has NO effect on the
+   * poll lifecycle: a pill watching the status must never be the reason a site
+   * starts polling, or an idle CMS would poll forever just to keep a badge
+   * current (§A8). Emits the current status immediately so a late subscriber
+   * — the header mounting after a save — renders the truth rather than a blank.
+   */
+  subscribeStatus(listener: (status: WatchStatus) => void): () => void {
+    this.statusListeners.add(listener);
+    listener(this.status());
+    return () => {
+      this.statusListeners.delete(listener);
+    };
+  }
+
+  status(): WatchStatus {
+    return { pendingCount: this.pending.length, latest: this.latestRow };
+  }
+
+  /**
+   * Seeds the last known deployment from a source other than the poll — the
+   * one read the app makes on mount, so an editor who has saved nothing this
+   * session still sees whether the site is live or broken.
+   */
+  observe(rows: DeploymentRow[]): void {
+    this.rememberLatest(rows);
+    this.emitStatus();
   }
 
   /** Records a save and starts (or keeps) watching for the deploy that carries it. */
@@ -347,6 +455,24 @@ export class DeployWatcher {
 
   private persist() {
     this.ledger.save(this.pending);
+    // Every mutation of the ledger goes through here, so the pill cannot drift
+    // out of step with what is actually pending.
+    this.emitStatus();
+  }
+
+  private rememberLatest(rows: DeploymentRow[]) {
+    for (const row of rows) {
+      if (!this.latestRow || Date.parse(row.updated_at) > Date.parse(this.latestRow.updated_at)) {
+        this.latestRow = row;
+      }
+    }
+  }
+
+  private emitStatus() {
+    const status = this.status();
+    for (const listener of [...this.statusListeners]) {
+      listener(status);
+    }
   }
 
   private ensureRunning() {
@@ -390,6 +516,8 @@ export class DeployWatcher {
 
     if (rows.length > 0) {
       this.sawAnyRow = true;
+      this.rememberLatest(rows);
+      this.emitStatus();
     }
 
     this.pending = this.prune(this.pending);
@@ -547,6 +675,13 @@ const DEPLOYMENT_COLUMNS = [
 /** More rows than any window should hold, so one read cannot become large. */
 const DEPLOYMENT_LIMIT = 20;
 
+/**
+ * A page of history. Capped rather than paged on purpose: past a screenful,
+ * the question an editor has stopped being "did my change ship" and the
+ * answer lives in the host's own dashboard.
+ */
+const HISTORY_LIMIT = 25;
+
 export interface DeploymentFetcherConfig {
   /** Project root, e.g. `https://<ref>.supabase.co` — no trailing path. */
   baseUrl: string;
@@ -573,41 +708,59 @@ export interface DeploymentFetcherConfig {
  * is what keeps a stale JWT (still scoped to the site the editor was on a
  * moment ago) from returning another site's rows.
  */
-export function createDeploymentFetcher(config: DeploymentFetcherConfig) {
+async function queryDeployments(
+  config: DeploymentFetcherConfig,
+  extra: Record<string, string>,
+  limit: number,
+): Promise<DeploymentRow[]> {
   const doFetch = config.fetchImpl ?? ((...args: Parameters<typeof fetch>) => fetch(...args));
+  const accessToken = config.getAccessToken();
 
-  return async function fetchDeployments(sinceIso: string): Promise<DeploymentRow[]> {
-    const accessToken = config.getAccessToken();
-    if (!accessToken) {
-      // The anon key alone cannot satisfy the select policy, so a request now
-      // would be a guaranteed empty read that looks like "no deploy".
-      throw new Error('Deploy status requires a signed-in session');
-    }
+  if (!accessToken) {
+    // The anon key alone cannot satisfy the select policy, so a request now
+    // would be a guaranteed empty read that looks like "no deploy".
+    throw new Error('Deploy status requires a signed-in session');
+  }
 
-    const params = new URLSearchParams({
-      select: DEPLOYMENT_COLUMNS,
-      site_id: `eq.${config.siteId}`,
-      branch: `eq.${config.branch}`,
-      updated_at: `gte.${sinceIso}`,
-      order: 'updated_at.desc',
-      limit: String(DEPLOYMENT_LIMIT),
-    });
+  const params = new URLSearchParams({
+    select: DEPLOYMENT_COLUMNS,
+    site_id: `eq.${config.siteId}`,
+    branch: `eq.${config.branch}`,
+    ...extra,
+    order: 'updated_at.desc',
+    limit: String(limit),
+  });
 
-    const response = await doFetch(`${config.baseUrl}/rest/v1/site_deployments?${params}`, {
-      method: 'GET',
-      headers: {
-        apikey: config.anonKey,
-        Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
-      },
-    });
+  const response = await doFetch(`${config.baseUrl}/rest/v1/site_deployments?${params}`, {
+    method: 'GET',
+    headers: {
+      apikey: config.anonKey,
+      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+    },
+  });
 
-    if (!response.ok) {
-      throw new Error(`Deploy status request failed: ${response.status} ${response.statusText}`);
-    }
+  if (!response.ok) {
+    throw new Error(`Deploy status request failed: ${response.status} ${response.statusText}`);
+  }
 
-    const text = await response.text();
-    return text ? (JSON.parse(text) as DeploymentRow[]) : [];
+  const text = await response.text();
+  return text ? (JSON.parse(text) as DeploymentRow[]) : [];
+}
+
+export function createDeploymentFetcher(config: DeploymentFetcherConfig) {
+  return function fetchDeployments(sinceIso: string): Promise<DeploymentRow[]> {
+    return queryDeployments(config, { updated_at: `gte.${sinceIso}` }, DEPLOYMENT_LIMIT);
+  };
+}
+
+/**
+ * The unbounded read behind the Deploys page and the one status read the app
+ * makes on mount. No `updated_at` floor: the page is history, not a window.
+ */
+export function createDeploymentLister(config: DeploymentFetcherConfig) {
+  return function listDeployments(limit = HISTORY_LIMIT): Promise<DeploymentRow[]> {
+    return queryDeployments(config, {}, Math.min(limit, HISTORY_LIMIT));
   };
 }
 

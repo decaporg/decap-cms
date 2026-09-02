@@ -1,5 +1,7 @@
 import {
   createDeploymentFetcher,
+  createDeploymentLister,
+  parseDeployStatusOptions,
   createLocalStorageLedger,
   createMemoryLedger,
   createPollingTransport,
@@ -12,6 +14,7 @@ import {
 
 import type {
   DeploymentRow,
+  WatchStatus,
   DeployResolution,
   DeployTransport,
   LedgerStore,
@@ -566,5 +569,163 @@ describe('createDeploymentFetcher', () => {
     await expect(createDeploymentFetcher({ ...config, fetchImpl } as never)('t')).resolves.toEqual(
       [],
     );
+  });
+});
+
+describe('createDeploymentLister', () => {
+  const config = {
+    baseUrl: 'https://project.supabase.co',
+    anonKey: 'anon-key',
+    siteId: 'site-1',
+    branch: 'main',
+    getAccessToken: () => 'jwt-token',
+  };
+
+  it('reads history with no time floor', async () => {
+    const fetchImpl = jest.fn().mockResolvedValue({
+      ok: true,
+      text: () => Promise.resolve(JSON.stringify([row()])),
+    });
+
+    await createDeploymentLister({ ...config, fetchImpl } as never)();
+
+    const [url] = fetchImpl.mock.calls[0];
+    expect(url).toContain('site_id=eq.site-1');
+    expect(url).toContain('branch=eq.main');
+    // The page is history, not a window — an `updated_at` floor would hide
+    // exactly the older deploys someone opened it to see.
+    expect(url).not.toContain('updated_at=');
+    expect(url).toContain('order=updated_at.desc');
+  });
+
+  it('caps the caller\u2019s limit so one read cannot become large', async () => {
+    const fetchImpl = jest.fn().mockResolvedValue({ ok: true, text: () => Promise.resolve('[]') });
+
+    await createDeploymentLister({ ...config, fetchImpl } as never)(5000);
+
+    expect(fetchImpl.mock.calls[0][0]).toContain('limit=25');
+  });
+});
+
+describe('parseDeployStatusOptions', () => {
+  it('defaults to on, because the surfaces auto-hide anyway', () => {
+    expect(parseDeployStatusOptions(undefined)).toEqual({
+      enabled: true,
+      notifications: true,
+      page: true,
+      primaryTarget: null,
+    });
+  });
+
+  it('turns everything off for `deploy_status: false`', () => {
+    expect(parseDeployStatusOptions(false)).toEqual({
+      enabled: false,
+      notifications: false,
+      page: false,
+      primaryTarget: null,
+    });
+  });
+
+  it('turns off one surface at a time', () => {
+    expect(parseDeployStatusOptions({ notifications: false })).toMatchObject({
+      enabled: true,
+      notifications: false,
+      page: true,
+    });
+    expect(parseDeployStatusOptions({ page: false })).toMatchObject({
+      notifications: true,
+      page: false,
+    });
+  });
+
+  // Otherwise `{ enabled: false, page: true }` leaves a nav item that can
+  // never show anything.
+  it('lets `enabled: false` override the sub-keys', () => {
+    expect(parseDeployStatusOptions({ enabled: false, page: true, notifications: true })).toMatchObject({
+      enabled: false,
+      page: false,
+      notifications: false,
+    });
+  });
+
+  it('reads primary_target', () => {
+    expect(parseDeployStatusOptions({ primary_target: '  Netlify  ' }).primaryTarget).toBe('Netlify');
+    expect(parseDeployStatusOptions({ primary_target: '   ' }).primaryTarget).toBeNull();
+    expect(parseDeployStatusOptions({ primary_target: 7 }).primaryTarget).toBeNull();
+  });
+});
+
+describe('DeployWatcher status channel', () => {
+  it('emits the current status immediately, so a late subscriber is not blank', () => {
+    const { watcher } = makeWatcher();
+    const seen: WatchStatus[] = [];
+
+    watcher.subscribeStatus(status => seen.push(status));
+
+    expect(seen).toEqual([{ pendingCount: 0, latest: null }]);
+  });
+
+  it('follows the ledger as saves are recorded and resolved', async () => {
+    const contained = jest.fn().mockResolvedValue(true);
+    const { watcher, transport } = makeWatcher({ contained });
+    const seen: WatchStatus[] = [];
+    watcher.subscribeStatus(status => seen.push(status));
+
+    watcher.record({ entryPath: 'a.md', commitSha: 'aaa' });
+    expect(seen[seen.length - 1].pendingCount).toBe(1);
+
+    watcher.record({ entryPath: 'b.md', commitSha: 'bbb' });
+    expect(seen[seen.length - 1].pendingCount).toBe(2);
+
+    transport.deliver([row({ commit_sha: 'bbb', state: 'success' })]);
+    await flush();
+
+    expect(seen[seen.length - 1].pendingCount).toBe(0);
+    expect(seen[seen.length - 1].latest).toMatchObject({ commit_sha: 'bbb' });
+  });
+
+  // The whole cost argument of A4b rests on this: a badge that polls to stay
+  // current would have an idle CMS reading forever.
+  it('never starts a poll', () => {
+    const { watcher, transport } = makeWatcher();
+
+    watcher.subscribeStatus(() => undefined);
+
+    expect(transport.start).not.toHaveBeenCalled();
+    expect(watcher.isWatching).toBe(false);
+  });
+
+  it('stops emitting once unsubscribed', () => {
+    const { watcher } = makeWatcher();
+    const seen: WatchStatus[] = [];
+    const unsubscribe = watcher.subscribeStatus(status => seen.push(status));
+
+    unsubscribe();
+    watcher.record({ entryPath: 'a.md', commitSha: 'aaa' });
+
+    expect(seen).toHaveLength(1);
+  });
+
+  it('takes the latest deploy from a read it did not make', () => {
+    // The one read the app makes on mount, so an editor who has saved nothing
+    // this session still sees whether the site is live or broken.
+    const { watcher } = makeWatcher();
+    const seen: WatchStatus[] = [];
+    watcher.subscribeStatus(status => seen.push(status));
+
+    watcher.observe([
+      row({ commit_sha: 'old', updated_at: '2026-09-02T10:00:00.000Z' }),
+      row({ commit_sha: 'new', updated_at: '2026-09-02T11:00:00.000Z' }),
+    ]);
+
+    expect(seen[seen.length - 1].latest).toMatchObject({ commit_sha: 'new' });
+  });
+
+  it('does not let an older row overwrite a newer one', () => {
+    const { watcher } = makeWatcher();
+    watcher.observe([row({ commit_sha: 'new', updated_at: '2026-09-02T11:00:00.000Z' })]);
+    watcher.observe([row({ commit_sha: 'old', updated_at: '2026-09-02T09:00:00.000Z' })]);
+
+    expect(watcher.status().latest).toMatchObject({ commit_sha: 'new' });
   });
 });

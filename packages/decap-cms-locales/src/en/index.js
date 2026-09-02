@@ -20,6 +20,12 @@ const en = {
     header: {
       content: 'Contents',
       workflow: 'Workflow',
+      // The deploy nav item doubles as the state indicator — see §A8. It reads
+      // 'Deploys' at rest and names the state when there is one worth naming.
+      deploys: 'Deploys',
+      deploysPublishing: 'Publishing…',
+      deploysBuilding: 'Building',
+      deploysFailed: 'Build failed',
       media: 'Media',
       quickAdd: 'Quick add',
     },
@@ -297,6 +303,48 @@ const en = {
     settingsDropdown: {
       logOut: 'Log Out',
       account: 'Account options dropdown',
+    },
+    // The header pill and the Deploys page. See decap-turbo
+    // docs/deploy-status-plan.md §A8 — state belongs in a place on screen,
+    // not in a toast that has to leave.
+    deployStatus: {
+      publishing: 'Publishing…',
+      building: 'Building',
+      live: 'Live',
+      failed: 'Build failed',
+    },
+    deploys: {
+      heading: 'Deploys',
+      refresh: 'Refresh',
+      refreshing: 'Refreshing…',
+      viewSite: 'View site',
+      summaryPublishing: 'Publishing %{count} change(s) — waiting for your site to build.',
+      summaryBuilding: 'Your site is building.',
+      summaryLive: 'Your latest change is live. Deployed %{time}.',
+      summaryFailed: 'The last build failed. Your most recent change is not on the site yet.',
+      summaryUnknown: 'No deploy has been reported for this site yet.',
+      loadError: 'Could not load deploys: %{details}',
+      multipleTargets: 'Deploys are reported from more than one place: %{targets}.',
+      // Deliberately explicit about the most likely cause. Netlify reports
+      // nothing to git about branch or production deploys, so a site without
+      // the deploy webhook will always show an empty page (§A6).
+      emptyConfigured:
+        'Nothing recorded yet. If this site deploys on Netlify, add the deploy webhook in your Decap Turbo dashboard — Netlify does not report branch or production deploys to your git provider. Other hosts report automatically.',
+      emptyUnknown: 'Loading deploys…',
+      columnState: 'State',
+      columnTarget: 'Reported by',
+      columnCommit: 'Commit',
+      columnWhen: 'When',
+      webhook: 'Deploy webhook',
+      gitProvider: 'Git provider',
+      state: {
+        pending: 'Queued',
+        building: 'Building',
+        success: 'Live',
+        failed: 'Failed',
+        // Not a failure: the change ships inside a newer deploy.
+        canceled: 'Superseded',
+      },
     },
     toast: {
       onFailToLoadEntries: 'Failed to load entry: %{details}',

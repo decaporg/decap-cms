@@ -7,6 +7,7 @@ import type { Auth } from '../reducers/auth';
 import type { Status } from '../reducers/status';
 import type { Medias } from '../reducers/medias';
 import type { Deploys } from '../reducers/deploys';
+import type { DeployStatusState } from '../reducers/deployStatus';
 import type { Search } from '../reducers/search';
 import type { GlobalUI } from '../reducers/globalUI';
 import type { NotificationsState } from '../reducers/notifications';
@@ -793,6 +794,7 @@ export interface State {
   cursors: Cursors;
   collections: Collections;
   deploys: Deploys;
+  deployStatus: DeployStatusState;
   globalUI: GlobalUI;
   editorialWorkflow: EditorialWorkflow;
   entries: Entries;

@@ -18,8 +18,10 @@ import {
 import { connect } from 'react-redux';
 
 import { SettingsDropdown } from '../UI';
+import { StatusDot, deployIndicator } from './deployStatusIndicator';
 import { checkBackendStatus } from '../../actions/status';
 import { selectCanCreateNewEntry } from '../../reducers';
+import { selectDeployStatusVisible } from '../../reducers/deployStatus';
 
 const styles = {
   buttonActive: css`
@@ -208,7 +210,12 @@ class Header extends React.Component {
       isTestRepo,
       t,
       showMediaButton,
+      hasDeployStatus,
+      deployPendingCount,
+      deployLatest,
     } = this.props;
+
+    const deployPill = deployIndicator(deployPendingCount, deployLatest);
 
     const shouldShowLogo = logo?.show_in_header && logo?.src;
 
@@ -237,6 +244,18 @@ class Header extends React.Component {
                   <AppHeaderNavLink to="/workflow" activeClassName="header-link-active">
                     <Icon type="workflow" />
                     {t('app.header.workflow')}
+                  </AppHeaderNavLink>
+                </li>
+              )}
+              {hasDeployStatus && (
+                <li>
+                  {/*
+                    Ambient, never an interruption — the counterpart to the
+                    toasts, which announce a change and then leave. See §A8.
+                  */}
+                  <AppHeaderNavLink to="/deploys" activeClassName="header-link-active">
+                    <StatusDot color={deployPill.color} />
+                    {t(deployPill.key)}
                   </AppHeaderNavLink>
                 </li>
               )}
@@ -287,10 +306,14 @@ const mapDispatchToProps = {
 };
 
 function mapStateToProps(state, ownProps) {
+  const { deployStatus } = state;
   return {
     creatableCollections: ownProps.collections
       .filter(collection => selectCanCreateNewEntry(state, collection.get('name')))
       .toList(),
+    hasDeployStatus: selectDeployStatusVisible(deployStatus),
+    deployPendingCount: deployStatus.pendingCount,
+    deployLatest: deployStatus.latest,
   };
 }
 

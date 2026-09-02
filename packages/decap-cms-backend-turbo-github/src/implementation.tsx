@@ -21,7 +21,16 @@ import {
   recordProxyResponse,
   type ProxyMeter,
 } from './saveMetrics';
-import { createDeployWatcher, type DeployWatcher, type DeployResolution } from './deployWatcher';
+import {
+  createDeployWatcher,
+  createDeploymentLister,
+  parseDeployStatusOptions,
+  type DeployWatcher,
+  type DeployResolution,
+  type DeployStatusOptions,
+  type DeploymentRow,
+  type WatchStatus,
+} from './deployWatcher';
 
 import type { GitHubUser } from 'decap-cms-backend-github/src/implementation';
 
@@ -151,6 +160,9 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
    */
   lastSavedCommit: { sha: string; entryPath?: string } | null = null;
 
+  /** Whether editors see deploy status at all, and which host counts (§A7). */
+  private deployStatusOptions: DeployStatusOptions = parseDeployStatusOptions(undefined);
+
   constructor(config: Config, options: any = {}) {
     super(config, options);
 
@@ -174,6 +186,9 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
       '') as string;
     this.supabaseId = (config.backend.supabase_app_id || '') as string;
     this.siteId = (config.backend.turbo_site_id || '') as string;
+    this.deployStatusOptions = parseDeployStatusOptions(
+      (config.backend as Record<string, unknown>).deploy_status,
+    );
     this.commitAuthorEmailFallback =
       ((config.backend as Record<string, unknown>).commit_author_email as string | undefined) ||
       ((config.backend as Record<string, unknown>).noreply_email as string | undefined);
@@ -989,7 +1004,48 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
   subscribeDeployResolutions(
     listener: (resolution: DeployResolution) => void,
   ): (() => void) | null {
+    if (!this.deployStatusOptions.notifications) {
+      return null;
+    }
     return this.deployWatcher()?.subscribe(listener) ?? null;
+  }
+
+  /** What the header pill renders. Never starts a poll — see §A8. */
+  subscribeDeployStatus(listener: (status: WatchStatus) => void): (() => void) | null {
+    if (!this.deployStatusOptions.enabled) {
+      return null;
+    }
+    return this.deployWatcher()?.subscribeStatus(listener) ?? null;
+  }
+
+  deployStatusConfig(): DeployStatusOptions {
+    return this.deployStatusOptions;
+  }
+
+  /**
+   * Reads the site's recent deploys — the Deploys page, and the single read
+   * the app makes on mount so an editor who has saved nothing still sees
+   * whether the site is live or broken.
+   *
+   * Rows are handed to the watcher as well as returned, so the pill and the
+   * page cannot disagree about what the latest deploy was.
+   */
+  async listDeployments(limit?: number): Promise<DeploymentRow[]> {
+    const baseUrl = this.baseUrl || (this.supabaseId && `https://${this.supabaseId}.supabase.co`);
+    if (!this.deployStatusOptions.enabled || !baseUrl || !this.siteId || !this.supabaseAnonKey) {
+      return [];
+    }
+
+    const rows = await createDeploymentLister({
+      baseUrl,
+      anonKey: this.supabaseAnonKey,
+      siteId: this.siteId,
+      branch: this.branch,
+      getAccessToken: () => this.supabaseAccessToken,
+    })(limit);
+
+    this.deployWatcher()?.observe(rows);
+    return rows;
   }
 
   /**
