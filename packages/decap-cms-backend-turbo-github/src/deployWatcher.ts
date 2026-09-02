@@ -143,6 +143,13 @@ export interface DeployStatusOptions {
   primaryTarget: string | null;
 }
 
+/**
+ * What the app is told about this backend's deploy status. The parsed options
+ * plus the one runtime fact the surfaces need: which branch is the site, so
+ * "Live" can be told apart from "a branch of this repo also built".
+ */
+export type DeployStatusConfig = DeployStatusOptions & { branch: string | null };
+
 export const DEFAULT_DEPLOY_STATUS_OPTIONS: DeployStatusOptions = {
   enabled: true,
   notifications: true,
@@ -354,6 +361,12 @@ export interface DeployWatcherDeps {
    * ours, which is exactly the cancelled-in-favour-of-newer case.
    */
   isCommitContained: (base: string, head: string) => Promise<boolean>;
+  /**
+   * The branch the site publishes from. Only a deploy of THIS branch can be
+   * the site's current state — see `rememberLatest`. Null means "unknown", in
+   * which case every row counts, which is the pre-branch-column behaviour.
+   */
+  siteBranch?: string | null;
   ledger?: LedgerStore;
   clock?: Clock;
 }
@@ -368,6 +381,7 @@ export interface DeployWatcherDeps {
 export class DeployWatcher {
   private transport: DeployTransport;
   private isCommitContained: DeployWatcherDeps['isCommitContained'];
+  private siteBranch: string | null;
   private ledger: LedgerStore;
   private clock: Clock;
   private stopTransport: (() => void) | null = null;
@@ -386,6 +400,7 @@ export class DeployWatcher {
   constructor(deps: DeployWatcherDeps) {
     this.transport = deps.transport;
     this.isCommitContained = deps.isCommitContained;
+    this.siteBranch = deps.siteBranch ?? null;
     this.ledger = deps.ledger ?? createMemoryLedger();
     this.clock = deps.clock ?? REAL_CLOCK;
     this.pending = this.prune(this.ledger.load());
@@ -489,8 +504,25 @@ export class DeployWatcher {
     this.emitStatus();
   }
 
+  /**
+   * The latest deploy OF THE SITE'S OWN BRANCH.
+   *
+   * The poll's own rows are already branch-scoped, but `observe` is fed the
+   * Deploys page's unscoped read — which deliberately includes editorial-
+   * workflow branches so the page can show them. Measured on the tester: an
+   * unpublish built `cms/posts/…` as a Netlify branch deploy, that row was the
+   * newest, and the header pill and the page's summary both announced "your
+   * latest change is live" about a preview of an unpublished entry.
+   *
+   * A row with no branch is kept: some hosts report none, and refusing those
+   * would mean a site that never learns its own state. Only a row that names a
+   * DIFFERENT branch is excluded, which is the case we can actually prove.
+   */
   private rememberLatest(rows: DeploymentRow[]) {
     for (const row of rows) {
+      if (this.siteBranch && row.branch && row.branch !== this.siteBranch) {
+        continue;
+      }
       if (!this.latestRow || Date.parse(row.updated_at) > Date.parse(this.latestRow.updated_at)) {
         this.latestRow = row;
       }
@@ -711,9 +743,14 @@ const DEPLOYMENT_COLUMNS = [
   'updated_at',
 ].join(',');
 
-const COMMIT_COLUMNS = ['commit_sha', 'branch', 'entry_label', 'entry_path', 'message', 'created_at'].join(
-  ',',
-);
+const COMMIT_COLUMNS = [
+  'commit_sha',
+  'branch',
+  'entry_label',
+  'entry_path',
+  'message',
+  'created_at',
+].join(',');
 
 /** More rows than any window should hold, so one read cannot become large. */
 const DEPLOYMENT_LIMIT = 20;
@@ -871,6 +908,7 @@ export function createDeployWatcher(
   holder.watcher = new DeployWatcher({
     transport,
     isCommitContained: config.isCommitContained,
+    siteBranch: config.branch,
     ledger: config.ledger ?? createLocalStorageLedger(`decap-turbo:deploys:${config.siteId}`),
     clock: config.clock,
   });

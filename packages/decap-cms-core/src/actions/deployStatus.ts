@@ -65,6 +65,8 @@ export type DeployStatusAction =
         latest: DeploymentRow | null;
         supported?: boolean;
         pageEnabled?: boolean;
+        /** The branch the site publishes from; null when the backend cannot say. */
+        branch?: string | null;
       };
     }
   | { type: typeof DEPLOY_HISTORY_REQUEST }
@@ -92,7 +94,12 @@ interface DeployWatchingBackend {
   ) => (() => void) | null;
   listDeployments?: (limit?: number) => Promise<DeploymentRow[]>;
   listCommits?: (limit?: number) => Promise<CommitRow[]>;
-  deployStatusConfig?: () => { enabled: boolean; page: boolean; primaryTarget: string | null };
+  deployStatusConfig?: () => {
+    enabled: boolean;
+    page: boolean;
+    primaryTarget: string | null;
+    branch?: string | null;
+  };
 }
 
 /**
@@ -196,6 +203,10 @@ export function startDeployStatus() {
             latest: status.latest,
             supported: true,
             pageEnabled: config.page,
+            // Which branch is the site. Without it the page cannot tell a
+            // deploy of the site from a deploy of an editorial-workflow
+            // branch, and calls the wrong one "Live".
+            branch: config.branch ?? null,
           },
         }),
       ) ?? null;

@@ -719,3 +719,38 @@ describe('turbo backend deploy watch', () => {
     await expect(backend.isCommitContained('mine', 'other-branch')).resolves.toBe(false);
   });
 });
+
+describe('turbo backend deploy status config', () => {
+  // Core has no idea what a Turbo site is; the branch has to travel with the
+  // options, or the Deploys page cannot tell "Live" from "a branch also built".
+  it('reports the branch the site publishes from', () => {
+    const backend = new DecapTurboGitHubBackend({
+      backend: {
+        repo: 'owner/repo',
+        branch: 'turbo',
+        supabase_app_id: 'supabase-project-id',
+        supabase_anon_key: 'supabase-anon-key',
+      },
+      media_folder: 'static/media',
+    });
+
+    expect(backend.deployStatusConfig()).toMatchObject({
+      enabled: true,
+      page: true,
+      branch: 'turbo',
+    });
+  });
+
+  it('reports the default branch when the config names none', () => {
+    const backend = new DecapTurboGitHubBackend({
+      backend: {
+        repo: 'owner/repo',
+        supabase_app_id: 'supabase-project-id',
+        supabase_anon_key: 'supabase-anon-key',
+      },
+      media_folder: 'static/media',
+    });
+
+    expect(backend.deployStatusConfig().branch).toBe('master');
+  });
+});

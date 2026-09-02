@@ -159,3 +159,66 @@ describe('deployStatus reducer', () => {
     expect(state.deployments).toEqual([]);
   });
 });
+
+describe('deployStatus reducer, branch scoping', () => {
+  function withBranch(branch: string | null) {
+    return deployStatus(undefined, {
+      type: DEPLOY_STATUS_UPDATE,
+      payload: { pendingCount: 0, latest: null, supported: true, pageEnabled: true, branch },
+    } as never);
+  }
+
+  // The history read is deliberately unscoped, so the page can show which
+  // branch each deploy went to. `latest` is what says "the site is live" —
+  // and a branch deploy of an unpublished entry is not the site.
+  it('takes the latest from the site branch, not from the newest row', () => {
+    const state = deployStatus(withBranch('turbo'), {
+      type: DEPLOY_HISTORY_SUCCESS,
+      payload: {
+        deployments: [
+          row({ external_id: 'workflow', branch: 'cms/posts/x' }),
+          row({ external_id: 'site', branch: 'turbo' }),
+        ],
+        commits: [],
+      },
+    } as never);
+
+    expect(state.latest).toMatchObject({ external_id: 'site' });
+    // The table still gets everything.
+    expect(state.deployments).toHaveLength(2);
+  });
+
+  it('keeps a row that names no branch', () => {
+    const state = deployStatus(withBranch('turbo'), {
+      type: DEPLOY_HISTORY_SUCCESS,
+      payload: { deployments: [row({ external_id: 'nameless', branch: null })], commits: [] },
+    } as never);
+
+    expect(state.latest).toMatchObject({ external_id: 'nameless' });
+  });
+
+  it('scopes nothing when the backend cannot name the branch', () => {
+    const state = deployStatus(withBranch(null), {
+      type: DEPLOY_HISTORY_SUCCESS,
+      payload: {
+        deployments: [row({ external_id: 'whatever', branch: 'cms/posts/x' })],
+        commits: [],
+      },
+    } as never);
+
+    expect(state.latest).toMatchObject({ external_id: 'whatever' });
+  });
+
+  // Branch scoping must not hide the page from a site whose host only ever
+  // reports branch deploys — that site has real deploy information, and this
+  // page is where someone goes to find out why nothing is live.
+  it('stays visible when there are deploys but none on the site branch', () => {
+    const state = deployStatus(withBranch('turbo'), {
+      type: DEPLOY_HISTORY_SUCCESS,
+      payload: { deployments: [row({ branch: 'cms/posts/x' })], commits: [] },
+    } as never);
+
+    expect(state.latest).toBeNull();
+    expect(selectDeployStatusVisible(state)).toBe(true);
+  });
+});

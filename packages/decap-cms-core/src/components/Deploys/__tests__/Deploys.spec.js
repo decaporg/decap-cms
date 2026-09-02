@@ -38,6 +38,7 @@ function renderPage(deployStatus) {
       pageEnabled: true,
       loaded: true,
       entryLabels: {},
+      branch: null,
       ...deployStatus,
     },
   });
@@ -81,7 +82,10 @@ describe('Deploys page', () => {
   it('lists deploys with their host, commit and state', () => {
     renderPage({
       latest: row(),
-      deployments: [row(), row({ external_id: 'deploy-2', state: 'failed', error_message: 'Build script failed' })],
+      deployments: [
+        row(),
+        row({ external_id: 'deploy-2', state: 'failed', error_message: 'Build script failed' }),
+      ],
     });
 
     expect(screen.getAllByText('abc1234')).toHaveLength(2);
@@ -101,12 +105,17 @@ describe('Deploys page', () => {
   it('explains an empty page instead of shrugging at it', () => {
     renderPage({ deployments: [], loaded: true });
 
-    expect(screen.getByText(/Netlify does not report branch or production deploys/)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Netlify does not report branch or production deploys/),
+    ).toBeInTheDocument();
   });
 
   it('names the sources when a site reports from more than one', () => {
     renderPage({
-      deployments: [row(), row({ external_id: 'd2', source: 'github_deployment', provider_label: 'Vercel' })],
+      deployments: [
+        row(),
+        row({ external_id: 'd2', source: 'github_deployment', provider_label: 'Vercel' }),
+      ],
     });
 
     expect(screen.getByText(/Netlify, Vercel/)).toBeInTheDocument();
@@ -237,6 +246,52 @@ describe('Deploys page', () => {
     expect(screen.getByText('Failed')).toBeInTheDocument();
     expect(screen.getAllByText('Live')).toHaveLength(1);
     expect(screen.getAllByText('Deployed')).toHaveLength(1);
+  });
+
+  // Measured on the tester: unpublishing an entry made Netlify branch-deploy
+  // `cms/posts/…`, that success was the newest row of all, and the page
+  // crowned a preview of an UNPUBLISHED entry as the live site.
+  it('never calls a deploy of another branch Live', () => {
+    renderPage({
+      branch: 'turbo',
+      deployments: [
+        row({
+          external_id: 'workflow',
+          branch: 'cms/posts/some-entry',
+          environment: 'branch-deploy',
+        }),
+        row({ external_id: 'site', branch: 'turbo' }),
+      ],
+    });
+
+    expect(screen.getAllByText('Live')).toHaveLength(1);
+    expect(screen.getAllByText('Deployed')).toHaveLength(1);
+    // The site's own deploy is the live one, and it is the row that says so.
+    expect(screen.getByText('turbo').closest('tr')).toHaveTextContent('Live');
+  });
+
+  // A host that reports no branch at all must not be locked out of ever being
+  // live — that would be every site whose webhook omits the field.
+  it('still calls a branchless deploy Live', () => {
+    renderPage({
+      branch: 'turbo',
+      deployments: [row({ external_id: 'nameless', branch: null })],
+    });
+
+    expect(screen.getAllByText('Live')).toHaveLength(1);
+  });
+
+  // With no branch known, the old behaviour stands: the newest success wins.
+  it('falls back to the newest success when the backend cannot name the branch', () => {
+    renderPage({
+      branch: null,
+      deployments: [
+        row({ external_id: 'newest', branch: 'cms/posts/x' }),
+        row({ external_id: 'older' }),
+      ],
+    });
+
+    expect(screen.getAllByText('Live')).toHaveLength(1);
   });
 
   it('names the git forge rather than saying "Git provider"', () => {

@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { Icon, colors, lengths, components, shadows, buttons } from 'decap-cms-ui-default';
 
 import { loadDeployHistory, selectCommitUrl } from '../../actions/deployStatus';
+import { onSiteBranch } from '../../reducers/deployStatus';
 import { DEPLOY_STATE_COLORS, StatusDot } from '../App/deployStatusIndicator';
 
 /**
@@ -149,7 +150,10 @@ function summaryFor(pendingCount, latest) {
     return { key: 'ui.deploys.summaryBuilding', options: {} };
   }
   if (latest.state === 'success') {
-    return { key: 'ui.deploys.summaryLive', options: { time: formatTime(latest.finished_at || latest.updated_at) } };
+    return {
+      key: 'ui.deploys.summaryLive',
+      options: { time: formatTime(latest.finished_at || latest.updated_at) },
+    };
   }
   return { key: 'ui.deploys.summaryUnknown', options: {} };
 }
@@ -179,13 +183,18 @@ function targetOf(row) {
 
 /**
  * Only one deploy is live at a time, and it is the most recent successful one
- * — later successes supersede earlier ones. Every other success was live once
- * and no longer is, so calling them all "Live" is simply untrue.
+ * ON THE SITE'S OWN BRANCH — later successes supersede earlier ones. Every
+ * other success was live once and no longer is, or was never the site at all,
+ * so calling them all "Live" is simply untrue.
  *
- * Rows arrive newest-first, so the first success is the live one. A rollback
- * on the host would defeat this, and the host's own dashboard is authoritative
- * there; the alternative is calling nothing live, which is less useful and no
- * more correct.
+ * The branch clause is not hypothetical: on the tester, unpublishing an entry
+ * made Netlify branch-deploy `cms/posts/…`, that success was the newest row,
+ * and the page announced a preview of an unpublished entry as the live site.
+ *
+ * Rows arrive newest-first, so the first qualifying success is the live one. A
+ * rollback on the host would defeat this, and the host's own dashboard is
+ * authoritative there; the alternative is calling nothing live, which is less
+ * useful and no more correct.
  */
 function stateKeyFor(row, liveId) {
   if (row.state === 'success') {
@@ -196,8 +205,8 @@ function stateKeyFor(row, liveId) {
   return `ui.deploys.state.${row.state}`;
 }
 
-function liveDeployId(deployments) {
-  const live = deployments.find(row => row.state === 'success');
+function liveDeployId(deployments, branch) {
+  const live = onSiteBranch(deployments, branch).find(row => row.state === 'success');
   return live ? `${live.source}:${live.external_id}` : null;
 }
 
@@ -235,6 +244,7 @@ export class Deploys extends React.Component {
     error: PropTypes.string,
     commitUrls: PropTypes.object.isRequired,
     entryLabels: PropTypes.object.isRequired,
+    branch: PropTypes.string,
     loadDeployHistory: PropTypes.func.isRequired,
     t: PropTypes.func.isRequired,
   };
@@ -296,11 +306,12 @@ export class Deploys extends React.Component {
       error,
       commitUrls,
       entryLabels,
+      branch,
       t,
     } = this.props;
     const summary = summaryFor(pendingCount, latest);
     const targets = [...new Set(deployments.map(targetOf))];
-    const liveId = liveDeployId(deployments);
+    const liveId = liveDeployId(deployments, branch);
     const liveUrl = latest && latest.state === 'success' ? latest.target_url : null;
 
     return (
@@ -364,7 +375,11 @@ export class Deploys extends React.Component {
                           site for a success, the build log for a failure.
                         */}
                         {row.target_url ? (
-                          <StateLink href={row.target_url} target="_blank" rel="noopener noreferrer">
+                          <StateLink
+                            href={row.target_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
                             {t(stateKeyFor(row, liveId))}
                           </StateLink>
                         ) : (
@@ -415,7 +430,7 @@ export class Deploys extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { deployments, pendingCount, latest, isFetching, error, loaded, entryLabels } =
+  const { deployments, pendingCount, latest, isFetching, error, loaded, entryLabels, branch } =
     state.deployStatus;
 
   // Derived rather than stored: it depends only on the backend, and keeping a
@@ -427,7 +442,17 @@ function mapStateToProps(state) {
     }
   }
 
-  return { deployments, pendingCount, latest, isFetching, error, loaded, commitUrls, entryLabels };
+  return {
+    deployments,
+    pendingCount,
+    latest,
+    isFetching,
+    error,
+    loaded,
+    commitUrls,
+    entryLabels,
+    branch,
+  };
 }
 
 const mapDispatchToProps = {

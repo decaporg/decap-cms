@@ -29,6 +29,7 @@ import {
   type DeployWatcher,
   type DeployResolution,
   type DeployStatusOptions,
+  type DeployStatusConfig,
   type DeploymentRow,
   type CommitRow,
   type WatchStatus,
@@ -1020,8 +1021,11 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
     return this.deployWatcher()?.subscribeStatus(listener) ?? null;
   }
 
-  deployStatusConfig(): DeployStatusOptions {
-    return this.deployStatusOptions;
+  deployStatusConfig(): DeployStatusConfig {
+    // The branch travels with the options so core can scope "Live" without
+    // knowing anything about Turbo — it is the same duck-typed contract the
+    // rest of this feature uses.
+    return { ...this.deployStatusOptions, branch: this.branch ?? null };
   }
 
   /**

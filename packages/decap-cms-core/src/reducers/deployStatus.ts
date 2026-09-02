@@ -25,6 +25,12 @@ export type DeployStatusState = {
   /** History, newest first — only populated once something asks for it. */
   deployments: DeploymentRow[];
   /**
+   * The branch the site publishes from, as the backend reports it. Null when
+   * the backend cannot say, which makes every row a candidate for "Live" —
+   * the behaviour from before deploy rows carried a branch.
+   */
+  branch: string | null;
+  /**
    * What each commit saved, keyed by sha. Shared across editors, unlike the
    * watcher's own ledger, so a colleague's save is named too.
    */
@@ -47,6 +53,7 @@ const defaultState: DeployStatusState = {
   pendingCount: 0,
   latest: null,
   deployments: [],
+  branch: null,
   entryLabels: {},
   isFetching: false,
   error: null,
@@ -55,11 +62,28 @@ const defaultState: DeployStatusState = {
   loaded: false,
 };
 
+/**
+ * The rows that describe the site itself, in the order they arrived.
+ *
+ * A row naming no branch is kept: some hosts report none, and dropping those
+ * would leave such a site permanently unable to say anything about itself.
+ * Only a row that names a different branch is excluded.
+ */
+export function onSiteBranch(deployments: DeploymentRow[], branch: string | null) {
+  if (!branch) {
+    return deployments;
+  }
+  return deployments.filter(row => !row.branch || row.branch === branch);
+}
+
 const deployStatus = produce((state: DeployStatusState, action: DeployStatusAction) => {
   switch (action.type) {
     case DEPLOY_STATUS_UPDATE: {
-      const { pendingCount, latest, supported, pageEnabled } = action.payload;
+      const { pendingCount, latest, supported, pageEnabled, branch } = action.payload;
       state.pendingCount = pendingCount;
+      if (branch !== undefined) {
+        state.branch = branch;
+      }
       // A poll that returns nothing must not erase what we already knew: the
       // window it reads is bounded by the oldest pending save, so an older
       // deploy legitimately falls out of it.
@@ -84,7 +108,11 @@ const deployStatus = produce((state: DeployStatusState, action: DeployStatusActi
       state.isFetching = false;
       state.loaded = true;
       state.deployments = action.payload.deployments;
-      state.latest = action.payload.deployments[0] ?? state.latest;
+      // The history read is deliberately unscoped — showing which branch a
+      // deploy went to is half the point of the table. `latest` is not: it is
+      // "the state of the site", and a branch deploy of an unpublished entry
+      // is not the state of the site.
+      state.latest = onSiteBranch(action.payload.deployments, state.branch)[0] ?? state.latest;
       state.entryLabels = {};
       for (const commit of action.payload.commits ?? []) {
         if (commit.entry_label) {
@@ -112,7 +140,15 @@ const deployStatus = produce((state: DeployStatusState, action: DeployStatusActi
  * empty page.
  */
 export function selectDeployStatusVisible(state: DeployStatusState) {
-  return state.supported && state.pageEnabled && (state.latest !== null || state.pendingCount > 0);
+  return (
+    state.supported &&
+    state.pageEnabled &&
+    // `deployments` as well as `latest`, because `latest` is scoped to the
+    // site's branch: a site whose host only reports branch deploys has real
+    // deploy information and nothing that is "live", and the page is exactly
+    // where someone would go to find out why.
+    (state.latest !== null || state.deployments.length > 0 || state.pendingCount > 0)
+  );
 }
 
 export default deployStatus;

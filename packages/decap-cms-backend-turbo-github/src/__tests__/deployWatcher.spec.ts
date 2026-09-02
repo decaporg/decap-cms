@@ -99,6 +99,7 @@ function makeWatcher(
   overrides: {
     contained?: jest.Mock;
     ledger?: LedgerStore;
+    siteBranch?: string | null;
   } = {},
 ) {
   const timers = fakeClock();
@@ -109,6 +110,7 @@ function makeWatcher(
   const watcher = new DeployWatcher({
     transport: transport.transport,
     isCommitContained,
+    siteBranch: overrides.siteBranch ?? null,
     ledger: overrides.ledger ?? createMemoryLedger(),
     clock: timers.clock,
   });
@@ -644,7 +646,9 @@ describe('parseDeployStatusOptions', () => {
   // Otherwise `{ enabled: false, page: true }` leaves a nav item that can
   // never show anything.
   it('lets `enabled: false` override the sub-keys', () => {
-    expect(parseDeployStatusOptions({ enabled: false, page: true, notifications: true })).toMatchObject({
+    expect(
+      parseDeployStatusOptions({ enabled: false, page: true, notifications: true }),
+    ).toMatchObject({
       enabled: false,
       page: false,
       notifications: false,
@@ -652,7 +656,9 @@ describe('parseDeployStatusOptions', () => {
   });
 
   it('reads primary_target', () => {
-    expect(parseDeployStatusOptions({ primary_target: '  Netlify  ' }).primaryTarget).toBe('Netlify');
+    expect(parseDeployStatusOptions({ primary_target: '  Netlify  ' }).primaryTarget).toBe(
+      'Netlify',
+    );
     expect(parseDeployStatusOptions({ primary_target: '   ' }).primaryTarget).toBeNull();
     expect(parseDeployStatusOptions({ primary_target: 7 }).primaryTarget).toBeNull();
   });
@@ -722,6 +728,35 @@ describe('DeployWatcher status channel', () => {
     ]);
 
     expect(seen[seen.length - 1].latest).toMatchObject({ commit_sha: 'new' });
+  });
+
+  // `observe` is fed the Deploys page's read, which is deliberately unscoped so
+  // the page can show editorial-workflow branches. The pill is not the page:
+  // measured on the tester, an unpublish branch-deployed `cms/posts/…` and the
+  // pill announced a preview of an unpublished entry as the site being live.
+  it('ignores a deploy of another branch', () => {
+    const { watcher } = makeWatcher({ siteBranch: 'turbo' });
+
+    watcher.observe([
+      row({
+        commit_sha: 'workflow',
+        branch: 'cms/posts/x',
+        updated_at: '2026-09-02T11:00:00.000Z',
+      }),
+      row({ commit_sha: 'site', branch: 'turbo', updated_at: '2026-09-02T10:00:00.000Z' }),
+    ]);
+
+    expect(watcher.status().latest).toMatchObject({ commit_sha: 'site' });
+  });
+
+  // Some hosts report no branch at all; refusing those would leave such a site
+  // permanently unable to say anything about itself.
+  it('keeps a row that names no branch', () => {
+    const { watcher } = makeWatcher({ siteBranch: 'turbo' });
+
+    watcher.observe([row({ commit_sha: 'nameless', branch: null })]);
+
+    expect(watcher.status().latest).toMatchObject({ commit_sha: 'nameless' });
   });
 
   it('does not let an older row overwrite a newer one', () => {

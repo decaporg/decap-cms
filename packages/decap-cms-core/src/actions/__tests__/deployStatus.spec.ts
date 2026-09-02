@@ -3,6 +3,7 @@ import thunk from 'redux-thunk';
 
 import { currentBackend } from '../../backend';
 import {
+  DEPLOY_STATUS_UPDATE,
   loadDeployHistory,
   notifyEntrySaved,
   startDeployNotifications,
@@ -275,7 +276,9 @@ describe('deploy notifications — the entry link', () => {
 
     watch.resolve({
       status: 'live',
-      entries: [{ entryPath: 'content/posts/a.md', entryLabel: 'A post', entryUrlPath: '/blog/a/' }],
+      entries: [
+        { entryPath: 'content/posts/a.md', entryLabel: 'A post', entryUrlPath: '/blog/a/' },
+      ],
       targetUrl: 'https://site.example',
     });
 
@@ -401,5 +404,61 @@ describe('deploy status on a backend that does not support it', () => {
     expect(() => store.dispatch(loadDeployHistory())).not.toThrow();
     expect(() => store.dispatch(notifyEntrySaved('A post'))).not.toThrow();
     expect(sent(store)[0].payload.message).toEqual({ key: 'ui.toast.entrySaved' });
+  });
+});
+
+describe('deploy status configuration', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    stopDeployNotifications();
+  });
+
+  // The page cannot tell a deploy of the site from a deploy of an editorial-
+  // workflow branch without this, and calls the wrong one "Live".
+  it('carries the site branch from the backend into the store', () => {
+    const subscribeDeployStatus = jest.fn(cb => {
+      cb({ pendingCount: 0, latest: null });
+      return jest.fn();
+    });
+    mockedCurrentBackend.mockReturnValue({
+      implementation: {
+        subscribeDeployStatus,
+        listDeployments: jest.fn().mockResolvedValue([]),
+        deployStatusConfig: () => ({
+          enabled: true,
+          page: true,
+          primaryTarget: null,
+          branch: 'turbo',
+        }),
+      },
+    });
+    const store = storeWith();
+
+    store.dispatch(startDeployStatus());
+
+    const update = store.getActions().find(action => action.type === DEPLOY_STATUS_UPDATE);
+    expect(update.payload).toMatchObject({ branch: 'turbo', supported: true, pageEnabled: true });
+  });
+
+  // Every backend written before the branch existed, and the GitLab mirror
+  // until it catches up: null means "do not scope", not "scope to nothing".
+  it('reports a null branch when the backend does not name one', () => {
+    const subscribeDeployStatus = jest.fn(cb => {
+      cb({ pendingCount: 0, latest: null });
+      return jest.fn();
+    });
+    mockedCurrentBackend.mockReturnValue({
+      implementation: {
+        subscribeDeployStatus,
+        listDeployments: jest.fn().mockResolvedValue([]),
+        deployStatusConfig: () => ({ enabled: true, page: true, primaryTarget: null }),
+      },
+    });
+    const store = storeWith();
+
+    store.dispatch(startDeployStatus());
+
+    const update = store.getActions().find(action => action.type === DEPLOY_STATUS_UPDATE);
+    expect(update.payload.branch).toBeNull();
   });
 });
