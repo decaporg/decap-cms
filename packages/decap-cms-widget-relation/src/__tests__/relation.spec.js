@@ -1,4 +1,4 @@
-import React from 'react';
+import { Component } from 'react';
 import { fromJS } from 'immutable';
 import { render, fireEvent, waitFor, act } from '@testing-library/react';
 
@@ -241,7 +241,7 @@ const numberFieldsHits = [
     },
   },
 ];
-class RelationController extends React.Component {
+class RelationController extends Component {
   state = {
     value: this.props.value,
     queryHits: [],

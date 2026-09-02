@@ -1,4 +1,4 @@
-import React from 'react';
+import { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 
@@ -62,7 +62,7 @@ export default function withWorkflow(Editor) {
     null,
     mergeProps,
   )(
-    class WorkflowEditor extends React.Component {
+    class WorkflowEditor extends Component {
       render() {
         // Editor assumes a valid `collection` from its very first lifecycle
         // method (componentDidMount calls retrieveLocalBackup(collection, ...)

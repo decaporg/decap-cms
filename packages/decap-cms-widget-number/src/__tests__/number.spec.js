@@ -1,4 +1,4 @@
-import React from 'react';
+import { Component } from 'react';
 import { fromJS } from 'immutable';
 import { render, fireEvent } from '@testing-library/react';
 
@@ -14,7 +14,7 @@ const fieldSettings = {
   value_type: 'int',
 };
 
-class NumberController extends React.Component {
+class NumberController extends Component {
   state = {
     value: this.props.defaultValue,
   };

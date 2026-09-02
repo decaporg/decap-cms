@@ -1,4 +1,4 @@
-import React from 'react';
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
@@ -100,7 +100,7 @@ export function DownloadButton({ children, ...props }) {
   );
 }
 
-export class CopyToClipBoardButton extends React.Component {
+export class CopyToClipBoardButton extends Component {
   mounted = false;
   timeout;
 
@@ -119,7 +119,7 @@ export class CopyToClipBoardButton extends React.Component {
   handleCopy = async () => {
     clearTimeout(this.timeout);
     const { path, draft, name } = this.props;
-    await navigator.clipboard.writeText(isAbsolutePath(path) || !draft ? path : name);
+    await navigator.clipboard?.writeText(isAbsolutePath(path) || !draft ? path : name);
     this.setState({ copied: true });
     this.timeout = setTimeout(() => this.mounted && this.setState({ copied: false }), 1500);
   };

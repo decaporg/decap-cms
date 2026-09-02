@@ -1,4 +1,4 @@
-import React from 'react';
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
@@ -36,7 +36,7 @@ const IMAGE_EXTENSIONS_VIEWABLE = [
 ];
 const IMAGE_EXTENSIONS = [...IMAGE_EXTENSIONS_VIEWABLE];
 
-class MediaLibrary extends React.Component {
+class MediaLibrary extends Component {
   static propTypes = {
     isVisible: PropTypes.bool,
     loadMediaDisplayURL: PropTypes.func,
@@ -97,7 +97,7 @@ class MediaLibrary extends React.Component {
 
     if (this.state.isPersisted) {
       this.setState({
-        selectedFile: nextProps.files[0],
+        selectedFile: nextProps.files[0] || {},
         isPersisted: false,
       });
     }
@@ -112,7 +112,7 @@ class MediaLibrary extends React.Component {
 
     if (this.state.isPersisted) {
       this.setState({
-        selectedFile: this.props.files[0],
+        selectedFile: this.props.files[0] || {},
         isPersisted: false,
       });
     }
