@@ -27,6 +27,7 @@ import { navigateToEntry } from '../routing/history';
 import { getProcessSegment } from '../lib/formatters';
 import { hasI18n, duplicateDefaultI18nFields, serializeI18n, I18N, I18N_FIELD } from '../lib/i18n';
 import { addNotification } from './notifications';
+import { notifyEntrySaved } from './deployStatus';
 import { FILES } from '../constants/collectionTypes';
 
 import type { ImplementationMediaFile, Note, IssueChange } from 'decap-cms-lib-util';
@@ -997,15 +998,10 @@ export function persistEntry(collection: Collection) {
         usedSlugs,
       })
       .then(async (newSlug: string) => {
-        dispatch(
-          addNotification({
-            message: {
-              key: 'ui.toast.entrySaved',
-            },
-            type: 'success',
-            dismissAfter: 4000,
-          }),
-        );
+        // "Entry saved" plus, where the backend can report one, the deploy
+        // that follows it — see actions/deployStatus.ts and §A4. Falls back to
+        // exactly the previous toast when it cannot.
+        dispatch(notifyEntrySaved());
 
         /**
          * Release the editor as soon as the entry is committed.
