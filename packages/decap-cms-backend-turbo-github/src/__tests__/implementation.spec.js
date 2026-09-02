@@ -189,6 +189,34 @@ describe('turbo backend supabase session refresh', () => {
       expect(init.headers.Authorization).toBe('Bearer access-123');
     });
 
+    it('refreshes an expiring token before sending it, instead of 401ing', async () => {
+      const backend = new DecapTurboGitHubBackend({
+        ...config,
+        backend: { ...config.backend, turbo_site_id: 'site-123' },
+      });
+      backend.supabaseAccessToken = 'stale-token';
+      backend.supabaseRefreshToken = 'refresh-1';
+      // Inside REFRESH_BUFFER_SECONDS, so this token is about to expire.
+      backend.supabaseExpiresAt = Math.floor(Date.now() / 1000) + 10;
+
+      backend.getRefreshedAccessToken = jest.fn().mockImplementation(async () => {
+        backend.supabaseAccessToken = 'fresh-token';
+        backend.supabaseExpiresAt = Math.floor(Date.now() / 1000) + 3600;
+        return 'fresh-token';
+      });
+
+      global.fetch = jest.fn().mockResolvedValue({ ok: true, json: () => Promise.resolve({}) });
+
+      await backend.fetchTurboPermissions();
+
+      // `authenticate` runs this concurrently with `currentUser`, so it cannot
+      // rely on currentUser's refresh having landed first. A 401 here does not
+      // fail loudly — it silently drops the editor's collection restrictions.
+      expect(backend.getRefreshedAccessToken).toHaveBeenCalled();
+      const [, init] = global.fetch.mock.calls[0];
+      expect(init.headers.Authorization).toBe('Bearer fresh-token');
+    });
+
     it('returns undefined and warns when the permissions endpoint fails', async () => {
       const backend = new DecapTurboGitHubBackend({
         ...config,

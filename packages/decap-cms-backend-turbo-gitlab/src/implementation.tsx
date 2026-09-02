@@ -489,6 +489,15 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
       return undefined;
     }
 
+    // Refresh first, like every other call site that sends this token
+    // (`ghFetch`/`glFetch`, `setActiveSiteAndRefresh`, `getToken`). While this
+    // ran after `api.user()` it inherited the refresh `currentUser` performs;
+    // running the two concurrently made it read a token that was still
+    // expiring, and a 401 here does not fail loudly — it silently drops the
+    // editor's collection restrictions. Refreshes are memoised on
+    // `refreshedTokenPromise`, so sharing one with `currentUser` costs nothing.
+    await this.refreshSessionIfNeeded();
+
     try {
       const res = await fetch(
         `${this.baseUrl}/functions/v1/permissions?site_id=${encodeURIComponent(this.siteId)}`,
