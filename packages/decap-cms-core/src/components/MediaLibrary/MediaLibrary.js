@@ -97,7 +97,7 @@ class MediaLibrary extends React.Component {
 
     if (this.state.isPersisted) {
       this.setState({
-        selectedFile: nextProps.files[0],
+        selectedFile: nextProps.files[0] || {},
         isPersisted: false,
       });
     }
@@ -112,7 +112,7 @@ class MediaLibrary extends React.Component {
 
     if (this.state.isPersisted) {
       this.setState({
-        selectedFile: this.props.files[0],
+        selectedFile: this.props.files[0] || {},
         isPersisted: false,
       });
     }
