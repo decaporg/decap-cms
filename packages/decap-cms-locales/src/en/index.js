@@ -340,7 +340,10 @@ const en = {
       state: {
         pending: 'Queued',
         building: 'Building',
-        success: 'Live',
+        // Only the newest success is actually live; every earlier one was live
+        // once and has since been superseded, so it is 'Deployed'.
+        live: 'Live',
+        deployed: 'Deployed',
         failed: 'Failed',
         // Not a failure: the change ships inside a newer deploy.
         canceled: 'Superseded',
@@ -362,6 +365,10 @@ const en = {
       entriesLive: '%{count} changes are live',
       entryDeployFailed: 'Your site failed to build',
       viewSite: 'View',
+      // Used when a single entry is named and we know where it lives on the
+      // built site — the editor is being told a specific change is live, so
+      // the link should show them that change rather than the home page.
+      viewEntry: 'View entry',
       viewBuildLog: 'View build log',
       entryPublished: 'Entry published',
       entryUnpublished: 'Entry unpublished',

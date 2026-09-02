@@ -295,3 +295,38 @@ export function folderFormatter(
 
   return mediaFolder;
 }
+
+/**
+ * Where an entry will live on the built site, as a path — `/blog/my-post/`.
+ *
+ * Same template as deploy preview links, so a collection's `preview_path`
+ * means one thing across the CMS. A path rather than a URL because the caller
+ * may not know the host yet: the deploy that carries a change knows its own,
+ * and on a branch-published site that is not the one in `site_url`. See
+ * actions/deployStatus.ts.
+ *
+ * Returns undefined when the collection configures no `preview_path`: the
+ * formatter then hands back the base unchanged, and a link to the site root
+ * dressed up as a link to the entry is worse than a plain site link.
+ */
+export function entryPreviewPath(
+  collection: Collection,
+  slug: string,
+  entry: EntryMap,
+  slugConfig?: CmsSlug,
+): string | undefined {
+  // A base that cannot be confused for a real one, since only the path is kept.
+  const SENTINEL = 'https://entry-preview-path.invalid';
+
+  try {
+    const url = previewUrlFormatter(SENTINEL, collection, slug, entry, slugConfig);
+    if (!url || !url.startsWith(SENTINEL)) {
+      return undefined;
+    }
+    const path = url.slice(SENTINEL.length);
+    return path && path !== '/' ? path : undefined;
+  } catch {
+    // A malformed template must not cost the editor their save notification.
+    return undefined;
+  }
+}

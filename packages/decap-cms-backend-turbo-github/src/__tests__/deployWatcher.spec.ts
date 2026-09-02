@@ -729,3 +729,40 @@ describe('DeployWatcher status channel', () => {
     expect(watcher.status().latest).toMatchObject({ commit_sha: 'new' });
   });
 });
+
+describe('DeployWatcher entry URLs', () => {
+  it('carries the entry path through to the resolution', () => {
+    // Resolved at save time, because that is the only moment the collection's
+    // preview_path template and the entry's fields are both in hand.
+    const contained = jest.fn().mockResolvedValue(true);
+    const { watcher, transport, resolutions } = makeWatcher({ contained });
+
+    watcher.record({
+      entryPath: 'content/posts/a.md',
+      entryLabel: 'A post',
+      entryUrlPath: '/blog/a/',
+      commitSha: 'aaa',
+    });
+    transport.deliver([row({ commit_sha: 'aaa', state: 'success' })]);
+
+    return flush().then(() => {
+      expect(resolutions[0].entries[0]).toEqual({
+        entryPath: 'content/posts/a.md',
+        entryLabel: 'A post',
+        entryUrlPath: '/blog/a/',
+      });
+    });
+  });
+
+  it('survives a save with no entry path at all', () => {
+    const contained = jest.fn().mockResolvedValue(true);
+    const { watcher, transport, resolutions } = makeWatcher({ contained });
+
+    watcher.record({ entryPath: 'a.md', commitSha: 'aaa' });
+    transport.deliver([row({ commit_sha: 'aaa', state: 'success' })]);
+
+    return flush().then(() => {
+      expect(resolutions[0].entries[0].entryUrlPath).toBeUndefined();
+    });
+  });
+});

@@ -25,7 +25,7 @@ import { waitUntil } from './waitUntil';
 import { selectIsFetching, selectEntriesSortFields, selectEntryByPath } from '../reducers/entries';
 import { selectCustomPath } from '../reducers/entryDraft';
 import { navigateToEntry } from '../routing/history';
-import { getProcessSegment } from '../lib/formatters';
+import { getProcessSegment, entryPreviewPath } from '../lib/formatters';
 import { hasI18n, duplicateDefaultI18nFields, serializeI18n, I18N, I18N_FIELD } from '../lib/i18n';
 import { addNotification } from './notifications';
 import { notifyEntrySaved } from './deployStatus';
@@ -1004,7 +1004,12 @@ export function persistEntry(collection: Collection) {
         // actions/deployStatus.ts and §A4b. Falls back to exactly the previous
         // toast when it cannot. The title is passed so that notification can
         // name the entry rather than its path.
-        dispatch(notifyEntrySaved(selectEntryCollectionTitle(collection, serializedEntry)));
+        dispatch(
+          notifyEntrySaved(
+            selectEntryCollectionTitle(collection, serializedEntry),
+            entryPreviewPath(collection, newSlug, serializedEntry, state.config.slug),
+          ),
+        );
 
         /**
          * Release the editor as soon as the entry is committed.

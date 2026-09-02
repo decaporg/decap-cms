@@ -1056,7 +1056,7 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
    * caller's cue to leave today's plain "Entry saved" in place, and it is the
    * common case: most sites never produce a deploy row at all (§A0).
    */
-  recordSaveForDeployWatch(entryLabel?: string): boolean {
+  recordSaveForDeployWatch(entryLabel?: string, entryUrlPath?: string): boolean {
     const saved = this.lastSavedCommit;
     const watcher = this.deployWatcher();
 
@@ -1067,9 +1067,28 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
     watcher.record({
       entryPath: saved.entryPath,
       entryLabel,
+      entryUrlPath,
       commitSha: saved.sha,
     });
     return true;
+  }
+
+  /**
+   * Where a commit can be read by a human.
+   *
+   * The Deploys page shows a short sha, and a sha that links to the deployed
+   * site is worse than no link at all — it looks like it will show you the
+   * change and shows you the home page. This is the honest destination.
+   *
+   * `apiRoot` is Turbo's edge function rather than GitHub, so it cannot be
+   * derived from there; this backend is github.com-only (Enterprise is not
+   * supported), so the host is fixed.
+   */
+  commitUrl(sha: string): string | null {
+    if (!sha || !this.originRepo) {
+      return null;
+    }
+    return `https://github.com/${this.originRepo}/commit/${sha}`;
   }
 
   /**

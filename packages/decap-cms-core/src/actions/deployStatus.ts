@@ -60,7 +60,7 @@ export type DeployStatusAction =
 interface DeployResolution {
   /** `live` — a deploy containing the change succeeded. `failed` — one containing it failed. */
   status: 'live' | 'failed';
-  entries: Array<{ entryPath: string; entryLabel?: string }>;
+  entries: Array<{ entryPath: string; entryLabel?: string; entryUrlPath?: string }>;
   targetUrl: string | null;
 }
 
@@ -68,7 +68,8 @@ interface DeployWatchingBackend {
   subscribeDeployResolutions?: (
     listener: (resolution: DeployResolution) => void,
   ) => (() => void) | null;
-  recordSaveForDeployWatch?: (entryLabel?: string) => boolean;
+  recordSaveForDeployWatch?: (entryLabel?: string, entryUrlPath?: string) => boolean;
+  commitUrl?: (sha: string) => string | null;
   subscribeDeployStatus?: (
     listener: (status: { pendingCount: number; latest: DeploymentRow | null }) => void,
   ) => (() => void) | null;
@@ -193,14 +194,23 @@ export function startDeployStatus() {
  * preview links, so a manual check does not read as an admission that the
  * automatic path is unreliable.
  */
-export function loadDeployHistory(limit?: number) {
+export function loadDeployHistory({
+  limit,
+  silent = false,
+}: { limit?: number; silent?: boolean } = {}) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const implementation = backendFor(getState);
     if (typeof implementation?.listDeployments !== 'function') {
       return;
     }
 
-    dispatch({ type: DEPLOY_HISTORY_REQUEST });
+    // `silent` is for the background refresh the Deploys page runs while it is
+    // open: without it every tick would flip the Refresh button to
+    // "Refreshing…" and the page would visibly twitch once a poll.
+    if (!silent) {
+      dispatch({ type: DEPLOY_HISTORY_REQUEST });
+    }
+
     try {
       const deployments = await implementation.listDeployments(limit);
       dispatch({ type: DEPLOY_HISTORY_SUCCESS, payload: { deployments } });
@@ -214,6 +224,22 @@ export function loadDeployHistory(limit?: number) {
 }
 
 /**
+ * Where a commit can be read by a human, or null when the backend cannot say.
+ * Read once by the Deploys page rather than stored, since it is derived.
+ */
+export function selectCommitUrl(state: State, sha: string): string | null {
+  const implementation = backendFor(() => state);
+  if (typeof implementation?.commitUrl !== 'function') {
+    return null;
+  }
+  try {
+    return implementation.commitUrl(sha);
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Announces a completed save, and asks the backend to watch for the deploy
  * that carries it.
  *
@@ -221,7 +247,7 @@ export function loadDeployHistory(limit?: number) {
  * directly. Editorial workflow keeps the plain toast: saving there creates an
  * unpublished change, which by definition has not deployed.
  */
-export function notifyEntrySaved(entryLabel?: string) {
+export function notifyEntrySaved(entryLabel?: string, entryUrlPath?: string) {
   return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const implementation = backendFor(getState);
 
@@ -231,7 +257,7 @@ export function notifyEntrySaved(entryLabel?: string) {
 
     const watching =
       typeof implementation?.recordSaveForDeployWatch === 'function' &&
-      implementation.recordSaveForDeployWatch(entryLabel);
+      implementation.recordSaveForDeployWatch(entryLabel, entryUrlPath);
 
     const id = crypto.randomUUID();
     saveNotificationId = watching ? id : null;
@@ -256,6 +282,18 @@ function announceDeployResolution(resolution: DeployResolution) {
     const entries = resolution.entries ?? [];
     const only = entries.length === 1 ? entries[0] : null;
 
+    // The deploy's own URL is the live site (§A2 — it is `environment_url`,
+    // not the build log). `site_url` is the fallback for a host that reports
+    // no URL; without either, no link is shown rather than one that goes
+    // nowhere.
+    const siteUrl = resolution.targetUrl || state.config.site_url;
+
+    // When exactly one entry is named, send the editor to THAT entry rather
+    // than to the home page — they are being told a specific change is live,
+    // so the link should show them that change. Only in the named case: a
+    // grouped "3 changes are live" has no single page to point at.
+    const entryUrl = only?.entryUrlPath ? joinUrl(siteUrl, only.entryUrlPath) : null;
+
     const payload: Partial<NotificationPayload> =
       resolution.status === 'live'
         ? {
@@ -266,11 +304,9 @@ function announceDeployResolution(resolution: DeployResolution) {
               : { key: 'ui.toast.entriesLive', count: entries.length },
             type: 'success',
             dismissAfter: 8000,
-            // The deploy's own URL is the live site (§A2 — it is
-            // `environment_url`, not the build log). `site_url` is the
-            // fallback for a host that reports no URL; without either, no link
-            // is shown rather than one that goes nowhere.
-            link: linkTo(resolution.targetUrl || state.config.site_url, 'ui.toast.viewSite'),
+            link: entryUrl
+              ? linkTo(entryUrl, 'ui.toast.viewEntry')
+              : linkTo(siteUrl, 'ui.toast.viewSite'),
           }
         : {
             message: { key: 'ui.toast.entryDeployFailed' },
@@ -299,4 +335,12 @@ function announceDeployResolution(resolution: DeployResolution) {
 
 function linkTo(url: string | null | undefined, labelKey: string) {
   return url ? { url, label: { key: labelKey } } : undefined;
+}
+
+/** Joins a site URL to an entry path without doubling or dropping the slash. */
+function joinUrl(base: string | null | undefined, path: string) {
+  if (!base) {
+    return null;
+  }
+  return `${base.replace(/\/$/, '')}/${path.replace(/^\//, '')}`;
 }

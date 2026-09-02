@@ -5,7 +5,7 @@ import { translate } from 'react-polyglot';
 import { connect } from 'react-redux';
 import { Icon, colors, lengths, components, shadows, buttons } from 'decap-cms-ui-default';
 
-import { loadDeployHistory } from '../../actions/deployStatus';
+import { loadDeployHistory, selectCommitUrl } from '../../actions/deployStatus';
 import { DEPLOY_STATE_COLORS, StatusDot } from '../App/deployStatusIndicator';
 
 /**
@@ -100,6 +100,15 @@ const StateCell = styled.span`
   font-weight: 600;
 `;
 
+const StateLink = styled.a`
+  color: inherit;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
 const Muted = styled.p`
   color: ${colors.text};
   margin: 0;
@@ -146,13 +155,54 @@ function summaryFor(pendingCount, latest) {
 }
 
 /**
- * A target is `(source, provider_label)` — who reported, not what deployed.
- * Naming them is what makes a site published to several hosts legible rather
- * than one confusing stream (§A7).
+ * A target is `(source, provider_label)` — who REPORTED the deploy, not
+ * necessarily who ran it. Naming them is what makes a site published to
+ * several hosts legible rather than one confusing stream (§A7).
+ *
+ * `provider_label` is the host's own name when we could identify it
+ * ("Netlify"). Without one we still know which git forge the report came
+ * through, because that is encoded in the source — so this says "GitHub"
+ * rather than an unhelpful "Git provider".
  */
-function targetOf(row, t) {
-  return row.provider_label || t(row.source === 'webhook' ? 'ui.deploys.webhook' : 'ui.deploys.gitProvider');
+function targetOf(row) {
+  if (row.provider_label) {
+    return row.provider_label;
+  }
+  if (row.source?.startsWith('github')) {
+    return 'GitHub';
+  }
+  if (row.source?.startsWith('gitlab')) {
+    return 'GitLab';
+  }
+  return 'Webhook';
 }
+
+/**
+ * Only one deploy is live at a time, and it is the most recent successful one
+ * — later successes supersede earlier ones. Every other success was live once
+ * and no longer is, so calling them all "Live" is simply untrue.
+ *
+ * Rows arrive newest-first, so the first success is the live one. A rollback
+ * on the host would defeat this, and the host's own dashboard is authoritative
+ * there; the alternative is calling nothing live, which is less useful and no
+ * more correct.
+ */
+function stateKeyFor(row, liveId) {
+  if (row.state === 'success') {
+    return `${row.source}:${row.external_id}` === liveId
+      ? 'ui.deploys.state.live'
+      : 'ui.deploys.state.deployed';
+  }
+  return `ui.deploys.state.${row.state}`;
+}
+
+function liveDeployId(deployments) {
+  const live = deployments.find(row => row.state === 'success');
+  return live ? `${live.source}:${live.external_id}` : null;
+}
+
+/** Poll cadence while the page is open. See §A8 on why only while it is. */
+const REFRESH_MS = 10000;
 
 export class Deploys extends React.Component {
   static propTypes = {
@@ -162,20 +212,64 @@ export class Deploys extends React.Component {
     isFetching: PropTypes.bool.isRequired,
     loaded: PropTypes.bool.isRequired,
     error: PropTypes.string,
+    commitUrls: PropTypes.object.isRequired,
     loadDeployHistory: PropTypes.func.isRequired,
     t: PropTypes.func.isRequired,
   };
 
   componentDidMount() {
-    // Opening the page is an explicit request for current information, and
-    // is one of only two things that may cause a read (§A8).
+    // Opening the page is an explicit request for current information, and is
+    // one of only three things that may cause a read (§A8).
     this.props.loadDeployHistory();
+    this.startAutoRefresh();
+    document.addEventListener('visibilitychange', this.handleVisibilityChange);
   }
 
+  componentWillUnmount() {
+    this.stopAutoRefresh();
+    document.removeEventListener('visibilitychange', this.handleVisibilityChange);
+  }
+
+  /**
+   * A build finishing while the page is open should change the page, not wait
+   * for someone to reload. This is the one place a repeating read is allowed:
+   * it is scoped to a page the editor deliberately opened and stops the moment
+   * they leave it, which keeps §A4b's "an idle CMS polls zero times" intact.
+   *
+   * `silent` so the Refresh button does not flicker to "Refreshing…" every ten
+   * seconds on its own.
+   */
+  startAutoRefresh() {
+    if (this.timer) {
+      return;
+    }
+    this.timer = setInterval(() => {
+      this.props.loadDeployHistory({ silent: true });
+    }, REFRESH_MS);
+  }
+
+  stopAutoRefresh() {
+    clearInterval(this.timer);
+    this.timer = null;
+  }
+
+  // A background tab is not being watched, so it has no reason to keep
+  // reading. Coming back is a good moment to read once, immediately.
+  handleVisibilityChange = () => {
+    if (document.hidden) {
+      this.stopAutoRefresh();
+    } else {
+      this.props.loadDeployHistory({ silent: true });
+      this.startAutoRefresh();
+    }
+  };
+
   render() {
-    const { deployments, pendingCount, latest, isFetching, loaded, error, t } = this.props;
+    const { deployments, pendingCount, latest, isFetching, loaded, error, commitUrls, t } =
+      this.props;
     const summary = summaryFor(pendingCount, latest);
-    const targets = [...new Set(deployments.map(row => targetOf(row, t)))];
+    const targets = [...new Set(deployments.map(targetOf))];
+    const liveId = liveDeployId(deployments);
     const liveUrl = latest && latest.state === 'success' ? latest.target_url : null;
 
     return (
@@ -231,14 +325,34 @@ export class Deploys extends React.Component {
                     <td>
                       <StateCell color={DEPLOY_STATE_COLORS[row.state] || colors.text}>
                         <StatusDot color={DEPLOY_STATE_COLORS[row.state] || colors.text} />
-                        {t(`ui.deploys.state.${row.state}`)}
+                        {/*
+                          Only the newest success is actually live; the rest
+                          were live once. The link is the deploy's own — the
+                          site for a success, the build log for a failure.
+                        */}
+                        {row.target_url ? (
+                          <StateLink href={row.target_url} target="_blank" rel="noopener noreferrer">
+                            {t(stateKeyFor(row, liveId))}
+                          </StateLink>
+                        ) : (
+                          t(stateKeyFor(row, liveId))
+                        )}
                       </StateCell>
                       {row.error_message && <ErrorText>{row.error_message}</ErrorText>}
                     </td>
-                    <td>{targetOf(row, t)}</td>
+                    <td>{targetOf(row)}</td>
                     <td>
-                      {row.target_url ? (
-                        <a href={row.target_url} target="_blank" rel="noopener noreferrer">
+                      {/*
+                        A commit that links to the deployed site looks like it
+                        will show you the change and shows you the home page.
+                        Either the commit itself, or plain text.
+                      */}
+                      {commitUrls[row.commit_sha] ? (
+                        <a
+                          href={commitUrls[row.commit_sha]}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
                           <Commit>{row.commit_sha.slice(0, 7)}</Commit>
                         </a>
                       ) : (
@@ -259,7 +373,17 @@ export class Deploys extends React.Component {
 
 function mapStateToProps(state) {
   const { deployments, pendingCount, latest, isFetching, error, loaded } = state.deployStatus;
-  return { deployments, pendingCount, latest, isFetching, error, loaded };
+
+  // Derived rather than stored: it depends only on the backend, and keeping a
+  // copy in the store would be one more thing that can go stale.
+  const commitUrls = {};
+  for (const row of deployments) {
+    if (!(row.commit_sha in commitUrls)) {
+      commitUrls[row.commit_sha] = selectCommitUrl(state, row.commit_sha);
+    }
+  }
+
+  return { deployments, pendingCount, latest, isFetching, error, loaded, commitUrls };
 }
 
 const mapDispatchToProps = {

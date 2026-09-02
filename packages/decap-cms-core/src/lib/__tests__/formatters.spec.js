@@ -5,6 +5,7 @@ import {
   prepareSlug,
   slugFormatter,
   previewUrlFormatter,
+  entryPreviewPath,
   summaryFormatter,
   folderFormatter,
 } from '../formatters';
@@ -658,6 +659,45 @@ describe('formatters', () => {
           slugConfig,
         ),
       ).toBe('https://www.example.com/prefix/nested-value');
+    });
+  });
+
+  describe('entryPreviewPath', () => {
+    // Feeds the "your change is live" notification's link, so it can point at
+    // the entry rather than the site's home page — see actions/deployStatus.ts.
+    it('returns only the path, never the sentinel base', () => {
+      const date = new Date('2020-01-02T13:28:27.679Z');
+      const path = entryPreviewPath(
+        Map({
+          preview_path: '{{year}}/{{slug}}',
+          preview_path_date_field: 'customDateField',
+        }),
+        'backendSlug',
+        Map({ data: Map({ customDateField: date, slug: 'entrySlug', title: 'title' }) }),
+        slugConfig,
+      );
+
+      expect(path).toBe('/2020/backendslug');
+      expect(path).not.toContain('invalid');
+      expect(path).not.toContain('https://');
+    });
+
+    // Without a preview_path the formatter hands back the base unchanged, and
+    // a link to the site root dressed up as a link to the entry is worse than
+    // the plain site link the notification already falls back to.
+    it('returns undefined for a collection with no preview_path', () => {
+      expect(entryPreviewPath(Map({}), 'slug', Map({ data: Map({}) }), slugConfig)).toBeUndefined();
+    });
+
+    it('returns undefined rather than throwing on a template it cannot compile', () => {
+      expect(() =>
+        entryPreviewPath(
+          Map({ preview_path: '{{unknown_field}}' }),
+          'slug',
+          Map({ data: Map({}) }),
+          slugConfig,
+        ),
+      ).not.toThrow();
     });
   });
 

@@ -115,3 +115,13 @@ describe('App deploy watching', () => {
     expect(startDeployStatus).toHaveBeenCalledTimes(1);
   });
 });
+
+describe('App deploy status visibility', () => {
+  it('registers no /deploys route for a backend that cannot report deploys', () => {
+    // Every non-Turbo backend. The route and the nav item must not exist at
+    // all — auto-hide is the default, see §A7.
+    const { container } = renderApp({ deployStatusVisible: false });
+
+    expect(container.querySelector('a[href*="deploys"]')).toBeNull();
+  });
+});

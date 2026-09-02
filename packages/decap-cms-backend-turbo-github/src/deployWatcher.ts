@@ -39,6 +39,16 @@ export interface PendingSave {
   entryPath: string;
   /** Human title for the notification; the path is the fallback. */
   entryLabel?: string;
+  /**
+   * Where this entry lives on the built site, as a path — `/blog/my-post/`.
+   *
+   * Resolved at save time, because that is the only moment the collection's
+   * `preview_path` template and the entry's own fields are both in hand. A
+   * path rather than a URL so it can be joined to whichever deploy turns out
+   * to carry the change: on a branch-published site the deploy's own host is
+   * not the one in `site_url`.
+   */
+  entryUrlPath?: string;
   commitSha: string;
   /** Epoch ms, browser clock — used only for expiry and the query window. */
   savedAt: number;
@@ -50,7 +60,7 @@ export interface PendingSave {
 export interface DeployResolution {
   status: 'live' | 'failed';
   /** Every pending save this deployment accounted for. */
-  entries: Array<{ entryPath: string; entryLabel?: string }>;
+  entries: Array<{ entryPath: string; entryLabel?: string; entryUrlPath?: string }>;
   targetUrl: string | null;
   deployment: DeploymentRow;
 }
@@ -416,7 +426,12 @@ export class DeployWatcher {
   }
 
   /** Records a save and starts (or keeps) watching for the deploy that carries it. */
-  record(save: { entryPath: string; entryLabel?: string; commitSha: string }): void {
+  record(save: {
+    entryPath: string;
+    entryLabel?: string;
+    entryUrlPath?: string;
+    commitSha: string;
+  }): void {
     const now = this.clock.now();
     // Newest commit per path wins: announcing an older version as live when a
     // newer one is still building would be worse than saying nothing.
@@ -569,7 +584,11 @@ export class DeployWatcher {
       this.persist();
       this.emit({
         status: 'live',
-        entries: contained.map(({ entryPath, entryLabel }) => ({ entryPath, entryLabel })),
+        entries: contained.map(({ entryPath, entryLabel, entryUrlPath }) => ({
+          entryPath,
+          entryLabel,
+          entryUrlPath,
+        })),
         targetUrl: row.target_url,
         deployment: row,
       });
@@ -589,7 +608,11 @@ export class DeployWatcher {
       this.persist();
       this.emit({
         status: 'failed',
-        entries: contained.map(({ entryPath, entryLabel }) => ({ entryPath, entryLabel })),
+        entries: contained.map(({ entryPath, entryLabel, entryUrlPath }) => ({
+          entryPath,
+          entryLabel,
+          entryUrlPath,
+        })),
         targetUrl: row.target_url,
         deployment: row,
       });

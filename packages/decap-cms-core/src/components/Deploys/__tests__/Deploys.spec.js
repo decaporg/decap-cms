@@ -131,6 +131,7 @@ describe('Deploys page', () => {
           isFetching={false}
           loaded
           loadDeployHistory={loadDeployHistory}
+          commitUrls={{}}
           t={key => key}
         />
       </I18n>,
@@ -138,9 +139,46 @@ describe('Deploys page', () => {
 
     expect(loadDeployHistory).toHaveBeenCalledTimes(1);
 
-    fireEvent.click(screen.getByRole('button', { name: /ui.deploys.refresh/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'ui.deploys.refresh' }));
 
     expect(loadDeployHistory).toHaveBeenCalledTimes(2);
+  });
+
+  // A build finishing while the page is open should change the page, not wait
+  // for someone to reload it.
+  it('refreshes itself while it is open, silently, and stops on unmount', () => {
+    jest.useFakeTimers();
+    const loadDeployHistory = jest.fn();
+
+    const { unmount } = render(
+      <I18n locale="en" messages={en}>
+        <UnconnectedDeploys
+          deployments={[row()]}
+          pendingCount={0}
+          latest={row()}
+          isFetching={false}
+          loaded
+          loadDeployHistory={loadDeployHistory}
+          commitUrls={{}}
+          t={key => key}
+        />
+      </I18n>,
+    );
+
+    jest.advanceTimersByTime(30000);
+
+    expect(loadDeployHistory).toHaveBeenCalledTimes(4);
+    // Silent, or the Refresh button would flicker to "Refreshing…" on its own
+    // every ten seconds.
+    expect(loadDeployHistory).toHaveBeenLastCalledWith({ silent: true });
+
+    unmount();
+    jest.advanceTimersByTime(60000);
+
+    // §A8: the repeating read is scoped to a page the editor deliberately
+    // opened. Leaving it must leave an idle CMS polling zero times.
+    expect(loadDeployHistory).toHaveBeenCalledTimes(4);
+    jest.useRealTimers();
   });
 
   it('does not let Refresh stack reads while one is in flight', () => {
@@ -155,14 +193,91 @@ describe('Deploys page', () => {
           isFetching
           loaded
           loadDeployHistory={loadDeployHistory}
+          commitUrls={{}}
           t={key => key}
         />
       </I18n>,
     );
 
-    fireEvent.click(screen.getByRole('button', { name: /ui.deploys.refreshing/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'ui.deploys.refreshing' }));
 
     expect(loadDeployHistory).toHaveBeenCalledTimes(1);
+  });
+
+  // Only one deploy is live at a time. Calling every past success "Live" is
+  // simply untrue, and the page is the place someone goes to check.
+  it('calls only the newest success Live, and the rest Deployed', () => {
+    renderPage({
+      deployments: [
+        row({ external_id: 'newest' }),
+        row({ external_id: 'older' }),
+        row({ external_id: 'oldest' }),
+      ],
+    });
+
+    expect(screen.getAllByText('Live')).toHaveLength(1);
+    expect(screen.getAllByText('Deployed')).toHaveLength(2);
+  });
+
+  // A failed build does not take the site down — the last successful deploy is
+  // still the one being served, so it is still the live one.
+  it('keeps the last success Live when a newer deploy failed', () => {
+    renderPage({
+      deployments: [
+        row({ external_id: 'newest', state: 'failed' }),
+        row({ external_id: 'older' }),
+        row({ external_id: 'oldest' }),
+      ],
+    });
+
+    expect(screen.getByText('Failed')).toBeInTheDocument();
+    expect(screen.getAllByText('Live')).toHaveLength(1);
+    expect(screen.getAllByText('Deployed')).toHaveLength(1);
+  });
+
+  it('names the git forge rather than saying "Git provider"', () => {
+    renderPage({
+      deployments: [
+        row({ external_id: 'a', source: 'github_deployment', provider_label: null }),
+        row({ external_id: 'b', source: 'gitlab_pipeline', provider_label: null }),
+      ],
+    });
+
+    expect(screen.getByText('GitHub')).toBeInTheDocument();
+    expect(screen.getByText('GitLab')).toBeInTheDocument();
+    expect(screen.queryByText('Git provider')).not.toBeInTheDocument();
+  });
+
+  it('links the state to the deploy and the commit to the commit', () => {
+    render(
+      <I18n locale="en" messages={en}>
+        <UnconnectedDeploys
+          deployments={[row()]}
+          pendingCount={0}
+          latest={row()}
+          isFetching={false}
+          loaded
+          loadDeployHistory={jest.fn()}
+          commitUrls={{ abc1234def5678: 'https://github.com/acme/site/commit/abc1234def5678' }}
+          t={key => key}
+        />
+      </I18n>,
+    );
+
+    const commitLink = screen.getByText('abc1234').closest('a');
+    expect(commitLink).toHaveAttribute(
+      'href',
+      'https://github.com/acme/site/commit/abc1234def5678',
+    );
+    // A commit that links to the deployed site looks like it will show you the
+    // change and shows you the home page.
+    expect(commitLink).not.toHaveAttribute('href', 'https://site.example');
+  });
+
+  it('leaves the commit as plain text when the backend cannot link it', () => {
+    renderPage({ deployments: [row()] });
+
+    expect(screen.getByText('abc1234').closest('a')).toBeNull();
   });
 
   it('surfaces a read failure rather than showing an empty history', () => {

@@ -3,8 +3,10 @@ import thunk from 'redux-thunk';
 
 import { currentBackend } from '../../backend';
 import {
+  loadDeployHistory,
   notifyEntrySaved,
   startDeployNotifications,
+  startDeployStatus,
   stopDeployNotifications,
 } from '../deployStatus';
 import { NOTIFICATION_SEND, NOTIFICATION_UPDATE } from '../notifications';
@@ -16,7 +18,7 @@ const mockedCurrentBackend = currentBackend as unknown as jest.Mock;
 
 type Resolution = {
   status: 'live' | 'failed';
-  entries: Array<{ entryPath: string; entryLabel?: string }>;
+  entries: Array<{ entryPath: string; entryLabel?: string; entryUrlPath?: string }>;
   targetUrl: string | null;
 };
 
@@ -97,7 +99,7 @@ describe('deploy notifications', () => {
 
     store.dispatch(notifyEntrySaved('A post'));
 
-    expect(recordSaveForDeployWatch).toHaveBeenCalledWith('A post');
+    expect(recordSaveForDeployWatch).toHaveBeenCalledWith('A post', undefined);
     expect(sent(store)[0].payload).toMatchObject({
       message: { key: 'ui.toast.entryPublishing' },
       dismissAfter: 4000,
@@ -256,5 +258,148 @@ describe('deploy notifications', () => {
 
     expect(updates(store)).toHaveLength(0);
     expect(sent(store)).toHaveLength(2);
+  });
+});
+
+describe('deploy notifications — the entry link', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    stopDeployNotifications();
+  });
+
+  it('links to the entry itself when one entry is named', () => {
+    const watch = backendWithWatch();
+    mockedCurrentBackend.mockReturnValue(watch.backend);
+    const store = storeWith();
+    store.dispatch(startDeployNotifications());
+
+    watch.resolve({
+      status: 'live',
+      entries: [{ entryPath: 'content/posts/a.md', entryLabel: 'A post', entryUrlPath: '/blog/a/' }],
+      targetUrl: 'https://site.example',
+    });
+
+    expect(sent(store)[0].payload).toMatchObject({
+      message: { key: 'ui.toast.entryLive', entry: 'A post' },
+      link: { url: 'https://site.example/blog/a/', label: { key: 'ui.toast.viewEntry' } },
+    });
+  });
+
+  it('joins the deploy URL and the entry path without doubling the slash', () => {
+    const watch = backendWithWatch();
+    mockedCurrentBackend.mockReturnValue(watch.backend);
+    const store = storeWith();
+    store.dispatch(startDeployNotifications());
+
+    watch.resolve({
+      status: 'live',
+      entries: [{ entryPath: 'a.md', entryLabel: 'A', entryUrlPath: '/blog/a/' }],
+      targetUrl: 'https://site.example/',
+    });
+
+    expect(sent(store)[0].payload.link.url).toBe('https://site.example/blog/a/');
+  });
+
+  // A grouped "3 changes are live" has no single page to point at.
+  it('falls back to the plain site link when several entries are named', () => {
+    const watch = backendWithWatch();
+    mockedCurrentBackend.mockReturnValue(watch.backend);
+    const store = storeWith();
+    store.dispatch(startDeployNotifications());
+
+    watch.resolve({
+      status: 'live',
+      entries: [
+        { entryPath: 'a.md', entryUrlPath: '/blog/a/' },
+        { entryPath: 'b.md', entryUrlPath: '/blog/b/' },
+      ],
+      targetUrl: 'https://site.example',
+    });
+
+    expect(sent(store)[0].payload.link).toEqual({
+      url: 'https://site.example',
+      label: { key: 'ui.toast.viewSite' },
+    });
+  });
+
+  it('falls back to the site link when the collection configures no preview path', () => {
+    const watch = backendWithWatch();
+    mockedCurrentBackend.mockReturnValue(watch.backend);
+    const store = storeWith();
+    store.dispatch(startDeployNotifications());
+
+    watch.resolve({
+      status: 'live',
+      entries: [{ entryPath: 'a.md', entryLabel: 'A' }],
+      targetUrl: 'https://site.example',
+    });
+
+    expect(sent(store)[0].payload.link.label).toEqual({ key: 'ui.toast.viewSite' });
+  });
+
+  it('passes the entry path to the backend so the ledger can keep it', () => {
+    const watch = backendWithWatch();
+    mockedCurrentBackend.mockReturnValue(watch.backend);
+    const store = storeWith();
+
+    store.dispatch(notifyEntrySaved('A post', '/blog/a/'));
+
+    expect(watch.recordSaveForDeployWatch).toHaveBeenCalledWith('A post', '/blog/a/');
+  });
+});
+
+/**
+ * Every backend that is not Turbo. None of this feature may reach them: no
+ * subscription, no read, no change to the toast they have always shown.
+ */
+describe('deploy status on a backend that does not support it', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    stopDeployNotifications();
+  });
+
+  const plainBackend = { implementation: { getEntry: jest.fn(), persistEntry: jest.fn() } };
+
+  it('starts no status subscription', () => {
+    mockedCurrentBackend.mockReturnValue(plainBackend);
+    const store = storeWith();
+
+    store.dispatch(startDeployStatus());
+
+    expect(store.getActions().filter(a => typeof a !== 'function')).toEqual([]);
+  });
+
+  it('reads no deploy history', () => {
+    mockedCurrentBackend.mockReturnValue(plainBackend);
+    const store = storeWith();
+
+    store.dispatch(loadDeployHistory());
+
+    expect(store.getActions().filter(a => typeof a !== 'function')).toEqual([]);
+  });
+
+  it('sends exactly the toast it always sent on save', () => {
+    mockedCurrentBackend.mockReturnValue(plainBackend);
+    const store = storeWith();
+
+    store.dispatch(notifyEntrySaved('A post', '/blog/a/'));
+
+    const payload = sent(store)[0].payload;
+    expect(payload.message).toEqual({ key: 'ui.toast.entrySaved' });
+    expect(payload.type).toBe('success');
+    expect(payload.link).toBeUndefined();
+    expect(payload.spinner).toBeUndefined();
+  });
+
+  it('survives a backend that cannot be constructed at all', () => {
+    mockedCurrentBackend.mockImplementation(() => {
+      throw new Error('no config yet');
+    });
+    const store = storeWith();
+
+    expect(() => store.dispatch(startDeployStatus())).not.toThrow();
+    expect(() => store.dispatch(loadDeployHistory())).not.toThrow();
+    expect(() => store.dispatch(notifyEntrySaved('A post'))).not.toThrow();
+    expect(sent(store)[0].payload.message).toEqual({ key: 'ui.toast.entrySaved' });
   });
 });

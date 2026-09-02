@@ -1,5 +1,6 @@
+import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
-import { colorsRaw } from 'decap-cms-ui-default';
+import { Icon, colorsRaw } from 'decap-cms-ui-default';
 
 /**
  * The header's deploy indicator. See decap-turbo/docs/deploy-status-plan.md §A8.
@@ -14,13 +15,24 @@ import { colorsRaw } from 'decap-cms-ui-default';
  * always-visible element also carries the live answer.
  */
 
-export const StatusDot = styled.span`
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
+const DotIcon = styled(Icon)`
+  color: ${props => props.color};
   flex-shrink: 0;
-  background-color: ${props => props.color};
 `;
+
+/**
+ * The `circle` icon rather than a styled span, so the indicator occupies the
+ * exact same box as `page`, `workflow` and `media-alt` and lines up with them.
+ * Its artwork is a small dot centred in a 24px viewBox — the visual weight of
+ * a status dot, the footprint of an icon.
+ */
+export function StatusDot({ color }) {
+  return <DotIcon type="circle" color={color} />;
+}
+
+StatusDot.propTypes = {
+  color: PropTypes.string.isRequired,
+};
 
 /**
  * `yellow` in this palette is a pale background tint — invisible as an 8px

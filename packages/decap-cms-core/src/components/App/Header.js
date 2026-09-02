@@ -247,24 +247,26 @@ class Header extends React.Component {
                   </AppHeaderNavLink>
                 </li>
               )}
-              {hasDeployStatus && (
-                <li>
-                  {/*
-                    Ambient, never an interruption — the counterpart to the
-                    toasts, which announce a change and then leave. See §A8.
-                  */}
-                  <AppHeaderNavLink to="/deploys" activeClassName="header-link-active">
-                    <StatusDot color={deployPill.color} />
-                    {t(deployPill.key)}
-                  </AppHeaderNavLink>
-                </li>
-              )}
               {showMediaButton && (
                 <li>
                   <AppHeaderButton onClick={openMediaLibrary}>
                     <Icon type="media-alt" />
                     {t('app.header.media')}
                   </AppHeaderButton>
+                </li>
+              )}
+              {hasDeployStatus && (
+                <li>
+                  {/*
+                    Ambient, never an interruption — the counterpart to the
+                    toasts, which announce a change and then leave. See §A8.
+                    Last in the nav: it is the only item that is not somewhere
+                    an editor goes to work.
+                  */}
+                  <AppHeaderNavLink to="/deploys" activeClassName="header-link-active">
+                    <StatusDot color={deployPill.color} />
+                    {t(deployPill.key)}
+                  </AppHeaderNavLink>
                 </li>
               )}
             </AppHeaderNavList>
