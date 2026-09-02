@@ -32,15 +32,29 @@ export const DEPLOY_HISTORY_FAILURE = 'DEPLOY_HISTORY_FAILURE';
 /** One row of `site_deployments`, as the backend hands it over. */
 export interface DeploymentRow {
   commit_sha: string;
+  /** The branch that was built — the site's, or an editorial-workflow one. */
+  branch?: string | null;
   source: string;
   external_id: string;
   provider_label: string | null;
   state: 'pending' | 'building' | 'success' | 'failed' | 'canceled';
   target_url: string | null;
   error_message: string | null;
+  /** Where it published to, in the host's words. */
+  environment?: string | null;
   started_at: string | null;
   finished_at: string | null;
   updated_at: string;
+}
+
+/** One CMS save, as `site_commits` records it. */
+export interface CommitRow {
+  commit_sha: string;
+  branch: string;
+  entry_label: string | null;
+  entry_path: string | null;
+  message: string | null;
+  created_at: string;
 }
 
 export type DeployStatusAction =
@@ -54,7 +68,10 @@ export type DeployStatusAction =
       };
     }
   | { type: typeof DEPLOY_HISTORY_REQUEST }
-  | { type: typeof DEPLOY_HISTORY_SUCCESS; payload: { deployments: DeploymentRow[] } }
+  | {
+      type: typeof DEPLOY_HISTORY_SUCCESS;
+      payload: { deployments: DeploymentRow[]; commits: CommitRow[] };
+    }
   | { type: typeof DEPLOY_HISTORY_FAILURE; payload: { error: string } };
 
 interface DeployResolution {
@@ -74,6 +91,7 @@ interface DeployWatchingBackend {
     listener: (status: { pendingCount: number; latest: DeploymentRow | null }) => void,
   ) => (() => void) | null;
   listDeployments?: (limit?: number) => Promise<DeploymentRow[]>;
+  listCommits?: (limit?: number) => Promise<CommitRow[]>;
   deployStatusConfig?: () => { enabled: boolean; page: boolean; primaryTarget: string | null };
 }
 
@@ -212,8 +230,14 @@ export function loadDeployHistory({
     }
 
     try {
-      const deployments = await implementation.listDeployments(limit);
-      dispatch({ type: DEPLOY_HISTORY_SUCCESS, payload: { deployments } });
+      // Together, because the page is unreadable with one and not the other:
+      // a deploy with no entry name is the bare sha this read exists to
+      // replace. A backend that cannot list commits simply contributes none.
+      const [deployments, commits] = await Promise.all([
+        implementation.listDeployments(limit),
+        implementation.listCommits?.(limit) ?? Promise.resolve([]),
+      ]);
+      dispatch({ type: DEPLOY_HISTORY_SUCCESS, payload: { deployments, commits } });
     } catch (error) {
       dispatch({
         type: DEPLOY_HISTORY_FAILURE,

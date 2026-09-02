@@ -35,6 +35,7 @@ import {
   selectMediaFolders,
   selectFieldsComments,
   selectHasMetaPath,
+  selectEntryCollectionTitle,
 } from './reducers/collections';
 import { createEntry } from './valueObjects/Entry';
 import { sanitizeChar } from './lib/urlHelper';
@@ -358,6 +359,14 @@ function collectionRegex(collection: Collection): RegExp | undefined {
   }
 
   return ruleString ? new RegExp(ruleString) : undefined;
+}
+
+function safeEntryLabel(collection: Collection, entry: EntryMap) {
+  try {
+    return selectEntryCollectionTitle(collection, entry);
+  } catch {
+    return undefined;
+  }
 }
 
 export class Backend {
@@ -1371,6 +1380,18 @@ export class Backend {
       collectionName,
       useWorkflow,
       hasSubfolders,
+      // The entry's title as the CMS displays it — the same value the "your
+      // change is live" notification uses. Backends that record deploys store
+      // it against the commit so a colleague's save reads as an entry rather
+      // than a bare sha; every other backend ignores it. The commit message
+      // cannot stand in: it carries the slug and is template-configurable.
+      //
+      // Guarded because this now runs on every save for every backend, and
+      // the title lookup walks entry data that a preSave event handler may
+      // have replaced with a shape it does not expect. A missing label costs
+      // a column on one page; a throw here would cost the save.
+      entryLabel: safeEntryLabel(collection, entryDraft.get('entry')),
+      entryPath: path,
       ...updatedOptions,
     };
 

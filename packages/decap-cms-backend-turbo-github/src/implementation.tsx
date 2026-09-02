@@ -24,11 +24,13 @@ import {
 import {
   createDeployWatcher,
   createDeploymentLister,
+  createCommitLister,
   parseDeployStatusOptions,
   type DeployWatcher,
   type DeployResolution,
   type DeployStatusOptions,
   type DeploymentRow,
+  type CommitRow,
   type WatchStatus,
 } from './deployWatcher';
 
@@ -1046,6 +1048,26 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
 
     this.deployWatcher()?.observe(rows);
     return rows;
+  }
+
+  /**
+   * Recent CMS saves, so the Deploys page can name the entry a deploy carried
+   * instead of showing a bare sha. Shared across editors and devices, unlike
+   * the watcher's ledger.
+   */
+  async listCommits(limit?: number): Promise<CommitRow[]> {
+    const baseUrl = this.baseUrl || (this.supabaseId && `https://${this.supabaseId}.supabase.co`);
+    if (!this.deployStatusOptions.enabled || !baseUrl || !this.siteId || !this.supabaseAnonKey) {
+      return [];
+    }
+
+    return createCommitLister({
+      baseUrl,
+      anonKey: this.supabaseAnonKey,
+      siteId: this.siteId,
+      branch: this.branch,
+      getAccessToken: () => this.supabaseAccessToken,
+    })(limit);
   }
 
   /**

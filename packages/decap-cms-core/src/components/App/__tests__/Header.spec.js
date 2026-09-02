@@ -22,6 +22,7 @@ function renderHeader(deployStatus) {
       supported: false,
       pageEnabled: false,
       loaded: false,
+      entryLabels: {},
       ...deployStatus,
     },
   });
@@ -64,7 +65,7 @@ describe('Header deploy indicator', () => {
   it('renders nothing for a backend that cannot report deploys', () => {
     renderHeader({ supported: false });
 
-    expect(screen.queryByText('Deploys')).not.toBeInTheDocument();
+    expect(screen.queryByText('Deployed')).not.toBeInTheDocument();
   });
 
   // Auto-hide (§A7): supported is not enough — a site whose host has never
@@ -73,18 +74,19 @@ describe('Header deploy indicator', () => {
     renderHeader({ supported: true, pageEnabled: true });
 
     expect(screen.queryByText('Deploys')).not.toBeInTheDocument();
+    expect(screen.queryByText('Deployed')).not.toBeInTheDocument();
   });
 
   it('renders nothing when the page is configured off', () => {
     renderHeader({ supported: true, pageEnabled: false, latest: liveDeploy });
 
-    expect(screen.queryByText('Deploys')).not.toBeInTheDocument();
+    expect(screen.queryByText('Deployed')).not.toBeInTheDocument();
   });
 
-  it('appears once a deploy is known, and links to the page', () => {
+  it('appears once a deploy is known, naming the state, and links to the page', () => {
     renderHeader({ supported: true, pageEnabled: true, latest: liveDeploy });
 
-    expect(screen.getByText('Deploys').closest('a')).toHaveAttribute('href', '/deploys');
+    expect(screen.getByText('Deployed').closest('a')).toHaveAttribute('href', '/deploys');
   });
 
   it('names the state while a save is outstanding', () => {
@@ -108,6 +110,6 @@ describe('Header deploy indicator', () => {
     renderHeader({ supported: true, pageEnabled: true, latest: liveDeploy });
 
     const items = [...document.querySelectorAll('header nav li')].map(li => li.textContent.trim());
-    expect(items[items.length - 1]).toBe('Deploys');
+    expect(items[items.length - 1]).toBe('Deployed');
   });
 });

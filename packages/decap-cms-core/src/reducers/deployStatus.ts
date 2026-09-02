@@ -24,6 +24,11 @@ export type DeployStatusState = {
   latest: DeploymentRow | null;
   /** History, newest first — only populated once something asks for it. */
   deployments: DeploymentRow[];
+  /**
+   * What each commit saved, keyed by sha. Shared across editors, unlike the
+   * watcher's own ledger, so a colleague's save is named too.
+   */
+  entryLabels: Record<string, string>;
   isFetching: boolean;
   error: string | null;
   /**
@@ -42,6 +47,7 @@ const defaultState: DeployStatusState = {
   pendingCount: 0,
   latest: null,
   deployments: [],
+  entryLabels: {},
   isFetching: false,
   error: null,
   supported: false,
@@ -74,12 +80,19 @@ const deployStatus = produce((state: DeployStatusState, action: DeployStatusActi
       state.error = null;
       break;
 
-    case DEPLOY_HISTORY_SUCCESS:
+    case DEPLOY_HISTORY_SUCCESS: {
       state.isFetching = false;
       state.loaded = true;
       state.deployments = action.payload.deployments;
       state.latest = action.payload.deployments[0] ?? state.latest;
+      state.entryLabels = {};
+      for (const commit of action.payload.commits ?? []) {
+        if (commit.entry_label) {
+          state.entryLabels[commit.commit_sha] = commit.entry_label;
+        }
+      }
       break;
+    }
 
     case DEPLOY_HISTORY_FAILURE:
       state.isFetching = false;

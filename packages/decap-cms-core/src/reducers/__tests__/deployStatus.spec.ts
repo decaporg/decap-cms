@@ -92,7 +92,10 @@ describe('deployStatus reducer', () => {
   it('records history and takes the newest row as latest', () => {
     const state = deployStatus(undefined, {
       type: DEPLOY_HISTORY_SUCCESS,
-      payload: { deployments: [row({ commit_sha: 'newest' }), row({ commit_sha: 'older' })] },
+      payload: {
+        deployments: [row({ commit_sha: 'newest' }), row({ commit_sha: 'older' })],
+        commits: [],
+      },
     } as never);
 
     expect(state.deployments).toHaveLength(2);
@@ -112,6 +115,36 @@ describe('deployStatus reducer', () => {
       isFetching: true,
       error: null,
     });
+  });
+
+  it('indexes entry labels by commit, skipping commits that have none', () => {
+    const state = deployStatus(undefined, {
+      type: DEPLOY_HISTORY_SUCCESS,
+      payload: {
+        deployments: [row()],
+        commits: [
+          { commit_sha: 'aaa', entry_label: 'Spring menu' },
+          // A media-only save or a bulk delete: a bare sha beats a wrong name.
+          { commit_sha: 'bbb', entry_label: null },
+        ],
+      },
+    } as never);
+
+    expect(state.entryLabels).toEqual({ aaa: 'Spring menu' });
+  });
+
+  it('replaces the label index rather than accumulating stale entries', () => {
+    const first = deployStatus(undefined, {
+      type: DEPLOY_HISTORY_SUCCESS,
+      payload: { deployments: [], commits: [{ commit_sha: 'aaa', entry_label: 'Old' }] },
+    } as never);
+
+    const second = deployStatus(first, {
+      type: DEPLOY_HISTORY_SUCCESS,
+      payload: { deployments: [], commits: [{ commit_sha: 'bbb', entry_label: 'New' }] },
+    } as never);
+
+    expect(second.entryLabels).toEqual({ bbb: 'New' });
   });
 
   // An empty list after a failure means "we do not know", not "this site has

@@ -136,6 +136,11 @@ export default class TurboAPI extends API {
         branch: this.branch,
         message: options.commitMessage,
         additions,
+        // Descriptive only — nothing about the commit depends on it. It is
+        // what the Deploys page shows in place of a bare sha, for every
+        // editor rather than only the browser that saved.
+        entry_label: (options as { entryLabel?: string }).entryLabel,
+        entry_path: (options as { entryPath?: string }).entryPath,
       });
 
       return commit as unknown as PersistFilesResult;

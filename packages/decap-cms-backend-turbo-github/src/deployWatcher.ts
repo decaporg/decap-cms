@@ -19,8 +19,20 @@
 /** Mirrors the `site_deployments_state_check` constraint. */
 export type DeployState = 'pending' | 'building' | 'success' | 'failed' | 'canceled';
 
+/** One CMS save, as `site_commits` records it. */
+export interface CommitRow {
+  commit_sha: string;
+  branch: string;
+  entry_label: string | null;
+  entry_path: string | null;
+  message: string | null;
+  created_at: string;
+}
+
 export interface DeploymentRow {
   commit_sha: string;
+  /** The branch that was BUILT — the site's, or an editorial-workflow one. */
+  branch?: string | null;
   source: string;
   external_id: string;
   /** Null when the host could not be identified — callers then say "your
@@ -29,6 +41,8 @@ export interface DeploymentRow {
   state: DeployState;
   target_url: string | null;
   error_message: string | null;
+  /** Where it published to, in the host's words: "production", "deploy-preview". */
+  environment?: string | null;
   started_at: string | null;
   finished_at: string | null;
   updated_at: string;
@@ -684,16 +698,22 @@ export class DeployWatcher {
 /** Columns the notification needs; `select=*` would ship site_id and repo for nothing. */
 const DEPLOYMENT_COLUMNS = [
   'commit_sha',
+  'branch',
   'source',
   'external_id',
   'provider_label',
   'state',
   'target_url',
   'error_message',
+  'environment',
   'started_at',
   'finished_at',
   'updated_at',
 ].join(',');
+
+const COMMIT_COLUMNS = ['commit_sha', 'branch', 'entry_label', 'entry_path', 'message', 'created_at'].join(
+  ',',
+);
 
 /** More rows than any window should hold, so one read cannot become large. */
 const DEPLOYMENT_LIMIT = 20;
@@ -735,6 +755,7 @@ async function queryDeployments(
   config: DeploymentFetcherConfig,
   extra: Record<string, string>,
   limit: number,
+  { scopeToBranch = true }: { scopeToBranch?: boolean } = {},
 ): Promise<DeploymentRow[]> {
   const doFetch = config.fetchImpl ?? ((...args: Parameters<typeof fetch>) => fetch(...args));
   const accessToken = config.getAccessToken();
@@ -748,7 +769,10 @@ async function queryDeployments(
   const params = new URLSearchParams({
     select: DEPLOYMENT_COLUMNS,
     site_id: `eq.${config.siteId}`,
-    branch: `eq.${config.branch}`,
+    // The notification poll is scoped to the site's branch: a deploy of an
+    // editorial-workflow branch must never resolve a published save. The page
+    // is not, because "which branch did this go to" is exactly what it is for.
+    ...(scopeToBranch ? { branch: `eq.${config.branch}` } : {}),
     ...extra,
     order: 'updated_at.desc',
     limit: String(limit),
@@ -783,7 +807,46 @@ export function createDeploymentFetcher(config: DeploymentFetcherConfig) {
  */
 export function createDeploymentLister(config: DeploymentFetcherConfig) {
   return function listDeployments(limit = HISTORY_LIMIT): Promise<DeploymentRow[]> {
-    return queryDeployments(config, {}, Math.min(limit, HISTORY_LIMIT));
+    return queryDeployments(config, {}, Math.min(limit, HISTORY_LIMIT), { scopeToBranch: false });
+  };
+}
+
+/**
+ * Recent CMS saves for this site, so the page can name the entry a deploy
+ * carried. Shared rather than per-browser: `site_commits` is written by the
+ * commit endpoint, so a colleague's save is legible too.
+ */
+export function createCommitLister(config: DeploymentFetcherConfig) {
+  return async function listCommits(limit = HISTORY_LIMIT): Promise<CommitRow[]> {
+    const doFetch = config.fetchImpl ?? ((...args: Parameters<typeof fetch>) => fetch(...args));
+    const accessToken = config.getAccessToken();
+
+    if (!accessToken) {
+      throw new Error('Deploy status requires a signed-in session');
+    }
+
+    const params = new URLSearchParams({
+      select: COMMIT_COLUMNS,
+      site_id: `eq.${config.siteId}`,
+      order: 'created_at.desc',
+      limit: String(Math.min(limit, HISTORY_LIMIT)),
+    });
+
+    const response = await doFetch(`${config.baseUrl}/rest/v1/site_commits?${params}`, {
+      method: 'GET',
+      headers: {
+        apikey: config.anonKey,
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Deploy status request failed: ${response.status} ${response.statusText}`);
+    }
+
+    const text = await response.text();
+    return text ? (JSON.parse(text) as CommitRow[]) : [];
   };
 }
 

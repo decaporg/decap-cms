@@ -65,10 +65,12 @@ export function deployIndicator(pendingCount, latest) {
   if (latest.state === 'building' || latest.state === 'pending') {
     return { key: 'app.header.deploysBuilding', color: DEPLOY_STATE_COLORS.building };
   }
-  if (latest.state === 'success') {
-    return { key: 'app.header.deploys', color: DEPLOY_STATE_COLORS.success };
-  }
-  // `canceled` alone says nothing an editor can act on — the change is still
-  // going to ship inside a newer deploy.
-  return { key: 'app.header.deploys', color: colorsRaw.gray };
+  // A green dot beside the word "Deploys" leaves the reader to work out what
+  // green means. Naming the state costs nothing and is the whole point of the
+  // indicator, so it says the state whenever it knows one.
+  //
+  // `canceled` counts as deployed: the site is still serving the last
+  // successful deploy, and a superseded build has lost nothing — its change
+  // ships inside the newer one.
+  return { key: 'app.header.deploysDeployed', color: DEPLOY_STATE_COLORS.success };
 }

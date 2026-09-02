@@ -1,4 +1,5 @@
 import {
+  createCommitLister,
   createDeploymentFetcher,
   createDeploymentLister,
   parseDeployStatusOptions,
@@ -591,11 +592,13 @@ describe('createDeploymentLister', () => {
 
     const [url] = fetchImpl.mock.calls[0];
     expect(url).toContain('site_id=eq.site-1');
-    expect(url).toContain('branch=eq.main');
     // The page is history, not a window — an `updated_at` floor would hide
     // exactly the older deploys someone opened it to see.
     expect(url).not.toContain('updated_at=');
     expect(url).toContain('order=updated_at.desc');
+    // And NOT scoped to the site branch: "which branch did this go to" is
+    // exactly what the page is for, so editorial-workflow deploys belong in it.
+    expect(url).not.toContain('branch=eq.');
   });
 
   it('caps the caller\u2019s limit so one read cannot become large', async () => {
@@ -764,5 +767,49 @@ describe('DeployWatcher entry URLs', () => {
     return flush().then(() => {
       expect(resolutions[0].entries[0].entryUrlPath).toBeUndefined();
     });
+  });
+});
+
+describe('createCommitLister', () => {
+  const config = {
+    baseUrl: 'https://project.supabase.co',
+    anonKey: 'anon-key',
+    siteId: 'site-1',
+    branch: 'main',
+    getAccessToken: () => 'jwt-token',
+  };
+
+  it('reads this site\u2019s recent saves', async () => {
+    const fetchImpl = jest.fn().mockResolvedValue({
+      ok: true,
+      text: () =>
+        Promise.resolve(JSON.stringify([{ commit_sha: 'aaa', entry_label: 'Spring menu' }])),
+    });
+
+    const rows = await createCommitLister({ ...config, fetchImpl } as never)();
+
+    const [url, init] = fetchImpl.mock.calls[0];
+    expect(url).toContain('/rest/v1/site_commits?');
+    expect(url).toContain('site_id=eq.site-1');
+    expect(url).toContain('order=created_at.desc');
+    expect(init.headers.Authorization).toBe('Bearer jwt-token');
+    expect(rows[0].entry_label).toBe('Spring menu');
+  });
+
+  it('caps the limit like the deploy history does', async () => {
+    const fetchImpl = jest.fn().mockResolvedValue({ ok: true, text: () => Promise.resolve('[]') });
+
+    await createCommitLister({ ...config, fetchImpl } as never)(9999);
+
+    expect(fetchImpl.mock.calls[0][0]).toContain('limit=25');
+  });
+
+  it('refuses to read without a session', async () => {
+    const fetchImpl = jest.fn();
+
+    await expect(
+      createCommitLister({ ...config, getAccessToken: () => null, fetchImpl } as never)(),
+    ).rejects.toThrow(/session/);
+    expect(fetchImpl).not.toHaveBeenCalled();
   });
 });

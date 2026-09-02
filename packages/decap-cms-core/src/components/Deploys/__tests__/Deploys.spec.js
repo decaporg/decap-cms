@@ -37,6 +37,7 @@ function renderPage(deployStatus) {
       supported: true,
       pageEnabled: true,
       loaded: true,
+      entryLabels: {},
       ...deployStatus,
     },
   });
@@ -132,6 +133,7 @@ describe('Deploys page', () => {
           loaded
           loadDeployHistory={loadDeployHistory}
           commitUrls={{}}
+          entryLabels={{}}
           t={key => key}
         />
       </I18n>,
@@ -160,6 +162,7 @@ describe('Deploys page', () => {
           loaded
           loadDeployHistory={loadDeployHistory}
           commitUrls={{}}
+          entryLabels={{}}
           t={key => key}
         />
       </I18n>,
@@ -194,6 +197,7 @@ describe('Deploys page', () => {
           loaded
           loadDeployHistory={loadDeployHistory}
           commitUrls={{}}
+          entryLabels={{}}
           t={key => key}
         />
       </I18n>,
@@ -259,6 +263,7 @@ describe('Deploys page', () => {
           loaded
           loadDeployHistory={jest.fn()}
           commitUrls={{ abc1234def5678: 'https://github.com/acme/site/commit/abc1234def5678' }}
+          entryLabels={{}}
           t={key => key}
         />
       </I18n>,
@@ -280,6 +285,57 @@ describe('Deploys page', () => {
     expect(screen.getByText('abc1234').closest('a')).toBeNull();
   });
 
+  // The same value the notification shows — the entry's title, not the commit
+  // message, which carries the slug and is template-configurable.
+  it('names the entry a deploy carried', () => {
+    renderPage({
+      deployments: [row()],
+      entryLabels: { abc1234def5678: 'Spring menu' },
+    });
+
+    expect(screen.getByText('Spring menu')).toBeInTheDocument();
+  });
+
+  it('leaves the entry blank for a commit the CMS did not make', () => {
+    renderPage({ deployments: [row()], entryLabels: {} });
+
+    // A dash, not a guess: a commit from a git push has no entry behind it.
+    expect(screen.queryByText('Spring menu')).not.toBeInTheDocument();
+    expect(screen.getAllByText('—').length).toBeGreaterThan(0);
+  });
+
+  it('says where a deploy published to', () => {
+    renderPage({
+      deployments: [
+        row({ external_id: 'a', branch: 'main', environment: 'production' }),
+        row({ external_id: 'b', branch: 'cms/posts/draft', environment: 'deploy-preview' }),
+      ],
+    });
+
+    expect(screen.getByText('main · production')).toBeInTheDocument();
+    expect(screen.getByText('cms/posts/draft · deploy-preview')).toBeInTheDocument();
+  });
+
+  // "main · main" reads as noise where "main" already said it.
+  it('does not repeat the branch when the environment adds nothing', () => {
+    renderPage({ deployments: [row({ branch: 'main', environment: 'main' })] });
+
+    expect(screen.getByText('main')).toBeInTheDocument();
+    expect(screen.queryByText('main · main')).not.toBeInTheDocument();
+  });
+
+  it('shows whichever half it has', () => {
+    renderPage({
+      deployments: [
+        row({ external_id: 'a', branch: 'turbo', environment: null }),
+        row({ external_id: 'b', branch: null, environment: 'production' }),
+      ],
+    });
+
+    expect(screen.getByText('turbo')).toBeInTheDocument();
+    expect(screen.getByText('production')).toBeInTheDocument();
+  });
+
   it('surfaces a read failure rather than showing an empty history', () => {
     renderPage({ error: 'Deploy status requires a signed-in session', loaded: false });
 
@@ -296,16 +352,19 @@ describe('deployIndicator', () => {
     expect(deployIndicator(0, row({ state: 'failed' })).key).toBe('app.header.deploysFailed');
   });
 
-  it('is plain when the site is live', () => {
-    expect(deployIndicator(0, row()).key).toBe('app.header.deploys');
+  // A green dot beside the word "Deploys" leaves the reader to work out what
+  // green means.
+  it('names the state when the site is live', () => {
+    expect(deployIndicator(0, row()).key).toBe('app.header.deploysDeployed');
   });
 
-  it('is plain when nothing is known yet', () => {
+  it('is plain only when nothing is known yet', () => {
     expect(deployIndicator(0, null).key).toBe('app.header.deploys');
   });
 
-  // 'canceled' alone says nothing an editor can act on.
-  it('says nothing special about a superseded deploy', () => {
-    expect(deployIndicator(0, row({ state: 'canceled' })).key).toBe('app.header.deploys');
+  // The site is still serving the last successful deploy, and a superseded
+  // build has lost nothing — its change ships inside the newer one.
+  it('counts a superseded deploy as deployed', () => {
+    expect(deployIndicator(0, row({ state: 'canceled' })).key).toBe('app.header.deploysDeployed');
   });
 });

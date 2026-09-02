@@ -22,7 +22,11 @@ const en = {
       workflow: 'Workflow',
       // The deploy nav item doubles as the state indicator — see §A8. It reads
       // 'Deploys' at rest and names the state when there is one worth naming.
+      // The nav item names the state whenever it knows one — a coloured dot
+      // alone leaves the reader to work out what the colour means. 'Deploys'
+      // is only the fallback for "nothing known yet".
       deploys: 'Deploys',
+      deploysDeployed: 'Deployed',
       deploysPublishing: 'Publishing…',
       deploysBuilding: 'Building',
       deploysFailed: 'Build failed',
@@ -332,6 +336,8 @@ const en = {
         'Nothing recorded yet. If this site deploys on Netlify, add the deploy webhook in your Decap Turbo dashboard — Netlify does not report branch or production deploys to your git provider. Other hosts report automatically.',
       emptyUnknown: 'Loading deploys…',
       columnState: 'State',
+      columnEntry: 'Saved entry',
+      columnWhere: 'Published to',
       columnTarget: 'Reported by',
       columnCommit: 'Commit',
       columnWhen: 'When',

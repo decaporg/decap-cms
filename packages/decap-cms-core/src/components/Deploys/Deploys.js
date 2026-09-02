@@ -201,6 +201,27 @@ function liveDeployId(deployments) {
   return live ? `${live.source}:${live.external_id}` : null;
 }
 
+/**
+ * Where the deploy published to.
+ *
+ * Branch and environment answer different halves of it: the branch says which
+ * content, the environment says which destination. Netlify will build the same
+ * ref as both a production deploy and a branch deploy, and for editorial
+ * workflow a Deploy Preview is a third — so neither alone is the answer.
+ *
+ * Shown together only when they differ, since "main / production" reads as
+ * noise where "main" already said it.
+ */
+function whereOf(row) {
+  const branch = row.branch || null;
+  const environment = row.environment || null;
+
+  if (branch && environment && environment !== branch) {
+    return `${branch} · ${environment}`;
+  }
+  return branch || environment || '—';
+}
+
 /** Poll cadence while the page is open. See §A8 on why only while it is. */
 const REFRESH_MS = 10000;
 
@@ -213,6 +234,7 @@ export class Deploys extends React.Component {
     loaded: PropTypes.bool.isRequired,
     error: PropTypes.string,
     commitUrls: PropTypes.object.isRequired,
+    entryLabels: PropTypes.object.isRequired,
     loadDeployHistory: PropTypes.func.isRequired,
     t: PropTypes.func.isRequired,
   };
@@ -265,8 +287,17 @@ export class Deploys extends React.Component {
   };
 
   render() {
-    const { deployments, pendingCount, latest, isFetching, loaded, error, commitUrls, t } =
-      this.props;
+    const {
+      deployments,
+      pendingCount,
+      latest,
+      isFetching,
+      loaded,
+      error,
+      commitUrls,
+      entryLabels,
+      t,
+    } = this.props;
     const summary = summaryFor(pendingCount, latest);
     const targets = [...new Set(deployments.map(targetOf))];
     const liveId = liveDeployId(deployments);
@@ -314,6 +345,8 @@ export class Deploys extends React.Component {
               <thead>
                 <tr>
                   <th>{t('ui.deploys.columnState')}</th>
+                  <th>{t('ui.deploys.columnEntry')}</th>
+                  <th>{t('ui.deploys.columnWhere')}</th>
                   <th>{t('ui.deploys.columnTarget')}</th>
                   <th>{t('ui.deploys.columnCommit')}</th>
                   <th>{t('ui.deploys.columnWhen')}</th>
@@ -340,6 +373,16 @@ export class Deploys extends React.Component {
                       </StateCell>
                       {row.error_message && <ErrorText>{row.error_message}</ErrorText>}
                     </td>
+                    <td>
+                      {/*
+                        The same value the "your change is live" notification
+                        shows — the entry's title, not the commit message,
+                        which carries the slug. Blank for a commit the CMS did
+                        not make, or one made before this was recorded.
+                      */}
+                      {entryLabels[row.commit_sha] || <Muted as="span">—</Muted>}
+                    </td>
+                    <td>{whereOf(row)}</td>
                     <td>{targetOf(row)}</td>
                     <td>
                       {/*
@@ -372,7 +415,8 @@ export class Deploys extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { deployments, pendingCount, latest, isFetching, error, loaded } = state.deployStatus;
+  const { deployments, pendingCount, latest, isFetching, error, loaded, entryLabels } =
+    state.deployStatus;
 
   // Derived rather than stored: it depends only on the backend, and keeping a
   // copy in the store would be one more thing that can go stale.
@@ -383,7 +427,7 @@ function mapStateToProps(state) {
     }
   }
 
-  return { deployments, pendingCount, latest, isFetching, error, loaded, commitUrls };
+  return { deployments, pendingCount, latest, isFetching, error, loaded, commitUrls, entryLabels };
 }
 
 const mapDispatchToProps = {
