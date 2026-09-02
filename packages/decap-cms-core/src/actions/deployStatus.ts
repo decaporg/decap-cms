@@ -49,8 +49,19 @@ interface DeployWatchingBackend {
 }
 
 /**
- * The toast the current watch is driving, so a second save replaces the first
- * one's toast instead of leaving a stale "Publishing…" next to a fresh one.
+ * The toast the last save's deploy is being reported through, so a new save
+ * replaces it instead of stacking beside it.
+ *
+ * Held past the end of the watch on purpose. The `failed` toast is deliberately
+ * held open (it carries the build log link), so it is precisely the one still
+ * on screen when the editor saves again — usually *because* it failed. Clearing
+ * this on the last update left a red "Your site failed to build" sitting next
+ * to a fresh "Publishing…", which reads as though the new save had failed too.
+ * Measured in the browser on 2026-09-02; two toasts is exactly what §A4 exists
+ * to avoid.
+ *
+ * Dismissing an id whose toast is already gone is a no-op, so keeping a stale
+ * one here costs nothing.
  *
  * Module state rather than store state on purpose: the watcher it mirrors is
  * itself a single backend-held object, and a reducer entry would have to be
@@ -179,15 +190,15 @@ function applyDeployUpdate(notificationId: string, update: DeployWatchUpdate) {
   };
 }
 
-/** Last update for this watch: stop treating its toast as the live one. */
+/**
+ * The watch's last word. It stays the active deploy toast afterwards — see
+ * `activeDeployNotificationId` — so the next save clears it.
+ */
 function finish(
   dispatch: ThunkDispatch<State, {}, AnyAction>,
   notificationId: string,
   payload: Parameters<typeof updateNotification>[1],
 ) {
-  if (activeDeployNotificationId === notificationId) {
-    activeDeployNotificationId = null;
-  }
   dispatch(updateNotification(notificationId, payload));
 }
 

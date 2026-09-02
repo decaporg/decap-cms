@@ -205,19 +205,22 @@ describe('notifyEntrySaved', () => {
     expect(sent(store)).toHaveLength(2);
   });
 
-  // Once a watch has reported its last word, its toast is no longer the live
-  // one — the next save has nothing to dismiss.
-  it('does not dismiss a toast that has already finished', () => {
+  // The failed toast is held open, so it is the one still on screen when the
+  // editor saves again — usually because it failed. Leaving it there put a red
+  // "failed" next to a fresh "Publishing…", which reads as the new save having
+  // failed too. Found in the browser, 2026-09-02.
+  it('replaces a finished toast too, so a stale failure cannot sit beside a fresh save', () => {
     const { backend, deliver } = backendWithWatch();
     mockedCurrentBackend.mockReturnValue(backend);
     const store = storeWith();
 
     store.dispatch(notifyEntrySaved());
-    deliver({ status: 'success', deployment: deployment(), commitSha: 'sha' });
+    const first = sent(store)[0].payload.id;
+    deliver({ status: 'failed', deployment: deployment(), commitSha: 'sha' });
     store.dispatch(notifyEntrySaved());
 
-    expect(store.getActions().filter(action => action.type === NOTIFICATION_DISMISS)).toHaveLength(
-      0,
-    );
+    const dismissed = store.getActions().filter(action => action.type === NOTIFICATION_DISMISS);
+    expect(dismissed).toHaveLength(1);
+    expect(dismissed[0].id).toBe(first);
   });
 });
