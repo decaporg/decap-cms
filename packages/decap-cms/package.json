@@ -1,7 +1,7 @@
 {
   "name": "decap-cms",
   "description": "An extensible, open source, Git-based, React CMS for static sites.",
-  "version": "3.15.1",
+  "version": "3.16.0",
   "homepage": "https://www.decapcms.org",
   "repository": "https://github.com/decaporg/decap-cms",
   "bugs": "https://github.com/decaporg/decap-cms/issues",

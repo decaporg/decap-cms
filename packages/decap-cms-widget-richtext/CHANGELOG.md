@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.6.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-richtext@3.5.0...decap-cms-widget-richtext@3.6.0) (2026-08-31)
+
+**Note:** Version bump only for package decap-cms-widget-richtext
+
 # [3.5.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-richtext@3.4.1...decap-cms-widget-richtext@3.5.0) (2026-07-23)
 
 ### Bug Fixes
