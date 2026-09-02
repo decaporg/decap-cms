@@ -7,8 +7,7 @@
   "bugs": "https://github.com/decaporg/decap-cms/issues",
   "main": "dist/decap-cms.js",
   "scripts": {
-    "webpack": "node --max_old_space_size=4096 ../../node_modules/webpack/bin/webpack.js",
-    "build": "cross-env NODE_ENV=production run-s webpack",
+    "build": "cross-env NODE_ENV=production NODE_OPTIONS=--max-old-space-size=4096 webpack",
     "build-preview": "cross-env NODE_ENV=production webpack serve --open",
     "develop": "webpack serve --hot"
   },
