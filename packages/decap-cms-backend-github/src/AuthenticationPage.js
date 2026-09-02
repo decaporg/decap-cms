@@ -1,4 +1,4 @@
-import React from 'react';
+import { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import { NetlifyAuthenticator } from 'decap-cms-lib-auth';
@@ -21,7 +21,7 @@ const ForkButtonsContainer = styled.div`
   align-items: center;
 `;
 
-export default class GitHubAuthenticationPage extends React.Component {
+export default class GitHubAuthenticationPage extends Component {
   static propTypes = {
     onLogin: PropTypes.func.isRequired,
     inProgress: PropTypes.bool,
@@ -107,10 +107,10 @@ export default class GitHubAuthenticationPage extends React.Component {
     return inProgress || this.state.findingFork ? (
       t('auth.loggingIn')
     ) : (
-      <React.Fragment>
+      <Fragment>
         <LoginButtonIcon type="github" />
         {t('auth.loginWithGitHub')}
-      </React.Fragment>
+      </Fragment>
     );
   };
 

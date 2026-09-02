@@ -1,7 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import padStart from 'lodash/padStart';
-import { Map } from 'immutable';
+import { fromJS, Map } from 'immutable';
 
+import image from '../../../decap-cms-editor-component-image/src';
 import RichtextPreview from '../RichtextPreview';
 import { markdownToHtml } from '../serializers';
 
@@ -93,6 +94,32 @@ Text with **bold** & _em_ elements
         expect(screen.getByText('ol item 1')).toBeInTheDocument();
         expect(screen.getByText('Sublist 1')).toBeInTheDocument();
         expect(screen.getByText('Sub-Sublist 1')).toBeInTheDocument();
+      });
+
+      it('should render block images inside list items', () => {
+        const value = `1. First step.
+2. Last step.
+
+   ![Screenshot](/img/screenshot.png)`;
+        const editorComponents = Map({
+          image: { ...image, fields: fromJS(image.fields) },
+        });
+        const getAsset = jest.fn(asset => asset);
+        const { container } = render(
+          <RichtextPreview
+            value={value}
+            getAsset={getAsset}
+            resolveWidget={jest.fn()}
+            getEditorComponents={() => editorComponents}
+          />,
+        );
+
+        expect(container.querySelectorAll('ol > li').length).toBe(2);
+        expect(container.querySelector('ol > li img')).toHaveAttribute(
+          'src',
+          '/img/screenshot.png',
+        );
+        expect(container.querySelector('ol > li img')).toHaveAttribute('alt', 'Screenshot');
       });
     });
 

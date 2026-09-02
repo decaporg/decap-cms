@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import { createElement, Component } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Map, List } from 'immutable';
 import { oneLine } from 'common-tags';
@@ -328,7 +328,7 @@ export default class Widget extends Component {
       isParentListCollapsed,
     } = this.props;
 
-    return React.createElement(controlComponent, {
+    return createElement(controlComponent, {
       entry,
       collection,
       config,

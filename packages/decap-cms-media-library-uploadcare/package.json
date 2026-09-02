@@ -17,13 +17,17 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "develop": "npm run build:esm -- --watch",
+    "develop": "pnpm run build:esm --watch",
     "build": "cross-env NODE_ENV=production webpack",
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
   },
   "dependencies": {
-    "immutable": "^3.7.6",
-    "uploadcare-widget": "^3.7.0",
-    "uploadcare-widget-tab-effects": "^1.4.0"
+    "uploadcare-widget": "catalog:",
+    "uploadcare-widget-tab-effects": "catalog:",
+    "immutable": "catalog:"
+  },
+  "peerDependencies": {
+    "immutable": "catalog:",
+    "uuid": "catalog:"
   }
 }
