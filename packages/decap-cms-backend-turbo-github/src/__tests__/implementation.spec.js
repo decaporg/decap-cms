@@ -661,6 +661,10 @@ describe('turbo backend deploy watch', () => {
   const config = {
     backend: {
       repo: 'owner/repo',
+      // Always set in practice — `preloadConfig` takes it from the sites row —
+      // and load-bearing here: only a commit on the site's own branch can
+      // produce a deploy the editor is waiting for.
+      branch: 'main',
       supabase_app_id: 'supabase-project-id',
       supabase_anon_key: 'supabase-anon-key',
     },
@@ -734,6 +738,24 @@ describe('turbo backend deploy watch', () => {
     await backend.persistEntry(entry, { collectionName: 'posts' });
 
     expect(backend.lastSavedCommit).toBeNull();
+  });
+
+  // An editorial-workflow save commits to the entry's own `cms/...` branch,
+  // and that commit never appears in a deploy of the site's branch — so
+  // watching it would leave the editor waiting on a deploy that is never
+  // coming.
+  it('does not watch a commit made on an editorial-workflow branch', async () => {
+    jest.spyOn(superPersistEntry, 'persistEntry').mockResolvedValue({
+      sha: 'sha-wf',
+      branch: 'cms/posts/post',
+      url: 'https://github.example',
+    });
+
+    const backend = makeBackend();
+    await backend.persistEntry(entry, { collectionName: 'posts', useWorkflow: true });
+
+    expect(backend.lastSavedCommit).toBeNull();
+    expect(backend.recordSaveForDeployWatch('A post')).toBe(false);
   });
 
   it('declines to record a save when none has produced a commit', () => {

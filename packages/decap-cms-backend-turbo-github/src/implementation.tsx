@@ -1015,9 +1015,16 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
     // Assigned on every save, including to null: only the one-call commit
     // endpoint (§B1) returns a sha, and leaving the previous one in place
     // would have a REST-fallback save watch the deploy of the save before it.
+    //
+    // The branch has to match too. An editorial-workflow save commits to the
+    // entry's own `cms/...` branch, and that commit will never appear in a
+    // deploy of the site's branch — so watching it would leave the editor
+    // waiting on a deploy that is never coming. An unpublished entry is not
+    // going live, and "Entry saved" is the honest thing to say about it.
     const sha = (result as { sha?: unknown } | undefined)?.sha;
+    const committedBranch = (result as { branch?: unknown } | undefined)?.branch;
     this.lastSavedCommit =
-      typeof sha === 'string' && sha
+      typeof sha === 'string' && sha && committedBranch === this.branch
         ? { sha, entryPath: entry.dataFiles?.[0]?.path as string | undefined }
         : null;
 
