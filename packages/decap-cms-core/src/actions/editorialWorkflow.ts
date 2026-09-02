@@ -251,6 +251,36 @@ export function loadUnpublishedEntry(collection: Collection, slug: string) {
       } catch (e) {}
     }
 
+    // `backend.unpublishedEntry` re-derives, for this one slug, the same
+    // open-pull-request set the list above already holds. So when the list is
+    // loaded and this entry is not in it, the answer is already known — the
+    // entry is not under editorial workflow — and asking again costs a full
+    // round trip before the editor can even begin loading the published entry.
+    // Measured through Turbo's proxy at 2.4s, paid on every open of every
+    // published entry, which is the common case.
+    //
+    // The list is kept current locally as this session works: persisting adds
+    // the entity, publishing and deleting remove it. What it does not see is a
+    // draft another editor created since the list loaded — but neither does
+    // the collection list nor the Workflow tab, both of which render from this
+    // same state, so the staleness is not new here, and navigating to either
+    // reloads it.
+    //
+    // Read from a fresh getState(), because the load above may have just
+    // populated it.
+    const loadedState = getState();
+    const listLoaded = Boolean(get(loadedState.editorialWorkflow.toJS(), 'pages.ids', false));
+    const isKnownUnpublished = Boolean(
+      selectUnpublishedEntry(loadedState, collection.get('name'), slug),
+    );
+
+    if (listLoaded && !isKnownUnpublished) {
+      // Exactly what the notUnderEditorialWorkflow branch below does.
+      dispatch(unpublishedEntryRedirected(collection, slug));
+      dispatch(loadEntry(collection, slug));
+      return;
+    }
+
     dispatch(unpublishedEntryLoading(collection, slug));
 
     try {

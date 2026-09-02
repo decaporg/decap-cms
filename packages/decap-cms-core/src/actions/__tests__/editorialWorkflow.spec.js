@@ -40,7 +40,12 @@ describe('editorialWorkflow actions', () => {
           isLoading: false,
         }),
         editorialWorkflow: fromJS({
-          pages: { ids: [] },
+          pages: { ids: ['slug'] },
+          // The entry has to actually be in the loaded list: an entry absent
+          // from it is, by definition, not under editorial workflow, and
+          // loadUnpublishedEntry now answers that from state instead of
+          // spending a round trip asking the backend to confirm it.
+          entities: { 'posts.slug': { collection: 'posts', slug: 'slug' } },
         }),
       });
 
@@ -74,6 +79,69 @@ describe('editorialWorkflow actions', () => {
             entry,
           },
         });
+      });
+    });
+
+    it('loads the published entry without asking the backend when the loaded list does not contain the slug', () => {
+      const { currentBackend } = require('../../backend');
+
+      const backend = {
+        unpublishedEntry: jest.fn(),
+      };
+
+      const store = mockStore({
+        config: fromJS({ editor: { notes: true } }),
+        collections: fromJS({ posts: { name: 'posts' } }),
+        mediaLibrary: fromJS({ isLoading: false }),
+        entries: fromJS({}),
+        editorialWorkflow: fromJS({
+          // Loaded, and this slug is not in it.
+          pages: { ids: ['other'] },
+          entities: { 'posts.other': { collection: 'posts', slug: 'other' } },
+        }),
+      });
+
+      currentBackend.mockReturnValue(backend);
+
+      const collection = store.getState().collections.get('posts');
+
+      return store.dispatch(actions.loadUnpublishedEntry(collection, 'slug')).then(() => {
+        // The open-pull-request set the backend would consult is the same one
+        // the list came from, so the request is pure latency.
+        expect(backend.unpublishedEntry).not.toHaveBeenCalled();
+
+        const dispatched = store.getActions();
+        expect(dispatched[0]).toEqual({
+          type: 'UNPUBLISHED_ENTRY_REDIRECT',
+          payload: { collection: 'posts', slug: 'slug' },
+        });
+        expect(dispatched.map(a => a.type)).not.toContain('UNPUBLISHED_ENTRY_REQUEST');
+      });
+    });
+
+    it('still asks the backend when the unpublished list has never loaded', () => {
+      const { currentBackend } = require('../../backend');
+
+      const backend = {
+        unpublishedEntries: jest.fn().mockRejectedValue(new Error('offline')),
+        unpublishedEntry: jest.fn().mockRejectedValue(new Error('nope')),
+      };
+
+      const store = mockStore({
+        config: fromJS({ editor: { notes: true } }),
+        collections: fromJS({ posts: { name: 'posts' } }),
+        mediaLibrary: fromJS({ isLoading: false }),
+        // No `pages`, so nothing is known — a failed or never-run list load
+        // must not be mistaken for "loaded and empty".
+        editorialWorkflow: fromJS({}),
+      });
+
+      currentBackend.mockReturnValue(backend);
+
+      const collection = store.getState().collections.get('posts');
+
+      return store.dispatch(actions.loadUnpublishedEntry(collection, 'slug')).then(() => {
+        expect(backend.unpublishedEntry).toHaveBeenCalled();
       });
     });
   });

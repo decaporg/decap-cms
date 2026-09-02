@@ -1315,9 +1315,34 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
     // One request, in place of a tree listing plus two GitHub calls per entry
     // driven from the browser — which cost 2,001 requests for a 1,000-entry
     // collection, against an installation budget of 5,000/hour.
-    await this.syncCollection(collection, folder, extension, depth, pathRegex);
+    //
+    // Started alongside the cache read rather than awaited before it. The sync
+    // costs 1.4s even when it has nothing to do — it revalidates the branch
+    // head through the proxy, which charges a fixed preamble per request —
+    // while the read itself is ~300ms, so waiting for one before starting the
+    // other spent the read's whole duration for nothing on every warm load.
+    const syncPromise = this.syncCollection(collection, folder, extension, depth, pathRegex);
 
-    const entries = await this.supabase.fetchEntries(collection, searchTerm);
+    // Speculative, and its failure is swallowed to `null` here: a read issued
+    // before the sync answered must never be the reason a load fails, because
+    // the authoritative read below would have served it. Handling it inline
+    // also keeps it from ever becoming an unhandled rejection on the branch
+    // that discards it.
+    const speculativeRead = this.supabase
+      .fetchEntries(collection, searchTerm)
+      .then(rows => rows, () => null);
+
+    const sync = await syncPromise;
+
+    // `fresh` means the branch head already matched the ingested sha and no
+    // row was missing metadata — the server wrote nothing, so the concurrent
+    // read cannot have missed anything. Anything else (a sync that ingested,
+    // a deferred sync) means the read may predate a write, so it is discarded
+    // and the collection is read again. Correctness first; the saved round
+    // trip is only ever claimed when the server says nothing changed.
+    const entries =
+      (sync?.fresh ? await speculativeRead : null) ??
+      (await this.supabase.fetchEntries(collection, searchTerm));
 
     // The client no longer fetches a tree, so sort by path here to keep entry
     // order stable across loads. Path order is what the tree gave anyway —
