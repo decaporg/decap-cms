@@ -1,4 +1,3 @@
-import map from 'lodash/map';
 import has from 'lodash/has';
 import { renderToString } from 'react-dom/server';
 import u from 'unist-builder';
