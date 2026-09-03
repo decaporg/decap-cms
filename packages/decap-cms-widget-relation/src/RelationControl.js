@@ -475,7 +475,7 @@ export default class RelationControl extends Component {
         const hits = result.payload.hits || [];
         const options = this.parseHitOptions(hits);
         const optionsLength = field.get('options_length') || 20;
-        const uniq = uniqOptions(this.state.initialOptions, options).slice(0, optionsLength);
+        const uniq = uniqOptions(options, this.state.initialOptions).slice(0, optionsLength);
         callback(uniq);
       })
       .catch(error => {
