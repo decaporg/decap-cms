@@ -6,8 +6,7 @@ import { connect } from 'react-redux';
 import { Icon, colors, lengths, components, shadows, buttons } from 'decap-cms-ui-default';
 
 import { loadDeployHistory, selectCommitUrl } from '../../actions/deployStatus';
-import { onSiteBranch } from '../../reducers/deployStatus';
-import { DEPLOY_STATE_COLORS, StatusDot } from '../App/deployStatusIndicator';
+import { DEPLOY_STATE_COLORS, StatusDot, isStaleDeploy } from '../App/deployStatusIndicator';
 
 /**
  * The Deploys page. See decap-turbo/docs/deploy-status-plan.md §A8.
@@ -72,6 +71,31 @@ const Card = styled.div`
   margin-bottom: 16px;
 `;
 
+const Controls = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+  margin-bottom: 16px;
+`;
+
+const Field = styled.label`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  color: ${colors.controlLabel};
+
+  select {
+    font-size: 14px;
+    padding: 6px 8px;
+    border: 1px solid ${colors.textFieldBorder};
+    border-radius: ${lengths.borderRadius};
+    background-color: ${colors.inputBackground};
+    color: ${colors.controlLabel};
+  }
+`;
+
 const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
@@ -89,6 +113,54 @@ const Table = styled.table`
     color: ${colors.controlLabel};
     font-weight: 600;
     white-space: nowrap;
+  }
+`;
+
+/**
+ * A sortable heading is a button inside the `th` rather than a click handler on
+ * the cell: the header has to be reachable and operable from the keyboard, and
+ * `aria-sort` on the `th` is what tells a screen reader which way the column
+ * currently runs.
+ */
+const SortButton = styled.button`
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+
+  &:hover {
+    color: ${colors.active};
+  }
+`;
+
+const Pager = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16px;
+`;
+
+const PagerControls = styled.div`
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+`;
+
+const PagerButton = styled.button`
+  ${buttons.button};
+  ${buttons.default};
+  ${buttons.gray};
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
   }
 `;
 
@@ -131,16 +203,25 @@ function formatTime(iso) {
   return Number.isNaN(date.getTime()) ? '' : date.toLocaleString();
 }
 
+function timeOf(row) {
+  return Date.parse(row.finished_at || row.updated_at) || 0;
+}
+
 /**
  * The one sentence the page exists to say. Publishing wins over everything —
  * an editor with a save in flight is asking about that save, not about a
  * build that finished before it.
+ *
+ * `latest` is already scoped to the site's own branch by the reducer, so this
+ * never speaks for a branch deploy. That scoping is deliberate and is the one
+ * place on the page that stays narrow — see `liveDeployIds` for why the table
+ * itself is broader.
  */
-function summaryFor(pendingCount, latest) {
+function summaryFor(pendingCount, latest, now) {
   if (pendingCount > 0) {
     return { key: 'ui.deploys.summaryPublishing', options: { count: pendingCount } };
   }
-  if (!latest) {
+  if (!latest || isStaleDeploy(latest, now)) {
     return { key: 'ui.deploys.summaryUnknown', options: {} };
   }
   if (latest.state === 'failed') {
@@ -181,33 +262,66 @@ function targetOf(row) {
   return 'Webhook';
 }
 
+function rowId(row) {
+  return `${row.source}:${row.external_id}`;
+}
+
+function branchOf(row) {
+  return row.branch || '';
+}
+
 /**
- * Only one deploy is live at a time, and it is the most recent successful one
- * ON THE SITE'S OWN BRANCH — later successes supersede earlier ones. Every
- * other success was live once and no longer is, or was never the site at all,
- * so calling them all "Live" is simply untrue.
+ * The deploy currently being served, for every branch that has one.
  *
- * The branch clause is not hypothetical: on the tester, unpublishing an entry
- * made Netlify branch-deploy `cms/posts/…`, that success was the newest row,
- * and the page announced a preview of an unpublished entry as the live site.
+ * Per branch, not once for the whole table: with editorial workflow on there is
+ * a `cms/…` branch per unpublished entry, each with its own URL that its own
+ * newest successful build is genuinely serving. Marking only the site's meant
+ * every other branch's current deploy sat in a column of "Deployed" with
+ * nothing saying which of that branch's five builds the URL will show you.
  *
- * Rows arrive newest-first, so the first qualifying success is the live one. A
- * rollback on the host would defeat this, and the host's own dashboard is
- * authoritative there; the alternative is calling nothing live, which is less
- * useful and no more correct.
+ * Rows arrive newest-first, so the first success per branch is that branch's
+ * live one; every earlier success has been superseded.
+ *
+ * This deliberately does NOT feed the summary band or the header pill, which
+ * stay scoped to the site's own branch. "Live" here means "this is what that
+ * branch serves"; "your latest change is live" is a claim about the published
+ * site, and a preview of an unpublished entry is not that.
  */
-function stateKeyFor(row, liveId) {
+export function liveDeployIds(deployments) {
+  const seen = new Set();
+  const live = new Set();
+  for (const row of deployments) {
+    if (row.state !== 'success') continue;
+    const branch = branchOf(row);
+    if (seen.has(branch)) continue;
+    seen.add(branch);
+    live.add(rowId(row));
+  }
+  return live;
+}
+
+/**
+ * What a row's state cell says.
+ *
+ * `stalled` is ours rather than the host's: a build still marked building long
+ * after anything last mentioned it has not failed as far as we know, but
+ * "Building" promises that something is still happening.
+ */
+function stateKeyFor(row, liveIds, now) {
+  if (isStaleDeploy(row, now)) {
+    return 'ui.deploys.state.stalled';
+  }
   if (row.state === 'success') {
-    return `${row.source}:${row.external_id}` === liveId
-      ? 'ui.deploys.state.live'
-      : 'ui.deploys.state.deployed';
+    return liveIds.has(rowId(row)) ? 'ui.deploys.state.live' : 'ui.deploys.state.deployed';
   }
   return `ui.deploys.state.${row.state}`;
 }
 
-function liveDeployId(deployments, branch) {
-  const live = onSiteBranch(deployments, branch).find(row => row.state === 'success');
-  return live ? `${live.source}:${live.external_id}` : null;
+function stateColorFor(row, now) {
+  if (isStaleDeploy(row, now)) {
+    return DEPLOY_STATE_COLORS.stalled;
+  }
+  return DEPLOY_STATE_COLORS[row.state] || colors.text;
 }
 
 /**
@@ -234,6 +348,17 @@ function whereOf(row) {
 /** Poll cadence while the page is open. See §A8 on why only while it is. */
 const REFRESH_MS = 10000;
 
+export const PAGE_SIZES = [20, 50, 100];
+
+/** The filter value that means "do not filter on this at all". */
+const ANY = '';
+
+const SORTS = {
+  when: row => timeOf(row),
+  branch: row => branchOf(row).toLowerCase(),
+  entry: (row, entryLabels) => (entryLabels[row.commit_sha] || '').toLowerCase(),
+};
+
 export class Deploys extends React.Component {
   static propTypes = {
     deployments: PropTypes.array.isRequired,
@@ -247,6 +372,16 @@ export class Deploys extends React.Component {
     branch: PropTypes.string,
     loadDeployHistory: PropTypes.func.isRequired,
     t: PropTypes.func.isRequired,
+  };
+
+  state = {
+    page: 0,
+    pageSize: PAGE_SIZES[0],
+    sortKey: 'when',
+    sortDir: 'desc',
+    filterTarget: ANY,
+    filterState: ANY,
+    filterBranch: ANY,
   };
 
   componentDidMount() {
@@ -296,6 +431,170 @@ export class Deploys extends React.Component {
     }
   };
 
+  // Any change to what is being shown returns to the first page. Staying on
+  // page four of a filter that now has two pages shows an empty table, which
+  // reads as "the filter matched nothing".
+  setView = patch => {
+    this.setState({ page: 0, ...patch });
+  };
+
+  toggleSort = key => {
+    this.setView({
+      sortKey: key,
+      // Time reads newest-first and names read A–Z; both are what someone
+      // means by the first click.
+      sortDir:
+        this.state.sortKey === key
+          ? this.state.sortDir === 'asc'
+            ? 'desc'
+            : 'asc'
+          : key === 'when'
+          ? 'desc'
+          : 'asc',
+    });
+  };
+
+  /** The rows the current filters and sort select, before paging. */
+  visibleRows() {
+    const { deployments, entryLabels } = this.props;
+    const { sortKey, sortDir, filterTarget, filterState, filterBranch } = this.state;
+
+    const filtered = deployments.filter(row => {
+      if (filterTarget !== ANY && targetOf(row) !== filterTarget) return false;
+      if (filterState !== ANY && row.state !== filterState) return false;
+      if (filterBranch !== ANY && branchOf(row) !== filterBranch) return false;
+      return true;
+    });
+
+    const read = SORTS[sortKey] ?? SORTS.when;
+    const direction = sortDir === 'asc' ? 1 : -1;
+    // Sorting a copy: `deployments` is the store's own array, and sorting in
+    // place would mutate state other components read.
+    return [...filtered].sort((a, b) => {
+      const left = read(a, entryLabels);
+      const right = read(b, entryLabels);
+      if (left === right) {
+        // Ties settle by time, so a branch with six builds still reads in a
+        // sensible order rather than whatever order the store happened to hold.
+        return timeOf(b) - timeOf(a);
+      }
+      return left > right ? direction : -direction;
+    });
+  }
+
+  renderSortHeader(key, labelKey) {
+    const { t } = this.props;
+    const active = this.state.sortKey === key;
+    const ascending = this.state.sortDir === 'asc';
+    return (
+      <th aria-sort={active ? (ascending ? 'ascending' : 'descending') : 'none'}>
+        <SortButton type="button" onClick={() => this.toggleSort(key)}>
+          {t(labelKey)}
+          {active && <span aria-hidden="true">{ascending ? '▲' : '▼'}</span>}
+        </SortButton>
+      </th>
+    );
+  }
+
+  renderControls(branches, targets, states) {
+    const { t } = this.props;
+    const { filterTarget, filterState, filterBranch } = this.state;
+    return (
+      <Controls>
+        <Field>
+          {t('ui.deploys.columnTarget')}
+          <select
+            value={filterTarget}
+            onChange={event => this.setView({ filterTarget: event.target.value })}
+          >
+            <option value={ANY}>{t('ui.deploys.filterAny')}</option>
+            {targets.map(target => (
+              <option key={target} value={target}>
+                {target}
+              </option>
+            ))}
+          </select>
+        </Field>
+        <Field>
+          {t('ui.deploys.columnState')}
+          <select
+            value={filterState}
+            onChange={event => this.setView({ filterState: event.target.value })}
+          >
+            <option value={ANY}>{t('ui.deploys.filterAny')}</option>
+            {states.map(state => (
+              <option key={state} value={state}>
+                {/*
+                  The host's own state, not the computed label: "Live" and
+                  "Deployed" are both `success`, so offering them separately
+                  would promise a distinction the filter cannot make.
+                */}
+                {t(`ui.deploys.state.${state}`)}
+              </option>
+            ))}
+          </select>
+        </Field>
+        <Field>
+          {t('ui.deploys.filterBranch')}
+          <select
+            value={filterBranch}
+            onChange={event => this.setView({ filterBranch: event.target.value })}
+          >
+            <option value={ANY}>{t('ui.deploys.filterAny')}</option>
+            {branches.map(branch => (
+              <option key={branch} value={branch}>
+                {branch || t('ui.deploys.branchUnknown')}
+              </option>
+            ))}
+          </select>
+        </Field>
+      </Controls>
+    );
+  }
+
+  renderPager(total) {
+    const { t } = this.props;
+    const { page, pageSize } = this.state;
+    const pages = Math.max(1, Math.ceil(total / pageSize));
+    const first = total === 0 ? 0 : page * pageSize + 1;
+    const last = Math.min(total, (page + 1) * pageSize);
+
+    return (
+      <Pager>
+        <Muted as="span">{t('ui.deploys.pageRange', { first, last, total })}</Muted>
+        <PagerControls>
+          <Field>
+            {t('ui.deploys.perPage')}
+            <select
+              value={pageSize}
+              onChange={event => this.setView({ pageSize: Number(event.target.value) })}
+            >
+              {PAGE_SIZES.map(size => (
+                <option key={size} value={size}>
+                  {size}
+                </option>
+              ))}
+            </select>
+          </Field>
+          <PagerButton
+            type="button"
+            disabled={page === 0}
+            onClick={() => this.setState({ page: page - 1 })}
+          >
+            {t('ui.deploys.previousPage')}
+          </PagerButton>
+          <PagerButton
+            type="button"
+            disabled={page >= pages - 1}
+            onClick={() => this.setState({ page: page + 1 })}
+          >
+            {t('ui.deploys.nextPage')}
+          </PagerButton>
+        </PagerControls>
+      </Pager>
+    );
+  }
+
   render() {
     const {
       deployments,
@@ -309,10 +608,24 @@ export class Deploys extends React.Component {
       branch,
       t,
     } = this.props;
-    const summary = summaryFor(pendingCount, latest);
-    const targets = [...new Set(deployments.map(targetOf))];
-    const liveId = liveDeployId(deployments, branch);
+    const { page, pageSize } = this.state;
+
+    // Read once per render, so every row in one paint is judged against the
+    // same clock — a row cannot be fresh at the top of the table and stale
+    // further down.
+    const now = Date.now();
+
+    const summary = summaryFor(pendingCount, latest, now);
+    const targets = [...new Set(deployments.map(targetOf))].sort();
+    const branches = [...new Set(deployments.map(branchOf))].sort();
+    const states = [...new Set(deployments.map(row => row.state))].sort();
+    // Computed over everything rather than over the visible page: which deploy
+    // a branch is serving does not change because someone turned to page two.
+    const liveIds = liveDeployIds(deployments);
     const liveUrl = latest && latest.state === 'success' ? latest.target_url : null;
+
+    const sorted = this.visibleRows();
+    const pageRows = sorted.slice(page * pageSize, (page + 1) * pageSize);
 
     return (
       <DeploysContainer>
@@ -352,76 +665,102 @@ export class Deploys extends React.Component {
             // page (§A6).
             <Muted>{t(loaded ? 'ui.deploys.emptyConfigured' : 'ui.deploys.emptyUnknown')}</Muted>
           ) : (
-            <Table>
-              <thead>
-                <tr>
-                  <th>{t('ui.deploys.columnState')}</th>
-                  <th>{t('ui.deploys.columnEntry')}</th>
-                  <th>{t('ui.deploys.columnWhere')}</th>
-                  <th>{t('ui.deploys.columnTarget')}</th>
-                  <th>{t('ui.deploys.columnCommit')}</th>
-                  <th>{t('ui.deploys.columnWhen')}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {deployments.map(row => (
-                  <tr key={`${row.source}:${row.external_id}`}>
-                    <td>
-                      <StateCell color={DEPLOY_STATE_COLORS[row.state] || colors.text}>
-                        <StatusDot color={DEPLOY_STATE_COLORS[row.state] || colors.text} />
-                        {/*
-                          Only the newest success is actually live; the rest
-                          were live once. The link is the deploy's own — the
-                          site for a success, the build log for a failure.
-                        */}
-                        {row.target_url ? (
-                          <StateLink
-                            href={row.target_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            {t(stateKeyFor(row, liveId))}
-                          </StateLink>
-                        ) : (
-                          t(stateKeyFor(row, liveId))
-                        )}
-                      </StateCell>
-                      {row.error_message && <ErrorText>{row.error_message}</ErrorText>}
-                    </td>
-                    <td>
-                      {/*
-                        The same value the "your change is live" notification
-                        shows — the entry's title, not the commit message,
-                        which carries the slug. Blank for a commit the CMS did
-                        not make, or one made before this was recorded.
-                      */}
-                      {entryLabels[row.commit_sha] || <Muted as="span">—</Muted>}
-                    </td>
-                    <td>{whereOf(row)}</td>
-                    <td>{targetOf(row)}</td>
-                    <td>
-                      {/*
-                        A commit that links to the deployed site looks like it
-                        will show you the change and shows you the home page.
-                        Either the commit itself, or plain text.
-                      */}
-                      {commitUrls[row.commit_sha] ? (
-                        <a
-                          href={commitUrls[row.commit_sha]}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <Commit>{row.commit_sha.slice(0, 7)}</Commit>
-                        </a>
-                      ) : (
-                        <Commit>{row.commit_sha.slice(0, 7)}</Commit>
-                      )}
-                    </td>
-                    <td>{formatTime(row.finished_at || row.updated_at)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
+            <>
+              {this.renderControls(branches, targets, states)}
+              {sorted.length === 0 ? (
+                <Muted>{t('ui.deploys.emptyFiltered')}</Muted>
+              ) : (
+                <>
+                  <Table>
+                    <thead>
+                      <tr>
+                        <th>{t('ui.deploys.columnState')}</th>
+                        {this.renderSortHeader('entry', 'ui.deploys.columnEntry')}
+                        {this.renderSortHeader('branch', 'ui.deploys.columnWhere')}
+                        <th>{t('ui.deploys.columnTarget')}</th>
+                        <th>{t('ui.deploys.columnCommit')}</th>
+                        {this.renderSortHeader('when', 'ui.deploys.columnWhen')}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {pageRows.map(row => {
+                        const stateKey = stateKeyFor(row, liveIds, now);
+                        const color = stateColorFor(row, now);
+                        // "Live" on a branch that is not the site's is true of
+                        // that branch's own URL and only that. Say so, rather
+                        // than let it read as the site serving a preview of an
+                        // entry nobody has published.
+                        const onOtherBranch =
+                          Boolean(branch) && Boolean(branchOf(row)) && branchOf(row) !== branch;
+                        const title = isStaleDeploy(row, now)
+                          ? t('ui.deploys.stalledHint')
+                          : stateKey === 'ui.deploys.state.live' && onOtherBranch
+                          ? t('ui.deploys.liveOnBranchHint')
+                          : undefined;
+                        return (
+                          <tr key={rowId(row)}>
+                            <td>
+                              <StateCell color={color} title={title}>
+                                <StatusDot color={color} />
+                                {/*
+                                  The link is the deploy's own — the site for a
+                                  success, the build log for a failure.
+                                */}
+                                {row.target_url ? (
+                                  <StateLink
+                                    href={row.target_url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                  >
+                                    {t(stateKey)}
+                                  </StateLink>
+                                ) : (
+                                  t(stateKey)
+                                )}
+                              </StateCell>
+                              {row.error_message && <ErrorText>{row.error_message}</ErrorText>}
+                            </td>
+                            <td>
+                              {/*
+                                The same value the "your change is live"
+                                notification shows — the entry's title, not the
+                                commit message, which carries the slug. Blank
+                                for a commit the CMS did not make, or one made
+                                before this was recorded.
+                              */}
+                              {entryLabels[row.commit_sha] || <Muted as="span">—</Muted>}
+                            </td>
+                            <td>{whereOf(row)}</td>
+                            <td>{targetOf(row)}</td>
+                            <td>
+                              {/*
+                                A commit that links to the deployed site looks
+                                like it will show you the change and shows you
+                                the home page. Either the commit itself, or
+                                plain text.
+                              */}
+                              {commitUrls[row.commit_sha] ? (
+                                <a
+                                  href={commitUrls[row.commit_sha]}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  <Commit>{row.commit_sha.slice(0, 7)}</Commit>
+                                </a>
+                              ) : (
+                                <Commit>{row.commit_sha.slice(0, 7)}</Commit>
+                              )}
+                            </td>
+                            <td>{formatTime(row.finished_at || row.updated_at)}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </Table>
+                  {this.renderPager(sorted.length)}
+                </>
+              )}
+            </>
           )}
         </Card>
       </DeploysContainer>

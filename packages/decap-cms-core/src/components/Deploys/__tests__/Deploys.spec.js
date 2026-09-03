@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { I18n } from 'react-polyglot';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
@@ -9,6 +9,17 @@ import { deployIndicator } from '../../App/deployStatusIndicator';
 import en from '../../../../../decap-cms-locales/src/en';
 
 const mockStore = configureStore([thunk]);
+
+/**
+ * The table, and only the table.
+ *
+ * The filter selects list every branch, state and reporter present, so a bare
+ * `getByText('Netlify')` now finds the option as well as the cell. Scoping says
+ * which one the assertion is about instead of relying on there being one.
+ */
+function table() {
+  return within(screen.getByRole('table'));
+}
 
 function row(overrides = {}) {
   return {
@@ -88,17 +99,17 @@ describe('Deploys page', () => {
       ],
     });
 
-    expect(screen.getAllByText('abc1234')).toHaveLength(2);
-    expect(screen.getAllByText('Netlify')).toHaveLength(2);
-    expect(screen.getByText('Build script failed')).toBeInTheDocument();
+    expect(table().getAllByText('abc1234')).toHaveLength(2);
+    expect(table().getAllByText('Netlify')).toHaveLength(2);
+    expect(table().getByText('Build script failed')).toBeInTheDocument();
   });
 
   // Not a failure — the change ships inside a newer deploy.
   it('calls a cancelled deploy superseded, not failed', () => {
     renderPage({ deployments: [row({ state: 'canceled' })], latest: row({ state: 'canceled' }) });
 
-    expect(screen.getByText('Superseded')).toBeInTheDocument();
-    expect(screen.queryByText('Failed')).not.toBeInTheDocument();
+    expect(table().getByText('Superseded')).toBeInTheDocument();
+    expect(table().queryByText('Failed')).not.toBeInTheDocument();
   });
 
   // The single most likely reason someone opens this page.
@@ -228,8 +239,8 @@ describe('Deploys page', () => {
       ],
     });
 
-    expect(screen.getAllByText('Live')).toHaveLength(1);
-    expect(screen.getAllByText('Deployed')).toHaveLength(2);
+    expect(table().getAllByText('Live')).toHaveLength(1);
+    expect(table().getAllByText('Deployed')).toHaveLength(2);
   });
 
   // A failed build does not take the site down — the last successful deploy is
@@ -243,31 +254,60 @@ describe('Deploys page', () => {
       ],
     });
 
-    expect(screen.getByText('Failed')).toBeInTheDocument();
-    expect(screen.getAllByText('Live')).toHaveLength(1);
-    expect(screen.getAllByText('Deployed')).toHaveLength(1);
+    expect(table().getByText('Failed')).toBeInTheDocument();
+    expect(table().getAllByText('Live')).toHaveLength(1);
+    expect(table().getAllByText('Deployed')).toHaveLength(1);
   });
 
-  // Measured on the tester: unpublishing an entry made Netlify branch-deploy
-  // `cms/posts/…`, that success was the newest row of all, and the page
-  // crowned a preview of an UNPUBLISHED entry as the live site.
-  it('never calls a deploy of another branch Live', () => {
+  // Every branch has a URL, and its newest success is what that URL serves.
+  // Marking only the site's left every other branch's current deploy sitting
+  // in a column of "Deployed" with nothing saying which one is current.
+  it('calls the newest success of each branch Live', () => {
     renderPage({
       branch: 'turbo',
       deployments: [
-        row({
-          external_id: 'workflow',
-          branch: 'cms/posts/some-entry',
-          environment: 'branch-deploy',
-        }),
+        row({ external_id: 'workflow-new', branch: 'cms/posts/some-entry' }),
+        row({ external_id: 'workflow-old', branch: 'cms/posts/some-entry' }),
         row({ external_id: 'site', branch: 'turbo' }),
       ],
     });
 
-    expect(screen.getAllByText('Live')).toHaveLength(1);
-    expect(screen.getAllByText('Deployed')).toHaveLength(1);
-    // The site's own deploy is the live one, and it is the row that says so.
-    expect(screen.getByText('turbo').closest('tr')).toHaveTextContent('Live');
+    // One per branch, not one per table.
+    expect(table().getAllByText('Live')).toHaveLength(2);
+    expect(table().getAllByText('Deployed')).toHaveLength(1);
+    expect(table().getByText('turbo').closest('tr')).toHaveTextContent('Live');
+  });
+
+  // The distinction the summary band keeps and a shared word cannot: a `cms/…`
+  // branch deploy is live at its own URL and is not the published site.
+  it('says which URL a Live on another branch is live at', () => {
+    renderPage({
+      branch: 'turbo',
+      deployments: [
+        row({ external_id: 'workflow', branch: 'cms/posts/some-entry' }),
+        row({ external_id: 'site', branch: 'turbo' }),
+      ],
+    });
+
+    const workflowRow = table().getByText('cms/posts/some-entry').closest('tr');
+    expect(within(workflowRow).getByTitle(/not the published site/)).toBeInTheDocument();
+    // The site's own Live is unqualified — it IS the published site.
+    const siteRow = table().getByText('turbo').closest('tr');
+    expect(within(siteRow).queryByTitle(/not the published site/)).not.toBeInTheDocument();
+  });
+
+  // However many branches the table calls Live, the summary band stays scoped
+  // to the site's own. This is the regression that started all of it.
+  it('does not let a branch deploy speak for the site', () => {
+    renderPage({
+      branch: 'turbo',
+      // `latest` is what the reducer already scoped to the site branch.
+      latest: null,
+      deployments: [row({ external_id: 'workflow', branch: 'cms/posts/some-entry' })],
+    });
+
+    expect(screen.getByText(/No deploy has been reported/)).toBeInTheDocument();
+    expect(screen.queryByText(/Your latest change is live/)).not.toBeInTheDocument();
   });
 
   // A host that reports no branch at all must not be locked out of ever being
@@ -278,20 +318,23 @@ describe('Deploys page', () => {
       deployments: [row({ external_id: 'nameless', branch: null })],
     });
 
-    expect(screen.getAllByText('Live')).toHaveLength(1);
+    expect(table().getAllByText('Live')).toHaveLength(1);
   });
 
-  // With no branch known, the old behaviour stands: the newest success wins.
-  it('falls back to the newest success when the backend cannot name the branch', () => {
+  // Rows that name no branch are one group, not one group each — otherwise a
+  // host that reports no branch would have every success called Live.
+  it('groups branchless rows together', () => {
     renderPage({
       branch: null,
       deployments: [
-        row({ external_id: 'newest', branch: 'cms/posts/x' }),
+        row({ external_id: 'newest' }),
         row({ external_id: 'older' }),
+        row({ external_id: 'oldest' }),
       ],
     });
 
-    expect(screen.getAllByText('Live')).toHaveLength(1);
+    expect(table().getAllByText('Live')).toHaveLength(1);
+    expect(table().getAllByText('Deployed')).toHaveLength(2);
   });
 
   it('names the git forge rather than saying "Git provider"', () => {
@@ -302,9 +345,9 @@ describe('Deploys page', () => {
       ],
     });
 
-    expect(screen.getByText('GitHub')).toBeInTheDocument();
-    expect(screen.getByText('GitLab')).toBeInTheDocument();
-    expect(screen.queryByText('Git provider')).not.toBeInTheDocument();
+    expect(table().getByText('GitHub')).toBeInTheDocument();
+    expect(table().getByText('GitLab')).toBeInTheDocument();
+    expect(table().queryByText('Git provider')).not.toBeInTheDocument();
   });
 
   it('links the state to the deploy and the commit to the commit', () => {
@@ -375,8 +418,8 @@ describe('Deploys page', () => {
   it('does not repeat the branch when the environment adds nothing', () => {
     renderPage({ deployments: [row({ branch: 'main', environment: 'main' })] });
 
-    expect(screen.getByText('main')).toBeInTheDocument();
-    expect(screen.queryByText('main · main')).not.toBeInTheDocument();
+    expect(table().getByText('main')).toBeInTheDocument();
+    expect(table().queryByText('main · main')).not.toBeInTheDocument();
   });
 
   it('shows whichever half it has', () => {
@@ -387,8 +430,254 @@ describe('Deploys page', () => {
       ],
     });
 
-    expect(screen.getByText('turbo')).toBeInTheDocument();
-    expect(screen.getByText('production')).toBeInTheDocument();
+    expect(table().getByText('turbo')).toBeInTheDocument();
+    expect(table().getByText('production')).toBeInTheDocument();
+  });
+
+  // A build nobody has mentioned for half an hour is not "Building". Measured
+  // on the tester: publishing an editorial-workflow entry deletes the `cms/…`
+  // branch, orphaning the Deploy Preview still building for it — Netlify
+  // leaves that deploy in `uploaded` rather than `ready`, so no notification
+  // ever fires. Two rows sat at "Building" for seventeen hours.
+  describe('a build that stopped being reported', () => {
+    function longAgo() {
+      return new Date(Date.now() - 60 * 60 * 1000).toISOString();
+    }
+
+    function justNow() {
+      return new Date().toISOString();
+    }
+
+    it('stops calling it Building', () => {
+      renderPage({
+        deployments: [row({ state: 'building', finished_at: null, updated_at: longAgo() })],
+      });
+
+      expect(table().getByText('Unknown')).toBeInTheDocument();
+      expect(table().queryByText('Building')).not.toBeInTheDocument();
+    });
+
+    it('says why, rather than leaving the reader to guess', () => {
+      renderPage({
+        deployments: [row({ state: 'building', finished_at: null, updated_at: longAgo() })],
+      });
+
+      expect(table().getByTitle(/nothing has been reported since/)).toBeInTheDocument();
+    });
+
+    // The threshold must never overtake a slow but healthy build.
+    it('leaves a build that is still being reported alone', () => {
+      renderPage({
+        deployments: [row({ state: 'building', finished_at: null, updated_at: justNow() })],
+      });
+
+      expect(table().getByText('Building')).toBeInTheDocument();
+    });
+
+    // The pill is the surface an editor watches while they wait, so it is the
+    // one place where "Building" for ever costs them the most.
+    it('does not let the header pill promise a build that ended', () => {
+      const stale = row({ state: 'building', finished_at: null, updated_at: longAgo() });
+
+      expect(deployIndicator(0, stale).key).toBe('app.header.deploys');
+      expect(deployIndicator(0, row({ state: 'building', updated_at: justNow() })).key).toBe(
+        'app.header.deploysBuilding',
+      );
+    });
+
+    // Nothing is written back: we did not learn it failed, we learnt we
+    // stopped hearing about it, and those are different claims.
+    it('does not claim the build failed', () => {
+      renderPage({
+        deployments: [row({ state: 'building', finished_at: null, updated_at: longAgo() })],
+      });
+
+      expect(table().queryByText('Failed')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('filtering', () => {
+    function mixed() {
+      return [
+        row({ external_id: 'a', branch: 'turbo', provider_label: 'Netlify', state: 'success' }),
+        row({
+          external_id: 'b',
+          branch: 'cms/posts/x',
+          provider_label: 'Netlify',
+          state: 'failed',
+        }),
+        row({
+          external_id: 'c',
+          branch: 'turbo',
+          source: 'github_deployment',
+          provider_label: 'Vercel',
+          state: 'success',
+        }),
+      ];
+    }
+
+    function choose(label, value) {
+      fireEvent.change(screen.getByLabelText(label), { target: { value } });
+    }
+
+    it('filters by who reported the deploy', () => {
+      renderPage({ deployments: mixed() });
+      choose('Reported by', 'Vercel');
+
+      expect(table().getAllByRole('row')).toHaveLength(2); // header + one
+      expect(table().getByText('Vercel')).toBeInTheDocument();
+    });
+
+    it('filters by state', () => {
+      renderPage({ deployments: mixed() });
+      choose('State', 'failed');
+
+      expect(table().getAllByRole('row')).toHaveLength(2);
+      expect(table().getByText('Failed')).toBeInTheDocument();
+    });
+
+    it('filters by branch', () => {
+      renderPage({ deployments: mixed() });
+      choose('Branch', 'turbo');
+
+      expect(table().getAllByRole('row')).toHaveLength(3);
+      expect(table().queryByText('cms/posts/x')).not.toBeInTheDocument();
+    });
+
+    // An empty table after a filter must not read like an empty site — that
+    // message tells you to go and set up a webhook you already have.
+    it('says the filter matched nothing, not that the site has never deployed', () => {
+      renderPage({ deployments: mixed() });
+      choose('Branch', 'cms/posts/x');
+      choose('Reported by', 'Vercel');
+
+      expect(screen.getByText('No deploys match these filters.')).toBeInTheDocument();
+      expect(
+        screen.queryByText(/Netlify does not report branch or production deploys/),
+      ).not.toBeInTheDocument();
+    });
+
+    // Which deploy a branch is serving is a fact about the branch, not about
+    // what happens to be on screen.
+    it('does not re-crown a superseded deploy when the newest is filtered out', () => {
+      renderPage({
+        deployments: [
+          row({ external_id: 'new', branch: 'turbo', provider_label: 'Vercel' }),
+          row({ external_id: 'old', branch: 'turbo', provider_label: 'Netlify' }),
+        ],
+      });
+      choose('Reported by', 'Netlify');
+
+      expect(table().queryByText('Live')).not.toBeInTheDocument();
+      expect(table().getByText('Deployed')).toBeInTheDocument();
+    });
+  });
+
+  describe('sorting and paging', () => {
+    function many(count) {
+      return Array.from({ length: count }, (_, i) =>
+        row({
+          external_id: `d${i}`,
+          branch: `branch-${String(i).padStart(2, '0')}`,
+          commit_sha: `sha${String(i).padStart(4, '0')}xyz`,
+          finished_at: new Date(Date.UTC(2026, 0, 1, 0, i)).toISOString(),
+          updated_at: new Date(Date.UTC(2026, 0, 1, 0, i)).toISOString(),
+        }),
+      );
+    }
+
+    function bodyRows() {
+      return table().getAllByRole('row').slice(1);
+    }
+
+    it('shows one page at a time and says how much there is', () => {
+      renderPage({ deployments: many(45) });
+
+      expect(bodyRows()).toHaveLength(20);
+      expect(screen.getByText('Showing 1–20 of 45')).toBeInTheDocument();
+    });
+
+    it('pages forward and back', () => {
+      renderPage({ deployments: many(45) });
+
+      fireEvent.click(screen.getByRole('button', { name: 'Next' }));
+      expect(screen.getByText('Showing 21–40 of 45')).toBeInTheDocument();
+
+      fireEvent.click(screen.getByRole('button', { name: 'Next' }));
+      expect(screen.getByText('Showing 41–45 of 45')).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Next' })).toBeDisabled();
+
+      fireEvent.click(screen.getByRole('button', { name: 'Previous' }));
+      expect(screen.getByText('Showing 21–40 of 45')).toBeInTheDocument();
+    });
+
+    it('changes the page size', () => {
+      renderPage({ deployments: many(45) });
+      fireEvent.change(screen.getByLabelText('Per page'), { target: { value: '50' } });
+
+      expect(bodyRows()).toHaveLength(45);
+      expect(screen.queryByText(/Showing 1–20/)).not.toBeInTheDocument();
+    });
+
+    // Page four of a filter that now has two pages shows an empty table, which
+    // reads as "the filter matched nothing".
+    it('returns to the first page when the view changes', () => {
+      renderPage({ deployments: many(45) });
+      fireEvent.click(screen.getByRole('button', { name: 'Next' }));
+      expect(screen.getByText('Showing 21–40 of 45')).toBeInTheDocument();
+
+      fireEvent.change(screen.getByLabelText('Per page'), { target: { value: '50' } });
+      expect(screen.getByText('Showing 1–45 of 45')).toBeInTheDocument();
+    });
+
+    it('sorts by when, newest first, and reverses on a second click', () => {
+      renderPage({ deployments: many(3) });
+
+      expect(bodyRows()[0]).toHaveTextContent('branch-02');
+
+      fireEvent.click(screen.getByRole('button', { name: /When/ }));
+      expect(bodyRows()[0]).toHaveTextContent('branch-00');
+    });
+
+    it('sorts by branch', () => {
+      renderPage({
+        deployments: [
+          row({ external_id: 'a', branch: 'zebra' }),
+          row({ external_id: 'b', branch: 'alpha' }),
+        ],
+      });
+
+      fireEvent.click(screen.getByRole('button', { name: /Published to/ }));
+      expect(bodyRows()[0]).toHaveTextContent('alpha');
+    });
+
+    it('sorts by the entry that was saved', () => {
+      renderPage({
+        deployments: [
+          row({ external_id: 'a', commit_sha: 'aaa1111' }),
+          row({ external_id: 'b', commit_sha: 'bbb2222' }),
+        ],
+        entryLabels: { aaa1111: 'Zebra post', bbb2222: 'Alpha post' },
+      });
+
+      fireEvent.click(screen.getByRole('button', { name: /Saved entry/ }));
+      expect(bodyRows()[0]).toHaveTextContent('Alpha post');
+    });
+
+    // A screen reader has no arrow glyph to read, so the direction has to be
+    // on the header itself.
+    it('tells assistive technology which way the column runs', () => {
+      renderPage({ deployments: many(3) });
+
+      expect(screen.getByRole('columnheader', { name: /When/ })).toHaveAttribute(
+        'aria-sort',
+        'descending',
+      );
+      expect(screen.getByRole('columnheader', { name: /Published to/ })).toHaveAttribute(
+        'aria-sort',
+        'none',
+      );
+    });
   });
 
   it('surfaces a read failure rather than showing an empty history', () => {

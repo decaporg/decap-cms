@@ -44,7 +44,42 @@ export const DEPLOY_STATE_COLORS = {
   building: colorsRaw.brown,
   pending: colorsRaw.brown,
   canceled: colorsRaw.gray,
+  // Not a state the host reports — what we call a build that stopped being
+  // mentioned. Grey because it is an absence of information, not an outcome.
+  stalled: colorsRaw.gray,
 };
+
+/**
+ * How long an unfinished deploy may go unmentioned before we stop calling it
+ * "building".
+ *
+ * Some builds are never reported again. Measured on the tester: publishing an
+ * editorial-workflow entry deletes the `cms/…` branch, which orphans the Deploy
+ * Preview still building for it — Netlify leaves that deploy in `uploaded`
+ * rather than `ready`, so no "Deploy succeeded" notification ever fires and no
+ * success status ever reaches GitHub. Nothing further is coming, and the row
+ * sat at "Building" for seventeen hours.
+ *
+ * Generous on purpose: this must never overtake a slow but healthy build. The
+ * tester's builds finish in twenty seconds; a big site's take minutes.
+ */
+export const STALE_AFTER_MS = 30 * 60 * 1000;
+
+/**
+ * Whether an unfinished deploy has gone quiet for long enough that "building"
+ * is no longer an honest thing to say about it.
+ *
+ * Presentation only — the row is left exactly as the host last reported it,
+ * because we have not learnt that it failed. We have learnt that we stopped
+ * hearing about it, and that is a different claim.
+ */
+export function isStaleDeploy(row, now = Date.now()) {
+  if (!row || (row.state !== 'building' && row.state !== 'pending')) {
+    return false;
+  }
+  const at = Date.parse(row.updated_at);
+  return Number.isFinite(at) && now - at > STALE_AFTER_MS;
+}
 
 /**
  * What the nav item says and what colour its dot is.
@@ -52,11 +87,14 @@ export const DEPLOY_STATE_COLORS = {
  * Publishing beats everything: an editor with a save in flight is asking about
  * that save, not about a build that finished before it.
  */
-export function deployIndicator(pendingCount, latest) {
+export function deployIndicator(pendingCount, latest, now = Date.now()) {
   if (pendingCount > 0) {
     return { key: 'app.header.deploysPublishing', color: DEPLOY_STATE_COLORS.building };
   }
-  if (!latest) {
+  // A build nobody has mentioned for half an hour must not leave the pill
+  // saying "Building" indefinitely — that is the one state an editor acts on
+  // by waiting, and waiting is exactly what will not help.
+  if (!latest || isStaleDeploy(latest, now)) {
     return { key: 'app.header.deploys', color: colorsRaw.gray };
   }
   if (latest.state === 'failed') {

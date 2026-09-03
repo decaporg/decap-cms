@@ -795,11 +795,18 @@ const COMMIT_COLUMNS = [
 const DEPLOYMENT_LIMIT = 20;
 
 /**
- * A page of history. Capped rather than paged on purpose: past a screenful,
- * the question an editor has stopped being "did my change ship" and the
- * answer lives in the host's own dashboard.
+ * The window the Deploys page works over.
+ *
+ * Was 25 — one screenful, on the reasoning that past that the question stops
+ * being "did my change ship". Filtering by branch defeats that: a site with
+ * editorial workflow on produces three rows per commit (branch deploy, deploy
+ * preview, and the git provider's own report of the preview), so twenty-five
+ * rows is eight commits and a branch filter would routinely find nothing.
+ *
+ * Still a window, not the whole table. The page says so when it is full, and
+ * `site_deployments` keeps far more than this.
  */
-const HISTORY_LIMIT = 25;
+export const HISTORY_LIMIT = 200;
 
 export interface DeploymentFetcherConfig {
   /** Project root, e.g. `https://<ref>.supabase.co` — no trailing path. */

@@ -8,6 +8,7 @@ import {
   createPollingTransport,
   DeployWatcher,
   FIRST_SIGN_TIMEOUT_MS,
+  HISTORY_LIMIT,
   LEDGER_TTL_MS,
   MAX_CONSECUTIVE_ERRORS,
   pollIntervalFor,
@@ -646,7 +647,7 @@ describe('createDeploymentLister', () => {
 
     await createDeploymentLister({ ...config, fetchImpl } as never)(5000);
 
-    expect(fetchImpl.mock.calls[0][0]).toContain('limit=25');
+    expect(fetchImpl.mock.calls[0][0]).toContain(`limit=${HISTORY_LIMIT}`);
   });
 });
 
@@ -874,7 +875,7 @@ describe('createCommitLister', () => {
 
     await createCommitLister({ ...config, fetchImpl } as never)(9999);
 
-    expect(fetchImpl.mock.calls[0][0]).toContain('limit=25');
+    expect(fetchImpl.mock.calls[0][0]).toContain(`limit=${HISTORY_LIMIT}`);
   });
 
   it('refuses to read without a session', async () => {

@@ -335,6 +335,20 @@ const en = {
       emptyConfigured:
         'Nothing recorded yet. If this site deploys on Netlify, add the deploy webhook in your Decap Turbo dashboard — Netlify does not report branch or production deploys to your git provider. Other hosts report automatically.',
       emptyUnknown: 'Loading deploys…',
+      emptyFiltered: 'No deploys match these filters.',
+      filterAny: 'Any',
+      filterBranch: 'Branch',
+      branchUnknown: 'Not reported',
+      perPage: 'Per page',
+      previousPage: 'Previous',
+      nextPage: 'Next',
+      pageRange: 'Showing %{first}–%{last} of %{total}',
+      // Only ever seen on a branch that is not the one the site publishes
+      // from, where "Live" is true of that branch's own URL and nothing else.
+      liveOnBranchHint:
+        "The current deploy of this branch, served at the branch's own URL — not the published site.",
+      stalledHint:
+        'This build was still running when your host last mentioned it, and nothing has been reported since. A deploy preview whose branch was deleted mid-build ends this way.',
       columnState: 'State',
       columnEntry: 'Saved entry',
       columnWhere: 'Published to',
@@ -353,6 +367,9 @@ const en = {
         failed: 'Failed',
         // Not a failure: the change ships inside a newer deploy.
         canceled: 'Superseded',
+        // Not reported by the host — what we call a build that stopped being
+        // mentioned. See `stalledHint`.
+        stalled: 'Unknown',
       },
     },
     toast: {
