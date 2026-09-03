@@ -419,20 +419,32 @@ export default class ListControl extends Component {
   getObjectValue = idx => this.props.value.get(idx) || Map();
 
   handleChangeFor(index) {
+    const key = this.state.keys[index];
+
     return (f, newValue, newMetadata) => {
       const { value, metadata, onChange, field } = this.props;
+
+      // Resolve the item's position when the change fires rather than when this
+      // handler was created. If an item has been removed or moved in between,
+      // `index` now points at a different item, or past the end of the list.
+      const currentIndex = this.state.keys.indexOf(key);
+
+      if (currentIndex === -1) {
+        return;
+      }
+
       const collectionName = field.get('name');
       const listFieldObjectWidget = field.getIn(['field', 'widget']) === 'object';
       const withNameKey =
         this.getValueType() !== valueTypes.SINGLE ||
         (this.getValueType() === valueTypes.SINGLE && listFieldObjectWidget);
       const newObjectValue = withNameKey
-        ? this.getObjectValue(index).set(f.get('name'), newValue)
+        ? this.getObjectValue(currentIndex).set(f.get('name'), newValue)
         : newValue;
       const parsedMetadata = {
         [collectionName]: Object.assign(metadata ? metadata.toJS() : {}, newMetadata || {}),
       };
-      onChange(value.set(index, newObjectValue), parsedMetadata);
+      onChange(value.set(currentIndex, newObjectValue), parsedMetadata);
     };
   }
 
