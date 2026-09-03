@@ -536,6 +536,17 @@ describe('Deploys page', () => {
       expect(table().getByText('Failed')).toBeInTheDocument();
     });
 
+    // The filter offers the host's raw states, which are not the words the
+    // table uses — `success` is shown as Live or Deployed there and so had no
+    // label of its own. It rendered as the bare key `ui.deploys.state.success`.
+    it('names every state it offers', () => {
+      renderPage({ deployments: mixed() });
+
+      const options = [...screen.getByLabelText('State').options].map(o => o.textContent);
+      expect(options).toEqual(['Any', 'Failed', 'Succeeded']);
+      expect(options.some(label => label.includes('ui.deploys'))).toBe(false);
+    });
+
     it('filters by branch', () => {
       renderPage({ deployments: mixed() });
       choose('Branch', 'turbo');
