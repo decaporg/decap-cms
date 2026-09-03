@@ -251,6 +251,26 @@ collections: # A list of collections the CMS should be able to edit
             fields:
               - { label: 'Image', name: 'image', widget: 'image' }
               - { label: 'File', name: 'file', widget: 'file' }
+  - name: sections # nested collection demonstrating index fields
+    label: Sections
+    label_singular: 'Section'
+    folder: _sections
+    create: true
+    nested: { depth: 3, subfolders: false }
+    index_file:
+      pattern: '^index$'
+      editor:
+        preview: false
+      fields:
+        - { label: 'Title', name: 'title', widget: 'string' }
+        - { label: 'Section Intro', name: 'intro', widget: 'text', required: false }
+    fields:
+      - { label: 'Title', name: 'title', widget: 'string' }
+      - { label: 'Body', name: 'body', widget: 'markdown' }
+    # `index_file.pattern` decides which entries get the index fields; `meta.path.index_file`
+    # decides the filename an index entry is written to. Both are needed, and must agree.
+    meta: { path: { widget: string, label: 'Path', index_file: 'index' } }
+
   - name: pages # a nested collection
     label: Pages
     label_singular: 'Page'

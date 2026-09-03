@@ -81,6 +81,22 @@
       content: "---\ntitle: \"This FAQ item # " + i + "\"\ndate: " + dateString + "T00:00:00.000Z\n---\n\n# Loren ipsum dolor sit amet"
     }
   }
+  window.repoFiles._sections = {
+    guides: {
+      'index.md': {
+        path: '_sections/guides/index.md',
+        content: '---\ntitle: "Guides"\nintro: "Everything you need to get going."\n---\n',
+      },
+      'first-steps.md': {
+        path: '_sections/guides/first-steps.md',
+        content: '---\ntitle: "First steps"\nbody: "A regular content page."\n---\n',
+      },
+    },
+    'index.md': {
+      path: '_sections/index.md',
+      content: '---\ntitle: "All sections"\nintro: "Top level section index."\n---\n',
+    },
+  };
   window.repoFiles._pages = {
     directory: {
       'sub-directory': {

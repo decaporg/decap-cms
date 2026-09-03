@@ -1,21 +1,30 @@
 import '../utils/dismiss-local-backup';
-import {
-  login,
-  createPostAndPublish,
-  assertPublishedEntry,
-} from '../utils/steps';
-
-const indexFileEntry = {
-  title: 'Index Page',
-  body: 'This is the index page content.',
-};
-
-const regularEntry = {
-  title: 'Regular Post',
-  body: 'This is a regular post content.',
-};
+import { login, exitEditor, publishEntry, assertNotification } from '../utils/steps';
+import { notifications } from '../utils/constants';
 
 const backend = 'test';
+
+/**
+ * The dev-test `posts` collection is configured with:
+ *
+ *   index_file:
+ *     pattern: _index
+ *     editor: { preview: false }
+ *     fields: [title, body]
+ *
+ * and ships a matching `_posts/_index.md` fixture. Everything below asserts that an entry
+ * matching that pattern is treated differently from the rest of the collection.
+ */
+const indexEntryTitle = 'Posts list page';
+const regularEntryTitle = 'This is a YAML front matter post';
+
+const entryCards = () => cy.get('[class*=ListCardLink]');
+const indexFileIcons = () => cy.get('[class*=ListCardLink] [class*=TitleIcons] svg');
+const previewPane = () => cy.get('[class*=PreviewPaneFrame]');
+
+function openEntry(title) {
+  cy.contains('[class*=ListCardLink]', title).click();
+}
 
 describe('Index File Feature', () => {
   before(() => {
@@ -27,54 +36,123 @@ describe('Index File Feature', () => {
     cy.task('teardownBackend', { backend });
   });
 
-  it('successfully loads with index file configured', () => {
+  beforeEach(() => {
     login();
   });
 
-  it('can create and publish an index file entry', () => {
-    login();
-    createPostAndPublish(indexFileEntry);
-    assertPublishedEntry(indexFileEntry);
+  it('sorts the index file to the top of the collection', () => {
+    entryCards().first().should('contain.text', indexEntryTitle);
   });
 
-  it('can create and publish a regular entry alongside index file', () => {
-    login();
-    createPostAndPublish(regularEntry);
-    assertPublishedEntry(regularEntry);
+  it('marks only the index file entry with an icon', () => {
+    // the icon lives on the index entry's card and on no other
+    indexFileIcons().should('have.length', 1);
+    cy.contains('[class*=ListCardLink]', indexEntryTitle).find('[class*=TitleIcons] svg');
   });
 
-  it('displays correct entry type in list when index file exists', () => {
-    login();
-    // Verify that entries list loads and displays both regular and index entries
-    cy.contains('a', 'New Post');
-    cy.get('[data-testid="list-control"]').should('exist');
+  it('edits the index file entry with the index fields', () => {
+    openEntry(indexEntryTitle);
+
+    cy.contains('label', 'Title');
+    cy.contains('label', 'Body');
+    // fields that only exist on the collection's regular entries
+    cy.contains('label', 'Publish Date').should('not.exist');
+    cy.contains('label', 'Cover Image').should('not.exist');
   });
 
-  it('can distinguish between index and regular entries in editor', () => {
-    login();
-    // Navigate to entries list
-    cy.contains('a', 'Writing in').click();
-    // Should see entries listed
-    cy.get('[class*="entrylist"]').should('exist');
+  it('edits a regular entry with the collection fields', () => {
+    openEntry(regularEntryTitle);
+
+    cy.contains('label', 'Title');
+    cy.contains('label', 'Publish Date');
+    cy.contains('label', 'Cover Image');
   });
 
-  it('can edit and republish index file entry', () => {
-    login();
-    createPostAndPublish(indexFileEntry);
+  it('disables the editor preview for the index file entry only', () => {
+    openEntry(indexEntryTitle);
+    previewPane().should('not.exist');
 
-    // Navigate to entries list
-    cy.contains('a', 'Writing in').click();
-    cy.contains(indexFileEntry.title).click();
+    exitEditor();
 
-    // Update content
-    const updatedTitle = 'Updated Index Page';
-    cy.get('input[name="title"]').clear();
-    cy.get('input[name="title"]').type(updatedTitle);
-    cy.get('textarea[name="body"]').clear();
-    cy.get('textarea[name="body"]').type('Updated index content.');
+    openEntry(regularEntryTitle);
+    previewPane().should('exist');
+  });
 
-    // Publish changes
-    cy.contains('button', 'Publish').click();
-    cy.contains('Published to').should('exist');
+  it('can edit and republish the index file entry', () => {
+    const updatedTitle = 'Updated posts list page';
+
+    openEntry(indexEntryTitle);
+    cy.get('[id^="title-field"]').clear();
+    cy.get('[id^="title-field"]').type(updatedTitle);
+    publishEntry();
+    assertNotification(notifications.saved);
+
+    // the entry is written back to the same file rather than re-slugged from the new title
+    cy.url().should('contain', '/collections/posts/entries/_index');
+
+    exitEditor();
+
+    // still the collection's only index file, still sorted to the top
+    // (the card summary itself is not re-fetched after a save, which is pre-existing behaviour)
+    entryCards().first().should('contain.text', indexEntryTitle);
+    indexFileIcons().should('have.length', 1);
+  });
+
+  describe('in a nested collection', () => {
+    /**
+     * The dev-test `sections` collection is nested and configured with both
+     *
+     *   index_file: { pattern: '^index$', ... }   // which entries get the index fields
+     *   meta: { path: { index_file: index } }     // the filename an index entry is written to
+     *
+     * which together let one collection hold index pages and content pages side by side.
+     */
+    const newEntryDropdown = () => cy.contains('[role="button"]', '＋ Section');
+
+    function chooseNewEntryType(label) {
+      newEntryDropdown().click();
+      cy.contains('[role="menuitem"] span', label).click();
+    }
+
+    beforeEach(() => {
+      cy.contains('a', 'Sections').click();
+    });
+
+    it('offers a path type when creating an entry', () => {
+      newEntryDropdown().click();
+      cy.contains('[role="menuitem"] span', 'Index Page');
+      cy.contains('[role="menuitem"] span', 'Content Page');
+    });
+
+    it('creates an index page as the folder index file', () => {
+      chooseNewEntryType('Index Page');
+      cy.url().should('contain', 'path_type=index');
+
+      cy.get('[id^="path-field"]').clear();
+      cy.get('[id^="path-field"]').type('guides/advanced');
+      cy.get('[id^="title-field"]').type('Advanced guides');
+      publishEntry();
+      assertNotification(notifications.saved);
+
+      // written to `_sections/guides/advanced/index.md`
+      cy.url().should('contain', '/collections/sections/entries/guides/advanced/index');
+    });
+
+    it('creates a content page at its own slug', () => {
+      chooseNewEntryType('Content Page');
+      cy.url().should('contain', 'path_type=slug');
+
+      cy.get('[id^="path-field"]').clear();
+      cy.get('[id^="path-field"]').type('guides/second-steps');
+      cy.get('[id^="title-field"]').type('Second steps');
+      cy.getMarkdownEditor().first().click();
+      cy.getMarkdownEditor().first().type('A regular content page.');
+      publishEntry();
+      assertNotification(notifications.saved);
+
+      // written to `_sections/guides/second-steps.md`, not to a folder index file
+      cy.url().should('contain', '/collections/sections/entries/guides/second-steps');
+      cy.url().should('not.contain', 'second-steps/index');
+    });
   });
 });
