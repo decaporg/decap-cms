@@ -42,15 +42,17 @@ describe('View Group', () => {
     // enable group
     group('Year');
 
-    assertGroupsCount(2);
+    // three groups: the two post years plus the index file, which has no date
+    assertGroupsCount(3);
     const year = new Date().getFullYear();
     assertEachGroupCount(`Year${year}`, 20);
     assertEachGroupCount('Year2015', 3);
+    assertEachGroupCount('missing_value', 1);
 
     //disable group
     group('Year');
 
-    assertEntriesCount(23);
+    assertEntriesCount(24);
     for (let i = 1; i <= 20; i++) {
       assertInEntries(`This is post # ${i} --`);
     }
@@ -61,10 +63,11 @@ describe('View Group', () => {
     //enable group
     group('Relation Test');
 
-    assertEntriesCount(23);
+    assertEntriesCount(24);
     assertGroupsCount(3);
     assertEachGroupCount('Relation Testtrue', 10);
     assertEachGroupCount('Relation Testfalse', 10);
-    assertEachGroupCount('missing_value', 3);
+    // the 3 dated posts without a relation_test field, plus the index file
+    assertEachGroupCount('missing_value', 4);
   });
 });

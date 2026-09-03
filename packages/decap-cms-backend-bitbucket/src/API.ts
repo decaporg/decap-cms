@@ -427,7 +427,7 @@ export default class API {
   };
 
   async uploadFiles(
-    files: { path: string; newPath?: string; delete?: boolean }[],
+    files: { path: string; newPath?: string; delete?: boolean; isFolder?: boolean }[],
     {
       commitMessage,
       branch,
@@ -436,14 +436,26 @@ export default class API {
     }: { commitMessage: string; branch: string; parentSha?: string; hasSubfolders?: boolean },
   ) {
     const formData = new FormData();
-    const toMove: { from: string; to: string; contentBlob: Blob; hasSubfolders: boolean }[] = [];
+    const toMove: {
+      from: string;
+      to: string;
+      contentBlob: Blob;
+      hasSubfolders: boolean;
+      isFolder?: boolean;
+    }[] = [];
     files.forEach(file => {
       if (file.delete) {
         // delete the file
         formData.append('files', file.path);
       } else if (file.newPath) {
         const contentBlob = get(file, 'fileObj', new Blob([(file as DataFile).raw]));
-        toMove.push({ from: file.path, to: file.newPath, contentBlob, hasSubfolders });
+        toMove.push({
+          from: file.path,
+          to: file.newPath,
+          contentBlob,
+          hasSubfolders,
+          isFolder: file.isFolder,
+        });
       } else {
         // add/modify the file
         const contentBlob = get(file, 'fileObj', new Blob([(file as DataFile).raw]));
@@ -451,9 +463,8 @@ export default class API {
         formData.append(file.path, contentBlob, basename(file.path));
       }
     });
-    for (const { from, to, contentBlob, hasSubfolders } of toMove) {
-      if (!hasSubfolders) {
-        // New behavior (subfolders: false): Only move the specific file
+    for (const { from, to, contentBlob, hasSubfolders, isFolder } of toMove) {
+      if (!hasSubfolders || isFolder === false) {
         // to move a file in Bitbucket we need to delete the old path
         // and upload the file content to the new path
         // NOTE: this is very wasteful, and also the Bitbucket `diff` API

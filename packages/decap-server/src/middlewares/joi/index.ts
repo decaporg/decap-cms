@@ -46,6 +46,7 @@ export function defaultSchema({ path = requiredString } = {}) {
     path,
     raw: requiredString,
     newPath: path.optional(),
+    isFolder: Joi.boolean().optional(),
   });
 
   const params = Joi.when('action', {

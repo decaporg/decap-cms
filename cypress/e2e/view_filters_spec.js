@@ -46,7 +46,7 @@ describe('View Filter', () => {
 
     // disable filter
     filter('Posts With Index');
-    assertEntriesCount(23);
+    assertEntriesCount(24);
     for (let i = 1; i <= 20; i++) {
       assertInEntries(`This is post # ${i} --`);
     }
@@ -91,7 +91,7 @@ describe('View Filter', () => {
 
     // disable filter
     filter('Relation Test');
-    assertEntriesCount(23);
+    assertEntriesCount(24);
     for (let i = 1; i <= 20; i++) {
       assertInEntries(`This is post # ${i} --`);
     }

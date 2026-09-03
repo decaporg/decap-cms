@@ -117,12 +117,12 @@ class EntryListing extends Component {
 
     let unpublishedList = List(unpublishedEntries.map(entry => entry));
 
-    if (collections.has('nested') && filterTerm) {
+    if (collections.has('nested')) {
       const collectionFolder = collections.get('folder');
       const subfolders = collections.get('nested').get('subfolders') !== false;
 
       unpublishedList = filterNestedEntries(
-        filterTerm,
+        filterTerm || '',
         collectionFolder,
         unpublishedList,
         subfolders,

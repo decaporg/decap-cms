@@ -3,7 +3,7 @@ import set from 'lodash/set';
 import groupBy from 'lodash/groupBy';
 import escapeRegExp from 'lodash/escapeRegExp';
 
-import { selectEntrySlug } from '../reducers/collections';
+import { isNestedSubfolders, selectEntrySlug } from '../reducers/collections';
 
 import type { Collection, Entry, EntryDraft, EntryField, EntryMap } from '../types/redux';
 import type { EntryValue } from '../valueObjects/Entry';
@@ -128,6 +128,46 @@ export function getFilePaths(
   return paths;
 }
 
+/**
+ * The locale files an entry was actually loaded from.
+ *
+ * `getFilePaths` returns a path for every configured locale, whether or not a file exists.
+ * That is fine for writing, but asking a backend to delete a path that is not in the tree
+ * fails the whole commit (GitHub answers `GitRPC::BadObjectState`). Probing the backend is
+ * not an option either: the GitHub, Gitea and Forgejo implementations of `getEntry` resolve
+ * with empty data instead of rejecting when a file is missing.
+ *
+ * The merged entry already knows which locales it found: `i18n` holds every locale except
+ * the one the entry's own path points at. Fall back to every configured locale when the
+ * entry is not in the store, which keeps the previous behaviour for unknown entries.
+ */
+export function getExistingFilePaths(
+  collection: Collection,
+  extension: string,
+  path: string,
+  slug: string,
+  entry?: EntryMap,
+) {
+  const { structure, defaultLocale } = getI18nInfo(collection) as I18nInfo;
+
+  if (structure === I18N_STRUCTURE.SINGLE_FILE) {
+    return [path];
+  }
+
+  // Nothing loaded for this entry, so we cannot know: keep the old behaviour.
+  if (!entry) {
+    return getFilePaths(collection, extension, path, slug);
+  }
+
+  // `mergeValues` only sets `i18n` when the entry has locales beyond the one its own path
+  // points at, so an absent key means the entry exists in the default locale only.
+  const i18n = entry.get('i18n');
+  const locales = [defaultLocale, ...(i18n ? i18n.keySeq().toArray() : [])];
+  return locales.map(locale =>
+    getFilePath(structure as I18N_STRUCTURE, extension, path, slug, locale),
+  );
+}
+
 export function normalizeFilePath(structure: I18N_STRUCTURE, path: string, locale: string) {
   switch (structure) {
     case I18N_STRUCTURE.MULTIPLE_FOLDERS:
@@ -140,6 +180,18 @@ export function normalizeFilePath(structure: I18N_STRUCTURE, path: string, local
   }
 }
 
+// Remove meta fields that should not be serialized to frontmatter
+function removeMetaFields(data: unknown) {
+  if (!Map.isMap(data)) {
+    return data;
+  }
+  return (data as Map<string, unknown>).delete('path').delete('path_type');
+}
+
+function getNonDefaultLocales(locales: string[], defaultLocale: string) {
+  return locales.filter(locale => locale !== defaultLocale);
+}
+
 export function getI18nFiles(
   collection: Collection,
   extension: string,
@@ -148,13 +200,15 @@ export function getI18nFiles(
   path: string,
   slug: string,
   newPath?: string,
+  isFolder?: boolean,
 ) {
   const { structure, defaultLocale, locales } = getI18nInfo(collection) as I18nInfo;
 
   if (structure === I18N_STRUCTURE.SINGLE_FILE) {
     const data = locales.reduce((map, locale) => {
       const dataPath = getDataPath(locale, defaultLocale);
-      return map.set(locale, entryDraft.getIn(dataPath));
+      const localeData = removeMetaFields(entryDraft.getIn(dataPath));
+      return map.set(locale, localeData);
     }, Map<string, unknown>({}));
     const draft = entryDraft.set('data', data);
 
@@ -173,7 +227,8 @@ export function getI18nFiles(
   const dataFiles = locales
     .map(locale => {
       const dataPath = getDataPath(locale, defaultLocale);
-      const draft = entryDraft.set('data', entryDraft.getIn(dataPath));
+      const data = removeMetaFields(entryDraft.getIn(dataPath));
+      const draft = entryDraft.set('data', data);
       return {
         path: getFilePath(structure, extension, path, slug, locale),
         slug,
@@ -181,6 +236,7 @@ export function getI18nFiles(
         ...(newPath && {
           newPath: getFilePath(structure, extension, newPath, slug, locale),
         }),
+        isFolder,
       };
     })
     .filter(dataFile => dataFile.raw);
@@ -194,17 +250,15 @@ export function getI18nBackup(
 ) {
   const { locales, defaultLocale } = getI18nInfo(collection) as I18nInfo;
 
-  const i18nBackup = locales
-    .filter(l => l !== defaultLocale)
-    .reduce((acc, locale) => {
-      const dataPath = getDataPath(locale, defaultLocale);
-      const data = entry.getIn(dataPath);
-      if (!data) {
-        return acc;
-      }
-      const draft = entry.set('data', data);
-      return { ...acc, [locale]: { raw: entryToRaw(draft) } };
-    }, {} as Record<string, { raw: string }>);
+  const i18nBackup = getNonDefaultLocales(locales, defaultLocale).reduce((acc, locale) => {
+    const dataPath = getDataPath(locale, defaultLocale);
+    const data = removeMetaFields(entry.getIn(dataPath));
+    if (!data) {
+      return acc;
+    }
+    const draft = entry.set('data', data);
+    return { ...acc, [locale]: { raw: entryToRaw(draft) } };
+  }, {} as Record<string, { raw: string }>);
 
   return i18nBackup;
 }
@@ -279,13 +333,10 @@ function mergeSingleFileValue(
   locales: string[],
 ): EntryValue {
   const data = entryValue.data[defaultLocale] || {};
-  const i18n = locales
-    .filter(l => l !== defaultLocale)
-    .map(l => ({ locale: l, value: entryValue.data[l] }))
-    .filter(e => e.value)
-    .reduce((acc, e) => {
-      return { ...acc, [e.locale]: { data: e.value } };
-    }, {});
+  const i18n = getNonDefaultLocales(locales, defaultLocale).reduce((acc, locale) => {
+    const value = entryValue.data[locale];
+    return value ? { ...acc, [locale]: { data: value } } : acc;
+  }, {});
 
   return {
     ...entryValue,
@@ -318,7 +369,13 @@ export async function getI18nEntry(
 
     const nonNullValues = entryValuesResults
       .map(e => (e.status === 'fulfilled' ? e.value : undefined))
-      .filter((e): e is { value: EntryValue; locale: string } => e !== undefined);
+      .filter((e): e is { value: EntryValue; locale: string } => e !== undefined)
+      // The GitHub, Gitea and Forgejo backends end `getEntry` with a `.catch` that resolves
+      // with empty data instead of rejecting, so a locale that has no file reaches us looking
+      // like an empty translation. Left in, the entry claims translations it does not have,
+      // and deleting it then asks the backend to remove paths that are not in the tree, which
+      // GitHub rejects with `GitRPC::BadObjectState`.
+      .filter(e => e.value.raw !== '');
 
     if (nonNullValues.length === 0) {
       // mergeValues will throw on an empty list, and show the error messages.
@@ -353,10 +410,24 @@ export function groupEntries(collection: Collection, extension: string, entries:
 
   const groupedEntries = Object.values(grouped).reduce((acc, values) => {
     const entryValue = mergeValues(collection, structure, defaultLocale, values);
+    // `mergeValues` reports the slug of the default-locale file. When the locale files sit in
+    // different folders (or the default locale is missing) that differs from the slug the entry
+    // was actually read under, which is the one callers need to write or delete the right files.
+    // Keep it as `srcSlug` so the caller can restore it; see `getEntry` in backend.ts.
+    if (values[0]?.value?.slug !== entryValue.slug) {
+      entryValue.srcSlug = values[0]?.value?.slug;
+    }
     return [...acc, entryValue];
   }, [] as EntryValue[]);
 
   return groupedEntries;
+}
+
+function compareFilePathEndings(path1: string, path2: string, hasSubfolders = false) {
+  const [p1, p2] = [path1, path2].map(p => p.split('/'));
+  return hasSubfolders
+    ? p1.slice(-2).join('/') === p2.slice(-2).join('/')
+    : p1.at(-1) === p2.at(-1);
 }
 
 export function getI18nDataFiles(
@@ -364,15 +435,17 @@ export function getI18nDataFiles(
   extension: string,
   path: string,
   slug: string,
-  diffFiles: { path: string; id: string; newFile: boolean }[],
+  diffFiles: { path: string; id: string; newFile: boolean; prevPath?: string }[],
 ) {
   const { structure } = getI18nInfo(collection) as I18nInfo;
   if (structure === I18N_STRUCTURE.SINGLE_FILE) {
     return diffFiles;
   }
   const paths = getFilePaths(collection, extension, path, slug);
+  const hasSubfolders =
+    structure === I18N_STRUCTURE.MULTIPLE_FOLDERS || isNestedSubfolders(collection);
   const dataFiles = paths.reduce((acc, path) => {
-    const dataFile = diffFiles.find(file => file.path === path);
+    const dataFile = diffFiles.find(file => compareFilePathEndings(file.path, path, hasSubfolders));
     if (dataFile) {
       return [...acc, dataFile];
     } else {
@@ -387,13 +460,9 @@ export function getI18nDataFiles(
 export function duplicateDefaultI18nFields(collection: Collection, dataFields: any) {
   const { locales, defaultLocale } = getI18nInfo(collection) as I18nInfo;
 
-  const i18nFields = Object.fromEntries(
-    locales
-      .filter(locale => locale !== defaultLocale)
-      .map(locale => [locale, { data: dataFields }]),
+  return Object.fromEntries(
+    getNonDefaultLocales(locales, defaultLocale).map(locale => [locale, { data: dataFields }]),
   );
-
-  return i18nFields;
 }
 
 export function duplicateI18nFields(
@@ -404,15 +473,14 @@ export function duplicateI18nFields(
   fieldPath: string[] = [field.get('name')],
 ) {
   const value = entryDraft.getIn(['entry', 'data', ...fieldPath]);
+
   if (field.get(I18N) === I18N_FIELD.DUPLICATE) {
-    locales
-      .filter(l => l !== defaultLocale)
-      .forEach(l => {
-        entryDraft = entryDraft.setIn(
-          ['entry', ...getDataPath(l, defaultLocale), ...fieldPath],
-          value,
-        );
-      });
+    getNonDefaultLocales(locales, defaultLocale).forEach(locale => {
+      entryDraft = entryDraft.setIn(
+        ['entry', ...getDataPath(locale, defaultLocale), ...fieldPath],
+        value,
+      );
+    });
   }
 
   if (field.has('field') && !List.isList(value)) {
@@ -451,12 +519,10 @@ export function serializeI18n(
 ) {
   const { locales, defaultLocale } = getI18nInfo(collection) as I18nInfo;
 
-  locales
-    .filter(locale => locale !== defaultLocale)
-    .forEach(locale => {
-      const dataPath = getLocaleDataPath(locale);
-      entry = entry.setIn(dataPath, serializeValues(entry.getIn(dataPath)));
-    });
+  getNonDefaultLocales(locales, defaultLocale).forEach(locale => {
+    const dataPath = getLocaleDataPath(locale);
+    entry = entry.setIn(dataPath, serializeValues(entry.getIn(dataPath)));
+  });
 
   return entry;
 }

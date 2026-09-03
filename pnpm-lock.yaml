@@ -1638,6 +1638,9 @@ importers:
       lodash:
         specifier: 'catalog:'
         version: 4.17.21
+      path-browserify:
+        specifier: 'catalog:'
+        version: 1.0.1
       prop-types:
         specifier: 'catalog:'
         version: 15.8.1

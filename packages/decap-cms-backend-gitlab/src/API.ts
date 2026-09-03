@@ -80,6 +80,7 @@ type CommitItem = {
   path: string;
   oldPath?: string;
   action: CommitAction;
+  isFolder?: boolean;
 };
 
 type FileEntry = { id: string; type: string; path: string; name: string };
@@ -633,7 +634,7 @@ export default class API {
   }
 
   async getCommitItems(
-    files: { path: string; newPath?: string }[],
+    files: { path: string; newPath?: string; isFolder?: boolean }[],
     branch: string,
     hasSubfolders = true,
   ) {
@@ -659,13 +660,16 @@ export default class API {
           base64Content,
           path,
           oldPath,
+          isFolder: file.isFolder,
         };
       }),
     );
 
-    // Move children if subfolders is true (legacy/default behavior)
     if (hasSubfolders) {
       for (const item of items.filter(i => i.oldPath && i.action === CommitAction.MOVE)) {
+        if (item.isFolder === false) {
+          continue;
+        }
         const sourceDir = dirname(item.oldPath as string);
         const destDir = dirname(item.path);
         const children = await this.listAllFiles(sourceDir, true, branch);

@@ -1448,11 +1448,11 @@ export default class API {
 
   async updateTree(
     baseSha: string,
-    files: { path: string; sha: string | null; newPath?: string }[],
+    files: { path: string; sha: string | null; newPath?: string; isFolder?: boolean }[],
     branch = this.branch,
     hasSubfolders = true,
   ) {
-    const toMove: { from: string; to: string; sha: string }[] = [];
+    const toMove: { from: string; to: string; sha: string; isFolder?: boolean }[] = [];
     const tree = files.reduce((acc, file) => {
       const entry = {
         path: trimStart(file.path, '/'),
@@ -1462,7 +1462,12 @@ export default class API {
       } as TreeEntry;
 
       if (file.newPath) {
-        toMove.push({ from: file.path, to: file.newPath, sha: file.sha as string });
+        toMove.push({
+          from: file.path,
+          to: file.newPath,
+          sha: file.sha as string,
+          isFolder: file.isFolder,
+        });
       } else {
         acc.push(entry);
       }
@@ -1470,9 +1475,8 @@ export default class API {
       return acc;
     }, [] as TreeEntry[]);
 
-    for (const { from, to, sha } of toMove) {
-      if (!hasSubfolders) {
-        // New behavior (subfolders: false): Only move the specific file
+    for (const { from, to, sha, isFolder } of toMove) {
+      if (!hasSubfolders || isFolder === false) {
         // Delete the file at the old path
         tree.push({
           path: trimStart(from, '/'),

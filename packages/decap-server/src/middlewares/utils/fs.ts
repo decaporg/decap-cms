@@ -62,21 +62,29 @@ async function moveFile(from: string, to: string) {
   await fs.rename(from, to);
 }
 
-export async function move(repoPath: string, from: string, to: string, hasSubfolders = true) {
+export async function move(
+  repoPath: string,
+  from: string,
+  to: string,
+  hasSubfolders = true,
+  isFolder?: boolean,
+) {
   const resolvedFrom = await resolveExistingRepoPath(repoPath, from);
   const resolvedTo = await resolveNewRepoPath(repoPath, to);
 
   // move file
   await moveFile(resolvedFrom, resolvedTo);
 
-  if (hasSubfolders) {
-    // Legacy behavior (subfolders: true, default): move all files in the directory
-    // This is for collections where all files in a folder represent a single entry
-    const sourceDir = path.dirname(resolvedFrom);
-    const destDir = path.dirname(resolvedTo);
-    const allFiles = await listFiles(sourceDir, '', 100);
-    await Promise.all(allFiles.map(file => moveFile(file, file.replace(sourceDir, destDir))));
+  if (!hasSubfolders || isFolder === false) {
+    return;
   }
+
+  // Legacy behavior (subfolders: true, default): move all files in the directory.
+  // This is for collections where all files in a folder represent a single entry.
+  const sourceDir = path.dirname(resolvedFrom);
+  const destDir = path.dirname(resolvedTo);
+  const allFiles = await listFiles(sourceDir, '', 100);
+  await Promise.all(allFiles.map(file => moveFile(file, file.replace(sourceDir, destDir))));
 }
 
 export async function getUpdateDate(repoPath: string, filePath: string) {

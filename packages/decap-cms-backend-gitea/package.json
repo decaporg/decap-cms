@@ -21,6 +21,7 @@
   "dependencies": {
     "common-tags": "catalog:",
     "js-base64": "catalog:",
+    "path-browserify": "catalog:",
     "semaphore": "catalog:"
   },
   "peerDependencies": {
@@ -33,5 +34,8 @@
     "lodash": "catalog:",
     "prop-types": "catalog:",
     "react": "catalog:"
+  },
+  "browser": {
+    "path": "path-browserify"
   }
 }

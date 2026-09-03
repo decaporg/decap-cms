@@ -22,11 +22,11 @@ import { SortDirection } from '../types/redux';
 import { waitForMediaLibraryToLoad, loadMedia } from './mediaLibrary';
 import { waitUntil } from './waitUntil';
 import { selectIsFetching, selectEntriesSortFields, selectEntryByPath } from '../reducers/entries';
-import { selectCustomPath } from '../reducers/entryDraft';
 import { navigateToEntry } from '../routing/history';
 import { getProcessSegment } from '../lib/formatters';
 import { hasI18n, duplicateDefaultI18nFields, serializeI18n, I18N, I18N_FIELD } from '../lib/i18n';
 import { addNotification } from './notifications';
+import { selectCustomPath } from '../reducers/entryDraft';
 import { FILES } from '../constants/collectionTypes';
 
 import type { ImplementationMediaFile, Note, IssueChange } from 'decap-cms-lib-util';
@@ -41,6 +41,7 @@ import type {
   ViewFilter,
   ViewGroup,
   Entry,
+  Entries,
 } from '../types/redux';
 import type { EntryValue } from '../valueObjects/Entry';
 import type { Backend } from '../backend';
@@ -423,7 +424,9 @@ export function draftDuplicateEntry(entry: EntryMap) {
     type: DRAFT_CREATE_DUPLICATE_FROM_ENTRY,
     payload: createEntry(entry.get('collection'), '', '', {
       data: entry.get('data'),
-      i18n: entry.get('i18n'),
+      // an entry read outside of `createEntry` may carry neither key
+      meta: (entry.get('meta') || Map()).toJS(),
+      i18n: (entry.get('i18n') || Map()).toJS(),
       mediaFiles: entry.get('mediaFiles').toJS(),
     }),
   };
@@ -1485,6 +1488,22 @@ function getPathError(
   };
 }
 
+function getExistingEntry(
+  entries: Entries,
+  collection: Collection,
+  path: string,
+  pathType: string,
+) {
+  const customPath = selectCustomPath(
+    collection,
+    fromJS({ entry: { meta: { path, path_type: pathType } } }),
+  );
+  if (!customPath) {
+    return undefined;
+  }
+  return selectEntryByPath(entries, collection.get('name'), customPath);
+}
+
 export function validateMetaField(
   state: State,
   collection: Collection,
@@ -1505,11 +1524,9 @@ export function validateMetaField(
       return getPathError(value, 'invalidPath', t);
     }
 
-    const customPath = selectCustomPath(collection, fromJS({ entry: { meta: { path: value } } }));
-    const existingEntry = customPath
-      ? selectEntryByPath(state.entries, collection.get('name'), customPath)
-      : undefined;
-
+    const existingEntry =
+      getExistingEntry(state.entries, collection, value, 'index') ??
+      getExistingEntry(state.entries, collection, value, 'slug');
     const existingEntryPath = existingEntry?.get('path');
     const draftPath = state.entryDraft?.getIn(['entry', 'path']);
 

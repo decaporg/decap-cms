@@ -19,6 +19,7 @@ import EditorPreviewPane from './EditorPreviewPane/EditorPreviewPane';
 import EditorNotesPane from './EditorNotesPane/EditorNotesPane';
 import EditorToolbar from './EditorToolbar';
 import { hasI18n, getI18nInfo, getPreviewEntry } from '../../lib/i18n';
+import { isIndexFileEntry } from '../../lib/indexFileHelper';
 import { FILES } from '../../constants/collectionTypes';
 import { getFileFromSlug } from '../../reducers/collections';
 
@@ -161,8 +162,21 @@ function isPreviewEnabled(collection, entry) {
   if (collection.get('type') === FILES) {
     const file = getFileFromSlug(collection, entry.get('slug'));
     const previewEnabled = file?.getIn(['editor', 'preview']);
+
     if (previewEnabled != null) return previewEnabled;
   }
+
+  const indexFileConfig = collection.get('index_file');
+  // `isIndexFileEntry` also honours `meta.path_type`, so a new entry created as an index page
+  // picks up the index editor settings before it has a slug to match against the pattern.
+  if (
+    indexFileConfig &&
+    indexFileConfig.get('editor')?.has('preview') &&
+    isIndexFileEntry(entry, collection)
+  ) {
+    return indexFileConfig.get('editor').get('preview');
+  }
+
   return collection.getIn(['editor', 'preview'], true);
 }
 

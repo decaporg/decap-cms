@@ -35,11 +35,14 @@ import {
   selectMediaFolders,
   selectFieldsComments,
   selectHasMetaPath,
+  isNestedSubfolders,
+  isNested,
 } from './reducers/collections';
 import { createEntry } from './valueObjects/Entry';
 import { sanitizeChar } from './lib/urlHelper';
 import { getBackend, invokeEvent } from './lib/registry';
 import { commitMessageFormatter, slugFormatter, previewUrlFormatter } from './lib/formatters';
+import { isIndexFile } from './lib/indexFileHelper';
 import { status } from './constants/publishModes';
 import { FOLDER, FILES } from './constants/collectionTypes';
 import { selectCustomPath } from './reducers/entryDraft';
@@ -47,7 +50,7 @@ import {
   getI18nFilesDepth,
   getI18nFiles,
   hasI18n,
-  getFilePaths,
+  getExistingFilePaths,
   getI18nEntry,
   groupEntries,
   getI18nDataFiles,
@@ -310,12 +313,37 @@ type Implementation = BackendImplementation & {
   refreshNotesNow?: (collection: string, slug: string) => Promise<void>;
 };
 
-function prepareMetaPath(path: string, collection: Collection) {
+function prepareMetaPath(path: string, collection: Collection, slug?: string) {
   if (!selectHasMetaPath(collection)) {
     return path;
   }
+
+  // Only collections that opt into index files can hold slug-type entries, whose meta path
+  // is the entry path itself. Without `index_file` every entry keeps the legacy behaviour of
+  // reporting the folder it lives in.
+  if (
+    slug &&
+    isNested(collection) &&
+    !isNestedSubfolders(collection) &&
+    collection.get('index_file') &&
+    prepareMetaPathType(slug, collection) !== 'index'
+  ) {
+    return slug;
+  }
+
   const dir = dirname(path);
   return dir.slice(collection.get('folder')!.length + 1) || '/';
+}
+
+function prepareMetaPathType(slug: string, collection: Collection) {
+  const indexFileConfig = collection.get('index_file');
+  if (
+    indexFileConfig &&
+    isIndexFile(slug, indexFileConfig.get('pattern'), !!collection.get('nested'))
+  ) {
+    return 'index';
+  }
+  return 'slug';
 }
 
 function collectionDepth(collection: Collection) {
@@ -545,20 +573,19 @@ export class Backend {
   }
 
   processEntries(loadedEntries: ImplementationEntry[], collection: Collection) {
-    const entries = loadedEntries.map(loadedEntry =>
-      createEntry(
-        collection.get('name'),
-        selectEntrySlug(collection, loadedEntry.file.path),
-        loadedEntry.file.path,
-        {
-          raw: loadedEntry.data || '',
-          label: loadedEntry.file.label,
-          author: loadedEntry.file.author,
-          updatedOn: loadedEntry.file.updatedOn,
-          meta: { path: prepareMetaPath(loadedEntry.file.path, collection) },
+    const entries = loadedEntries.map(loadedEntry => {
+      const slug = selectEntrySlug(collection, loadedEntry.file.path) as string;
+      return createEntry(collection.get('name'), slug, loadedEntry.file.path, {
+        raw: loadedEntry.data || '',
+        label: loadedEntry.file.label,
+        author: loadedEntry.file.author,
+        updatedOn: loadedEntry.file.updatedOn,
+        meta: {
+          path: prepareMetaPath(loadedEntry.file.path, collection, slug),
+          path_type: prepareMetaPathType(slug, collection),
         },
-      ),
-    );
+      });
+    });
     const formattedEntries = entries.map(this.entryWithFormat(collection));
     // If this collection has a "filter" property, filter entries accordingly
     const collectionFilter = collection.get('filter');
@@ -883,7 +910,7 @@ export class Backend {
           raw,
           label,
           mediaFiles,
-          meta: { path: prepareMetaPath(path, collection) },
+          meta: { path: prepareMetaPath(path, collection, slug) },
         }),
       );
     };
@@ -969,11 +996,16 @@ export class Backend {
 
     const getEntryValue = async (path: string) => {
       const loadedEntry = await this.implementation.getEntry(path);
-      let entry = createEntry(collection.get('name'), slug, loadedEntry.file.path, {
+      const entryPath = loadedEntry.file.path;
+
+      let entry = createEntry(collection.get('name'), slug, entryPath, {
         raw: loadedEntry.data,
         label,
         mediaFiles: [],
-        meta: { path: prepareMetaPath(loadedEntry.file.path, collection) },
+        meta: {
+          path: prepareMetaPath(entryPath, collection, slug),
+          path_type: prepareMetaPathType(slug, collection),
+        },
       });
 
       entry = this.entryWithFormat(collection)(entry);
@@ -1067,7 +1099,10 @@ export class Backend {
         updatedOn: entryData.updatedAt,
         author: entryData.pullRequestAuthor,
         status: entryData.status,
-        meta: { path: prepareMetaPath(path, collection) },
+        meta: {
+          path: prepareMetaPath(path, collection, slug),
+          path_type: prepareMetaPathType(slug, collection),
+        },
       });
 
       const entryWithFormat = this.entryWithFormat(collection)(entry);
@@ -1100,6 +1135,11 @@ export class Backend {
       );
       entries = entries.filter(Boolean);
       const grouped = await groupEntries(collection, extension, entries as EntryValue[]);
+      // Grouping reports the default-locale slug; restore the slug the entry was requested
+      // under so later writes and deletes target the files we actually read. See `groupEntries`.
+      if (grouped[0]?.srcSlug) {
+        grouped[0].slug = grouped[0].srcSlug;
+      }
       return grouped[0];
     } else {
       const entryWithFormat = await readAndFormatDataFile(dataFiles[0]);
@@ -1260,6 +1300,9 @@ export class Backend {
     const customPath = selectCustomPath(collection, entryDraft);
 
     let dataFile: DataFile;
+
+    let isFolder = true;
+
     if (newEntry) {
       if (!selectAllowNewEntries(collection)) {
         throw new Error('Not allowed to create new entries in this collection');
@@ -1280,6 +1323,7 @@ export class Backend {
         usedSlugs,
         customPath,
       );
+      isFolder = prepareMetaPathType(slug, collection) === 'index';
       const path = customPath || (selectEntryPath(collection, slug) as string);
       dataFile = {
         path,
@@ -1290,13 +1334,16 @@ export class Backend {
       updateAssetProxies(assetProxies, config, collection, entryDraft, path);
     } else {
       const slug = entryDraft.getIn(['entry', 'slug']);
+      isFolder = prepareMetaPathType(slug, collection) === 'index';
       const path = entryDraft.getIn(['entry', 'path']);
+
       dataFile = {
         path,
         // for workflow entries we refresh the slug on publish
         slug: customPath && !useWorkflow ? slugFromCustomPath(collection, customPath) : slug,
         raw: this.entryToRaw(collection, entryDraft.get('entry')),
         newPath: customPath === path ? undefined : customPath,
+        isFolder,
       };
     }
 
@@ -1313,6 +1360,7 @@ export class Backend {
         path,
         slug,
         newPath,
+        isFolder,
       );
     }
 
@@ -1440,7 +1488,10 @@ export class Backend {
     await this.invokePreUnpublishEvent(entry);
     let paths = [path];
     if (hasI18n(collection)) {
-      paths = getFilePaths(collection, extension, path, slug);
+      // Only delete the locale files the entry was actually loaded from. Asking GitHub to
+      // delete a path that is not in the tree fails the whole commit with
+      // `GitRPC::BadObjectState`, which is what a partially translated entry used to hit.
+      paths = getExistingFilePaths(collection, extension, path, slug, entry);
     }
     await this.implementation.deleteFiles(paths, commitMessage);
 

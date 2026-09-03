@@ -5,6 +5,7 @@ import * as i18n from '../i18n';
 jest.mock('../../reducers/collections', () => {
   return {
     selectEntrySlug: () => 'index',
+    isNestedSubfolders: () => false,
   };
 });
 
@@ -189,6 +190,112 @@ describe('i18n', () => {
             i18n: { structure: i18n.I18N_STRUCTURE.SINGLE_FILE, locales: ['en', 'de'] },
           }),
           ...args,
+        ),
+      ).toEqual(['src/content/index.md']);
+    });
+  });
+
+  describe('getI18nEntry', () => {
+    const collection = fromJS({
+      i18n: {
+        structure: i18n.I18N_STRUCTURE.MULTIPLE_FILES,
+        locales: ['en', 'de', 'fr'],
+        default_locale: 'en',
+      },
+    });
+
+    it('should ignore locales whose file came back empty', async () => {
+      // github/gitea/forgejo resolve getEntry with empty data instead of rejecting
+      const getEntryValue = jest.fn(path =>
+        Promise.resolve({
+          path,
+          slug: 'index',
+          data: path.includes('.en.') ? { title: 'en' } : {},
+          raw: path.includes('.en.') ? 'raw' : '',
+        }),
+      );
+
+      const entry = await i18n.getI18nEntry(
+        collection,
+        'md',
+        'src/content/index.md',
+        'index',
+        getEntryValue,
+      );
+
+      // an entry with no other locale carries no i18n key at all
+      expect(entry.i18n).toBeUndefined();
+    });
+
+    it('should keep locales that returned content', async () => {
+      const getEntryValue = jest.fn(path =>
+        Promise.resolve({
+          path,
+          slug: 'index',
+          data: { title: 'x' },
+          raw: path.includes('.fr.') ? '' : 'raw',
+        }),
+      );
+
+      const entry = await i18n.getI18nEntry(
+        collection,
+        'md',
+        'src/content/index.md',
+        'index',
+        getEntryValue,
+      );
+
+      expect(Object.keys(entry.i18n)).toEqual(['de']);
+    });
+  });
+
+  describe('getExistingFilePaths', () => {
+    const args = ['md', 'src/content/index.md', 'index'];
+    const collection = fromJS({
+      i18n: {
+        structure: i18n.I18N_STRUCTURE.MULTIPLE_FILES,
+        locales: ['en', 'de', 'fr'],
+        default_locale: 'en',
+      },
+    });
+
+    it('should only return paths for the locales the entry was loaded with', () => {
+      // an entry translated into de but not fr
+      const entry = fromJS({ i18n: { de: { data: {} } } });
+      expect(i18n.getExistingFilePaths(collection, ...args, entry)).toEqual([
+        'src/content/index.en.md',
+        'src/content/index.de.md',
+      ]);
+    });
+
+    it('should return only the default locale path for an untranslated entry', () => {
+      // mergeValues leaves the i18n key off entirely when there is only one locale
+      const entry = fromJS({ slug: 'index' });
+      expect(i18n.getExistingFilePaths(collection, ...args, entry)).toEqual([
+        'src/content/index.en.md',
+      ]);
+    });
+
+    it('should fall back to every configured locale when the entry is unknown', () => {
+      expect(i18n.getExistingFilePaths(collection, ...args, undefined)).toEqual([
+        'src/content/index.en.md',
+        'src/content/index.de.md',
+        'src/content/index.fr.md',
+      ]);
+    });
+
+    it('should return array with single path when structure is I18N_STRUCTURE.SINGLE_FILE', () => {
+      expect(
+        i18n.getExistingFilePaths(
+          fromJS({
+            i18n: {
+              structure: i18n.I18N_STRUCTURE.SINGLE_FILE,
+              locales: ['en', 'de'],
+              default_locale: 'en',
+            },
+          }),
+          ...args,
+          fromJS({ i18n: { de: { data: {} } } }),
         ),
       ).toEqual(['src/content/index.md']);
     });

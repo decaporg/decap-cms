@@ -5,6 +5,7 @@ import result from 'lodash/result';
 import partial from 'lodash/partial';
 import last from 'lodash/last';
 import initial from 'lodash/initial';
+import { dirname } from 'path';
 import {
   APIError,
   basename,
@@ -391,7 +392,10 @@ export default class API {
     })) as FilesResponse;
   }
 
-  async getChangeFileOperations(files: { path: string; newPath?: string }[], branch: string) {
+  async getChangeFileOperations(
+    files: { path: string; newPath?: string; isFolder?: boolean }[],
+    branch: string,
+  ) {
     const items: ChangeFileOperation[] = await Promise.all(
       files.map(async file => {
         const content = await result(
@@ -422,6 +426,45 @@ export default class API {
         } as ChangeFileOperation;
       }),
     );
+
+    // move children for folder-type (index) entries
+    for (const item of items.filter(i => i.from_path)) {
+      // skip moving children for non-folder (slug) type entries
+      const file = files.find(f => f.newPath && trimStart(f.path, '/') === item.from_path);
+      if (file && file.isFolder === false) {
+        continue;
+      }
+      const sourceDir = dirname(item.from_path as string);
+      const destDir = dirname(item.path);
+      if (sourceDir === destDir) {
+        continue;
+      }
+      const children = await this.listFiles(sourceDir, { branch, depth: 100 });
+      for (const child of children) {
+        if (child.path === item.from_path) {
+          continue;
+        }
+        let sha;
+        try {
+          sha = await this.getFileSha(child.path, { branch });
+        } catch {
+          continue;
+        }
+        const rawContent = (await this.readFile(child.path, child.id, { branch })) as string;
+        const base64Content = await this.toBase64(rawContent);
+        items.push({
+          operation: FileOperation.DELETE,
+          path: child.path,
+          sha,
+        } as ChangeFileOperation);
+        items.push({
+          operation: FileOperation.CREATE,
+          content: base64Content,
+          path: child.path.replace(sourceDir, destDir),
+        } as ChangeFileOperation);
+      }
+    }
+
     return items;
   }
 

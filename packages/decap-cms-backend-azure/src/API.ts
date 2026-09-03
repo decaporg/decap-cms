@@ -208,6 +208,7 @@ type AzureCommitItem = {
   text?: string;
   path: string;
   oldPath?: string;
+  isFolder?: boolean;
 };
 
 interface AzureApiConfig {
@@ -504,9 +505,9 @@ export default class API {
   }
 
   async getCommitItems(
-    files: { path: string; newPath?: string }[],
+    files: { path: string; newPath?: string; isFolder?: boolean }[],
     branch: string,
-    subfolders = true,
+    hasSubfolders = true,
   ) {
     const items = await Promise.all(
       files.map(async file => {
@@ -526,15 +527,18 @@ export default class API {
           base64Content,
           path,
           oldPath,
+          isFolder: file.isFolder,
         } as AzureCommitItem;
       }),
     );
 
-    // move children when subfolders is true (legacy/default behavior)
-    if (subfolders) {
+    if (hasSubfolders) {
       for (const item of items.filter(
         i => i.oldPath && i.action === AzureCommitChangeType.RENAME,
       )) {
+        if (item.isFolder === false) {
+          continue;
+        }
         const sourceDir = dirname(item.oldPath as string);
         const destDir = dirname(item.path);
         const children = await this.listFiles(sourceDir, true, branch);

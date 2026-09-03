@@ -36,7 +36,7 @@ import {
   UNPUBLISHED_ENTRY_PUBLISH_SUCCESS,
   UNPUBLISHED_ENTRY_PUBLISH_FAILURE,
 } from '../actions/editorialWorkflow';
-import { selectFolderEntryExtension, selectHasMetaPath } from './collections';
+import { isNestedSubfolders, selectFolderEntryExtension, selectHasMetaPath } from './collections';
 import { getDataPath, duplicateI18nFields } from '../lib/i18n';
 
 const initialState = Map({
@@ -259,14 +259,27 @@ export function selectCustomPath(collection, entryDraft) {
 
   const extension = selectFolderEntryExtension(collection);
   const indexFile = get(collection.toJS(), ['meta', 'path', 'index_file']);
+  const pathType = meta && meta.get('path_type');
 
-  // If index_file is specified, use the old behavior for backward compatibility
   if (indexFile) {
-    const customPath = join(collection.get('folder'), path, `${indexFile}.${extension}`);
-    return customPath;
+    const currentPath = entryDraft.getIn(['entry', 'path']);
+    const currentFilename = currentPath && basename(currentPath, `.${extension}`);
+    const useIndexFile =
+      isNestedSubfolders(collection) ||
+      pathType === 'index' ||
+      (!pathType &&
+        (entryDraft.getIn(['entry', 'newRecord']) === true || currentFilename === indexFile));
+
+    if (useIndexFile) {
+      return join(collection.get('folder'), path, `${indexFile}.${extension}`);
+    }
+
+    const pathSegments = path.split('/');
+    const fileName = pathSegments.pop();
+    const filePath = pathSegments.join('/');
+    return join(collection.get('folder'), filePath, `${fileName}.${extension}`);
   }
 
-  // New behavior: generate filename from entry title
   const isNewEntry = entryDraft.getIn(['entry', 'newRecord']);
   const currentPath = entryDraft.getIn(['entry', 'path']);
 
