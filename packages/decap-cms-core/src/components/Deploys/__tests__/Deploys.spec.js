@@ -530,21 +530,41 @@ describe('Deploys page', () => {
 
     it('filters by state', () => {
       renderPage({ deployments: mixed() });
-      choose('State', 'failed');
+      choose('State', 'ui.deploys.state.failed');
 
       expect(table().getAllByRole('row')).toHaveLength(2);
       expect(table().getByText('Failed')).toBeInTheDocument();
     });
 
-    // The filter offers the host's raw states, which are not the words the
-    // table uses — `success` is shown as Live or Deployed there and so had no
-    // label of its own. It rendered as the bare key `ui.deploys.state.success`.
-    it('names every state it offers', () => {
+    // The filter keys on the DISPLAYED state. Keying on the host's own left it
+    // offering "Succeeded" for what the column calls Live and Deployed, so
+    // neither of the two words actually on screen could be filtered for.
+    it('offers Live and Deployed separately, as the column shows them', () => {
       renderPage({ deployments: mixed() });
 
       const options = [...screen.getByLabelText('State').options].map(o => o.textContent);
-      expect(options).toEqual(['Any', 'Failed', 'Succeeded']);
+      expect(options).toEqual(['Any', 'Live', 'Deployed', 'Failed']);
       expect(options.some(label => label.includes('ui.deploys'))).toBe(false);
+    });
+
+    it('filters down to just what is live', () => {
+      renderPage({ deployments: mixed() });
+      choose('State', 'ui.deploys.state.live');
+
+      expect(table().getAllByRole('row')).toHaveLength(2);
+      expect(table().getByText('Live')).toBeInTheDocument();
+      expect(table().queryByText('Deployed')).not.toBeInTheDocument();
+    });
+
+    // Live and Deployed are the same state underneath, so this is the case
+    // that proves the filter is reading the column and not the row.
+    it('separates two successes that differ only in being current', () => {
+      renderPage({ deployments: mixed() });
+      choose('State', 'ui.deploys.state.deployed');
+
+      expect(table().getAllByRole('row')).toHaveLength(2);
+      expect(table().getByText('Deployed')).toBeInTheDocument();
+      expect(table().queryByText('Live')).not.toBeInTheDocument();
     });
 
     it('filters by branch', () => {
@@ -673,6 +693,64 @@ describe('Deploys page', () => {
 
       fireEvent.click(screen.getByRole('button', { name: /Saved entry/ }));
       expect(bodyRows()[0]).toHaveTextContent('Alpha post');
+    });
+
+    it('sorts by who reported the deploy', () => {
+      renderPage({
+        deployments: [
+          row({ external_id: 'a', provider_label: 'Vercel' }),
+          row({ external_id: 'b', provider_label: 'Netlify' }),
+        ],
+      });
+
+      fireEvent.click(screen.getByRole('button', { name: /Reported by/ }));
+      expect(bodyRows()[0]).toHaveTextContent('Netlify');
+    });
+
+    it('sorts by commit', () => {
+      renderPage({
+        deployments: [
+          row({ external_id: 'a', commit_sha: 'fff9999aaa' }),
+          row({ external_id: 'b', commit_sha: 'aaa1111bbb' }),
+        ],
+      });
+
+      fireEvent.click(screen.getByRole('button', { name: /Commit/ }));
+      expect(bodyRows()[0]).toHaveTextContent('aaa1111');
+    });
+
+    // Not alphabetical: "Building, Deployed, Failed, Live" would put what is
+    // live in the middle and what is broken above it. Reading down from what
+    // is serving now is the order someone scanning this column wants.
+    it('sorts state by what it means, not by its first letter', () => {
+      renderPage({
+        branch: 'turbo',
+        deployments: [
+          row({ external_id: 'f', branch: 'a-branch', state: 'failed' }),
+          row({ external_id: 'live', branch: 'turbo' }),
+          row({ external_id: 'old', branch: 'turbo' }),
+        ],
+      });
+
+      fireEvent.click(screen.getByRole('button', { name: /State/ }));
+      expect(bodyRows().map(r => r.textContent.match(/Live|Deployed|Failed/)[0])).toEqual([
+        'Live',
+        'Deployed',
+        'Failed',
+      ]);
+    });
+
+    // Which one is worth sorting by depends on why you opened the page, and a
+    // header that does nothing when clicked is worse than no header at all.
+    it('makes every column sortable', () => {
+      renderPage({ deployments: many(3) });
+
+      const headers = screen.getAllByRole('columnheader');
+      expect(headers).toHaveLength(6);
+      for (const header of headers) {
+        expect(within(header).getByRole('button')).toBeInTheDocument();
+        expect(header).toHaveAttribute('aria-sort');
+      }
     });
 
     // A screen reader has no arrow glyph to read, so the direction has to be

@@ -360,10 +360,6 @@ const en = {
       state: {
         pending: 'Queued',
         building: 'Building',
-        // The host's own word for a build that worked. Only the filter shows
-        // it: in the table a success is either Live or Deployed, and the
-        // filter cannot make that distinction because both are `success`.
-        success: 'Succeeded',
         // Only the newest success is actually live; every earlier one was live
         // once and has since been superseded, so it is 'Deployed'.
         live: 'Live',

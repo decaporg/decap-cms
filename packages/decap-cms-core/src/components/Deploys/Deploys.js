@@ -353,10 +353,41 @@ export const PAGE_SIZES = [20, 50, 100];
 /** The filter value that means "do not filter on this at all". */
 const ANY = '';
 
+/**
+ * The order states read in when the State column is sorted, and the order the
+ * State filter offers them.
+ *
+ * Not alphabetical: "Building, Deployed, Failed, Live, Superseded, Unknown"
+ * puts what is live in the middle and what is broken above it. Reading down
+ * from what is serving now to what never finished is the order someone
+ * scanning this column actually wants, and the arrow still reverses it.
+ */
+const STATE_ORDER = [
+  'ui.deploys.state.live',
+  'ui.deploys.state.deployed',
+  'ui.deploys.state.building',
+  'ui.deploys.state.pending',
+  'ui.deploys.state.failed',
+  'ui.deploys.state.canceled',
+  'ui.deploys.state.stalled',
+];
+
+/**
+ * How each column sorts. Every column, because which one is worth sorting by
+ * depends on what you came to the page for, and guessing wrong just means a
+ * header that does nothing when clicked.
+ *
+ * `ctx` carries what the displayed value depends on — the entry labels, and
+ * for State the live set and the clock — so the sort orders what is on screen
+ * rather than the raw row behind it.
+ */
 const SORTS = {
-  when: row => timeOf(row),
+  state: (row, ctx) => STATE_ORDER.indexOf(stateKeyFor(row, ctx.liveIds, ctx.now)),
+  entry: (row, ctx) => (ctx.entryLabels[row.commit_sha] || '').toLowerCase(),
   branch: row => branchOf(row).toLowerCase(),
-  entry: (row, entryLabels) => (entryLabels[row.commit_sha] || '').toLowerCase(),
+  target: row => targetOf(row).toLowerCase(),
+  commit: row => (row.commit_sha || '').toLowerCase(),
+  when: row => timeOf(row),
 };
 
 export class Deploys extends React.Component {
@@ -455,13 +486,19 @@ export class Deploys extends React.Component {
   };
 
   /** The rows the current filters and sort select, before paging. */
-  visibleRows() {
-    const { deployments, entryLabels } = this.props;
+  visibleRows(ctx) {
+    const { deployments } = this.props;
     const { sortKey, sortDir, filterTarget, filterState, filterBranch } = this.state;
 
     const filtered = deployments.filter(row => {
       if (filterTarget !== ANY && targetOf(row) !== filterTarget) return false;
-      if (filterState !== ANY && row.state !== filterState) return false;
+      // Against the DISPLAYED state, not `row.state`. The table says Live and
+      // Deployed, and a filter that offered neither — because both are
+      // `success` underneath — asked the reader to translate the column back
+      // into the host's vocabulary before they could use it.
+      if (filterState !== ANY && stateKeyFor(row, ctx.liveIds, ctx.now) !== filterState) {
+        return false;
+      }
       if (filterBranch !== ANY && branchOf(row) !== filterBranch) return false;
       return true;
     });
@@ -471,8 +508,8 @@ export class Deploys extends React.Component {
     // Sorting a copy: `deployments` is the store's own array, and sorting in
     // place would mutate state other components read.
     return [...filtered].sort((a, b) => {
-      const left = read(a, entryLabels);
-      const right = read(b, entryLabels);
+      const left = read(a, ctx);
+      const right = read(b, ctx);
       if (left === right) {
         // Ties settle by time, so a branch with six builds still reads in a
         // sensible order rather than whatever order the store happened to hold.
@@ -496,7 +533,7 @@ export class Deploys extends React.Component {
     );
   }
 
-  renderControls(branches, targets, states) {
+  renderControls(branches, targets, stateKeys) {
     const { t } = this.props;
     const { filterTarget, filterState, filterBranch } = this.state;
     return (
@@ -522,14 +559,14 @@ export class Deploys extends React.Component {
             onChange={event => this.setView({ filterState: event.target.value })}
           >
             <option value={ANY}>{t('ui.deploys.filterAny')}</option>
-            {states.map(state => (
-              <option key={state} value={state}>
+            {stateKeys.map(key => (
+              <option key={key} value={key}>
                 {/*
-                  The host's own state, not the computed label: "Live" and
-                  "Deployed" are both `success`, so offering them separately
-                  would promise a distinction the filter cannot make.
+                  Keyed on the DISPLAYED state, so the filter offers exactly
+                  the words in the column — Live and Deployed included, even
+                  though the host calls both of them `success`.
                 */}
-                {t(`ui.deploys.state.${state}`)}
+                {t(key)}
               </option>
             ))}
           </select>
@@ -618,13 +655,18 @@ export class Deploys extends React.Component {
     const summary = summaryFor(pendingCount, latest, now);
     const targets = [...new Set(deployments.map(targetOf))].sort();
     const branches = [...new Set(deployments.map(branchOf))].sort();
-    const states = [...new Set(deployments.map(row => row.state))].sort();
     // Computed over everything rather than over the visible page: which deploy
     // a branch is serving does not change because someone turned to page two.
     const liveIds = liveDeployIds(deployments);
+    const ctx = { entryLabels, liveIds, now };
+    // The states the table actually shows, in reading order — so the filter
+    // offers Live and Deployed rather than the `success` they share.
+    const stateKeys = [...new Set(deployments.map(row => stateKeyFor(row, liveIds, now)))].sort(
+      (a, b) => STATE_ORDER.indexOf(a) - STATE_ORDER.indexOf(b),
+    );
     const liveUrl = latest && latest.state === 'success' ? latest.target_url : null;
 
-    const sorted = this.visibleRows();
+    const sorted = this.visibleRows(ctx);
     const pageRows = sorted.slice(page * pageSize, (page + 1) * pageSize);
 
     return (
@@ -666,7 +708,7 @@ export class Deploys extends React.Component {
             <Muted>{t(loaded ? 'ui.deploys.emptyConfigured' : 'ui.deploys.emptyUnknown')}</Muted>
           ) : (
             <>
-              {this.renderControls(branches, targets, states)}
+              {this.renderControls(branches, targets, stateKeys)}
               {sorted.length === 0 ? (
                 <Muted>{t('ui.deploys.emptyFiltered')}</Muted>
               ) : (
@@ -674,11 +716,11 @@ export class Deploys extends React.Component {
                   <Table>
                     <thead>
                       <tr>
-                        <th>{t('ui.deploys.columnState')}</th>
+                        {this.renderSortHeader('state', 'ui.deploys.columnState')}
                         {this.renderSortHeader('entry', 'ui.deploys.columnEntry')}
                         {this.renderSortHeader('branch', 'ui.deploys.columnWhere')}
-                        <th>{t('ui.deploys.columnTarget')}</th>
-                        <th>{t('ui.deploys.columnCommit')}</th>
+                        {this.renderSortHeader('target', 'ui.deploys.columnTarget')}
+                        {this.renderSortHeader('commit', 'ui.deploys.columnCommit')}
                         {this.renderSortHeader('when', 'ui.deploys.columnWhen')}
                       </tr>
                     </thead>
