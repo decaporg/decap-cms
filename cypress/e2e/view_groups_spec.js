@@ -67,6 +67,7 @@ describe('View Group', () => {
     assertGroupsCount(3);
     assertEachGroupCount('Relation Testtrue', 10);
     assertEachGroupCount('Relation Testfalse', 10);
-    assertEachGroupCount('missing_value', 3);
+    // the 3 dated posts without a relation_test field, plus the index file
+    assertEachGroupCount('missing_value', 4);
   });
 });

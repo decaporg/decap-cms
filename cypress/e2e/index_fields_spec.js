@@ -26,6 +26,18 @@ function openEntry(title) {
   cy.contains('[class*=ListCardLink]', title).click();
 }
 
+/**
+ * The collection view pages in 20 entries at a time, and the index file is hoisted to the
+ * top client side, over the entries that are already loaded. The dev-test posts collection
+ * has 24 entries and the index file sorts last by date, so it is not on the first page at
+ * all: everything below has to page the whole collection in before it can see it.
+ */
+function loadWholeCollection() {
+  cy.get('[class*=ListCardLink]').should('have.length', 20);
+  cy.scrollTo('bottom');
+  cy.get('[class*=ListCardLink]').should('have.length', 24);
+}
+
 describe('Index File Feature', () => {
   before(() => {
     Cypress.config('defaultCommandTimeout', 4000);
@@ -40,62 +52,68 @@ describe('Index File Feature', () => {
     login();
   });
 
-  it('sorts the index file to the top of the collection', () => {
-    entryCards().first().should('contain.text', indexEntryTitle);
-  });
+  describe('in the posts collection', () => {
+    beforeEach(() => {
+      loadWholeCollection();
+    });
 
-  it('marks only the index file entry with an icon', () => {
-    // the icon lives on the index entry's card and on no other
-    indexFileIcons().should('have.length', 1);
-    cy.contains('[class*=ListCardLink]', indexEntryTitle).find('[class*=TitleIcons] svg');
-  });
+    it('sorts the index file to the top of the collection', () => {
+      entryCards().first().should('contain.text', indexEntryTitle);
+    });
 
-  it('edits the index file entry with the index fields', () => {
-    openEntry(indexEntryTitle);
+    it('marks only the index file entry with an icon', () => {
+      // the icon lives on the index entry's card and on no other
+      indexFileIcons().should('have.length', 1);
+      cy.contains('[class*=ListCardLink]', indexEntryTitle).find('[class*=TitleIcons] svg');
+    });
 
-    cy.contains('label', 'Title');
-    cy.contains('label', 'Body');
-    // fields that only exist on the collection's regular entries
-    cy.contains('label', 'Publish Date').should('not.exist');
-    cy.contains('label', 'Cover Image').should('not.exist');
-  });
+    it('edits the index file entry with the index fields', () => {
+      openEntry(indexEntryTitle);
 
-  it('edits a regular entry with the collection fields', () => {
-    openEntry(regularEntryTitle);
+      cy.contains('label', 'Title');
+      cy.contains('label', 'Body');
+      // fields that only exist on the collection's regular entries
+      cy.contains('label', 'Publish Date').should('not.exist');
+      cy.contains('label', 'Cover Image').should('not.exist');
+    });
 
-    cy.contains('label', 'Title');
-    cy.contains('label', 'Publish Date');
-    cy.contains('label', 'Cover Image');
-  });
+    it('edits a regular entry with the collection fields', () => {
+      openEntry(regularEntryTitle);
 
-  it('disables the editor preview for the index file entry only', () => {
-    openEntry(indexEntryTitle);
-    previewPane().should('not.exist');
+      cy.contains('label', 'Title');
+      cy.contains('label', 'Publish Date');
+      cy.contains('label', 'Cover Image');
+    });
 
-    exitEditor();
+    it('disables the editor preview for the index file entry only', () => {
+      openEntry(indexEntryTitle);
+      previewPane().should('not.exist');
 
-    openEntry(regularEntryTitle);
-    previewPane().should('exist');
-  });
+      exitEditor();
 
-  it('can edit and republish the index file entry', () => {
-    const updatedTitle = 'Updated posts list page';
+      openEntry(regularEntryTitle);
+      previewPane().should('exist');
+    });
 
-    openEntry(indexEntryTitle);
-    cy.get('[id^="title-field"]').clear();
-    cy.get('[id^="title-field"]').type(updatedTitle);
-    publishEntry();
-    assertNotification(notifications.saved);
+    it('can edit and republish the index file entry', () => {
+      const updatedTitle = 'Updated posts list page';
 
-    // the entry is written back to the same file rather than re-slugged from the new title
-    cy.url().should('contain', '/collections/posts/entries/_index');
+      openEntry(indexEntryTitle);
+      cy.get('[id^="title-field"]').clear();
+      cy.get('[id^="title-field"]').type(updatedTitle);
+      publishEntry();
+      assertNotification(notifications.saved);
 
-    exitEditor();
+      // the entry is written back to the same file rather than re-slugged from the new title
+      cy.url().should('contain', '/collections/posts/entries/_index');
 
-    // still the collection's only index file, still sorted to the top
-    // (the card summary itself is not re-fetched after a save, which is pre-existing behaviour)
-    entryCards().first().should('contain.text', indexEntryTitle);
-    indexFileIcons().should('have.length', 1);
+      exitEditor();
+
+      // still the collection's only index file, still sorted to the top
+      // (the card summary itself is not re-fetched after a save, which is pre-existing behaviour)
+      entryCards().first().should('contain.text', indexEntryTitle);
+      indexFileIcons().should('have.length', 1);
+    });
   });
 
   describe('in a nested collection', () => {
