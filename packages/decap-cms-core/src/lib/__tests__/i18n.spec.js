@@ -195,6 +195,60 @@ describe('i18n', () => {
     });
   });
 
+  describe('getI18nEntry', () => {
+    const collection = fromJS({
+      i18n: {
+        structure: i18n.I18N_STRUCTURE.MULTIPLE_FILES,
+        locales: ['en', 'de', 'fr'],
+        default_locale: 'en',
+      },
+    });
+
+    it('should ignore locales whose file came back empty', async () => {
+      // github/gitea/forgejo resolve getEntry with empty data instead of rejecting
+      const getEntryValue = jest.fn(path =>
+        Promise.resolve({
+          path,
+          slug: 'index',
+          data: path.includes('.en.') ? { title: 'en' } : {},
+          raw: path.includes('.en.') ? 'raw' : '',
+        }),
+      );
+
+      const entry = await i18n.getI18nEntry(
+        collection,
+        'md',
+        'src/content/index.md',
+        'index',
+        getEntryValue,
+      );
+
+      // an entry with no other locale carries no i18n key at all
+      expect(entry.i18n).toBeUndefined();
+    });
+
+    it('should keep locales that returned content', async () => {
+      const getEntryValue = jest.fn(path =>
+        Promise.resolve({
+          path,
+          slug: 'index',
+          data: { title: 'x' },
+          raw: path.includes('.fr.') ? '' : 'raw',
+        }),
+      );
+
+      const entry = await i18n.getI18nEntry(
+        collection,
+        'md',
+        'src/content/index.md',
+        'index',
+        getEntryValue,
+      );
+
+      expect(Object.keys(entry.i18n)).toEqual(['de']);
+    });
+  });
+
   describe('getExistingFilePaths', () => {
     const args = ['md', 'src/content/index.md', 'index'];
     const collection = fromJS({
@@ -215,7 +269,8 @@ describe('i18n', () => {
     });
 
     it('should return only the default locale path for an untranslated entry', () => {
-      const entry = fromJS({ i18n: {} });
+      // mergeValues leaves the i18n key off entirely when there is only one locale
+      const entry = fromJS({ slug: 'index' });
       expect(i18n.getExistingFilePaths(collection, ...args, entry)).toEqual([
         'src/content/index.en.md',
       ]);

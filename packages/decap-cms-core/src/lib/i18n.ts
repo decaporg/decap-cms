@@ -154,12 +154,15 @@ export function getExistingFilePaths(
     return [path];
   }
 
-  const i18n = entry?.get('i18n');
-  if (!i18n) {
+  // Nothing loaded for this entry, so we cannot know: keep the old behaviour.
+  if (!entry) {
     return getFilePaths(collection, extension, path, slug);
   }
 
-  const locales = [defaultLocale, ...i18n.keySeq().toArray()];
+  // `mergeValues` only sets `i18n` when the entry has locales beyond the one its own path
+  // points at, so an absent key means the entry exists in the default locale only.
+  const i18n = entry.get('i18n');
+  const locales = [defaultLocale, ...(i18n ? i18n.keySeq().toArray() : [])];
   return locales.map(locale =>
     getFilePath(structure as I18N_STRUCTURE, extension, path, slug, locale),
   );
@@ -366,7 +369,13 @@ export async function getI18nEntry(
 
     const nonNullValues = entryValuesResults
       .map(e => (e.status === 'fulfilled' ? e.value : undefined))
-      .filter((e): e is { value: EntryValue; locale: string } => e !== undefined);
+      .filter((e): e is { value: EntryValue; locale: string } => e !== undefined)
+      // The GitHub, Gitea and Forgejo backends end `getEntry` with a `.catch` that resolves
+      // with empty data instead of rejecting, so a locale that has no file reaches us looking
+      // like an empty translation. Left in, the entry claims translations it does not have,
+      // and deleting it then asks the backend to remove paths that are not in the tree, which
+      // GitHub rejects with `GitRPC::BadObjectState`.
+      .filter(e => e.value.raw !== '');
 
     if (nonNullValues.length === 0) {
       // mergeValues will throw on an empty list, and show the error messages.
