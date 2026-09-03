@@ -63,6 +63,22 @@ type GitLabUser = {
 
 const REFRESH_BUFFER_SECONDS = 300;
 const REFRESH_RETRY_ATTEMPTS = 3;
+/** How long to stop retrying after a refresh failed transiently. */
+const REFRESH_COOLDOWN_MS = 30_000;
+/**
+ * GoTrue refresh-grant failures that mean the token is dead for good. Kept
+ * alongside the status check so a code arriving under an unexpected status is
+ * still recognised.
+ */
+const TERMINAL_REFRESH_CODES = new Set([
+  'refresh_token_not_found',
+  'refresh_token_already_used',
+  'invalid_grant',
+  'invalid_refresh_token',
+  'session_not_found',
+  'session_expired',
+]);
+
 
 // See decap-cms-backend-turbo-github's implementation.tsx for the GitHub-flavored
 // twin of this — same rationale: shared control-plane values are identical
@@ -145,6 +161,8 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
   // (no allowDeclareFields), so it's intentionally omitted rather than
   // re-declared.
   reloadEntriesAfterPersist?: boolean;
+  /** Epoch ms before which refreshSessionIfNeeded will not try again. */
+  refreshBlockedUntil = 0;
   _currentUserPromise?: Promise<GitLabUser>;
   /**
    * Non-null only while a save is in flight. Every proxied response is folded
@@ -342,6 +360,7 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
     this.supabase.setAccessToken(null);
     this._currentUserPromise = undefined;
     this.refreshedTokenPromise = undefined;
+    this.refreshBlockedUntil = 0;
     return super.logout();
   }
 
@@ -588,10 +607,18 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
     if (status === 401) {
       return true;
     }
-    if (status === 400 && ['invalid_grant', 'invalid_refresh_token'].includes(String(code))) {
+    // ANY 400 from the refresh grant is terminal — see the GitHub twin for the
+    // full reasoning. GoTrue answers a refresh it cannot honour with 400 and
+    // one of several codes (`refresh_token_not_found`,
+    // `refresh_token_already_used`, `invalid_grant`, `invalid_refresh_token`,
+    // `session_not_found`, `session_expired`), all of which mean the token is
+    // dead. Allow-listing two of them made a dead session look transient and
+    // turned one collection load into a refresh storm the session could never
+    // recover from.
+    if (status === 400) {
       return true;
     }
-    return false;
+    return TERMINAL_REFRESH_CODES.has(String(code));
   }
 
   isRetryableStatus(status?: number) {
@@ -674,6 +701,7 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
             this.api.token = data.access_token;
           }
           this._currentUserPromise = undefined;
+          this.refreshBlockedUntil = 0;
 
           this.updateUserCredentialsFn({
             token: data.access_token,
@@ -738,6 +766,14 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
       return;
     }
 
+    // A refresh that just failed for a reason we decided NOT to log out over
+    // (offline, 5xx, a rate limit) is not worth re-attempting once per
+    // request: `refreshedTokenPromise` only dedupes refreshes that overlap in
+    // flight, and a collection load fires its entries sequentially.
+    if (Date.now() < this.refreshBlockedUntil) {
+      return;
+    }
+
     try {
       await this.getRefreshedAccessToken();
     } catch (error) {
@@ -746,6 +782,7 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
         this.logout();
         throw new Error(this.getRefreshFailureMessage(error));
       }
+      this.refreshBlockedUntil = Date.now() + REFRESH_COOLDOWN_MS;
     }
   }
 

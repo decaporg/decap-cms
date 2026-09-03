@@ -64,6 +64,22 @@ type SupabaseRefreshError = Error & {
 
 const REFRESH_BUFFER_SECONDS = 300;
 const REFRESH_RETRY_ATTEMPTS = 3;
+/** How long to stop retrying after a refresh failed transiently. */
+const REFRESH_COOLDOWN_MS = 30_000;
+/**
+ * GoTrue refresh-grant failures that mean the token is dead for good. Kept
+ * alongside the status check so a code arriving under an unexpected status is
+ * still recognised.
+ */
+const TERMINAL_REFRESH_CODES = new Set([
+  'refresh_token_not_found',
+  'refresh_token_already_used',
+  'invalid_grant',
+  'invalid_refresh_token',
+  'session_not_found',
+  'session_expired',
+]);
+
 
 // Shared control-plane values (supabase_app_id, supabase_anon_key, base_url,
 // api_root) are identical across every site, so a site's config.yml only
@@ -154,6 +170,8 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
   commitAuthorEmail?: string;
   updateUserCredentials: (credentials: Credentials) => void;
   refreshedTokenPromise?: Promise<string>;
+  /** Epoch ms before which refreshSessionIfNeeded will not try again. */
+  refreshBlockedUntil = 0;
   reloadEntriesAfterPersist?: boolean;
   /**
    * Non-null only while a save is in flight. Every proxied response is folded
@@ -402,6 +420,7 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
     this.supabase.setAccessToken(null);
     this._currentUserPromise = undefined;
     this.refreshedTokenPromise = undefined;
+    this.refreshBlockedUntil = 0;
     if (this.deployWatcherInstance) {
       this.deployWatcherInstance.stop();
       this.deployWatcherInstance = null;
@@ -746,10 +765,27 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
     if (status === 401) {
       return true;
     }
-    if (status === 400 && ['invalid_grant', 'invalid_refresh_token'].includes(String(code))) {
+    // ANY 400 from the refresh grant is terminal. GoTrue answers a refresh it
+    // cannot honour with 400 and one of several codes — `refresh_token_not_
+    // found`, `refresh_token_already_used`, `invalid_grant`,
+    // `invalid_refresh_token`, `session_not_found`, `session_expired` — and
+    // every one of them means this token will never work again, so there is
+    // nothing a retry can achieve.
+    //
+    // Matching an allow-list of two of those codes is what made a dead session
+    // look transient: a real `refresh_token_not_found` was classified
+    // non-terminal, so it was retried three times, swallowed by
+    // refreshSessionIfNeeded, and the caller went on to use the EXPIRED access
+    // token. Every request then 401'd as "Failed to load entry: Unauthorized"
+    // and every one of them started the cycle again — 87 refresh POSTs in 41
+    // seconds on a single collection load, until GoTrue's own rate limiter
+    // started answering 429 and the session could never recover. Failing
+    // closed here is what turns that into one honest "Session expired. Please
+    // log in again."
+    if (status === 400) {
       return true;
     }
-    return false;
+    return TERMINAL_REFRESH_CODES.has(String(code));
   }
 
   isRetryableStatus(status?: number) {
@@ -828,6 +864,7 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
             this.api.token = data.access_token;
           }
           this._currentUserPromise = undefined;
+          this.refreshBlockedUntil = 0;
 
           this.updateUserCredentials({
             token: data.access_token,
@@ -892,6 +929,17 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
       return;
     }
 
+    // A refresh that just failed for a reason we decided NOT to log out over
+    // (offline, 5xx, a rate limit) is not worth re-attempting once per
+    // request. `refreshedTokenPromise` only dedupes refreshes that overlap in
+    // flight; a collection load fires its entries sequentially, so each one
+    // would start a fresh three-attempt cycle against an endpoint that is
+    // already failing — which is how a rate limit gets held open indefinitely
+    // instead of draining.
+    if (Date.now() < this.refreshBlockedUntil) {
+      return;
+    }
+
     try {
       await this.getRefreshedAccessToken();
     } catch (error) {
@@ -900,6 +948,7 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
         this.logout();
         throw new Error(this.getRefreshFailureMessage(error));
       }
+      this.refreshBlockedUntil = Date.now() + REFRESH_COOLDOWN_MS;
     }
   }
 

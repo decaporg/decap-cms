@@ -90,6 +90,81 @@ describe('turbo backend supabase session refresh', () => {
     expect(global.fetch).toHaveBeenCalledTimes(1);
   });
 
+  it('marks refresh_token_not_found as terminal, so a dead session cannot storm', async () => {
+    // This is the code GoTrue actually returns for a rotated-away or expired
+    // refresh token. It used to fall outside the terminal allow-list, so it
+    // was retried, swallowed, and left every subsequent request to 401 —
+    // 87 refresh POSTs in 41 seconds on one collection load, until GoTrue's
+    // rate limiter answered 429 and the session could never recover.
+    const backend = new DecapTurboGitHubBackend(config);
+    backend.supabaseRefreshToken = 'rotated-away-token';
+
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: false,
+      status: 400,
+      json: () =>
+        Promise.resolve({
+          code: 400,
+          error_code: 'refresh_token_not_found',
+          msg: 'Invalid Refresh Token: Refresh Token Not Found',
+        }),
+    });
+
+    await expect(backend.getRefreshedAccessToken()).rejects.toMatchObject({ isTerminal: true });
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+  });
+
+  it('logs out once on a terminal refresh instead of letting callers reuse a dead token', async () => {
+    const backend = new DecapTurboGitHubBackend(config);
+    backend.supabaseRefreshToken = 'rotated-away-token';
+    backend.supabaseAccessToken = 'expired-access-token';
+    // Inside the refresh buffer, so refreshSessionIfNeeded actually runs.
+    backend.supabaseExpiresAt = Math.floor(Date.now() / 1000) + 10;
+    backend.logout = jest.fn();
+
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: false,
+      status: 400,
+      json: () => Promise.resolve({ error_code: 'refresh_token_not_found' }),
+    });
+
+    await expect(backend.refreshSessionIfNeeded()).rejects.toThrow(/log in again/i);
+    expect(backend.logout).toHaveBeenCalledTimes(1);
+  });
+
+  it('stops re-attempting a transiently failed refresh for a cooldown window', async () => {
+    // A rate limit or a 5xx is not worth one three-attempt cycle per request:
+    // refreshedTokenPromise only dedupes refreshes that overlap in flight, and
+    // a collection load fires its entries sequentially.
+    const backend = new DecapTurboGitHubBackend(config);
+    backend.supabaseRefreshToken = 'refresh-token';
+    backend.supabaseAccessToken = 'expired-access-token';
+    backend.supabaseExpiresAt = Math.floor(Date.now() / 1000) + 10;
+    backend.delay = jest.fn().mockResolvedValue(undefined);
+
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: false,
+      status: 429,
+      json: () => Promise.resolve({ error_code: 'over_request_rate_limit' }),
+    });
+
+    // Non-terminal: it must NOT log the user out.
+    await expect(backend.refreshSessionIfNeeded()).resolves.toBeUndefined();
+    const afterFirst = global.fetch.mock.calls.length;
+    expect(afterFirst).toBe(3); // the three in-cycle attempts
+
+    // Three more requests arriving right behind it add nothing.
+    await backend.refreshSessionIfNeeded();
+    await backend.refreshSessionIfNeeded();
+    await backend.refreshSessionIfNeeded();
+    expect(global.fetch).toHaveBeenCalledTimes(afterFirst);
+
+    // Once the window passes, it is willing to try again.
+    backend.refreshBlockedUntil = 0;
+    await backend.refreshSessionIfNeeded();
+    expect(global.fetch.mock.calls.length).toBeGreaterThan(afterFirst);
+  });
+
   it('scopes gh proxy requests with auth header, x-site-id, and site_id query param', async () => {
     const backend = new DecapTurboGitHubBackend({
       ...config,
