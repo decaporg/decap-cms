@@ -244,6 +244,26 @@ I get 10 times more traffic from [Google] than from [Yahoo] or [MSN].
       expect(link).not.toHaveAttribute('href');
     });
 
+    it('should preserve blob: URLs used for not-yet-committed asset previews', () => {
+      // Editors preview a selected-but-not-yet-committed image via URL.createObjectURL(),
+      // which produces a blob: URL - DOMPurify's default ALLOWED_URI_REGEXP doesn't include
+      // that scheme, so it silently stripped `src` here once sanitize_preview defaulted to
+      // true, even though the image itself is entirely local and safe.
+      const value = '<img src="blob:https://example.com/1234-5678-90ab">';
+      const field = Map({ sanitize_preview: true });
+
+      const { container } = render(
+        <RichtextPreview
+          value={value}
+          getAsset={jest.fn()}
+          resolveWidget={jest.fn()}
+          field={field}
+        />,
+      );
+      const img = container.querySelector('img');
+      expect(img).toHaveAttribute('src', 'blob:https://example.com/1234-5678-90ab');
+    });
+
     it('should not sanitize HTML', () => {
       const value = `<img src="foobar.png" onerror="alert('hello')">`;
       const field = Map({ sanitize_preview: false });

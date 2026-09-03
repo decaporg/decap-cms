@@ -4,6 +4,17 @@ import { WidgetPreviewContainer } from 'decap-cms-ui-default';
 import DOMPurify from 'dompurify';
 
 import { markdownToHtml } from './serializers';
+
+// DOMPurify's default ALLOWED_URI_REGEXP doesn't include the `blob:` scheme, so it strips
+// `src` on any <img> pointing at a not-yet-committed asset - the editor always previews those
+// via `URL.createObjectURL()` (a blob: URL) before the file has a real repo URL. Extend the
+// default regex (see DOMPurify's own IS_ALLOWED_URI) to keep that scheme allowed while still
+// stripping the actually dangerous ones (javascript:, vbscript:, etc.).
+const SANITIZE_CONFIG = {
+  ALLOWED_URI_REGEXP:
+    /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|sms|cid|xmpp|matrix|blob):|[^a-z]|[a-z+.-]+(?:[^a-z+.-:]|$))/i,
+};
+
 class MarkdownPreview extends Component {
   static propTypes = {
     getAsset: PropTypes.func.isRequired,
@@ -24,7 +35,7 @@ class MarkdownPreview extends Component {
 
     const html = markdownToHtml(value, { getAsset, resolveWidget }, getRemarkPlugins?.());
     const shouldSanitizePreview = field?.get('sanitize_preview') ?? true;
-    const toRender = shouldSanitizePreview ? DOMPurify.sanitize(html) : html;
+    const toRender = shouldSanitizePreview ? DOMPurify.sanitize(html, SANITIZE_CONFIG) : html;
 
     return <WidgetPreviewContainer dangerouslySetInnerHTML={{ __html: toRender }} />;
   }

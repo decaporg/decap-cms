@@ -5,6 +5,16 @@ import DOMPurify from 'dompurify';
 
 import { markdownToHtml } from './serializers';
 
+// DOMPurify's default ALLOWED_URI_REGEXP doesn't include the `blob:` scheme, so it strips
+// `src` on any <img> pointing at a not-yet-committed asset - the editor always previews those
+// via `URL.createObjectURL()` (a blob: URL) before the file has a real repo URL. Extend the
+// default regex (see DOMPurify's own IS_ALLOWED_URI) to keep that scheme allowed while still
+// stripping the actually dangerous ones (javascript:, vbscript:, etc.).
+const SANITIZE_CONFIG = {
+  ALLOWED_URI_REGEXP:
+    /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|sms|cid|xmpp|matrix|blob):|[^a-z]|[a-z+.-]+(?:[^a-z+.-:]|$))/i,
+};
+
 function RichtextPreview({
   value,
   getAsset,
@@ -22,7 +32,7 @@ function RichtextPreview({
     getRemarkPlugins?.(),
   );
   const shouldSanitizePreview = field?.get('sanitize_preview') ?? true;
-  const toRender = shouldSanitizePreview ? DOMPurify.sanitize(html) : html;
+  const toRender = shouldSanitizePreview ? DOMPurify.sanitize(html, SANITIZE_CONFIG) : html;
 
   // Inject block-specific styles into the iframe
   const previewStyles = `
