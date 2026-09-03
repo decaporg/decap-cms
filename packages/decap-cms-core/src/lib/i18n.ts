@@ -128,6 +128,43 @@ export function getFilePaths(
   return paths;
 }
 
+/**
+ * The locale files an entry was actually loaded from.
+ *
+ * `getFilePaths` returns a path for every configured locale, whether or not a file exists.
+ * That is fine for writing, but asking a backend to delete a path that is not in the tree
+ * fails the whole commit (GitHub answers `GitRPC::BadObjectState`). Probing the backend is
+ * not an option either: the GitHub, Gitea and Forgejo implementations of `getEntry` resolve
+ * with empty data instead of rejecting when a file is missing.
+ *
+ * The merged entry already knows which locales it found: `i18n` holds every locale except
+ * the one the entry's own path points at. Fall back to every configured locale when the
+ * entry is not in the store, which keeps the previous behaviour for unknown entries.
+ */
+export function getExistingFilePaths(
+  collection: Collection,
+  extension: string,
+  path: string,
+  slug: string,
+  entry?: EntryMap,
+) {
+  const { structure, defaultLocale } = getI18nInfo(collection) as I18nInfo;
+
+  if (structure === I18N_STRUCTURE.SINGLE_FILE) {
+    return [path];
+  }
+
+  const i18n = entry?.get('i18n');
+  if (!i18n) {
+    return getFilePaths(collection, extension, path, slug);
+  }
+
+  const locales = [defaultLocale, ...i18n.keySeq().toArray()];
+  return locales.map(locale =>
+    getFilePath(structure as I18N_STRUCTURE, extension, path, slug, locale),
+  );
+}
+
 export function normalizeFilePath(structure: I18N_STRUCTURE, path: string, locale: string) {
   switch (structure) {
     case I18N_STRUCTURE.MULTIPLE_FOLDERS:

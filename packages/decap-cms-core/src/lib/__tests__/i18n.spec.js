@@ -195,6 +195,57 @@ describe('i18n', () => {
     });
   });
 
+  describe('getExistingFilePaths', () => {
+    const args = ['md', 'src/content/index.md', 'index'];
+    const collection = fromJS({
+      i18n: {
+        structure: i18n.I18N_STRUCTURE.MULTIPLE_FILES,
+        locales: ['en', 'de', 'fr'],
+        default_locale: 'en',
+      },
+    });
+
+    it('should only return paths for the locales the entry was loaded with', () => {
+      // an entry translated into de but not fr
+      const entry = fromJS({ i18n: { de: { data: {} } } });
+      expect(i18n.getExistingFilePaths(collection, ...args, entry)).toEqual([
+        'src/content/index.en.md',
+        'src/content/index.de.md',
+      ]);
+    });
+
+    it('should return only the default locale path for an untranslated entry', () => {
+      const entry = fromJS({ i18n: {} });
+      expect(i18n.getExistingFilePaths(collection, ...args, entry)).toEqual([
+        'src/content/index.en.md',
+      ]);
+    });
+
+    it('should fall back to every configured locale when the entry is unknown', () => {
+      expect(i18n.getExistingFilePaths(collection, ...args, undefined)).toEqual([
+        'src/content/index.en.md',
+        'src/content/index.de.md',
+        'src/content/index.fr.md',
+      ]);
+    });
+
+    it('should return array with single path when structure is I18N_STRUCTURE.SINGLE_FILE', () => {
+      expect(
+        i18n.getExistingFilePaths(
+          fromJS({
+            i18n: {
+              structure: i18n.I18N_STRUCTURE.SINGLE_FILE,
+              locales: ['en', 'de'],
+              default_locale: 'en',
+            },
+          }),
+          ...args,
+          fromJS({ i18n: { de: { data: {} } } }),
+        ),
+      ).toEqual(['src/content/index.md']);
+    });
+  });
+
   describe('normalizeFilePath', () => {
     it('should remove locale folder from path when structure is I18N_STRUCTURE.MULTIPLE_FOLDERS', () => {
       expect(

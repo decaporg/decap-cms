@@ -50,7 +50,7 @@ import {
   getI18nFilesDepth,
   getI18nFiles,
   hasI18n,
-  getFilePaths,
+  getExistingFilePaths,
   getI18nEntry,
   groupEntries,
   getI18nDataFiles,
@@ -1488,20 +1488,10 @@ export class Backend {
     await this.invokePreUnpublishEvent(entry);
     let paths = [path];
     if (hasI18n(collection)) {
-      const allPaths = getFilePaths(collection, extension, path, slug);
-      // Filter out non-existent files to prevent deletion errors
-      const existingPaths = await Promise.all(
-        allPaths.map(async filePath => {
-          try {
-            await this.implementation.getEntry(filePath);
-            return filePath;
-          } catch (error) {
-            // File doesn't exist, skip it
-            return null;
-          }
-        }),
-      );
-      paths = existingPaths.filter((p): p is string => p !== null);
+      // Only delete the locale files the entry was actually loaded from. Asking GitHub to
+      // delete a path that is not in the tree fails the whole commit with
+      // `GitRPC::BadObjectState`, which is what a partially translated entry used to hit.
+      paths = getExistingFilePaths(collection, extension, path, slug, entry);
     }
     await this.implementation.deleteFiles(paths, commitMessage);
 
