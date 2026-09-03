@@ -932,14 +932,50 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
     return result;
   }
 
+  /**
+   * Caches the i18n locale files the collection listing leaves out.
+   *
+   * `collectionRegex` narrows a listing to the default locale — one card per
+   * entry is what a list wants — so with `structure: multiple_files` only
+   * `slug.en.md` was ever ingested, and the editor, which reads every locale
+   * as its own file, missed the cache on each sibling and fell through to
+   * GitLab on every entry open.
+   *
+   * Its own collection key, not the listing's, so `fetchEntries` still returns
+   * one row per entry — the sibling rows are found by `fetchEntryByPath`,
+   * which matches on path alone and does not care which collection tagged
+   * them. Not awaited: nothing on this load needs it, and the entry it serves
+   * is a human click away, by which time the sync has long finished.
+   */
+  private warmLocaleSiblings(
+    folder: string,
+    extension: string,
+    depth: number,
+    localeSiblingRegex?: RegExp,
+  ) {
+    if (!localeSiblingRegex) {
+      return;
+    }
+
+    const collection = `${folder}:${extension}:${depth}:${localeSiblingRegex.toString()}`;
+    // Swallowed rather than surfaced: this is a prefetch, and the entry open
+    // it optimises reads from GitLab perfectly well without it.
+    this.syncCollection(collection, folder, extension, depth, localeSiblingRegex).catch(
+      () => undefined,
+    );
+  }
+
   async allEntriesByFolder(
     folder: string,
     extension: string,
     depth: number,
     pathRegex?: RegExp,
     searchTerm?: string,
+    localeSiblingRegex?: RegExp,
   ) {
     const collection = `${folder}:${extension}:${depth}:${pathRegex?.toString() || 'all'}`;
+
+    this.warmLocaleSiblings(folder, extension, depth, localeSiblingRegex);
 
     // One request, in place of a tree listing plus a file read and a commits
     // lookup per entry, driven from the browser.

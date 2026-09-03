@@ -1032,3 +1032,86 @@ describe('turbo backend user identity', () => {
     expect(user.email).toBeUndefined();
   });
 });
+
+describe('turbo backend locale sibling prefetch', () => {
+  const config = {
+    backend: {
+      repo: 'owner/repo',
+      supabase_app_id: 'supabase-project-id',
+      supabase_anon_key: 'supabase-anon-key',
+    },
+    media_folder: 'static/media',
+  };
+
+  function makeBackend() {
+    const backend = new DecapTurboGitHubBackend(config);
+    backend.baseUrl = 'https://sb.example.com';
+    backend.supabaseAccessToken = 'access-token';
+    backend.siteId = 'site-id';
+    // The listing's own sync and read, stubbed: these tests are about the
+    // EXTRA sync the prefetch does, not about how a collection loads.
+    backend.supabase = { fetchEntries: jest.fn().mockResolvedValue([]) };
+    return backend;
+  }
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  const listingRegex = /\.en\..*/;
+  const siblingRegex = /\.(?:de|si)\..*/;
+
+  it('syncs the locale siblings under their own collection key', async () => {
+    const backend = makeBackend();
+    const sync = jest.spyOn(backend, 'syncCollection').mockResolvedValue({ fresh: true });
+
+    await backend.allEntriesByFolder(
+      'content/posts',
+      'md',
+      1,
+      listingRegex,
+      undefined,
+      siblingRegex,
+    );
+
+    const collections = sync.mock.calls.map(call => call[0]);
+    const regexes = sync.mock.calls.map(call => call[4]);
+
+    // Two syncs, and crucially two DIFFERENT collection keys: the sibling rows
+    // must not be tagged with the listing's key, or fetchEntries would return
+    // three rows per entry and the collection would render each locale as its
+    // own card.
+    expect(sync).toHaveBeenCalledTimes(2);
+    expect(new Set(collections).size).toBe(2);
+    expect(regexes).toContain(siblingRegex);
+    expect(collections.some(name => name.includes(siblingRegex.toString()))).toBe(true);
+  });
+
+  it('does not sync siblings when the collection has none', async () => {
+    const backend = makeBackend();
+    const sync = jest.spyOn(backend, 'syncCollection').mockResolvedValue({ fresh: true });
+
+    await backend.allEntriesByFolder('content/posts', 'md', 1, listingRegex);
+
+    expect(sync).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not let a failed prefetch fail the collection load', async () => {
+    // The prefetch is not awaited, so a rejection here would otherwise surface
+    // as an unhandled rejection rather than as a slower entry open.
+    const backend = makeBackend();
+    jest.spyOn(backend, 'syncCollection').mockImplementation(collection =>
+      collection.includes(siblingRegex.toString())
+        ? Promise.reject(new Error('sibling sync failed'))
+        : Promise.resolve({ fresh: true }),
+    );
+
+    await expect(
+      backend.allEntriesByFolder('content/posts', 'md', 1, listingRegex, undefined, siblingRegex),
+    ).resolves.toEqual([]);
+  });
+});

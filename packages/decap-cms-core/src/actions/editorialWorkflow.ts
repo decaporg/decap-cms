@@ -1,6 +1,6 @@
 import get from 'lodash/get';
 import { Map, List } from 'immutable';
-import { EDITORIAL_WORKFLOW_ERROR } from 'decap-cms-lib-util';
+import { EDITORIAL_WORKFLOW_ERROR, generateContentKey } from 'decap-cms-lib-util';
 
 import { currentBackend, slugFromCustomPath } from '../backend';
 import {
@@ -49,6 +49,9 @@ export const UNPUBLISHED_ENTRY_REDIRECT = 'UNPUBLISHED_ENTRY_REDIRECT';
 export const UNPUBLISHED_ENTRIES_REQUEST = 'UNPUBLISHED_ENTRIES_REQUEST';
 export const UNPUBLISHED_ENTRIES_SUCCESS = 'UNPUBLISHED_ENTRIES_SUCCESS';
 export const UNPUBLISHED_ENTRIES_FAILURE = 'UNPUBLISHED_ENTRIES_FAILURE';
+
+/** Which entries are under editorial workflow, without loading any of them. */
+export const UNPUBLISHED_KEYS_SUCCESS = 'UNPUBLISHED_KEYS_SUCCESS';
 
 export const UNPUBLISHED_ENTRY_PERSIST_REQUEST = 'UNPUBLISHED_ENTRY_PERSIST_REQUEST';
 export const UNPUBLISHED_ENTRY_PERSIST_SUCCESS = 'UNPUBLISHED_ENTRY_PERSIST_SUCCESS';
@@ -116,6 +119,19 @@ function unpublishedEntriesLoaded(entries: EntryValue[], pagination: number) {
       entries,
       pages: pagination,
     },
+  };
+}
+
+/**
+ * The identities of the entries under editorial workflow, with none of their
+ * contents. This is all `loadUnpublishedEntry` needs to know whether a slug is
+ * in the workflow, and it costs one request where loading the entries costs one
+ * per entry on top of it.
+ */
+function unpublishedKeysLoaded(keys: string[]) {
+  return {
+    type: UNPUBLISHED_KEYS_SUCCESS,
+    payload: { keys },
   };
 }
 
@@ -238,10 +254,10 @@ function unpublishedEntryDeleteError(collection: string, slug: string) {
  */
 
 /**
- * How long the unpublished-entry list may be reused as proof that a given slug
- * is NOT under editorial workflow. Short enough that a colleague's new draft is
- * noticed within one navigation or two, long enough that browsing a collection
- * does not refetch per entry opened.
+ * How long the set of workflow entry keys may be reused as proof that a given
+ * slug is NOT under editorial workflow. Short enough that a colleague's new
+ * draft is noticed within one navigation or two, long enough that browsing a
+ * collection does not refetch per entry opened.
  */
 const UNPUBLISHED_LIST_MAX_AGE = 30 * 1000;
 
@@ -249,55 +265,69 @@ export function loadUnpublishedEntry(collection: Collection, slug: string) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const backend = currentBackend(state.config);
-    const workflowState = state.editorialWorkflow.toJS();
-    const entriesLoaded = get(workflowState, 'pages.ids', false);
-    const loadedAt = get(workflowState, 'pages.loadedAt', 0) as number;
-    // The list is only ever fetched once per page load — loadUnpublishedEntries
-    // early-returns while `pages.ids` is set, and nothing clears it after
-    // CONFIG_SUCCESS. So without a freshness window the shortcut below would
-    // answer "not under editorial workflow" from a snapshot taken when the
-    // session started, which is wrong the moment a COLLEAGUE creates a draft:
-    // the entry opens as the published version with no workflow bar, and
-    // saving it takes the `!unpublished` path, calls createBranch on the
-    // `cms/...` branch that already exists, and 422s. Editorial workflow
-    // exists for multi-editor use, so that is the ordinary case, not an edge.
+    const keys = state.editorialWorkflow.getIn(['pages', 'keys']) as List<string> | undefined;
+    const loadedAt = (state.editorialWorkflow.getIn(['pages', 'loadedAt']) as number) ?? 0;
+    // The key set is only ever fetched once per page load —
+    // loadUnpublishedEntries early-returns while `pages.ids` is set, and
+    // nothing clears it after CONFIG_SUCCESS. So without a freshness window
+    // the shortcut below would answer "not under editorial workflow" from a
+    // snapshot taken when the session started, which is wrong the moment a
+    // COLLEAGUE creates a draft: the entry opens as the published version with
+    // no workflow bar, and saving it takes the `!unpublished` path, calls
+    // createBranch on the `cms/...` branch that already exists, and 422s.
+    // Editorial workflow exists for multi-editor use, so that is the ordinary
+    // case, not an edge.
     //
-    // Refreshing the LIST rather than falling back to a per-slug
-    // `unpublishedEntry` keeps the optimisation: one request covers every
-    // entry opened in the next window, where the old code paid a round trip
-    // per published entry opened.
-    const listIsStale = !entriesLoaded || Date.now() - loadedAt > UNPUBLISHED_LIST_MAX_AGE;
-    //run possible unpublishedEntries migration
-    if (listIsStale) {
+    // What gets refreshed is the KEY SET, not the entries. Proving a slug is
+    // absent needs identities only, and `backend.unpublishedContentKeys` is
+    // the one request that lists them; `backend.unpublishedEntries` answers
+    // the same question but then hydrates every draft it found — a pull
+    // request lookup, a diff and a blob read each — which measured 20 requests
+    // and 3.1s through Turbo's proxy, in front of an entry load that had not
+    // started yet.
+    const keysAreStale = !keys || Date.now() - loadedAt > UNPUBLISHED_LIST_MAX_AGE;
+    if (keysAreStale) {
       try {
-        const { entries, pagination } = await backend.unpublishedEntries(state.collections);
-        dispatch(unpublishedEntriesLoaded(entries, pagination));
+        dispatch(unpublishedKeysLoaded(await backend.unpublishedContentKeys()));
         // eslint-disable-next-line no-empty
       } catch (e) {}
     }
 
     // `backend.unpublishedEntry` re-derives, for this one slug, the same
-    // open-pull-request set the list above already holds. So when the list is
-    // loaded and this entry is not in it, the answer is already known — the
-    // entry is not under editorial workflow — and asking again costs a full
-    // round trip before the editor can even begin loading the published entry.
-    // Measured through Turbo's proxy at 2.4s, paid on every open of every
-    // published entry, which is the common case.
+    // open-pull-request set the keys above already describe. So when the keys
+    // are known and this entry is not among them, the answer is already there
+    // — the entry is not under editorial workflow — and asking again costs a
+    // full round trip before the editor can even begin loading the published
+    // entry. Measured through Turbo's proxy at 2.4s, paid on every open of
+    // every published entry, which is the common case.
     //
-    // The list is kept current locally as this session works: persisting adds
-    // the entity, publishing and deleting remove it. A draft another editor
+    // The key set is kept current locally as this session works: persisting
+    // adds the key, publishing and deleting remove it. A draft another editor
     // created is picked up by the staleness refresh above, which is what makes
-    // "absent from the list" safe to treat as "not under editorial workflow".
+    // "absent from the keys" safe to treat as "not under editorial workflow".
     //
-    // Read from a fresh getState(), because the load above may have just
+    // Read from a fresh getState(), because the refresh above may have just
     // populated it.
+    //
+    // Gated on `loadedAt` rather than on the keys being present, because the
+    // local bookkeeping creates the key set too: persisting into an empty
+    // state adds one key, publishing out of it leaves an empty list, and
+    // neither has asked the backend anything. Taking an unconfirmed set as
+    // proof of absence would send every other entry down the published path.
+    // A refresh that threw therefore falls through to the slower per-slug
+    // lookup below, which is the safe direction.
     const loadedState = getState();
-    const listLoaded = Boolean(get(loadedState.editorialWorkflow.toJS(), 'pages.ids', false));
+    const confirmedAt = loadedState.editorialWorkflow.getIn(['pages', 'loadedAt']) as
+      | number
+      | undefined;
+    const currentKeys = loadedState.editorialWorkflow.getIn(['pages', 'keys']) as
+      | List<string>
+      | undefined;
     const isKnownUnpublished = Boolean(
-      selectUnpublishedEntry(loadedState, collection.get('name'), slug),
+      currentKeys?.includes(generateContentKey(collection.get('name') as string, slug)),
     );
 
-    if (listLoaded && !isKnownUnpublished) {
+    if (confirmedAt && currentKeys && !isKnownUnpublished) {
       // Exactly what the notUnderEditorialWorkflow branch below does.
       dispatch(unpublishedEntryRedirected(collection, slug));
       dispatch(loadEntry(collection, slug));

@@ -278,6 +278,13 @@ export interface Implementation {
     depth: number,
     pathRegex?: RegExp,
     searchTerm?: string,
+    /**
+     * Selects the i18n locale files `pathRegex` excludes — the listing wants
+     * one file per entry, the editor wants every locale. Advisory: a backend
+     * that caches can warm those files, and one that does not may ignore it.
+     * The returned entries must not include them either way.
+     */
+    localeSiblingRegex?: RegExp,
   ) => Promise<ImplementationEntry[]>;
   traverseCursor?: (
     cursor: Cursor,

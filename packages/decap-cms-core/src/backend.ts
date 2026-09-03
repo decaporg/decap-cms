@@ -6,6 +6,7 @@ import trim from 'lodash/trim';
 import sortBy from 'lodash/sortBy';
 import get from 'lodash/get';
 import set from 'lodash/set';
+import escapeRegExp from 'lodash/escapeRegExp';
 import { List, fromJS, Set } from 'immutable';
 import * as fuzzy from 'fuzzy';
 import {
@@ -332,31 +333,79 @@ function collectionDepth(collection: Collection) {
   return depth;
 }
 
-function i18nRulestring(ruleString: string, { defaultLocale, structure }: I18nInfo): string {
+function i18nRulestring(
+  ruleString: string,
+  { defaultLocale, structure }: I18nInfo,
+  locale: string = defaultLocale,
+): string {
   if (structure === I18N_STRUCTURE.MULTIPLE_FOLDERS) {
-    return `${defaultLocale}\\/${ruleString}`;
+    return `${locale}\\/${ruleString}`;
   }
 
   if (structure === I18N_STRUCTURE.MULTIPLE_FILES) {
-    return `${ruleString}\\.${defaultLocale}\\..*`;
+    return `${ruleString}\\.${locale}\\..*`;
   }
 
   return ruleString;
 }
 
-function collectionRegex(collection: Collection): RegExp | undefined {
-  let ruleString = '';
-
-  if (collection.get('path')) {
-    ruleString = `${collection.get('folder')}/${collection.get('path')}`.replace(
-      /{{.*}}/gm,
-      '(.*)',
-    );
+function collectionRuleString(collection: Collection): string {
+  if (!collection.get('path')) {
+    return '';
   }
+  return `${collection.get('folder')}/${collection.get('path')}`.replace(/{{.*}}/gm, '(.*)');
+}
+
+function collectionRegex(collection: Collection): RegExp | undefined {
+  let ruleString = collectionRuleString(collection);
 
   if (hasI18n(collection)) {
     ruleString = i18nRulestring(ruleString, getI18nInfo(collection) as I18nInfo);
   }
+
+  return ruleString ? new RegExp(ruleString) : undefined;
+}
+
+/**
+ * The same selector as `collectionRegex`, for the locales it deliberately
+ * leaves out.
+ *
+ * A collection list only ever wants one file per entry, so `collectionRegex`
+ * narrows to the default locale. The EDITOR wants all of them: with
+ * `structure: multiple_files` it reads `slug.en.md`, `slug.de.md` and
+ * `slug.si.md` as separate files. Backends that maintain a cache keyed on the
+ * collection selector therefore cache the default locale and miss every
+ * sibling, so each non-default locale falls back to the origin on every entry
+ * open — through Turbo's proxy, a tree read plus a blob read per locale.
+ *
+ * Built from the same `i18nRulestring` with the locale substituted, so the two
+ * selectors cannot drift into disagreeing about the repository layout.
+ *
+ * Undefined when there is nothing extra to select: no i18n, a single file
+ * holding every locale, or only the default locale configured.
+ */
+function localeSiblingRegex(collection: Collection): RegExp | undefined {
+  if (!hasI18n(collection)) {
+    return undefined;
+  }
+
+  const i18n = getI18nInfo(collection) as I18nInfo;
+  const { structure, defaultLocale, locales } = i18n;
+
+  if (structure === I18N_STRUCTURE.SINGLE_FILE) {
+    return undefined;
+  }
+
+  const siblings = (locales || []).filter(locale => locale !== defaultLocale);
+  if (siblings.length === 0) {
+    return undefined;
+  }
+
+  const ruleString = i18nRulestring(
+    collectionRuleString(collection),
+    i18n,
+    `(?:${siblings.map(escapeRegExp).join('|')})`,
+  );
 
   return ruleString ? new RegExp(ruleString) : undefined;
 }
@@ -773,6 +822,10 @@ export class Backend {
           depth,
           collectionRegex(collection),
           searchTerm,
+          // The locales this listing leaves out. A caching backend can warm
+          // them here so the editor does not read each one from the origin on
+          // every entry open; a backend without a cache ignores it.
+          localeSiblingRegex(collection),
         )
         .then(entries => this.processEntries(entries, collection));
     }
@@ -1144,6 +1197,22 @@ export class Backend {
       const entryWithFormat = await readAndFormatDataFile(dataFiles[0]);
       return entryWithFormat;
     }
+  }
+
+  /**
+   * The content keys (`collection/slug`) of every entry under editorial
+   * workflow, and nothing else about them.
+   *
+   * This is the cheap half of `unpublishedEntries`: the same single call that
+   * lists the open workflow branches, without the per-entry hydration that
+   * follows it there. Callers that only need to know WHICH entries are in the
+   * workflow — rather than render them — should use this: hydrating a draft
+   * costs a pull request lookup, a diff and a blob read, so answering "is this
+   * slug in the workflow" from the full load scales the cost with the number
+   * of open drafts for an answer that never needed their contents.
+   */
+  async unpublishedContentKeys(): Promise<string[]> {
+    return this.implementation.unpublishedEntries!();
   }
 
   async unpublishedEntries(collections: Collections) {

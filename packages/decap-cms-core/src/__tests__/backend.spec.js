@@ -1429,4 +1429,77 @@ describe('Backend', () => {
       );
     });
   });
+
+  describe('listAllEntries locale siblings', () => {
+    // A listing wants one file per entry, so the path regex it sends narrows to
+    // the default locale. The EDITOR reads every locale as its own file, so a
+    // backend that caches on the listing's selector caches `slug.en.md` and
+    // misses `slug.de.md` and `slug.si.md` on every entry open. The extra
+    // selector below is how such a backend learns which files those are.
+    function collectionWithI18n(structure) {
+      return fromJS({
+        name: 'posts',
+        type: FOLDER,
+        folder: 'content/posts',
+        extension: 'md',
+        i18n: { structure, locales: ['en', 'de', 'si'], default_locale: 'en' },
+      });
+    }
+
+    function backendWith(implementation) {
+      return new Backend(implementation, { config: { backend: {} }, backendName: 'github' });
+    }
+
+    it('passes a selector for the locales the listing leaves out', async () => {
+      const implementation = {
+        init: jest.fn(() => implementation),
+        allEntriesByFolder: jest.fn().mockResolvedValue([]),
+      };
+      const backend = backendWith(implementation);
+
+      await backend.listAllEntries(collectionWithI18n('multiple_files'));
+
+      const [, , , pathRegex, , siblingRegex] = implementation.allEntriesByFolder.mock.calls[0];
+
+      // The listing selector takes the default locale and nothing else...
+      expect(pathRegex.test('content/posts/slug.en.md')).toBe(true);
+      expect(pathRegex.test('content/posts/slug.de.md')).toBe(false);
+
+      // ...and the sibling selector is its exact complement across the
+      // configured locales, so between them every locale file is accounted for
+      // and none is claimed twice.
+      expect(siblingRegex.test('content/posts/slug.de.md')).toBe(true);
+      expect(siblingRegex.test('content/posts/slug.si.md')).toBe(true);
+      expect(siblingRegex.test('content/posts/slug.en.md')).toBe(false);
+    });
+
+    it('passes no sibling selector when every locale lives in one file', async () => {
+      const implementation = {
+        init: jest.fn(() => implementation),
+        allEntriesByFolder: jest.fn().mockResolvedValue([]),
+      };
+      const backend = backendWith(implementation);
+
+      await backend.listAllEntries(collectionWithI18n('single_file'));
+
+      const [, , , , , siblingRegex] = implementation.allEntriesByFolder.mock.calls[0];
+      expect(siblingRegex).toBeUndefined();
+    });
+
+    it('passes no sibling selector for a collection without i18n', async () => {
+      const implementation = {
+        init: jest.fn(() => implementation),
+        allEntriesByFolder: jest.fn().mockResolvedValue([]),
+      };
+      const backend = backendWith(implementation);
+
+      await backend.listAllEntries(
+        fromJS({ name: 'posts', type: FOLDER, folder: 'content/posts', extension: 'md' }),
+      );
+
+      const [, , , , , siblingRegex] = implementation.allEntriesByFolder.mock.calls[0];
+      expect(siblingRegex).toBeUndefined();
+    });
+  });
+
 });
