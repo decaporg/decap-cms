@@ -32,6 +32,7 @@ const typeMap = {
   link: 'link',
   image: 'image',
   shortcode: 'shortcode',
+  'inline-shortcode': 'inline-shortcode',
 };
 
 /**
@@ -62,7 +63,7 @@ const blockTypes = [
   'table-cell',
 ];
 
-const inlineTypes = ['link', 'image', 'break'];
+const inlineTypes = ['link', 'image', 'break', 'inline-shortcode'];
 
 const leadingWhitespaceExp = /^\s+\S/;
 const trailingWhitespaceExp = /(?!\S)\s+$/;
@@ -467,6 +468,14 @@ export default function slateToRemark(value, { voidCodeBlock }) {
       case 'image': {
         const { url, title, alt, ...data } = get(node, 'data', {});
         return u(typeMap[node.type], { url, title, alt, data });
+      }
+
+      /**
+       * Inline Shortcodes
+       */
+      case 'inline-shortcode': {
+        const { data } = node;
+        return u(typeMap[node.type], { data });
       }
     }
   }
