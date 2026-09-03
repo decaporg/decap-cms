@@ -318,10 +318,14 @@ function prepareMetaPath(path: string, collection: Collection, slug?: string) {
     return path;
   }
 
+  // Only collections that opt into index files can hold slug-type entries, whose meta path
+  // is the entry path itself. Without `index_file` every entry keeps the legacy behaviour of
+  // reporting the folder it lives in.
   if (
     slug &&
     isNested(collection) &&
     !isNestedSubfolders(collection) &&
+    collection.get('index_file') &&
     prepareMetaPathType(slug, collection) !== 'index'
   ) {
     return slug;
@@ -1131,6 +1135,8 @@ export class Backend {
       );
       entries = entries.filter(Boolean);
       const grouped = await groupEntries(collection, extension, entries as EntryValue[]);
+      // Grouping reports the default-locale slug; restore the slug the entry was requested
+      // under so later writes and deletes target the files we actually read. See `groupEntries`.
       if (grouped[0]?.srcSlug) {
         grouped[0].slug = grouped[0].srcSlug;
       }
