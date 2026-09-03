@@ -142,7 +142,7 @@ export function normalizeFilePath(structure: I18N_STRUCTURE, path: string, local
 
 // Remove meta fields that should not be serialized to frontmatter
 function removeMetaFields(data: unknown) {
-  if (!data || typeof data !== 'object' || !('delete' in data)) {
+  if (!Map.isMap(data)) {
     return data;
   }
   return (data as Map<string, unknown>).delete('path').delete('path_type');
@@ -364,6 +364,10 @@ export function groupEntries(collection: Collection, extension: string, entries:
 
   const groupedEntries = Object.values(grouped).reduce((acc, values) => {
     const entryValue = mergeValues(collection, structure, defaultLocale, values);
+    // `mergeValues` reports the slug of the default-locale file. When the locale files sit in
+    // different folders (or the default locale is missing) that differs from the slug the entry
+    // was actually read under, which is the one callers need to write or delete the right files.
+    // Keep it as `srcSlug` so the caller can restore it; see `getEntry` in backend.ts.
     if (values[0]?.value?.slug !== entryValue.slug) {
       entryValue.srcSlug = values[0]?.value?.slug;
     }

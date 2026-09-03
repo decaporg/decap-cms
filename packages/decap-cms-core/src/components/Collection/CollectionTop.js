@@ -11,7 +11,8 @@ import {
   buttons,
   shadows,
 } from 'decap-cms-ui-default';
-import { createHashHistory } from 'history';
+
+import { history } from '../../routing/history';
 
 const CollectionTopContainer = styled.div`
   ${components.cardTop};
@@ -64,13 +65,9 @@ function getCollectionProps(collection) {
   };
 }
 
-const history = createHashHistory();
-
 function CollectionTop({ collection, newEntryUrl, t }) {
-  const { collectionLabel, collectionLabelSingular, collectionDescription } = getCollectionProps(
-    collection,
-    t,
-  );
+  const { collectionLabel, collectionLabelSingular, collectionDescription } =
+    getCollectionProps(collection);
 
   const indexFileConfig = collection.get('index_file');
 

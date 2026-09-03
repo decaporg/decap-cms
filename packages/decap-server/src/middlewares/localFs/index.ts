@@ -79,7 +79,7 @@ export function localFsMiddleware({ repoPath, logger }: FsOptions) {
             assets.map(a => writeFile(repoPath, a.path, Buffer.from(a.content, a.encoding))),
           );
           if (dataFiles.every(dataFile => dataFile.newPath)) {
-            dataFiles.forEach(async dataFile => {
+            for (const dataFile of dataFiles) {
               await move(
                 repoPath,
                 dataFile.path,
@@ -87,7 +87,7 @@ export function localFsMiddleware({ repoPath, logger }: FsOptions) {
                 hasSubfolders,
                 dataFile.isFolder,
               );
-            });
+            }
           }
           res.json({ message: 'entry persisted' });
           break;

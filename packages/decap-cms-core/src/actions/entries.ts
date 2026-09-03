@@ -424,8 +424,9 @@ export function draftDuplicateEntry(entry: EntryMap) {
     type: DRAFT_CREATE_DUPLICATE_FROM_ENTRY,
     payload: createEntry(entry.get('collection'), '', '', {
       data: entry.get('data'),
-      meta: entry.get('meta').toJS(),
-      i18n: entry.get('i18n').toJS(),
+      // an entry read outside of `createEntry` may carry neither key
+      meta: (entry.get('meta') || Map()).toJS(),
+      i18n: (entry.get('i18n') || Map()).toJS(),
       mediaFiles: entry.get('mediaFiles').toJS(),
     }),
   };
@@ -1491,9 +1492,12 @@ function getExistingEntry(
   entries: Entries,
   collection: Collection,
   path: string,
-  path_type: string,
+  pathType: string,
 ) {
-  const customPath = selectCustomPath(collection, fromJS({ entry: { meta: { path, path_type } } }));
+  const customPath = selectCustomPath(
+    collection,
+    fromJS({ entry: { meta: { path, path_type: pathType } } }),
+  );
   if (!customPath) {
     return undefined;
   }

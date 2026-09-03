@@ -96,9 +96,9 @@ async function commitEntry(
     assets.map(a => writeFile(repoPath, a.path, Buffer.from(a.content, a.encoding))),
   );
   if (dataFiles.every(dataFile => dataFile.newPath)) {
-    dataFiles.forEach(async dataFile => {
+    for (const dataFile of dataFiles) {
       await move(repoPath, dataFile.path, dataFile.newPath!, hasSubfolders, dataFile.isFolder);
-    });
+    }
   }
 
   // commits files
