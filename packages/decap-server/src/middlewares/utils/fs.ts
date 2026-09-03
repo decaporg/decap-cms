@@ -1,6 +1,8 @@
 import path from 'path';
 import { promises as fs } from 'fs';
 
+import { resolveExistingRepoPath, resolveNewRepoPath } from './path';
+
 async function listFiles(dir: string, extension: string, depth: number): Promise<string[]> {
   if (depth <= 0) {
     return [];
@@ -28,17 +30,31 @@ export async function listRepoFiles(
   extension: string,
   depth: number,
 ) {
-  const files = await listFiles(path.join(repoPath, folder), extension, depth);
-  return files.map(f => f.slice(repoPath.length + 1));
+  const repoRoot = await fs.realpath(path.resolve(repoPath));
+
+  let resolvedFolder: string;
+  try {
+    resolvedFolder = await resolveExistingRepoPath(repoRoot, folder);
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code === 'ENOENT') {
+      return [];
+    }
+    throw e;
+  }
+
+  const files = await listFiles(resolvedFolder, extension, depth);
+  return files.map(f => path.relative(repoRoot, f));
 }
 
-export async function writeFile(filePath: string, content: Buffer | string) {
-  await fs.mkdir(path.dirname(filePath), { recursive: true });
-  await fs.writeFile(filePath, content);
+export async function writeFile(repoPath: string, filePath: string, content: Buffer | string) {
+  const resolvedPath = await resolveNewRepoPath(repoPath, filePath);
+  await fs.mkdir(path.dirname(resolvedPath), { recursive: true });
+  await fs.writeFile(resolvedPath, content);
 }
 
 export async function deleteFile(repoPath: string, filePath: string) {
-  await fs.unlink(path.join(repoPath, filePath)).catch(() => undefined);
+  const resolvedPath = await resolveNewRepoPath(repoPath, filePath);
+  await fs.unlink(resolvedPath).catch(() => undefined);
 }
 
 async function moveFile(from: string, to: string) {
@@ -46,24 +62,37 @@ async function moveFile(from: string, to: string) {
   await fs.rename(from, to);
 }
 
-export async function move(from: string, to: string, hasSubfolders = true, isFolder?: boolean) {
+export async function move(
+  repoPath: string,
+  from: string,
+  to: string,
+  hasSubfolders = true,
+  isFolder?: boolean,
+) {
+  const resolvedFrom = await resolveExistingRepoPath(repoPath, from);
+  const resolvedTo = await resolveNewRepoPath(repoPath, to);
+
   // move file
-  await moveFile(from, to);
+  await moveFile(resolvedFrom, resolvedTo);
 
   if (!hasSubfolders || isFolder === false) {
     return;
   }
 
-  // Move children for folder-type entries in legacy nested collections.
-  const sourceDir = path.dirname(from);
-  const destDir = path.dirname(to);
+  // Legacy behavior (subfolders: true, default): move all files in the directory.
+  // This is for collections where all files in a folder represent a single entry.
+  const sourceDir = path.dirname(resolvedFrom);
+  const destDir = path.dirname(resolvedTo);
   const allFiles = await listFiles(sourceDir, '', 100);
   await Promise.all(allFiles.map(file => moveFile(file, file.replace(sourceDir, destDir))));
 }
 
 export async function getUpdateDate(repoPath: string, filePath: string) {
-  return fs
-    .stat(path.join(repoPath, filePath))
-    .then(stat => stat.mtime)
-    .catch(() => new Date());
+  try {
+    return await fs
+      .stat(await resolveExistingRepoPath(repoPath, filePath))
+      .then(stat => stat.mtime);
+  } catch (e) {
+    return new Date();
+  }
 }

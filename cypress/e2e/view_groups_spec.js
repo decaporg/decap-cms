@@ -59,12 +59,12 @@ describe('View Group', () => {
     assertInEntries('This is a TOML front matter post');
 
     //enable group
-    group('Drafts');
+    group('Relation Test');
 
     assertEntriesCount(23);
     assertGroupsCount(3);
-    assertEachGroupCount('Draftstrue', 10);
-    assertEachGroupCount('Draftsfalse', 10);
+    assertEachGroupCount('Relation Testtrue', 10);
+    assertEachGroupCount('Relation Testfalse', 10);
     assertEachGroupCount('missing_value', 3);
   });
 });

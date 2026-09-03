@@ -78,6 +78,24 @@ describe('editorialWorkflow actions', () => {
     });
   });
 
+  describe('loadUnpublishedEntries', () => {
+    it('does not start another request while entries are loading', () => {
+      const { currentBackend } = require('../../backend');
+      const backend = { unpublishedEntries: jest.fn() };
+      const store = mockStore({
+        config: fromJS({ publish_mode: 'editorial_workflow' }),
+        collections: fromJS({}),
+        editorialWorkflow: fromJS({ pages: { isFetching: true } }),
+      });
+
+      currentBackend.mockReturnValue(backend);
+      store.dispatch(actions.loadUnpublishedEntries(store.getState().collections));
+
+      expect(backend.unpublishedEntries).not.toHaveBeenCalled();
+      expect(store.getActions()).toHaveLength(0);
+    });
+  });
+
   describe('publishUnpublishedEntry', () => {
     it('should publish unpublished entry and report success', async () => {
       const { currentBackend } = require('../../backend');

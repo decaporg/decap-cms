@@ -2,6 +2,8 @@ import crypto from 'crypto';
 import path from 'path';
 import { promises as fs } from 'fs';
 
+import { resolveExistingRepoPath } from './path';
+
 function sha256(buffer: Buffer) {
   return crypto.createHash('sha256').update(buffer).digest('hex');
 }
@@ -18,7 +20,7 @@ export async function entriesFromFiles(
   return Promise.all(
     files.map(async file => {
       try {
-        const content = await fs.readFile(path.join(repoPath, file.path));
+        const content = await fs.readFile(await resolveExistingRepoPath(repoPath, file.path));
         return {
           data: content.toString(),
           file: { path: normalizePath(file.path), label: file.label, id: sha256(content) },
@@ -35,7 +37,7 @@ export async function entriesFromFiles(
 
 export async function readMediaFile(repoPath: string, file: string) {
   const encoding = 'base64';
-  const buffer = await fs.readFile(path.join(repoPath, file));
+  const buffer = await fs.readFile(await resolveExistingRepoPath(repoPath, file));
   const id = sha256(buffer);
 
   return {

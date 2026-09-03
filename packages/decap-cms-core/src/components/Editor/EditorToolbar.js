@@ -1,4 +1,5 @@
-import React from 'react';
+// eslint-disable-next-line no-unused-vars
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { css } from '@emotion/react';
@@ -262,7 +263,7 @@ const StatusDropdownItem = styled(DropdownItem)`
   }
 `;
 
-export class EditorToolbar extends React.Component {
+export class EditorToolbar extends Component {
   static propTypes = {
     isPersisting: PropTypes.bool,
     isPublishing: PropTypes.bool,
@@ -282,6 +283,7 @@ export class EditorToolbar extends React.Component {
     onPublishAndDuplicate: PropTypes.func.isRequired,
     user: PropTypes.object,
     hasChanged: PropTypes.bool,
+    canCreateNewEntry: PropTypes.bool,
     displayUrl: PropTypes.string,
     collection: ImmutablePropTypes.map.isRequired,
     hasWorkflow: PropTypes.bool,
@@ -330,8 +332,9 @@ export class EditorToolbar extends React.Component {
   }
 
   renderSimpleControls = () => {
-    const { collection, hasChanged, isNewEntry, showDelete, onDelete, t } = this.props;
-    const canCreate = collection.get('create');
+    const { collection, canCreateNewEntry, hasChanged, isNewEntry, showDelete, onDelete, t } =
+      this.props;
+    const canCreate = canCreateNewEntry ?? collection.get('create');
 
     return (
       <>
@@ -608,10 +611,11 @@ export class EditorToolbar extends React.Component {
       isModification,
       currentStatus,
       collection,
+      canCreateNewEntry,
       t,
     } = this.props;
 
-    const canCreate = collection.get('create');
+    const canCreate = canCreateNewEntry ?? collection.get('create');
     const canPublish = collection.get('publish') && !useOpenAuthoring;
     const canDelete = collection.get('delete', true);
 
@@ -634,19 +638,19 @@ export class EditorToolbar extends React.Component {
       </SaveButton>,
       currentStatus
         ? [
-            <React.Fragment key="workflow-status-controls">
+            <Fragment key="workflow-status-controls">
               {this.renderWorkflowStatusControls()}
               {!hasChanged && this.renderNewEntryWorkflowPublishControls({ canCreate, canPublish })}
-            </React.Fragment>,
+            </Fragment>,
           ]
         : !isNewEntry && (
-            <React.Fragment key="existing-entry-workflow-publish-controls">
+            <Fragment key="existing-entry-workflow-publish-controls">
               {this.renderExistingEntryWorkflowPublishControls({
                 canCreate,
                 canPublish,
                 canDelete,
               })}
-            </React.Fragment>
+            </Fragment>
           ),
       (!showDelete || useOpenAuthoring) && !hasUnpublishedChanges && !isModification ? null : (
         <DeleteButton

@@ -247,11 +247,20 @@ export default class API {
         headers: {
           'Content-Type': 'application/json; charset=utf-8',
           ...headers,
-          authorization: this.token ? `Bearer ${this.token}` : '',
+          Authorization: this.token ? `Bearer ${this.token}` : '',
         },
       };
     });
-    const httpLink = createHttpLink({ uri: this.graphQLAPIRoot });
+    const httpLink = createHttpLink({
+      uri: this.graphQLAPIRoot,
+      fetch: this.requestFunction
+        ? (input: RequestInfo, init?: RequestInit) => {
+            const url = typeof input === 'string' ? input : input.url;
+            const request = unsentRequest.fromFetchArguments(url, init).toJS() as ApiRequest;
+            return this.requestFunction!(request);
+          }
+        : undefined,
+    });
     return new ApolloClient({
       link: authLink.concat(httpLink),
       cache: new InMemoryCache(),

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -139,7 +139,7 @@ function CardImage({ getAsset, value, field }) {
     setAsset(value ? getAsset(value, field) : null);
   }, [value, field, getAsset]);
 
-  return asset ? <StyledImage src={asset.toString()} /> : null;
+  return asset ? <StyledImage data-testid="entry-card-image" src={asset.toString()} /> : null;
 }
 
 function EntryCard({

@@ -18,6 +18,7 @@ import { defaultSchema, joi } from '../joi';
 import { pathTraversal } from '../joi/customValidators';
 import { listRepoFiles, writeFile, move, deleteFile, getUpdateDate } from '../utils/fs';
 import { entriesFromFiles, readMediaFile } from '../utils/entries';
+import { resolveExistingRepoPath } from '../utils/path';
 
 import type {
   EntriesByFolderParams,
@@ -89,21 +90,14 @@ async function commitEntry(
   hasSubfolders = true,
 ) {
   // save entry content
-  await Promise.all(
-    dataFiles.map(dataFile => writeFile(path.join(repoPath, dataFile.path), dataFile.raw)),
-  );
+  await Promise.all(dataFiles.map(dataFile => writeFile(repoPath, dataFile.path, dataFile.raw)));
   // save assets
   await Promise.all(
-    assets.map(a => writeFile(path.join(repoPath, a.path), Buffer.from(a.content, a.encoding))),
+    assets.map(a => writeFile(repoPath, a.path, Buffer.from(a.content, a.encoding))),
   );
   if (dataFiles.every(dataFile => dataFile.newPath)) {
     dataFiles.forEach(async dataFile => {
-      await move(
-        path.join(repoPath, dataFile.path),
-        path.join(repoPath, dataFile.newPath!),
-        hasSubfolders,
-        dataFile.isFolder,
-      );
+      await move(repoPath, dataFile.path, dataFile.newPath!, hasSubfolders, dataFile.isFolder);
     });
   }
 
@@ -347,7 +341,9 @@ export function localGitMiddleware({ repoPath, logger }: GitOptions) {
               const toDelete = diffs.filter(
                 d => d.binary && !assets.map(a => a.path).includes(d.path),
               );
-              await Promise.all(toDelete.map(f => fs.unlink(path.join(repoPath, f.path))));
+              await Promise.all(
+                toDelete.map(async f => fs.unlink(await resolveExistingRepoPath(repoPath, f.path))),
+              );
               await commitEntry(
                 git,
                 repoPath,
@@ -413,10 +409,7 @@ export function localGitMiddleware({ repoPath, logger }: GitOptions) {
           } = body.params as PersistMediaParams;
 
           const file = await runOnBranch(git, branch, async () => {
-            await writeFile(
-              path.join(repoPath, asset.path),
-              Buffer.from(asset.content, asset.encoding),
-            );
+            await writeFile(repoPath, asset.path, Buffer.from(asset.content, asset.encoding));
             await commit(git, commitMessage);
             return readMediaFile(repoPath, asset.path);
           });

@@ -1,6 +1,6 @@
 import type { Action } from 'redux';
 import type { StaticallyTypedRecord } from './immutable';
-import type { Map, List, OrderedMap, Set } from 'immutable';
+import type { List, Map, OrderedMap, Set } from 'immutable';
 import type { FILES, FOLDER } from '../constants/collectionTypes';
 import type { MediaFile as BackendMediaFile } from '../backend';
 import type { Auth } from '../reducers/auth';
@@ -19,6 +19,7 @@ export type CmsBackendType =
   | 'github'
   | 'gitlab'
   | 'gitea'
+  | 'forgejo'
   | 'bitbucket'
   | 'test-repo'
   | 'proxy';
@@ -77,6 +78,7 @@ export interface CmsFieldBase {
   i18n?: boolean | 'translate' | 'duplicate' | 'none';
   media_folder?: string;
   public_folder?: string;
+  media_processing?: CmsMediaProcessing;
   comment?: string;
   readonly?: boolean;
 }
@@ -411,6 +413,7 @@ export interface CmsCollection {
   view_filters?: ViewFilter[];
   view_groups?: ViewGroup[];
   i18n?: boolean | CmsI18nConfig;
+  limit?: number;
 
   index_file?: {
     pattern: string;
@@ -465,6 +468,21 @@ export interface CmsIssueReports {
   url?: string;
 }
 
+export type CmsMediaProcessingFormat = 'jpeg' | 'webp';
+
+export interface CmsMediaProcessing {
+  enabled: boolean;
+  format?: {
+    enabled: boolean;
+    default: CmsMediaProcessingFormat;
+  };
+  quality?: number;
+  strip_metadata?: boolean;
+  width?: number | null;
+  height?: number | null;
+  aspect_ratio?: number | string | null;
+}
+
 export interface CmsConfig {
   backend: CmsBackend;
   collections: CmsCollection[];
@@ -480,6 +498,7 @@ export interface CmsConfig {
   media_folder?: string;
   public_folder?: string;
   media_folder_relative?: boolean;
+  media_processing?: CmsMediaProcessing;
   media_library?: CmsMediaLibrary;
   publish_mode?: CmsPublishMode;
   load_config_file?: boolean;
@@ -553,7 +572,11 @@ export type Config = StaticallyTypedRecord<{
 }>;
 
 type PagesObject = {
-  [collection: string]: { isFetching: boolean; page: number; ids: List<string> };
+  [collection: string]: {
+    isFetching: boolean;
+    page: number;
+    ids: List<string>;
+  };
 };
 
 type Pages = StaticallyTypedRecord<PagesObject>;
@@ -643,6 +666,7 @@ export type EntryField = StaticallyTypedRecord<{
   media_folder?: string;
   multiple?: boolean;
   public_folder?: string;
+  media_processing?: CmsMediaProcessing;
   comment?: string;
   meta?: boolean;
   i18n: 'translate' | 'duplicate' | 'none';
@@ -733,6 +757,7 @@ type CollectionObject = {
   meta?: Meta;
   i18n: i18n;
   index_file?: IndexFile;
+  limit?: number;
 };
 
 export type Collection = StaticallyTypedRecord<CollectionObject>;

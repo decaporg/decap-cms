@@ -1,5 +1,5 @@
+import { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import { Waypoint } from 'react-waypoint';
@@ -40,7 +40,7 @@ const SectionHeading = styled.p`
   margin: 0 0 8px;
 `;
 
-class EntryListing extends React.Component {
+class EntryListing extends Component {
   static propTypes = {
     collections: ImmutablePropTypes.iterable.isRequired,
     entries: ImmutablePropTypes.list,
@@ -200,7 +200,7 @@ class EntryListing extends React.Component {
     });
 
     return (
-      <React.Fragment>
+      <Fragment>
         {showPublishedEntries && (
           <CardsGrid>
             {publishedCards}
@@ -211,7 +211,7 @@ class EntryListing extends React.Component {
           <SectionHeading>{t('collection.entries.unpublishedHeader')}</SectionHeading>
         </SectionSeparator>
         <CardsGrid>{unpublishedCards}</CardsGrid>
-      </React.Fragment>
+      </Fragment>
     );
   };
 

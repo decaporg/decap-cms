@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import { Component } from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { css, Global } from '@emotion/react';
 import styled from '@emotion/styled';
@@ -284,6 +284,7 @@ class EditorInterface extends Component {
       onValidate,
       user,
       hasChanged,
+      canCreateNewEntry,
       displayUrl,
       hasWorkflow,
       useOpenAuthoring,
@@ -439,6 +440,7 @@ class EditorInterface extends Component {
           onPublishAndDuplicate={() => this.handleOnPublish({ createNew: true, duplicate: true })}
           user={user}
           hasChanged={hasChanged}
+          canCreateNewEntry={canCreateNewEntry}
           displayUrl={displayUrl}
           collection={collection}
           hasWorkflow={hasWorkflow}
@@ -525,6 +527,7 @@ EditorInterface.propTypes = {
   onChangeStatus: PropTypes.func.isRequired,
   user: PropTypes.object,
   hasChanged: PropTypes.bool,
+  canCreateNewEntry: PropTypes.bool,
   displayUrl: PropTypes.string,
   hasWorkflow: PropTypes.bool,
   useOpenAuthoring: PropTypes.bool,

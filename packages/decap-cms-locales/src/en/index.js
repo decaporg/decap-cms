@@ -8,6 +8,7 @@ const en = {
     loginWithGitHub: 'Login with GitHub',
     loginWithGitLab: 'Login with GitLab',
     loginWithGitea: 'Login with Gitea',
+    loginWithForgejo: 'Login with Forgejo',
     errors: {
       email: 'Make sure to enter your email.',
       password: 'Please enter your password.',

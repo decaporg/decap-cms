@@ -23,7 +23,6 @@ import {
   publishAndCreateNewEntryInEditor,
   publishAndDuplicateEntryInEditor,
   assertNotification,
-  assertFieldValidationError,
 } from '../utils/steps';
 import { workflowStatus, editorStatus, publishTypes, notifications } from '../utils/constants';
 
@@ -52,6 +51,7 @@ describe('Test Backend Editorial Workflow', () => {
 
   beforeEach(() => {
     cy.task('updateConfig', { collections: [{ publish: true }] });
+    cy.clock(0, ['Date']);
   });
 
   it('successfully loads', () => {
@@ -207,16 +207,16 @@ describe('Test Backend Editorial Workflow', () => {
     login();
 
     inSidebar(() => cy.contains('a', 'Pages').click());
-    inSidebar(() => cy.contains('a', /^Directory$/));
+    inSidebar(() => cy.get('[data-testid="/directory"]'));
     inGrid(() => cy.contains('a', 'Root Page'));
 
-    inSidebar(() => cy.contains('a', /^Directory$/).click());
+    inSidebar(() => cy.get('[data-testid="/directory"]').click());
 
-    inSidebar(() => cy.contains('a', /^Sub Directory$/));
-    inSidebar(() => cy.contains('a', 'Another Sub Directory'));
+    inSidebar(() => cy.get('[data-testid="/directory/sub-directory"]'));
+    inSidebar(() => cy.get('[data-testid="/directory/another-sub-directory"]'));
 
-    inSidebar(() => cy.contains('a', /^Sub Directory$/).click());
-    inSidebar(() => cy.contains('a', 'Nested Directory'));
+    inSidebar(() => cy.get('[data-testid="/directory/sub-directory"]').click());
+    inSidebar(() => cy.get('[data-testid="/directory/sub-directory/nested-directory"]'));
     cy.url().should(
       'eq',
       'http://localhost:8080/#/collections/pages/filter/directory/sub-directory',
@@ -232,8 +232,8 @@ describe('Test Backend Editorial Workflow', () => {
     login();
 
     inSidebar(() => cy.contains('a', 'Pages').click());
-    inSidebar(() => cy.contains('a', /^Directory$/).click());
-    inSidebar(() => cy.contains('a', 'Another Sub Directory').click());
+    inSidebar(() => cy.get('[data-testid="/directory"]').click());
+    inSidebar(() => cy.get('[data-testid="/directory/another-sub-directory"]').click());
     inGrid(() => cy.contains('a', 'Another Sub Directory'));
   });
 
@@ -241,12 +241,12 @@ describe('Test Backend Editorial Workflow', () => {
     login();
 
     inSidebar(() => cy.contains('a', 'Pages').click());
-    inSidebar(() => cy.contains('a', /^Directory$/).click());
-    inSidebar(() => cy.contains('a', /^Sub Directory$/).click());
-    cy.contains('a', 'New Page').click();
+    inSidebar(() => cy.get('[data-testid="/directory"]').click());
+    inSidebar(() => cy.get('[data-testid="/directory/sub-directory"]').click());
+    cy.contains('a', '＋ Page').click();
 
     cy.get('[id^="path-field"]').should('have.value', 'directory/sub-directory');
-    cy.get('[id^="path-field"]').type('/new-path');
+    cy.get('[id^="path-field"]').type('{end}/new-path');
     cy.get('[id^="title-field"]').type('New Path Title');
     cy.clock().then(clock => {
       clock.tick(150);
@@ -257,37 +257,38 @@ describe('Test Backend Editorial Workflow', () => {
     publishEntryInEditor(publishTypes.publishNow);
     exitEditor();
 
-    inSidebar(() => cy.contains('a', 'New Path Title'));
-    inSidebar(() => cy.contains('a', /^Directory$/).click());
-    inSidebar(() => cy.contains('a', /^Directory$/).click());
+    inSidebar(() => cy.get('[data-testid="/directory/sub-directory/new-path"]').click());
+    inGrid(() => cy.contains('a', 'New Path Title'));
+    inSidebar(() => cy.get('[data-testid="/directory"]').click());
+    inSidebar(() => cy.get('[data-testid="/directory"]').click());
     inGrid(() => cy.contains('a', 'New Path Title').should('not.exist'));
   });
 
-  it(`can't create an entry with an existing path`, () => {
+  it('creates a unique filename when an entry already exists at the generated path', () => {
     login();
 
     inSidebar(() => cy.contains('a', 'Pages').click());
-    inSidebar(() => cy.contains('a', /^Directory$/).click());
-    inSidebar(() => cy.contains('a', /^Sub Directory$/).click());
+    inSidebar(() => cy.get('[data-testid="/directory"]').click());
+    inSidebar(() => cy.get('[data-testid="/directory/sub-directory"]').click());
 
-    cy.contains('a', 'New Page').click();
-    cy.get('[id^="title-field"]').type('New Path Title');
+    cy.contains('a', '＋ Page').click();
+    cy.get('[id^="title-field"]').type('index');
     cy.clock().then(clock => {
       clock.tick(150);
     });
     cy.contains('button', 'Save').click();
-
-    assertFieldValidationError({
-      message: `Path 'directory/sub-directory' already exists`,
-      fieldLabel: 'Path',
-    });
+    assertNotification(notifications.saved);
+    cy.url().should(
+      'eq',
+      'http://localhost:8080/#/collections/pages/entries/directory/sub-directory/index-1',
+    );
   });
 
   it('can move an existing entry to a new path', () => {
     login();
 
     inSidebar(() => cy.contains('a', 'Pages').click());
-    inSidebar(() => cy.contains('a', /^Directory$/).click());
+    inSidebar(() => cy.get('[data-testid="/directory"]').click());
     inGrid(() => cy.contains('a', /^Directory$/).click());
 
     cy.get('[id^="path-field"]').should('have.value', 'directory');
@@ -304,9 +305,14 @@ describe('Test Backend Editorial Workflow', () => {
     publishEntryInEditor(publishTypes.publishNow);
     exitEditor();
 
-    inSidebar(() => cy.contains('a', 'New Directory').click());
+    inSidebar(() => cy.get('[data-testid="/new-directory"]').click());
+    inSidebar(() => cy.get('[data-testid="/new-directory/sub-directory"]').should('not.exist'));
+    inSidebar(() =>
+      cy.get('[data-testid="/new-directory/another-sub-directory"]').should('not.exist'),
+    );
 
-    inSidebar(() => cy.contains('a', /^Sub Directory$/));
-    inSidebar(() => cy.contains('a', 'Another Sub Directory'));
+    inSidebar(() => cy.get('[data-testid="/directory"]').click());
+    inSidebar(() => cy.get('[data-testid="/directory/sub-directory"]'));
+    inSidebar(() => cy.get('[data-testid="/directory/another-sub-directory"]'));
   });
 });

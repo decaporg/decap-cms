@@ -43,6 +43,7 @@ type UnpublishedRepoEntry = {
   slug: string;
   collection: string;
   status: string;
+  hasSubfolders: boolean;
   diffs: Diff[];
   updatedAt: string;
 };
@@ -81,6 +82,27 @@ function writeFile(path: string, content: string | AssetProxy, tree: RepoTree) {
 
 function deleteFile(path: string, tree: RepoTree) {
   unset(tree, path.split('/'));
+}
+
+function moveFile(path: string, newPath: string, tree: RepoTree, hasSubfolders: boolean) {
+  const sourceDir = dirname(path);
+  const destDir = dirname(newPath);
+
+  if (!hasSubfolders || sourceDir === destDir) {
+    deleteFile(path, tree);
+    return;
+  }
+
+  const files = getFolderFiles(tree, path.split('/')[0], '', 100).filter(file =>
+    file.path.startsWith(`${sourceDir}/`),
+  );
+  files.forEach(file => {
+    deleteFile(file.path, tree);
+    // the moved entry itself is rewritten by the caller at its new path
+    if (file.path !== path) {
+      writeFile(file.path.replace(sourceDir, destDir), file.content, tree);
+    }
+  });
 }
 
 const pageSize = 10;
@@ -276,6 +298,7 @@ export default class TestBackend implements Implementation {
     slug: string,
     collection: string,
     status: string,
+    hasSubfolders: boolean,
   ) {
     const diffs: Diff[] = [];
     dataFiles.forEach(dataFile => {
@@ -306,6 +329,7 @@ export default class TestBackend implements Implementation {
       slug,
       collection,
       status,
+      hasSubfolders,
       diffs,
       updatedAt: new Date().toISOString(),
     };
@@ -326,6 +350,7 @@ export default class TestBackend implements Implementation {
         slug,
         options.collectionName as string,
         status,
+        options.hasSubfolders !== false,
       );
       return Promise.resolve();
     }
@@ -333,33 +358,15 @@ export default class TestBackend implements Implementation {
     entry.dataFiles.forEach(dataFile => {
       const { path, newPath, raw, isFolder } = dataFile;
       if (newPath && newPath !== path) {
-        const sourceDir = dirname(path);
-        const destDir = dirname(newPath);
-        if (sourceDir !== destDir) {
-          if (isFolder !== false) {
-            // move all children in the directory for folder-type (index) entries
-            const rootFolder = path.split('/')[0];
-            const toMove = getFolderFiles(window.repoFiles, rootFolder, '', 100).filter(f =>
-              f.path.startsWith(sourceDir + '/'),
-            );
-            toMove.forEach(f => {
-              deleteFile(f.path, window.repoFiles);
-              if (f.path !== path) {
-                writeFile(f.path.replace(sourceDir, destDir), f.content, window.repoFiles);
-              }
-            });
-          } else {
-            // only move the single file for slug-type entries
-            deleteFile(path, window.repoFiles);
-          }
-        } else {
-          // same directory, just rename the file
-          deleteFile(path, window.repoFiles);
-        }
-        writeFile(newPath, raw, window.repoFiles);
-      } else {
-        writeFile(path, raw, window.repoFiles);
+        // only folder-type (index) entries drag their subfolder contents along
+        moveFile(
+          path,
+          newPath,
+          window.repoFiles,
+          options.hasSubfolders !== false && isFolder !== false,
+        );
       }
+      writeFile(newPath || path, raw, window.repoFiles);
     });
     entry.assets.forEach(a => {
       writeFile(a.path, a, window.repoFiles);
@@ -382,28 +389,7 @@ export default class TestBackend implements Implementation {
     unpubEntry.diffs.forEach(d => {
       if (d.originalPath && !d.newFile) {
         const originalPath = d.originalPath;
-        const sourceDir = dirname(originalPath);
-        const destDir = dirname(d.path);
-        if (sourceDir !== destDir) {
-          if (d.isFolder !== false) {
-            // move all children in the directory for folder-type (index) entries
-            const toMove = getFolderFiles(tree, originalPath.split('/')[0], '', 100).filter(f =>
-              f.path.startsWith(sourceDir + '/'),
-            );
-            toMove.forEach(f => {
-              deleteFile(f.path, tree);
-              if (f.path !== originalPath) {
-                writeFile(f.path.replace(sourceDir, destDir), f.content, tree);
-              }
-            });
-          } else {
-            // only move the single file for slug-type entries
-            deleteFile(originalPath, tree);
-          }
-        } else {
-          // same directory, just rename the file
-          deleteFile(originalPath, tree);
-        }
+        moveFile(originalPath, d.path, tree, unpubEntry.hasSubfolders && d.isFolder !== false);
       }
       writeFile(d.path, d.content, tree);
     });
