@@ -207,12 +207,16 @@ I get 10 times more traffic from [Google] than from [Yahoo] or [MSN].
       expect(img).not.toHaveAttribute('onerror');
     });
 
-    it('should preserve blob: URLs used for not-yet-committed asset previews', () => {
+    it('should preserve same-origin blob: URLs used for not-yet-committed asset previews', () => {
       // Editors preview a selected-but-not-yet-committed image via URL.createObjectURL(),
       // which produces a blob: URL - DOMPurify's default ALLOWED_URI_REGEXP doesn't include
       // that scheme, so it silently stripped `src` here once sanitize_preview defaulted to
-      // true, even though the image itself is entirely local and safe.
-      const value = '<img src="blob:https://example.com/1234-5678-90ab">';
+      // true, even though the image itself is entirely local and safe. A real
+      // URL.createObjectURL() call always embeds the current document's own origin, so the
+      // fixture must too - a cross-origin value isn't something this exception should (or, per
+      // the test below, does) preserve.
+      const blobUrl = `blob:${window.location.origin}/1234-5678-90ab`;
+      const value = `<img src="${blobUrl}">`;
       const field = Map({ sanitize_preview: true });
 
       const { container } = render(
@@ -224,7 +228,49 @@ I get 10 times more traffic from [Google] than from [Yahoo] or [MSN].
         />,
       );
       const img = container.querySelector('img');
-      expect(img).toHaveAttribute('src', 'blob:https://example.com/1234-5678-90ab');
+      expect(img).toHaveAttribute('src', blobUrl);
+    });
+
+    it('should NOT preserve blob: URLs on non-<img> attributes', () => {
+      // The blob: exception above must be scoped to <img src>. Widening DOMPurify's global
+      // ALLOWED_URI_REGEXP instead of using a node-scoped hook would let blob: through on any
+      // URI-bearing attribute - including <a href> and <form action>, both of which could be
+      // used to smuggle attacker-controlled blob content (see PR review discussion). Uses a
+      // same-origin blob: URL so this test isolates the tag/attribute scoping specifically,
+      // independent of the separate cross-origin check below.
+      const blobUrl = `blob:${window.location.origin}/should-be-stripped`;
+      const value = [`<a href="${blobUrl}">click</a>`, `<form action="${blobUrl}"></form>`].join('');
+      const field = Map({ sanitize_preview: true });
+
+      const { container } = render(
+        <MarkdownPreview
+          value={value}
+          getAsset={jest.fn()}
+          resolveWidget={jest.fn()}
+          field={field}
+        />,
+      );
+      expect(container.querySelector('a')).not.toHaveAttribute('href');
+      expect(container.querySelector('form')).not.toHaveAttribute('action');
+    });
+
+    it('should NOT preserve a cross-origin blob: URL even on <img src>', () => {
+      // A blob: URL embeds the origin that created it and a browser already refuses to
+      // dereference one from a different origin, but the sanitizer should reject it outright
+      // rather than pass through a value that could not be one of this CMS instance's own
+      // asset previews.
+      const value = '<img src="blob:https://attacker.example/1234-5678-90ab">';
+      const field = Map({ sanitize_preview: true });
+
+      const { container } = render(
+        <MarkdownPreview
+          value={value}
+          getAsset={jest.fn()}
+          resolveWidget={jest.fn()}
+          field={field}
+        />,
+      );
+      expect(container.querySelector('img')).not.toHaveAttribute('src');
     });
 
     it('should sanitize dangerous link protocols', () => {
