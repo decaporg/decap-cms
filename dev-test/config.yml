@@ -6,6 +6,12 @@ site_url: https://example.com
 publish_mode: editorial_workflow
 media_folder: assets/uploads
 
+# Collections opt in to i18n with `i18n: true`
+i18n:
+  structure: single_file
+  locales: [en, de]
+  default_locale: en
+
 collections: # A list of collections the CMS should be able to edit
   - name: 'posts' # Used in routes, ie.: /admin/collections/:slug/edit
     label: 'Posts' # Used in the UI
@@ -299,3 +305,18 @@ collections: # A list of collections the CMS should be able to edit
         name: title
         widget: string
     meta: { path: { widget: string, label: 'Path' } }
+
+  - name: 'i18n_posts' # a single file i18n collection with a filter
+    label: 'i18n Posts'
+    label_singular: 'i18n Post'
+    description: >
+      Entries of this collection keep every locale in a single file. The collection filter
+      hides the drafted entry, so only the two published ones should be listed.
+    folder: '_i18n_posts'
+    create: true
+    i18n: true
+    filter: { field: 'draft', value: false }
+    fields:
+      - { label: 'Title', name: 'title', widget: 'string', i18n: true }
+      - { label: 'Draft', name: 'draft', widget: 'boolean', default: false, i18n: duplicate }
+      - { label: 'Body', name: 'body', widget: 'markdown', i18n: true }
