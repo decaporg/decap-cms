@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.6.1](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-gitlab@3.6.0...decap-cms-backend-gitlab@3.6.1) (2026-06-15)
+
+### Bug Fixes
+
+- **gitlab:** refresh expired PKCE access tokens ([#7854](https://github.com/decaporg/decap-cms/issues/7854)) ([18be93a](https://github.com/decaporg/decap-cms/commit/18be93a85804bb49058cbbc1a18f128c1cee14da))
+- **gitlab:** use Bearer auth scheme for GraphQL requests ([#7855](https://github.com/decaporg/decap-cms/issues/7855)) ([d7bef89](https://github.com/decaporg/decap-cms/commit/d7bef898443b4dbe17bafd940412a8e81db6d904))
+
+# [3.6.0](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-gitlab@3.5.0...decap-cms-backend-gitlab@3.6.0) (2026-06-08)
+
+### Bug Fixes
+
+- **gitlab:** load lfs media content ([#7815](https://github.com/decaporg/decap-cms/issues/7815)) ([c76586b](https://github.com/decaporg/decap-cms/commit/c76586b151f83c805012d1a19ae3e0188faf963e))
+- remove unused dependencies and specify missing dependencies ([#7833](https://github.com/decaporg/decap-cms/issues/7833)) ([e324a14](https://github.com/decaporg/decap-cms/commit/e324a142f7f0ba63c760b2e8524d971c35200f87))
+
+# [3.5.0](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-gitlab@3.4.0...decap-cms-backend-gitlab@3.5.0) (2026-06-01)
+
+**Note:** Version bump only for package decap-cms-backend-gitlab
+
 # [3.4.0](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-gitlab@3.3.1...decap-cms-backend-gitlab@3.4.0) (2025-07-15)
 
 ### Features

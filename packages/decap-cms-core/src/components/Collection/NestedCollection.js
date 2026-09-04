@@ -1,4 +1,3 @@
-import React from 'react';
 import { List } from 'immutable';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
@@ -7,6 +6,7 @@ import { NavLink } from 'react-router-dom';
 import { dirname, sep } from 'path';
 import { stringTemplate } from 'decap-cms-lib-widgets';
 import { Icon, colors, components } from 'decap-cms-ui-default';
+import { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import sortBy from 'lodash/sortBy';
@@ -67,18 +67,25 @@ const TreeNavLink = styled(NavLink)`
   `};
 `;
 
-function getNodeTitle(node) {
-  const title = node.isRoot
-    ? node.title
-    : node.children.find(c => !c.isDir && c.title)?.title || node.title;
-  return title;
+function getNodeTitle(node, collection) {
+  // Backward compatibility: when `nested.subfolders` is true(default) or undefined,
+  // directory nodes should use the title of their index entry.
+  // Otherwise, use the folder name already stored in `node.title`.
+  const subfolders = collection.getIn(['nested', 'subfolders']) !== false;
+  if (!node.isRoot && node.isDir && subfolders) {
+    const indexChild = node.children.find(child => !child.isDir);
+    if (indexChild && indexChild.title) {
+      return indexChild.title;
+    }
+  }
+  return node.title;
 }
 
 function TreeNode(props) {
   const { collection, treeData, depth = 0, onToggle } = props;
   const collectionName = collection.get('name');
 
-  const sortedData = sortBy(treeData, getNodeTitle);
+  const sortedData = sortBy(treeData, node => getNodeTitle(node, collection));
   const subfolders = collection.get('nested')?.get('subfolders') !== false;
   return sortedData.map(node => {
     const leaf =
@@ -93,7 +100,7 @@ function TreeNode(props) {
     if (depth > 0) {
       to = `${to}/filter${node.path}`;
     }
-    const title = getNodeTitle(node);
+    const title = getNodeTitle(node, collection);
 
     const hasChildren =
       depth === 0 ||
@@ -102,7 +109,7 @@ function TreeNode(props) {
         : node.children.some(c => c.isDir));
 
     return (
-      <React.Fragment key={node.path}>
+      <Fragment key={node.path}>
         <TreeNavLink
           exact
           to={to}
@@ -125,7 +132,7 @@ function TreeNode(props) {
             onToggle={onToggle}
           />
         )}
-      </React.Fragment>
+      </Fragment>
     );
   });
 }
@@ -247,7 +254,7 @@ export function updateNode(treeData, node, callback) {
   return updater([...treeData]);
 }
 
-export class NestedCollection extends React.Component {
+export class NestedCollection extends Component {
   static propTypes = {
     collection: ImmutablePropTypes.map.isRequired,
     entries: ImmutablePropTypes.list.isRequired,

@@ -1,4 +1,3 @@
-import React from 'react';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { buttons, StyledDropdownButton, colors } from 'decap-cms-ui-default';
@@ -8,6 +7,7 @@ const Button = styled(StyledDropdownButton)`
   ${buttons.medium};
   ${buttons.grayText};
   font-size: 14px;
+  white-space: nowrap;
 
   &:after {
     top: 11px;

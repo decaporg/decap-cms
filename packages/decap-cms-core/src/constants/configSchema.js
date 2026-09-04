@@ -6,7 +6,6 @@ import {
   prohibited,
 } from 'ajv-keywords/dist/keywords';
 import ajvErrors from 'ajv-errors';
-import { v4 as uuid } from 'uuid';
 
 import { frontmatterFormats, extensionFormatters } from '../formats/formats';
 import { getWidgets } from '../lib/registry';
@@ -41,11 +40,44 @@ const i18nField = {
   oneOf: [{ type: 'boolean' }, { type: 'string', enum: Object.values(I18N_FIELD) }],
 };
 
+const mediaProcessing = {
+  type: 'object',
+  properties: {
+    enabled: { type: 'boolean' },
+    format: {
+      type: 'object',
+      properties: {
+        enabled: { type: 'boolean' },
+        default: { type: 'string', enum: ['jpeg', 'webp'] },
+      },
+      required: ['enabled', 'default'],
+      additionalProperties: false,
+    },
+    quality: {
+      type: 'number',
+      minimum: 1,
+      maximum: 100,
+    },
+    strip_metadata: { type: 'boolean' },
+    width: { oneOf: [{ type: 'number', minimum: 1 }, { type: 'null' }] },
+    height: { oneOf: [{ type: 'number', minimum: 1 }, { type: 'null' }] },
+    aspect_ratio: {
+      oneOf: [
+        { type: 'number', exclusiveMinimum: 0 },
+        { type: 'string', pattern: '^\\d+(?:\\.\\d+)?[_:x]\\d+(?:\\.\\d+)?$' },
+        { type: 'null' },
+      ],
+    },
+  },
+  required: ['enabled'],
+  additionalProperties: false,
+};
+
 /**
  * Config for fields in both file and folder collections.
  */
 function fieldsConfig() {
-  const id = uuid();
+  const id = crypto.randomUUID();
   return {
     $id: `fields_${id}`,
     type: 'array',
@@ -61,6 +93,7 @@ function fieldsConfig() {
         required: { type: 'boolean' },
         i18n: i18nField,
         hint: { type: 'string' },
+        media_processing: mediaProcessing,
         pattern: {
           type: 'array',
           minItems: 2,
@@ -173,6 +206,7 @@ function getConfigSchema() {
       media_folder: { type: 'string', examples: ['assets/uploads'] },
       public_folder: { type: 'string', examples: ['/uploads'] },
       media_folder_relative: { type: 'boolean' },
+      media_processing: mediaProcessing,
       media_library: {
         type: 'object',
         properties: {
@@ -191,6 +225,12 @@ function getConfigSchema() {
         properties: {
           encoding: { type: 'string', enum: ['unicode', 'ascii'] },
           clean_accents: { type: 'boolean' },
+        },
+      },
+      issue_reports: {
+        type: 'object',
+        properties: {
+          url: { type: 'string', examples: ['https://example.com/report-issue'] },
         },
       },
       collections: {
@@ -218,6 +258,7 @@ function getConfigSchema() {
                   file: { type: 'string' },
                   preview_path: { type: 'string' },
                   preview_path_date_field: { type: 'string' },
+                  preview_path_preserve_slashes: { type: 'boolean' },
                   fields: fieldsConfig(),
                 },
                 required: ['name', 'label', 'file', 'fields'],
@@ -230,6 +271,7 @@ function getConfigSchema() {
             path: { type: 'string' },
             preview_path: { type: 'string' },
             preview_path_date_field: { type: 'string' },
+            preview_path_preserve_slashes: { type: 'boolean' },
             create: { type: 'boolean' },
             publish: { type: 'boolean' },
             hide: { type: 'boolean' },
@@ -253,7 +295,21 @@ function getConfigSchema() {
             sortable_fields: {
               type: 'array',
               items: {
-                type: 'string',
+                oneOf: [
+                  { type: 'string' },
+                  {
+                    type: 'object',
+                    properties: {
+                      field: { type: 'string' },
+                      label: { type: 'string' },
+                      default_sort: {
+                        oneOf: [{ type: 'boolean' }, { type: 'string', enum: ['asc', 'desc'] }],
+                      },
+                    },
+                    required: ['field'],
+                    additionalProperties: false,
+                  },
+                ],
               },
             },
             sortableFields: {
@@ -283,13 +339,16 @@ function getConfigSchema() {
                     widget: { type: 'string' },
                     index_file: { type: 'string' },
                   },
-                  required: ['label', 'widget', 'index_file'],
+                  required: ['label', 'widget'],
                 },
               },
               additionalProperties: false,
               minProperties: 1,
             },
             i18n: i18nCollection,
+            limit: {
+              type: 'number',
+            },
           },
           required: ['name', 'label'],
           oneOf: [{ required: ['files'] }, { required: ['folder', 'fields'] }],
@@ -404,5 +463,24 @@ export function validateConfig(config) {
     });
     console.error('Config Errors', errors);
     throw new ConfigError(errors);
+  }
+
+  // Custom validation: only one sortable field can have default_sort property
+  if (config.collections) {
+    config.collections.forEach((collection, index) => {
+      if (collection.sortable_fields) {
+        const defaultFields = collection.sortable_fields.filter(
+          field => typeof field === 'object' && field.default_sort !== undefined,
+        );
+        if (defaultFields.length > 1) {
+          const error = {
+            instancePath: `/collections/${index}/sortable_fields`,
+            message: 'only one sortable field can have the default_sort property',
+          };
+          console.error('Config Errors', [error]);
+          throw new ConfigError([error]);
+        }
+      }
+    });
   }
 }

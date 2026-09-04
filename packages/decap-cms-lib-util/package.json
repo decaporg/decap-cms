@@ -1,7 +1,7 @@
 {
   "name": "decap-cms-lib-util",
   "description": "Shared utilities for Decap CMS.",
-  "version": "3.3.1",
+  "version": "3.8.0",
   "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-lib-util",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
   "module": "dist/esm/index.js",
@@ -15,17 +15,21 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "develop": "npm run build:esm -- --watch",
+    "develop": "pnpm run build:esm --watch",
     "build": "cross-env NODE_ENV=production webpack",
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward --extensions \".js,.jsx,.ts,.tsx\""
   },
   "dependencies": {
-    "js-sha256": "^0.9.0",
-    "localforage": "^1.7.3",
-    "semaphore": "^1.1.0"
+    "js-sha256": "catalog:",
+    "localforage": "catalog:",
+    "semaphore": "catalog:"
   },
   "peerDependencies": {
-    "immutable": "^3.7.6",
-    "lodash": "^4.17.11"
+    "common-tags": "catalog:",
+    "immutable": "catalog:",
+    "lodash": "catalog:"
+  },
+  "devDependencies": {
+    "common-tags": "catalog:"
   }
 }

@@ -41,7 +41,22 @@ export default {
     if (content && content.trim().endsWith('---')) {
       content = content.trim().slice(0, -3);
     }
-    return yaml.parse(content, { customTags: [timestampTag] });
+
+    const doc = yaml.parseDocument(content, {
+      customTags: [timestampTag],
+      prettyErrors: true,
+    });
+
+    for (const warn of doc.warnings) {
+      console.warn(`YAML warning: ${warn.message}`);
+    }
+
+    if (doc.errors.length > 0) {
+      const messages = doc.errors.map(e => e.message).join('\n');
+      throw new Error(`YAML parsing error:\n${messages}`);
+    }
+
+    return doc.toJSON();
   },
 
   toFile(data: object, sortedKeys: string[] = [], comments: Record<string, string> = {}) {

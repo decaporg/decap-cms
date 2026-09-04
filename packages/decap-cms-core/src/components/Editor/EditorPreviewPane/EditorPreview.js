@@ -1,4 +1,4 @@
-import React from 'react';
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
@@ -15,7 +15,7 @@ const PreviewContainer = styled.div`
  * Use a stateful component so that child components can effectively utilize
  * `shouldComponentUpdate`.
  */
-export default class Preview extends React.Component {
+export default class Preview extends Component {
   render() {
     const { collection, fields, widgetFor } = this.props;
     if (!collection || !fields) {

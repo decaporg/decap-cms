@@ -10,28 +10,19 @@ console.log('Build Package:', path.basename(process.cwd()));
 
 // Always enabled plugins
 const basePlugins = [
+  'babel-plugin-inline-json-import',
   [
-    'babel-plugin-transform-builtin-extend',
+    '@emotion/babel-plugin',
     {
-      globals: ['Error'],
+      autoLabel: 'always',
     },
   ],
-  'babel-plugin-inline-json-import',
 ];
 
-// Legacy transforms for non-ESM builds
-// REVISIT: We probably don't need any of these since we use preset-env
-const legacyPlugins = [
-  'transform-export-extensions',
-  '@babel/plugin-proposal-class-properties',
-  '@babel/plugin-proposal-object-rest-spread',
-  '@babel/plugin-proposal-export-default-from',
-  '@babel/plugin-proposal-nullish-coalescing-operator',
-  '@babel/plugin-proposal-optional-chaining',
-  '@babel/plugin-syntax-dynamic-import',
-];
+// All legacy transforms have been removed as they are now included in @babel/preset-env
+// Features like class properties, optional chaining, nullish coalescing are now standard in modern JS
 
-const defaultPlugins = [...basePlugins, ...(isESM ? [] : legacyPlugins)];
+const defaultPlugins = [...basePlugins];
 
 const svgo = {
   plugins: [
@@ -46,17 +37,31 @@ const svgo = {
   ],
 };
 
+const slateSerializerSpec =
+  /packages[\\/]decap-cms-widget-(markdown|richtext)[\\/]src[\\/]serializers[\\/]__tests__[\\/]slate\.spec\.js$/;
+
+const automaticReactPreset = [
+  '@babel/preset-react',
+  {
+    runtime: 'automatic',
+    importSource: '@emotion/react',
+  },
+];
+
 function presets() {
+  return [...(!isESM ? [['@babel/preset-env', {}]] : []), '@babel/preset-typescript'];
+}
+
+function overrides() {
   return [
-    '@babel/preset-react',
-    ...(!isESM ? [['@babel/preset-env', {}]] : []),
-    [
-      '@emotion/babel-preset-css-prop',
-      {
-        autoLabel: 'always',
-      },
-    ],
-    '@babel/preset-typescript',
+    {
+      exclude: slateSerializerSpec,
+      presets: [automaticReactPreset],
+    },
+    {
+      test: slateSerializerSpec,
+      presets: [['@babel/preset-react', { runtime: 'classic', pragma: 'h' }]],
+    },
   ];
 }
 
@@ -99,7 +104,7 @@ function plugins() {
   }
 
   if (!isProduction) {
-    return [...defaultPlugins];
+    return defaultPlugins;
   }
 
   return defaultPlugins;
@@ -108,4 +113,5 @@ function plugins() {
 module.exports = {
   presets: presets(),
   plugins: plugins(),
+  overrides: overrides(),
 };

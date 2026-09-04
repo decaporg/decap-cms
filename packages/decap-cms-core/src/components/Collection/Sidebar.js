@@ -1,11 +1,11 @@
-import React from 'react';
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
 import { css } from '@emotion/react';
 import { translate } from 'react-polyglot';
 import { NavLink } from 'react-router-dom';
-import { Icon, components, colors } from 'decap-cms-ui-default';
+import { Icon, components, colors, lengths } from 'decap-cms-ui-default';
 
 import { searchCollections } from '../../actions/collections';
 import CollectionSearch from './CollectionSearch';
@@ -21,19 +21,20 @@ const styles = {
 
 const SidebarContainer = styled.aside`
   ${components.card};
-  width: 250px;
+  width: ${lengths.topCardWidth};
+  max-width: 100%;
   padding: 8px 0 12px;
-  position: fixed;
   max-height: calc(100vh - 112px);
   display: flex;
   flex-direction: column;
+  @media (min-width: 800px) {
+    position: fixed;
+    width: 250px;
+  }
 `;
 
 const SidebarHeading = styled.h2`
-  font-size: 22px;
-  font-weight: 600;
-  line-height: 37px;
-  padding: 0;
+  ${components.cardTopHeading};
   margin: 10px 20px;
   color: ${colors.textLead};
 `;
@@ -67,7 +68,7 @@ const SidebarNavLink = styled(NavLink)`
   `};
 `;
 
-export class Sidebar extends React.Component {
+export class Sidebar extends Component {
   static propTypes = {
     collections: ImmutablePropTypes.map.isRequired,
     collection: ImmutablePropTypes.map,

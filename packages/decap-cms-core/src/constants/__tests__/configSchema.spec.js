@@ -94,6 +94,66 @@ describe('config', () => {
       }).toThrowError("'media_folder' must be string");
     });
 
+    it('should not throw for media processing config', () => {
+      expect(() => {
+        validateConfig({
+          ...validConfig,
+          media_processing: {
+            enabled: true,
+            format: { enabled: true, default: 'jpeg' },
+            quality: 90,
+            strip_metadata: true,
+            width: null,
+            height: null,
+            aspect_ratio: '16_9',
+          },
+        });
+      }).not.toThrowError();
+    });
+
+    it('should not throw for x-delimited media processing aspect ratio', () => {
+      expect(() => {
+        validateConfig({
+          ...validConfig,
+          media_processing: {
+            enabled: true,
+            width: 1600,
+            aspect_ratio: '16x9',
+          },
+        });
+      }).not.toThrowError();
+    });
+
+    it('should not throw for media processing with explicit dimensions and format', () => {
+      expect(() => {
+        validateConfig({
+          ...validConfig,
+          media_processing: {
+            enabled: true,
+            format: { enabled: true, default: 'webp' },
+            quality: 80,
+            width: 1200,
+            height: 675,
+            aspect_ratio: 16 / 9,
+          },
+        });
+      }).not.toThrowError();
+    });
+
+    it('should throw if media processing format is unsupported', () => {
+      expect(() => {
+        validateConfig({
+          ...validConfig,
+          media_processing: {
+            enabled: true,
+            format: { enabled: true, default: 'gif' },
+          },
+        });
+      }).toThrowError(
+        "'media_processing.format.default' must be equal to one of the allowed values",
+      );
+    });
+
     it('should throw if collections is not defined in config', () => {
       expect(() => {
         validateConfig({ foo: 'bar', backend: { name: 'bar' }, media_folder: 'baz' });
@@ -214,6 +274,90 @@ describe('config', () => {
           merge({}, validConfig, { collections: [{ sortable_fields: [], sortableFields: [] }] }),
         );
       }).toThrowError("'collections[0]' must NOT be valid");
+    });
+
+    it('should allow sortable_fields to have object format with field property', () => {
+      expect(() => {
+        validateConfig(
+          merge({}, validConfig, {
+            collections: [{ sortable_fields: [{ field: 'title' }] }],
+          }),
+        );
+      }).not.toThrow();
+    });
+
+    it('should allow sortable_fields with default_sort as boolean', () => {
+      expect(() => {
+        validateConfig(
+          merge({}, validConfig, {
+            collections: [{ sortable_fields: [{ field: 'title', default_sort: true }] }],
+          }),
+        );
+      }).not.toThrow();
+    });
+
+    it('should allow sortable_fields with default_sort as asc/desc', () => {
+      expect(() => {
+        validateConfig(
+          merge({}, validConfig, {
+            collections: [{ sortable_fields: ['title', { field: 'date', default_sort: 'desc' }] }],
+          }),
+        );
+      }).not.toThrow();
+    });
+
+    it('should allow sortable_fields with custom label', () => {
+      expect(() => {
+        validateConfig(
+          merge({}, validConfig, {
+            collections: [{ sortable_fields: [{ field: 'date', label: 'Publish Date' }] }],
+          }),
+        );
+      }).not.toThrow();
+    });
+
+    it('should allow sortable_fields with label and default_sort', () => {
+      expect(() => {
+        validateConfig(
+          merge({}, validConfig, {
+            collections: [
+              {
+                sortable_fields: [
+                  'title',
+                  { field: 'date', label: 'Publish Date', default_sort: 'desc' },
+                ],
+              },
+            ],
+          }),
+        );
+      }).not.toThrow();
+    });
+
+    it('should allow mixed string and object format in sortable_fields', () => {
+      expect(() => {
+        validateConfig(
+          merge({}, validConfig, {
+            collections: [{ sortable_fields: ['title', { field: 'date', default_sort: true }] }],
+          }),
+        );
+      }).not.toThrow();
+    });
+
+    it('should throw if more than one sortable field has default_sort property', () => {
+      expect(() => {
+        validateConfig(
+          merge({}, validConfig, {
+            collections: [
+              {
+                sortable_fields: [
+                  { field: 'title', default_sort: true },
+                  { field: 'date', default_sort: true },
+                ],
+              },
+            ],
+          }),
+        );
+      }).toThrowError('only one sortable field can have the default_sort property');
     });
 
     it('should throw if collection names are not unique', () => {
@@ -393,22 +537,25 @@ describe('config', () => {
           merge({}, validConfig, { collections: [{ meta: { path: { label: 'Label' } } }] }),
         );
       }).toThrowError("'collections[0].meta.path' must have required property 'widget'");
-      expect(() => {
-        validateConfig(
-          merge({}, validConfig, {
-            collections: [{ meta: { path: { label: 'Label', widget: 'widget' } } }],
-          }),
-        );
-      }).toThrowError("'collections[0].meta.path' must have required property 'index_file'");
     });
 
-    it('should allow collection meta to have a path configuration', () => {
+    it('should allow collection meta to have a path configuration with index_file', () => {
       expect(() => {
         validateConfig(
           merge({}, validConfig, {
             collections: [
               { meta: { path: { label: 'Path', widget: 'string', index_file: 'index' } } },
             ],
+          }),
+        );
+      }).not.toThrow();
+    });
+
+    it('should allow collection meta to have a path configuration without index_file', () => {
+      expect(() => {
+        validateConfig(
+          merge({}, validConfig, {
+            collections: [{ meta: { path: { label: 'Path', widget: 'string' } } }],
           }),
         );
       }).not.toThrow();

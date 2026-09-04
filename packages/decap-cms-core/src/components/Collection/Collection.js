@@ -1,4 +1,5 @@
-import React from 'react';
+// eslint-disable-next-line no-unused-vars
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
@@ -24,25 +25,33 @@ import {
   selectEntriesGroup,
   selectViewStyle,
 } from '../../reducers/entries';
+import { selectCanCreateNewEntry } from '../../reducers';
 
 const CollectionContainer = styled.div`
-  margin: ${lengths.pageMargin};
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin: ${lengths.pageMarginMobile};
+  @media (min-width: 500px) {
+    margin: ${lengths.pageMargin};
+  }
 `;
 
 const CollectionMain = styled.main`
-  padding-left: 280px;
+  @media (min-width: 800px) {
+    padding-left: 280px;
+  }
 `;
 
 const SearchResultContainer = styled.div`
   ${components.cardTop};
-  margin-bottom: 22px;
 `;
 
 const SearchResultHeading = styled.h1`
   ${components.cardTopHeading};
 `;
 
-export class Collection extends React.Component {
+export class Collection extends Component {
   static propTypes = {
     searchTerm: PropTypes.string,
     collectionName: PropTypes.string,
@@ -53,6 +62,9 @@ export class Collection extends React.Component {
     sortableFields: PropTypes.array,
     sort: ImmutablePropTypes.orderedMap,
     onSortClick: PropTypes.func.isRequired,
+    canCreate: PropTypes.bool.isRequired,
+    filterTerm: PropTypes.string,
+    viewStyle: PropTypes.string,
   };
 
   componentDidMount() {
@@ -99,9 +111,10 @@ export class Collection extends React.Component {
       group,
       onChangeViewStyle,
       viewStyle,
+      canCreate,
     } = this.props;
 
-    let newEntryUrl = collection.get('create') ? getNewEntryUrl(collectionName) : '';
+    let newEntryUrl = canCreate ? getNewEntryUrl(collectionName) : '';
     if (newEntryUrl && filterTerm) {
       newEntryUrl = getNewEntryUrl(collectionName);
       if (filterTerm) {
@@ -167,6 +180,7 @@ function mapStateToProps(state, ownProps) {
   const filter = selectEntriesFilter(state.entries, collection.get('name'));
   const group = selectEntriesGroup(state.entries, collection.get('name'));
   const viewStyle = selectViewStyle(state.entries);
+  const canCreate = selectCanCreateNewEntry(state, name);
 
   return {
     collection,
@@ -183,6 +197,7 @@ function mapStateToProps(state, ownProps) {
     filter,
     group,
     viewStyle,
+    canCreate,
   };
 }
 

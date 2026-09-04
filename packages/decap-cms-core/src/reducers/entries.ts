@@ -474,14 +474,16 @@ function getGroup(entry: EntryMap, selectedGroup: GroupMap) {
   if (selectedGroup.has('pattern')) {
     const pattern = selectedGroup.get('pattern');
     let value = '';
-    try {
-      const regex = new RegExp(pattern);
-      const matched = dataAsString.match(regex);
-      if (matched) {
-        value = matched[0];
+    if (pattern !== undefined) {
+      try {
+        const regex = new RegExp(pattern);
+        const matched = dataAsString.match(regex);
+        if (matched) {
+          value = matched[0];
+        }
+      } catch (e) {
+        console.warn(`Invalid view group pattern '${pattern}' for field '${field}'`, e);
       }
-    } catch (e) {
-      console.warn(`Invalid view group pattern '${pattern}' for field '${field}'`, e);
     }
     return {
       id: `${label}${value}`,
@@ -543,6 +545,17 @@ export function selectIsFetching(state: Entries, collection: string) {
 function getFileField(collectionFiles: CollectionFiles, slug: string | undefined) {
   const file = collectionFiles.find(f => f?.get('name') === slug);
   return file;
+}
+
+function getMediaPublicPathSegment(mediaPath: string) {
+  const normalizedPath = trim(mediaPath, '/');
+  const transformationIndex = normalizedPath.indexOf('_transformations/');
+
+  if (transformationIndex >= 0) {
+    return normalizedPath.slice(transformationIndex);
+  }
+
+  return basename(mediaPath);
 }
 
 function hasCustomFolder(
@@ -804,10 +817,10 @@ export function selectMediaFilePublicPath(
   }
 
   if (isAbsolutePath(publicFolder)) {
-    return joinUrlPath(publicFolder, basename(mediaPath));
+    return joinUrlPath(publicFolder, getMediaPublicPathSegment(mediaPath));
   }
 
-  return join(publicFolder, basename(mediaPath));
+  return join(publicFolder, getMediaPublicPathSegment(mediaPath));
 }
 
 export function selectEditingDraft(state: EntryDraft) {

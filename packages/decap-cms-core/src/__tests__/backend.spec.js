@@ -9,6 +9,7 @@ import {
 } from '../backend';
 import { getBackend } from '../lib/registry';
 import { FOLDER, FILES } from '../constants/collectionTypes';
+import { EDITORIAL_WORKFLOW } from '../constants/publishModes';
 
 jest.mock('../lib/registry');
 jest.mock('decap-cms-lib-util');
@@ -492,6 +493,210 @@ describe('Backend', () => {
 
       expect(backend.entryToRaw).toHaveBeenCalledTimes(1);
       expect(backend.entryToRaw).toHaveBeenCalledWith(collection, newEntry);
+    });
+
+    it('should reject new entries when collection limit is reached', async () => {
+      const implementation = {
+        init: jest.fn(() => implementation),
+        persistEntry: jest.fn(() => implementation),
+      };
+
+      const config = {
+        backend: {
+          commit_messages: 'commit-messages',
+        },
+      };
+      const collection = Map({
+        name: 'posts',
+        type: FOLDER,
+        create: true,
+        limit: 1,
+      });
+      const entry = Map({
+        data: Map({}),
+        newRecord: true,
+      });
+      const entryDraft = Map({
+        entry,
+      });
+
+      const user = { login: 'login', name: 'name' };
+      const backend = new Backend(implementation, { config, backendName: 'github' });
+
+      backend.currentUser = jest.fn().mockResolvedValue(user);
+      backend.invokePreSaveEvent = jest.fn().mockReturnValueOnce(entry);
+      backend.listAllEntries = jest.fn().mockResolvedValue([{ slug: 'existing' }]);
+
+      await expect(
+        backend.persistEntry({
+          config,
+          collection,
+          entryDraft,
+          assetProxies: [],
+          usedSlugs: List(),
+        }),
+      ).rejects.toThrow('Entry limit of 1 reached for collection posts');
+
+      expect(backend.listAllEntries).toHaveBeenCalledWith(collection);
+      expect(implementation.persistEntry).toHaveBeenCalledTimes(0);
+    });
+
+    it('should include unpublished workflow entries when checking collection limits', async () => {
+      const implementation = {
+        init: jest.fn(() => implementation),
+        persistEntry: jest.fn(() => implementation),
+        unpublishedEntries: jest.fn().mockResolvedValue(['posts/draft']),
+        unpublishedEntry: jest.fn().mockResolvedValue({
+          collection: 'posts',
+          slug: 'draft',
+          status: 'draft',
+          diffs: [],
+          updatedAt: '',
+        }),
+      };
+
+      const config = {
+        backend: {
+          commit_messages: 'commit-messages',
+        },
+        publish_mode: EDITORIAL_WORKFLOW,
+      };
+      const collection = Map({
+        name: 'posts',
+        type: FOLDER,
+        create: true,
+        limit: 1,
+      });
+      const entry = Map({
+        data: Map({}),
+        newRecord: true,
+      });
+      const entryDraft = Map({
+        entry,
+      });
+
+      const backend = new Backend(implementation, { config, backendName: 'github' });
+
+      backend.invokePreSaveEvent = jest.fn().mockReturnValueOnce(entry);
+      backend.listAllEntries = jest.fn().mockResolvedValue([]);
+
+      await expect(
+        backend.persistEntry({
+          config,
+          collection,
+          entryDraft,
+          assetProxies: [],
+          usedSlugs: List(),
+        }),
+      ).rejects.toThrow('Entry limit of 1 reached for collection posts');
+
+      expect(implementation.unpublishedEntries).toHaveBeenCalledTimes(1);
+      expect(implementation.persistEntry).toHaveBeenCalledTimes(0);
+    });
+
+    it('should use complete published entries instead of loaded slugs when checking limits', async () => {
+      const implementation = {
+        init: jest.fn(() => implementation),
+        persistEntry: jest.fn(() => implementation),
+      };
+
+      const config = {
+        backend: {
+          commit_messages: 'commit-messages',
+        },
+      };
+      const collection = Map({
+        name: 'posts',
+        type: FOLDER,
+        create: true,
+        limit: 2,
+      });
+      const entry = Map({
+        data: Map({}),
+        newRecord: true,
+      });
+      const entryDraft = Map({
+        entry,
+      });
+
+      const backend = new Backend(implementation, { config, backendName: 'github' });
+
+      backend.invokePreSaveEvent = jest.fn().mockReturnValueOnce(entry);
+      backend.listAllEntries = jest.fn().mockResolvedValue([{ slug: 'one' }, { slug: 'two' }]);
+
+      await expect(
+        backend.persistEntry({
+          config,
+          collection,
+          entryDraft,
+          assetProxies: [],
+          usedSlugs: List(['one']),
+        }),
+      ).rejects.toThrow('Entry limit of 2 reached for collection posts');
+
+      expect(implementation.persistEntry).toHaveBeenCalledTimes(0);
+    });
+
+    it('should preserve slug when preSave event handler modifies file collection entry', async () => {
+      const implementation = {
+        init: jest.fn(() => implementation),
+        persistEntry: jest.fn(() => implementation),
+      };
+
+      const config = {
+        backend: {
+          commit_messages: 'commit-messages',
+        },
+      };
+
+      // File collection with a single file
+      const collection = Map({
+        name: 'settings',
+        type: FILES,
+        files: List([
+          Map({
+            name: 'config',
+            file: 'data/config.json',
+            fields: List([Map({ name: 'title', widget: 'string' })]),
+          }),
+        ]),
+      });
+
+      const originalEntry = Map({
+        slug: 'config',
+        path: 'data/config.json',
+        data: Map({ title: 'original' }),
+        meta: Map({ path: 'data/config.json' }),
+      });
+
+      const entryDraft = Map({
+        entry: originalEntry,
+      });
+
+      const user = { login: 'login', name: 'name' };
+      const backend = new Backend(implementation, { config, backendName: 'github' });
+
+      backend.currentUser = jest.fn().mockResolvedValue(user);
+      backend.entryToRaw = jest.fn().mockReturnValue('content');
+
+      // Mock invokePreSaveEvent to simulate a preSave handler that modifies data
+      // This is what happens when custom widgets or event handlers modify entry data
+      // The key is that it returns the FULL entry with slug, not just the data
+      backend.invokePreSaveEvent = jest.fn().mockImplementation(async entry => {
+        // Simulate a preSave handler modifying the data field
+        return entry.setIn(['data', 'title'], 'modified');
+      });
+
+      await backend.persistEntry({ config, collection, entryDraft });
+
+      // Verify entryToRaw was called with an entry that has the slug
+      expect(backend.entryToRaw).toHaveBeenCalledTimes(1);
+      const entryPassedToRaw = backend.entryToRaw.mock.calls[0][1];
+
+      // Critical assertion: slug must be preserved
+      expect(entryPassedToRaw.get('slug')).toBe('config');
+      expect(entryPassedToRaw.get('path')).toBe('data/config.json');
+      expect(entryPassedToRaw.getIn(['data', 'title'])).toBe('modified');
     });
   });
 
@@ -1106,6 +1311,158 @@ describe('Backend', () => {
           },
         },
       ]);
+    });
+  });
+
+  describe('persistEntry with nested collections', () => {
+    it('should pass hasSubfolders=true when subfolders is true (default)', async () => {
+      const implementation = {
+        init: jest.fn(() => implementation),
+        persistEntry: jest.fn(),
+      };
+
+      const config = {
+        backend: { commit_messages: {} },
+      };
+      const collection = Map({
+        name: 'pages',
+        type: FOLDER,
+        folder: '_pages',
+        create: true,
+        fields: List([Map({ name: 'title', widget: 'string' })]),
+        nested: Map({ depth: 10, subfolders: true }),
+        meta: Map({ path: Map({ label: 'Path', widget: 'string' }) }),
+      });
+      const entryDraft = Map({
+        entry: Map({
+          data: Map({ title: 'Test' }),
+          meta: Map({ path: 'blog' }),
+          newRecord: true,
+        }),
+      });
+      const user = { login: 'user', name: 'User' };
+      const backend = new Backend(implementation, { config, backendName: 'test' });
+
+      backend.currentUser = jest.fn().mockResolvedValue(user);
+      backend.entryToRaw = jest.fn().mockReturnValue('content');
+      backend.generateUniqueSlug = jest.fn().mockResolvedValue('test-slug');
+      backend.invokePreSaveEvent = jest.fn().mockResolvedValue(entryDraft.get('entry'));
+      backend.invokePostSaveEvent = jest.fn().mockResolvedValue();
+
+      await backend.persistEntry({
+        config,
+        collection,
+        entryDraft,
+        assetProxies: [],
+        usedSlugs: List(),
+      });
+
+      expect(implementation.persistEntry).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({
+          hasSubfolders: true,
+        }),
+      );
+    });
+
+    it('should pass hasSubfolders=false when subfolders is false', async () => {
+      const implementation = {
+        init: jest.fn(() => implementation),
+        persistEntry: jest.fn(),
+      };
+
+      const config = {
+        backend: { commit_messages: {} },
+      };
+      const collection = Map({
+        name: 'pages',
+        type: FOLDER,
+        folder: '_pages',
+        create: true,
+        fields: List([Map({ name: 'title', widget: 'string' })]),
+        nested: Map({ depth: 10, subfolders: false }),
+        meta: Map({ path: Map({ label: 'Path', widget: 'string' }) }),
+      });
+      const entryDraft = Map({
+        entry: Map({
+          data: Map({ title: 'Test' }),
+          meta: Map({ path: 'blog' }),
+          newRecord: true,
+        }),
+      });
+      const user = { login: 'user', name: 'User' };
+      const backend = new Backend(implementation, { config, backendName: 'test' });
+
+      backend.currentUser = jest.fn().mockResolvedValue(user);
+      backend.entryToRaw = jest.fn().mockReturnValue('content');
+      backend.generateUniqueSlug = jest.fn().mockResolvedValue('test-slug');
+      backend.invokePreSaveEvent = jest.fn().mockResolvedValue(entryDraft.get('entry'));
+      backend.invokePostSaveEvent = jest.fn().mockResolvedValue();
+
+      await backend.persistEntry({
+        config,
+        collection,
+        entryDraft,
+        assetProxies: [],
+        usedSlugs: List(),
+      });
+
+      expect(implementation.persistEntry).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({
+          hasSubfolders: false,
+        }),
+      );
+    });
+
+    it('should default to hasSubfolders=true when subfolders is not specified', async () => {
+      const implementation = {
+        init: jest.fn(() => implementation),
+        persistEntry: jest.fn(),
+      };
+
+      const config = {
+        backend: { commit_messages: {} },
+      };
+      const collection = Map({
+        name: 'pages',
+        type: FOLDER,
+        folder: '_pages',
+        create: true,
+        fields: List([Map({ name: 'title', widget: 'string' })]),
+        nested: Map({ depth: 10 }),
+        meta: Map({ path: Map({ label: 'Path', widget: 'string' }) }),
+      });
+      const entryDraft = Map({
+        entry: Map({
+          data: Map({ title: 'Test' }),
+          meta: Map({ path: 'blog' }),
+          newRecord: true,
+        }),
+      });
+      const user = { login: 'user', name: 'User' };
+      const backend = new Backend(implementation, { config, backendName: 'test' });
+
+      backend.currentUser = jest.fn().mockResolvedValue(user);
+      backend.entryToRaw = jest.fn().mockReturnValue('content');
+      backend.generateUniqueSlug = jest.fn().mockResolvedValue('test-slug');
+      backend.invokePreSaveEvent = jest.fn().mockResolvedValue(entryDraft.get('entry'));
+      backend.invokePostSaveEvent = jest.fn().mockResolvedValue();
+
+      await backend.persistEntry({
+        config,
+        collection,
+        entryDraft,
+        assetProxies: [],
+        usedSlugs: List(),
+      });
+
+      expect(implementation.persistEntry).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({
+          hasSubfolders: true,
+        }),
+      );
     });
   });
 });

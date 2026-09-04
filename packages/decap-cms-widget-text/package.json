@@ -1,7 +1,7 @@
 {
   "name": "decap-cms-widget-text",
   "description": "Widget for editing multiline plain string values in Decap CMS.",
-  "version": "3.2.0",
+  "version": "3.3.0",
   "homepage": "https://www.decapcms.org/docs/widgets/#text",
   "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-widget-text",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
@@ -18,16 +18,17 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "develop": "npm run build:esm -- --watch",
+    "develop": "pnpm run build:esm --watch",
     "build": "cross-env NODE_ENV=production webpack",
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
   },
   "dependencies": {
-    "react-textarea-autosize": "^8.0.0"
+    "react-textarea-autosize": "catalog:"
   },
   "peerDependencies": {
-    "decap-cms-ui-default": "^3.0.0",
-    "prop-types": "^15.7.2",
-    "react": "^19.1.0"
+    "@emotion/react": "catalog:",
+    "decap-cms-ui-default": "workspace:*",
+    "prop-types": "catalog:",
+    "react": "catalog:"
   }
 }

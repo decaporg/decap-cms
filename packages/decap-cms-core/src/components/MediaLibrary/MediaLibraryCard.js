@@ -1,4 +1,4 @@
-import React from 'react';
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
@@ -62,7 +62,7 @@ const DraftText = styled.p`
   border-radius: ${lengths.borderRadius} 0 ${lengths.borderRadius} 0;
 `;
 
-class MediaLibraryCard extends React.Component {
+class MediaLibraryCard extends Component {
   render() {
     const {
       isSelected,
@@ -70,7 +70,6 @@ class MediaLibraryCard extends React.Component {
       text,
       onClick,
       draftText,
-      width,
       height,
       margin,
       isPrivate,
@@ -83,7 +82,7 @@ class MediaLibraryCard extends React.Component {
       <Card
         isSelected={isSelected}
         onClick={onClick}
-        width={width}
+        width="100%"
         height={height}
         margin={margin}
         tabIndex="-1"
@@ -115,7 +114,6 @@ MediaLibraryCard.propTypes = {
   text: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
   draftText: PropTypes.string.isRequired,
-  width: PropTypes.string.isRequired,
   height: PropTypes.string.isRequired,
   margin: PropTypes.string.isRequired,
   isPrivate: PropTypes.bool,

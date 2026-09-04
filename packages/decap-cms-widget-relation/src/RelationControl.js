@@ -1,4 +1,4 @@
-import React from 'react';
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { components } from 'react-select';
@@ -24,7 +24,6 @@ import {
 import { SortableContext, horizontalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { restrictToParentElement } from '@dnd-kit/modifiers';
 import { CSS } from '@dnd-kit/utilities';
-import { v4 as uuid } from 'uuid';
 
 import relationCache from './RelationCache';
 
@@ -51,7 +50,7 @@ function MultiValue(props) {
 
   const innerProps = { ...props.innerProps, onMouseDown };
   return (
-    <div ref={setNodeRef} style={style}>
+    <div ref={setNodeRef} style={style} title={props.data.label}>
       <components.MultiValue {...props} innerProps={innerProps} />
     </div>
   );
@@ -63,7 +62,16 @@ function MultiValueLabel(props) {
   });
 
   return (
-    <div {...attributes} {...listeners}>
+    <div
+      {...attributes}
+      {...listeners}
+      style={{
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        maxWidth: '300px',
+      }}
+    >
       <components.MultiValueLabel {...props} />
     </div>
   );
@@ -106,7 +114,14 @@ function SortableSelect(props) {
 }
 
 function Option({ index, style, data }) {
-  return <div style={style}>{data.options[index]}</div>;
+  const option = data.options[index];
+  const label = option.props.label || (option.props.data && option.props.data.label) || '';
+
+  return (
+    <div style={style} title={typeof label === 'string' ? label : ''}>
+      {option}
+    </div>
+  );
 }
 
 function MenuList(props) {
@@ -186,12 +201,12 @@ function convertToSortableOption(raw) {
     ...option,
     data: {
       ...option.data,
-      id: uuid(),
+      id: crypto.randomUUID(),
     },
   };
 }
 
-export default class RelationControl extends React.Component {
+export default class RelationControl extends Component {
   mounted = false;
 
   state = {
@@ -274,7 +289,11 @@ export default class RelationControl extends React.Component {
       );
 
       const hits = result.payload.hits || [];
-      const options = this.parseHitOptions(hits);
+      let options = this.parseHitOptions(hits);
+      if (this.isMultiple()) {
+        const selectedOptions = getSelectedOptions(value);
+        options = options.filter(o => selectedOptions.includes(o.value));
+      }
 
       if (this.mounted) {
         this.setState({ initialOptions: options });
@@ -456,7 +475,7 @@ export default class RelationControl extends React.Component {
         const hits = result.payload.hits || [];
         const options = this.parseHitOptions(hits);
         const optionsLength = field.get('options_length') || 20;
-        const uniq = uniqOptions(this.state.initialOptions, options).slice(0, optionsLength);
+        const uniq = uniqOptions(options, this.state.initialOptions).slice(0, optionsLength);
         callback(uniq);
       })
       .catch(error => {
@@ -479,6 +498,16 @@ export default class RelationControl extends React.Component {
       isMultiple,
     });
 
+    const customStyles = {
+      ...reactSelectStyles,
+      option: (provided, state) => ({
+        ...reactSelectStyles.option(provided, state),
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+      }),
+    };
+
     return (
       <SortableSelect
         useDragHandle
@@ -491,11 +520,12 @@ export default class RelationControl extends React.Component {
         cacheOptions
         defaultOptions
         loadOptions={this.loadOptions}
+        loadingMessage={() => 'Loading options…'}
         onChange={this.handleChange}
         className={classNameWrapper}
         onFocus={setActiveStyle}
         onBlur={setInactiveStyle}
-        styles={reactSelectStyles}
+        styles={customStyles}
         isMulti={isMultiple}
         isClearable={isClearable}
         placeholder=""

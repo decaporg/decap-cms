@@ -1,4 +1,3 @@
-import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
 import { fromJS } from 'immutable';
 
@@ -34,7 +33,6 @@ jest.mock('decap-cms-ui-default', () => {
     ListItemTopBar,
   };
 });
-jest.mock('uuid');
 
 describe('ListControl', () => {
   const props = {
@@ -63,9 +61,8 @@ describe('ListControl', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    const uuid = require('uuid');
     let id = 0;
-    uuid.v4.mockImplementation(() => {
+    global.crypto.randomUUID = jest.fn(() => {
       return id++;
     });
   });
@@ -788,5 +785,78 @@ describe('ListControl', () => {
 
     listControl.validate();
     expect(props.onValidateObject).toHaveBeenCalledWith('forID', []);
+  });
+
+  const typedField = fromJS({
+    name: 'list',
+    label: 'List',
+    types: [
+      {
+        name: 'type_one',
+        widget: 'object',
+        fields: [{ name: 'text', widget: 'markdown', label: 'Text' }],
+      },
+    ],
+  });
+
+  it('should apply a change to the item it was made on after an earlier item is removed', () => {
+    const value = fromJS([
+      { type: 'type_one', text: 'one' },
+      { type: 'type_one', text: 'two' },
+      { type: 'type_one', text: 'three' },
+    ]);
+
+    let control;
+    const { getAllByText, rerender } = render(
+      <ListControl ref={ref => (control = ref)} {...props} field={typedField} value={value} />,
+    );
+
+    const changeThirdItem = control.handleChangeFor(2);
+
+    fireEvent.click(getAllByText('Remove')[0]);
+    const afterRemoval = props.onChange.mock.calls[0][0];
+    rerender(
+      <ListControl
+        ref={ref => (control = ref)}
+        {...props}
+        field={typedField}
+        value={afterRemoval}
+      />,
+    );
+
+    changeThirdItem(fromJS({ name: 'text' }), 'three edited');
+
+    const written = props.onChange.mock.calls[1][0].toJS();
+    expect(written).toHaveLength(2);
+    expect(written[1]).toEqual({ type: 'type_one', text: 'three edited' });
+  });
+
+  it('should discard a change made on an item that has since been removed', () => {
+    const value = fromJS([
+      { type: 'type_one', text: 'one' },
+      { type: 'type_one', text: 'two' },
+    ]);
+
+    let control;
+    const { getAllByText, rerender } = render(
+      <ListControl ref={ref => (control = ref)} {...props} field={typedField} value={value} />,
+    );
+
+    const changeSecondItem = control.handleChangeFor(1);
+
+    fireEvent.click(getAllByText('Remove')[1]);
+    const afterRemoval = props.onChange.mock.calls[0][0];
+    rerender(
+      <ListControl
+        ref={ref => (control = ref)}
+        {...props}
+        field={typedField}
+        value={afterRemoval}
+      />,
+    );
+
+    changeSecondItem(fromJS({ name: 'text' }), 'text for a removed item');
+
+    expect(props.onChange).toHaveBeenCalledTimes(1);
   });
 });

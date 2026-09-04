@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import { Icon, lengths, colors, zIndex } from 'decap-cms-ui-default';
@@ -8,7 +7,8 @@ const SearchContainer = styled.div`
   display: flex;
   align-items: center;
   position: relative;
-  width: 400px;
+  flex: 1 1 150px;
+  max-width: 460px;
 `;
 
 const SearchInput = styled.input`
@@ -33,6 +33,7 @@ const SearchIcon = styled(Icon)`
   left: 6px;
   z-index: ${zIndex.zIndex2};
   transform: translate(0, -50%);
+  pointer-events: none;
 `;
 
 function MediaLibrarySearch({ value, onChange, onKeyDown, placeholder, disabled }) {

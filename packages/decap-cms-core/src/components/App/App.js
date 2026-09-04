@@ -1,5 +1,5 @@
+import { Component, createElement } from 'react';
 import PropTypes from 'prop-types';
-import React from 'react';
 import { translate } from 'react-polyglot';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
@@ -32,7 +32,6 @@ TopBarProgress.config({
 });
 
 const AppMainContainer = styled.div`
-  min-width: 800px;
   max-width: 1440px;
   margin: 0 auto;
 `;
@@ -69,7 +68,7 @@ function RouteInCollection({ collections, render, ...props }) {
   );
 }
 
-class App extends React.Component {
+class App extends Component {
   static propTypes = {
     auth: PropTypes.object.isRequired,
     config: PropTypes.object.isRequired,
@@ -124,7 +123,7 @@ class App extends React.Component {
     return (
       <div>
         <Notifications />
-        {React.createElement(backend.authComponent(), {
+        {createElement(backend.authComponent(), {
           onLogin: this.handleLogin.bind(this),
           error: auth.error,
           inProgress: auth.isFetching,
@@ -156,6 +155,7 @@ class App extends React.Component {
       openMediaLibrary,
       t,
       showMediaButton,
+      location,
     } = this.props;
 
     if (config === null) {
@@ -177,22 +177,30 @@ class App extends React.Component {
     const defaultPath = getDefaultPath(collections);
     const hasWorkflow = publishMode === EDITORIAL_WORKFLOW;
 
+    // Work out if this is an editor route, following the same URL matching as the router.
+    // - /collections/:name/entries/*
+    // - /collections/:name/new
+    const [, base, , view] = location.pathname.split('/');
+    const isEditorRoute = base === 'collections' && (view === 'entries' || view === 'new');
+
     return (
       <>
         <Notifications />
-        <Header
-          user={user}
-          collections={collections}
-          onCreateEntryClick={createNewEntry}
-          onLogoutClick={logoutUser}
-          openMediaLibrary={openMediaLibrary}
-          hasWorkflow={hasWorkflow}
-          displayUrl={config.display_url}
-          logoUrl={config.logo_url} // Deprecated, replaced by `logo.src`
-          logo={config.logo}
-          isTestRepo={config.backend.name === 'test-repo'}
-          showMediaButton={showMediaButton}
-        />
+        {!isEditorRoute && (
+          <Header
+            user={user}
+            collections={collections}
+            onCreateEntryClick={createNewEntry}
+            onLogoutClick={logoutUser}
+            openMediaLibrary={openMediaLibrary}
+            hasWorkflow={hasWorkflow}
+            displayUrl={config.display_url}
+            logoUrl={config.logo_url} // Deprecated, replaced by `logo.src`
+            logo={config.logo}
+            isTestRepo={config.backend.name === 'test-repo'}
+            showMediaButton={showMediaButton}
+          />
+        )}
         <AppMainContainer>
           {isFetching && <TopBarProgress />}
           <Switch>

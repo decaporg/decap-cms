@@ -1,5 +1,3 @@
-import React from 'react';
-
 const image = {
   label: 'Image',
   id: 'image',
@@ -17,7 +15,7 @@ const image = {
     const src = getAsset(image, imageField);
     return <img src={src || ''} alt={alt || ''} title={title || ''} />;
   },
-  pattern: /^!\[(.*)\]\((.*?)(\s"(.*)")?\)/,
+  pattern: /^!\[([^\]]*)\]\((.*?)(\s"([^"]*)")?\)/,
   fields: [
     {
       label: 'Image',

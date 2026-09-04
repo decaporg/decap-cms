@@ -1,5 +1,5 @@
-import React from 'react';
 import { bindActionCreators } from 'redux';
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { translate } from 'react-polyglot';
@@ -121,7 +121,7 @@ function LabelComponent({ field, isActive, hasErrors, uniqueFieldId, isFieldOpti
   return labelComponent;
 }
 
-class EditorControl extends React.Component {
+class EditorControl extends Component {
   static propTypes = {
     value: PropTypes.oneOfType([
       PropTypes.node,
@@ -245,6 +245,7 @@ class EditorControl extends React.Component {
         {({ css, cx }) => (
           <ControlContainer
             className={className}
+            aria-label={t('editor.editorControl.field.widgetLabel', { widgetLabel: widgetName })}
             css={css`
               ${isHidden && styleStrings.hidden};
             `}

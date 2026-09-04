@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from '@emotion/styled';
 import { Icon, buttons, colors } from 'decap-cms-ui-default';
 
@@ -28,16 +27,18 @@ const ViewControlsButton = styled.button`
   }
 `;
 
-function ViewStyleControl({ viewStyle, onChangeViewStyle }) {
+function ViewStyleControl({ viewStyle, onChangeViewStyle, t }) {
   return (
     <ViewControlsSection>
       <ViewControlsButton
+        aria-label={t('collection.collectionTop.viewAsList')}
         isActive={viewStyle === VIEW_STYLE_LIST}
         onClick={() => onChangeViewStyle(VIEW_STYLE_LIST)}
       >
         <Icon type="list" />
       </ViewControlsButton>
       <ViewControlsButton
+        aria-label={t('collection.collectionTop.viewAsGrid')}
         isActive={viewStyle === VIEW_STYLE_GRID}
         onClick={() => onChangeViewStyle(VIEW_STYLE_GRID)}
       >

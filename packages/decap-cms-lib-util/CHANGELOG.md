@@ -3,6 +3,38 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.8.0](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-util@3.7.1...decap-cms-lib-util@3.8.0) (2026-07-23)
+
+**Note:** Version bump only for package decap-cms-lib-util
+
+## [3.7.1](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-util@3.7.0...decap-cms-lib-util@3.7.1) (2026-06-15)
+
+### Bug Fixes
+
+- **gitlab:** refresh expired PKCE access tokens ([#7854](https://github.com/decaporg/decap-cms/issues/7854)) ([18be93a](https://github.com/decaporg/decap-cms/commit/18be93a85804bb49058cbbc1a18f128c1cee14da))
+
+# [3.7.0](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-util@3.6.0...decap-cms-lib-util@3.7.0) (2026-06-08)
+
+### Bug Fixes
+
+- remove unused dependencies and specify missing dependencies ([#7833](https://github.com/decaporg/decap-cms/issues/7833)) ([e324a14](https://github.com/decaporg/decap-cms/commit/e324a142f7f0ba63c760b2e8524d971c35200f87))
+
+# [3.6.0](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-util@3.5.0...decap-cms-lib-util@3.6.0) (2026-06-01)
+
+**Note:** Version bump only for package decap-cms-lib-util
+
+# [3.5.0](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-util@3.4.0...decap-cms-lib-util@3.5.0) (2026-04-16)
+
+### Features
+
+- add config option to enable Signed-off-by in commit messages ([#7766](https://github.com/decaporg/decap-cms/issues/7766)) ([4b9ea40](https://github.com/decaporg/decap-cms/commit/4b9ea4040f3b858793052cee287caa3cce2f3af3))
+
+# [3.4.0](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-util@3.3.1...decap-cms-lib-util@3.4.0) (2025-12-18)
+
+### Bug Fixes
+
+- **lib-util:** treat root-relative media paths as absolute ([#7650](https://github.com/decaporg/decap-cms/issues/7650)) ([5d0e417](https://github.com/decaporg/decap-cms/commit/5d0e4175f042f43b2e63cc57b631d6b684fea0fc))
+
 ## [3.3.1](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-util@3.3.0...decap-cms-lib-util@3.3.1) (2025-07-31)
 
 **Note:** Version bump only for package decap-cms-lib-util

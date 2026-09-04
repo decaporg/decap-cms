@@ -1,4 +1,4 @@
-import React from 'react';
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 import { css, Global, ClassNames } from '@emotion/react';
 import ReactModal from 'react-modal';
@@ -20,8 +20,12 @@ const styleStrings = {
   modalBody: `
     ${shadows.dropDeep};
     background-color: #fff;
-    border-radius: ${lengths.borderRadius};
-    height: 80%;
+    border-radius: ${lengths.borderRadius} ${lengths.borderRadius} 0 0;
+    height: 90%;
+    @media (min-width: 500px) {
+      border-radius: ${lengths.borderRadius};
+      height: 80%;
+    }
     text-align: center;
     max-width: 2200px;
     padding: 20px;
@@ -39,7 +43,10 @@ const styleStrings = {
     bottom: 0;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-end;
+    @media (min-width: 500px) {
+      align-items: center;
+    }
     opacity: 0;
     background-color: rgba(0, 0, 0, 0);
     transition: background-color ${transitions.main}, opacity ${transitions.main};
@@ -54,7 +61,7 @@ const styleStrings = {
   `,
 };
 
-export class Modal extends React.Component {
+export class Modal extends Component {
   static propTypes = {
     children: PropTypes.node.isRequired,
     isOpen: PropTypes.bool.isRequired,

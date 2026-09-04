@@ -23,8 +23,7 @@ const deploys = produce((state: Deploys, action: DeploysAction) => {
     case DEPLOY_PREVIEW_REQUEST: {
       const { collection, slug } = action.payload;
       const key = `${collection}.${slug}`;
-      state[key] = state[key] || {};
-      state[key].isFetching = true;
+      state[key] = { isFetching: true, status: 'PENDING' };
       break;
     }
 
@@ -39,7 +38,10 @@ const deploys = produce((state: Deploys, action: DeploysAction) => {
 
     case DEPLOY_PREVIEW_FAILURE: {
       const { collection, slug } = action.payload;
-      state[`${collection}.${slug}`].isFetching = false;
+      const key = `${collection}.${slug}`;
+      state[key].isFetching = false;
+      state[key].url = undefined;
+      state[key].status = 'PENDING';
       break;
     }
   }

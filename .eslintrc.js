@@ -6,10 +6,17 @@ const packages = fs
   .map(dirent => dirent.name);
 
 module.exports = {
-  parser: 'babel-eslint',
+  parser: '@babel/eslint-parser',
+  parserOptions: {
+    requireConfigFile: false,
+    babelOptions: {
+      presets: [['@babel/preset-react', { runtime: 'automatic', importSource: '@emotion/react' }]],
+    },
+  },
   extends: [
     'eslint:recommended',
     'plugin:react/recommended',
+    'plugin:react/jsx-runtime',
     'plugin:cypress/recommended',
     'prettier',
     'plugin:import/recommended',
@@ -30,6 +37,9 @@ module.exports = {
   rules: {
     'no-console': [0],
     'react/prop-types': [0],
+    // With the new React JSX transform (jsx: "react-jsx"), React doesn't need to be in scope
+    'react/react-in-jsx-scope': 'off',
+    'react/jsx-uses-react': 'off',
     'import/no-named-as-default': 0,
     'import/order': [
       'error',
@@ -53,7 +63,10 @@ module.exports = {
       },
     ],
     'unicorn/prefer-string-slice': 'error',
-    'react/no-unknown-property': ['error', { ignore: ['css', 'bold', 'italic', 'delete'] }],
+    'react/no-unknown-property': [
+      'error',
+      { ignore: ['css', 'bold', 'italic', 'delete', 'strikethrough'] },
+    ],
   },
   plugins: ['babel', '@emotion', 'cypress', 'unicorn'],
   settings: {
@@ -64,16 +77,26 @@ module.exports = {
       node: {
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
       },
+      exports: {},
     },
     'import/core-modules': [...packages, 'decap-cms-app/dist/esm'],
   },
   overrides: [
+    {
+      files: ['packages/decap-cms-widget-richtext/src/**/*.js'],
+      rules: {
+        // PlateJS re-exports named APIs through package export subpaths that
+        // eslint-plugin-import does not reliably trace, even though Node resolves them.
+        'import/named': 'off',
+      },
+    },
     {
       files: ['*.ts', '*.tsx'],
       parser: '@typescript-eslint/parser',
       extends: [
         'eslint:recommended',
         'plugin:react/recommended',
+        'plugin:react/jsx-runtime',
         'plugin:cypress/recommended',
         'plugin:@typescript-eslint/recommended',
         'prettier',
@@ -99,6 +122,9 @@ module.exports = {
           'error',
           { functions: false, classes: true, variables: true },
         ],
+        // With the new React JSX transform (jsx: "react-jsx"), React doesn't need to be in scope
+        'react/react-in-jsx-scope': 'off',
+        'react/jsx-uses-react': 'off',
       },
     },
   ],
