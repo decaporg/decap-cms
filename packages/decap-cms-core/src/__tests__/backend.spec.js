@@ -118,6 +118,108 @@ describe('Backend', () => {
     });
   });
 
+  describe('processEntries', () => {
+    let backend;
+
+    function createBackend() {
+      getBackend.mockReturnValue({
+        init: jest.fn(),
+      });
+      return resolveBackend({
+        backend: {
+          name: 'git-gateway',
+        },
+      });
+    }
+
+    function createCollection(i18n) {
+      return fromJS({
+        name: 'posts',
+        type: FOLDER,
+        folder: '_posts',
+        format: 'yaml',
+        extension: 'yml',
+        filter: { field: 'draft', value: false },
+        fields: [{ name: 'title' }, { name: 'draft' }],
+        ...(i18n && { i18n }),
+      });
+    }
+
+    function loadedEntry(path, data) {
+      return { file: { path }, data };
+    }
+
+    beforeEach(() => {
+      backend = createBackend();
+    });
+
+    it('filters entries of a single file i18n collection on the default locale data', () => {
+      const collection = createCollection({
+        structure: 'single_file',
+        locales: ['en', 'de'],
+        default_locale: 'en',
+      });
+
+      const result = backend.processEntries(
+        [
+          loadedEntry(
+            '_posts/published.yml',
+            'en:\n  title: Published\n  draft: false\nde:\n  title: Veröffentlicht\n  draft: false\n',
+          ),
+          loadedEntry(
+            '_posts/drafted.yml',
+            'en:\n  title: Drafted\n  draft: true\nde:\n  title: Entwurf\n  draft: true\n',
+          ),
+        ],
+        collection,
+      );
+
+      expect(result).toHaveLength(1);
+      expect(result[0].slug).toBe('published');
+      expect(result[0].data).toEqual({ title: 'Published', draft: false });
+      expect(result[0].i18n).toEqual({
+        de: { data: { title: 'Veröffentlicht', draft: false } },
+      });
+    });
+
+    it('keeps translations of a multiple files i18n collection whose filter field is not translated', () => {
+      const collection = createCollection({
+        structure: 'multiple_files',
+        locales: ['en', 'de'],
+        default_locale: 'en',
+      });
+
+      const result = backend.processEntries(
+        [
+          loadedEntry('_posts/published.en.yml', 'title: Published\ndraft: false\n'),
+          loadedEntry('_posts/published.de.yml', 'title: Veröffentlicht\n'),
+          loadedEntry('_posts/drafted.en.yml', 'title: Drafted\ndraft: true\n'),
+          loadedEntry('_posts/drafted.de.yml', 'title: Entwurf\n'),
+        ],
+        collection,
+      );
+
+      expect(result).toHaveLength(1);
+      expect(result[0].slug).toBe('published');
+      expect(result[0].data).toEqual({ title: 'Published', draft: false });
+      expect(result[0].i18n).toEqual({ de: { data: { title: 'Veröffentlicht' } } });
+    });
+
+    it('filters entries of a collection without i18n', () => {
+      const result = backend.processEntries(
+        [
+          loadedEntry('_posts/published.yml', 'title: Published\ndraft: false\n'),
+          loadedEntry('_posts/drafted.yml', 'title: Drafted\ndraft: true\n'),
+        ],
+        createCollection(),
+      );
+
+      expect(result).toHaveLength(1);
+      expect(result[0].slug).toBe('published');
+      expect(result[0].data).toEqual({ title: 'Published', draft: false });
+    });
+  });
+
   describe('getLocalDraftBackup', () => {
     const { localForage, asyncLock } = require('decap-cms-lib-util');
 
