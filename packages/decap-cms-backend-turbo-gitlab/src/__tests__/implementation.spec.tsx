@@ -331,9 +331,9 @@ describe('turbo gitlab backend preloadConfig', () => {
     await expect(DecapTurboGitLabBackend.preloadConfig(config)).rejects.toThrow('site not found');
   });
 
-  it('overrides a stale local repo/branch with the control plane\'s values', async () => {
+  it("overrides a stale local repo with the control plane's value", async () => {
     const config = {
-      backend: { turbo_site_id: 'site-123', repo: 'stale/project', branch: 'stale-branch' },
+      backend: { turbo_site_id: 'site-123', repo: 'stale/project' },
     } as any;
     global.fetch = jest.fn().mockResolvedValue({
       ok: true,
@@ -349,7 +349,30 @@ describe('turbo gitlab backend preloadConfig', () => {
     const actual = await DecapTurboGitLabBackend.preloadConfig(config);
 
     expect(actual.backend.repo).toBe('group/project');
-    expect(actual.backend.branch).toBe('main');
+  });
+
+  // One sites row serves every deploy of a project, so its branch cannot be
+  // the one a staging deploy edits; the deploy's own config.yml says which
+  // branch it is on.
+  it('keeps the branch from config.yml over the control plane branch', async () => {
+    const config = {
+      backend: { turbo_site_id: 'site-123', branch: 'develop' },
+    } as any;
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      json: () =>
+        Promise.resolve({
+          supabase_app_id: 'resolved-app-id',
+          supabase_anon_key: 'resolved-key',
+          repo: 'group/project',
+          branch: 'main',
+        }),
+    } as any);
+
+    const actual = await DecapTurboGitLabBackend.preloadConfig(config);
+
+    expect(actual.backend.repo).toBe('group/project');
+    expect(actual.backend.branch).toBe('develop');
   });
 
   it('fills in repo/branch from the control plane when config.yml omits them', async () => {

@@ -138,14 +138,19 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
       backend: {
         ...otherDefaults,
         ...config.backend,
-        // repo/branch are authoritative from the sites row, not config.yml:
-        // permissions and the content cache already resolve from
-        // sites.repo@sites.branch, so a stale local value here is exactly
-        // what makes checkRepoScope 403 with "requested repo does not
-        // match". A site's config.yml only needs turbo_site_id — see
-        // docs/site-integration.md in decap-turbo.
+        // `repo` is authoritative from the sites row, not config.yml: the
+        // proxy resolves permissions from sites.repo, so a stale local value
+        // here is exactly what makes checkRepoScope 403 with "requested repo
+        // does not match".
         ...(repo ? { repo } : {}),
-        ...(branch ? { branch } : {}),
+        // `branch` is the opposite: one sites row legitimately serves several
+        // deploys of the same repo (a production site on `main`, a staging
+        // site on `develop`), and each deploy says which branch it edits in
+        // its own config.yml. The proxy takes the branch per request — the
+        // content cache is keyed by (site, repo, branch) — so config.yml wins
+        // whenever it names one, and the sites row is only the default for a
+        // config.yml that leaves it out.
+        ...(branch && !config.backend.branch ? { branch } : {}),
       },
     };
   }

@@ -128,10 +128,11 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
       backend: {
         ...otherDefaults,
         ...config.backend,
-        // repo/branch are authoritative from the sites row, not config.yml —
-        // see decap-cms-backend-turbo-github's implementation.tsx for why.
+        // `repo` is authoritative from the sites row, not config.yml, while
+        // `branch` comes from config.yml whenever it names one — see
+        // decap-cms-backend-turbo-github's implementation.tsx for why.
         ...(repo ? { repo } : {}),
-        ...(branch ? { branch } : {}),
+        ...(branch && !config.backend.branch ? { branch } : {}),
       },
     };
   }
