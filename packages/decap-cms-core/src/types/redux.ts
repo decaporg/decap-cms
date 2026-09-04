@@ -494,6 +494,7 @@ export interface CmsConfig {
   i18n?: CmsI18nConfig;
   issue_reports?: CmsIssueReports;
   local_backend?: boolean | CmsLocalBackend;
+  remove_empty_fields?: string[];
   editor?: {
     preview?: boolean;
     notes?: boolean;

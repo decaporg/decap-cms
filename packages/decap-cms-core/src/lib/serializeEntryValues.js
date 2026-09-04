@@ -21,30 +21,52 @@ import { getWidgetValueSerializer } from './registry';
  * registered deserialization handlers run on entry load, and serialization
  * handlers run on persist.
  */
-function runSerializer(values, fields, method) {
+function runSerializer(
+  values,
+  fields,
+  method,
+  removeEmptyFields = [],
+  pathsToRemove = [],
+  currentPath = [],
+) {
   /**
    * Reduce the list of fields to a map where keys are field names and values
    * are field values, serializing the values of fields whose widgets have
    * registered serializers.  If the field is a list or object, call recursively
    * for nested fields.
    */
-  let serializedData = fields.reduce((acc, field) => {
+  const serializedData = fields.reduce((acc, field) => {
     const fieldName = field.get('name');
     const value = values.get(fieldName);
-    const serializer = getWidgetValueSerializer(field.get('widget'));
+    const widget = field.get('widget', 'string');
+    const serializer = getWidgetValueSerializer(widget);
     const nestedFields = field.get('fields');
+    const newPath = [...currentPath, fieldName];
 
     // Call recursively for fields within lists
     if (nestedFields && List.isList(value)) {
       return acc.set(
         fieldName,
-        value.map(val => runSerializer(val, nestedFields, method)),
+        value.map((val, index) =>
+          runSerializer(val, nestedFields, method, removeEmptyFields, pathsToRemove, [
+            ...newPath,
+            index,
+          ]),
+        ),
       );
     }
 
     // Call recursively for fields within objects
     if (nestedFields && Map.isMap(value)) {
-      return acc.set(fieldName, runSerializer(value, nestedFields, method));
+      return acc.set(
+        fieldName,
+        runSerializer(value, nestedFields, method, removeEmptyFields, pathsToRemove, newPath),
+      );
+    }
+
+    if (removeEmptyFields.includes(widget) && (isNil(value) || value === '')) {
+      pathsToRemove.push(newPath);
+      return acc;
     }
 
     // Run serialization method on value if not null or undefined
@@ -60,14 +82,43 @@ function runSerializer(values, fields, method) {
     return acc;
   }, Map());
 
-  //preserve unknown fields value
-  serializedData = values.mergeDeep(serializedData);
-
-  return serializedData;
+  // preserve unknown fields value
+  return values.mergeDeep(serializedData);
 }
 
-export function serializeValues(values, fields) {
-  return runSerializer(values, fields, 'serialize');
+function removeEntriesByPaths(data, paths) {
+  paths.forEach(path => {
+    data = removeEntryByPath(data, path);
+  });
+  return data;
+}
+
+function removeEntryByPath(data, keys) {
+  if (keys.length === 1) {
+    return data.delete(keys[0]);
+  }
+
+  const [firstKey, ...restKeys] = keys;
+  const nestedData = data.get(firstKey);
+
+  if (nestedData) {
+    const updatedNestedData = removeEntryByPath(nestedData, restKeys);
+    return data.set(firstKey, updatedNestedData);
+  }
+
+  return data;
+}
+
+export function serializeValues(values, fields, config) {
+  const pathsToRemove = [];
+  const serializedValues = runSerializer(
+    values,
+    fields,
+    'serialize',
+    config?.remove_empty_fields,
+    pathsToRemove,
+  );
+  return removeEntriesByPaths(serializedValues, pathsToRemove);
 }
 
 export function deserializeValues(values, fields) {

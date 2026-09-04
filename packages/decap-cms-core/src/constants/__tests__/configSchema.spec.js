@@ -232,6 +232,24 @@ describe('config', () => {
       }).not.toThrowError();
     });
 
+    it('should throw if remove_empty_fields is not an array', () => {
+      expect(() => {
+        validateConfig(merge({}, validConfig, { remove_empty_fields: 'image' }));
+      }).toThrowError("'remove_empty_fields' must be array");
+    });
+
+    it('should throw if remove_empty_fields contains a non-string value', () => {
+      expect(() => {
+        validateConfig(merge({}, validConfig, { remove_empty_fields: ['image', false] }));
+      }).toThrowError("'remove_empty_fields[1]' must be string");
+    });
+
+    it('should not throw if remove_empty_fields is a string array', () => {
+      expect(() => {
+        validateConfig(merge({}, validConfig, { remove_empty_fields: ['image', 'string'] }));
+      }).not.toThrowError();
+    });
+
     it('should throw if collection publish is not a boolean', () => {
       expect(() => {
         validateConfig(merge({}, validConfig, { collections: [{ publish: 'false' }] }));

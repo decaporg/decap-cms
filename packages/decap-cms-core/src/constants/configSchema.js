@@ -189,6 +189,10 @@ function getConfigSchema() {
           },
         ],
       },
+      remove_empty_fields: {
+        type: 'array',
+        items: { type: 'string' },
+      },
       locale: { type: 'string', examples: ['en', 'fr', 'de'] },
       i18n: i18nRoot,
       site_url: { type: 'string', examples: ['https://example.com'] },

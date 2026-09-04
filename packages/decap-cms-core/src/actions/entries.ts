@@ -41,6 +41,7 @@ import type {
   ViewFilter,
   ViewGroup,
   Entry,
+  CmsConfig,
 } from '../types/redux';
 import type { EntryValue } from '../valueObjects/Entry';
 import type { Backend } from '../backend';
@@ -931,7 +932,7 @@ export function getMediaAssets({ entry }: { entry: EntryMap }) {
   return assets;
 }
 
-export function getSerializedEntry(collection: Collection, entry: Entry) {
+export function getSerializedEntry(collection: Collection, entry: Entry, config: CmsConfig) {
   /**
    * Serialize the values of any fields with registered serializers, and
    * update the entry and entryDraft with the serialized values.
@@ -940,7 +941,7 @@ export function getSerializedEntry(collection: Collection, entry: Entry) {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function serializeData(data: any) {
-    return serializeValues(data, fields);
+    return serializeValues(data, fields, config);
   }
 
   const serializedData = serializeData(entry.get('data'));
@@ -985,7 +986,7 @@ export function persistEntry(collection: Collection) {
       entry,
     });
 
-    const serializedEntry = getSerializedEntry(collection, entry);
+    const serializedEntry = getSerializedEntry(collection, entry, state.config);
     const serializedEntryDraft = entryDraft.set('entry', serializedEntry);
     dispatch(entryPersisting(collection, serializedEntry));
     return backend
