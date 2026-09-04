@@ -96,6 +96,33 @@ describe('Backend', () => {
       expect(result.length).toBe(1);
     });
 
+    it('filters multiple values', () => {
+      const result = backend.filterEntries(
+        {
+          entries: [
+            {
+              data: {
+                testField: 'one',
+              },
+            },
+            {
+              data: {
+                testField: 'two',
+              },
+            },
+            {
+              data: {
+                testField: 'three',
+              },
+            },
+          ],
+        },
+        Map({ field: 'testField', value: ['one', 'two'] }),
+      );
+
+      expect(result.length).toBe(2);
+    });
+
     it('filters list values', () => {
       const result = backend.filterEntries(
         {
@@ -116,6 +143,23 @@ describe('Backend', () => {
       );
 
       expect(result.length).toBe(1);
+    });
+
+    it('behaves when field values are absent', () => {
+      const result = backend.filterEntries(
+        {
+          entries: [
+            {
+              data: {
+                otherField: 'testValue',
+              },
+            },
+          ],
+        },
+        Map({ field: 'testField', value: 'testValue' }),
+      );
+
+      expect(result.length).toBe(0);
     });
   });
 
