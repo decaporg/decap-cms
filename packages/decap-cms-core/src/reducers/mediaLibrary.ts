@@ -92,7 +92,10 @@ function mediaLibrary(state = Map(defaultState), action: MediaLibraryAction) {
         map.set('forImage', forImage ?? false);
         map.set('controlID', controlID ?? '');
         map.set('canInsert', !!controlID);
-        map.set('privateUpload', privateUpload);
+        // NOTE: stored as-is rather than defaulted - `privateUploadChanged`
+        // above compares against this value on the next open, so coercing
+        // `undefined` to `false` would spuriously reset the library state.
+        map.set('privateUpload', privateUpload as boolean);
         map.set('config', libConfig);
         map.set('field', field ?? '');
         map.set('value', value == '' && libConfig.get('multiple') ? [] : value ?? '');
@@ -269,7 +272,7 @@ export function selectMediaFiles(state: State, field?: EntryField) {
   if (editingDraft && !integration) {
     const entryFiles = entryDraft
       .getIn(['entry', 'mediaFiles'], List<MediaFileMap>())
-      .toJS() as MediaFile[];
+      .toJS() as unknown as MediaFile[];
     const entry = entryDraft.get('entry');
     const collection = state.collections.get(entry?.get('collection'));
     const mediaFolder = selectMediaFolder(state.config, collection, entry, field);

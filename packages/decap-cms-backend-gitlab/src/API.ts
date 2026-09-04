@@ -459,7 +459,7 @@ export default class API {
   };
 
   traverseCursor = async (cursor: Cursor, action: string) => {
-    const link = cursor.data!.getIn(['links', action]);
+    const link = cursor.data!.getIn(['links', action]) as string;
     const { entries, cursor: newCursor } = await this.fetchCursorAndEntries(link);
     return {
       entries: entries.filter(({ type }) => type === 'blob'),
@@ -572,7 +572,7 @@ export default class API {
     });
     entries.push(...initialEntries);
     while (cursor && cursor.actions!.has('next')) {
-      const link = cursor.data!.getIn(['links', 'next']);
+      const link = cursor.data!.getIn(['links', 'next']) as string;
       const { cursor: newCursor, entries: newEntries } = await this.fetchCursorAndEntries(link);
       entries.push(...newEntries);
       cursor = newCursor;

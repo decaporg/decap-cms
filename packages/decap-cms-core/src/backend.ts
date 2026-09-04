@@ -908,17 +908,14 @@ export class Backend {
       }
 
       const mediaFiles = await Promise.all<MediaFile>(
-        entry
-          .get('mediaFiles')
-          .toJS()
-          .map(async (file: MediaFile) => {
-            // make sure to serialize the file
-            if (file.url?.startsWith('blob:')) {
-              const blob = await fetch(file.url as string).then(res => res.blob());
-              return { ...file, file: blobToFileObj(file.name, blob) };
-            }
-            return file;
-          }),
+        (entry.get('mediaFiles').toJS() as unknown as MediaFile[]).map(async file => {
+          // make sure to serialize the file
+          if (file.url?.startsWith('blob:')) {
+            const blob = await fetch(file.url as string).then(res => res.blob());
+            return { ...file, file: blobToFileObj(file.name, blob) };
+          }
+          return file;
+        }),
       );
 
       let i18n;
@@ -1032,7 +1029,7 @@ export class Backend {
     let extension: string;
     if (collection.get('type') === FILES) {
       const file = collection.get('files')!.find(f => f?.get('name') === slug);
-      extension = extname(file.get('file'));
+      extension = extname(file!.get('file'));
     } else {
       extension = selectFolderEntryExtension(collection);
     }
@@ -1130,7 +1127,11 @@ export class Backend {
 
   async processEntry(state: State, collection: Collection, entry: EntryValue) {
     const integration = selectIntegration(state.integrations, null, 'assetStore');
-    const mediaFolders = selectMediaFolders(state.config, collection, fromJS(entry));
+    const mediaFolders = selectMediaFolders(
+      state.config,
+      collection,
+      fromJS(entry) as unknown as EntryMap,
+    );
     if (mediaFolders.length > 0 && !integration) {
       const files = await Promise.all(
         mediaFolders.map(folder => this.implementation.getMedia(folder)),

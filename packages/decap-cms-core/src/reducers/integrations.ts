@@ -10,7 +10,7 @@ interface Acc {
   hooks: Record<string, string | Record<string, string>>;
 }
 
-export function getIntegrations(config: CmsConfig) {
+export function getIntegrations(config: CmsConfig): Integrations {
   const integrations = config.integrations || [];
   const newState = integrations.reduce(
     (acc, integration) => {
@@ -35,10 +35,10 @@ export function getIntegrations(config: CmsConfig) {
     },
     { providers: {}, hooks: {} } as Acc,
   );
-  return fromJS(newState);
+  return fromJS(newState) as unknown as Integrations;
 }
 
-const defaultState = fromJS({ providers: {}, hooks: {} });
+const defaultState = fromJS({ providers: {}, hooks: {} }) as unknown as Integrations;
 
 function integrations(state = defaultState, action: ConfigAction): Integrations | null {
   switch (action.type) {

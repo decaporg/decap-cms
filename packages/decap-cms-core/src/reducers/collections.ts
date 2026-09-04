@@ -27,7 +27,7 @@ import type { Backend } from '../backend';
 
 const { keyToPathArray } = stringTemplate;
 
-const defaultState: Collections = fromJS({});
+const defaultState = fromJS({}) as unknown as Collections;
 
 function collections(state = defaultState, action: ConfigAction) {
   switch (action.type) {
@@ -494,12 +494,12 @@ export function selectSortDataPath(collection: Collection, key: string) {
 }
 
 export function selectViewFilters(collection: Collection) {
-  const viewFilters = collection.get('view_filters').toJS() as ViewFilter[];
+  const viewFilters = collection.get('view_filters').toJS() as unknown as ViewFilter[];
   return viewFilters;
 }
 
 export function selectViewGroups(collection: Collection) {
-  const viewGroups = collection.get('view_groups').toJS() as ViewGroup[];
+  const viewGroups = collection.get('view_groups').toJS() as unknown as ViewGroup[];
   return viewGroups;
 }
 
@@ -509,7 +509,7 @@ export function selectFieldsComments(collection: Collection, entryMap: EntryMap)
     fields = collection.get('fields').toArray();
   } else if (collection.has('files')) {
     const file = collection.get('files')!.find(f => f?.get('name') === entryMap.get('slug'));
-    fields = file.get('fields').toArray();
+    fields = file?.get('fields').toArray() || [];
   }
   const comments: Record<string, string> = {};
   const names = getFieldsNames(fields);
