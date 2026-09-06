@@ -191,7 +191,7 @@ function mediaLibrary(state = Map(defaultState), action: MediaLibraryAction) {
       }
       return state.withMutations(map => {
         const fileWithKey = { ...file, key: crypto.randomUUID() };
-        const files = map.get('files') as MediaFile[];
+        const files = (map.get('files') as MediaFile[]) || [];
         const updatedFiles = [fileWithKey, ...files];
         map.set('files', updatedFiles);
         map.set('isPersisting', false);

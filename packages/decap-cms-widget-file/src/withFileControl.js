@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { Component, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
@@ -238,7 +238,7 @@ const warnDeprecatedOptions = once(field =>
 );
 
 export default function withFileControl({ forImage } = {}) {
-  return class FileControl extends React.Component {
+  return class FileControl extends Component {
     static propTypes = {
       field: PropTypes.object.isRequired,
       getAsset: PropTypes.func.isRequired,

@@ -1,5 +1,6 @@
 import Joi from '@hapi/joi';
-import path from 'path';
+
+import { resolveRepoPath } from '../utils/path';
 
 export function pathTraversal(repoPath: string) {
   return Joi.extend({
@@ -9,8 +10,9 @@ export function pathTraversal(repoPath: string) {
       'path.invalid': '{{#label}} must resolve to a path under the configured repository',
     },
     validate(value, helpers) {
-      const resolvedPath = path.join(repoPath, value);
-      if (!resolvedPath.startsWith(repoPath)) {
+      try {
+        resolveRepoPath(repoPath, value);
+      } catch (e) {
         return { value, errors: helpers.error('path.invalid') };
       }
     },

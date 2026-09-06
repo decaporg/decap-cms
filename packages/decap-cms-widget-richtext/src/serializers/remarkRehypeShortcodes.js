@@ -13,40 +13,48 @@ export default function remarkToRehypeShortcodes({ plugins, getAsset, resolveWid
   return transform;
 
   function transform(root) {
-    const transformedChildren = map(root.children, processShortcodes);
-    return { ...root, children: transformedChildren };
+    return processShortcodes(root);
   }
 
   /**
-   * Mapping function to transform nodes that contain shortcodes.
+   * Recursively transform nodes that contain shortcodes.
    */
   function processShortcodes(node) {
     /**
-     * If the node doesn't contain shortcode data, return the original node.
+     * Transform shortcode nodes before descending into their children.
      */
-    if (!has(node, ['data', 'shortcode'])) return node;
+    let transformedNode = node;
+    if (has(node, ['data', 'shortcode'])) {
+      /**
+       * Get shortcode data from the node, and retrieve the matching plugin by
+       * key.
+       */
+      const { shortcode, shortcodeData } = node.data;
+      const plugin = plugins.get(shortcode);
 
-    /**
-     * Get shortcode data from the node, and retrieve the matching plugin by
-     * key.
-     */
-    const { shortcode, shortcodeData } = node.data;
-    const plugin = plugins.get(shortcode);
+      /**
+       * Run the shortcode plugin's `toPreview` method, which will return either
+       * an HTML string or a React component. If a React component is returned,
+       * render it to an HTML string.
+       */
+      const value = getPreview(plugin, shortcodeData);
+      const valueHtml = typeof value === 'string' ? value : renderToString(value);
 
-    /**
-     * Run the shortcode plugin's `toPreview` method, which will return either
-     * an HTML string or a React component. If a React component is returned,
-     * render it to an HTML string.
-     */
-    const value = getPreview(plugin, shortcodeData);
-    const valueHtml = typeof value === 'string' ? value : renderToString(value);
+      /**
+       * Return a new 'html' type node containing the shortcode preview markup.
+       */
+      const textNode = u('html', valueHtml);
+      transformedNode = { ...node, children: [textNode] };
+    }
 
-    /**
-     * Return a new 'html' type node containing the shortcode preview markup.
-     */
-    const textNode = u('html', valueHtml);
-    const children = [textNode];
-    return { ...node, children };
+    if (!transformedNode.children) {
+      return transformedNode;
+    }
+
+    return {
+      ...transformedNode,
+      children: map(transformedNode.children, processShortcodes),
+    };
   }
 
   /**
