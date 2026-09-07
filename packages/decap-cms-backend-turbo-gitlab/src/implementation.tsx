@@ -5,7 +5,9 @@ import {
   type Config,
   type User,
   type Credentials,
+  branchFromContentKey,
   collectionKeyForFiles,
+  generateContentKey,
 } from 'decap-cms-lib-util';
 import { stripIndent } from 'common-tags';
 
@@ -152,9 +154,6 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
   supabaseId: string;
   siteId: string;
   commitAuthorEmailFallback?: string;
-  // API.commitAuthor is typed as an untyped `{}`, so this mirrors its email
-  // in a typed field for callers (e.g. telemetry) that need to read it back.
-  commitAuthorEmail?: string;
   updateUserCredentialsFn: (credentials: Credentials) => void;
   // refreshedTokenPromise is already declared (and typed identically) on the
   // GitLabBackend base class — redeclaring it here would need TypeScript's
@@ -474,7 +473,6 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
       this.commitAuthorEmailFallback,
     );
     this.api.commitAuthor = commitAuthor;
-    this.commitAuthorEmail = commitAuthor?.email;
 
     // `turboPermissions` was resolved above, alongside the user. It is attached
     // to the returned user object because decap-cms-core's actions/auth.ts
@@ -896,6 +894,17 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
 
     const durationMs = Date.now() - startedAt;
 
+    // The branch this save actually committed to. An editorial-workflow save
+    // goes to the entry's own `cms/<collection>/<slug>` branch, not the site's,
+    // so logging this.branch made a draft read as a publish in the org's
+    // activity feed (decap-turbo docs/pre-production-review-findings.md L8).
+    // Derived the same way GitLabBackend's own persistFiles does.
+    const savedBranch = options.useWorkflow
+      ? branchFromContentKey(
+          generateContentKey(options.collectionName as string, entry.dataFiles?.[0]?.slug),
+        )
+      : this.branch;
+
     if (result && entry.dataFiles && entry.dataFiles.length > 0) {
       // Deliberately does not write the cache — the server owns it. The commit
       // moves the branch head and reloadEntriesAfterPersist makes core re-list
@@ -912,10 +921,15 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
           collection: options.collectionName,
           slug: entry.dataFiles[0].slug,
           path: entry.dataFiles[0].path,
-          branch: this.branch,
-          // Redundant with the server-derived user_id (from the auth JWT) —
-          // a fallback for the activity feed when that lookup misses.
-          authorEmail: this.commitAuthorEmail,
+          branch: savedBranch,
+          // Whether this was an editorial-workflow draft. The branch alone
+          // can't say so — a site is free to publish from a `cms/...` branch.
+          workflow: options.useWorkflow === true,
+          // No authorEmail. It was a second copy of an email the row already
+          // identifies through the server-derived user_id, and the activity
+          // feed's fallback to it never fired (decap-turbo H12). The server
+          // drops the key regardless, so an older bundle sending it stores
+          // nothing either.
           // Baseline for the one-call commit endpoint (decap-turbo
           // docs/deploy-status-plan.md B5 -> B1). GitLab already commits in a
           // single API call, so `requests` here is expected to be far lower

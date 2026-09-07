@@ -4,7 +4,9 @@ import {
   type User,
   type Credentials,
   APIError,
+  branchFromContentKey,
   collectionKeyForFiles,
+  generateContentKey,
   unsentRequest,
 } from 'decap-cms-lib-util';
 import GraphQLAPI from 'decap-cms-backend-github/src/GraphQLAPI';
@@ -89,6 +91,27 @@ const TERMINAL_REFRESH_CODES = new Set([
 // extension point) before constructing the backend.
 const DEFAULT_CONFIG_ENDPOINT = 'https://sb.decapcms.org/functions/v1/config';
 
+/**
+ * The content key an editorial-workflow save's branch is named after.
+ *
+ * Delegates to the API client, which adds open authoring's `${repo}/` prefix,
+ * and falls back to the bare key if `api` is somehow unset. That fallback is
+ * unreachable from a real save — `authenticate` builds `api` long before
+ * `persistEntry` can run — but this value only feeds telemetry, and telemetry
+ * must never be the thing that breaks a save.
+ */
+function workflowContentKey(
+  backend: { api?: { generateContentKey: (collection: string, slug: string) => string } | null },
+  options: any,
+  entry: any,
+): string {
+  const collection = options.collectionName as string;
+  const slug = entry.dataFiles?.[0]?.slug as string;
+  return backend.api
+    ? backend.api.generateContentKey(collection, slug)
+    : generateContentKey(collection, slug);
+}
+
 export default class DecapTurboGitHubBackend extends GitHubBackend {
   static async preloadConfig(config: Config): Promise<Config> {
     const backend = config.backend as Record<string, unknown>;
@@ -170,9 +193,6 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
   supabaseId: string;
   siteId: string;
   commitAuthorEmailFallback?: string;
-  // API.commitAuthor is typed as an untyped `{}`, so this mirrors its email
-  // in a typed field for callers (e.g. telemetry) that need to read it back.
-  commitAuthorEmail?: string;
   updateUserCredentials: (credentials: Credentials) => void;
   refreshedTokenPromise?: Promise<string>;
   /** Epoch ms before which refreshSessionIfNeeded will not try again. */
@@ -548,7 +568,6 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
       this.commitAuthorEmailFallback,
     );
     this.api!.commitAuthor = commitAuthor;
-    this.commitAuthorEmail = commitAuthor?.email;
 
     recordCmsEvent(
       this.baseUrl!,
@@ -1087,6 +1106,20 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
         ? { sha, entryPath: entry.dataFiles?.[0]?.path as string | undefined }
         : null;
 
+    // The branch this save actually committed to, which is not `this.branch`
+    // for an editorial-workflow save — that goes to the entry's own
+    // `cms/<collection>/<slug>` branch. Logging the site's branch made a draft
+    // read as a publish in the org's activity feed (decap-turbo
+    // docs/pre-production-review-findings.md L8). `result.branch` is
+    // authoritative when the one-call commit endpoint answered; otherwise
+    // derive it the same way GitHubBackend's own persistFiles does.
+    const savedBranch =
+      typeof committedBranch === 'string' && committedBranch
+        ? committedBranch
+        : options.useWorkflow
+          ? branchFromContentKey(workflowContentKey(this, options, entry))
+          : this.branch;
+
     if (result && entry.dataFiles && entry.dataFiles.length > 0) {
       // Deliberately does not write the cache. The commit moves the branch
       // HEAD, and `reloadEntriesAfterPersist` makes core re-run loadEntries
@@ -1104,10 +1137,15 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
           collection: options.collectionName,
           slug: entry.dataFiles[0].slug,
           path: entry.dataFiles[0].path,
-          branch: this.branch,
-          // Redundant with the server-derived user_id (from the auth JWT) —
-          // a fallback for the activity feed when that lookup misses.
-          authorEmail: this.commitAuthorEmail,
+          branch: savedBranch,
+          // Whether this was an editorial-workflow draft. The branch alone
+          // can't say so — a site is free to publish from a `cms/...` branch.
+          workflow: options.useWorkflow === true,
+          // No authorEmail. It was a second copy of an email the row already
+          // identifies through the server-derived user_id, and the activity
+          // feed's fallback to it never fired (decap-turbo H12). The server
+          // drops the key regardless, so an older bundle sending it stores
+          // nothing either.
           // Baseline for the one-call commit endpoint (decap-turbo
           // docs/deploy-status-plan.md B5 -> B1). `requests` is the headline
           // — one save is N+4 round trips today — and durationMs minus
