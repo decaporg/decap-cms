@@ -72,6 +72,14 @@ function parseListObjectsXml(xml: string, prefix: string): ListObjectsResult {
   return { files, isTruncated, nextContinuationToken };
 }
 
+const MAX_LOGGED_BODY_LENGTH = 300;
+
+function truncateForLog(body: string): string {
+  return body.length > MAX_LOGGED_BODY_LENGTH
+    ? `${body.slice(0, MAX_LOGGED_BODY_LENGTH)}… (truncated)`
+    : body;
+}
+
 export class S3Client {
   private edgeBaseUrl: string;
   private getAccessToken: () => Promise<string | null>;
@@ -116,11 +124,14 @@ export class S3Client {
 
   private async handleErrorResponse(response: Response): Promise<never> {
     const errorBody = await response.text();
+    // Never log response headers: they can carry auth echoes, proxy internals
+    // and set-cookie, and the browser console is readable by any extension.
+    // The body is truncated for the same reason — the thrown Error below still
+    // carries it in full for callers that need it.
     console.error('[S3 Client] API Error Response:', {
       status: response.status,
       statusText: response.statusText,
-      body: errorBody,
-      headers: Object.fromEntries(response.headers.entries()),
+      body: truncateForLog(errorBody),
     });
     throw new Error(`S3 API error: ${response.status} - ${errorBody}`);
   }

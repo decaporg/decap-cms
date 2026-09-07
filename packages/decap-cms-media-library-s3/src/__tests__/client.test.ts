@@ -92,7 +92,11 @@ describe('S3Client', () => {
     expect(result.files).toHaveLength(2);
 
     const folder = result.files.find(f => f.IsDirectory);
-    expect(folder).toMatchObject({ Key: 'images/subfolder/', IsDirectory: true, ObjectName: 'subfolder' });
+    expect(folder).toMatchObject({
+      Key: 'images/subfolder/',
+      IsDirectory: true,
+      ObjectName: 'subfolder',
+    });
 
     const file = result.files.find(f => !f.IsDirectory);
     expect(file).toMatchObject({
@@ -117,8 +121,16 @@ describe('S3Client', () => {
 
   it('should follow pagination via listAllObjects until IsTruncated is false', async () => {
     (global.fetch as jest.Mock)
-      .mockResolvedValueOnce({ ok: true, headers: xmlHeaders(), text: async () => TRUNCATED_PAGE_1_XML })
-      .mockResolvedValueOnce({ ok: true, headers: xmlHeaders(), text: async () => TRUNCATED_PAGE_2_XML });
+      .mockResolvedValueOnce({
+        ok: true,
+        headers: xmlHeaders(),
+        text: async () => TRUNCATED_PAGE_1_XML,
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        headers: xmlHeaders(),
+        text: async () => TRUNCATED_PAGE_2_XML,
+      });
 
     const client = new S3Client({
       edgeBaseUrl: 'https://edge.example.test/functions/v1/integrations/s3',
@@ -204,6 +216,66 @@ describe('S3Client', () => {
     });
 
     await expect(client.deleteFile('images/gone.txt')).resolves.toBeUndefined();
+  });
+
+  it('should not log response headers when an API call fails', async () => {
+    const consoleError = jest.spyOn(console, 'error').mockImplementation(() => undefined);
+    const secretHeaderValue = 'header-value-that-must-not-be-logged';
+
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: false,
+      status: 500,
+      statusText: 'Internal Server Error',
+      headers: {
+        entries: () => [
+          ['x-proxy-internal', secretHeaderValue],
+          ['set-cookie', secretHeaderValue],
+        ],
+      },
+      text: async () => 'upstream exploded',
+    });
+
+    const client = new S3Client({
+      edgeBaseUrl: 'https://edge.example.test/functions/v1/integrations/s3',
+      getAccessToken,
+      getActiveSiteId,
+    });
+
+    await expect(client.listObjects('')).rejects.toThrow('S3 API error: 500');
+
+    expect(consoleError).toHaveBeenCalled();
+    const logged = JSON.stringify(consoleError.mock.calls);
+    expect(logged).not.toContain(secretHeaderValue);
+    expect(logged).not.toContain('x-proxy-internal');
+
+    consoleError.mockRestore();
+  });
+
+  it('should truncate a long error body before logging it, but not in the thrown error', async () => {
+    const consoleError = jest.spyOn(console, 'error').mockImplementation(() => undefined);
+    const longBody = 'x'.repeat(5000);
+
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: false,
+      status: 500,
+      statusText: 'Internal Server Error',
+      headers: { entries: () => [] },
+      text: async () => longBody,
+    });
+
+    const client = new S3Client({
+      edgeBaseUrl: 'https://edge.example.test/functions/v1/integrations/s3',
+      getAccessToken,
+      getActiveSiteId,
+    });
+
+    await expect(client.listObjects('')).rejects.toThrow(longBody);
+
+    const loggedBody = consoleError.mock.calls[0][1].body;
+    expect(loggedBody.length).toBeLessThan(longBody.length);
+    expect(loggedBody).toContain('(truncated)');
+
+    consoleError.mockRestore();
   });
 
   it('should generate public URL correctly', () => {
