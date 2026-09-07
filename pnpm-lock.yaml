@@ -1531,17 +1531,17 @@ importers:
         specifier: ^1.8.0
         version: 1.8.2
       decap-cms-lib-auth:
-        specifier: ^3.0.0
-        version: 3.2.1(immutable@3.8.2)(lodash@4.17.21)
+        specifier: workspace:*
+        version: link:../decap-cms-lib-auth
       decap-cms-lib-util:
-        specifier: ^3.0.0
-        version: 3.8.0(immutable@3.8.2)(lodash@4.17.21)
+        specifier: workspace:*
+        version: link:../decap-cms-lib-util
       decap-cms-ui-default:
-        specifier: ^3.0.0
-        version: 3.8.0(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(@types/react@19.2.2)(react@19.2.0))(immutable@3.8.2)(lodash@4.17.21)(prop-types@15.8.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        specifier: workspace:*
+        version: link:../decap-cms-ui-default
       immutable:
-        specifier: ^3.7.6
-        version: 3.8.2
+        specifier: 'catalog:'
+        version: 4.3.9
       js-base64:
         specifier: ^3.0.0
         version: 3.7.5
@@ -2692,14 +2692,14 @@ importers:
         specifier: ^49.1.0
         version: 49.1.0(platejs@49.2.21(@types/react@19.2.2)(immer@10.1.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(scheduler@0.27.0)(use-sync-external-store@1.4.0(react@19.2.0)))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       decap-cms-ui-default:
-        specifier: ^3.0.0
-        version: 3.8.0(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(@types/react@19.2.2)(react@19.2.0))(immutable@3.8.2)(lodash@4.17.21)(prop-types@15.8.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        specifier: workspace:*
+        version: link:../decap-cms-ui-default
       dompurify:
         specifier: ^3.4.13
         version: 3.4.13
       immutable:
-        specifier: ^3.7.6
-        version: 3.8.2
+        specifier: 'catalog:'
+        version: 4.3.9
       lodash:
         specifier: ^4.17.11
         version: 4.17.21
@@ -2723,7 +2723,7 @@ importers:
         version: 19.2.0(react@19.2.0)
       react-immutable-proptypes:
         specifier: ^2.1.0
-        version: 2.2.0(immutable@3.8.2)
+        version: 2.2.0(immutable@4.3.9)
       rehype-parse:
         specifier: ^6.0.0
         version: 6.0.2
@@ -7091,27 +7091,6 @@ packages:
     resolution: {integrity: sha512-z2S+W9X73hAUUki+N+9Za2lBlun89zigOyGrsax+KUQ6wKW4ZoWpEYBkGhQjwAjjDCkWxhY0VKEhk8wzY7F5cA==}
     engines: {node: '>=0.10.0'}
 
-  decap-cms-lib-auth@3.2.1:
-    resolution: {integrity: sha512-DK9aun0xWIFxM+3SWp40GkbrA+64IJtLeqQglAD4Xf7obVo8Mu5c6kBPXbeWi6ocGT3U08kcxIiAz3M3rKkktw==}
-    peerDependencies:
-      immutable: ^3.7.6
-      lodash: ^4.17.11
-
-  decap-cms-lib-util@3.8.0:
-    resolution: {integrity: sha512-4jCB3t9ZmXzJRjboz1p5wGCHt3nycKhO32WRXmR7wIc1EKVX3HlJwoT0gTA0Rzc37blYM9r+WxRL3xeL3yfcyA==}
-    peerDependencies:
-      immutable: ^3.7.6
-      lodash: ^4.17.11
-
-  decap-cms-ui-default@3.8.0:
-    resolution: {integrity: sha512-uHwDdu7WDC+GxC52b5ZxF3hYiXbt2eOWuBCZeI/dNdCDDAMwiKcJJs8sX5VT/k7C6eIF7ZvHBcBGV5CL8vClFg==}
-    peerDependencies:
-      '@emotion/react': ^11.11.1
-      '@emotion/styled': ^11.11.0
-      lodash: ^4.17.11
-      prop-types: ^15.7.2
-      react: ^19.1.0
-
   decimal.js@10.4.3:
     resolution: {integrity: sha512-VBBaLc1MgL5XpzgIP7ny5Z6Nx3UrRkIViUkPUdtl9aya5amy3De1gsUUSB1g3+3sExYNjCAsAznmukyxCb1GRA==}
 
@@ -8529,10 +8508,6 @@ packages:
 
   immer@9.0.21:
     resolution: {integrity: sha512-bc4NBHqOqSfRW7POMkHd51LvClaeMXpm8dx0e8oE2GORbq5aRK7Bxl4FyzVLdGtLmvLKL7BTDBG5ACQm4HWjTA==}
-
-  immutable@3.8.2:
-    resolution: {integrity: sha512-15gZoQ38eYjEjxkorfbcgBKBL6R7T459OuK+CpcWt7O3KF4uPCx2tD0uFETlUDIyo+1789crbMhTvQBSR5yBMg==}
-    engines: {node: '>=0.10.0'}
 
   immutable@4.3.9:
     resolution: {integrity: sha512-ObHy4YN7ycwZOUCLI1/6svfyAFu7vL8RhAvVu/bh/RZW9EPlOyDaQ9jDQWCtdqzaXUjgXZCW1migtHE7YI7UGQ==}
@@ -18477,33 +18452,6 @@ snapshots:
 
   decamelize@1.2.0: {}
 
-  decap-cms-lib-auth@3.2.1(immutable@3.8.2)(lodash@4.17.21):
-    dependencies:
-      immutable: 3.8.2
-      lodash: 4.17.21
-
-  decap-cms-lib-util@3.8.0(immutable@3.8.2)(lodash@4.17.21):
-    dependencies:
-      immutable: 3.8.2
-      js-sha256: 0.9.0
-      localforage: 1.10.0
-      lodash: 4.17.21
-      semaphore: 1.1.0
-
-  decap-cms-ui-default@3.8.0(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(@types/react@19.2.2)(react@19.2.0))(immutable@3.8.2)(lodash@4.17.21)(prop-types@15.8.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
-    dependencies:
-      '@emotion/react': 11.14.0(@types/react@19.2.2)(react@19.2.0)
-      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(@types/react@19.2.2)(react@19.2.0)
-      lodash: 4.17.21
-      prop-types: 15.8.1
-      react: 19.2.0
-      react-aria-menubutton: 7.0.3(react@19.2.0)
-      react-immutable-proptypes: 2.2.0(immutable@3.8.2)
-      react-transition-group: 4.4.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
-    transitivePeerDependencies:
-      - immutable
-      - react-dom
-
   decimal.js@10.4.3: {}
 
   decode-named-character-reference@1.2.0:
@@ -20278,8 +20226,6 @@ snapshots:
   immer@10.1.3: {}
 
   immer@9.0.21: {}
-
-  immutable@3.8.2: {}
 
   immutable@4.3.9: {}
 
@@ -23485,11 +23431,6 @@ snapshots:
       prop-types: 15.8.1
       react: 19.2.0
       react-dom: 19.2.0(react@19.2.0)
-
-  react-immutable-proptypes@2.2.0(immutable@3.8.2):
-    dependencies:
-      immutable: 3.8.2
-      invariant: 2.2.4
 
   react-immutable-proptypes@2.2.0(immutable@4.3.9):
     dependencies:
