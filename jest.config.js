@@ -1,8 +1,7 @@
 module.exports = {
   setupFilesAfterEnv: ['<rootDir>/setupTestFramework.js'],
+  resolver: '<rootDir>/jest.resolver.js',
   moduleNameMapper: {
-    '^platejs/react$': '<rootDir>/node_modules/platejs/dist/react/index.js',
-    '^(@platejs/.+)/react$': '<rootDir>/node_modules/$1/dist/react/index.js',
     'decap-cms-lib-auth': '<rootDir>/packages/decap-cms-lib-auth/src/index.js',
     'decap-cms-lib-util': '<rootDir>/packages/decap-cms-lib-util/src/index.ts',
     'decap-cms-ui-default': '<rootDir>/packages/decap-cms-ui-default/src/index.js',
@@ -14,6 +13,8 @@ module.exports = {
     'decap-cms-widget-object': '<rootDir>/packages/decap-cms-widget-object/src/index.js',
     '\\.(css|less)$': '<rootDir>/__mocks__/styleMock.js',
     '^#home-directory$': 'clean-stack/home-directory.js',
+    '^clean-stack$': '<rootDir>/__mocks__/cleanStackMock.js',
+    '\\.(svg)$': '<rootDir>/__mocks__/fileMock.js',
   },
   modulePathIgnorePatterns: ['.nx', 'dist'],
   snapshotSerializers: ['@emotion/jest/serializer'],

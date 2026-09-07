@@ -17,6 +17,7 @@
     "useUnknownInCatchVariables": false,
     "baseUrl": "./",
     "paths": {
+      "decap-cms-core": ["packages/decap-cms-core"],
       "decap-cms-backend-bitbucket": ["packages/decap-cms-backend-bitbucket/src"],
       "decap-cms-backend-github": ["packages/decap-cms-backend-github/src"],
       "decap-cms-backend-gitlab": ["packages/decap-cms-backend-gitlab/src"],

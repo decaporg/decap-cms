@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.7.0](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-git-gateway@3.6.0...decap-cms-backend-git-gateway@3.7.0) (2026-08-31)
+
+### Bug Fixes
+
+- **backend-git-gateway:** restore PKCE session on page reload ([#7934](https://github.com/decaporg/decap-cms/issues/7934)) ([a82d935](https://github.com/decaporg/decap-cms/commit/a82d935784fd4b34aeb5ef1ecd9f810ae4a02fab)), closes [#7933](https://github.com/decaporg/decap-cms/issues/7933)
+
 # [3.6.0](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-git-gateway@3.5.1...decap-cms-backend-git-gateway@3.6.0) (2026-04-16)
 
 ### Features

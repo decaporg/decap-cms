@@ -1,4 +1,4 @@
-import React from 'react';
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { List, Map } from 'immutable';
@@ -22,7 +22,7 @@ export function getEditorComponents() {
   return _getEditorComponents();
 }
 
-export default class MarkdownControl extends React.Component {
+export default class MarkdownControl extends Component {
   static propTypes = {
     onChange: PropTypes.func.isRequired,
     onAddAsset: PropTypes.func.isRequired,

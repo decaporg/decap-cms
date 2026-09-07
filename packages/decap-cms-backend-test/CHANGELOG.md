@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.5.0](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-test@3.4.0...decap-cms-backend-test@3.5.0) (2026-08-31)
+
+### Bug Fixes
+
+- solve flaky/failing tests ([#7951](https://github.com/decaporg/decap-cms/issues/7951)) ([bfe0dfd](https://github.com/decaporg/decap-cms/commit/bfe0dfd65b888f8c20f6afb879fcaff495cee7b1))
+
 # [3.4.0](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-test@3.3.0...decap-cms-backend-test@3.4.0) (2026-07-23)
 
 **Note:** Version bump only for package decap-cms-backend-test

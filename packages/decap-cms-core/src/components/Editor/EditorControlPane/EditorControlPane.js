@@ -1,4 +1,4 @@
-import React from 'react';
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 import memoize from 'lodash/memoize';
 import ImmutablePropTypes from 'react-immutable-proptypes';
@@ -95,7 +95,7 @@ function getFieldValue({ field, entry, isTranslatable, locale }) {
   return entry.getIn(['data', field.get('name')]);
 }
 
-export default class ControlPane extends React.Component {
+export default class ControlPane extends Component {
   state = {
     selectedLocale: this.props.locale,
   };

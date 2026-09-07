@@ -19,29 +19,36 @@ jobs:
         with:
           fetch-depth: 0  # Required for Lerna to detect changes
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.12.0
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '24'
           registry-url: 'https://registry.npmjs.org'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Build packages
-        run: npm run build
+        run: pnpm run build
 
       - name: Run tests
-        run: npm run test:ci
+        run: pnpm run test:ci
 
       - name: Test package integrity
-        run: npm run test:package-integrity
+        run: pnpm run test:package-integrity
 
       - name: Debug
         run: |
           echo "::group::Node & npm versions"
           node -v
           npm -v
+          pnpm -v
           echo "::endgroup::"
 
           echo "::group::npm config (redacted)"
@@ -65,9 +72,9 @@ jobs:
           echo "::endgroup::"
 
           echo "::group::Lerna packages"
-          npx lerna ls --json || true
+          pnpm exec lerna ls --json || true
           echo "::endgroup::"
 
       - name: Publish to npm
-        run: npm run lerna:publish -- --loglevel silly
+        run: pnpm run publish:packages -- --provenance
         # No NODE_AUTH_TOKEN needed - uses OIDC automatically via trusted publishers

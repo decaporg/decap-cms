@@ -17,17 +17,17 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "develop": "npm run build:esm -- --watch",
+    "develop": "pnpm run build:esm --watch",
     "build": "cross-env NODE_ENV=production webpack",
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
   },
   "peerDependencies": {
-    "@emotion/react": "^11.11.1",
-    "@emotion/styled": "^11.11.0",
-    "decap-cms-ui-default": "^3.0.0",
-    "decap-cms-widget-file": "^3.0.0",
-    "immutable": "^3.7.6",
-    "prop-types": "^15.7.2",
-    "react": "^19.1.0"
+    "@emotion/react": "catalog:",
+    "@emotion/styled": "catalog:",
+    "decap-cms-ui-default": "workspace:*",
+    "decap-cms-widget-file": "workspace:*",
+    "immutable": "catalog:",
+    "prop-types": "catalog:",
+    "react": "catalog:"
   }
 }

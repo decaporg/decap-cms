@@ -1,4 +1,4 @@
-import React from 'react';
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import styled from '@emotion/styled';
@@ -172,7 +172,7 @@ function LabelComponent({ field, isActive, hasErrors, uniqueFieldId, isFieldOpti
   );
 }
 
-export default class ListControl extends React.Component {
+export default class ListControl extends Component {
   childRefs = {};
 
   static propTypes = {
@@ -427,21 +427,36 @@ export default class ListControl extends React.Component {
    */
   getObjectValue = idx => this.props.value.get(idx) || Map();
 
-  handleChangeFor = memoize(index => {
+  /**
+   * Memoized on the item's key rather than its position, so each item keeps a
+   * stable `onChangeObject` reference across renders and reorders.
+   */
+  handleChangeFor = memoize(key => {
     return (f, newValue, newMetadata) => {
       const { value, metadata, onChange, field } = this.props;
+
+      // Resolve the item's position when the change fires rather than when this
+      // handler was created. If the item has been removed or moved in between,
+      // its old position now points at a different item, or past the end of the
+      // list.
+      const currentIndex = this.state.keys.indexOf(key);
+
+      if (currentIndex === -1) {
+        return;
+      }
+
       const collectionName = field.get('name');
       const listFieldObjectWidget = field.getIn(['field', 'widget']) === 'object';
       const withNameKey =
         this.getValueType() !== valueTypes.SINGLE ||
         (this.getValueType() === valueTypes.SINGLE && listFieldObjectWidget);
       const newObjectValue = withNameKey
-        ? this.getObjectValue(index).set(f.get('name'), newValue)
+        ? this.getObjectValue(currentIndex).set(f.get('name'), newValue)
         : newValue;
       const parsedMetadata = {
         [collectionName]: Object.assign(metadata ? metadata.toJS() : {}, newMetadata || {}),
       };
-      onChange(value.set(index, newObjectValue), parsedMetadata);
+      onChange(value.set(currentIndex, newObjectValue), parsedMetadata);
     };
   });
 
@@ -713,7 +728,7 @@ export default class ListControl extends React.Component {
               })}
               value={item}
               field={field}
-              onChangeObject={this.handleChangeFor(index)}
+              onChangeObject={this.handleChangeFor(key)}
               editorControl={editorControl}
               resolveWidget={resolveWidget}
               metadata={metadata}

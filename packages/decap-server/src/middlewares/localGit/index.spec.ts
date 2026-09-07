@@ -53,6 +53,40 @@ describe('localGitMiddleware', () => {
   });
 
   describe('getSchema', () => {
+    it.each([
+      [
+        'getMediaFile',
+        { ...defaultParams, path: '../repo-owned/secret.txt' },
+        '"params.path" must resolve to a path under the configured repository',
+      ],
+      [
+        'persistMedia',
+        {
+          ...defaultParams,
+          asset: {
+            path: '../repo-owned/write.txt',
+            content: 'b3V0c2lkZS13cml0ZS1wcm9vZgo=',
+            encoding: 'base64',
+          },
+          options: { commitMessage: 'proof-write' },
+        },
+        '"params.asset.path" must resolve to a path under the configured repository',
+      ],
+      [
+        'deleteFile',
+        {
+          ...defaultParams,
+          path: '../repo-owned/delete-me.txt',
+          options: { commitMessage: 'proof-delete' },
+        },
+        '"params.path" must resolve to a path under the configured repository',
+      ],
+    ])('should reject sibling-prefix traversal for %s', (action, params, expectedMessage) => {
+      const schema = getSchema({ repoPath: '/Users/user/documents/code/repo' });
+
+      assetFailure(schema.validate({ action, params }), expectedMessage);
+    });
+
     it('should throw on path traversal', () => {
       const schema = getSchema({ repoPath: '/Users/user/documents/code/repo' });
 
