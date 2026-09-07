@@ -131,3 +131,78 @@ describe('s3 media library', () => {
     });
   });
 });
+
+describe('request context resolution', () => {
+  const ACCESS_TOKEN = 'access-token-abc';
+  const REFRESH_TOKEN = 'refresh-token-must-never-leave-core';
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    document.body.innerHTML = '';
+    window.localStorage.clear();
+    delete window.CMS_CONFIG;
+  });
+
+  async function resolveWith({ getMediaLibraryContext } = {}) {
+    const integration = await s3.init({
+      options: { config: { public_url_prefix: 'https://cdn.example.test' } },
+      getMediaLibraryContext,
+    });
+
+    integration.show();
+
+    return getRenderedWidgetProps().resolveRequestContext();
+  }
+
+  it('takes the access token from context.token alone, with no user present', async () => {
+    const context = await resolveWith({
+      getMediaLibraryContext: async () => ({
+        backendName: 'turbo-github',
+        backendConfig: { base_url: 'https://edge.example.test', turbo_site_id: 'site-1' },
+        token: ACCESS_TOKEN,
+        activeSiteId: 'site-1',
+      }),
+    });
+
+    expect(context).toEqual({
+      accessToken: ACCESS_TOKEN,
+      activeSiteId: 'site-1',
+      edgeBaseUrl: 'https://edge.example.test/functions/v1/integrations/s3',
+    });
+  });
+
+  it('ignores credentials attached to the context user', async () => {
+    const context = await resolveWith({
+      getMediaLibraryContext: async () => ({
+        backendConfig: { base_url: 'https://edge.example.test', turbo_site_id: 'site-1' },
+        // Neither the picked user shape nor the `authUser` an older core still
+        // sends may be used as a credential source — `context.token` is the
+        // only token this library accepts.
+        user: { access_token: 'from-user', refresh_token: REFRESH_TOKEN },
+        authUser: { access_token: 'from-auth-user', token: 'from-auth-user' },
+      }),
+    });
+
+    expect(context.accessToken).toBeNull();
+  });
+
+  // Older-core path: `getMediaLibraryContext` did not exist, so the token has
+  // to come from where Decap persists the session.
+  it('falls back to localStorage when getMediaLibraryContext is undefined', async () => {
+    window.CMS_CONFIG = {
+      backend: { base_url: 'https://edge.example.test', turbo_site_id: 'site-1' },
+    };
+    window.localStorage.setItem(
+      'decap-cms-user',
+      JSON.stringify({ access_token: ACCESS_TOKEN, refresh_token: REFRESH_TOKEN }),
+    );
+
+    const context = await resolveWith();
+
+    expect(context).toEqual({
+      accessToken: ACCESS_TOKEN,
+      activeSiteId: 'site-1',
+      edgeBaseUrl: 'https://edge.example.test/functions/v1/integrations/s3',
+    });
+  });
+});

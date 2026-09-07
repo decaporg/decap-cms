@@ -9,10 +9,15 @@ import { createRoot } from 'react-dom/client';
 
 import S3Widget from './components/S3Widget';
 
-function readStoredAuthUser() {
+// Fallback for an older core that predates `getMediaLibraryContext` and so
+// passes us no token at all. Reads only the access token: everything else Decap
+// persists here (the refresh token in particular) is none of this package's
+// business.
+function readStoredAccessToken() {
   try {
     const stored = window.localStorage.getItem('decap-cms-user');
-    return stored ? JSON.parse(stored) : null;
+    const parsed = stored ? JSON.parse(stored) : null;
+    return (parsed && (parsed.access_token || parsed.token)) || null;
   } catch (_error) {
     return null;
   }
@@ -33,16 +38,11 @@ function buildEdgeBaseUrl(baseUrl) {
 function createContextResolver(providedConfig, getMediaLibraryContext) {
   return async () => {
     const context = getMediaLibraryContext ? await getMediaLibraryContext() : {};
-    const storedAuthUser = readStoredAuthUser() || {};
     const backendConfig = context.backendConfig || getBackendConfigFromWindow() || {};
-    const authUser = context.authUser || storedAuthUser;
 
-    const accessToken =
-      context.token ||
-      authUser.access_token ||
-      authUser.token ||
-      storedAuthUser.access_token ||
-      null;
+    // `context.token` is the short-lived access token core hands us; the
+    // localStorage read only covers a core old enough not to supply one.
+    const accessToken = context.token || readStoredAccessToken();
     const activeSiteId = context.activeSiteId || backendConfig.turbo_site_id || null;
     const baseUrl = backendConfig.base_url;
 
