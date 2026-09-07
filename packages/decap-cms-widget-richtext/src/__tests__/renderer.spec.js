@@ -276,7 +276,9 @@ I get 10 times more traffic from [Google] than from [Yahoo] or [MSN].
       // same-origin blob: URL so this test isolates the tag/attribute scoping specifically,
       // independent of the separate cross-origin check below.
       const blobUrl = `blob:${window.location.origin}/should-be-stripped`;
-      const value = [`<a href="${blobUrl}">click</a>`, `<form action="${blobUrl}"></form>`].join('');
+      const value = [`<a href="${blobUrl}">click</a>`, `<form action="${blobUrl}"></form>`].join(
+        '',
+      );
       const field = Map({ sanitize_preview: true });
 
       const { container } = render(
