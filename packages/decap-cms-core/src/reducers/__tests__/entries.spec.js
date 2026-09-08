@@ -549,6 +549,18 @@ describe('entries', () => {
       ).toEqual('/static/media/hosting-and-deployment/deployment-with-nanobox/image.png');
     });
 
+    it('should preserve generated transformation paths', () => {
+      expect(
+        selectMediaFilePublicPath(
+          { public_folder: '/uploads' },
+          null,
+          'public/uploads/_transformations/webp/kittens.webp',
+          undefined,
+          undefined,
+        ),
+      ).toBe('/uploads/_transformations/webp/kittens.webp');
+    });
+
     it('should handle file public_folder', () => {
       const entry = fromJS({
         path: 'src/posts/index.md',

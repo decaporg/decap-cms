@@ -10,6 +10,7 @@ declare module 'decap-cms-core' {
     | 'github'
     | 'gitlab'
     | 'gitea'
+    | 'forgejo'
     | 'bitbucket'
     | 'test-repo'
     | 'proxy';
@@ -60,6 +61,7 @@ declare module 'decap-cms-core' {
     i18n?: boolean | 'translate' | 'duplicate' | 'none';
     media_folder?: string;
     public_folder?: string;
+    media_processing?: CmsMediaProcessing;
     comment?: string;
   }
 
@@ -359,6 +361,7 @@ declare module 'decap-cms-core' {
     view_filters?: ViewFilter[];
     view_groups?: ViewGroup[];
     i18n?: boolean | CmsI18nConfig;
+    limit?: number;
 
     /**
      * @deprecated Use sortable_fields instead
@@ -408,6 +411,21 @@ declare module 'decap-cms-core' {
     url?: string;
   }
 
+  export type CmsMediaProcessingFormat = 'jpeg' | 'webp';
+
+  export interface CmsMediaProcessing {
+    enabled: boolean;
+    format?: {
+      enabled: boolean;
+      default: CmsMediaProcessingFormat;
+    };
+    quality?: number;
+    strip_metadata?: boolean;
+    width?: number | null;
+    height?: number | null;
+    aspect_ratio?: number | string | null;
+  }
+
   export interface CmsConfig {
     backend: CmsBackend;
     collections: CmsCollection[];
@@ -423,6 +441,7 @@ declare module 'decap-cms-core' {
     media_folder?: string;
     public_folder?: string;
     media_folder_relative?: boolean;
+    media_processing?: CmsMediaProcessing;
     media_library?: CmsMediaLibrary;
     publish_mode?: CmsPublishMode;
     issue_reports?: CmsIssueReports;

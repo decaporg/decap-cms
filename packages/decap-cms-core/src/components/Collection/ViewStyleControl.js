@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from '@emotion/styled';
 import { Icon, buttons, colors } from 'decap-cms-ui-default';
 

@@ -524,6 +524,31 @@ export class Backend {
     return uniqueSlug;
   }
 
+  async entrySlugsForCollectionLimit(
+    collection: Collection,
+    config: CmsConfig,
+    usedSlugs: List<string>,
+  ) {
+    const publishedEntries = await this.listAllEntries(collection);
+    let entrySlugs = Set<string>(publishedEntries.map(entry => entry.slug)).union(usedSlugs);
+
+    if (selectUseWorkflow(config)) {
+      const unpublishedEntryIds = await this.implementation.unpublishedEntries();
+      const unpublishedEntries = await Promise.all(
+        unpublishedEntryIds.map(id => this.implementation.unpublishedEntry({ id })),
+      );
+      const collectionName = collection.get('name');
+
+      unpublishedEntries.forEach(entry => {
+        if (entry.collection === collectionName) {
+          entrySlugs = entrySlugs.add(entry.slug);
+        }
+      });
+    }
+
+    return entrySlugs;
+  }
+
   processEntries(loadedEntries: ImplementationEntry[], collection: Collection) {
     const entries = loadedEntries.map(loadedEntry =>
       createEntry(
@@ -539,20 +564,22 @@ export class Backend {
         },
       ),
     );
+
     const formattedEntries = entries.map(this.entryWithFormat(collection));
-    // If this collection has a "filter" property, filter entries accordingly
-    const collectionFilter = collection.get('filter');
-    const filteredEntries = collectionFilter
-      ? this.filterEntries({ entries: formattedEntries }, collectionFilter)
+
+    // Group i18n entries before filtering them, so that the filter is matched against
+    // the default locale data of a single, merged entry. Notably, entries of a
+    // `single_file` structure collection keep their data nested under a locale key
+    // until they're grouped, so a filter would never match anything.
+    const groupedEntries = hasI18n(collection)
+      ? groupEntries(collection, selectFolderEntryExtension(collection), formattedEntries)
       : formattedEntries;
 
-    if (hasI18n(collection)) {
-      const extension = selectFolderEntryExtension(collection);
-      const groupedEntries = groupEntries(collection, extension, filteredEntries);
-      return groupedEntries;
-    }
-
-    return filteredEntries;
+    // If this collection has a "filter" property, filter entries accordingly
+    const collectionFilter = collection.get('filter');
+    return collectionFilter
+      ? this.filterEntries({ entries: groupedEntries }, collectionFilter)
+      : groupedEntries;
   }
 
   async listEntries(collection: Collection) {
@@ -888,17 +915,14 @@ export class Backend {
       }
 
       const mediaFiles = await Promise.all<MediaFile>(
-        entry
-          .get('mediaFiles')
-          .toJS()
-          .map(async (file: MediaFile) => {
-            // make sure to serialize the file
-            if (file.url?.startsWith('blob:')) {
-              const blob = await fetch(file.url as string).then(res => res.blob());
-              return { ...file, file: blobToFileObj(file.name, blob) };
-            }
-            return file;
-          }),
+        (entry.get('mediaFiles').toJS() as unknown as MediaFile[]).map(async file => {
+          // make sure to serialize the file
+          if (file.url?.startsWith('blob:')) {
+            const blob = await fetch(file.url as string).then(res => res.blob());
+            return { ...file, file: blobToFileObj(file.name, blob) };
+          }
+          return file;
+        }),
       );
 
       let i18n;
@@ -1012,7 +1036,7 @@ export class Backend {
     let extension: string;
     if (collection.get('type') === FILES) {
       const file = collection.get('files')!.find(f => f?.get('name') === slug);
-      extension = extname(file.get('file'));
+      extension = extname(file!.get('file'));
     } else {
       extension = selectFolderEntryExtension(collection);
     }
@@ -1110,7 +1134,11 @@ export class Backend {
 
   async processEntry(state: State, collection: Collection, entry: EntryValue) {
     const integration = selectIntegration(state.integrations, null, 'assetStore');
-    const mediaFolders = selectMediaFolders(state.config, collection, fromJS(entry));
+    const mediaFolders = selectMediaFolders(
+      state.config,
+      collection,
+      fromJS(entry) as unknown as EntryMap,
+    );
     if (mediaFolders.length > 0 && !integration) {
       const files = await Promise.all(
         mediaFolders.map(folder => this.implementation.getMedia(folder)),
@@ -1220,7 +1248,7 @@ export class Backend {
     collection,
     entryDraft: draft,
     assetProxies,
-    usedSlugs,
+    usedSlugs = List<string>(),
     unpublished = false,
     status,
   }: PersistArgs) {
@@ -1243,6 +1271,15 @@ export class Backend {
     if (newEntry) {
       if (!selectAllowNewEntries(collection)) {
         throw new Error('Not allowed to create new entries in this collection');
+      }
+      const limit = collection.get('limit') as number | undefined;
+      if (
+        collection.get('type') === FOLDER &&
+        limit !== undefined &&
+        limit !== null &&
+        (await this.entrySlugsForCollectionLimit(collection, config, usedSlugs)).size >= limit
+      ) {
+        throw new Error(`Entry limit of ${limit} reached for collection ${collection.get('name')}`);
       }
       const slug = await this.generateUniqueSlug(
         collection,

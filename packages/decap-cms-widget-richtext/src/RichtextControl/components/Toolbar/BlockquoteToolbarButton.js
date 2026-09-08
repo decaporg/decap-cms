@@ -1,4 +1,3 @@
-import React from 'react';
 import { useEditorRef, useEditorSelector } from 'platejs/react';
 import { BlockquotePlugin } from '@platejs/basic-nodes/react';
 import { unwrapList } from '@platejs/list-classic';

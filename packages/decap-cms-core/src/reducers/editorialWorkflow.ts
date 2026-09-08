@@ -8,6 +8,7 @@ import {
   UNPUBLISHED_ENTRY_SUCCESS,
   UNPUBLISHED_ENTRIES_REQUEST,
   UNPUBLISHED_ENTRIES_SUCCESS,
+  UNPUBLISHED_ENTRIES_FAILURE,
   UNPUBLISHED_ENTRY_PERSIST_REQUEST,
   UNPUBLISHED_ENTRY_PERSIST_SUCCESS,
   UNPUBLISHED_ENTRY_PERSIST_FAILURE,
@@ -56,7 +57,7 @@ function unpublishedEntries(state = Map(), action: EditorialWorkflowAction) {
         action.payload!.entries.forEach(entry =>
           map.setIn(
             ['entities', `${entry.collection}.${entry.slug}`],
-            fromJS(entry).set('isFetching', false),
+            fromJS({ ...entry, isFetching: false }),
           ),
         );
         map.set(
@@ -67,6 +68,9 @@ function unpublishedEntries(state = Map(), action: EditorialWorkflowAction) {
           }),
         );
       });
+
+    case UNPUBLISHED_ENTRIES_FAILURE:
+      return state.setIn(['pages', 'isFetching'], false);
 
     case UNPUBLISHED_ENTRY_PERSIST_REQUEST: {
       return state.setIn(
@@ -88,7 +92,7 @@ function unpublishedEntries(state = Map(), action: EditorialWorkflowAction) {
           'isPersisting',
         ]);
         map.updateIn(['pages', 'ids'], List(), list =>
-          list.push(action.payload!.entry.get('slug')),
+          (list as List<string>).push(action.payload!.entry.get('slug')),
         );
       });
 

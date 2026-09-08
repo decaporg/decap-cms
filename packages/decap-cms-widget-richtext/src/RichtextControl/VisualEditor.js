@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { KEYS } from 'platejs';
 import { usePlateEditor, Plate, ParagraphPlugin, PlateLeaf } from 'platejs/react';
 import {
@@ -8,7 +8,6 @@ import {
   CodePlugin,
   HeadingPlugin,
 } from '@platejs/basic-nodes/react';
-import { ListPlugin } from '@platejs/list-classic/react';
 import { LinkPlugin } from '@platejs/link/react';
 import { ClassNames, css } from '@emotion/react';
 import { fonts, lengths, zIndex } from 'decap-cms-ui-default';
@@ -28,6 +27,7 @@ import LinkElement from './components/Element/LinkElement';
 import ImageElement from './components/Element/ImageElement';
 import ExtendedBlockquotePlugin from './plugins/ExtendedBlockquotePlugin';
 import ImagePlugin from './plugins/ImagePlugin';
+import ListPlugin from './plugins/ListPlugin';
 import BreakPlugin from './plugins/BreakPlugin';
 import ShortcodePlugin from './plugins/ShortcodePlugin';
 import { TablePlugin, TableRowPlugin, TableCellPlugin } from './plugins/TablePlugin';

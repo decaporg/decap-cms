@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
@@ -62,7 +61,7 @@ function MediaLibraryTop({
   hasSelection,
   isPersisting,
   isDeleting,
-  selectedFile,
+  selectedFile = {},
 }) {
   const shouldShowButtonLoader = isPersisting || isDeleting;
   const uploadEnabled = !shouldShowButtonLoader;

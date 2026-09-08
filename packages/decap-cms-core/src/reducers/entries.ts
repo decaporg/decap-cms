@@ -68,6 +68,7 @@ import type {
   GroupOfEntries,
   EntryGroup,
 } from '../types/redux';
+import type { StaticallyTypedRecord } from '../types/immutable';
 
 const { keyToPathArray } = stringTemplate;
 
@@ -100,7 +101,10 @@ const loadSort = once(() => {
         let orderedMap = OrderedMap() as SortMap;
         sortBy(Object.values(sort), ['index']).forEach(value => {
           const { key, direction } = value;
-          orderedMap = orderedMap.set(key, fromJS({ key, direction }));
+          orderedMap = orderedMap.set(
+            key,
+            fromJS({ key, direction }) as unknown as StaticallyTypedRecord<SortObject>,
+          );
         });
         map = map.set(collection, orderedMap);
       });
@@ -121,7 +125,7 @@ function persistSort(sort: Sort | undefined) {
     const storageSort: StorageSort = {};
     sort.keySeq().forEach(key => {
       const collection = key as string;
-      const sortObjects = (sort.get(collection).valueSeq().toJS() as SortObject[]).map(
+      const sortObjects = (sort.get(collection)!.valueSeq().toJS() as unknown as SortObject[]).map(
         (value, index) => ({ ...value, index }),
       );
 
@@ -173,7 +177,7 @@ function entries(
       slug = payload.entry.slug;
       return state.withMutations(map => {
         map.setIn(['entities', `${collection}.${slug}`], fromJS(payload.entry));
-        const ids = map.getIn(['pages', collection, 'ids'], List());
+        const ids = map.getIn(['pages', collection, 'ids'], List()) as List<string>;
         if (!ids.includes(slug)) {
           map.setIn(['pages', collection, 'ids'], ids.unshift(slug));
         }
@@ -199,7 +203,7 @@ function entries(
         loadedEntries.forEach(entry =>
           map.setIn(
             ['entities', `${collection}.${entry.slug}`],
-            fromJS(entry).set('isFetching', false),
+            fromJS({ ...entry, isFetching: false }),
           ),
         );
 
@@ -208,7 +212,9 @@ function entries(
           ['pages', collection],
           Map({
             page,
-            ids: append ? map.getIn(['pages', collection, 'ids'], List()).concat(ids) : ids,
+            ids: append
+              ? (map.getIn(['pages', collection, 'ids'], List()) as List<string>).concat(ids)
+              : ids,
           }),
         );
       });
@@ -234,7 +240,7 @@ function entries(
         loadedEntries.forEach(entry =>
           map.setIn(
             ['entities', `${entry.collection}.${entry.slug}`],
-            fromJS(entry).set('isFetching', false),
+            fromJS({ ...entry, isFetching: false }),
           ),
         );
       });
@@ -244,8 +250,8 @@ function entries(
       const payload = action.payload as EntryDeletePayload;
       return state.withMutations(map => {
         map.deleteIn(['entities', `${payload.collectionName}.${payload.entrySlug}`]);
-        map.updateIn(['pages', payload.collectionName, 'ids'], (ids: string[]) =>
-          ids.filter(id => id !== payload.entrySlug),
+        map.updateIn(['pages', payload.collectionName, 'ids'], ids =>
+          (ids as List<string>).filter(id => id !== payload.entrySlug),
         );
       });
     }
@@ -273,7 +279,7 @@ function entries(
         loadedEntries.forEach(entry =>
           map.setIn(
             ['entities', `${entry.collection}.${entry.slug}`],
-            fromJS(entry).set('isFetching', false),
+            fromJS({ ...entry, isFetching: false }),
           ),
         );
         map.setIn(['pages', collection, 'isFetching'], false);
@@ -304,7 +310,7 @@ function entries(
       const payload = action.payload as EntriesFilterRequestPayload;
       const { collection, filter } = payload;
       const newState = state.withMutations(map => {
-        const current: FilterMap = map.getIn(['filter', collection, filter.id], fromJS(filter));
+        const current = map.getIn(['filter', collection, filter.id], fromJS(filter)) as FilterMap;
         map.setIn(
           ['filter', collection, current.get('id')],
           current.set('active', !current.get('active')),
@@ -327,7 +333,7 @@ function entries(
       const payload = action.payload as EntriesGroupRequestPayload;
       const { collection, group } = payload;
       const newState = state.withMutations(map => {
-        const current: GroupMap = map.getIn(['group', collection, group.id], fromJS(group));
+        const current = map.getIn(['group', collection, group.id], fromJS(group)) as GroupMap;
         map.deleteIn(['group', collection]);
         map.setIn(
           ['group', collection, current.get('id')],
@@ -434,7 +440,7 @@ export function selectEntries(state: Entries, collection: Collection) {
     const orders = sortFields.map(v =>
       v.get('direction') === SortDirection.Ascending ? 'asc' : 'desc',
     );
-    entries = fromJS(orderBy(entries.toJS(), keys, orders));
+    entries = fromJS(orderBy(entries.toJS(), keys, orders)) as unknown as List<EntryMap>;
   }
 
   const filters = selectEntriesFilterFields(state, collectionName);
@@ -546,6 +552,17 @@ export function selectIsFetching(state: Entries, collection: string) {
 function getFileField(collectionFiles: CollectionFiles, slug: string | undefined) {
   const file = collectionFiles.find(f => f?.get('name') === slug);
   return file;
+}
+
+function getMediaPublicPathSegment(mediaPath: string) {
+  const normalizedPath = trim(mediaPath, '/');
+  const transformationIndex = normalizedPath.indexOf('_transformations/');
+
+  if (transformationIndex >= 0) {
+    return normalizedPath.slice(transformationIndex);
+  }
+
+  return basename(mediaPath);
 }
 
 function hasCustomFolder(
@@ -807,10 +824,10 @@ export function selectMediaFilePublicPath(
   }
 
   if (isAbsolutePath(publicFolder)) {
-    return joinUrlPath(publicFolder, basename(mediaPath));
+    return joinUrlPath(publicFolder, getMediaPublicPathSegment(mediaPath));
   }
 
-  return join(publicFolder, basename(mediaPath));
+  return join(publicFolder, getMediaPublicPathSegment(mediaPath));
 }
 
 export function selectEditingDraft(state: EntryDraft) {

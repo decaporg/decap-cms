@@ -8,6 +8,7 @@ const de = {
     loginWithGitHub: 'Mit GitHub einloggen',
     loginWithGitLab: 'Mit GitLab einloggen',
     loginWithGitea: 'Mit Gitea einloggen',
+    loginWithForgejo: 'Mit Forgejo einloggen',
     errors: {
       email: 'Stellen Sie sicher, Ihre E-Mail-Adresse einzugeben.',
       password: 'Bitte geben Sie Ihr Passwort ein.',

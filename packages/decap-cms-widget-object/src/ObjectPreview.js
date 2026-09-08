@@ -1,4 +1,3 @@
-import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { WidgetPreviewContainer } from 'decap-cms-ui-default';
 import { fromJS } from 'immutable';

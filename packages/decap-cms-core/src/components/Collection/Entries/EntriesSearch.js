@@ -1,4 +1,4 @@
-import React from 'react';
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
@@ -12,7 +12,7 @@ import {
 } from '../../../actions/search';
 import Entries from './Entries';
 
-class EntriesSearch extends React.Component {
+class EntriesSearch extends Component {
   static propTypes = {
     isFetching: PropTypes.bool,
     searchEntries: PropTypes.func.isRequired,

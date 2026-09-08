@@ -1,5 +1,3 @@
-import React from 'react';
-
 import type { EditorComponentOptions } from 'decap-cms-core';
 
 const image: EditorComponentOptions = {

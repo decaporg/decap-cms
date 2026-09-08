@@ -294,8 +294,9 @@ export function loadUnpublishedEntries(collections: Collections) {
     const state = getState();
     const backend = currentBackend(state.config);
     const entriesLoaded = get(state.editorialWorkflow.toJS(), 'pages.ids', false);
+    const entriesLoading = get(state.editorialWorkflow.toJS(), 'pages.isFetching', false);
 
-    if (state.config.publish_mode !== EDITORIAL_WORKFLOW || entriesLoaded) {
+    if (state.config.publish_mode !== EDITORIAL_WORKFLOW || entriesLoaded || entriesLoading) {
       return;
     }
 

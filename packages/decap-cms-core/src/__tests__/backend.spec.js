@@ -9,6 +9,7 @@ import {
 } from '../backend';
 import { getBackend } from '../lib/registry';
 import { FOLDER, FILES } from '../constants/collectionTypes';
+import { EDITORIAL_WORKFLOW } from '../constants/publishModes';
 
 jest.mock('../lib/registry');
 jest.mock('decap-cms-lib-util');
@@ -115,6 +116,108 @@ describe('Backend', () => {
       );
 
       expect(result.length).toBe(1);
+    });
+  });
+
+  describe('processEntries', () => {
+    let backend;
+
+    function createBackend() {
+      getBackend.mockReturnValue({
+        init: jest.fn(),
+      });
+      return resolveBackend({
+        backend: {
+          name: 'git-gateway',
+        },
+      });
+    }
+
+    function createCollection(i18n) {
+      return fromJS({
+        name: 'posts',
+        type: FOLDER,
+        folder: '_posts',
+        format: 'yaml',
+        extension: 'yml',
+        filter: { field: 'draft', value: false },
+        fields: [{ name: 'title' }, { name: 'draft' }],
+        ...(i18n && { i18n }),
+      });
+    }
+
+    function loadedEntry(path, data) {
+      return { file: { path }, data };
+    }
+
+    beforeEach(() => {
+      backend = createBackend();
+    });
+
+    it('filters entries of a single file i18n collection on the default locale data', () => {
+      const collection = createCollection({
+        structure: 'single_file',
+        locales: ['en', 'de'],
+        default_locale: 'en',
+      });
+
+      const result = backend.processEntries(
+        [
+          loadedEntry(
+            '_posts/published.yml',
+            'en:\n  title: Published\n  draft: false\nde:\n  title: Veröffentlicht\n  draft: false\n',
+          ),
+          loadedEntry(
+            '_posts/drafted.yml',
+            'en:\n  title: Drafted\n  draft: true\nde:\n  title: Entwurf\n  draft: true\n',
+          ),
+        ],
+        collection,
+      );
+
+      expect(result).toHaveLength(1);
+      expect(result[0].slug).toBe('published');
+      expect(result[0].data).toEqual({ title: 'Published', draft: false });
+      expect(result[0].i18n).toEqual({
+        de: { data: { title: 'Veröffentlicht', draft: false } },
+      });
+    });
+
+    it('keeps translations of a multiple files i18n collection whose filter field is not translated', () => {
+      const collection = createCollection({
+        structure: 'multiple_files',
+        locales: ['en', 'de'],
+        default_locale: 'en',
+      });
+
+      const result = backend.processEntries(
+        [
+          loadedEntry('_posts/published.en.yml', 'title: Published\ndraft: false\n'),
+          loadedEntry('_posts/published.de.yml', 'title: Veröffentlicht\n'),
+          loadedEntry('_posts/drafted.en.yml', 'title: Drafted\ndraft: true\n'),
+          loadedEntry('_posts/drafted.de.yml', 'title: Entwurf\n'),
+        ],
+        collection,
+      );
+
+      expect(result).toHaveLength(1);
+      expect(result[0].slug).toBe('published');
+      expect(result[0].data).toEqual({ title: 'Published', draft: false });
+      expect(result[0].i18n).toEqual({ de: { data: { title: 'Veröffentlicht' } } });
+    });
+
+    it('filters entries of a collection without i18n', () => {
+      const result = backend.processEntries(
+        [
+          loadedEntry('_posts/published.yml', 'title: Published\ndraft: false\n'),
+          loadedEntry('_posts/drafted.yml', 'title: Drafted\ndraft: true\n'),
+        ],
+        createCollection(),
+      );
+
+      expect(result).toHaveLength(1);
+      expect(result[0].slug).toBe('published');
+      expect(result[0].data).toEqual({ title: 'Published', draft: false });
     });
   });
 
@@ -390,6 +493,148 @@ describe('Backend', () => {
 
       expect(backend.entryToRaw).toHaveBeenCalledTimes(1);
       expect(backend.entryToRaw).toHaveBeenCalledWith(collection, newEntry);
+    });
+
+    it('should reject new entries when collection limit is reached', async () => {
+      const implementation = {
+        init: jest.fn(() => implementation),
+        persistEntry: jest.fn(() => implementation),
+      };
+
+      const config = {
+        backend: {
+          commit_messages: 'commit-messages',
+        },
+      };
+      const collection = Map({
+        name: 'posts',
+        type: FOLDER,
+        create: true,
+        limit: 1,
+      });
+      const entry = Map({
+        data: Map({}),
+        newRecord: true,
+      });
+      const entryDraft = Map({
+        entry,
+      });
+
+      const user = { login: 'login', name: 'name' };
+      const backend = new Backend(implementation, { config, backendName: 'github' });
+
+      backend.currentUser = jest.fn().mockResolvedValue(user);
+      backend.invokePreSaveEvent = jest.fn().mockReturnValueOnce(entry);
+      backend.listAllEntries = jest.fn().mockResolvedValue([{ slug: 'existing' }]);
+
+      await expect(
+        backend.persistEntry({
+          config,
+          collection,
+          entryDraft,
+          assetProxies: [],
+          usedSlugs: List(),
+        }),
+      ).rejects.toThrow('Entry limit of 1 reached for collection posts');
+
+      expect(backend.listAllEntries).toHaveBeenCalledWith(collection);
+      expect(implementation.persistEntry).toHaveBeenCalledTimes(0);
+    });
+
+    it('should include unpublished workflow entries when checking collection limits', async () => {
+      const implementation = {
+        init: jest.fn(() => implementation),
+        persistEntry: jest.fn(() => implementation),
+        unpublishedEntries: jest.fn().mockResolvedValue(['posts/draft']),
+        unpublishedEntry: jest.fn().mockResolvedValue({
+          collection: 'posts',
+          slug: 'draft',
+          status: 'draft',
+          diffs: [],
+          updatedAt: '',
+        }),
+      };
+
+      const config = {
+        backend: {
+          commit_messages: 'commit-messages',
+        },
+        publish_mode: EDITORIAL_WORKFLOW,
+      };
+      const collection = Map({
+        name: 'posts',
+        type: FOLDER,
+        create: true,
+        limit: 1,
+      });
+      const entry = Map({
+        data: Map({}),
+        newRecord: true,
+      });
+      const entryDraft = Map({
+        entry,
+      });
+
+      const backend = new Backend(implementation, { config, backendName: 'github' });
+
+      backend.invokePreSaveEvent = jest.fn().mockReturnValueOnce(entry);
+      backend.listAllEntries = jest.fn().mockResolvedValue([]);
+
+      await expect(
+        backend.persistEntry({
+          config,
+          collection,
+          entryDraft,
+          assetProxies: [],
+          usedSlugs: List(),
+        }),
+      ).rejects.toThrow('Entry limit of 1 reached for collection posts');
+
+      expect(implementation.unpublishedEntries).toHaveBeenCalledTimes(1);
+      expect(implementation.persistEntry).toHaveBeenCalledTimes(0);
+    });
+
+    it('should use complete published entries instead of loaded slugs when checking limits', async () => {
+      const implementation = {
+        init: jest.fn(() => implementation),
+        persistEntry: jest.fn(() => implementation),
+      };
+
+      const config = {
+        backend: {
+          commit_messages: 'commit-messages',
+        },
+      };
+      const collection = Map({
+        name: 'posts',
+        type: FOLDER,
+        create: true,
+        limit: 2,
+      });
+      const entry = Map({
+        data: Map({}),
+        newRecord: true,
+      });
+      const entryDraft = Map({
+        entry,
+      });
+
+      const backend = new Backend(implementation, { config, backendName: 'github' });
+
+      backend.invokePreSaveEvent = jest.fn().mockReturnValueOnce(entry);
+      backend.listAllEntries = jest.fn().mockResolvedValue([{ slug: 'one' }, { slug: 'two' }]);
+
+      await expect(
+        backend.persistEntry({
+          config,
+          collection,
+          entryDraft,
+          assetProxies: [],
+          usedSlugs: List(['one']),
+        }),
+      ).rejects.toThrow('Entry limit of 2 reached for collection posts');
+
+      expect(implementation.persistEntry).toHaveBeenCalledTimes(0);
     });
 
     it('should preserve slug when preSave event handler modifies file collection entry', async () => {

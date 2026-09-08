@@ -1,4 +1,4 @@
-import React from 'react';
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import { Icon, buttons, shadows, GoBackButton, renderPageLogo } from 'decap-cms-ui-default';
@@ -28,7 +28,7 @@ const LoginButton = styled.button`
   }
 `;
 
-export default class AuthenticationPage extends React.Component {
+export default class AuthenticationPage extends Component {
   static propTypes = {
     onLogin: PropTypes.func.isRequired,
     inProgress: PropTypes.bool,

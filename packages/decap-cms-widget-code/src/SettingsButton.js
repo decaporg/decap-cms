@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from '@emotion/styled';
 import { Icon, buttons, shadows, zIndex } from 'decap-cms-ui-default';
 

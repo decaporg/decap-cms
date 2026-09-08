@@ -1,4 +1,3 @@
-import React from 'react';
 import { render } from '@testing-library/react';
 import { Set, fromJS } from 'immutable';
 import configureStore from 'redux-mock-store';
@@ -11,7 +10,6 @@ import ConnectedEntriesCollection, {
 import Entries from '../Entries';
 
 jest.mock('../Entries', () => {
-  const React = require('react');
   return jest.fn(props => <mock-entries {...props} />);
 });
 

@@ -1,4 +1,3 @@
-import React from 'react';
 import { useEditorRef } from 'platejs/react';
 import { useLinkToolbarButton, useLinkToolbarButtonState } from '@platejs/link/react';
 

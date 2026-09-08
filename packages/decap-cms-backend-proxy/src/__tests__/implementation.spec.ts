@@ -7,6 +7,7 @@ describe('ProxyBackend', () => {
         name: 'proxy',
         proxy_url: proxyUrl,
       },
+      auth: {},
       media_folder: 'static/uploads',
     } as ConstructorParameters<typeof ProxyBackend>[0];
   }

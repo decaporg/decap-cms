@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { GitHubBackend } from 'decap-cms-backend-github';
 import { PKCEAuthenticationPage } from 'decap-cms-ui-auth';
 

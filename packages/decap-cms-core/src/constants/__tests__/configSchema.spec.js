@@ -94,6 +94,66 @@ describe('config', () => {
       }).toThrowError("'media_folder' must be string");
     });
 
+    it('should not throw for media processing config', () => {
+      expect(() => {
+        validateConfig({
+          ...validConfig,
+          media_processing: {
+            enabled: true,
+            format: { enabled: true, default: 'jpeg' },
+            quality: 90,
+            strip_metadata: true,
+            width: null,
+            height: null,
+            aspect_ratio: '16_9',
+          },
+        });
+      }).not.toThrowError();
+    });
+
+    it('should not throw for x-delimited media processing aspect ratio', () => {
+      expect(() => {
+        validateConfig({
+          ...validConfig,
+          media_processing: {
+            enabled: true,
+            width: 1600,
+            aspect_ratio: '16x9',
+          },
+        });
+      }).not.toThrowError();
+    });
+
+    it('should not throw for media processing with explicit dimensions and format', () => {
+      expect(() => {
+        validateConfig({
+          ...validConfig,
+          media_processing: {
+            enabled: true,
+            format: { enabled: true, default: 'webp' },
+            quality: 80,
+            width: 1200,
+            height: 675,
+            aspect_ratio: 16 / 9,
+          },
+        });
+      }).not.toThrowError();
+    });
+
+    it('should throw if media processing format is unsupported', () => {
+      expect(() => {
+        validateConfig({
+          ...validConfig,
+          media_processing: {
+            enabled: true,
+            format: { enabled: true, default: 'gif' },
+          },
+        });
+      }).toThrowError(
+        "'media_processing.format.default' must be equal to one of the allowed values",
+      );
+    });
+
     it('should throw if collections is not defined in config', () => {
       expect(() => {
         validateConfig({ foo: 'bar', backend: { name: 'bar' }, media_folder: 'baz' });

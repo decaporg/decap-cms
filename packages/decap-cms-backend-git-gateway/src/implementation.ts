@@ -383,14 +383,24 @@ export default class GitGateway implements Implementation {
         login: userData.email,
         email: userData.email,
         avatar_url: userData.avatar_url,
+        // PKCE/OAuth logins have no gotrue session to recover on a page
+        // reload, so the token and claims-derived metadata must be persisted
+        // with the user entry for restoreUser to re-authenticate with.
+        ...(typeof user.jwt === 'function'
+          ? {}
+          : { token: user.token, user_metadata: user.user_metadata }),
       } as unknown as User;
     });
   }
-  async restoreUser() {
+  async restoreUser(user: User) {
+    const storedUser = user as unknown as Partial<GitGatewayUser> | undefined;
+    if (storedUser && !storedUser.jwt && typeof storedUser.token === 'string' && storedUser.token) {
+      return this.authenticate(storedUser as Credentials);
+    }
     const client = await this.getAuthClient();
-    const user = client.currentUser();
-    if (!user) return Promise.reject();
-    return this.authenticate(user as Credentials);
+    const gotrueUser = client.currentUser();
+    if (!gotrueUser) return Promise.reject();
+    return this.authenticate(gotrueUser as Credentials);
   }
   authComponent() {
     return this.authType === 'pkce' ? PKCEAuthenticationPage : NetlifyAuthenticationPage;

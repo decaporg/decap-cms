@@ -1,4 +1,4 @@
-import React from 'react';
+import { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import { PkceAuthenticator } from 'decap-cms-lib-auth';
@@ -8,7 +8,7 @@ const LoginButtonIcon = styled(Icon)`
   margin-right: 18px;
 `;
 
-export default class GiteaAuthenticationPage extends React.Component {
+export default class GiteaAuthenticationPage extends Component {
   static propTypes = {
     inProgress: PropTypes.bool,
     config: PropTypes.object.isRequired,
@@ -68,10 +68,10 @@ export default class GiteaAuthenticationPage extends React.Component {
         logo={config.logo}
         siteUrl={config.site_url}
         renderButtonContent={() => (
-          <React.Fragment>
+          <Fragment>
             <LoginButtonIcon type="gitea" />{' '}
             {inProgress ? t('auth.loggingIn') : t('auth.loginWithGitea')}
-          </React.Fragment>
+          </Fragment>
         )}
         t={t}
       />

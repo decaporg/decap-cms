@@ -3,6 +3,36 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.18.1](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.18.0...decap-cms-core@3.18.1) (2026-09-08)
+
+### Bug Fixes
+
+- applying collection filter on i18n: single file ([#7612](https://github.com/decaporg/decap-cms/issues/7612)) ([8b56355](https://github.com/decaporg/decap-cms/commit/8b563553a396d4fbcff54b40ad391fdee192e11e))
+- Windows path-mock regression and media library upload/delete edge case ([#7965](https://github.com/decaporg/decap-cms/issues/7965)) ([d532e66](https://github.com/decaporg/decap-cms/commit/d532e66237ed07bbdfcbea7ba2d97a8a4032c8de))
+
+# [3.18.0](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.17.1...decap-cms-core@3.18.0) (2026-08-31)
+
+### Bug Fixes
+
+- solve flaky/failing tests ([#7951](https://github.com/decaporg/decap-cms/issues/7951)) ([bfe0dfd](https://github.com/decaporg/decap-cms/commit/bfe0dfd65b888f8c20f6afb879fcaff495cee7b1))
+
+## [3.17.1](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.17.0...decap-cms-core@3.17.1) (2026-07-24)
+
+### Bug Fixes
+
+- bump incompatible react-tostify version ([#7914](https://github.com/decaporg/decap-cms/issues/7914)) ([d8436e6](https://github.com/decaporg/decap-cms/commit/d8436e6a2536c57f200448d10ede5aa87f0a65f8))
+
+# [3.17.0](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.16.0...decap-cms-core@3.17.0) (2026-07-23)
+
+### Bug Fixes
+
+- add separator and sorting for unpublished entries ([#7624](https://github.com/decaporg/decap-cms/issues/7624)) ([2f5c54d](https://github.com/decaporg/decap-cms/commit/2f5c54d96d3eaf657d0b75a0a2578073731907a7)), closes [#7542](https://github.com/decaporg/decap-cms/issues/7542)
+- remove weird padding from group by headings ([#7866](https://github.com/decaporg/decap-cms/issues/7866)) ([825f3d8](https://github.com/decaporg/decap-cms/commit/825f3d8e40b328d6e52f435a8c1aba271bf24016))
+
+### Features
+
+- add collection size limit feature ([#7451](https://github.com/decaporg/decap-cms/issues/7451)) ([40c4ac0](https://github.com/decaporg/decap-cms/commit/40c4ac0d5ee126b92f35fa3651d1f4aacbdea733))
+
 # [3.16.0](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.15.0...decap-cms-core@3.16.0) (2026-06-15)
 
 ### Features
