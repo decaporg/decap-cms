@@ -57,7 +57,7 @@ function unpublishedEntries(state = Map(), action: EditorialWorkflowAction) {
         action.payload!.entries.forEach(entry =>
           map.setIn(
             ['entities', `${entry.collection}.${entry.slug}`],
-            fromJS(entry).set('isFetching', false),
+            fromJS({ ...entry, isFetching: false }),
           ),
         );
         map.set(
@@ -92,7 +92,7 @@ function unpublishedEntries(state = Map(), action: EditorialWorkflowAction) {
           'isPersisting',
         ]);
         map.updateIn(['pages', 'ids'], List(), list =>
-          list.push(action.payload!.entry.get('slug')),
+          (list as List<string>).push(action.payload!.entry.get('slug')),
         );
       });
 

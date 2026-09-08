@@ -119,7 +119,7 @@ const encodingCache = new Map();
  * Uses a visitor pattern with caching to handle recursive structures
  */
 export function encodeEntry(value: unknown, fields: List<ImmutableMap<string, unknown>>) {
-  const plainFields = fields.toJS() as CmsField[];
+  const plainFields = fields.toJS() as unknown as CmsField[];
 
   function visit(value: unknown, fields: CmsField[], path = '') {
     const cached = encodingCache.get(path);
