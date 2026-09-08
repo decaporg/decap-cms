@@ -502,7 +502,6 @@ declare module 'decap-cms-core' {
     id: string;
     label: string;
     type: 'inline';
-    isVoid?: boolean;
     trigger?: string;
     pattern: RegExp;
     fromInline: (match: RegExpExecArray) => Record<string, any>;

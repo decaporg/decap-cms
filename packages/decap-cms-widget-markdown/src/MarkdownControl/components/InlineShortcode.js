@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { css } from '@emotion/react';
 import { useSelected, ReactEditor, useSlate } from 'slate-react';
-import { Transforms } from 'slate';
+import { Editor, Transforms } from 'slate';
 import { colors, lengths } from 'decap-cms-ui-default';
 
 import { getEditorComponents } from '../index';
@@ -11,17 +11,17 @@ function InlineShortcode(props) {
   const editor = useSlate();
   const isSelected = useSelected();
   const plugin = getEditorComponents().get(element.data?.shortcode);
-  const isVoid = element.data?.isVoid !== false;
   const shortcodeData = element.data?.shortcodeData || {};
 
   async function handleClick(e) {
     if (plugin && typeof plugin.onEdit === 'function') {
       e.preventDefault();
       e.stopPropagation();
+      const pathRef = Editor.pathRef(editor, ReactEditor.findPath(editor, element));
       try {
         const updatedData = await plugin.onEdit({ data: shortcodeData });
-        if (updatedData) {
-          const path = ReactEditor.findPath(editor, element);
+        const path = pathRef.current;
+        if (updatedData && path) {
           Transforms.setNodes(
             editor,
             {
@@ -38,6 +38,8 @@ function InlineShortcode(props) {
           `Error executing onEdit for inline component '${element.data?.shortcode}':`,
           err,
         );
+      } finally {
+        pathRef.unref();
       }
     }
   }
@@ -64,7 +66,7 @@ function InlineShortcode(props) {
 
   return (
     <span {...attributes} css={inlineStyles} onClick={handleClick}>
-      <span contentEditable={isVoid ? false : undefined} style={{ userSelect: 'none' }}>
+      <span contentEditable={false} style={{ userSelect: 'none' }}>
         {previewContent}
       </span>
       {children}

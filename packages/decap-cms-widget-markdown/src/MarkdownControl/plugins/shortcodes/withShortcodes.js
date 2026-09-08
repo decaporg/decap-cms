@@ -10,7 +10,7 @@ function withShortcodes(editor) {
       return true;
     }
     if (element.type === 'inline-shortcode') {
-      return element.data && element.data.isVoid !== undefined ? element.data.isVoid : true;
+      return true;
     }
     return isVoid(element);
   };

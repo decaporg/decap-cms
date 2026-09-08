@@ -22,29 +22,26 @@ Extend existing component registration with `type: 'inline'` and associated life
 
 ```typescript
 interface InlineEditorComponentOptions {
-  id: string;                         // Unique identifier
-  label: string;                      // Toolbar button label / tooltip
-  type: 'inline';                     // Explicitly marks component as inline
-  isVoid?: boolean;                   // Atomicity flag (default: true; non-editable content)
-  trigger?: string;                   // Prefix character for Remark tokenizer optimization (e.g. '@', '[')
-  
+  id: string; // Unique identifier
+  label: string; // Toolbar button label / tooltip
+  type: 'inline'; // Explicitly marks component as inline
+  trigger?: string; // Prefix character for Remark tokenizer optimization (e.g. '@', '[')
+
   // 1. Markdown Regex Parsing & Stringification
-  pattern: RegExp;                    // Regular expression matching inline syntax (non-greedy recommended)
+  pattern: RegExp; // Regular expression matching inline syntax (non-greedy recommended)
   fromInline: (match: RegExpExecArray) => Record<string, any>; // Parse matched regex into pure data object
-  toInline: (data: Record<string, any>) => string;             // Serialize data object back to Markdown string
-  
+  toInline: (data: Record<string, any>) => string; // Serialize data object back to Markdown string
+
   // 2. Rich Text Visual Editor Rendering
   toPreview: (data: Record<string, any>) => React.ReactNode;
-  
+
   // 3. Interactive & Async Lifecycles (Optional)
-  onInsert?: (context: { 
-    selectedText: string; 
+  onInsert?: (context: {
+    selectedText: string;
     cmsContext: any;
   }) => Promise<Record<string, any> | null>; // Returns data object, or null to cancel insertion
-  
-  onEdit?: (context: { 
-    data: Record<string, any>;
-  }) => Promise<Record<string, any> | null>; // Triggered when existing node is clicked
+
+  onEdit?: (context: { data: Record<string, any> }) => Promise<Record<string, any> | null>; // Triggered when existing node is clicked
 }
 ```
 
@@ -59,7 +56,7 @@ Markdown (Raw Source)
 MDAST Inline Node (`type: 'inline-shortcode'`)
   │ ▲
   ▼ │  [remarkToSlate / slateToRemark]
-Slate Inline Element (`inline: true`, `void: isVoid`)
+Slate Inline Element (`inline: true`, `void: true`)
   │ ▲
   ▼ │  [Slate Element Component]
 Rich Text Visual DOM (Rendered via `toPreview`)
@@ -73,7 +70,7 @@ Rich Text Visual DOM (Rendered via `toPreview`)
   - [x] Implement Remark `inlineTokenizer` supporting custom patterns.
   - [x] Validate bidirectional round-trip conversions (`Markdown <-> MDAST`) without character escaping or whitespace loss.
 - [x] **Phase 2: Slate Integration**
-  - [x] Register Slate Inline Node types (`isVoid: true/false`).
+  - [x] Register atomic Slate Inline Node types.
   - [x] Implement Slate element renderer with `contentEditable={false}` for void nodes.
 - [x] **Phase 3: Interactive Events & Toolbar**
   - [x] Toolbar button click -> capture selection -> invoke `onInsert`.
@@ -88,4 +85,3 @@ Rich Text Visual DOM (Rendered via `toPreview`)
 
 - **Scope of this PR**: This implementation specifically targets `packages/decap-cms-widget-markdown`, the primary and default Markdown editor across Decap CMS.
 - **Future Work**: Support for `packages/decap-cms-widget-richtext` (based on Plate.js) will be tracked and implemented in a separate follow-up PR to keep PR review focused and risk-contained.
-

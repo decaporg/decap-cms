@@ -1,6 +1,6 @@
 describe('Markdown widget inline component', () => {
   it('loads the post entry and tests the Wikilink inline editor component full round-trip', () => {
-    cy.visit('/#/collections/posts/entries/2026-08-16-post-number-20');
+    cy.visit('/#/collections/posts/entries/2015-02-14-this-is-a-post');
 
     // Click Login on test-repo login screen
     cy.get('button').contains('Login').click();

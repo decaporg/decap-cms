@@ -115,7 +115,8 @@ export default function slateToRemark(value, { voidCodeBlock }) {
         }
 
         case 'image':
-        case 'break': {
+        case 'break':
+        case 'inline-shortcode': {
           const data = omit(node.data, 'marks');
           return { ...node, data };
         }
@@ -154,6 +155,7 @@ export default function slateToRemark(value, { voidCodeBlock }) {
 
       case 'break':
       case 'image':
+      case 'inline-shortcode':
         return map(get(node, ['data', 'marks']), mark => mark.type);
 
       default:

@@ -12,6 +12,17 @@ export function remarkParseShortcodes({ plugins }) {
   inlineMethods.unshift('inlineShortcode');
 }
 
+function createPattern(pattern, { anchored = false } = {}) {
+  let source = pattern.source;
+  if (anchored && !source.startsWith('^')) {
+    source = `^${source}`;
+  } else if (!anchored && source.startsWith('^')) {
+    source = source.slice(1);
+  }
+
+  return new RegExp(source, pattern.flags.replace(/[gy]/g, ''));
+}
+
 function createShortcodeTokenizer({ plugins }) {
   plugins.forEach(plugin => {
     if (plugin.pattern && plugin.pattern.flags.includes('m')) {
@@ -31,13 +42,11 @@ function createShortcodeTokenizer({ plugins }) {
       // Plugin patterns must start with a caret (^) to match the beginning of the block.
       // If the pattern does not start with a caret, we add it
       // to ensure that remark consumes only the shortcode, without any leading text.
-      if (!pattern.source.startsWith('^')) {
-        pattern = new RegExp(`^${pattern.source}`, pattern.flags);
-      }
+      pattern = createPattern(pattern, { anchored: true });
 
-      match = value.match(pattern);
+      match = pattern.exec(value);
       if (!match) {
-        match = potentialMatchValue.match(pattern);
+        match = pattern.exec(potentialMatchValue);
       }
 
       return !!match;
@@ -100,11 +109,9 @@ function createInlineShortcodeTokenizer({ plugins }) {
       }
       let { pattern } = plugin;
       // Inline patterns must match at the current offset (leading ^)
-      if (!pattern.source.startsWith('^')) {
-        pattern = new RegExp(`^${pattern.source}`, pattern.flags);
-      }
+      pattern = createPattern(pattern, { anchored: true });
 
-      match = value.match(pattern);
+      match = pattern.exec(value);
       return !!match;
     });
 
@@ -125,7 +132,7 @@ function createInlineShortcodeTokenizer({ plugins }) {
           data: {
             shortcode: plugin.id,
             shortcodeData,
-            isVoid: plugin.isVoid !== false,
+            isVoid: true,
           },
         });
       } catch (e) {
@@ -152,12 +159,9 @@ function createInlineShortcodeTokenizer({ plugins }) {
           minIndex = triggerIndex;
         }
       } else {
-        let searchPattern = plugin.pattern;
-        if (searchPattern.source.startsWith('^')) {
-          searchPattern = new RegExp(searchPattern.source.slice(1), searchPattern.flags);
-        }
+        const searchPattern = createPattern(plugin.pattern);
         const slice = value.slice(fromIndex);
-        const match = slice.match(searchPattern);
+        const match = searchPattern.exec(slice);
         if (match && typeof match.index === 'number') {
           const foundIndex = fromIndex + match.index;
           if (minIndex === -1 || foundIndex < minIndex) {

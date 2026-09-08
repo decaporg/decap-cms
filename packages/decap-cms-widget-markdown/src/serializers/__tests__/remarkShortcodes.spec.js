@@ -223,6 +223,33 @@ describe('remarkParseShortcodes', () => {
         });
       });
 
+      it.each([undefined, '['])(
+        'should preserve captures for global patterns with trigger %s',
+        trigger => {
+          const wikilinkComponent = {
+            id: 'wikilink',
+            type: 'inline',
+            trigger,
+            pattern: /\[\[(?<target>[^\]]+)\]\]/g,
+            fromInline: match => ({ target: match.groups.target }),
+          };
+
+          const mdast = process(
+            'Before [[target]] after',
+            Map({ [wikilinkComponent.id]: wikilinkComponent }),
+          );
+
+          expect(removePositions(mdast).children[0].children[1]).toEqual({
+            type: 'inline-shortcode',
+            data: {
+              shortcode: 'wikilink',
+              shortcodeData: { target: 'target' },
+              isVoid: true,
+            },
+          });
+        },
+      );
+
       it('should stringify inline shortcodes correctly in round-trip', () => {
         const inlineComponent = {
           id: 'ref',

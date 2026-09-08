@@ -1,4 +1,4 @@
-import { createEditor } from 'slate';
+import { createEditor, Editor, Transforms } from 'slate';
 import { withReact } from 'slate-react';
 
 import withShortcodes from '../withShortcodes';
@@ -69,5 +69,38 @@ describe('insertShortcode', () => {
       child => child.type === 'inline-shortcode',
     );
     expect(insertedNode).toBeUndefined();
+  });
+
+  it('should insert at the captured selection after onInsert changes focus', async () => {
+    const editor = makeEditor();
+    Transforms.select(editor, {
+      anchor: { path: [0, 0], offset: 0 },
+      focus: { path: [0, 0], offset: 6 },
+    });
+    let resolveInsert;
+    const onInsert = jest.fn(
+      () =>
+        new Promise(resolve => {
+          resolveInsert = resolve;
+        }),
+    );
+
+    const insertion = insertShortcode(editor, {
+      id: 'wikilink',
+      type: 'inline',
+      onInsert,
+    });
+    Transforms.select(editor, { path: [0, 0], offset: 11 });
+    resolveInsert({ target: 'doc-page' });
+    await insertion;
+
+    expect(editor.children[0].children[1].type).toBe('inline-shortcode');
+    expect(Editor.string(editor, [0])).toBe(' text');
+  });
+
+  it('should keep inline shortcodes atomic when isVoid is false', () => {
+    const editor = makeEditor();
+
+    expect(editor.isVoid({ type: 'inline-shortcode', data: { isVoid: false } })).toBe(true);
   });
 });

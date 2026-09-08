@@ -33,6 +33,7 @@ import ShortcodePlugin from './plugins/ShortcodePlugin';
 import { TablePlugin, TableRowPlugin, TableCellPlugin } from './plugins/TablePlugin';
 import defaultEmptyBlock from './defaultEmptyBlock';
 import { mergeMediaConfig } from './mergeMediaConfig';
+import filterInlineEditorComponents from '../filterInlineEditorComponents';
 import { handleLinkClick } from './linkHandler';
 import { handlePasteHtml } from './pasteHandler';
 
@@ -66,7 +67,7 @@ export default function VisualEditor(props) {
     getAsset,
   } = props;
 
-  let editorComponents = getEditorComponents();
+  let editorComponents = filterInlineEditorComponents(getEditorComponents());
   const codeBlockComponent = fromJS(editorComponents.find(({ type }) => type === 'code-block'));
 
   editorComponents =

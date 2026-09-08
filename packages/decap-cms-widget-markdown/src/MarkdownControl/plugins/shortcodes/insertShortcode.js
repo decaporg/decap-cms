@@ -4,6 +4,7 @@ import isCursorInEmptyParagraph from './locations/isCursorInEmptyParagraph';
 
 async function insertShortcode(editor, pluginConfig, cmsContext = {}) {
   if (pluginConfig.type === 'inline') {
+    const selectionRef = editor.selection ? Editor.rangeRef(editor, editor.selection) : null;
     let selectedText = '';
     if (editor.selection && Range.isRange(editor.selection)) {
       selectedText = Editor.string(editor, editor.selection);
@@ -15,10 +16,12 @@ async function insertShortcode(editor, pluginConfig, cmsContext = {}) {
       try {
         const result = await pluginConfig.onInsert({ selectedText, cmsContext });
         if (result === null || result === undefined) {
+          selectionRef?.unref();
           return;
         }
         shortcodeData = result;
       } catch (err) {
+        selectionRef?.unref();
         console.error(`Error in onInsert for inline component '${pluginConfig.id}':`, err);
         return;
       }
@@ -37,12 +40,16 @@ async function insertShortcode(editor, pluginConfig, cmsContext = {}) {
         shortcode: pluginConfig.id,
         shortcodeNew: true,
         shortcodeData,
-        isVoid: pluginConfig.isVoid !== false,
+        isVoid: true,
       },
       children: [{ text: '' }],
     };
 
-    Transforms.insertNodes(editor, nodeData);
+    const at = selectionRef?.unref();
+    if (selectionRef && !at) {
+      return;
+    }
+    Transforms.insertNodes(editor, nodeData, at ? { at } : undefined);
     return;
   }
 
