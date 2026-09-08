@@ -1,7 +1,7 @@
 {
   "name": "decap-cms-widget-code",
   "description": "Widget for editing code in Decap CMS",
-  "version": "3.7.0",
+  "version": "3.7.1",
   "homepage": "https://www.decapcms.org/docs/widgets/#code",
   "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-widget-code",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
@@ -35,10 +35,10 @@
     "uuid": "catalog:"
   },
   "dependencies": {
+    "immutable": "catalog:",
     "is-hotkey": "catalog:",
     "react-codemirror2": "catalog:",
     "react-immutable-proptypes": "catalog:",
-    "react-select": "catalog:",
-    "immutable": "catalog:"
+    "react-select": "catalog:"
   }
 }
