@@ -25,6 +25,7 @@
   "dependencies": {
     "apollo-cache-inmemory": "catalog:",
     "apollo-client": "catalog:",
+    "apollo-link": "catalog:",
     "apollo-link-context": "catalog:",
     "apollo-link-http": "catalog:",
     "common-tags": "catalog:",

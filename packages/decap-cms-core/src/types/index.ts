@@ -495,6 +495,16 @@ export interface EditorComponentOptions {
   toPreview: (data: any, getAsset: GetAssetFunction, fields: any) => string | JSX.Element;
 }
 
+/**
+ * The registered form of an editor component, as returned by
+ * `getEditorComponents()`. Identical to the options that were passed to
+ * `registerEditorComponent`, except that `fields` has been deeply converted to
+ * Immutable.
+ */
+export type RegisteredEditorComponent = Omit<EditorComponentOptions, 'fields'> & {
+  fields: List<Map<string, any>>;
+};
+
 export interface PreviewStyleOptions {
   raw: boolean;
 }
@@ -577,7 +587,7 @@ export interface CmsRegistry {
   widgets: {
     [name: string]: CmsWidget;
   };
-  editorComponents: Map<string, EditorComponentOptions>;
+  editorComponents: Map<string, RegisteredEditorComponent>;
   remarkPlugins: Pluggable[];
   widgetValueSerializers: {
     [name: string]: CmsWidgetValueSerializer;
@@ -625,7 +635,7 @@ export type PreviewTemplateComponentProps = {
 
 export interface CMS {
   getBackend: (name: string) => CmsRegistryBackend | undefined;
-  getEditorComponents: () => Map<string, EditorComponentOptions>;
+  getEditorComponents: () => Map<string, RegisteredEditorComponent>;
   getRemarkPlugins: () => Array<Pluggable>;
   getLocale: (locale: string) => CmsLocalePhrases | undefined;
   getMediaLibrary: (name: string) => CmsMediaLibrary | undefined;

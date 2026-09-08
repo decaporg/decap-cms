@@ -1,7 +1,8 @@
 import { fromJS } from 'immutable';
 import isFunction from 'lodash/isFunction';
 
-import type { EditorComponentOptions } from '../types';
+import type { List, Map } from 'immutable';
+import type { EditorComponentOptions, RegisteredEditorComponent } from '../types';
 
 const catchesNothing = /.^/;
 
@@ -11,7 +12,7 @@ function bind(fn) {
 
 export default function createEditorComponent(
   config: EditorComponentOptions,
-): EditorComponentOptions {
+): RegisteredEditorComponent {
   const {
     id = null,
     label = 'unnamed component',
@@ -36,7 +37,7 @@ export default function createEditorComponent(
     fromBlock: bind(fromBlock) || (() => ({})),
     toBlock: bind(toBlock) || (() => 'Plugin'),
     toPreview: bind(toPreview) || (!widget && (bind(toBlock) || (() => 'Plugin'))),
-    fields: fromJS(fields),
+    fields: fromJS(fields) as List<Map<string, any>>,
     ...remainingConfig,
   };
 }

@@ -26,6 +26,7 @@ import * as mutations from './mutations';
 import type { Config, BlobArgs } from './API';
 import type { NormalizedCacheObject } from 'apollo-cache-inmemory';
 import type { QueryOptions, MutationOptions, OperationVariables } from 'apollo-client';
+import type { FetchResult } from 'apollo-link';
 import type { GraphQLError } from 'graphql';
 import type { Endpoints } from '@octokit/types';
 
@@ -150,7 +151,9 @@ export default class GraphQLAPI extends API {
     });
   }
 
-  async mutate(options: MutationOptions<OperationVariables>) {
+  async mutate(
+    options: MutationOptions<OperationVariables>,
+  ): Promise<FetchResult<OperationVariables>> {
     try {
       const result = await this.client.mutate(options);
       return result;

@@ -97,7 +97,7 @@ function moveFile(path: string, newPath: string, tree: RepoTree, hasSubfolders: 
   );
   files.forEach(file => {
     deleteFile(file.path, tree);
-    writeFile(file.path.replace(sourceDir, destDir), file.content, tree);
+    writeFile(file.path.replace(sourceDir, destDir), file.content!, tree);
   });
 }
 

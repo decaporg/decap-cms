@@ -24,6 +24,7 @@
     "build:types": "tsc"
   },
   "dependencies": {
+    "@types/unist": "catalog:",
     "detab": "catalog:",
     "dompurify": "catalog:",
     "is-hotkey": "catalog:",

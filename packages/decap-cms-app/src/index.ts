@@ -1,6 +1,8 @@
 import { DecapCmsCore as CMS } from 'decap-cms-core';
 import './extensions.js';
 
+import type { CMS as CmsInterface } from 'decap-cms-core';
+
 export * from 'decap-cms-core';
 
 declare global {
@@ -15,7 +17,7 @@ if (typeof window !== 'undefined') {
   }
 }
 
-export const DecapCmsApp = {
+export const DecapCmsApp: CmsInterface = {
   ...CMS,
 };
 export default CMS;

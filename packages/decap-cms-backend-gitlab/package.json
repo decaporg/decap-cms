@@ -27,6 +27,7 @@
     "apollo-link-context": "catalog:",
     "apollo-link-http": "catalog:",
     "common-tags": "catalog:",
+    "graphql": "catalog:",
     "graphql-tag": "catalog:",
     "js-base64": "catalog:",
     "path-browserify": "catalog:",

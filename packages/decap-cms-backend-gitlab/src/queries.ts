@@ -1,7 +1,9 @@
 import { gql } from 'graphql-tag';
 import { oneLine } from 'common-tags';
 
-export const files = gql`
+import type { DocumentNode } from 'graphql';
+
+export const files: DocumentNode = gql`
   query files($repo: ID!, $branch: String!, $path: String!, $recursive: Boolean!, $cursor: String) {
     project(fullPath: $repo) {
       repository {
@@ -24,7 +26,7 @@ export const files = gql`
   }
 `;
 
-export const blobs = gql`
+export const blobs: DocumentNode = gql`
   query blobs($repo: ID!, $branch: String!, $paths: [String!]!) {
     project(fullPath: $repo) {
       repository {
@@ -39,7 +41,7 @@ export const blobs = gql`
   }
 `;
 
-export function lastCommits(paths: string[]) {
+export function lastCommits(paths: string[]): DocumentNode {
   const tree = paths
     .map(
       (path, index) => oneLine`
