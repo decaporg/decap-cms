@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.12.1](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-markdown@3.12.0...decap-cms-widget-markdown@3.12.1) (2026-09-08)
+
+### Bug Fixes
+
+- **preview:** preserve blob: image URLs when sanitizing preview HTML ([#7970](https://github.com/decaporg/decap-cms/issues/7970)) ([dd9219c](https://github.com/decaporg/decap-cms/commit/dd9219ce8192c014ac186210ffa8ac831bedbb4a))
+
 # [3.12.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-markdown@3.11.0...decap-cms-widget-markdown@3.12.0) (2026-08-31)
 
 **Note:** Version bump only for package decap-cms-widget-markdown
