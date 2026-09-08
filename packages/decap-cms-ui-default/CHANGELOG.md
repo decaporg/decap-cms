@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.9.1](https://github.com/decaporg/decap-cms/compare/decap-cms-ui-default@3.9.0...decap-cms-ui-default@3.9.1) (2026-09-08)
+
+**Note:** Version bump only for package decap-cms-ui-default
+
 # [3.9.0](https://github.com/decaporg/decap-cms/compare/decap-cms-ui-default@3.8.0...decap-cms-ui-default@3.9.0) (2026-07-23)
 
 **Note:** Version bump only for package decap-cms-ui-default

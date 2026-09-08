@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.18.1](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.18.0...decap-cms-core@3.18.1) (2026-09-08)
+
+### Bug Fixes
+
+- applying collection filter on i18n: single file ([#7612](https://github.com/decaporg/decap-cms/issues/7612)) ([8b56355](https://github.com/decaporg/decap-cms/commit/8b563553a396d4fbcff54b40ad391fdee192e11e))
+- Windows path-mock regression and media library upload/delete edge case ([#7965](https://github.com/decaporg/decap-cms/issues/7965)) ([d532e66](https://github.com/decaporg/decap-cms/commit/d532e66237ed07bbdfcbea7ba2d97a8a4032c8de))
+
 # [3.18.0](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.17.1...decap-cms-core@3.18.0) (2026-08-31)
 
 ### Bug Fixes
