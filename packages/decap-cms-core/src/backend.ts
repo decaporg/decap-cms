@@ -559,20 +559,22 @@ export class Backend {
         },
       ),
     );
+
     const formattedEntries = entries.map(this.entryWithFormat(collection));
-    // If this collection has a "filter" property, filter entries accordingly
-    const collectionFilter = collection.get('filter');
-    const filteredEntries = collectionFilter
-      ? this.filterEntries({ entries: formattedEntries }, collectionFilter)
+
+    // Group i18n entries before filtering them, so that the filter is matched against
+    // the default locale data of a single, merged entry. Notably, entries of a
+    // `single_file` structure collection keep their data nested under a locale key
+    // until they're grouped, so a filter would never match anything.
+    const groupedEntries = hasI18n(collection)
+      ? groupEntries(collection, selectFolderEntryExtension(collection), formattedEntries)
       : formattedEntries;
 
-    if (hasI18n(collection)) {
-      const extension = selectFolderEntryExtension(collection);
-      const groupedEntries = groupEntries(collection, extension, filteredEntries);
-      return groupedEntries;
-    }
-
-    return filteredEntries;
+    // If this collection has a "filter" property, filter entries accordingly
+    const collectionFilter = collection.get('filter');
+    return collectionFilter
+      ? this.filterEntries({ entries: groupedEntries }, collectionFilter)
+      : groupedEntries;
   }
 
   async listEntries(collection: Collection) {
