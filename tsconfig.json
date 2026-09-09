@@ -26,6 +26,15 @@
       "decap-cms-ui-default": ["packages/decap-cms-ui-default/src"]
     }
   },
+  // Cypress loads cypress.config.ts through ts-node, which runs in CommonJS.
+  // Since TypeScript 5.0 that conflicts with the nodenext moduleResolution
+  // above (TS5110), so ts-node gets a matching pair of its own.
+  "ts-node": {
+    "compilerOptions": {
+      "module": "CommonJS",
+      "moduleResolution": "Node"
+    }
+  },
   "include": ["**/src/**/*"],
   "exclude": ["node_modules", "**/*.spec.ts"]
 }
