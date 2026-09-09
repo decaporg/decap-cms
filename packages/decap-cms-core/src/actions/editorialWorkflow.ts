@@ -153,12 +153,18 @@ function unpublishedEntryPersisting(collection: Collection, slug: string) {
   };
 }
 
-function unpublishedEntryPersisted(collection: Collection, entry: EntryMap) {
+function unpublishedEntryPersisted(collection: Collection, entry: EntryMap, slug: string) {
   return {
     type: UNPUBLISHED_ENTRY_PERSIST_SUCCESS,
     payload: {
       collection: collection.get('name'),
       entry,
+      // The slug the backend actually committed under. `entry` is the draft as
+      // serialized, and a new entry's draft carries no slug — persistEntry
+      // computes it. The entity and id below keep using the draft's own value,
+      // because the editor looks the just-saved entry up by the slug still in
+      // its route; only the content key needs the authoritative one.
+      slug,
     },
   };
 }
@@ -485,7 +491,7 @@ export function persistUnpublishedEntry(collection: Collection, existingUnpublis
           dismissAfter: 4000,
         }),
       );
-      dispatch(unpublishedEntryPersisted(collection, serializedEntry));
+      dispatch(unpublishedEntryPersisted(collection, serializedEntry, newSlug));
 
       if (entry.get('slug') !== newSlug) {
         await dispatch(loadUnpublishedEntry(collection, newSlug));
@@ -644,7 +650,7 @@ export function unpublishPublishedEntry(collection: Collection, slug: string) {
       )
       .then(() => backend.reopenIssueForUnpublishedEntry(collection.get('name'), slug))
       .then(() => {
-        dispatch(unpublishedEntryPersisted(collection, entry));
+        dispatch(unpublishedEntryPersisted(collection, entry, slug));
         dispatch(entryDeleted(collection, slug));
         dispatch(loadUnpublishedEntry(collection, slug));
         dispatch(

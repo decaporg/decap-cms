@@ -138,12 +138,20 @@ function unpublishedEntries(state = Map(), action: EditorialWorkflowAction) {
         // the staleness clock without asking the backend would let a
         // colleague's draft go unnoticed for another full window — the exact
         // failure the window bounds.
+        //
+        // Keyed on payload.slug, the slug the backend committed under, and not
+        // on the entry's own. A new entry's draft has no slug until persist
+        // computes one, so the entry here would key it `<collection>/` — and
+        // loadUnpublishedEntry, called with the real slug immediately after,
+        // would not find it and would take its absence as proof the entry is
+        // published.
         map.updateIn(['pages', 'keys'], List(), list => {
-          const key = generateContentKey(
-            action.payload!.collection,
-            action.payload!.entry.get('slug'),
-          );
+          const slug = action.payload!.slug || action.payload!.entry.get('slug');
           const keys = list as List<string>;
+          if (!slug) {
+            return keys;
+          }
+          const key = generateContentKey(action.payload!.collection, slug);
           return keys.includes(key) ? keys : keys.push(key);
         });
       });

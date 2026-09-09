@@ -39,6 +39,39 @@ describe('editorialWorkflow', () => {
     // loadUnpublishedEntry treated a live draft as published and loaded it
     // from the site branch, giving "404 File Not Found" and an editor showing
     // "Published" for an entry still in review.
+    // The e2e editorial-workflow failures, root cause. A new entry's draft has
+    // no slug until persistEntry computes one, so keying on the entry itself
+    // recorded `posts/` — and loadUnpublishedEntry, called with the real slug
+    // on the very next line, did not find it and took the absence as proof the
+    // entry was published: it deleted the entity and loaded from the site
+    // branch, giving "404 File Not Found" and a toolbar reading "Published".
+    it('keys a newly created entry on the slug the backend committed under', () => {
+      const state = fromJS({ pages: { keys: [] } });
+      const action = {
+        type: 'UNPUBLISHED_ENTRY_PERSIST_SUCCESS',
+        payload: {
+          collection: 'posts',
+          // The draft as serialized: no slug of its own yet.
+          entry: fromJS({ slug: '' }),
+          slug: '1970-01-01-first-title',
+        },
+      };
+
+      expect(editorialWorkflow(state, action).getIn(['pages', 'keys']).toJS()).toEqual([
+        'posts/1970-01-01-first-title',
+      ]);
+    });
+
+    it('records no key at all when neither slug is known', () => {
+      const state = fromJS({ pages: { keys: [] } });
+      const action = {
+        type: 'UNPUBLISHED_ENTRY_PERSIST_SUCCESS',
+        payload: { collection: 'posts', entry: fromJS({ slug: '' }) },
+      };
+
+      expect(editorialWorkflow(state, action).getIn(['pages', 'keys']).toJS()).toEqual([]);
+    });
+
     it('keeps a key this session added when a listing does not mention it', () => {
       const state = fromJS({ pages: { keys: ['posts/just-saved'], ids: ['just-saved'] } });
       const action = {
