@@ -140,7 +140,7 @@ catalog:
   http-server: ^14.0.0
   husky: ^7.0.0
   immer: ^9.0.0
-  immutable: ^3.7.6
+  immutable: ^4.3.9
   imports-loader: ^4.0.1
   ini: ^2.0.0
   is-hotkey: ^0.2.0

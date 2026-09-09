@@ -59,7 +59,7 @@ function unpublishedEntries(state = Map(), action: EditorialWorkflowAction) {
         action.payload!.entries.forEach(entry =>
           map.setIn(
             ['entities', `${entry.collection}.${entry.slug}`],
-            fromJS(entry).set('isFetching', false),
+            fromJS({ ...entry, isFetching: false }),
           ),
         );
         map.set(
@@ -116,7 +116,7 @@ function unpublishedEntries(state = Map(), action: EditorialWorkflowAction) {
           'isPersisting',
         ]);
         map.updateIn(['pages', 'ids'], List(), list =>
-          list.push(action.payload!.entry.get('slug')),
+          (list as List<string>).push(action.payload!.entry.get('slug')),
         );
         // The entry this session just put into review is in the workflow, so
         // the key set says so without a round trip. `loadedAt` is deliberately
@@ -129,7 +129,8 @@ function unpublishedEntries(state = Map(), action: EditorialWorkflowAction) {
             action.payload!.collection,
             action.payload!.entry.get('slug'),
           );
-          return list.includes(key) ? list : list.push(key);
+          const keys = list as List<string>;
+          return keys.includes(key) ? keys : keys.push(key);
         });
       });
 
@@ -180,7 +181,7 @@ function unpublishedEntries(state = Map(), action: EditorialWorkflowAction) {
         map.deleteIn(['entities', `${action.payload!.collection}.${action.payload!.slug}`]);
         map.updateIn(['pages', 'keys'], List(), list => {
           const key = generateContentKey(action.payload!.collection, action.payload!.slug);
-          return list.filter((existing: string) => existing !== key);
+          return (list as List<string>).filter(existing => existing !== key);
         });
       });
 

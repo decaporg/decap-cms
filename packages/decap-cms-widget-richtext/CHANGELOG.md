@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.6.1](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-richtext@3.6.0...decap-cms-widget-richtext@3.6.1) (2026-09-08)
+
+### Bug Fixes
+
+- **preview:** preserve blob: image URLs when sanitizing preview HTML ([#7970](https://github.com/decaporg/decap-cms/issues/7970)) ([dd9219c](https://github.com/decaporg/decap-cms/commit/dd9219ce8192c014ac186210ffa8ac831bedbb4a))
+- **richtext:** render nested shortcodes in preview ([#7899](https://github.com/decaporg/decap-cms/issues/7899)) ([4d3d3ba](https://github.com/decaporg/decap-cms/commit/4d3d3ba3ce4e6998067a6f121da27cfef8c8b539))
+
 # [3.6.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-richtext@3.5.0...decap-cms-widget-richtext@3.6.0) (2026-08-31)
 
 **Note:** Version bump only for package decap-cms-widget-richtext

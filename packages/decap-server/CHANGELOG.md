@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.11.1](https://github.com/decaporg/decap-cms/compare/decap-server@3.11.0...decap-server@3.11.1) (2026-09-08)
+
+### Bug Fixes
+
+- Windows path-mock regression and media library upload/delete edge case ([#7965](https://github.com/decaporg/decap-cms/issues/7965)) ([d532e66](https://github.com/decaporg/decap-cms/commit/d532e66237ed07bbdfcbea7ba2d97a8a4032c8de))
+
 # [3.11.0](https://github.com/decaporg/decap-cms/compare/decap-server@3.10.0...decap-server@3.11.0) (2026-08-31)
 
 **Note:** Version bump only for package decap-server

@@ -1,12 +1,16 @@
 import flow from 'lodash/flow';
 import fromPairs from 'lodash/fromPairs';
 import { map } from 'lodash/fp';
-import { fromJS } from 'immutable';
+import { Map as ImmutableMap } from 'immutable';
 
 import unsentRequest from './unsentRequest';
 import APIError from './APIError';
 
-type Formatter = (res: Response) => Promise<string | Blob | unknown>;
+// A formatter yields a string, a Blob or parsed JSON depending on the requested
+// format, so its result is only known at the call site - hence `any`. Callers
+// narrow it themselves (e.g. `.then<Blob | string>(...)`).
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Formatter = (res: Response) => Promise<any>;
 
 export function filterByExtension(file: { path: string }, extension: string) {
   const path = file?.path || '';
@@ -25,7 +29,9 @@ function catchFormatErrors(format: string, formatter: Formatter) {
   };
 }
 
-const responseFormatters = fromJS({
+// NOTE: `Map` rather than `fromJS` on purpose - the values are functions, which
+// `fromJS` would leave untouched anyway, and `Map` keeps them properly typed.
+const responseFormatters = ImmutableMap<string, Formatter>({
   json: async (res: Response) => {
     const contentType = res.headers.get('Content-Type') || '';
     if (!contentType.startsWith('application/json') && !contentType.startsWith('text/json')) {
@@ -35,10 +41,7 @@ const responseFormatters = fromJS({
   },
   text: async (res: Response) => res.text(),
   blob: async (res: Response) => res.blob(),
-}).mapEntries(([format, formatter]: [string, Formatter]) => [
-  format,
-  catchFormatErrors(format, formatter),
-]);
+}).mapEntries(([format, formatter]) => [format, catchFormatErrors(format, formatter)]);
 
 export async function parseResponse(
   res: Response,

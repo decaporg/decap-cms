@@ -1,7 +1,7 @@
 {
   "name": "decap-cms-core",
   "description": "Decap CMS core application, see decap-cms package for the main distribution.",
-  "version": "3.18.0",
+  "version": "3.18.1",
   "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-core",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
   "module": "dist/esm/index.js",
@@ -27,6 +27,9 @@
     "@jsquash/webp": "catalog:",
     "@reduxjs/toolkit": "catalog:",
     "@vercel/stega": "catalog:",
+    "ajv": "catalog:",
+    "ajv-errors": "catalog:",
+    "ajv-keywords": "catalog:",
     "buffer": "catalog:",
     "clean-stack": "catalog:",
     "common-tags": "catalog:",
@@ -74,10 +77,7 @@
     "url": "catalog:",
     "url-join": "catalog:",
     "what-input": "catalog:",
-    "yaml": "catalog:",
-    "ajv": "catalog:",
-    "ajv-errors": "catalog:",
-    "ajv-keywords": "catalog:"
+    "yaml": "catalog:"
   },
   "peerDependencies": {
     "@emotion/react": "catalog:",
@@ -100,8 +100,8 @@
     "@types/iarna__toml": "catalog:",
     "@types/redux-mock-store": "catalog:",
     "@types/url-join": "catalog:",
-    "redux-mock-store": "catalog:",
-    "jest-mock": "catalog:"
+    "jest-mock": "catalog:",
+    "redux-mock-store": "catalog:"
   },
   "browser": {
     "path": "path-browserify"

@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.6.1](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-list@3.6.0...decap-cms-widget-list@3.6.1) (2026-09-08)
+
+### Bug Fixes
+
+- **widget-list:** route list item changes by item id, not position ([#7972](https://github.com/decaporg/decap-cms/issues/7972)) ([060c15b](https://github.com/decaporg/decap-cms/commit/060c15b6a98dbfa7c2b62795a4461f7726db316c))
+
 # [3.6.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-list@3.5.0...decap-cms-widget-list@3.6.0) (2026-06-08)
 
 ### Bug Fixes

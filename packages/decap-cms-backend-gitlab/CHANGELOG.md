@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.6.2](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-gitlab@3.6.1...decap-cms-backend-gitlab@3.6.2) (2026-09-08)
+
+### Bug Fixes
+
+- **gitlab:** refresh expired tokens for GraphQL and REST 401s ([#7932](https://github.com/decaporg/decap-cms/issues/7932)) ([cec9441](https://github.com/decaporg/decap-cms/commit/cec9441e1660a5c28d305419e06de167889649a5))
+
 ## [3.6.1](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-gitlab@3.6.0...decap-cms-backend-gitlab@3.6.1) (2026-06-15)
 
 ### Bug Fixes

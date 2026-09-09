@@ -20,6 +20,7 @@ import type { AnyAction } from 'redux';
 import type {
   CmsCollection,
   CmsConfig,
+  Collection,
   CmsField,
   CmsFieldBase,
   CmsFieldObject,
@@ -166,8 +167,7 @@ function throwOnMissingDefaultLocale(i18n?: CmsI18nConfig) {
 }
 
 function hasIntegration(config: CmsConfig, collection: CmsCollection) {
-  // TODO remove fromJS when Immutable is removed from the integrations state slice
-  const integrations = getIntegrations(fromJS(config));
+  const integrations = getIntegrations(config);
   const integration = selectIntegration(integrations, collection.name, 'listEntries');
   return !!integration;
 }
@@ -371,7 +371,7 @@ export function applyDefaults(originalConfig: CmsConfig) {
       if (!collection.sortable_fields) {
         collection.sortable_fields = selectDefaultSortableFields(
           // TODO remove fromJS when Immutable is removed from the collections state slice
-          fromJS(collection),
+          fromJS(collection) as unknown as Collection,
           backend,
           hasIntegration(config, collection),
         );
