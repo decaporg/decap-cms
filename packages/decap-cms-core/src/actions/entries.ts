@@ -852,55 +852,48 @@ export function createEmptyDraftData(
   fields: EntryFields,
   skipField: (field: EntryField) => boolean = () => false,
 ) {
-  return fields.reduce(
-    (
-      reduction: DraftEntryData | string | undefined | boolean | List<unknown>,
-      value: EntryField | undefined | boolean,
-    ) => {
-      const acc = reduction as DraftEntryData;
-      const item = value as EntryField;
+  return fields.reduce((acc: DraftEntryData, value: EntryField | undefined | boolean) => {
+    const item = value as EntryField;
 
-      if (skipField(item)) {
-        return acc;
-      }
-
-      const subfields = item.get('field') || item.get('fields');
-      const list = item.get('widget') == 'list';
-      const name = item.get('name');
-      const defaultValue = item.get('default', null);
-
-      function isEmptyDefaultValue(val: unknown) {
-        return [[{}], {}].some(e => isEqual(val, e));
-      }
-
-      const hasSubfields = List.isList(subfields) || Map.isMap(subfields);
-      if (hasSubfields) {
-        if (list && List.isList(defaultValue)) {
-          acc[name] = defaultValue;
-        } else {
-          const asList = List.isList(subfields)
-            ? (subfields as EntryFields)
-            : List([subfields as EntryField]);
-
-          const subDefaultValue = list
-            ? [createEmptyDraftData(asList, skipField)]
-            : createEmptyDraftData(asList, skipField);
-
-          if (!isEmptyDefaultValue(subDefaultValue)) {
-            acc[name] = subDefaultValue;
-          }
-        }
-        return acc;
-      }
-
-      if (defaultValue !== null) {
-        acc[name] = defaultValue;
-      }
-
+    if (skipField(item)) {
       return acc;
-    },
-    {} as DraftEntryData,
-  );
+    }
+
+    const subfields = item.get('field') || item.get('fields');
+    const list = item.get('widget') == 'list';
+    const name = item.get('name');
+    const defaultValue = item.get('default', null);
+
+    function isEmptyDefaultValue(val: unknown) {
+      return [[{}], {}].some(e => isEqual(val, e));
+    }
+
+    const hasSubfields = List.isList(subfields) || Map.isMap(subfields);
+    if (hasSubfields) {
+      if (list && List.isList(defaultValue)) {
+        acc[name] = defaultValue;
+      } else {
+        const asList = List.isList(subfields)
+          ? (subfields as EntryFields)
+          : List([subfields as EntryField]);
+
+        const subDefaultValue = list
+          ? [createEmptyDraftData(asList, skipField)]
+          : createEmptyDraftData(asList, skipField);
+
+        if (!isEmptyDefaultValue(subDefaultValue)) {
+          acc[name] = subDefaultValue;
+        }
+      }
+      return acc;
+    }
+
+    if (defaultValue !== null) {
+      acc[name] = defaultValue;
+    }
+
+    return acc;
+  }, {} as DraftEntryData);
 }
 
 function createEmptyDraftI18nData(collection: Collection, dataFields: EntryFields) {

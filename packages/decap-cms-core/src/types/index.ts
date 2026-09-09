@@ -4,6 +4,8 @@ import type { ComponentType, JSX } from 'react';
 import type { List, Map } from 'immutable';
 import type { Pluggable } from 'unified';
 import type { Implementation } from 'decap-cms-lib-util';
+import type AssetProxy from '../valueObjects/AssetProxy';
+import type { EntryField, EntryMap } from './redux';
 
 export type CmsBackendClass = new (...args: any[]) => Implementation;
 
@@ -492,7 +494,11 @@ export interface EditorComponentOptions {
   allow_add?: boolean;
   fromBlock: (match: RegExpMatchArray) => any;
   toBlock: (data: any) => string;
-  toPreview: (data: any, getAsset: GetAssetFunction, fields: any) => string | JSX.Element;
+  toPreview: (
+    data: any,
+    getAsset: GetAssetFunction,
+    fields?: List<Map<string, any>>,
+  ) => string | JSX.Element;
 }
 
 /**
@@ -501,12 +507,13 @@ export interface EditorComponentOptions {
  * `registerEditorComponent`, except that `fields` has been deeply converted to
  * Immutable.
  */
-export type RegisteredEditorComponent = Omit<EditorComponentOptions, 'fields'> & {
+export type RegisteredEditorComponent = Omit<EditorComponentOptions, 'fields' | 'toPreview'> & {
   fields: List<Map<string, any>>;
+  toPreview: EditorComponentOptions['toPreview'] | false;
 };
 
 export interface PreviewStyleOptions {
-  raw: boolean;
+  raw?: boolean;
 }
 
 export interface PreviewStyle extends PreviewStyleOptions {
@@ -556,15 +563,22 @@ export interface CmsMediaLibrary {
   config?: CmsMediaLibraryOptions;
 }
 
+export type CmsEventName =
+  | 'prePublish'
+  | 'postPublish'
+  | 'preUnpublish'
+  | 'postUnpublish'
+  | 'preSave'
+  | 'postSave';
+
+export type EventData = {
+  entry: EntryMap;
+  author: { login?: string; name: string };
+};
+
 export interface CmsEventListener {
-  name: 'prePublish' | 'postPublish' | 'preUnpublish' | 'postUnpublish' | 'preSave' | 'postSave';
-  handler: ({
-    entry,
-    author,
-  }: {
-    entry: Map<string, any>;
-    author: { login: string; name: string };
-  }) => any;
+  name: CmsEventName;
+  handler: (data: EventData, options?: CmsEventListenerOptions) => any;
 }
 
 export type CmsEventListenerOptions = any; // TODO: type properly
@@ -592,7 +606,7 @@ export interface CmsRegistry {
   widgetValueSerializers: {
     [name: string]: CmsWidgetValueSerializer;
   };
-  mediaLibraries: CmsMediaLibrary[];
+  mediaLibraries: Array<CmsMediaLibrary & { options?: CmsMediaLibraryOptions }>;
   locales: {
     [name: string]: CmsLocalePhrases;
   };
@@ -610,12 +624,12 @@ export interface CmsRegistry {
   };
 }
 
-type GetAssetFunction = (asset: string) => {
-  url: string;
-  path: string;
-  field?: any;
-  fileObj: File;
-};
+/**
+ * Mirrors `boundGetAsset` in src/actions/media.ts. The optional field is only
+ * used to resolve per-field media folders; internally it is an `EntryField`,
+ * but editor components hold their fields as untyped config maps.
+ */
+export type GetAssetFunction = (path: string, field?: EntryField | Map<string, any>) => AssetProxy;
 
 export type PreviewTemplateComponentProps = {
   entry: Map<string, any>;
@@ -666,4 +680,16 @@ export interface CMS {
   registerWidgetValueSerializer: (widgetName: string, serializer: CmsWidgetValueSerializer) => void;
   resolveWidget: (name: string) => CmsWidget | undefined;
   registerCustomFormat: (name: string, extension: string, formatter: Formatter) => void;
+  getWidgets: () => Array<CmsWidget & { name: string }>;
+  getEventListeners: (
+    name: CmsEventName,
+  ) => Array<{ handler: CmsEventListener['handler']; options: CmsEventListenerOptions }>;
+  removeEventListener: (listener: {
+    name: CmsEventName;
+    handler?: CmsEventListener['handler'];
+  }) => void;
+  invokeEvent: (event: { name: CmsEventName; data: EventData }) => Promise<EntryMap>;
+  getCustomFormats: () => CmsRegistry['formats'];
+  getCustomFormatsExtensions: () => Record<string, string>;
+  getCustomFormatsFormatters: () => Record<string, Formatter>;
 }

@@ -10,9 +10,9 @@
     "type-check:watch": "pnpm run type-check -- --watch",
     "clean": "rimraf \"packages/*/dist\" dev-test/dist \"packages/*/node_modules\" \".nx/cache\" \"packages/*/tsconfig.tsbuildinfo\"",
     "reset": "pnpm run clean",
-    "test": "pnpm run lint && pnpm run type-check && pnpm run test:cypress-runner && pnpm run test:unit",
+    "test": "pnpm run lint && pnpm run type-check && pnpm run test:types-coverage && pnpm run test:cypress-runner && pnpm run test:unit",
     "test:all": "pnpm run test && pnpm run test:e2e",
-    "test:ci": "pnpm run lint-quiet && pnpm run type-check && pnpm run test:cypress-runner && pnpm run test:unit",
+    "test:ci": "pnpm run lint-quiet && pnpm run type-check && pnpm run test:types-coverage && pnpm run test:cypress-runner && pnpm run test:unit",
     "test:cypress-runner": "node --test cypress/run.spec.mjs",
     "test:unit": "cross-env NODE_ENV=test jest --no-cache",
     "test:e2e": "pnpm run build:demo && pnpm run test:e2e:run",
@@ -36,6 +36,8 @@
     "format:prettier": "prettier \"{{packages,scripts}/**/,}*.{js,jsx,ts,tsx,css}\"",
     "prepare": "husky install",
     "publish:packages": "pnpm publish -r --no-git-checks --report-summary",
+    "test:types-coverage": "node scripts/test-types-coverage.mjs",
+    "test:types": "nx run decap-cms-types-fixture:test:types",
     "test:package-integrity": "node scripts/test-package-integrity.mjs"
   },
   "browserslist": [

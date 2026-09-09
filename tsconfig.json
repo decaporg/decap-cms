@@ -25,6 +25,7 @@
       "decap-cms-backend-azure": ["packages/decap-cms-backend-azure/src"],
       "decap-cms-backend-bitbucket": ["packages/decap-cms-backend-bitbucket/src"],
       "decap-cms-backend-git-gateway": ["packages/decap-cms-backend-git-gateway/src"],
+      "decap-cms-backend-forgejo": ["packages/decap-cms-backend-forgejo/src"],
       "decap-cms-backend-gitea": ["packages/decap-cms-backend-gitea/src"],
       "decap-cms-backend-github": ["packages/decap-cms-backend-github/src"],
       "decap-cms-backend-gitlab": ["packages/decap-cms-backend-gitlab/src"],
@@ -43,6 +44,7 @@
       "decap-cms-media-library-uploadcare": [
         "packages/decap-cms-media-library-uploadcare/src"
       ],
+      "decap-cms-ui-auth": ["packages/decap-cms-ui-auth/src"],
       "decap-cms-ui-default": ["packages/decap-cms-ui-default/src"],
       "decap-cms-widget-boolean": ["packages/decap-cms-widget-boolean/src"],
       "decap-cms-widget-code": ["packages/decap-cms-widget-code/src"],
@@ -56,9 +58,11 @@
       "decap-cms-widget-number": ["packages/decap-cms-widget-number/src"],
       "decap-cms-widget-object": ["packages/decap-cms-widget-object/src"],
       "decap-cms-widget-relation": ["packages/decap-cms-widget-relation/src"],
+      "decap-cms-widget-richtext": ["packages/decap-cms-widget-richtext/src"],
       "decap-cms-widget-select": ["packages/decap-cms-widget-select/src"],
       "decap-cms-widget-string": ["packages/decap-cms-widget-string/src"],
-      "decap-cms-widget-text": ["packages/decap-cms-widget-text/src"]
+      "decap-cms-widget-text": ["packages/decap-cms-widget-text/src"],
+      "decap-cms-widget-uuid": ["packages/decap-cms-widget-uuid/src"]
     }
   },
   "ts-node": {
@@ -72,6 +76,7 @@
     {"path": "packages/decap-cms-backend-aws-cognito-github-proxy"},
     {"path": "packages/decap-cms-backend-azure"},
     {"path": "packages/decap-cms-backend-bitbucket"},
+    {"path": "packages/decap-cms-backend-forgejo"},
     {"path": "packages/decap-cms-backend-git-gateway"},
     {"path": "packages/decap-cms-backend-gitea"},
     {"path": "packages/decap-cms-backend-github"},
@@ -87,6 +92,7 @@
     {"path": "packages/decap-cms-locales"},
     {"path": "packages/decap-cms-media-library-cloudinary"},
     {"path": "packages/decap-cms-media-library-uploadcare"},
+    {"path": "packages/decap-cms-ui-auth"},
     {"path": "packages/decap-cms-ui-default"},
     {"path": "packages/decap-cms-widget-boolean"},
     {"path": "packages/decap-cms-widget-code"},
@@ -100,9 +106,11 @@
     {"path": "packages/decap-cms-widget-number"},
     {"path": "packages/decap-cms-widget-object"},
     {"path": "packages/decap-cms-widget-relation"},
+    {"path": "packages/decap-cms-widget-richtext"},
     {"path": "packages/decap-cms-widget-select"},
     {"path": "packages/decap-cms-widget-string"},
     {"path": "packages/decap-cms-widget-text"},
+    {"path": "packages/decap-cms-widget-uuid"},
     {"path": "packages/decap-server"}
   ],
   "include": [],

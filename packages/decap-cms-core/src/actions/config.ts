@@ -285,7 +285,7 @@ export function applyDefaults(originalConfig: CmsConfig) {
       }
 
       const i18nConfig = collection[I18N];
-      let collectionI18n: CmsI18nConfig;
+      let collectionI18n: CmsI18nConfig | undefined;
 
       if (i18n && i18nConfig) {
         collectionI18n = getI18nDefaults(i18nConfig, i18n);
@@ -351,7 +351,7 @@ export function applyDefaults(originalConfig: CmsConfig) {
           }
 
           const fileI18nConfig = file[I18N];
-          let fileI18n: CmsI18nConfig;
+          let fileI18n: CmsI18nConfig | undefined;
 
           if (fileI18nConfig && collectionI18n) {
             fileI18n = getI18nDefaults(fileI18nConfig, collectionI18n);

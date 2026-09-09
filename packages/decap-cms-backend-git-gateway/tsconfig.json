@@ -12,6 +12,7 @@
     {"path": "../decap-cms-backend-gitlab"},
     {"path": "../decap-cms-lib-auth"},
     {"path": "../decap-cms-lib-util"},
+    {"path": "../decap-cms-ui-auth"},
     {"path": "../decap-cms-ui-default"}
   ]
 }

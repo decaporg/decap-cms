@@ -10,6 +10,7 @@
     {"path": "../decap-cms-backend-aws-cognito-github-proxy"},
     {"path": "../decap-cms-backend-azure"},
     {"path": "../decap-cms-backend-bitbucket"},
+    {"path": "../decap-cms-backend-forgejo"},
     {"path": "../decap-cms-backend-git-gateway"},
     {"path": "../decap-cms-backend-gitea"},
     {"path": "../decap-cms-backend-github"},
@@ -22,6 +23,7 @@
     {"path": "../decap-cms-lib-util"},
     {"path": "../decap-cms-lib-widgets"},
     {"path": "../decap-cms-locales"},
+    {"path": "../decap-cms-ui-auth"},
     {"path": "../decap-cms-ui-default"},
     {"path": "../decap-cms-widget-boolean"},
     {"path": "../decap-cms-widget-code"},
@@ -35,8 +37,10 @@
     {"path": "../decap-cms-widget-number"},
     {"path": "../decap-cms-widget-object"},
     {"path": "../decap-cms-widget-relation"},
+    {"path": "../decap-cms-widget-richtext"},
     {"path": "../decap-cms-widget-select"},
     {"path": "../decap-cms-widget-string"},
-    {"path": "../decap-cms-widget-text"}
+    {"path": "../decap-cms-widget-text"},
+    {"path": "../decap-cms-widget-uuid"}
   ]
 }

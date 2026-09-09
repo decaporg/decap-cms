@@ -71,6 +71,7 @@ import type {
   EntryField,
 } from './types/redux';
 import type { EntryValue } from './valueObjects/Entry';
+import type { CmsEventName } from './types';
 import type {
   Implementation as BackendImplementation,
   DisplayURL,
@@ -1373,7 +1374,7 @@ export class Backend {
     return slug;
   }
 
-  async invokeEventWithEntry(event: string, entry: EntryMap) {
+  async invokeEventWithEntry(event: CmsEventName, entry: EntryMap) {
     const { login, name } = (await this.currentUser()) as User;
     return await invokeEvent({ name: event, data: { entry, author: { login, name } } });
   }

@@ -7,10 +7,8 @@
   },
   "include": ["src/**/*"],
   "references": [
-    {"path": "../decap-cms-backend-github"},
     {"path": "../decap-cms-lib-auth"},
     {"path": "../decap-cms-lib-util"},
-    {"path": "../decap-cms-ui-auth"},
     {"path": "../decap-cms-ui-default"}
   ]
 }
