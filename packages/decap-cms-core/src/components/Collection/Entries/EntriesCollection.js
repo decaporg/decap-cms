@@ -244,7 +244,7 @@ function mapStateToProps(state, ownProps) {
 
   const isEditorialWorkflowEnabled = state.config?.publish_mode === 'editorial_workflow';
   const unpublishedEntriesLoaded = isEditorialWorkflowEnabled
-    ? !!state.editorialWorkflow?.getIn(['pages', 'listLoaded'], false)
+    ? !!state.editorialWorkflow?.getIn(['pages', 'ids'], false)
     : true;
 
   return {

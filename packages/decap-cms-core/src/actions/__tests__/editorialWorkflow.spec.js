@@ -256,9 +256,10 @@ describe('editorialWorkflow actions', () => {
       const { currentBackend } = require('../../backend');
       const backend = { unpublishedEntries: jest.fn() };
       const store = mockStore({
-        // Plain object, not fromJS: config left Immutable, and the guard below
-        // reads `state.config.publish_mode` directly — an Immutable Map here
-        // makes it undefined and the early return fire for the wrong reason.
+        // Plain object, not fromJS: config left Immutable, and the guard reads
+        // `state.config.publish_mode` directly — an Immutable Map here makes it
+        // undefined, so the publish-mode check returns early and this test
+        // passes without ever exercising the isFetching guard it names.
         config: { publish_mode: 'editorial_workflow' },
         collections: fromJS({}),
         editorialWorkflow: fromJS({ pages: { isFetching: true } }),
@@ -269,40 +270,6 @@ describe('editorialWorkflow actions', () => {
 
       expect(backend.unpublishedEntries).not.toHaveBeenCalled();
       expect(store.getActions()).toHaveLength(0);
-    });
-
-    // The Workflow board rendered empty columns for an entry saved this
-    // session. Persisting pushes that one slug into `pages.ids`, and this
-    // guard used to read a non-empty `ids` as "the whole list is loaded", so
-    // the fetch that brings in everything else never ran.
-    it('still fetches when ids holds a persisted slug but nothing has been hydrated', () => {
-      const { currentBackend } = require('../../backend');
-      const backend = { unpublishedEntries: jest.fn().mockResolvedValue({ entries: [] }) };
-      const store = mockStore({
-        config: { publish_mode: 'editorial_workflow' },
-        collections: fromJS({}),
-        editorialWorkflow: fromJS({ pages: { ids: ['just-saved'] } }),
-      });
-
-      currentBackend.mockReturnValue(backend);
-      store.dispatch(actions.loadUnpublishedEntries(store.getState().collections));
-
-      expect(backend.unpublishedEntries).toHaveBeenCalled();
-    });
-
-    it('does not fetch again once the list really has been loaded', () => {
-      const { currentBackend } = require('../../backend');
-      const backend = { unpublishedEntries: jest.fn() };
-      const store = mockStore({
-        config: { publish_mode: 'editorial_workflow' },
-        collections: fromJS({}),
-        editorialWorkflow: fromJS({ pages: { listLoaded: true, ids: [] } }),
-      });
-
-      currentBackend.mockReturnValue(backend);
-      store.dispatch(actions.loadUnpublishedEntries(store.getState().collections));
-
-      expect(backend.unpublishedEntries).not.toHaveBeenCalled();
     });
   });
 

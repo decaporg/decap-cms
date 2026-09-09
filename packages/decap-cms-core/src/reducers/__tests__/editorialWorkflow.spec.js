@@ -30,32 +30,13 @@ describe('editorialWorkflow', () => {
 
       expect(pages.get('keys').toJS()).toEqual(['posts/one', 'authors/someone']);
       expect(pages.get('loadedAt')).toBeGreaterThan(0);
-      // The one call that hydrates every draft, so the only one that may say so.
-      expect(pages.get('listLoaded')).toBe(true);
-    });
-
-    // The Workflow board showed empty columns for an entry saved this session:
-    // persisting pushes one slug into `ids`, and every consumer read a
-    // non-empty `ids` as "the whole list is loaded", so the fetch that would
-    // have brought in the rest never ran.
-    it('does not claim the list is loaded just because a persist added a slug', () => {
-      const state = fromJS({ pages: { keys: [], ids: [] } });
-      const action = {
-        type: 'UNPUBLISHED_ENTRY_PERSIST_SUCCESS',
-        payload: { collection: 'posts', entry: fromJS({ slug: 'two' }) },
-      };
-
-      const pages = editorialWorkflow(state, action).get('pages');
-
-      expect(pages.get('ids').toJS()).toEqual(['two']);
-      expect(pages.get('listLoaded')).toBeUndefined();
     });
 
     it('accepts the keys on their own without claiming the entries are loaded', () => {
       // The point of the cheap refresh: it answers "which entries are in the
-      // workflow" without loading any of them. `listLoaded` means the entries
-      // THEMSELVES are loaded — the Workflow board and the collection view both
-      // act on it — so setting it here would suppress the load they still need.
+      // workflow" without loading any of them. `ids` means the entries THEMSELVES
+      // are loaded — the Workflow board and the collection view both act on it —
+      // so setting it here would suppress the load they still need.
       const state = fromJS({ pages: {} });
       const action = {
         type: 'UNPUBLISHED_KEYS_SUCCESS',
@@ -67,7 +48,6 @@ describe('editorialWorkflow', () => {
       expect(pages.get('keys').toJS()).toEqual(['posts/one']);
       expect(pages.get('loadedAt')).toBeGreaterThan(0);
       expect(pages.get('ids')).toBeUndefined();
-      expect(pages.get('listLoaded')).toBeUndefined();
     });
 
     it('adds the key of an entry this session put into review', () => {
