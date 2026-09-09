@@ -136,6 +136,11 @@ const stubFetch = (win, routes) => {
       console.warn(
         `No route match for api request. Fetch args: ${JSON.stringify(args)}. Returning 404`,
       );
+      // TEMPORARY (decap-turbo e2e triage). Accumulated on Cypress rather than
+      // on `win`, which is replaced on every page load. Reported by the
+      // afterEach hook in cypress/support/e2e.js; remove both together.
+      Cypress.__unmatchedRoutes = Cypress.__unmatchedRoutes || [];
+      Cypress.__unmatchedRoutes.push(`${(args[1] && args[1].method) || 'GET'} ${args[0]}`);
       const fetchResponse = {
         status: 404,
         headers: new Headers(),

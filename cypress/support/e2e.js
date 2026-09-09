@@ -29,4 +29,46 @@ Cypress.on('uncaught:exception', err => {
   return false; // Prevent Cypress from failing the test
 });
 
+// TEMPORARY (decap-turbo e2e triage). The editorial-workflow specs fail on this
+// branch and not on main, and `cypress run` stdout carries only the assertion
+// message — no browser console, so the "No route match for api request" warning
+// that cy.stubFetch already emits is invisible in CI. This reports it, plus just
+// enough DOM state to tell the two failure shapes apart: an editor that never
+// rendered its toolbar, versus a Workflow board with empty columns.
+// Remove this hook, the `log` task in cypress/plugins/index.js, and the
+// accumulator in cypress/support/commands.js together.
+beforeEach(() => {
+  Cypress.__unmatchedRoutes = [];
+});
+
+afterEach(function reportDiagnosticsOnFailure() {
+  if (!this.currentTest || this.currentTest.state !== 'failed') {
+    return;
+  }
+
+  const unmatched = Cypress.__unmatchedRoutes || [];
+  const win = cy.state('window');
+  const doc = win && win.document;
+  const text = (doc && doc.body && doc.body.innerText) || '';
+
+  const diagnostics = {
+    test: this.currentTest.fullTitle(),
+    href: (win && win.location && win.location.href) || null,
+    // Distinguishes the two shapes: the back link is the editor toolbar, and
+    // the column headings mean the Workflow board rendered at all.
+    hasEditorBackLink: doc
+      ? Array.from(doc.querySelectorAll('a')).some(a => /Writing in/.test(a.textContent))
+      : null,
+    columnHeadings: doc
+      ? Array.from(doc.querySelectorAll('h2')).map(h => h.textContent.trim())
+      : null,
+    entryLinkCount: doc ? doc.querySelectorAll('[class*="column"] a').length : null,
+    visibleLines: text.split('\n').filter(Boolean).slice(0, 30),
+    unmatchedRouteCount: unmatched.length,
+    unmatchedRoutes: unmatched.slice(0, 40),
+  };
+
+  cy.task('log', `[E2E-DIAG] ${JSON.stringify(diagnostics, null, 2)}`, { log: false });
+});
+
 import './commands';
