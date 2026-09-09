@@ -268,7 +268,7 @@ export function loadUnpublishedEntry(collection: Collection, slug: string) {
     const keys = state.editorialWorkflow.getIn(['pages', 'keys']) as List<string> | undefined;
     const loadedAt = (state.editorialWorkflow.getIn(['pages', 'loadedAt']) as number) ?? 0;
     // The key set is only ever fetched once per page load —
-    // loadUnpublishedEntries early-returns while `pages.ids` is set, and
+    // loadUnpublishedEntries early-returns while `pages.listLoaded` is set, and
     // nothing clears it after CONFIG_SUCCESS. So without a freshness window
     // the shortcut below would answer "not under editorial workflow" from a
     // snapshot taken when the session started, which is wrong the moment a
@@ -376,7 +376,11 @@ export function loadUnpublishedEntries(collections: Collections) {
   return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const backend = currentBackend(state.config);
-    const entriesLoaded = get(state.editorialWorkflow.toJS(), 'pages.ids', false);
+    // `pages.listLoaded`, not `pages.ids`. An empty list load leaves `ids` an
+    // empty List, which is truthy, and persisting pushes one slug into it —
+    // both used to read here as "the whole list is already loaded" and suppress
+    // the fetch the Workflow board needs to show a colleague's draft.
+    const entriesLoaded = get(state.editorialWorkflow.toJS(), 'pages.listLoaded', false);
     const entriesLoading = get(state.editorialWorkflow.toJS(), 'pages.isFetching', false);
 
     if (state.config.publish_mode !== EDITORIAL_WORKFLOW || entriesLoaded || entriesLoading) {
@@ -412,7 +416,7 @@ export function persistUnpublishedEntry(collection: Collection, existingUnpublis
     const unpublishedSlugs = selectUnpublishedSlugs(state, collection.get('name'));
     const publishedSlugs = selectPublishedSlugs(state, collection.get('name'));
     const usedSlugs = publishedSlugs.concat(unpublishedSlugs) as List<string>;
-    const entriesLoaded = get(state.editorialWorkflow.toJS(), 'pages.ids', false);
+    const entriesLoaded = get(state.editorialWorkflow.toJS(), 'pages.listLoaded', false);
 
     //load unpublishedEntries
     !entriesLoaded && dispatch(loadUnpublishedEntries(state.collections));

@@ -66,6 +66,12 @@ function unpublishedEntries(state = Map(), action: EditorialWorkflowAction) {
           'pages',
           Map({
             ...action.payload!.pages,
+            // This one call is the only thing that hydrates every open draft,
+            // so it is the only thing entitled to claim the list is loaded.
+            // `ids` cannot say so: persisting pushes a single slug into it,
+            // which would leave every consumer believing a list it never
+            // fetched was complete.
+            listLoaded: true,
             ids: List(action.payload!.entries.map(entry => entry.slug)),
             // Which entries are under editorial workflow, collection-qualified
             // so two collections may hold the same slug. Read by
@@ -84,9 +90,10 @@ function unpublishedEntries(state = Map(), action: EditorialWorkflowAction) {
       });
 
     // The key set on its own, from the one call that lists the open workflow
-    // branches. Deliberately leaves `ids` alone: that flag means "the entries
-    // themselves are loaded", which the Workflow board and the collection view
-    // both act on, and claiming it here would suppress the load they need.
+    // branches. Deliberately leaves `ids` and `listLoaded` alone: this call
+    // hydrates nothing, and the Workflow board and the collection view both
+    // act on `listLoaded`, so claiming it here would suppress the load they
+    // need.
     case UNPUBLISHED_KEYS_SUCCESS:
       return state.withMutations(map => {
         map.setIn(['pages', 'keys'], List(action.payload!.keys));
