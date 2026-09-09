@@ -1,0 +1,18 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+    "noEmit": false,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "outDir": "./dist/esm",
+    "rootDir": "./src"
+  },
+  "include": ["src/**/*"],
+  "exclude": ["**/__tests__/**", "**/*.spec.*", "**/*.test.*"],
+  "references": [
+    {"path": "../decap-cms-lib-util/tsconfig.build.json"},
+    {"path": "../decap-cms-lib-widgets/tsconfig.build.json"},
+    {"path": "../decap-cms-ui-default/tsconfig.build.json"}
+  ]
+}

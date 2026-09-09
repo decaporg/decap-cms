@@ -71,6 +71,7 @@ import type {
   EntryField,
 } from './types/redux';
 import type { EntryValue } from './valueObjects/Entry';
+import type { CmsEventName } from './types';
 import type {
   Implementation as BackendImplementation,
   DisplayURL,
@@ -296,8 +297,6 @@ interface ImplementationInitOptions {
 }
 
 type Implementation = BackendImplementation & {
-  init: (config: CmsConfig, options: ImplementationInitOptions) => Implementation;
-
   startNotesPolling?: (
     collection: string,
     slug: string,
@@ -308,6 +307,10 @@ type Implementation = BackendImplementation & {
   ) => Promise<void>;
   stopNotesPolling?: (collection: string, slug: string) => Promise<void>;
   refreshNotesNow?: (collection: string, slug: string) => Promise<void>;
+};
+
+export type CmsRegistryBackend = {
+  init: (config: CmsConfig, options: ImplementationInitOptions) => Implementation;
 };
 
 function prepareMetaPath(path: string, collection: Collection) {
@@ -367,7 +370,10 @@ export class Backend {
   user?: User | null;
   backupSync: AsyncLock;
 
-  constructor(implementation: Implementation, { backendName, authStore, config }: BackendOptions) {
+  constructor(
+    implementation: CmsRegistryBackend,
+    { backendName, authStore, config }: BackendOptions,
+  ) {
     // We can't reliably run this on exit, so we do cleanup on load.
     this.deleteAnonymousBackup();
     this.config = config;
@@ -1368,7 +1374,7 @@ export class Backend {
     return slug;
   }
 
-  async invokeEventWithEntry(event: string, entry: EntryMap) {
+  async invokeEventWithEntry(event: CmsEventName, entry: EntryMap) {
     const { login, name } = (await this.currentUser()) as User;
     return await invokeEvent({ name: event, data: { entry, author: { login, name } } });
   }
