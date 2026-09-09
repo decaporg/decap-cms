@@ -204,7 +204,16 @@ Decap CMS uses NPM trusted publishers with OIDC for secure, automated package pu
 - Uses OpenID Connect (OIDC) for authentication. No NPM tokens required
 - Each package has a trusted publisher configured on npmjs.com
 - Workflow generates short-lived, cryptographically-signed tokens automatically
-- Publishes all changed packages in the monorepo via Lerna
+- Lerna bumps versions and tags; **`pnpm publish -r` does the publishing**
+
+> [!IMPORTANT]
+> **Never run `lerna publish` (in any form, including `from-git` and `from-package`).**
+>
+> Package manifests declare their dependencies as `catalog:`, a pnpm-workspace-internal protocol that has to be substituted with the real semver ranges at publish time. `pnpm publish` does that substitution; Lerna's publish client does not, and uploads the literal string `catalog:` to the registry. The result installs fine with pnpm inside this workspace and is broken for every consumer using npm, yarn or bun.
+>
+> This is what happened in the 2026-09-08 release: eight packages, including `decap-server@3.11.1`, shipped uninstallable. See [#7979](https://github.com/decaporg/decap-cms/issues/7979).
+>
+> Use `lerna version` to bump and tag. Publishing is CI's job, and `pnpm run publish:packages` is the only manual fallback.
 
 ### Release Process
 
@@ -228,10 +237,19 @@ Decap CMS uses NPM trusted publishers with OIDC for secure, automated package pu
 2. **Automated publishing:**
    - Tags pushed to `main` trigger the publish workflow automatically
    - GitHub Actions runs tests and builds packages
-   - Lerna publishes changed packages to npm using OIDC
+   - `pnpm publish -r` publishes changed packages to npm using OIDC
    - Provenance attestations are generated automatically
+   - The workflow retries the publish step, then verifies every published manifest
 
-3. **Create GitHub release:**
+3. **Verify the release:**
+   ```sh
+   git pull
+   pnpm run verify:published
+   ```
+
+   The publish workflow runs this too, but run it locally as well after any release that needed manual intervention. It fetches every publishable package from the registry at the version in your working tree and fails if a published manifest still contains `catalog:` or `workspace:` specifiers.
+
+4. **Create GitHub release:**
    - Go to [Releases](https://github.com/decaporg/decap-cms/releases)
    - Draft a new release from the tag
    - Add release notes highlighting changes
@@ -244,11 +262,16 @@ If automated publishing fails and you need to publish manually:
 # Authenticate with npm (uses session-based auth with 2FA)
 npm login
 
-# Publish changed packages
+# Publish changed packages -- pnpm, never lerna, see the warning above
 pnpm run publish:packages
+
+# Always confirm what actually reached the registry
+pnpm run verify:published
 ```
 
 Note: Manual publishing still requires 2FA. Use recovery codes if you don't have access to your 2FA device.
+
+`pnpm publish -r` skips versions that are already on the registry, so it is safe to re-run against a partially published release.
 
 ## License
 
