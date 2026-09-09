@@ -81,7 +81,10 @@ function delay(ms) {
 }
 
 async function fetchPublishedManifest(registry, name, version) {
-  const url = `${registry}/${name.replace('/', '%2f')}/${version}`;
+  // Scoped names must have their separator encoded to address a single version,
+  // e.g. `@scope/pkg` -> `@scope%2fpkg`. replaceAll, not replace: escaping only
+  // the first occurrence is the js/incomplete-sanitization pattern.
+  const url = `${registry}/${name.replaceAll('/', '%2f')}/${version}`;
 
   for (let attempt = 1; attempt <= FETCH_ATTEMPTS; attempt++) {
     let response;
