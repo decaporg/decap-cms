@@ -21,5 +21,6 @@ coverage/
 .temp/
 storybook-static/
 .nx
+*.tsbuildinfo
 .claude/settings.local.json
 pnpm-publish-summary.json

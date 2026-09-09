@@ -8,10 +8,9 @@
   "main": "dist/decap-cms-core.js",
   "files": [
     "src/",
-    "dist/",
-    "index.d.ts"
+    "dist/"
   ],
-  "types": "index.d.ts",
+  "types": "dist/esm/index.d.ts",
   "scripts": {
     "develop": "pnpm run build:esm --watch",
     "webpack": "node --max_old_space_size=4096 ../../node_modules/webpack/bin/webpack.js",
@@ -75,6 +74,7 @@
     "sanitize-filename": "catalog:",
     "semaphore": "catalog:",
     "tomlify-j0.4": "catalog:",
+    "unified": "catalog:",
     "url": "catalog:",
     "url-join": "catalog:",
     "what-input": "catalog:",

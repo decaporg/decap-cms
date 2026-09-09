@@ -1,0 +1,14 @@
+{
+  "name": "decap-cms-types-fixture",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Type-checks the published declarations the way an external consumer would. Not published.",
+  "scripts": {
+    "test:types": "tsc -p ."
+  },
+  "devDependencies": {
+    "decap-cms-app": "workspace:*",
+    "@types/react": "catalog:",
+    "typescript": "catalog:"
+  }
+}

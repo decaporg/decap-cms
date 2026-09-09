@@ -1,4 +1,6 @@
-const image = {
+import type { EditorComponentOptions } from 'decap-cms-core';
+
+const image: EditorComponentOptions = {
   label: 'Image',
   id: 'image',
   fromBlock: match =>
@@ -13,7 +15,7 @@ const image = {
   toPreview: ({ alt, image, title }, getAsset, fields) => {
     const imageField = fields?.find(f => f.get('widget') === 'image');
     const src = getAsset(image, imageField);
-    return <img src={src || ''} alt={alt || ''} title={title || ''} />;
+    return <img src={src ? String(src) : ''} alt={alt || ''} title={title || ''} />;
   },
   pattern: /^!\[([^\]]*)\]\((.*?)(\s"([^"]*)")?\)/,
   fields: [
