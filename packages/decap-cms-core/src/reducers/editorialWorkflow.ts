@@ -54,7 +54,24 @@ function unpublishedEntries(state = Map(), action: EditorialWorkflowAction) {
     case UNPUBLISHED_ENTRIES_REQUEST:
       return state.setIn(['pages', 'isFetching'], true);
 
-    case UNPUBLISHED_ENTRIES_SUCCESS:
+    case UNPUBLISHED_ENTRIES_SUCCESS: {
+      const fetchedKeys = List(
+        action.payload!.entries.map(entry => generateContentKey(entry.collection, entry.slug)),
+      );
+      // Union, not replace. A key this session added by persisting an entry
+      // into review is not contradicted by a listing that does not mention it:
+      // the listing may have been requested before that commit landed, or
+      // served stale. Dropping it here while also stamping `loadedAt` turns
+      // "absent" into "confirmed absent", and loadUnpublishedEntry's shortcut
+      // then treats a live draft as published and loads it from the site
+      // branch, where it does not exist — "Failed to load entry: 404 File Not
+      // Found", and an editor showing "Published" for an entry still in
+      // review. Publishing and deleting prune keys explicitly, so a key that
+      // really is gone still goes; one that lingers costs a single per-slug
+      // lookup, which is the direction that fails safely.
+      const previousKeys = (state.getIn(['pages', 'keys']) as List<string>) || List<string>();
+      const keys = fetchedKeys.concat(previousKeys.filter(key => !fetchedKeys.includes(key)));
+
       return state.withMutations(map => {
         action.payload!.entries.forEach(entry =>
           map.setIn(
@@ -71,17 +88,14 @@ function unpublishedEntries(state = Map(), action: EditorialWorkflowAction) {
             // so two collections may hold the same slug. Read by
             // loadUnpublishedEntry, which treats "this key is absent" as proof
             // the entry is not under editorial workflow.
-            keys: List(
-              action.payload!.entries.map(entry =>
-                generateContentKey(entry.collection, entry.slug),
-              ),
-            ),
+            keys,
             // When those keys were last known to match the backend — the proof
             // above is only as good as its age.
             loadedAt: Date.now(),
           }),
         );
       });
+    }
 
     // The key set on its own, from the one call that lists the open workflow
     // branches. Deliberately leaves `ids` alone: that flag means "the entries

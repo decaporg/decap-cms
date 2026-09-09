@@ -32,6 +32,37 @@ describe('editorialWorkflow', () => {
       expect(pages.get('loadedAt')).toBeGreaterThan(0);
     });
 
+    // The e2e editorial-workflow failures: save an entry, then anything that
+    // lists the workflow (the collection view, the board) returned a list
+    // taken before that commit landed. Replacing the keys dropped the one the
+    // persist had just added, and `loadedAt` then certified the absence — so
+    // loadUnpublishedEntry treated a live draft as published and loaded it
+    // from the site branch, giving "404 File Not Found" and an editor showing
+    // "Published" for an entry still in review.
+    it('keeps a key this session added when a listing does not mention it', () => {
+      const state = fromJS({ pages: { keys: ['posts/just-saved'], ids: ['just-saved'] } });
+      const action = {
+        type: 'UNPUBLISHED_ENTRIES_SUCCESS',
+        payload: { pages: {}, entries: [] },
+      };
+
+      const pages = editorialWorkflow(state, action).get('pages');
+
+      expect(pages.get('keys').toJS()).toEqual(['posts/just-saved']);
+    });
+
+    it('does not duplicate a key the listing also reports', () => {
+      const state = fromJS({ pages: { keys: ['posts/one'] } });
+      const action = {
+        type: 'UNPUBLISHED_ENTRIES_SUCCESS',
+        payload: { pages: {}, entries: [{ collection: 'posts', slug: 'one' }] },
+      };
+
+      expect(editorialWorkflow(state, action).getIn(['pages', 'keys']).toJS()).toEqual([
+        'posts/one',
+      ]);
+    });
+
     it('accepts the keys on their own without claiming the entries are loaded', () => {
       // The point of the cheap refresh: it answers "which entries are in the
       // workflow" without loading any of them. `ids` means the entries THEMSELVES
