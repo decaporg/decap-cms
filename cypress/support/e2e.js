@@ -66,6 +66,10 @@ afterEach(function reportDiagnosticsOnFailure() {
     visibleLines: text.split('\n').filter(Boolean).slice(0, 30),
     unmatchedRouteCount: unmatched.length,
     unmatchedRoutes: unmatched.slice(0, 40),
+    // Set by the temporary probe in actions/editorialWorkflow.ts: every call to
+    // loadUnpublishedEntry, with the key it looked for, the key set it looked
+    // in, and whether the absence shortcut fired.
+    workflowDiag: (win && win.__workflowDiag) || null,
   };
 
   cy.task('log', `[E2E-DIAG] ${JSON.stringify(diagnostics, null, 2)}`, { log: false });

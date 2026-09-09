@@ -327,6 +327,23 @@ export function loadUnpublishedEntry(collection: Collection, slug: string) {
       currentKeys?.includes(generateContentKey(collection.get('name') as string, slug)),
     );
 
+    // TEMPORARY (decap-turbo e2e triage). Records the shortcut's inputs so a
+    // failing spec can say whether it fired and on what. Reported by the
+    // afterEach hook in cypress/support/e2e.js; remove both together.
+    if (typeof window !== 'undefined') {
+      const w = window as unknown as { __workflowDiag?: unknown[] };
+      w.__workflowDiag = w.__workflowDiag || [];
+      w.__workflowDiag.push({
+        slug,
+        collection: collection.get('name'),
+        lookedFor: generateContentKey(collection.get('name') as string, slug),
+        keys: currentKeys ? currentKeys.toJS() : null,
+        confirmedAt: confirmedAt ?? null,
+        isKnownUnpublished,
+        willShortcut: Boolean(confirmedAt && currentKeys && !isKnownUnpublished),
+      });
+    }
+
     if (confirmedAt && currentKeys && !isKnownUnpublished) {
       // Exactly what the notUnderEditorialWorkflow branch below does.
       dispatch(unpublishedEntryRedirected(collection, slug));
