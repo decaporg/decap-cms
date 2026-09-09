@@ -320,10 +320,20 @@ export function entryPreviewPath(
 
   try {
     const url = previewUrlFormatter(SENTINEL, collection, slug, entry, slugConfig);
-    if (!url || !url.startsWith(SENTINEL)) {
+    if (!url) {
       return undefined;
     }
-    const path = url.slice(SENTINEL.length);
+    // Compared as parsed origins rather than as a string prefix. The prefix
+    // form is safe only because previewUrlFormatter joins with an unconditional
+    // `/`; without that, `${SENTINEL}.example.com/x` would satisfy startsWith
+    // while naming a different host, and the caller joins whatever comes back
+    // to a real deploy host. Origins do not depend on that distant detail
+    // holding, and CodeQL flags the prefix form for the same reason.
+    const parsed = new URL(url);
+    if (parsed.origin !== new URL(SENTINEL).origin) {
+      return undefined;
+    }
+    const path = `${parsed.pathname}${parsed.search}${parsed.hash}`;
     return path && path !== '/' ? path : undefined;
   } catch {
     // A malformed template must not cost the editor their save notification.

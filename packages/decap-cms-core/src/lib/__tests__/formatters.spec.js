@@ -699,6 +699,19 @@ describe('formatters', () => {
         ),
       ).not.toThrow();
     });
+
+    // previewUrlFormatter joins base and path with an unconditional `/`, so a
+    // template cannot reach the host position — this stays a path.
+    it('keeps a host-looking template in the path, where it belongs', () => {
+      expect(
+        entryPreviewPath(
+          Map({ preview_path: '.example.com/evil' }),
+          'slug',
+          Map({ data: Map({}) }),
+          slugConfig,
+        ),
+      ).toBe('/.example.com/evil');
+    });
   });
 
   describe('summaryFormatter', () => {
