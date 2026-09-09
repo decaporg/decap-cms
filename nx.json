@@ -7,6 +7,10 @@
     "build": {
       "cache": true,
       "dependsOn": ["^build"]
+    },
+    "test:types": {
+      "cache": true,
+      "dependsOn": ["^build:esm"]
     }
   },
   "namedInputs": {

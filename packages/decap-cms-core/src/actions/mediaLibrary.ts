@@ -614,7 +614,7 @@ export async function getMediaDisplayURL(
 ) {
   const displayURLState: DisplayURLState = selectMediaDisplayURL(state, file.id);
 
-  let url: string | null | undefined;
+  let url: string | null | void;
   if (displayURLState.get('url')) {
     // url was already loaded
     url = displayURLState.get('url');

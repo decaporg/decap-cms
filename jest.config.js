@@ -10,7 +10,7 @@ module.exports = {
     'decap-cms-backend-github': '<rootDir>/packages/decap-cms-backend-github/src/index.ts',
     'decap-cms-backend-gitlab': '<rootDir>/packages/decap-cms-backend-gitlab/src/index.ts',
     'decap-cms-lib-widgets': '<rootDir>/packages/decap-cms-lib-widgets/src/index.ts',
-    'decap-cms-widget-object': '<rootDir>/packages/decap-cms-widget-object/src/index.js',
+    'decap-cms-widget-object': '<rootDir>/packages/decap-cms-widget-object/src/index.ts',
     '\\.(css|less)$': '<rootDir>/__mocks__/styleMock.js',
     '^#home-directory$': 'clean-stack/home-directory.js',
     '^clean-stack$': '<rootDir>/__mocks__/cleanStackMock.js',

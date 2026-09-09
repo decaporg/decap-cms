@@ -5,18 +5,19 @@
   "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-core",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
   "module": "dist/esm/index.js",
+  "types": "dist/esm/index.d.ts",
   "main": "dist/decap-cms-core.js",
   "files": [
     "src/",
-    "dist/",
-    "index.d.ts"
+    "dist/"
   ],
-  "types": "index.d.ts",
   "scripts": {
-    "develop": "pnpm run build:esm --watch",
+    "develop": "pnpm run build:babel --watch",
     "webpack": "node --max_old_space_size=4096 ../../node_modules/webpack/bin/webpack.js",
-    "build": "cross-env NODE_ENV=production run-s webpack",
-    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward --extensions \".js,.jsx,.ts,.tsx\""
+    "build": "cross-env NODE_ENV=production webpack",
+    "build:esm": "run-p build:types build:babel",
+    "build:babel": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward --extensions \".js,.jsx,.ts,.tsx\"",
+    "build:types": "tsc"
   },
   "keywords": [
     "cms",
@@ -75,6 +76,7 @@
     "sanitize-filename": "catalog:",
     "semaphore": "catalog:",
     "tomlify-j0.4": "catalog:",
+    "unified": "catalog:",
     "url": "catalog:",
     "url-join": "catalog:",
     "what-input": "catalog:",
@@ -83,7 +85,6 @@
   "peerDependencies": {
     "@emotion/react": "catalog:",
     "@emotion/styled": "catalog:",
-    "decap-cms-editor-component-image": "workspace:*",
     "decap-cms-lib-auth": "workspace:*",
     "decap-cms-lib-util": "workspace:*",
     "decap-cms-lib-widgets": "workspace:*",
@@ -100,6 +101,7 @@
     "@types/history": "catalog:",
     "@types/iarna__toml": "catalog:",
     "@types/redux-mock-store": "catalog:",
+    "@types/semaphore": "catalog:",
     "@types/url-join": "catalog:",
     "jest-mock": "catalog:",
     "redux-mock-store": "catalog:"

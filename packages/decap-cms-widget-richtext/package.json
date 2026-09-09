@@ -6,6 +6,7 @@
   "repository": "https://github.com/decaporg/decap-cms/tree/master/packages/decap-cms-widget-richtext",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
   "module": "dist/esm/index.js",
+  "types": "dist/esm/index.d.ts",
   "main": "dist/decap-cms-widget-richtext.js",
   "license": "MIT",
   "keywords": [
@@ -16,14 +17,17 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "develop": "npm run build:esm -- --watch",
+    "develop": "pnpm run build:babel --watch",
     "build": "cross-env NODE_ENV=production webpack",
-    "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\"  --root-mode upward --copy-files --extensions \".js,.jsx,.ts,.tsx\""
+    "build:esm": "run-p build:types build:babel",
+    "build:babel": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\"  --root-mode upward --copy-files --extensions \".js,.jsx,.ts,.tsx\"",
+    "build:types": "tsc"
   },
   "dependencies": {
     "@platejs/basic-nodes": "^49.0.0",
     "@platejs/link": "^50.2.7",
     "@platejs/list-classic": "^49.1.0",
+    "@types/unist": "catalog:",
     "dompurify": "^3.4.13",
     "mdast-util-definitions": "^1.2.3",
     "mdast-util-to-string": "^2.0.0",

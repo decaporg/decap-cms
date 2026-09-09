@@ -60,6 +60,8 @@ import slateToRemark from './slateRemark';
 
 /**
  * Deserialize a Markdown string to an MDAST.
+ *
+ * @returns {import('unist').Node}
  */
 export function markdownToRemark(markdown, remarkPlugins = [], editorComponents = Map()) {
   const processor = unified()
@@ -197,6 +199,8 @@ export function markdownToHtml(
 /**
  * Deserialize an HTML string to Slate's Raw AST. Currently used for HTML
  * pastes.
+ *
+ * @returns {import('unist').Node}
  */
 export function htmlToSlate(html) {
   const hast = unified().use(htmlToRehype, { fragment: true }).parse(html);

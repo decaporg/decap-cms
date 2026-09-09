@@ -88,6 +88,8 @@ jobs:
           CYPRESS_INSTALL_BINARY: 0
       - name: build demo site
         run: pnpm run build:demo
+      - name: test published typings against a consumer
+        run: pnpm run test:types
       - name: test package integrity
         run: pnpm run test:package-integrity
       - name: upload demo site

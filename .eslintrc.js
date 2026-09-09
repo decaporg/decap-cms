@@ -128,4 +128,5 @@ module.exports = {
       },
     },
   ],
+  ignorePatterns: ['**/dist/**'],
 };
