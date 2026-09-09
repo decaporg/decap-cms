@@ -21,7 +21,6 @@ import {
 
 import type React from 'react';
 
-
 interface FileUploadProps {
   onUpload: (files: File[]) => void;
   isUploading: boolean;

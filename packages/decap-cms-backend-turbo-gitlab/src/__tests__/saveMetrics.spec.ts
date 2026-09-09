@@ -15,9 +15,9 @@ function responseWith(serverTiming?: string) {
 
 describe('parseServerTimingMs', () => {
   it('reads a named metric out of a multi-metric header', () => {
-    expect(parseServerTimingMs('preamble;dur=12, upstream;dur=302, total;dur=316', 'upstream')).toBe(
-      302,
-    );
+    expect(
+      parseServerTimingMs('preamble;dur=12, upstream;dur=302, total;dur=316', 'upstream'),
+    ).toBe(302);
   });
 
   it('tolerates whitespace and float durations', () => {

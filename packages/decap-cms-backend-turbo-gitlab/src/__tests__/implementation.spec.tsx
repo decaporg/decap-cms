@@ -1,3 +1,5 @@
+import { unsentRequest } from 'decap-cms-lib-util';
+
 import DecapTurboGitLabBackend from '../implementation';
 import { recordCmsEvent } from '../telemetry';
 import { recordProxyResponse } from '../saveMetrics';
@@ -104,12 +106,13 @@ describe('turbo gitlab backend supabase session refresh', () => {
     });
     backend.supabaseAccessToken = 'access-123';
 
-    global.fetch = jest.fn().mockResolvedValue({ ok: true, json: () => Promise.resolve({}) } as any);
+    global.fetch = jest
+      .fn()
+      .mockResolvedValue({ ok: true, json: () => Promise.resolve({}) } as any);
 
     // apiRequestFunction expects an Immutable-style ApiRequest — build a real
     // one via unsentRequest.fromURL rather than a hand-rolled fake, so this
     // test exercises the actual header/param shape sent.
-    const { unsentRequest } = require('decap-cms-lib-util');
     const req = unsentRequest.fromURL(
       'https://supabase.example/functions/v1/gl/projects/group%2Fproject/repository/tree',
     );

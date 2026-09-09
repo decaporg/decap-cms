@@ -128,7 +128,10 @@ export default class SupabaseAuthenticationPage extends React.Component {
     // because the CORS preflight (OPTIONS) carries no body — the server needs
     // it there to decide which site's admin_interface_url to check the
     // request's Origin against before allowing the real POST through.
-    const exchangeUrl = `${turboAdminUrl.replace(/\/$/, '')}/auth/exchange?site_id=${encodeURIComponent(siteId)}`;
+    const exchangeUrl = `${turboAdminUrl.replace(
+      /\/$/,
+      '',
+    )}/auth/exchange?site_id=${encodeURIComponent(siteId)}`;
 
     try {
       const response = await fetch(exchangeUrl, {
@@ -151,7 +154,9 @@ export default class SupabaseAuthenticationPage extends React.Component {
 
       this.props.onLogin(credentials);
     } catch {
-      this.setState({ exchangeError: 'Could not reach Turbo to complete login. Please try again.' });
+      this.setState({
+        exchangeError: 'Could not reach Turbo to complete login. Please try again.',
+      });
     }
   };
 

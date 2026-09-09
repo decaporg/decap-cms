@@ -28,7 +28,12 @@ export class S3FileManager {
   private client: S3Client;
   private publicUrlPrefix: string;
 
-  constructor({ edgeBaseUrl, getAccessToken, getActiveSiteId, publicUrlPrefix }: FileManagerOptions) {
+  constructor({
+    edgeBaseUrl,
+    getAccessToken,
+    getActiveSiteId,
+    publicUrlPrefix,
+  }: FileManagerOptions) {
     this.client = new S3Client({ edgeBaseUrl, getAccessToken, getActiveSiteId });
     this.publicUrlPrefix = publicUrlPrefix;
   }

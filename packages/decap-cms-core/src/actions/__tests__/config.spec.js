@@ -1065,9 +1065,7 @@ describe('config', () => {
 
       refilterConfigForPermissions({ collections: { pages: 'none' } })(dispatch, getState);
 
-      expect(dispatch).toHaveBeenCalledWith(
-        configLoaded({ collections: [{ name: 'posts' }] }),
-      );
+      expect(dispatch).toHaveBeenCalledWith(configLoaded({ collections: [{ name: 'posts' }] }));
     });
   });
 

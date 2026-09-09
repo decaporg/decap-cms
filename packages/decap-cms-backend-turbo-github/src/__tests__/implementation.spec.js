@@ -1182,11 +1182,13 @@ describe('turbo backend locale sibling prefetch', () => {
     // The prefetch is not awaited, so a rejection here would otherwise surface
     // as an unhandled rejection rather than as a slower entry open.
     const backend = makeBackend();
-    jest.spyOn(backend, 'syncCollection').mockImplementation(collection =>
-      collection.includes(siblingRegex.toString())
-        ? Promise.reject(new Error('sibling sync failed'))
-        : Promise.resolve({ fresh: true }),
-    );
+    jest
+      .spyOn(backend, 'syncCollection')
+      .mockImplementation(collection =>
+        collection.includes(siblingRegex.toString())
+          ? Promise.reject(new Error('sibling sync failed'))
+          : Promise.resolve({ fresh: true }),
+      );
 
     await expect(
       backend.allEntriesByFolder('content/posts', 'md', 1, listingRegex, undefined, siblingRegex),

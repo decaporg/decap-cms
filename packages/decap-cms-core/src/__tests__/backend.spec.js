@@ -756,8 +756,9 @@ describe('Backend', () => {
       sanitizeSlug.mockReturnValue('some-post-title');
       sanitizeChar.mockReturnValue('-');
 
-      const notFound = () =>
-        Promise.reject(Object.assign(new Error('Not Found'), { status: 404 }));
+      function notFound() {
+        return Promise.reject(Object.assign(new Error('Not Found'), { status: 404 }));
+      }
 
       const implementation = {
         init: jest.fn(() => implementation),
@@ -1501,5 +1502,4 @@ describe('Backend', () => {
       expect(siblingRegex).toBeUndefined();
     });
   });
-
 });

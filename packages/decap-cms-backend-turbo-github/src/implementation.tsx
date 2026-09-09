@@ -82,7 +82,6 @@ const TERMINAL_REFRESH_CODES = new Set([
   'session_expired',
 ]);
 
-
 // Shared control-plane values (supabase_app_id, supabase_anon_key, base_url,
 // api_root) are identical across every site, so a site's config.yml only
 // needs `turbo_site_id`. This is resolved here, in this backend's own code,
@@ -1117,8 +1116,8 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
       typeof committedBranch === 'string' && committedBranch
         ? committedBranch
         : options.useWorkflow
-          ? branchFromContentKey(workflowContentKey(this, options, entry))
-          : this.branch;
+        ? branchFromContentKey(workflowContentKey(this, options, entry))
+        : this.branch;
 
     if (result && entry.dataFiles && entry.dataFiles.length > 0) {
       // Deliberately does not write the cache. The commit moves the branch
@@ -1478,9 +1477,10 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
     // the authoritative read below would have served it. Handling it inline
     // also keeps it from ever becoming an unhandled rejection on the branch
     // that discards it.
-    const speculativeRead = this.supabase
-      .fetchEntries(collection, searchTerm)
-      .then(rows => rows, () => null);
+    const speculativeRead = this.supabase.fetchEntries(collection, searchTerm).then(
+      rows => rows,
+      () => null,
+    );
 
     const sync = await syncPromise;
 

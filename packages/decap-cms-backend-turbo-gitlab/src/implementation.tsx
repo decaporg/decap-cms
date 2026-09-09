@@ -81,7 +81,6 @@ const TERMINAL_REFRESH_CODES = new Set([
   'session_expired',
 ]);
 
-
 // See decap-cms-backend-turbo-github's implementation.tsx for the GitHub-flavored
 // twin of this — same rationale: shared control-plane values are identical
 // across every site, so a site's config.yml only needs `turbo_site_id`.
@@ -114,7 +113,9 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
 
     if (!response.ok) {
       const body = (await response.json().catch(() => ({}))) as { error?: string };
-      throw new Error(`Failed to load turbo-gitlab site defaults: ${body.error || response.status}`);
+      throw new Error(
+        `Failed to load turbo-gitlab site defaults: ${body.error || response.status}`,
+      );
     }
 
     const defaults = await response.json();
@@ -458,7 +459,9 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
     });
 
     if (!isCollab) {
-      throw new Error('The configured GitLab access token does not have write access to this project.');
+      throw new Error(
+        'The configured GitLab access token does not have write access to this project.',
+      );
     }
 
     if (!this.isBranchConfigured) {
@@ -480,7 +483,13 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
     // backend-neutral by design — any backend could set it) and re-filters the
     // loaded config against it.
 
-    recordCmsEvent(this.baseUrl!, this.supabaseAnonKey, this.supabaseAccessToken, 'cms_session_started', this.siteId);
+    recordCmsEvent(
+      this.baseUrl!,
+      this.supabaseAnonKey,
+      this.supabaseAccessToken,
+      'cms_session_started',
+      this.siteId,
+    );
 
     const displayIdentity = this.sessionIdentity();
 
@@ -812,7 +821,9 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
     };
   }
 
-  async currentUser({ token }: { token: string } = { token: this.token || '' }): Promise<GitLabUser> {
+  async currentUser(
+    { token }: { token: string } = { token: this.token || '' },
+  ): Promise<GitLabUser> {
     if (!this._currentUserPromise) {
       this._currentUserPromise = (async () => {
         await this.refreshSessionIfNeeded();

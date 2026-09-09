@@ -33,10 +33,38 @@ describe('S3FileManager', () => {
     const manager = new S3FileManager(mockConfig);
 
     const files = [
-      { Key: 'image.jpg', Size: 1024, LastModified: '2024-01-01T00:00:00Z', ETag: 'a', IsDirectory: false, ObjectName: 'image.jpg' },
-      { Key: 'document.pdf', Size: 2048, LastModified: '2024-01-01T00:00:00Z', ETag: 'b', IsDirectory: false, ObjectName: 'document.pdf' },
-      { Key: 'video.png', Size: 512, LastModified: '2024-01-01T00:00:00Z', ETag: 'c', IsDirectory: false, ObjectName: 'video.png' },
-      { Key: 'folder/', Size: 0, LastModified: '', ETag: '', IsDirectory: true, ObjectName: 'folder' },
+      {
+        Key: 'image.jpg',
+        Size: 1024,
+        LastModified: '2024-01-01T00:00:00Z',
+        ETag: 'a',
+        IsDirectory: false,
+        ObjectName: 'image.jpg',
+      },
+      {
+        Key: 'document.pdf',
+        Size: 2048,
+        LastModified: '2024-01-01T00:00:00Z',
+        ETag: 'b',
+        IsDirectory: false,
+        ObjectName: 'document.pdf',
+      },
+      {
+        Key: 'video.png',
+        Size: 512,
+        LastModified: '2024-01-01T00:00:00Z',
+        ETag: 'c',
+        IsDirectory: false,
+        ObjectName: 'video.png',
+      },
+      {
+        Key: 'folder/',
+        Size: 0,
+        LastModified: '',
+        ETag: '',
+        IsDirectory: true,
+        ObjectName: 'folder',
+      },
     ];
 
     const filtered = manager.filterImageFiles(files);

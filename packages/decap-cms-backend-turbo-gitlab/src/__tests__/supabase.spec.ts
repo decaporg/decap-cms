@@ -63,9 +63,6 @@ describe('SupabaseClient', () => {
     });
   });
 
-
-
-
   describe('buildScopedQuery', () => {
     it('filters by collections set membership, not a collection column', () => {
       const query = client.buildScopedQuery('posts:md:1:all');
@@ -133,5 +130,4 @@ describe('SupabaseClient', () => {
       expect(result).toEqual({ file: { id: 'id-1' }, data: 'hello world' });
     });
   });
-
 });
