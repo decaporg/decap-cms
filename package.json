@@ -36,7 +36,8 @@
     "format:prettier": "prettier \"{{packages,scripts}/**/,}*.{js,jsx,ts,tsx,css}\"",
     "prepare": "husky install",
     "publish:packages": "pnpm publish -r --no-git-checks --report-summary",
-    "test:package-integrity": "node scripts/test-package-integrity.mjs"
+    "test:package-integrity": "node scripts/test-package-integrity.mjs",
+    "verify:published": "node scripts/verify-published-packages.mjs"
   },
   "browserslist": [
     "last 2 Chrome versions",
