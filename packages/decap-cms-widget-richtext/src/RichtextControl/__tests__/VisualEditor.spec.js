@@ -6,8 +6,18 @@ import { markdownToSlate, slateToMarkdown } from '../../serializers';
 import { mergeMediaConfig } from '../mergeMediaConfig';
 import ListPlugin from '../plugins/ListPlugin';
 import ShortcodePlugin from '../plugins/ShortcodePlugin';
+import filterInlineEditorComponents from '../../filterInlineEditorComponents';
 
 describe('VisualEditor', () => {
+  it('should exclude inline editor components', () => {
+    const editorComponents = Map({
+      block: { id: 'block' },
+      inline: { id: 'inline', type: 'inline' },
+    });
+
+    expect(filterInlineEditorComponents(editorComponents).keySeq().toArray()).toEqual(['block']);
+  });
+
   it('should preserve block images inside list items', () => {
     const markdown = `1. First step.
 2. Last step.
