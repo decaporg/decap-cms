@@ -234,12 +234,15 @@ Decap CMS uses NPM trusted publishers with OIDC for secure, automated package pu
   # - Push to upstream
   ```
 
-2. **Automated publishing:**
-   - Tags pushed to `main` trigger the publish workflow automatically
+2. **Publish:**
+   - Run the **Publish Packages** workflow manually from the Actions tab, against the `chore(release): publish` commit
    - GitHub Actions runs tests and builds packages
    - `pnpm publish -r` publishes changed packages to npm using OIDC
    - Provenance attestations are generated automatically
    - The workflow retries the publish step, then verifies every published manifest
+
+   > [!NOTE]
+   > The workflow also has a tag trigger, but **do not rely on it for a release**. GitHub creates no workflow run at all when a single push carries many tags, and a release pushes one tag per package. Use the manual trigger. `pnpm publish -r` skips versions already on the registry, so re-running it against a partially published release is safe.
 
 3. **Verify the release:**
    ```sh
@@ -248,6 +251,8 @@ Decap CMS uses NPM trusted publishers with OIDC for secure, automated package pu
    ```
 
    The publish workflow runs this too, but run it locally as well after any release that needed manual intervention. It fetches every publishable package from the registry at the version in your working tree and fails if a published manifest still contains `catalog:` or `workspace:` specifiers.
+
+   npm accepts a publish before the version becomes readable, so the check allows up to 10 minutes for absent versions to appear before failing. Unresolved specifiers fail immediately -- that is a property of the published manifest and will not change on its own.
 
 4. **Create GitHub release:**
    - Go to [Releases](https://github.com/decaporg/decap-cms/releases)

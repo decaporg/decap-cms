@@ -28,6 +28,12 @@ const DEPENDENCY_FIELDS = [
 const PUBLISH_PROTOCOL = /^(catalog|workspace):/;
 const FETCH_ATTEMPTS = 3;
 const FETCH_RETRY_DELAY_MS = 2000;
+// npm accepts a publish before the version is readable, and the lag is per
+// package: in the 3.x.2 release one package took ~4 minutes to appear. Without
+// a settle window this gate reports a green publish as a failed release, and a
+// gate that cries wolf gets ignored.
+const PROPAGATION_SETTLE_MS = 10 * 60 * 1000;
+const PROPAGATION_POLL_MS = 15000;
 
 function log(msg) {
   console.log(`[verify-published-packages] ${msg}`);
@@ -131,6 +137,54 @@ function findPublishProtocolDependencies(manifest) {
   return dependenciesWithPublishProtocols;
 }
 
+async function checkPackage(registry, name, version) {
+  let manifest;
+  try {
+    manifest = await fetchPublishedManifest(registry, name, version);
+  } catch (e) {
+    return { status: 'broken', issues: [e.message] };
+  }
+
+  if (!manifest) {
+    return { status: 'missing', issues: [] };
+  }
+
+  const issues = findPublishProtocolDependencies(manifest);
+  return issues.length > 0 ? { status: 'broken', issues } : { status: 'ok', issues: [] };
+}
+
+/**
+ * Re-check packages the registry has not caught up on yet, until they appear or
+ * the settle window expires. Only absent versions are retried: an unresolved
+ * specifier is a fact about the published manifest and will never fix itself.
+ */
+async function waitForPropagation(registry, pending) {
+  const deadline = Date.now() + PROPAGATION_SETTLE_MS;
+  let remaining = pending;
+  const broken = [];
+
+  while (remaining.length > 0 && Date.now() < deadline) {
+    const waitSeconds = Math.round(PROPAGATION_POLL_MS / 1000);
+    log(`  ${remaining.length} not visible yet, re-checking in ${waitSeconds}s...`);
+    await delay(PROPAGATION_POLL_MS);
+
+    const stillMissing = [];
+    for (const pkg of remaining) {
+      const { status, issues } = await checkPackage(registry, pkg.name, pkg.version);
+      if (status === 'ok') {
+        log(`  ${pkg.name}@${pkg.version} OK (appeared after propagation)`);
+      } else if (status === 'broken') {
+        broken.push({ ...pkg, issues });
+      } else {
+        stillMissing.push(pkg);
+      }
+    }
+    remaining = stillMissing;
+  }
+
+  return { missing: remaining, broken };
+}
+
 async function main() {
   const { registry, allowMissing } = parseArgs(process.argv.slice(2));
   const packages = getPublishablePackages();
@@ -138,35 +192,32 @@ async function main() {
   log(`Verifying ${packages.length} publishable packages against ${registry}`);
 
   const broken = [];
-  const missing = [];
+  let missing = [];
 
   for (const { name, version } of packages) {
-    let manifest;
-    try {
-      manifest = await fetchPublishedManifest(registry, name, version);
-    } catch (e) {
-      error(e.message);
-      broken.push({ name, version, issues: [e.message] });
-      continue;
-    }
+    const { status, issues } = await checkPackage(registry, name, version);
 
-    if (!manifest) {
-      missing.push({ name, version });
-      log(`  ${name}@${version} is not on the registry`);
-      continue;
-    }
-
-    const issues = findPublishProtocolDependencies(manifest);
-    if (issues.length > 0) {
+    if (status === 'broken') {
       broken.push({ name, version, issues });
       error(`${name}@${version} published with unresolved pnpm protocols:`);
       for (const issue of issues) {
         error(`  ${issue}`);
       }
-      continue;
+    } else if (status === 'missing') {
+      missing.push({ name, version });
+      log(`  ${name}@${version} is not on the registry yet`);
+    } else {
+      log(`  ${name}@${version} OK`);
     }
+  }
 
-    log(`  ${name}@${version} OK`);
+  // Absent versions may simply not have propagated yet, so give the registry
+  // time to catch up before calling the release broken.
+  if (missing.length > 0 && !allowMissing) {
+    log(`\nWaiting up to ${PROPAGATION_SETTLE_MS / 60000} minutes for the registry to catch up`);
+    const settled = await waitForPropagation(registry, missing);
+    missing = settled.missing;
+    broken.push(...settled.broken);
   }
 
   log('\n=== Summary ===');

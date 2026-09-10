@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.4.2](https://github.com/decaporg/decap-cms/compare/decap-cms-editor-component-image@3.4.1...decap-cms-editor-component-image@3.4.2) (2026-09-10)
+
+**Note:** Version bump only for package decap-cms-editor-component-image
+
 ## [3.4.1](https://github.com/decaporg/decap-cms/compare/decap-cms-editor-component-image@3.4.0...decap-cms-editor-component-image@3.4.1) (2026-09-08)
 
 **Note:** Version bump only for package decap-cms-editor-component-image
