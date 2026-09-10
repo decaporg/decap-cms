@@ -4,6 +4,12 @@ on:
   push:
     tags:
       - 'decap-*@*'
+  # GitHub creates no workflow run at all when a push carries many tags at once,
+  # and a release pushes one tag per package (41 in 3.x.2). The tag trigger above
+  # therefore does not fire for a normal release, so publishing needs a manual
+  # entry point. Run it against the release commit; `pnpm publish -r` skips
+  # versions already on the registry, so it is safe to re-run.
+  workflow_dispatch:
 
 permissions:
   contents: read
