@@ -17,7 +17,7 @@ const NoEntriesMessage = styled(PaginationMessage)`
   margin-top: 16px;
 `;
 
-function Entries({
+export function Entries({
   collections,
   entries,
   isFetching,
@@ -43,8 +43,13 @@ function Entries({
     return <Loader active>{loadingMessages}</Loader>;
   }
 
+  const unpublishedEntries = showUnpublishedEntries
+    ? getUnpublishedEntries?.(collections.get('name'))
+    : [];
   const hasEntries =
-    showPublishedEntries && ((entries && entries.size > 0) || cursor?.actions?.has('append_next'));
+    (showPublishedEntries &&
+      ((entries && entries.size > 0) || cursor?.actions?.has('append_next'))) ||
+    unpublishedEntries?.length > 0;
   if (hasEntries || !showPublishedEntries) {
     return (
       <>

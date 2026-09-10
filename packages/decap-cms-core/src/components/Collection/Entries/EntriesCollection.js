@@ -283,6 +283,15 @@ function mapStateToProps(state, ownProps) {
         }
       });
 
+      if (collection.has('nested')) {
+        return filterNestedEntries(
+          filterTerm || '',
+          collection.get('folder'),
+          unpublishedEntries,
+          collection.get('nested').get('subfolders') !== false,
+        );
+      }
+
       return unpublishedEntries;
     },
   };
