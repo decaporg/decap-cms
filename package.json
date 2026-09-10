@@ -35,7 +35,7 @@
     "format": "pnpm run lint:js -- --fix --quiet && pnpm run format:prettier -- --write",
     "format:prettier": "prettier \"{{packages,scripts}/**/,}*.{js,jsx,ts,tsx,css}\"",
     "prepare": "husky install",
-    "publish:packages": "pnpm publish -r --no-git-checks --report-summary",
+    "publish:packages": "node scripts/publish-packages.mjs",
     "test:package-integrity": "node scripts/test-package-integrity.mjs",
     "verify:published": "node scripts/verify-published-packages.mjs"
   },
