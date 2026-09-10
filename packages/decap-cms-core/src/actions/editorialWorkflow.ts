@@ -10,7 +10,7 @@ import {
   selectUnpublishedEntry,
 } from '../reducers';
 import { selectEditingDraft } from '../reducers/entries';
-import { EDITORIAL_WORKFLOW, status } from '../constants/publishModes';
+import { status, usesUnpublishedEntries } from '../constants/publishModes';
 import {
   loadEntry,
   entryDeleted,
@@ -295,7 +295,7 @@ export function loadUnpublishedEntries(collections: Collections) {
     const backend = currentBackend(state.config);
     const entriesLoaded = get(state.editorialWorkflow.toJS(), 'pages.ids', false);
 
-    if (state.config.publish_mode !== EDITORIAL_WORKFLOW || entriesLoaded) {
+    if (!usesUnpublishedEntries(state.config.publish_mode) || entriesLoaded) {
       return;
     }
 

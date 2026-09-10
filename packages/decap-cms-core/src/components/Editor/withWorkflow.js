@@ -1,14 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { EDITORIAL_WORKFLOW } from '../../constants/publishModes';
+import { usesUnpublishedEntries } from '../../constants/publishModes';
 import { selectUnpublishedEntry } from '../../reducers';
 import { selectAllowDeletion } from '../../reducers/collections';
 import { loadUnpublishedEntry, persistUnpublishedEntry } from '../../actions/editorialWorkflow';
 
 function mapStateToProps(state, ownProps) {
   const { collections } = state;
-  const isEditorialWorkflow = state.config.publish_mode === EDITORIAL_WORKFLOW;
+  const isEditorialWorkflow = usesUnpublishedEntries(state.config.publish_mode);
   const collection = collections.get(ownProps.match.params.name);
   const returnObj = {
     isEditorialWorkflow,

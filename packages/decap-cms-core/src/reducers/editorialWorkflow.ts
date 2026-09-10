@@ -1,7 +1,7 @@
 import { Map, List, fromJS } from 'immutable';
 import startsWith from 'lodash/startsWith';
 
-import { EDITORIAL_WORKFLOW } from '../constants/publishModes';
+import { usesUnpublishedEntries } from '../constants/publishModes';
 import {
   UNPUBLISHED_ENTRY_REQUEST,
   UNPUBLISHED_ENTRY_REDIRECT,
@@ -27,7 +27,7 @@ function unpublishedEntries(state = Map(), action: EditorialWorkflowAction) {
   switch (action.type) {
     case CONFIG_SUCCESS: {
       const publishMode = action.payload && action.payload.publish_mode;
-      if (publishMode === EDITORIAL_WORKFLOW) {
+      if (usesUnpublishedEntries(publishMode)) {
         //  Editorial workflow state is explicitly initiated after the config.
         return Map({ entities: Map(), pages: Map() });
       }

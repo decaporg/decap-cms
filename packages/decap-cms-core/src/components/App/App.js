@@ -15,7 +15,7 @@ import { openMediaLibrary } from '../../actions/mediaLibrary';
 import MediaLibrary from '../MediaLibrary/MediaLibrary';
 import { Notifications } from '../UI';
 import { history } from '../../routing/history';
-import { SIMPLE, EDITORIAL_WORKFLOW } from '../../constants/publishModes';
+import { SIMPLE, SIMPLE_DRAFT, EDITORIAL_WORKFLOW } from '../../constants/publishModes';
 import Collection from '../Collection/Collection';
 import Workflow from '../Workflow/Workflow';
 import Editor from '../Editor/Editor';
@@ -77,7 +77,7 @@ class App extends React.Component {
     logoutUser: PropTypes.func.isRequired,
     user: PropTypes.object,
     isFetching: PropTypes.bool.isRequired,
-    publishMode: PropTypes.oneOf([SIMPLE, EDITORIAL_WORKFLOW]),
+    publishMode: PropTypes.oneOf([SIMPLE, SIMPLE_DRAFT, EDITORIAL_WORKFLOW]),
     siteId: PropTypes.string,
     useMediaLibrary: PropTypes.bool,
     openMediaLibrary: PropTypes.func.isRequired,

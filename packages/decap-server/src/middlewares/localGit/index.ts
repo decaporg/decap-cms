@@ -189,7 +189,7 @@ export function localGitMiddleware({ repoPath, logger }: GitOptions) {
       if (body.action === 'info') {
         res.json({
           repo: path.basename(repoPath),
-          publish_modes: ['simple', 'editorial_workflow'],
+          publish_modes: ['simple', 'simple_draft', 'editorial_workflow'],
           type: 'local_git',
         });
         return;

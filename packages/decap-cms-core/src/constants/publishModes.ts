@@ -2,7 +2,12 @@ import { Map, OrderedMap } from 'immutable';
 
 // Create/edit workflow modes
 export const SIMPLE = 'simple';
+export const SIMPLE_DRAFT = 'simple_draft';
 export const EDITORIAL_WORKFLOW = 'editorial_workflow';
+
+export function usesUnpublishedEntries(publishMode?: string) {
+  return publishMode === SIMPLE_DRAFT || publishMode === EDITORIAL_WORKFLOW;
+}
 
 export const Statues = {
   DRAFT: 'draft',

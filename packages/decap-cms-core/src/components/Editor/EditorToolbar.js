@@ -204,6 +204,11 @@ const StatusButton = styled(DropdownButton)`
   color: ${colorsRaw.teal};
 `;
 
+const StaticStatusButton = styled(ToolbarButton)`
+  background-color: ${colorsRaw.tealLight};
+  color: ${colorsRaw.teal};
+`;
+
 const PreviewButtonContainer = styled.div`
   margin-right: 12px;
   color: ${colorsRaw.blue};
@@ -286,6 +291,7 @@ export class EditorToolbar extends React.Component {
     displayUrl: PropTypes.string,
     collection: ImmutablePropTypes.map.isRequired,
     hasWorkflow: PropTypes.bool,
+    simpleDraftMode: PropTypes.bool,
     useOpenAuthoring: PropTypes.bool,
     hasUnpublishedChanges: PropTypes.bool,
     isNewEntry: PropTypes.bool,
@@ -401,7 +407,14 @@ export class EditorToolbar extends React.Component {
   };
 
   renderWorkflowStatusControls = () => {
-    const { isUpdatingStatus, onChangeStatus, currentStatus, t, useOpenAuthoring } = this.props;
+    const {
+      isUpdatingStatus,
+      onChangeStatus,
+      currentStatus,
+      t,
+      useOpenAuthoring,
+      simpleDraftMode,
+    } = this.props;
 
     const statusToTranslation = {
       [status.get('DRAFT')]: t('editor.editorToolbar.draft'),
@@ -412,6 +425,10 @@ export class EditorToolbar extends React.Component {
     const buttonText = isUpdatingStatus
       ? t('editor.editorToolbar.updating')
       : t('editor.editorToolbar.status', { status: statusToTranslation[currentStatus] });
+
+    if (simpleDraftMode) {
+      return <StaticStatusButton>{buttonText}</StaticStatusButton>;
+    }
 
     return (
       <>
