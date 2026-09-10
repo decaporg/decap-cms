@@ -8,9 +8,7 @@ on:
     inputs:
       dist_tag:
         description: >
-          npm dist-tag to publish under. `latest` is what `npm install <pkg>`
-          resolves to, so a prerelease must go out as `beta` or it becomes the
-          default install for everyone.
+          npm dist-tag to publish under. `latest` is what `npm install <pkg>` resolves to, so a prerelease must go out as `beta` or it becomes the default install for everyone.
         type: choice
         default: latest
         options:
@@ -87,38 +85,21 @@ jobs:
           pnpm exec lerna ls --json || true
           echo "::endgroup::"
 
+      # Skips versions already on the registry, isolates a failure to its own
+      # package instead of stranding the rest, retries the intermittent OIDC
+      # exchange, and names the packages that need a manual first publish.
+      # Re-running against a partially published release is safe.
+      # No NODE_AUTH_TOKEN needed - uses OIDC automatically via trusted publishers
       - name: Publish to npm
-        # The OIDC token exchange fails intermittently (ERR_PNPM_AUTH_TOKEN_EXCHANGE),
-        # which used to leave the release half-published until a maintainer noticed
-        # and re-ran the workflow by hand. `pnpm publish -r` skips versions that are
-        # already on the registry, so retrying is safe and resumes where it stopped.
-        # No NODE_AUTH_TOKEN needed - uses OIDC automatically via trusted publishers
-        #
-        # Invoked directly rather than through `pnpm run publish:packages --`.
-        # `pnpm run` injects a literal `--` ahead of forwarded arguments, so they
-        # arrive as positionals and are silently ignored: `pnpm run publish:packages
-        # -- --tag beta --dry-run` publishes for real, to `latest`. That is why
-        # `--tag` cannot be passed through the script, and it means the
-        # `--provenance` this step used to forward was never taking effect.
-        env:
-          DIST_TAG: ${{ inputs.dist_tag || 'latest' }}
-        run: |
-          echo "Publishing under dist-tag: $DIST_TAG"
-          for attempt in 1 2 3; do
-            echo "::group::Publish attempt $attempt"
-            if pnpm publish -r --no-git-checks --report-summary --provenance --tag "$DIST_TAG"; then
-              echo "::endgroup::"
-              exit 0
-            fi
-            echo "::endgroup::"
-            echo "Publish attempt $attempt failed, retrying in 30s..."
-            sleep 30
-          done
-          echo "::error::pnpm publish failed after 3 attempts"
-          exit 1
+        run: node scripts/publish-packages.mjs --provenance --tag=${{ inputs.dist_tag || 'latest' }}
 
       # Must run after publishing: a pre-publish check only sees what the correct
       # publish client produces, so it cannot catch a release uploaded by a client
       # that does not understand `catalog:`. See issue #7979.
+      #
+      # `always()`: a failed publish is exactly when the true registry state is
+      # least obvious. The 3.17.0-beta.0 release reported failure having shipped
+      # 16 of 44 packages, and this step being skipped meant nobody could tell.
       - name: Verify published manifests
-        run: pnpm run verify:published
+        if: always()
+        run: node scripts/verify-published-packages.mjs

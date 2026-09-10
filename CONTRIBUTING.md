@@ -238,32 +238,19 @@ Decap CMS uses NPM trusted publishers with OIDC for secure, automated package pu
    - Run the **Publish Packages** workflow manually from the Actions tab, against the `chore(release): publish` commit
    - Leave **dist-tag** on `latest` for a normal release; set it to `beta` for a prerelease
    - GitHub Actions runs tests and builds packages
-   - `pnpm publish -r` publishes changed packages to npm using OIDC
+   - `scripts/publish-packages.mjs` publishes to npm using OIDC, skipping versions already on the registry
    - Provenance attestations are generated automatically
-   - The workflow retries the publish step, then verifies every published manifest
+   - Every published manifest is verified afterwards, whether or not the publish succeeded
 
    > [!NOTE]
-   > The workflow also has a tag trigger, but **do not rely on it for a release**. GitHub creates no workflow run at all when a single push carries many tags, and a release pushes one tag per package. Use the manual trigger. `pnpm publish -r` skips versions already on the registry, so re-running it against a partially published release is safe.
+   > The workflow also has a tag trigger, but **do not rely on it for a release**. GitHub creates no workflow run at all when a single push carries many tags, and a release pushes one tag per package. Use the manual trigger.
+
+   > [!NOTE]
+   > Re-running the workflow against a partially published release is safe and is the intended way to resume one. The publish script asks the registry what already exists and never re-uploads it, so a second run picks up exactly what is left.
 
    > [!WARNING]
-   > Never pass publish flags through `pnpm run`. `pnpm run <script> -- --flag` injects a literal `--`, so the flags arrive as positional arguments and are silently dropped — `pnpm run publish:packages -- --tag beta --dry-run` ignores both and publishes for real, to `latest`. Invoke `pnpm publish` directly, which is what the workflow does.
+   > Never pass publish flags through `pnpm run`. `pnpm run <script> -- --flag` injects a literal `--`, so the flags arrive as positional arguments and are dropped without a word: `pnpm run publish:packages -- --tag beta --dry-run` ignores both and publishes for real, to `latest`. Invoke the script or `pnpm publish` directly.
 
-### Prerelease (beta) Releases
-
-A prerelease must never land on the `latest` dist-tag: npm does not infer a tag from the version, so `3.20.0-beta.0` published without `--tag` becomes what `npm install decap-cms` resolves to.
-
-```sh
-# From a release/* branch -- lerna.json's allowBranch permits main and release/*
-pnpm exec lerna version --conventional-prerelease --preid beta
-```
-
-Then run **Publish Packages** against the resulting `chore(release): publish` commit with **dist-tag** set to `beta`. Afterwards confirm both tags moved as intended:
-
-```sh
-npm view decap-cms dist-tags   # latest must be unchanged; beta on the new version
-```
-
-Repeating `lerna version --conventional-prerelease --preid beta` bumps `-beta.0` to `-beta.1`. The manual fallback is `pnpm run publish:packages:beta`.
 
 3. **Verify the release:**
    ```sh
@@ -279,6 +266,34 @@ Repeating `lerna version --conventional-prerelease --preid beta` bumps `-beta.0`
    - Go to [Releases](https://github.com/decaporg/decap-cms/releases)
    - Draft a new release from the tag
    - Add release notes highlighting changes
+
+### Prerelease (beta) Releases
+
+A prerelease must never land on the `latest` dist-tag. npm does not infer a tag from the version, so `3.20.0-beta.0` published without `--tag` becomes what `npm install decap-cms` resolves to.
+
+```sh
+# From a release/* branch -- lerna.json's allowBranch permits main and release/*
+pnpm exec lerna version --conventional-prerelease --preid beta
+```
+
+Then run **Publish Packages** against the resulting `chore(release): publish` commit with **dist-tag** set to `beta`, and confirm both tags afterwards:
+
+```sh
+npm view decap-cms dist-tags   # latest unchanged; beta on the new version
+```
+
+Repeating `lerna version --conventional-prerelease --preid beta` bumps `-beta.0` to `-beta.1`. Note that a prerelease is all-or-nothing: every package is versioned together and the beta manifests pin each other at exact beta versions, so consumers have to take the whole set from `beta`.
+
+### Publishing a Brand-New Package
+
+npm configures trusted publishing per existing package, so there is nothing for CI to exchange an OIDC token against until a package's first version exists. CI cannot create a package. Publish the first version from a maintainer machine, then configure trusted publishing for it on npmjs.com:
+
+```sh
+npm login
+pnpm publish --filter <package-name> --no-git-checks --tag beta --access public
+```
+
+Use `pnpm`, never `npm publish`, which does not understand `catalog:` and would ship the specifier literally. The publish script detects this case and prints the exact command for the packages that need it.
 
 ### Manual Publishing (Emergency Only)
 
