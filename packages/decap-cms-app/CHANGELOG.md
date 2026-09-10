@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.17.0-beta.0](https://github.com/decaporg/decap-cms/compare/decap-cms-app@3.16.2...decap-cms-app@3.17.0-beta.0) (2026-09-10)
+
+### Bug Fixes
+
+- make pnpm run build and lint work under corepack-managed pnpm ([2792b04](https://github.com/decaporg/decap-cms/commit/2792b04c9ff9c80b780850fbb3b0b31e3659bb68))
+
+### Features
+
+- add turbo gitlab backend, rename turbo-github ([ea09b39](https://github.com/decaporg/decap-cms/commit/ea09b3995721227d0eb57c329ad2616d3defd439))
+- **deap-turbo:** create decap-turbo backend - wip ([17f228a](https://github.com/decaporg/decap-cms/commit/17f228ad5e9ef0281a4c8db2c2faff97cc6f563f))
+- **proxy:** wip - first draft / caching allEntriesByFolder ([56ca436](https://github.com/decaporg/decap-cms/commit/56ca436725668a997ba4ee24122d1e10bbb2ed3c))
+
 ## [3.16.2](https://github.com/decaporg/decap-cms/compare/decap-cms-app@3.16.1...decap-cms-app@3.16.2) (2026-09-10)
 
 **Note:** Version bump only for package decap-cms-app

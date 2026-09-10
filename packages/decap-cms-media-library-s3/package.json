@@ -1,7 +1,7 @@
 {
   "name": "decap-cms-media-library-s3",
   "description": "S3-compatible object storage integration for Decap CMS (AWS S3, Cloudflare R2, and other S3-compatible providers)",
-  "version": "0.1.0",
+  "version": "0.2.0-beta.0",
   "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-media-library-s3",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
   "module": "dist/esm/index.js",
@@ -29,9 +29,9 @@
     "test": "jest"
   },
   "peerDependencies": {
+    "decap-cms-lib-util": "workspace:*",
     "react": "catalog:",
-    "react-dom": "catalog:",
-    "decap-cms-lib-util": "workspace:*"
+    "react-dom": "catalog:"
   },
   "dependencies": {
     "@emotion/react": "catalog:",
