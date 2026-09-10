@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.19.0](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.18.1...decap-cms-core@3.19.0) (2026-09-10)
+
+### Features
+
+- **widget-markdown:** support inline custom editor components ([#7958](https://github.com/decaporg/decap-cms/issues/7958)) ([e857f7d](https://github.com/decaporg/decap-cms/commit/e857f7dac60872a499b16c36ad38adce7489c383)), closes [#7951](https://github.com/decaporg/decap-cms/issues/7951) [#7936](https://github.com/decaporg/decap-cms/issues/7936)
+
 ## [3.18.1](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.18.0...decap-cms-core@3.18.1) (2026-09-08)
 
 ### Bug Fixes

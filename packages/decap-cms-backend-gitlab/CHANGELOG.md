@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.6.3](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-gitlab@3.6.2...decap-cms-backend-gitlab@3.6.3) (2026-09-10)
+
+**Note:** Version bump only for package decap-cms-backend-gitlab
+
 ## [3.6.2](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-gitlab@3.6.1...decap-cms-backend-gitlab@3.6.2) (2026-09-08)
 
 ### Bug Fixes
