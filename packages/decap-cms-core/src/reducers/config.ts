@@ -1,7 +1,7 @@
 import { produce } from 'immer';
 
 import { CONFIG_REQUEST, CONFIG_SUCCESS, CONFIG_FAILURE } from '../actions/config';
-import { EDITORIAL_WORKFLOW } from '../constants/publishModes';
+import { usesUnpublishedEntries } from '../constants/publishModes';
 
 import type { ConfigAction } from '../actions/config';
 import type { CmsConfig } from '../types/redux';
@@ -32,7 +32,7 @@ export function selectLocale(state: CmsConfig) {
 }
 
 export function selectUseWorkflow(state: CmsConfig) {
-  return state.publish_mode === EDITORIAL_WORKFLOW;
+  return usesUnpublishedEntries(state.publish_mode);
 }
 
 export default config;
