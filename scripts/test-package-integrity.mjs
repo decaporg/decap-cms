@@ -19,7 +19,11 @@ import { join } from 'path';
 import { gunzipSync } from 'zlib';
 
 const ROOT_DIR = process.cwd();
-const PACKAGES_TO_TEST = ['decap-cms', 'decap-cms-core', 'decap-cms-app'];
+// The browser-bundle and package.json-shape checks only make sense for the
+// browser entry points. The publish-protocol check runs over every publishable
+// package -- scoping it to a hardcoded few is what let decap-server ship with
+// unresolved `catalog:` specifiers (issue #7979).
+const BROWSER_PACKAGES = ['decap-cms', 'decap-cms-core', 'decap-cms-app'];
 const DEPENDENCY_FIELDS = [
   'dependencies',
   'devDependencies',
@@ -66,6 +70,29 @@ function readFileFromTarball(tarballPath, targetPath) {
   }
 
   throw new Error(`Missing ${targetPath} in ${tarballPath}`);
+}
+
+/**
+ * Every non-private package in the pnpm workspace, i.e. exactly the set that
+ * `pnpm publish -r` uploads.
+ */
+function getPublishablePackages() {
+  // Passed as a single string: spawnSync warns (DEP0190) when args are combined
+  // with `shell: true`, and the shell is needed to resolve pnpm on Windows.
+  const result = spawnSync('pnpm list -r --depth -1 --json', {
+    encoding: 'utf8',
+    stdio: 'pipe',
+    shell: true,
+  });
+
+  if (result.status !== 0) {
+    throw new Error(`pnpm list failed: ${result.stderr || result.stdout}`);
+  }
+
+  return JSON.parse(result.stdout)
+    .filter(pkg => pkg.name && !pkg.private)
+    .map(({ name, path }) => ({ name, dir: path }))
+    .sort((a, b) => a.name.localeCompare(b.name));
 }
 
 function findPublishProtocolDependencies(manifest) {
@@ -136,9 +163,7 @@ function checkDistForNodeProtocol(packageDir) {
 /**
  * Test that a package can be packed without errors
  */
-function testPackagePack(packageName) {
-  const packageDir = join(ROOT_DIR, 'packages', packageName);
-
+function testPackagePack(packageName, packageDir) {
   log(`Testing pnpm pack for ${packageName}...`);
 
   const packDir = mkdtempSync(join(tmpdir(), `decap-pack-${packageName}-`));
@@ -252,14 +277,22 @@ async function main() {
 
   let allPassed = true;
 
-  for (const packageName of PACKAGES_TO_TEST) {
+  const publishablePackages = getPublishablePackages();
+  log(`\n=== Checking packed manifests for ${publishablePackages.length} publishable packages ===`);
+
+  for (const { name, dir } of publishablePackages) {
+    if (!testPackagePack(name, dir)) {
+      allPassed = false;
+    }
+  }
+
+  for (const packageName of BROWSER_PACKAGES) {
     log(`\n=== Testing ${packageName} ===`);
 
-    const packOk = testPackagePack(packageName);
     const browserOk = testBrowserCompatibility(packageName);
     const pkgJsonOk = testPackageJson(packageName);
 
-    if (!packOk || !browserOk || !pkgJsonOk) {
+    if (!browserOk || !pkgJsonOk) {
       allPassed = false;
     }
   }

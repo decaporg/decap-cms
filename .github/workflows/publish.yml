@@ -76,5 +76,27 @@ jobs:
           echo "::endgroup::"
 
       - name: Publish to npm
-        run: pnpm run publish:packages -- --provenance
+        # The OIDC token exchange fails intermittently (ERR_PNPM_AUTH_TOKEN_EXCHANGE),
+        # which used to leave the release half-published until a maintainer noticed
+        # and re-ran the workflow by hand. `pnpm publish -r` skips versions that are
+        # already on the registry, so retrying is safe and resumes where it stopped.
         # No NODE_AUTH_TOKEN needed - uses OIDC automatically via trusted publishers
+        run: |
+          for attempt in 1 2 3; do
+            echo "::group::Publish attempt $attempt"
+            if pnpm run publish:packages -- --provenance; then
+              echo "::endgroup::"
+              exit 0
+            fi
+            echo "::endgroup::"
+            echo "Publish attempt $attempt failed, retrying in 30s..."
+            sleep 30
+          done
+          echo "::error::pnpm publish failed after 3 attempts"
+          exit 1
+
+      # Must run after publishing: a pre-publish check only sees what the correct
+      # publish client produces, so it cannot catch a release uploaded by a client
+      # that does not understand `catalog:`. See issue #7979.
+      - name: Verify published manifests
+        run: pnpm run verify:published
