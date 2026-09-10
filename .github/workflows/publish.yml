@@ -5,6 +5,17 @@ on:
     tags:
       - 'decap-*@*'
   workflow_dispatch:
+    inputs:
+      dist_tag:
+        description: >
+          npm dist-tag to publish under. `latest` is what `npm install <pkg>`
+          resolves to, so a prerelease must go out as `beta` or it becomes the
+          default install for everyone.
+        type: choice
+        default: latest
+        options:
+          - latest
+          - beta
 
 permissions:
   contents: read
@@ -82,10 +93,20 @@ jobs:
         # and re-ran the workflow by hand. `pnpm publish -r` skips versions that are
         # already on the registry, so retrying is safe and resumes where it stopped.
         # No NODE_AUTH_TOKEN needed - uses OIDC automatically via trusted publishers
+        #
+        # Invoked directly rather than through `pnpm run publish:packages --`.
+        # `pnpm run` injects a literal `--` ahead of forwarded arguments, so they
+        # arrive as positionals and are silently ignored: `pnpm run publish:packages
+        # -- --tag beta --dry-run` publishes for real, to `latest`. That is why
+        # `--tag` cannot be passed through the script, and it means the
+        # `--provenance` this step used to forward was never taking effect.
+        env:
+          DIST_TAG: ${{ inputs.dist_tag || 'latest' }}
         run: |
+          echo "Publishing under dist-tag: $DIST_TAG"
           for attempt in 1 2 3; do
             echo "::group::Publish attempt $attempt"
-            if pnpm run publish:packages -- --provenance; then
+            if pnpm publish -r --no-git-checks --report-summary --provenance --tag "$DIST_TAG"; then
               echo "::endgroup::"
               exit 0
             fi

@@ -236,6 +236,7 @@ Decap CMS uses NPM trusted publishers with OIDC for secure, automated package pu
 
 2. **Publish:**
    - Run the **Publish Packages** workflow manually from the Actions tab, against the `chore(release): publish` commit
+   - Leave **dist-tag** on `latest` for a normal release; set it to `beta` for a prerelease
    - GitHub Actions runs tests and builds packages
    - `pnpm publish -r` publishes changed packages to npm using OIDC
    - Provenance attestations are generated automatically
@@ -243,6 +244,26 @@ Decap CMS uses NPM trusted publishers with OIDC for secure, automated package pu
 
    > [!NOTE]
    > The workflow also has a tag trigger, but **do not rely on it for a release**. GitHub creates no workflow run at all when a single push carries many tags, and a release pushes one tag per package. Use the manual trigger. `pnpm publish -r` skips versions already on the registry, so re-running it against a partially published release is safe.
+
+   > [!WARNING]
+   > Never pass publish flags through `pnpm run`. `pnpm run <script> -- --flag` injects a literal `--`, so the flags arrive as positional arguments and are silently dropped — `pnpm run publish:packages -- --tag beta --dry-run` ignores both and publishes for real, to `latest`. Invoke `pnpm publish` directly, which is what the workflow does.
+
+### Prerelease (beta) Releases
+
+A prerelease must never land on the `latest` dist-tag: npm does not infer a tag from the version, so `3.20.0-beta.0` published without `--tag` becomes what `npm install decap-cms` resolves to.
+
+```sh
+# From a release/* branch -- lerna.json's allowBranch permits main and release/*
+pnpm exec lerna version --conventional-prerelease --preid beta
+```
+
+Then run **Publish Packages** against the resulting `chore(release): publish` commit with **dist-tag** set to `beta`. Afterwards confirm both tags moved as intended:
+
+```sh
+npm view decap-cms dist-tags   # latest must be unchanged; beta on the new version
+```
+
+Repeating `lerna version --conventional-prerelease --preid beta` bumps `-beta.0` to `-beta.1`. The manual fallback is `pnpm run publish:packages:beta`.
 
 3. **Verify the release:**
    ```sh
