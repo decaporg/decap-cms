@@ -237,6 +237,24 @@
         );
       }
     });
+    CMS.registerEditorComponent({
+      id: 'wikilink',
+      label: 'Wikilink',
+      type: 'inline',
+      trigger: '[',
+      pattern: /\[\[(?<target>[^\]]+)\]\]/,
+      fromInline: match => ({ target: match.groups.target }),
+      toInline: data => `[[${data.target}]]`,
+      toPreview: data => `🔗 [[${data.target || 'link'}]]`,
+      onInsert: async ({ selectedText }) => {
+        const target = prompt('Enter link target:', selectedText);
+        return target ? { target } : null;
+      },
+      onEdit: async ({ data }) => {
+        const target = prompt('Edit link target:', data.target);
+        return target ? { target } : null;
+      },
+    });
   </script>
 </body>
 </html>

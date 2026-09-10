@@ -4,6 +4,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import DOMPurify from 'dompurify';
 
 import { markdownToHtml } from './serializers';
+import filterInlineEditorComponents from './filterInlineEditorComponents';
 
 // Editors preview a selected-but-not-yet-committed image via URL.createObjectURL(), which
 // produces a blob: URL - DOMPurify's default ALLOWED_URI_REGEXP doesn't include that scheme,
@@ -51,9 +52,10 @@ function RichtextPreview({
   if (value === null) {
     return null;
   }
+  const editorComponents = filterInlineEditorComponents(getEditorComponents?.());
   const html = markdownToHtml(
     value,
-    { getAsset, resolveWidget, editorComponents: getEditorComponents?.() },
+    { getAsset, resolveWidget, editorComponents },
     getRemarkPlugins?.(),
   );
   const shouldSanitizePreview = field?.get('sanitize_preview') ?? true;

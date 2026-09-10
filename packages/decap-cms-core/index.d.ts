@@ -492,9 +492,10 @@ declare module 'decap-cms-core' {
         fields?: EditorComponentField[];
       };
 
-  export interface EditorComponentOptions {
+  export interface BlockEditorComponentOptions {
     id: string;
     label: string;
+    type?: 'block';
     fields?: EditorComponentField[];
     pattern: RegExp;
     allow_add?: boolean;
@@ -502,6 +503,24 @@ declare module 'decap-cms-core' {
     toBlock: (data: any) => string;
     toPreview: (data: any) => string | JSX.Element;
   }
+
+  export interface InlineEditorComponentOptions {
+    id: string;
+    label: string;
+    type: 'inline';
+    trigger?: string;
+    pattern: RegExp;
+    fromInline: (match: RegExpExecArray) => Record<string, any>;
+    toInline: (data: Record<string, any>) => string;
+    toPreview: (data: Record<string, any>) => React.ReactNode;
+    onInsert?: (context: {
+      selectedText: string;
+      cmsContext: any;
+    }) => Promise<Record<string, any> | null>;
+    onEdit?: (context: { data: Record<string, any> }) => Promise<Record<string, any> | null>;
+  }
+
+  export type EditorComponentOptions = BlockEditorComponentOptions | InlineEditorComponentOptions;
 
   export interface PreviewStyleOptions {
     raw: boolean;
