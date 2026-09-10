@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.13.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-markdown@3.12.1...decap-cms-widget-markdown@3.13.0) (2026-09-10)
+
+### Features
+
+- **widget-markdown:** support inline custom editor components ([#7958](https://github.com/decaporg/decap-cms/issues/7958)) ([e857f7d](https://github.com/decaporg/decap-cms/commit/e857f7dac60872a499b16c36ad38adce7489c383)), closes [#7951](https://github.com/decaporg/decap-cms/issues/7951) [#7936](https://github.com/decaporg/decap-cms/issues/7936)
+
+## [3.12.1](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-markdown@3.12.0...decap-cms-widget-markdown@3.12.1) (2026-09-08)
+
+### Bug Fixes
+
+- **preview:** preserve blob: image URLs when sanitizing preview HTML ([#7970](https://github.com/decaporg/decap-cms/issues/7970)) ([dd9219c](https://github.com/decaporg/decap-cms/commit/dd9219ce8192c014ac186210ffa8ac831bedbb4a))
+
+# [3.12.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-markdown@3.11.0...decap-cms-widget-markdown@3.12.0) (2026-08-31)
+
+**Note:** Version bump only for package decap-cms-widget-markdown
+
 # [3.11.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-markdown@3.10.1...decap-cms-widget-markdown@3.11.0) (2026-07-23)
 
 **Note:** Version bump only for package decap-cms-widget-markdown

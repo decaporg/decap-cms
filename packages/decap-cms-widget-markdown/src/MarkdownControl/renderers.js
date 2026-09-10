@@ -6,6 +6,7 @@ import { useSelected } from 'slate-react';
 
 import VoidBlock from './components/VoidBlock';
 import Shortcode from './components/Shortcode';
+import InlineShortcode from './components/InlineShortcode';
 
 const bottomMargin = '16px';
 
@@ -350,6 +351,8 @@ export function Element(props) {
           <Shortcode {...props}>{children}</Shortcode>
         </VoidBlock>
       );
+    case 'inline-shortcode':
+      return <InlineShortcode {...props} />;
     default:
       return <Paragraph style={style}>{children}</Paragraph>;
   }

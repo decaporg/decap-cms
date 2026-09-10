@@ -149,8 +149,13 @@ class Authenticator {
         }),
       );
     }
-    const url = `${this.base_url}/${this.auth_endpoint}/refresh?provider=${provider}&site_id=${siteID}&refresh_token=${refresh_token}`;
-    const refreshPromise = fetch(url, { method: 'POST', body: '' }).then(res => res.json());
+    const url = `${this.base_url}/${this.auth_endpoint}/refresh?provider=${provider}&site_id=${siteID}`;
+    const body = new URLSearchParams({ refresh_token }).toString();
+    const refreshPromise = fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body,
+    }).then(res => res.json());
 
     // Return a promise if a callback wasn't provided
     if (!cb) {

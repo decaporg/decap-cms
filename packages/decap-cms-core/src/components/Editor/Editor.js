@@ -1,5 +1,5 @@
+import { Component } from 'react';
 import PropTypes from 'prop-types';
-import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import { Loader } from 'decap-cms-ui-default';
@@ -58,7 +58,7 @@ function isNotesEnabled(collection, slug) {
   return collection.getIn(['editor', 'notes'], false);
 }
 
-export class Editor extends React.Component {
+export class Editor extends Component {
   static propTypes = {
     changeDraftField: PropTypes.func.isRequired,
     changeDraftFieldValidation: PropTypes.func.isRequired,

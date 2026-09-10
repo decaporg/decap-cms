@@ -16,6 +16,12 @@ import { addDraftEntryMediaFile, removeDraftEntryMediaFile } from './entries';
 import { sanitizeSlug } from '../lib/urlHelper';
 import { waitUntilWithTimeout } from './waitUntil';
 import { addNotification } from './notifications';
+import {
+  getMediaProcessingConfig,
+  getMediaProcessingFileName,
+  shouldTransformImage,
+  transformImage,
+} from '../lib/imageTransformations';
 
 import type {
   State,
@@ -210,6 +216,53 @@ function createMediaFileFromAsset({
   return mediaFile;
 }
 
+async function getMediaFilesForUpload({
+  file,
+  path,
+  config,
+  field,
+}: {
+  file: File;
+  path: string;
+  config: State['config'];
+  field?: EntryField;
+}) {
+  const mediaProcessing = getMediaProcessingConfig(config, field);
+
+  if (!shouldTransformImage(file, mediaProcessing)) {
+    return [{ file, path }];
+  }
+
+  return transformImage(file, path, mediaProcessing!);
+}
+
+async function getMediaFileForUpload({
+  file,
+  path,
+  config,
+  field,
+}: {
+  file: File;
+  path: string;
+  config: State['config'];
+  field?: EntryField;
+}) {
+  const [mediaFile] = await getMediaFilesForUpload({ file, path, config, field });
+  return mediaFile;
+}
+
+function getUploadFileName(
+  fileName: string,
+  file: File,
+  config: State['config'],
+  field?: EntryField,
+) {
+  const mediaProcessing = getMediaProcessingConfig(config, field);
+  return shouldTransformImage(file, mediaProcessing)
+    ? getMediaProcessingFileName(fileName, mediaProcessing)
+    : fileName;
+}
+
 export function persistMedia(file: File, opts: MediaOptions = {}) {
   const { privateUpload, field } = opts;
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
@@ -218,7 +271,10 @@ export function persistMedia(file: File, opts: MediaOptions = {}) {
     const integration = selectIntegration(state, null, 'assetStore');
     const files: MediaFile[] = selectMediaFiles(state, field);
     const fileName = sanitizeSlug(file.name.toLowerCase(), state.config.slug);
-    const existingFile = files.find(existingFile => existingFile.name.toLowerCase() === fileName);
+    const uploadFileName = getUploadFileName(fileName, file, state.config, field);
+    const existingFile = files.find(
+      existingFile => existingFile.name.toLowerCase() === uploadFileName,
+    );
 
     const editingDraft = selectEditingDraft(state.entryDraft);
 
@@ -241,24 +297,40 @@ export function persistMedia(file: File, opts: MediaOptions = {}) {
     }
 
     try {
-      let assetProxy: AssetProxy;
+      let assetProxies: { file: File; assetProxy: AssetProxy }[];
       if (integration) {
+        const mediaFile = await getMediaFileForUpload({
+          file,
+          path: fileName,
+          config: state.config,
+          field,
+        });
         try {
           const provider = getIntegrationProvider(
             state.integrations,
             backend.getToken,
             integration,
           );
-          const response = await provider.upload(file, privateUpload);
-          assetProxy = createAssetProxy({
-            url: response.asset.url,
-            path: response.asset.url,
-          });
+          const response = await provider.upload(mediaFile.file, privateUpload);
+          assetProxies = [
+            {
+              file: mediaFile.file,
+              assetProxy: createAssetProxy({
+                url: response.asset.url,
+                path: response.asset.url,
+              }),
+            },
+          ];
         } catch (error) {
-          assetProxy = createAssetProxy({
-            file,
-            path: fileName,
-          });
+          assetProxies = [
+            {
+              file: mediaFile.file,
+              assetProxy: createAssetProxy({
+                file: mediaFile.file,
+                path: mediaFile.path,
+              }),
+            },
+          ];
         }
       } else if (privateUpload) {
         throw new Error('The Private Upload option is only available for Asset Store Integration');
@@ -266,34 +338,50 @@ export function persistMedia(file: File, opts: MediaOptions = {}) {
         const entry = state.entryDraft.get('entry');
         const collection = state.collections.get(entry?.get('collection'));
         const path = selectMediaFilePath(state.config, collection, entry, fileName, field);
-        assetProxy = createAssetProxy({
+        const mediaFiles = await getMediaFilesForUpload({
           file,
           path,
+          config: state.config,
           field,
         });
+        assetProxies = mediaFiles.map(mediaFile => ({
+          file: mediaFile.file,
+          assetProxy: createAssetProxy({
+            file: mediaFile.file,
+            path: mediaFile.path,
+            field,
+          }),
+        }));
       }
 
-      dispatch(addAsset(assetProxy));
+      let lastDispatch;
 
-      let mediaFile: ImplementationMediaFile;
-      if (integration) {
-        const id = await getBlobSHA(file);
-        // integration assets are persisted immediately, thus draft is false
-        mediaFile = createMediaFileFromAsset({ id, file, assetProxy, draft: false });
-      } else if (editingDraft) {
-        const id = await getBlobSHA(file);
-        mediaFile = createMediaFileFromAsset({
-          id,
-          file,
-          assetProxy,
-          draft: editingDraft,
-        });
-        return dispatch(addDraftEntryMediaFile(mediaFile));
-      } else {
-        mediaFile = await backend.persistMedia(state.config, assetProxy);
+      for (const { file, assetProxy } of assetProxies) {
+        dispatch(addAsset(assetProxy));
+
+        let mediaFile: ImplementationMediaFile;
+        if (integration) {
+          const id = await getBlobSHA(file);
+          // integration assets are persisted immediately, thus draft is false
+          mediaFile = createMediaFileFromAsset({ id, file, assetProxy, draft: false });
+        } else if (editingDraft) {
+          const id = await getBlobSHA(file);
+          mediaFile = createMediaFileFromAsset({
+            id,
+            file,
+            assetProxy,
+            draft: editingDraft,
+          });
+          lastDispatch = dispatch(addDraftEntryMediaFile(mediaFile));
+          continue;
+        } else {
+          mediaFile = await backend.persistMedia(state.config, assetProxy);
+        }
+
+        lastDispatch = dispatch(mediaPersisted(mediaFile, { privateUpload }));
       }
 
-      return dispatch(mediaPersisted(mediaFile, { privateUpload }));
+      return lastDispatch;
     } catch (error) {
       console.error(error);
       dispatch(

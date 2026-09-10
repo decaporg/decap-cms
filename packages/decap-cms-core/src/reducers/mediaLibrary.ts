@@ -33,6 +33,11 @@ import type {
   EntryField,
 } from '../types/redux';
 
+function isMediaFileInFolder(filePath: string, mediaFolder: string) {
+  const fileFolder = dirname(filePath);
+  return fileFolder === mediaFolder || fileFolder.startsWith(`${mediaFolder}/_transformations/`);
+}
+
 const defaultState: {
   isVisible: boolean;
   showMediaButton: boolean;
@@ -87,7 +92,10 @@ function mediaLibrary(state = Map(defaultState), action: MediaLibraryAction) {
         map.set('forImage', forImage ?? false);
         map.set('controlID', controlID ?? '');
         map.set('canInsert', !!controlID);
-        map.set('privateUpload', privateUpload);
+        // NOTE: stored as-is rather than defaulted - `privateUploadChanged`
+        // above compares against this value on the next open, so coercing
+        // `undefined` to `false` would spuriously reset the library state.
+        map.set('privateUpload', privateUpload as boolean);
         map.set('config', libConfig);
         map.set('field', field ?? '');
         map.set('value', value == '' && libConfig.get('multiple') ? [] : value ?? '');
@@ -186,7 +194,7 @@ function mediaLibrary(state = Map(defaultState), action: MediaLibraryAction) {
       }
       return state.withMutations(map => {
         const fileWithKey = { ...file, key: crypto.randomUUID() };
-        const files = map.get('files') as MediaFile[];
+        const files = (map.get('files') as MediaFile[]) || [];
         const updatedFiles = [fileWithKey, ...files];
         map.set('files', updatedFiles);
         map.set('isPersisting', false);
@@ -264,12 +272,12 @@ export function selectMediaFiles(state: State, field?: EntryField) {
   if (editingDraft && !integration) {
     const entryFiles = entryDraft
       .getIn(['entry', 'mediaFiles'], List<MediaFileMap>())
-      .toJS() as MediaFile[];
+      .toJS() as unknown as MediaFile[];
     const entry = entryDraft.get('entry');
     const collection = state.collections.get(entry?.get('collection'));
     const mediaFolder = selectMediaFolder(state.config, collection, entry, field);
     files = entryFiles
-      .filter(f => dirname(f.path) === mediaFolder)
+      .filter(f => isMediaFileInFolder(f.path, mediaFolder))
       .map(file => ({ key: file.id, ...file }));
   } else {
     files = mediaLibrary.get('files') || [];

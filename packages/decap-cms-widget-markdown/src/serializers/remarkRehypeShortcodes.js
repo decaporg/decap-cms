@@ -1,8 +1,7 @@
-import React from 'react';
-import map from 'lodash/map';
 import has from 'lodash/has';
 import { renderToString } from 'react-dom/server';
 import u from 'unist-builder';
+import { createElement } from 'react';
 
 /**
  * This plugin doesn't actually transform Remark (MDAST) nodes to Rehype
@@ -14,8 +13,21 @@ export default function remarkToRehypeShortcodes({ plugins, getAsset, resolveWid
   return transform;
 
   function transform(root) {
-    const transformedChildren = map(root.children, processShortcodes);
-    return { ...root, children: transformedChildren };
+    function walk(node) {
+      if (!node) return node;
+      if (has(node, ['data', 'shortcode'])) {
+        return processShortcodes(node);
+      }
+      if (Array.isArray(node.children)) {
+        return {
+          ...node,
+          children: node.children.map(walk),
+        };
+      }
+      return node;
+    }
+
+    return walk(root);
   }
 
   /**
@@ -33,6 +45,7 @@ export default function remarkToRehypeShortcodes({ plugins, getAsset, resolveWid
      */
     const { shortcode, shortcodeData } = node.data;
     const plugin = plugins.get(shortcode);
+    if (!plugin) return node;
 
     /**
      * Run the shortcode plugin's `toPreview` method, which will return either
@@ -45,9 +58,7 @@ export default function remarkToRehypeShortcodes({ plugins, getAsset, resolveWid
     /**
      * Return a new 'html' type node containing the shortcode preview markup.
      */
-    const textNode = u('html', valueHtml);
-    const children = [textNode];
-    return { ...node, children };
+    return u('html', valueHtml);
   }
 
   /**
@@ -58,7 +69,6 @@ export default function remarkToRehypeShortcodes({ plugins, getAsset, resolveWid
     if (toPreview) {
       return toPreview(shortcodeData, getAsset, fields);
     }
-
     /**
      * For editor components without a custom `toPreview` (e.g. container
      * components with nested markdown/richtext fields), render each sub-field
@@ -88,7 +98,7 @@ export default function remarkToRehypeShortcodes({ plugins, getAsset, resolveWid
      * Last resort fallback: try resolving the widget and rendering its preview.
      */
     const preview = resolveWidget(plugin.widget);
-    return React.createElement(preview.preview, {
+    return createElement(preview.preview, {
       value: shortcodeData,
       field: plugin,
       getAsset,

@@ -29,6 +29,11 @@ import visit from 'unist-util-visit';
 import { oneLineTrim } from 'common-tags';
 import { escapeRegExp } from '../utils/regexp';
 
+function normalizeUrl(url) {
+  const [pathname, query] = url.split('?');
+  return query ? `${pathname}?${query.split('&').sort().join('&')}` : pathname;
+}
+
 const matchRoute = (route, fetchArgs) => {
   const url = fetchArgs[0];
   const options = fetchArgs[1];
@@ -54,23 +59,47 @@ const matchRoute = (route, fetchArgs) => {
     bodyMatch = body === routeBody;
   }
 
-  // use pattern matching for the timestamp parameter
-  const urlRegex = escapeRegExp(decodeURIComponent(route.url)).replace(
+  // Ignore query parameter order and use pattern matching for the timestamp parameter.
+  const urlRegex = escapeRegExp(decodeURIComponent(normalizeUrl(route.url))).replace(
     /ts=\d{1,15}/,
     'ts=\\d{1,15}',
   );
 
   return (
-    method === route.method && bodyMatch && decodeURIComponent(url).match(new RegExp(`${urlRegex}`))
+    method === route.method &&
+    bodyMatch &&
+    decodeURIComponent(normalizeUrl(url)).match(new RegExp(`${urlRegex}`))
   );
 };
 
 const stubFetch = (win, routes) => {
   const fetch = win.fetch;
+  const matchedGetRoutes = [];
+
+  const createResponse = route => {
+    let blob;
+    if (route.response && route.response.encoding === 'base64') {
+      const buffer = Buffer.from(route.response.content, 'base64');
+      blob = new Blob([buffer]);
+    } else {
+      blob = new Blob([route.response || '']);
+    }
+
+    return {
+      status: route.status,
+      headers: new Headers(route.headers),
+      blob: () => Promise.resolve(blob),
+      text: () => Promise.resolve(route.response),
+      json: () => Promise.resolve(JSON.parse(route.response)),
+      ok: route.status >= 200 && route.status <= 299,
+    };
+  };
+
   cy.stub(win, 'fetch').callsFake((...args) => {
     let routeIndex = routes.findIndex(r => matchRoute(r, args));
     if (routeIndex >= 0) {
       let route = routes.splice(routeIndex, 1)[0];
+      const requestRoute = route;
       const message = `matched ${args[0]} to ${route.url} ${route.method} ${route.status}`;
       console.log(message);
       if (route.status === 302) {
@@ -79,23 +108,23 @@ const stubFetch = (win, routes) => {
         route = routes.splice(routeIndex, 1)[0];
       }
 
-      let blob;
-      if (route.response && route.response.encoding === 'base64') {
-        const buffer = Buffer.from(route.response.content, 'base64');
-        blob = new Blob([buffer]);
-      } else {
-        blob = new Blob([route.response || '']);
+      if (requestRoute.method === 'GET') {
+        matchedGetRoutes.push({ requestRoute, responseRoute: route });
       }
-      const fetchResponse = {
-        status: route.status,
-        headers: new Headers(route.headers),
-        blob: () => Promise.resolve(blob),
-        text: () => Promise.resolve(route.response),
-        json: () => Promise.resolve(JSON.parse(route.response)),
-        ok: route.status >= 200 && route.status <= 299,
-      };
-      return Promise.resolve(fetchResponse);
-    } else if (
+
+      return Promise.resolve(createResponse(route));
+    }
+
+    if ((args[1]?.method || 'GET') === 'GET') {
+      const matchedRoute = [...matchedGetRoutes]
+        .reverse()
+        .find(({ requestRoute }) => matchRoute(requestRoute, args));
+      if (matchedRoute) {
+        return Promise.resolve(createResponse(matchedRoute.responseRoute));
+      }
+    }
+
+    if (
       args[0].includes('api.github.com') ||
       args[0].includes('api.bitbucket.org') ||
       args[0].includes('bitbucket.org') ||
@@ -116,10 +145,10 @@ const stubFetch = (win, routes) => {
         ok: false,
       };
       return Promise.resolve(fetchResponse);
-    } else {
-      console.log(`No route match for fetch args: ${JSON.stringify(args)}`);
-      return fetch(...args);
     }
+
+    console.log(`No route match for fetch args: ${JSON.stringify(args)}`);
+    return fetch(...args);
   });
 };
 
@@ -298,12 +327,13 @@ Cypress.Commands.add('confirmMarkdownEditorContent', expectedDomString => {
     // - blank element (placed inside empty elements): 1 BOM + <br>
     // - inline element (e.g. link tag <a>) are wrapped with BOM characters (https://github.com/ianstormtaylor/slate/issues/2722)
     // We replace to represent a blank line as a single <br>, remove the
-    // contents of elements that are actually empty, and remove BOM characters wrapping <a> tags
+    // contents of elements that are actually empty, and remove Slate padding around <a> tags
     const actualDomString = toPlainTree(element.innerHTML)
       .replace(/\uFEFF\uFEFF<br>/g, '<br>')
       .replace(/\uFEFF<br>/g, '')
-      .replace(/\uFEFF<a>/g, '<a>')
-      .replace(/<\/a>\uFEFF/g, '</a>');
+      .replace(/[\uFEFF\u00A0]+<a>/g, '<a>')
+      .replace(/[\uFEFF\u00A0]+<\/a>/g, '</a>')
+      .replace(/<\/a>[\uFEFF\u00A0]+/g, '</a>');
     expect(actualDomString).toEqual(oneLineTrim(expectedDomString));
   });
 });

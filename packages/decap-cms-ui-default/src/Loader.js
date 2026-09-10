@@ -1,4 +1,4 @@
-import React from 'react';
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import { css, keyframes } from '@emotion/react';
@@ -56,7 +56,7 @@ const LoaderItem = styled.div`
   transform: translateX(-50%);
 `;
 
-export class Loader extends React.Component {
+export class Loader extends Component {
   static propTypes = {
     children: PropTypes.node,
     className: PropTypes.string,

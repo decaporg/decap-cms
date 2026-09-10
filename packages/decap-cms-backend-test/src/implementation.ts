@@ -42,6 +42,7 @@ type UnpublishedRepoEntry = {
   slug: string;
   collection: string;
   status: string;
+  hasSubfolders: boolean;
   diffs: Diff[];
   updatedAt: string;
 };
@@ -80,6 +81,24 @@ function writeFile(path: string, content: string | AssetProxy, tree: RepoTree) {
 
 function deleteFile(path: string, tree: RepoTree) {
   unset(tree, path.split('/'));
+}
+
+function moveFile(path: string, newPath: string, tree: RepoTree, hasSubfolders: boolean) {
+  const sourceDir = dirname(path);
+  const destDir = dirname(newPath);
+
+  if (!hasSubfolders || sourceDir === destDir) {
+    deleteFile(path, tree);
+    return;
+  }
+
+  const files = getFolderFiles(tree, path.split('/')[0], '', 100).filter(file =>
+    file.path.startsWith(`${sourceDir}/`),
+  );
+  files.forEach(file => {
+    deleteFile(file.path, tree);
+    writeFile(file.path.replace(sourceDir, destDir), file.content, tree);
+  });
 }
 
 const pageSize = 10;
@@ -275,6 +294,7 @@ export default class TestBackend implements Implementation {
     slug: string,
     collection: string,
     status: string,
+    hasSubfolders: boolean,
   ) {
     const diffs: Diff[] = [];
     dataFiles.forEach(dataFile => {
@@ -304,6 +324,7 @@ export default class TestBackend implements Implementation {
       slug,
       collection,
       status,
+      hasSubfolders,
       diffs,
       updatedAt: new Date().toISOString(),
     };
@@ -324,13 +345,17 @@ export default class TestBackend implements Implementation {
         slug,
         options.collectionName as string,
         status,
+        options.hasSubfolders !== false,
       );
       return Promise.resolve();
     }
 
     entry.dataFiles.forEach(dataFile => {
-      const { path, raw } = dataFile;
-      writeFile(path, raw, window.repoFiles);
+      const { path, newPath, raw } = dataFile;
+      if (newPath) {
+        moveFile(path, newPath, window.repoFiles, options.hasSubfolders !== false);
+      }
+      writeFile(newPath || path, raw, window.repoFiles);
     });
     entry.assets.forEach(a => {
       writeFile(a.path, a, window.repoFiles);
@@ -353,15 +378,7 @@ export default class TestBackend implements Implementation {
     unpubEntry.diffs.forEach(d => {
       if (d.originalPath && !d.newFile) {
         const originalPath = d.originalPath;
-        const sourceDir = dirname(originalPath);
-        const destDir = dirname(d.path);
-        const toMove = getFolderFiles(tree, originalPath.split('/')[0], '', 100).filter(f =>
-          f.path.startsWith(sourceDir),
-        );
-        toMove.forEach(f => {
-          deleteFile(f.path, tree);
-          writeFile(f.path.replace(sourceDir, destDir), f.content, tree);
-        });
+        moveFile(originalPath, d.path, tree, unpubEntry.hasSubfolders);
       }
       writeFile(d.path, d.content, tree);
     });

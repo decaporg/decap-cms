@@ -1,6 +1,6 @@
 import createReactClass from 'create-react-class';
-import React from 'react';
 import { DecapCmsApp as CMS } from 'decap-cms-app';
+import { createElement } from 'react';
 import './extensions';
 
 /**
@@ -19,7 +19,7 @@ if (typeof window !== 'undefined') {
   window.CMS = CMS;
   window.initCMS = CMS.init;
   window.createClass = window.createClass || createReactClass;
-  window.h = window.h || React.createElement;
+  window.h = window.h || createElement;
   /**
    * Log the version number.
    */

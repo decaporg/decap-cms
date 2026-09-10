@@ -61,6 +61,7 @@ declare module 'decap-cms-core' {
     i18n?: boolean | 'translate' | 'duplicate' | 'none';
     media_folder?: string;
     public_folder?: string;
+    media_processing?: CmsMediaProcessing;
     comment?: string;
   }
 
@@ -410,6 +411,21 @@ declare module 'decap-cms-core' {
     url?: string;
   }
 
+  export type CmsMediaProcessingFormat = 'jpeg' | 'webp';
+
+  export interface CmsMediaProcessing {
+    enabled: boolean;
+    format?: {
+      enabled: boolean;
+      default: CmsMediaProcessingFormat;
+    };
+    quality?: number;
+    strip_metadata?: boolean;
+    width?: number | null;
+    height?: number | null;
+    aspect_ratio?: number | string | null;
+  }
+
   export interface CmsConfig {
     backend: CmsBackend;
     collections: CmsCollection[];
@@ -425,6 +441,7 @@ declare module 'decap-cms-core' {
     media_folder?: string;
     public_folder?: string;
     media_folder_relative?: boolean;
+    media_processing?: CmsMediaProcessing;
     media_library?: CmsMediaLibrary;
     publish_mode?: CmsPublishMode;
     issue_reports?: CmsIssueReports;
@@ -469,9 +486,10 @@ declare module 'decap-cms-core' {
         fields?: EditorComponentField[];
       };
 
-  export interface EditorComponentOptions {
+  export interface BlockEditorComponentOptions {
     id: string;
     label: string;
+    type?: 'block';
     fields?: EditorComponentField[];
     pattern: RegExp;
     allow_add?: boolean;
@@ -479,6 +497,24 @@ declare module 'decap-cms-core' {
     toBlock: (data: any) => string;
     toPreview: (data: any) => string | JSX.Element;
   }
+
+  export interface InlineEditorComponentOptions {
+    id: string;
+    label: string;
+    type: 'inline';
+    trigger?: string;
+    pattern: RegExp;
+    fromInline: (match: RegExpExecArray) => Record<string, any>;
+    toInline: (data: Record<string, any>) => string;
+    toPreview: (data: Record<string, any>) => React.ReactNode;
+    onInsert?: (context: {
+      selectedText: string;
+      cmsContext: any;
+    }) => Promise<Record<string, any> | null>;
+    onEdit?: (context: { data: Record<string, any> }) => Promise<Record<string, any> | null>;
+  }
+
+  export type EditorComponentOptions = BlockEditorComponentOptions | InlineEditorComponentOptions;
 
   export interface PreviewStyleOptions {
     raw: boolean;

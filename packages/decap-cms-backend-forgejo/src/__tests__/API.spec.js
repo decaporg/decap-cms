@@ -688,6 +688,23 @@ describe('forgejo API', () => {
       });
     });
 
+    it('should match pull request by ref when head label does not include the owner', async () => {
+      const api = new API({ branch: 'gh-pages', repo: 'owner/my-repo', token: 'token' });
+      api.requestAllPages = jest.fn().mockResolvedValue([
+        {
+          number: 1,
+          head: { label: 'cms/new-branch', ref: 'cms/new-branch' },
+        },
+      ]);
+
+      await expect(api.getPullRequests('open', 'owner:cms/new-branch')).resolves.toEqual([
+        {
+          number: 1,
+          head: { label: 'cms/new-branch', ref: 'cms/new-branch' },
+        },
+      ]);
+    });
+
     it('should list unpublished branches (standard mode)', async () => {
       const api = new API({
         branch: 'gh-pages',

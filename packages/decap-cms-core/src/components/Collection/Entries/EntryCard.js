@@ -138,7 +138,7 @@ function CardImage({ getAsset, value, field }) {
     setAsset(value ? getAsset(value, field) : null);
   }, [value, field, getAsset]);
 
-  return asset ? <StyledImage src={asset.toString()} /> : null;
+  return asset ? <StyledImage data-testid="entry-card-image" src={asset.toString()} /> : null;
 }
 
 function EntryCard({
