@@ -202,6 +202,35 @@ function getConfigSchema() {
         },
         required: ['src'],
       },
+      branding: {
+        type: 'object',
+        properties: {
+          theme: {
+            type: 'object',
+            properties: {
+              primary: { type: 'string', examples: ['#112f4e'] },
+              background: { type: 'string', examples: ['#f5f6f8'] },
+              foreground: { type: 'string', examples: ['#ffffff'] },
+              text: { type: 'string', examples: ['#798291'] },
+              textLead: { type: 'string', examples: ['#313d3e'] },
+              activeBackground: { type: 'string', examples: ['#e8f5fe'] },
+              borderRadius: { type: 'string', examples: ['5px'] },
+              fontFamily: { type: 'string', examples: ['system-ui, sans-serif'] },
+              status: {
+                type: 'object',
+                properties: {
+                  draft: { type: 'string', examples: ['#70399f'] },
+                  in_review: { type: 'string', examples: ['#754e00'] },
+                  ready: { type: 'string', examples: ['#005614'] },
+                },
+                additionalProperties: false,
+              },
+            },
+            additionalProperties: false,
+          },
+        },
+        additionalProperties: false,
+      },
       show_preview_links: { type: 'boolean' },
       media_folder: { type: 'string', examples: ['assets/uploads'] },
       public_folder: { type: 'string', examples: ['/uploads'] },
