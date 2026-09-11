@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.17.0-beta.0](https://github.com/decaporg/decap-cms/compare/decap-cms@3.16.2...decap-cms@3.17.0-beta.0) (2026-09-10)
+
+### Bug Fixes
+
+- make pnpm run build and lint work under corepack-managed pnpm ([2792b04](https://github.com/decaporg/decap-cms/commit/2792b04c9ff9c80b780850fbb3b0b31e3659bb68))
+
+### Features
+
+- add S3-compatible media library, remove standalone Bunny package ([8d19951](https://github.com/decaporg/decap-cms/commit/8d1995164017e6c6c5b7263acd4da91be7ea0686))
+
 ## [3.16.2](https://github.com/decaporg/decap-cms/compare/decap-cms@3.16.1...decap-cms@3.16.2) (2026-09-10)
 
 **Note:** Version bump only for package decap-cms

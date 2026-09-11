@@ -9,6 +9,7 @@ import {
   updateFieldByKey,
   selectDefaultSortField,
   getFileFromSlug,
+  selectEntryCollectionTitle,
 } from '../reducers/collections';
 import { selectIntegration, selectPublishedSlugs } from '../reducers';
 import { getIntegrationProvider } from '../integrations';
@@ -24,9 +25,10 @@ import { waitUntil } from './waitUntil';
 import { selectIsFetching, selectEntriesSortFields, selectEntryByPath } from '../reducers/entries';
 import { selectCustomPath } from '../reducers/entryDraft';
 import { navigateToEntry } from '../routing/history';
-import { getProcessSegment } from '../lib/formatters';
+import { getProcessSegment, entryPreviewPath } from '../lib/formatters';
 import { hasI18n, duplicateDefaultI18nFields, serializeI18n, I18N, I18N_FIELD } from '../lib/i18n';
 import { addNotification } from './notifications';
+import { notifyEntrySaved } from './deployStatus';
 import { FILES } from '../constants/collectionTypes';
 
 import type { ImplementationMediaFile, Note, IssueChange } from 'decap-cms-lib-util';
@@ -998,22 +1000,45 @@ export function persistEntry(collection: Collection) {
         usedSlugs,
       })
       .then(async (newSlug: string) => {
+        // "Entry saved" plus, where the backend can report one, a later
+        // notification when a deploy carries this change live — see
+        // actions/deployStatus.ts and §A4b. Falls back to exactly the previous
+        // toast when it cannot. The title is passed so that notification can
+        // name the entry rather than its path.
         dispatch(
-          addNotification({
-            message: {
-              key: 'ui.toast.entrySaved',
-            },
-            type: 'success',
-            dismissAfter: 4000,
-          }),
+          notifyEntrySaved(
+            selectEntryCollectionTitle(collection, serializedEntry),
+            entryPreviewPath(collection, newSlug, serializedEntry, state.config.slug),
+          ),
         );
 
-        // re-load media library if entry had media files
-        if (assetProxies.length > 0) {
-          await dispatch(loadMedia());
-        }
+        /**
+         * Release the editor as soon as the entry is committed.
+         *
+         * `entryPersisted` is what clears `isPersisting` — the save button's
+         * spinner and the unsaved-changes guard. It used to be dispatched
+         * *after* the media-library reload below, so saving an entry with
+         * images held the editor busy through a refresh of a panel that isn't
+         * even on screen. A save felt as slow as its slowest follow-up rather
+         * than as slow as the write itself.
+         *
+         * Everything after this point is a background refresh of views the
+         * editor is not waiting on.
+         */
         dispatch(entryPersisted(collection, serializedEntry, newSlug));
-        if (collection.has('nested')) {
+
+        // Deliberately not awaited, for the same reason. loadMedia already
+        // handles its own failures internally (it dispatches mediaLoadFailed
+        // rather than rejecting); the catch is there so that if it ever does
+        // reject, it surfaces as a logged error rather than an unhandled
+        // rejection — and never as a failed save, because the save succeeded.
+        if (assetProxies.length > 0) {
+          Promise.resolve(dispatch(loadMedia())).catch(error => {
+            console.error('Failed to reload the media library after saving', error);
+          });
+        }
+
+        if (collection.has('nested') || backend.implementation.reloadEntriesAfterPersist) {
           await dispatch(loadEntries(collection));
         }
         if (entry.get('slug') !== newSlug) {

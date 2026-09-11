@@ -1205,6 +1205,9 @@ importers:
       decap-cms-media-library-cloudinary:
         specifier: workspace:*
         version: link:../decap-cms-media-library-cloudinary
+      decap-cms-media-library-s3:
+        specifier: workspace:*
+        version: link:../decap-cms-media-library-s3
       decap-cms-media-library-uploadcare:
         specifier: workspace:*
         version: link:../decap-cms-media-library-uploadcare
@@ -1274,6 +1277,12 @@ importers:
       decap-cms-backend-test:
         specifier: workspace:*
         version: link:../decap-cms-backend-test
+      decap-cms-backend-turbo-github:
+        specifier: workspace:*
+        version: link:../decap-cms-backend-turbo-github
+      decap-cms-backend-turbo-gitlab:
+        specifier: workspace:*
+        version: link:../decap-cms-backend-turbo-gitlab
       decap-cms-core:
         specifier: workspace:*
         version: link:../decap-cms-core
@@ -1812,6 +1821,96 @@ importers:
         specifier: 'catalog:'
         version: 8.3.2
 
+  packages/decap-cms-backend-turbo-github:
+    dependencies:
+      '@emotion/react':
+        specifier: 'catalog:'
+        version: 11.14.0(@types/react@19.2.2)(react@19.2.0)
+      '@emotion/styled':
+        specifier: 'catalog:'
+        version: 11.14.1(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(@types/react@19.2.2)(react@19.2.0)
+      apollo-cache-inmemory:
+        specifier: 'catalog:'
+        version: 1.6.6(graphql@15.10.1)
+      apollo-client:
+        specifier: 'catalog:'
+        version: 2.6.10(graphql@15.10.1)
+      apollo-link-context:
+        specifier: 'catalog:'
+        version: 1.0.20(graphql@15.10.1)
+      apollo-link-http:
+        specifier: 'catalog:'
+        version: 1.5.17(graphql@15.10.1)
+      common-tags:
+        specifier: 'catalog:'
+        version: 1.8.2
+      decap-cms-backend-github:
+        specifier: workspace:*
+        version: link:../decap-cms-backend-github
+      decap-cms-lib-util:
+        specifier: workspace:*
+        version: link:../decap-cms-lib-util
+      decap-cms-ui-default:
+        specifier: workspace:*
+        version: link:../decap-cms-ui-default
+      graphql:
+        specifier: 'catalog:'
+        version: 15.10.1
+      graphql-tag:
+        specifier: 'catalog:'
+        version: 2.12.6(graphql@15.10.1)
+      js-base64:
+        specifier: 'catalog:'
+        version: 3.7.5
+      lodash:
+        specifier: 'catalog:'
+        version: 4.17.21
+      prop-types:
+        specifier: 'catalog:'
+        version: 15.8.1
+      react:
+        specifier: 'catalog:'
+        version: 19.2.0
+      semaphore:
+        specifier: 'catalog:'
+        version: 1.1.0
+
+  packages/decap-cms-backend-turbo-gitlab:
+    dependencies:
+      '@emotion/react':
+        specifier: 'catalog:'
+        version: 11.14.0(@types/react@19.2.2)(react@19.2.0)
+      '@emotion/styled':
+        specifier: 'catalog:'
+        version: 11.14.1(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(@types/react@19.2.2)(react@19.2.0)
+      common-tags:
+        specifier: 'catalog:'
+        version: 1.8.2
+      decap-cms-backend-gitlab:
+        specifier: workspace:*
+        version: link:../decap-cms-backend-gitlab
+      decap-cms-lib-util:
+        specifier: workspace:*
+        version: link:../decap-cms-lib-util
+      decap-cms-ui-default:
+        specifier: workspace:*
+        version: link:../decap-cms-ui-default
+      js-base64:
+        specifier: 'catalog:'
+        version: 3.7.5
+      lodash:
+        specifier: 'catalog:'
+        version: 4.17.21
+      prop-types:
+        specifier: 'catalog:'
+        version: 15.8.1
+      react:
+        specifier: 'catalog:'
+        version: 19.2.0
+      semaphore:
+        specifier: 'catalog:'
+        version: 1.1.0
+
   packages/decap-cms-core:
     dependencies:
       '@emotion/react':
@@ -2131,6 +2230,24 @@ importers:
       lodash:
         specifier: 'catalog:'
         version: 4.17.21
+
+  packages/decap-cms-media-library-s3:
+    dependencies:
+      '@emotion/react':
+        specifier: 'catalog:'
+        version: 11.14.0(@types/react@19.2.2)(react@19.2.0)
+      '@emotion/styled':
+        specifier: 'catalog:'
+        version: 11.14.1(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(@types/react@19.2.2)(react@19.2.0)
+      decap-cms-lib-util:
+        specifier: workspace:*
+        version: link:../decap-cms-lib-util
+      react:
+        specifier: 'catalog:'
+        version: 19.2.0
+      react-dom:
+        specifier: 'catalog:'
+        version: 19.2.0(react@19.2.0)
 
   packages/decap-cms-media-library-uploadcare:
     dependencies:

@@ -11,6 +11,7 @@ import entryDraft from './entryDraft';
 import medias from './medias';
 import mediaLibrary from './mediaLibrary';
 import deploys, * as fromDeploys from './deploys';
+import deployStatus from './deployStatus';
 import globalUI from './globalUI';
 import search from './search';
 import status from './status';
@@ -34,6 +35,7 @@ const reducers = {
   medias,
   mediaLibrary,
   deploys,
+  deployStatus,
   globalUI,
   status,
   notifications,

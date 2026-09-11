@@ -357,7 +357,7 @@ export default class GitHub implements Implementation {
       useOpenAuthoring: this.useOpenAuthoring,
       initialWorkflowStatus: this.options.initialWorkflowStatus,
       baseUrl: this.baseUrl,
-      getUser: args => this.currentUser(args),
+      getUser: this.currentUser.bind(this),
     });
     const user = await this.api!.user();
     const isCollab = await this.api!.hasWriteAccess().catch(error => {

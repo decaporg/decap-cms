@@ -7,6 +7,7 @@ import type { Auth } from '../reducers/auth';
 import type { Status } from '../reducers/status';
 import type { Medias } from '../reducers/medias';
 import type { Deploys } from '../reducers/deploys';
+import type { DeployStatusState } from '../reducers/deployStatus';
 import type { Search } from '../reducers/search';
 import type { GlobalUI } from '../reducers/globalUI';
 import type { NotificationsState } from '../reducers/notifications';
@@ -17,6 +18,8 @@ export type CmsBackendType =
   | 'azure'
   | 'git-gateway'
   | 'github'
+  | 'turbo-github'
+  | 'turbo-gitlab'
   | 'gitlab'
   | 'gitea'
   | 'forgejo'
@@ -601,8 +604,26 @@ export type Entries = StaticallyTypedRecord<{
   viewStyle: string;
 }>;
 
+/**
+ * The editorial-workflow `pages` slice. Deliberately not `PagesObject`, which
+ * is keyed by collection and describes the entries reducer: this one is a
+ * single flat record for the whole workflow.
+ */
+export type WorkflowPagesObject = {
+  isFetching?: boolean;
+  page?: number;
+  /** Slugs of the loaded workflow entries; set means "the entries are loaded". */
+  ids?: List<string>;
+  /** `collection/slug` for every entry under editorial workflow. */
+  keys?: List<string>;
+  /** When `keys` was last confirmed against the backend. */
+  loadedAt?: number;
+};
+
+export type WorkflowPages = StaticallyTypedRecord<WorkflowPagesObject>;
+
 export type EditorialWorkflow = StaticallyTypedRecord<{
-  pages: Pages & PagesObject;
+  pages: WorkflowPages & WorkflowPagesObject;
   entities: Entities & EntitiesObject;
 }>;
 
@@ -791,6 +812,7 @@ export interface State {
   cursors: Cursors;
   collections: Collections;
   deploys: Deploys;
+  deployStatus: DeployStatusState;
   globalUI: GlobalUI;
   editorialWorkflow: EditorialWorkflow;
   entries: Entries;
@@ -900,6 +922,9 @@ export interface EditorialWorkflowAction extends Action<string> {
   } & {
     pages: [];
     entries: { collection: string; slug: string }[];
+  } & {
+    /** UNPUBLISHED_KEYS_SUCCESS: `collection/slug` for every workflow entry. */
+    keys: string[];
   } & {
     collection: string;
     entry: StaticallyTypedRecord<{ slug: string }>;

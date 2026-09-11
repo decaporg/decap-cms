@@ -1,7 +1,7 @@
 {
   "name": "decap-cms-app",
   "description": "An extensible, open source, Git-based, React CMS for static sites. Reusable congiuration with React as peer.",
-  "version": "3.16.2",
+  "version": "3.17.0-beta.0",
   "homepage": "https://www.decapcms.org",
   "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-app",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
@@ -15,8 +15,7 @@
   "types": "index.d.ts",
   "scripts": {
     "develop": "pnpm run build:esm --watch",
-    "webpack": "node --max_old_space_size=4096 ../../node_modules/webpack/bin/webpack.js",
-    "build": "cross-env NODE_ENV=production run-s webpack",
+    "build": "cross-env NODE_ENV=production NODE_OPTIONS=--max-old-space-size=4096 webpack",
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore \"**/__tests__\" --root-mode upward"
   },
   "keywords": [
@@ -44,6 +43,8 @@
     "decap-cms-backend-gitlab": "workspace:*",
     "decap-cms-backend-proxy": "workspace:*",
     "decap-cms-backend-test": "workspace:*",
+    "decap-cms-backend-turbo-github": "workspace:*",
+    "decap-cms-backend-turbo-gitlab": "workspace:*",
     "decap-cms-core": "workspace:*",
     "decap-cms-editor-component-image": "workspace:*",
     "decap-cms-lib-auth": "workspace:*",

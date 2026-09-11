@@ -6,6 +6,7 @@ import trim from 'lodash/trim';
 import sortBy from 'lodash/sortBy';
 import get from 'lodash/get';
 import set from 'lodash/set';
+import escapeRegExp from 'lodash/escapeRegExp';
 import { List, fromJS, Set } from 'immutable';
 import * as fuzzy from 'fuzzy';
 import {
@@ -35,6 +36,7 @@ import {
   selectMediaFolders,
   selectFieldsComments,
   selectHasMetaPath,
+  selectEntryCollectionTitle,
 } from './reducers/collections';
 import { createEntry } from './valueObjects/Entry';
 import { sanitizeChar } from './lib/urlHelper';
@@ -47,6 +49,7 @@ import {
   getI18nFilesDepth,
   getI18nFiles,
   hasI18n,
+  getFilePath,
   getFilePaths,
   getI18nEntry,
   groupEntries,
@@ -330,33 +333,89 @@ function collectionDepth(collection: Collection) {
   return depth;
 }
 
-function i18nRulestring(ruleString: string, { defaultLocale, structure }: I18nInfo): string {
+function i18nRulestring(
+  ruleString: string,
+  { defaultLocale, structure }: I18nInfo,
+  locale: string = defaultLocale,
+): string {
   if (structure === I18N_STRUCTURE.MULTIPLE_FOLDERS) {
-    return `${defaultLocale}\\/${ruleString}`;
+    return `${locale}\\/${ruleString}`;
   }
 
   if (structure === I18N_STRUCTURE.MULTIPLE_FILES) {
-    return `${ruleString}\\.${defaultLocale}\\..*`;
+    return `${ruleString}\\.${locale}\\..*`;
   }
 
   return ruleString;
 }
 
-function collectionRegex(collection: Collection): RegExp | undefined {
-  let ruleString = '';
-
-  if (collection.get('path')) {
-    ruleString = `${collection.get('folder')}/${collection.get('path')}`.replace(
-      /{{.*}}/gm,
-      '(.*)',
-    );
+function collectionRuleString(collection: Collection): string {
+  if (!collection.get('path')) {
+    return '';
   }
+  return `${collection.get('folder')}/${collection.get('path')}`.replace(/{{.*}}/gm, '(.*)');
+}
+
+function collectionRegex(collection: Collection): RegExp | undefined {
+  let ruleString = collectionRuleString(collection);
 
   if (hasI18n(collection)) {
     ruleString = i18nRulestring(ruleString, getI18nInfo(collection) as I18nInfo);
   }
 
   return ruleString ? new RegExp(ruleString) : undefined;
+}
+
+/**
+ * The same selector as `collectionRegex`, for the locales it deliberately
+ * leaves out.
+ *
+ * A collection list only ever wants one file per entry, so `collectionRegex`
+ * narrows to the default locale. The EDITOR wants all of them: with
+ * `structure: multiple_files` it reads `slug.en.md`, `slug.de.md` and
+ * `slug.si.md` as separate files. Backends that maintain a cache keyed on the
+ * collection selector therefore cache the default locale and miss every
+ * sibling, so each non-default locale falls back to the origin on every entry
+ * open — through Turbo's proxy, a tree read plus a blob read per locale.
+ *
+ * Built from the same `i18nRulestring` with the locale substituted, so the two
+ * selectors cannot drift into disagreeing about the repository layout.
+ *
+ * Undefined when there is nothing extra to select: no i18n, a single file
+ * holding every locale, or only the default locale configured.
+ */
+function localeSiblingRegex(collection: Collection): RegExp | undefined {
+  if (!hasI18n(collection)) {
+    return undefined;
+  }
+
+  const i18n = getI18nInfo(collection) as I18nInfo;
+  const { structure, defaultLocale, locales } = i18n;
+
+  if (structure === I18N_STRUCTURE.SINGLE_FILE) {
+    return undefined;
+  }
+
+  const siblings = (locales || []).filter(locale => locale !== defaultLocale);
+  if (siblings.length === 0) {
+    return undefined;
+  }
+
+  const ruleString = i18nRulestring(
+    collectionRuleString(collection),
+    i18n,
+    `(?:${siblings.map(escapeRegExp).join('|')})`,
+  );
+
+  return ruleString ? new RegExp(ruleString) : undefined;
+}
+
+function safeEntryLabel(collection: Collection, entry: EntryMap) {
+  try {
+    return selectEntryCollectionTitle(collection, entry);
+  } catch {
+    return undefined;
+  }
 }
 
 export class Backend {
@@ -477,11 +536,38 @@ export class Backend {
 
     if (unpublishedEntry) return unpublishedEntry;
 
+    // For multiple_files/multiple_folders i18n the entry does not live at
+    // `path` itself but at the localised variants of it, so probing `path`
+    // always misses — and a miss here licenses reusing the slug, which
+    // overwrites the existing entry's files. The default locale is written for
+    // every entry, so one probe still answers the question.
+    let entryPath = path;
+    if (hasI18n(collection)) {
+      const { structure, defaultLocale } = getI18nInfo(collection) as I18nInfo;
+      entryPath = getFilePath(
+        structure as I18N_STRUCTURE,
+        selectFolderEntryExtension(collection),
+        path,
+        slug,
+        defaultLocale,
+      );
+    }
+
     const publishedEntry = await this.implementation
-      .getEntry(path)
-      .then(({ data }) => data)
-      .catch(() => {
-        return Promise.resolve(false);
+      .getEntry(entryPath)
+      // A backend that resolves nothing is saying "no such entry"; only a
+      // rejection is ambiguous.
+      .then(result => result?.data)
+      .catch((error: Error & { status?: number }) => {
+        // A 404 is the only answer that means "absent". Anything else means we
+        // could not tell, and both available answers are wrong: "absent" lets
+        // the caller reuse a slug that is taken and overwrite live content,
+        // while "present" spins generateUniqueSlug's loop forever. Fail the
+        // save instead — the editor retries, rather than losing an entry.
+        if (error?.status === 404) {
+          return false;
+        }
+        throw error;
       });
 
     return publishedEntry;
@@ -727,7 +813,7 @@ export class Backend {
   // repeats the process. Once there is no available "next" action, it
   // returns all the collected entries. Used to retrieve all entries
   // for local searches and queries.
-  async listAllEntries(collection: Collection) {
+  async listAllEntries(collection: Collection, searchTerm?: string) {
     if (collection.get('folder') && this.implementation.allEntriesByFolder) {
       const depth = collectionDepth(collection);
       const extension = selectFolderEntryExtension(collection);
@@ -737,6 +823,11 @@ export class Backend {
           extension,
           depth,
           collectionRegex(collection),
+          searchTerm,
+          // The locales this listing leaves out. A caching backend can warm
+          // them here so the editor does not read each one from the origin on
+          // every entry open; a backend without a cache ignores it.
+          localeSiblingRegex(collection),
         )
         .then(entries => this.processEntries(entries, collection));
     }
@@ -784,10 +875,11 @@ export class Backend {
               }
               return elem;
             }),
+            'body',
           ];
         }
         const filteredSearchFields = searchFields.filter(Boolean) as string[];
-        const collectionEntries = await this.listAllEntries(collection);
+        const collectionEntries = await this.listAllEntries(collection, searchTerm);
         return fuzzy.filter(searchTerm, collectionEntries, {
           extract: extractSearchFields(uniq(filteredSearchFields)),
         });
@@ -1106,6 +1198,22 @@ export class Backend {
     }
   }
 
+  /**
+   * The content keys (`collection/slug`) of every entry under editorial
+   * workflow, and nothing else about them.
+   *
+   * This is the cheap half of `unpublishedEntries`: the same single call that
+   * lists the open workflow branches, without the per-entry hydration that
+   * follows it there. Callers that only need to know WHICH entries are in the
+   * workflow — rather than render them — should use this: hydrating a draft
+   * costs a pull request lookup, a diff and a blob read, so answering "is this
+   * slug in the workflow" from the full load scales the cost with the number
+   * of open drafts for an answer that never needed their contents.
+   */
+  async unpublishedContentKeys(): Promise<string[]> {
+    return this.implementation.unpublishedEntries!();
+  }
+
   async unpublishedEntries(collections: Collections) {
     const ids = await this.implementation.unpublishedEntries!();
     const entries = (
@@ -1344,6 +1452,18 @@ export class Backend {
       collectionName,
       useWorkflow,
       hasSubfolders,
+      // The entry's title as the CMS displays it — the same value the "your
+      // change is live" notification uses. Backends that record deploys store
+      // it against the commit so a colleague's save reads as an entry rather
+      // than a bare sha; every other backend ignores it. The commit message
+      // cannot stand in: it carries the slug and is template-configurable.
+      //
+      // Guarded because this now runs on every save for every backend, and
+      // the title lookup walks entry data that a preSave event handler may
+      // have replaced with a shape it does not expect. A missing label costs
+      // a column on one page; a throw here would cost the save.
+      entryLabel: safeEntryLabel(collection, entryDraft.get('entry')),
+      entryPath: path,
       ...updatedOptions,
     };
 

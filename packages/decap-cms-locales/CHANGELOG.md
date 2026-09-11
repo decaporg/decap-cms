@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.9.0-beta.0](https://github.com/decaporg/decap-cms/compare/decap-cms-locales@3.8.2...decap-cms-locales@3.9.0-beta.0) (2026-09-10)
+
+### Bug Fixes
+
+- **deploys:** name the success state in the filter ([a32ba30](https://github.com/decaporg/decap-cms/commit/a32ba3051b20d59478913b97a9f9792760cb0a37))
+
+### Features
+
+- **core,turbo-github:** async, entry-scoped deploy notifications (A4b) ([ce3ef09](https://github.com/decaporg/decap-cms/commit/ce3ef092ab65d73502d3340ab281b33c26050ce9))
+- **core:** follow a save's deploy in one updating toast (A4) ([4aa5b0a](https://github.com/decaporg/decap-cms/commit/4aa5b0afc2c14dd62097eecb9967e843a49d29d9))
+- **deploy-status:** a Deploys page and a header state indicator (A8) ([1827898](https://github.com/decaporg/decap-cms/commit/18278989b65d3f5dcef1f433feed7e84e00d346f))
+- **deploy-status:** saved entry and published-to columns, stateful nav ([6bce67b](https://github.com/decaporg/decap-cms/commit/6bce67b506ef075f412107ff0be8e114910a216d))
+- **deploys:** filter by the state shown, and sort every column ([b3b3a6a](https://github.com/decaporg/decap-cms/commit/b3b3a6a43d01b2381d83dccb4736c3fbefa966fe))
+- **deploys:** live per branch, a stalled state, and table controls ([feb232e](https://github.com/decaporg/decap-cms/commit/feb232e87f57c5558bd6c29da2470d8c509f6340))
+
 ## [3.8.2](https://github.com/decaporg/decap-cms/compare/decap-cms-locales@3.8.1...decap-cms-locales@3.8.2) (2026-09-10)
 
 **Note:** Version bump only for package decap-cms-locales

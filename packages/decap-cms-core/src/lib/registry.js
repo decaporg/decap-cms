@@ -207,6 +207,7 @@ export function registerBackend(name, BackendClass) {
   } else {
     registry.backends[name] = {
       init: (...args) => new BackendClass(...args),
+      BackendClass,
     };
   }
 }

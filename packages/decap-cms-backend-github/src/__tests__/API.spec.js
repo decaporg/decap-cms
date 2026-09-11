@@ -723,6 +723,42 @@ describe('github API', () => {
     });
   });
 
+  describe('listUnpublishedBranches', () => {
+    function pullRequest(ref, labels) {
+      return { head: { ref, repo: { fork: false } }, labels: labels.map(name => ({ name })) };
+    }
+
+    it('reads the open pull request list once when nothing needs migrating', async () => {
+      const api = new API({ branch: 'main', repo: 'owner/repo' });
+      api.requestAllPages = jest
+        .fn()
+        .mockResolvedValue([pullRequest('cms/posts/a-post', ['decap-cms/pending_review'])]);
+
+      await expect(api.listUnpublishedBranches()).resolves.toEqual(['cms/posts/a-post']);
+
+      // The labelled and unlabelled sets are two filters over the same
+      // `GET /pulls?base=…&state=open` page, so asking for both must not cost
+      // two identical round trips.
+      expect(api.requestAllPages).toHaveBeenCalledTimes(1);
+    });
+
+    it('re-reads the list after a migration, because migrating is what adds the label', async () => {
+      const api = new API({ branch: 'main', repo: 'owner/repo' });
+      const unlabeled = pullRequest('cms/posts/legacy', []);
+      api.requestAllPages = jest
+        .fn()
+        .mockResolvedValueOnce([unlabeled])
+        .mockResolvedValueOnce([pullRequest('cms/posts/legacy', ['decap-cms/draft'])]);
+      api.migratePullRequest = jest.fn().mockResolvedValue(undefined);
+      global.alert = jest.fn();
+
+      await expect(api.listUnpublishedBranches()).resolves.toEqual(['cms/posts/legacy']);
+
+      expect(api.migratePullRequest).toHaveBeenCalledTimes(1);
+      expect(api.requestAllPages).toHaveBeenCalledTimes(2);
+    });
+  });
+
   describe('listFiles', () => {
     it('should get files by depth', async () => {
       const api = new API({ branch: 'master', repo: 'owner/repo' });

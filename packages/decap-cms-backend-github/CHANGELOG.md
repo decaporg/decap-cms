@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.9.0-beta.0](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-github@3.8.2...decap-cms-backend-github@3.9.0-beta.0) (2026-09-10)
+
+### Features
+
+- **proxy:** wip - first draft / caching allEntriesByFolder ([56ca436](https://github.com/decaporg/decap-cms/commit/56ca436725668a997ba4ee24122d1e10bbb2ed3c))
+
+### Performance Improvements
+
+- **turbo-github,turbo-gitlab,backend-github:** cut redundant and duplicate reads ([133dd26](https://github.com/decaporg/decap-cms/commit/133dd267c28f50a4d324b8a8d2575e76cc8ffefc))
+
 ## [3.8.2](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-github@3.8.1...decap-cms-backend-github@3.8.2) (2026-09-10)
 
 **Note:** Version bump only for package decap-cms-backend-github
