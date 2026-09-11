@@ -206,11 +206,49 @@ function convertToSortableOption(raw) {
   };
 }
 
+/**
+ * The hits from a resolved `query` action, or a throw if the query failed.
+ *
+ * The query thunk never rejects: on failure it resolves with the action
+ * `queryFailure` returns, which carries `payload.error` where a success would
+ * carry `payload.hits`. Reading `payload.hits` off it yields `undefined`, and
+ * the `|| []` that follows turns a failed request into the claim that the
+ * collection is empty — a claim that is then cached (see RelationCache) and
+ * shown to the editor as "No options" until the page is reloaded.
+ *
+ * Throwing instead keeps the failure a failure: RelationCache only stores
+ * resolved values, so a transient error is retried on the next attempt rather
+ * than memoised for the life of the page.
+ */
+function hitsFromQueryResult(result) {
+  const error = result?.payload?.error;
+  if (error) {
+    throw error instanceof Error ? error : new Error(String(error));
+  }
+  if (!result?.payload || !Array.isArray(result.payload.hits)) {
+    throw new Error('Relation query returned no hits');
+  }
+  return result.payload.hits;
+}
+
 export default class RelationControl extends Component {
   mounted = false;
 
   state = {
     initialOptions: [],
+    /**
+     * What the menu shows before anything is typed. `undefined` means "not
+     * loaded yet", which is distinct from `[]` ("loaded, genuinely empty") —
+     * only the former is retried when the menu is opened.
+     */
+    menuOptions: undefined,
+    /**
+     * True while the menu list is being fetched. react-select derived this
+     * itself from `defaultOptions={true}`; now that the list is ours, the
+     * spinner has to be too — without it a slow load renders as "No options",
+     * which is the exact confusion this whole change exists to remove.
+     */
+    loadingOptions: true,
   };
 
   static propTypes = {
@@ -246,11 +284,17 @@ export default class RelationControl extends Component {
     return error ? { error } : { error: false };
   };
 
-  shouldComponentUpdate(nextProps) {
+  shouldComponentUpdate(nextProps, nextState) {
     return (
       this.props.value !== nextProps.value ||
       this.props.hasActiveStyle !== nextProps.hasActiveStyle ||
-      this.props.queryHits !== nextProps.queryHits
+      this.props.queryHits !== nextProps.queryHits ||
+      // Previously absent, which meant a setState could not repaint the menu on
+      // its own — it only ever rendered because `queryHits` happened to change
+      // in the same tick.
+      this.state.initialOptions !== nextState.initialOptions ||
+      this.state.menuOptions !== nextState.menuOptions ||
+      this.state.loadingOptions !== nextState.loadingOptions
     );
   }
 
@@ -259,10 +303,10 @@ export default class RelationControl extends Component {
     PropTypes.checkPropTypes(RelationControl.propTypes, this.props, 'prop', 'RelationControl');
 
     this.mounted = true;
-    const { value } = this.props;
-    if (value && this.hasInitialValues(value)) {
-      await this.loadInitialOptions();
-    }
+    // Unconditional now. It used to run only for a field that already held a
+    // value, because react-select loaded the menu itself in every other case;
+    // that load is no longer used (see handleMenuOpen).
+    await this.loadInitialOptions();
   }
 
   hasInitialValues(value) {
@@ -279,24 +323,38 @@ export default class RelationControl extends Component {
     const searchFieldsArray = getFieldArray(field.get('search_fields'));
     const file = field.get('file');
 
+    if (this.mounted) {
+      this.setState({ loadingOptions: true });
+    }
+
     try {
-      const result = await relationCache.getOptions(
+      const hits = await relationCache.getOptions(
         collection,
         searchFieldsArray,
         '', // empty term for initial load
         file,
-        () => query(forID, collection, searchFieldsArray, '', file),
+        () => query(forID, collection, searchFieldsArray, '', file).then(hitsFromQueryResult),
       );
 
-      const hits = result.payload.hits || [];
-      let options = this.parseHitOptions(hits);
+      const allOptions = this.parseHitOptions(hits);
+      let options = allOptions;
       if (this.isMultiple()) {
-        const selectedOptions = getSelectedOptions(value);
+        // `|| []` because this now runs for a field with no value at all, where
+        // getSelectedOptions returns null. It could not before: the load was
+        // gated on the field already holding one.
+        const selectedOptions = getSelectedOptions(value) || [];
         options = options.filter(o => selectedOptions.includes(o.value));
       }
 
       if (this.mounted) {
-        this.setState({ initialOptions: options });
+        // `menuOptions` is the whole list the menu offers; `initialOptions` is
+        // narrowed to what is already selected, because it exists to resolve
+        // those values' labels rather than to be offered again.
+        this.setState({
+          initialOptions: options,
+          menuOptions: allOptions.slice(0, this.optionsLength()),
+          loadingOptions: false,
+        });
 
         // Call onChange with metadata for initial values
         if (value && this.hasInitialValues(value)) {
@@ -305,8 +363,32 @@ export default class RelationControl extends Component {
       }
     } catch (error) {
       console.error('Failed to load initial options:', error);
+      // Deliberately leaves `menuOptions` undefined rather than setting `[]`:
+      // that is what lets `handleMenuOpen` tell "we never managed to load" from
+      // "there is genuinely nothing here", and retry only the former.
+      if (this.mounted) {
+        this.setState({ loadingOptions: false });
+      }
     }
   }
+
+  optionsLength() {
+    return this.props.field.get('options_length') || 20;
+  }
+
+  /**
+   * Retry the list the menu shows, if we have never successfully loaded it.
+   *
+   * react-select's own `defaultOptions={true}` loads exactly once, in a mount
+   * effect with no dependencies, and there is no way to ask it to try again —
+   * so a single failed load left the menu permanently empty even after the
+   * cause had passed. Owning the list means opening the menu can retry it.
+   */
+  handleMenuOpen = () => {
+    if (this.state.menuOptions === undefined && !this.state.loadingOptions) {
+      this.loadInitialOptions();
+    }
+  };
 
   triggerInitialOnChange(value, options) {
     const { onChange, field } = this.props;
@@ -469,16 +551,15 @@ export default class RelationControl extends Component {
 
     relationCache
       .getOptions(collection, searchFieldsArray, term, file, () =>
-        query(forID, collection, searchFieldsArray, term, file),
+        query(forID, collection, searchFieldsArray, term, file).then(hitsFromQueryResult),
       )
-      .then(result => {
-        const hits = result.payload.hits || [];
+      .then(hits => {
         const options = this.parseHitOptions(hits);
-        const optionsLength = field.get('options_length') || 20;
-        const uniq = uniqOptions(options, this.state.initialOptions).slice(0, optionsLength);
+        const uniq = uniqOptions(options, this.state.initialOptions).slice(0, this.optionsLength());
         callback(uniq);
       })
       .catch(error => {
+        // Nothing is cached for this term, so the next keystroke retries.
         console.error('Failed to load options:', error);
         callback([]);
       });
@@ -518,8 +599,10 @@ export default class RelationControl extends Component {
         value={selectedValue}
         inputId={forID}
         cacheOptions
-        defaultOptions
+        defaultOptions={this.state.menuOptions}
         loadOptions={this.loadOptions}
+        onMenuOpen={this.handleMenuOpen}
+        isLoading={this.state.loadingOptions}
         loadingMessage={() => 'Loading options…'}
         onChange={this.handleChange}
         className={classNameWrapper}
