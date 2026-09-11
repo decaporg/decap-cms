@@ -100,10 +100,7 @@ describe('relation options after a failed query', () => {
   // can never be asked again, so before this the menu stayed empty for the life
   // of the page even once the backend had recovered.
   it('retries the menu list when the dropdown is opened', async () => {
-    const query = jest
-      .fn()
-      .mockImplementationOnce(failedQuery)
-      .mockImplementation(succeededQuery);
+    const query = jest.fn().mockImplementationOnce(failedQuery).mockImplementation(succeededQuery);
 
     const { input, getByText, queryByText } = setup(query);
 
@@ -148,7 +145,13 @@ describe('relation options after a failed query', () => {
     // The props object is reused as `nextProps` for the unchanged case: these
     // are identity comparisons, so a fresh `{queryHits: []}` would read as a
     // change and prove nothing.
-    const props = { field, value: undefined, hasActiveStyle: false, queryHits: [], query: jest.fn() };
+    const props = {
+      field,
+      value: undefined,
+      hasActiveStyle: false,
+      queryHits: [],
+      query: jest.fn(),
+    };
     const instance = new RelationControl(props);
     instance.state = { initialOptions: [], menuOptions: undefined, loadingOptions: true };
     return { instance, props };
