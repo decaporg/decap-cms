@@ -30,7 +30,7 @@ function withInlines(editor) {
   if (editor.keyDownHandlers === undefined) {
     editor.keyDownHandlers = [];
   }
-  editor.keyDownHandlers.push((event, editor) => keyDown(event, editor));
+  editor.keyDownHandlers.push((event, editor, options) => keyDown(event, editor, options));
 
   return editor;
 }

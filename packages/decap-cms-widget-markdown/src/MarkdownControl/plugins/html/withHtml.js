@@ -3,35 +3,7 @@ import DOMPurify from 'dompurify';
 import { jsx } from 'slate-hyperscript';
 import { Transforms } from 'slate';
 
-function sanitizeElementUrl(url, { allowDataImage = false } = {}) {
-  if (!url) {
-    return null;
-  }
-
-  const trimmed = url.trim();
-
-  if (!trimmed) {
-    return null;
-  }
-
-  const normalized = trimmed.replace(/\s+/g, '').toLowerCase();
-
-  if (
-    normalized.startsWith('javascript:') ||
-    normalized.startsWith('vbscript:') ||
-    normalized.startsWith('file:')
-  ) {
-    return null;
-  }
-
-  if (normalized.startsWith('data:')) {
-    return allowDataImage && /^data:image\/(?!svg\+xml)[a-z0-9.+-]+[;,]/i.test(normalized)
-      ? trimmed
-      : null;
-  }
-
-  return trimmed;
-}
+import sanitizeElementUrl from '../urls/sanitizeElementUrl';
 
 const ELEMENT_TAGS = {
   A: el => {

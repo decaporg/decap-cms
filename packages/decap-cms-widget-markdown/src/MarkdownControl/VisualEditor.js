@@ -155,7 +155,7 @@ function Editor(props) {
   }
 
   function handleLinkClick() {
-    toggleLink(editor, t('editor.editorWidgets.markdown.linkPrompt'));
+    toggleLink(editor, t);
     ReactEditor.focus(editor);
   }
 
@@ -173,7 +173,7 @@ function Editor(props) {
 
   function handleKeyDown(event) {
     for (const handler of editor.keyDownHandlers || []) {
-      if (handler(event, editor) === false) {
+      if (handler(event, editor, { t }) === false) {
         break;
       }
     }

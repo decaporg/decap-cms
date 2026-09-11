@@ -183,6 +183,8 @@ const en = {
         code: 'Code',
         link: 'Link',
         linkPrompt: 'Enter the URL of the link',
+        linkPromptInvalid:
+          "That doesn't look like a valid URL. Check it for spaces or an unsupported protocol.",
         headings: 'Headings',
         quote: 'Quote',
         bulletedList: 'Bulleted List',

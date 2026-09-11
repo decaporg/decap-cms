@@ -13,7 +13,7 @@ const MARK_HOTKEYS = {
   'mod+shift+c': 'code',
 };
 
-function keyDown(event, editor) {
+function keyDown(event, editor, { t } = {}) {
   if (!editor.selection) return;
 
   for (const hotkey in MARK_HOTKEYS) {
@@ -26,7 +26,7 @@ function keyDown(event, editor) {
 
   if (isHotkey('mod+k', event)) {
     event.preventDefault();
-    return toggleLink(editor);
+    return toggleLink(editor, t);
   }
 
   if (isHotkey('shift+enter', event)) {
