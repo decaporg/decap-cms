@@ -43,7 +43,7 @@ import {
   selectDeployPreview,
 } from '../../reducers';
 import { selectFields, getFileFromSlug } from '../../reducers/collections';
-import { status, EDITORIAL_WORKFLOW } from '../../constants/publishModes';
+import { status, SIMPLE_DRAFT, usesUnpublishedEntries } from '../../constants/publishModes';
 import { FILES } from '../../constants/collectionTypes';
 import EditorInterface from './EditorInterface';
 import withWorkflow from './withWorkflow';
@@ -79,6 +79,7 @@ export class Editor extends Component {
     newEntry: PropTypes.bool.isRequired,
     displayUrl: PropTypes.string,
     hasWorkflow: PropTypes.bool,
+    simpleDraftMode: PropTypes.bool,
     useOpenAuthoring: PropTypes.bool,
     unpublishedEntry: PropTypes.bool,
     isModification: PropTypes.bool,
@@ -301,7 +302,8 @@ export class Editor extends Component {
       currentStatus,
       t,
     } = this.props;
-    if (currentStatus !== status.last()) {
+    const canPublishDraft = this.props.simpleDraftMode && currentStatus === status.get('DRAFT');
+    if (currentStatus !== status.last() && !canPublishDraft) {
       window.alert(t('editor.editor.onPublishingNotReady'));
       return;
     } else if (entryDraft.get('hasChanged')) {
@@ -465,6 +467,7 @@ export class Editor extends Component {
         canCreateNewEntry={canCreateNewEntry}
         displayUrl={displayUrl}
         hasWorkflow={hasWorkflow}
+        simpleDraftMode={this.props.simpleDraftMode}
         useOpenAuthoring={useOpenAuthoring}
         hasUnpublishedChanges={unpublishedEntry}
         isNewEntry={newEntry}
@@ -493,7 +496,8 @@ function mapStateToProps(state, ownProps) {
   const hasChanged = entryDraft.get('hasChanged');
   const canCreateNewEntry = selectCanCreateNewEntry(state, collectionName);
   const displayUrl = config.display_url;
-  const hasWorkflow = config.publish_mode === EDITORIAL_WORKFLOW;
+  const hasWorkflow = usesUnpublishedEntries(config.publish_mode);
+  const simpleDraftMode = config.publish_mode === SIMPLE_DRAFT;
   const useOpenAuthoring = globalUI.useOpenAuthoring;
   const isModification = entryDraft.getIn(['entry', 'isModification']);
   const collectionEntriesLoaded = !!entries.getIn(['pages', collectionName]);
@@ -528,6 +532,7 @@ function mapStateToProps(state, ownProps) {
     canCreateNewEntry,
     displayUrl,
     hasWorkflow,
+    simpleDraftMode,
     useOpenAuthoring,
     isModification,
     collectionEntriesLoaded,

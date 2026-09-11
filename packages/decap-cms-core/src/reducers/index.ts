@@ -16,7 +16,7 @@ import search from './search';
 import status from './status';
 import notifications from './notifications';
 import { FOLDER } from '../constants/collectionTypes';
-import { EDITORIAL_WORKFLOW } from '../constants/publishModes';
+import { usesUnpublishedEntries } from '../constants/publishModes';
 
 import type { Status } from '../constants/publishModes';
 import type { State, Collection } from '../types/redux';
@@ -104,7 +104,7 @@ export function selectCanCreateNewEntry(state: State, collectionName: string) {
 
   let entrySlugs = Set<string>(fromEntries.selectPublishedSlugs(state.entries, collectionName));
   const unpublishedSlugs =
-    state.config?.publish_mode === EDITORIAL_WORKFLOW && state.editorialWorkflow
+    usesUnpublishedEntries(state.config?.publish_mode) && state.editorialWorkflow
       ? fromEditorialWorkflow.selectUnpublishedSlugs(state.editorialWorkflow, collectionName)
       : null;
 

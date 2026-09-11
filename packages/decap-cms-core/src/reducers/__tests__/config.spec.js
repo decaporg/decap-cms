@@ -1,5 +1,5 @@
 import { configLoaded, configLoading, configFailed } from '../../actions/config';
-import config, { selectLocale } from '../config';
+import config, { selectLocale, selectUseWorkflow } from '../config';
 
 describe('config', () => {
   it('should handle an empty state', () => {
@@ -34,5 +34,13 @@ describe('config', () => {
 
   it('should default to "en" locale', () => {
     expect(selectLocale({})).toEqual('en');
+  });
+
+  it.each([
+    ['simple', false],
+    ['simple_draft', true],
+    ['editorial_workflow', true],
+  ])('should set workflow usage for %s mode', (publishMode, expected) => {
+    expect(selectUseWorkflow({ publish_mode: publishMode })).toBe(expected);
   });
 });

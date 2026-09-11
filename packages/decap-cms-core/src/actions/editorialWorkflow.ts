@@ -10,7 +10,7 @@ import {
   selectUnpublishedEntry,
 } from '../reducers';
 import { selectEditingDraft } from '../reducers/entries';
-import { EDITORIAL_WORKFLOW, status } from '../constants/publishModes';
+import { SIMPLE_DRAFT, status, usesUnpublishedEntries } from '../constants/publishModes';
 import {
   loadEntry,
   entryDeleted,
@@ -65,6 +65,10 @@ export const UNPUBLISHED_ENTRY_PUBLISH_FAILURE = 'UNPUBLISHED_ENTRY_PUBLISH_FAIL
 export const UNPUBLISHED_ENTRY_DELETE_REQUEST = 'UNPUBLISHED_ENTRY_DELETE_REQUEST';
 export const UNPUBLISHED_ENTRY_DELETE_SUCCESS = 'UNPUBLISHED_ENTRY_DELETE_SUCCESS';
 export const UNPUBLISHED_ENTRY_DELETE_FAILURE = 'UNPUBLISHED_ENTRY_DELETE_FAILURE';
+
+function normalizeUnpublishedEntryStatus(entry: EntryValue, publishMode?: string) {
+  return publishMode === SIMPLE_DRAFT ? { ...entry, status: status.get('DRAFT') } : entry;
+}
 
 /*
  * Simple Action Creators (Internal)
@@ -246,7 +250,10 @@ export function loadUnpublishedEntry(collection: Collection, slug: string) {
     if (!entriesLoaded) {
       try {
         const { entries, pagination } = await backend.unpublishedEntries(state.collections);
-        dispatch(unpublishedEntriesLoaded(entries, pagination));
+        const normalizedEntries = entries.map(entry =>
+          normalizeUnpublishedEntryStatus(entry, state.config.publish_mode),
+        );
+        dispatch(unpublishedEntriesLoaded(normalizedEntries, pagination));
         // eslint-disable-next-line no-empty
       } catch (e) {}
     }
@@ -254,7 +261,8 @@ export function loadUnpublishedEntry(collection: Collection, slug: string) {
     dispatch(unpublishedEntryLoading(collection, slug));
 
     try {
-      const entry = (await backend.unpublishedEntry(state, collection, slug)) as EntryValue;
+      const loadedEntry = (await backend.unpublishedEntry(state, collection, slug)) as EntryValue;
+      const entry = normalizeUnpublishedEntryStatus(loadedEntry, state.config.publish_mode);
       const assetProxies = await Promise.all(
         entry.mediaFiles
           .filter(file => file.draft)
@@ -296,14 +304,19 @@ export function loadUnpublishedEntries(collections: Collections) {
     const entriesLoaded = get(state.editorialWorkflow.toJS(), 'pages.ids', false);
     const entriesLoading = get(state.editorialWorkflow.toJS(), 'pages.isFetching', false);
 
-    if (state.config.publish_mode !== EDITORIAL_WORKFLOW || entriesLoaded || entriesLoading) {
+    if (!usesUnpublishedEntries(state.config.publish_mode) || entriesLoaded || entriesLoading) {
       return;
     }
 
     dispatch(unpublishedEntriesLoading());
     backend
       .unpublishedEntries(collections)
-      .then(response => dispatch(unpublishedEntriesLoaded(response.entries, response.pagination)))
+      .then(response => {
+        const entries = response.entries.map(entry =>
+          normalizeUnpublishedEntryStatus(entry, state.config.publish_mode),
+        );
+        dispatch(unpublishedEntriesLoaded(entries, response.pagination));
+      })
       .catch((error: Error) => {
         dispatch(
           addNotification({
@@ -539,7 +552,10 @@ export function unpublishPublishedEntry(collection: Collection, slug: string) {
           entryDraft,
           assetProxies: [],
           usedSlugs: List(),
-          status: status.get('PENDING_PUBLISH'),
+          status:
+            state.config.publish_mode === SIMPLE_DRAFT
+              ? status.get('DRAFT')
+              : status.get('PENDING_PUBLISH'),
         }),
       )
       .then(() => backend.reopenIssueForUnpublishedEntry(collection.get('name'), slug))

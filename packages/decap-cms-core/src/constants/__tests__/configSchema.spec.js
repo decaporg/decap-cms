@@ -37,6 +37,12 @@ describe('config', () => {
       }).not.toThrowError();
     });
 
+    it('should allow the simple draft publish mode', () => {
+      expect(() => {
+        validateConfig({ ...validConfig, publish_mode: 'simple_draft' });
+      }).not.toThrowError();
+    });
+
     it('should throw if backend is not defined in config', () => {
       expect(() => {
         validateConfig({ foo: 'bar' });

@@ -59,7 +59,7 @@ export type CmsCollectionFormatType =
 
 export type CmsAuthScope = 'repo' | 'public_repo';
 
-export type CmsPublishMode = 'simple' | 'editorial_workflow';
+export type CmsPublishMode = 'simple' | 'simple_draft' | 'editorial_workflow';
 
 export type CmsSlugEncoding = 'unicode' | 'ascii';
 
