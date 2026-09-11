@@ -2,6 +2,7 @@ import { fromJS } from 'immutable';
 import { render, fireEvent, waitFor } from '@testing-library/react';
 
 import { DecapCmsWidgetRelation } from '../';
+import RelationControl from '../RelationControl';
 import relationCache from '../RelationCache';
 
 // Deliberately NOT mocking RelationCache: what a failure does to the cache is
@@ -13,7 +14,7 @@ jest.mock('react-window', () => {
   return { FixedSizeList };
 });
 
-const RelationControl = DecapCmsWidgetRelation.controlComponent;
+const RelationControlComponent = DecapCmsWidgetRelation.controlComponent;
 
 const field = fromJS({
   name: 'post',
@@ -38,7 +39,7 @@ function succeededQuery() {
 
 function setup(query) {
   const helpers = render(
-    <RelationControl
+    <RelationControlComponent
       field={field}
       value={undefined}
       query={query}
@@ -136,6 +137,39 @@ describe('relation options after a failed query', () => {
     await waitFor(() => {
       expect(queryByText('Loading options…')).not.toBeInTheDocument();
     });
+  });
+
+  // The core Widget borrows this method off the control instance and calls it
+  // with `nextProps` alone, to decide whether the WIDGET should re-render
+  // (components/Editor/EditorControlPane/Widget.js:92). Dereferencing the
+  // missing `nextState` threw and took the whole editor down with an error
+  // screen the moment a dropdown was opened.
+  function instanceWithProps() {
+    // The props object is reused as `nextProps` for the unchanged case: these
+    // are identity comparisons, so a fresh `{queryHits: []}` would read as a
+    // change and prove nothing.
+    const props = { field, value: undefined, hasActiveStyle: false, queryHits: [], query: jest.fn() };
+    const instance = new RelationControl(props);
+    instance.state = { initialOptions: [], menuOptions: undefined, loadingOptions: true };
+    return { instance, props };
+  }
+
+  it('survives shouldComponentUpdate being called without nextState', () => {
+    const { instance, props } = instanceWithProps();
+
+    expect(() => instance.shouldComponentUpdate(props)).not.toThrow();
+    expect(instance.shouldComponentUpdate(props)).toBe(false);
+    // A real prop change must still be reported, with or without nextState.
+    expect(instance.shouldComponentUpdate({ ...props, value: 'Post # 1' })).toBe(true);
+  });
+
+  it('still repaints when only state changed and React passes nextState', () => {
+    const { instance, props } = instanceWithProps();
+    const state = instance.state;
+
+    expect(instance.shouldComponentUpdate(props, state)).toBe(false);
+    expect(instance.shouldComponentUpdate(props, { ...state, menuOptions: [] })).toBe(true);
+    expect(instance.shouldComponentUpdate(props, { ...state, loadingOptions: false })).toBe(true);
   });
 
   // A collection that really is empty must not be re-queried on every open.

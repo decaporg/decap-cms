@@ -285,13 +285,19 @@ export default class RelationControl extends Component {
   };
 
   shouldComponentUpdate(nextProps, nextState) {
-    return (
+    if (
       this.props.value !== nextProps.value ||
       this.props.hasActiveStyle !== nextProps.hasActiveStyle ||
-      this.props.queryHits !== nextProps.queryHits ||
-      // Previously absent, which meant a setState could not repaint the menu on
-      // its own — it only ever rendered because `queryHits` happened to change
-      // in the same tick.
+      this.props.queryHits !== nextProps.queryHits
+    ) {
+      return true;
+    }
+
+    if (!nextState) {
+      return false;
+    }
+
+    return (
       this.state.initialOptions !== nextState.initialOptions ||
       this.state.menuOptions !== nextState.menuOptions ||
       this.state.loadingOptions !== nextState.loadingOptions
