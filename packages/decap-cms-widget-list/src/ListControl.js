@@ -736,16 +736,19 @@ export default class ListControl extends Component {
   renderErroneousTypedItem(index, item) {
     const field = this.props.field;
     const errorMessage = getErrorMessageForTypedFieldAndValue(field, item);
-    const key = `item-${index}`;
+    const key = this.state.keys[index];
     return (
       <SortableListItem
         css={[styles.listControlItem, styles.listControlItemCollapsed]}
         index={index}
         key={key}
+        id={key}
       >
         <StyledListItemTopBar
           onCollapseToggle={null}
-          onRemove={partial(this.handleRemove, index, key)}
+          onRemove={partial(this.handleRemove, index)}
+          allowRemove={field.get('allow_remove', true)}
+          allowReorder={field.get('allow_reorder', true)}
           dragHandle={DragHandle}
           id={key}
         />
