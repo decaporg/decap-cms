@@ -5,7 +5,7 @@ backend edge proxy with backend-provided auth/site context, and per-site provide
 
 ## Prerequisites
 
-- Decap CMS with `decap-turbo` backend
+- Decap CMS with the `turbo-github` or `turbo-gitlab` backend
 - Deployed `integrations` edge function (`/functions/v1/integrations/s3`)
 - An S3-compatible bucket already created (AWS S3, Cloudflare R2, Backblaze B2, DigitalOcean
   Spaces, Wasabi, MinIO, Scaleway, Linode, or any other S3-compatible provider)
