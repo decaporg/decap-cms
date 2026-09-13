@@ -612,19 +612,23 @@ export class Backend {
       maxBytes = slugByteBudget(collection, config);
       slug = truncateSlug(slugFormatter(collection, entryData, slugConfig), maxBytes, slugConfig);
     }
+    const slugExists = (candidate: string) =>
+      usedSlugs.includes(candidate) ||
+      this.entryExist(
+        collection,
+        selectEntryPath(collection, candidate) as string,
+        candidate,
+        selectUseWorkflow(config),
+      );
+    let collision = await slugExists(slug);
+    if (collision && collection.get('slug_collision', 'suffix') === 'reject') {
+      const path = selectEntryPath(collection, slug) as string;
+      throw new Error(`An entry already exists at "${path}". Change the entry identifier or path.`);
+    }
+
     let i = 1;
     let uniqueSlug = slug;
-
-    // Check for duplicate slug in loaded entities store first before repo
-    while (
-      usedSlugs.includes(uniqueSlug) ||
-      (await this.entryExist(
-        collection,
-        selectEntryPath(collection, uniqueSlug) as string,
-        uniqueSlug,
-        selectUseWorkflow(config),
-      ))
-    ) {
+    while (collision) {
       // The suffix stays whole; the slug in front of it gives way to the cap.
       const suffix = `${sanitizeChar(' ', slugConfig)}${i++}`;
       const base =
@@ -632,6 +636,7 @@ export class Backend {
           ? slug
           : truncateSlug(slug, maxBytes - utf8ByteLength(suffix), slugConfig);
       uniqueSlug = `${base}${suffix}`;
+      collision = await slugExists(uniqueSlug);
     }
     return uniqueSlug;
   }
