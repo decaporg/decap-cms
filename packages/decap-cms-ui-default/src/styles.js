@@ -1,10 +1,14 @@
 import { css, Global } from '@emotion/react';
 
+import { buildThemeCssVars, themeVar } from './themeTokens';
+
 /**
  * Font Stacks
  */
 const fonts = {
-  primary: `
+  primary: themeVar(
+    'fontFamily',
+    `
     system-ui,
     -apple-system,
     BlinkMacSystemFont,
@@ -17,6 +21,7 @@ const fonts = {
     "Segoe UI Emoji",
     "Segoe UI Symbol"
   `,
+  ),
   mono: `
     'SFMono-Regular',
     Consolas,
@@ -51,29 +56,33 @@ const colorsRaw = {
   tealLight: '#ddf5f9',
 };
 
+/**
+ * Semantic colors use CSS custom properties so `branding.theme` can override
+ * them without rewriting Emotion styles. Fallbacks preserve current defaults.
+ */
 const colors = {
-  statusDraftText: colorsRaw.purple,
+  statusDraftText: themeVar('statusDraft', colorsRaw.purple),
   statusDraftBackground: colorsRaw.purpleLight,
-  statusReviewText: colorsRaw.brown,
+  statusReviewText: themeVar('statusInReview', colorsRaw.brown),
   statusReviewBackground: colorsRaw.yellow,
-  statusReadyText: colorsRaw.green,
+  statusReadyText: themeVar('statusReady', colorsRaw.green),
   statusReadyBackground: colorsRaw.greenLight,
-  text: colorsRaw.gray,
+  text: themeVar('text', colorsRaw.gray),
   textLight: colorsRaw.white,
-  textLead: colorsRaw.grayDark,
-  background: colorsRaw.grayLight,
-  foreground: colorsRaw.white,
-  active: colorsRaw.blue,
-  activeBackground: colorsRaw.blueLight,
+  textLead: themeVar('textLead', colorsRaw.grayDark),
+  background: themeVar('background', colorsRaw.grayLight),
+  foreground: themeVar('foreground', colorsRaw.white),
+  active: themeVar('primary', colorsRaw.blue),
+  activeBackground: themeVar('activeBackground', colorsRaw.blueLight),
   inactive: colorsRaw.gray,
   button: colorsRaw.grayDark,
   buttonText: colorsRaw.white,
   inputBackground: colorsRaw.white,
-  infoText: colorsRaw.blue,
-  infoBackground: colorsRaw.blueLight,
-  successText: colorsRaw.green,
+  infoText: themeVar('primary', colorsRaw.blue),
+  infoBackground: themeVar('activeBackground', colorsRaw.blueLight),
+  successText: themeVar('statusReady', colorsRaw.green),
   successBackground: colorsRaw.greenLight,
-  warnText: colorsRaw.brown,
+  warnText: themeVar('statusInReview', colorsRaw.brown),
   warnBackground: colorsRaw.yellow,
   errorText: colorsRaw.red,
   errorBackground: colorsRaw.redLight,
@@ -81,14 +90,14 @@ const colors = {
   controlLabel: '#5D626F',
   checkerboardLight: '#f2f2f2',
   checkerboardDark: '#e6e6e6',
-  mediaDraftText: colorsRaw.purple,
+  mediaDraftText: themeVar('statusDraft', colorsRaw.purple),
   mediaDraftBackground: colorsRaw.purpleLight,
 };
 
 const lengths = {
   topBarHeight: '56px',
   inputPadding: '16px 20px',
-  borderRadius: '5px',
+  borderRadius: themeVar('borderRadius', '5px'),
   richTextEditorMinHeight: '300px',
   borderWidth: '2px',
   topCardWidth: '682px',
@@ -439,6 +448,10 @@ function GlobalStyles() {
   return (
     <Global
       styles={css`
+        :root {
+          ${buildThemeCssVars()}
+        }
+
         *,
         *:before,
         *:after {

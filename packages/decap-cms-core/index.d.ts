@@ -437,6 +437,23 @@ declare module 'decap-cms-core' {
       src: string;
       show_in_header?: boolean;
     };
+    branding?: {
+      theme?: {
+        primary?: string;
+        background?: string;
+        foreground?: string;
+        text?: string;
+        textLead?: string;
+        activeBackground?: string;
+        borderRadius?: string;
+        fontFamily?: string;
+        status?: {
+          draft?: string;
+          in_review?: string;
+          ready?: string;
+        };
+      };
+    };
     show_preview_links?: boolean;
     media_folder?: string;
     public_folder?: string;

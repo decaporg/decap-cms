@@ -2,7 +2,7 @@ import './lib/polyfill';
 import { createRoot } from 'react-dom/client';
 import { Provider, connect } from 'react-redux';
 import { Route, Router } from 'react-router-dom';
-import { GlobalStyles } from 'decap-cms-ui-default';
+import { GlobalStyles, ThemeStyles } from 'decap-cms-ui-default';
 import { I18n } from 'react-polyglot';
 
 import { store } from './redux';
@@ -22,6 +22,7 @@ const ROOT_ID = 'nc-root';
 function TranslatedApp({ locale, config }) {
   return (
     <I18n locale={locale} messages={getPhrases(locale)}>
+      <ThemeStyles theme={config?.branding?.theme} />
       <ErrorBoundary showBackup config={config}>
         <Router history={history}>
           <Route component={App} />

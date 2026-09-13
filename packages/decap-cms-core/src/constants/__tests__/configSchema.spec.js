@@ -667,5 +667,43 @@ describe('config', () => {
         }).not.toThrow();
       });
     });
+
+    describe('branding.theme', () => {
+      it('should allow branding.theme overrides', () => {
+        expect(() => {
+          validateConfig(
+            merge({}, validConfig, {
+              branding: {
+                theme: {
+                  primary: '#112f4e',
+                  background: '#f5f6f8',
+                  text: '#313d3e',
+                  status: {
+                    draft: '#70399f',
+                    in_review: '#754e00',
+                    ready: '#005614',
+                  },
+                },
+              },
+            }),
+          );
+        }).not.toThrow();
+      });
+
+      it('should reject unknown branding.theme keys', () => {
+        expect(() => {
+          validateConfig(
+            merge({}, validConfig, {
+              branding: {
+                theme: {
+                  primary: '#112f4e',
+                  neonGlow: '#ff00ff',
+                },
+              },
+            }),
+          );
+        }).toThrowError(`'branding.theme' must NOT have additional properties`);
+      });
+    });
   });
 });
