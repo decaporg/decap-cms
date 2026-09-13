@@ -852,6 +852,123 @@ describe('Backend', () => {
         'sub_dir/some-post-title-1',
       );
     });
+
+    it('should reject an existing slug when the collection collision policy is reject', async () => {
+      const { sanitizeSlug } = require('../lib/urlHelper');
+      sanitizeSlug.mockReturnValue('some-post-title');
+
+      const implementation = {
+        init: jest.fn(() => implementation),
+        getEntry: jest.fn().mockResolvedValue({ data: 'data' }),
+      };
+
+      const collection = fromJS({
+        name: 'posts',
+        fields: [{ name: 'title' }],
+        type: FOLDER,
+        folder: 'posts',
+        slug: '{{slug}}',
+        path: '{{slug}}/index',
+        slug_collision: 'reject',
+      });
+      const entry = Map({ title: 'some post title' });
+      const backend = new Backend(implementation, { config: {}, backendName: 'github' });
+
+      await expect(backend.generateUniqueSlug(collection, entry, Map({}), [])).rejects.toThrow(
+        'An entry already exists at "posts/some-post-title/index.md". Change the entry identifier or path.',
+      );
+      expect(implementation.getEntry).toHaveBeenCalledTimes(1);
+    });
+
+    it('should reject a slug reserved by another loaded entry', async () => {
+      const { sanitizeSlug } = require('../lib/urlHelper');
+      sanitizeSlug.mockReturnValue('some-post-title');
+
+      const implementation = {
+        init: jest.fn(() => implementation),
+        getEntry: jest.fn(),
+      };
+
+      const collection = fromJS({
+        name: 'posts',
+        fields: [{ name: 'title' }],
+        type: FOLDER,
+        folder: 'posts',
+        slug: '{{slug}}',
+        path: '{{slug}}/index',
+        slug_collision: 'reject',
+      });
+      const entry = Map({ title: 'some post title' });
+      const backend = new Backend(implementation, { config: {}, backendName: 'github' });
+
+      await expect(
+        backend.generateUniqueSlug(collection, entry, Map({}), List(['some-post-title/index'])),
+      ).rejects.toThrow('An entry already exists at "posts/some-post-title/index.md"');
+      expect(implementation.getEntry).not.toHaveBeenCalled();
+    });
+
+    it('should reject a slug reserved by an unpublished workflow entry', async () => {
+      const { sanitizeSlug } = require('../lib/urlHelper');
+      sanitizeSlug.mockReturnValue('some-post-title');
+
+      const implementation = {
+        init: jest.fn(() => implementation),
+        unpublishedEntry: jest.fn().mockResolvedValue({ slug: 'some-post-title/index' }),
+        getEntry: jest.fn(),
+      };
+
+      const collection = fromJS({
+        name: 'posts',
+        fields: [{ name: 'title' }],
+        type: FOLDER,
+        folder: 'posts',
+        slug: '{{slug}}',
+        path: '{{slug}}/index',
+        slug_collision: 'reject',
+      });
+      const entry = Map({ title: 'some post title' });
+      const config = { publish_mode: EDITORIAL_WORKFLOW };
+      const backend = new Backend(implementation, { config, backendName: 'github' });
+
+      await expect(backend.generateUniqueSlug(collection, entry, config, List())).rejects.toThrow(
+        'An entry already exists at "posts/some-post-title/index.md"',
+      );
+      expect(implementation.unpublishedEntry).toHaveBeenCalledWith({
+        collection: 'posts',
+        slug: 'some-post-title/index',
+      });
+      expect(implementation.getEntry).not.toHaveBeenCalled();
+    });
+
+    it('should suffix an existing slug when the collision policy is suffix', async () => {
+      const { sanitizeSlug, sanitizeChar } = require('../lib/urlHelper');
+      sanitizeSlug.mockReturnValue('some-post-title');
+      sanitizeChar.mockReturnValue('-');
+
+      const implementation = {
+        init: jest.fn(() => implementation),
+        getEntry: jest
+          .fn()
+          .mockResolvedValueOnce({ data: 'data' })
+          .mockResolvedValueOnce(undefined),
+      };
+
+      const collection = fromJS({
+        name: 'posts',
+        fields: [{ name: 'title' }],
+        type: FOLDER,
+        folder: 'posts',
+        slug: '{{slug}}',
+        path: 'sub_dir/{{slug}}',
+        slug_collision: 'suffix',
+      });
+      const entry = Map({ title: 'some post title' });
+      const backend = new Backend(implementation, { config: {}, backendName: 'github' });
+
+      await expect(backend.generateUniqueSlug(collection, entry, Map({}), List())).resolves.toBe(
+        'sub_dir/some-post-title-1',
+      );
+    });
   });
 
   describe('extractSearchFields', () => {
