@@ -620,20 +620,25 @@ export class Backend {
         ? `${truncateSlug(slug, maxBytes - utf8ByteLength(suffix), slugConfig)}${suffix}`
         : slug;
     }
-    let i = 1;
-    let uniqueSlug = fitSlug();
-
-    // Check for duplicate slug in loaded entities store first before repo
-    while (
-      usedSlugs.includes(uniqueSlug) ||
-      (await this.entryExist(
+    const slugExists = (candidate: string) =>
+      usedSlugs.includes(candidate) ||
+      this.entryExist(
         collection,
-        selectEntryPath(collection, uniqueSlug) as string,
-        uniqueSlug,
+        selectEntryPath(collection, candidate) as string,
+        candidate,
         selectUseWorkflow(config),
-      ))
-    ) {
+      );
+    let uniqueSlug = fitSlug();
+    let collision = await slugExists(uniqueSlug);
+    if (collision && collection.get('slug_collision', 'suffix') === 'reject') {
+      const path = selectEntryPath(collection, uniqueSlug) as string;
+      throw new Error(`An entry already exists at "${path}". Change the entry identifier or path.`);
+    }
+
+    let i = 1;
+    while (collision) {
       uniqueSlug = fitSlug(`${sanitizeChar(' ', slugConfig)}${i++}`);
+      collision = await slugExists(uniqueSlug);
     }
     return uniqueSlug;
   }
