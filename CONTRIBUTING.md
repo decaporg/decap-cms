@@ -204,7 +204,16 @@ Decap CMS uses NPM trusted publishers with OIDC for secure, automated package pu
 - Uses OpenID Connect (OIDC) for authentication. No NPM tokens required
 - Each package has a trusted publisher configured on npmjs.com
 - Workflow generates short-lived, cryptographically-signed tokens automatically
-- Publishes all changed packages in the monorepo via Lerna
+- Lerna bumps versions and tags; **`pnpm publish -r` does the publishing**
+
+> [!IMPORTANT]
+> **Never run `lerna publish` (in any form, including `from-git` and `from-package`).**
+>
+> Package manifests declare their dependencies as `catalog:`, a pnpm-workspace-internal protocol that has to be substituted with the real semver ranges at publish time. `pnpm publish` does that substitution; Lerna's publish client does not, and uploads the literal string `catalog:` to the registry. The result installs fine with pnpm inside this workspace and is broken for every consumer using npm, yarn or bun.
+>
+> This is what happened in the 2026-09-08 release: eight packages, including `decap-server@3.11.1`, shipped uninstallable. See [#7979](https://github.com/decaporg/decap-cms/issues/7979).
+>
+> Use `lerna version` to bump and tag. Publishing is CI's job, and `pnpm run publish:packages` is the only manual fallback.
 
 ### Release Process
 
@@ -225,13 +234,62 @@ Decap CMS uses NPM trusted publishers with OIDC for secure, automated package pu
   # - Push to upstream
   ```
 
-2. **Automated publishing:**
-   - Tags pushed to `main` trigger the publish workflow automatically
+2. **Publish:**
+   - Run the **Publish Packages** workflow manually from the Actions tab, against the `chore(release): publish` commit
+   - Leave **dist-tag** on `latest` for a normal release; set it to `beta` for a prerelease
    - GitHub Actions runs tests and builds packages
-   - Lerna publishes changed packages to npm using OIDC
+   - `scripts/publish-packages.mjs` publishes to npm using OIDC, skipping versions already on the registry
    - Provenance attestations are generated automatically
+   - Every published manifest is verified afterwards, whether or not the publish succeeded
 
-3. **Create GitHub release:**
+   > [!NOTE]
+   > The workflow also has a tag trigger, but **do not rely on it for a release**. GitHub creates no workflow run at all when a single push carries many tags, and a release pushes one tag per package. Use the manual trigger.
+
+   > [!NOTE]
+   > Re-running the workflow against a partially published release is safe and is the intended way to resume one. The publish script asks the registry what already exists and never re-uploads it, so a second run picks up exactly what is left.
+
+   > [!WARNING]
+   > Never pass publish flags through `pnpm run`. `pnpm run <script> -- --flag` injects a literal `--`, so the flags arrive as positional arguments and are dropped without a word: `pnpm run publish:packages -- --tag beta --dry-run` ignores both and publishes for real, to `latest`. Invoke the script or `pnpm publish` directly.
+
+### Prerelease (beta) Releases
+
+A prerelease must never land on the `latest` dist-tag. npm does not infer a tag from the version, so `3.20.0-beta.0` published without `--tag` becomes what `npm install decap-cms` resolves to.
+
+```sh
+# From a release/* branch -- lerna.json's allowBranch permits main and release/*
+pnpm exec lerna version --conventional-prerelease --preid beta
+```
+
+Then run **Publish Packages** against the resulting `chore(release): publish` commit with **dist-tag** set to `beta`, and confirm both tags afterwards:
+
+```sh
+npm view decap-cms dist-tags   # latest unchanged; beta on the new version
+```
+
+Repeating `lerna version --conventional-prerelease --preid beta` bumps `-beta.0` to `-beta.1`. Note that a prerelease is all-or-nothing: every package is versioned together and the beta manifests pin each other at exact beta versions, so consumers have to take the whole set from `beta`.
+
+### Publishing a Brand-New Package
+
+npm configures trusted publishing per existing package, so there is nothing for CI to exchange an OIDC token against until a package's first version exists. CI cannot create a package. Publish the first version from a maintainer machine, then configure trusted publishing for it on npmjs.com:
+
+```sh
+npm login
+pnpm publish --filter <package-name> --no-git-checks --tag beta --access public
+```
+
+Use `pnpm`, never `npm publish`, which does not understand `catalog:` and would ship the specifier literally. The publish script detects this case and prints the exact command for the packages that need it.
+
+3. **Verify the release:**
+   ```sh
+   git pull
+   pnpm run verify:published
+   ```
+
+   The publish workflow runs this too, but run it locally as well after any release that needed manual intervention. It fetches every publishable package from the registry at the version in your working tree and fails if a published manifest still contains `catalog:` or `workspace:` specifiers.
+
+   npm accepts a publish before the version becomes readable, so the check allows up to 10 minutes for absent versions to appear before failing. Unresolved specifiers fail immediately -- that is a property of the published manifest and will not change on its own.
+
+4. **Create GitHub release:**
    - Go to [Releases](https://github.com/decaporg/decap-cms/releases)
    - Draft a new release from the tag
    - Add release notes highlighting changes
@@ -244,11 +302,16 @@ If automated publishing fails and you need to publish manually:
 # Authenticate with npm (uses session-based auth with 2FA)
 npm login
 
-# Publish changed packages
+# Publish changed packages -- pnpm, never lerna, see the warning above
 pnpm run publish:packages
+
+# Always confirm what actually reached the registry
+pnpm run verify:published
 ```
 
 Note: Manual publishing still requires 2FA. Use recovery codes if you don't have access to your 2FA device.
+
+`pnpm publish -r` skips versions that are already on the registry, so it is safe to re-run against a partially published release.
 
 ## License
 

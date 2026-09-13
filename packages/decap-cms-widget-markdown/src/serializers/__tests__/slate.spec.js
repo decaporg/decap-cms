@@ -6,6 +6,7 @@ import flow from 'lodash/flow';
 // eslint-disable-next-line no-unused-vars
 import h from '../../../test-helpers/h';
 import { markdownToSlate, slateToMarkdown } from '../index';
+import slateToRemark from '../slateRemark';
 
 const process = flow([markdownToSlate, slateToMarkdown]);
 
@@ -53,6 +54,44 @@ describe('slate', () => {
 
   it('should wrap break tags in surrounding marks', () => {
     expect(process('*a  \nb*')).toEqual('*a\\\nb*');
+  });
+
+  it('should preserve marks around inline shortcodes', () => {
+    const marks = [{ type: 'bold' }];
+    const mdast = slateToRemark(
+      [
+        {
+          type: 'paragraph',
+          children: [
+            { text: 'Important ', bold: true, marks },
+            {
+              type: 'inline-shortcode',
+              data: {
+                shortcode: 'badge',
+                shortcodeData: { text: 'NEW' },
+                marks,
+              },
+              children: [{ text: '' }],
+            },
+            { text: ' Note', bold: true, marks },
+          ],
+        },
+      ],
+      {},
+    );
+
+    expect(mdast.children[0].children).toHaveLength(1);
+    expect(mdast.children[0].children[0]).toMatchObject({
+      type: 'strong',
+      children: [
+        { type: 'html', value: 'Important ' },
+        {
+          type: 'inline-shortcode',
+          data: { shortcode: 'badge', shortcodeData: { text: 'NEW' } },
+        },
+        { type: 'html', value: ' Note' },
+      ],
+    });
   });
 
   // slateAst no longer valid
@@ -297,6 +336,47 @@ describe('slate', () => {
         </editor>
       );
       expect(slateToMarkdown(slateAst.children)).toMatchInlineSnapshot(`"*h~~e**l**l~~o*"`);
+    });
+  });
+
+  describe('inline-shortcode', () => {
+    it('should convert inline-shortcode between Slate and MDAST', () => {
+      const slateAst = (
+        <editor>
+          <element type="paragraph">
+            <text>Hello </text>
+            <element
+              type="inline-shortcode"
+              data={{
+                shortcode: 'ref',
+                shortcodeData: { target: 'about' },
+              }}
+            >
+              <text></text>
+            </element>
+            <text> world</text>
+          </element>
+        </editor>
+      );
+
+      const refPlugin = {
+        id: 'ref',
+        type: 'inline',
+        pattern: /\{\{<\s*ref\s+"(?<target>[^"]+)"\s*>\}\}/,
+        fromInline: match => ({ target: match.groups.target }),
+        toInline: data => `{{< ref "${data.target}" >}}`,
+      };
+
+      const markdown = slateToMarkdown(slateAst.children, {
+        remarkPlugins: [
+          function () {
+            this.Compiler.prototype.visitors['inline-shortcode'] = node =>
+              refPlugin.toInline(node.data.shortcodeData);
+          },
+        ],
+      });
+
+      expect(markdown).toEqual('Hello {{< ref "about" >}} world');
     });
   });
 });
