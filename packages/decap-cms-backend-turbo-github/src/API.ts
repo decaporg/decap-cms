@@ -207,6 +207,14 @@ export default class TurboAPI extends API {
 
       const commit = await this.turboCommit({
         branch: workflowBranch ?? this.branch,
+        // The branch this deploy edits, which the server cannot infer: one
+        // Turbo site serves several deploys of the same repo (production on
+        // `main`, staging on `develop`), each naming its own in config.yml.
+        // A workflow entry branches off this and opens its pull request
+        // against it; without it the server fell back to the sites row and a
+        // staging draft forked from production. Sent on every save so the
+        // ordinary path records the same branch it committed to.
+        base: this.branch,
         ...(workflowBranch && {
           workflow: {
             status: options.status || this.initialWorkflowStatus,
