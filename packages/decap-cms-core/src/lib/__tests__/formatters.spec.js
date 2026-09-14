@@ -381,6 +381,14 @@ describe('formatters', () => {
       ).toBe('post-title');
     });
 
+    it('should apply a suffix to a slug without a path template', () => {
+      selectIdentifier.mockReturnValueOnce('title');
+
+      expect(
+        slugFormatter(Map({ slug: '{{slug}}' }), Map({ title: 'Post Title' }), slugConfig, '-1'),
+      ).toBe('post-title-1');
+    });
+
     it('should return slug with path', () => {
       selectIdentifier.mockReturnValueOnce('title');
 
@@ -391,6 +399,32 @@ describe('formatters', () => {
           slugConfig,
         ),
       ).toBe('sub_dir/2020/2020-01-01-post-title');
+    });
+
+    it('should apply a suffix to a filtered slug placeholder before the rest of the path', () => {
+      selectIdentifier.mockReturnValueOnce('title');
+
+      expect(
+        slugFormatter(
+          Map({ slug: '{{slug}}', path: '{{slug | lower}}/index' }),
+          Map({ title: 'Post Title' }),
+          slugConfig,
+          '-1',
+        ),
+      ).toBe('post-title-1/index');
+    });
+
+    it('should apply a suffix to the complete path when it has no slug placeholder', () => {
+      selectIdentifier.mockReturnValueOnce('title');
+
+      expect(
+        slugFormatter(
+          Map({ slug: '{{slug}}', path: 'sub_dir/{{year}}/index' }),
+          Map({ title: 'Post Title' }),
+          slugConfig,
+          '-1',
+        ),
+      ).toBe('sub_dir/2020/index-1');
     });
 
     it('should only sanitize template variables', () => {
