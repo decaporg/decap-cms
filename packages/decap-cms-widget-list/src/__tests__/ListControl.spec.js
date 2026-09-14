@@ -811,7 +811,7 @@ describe('ListControl', () => {
       <ListControl ref={ref => (control = ref)} {...props} field={typedField} value={value} />,
     );
 
-    const changeThirdItem = control.handleChangeFor(2);
+    const changeThirdItem = control.handleChangeFor(control.state.keys[2]);
 
     fireEvent.click(getAllByText('Remove')[0]);
     const afterRemoval = props.onChange.mock.calls[0][0];
@@ -842,7 +842,7 @@ describe('ListControl', () => {
       <ListControl ref={ref => (control = ref)} {...props} field={typedField} value={value} />,
     );
 
-    const changeSecondItem = control.handleChangeFor(1);
+    const changeSecondItem = control.handleChangeFor(control.state.keys[1]);
 
     fireEvent.click(getAllByText('Remove')[1]);
     const afterRemoval = props.onChange.mock.calls[0][0];
