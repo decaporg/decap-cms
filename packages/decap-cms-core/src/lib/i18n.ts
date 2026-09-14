@@ -11,6 +11,7 @@ import type { EntryValue } from '../valueObjects/Entry';
 export const I18N = 'i18n';
 
 export enum I18N_STRUCTURE {
+  MULTIPLE_FOLDERS_I18N_ROOT = 'multiple_folders_i18n_root',
   MULTIPLE_FOLDERS = 'multiple_folders',
   MULTIPLE_FILES = 'multiple_files',
   SINGLE_FILE = 'single_file',
@@ -42,7 +43,10 @@ export function getI18nInfo(collection: Collection) {
 
 export function getI18nFilesDepth(collection: Collection, depth: number) {
   const { structure } = getI18nInfo(collection) as I18nInfo;
-  if (structure === I18N_STRUCTURE.MULTIPLE_FOLDERS) {
+  if (
+    structure === I18N_STRUCTURE.MULTIPLE_FOLDERS ||
+    structure === I18N_STRUCTURE.MULTIPLE_FOLDERS_I18N_ROOT
+  ) {
     return depth + 1;
   }
   return depth;
@@ -72,6 +76,24 @@ export function getDataPath(locale: string, defaultLocale: string) {
   return dataPath;
 }
 
+export function getI18nFolder(collection: Collection): string {
+  let folder = collection.get('folder') as string;
+
+  // modify folder in case we want to insert the i18n locale at the root of the file path
+  const { defaultLocale, structure } = getI18nInfo(collection) as I18nInfo;
+  if (structure === I18N_STRUCTURE.MULTIPLE_FOLDERS_I18N_ROOT) {
+    folder = insertI18nAtRoot(folder, defaultLocale);
+  }
+
+  return folder;
+}
+
+export function insertI18nAtRoot(path: string, locale: string): string {
+  const parts = path.split('/');
+  parts.splice(1, 0, locale);
+  return parts.join('/');
+}
+
 export function getFilePath(
   structure: I18N_STRUCTURE,
   extension: string,
@@ -80,6 +102,8 @@ export function getFilePath(
   locale: string,
 ) {
   switch (structure) {
+    case I18N_STRUCTURE.MULTIPLE_FOLDERS_I18N_ROOT:
+      return insertI18nAtRoot(path, locale);
     case I18N_STRUCTURE.MULTIPLE_FOLDERS:
       return path.replace(`/${slug}`, `/${locale}/${slug}`);
     case I18N_STRUCTURE.MULTIPLE_FILES:
@@ -92,6 +116,10 @@ export function getFilePath(
 
 export function getLocaleFromPath(structure: I18N_STRUCTURE, extension: string, path: string) {
   switch (structure) {
+    case I18N_STRUCTURE.MULTIPLE_FOLDERS_I18N_ROOT: {
+      const parts = path.split('/');
+      return parts[1];
+    }
     case I18N_STRUCTURE.MULTIPLE_FOLDERS: {
       const parts = path.split('/');
       // filename
@@ -130,6 +158,7 @@ export function getFilePaths(
 
 export function normalizeFilePath(structure: I18N_STRUCTURE, path: string, locale: string) {
   switch (structure) {
+    case I18N_STRUCTURE.MULTIPLE_FOLDERS_I18N_ROOT:
     case I18N_STRUCTURE.MULTIPLE_FOLDERS:
       return path.replace(`${locale}/`, '');
     case I18N_STRUCTURE.MULTIPLE_FILES:
