@@ -12,12 +12,15 @@ import { loginUser, logoutUser } from '../../actions/auth';
 import { currentBackend } from '../../backend';
 import { createNewEntry } from '../../actions/collections';
 import { openMediaLibrary } from '../../actions/mediaLibrary';
+import { startDeployNotifications, startDeployStatus } from '../../actions/deployStatus';
+import { selectDeployStatusVisible } from '../../reducers/deployStatus';
 import MediaLibrary from '../MediaLibrary/MediaLibrary';
 import { Notifications } from '../UI';
 import { history } from '../../routing/history';
 import { SIMPLE, EDITORIAL_WORKFLOW } from '../../constants/publishModes';
 import Collection from '../Collection/Collection';
 import Workflow from '../Workflow/Workflow';
+import Deploys from '../Deploys/Deploys';
 import Editor from '../Editor/Editor';
 import NotFoundPage from './NotFoundPage';
 import Header from './Header';
@@ -68,7 +71,7 @@ function RouteInCollection({ collections, render, ...props }) {
   );
 }
 
-class App extends Component {
+export class App extends Component {
   static propTypes = {
     auth: PropTypes.object.isRequired,
     config: PropTypes.object.isRequired,
@@ -82,12 +85,47 @@ class App extends Component {
     useMediaLibrary: PropTypes.bool,
     openMediaLibrary: PropTypes.func.isRequired,
     showMediaButton: PropTypes.bool,
+    startDeployNotifications: PropTypes.func.isRequired,
+    startDeployStatus: PropTypes.func.isRequired,
+    deployStatusVisible: PropTypes.bool.isRequired,
     t: PropTypes.func.isRequired,
   };
 
   componentDidMount() {
     // Manually validate PropTypes - React 19 breaking change
     PropTypes.checkPropTypes(App.propTypes, this.props, 'prop', 'App');
+
+    this.startDeployWatching();
+  }
+
+  componentDidUpdate(prevProps) {
+    // Both deploy thunks need a constructed backend and a live session, and at
+    // mount there is neither — the config is still loading, so `currentBackend`
+    // throws and both calls quietly do nothing.
+    //
+    // Measured, not theorised: the Deploys nav item never appeared on a real
+    // site because the one mount read never ran. The same gap meant a ledger
+    // left over from before a page reload only resumed once the editor
+    // happened to save again, since that path re-dispatches the subscription
+    // itself. Retrying when the user arrives fixes both; the thunks are
+    // idempotent, so a repeat is free.
+    if (!prevProps.user && this.props.user) {
+      this.startDeployWatching();
+    }
+  }
+
+  startDeployWatching() {
+    // Deploy outcomes are announced for the whole session, from here rather
+    // than from the editor: a build outlives the screen the save was made on,
+    // and the editor should hear that their change went live wherever they
+    // have navigated to. Backends that cannot report deploys make this a
+    // no-op. See decap-turbo/docs/deploy-status-plan.md §A4b.
+    this.props.startDeployNotifications();
+
+    // The header indicator and the Deploys page, plus the single read that
+    // establishes the site's current state for an editor who has saved
+    // nothing this session. See §A8.
+    this.props.startDeployStatus();
   }
 
   configError(config) {
@@ -156,6 +194,7 @@ class App extends Component {
       t,
       showMediaButton,
       location,
+      deployStatusVisible,
     } = this.props;
 
     if (config === null) {
@@ -176,6 +215,10 @@ class App extends Component {
 
     const defaultPath = getDefaultPath(collections);
     const hasWorkflow = publishMode === EDITORIAL_WORKFLOW;
+    // Auto-hide: no route and no nav item until the backend has actually
+    // reported a deploy for this site. See §A7 — a CMS whose host says nothing
+    // should look like a CMS without the feature.
+    const hasDeployStatus = deployStatusVisible;
 
     // Work out if this is an editor route, following the same URL matching as the router.
     // - /collections/:name/entries/*
@@ -219,6 +262,7 @@ class App extends Component {
               to={defaultPath}
             />
             {hasWorkflow ? <Route path="/workflow" component={Workflow} /> : null}
+            {hasDeployStatus ? <Route path="/deploys" component={Deploys} /> : null}
             <RouteInCollection
               exact
               collections={collections}
@@ -267,7 +311,7 @@ class App extends Component {
 }
 
 function mapStateToProps(state) {
-  const { auth, config, collections, globalUI, mediaLibrary } = state;
+  const { auth, config, collections, globalUI, mediaLibrary, deployStatus } = state;
   const user = auth.user;
   const isFetching = globalUI.isFetching;
   const publishMode = config.publish_mode;
@@ -282,6 +326,7 @@ function mapStateToProps(state) {
     publishMode,
     showMediaButton,
     useMediaLibrary,
+    deployStatusVisible: selectDeployStatusVisible(deployStatus),
   };
 }
 
@@ -289,6 +334,8 @@ const mapDispatchToProps = {
   openMediaLibrary,
   loginUser,
   logoutUser,
+  startDeployNotifications,
+  startDeployStatus,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(translate()(App));

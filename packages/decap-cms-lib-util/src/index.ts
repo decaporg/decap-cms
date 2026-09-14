@@ -8,6 +8,7 @@ import { onlySuccessfulPromises, flowAsync, then } from './promise';
 import unsentRequest from './unsentRequest';
 import {
   filterByExtension,
+  collectionKeyForFiles,
   getAllResponses,
   parseLinkHeader,
   parseResponse,
@@ -127,6 +128,7 @@ export const DecapCmsLibUtil = {
   then,
   unsentRequest,
   filterByExtension,
+  collectionKeyForFiles,
   parseLinkHeader,
   parseResponse,
   responseParser,
@@ -181,6 +183,7 @@ export {
   then,
   unsentRequest,
   filterByExtension,
+  collectionKeyForFiles,
   parseLinkHeader,
   getAllResponses,
   parseResponse,

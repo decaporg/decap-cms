@@ -18,8 +18,11 @@ import {
 import { connect } from 'react-redux';
 
 import { SettingsDropdown } from '../UI';
+import { StatusDot, deployIndicator } from './deployStatusIndicator';
 import { checkBackendStatus } from '../../actions/status';
 import { selectCanCreateNewEntry } from '../../reducers';
+import { selectDeployStatusVisible } from '../../reducers/deployStatus';
+import { selectUserIdentity } from '../../lib/userHelper';
 
 const styles = {
   buttonActive: css`
@@ -208,7 +211,12 @@ class Header extends Component {
       isTestRepo,
       t,
       showMediaButton,
+      hasDeployStatus,
+      deployPendingCount,
+      deployLatest,
     } = this.props;
+
+    const deployPill = deployIndicator(deployPendingCount, deployLatest);
 
     const shouldShowLogo = logo?.show_in_header && logo?.src;
 
@@ -248,6 +256,20 @@ class Header extends Component {
                   </AppHeaderButton>
                 </li>
               )}
+              {hasDeployStatus && (
+                <li>
+                  {/*
+                    Ambient, never an interruption — the counterpart to the
+                    toasts, which announce a change and then leave. See §A8.
+                    Last in the nav: it is the only item that is not somewhere
+                    an editor goes to work.
+                  */}
+                  <AppHeaderNavLink to="/deploys" activeClassName="header-link-active">
+                    <StatusDot color={deployPill.color} />
+                    {t(deployPill.key)}
+                  </AppHeaderNavLink>
+                </li>
+              )}
             </AppHeaderNavList>
           </nav>
           <AppHeaderActions>
@@ -273,6 +295,7 @@ class Header extends Component {
               displayUrl={displayUrl}
               isTestRepo={isTestRepo}
               imageUrl={user?.avatar_url}
+              identity={selectUserIdentity(user)}
               onLogoutClick={onLogoutClick}
             />
           </AppHeaderActions>
@@ -287,10 +310,14 @@ const mapDispatchToProps = {
 };
 
 function mapStateToProps(state, ownProps) {
+  const { deployStatus } = state;
   return {
     creatableCollections: ownProps.collections
       .filter(collection => selectCanCreateNewEntry(state, collection.get('name')))
       .toList(),
+    hasDeployStatus: selectDeployStatusVisible(deployStatus),
+    deployPendingCount: deployStatus.pendingCount,
+    deployLatest: deployStatus.latest,
   };
 }
 

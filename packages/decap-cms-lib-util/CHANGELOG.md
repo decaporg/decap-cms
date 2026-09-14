@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.9.0-beta.0](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-util@3.8.2...decap-cms-lib-util@3.9.0-beta.0) (2026-09-10)
+
+### Bug Fixes
+
+- reload entries after persist based on backend config ([8caaf54](https://github.com/decaporg/decap-cms/commit/8caaf5416138d97bb6ca591a5f68e4452e2a370d))
+
+### Features
+
+- harden turbo backend auth, config, and API error handling ([ae1bd79](https://github.com/decaporg/decap-cms/commit/ae1bd79389019716b49111d8fcaeb23ee359a992))
+- **proxy:** wip - first draft / caching allEntriesByFolder ([56ca436](https://github.com/decaporg/decap-cms/commit/56ca436725668a997ba4ee24122d1e10bbb2ed3c))
+- rename turbo keys, add backend config resolver ([60b963b](https://github.com/decaporg/decap-cms/commit/60b963ba094255fb9de7052e516b5b65fc3fd1d7))
+- **supabase-github-proxy:** add site_id support, update readme ([87ed396](https://github.com/decaporg/decap-cms/commit/87ed3964e035d3b8d6666dce0e5f31e4db1c08dd))
+- **supabase-github-proxy:** allow searching on the cached backend query ([a8bec9b](https://github.com/decaporg/decap-cms/commit/a8bec9b874e09373abe05444c89b1921599a6238))
+- **turbo-gitlab:** sync collections server-side, matching turbo-github ([4d9400b](https://github.com/decaporg/decap-cms/commit/4d9400bd5703f36882ce10a9cdfb71e596414ee8))
+
+### Performance Improvements
+
+- **core,turbo-github,turbo-gitlab:** stop hydrating every draft, cache i18n siblings ([b26cb27](https://github.com/decaporg/decap-cms/commit/b26cb27223714928e06b684527ca233559e8f769))
+
 ## [3.8.2](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-util@3.8.1...decap-cms-lib-util@3.8.2) (2026-09-10)
 
 **Note:** Version bump only for package decap-cms-lib-util

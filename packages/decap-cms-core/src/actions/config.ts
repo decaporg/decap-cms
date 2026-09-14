@@ -11,6 +11,7 @@ import { validateConfig } from '../constants/configSchema';
 import { selectDefaultSortableFields } from '../reducers/collections';
 import { getIntegrations, selectIntegration } from '../reducers/integrations';
 import { resolveBackend } from '../backend';
+import { getBackend } from '../lib/registry';
 import { I18N, I18N_FIELD, I18N_STRUCTURE } from '../lib/i18n';
 import { FILES, FOLDER } from '../constants/collectionTypes';
 
@@ -434,6 +435,66 @@ async function getConfigYaml(file: string, hasManualConfig: boolean) {
   return parseConfig(await response.text());
 }
 
+export type CollectionAccess = 'edit' | 'view' | 'none';
+
+// A backend-agnostic permission set a backend can resolve however it likes
+// (e.g. decap-cms-backend-turbo-github/-gitlab fetching it from their shared
+// control plane after auth) and attach to the user object it resolves from `authenticate()`/
+// `currentUser()` as `permissions` (see actions/auth.ts) — the field name is
+// deliberately not backend-specific, since any backend may set it. Core has
+// no opinion on where this comes from; `collections` only ever lists
+// explicit overrides — a collection name absent from it is always full
+// access, so a backend that never supplies this is entirely unaffected.
+export interface BackendPermissions {
+  collections?: Record<string, CollectionAccess>;
+}
+
+/**
+ * Pure filter: drops collections resolved to `access: 'none'`. Identity
+ * function when `permissions` is absent/empty — the overwhelmingly common
+ * case (every non-Turbo backend, and Turbo before its post-auth permission
+ * fetch completes) — so this is zero behavior change unless a backend
+ * explicitly supplies a restriction.
+ *
+ * This is a UX/defense-in-depth layer only. The real enforcement boundary
+ * lives server-side, in whichever backend proxies writes (for
+ * decap-cms-backend-turbo-github/-gitlab, that's the `gh`/`gl` Supabase edge
+ * function) — nothing here should be relied on as the sole security check.
+ */
+export function applyBackendPermissionFilter(
+  config: CmsConfig,
+  permissions?: BackendPermissions,
+): CmsConfig {
+  if (!permissions?.collections || isEmpty(permissions.collections)) {
+    return config;
+  }
+
+  const collections = config.collections || [];
+  const filteredCollections = collections.filter(
+    collection => permissions.collections![collection.name] !== 'none',
+  );
+
+  if (filteredCollections.length === collections.length) {
+    return config;
+  }
+
+  return { ...config, collections: filteredCollections };
+}
+
+/**
+ * Dispatched by actions/auth.ts once a backend's resolved user carries a
+ * `permissions` field — i.e. after the initial config load, once auth has
+ * completed and the permission set is actually known. Re-filters the config
+ * already in state (which was loaded with no permissions applied, so nothing
+ * has been dropped from it yet) and re-dispatches it narrowed.
+ */
+export function refilterConfigForPermissions(permissions: BackendPermissions) {
+  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+    const { config } = getState();
+    dispatch(configLoaded(applyBackendPermissionFilter(config, permissions)));
+  };
+}
+
 export function configLoaded(config: CmsConfig) {
   return {
     type: CONFIG_SUCCESS,
@@ -545,6 +606,24 @@ export async function handleLocalBackend(originalConfig: CmsConfig) {
   });
 }
 
+// Generic extension point: if the backend class registered under
+// `config.backend.name` exposes a static async `preloadConfig(config)`,
+// it's awaited here before the backend is constructed, and its returned
+// config is used from then on. This lets a backend implementation resolve
+// its own config (e.g. fetch remaining fields from a remote endpoint)
+// however it likes, with zero backend-specific knowledge in core.
+export async function applyBackendPreloadConfig(originalConfig: CmsConfig) {
+  const backendName = originalConfig.backend?.name;
+  const registered = backendName && getBackend(backendName);
+  const preloadConfig = registered?.BackendClass?.preloadConfig;
+
+  if (typeof preloadConfig !== 'function') {
+    return originalConfig;
+  }
+
+  return preloadConfig(originalConfig);
+}
+
 export function loadConfig(manualConfig: Partial<CmsConfig> = {}, onLoad: () => unknown) {
   if (window.CMS_CONFIG) {
     return configLoaded(window.CMS_CONFIG);
@@ -566,7 +645,8 @@ export function loadConfig(manualConfig: Partial<CmsConfig> = {}, onLoad: () => 
       validateConfig(mergedConfig);
 
       const withLocalBackend = await handleLocalBackend(mergedConfig);
-      const normalizedConfig = normalizeConfig(withLocalBackend);
+      const withPreloadedBackend = await applyBackendPreloadConfig(withLocalBackend);
+      const normalizedConfig = normalizeConfig(withPreloadedBackend);
 
       const config = applyDefaults(normalizedConfig);
 

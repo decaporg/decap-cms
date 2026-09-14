@@ -896,28 +896,46 @@ export default class API {
       );
       branches = branchesWithFilter.filter(b => b.filter).map(b => b.branch);
     } else {
-      // backwards compatibility code, get relevant pull requests and migrate them
-      const pullRequests = await this.getPullRequests(
+      // One fetch, two filters. `getPullRequests` re-requests the list for
+      // each predicate, and both calls here pass the same `head`/`state`, so
+      // the two below issued a byte-identical
+      // `GET /pulls?base=…&state=open&per_page=100` on every collection load —
+      // 2.0s + 1.8s of it when the request goes through a proxy. The predicate
+      // is applied client-side anyway, so the page only needs fetching once.
+      const openPullRequests = await this.getPullRequests(
         undefined,
         PullRequestState.Open,
+        () => true,
+      );
+
+      // Backwards compatibility: entries created before the CMS labelled its
+      // pull requests. Effectively always empty on a repo that has only ever
+      // been edited by a current CMS.
+      const unlabeled = openPullRequests.filter(
         pr => !pr.head.repo.fork && withoutCmsLabel(pr, this.cmsLabelPrefix),
       );
       let prCount = 0;
-      for (const pr of pullRequests) {
+      for (const pr of unlabeled) {
         if (!migrationNotified) {
           migrationNotified = true;
           alert(oneLine`
-            Decap CMS is adding labels to ${pullRequests.length} of your Editorial Workflow
+            Decap CMS is adding labels to ${unlabeled.length} of your Editorial Workflow
             entries. The "Workflow" tab will be unavailable during this migration. You may use other
             areas of the CMS during this time. Note that closing the CMS will pause the migration.
           `);
         }
         prCount = prCount + 1;
-        await this.migratePullRequest(pr, `${prCount} of ${pullRequests.length}`);
+        await this.migratePullRequest(pr, `${prCount} of ${unlabeled.length}`);
       }
-      const cmsPullRequests = await this.getPullRequests(undefined, PullRequestState.Open, pr =>
-        withCmsLabel(pr, this.cmsLabelPrefix),
-      );
+
+      // Migration is what puts the label on, so when it ran the list has to be
+      // read again — the page fetched above predates those labels. Conditional
+      // rather than unconditional precisely because that path is the rare one.
+      const cmsPullRequests = unlabeled.length
+        ? await this.getPullRequests(undefined, PullRequestState.Open, pr =>
+            withCmsLabel(pr, this.cmsLabelPrefix),
+          )
+        : openPullRequests.filter(pr => withCmsLabel(pr, this.cmsLabelPrefix));
       branches = cmsPullRequests.map(pr => pr.head.ref);
     }
 

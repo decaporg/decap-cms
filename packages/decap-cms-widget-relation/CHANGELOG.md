@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.7.3-beta.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-relation@3.7.2...decap-cms-widget-relation@3.7.3-beta.0) (2026-09-10)
+
+### Bug Fixes
+
+- **widget-relation:** don't let selected options crowd out search matches ([2f3bdd4](https://github.com/decaporg/decap-cms/commit/2f3bdd4bb40e38ecbca2d3e00ab2541353b5adc1))
+
 ## [3.7.2](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-relation@3.7.1...decap-cms-widget-relation@3.7.2) (2026-09-10)
 
 **Note:** Version bump only for package decap-cms-widget-relation
