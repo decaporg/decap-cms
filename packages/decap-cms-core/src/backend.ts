@@ -625,13 +625,16 @@ export class Backend {
         selectUseWorkflow(config),
       ))
     ) {
-      // The suffix stays whole; the slug in front of it gives way to the cap.
       const suffix = `${sanitizeChar(' ', slugConfig)}${i++}`;
-      const base =
-        maxBytes === Infinity
-          ? slug
-          : truncateSlug(slug, maxBytes - utf8ByteLength(suffix), slugConfig);
-      uniqueSlug = `${base}${suffix}`;
+      // Normal slugs are reformatted so the suffix can be placed inside the collection's
+      // path template. A custom path has no template variable to target, so append it.
+      uniqueSlug = customPath
+        ? `${slug}${suffix}`
+        : slugFormatter(collection, entryData, slugConfig, suffix);
+      if (!customPath && utf8ByteLength(uniqueSlug) > maxBytes) {
+        // Keep the suffix distinct and inside Git's byte cap when the path has no room for it.
+        uniqueSlug = `${truncateSlug(uniqueSlug, maxBytes - utf8ByteLength(suffix), slugConfig)}${suffix}`;
+      }
     }
     return uniqueSlug;
   }

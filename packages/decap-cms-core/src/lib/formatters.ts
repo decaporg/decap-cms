@@ -135,10 +135,18 @@ export function getProcessSegment(
         ])(value);
 }
 
+/**
+ * Formats an entry slug and its optional collection path.
+ *
+ * A collision suffix is inserted into the built-in `{{slug}}` variable before the path is
+ * assembled. This keeps nested bundle paths as `post-1/index` instead of `post/index-1`.
+ * Paths without `{{slug}}` retain the existing whole-path suffix behavior.
+ */
 export function slugFormatter(
   collection: Collection,
   entryData: Map<string, unknown>,
   slugConfig?: CmsSlug,
+  suffix = '',
 ) {
   const slugTemplate = collection.get('slug') || '{{slug}}';
 
@@ -160,12 +168,21 @@ export function slugFormatter(
   const slug = compileStringTemplate(slugTemplate, date, identifier, entryData, processSegment);
 
   if (!collection.has('path')) {
-    return slug;
+    return `${slug}${suffix}`;
   } else {
     const pathTemplate = prepareSlug(collection.get('path') as string);
-    return compileStringTemplate(pathTemplate, date, slug, entryData, (value: string) =>
-      value === slug ? value : processSegment(value),
-    );
+    let hasSlugVariable = false;
+    // Use the parsed key rather than the rendered value so filtered slug variables are
+    // recognized without treating an unrelated field with the same value as `{{slug}}`.
+    const path = compileStringTemplate(pathTemplate, date, slug, entryData, (value, key) => {
+      const processedValue = value === slug ? value : processSegment(value);
+      if (key === 'slug') {
+        hasSlugVariable = true;
+        return `${processedValue}${suffix}`;
+      }
+      return processedValue;
+    });
+    return hasSlugVariable ? path : `${path}${suffix}`;
   }
 }
 
