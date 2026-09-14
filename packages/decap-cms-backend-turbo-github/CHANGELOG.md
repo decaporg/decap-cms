@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.5.0-beta.1](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-turbo-github@3.5.0-beta.0...decap-cms-backend-turbo-github@3.5.0-beta.1) (2026-09-14)
+
+### Bug Fixes
+
+- **turbo-github:** send the branch this deploy edits as the commit base ([fc3b647](https://github.com/decaporg/decap-cms/commit/fc3b64788eec1817a4cb02316eff4484921831d9))
+
 # 3.5.0-beta.0 (2026-09-10)
 
 ### Bug Fixes
