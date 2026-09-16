@@ -9,6 +9,8 @@ import trim from 'lodash/trim';
 import { oneLine } from 'common-tags';
 import { dirname } from 'path';
 import {
+  formatNoteBody,
+  parseNoteBody,
   getAllResponses,
   APIError,
   EditorialWorkflowError,
@@ -1555,49 +1557,8 @@ export default class API {
   /**
    * Constants for note formatting to aid with PR comment to note conversion
    */
-  private static readonly NOTE_STATUS_RESOLVED = 'RESOLVED';
-  private static readonly NOTE_STATUS_OPEN = 'OPEN';
   private static readonly NOTES_LABEL = 'decap-cms-notes';
   private static readonly NOTE_ISSUE_PREFIX = 'Notes: ';
-  // In Github we hide Decap Notes metadata in a HTML comment, that way we can track status of whether or not a note has been resolved (similar to GDocs)
-  //
-  // Author and AuthorId ride along in the same comment because the GitHub
-  // comment author is not always the person who wrote the note: Decap Turbo
-  // posts with the organization's App installation token, so GitHub attributes
-  // every note to the App's bot user and there is no impersonation API to
-  // change that. Without a recorded author nobody can edit, resolve or delete
-  // their own note under Turbo. AuthorId is what ownership compares on — a
-  // display name is not unique — and it is an opaque, backend-defined
-  // identifier (the GitHub login on this backend) rather than an email, so
-  // nothing here puts a personal address into a repo that may be public.
-  //
-  // Both are optional in the pattern: notes written before this existed, and
-  // comments typed straight into the issue on GitHub, still parse.
-  private static readonly NOTE_REGEX =
-    /^<!-- DecapCMS Note - Status: (RESOLVED|OPEN)(?: - Author: (.*?))?(?: - AuthorId: (.*?))? -->([\s\S]+)$/;
-
-  /**
-   * Format a note for PR comment display
-   */
-  private formatNoteForGithub(note: Note): string {
-    const status = note.resolved ? API.NOTE_STATUS_RESOLVED : API.NOTE_STATUS_OPEN;
-    // `-->` inside either field would end the HTML comment early and take the
-    // rest of the marker — and the note's first line — with it.
-    function safe(value: string) {
-      return value.replace(/--+>/g, '');
-    }
-    // Both or neither: `Author` alone would freeze a display name into the note
-    // while ownership still resolved by another route, and a name with no id to
-    // compare against buys nothing. A backend that records no id (the default —
-    // see GitHubBackend.noteAuthorIdentity) writes the original format
-    // unchanged.
-    const identity = note.authorId
-      ? ` - Author: ${safe(note.author)} - AuthorId: ${safe(note.authorId)}`
-      : '';
-
-    return `<!-- DecapCMS Note - Status: ${status}${identity} -->
-${note.content}`;
-  }
 
   /**
    * Parse a GitHub comment into a Note object
@@ -1607,22 +1568,17 @@ ${note.content}`;
       throw new Error('Invalid comment structure');
     }
 
-    const structuredMatch = comment.body.match(API.NOTE_REGEX);
+    const { content, resolved, author, authorId } = parseNoteBody(comment.body);
 
-    const content = structuredMatch ? structuredMatch[4].trim() : comment.body;
-    const resolved = structuredMatch ? structuredMatch[1] === API.NOTE_STATUS_RESOLVED : false;
-    // Falls back to the GitHub comment author, which is right for a comment
-    // typed on GitHub and for notes predating the recorded author.
-    const author = structuredMatch?.[2]?.trim() || comment.user.login;
-    const authorId = structuredMatch?.[3]?.trim() || undefined;
-
-    if (!content.trim()) {
+    if (!content) {
       throw new Error('Empty note content');
     }
 
     return {
       id: comment.id.toString(),
-      author,
+      // Falls back to the GitHub comment author, which is right for a comment
+      // typed on GitHub and for notes predating the recorded author.
+      author: author || comment.user.login,
       authorId,
       // Only when the comment's GitHub author IS the note's author. A recorded
       // author means someone else posted on their behalf — under Turbo, the
@@ -1792,7 +1748,7 @@ ${note.content}`;
         {
           method: 'POST',
           body: JSON.stringify({
-            body: this.formatNoteForGithub(note),
+            body: formatNoteBody(note),
           }),
         },
       );
@@ -1812,7 +1768,7 @@ ${note.content}`;
       await this.request(`${this.repoURL}/issues/comments/${commentId}`, {
         method: 'PATCH',
         body: JSON.stringify({
-          body: this.formatNoteForGithub(note),
+          body: formatNoteBody(note),
         }),
       });
     } catch (error) {

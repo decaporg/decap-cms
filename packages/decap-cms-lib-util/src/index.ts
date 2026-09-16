@@ -15,6 +15,7 @@ import {
   getPathDepth,
 } from './backendUtil';
 import { NotesPollingManager } from './notesPolling';
+import { formatNoteBody, parseNoteBody } from './notesFormat';
 import loadScript from './loadScript';
 import getBlobSHA from './getBlobSHA';
 import { asyncLock } from './asyncLock';
@@ -85,9 +86,11 @@ import type {
   IssueChange as IC,
 } from './implementation';
 import type { NotesPollingAPI as NPA } from './notesPolling';
+import type { ParsedNoteBody as PNB } from './notesFormat';
 import type { AsyncLock as AL } from './asyncLock';
 
 export type NotesPollingAPI = NPA;
+export type ParsedNoteBody = PNB;
 export type AsyncLock = AL;
 export type Implementation = I;
 export type ImplementationEntry = IE;
@@ -171,6 +174,8 @@ export const DecapCmsLibUtil = {
 };
 export {
   NotesPollingManager,
+  formatNoteBody,
+  parseNoteBody,
   APIError,
   Cursor,
   CURSOR_COMPATIBILITY_SYMBOL,
