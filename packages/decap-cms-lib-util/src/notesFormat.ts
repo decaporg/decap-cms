@@ -1,27 +1,19 @@
 /**
- * How a note is encoded inside a comment on the host.
+ * How a note is encoded inside a comment on the host
  *
- * A note is an ordinary comment with a leading HTML comment carrying what the
- * comment itself cannot express: whether the note is resolved, and — when the
- * account that posted it is not the editor who wrote it — who did. Hosts render
- * HTML comments invisibly, so the marker stays out of the way when the thread
- * is read on the host's own site.
+ * A note is an ordinary comment with a leading HTML comment carrying
+ * whether the note is resolved and who wrote it - which can differ from
+ * the account that posted it.
+ * Hosts render HTML comments invisibly, so the marker stays out of the way
+ * when the thread is read on the host's own site.
  *
- * This lives in lib-util because the encoding has to be identical everywhere.
- * Two backends with their own copy of the regex is how a repository moved from
- * one host to another silently loses every resolved flag.
+ * Encoding is identical across backends
  */
 import type { Note } from './implementation';
 
 const STATUS_RESOLVED = 'RESOLVED';
 const STATUS_OPEN = 'OPEN';
 
-/**
- * `Author` and `AuthorId` are optional in the pattern: notes written before
- * they were recorded, and comments typed straight into the thread on the host,
- * both still parse — they simply have no recorded author and fall back to the
- * account that posted them.
- */
 const NOTE_PATTERN =
   /^<!-- DecapCMS Note - Status: (RESOLVED|OPEN)(?: - Author: (.*?))?(?: - AuthorId: (.*?))? -->([\s\S]+)$/;
 

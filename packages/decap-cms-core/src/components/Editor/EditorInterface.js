@@ -25,21 +25,6 @@ import { getFileFromSlug } from '../../reducers/collections';
 const SCROLL_SYNC_ENABLED = 'cms.scroll-sync-enabled';
 const SPLIT_PANE_POSITION = 'cms.split-pane-position';
 const RIGHT_PANE = 'cms.right-pane';
-
-/**
- * There is one slot to the right of the form and three things that want it, so
- * which one is showing is a single value rather than three booleans.
- *
- * As three booleans they could all be true at once — which was the default,
- * since each read `!== 'false'` from empty storage — and the renderer picked a
- * winner by precedence. Only i18n's toggle told the truth in that state:
- * pressing Notes set its flag and lit its button while i18n kept the slot, so
- * the control claimed to be on while showing something else. A single value
- * cannot represent that.
- *
- * Order is the precedence the old renderer applied, kept as the default for an
- * editor who has never expressed a preference.
- */
 const PANE_ORDER = ['i18n', 'notes', 'preview'];
 const NO_PANE = 'none';
 

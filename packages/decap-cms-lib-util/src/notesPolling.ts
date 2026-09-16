@@ -1,5 +1,5 @@
 /**
- * Notes polling.
+ * Notes polling
  *
  * Watches the thread an entry's notes live in and reports what changed, so
  * notes another editor adds appear without a reload. Where the host supports
@@ -8,10 +8,8 @@
  * change when the thread's contents actually differ, so a host that always
  * answers 200 is slower, not wrong.
  *
- * Nothing here is specific to one host: it talks to `NotesPollingAPI` below,
- * which any backend with a comment thread per entry can satisfy. It lives in
- * lib-util rather than in a backend so the second one to implement notes
- * inherits it instead of copying it.
+ * Not specific to one host: it talks to `NotesPollingAPI` below,
+ * which any backend with a comment thread per entry can satisfy.
  *
  * @module notesPolling
  */
