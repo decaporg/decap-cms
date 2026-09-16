@@ -22,11 +22,64 @@ import { hasI18n, getI18nInfo, getPreviewEntry } from '../../lib/i18n';
 import { FILES } from '../../constants/collectionTypes';
 import { getFileFromSlug } from '../../reducers/collections';
 
-const PREVIEW_VISIBLE = 'cms.preview-visible';
-const NOTES_VISIBLE = 'cms.notes-visible';
 const SCROLL_SYNC_ENABLED = 'cms.scroll-sync-enabled';
 const SPLIT_PANE_POSITION = 'cms.split-pane-position';
-const I18N_VISIBLE = 'cms.i18n-visible';
+const RIGHT_PANE = 'cms.right-pane';
+
+// Superseded by RIGHT_PANE; read once so an existing editor keeps their layout.
+const LEGACY_PREVIEW_VISIBLE = 'cms.preview-visible';
+const LEGACY_NOTES_VISIBLE = 'cms.notes-visible';
+const LEGACY_I18N_VISIBLE = 'cms.i18n-visible';
+
+/**
+ * There is one slot to the right of the form and three things that want it, so
+ * which one is showing is a single value rather than three booleans.
+ *
+ * As three booleans they could all be true at once — which was the default,
+ * since each read `!== 'false'` from empty storage — and the renderer picked a
+ * winner by precedence. Only i18n's toggle told the truth in that state:
+ * pressing Notes set its flag and lit its button while i18n kept the slot, so
+ * the control claimed to be on while showing something else. A single value
+ * cannot represent that.
+ *
+ * Order is the precedence the old renderer applied, kept so an editor who
+ * never expressed a preference sees the same pane as before.
+ */
+const PANE_ORDER = ['i18n', 'notes', 'preview'];
+const NO_PANE = 'none';
+
+export function storedPanePreference() {
+  const stored = localStorage.getItem(RIGHT_PANE);
+  if (stored) {
+    return stored;
+  }
+  // No preference recorded yet: honour whichever legacy pane was last turned
+  // off, so an editor who hid the preview does not find it back.
+  const legacyOff = {
+    i18n: localStorage.getItem(LEGACY_I18N_VISIBLE) === 'false',
+    notes: localStorage.getItem(LEGACY_NOTES_VISIBLE) === 'false',
+    preview: localStorage.getItem(LEGACY_PREVIEW_VISIBLE) === 'false',
+  };
+  const firstStillOn = PANE_ORDER.find(pane => !legacyOff[pane]);
+  return firstStillOn ?? NO_PANE;
+}
+
+/**
+ * `preferred` is what the editor asked for; `available` is what this entry can
+ * actually offer (notes need a saved entry, i18n needs a second locale, preview
+ * can be switched off per collection). A preference for a pane this entry does
+ * not have falls through to the next one rather than leaving the slot empty,
+ * which is what the three-boolean version did.
+ */
+export function resolveRightPane(preferred, available) {
+  if (preferred === NO_PANE) {
+    return null;
+  }
+  if (preferred && available[preferred]) {
+    return preferred;
+  }
+  return PANE_ORDER.find(pane => available[pane]) ?? null;
+}
 
 const styles = {
   splitPane: css`
@@ -138,22 +191,21 @@ const ViewControls = styled.div`
 `;
 
 function EditorContent({
-  i18nVisible,
-  previewVisible,
-  notesVisible,
+  rightPane,
   editor,
   editorWithEditor,
   editorWithPreview,
   editorWithNotes,
 }) {
-  if (i18nVisible) {
-    return editorWithEditor;
-  } else if (notesVisible) {
-    return editorWithNotes;
-  } else if (previewVisible) {
-    return editorWithPreview;
-  } else {
-    return <NoPreviewContainer>{editor}</NoPreviewContainer>;
+  switch (rightPane) {
+    case 'i18n':
+      return editorWithEditor;
+    case 'notes':
+      return editorWithNotes;
+    case 'preview':
+      return editorWithPreview;
+    default:
+      return <NoPreviewContainer>{editor}</NoPreviewContainer>;
   }
 }
 
@@ -182,10 +234,8 @@ function isNotesEnabled(collection, entry, isNewEntry, isPublished, hasWorkflow)
 class EditorInterface extends Component {
   state = {
     showEventBlocker: false,
-    previewVisible: localStorage.getItem(PREVIEW_VISIBLE) !== 'false',
-    notesVisible: localStorage.getItem(NOTES_VISIBLE) !== 'false',
+    rightPane: storedPanePreference(),
     scrollSyncEnabled: localStorage.getItem(SCROLL_SYNC_ENABLED) !== 'false',
-    i18nVisible: localStorage.getItem(I18N_VISIBLE) !== 'false',
   };
 
   handleFieldClick = path => {
@@ -214,24 +264,15 @@ class EditorInterface extends Component {
     this.props.onPublish({ createNew, duplicate });
   };
 
-  handleTogglePreview = () => {
-    const newPreviewVisible = !this.state.previewVisible;
-    this.setState({
-      previewVisible: newPreviewVisible,
-      notesVisible: false, // Hide notes when showing preview
-    });
-    localStorage.setItem(PREVIEW_VISIBLE, newPreviewVisible);
-    localStorage.setItem(NOTES_VISIBLE, 'false');
-  };
-
-  handleToggleNotes = () => {
-    const newNotesVisible = !this.state.notesVisible;
-    this.setState({
-      notesVisible: newNotesVisible,
-      previewVisible: false, // Hide preview when showing notes
-    });
-    localStorage.setItem(NOTES_VISIBLE, newNotesVisible);
-    localStorage.setItem(PREVIEW_VISIBLE, 'false');
+  /**
+   * Takes the pane that is actually showing, not the stored preference: the two
+   * differ when the preference names a pane this entry cannot offer, and a
+   * toggle must act on what the editor can see.
+   */
+  handleTogglePane = (pane, showing) => {
+    const next = showing === pane ? NO_PANE : pane;
+    this.setState({ rightPane: next });
+    localStorage.setItem(RIGHT_PANE, next);
   };
 
   handleNotesChange = (action, payload) => {
@@ -242,12 +283,6 @@ class EditorInterface extends Component {
     const newScrollSyncEnabled = !this.state.scrollSyncEnabled;
     this.setState({ scrollSyncEnabled: newScrollSyncEnabled });
     localStorage.setItem(SCROLL_SYNC_ENABLED, newScrollSyncEnabled);
-  };
-
-  handleToggleI18n = () => {
-    const newI18nVisible = !this.state.i18nVisible;
-    this.setState({ i18nVisible: newI18nVisible });
-    localStorage.setItem(I18N_VISIBLE, newI18nVisible);
   };
 
   handleLeftPanelLocaleChange = locale => {
@@ -402,10 +437,12 @@ class EditorInterface extends Component {
       </ScrollSync>
     );
 
-    const i18nVisible = collectionI18nEnabled && this.state.i18nVisible;
-    const previewVisible = previewEnabled && this.state.previewVisible;
-    const notesVisible = notesEnabled && this.state.notesVisible;
-    const scrollSyncVisible = i18nVisible || previewVisible || notesVisible;
+    const rightPane = resolveRightPane(this.state.rightPane, {
+      i18n: collectionI18nEnabled,
+      notes: notesEnabled,
+      preview: previewEnabled,
+    });
+    const scrollSyncVisible = rightPane !== null;
 
     return (
       <EditorContainer>
@@ -446,8 +483,8 @@ class EditorInterface extends Component {
           <ViewControls>
             {collectionI18nEnabled && (
               <EditorToggle
-                isActive={i18nVisible}
-                onClick={this.handleToggleI18n}
+                isActive={rightPane === 'i18n'}
+                onClick={() => this.handleTogglePane('i18n', rightPane)}
                 size="large"
                 type="page"
                 title={t('editor.editorInterface.toggleI18n')}
@@ -456,8 +493,8 @@ class EditorInterface extends Component {
             )}
             {previewEnabled && (
               <EditorToggle
-                isActive={previewVisible}
-                onClick={this.handleTogglePreview}
+                isActive={rightPane === 'preview'}
+                onClick={() => this.handleTogglePane('preview', rightPane)}
                 size="large"
                 type="eye"
                 title={t('editor.editorInterface.togglePreview')}
@@ -465,8 +502,8 @@ class EditorInterface extends Component {
             )}
             {notesEnabled && (
               <EditorToggle
-                isActive={notesVisible}
-                onClick={this.handleToggleNotes}
+                isActive={rightPane === 'notes'}
+                onClick={() => this.handleTogglePane('notes', rightPane)}
                 size="large"
                 type="write"
                 title={t('editor.editorInterface.toggleNotes')}
@@ -483,9 +520,7 @@ class EditorInterface extends Component {
             )}
           </ViewControls>
           <EditorContent
-            i18nVisible={i18nVisible}
-            previewVisible={previewVisible}
-            notesVisible={notesVisible}
+            rightPane={rightPane}
             editor={editor}
             editorWithEditor={editorWithEditor}
             editorWithPreview={editorWithPreview}
