@@ -576,16 +576,9 @@ export default class GitLab implements Implementation {
     );
   }
 
-  // Notes: an entry's notes live in a GitLab issue of their own, one comment
-  // per note. See notesApi.ts for the REST surface and how it differs from the
-  // GitHub backend's.
-
   /**
-   * Who the signed-in editor is, as a note records them. On this backend the
-   * editor signs in to GitLab themselves, so the account that posts a comment
-   * IS the author and nothing needs recording: GitLab reports the current
-   * username on every read, which means ownership survives a rename on its own.
-   * A backend that posts through a shared app overrides this.
+   * Who the signed-in editor is, as a note records them. No id: GitLab reports
+   * the current username on every read, so ownership follows a rename.
    */
   async noteAuthorIdentity(): Promise<{ author: string; authorId?: string }> {
     const user = await this.api!.user();

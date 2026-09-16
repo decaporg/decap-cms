@@ -17,14 +17,13 @@ const MARKER_SUFFIX = ' -->';
 const NOTE_PATTERN = /^<!-- DecapCMS Note (\{[\s\S]*?\}) -->\n?([\s\S]*)$/;
 
 /**
- * A JSON string may contain `-->`, which would close the HTML comment early
- * and take the rest of the marker - and the note's first line - with it.
- * Escaping every hyphen that precedes another hyphen removes every `--`, so
- * `-->` cannot survive. `JSON.parse` decodes `-` transparently, so this
- * is lossless, and a lone hyphen (`Jean-Luc`) stays readable.
+ * A JSON string may contain `-->`, which would close the HTML comment early.
+ * Escaping every hyphen that precedes another removes every `--`, so `-->`
+ * cannot survive; `JSON.parse` decodes `\u002d` back, so it stays lossless
+ * and a lone hyphen (`Jean-Luc`) stays readable.
  *
- * Escaping only `--` in one pass is not enough: a run of five hyphens leaves
- * a `--` behind at the seam between replacements.
+ * Replacing `--` instead is not enough - a run of five hyphens leaves one
+ * behind at the seam.
  */
 function encode(payload: Record<string, unknown>) {
   return JSON.stringify(payload).replace(/-(?=-)/g, '\\u002d');

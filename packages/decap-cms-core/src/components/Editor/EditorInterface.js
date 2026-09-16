@@ -36,8 +36,7 @@ export function storedPanePreference() {
  * `preferred` is what the editor asked for; `available` is what this entry can
  * actually offer (notes need a saved entry, i18n needs a second locale, preview
  * can be switched off per collection). A preference for a pane this entry does
- * not have falls through to the next one rather than leaving the slot empty,
- * which is what the three-boolean version did.
+ * not have falls through to the next one rather than leaving the slot empty.
  */
 export function resolveRightPane(preferred, available) {
   if (preferred === NO_PANE) {

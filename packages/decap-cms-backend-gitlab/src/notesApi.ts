@@ -1,21 +1,18 @@
 /**
- * Notes on the GitLab backend.
+ * Notes on the GitLab backend
  *
- * An entry's notes live in a GitLab issue of their own, one comment per note —
- * the same shape the GitHub backend uses, so a repository's notes read the same
- * whichever host holds them. The body encoding is shared (`formatNoteBody` /
- * `parseNoteBody` in lib-util); what lives here is GitLab's REST surface and
- * the handful of places it differs from GitHub's.
+ * An entry's notes live in a GitLab issue of their own, one comment per note.
+ * The body encoding is shared (`formatNoteBody` / `parseNoteBody` in lib-util);
+ * this is GitLab's REST surface for it.
  *
- * Three differences worth knowing:
+ * GitLab quirks this has to handle:
  *
- * - GitLab calls a comment a "note", which is not Decap's note. In this file
- *   `comment` always means GitLab's note and `note` always means Decap's.
- * - A comment id is scoped to its issue, not to the project, so every mutation
- *   needs the issue's iid as well as the comment id. GitHub's ids are global
- *   and its methods take only the id.
- * - GitLab posts its own comments — "changed the description", "closed" — as
- *   comments with `system: true`. They are not notes and are filtered out.
+ * - GitLab calls a comment a "note", which is not Decap's note. Here `comment`
+ *   always means GitLab's and `note` always means Decap's.
+ * - A comment id is scoped to its issue, so every mutation needs the issue iid
+ *   as well as the comment id.
+ * - GitLab posts its own activity ("changed the description", "closed") as
+ *   comments flagged `system`. They are not notes and are filtered out.
  */
 import { APIError, formatNoteBody, parseNoteBody } from 'decap-cms-lib-util';
 
@@ -121,8 +118,8 @@ export class GitLabNotesAPI {
 
     return {
       id: comment.id.toString(),
-      // Falls back to the account that posted, which is right for a comment
-      // typed on GitLab and for notes predating the recorded author.
+      // Falls back to the account that posted, for a comment typed on GitLab
+      // and for any note with no recorded author.
       author: author || comment.user?.login || 'Unknown',
       authorId,
       // Only when the posting account IS the note's author — a recorded author
@@ -137,11 +134,9 @@ export class GitLabNotesAPI {
   }
 
   /**
-   * The shared polling interface identifies a thread by `number`, which is
-   * GitHub's word for it; GitLab's is `iid`, and the two are not
-   * interchangeable with GitLab's other id (`id`, which is global rather than
-   * project-scoped). Translating here rather than adding a synthetic `number`
-   * to the issue type keeps the mismatch in one visible place.
+   * The shared polling interface says `number`; GitLab's is `iid`, which is not
+   * its `id` (global rather than project-scoped). Translated here rather than
+   * faking a `number` on the issue type, to keep the mismatch in one place.
    */
   asPollingAPI(): NotesPollingAPI {
     return {
@@ -173,14 +168,9 @@ export class GitLabNotesAPI {
   }
 
   /**
-   * GitLab's issue list is already project-scoped, so this is a filter rather
-   * than GitHub's global `search/issues` with a `repo:` qualifier — no
-   * cross-project query to get wrong, and no search index to lag behind a
-   * just-created issue.
-   *
-   * `search` is a substring match over the description, so it can in principle
-   * match a longer slug that contains this one; the exact `collection/slug`
-   * string is confirmed against the description before the issue is accepted.
+   * `search` is a substring match over the description, so it also returns the
+   * thread for a longer slug containing this one. The exact `collection/slug`
+   * is confirmed against the description before an issue is accepted.
    */
   async findEntryIssue(collectionName: string, slug: string): Promise<GitLabIssue | null> {
     try {
@@ -227,13 +217,10 @@ export class GitLabNotesAPI {
   }
 
   /**
-   * Always a full read. GitLab does not offer a usable conditional request
-   * here: it does not promise an ETag on issues, and `requestJSON` parses a
-   * body that a 304 would not have. The signature keeps the ETag shape because
-   * `NotesPollingAPI` is shared with backends that do support it — this one
-   * simply always answers 200 with a null tag, and the polling manager still
-   * reports a change only when the thread's contents actually differ. The cost
-   * is two reads per poll instead of a cheap 304, not a wrong answer.
+   * Always a full read: GitLab promises no ETag on issues, and `requestJSON`
+   * parses a body a 304 would not have. The ETag shape stays because
+   * `NotesPollingAPI` is shared; the polling manager still only reports a
+   * change when the thread's contents differ, so this is slower, not wrong.
    */
   async getIssueWithETag(
     iid: number,

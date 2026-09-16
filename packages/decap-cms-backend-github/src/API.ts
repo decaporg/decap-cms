@@ -1576,8 +1576,8 @@ export default class API {
 
     return {
       id: comment.id.toString(),
-      // Falls back to the GitHub comment author, which is right for a comment
-      // typed on GitHub and for notes predating the recorded author.
+      // Falls back to the account that posted, for a comment typed on GitHub
+      // and for any note with no recorded author.
       author: author || comment.user.login,
       authorId,
       // Only when the comment's GitHub author IS the note's author. A recorded
@@ -1648,14 +1648,9 @@ export default class API {
     | { status: 200; data: IssueState; etag: string | null }
   > {
     try {
-      // Built through `urlFor`/`requestHeaders` rather than by hand, even
-      // though this is a raw `fetch` (it has to be — `request` parses the body
-      // and drops the ETag header this needs). Subclasses override both hooks
-      // to scope a request to their own proxy: decap-cms-backend-turbo-github
-      // adds the `site_id` parameter and `x-site-id` header the Turbo edge
-      // function rejects the request without, and refreshes the session token
-      // in `requestHeaders`. A hand-built URL and Authorization header skip
-      // all of that and come back 400, which is why polling never ran there.
+      // Raw fetch because `request` parses the body and drops the ETag header.
+      // Still built through urlFor/requestHeaders so subclasses can scope it to
+      // their own proxy; hand-building the URL and auth header breaks them.
       const headers: Record<string, string> = await this.requestHeaders(
         etag ? { 'If-None-Match': etag } : {},
       );

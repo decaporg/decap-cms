@@ -69,7 +69,7 @@ export interface Note {
   content: string;
   timestamp: string;
   author: string; // not unique - do not use for comparison
-  authorId?: string; // unique note author id
+  authorId?: string; // unique note author id; absent when the poster IS the author
   isOwn?: boolean; // whether signed-in editor wrote this note
   entrySlug: string;
   resolved: boolean;

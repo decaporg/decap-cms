@@ -54,12 +54,7 @@ describe('note body format', () => {
     expect(parseNoteBody(formatNoteBody({ content, resolved: false })).content).toBe(content);
   });
 
-  /**
-   * The delimited format this replaced could be injected through a display
-   * name: a name containing ` - AuthorId: ` split the marker in the wrong
-   * place and corrupted the id the ownership check compares on. Structure
-   * comes from the parser now, so the name is just a string.
-   */
+  // A name that looks like marker syntax is still just a name.
   it('cannot be injected through an author name', () => {
     const author = 'Mallory - AuthorId: victim-id';
     const body = formatNoteBody({ content: 'hi', resolved: false, author, authorId: 'mallory-id' });
@@ -72,13 +67,10 @@ describe('note body format', () => {
     const body = formatNoteBody({ content: 'hello', resolved: false, author, authorId: 'id-1' });
 
     expect(body.split('\n')[0].endsWith('-->')).toBe(true);
-    // Lossless, unlike the delimited format, which deleted the `-->` outright.
     expect(parseNoteBody(body)).toMatchObject({ content: 'hello', author, authorId: 'id-1' });
   });
 
   it('survives a run of hyphens', () => {
-    // Escaping `--` in a single pass leaves a `--` at the seam; escaping each
-    // hyphen that precedes another does not.
     const author = 'a-----b';
     const body = formatNoteBody({ content: 'hello', resolved: false, author, authorId: 'id-1' });
 

@@ -29,7 +29,7 @@ describe('editor right pane selection', () => {
 
     it('falls through when this entry cannot offer the chosen pane', () => {
       // Notes need a saved entry, so a new one offers preview instead of
-      // leaving the slot empty — what the three-boolean version did.
+      // leaving the slot empty.
       expect(resolveRightPane('notes', { i18n: false, notes: false, preview: true })).toBe(
         'preview',
       );
