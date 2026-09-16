@@ -19,11 +19,11 @@ import {
   contentKeyFromBranch,
   unsentRequest,
   branchFromContentKey,
+  NotesPollingManager,
 } from 'decap-cms-lib-util';
 
 import AuthenticationPage from './AuthenticationPage';
 import API, { API_NAME } from './API';
-import { ETagPollingManager } from './polling';
 import GraphQLAPI from './GraphQLAPI';
 
 import type { Endpoints } from '@octokit/types';
@@ -92,7 +92,7 @@ export default class GitHub implements Implementation {
     [key: string]: Promise<boolean>;
   };
   _mediaDisplayURLSem?: Semaphore;
-  pollingManager?: ETagPollingManager;
+  pollingManager?: NotesPollingManager;
   unwatchFunctions: Map<string, () => void> = new Map();
 
   constructor(config: Config, options = {}) {
@@ -386,7 +386,7 @@ export default class GitHub implements Implementation {
     // }
 
     if (this.api && !this.pollingManager) {
-      this.pollingManager = new ETagPollingManager(this.api, 15000);
+      this.pollingManager = new NotesPollingManager(this.api, 15000);
     }
     // Authorized user
     return { ...user, token: state.token as string, useOpenAuthoring: this.useOpenAuthoring };

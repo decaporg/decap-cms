@@ -1,13 +1,22 @@
 /**
- * GitHub Notes Polling System
+ * Notes polling.
  *
- * ETag-based polling manager that efficiently checks for changes in GitHub Issues
- * Used for a real-time feel of notes updates without excessive API calls leveraging conditional requests (304) that don't count on Github rate limits.
+ * Watches the thread an entry's notes live in and reports what changed, so
+ * notes another editor adds appear without a reload. Where the host supports
+ * conditional requests the poll is an ETag round trip that returns 304 and
+ * costs no rate limit; where it does not, the manager still only reports a
+ * change when the thread's contents actually differ, so a host that always
+ * answers 200 is slower, not wrong.
  *
- * @module polling
+ * Nothing here is specific to one host: it talks to `NotesPollingAPI` below,
+ * which any backend with a comment thread per entry can satisfy. It lives in
+ * lib-util rather than in a backend so the second one to implement notes
+ * inherits it instead of copying it.
+ *
+ * @module notesPolling
  */
 
-import type { Note, IssueState, CommentData, IssueChange } from 'decap-cms-lib-util';
+import type { Note, IssueState, CommentData, IssueChange } from './implementation';
 
 interface WatchedIssue {
   issueNumber: number;
@@ -21,7 +30,7 @@ interface WatchedIssue {
   maxRetries?: number;
 }
 
-export interface GitHubNotesAPI {
+export interface NotesPollingAPI {
   getIssueState(issueNumber: number): Promise<IssueState>;
   getIssueWithETag(
     issueNumber: number,
@@ -40,17 +49,17 @@ export const NOTES_POLLING_STOP = 'NOTES_POLLING_STOP';
 export const NOTES_POLLING_UPDATE = 'NOTES_POLLING_UPDATE';
 export const NOTES_CHANGE_DETECTED = 'NOTES_CHANGE_DETECTED';
 
-export class ETagPollingManager {
+export class NotesPollingManager {
   private currentWatch: WatchedIssue | null = null;
   private currentIssueKey: string | null = null;
   private pollingInterval = 15000;
   private intervalId: NodeJS.Timeout | null = null;
   private isDocumentVisible = true;
-  private api: GitHubNotesAPI;
+  private api: NotesPollingAPI;
   private isPolling = false;
   private pendingRetryTimeout: NodeJS.Timeout | null = null;
 
-  constructor(api: GitHubNotesAPI, pollingInterval = 15000) {
+  constructor(api: NotesPollingAPI, pollingInterval = 15000) {
     this.api = api;
     this.pollingInterval = pollingInterval;
     this.setupVisibilityListener();
@@ -469,4 +478,4 @@ export class ETagPollingManager {
   }
 }
 
-export default ETagPollingManager;
+export default NotesPollingManager;

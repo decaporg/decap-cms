@@ -14,6 +14,7 @@ import {
   responseParser,
   getPathDepth,
 } from './backendUtil';
+import { NotesPollingManager } from './notesPolling';
 import loadScript from './loadScript';
 import getBlobSHA from './getBlobSHA';
 import { asyncLock } from './asyncLock';
@@ -83,8 +84,10 @@ import type {
   IssueChangeData as ICD,
   IssueChange as IC,
 } from './implementation';
+import type { NotesPollingAPI as NPA } from './notesPolling';
 import type { AsyncLock as AL } from './asyncLock';
 
+export type NotesPollingAPI = NPA;
 export type AsyncLock = AL;
 export type Implementation = I;
 export type ImplementationEntry = IE;
@@ -167,6 +170,7 @@ export const DecapCmsLibUtil = {
   throwOnConflictingBranches,
 };
 export {
+  NotesPollingManager,
   APIError,
   Cursor,
   CURSOR_COMPATIBILITY_SYMBOL,
