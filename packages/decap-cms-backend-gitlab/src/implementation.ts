@@ -3,6 +3,7 @@ import semaphore from 'semaphore';
 import trim from 'lodash/trim';
 import { stripIndent } from 'common-tags';
 import {
+  NotesPollingManager,
   CURSOR_COMPATIBILITY_SYMBOL,
   basename,
   entriesByFolder,
@@ -29,8 +30,11 @@ import { PkceAuthenticator } from 'decap-cms-lib-auth';
 
 import AuthenticationPage from './AuthenticationPage';
 import API, { API_NAME } from './API';
+import { GitLabNotesAPI } from './notesApi';
 
 import type {
+  Note,
+  IssueChange,
   Entry,
   AssetProxy,
   PersistOptions,
@@ -50,6 +54,10 @@ import type { Semaphore } from 'semaphore';
 const MAX_CONCURRENT_DOWNLOADS = 10;
 
 export default class GitLab implements Implementation {
+  notesApi?: GitLabNotesAPI;
+  pollingManager?: NotesPollingManager;
+  private unwatchNotes = new Map<string, () => void>();
+
   lock: AsyncLock;
   api: API | null;
   updateUserCredentials: (args: { token: string; refresh_token?: string }) => Promise<null>;
@@ -186,6 +194,9 @@ export default class GitLab implements Implementation {
         this.branch = defaultBranchName;
       }
     }
+    this.notesApi = new GitLabNotesAPI(this.api);
+    this.pollingManager = new NotesPollingManager(this.notesApi.asPollingAPI(), 15000);
+
     // Authorized user
     return {
       ...user,
@@ -543,7 +554,12 @@ export default class GitLab implements Implementation {
     // deleteUnpublishedEntry is a transactional operation
     return runWithLock(
       this.lock,
-      () => this.api!.deleteUnpublishedEntry(collection, slug),
+      async () => {
+        await this.api!.deleteUnpublishedEntry(collection, slug);
+        // Best effort: losing the thread's label does not make the entry any
+        // less deleted, and failing the delete over it would be worse.
+        await this.notesApi?.closeEntryNotesIssue(collection, slug);
+      },
       'Failed to acquire delete entry lock',
     );
   }
@@ -552,9 +568,157 @@ export default class GitLab implements Implementation {
     // publishUnpublishedEntry is a transactional operation
     return runWithLock(
       this.lock,
-      () => this.api!.publishUnpublishedEntry(collection, slug),
+      async () => {
+        await this.api!.publishUnpublishedEntry(collection, slug);
+        await this.notesApi?.closeIssueOnPublish(collection, slug);
+      },
       'Failed to acquire publish entry lock',
     );
+  }
+
+  // Notes: an entry's notes live in a GitLab issue of their own, one comment
+  // per note. See notesApi.ts for the REST surface and how it differs from the
+  // GitHub backend's.
+
+  /**
+   * Who the signed-in editor is, as a note records them. On this backend the
+   * editor signs in to GitLab themselves, so the account that posts a comment
+   * IS the author and nothing needs recording: GitLab reports the current
+   * username on every read, which means ownership survives a rename on its own.
+   * A backend that posts through a shared app overrides this.
+   */
+  async noteAuthorIdentity(): Promise<{ author: string; authorId?: string }> {
+    const user = await this.api!.user();
+    return { author: user.username || user.name || '', authorId: undefined };
+  }
+
+  /**
+   * Resolved here rather than in the pane, because only the backend knows how
+   * its own identities compare.
+   */
+  private async markOwnNotes(notes: Note[]): Promise<Note[]> {
+    const { author, authorId } = await this.noteAuthorIdentity();
+    return notes.map(note => ({
+      ...note,
+      isOwn: note.authorId ? note.authorId === authorId : note.author === author,
+    }));
+  }
+
+  async getNotes(collection: string, slug: string): Promise<Note[]> {
+    const notes = await this.notesApi!.getEntryNotes(collection, slug);
+    return this.markOwnNotes(notes.map(note => ({ ...note, entrySlug: slug })));
+  }
+
+  async addNote(
+    collection: string,
+    slug: string,
+    noteData: Omit<Note, 'id'>,
+    entryTitle?: string,
+  ): Promise<Note> {
+    const identity = await this.noteAuthorIdentity();
+    const note: Note = {
+      ...noteData,
+      id: `temp-${Date.now()}`,
+      author: identity.author,
+      authorId: identity.authorId,
+      isOwn: true,
+      entrySlug: slug,
+      timestamp: noteData.timestamp || new Date().toISOString(),
+      resolved: noteData.resolved || false,
+    };
+
+    const { commentId, issueUrl } = await this.notesApi!.addNoteToEntry(
+      collection,
+      slug,
+      note,
+      entryTitle,
+    );
+
+    return { ...note, id: commentId, issueUrl };
+  }
+
+  private async findNote(collection: string, slug: string, noteId: string) {
+    const notes = await this.notesApi!.getEntryNotes(collection, slug);
+    const note = notes.find(candidate => candidate.id === noteId);
+    if (!note) {
+      throw new Error(`Note with ID ${noteId} not found`);
+    }
+    return note;
+  }
+
+  async updateNote(
+    collection: string,
+    slug: string,
+    noteId: string,
+    updates: Partial<Note>,
+  ): Promise<Note> {
+    const updated = { ...(await this.findNote(collection, slug, noteId)), ...updates };
+    await this.notesApi!.updateEntryNote(collection, slug, noteId, updated);
+    return (await this.markOwnNotes([updated]))[0];
+  }
+
+  async deleteNote(collection: string, slug: string, noteId: string): Promise<void> {
+    await this.notesApi!.deleteEntryNote(collection, slug, noteId);
+  }
+
+  async toggleNoteResolution(collection: string, slug: string, noteId: string): Promise<Note> {
+    const note = await this.findNote(collection, slug, noteId);
+    return this.updateNote(collection, slug, noteId, { resolved: !note.resolved });
+  }
+
+  async reopenIssueForUnpublishedEntry(collection: string, slug: string) {
+    await this.notesApi?.reopenIssueOnUnpublish(collection, slug);
+  }
+
+  async startNotesPolling(
+    collection: string,
+    slug: string,
+    callbacks: {
+      onUpdate: (notes: Note[], changes: IssueChange[]) => void;
+      onChange?: (change: IssueChange) => void;
+    },
+  ): Promise<void> {
+    if (!this.pollingManager) {
+      return;
+    }
+
+    const key = `${collection}/${slug}`;
+    if (this.pollingManager.getStatus().currentWatch === key) {
+      return;
+    }
+
+    this.unwatchNotes.get(key)?.();
+    this.unwatchNotes.delete(key);
+
+    try {
+      const unwatch = await this.pollingManager.watchIssueWithRetry(
+        collection,
+        slug,
+        {
+          ...callbacks,
+          // Polled notes are rebuilt from the thread's comments and so arrive
+          // without the ownership flag getNotes adds; without this a poll would
+          // strip the actions off the editor's own notes moments after writing.
+          onUpdate: async (notes, changes) =>
+            callbacks.onUpdate(await this.markOwnNotes(notes), changes),
+        },
+        5,
+        2000,
+      );
+      this.unwatchNotes.set(key, unwatch);
+    } catch (error) {
+      console.error('[DecapNotes Polling] Failed to start polling after retries:', error);
+    }
+  }
+
+  async stopNotesPolling(collection: string, slug: string): Promise<void> {
+    const key = `${collection}/${slug}`;
+    this.unwatchNotes.get(key)?.();
+    this.unwatchNotes.delete(key);
+  }
+
+  async refreshNotesNow(collection: string, slug: string): Promise<void> {
+    await this.pollingManager?.checkIssueNow(collection, slug);
   }
 
   async getDeployPreview(collection: string, slug: string) {

@@ -142,30 +142,20 @@ class EditorNotesPane extends Component {
 
     this.handleUpdateNote(noteId, { resolved: !currentResolved });
   };
-  // Helper method to get the appropriate link text and icon type based on the source
+  // The link back to wherever the notes actually live, named after the host so
+  // it is obvious where following it lands.
   getSourceInfo = url => {
-    // Check if URL is from GitHub
     if (url.includes('github.com')) {
-      return {
-        text: 'View in GitHub',
-        iconType: 'github', // Using GitHub icon type
-      };
+      return { text: 'View in GitHub', iconType: 'github' };
     }
 
-    // TODO: Add support for other Git providers
-    // Example for future contributors:
-    // if (url.includes('gitlab.com')) {
-    //   return { text: 'View in GitLab', iconType: 'gitlab' };
-    // }
-    // if (url.includes('bitbucket.org')) {
-    //   return { text: 'View in Bitbucket', iconType: 'bitbucket' };
-    // }
+    if (url.includes('gitlab.com')) {
+      return { text: 'View in GitLab', iconType: 'gitlab' };
+    }
 
-    // Default fallback
-    return {
-      text: 'View source',
-      iconType: 'link',
-    };
+    // Self-hosted GitLab, Gitea, and anything else a backend points at: the
+    // host is unknown but the link is still worth offering.
+    return { text: 'View source', iconType: 'link' };
   };
 
   render() {
