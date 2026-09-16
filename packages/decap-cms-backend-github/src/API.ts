@@ -1560,16 +1560,42 @@ export default class API {
   private static readonly NOTES_LABEL = 'decap-cms-notes';
   private static readonly NOTE_ISSUE_PREFIX = 'Notes: ';
   // In Github we hide Decap Notes metadata in a HTML comment, that way we can track status of whether or not a note has been resolved (similar to GDocs)
+  //
+  // Author and AuthorId ride along in the same comment because the GitHub
+  // comment author is not always the person who wrote the note: Decap Turbo
+  // posts with the organization's App installation token, so GitHub attributes
+  // every note to the App's bot user and there is no impersonation API to
+  // change that. Without a recorded author nobody can edit, resolve or delete
+  // their own note under Turbo. AuthorId is what ownership compares on — a
+  // display name is not unique — and it is an opaque, backend-defined
+  // identifier (the GitHub login on this backend) rather than an email, so
+  // nothing here puts a personal address into a repo that may be public.
+  //
+  // Both are optional in the pattern: notes written before this existed, and
+  // comments typed straight into the issue on GitHub, still parse.
   private static readonly NOTE_REGEX =
-    /^<!-- DecapCMS Note - Status: (RESOLVED|OPEN) -->([\s\S]+)$/;
+    /^<!-- DecapCMS Note - Status: (RESOLVED|OPEN)(?: - Author: (.*?))?(?: - AuthorId: (.*?))? -->([\s\S]+)$/;
 
   /**
    * Format a note for PR comment display
    */
   private formatNoteForGithub(note: Note): string {
     const status = note.resolved ? API.NOTE_STATUS_RESOLVED : API.NOTE_STATUS_OPEN;
+    // `-->` inside either field would end the HTML comment early and take the
+    // rest of the marker — and the note's first line — with it.
+    function safe(value: string) {
+      return value.replace(/--+>/g, '');
+    }
+    // Both or neither: `Author` alone would freeze a display name into the note
+    // while ownership still resolved by another route, and a name with no id to
+    // compare against buys nothing. A backend that records no id (the default —
+    // see GitHubBackend.noteAuthorIdentity) writes the original format
+    // unchanged.
+    const identity = note.authorId
+      ? ` - Author: ${safe(note.author)} - AuthorId: ${safe(note.authorId)}`
+      : '';
 
-    return `<!-- DecapCMS Note - Status: ${status} -->
+    return `<!-- DecapCMS Note - Status: ${status}${identity} -->
 ${note.content}`;
   }
 
@@ -1583,8 +1609,12 @@ ${note.content}`;
 
     const structuredMatch = comment.body.match(API.NOTE_REGEX);
 
-    const content = structuredMatch ? structuredMatch[2].trim() : comment.body;
+    const content = structuredMatch ? structuredMatch[4].trim() : comment.body;
     const resolved = structuredMatch ? structuredMatch[1] === API.NOTE_STATUS_RESOLVED : false;
+    // Falls back to the GitHub comment author, which is right for a comment
+    // typed on GitHub and for notes predating the recorded author.
+    const author = structuredMatch?.[2]?.trim() || comment.user.login;
+    const authorId = structuredMatch?.[3]?.trim() || undefined;
 
     if (!content.trim()) {
       throw new Error('Empty note content');
@@ -1592,8 +1622,13 @@ ${note.content}`;
 
     return {
       id: comment.id.toString(),
-      author: comment.user.login,
-      avatarUrl: comment.user.avatar_url,
+      author,
+      authorId,
+      // Only when the comment's GitHub author IS the note's author. A recorded
+      // author means someone else posted on their behalf — under Turbo, the
+      // App bot — and pairing that name with the bot's avatar just mislabels
+      // the note. The pane falls back to initials of the recorded name.
+      avatarUrl: authorId ? undefined : comment.user.avatar_url,
       timestamp: comment.created_at,
       content,
       resolved,
@@ -1657,15 +1692,19 @@ ${note.content}`;
     | { status: 200; data: IssueState; etag: string | null }
   > {
     try {
-      const headers: Record<string, string> = {
-        Authorization: `${this.tokenKeyword} ${this.token}`,
-      };
+      // Built through `urlFor`/`requestHeaders` rather than by hand, even
+      // though this is a raw `fetch` (it has to be — `request` parses the body
+      // and drops the ETag header this needs). Subclasses override both hooks
+      // to scope a request to their own proxy: decap-cms-backend-turbo-github
+      // adds the `site_id` parameter and `x-site-id` header the Turbo edge
+      // function rejects the request without, and refreshes the session token
+      // in `requestHeaders`. A hand-built URL and Authorization header skip
+      // all of that and come back 400, which is why polling never ran there.
+      const headers: Record<string, string> = await this.requestHeaders(
+        etag ? { 'If-None-Match': etag } : {},
+      );
 
-      if (etag) {
-        headers['If-None-Match'] = etag;
-      }
-
-      const response = await fetch(`${this.apiRoot}${this.repoURL}/issues/${issueNumber}`, {
+      const response = await fetch(this.urlFor(`${this.repoURL}/issues/${issueNumber}`, {}), {
         headers,
       });
 
@@ -1678,7 +1717,7 @@ ${note.content}`;
         const newETag = response.headers.get('ETag');
 
         const commentsResponse = await fetch(
-          `${this.apiRoot}${this.repoURL}/issues/${issueNumber}/comments`,
+          this.urlFor(`${this.repoURL}/issues/${issueNumber}/comments`, {}),
           { headers },
         );
         const commentsRaw: GitHubIssue[] = await commentsResponse.json();

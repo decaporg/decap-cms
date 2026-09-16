@@ -751,24 +751,71 @@ export default class GitHub implements Implementation {
 
   // Notes implementation, which is an abstraction to Github's PR issue comments.
 
+  /**
+   * Who the signed-in editor is, as a note records them: a display name for the
+   * pane and a stable id for the ownership check behind Edit/Resolve/Delete.
+   *
+   * A hook rather than a constant because the two are only the same thing when
+   * the editor signs in to GitHub itself. Decap Turbo commits and comments with
+   * the organization's App installation token and its editors have no GitHub
+   * account at all, so it overrides this with the identity from its own
+   * session — see decap-cms-backend-turbo-github.
+   */
+  async noteAuthorIdentity(): Promise<{ author: string; authorId?: string }> {
+    const currentUser = await this.currentUser({ token: this.token! });
+    return {
+      author: currentUser.login || currentUser.name || '',
+      // Deliberately no id, so nothing is recorded in the note and the format
+      // stays exactly what it was. GitHub reports the comment author's CURRENT
+      // login on every read, so ownership already follows an account rename;
+      // freezing the login into the note at write time would break it — rename
+      // the account and its own past notes go read-only. A backend whose API
+      // identity is not the editor (Decap Turbo posts as its App) has nothing
+      // to follow and overrides this.
+      authorId: undefined,
+    };
+  }
+
+  /**
+   * Resolves each note's `isOwn` here rather than in the pane, because only the
+   * backend knows how its identities compare. Falls back to the display name
+   * for notes with no recorded id — the previous behavior, and still right on
+   * this backend, where the name IS the GitHub login.
+   */
+  private async markOwnNotes(notes: Note[]): Promise<Note[]> {
+    const { author, authorId } = await this.noteAuthorIdentity();
+    return notes.map(note => ({
+      ...note,
+      isOwn: note.authorId ? note.authorId === authorId : note.author === author,
+    }));
+  }
+
   // Notes implementation using GitHub Issues
   async getNotes(collection: string, slug: string): Promise<Note[]> {
     try {
       const notes = await this.api!.getEntryNotes(collection, slug);
-      return notes.map(note => ({ ...note, entrySlug: slug }));
+      return this.markOwnNotes(notes.map(note => ({ ...note, entrySlug: slug })));
     } catch (error) {
       console.error('Failed to get notes:', error);
       return [];
     }
   }
 
-  async addNote(collection: string, slug: string, noteData: Omit<Note, 'id'>): Promise<Note> {
+  async addNote(
+    collection: string,
+    slug: string,
+    noteData: Omit<Note, 'id'>,
+    entryTitle?: string,
+  ): Promise<Note> {
     const currentUser = await this.currentUser({ token: this.token! });
+    const identity = await this.noteAuthorIdentity();
 
     const note: Note = {
       ...noteData,
       id: 'temp-' + Date.now(),
-      author: currentUser.login || currentUser.name || '',
+      author: identity.author,
+      authorId: identity.authorId,
+      isOwn: true,
       avatarUrl: currentUser.avatar_url,
       entrySlug: slug,
       timestamp: noteData.timestamp || new Date().toISOString(),
@@ -776,15 +823,16 @@ export default class GitHub implements Implementation {
       issueUrl: undefined,
     };
 
-    // Get entry title for better issue naming
-    let entryTitle: string | undefined;
-    try {
-      const entryData = await this.getEntry(`${collection}/${slug}.md`);
-      const titleMatch = entryData.data.match(/^title:\s*["']?([^"'\n]+)["']?/m);
-      entryTitle = titleMatch ? titleMatch[1] : undefined;
-    } catch (error) {
-      // Entry not found or error reading, use undefined title
-    }
+    // `entryTitle` is supplied by the caller because only it can name the
+    // entry. This used to read the file back with
+    // `getEntry(`${collection}/${slug}.md`)`, which builds a path out of the
+    // collection's NAME rather than its configured `folder` — so for a
+    // collection named `posts` stored under `content/posts` (and for any
+    // non-`.md` extension, and for every i18n file with a locale suffix) it
+    // 404ed on every note. The failure was swallowed, so the only symptom was
+    // that threads got titled after the slug instead of the entry, at the cost
+    // of two doomed requests per note. Core reads the title straight off the
+    // open draft, so there is nothing to fetch.
 
     const { commentId, issueUrl } = await this.api!.addNoteToEntry(
       collection,
@@ -883,7 +931,15 @@ export default class GitHub implements Implementation {
       const unwatchFn = await this.pollingManager.watchIssueWithRetry(
         collection,
         slug,
-        callbacks,
+        {
+          ...callbacks,
+          // The polling manager rebuilds notes straight from the issue's
+          // comments, so they arrive without the ownership flag getNotes adds.
+          // Without this, a poll silently strips Edit/Resolve/Delete off the
+          // editor's own notes ~15s after they appear.
+          onUpdate: async (notes, changes) =>
+            callbacks.onUpdate(await this.markOwnNotes(notes), changes),
+        },
         5, // maxRetries - will try up to 5 times
         2000, // retryDelay - 2 seconds between attempts
       );

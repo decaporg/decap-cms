@@ -842,4 +842,102 @@ describe('github API', () => {
     expect(api.request).toHaveBeenCalledTimes(1);
     expect(api.request).toHaveBeenCalledWith(`/repos/repo/commits/${sha}/status`);
   });
+
+  describe('note author round trip', () => {
+    // Decap Turbo posts notes with the organization's App installation token,
+    // so GitHub attributes every one of them to the App's bot. The author the
+    // pane shows, and the id its Edit/Resolve/Delete check compares on, have to
+    // survive in the note itself or nobody can act on their own note.
+    function api() {
+      return new API({ repo: 'owner/repo' });
+    }
+
+    function asComment(body) {
+      return {
+        id: 7,
+        body,
+        user: { login: 'decap-turbo[bot]', avatar_url: 'https://avatar' },
+        created_at: '2026-01-01T00:00:00Z',
+      };
+    }
+
+    it('round trips author and authorId through the marker', () => {
+      const a = api();
+      const body = a.formatNoteForGithub({
+        content: 'hello',
+        resolved: false,
+        author: 'Martin Jagodic',
+        authorId: '11ea20d1-9887-4af0-874d-2f2aaa1d2378',
+      });
+
+      const note = a.parseCommentToNote(asComment(body));
+
+      expect(note.author).toBe('Martin Jagodic');
+      expect(note.authorId).toBe('11ea20d1-9887-4af0-874d-2f2aaa1d2378');
+      expect(note.content).toBe('hello');
+      expect(note.resolved).toBe(false);
+    });
+
+    it('keeps the resolved flag alongside the author', () => {
+      const a = api();
+      const body = a.formatNoteForGithub({
+        content: 'hello',
+        resolved: true,
+        author: 'Martin Jagodic',
+        authorId: 'id-1',
+      });
+
+      expect(a.parseCommentToNote(asComment(body)).resolved).toBe(true);
+    });
+
+    it('writes the original format when the backend records no author id', () => {
+      // The GitHub backend's default: GitHub already reports the comment
+      // author's current login on every read, so ownership follows an account
+      // rename on its own. Recording it would freeze it and break exactly that.
+      const body = api().formatNoteForGithub({
+        content: 'hello',
+        resolved: false,
+        author: 'martinjagodic',
+      });
+
+      expect(body).toBe('<!-- DecapCMS Note - Status: OPEN -->\nhello');
+    });
+
+    it('falls back to the GitHub comment author for a note with no marker', () => {
+      // A comment typed straight into the issue on GitHub, and every note
+      // written before the author was recorded.
+      const note = api().parseCommentToNote(asComment('just a comment'));
+
+      expect(note.author).toBe('decap-turbo[bot]');
+      expect(note.authorId).toBeUndefined();
+      expect(note.content).toBe('just a comment');
+    });
+
+    it('falls back for the old marker that carried only a status', () => {
+      const note = api().parseCommentToNote(
+        asComment('<!-- DecapCMS Note - Status: RESOLVED -->\nlegacy note'),
+      );
+
+      expect(note.author).toBe('decap-turbo[bot]');
+      expect(note.authorId).toBeUndefined();
+      expect(note.resolved).toBe(true);
+      expect(note.content).toBe('legacy note');
+    });
+
+    it('does not let an author name close the HTML comment early', () => {
+      const a = api();
+      const body = a.formatNoteForGithub({
+        content: 'hello',
+        resolved: false,
+        author: 'evil --> <img src=x>',
+        authorId: 'id-1',
+      });
+
+      const note = a.parseCommentToNote(asComment(body));
+
+      expect(body.split('\n')[0].endsWith('-->')).toBe(true);
+      expect(note.content).toBe('hello');
+      expect(note.authorId).toBe('id-1');
+    });
+  });
 });

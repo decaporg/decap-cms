@@ -68,7 +68,22 @@ export interface Note {
   avatarUrl?: string;
   content: string;
   timestamp: string;
+  /** Display name for the pane. Not unique — never compare ownership on it. */
   author: string;
+  /**
+   * Stable, unique id of whoever wrote the note, used for the ownership check
+   * behind Edit/Resolve/Delete. Absent on notes written before this existed and
+   * on comments typed straight into the issue on GitHub, which is why
+   * `isOwn` falls back to a name comparison.
+   */
+  authorId?: string;
+  /**
+   * Whether the signed-in editor wrote this note. Decided by the backend, which
+   * is the only layer that knows how its own identities compare — under Turbo
+   * the GitHub comment author is always the App bot, so the answer cannot be
+   * read off `author`.
+   */
+  isOwn?: boolean;
   entrySlug: string;
   resolved: boolean;
   issueUrl?: string;
@@ -215,7 +230,13 @@ export interface Implementation {
   deleteFiles: (paths: string[], commitMessage: string) => Promise<void>;
 
   getNotes?: (collection: string, slug: string) => Promise<Note[]>;
-  addNote?: (collection: string, slug: string, note: Omit<Note, 'id'>) => Promise<Note>;
+  addNote?: (
+    collection: string,
+    slug: string,
+    note: Omit<Note, 'id'>,
+    /** The entry's display title, for naming the thread the note is stored in. */
+    entryTitle?: string,
+  ) => Promise<Note>;
   updateNote?: (
     collection: string,
     slug: string,
