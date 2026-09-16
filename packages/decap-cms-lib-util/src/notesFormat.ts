@@ -11,16 +11,23 @@
  */
 import type { Note } from './implementation';
 
-const STATUS_RESOLVED = 'RESOLVED';
-const STATUS_OPEN = 'OPEN';
+const MARKER_PREFIX = '<!-- DecapCMS Note ';
+const MARKER_SUFFIX = ' -->';
 
-const NOTE_PATTERN =
-  /^<!-- DecapCMS Note - Status: (RESOLVED|OPEN)(?: - Author: (.*?))?(?: - AuthorId: (.*?))? -->([\s\S]+)$/;
+const NOTE_PATTERN = /^<!-- DecapCMS Note (\{[\s\S]*?\}) -->\n?([\s\S]*)$/;
 
-/** `-->` inside a field would close the HTML comment early and take the rest of
- *  the marker — and the note's first line — with it. */
-function safe(value: string) {
-  return value.replace(/--+>/g, '');
+/**
+ * A JSON string may contain `-->`, which would close the HTML comment early
+ * and take the rest of the marker - and the note's first line - with it.
+ * Escaping every hyphen that precedes another hyphen removes every `--`, so
+ * `-->` cannot survive. `JSON.parse` decodes `-` transparently, so this
+ * is lossless, and a lone hyphen (`Jean-Luc`) stays readable.
+ *
+ * Escaping only `--` in one pass is not enough: a run of five hyphens leaves
+ * a `--` behind at the seam between replacements.
+ */
+function encode(payload: Record<string, unknown>) {
+  return JSON.stringify(payload).replace(/-(?=-)/g, '\\u002d');
 }
 
 export interface ParsedNoteBody {
@@ -34,27 +41,38 @@ export interface ParsedNoteBody {
 export function formatNoteBody(
   note: Pick<Note, 'content' | 'resolved'> & Partial<Pick<Note, 'author' | 'authorId'>>,
 ) {
-  const status = note.resolved ? STATUS_RESOLVED : STATUS_OPEN;
-  // Both or neither: `Author` alone would freeze a display name into the note
-  // while ownership still resolved by another route, and a name with no id to
-  // compare against buys nothing. A backend that records no id writes the
-  // original format, unchanged.
+  // Both or neither: a name with no id to compare against buys nothing, and a
+  // backend whose poster IS the editor records neither.
   const identity =
-    note.authorId && note.author
-      ? ` - Author: ${safe(note.author)} - AuthorId: ${safe(note.authorId)}`
-      : '';
+    note.authorId && note.author ? { author: note.author, authorId: note.authorId } : {};
 
-  return `<!-- DecapCMS Note - Status: ${status}${identity} -->
-${note.content}`;
+  const marker = encode({ resolved: note.resolved, ...identity });
+
+  return `${MARKER_PREFIX}${marker}${MARKER_SUFFIX}\n${note.content}`;
 }
 
 export function parseNoteBody(body: string): ParsedNoteBody {
   const match = body.match(NOTE_PATTERN);
 
+  if (!match) {
+    // A comment typed straight into the thread on the host. It is still a note,
+    // just an unresolved one with no recorded author.
+    return { content: body.trim(), resolved: false };
+  }
+
+  let payload: Partial<ParsedNoteBody & { resolved: boolean }>;
+  try {
+    payload = JSON.parse(match[1]);
+  } catch {
+    // Someone edited the marker by hand into something unparseable. Treat the
+    // whole comment as content rather than dropping the note.
+    return { content: body.trim(), resolved: false };
+  }
+
   return {
-    content: (match ? match[4] : body).trim(),
-    resolved: match ? match[1] === STATUS_RESOLVED : false,
-    author: match?.[2]?.trim() || undefined,
-    authorId: match?.[3]?.trim() || undefined,
+    content: match[2].trim(),
+    resolved: payload.resolved === true,
+    author: payload.author || undefined,
+    authorId: payload.authorId || undefined,
   };
 }

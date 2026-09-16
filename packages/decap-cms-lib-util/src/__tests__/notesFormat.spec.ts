@@ -28,12 +28,16 @@ describe('note body format', () => {
     expect(parseNoteBody(body).resolved).toBe(true);
   });
 
-  it('writes the original format when no author id is recorded', () => {
-    // What a backend whose poster IS the editor writes — the format predating
-    // recorded authors, so those deployments see no change at all.
-    expect(formatNoteBody({ content: 'hello', resolved: false, author: 'martinjagodic' })).toBe(
-      '<!-- DecapCMS Note - Status: OPEN -->\nhello',
-    );
+  it('records no identity when the backend supplies none', () => {
+    // A backend whose posting account IS the editor records neither field.
+    const body = formatNoteBody({ content: 'hello', resolved: false, author: 'martinjagodic' });
+
+    expect(parseNoteBody(body)).toEqual({
+      content: 'hello',
+      resolved: false,
+      author: undefined,
+      authorId: undefined,
+    });
   });
 
   it('reads a comment with no marker as an unresolved note', () => {
@@ -41,30 +45,64 @@ describe('note body format', () => {
     expect(parseNoteBody('just a comment')).toEqual({
       content: 'just a comment',
       resolved: false,
-      author: undefined,
-      authorId: undefined,
     });
   });
 
-  it('reads the older marker that carried only a status', () => {
-    expect(parseNoteBody('<!-- DecapCMS Note - Status: RESOLVED -->\nlegacy note')).toEqual({
-      content: 'legacy note',
-      resolved: true,
-      author: undefined,
-      authorId: undefined,
-    });
+  it('keeps multi-line content intact', () => {
+    const content = 'first line\n\nthird line';
+
+    expect(parseNoteBody(formatNoteBody({ content, resolved: false })).content).toBe(content);
+  });
+
+  /**
+   * The delimited format this replaced could be injected through a display
+   * name: a name containing ` - AuthorId: ` split the marker in the wrong
+   * place and corrupted the id the ownership check compares on. Structure
+   * comes from the parser now, so the name is just a string.
+   */
+  it('cannot be injected through an author name', () => {
+    const author = 'Mallory - AuthorId: victim-id';
+    const body = formatNoteBody({ content: 'hi', resolved: false, author, authorId: 'mallory-id' });
+
+    expect(parseNoteBody(body)).toMatchObject({ author, authorId: 'mallory-id' });
   });
 
   it('does not let an author name close the HTML comment early', () => {
+    const author = 'evil --> <img src=x>';
+    const body = formatNoteBody({ content: 'hello', resolved: false, author, authorId: 'id-1' });
+
+    expect(body.split('\n')[0].endsWith('-->')).toBe(true);
+    // Lossless, unlike the delimited format, which deleted the `-->` outright.
+    expect(parseNoteBody(body)).toMatchObject({ content: 'hello', author, authorId: 'id-1' });
+  });
+
+  it('survives a run of hyphens', () => {
+    // Escaping `--` in a single pass leaves a `--` at the seam; escaping each
+    // hyphen that precedes another does not.
+    const author = 'a-----b';
+    const body = formatNoteBody({ content: 'hello', resolved: false, author, authorId: 'id-1' });
+
+    // The opening `<!--` has its own `--`, so check the payload itself.
+    const payload = body.slice('<!-- DecapCMS Note '.length, body.indexOf(' -->'));
+    expect(payload).not.toContain('--');
+    expect(parseNoteBody(body).author).toBe(author);
+  });
+
+  it('keeps an ordinary hyphen readable in the marker', () => {
     const body = formatNoteBody({
       content: 'hello',
       resolved: false,
-      author: 'evil --> <img src=x>',
+      author: 'Jean-Luc Picard',
       authorId: 'id-1',
     });
 
-    expect(body.split('\n')[0].endsWith('-->')).toBe(true);
-    expect(parseNoteBody(body)).toMatchObject({ content: 'hello', authorId: 'id-1' });
+    expect(body).toContain('Jean-Luc Picard');
+  });
+
+  it('treats an unparseable marker as plain content rather than dropping it', () => {
+    const body = '<!-- DecapCMS Note {not json} -->\nhello';
+
+    expect(parseNoteBody(body)).toEqual({ content: body.trim(), resolved: false });
   });
 
   /**
@@ -75,6 +113,6 @@ describe('note body format', () => {
   it('pins the wire format', () => {
     expect(
       formatNoteBody({ content: 'hello', resolved: true, author: 'Ada', authorId: 'u1' }),
-    ).toBe('<!-- DecapCMS Note - Status: RESOLVED - Author: Ada - AuthorId: u1 -->\nhello');
+    ).toBe('<!-- DecapCMS Note {"resolved":true,"author":"Ada","authorId":"u1"} -->\nhello');
   });
 });

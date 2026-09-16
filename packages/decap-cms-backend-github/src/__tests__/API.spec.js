@@ -888,7 +888,7 @@ describe('github API', () => {
 
     it('rejects a note whose body is only the marker', () => {
       expect(() =>
-        api().parseCommentToNote(asComment('<!-- DecapCMS Note - Status: OPEN -->\n   ')),
+        api().parseCommentToNote(asComment('<!-- DecapCMS Note {"resolved":false} -->\n   ')),
       ).toThrow('Empty note content');
     });
 

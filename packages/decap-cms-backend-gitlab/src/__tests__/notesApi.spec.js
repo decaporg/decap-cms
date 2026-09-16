@@ -106,7 +106,7 @@ describe('GitLab notes API', () => {
       const { api } = makeApi(async req => {
         if (url(req).endsWith('/notes')) {
           return [
-            comment({ id: 1, body: '<!-- DecapCMS Note - Status: OPEN -->\n   ' }),
+            comment({ id: 1, body: '<!-- DecapCMS Note {"resolved":false} -->\n   ' }),
             comment({ id: 2, body: 'a real note' }),
           ];
         }
