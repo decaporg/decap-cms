@@ -26,11 +26,6 @@ const SCROLL_SYNC_ENABLED = 'cms.scroll-sync-enabled';
 const SPLIT_PANE_POSITION = 'cms.split-pane-position';
 const RIGHT_PANE = 'cms.right-pane';
 
-// Superseded by RIGHT_PANE; read once so an existing editor keeps their layout.
-const LEGACY_PREVIEW_VISIBLE = 'cms.preview-visible';
-const LEGACY_NOTES_VISIBLE = 'cms.notes-visible';
-const LEGACY_I18N_VISIBLE = 'cms.i18n-visible';
-
 /**
  * There is one slot to the right of the form and three things that want it, so
  * which one is showing is a single value rather than three booleans.
@@ -42,26 +37,14 @@ const LEGACY_I18N_VISIBLE = 'cms.i18n-visible';
  * the control claimed to be on while showing something else. A single value
  * cannot represent that.
  *
- * Order is the precedence the old renderer applied, kept so an editor who
- * never expressed a preference sees the same pane as before.
+ * Order is the precedence the old renderer applied, kept as the default for an
+ * editor who has never expressed a preference.
  */
 const PANE_ORDER = ['i18n', 'notes', 'preview'];
 const NO_PANE = 'none';
 
 export function storedPanePreference() {
-  const stored = localStorage.getItem(RIGHT_PANE);
-  if (stored) {
-    return stored;
-  }
-  // No preference recorded yet: honour whichever legacy pane was last turned
-  // off, so an editor who hid the preview does not find it back.
-  const legacyOff = {
-    i18n: localStorage.getItem(LEGACY_I18N_VISIBLE) === 'false',
-    notes: localStorage.getItem(LEGACY_NOTES_VISIBLE) === 'false',
-    preview: localStorage.getItem(LEGACY_PREVIEW_VISIBLE) === 'false',
-  };
-  const firstStillOn = PANE_ORDER.find(pane => !legacyOff[pane]);
-  return firstStillOn ?? NO_PANE;
+  return localStorage.getItem(RIGHT_PANE) || PANE_ORDER[0];
 }
 
 /**

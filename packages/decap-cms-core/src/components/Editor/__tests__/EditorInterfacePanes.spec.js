@@ -65,28 +65,5 @@ describe('editor right pane selection', () => {
     it('defaults to the first pane, matching the old precedence', () => {
       expect(storedPanePreference()).toBe('i18n');
     });
-
-    it('carries over a pane the editor had hidden before the upgrade', () => {
-      // They turned the i18n pane off under the old three-boolean storage and
-      // must not find it back on next load.
-      localStorage.setItem('cms.i18n-visible', 'false');
-
-      expect(storedPanePreference()).toBe('notes');
-    });
-
-    it('carries over an editor who had hidden everything', () => {
-      localStorage.setItem('cms.i18n-visible', 'false');
-      localStorage.setItem('cms.notes-visible', 'false');
-      localStorage.setItem('cms.preview-visible', 'false');
-
-      expect(storedPanePreference()).toBe('none');
-    });
-
-    it('prefers the new key over the legacy ones once one exists', () => {
-      localStorage.setItem('cms.i18n-visible', 'false');
-      localStorage.setItem('cms.right-pane', 'i18n');
-
-      expect(storedPanePreference()).toBe('i18n');
-    });
   });
 });
