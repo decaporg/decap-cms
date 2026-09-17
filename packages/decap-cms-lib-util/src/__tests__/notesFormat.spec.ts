@@ -91,6 +91,31 @@ describe('note body format', () => {
     expect(body).toContain('Jean-Luc Picard');
   });
 
+  // The marker is hand-editable on the host, so its field types are not
+  // guaranteed. A non-string author used to reach the pane and crash it.
+  it('ignores a marker field that is not a string', () => {
+    const body = '<!-- DecapCMS Note {"resolved":false,"author":{"a":1},"authorId":42} -->\nhi';
+
+    expect(parseNoteBody(body)).toEqual({
+      content: 'hi',
+      resolved: false,
+      author: undefined,
+      authorId: undefined,
+    });
+  });
+
+  it('ignores a whitespace-only author', () => {
+    const body = '<!-- DecapCMS Note {"resolved":false,"author":"   ","authorId":"u1"} -->\nhi';
+
+    expect(parseNoteBody(body).author).toBeUndefined();
+  });
+
+  it('treats a non-boolean resolved as unresolved', () => {
+    const body = '<!-- DecapCMS Note {"resolved":"yes"} -->\nhi';
+
+    expect(parseNoteBody(body).resolved).toBe(false);
+  });
+
   it('treats an unparseable marker as plain content rather than dropping it', () => {
     const body = '<!-- DecapCMS Note {not json} -->\nhello';
 

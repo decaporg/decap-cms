@@ -22,6 +22,11 @@ import type { CommentData, IssueState, Note, NotesPollingAPI } from 'decap-cms-l
  *  arbitrary markdown, and a long one does not belong in a URL. */
 const JSON_HEADERS = { 'Content-Type': 'application/json; charset=utf-8' };
 
+const PER_PAGE = 100;
+/** A thread or a search running past this is pathological; stop rather than
+ *  paging forever against a host that keeps answering. */
+const MAX_PAGES = 20;
+
 export const NOTES_LABEL = 'decap-cms-notes';
 export const NOTE_ISSUE_PREFIX = 'Notes: ';
 
@@ -92,6 +97,30 @@ export interface NotesRequester {
   repoURL: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   requestJSON: (req: any) => Promise<any>;
+}
+
+/** GitLab paginates every list endpoint. Pages are walked by number rather
+ *  than by the `X-Next-Page` header so this needs only `requestJSON`, which
+ *  hands back parsed JSON without the response. `stop` ends the walk early -
+ *  a lookup that has found its match should not keep paging. */
+async function walkPages<T>(
+  fetchPage: (page: number) => Promise<T[]>,
+  stop: (items: T[]) => boolean = () => false,
+) {
+  const all: T[] = [];
+
+  for (let page = 1; page <= MAX_PAGES; page += 1) {
+    const items = await fetchPage(page);
+    if (!Array.isArray(items) || items.length === 0) {
+      break;
+    }
+    all.push(...items);
+    if (stop(all) || items.length < PER_PAGE) {
+      break;
+    }
+  }
+
+  return all;
 }
 
 export class GitLabNotesAPI {
@@ -173,19 +202,33 @@ export class GitLabNotesAPI {
    * is confirmed against the description before an issue is accepted.
    */
   async findEntryIssue(collectionName: string, slug: string): Promise<GitLabIssue | null> {
-    try {
-      const needle = `${collectionName}/${slug}`;
-      const issues: GitLabIssue[] = await this.api.requestJSON({
-        url: `${this.repoURL}/issues`,
-        params: {
-          labels: NOTES_LABEL,
-          search: needle,
-          in: 'description',
-          per_page: 20,
-        },
-      });
+    const needle = `${collectionName}/${slug}`;
 
-      return issues.find(issue => (issue.description ?? '').includes(`\`${needle}\``)) ?? null;
+    function isExact(issue: GitLabIssue) {
+      return (issue.description ?? '').includes(`\`${needle}\``);
+    }
+
+    try {
+      // Paged rather than taking the first page: `search` is a substring match,
+      // so enough longer slugs sharing this prefix could push the exact thread
+      // off page one. Missing it means addNoteToEntry opens a second thread and
+      // the entry's notes split across two issues, silently.
+      const issues = await walkPages<GitLabIssue>(
+        page =>
+          this.api.requestJSON({
+            url: `${this.repoURL}/issues`,
+            params: {
+              labels: NOTES_LABEL,
+              search: needle,
+              in: 'description',
+              per_page: PER_PAGE,
+              page,
+            },
+          }),
+        found => found.some(isExact),
+      );
+
+      return issues.find(isExact) ?? null;
     } catch (error) {
       console.warn('Failed to search for existing notes issue:', error);
       return null;
@@ -196,24 +239,28 @@ export class GitLabNotesAPI {
     return this.api.requestJSON(`${this.repoURL}/issues/${iid}`);
   }
 
+  /**
+   * Errors propagate deliberately. Returning an empty list on a failed request
+   * is indistinguishable from a thread whose comments were all deleted: the
+   * polling manager would diff against it, emit `comment_deleted` for every
+   * note and blank the pane, then restore them on the next poll. Throwing
+   * leaves the manager's last state alone and lets it retry.
+   */
   private async getIssueComments(iid: number): Promise<CommentData[]> {
-    try {
-      const comments: GitLabComment[] = await this.api.requestJSON({
+    const comments = await walkPages<GitLabComment>(page =>
+      this.api.requestJSON({
         url: `${this.repoURL}/issues/${iid}/notes`,
-        params: { per_page: 100, sort: 'asc', order_by: 'created_at' },
-      });
+        params: { per_page: PER_PAGE, sort: 'asc', order_by: 'created_at', page },
+      }),
+    );
 
-      return (
-        (Array.isArray(comments) ? comments : [])
-          // GitLab's own activity entries ("changed the description", "closed")
-          // arrive on this endpoint too and are not notes.
-          .filter(comment => !comment.system)
-          .map(toCommentData)
-      );
-    } catch (error) {
-      console.error('Failed to get issue comments:', error);
-      return [];
-    }
+    return (
+      comments
+        // GitLab's own activity entries ("changed the description", "closed")
+        // arrive on this endpoint too and are not notes.
+        .filter(comment => !comment.system)
+        .map(toCommentData)
+    );
   }
 
   /**

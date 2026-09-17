@@ -73,6 +73,33 @@ describe('GitLab notes API', () => {
       expect((await api.findEntryIssue('posts', 'my-post')).iid).toBe(12);
     });
 
+    /**
+     * `search` is a substring match, so enough longer slugs sharing this prefix
+     * push the exact thread off page one. Stopping there returned null and
+     * addNoteToEntry opened a second thread, splitting the entry's notes.
+     */
+    it('pages past a full page of substring matches to find the exact thread', async () => {
+      const decoys = Array.from({ length: 100 }, (_, i) => ({
+        ...ISSUE,
+        iid: 200 + i,
+        description: noteIssueDescription('posts', `my-post-${i}`),
+      }));
+      const { api, requestJSON } = makeApi(async req =>
+        req.params.page === 1 ? decoys : req.params.page === 2 ? [ISSUE] : [],
+      );
+
+      expect((await api.findEntryIssue('posts', 'my-post')).iid).toBe(12);
+      expect(requestJSON.mock.calls.length).toBeGreaterThan(1);
+    });
+
+    it('stops paging as soon as the exact thread is found', async () => {
+      const { api, requestJSON } = makeApi(async () => [ISSUE]);
+
+      await api.findEntryIssue('posts', 'my-post');
+
+      expect(requestJSON.mock.calls).toHaveLength(1);
+    });
+
     it('reports no thread rather than failing when the lookup errors', async () => {
       const { api } = makeApi(async () => {
         throw new Error('boom');
@@ -116,6 +143,28 @@ describe('GitLab notes API', () => {
       const notes = await api.getEntryNotes('posts', 'my-post');
 
       expect(notes.map(note => note.content)).toEqual(['a real note']);
+    });
+
+    it('pages past the first page of comments', async () => {
+      // A thread longer than one page silently lost its older notes.
+      const page1 = Array.from({ length: 100 }, (_, i) =>
+        comment({ id: i + 1, body: `note ${i}` }),
+      );
+      const { api } = makeApi(async req => {
+        if (url(req).endsWith('/notes')) {
+          return req.params.page === 1
+            ? page1
+            : req.params.page === 2
+            ? [comment({ id: 999, body: 'last' })]
+            : [];
+        }
+        return [ISSUE];
+      });
+
+      const notes = await api.getEntryNotes('posts', 'my-post');
+
+      expect(notes).toHaveLength(101);
+      expect(notes[notes.length - 1].content).toBe('last');
     });
 
     it('carries the thread url so the pane can link to it', async () => {
@@ -283,6 +332,21 @@ describe('GitLab notes API', () => {
   });
 
   describe('polling adapter', () => {
+    /**
+     * Swallowing the error and answering 200 with no comments is
+     * indistinguishable from a thread whose notes were all deleted: the
+     * polling manager diffs against it, emits comment_deleted for every note
+     * and blanks the pane. Throwing leaves its last state alone.
+     */
+    it('propagates a failed comment fetch instead of reporting an empty thread', async () => {
+      const { api } = makeApi(async req => {
+        if (url(req).endsWith('/notes')) throw new Error('503');
+        return url(req).endsWith('/12') ? ISSUE : [ISSUE];
+      });
+
+      await expect(api.asPollingAPI().getIssueWithETag(12, null)).rejects.toThrow();
+    });
+
     it('translates GitLab iid to the number the shared interface expects', async () => {
       const { api } = makeApi(async () => [ISSUE]);
 

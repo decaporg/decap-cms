@@ -50,6 +50,17 @@ export function formatNoteBody(
   return `${MARKER_PREFIX}${marker}${MARKER_SUFFIX}\n${note.content}`;
 }
 
+/**
+ * The marker is hand-editable on the host, so nothing in it is trusted to be
+ * the type it should be. A non-string author reaching `Note` crashes the pane
+ * outright - the avatar initials call `.split()` on it - so anything that is
+ * not a usable string is treated as no recorded author, which falls back to
+ * the account that posted the comment.
+ */
+function asString(value: unknown) {
+  return typeof value === 'string' && value.trim() ? value.trim() : undefined;
+}
+
 export function parseNoteBody(body: string): ParsedNoteBody {
   const match = body.match(NOTE_PATTERN);
 
@@ -59,7 +70,7 @@ export function parseNoteBody(body: string): ParsedNoteBody {
     return { content: body.trim(), resolved: false };
   }
 
-  let payload: Partial<ParsedNoteBody & { resolved: boolean }>;
+  let payload: Record<string, unknown>;
   try {
     payload = JSON.parse(match[1]);
   } catch {
@@ -71,7 +82,7 @@ export function parseNoteBody(body: string): ParsedNoteBody {
   return {
     content: match[2].trim(),
     resolved: payload.resolved === true,
-    author: payload.author || undefined,
-    authorId: payload.authorId || undefined,
+    author: asString(payload.author),
+    authorId: asString(payload.authorId),
   };
 }

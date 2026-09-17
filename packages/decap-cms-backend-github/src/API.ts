@@ -1721,16 +1721,22 @@ export default class API {
   /**
    * Get comments from a GitHub issue
    */
+  /**
+   * Paged, because this endpoint defaults to 30 per page - a thread past that
+   * silently lost its older notes, in the pane and in polling alike.
+   *
+   * Errors propagate deliberately. Returning an empty list on a failed request
+   * is indistinguishable from a thread whose comments were all deleted: the
+   * polling manager would diff against it, emit `comment_deleted` for every
+   * note and blank the pane, then restore them on the next poll. Throwing
+   * leaves the manager's last state alone and lets it retry.
+   */
   private async getIssueComments(issueNumber: number): Promise<GitHubIssue[]> {
-    try {
-      const response: GitHubIssue[] = await this.request(
-        `${this.repoURL}/issues/${issueNumber}/comments`,
-      );
-      return Array.isArray(response) ? response : [];
-    } catch (error) {
-      console.error('Failed to get issue comments:', error);
-      return [];
-    }
+    const response = await this.requestAllPages<GitHubIssue>(
+      `${this.repoURL}/issues/${issueNumber}/comments`,
+    );
+
+    return Array.isArray(response) ? response : [];
   }
 
   /**
