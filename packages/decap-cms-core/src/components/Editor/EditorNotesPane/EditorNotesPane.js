@@ -97,6 +97,36 @@ const EmptyStateText = styled.p`
   line-height: 1.4;
 `;
 
+/**
+ * Names the link back to wherever the notes live.
+ *
+ * Matched on the parsed hostname, not a substring of the URL: `notgithub.com`
+ * contains `github.com`. A host we do not recognise - self-hosted GitLab,
+ * Gitea, GitHub Enterprise - still gets a link, just a generic label.
+ */
+export function getSourceInfo(url) {
+  let host;
+  try {
+    host = new URL(url).hostname.toLowerCase();
+  } catch {
+    return { text: 'View source', iconType: 'link' };
+  }
+
+  function isHost(domain) {
+    return host === domain || host.endsWith(`.${domain}`);
+  }
+
+  if (isHost('github.com')) {
+    return { text: 'View in GitHub', iconType: 'github' };
+  }
+
+  if (isHost('gitlab.com')) {
+    return { text: 'View in GitLab', iconType: 'gitlab' };
+  }
+
+  return { text: 'View source', iconType: 'link' };
+}
+
 class EditorNotesPane extends Component {
   static propTypes = {
     notes: ImmutablePropTypes.list,
@@ -143,18 +173,6 @@ class EditorNotesPane extends Component {
     this.handleUpdateNote(noteId, { resolved: !currentResolved });
   };
 
-  getSourceInfo = url => {
-    if (url.includes('github.com')) {
-      return { text: 'View in GitHub', iconType: 'github' };
-    }
-
-    if (url.includes('gitlab.com')) {
-      return { text: 'View in GitLab', iconType: 'gitlab' };
-    }
-
-    return { text: 'View source', iconType: 'link' };
-  };
-
   render() {
     const { notes, t } = this.props;
     const notesList = notes && notes.size !== undefined ? notes : List(notes || []);
@@ -162,7 +180,7 @@ class EditorNotesPane extends Component {
     const unresolvedCount = notesList.filter(note => !note.get('resolved')).size;
 
     const sourceUrl = notesCount > 0 ? notesList.first()?.get('issueUrl') : null;
-    const sourceInfo = sourceUrl ? this.getSourceInfo(sourceUrl) : null;
+    const sourceInfo = sourceUrl ? getSourceInfo(sourceUrl) : null;
 
     return (
       <NotesContainer>
