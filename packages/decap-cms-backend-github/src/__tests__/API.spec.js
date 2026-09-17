@@ -875,13 +875,13 @@ describe('github API', () => {
       const body = formatNoteBody({
         content: 'hello',
         resolved: false,
-        author: 'Martin Jagodic',
+        author: 'Decap Tester',
         authorId: 'u-1',
       });
 
       const note = api().parseCommentToNote(asComment(body));
 
-      expect(note.author).toBe('Martin Jagodic');
+      expect(note.author).toBe('Decap Tester');
       expect(note.authorId).toBe('u-1');
       expect(note.avatarUrl).toBeUndefined();
     });

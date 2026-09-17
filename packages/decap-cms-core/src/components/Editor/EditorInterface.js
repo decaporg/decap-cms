@@ -185,7 +185,7 @@ function isPreviewEnabled(collection, entry) {
   return collection.getIn(['editor', 'preview'], true);
 }
 
-function isNotesEnabled(collection, entry, isNewEntry, isPublished, hasWorkflow) {
+export function isNotesEnabled(collection, entry, isNewEntry, isPublished, hasWorkflow) {
   if (isNewEntry || !hasWorkflow) {
     return false;
   }

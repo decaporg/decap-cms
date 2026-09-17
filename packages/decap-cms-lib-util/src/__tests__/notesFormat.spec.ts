@@ -5,14 +5,14 @@ describe('note body format', () => {
     const body = formatNoteBody({
       content: 'hello',
       resolved: false,
-      author: 'Martin Jagodic',
+      author: 'Decap Tester',
       authorId: '11ea20d1-9887-4af0-874d-2f2aaa1d2378',
     });
 
     expect(parseNoteBody(body)).toEqual({
       content: 'hello',
       resolved: false,
-      author: 'Martin Jagodic',
+      author: 'Decap Tester',
       authorId: '11ea20d1-9887-4af0-874d-2f2aaa1d2378',
     });
   });
@@ -21,7 +21,7 @@ describe('note body format', () => {
     const body = formatNoteBody({
       content: 'hello',
       resolved: true,
-      author: 'Martin Jagodic',
+      author: 'Decap Tester',
       authorId: 'id-1',
     });
 

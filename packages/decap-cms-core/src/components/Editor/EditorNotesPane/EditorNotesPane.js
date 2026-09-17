@@ -97,13 +97,6 @@ const EmptyStateText = styled.p`
   line-height: 1.4;
 `;
 
-/**
- * Names the link back to wherever the notes live.
- *
- * Matched on the parsed hostname, not a substring of the URL: `notgithub.com`
- * contains `github.com`. A host we do not recognise - self-hosted GitLab,
- * Gitea, GitHub Enterprise - still gets a link, just a generic label.
- */
 export function getSourceInfo(url) {
   let host;
   try {
