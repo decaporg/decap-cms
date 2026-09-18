@@ -1667,11 +1667,7 @@ export default class API {
         const issue = await response.json();
         const newETag = response.headers.get('ETag');
 
-        const commentsResponse = await fetch(
-          this.urlFor(`${this.repoURL}/issues/${issueNumber}/comments`, {}),
-          { headers },
-        );
-        const commentsRaw: GitHubIssue[] = await commentsResponse.json();
+        const commentsRaw = await this.getIssueComments(issueNumber);
 
         const comments: CommentData[] = commentsRaw.map(comment => ({
           id: comment.id,

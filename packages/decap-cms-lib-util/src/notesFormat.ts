@@ -15,6 +15,7 @@ const MARKER_PREFIX = '<!-- DecapCMS Note ';
 const MARKER_SUFFIX = ' -->';
 
 const NOTE_PATTERN = /^<!-- DecapCMS Note (\{[\s\S]*?\}) -->\n?([\s\S]*)$/;
+const LEGACY_NOTE_PATTERN = /^<!-- DecapCMS Note - Status: (RESOLVED|OPEN) -->\n?([\s\S]*)$/;
 
 /**
  * A JSON string may contain `-->`, which would close the HTML comment early.
@@ -65,6 +66,11 @@ export function parseNoteBody(body: string): ParsedNoteBody {
   const match = body.match(NOTE_PATTERN);
 
   if (!match) {
+    const legacy = body.match(LEGACY_NOTE_PATTERN);
+    if (legacy) {
+      return { content: legacy[2].trim(), resolved: legacy[1] === 'RESOLVED' };
+    }
+
     // A comment typed straight into the thread on the host. It is still a note,
     // just an unresolved one with no recorded author.
     return { content: body.trim(), resolved: false };

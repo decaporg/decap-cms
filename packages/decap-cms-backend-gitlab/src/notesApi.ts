@@ -97,6 +97,8 @@ export interface NotesRequester {
   repoURL: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   requestJSON: (req: any) => Promise<any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  request: (req: any) => Promise<Response>;
 }
 
 /** GitLab paginates every list endpoint. Pages are walked by number rather
@@ -373,10 +375,14 @@ export class GitLabNotesAPI {
     }
 
     try {
-      await this.api.requestJSON({
+      const response = await this.api.request({
         url: `${this.repoURL}/issues/${issue.iid}/notes/${noteId}`,
         method: 'DELETE',
       });
+
+      if (!response.ok) {
+        throw new APIError('Failed to delete note', response.status, 'GitLab');
+      }
     } catch (error) {
       console.error('Failed to delete entry note:', error);
       throw new APIError('Failed to delete note', error?.status || 500, 'GitLab');

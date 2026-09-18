@@ -2,10 +2,11 @@ import { formatNoteBody } from 'decap-cms-lib-util';
 
 import { GitLabNotesAPI, noteIssueDescription } from '../notesApi';
 
-function makeApi(handler) {
+function makeApi(handler, requestHandler) {
   const requestJSON = jest.fn(handler);
-  const api = new GitLabNotesAPI({ repoURL: '/projects/owner%2Frepo', requestJSON });
-  return { api, requestJSON };
+  const request = jest.fn(requestHandler || (async () => ({ ok: true, status: 204 })));
+  const api = new GitLabNotesAPI({ repoURL: '/projects/owner%2Frepo', requestJSON, request });
+  return { api, requestJSON, request };
 }
 
 function url(req) {
@@ -274,16 +275,23 @@ describe('GitLab notes API', () => {
       expect(url(put)).toBe('/projects/owner%2Frepo/issues/12/notes/99');
     });
 
-    it('deletes through the thread too', async () => {
-      const { api, requestJSON } = makeApi(async req => {
-        if (req.method === 'DELETE') return {};
-        return [ISSUE];
-      });
+    it('deletes through the thread, and treats 204 as success', async () => {
+      const { api, request } = makeApi(async () => [ISSUE]);
 
-      await api.deleteEntryNote('posts', 'my-post', '99');
+      await expect(api.deleteEntryNote('posts', 'my-post', '99')).resolves.toBeUndefined();
 
-      const del = requestJSON.mock.calls.find(([req]) => req.method === 'DELETE')[0];
+      const del = request.mock.calls[0][0];
       expect(url(del)).toBe('/projects/owner%2Frepo/issues/12/notes/99');
+      expect(del.method).toBe('DELETE');
+    });
+
+    it('still reports a delete the host refused', async () => {
+      const { api } = makeApi(
+        async () => [ISSUE],
+        async () => ({ ok: false, status: 403 }),
+      );
+
+      await expect(api.deleteEntryNote('posts', 'my-post', '99')).rejects.toThrow();
     });
 
     it('refuses to mutate a note whose thread is gone', async () => {
