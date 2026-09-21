@@ -104,6 +104,23 @@ describe('note body format', () => {
     });
   });
 
+  it('ignores an author recorded without an id', () => {
+    const body = '<!-- DecapCMS Note {"resolved":false,"author":"alice"} -->\nhi';
+
+    expect(parseNoteBody(body)).toEqual({
+      content: 'hi',
+      resolved: false,
+      author: undefined,
+      authorId: undefined,
+    });
+  });
+
+  it('ignores an id recorded without an author', () => {
+    const body = '<!-- DecapCMS Note {"resolved":false,"authorId":"u1"} -->\nhi';
+
+    expect(parseNoteBody(body).authorId).toBeUndefined();
+  });
+
   it('ignores a whitespace-only author', () => {
     const body = '<!-- DecapCMS Note {"resolved":false,"author":"   ","authorId":"u1"} -->\nhi';
 

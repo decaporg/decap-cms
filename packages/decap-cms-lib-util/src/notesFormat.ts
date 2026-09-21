@@ -85,10 +85,16 @@ export function parseNoteBody(body: string): ParsedNoteBody {
     return { content: body.trim(), resolved: false };
   }
 
+  const author = asString(payload.author);
+  const authorId = asString(payload.authorId);
+
+  // Both or neither, as formatNoteBody writes them.
+  const identity = author && authorId ? { author, authorId } : {};
+
   return {
     content: match[2].trim(),
     resolved: payload.resolved === true,
-    author: asString(payload.author),
-    authorId: asString(payload.authorId),
+    author: identity.author,
+    authorId: identity.authorId,
   };
 }
