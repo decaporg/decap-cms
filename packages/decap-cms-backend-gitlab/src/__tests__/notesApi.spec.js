@@ -101,12 +101,12 @@ describe('GitLab notes API', () => {
       expect(requestJSON.mock.calls).toHaveLength(1);
     });
 
-    it('reports no thread rather than failing when the lookup errors', async () => {
+    it('fails rather than reporting no thread when the lookup errors', async () => {
       const { api } = makeApi(async () => {
         throw new Error('boom');
       });
 
-      expect(await api.findEntryIssue('posts', 'my-post')).toBeNull();
+      await expect(api.findEntryIssue('posts', 'my-post')).rejects.toThrow('boom');
     });
   });
 
@@ -208,6 +208,17 @@ describe('GitLab notes API', () => {
 
       expect(await api.getEntryNotes('posts', 'my-post')).toEqual([]);
     });
+
+    it('fails rather than reporting no notes when the thread cannot be read', async () => {
+      const { api } = makeApi(async req => {
+        if (url(req).endsWith('/notes')) {
+          throw new Error('boom');
+        }
+        return [ISSUE];
+      });
+
+      await expect(api.getEntryNotes('posts', 'my-post')).rejects.toThrow('boom');
+    });
   });
 
   describe('writes', () => {
@@ -230,6 +241,21 @@ describe('GitLab notes API', () => {
         ([req]) => req.method === 'POST' && url(req).endsWith('/issues'),
       )[0];
       expect(JSON.parse(created.body).title).toBe('Notes: My Post');
+    });
+
+    it('does not open a second thread when the search for the first fails', async () => {
+      const { api, requestJSON } = makeApi(async req => {
+        if (req.method === 'POST') {
+          return { ...ISSUE, id: 501 };
+        }
+        throw Object.assign(new Error('Bad gateway'), { status: 502 });
+      });
+
+      await expect(
+        api.addNoteToEntry('posts', 'my-post', { content: 'hello', resolved: false }),
+      ).rejects.toThrow('Failed to create note');
+
+      expect(requestJSON.mock.calls.filter(([req]) => req.method === 'POST')).toHaveLength(0);
     });
 
     it('reuses the existing thread rather than opening a second', async () => {

@@ -210,31 +210,26 @@ export class GitLabNotesAPI {
       return (issue.description ?? '').includes(`\`${needle}\``);
     }
 
-    try {
-      // Paged rather than taking the first page: `search` is a substring match,
-      // so enough longer slugs sharing this prefix could push the exact thread
-      // off page one. Missing it means addNoteToEntry opens a second thread and
-      // the entry's notes split across two issues, silently.
-      const issues = await walkPages<GitLabIssue>(
-        page =>
-          this.api.requestJSON({
-            url: `${this.repoURL}/issues`,
-            params: {
-              labels: NOTES_LABEL,
-              search: needle,
-              in: 'description',
-              per_page: PER_PAGE,
-              page,
-            },
-          }),
-        found => found.some(isExact),
-      );
+    // Paged rather than taking the first page: `search` is a substring match,
+    // so enough longer slugs sharing this prefix could push the exact thread
+    // off page one. Missing it means addNoteToEntry opens a second thread and
+    // the entry's notes split across two issues, silently.
+    const issues = await walkPages<GitLabIssue>(
+      page =>
+        this.api.requestJSON({
+          url: `${this.repoURL}/issues`,
+          params: {
+            labels: NOTES_LABEL,
+            search: needle,
+            in: 'description',
+            per_page: PER_PAGE,
+            page,
+          },
+        }),
+      found => found.some(isExact),
+    );
 
-      return issues.find(isExact) ?? null;
-    } catch (error) {
-      console.warn('Failed to search for existing notes issue:', error);
-      return null;
-    }
+    return issues.find(isExact) ?? null;
   }
 
   private async getIssue(iid: number): Promise<GitLabIssue> {
@@ -294,27 +289,22 @@ export class GitLabNotesAPI {
   }
 
   async getEntryNotes(collectionName: string, slug: string): Promise<Note[]> {
-    try {
-      const issue = await this.findEntryIssue(collectionName, slug);
-      if (!issue) {
-        return [];
-      }
-
-      const comments = await this.getIssueComments(issue.iid);
-
-      return comments.reduce<Note[]>((notes, comment) => {
-        try {
-          notes.push({ ...this.parseCommentToNote(comment), issueUrl: issue.web_url });
-        } catch (error) {
-          // An empty or malformed comment is not a note; skipping it keeps the
-          // rest of the thread readable instead of failing the whole pane.
-        }
-        return notes;
-      }, []);
-    } catch (error) {
-      console.error('Failed to get entry notes:', error);
+    const issue = await this.findEntryIssue(collectionName, slug);
+    if (!issue) {
       return [];
     }
+
+    const comments = await this.getIssueComments(issue.iid);
+
+    return comments.reduce<Note[]>((notes, comment) => {
+      try {
+        notes.push({ ...this.parseCommentToNote(comment), issueUrl: issue.web_url });
+      } catch (error) {
+        // An empty or malformed comment is not a note; skipping it keeps the
+        // rest of the thread readable instead of failing the whole pane.
+      }
+      return notes;
+    }, []);
   }
 
   async addNoteToEntry(
