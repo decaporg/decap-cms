@@ -83,18 +83,20 @@ export class NotesPollingManager {
    */
   private setupVisibilityListener() {
     if (typeof document !== 'undefined') {
-      document.addEventListener('visibilitychange', () => {
-        this.isDocumentVisible = !document.hidden;
-
-        if (this.isDocumentVisible) {
-          this.startPolling();
-          this.checkAllIssuesNow();
-        } else {
-          this.stopPolling();
-        }
-      });
+      document.addEventListener('visibilitychange', this.handleVisibilityChange);
     }
   }
+
+  private handleVisibilityChange = () => {
+    this.isDocumentVisible = !document.hidden;
+
+    if (this.isDocumentVisible) {
+      this.startPolling();
+      this.checkAllIssuesNow();
+    } else {
+      this.stopPolling();
+    }
+  };
 
   /**
    * Start watching an issue for changes
@@ -515,6 +517,10 @@ export class NotesPollingManager {
 
     // Stop current watch
     this.stopCurrentWatch();
+
+    if (typeof document !== 'undefined') {
+      document.removeEventListener('visibilitychange', this.handleVisibilityChange);
+    }
   }
 }
 

@@ -194,6 +194,7 @@ export default class GitLab implements Implementation {
         this.branch = defaultBranchName;
       }
     }
+    this.destroyNotesPolling();
     this.notesApi = new GitLabNotesAPI(this.api);
     this.pollingManager = new NotesPollingManager(this.notesApi.asPollingAPI(), 15000);
 
@@ -241,8 +242,15 @@ export default class GitLab implements Implementation {
     return this.refreshedTokenPromise;
   }
 
+  private destroyNotesPolling() {
+    this.pollingManager?.destroy();
+    this.pollingManager = undefined;
+    this.unwatchNotes.clear();
+  }
+
   async logout() {
     this.token = null;
+    this.destroyNotesPolling();
     return;
   }
 

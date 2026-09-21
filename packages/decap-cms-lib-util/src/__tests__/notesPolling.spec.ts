@@ -62,6 +62,18 @@ describe('NotesPollingManager', () => {
     jest.restoreAllMocks();
   });
 
+  it('stops listening for tab visibility once destroyed', () => {
+    const add = jest.spyOn(document, 'addEventListener');
+    const remove = jest.spyOn(document, 'removeEventListener');
+
+    manager = new NotesPollingManager(createApi());
+    const [, listener] = add.mock.calls.find(([type]) => type === 'visibilitychange')!;
+
+    manager.destroy();
+
+    expect(remove).toHaveBeenCalledWith('visibilitychange', listener);
+  });
+
   describe('looking for an issue that does not exist yet', () => {
     beforeEach(() => {
       jest.useFakeTimers();
