@@ -598,8 +598,17 @@ export default class GitLab implements Implementation {
   }
 
   async getNotes(collection: string, slug: string): Promise<Note[]> {
-    const notes = await this.notesApi!.getEntryNotes(collection, slug);
-    return this.markOwnNotes(notes.map(note => ({ ...note, entrySlug: slug })));
+    const notes = (await this.notesApi!.getEntryNotes(collection, slug)).map(note => ({
+      ...note,
+      entrySlug: slug,
+    }));
+
+    try {
+      return await this.markOwnNotes(notes);
+    } catch (error) {
+      console.warn('Failed to resolve note ownership:', error);
+      return notes;
+    }
   }
 
   async addNote(
@@ -692,8 +701,7 @@ export default class GitLab implements Implementation {
           // Polled notes are rebuilt from the thread's comments and so arrive
           // without the ownership flag getNotes adds; without this a poll would
           // strip the actions off the editor's own notes moments after writing.
-          onUpdate: async (notes, changes) =>
-            callbacks.onUpdate(await this.markOwnNotes(notes), changes),
+          prepareNotes: notes => this.markOwnNotes(notes),
         },
         5,
         2000,

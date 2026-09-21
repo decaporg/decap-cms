@@ -739,33 +739,28 @@ describe('github backend implementation', () => {
           'posts',
           'my-post',
           expect.objectContaining({
-            onUpdate: expect.any(Function),
+            onUpdate: callbacks.onUpdate,
             onChange: callbacks.onChange,
+            prepareNotes: expect.any(Function),
           }),
           5,
           2000,
         );
 
         // The polling manager rebuilds notes from the issue's comments, so they
-        // arrive with no ownership flag. Without the wrapper a poll would strip
+        // arrive with no ownership flag. Without prepareNotes a poll would strip
         // Edit/Resolve/Delete off the editor's own notes ~15s after they show.
         const [, , passedCallbacks] =
           gitHubImplementation.pollingManager.watchIssueWithRetry.mock.calls[0];
-        await passedCallbacks.onUpdate(
-          [
-            { id: '1', author: 'user1', content: 'mine', resolved: false },
-            { id: '2', author: 'someone-else', content: 'theirs', resolved: false },
-          ],
-          [],
-        );
+        const prepared = await passedCallbacks.prepareNotes([
+          { id: '1', author: 'user1', content: 'mine', resolved: false },
+          { id: '2', author: 'someone-else', content: 'theirs', resolved: false },
+        ]);
 
-        expect(callbacks.onUpdate).toHaveBeenCalledWith(
-          [
-            expect.objectContaining({ id: '1', isOwn: true }),
-            expect.objectContaining({ id: '2', isOwn: false }),
-          ],
-          [],
-        );
+        expect(prepared).toEqual([
+          expect.objectContaining({ id: '1', isOwn: true }),
+          expect.objectContaining({ id: '2', isOwn: false }),
+        ]);
       });
 
       it('should not start polling if already watching same entry', async () => {
@@ -839,14 +834,15 @@ describe('github backend implementation', () => {
 
         await gitHubImplementation.startNotesPolling('posts', 'my-post', callbacks);
 
-        // onUpdate is wrapped so polled notes get the same ownership flag
-        // getNotes applies; onChange is passed straight through.
+        // The callbacks are passed straight through; prepareNotes is added so
+        // polled notes get the same ownership flag getNotes applies.
         expect(gitHubImplementation.pollingManager.watchIssueWithRetry).toHaveBeenCalledWith(
           'posts',
           'my-post',
           expect.objectContaining({
-            onUpdate: expect.any(Function),
+            onUpdate: callbacks.onUpdate,
             onChange: callbacks.onChange,
+            prepareNotes: expect.any(Function),
           }),
           5,
           2000,

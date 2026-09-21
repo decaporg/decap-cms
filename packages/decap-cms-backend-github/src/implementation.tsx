@@ -914,8 +914,7 @@ export default class GitHub implements Implementation {
           // comments, so they arrive without the ownership flag getNotes adds.
           // Without this, a poll silently strips Edit/Resolve/Delete off the
           // editor's own notes ~15s after they appear.
-          onUpdate: async (notes, changes) =>
-            callbacks.onUpdate(await this.markOwnNotes(notes), changes),
+          prepareNotes: notes => this.markOwnNotes(notes),
         },
         5, // maxRetries - will try up to 5 times
         2000, // retryDelay - 2 seconds between attempts

@@ -1249,6 +1249,10 @@ export function startNotesPolling(collection: Collection, slug: string) {
 
       const callbacks = {
         onUpdate: (notes: Note[], changes: IssueChange[]) => {
+          if (getState().entryDraft?.getIn(['entry', 'slug']) !== slug) {
+            return;
+          }
+
           dispatch(notesUpdatedFromPolling(collection, slug, notes, changes));
           dispatch(loadNotesForEntry(notes));
         },

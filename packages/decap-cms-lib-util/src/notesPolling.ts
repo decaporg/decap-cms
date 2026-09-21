@@ -24,8 +24,15 @@ interface WatchedIssue {
   lastState: IssueState | null;
   onUpdate?: (notes: Note[], changes: IssueChange[]) => void;
   onChange?: (change: IssueChange) => void;
+  prepareNotes?: (notes: Note[]) => Note[] | Promise<Note[]>;
   retryCount?: number;
   maxRetries?: number;
+}
+
+export interface NotesWatchCallbacks {
+  onUpdate?: (notes: Note[], changes: IssueChange[]) => void;
+  onChange?: (change: IssueChange) => void;
+  prepareNotes?: (notes: Note[]) => Note[] | Promise<Note[]>;
 }
 
 export interface NotesPollingAPI {
@@ -95,10 +102,7 @@ export class NotesPollingManager {
     issueNumber: number,
     collection: string,
     slug: string,
-    callbacks: {
-      onUpdate?: (notes: Note[], changes: IssueChange[]) => void;
-      onChange?: (change: IssueChange) => void;
-    },
+    callbacks: NotesWatchCallbacks,
     initialState: IssueState | null = null,
   ): Promise<() => void> {
     const issueKey = this.getIssueKey(collection, slug);
@@ -125,6 +129,7 @@ export class NotesPollingManager {
       lastState: initialState,
       onUpdate: callbacks.onUpdate,
       onChange: callbacks.onChange,
+      prepareNotes: callbacks.prepareNotes,
       retryCount: 0,
       maxRetries: 5,
     };
@@ -149,10 +154,7 @@ export class NotesPollingManager {
   async watchIssueWithRetry(
     collection: string,
     slug: string,
-    callbacks: {
-      onUpdate?: (notes: Note[], changes: IssueChange[]) => void;
-      onChange?: (change: IssueChange) => void;
-    },
+    callbacks: NotesWatchCallbacks,
     maxRetries = 5,
     retryDelay = 2000,
   ): Promise<() => void> {
@@ -294,22 +296,30 @@ export class NotesPollingManager {
         return;
       }
 
+      if (this.currentWatch !== watch) {
+        return;
+      }
+
       if (response.status === 200) {
         const newState: IssueState = response.data;
-        const newETag = response.etag;
-
-        // Update ETag
-        watch.etag = newETag || null;
 
         // Detect specific changes
         const changes = this.detectChanges(watch.lastState, newState);
 
         if (changes.length > 0) {
           // Convert comments to notes
-          const newNotes = newState.comments.map(comment => ({
+          let newNotes = newState.comments.map(comment => ({
             ...this.api.parseCommentToNote(comment),
             issueUrl: newState.html_url,
           }));
+
+          if (watch.prepareNotes) {
+            newNotes = await watch.prepareNotes(newNotes);
+
+            if (this.currentWatch !== watch) {
+              return;
+            }
+          }
 
           if (watch.onUpdate) {
             watch.onUpdate(newNotes, changes);
@@ -322,13 +332,12 @@ export class NotesPollingManager {
           }
         }
 
-        // Update stored state
+        // Update ETag and stored state
+        watch.etag = response.etag || null;
         watch.lastState = newState;
       }
     } catch (error) {
-      if (error && typeof error === 'object' && 'status' in error && error.status !== 304) {
-        console.error(`[DecapNotes Polling] Error checking ${this.currentIssueKey}:`, error);
-      }
+      console.error(`[DecapNotes Polling] Error checking ${this.currentIssueKey}:`, error);
     } finally {
       this.isPolling = false;
     }
