@@ -4,6 +4,7 @@ import trim from 'lodash/trim';
 import { stripIndent } from 'common-tags';
 import {
   NotesPollingManager,
+  markOwnNotes,
   CURSOR_COMPATIBILITY_SYMBOL,
   basename,
   entriesByFolder,
@@ -613,11 +614,7 @@ export default class GitLab implements Implementation {
    * its own identities compare.
    */
   private async markOwnNotes(notes: Note[]): Promise<Note[]> {
-    const { author, authorId } = await this.noteAuthorIdentity();
-    return notes.map(note => ({
-      ...note,
-      isOwn: note.authorId ? note.authorId === authorId : note.author === author,
-    }));
+    return markOwnNotes(notes, await this.noteAuthorIdentity());
   }
 
   async getNotes(collection: string, slug: string): Promise<Note[]> {

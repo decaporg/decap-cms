@@ -20,6 +20,7 @@ import {
   unsentRequest,
   branchFromContentKey,
   NotesPollingManager,
+  markOwnNotes,
 } from 'decap-cms-lib-util';
 
 import AuthenticationPage from './AuthenticationPage';
@@ -771,11 +772,7 @@ export default class GitHub implements Implementation {
    * for notes with no recorded id.
    */
   private async markOwnNotes(notes: Note[]): Promise<Note[]> {
-    const { author, authorId } = await this.noteAuthorIdentity();
-    return notes.map(note => ({
-      ...note,
-      isOwn: note.authorId ? note.authorId === authorId : note.author === author,
-    }));
+    return markOwnNotes(notes, await this.noteAuthorIdentity());
   }
 
   // Notes implementation using GitHub Issues

@@ -14,6 +14,8 @@
  * @module notesPolling
  */
 
+import { commentsToNotes } from './notesFormat';
+
 import type { Note, IssueState, CommentData, IssueChange } from './implementation';
 
 interface WatchedIssue {
@@ -44,7 +46,7 @@ export interface NotesPollingAPI {
     | { status: 304; data?: never; etag?: never }
     | { status: 200; data: IssueState; etag: string | null }
   >;
-  parseCommentToNote(comment: CommentData): Note;
+  parseCommentToNote?(comment: CommentData): Note;
   findEntryIssue(collection: string, slug: string): Promise<{ number: number } | null>;
 }
 
@@ -342,17 +344,11 @@ export class NotesPollingManager {
 
         if (changes.length > 0) {
           // Convert comments to notes
-          let newNotes = newState.comments.reduce<Note[]>((notes, comment) => {
-            try {
-              notes.push({
-                ...this.api.parseCommentToNote(comment),
-                issueUrl: newState.html_url,
-              });
-            } catch (error) {
-              // Not a note; skip it
-            }
-            return notes;
-          }, []);
+          let newNotes = commentsToNotes(
+            newState.comments,
+            newState.html_url,
+            this.api.parseCommentToNote && (comment => this.api.parseCommentToNote!(comment)),
+          );
 
           if (watch.prepareNotes) {
             newNotes = await watch.prepareNotes(newNotes);

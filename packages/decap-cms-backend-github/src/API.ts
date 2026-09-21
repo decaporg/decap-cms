@@ -10,7 +10,8 @@ import { oneLine } from 'common-tags';
 import { dirname } from 'path';
 import {
   formatNoteBody,
-  parseNoteBody,
+  commentToNote,
+  commentsToNotes,
   getAllResponses,
   APIError,
   EditorialWorkflowError,
@@ -1563,33 +1564,8 @@ export default class API {
   /**
    * Parse a GitHub comment into a Note object
    */
-  parseCommentToNote(comment: GitHubIssue): Note {
-    if (!comment || !comment.body || !comment.user) {
-      throw new Error('Invalid comment structure');
-    }
-
-    const { content, resolved, author, authorId } = parseNoteBody(comment.body);
-
-    if (!content) {
-      throw new Error('Empty note content');
-    }
-
-    return {
-      id: comment.id.toString(),
-      // Falls back to the account that posted, for a comment typed on GitHub
-      // and for any note with no recorded author.
-      author: author || comment.user.login,
-      authorId,
-      // Only when the comment's GitHub author IS the note's author. A recorded
-      // author means someone else posted on their behalf — under Turbo, the
-      // App bot — and pairing that name with the bot's avatar just mislabels
-      // the note. The pane falls back to initials of the recorded name.
-      avatarUrl: authorId ? undefined : comment.user.avatar_url,
-      timestamp: comment.created_at,
-      content,
-      resolved,
-      entrySlug: '',
-    };
+  parseCommentToNote(comment: CommentData): Note {
+    return commentToNote(comment);
   }
 
   /**
@@ -1860,14 +1836,7 @@ export default class API {
       const issueUrl = issue.html_url; // Get the issue URL once
 
       // Add issueUrl to each note (this info is picked up by the UI to direct users to the source of the Notes in Github)
-      return comments.reduce<Note[]>((notes, comment) => {
-        try {
-          notes.push({ ...this.parseCommentToNote(comment), issueUrl });
-        } catch (error) {
-          // Not a note; skip it
-        }
-        return notes;
-      }, []);
+      return commentsToNotes(comments, issueUrl, comment => this.parseCommentToNote(comment));
     } catch (error) {
       console.error('Failed to get entry notes:', error);
       return [];

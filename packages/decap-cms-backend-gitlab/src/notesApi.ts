@@ -14,7 +14,7 @@
  * - GitLab posts its own activity ("changed the description", "closed") as
  *   comments flagged `system`. They are not notes and are filtered out.
  */
-import { APIError, formatNoteBody, parseNoteBody } from 'decap-cms-lib-util';
+import { APIError, commentsToNotes, formatNoteBody } from 'decap-cms-lib-util';
 
 import type { CommentData, IssueState, Note, NotesPollingAPI } from 'decap-cms-lib-util';
 
@@ -137,34 +137,6 @@ export class GitLabNotesAPI {
     return this.api.repoURL;
   }
 
-  parseCommentToNote(comment: CommentData): Note {
-    if (!comment || !comment.body) {
-      throw new Error('Invalid comment structure');
-    }
-
-    const { content, resolved, author, authorId } = parseNoteBody(comment.body);
-
-    if (!content) {
-      throw new Error('Empty note content');
-    }
-
-    return {
-      id: comment.id.toString(),
-      // Falls back to the account that posted, for a comment typed on GitLab
-      // and for any note with no recorded author.
-      author: author || comment.user?.login || 'Unknown',
-      authorId,
-      // Only when the posting account IS the note's author — a recorded author
-      // means someone posted on their behalf, and its avatar would mislabel the
-      // note. The pane shows initials instead.
-      avatarUrl: authorId ? undefined : comment.user?.avatar_url || undefined,
-      timestamp: comment.created_at,
-      content,
-      resolved,
-      entrySlug: '',
-    };
-  }
-
   /**
    * The shared polling interface says `number`; GitLab's is `iid`, which is not
    * its `id` (global rather than project-scoped). Translated here rather than
@@ -174,7 +146,6 @@ export class GitLabNotesAPI {
     return {
       getIssueState: iid => this.getIssueState(iid),
       getIssueWithETag: (iid, etag) => this.getIssueWithETag(iid, etag),
-      parseCommentToNote: comment => this.parseCommentToNote(comment),
       findEntryIssue: async (collection, slug) => {
         const issue = await this.findEntryIssue(collection, slug);
         return issue ? { number: issue.iid } : null;
@@ -317,15 +288,7 @@ export class GitLabNotesAPI {
 
     const comments = await this.getIssueComments(issue.iid);
 
-    return comments.reduce<Note[]>((notes, comment) => {
-      try {
-        notes.push({ ...this.parseCommentToNote(comment), issueUrl: issue.web_url });
-      } catch (error) {
-        // An empty or malformed comment is not a note; skipping it keeps the
-        // rest of the thread readable instead of failing the whole pane.
-      }
-      return notes;
-    }, []);
+    return commentsToNotes(comments, issue.web_url);
   }
 
   async addNoteToEntry(

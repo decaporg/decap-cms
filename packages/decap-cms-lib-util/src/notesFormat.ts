@@ -9,7 +9,7 @@
  *
  * Encoding is identical across backends
  */
-import type { Note } from './implementation';
+import type { CommentData, Note } from './implementation';
 
 const MARKER_PREFIX = '<!-- DecapCMS Note ';
 const MARKER_SUFFIX = ' -->';
@@ -97,4 +97,57 @@ export function parseNoteBody(body: string): ParsedNoteBody {
     author: identity.author,
     authorId: identity.authorId,
   };
+}
+
+export function commentToNote(comment: CommentData): Note {
+  if (!comment || !comment.body) {
+    throw new Error('Invalid comment structure');
+  }
+
+  const { content, resolved, author, authorId } = parseNoteBody(comment.body);
+
+  if (!content) {
+    throw new Error('Empty note content');
+  }
+
+  return {
+    id: comment.id.toString(),
+    // Falls back to the account that posted, for a comment typed on the host
+    // and for any note with no recorded author.
+    author: author || comment.user?.login || 'Unknown',
+    authorId,
+    // Only when the posting account IS the note's author — a recorded author
+    // means someone posted on their behalf, and its avatar would mislabel the
+    // note. The pane shows initials instead.
+    avatarUrl: authorId ? undefined : comment.user?.avatar_url || undefined,
+    timestamp: comment.created_at,
+    content,
+    resolved,
+    entrySlug: '',
+  };
+}
+
+export function commentsToNotes(
+  comments: CommentData[],
+  issueUrl: string | undefined,
+  toNote: (comment: CommentData) => Note = commentToNote,
+): Note[] {
+  return comments.reduce<Note[]>((notes, comment) => {
+    try {
+      notes.push({ ...toNote(comment), issueUrl });
+    } catch (error) {
+      // Not a note; skip it
+    }
+    return notes;
+  }, []);
+}
+
+export function markOwnNotes(
+  notes: Note[],
+  identity: { author: string; authorId?: string },
+): Note[] {
+  return notes.map(note => ({
+    ...note,
+    isOwn: note.authorId ? note.authorId === identity.authorId : note.author === identity.author,
+  }));
 }

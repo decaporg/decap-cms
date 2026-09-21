@@ -893,9 +893,7 @@ describe('github API', () => {
     });
 
     it('rejects a malformed comment', () => {
-      expect(() => api().parseCommentToNote({ id: 1, body: 'x' })).toThrow(
-        'Invalid comment structure',
-      );
+      expect(() => api().parseCommentToNote({ id: 1 })).toThrow('Invalid comment structure');
     });
   });
 

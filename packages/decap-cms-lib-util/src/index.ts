@@ -15,7 +15,13 @@ import {
   getPathDepth,
 } from './backendUtil';
 import { NotesPollingManager } from './notesPolling';
-import { formatNoteBody, parseNoteBody } from './notesFormat';
+import {
+  formatNoteBody,
+  parseNoteBody,
+  commentToNote,
+  commentsToNotes,
+  markOwnNotes,
+} from './notesFormat';
 import loadScript from './loadScript';
 import getBlobSHA from './getBlobSHA';
 import { asyncLock } from './asyncLock';
@@ -176,6 +182,9 @@ export {
   NotesPollingManager,
   formatNoteBody,
   parseNoteBody,
+  commentToNote,
+  commentsToNotes,
+  markOwnNotes,
   APIError,
   Cursor,
   CURSOR_COMPATIBILITY_SYMBOL,

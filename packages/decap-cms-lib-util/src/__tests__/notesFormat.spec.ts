@@ -1,4 +1,12 @@
-import { formatNoteBody, parseNoteBody } from '../notesFormat';
+import {
+  commentToNote,
+  commentsToNotes,
+  formatNoteBody,
+  markOwnNotes,
+  parseNoteBody,
+} from '../notesFormat';
+
+import type { CommentData, Note } from '../implementation';
 
 describe('note body format', () => {
   it('round trips an author and id through the marker', () => {
@@ -148,5 +156,86 @@ describe('note body format', () => {
     expect(
       formatNoteBody({ content: 'hello', resolved: true, author: 'Ada', authorId: 'u1' }),
     ).toBe('<!-- DecapCMS Note {"resolved":true,"author":"Ada","authorId":"u1"} -->\nhello');
+  });
+});
+
+describe('comments as notes', () => {
+  function comment(overrides: Partial<CommentData> = {}): CommentData {
+    return {
+      id: 7,
+      body: 'a note',
+      user: { login: 'ada', avatar_url: 'https://avatar' },
+      created_at: '2026-01-01T00:00:00Z',
+      updated_at: '2026-01-01T00:00:00Z',
+      ...overrides,
+    };
+  }
+
+  it('attributes a note with no recorded author to the account that posted it', () => {
+    expect(commentToNote(comment())).toEqual(
+      expect.objectContaining({
+        id: '7',
+        author: 'ada',
+        authorId: undefined,
+        avatarUrl: 'https://avatar',
+        content: 'a note',
+      }),
+    );
+  });
+
+  it('prefers a recorded author, and drops the poster avatar with it', () => {
+    const body = formatNoteBody({
+      content: 'hello',
+      resolved: false,
+      author: 'Decap Tester',
+      authorId: 'u-1',
+    });
+
+    expect(commentToNote(comment({ body }))).toEqual(
+      expect.objectContaining({ author: 'Decap Tester', authorId: 'u-1', avatarUrl: undefined }),
+    );
+  });
+
+  it('still reads a comment whose account is gone', () => {
+    expect(commentToNote(comment({ user: null })).author).toBe('Unknown');
+  });
+
+  it('leaves out a comment that is not a note, and links the rest to the thread', () => {
+    const notes = commentsToNotes(
+      [comment({ id: 1 }), comment({ id: 2, body: '' }), comment({ id: 3 })],
+      'https://issue',
+    );
+
+    expect(notes.map(note => note.id)).toEqual(['1', '3']);
+    expect(notes[0].issueUrl).toBe('https://issue');
+  });
+});
+
+describe('markOwnNotes', () => {
+  function note(overrides: Partial<Note>): Note {
+    return {
+      id: '1',
+      author: 'ada',
+      content: 'x',
+      timestamp: '',
+      resolved: false,
+      entrySlug: '',
+      ...overrides,
+    };
+  }
+
+  it('goes by name for a note that recorded no id', () => {
+    const [mine, theirs] = markOwnNotes([note({}), note({ author: 'grace' })], { author: 'ada' });
+
+    expect(mine.isOwn).toBe(true);
+    expect(theirs.isOwn).toBe(false);
+  });
+
+  it('goes by id, not name, for a note that recorded one', () => {
+    const notes = [note({ authorId: 'u-1' }), note({ authorId: 'u-2' })];
+    const [mine, namesake] = markOwnNotes(notes, { author: 'ada', authorId: 'u-1' });
+
+    expect(mine.isOwn).toBe(true);
+    expect(namesake.isOwn).toBe(false);
   });
 });
