@@ -62,6 +62,101 @@ describe('NotesPollingManager', () => {
     jest.restoreAllMocks();
   });
 
+  describe('looking for an issue that does not exist yet', () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('abandons the search for entry A once entry B is watched', async () => {
+      const api = createApi();
+      api.findEntryIssue.mockImplementation(async (_collection, slug) =>
+        slug === 'entry-b' ? { number: 13 } : null,
+      );
+      api.getIssueWithETag.mockResolvedValue({ status: 304 });
+      manager = new NotesPollingManager(api);
+
+      const chainA = manager.watchIssueWithRetry('posts', 'entry-a', {}, 5, 2000);
+      await flush();
+      expect(manager.getStatus().hasPendingRetry).toBe(true);
+
+      await manager.watchIssueWithRetry('posts', 'entry-b', {}, 5, 2000);
+      expect(manager.getStatus().currentWatch).toBe('posts/entry-b');
+
+      api.findEntryIssue.mockResolvedValue({ number: 12 });
+      jest.advanceTimersByTime(10000);
+      await flush();
+
+      const unwatchA = await chainA;
+      unwatchA();
+
+      expect(manager.getStatus().currentWatch).toBe('posts/entry-b');
+      expect(api.findEntryIssue).toHaveBeenCalledTimes(2);
+    });
+
+    it('abandons a lookup that was in flight when the entry changed', async () => {
+      const api = createApi();
+      const lookups: Array<(issue: { number: number } | null) => void> = [];
+      api.findEntryIssue.mockImplementation(
+        (_collection, slug) =>
+          new Promise(resolve => {
+            if (slug === 'entry-a') {
+              lookups.push(resolve);
+            } else {
+              resolve({ number: 13 });
+            }
+          }),
+      );
+      api.getIssueWithETag.mockResolvedValue({ status: 304 });
+      manager = new NotesPollingManager(api);
+
+      const chainA = manager.watchIssueWithRetry('posts', 'entry-a', {});
+      await manager.watchIssueWithRetry('posts', 'entry-b', {});
+
+      lookups.forEach(resolve => resolve({ number: 12 }));
+      await chainA;
+
+      expect(manager.getStatus().currentWatch).toBe('posts/entry-b');
+    });
+
+    it('can be stopped by entry while still searching', async () => {
+      const api = createApi();
+      api.findEntryIssue.mockResolvedValue(null);
+      manager = new NotesPollingManager(api);
+
+      const chain = manager.watchIssueWithRetry('posts', 'entry-a', {}, 5, 2000);
+      await flush();
+
+      manager.stopWatching('posts', 'entry-b');
+      expect(manager.getStatus().hasPendingRetry).toBe(true);
+
+      manager.stopWatching('posts', 'entry-a');
+      expect(manager.getStatus().hasPendingRetry).toBe(false);
+
+      await chain;
+      jest.advanceTimersByTime(10000);
+      await flush();
+      expect(api.findEntryIssue).toHaveBeenCalledTimes(1);
+    });
+
+    it('starts watching once the issue appears', async () => {
+      const api = createApi();
+      api.findEntryIssue.mockResolvedValueOnce(null).mockResolvedValue({ number: 12 });
+      api.getIssueWithETag.mockResolvedValue({ status: 304 });
+      manager = new NotesPollingManager(api);
+
+      const chain = manager.watchIssueWithRetry('posts', 'entry-a', {}, 5, 2000);
+      await flush();
+      jest.advanceTimersByTime(2000);
+      await chain;
+
+      expect(manager.getStatus().currentWatch).toBe('posts/entry-a');
+    });
+  });
+
   describe('delivering changes', () => {
     it('reports notes once prepareNotes has resolved', async () => {
       const api = createApi();

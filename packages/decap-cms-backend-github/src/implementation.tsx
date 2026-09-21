@@ -940,9 +940,9 @@ export default class GitHub implements Implementation {
     if (unwatchFn) {
       unwatchFn();
       this.unwatchFunctions.delete(issueKey);
-    } else {
-      console.log(`[DecapNotes Polling] No active polling found for ${issueKey}`);
     }
+
+    this.pollingManager?.stopWatching(collection, slug);
   }
 
   /**

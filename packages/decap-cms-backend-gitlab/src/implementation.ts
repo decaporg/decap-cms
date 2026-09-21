@@ -716,6 +716,7 @@ export default class GitLab implements Implementation {
     const key = `${collection}/${slug}`;
     this.unwatchNotes.get(key)?.();
     this.unwatchNotes.delete(key);
+    this.pollingManager?.stopWatching(collection, slug);
   }
 
   async refreshNotesNow(collection: string, slug: string): Promise<void> {

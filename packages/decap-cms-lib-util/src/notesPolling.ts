@@ -48,6 +48,10 @@ export interface NotesPollingAPI {
   findEntryIssue(collection: string, slug: string): Promise<{ number: number } | null>;
 }
 
+function noop() {
+  /* nothing to unwatch */
+}
+
 // Redux action types
 export const NOTES_POLLING_START = 'NOTES_POLLING_START';
 export const NOTES_POLLING_STOP = 'NOTES_POLLING_STOP';
@@ -63,6 +67,9 @@ export class NotesPollingManager {
   private api: NotesPollingAPI;
   private isPolling = false;
   private pendingRetryTimeout: NodeJS.Timeout | null = null;
+  private cancelPendingRetry: (() => void) | null = null;
+  private pendingIssueKey: string | null = null;
+  private watchGeneration = 0;
 
   constructor(api: NotesPollingAPI, pollingInterval = 15000) {
     this.api = api;
@@ -108,9 +115,8 @@ export class NotesPollingManager {
     const issueKey = this.getIssueKey(collection, slug);
 
     // STOP ANY EXISTING WATCH FIRST
-    if (this.currentWatch) {
-      this.stopCurrentWatch();
-    }
+    this.stopCurrentWatch();
+    const generation = this.watchGeneration;
 
     // Get initial state if not provided
     if (!initialState) {
@@ -119,9 +125,13 @@ export class NotesPollingManager {
       } catch (error) {
         console.error('[DecapNotes Polling] Failed to get initial state:', error);
       }
+
+      if (generation !== this.watchGeneration) {
+        return noop;
+      }
     }
 
-    this.currentWatch = {
+    const watch: WatchedIssue = {
       issueNumber,
       collection,
       slug,
@@ -134,6 +144,7 @@ export class NotesPollingManager {
       maxRetries: 5,
     };
 
+    this.currentWatch = watch;
     this.currentIssueKey = issueKey;
 
     // Start polling if not already running
@@ -145,7 +156,11 @@ export class NotesPollingManager {
     this.checkCurrentIssue();
 
     // Return unwatch function
-    return () => this.stopCurrentWatch();
+    return () => {
+      if (this.currentWatch === watch) {
+        this.stopCurrentWatch();
+      }
+    };
   }
 
   /**
@@ -161,75 +176,92 @@ export class NotesPollingManager {
     const issueKey = this.getIssueKey(collection, slug);
 
     // STOP ANY EXISTING WATCH FIRST
-    if (this.currentWatch) {
-      this.stopCurrentWatch();
-    }
+    this.stopCurrentWatch();
+    const generation = this.watchGeneration;
+    this.pendingIssueKey = issueKey;
+
+    const isSuperseded = () => generation !== this.watchGeneration;
 
     const attemptWatch = async (attempt: number): Promise<() => void> => {
+      let lookupError: unknown;
+      let issue: { number: number } | null = null;
+
       try {
-        const issue = await this.api.findEntryIssue(collection, slug);
-
-        if (issue) {
-          return await this.watchIssue(issue.number, collection, slug, callbacks);
-        }
-
-        if (attempt < maxRetries) {
-          return new Promise((resolve, reject) => {
-            this.pendingRetryTimeout = setTimeout(async () => {
-              this.pendingRetryTimeout = null;
-              try {
-                const unwatchFn = await attemptWatch(attempt + 1);
-                resolve(unwatchFn);
-              } catch (error) {
-                reject(error);
-              }
-            }, retryDelay);
-          });
-        }
-
-        console.log(
-          `[DecapNotes Polling] No issue found for ${issueKey} after ${maxRetries} attempts. This is expected if there are no notes for this entry yet.`,
-        );
-        // Return a no-op unwatch function
-        return () => {
-          /* no-op */
-        };
+        issue = await this.api.findEntryIssue(collection, slug);
       } catch (error) {
         console.error(`[DecapNotes Polling] Error finding issue for ${issueKey}:`, error);
-
-        if (attempt < maxRetries) {
-          return new Promise((resolve, reject) => {
-            this.pendingRetryTimeout = setTimeout(async () => {
-              this.pendingRetryTimeout = null;
-              try {
-                const unwatchFn = await attemptWatch(attempt + 1);
-                resolve(unwatchFn);
-              } catch (err) {
-                reject(err);
-              }
-            }, retryDelay);
-          });
-        }
-
-        throw error;
+        lookupError = error;
       }
+
+      if (isSuperseded()) {
+        return noop;
+      }
+
+      if (issue) {
+        this.pendingIssueKey = null;
+        return this.watchIssue(issue.number, collection, slug, callbacks);
+      }
+
+      if (attempt < maxRetries) {
+        const elapsed = await this.waitForRetry(retryDelay);
+        return elapsed && !isSuperseded() ? attemptWatch(attempt + 1) : noop;
+      }
+
+      this.pendingIssueKey = null;
+
+      if (lookupError) {
+        throw lookupError;
+      }
+
+      console.log(
+        `[DecapNotes Polling] No issue found for ${issueKey} after ${maxRetries} attempts. This is expected if there are no notes for this entry yet.`,
+      );
+      return noop;
     };
 
     return attemptWatch(1);
+  }
+
+  private waitForRetry(delay: number): Promise<boolean> {
+    return new Promise(resolve => {
+      this.cancelPendingRetry = () => resolve(false);
+      this.pendingRetryTimeout = setTimeout(() => {
+        this.pendingRetryTimeout = null;
+        this.cancelPendingRetry = null;
+        resolve(true);
+      }, delay);
+    });
+  }
+
+  private clearPendingRetry() {
+    if (this.pendingRetryTimeout) {
+      clearTimeout(this.pendingRetryTimeout);
+      this.pendingRetryTimeout = null;
+    }
+    this.cancelPendingRetry?.();
+    this.cancelPendingRetry = null;
+    this.pendingIssueKey = null;
+  }
+
+  /**
+   * Stop watching an entry, including a pending retry
+   */
+  stopWatching(collection: string, slug: string) {
+    const issueKey = this.getIssueKey(collection, slug);
+    if (this.currentIssueKey === issueKey || this.pendingIssueKey === issueKey) {
+      this.stopCurrentWatch();
+    }
   }
 
   /**
    * Stop watching the current issue - complete cleanup
    */
   private stopCurrentWatch() {
+    this.watchGeneration += 1;
+    this.clearPendingRetry();
+
     if (!this.currentWatch) {
       return;
-    }
-
-    // Clear any pending retry timeout
-    if (this.pendingRetryTimeout) {
-      clearTimeout(this.pendingRetryTimeout);
-      this.pendingRetryTimeout = null;
     }
 
     // Clear current watch
@@ -480,12 +512,6 @@ export class NotesPollingManager {
    */
   destroy() {
     console.log('[DecapNotes Polling] Destroying polling manager');
-
-    // Clear pending retry
-    if (this.pendingRetryTimeout) {
-      clearTimeout(this.pendingRetryTimeout);
-      this.pendingRetryTimeout = null;
-    }
 
     // Stop current watch
     this.stopCurrentWatch();
