@@ -97,7 +97,16 @@ const EmptyStateText = styled.p`
   line-height: 1.4;
 `;
 
-export function getSourceInfo(url) {
+const SOURCES = {
+  github: { text: 'View in GitHub', iconType: 'github' },
+  gitlab: { text: 'View in GitLab', iconType: 'gitlab' },
+};
+
+export function getSourceInfo(url, backendName) {
+  if (SOURCES[backendName]) {
+    return SOURCES[backendName];
+  }
+
   let host;
   try {
     host = new URL(url).hostname.toLowerCase();
@@ -110,11 +119,11 @@ export function getSourceInfo(url) {
   }
 
   if (isHost('github.com')) {
-    return { text: 'View in GitHub', iconType: 'github' };
+    return SOURCES.github;
   }
 
   if (isHost('gitlab.com')) {
-    return { text: 'View in GitLab', iconType: 'gitlab' };
+    return SOURCES.gitlab;
   }
 
   return { text: 'View source', iconType: 'link' };
@@ -167,13 +176,13 @@ class EditorNotesPane extends Component {
   };
 
   render() {
-    const { notes, t } = this.props;
+    const { notes, user, t } = this.props;
     const notesList = notes && notes.size !== undefined ? notes : List(notes || []);
     const notesCount = notesList.size;
     const unresolvedCount = notesList.filter(note => !note.get('resolved')).size;
 
     const sourceUrl = notesCount > 0 ? notesList.first()?.get('issueUrl') : null;
-    const sourceInfo = sourceUrl ? getSourceInfo(sourceUrl) : null;
+    const sourceInfo = sourceUrl ? getSourceInfo(sourceUrl, user?.backendName) : null;
 
     return (
       <NotesContainer>

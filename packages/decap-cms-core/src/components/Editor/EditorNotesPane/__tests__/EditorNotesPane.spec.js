@@ -157,6 +157,24 @@ describe('EditorNotesPane', () => {
       expect(screen.getByRole('link')).toHaveTextContent('View in GitLab');
     });
 
+    it('names a self-hosted host after the backend', () => {
+      renderPane({
+        notes: [note({ issueUrl: 'https://git.mycorp.io/o/r/-/issues/7' })],
+        user: { login: 'ada', backendName: 'gitlab' },
+      });
+
+      expect(screen.getByRole('link')).toHaveTextContent('View in GitLab');
+    });
+
+    it('goes by the hostname for a backend that could front either host', () => {
+      renderPane({
+        notes: [note({ issueUrl: 'https://github.com/o/r/issues/7' })],
+        user: { login: 'ada', backendName: 'git-gateway' },
+      });
+
+      expect(screen.getByRole('link')).toHaveTextContent('View in GitHub');
+    });
+
     // A substring test would call this GitHub.
     it('does not name a host that merely contains the name', () => {
       renderPane({ notes: [note({ issueUrl: 'https://notgithub.com/o/r/issues/7' })] });
