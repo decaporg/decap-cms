@@ -1858,11 +1858,15 @@ export default class API {
       const comments = await this.getIssueComments(issue.number);
       const issueUrl = issue.html_url; // Get the issue URL once
 
-      // Add issueUrl to each note
-      return comments.map(comment => ({
-        ...this.parseCommentToNote(comment),
-        issueUrl, // Add the issue URL to each note (this info is picked up by the UI to direct users to the source of the Notes in Github)
-      }));
+      // Add issueUrl to each note (this info is picked up by the UI to direct users to the source of the Notes in Github)
+      return comments.reduce<Note[]>((notes, comment) => {
+        try {
+          notes.push({ ...this.parseCommentToNote(comment), issueUrl });
+        } catch (error) {
+          // Not a note; skip it
+        }
+        return notes;
+      }, []);
     } catch (error) {
       console.error('Failed to get entry notes:', error);
       return [];

@@ -308,10 +308,17 @@ export class NotesPollingManager {
 
         if (changes.length > 0) {
           // Convert comments to notes
-          let newNotes = newState.comments.map(comment => ({
-            ...this.api.parseCommentToNote(comment),
-            issueUrl: newState.html_url,
-          }));
+          let newNotes = newState.comments.reduce<Note[]>((notes, comment) => {
+            try {
+              notes.push({
+                ...this.api.parseCommentToNote(comment),
+                issueUrl: newState.html_url,
+              });
+            } catch (error) {
+              // Not a note; skip it
+            }
+            return notes;
+          }, []);
 
           if (watch.prepareNotes) {
             newNotes = await watch.prepareNotes(newNotes);

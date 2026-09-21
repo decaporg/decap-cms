@@ -898,4 +898,23 @@ describe('github API', () => {
       );
     });
   });
+
+  describe('getEntryNotes', () => {
+    it('skips a marker-only comment instead of blanking the whole thread', async () => {
+      const api = new API({ repo: 'owner/repo' });
+      const user = { login: 'ada', avatar_url: 'https://avatar' };
+
+      api.findEntryIssue = jest.fn().mockResolvedValue({ number: 3, html_url: 'https://issue' });
+      api.requestAllPages = jest.fn().mockResolvedValue([
+        { id: 1, body: 'first', user, created_at: '2026-01-01T00:00:00Z' },
+        { id: 2, body: '<!-- DecapCMS Note {"resolved":false} -->\n', user, created_at: '' },
+        { id: 3, body: 'third', user, created_at: '2026-01-03T00:00:00Z' },
+      ]);
+
+      const notes = await api.getEntryNotes('posts', 'my-post');
+
+      expect(notes.map(note => note.id)).toEqual(['1', '3']);
+      expect(notes[0].issueUrl).toBe('https://issue');
+    });
+  });
 });

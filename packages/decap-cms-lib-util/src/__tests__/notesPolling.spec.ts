@@ -128,6 +128,38 @@ describe('NotesPollingManager', () => {
       ]);
     });
 
+    it('skips a comment that is not a note and keeps polling', async () => {
+      const api = createApi();
+      api.parseCommentToNote.mockImplementation(c => {
+        if (!c.body) {
+          throw new Error('Empty note content');
+        }
+        return {
+          id: String(c.id),
+          author: 'alice',
+          content: c.body,
+          timestamp: c.created_at,
+          resolved: false,
+          entrySlug: '',
+        };
+      });
+      api.getIssueWithETag.mockResolvedValue({
+        status: 200,
+        data: issueState([comment(1), comment(2, ''), comment(3)]),
+        etag: 'b',
+      });
+      manager = new NotesPollingManager(api);
+
+      const onUpdate = jest.fn();
+      await manager.watchIssue(12, 'posts', 'my-post', { onUpdate }, issueState([comment(1)]));
+      await flush();
+
+      expect(onUpdate.mock.calls[0][0].map((note: { id: string }) => note.id)).toEqual(['1', '3']);
+
+      await manager.checkIssueNow('posts', 'my-post');
+      expect(onUpdate).toHaveBeenCalledTimes(1);
+    });
+
     it('drops an update whose watch was replaced while prepareNotes was in flight', async () => {
       const api = createApi();
       api.getIssueWithETag.mockImplementation(async issueNumber =>
