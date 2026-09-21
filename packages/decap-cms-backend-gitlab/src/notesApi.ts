@@ -127,6 +127,7 @@ async function walkPages<T>(
 
 export class GitLabNotesAPI {
   private api: NotesRequester;
+  private entryIids = new Map<string, number>();
 
   constructor(api: NotesRequester) {
     this.api = api;
@@ -186,7 +187,7 @@ export class GitLabNotesAPI {
     slug: string,
     entryTitle?: string,
   ): Promise<GitLabIssue> {
-    return this.api.requestJSON({
+    const issue: GitLabIssue = await this.api.requestJSON({
       url: `${this.repoURL}/issues`,
       method: 'POST',
       headers: JSON_HEADERS,
@@ -196,6 +197,9 @@ export class GitLabNotesAPI {
         labels: [NOTES_LABEL, `collection:${collectionName}`].join(','),
       }),
     });
+
+    this.entryIids.set(`${collectionName}/${slug}`, issue.iid);
+    return issue;
   }
 
   /**
@@ -229,7 +233,25 @@ export class GitLabNotesAPI {
       found => found.some(isExact),
     );
 
-    return issues.find(isExact) ?? null;
+    const issue = issues.find(isExact) ?? null;
+    if (issue) {
+      this.entryIids.set(needle, issue.iid);
+    }
+    return issue;
+  }
+
+  private async findEntryIid(collectionName: string, slug: string): Promise<number | null> {
+    const cached = this.entryIids.get(`${collectionName}/${slug}`);
+    if (cached !== undefined) {
+      return cached;
+    }
+    return (await this.findEntryIssue(collectionName, slug))?.iid ?? null;
+  }
+
+  private forgetEntryIidOn404(collectionName: string, slug: string, error: unknown) {
+    if ((error as { status?: number })?.status === 404) {
+      this.entryIids.delete(`${collectionName}/${slug}`);
+    }
   }
 
   private async getIssue(iid: number): Promise<GitLabIssue> {
@@ -274,8 +296,7 @@ export class GitLabNotesAPI {
     | { status: 304; data?: never; etag?: never }
     | { status: 200; data: IssueState; etag: string | null }
   > {
-    const issue = await this.getIssue(iid);
-    const comments = await this.getIssueComments(iid);
+    const [issue, comments] = await Promise.all([this.getIssue(iid), this.getIssueComments(iid)]);
 
     return { status: 200, data: toIssueState(issue, comments), etag: null };
   }
@@ -340,33 +361,34 @@ export class GitLabNotesAPI {
     noteId: string,
     note: Note,
   ): Promise<void> {
-    const issue = await this.findEntryIssue(collectionName, slug);
-    if (!issue) {
+    const iid = await this.findEntryIid(collectionName, slug);
+    if (iid === null) {
       throw new APIError('Failed to update note', 404, 'GitLab');
     }
 
     try {
       await this.api.requestJSON({
-        url: `${this.repoURL}/issues/${issue.iid}/notes/${noteId}`,
+        url: `${this.repoURL}/issues/${iid}/notes/${noteId}`,
         method: 'PUT',
         headers: JSON_HEADERS,
         body: JSON.stringify({ body: formatNoteBody(note) }),
       });
     } catch (error) {
       console.error('Failed to update entry note:', error);
+      this.forgetEntryIidOn404(collectionName, slug, error);
       throw new APIError('Failed to update note', error?.status || 500, 'GitLab');
     }
   }
 
   async deleteEntryNote(collectionName: string, slug: string, noteId: string): Promise<void> {
-    const issue = await this.findEntryIssue(collectionName, slug);
-    if (!issue) {
+    const iid = await this.findEntryIid(collectionName, slug);
+    if (iid === null) {
       throw new APIError('Failed to delete note', 404, 'GitLab');
     }
 
     try {
       const response = await this.api.request({
-        url: `${this.repoURL}/issues/${issue.iid}/notes/${noteId}`,
+        url: `${this.repoURL}/issues/${iid}/notes/${noteId}`,
         method: 'DELETE',
       });
 
@@ -375,6 +397,7 @@ export class GitLabNotesAPI {
       }
     } catch (error) {
       console.error('Failed to delete entry note:', error);
+      this.forgetEntryIidOn404(collectionName, slug, error);
       throw new APIError('Failed to delete note', error?.status || 500, 'GitLab');
     }
   }

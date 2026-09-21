@@ -1730,6 +1730,7 @@ export default class API {
   private async getIssueComments(issueNumber: number): Promise<GitHubIssue[]> {
     const response = await this.requestAllPages<GitHubIssue>(
       `${this.repoURL}/issues/${issueNumber}/comments`,
+      { params: { per_page: 100 } },
     );
 
     return Array.isArray(response) ? response : [];

@@ -57,6 +57,7 @@ export default class GitLab implements Implementation {
   notesApi?: GitLabNotesAPI;
   pollingManager?: NotesPollingManager;
   private unwatchNotes = new Map<string, () => void>();
+  private notesUserPromise?: Promise<{ username?: string; name?: string }>;
 
   lock: AsyncLock;
   api: API | null;
@@ -246,6 +247,7 @@ export default class GitLab implements Implementation {
     this.pollingManager?.destroy();
     this.pollingManager = undefined;
     this.unwatchNotes.clear();
+    this.notesUserPromise = undefined;
   }
 
   async logout() {
@@ -589,8 +591,21 @@ export default class GitLab implements Implementation {
    * the current username on every read, so ownership follows a rename.
    */
   async noteAuthorIdentity(): Promise<{ author: string; authorId?: string }> {
-    const user = await this.api!.user();
+    const user = await this.currentNotesUser();
     return { author: user.username || user.name || '', authorId: undefined };
+  }
+
+  private currentNotesUser() {
+    if (!this.notesUserPromise) {
+      const promise: Promise<{ username?: string; name?: string }> = this.api!.user();
+      this.notesUserPromise = promise;
+      promise.catch(() => {
+        if (this.notesUserPromise === promise) {
+          this.notesUserPromise = undefined;
+        }
+      });
+    }
+    return this.notesUserPromise;
   }
 
   /**
@@ -662,8 +677,18 @@ export default class GitLab implements Implementation {
     noteId: string,
     updates: Partial<Note>,
   ): Promise<Note> {
-    const updated = { ...(await this.findNote(collection, slug, noteId)), ...updates };
-    await this.notesApi!.updateEntryNote(collection, slug, noteId, updated);
+    const note = await this.findNote(collection, slug, noteId);
+    return this.applyNoteUpdate(collection, slug, note, updates);
+  }
+
+  private async applyNoteUpdate(
+    collection: string,
+    slug: string,
+    note: Note,
+    updates: Partial<Note>,
+  ): Promise<Note> {
+    const updated = { ...note, ...updates };
+    await this.notesApi!.updateEntryNote(collection, slug, note.id, updated);
     return (await this.markOwnNotes([updated]))[0];
   }
 
@@ -673,7 +698,7 @@ export default class GitLab implements Implementation {
 
   async toggleNoteResolution(collection: string, slug: string, noteId: string): Promise<Note> {
     const note = await this.findNote(collection, slug, noteId);
-    return this.updateNote(collection, slug, noteId, { resolved: !note.resolved });
+    return this.applyNoteUpdate(collection, slug, note, { resolved: !note.resolved });
   }
 
   async reopenIssueForUnpublishedEntry(collection: string, slug: string) {

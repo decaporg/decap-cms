@@ -320,6 +320,39 @@ describe('GitLab notes API', () => {
       await expect(api.deleteEntryNote('posts', 'my-post', '99')).rejects.toThrow();
     });
 
+    it('does not search for the thread again once it is known', async () => {
+      const { api, requestJSON } = makeApi(async req => (req.method ? {} : [ISSUE]));
+      function searches() {
+        return requestJSON.mock.calls.filter(([req]) => req.params?.search).length;
+      }
+
+      await api.findEntryIssue('posts', 'my-post');
+      expect(searches()).toBe(1);
+
+      await api.updateEntryNote('posts', 'my-post', '99', { content: 'x', resolved: true });
+      await api.deleteEntryNote('posts', 'my-post', '99');
+
+      expect(searches()).toBe(1);
+    });
+
+    it('looks the thread up afresh after the remembered one turns out to be gone', async () => {
+      const { api, requestJSON } = makeApi(async req => {
+        if (req.method === 'PUT') {
+          throw Object.assign(new Error('Not found'), { status: 404 });
+        }
+        return [ISSUE];
+      });
+      function searches() {
+        return requestJSON.mock.calls.filter(([req]) => req.params?.search).length;
+      }
+      const note = { content: 'x', resolved: true };
+
+      await expect(api.updateEntryNote('posts', 'my-post', '99', note)).rejects.toThrow();
+      await expect(api.updateEntryNote('posts', 'my-post', '99', note)).rejects.toThrow();
+
+      expect(searches()).toBe(2);
+    });
+
     it('refuses to mutate a note whose thread is gone', async () => {
       const { api } = makeApi(async () => []);
 
