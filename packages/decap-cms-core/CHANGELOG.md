@@ -3,6 +3,59 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.20.0-beta.0](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.19.0...decap-cms-core@3.20.0-beta.0) (2026-09-10)
+
+### Bug Fixes
+
+- always route local_backend through proxy detection ([479d9b0](https://github.com/decaporg/decap-cms/commit/479d9b0a73440f5166a82831edebd3c07602cc6c))
+- **core,media-library-s3:** stop handing media libraries the refresh token ([27927cb](https://github.com/decaporg/decap-cms/commit/27927cbbec0189c7e1220cda9da4692a8a57ed5a))
+- **core,turbo-github:** three defects in deploy watching ([90b58c8](https://github.com/decaporg/decap-cms/commit/90b58c82234907f0b0342edc0f4681b7dc9a070d))
+- **core:** do not let a stale listing certify a draft as published ([ccdd71d](https://github.com/decaporg/decap-cms/commit/ccdd71d30bd0ac768e1a95a7e9a7ef02c7fd1948))
+- **core:** don't let a create overwrite an existing i18n entry ([d3d40d1](https://github.com/decaporg/decap-cms/commit/d3d40d1b3a8e7604e3ebe8839517e23328a53051))
+- **core:** give the unpublished-entry shortcut a freshness window ([591c145](https://github.com/decaporg/decap-cms/commit/591c14591d6be18a13e2dc3889fc59916921cc5d))
+- **core:** key a new workflow entry on the slug the backend committed ([efbd052](https://github.com/decaporg/decap-cms/commit/efbd05279483aa0a13390128309e88a568cb6b96))
+- **core:** let a new save clear the previous deploy toast in every state ([6e7bee0](https://github.com/decaporg/decap-cms/commit/6e7bee01f7ec24782440114b2406a9b81d79d7f2))
+- **core:** let an update cancel a queued dismissal ([a115a19](https://github.com/decaporg/decap-cms/commit/a115a1906d4c772da9b099f8c2cf493391d1c01e))
+- **core:** match the preview-path sentinel by origin, not by prefix ([7f6e6b1](https://github.com/decaporg/decap-cms/commit/7f6e6b1b55dcd2ea7acd237e0e49ffc8430b8613))
+- **core:** stop a persisted slug passing for a loaded workflow list ([5deeb6e](https://github.com/decaporg/decap-cms/commit/5deeb6e68f9206bf2153d4c351f64be83a764850))
+- **core:** stop Editor crashing when its route names a collection missing from state ([465bdd7](https://github.com/decaporg/decap-cms/commit/465bdd7b08be4e8b14cc7b47ae190e5db8ce1d55))
+- **deploy-status:** only the site's own branch can be Live ([69f5776](https://github.com/decaporg/decap-cms/commit/69f57764b0d31cafc306c9d3f8a7deb9de7da257))
+- **deploy-status:** subscribe once the user exists, not only at mount ([4339011](https://github.com/decaporg/decap-cms/commit/43390116c416967112439e8af3ec0f236f3611d4))
+- **deploys:** name the success state in the filter ([a32ba30](https://github.com/decaporg/decap-cms/commit/a32ba3051b20d59478913b97a9f9792760cb0a37))
+- dispatch doneAuthenticating after login failure ([8ee54c9](https://github.com/decaporg/decap-cms/commit/8ee54c97c12bbf067718ff898f9317ae4d118ad0))
+- make pnpm run build and lint work under corepack-managed pnpm ([2792b04](https://github.com/decaporg/decap-cms/commit/2792b04c9ff9c80b780850fbb3b0b31e3659bb68))
+- release editor before media library reload on entry save ([b51a744](https://github.com/decaporg/decap-cms/commit/b51a744885158529066fee890d25ea68d4237861))
+- reload entries after persist based on backend config ([8caaf54](https://github.com/decaporg/decap-cms/commit/8caaf5416138d97bb6ca591a5f68e4452e2a370d))
+
+### Features
+
+- add S3-compatible media library, remove standalone Bunny package ([8d19951](https://github.com/decaporg/decap-cms/commit/8d1995164017e6c6c5b7263acd4da91be7ea0686))
+- add turbo gitlab backend, rename turbo-github ([ea09b39](https://github.com/decaporg/decap-cms/commit/ea09b3995721227d0eb57c329ad2616d3defd439))
+- **core,turbo-github:** async, entry-scoped deploy notifications (A4b) ([ce3ef09](https://github.com/decaporg/decap-cms/commit/ce3ef092ab65d73502d3340ab281b33c26050ce9))
+- **core:** follow a save's deploy in one updating toast (A4) ([4aa5b0a](https://github.com/decaporg/decap-cms/commit/4aa5b0afc2c14dd62097eecb9967e843a49d29d9))
+- **deap-turbo:** create decap-turbo backend - wip ([17f228a](https://github.com/decaporg/decap-cms/commit/17f228ad5e9ef0281a4c8db2c2faff97cc6f563f))
+- **decap-turbo:** add backend preload config check in handleLocalBackend function ([9cd8963](https://github.com/decaporg/decap-cms/commit/9cd8963bf2e4ddd3bf2c7cc55f555629bd600b21))
+- **decap-turbo:** implement backend-agnostic permissions handling ([bd173a2](https://github.com/decaporg/decap-cms/commit/bd173a2294fea62a4e4b4fe8a891e9e4b9263c21))
+- **decap-turbo:** update configuration handling and improve error messaging ([f8f151b](https://github.com/decaporg/decap-cms/commit/f8f151b2597c25cd7bb84f3a5cad690b427d2845))
+- **deploy-status:** a Deploys page and a header state indicator (A8) ([1827898](https://github.com/decaporg/decap-cms/commit/18278989b65d3f5dcef1f433feed7e84e00d346f))
+- **deploy-status:** saved entry and published-to columns, stateful nav ([6bce67b](https://github.com/decaporg/decap-cms/commit/6bce67b506ef075f412107ff0be8e114910a216d))
+- **deploys:** filter by the state shown, and sort every column ([b3b3a6a](https://github.com/decaporg/decap-cms/commit/b3b3a6a43d01b2381d83dccb4736c3fbefa966fe))
+- **deploys:** live per branch, a stalled state, and table controls ([feb232e](https://github.com/decaporg/decap-cms/commit/feb232e87f57c5558bd6c29da2470d8c509f6340))
+- harden turbo backend auth, config, and API error handling ([ae1bd79](https://github.com/decaporg/decap-cms/commit/ae1bd79389019716b49111d8fcaeb23ee359a992))
+- **proxy:** add supabase-github-proxy as possible backend in CmsBackendType ([24be973](https://github.com/decaporg/decap-cms/commit/24be973e02c3cac4173c19ac6326f44c15aef18e))
+- **proxy:** force reload entries after publishing if backend is supabase-github-proxy ([dc9b27c](https://github.com/decaporg/decap-cms/commit/dc9b27cc4fc04cbbf809407ec88da599b02af86e))
+- **proxy:** wip - first draft / caching allEntriesByFolder ([56ca436](https://github.com/decaporg/decap-cms/commit/56ca436725668a997ba4ee24122d1e10bbb2ed3c))
+- rename turbo keys, add backend config resolver ([60b963b](https://github.com/decaporg/decap-cms/commit/60b963ba094255fb9de7052e516b5b65fc3fd1d7))
+- **supabase-github-proxy:** add site_id support, update readme ([87ed396](https://github.com/decaporg/decap-cms/commit/87ed3964e035d3b8d6666dce0e5f31e4db1c08dd))
+- **supabase-github-proxy:** allow searching on the cached backend query ([a8bec9b](https://github.com/decaporg/decap-cms/commit/a8bec9b874e09373abe05444c89b1921599a6238))
+- **turbo-github,turbo-gitlab:** show signed-in user identity and clear session on logout ([295ae6d](https://github.com/decaporg/decap-cms/commit/295ae6dae7989b8006b2579e564dbb1461631ee8))
+- **widget-markdown:** support inline custom editor components ([#7958](https://github.com/decaporg/decap-cms/issues/7958)) ([65526d2](https://github.com/decaporg/decap-cms/commit/65526d2daa8e38a998f59b8c3476e27e3b166656)), closes [#7951](https://github.com/decaporg/decap-cms/issues/7951) [#7936](https://github.com/decaporg/decap-cms/issues/7936)
+
+### Performance Improvements
+
+- **core,turbo-github,turbo-gitlab:** stop hydrating every draft, cache i18n siblings ([b26cb27](https://github.com/decaporg/decap-cms/commit/b26cb27223714928e06b684527ca233559e8f769))
+- **core,turbo-github:** answer "is this entry in the workflow" from state ([f8e58ae](https://github.com/decaporg/decap-cms/commit/f8e58aeea99ebbaa41fd19d438f2c20cb033ee47))
+
 # [3.19.0](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.18.1...decap-cms-core@3.19.0) (2026-09-10)
 
 ### Features

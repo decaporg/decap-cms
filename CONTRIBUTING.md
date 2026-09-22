@@ -251,6 +251,22 @@ Decap CMS uses NPM trusted publishers with OIDC for secure, automated package pu
    > [!WARNING]
    > Never pass publish flags through `pnpm run`. `pnpm run <script> -- --flag` injects a literal `--`, so the flags arrive as positional arguments and are dropped without a word: `pnpm run publish:packages -- --tag beta --dry-run` ignores both and publishes for real, to `latest`. Invoke the script or `pnpm publish` directly.
 
+
+3. **Verify the release:**
+   ```sh
+   git pull
+   pnpm run verify:published
+   ```
+
+   The publish workflow runs this too, but run it locally as well after any release that needed manual intervention. It fetches every publishable package from the registry at the version in your working tree and fails if a published manifest still contains `catalog:` or `workspace:` specifiers.
+
+   npm accepts a publish before the version becomes readable, so the check allows up to 10 minutes for absent versions to appear before failing. Unresolved specifiers fail immediately -- that is a property of the published manifest and will not change on its own.
+
+4. **Create GitHub release:**
+   - Go to [Releases](https://github.com/decaporg/decap-cms/releases)
+   - Draft a new release from the tag
+   - Add release notes highlighting changes
+
 ### Prerelease (beta) Releases
 
 A prerelease must never land on the `latest` dist-tag. npm does not infer a tag from the version, so `3.20.0-beta.0` published without `--tag` becomes what `npm install decap-cms` resolves to.
@@ -278,21 +294,6 @@ pnpm publish --filter <package-name> --no-git-checks --tag beta --access public
 ```
 
 Use `pnpm`, never `npm publish`, which does not understand `catalog:` and would ship the specifier literally. The publish script detects this case and prints the exact command for the packages that need it.
-
-3. **Verify the release:**
-   ```sh
-   git pull
-   pnpm run verify:published
-   ```
-
-   The publish workflow runs this too, but run it locally as well after any release that needed manual intervention. It fetches every publishable package from the registry at the version in your working tree and fails if a published manifest still contains `catalog:` or `workspace:` specifiers.
-
-   npm accepts a publish before the version becomes readable, so the check allows up to 10 minutes for absent versions to appear before failing. Unresolved specifiers fail immediately -- that is a property of the published manifest and will not change on its own.
-
-4. **Create GitHub release:**
-   - Go to [Releases](https://github.com/decaporg/decap-cms/releases)
-   - Draft a new release from the tag
-   - Add release notes highlighting changes
 
 ### Manual Publishing (Emergency Only)
 

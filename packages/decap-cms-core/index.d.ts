@@ -8,6 +8,8 @@ declare module 'decap-cms-core' {
     | 'azure'
     | 'git-gateway'
     | 'github'
+    | 'turbo-github'
+    | 'turbo-gitlab'
     | 'gitlab'
     | 'gitea'
     | 'forgejo'
@@ -381,6 +383,10 @@ declare module 'decap-cms-core' {
     base_url?: string;
     auth_endpoint?: string;
     app_id?: string;
+    turbo_site_id?: string;
+    turbo_config_url?: string;
+    supabase_app_id?: string;
+    supabase_anon_key?: string;
     auth_type?: 'implicit' | 'pkce';
     cms_label_prefix?: string;
     squash_merges?: boolean;

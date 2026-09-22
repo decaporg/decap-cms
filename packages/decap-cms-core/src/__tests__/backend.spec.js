@@ -852,6 +852,73 @@ describe('Backend', () => {
         'sub_dir/some-post-title-1',
       );
     });
+
+    it('should probe the localised path for multiple_files i18n collections', async () => {
+      const { sanitizeSlug, sanitizeChar } = require('../lib/urlHelper');
+      sanitizeSlug.mockReturnValue('some-post-title');
+      sanitizeChar.mockReturnValue('-');
+
+      function notFound() {
+        return Promise.reject(Object.assign(new Error('Not Found'), { status: 404 }));
+      }
+
+      const implementation = {
+        init: jest.fn(() => implementation),
+        // Only the localised file exists, which is the real shape on disk.
+        getEntry: jest.fn(p =>
+          p === 'posts/some-post-title.en.md' ? Promise.resolve({ data: 'data' }) : notFound(),
+        ),
+      };
+
+      const collection = fromJS({
+        name: 'posts',
+        fields: [{ name: 'title' }],
+        type: FOLDER,
+        folder: 'posts',
+        slug: '{{slug}}',
+        i18n: { structure: 'multiple_files', locales: ['en', 'de'], default_locale: 'en' },
+      });
+
+      const backend = new Backend(implementation, { config: {}, backendName: 'github' });
+
+      // Probing the unlocalised 'posts/some-post-title.md' would miss, and the
+      // caller would reuse the slug and overwrite the existing entry.
+      await expect(
+        backend.generateUniqueSlug(collection, Map({ title: 'some post title' }), Map({}), []),
+      ).resolves.toBe('some-post-title-1');
+
+      expect(implementation.getEntry).toHaveBeenCalledWith('posts/some-post-title.en.md');
+    });
+
+    it('should fail the save when it cannot tell whether the entry exists', async () => {
+      const { sanitizeSlug, sanitizeChar } = require('../lib/urlHelper');
+      sanitizeSlug.mockReturnValue('some-post-title');
+      sanitizeChar.mockReturnValue('-');
+
+      const implementation = {
+        init: jest.fn(() => implementation),
+        // Not a 404 — the answer is unknown, not "absent".
+        getEntry: jest
+          .fn()
+          .mockRejectedValue(Object.assign(new Error('API rate limit exceeded'), { status: 403 })),
+      };
+
+      const collection = fromJS({
+        name: 'posts',
+        fields: [{ name: 'title' }],
+        type: FOLDER,
+        folder: 'posts',
+        slug: '{{slug}}',
+      });
+
+      const backend = new Backend(implementation, { config: {}, backendName: 'github' });
+
+      // Reporting "absent" would overwrite; reporting "present" would spin the
+      // uniqueness loop forever. Rejecting is the only safe answer.
+      await expect(
+        backend.generateUniqueSlug(collection, Map({ title: 'some post title' }), Map({}), []),
+      ).rejects.toThrow('API rate limit exceeded');
+    });
   });
 
   describe('extractSearchFields', () => {
@@ -1463,6 +1530,78 @@ describe('Backend', () => {
           hasSubfolders: true,
         }),
       );
+    });
+  });
+
+  describe('listAllEntries locale siblings', () => {
+    // A listing wants one file per entry, so the path regex it sends narrows to
+    // the default locale. The EDITOR reads every locale as its own file, so a
+    // backend that caches on the listing's selector caches `slug.en.md` and
+    // misses `slug.de.md` and `slug.si.md` on every entry open. The extra
+    // selector below is how such a backend learns which files those are.
+    function collectionWithI18n(structure) {
+      return fromJS({
+        name: 'posts',
+        type: FOLDER,
+        folder: 'content/posts',
+        extension: 'md',
+        i18n: { structure, locales: ['en', 'de', 'si'], default_locale: 'en' },
+      });
+    }
+
+    function backendWith(implementation) {
+      return new Backend(implementation, { config: { backend: {} }, backendName: 'github' });
+    }
+
+    it('passes a selector for the locales the listing leaves out', async () => {
+      const implementation = {
+        init: jest.fn(() => implementation),
+        allEntriesByFolder: jest.fn().mockResolvedValue([]),
+      };
+      const backend = backendWith(implementation);
+
+      await backend.listAllEntries(collectionWithI18n('multiple_files'));
+
+      const [, , , pathRegex, , siblingRegex] = implementation.allEntriesByFolder.mock.calls[0];
+
+      // The listing selector takes the default locale and nothing else...
+      expect(pathRegex.test('content/posts/slug.en.md')).toBe(true);
+      expect(pathRegex.test('content/posts/slug.de.md')).toBe(false);
+
+      // ...and the sibling selector is its exact complement across the
+      // configured locales, so between them every locale file is accounted for
+      // and none is claimed twice.
+      expect(siblingRegex.test('content/posts/slug.de.md')).toBe(true);
+      expect(siblingRegex.test('content/posts/slug.si.md')).toBe(true);
+      expect(siblingRegex.test('content/posts/slug.en.md')).toBe(false);
+    });
+
+    it('passes no sibling selector when every locale lives in one file', async () => {
+      const implementation = {
+        init: jest.fn(() => implementation),
+        allEntriesByFolder: jest.fn().mockResolvedValue([]),
+      };
+      const backend = backendWith(implementation);
+
+      await backend.listAllEntries(collectionWithI18n('single_file'));
+
+      const [, , , , , siblingRegex] = implementation.allEntriesByFolder.mock.calls[0];
+      expect(siblingRegex).toBeUndefined();
+    });
+
+    it('passes no sibling selector for a collection without i18n', async () => {
+      const implementation = {
+        init: jest.fn(() => implementation),
+        allEntriesByFolder: jest.fn().mockResolvedValue([]),
+      };
+      const backend = backendWith(implementation);
+
+      await backend.listAllEntries(
+        fromJS({ name: 'posts', type: FOLDER, folder: 'content/posts', extension: 'md' }),
+      );
+
+      const [, , , , , siblingRegex] = implementation.allEntriesByFolder.mock.calls[0];
+      expect(siblingRegex).toBeUndefined();
     });
   });
 });

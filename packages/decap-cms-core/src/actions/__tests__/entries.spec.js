@@ -8,6 +8,7 @@ import {
   retrieveLocalBackup,
   persistLocalBackup,
   getMediaAssets,
+  persistEntry,
   validateMetaField,
 } from '../entries';
 import AssetProxy from '../../valueObjects/AssetProxy';
@@ -605,6 +606,140 @@ describe('entries', () => {
       ).toEqual({
         error: false,
       });
+    });
+  });
+
+  describe('persistEntry', () => {
+    const { currentBackend } = require('../../backend');
+    const { loadMedia } = require('../mediaLibrary');
+    const { selectPublishedSlugs } = require('../../reducers/entries');
+    const collections = require('../../reducers/collections');
+
+    // `type` matters: selectFields dispatches on it, and this suite does not
+    // mock reducers/collections.
+    const collection = fromJS({
+      name: 'posts',
+      type: 'folder',
+      folder: 'content',
+      fields: [{ name: 'title' }],
+    });
+
+    function storeWithDraft() {
+      return mockStore({
+        config: fromJS({}),
+        collections: fromJS({ posts: collection }),
+        entryDraft: fromJS({
+          entry: {
+            slug: 'hello',
+            path: 'content/hello.md',
+            data: { title: 'Hello' },
+            mediaFiles: [],
+          },
+          fieldsErrors: {},
+        }),
+        mediaLibrary: fromJS({ files: [] }),
+      });
+    }
+
+    function typesOf(store) {
+      return store.getActions().map(action => action.type);
+    }
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+      selectPublishedSlugs.mockReturnValue(List());
+      loadMedia.mockReturnValue({ type: 'MEDIA_LOAD_SUCCESS' });
+      // reducers/collections is not mocked by this suite, and its real
+      // selectFields keys a selector map on constants that come from the
+      // auto-mocked decap-cms-lib-util — so they are undefined here. Stub the
+      // one function this path needs rather than mocking the whole module.
+      jest.spyOn(collections, 'selectFields').mockReturnValue(List());
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    // Characterization of a plain save: request, commit, toast, release, and
+    // nothing else. Note this one passes with or without the B3 reordering —
+    // with no assets there is no media reload to be ordered against. It is
+    // here to pin the sequence, not to guard the change; the test below is
+    // what guards the change.
+    it('dispatches request, toast and release in order for a save with no media', async () => {
+      currentBackend.mockReturnValue({
+        persistEntry: jest.fn().mockResolvedValue('hello'),
+        implementation: {},
+      });
+
+      const store = storeWithDraft();
+      await store.dispatch(persistEntry(collection));
+
+      expect(typesOf(store)).toEqual([
+        'ENTRY_PERSIST_REQUEST',
+        'NOTIFICATION_SEND',
+        'ENTRY_PERSIST_SUCCESS',
+      ]);
+      expect(loadMedia).not.toHaveBeenCalled();
+    });
+
+    // THE guard for B3. entryPersisted used to be dispatched after an awaited
+    // loadMedia(), so saving an entry with images held the save spinner
+    // through a refresh of a panel that is not even on screen. Verified to
+    // fail against the previous ordering.
+    it('releases the editor before reloading the media library', async () => {
+      let mediaReloadStarted = false;
+      loadMedia.mockImplementation(() => {
+        mediaReloadStarted = true;
+        return { type: 'MEDIA_LOAD_SUCCESS' };
+      });
+
+      currentBackend.mockReturnValue({
+        persistEntry: jest.fn().mockResolvedValue('hello'),
+        implementation: {},
+      });
+
+      const asset = new AssetProxy({ path: 'static/img/a.png', file: new File([''], 'a.png') });
+      const store = mockStore({
+        config: fromJS({}),
+        collections: fromJS({ posts: collection }),
+        entryDraft: fromJS({
+          entry: {
+            slug: 'hello',
+            path: 'content/hello.md',
+            data: { title: 'Hello' },
+            mediaFiles: [{ path: 'static/img/a.png', draft: true, ...asset }],
+          },
+          fieldsErrors: {},
+        }),
+        mediaLibrary: fromJS({ files: [] }),
+      });
+
+      await store.dispatch(persistEntry(collection));
+
+      // Asserted, not guarded by an `if`: a fixture that stopped producing
+      // asset proxies would make the ordering assertion below vacuous and this
+      // test would pass while guarding nothing.
+      expect(mediaReloadStarted).toBe(true);
+
+      const types = typesOf(store);
+      expect(types.indexOf('ENTRY_PERSIST_SUCCESS')).toBeLessThan(
+        types.indexOf('MEDIA_LOAD_SUCCESS'),
+      );
+    });
+
+    it('does not release the editor when the commit fails', async () => {
+      currentBackend.mockReturnValue({
+        persistEntry: jest.fn().mockRejectedValue(new Error('conflict')),
+        implementation: {},
+      });
+
+      const store = storeWithDraft();
+      await expect(store.dispatch(persistEntry(collection))).rejects.toBeDefined();
+
+      const types = typesOf(store);
+      expect(types).toContain('ENTRY_PERSIST_FAILURE');
+      expect(types).not.toContain('ENTRY_PERSIST_SUCCESS');
+      expect(loadMedia).not.toHaveBeenCalled();
     });
   });
 });
