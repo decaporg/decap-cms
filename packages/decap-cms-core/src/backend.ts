@@ -514,7 +514,12 @@ export class Backend {
         selectUseWorkflow(config),
       ))
     ) {
-      uniqueSlug = `${slug}${sanitizeChar(' ', slugConfig)}${i++}`;
+      const suffix = `${sanitizeChar(' ', slugConfig)}${i++}`;
+      // Normal slugs are reformatted so the suffix can be placed inside the collection's
+      // path template. A custom path has no template variable to target, so append it.
+      uniqueSlug = customPath
+        ? `${slug}${suffix}`
+        : slugFormatter(collection, entryData, slugConfig, suffix);
     }
     return uniqueSlug;
   }
