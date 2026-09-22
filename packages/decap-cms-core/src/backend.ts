@@ -39,7 +39,7 @@ import {
 import { createEntry } from './valueObjects/Entry';
 import { sanitizeChar } from './lib/urlHelper';
 import { getBackend, invokeEvent } from './lib/registry';
-import { commitMessageFormatter, slugFormatter, previewUrlFormatter } from './lib/formatters';
+import { commitMessageFormatter, getSlugFormatter, previewUrlFormatter } from './lib/formatters';
 import { status } from './constants/publishModes';
 import { FOLDER, FILES } from './constants/collectionTypes';
 import { selectCustomPath } from './reducers/entryDraft';
@@ -495,14 +495,15 @@ export class Backend {
     customPath: string | undefined,
   ) {
     const slugConfig = config.slug;
-    let slug: string;
+    let formatSlug: (suffix?: string) => string;
     if (customPath) {
-      slug = slugFromCustomPath(collection, customPath);
+      const slug = slugFromCustomPath(collection, customPath);
+      formatSlug = (suffix = '') => `${slug}${suffix}`;
     } else {
-      slug = slugFormatter(collection, entryData, slugConfig);
+      formatSlug = getSlugFormatter(collection, entryData, slugConfig);
     }
     let i = 1;
-    let uniqueSlug = slug;
+    let uniqueSlug = formatSlug();
 
     // Check for duplicate slug in loaded entities store first before repo
     while (
@@ -514,12 +515,7 @@ export class Backend {
         selectUseWorkflow(config),
       ))
     ) {
-      const suffix = `${sanitizeChar(' ', slugConfig)}${i++}`;
-      // Normal slugs are reformatted so the suffix can be placed inside the collection's
-      // path template. A custom path has no template variable to target, so append it.
-      uniqueSlug = customPath
-        ? `${slug}${suffix}`
-        : slugFormatter(collection, entryData, slugConfig, suffix);
+      uniqueSlug = formatSlug(`${sanitizeChar(' ', slugConfig)}${i++}`);
     }
     return uniqueSlug;
   }
