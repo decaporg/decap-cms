@@ -105,10 +105,9 @@ describe('stringTemplate', () => {
     });
 
     it('return apply processor to values', () => {
-      const processor = jest.fn(value => value.toUpperCase());
-
-      expect(compileStringTemplate('{{slug}}', date, 'slug', fromJS({}), processor)).toBe('SLUG');
-      expect(processor).toHaveBeenCalledWith('slug', 'slug');
+      expect(
+        compileStringTemplate('{{slug}}', date, 'slug', fromJS({}), value => value.toUpperCase()),
+      ).toBe('SLUG');
     });
 
     it('return apply filter to values', () => {

@@ -171,19 +171,12 @@ function getFilterFunction(filterStr: string) {
   return null;
 }
 
-/**
- * Resolves variables in a string template.
- *
- * The optional processor runs after template filters and receives the parsed variable key
- * as well as the resolved value. The key identifies `{{slug}}` even when filters change
- * its value and distinguishes it from fields that happen to resolve to the same string.
- */
 export function compileStringTemplate(
   template: string,
   date: Date | undefined | null,
   identifier = '',
   data = Map<string, unknown>(),
-  processor?: (value: string, key: string) => string,
+  processor?: (value: string) => string,
 ) {
   let missingRequiredDate;
 
@@ -216,7 +209,7 @@ export function compileStringTemplate(
       }
 
       if (processor) {
-        replacement = processor(replacement, key);
+        replacement = processor(replacement);
       }
 
       return replacement;
