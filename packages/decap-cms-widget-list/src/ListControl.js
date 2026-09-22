@@ -6,6 +6,7 @@ import { css, ClassNames } from '@emotion/react';
 import { List, Map, fromJS } from 'immutable';
 import partial from 'lodash/partial';
 import isEmpty from 'lodash/isEmpty';
+import memoize from 'lodash/memoize';
 import uniqueId from 'lodash/uniqueId';
 import DecapCmsWidgetObject from 'decap-cms-widget-object';
 import {
@@ -255,10 +256,18 @@ export default class ListControl extends Component {
 
   uniqueFieldId = uniqueId(`${this.props.field.get('name')}-field-`);
   /**
+   * Old comment:
+   *
    * Always update so that each nested widget has the option to update. This is
    * required because ControlHOC provides a default `shouldComponentUpdate`
    * which only updates if the value changes, but every widget must be allowed
    * to override this.
+   *
+   * New comment:
+   *
+   * Each Widget is wrapped with EditorControl which already tries to update every time.
+   * Is there a specific reason we need to always rerender the list?
+   * This seems overkill.
    */
   shouldComponentUpdate() {
     return true;
@@ -418,15 +427,18 @@ export default class ListControl extends Component {
    */
   getObjectValue = idx => this.props.value.get(idx) || Map();
 
-  handleChangeFor(index) {
-    const key = this.state.keys[index];
-
+  /**
+   * Memoized on the item's key rather than its position, so each item keeps a
+   * stable `onChangeObject` reference across renders and reorders.
+   */
+  handleChangeFor = memoize(key => {
     return (f, newValue, newMetadata) => {
       const { value, metadata, onChange, field } = this.props;
 
       // Resolve the item's position when the change fires rather than when this
-      // handler was created. If an item has been removed or moved in between,
-      // `index` now points at a different item, or past the end of the list.
+      // handler was created. If the item has been removed or moved in between,
+      // its old position now points at a different item, or past the end of the
+      // list.
       const currentIndex = this.state.keys.indexOf(key);
 
       if (currentIndex === -1) {
@@ -446,7 +458,7 @@ export default class ListControl extends Component {
       };
       onChange(value.set(currentIndex, newObjectValue), parsedMetadata);
     };
-  }
+  });
 
   handleRemove = (index, event) => {
     event.preventDefault();
@@ -641,6 +653,11 @@ export default class ListControl extends Component {
     }
   }
 
+  getStableParentIds = memoize(
+    (parentIds, forID, key) => [...parentIds, forID, key],
+    (parentIds, forID, key) => JSON.stringify([...parentIds, forID, key]),
+  );
+
   // eslint-disable-next-line react/display-name
   renderItem = (item, index) => {
     const {
@@ -711,7 +728,7 @@ export default class ListControl extends Component {
               })}
               value={item}
               field={field}
-              onChangeObject={this.handleChangeFor(index)}
+              onChangeObject={this.handleChangeFor(key)}
               editorControl={editorControl}
               resolveWidget={resolveWidget}
               metadata={metadata}
@@ -725,7 +742,7 @@ export default class ListControl extends Component {
               collapsed={collapsed}
               data-testid={`object-control-${key}`}
               hasError={hasError}
-              parentIds={[...parentIds, forID, key]}
+              parentIds={this.getStableParentIds(parentIds, forID, key)}
             />
           )}
         </ClassNames>
