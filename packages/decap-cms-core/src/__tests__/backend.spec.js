@@ -881,6 +881,7 @@ describe('Backend', () => {
       await expect(backend.generateUniqueSlug(collection, entry, Map({}), [])).resolves.toBe(
         'some-post-title-2/index',
       );
+      expect(implementation.getEntry).toHaveBeenNthCalledWith(1, 'posts/some-post-title/index.md');
       expect(implementation.getEntry).toHaveBeenNthCalledWith(
         2,
         'posts/some-post-title-1/index.md',
