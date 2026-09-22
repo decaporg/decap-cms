@@ -1,13 +1,22 @@
 /**
- * GitHub Notes Polling System
+ * Notes polling
  *
- * ETag-based polling manager that efficiently checks for changes in GitHub Issues
- * Used for a real-time feel of notes updates without excessive API calls leveraging conditional requests (304) that don't count on Github rate limits.
+ * Watches the thread an entry's notes live in and reports what changed, so
+ * notes another editor adds appear without a reload. Where the host supports
+ * conditional requests the poll is an ETag round trip that returns 304 and
+ * costs no rate limit; where it does not, the manager still only reports a
+ * change when the thread's contents actually differ, so a host that always
+ * answers 200 is slower, not wrong.
  *
- * @module polling
+ * Not specific to one host: it talks to `NotesPollingAPI` below,
+ * which any backend with a comment thread per entry can satisfy.
+ *
+ * @module notesPolling
  */
 
-import type { Note, IssueState, CommentData, IssueChange } from 'decap-cms-lib-util';
+import { commentsToNotes } from './notesFormat';
+
+import type { Note, IssueState, CommentData, IssueChange } from './implementation';
 
 interface WatchedIssue {
   issueNumber: number;
@@ -17,11 +26,18 @@ interface WatchedIssue {
   lastState: IssueState | null;
   onUpdate?: (notes: Note[], changes: IssueChange[]) => void;
   onChange?: (change: IssueChange) => void;
+  prepareNotes?: (notes: Note[]) => Note[] | Promise<Note[]>;
   retryCount?: number;
   maxRetries?: number;
 }
 
-export interface GitHubNotesAPI {
+export interface NotesWatchCallbacks {
+  onUpdate?: (notes: Note[], changes: IssueChange[]) => void;
+  onChange?: (change: IssueChange) => void;
+  prepareNotes?: (notes: Note[]) => Note[] | Promise<Note[]>;
+}
+
+export interface NotesPollingAPI {
   getIssueState(issueNumber: number): Promise<IssueState>;
   getIssueWithETag(
     issueNumber: number,
@@ -30,8 +46,12 @@ export interface GitHubNotesAPI {
     | { status: 304; data?: never; etag?: never }
     | { status: 200; data: IssueState; etag: string | null }
   >;
-  parseCommentToNote(comment: CommentData): Note;
+  parseCommentToNote?(comment: CommentData): Note;
   findEntryIssue(collection: string, slug: string): Promise<{ number: number } | null>;
+}
+
+function noop() {
+  /* nothing to unwatch */
 }
 
 // Redux action types
@@ -40,17 +60,20 @@ export const NOTES_POLLING_STOP = 'NOTES_POLLING_STOP';
 export const NOTES_POLLING_UPDATE = 'NOTES_POLLING_UPDATE';
 export const NOTES_CHANGE_DETECTED = 'NOTES_CHANGE_DETECTED';
 
-export class ETagPollingManager {
+export class NotesPollingManager {
   private currentWatch: WatchedIssue | null = null;
   private currentIssueKey: string | null = null;
   private pollingInterval = 15000;
   private intervalId: NodeJS.Timeout | null = null;
   private isDocumentVisible = true;
-  private api: GitHubNotesAPI;
+  private api: NotesPollingAPI;
   private isPolling = false;
   private pendingRetryTimeout: NodeJS.Timeout | null = null;
+  private cancelPendingRetry: (() => void) | null = null;
+  private pendingIssueKey: string | null = null;
+  private watchGeneration = 0;
 
-  constructor(api: GitHubNotesAPI, pollingInterval = 15000) {
+  constructor(api: NotesPollingAPI, pollingInterval = 15000) {
     this.api = api;
     this.pollingInterval = pollingInterval;
     this.setupVisibilityListener();
@@ -62,18 +85,20 @@ export class ETagPollingManager {
    */
   private setupVisibilityListener() {
     if (typeof document !== 'undefined') {
-      document.addEventListener('visibilitychange', () => {
-        this.isDocumentVisible = !document.hidden;
-
-        if (this.isDocumentVisible) {
-          this.startPolling();
-          this.checkAllIssuesNow();
-        } else {
-          this.stopPolling();
-        }
-      });
+      document.addEventListener('visibilitychange', this.handleVisibilityChange);
     }
   }
+
+  private handleVisibilityChange = () => {
+    this.isDocumentVisible = !document.hidden;
+
+    if (this.isDocumentVisible) {
+      this.startPolling();
+      this.checkAllIssuesNow();
+    } else {
+      this.stopPolling();
+    }
+  };
 
   /**
    * Start watching an issue for changes
@@ -88,18 +113,14 @@ export class ETagPollingManager {
     issueNumber: number,
     collection: string,
     slug: string,
-    callbacks: {
-      onUpdate?: (notes: Note[], changes: IssueChange[]) => void;
-      onChange?: (change: IssueChange) => void;
-    },
+    callbacks: NotesWatchCallbacks,
     initialState: IssueState | null = null,
   ): Promise<() => void> {
     const issueKey = this.getIssueKey(collection, slug);
 
     // STOP ANY EXISTING WATCH FIRST
-    if (this.currentWatch) {
-      this.stopCurrentWatch();
-    }
+    this.stopCurrentWatch();
+    const generation = this.watchGeneration;
 
     // Get initial state if not provided
     if (!initialState) {
@@ -108,9 +129,13 @@ export class ETagPollingManager {
       } catch (error) {
         console.error('[DecapNotes Polling] Failed to get initial state:', error);
       }
+
+      if (generation !== this.watchGeneration) {
+        return noop;
+      }
     }
 
-    this.currentWatch = {
+    const watch: WatchedIssue = {
       issueNumber,
       collection,
       slug,
@@ -118,10 +143,12 @@ export class ETagPollingManager {
       lastState: initialState,
       onUpdate: callbacks.onUpdate,
       onChange: callbacks.onChange,
+      prepareNotes: callbacks.prepareNotes,
       retryCount: 0,
       maxRetries: 5,
     };
 
+    this.currentWatch = watch;
     this.currentIssueKey = issueKey;
 
     // Start polling if not already running
@@ -133,7 +160,11 @@ export class ETagPollingManager {
     this.checkCurrentIssue();
 
     // Return unwatch function
-    return () => this.stopCurrentWatch();
+    return () => {
+      if (this.currentWatch === watch) {
+        this.stopCurrentWatch();
+      }
+    };
   }
 
   /**
@@ -142,85 +173,99 @@ export class ETagPollingManager {
   async watchIssueWithRetry(
     collection: string,
     slug: string,
-    callbacks: {
-      onUpdate?: (notes: Note[], changes: IssueChange[]) => void;
-      onChange?: (change: IssueChange) => void;
-    },
+    callbacks: NotesWatchCallbacks,
     maxRetries = 5,
     retryDelay = 2000,
   ): Promise<() => void> {
     const issueKey = this.getIssueKey(collection, slug);
 
     // STOP ANY EXISTING WATCH FIRST
-    if (this.currentWatch) {
-      this.stopCurrentWatch();
-    }
+    this.stopCurrentWatch();
+    const generation = this.watchGeneration;
+    this.pendingIssueKey = issueKey;
+
+    const isSuperseded = () => generation !== this.watchGeneration;
 
     const attemptWatch = async (attempt: number): Promise<() => void> => {
+      let lookupError: unknown;
+      let issue: { number: number } | null = null;
+
       try {
-        const issue = await this.api.findEntryIssue(collection, slug);
-
-        if (issue) {
-          return await this.watchIssue(issue.number, collection, slug, callbacks);
-        }
-
-        if (attempt < maxRetries) {
-          return new Promise((resolve, reject) => {
-            this.pendingRetryTimeout = setTimeout(async () => {
-              this.pendingRetryTimeout = null;
-              try {
-                const unwatchFn = await attemptWatch(attempt + 1);
-                resolve(unwatchFn);
-              } catch (error) {
-                reject(error);
-              }
-            }, retryDelay);
-          });
-        }
-
-        console.log(
-          `[DecapNotes Polling] No issue found for ${issueKey} after ${maxRetries} attempts. This is expected if there are no notes for this entry yet.`,
-        );
-        // Return a no-op unwatch function
-        return () => {
-          /* no-op */
-        };
+        issue = await this.api.findEntryIssue(collection, slug);
       } catch (error) {
         console.error(`[DecapNotes Polling] Error finding issue for ${issueKey}:`, error);
-
-        if (attempt < maxRetries) {
-          return new Promise((resolve, reject) => {
-            this.pendingRetryTimeout = setTimeout(async () => {
-              this.pendingRetryTimeout = null;
-              try {
-                const unwatchFn = await attemptWatch(attempt + 1);
-                resolve(unwatchFn);
-              } catch (err) {
-                reject(err);
-              }
-            }, retryDelay);
-          });
-        }
-
-        throw error;
+        lookupError = error;
       }
+
+      if (isSuperseded()) {
+        return noop;
+      }
+
+      if (issue) {
+        this.pendingIssueKey = null;
+        return this.watchIssue(issue.number, collection, slug, callbacks);
+      }
+
+      if (attempt < maxRetries) {
+        const elapsed = await this.waitForRetry(retryDelay);
+        return elapsed && !isSuperseded() ? attemptWatch(attempt + 1) : noop;
+      }
+
+      this.pendingIssueKey = null;
+
+      if (lookupError) {
+        throw lookupError;
+      }
+
+      console.log(
+        `[DecapNotes Polling] No issue found for ${issueKey} after ${maxRetries} attempts. This is expected if there are no notes for this entry yet.`,
+      );
+      return noop;
     };
 
     return attemptWatch(1);
+  }
+
+  private waitForRetry(delay: number): Promise<boolean> {
+    return new Promise(resolve => {
+      this.cancelPendingRetry = () => resolve(false);
+      this.pendingRetryTimeout = setTimeout(() => {
+        this.pendingRetryTimeout = null;
+        this.cancelPendingRetry = null;
+        resolve(true);
+      }, delay);
+    });
+  }
+
+  private clearPendingRetry() {
+    if (this.pendingRetryTimeout) {
+      clearTimeout(this.pendingRetryTimeout);
+      this.pendingRetryTimeout = null;
+    }
+    this.cancelPendingRetry?.();
+    this.cancelPendingRetry = null;
+    this.pendingIssueKey = null;
+  }
+
+  /**
+   * Stop watching an entry, including a pending retry
+   */
+  stopWatching(collection: string, slug: string) {
+    const issueKey = this.getIssueKey(collection, slug);
+    if (this.currentIssueKey === issueKey || this.pendingIssueKey === issueKey) {
+      this.stopCurrentWatch();
+    }
   }
 
   /**
    * Stop watching the current issue - complete cleanup
    */
   private stopCurrentWatch() {
+    this.watchGeneration += 1;
+    this.clearPendingRetry();
+
     if (!this.currentWatch) {
       return;
-    }
-
-    // Clear any pending retry timeout
-    if (this.pendingRetryTimeout) {
-      clearTimeout(this.pendingRetryTimeout);
-      this.pendingRetryTimeout = null;
     }
 
     // Clear current watch
@@ -287,22 +332,31 @@ export class ETagPollingManager {
         return;
       }
 
+      if (this.currentWatch !== watch) {
+        return;
+      }
+
       if (response.status === 200) {
         const newState: IssueState = response.data;
-        const newETag = response.etag;
-
-        // Update ETag
-        watch.etag = newETag || null;
 
         // Detect specific changes
         const changes = this.detectChanges(watch.lastState, newState);
 
         if (changes.length > 0) {
           // Convert comments to notes
-          const newNotes = newState.comments.map(comment => ({
-            ...this.api.parseCommentToNote(comment),
-            issueUrl: newState.html_url,
-          }));
+          let newNotes = commentsToNotes(
+            newState.comments,
+            newState.html_url,
+            this.api.parseCommentToNote && (comment => this.api.parseCommentToNote!(comment)),
+          );
+
+          if (watch.prepareNotes) {
+            newNotes = await watch.prepareNotes(newNotes);
+
+            if (this.currentWatch !== watch) {
+              return;
+            }
+          }
 
           if (watch.onUpdate) {
             watch.onUpdate(newNotes, changes);
@@ -315,13 +369,12 @@ export class ETagPollingManager {
           }
         }
 
-        // Update stored state
+        // Update ETag and stored state
+        watch.etag = response.etag || null;
         watch.lastState = newState;
       }
     } catch (error) {
-      if (error && typeof error === 'object' && 'status' in error && error.status !== 304) {
-        console.error(`[DecapNotes Polling] Error checking ${this.currentIssueKey}:`, error);
-      }
+      console.error(`[DecapNotes Polling] Error checking ${this.currentIssueKey}:`, error);
     } finally {
       this.isPolling = false;
     }
@@ -458,15 +511,13 @@ export class ETagPollingManager {
   destroy() {
     console.log('[DecapNotes Polling] Destroying polling manager');
 
-    // Clear pending retry
-    if (this.pendingRetryTimeout) {
-      clearTimeout(this.pendingRetryTimeout);
-      this.pendingRetryTimeout = null;
-    }
-
     // Stop current watch
     this.stopCurrentWatch();
+
+    if (typeof document !== 'undefined') {
+      document.removeEventListener('visibilitychange', this.handleVisibilityChange);
+    }
   }
 }
 
-export default ETagPollingManager;
+export default NotesPollingManager;

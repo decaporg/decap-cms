@@ -9,6 +9,9 @@ import trim from 'lodash/trim';
 import { oneLine } from 'common-tags';
 import { dirname } from 'path';
 import {
+  formatNoteBody,
+  commentToNote,
+  commentsToNotes,
   getAllResponses,
   APIError,
   EditorialWorkflowError,
@@ -1573,50 +1576,14 @@ export default class API {
   /**
    * Constants for note formatting to aid with PR comment to note conversion
    */
-  private static readonly NOTE_STATUS_RESOLVED = 'RESOLVED';
-  private static readonly NOTE_STATUS_OPEN = 'OPEN';
   private static readonly NOTES_LABEL = 'decap-cms-notes';
   private static readonly NOTE_ISSUE_PREFIX = 'Notes: ';
-  // In Github we hide Decap Notes metadata in a HTML comment, that way we can track status of whether or not a note has been resolved (similar to GDocs)
-  private static readonly NOTE_REGEX =
-    /^<!-- DecapCMS Note - Status: (RESOLVED|OPEN) -->([\s\S]+)$/;
-
-  /**
-   * Format a note for PR comment display
-   */
-  private formatNoteForGithub(note: Note): string {
-    const status = note.resolved ? API.NOTE_STATUS_RESOLVED : API.NOTE_STATUS_OPEN;
-
-    return `<!-- DecapCMS Note - Status: ${status} -->
-${note.content}`;
-  }
 
   /**
    * Parse a GitHub comment into a Note object
    */
-  parseCommentToNote(comment: GitHubIssue): Note {
-    if (!comment || !comment.body || !comment.user) {
-      throw new Error('Invalid comment structure');
-    }
-
-    const structuredMatch = comment.body.match(API.NOTE_REGEX);
-
-    const content = structuredMatch ? structuredMatch[2].trim() : comment.body;
-    const resolved = structuredMatch ? structuredMatch[1] === API.NOTE_STATUS_RESOLVED : false;
-
-    if (!content.trim()) {
-      throw new Error('Empty note content');
-    }
-
-    return {
-      id: comment.id.toString(),
-      author: comment.user.login,
-      avatarUrl: comment.user.avatar_url,
-      timestamp: comment.created_at,
-      content,
-      resolved,
-      entrySlug: '',
-    };
+  parseCommentToNote(comment: CommentData): Note {
+    return commentToNote(comment);
   }
 
   /**
@@ -1675,15 +1642,14 @@ ${note.content}`;
     | { status: 200; data: IssueState; etag: string | null }
   > {
     try {
-      const headers: Record<string, string> = {
-        Authorization: `${this.tokenKeyword} ${this.token}`,
-      };
+      // Raw fetch because `request` parses the body and drops the ETag header.
+      // Still built through urlFor/requestHeaders so subclasses can scope it to
+      // their own proxy; hand-building the URL and auth header breaks them.
+      const headers: Record<string, string> = await this.requestHeaders(
+        etag ? { 'If-None-Match': etag } : {},
+      );
 
-      if (etag) {
-        headers['If-None-Match'] = etag;
-      }
-
-      const response = await fetch(`${this.apiRoot}${this.repoURL}/issues/${issueNumber}`, {
+      const response = await fetch(this.urlFor(`${this.repoURL}/issues/${issueNumber}`, {}), {
         headers,
       });
 
@@ -1695,11 +1661,7 @@ ${note.content}`;
         const issue = await response.json();
         const newETag = response.headers.get('ETag');
 
-        const commentsResponse = await fetch(
-          `${this.apiRoot}${this.repoURL}/issues/${issueNumber}/comments`,
-          { headers },
-        );
-        const commentsRaw: GitHubIssue[] = await commentsResponse.json();
+        const commentsRaw = await this.getIssueComments(issueNumber);
 
         const comments: CommentData[] = commentsRaw.map(comment => ({
           id: comment.id,
@@ -1749,16 +1711,23 @@ ${note.content}`;
   /**
    * Get comments from a GitHub issue
    */
+  /**
+   * Paged, because this endpoint defaults to 30 per page - a thread past that
+   * silently lost its older notes, in the pane and in polling alike.
+   *
+   * Errors propagate deliberately. Returning an empty list on a failed request
+   * is indistinguishable from a thread whose comments were all deleted: the
+   * polling manager would diff against it, emit `comment_deleted` for every
+   * note and blank the pane, then restore them on the next poll. Throwing
+   * leaves the manager's last state alone and lets it retry.
+   */
   private async getIssueComments(issueNumber: number): Promise<GitHubIssue[]> {
-    try {
-      const response: GitHubIssue[] = await this.request(
-        `${this.repoURL}/issues/${issueNumber}/comments`,
-      );
-      return Array.isArray(response) ? response : [];
-    } catch (error) {
-      console.error('Failed to get issue comments:', error);
-      return [];
-    }
+    const response = await this.requestAllPages<GitHubIssue>(
+      `${this.repoURL}/issues/${issueNumber}/comments`,
+      { params: { per_page: 100 } },
+    );
+
+    return Array.isArray(response) ? response : [];
   }
 
   /**
@@ -1771,7 +1740,7 @@ ${note.content}`;
         {
           method: 'POST',
           body: JSON.stringify({
-            body: this.formatNoteForGithub(note),
+            body: formatNoteBody(note),
           }),
         },
       );
@@ -1791,7 +1760,7 @@ ${note.content}`;
       await this.request(`${this.repoURL}/issues/comments/${commentId}`, {
         method: 'PATCH',
         body: JSON.stringify({
-          body: this.formatNoteForGithub(note),
+          body: formatNoteBody(note),
         }),
       });
     } catch (error) {
@@ -1884,11 +1853,8 @@ ${note.content}`;
       const comments = await this.getIssueComments(issue.number);
       const issueUrl = issue.html_url; // Get the issue URL once
 
-      // Add issueUrl to each note
-      return comments.map(comment => ({
-        ...this.parseCommentToNote(comment),
-        issueUrl, // Add the issue URL to each note (this info is picked up by the UI to direct users to the source of the Notes in Github)
-      }));
+      // Add issueUrl to each note (this info is picked up by the UI to direct users to the source of the Notes in Github)
+      return commentsToNotes(comments, issueUrl, comment => this.parseCommentToNote(comment));
     } catch (error) {
       console.error('Failed to get entry notes:', error);
       return [];

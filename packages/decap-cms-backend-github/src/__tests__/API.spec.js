@@ -1,4 +1,5 @@
 import { Base64 } from 'js-base64';
+import { formatNoteBody } from 'decap-cms-lib-util';
 
 import API from '../API';
 
@@ -877,5 +878,77 @@ describe('github API', () => {
     expect(api.getBranchPullRequest).toHaveBeenCalledWith('cms/collection/slug');
     expect(api.request).toHaveBeenCalledTimes(1);
     expect(api.request).toHaveBeenCalledWith(`/repos/repo/commits/${sha}/status`);
+  });
+
+  describe('parseCommentToNote', () => {
+    // The body encoding itself is lib-util's (see notesFormat.spec); what is
+    // GitHub's is how a comment maps onto a note when the marker is silent.
+    function api() {
+      return new API({ repo: 'owner/repo' });
+    }
+
+    function asComment(body) {
+      return {
+        id: 7,
+        body,
+        user: { login: 'decap-turbo[bot]', avatar_url: 'https://avatar' },
+        created_at: '2026-01-01T00:00:00Z',
+      };
+    }
+
+    it('falls back to the comment account when the note records no author', () => {
+      const note = api().parseCommentToNote(asComment('just a comment'));
+
+      expect(note.author).toBe('decap-turbo[bot]');
+      expect(note.authorId).toBeUndefined();
+      expect(note.avatarUrl).toBe('https://avatar');
+      expect(note.content).toBe('just a comment');
+    });
+
+    it('prefers the recorded author, and drops the poster avatar with it', () => {
+      // A recorded author means the account that posted is not the person, so
+      // its avatar would mislabel the note. The pane shows initials instead.
+      const body = formatNoteBody({
+        content: 'hello',
+        resolved: false,
+        author: 'Decap Tester',
+        authorId: 'u-1',
+      });
+
+      const note = api().parseCommentToNote(asComment(body));
+
+      expect(note.author).toBe('Decap Tester');
+      expect(note.authorId).toBe('u-1');
+      expect(note.avatarUrl).toBeUndefined();
+    });
+
+    it('rejects a note whose body is only the marker', () => {
+      expect(() =>
+        api().parseCommentToNote(asComment('<!-- DecapCMS Note {"resolved":false} -->\n   ')),
+      ).toThrow('Empty note content');
+    });
+
+    it('rejects a malformed comment', () => {
+      expect(() => api().parseCommentToNote({ id: 1 })).toThrow('Invalid comment structure');
+    });
+  });
+
+  describe('getEntryNotes', () => {
+    it('skips a marker-only comment instead of blanking the whole thread', async () => {
+      const api = new API({ repo: 'owner/repo' });
+      const user = { login: 'ada', avatar_url: 'https://avatar' };
+
+      api.findEntryIssue = jest.fn().mockResolvedValue({ number: 3, html_url: 'https://issue' });
+      api.requestAllPages = jest.fn().mockResolvedValue([
+        { id: 1, body: 'first', user, created_at: '2026-01-01T00:00:00Z' },
+        { id: 2, body: '<!-- DecapCMS Note {"resolved":false} -->\n', user, created_at: '' },
+        { id: 3, body: 'third', user, created_at: '2026-01-03T00:00:00Z' },
+      ]);
+
+      const notes = await api.getEntryNotes('posts', 'my-post');
+
+      expect(notes.map(note => note.id)).toEqual(['1', '3']);
+      expect(notes[0].issueUrl).toBe('https://issue');
+    });
   });
 });

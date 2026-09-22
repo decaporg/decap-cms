@@ -1273,6 +1273,10 @@ export function startNotesPolling(collection: Collection, slug: string) {
 
       const callbacks = {
         onUpdate: (notes: Note[], changes: IssueChange[]) => {
+          if (getState().entryDraft?.getIn(['entry', 'slug']) !== slug) {
+            return;
+          }
+
           dispatch(notesUpdatedFromPolling(collection, slug, notes, changes));
           dispatch(loadNotesForEntry(notes));
         },
@@ -1334,10 +1338,21 @@ export function refreshNotesNow(collection: Collection, slug: string) {
 
 export function persistNote(collection: Collection, slug: string, note: Omit<Note, 'id'>) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
-    const backend = currentBackend(getState().config);
+    const state = getState();
+    const backend = currentBackend(state.config);
+    // Named off the open draft rather than fetched: this runs from the editor,
+    // so the entry is already in hand, and `selectEntryCollectionTitle` is the
+    // same thing the collection list shows — it honours a `summary` template,
+    // a files collection's label, and an inferred title field, none of which a
+    // backend reading the raw file can work out for itself.
+    const draftEntry = state.entryDraft?.get('entry');
+    const entryTitle =
+      draftEntry && draftEntry.get('slug') === slug
+        ? selectEntryCollectionTitle(collection, draftEntry)
+        : undefined;
     dispatch(notePersisting(collection, slug, note as Note));
     try {
-      const savedNote = await backend.addNote(collection.get('name'), slug, note);
+      const savedNote = await backend.addNote(collection.get('name'), slug, note, entryTitle);
       dispatch(notePersisted(collection, slug, savedNote));
       dispatch(addNote(savedNote));
       dispatch(
