@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.5.0-beta.2](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-turbo-github@3.5.0-beta.1...decap-cms-backend-turbo-github@3.5.0-beta.2) (2026-09-22)
+
+### Features
+
+- attribute Turbo notes to signed-in editor and fix github issue lookup ([2414aca](https://github.com/decaporg/decap-cms/commit/2414aca6e024ad8e3d417ac7b547491592cca66e))
+
 # [3.5.0-beta.1](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-turbo-github@3.5.0-beta.0...decap-cms-backend-turbo-github@3.5.0-beta.1) (2026-09-14)
 
 ### Bug Fixes
