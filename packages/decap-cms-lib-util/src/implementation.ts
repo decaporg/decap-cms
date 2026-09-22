@@ -68,7 +68,9 @@ export interface Note {
   avatarUrl?: string;
   content: string;
   timestamp: string;
-  author: string;
+  author: string; // not unique - do not use for comparison
+  authorId?: string; // unique note author id; absent when the poster IS the author
+  isOwn?: boolean; // whether signed-in editor wrote this note
   entrySlug: string;
   resolved: boolean;
   issueUrl?: string;
@@ -215,7 +217,12 @@ export interface Implementation {
   deleteFiles: (paths: string[], commitMessage: string) => Promise<void>;
 
   getNotes?: (collection: string, slug: string) => Promise<Note[]>;
-  addNote?: (collection: string, slug: string, note: Omit<Note, 'id'>) => Promise<Note>;
+  addNote?: (
+    collection: string,
+    slug: string,
+    note: Omit<Note, 'id'>,
+    entryTitle?: string,
+  ) => Promise<Note>;
   updateNote?: (
     collection: string,
     slug: string,

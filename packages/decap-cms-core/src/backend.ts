@@ -632,9 +632,14 @@ export class Backend {
     return [];
   }
 
-  async addNote(collection: string, slug: string, note: Omit<Note, 'id'>): Promise<Note> {
+  async addNote(
+    collection: string,
+    slug: string,
+    note: Omit<Note, 'id'>,
+    entryTitle?: string,
+  ): Promise<Note> {
     if (typeof this.implementation.addNote === 'function') {
-      return this.implementation.addNote(collection, slug, note);
+      return this.implementation.addNote(collection, slug, note, entryTitle);
     }
 
     throw new Error(`Backend '${this.backendName}' does not support adding notes`);
