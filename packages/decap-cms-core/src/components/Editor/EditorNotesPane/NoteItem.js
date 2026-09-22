@@ -153,6 +153,14 @@ class NoteItem extends Component {
 
   isCurrentUserAuthor = () => {
     const { note, user } = this.props;
+
+    // The backend decides this when it can.
+    // Needed when the posting account is an App or bot, not the editor.
+    const isOwn = note.get('isOwn');
+    if (isOwn !== undefined) {
+      return isOwn;
+    }
+
     const currentUserName = user?.login || user?.name || 'Anonymous';
     return note.get('author') === currentUserName;
   };

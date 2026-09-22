@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.19.1](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.19.0...decap-cms-core@3.19.1) (2026-09-22)
+
+**Note:** Version bump only for package decap-cms-core
+
 # [3.19.0](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.18.1...decap-cms-core@3.19.0) (2026-09-10)
 
 ### Features
