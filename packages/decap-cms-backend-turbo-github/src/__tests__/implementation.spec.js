@@ -496,6 +496,40 @@ describe('turbo backend authenticate', () => {
     expect(requested.some(url => /\/repos\/owner\/repo(\?|$)/.test(url))).toBe(false);
     expect(requested.some(url => url.includes('/functions/v1/permissions'))).toBe(true);
   });
+
+  it('builds the notes polling manager, which the base authenticate would have', async () => {
+    // This override replaces GitHubBackend.authenticate wholesale, and that is
+    // the only place the manager is built - without this, notes another editor
+    // writes never reach the pane.
+    const backend = new DecapTurboGitHubBackend(config);
+
+    global.fetch = jest
+      .fn()
+      .mockResolvedValue({ ok: true, json: () => Promise.resolve({ collections: {} }) });
+
+    await backend.authenticate({ token: 'gh-token', access_token: 'access-123' });
+
+    expect(backend.pollingManager).toBeDefined();
+    await backend.logout();
+    expect(backend.pollingManager).toBeUndefined();
+  });
+
+  it("replaces the previous session's manager rather than leaving it polling", async () => {
+    const backend = new DecapTurboGitHubBackend(config);
+
+    global.fetch = jest
+      .fn()
+      .mockResolvedValue({ ok: true, json: () => Promise.resolve({ collections: {} }) });
+
+    await backend.authenticate({ token: 'gh-token', access_token: 'access-123' });
+    const first = backend.pollingManager;
+    const destroy = jest.spyOn(first, 'destroy');
+
+    await backend.authenticate({ token: 'gh-token-2', access_token: 'access-456' });
+
+    expect(destroy).toHaveBeenCalledTimes(1);
+    expect(backend.pollingManager).not.toBe(first);
+  });
 });
 
 describe('turbo backend preloadConfig', () => {
@@ -1193,5 +1227,85 @@ describe('turbo backend locale sibling prefetch', () => {
     await expect(
       backend.allEntriesByFolder('content/posts', 'md', 1, listingRegex, undefined, siblingRegex),
     ).resolves.toEqual([]);
+  });
+});
+
+describe('turbo backend notes', () => {
+  const config = {
+    backend: {
+      repo: 'owner/repo',
+      supabase_app_id: 'supabase-project-id',
+      supabase_anon_key: 'supabase-anon-key',
+    },
+    media_folder: 'static/media',
+  };
+
+  const USER_ID = '3f2b1c4d-0000-4a5b-8c9d-1e2f3a4b5c6d';
+
+  function segment(value) {
+    return Buffer.from(JSON.stringify(value), 'utf8').toString('base64url');
+  }
+
+  function tokenFor(claims) {
+    return `${segment({ alg: 'HS256' })}.${segment(claims)}.signature`;
+  }
+
+  function signedIn(overrides = {}) {
+    const backend = new DecapTurboGitHubBackend(config);
+    backend.supabaseAccessToken = tokenFor({ sub: USER_ID });
+    backend.supabaseIdentity = {
+      user_email: 'decap@p-m.si',
+      user_metadata: { full_name: 'Decap Tester' },
+      ...overrides,
+    };
+    return backend;
+  }
+
+  it('attributes a note to the editor, not to the repo owner', async () => {
+    // Every note is posted by the App installation, so the comment's account
+    // is the same bot for everyone and `currentUser().login` - what the GitHub
+    // backend compares on - is the repo owner for every editor alike.
+    const backend = signedIn();
+
+    expect(await backend.noteAuthorIdentity()).toEqual({
+      author: 'Decap Tester',
+      authorId: USER_ID,
+    });
+    expect((await backend.currentUser({ token: 't' })).login).toBe('owner');
+  });
+
+  it('falls back to the email when the session carries no name', async () => {
+    const backend = signedIn({ user_metadata: {} });
+    // resolveCommitAuthorFromSupabaseUser already names an unnamed user after
+    // the local part, which is better than an empty byline.
+    expect((await backend.noteAuthorIdentity()).author).toBe('decap');
+  });
+
+  it('records no id when there is no session to read one from', async () => {
+    const backend = signedIn();
+    backend.supabaseAccessToken = null;
+
+    // Both or neither: lib-util drops a name with no id to compare against,
+    // and ownership falls back to comparing names.
+    expect((await backend.noteAuthorIdentity()).authorId).toBeUndefined();
+  });
+
+  it('leaves a new note without an avatar, as a re-read of it would be', async () => {
+    // The thread only carries the App's avatar, so a note read back from the
+    // host shows initials. Showing the editor's own avatar until the next read
+    // would make the same note look like two different ones.
+    const backend = signedIn();
+    backend.api = {
+      addNoteToEntry: jest
+        .fn()
+        .mockResolvedValue({ commentId: '99', issueUrl: 'https://github.com/o/r/issues/1' }),
+    };
+
+    const note = await backend.addNote('posts', 'my-post', { content: 'hi' }, 'My post');
+
+    expect(note).toEqual(
+      expect.objectContaining({ id: '99', author: 'Decap Tester', authorId: USER_ID }),
+    );
+    expect(note.avatarUrl).toBeUndefined();
   });
 });

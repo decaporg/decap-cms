@@ -648,3 +648,135 @@ describe('turbo gitlab backend user identity', () => {
     expect(user.avatar_url).toBeNull();
   });
 });
+
+describe('turbo gitlab backend notes', () => {
+  const config: any = {
+    backend: {
+      repo: 'group/project',
+      supabase_app_id: 'supabase-project-id',
+      supabase_anon_key: 'supabase-anon-key',
+    },
+    media_folder: 'static/media',
+  };
+
+  const USER_ID = '3f2b1c4d-0000-4a5b-8c9d-1e2f3a4b5c6d';
+
+  function segment(value: unknown) {
+    return Buffer.from(JSON.stringify(value), 'utf8').toString('base64url');
+  }
+
+  function tokenFor(claims: Record<string, unknown>) {
+    return `${segment({ alg: 'HS256' })}.${segment(claims)}.signature`;
+  }
+
+  function signedIn(overrides: Record<string, unknown> = {}) {
+    const backend = new DecapTurboGitLabBackend(config);
+    backend.supabaseAccessToken = tokenFor({ sub: USER_ID });
+    backend.supabaseIdentity = {
+      user_email: 'decap@p-m.si',
+      user_metadata: { full_name: 'Decap Tester' },
+      ...overrides,
+    } as any;
+    return backend;
+  }
+
+  it('attributes a note to the editor without asking the proxy who they are', async () => {
+    // GitLabBackend reads the username off `api.user()`, which here is the
+    // proxy's synthesized answer built from the email's local part - a round
+    // trip, a name nobody recognises, and a value two editors can share.
+    const backend = signedIn();
+    backend.api = { user: jest.fn() } as any;
+
+    expect(await backend.noteAuthorIdentity()).toEqual({
+      author: 'Decap Tester',
+      authorId: USER_ID,
+    });
+    expect((backend.api as any).user).not.toHaveBeenCalled();
+  });
+
+  it('falls back to the email when the session carries no name', async () => {
+    const backend = signedIn({ user_metadata: {} });
+    expect((await backend.noteAuthorIdentity()).author).toBe('decap');
+  });
+
+  it('records no id when there is no session to read one from', async () => {
+    const backend = signedIn();
+    backend.supabaseAccessToken = null;
+
+    // Both or neither: lib-util drops a name with no id to compare against,
+    // and ownership falls back to comparing names.
+    expect((await backend.noteAuthorIdentity()).authorId).toBeUndefined();
+  });
+});
+
+describe('turbo gitlab backend authenticate', () => {
+  const config: any = {
+    backend: {
+      repo: 'group/project',
+      branch: 'main',
+      supabase_app_id: 'supabase-project-id',
+      supabase_anon_key: 'supabase-anon-key',
+      turbo_site_id: 'site-123',
+    },
+    media_folder: 'static/media',
+  };
+
+  function ready(backend: any) {
+    backend.fetchTurboPermissions = jest.fn().mockResolvedValue(undefined);
+    global.fetch = jest.fn().mockImplementation((url: string) => {
+      const target = String(url);
+      if (target.includes('/user')) {
+        return Promise.resolve({
+          ok: true,
+          status: 200,
+          headers: new Headers({ 'Content-Type': 'application/json' }),
+          json: () => Promise.resolve({ id: 1, username: 'decap', name: 'Decap Tester' }),
+          text: () => Promise.resolve('{}'),
+        });
+      }
+      // hasWriteAccess reads the project and looks at its permissions.
+      return Promise.resolve({
+        ok: true,
+        status: 200,
+        headers: new Headers({ 'Content-Type': 'application/json' }),
+        json: () =>
+          Promise.resolve({ permissions: { project_access: { access_level: 40 } }, id: 7 }),
+        text: () => Promise.resolve('{}'),
+      });
+    }) as any;
+    return backend;
+  }
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('builds the notes api and polling manager, which the base authenticate would have', async () => {
+    // This override replaces GitLabBackend.authenticate wholesale, and that is
+    // the only place the two are built - without this the notes pane has no
+    // API to call and nothing watching the thread.
+    const backend: any = ready(new DecapTurboGitLabBackend(config));
+
+    await backend.authenticate({ token: 'gl-token', access_token: 'access-123' });
+
+    expect(backend.notesApi).toBeDefined();
+    expect(backend.pollingManager).toBeDefined();
+
+    await backend.logout();
+    expect(backend.pollingManager).toBeUndefined();
+  });
+
+  it("replaces the previous session's manager rather than leaving it polling", async () => {
+    const backend: any = ready(new DecapTurboGitLabBackend(config));
+
+    await backend.authenticate({ token: 'gl-token', access_token: 'access-123' });
+    const first = backend.pollingManager;
+    const destroy = jest.spyOn(first, 'destroy');
+
+    await backend.authenticate({ token: 'gl-token-2', access_token: 'access-456' });
+
+    expect(destroy).toHaveBeenCalledTimes(1);
+    expect(backend.pollingManager).not.toBe(first);
+    expect(backend.notesApi).toBeDefined();
+  });
+});

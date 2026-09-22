@@ -3,7 +3,9 @@ import {
   type Config,
   type User,
   type Credentials,
+  type Note,
   APIError,
+  NotesPollingManager,
   branchFromContentKey,
   collectionKeyForFiles,
   generateContentKey,
@@ -15,6 +17,7 @@ import TurboAPI from './API';
 import { SupabaseClient } from './supabase';
 import SupabaseAuthenticationPage from './AuthenticationPage';
 import { resolveCommitAuthorFromSupabaseUser } from './commitAuthor';
+import { supabaseUserIdFromToken } from './noteIdentity';
 import { coalesceKey, createRequestCoalescer, type RequestCoalescer } from './requestCoalescer';
 import { recordCmsEvent } from './telemetry';
 import {
@@ -532,6 +535,15 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
     });
     this.setScopedApiRequestBuilder();
 
+    // GitHubBackend builds this in its own `authenticate`, which this override
+    // replaces wholesale - without it the notes pane has nothing watching the
+    // thread and another editor's note never appears. Rebuilt rather than
+    // reused, so a second login on the same instance cannot leave the previous
+    // session's manager polling with the previous session's api.
+    this.pollingManager?.destroy();
+    this.unwatchFunctions.clear();
+    this.pollingManager = new NotesPollingManager(this.api, 15000);
+
     // GitHubBackend.authenticate calls `api.hasWriteAccess()` here, which is a
     // `GET /repos/{owner}/{repo}` read of `permissions.push` for the signed-in
     // GitHub user. Turbo has no signed-in GitHub user: it commits with the
@@ -1027,6 +1039,45 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
       })() as any;
     }
     return this._currentUserPromise!;
+  }
+
+  /**
+   * Who the signed-in editor is, as a note records them.
+   *
+   * Overrides GitHubBackend's, which reads `currentUser().login`. On this
+   * backend that is the repo owner for every editor alike - a synthesized
+   * login, because Turbo has no signed-in GitHub user - so ownership would
+   * match everyone and every note would offer Edit, Resolve and Delete to
+   * whoever opened it.
+   *
+   * Unlike the GitHub and GitLab backends, this one DOES record an id. There
+   * the editor posts the comment themselves, so the host reports their current
+   * login on every read and ownership follows a rename on its own; here every
+   * note is posted by the organization's App installation, so the comment says
+   * nothing about who wrote it and the note body has to.
+   */
+  async noteAuthorIdentity(): Promise<{ author: string; authorId?: string }> {
+    const identity = this.sessionIdentity();
+    return {
+      author: identity.name || identity.email || '',
+      authorId: supabaseUserIdFromToken(this.supabaseAccessToken),
+    };
+  }
+
+  /**
+   * Notes written by others show initials rather than an avatar, because the
+   * only avatar the thread carries is the App's. Dropping it here keeps a note
+   * looking the same before and after a reload - otherwise the one just
+   * written showed the editor's own avatar until the thread was re-read.
+   */
+  async addNote(
+    collection: string,
+    slug: string,
+    noteData: Omit<Note, 'id'>,
+    entryTitle?: string,
+  ): Promise<Note> {
+    const note = await super.addNote(collection, slug, noteData, entryTitle);
+    return { ...note, avatarUrl: undefined };
   }
 
   /**

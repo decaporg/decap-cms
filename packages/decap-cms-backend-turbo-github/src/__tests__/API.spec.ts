@@ -303,3 +303,115 @@ describe('TurboAPI.deleteFiles', () => {
     expect(restDelete).toHaveBeenCalledWith(['a.md'], 'Delete a');
   });
 });
+
+describe('TurboAPI.findEntryIssue', () => {
+  function notesBody(entry: string) {
+    return `This issue tracks notes for entry: \`${entry}\`\n\n---\n*Created automatically.*`;
+  }
+
+  function apiListing(...pages: unknown[][]) {
+    const api = makeApi(jest.fn());
+    const request = jest.fn();
+    pages.forEach(page => request.mockResolvedValueOnce(page));
+    request.mockResolvedValue([]);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (api as any).request = request;
+    return { api, request };
+  }
+
+  function page(size: number, entry = 'posts/filler') {
+    return Array.from({ length: size }, (_unused, index) => ({
+      number: 900 + index,
+      body: notesBody(`${entry}-${index}`),
+    }));
+  }
+
+  it("lists the repo's notes issues rather than searching", async () => {
+    const { api, request } = apiListing([{ number: 12, body: notesBody('posts/my-post') }]);
+
+    expect(await api.findEntryIssue('posts', 'my-post')).toEqual({
+      number: 12,
+      body: notesBody('posts/my-post'),
+    });
+
+    expect(request).toHaveBeenCalledTimes(1);
+    const [path, options] = request.mock.calls[0];
+    // Repo-scoped, so the proxy's repo check applies to it. `/search/issues`
+    // is not, which is the whole reason this override exists.
+    expect(path).toBe('/repos/acme/site/issues');
+    expect(path).not.toContain('search');
+    expect(options.params).toEqual({
+      // Narrowed to the collection by the second label createEntryIssue writes,
+      // which GitHub ANDs - otherwise every notes thread on the site comes back
+      // on each of the several lookups one entry open makes.
+      labels: 'decap-cms-notes,collection:posts',
+      // A published entry's thread is closed and its notes still count.
+      state: 'all',
+      per_page: 100,
+      page: 1,
+    });
+  });
+
+  it("asks only for the entry's own collection", async () => {
+    const { api, request } = apiListing([{ number: 40, body: notesBody('authors/someone') }]);
+
+    await api.findEntryIssue('authors', 'someone');
+
+    expect(request.mock.calls[0][1].params.labels).toBe('decap-cms-notes,collection:authors');
+  });
+
+  it('does not accept a longer slug that contains this one', async () => {
+    const { api } = apiListing([
+      { number: 20, body: notesBody('posts/my-post-2') },
+      { number: 21, body: notesBody('posts/my-post') },
+    ]);
+
+    expect(await api.findEntryIssue('posts', 'my-post')).toEqual(
+      expect.objectContaining({ number: 21 }),
+    );
+  });
+
+  it('answers null when no thread matches', async () => {
+    const { api } = apiListing([{ number: 30, body: notesBody('posts/other') }]);
+    expect(await api.findEntryIssue('posts', 'my-post')).toBeNull();
+  });
+
+  it('pages past a full page by page number, since the proxy drops Link', async () => {
+    const { api, request } = apiListing(page(100), [
+      { number: 77, body: notesBody('posts/my-post') },
+    ]);
+
+    expect(await api.findEntryIssue('posts', 'my-post')).toEqual(
+      expect.objectContaining({ number: 77 }),
+    );
+
+    expect(request).toHaveBeenCalledTimes(2);
+    expect(request.mock.calls[1][1].params.page).toBe(2);
+  });
+
+  it('stops on a short page rather than asking for another', async () => {
+    const { api, request } = apiListing(page(99));
+    expect(await api.findEntryIssue('posts', 'my-post')).toBeNull();
+    expect(request).toHaveBeenCalledTimes(1);
+  });
+
+  it('stops paging rather than walking a host that keeps answering', async () => {
+    const api = makeApi(jest.fn());
+    const request = jest.fn().mockResolvedValue(page(100));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (api as any).request = request;
+
+    expect(await api.findEntryIssue('posts', 'my-post')).toBeNull();
+    expect(request).toHaveBeenCalledTimes(20);
+  });
+
+  it('answers null rather than throwing when the listing fails', async () => {
+    const api = makeApi(jest.fn());
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (api as any).request = jest.fn().mockRejectedValue(new Error('boom'));
+    jest.spyOn(console, 'warn').mockImplementation(() => undefined);
+
+    expect(await api.findEntryIssue('posts', 'my-post')).toBeNull();
+    jest.restoreAllMocks();
+  });
+});

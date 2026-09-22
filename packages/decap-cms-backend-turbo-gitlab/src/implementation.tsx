@@ -1,7 +1,12 @@
-import { GitLabBackend } from 'decap-cms-backend-gitlab';
-import API from 'decap-cms-backend-gitlab/src/API';
+// Imported from the package root, not `decap-cms-backend-gitlab/src/API`:
+// jest's moduleNameMapper rewrites any path containing the package name to its
+// index, so the deep path resolved to the index's (nonexistent) default export
+// and `new API(...)` threw under test - which is why `authenticate` had no
+// coverage here at all. See the same note in decap-cms-backend-turbo-github.
+import { GitLabBackend, GitLabNotesAPI, API } from 'decap-cms-backend-gitlab';
 import {
   unsentRequest,
+  NotesPollingManager,
   type Config,
   type User,
   type Credentials,
@@ -14,6 +19,7 @@ import { stripIndent } from 'common-tags';
 import { SupabaseClient } from './supabase';
 import SupabaseAuthenticationPage from './AuthenticationPage';
 import { resolveCommitAuthorFromSupabaseUser } from './commitAuthor';
+import { supabaseUserIdFromToken } from './noteIdentity';
 import { coalesceKey, createRequestCoalescer, type RequestCoalescer } from './requestCoalescer';
 import { recordCmsEvent } from './telemetry';
 import {
@@ -430,6 +436,15 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
       requestFunction: this.apiRequestFunction,
     });
 
+    // GitLabBackend builds these in its own `authenticate`, which this override
+    // replaces wholesale - without them the notes pane has no API to call and
+    // nothing watching the thread. Rebuilt rather than reused, so a second
+    // login on the same instance cannot leave the previous session's manager
+    // polling through the previous session's api.
+    this.destroyNotesPolling();
+    this.notesApi = new GitLabNotesAPI(this.api);
+    this.pollingManager = new NotesPollingManager(this.notesApi.asPollingAPI(), 15000);
+
     // Permissions are only knowable post-auth (the `config` bootstrap
     // endpoint's static preloadConfig hook runs before a user JWT exists), so
     // they are fetched here rather than resolved earlier — but nothing below
@@ -818,6 +833,31 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
       name: author?.name,
       email: author?.email,
       avatarUrl: metadata?.avatar_url || metadata?.picture || null,
+    };
+  }
+
+  /**
+   * Who the signed-in editor is, as a note records them.
+   *
+   * Overrides GitLabBackend's, which reads the username off `api.user()`. On
+   * this backend that route is answered by the proxy rather than GitLab, from
+   * the local part of the editor's email - so two editors at different domains
+   * who share one collide, and the pane would name people "decap" rather than
+   * by their display name.
+   *
+   * Unlike the GitHub and GitLab backends, this one DOES record an id. There
+   * the editor posts the comment themselves, so the host reports their current
+   * username on every read and ownership follows a rename on its own; here
+   * every note is posted with the organization's group token, so the comment
+   * says nothing about who wrote it and the note body has to.
+   *
+   * Local, so it also spares the `/gl/user` round trip the inherited one made.
+   */
+  async noteAuthorIdentity(): Promise<{ author: string; authorId?: string }> {
+    const identity = this.sessionIdentity();
+    return {
+      author: identity.name || identity.email || '',
+      authorId: supabaseUserIdFromToken(this.supabaseAccessToken),
     };
   }
 

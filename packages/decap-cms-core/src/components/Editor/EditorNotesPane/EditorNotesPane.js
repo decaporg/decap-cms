@@ -102,6 +102,9 @@ const SOURCES = {
   gitlab: { text: 'View in GitLab', iconType: 'gitlab' },
 };
 
+SOURCES['turbo-github'] = SOURCES.github;
+SOURCES['turbo-gitlab'] = SOURCES.gitlab;
+
 export function getSourceInfo(url, backendName) {
   if (SOURCES[backendName]) {
     return SOURCES[backendName];

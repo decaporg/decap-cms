@@ -1574,10 +1574,10 @@ export default class API {
   }
 
   /**
-   * Constants for note formatting to aid with PR comment to note conversion
+   * How a notes issue is recognised on the host.
    */
-  private static readonly NOTES_LABEL = 'decap-cms-notes';
-  private static readonly NOTE_ISSUE_PREFIX = 'Notes: ';
+  static readonly NOTES_LABEL = 'decap-cms-notes';
+  static readonly NOTE_ISSUE_PREFIX = 'Notes: ';
 
   /**
    * Parse a GitHub comment into a Note object
