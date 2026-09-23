@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import dayjs from 'dayjs';
 
@@ -31,6 +32,24 @@ function setup(propsOverrides = {}) {
     nowButton,
     clearButton,
   };
+}
+
+function ControlledDateTime({ field, initialValue }) {
+  const [value, setValue] = useState(initialValue);
+
+  return (
+    <DateTimeControl
+      forID="controlled-datetime"
+      onChange={setValue}
+      classNameWrapper="classNameWrapper"
+      setActiveStyle={jest.fn()}
+      setInactiveStyle={jest.fn()}
+      value={value}
+      t={key => key}
+      isDisabled={false}
+      field={field}
+    />
+  );
 }
 
 describe('DateTimeControl', () => {
@@ -85,5 +104,24 @@ describe('DateTimeControl', () => {
 
     const expectedValue = dayjs(testDate).format('YYYY-MM-DDTHH:mm:ss.SSS[Z]');
     expect(props.onChange).toHaveBeenCalledWith(expectedValue);
+  });
+
+  test('does not rewrite the year while it is being typed in a controlled date input', () => {
+    const field = new Map([
+      ['name', 'date'],
+      ['format', 'YYYY-MM-DD'],
+      ['time_format', false],
+    ]);
+    const { getByTestId } = render(<ControlledDateTime field={field} initialValue="2025-08-03" />);
+    const input = getByTestId('controlled-datetime');
+
+    fireEvent.focus(input);
+    for (const value of ['0002-08-03', '0020-08-03', '0202-08-03', '2026-08-03']) {
+      fireEvent.change(input, { target: { value } });
+      expect(input).toHaveValue(value);
+    }
+    fireEvent.blur(input);
+
+    expect(input).toHaveValue('2026-08-03');
   });
 });
