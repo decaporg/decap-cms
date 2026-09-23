@@ -60,7 +60,7 @@
           'settings.json': {
             content: '{"site_title": "CMS Demo"}',
           },
-          'authors.yml': {
+          'blog_authors.yml': {
             content:
               'authors:\n  - name: Mathias\n    description: Co-founder @ Netlify\n  - name: Chris\n    description: Co-founder @ Netlify\n',
           },
@@ -184,420 +184,453 @@
         },
       };
 
-      window.repoFiles._artists = {
-        'black-sabbath.md': {
+      window.repoFiles._authors = {
+        'chinua-achebe.md': {
           content:
-            '---\nname: "Black Sabbath"\ncountry: UK\nformed_year: 1968\n---\n\n# Black Sabbath\n\nBlack Sabbath is a metal band from UK, formed in 1968.\n',
+            '---\nname: "Chinua Achebe"\ncountry: Nigeria\nborn: 1930\n---\n# Chinua Achebe\n\nChinua Achebe is a writer from Nigeria, born in 1930.\n',
         },
-        'deep-purple.md': {
+        'wole-soyinka.md': {
           content:
-            '---\nname: "Deep Purple"\ncountry: UK\nformed_year: 1968\n---\n\n# Deep Purple\n\nDeep Purple is a metal band from UK, formed in 1968.\n',
+            '---\nname: "Wole Soyinka"\ncountry: Nigeria\nborn: 1934\n---\n# Wole Soyinka\n\nWole Soyinka is a writer from Nigeria, born in 1934.\n',
         },
-        'budgie.md': {
+        'naguib-mahfouz.md': {
           content:
-            '---\nname: "Budgie"\ncountry: UK\nformed_year: 1967\n---\n\n# Budgie\n\nBudgie is a metal band from UK, formed in 1967.\n',
+            '---\nname: "Naguib Mahfouz"\ncountry: Egypt\nborn: 1911\n---\n# Naguib Mahfouz\n\nNaguib Mahfouz is a writer from Egypt, born in 1911.\n',
         },
-        'rush.md': {
+        'nadine-gordimer.md': {
           content:
-            '---\nname: "Rush"\ncountry: Canada\nformed_year: 1968\n---\n\n# Rush\n\nRush is a metal band from Canada, formed in 1968.\n',
+            '---\nname: "Nadine Gordimer"\ncountry: South Africa\nborn: 1923\n---\n# Nadine Gordimer\n\nNadine Gordimer is a writer from South Africa, born in 1923.\n',
         },
-        'rainbow.md': {
+        'j-m-coetzee.md': {
           content:
-            '---\nname: "Rainbow"\ncountry: UK\nformed_year: 1975\n---\n\n# Rainbow\n\nRainbow is a metal band from UK, formed in 1975.\n',
+            '---\nname: "J.M. Coetzee"\ncountry: South Africa\nborn: 1940\n---\n# J.M. Coetzee\n\nJ.M. Coetzee is a writer from South Africa, born in 1940.\n',
         },
-        'judas-priest.md': {
+        'ngugi-wa-thiong-o.md': {
           content:
-            '---\nname: "Judas Priest"\ncountry: UK\nformed_year: 1969\n---\n\n# Judas Priest\n\nJudas Priest is a metal band from UK, formed in 1969.\n',
+            "---\nname: \"Ngũgĩ wa Thiong'o\"\ncountry: Kenya\nborn: 1938\n---\n# Ngũgĩ wa Thiong'o\n\nNgũgĩ wa Thiong'o is a writer from Kenya, born in 1938.\n",
         },
-        'scorpions.md': {
+        'yaa-gyasi.md': {
           content:
-            '---\nname: "Scorpions"\ncountry: Germany\nformed_year: 1965\n---\n\n# Scorpions\n\nScorpions is a metal band from Germany, formed in 1965.\n',
+            '---\nname: "Yaa Gyasi"\ncountry: Ghana\nborn: 1989\n---\n# Yaa Gyasi\n\nYaa Gyasi is a writer from Ghana, born in 1989.\n',
         },
-        'ac-dc.md': {
+        'nelson-mandela.md': {
           content:
-            '---\nname: "AC/DC"\ncountry: Australia\nformed_year: 1973\n---\n\n# AC/DC\n\nAC/DC is a metal band from Australia, formed in 1973.\n',
+            '---\nname: "Nelson Mandela"\ncountry: South Africa\nborn: 1918\n---\n# Nelson Mandela\n\nNelson Mandela is a writer from South Africa, born in 1918.\n',
         },
-        'motorhead.md': {
+        'orhan-pamuk.md': {
           content:
-            '---\nname: "Motörhead"\ncountry: UK\nformed_year: 1975\n---\n\n# Motörhead\n\nMotörhead is a metal band from UK, formed in 1975.\n',
+            '---\nname: "Orhan Pamuk"\ncountry: Turkey\nborn: 1952\n---\n# Orhan Pamuk\n\nOrhan Pamuk is a writer from Turkey, born in 1952.\n',
         },
-        'iron-maiden.md': {
+        'khaled-hosseini.md': {
           content:
-            '---\nname: "Iron Maiden"\ncountry: UK\nformed_year: 1975\n---\n\n# Iron Maiden\n\nIron Maiden is a metal band from UK, formed in 1975.\n',
+            '---\nname: "Khaled Hosseini"\ncountry: Afghanistan\nborn: 1965\n---\n# Khaled Hosseini\n\nKhaled Hosseini is a writer from Afghanistan, born in 1965.\n',
         },
-        'venom.md': {
+        'mahmoud-darwish.md': {
           content:
-            '---\nname: "Venom"\ncountry: UK\nformed_year: 1979\n---\n\n# Venom\n\nVenom is a metal band from UK, formed in 1979.\n',
+            '---\nname: "Mahmoud Darwish"\ncountry: Palestine\nborn: 1941\n---\n# Mahmoud Darwish\n\nMahmoud Darwish is a writer from Palestine, born in 1941.\n',
         },
-        'mercyful-fate.md': {
+        'haruki-murakami.md': {
           content:
-            '---\nname: "Mercyful Fate"\ncountry: Denmark\nformed_year: 1981\n---\n\n# Mercyful Fate\n\nMercyful Fate is a metal band from Denmark, formed in 1981.\n',
+            '---\nname: "Haruki Murakami"\ncountry: Japan\nborn: 1949\n---\n# Haruki Murakami\n\nHaruki Murakami is a writer from Japan, born in 1949.\n',
         },
-        'celtic-frost.md': {
+        'yukio-mishima.md': {
           content:
-            '---\nname: "Celtic Frost"\ncountry: Switzerland\nformed_year: 1984\n---\n\n# Celtic Frost\n\nCeltic Frost is a metal band from Switzerland, formed in 1984.\n',
+            '---\nname: "Yukio Mishima"\ncountry: Japan\nborn: 1925\n---\n# Yukio Mishima\n\nYukio Mishima is a writer from Japan, born in 1925.\n',
         },
-        'loudness.md': {
+        'mo-yan.md': {
           content:
-            '---\nname: "Loudness"\ncountry: Japan\nformed_year: 1981\n---\n\n# Loudness\n\nLoudness is a metal band from Japan, formed in 1981.\n',
+            '---\nname: "Mo Yan"\ncountry: China\nborn: 1955\n---\n# Mo Yan\n\nMo Yan is a writer from China, born in 1955.\n',
         },
-        'metallica.md': {
+        'yu-hua.md': {
           content:
-            '---\nname: "Metallica"\ncountry: US\nformed_year: 1981\n---\n\n# Metallica\n\nMetallica is a metal band from US, formed in 1981.\n',
+            '---\nname: "Yu Hua"\ncountry: China\nborn: 1960\n---\n# Yu Hua\n\nYu Hua is a writer from China, born in 1960.\n',
         },
-        'slayer.md': {
+        'arundhati-roy.md': {
           content:
-            '---\nname: "Slayer"\ncountry: US\nformed_year: 1981\n---\n\n# Slayer\n\nSlayer is a metal band from US, formed in 1981.\n',
+            '---\nname: "Arundhati Roy"\ncountry: India\nborn: 1961\n---\n# Arundhati Roy\n\nArundhati Roy is a writer from India, born in 1961.\n',
         },
-        'kreator.md': {
+        'salman-rushdie.md': {
           content:
-            '---\nname: "Kreator"\ncountry: Germany\nformed_year: 1982\n---\n\n# Kreator\n\nKreator is a metal band from Germany, formed in 1982.\n',
+            '---\nname: "Salman Rushdie"\ncountry: India\nborn: 1947\n---\n# Salman Rushdie\n\nSalman Rushdie is a writer from India, born in 1947.\n',
         },
-        'helloween.md': {
+        'han-kang.md': {
           content:
-            '---\nname: "Helloween"\ncountry: Germany\nformed_year: 1984\n---\n\n# Helloween\n\nHelloween is a metal band from Germany, formed in 1984.\n',
+            '---\nname: "Han Kang"\ncountry: South Korea\nborn: 1970\n---\n# Han Kang\n\nHan Kang is a writer from South Korea, born in 1970.\n',
         },
-        'sepultura.md': {
+        'pramoedya-ananta-toer.md': {
           content:
-            '---\nname: "Sepultura"\ncountry: Brazil\nformed_year: 1984\n---\n\n# Sepultura\n\nSepultura is a metal band from Brazil, formed in 1984.\n',
+            '---\nname: "Pramoedya Ananta Toer"\ncountry: Indonesia\nborn: 1925\n---\n# Pramoedya Ananta Toer\n\nPramoedya Ananta Toer is a writer from Indonesia, born in 1925.\n',
         },
-        'death.md': {
+        'kim-thuy.md': {
           content:
-            '---\nname: "Death"\ncountry: US\nformed_year: 1983\n---\n\n# Death\n\nDeath is a metal band from US, formed in 1983.\n',
+            '---\nname: "Kim Thúy"\ncountry: Vietnam\nborn: 1968\n---\n# Kim Thúy\n\nKim Thúy is a writer from Vietnam, born in 1968.\n',
         },
-        'pantera.md': {
+        'italo-calvino.md': {
           content:
-            '---\nname: "Pantera"\ncountry: US\nformed_year: 1981\n---\n\n# Pantera\n\nPantera is a metal band from US, formed in 1981.\n',
+            '---\nname: "Italo Calvino"\ncountry: Italy\nborn: 1923\n---\n# Italo Calvino\n\nItalo Calvino is a writer from Italy, born in 1923.\n',
         },
-        'cannibal-corpse.md': {
+        'umberto-eco.md': {
           content:
-            '---\nname: "Cannibal Corpse"\ncountry: US\nformed_year: 1988\n---\n\n# Cannibal Corpse\n\nCannibal Corpse is a metal band from US, formed in 1988.\n',
+            '---\nname: "Umberto Eco"\ncountry: Italy\nborn: 1932\n---\n# Umberto Eco\n\nUmberto Eco is a writer from Italy, born in 1932.\n',
         },
-        'rotting-christ.md': {
+        'elena-ferrante.md': {
           content:
-            '---\nname: "Rotting Christ"\ncountry: Greece\nformed_year: 1987\n---\n\n# Rotting Christ\n\nRotting Christ is a metal band from Greece, formed in 1987.\n',
+            '---\nname: "Elena Ferrante"\ncountry: Italy\n---\n# Elena Ferrante\n\nElena Ferrante is a writer from Italy.\n',
         },
-        'type-o-negative.md': {
+        'milan-kundera.md': {
           content:
-            '---\nname: "Type O Negative"\ncountry: US\nformed_year: 1989\n---\n\n# Type O Negative\n\nType O Negative is a metal band from US, formed in 1989.\n',
+            '---\nname: "Milan Kundera"\ncountry: Czech Republic\nborn: 1929\n---\n# Milan Kundera\n\nMilan Kundera is a writer from Czech Republic, born in 1929.\n',
         },
-        'mayhem.md': {
+        'franz-kafka.md': {
           content:
-            '---\nname: "Mayhem"\ncountry: Norway\nformed_year: 1984\n---\n\n# Mayhem\n\nMayhem is a metal band from Norway, formed in 1984.\n',
+            '---\nname: "Franz Kafka"\ncountry: Czech Republic\nborn: 1883\n---\n# Franz Kafka\n\nFranz Kafka is a writer from Czech Republic, born in 1883.\n',
         },
-        'darkthrone.md': {
+        'fyodor-dostoevsky.md': {
           content:
-            '---\nname: "Darkthrone"\ncountry: Norway\nformed_year: 1986\n---\n\n# Darkthrone\n\nDarkthrone is a metal band from Norway, formed in 1986.\n',
+            '---\nname: "Fyodor Dostoevsky"\ncountry: Russia\nborn: 1821\n---\n# Fyodor Dostoevsky\n\nFyodor Dostoevsky is a writer from Russia, born in 1821.\n',
         },
-        'at-the-gates.md': {
+        'leo-tolstoy.md': {
           content:
-            '---\nname: "At the Gates"\ncountry: Sweden\nformed_year: 1990\n---\n\n# At the Gates\n\nAt the Gates is a metal band from Sweden, formed in 1990.\n',
+            '---\nname: "Leo Tolstoy"\ncountry: Russia\nborn: 1828\n---\n# Leo Tolstoy\n\nLeo Tolstoy is a writer from Russia, born in 1828.\n',
         },
-        'moonspell.md': {
+        'mikhail-bulgakov.md': {
           content:
-            '---\nname: "Moonspell"\ncountry: Portugal\nformed_year: 1992\n---\n\n# Moonspell\n\nMoonspell is a metal band from Portugal, formed in 1992.\n',
+            '---\nname: "Mikhail Bulgakov"\ncountry: Russia\nborn: 1891\n---\n# Mikhail Bulgakov\n\nMikhail Bulgakov is a writer from Russia, born in 1891.\n',
         },
-        'opeth.md': {
+        'albert-camus.md': {
           content:
-            '---\nname: "Opeth"\ncountry: Sweden\nformed_year: 1989\n---\n\n# Opeth\n\nOpeth is a metal band from Sweden, formed in 1989.\n',
+            '---\nname: "Albert Camus"\ncountry: France\nborn: 1913\n---\n# Albert Camus\n\nAlbert Camus is a writer from France, born in 1913.\n',
         },
-        'rammstein.md': {
+        'victor-hugo.md': {
           content:
-            '---\nname: "Rammstein"\ncountry: Germany\nformed_year: 1994\n---\n\n# Rammstein\n\nRammstein is a metal band from Germany, formed in 1994.\n',
+            '---\nname: "Victor Hugo"\ncountry: France\nborn: 1802\n---\n# Victor Hugo\n\nVictor Hugo is a writer from France, born in 1802.\n',
         },
-        'meshuggah.md': {
+        'gabriel-garcia-marquez.md': {
           content:
-            '---\nname: "Meshuggah"\ncountry: Sweden\nformed_year: 1987\n---\n\n# Meshuggah\n\nMeshuggah is a metal band from Sweden, formed in 1987.\n',
+            '---\nname: "Gabriel García Márquez"\ncountry: Colombia\nborn: 1927\n---\n# Gabriel García Márquez\n\nGabriel García Márquez is a writer from Colombia, born in 1927.\n',
         },
-        'dimmu-borgir.md': {
+        'jorge-luis-borges.md': {
           content:
-            '---\nname: "Dimmu Borgir"\ncountry: Norway\nformed_year: 1993\n---\n\n# Dimmu Borgir\n\nDimmu Borgir is a metal band from Norway, formed in 1993.\n',
+            '---\nname: "Jorge Luis Borges"\ncountry: Argentina\nborn: 1899\n---\n# Jorge Luis Borges\n\nJorge Luis Borges is a writer from Argentina, born in 1899.\n',
         },
-        'children-of-bodom.md': {
+        'isabel-allende.md': {
           content:
-            '---\nname: "Children of Bodom"\ncountry: Finland\nformed_year: 1993\n---\n\n# Children of Bodom\n\nChildren of Bodom is a metal band from Finland, formed in 1993.\n',
+            '---\nname: "Isabel Allende"\ncountry: Chile\nborn: 1942\n---\n# Isabel Allende\n\nIsabel Allende is a writer from Chile, born in 1942.\n',
         },
-        'behemoth.md': {
+        'mario-vargas-llosa.md': {
           content:
-            '---\nname: "Behemoth"\ncountry: Poland\nformed_year: 1991\n---\n\n# Behemoth\n\nBehemoth is a metal band from Poland, formed in 1991.\n',
+            '---\nname: "Mario Vargas Llosa"\ncountry: Peru\nborn: 1936\n---\n# Mario Vargas Llosa\n\nMario Vargas Llosa is a writer from Peru, born in 1936.\n',
         },
-        'nightwish.md': {
+        'clarice-lispector.md': {
           content:
-            '---\nname: "Nightwish"\ncountry: Finland\nformed_year: 1996\n---\n\n# Nightwish\n\nNightwish is a metal band from Finland, formed in 1996.\n',
+            '---\nname: "Clarice Lispector"\ncountry: Brazil\nborn: 1920\n---\n# Clarice Lispector\n\nClarice Lispector is a writer from Brazil, born in 1920.\n',
         },
-        'lamb-of-god.md': {
+        'juan-rulfo.md': {
           content:
-            '---\nname: "Lamb of God"\ncountry: US\nformed_year: 1994\n---\n\n# Lamb of God\n\nLamb of God is a metal band from US, formed in 1994.\n',
+            '---\nname: "Juan Rulfo"\ncountry: Mexico\nborn: 1917\n---\n# Juan Rulfo\n\nJuan Rulfo is a writer from Mexico, born in 1917.\n',
         },
-        'mastodon.md': {
+        'octavio-paz.md': {
           content:
-            '---\nname: "Mastodon"\ncountry: US\nformed_year: 2000\n---\n\n# Mastodon\n\nMastodon is a metal band from US, formed in 2000.\n',
+            '---\nname: "Octavio Paz"\ncountry: Mexico\nborn: 1914\n---\n# Octavio Paz\n\nOctavio Paz is a writer from Mexico, born in 1914.\n',
         },
-        'gojira.md': {
+        'toni-morrison.md': {
           content:
-            '---\nname: "Gojira"\ncountry: France\nformed_year: 1996\n---\n\n# Gojira\n\nGojira is a metal band from France, formed in 1996.\n',
+            '---\nname: "Toni Morrison"\ncountry: United States\nborn: 1931\n---\n# Toni Morrison\n\nToni Morrison is a writer from United States, born in 1931.\n',
         },
-        'baroness.md': {
+        'kurt-vonnegut.md': {
           content:
-            '---\nname: "Baroness"\ncountry: US\nformed_year: 2003\n---\n\n# Baroness\n\nBaroness is a metal band from US, formed in 2003.\n',
+            '---\nname: "Kurt Vonnegut"\ncountry: United States\nborn: 1922\n---\n# Kurt Vonnegut\n\nKurt Vonnegut is a writer from United States, born in 1922.\n',
         },
-        'deafheaven.md': {
+        'george-orwell.md': {
           content:
-            '---\nname: "Deafheaven"\ncountry: US\nformed_year: 2010\n---\n\n# Deafheaven\n\nDeafheaven is a metal band from US, formed in 2010.\n',
+            '---\nname: "George Orwell"\ncountry: United Kingdom\nborn: 1903\n---\n# George Orwell\n\nGeorge Orwell is a writer from United Kingdom, born in 1903.\n',
         },
-        'ghost.md': {
+        'virginia-woolf.md': {
           content:
-            '---\nname: "Ghost"\ncountry: Sweden\nformed_year: 2008\n---\n\n# Ghost\n\nGhost is a metal band from Sweden, formed in 2008.\n',
+            '---\nname: "Virginia Woolf"\ncountry: United Kingdom\nborn: 1882\n---\n# Virginia Woolf\n\nVirginia Woolf is a writer from United Kingdom, born in 1882.\n',
         },
-        'babymetal.md': {
+        'kazuo-ishiguro.md': {
           content:
-            '---\nname: "Babymetal"\ncountry: Japan\nformed_year: 2010\n---\n\n# Babymetal\n\nBabymetal is a metal band from Japan, formed in 2010.\n',
+            '---\nname: "Kazuo Ishiguro"\ncountry: United Kingdom\nborn: 1954\n---\n# Kazuo Ishiguro\n\nKazuo Ishiguro is a writer from United Kingdom, born in 1954.\n',
         },
-        'nervosa.md': {
+        'j-r-r-tolkien.md': {
           content:
-            '---\nname: "Nervosa"\ncountry: Brazil\nformed_year: 2010\n---\n\n# Nervosa\n\nNervosa is a metal band from Brazil, formed in 2010.\n',
+            '---\nname: "J.R.R. Tolkien"\ncountry: United Kingdom\nborn: 1892\n---\n# J.R.R. Tolkien\n\nJ.R.R. Tolkien is a writer from United Kingdom, born in 1892.\n',
         },
-        'power-trip.md': {
+        'agatha-christie.md': {
           content:
-            '---\nname: "Power Trip"\ncountry: US\nformed_year: 2008\n---\n\n# Power Trip\n\nPower Trip is a metal band from US, formed in 2008.\n',
+            '---\nname: "Agatha Christie"\ncountry: United Kingdom\nborn: 1890\n---\n# Agatha Christie\n\nAgatha Christie is a writer from United Kingdom, born in 1890.\n',
         },
-        'amenra.md': {
+        'james-joyce.md': {
           content:
-            '---\nname: "Amenra"\ncountry: Belgium\nformed_year: 1999\n---\n\n# Amenra\n\nAmenra is a metal band from Belgium, formed in 1999.\n',
+            '---\nname: "James Joyce"\ncountry: Ireland\nborn: 1882\n---\n# James Joyce\n\nJames Joyce is a writer from Ireland, born in 1882.\n',
         },
-        'spiritbox.md': {
+        'bram-stoker.md': {
           content:
-            '---\nname: "Spiritbox"\ncountry: Canada\nformed_year: 2017\n---\n\n# Spiritbox\n\nSpiritbox is a metal band from Canada, formed in 2017.\n',
+            '---\nname: "Bram Stoker"\ncountry: Ireland\nborn: 1847\n---\n# Bram Stoker\n\nBram Stoker is a writer from Ireland, born in 1847.\n',
         },
-        'wormrot.md': {
+        'margaret-atwood.md': {
           content:
-            '---\nname: "Wormrot"\ncountry: Singapore\nformed_year: 2003\n---\n\n# Wormrot\n\nWormrot is a metal band from Singapore, formed in 2003.\n',
+            '---\nname: "Margaret Atwood"\ncountry: Canada\nborn: 1939\n---\n# Margaret Atwood\n\nMargaret Atwood is a writer from Canada, born in 1939.\n',
         },
-        'lorna-shore.md': {
+        'alice-munro.md': {
           content:
-            '---\nname: "Lorna Shore"\ncountry: US\nformed_year: 2010\n---\n\n# Lorna Shore\n\nLorna Shore is a metal band from US, formed in 2010.\n',
+            '---\nname: "Alice Munro"\ncountry: Canada\nborn: 1931\n---\n# Alice Munro\n\nAlice Munro is a writer from Canada, born in 1931.\n',
+        },
+        'yann-martel.md': {
+          content:
+            '---\nname: "Yann Martel"\ncountry: Canada\nborn: 1963\n---\n# Yann Martel\n\nYann Martel is a writer from Canada, born in 1963.\n',
+        },
+        'halldor-laxness.md': {
+          content:
+            '---\nname: "Halldór Laxness"\ncountry: Iceland\nborn: 1902\n---\n# Halldór Laxness\n\nHalldór Laxness is a writer from Iceland, born in 1902.\n',
+        },
+        'karl-ove-knausgard.md': {
+          content:
+            '---\nname: "Karl Ove Knausgård"\ncountry: Norway\nborn: 1968\n---\n# Karl Ove Knausgård\n\nKarl Ove Knausgård is a writer from Norway, born in 1968.\n',
+        },
+        'keri-hulme.md': {
+          content:
+            '---\nname: "Keri Hulme"\ncountry: New Zealand\nborn: 1947\n---\n# Keri Hulme\n\nKeri Hulme is a writer from New Zealand, born in 1947.\n',
+        },
+        'patrick-white.md': {
+          content:
+            '---\nname: "Patrick White"\ncountry: Australia\nborn: 1912\n---\n# Patrick White\n\nPatrick White is a writer from Australia, born in 1912.\n',
+        },
+        'markus-zusak.md': {
+          content:
+            '---\nname: "Markus Zusak"\ncountry: Australia\nborn: 1975\n---\n# Markus Zusak\n\nMarkus Zusak is a writer from Australia, born in 1975.\n',
         },
       };
-      window.repoFiles._albums = {
-        'paranoid.md': {
+
+      window.repoFiles._books = {
+        'things-fall-apart.md': {
           content:
-            '---\ntitle: "Paranoid"\nartist: black-sabbath\nrelease_date: 1970-09-18T00:00:00.000Z\ngenre: "Heavy Metal"\ncatalog_number: VR-6033\ntracklist:\n  - "War Pigs"\n  - "Paranoid"\n  - "Iron Man"\n---\n\n# Paranoid\n',
+            '---\ntitle: "Things Fall Apart"\nauthor: chinua-achebe\npublished_date: 1958-01-01T00:00:00.000Z\ngenre: "Historical Fiction"\nisbn: 979-1-60-470116-1\ntable_of_contents:\n  - "Book One"\n  - "Book Two"\n  - "Book Three"\n---\n# Things Fall Apart\n',
         },
-        'master-of-reality.md': {
+        'death-and-the-king-s-horseman.md': {
           content:
-            '---\ntitle: "Master of Reality"\nartist: black-sabbath\nrelease_date: 1971-07-21T00:00:00.000Z\ngenre: "Heavy Metal"\ncatalog_number: VR-6033\ntracklist:\n  - "Sweet Leaf"\n  - "Children of the Grave"\n  - "Into the Void"\n---\n\n# Master of Reality\n',
+            '---\ntitle: "Death and the King\'s Horseman"\nauthor: wole-soyinka\npublished_date: 1975-01-01T00:00:00.000Z\ngenre: "Drama"\nisbn: 978-3-21-682583-6\ntable_of_contents:\n  - "Part I"\n  - "Part II"\n---\n# Death and the King\'s Horseman\n',
         },
-        'machine-head.md': {
+        'palace-walk.md': {
           content:
-            '---\ntitle: "Machine Head"\nartist: deep-purple\nrelease_date: 1972-03-25T00:00:00.000Z\ngenre: "Hard Rock"\ncatalog_number: PUR-102\ntracklist:\n  - "Highway Star"\n  - "Smoke on the Water"\n  - "Space Truckin’"\n---\n\n# Machine Head\n',
+            '---\ntitle: "Palace Walk"\nauthor: naguib-mahfouz\npublished_date: 1956-01-01T00:00:00.000Z\ngenre: "Historical Fiction"\nisbn: 979-3-28-236668-4\ntable_of_contents:\n  - "Chapter One"\n  - "Chapter Two"\n  - "Chapter Three"\n  - "Chapter Four"\n---\n# Palace Walk\n',
         },
-        'never-turn-your-back-on-a-friend.md': {
+        'july-s-people.md': {
           content:
-            '---\ntitle: "Never Turn Your Back on a Friend"\nartist: budgie\nrelease_date: 1973-09-01T00:00:00.000Z\ngenre: "Heavy Metal"\ncatalog_number: MCA-2201\ntracklist:\n  - "Breadfan"\n  - "Baby Please Don’t Go"\n  - "You Know I’ll Always Love You"\n---\n\n# Never Turn Your Back on a Friend\n',
+            '---\ntitle: "July\'s People"\nauthor: nadine-gordimer\npublished_date: 1981-01-01T00:00:00.000Z\ngenre: "Literary Fiction"\nisbn: 979-8-56-332223-7\ntable_of_contents:\n  - "Prologue"\n  - "Part One"\n  - "Part Two"\n  - "Epilogue"\n---\n# July\'s People\n',
         },
-        '2112.md': {
+        'disgrace.md': {
           content:
-            '---\ntitle: "2112"\nartist: rush\nrelease_date: 1976-04-01T00:00:00.000Z\ngenre: "Progressive Rock"\ncatalog_number: MER-1079\ntracklist:\n  - "2112: Overture"\n  - "2112: The Temples of Syrinx"\n  - "A Passage to Bangkok"\n---\n\n# 2112\n',
+            '---\ntitle: "Disgrace"\nauthor: j-m-coetzee\npublished_date: 1999-01-01T00:00:00.000Z\ngenre: "Literary Fiction"\nisbn: 979-1-88-665910-8\ntable_of_contents:\n  - "Book One"\n  - "Book Two"\n  - "Book Three"\n---\n# Disgrace\n',
         },
-        'rising.md': {
+        'petals-of-blood.md': {
           content:
-            '---\ntitle: "Rising"\nartist: rainbow\nrelease_date: 1976-05-01T00:00:00.000Z\ngenre: "Heavy Metal"\ncatalog_number: POLY-9105\ntracklist:\n  - "Tarot Woman"\n  - "Run with the Wolf"\n  - "Stargazer"\n---\n\n# Rising\n',
+            '---\ntitle: "Petals of Blood"\nauthor: ngugi-wa-thiong-o\npublished_date: 1977-01-01T00:00:00.000Z\ngenre: "Historical Fiction"\nisbn: 979-6-78-530495-9\ntable_of_contents:\n  - "Part I"\n  - "Part II"\n---\n# Petals of Blood\n',
         },
-        'sad-wings-of-destiny.md': {
+        'homegoing.md': {
           content:
-            '---\ntitle: "Sad Wings of Destiny"\nartist: judas-priest\nrelease_date: 1976-03-01T00:00:00.000Z\ngenre: "Heavy Metal"\ncatalog_number: GULL-1015\ntracklist:\n  - "Victim of Changes"\n  - "The Ripper"\n  - "Genocide"\n---\n\n# Sad Wings of Destiny\n',
+            '---\ntitle: "Homegoing"\nauthor: yaa-gyasi\npublished_date: 2016-01-01T00:00:00.000Z\ngenre: "Historical Fiction"\nisbn: 979-0-39-565285-0\ntable_of_contents:\n  - "Chapter One"\n  - "Chapter Two"\n  - "Chapter Three"\n  - "Chapter Four"\n---\n# Homegoing\n',
         },
-        'taken-by-force.md': {
+        'long-walk-to-freedom.md': {
           content:
-            '---\ntitle: "Taken by Force"\nartist: scorpions\nrelease_date: 1977-10-01T00:00:00.000Z\ngenre: "Heavy Metal"\ncatalog_number: RCA-26441\ntracklist:\n  - "Steamrock Fever"\n  - "We’ll Burn the Sky"\n  - "The Sails of Charon"\n---\n\n# Taken by Force\n',
+            '---\ntitle: "Long Walk to Freedom"\nauthor: nelson-mandela\npublished_date: 1994-01-01T00:00:00.000Z\ngenre: "Biography"\nisbn: 978-9-32-426413-2\ntable_of_contents:\n  - "Prologue"\n  - "Part One"\n  - "Part Two"\n  - "Epilogue"\n---\n# Long Walk to Freedom\n',
         },
-        'powerage.md': {
+        'my-name-is-red.md': {
           content:
-            '---\ntitle: "Powerage"\nartist: ac-dc\nrelease_date: 1978-05-05T00:00:00.000Z\ngenre: "Hard Rock"\ncatalog_number: ATL-19180\ntracklist:\n  - "Rock ’n’ Roll Damnation"\n  - "Down Payment Blues"\n  - "Riff Raff"\n---\n\n# Powerage\n',
+            '---\ntitle: "My Name Is Red"\nauthor: orhan-pamuk\npublished_date: 1998-01-01T00:00:00.000Z\ngenre: "Historical Fiction"\nisbn: 979-5-20-842585-1\ntable_of_contents:\n  - "Book One"\n  - "Book Two"\n  - "Book Three"\n---\n# My Name Is Red\n',
         },
-        'overkill.md': {
+        'snow.md': {
           content:
-            '---\ntitle: "Overkill"\nartist: motorhead\nrelease_date: 1979-03-24T00:00:00.000Z\ngenre: "Heavy Metal"\ncatalog_number: BRON-521\ntracklist:\n  - "Overkill"\n  - "Stay Clean"\n  - "Damage Case"\n---\n\n# Overkill\n',
+            '---\ntitle: "Snow"\nauthor: orhan-pamuk\npublished_date: 2002-01-01T00:00:00.000Z\ngenre: "Literary Fiction"\nisbn: 978-0-72-181360-8\ntable_of_contents:\n  - "Part I"\n  - "Part II"\n---\n# Snow\n',
         },
-        'the-number-of-the-beast.md': {
+        'the-kite-runner.md': {
           content:
-            '---\ntitle: "The Number of the Beast"\nartist: iron-maiden\nrelease_date: 1982-03-22T00:00:00.000Z\ngenre: "Heavy Metal"\ncatalog_number: EMI-3400\ntracklist:\n  - "The Number of the Beast"\n  - "Run to the Hills"\n  - "Hallowed Be Thy Name"\n---\n\n# The Number of the Beast\n',
+            '---\ntitle: "The Kite Runner"\nauthor: khaled-hosseini\npublished_date: 2003-01-01T00:00:00.000Z\ngenre: "Literary Fiction"\nisbn: 978-8-20-530664-6\ntable_of_contents:\n  - "Chapter One"\n  - "Chapter Two"\n  - "Chapter Three"\n  - "Chapter Four"\n---\n# The Kite Runner\n',
         },
-        'black-metal.md': {
+        'unfortunately-it-was-paradise.md': {
           content:
-            '---\ntitle: "Black Metal"\nartist: venom\nrelease_date: 1982-11-01T00:00:00.000Z\ngenre: "Black Metal"\ncatalog_number: NEAT-1005\ntracklist:\n  - "Black Metal"\n  - "Buried Alive"\n  - "Countess Bathory"\n---\n\n# Black Metal\n',
+            '---\ntitle: "Unfortunately, It Was Paradise"\nauthor: mahmoud-darwish\npublished_date: 2003-01-01T00:00:00.000Z\ngenre: "Poetry"\nisbn: 979-4-13-534318-2\ntable_of_contents:\n  - "Prologue"\n  - "Part One"\n  - "Part Two"\n  - "Epilogue"\n---\n# Unfortunately, It Was Paradise\n',
         },
-        'dont-break-the-oath.md': {
+        'norwegian-wood.md': {
           content:
-            '---\ntitle: "Don’t Break the Oath"\nartist: mercyful-fate\nrelease_date: 1984-10-15T00:00:00.000Z\ngenre: "Heavy Metal"\ncatalog_number: ROAD-3910\ntracklist:\n  - "A Dangerous Meeting"\n  - "Nightmare"\n  - "The Oath"\n---\n\n# Don’t Break the Oath\n',
+            '---\ntitle: "Norwegian Wood"\nauthor: haruki-murakami\npublished_date: 1987-01-01T00:00:00.000Z\ngenre: "Literary Fiction"\nisbn: 979-2-28-523028-3\ntable_of_contents:\n  - "Book One"\n  - "Book Two"\n  - "Book Three"\n---\n# Norwegian Wood\n',
         },
-        'to-mega-therion.md': {
+        'kafka-on-the-shore.md': {
           content:
-            '---\ntitle: "To Mega Therion"\nartist: celtic-frost\nrelease_date: 1985-10-01T00:00:00.000Z\ngenre: "Black Metal"\ncatalog_number: NOISE-N0022\ntracklist:\n  - "Innocence and Wrath"\n  - "Circle of the Tyrants"\n  - "Dawn of Meggido"\n---\n\n# To Mega Therion\n',
+            '---\ntitle: "Kafka on the Shore"\nauthor: haruki-murakami\npublished_date: 2002-01-01T00:00:00.000Z\ngenre: "Magical Realism"\nisbn: 979-4-98-959703-2\ntable_of_contents:\n  - "Part I"\n  - "Part II"\n---\n# Kafka on the Shore\n',
         },
-        'thunder-in-the-east.md': {
+        'the-sound-of-waves.md': {
           content:
-            '---\ntitle: "Thunder in the East"\nartist: loudness\nrelease_date: 1985-01-25T00:00:00.000Z\ngenre: "Heavy Metal"\ncatalog_number: ATCO-90246\ntracklist:\n  - "Crazy Nights"\n  - "Heavy Chains"\n  - "Get Away"\n---\n\n# Thunder in the East\n',
+            '---\ntitle: "The Sound of Waves"\nauthor: yukio-mishima\npublished_date: 1954-01-01T00:00:00.000Z\ngenre: "Literary Fiction"\nisbn: 978-3-42-136584-6\ntable_of_contents:\n  - "Chapter One"\n  - "Chapter Two"\n  - "Chapter Three"\n  - "Chapter Four"\n---\n# The Sound of Waves\n',
         },
-        'master-of-puppets.md': {
+        'red-sorghum.md': {
           content:
-            '---\ntitle: "Master of Puppets"\nartist: metallica\nrelease_date: 1986-03-03T00:00:00.000Z\ngenre: "Thrash Metal"\ncatalog_number: ELEK-60439\ntracklist:\n  - "Battery"\n  - "Master of Puppets"\n  - "Disposable Heroes"\n---\n\n# Master of Puppets\n',
+            '---\ntitle: "Red Sorghum"\nauthor: mo-yan\npublished_date: 1986-01-01T00:00:00.000Z\ngenre: "Historical Fiction"\nisbn: 978-4-72-648935-6\ntable_of_contents:\n  - "Prologue"\n  - "Part One"\n  - "Part Two"\n  - "Epilogue"\n---\n# Red Sorghum\n',
         },
-        'reign-in-blood.md': {
+        'to-live.md': {
           content:
-            '---\ntitle: "Reign in Blood"\nartist: slayer\nrelease_date: 1986-10-07T00:00:00.000Z\ngenre: "Thrash Metal"\ncatalog_number: DEF-24131\ntracklist:\n  - "Angel of Death"\n  - "Piece by Piece"\n  - "Raining Blood"\n---\n\n# Reign in Blood\n',
+            '---\ntitle: "To Live"\nauthor: yu-hua\npublished_date: 1993-01-01T00:00:00.000Z\ngenre: "Historical Fiction"\nisbn: 979-6-79-465635-8\ntable_of_contents:\n  - "Book One"\n  - "Book Two"\n  - "Book Three"\n---\n# To Live\n',
         },
-        'pleasure-to-kill.md': {
+        'the-god-of-small-things.md': {
           content:
-            '---\ntitle: "Pleasure to Kill"\nartist: kreator\nrelease_date: 1986-08-01T00:00:00.000Z\ngenre: "Thrash Metal"\ncatalog_number: NOISE-N0031\ntracklist:\n  - "Choir of Damned"\n  - "Ripping Corpse"\n  - "Pleasure to Kill"\n---\n\n# Pleasure to Kill\n',
+            '---\ntitle: "The God of Small Things"\nauthor: arundhati-roy\npublished_date: 1997-01-01T00:00:00.000Z\ngenre: "Literary Fiction"\nisbn: 979-6-34-939893-1\ntable_of_contents:\n  - "Part I"\n  - "Part II"\n---\n# The God of Small Things\n',
         },
-        'keeper-of-the-seven-keys-pt-1.md': {
+        'midnight-s-children.md': {
           content:
-            '---\ntitle: "Keeper of the Seven Keys, Pt. 1"\nartist: helloween\nrelease_date: 1987-05-04T00:00:00.000Z\ngenre: "Power Metal"\ncatalog_number: NOISE-N0053\ntracklist:\n  - "Initiation"\n  - "I’m Alive"\n  - "A Little Time"\n---\n\n# Keeper of the Seven Keys, Pt. 1\n',
+            '---\ntitle: "Midnight\'s Children"\nauthor: salman-rushdie\npublished_date: 1981-01-01T00:00:00.000Z\ngenre: "Magical Realism"\nisbn: 979-6-22-809554-3\ntable_of_contents:\n  - "Chapter One"\n  - "Chapter Two"\n  - "Chapter Three"\n  - "Chapter Four"\n---\n# Midnight\'s Children\n',
         },
-        'beneath-the-remains.md': {
+        'the-vegetarian.md': {
           content:
-            '---\ntitle: "Beneath the Remains"\nartist: sepultura\nrelease_date: 1989-04-01T00:00:00.000Z\ngenre: "Thrash Metal"\ncatalog_number: ROAD-9509\ntracklist:\n  - "Beneath the Remains"\n  - "Inner Self"\n  - "Stronger Than Hate"\n---\n\n# Beneath the Remains\n',
+            '---\ntitle: "The Vegetarian"\nauthor: han-kang\npublished_date: 2007-01-01T00:00:00.000Z\ngenre: "Literary Fiction"\nisbn: 978-5-37-206150-3\ntable_of_contents:\n  - "Prologue"\n  - "Part One"\n  - "Part Two"\n  - "Epilogue"\n---\n# The Vegetarian\n',
         },
-        'human.md': {
+        'this-earth-of-mankind.md': {
           content:
-            '---\ntitle: "Human"\nartist: death\nrelease_date: 1991-10-22T00:00:00.000Z\ngenre: "Death Metal"\ncatalog_number: RC-9114\ntracklist:\n  - "Flattening of Emotions"\n  - "Suicide Machine"\n  - "Lack of Comprehension"\n---\n\n# Human\n',
+            '---\ntitle: "This Earth of Mankind"\nauthor: pramoedya-ananta-toer\npublished_date: 1980-01-01T00:00:00.000Z\ngenre: "Historical Fiction"\nisbn: 978-0-69-911135-6\ntable_of_contents:\n  - "Book One"\n  - "Book Two"\n  - "Book Three"\n---\n# This Earth of Mankind\n',
         },
-        'vulgar-display-of-power.md': {
+        'ru.md': {
           content:
-            '---\ntitle: "Vulgar Display of Power"\nartist: pantera\nrelease_date: 1992-02-25T00:00:00.000Z\ngenre: "Groove Metal"\ncatalog_number: ATCO-92302\ntracklist:\n  - "Mouth for War"\n  - "Walk"\n  - "This Love"\n---\n\n# Vulgar Display of Power\n',
+            '---\ntitle: "Ru"\nauthor: kim-thuy\npublished_date: 2009-01-01T00:00:00.000Z\ngenre: "Memoir"\nisbn: 978-9-41-364308-8\ntable_of_contents:\n  - "Part I"\n  - "Part II"\n---\n# Ru\n',
         },
-        'tomb-of-the-mutilated.md': {
+        'invisible-cities.md': {
           content:
-            '---\ntitle: "Tomb of the Mutilated"\nartist: cannibal-corpse\nrelease_date: 1992-07-14T00:00:00.000Z\ngenre: "Death Metal"\ncatalog_number: MET-0022\ntracklist:\n  - "Hammer Smashed Face"\n  - "Rotted Body Landslide"\n  - "Post Mortal Ejaculation"\n---\n\n# Tomb of the Mutilated\n',
+            '---\ntitle: "Invisible Cities"\nauthor: italo-calvino\npublished_date: 1972-01-01T00:00:00.000Z\ngenre: "Magical Realism"\nisbn: 978-6-86-478647-1\ntable_of_contents:\n  - "Chapter One"\n  - "Chapter Two"\n  - "Chapter Three"\n  - "Chapter Four"\n---\n# Invisible Cities\n',
         },
-        'thy-mighty-contract.md': {
+        'the-name-of-the-rose.md': {
           content:
-            '---\ntitle: "Thy Mighty Contract"\nartist: rotting-christ\nrelease_date: 1993-08-01T00:00:00.000Z\ngenre: "Black Metal"\ncatalog_number: OSM-013\ntracklist:\n  - "Exiled Archangels"\n  - "Visions of a Funeral Wedding"\n  - "Thy Mighty Contract"\n---\n\n# Thy Mighty Contract\n',
+            '---\ntitle: "The Name of the Rose"\nauthor: umberto-eco\npublished_date: 1980-01-01T00:00:00.000Z\ngenre: "Mystery"\nisbn: 979-7-71-231884-6\ntable_of_contents:\n  - "Prologue"\n  - "Part One"\n  - "Part Two"\n  - "Epilogue"\n---\n# The Name of the Rose\n',
         },
-        'chaos-ad.md': {
+        'my-brilliant-friend.md': {
           content:
-            '---\ntitle: "Chaos A.D."\nartist: sepultura\nrelease_date: 1993-10-19T00:00:00.000Z\ngenre: "Groove Metal"\ncatalog_number: ROAD-9522\ntracklist:\n  - "Refuse/Resist"\n  - "Territory"\n  - "Slave New World"\n---\n\n# Chaos A.D.\n',
+            '---\ntitle: "My Brilliant Friend"\nauthor: elena-ferrante\npublished_date: 2011-01-01T00:00:00.000Z\ngenre: "Literary Fiction"\nisbn: 978-7-59-438916-8\ntable_of_contents:\n  - "Book One"\n  - "Book Two"\n  - "Book Three"\n---\n# My Brilliant Friend\n',
         },
-        'bloody-kisses.md': {
+        'the-unbearable-lightness-of-being.md': {
           content:
-            '---\ntitle: "Bloody Kisses"\nartist: type-o-negative\nrelease_date: 1993-08-24T00:00:00.000Z\ngenre: "Gothic Metal"\ncatalog_number: RRE-8988\ntracklist:\n  - "Bloody Kisses"\n  - "Christian Woman"\n  - "Black No. 1"\n---\n\n# Bloody Kisses\n',
+            '---\ntitle: "The Unbearable Lightness of Being"\nauthor: milan-kundera\npublished_date: 1984-01-01T00:00:00.000Z\ngenre: "Philosophy"\nisbn: 978-0-15-315191-5\ntable_of_contents:\n  - "Part I"\n  - "Part II"\n---\n# The Unbearable Lightness of Being\n',
         },
-        'de-mysteriis-dom-sathanas.md': {
+        'the-trial.md': {
           content:
-            '---\ntitle: "De Mysteriis Dom Sathanas"\nartist: mayhem\nrelease_date: 1994-05-08T00:00:00.000Z\ngenre: "Black Metal"\ncatalog_number: DSP-8\ntracklist:\n  - "Funeral Fog"\n  - "Freezing Moon"\n  - "Pagan Fears"\n---\n\n# De Mysteriis Dom Sathanas\n',
+            '---\ntitle: "The Trial"\nauthor: franz-kafka\npublished_date: 1925-01-01T00:00:00.000Z\ngenre: "Dystopian"\nisbn: 978-7-44-506733-4\ntable_of_contents:\n  - "Chapter One"\n  - "Chapter Two"\n  - "Chapter Three"\n  - "Chapter Four"\n---\n# The Trial\n',
         },
-        'transilvanian-hunger.md': {
+        'crime-and-punishment.md': {
           content:
-            '---\ntitle: "Transilvanian Hunger"\nartist: darkthrone\nrelease_date: 1994-02-01T00:00:00.000Z\ngenre: "Black Metal"\ncatalog_number: PEA-023\ntracklist:\n  - "Transilvanian Hunger"\n  - "Skald Av Satans Sol"\n  - "As Flittermice as Satans Spys"\n---\n\n# Transilvanian Hunger\n',
+            '---\ntitle: "Crime and Punishment"\nauthor: fyodor-dostoevsky\npublished_date: 1866-01-01T00:00:00.000Z\ngenre: "Crime"\nisbn: 978-1-20-667204-7\ntable_of_contents:\n  - "Prologue"\n  - "Part One"\n  - "Part Two"\n  - "Epilogue"\n---\n# Crime and Punishment\n',
         },
-        'slaughter-of-the-soul.md': {
+        'anna-karenina.md': {
           content:
-            '---\ntitle: "Slaughter of the Soul"\nartist: at-the-gates\nrelease_date: 1995-11-06T00:00:00.000Z\ngenre: "Melodic Death Metal"\ncatalog_number: EAR-016\ntracklist:\n  - "Blinded by Fear"\n  - "Slaughter of the Soul"\n  - "Under a Serpent Sun"\n---\n\n# Slaughter of the Soul\n',
+            '---\ntitle: "Anna Karenina"\nauthor: leo-tolstoy\npublished_date: 1877-01-01T00:00:00.000Z\ngenre: "Romance"\nisbn: 979-9-60-760089-4\ntable_of_contents:\n  - "Book One"\n  - "Book Two"\n  - "Book Three"\n---\n# Anna Karenina\n',
         },
-        'wolfheart.md': {
+        'the-master-and-margarita.md': {
           content:
-            '---\ntitle: "Wolfheart"\nartist: moonspell\nrelease_date: 1995-10-30T00:00:00.000Z\ngenre: "Gothic Metal"\ncatalog_number: CM-005\ntracklist:\n  - "Trebaruna"\n  - "Wolfheart"\n  - "Ataegina"\n---\n\n# Wolfheart\n',
+            '---\ntitle: "The Master and Margarita"\nauthor: mikhail-bulgakov\npublished_date: 1967-01-01T00:00:00.000Z\ngenre: "Fantasy"\nisbn: 979-9-77-270105-8\ntable_of_contents:\n  - "Part I"\n  - "Part II"\n---\n# The Master and Margarita\n',
         },
-        'blackwater-park.md': {
+        'the-stranger.md': {
           content:
-            '---\ntitle: "Blackwater Park"\nartist: opeth\nrelease_date: 2001-02-05T00:00:00.000Z\ngenre: "Progressive Metal"\ncatalog_number: MNW-165P\ntracklist:\n  - "The Leper Affinity"\n  - "Bleak"\n  - "Blackwater Park"\n---\n\n# Blackwater Park\n',
+            '---\ntitle: "The Stranger"\nauthor: albert-camus\npublished_date: 1942-01-01T00:00:00.000Z\ngenre: "Philosophy"\nisbn: 978-6-86-264566-3\ntable_of_contents:\n  - "Chapter One"\n  - "Chapter Two"\n  - "Chapter Three"\n  - "Chapter Four"\n---\n# The Stranger\n',
         },
-        'mutter.md': {
+        'les-miserables.md': {
           content:
-            '---\ntitle: "Mutter"\nartist: rammstein\nrelease_date: 2001-04-02T00:00:00.000Z\ngenre: "Industrial Metal"\ncatalog_number: MOT-724372\ntracklist:\n  - "Mein Herz Brennt"\n  - "Links 2 3 4"\n  - "Sonne"\n---\n\n# Mutter\n',
+            '---\ntitle: "Les Misérables"\nauthor: victor-hugo\npublished_date: 1862-01-01T00:00:00.000Z\ngenre: "Epic"\nisbn: 978-0-50-434192-0\ntable_of_contents:\n  - "Prologue"\n  - "Part One"\n  - "Part Two"\n  - "Epilogue"\n---\n# Les Misérables\n',
         },
-        'nothing.md': {
+        'one-hundred-years-of-solitude.md': {
           content:
-            '---\ntitle: "Nothing"\nartist: meshuggah\nrelease_date: 2002-03-26T00:00:00.000Z\ngenre: "Progressive Metal"\ncatalog_number: NB-047\ntracklist:\n  - "Rational Gaze"\n  - "Perpetual Black Second"\n  - "Nebulous"\n---\n\n# Nothing\n',
+            '---\ntitle: "One Hundred Years of Solitude"\nauthor: gabriel-garcia-marquez\npublished_date: 1967-01-01T00:00:00.000Z\ngenre: "Magical Realism"\nisbn: 979-8-64-919473-2\ntable_of_contents:\n  - "Book One"\n  - "Book Two"\n  - "Book Three"\n---\n# One Hundred Years of Solitude\n',
         },
-        'death-cult-armageddon.md': {
+        'love-in-the-time-of-cholera.md': {
           content:
-            '---\ntitle: "Death Cult Armageddon"\nartist: dimmu-borgir\nrelease_date: 2003-09-08T00:00:00.000Z\ngenre: "Symphonic Black Metal"\ncatalog_number: NB-582\ntracklist:\n  - "Progenies of the Great Apocalypse"\n  - "Allehelgens Death March"\n  - "Vredesbyrd"\n---\n\n# Death Cult Armageddon\n',
+            '---\ntitle: "Love in the Time of Cholera"\nauthor: gabriel-garcia-marquez\npublished_date: 1985-01-01T00:00:00.000Z\ngenre: "Romance"\nisbn: 978-4-68-171676-1\ntable_of_contents:\n  - "Part I"\n  - "Part II"\n---\n# Love in the Time of Cholera\n',
         },
-        'hate-crew-deathroll.md': {
+        'ficciones.md': {
           content:
-            '---\ntitle: "Hate Crew Deathroll"\nartist: children-of-bodom\nrelease_date: 2003-09-08T00:00:00.000Z\ngenre: "Melodic Death Metal"\ncatalog_number: SPI-346\ntracklist:\n  - "Needled 24/7"\n  - "Sixpounder"\n  - "Bed of Razors"\n---\n\n# Hate Crew Deathroll\n',
+            '---\ntitle: "Ficciones"\nauthor: jorge-luis-borges\npublished_date: 1944-01-01T00:00:00.000Z\ngenre: "Short Stories"\nisbn: 978-1-20-199787-6\ntable_of_contents:\n  - "Chapter One"\n  - "Chapter Two"\n  - "Chapter Three"\n  - "Chapter Four"\n---\n# Ficciones\n',
         },
-        'demigod.md': {
+        'the-house-of-the-spirits.md': {
           content:
-            '---\ntitle: "Demigod"\nartist: behemoth\nrelease_date: 2004-09-13T00:00:00.000Z\ngenre: "Blackened Death Metal"\ncatalog_number: REG-121\ntracklist:\n  - "Slaves Shall Serve"\n  - "Conquer All"\n  - "Demigod"\n---\n\n# Demigod\n',
+            '---\ntitle: "The House of the Spirits"\nauthor: isabel-allende\npublished_date: 1982-01-01T00:00:00.000Z\ngenre: "Magical Realism"\nisbn: 979-2-43-264270-1\ntable_of_contents:\n  - "Prologue"\n  - "Part One"\n  - "Part Two"\n  - "Epilogue"\n---\n# The House of the Spirits\n',
         },
-        'once.md': {
+        'the-feast-of-the-goat.md': {
           content:
-            '---\ntitle: "Once"\nartist: nightwish\nrelease_date: 2004-06-06T00:00:00.000Z\ngenre: "Symphonic Metal"\ncatalog_number: SPI-373\ntracklist:\n  - "Dark Chest of Wonders"\n  - "Wish I Had an Angel"\n  - "Nemo"\n---\n\n# Once\n',
+            '---\ntitle: "The Feast of the Goat"\nauthor: mario-vargas-llosa\npublished_date: 2000-01-01T00:00:00.000Z\ngenre: "Historical Fiction"\nisbn: 979-1-18-140239-1\ntable_of_contents:\n  - "Book One"\n  - "Book Two"\n  - "Book Three"\n---\n# The Feast of the Goat\n',
         },
-        'ashes-of-the-wake.md': {
+        'the-hour-of-the-star.md': {
           content:
-            '---\ntitle: "Ashes of the Wake"\nartist: lamb-of-god\nrelease_date: 2004-08-24T00:00:00.000Z\ngenre: "Groove Metal"\ncatalog_number: EPIC-90556\ntracklist:\n  - "Laid to Rest"\n  - "Now You’ve Got Something to Die For"\n  - "Omerta"\n---\n\n# Ashes of the Wake\n',
+            '---\ntitle: "The Hour of the Star"\nauthor: clarice-lispector\npublished_date: 1977-01-01T00:00:00.000Z\ngenre: "Literary Fiction"\nisbn: 978-7-96-616561-1\ntable_of_contents:\n  - "Part I"\n  - "Part II"\n---\n# The Hour of the Star\n',
         },
-        'leviathan.md': {
+        'pedro-paramo.md': {
           content:
-            '---\ntitle: "Leviathan"\nartist: mastodon\nrelease_date: 2004-08-31T00:00:00.000Z\ngenre: "Progressive Metal"\ncatalog_number: RALP-0574\ntracklist:\n  - "Blood and Thunder"\n  - "Iron Tusk"\n  - "Aqua Dementia"\n---\n\n# Leviathan\n',
+            '---\ntitle: "Pedro Páramo"\nauthor: juan-rulfo\npublished_date: 1955-01-01T00:00:00.000Z\ngenre: "Magical Realism"\nisbn: 978-1-42-256928-1\ntable_of_contents:\n  - "Chapter One"\n  - "Chapter Two"\n  - "Chapter Three"\n  - "Chapter Four"\n---\n# Pedro Páramo\n',
         },
-        'from-mars-to-sirius.md': {
+        'the-labyrinth-of-solitude.md': {
           content:
-            '---\ntitle: "From Mars to Sirius"\nartist: gojira\nrelease_date: 2005-06-13T00:00:00.000Z\ngenre: "Progressive Metal"\ncatalog_number: LIS-014\ntracklist:\n  - "Ocean Planet"\n  - "Backbone"\n  - "Flying Whales"\n---\n\n# From Mars to Sirius\n',
+            '---\ntitle: "The Labyrinth of Solitude"\nauthor: octavio-paz\npublished_date: 1950-01-01T00:00:00.000Z\ngenre: "Essay"\nisbn: 978-3-97-204198-0\ntable_of_contents:\n  - "Prologue"\n  - "Part One"\n  - "Part Two"\n  - "Epilogue"\n---\n# The Labyrinth of Solitude\n',
         },
-        'yellow-and-green.md': {
+        'beloved.md': {
           content:
-            '---\ntitle: "Yellow & Green"\nartist: baroness\nrelease_date: 2012-07-17T00:00:00.000Z\ngenre: "Sludge Metal"\ncatalog_number: REL-1878\ntracklist:\n  - "Yellow Theme"\n  - "Take My Bones Away"\n  - "Cocainium"\n---\n\n# Yellow & Green\n',
+            '---\ntitle: "Beloved"\nauthor: toni-morrison\npublished_date: 1987-01-01T00:00:00.000Z\ngenre: "Historical Fiction"\nisbn: 979-2-82-845013-3\ntable_of_contents:\n  - "Book One"\n  - "Book Two"\n  - "Book Three"\n---\n# Beloved\n',
         },
-        'sunbather.md': {
+        'slaughterhouse-five.md': {
           content:
-            '---\ntitle: "Sunbather"\nartist: deafheaven\nrelease_date: 2013-06-11T00:00:00.000Z\ngenre: "Blackgaze"\ncatalog_number: DEA-004\ntracklist:\n  - "Dream House"\n  - "Sunbather"\n  - "Vertigo"\n---\n\n# Sunbather\n',
+            '---\ntitle: "Slaughterhouse-Five"\nauthor: kurt-vonnegut\npublished_date: 1969-01-01T00:00:00.000Z\ngenre: "Satire"\nisbn: 979-2-68-500107-0\ntable_of_contents:\n  - "Part I"\n  - "Part II"\n---\n# Slaughterhouse-Five\n',
         },
-        'the-satanist.md': {
+        '1984.md': {
           content:
-            '---\ntitle: "The Satanist"\nartist: behemoth\nrelease_date: 2014-02-04T00:00:00.000Z\ngenre: "Blackened Death Metal"\ncatalog_number: NB-2717\ntracklist:\n  - "Blow Your Trumpets Gabriel"\n  - "Furor Divinus"\n  - "Ora Pro Nobis Lucifer"\n---\n\n# The Satanist\n',
+            '---\ntitle: "1984"\nauthor: george-orwell\npublished_date: 1949-01-01T00:00:00.000Z\ngenre: "Dystopian"\nisbn: 978-2-55-157608-5\ntable_of_contents:\n  - "Chapter One"\n  - "Chapter Two"\n  - "Chapter Three"\n  - "Chapter Four"\n---\n# 1984\n',
         },
-        'meliora.md': {
+        'mrs-dalloway.md': {
           content:
-            '---\ntitle: "Meliora"\nartist: ghost\nrelease_date: 2015-08-21T00:00:00.000Z\ngenre: "Heavy Metal"\ncatalog_number: LOM-023\ntracklist:\n  - "Spirit"\n  - "From the Pinnacle to the Pit"\n  - "Cirice"\n---\n\n# Meliora\n',
+            '---\ntitle: "Mrs Dalloway"\nauthor: virginia-woolf\npublished_date: 1925-01-01T00:00:00.000Z\ngenre: "Literary Fiction"\nisbn: 979-5-70-352492-3\ntable_of_contents:\n  - "Prologue"\n  - "Part One"\n  - "Part Two"\n  - "Epilogue"\n---\n# Mrs Dalloway\n',
         },
-        'metal-resistance.md': {
+        'never-let-me-go.md': {
           content:
-            '---\ntitle: "Metal Resistance"\nartist: babymetal\nrelease_date: 2016-04-01T00:00:00.000Z\ngenre: "Kawaii Metal"\ncatalog_number: BMD-002\ntracklist:\n  - "Road of Resistance"\n  - "Karate"\n  - "Amore"\n---\n\n# Metal Resistance\n',
+            '---\ntitle: "Never Let Me Go"\nauthor: kazuo-ishiguro\npublished_date: 2005-01-01T00:00:00.000Z\ngenre: "Science Fiction"\nisbn: 978-5-67-889734-7\ntable_of_contents:\n  - "Book One"\n  - "Book Two"\n  - "Book Three"\n---\n# Never Let Me Go\n',
         },
-        'magma.md': {
+        'the-fellowship-of-the-ring.md': {
           content:
-            '---\ntitle: "Magma"\nartist: gojira\nrelease_date: 2016-06-17T00:00:00.000Z\ngenre: "Progressive Metal"\ncatalog_number: ROA-7238\ntracklist:\n  - "Shooting Star"\n  - "Silvera"\n  - "Stranded"\n---\n\n# Magma\n',
+            '---\ntitle: "The Fellowship of the Ring"\nauthor: j-r-r-tolkien\npublished_date: 1954-01-01T00:00:00.000Z\ngenre: "Fantasy"\nisbn: 978-6-68-599286-1\ntable_of_contents:\n  - "Part I"\n  - "Part II"\n---\n# The Fellowship of the Ring\n',
         },
-        'agony.md': {
+        'murder-on-the-orient-express.md': {
           content:
-            '---\ntitle: "Agony"\nartist: nervosa\nrelease_date: 2016-02-19T00:00:00.000Z\ngenre: "Thrash Metal"\ncatalog_number: NB-3489\ntracklist:\n  - "Kill the Silence"\n  - "Agony"\n  - "Morbid Bystanders"\n---\n\n# Agony\n',
+            '---\ntitle: "Murder on the Orient Express"\nauthor: agatha-christie\npublished_date: 1934-01-01T00:00:00.000Z\ngenre: "Mystery"\nisbn: 979-9-73-193169-5\ntable_of_contents:\n  - "Chapter One"\n  - "Chapter Two"\n  - "Chapter Three"\n  - "Chapter Four"\n---\n# Murder on the Orient Express\n',
         },
-        'nightmare-logic.md': {
+        'ulysses.md': {
           content:
-            '---\ntitle: "Nightmare Logic"\nartist: power-trip\nrelease_date: 2017-02-24T00:00:00.000Z\ngenre: "Thrash Metal"\ncatalog_number: SP-063\ntracklist:\n  - "Soul Sacrifice"\n  - "Nightmare Logic"\n  - "Executioner’s Tax (Swing of the Axe)"\n---\n\n# Nightmare Logic\n',
+            '---\ntitle: "Ulysses"\nauthor: james-joyce\npublished_date: 1922-01-01T00:00:00.000Z\ngenre: "Epic"\nisbn: 978-4-58-371844-7\ntable_of_contents:\n  - "Prologue"\n  - "Part One"\n  - "Part Two"\n  - "Epilogue"\n---\n# Ulysses\n',
         },
-        'mass-vi.md': {
+        'dracula.md': {
           content:
-            '---\ntitle: "Mass VI"\nartist: amenra\nrelease_date: 2017-01-27T00:00:00.000Z\ngenre: "Sludge Metal"\ncatalog_number: NEU-49\ntracklist:\n  - "Children of the Eye"\n  - "A Solitary Reign"\n  - "Boden"\n---\n\n# Mass VI\n',
+            '---\ntitle: "Dracula"\nauthor: bram-stoker\npublished_date: 1897-01-01T00:00:00.000Z\ngenre: "Horror"\nisbn: 979-4-30-320332-0\ntable_of_contents:\n  - "Book One"\n  - "Book Two"\n  - "Book Three"\n---\n# Dracula\n',
         },
-        'firepower.md': {
+        'the-handmaid-s-tale.md': {
           content:
-            '---\ntitle: "Firepower"\nartist: judas-priest\nrelease_date: 2018-03-09T00:00:00.000Z\ngenre: "Heavy Metal"\ncatalog_number: CBS-88985\ntracklist:\n  - "Firepower"\n  - "Lightning Strike"\n  - "Evil Never Dies"\n---\n\n# Firepower\n',
+            '---\ntitle: "The Handmaid\'s Tale"\nauthor: margaret-atwood\npublished_date: 1985-01-01T00:00:00.000Z\ngenre: "Dystopian"\nisbn: 979-0-40-601518-5\ntable_of_contents:\n  - "Part I"\n  - "Part II"\n---\n# The Handmaid\'s Tale\n',
         },
-        'hushed-and-grim.md': {
+        'dance-of-the-happy-shades.md': {
           content:
-            '---\ntitle: "Hushed and Grim"\nartist: mastodon\nrelease_date: 2021-10-29T00:00:00.000Z\ngenre: "Progressive Metal"\ncatalog_number: RALP-1148\ntracklist:\n  - "Pain with an Anchor"\n  - "The Crux"\n  - "Sickle and Peace"\n---\n\n# Hushed and Grim\n',
+            '---\ntitle: "Dance of the Happy Shades"\nauthor: alice-munro\npublished_date: 1968-01-01T00:00:00.000Z\ngenre: "Short Stories"\nisbn: 979-9-63-571038-5\ntable_of_contents:\n  - "Chapter One"\n  - "Chapter Two"\n  - "Chapter Three"\n  - "Chapter Four"\n---\n# Dance of the Happy Shades\n',
         },
-        'eternal-blue.md': {
+        'life-of-pi.md': {
           content:
-            '---\ntitle: "Eternal Blue"\nartist: spiritbox\nrelease_date: 2021-09-17T00:00:00.000Z\ngenre: "Progressive Metal"\ncatalog_number: RS-1102\ntracklist:\n  - "Sun Killer"\n  - "Holy Roller"\n  - "Circle with Me"\n---\n\n# Eternal Blue\n',
+            '---\ntitle: "Life of Pi"\nauthor: yann-martel\npublished_date: 2001-01-01T00:00:00.000Z\ngenre: "Fantasy"\nisbn: 978-1-44-594422-2\ntable_of_contents:\n  - "Prologue"\n  - "Part One"\n  - "Part Two"\n  - "Epilogue"\n---\n# Life of Pi\n',
         },
-        'impera.md': {
+        'independent-people.md': {
           content:
-            '---\ntitle: "Impera"\nartist: ghost\nrelease_date: 2022-03-11T00:00:00.000Z\ngenre: "Heavy Metal"\ncatalog_number: LOM-055\ntracklist:\n  - "Kaisarion"\n  - "Spillways"\n  - "Call Me Little Sunshine"\n---\n\n# Impera\n',
+            '---\ntitle: "Independent People"\nauthor: halldor-laxness\npublished_date: 1934-01-01T00:00:00.000Z\ngenre: "Literary Fiction"\nisbn: 978-1-50-231833-7\ntable_of_contents:\n  - "Book One"\n  - "Book Two"\n  - "Book Three"\n---\n# Independent People\n',
         },
-        'hiss.md': {
+        'my-struggle-book-one.md': {
           content:
-            '---\ntitle: "Hiss"\nartist: wormrot\nrelease_date: 2022-09-16T00:00:00.000Z\ngenre: "Grindcore"\ncatalog_number: EOS-121\ntracklist:\n  - "Genesis"\n  - "Preserved in Filth"\n  - "Bringer of Bad Tidings"\n---\n\n# Hiss\n',
+            '---\ntitle: "My Struggle: Book One"\nauthor: karl-ove-knausgard\npublished_date: 2009-01-01T00:00:00.000Z\ngenre: "Memoir"\nisbn: 979-5-95-819467-5\ntable_of_contents:\n  - "Part I"\n  - "Part II"\n---\n# My Struggle: Book One\n',
         },
-        'pain-remains.md': {
+        'the-bone-people.md': {
           content:
-            '---\ntitle: "Pain Remains"\nartist: lorna-shore\nrelease_date: 2022-10-14T00:00:00.000Z\ngenre: "Deathcore"\ncatalog_number: CMD-093\ntracklist:\n  - "Welcome Back, O’ Sleeping Dreamer"\n  - "Cursed to Die"\n  - "Pain Remains I: Dancing Like Flames"\n---\n\n# Pain Remains\n',
+            '---\ntitle: "The Bone People"\nauthor: keri-hulme\npublished_date: 1984-01-01T00:00:00.000Z\ngenre: "Literary Fiction"\nisbn: 978-8-10-924034-9\ntable_of_contents:\n  - "Chapter One"\n  - "Chapter Two"\n  - "Chapter Three"\n  - "Chapter Four"\n---\n# The Bone People\n',
+        },
+        'voss.md': {
+          content:
+            '---\ntitle: "Voss"\nauthor: patrick-white\npublished_date: 1957-01-01T00:00:00.000Z\ngenre: "Literary Fiction"\nisbn: 978-1-54-696410-3\ntable_of_contents:\n  - "Prologue"\n  - "Part One"\n  - "Part Two"\n  - "Epilogue"\n---\n# Voss\n',
+        },
+        'the-book-thief.md': {
+          content:
+            '---\ntitle: "The Book Thief"\nauthor: markus-zusak\npublished_date: 2005-01-01T00:00:00.000Z\ngenre: "Young Adult"\nisbn: 978-2-57-305446-5\ntable_of_contents:\n  - "Book One"\n  - "Book Two"\n  - "Book Three"\n---\n# The Book Thief\n',
         },
       };
 
@@ -607,16 +640,16 @@
       // writes on the demo stays in their browser and is gone on reload.
       var HOUR = 60 * 60 * 1000;
       window.repoNotes = {
-        'albums/paranoid': [
+        'books/one-hundred-years-of-solitude': [
           {
             id: 'note-1',
             author: 'Ada Reviewer',
             authorId: 'ada',
             isOwn: false,
             content:
-              'Catalog number here is the US Warner pressing. Should we standardise on the original UK Vertigo number instead?',
+              'ISBN here is the 2003 Harper Perennial reprint. Should we standardise on the original 1967 Editorial Sudamericana edition instead?',
             timestamp: new Date(Date.now() - 26 * HOUR).toISOString(),
-            entrySlug: 'paranoid',
+            entrySlug: 'one-hundred-years-of-solitude',
             resolved: false,
           },
           {
@@ -625,9 +658,9 @@
             authorId: 'demo-editor',
             isOwn: true,
             content:
-              'Good catch — leaving it for now, but the tracklist is only the three singles.',
+              'Good catch — leaving it for now, but the table of contents only covers the first three parts.',
             timestamp: new Date(Date.now() - 3 * HOUR).toISOString(),
-            entrySlug: 'paranoid',
+            entrySlug: 'one-hundred-years-of-solitude',
             resolved: false,
           },
           {
@@ -637,20 +670,20 @@
             isOwn: false,
             content: 'Cover art is missing. (Resolved notes collapse and grey out like this one.)',
             timestamp: new Date(Date.now() - 72 * HOUR).toISOString(),
-            entrySlug: 'paranoid',
+            entrySlug: 'one-hundred-years-of-solitude',
             resolved: true,
           },
         ],
-        'albums/master-of-puppets': [
+        'books/the-master-and-margarita': [
           {
             id: 'note-4',
             author: 'Ada Reviewer',
             authorId: 'ada',
             isOwn: false,
             content:
-              'Release date should be 1986-03-03, not the reissue date. Can you double-check?',
+              'Published date should be 1967, when the censored serialization first ran, not the later uncensored edition. Can you double-check?',
             timestamp: new Date(Date.now() - 5 * HOUR).toISOString(),
-            entrySlug: 'master-of-puppets',
+            entrySlug: 'the-master-and-margarita',
             resolved: false,
           },
         ],

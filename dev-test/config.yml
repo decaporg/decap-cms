@@ -90,20 +90,21 @@ collections: # A list of collections the CMS should be able to edit
       - { label: 'Body', name: 'bodyold', widget: 'markdown', hint: 'Main content goes here.' }
       - { label: 'Body', name: 'bodyold2', widget: 'markdown', hint: 'Main content goes here 2.' }
 
-  - name: 'artists'
-    label: 'Artists'
-    label_singular: 'Artist'
+  - name: 'authors'
+    label: 'Authors'
+    label_singular: 'Author'
     description: >
-      Bands and musicians referenced by Albums below — demonstrates the relation widget's
-      "many albums to one artist" side, identifier_field (entries are titled by "Name", not
-      "Title"), and a square-cropped photo via media_processing.
-    folder: '_artists'
+      54 writers from 32 countries across every inhabited continent, referenced by Books
+      below — demonstrates the relation widget's "many books to one author" side,
+      identifier_field (entries are titled by "Name", not "Title"), and a square-cropped
+      photo via media_processing.
+    folder: '_authors'
     create: true
     identifier_field: name
     fields:
       - { label: 'Name', name: 'name', widget: 'string' }
       - { label: 'Country', name: 'country', widget: 'string', required: false }
-      - { label: 'Formed', name: 'formed_year', widget: 'number', required: false }
+      - { label: 'Born', name: 'born', widget: 'number', required: false }
       - label: 'Photo'
         name: 'photo'
         widget: 'image'
@@ -117,70 +118,75 @@ collections: # A list of collections the CMS should be able to edit
           aspect_ratio: '1:1'
       - { label: 'Bio', name: 'bio', widget: 'markdown', required: false }
 
-  - name: 'albums'
-    label: 'Albums'
-    label_singular: 'Album'
+  - name: 'books'
+    label: 'Books'
+    label_singular: 'Book'
     description: >
-      55 landmark metal albums (10 per decade, 1970s-2010s, plus 5 so far from the 2020s),
-      seeded as sample data. Demonstrates the relation widget (Artist), a per-collection
-      media_folder/public_folder override, sortable_fields/view_filters/view_groups, a
-      regex-validated field (Catalog Number), a summary string transform, a plain list
-      widget (Tracklist), and a media_processing override on the cover art.
-    folder: '_albums'
-    media_folder: 'assets/uploads/albums'
-    public_folder: '/assets/uploads/albums'
+      57 novels, story and poetry collections, and one autobiography, spanning six
+      continents and two centuries, seeded as sample data. Demonstrates the relation
+      widget (Author), a per-collection media_folder/public_folder override,
+      sortable_fields/view_filters/view_groups, a regex-validated field (ISBN), a summary
+      string transform, a plain list widget (Table of Contents), and a media_processing
+      override on the cover art (a portrait crop, unlike Authors' square one).
+    folder: '_books'
+    media_folder: 'assets/uploads/books'
+    public_folder: '/assets/uploads/books'
     create: true
-    summary: "{{title}} ({{release_date | date('YYYY')}}) — {{genre}}"
-    sortable_fields: [title, release_date]
+    summary: "{{title}} ({{published_date | date('YYYY')}}) — {{genre}}"
+    sortable_fields: [title, published_date]
     view_filters:
-      - { label: 'Thrash Metal', field: genre, pattern: 'Thrash Metal' }
-      - { label: 'Death Metal', field: genre, pattern: 'Death Metal' }
-      - { label: 'Black Metal', field: genre, pattern: 'Black Metal' }
+      - { label: 'Magical Realism', field: genre, pattern: 'Magical Realism' }
+      - { label: 'Historical Fiction', field: genre, pattern: 'Historical Fiction' }
+      - { label: 'Dystopian', field: genre, pattern: 'Dystopian' }
     view_groups:
       - { label: 'Genre', field: genre }
-      - { label: 'Artist', field: artist }
+      - { label: 'Author', field: author }
     fields:
       - { label: 'Title', name: 'title', widget: 'string' }
-      - name: artist
-        label: 'Artist'
+      - name: author
+        label: 'Author'
         widget: relation
-        collection: artists
+        collection: authors
         search_fields: ['name']
         display_fields: ['name']
         value_field: '{{slug}}'
-      - { label: 'Release Date', name: 'release_date', widget: 'datetime', format: 'YYYY-MM-DD' }
+      - { label: 'Published', name: 'published_date', widget: 'datetime', format: 'YYYY-MM-DD' }
       - label: 'Genre'
         name: 'genre'
         widget: 'select'
         options:
           [
-            'Heavy Metal',
-            'Hard Rock',
-            'Progressive Rock',
-            'Thrash Metal',
-            'Black Metal',
-            'Death Metal',
-            'Melodic Death Metal',
-            'Groove Metal',
-            'Power Metal',
-            'Gothic Metal',
-            'Industrial Metal',
-            'Symphonic Metal',
-            'Symphonic Black Metal',
-            'Blackened Death Metal',
-            'Progressive Metal',
-            'Blackgaze',
-            'Sludge Metal',
-            'Kawaii Metal',
-            'Grindcore',
-            'Deathcore',
+            'Literary Fiction',
+            'Magical Realism',
+            'Historical Fiction',
+            'Science Fiction',
+            'Fantasy',
+            'Mystery',
+            'Crime',
+            'Romance',
+            'Horror',
+            'Dystopian',
+            'Satire',
+            'Poetry',
+            'Drama',
+            'Short Stories',
+            'Philosophy',
+            'Memoir',
+            'Biography',
+            'Epic',
+            'Young Adult',
+            'Essay',
           ]
-      - label: 'Catalog Number'
-        name: 'catalog_number'
+      - label: 'ISBN'
+        name: 'isbn'
         widget: 'string'
         required: false
-        hint: 'Record-label catalog number, e.g. SST-027'
-        pattern: ['^[A-Z0-9]{2,6}-[A-Z0-9]{1,6}$', 'Must look like a catalog number, e.g. SST-027']
+        hint: 'ISBN-13, e.g. 978-0-14-243723-0'
+        pattern:
+          [
+            '^97[89]-\\d{1,5}-\\d{1,7}-\\d{1,6}-\\d$',
+            'Must look like an ISBN-13, e.g. 978-0-14-243723-0',
+          ]
       - label: 'Cover Art'
         name: 'cover'
         widget: 'image'
@@ -189,10 +195,10 @@ collections: # A list of collections the CMS should be able to edit
           enabled: true
           format: { enabled: true, default: webp }
           quality: 85
-          width: 1000
-          height: 1000
-          aspect_ratio: '1:1'
-      - { label: 'Tracklist', name: 'tracklist', widget: 'list', required: false }
+          width: 800
+          height: 1200
+          aspect_ratio: '2:3'
+      - { label: 'Table of Contents', name: 'table_of_contents', widget: 'list', required: false }
 
   - name: 'faq' # Used in routes, ie.: /admin/collections/:slug/edit
     label: 'FAQ' # Used in the UI
@@ -234,10 +240,10 @@ collections: # A list of collections the CMS should be able to edit
                   required: false,
                 }
 
-      - name: 'authors'
-        label: 'Authors'
-        file: '_data/authors.yml'
-        description: 'Author descriptions'
+      - name: 'blog_authors'
+        label: 'Blog Authors'
+        file: '_data/blog_authors.yml'
+        description: 'Author descriptions (distinct from the Authors collection, which is book authors)'
         fields:
           - name: authors
             label: Authors

@@ -63,7 +63,7 @@ describe('dev-test/config.yml (the demo.decapcms.org config)', () => {
     // Notes pane: enabled globally, cascades to every collection, needs editorial workflow
     expect(cfg.publish_mode).toBe('editorial_workflow');
     expect(cfg.editor.notes).toBe(true);
-    expect(byName.albums.editor.notes).toBe(true);
+    expect(byName.books.editor.notes).toBe(true);
     expect(byName.posts.editor.notes).toBe(true);
 
     // Two i18n structures side by side: global multiple_folders, per-collection single_file
@@ -84,8 +84,8 @@ describe('dev-test/config.yml (the demo.decapcms.org config)', () => {
     expect(byName.pages.nested).toBeTruthy();
     expect(byName.pages.i18n).toBeUndefined();
 
-    // Per-collection media folder override on albums
-    expect(byName.albums.media_folder).toBe('assets/uploads/albums');
-    expect(byName.albums.public_folder).toBe('/assets/uploads/albums');
+    // Per-collection media folder override on books
+    expect(byName.books.media_folder).toBe('assets/uploads/books');
+    expect(byName.books.public_folder).toBe('/assets/uploads/books');
   });
 });
