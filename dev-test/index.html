@@ -152,6 +152,38 @@
         },
       };
 
+      // `structure: multiple_folders` keeps one file per locale under _localized/<locale>/.
+      // `ref` is an `i18n: duplicate` field, so it is identical across locales.
+      window.repoFiles._localized = {
+        en: {
+          'about.md': {
+            content:
+              '---\ntitle: About this demo\nref: about\n---\n\nThis entry exists once per locale, in its own folder.\n',
+          },
+          'contact.md': {
+            content: '---\ntitle: Contact\nref: contact\n---\n\nHow to reach the team.\n',
+          },
+        },
+        es: {
+          'about.md': {
+            content:
+              '---\ntitle: Acerca de esta demo\nref: about\n---\n\nEsta entrada existe una vez por idioma, en su propia carpeta.\n',
+          },
+          'contact.md': {
+            content: '---\ntitle: Contacto\nref: contact\n---\n\nCómo contactar al equipo.\n',
+          },
+        },
+        fr: {
+          'about.md': {
+            content:
+              '---\ntitle: À propos de cette démo\nref: about\n---\n\nCette entrée existe une fois par langue, dans son propre dossier.\n',
+          },
+          'contact.md': {
+            content: '---\ntitle: Contact\nref: contact\n---\n\nComment joindre l’équipe.\n',
+          },
+        },
+      };
+
       window.repoFiles._artists = {
         'black-sabbath.md': {
           content:
@@ -567,6 +599,61 @@
           content:
             '---\ntitle: "Pain Remains"\nartist: lorna-shore\nrelease_date: 2022-10-14T00:00:00.000Z\ngenre: "Deathcore"\ncatalog_number: CMD-093\ntracklist:\n  - "Welcome Back, O’ Sleeping Dreamer"\n  - "Cursed to Die"\n  - "Pain Remains I: Dancing Like Flames"\n---\n\n# Pain Remains\n',
         },
+      };
+
+      // Sample editorial notes for the Notes pane (config: `editor: { notes: true }`).
+      // On a git backend these live as comments on a per-entry GitHub/GitLab issue. The
+      // test-repo backend keeps them in this in-memory object only, so anything a visitor
+      // writes on the demo stays in their browser and is gone on reload.
+      var HOUR = 60 * 60 * 1000;
+      window.repoNotes = {
+        'albums/paranoid': [
+          {
+            id: 'note-1',
+            author: 'Ada Reviewer',
+            authorId: 'ada',
+            isOwn: false,
+            content:
+              'Catalog number here is the US Warner pressing. Should we standardise on the original UK Vertigo number instead?',
+            timestamp: new Date(Date.now() - 26 * HOUR).toISOString(),
+            entrySlug: 'paranoid',
+            resolved: false,
+          },
+          {
+            id: 'note-2',
+            author: 'Demo Editor',
+            authorId: 'demo-editor',
+            isOwn: true,
+            content:
+              'Good catch — leaving it for now, but the tracklist is only the three singles.',
+            timestamp: new Date(Date.now() - 3 * HOUR).toISOString(),
+            entrySlug: 'paranoid',
+            resolved: false,
+          },
+          {
+            id: 'note-3',
+            author: 'Ada Reviewer',
+            authorId: 'ada',
+            isOwn: false,
+            content: 'Cover art is missing. (Resolved notes collapse and grey out like this one.)',
+            timestamp: new Date(Date.now() - 72 * HOUR).toISOString(),
+            entrySlug: 'paranoid',
+            resolved: true,
+          },
+        ],
+        'albums/master-of-puppets': [
+          {
+            id: 'note-4',
+            author: 'Ada Reviewer',
+            authorId: 'ada',
+            isOwn: false,
+            content:
+              'Release date should be 1986-03-03, not the reissue date. Can you double-check?',
+            timestamp: new Date(Date.now() - 5 * HOUR).toISOString(),
+            entrySlug: 'master-of-puppets',
+            resolved: false,
+          },
+        ],
       };
     </script>
   </head>

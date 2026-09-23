@@ -30,6 +30,14 @@ slug:
   encoding: unicode
   clean_accents: true
 
+# Adds the Notes pane to the editor sidebar of every collection. Requires
+# publish_mode: editorial_workflow and an existing (non-new) entry. On a real git
+# backend each entry's notes are stored as comments on a GitHub/GitLab issue; the
+# test-repo backend used by this demo keeps them in memory only, so nothing a
+# visitor writes here leaves the browser or survives a reload.
+editor:
+  notes: true
+
 collections: # A list of collections the CMS should be able to edit
   - name: 'posts' # Used in routes, ie.: /admin/collections/:slug/edit
     label: 'Posts' # Used in the UI
@@ -146,17 +154,33 @@ collections: # A list of collections the CMS should be able to edit
         widget: 'select'
         options:
           [
-            'Heavy Metal', 'Hard Rock', 'Progressive Rock', 'Thrash Metal', 'Black Metal',
-            'Death Metal', 'Melodic Death Metal', 'Groove Metal', 'Power Metal', 'Gothic Metal',
-            'Industrial Metal', 'Symphonic Metal', 'Symphonic Black Metal', 'Blackened Death Metal',
-            'Progressive Metal', 'Blackgaze', 'Sludge Metal', 'Kawaii Metal', 'Grindcore', 'Deathcore',
+            'Heavy Metal',
+            'Hard Rock',
+            'Progressive Rock',
+            'Thrash Metal',
+            'Black Metal',
+            'Death Metal',
+            'Melodic Death Metal',
+            'Groove Metal',
+            'Power Metal',
+            'Gothic Metal',
+            'Industrial Metal',
+            'Symphonic Metal',
+            'Symphonic Black Metal',
+            'Blackened Death Metal',
+            'Progressive Metal',
+            'Blackgaze',
+            'Sludge Metal',
+            'Kawaii Metal',
+            'Grindcore',
+            'Deathcore',
           ]
       - label: 'Catalog Number'
         name: 'catalog_number'
         widget: 'string'
         required: false
         hint: 'Record-label catalog number, e.g. SST-027'
-        pattern: ['^[A-Z0-9]{2,6}-\d{2,6}$', 'Must look like a catalog number, e.g. SST-027']
+        pattern: ['^[A-Z0-9]{2,6}-[A-Z0-9]{1,6}$', 'Must look like a catalog number, e.g. SST-027']
       - label: 'Cover Art'
         name: 'cover'
         widget: 'image'
@@ -236,7 +260,14 @@ collections: # A list of collections the CMS should be able to edit
         search_fields: ['title', 'body']
         value_field: 'title'
       - { label: 'Title', name: 'title', widget: 'string' }
-      - { label: 'ID', name: 'uuid', widget: 'uuid', read_only: true, prefix: '', use_b32_encoding: false }
+      - {
+          label: 'ID',
+          name: 'uuid',
+          widget: 'uuid',
+          read_only: true,
+          prefix: '',
+          use_b32_encoding: false,
+        }
       - { label: 'Boolean', name: 'boolean', widget: 'boolean', default: true }
       - { label: 'Map', name: 'map', widget: 'map' }
       - { label: 'Text', name: 'text', widget: 'text', hint: 'Plain text, not markdown' }
@@ -368,22 +399,41 @@ collections: # A list of collections the CMS should be able to edit
   - name: pages # a nested collection
     label: Pages
     label_singular: 'Page'
+    description: >
+      A nested collection: entries live in a folder tree and the sidebar mirrors that tree.
+      The meta.path option exposes the folder path as an editable field. This collection is
+      deliberately not translated — multiple_folders reads the locale from the path segment
+      just above the file, which only holds at depth 1, so it cannot be combined with nested.
+      See Localized Pages for the multiple_folders demo.
     folder: _pages
     create: true
     preview_path: 'pages/{{slug}}'
     preview_path_preserve_slashes: true
     nested: { depth: 100, subfolders: false }
-    i18n: true
     fields:
       - label: Title
         name: title
         widget: string
-        i18n: translate
       - label: Body
         name: body
         widget: markdown
-        i18n: translate
     meta: { path: { widget: string, label: 'Path' } }
+
+  - name: 'localized_pages'
+    label: 'Localized Pages'
+    label_singular: 'Localized Page'
+    description: >
+      Inherits the global i18n block, structure multiple_folders, so every locale is a
+      separate file under _localized/<locale>/. The editor shows one pane per locale side by
+      side. Fields marked i18n: translate are edited per locale; fields marked i18n: duplicate
+      are copied from the default locale and locked in the others (see Slug).
+    folder: '_localized'
+    create: true
+    i18n: true
+    fields:
+      - { label: 'Title', name: 'title', widget: 'string', i18n: translate }
+      - { label: 'Slug', name: 'ref', widget: 'string', i18n: duplicate }
+      - { label: 'Body', name: 'body', widget: 'markdown', i18n: translate }
 
   - name: 'i18n_posts' # a single file i18n collection with a filter
     label: 'i18n Posts'
