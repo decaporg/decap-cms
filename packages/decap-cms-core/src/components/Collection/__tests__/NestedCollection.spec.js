@@ -266,6 +266,40 @@ describe('NestedCollection', () => {
     expect(asFragment()).toMatchSnapshot();
   });
 
+  it('includes simple drafts in the nested navigation', () => {
+    const nestedCollection = collection.setIn(['nested', 'subfolders'], false);
+    const store = mockStore({
+      config: { publish_mode: 'simple_draft' },
+      entries: fromJS({ pages: { pages: { ids: [] } }, entities: {} }),
+      editorialWorkflow: fromJS({
+        entities: {
+          'pages.draft-page': {
+            collection: 'pages',
+            slug: 'draft-page',
+            path: 'src/pages/folder-a/draft-page/index.md',
+            status: 'draft',
+            data: { title: 'Draft Page' },
+          },
+        },
+      }),
+    });
+
+    const { getByTestId } = renderWithRedux(
+      <MemoryRouter>
+        <ConnectedNestedCollection collection={nestedCollection} />
+      </MemoryRouter>,
+      { store },
+    );
+
+    fireEvent.click(getByTestId('/'));
+    fireEvent.click(getByTestId('/folder-a'));
+
+    expect(getByTestId('/folder-a/draft-page')).toHaveAttribute(
+      'href',
+      '/collections/pages/filter/folder-a/draft-page',
+    );
+  });
+
   describe('getTreeData', () => {
     it('should return nested tree data from entries', () => {
       const entries = fromJS([

@@ -24,15 +24,19 @@ describe('editorialWorkflow actions', () => {
       const { createAssetProxy } = require('../../valueObjects/AssetProxy');
 
       const assetProxy = { name: 'name', path: 'path' };
-      const entry = { mediaFiles: [{ file: { name: 'name' }, id: '1', draft: true }] };
+      const entry = {
+        status: 'pending_review',
+        mediaFiles: [{ file: { name: 'name' }, id: '1', draft: true }],
+      };
       const backend = {
         unpublishedEntry: jest.fn().mockResolvedValue(entry),
       };
 
       const store = mockStore({
-        config: fromJS({
+        config: {
+          publish_mode: 'simple_draft',
           editor: { notes: true },
-        }),
+        },
         collections: fromJS({
           posts: { name: 'posts' },
         }),
@@ -65,16 +69,53 @@ describe('editorialWorkflow actions', () => {
           type: 'UNPUBLISHED_ENTRY_SUCCESS',
           payload: {
             collection: 'posts',
-            entry: { ...entry, mediaFiles: [{ file: { name: 'name' }, id: '1', draft: true }] },
+            entry: {
+              ...entry,
+              status: 'draft',
+              mediaFiles: [{ file: { name: 'name' }, id: '1', draft: true }],
+            },
           },
         });
         expect(actions[3]).toEqual({
           type: 'DRAFT_CREATE_FROM_ENTRY',
           payload: {
-            entry,
+            entry: { ...entry, status: 'draft' },
           },
         });
       });
+    });
+
+    it('normalizes migrated entries in simple draft mode', async () => {
+      const { currentBackend } = require('../../backend');
+      const backend = {
+        unpublishedEntries: jest.fn().mockResolvedValue({
+          entries: [
+            { collection: 'posts', slug: 'other', status: 'pending_review' },
+            { collection: 'posts', slug: 'ready', status: 'pending_publish' },
+          ],
+          pagination: {},
+        }),
+        unpublishedEntry: jest.fn().mockResolvedValue({
+          collection: 'posts',
+          slug: 'post',
+          status: 'pending_review',
+          mediaFiles: [],
+        }),
+      };
+      const store = mockStore({
+        config: { publish_mode: 'simple_draft' },
+        collections: fromJS({ posts: { name: 'posts' } }),
+        editorialWorkflow: fromJS({ pages: {} }),
+      });
+
+      currentBackend.mockReturnValue(backend);
+      const collection = store.getState().collections.get('posts');
+      await store.dispatch(actions.loadUnpublishedEntry(collection, 'post'));
+
+      const migratedEntries = store
+        .getActions()
+        .find(action => action.type === 'UNPUBLISHED_ENTRIES_SUCCESS').payload.entries;
+      expect(migratedEntries.map(entry => entry.status)).toEqual(['draft', 'draft']);
     });
   });
 
@@ -93,6 +134,68 @@ describe('editorialWorkflow actions', () => {
 
       expect(backend.unpublishedEntries).not.toHaveBeenCalled();
       expect(store.getActions()).toHaveLength(0);
+    });
+
+    it('normalizes review states to draft in simple draft mode', async () => {
+      const { currentBackend } = require('../../backend');
+      const backend = {
+        unpublishedEntries: jest.fn().mockResolvedValue({
+          entries: [
+            {
+              collection: 'posts',
+              slug: 'post',
+              status: 'pending_review',
+            },
+          ],
+          pagination: {},
+        }),
+      };
+      const store = mockStore({
+        config: { publish_mode: 'simple_draft' },
+        collections: fromJS({}),
+        editorialWorkflow: fromJS({ pages: {} }),
+      });
+
+      currentBackend.mockReturnValue(backend);
+      store.dispatch(actions.loadUnpublishedEntries(store.getState().collections));
+      await Promise.resolve();
+
+      expect(store.getActions()[1].payload.entries[0].status).toBe('draft');
+    });
+  });
+
+  describe('unpublishPublishedEntry', () => {
+    it('creates a draft in simple draft mode', async () => {
+      const { currentBackend } = require('../../backend');
+      const backend = {
+        deleteEntry: jest.fn().mockResolvedValue(),
+        persistEntry: jest.fn().mockResolvedValue(),
+        reopenIssueForUnpublishedEntry: jest.fn().mockResolvedValue(),
+        unpublishedEntry: jest.fn().mockResolvedValue({
+          collection: 'posts',
+          slug: 'post',
+          status: 'draft',
+          mediaFiles: [],
+        }),
+      };
+      const store = mockStore({
+        config: { publish_mode: 'simple_draft' },
+        collections: fromJS({ posts: { name: 'posts' } }),
+        entries: fromJS({
+          entities: {
+            'posts.post': { collection: 'posts', slug: 'post', mediaFiles: [] },
+          },
+        }),
+        editorialWorkflow: fromJS({ pages: { ids: ['post'] } }),
+      });
+
+      currentBackend.mockReturnValue(backend);
+      const collection = store.getState().collections.get('posts');
+      await store.dispatch(actions.unpublishPublishedEntry(collection, 'post'));
+
+      expect(backend.persistEntry).toHaveBeenCalledWith(
+        expect.objectContaining({ status: 'draft' }),
+      );
     });
   });
 

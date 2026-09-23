@@ -13,6 +13,7 @@ import {
   traverseCollectionCursor as actionTraverseCollectionCursor,
 } from '../../../actions/entries';
 import { loadUnpublishedEntries } from '../../../actions/editorialWorkflow';
+import { usesUnpublishedEntries } from '../../../constants/publishModes';
 import {
   selectEntries,
   selectEntriesLoaded,
@@ -242,7 +243,7 @@ function mapStateToProps(state, ownProps) {
   const rawCursor = selectCollectionEntriesCursor(state.cursors, collection.get('name'));
   const cursor = Cursor.create(rawCursor).clearData();
 
-  const isEditorialWorkflowEnabled = state.config?.publish_mode === 'editorial_workflow';
+  const isEditorialWorkflowEnabled = usesUnpublishedEntries(state.config?.publish_mode);
   const unpublishedEntriesLoaded = isEditorialWorkflowEnabled
     ? !!state.editorialWorkflow?.getIn(['pages', 'ids'], false)
     : true;
@@ -281,6 +282,15 @@ function mapStateToProps(state, ownProps) {
           });
         }
       });
+
+      if (collection.has('nested')) {
+        return filterNestedEntries(
+          filterTerm || '',
+          collection.get('folder'),
+          unpublishedEntries,
+          collection.get('nested').get('subfolders') !== false,
+        );
+      }
 
       return unpublishedEntries;
     },

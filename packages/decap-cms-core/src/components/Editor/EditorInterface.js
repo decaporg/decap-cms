@@ -277,6 +277,7 @@ class EditorInterface extends Component {
       canCreateNewEntry,
       displayUrl,
       hasWorkflow,
+      simpleDraftMode,
       useOpenAuthoring,
       hasUnpublishedChanges,
       isNewEntry,
@@ -436,6 +437,7 @@ class EditorInterface extends Component {
           displayUrl={displayUrl}
           collection={collection}
           hasWorkflow={hasWorkflow}
+          simpleDraftMode={simpleDraftMode}
           useOpenAuthoring={useOpenAuthoring}
           hasUnpublishedChanges={hasUnpublishedChanges}
           isNewEntry={isNewEntry}
@@ -520,6 +522,7 @@ EditorInterface.propTypes = {
   canCreateNewEntry: PropTypes.bool,
   displayUrl: PropTypes.string,
   hasWorkflow: PropTypes.bool,
+  simpleDraftMode: PropTypes.bool,
   useOpenAuthoring: PropTypes.bool,
   hasUnpublishedChanges: PropTypes.bool,
   isNewEntry: PropTypes.bool,

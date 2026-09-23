@@ -1,12 +1,15 @@
 import { render } from '@testing-library/react';
 import { fromJS } from 'immutable';
+import React from 'react';
 
 import { Editor } from '../Editor';
 
 jest.mock('lodash/debounce', () => {
   const flush = jest.fn();
+  const cancel = jest.fn();
   return func => {
     func.flush = flush;
+    func.cancel = cancel;
     return func;
   };
 });
@@ -50,6 +53,7 @@ describe('Editor', () => {
     localBackup: fromJS({}),
     retrieveLocalBackup: jest.fn(),
     persistLocalBackup: jest.fn(),
+    deleteLocalBackup: jest.fn(),
     location: { search: '?title=title' },
   };
 
@@ -91,6 +95,28 @@ describe('Editor', () => {
       />,
     );
     expect(asFragment()).toMatchSnapshot();
+  });
+
+  it('should publish directly from draft in simple draft mode', async () => {
+    const ref = React.createRef();
+    window.confirm = jest.fn().mockReturnValue(true);
+
+    render(
+      <Editor
+        {...props}
+        ref={ref}
+        simpleDraftMode={true}
+        currentStatus="draft"
+        newEntry={false}
+        entryDraft={fromJS({ entry: { slug: 'slug' }, hasChanged: false })}
+        entry={fromJS({ isFetching: false })}
+      />,
+    );
+    jest.clearAllMocks();
+
+    await ref.current.handlePublishEntry();
+
+    expect(props.publishUnpublishedEntry).toHaveBeenCalledWith('posts', 'slug');
   });
 
   it('should call retrieveLocalBackup on mount', () => {

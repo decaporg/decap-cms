@@ -145,6 +145,40 @@ describe('EntriesCollection', () => {
     expect(asFragment()).toMatchSnapshot();
   });
 
+  it('filters unpublished entries to the current nested path', () => {
+    Entries.mockClear();
+
+    const nestedCollection = collection.set('nested', fromJS({ depth: 10, subfolders: false }));
+    const store = createMockStore(nestedCollection, [], {
+      config: { publish_mode: 'simple_draft' },
+      editorialWorkflow: fromJS({
+        pages: { ids: ['inside', 'outside'] },
+        entities: {
+          'pages.inside': {
+            collection: 'pages',
+            slug: 'inside',
+            path: 'src/pages/dir1/inside.md',
+            status: 'draft',
+          },
+          'pages.outside': {
+            collection: 'pages',
+            slug: 'outside',
+            path: 'src/pages/dir2/outside.md',
+            status: 'draft',
+          },
+        },
+      }),
+    });
+
+    renderWithRedux(
+      <ConnectedEntriesCollection collection={nestedCollection} filterTerm="dir1" />,
+      { store },
+    );
+
+    const getUnpublishedEntries = Entries.mock.calls[0][0].getUnpublishedEntries;
+    expect(getUnpublishedEntries('pages').map(entry => entry.get('slug'))).toEqual(['inside']);
+  });
+
   it('should render show only immediate children for nested collection', () => {
     const entriesArray = [
       { slug: 'index', path: 'src/pages/index.md', data: { title: 'Root' } },

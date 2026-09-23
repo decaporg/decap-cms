@@ -12,7 +12,9 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import sortBy from 'lodash/sortBy';
 
 import { selectEntries } from '../../reducers/entries';
+import { selectUnpublishedEntriesByStatus } from '../../reducers';
 import { selectEntryCollectionTitle } from '../../reducers/collections';
+import { SIMPLE_DRAFT, status } from '../../constants/publishModes';
 
 const { addFileTemplateFields } = stringTemplate;
 
@@ -323,7 +325,19 @@ export class NestedCollection extends Component {
 
 function mapStateToProps(state, ownProps) {
   const { collection } = ownProps;
-  const entries = selectEntries(state.entries, collection) || List();
+  let entries = selectEntries(state.entries, collection) || List();
+
+  if (state.config?.publish_mode === SIMPLE_DRAFT) {
+    const publishedPaths = entries.map(entry => entry.get('path')).toSet();
+    const unpublishedEntries =
+      selectUnpublishedEntriesByStatus(state, status.get('DRAFT')) || List();
+    const collectionName = collection.get('name');
+    const uniqueUnpublishedEntries = unpublishedEntries.filter(
+      entry => entry.get('collection') === collectionName && !publishedPaths.has(entry.get('path')),
+    );
+    entries = entries.concat(uniqueUnpublishedEntries);
+  }
+
   return { entries };
 }
 

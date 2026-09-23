@@ -2002,7 +2002,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
   display: inline-block;
 }
 
-.emotion-23:hover+.e1d2l9mo26 {
+.emotion-23:hover+.e1d2l9mo27 {
   visibility: visible;
   opacity: 0.9;
 }

@@ -54,6 +54,22 @@ describe('EditorToolbar', () => {
     expect(asFragment()).toMatchSnapshot();
   });
 
+  it('should show a draft status without editorial workflow states in simple draft mode', () => {
+    const { getByText, queryByText } = render(
+      <EditorToolbar
+        {...props}
+        hasWorkflow={true}
+        simpleDraftMode={true}
+        hasUnpublishedChanges={true}
+        currentStatus="draft"
+      />,
+    );
+
+    expect(getByText('editor.editorToolbar.status')).toBeInTheDocument();
+    expect(queryByText('editor.editorToolbar.inReview')).not.toBeInTheDocument();
+    expect(queryByText('editor.editorToolbar.ready')).not.toBeInTheDocument();
+  });
+
   [false, true].forEach(useOpenAuthoring => {
     it(`should render with workflow controls hasUnpublishedChanges=true,isNewEntry=false,isModification=true,useOpenAuthoring=${useOpenAuthoring}`, () => {
       const { asFragment } = render(
