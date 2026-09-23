@@ -6,8 +6,11 @@ site_url: https://example.com
 publish_mode: editorial_workflow
 media_folder: assets/uploads
 
+# Every locale of an entry lives in one file, keyed by locale. The test backend this demo
+# runs on pages its file listing 10 files at a time and groups i18n entries per page, so a
+# multiple_folders collection whose locale files straddle a page boundary would not merge.
 i18n:
-  structure: multiple_folders
+  structure: single_file
   locales: [en, es, fr]
   default_locale: en
 
@@ -30,21 +33,17 @@ slug:
   encoding: unicode
   clean_accents: true
 
-# Adds the Notes pane to the editor sidebar of every collection. Requires
-# publish_mode: editorial_workflow and an existing (non-new) entry. On a real git
-# backend each entry's notes are stored as comments on a GitHub/GitLab issue; the
-# test-repo backend used by this demo keeps them in memory only, so nothing a
-# visitor writes here leaves the browser or survives a reload.
 editor:
   notes: true
 
 collections: # A list of collections the CMS should be able to edit
   - name: 'posts' # Used in routes, ie.: /admin/collections/:slug/edit
-    label: 'Posts' # Used in the UI
+    label: 'Blog Posts' # Used in the UI
     label_singular: 'Post' # Used in the UI, ie: "New Post"
     description: >
-      The description is a great place for tone setting, high level information, and editing
-      guidelines that are specific to a collection.
+      Articles about Decap CMS and static site publishing. Shows a slug template, a summary
+      transform, sortable_fields, and view_filters/view_groups driven by real fields
+      (Category and Featured) rather than test flags.
     folder: '_posts'
     slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
     summary: '{{title}} -- {{year}}/{{month}}/{{day}}'
@@ -55,30 +54,37 @@ collections: # A list of collections the CMS should be able to edit
       - title
       - { field: date, default_sort: desc }
     view_filters:
-      - label: Posts With Index
-        field: title
-        pattern: 'This is post #'
-      - label: Posts Without Index
-        field: title
-        pattern: front matter post
-      - label: Relation Test
-        field: relation_test
-        pattern: true
+      - { label: 'Tutorials', field: category, pattern: 'Tutorial' }
+      - { label: 'Release Notes', field: category, pattern: 'Release Notes' }
+      - { label: 'Featured', field: featured, pattern: true }
     view_groups:
       - label: Year
         field: date
         pattern: \d{4}
-      - label: Relation Test
-        field: relation_test
+      - { label: 'Category', field: category }
+      - { label: 'Featured', field: featured }
     fields: # The fields each document in this collection have
       - { label: 'Title', name: 'title', widget: 'string', tagname: 'h1' }
-      - { label: 'Relation Test', name: 'relation_test', widget: 'hidden', default: true }
       - {
           label: 'Publish Date',
           name: 'date',
           widget: 'datetime',
           format: 'YYYY-MM-DD HH:mm',
           default: '{{now}}',
+        }
+      - label: 'Category'
+        name: 'category'
+        widget: 'select'
+        required: false
+        default: 'Tutorial'
+        options: ['Tutorial', 'Release Notes', 'Case Study', 'Opinion']
+      - {
+          label: 'Featured',
+          name: 'featured',
+          widget: 'boolean',
+          required: false,
+          default: false,
+          hint: 'Featured posts are pinned to the top of the blog index.',
         }
       - label: 'Cover Image'
         name: 'image'
@@ -90,15 +96,12 @@ collections: # A list of collections the CMS should be able to edit
       - { label: 'Body', name: 'bodyold', widget: 'markdown', hint: 'Main content goes here.' }
       - { label: 'Body', name: 'bodyold2', widget: 'markdown', hint: 'Main content goes here 2.' }
 
-  - name: 'authors'
-    label: 'Authors'
-    label_singular: 'Author'
+  - name: 'writers'
+    label: 'Writers'
+    label_singular: 'Writer'
     description: >
-      54 writers from 32 countries across every inhabited continent, referenced by Books
-      below — demonstrates the relation widget's "many books to one author" side,
-      identifier_field (entries are titled by "Name", not "Title"), and a square-cropped
-      photo via media_processing.
-    folder: '_authors'
+      This collection is a list of writers.
+    folder: '_writers'
     create: true
     identifier_field: name
     fields:
@@ -122,12 +125,7 @@ collections: # A list of collections the CMS should be able to edit
     label: 'Books'
     label_singular: 'Book'
     description: >
-      57 novels, story and poetry collections, and one autobiography, spanning six
-      continents and two centuries, seeded as sample data. Demonstrates the relation
-      widget (Author), a per-collection media_folder/public_folder override,
-      sortable_fields/view_filters/view_groups, a regex-validated field (ISBN), a summary
-      string transform, a plain list widget (Table of Contents), and a media_processing
-      override on the cover art (a portrait crop, unlike Authors' square one).
+      A collection of good books from all over the world
     folder: '_books'
     media_folder: 'assets/uploads/books'
     public_folder: '/assets/uploads/books'
@@ -146,7 +144,7 @@ collections: # A list of collections the CMS should be able to edit
       - name: author
         label: 'Author'
         widget: relation
-        collection: authors
+        collection: writers
         search_fields: ['name']
         display_fields: ['name']
         value_field: '{{slug}}'
@@ -202,11 +200,22 @@ collections: # A list of collections the CMS should be able to edit
 
   - name: 'faq' # Used in routes, ie.: /admin/collections/:slug/edit
     label: 'FAQ' # Used in the UI
+    label_singular: 'FAQ Item'
+    description: >
+      The multilingual collection. It inherits the global i18n block, structure
+      single_file, so every locale of an answer lives in one file keyed by locale, and the
+      editor shows one pane per locale side by side. Question and Answer are marked
+      i18n: translate (edited per locale); Published is i18n: duplicate (set once, copied
+      to every locale). The collection filter hides anything not published, so one draft
+      answer in the seed data never appears in this list.
     folder: '_faqs'
     create: true # Allow users to create new documents in this collection
+    i18n: true
+    filter: { field: 'published', value: true }
     fields: # The fields each document in this collection have
-      - { label: 'Question', name: 'title', widget: 'string', tagname: 'h1' }
-      - { label: 'Answer', name: 'body', widget: 'markdown' }
+      - { label: 'Question', name: 'title', widget: 'string', tagname: 'h1', i18n: translate }
+      - { label: 'Published', name: 'published', widget: 'boolean', default: true, i18n: duplicate }
+      - { label: 'Answer', name: 'body', widget: 'markdown', i18n: translate }
 
   - name: 'settings'
     label: 'Settings'
@@ -240,10 +249,10 @@ collections: # A list of collections the CMS should be able to edit
                   required: false,
                 }
 
-      - name: 'blog_authors'
-        label: 'Blog Authors'
-        file: '_data/blog_authors.yml'
-        description: 'Author descriptions (distinct from the Authors collection, which is book authors)'
+      - name: 'authors'
+        label: 'Authors'
+        file: '_data/authors.yml'
+        description: 'Bylines available to blog posts'
         fields:
           - name: authors
             label: Authors
@@ -403,14 +412,14 @@ collections: # A list of collections the CMS should be able to edit
               - { label: 'Image', name: 'image', widget: 'image' }
               - { label: 'File', name: 'file', widget: 'file' }
   - name: pages # a nested collection
-    label: Pages
+    label: Nested Pages
     label_singular: 'Page'
     description: >
-      A nested collection: entries live in a folder tree and the sidebar mirrors that tree.
-      The meta.path option exposes the folder path as an editable field. This collection is
-      deliberately not translated — multiple_folders reads the locale from the path segment
-      just above the file, which only holds at depth 1, so it cannot be combined with nested.
-      See Localized Pages for the multiple_folders demo.
+      A nested collection: entries live in a folder tree and the sidebar mirrors that tree,
+      and the meta.path option exposes the folder path as an editable field. Note that
+      nested cannot be combined with the multiple_folders i18n structure: that structure
+      reads the locale from the path segment just above the file, which only holds at
+      depth 1. See FAQ for the i18n demo.
     folder: _pages
     create: true
     preview_path: 'pages/{{slug}}'
@@ -424,38 +433,3 @@ collections: # A list of collections the CMS should be able to edit
         name: body
         widget: markdown
     meta: { path: { widget: string, label: 'Path' } }
-
-  - name: 'localized_pages'
-    label: 'Localized Pages'
-    label_singular: 'Localized Page'
-    description: >
-      Inherits the global i18n block, structure multiple_folders, so every locale is a
-      separate file under _localized/<locale>/. The editor shows one pane per locale side by
-      side. Fields marked i18n: translate are edited per locale; fields marked i18n: duplicate
-      are copied from the default locale and locked in the others (see Slug).
-    folder: '_localized'
-    create: true
-    i18n: true
-    fields:
-      - { label: 'Title', name: 'title', widget: 'string', i18n: translate }
-      - { label: 'Slug', name: 'ref', widget: 'string', i18n: duplicate }
-      - { label: 'Body', name: 'body', widget: 'markdown', i18n: translate }
-
-  - name: 'i18n_posts' # a single file i18n collection with a filter
-    label: 'i18n Posts'
-    label_singular: 'i18n Post'
-    description: >
-      Entries of this collection keep every locale in a single file. The collection filter
-      hides the drafted entry, so only the two published ones should be listed.
-    folder: '_i18n_posts'
-    create: true
-    # Overrides the global i18n block, which uses multiple_folders
-    i18n:
-      structure: single_file
-      locales: [en, de]
-      default_locale: en
-    filter: { field: 'draft', value: false }
-    fields:
-      - { label: 'Title', name: 'title', widget: 'string', i18n: true }
-      - { label: 'Draft', name: 'draft', widget: 'boolean', default: false, i18n: duplicate }
-      - { label: 'Body', name: 'body', widget: 'markdown', i18n: true }

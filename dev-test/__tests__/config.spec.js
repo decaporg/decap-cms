@@ -66,16 +66,22 @@ describe('dev-test/config.yml (the demo.decapcms.org config)', () => {
     expect(byName.books.editor.notes).toBe(true);
     expect(byName.posts.editor.notes).toBe(true);
 
-    // Two i18n structures side by side: global multiple_folders, per-collection single_file
-    expect(byName.localized_pages.i18n).toMatchObject({
-      structure: 'multiple_folders',
+    // FAQ is the multilingual collection. It uses single_file so that every locale of an
+    // entry sits in one file: the test backend pages its listing 10 files at a time and
+    // groups i18n entries per page, so multiple_folders would fail to merge locales once a
+    // collection grows past a page. It also carries the collection filter that hides
+    // unpublished answers — filter over an i18n collection is a past regression.
+    expect(byName.faq.i18n).toMatchObject({
+      structure: 'single_file',
       locales: ['en', 'es', 'fr'],
       default_locale: 'en',
     });
-    expect(byName.i18n_posts.i18n).toMatchObject({
-      structure: 'single_file',
-      locales: ['en', 'de'],
-      default_locale: 'en',
+    expect(byName.faq.filter).toMatchObject({ field: 'published', value: true });
+    const faqFields = Object.fromEntries(byName.faq.fields.map(f => [f.name, f.i18n]));
+    expect(faqFields).toMatchObject({
+      title: 'translate',
+      body: 'translate',
+      published: 'duplicate',
     });
 
     // `nested` cannot be combined with `multiple_folders`: getLocaleFromPath reads the
@@ -83,6 +89,23 @@ describe('dev-test/config.yml (the demo.decapcms.org config)', () => {
     // Opening a nested entry would otherwise render blank fields.
     expect(byName.pages.nested).toBeTruthy();
     expect(byName.pages.i18n).toBeUndefined();
+
+    // Blog Posts drives its view filters and groups off real fields, not test flags
+    expect(byName.posts.label).toBe('Blog Posts');
+    expect(byName.posts.view_filters.map(f => f.field).sort()).toEqual([
+      'category',
+      'category',
+      'featured',
+    ]);
+    expect(byName.posts.view_groups.map(g => g.field).sort()).toEqual([
+      'category',
+      'date',
+      'featured',
+    ]);
+
+    // The book relation points at the renamed Writers collection
+    expect(byName.writers).toBeTruthy();
+    expect(byName.books.fields.find(f => f.name === 'author').collection).toBe('writers');
 
     // Per-collection media folder override on books
     expect(byName.books.media_folder).toBe('assets/uploads/books');
