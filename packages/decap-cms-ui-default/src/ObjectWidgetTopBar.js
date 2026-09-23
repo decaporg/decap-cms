@@ -1,4 +1,4 @@
-import React from 'react';
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import { css } from '@emotion/react';
@@ -49,7 +49,7 @@ const AddButton = styled.button`
   }
 `;
 
-class ObjectWidgetTopBar extends React.Component {
+class ObjectWidgetTopBar extends Component {
   static propTypes = {
     allowAdd: PropTypes.bool,
     types: ImmutablePropTypes.list,

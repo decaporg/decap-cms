@@ -587,14 +587,21 @@ export default class API {
 
     return pullRequests.filter(pr => {
       const label = pr.head?.label;
-      if (label) {
-        return label === head;
-      }
       const repoOwner = pr.head?.repo?.owner?.login;
       const ref = pr.head?.ref;
+
+      if (label === head) {
+        return true;
+      }
       if (repoOwner && ref) {
         return `${repoOwner}:${ref}` === head;
       }
+
+      // Forgejo may return a branch-only label for same-repository PRs.
+      if (ref) {
+        return `${this.repoOwner}:${ref}` === head;
+      }
+
       return false;
     });
   }

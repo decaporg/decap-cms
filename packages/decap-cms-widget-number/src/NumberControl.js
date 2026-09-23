@@ -1,4 +1,4 @@
-import React from 'react';
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 const ValidationErrorTypes = {
@@ -48,7 +48,7 @@ export function validateMinMax(value, min, max, field, t) {
   return error;
 }
 
-export default class NumberControl extends React.Component {
+export default class NumberControl extends Component {
   static propTypes = {
     field: ImmutablePropTypes.map.isRequired,
     onChange: PropTypes.func.isRequired,

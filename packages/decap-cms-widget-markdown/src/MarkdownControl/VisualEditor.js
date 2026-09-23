@@ -164,7 +164,11 @@ function Editor(props) {
   }
 
   function handleInsertShortcode(pluginConfig) {
-    insertShortcode(editor, pluginConfig);
+    insertShortcode(editor, pluginConfig, {
+      getAsset: props.getAsset,
+      resolveWidget: props.resolveWidget,
+      t: props.t,
+    });
   }
 
   function handleKeyDown(event) {

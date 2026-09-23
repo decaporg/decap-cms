@@ -61,7 +61,7 @@ export function parseDateFromEntry(entry: Map<string, unknown>, dateFieldName?: 
     return;
   }
 
-  const entryData = entry.getIn(['data']);
+  const entryData = entry.getIn(['data']) as Map<string, unknown>;
   return parseDateFromEntryData(entryData, dateFieldName);
 }
 
@@ -72,7 +72,7 @@ export function parseDateFromEntryData(
   if (!dateFieldName) {
     return;
   }
-  const dateValue = entryData.getIn([dateFieldName]);
+  const dateValue = entryData.getIn([dateFieldName]) as dayjs.ConfigType;
   const dateDayjs = dateValue && dayjs(dateValue);
   if (dateDayjs && dateDayjs.isValid()) {
     return dateDayjs.toDate();
@@ -187,11 +187,11 @@ export function compileStringTemplate(
   const compiledString = template.replace(
     RegExp(templateVariablePattern, 'g'),
     (_full, key: string, _part, filter: string) => {
-      let replacement;
+      let replacement: string;
       const explicitFieldReplacement = getExplicitFieldReplacement(key, data);
 
       if (explicitFieldReplacement) {
-        replacement = explicitFieldReplacement;
+        replacement = explicitFieldReplacement as string;
       } else if (dateParsers[key] && !date) {
         missingRequiredDate = true;
         return '';

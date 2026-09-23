@@ -1,7 +1,7 @@
 {
   "packages": ["packages/*"],
   "version": "independent",
-  "npmClient": "npm",
+  "npmClient": "pnpm",
   "loglevel": "success",
   "command": {
     "version": {

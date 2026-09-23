@@ -1,4 +1,4 @@
-import React from 'react';
+import { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
@@ -63,7 +63,7 @@ function withGroups(groups, entries, EntriesToRender, t) {
   });
 }
 
-export class EntriesCollection extends React.Component {
+export class EntriesCollection extends Component {
   static propTypes = {
     collection: ImmutablePropTypes.map.isRequired,
     collections: ImmutablePropTypes.iterable,
@@ -180,10 +180,10 @@ export class EntriesCollection extends React.Component {
 
     if (groups && groups.length > 0) {
       return (
-        <React.Fragment>
+        <Fragment>
           {withGroups(groups, entries, EntriesToRender, t)}
           <EntriesToRender entries={entries} showPublishedEntries={false} />
-        </React.Fragment>
+        </Fragment>
       );
     }
 

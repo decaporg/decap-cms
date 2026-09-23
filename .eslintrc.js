@@ -37,6 +37,9 @@ module.exports = {
   rules: {
     'no-console': [0],
     'react/prop-types': [0],
+    // With the new React JSX transform (jsx: "react-jsx"), React doesn't need to be in scope
+    'react/react-in-jsx-scope': 'off',
+    'react/jsx-uses-react': 'off',
     'import/no-named-as-default': 0,
     'import/order': [
       'error',
@@ -80,6 +83,14 @@ module.exports = {
   },
   overrides: [
     {
+      files: ['packages/decap-cms-widget-richtext/src/**/*.js'],
+      rules: {
+        // PlateJS re-exports named APIs through package export subpaths that
+        // eslint-plugin-import does not reliably trace, even though Node resolves them.
+        'import/named': 'off',
+      },
+    },
+    {
       files: ['*.ts', '*.tsx'],
       parser: '@typescript-eslint/parser',
       extends: [
@@ -111,6 +122,9 @@ module.exports = {
           'error',
           { functions: false, classes: true, variables: true },
         ],
+        // With the new React JSX transform (jsx: "react-jsx"), React doesn't need to be in scope
+        'react/react-in-jsx-scope': 'off',
+        'react/jsx-uses-react': 'off',
       },
     },
   ],

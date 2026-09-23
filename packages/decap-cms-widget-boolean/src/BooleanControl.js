@@ -1,5 +1,5 @@
+import { Component } from 'react';
 import PropTypes from 'prop-types';
-import React from 'react';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { css } from '@emotion/react';
 import { Toggle, ToggleBackground, colors } from 'decap-cms-ui-default';
@@ -15,7 +15,7 @@ function BooleanBackground({ isActive, ...props }) {
   );
 }
 
-export default class BooleanControl extends React.Component {
+export default class BooleanControl extends Component {
   render() {
     const { value, forID, onChange, classNameWrapper, setActiveStyle, setInactiveStyle } =
       this.props;

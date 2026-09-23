@@ -61,7 +61,7 @@ function MediaLibraryTop({
   hasSelection,
   isPersisting,
   isDeleting,
-  selectedFile,
+  selectedFile = {},
 }) {
   const shouldShowButtonLoader = isPersisting || isDeleting;
   const uploadEnabled = !shouldShowButtonLoader;

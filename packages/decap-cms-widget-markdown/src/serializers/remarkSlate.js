@@ -21,6 +21,7 @@ const typeMap = {
   link: 'link',
   image: 'image',
   shortcode: 'shortcode',
+  'inline-shortcode': 'inline-shortcode',
 };
 
 /**
@@ -277,6 +278,12 @@ export default function remarkToSlate({ voidCodeBlock } = {}) {
         const nodes = [createText('')];
         const data = { ...node.data, id: node.data.shortcode, shortcodeNew: true };
         return createBlock(typeMap[node.type], nodes, { data });
+      }
+
+      case 'inline-shortcode': {
+        const nodes = [createText('')];
+        const data = { ...node.data, id: node.data.shortcode, shortcodeNew: true };
+        return createInline(typeMap[node.type], { data }, nodes);
       }
 
       case 'text': {

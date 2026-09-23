@@ -9,6 +9,7 @@ import {
   updateFieldByKey,
   selectDefaultSortField,
   getFileFromSlug,
+  selectEntryCollectionTitle,
 } from '../reducers/collections';
 import { selectIntegration, selectPublishedSlugs } from '../reducers';
 import { getIntegrationProvider } from '../integrations';
@@ -41,6 +42,7 @@ import type {
   ViewFilter,
   ViewGroup,
   Entry,
+  MediaFile,
 } from '../types/redux';
 import type { EntryValue } from '../valueObjects/Entry';
 import type { Backend } from '../backend';
@@ -424,7 +426,7 @@ export function draftDuplicateEntry(entry: EntryMap) {
     payload: createEntry(entry.get('collection'), '', '', {
       data: entry.get('data'),
       i18n: entry.get('i18n'),
-      mediaFiles: entry.get('mediaFiles').toJS(),
+      mediaFiles: entry.get('mediaFiles').toJS() as unknown as MediaFile[],
     }),
   };
 }
@@ -551,7 +553,7 @@ export function retrieveLocalBackup(collection: Collection, slug: string) {
           } else {
             return getAsset({
               collection,
-              entry: fromJS(entry),
+              entry: fromJS(entry) as unknown as EntryMap,
               path: file.path,
               field: file.field,
             })(dispatch, getState);
@@ -608,16 +610,16 @@ export async function tryLoadEntry(state: State, collection: Collection, slug: s
   return loadedEntry;
 }
 
+type AppendAction = { action: string; append: boolean };
+
 const appendActions = fromJS({
   ['append_next']: { action: 'next', append: true },
-});
+}) as Map<string, Map<string, string | boolean>>;
 
 function addAppendActionsToCursor(cursor: Cursor) {
   return Cursor.create(cursor).updateStore('actions', (actions: Set<string>) => {
     return actions.union(
-      appendActions
-        .filter((v: Map<string, string | boolean>) => actions.has(v.get('action') as string))
-        .keySeq(),
+      appendActions.filter(v => actions.has(v.get('action') as string)).keySeq(),
     );
   });
 }
@@ -724,7 +726,7 @@ export function traverseCollectionCursor(collection: Collection, action: string)
     const backend = currentBackend(state.config);
 
     const { action: realAction, append } = appendActions.has(action)
-      ? appendActions.get(action).toJS()
+      ? (appendActions.get(action)!.toJS() as AppendAction)
       : { action, append: false };
     const cursor = selectCollectionEntriesCursor(state.cursors, collection.get('name'));
 
@@ -1247,6 +1249,10 @@ export function startNotesPolling(collection: Collection, slug: string) {
 
       const callbacks = {
         onUpdate: (notes: Note[], changes: IssueChange[]) => {
+          if (getState().entryDraft?.getIn(['entry', 'slug']) !== slug) {
+            return;
+          }
+
           dispatch(notesUpdatedFromPolling(collection, slug, notes, changes));
           dispatch(loadNotesForEntry(notes));
         },
@@ -1308,10 +1314,21 @@ export function refreshNotesNow(collection: Collection, slug: string) {
 
 export function persistNote(collection: Collection, slug: string, note: Omit<Note, 'id'>) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
-    const backend = currentBackend(getState().config);
+    const state = getState();
+    const backend = currentBackend(state.config);
+    // Named off the open draft rather than fetched: this runs from the editor,
+    // so the entry is already in hand, and `selectEntryCollectionTitle` is the
+    // same thing the collection list shows — it honours a `summary` template,
+    // a files collection's label, and an inferred title field, none of which a
+    // backend reading the raw file can work out for itself.
+    const draftEntry = state.entryDraft?.get('entry');
+    const entryTitle =
+      draftEntry && draftEntry.get('slug') === slug
+        ? selectEntryCollectionTitle(collection, draftEntry)
+        : undefined;
     dispatch(notePersisting(collection, slug, note as Note));
     try {
-      const savedNote = await backend.addNote(collection.get('name'), slug, note);
+      const savedNote = await backend.addNote(collection.get('name'), slug, note, entryTitle);
       dispatch(notePersisted(collection, slug, savedNote));
       dispatch(addNote(savedNote));
       dispatch(

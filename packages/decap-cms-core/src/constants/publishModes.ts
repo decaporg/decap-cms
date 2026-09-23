@@ -14,9 +14,9 @@ export const Statues = {
 export const status = OrderedMap(Statues);
 
 export const statusDescriptions = Map({
-  [status.get('DRAFT')]: 'Draft',
-  [status.get('PENDING_REVIEW')]: 'Waiting for Review',
-  [status.get('PENDING_PUBLISH')]: 'Waiting to go live',
+  [Statues.DRAFT]: 'Draft',
+  [Statues.PENDING_REVIEW]: 'Waiting for Review',
+  [Statues.PENDING_PUBLISH]: 'Waiting to go live',
 });
 
 export type Status = keyof typeof Statues;

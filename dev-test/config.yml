@@ -384,3 +384,22 @@ collections: # A list of collections the CMS should be able to edit
         widget: markdown
         i18n: translate
     meta: { path: { widget: string, label: 'Path' } }
+
+  - name: 'i18n_posts' # a single file i18n collection with a filter
+    label: 'i18n Posts'
+    label_singular: 'i18n Post'
+    description: >
+      Entries of this collection keep every locale in a single file. The collection filter
+      hides the drafted entry, so only the two published ones should be listed.
+    folder: '_i18n_posts'
+    create: true
+    # Overrides the global i18n block, which uses multiple_folders
+    i18n:
+      structure: single_file
+      locales: [en, de]
+      default_locale: en
+    filter: { field: 'draft', value: false }
+    fields:
+      - { label: 'Title', name: 'title', widget: 'string', i18n: true }
+      - { label: 'Draft', name: 'draft', widget: 'boolean', default: false, i18n: duplicate }
+      - { label: 'Body', name: 'body', widget: 'markdown', i18n: true }

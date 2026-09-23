@@ -7,7 +7,7 @@ import {
 
 describe('deploys reducer', () => {
   it('should return the default state', () => {
-    const result = deploys(undefined, { type: 'UNKNOWN' });
+    const result = deploys(undefined, { type: 'UNKNOWN' } as never);
     expect(result).toEqual({});
   });
 

@@ -1,4 +1,5 @@
-import React from 'react';
+// eslint-disable-next-line no-unused-vars
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { translate } from 'react-polyglot';
 import styled from '@emotion/styled';
@@ -116,7 +117,7 @@ function RecoveredEntry({ entry, t }) {
       <hr />
       <h2>{t('ui.errorBoundary.recoveredEntry.heading')}</h2>
       <strong>{t('ui.errorBoundary.recoveredEntry.warning')}</strong>
-      <CopyButton onClick={() => navigator.clipboard.writeText(entry)}>
+      <CopyButton onClick={() => navigator.clipboard?.writeText(entry)}>
         {t('ui.errorBoundary.recoveredEntry.copyButtonLabel')}
       </CopyButton>
       <pre>
@@ -126,7 +127,7 @@ function RecoveredEntry({ entry, t }) {
   );
 }
 
-export class ErrorBoundary extends React.Component {
+export class ErrorBoundary extends Component {
   static propTypes = {
     children: PropTypes.node,
     t: PropTypes.func.isRequired,

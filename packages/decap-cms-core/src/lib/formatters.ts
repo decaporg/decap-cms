@@ -122,7 +122,7 @@ export function prepareSlug(slug: string) {
 
 export function getProcessSegment(
   slugConfig?: CmsSlug,
-  ignoreValues?: string[],
+  ignoreValues?: (string | undefined)[],
   preserveSlashes?: boolean,
 ) {
   return (value: string) =>
@@ -142,7 +142,9 @@ export function slugFormatter(
 ) {
   const slugTemplate = collection.get('slug') || '{{slug}}';
 
-  const identifier = entryData.getIn(keyToPathArray(selectIdentifier(collection) as string));
+  const identifier = entryData.getIn(
+    keyToPathArray(selectIdentifier(collection) as string),
+  ) as string;
   if (!identifier) {
     throw new Error(
       'Collection must have a field name that is a valid entry identifier, or must have `identifier_field` set',
@@ -282,7 +284,7 @@ export function folderFormatter(
       entry as unknown as Map<string, unknown>,
       selectInferredField(collection, 'date'),
     ) || null;
-  const identifier = fields.getIn(keyToPathArray(selectIdentifier(collection) as string));
+  const identifier = fields.getIn(keyToPathArray(selectIdentifier(collection) as string)) as string;
   const processSegment = getProcessSegment(slugConfig, [defaultFolder, fields.get('dirname')]);
 
   const mediaFolder = compileStringTemplate(

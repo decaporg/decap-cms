@@ -21,8 +21,8 @@ const initRepo = async dir => {
 };
 
 const startServer = async (repoDir, mode) => {
-  const tsNode = path.join(__dirname, '..', '..', 'node_modules', '.bin', 'ts-node');
   const serverDir = path.join(__dirname, '..', '..', 'packages', 'decap-server');
+  const tsNode = require.resolve('ts-node/dist/bin.js', { paths: [serverDir] });
   const distIndex = path.join(serverDir, 'dist', 'index.js');
   const tsIndex = path.join(serverDir, 'src', 'index.ts');
 
@@ -38,7 +38,7 @@ const startServer = async (repoDir, mode) => {
   if (await fs.pathExists(distIndex)) {
     serverProcess = spawn('node', [distIndex], { env, cwd: serverDir });
   } else {
-    serverProcess = spawn(tsNode, ['--files', tsIndex], { env, cwd: serverDir });
+    serverProcess = spawn(process.execPath, [tsNode, '--files', tsIndex], { env, cwd: serverDir });
   }
 
   return new Promise((resolve, reject) => {

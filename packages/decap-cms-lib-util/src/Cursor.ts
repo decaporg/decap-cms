@@ -27,7 +27,7 @@ export type CursorStore = {
 
 type ActionHandler = (action: string) => unknown;
 
-function jsToMap(obj: {}) {
+function jsToMap(obj?: {}): Map<string, unknown> {
   if (obj === undefined) {
     return Map();
   }
@@ -35,7 +35,7 @@ function jsToMap(obj: {}) {
   if (!Map.isMap(immutableObj)) {
     throw new Error('Object must be equivalent to a Map.');
   }
-  return immutableObj;
+  return immutableObj as Map<string, unknown>;
 }
 
 const knownMetaKeys = Set([
@@ -50,8 +50,8 @@ const knownMetaKeys = Set([
   'depth',
 ]);
 
-function filterUnknownMetaKeys(meta: Map<string, string>) {
-  return meta.filter((_v, k) => knownMetaKeys.has(k as string));
+function filterUnknownMetaKeys(meta: Map<string, unknown>) {
+  return meta.filter((_v, k) => knownMetaKeys.has(k));
 }
 
 /*
@@ -61,10 +61,11 @@ function filterUnknownMetaKeys(meta: Map<string, string>) {
   - (actions: <array/List>, data: <object/Map>, meta: <optional object/Map>) -> cursor
 */
 function createCursorStore(...args: {}[]) {
-  const { actions, data, meta } =
+  const { actions, data, meta } = (
     args.length === 1
       ? jsToMap(args[0]).toObject()
-      : { actions: args[0], data: args[1], meta: args[2] };
+      : { actions: args[0], data: args[1], meta: args[2] }
+  ) as { actions?: Iterable<string>; data?: {}; meta?: {} };
   return Map({
     // actions are a Set, rather than a List, to ensure an efficient .has
     actions: Set(actions),

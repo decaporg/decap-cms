@@ -48,6 +48,27 @@ const initialState = Map({
   key: '',
 });
 
+/**
+ * Merges incoming field metadata into the metadata already collected for the
+ * draft. Nested Maps are merged so that metadata for different fields,
+ * collections and options accumulates, while any other value (notably Lists) is
+ * replaced by the incoming one.
+ *
+ * NOTE: this cannot be `mergeDeep`. immutable 4 concatenates Lists when merging
+ * deeply, so re-sending metadata that contains a list - e.g. a relation widget
+ * resending the data of an already selected entry - would keep appending to it.
+ * `mergeDeepWith` is no help either: its merger is not called for two Lists.
+ */
+function mergeFieldsMetaData(existing, incoming) {
+  return existing.mergeWith(
+    (oldValue, newValue) =>
+      Map.isMap(oldValue) && Map.isMap(newValue)
+        ? mergeFieldsMetaData(oldValue, newValue)
+        : newValue,
+    incoming,
+  );
+}
+
 function entryDraftReducer(state = Map(), action) {
   switch (action.type) {
     case DRAFT_CREATE_FROM_ENTRY:
@@ -121,7 +142,9 @@ function entryDraftReducer(state = Map(), action) {
             state = duplicateI18nFields(state, field, i18n.locales, i18n.defaultLocale);
           }
         }
-        state.mergeDeepIn(['fieldsMetaData'], fromJS(metadata));
+        state.updateIn(['fieldsMetaData'], (fieldsMetaData = Map()) =>
+          mergeFieldsMetaData(fieldsMetaData, fromJS(metadata)),
+        );
         const newData = state.getIn(['entry', ...dataPath]);
         const newMeta = state.getIn(['entry', 'meta']);
         state.set(

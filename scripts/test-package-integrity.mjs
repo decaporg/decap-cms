@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
 /**
- * npm Package Integrity Test
+ * pnpm Package Integrity Test
  *
  * This script verifies that the built npm packages work correctly before publishing.
  * It tests:
- * 1. Package can be packed (npm pack)
+ * 1. Package can be packed (pnpm pack)
  * 2. Package doesn't have Node.js-only dependencies that break browser bundlers
  * 3. Package.json has required fields
  *
@@ -13,18 +13,26 @@
  */
 
 import { spawnSync } from 'child_process';
-import { readFileSync, existsSync, readdirSync, statSync } from 'fs';
+import { readFileSync, existsSync, readdirSync, statSync, mkdtempSync, rmSync } from 'fs';
+import { tmpdir } from 'os';
 import { join } from 'path';
+import { gunzipSync } from 'zlib';
 
 const ROOT_DIR = process.cwd();
-const PACKAGES_TO_TEST = ['decap-cms', 'decap-cms-core', 'decap-cms-app'];
+// The browser-bundle and package.json-shape checks only make sense for the
+// browser entry points. The publish-protocol check runs over every publishable
+// package -- scoping it to a hardcoded few is what let decap-server ship with
+// unresolved `catalog:` specifiers (issue #7979).
+const BROWSER_PACKAGES = ['decap-cms', 'decap-cms-core', 'decap-cms-app'];
+const DEPENDENCY_FIELDS = [
+  'dependencies',
+  'devDependencies',
+  'peerDependencies',
+  'optionalDependencies',
+];
 
 // Known Node.js protocol imports that break browser bundlers
-const BROWSER_INCOMPATIBLE_PATTERNS = [
-  /from ['"]node:/,
-  /require\(['"]node:/,
-  /import ['"]node:/,
-];
+const BROWSER_INCOMPATIBLE_PATTERNS = [/from ['"]node:/, /require\(['"]node:/, /import ['"]node:/];
 
 function log(msg) {
   console.log(`[test-package-integrity] ${msg}`);
@@ -32,6 +40,78 @@ function log(msg) {
 
 function error(msg) {
   console.error(`[test-package-integrity] ERROR: ${msg}`);
+}
+
+function readTarString(buffer, offset, length) {
+  const end = buffer.indexOf(0, offset);
+  const stringEnd = end === -1 || end > offset + length ? offset + length : end;
+  return buffer.toString('utf8', offset, stringEnd);
+}
+
+function readFileFromTarball(tarballPath, targetPath) {
+  const buffer = gunzipSync(readFileSync(tarballPath));
+
+  for (let offset = 0; offset < buffer.length; ) {
+    const name = readTarString(buffer, offset, 100);
+    if (!name) {
+      break;
+    }
+
+    const prefix = readTarString(buffer, offset + 345, 155);
+    const path = prefix ? `${prefix}/${name}` : name;
+    const size = parseInt(readTarString(buffer, offset + 124, 12).trim() || '0', 8);
+    const contentOffset = offset + 512;
+
+    if (path === targetPath) {
+      return buffer.toString('utf8', contentOffset, contentOffset + size);
+    }
+
+    offset = contentOffset + Math.ceil(size / 512) * 512;
+  }
+
+  throw new Error(`Missing ${targetPath} in ${tarballPath}`);
+}
+
+/**
+ * Every non-private package in the pnpm workspace, i.e. exactly the set that
+ * `pnpm publish -r` uploads.
+ */
+function getPublishablePackages() {
+  // Passed as a single string: spawnSync warns (DEP0190) when args are combined
+  // with `shell: true`, and the shell is needed to resolve pnpm on Windows.
+  const result = spawnSync('pnpm list -r --depth -1 --json', {
+    encoding: 'utf8',
+    stdio: 'pipe',
+    shell: true,
+  });
+
+  if (result.status !== 0) {
+    throw new Error(`pnpm list failed: ${result.stderr || result.stdout}`);
+  }
+
+  return JSON.parse(result.stdout)
+    .filter(pkg => pkg.name && !pkg.private)
+    .map(({ name, path }) => ({ name, dir: path }))
+    .sort((a, b) => a.name.localeCompare(b.name));
+}
+
+function findPublishProtocolDependencies(manifest) {
+  const dependenciesWithPublishProtocols = [];
+
+  for (const field of DEPENDENCY_FIELDS) {
+    const dependencies = manifest[field];
+    if (!dependencies) {
+      continue;
+    }
+
+    for (const [dependencyName, specifier] of Object.entries(dependencies)) {
+      if (typeof specifier === 'string' && /^(catalog|workspace):/.test(specifier)) {
+        dependenciesWithPublishProtocols.push(`${field}.${dependencyName}: ${specifier}`);
+      }
+    }
+  }
+
+  return dependenciesWithPublishProtocols;
 }
 
 /**
@@ -83,26 +163,42 @@ function checkDistForNodeProtocol(packageDir) {
 /**
  * Test that a package can be packed without errors
  */
-function testPackagePack(packageName) {
-  const packageDir = join(ROOT_DIR, 'packages', packageName);
+function testPackagePack(packageName, packageDir) {
+  log(`Testing pnpm pack for ${packageName}...`);
 
-  log(`Testing npm pack for ${packageName}...`);
+  const packDir = mkdtempSync(join(tmpdir(), `decap-pack-${packageName}-`));
 
-  const result = spawnSync('npm', ['pack', '--dry-run'], {
-    cwd: packageDir,
-    encoding: 'utf8',
-    stdio: 'pipe',
-    shell: true,
-  });
+  try {
+    const result = spawnSync('pnpm', ['pack', '--json', '--pack-destination', packDir], {
+      cwd: packageDir,
+      encoding: 'utf8',
+      stdio: 'pipe',
+      shell: true,
+    });
 
-  if (result.status !== 0) {
-    error(`npm pack failed for ${packageName}`);
-    error(result.stderr);
-    return false;
+    if (result.status !== 0) {
+      error(`pnpm pack failed for ${packageName}`);
+      error(result.stderr || result.stdout);
+      return false;
+    }
+
+    const packOutput = JSON.parse(result.stdout);
+    const tarballPath = Array.isArray(packOutput) ? packOutput[0].filename : packOutput.filename;
+    const packedPackageJson = JSON.parse(readFileFromTarball(tarballPath, 'package/package.json'));
+    const publishProtocolDependencies = findPublishProtocolDependencies(packedPackageJson);
+    if (publishProtocolDependencies.length > 0) {
+      error(`pnpm pack left unresolved pnpm protocols in ${packageName}:`);
+      for (const dependency of publishProtocolDependencies) {
+        error(`  ${dependency}`);
+      }
+      return false;
+    }
+
+    log(`  pnpm pack OK for ${packageName}`);
+    return true;
+  } finally {
+    rmSync(packDir, { recursive: true, force: true });
   }
-
-  log(`  npm pack OK for ${packageName}`);
-  return true;
 }
 
 /**
@@ -176,19 +272,27 @@ function testPackageJson(packageName) {
 }
 
 async function main() {
-  log('Starting npm package integrity tests...');
+  log('Starting pnpm package integrity tests...');
   log(`Root directory: ${ROOT_DIR}`);
 
   let allPassed = true;
 
-  for (const packageName of PACKAGES_TO_TEST) {
+  const publishablePackages = getPublishablePackages();
+  log(`\n=== Checking packed manifests for ${publishablePackages.length} publishable packages ===`);
+
+  for (const { name, dir } of publishablePackages) {
+    if (!testPackagePack(name, dir)) {
+      allPassed = false;
+    }
+  }
+
+  for (const packageName of BROWSER_PACKAGES) {
     log(`\n=== Testing ${packageName} ===`);
 
-    const packOk = testPackagePack(packageName);
     const browserOk = testBrowserCompatibility(packageName);
     const pkgJsonOk = testPackageJson(packageName);
 
-    if (!packOk || !browserOk || !pkgJsonOk) {
+    if (!browserOk || !pkgJsonOk) {
       allPassed = false;
     }
   }
