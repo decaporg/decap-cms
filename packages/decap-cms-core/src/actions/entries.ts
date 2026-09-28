@@ -1518,7 +1518,8 @@ export function validateMetaField(
       .map(getProcessSegment(state.config.slug))
       .join('/');
 
-    if (value !== sanitizedPath) {
+    // Slug processing lower-cases each segment, but folder names may keep their case
+    if (value.toLocaleLowerCase() !== sanitizedPath) {
       return getPathError(value, 'invalidPath', t);
     }
 
