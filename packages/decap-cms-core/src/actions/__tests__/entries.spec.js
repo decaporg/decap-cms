@@ -606,5 +606,40 @@ describe('entries', () => {
         error: false,
       });
     });
+
+    it('should not return error on path with uppercase characters', () => {
+      selectCustomPath.mockReturnValue('folder/Parent/Child/index.md');
+      selectEntryByPath.mockReturnValue(undefined);
+      expect(
+        validateMetaField(
+          {
+            ...state,
+            entryDraft: fromJS({
+              entry: {},
+            }),
+          },
+          collection,
+          fromJS({ meta: true, name: 'path' }),
+          'Parent/Child',
+          t,
+        ),
+      ).toEqual({
+        error: false,
+      });
+    });
+
+    it('should return error on path with uppercase and invalid characters', () => {
+      expect(
+        validateMetaField(state, null, fromJS({ meta: true, name: 'path' }), 'Invalid Path', t),
+      ).toEqual({
+        error: {
+          message: {
+            key: 'editor.editorControlPane.widget.invalidPath',
+            args: { path: 'Invalid Path' },
+          },
+          type: 'CUSTOM',
+        },
+      });
+    });
   });
 });
