@@ -154,6 +154,20 @@ const nestedFilterFieldConfig = {
   ],
 };
 
+const filterListFieldConfig = {
+  name: 'owner',
+  collection: 'owners_collection',
+  display_fields: ['name'],
+  search_fields: ['name'],
+  value_field: 'name',
+  filters: [
+    {
+      field: 'pets',
+      values: ['cats', 'dogs'],
+    },
+  ],
+};
+
 function generateHits(length) {
   const hits = Array.from({ length }, (val, idx) => {
     const title = `Post # ${idx + 1}`;
@@ -241,6 +255,13 @@ const numberFieldsHits = [
     },
   },
 ];
+const listFieldHits = [
+  { collection: 'owners_collection', data: { name: 'Owner A', pets: ['cats', 'birds'] } },
+  { collection: 'owners_collection', data: { name: 'Owner B', pets: ['birds'] } },
+  { collection: 'owners_collection', data: { name: 'Owner C', pets: ['dogs'] } },
+  { collection: 'owners_collection', data: { name: 'Owner D', pets: [] } },
+];
+
 class RelationController extends Component {
   state = {
     value: this.props.value,
@@ -278,6 +299,8 @@ class RelationController extends Component {
     let hits = queryHits;
     if (collection === 'numbers_collection') {
       hits = numberFieldsHits;
+    } else if (collection === 'owners_collection') {
+      hits = listFieldHits;
     } else if (file === 'nested_file') {
       hits = nestedFileCollectionHits;
     } else if (file === 'simple_file') {
@@ -737,6 +760,20 @@ describe('Relation widget', () => {
       await waitFor(() => {
         expect(() => getAllByText(/^Post # (\d{1,2}) post-number-\1$/)).toThrow(Error);
         expect(getAllByText('Deeply nested post post-deeply-nested')).toHaveLength(1);
+      });
+    });
+
+    it('should list option hits whose list field contains any of the filter values', async () => {
+      const field = fromJS(filterListFieldConfig);
+      const { getAllByText, queryByText, input } = setup({ field });
+      fireEvent.keyDown(input, { key: 'ArrowDown' });
+
+      await waitFor(() => {
+        expect(getAllByText(/^Owner [A-D]$/)).toHaveLength(2);
+        expect(getAllByText('Owner A')).toHaveLength(1);
+        expect(getAllByText('Owner C')).toHaveLength(1);
+        expect(queryByText('Owner B')).toBeNull();
+        expect(queryByText('Owner D')).toBeNull();
       });
     });
   });

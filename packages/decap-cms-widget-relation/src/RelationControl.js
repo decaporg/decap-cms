@@ -438,7 +438,10 @@ export default class RelationControl extends Component {
               return false;
             }
           }
-          return filter.values.includes(value);
+          // for list fields, match if any of the values is in the filter values
+          return Array.isArray(value)
+            ? value.some(item => filter.values.includes(item))
+            : filter.values.includes(value);
         })
       ) {
         const valuesPaths = stringTemplate.expandPath({ data: hit.data, path: valueField });
