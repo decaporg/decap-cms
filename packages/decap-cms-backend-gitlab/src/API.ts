@@ -158,6 +158,7 @@ type GitLabMergeRequest = {
 };
 
 type GitLabMember = {
+  id: number;
   access_level: number;
 };
 
@@ -336,7 +337,9 @@ export default class API {
         url: `${this.repoURL}/members/all`,
         params: { 'user_ids[]': userId, state: 'active' },
       });
-      return members.length > 0 ? members[0].access_level : 0;
+      // Only trust the entry of the user, in case the server ignores the filter
+      const member = members.find(({ id }) => id === userId);
+      return member ? member.access_level : 0;
     } catch (e) {
       console.log('Failed getting project member', e);
       return 0;

@@ -228,7 +228,7 @@ describe('gitlab backend', () => {
     api
       .get(`${expectedRepoUrl}/members/all`)
       .query({ 'user_ids[]': `${resp.user.success.id}`, state: 'active' })
-      .reply(200, [{ access_level: accessLevel }]);
+      .reply(200, [{ id: resp.user.success.id, access_level: accessLevel }]);
   }
 
   function interceptBranch(backend, { branch = 'master', response = resp.branch.success } = {}) {
@@ -385,6 +385,31 @@ describe('gitlab backend', () => {
       await backend.authenticate(mockCredentials);
       expect(backend.implementation.branch).toBe('main');
       expect(backend.implementation.api.branch).toBe('main');
+    });
+
+    it('reports a missing project when no branch is configured', async () => {
+      backend = resolveBackend(defaultConfig);
+      const api = mockApi(backend);
+      api.get('/user').query(true).reply(200, resp.user.success);
+      api
+        .get(expectedRepoUrl)
+        .times(2)
+        .query(true)
+        .reply(404, { message: '404 Project Not Found' });
+      await expect(backend.authenticate(mockCredentials)).rejects.toThrow(
+        'Repo "foo/bar" not found.',
+      );
+    });
+
+    it('fails the login when the default branch cannot be read', async () => {
+      backend = resolveBackend(defaultConfig);
+      const api = mockApi(backend);
+      api.get('/user').query(true).reply(200, resp.user.success);
+      api.get(expectedRepoUrl).query(true).reply(500, { message: '500 Internal Server Error' });
+      await expect(backend.authenticate(mockCredentials)).rejects.toThrow(
+        '500 Internal Server Error',
+      );
+      expect(backend.implementation.branch).toBe('master');
     });
 
     it('lets in a developer of the project with the editorial workflow', async () => {

@@ -18,7 +18,7 @@ describe('GitLab API', () => {
 
         api.requestJSON = jest.fn();
         api.requestJSON.mockResolvedValueOnce({});
-        api.requestJSON.mockResolvedValueOnce([{ access_level: level }]);
+        api.requestJSON.mockResolvedValueOnce([{ id: 1, access_level: level }]);
 
         await expect(api.hasWriteAccess(1)).resolves.toBe(true);
 
@@ -35,7 +35,7 @@ describe('GitLab API', () => {
 
         api.requestJSON = jest.fn();
         api.requestJSON.mockResolvedValueOnce({});
-        api.requestJSON.mockResolvedValueOnce([{ access_level: level }]);
+        api.requestJSON.mockResolvedValueOnce([{ id: 1, access_level: level }]);
 
         await expect(api.hasWriteAccess(1)).resolves.toBe(false);
       });
@@ -50,6 +50,16 @@ describe('GitLab API', () => {
         await expect(api.hasWriteAccess(1)).resolves.toBe(false);
 
         expect(console.log).not.toHaveBeenCalled();
+      });
+
+      test('should ignore the entries of other users', async () => {
+        const api = new API({ repo: 'repo', useWorkflow: true });
+
+        api.requestJSON = jest.fn();
+        api.requestJSON.mockResolvedValueOnce({});
+        api.requestJSON.mockResolvedValueOnce([{ id: 99, access_level: 50 }]);
+
+        await expect(api.hasWriteAccess(1)).resolves.toBe(false);
       });
 
       test('should return false on error getting the member', async () => {

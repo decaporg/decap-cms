@@ -49,6 +49,7 @@ import type {
   UnpublishedEntryMediaFile,
   AsyncLock,
   ApiRequest,
+  APIError,
 } from 'decap-cms-lib-util';
 import type { Semaphore } from 'semaphore';
 
@@ -179,7 +180,12 @@ export default class GitLab implements Implementation {
         repo: this.repo,
         token: this.token,
         apiRoot: this.apiRoot,
-      }).catch(() => null);
+      }).catch((error: APIError) => {
+        if (error.status === 404) {
+          return null;
+        }
+        throw error;
+      });
       if (defaultBranchName) {
         this.branch = defaultBranchName;
         this.api.branch = defaultBranchName;
