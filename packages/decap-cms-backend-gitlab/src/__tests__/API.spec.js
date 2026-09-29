@@ -1,4 +1,6 @@
-import API, { getMaxAccess } from '../API';
+import { APIError } from 'decap-cms-lib-util';
+
+import API from '../API';
 
 global.fetch = jest.fn().mockRejectedValue(new Error('should not call fetch inside tests'));
 
@@ -10,138 +12,109 @@ describe('GitLab API', () => {
   });
 
   describe('hasWriteAccess', () => {
-    test('should return true on project access_level >= 30', async () => {
-      const api = new API({ repo: 'repo' });
+    describe('with the editorial workflow', () => {
+      test.each([30, 40, 50])('should return true on member access_level %i', async level => {
+        const api = new API({ repo: 'repo', useWorkflow: true });
 
-      api.requestJSON = jest
-        .fn()
-        .mockResolvedValueOnce({ permissions: { project_access: { access_level: 30 } } });
+        api.requestJSON = jest.fn();
+        api.requestJSON.mockResolvedValueOnce({});
+        api.requestJSON.mockResolvedValueOnce({ id: 1 });
+        api.requestJSON.mockResolvedValueOnce({ access_level: level });
 
-      await expect(api.hasWriteAccess()).resolves.toBe(true);
-    });
+        await expect(api.hasWriteAccess()).resolves.toBe(true);
 
-    test('should return false on project access_level < 30', async () => {
-      const api = new API({ repo: 'repo' });
-
-      api.requestJSON = jest
-        .fn()
-        .mockResolvedValueOnce({ permissions: { project_access: { access_level: 10 } } });
-
-      await expect(api.hasWriteAccess()).resolves.toBe(false);
-    });
-
-    test('should return true on group access_level >= 30', async () => {
-      const api = new API({ repo: 'repo' });
-
-      api.requestJSON = jest
-        .fn()
-        .mockResolvedValueOnce({ permissions: { group_access: { access_level: 30 } } });
-
-      await expect(api.hasWriteAccess()).resolves.toBe(true);
-    });
-
-    test('should return false on group access_level < 30', async () => {
-      const api = new API({ repo: 'repo' });
-
-      api.requestJSON = jest
-        .fn()
-        .mockResolvedValueOnce({ permissions: { group_access: { access_level: 10 } } });
-
-      await expect(api.hasWriteAccess()).resolves.toBe(false);
-    });
-
-    test('should return true on shared group access_level >= 40', async () => {
-      const api = new API({ repo: 'repo' });
-      api.requestJSON = jest.fn().mockResolvedValueOnce({
-        permissions: { project_access: null, group_access: null },
-        shared_with_groups: [{ group_access_level: 10 }, { group_access_level: 40 }],
+        expect(api.requestJSON).toHaveBeenCalledTimes(3);
+        expect(api.requestJSON).toHaveBeenNthCalledWith(1, '/projects/repo');
+        expect(api.requestJSON).toHaveBeenNthCalledWith(2, '/user');
+        expect(api.requestJSON).toHaveBeenNthCalledWith(3, '/projects/repo/members/all/1');
       });
 
-      await expect(api.hasWriteAccess()).resolves.toBe(true);
+      test.each([10, 20])('should return false on member access_level %i', async level => {
+        const api = new API({ repo: 'repo', useWorkflow: true });
+
+        api.requestJSON = jest.fn();
+        api.requestJSON.mockResolvedValueOnce({});
+        api.requestJSON.mockResolvedValueOnce({ id: 1 });
+        api.requestJSON.mockResolvedValueOnce({ access_level: level });
+
+        await expect(api.hasWriteAccess()).resolves.toBe(false);
+      });
+
+      test('should return false when the user is not a member of the project', async () => {
+        const api = new API({ repo: 'repo', useWorkflow: true });
+
+        api.requestJSON = jest.fn();
+        api.requestJSON.mockResolvedValueOnce({});
+        api.requestJSON.mockResolvedValueOnce({ id: 1 });
+        api.requestJSON.mockRejectedValueOnce(new APIError('Not Found', 404, 'GitLab'));
+
+        await expect(api.hasWriteAccess()).resolves.toBe(false);
+      });
+
+      test('should throw on any other error getting the member', async () => {
+        const api = new API({ repo: 'repo', useWorkflow: true });
+        const error = new APIError('Internal Server Error', 500, 'GitLab');
+
+        api.requestJSON = jest.fn();
+        api.requestJSON.mockResolvedValueOnce({});
+        api.requestJSON.mockResolvedValueOnce({ id: 1 });
+        api.requestJSON.mockRejectedValueOnce(error);
+
+        await expect(api.hasWriteAccess()).rejects.toBe(error);
+      });
+    });
+
+    describe('with the simple workflow', () => {
+      test('should return true when the user can push to the branch', async () => {
+        const api = new API({ repo: 'repo', branch: 'main' });
+
+        api.requestJSON = jest.fn();
+        api.requestJSON.mockResolvedValueOnce({});
+        api.requestJSON.mockResolvedValueOnce({ name: 'main', can_push: true });
+
+        await expect(api.hasWriteAccess()).resolves.toBe(true);
+
+        expect(api.requestJSON).toHaveBeenCalledTimes(2);
+        expect(api.requestJSON).toHaveBeenNthCalledWith(
+          2,
+          '/projects/repo/repository/branches/main',
+        );
+      });
+
+      test('should return false when the user cannot push to the branch', async () => {
+        const api = new API({ repo: 'repo', branch: 'main' });
+
+        api.requestJSON = jest.fn();
+        api.requestJSON.mockResolvedValueOnce({});
+        api.requestJSON.mockResolvedValueOnce({ name: 'main', can_push: false });
+
+        await expect(api.hasWriteAccess()).resolves.toBe(false);
+      });
+
+      test('should return false on error getting the branch', async () => {
+        const api = new API({ repo: 'repo', branch: 'main' });
+        const error = new APIError('Not Found', 404, 'GitLab');
+
+        api.requestJSON = jest.fn();
+        api.requestJSON.mockResolvedValueOnce({});
+        api.requestJSON.mockRejectedValueOnce(error);
+
+        await expect(api.hasWriteAccess()).resolves.toBe(false);
+
+        expect(console.log).toHaveBeenCalledTimes(1);
+        expect(console.log).toHaveBeenCalledWith('Failed getting default branch', error);
+      });
+    });
+
+    test('should throw when the project is not found', async () => {
+      const api = new API({ repo: 'repo', useWorkflow: true });
+      const error = new APIError('Not Found', 404, 'GitLab');
+
+      api.requestJSON = jest.fn().mockRejectedValueOnce(error);
+
+      await expect(api.hasWriteAccess()).rejects.toBe(error);
 
       expect(api.requestJSON).toHaveBeenCalledTimes(1);
-    });
-
-    test('should return true on shared group access_level >= 30, developers can merge and push', async () => {
-      const api = new API({ repo: 'repo' });
-
-      api.requestJSON = jest.fn();
-      api.requestJSON.mockResolvedValueOnce({
-        permissions: { project_access: null, group_access: null },
-        shared_with_groups: [{ group_access_level: 10 }, { group_access_level: 30 }],
-      });
-      api.requestJSON.mockResolvedValueOnce({
-        developers_can_merge: true,
-        developers_can_push: true,
-      });
-
-      await expect(api.hasWriteAccess()).resolves.toBe(true);
-    });
-
-    test('should return false on shared group access_level < 30,', async () => {
-      const api = new API({ repo: 'repo' });
-
-      api.requestJSON = jest.fn();
-      api.requestJSON.mockResolvedValueOnce({
-        permissions: { project_access: null, group_access: null },
-        shared_with_groups: [{ group_access_level: 10 }, { group_access_level: 20 }],
-      });
-      api.requestJSON.mockResolvedValueOnce({
-        developers_can_merge: true,
-        developers_can_push: true,
-      });
-
-      await expect(api.hasWriteAccess()).resolves.toBe(false);
-    });
-
-    test("should return false on shared group access_level >= 30, developers can't merge", async () => {
-      const api = new API({ repo: 'repo' });
-
-      api.requestJSON = jest.fn();
-      api.requestJSON.mockResolvedValueOnce({
-        permissions: { project_access: null, group_access: null },
-        shared_with_groups: [{ group_access_level: 10 }, { group_access_level: 30 }],
-      });
-      api.requestJSON.mockResolvedValueOnce({
-        developers_can_merge: false,
-        developers_can_push: true,
-      });
-
-      await expect(api.hasWriteAccess()).resolves.toBe(false);
-    });
-
-    test("should return false on shared group access_level >= 30, developers can't push", async () => {
-      const api = new API({ repo: 'repo' });
-
-      api.requestJSON = jest.fn();
-      api.requestJSON.mockResolvedValueOnce({
-        permissions: { project_access: null, group_access: null },
-        shared_with_groups: [{ group_access_level: 10 }, { group_access_level: 30 }],
-      });
-      api.requestJSON.mockResolvedValueOnce({
-        developers_can_merge: true,
-        developers_can_push: false,
-      });
-
-      await expect(api.hasWriteAccess()).resolves.toBe(false);
-    });
-
-    test('should return false on shared group access_level >= 30, error getting branch', async () => {
-      const api = new API({ repo: 'repo' });
-
-      api.requestJSON = jest.fn();
-      api.requestJSON.mockResolvedValueOnce({
-        permissions: { project_access: null, group_access: null },
-        shared_with_groups: [{ group_access_level: 10 }, { group_access_level: 30 }],
-      });
-
-      const error = new Error('Not Found');
-      api.requestJSON.mockRejectedValue(error);
-
-      await expect(api.hasWriteAccess()).resolves.toBe(false);
-
-      expect(console.log).toHaveBeenCalledTimes(1);
-      expect(console.log).toHaveBeenCalledWith('Failed getting default branch', error);
     });
   });
 
@@ -205,18 +178,6 @@ describe('GitLab API', () => {
 
       expect(api.getMergeRequestStatues).toHaveBeenCalledTimes(1);
       expect(api.getMergeRequestStatues).toHaveBeenCalledWith(mr, 'cms/posts/title');
-    });
-  });
-
-  describe('getMaxAccess', () => {
-    it('should return group with max access level', () => {
-      const groups = [
-        { group_access_level: 10 },
-        { group_access_level: 5 },
-        { group_access_level: 100 },
-        { group_access_level: 1 },
-      ];
-      expect(getMaxAccess(groups)).toBe(groups[2]);
     });
   });
 });

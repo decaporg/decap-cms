@@ -97,6 +97,14 @@ const resp = {
   branch: {
     success: {
       name: 'master',
+      can_push: true,
+      commit: {
+        id: 1,
+      },
+    },
+    readOnly: {
+      name: 'master',
+      can_push: false,
       commit: {
         id: 1,
       },
@@ -110,13 +118,6 @@ const resp = {
         },
       },
       default_branch: 'main',
-    },
-    readOnly: {
-      permissions: {
-        project_access: {
-          access_level: 10,
-        },
-      },
     },
   },
 };
@@ -187,7 +188,7 @@ describe('gitlab backend', () => {
     return nock(backend.implementation.apiRoot);
   }
 
-  function interceptAuth(backend, { userResponse, projectResponse } = {}) {
+  function interceptAuth(backend, { userResponse, projectResponse, branchResponse } = {}) {
     const api = mockApi(backend);
     api
       .get('/user')
@@ -207,6 +208,31 @@ describe('gitlab backend', () => {
       .times(2)
       .query(true)
       .reply(200, projectResponse || resp.project.success);
+
+    // Without the editorial workflow, `hasWriteAccess` checks that the user can push to the branch
+    interceptBranchAccess(backend, branchResponse);
+  }
+
+  function interceptBranchAccess(backend, branchResponse) {
+    const api = mockApi(backend);
+    api
+      .get(
+        `${expectedRepoUrl}/repository/branches/${encodeURIComponent(
+          backend.implementation.branch,
+        )}`,
+      )
+      .query(true)
+      .reply(200, branchResponse || resp.branch.success);
+  }
+
+  // With the editorial workflow, `hasWriteAccess` checks the access level of the user
+  function interceptMember(backend, { accessLevel }) {
+    const api = mockApi(backend);
+    api.get('/user').query(true).reply(200, resp.user.success);
+    api
+      .get(`${expectedRepoUrl}/members/all/${resp.user.success.id}`)
+      .query(true)
+      .reply(200, { access_level: accessLevel });
   }
 
   function interceptBranch(backend, { branch = 'master' } = {}) {
@@ -338,12 +364,32 @@ describe('gitlab backend', () => {
   describe('authenticate', () => {
     it('throws if user does not have access to project', async () => {
       backend = resolveBackend(defaultConfig);
-      interceptAuth(backend, { projectResponse: resp.project.readOnly });
+      interceptAuth(backend, { branchResponse: resp.branch.readOnly });
       await expect(
         backend.authenticate(mockCredentials),
       ).rejects.toThrowErrorMatchingInlineSnapshot(
         `"Your GitLab user account does not have access to this repo."`,
       );
+    });
+
+    it('throws if user is not a developer of the project with the editorial workflow', async () => {
+      backend = resolveBackend({ ...defaultConfig, publish_mode: 'editorial_workflow' });
+      interceptAuth(backend);
+      interceptMember(backend, { accessLevel: 20 });
+      await expect(
+        backend.authenticate(mockCredentials),
+      ).rejects.toThrowErrorMatchingInlineSnapshot(
+        `"Your GitLab user account does not have access to this repo."`,
+      );
+    });
+
+    it('lets in a developer of the project with the editorial workflow', async () => {
+      const backendName = defaultConfig.backend.name;
+      backend = resolveBackend({ ...defaultConfig, publish_mode: 'editorial_workflow' });
+      interceptAuth(backend);
+      interceptMember(backend, { accessLevel: 30 });
+      const user = await backend.authenticate(mockCredentials);
+      expect(user).toEqual({ ...resp.user.success, ...mockCredentials, backendName });
     });
 
     it('stores and returns user object on success', async () => {
@@ -519,6 +565,7 @@ describe('gitlab backend', () => {
         .query(true)
         .reply(200, resp.user.success);
       api.get(expectedRepoUrl).times(2).query(true).reply(200, resp.project.success);
+      interceptBranchAccess(backend);
 
       const user = await backend.authenticate(pkceCredentials);
 

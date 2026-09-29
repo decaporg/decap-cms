@@ -68,6 +68,7 @@ export default class GitLab implements Implementation {
     API: API | null;
     updateUserCredentials: (args: { token: string; refresh_token?: string }) => Promise<null>;
     initialWorkflowStatus: string;
+    useWorkflow?: boolean;
   };
   repo: string;
   isBranchConfigured: boolean;
@@ -164,6 +165,7 @@ export default class GitLab implements Implementation {
       squashMerges: this.squashMerges,
       cmsLabelPrefix: this.cmsLabelPrefix,
       initialWorkflowStatus: this.options.initialWorkflowStatus,
+      useWorkflow: this.options.useWorkflow,
       useGraphQL: this.useGraphQL,
       graphQLAPIRoot: this.graphQLAPIRoot,
       requestFunction: this.apiRequestFunction,
