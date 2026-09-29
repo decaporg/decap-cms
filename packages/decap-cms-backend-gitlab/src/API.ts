@@ -309,13 +309,13 @@ export default class API {
 
   WRITE_ACCESS = 30;
 
-  hasWriteAccess = async () => {
+  hasWriteAccess = async (userId: number) => {
     // Rejects when the project does not exist or the user cannot see it
     await this.requestJSON(this.repoURL);
     if (this.useWorkflow) {
-      // The editorial workflow pushes its own branches and opens merge requests, which any
-      // Developer can do, whatever protects the base branch
-      return (await this.getMemberAccessLevel()) >= this.WRITE_ACCESS;
+      // Developers can push the branches of entries and open their merge requests whatever
+      // protects the base branch. Publishing and media library changes still write to it.
+      return (await this.getMemberAccessLevel(userId)) >= this.WRITE_ACCESS;
     }
     // Without it, entries are committed to the branch itself
     try {
@@ -328,17 +328,18 @@ export default class API {
   };
 
   // Access level GitLab applies to the user on the project, whatever grants it: membership of the
-  // project or of an ancestor group, or a group invited to either. 0 without any (404).
-  getMemberAccessLevel = async () => {
-    const { id } = await this.user();
+  // project or of an ancestor group, or a group invited to either. Memberships awaiting approval
+  // are left out (`state` filter, Premium and Ultimate). 0 without any, or when the lookup fails.
+  getMemberAccessLevel = async (userId: number) => {
     try {
-      const member: GitLabMember = await this.requestJSON(`${this.repoURL}/members/all/${id}`);
-      return member.access_level;
+      const members: GitLabMember[] = await this.requestJSON({
+        url: `${this.repoURL}/members/all`,
+        params: { 'user_ids[]': userId, state: 'active' },
+      });
+      return members.length > 0 ? members[0].access_level : 0;
     } catch (e) {
-      if (e.status === 404) {
-        return 0;
-      }
-      throw e;
+      console.log('Failed getting project member', e);
+      return 0;
     }
   };
 

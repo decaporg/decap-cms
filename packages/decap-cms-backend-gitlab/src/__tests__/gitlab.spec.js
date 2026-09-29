@@ -198,8 +198,8 @@ describe('gitlab backend', () => {
     api
       // The `authenticate` method of the API class from netlify-cms-backend-gitlab
       // calls the same endpoint twice for gettng a single project.
-      // First time through `this.api.hasWriteAccess()
-      // Second time through the method `getDefaultBranchName` from lib-util
+      // First time through the method `getDefaultBranchName` from lib-util
+      // Second time through `this.api.hasWriteAccess()
       // As a result, we need to repeat the same response twice.
       // Otherwise, we'll get an error: "No match for request to
       // https://gitlab.com/api/v4"
@@ -209,38 +209,34 @@ describe('gitlab backend', () => {
       .query(true)
       .reply(200, projectResponse || resp.project.success);
 
-    // Without the editorial workflow, `hasWriteAccess` checks that the user can push to the branch
-    interceptBranchAccess(backend, branchResponse);
-  }
-
-  function interceptBranchAccess(backend, branchResponse) {
-    const api = mockApi(backend);
-    api
-      .get(
-        `${expectedRepoUrl}/repository/branches/${encodeURIComponent(
-          backend.implementation.branch,
-        )}`,
-      )
-      .query(true)
-      .reply(200, branchResponse || resp.branch.success);
+    // Without the editorial workflow, `hasWriteAccess` checks that the user can push to the
+    // branch: the configured one, or else the default branch of the project
+    if (!backend.implementation.options.useWorkflow) {
+      const { branch, isBranchConfigured } = backend.implementation;
+      interceptBranch(backend, {
+        branch: isBranchConfigured
+          ? branch
+          : (projectResponse || resp.project.success).default_branch,
+        response: branchResponse,
+      });
+    }
   }
 
   // With the editorial workflow, `hasWriteAccess` checks the access level of the user
   function interceptMember(backend, { accessLevel }) {
     const api = mockApi(backend);
-    api.get('/user').query(true).reply(200, resp.user.success);
     api
-      .get(`${expectedRepoUrl}/members/all/${resp.user.success.id}`)
-      .query(true)
-      .reply(200, { access_level: accessLevel });
+      .get(`${expectedRepoUrl}/members/all`)
+      .query({ 'user_ids[]': `${resp.user.success.id}`, state: 'active' })
+      .reply(200, [{ access_level: accessLevel }]);
   }
 
-  function interceptBranch(backend, { branch = 'master' } = {}) {
+  function interceptBranch(backend, { branch = 'master', response = resp.branch.success } = {}) {
     const api = mockApi(backend);
     api
       .get(`${expectedRepoUrl}/repository/branches/${encodeURIComponent(branch)}`)
       .query(true)
-      .reply(200, resp.branch.success);
+      .reply(200, response);
   }
 
   function parseQuery(uri) {
@@ -381,6 +377,14 @@ describe('gitlab backend', () => {
       ).rejects.toThrowErrorMatchingInlineSnapshot(
         `"Your GitLab user account does not have access to this repo."`,
       );
+    });
+
+    it('checks and uses the default branch of the project when none is configured', async () => {
+      backend = resolveBackend(defaultConfig);
+      interceptAuth(backend);
+      await backend.authenticate(mockCredentials);
+      expect(backend.implementation.branch).toBe('main');
+      expect(backend.implementation.api.branch).toBe('main');
     });
 
     it('lets in a developer of the project with the editorial workflow', async () => {
@@ -565,7 +569,7 @@ describe('gitlab backend', () => {
         .query(true)
         .reply(200, resp.user.success);
       api.get(expectedRepoUrl).times(2).query(true).reply(200, resp.project.success);
-      interceptBranchAccess(backend);
+      interceptBranch(backend, { branch: resp.project.success.default_branch });
 
       const user = await backend.authenticate(pkceCredentials);
 
@@ -756,7 +760,7 @@ describe('gitlab backend', () => {
 
     it('returns all entries from folder collection', async () => {
       const tree = mockRepo.tree[collectionManyEntriesConfig.folder];
-      interceptBranch(backend);
+      interceptBranch(backend, { branch: backend.implementation.branch });
       tree.forEach(file => interceptFiles(backend, file.path));
 
       interceptCollection(backend, collectionManyEntriesConfig, { repeat: 5 });

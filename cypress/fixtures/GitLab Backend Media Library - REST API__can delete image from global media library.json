@@ -57,11 +57,11 @@
   },
   {
     "method": "GET",
-    "url": "/api/v4/projects/owner%2Frepo/members/all/1",
+    "url": "/api/v4/projects/owner%2Frepo/members/all?user_ids%5B%5D=1&state=active",
     "headers": {
       "Content-Type": "application/json"
     },
-    "response": "{\"id\":1,\"username\":\"owner\",\"name\":\"owner\",\"state\":\"active\",\"access_level\":50}",
+    "response": "[{\"id\":1,\"username\":\"owner\",\"name\":\"owner\",\"state\":\"active\",\"access_level\":50}]",
     "status": 200
   },
   {

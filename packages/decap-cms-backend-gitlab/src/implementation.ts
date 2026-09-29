@@ -171,7 +171,21 @@ export default class GitLab implements Implementation {
       requestFunction: this.apiRequestFunction,
     });
     const user = await this.api.user();
-    const isCollab = await this.api.hasWriteAccess().catch((error: Error) => {
+    // Query the default branch name when the `branch` property is missing in the config file,
+    // before checking the access to it. A missing project is reported by `hasWriteAccess`.
+    if (!this.isBranchConfigured) {
+      const defaultBranchName = await getDefaultBranchName({
+        backend: 'gitlab',
+        repo: this.repo,
+        token: this.token,
+        apiRoot: this.apiRoot,
+      }).catch(() => null);
+      if (defaultBranchName) {
+        this.branch = defaultBranchName;
+        this.api.branch = defaultBranchName;
+      }
+    }
+    const isCollab = await this.api.hasWriteAccess(user.id).catch((error: Error) => {
       error.message = stripIndent`
         Repo "${this.repo}" not found.
 
@@ -187,17 +201,6 @@ export default class GitLab implements Implementation {
       throw new Error('Your GitLab user account does not have access to this repo.');
     }
 
-    if (!this.isBranchConfigured) {
-      const defaultBranchName = await getDefaultBranchName({
-        backend: 'gitlab',
-        repo: this.repo,
-        token: this.token,
-        apiRoot: this.apiRoot,
-      });
-      if (defaultBranchName) {
-        this.branch = defaultBranchName;
-      }
-    }
     this.destroyNotesPolling();
     this.notesApi = new GitLabNotesAPI(this.api);
     this.pollingManager = new NotesPollingManager(this.notesApi.asPollingAPI(), 15000);

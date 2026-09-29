@@ -18,15 +18,16 @@ describe('GitLab API', () => {
 
         api.requestJSON = jest.fn();
         api.requestJSON.mockResolvedValueOnce({});
-        api.requestJSON.mockResolvedValueOnce({ id: 1 });
-        api.requestJSON.mockResolvedValueOnce({ access_level: level });
+        api.requestJSON.mockResolvedValueOnce([{ access_level: level }]);
 
-        await expect(api.hasWriteAccess()).resolves.toBe(true);
+        await expect(api.hasWriteAccess(1)).resolves.toBe(true);
 
-        expect(api.requestJSON).toHaveBeenCalledTimes(3);
+        expect(api.requestJSON).toHaveBeenCalledTimes(2);
         expect(api.requestJSON).toHaveBeenNthCalledWith(1, '/projects/repo');
-        expect(api.requestJSON).toHaveBeenNthCalledWith(2, '/user');
-        expect(api.requestJSON).toHaveBeenNthCalledWith(3, '/projects/repo/members/all/1');
+        expect(api.requestJSON).toHaveBeenNthCalledWith(2, {
+          url: '/projects/repo/members/all',
+          params: { 'user_ids[]': 1, state: 'active' },
+        });
       });
 
       test.each([10, 20])('should return false on member access_level %i', async level => {
@@ -34,33 +35,35 @@ describe('GitLab API', () => {
 
         api.requestJSON = jest.fn();
         api.requestJSON.mockResolvedValueOnce({});
-        api.requestJSON.mockResolvedValueOnce({ id: 1 });
-        api.requestJSON.mockResolvedValueOnce({ access_level: level });
+        api.requestJSON.mockResolvedValueOnce([{ access_level: level }]);
 
-        await expect(api.hasWriteAccess()).resolves.toBe(false);
+        await expect(api.hasWriteAccess(1)).resolves.toBe(false);
       });
 
-      test('should return false when the user is not a member of the project', async () => {
+      test('should return false when the user is not an active member of the project', async () => {
         const api = new API({ repo: 'repo', useWorkflow: true });
 
         api.requestJSON = jest.fn();
         api.requestJSON.mockResolvedValueOnce({});
-        api.requestJSON.mockResolvedValueOnce({ id: 1 });
-        api.requestJSON.mockRejectedValueOnce(new APIError('Not Found', 404, 'GitLab'));
+        api.requestJSON.mockResolvedValueOnce([]);
 
-        await expect(api.hasWriteAccess()).resolves.toBe(false);
+        await expect(api.hasWriteAccess(1)).resolves.toBe(false);
+
+        expect(console.log).not.toHaveBeenCalled();
       });
 
-      test('should throw on any other error getting the member', async () => {
+      test('should return false on error getting the member', async () => {
         const api = new API({ repo: 'repo', useWorkflow: true });
         const error = new APIError('Internal Server Error', 500, 'GitLab');
 
         api.requestJSON = jest.fn();
         api.requestJSON.mockResolvedValueOnce({});
-        api.requestJSON.mockResolvedValueOnce({ id: 1 });
         api.requestJSON.mockRejectedValueOnce(error);
 
-        await expect(api.hasWriteAccess()).rejects.toBe(error);
+        await expect(api.hasWriteAccess(1)).resolves.toBe(false);
+
+        expect(console.log).toHaveBeenCalledTimes(1);
+        expect(console.log).toHaveBeenCalledWith('Failed getting project member', error);
       });
     });
 
@@ -72,7 +75,7 @@ describe('GitLab API', () => {
         api.requestJSON.mockResolvedValueOnce({});
         api.requestJSON.mockResolvedValueOnce({ name: 'main', can_push: true });
 
-        await expect(api.hasWriteAccess()).resolves.toBe(true);
+        await expect(api.hasWriteAccess(1)).resolves.toBe(true);
 
         expect(api.requestJSON).toHaveBeenCalledTimes(2);
         expect(api.requestJSON).toHaveBeenNthCalledWith(
@@ -88,7 +91,7 @@ describe('GitLab API', () => {
         api.requestJSON.mockResolvedValueOnce({});
         api.requestJSON.mockResolvedValueOnce({ name: 'main', can_push: false });
 
-        await expect(api.hasWriteAccess()).resolves.toBe(false);
+        await expect(api.hasWriteAccess(1)).resolves.toBe(false);
       });
 
       test('should return false on error getting the branch', async () => {
@@ -99,7 +102,7 @@ describe('GitLab API', () => {
         api.requestJSON.mockResolvedValueOnce({});
         api.requestJSON.mockRejectedValueOnce(error);
 
-        await expect(api.hasWriteAccess()).resolves.toBe(false);
+        await expect(api.hasWriteAccess(1)).resolves.toBe(false);
 
         expect(console.log).toHaveBeenCalledTimes(1);
         expect(console.log).toHaveBeenCalledWith('Failed getting default branch', error);
@@ -112,7 +115,7 @@ describe('GitLab API', () => {
 
       api.requestJSON = jest.fn().mockRejectedValueOnce(error);
 
-      await expect(api.hasWriteAccess()).rejects.toBe(error);
+      await expect(api.hasWriteAccess(1)).rejects.toBe(error);
 
       expect(api.requestJSON).toHaveBeenCalledTimes(1);
     });
