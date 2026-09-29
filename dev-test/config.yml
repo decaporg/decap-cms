@@ -201,10 +201,7 @@ collections: # A list of collections the CMS should be able to edit
     description: >
       The multilingual collection. It inherits the global i18n block, structure
       single_file, so every locale of an answer lives in one file keyed by locale, and the
-      editor shows one pane per locale side by side. Question and Answer are marked
-      i18n: translate (edited per locale); Published is i18n: duplicate (set once, copied
-      to every locale). The collection filter hides anything not published, so one draft
-      answer in the seed data never appears in this list.
+      editor shows one pane per locale side by side.
     folder: '_faqs'
     create: true # Allow users to create new documents in this collection
     i18n: true
@@ -413,10 +410,7 @@ collections: # A list of collections the CMS should be able to edit
     label_singular: 'Page'
     description: >
       A nested collection: entries live in a folder tree and the sidebar mirrors that tree,
-      and the meta.path option exposes the folder path as an editable field. Note that
-      nested cannot be combined with the multiple_folders i18n structure: that structure
-      reads the locale from the path segment just above the file, which only holds at
-      depth 1. See FAQ for the i18n demo.
+      and the meta.path option exposes the folder path as an editable field. Nested cannot be combined with i18n: multiple_folders.
     folder: _pages
     create: true
     preview_path: 'pages/{{slug}}'
