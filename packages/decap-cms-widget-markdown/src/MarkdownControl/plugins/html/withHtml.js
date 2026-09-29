@@ -47,7 +47,15 @@ const ELEMENT_TAGS = {
   H6: () => ({ type: 'heading-six' }),
   IMG: el => {
     const url = sanitizeElementUrl(el.getAttribute('src'), { allowDataImage: true });
-    return url ? { type: 'image', url } : null;
+    if (!url) {
+      return null;
+    }
+    const alt = el.getAttribute('alt');
+    const title = el.getAttribute('title');
+    return {
+      type: 'image',
+      data: { url, ...(alt && { alt }), ...(title && { title }) },
+    };
   },
   LI: () => ({ type: 'list-item' }),
   OL: () => ({ type: 'numbered-list' }),
