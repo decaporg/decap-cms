@@ -6,9 +6,6 @@ site_url: https://example.com
 publish_mode: editorial_workflow
 media_folder: assets/uploads
 
-# Every locale of an entry lives in one file, keyed by locale. The test backend this demo
-# runs on pages its file listing 10 files at a time and groups i18n entries per page, so a
-# multiple_folders collection whose locale files straddle a page boundary would not merge.
 i18n:
   structure: single_file
   locales: [en, es, fr]
@@ -26,7 +23,7 @@ media_processing:
   aspect_ratio: null
 
 logo:
-  src: /nf-logo.png
+  src: /dcp-logo.png
   show_in_header: true
 
 slug:
