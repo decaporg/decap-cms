@@ -55,6 +55,15 @@
   },
   {
     "method": "GET",
+    "url": "/api/v4/projects/owner%2Frepo/repository/branches/master",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "response": "{\"name\":\"master\",\"protected\":false,\"can_push\":true,\"default\":true}",
+    "status": 200
+  },
+  {
+    "method": "GET",
     "url": "/api/v4/projects/owner%2Frepo/repository/tree?path=static/media&ref=master&per_page=100&recursive=false",
     "headers": {
       "Content-Type": "application/json",

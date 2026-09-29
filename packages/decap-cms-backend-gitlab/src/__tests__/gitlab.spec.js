@@ -97,6 +97,14 @@ const resp = {
   branch: {
     success: {
       name: 'master',
+      can_push: true,
+      commit: {
+        id: 1,
+      },
+    },
+    readOnly: {
+      name: 'master',
+      can_push: false,
       commit: {
         id: 1,
       },
@@ -110,13 +118,6 @@ const resp = {
         },
       },
       default_branch: 'main',
-    },
-    readOnly: {
-      permissions: {
-        project_access: {
-          access_level: 10,
-        },
-      },
     },
   },
 };
@@ -187,7 +188,7 @@ describe('gitlab backend', () => {
     return nock(backend.implementation.apiRoot);
   }
 
-  function interceptAuth(backend, { userResponse, projectResponse } = {}) {
+  function interceptAuth(backend, { userResponse, projectResponse, branchResponse } = {}) {
     const api = mockApi(backend);
     api
       .get('/user')
@@ -197,8 +198,8 @@ describe('gitlab backend', () => {
     api
       // The `authenticate` method of the API class from netlify-cms-backend-gitlab
       // calls the same endpoint twice for gettng a single project.
-      // First time through `this.api.hasWriteAccess()
-      // Second time through the method `getDefaultBranchName` from lib-util
+      // First time through the method `getDefaultBranchName` from lib-util
+      // Second time through `this.api.hasWriteAccess()
       // As a result, we need to repeat the same response twice.
       // Otherwise, we'll get an error: "No match for request to
       // https://gitlab.com/api/v4"
@@ -207,14 +208,35 @@ describe('gitlab backend', () => {
       .times(2)
       .query(true)
       .reply(200, projectResponse || resp.project.success);
+
+    // Without the editorial workflow, `hasWriteAccess` checks that the user can push to the
+    // branch: the configured one, or else the default branch of the project
+    if (!backend.implementation.options.useWorkflow) {
+      const { branch, isBranchConfigured } = backend.implementation;
+      interceptBranch(backend, {
+        branch: isBranchConfigured
+          ? branch
+          : (projectResponse || resp.project.success).default_branch,
+        response: branchResponse,
+      });
+    }
   }
 
-  function interceptBranch(backend, { branch = 'master' } = {}) {
+  // With the editorial workflow, `hasWriteAccess` checks the access level of the user
+  function interceptMember(backend, { accessLevel }) {
+    const api = mockApi(backend);
+    api
+      .get(`${expectedRepoUrl}/members/all`)
+      .query({ 'user_ids[]': `${resp.user.success.id}`, state: 'active' })
+      .reply(200, [{ id: resp.user.success.id, access_level: accessLevel }]);
+  }
+
+  function interceptBranch(backend, { branch = 'master', response = resp.branch.success } = {}) {
     const api = mockApi(backend);
     api
       .get(`${expectedRepoUrl}/repository/branches/${encodeURIComponent(branch)}`)
       .query(true)
-      .reply(200, resp.branch.success);
+      .reply(200, response);
   }
 
   function parseQuery(uri) {
@@ -338,12 +360,65 @@ describe('gitlab backend', () => {
   describe('authenticate', () => {
     it('throws if user does not have access to project', async () => {
       backend = resolveBackend(defaultConfig);
-      interceptAuth(backend, { projectResponse: resp.project.readOnly });
+      interceptAuth(backend, { branchResponse: resp.branch.readOnly });
       await expect(
         backend.authenticate(mockCredentials),
       ).rejects.toThrowErrorMatchingInlineSnapshot(
         `"Your GitLab user account does not have access to this repo."`,
       );
+    });
+
+    it('throws if user is not a developer of the project with the editorial workflow', async () => {
+      backend = resolveBackend({ ...defaultConfig, publish_mode: 'editorial_workflow' });
+      interceptAuth(backend);
+      interceptMember(backend, { accessLevel: 20 });
+      await expect(
+        backend.authenticate(mockCredentials),
+      ).rejects.toThrowErrorMatchingInlineSnapshot(
+        `"Your GitLab user account does not have access to this repo."`,
+      );
+    });
+
+    it('checks and uses the default branch of the project when none is configured', async () => {
+      backend = resolveBackend(defaultConfig);
+      interceptAuth(backend);
+      await backend.authenticate(mockCredentials);
+      expect(backend.implementation.branch).toBe('main');
+      expect(backend.implementation.api.branch).toBe('main');
+    });
+
+    it('reports a missing project when no branch is configured', async () => {
+      backend = resolveBackend(defaultConfig);
+      const api = mockApi(backend);
+      api.get('/user').query(true).reply(200, resp.user.success);
+      api
+        .get(expectedRepoUrl)
+        .times(2)
+        .query(true)
+        .reply(404, { message: '404 Project Not Found' });
+      await expect(backend.authenticate(mockCredentials)).rejects.toThrow(
+        'Repo "foo/bar" not found.',
+      );
+    });
+
+    it('fails the login when the default branch cannot be read', async () => {
+      backend = resolveBackend(defaultConfig);
+      const api = mockApi(backend);
+      api.get('/user').query(true).reply(200, resp.user.success);
+      api.get(expectedRepoUrl).query(true).reply(500, { message: '500 Internal Server Error' });
+      await expect(backend.authenticate(mockCredentials)).rejects.toThrow(
+        '500 Internal Server Error',
+      );
+      expect(backend.implementation.branch).toBe('master');
+    });
+
+    it('lets in a developer of the project with the editorial workflow', async () => {
+      const backendName = defaultConfig.backend.name;
+      backend = resolveBackend({ ...defaultConfig, publish_mode: 'editorial_workflow' });
+      interceptAuth(backend);
+      interceptMember(backend, { accessLevel: 30 });
+      const user = await backend.authenticate(mockCredentials);
+      expect(user).toEqual({ ...resp.user.success, ...mockCredentials, backendName });
     });
 
     it('stores and returns user object on success', async () => {
@@ -519,6 +594,7 @@ describe('gitlab backend', () => {
         .query(true)
         .reply(200, resp.user.success);
       api.get(expectedRepoUrl).times(2).query(true).reply(200, resp.project.success);
+      interceptBranch(backend, { branch: resp.project.success.default_branch });
 
       const user = await backend.authenticate(pkceCredentials);
 
@@ -709,7 +785,7 @@ describe('gitlab backend', () => {
 
     it('returns all entries from folder collection', async () => {
       const tree = mockRepo.tree[collectionManyEntriesConfig.folder];
-      interceptBranch(backend);
+      interceptBranch(backend, { branch: backend.implementation.branch });
       tree.forEach(file => interceptFiles(backend, file.path));
 
       interceptCollection(backend, collectionManyEntriesConfig, { repeat: 5 });
