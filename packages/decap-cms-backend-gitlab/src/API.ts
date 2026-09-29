@@ -164,6 +164,10 @@ type GitLabRepo = {
   };
 };
 
+type GitLabMember = {
+  access_level: number;
+};
+
 type GitLabBranch = {
   name: string;
   developers_can_push: boolean;
@@ -333,26 +337,52 @@ export default class API {
       return true;
     }
     // check for group write permissions
+    let sharedAccess = 0;
     if (sharedWithGroups && sharedWithGroups.length > 0) {
-      const maxAccess = getMaxAccess(sharedWithGroups);
-      // maintainer access
-      if (maxAccess.group_access_level >= this.MAINTAINER_ACCESS) {
+      sharedAccess = getMaxAccess(sharedWithGroups).group_access_level;
+      if (await this.hasSharedGroupWriteAccess(sharedAccess)) {
         return true;
       }
-      // developer access
-      if (maxAccess.group_access_level >= this.WRITE_ACCESS) {
-        // check permissions to merge and push
-        try {
-          const branch = await this.getDefaultBranch();
-          if (branch.developers_can_merge && branch.developers_can_push) {
-            return true;
-          }
-        } catch (e) {
-          console.log('Failed getting default branch', e);
+    }
+    // groups shared with an ancestor group of the project are not listed in shared_with_groups,
+    // but count in the effective access level of the user
+    const memberAccess = await this.getMemberAccessLevel();
+    if (memberAccess > sharedAccess) {
+      return this.hasSharedGroupWriteAccess(memberAccess);
+    }
+    return false;
+  };
+
+  hasSharedGroupWriteAccess = async (accessLevel: number) => {
+    // maintainer access
+    if (accessLevel >= this.MAINTAINER_ACCESS) {
+      return true;
+    }
+    // developer access
+    if (accessLevel >= this.WRITE_ACCESS) {
+      // check permissions to merge and push
+      try {
+        const branch = await this.getDefaultBranch();
+        if (branch.developers_can_merge && branch.developers_can_push) {
+          return true;
         }
+      } catch (e) {
+        console.log('Failed getting default branch', e);
       }
     }
     return false;
+  };
+
+  // Effective access level of the user on the project, from direct, inherited and shared
+  // memberships. 0 when the user is not a member (404).
+  getMemberAccessLevel = async () => {
+    try {
+      const { id } = await this.user();
+      const member: GitLabMember = await this.requestJSON(`${this.repoURL}/members/all/${id}`);
+      return member.access_level;
+    } catch (e) {
+      return 0;
+    }
   };
 
   readFile = async (
