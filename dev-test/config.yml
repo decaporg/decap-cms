@@ -6,19 +6,41 @@ site_url: https://example.com
 publish_mode: editorial_workflow
 media_folder: assets/uploads
 
-# Collections opt in to i18n with `i18n: true`
 i18n:
   structure: single_file
-  locales: [en, de]
+  locales: [en, es, fr]
   default_locale: en
+
+media_processing:
+  enabled: true
+  format:
+    enabled: true
+    default: webp
+  quality: 82
+  strip_metadata: true
+  width: 2000
+  height: null
+  aspect_ratio: null
+
+logo:
+  src: /dcp-logo.png
+  show_in_header: true
+
+slug:
+  encoding: unicode
+  clean_accents: true
+
+editor:
+  notes: true
 
 collections: # A list of collections the CMS should be able to edit
   - name: 'posts' # Used in routes, ie.: /admin/collections/:slug/edit
-    label: 'Posts' # Used in the UI
+    label: 'Blog Posts' # Used in the UI
     label_singular: 'Post' # Used in the UI, ie: "New Post"
     description: >
-      The description is a great place for tone setting, high level information, and editing
-      guidelines that are specific to a collection.
+      Articles about Decap CMS and static site publishing. Shows a slug template, a summary
+      transform, sortable_fields, and view_filters/view_groups driven by real fields
+      (Category and Featured) rather than test flags.
     folder: '_posts'
     slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
     summary: '{{title}} -- {{year}}/{{month}}/{{day}}'
@@ -29,30 +51,37 @@ collections: # A list of collections the CMS should be able to edit
       - title
       - { field: date, default_sort: desc }
     view_filters:
-      - label: Posts With Index
-        field: title
-        pattern: 'This is post #'
-      - label: Posts Without Index
-        field: title
-        pattern: front matter post
-      - label: Relation Test
-        field: relation_test
-        pattern: true
+      - { label: 'Tutorials', field: category, pattern: 'Tutorial' }
+      - { label: 'Release Notes', field: category, pattern: 'Release Notes' }
+      - { label: 'Featured', field: featured, pattern: true }
     view_groups:
       - label: Year
         field: date
         pattern: \d{4}
-      - label: Relation Test
-        field: relation_test
+      - { label: 'Category', field: category }
+      - { label: 'Featured', field: featured }
     fields: # The fields each document in this collection have
       - { label: 'Title', name: 'title', widget: 'string', tagname: 'h1' }
-      - { label: 'Relation Test', name: 'relation_test', widget: 'hidden', default: true }
       - {
           label: 'Publish Date',
           name: 'date',
           widget: 'datetime',
           format: 'YYYY-MM-DD HH:mm',
           default: '{{now}}',
+        }
+      - label: 'Category'
+        name: 'category'
+        widget: 'select'
+        required: false
+        default: 'Tutorial'
+        options: ['Tutorial', 'Release Notes', 'Case Study', 'Opinion']
+      - {
+          label: 'Featured',
+          name: 'featured',
+          widget: 'boolean',
+          required: false,
+          default: false,
+          hint: 'Featured posts are pinned to the top of the blog index.',
         }
       - label: 'Cover Image'
         name: 'image'
@@ -64,47 +93,123 @@ collections: # A list of collections the CMS should be able to edit
       - { label: 'Body', name: 'bodyold', widget: 'markdown', hint: 'Main content goes here.' }
       - { label: 'Body', name: 'bodyold2', widget: 'markdown', hint: 'Main content goes here 2.' }
 
-  - name: 'restaurants' # Used in routes, ie.: /admin/collections/:slug/edit
-    label: 'Restaurants' # Used in the UI
-    label_singular: 'Restaurant' # Used in the UI, ie: "New Post"
+  - name: 'writers'
+    label: 'Writers'
+    label_singular: 'Writer'
     description: >
-      Restaurants is an entry type used for testing galleries, relations and other widgets.
-      The tests must be written in such way that adding new fields does not affect previous flows.
-    folder: '_restaurants'
-    slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
-    summary: '{{title}} -- {{year}}/{{month}}/{{day}}'
-    create: true # Allow users to create new documents in this collection
-    editor:
-      visualEditing: true
-    fields: # The fields each document in this collection have
-      - { label: 'Title', name: 'title', widget: 'string', tagname: 'h1' }
-      - { label: 'Body', name: 'body', widget: 'markdown', hint: 'Main content goes here.' }
-      - { name: 'gallery', widget: 'image', choose_url: true, media_library: {config: {multiple: true, max_files: 999}}}
-      - name: post
+      This collection is a list of writers.
+    folder: '_writers'
+    create: true
+    identifier_field: name
+    fields:
+      - { label: 'Name', name: 'name', widget: 'string' }
+      - { label: 'Country', name: 'country', widget: 'string', required: false }
+      - { label: 'Born', name: 'born', widget: 'number', required: false }
+      - label: 'Photo'
+        name: 'photo'
+        widget: 'image'
+        required: false
+        media_processing:
+          enabled: true
+          format: { enabled: true, default: webp }
+          quality: 85
+          width: 500
+          height: 500
+          aspect_ratio: '1:1'
+      - { label: 'Bio', name: 'bio', widget: 'markdown', required: false }
+
+  - name: 'books'
+    label: 'Books'
+    label_singular: 'Book'
+    description: >
+      A collection of good books from all over the world
+    folder: '_books'
+    media_folder: 'assets/uploads/books'
+    public_folder: '/assets/uploads/books'
+    create: true
+    summary: "{{title}} ({{published_date | date('YYYY')}}) — {{genre}}"
+    sortable_fields: [title, published_date]
+    view_filters:
+      - { label: 'Magical Realism', field: genre, pattern: 'Magical Realism' }
+      - { label: 'Historical Fiction', field: genre, pattern: 'Historical Fiction' }
+      - { label: 'Dystopian', field: genre, pattern: 'Dystopian' }
+    view_groups:
+      - { label: 'Genre', field: genre }
+      - { label: 'Author', field: author }
+    fields:
+      - { label: 'Title', name: 'title', widget: 'string' }
+      - name: author
+        label: 'Author'
         widget: relation
-        collection: posts
-        multiple: true
-        search_fields: ['title']
-        display_fields: ['title']
+        collection: writers
+        search_fields: ['name']
+        display_fields: ['name']
         value_field: '{{slug}}'
-        filters:
-          - field: relation_test
-            values: [true]
-      - name: authors
-        label: Authors
-        label_singular: 'Author'
-        widget: list
-        fields:
-          - { label: 'Name', name: 'name', widget: 'string', hint: 'First and Last' }
-          - { label: 'Description', name: 'description', widget: 'markdown' }
+      - { label: 'Published', name: 'published_date', widget: 'datetime', format: 'YYYY-MM-DD' }
+      - label: 'Genre'
+        name: 'genre'
+        widget: 'select'
+        options:
+          [
+            'Literary Fiction',
+            'Magical Realism',
+            'Historical Fiction',
+            'Science Fiction',
+            'Fantasy',
+            'Mystery',
+            'Crime',
+            'Romance',
+            'Horror',
+            'Dystopian',
+            'Satire',
+            'Poetry',
+            'Drama',
+            'Short Stories',
+            'Philosophy',
+            'Memoir',
+            'Biography',
+            'Epic',
+            'Young Adult',
+            'Essay',
+          ]
+      - label: 'ISBN'
+        name: 'isbn'
+        widget: 'string'
+        required: false
+        hint: 'ISBN-13, e.g. 978-0-14-243723-0'
+        pattern:
+          [
+            '^97[89]-\\d{1,5}-\\d{1,7}-\\d{1,6}-\\d$',
+            'Must look like an ISBN-13, e.g. 978-0-14-243723-0',
+          ]
+      - label: 'Cover Art'
+        name: 'cover'
+        widget: 'image'
+        required: false
+        media_processing:
+          enabled: true
+          format: { enabled: true, default: webp }
+          quality: 85
+          width: 800
+          height: 1200
+          aspect_ratio: '2:3'
+      - { label: 'Table of Contents', name: 'table_of_contents', widget: 'list', required: false }
 
   - name: 'faq' # Used in routes, ie.: /admin/collections/:slug/edit
     label: 'FAQ' # Used in the UI
+    label_singular: 'FAQ Item'
+    description: >
+      The multilingual collection. It inherits the global i18n block, structure
+      single_file, so every locale of an answer lives in one file keyed by locale, and the
+      editor shows one pane per locale side by side.
     folder: '_faqs'
     create: true # Allow users to create new documents in this collection
+    i18n: true
+    filter: { field: 'published', value: true }
     fields: # The fields each document in this collection have
-      - { label: 'Question', name: 'title', widget: 'string', tagname: 'h1' }
-      - { label: 'Answer', name: 'body', widget: 'markdown' }
+      - { label: 'Question', name: 'title', widget: 'string', tagname: 'h1', i18n: translate }
+      - { label: 'Published', name: 'published', widget: 'boolean', default: true, i18n: duplicate }
+      - { label: 'Answer', name: 'body', widget: 'markdown', i18n: translate }
 
   - name: 'settings'
     label: 'Settings'
@@ -141,7 +246,7 @@ collections: # A list of collections the CMS should be able to edit
       - name: 'authors'
         label: 'Authors'
         file: '_data/authors.yml'
-        description: 'Author descriptions'
+        description: 'Bylines available to blog posts'
         fields:
           - name: authors
             label: Authors
@@ -164,7 +269,14 @@ collections: # A list of collections the CMS should be able to edit
         search_fields: ['title', 'body']
         value_field: 'title'
       - { label: 'Title', name: 'title', widget: 'string' }
-      - { label: 'ID', name: 'uuid', widget: 'uuid', read_only: true, prefix: '', use_b32_encoding: false }
+      - {
+          label: 'ID',
+          name: 'uuid',
+          widget: 'uuid',
+          read_only: true,
+          prefix: '',
+          use_b32_encoding: false,
+        }
       - { label: 'Boolean', name: 'boolean', widget: 'boolean', default: true }
       - { label: 'Map', name: 'map', widget: 'map' }
       - { label: 'Text', name: 'text', widget: 'text', hint: 'Plain text, not markdown' }
@@ -183,6 +295,7 @@ collections: # A list of collections the CMS should be able to edit
         }
       - { label: 'Hidden', name: 'hidden', widget: 'hidden', default: 'hidden' }
       - { label: 'Color', name: 'color', widget: 'color' }
+      - { label: 'Code', name: 'code', widget: 'code', default_language: 'yaml' }
       - label: 'Object'
         name: 'object'
         widget: 'object'
@@ -293,8 +406,11 @@ collections: # A list of collections the CMS should be able to edit
               - { label: 'Image', name: 'image', widget: 'image' }
               - { label: 'File', name: 'file', widget: 'file' }
   - name: pages # a nested collection
-    label: Pages
+    label: Nested Pages
     label_singular: 'Page'
+    description: >
+      A nested collection: entries live in a folder tree and the sidebar mirrors that tree,
+      and the meta.path option exposes the folder path as an editable field. Nested cannot be combined with i18n: multiple_folders.
     folder: _pages
     create: true
     preview_path: 'pages/{{slug}}'
@@ -304,19 +420,7 @@ collections: # A list of collections the CMS should be able to edit
       - label: Title
         name: title
         widget: string
+      - label: Body
+        name: body
+        widget: markdown
     meta: { path: { widget: string, label: 'Path' } }
-
-  - name: 'i18n_posts' # a single file i18n collection with a filter
-    label: 'i18n Posts'
-    label_singular: 'i18n Post'
-    description: >
-      Entries of this collection keep every locale in a single file. The collection filter
-      hides the drafted entry, so only the two published ones should be listed.
-    folder: '_i18n_posts'
-    create: true
-    i18n: true
-    filter: { field: 'draft', value: false }
-    fields:
-      - { label: 'Title', name: 'title', widget: 'string', i18n: true }
-      - { label: 'Draft', name: 'draft', widget: 'boolean', default: false, i18n: duplicate }
-      - { label: 'Body', name: 'body', widget: 'markdown', i18n: true }
