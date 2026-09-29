@@ -4,7 +4,6 @@
  * fails here instead of in the browser.
  */
 import fs from 'fs';
-import path from 'path';
 
 import { validateConfig } from '../../packages/decap-cms-core/src/constants/configSchema';
 import { parseConfig, applyDefaults } from '../../packages/decap-cms-core/src/actions/config';
@@ -49,7 +48,7 @@ getWidgets.mockImplementation(() => [
 getBackend.mockImplementation(name => (name === 'test-repo' ? { init: () => ({}) } : undefined));
 
 describe('dev-test/config.yml (the demo.decapcms.org config)', () => {
-  const raw = fs.readFileSync(path.resolve(__dirname, '../config.yml'), 'utf8');
+  const raw = fs.readFileSync(require.resolve('../config.yml'), 'utf8');
   const parsed = parseConfig(raw);
 
   it('passes Decap config schema validation', () => {

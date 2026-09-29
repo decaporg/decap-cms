@@ -5,12 +5,11 @@
  * (this caught a real bug: a catalog-number pattern that rejected the demo's own data).
  */
 import fs from 'fs';
-import path from 'path';
 import yaml from 'js-yaml';
 
 function loadFixtures() {
-  const html = fs.readFileSync(path.resolve(__dirname, '../index.html'), 'utf8');
-  const script = html.match(/<script>([\s\S]*?)<\/script>/)[1];
+  const html = fs.readFileSync(require.resolve('../index.html'), 'utf8');
+  const script = html.match(/<script>([\s\S]*?)<\/script>/i)[1];
   const sandbox = { repoFiles: {}, repoNotes: {} };
   // eslint-disable-next-line no-new-func
   new Function('window', script)(sandbox);
