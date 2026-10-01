@@ -1930,4 +1930,65 @@ describe('Backend', () => {
       expect(siblingRegex).toBeUndefined();
     });
   });
+
+  describe('persistEntry with slug_collision reject', () => {
+    function setup(getEntry) {
+      const implementation = {
+        init: jest.fn(() => implementation),
+        persistEntry: jest.fn(),
+        getEntry,
+      };
+      const config = { backend: { commit_messages: {} } };
+      const collection = Map({
+        name: 'pages',
+        type: FOLDER,
+        folder: '_pages',
+        create: true,
+        fields: List([Map({ name: 'title', widget: 'string' })]),
+        nested: Map({ depth: 10 }),
+        meta: Map({ path: Map({ label: 'Path', widget: 'string' }) }),
+        slug_collision: 'reject',
+      });
+      const entryDraft = Map({
+        entry: Map({
+          slug: 'old/index',
+          path: '_pages/old/index.md',
+          data: Map({ title: 'Test' }),
+          meta: Map({ path: 'other' }),
+          newRecord: false,
+        }),
+      });
+      const backend = new Backend(implementation, { config, backendName: 'test' });
+      backend.currentUser = jest.fn().mockResolvedValue({ login: 'user', name: 'User' });
+      backend.entryToRaw = jest.fn().mockReturnValue('content');
+      backend.invokePreSaveEvent = jest.fn().mockResolvedValue(entryDraft.get('entry'));
+      backend.invokePostSaveEvent = jest.fn().mockResolvedValue();
+      function persist() {
+        return backend.persistEntry({
+          config,
+          collection,
+          entryDraft,
+          assetProxies: [],
+          usedSlugs: List(),
+        });
+      }
+      return { implementation, persist };
+    }
+
+    it('should reject moving an existing entry onto another entry path', async () => {
+      const { implementation, persist } = setup(jest.fn().mockResolvedValue({ data: 'data' }));
+
+      await expect(persist()).rejects.toThrow('An entry already exists at');
+      expect(implementation.persistEntry).not.toHaveBeenCalled();
+    });
+
+    it('should allow moving an existing entry to a free path', async () => {
+      const { implementation, persist } = setup(
+        jest.fn().mockRejectedValue(Object.assign(new Error('Not Found'), { status: 404 })),
+      );
+
+      await persist();
+      expect(implementation.persistEntry).toHaveBeenCalled();
+    });
+  });
 });
