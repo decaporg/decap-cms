@@ -249,6 +249,44 @@ describe('i18n', () => {
   });
 
   describe('getI18nFiles', () => {
+    it('should serialize translated preSave entries without nesting entry metadata in content', async () => {
+      const { registerEventListener, removeEventListener, invokeEvent } = require('../registry');
+      const entry = fromJS({
+        collection: 'posts',
+        slug: 'article',
+        path: 'content/article.md',
+        data: { title: 'English' },
+        i18n: { 'pt-br': { data: { title: 'Old translation' } } },
+      });
+      function handler({ entry }) {
+        return entry.setIn(['i18n', 'pt-br', 'data', 'title'], 'Portuguese');
+      }
+      registerEventListener({ name: 'preSave', handler });
+      try {
+        const result = await invokeEvent({ name: 'preSave', data: { entry } });
+        const files = i18n.getI18nFiles(
+          fromJS({
+            i18n: {
+              structure: i18n.I18N_STRUCTURE.MULTIPLE_FOLDERS,
+              locales: ['en', 'pt-br'],
+              default_locale: 'en',
+            },
+          }),
+          'md',
+          result,
+          draft => JSON.stringify(draft.get('data').toJS()),
+          'content/article.md',
+          'article',
+        );
+        expect(files).toEqual([
+          { path: 'content/en/article.md', slug: 'article', raw: '{"title":"English"}' },
+          { path: 'content/pt-br/article.md', slug: 'article', raw: '{"title":"Portuguese"}' },
+        ]);
+      } finally {
+        removeEventListener({ name: 'preSave', handler });
+      }
+    });
+
     const locales = ['en', 'de', 'fr'];
     const default_locale = 'en';
     const args = [

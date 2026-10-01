@@ -253,7 +253,11 @@ export async function invokeEvent({ name, data }) {
   for (const { handler, options } of handlers) {
     const result = await handler(_data, options);
     if (result !== undefined) {
-      const entry = _data.entry.set('data', result);
+      // Handlers may return either field data or the complete entry (for example,
+      // to update i18n). Check entry metadata too: content can have a data field.
+      const isEntry =
+        Map.isMap(result) && ['data', 'collection', 'slug', 'path'].every(key => result.has(key));
+      const entry = isEntry ? result : _data.entry.set('data', result);
       _data = { ...data, entry };
     }
   }
