@@ -263,6 +263,26 @@ export default class Forgejo implements Implementation {
     if (await this.api!.forkExists()) {
       await this.api!.mergeUpstream();
       return Promise.resolve();
+    }
+
+    // The user may already have a fork under a different name
+    const existingFork = await this.api!.findUserFork();
+    if (existingFork) {
+      this.repo = existingFork.full_name;
+      if (!this.options.API) {
+        this.api = new API({
+          token,
+          branch: this.branch,
+          repo: this.repo,
+          originRepo: this.originRepo,
+          apiRoot: this.apiRoot,
+          useOpenAuthoring: this.useOpenAuthoring,
+          cmsLabelPrefix: this.cmsLabelPrefix,
+          initialWorkflowStatus: this.initialWorkflowStatus,
+        });
+      }
+      await this.api!.mergeUpstream();
+      return Promise.resolve();
     } else {
       await getPermissionToFork();
 
