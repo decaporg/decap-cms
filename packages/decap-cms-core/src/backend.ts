@@ -477,14 +477,50 @@ export class Backend {
 
     if (unpublishedEntry) return unpublishedEntry;
 
-    const publishedEntry = await this.implementation
-      .getEntry(path)
-      .then(({ data }) => data)
-      .catch(() => {
-        return Promise.resolve(false);
-      });
+    // i18n multiple_folders/multiple_files entries are stored at locale-specific paths
+    const paths = hasI18n(collection)
+      ? getFilePaths(collection, selectFolderEntryExtension(collection), path, slug)
+      : [path];
+    for (const filePath of paths) {
+      const publishedEntry = await this.implementation
+        .getEntry(filePath)
+        .then(({ data }) => data)
+        .catch(() => {
+          return Promise.resolve(false);
+        });
+      if (publishedEntry) return publishedEntry;
+    }
 
-    return publishedEntry;
+    return false;
+  }
+
+  async slugExists(
+    collection: Collection,
+    config: CmsConfig,
+    usedSlugs: List<string>,
+    slug: string,
+  ) {
+    return (
+      usedSlugs.includes(slug) ||
+      this.entryExist(
+        collection,
+        selectEntryPath(collection, slug) as string,
+        slug,
+        selectUseWorkflow(config),
+      )
+    );
+  }
+
+  async assertNoSlugCollision(
+    collection: Collection,
+    config: CmsConfig,
+    usedSlugs: List<string>,
+    slug: string,
+  ) {
+    if (await this.slugExists(collection, config, usedSlugs, slug)) {
+      const path = selectEntryPath(collection, slug) as string;
+      throw new Error(`An entry already exists at "${path}". Change the entry identifier or path.`);
+    }
   }
 
   async generateUniqueSlug(
@@ -501,19 +537,16 @@ export class Backend {
     } else {
       slug = slugFormatter(collection, entryData, slugConfig);
     }
+    if (collection.get('slug_collision', 'suffix') === 'reject') {
+      await this.assertNoSlugCollision(collection, config, usedSlugs, slug);
+      return slug;
+    }
+
     let i = 1;
     let uniqueSlug = slug;
 
     // Check for duplicate slug in loaded entities store first before repo
-    while (
-      usedSlugs.includes(uniqueSlug) ||
-      (await this.entryExist(
-        collection,
-        selectEntryPath(collection, uniqueSlug) as string,
-        uniqueSlug,
-        selectUseWorkflow(config),
-      ))
-    ) {
+    while (await this.slugExists(collection, config, usedSlugs, uniqueSlug)) {
       uniqueSlug = `${slug}${sanitizeChar(' ', slugConfig)}${i++}`;
     }
     return uniqueSlug;
@@ -1299,12 +1332,21 @@ export class Backend {
     } else {
       const slug = entryDraft.getIn(['entry', 'slug']);
       const path = entryDraft.getIn(['entry', 'path']);
+      const newPath = customPath === path ? undefined : customPath;
+      if (newPath && collection.get('slug_collision', 'suffix') === 'reject') {
+        await this.assertNoSlugCollision(
+          collection,
+          config,
+          usedSlugs,
+          slugFromCustomPath(collection, newPath),
+        );
+      }
       dataFile = {
         path,
         // for workflow entries we refresh the slug on publish
         slug: customPath && !useWorkflow ? slugFromCustomPath(collection, customPath) : slug,
         raw: this.entryToRaw(collection, entryDraft.get('entry')),
-        newPath: customPath === path ? undefined : customPath,
+        newPath,
       };
     }
 

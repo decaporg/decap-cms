@@ -268,6 +268,7 @@ function getConfigSchema() {
             identifier_field: { type: 'string' },
             summary: { type: 'string' },
             slug: { type: 'string' },
+            slug_collision: { type: 'string', enum: ['suffix', 'reject'] },
             path: { type: 'string' },
             preview_path: { type: 'string' },
             preview_path_date_field: { type: 'string' },
