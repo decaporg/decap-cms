@@ -1,0 +1,31 @@
+{
+  "name": "decap-turbo-api",
+  "description": "The Decap Turbo API contract: operations, input schemas and response types, shared by the decap CLI and the Turbo server",
+  "version": "0.1.0",
+  "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-turbo-api",
+  "bugs": "https://github.com/decaporg/decap-cms/issues",
+  "license": "MIT",
+  "keywords": [
+    "decap-cms",
+    "decap-turbo"
+  ],
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "devDependencies": {
+    "typescript": "catalog:"
+  }
+}

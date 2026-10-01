@@ -31,6 +31,7 @@ catalog:
   '@hapi/joi': ^17.0.2
   '@iarna/toml': 2.2.5
   '@jsquash/webp': 1.5.0
+  '@modelcontextprotocol/sdk': ^1.31.0
   '@octokit/rest': ^16.28.7
   '@octokit/types': ^16.0.0
   '@reduxjs/toolkit': ^1.9.1
@@ -272,6 +273,7 @@ catalog:
   what-the-diff: ^0.6.0
   winston: ^3.3.3
   yaml: ^1.8.3
+  zod: ^3.25.0
 
 overrides:
   clean-stack: 5.2.0

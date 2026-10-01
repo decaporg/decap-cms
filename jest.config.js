@@ -11,6 +11,10 @@ module.exports = {
     'decap-cms-backend-gitlab': '<rootDir>/packages/decap-cms-backend-gitlab/src/index.ts',
     'decap-cms-lib-widgets': '<rootDir>/packages/decap-cms-lib-widgets/src/index.ts',
     'decap-cms-widget-object': '<rootDir>/packages/decap-cms-widget-object/src/index.js',
+    '^decap-turbo-api$': '<rootDir>/packages/decap-turbo-api/src/index.ts',
+    // packages/decap is ESM TypeScript and imports siblings as `./api.js`,
+    // as node16 resolution requires. Strip the extension so jest finds the .ts.
+    '^(\\.{1,2}/.*)\\.js$': '$1',
     '\\.(css|less)$': '<rootDir>/__mocks__/styleMock.js',
     '^#home-directory$': 'clean-stack/home-directory.js',
     '^clean-stack$': '<rootDir>/__mocks__/cleanStackMock.js',

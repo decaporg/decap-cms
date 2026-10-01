@@ -1,0 +1,43 @@
+{
+  "name": "decap",
+  "description": "The Decap command line: manage Decap Turbo from your terminal, and connect AI agents to it over MCP",
+  "version": "0.1.0",
+  "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap",
+  "bugs": "https://github.com/decaporg/decap-cms/issues",
+  "license": "MIT",
+  "keywords": [
+    "decap-cms",
+    "decap-turbo",
+    "cli",
+    "mcp"
+  ],
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "bin": {
+    "decap": "./dist/cli.cjs"
+  },
+  "scripts": {
+    "build": "webpack --config webpack.config.cjs",
+    "test": "cd ../.. && cross-env NODE_ENV=test jest packages/decap/ packages/decap-turbo-api/",
+    "type-check": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "decap-turbo-api": "workspace:*",
+    "ts-loader": "catalog:",
+    "tsconfig-paths-webpack-plugin": "catalog:",
+    "typescript": "^5.9.3",
+    "webpack": "catalog:",
+    "webpack-cli": "catalog:",
+    "webpack-node-externals": "catalog:"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
