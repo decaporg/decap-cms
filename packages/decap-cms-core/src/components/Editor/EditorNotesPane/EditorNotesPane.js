@@ -97,6 +97,38 @@ const EmptyStateText = styled.p`
   line-height: 1.4;
 `;
 
+const SOURCES = {
+  github: { text: 'View in GitHub', iconType: 'github' },
+  gitlab: { text: 'View in GitLab', iconType: 'gitlab' },
+};
+
+export function getSourceInfo(url, backendName) {
+  if (SOURCES[backendName]) {
+    return SOURCES[backendName];
+  }
+
+  let host;
+  try {
+    host = new URL(url).hostname.toLowerCase();
+  } catch {
+    return { text: 'View source', iconType: 'link' };
+  }
+
+  function isHost(domain) {
+    return host === domain || host.endsWith(`.${domain}`);
+  }
+
+  if (isHost('github.com')) {
+    return SOURCES.github;
+  }
+
+  if (isHost('gitlab.com')) {
+    return SOURCES.gitlab;
+  }
+
+  return { text: 'View source', iconType: 'link' };
+}
+
 class EditorNotesPane extends Component {
   static propTypes = {
     notes: ImmutablePropTypes.list,
@@ -142,40 +174,15 @@ class EditorNotesPane extends Component {
 
     this.handleUpdateNote(noteId, { resolved: !currentResolved });
   };
-  // Helper method to get the appropriate link text and icon type based on the source
-  getSourceInfo = url => {
-    // Check if URL is from GitHub
-    if (url.includes('github.com')) {
-      return {
-        text: 'View in GitHub',
-        iconType: 'github', // Using GitHub icon type
-      };
-    }
-
-    // TODO: Add support for other Git providers
-    // Example for future contributors:
-    // if (url.includes('gitlab.com')) {
-    //   return { text: 'View in GitLab', iconType: 'gitlab' };
-    // }
-    // if (url.includes('bitbucket.org')) {
-    //   return { text: 'View in Bitbucket', iconType: 'bitbucket' };
-    // }
-
-    // Default fallback
-    return {
-      text: 'View source',
-      iconType: 'link',
-    };
-  };
 
   render() {
-    const { notes, t } = this.props;
+    const { notes, user, t } = this.props;
     const notesList = notes && notes.size !== undefined ? notes : List(notes || []);
     const notesCount = notesList.size;
     const unresolvedCount = notesList.filter(note => !note.get('resolved')).size;
 
     const sourceUrl = notesCount > 0 ? notesList.first()?.get('issueUrl') : null;
-    const sourceInfo = sourceUrl ? this.getSourceInfo(sourceUrl) : null;
+    const sourceInfo = sourceUrl ? getSourceInfo(sourceUrl, user?.backendName) : null;
 
     return (
       <NotesContainer>
