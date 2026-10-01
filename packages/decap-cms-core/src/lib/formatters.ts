@@ -1,3 +1,4 @@
+import escapeRegExp from 'lodash/escapeRegExp';
 import flow from 'lodash/flow';
 import partialRight from 'lodash/partialRight';
 import trimEnd from 'lodash/trimEnd';
@@ -135,16 +136,24 @@ export function getProcessSegment(
         ])(value);
 }
 
-export function slugFormatter(
+/**
+ * Returns a formatter for an entry slug and its optional collection path.
+ *
+ * The entry identifier, date and slug are resolved once so the formatter renders the same
+ * base slug for every collision suffix. A suffix is inserted after each `{{slug}}` or
+ * identifier field variable in the path, including filtered ones, so nested bundle paths
+ * become `post-1/index` instead of `post/index-1`. Paths without such a variable get the
+ * suffix appended to the whole path.
+ */
+export function getSlugFormatter(
   collection: Collection,
   entryData: Map<string, unknown>,
   slugConfig?: CmsSlug,
 ) {
   const slugTemplate = collection.get('slug') || '{{slug}}';
 
-  const identifier = entryData.getIn(
-    keyToPathArray(selectIdentifier(collection) as string),
-  ) as string;
+  const identifierField = selectIdentifier(collection) as string;
+  const identifier = entryData.getIn(keyToPathArray(identifierField)) as string;
   if (!identifier) {
     throw new Error(
       'Collection must have a field name that is a valid entry identifier, or must have `identifier_field` set',
@@ -160,13 +169,32 @@ export function slugFormatter(
   const slug = compileStringTemplate(slugTemplate, date, identifier, entryData, processSegment);
 
   if (!collection.has('path')) {
-    return slug;
-  } else {
-    const pathTemplate = prepareSlug(collection.get('path') as string);
-    return compileStringTemplate(pathTemplate, date, slug, entryData, (value: string) =>
-      value === slug ? value : processSegment(value),
-    );
+    return (suffix = '') => `${slug}${suffix}`;
   }
+
+  const pathTemplate = prepareSlug(collection.get('path') as string);
+  const slugVariablePattern = new RegExp(
+    `{{ *(?:slug|${escapeRegExp(identifierField)}) *(?:\\|[^}]*)?}}`,
+    'gi',
+  );
+  const processPathSegment = getProcessSegment(slugConfig, [slug]);
+
+  return (suffix = '') => {
+    const suffixedTemplate = pathTemplate.replace(
+      slugVariablePattern,
+      match => `${match}${suffix}`,
+    );
+    const path = compileStringTemplate(suffixedTemplate, date, slug, entryData, processPathSegment);
+    return suffixedTemplate === pathTemplate ? `${path}${suffix}` : path;
+  };
+}
+
+export function slugFormatter(
+  collection: Collection,
+  entryData: Map<string, unknown>,
+  slugConfig?: CmsSlug,
+) {
+  return getSlugFormatter(collection, entryData, slugConfig)();
 }
 
 export function previewUrlFormatter(

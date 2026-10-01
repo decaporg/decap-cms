@@ -3,6 +3,7 @@ import { List, Map, fromJS } from 'immutable';
 import {
   commitMessageFormatter,
   prepareSlug,
+  getSlugFormatter,
   slugFormatter,
   previewUrlFormatter,
   summaryFormatter,
@@ -421,6 +422,110 @@ describe('formatters', () => {
           slugConfig,
         ),
       ).toBe('--/dir/post-title.en');
+    });
+  });
+
+  describe('getSlugFormatter', () => {
+    const date = new Date('2020-01-01T13:28:27.679Z').valueOf();
+    jest.spyOn(Date, 'now').mockImplementation(() => date);
+
+    const { selectIdentifier } = require('../../reducers/collections');
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('should apply a suffix to a slug without a path template', () => {
+      selectIdentifier.mockReturnValueOnce('title');
+
+      expect(
+        getSlugFormatter(Map({ slug: '{{slug}}' }), Map({ title: 'Post Title' }), slugConfig)('-1'),
+      ).toBe('post-title-1');
+    });
+
+    it('should apply a suffix to the slug placeholder before the rest of the path', () => {
+      selectIdentifier.mockReturnValueOnce('title');
+
+      expect(
+        getSlugFormatter(
+          Map({ slug: '{{slug}}', path: '{{ slug }}/index' }),
+          Map({ title: 'Post Title' }),
+          slugConfig,
+        )('-1'),
+      ).toBe('post-title-1/index');
+    });
+
+    it('should apply a suffix to the identifier field placeholder in the path', () => {
+      selectIdentifier.mockReturnValueOnce('title');
+
+      expect(
+        getSlugFormatter(
+          Map({ slug: '{{year}}-{{slug}}', path: '{{title}}/index' }),
+          Map({ title: 'Post Title' }),
+          slugConfig,
+        )('-1'),
+      ).toBe('post-title-1/index');
+    });
+
+    it('should apply a suffix to every slug placeholder', () => {
+      selectIdentifier.mockReturnValueOnce('title');
+
+      expect(
+        getSlugFormatter(
+          Map({ slug: '{{slug}}', path: '{{slug}}/{{slug}}' }),
+          Map({ title: 'Post Title' }),
+          slugConfig,
+        )('-1'),
+      ).toBe('post-title-1/post-title-1');
+    });
+
+    it('should apply a suffix to a filtered slug placeholder', () => {
+      selectIdentifier.mockReturnValueOnce('title');
+
+      expect(
+        getSlugFormatter(
+          Map({ slug: '{{slug}}', path: '{{slug | upper}}/index' }),
+          Map({ title: 'Post Title' }),
+          slugConfig,
+        )('-1'),
+      ).toBe('post-title-1/index');
+    });
+
+    it('should not apply a suffix to variables that only start with the identifier field', () => {
+      selectIdentifier.mockReturnValueOnce('title');
+
+      expect(
+        getSlugFormatter(
+          Map({ slug: '{{slug}}', path: '{{title_short}}/index' }),
+          Map({ title: 'Post Title', title_short: 'Short' }),
+          slugConfig,
+        )('-1'),
+      ).toBe('short/index-1');
+    });
+
+    it('should apply a suffix to the complete path when it has no slug placeholder', () => {
+      selectIdentifier.mockReturnValueOnce('title');
+
+      expect(
+        getSlugFormatter(
+          Map({ slug: '{{slug}}', path: 'sub_dir/{{year}}/index' }),
+          Map({ title: 'Post Title' }),
+          slugConfig,
+        )('-1'),
+      ).toBe('sub_dir/2020/index-1');
+    });
+
+    it('should resolve the date once for every suffix', () => {
+      selectIdentifier.mockReturnValueOnce('title');
+      const formatSlug = getSlugFormatter(
+        Map({ slug: '{{year}}-{{month}}-{{day}}-{{slug}}', path: '{{year}}/{{slug}}' }),
+        Map({ title: 'Post Title' }),
+        slugConfig,
+      );
+
+      expect(formatSlug()).toBe('2020/2020-01-01-post-title');
+      expect(formatSlug('-1')).toBe('2020/2020-01-01-post-title-1');
+      expect(Date.now).toHaveBeenCalledTimes(1);
     });
   });
 
