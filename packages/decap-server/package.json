@@ -1,6 +1,6 @@
 {
   "name": "decap-server",
-  "description": "Proxy server to be used with Decap CMS proxy backend",
+  "description": "Proxy server for the Decap CMS proxy backend. Now `decap dev`; this package runs the same server.",
   "version": "3.11.3-beta.0",
   "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-server",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
@@ -12,45 +12,18 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "build": "webpack",
-    "prestart": "pnpm run build",
-    "start": "node dist/index.js",
-    "develop": "nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' --exec 'ts-node' --files src/index.ts",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "build": "webpack"
   },
   "dependencies": {
-    "@hapi/joi": "catalog:",
-    "async-mutex": "catalog:",
-    "cors": "catalog:",
-    "dotenv": "catalog:",
-    "express": "catalog:",
-    "morgan": "catalog:",
-    "simple-git": "catalog:",
-    "what-the-diff": "catalog:",
-    "winston": "catalog:"
+    "decap": "workspace:*"
   },
   "devDependencies": {
-    "@types/cors": "catalog:",
-    "@types/express": "catalog:",
-    "@types/hapi__joi": "catalog:",
-    "@types/jest": "catalog:",
-    "@types/morgan": "catalog:",
-    "@types/node": "catalog:",
-    "@types/vfile-message": "catalog:",
-    "decap-cms-lib-util": "workspace:*",
-    "jest": "catalog:",
-    "nodemon": "catalog:",
-    "ts-jest": "catalog:",
-    "ts-loader": "catalog:",
-    "ts-node": "catalog:",
-    "tsconfig-paths-webpack-plugin": "catalog:",
     "webpack": "catalog:",
+    "webpack-cli": "catalog:",
     "webpack-node-externals": "catalog:"
   },
   "engines": {
-    "node": ">=v10.22.1"
+    "node": ">=20"
   },
   "bin": {
     "decap-server": "./dist/index.js"

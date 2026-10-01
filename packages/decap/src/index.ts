@@ -8,19 +8,30 @@ import type { MeResponse } from 'decap-turbo-api';
 
 const HELP = `decap ${CLI_VERSION} — the Decap command line
 
-Today it manages Decap Turbo from your terminal and your AI agents.
-
 Usage:
-  decap login [--admin]     Sign in through the browser and store a token
+  decap dev                 Run the local proxy server for the CMS's proxy
+                            backend (formerly npx decap-server)
+
+  decap login [--admin]     Sign in to Decap Turbo and store a token
   decap logout              Revoke the stored token and forget it
   decap whoami [--json]     Show the signed-in user and their organizations
-  decap mcp                 Run the local MCP server (for Claude, Cursor, …)
+  decap mcp                 Run the local MCP server for AI agents
 
-Options:
+dev options (each overrides the matching variable, also read from .env):
+  --port <n>        PORT, default 8081
+  --host <addr>     BIND_HOST, listen on this address only
+  --mode <fs|git>   MODE, default fs; git commits and supports the
+                    editorial workflow
+  --dir <path>      GIT_REPO_DIRECTORY, default the current directory
+  --origin <url>    ORIGIN allowed to call the server, default localhost
+  --log-level <l>   LOG_LEVEL, default info
+
+Turbo options:
   --api-url <url>   Turbo instance (default https://turbo.decapcms.org,
                     or DECAP_API_URL)
   --admin           login: also request admin scope (manage sites and members)
   --json            Machine-readable output
+
   -h, --help        Show this help
   -v, --version     Show the version
 
@@ -30,8 +41,12 @@ Environment:
 
 async function main(argv: string[]): Promise<number> {
   const { flags: parsed, positionals } = parseCliArgs(argv);
+  function str(name: string): string | undefined {
+    const value = parsed[name];
+    return typeof value === 'string' ? value : undefined;
+  }
   const values = {
-    apiUrl: typeof parsed['api-url'] === 'string' ? parsed['api-url'] : undefined,
+    apiUrl: str('api-url'),
     admin: parsed.admin === true,
     json: parsed.json === true,
     help: parsed.help === true,
@@ -52,6 +67,23 @@ async function main(argv: string[]): Promise<number> {
   const flags = { apiUrl: values.apiUrl };
 
   switch (command) {
+    case 'dev': {
+      // Loaded only for this command: the proxy server brings Express and
+      // simple-git, which login/whoami/mcp have no use for.
+      const { runDevServer } = await import('./dev/server.js');
+      const port = str('port');
+      if (port !== undefined && !/^\d+$/.test(port)) throw new Error('--port must be a number.');
+      await runDevServer({
+        port: port === undefined ? undefined : Number(port),
+        host: str('host'),
+        mode: str('mode'),
+        dir: str('dir'),
+        origin: str('origin'),
+        logLevel: str('log-level'),
+      });
+      return -1; // keep serving
+    }
+
     case 'login': {
       const { apiUrl } = resolveAuth(flags);
       await login({ apiUrl, admin: values.admin });

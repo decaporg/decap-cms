@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { getSchema } from '.';
+import { getSchema } from './index.js';
 
 import type Joi from '@hapi/joi';
 

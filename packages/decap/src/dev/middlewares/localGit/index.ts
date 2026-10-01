@@ -10,15 +10,14 @@ import {
   parseContentKey,
 } from 'decap-cms-lib-util/src/APIUtils';
 import { parse } from 'what-the-diff';
-// eslint-disable-next-line import/no-named-as-default
-import simpleGit from 'simple-git';
+import { simpleGit } from 'simple-git';
 import { Mutex, withTimeout } from 'async-mutex';
 
-import { defaultSchema, joi } from '../joi';
-import { pathTraversal } from '../joi/customValidators';
-import { listRepoFiles, writeFile, move, deleteFile, getUpdateDate } from '../utils/fs';
-import { entriesFromFiles, readMediaFile } from '../utils/entries';
-import { resolveExistingRepoPath } from '../utils/path';
+import { defaultSchema, joi } from '../joi/index.js';
+import { pathTraversal } from '../joi/customValidators.js';
+import { listRepoFiles, writeFile, move, deleteFile, getUpdateDate } from '../utils/fs.js';
+import { entriesFromFiles, readMediaFile } from '../utils/entries.js';
+import { resolveExistingRepoPath } from '../utils/path.js';
 
 import type {
   EntriesByFolderParams,
@@ -39,7 +38,7 @@ import type {
   DeleteFilesParams,
   UnpublishedEntryDataFileParams,
   UnpublishedEntryMediaFileParams,
-} from '../types';
+} from '../types.js';
 import type express from 'express';
 import type winston from 'winston';
 import type { SimpleGit } from 'simple-git';

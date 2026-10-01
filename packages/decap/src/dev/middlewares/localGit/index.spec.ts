@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import winston from 'winston';
 
-import { validateRepo, getSchema, localGitMiddleware } from '.';
+import { validateRepo, getSchema, localGitMiddleware } from './index.js';
 
 import type Joi from '@hapi/joi';
 import type express from 'express';
@@ -22,7 +22,7 @@ const defaultParams = {
 };
 
 describe('localGitMiddleware', () => {
-  const simpleGit = require('simple-git');
+  const { simpleGit } = require('simple-git');
 
   const git = {
     checkIsRepo: jest.fn(),

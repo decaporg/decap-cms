@@ -1,6 +1,6 @@
 import path from 'path';
 
-import { resolveRepoPath } from './path';
+import { resolveRepoPath } from './path.js';
 
 describe('resolveRepoPath', () => {
   const repoPath = path.resolve('projects', 'repo');

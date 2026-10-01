@@ -4,8 +4,8 @@ import { promises as fs } from 'fs';
 import os from 'os';
 import path from 'path';
 
-import { readMediaFile } from './entries';
-import { deleteFile, writeFile } from './fs';
+import { readMediaFile } from './entries.js';
+import { deleteFile, writeFile } from './fs.js';
 
 describe('repository filesystem boundary', () => {
   let temporaryPath: string;

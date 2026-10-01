@@ -1,7 +1,7 @@
 import path from 'path';
 import { promises as fs } from 'fs';
 
-import { resolveExistingRepoPath, resolveNewRepoPath } from './path';
+import { resolveExistingRepoPath, resolveNewRepoPath } from './path.js';
 
 async function listFiles(dir: string, extension: string, depth: number): Promise<string[]> {
   if (depth <= 0) {

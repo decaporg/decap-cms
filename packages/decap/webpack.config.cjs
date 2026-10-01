@@ -6,13 +6,20 @@ const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const { version } = require('./package.json');
 const { NODE_ENV = 'production' } = process.env;
 
-// The API contract is bundled in, so the published CLI has no runtime
-// dependency on decap-turbo-api and cannot drift from the version it was
-// built against. Everything else in node_modules stays external.
-const allowlist = [/^decap-turbo-api/];
+// Workspace packages are bundled in: the API contract, so the published CLI
+// cannot drift from the version it was built against, and the few
+// decap-cms-lib-util helpers the dev server uses. Everything else in
+// node_modules stays external and is installed as a dependency.
+const allowlist = [/^decap-turbo-api/, /^decap-cms-lib-util/];
 
 module.exports = {
-  entry: { cli: path.join('src', 'index.ts') },
+  entry: {
+    // The `decap` binary.
+    cli: path.join('src', 'index.ts'),
+    // `decap/dev`: the proxy server's programmatic API (registerLocalFs,
+    // registerLocalGit, runDevServer), which decap-server re-exports.
+    dev: path.join('src', 'dev', 'index.ts'),
+  },
   mode: NODE_ENV,
   target: 'node',
   devtool: 'source-map',
@@ -22,6 +29,7 @@ module.exports = {
     // as ESM. The bundle is CommonJS so its externals resolve to the MCP SDK's
     // CommonJS build.
     filename: '[name].cjs',
+    chunkFilename: 'chunks/[name].cjs',
     libraryTarget: 'commonjs2',
   },
   resolve: {
@@ -42,7 +50,7 @@ module.exports = {
     }),
   ],
   plugins: [
-    new webpack.BannerPlugin({ banner: '#!/usr/bin/env node', raw: true }),
+    new webpack.BannerPlugin({ banner: '#!/usr/bin/env node', raw: true, include: /^cli\.cjs$/ }),
     new webpack.DefinePlugin({ DECAP_CLI_VERSION: JSON.stringify(version) }),
   ],
 };

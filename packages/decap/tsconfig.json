@@ -11,7 +11,8 @@
     "noUnusedParameters": true,
     "sourceMap": true,
     "paths": {
-      "decap-turbo-api": ["../decap-turbo-api/src"]
+      "decap-turbo-api": ["../decap-turbo-api/src"],
+      "decap-cms-lib-util/src/APIUtils": ["../decap-cms-lib-util/src/APIUtils.ts"]
     },
     "skipLibCheck": true
   },

@@ -2,7 +2,7 @@ import crypto from 'crypto';
 import path from 'path';
 import { promises as fs } from 'fs';
 
-import { resolveExistingRepoPath } from './path';
+import { resolveExistingRepoPath } from './path.js';
 
 function sha256(buffer: Buffer) {
   return crypto.createHash('sha256').update(buffer).digest('hex');

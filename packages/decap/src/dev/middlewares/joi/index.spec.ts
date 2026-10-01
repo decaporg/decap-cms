@@ -1,4 +1,4 @@
-import { defaultSchema, joi } from '.';
+import { defaultSchema, joi } from './index.js';
 
 import type express from 'express';
 import type Joi from '@hapi/joi';

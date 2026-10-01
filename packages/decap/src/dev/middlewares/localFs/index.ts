@@ -1,9 +1,9 @@
 import path from 'path';
 
-import { defaultSchema, joi } from '../joi';
-import { pathTraversal } from '../joi/customValidators';
-import { listRepoFiles, deleteFile, writeFile, move } from '../utils/fs';
-import { entriesFromFiles, readMediaFile } from '../utils/entries';
+import { defaultSchema, joi } from '../joi/index.js';
+import { pathTraversal } from '../joi/customValidators.js';
+import { listRepoFiles, deleteFile, writeFile, move } from '../utils/fs.js';
+import { entriesFromFiles, readMediaFile } from '../utils/entries.js';
 
 import type {
   EntriesByFolderParams,
@@ -16,7 +16,7 @@ import type {
   DeleteFileParams,
   DeleteFilesParams,
   DataFile,
-} from '../types';
+} from '../types.js';
 import type express from 'express';
 import type winston from 'winston';
 

@@ -1,6 +1,40 @@
 # decap
 
-The Decap command line, and a local MCP server for AI agents. Today it manages [Decap Turbo](https://turbo.decapcms.org): everything goes through the Turbo API with a personal access token, so it can never do more than you can in the dashboard.
+The Decap command line. It runs the local proxy server for editing a site on your own machine, manages [Decap Turbo](https://turbo.decapcms.org), and connects AI agents to Turbo over MCP. Turbo commands go through the Turbo API with a personal access token, so they can never do more than you can in the dashboard.
+
+## Local development: `decap dev`
+
+Runs the proxy server for Decap's `proxy` backend, so the CMS reads and writes the repository on disk. This was `npx decap-server`, which still works and runs the same server.
+
+```sh
+npx decap dev                 # serve the current directory on port 8081
+npx decap dev --mode git      # commit changes, with editorial workflow support
+npx decap dev --port 8082 --dir ../my-site
+```
+
+Point the CMS at it:
+
+```yaml
+local_backend: true
+```
+
+or, explicitly:
+
+```yaml
+backend:
+  name: proxy
+  proxy_url: http://localhost:8081/api/v1
+```
+
+Each flag overrides an environment variable, also read from a `.env` file in the working directory: `--port` (`PORT`, default 8081), `--host` (`BIND_HOST`), `--mode` (`MODE`: `fs` or `git`, default `fs`), `--dir` (`GIT_REPO_DIRECTORY`, default the current directory), `--origin` (`ORIGIN`, the CMS origin allowed to call the server, default localhost) and `--log-level` (`LOG_LEVEL`, default `info`).
+
+To mount the proxy endpoints on your own Express app instead:
+
+```js
+const { registerLocalFs, registerLocalGit } = require('decap/dev');
+
+await registerLocalFs(app); // or registerLocalGit(app)
+```
 
 ## Sign in
 

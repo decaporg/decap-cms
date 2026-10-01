@@ -9,7 +9,7 @@ export interface ParsedArgs {
 }
 
 /** Flags that take a value. Every other `--flag` is a boolean. */
-const VALUE_FLAGS = new Set(['api-url']);
+const VALUE_FLAGS = new Set(['api-url', 'port', 'host', 'mode', 'dir', 'origin', 'log-level']);
 
 const SHORT_FLAGS: Record<string, string> = { h: 'help', v: 'version' };
 

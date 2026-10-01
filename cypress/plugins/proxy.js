@@ -21,10 +21,13 @@ const initRepo = async dir => {
 };
 
 const startServer = async (repoDir, mode) => {
-  const serverDir = path.join(__dirname, '..', '..', 'packages', 'decap-server');
-  const tsNode = require.resolve('ts-node/dist/bin.js', { paths: [serverDir] });
-  const distIndex = path.join(serverDir, 'dist', 'index.js');
-  const tsIndex = path.join(serverDir, 'src', 'index.ts');
+  // The proxy server is `decap dev` (packages/decap), formerly decap-server.
+  // `pnpm run build:demo` builds it before the e2e run.
+  const cliDir = path.join(__dirname, '..', '..', 'packages', 'decap');
+  const cli = path.join(cliDir, 'dist', 'cli.cjs');
+  if (!(await fs.pathExists(cli))) {
+    throw new Error(`${cli} is missing. Build it with: pnpm --filter decap build`);
+  }
 
   const port = 8082;
   const env = {
@@ -35,11 +38,7 @@ const startServer = async (repoDir, mode) => {
   };
 
   console.log(`Starting proxy server on port '${port}' with mode ${mode}`);
-  if (await fs.pathExists(distIndex)) {
-    serverProcess = spawn('node', [distIndex], { env, cwd: serverDir });
-  } else {
-    serverProcess = spawn(process.execPath, [tsNode, '--files', tsIndex], { env, cwd: serverDir });
-  }
+  serverProcess = spawn('node', [cli, 'dev'], { env, cwd: cliDir });
 
   return new Promise((resolve, reject) => {
     serverProcess.stdout.on('data', data => {
@@ -60,9 +59,7 @@ const startServer = async (repoDir, mode) => {
 let serverProcess;
 
 async function setupProxy(options) {
-  const postfix = Math.random()
-    .toString(32)
-    .slice(2);
+  const postfix = Math.random().toString(32).slice(2);
 
   const testRepoName = `proxy-test-repo-${Date.now()}-${postfix}`;
   const tempDir = path.join('.temp', testRepoName);
