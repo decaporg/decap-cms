@@ -276,10 +276,13 @@ export default class CodeControl extends Component {
   setInactive = () => this.setState({ isActive: false });
 
   render() {
-    const { classNameWrapper, forID, widget, isNewEditorComponent } = this.props;
+    const { classNameWrapper, forID, widget, isEditorComponent, isNewEditorComponent } = this.props;
     const { lang, settingsVisible, keyMap, codeMirrorKey, theme, lastKnownValue } = this.state;
     const langInfo = this.getLanguageByName(lang);
     const mode = langInfo?.mimeType || langInfo?.mode;
+    // A code block inside the markdown editor is as tall as its content, so a
+    // short snippet does not leave a tall empty box in the middle of the text.
+    const minHeight = isEditorComponent ? '0' : '300px';
 
     return (
       <ClassNames>
@@ -322,11 +325,11 @@ export default class CodeControl extends Component {
                 .CodeMirror {
                   height: auto !important;
                   cursor: text;
-                  min-height: 300px;
+                  min-height: ${minHeight};
                 }
 
                 .CodeMirror-scroll {
-                  min-height: 300px;
+                  min-height: ${minHeight};
                 }
               `}
               options={{
