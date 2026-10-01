@@ -556,6 +556,39 @@ describe('gitlab backend', () => {
       const token = await backend.getToken();
       expect(token).toEqual(null);
     });
+
+    it('stops the notes polling manager', async () => {
+      backend = resolveBackend(defaultConfig);
+      interceptAuth(backend);
+      await backend.authenticate(mockCredentials);
+
+      const manager = backend.implementation.pollingManager;
+      const destroy = jest.spyOn(manager, 'destroy');
+
+      await backend.logout();
+
+      expect(destroy).toHaveBeenCalledTimes(1);
+      expect(backend.implementation.pollingManager).toBeUndefined();
+    });
+  });
+
+  describe('notes polling manager', () => {
+    it('is replaced, not leaked, when the user authenticates again', async () => {
+      backend = resolveBackend(defaultConfig);
+      interceptAuth(backend);
+      await backend.authenticate(mockCredentials);
+
+      const first = backend.implementation.pollingManager;
+      const destroy = jest.spyOn(first, 'destroy');
+
+      interceptAuth(backend);
+      await backend.authenticate(mockCredentials);
+
+      expect(destroy).toHaveBeenCalledTimes(1);
+      expect(backend.implementation.pollingManager).not.toBe(first);
+
+      backend.implementation.pollingManager.destroy();
+    });
   });
 
   describe('getEntry', () => {
