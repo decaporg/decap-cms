@@ -1043,13 +1043,20 @@ export default class API {
   }
 
   // A fork can be renamed (or created with a custom name), in which case it
-  // won't be found under the origin repo name. Look it up in the origin's forks.
+  // won't be found under the origin repo name. Look it up among the user's repos,
+  // which are usually far fewer than the origin's forks.
   async findUserFork(): Promise<ForgejoRepository | undefined> {
     try {
-      const forks = await this.requestAllPages<ForgejoRepository>(`${this.originRepoURL}/forks`, {
+      const repos = await this.requestAllPages<ForgejoRepository>('/user/repos', {
         params: { limit: 50 },
       });
-      return forks.find(fork => fork.owner.login.toLowerCase() === this.repoOwner.toLowerCase());
+      return repos.find(
+        repo =>
+          repo.fork === true &&
+          repo.owner.login.toLowerCase() === this.repoOwner.toLowerCase() &&
+          !!repo.parent &&
+          repo.parent.full_name.toLowerCase() === this.originRepo.toLowerCase(),
+      );
     } catch {
       return undefined;
     }

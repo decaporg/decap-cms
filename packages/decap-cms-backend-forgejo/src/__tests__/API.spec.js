@@ -1265,17 +1265,31 @@ describe('forgejo API', () => {
   });
 
   describe('findUserFork', () => {
-    it('should return the fork owned by the user', async () => {
+    function fork(full_name, parent, isFork = true) {
+      return {
+        full_name,
+        fork: isFork,
+        owner: { login: full_name.split('/')[0] },
+        parent: parent ? { full_name: parent } : null,
+      };
+    }
+
+    it('should return the user fork of the origin repo', async () => {
       const api = API({ branch: 'master', repo: 'user/repo', originRepo: 'owner/repo' });
-      api.requestAllPages = jest.fn().mockResolvedValue([
-        { full_name: 'other/repo', owner: { login: 'other' } },
-        { full_name: 'User/renamed-repo', owner: { login: 'User' } },
-      ]);
+      const renamed = fork('User/renamed-repo', 'Owner/Repo');
+      api.requestAllPages = jest
+        .fn()
+        .mockResolvedValue([
+          fork('user/other-fork', 'someone/else'),
+          fork('user/not-a-fork', null, false),
+          fork('org/repo', 'owner/repo'),
+          renamed,
+        ]);
 
       const result = await api.findUserFork();
 
-      expect(result).toEqual({ full_name: 'User/renamed-repo', owner: { login: 'User' } });
-      expect(api.requestAllPages).toHaveBeenCalledWith('/repos/owner/repo/forks', {
+      expect(result).toBe(renamed);
+      expect(api.requestAllPages).toHaveBeenCalledWith('/user/repos', {
         params: { limit: 50 },
       });
     });
@@ -1284,7 +1298,10 @@ describe('forgejo API', () => {
       const api = API({ branch: 'master', repo: 'user/repo', originRepo: 'owner/repo' });
       api.requestAllPages = jest
         .fn()
-        .mockResolvedValue([{ full_name: 'other/repo', owner: { login: 'other' } }]);
+        .mockResolvedValue([
+          fork('user/other-fork', 'someone/else'),
+          fork('org/repo', 'owner/repo'),
+        ]);
 
       await expect(api.findUserFork()).resolves.toBeUndefined();
     });
