@@ -47,6 +47,24 @@ npx decap logout         # revokes the token and forgets it
 
 The token is stored in `~/.config/decap/credentials.json` (mode 0600). In CI, set `DECAP_TOKEN` to a token created under **API tokens** in the dashboard instead.
 
+## Manage Turbo
+
+Every Turbo API operation is a command. `decap --help` lists them; `decap <command> --help` shows its flags.
+
+```sh
+decap orgs list
+decap sites list --org <org-id>
+decap sites create --org <org-id> --name "Marketing site" --repo acme/marketing
+decap sites update --site <site-id> --branch develop
+decap cache clear --site <site-id>
+decap deploys list --site <site-id> --limit 5
+decap members invite --org <org-id> --email someone@example.com
+decap members set-role --org <org-id> --member someone@example.com --role owner
+decap site-members add --site <site-id> --member someone@example.com
+```
+
+Members can be named by email or user id. Add `--json` for machine-readable output. Commands that change something need a token with admin scope (`decap login --admin`) and an organization owner behind it, the same as in the dashboard.
+
 ## Use it from an AI agent
 
 `decap mcp` is a local MCP server. Sign in once with `login`, then add it to your agent.

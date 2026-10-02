@@ -29,6 +29,19 @@ describe('parseCliArgs', () => {
     expect(() => parseCliArgs(['-x'])).toThrow(/Unknown option/);
   });
 
+  it('treats any other --flag as taking a value, for the generated commands', () => {
+    expect(parseCliArgs(['sites', 'list', '--org', 'o1', '--json'])).toEqual({
+      positionals: ['sites', 'list'],
+      flags: { org: 'o1', json: true },
+    });
+  });
+
+  it('lets a value start with a single dash', () => {
+    expect(parseCliArgs(['sites', 'update', '--name', '-draft-']).flags).toEqual({
+      name: '-draft-',
+    });
+  });
+
   it('stops parsing at --', () => {
     expect(parseCliArgs(['mcp', '--', '--admin']).positionals).toEqual(['mcp', '--admin']);
   });

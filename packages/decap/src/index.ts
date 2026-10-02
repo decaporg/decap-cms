@@ -1,12 +1,14 @@
 import { ApiClient, ApiError, CLI_VERSION, operations } from './api.js';
 import { parseCliArgs } from './args.js';
+import { commandHelp, commandList, findCommand, formatResult, inputFromFlags } from './commands.js';
 import { credentialsPath, deleteCredentials, resolveAuth } from './config.js';
 import { login } from './login.js';
 import { serveMcp } from './mcp.js';
 
 import type { MeResponse } from 'decap-turbo-api';
 
-const HELP = `decap ${CLI_VERSION} — the Decap command line
+function mainHelp(): string {
+  return `decap ${CLI_VERSION} — the Decap command line
 
 Usage:
   decap dev                 Run the local proxy server for the CMS's proxy
@@ -16,6 +18,9 @@ Usage:
   decap logout              Revoke the stored token and forget it
   decap whoami [--json]     Show the signed-in user and their organizations
   decap mcp                 Run the local MCP server for AI agents
+
+Turbo commands (decap <command> --help for flags):
+${commandList()}
 
 dev options (each overrides the matching variable, also read from .env):
   --port <n>        PORT, default 8081
@@ -38,6 +43,7 @@ Turbo options:
 Environment:
   DECAP_TOKEN   Use this token instead of the stored one (CI)
 `;
+}
 
 async function main(argv: string[]): Promise<number> {
   const { flags: parsed, positionals } = parseCliArgs(argv);
@@ -59,8 +65,13 @@ async function main(argv: string[]): Promise<number> {
   }
 
   const [command] = positionals;
+  const contractCommand = findCommand(positionals);
+  if (values.help && contractCommand) {
+    console.log(commandHelp(contractCommand));
+    return 0;
+  }
   if (values.help || !command) {
-    console.log(HELP);
+    console.log(mainHelp());
     return values.help ? 0 : 1;
   }
 
@@ -137,10 +148,34 @@ async function main(argv: string[]): Promise<number> {
       await serveMcp(flags);
       return -1; // keep running; the transport owns the process from here
 
-    default:
-      console.error(`Unknown command "${command}".\n`);
-      console.error(HELP);
-      return 1;
+    default: {
+      // Everything else is a Turbo command generated from the API contract.
+      if (!contractCommand) {
+        console.error(`Unknown command "${positionals.join(' ')}". Run decap --help.`);
+        return 1;
+      }
+      const extra = positionals.slice(contractCommand.cli!.command.length);
+      if (extra.length > 0) {
+        throw new Error(
+          `Unexpected "${extra.join(
+            ' ',
+          )}". Values are passed as flags; see decap ${contractCommand.cli!.command.join(
+            ' ',
+          )} --help.`,
+        );
+      }
+      const input = inputFromFlags(contractCommand, parsed);
+      const { apiUrl, token } = resolveAuth(flags);
+      const result = await new ApiClient(apiUrl, token).call<unknown>(contractCommand, input);
+      if (values.json) {
+        console.log(JSON.stringify(result ?? { ok: true }, null, 2));
+      } else {
+        console.log(formatResult(contractCommand, result));
+        const warning = (result as { warning?: unknown } | null)?.warning;
+        if (typeof warning === 'string') console.error(`! ${warning}`);
+      }
+      return 0;
+    }
   }
 }
 

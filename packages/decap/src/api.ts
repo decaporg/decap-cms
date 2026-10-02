@@ -1,4 +1,4 @@
-import { operations, type Operation } from 'decap-turbo-api';
+import { buildRequest, operations, type Operation } from 'decap-turbo-api';
 
 // Injected from package.json by webpack's DefinePlugin, so lerna's version bump
 // is the only place the version lives. Unset under jest.
@@ -41,7 +41,12 @@ export class ApiClient {
       );
     }
 
-    const url = new URL(`${this.apiUrl}/api/v1${op.path}`);
+    // Path segments, query and body come from the contract's buildRequest, so
+    // the CLI and the MCP server address the API the same way.
+    const request = buildRequest(op, input);
+    const url = new URL(`${this.apiUrl}/api/v1${request.path}`);
+    for (const [key, value] of Object.entries(request.query)) url.searchParams.set(key, value);
+
     const headers: Record<string, string> = {
       accept: 'application/json',
       'user-agent': `decap-cli/${CLI_VERSION} (${this.client})`,
@@ -50,13 +55,12 @@ export class ApiClient {
     if (op.auth === 'token' && this.token) headers.authorization = `Bearer ${this.token}`;
 
     let body: string | undefined;
-    if (op.method === 'GET' || op.method === 'DELETE') {
-      for (const [key, value] of Object.entries(input)) {
-        if (value !== undefined && value !== null) url.searchParams.set(key, String(value));
-      }
-    } else {
+    if (op.method !== 'GET') {
+      // On every non-GET, even a body-less DELETE: Astro's cross-site check
+      // refuses a mutating request with no Content-Type and no matching
+      // Origin, and a CLI sends no Origin.
       headers['content-type'] = 'application/json';
-      body = JSON.stringify(input);
+      if (request.body) body = JSON.stringify(request.body);
     }
 
     let response: Response;

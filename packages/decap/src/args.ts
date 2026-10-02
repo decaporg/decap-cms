@@ -1,15 +1,18 @@
 /**
- * A small argument parser for the handful of flags `decap` takes. Not
- * `util.parseArgs`: this repo's `@types/node` predates it, and the CLI needs
- * nothing a dozen lines can't do.
+ * A small argument parser for `decap`. Not `util.parseArgs`: this repo's
+ * `@types/node` predates it, and the commands generated from the API contract
+ * take flags that can't be listed up front.
+ *
+ * `--flag value` and `--flag=value` take a value; the flags in BOOLEAN_FLAGS
+ * never do. Positionals are the command words (`sites list`).
  */
 export interface ParsedArgs {
   positionals: string[];
   flags: Record<string, string | boolean>;
 }
 
-/** Flags that take a value. Every other `--flag` is a boolean. */
-const VALUE_FLAGS = new Set(['api-url', 'port', 'host', 'mode', 'dir', 'origin', 'log-level']);
+/** Flags that are switches. Every other `--flag` needs a value. */
+const BOOLEAN_FLAGS = new Set(['admin', 'json', 'help', 'version']);
 
 const SHORT_FLAGS: Record<string, string> = { h: 'help', v: 'version' };
 
@@ -27,16 +30,16 @@ export function parseCliArgs(argv: readonly string[]): ParsedArgs {
 
     if (arg.startsWith('--')) {
       const [name, inline] = arg.slice(2).split(/=(.*)/s, 2);
-      if (VALUE_FLAGS.has(name)) {
-        const value = inline ?? argv[i + 1];
-        if (value === undefined || (inline === undefined && value.startsWith('-'))) {
-          throw new Error(`--${name} needs a value.`);
-        }
-        flags[name] = value;
-        if (inline === undefined) i++;
-      } else {
-        flags[name] = true;
+      if (BOOLEAN_FLAGS.has(name)) {
+        flags[name] = inline === undefined ? true : inline !== 'false';
+        continue;
       }
+      const value = inline ?? argv[i + 1];
+      if (value === undefined || (inline === undefined && value.startsWith('--'))) {
+        throw new Error(`--${name} needs a value.`);
+      }
+      flags[name] = value;
+      if (inline === undefined) i++;
       continue;
     }
 
