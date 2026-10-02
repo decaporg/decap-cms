@@ -6,7 +6,7 @@ const bottomMargin = '16px';
 
 const StyledBlockQuote = styled.blockquote`
   padding-left: 16px;
-  border-left: 3px solid ${colors.background};
+  border-left: 3px solid ${colors.accentBackground};
   margin-left: 0;
   margin-right: 0;
   margin-bottom: ${bottomMargin};

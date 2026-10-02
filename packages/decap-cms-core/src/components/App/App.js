@@ -6,7 +6,7 @@ import styled from '@emotion/styled';
 import { connect } from 'react-redux';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import TopBarProgress from 'react-topbar-progress-indicator';
-import { Loader, colors } from 'decap-cms-ui-default';
+import { Loader, colorsRaw } from 'decap-cms-ui-default';
 
 import { loginUser, logoutUser } from '../../actions/auth';
 import { currentBackend } from '../../backend';
@@ -22,10 +22,12 @@ import Editor from '../Editor/Editor';
 import NotFoundPage from './NotFoundPage';
 import Header from './Header';
 
+// The bar is drawn on a canvas, which needs a literal colour rather than a
+// CSS custom property.
 TopBarProgress.config({
   barColors: {
-    0: colors.active,
-    '1.0': colors.active,
+    0: colorsRaw.blue,
+    '1.0': colorsRaw.blue,
   },
   shadowBlur: 0,
   barThickness: 2,

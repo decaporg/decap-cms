@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { colors, colorsRaw, components, lengths, zIndex } from 'decap-cms-ui-default';
+import { colors, components, lengths, zIndex } from 'decap-cms-ui-default';
 import { translate } from 'react-polyglot';
 
 import { boundGetAsset } from '../../../actions/media';
@@ -82,7 +82,7 @@ const CardBody = styled.div`
     left: -20%;
     height: 140%;
     width: 140%;
-    box-shadow: inset 0 -15px 24px ${colorsRaw.white};
+    box-shadow: inset 0 -15px 24px ${colors.foreground};
   }
 `;
 

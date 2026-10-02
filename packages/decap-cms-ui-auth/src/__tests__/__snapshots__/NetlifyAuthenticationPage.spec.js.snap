@@ -41,8 +41,8 @@ exports[`NetlifyAuthenticationPage should render with identity error 1`] = `
   padding: 0 15px;
   background-color: #798291;
   color: #fff;
-  background-color: #313d3e;
-  color: #fff;
+  background-color: var(--decap-color-button, #313d3e);
+  color: var(--decap-color-button-text, #fff);
   padding: 0 12px;
   margin-top: 0;
   display: -webkit-box;
@@ -63,8 +63,8 @@ exports[`NetlifyAuthenticationPage should render with identity error 1`] = `
 }
 
 .emotion-4[disabled] {
-  background-color: #eff0f4;
-  color: #798291;
+  background-color: var(--decap-color-disabled-background, #eff0f4);
+  color: var(--decap-color-text, #798291);
   cursor: default;
 }
 
@@ -181,8 +181,8 @@ exports[`NetlifyAuthenticationPage should render with no identity error 1`] = `
   padding: 0 15px;
   background-color: #798291;
   color: #fff;
-  background-color: #313d3e;
-  color: #fff;
+  background-color: var(--decap-color-button, #313d3e);
+  color: var(--decap-color-button-text, #fff);
   padding: 0 12px;
   margin-top: 0;
   display: -webkit-box;
@@ -203,8 +203,8 @@ exports[`NetlifyAuthenticationPage should render with no identity error 1`] = `
 }
 
 .emotion-4[disabled] {
-  background-color: #eff0f4;
-  color: #798291;
+  background-color: var(--decap-color-disabled-background, #eff0f4);
+  color: var(--decap-color-text, #798291);
   cursor: default;
 }
 

@@ -51,39 +51,73 @@ const colorsRaw = {
   tealLight: '#ddf5f9',
 };
 
-const colors = {
-  statusDraftText: colorsRaw.purple,
-  statusDraftBackground: colorsRaw.purpleLight,
-  statusReviewText: colorsRaw.brown,
-  statusReviewBackground: colorsRaw.yellow,
-  statusReadyText: colorsRaw.green,
-  statusReadyBackground: colorsRaw.greenLight,
-  text: colorsRaw.gray,
-  textLight: colorsRaw.white,
-  textLead: colorsRaw.grayDark,
-  background: colorsRaw.grayLight,
-  foreground: colorsRaw.white,
-  active: colorsRaw.blue,
-  activeBackground: colorsRaw.blueLight,
-  inactive: colorsRaw.gray,
-  button: colorsRaw.grayDark,
-  buttonText: colorsRaw.white,
-  inputBackground: colorsRaw.white,
-  infoText: colorsRaw.blue,
-  infoBackground: colorsRaw.blueLight,
-  successText: colorsRaw.green,
-  successBackground: colorsRaw.greenLight,
-  warnText: colorsRaw.brown,
-  warnBackground: colorsRaw.yellow,
-  errorText: colorsRaw.red,
-  errorBackground: colorsRaw.redLight,
-  textFieldBorder: '#dfdfe3',
-  controlLabel: '#5D626F',
-  checkerboardLight: '#f2f2f2',
-  checkerboardDark: '#e6e6e6',
-  mediaDraftText: colorsRaw.purple,
-  mediaDraftBackground: colorsRaw.purpleLight,
+/**
+ * Semantic colors, as [light, dark] pairs. Each one is exposed as a CSS custom
+ * property with the light value as its fallback, so a component renders as it
+ * always has wherever the properties are not defined (the preview pane, a
+ * widget used on its own). `GlobalStyles` redefines them for a dark system
+ * colour scheme.
+ */
+const themeColors = {
+  statusDraftText: [colorsRaw.purple, '#cfa6f5'],
+  statusDraftBackground: [colorsRaw.purpleLight, '#3a2552'],
+  statusReviewText: [colorsRaw.brown, '#f0c674'],
+  statusReviewBackground: [colorsRaw.yellow, '#40350f'],
+  statusReadyText: [colorsRaw.green, '#a5e065'],
+  statusReadyBackground: [colorsRaw.greenLight, '#21401c'],
+  text: [colorsRaw.gray, '#9aa4b2'],
+  textLight: [colorsRaw.white, colorsRaw.white],
+  textLead: [colorsRaw.grayDark, '#e6e9ee'],
+  textStrong: ['#1e2532', '#f3f5f8'],
+  background: [colorsRaw.grayLight, '#15171c'],
+  foreground: [colorsRaw.white, '#22262e'],
+  accentBackground: [colorsRaw.grayLight, '#323743'],
+  active: [colorsRaw.blue, '#7aa5f5'],
+  activeBackground: [colorsRaw.blueLight, '#1f3050'],
+  hoverBackground: ['#f1f2f4', '#2d323b'],
+  inactive: [colorsRaw.gray, '#9aa4b2'],
+  border: ['#eaebf1', '#343944'],
+  button: [colorsRaw.grayDark, '#434a59'],
+  buttonText: [colorsRaw.white, colorsRaw.white],
+  disabledBackground: [colorsRaw.grayLight, '#2a2e37'],
+  inputBackground: [colorsRaw.white, '#1b1e25'],
+  inputText: ['#444a57', '#e6e9ee'],
+  selectText: ['hsl(0, 0%, 20%)', '#e6e9ee'],
+  infoText: [colorsRaw.blue, '#7aa5f5'],
+  infoBackground: [colorsRaw.blueLight, '#1f3050'],
+  successText: [colorsRaw.green, '#a5e065'],
+  successBackground: [colorsRaw.greenLight, '#21401c'],
+  warnText: [colorsRaw.brown, '#f0c674'],
+  warnBackground: [colorsRaw.yellow, '#40350f'],
+  errorText: [colorsRaw.red, '#ff6685'],
+  errorBackground: [colorsRaw.redLight, '#451b23'],
+  dangerText: [colorsRaw.redDark, '#ff8aa1'],
+  badgeDangerBackground: ['#fbe0d7', '#451b23'],
+  tealText: [colorsRaw.tealDark, '#6ad6e8'],
+  tealButtonText: ['#1195aa', '#6ad6e8'],
+  tealBackground: [colorsRaw.tealLight, '#143d46'],
+  textFieldBorder: ['#dfdfe3', '#3b404b'],
+  controlLabel: ['#5D626F', '#a9b1bf'],
+  checkerboardLight: ['#f2f2f2', '#2b2f38'],
+  checkerboardDark: ['#e6e6e6', '#22262e'],
+  mediaDraftText: [colorsRaw.purple, '#cfa6f5'],
+  mediaDraftBackground: [colorsRaw.purpleLight, '#3a2552'],
 };
+
+function colorProperty(name) {
+  return `--decap-color-${name.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`)}`;
+}
+
+const colors = Object.fromEntries(
+  Object.entries(themeColors).map(([name, [light]]) => [
+    name,
+    `var(${colorProperty(name)}, ${light})`,
+  ]),
+);
+
+const darkColorProperties = Object.entries(themeColors)
+  .map(([name, [, dark]]) => `${colorProperty(name)}: ${dark};`)
+  .join('\n');
 
 const lengths = {
   topBarHeight: '56px',
@@ -177,7 +211,7 @@ const textBadge = css`
 const card = css`
   ${shadows.dropMain};
   border-radius: 5px;
-  background-color: #fff;
+  background-color: ${colors.foreground};
 `;
 
 const buttons = {
@@ -228,31 +262,31 @@ const buttons = {
   `,
   grayText: css`
     background-color: transparent;
-    color: ${colorsRaw.gray};
+    color: ${colors.text};
   `,
   green: css`
     background-color: #aae31f;
     color: ${colorsRaw.green};
   `,
   lightRed: css`
-    background-color: ${colorsRaw.redLight};
-    color: ${colorsRaw.redDark};
+    background-color: ${colors.errorBackground};
+    color: ${colors.dangerText};
   `,
   lightBlue: css`
-    background-color: ${colorsRaw.blueLight};
-    color: ${colorsRaw.blue};
+    background-color: ${colors.activeBackground};
+    color: ${colors.active};
   `,
   lightTeal: css`
-    background-color: ${colorsRaw.tealLight};
-    color: #1195aa;
+    background-color: ${colors.tealBackground};
+    color: ${colors.tealButtonText};
   `,
   teal: css`
     background-color: ${colorsRaw.teal};
     color: ${colorsRaw.white};
   `,
   disabled: css`
-    background-color: ${colorsRaw.grayLight};
-    color: ${colorsRaw.gray};
+    background-color: ${colors.disabledBackground};
+    color: ${colors.text};
     cursor: default;
   `,
 };
@@ -289,8 +323,8 @@ const components = {
   `,
   badgeDanger: css`
     ${backgroundBadge};
-    color: ${colorsRaw.red};
-    background-color: #fbe0d7;
+    color: ${colors.errorText};
+    background-color: ${colors.badgeDangerBackground};
   `,
   textBadge: css`
     ${textBadge};
@@ -302,7 +336,7 @@ const components = {
   `,
   textBadgeDanger: css`
     ${textBadge};
-    color: ${colorsRaw.red};
+    color: ${colors.errorText};
   `,
   loaderSize: css`
     width: 2.2857rem;
@@ -338,7 +372,7 @@ const components = {
   `,
   dropdownList: css`
     ${shadows.dropDeep};
-    background-color: ${colorsRaw.white};
+    background-color: ${colors.foreground};
     border-radius: ${lengths.borderRadius};
     overflow: hidden;
   `,
@@ -346,9 +380,9 @@ const components = {
     ${buttons.button};
     background-color: transparent;
     border-radius: 0;
-    color: ${colorsRaw.grayDark};
+    color: ${colors.textLead};
     font-weight: 500;
-    border-bottom: 1px solid #eaebf1;
+    border-bottom: 1px solid ${colors.border};
     padding: 8px 14px;
     display: flex;
     justify-content: space-between;
@@ -380,6 +414,7 @@ const reactSelectStyles = {
     ...styles,
     border: 0,
     boxShadow: 'none',
+    backgroundColor: colors.inputBackground,
     padding: '9px 0 9px 12px',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
@@ -392,9 +427,17 @@ const reactSelectStyles = {
       : state.isFocused
       ? `${colors.activeBackground}`
       : 'transparent',
+    color: state.isSelected ? colors.textLight : 'inherit',
     paddingLeft: '22px',
   }),
-  menu: styles => ({ ...styles, right: 0, zIndex: zIndex.zIndex300 }),
+  menu: styles => ({
+    ...styles,
+    right: 0,
+    zIndex: zIndex.zIndex300,
+    backgroundColor: colors.foreground,
+  }),
+  singleValue: styles => ({ ...styles, color: colors.selectText }),
+  input: styles => ({ ...styles, color: colors.selectText }),
   container: styles => ({ ...styles, padding: '0 !important' }),
   indicatorSeparator: (styles, state) =>
     state.hasValue && state.selectProps.isClearable
@@ -404,7 +447,7 @@ const reactSelectStyles = {
   clearIndicator: styles => ({ ...styles, color: `${colors.controlLabel}` }),
   multiValue: styles => ({
     ...styles,
-    backgroundColor: colors.background,
+    backgroundColor: colors.accentBackground,
   }),
   multiValueLabel: styles => ({
     ...styles,
@@ -439,6 +482,22 @@ function GlobalStyles() {
   return (
     <Global
       styles={css`
+        /**
+         * Dark colour scheme. It follows the system setting; set
+         * data-decap-theme="light" or "dark" on the root element to pin one.
+         */
+        @media (prefers-color-scheme: dark) {
+          :root:not([data-decap-theme='light']) {
+            color-scheme: dark;
+            ${darkColorProperties}
+          }
+        }
+
+        :root[data-decap-theme='dark'] {
+          color-scheme: dark;
+          ${darkColorProperties}
+        }
+
         *,
         *:before,
         *:after {
