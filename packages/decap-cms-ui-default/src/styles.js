@@ -89,7 +89,8 @@ const lengths = {
   topBarHeight: '56px',
   inputPadding: '16px 20px',
   borderRadius: '5px',
-  richTextEditorMinHeight: '300px',
+  // Editors are as tall as their content.
+  richTextEditorMinHeight: 'auto',
   borderWidth: '2px',
   topCardWidth: '682px',
   pageMargin: '28px 18px',
