@@ -17,6 +17,7 @@ import SupabaseAuthenticationPage from './AuthenticationPage';
 import { resolveCommitAuthorFromSupabaseUser } from './commitAuthor';
 import { coalesceKey, createRequestCoalescer, type RequestCoalescer } from './requestCoalescer';
 import { recordCmsEvent } from './telemetry';
+import { EditorBridge, registerAskClaudeAction } from './editorBridge';
 import {
   createProxyMeter,
   measurePayloadBytes,
@@ -37,6 +38,7 @@ import {
   type WatchStatus,
 } from './deployWatcher';
 
+import type { EditorApi, RegisterFieldAction } from './editorBridge';
 import type { GitHubUser } from 'decap-cms-backend-github/src/implementation';
 
 interface SupabaseUser extends User {
@@ -255,6 +257,8 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
       '') as string;
     this.supabaseId = (config.backend.supabase_app_id || '') as string;
     this.siteId = (config.backend.turbo_site_id || '') as string;
+    // The editor bridge (editorBridge.ts) is on unless the site turns it off.
+    this.editorBridgeEnabled = config.backend.editor_bridge !== false;
     this.deployStatusOptions = parseDeployStatusOptions(
       (config.backend as Record<string, unknown>).deploy_status,
     );
@@ -437,6 +441,7 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
    * Turbo is the dashboard's own logout button.
    */
   logout() {
+    this.editorBridgeInstance?.stop();
     this.supabaseAccessToken = null;
     this.supabaseRefreshToken = null;
     this.supabaseExpiresAt = null;
@@ -450,6 +455,36 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
       this.deployWatcherInstance = null;
     }
     return super.logout();
+  }
+
+  editorBridgeEnabled = true;
+  editorBridgeInstance: EditorBridge | null = null;
+
+  /**
+   * Called by decap-cms-core's Backend with the editor API and the
+   * field-action registry (duck-typed; this package does not depend on core).
+   * Starts the editor bridge, through which an AI agent can set fields in the
+   * entry open in this tab for the person to review and save, and adds the
+   * "Ask Claude" action beside each field.
+   */
+  attachEditor({
+    editor,
+    registerFieldAction,
+  }: {
+    editor: EditorApi;
+    registerFieldAction: RegisterFieldAction;
+  }) {
+    const baseUrl = this.baseUrl || (this.supabaseId && `https://${this.supabaseId}.supabase.co`);
+    if (!this.editorBridgeEnabled || !baseUrl || !this.siteId || !this.supabaseAnonKey) return;
+    this.editorBridgeInstance = new EditorBridge(editor, {
+      baseUrl,
+      anonKey: this.supabaseAnonKey,
+      siteId: this.siteId,
+      // Read per request: the token is refreshed during the session.
+      getAccessToken: () => this.supabaseAccessToken,
+    });
+    this.editorBridgeInstance.start();
+    registerAskClaudeAction(registerFieldAction, () => this.editorBridgeInstance, this.siteId);
   }
 
   authComponent() {
@@ -477,6 +512,8 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
   }
 
   async authenticate(state: Credentials) {
+    // Idempotent; ticks do nothing until the session has a token.
+    this.editorBridgeInstance?.start();
     if ('access_token' in state) {
       this.supabaseAccessToken = state.access_token as string;
       this.supabase.setAccessToken(this.supabaseAccessToken);

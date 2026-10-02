@@ -13,6 +13,7 @@ import ReactMarkdown from 'react-markdown';
 import gfm from 'remark-gfm';
 
 import { resolveWidget, getEditorComponents } from '../../../lib/registry';
+import { editorApi } from '../../../lib/editorApi';
 import { clearFieldErrors, tryLoadEntry, validateMetaField } from '../../../actions/entries';
 import { addAsset, boundGetAsset } from '../../../actions/media';
 import { selectIsLoadingAsset } from '../../../reducers/medias';
@@ -74,6 +75,29 @@ const ControlContainer = styled.div`
 
   &:first-of-type {
     margin-top: 36px;
+  }
+`;
+
+const FieldActions = styled.div`
+  display: flex;
+  gap: 6px;
+  margin-left: auto;
+`;
+
+const FieldActionButton = styled.button`
+  border: 0;
+  border-radius: ${lengths.borderRadius};
+  background: ${colors.textFieldBorder};
+  color: ${colors.controlLabel};
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 8px;
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible {
+    background: ${colors.active};
+    color: ${colors.textLight};
   }
 `;
 
@@ -155,6 +179,9 @@ class EditorControl extends Component {
     collection: ImmutablePropTypes.map.isRequired,
     isDisabled: PropTypes.bool,
     isHidden: PropTypes.bool,
+    isHighlighted: PropTypes.bool,
+    fieldActions: PropTypes.array,
+    fieldActionContext: PropTypes.object,
     isFieldDuplicate: PropTypes.func,
     isFieldHidden: PropTypes.func,
     locale: PropTypes.string,
@@ -218,6 +245,9 @@ class EditorControl extends Component {
       isEditorComponent,
       isNewEditorComponent,
       parentIds,
+      isHighlighted,
+      fieldActions,
+      fieldActionContext,
       t,
       validateMetaField,
       isLoadingAsset,
@@ -248,6 +278,12 @@ class EditorControl extends Component {
             aria-label={t('editor.editorControl.field.widgetLabel', { widgetLabel: widgetName })}
             css={css`
               ${isHidden && styleStrings.hidden};
+              ${isHighlighted &&
+              `
+                border-radius: ${lengths.borderRadius};
+                box-shadow: 0 0 0 3px ${colors.active};
+              `};
+              transition: box-shadow ${transitions.main};
             `}
           >
             <ControlTopbar>
@@ -260,6 +296,37 @@ class EditorControl extends Component {
                 isFieldOptional={isFieldOptional}
                 t={t}
               />
+              {fieldActions?.length > 0 &&
+                (() => {
+                  // registerFieldAction: plain values only, so an extension never
+                  // depends on the editor's Immutable internals.
+                  const context = {
+                    field: field.toJS(),
+                    collection: fieldActionContext?.collection?.get('name'),
+                    locale: fieldActionContext?.locale,
+                    entry: editorApi.getCurrentEntry(),
+                    applyFieldPatch: editorApi.applyFieldPatch,
+                  };
+                  const available = fieldActions.filter(
+                    action => !action.isAvailable || action.isAvailable(context),
+                  );
+                  return (
+                    available.length > 0 && (
+                      <FieldActions>
+                        {available.map(action => (
+                          <FieldActionButton
+                            key={action.id}
+                            type="button"
+                            title={action.title || action.label}
+                            onClick={() => action.onClick(context)}
+                          >
+                            {action.label}
+                          </FieldActionButton>
+                        ))}
+                      </FieldActions>
+                    )
+                  );
+                })()}
               {errors && (
                 <ControlErrorsList>
                   {errors.map(

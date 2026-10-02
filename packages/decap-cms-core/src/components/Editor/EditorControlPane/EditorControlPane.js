@@ -13,6 +13,7 @@ import {
 } from 'decap-cms-ui-default';
 
 import EditorControl from './EditorControl';
+import { getFieldActions } from '../../../lib/registry';
 import {
   getI18nInfo,
   getLocaleDataPath,
@@ -180,8 +181,21 @@ export default class ControlPane extends Component {
   }
 
   render() {
-    const { collection, entry, fields, fieldsMetaData, fieldsErrors, onChange, onValidate, t } =
-      this.props;
+    const {
+      collection,
+      entry,
+      fields,
+      fieldsMetaData,
+      fieldsErrors,
+      fieldRevisions,
+      fieldHighlights,
+      onChange,
+      onValidate,
+      t,
+    } = this.props;
+    // Actions extensions add beside each top-level field's label
+    // (registerFieldAction). Only top-level: nested controls get none.
+    const fieldActions = getFieldActions();
 
     if (!collection || !fields) {
       return null;
@@ -223,7 +237,11 @@ export default class ControlPane extends Component {
             const isTranslatable = isFieldTranslatable(field, locale, defaultLocale);
             const isDuplicate = isFieldDuplicate(field, locale, defaultLocale);
             const isHidden = isFieldHidden(field, locale, defaultLocale);
-            const key = i18n ? `${locale}_${i}` : i;
+            // A field changed from outside the editor (lib/editorApi.ts) gets a
+            // new key, so its widget remounts and shows the new value — the
+            // markdown and richtext editors only read their value on mount.
+            const revision = fieldRevisions?.get(field.get('name')) ?? 0;
+            const key = `${i18n ? `${locale}_${i}` : i}_${revision}`;
 
             return (
               <EditorControl
@@ -249,6 +267,9 @@ export default class ControlPane extends Component {
                 isFieldDuplicate={field => isFieldDuplicate(field, locale, defaultLocale)}
                 isFieldHidden={field => isFieldHidden(field, locale, defaultLocale)}
                 locale={locale}
+                isHighlighted={Boolean(fieldHighlights?.get(field.get('name')))}
+                fieldActions={fieldActions}
+                fieldActionContext={{ collection, entry, locale }}
               />
             );
           })}

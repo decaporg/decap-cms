@@ -65,6 +65,18 @@ decap site-members add --site <site-id> --member someone@example.com
 
 Members can be named by email or user id. Add `--json` for machine-readable output. Commands that change something need a token with admin scope (`decap login --admin`) and an organization owner behind it, the same as in the dashboard.
 
+## Edit the open entry
+
+When you have an entry open in a Turbo-backed CMS, an agent (or you) can change its fields there without saving: the change appears highlighted in your editor, for you to review and save.
+
+```sh
+decap editor list                                  # entries you have open, with their fields and values
+decap editor set --session <id> --fields '{"title": "New title", "seo.description": "…"}'
+decap editor open --site <site-id> --collection posts --slug hello   # the CMS link for an entry
+```
+
+The CMS shows a small "Agent bridge on" badge while an entry is open; its × turns the bridge off for that tab, and `editor_bridge: false` in config.yml turns it off for the site.
+
 ## Use it from an AI agent
 
 `decap mcp` is a local MCP server. Sign in once with `login`, then add it to your agent.

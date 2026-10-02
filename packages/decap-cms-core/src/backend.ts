@@ -40,7 +40,7 @@ import {
 } from './reducers/collections';
 import { createEntry } from './valueObjects/Entry';
 import { sanitizeChar } from './lib/urlHelper';
-import { getBackend, invokeEvent } from './lib/registry';
+import { getBackend, getEditorApi, invokeEvent, registerFieldAction } from './lib/registry';
 import { commitMessageFormatter, slugFormatter, previewUrlFormatter } from './lib/formatters';
 import { status } from './constants/publishModes';
 import { FOLDER, FILES } from './constants/collectionTypes';
@@ -441,6 +441,17 @@ export class Backend {
       throw new Error('Cannot instantiate a Backend with no implementation');
     }
     this.backupSync = asyncLock();
+
+    // Optional, duck-typed: a backend that works with the open entry (the
+    // Decap Turbo editor bridge) receives the editor API and the field-action
+    // registry here, so it needs no dependency on decap-cms-core.
+    const editor = getEditorApi();
+    const attachable = this.implementation as Implementation & {
+      attachEditor?: (options: { editor: unknown; registerFieldAction: unknown }) => void;
+    };
+    if (editor && typeof attachable.attachEditor === 'function') {
+      attachable.attachEditor({ editor, registerFieldAction });
+    }
   }
 
   async status() {

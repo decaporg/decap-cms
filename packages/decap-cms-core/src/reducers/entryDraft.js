@@ -8,6 +8,8 @@ import {
   DRAFT_CREATE_EMPTY,
   DRAFT_DISCARD,
   DRAFT_CHANGE_FIELD,
+  DRAFT_FIELDS_EXTERNALLY_CHANGED,
+  DRAFT_CLEAR_FIELD_HIGHLIGHTS,
   DRAFT_VALIDATION_ERRORS,
   DRAFT_CLEAR_ERRORS,
   DRAFT_LOCAL_BACKUP_RETRIEVED,
@@ -154,6 +156,27 @@ function entryDraftReducer(state = Map(), action) {
         );
       });
     }
+    // Per top-level field: how often it was changed from outside the editor
+    // (lib/editorApi.ts), used in its control's React key so the widget
+    // remounts with the new value, and whether it is highlighted right now.
+    // Both maps are created on first use; readers treat a missing one as empty.
+    case DRAFT_FIELDS_EXTERNALLY_CHANGED: {
+      const { names } = action.payload;
+      return state.withMutations(state => {
+        for (const name of names) {
+          state.updateIn(['fieldRevisions', name], (revision = 0) => revision + 1);
+          state.setIn(['fieldHighlights', name], true);
+        }
+      });
+    }
+
+    case DRAFT_CLEAR_FIELD_HIGHLIGHTS: {
+      const { names } = action.payload;
+      return state.withMutations(state => {
+        for (const name of names) state.deleteIn(['fieldHighlights', name]);
+      });
+    }
+
     case DRAFT_VALIDATION_ERRORS:
       if (action.payload.errors.length === 0) {
         return state.deleteIn(['fieldsErrors', action.payload.uniquefieldId]);

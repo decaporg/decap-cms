@@ -448,6 +448,8 @@ export class Editor extends Component {
         fields={fields}
         fieldsMetaData={entryDraft.get('fieldsMetaData')}
         fieldsErrors={entryDraft.get('fieldsErrors')}
+        fieldRevisions={entryDraft.get('fieldRevisions')}
+        fieldHighlights={entryDraft.get('fieldHighlights')}
         notes={entryDraft.get('notes')}
         onChange={this.handleChangeDraftField}
         onNotesChange={this.handleNotesChange}

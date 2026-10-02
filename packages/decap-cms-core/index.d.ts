@@ -387,6 +387,8 @@ declare module 'decap-cms-core' {
     turbo_config_url?: string;
     supabase_app_id?: string;
     supabase_anon_key?: string;
+    /** Decap Turbo: set false to turn off the editor bridge (AI agents setting fields in the open entry). */
+    editor_bridge?: boolean;
     auth_type?: 'implicit' | 'pkce';
     cms_label_prefix?: string;
     squash_merges?: boolean;

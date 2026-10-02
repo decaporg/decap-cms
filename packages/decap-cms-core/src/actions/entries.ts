@@ -86,6 +86,8 @@ export const DRAFT_CREATE_FROM_ENTRY = 'DRAFT_CREATE_FROM_ENTRY';
 export const DRAFT_CREATE_EMPTY = 'DRAFT_CREATE_EMPTY';
 export const DRAFT_DISCARD = 'DRAFT_DISCARD';
 export const DRAFT_CHANGE_FIELD = 'DRAFT_CHANGE_FIELD';
+export const DRAFT_FIELDS_EXTERNALLY_CHANGED = 'DRAFT_FIELDS_EXTERNALLY_CHANGED';
+export const DRAFT_CLEAR_FIELD_HIGHLIGHTS = 'DRAFT_CLEAR_FIELD_HIGHLIGHTS';
 export const DRAFT_VALIDATION_ERRORS = 'DRAFT_VALIDATION_ERRORS';
 export const DRAFT_CLEAR_ERRORS = 'DRAFT_CLEAR_ERRORS';
 export const DRAFT_LOCAL_BACKUP_RETRIEVED = 'DRAFT_LOCAL_BACKUP_RETRIEVED';
@@ -457,6 +459,19 @@ export function changeDraftField({
     type: DRAFT_CHANGE_FIELD,
     payload: { field, value, metadata, entries, i18n },
   };
+}
+
+/**
+ * Fields changed from outside the editor (lib/editorApi.ts): remount their
+ * controls so widgets that only read their value on mount (the markdown and
+ * richtext editors) show it, and highlight them until clearFieldHighlights.
+ */
+export function markFieldsExternallyChanged(names: string[]) {
+  return { type: DRAFT_FIELDS_EXTERNALLY_CHANGED, payload: { names } };
+}
+
+export function clearFieldHighlights(names: string[]) {
+  return { type: DRAFT_CLEAR_FIELD_HIGHLIGHTS, payload: { names } };
 }
 
 export function changeDraftFieldValidation(

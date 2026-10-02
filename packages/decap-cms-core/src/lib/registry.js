@@ -32,6 +32,11 @@ const registry = {
   locales: {},
   eventHandlers,
   formats: {},
+  fieldActions: [],
+  // Set by the core entry point (index.js), read by backend.ts. Kept here so
+  // backend.ts need not import lib/editorApi, which imports the store and the
+  // actions that import backend.ts.
+  editorApi: null,
 };
 
 export default {
@@ -56,6 +61,8 @@ export default {
   registerLocale,
   getLocale,
   registerEventListener,
+  registerFieldAction,
+  getFieldActions,
   removeEventListener,
   getEventListeners,
   invokeEvent,
@@ -234,6 +241,35 @@ function validateEventName(name) {
   if (!allowedEvents.includes(name)) {
     throw new Error(`Invalid event name '${name}'`);
   }
+}
+
+/**
+ * Field actions: buttons shown beside each top-level field's label in the
+ * editor, e.g. "Ask an AI to rewrite this". `onClick` and `isAvailable`
+ * receive plain values: `{ field, collection, locale, entry, applyFieldPatch }`,
+ * where `entry` is `CMS.editor.getCurrentEntry()` and `applyFieldPatch` changes
+ * fields without saving (lib/editorApi.ts).
+ */
+export function registerFieldAction(action) {
+  if (!action || typeof action.id !== 'string' || typeof action.label !== 'string') {
+    throw new Error('registerFieldAction needs an id and a label.');
+  }
+  if (typeof action.onClick !== 'function') {
+    throw new Error(`Field action "${action.id}" needs an onClick function.`);
+  }
+  registry.fieldActions = [...registry.fieldActions.filter(a => a.id !== action.id), action];
+}
+
+export function getFieldActions() {
+  return registry.fieldActions;
+}
+
+export function setEditorApi(editorApi) {
+  registry.editorApi = editorApi;
+}
+
+export function getEditorApi() {
+  return registry.editorApi;
 }
 
 export function getEventListeners(name) {

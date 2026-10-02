@@ -27,6 +27,13 @@ function parseValue(field: string, prop: JsonSchemaProperty, raw: string | boole
   const flag = `--${flagName(field)}`;
   if (prop.type === 'boolean') return raw === true || raw === 'true';
   if (raw === true) throw new Error(`${flag} needs a value.`);
+  if (prop.type === 'object') {
+    try {
+      return JSON.parse(String(raw));
+    } catch {
+      throw new Error(`${flag} must be JSON, e.g. ${flag} '{"title": "Hello"}'.`);
+    }
+  }
   if (prop.type === 'integer' || prop.type === 'number') {
     const value = Number(raw);
     if (Number.isNaN(value)) throw new Error(`${flag} must be a number.`);
@@ -74,7 +81,12 @@ export function commandHelp(op: Operation): string {
     lines.push('Flags:');
     const width = Math.max(...fields.map(([field]) => flagName(field).length)) + 2;
     for (const [field, prop] of fields) {
-      const choices = prop.type === 'string' && prop.enum ? ` (${prop.enum.join(', ')})` : '';
+      const choices =
+        prop.type === 'string' && prop.enum
+          ? ` (${prop.enum.join(', ')})`
+          : prop.type === 'object'
+          ? ' (JSON)'
+          : '';
       lines.push(
         `  --${flagName(field).padEnd(width)}${required.has(field) ? 'required. ' : ''}${
           prop.description ?? ''

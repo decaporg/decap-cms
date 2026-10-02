@@ -65,10 +65,37 @@ describe('operations', () => {
     }
   });
 
-  it('requires admin scope for every mutation exposed to agents', () => {
+  it('requires admin scope for every mutation exposed to agents, except editing content', () => {
+    // The editor bridge is content editing — what an editor token is for —
+    // and it never saves: the person reviews and saves in the CMS.
     for (const op of Object.values(operations) as Operation[]) {
-      if (op.mcp && op.method !== 'GET') expect([op.id, op.scope]).toEqual([op.id, 'admin']);
+      if (!op.mcp || op.method === 'GET') continue;
+      expect([op.id, op.scope]).toEqual([
+        op.id,
+        op.path.startsWith('/editor/') ? 'editor' : 'admin',
+      ]);
     }
+  });
+
+  it('accepts free-form objects only where the schema says so', () => {
+    expect(
+      validateInput(operations.setFields.input, {
+        session_id: 'x'.repeat(36),
+        fields: { title: 'A' },
+      }).ok,
+    ).toBe(
+      false, // the session id is malformed, but fields passes
+    );
+    const ok = validateInput(operations.setFields.input, {
+      session_id: '0e8e6c0e-0000-4000-8000-000000000000',
+      fields: { title: 'A', 'seo.description': 'B', tags: ['x'] },
+    });
+    expect(ok.ok).toBe(true);
+    const bad = validateInput(operations.setFields.input, {
+      session_id: '0e8e6c0e-0000-4000-8000-000000000000',
+      fields: ['title'],
+    });
+    expect(bad).toEqual({ ok: false, errors: ['"fields" must be a JSON object.'] });
   });
 });
 

@@ -25,7 +25,9 @@ export type JsonSchemaProperty =
       maxLength?: number;
     }
   | { type: 'integer' | 'number'; description?: string; minimum?: number; maximum?: number }
-  | { type: 'boolean'; description?: string };
+  | { type: 'boolean'; description?: string }
+  /** A free-form JSON object, e.g. field values keyed by field path. */
+  | { type: 'object'; description?: string; additionalProperties: true };
 
 export interface JsonSchemaObject {
   type: 'object';
@@ -572,6 +574,101 @@ export const operations = {
     mcp: { name: 'list_roles', title: 'List a site’s roles', readOnly: true },
     cli: { command: ['roles', 'list'], columns: ['id', 'name', 'is_builtin'] },
   },
+
+  // --- Editor bridge ----------------------------------------------------------
+  // An agent works on the entry a person has open in the CMS: it reads what is
+  // on screen, sets fields, and the person reviews and saves. Editor scope:
+  // this is content editing, the same as typing in the editor.
+
+  getOpenEditor: {
+    id: 'getOpenEditor',
+    method: 'GET',
+    path: '/editor/sessions',
+    summary:
+      'The entries the caller has open in the CMS right now, each with its fields and current, unsaved values. Call this before set_fields to get the session id and see what is on screen.',
+    auth: 'token',
+    scope: 'editor',
+    input: {
+      type: 'object',
+      properties: { site_id: { ...siteId, description: 'Only editors open on this site' } },
+      additionalProperties: false,
+    },
+    mcp: { name: 'get_open_editor', title: 'Read the entry open in the CMS', readOnly: true },
+    cli: {
+      command: ['editor', 'list'],
+      columns: ['session_id', 'site_name', 'collection', 'slug', 'updated_at'],
+    },
+  },
+  setFields: {
+    id: 'setFields',
+    method: 'POST',
+    path: '/editor/sessions/{session_id}/fields',
+    summary:
+      'Change fields in an entry open in the CMS, without saving: the changes appear in the person’s editor, highlighted, for them to review and save. `fields` maps a field name, or a dotted path into an object or list (seo.description, tags.0), to its new value; markdown fields take a markdown string. Waits a few seconds for the editor to apply them and reports which paths applied.',
+    auth: 'token',
+    scope: 'editor',
+    input: {
+      type: 'object',
+      properties: {
+        session_id: {
+          type: 'string',
+          pattern: UUID,
+          description: 'Editor session id (see get_open_editor)',
+        },
+        fields: {
+          type: 'object',
+          additionalProperties: true,
+          description:
+            'New values keyed by field path, e.g. {"title": "…", "seo.description": "…"}',
+        },
+        locale: {
+          type: 'string',
+          maxLength: 20,
+          description:
+            'Another locale of an i18n collection to write to; the default locale otherwise',
+        },
+      },
+      required: ['session_id', 'fields'],
+      additionalProperties: false,
+    },
+    mcp: {
+      name: 'set_fields',
+      title: 'Set fields in the open editor',
+      readOnly: false,
+      destructive: false,
+    },
+    cli: { command: ['editor', 'set'] },
+  },
+  openInEditor: {
+    id: 'openInEditor',
+    method: 'GET',
+    path: '/sites/{site_id}/editor-url',
+    summary:
+      'The CMS address of a site, or of one collection or entry in it, for the person to open in their browser — the editor must be open before set_fields can change it.',
+    auth: 'token',
+    scope: 'editor',
+    input: {
+      type: 'object',
+      properties: {
+        site_id: siteId,
+        collection: {
+          type: 'string',
+          maxLength: 200,
+          description: 'Collection name, to open its list or one of its entries',
+        },
+        slug: {
+          type: 'string',
+          maxLength: 500,
+          description: 'Entry slug (or file name in a file collection); omit for a new entry',
+        },
+        new_entry: { type: 'boolean', description: 'Open a new, empty entry in the collection' },
+      },
+      required: ['site_id'],
+      additionalProperties: false,
+    },
+    mcp: { name: 'open_in_editor', title: 'Get the CMS link for an entry', readOnly: true },
+    cli: { command: ['editor', 'open'] },
+  },
 } as const satisfies Record<string, Operation>;
 
 export type OperationId = keyof typeof operations;
@@ -733,6 +830,37 @@ export interface SiteRole {
   collections: Record<string, CollectionAccess>;
 }
 
+export interface EditorSession {
+  session_id: string;
+  site_id: string;
+  site_name: string;
+  collection: string;
+  /** Null for an entry that has not been saved yet. */
+  slug: string | null;
+  updated_at: string;
+  /** The collection's field definitions, as in config.yml. */
+  fields: Record<string, unknown>[];
+  /** Current, possibly unsaved, values; null when the entry was too large to share. */
+  data: Record<string, unknown> | null;
+  /** Other locales' values, keyed by locale. */
+  i18n: Record<string, { data: Record<string, unknown> }> | null;
+  locales: string[] | null;
+  default_locale: string | null;
+  has_unsaved_changes: boolean;
+}
+
+export interface SetFieldsResponse {
+  /** `pending` when the editor did not pick the change up in time; it still applies when the tab is active. */
+  status: 'applied' | 'partial' | 'rejected' | 'pending';
+  applied: string[];
+  rejected: { path: string; reason: string }[];
+  message: string;
+}
+
+export interface EditorUrlResponse {
+  url: string;
+}
+
 /** What mutating operations without a richer result return. */
 export interface OkResponse {
   ok: true;
@@ -798,6 +926,8 @@ export function validateInput<T = Record<string, unknown>>(
         errors.push(`"${key}" must be at most ${prop.maximum}.`);
     } else if (prop.type === 'boolean') {
       if (typeof v !== 'boolean') errors.push(`"${key}" must be true or false.`);
+    } else if (prop.type === 'object') {
+      if (typeof v !== 'object' || Array.isArray(v)) errors.push(`"${key}" must be a JSON object.`);
     }
   }
 
