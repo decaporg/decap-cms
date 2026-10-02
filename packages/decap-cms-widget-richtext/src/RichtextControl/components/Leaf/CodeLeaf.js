@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { colors, lengths } from 'decap-cms-ui-default';
 
 const StyledCode = styled.code`
-  background-color: ${colors.background};
+  background-color: ${colors.accentBackground};
   border-radius: ${lengths.borderRadius};
   padding: 0 2px;
   font-size: 85%;

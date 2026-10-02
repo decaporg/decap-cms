@@ -4,14 +4,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { css, Global } from '@emotion/react';
 import styled from '@emotion/styled';
 import SplitPane from 'react-split-pane';
-import {
-  colors,
-  colorsRaw,
-  components,
-  transitions,
-  IconButton,
-  zIndex,
-} from 'decap-cms-ui-default';
+import { colors, components, transitions, IconButton, zIndex } from 'decap-cms-ui-default';
 import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
 
 import EditorControlPane from './EditorControlPane/EditorControlPane';
@@ -90,7 +83,7 @@ function ReactSplitPaneGlobalStyles() {
             &:before {
               width: 4px;
               left: -1px;
-              background-color: ${colorsRaw.blue};
+              background-color: ${colors.active};
             }
           }
         }

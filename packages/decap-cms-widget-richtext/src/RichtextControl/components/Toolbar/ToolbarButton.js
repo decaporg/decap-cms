@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
-import { Icon, buttons } from 'decap-cms-ui-default';
+import { Icon, buttons, colors } from 'decap-cms-ui-default';
 
 const StyledToolbarButton = styled.button`
   ${buttons.button};
@@ -8,9 +8,9 @@ const StyledToolbarButton = styled.button`
   padding: 4px;
   margin: 2px;
   border: none;
-  background-color: ${props => (props.isActive ? '#e8f5fe' : 'transparent')};
+  background-color: ${props => (props.isActive ? colors.activeBackground : 'transparent')};
   font-size: 16px;
-  color: ${props => (props.isActive ? '#3a69c7' : 'inherit')};
+  color: ${props => (props.isActive ? colors.active : 'inherit')};
   cursor: pointer;
 
   &:disabled {

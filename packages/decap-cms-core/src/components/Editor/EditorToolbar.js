@@ -37,8 +37,8 @@ const styles = {
     border: 0 solid ${colors.textFieldBorder};
   `,
   publishedButton: css`
-    background-color: ${colorsRaw.tealLight};
-    color: ${colorsRaw.tealDark};
+    background-color: ${colors.tealBackground};
+    color: ${colors.tealText};
   `,
 };
 
@@ -92,7 +92,7 @@ const ToolbarContainer = styled.div`
   width: 100%;
   min-width: 800px;
   z-index: ${zIndex.zIndex300};
-  background-color: #fff;
+  background-color: ${colors.foreground};
   height: 66px;
   display: flex;
   justify-content: space-between;
@@ -123,7 +123,7 @@ const ToolbarSectionBackLink = styled(Link)`
 
   &:hover,
   &:focus {
-    background-color: #f1f2f4;
+    background-color: ${colors.hoverBackground};
   }
 `;
 
@@ -201,19 +201,19 @@ const PublishButton = styled(DropdownButton)`
 `;
 
 const StatusButton = styled(DropdownButton)`
-  background-color: ${colorsRaw.tealLight};
+  background-color: ${colors.tealBackground};
   color: ${colorsRaw.teal};
 `;
 
 const PreviewButtonContainer = styled.div`
   margin-right: 12px;
-  color: ${colorsRaw.blue};
+  color: ${colors.active};
   display: flex;
   align-items: center;
 
   a,
   ${Icon} {
-    color: ${colorsRaw.blue};
+    color: ${colors.active};
   }
 
   ${Icon} {
@@ -226,7 +226,7 @@ const RefreshPreviewButton = styled.button`
   background: none;
   border: 0;
   cursor: pointer;
-  color: ${colorsRaw.blue};
+  color: ${colors.active};
 
   span {
     margin-right: 6px;
