@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 
 import Icon from './Icon';
-import { buttons, shadows } from './styles';
+import { buttons, colors, shadows } from './styles';
 import GoBackButton from './GoBackButton';
 
 const StyledAuthenticationPage = styled.section`
@@ -23,6 +23,7 @@ const CustomIconWrapper = styled.span`
 
 const DecapLogoIcon = styled(Icon)`
   height: auto;
+  color: ${colors.logoText};
 `;
 
 const NetlifyCreditIcon = styled(Icon)`

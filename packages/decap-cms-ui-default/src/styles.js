@@ -69,6 +69,7 @@ const themeColors = {
   textLight: [colorsRaw.white, colorsRaw.white],
   textLead: [colorsRaw.grayDark, '#e6e9ee'],
   textStrong: ['#1e2532', '#f3f5f8'],
+  logoText: ['#000', '#f3f5f8'],
   background: [colorsRaw.grayLight, '#15171c'],
   foreground: [colorsRaw.white, '#22262e'],
   accentBackground: [colorsRaw.grayLight, '#323743'],
