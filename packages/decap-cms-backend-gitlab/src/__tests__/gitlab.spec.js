@@ -410,6 +410,137 @@ describe('gitlab backend', () => {
       expect(authStore.retrieve()).toEqual(expect.objectContaining(pkceCredentials));
     });
 
+    it('shares an in-flight refresh and permits a later refresh with the rotated token', async () => {
+      backend = resolveBackend(pkceConfig);
+      interceptAuth(backend);
+      await backend.authenticate(pkceCredentials);
+
+      let resolveRefresh;
+      const refresh = jest
+        .fn()
+        .mockImplementationOnce(
+          () =>
+            new Promise(resolve => {
+              resolveRefresh = resolve;
+            }),
+        )
+        .mockResolvedValue({ token: 'NEXT_TOKEN', refresh_token: 'NEXT_REFRESH_TOKEN' });
+      backend.implementation.authenticator = { refresh };
+
+      const firstRefresh = backend.implementation.getRefreshedAccessToken();
+      const concurrentRefresh = backend.implementation.getRefreshedAccessToken();
+      const pendingToken = backend.implementation.getToken();
+
+      expect(concurrentRefresh).toBe(firstRefresh);
+      expect(pendingToken).toBe(firstRefresh);
+      expect(refresh).toHaveBeenCalledTimes(1);
+
+      resolveRefresh({ token: 'NEW_TOKEN', refresh_token: 'NEW_REFRESH_TOKEN' });
+      await expect(Promise.all([firstRefresh, concurrentRefresh, pendingToken])).resolves.toEqual([
+        'NEW_TOKEN',
+        'NEW_TOKEN',
+        'NEW_TOKEN',
+      ]);
+      expect(backend.implementation.api.token).toBe('NEW_TOKEN');
+      expect(authStore.retrieve()).toEqual(
+        expect.objectContaining({ token: 'NEW_TOKEN', refresh_token: 'NEW_REFRESH_TOKEN' }),
+      );
+
+      await expect(backend.implementation.getRefreshedAccessToken()).resolves.toBe('NEXT_TOKEN');
+      expect(refresh).toHaveBeenCalledTimes(2);
+      expect(refresh).toHaveBeenLastCalledWith({ refresh_token: 'NEW_REFRESH_TOKEN' });
+    });
+
+    it('allows a new refresh after concurrent callers receive the same refresh failure', async () => {
+      backend = resolveBackend(pkceConfig);
+      interceptAuth(backend);
+      await backend.authenticate(pkceCredentials);
+
+      const refreshError = new Error('Temporary token endpoint failure');
+      let rejectRefresh;
+      const refresh = jest
+        .fn()
+        .mockImplementationOnce(
+          () =>
+            new Promise((_resolve, reject) => {
+              rejectRefresh = reject;
+            }),
+        )
+        .mockResolvedValue({ token: 'NEW_TOKEN', refresh_token: 'NEW_REFRESH_TOKEN' });
+      backend.implementation.authenticator = { refresh };
+
+      const firstRefresh = backend.implementation.getRefreshedAccessToken();
+      const concurrentRefresh = backend.implementation.getRefreshedAccessToken();
+      const pendingToken = backend.implementation.getToken();
+      const results = Promise.allSettled([firstRefresh, concurrentRefresh, pendingToken]);
+
+      expect(concurrentRefresh).toBe(firstRefresh);
+      expect(pendingToken).toBe(firstRefresh);
+      expect(refresh).toHaveBeenCalledTimes(1);
+
+      rejectRefresh(refreshError);
+      await expect(results).resolves.toEqual([
+        { status: 'rejected', reason: refreshError },
+        { status: 'rejected', reason: refreshError },
+        { status: 'rejected', reason: refreshError },
+      ]);
+      expect(authStore.retrieve()).toEqual(expect.objectContaining(pkceCredentials));
+      expect(backend.implementation.api.token).toBe('EXPIRED_TOKEN');
+
+      await expect(backend.implementation.getRefreshedAccessToken()).resolves.toBe('NEW_TOKEN');
+      expect(refresh).toHaveBeenCalledTimes(2);
+      expect(refresh).toHaveBeenLastCalledWith({ refresh_token: 'REFRESH_TOKEN' });
+      expect(await backend.getToken()).toBe('NEW_TOKEN');
+      expect(authStore.retrieve()).toEqual(
+        expect.objectContaining({ token: 'NEW_TOKEN', refresh_token: 'NEW_REFRESH_TOKEN' }),
+      );
+    });
+
+    it('recovers a later API request after the token endpoint temporarily fails', async () => {
+      backend = resolveBackend(pkceConfig);
+      interceptAuth(backend);
+      await backend.authenticate(pkceCredentials);
+
+      const api = mockApi(backend);
+      api
+        .get('/user')
+        .twice()
+        .matchHeader('authorization', 'Bearer EXPIRED_TOKEN')
+        .reply(401, unauthorizedTokenResponse);
+      api
+        .get('/user')
+        .matchHeader('authorization', 'Bearer NEW_TOKEN')
+        .reply(200, resp.user.success);
+
+      const tokenRequest = {
+        client_id: 'app-id',
+        grant_type: 'refresh_token',
+        redirect_uri: document.location.origin + document.location.pathname,
+        refresh_token: 'REFRESH_TOKEN',
+      };
+      const tokenApi = nock('https://gitlab.com')
+        .post('/oauth/token', tokenRequest)
+        .reply(503, { error: 'temporarily_unavailable' })
+        .post('/oauth/token', tokenRequest)
+        .reply(200, { access_token: 'NEW_TOKEN', refresh_token: 'NEW_REFRESH_TOKEN' });
+      const req = { url: `${backend.implementation.apiRoot}/user` };
+
+      await expect(backend.implementation.apiRequestFunction(req)).rejects.toThrow(
+        'temporarily_unavailable',
+      );
+      expect(authStore.retrieve()).toEqual(expect.objectContaining(pkceCredentials));
+
+      const response = await backend.implementation.apiRequestFunction(req);
+      expect(response.status).toBe(200);
+      await expect(response.json()).resolves.toEqual(resp.user.success);
+      expect(api.isDone()).toBe(true);
+      expect(tokenApi.isDone()).toBe(true);
+      expect(await backend.getToken()).toBe('NEW_TOKEN');
+      expect(authStore.retrieve()).toEqual(
+        expect.objectContaining({ token: 'NEW_TOKEN', refresh_token: 'NEW_REFRESH_TOKEN' }),
+      );
+    });
+
     it.each(restInvalidTokenResponses)(
       'refreshes the access token and retries the request on %s response',
       async (_responseType, invalidTokenResponse) => {
