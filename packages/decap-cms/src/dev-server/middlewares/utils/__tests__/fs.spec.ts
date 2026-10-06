@@ -1,7 +1,12 @@
+// These tests exercise the dev server's filesystem boundary, so they need the
+// OS's real path semantics, not the POSIX mock from vitest.setup.ts (which
+// breaks Windows drive-letter resolution).
+vi.unmock('path');
+
 import { promises as fs } from 'fs';
 import os from 'os';
 import path from 'path';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { readMediaFile } from '@/dev-server/middlewares/utils/entries';
 import { deleteFile, listRepoFiles, listRepoFolders, move, writeFile } from '@/dev-server/middlewares/utils/fs';
