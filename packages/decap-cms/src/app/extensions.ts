@@ -30,7 +30,7 @@ import DecapCmsWidgetMap from '@/widgets/map/index';
 import DecapCmsWidgetNumber from '@/widgets/number/index';
 import DecapCmsWidgetObject from '@/widgets/object/index';
 import DecapCmsWidgetRelation from '@/widgets/relation/index';
-import DecapCmsWidgetRichtext from '@/widgets/richtext/index';
+import DecapCmsWidgetRichtext, { imageEditorComponent, registerEditorComponent } from '@/widgets/richtext/index';
 import DecapCmsWidgetSelect from '@/widgets/select/index';
 import DecapCmsWidgetString from '@/widgets/string/index';
 import DecapCmsWidgetText from '@/widgets/text/index';
@@ -79,6 +79,9 @@ export const registerExtensions = once(function registerExtensions(): void {
     // when it is used.
     DecapCmsWidgetRichtext.Widget({ name: 'markdown' }),
   ].forEach(widget => CMS.registerWidget(widget));
+  // The default "Image" editor component, so richtext fields can insert
+  // images out of the box, as in upstream Decap.
+  registerEditorComponent(imageEditorComponent);
 
   // Entry codecs (whole-entry-file encodings) are registerable too; bare
   // consumers register only what their collections use. The markdown codec

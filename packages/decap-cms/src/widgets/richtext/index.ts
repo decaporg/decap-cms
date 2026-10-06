@@ -42,6 +42,7 @@ export {
   registerEditorComponent,
   unregisterEditorComponent,
 } from './editorComponents';
+export { default as imageEditorComponent } from './imageEditorComponent';
 
 // Serializers, exported so consumers (and the preview pane) can reuse the exact
 // markdown pipeline the editor uses.
