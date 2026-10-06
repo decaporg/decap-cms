@@ -25,8 +25,8 @@ test.describe('entry editor', () => {
     await page.getByRole('link', { name: /This is post #/ }).first().click();
     await expect(page).toHaveURL(/\/entries\//);
 
-    // `exact` so this doesn't match the "Test Backend ↗" header link.
-    await page.getByRole('link', { name: 'Back', exact: true }).click();
+    // The editor toolbar's back link ("← Writing in Posts collection").
+    await page.getByRole('link', { name: /Writing in Posts collection/ }).click();
 
     await expect(page).toHaveURL(/#\/collections\/posts$/);
     await expect(page.getByRole('heading', { name: 'Posts' })).toBeVisible();
@@ -34,7 +34,7 @@ test.describe('entry editor', () => {
 
   test('saving a blank new entry surfaces a validation notice', async ({ page }) => {
     // Deep-linking straight to `/collections/posts/new` via `gotoRoute` never
-    // works: per DCMS-431 the app-shell header (including the "Home" link
+    // works: per DCMS-431 the app-shell header (the `banner` landmark
     // `gotoRoute` waits on as its boot signal) is unmounted while an editor
     // route is active, even on direct deep-link. Reach the route the same
     // way `editor-topnav.e2e.ts` does — navigate to the collection list

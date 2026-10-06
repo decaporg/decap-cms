@@ -3,16 +3,14 @@ import { authedTest as test, expect, gotoRoute } from './fixtures';
 import type { Page } from '@playwright/test';
 
 /**
- * DCMS-2134 — the collapsed AI-assistant pill (`EditorPanels`) and the
- * view-controls icon row (`EditorInterface`'s `ViewControls`) are both
- * absolutely positioned in the top-right corner of the editor, with a
- * z-index above the preview iframe. Neither reserved any layout space, so
- * any preview content that wrapped into that same corner — e.g. a very long
- * entry title's `<h1>` — rendered *underneath* them and was visually
- * clipped: only the first wrapped line was affected, since every later line
- * wraps at the pane's true right edge with nothing painted over it.
+ * DCMS-2134 — the view-controls icon column (`EditorInterface`'s
+ * `ViewControls`) is absolutely positioned in the top-right corner of the
+ * editor, with a z-index above the preview iframe. It reserved no layout
+ * space, so any preview content that wrapped into that same corner — e.g. a
+ * very long entry title's `<h1>` — rendered *underneath* it and was visually
+ * clipped.
  *
- * `EditorInterface` now measures both overlays' real footprint and forwards
+ * `EditorInterface` now measures the overlay's real footprint and forwards
  * it to the preview iframe (`EditorPreviewContent`) as `chromeReserve`,
  * which renders a right-floated, zero-content spacer ahead of the actual
  * preview markup — the same mechanism that makes text wrap around a floated
@@ -54,39 +52,35 @@ function topmostElementAt(page: Page, x: number, y: number) {
 }
 
 test.describe('Preview pane chrome overlay does not clip wrapped content (DCMS-2134)', () => {
-  test('a 2000-char title\'s <h1> first line is not clipped by the assistant pill / view-controls chrome', async ({ page }) => {
+  test("no wrapped line of a 2000-char title's <h1> runs under the view-controls chrome", async ({ page }) => {
     const heading = await fillLongTitleAndOpenPreview(page, 'X'.repeat(2000));
 
-    const box = await heading.boundingBox();
-    expect(box).not.toBeNull();
-    if (!box) return;
+    const frameBox = await page.locator('#preview-pane').boundingBox();
+    expect(frameBox).not.toBeNull();
+    if (!frameBox) return;
 
-    // A point 4px in from the h1's right edge, 20px down from its top: deep
-    // inside the first wrapped line, at the exact spot the issue's
-    // screenshots show being clipped by the assistant pill.
-    const probeX = box.x + box.width - 4;
-    const probeY = box.y + 20;
-
-    const elementAtProbe = await topmostElementAt(page, probeX, probeY);
-    expect(elementAtProbe?.id).toBe('preview-pane');
-    expect(elementAtProbe?.tag).not.toBe('BUTTON');
-
-    // Acceptance criterion 2: every wrapped line — including line 1 — must
-    // extend to the same right edge. Compare the first line's client rect
-    // (from a `Range` over the heading's text) against a later line's; a
-    // clipped first line renders visibly shorter than its siblings even
-    // though the underlying text content is identical.
-    const lineRights = await heading.evaluate(el => {
+    // Each wrapped line's client rect (from a `Range` over the heading's
+    // text), in the iframe's own coordinates. Lines next to the controls
+    // are deliberately shorter: the `chromeReserve` float pushes them in.
+    const lines = await heading.evaluate(el => {
       const range = document.createRange();
       range.selectNodeContents(el);
-      const rects = Array.from(range.getClientRects());
-      return rects.map(r => r.right);
+      return Array.from(range.getClientRects()).map(r => ({ right: r.right, top: r.top, height: r.height }));
     });
+    expect(lines.length).toBeGreaterThan(2);
 
-    expect(lineRights.length).toBeGreaterThan(2);
-    const [firstLineRight, ...restRights] = lineRights;
-    const laterLineRight = restRights[Math.floor(restRights.length / 2)];
-    expect(Math.abs(firstLineRight - laterLineRight)).toBeLessThanOrEqual(2);
+    // Probe the last character of every on-screen line: the topmost element
+    // there must be the preview iframe, never a view-controls button painted
+    // over it. (`elementFromPoint` returns null off-screen.)
+    const viewportHeight = page.viewportSize()?.height ?? 0;
+    const visibleLines = lines.filter(line => frameBox.y + line.top + line.height < viewportHeight);
+    expect(visibleLines.length).toBeGreaterThan(2);
+    for (const line of visibleLines) {
+      const probeX = frameBox.x + line.right - 3;
+      const probeY = frameBox.y + line.top + line.height / 2;
+      const elementAtProbe = await topmostElementAt(page, probeX, probeY);
+      expect(elementAtProbe?.id).toBe('preview-pane');
+    }
   });
 
   test('special characters at the wrap boundary render fully visible on line 1', async ({ page }) => {

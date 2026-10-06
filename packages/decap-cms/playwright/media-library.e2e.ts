@@ -9,7 +9,7 @@ test.describe('media library', () => {
     const dialog = page.getByRole('dialog');
     await expect(dialog).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Media assets' })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Upload' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Upload', exact: true }).first()).toBeVisible();
 
     await page.getByLabel('Close').first().click();
     await expect(dialog).toHaveCount(0);

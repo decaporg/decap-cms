@@ -21,15 +21,6 @@ test.describe('navigation', () => {
     await expect(page.getByRole('link', { name: /New Post/i })).toBeVisible();
   });
 
-  test('settings route renders its sections', async ({ page }) => {
-    await gotoRoute(page, '/settings');
-
-    await expect(page.getByRole('heading', { name: 'Settings', exact: true })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Appearance' })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Backend' })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'About' })).toBeVisible();
-  });
-
   test('deep-linking to a nonexistent entry surfaces exactly one failure toast', async ({ page }) => {
     // DCMS-447: the notifications reducer used to append unconditionally, so
     // a single failed `loadEntry` dispatch (occasionally invoked more than

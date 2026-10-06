@@ -2,9 +2,9 @@ import { authedTest as test, expect, gotoRoute } from './fixtures';
 
 /**
  * Regression for DCMS-2138: opening the relation widget's option menu above
- * a richtext (Lexical) widget used to leave the richtext widget's sticky
- * toolbar (`ScrollableToolbar`'s `sticky top-0 z-10` wrapper, see
- * `Editor.tsx`) painted on top of the menu's lower rows.
+ * a richtext widget used to leave the richtext widget's sticky toolbar
+ * (the `position: sticky` wrapper around `Toolbar.tsx`, which carries its
+ * own explicit z-index) painted on top of the menu's lower rows.
  *
  * Root cause: `ComboboxPositioner` (the floating element `Combobox.tsx`
  * portals to `document.body`) is `position: absolute`/`fixed` with
@@ -13,7 +13,7 @@ import { authedTest as test, expect, gotoRoute } from './fixtures';
  * position, not visual nesting - as any other stacking context establishing
  * `z-index: auto`/`0` element elsewhere in the document, including a sibling
  * `position: sticky` element with its own explicit `z-index` (the richtext
- * toolbar's `z-10`). `ComboboxPopup`'s own `z-index: 50` only wins against
+ * toolbar's wrapper). `ComboboxPopup`'s own `z-index: 50` only wins against
  * its siblings *within* the Positioner - it did nothing for stacking against
  * that unrelated tree. Fixed by giving `ComboboxPositioner` itself an
  * explicit z-index, which promotes the whole floating tree into the
@@ -38,7 +38,10 @@ test.describe('relation widget menu vs richtext sticky toolbar (DCMS-2138)', () 
     const lastOption = page.getByRole('option', { name: /This is post # 1$/ });
     await expect(lastOption).toBeVisible();
 
-    const toolbar = page.locator('[role="toolbar"][aria-label="Text formatting"]').first();
+    // The richtext toolbar container: the Bold button's toolbar row. A CSS
+    // locator, because the open combobox hides the rest of the page from the
+    // accessibility tree, so role queries can't reach the toolbar.
+    const toolbar = page.locator('button[title="Bold"]').first().locator('xpath=../..');
     await expect(toolbar).toBeVisible();
 
     // The two elements' boxes must actually overlap for this assertion to be

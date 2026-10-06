@@ -35,19 +35,14 @@ export const authedTest = base.extend({
 });
 
 /**
- * The collections sidebar — an `<aside aria-label="Collections">`, distinct
- * from the header's own `navigation` region. Scope collection-link
- * assertions to this so they don't match header links.
- *
- * Desktop renders it as a persistent landmark (role `complementary`); a shell
- * that collapses it into a Base UI `Drawer.Popup` at narrow viewports asserts
- * dialog semantics (role `dialog`) regardless of any `render={<aside />}`
- * override. Match either role so this helper works at both viewports.
+ * The collections sidebar — the `<aside>` (role `complementary`) headed
+ * "Collections", distinct from the header's own `navigation` region. Scope
+ * collection-link assertions to this so they don't match header links.
  */
 export function sidebar(page: Page) {
   return page
-    .getByRole('complementary', { name: 'Collections' })
-    .or(page.getByRole('dialog', { name: 'Collections' }));
+    .getByRole('complementary')
+    .filter({ has: page.getByRole('heading', { name: 'Collections' }) });
 }
 
 /**

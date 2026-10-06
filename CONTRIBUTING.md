@@ -65,8 +65,8 @@ pnpm test -- -t "name pattern"
    ticket-suffix rule) — treat them as house style flagged by reviewers, not a hard commit-msg gate.
 4. If your change should ship in the next release, run `pnpm changeset` (a.k.a.
    `pnpm changeset add`) from the repo root and follow the prompts to add a changeset entry
-   describing the change. This is what the release tooling reads to bump versions and generate
-   `CHANGELOG.md` — see [Releasing](#releasing).
+   describing the change. This is what the release tooling reads to bump versions and generate the
+   package changelog — see [Releasing](#releasing).
 5. Run `pnpm test:ci` and make sure it passes.
 6. A maintainer reviews and merges; PRs should be rebased on `main` before merge.
 
@@ -93,8 +93,8 @@ Releases are managed by [changesets](https://github.com/changesets/changesets) v
    describes the bump type (patch/minor/major) and a changelog blurb.
 2. When it's time to release, a maintainer runs `pnpm version-packages` from the repo root (root
    `package.json`'s `version-packages` script, currently `changeset version`) to consume the pending
-   `.changeset/*.md` files, bump `packages/decap-cms/package.json`'s `version`, and update
-   `CHANGELOG.md` — then commits the result.
+   `.changeset/*.md` files, bump `packages/decap-cms/package.json`'s `version`, and write the
+   package changelog (changesets creates it on the first release) — then commits the result.
 3. Run `pnpm test:ci` and make sure it passes.
 4. A maintainer runs `pnpm release` from the repo root (root `package.json`'s `release` script,
    currently `node scripts/assert-release-branch.mjs && changeset publish`) to publish to npm.
