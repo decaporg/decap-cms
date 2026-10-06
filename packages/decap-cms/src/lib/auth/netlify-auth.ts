@@ -212,11 +212,14 @@ class Authenticator {
         }),
       );
     }
-    const url =
-      `${this.base_url}/${this.auth_endpoint}/refresh?provider=${provider}&site_id=${siteID}&refresh_token=${refresh_token}`;
+    // The refresh token goes in the POST body, never the URL, so it can't leak
+    // into server logs, proxies or browser history (GHSA-jm5q-pq3r-26g9).
+    const url = `${this.base_url}/${this.auth_endpoint}/refresh?provider=${provider}&site_id=${siteID}`;
+    const body = new URLSearchParams({ refresh_token }).toString();
     const refreshPromise: Promise<NetlifyAuthResult> = fetch(url, {
       method: 'POST',
-      body: '',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body,
     }).then(res => res.json() as Promise<NetlifyAuthResult>);
 
     // Return a promise if a callback wasn't provided

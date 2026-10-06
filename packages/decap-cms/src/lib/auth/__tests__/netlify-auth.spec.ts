@@ -119,4 +119,29 @@ describe('Authenticator', () => {
       'You must specify a provider when calling netlify.authenticate',
     );
   });
+
+  it('sends the refresh token in the request body, never the URL', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      json: async () => ({ token: 'new-access-token', refresh_token: 'new-refresh-token' }),
+    });
+    vi.stubGlobal('fetch', fetchMock);
+    const authenticator = new Authenticator({
+      base_url: 'https://api.example.com',
+      site_id: 'cms.example.com',
+    });
+    // Characters that would smuggle extra query params if interpolated raw.
+    const refreshToken = 'old refresh&token=secret';
+
+    await authenticator.refresh({ provider: 'bitbucket', refresh_token: refreshToken });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://api.example.com/auth/refresh?provider=bitbucket&site_id=cms.example.com',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ refresh_token: refreshToken }).toString(),
+      },
+    );
+    vi.unstubAllGlobals();
+  });
 });
