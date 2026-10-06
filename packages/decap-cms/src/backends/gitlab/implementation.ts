@@ -280,7 +280,15 @@ export default class GitLab implements BackendImplementation {
         .clone()
         .json()
         .catch(() => null);
-      if (json && json.error === 'invalid_token') {
+      // GitLab reports an expired or revoked token three ways: the OAuth
+      // `invalid_token` error, the REST API's plain `401 Unauthorized`
+      // message, and GraphQL's `Invalid token` error.
+      const isInvalidToken = json
+        && (json.error === 'invalid_token'
+          || json.message === '401 Unauthorized'
+          || (Array.isArray(json.errors)
+            && json.errors.some(({ message }: { message?: string }) => message === 'Invalid token')));
+      if (isInvalidToken) {
         const newToken = await this.getRefreshedAccessToken();
         const reqWithNewToken = unsentRequest.withHeaders(
           {

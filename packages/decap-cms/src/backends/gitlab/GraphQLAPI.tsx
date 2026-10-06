@@ -2,10 +2,12 @@ import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 import { SetContextLink } from '@apollo/client/link/context';
 
 import { rawContent } from '@/lib/backend/index';
+import { unsentRequest } from '@/lib/util/index';
 import API from './API';
 import * as queries from './queries';
 
 import type { BackendEntry, BackendFileRef } from '@/lib/backend/index';
+import type { ApiRequest } from '@/lib/util/index';
 import type { Config, FileEntry } from './API';
 
 const NO_CACHE = 'no-cache';
@@ -35,7 +37,26 @@ export default class GraphQLAPI extends API {
         },
       };
     });
-    const httpLink = new HttpLink({ uri: this.graphQLAPIRoot });
+    // Send GraphQL through the backend's request function when there is one,
+    // so an expired PKCE token gets the same refresh-and-retry as REST calls.
+    // That function sets the Authorization header itself, so drop the one
+    // above: Apollo lowercases header names, and sending both would merge them
+    // into a single invalid value.
+    const requestFunction = this.requestFunction;
+    const httpLink = new HttpLink({
+      uri: this.graphQLAPIRoot,
+      ...(requestFunction && {
+        fetch: ((input: RequestInfo | URL, init?: RequestInit) => {
+          const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
+          const headers = Object.fromEntries(
+            Object.entries((init?.headers ?? {}) as Record<string, string>).filter(
+              ([name]) => name.toLowerCase() !== 'authorization',
+            ),
+          );
+          return requestFunction(unsentRequest.fromFetchArguments(url, { ...init, headers }) as ApiRequest);
+        }) as typeof fetch,
+      }),
+    });
     return new ApolloClient({
       link: authLink.concat(httpLink),
       cache: new InMemoryCache(),
