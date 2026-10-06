@@ -143,6 +143,12 @@ export default class Widget extends Component<WidgetProps> {
       || this.props.hasErrors !== nextProps.hasErrors
       || this.props.errorListId !== nextProps.errorListId
       || this.props.hintId !== nextProps.hintId
+      // A media library insert lands in `mediaPaths` (keyed by the file or
+      // image control that opened the library), not in `value`. Upstream's
+      // class-based file control re-rendered on it through its own
+      // shouldComponentUpdate; the function component here has none, so the
+      // chosen file never reached the field.
+      || this.props.mediaPaths !== nextProps.mediaPaths
     );
   }
 
