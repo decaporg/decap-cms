@@ -1003,6 +1003,99 @@ describe('Backend', () => {
     });
   });
 
+  // decaporg #7612: a collection filter must see an i18n entry after its
+  // locales are grouped.
+  describe('processEntries', () => {
+    let backend: Backend;
+
+    function createCollection(i18n?: Record<string, unknown>) {
+      return {
+        name: 'posts',
+        type: FOLDER,
+        folder: '_posts',
+        format: 'yaml',
+        extension: 'yml',
+        filter: { field: 'draft', value: false },
+        fields: [{ name: 'title' }, { name: 'draft' }],
+        ...(i18n && { i18n }),
+      } as any;
+    }
+
+    function loadedEntry(path: string, raw: string) {
+      return { file: { path }, content: { kind: 'raw' as const, raw } };
+    }
+
+    beforeEach(() => {
+      (getBackend as ReturnType<typeof vi.fn>).mockReturnValue({ init: vi.fn() });
+      mockEntryCodecRegistry();
+      backend = resolveBackend({ backend: { name: 'git-gateway' } } as any);
+    });
+
+    it('filters entries of a single file i18n collection on the default locale data', () => {
+      const collection = createCollection({
+        structure: 'single_file',
+        locales: ['en', 'de'],
+        default_locale: 'en',
+      });
+
+      const result = backend.processEntries(
+        [
+          loadedEntry(
+            '_posts/published.yml',
+            'en:\n  title: Published\n  draft: false\nde:\n  title: Veröffentlicht\n  draft: false\n',
+          ),
+          loadedEntry(
+            '_posts/drafted.yml',
+            'en:\n  title: Drafted\n  draft: true\nde:\n  title: Entwurf\n  draft: true\n',
+          ),
+        ] as any,
+        collection,
+      );
+
+      expect(result).toHaveLength(1);
+      expect(result[0].slug).toBe('published');
+      expect(result[0].data).toEqual({ title: 'Published', draft: false });
+      expect(result[0].i18n).toEqual({ de: { data: { title: 'Veröffentlicht', draft: false } } });
+    });
+
+    it('keeps translations of a multiple files i18n collection whose filter field is not translated', () => {
+      const collection = createCollection({
+        structure: 'multiple_files',
+        locales: ['en', 'de'],
+        default_locale: 'en',
+      });
+
+      const result = backend.processEntries(
+        [
+          loadedEntry('_posts/published.en.yml', 'title: Published\ndraft: false\n'),
+          loadedEntry('_posts/published.de.yml', 'title: Veröffentlicht\n'),
+          loadedEntry('_posts/drafted.en.yml', 'title: Drafted\ndraft: true\n'),
+          loadedEntry('_posts/drafted.de.yml', 'title: Entwurf\n'),
+        ] as any,
+        collection,
+      );
+
+      expect(result).toHaveLength(1);
+      expect(result[0].slug).toBe('published');
+      expect(result[0].data).toEqual({ title: 'Published', draft: false });
+      expect(result[0].i18n).toEqual({ de: { data: { title: 'Veröffentlicht' } } });
+    });
+
+    it('filters entries of a collection without i18n', () => {
+      const result = backend.processEntries(
+        [
+          loadedEntry('_posts/published.yml', 'title: Published\ndraft: false\n'),
+          loadedEntry('_posts/drafted.yml', 'title: Drafted\ndraft: true\n'),
+        ] as any,
+        createCollection(),
+      );
+
+      expect(result).toHaveLength(1);
+      expect(result[0].slug).toBe('published');
+      expect(result[0].data).toEqual({ title: 'Published', draft: false });
+    });
+  });
+
   // DCMS-1354 / DCMS-1352: port of DCMS-514 (#560) to v4.beta. An unknown slug in
   // a files collection used to reach `implementation.getEntry` with an `undefined`
   // path (silently cast `as string`), crashing deep in path parsing with a raw

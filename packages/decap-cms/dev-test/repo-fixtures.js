@@ -158,6 +158,20 @@ function makeImageAssetProxy(path, base64) {
   };
 }
 
+// A single file i18n collection with a filter (decaporg #7612): the drafted
+// entry is filtered out, so only the two published ones are listed.
+window.repoFiles._i18n_posts = {
+  'a-published-post.md': {
+    content: '---\nen:\n  title: A published post\n  draft: false\n  body: This entry passes the collection filter.\nde:\n  title: Ein veröffentlichter Beitrag\n  draft: false\n  body: Dieser Eintrag passiert den Filter.\n---\n',
+  },
+  'another-published-post.md': {
+    content: '---\nen:\n  title: Another published post\n  draft: false\n  body: This entry passes the collection filter, too.\nde:\n  title: Noch ein veröffentlichter Beitrag\n  draft: false\n  body: Dieser Eintrag passiert den Filter auch.\n---\n',
+  },
+  'a-drafted-post.md': {
+    content: '---\nen:\n  title: A drafted post\n  draft: true\n  body: This entry is filtered out of the collection.\nde:\n  title: Ein Beitragsentwurf\n  draft: true\n  body: Dieser Eintrag wird herausgefiltert.\n---\n',
+  },
+};
+
 window.repoFiles.assets = {
   uploads: {
     'nf-logo.png': makeImageAssetProxy('assets/uploads/nf-logo.png', NF_LOGO_PNG_BASE64),

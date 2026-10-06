@@ -787,19 +787,21 @@ export class Backend {
         meta: { path: prepareMetaPath(file.path, collection) },
       });
     });
-    // If this collection has a "filter" property, filter entries accordingly
-    const collectionFilter = collection.filter;
-    const filteredEntries = collectionFilter
-      ? this.filterEntries({ entries: formattedEntries }, collectionFilter)
+    // Group i18n entries before filtering them, so the filter is matched
+    // against the default locale data of a single, merged entry. Entries of a
+    // `single_file` collection keep their data nested under a locale key until
+    // they're grouped, so filtering first never matched anything; for
+    // `multiple_files`/`multiple_folders` it dropped translations whose file
+    // didn't repeat the filter field.
+    const groupedEntries = hasI18n(collection)
+      ? groupEntries(collection, selectFolderEntryExtension(collection), formattedEntries)
       : formattedEntries;
 
-    if (hasI18n(collection)) {
-      const extension = selectFolderEntryExtension(collection);
-      const groupedEntries = groupEntries(collection, extension, filteredEntries);
-      return groupedEntries;
-    }
-
-    return filteredEntries;
+    // If this collection has a "filter" property, filter entries accordingly
+    const collectionFilter = collection.filter;
+    return collectionFilter
+      ? this.filterEntries({ entries: groupedEntries }, collectionFilter)
+      : groupedEntries;
   }
 
   async listEntries(collection: CmsCollectionState) {

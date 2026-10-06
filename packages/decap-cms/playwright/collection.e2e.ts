@@ -67,3 +67,14 @@ test.describe('restaurants collection', () => {
     expect(summary.trim()).not.toMatch(/--\s*$/);
   });
 });
+
+// decaporg #7612: a collection filter on a single-file i18n collection.
+test.describe('i18n collection with a filter', () => {
+  test('lists the entries that pass the filter', async ({ page }) => {
+    await gotoRoute(page, '/collections/i18n_posts');
+
+    await expect(page.getByRole('link', { name: 'A published post', exact: true })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Another published post', exact: true })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'A drafted post', exact: true })).toHaveCount(0);
+  });
+});
