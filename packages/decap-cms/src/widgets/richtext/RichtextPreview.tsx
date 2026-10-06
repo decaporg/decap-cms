@@ -41,6 +41,35 @@ const previewStyles = `
   }
 `;
 
+// Editors preview a selected-but-not-yet-committed image via
+// `URL.createObjectURL()`, which produces a `blob:` URL. DOMPurify's default
+// URI allow-list doesn't include that scheme, so it stripped `src` from exactly
+// those images and the preview went blank (decaporg #7873).
+//
+// The exception is scoped to `<img src>` with a hook rather than by widening
+// DOMPurify's ALLOWED_URI_REGEXP, which would also allow `blob:` on `<a href>`,
+// `<form action>` and every other URI attribute. It is further limited to this
+// document's own origin: a `blob:` URL embeds the origin that created it, so a
+// value from any other origin can't be one of this CMS's own asset previews.
+// The hook is added and removed around a single `sanitize()` call so it never
+// affects other users of the shared DOMPurify instance.
+function isSameOriginBlobUrl(value: string) {
+  return value.startsWith(`blob:${window.location.origin}/`);
+}
+
+function sanitizePreviewHtml(html: string) {
+  DOMPurify.addHook('uponSanitizeAttribute', (node, data) => {
+    if (node.nodeName === 'IMG' && data.attrName === 'src' && isSameOriginBlobUrl(data.attrValue)) {
+      data.forceKeepAttr = true;
+    }
+  });
+  try {
+    return DOMPurify.sanitize(html);
+  } finally {
+    DOMPurify.removeHook('uponSanitizeAttribute');
+  }
+}
+
 export interface RichtextPreviewProps extends Omit<CmsWidgetPreviewProps<string, RichtextField>, 'getAsset'> {
   getAsset?: GetAssetFunction | undefined;
   resolveWidget?: ResolveWidgetFunction | undefined;
@@ -66,7 +95,7 @@ export default function RichtextPreview({
   });
 
   const shouldSanitizePreview = field?.sanitize_preview ?? true;
-  const toRender = shouldSanitizePreview ? DOMPurify.sanitize(html) : html;
+  const toRender = shouldSanitizePreview ? sanitizePreviewHtml(html) : html;
 
   return (
     <WidgetPreviewContainer>
