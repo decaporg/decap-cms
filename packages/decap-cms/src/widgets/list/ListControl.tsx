@@ -374,6 +374,7 @@ const ListControl = React.forwardRef<ListControlHandle, ListControlProps>(
     // Latest state/props for the imperative handle so callers that captured the
     // handle once keep seeing the current value.
     const latestRef = React.useRef({
+      inputValue,
       listCollapsed,
       itemsCollapsed,
       keys,
@@ -384,6 +385,7 @@ const ListControl = React.forwardRef<ListControlHandle, ListControlProps>(
       validateSize,
     });
     latestRef.current = {
+      inputValue,
       listCollapsed,
       itemsCollapsed,
       keys,
@@ -522,18 +524,28 @@ const ListControl = React.forwardRef<ListControlHandle, ListControlProps>(
       };
     }
 
-    function getObjectValue(idx: number) {
-      return ((inputValue as unknown[])[idx] || {}) as Record<string, unknown>;
-    }
-
     const handleChangeFor = React.useMemo(
       () =>
         memoize((index: number) => {
+          const key = keys[index];
+
           return (f: CmsField, newValue: unknown, newMetadata: Record<string, unknown>) => {
-            const value = Array.isArray(inputValue)
-              ? [...inputValue]
-              : inputValue
-              ? [inputValue]
+            // Resolve the item's position, and read the list, when the change
+            // fires rather than when this handler was created. An editor can
+            // fire late with a handler from before an item was removed or
+            // moved; `index` would then point at a different item (or past
+            // the end), and the captured list would bring removed items back.
+            const { inputValue: currentValue, keys: currentKeys } = latestRef.current;
+            const currentIndex = currentKeys.indexOf(key);
+            if (currentIndex === -1) {
+              // The item this change belongs to has been removed.
+              return;
+            }
+
+            const value = Array.isArray(currentValue)
+              ? [...currentValue]
+              : currentValue
+              ? [currentValue]
               : [];
             const collectionName = field.name;
             const isListFieldObjectWidget = get(field, ['field', 'widget']) === 'object';
@@ -542,7 +554,7 @@ const ListControl = React.forwardRef<ListControlHandle, ListControlProps>(
             let newObjectValue;
             if (withNameKey) {
               const name = f.name;
-              const ov = { ...getObjectValue(index) };
+              const ov = { ...((value[currentIndex] || {}) as Record<string, unknown>) };
               ov[name] = newValue;
               newObjectValue = ov;
             } else {
@@ -552,13 +564,14 @@ const ListControl = React.forwardRef<ListControlHandle, ListControlProps>(
               [collectionName]: { ...(metadata ?? {}), ...(newMetadata || {}) },
             };
 
-            value[index] = newObjectValue;
+            value[currentIndex] = newObjectValue;
             onChange(value, parsedMetadata);
           };
         }),
-      // Recreate when value identity changes so closures see latest value.
+      // Recreate when the items change so each new handler captures its
+      // item's key; the value itself is read from `latestRef` at fire time.
       // eslint-disable-next-line react-hooks/exhaustive-deps
-      [inputValue, metadata, field, onChange],
+      [inputValue, keys, metadata, field, onChange],
     );
 
     function handleRemove(index: number, event: React.MouseEvent) {

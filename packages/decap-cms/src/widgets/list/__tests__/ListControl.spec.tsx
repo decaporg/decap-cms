@@ -3,6 +3,10 @@ vi.mock('../../object/index', async () => {
   class MockObjectControl extends React.Component<any> {
     validate() {}
     render() {
+      // Expose each item's latest props (keyed by its test id) so tests can
+      // call the change handler an item was given.
+      (globalThis as any).__objectControlProps ??= {};
+      (globalThis as any).__objectControlProps[this.props['data-testid']] = this.props;
       const { children, ...rest } = this.props;
       return React.createElement('mock-object-control', rest, children);
     }
@@ -29,12 +33,21 @@ vi.mock('../../../ui/default/index', async () => {
     );
   }
 
+  // The real SortableArea, but its `onSortEnd` is exposed so tests can
+  // reorder items the way a drag does.
+  const ActualSortableArea = (actual as any).SortableArea;
+  function SortableArea(props) {
+    (globalThis as any).__listSortEnd = props.onSortEnd;
+    return <ActualSortableArea {...props} />;
+  }
+
   return {
     ...actual,
     ListItemTopBar,
+    SortableArea,
   };
 });
-import { fireEvent, render } from '@testing-library/react';
+import { act, fireEvent, render } from '@testing-library/react';
 import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -897,5 +910,91 @@ describe('ListControl', () => {
         type: 'PRESENCE',
       },
     ]);
+  });
+
+  describe('changes made on an item after the list changed shape (decaporg #7956)', () => {
+    const typedField = {
+      name: 'list',
+      label: 'List',
+      types: [
+        {
+          name: 'type_one',
+          widget: 'object',
+          fields: [{ name: 'text', widget: 'richtext', label: 'Text' }],
+        },
+      ],
+    };
+
+    // The `onChangeObject` handler the list gave an item, as captured at render
+    // time — what an editor holding a stale closure would call later.
+    function changeHandlerOf(key: string) {
+      return (globalThis as any).__objectControlProps[`object-control-${key}`].onChangeObject;
+    }
+
+    it('applies a change to the item it was made on after an earlier item is removed', () => {
+      const value = [
+        { type: 'type_one', text: 'one' },
+        { type: 'type_one', text: 'two' },
+        { type: 'type_one', text: 'three' },
+      ];
+      const { getAllByText, rerender } = render(
+        <ListControl {...props} field={typedField} value={value} />,
+      );
+      // Keys come from the sequential randomUUID mock: '0', '1', '2'.
+      const changeThirdItem = changeHandlerOf('2');
+
+      fireEvent.click(getAllByText('Remove')[0]);
+      const afterRemoval = props.onChange.mock.calls[0][0];
+      rerender(<ListControl {...props} field={typedField} value={afterRemoval} />);
+
+      changeThirdItem({ name: 'text' }, 'three edited');
+
+      const written = props.onChange.mock.calls[1][0];
+      expect(written).toEqual([
+        { type: 'type_one', text: 'two' },
+        { type: 'type_one', text: 'three edited' },
+      ]);
+    });
+
+    it('applies a change to the item it was made on after the items are reordered', () => {
+      const value = [
+        { type: 'type_one', text: 'one' },
+        { type: 'type_one', text: 'two' },
+      ];
+      const { rerender } = render(<ListControl {...props} field={typedField} value={value} />);
+      const changeFirstItem = changeHandlerOf('0');
+
+      // Drag the first item below the second.
+      act(() => (globalThis as any).__listSortEnd({ oldIndex: 0, newIndex: 1 }));
+      const afterSort = props.onChange.mock.calls[0][0];
+      expect(afterSort).toEqual([value[1], value[0]]);
+      rerender(<ListControl {...props} field={typedField} value={afterSort} />);
+
+      changeFirstItem({ name: 'text' }, 'one edited');
+
+      expect(props.onChange.mock.calls[1][0]).toEqual([
+        { type: 'type_one', text: 'two' },
+        { type: 'type_one', text: 'one edited' },
+      ]);
+    });
+
+    it('discards a change made on an item that has since been removed', () => {
+      const value = [
+        { type: 'type_one', text: 'one' },
+        { type: 'type_one', text: 'two' },
+      ];
+      const { getAllByText, rerender } = render(
+        <ListControl {...props} field={typedField} value={value} />,
+      );
+      const changeSecondItem = changeHandlerOf('1');
+
+      fireEvent.click(getAllByText('Remove')[1]);
+      const afterRemoval = props.onChange.mock.calls[0][0];
+      rerender(<ListControl {...props} field={typedField} value={afterRemoval} />);
+
+      changeSecondItem({ name: 'text' }, 'text for a removed item');
+
+      expect(props.onChange).toHaveBeenCalledTimes(1);
+    });
   });
 });
