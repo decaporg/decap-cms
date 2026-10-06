@@ -3,7 +3,8 @@ import os from 'os';
 import path from 'path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { listRepoFiles, listRepoFolders } from '@/dev-server/middlewares/utils/fs';
+import { readMediaFile } from '@/dev-server/middlewares/utils/entries';
+import { deleteFile, listRepoFiles, listRepoFolders, move, writeFile } from '@/dev-server/middlewares/utils/fs';
 
 describe('dev-server fs utils', () => {
   let repoPath: string;
@@ -119,5 +120,69 @@ describe('dev-server fs utils', () => {
 
       expect(folders).toEqual([]);
     });
+  });
+});
+
+describe('repository filesystem boundary', () => {
+  const invalidPath = 'Path must resolve under the configured repository';
+  let temporaryPath: string;
+  let repoPath: string;
+  let outsidePath: string;
+
+  beforeEach(async () => {
+    temporaryPath = await fs.mkdtemp(path.join(os.tmpdir(), 'decap-cms-dev-server-'));
+    repoPath = path.join(temporaryPath, 'repo');
+    // Shares the repository's name as a prefix, so a naive
+    // `startsWith(repoPath)` check would wrongly accept it.
+    outsidePath = path.join(temporaryPath, 'repo-owned');
+    await Promise.all([fs.mkdir(repoPath), fs.mkdir(outsidePath)]);
+  });
+
+  afterEach(async () => {
+    await fs.rm(temporaryPath, { recursive: true, force: true });
+  });
+
+  it('blocks reads, writes, and deletes through a sibling-prefix traversal', async () => {
+    const traversalPath = path.join('..', 'repo-owned', 'secret.txt');
+    const outsideFile = path.join(outsidePath, 'secret.txt');
+    await fs.writeFile(outsideFile, 'outside-proof');
+
+    await expect(readMediaFile(repoPath, traversalPath)).rejects.toThrow(invalidPath);
+    await expect(writeFile(repoPath, traversalPath, 'changed')).rejects.toThrow(invalidPath);
+    await expect(deleteFile(repoPath, traversalPath)).rejects.toThrow(invalidPath);
+    await expect(fs.readFile(outsideFile, 'utf8')).resolves.toBe('outside-proof');
+  });
+
+  it('blocks reads, writes, deletes, moves and listings through a repository symlink', async () => {
+    const linkPath = path.join(repoPath, 'linked');
+    await fs.symlink(outsidePath, linkPath, process.platform === 'win32' ? 'junction' : 'dir');
+    await fs.writeFile(path.join(outsidePath, 'secret.txt'), 'outside-proof');
+    await fs.writeFile(path.join(outsidePath, 'delete-me.txt'), 'keep-me');
+    await fs.writeFile(path.join(repoPath, 'inside.md'), 'inside');
+
+    await expect(readMediaFile(repoPath, 'linked/secret.txt')).rejects.toThrow(invalidPath);
+    await expect(writeFile(repoPath, 'linked/write.txt', 'changed')).rejects.toThrow(invalidPath);
+    await expect(deleteFile(repoPath, 'linked/delete-me.txt')).rejects.toThrow(invalidPath);
+    await expect(move(repoPath, 'inside.md', 'linked/moved.md', false)).rejects.toThrow(invalidPath);
+    await expect(listRepoFiles(repoPath, 'linked', '.txt', 10)).rejects.toThrow(invalidPath);
+
+    await expect(fs.readFile(path.join(outsidePath, 'secret.txt'), 'utf8')).resolves.toBe('outside-proof');
+    await expect(fs.readFile(path.join(outsidePath, 'delete-me.txt'), 'utf8')).resolves.toBe('keep-me');
+    await expect(fs.stat(path.join(outsidePath, 'write.txt'))).rejects.toMatchObject({ code: 'ENOENT' });
+    await expect(fs.stat(path.join(outsidePath, 'moved.md'))).rejects.toMatchObject({ code: 'ENOENT' });
+    await expect(fs.readFile(path.join(repoPath, 'inside.md'), 'utf8')).resolves.toBe('inside');
+  });
+
+  it('still writes, moves and lists files inside the repository', async () => {
+    await writeFile(repoPath, 'content/posts/new.md', 'hello');
+    await move(repoPath, 'content/posts/new.md', 'content/archive/new.md', false);
+
+    await expect(listRepoFiles(repoPath, 'content', '.md', 10)).resolves.toEqual([
+      path.join('content', 'archive', 'new.md'),
+    ]);
+  });
+
+  it('lists nothing for a collection folder that does not exist yet', async () => {
+    await expect(listRepoFiles(repoPath, 'content/not-created-yet', '.md', 10)).resolves.toEqual([]);
   });
 });

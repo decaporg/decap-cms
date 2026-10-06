@@ -1,13 +1,7 @@
 import path from 'path';
 
 import { entriesFromFiles, normalizePath, readMediaFile } from '@/dev-server/middlewares/utils/entries';
-import {
-  deleteFile,
-  listRepoFiles,
-  listRepoFolders,
-  move,
-  writeFile,
-} from '@/dev-server/middlewares/utils/fs';
+import { deleteFile, listRepoFiles, listRepoFolders, move, writeFile } from '@/dev-server/middlewares/utils/fs';
 import { defaultSchema, validateRequest } from '@/dev-server/middlewares/validation';
 import { pathTraversal } from '@/dev-server/middlewares/validation/customValidators';
 
@@ -77,19 +71,15 @@ export function localFsMiddleware({ repoPath, logger }: FsOptions) {
           } = body.params as PersistEntryParams;
           const hasSubfolders = options?.hasSubfolders !== false;
           await Promise.all(
-            dataFiles.map(dataFile => writeFile(path.join(repoPath, dataFile.path), dataFile.raw)),
+            dataFiles.map(dataFile => writeFile(repoPath, dataFile.path, dataFile.raw)),
           );
           // save assets
           await Promise.all(
-            assets.map(a => writeFile(path.join(repoPath, a.path), Buffer.from(a.content, a.encoding))),
+            assets.map(a => writeFile(repoPath, a.path, Buffer.from(a.content, a.encoding))),
           );
           if (dataFiles.every(dataFile => dataFile.newPath)) {
             dataFiles.forEach(async dataFile => {
-              await move(
-                path.join(repoPath, dataFile.path),
-                path.join(repoPath, dataFile.newPath!),
-                hasSubfolders,
-              );
+              await move(repoPath, dataFile.path, dataFile.newPath!, hasSubfolders);
             });
           }
           res.json({ message: 'entry persisted' });
@@ -121,10 +111,7 @@ export function localFsMiddleware({ repoPath, logger }: FsOptions) {
         }
         case 'persistMedia': {
           const { asset } = body.params as PersistMediaParams;
-          await writeFile(
-            path.join(repoPath, asset.path),
-            Buffer.from(asset.content, asset.encoding),
-          );
+          await writeFile(repoPath, asset.path, Buffer.from(asset.content, asset.encoding));
           const file = await readMediaFile(repoPath, asset.path);
           res.json(file);
           break;

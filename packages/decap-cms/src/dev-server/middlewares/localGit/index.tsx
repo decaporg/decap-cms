@@ -11,6 +11,7 @@ import {
   move,
   writeFile,
 } from '@/dev-server/middlewares/utils/fs';
+import { resolveExistingRepoPath } from '@/dev-server/middlewares/utils/path';
 import { defaultSchema, validateRequest } from '@/dev-server/middlewares/validation';
 import { pathTraversal } from '@/dev-server/middlewares/validation/customValidators';
 import {
@@ -95,19 +96,15 @@ async function commitEntry(
 ) {
   // save entry content
   await Promise.all(
-    dataFiles.map(dataFile => writeFile(path.join(repoPath, dataFile.path), dataFile.raw)),
+    dataFiles.map(dataFile => writeFile(repoPath, dataFile.path, dataFile.raw)),
   );
   // save assets
   await Promise.all(
-    assets.map(a => writeFile(path.join(repoPath, a.path), Buffer.from(a.content, a.encoding))),
+    assets.map(a => writeFile(repoPath, a.path, Buffer.from(a.content, a.encoding))),
   );
   if (dataFiles.every(dataFile => dataFile.newPath)) {
     dataFiles.forEach(async dataFile => {
-      await move(
-        path.join(repoPath, dataFile.path),
-        path.join(repoPath, dataFile.newPath!),
-        hasSubfolders,
-      );
+      await move(repoPath, dataFile.path, dataFile.newPath!, hasSubfolders);
     });
   }
 
@@ -347,7 +344,7 @@ export function localGitMiddleware({ repoPath, logger }: GitOptions) {
               const toDelete = diffs.filter(
                 d => d.binary && !assets.map(a => a.path).includes(d.path),
               );
-              await Promise.all(toDelete.map(f => fs.unlink(path.join(repoPath, f.path))));
+              await Promise.all(toDelete.map(async f => fs.unlink(await resolveExistingRepoPath(repoPath, f.path))));
               await commitEntry(
                 git,
                 repoPath,
@@ -422,10 +419,7 @@ export function localGitMiddleware({ repoPath, logger }: GitOptions) {
           } = body.params as PersistMediaParams;
 
           const file = await runOnBranch(git, branch, async () => {
-            await writeFile(
-              path.join(repoPath, asset.path),
-              Buffer.from(asset.content, asset.encoding),
-            );
+            await writeFile(repoPath, asset.path, Buffer.from(asset.content, asset.encoding));
             await commit(git, commitMessage);
             return readMediaFile(repoPath, asset.path);
           });
