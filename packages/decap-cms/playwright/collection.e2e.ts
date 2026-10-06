@@ -14,7 +14,7 @@ test.describe('collection controls', () => {
   test('sort menu offers the configured sortable fields', async ({ page }) => {
     await page.getByRole('button', { name: 'Sort by' }).click();
 
-    for (const field of ['Title', 'Publish Date', 'Draft']) {
+    for (const field of ['Title', 'Publish Date']) {
       await expect(page.getByRole('menuitem', { name: field })).toBeVisible();
     }
   });
@@ -24,7 +24,7 @@ test.describe('collection controls', () => {
 
     // Filter entries are checkable, so Base UI exposes them as
     // menuitemcheckbox rather than plain menuitem.
-    for (const filter of ['Posts With Index', 'Posts Without Index', 'Drafts']) {
+    for (const filter of ['Posts With Index', 'Posts Without Index', 'Relation Test']) {
       await expect(page.getByRole('menuitemcheckbox', { name: filter })).toBeVisible();
     }
   });
@@ -32,12 +32,12 @@ test.describe('collection controls', () => {
   test('group menu offers the configured view groups', async ({ page }) => {
     await page.getByRole('button', { name: 'Group by' }).click();
 
-    for (const group of ['Year']) {
+    for (const group of ['Year', 'Relation Test']) {
       await expect(page.getByRole('menuitem', { name: group })).toBeVisible();
     }
 
-    // Guard against the duplicate Drafts view_groups fixture entry (DCMS-812)
-    // reappearing: dev-test/config.yml intentionally has only one view group.
+    // The demo dropped its front-matter `draft` field (decaporg #7865): drafts
+    // are what the editorial workflow is for.
     await expect(page.getByRole('menuitem', { name: 'Drafts' })).not.toBeVisible();
   });
 

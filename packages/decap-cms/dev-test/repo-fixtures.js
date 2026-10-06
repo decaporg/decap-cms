@@ -76,7 +76,7 @@ for (let i = 1; i <= 20; i++) {
   const slug = dateString + '-post-number-' + i + '.md';
 
   window.repoFiles._posts[slug] = {
-    content: '---\ntitle: "This is post # ' + i + `"\ndraft: ${i % 2 === 0}` + '\ndate: ' + dateString
+    content: '---\ntitle: "This is post # ' + i + `"\nrelation_test: ${i % 2 !== 0}` + '\ndate: ' + dateString
       + 'T00:00:00.000Z\n---\n\n# The post is number ' + i + '\n\nAnd this is yet another identical post body',
   };
 }
