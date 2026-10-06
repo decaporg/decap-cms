@@ -172,7 +172,6 @@ const en = {
       panels: 'Panels',
       openPanels: 'Open panels',
       closePanels: 'Close panels',
-      noPreviewRegistered: 'No preview available for this collection. Register one with CMS.registerPreviewTemplate().',
       previewPaneTitle: 'Preview pane',
       newEntryTitle: 'New - %{collectionLabel}',
       untitledEntryTitle: 'Untitled - %{collectionLabel}',
