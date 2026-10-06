@@ -4,6 +4,7 @@ import { startsWith } from 'lodash-es';
 
 import { CONFIG_SUCCESS } from '@/core/actions/config';
 import {
+  UNPUBLISHED_ENTRIES_FAILURE,
   UNPUBLISHED_ENTRIES_REQUEST,
   UNPUBLISHED_ENTRIES_SUCCESS,
   UNPUBLISHED_ENTRY_DELETE_SUCCESS,
@@ -91,6 +92,13 @@ const unpublishedEntries = produce((state: EditorialWorkflow, action: AnyAction)
         ...action.payload.pages,
         ids: (action.payload.entries as WorkflowEntry[]).map(entry => entry.slug),
       };
+      break;
+    }
+
+    case UNPUBLISHED_ENTRIES_FAILURE: {
+      // Without this the workflow board kept showing its loader after a
+      // failed load, and the flag never cleared for a retry.
+      state.pages = { ...state.pages, isFetching: false };
       break;
     }
 

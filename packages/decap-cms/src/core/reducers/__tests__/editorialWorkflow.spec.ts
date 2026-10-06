@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  UNPUBLISHED_ENTRIES_FAILURE,
+  UNPUBLISHED_ENTRIES_REQUEST,
   UNPUBLISHED_ENTRIES_SUCCESS,
   UNPUBLISHED_ENTRY_PUBLISH_SCHEDULE_SUCCESS,
   UNPUBLISHED_ENTRY_PUBLISH_UNSCHEDULE_SUCCESS,
@@ -19,6 +21,19 @@ describe('unpublishedEntries reducer', () => {
   it('should return the default state on an empty action', () => {
     const result = unpublishedEntries(undefined, { type: 'UNKNOWN' });
     expect(result).toEqual({ entities: {}, pages: {} });
+  });
+
+  describe('UNPUBLISHED_ENTRIES_FAILURE', () => {
+    it('clears the fetching flag so the board stops loading and a retry can run', () => {
+      const loading = unpublishedEntries(undefined, { type: UNPUBLISHED_ENTRIES_REQUEST });
+      expect(loading.pages.isFetching).toBe(true);
+
+      const failed = unpublishedEntries(loading, {
+        type: UNPUBLISHED_ENTRIES_FAILURE,
+        payload: new Error('network'),
+      });
+      expect(failed.pages.isFetching).toBe(false);
+    });
   });
 
   describe('UNPUBLISHED_ENTRIES_SUCCESS', () => {
