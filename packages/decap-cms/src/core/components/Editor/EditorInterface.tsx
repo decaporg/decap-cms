@@ -311,6 +311,8 @@ interface EditorInterfaceProps {
   onChangeStatus: (newStatus: string) => void;
   user?: { login?: string, name?: string, avatar_url?: string, [key: string]: unknown };
   hasChanged?: boolean;
+  /** Whether a new entry can be created in this collection (`create` plus any `limit`). */
+  canCreateNewEntry?: boolean;
   displayUrl?: string;
   hasWorkflow?: boolean;
   useOpenAuthoring?: boolean;
@@ -351,6 +353,7 @@ function EditorInterface(props: EditorInterfaceProps) {
     onValidate,
     user,
     hasChanged,
+    canCreateNewEntry,
     displayUrl,
     hasWorkflow,
     useOpenAuthoring,
@@ -761,6 +764,7 @@ function EditorInterface(props: EditorInterfaceProps) {
     onPublishAndDuplicate: () => handleOnPublish({ createNew: true, duplicate: true }),
     user,
     hasChanged,
+    canCreateNewEntry,
     displayUrl,
     collection,
     hasWorkflow,

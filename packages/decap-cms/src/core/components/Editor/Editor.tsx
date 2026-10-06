@@ -52,6 +52,7 @@ function Editor({ newRecord = false, collectionName, slug, renderNotFound }: Edi
     fields,
     user,
     hasChanged,
+    canCreateNewEntry,
     displayUrl,
     hasWorkflow,
     useOpenAuthoring,
@@ -211,6 +212,7 @@ function Editor({ newRecord = false, collectionName, slug, renderNotFound }: Edi
       showDelete={showDelete ?? false}
       user={user}
       hasChanged={hasChanged ?? false}
+      canCreateNewEntry={canCreateNewEntry}
       displayUrl={displayUrl}
       hasWorkflow={hasWorkflow ?? false}
       useOpenAuthoring={useOpenAuthoring ?? false}

@@ -718,6 +718,96 @@ describe('Backend', () => {
   });
 
   describe('persistEntry', () => {
+    // decaporg #7451: collection size limit.
+    describe('collection limit', () => {
+      function setup({ limit, published = ['a', 'b'], unpublished = [] as string[], workflow = false }: {
+        limit?: number,
+        published?: string[],
+        unpublished?: string[],
+        workflow?: boolean,
+      }) {
+        const implementation = {
+          init: vi.fn(() => implementation),
+          persistEntry: vi.fn(),
+          unpublishedEntries: vi.fn().mockResolvedValue(unpublished.map(slug => `id-${slug}`)),
+          unpublishedEntry: vi.fn(({ id }: { id: string }) =>
+            Promise.resolve({ collection: 'posts', slug: id.replace('id-', '') })
+          ),
+        };
+        const config = {
+          backend: { commit_messages: 'commit-messages' },
+          ...(workflow && { publish_mode: 'editorial_workflow' }),
+        };
+        const collection = {
+          name: 'posts',
+          type: FOLDER,
+          create: true,
+          folder: 'posts',
+          ...(limit !== undefined && { limit }),
+        };
+        const backend = new Backend(implementation as any, { config, backendName: 'github' } as any);
+        backend.currentUser = vi.fn().mockResolvedValue({ login: 'login', name: 'name' });
+        backend.entryToRaw = vi.fn().mockReturnValue('content');
+        backend.invokePreSaveEvent = vi.fn().mockResolvedValue(undefined);
+        backend.listAllEntries = vi.fn().mockResolvedValue(published.map(slug => ({ slug })));
+        backend.generateUniqueSlug = vi.fn().mockResolvedValue('new-post');
+        return { backend, implementation, config, collection };
+      }
+
+      const newDraft = { entry: { newRecord: true, data: { title: 'New post' } } };
+
+      it('refuses a new entry once the limit is reached', async () => {
+        const { backend, implementation, config, collection } = setup({ limit: 2 });
+
+        await expect(
+          backend.persistEntry({ config, collection, entryDraft: newDraft, assetProxies: [], usedSlugs: [] } as any),
+        ).rejects.toThrow('Entry limit of 2 reached for collection posts');
+        expect(implementation.persistEntry).not.toHaveBeenCalled();
+      });
+
+      it('saves a new entry below the limit', async () => {
+        const { backend, implementation, config, collection } = setup({ limit: 3 });
+
+        await backend.persistEntry(
+          { config, collection, entryDraft: newDraft, assetProxies: [], usedSlugs: [] } as any,
+        );
+        expect(implementation.persistEntry).toHaveBeenCalledTimes(1);
+      });
+
+      it('counts unpublished entries with the editorial workflow', async () => {
+        const { backend, implementation, config, collection } = setup({
+          limit: 3,
+          unpublished: ['b', 'c'],
+          workflow: true,
+        });
+
+        await expect(
+          backend.persistEntry({ config, collection, entryDraft: newDraft, assetProxies: [], usedSlugs: [] } as any),
+        ).rejects.toThrow('Entry limit of 3 reached');
+        expect(implementation.persistEntry).not.toHaveBeenCalled();
+      });
+
+      it('still saves changes to an existing entry at the limit', async () => {
+        const { backend, implementation, config, collection } = setup({ limit: 2 });
+        const existingDraft = { entry: { newRecord: false, slug: 'a', path: 'posts/a.md', data: { title: 'A' } } };
+
+        await backend.persistEntry(
+          { config, collection, entryDraft: existingDraft, assetProxies: [], usedSlugs: [] } as any,
+        );
+        expect(implementation.persistEntry).toHaveBeenCalledTimes(1);
+      });
+
+      it('ignores collections without a limit', async () => {
+        const { backend, implementation, config, collection } = setup({ published: ['a', 'b', 'c', 'd'] });
+
+        await backend.persistEntry(
+          { config, collection, entryDraft: newDraft, assetProxies: [], usedSlugs: [] } as any,
+        );
+        expect(backend.listAllEntries).not.toHaveBeenCalled();
+        expect(implementation.persistEntry).toHaveBeenCalledTimes(1);
+      });
+    });
+
     it('should update the draft with the new entry returned by preSave event', async () => {
       const implementation = {
         init: vi.fn(() => implementation),

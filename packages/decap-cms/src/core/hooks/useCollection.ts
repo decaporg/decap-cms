@@ -4,6 +4,7 @@ import { changeViewStyle, filterByField, groupByField, sortByField } from '@/cor
 import { getNewEntryUrl } from '@/core/lib/urlHelper';
 import { selectSortableFields, selectViewFilters, selectViewGroups } from '@/core/reducers/collections';
 import { selectEntriesFilter, selectEntriesGroup, selectEntriesSort, selectViewStyle } from '@/core/reducers/entries';
+import { selectCanCreateNewEntry } from '@/core/lib/canCreateNewEntry';
 import { useAppDispatch, useAppSelector } from './useRedux';
 
 import type { CmsSortDirection, CmsViewFilter, CmsViewGroup } from '@/lib/util/index';
@@ -31,6 +32,8 @@ export function useCollection(collectionName?: string, t?: (key: string) => stri
   }, [collections, collectionName]);
 
   const name = collection?.name;
+  // `create` plus any collection `limit`.
+  const canCreate = useAppSelector(state => !!name && selectCanCreateNewEntry(state, name));
 
   const sort = useMemo(
     () => (name ? selectEntriesSort(entries, name) : undefined),
@@ -65,11 +68,11 @@ export function useCollection(collectionName?: string, t?: (key: string) => stri
   const viewStyle = useMemo(() => selectViewStyle(entries), [entries]);
 
   const newEntryUrl = useMemo(() => {
-    if (collection?.create && name) {
+    if (canCreate && name) {
       return getNewEntryUrl(name);
     }
     return '';
-  }, [collection, name]);
+  }, [canCreate, name]);
 
   const onSortClick = useCallback(
     (key: string, direction: SortDirection) => {

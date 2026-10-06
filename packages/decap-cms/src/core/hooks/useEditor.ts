@@ -28,6 +28,7 @@ import {
 } from '@/core/actions/entries';
 import { acquireEntryLock, refreshEntryLock, releaseEntryLock } from '@/core/actions/entryLock';
 import { EDITORIAL_WORKFLOW, status } from '@/core/constants/publishModes';
+import { selectCanCreateNewEntry } from '@/core/lib/canCreateNewEntry';
 import { selectDeployPreview, selectEntry, selectUnpublishedEntry } from '@/core/reducers';
 import { selectFields } from '@/core/reducers/collections';
 import { useRouter } from '@/core/routing/context';
@@ -154,6 +155,8 @@ export function useEditor({
 
   // Derived state
   const hasChanged = entryDraft?.hasChanged as boolean | undefined;
+  // `create` plus any collection `limit`: drives the "new"/"duplicate" actions.
+  const canCreateNewEntry = useAppSelector(state => selectCanCreateNewEntry(state, collectionName));
   const isModification = entryDraft?.entry?.isModification as boolean | undefined;
   const localBackup = entryDraft?.localBackup;
   const draftKey = entryDraft?.key;
@@ -784,6 +787,7 @@ export function useEditor({
     fields,
     user,
     hasChanged,
+    canCreateNewEntry,
     displayUrl,
     hasWorkflow,
     useOpenAuthoring,

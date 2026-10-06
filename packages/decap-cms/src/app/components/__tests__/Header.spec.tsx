@@ -12,6 +12,8 @@ vi.mock('@/core/i18n', () => ({
 
 vi.mock('@/core/hooks/useRedux', () => ({
   useAppDispatch: () => () => undefined,
+  // The only store read is the creatable-collection names (Quick add).
+  useAppSelector: () => [],
 }));
 
 // Effective user scopes come from the store through useCurrentUserScopes;

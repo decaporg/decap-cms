@@ -1253,6 +1253,34 @@ export class Backend {
     }
   }
 
+  /**
+   * Every slug a collection already holds: published entries, the slugs the
+   * caller already knows about and, with the editorial workflow, unpublished
+   * entries. Used to enforce a collection's `limit`.
+   */
+  async entrySlugsForCollectionLimit(
+    collection: CmsCollectionState,
+    config: CmsConfig,
+    usedSlugs: string[] = [],
+  ): Promise<Set<string>> {
+    const publishedEntries = await this.listAllEntries(collection);
+    const slugs = new Set<string>([...publishedEntries.map(entry => entry.slug), ...usedSlugs]);
+
+    if (selectUseWorkflow(config) && this.implementation.unpublishedEntries) {
+      const ids = await this.implementation.unpublishedEntries();
+      const unpublishedEntries = await Promise.all(
+        ids.map(id => this.implementation.unpublishedEntry({ id })),
+      );
+      for (const entry of unpublishedEntries) {
+        if (entry.collection === collection.name) {
+          slugs.add(entry.slug);
+        }
+      }
+    }
+
+    return slugs;
+  }
+
   async unpublishedEntries(collections: CmsCollectionState[]) {
     const ids = await this.implementation.unpublishedEntries!();
     const entries = (
@@ -1477,6 +1505,15 @@ export class Backend {
     if (newEntry) {
       if (!selectAllowNewEntries(collection)) {
         throw new Error('Not allowed to create new entries in this collection');
+      }
+      const limit = collection.limit;
+      if (
+        collection.type === FOLDER
+        && limit !== undefined
+        && limit !== null
+        && (await this.entrySlugsForCollectionLimit(collection, config, usedSlugs)).size >= limit
+      ) {
+        throw new Error(`Entry limit of ${limit} reached for collection ${collection.name}`);
       }
       const slug = await this.generateUniqueSlug(
         collection,

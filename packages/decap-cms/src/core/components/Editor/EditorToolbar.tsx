@@ -299,6 +299,11 @@ interface EditorToolbarProps {
   onCancelSchedulePublish?: () => void;
   user?: CmsUser;
   hasChanged?: boolean;
+  /**
+   * Whether a new entry can be created in this collection (`create` plus any
+   * `limit`). Falls back to `collection.create` when not provided.
+   */
+  canCreateNewEntry?: boolean;
   displayUrl?: string;
   collection: Collection;
   hasWorkflow?: boolean;
@@ -323,6 +328,7 @@ export function EditorToolbar(props: EditorToolbarProps) {
     isDeleting,
     isModification,
     hasChanged,
+    canCreateNewEntry,
     hasUnpublishedChanges,
     useOpenAuthoring,
     currentStatus,
@@ -681,7 +687,7 @@ export function EditorToolbar(props: EditorToolbarProps) {
 
   function renderSimpleControls() {
     if (!hasEditAccess) return null;
-    const canCreate = collection.create;
+    const canCreate = canCreateNewEntry ?? collection.create;
     return (
       <>
         {!isNewEntry && !hasChanged
@@ -702,7 +708,7 @@ export function EditorToolbar(props: EditorToolbarProps) {
 
   function renderWorkflowControls() {
     if (!hasEditAccess) return null;
-    const canCreate = collection.create;
+    const canCreate = canCreateNewEntry ?? collection.create;
     const canPublish = !!(collection.publish && !useOpenAuthoring);
     const canDelete = collection.delete ?? true;
 

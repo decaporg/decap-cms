@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from '@/core/hooks/useRedux';
 import { useTranslate } from '@/core/i18n';
 import { canEditCollection } from '@/core/lib/collectionAccess';
 import { useCmsSlots } from '@/core/lib/slots';
+import { selectCanCreateNewEntry } from '@/core/lib/canCreateNewEntry';
 import { getNewEntryUrl } from '@/core/lib/urlHelper';
 import { selectSortableFields, selectViewFilters, selectViewGroups } from '@/core/reducers/collections';
 import { selectEntriesFilter, selectEntriesGroup, selectEntriesSort, selectViewStyle } from '@/core/reducers/entries';
@@ -101,6 +102,8 @@ function CmsCollection({
   }, [collections, name]) as CmsCollectionState | undefined;
 
   const collectionName = collection?.name || name || '';
+  // `create` plus any collection `limit`.
+  const canCreate = useAppSelector(state => !!collectionName && selectCanCreateNewEntry(state, collectionName));
 
   // Memoized selectors
   const sort = useMemo(
@@ -137,7 +140,7 @@ function CmsCollection({
 
   // Compute new entry URL
   const newEntryUrl = useMemo(() => {
-    if (!collection?.create || !collectionName || !canEditCollection(collection, userScopes)) {
+    if (!collection || !canCreate || !collectionName || !canEditCollection(collection, userScopes)) {
       return '';
     }
     let url = getNewEntryUrl(collectionName);
@@ -145,7 +148,7 @@ function CmsCollection({
       url = `${url}?path=${filterTerm}`;
     }
     return url;
-  }, [collection, collectionName, filterTerm, userScopes]);
+  }, [collection, canCreate, collectionName, filterTerm, userScopes]);
 
   // Handlers using useCallback
   const onSortClick = useCallback(

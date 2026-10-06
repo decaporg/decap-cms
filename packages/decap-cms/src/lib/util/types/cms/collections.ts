@@ -89,6 +89,11 @@ export interface CmsCollection {
   view_filters?: CmsViewFilter[] | undefined;
   view_groups?: CmsViewGroup[] | undefined;
   i18n?: boolean | CmsI18nConfig | undefined;
+  /**
+   * Folder collections only: the most entries the collection may hold,
+   * published and unpublished together. Creating more is blocked.
+   */
+  limit?: number | undefined;
   /** @deprecated Use sortable_fields instead */
   sortableFields?: (string | CmsSortableField)[] | undefined;
 }
@@ -145,6 +150,7 @@ export type CmsCollectionState = {
   search_fields?: string[],
   view_filters: CmsViewFilter[],
   view_groups: CmsViewGroup[],
+  limit?: number,
   nested?: { depth: number, subfolders?: boolean },
   meta?: CmsMetaObject,
   i18n: CmsI18nStructure,

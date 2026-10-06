@@ -264,6 +264,10 @@
         },
         "view_filters": { "$ref": "#/definitions/viewFilters" },
         "view_groups": { "$ref": "#/definitions/viewGroups" },
+        "limit": {
+          "type": "number",
+          "description": "Folder collections only: the most entries the collection may hold, published and unpublished together. Creating more is blocked."
+        },
         "nested": {
           "type": "object",
           "properties": {

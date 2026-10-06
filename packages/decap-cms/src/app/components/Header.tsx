@@ -1,13 +1,15 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import React from 'react';
+import { shallowEqual } from 'react-redux';
 
 import { checkBackendStatus } from '@/core/actions/status';
 import { OfflineIndicator, SettingsDropdown } from '@/core/components/UI';
 import { useCurrentUserScopes } from '@/core/hooks/useCurrentUserScopes';
-import { useAppDispatch } from '@/core/hooks/useRedux';
+import { useAppDispatch, useAppSelector } from '@/core/hooks/useRedux';
 import { translate } from '@/core/i18n';
 import { canEditCollection } from '@/core/lib/collectionAccess';
+import { selectCreatableCollectionNames } from '@/core/lib/canCreateNewEntry';
 import { useLocation } from '@/core/routing/context';
 import { NavLink } from '@/core/routing/Link';
 import {
@@ -230,8 +232,10 @@ function Header({
   }
 
   const userScopes = useCurrentUserScopes();
+  // `create` plus any collection `limit` (selectCanCreateNewEntry).
+  const creatableNames = useAppSelector(selectCreatableCollectionNames, shallowEqual);
   const creatableCollections = Object.values(collections).filter(
-    (collection: Collection) => !!collection.create && canEditCollection(collection, userScopes),
+    (collection: Collection) => creatableNames.includes(collection.name) && canEditCollection(collection, userScopes),
   );
 
   const shouldShowLogo = logo?.show_in_header && logo?.src;

@@ -369,6 +369,7 @@ export function getConfigSchema(): JSONSchema {
             },
             view_filters: viewFilters,
             view_groups: viewGroups,
+            limit: { type: 'number' },
             nested: {
               type: 'object',
               properties: {

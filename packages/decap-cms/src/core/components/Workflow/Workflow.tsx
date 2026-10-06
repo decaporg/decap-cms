@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import React from 'react';
+import { shallowEqual } from 'react-redux';
 
 import { createNewEntry } from '@/core/actions/collections';
 import {
@@ -15,6 +16,7 @@ import { useAppDispatch, useAppSelector } from '@/core/hooks/useRedux';
 import { translate } from '@/core/i18n';
 import { canEditCollection } from '@/core/lib/collectionAccess';
 import { useCmsSlots } from '@/core/lib/slots';
+import { selectCreatableCollectionNames } from '@/core/lib/canCreateNewEntry';
 import { selectUnpublishedEntriesGroupedByStatus } from '@/core/reducers';
 import { components, Dropdown, DropdownItem, lengths, Loader, shadows, StyledDropdownButton } from '@/ui/default/index';
 import WorkflowList from './WorkflowList';
@@ -66,6 +68,8 @@ function Workflow({ t }: WorkflowProps) {
   const { renderLoader } = useCmsSlots();
   const dispatch = useAppDispatch();
   const collections = useAppSelector((state: any) => state.collections as Collections);
+  // `create` plus any collection `limit` (selectCanCreateNewEntry).
+  const creatableNames = useAppSelector(selectCreatableCollectionNames, shallowEqual);
   const isEditorialWorkflow = useAppSelector(
     (state: any) => state.config.publish_mode === EDITORIAL_WORKFLOW,
   );
@@ -109,7 +113,7 @@ function Workflow({ t }: WorkflowProps) {
   const reviewCount = unpublishedEntries ? (unpublishedEntries['pending_review']?.length ?? 0) : 0;
   const readyCount = unpublishedEntries ? (unpublishedEntries['pending_publish']?.length ?? 0) : 0;
   const creatableCollections = Object.values(collections).filter(
-    (collection: Collection) => !!collection.create && canEditCollection(collection, userScopes),
+    (collection: Collection) => creatableNames.includes(collection.name) && canEditCollection(collection, userScopes),
   );
 
   return (

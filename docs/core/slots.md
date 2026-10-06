@@ -55,7 +55,7 @@ Replaces the heading + "new entry" button rendered above a collection's entry li
 - Props: `CollectionTopRenderProps` (`collection`, `newEntryUrl?`, `filterTerm?`, `userScopes?`)
   - `filterTerm?`: current nested-collection tree path (`''` or `undefined` at the root).
   - `userScopes?`: authenticated user's scopes for custom affordance gating.
-- Consumer: `packages/decap-cms/src/core/components/Collection/Collection.tsx:76`
+- Consumer: `packages/decap-cms/src/core/components/Collection/Collection.tsx:77`
 
 ### `renderCollectionSidebar`
 
@@ -66,7 +66,7 @@ reflows to fill the row when this slot returns `null`.
 
 - Props: `CollectionSidebarRenderProps` (`collections`, `collection?`, `isSearchEnabled?`,
   `searchTerm?`, `filterTerm?`, `userScopes?`)
-- Consumer: `packages/decap-cms/src/core/components/Collection/Collection.tsx:76`
+- Consumer: `packages/decap-cms/src/core/components/Collection/Collection.tsx:77`
 
 ### `renderCollectionControls`
 
@@ -76,7 +76,7 @@ Handlers and current state are pre-resolved, so the renderer stays presentationa
 - Props: `CollectionControlsRenderProps` (`viewStyle`, `onChangeViewStyle`, `sortableFields`,
   `onSortClick`, `sort?`, `viewFilters?`, `viewGroups?`, `onFilterClick`, `onGroupClick`, `filter?`,
   `group?`, `searchQuery?`, `onSearchChange?`)
-- Consumer: `packages/decap-cms/src/core/components/Collection/Collection.tsx:76`
+- Consumer: `packages/decap-cms/src/core/components/Collection/Collection.tsx:77`
 
 ### `renderEntryCard`
 
@@ -106,7 +106,7 @@ loader is being shown. Omit to keep the default `<Loader>`.
 - Props: `LoaderRenderProps` (`label?`, `context?: 'config' | 'entries' | 'entry' | 'workflow'`)
 - Consumers:
   - `packages/decap-cms/src/core/components/Collection/Entries/Entries.tsx:55`
-  - `packages/decap-cms/src/core/components/Workflow/Workflow.tsx:66`
+  - `packages/decap-cms/src/core/components/Workflow/Workflow.tsx:68`
   - `packages/decap-cms/src/core/components/Editor/Editor.tsx:27`
 
 ### `renderWorkflowCard`
@@ -128,7 +128,7 @@ edit form. The full prop bundle is pre-resolved so the renderer stays presentati
 - Props: `EditorToolbarRenderProps` (persist/publish/delete state and handlers, `user?`,
   `hasChanged?`, `displayUrl?`, `collection`, `hasWorkflow?`, `useOpenAuthoring?`, and more — see
   the interface in `slots.tsx`)
-- Consumer: `packages/decap-cms/src/core/components/Editor/EditorInterface.tsx:332`
+- Consumer: `packages/decap-cms/src/core/components/Editor/EditorInterface.tsx:334`
 
 ### `renderEditorViewControls`
 
@@ -139,7 +139,7 @@ pane, and scroll-sync. Each toggle arrives as `<feature>Enabled` (should it rend
 - Props: `EditorViewControlsRenderProps` (`i18nEnabled`, `i18nVisible`, `onToggleI18n`,
   `previewEnabled`, `previewVisible`, `onTogglePreview`, `scrollSyncEnabled`, `scrollSyncVisible`,
   `onToggleScrollSync`)
-- Consumer: `packages/decap-cms/src/core/components/Editor/EditorInterface.tsx:332`
+- Consumer: `packages/decap-cms/src/core/components/Editor/EditorInterface.tsx:334`
 
 ### `renderMediaLibraryCard`
 
