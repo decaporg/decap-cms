@@ -80,6 +80,33 @@ Repo-wide tooling (formatting via dprint, git hooks via husky, commit linting) l
 each package is otherwise self-contained (its own tsconfig, ESLint config, tests, and build). See
 [CONTRIBUTING.md](CONTRIBUTING.md) for the development guide.
 
+## Decap Turbo
+
+Need centralized user management, advanced roles, a database proxy, or premium support? Explore [Decap Turbo](https://decapcms.org/turbo/).
+
+## Sponsors
+
+Help support Decap CMS development by becoming a sponsor! Your contributions help us maintain and improve this open-source project.
+
+[![GitHub Sponsors](https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?style=for-the-badge&logo=github)](https://github.com/sponsors/decaporg)
+[![Open Collective](https://img.shields.io/badge/Sponsor-Open%20Collective-blue?style=for-the-badge&logo=opencollective)](https://opencollective.com/decap)
+
+### Main Partner
+
+Decap CMS is supported by our main partner <a href="https://p-m.si/">PM</a>.
+
+### Backers
+
+![Open Collective Backers](https://opencollective.com/decap/backers.svg?limit=30&button=false&avatarHeight=48&width=400)
+
+Thank you for your support!
+
+## Expert Services
+
+Get hands-on help from Decap experts and partners for onboarding, custom feature development, website development and premium support.
+
+[Explore expert services](https://decapcms.org/services/)
+
 ## License
 
 [MIT](LICENSE)
