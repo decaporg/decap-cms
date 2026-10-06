@@ -361,6 +361,12 @@ const itemIndicatorClass = css`
   justify-content: center;
 `;
 
+// Lets the item's content shrink inside the flex row, so a long label can
+// truncate instead of overflowing the popup.
+const itemTextClass = css`
+  min-width: 0;
+`;
+
 export function ComboboxItem({
   className,
   children,
@@ -373,7 +379,7 @@ export function ComboboxItem({
       className={className}
       {...props}
     >
-      <span>{children}</span>
+      <span css={itemTextClass}>{children}</span>
       <span css={itemIndicatorClass}>
         <ComboboxPrimitive.ItemIndicator>
           <CheckIcon size={16} />
@@ -388,6 +394,11 @@ const emptyClass = css`
   text-align: center;
   font-size: 0.875rem;
   color: var(--muted-foreground);
+  /* Base UI keeps this element mounted while the list has items; without
+     this its padding showed as a blank band above the options. */
+  &:empty {
+    padding: 0;
+  }
 `;
 
 export function ComboboxEmpty({
@@ -408,6 +419,9 @@ const statusClass = css`
   padding: 0.375rem 0.5rem;
   font-size: 0.75rem;
   color: var(--muted-foreground);
+  &:empty {
+    padding: 0;
+  }
 `;
 
 export function ComboboxStatus({

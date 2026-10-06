@@ -664,7 +664,36 @@ describe('Relation widget', () => {
     });
   });
 
+  it('lists search results ahead of the default options (decaporg #7968)', async () => {
+    const field = fieldConfig;
+    const { getAllByRole, input, querySpy } = setup({ field, value: 'Post # 1' });
+    await waitFor(() => expect(querySpy).toHaveBeenCalled());
+
+    // The input shows the selected label; type over it, as a user would.
+    await userEvent.tripleClick(input);
+    await userEvent.keyboard('YAML');
+
+    await waitFor(() => {
+      expect(getAllByRole('option')[0]).toHaveTextContent('YAML post post-yaml');
+    });
+  });
+
   describe('with multiple', () => {
+    // decaporg #7968: with values already selected, the initial load kept
+    // every default hit as an "initial option", and those were listed ahead
+    // of the search results, so searching seemed to do nothing.
+    it('lists search results first when values are already selected', async () => {
+      const field = { ...fieldConfig, multiple: true };
+      const { getAllByRole, input, querySpy } = setup({ field, value: ['Post # 1'] });
+      await waitFor(() => expect(querySpy).toHaveBeenCalled());
+
+      await userEvent.type(input, 'YAML');
+
+      await waitFor(() => {
+        expect(getAllByRole('option')[0]).toHaveTextContent('YAML post post-yaml');
+      });
+    });
+
     it('should call onChange with correct selectedItem value and metadata', async () => {
       const field = { ...fieldConfig, multiple: true };
       const { getByText, input, onChangeSpy } = setup({ field });
@@ -1030,7 +1059,9 @@ describe('Relation widget', () => {
 
     it('shows an error and keeps the form open when creation fails', async () => {
       const user = userEvent.setup();
-      const onQuickCreateEntry = vi.fn().mockRejectedValue(new Error('Not allowed to create new entries in this collection'));
+      const onQuickCreateEntry = vi.fn().mockRejectedValue(
+        new Error('Not allowed to create new entries in this collection'),
+      );
       const { getByText, getByLabelText } = setup({
         field: quickAddFieldConfig,
         onQuickCreateEntry,
