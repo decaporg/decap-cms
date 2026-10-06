@@ -81,18 +81,11 @@ export default function remarkToRehypeShortcodes({
   }
 
   /**
-   * Mapping function to transform nodes that contain shortcodes.
+   * Turn a shortcode node into one holding its preview markup.
    */
-  function processShortcodes(node: MdastNode): MdastNode {
+  function renderShortcode(node: MdastNode, shortcode: string): MdastNode {
     /**
-     * If the node doesn't contain shortcode data, return the original node.
-     */
-    const shortcode = node.data?.shortcode;
-    if (typeof shortcode !== 'string') return node;
-
-    /**
-     * Get shortcode data from the node, and retrieve the matching plugin by
-     * key.
+     * Retrieve the matching plugin by key.
      */
     const plugin = plugins.get(shortcode);
     if (!plugin) return node;
@@ -112,6 +105,22 @@ export default function remarkToRehypeShortcodes({
      */
     const textNode = u<MdastNode>('html', valueHtml);
     return { ...node, children: [textNode] };
+  }
+
+  /**
+   * Recursively transform nodes that contain shortcodes. Shortcodes can sit
+   * below the root, e.g. a block image inside a list item (decaporg #7898);
+   * left untransformed, remark-rehype drops them from the preview.
+   */
+  function processShortcodes(node: MdastNode): MdastNode {
+    const shortcode = node.data?.shortcode;
+    const transformedNode = typeof shortcode === 'string' ? renderShortcode(node, shortcode) : node;
+
+    if (!transformedNode.children) {
+      return transformedNode;
+    }
+
+    return { ...transformedNode, children: transformedNode.children.map(processShortcodes) };
   }
 
   return function transform(root: MdastRoot): MdastRoot {
