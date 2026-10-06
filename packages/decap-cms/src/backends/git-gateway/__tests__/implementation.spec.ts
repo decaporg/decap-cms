@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 
+import GitHubAPI from '@/backends/git-gateway/GitHubAPI';
 import GitGateway from '@/backends/git-gateway/implementation';
 import { Cursor } from '@/lib/util/index';
 
@@ -228,5 +229,74 @@ describe('git-gateway entry reads delegate to the wrapped backend', () => {
 
     expect(result.entries).toEqual([entry]);
     expect(delegate.traverseCursor).toHaveBeenCalledWith(cursor, 'next');
+  });
+});
+
+// decaporg #7934: a PKCE/OAuth login has no GoTrue session, so it must be
+// restorable from the stored user after a page reload.
+describe('git-gateway session restore', () => {
+  const config = makeConfig({ auth_type: 'pkce', gateway_url: '/.netlify/git/github' });
+
+  const pkceCredentials = {
+    token: 'pkce-token',
+    email: 'user@example.com',
+    user_metadata: {
+      full_name: 'Test User',
+      avatar_url: 'https://example.com/avatar.png',
+    },
+  };
+
+  beforeEach(() => {
+    window.localStorage.clear();
+    vi.spyOn(GitHubAPI.prototype, 'hasWriteAccess').mockResolvedValue(true);
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  test('restores a PKCE login from the serialized authenticated user', async () => {
+    const gateway = new GitGateway(config);
+    const authenticatedUser = await gateway.authenticate(pkceCredentials as any);
+
+    expect(authenticatedUser).toEqual({
+      name: 'Test User',
+      login: 'user@example.com',
+      email: 'user@example.com',
+      avatar_url: 'https://example.com/avatar.png',
+      token: 'pkce-token',
+      user_metadata: pkceCredentials.user_metadata,
+    });
+
+    // What the CMS keeps in localStorage between page loads.
+    const storedUser = JSON.parse(JSON.stringify({ ...authenticatedUser, backendName: 'git-gateway' }));
+    const restoredGateway = new GitGateway(config);
+    const getAuthClient = vi.spyOn(restoredGateway, 'getAuthClient');
+
+    await expect(restoredGateway.restoreUser(storedUser)).resolves.toEqual(authenticatedUser);
+    await expect(restoredGateway.getToken()).resolves.toBe('pkce-token');
+    expect(getAuthClient).not.toHaveBeenCalled();
+    expect(GitHubAPI.prototype.hasWriteAccess).toHaveBeenCalledTimes(2);
+  });
+
+  test('falls back to the GoTrue session when the stored user has no token', async () => {
+    const gateway = new GitGateway(makeConfig({ auth_type: 'netlify', gateway_url: '/.netlify/git/github' }));
+    const gotrueUser = {
+      jwt: vi.fn().mockResolvedValue('gotrue-token'),
+      email: 'user@example.com',
+      user_metadata: pkceCredentials.user_metadata,
+    };
+    const currentUser = vi.fn().mockReturnValue(gotrueUser);
+    vi.spyOn(gateway, 'getAuthClient').mockResolvedValue({ currentUser } as any);
+
+    await expect(gateway.restoreUser({ name: 'Test User' } as any)).resolves.toEqual({
+      name: 'Test User',
+      login: 'user@example.com',
+      email: 'user@example.com',
+      avatar_url: 'https://example.com/avatar.png',
+    });
+
+    expect(currentUser).toHaveBeenCalledTimes(1);
+    expect(gotrueUser.jwt).toHaveBeenCalledTimes(1);
   });
 });
