@@ -300,7 +300,12 @@ describe('forgejo API', () => {
       api.createBranch = vi.fn().mockResolvedValue({ name: 'cms/posts/entry', commit: { id: 'sha' } });
       api.getChangeFileOperations = vi.fn().mockResolvedValue([]);
       api.changeFiles = vi.fn().mockResolvedValue({});
-      api.createPR = vi.fn().mockResolvedValue({ number: 1, state: 'open', labels: [], head: { ref: 'cms/posts/entry', sha: 'sha' } });
+      api.createPR = vi.fn().mockResolvedValue({
+        number: 1,
+        state: 'open',
+        labels: [],
+        head: { ref: 'cms/posts/entry', sha: 'sha' },
+      });
       api.setPullRequestStatus = vi.fn().mockResolvedValue(undefined);
 
       await api.editorialWorkflowGit(
@@ -339,6 +344,26 @@ describe('forgejo API', () => {
 
       expect(api.createBranch).not.toHaveBeenCalled();
       expect(api.createPR).not.toHaveBeenCalled();
+    });
+  });
+
+  // decaporg #7976
+  describe('getPullRequests', () => {
+    it('matches a pull request by ref when its head label has no owner', async () => {
+      const api = new API({ branch: 'gh-pages', repo: 'owner/my-repo', token: 'token' } as any);
+      const pullRequest = { number: 1, head: { label: 'cms/new-branch', ref: 'cms/new-branch' } };
+      api.requestAllPages = vi.fn().mockResolvedValue([pullRequest]);
+
+      await expect(api.getPullRequests('open' as any, 'owner:cms/new-branch')).resolves.toEqual([pullRequest]);
+    });
+
+    it('does not match a branch-only label from a different branch', async () => {
+      const api = new API({ branch: 'gh-pages', repo: 'owner/my-repo', token: 'token' } as any);
+      api.requestAllPages = vi.fn().mockResolvedValue([
+        { number: 2, head: { label: 'cms/other-branch', ref: 'cms/other-branch' } },
+      ]);
+
+      await expect(api.getPullRequests('open' as any, 'owner:cms/new-branch')).resolves.toEqual([]);
     });
   });
 });
