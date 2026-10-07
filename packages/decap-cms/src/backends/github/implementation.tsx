@@ -1,7 +1,7 @@
 import { trimStart } from 'lodash-es';
 import * as React from 'react';
 
-import { rawContent } from '@/lib/backend/index';
+import { markOwnNotes, NotesPollingManager, rawContent } from '@/lib/backend/index';
 import { GitLfsClient } from '@/lib/util/git-lfs-client';
 import { stripIndent } from '@/lib/util/index';
 import {
@@ -31,7 +31,14 @@ import {
 import API, { API_NAME } from './API';
 import AuthenticationPage from './AuthenticationPage';
 
-import type { BackendEntry, BackendFileRef, BackendImplementation, PersistPayload } from '@/lib/backend/index';
+import type {
+  BackendEntry,
+  BackendFileRef,
+  BackendImplementation,
+  Note,
+  NotesWatchCallbacks,
+  PersistPayload,
+} from '@/lib/backend/index';
 import type {
   AsyncLock,
   CmsAssetProxy,
@@ -77,6 +84,21 @@ type GitHubStatusComponent = {
 
 let registeredGraphQLAPI: typeof API | null = null;
 
+/** How often the open entry's notes thread is checked for other editors' notes. */
+const NOTES_POLLING_INTERVAL = 15000;
+
+/**
+ * Whether any collection or file can show notes. Publishing and deleting look
+ * the entry's notes thread up with a search request, which is skipped for
+ * sites that never use notes.
+ */
+function notesConfigured(config: CmsConfig) {
+  return !!config.editor?.notes
+    || (config.collections || []).some(
+      collection => collection.editor?.notes || collection.files?.some(file => file.editor?.notes),
+    );
+}
+
 /**
  * Registers the API class used when the backend has `use_graphql` enabled. Wired up by
  * importing 'decap-cms/backends/github/graphql', which is a separate entry so
@@ -120,6 +142,8 @@ export default class GitHub implements BackendImplementation {
   _mediaDisplayURLSem?: Semaphore;
   largeMediaURL: string;
   _largeMediaClientPromise?: Promise<GitLfsClient>;
+  pollingManager: NotesPollingManager | undefined;
+  unwatchFunctions = new Map<string, () => void>();
 
   constructor(config: CmsConfig, options = {}) {
     this.options = {
@@ -419,6 +443,12 @@ export default class GitHub implements BackendImplementation {
     //   }
     // }
 
+    // A manager left from an earlier sign-in would keep polling with that
+    // session's API and token.
+    this.pollingManager?.destroy();
+    this.unwatchFunctions.clear();
+    this.pollingManager = new NotesPollingManager(this.api!, NOTES_POLLING_INTERVAL);
+
     // Authorized user
     return {
       ...user,
@@ -429,6 +459,9 @@ export default class GitHub implements BackendImplementation {
 
   logout() {
     this.token = null;
+    this.pollingManager?.destroy();
+    this.pollingManager = undefined;
+    this.unwatchFunctions.clear();
     if (this.api && this.api.reset && typeof this.api.reset === 'function') {
       return this.api.reset();
     }
@@ -871,7 +904,12 @@ export default class GitHub implements BackendImplementation {
     // deleteUnpublishedEntry is a transactional operation
     return runWithLock(
       this.lock,
-      () => this.api!.deleteUnpublishedEntry(collection, slug),
+      async () => {
+        await this.api!.deleteUnpublishedEntry(collection, slug);
+        if (notesConfigured(this.config)) {
+          await this.api!.closeEntryNotesIssue(collection, slug);
+        }
+      },
       'Failed to acquire delete entry lock',
     );
   }
@@ -880,8 +918,157 @@ export default class GitHub implements BackendImplementation {
     // publishUnpublishedEntry is a transactional operation
     return runWithLock(
       this.lock,
-      () => this.api!.publishUnpublishedEntry(collection, slug),
+      async () => {
+        await this.api!.publishUnpublishedEntry(collection, slug);
+        if (notesConfigured(this.config)) {
+          await this.api!.closeIssueOnPublish(collection, slug);
+        }
+      },
       'Failed to acquire publish entry lock',
     );
+  }
+
+  // -- Editor notes (decaporg #7563 / #7994) ----------------------------------
+  // Each entry's notes are comments on a GitHub issue of its own; see the
+  // notes section of API.tsx.
+
+  /**
+   * Who the signed-in editor is, as a note records them: a display name, and a
+   * stable id when the account that posts the comment is not the editor.
+   */
+  async noteAuthorIdentity(): Promise<{ author: string, authorId?: string | undefined }> {
+    const currentUser = await this.currentUser({ token: this.token! });
+    // No id on purpose: the editor posts as themselves and GitHub reports the
+    // author's current login on every read, so ownership follows a rename.
+    // Recording an id here would freeze it.
+    return { author: currentUser.login || currentUser.name || '' };
+  }
+
+  /** Ownership is decided here because only the backend knows how its identities compare. */
+  private async markOwnNotes(notes: Note[]): Promise<Note[]> {
+    return markOwnNotes(notes, await this.noteAuthorIdentity());
+  }
+
+  private async entryNotes(collection: string, slug: string) {
+    const notes = await this.api!.getEntryNotes(collection, slug);
+    return this.markOwnNotes(notes.map(note => ({ ...note, entrySlug: slug })));
+  }
+
+  private async findNote(collection: string, slug: string, noteId: string) {
+    const note = (await this.entryNotes(collection, slug)).find(n => n.id === noteId);
+    if (!note) {
+      throw new Error(`Note with ID ${noteId} not found`);
+    }
+    return note;
+  }
+
+  async getNotes(collection: string, slug: string): Promise<Note[]> {
+    try {
+      return await this.entryNotes(collection, slug);
+    } catch (error: unknown) {
+      console.error('Failed to get notes:', error);
+      return [];
+    }
+  }
+
+  async addNote(collection: string, slug: string, noteData: Omit<Note, 'id'>, entryTitle?: string): Promise<Note> {
+    const currentUser = await this.currentUser({ token: this.token! });
+    const identity = await this.noteAuthorIdentity();
+    const note: Note = {
+      ...noteData,
+      id: `temp-${Date.now()}`,
+      author: identity.author,
+      authorId: identity.authorId,
+      isOwn: true,
+      // A recorded author means someone else posts for them, whose avatar
+      // would mislabel the note.
+      avatarUrl: identity.authorId ? undefined : currentUser.avatar_url,
+      entrySlug: slug,
+      timestamp: noteData.timestamp || new Date().toISOString(),
+      resolved: noteData.resolved || false,
+      issueUrl: undefined,
+    };
+
+    const { commentId, issueUrl } = await this.api!.addNoteToEntry(collection, slug, note, entryTitle);
+    return { ...note, id: commentId, issueUrl };
+  }
+
+  /** A comment is replaced whole, so the note is read back to merge `updates` into. */
+  async updateNote(collection: string, slug: string, noteId: string, updates: Partial<Note>): Promise<Note> {
+    const existing = await this.findNote(collection, slug, noteId);
+    const updated: Note = { ...existing, ...updates, id: noteId, entrySlug: slug };
+    await this.api!.updateEntryNote(noteId, updated);
+    return updated;
+  }
+
+  async deleteNote(collection: string, slug: string, noteId: string): Promise<void> {
+    await this.findNote(collection, slug, noteId);
+    await this.api!.deleteEntryNote(noteId);
+  }
+
+  async toggleNoteResolution(collection: string, slug: string, noteId: string): Promise<Note> {
+    const note = await this.findNote(collection, slug, noteId);
+    return this.updateNote(collection, slug, noteId, { resolved: !note.resolved });
+  }
+
+  /** Reopens the entry's notes thread, closed when it was published, once it is unpublished. */
+  async reopenIssueForUnpublishedEntry(collection: string, slug: string) {
+    if (notesConfigured(this.config)) {
+      await this.api!.reopenIssueOnUnpublish(collection, slug);
+    }
+  }
+
+  /**
+   * Watches the entry's thread so other editors' notes appear. The entry may
+   * have no thread yet (or search may not see a new one), so the lookup is
+   * retried a few times before giving up quietly.
+   */
+  async startNotesPolling(collection: string, slug: string, callbacks: NotesWatchCallbacks): Promise<void> {
+    if (!this.pollingManager) {
+      console.warn('[DecapNotes Polling] Polling manager not initialized');
+      return;
+    }
+
+    const issueKey = `${collection}/${slug}`;
+    if (this.pollingManager.getStatus().currentWatch === issueKey) {
+      return;
+    }
+
+    this.unwatchFunctions.get(issueKey)?.();
+    this.unwatchFunctions.delete(issueKey);
+
+    try {
+      const unwatch = await this.pollingManager.watchIssueWithRetry(
+        collection,
+        slug,
+        {
+          ...callbacks,
+          // Polled notes are rebuilt from the thread's comments without the
+          // ownership flag getNotes adds; without this a poll would strip
+          // Edit/Resolve/Delete off the editor's own notes.
+          prepareNotes: notes => this.markOwnNotes(notes),
+        },
+        5,
+        2000,
+      );
+      this.unwatchFunctions.set(issueKey, unwatch);
+    } catch (error: unknown) {
+      console.error('[DecapNotes Polling] Failed to start polling after retries:', error);
+    }
+  }
+
+  async stopNotesPolling(collection: string, slug: string): Promise<void> {
+    const issueKey = `${collection}/${slug}`;
+    this.unwatchFunctions.get(issueKey)?.();
+    this.unwatchFunctions.delete(issueKey);
+    // Also cancels a lookup still retrying for this entry.
+    this.pollingManager?.stopWatching(collection, slug);
+  }
+
+  async refreshNotesNow(collection: string, slug: string): Promise<void> {
+    if (!this.pollingManager) {
+      throw new Error('Polling manager not initialized');
+    }
+    await this.pollingManager.checkIssueNow(collection, slug);
   }
 }

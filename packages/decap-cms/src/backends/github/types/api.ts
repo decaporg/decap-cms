@@ -144,3 +144,32 @@ export type MediaFile = {
   sha: string,
   path: string,
 };
+
+/** The account behind an issue or comment, as the notes code reads it. */
+export interface GitHubIssueUser {
+  login: string;
+  avatar_url: string;
+}
+
+/** An entry's notes thread: a repository issue, one comment per note. */
+export interface GitHubIssue {
+  id: number;
+  number: number;
+  title: string;
+  body: string | null;
+  state: 'open' | 'closed';
+  comments: number;
+  html_url: string;
+  created_at: string;
+  updated_at: string;
+  user: GitHubIssueUser | null;
+  labels: { name: string, color: string }[];
+}
+
+export interface GitHubIssueComment {
+  id: number;
+  body: string | null;
+  user: GitHubIssueUser | null;
+  created_at: string;
+  updated_at: string;
+}

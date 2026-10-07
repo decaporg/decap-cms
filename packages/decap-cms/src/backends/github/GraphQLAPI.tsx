@@ -113,6 +113,7 @@ export default class GraphQLAPI extends API {
   }
 
   reset() {
+    super.reset();
     return this.client.resetStore();
   }
 
