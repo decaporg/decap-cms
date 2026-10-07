@@ -17,6 +17,7 @@ Statuses: `todo` · `done` · `ported-by-laika` (already on v4-beta before this 
 - `cec9441e1`: GitLab PKCE refresh on an expired token, REST and GraphQL (decap-cms-tester-GITLAB).
 - `a82d93578`: git-gateway PKCE session survives a reload.
 - `59843046c`: Forgejo editorial workflow PR matching.
+- `03d6446d5`/`f269a8a4f`: notes on GitHub and GitLab.
 
 ## v4 issues found along the way
 
@@ -64,7 +65,7 @@ Statuses: `todo` · `done` · `ported-by-laika` (already on v4-beta before this 
 | `18be93a85` | 2026-06-12 | [#7854](https://github.com/decaporg/decap-cms/pull/7854) | fix(gitlab): refresh expired PKCE access tokens (#7854) | ported-by-laika | fefd7959e |  |
 | `8d83ac219` | 2026-06-12 | [#7856](https://github.com/decaporg/decap-cms/pull/7856) | chore: cleanup some old unused code (#7856) | n/a |  | none of the removed code or dependencies exist on v4 |
 | `505b6a428` | 2026-06-15 |  | chore(release): publish | n/a |  | release commit |
-| `03d6446d5` | 2026-06-17 | [#7563](https://github.com/decaporg/decap-cms/pull/7563) | Feature: Collaborative Notes Pane for the Editor screen (#7563) | todo |  | big feature; decision 2026-10-06: v4 gets the Notes pane |
+| `03d6446d5` | 2026-06-17 | [#7563](https://github.com/decaporg/decap-cms/pull/7563) | Feature: Collaborative Notes Pane for the Editor screen (#7563) | done | 5941e825b, d6d6aa9c8, 98f0c1e36, 02b4980a3, ba7b02c99 | core, UI and test backend; GitLab and GitHub keep notes on a companion issue per entry; proxy backend left out (its server never had notes) |
 | `333506d64` | 2026-06-17 | [#7859](https://github.com/decaporg/decap-cms/pull/7859) | chore(deps): bump dompurify from 3.4.0 to 3.4.10 (#7859) | n/a |  | v4 has it at least this new, or no longer uses it |
 | `ca3585e68` | 2026-06-17 | [#7860](https://github.com/decaporg/decap-cms/pull/7860) | chore(deps-dev): bump @babel/core from 7.28.5 to 7.29.6 (#7860) | n/a |  | v4 has it at least this new, or no longer uses it |
 | `5e38528d0` | 2026-06-17 | [#7862](https://github.com/decaporg/decap-cms/pull/7862) | chore(deps-dev): bump launch-editor from 2.12.0 to 2.14.1 (#7862) | n/a |  | v4 has it at least this new, or no longer uses it |
@@ -84,7 +85,7 @@ Statuses: `todo` · `done` · `ported-by-laika` (already on v4-beta before this 
 | `6c81f3c51` | 2026-07-21 | [#7890](https://github.com/decaporg/decap-cms/pull/7890) | chore(deps): bump axios from 1.16.0 to 1.18.1 (#7890) | n/a |  | v4 has it at least this new, or no longer uses it |
 | `16fd12fe7` | 2026-07-23 | [#7894](https://github.com/decaporg/decap-cms/pull/7894) | Update dependencies (#7894) | n/a |  | lockfile/dependency refresh; v4 has its own catalog |
 | `8f23db0f9` | 2026-07-23 | [#7896](https://github.com/decaporg/decap-cms/pull/7896) | fix(richtext): preserve block images in list items (#7896) | done | 3f3b1abd9 | fix came with the Plate richtext port (ec72c45ec); test ported here |
-| `40c4ac0d5` | 2026-07-23 | [#7451](https://github.com/decaporg/decap-cms/pull/7451) | feat: add collection size limit feature (#7451) | todo |  | big feature |
+| `40c4ac0d5` | 2026-07-23 | [#7451](https://github.com/decaporg/decap-cms/pull/7451) | feat: add collection size limit feature (#7451) | done | 14747a571 | selector in core/lib/canCreateNewEntry; e2e with a config override |
 | `ffe5ab7e6` | 2026-07-23 |  | chore(release): publish | n/a |  | release commit |
 | `d8436e6a2` | 2026-07-24 | [#7914](https://github.com/decaporg/decap-cms/pull/7914) | fix: bump incompatible react-tostify version (#7914) | n/a |  | v4 replaced react-toastify with Base UI toasts |
 | `bc76c05a8` | 2026-07-24 |  | chore(release): publish | n/a |  | release commit |
@@ -97,7 +98,7 @@ Statuses: `todo` · `done` · `ported-by-laika` (already on v4-beta before this 
 | `a82d93578` | 2026-08-13 | [#7934](https://github.com/decaporg/decap-cms/pull/7934) | fix(backend-git-gateway): restore PKCE session on page reload (#7934) | done | b6601ac7f | real git-gateway PKCE check still open |
 | `bfe0dfd65` | 2026-08-19 | [#7951](https://github.com/decaporg/decap-cms/pull/7951) | fix: solve flaky/failing tests (#7951) | done | a21a9fb81 | failure half only; in-flight dedupe already covered by queryCore |
 | `c7af08ac5` | 2026-08-19 | [#7936](https://github.com/decaporg/decap-cms/pull/7936) | chore(deps-dev): bump nx from 21.6.11 to 23.1.1 (#7936) | n/a |  | v4 has it at least this new, or no longer uses it |
-| `2b772c789` | 2026-08-21 | [#7845](https://github.com/decaporg/decap-cms/pull/7845) | Support browser image transformations (#7845) | todo |  | big feature |
+| `2b772c789` | 2026-08-21 | [#7845](https://github.com/decaporg/decap-cms/pull/7845) | Support browser image transformations (#7845) | done | 2d1d3f4a7 | media_processing canonical, image_optimization deprecated; WASM shipped beside script-tag bundles |
 | `1f6f71c23` | 2026-08-31 |  | Merge commit from fork | done | a872fe4d1 | GHSA-jm5q-pq3r-26g9; real-backend check (Bitbucket via Netlify auth) still open |
 | `532fbb6ea` | 2026-08-31 |  | Merge commit from fork | done | 5f8748117 | keeps "missing folder lists nothing" (upstream later did the same in #7965); also guards v4-only listRepoFolders |
 | `63c8abdbd` | 2026-08-31 |  | chore(release): publish | n/a |  | release commit |
@@ -126,5 +127,5 @@ Statuses: `todo` · `done` · `ported-by-laika` (already on v4-beta before this 
 | `66c133dfc` | 2026-09-11 |  | fix(relation): guard shouldComponentUpdate when nextState is missing | n/a |  | reverted upstream by 97f788a18 |
 | `97f788a18` | 2026-09-11 |  | Revert "fix(relation): retry menu options after a failed query" and its follow-up | n/a |  | revert |
 | `b994417f8` | 2026-09-22 | [#7793](https://github.com/decaporg/decap-cms/pull/7793) | Feature/optimize editor performance (#7793) | ported-by-laika | 9c36573e3 | came from Laika's optimize-editor-performance branch |
-| `f269a8a4f` | 2026-09-22 | [#7994](https://github.com/decaporg/decap-cms/pull/7994) | Notes pane improvements, GitLab support (#7994) | todo |  | big feature; follows #7563 |
+| `f269a8a4f` | 2026-09-22 | [#7994](https://github.com/decaporg/decap-cms/pull/7994) | Notes pane improvements, GitLab support (#7994) | done | 5941e825b, d6d6aa9c8 | ported together with #7563 |
 | `1d5868347` | 2026-09-22 |  | chore(release): publish | n/a |  | release commit |
