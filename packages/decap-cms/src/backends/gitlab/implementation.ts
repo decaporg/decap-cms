@@ -62,7 +62,7 @@ const NOTES_POLLING_INTERVAL = 15000;
 const NOTES_WATCH_RETRIES = 5;
 const NOTES_WATCH_RETRY_DELAY = 2000;
 
-type NotesUser = { username?: string, name?: string };
+type NotesUser = { username?: string, name?: string, avatar_url?: string };
 
 type GraphQLAPIInstance = API & {
   readFilesGraphQL: (files: BackendFileRef[]) => Promise<BackendEntry[]>,
@@ -684,11 +684,15 @@ export default class GitLab implements BackendImplementation {
 
   async addNote(collection: string, slug: string, noteData: Omit<Note, 'id'>, entryTitle?: string): Promise<Note> {
     const identity = await this.noteAuthorIdentity();
+    const user = await this.currentNotesUser();
     const note: Note = {
       ...noteData,
       id: `temp-${Date.now()}`,
       author: identity.author,
       authorId: identity.authorId,
+      // The avatar a reload shows; without it a new note shows a placeholder
+      // until the thread is read again.
+      avatarUrl: user.avatar_url,
       isOwn: true,
       entrySlug: slug,
       timestamp: noteData.timestamp || new Date().toISOString(),

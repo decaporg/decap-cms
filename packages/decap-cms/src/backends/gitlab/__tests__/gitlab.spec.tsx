@@ -655,7 +655,7 @@ describe('gitlab backend', () => {
   });
 
   describe('notes', () => {
-    const notesUser = { id: 1, username: 'ada', name: 'Ada Lovelace' };
+    const notesUser = { id: 1, username: 'ada', name: 'Ada Lovelace', avatar_url: 'https://avatar/ada' };
     const issuesUrl = `${expectedRepoUrl}/issues`;
     const notesIssue = {
       iid: 12,
@@ -780,6 +780,7 @@ describe('gitlab backend', () => {
           id: '77',
           content: 'hello',
           author: 'ada',
+          avatarUrl: 'https://avatar/ada',
           isOwn: true,
           entrySlug: 'my-post',
           resolved: false,
