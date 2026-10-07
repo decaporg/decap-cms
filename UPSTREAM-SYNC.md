@@ -17,7 +17,7 @@ Statuses: `todo` · `done` · `ported-by-laika` (already on v4-beta before this 
 - `cec9441e1`: GitLab PKCE refresh on an expired token: REST verified 2026-10-07 (401 → `oauth/token` → retry, new token stored); GraphQL still open (the tester doesn't set `use_graphql`).
 - `a82d93578`: git-gateway PKCE session survives a reload.
 - `59843046c`: Forgejo editorial workflow PR matching.
-- `03d6446d5`/`f269a8a4f`: notes on GitLab verified 2026-10-07 (read an existing 2025 thread, add, edit, resolve, delete, polling picks up a comment posted on GitLab, others' notes read-only); publish/unpublish lifecycle on GitLab and everything on GitHub still open.
+- ~~`03d6446d5`/`f269a8a4f`: notes~~ verified 2026-10-07 on GitLab and GitHub: read, add, edit, resolve, delete, a second quick note reuses the thread, others' notes read-only, polling picks up comments posted and edited on the host within one 15s cycle (so a comment edit does change GitHub's issue ETag), publish closes the thread with `entry-published` (GitHub creates the missing label), unpublish reopens it and drops the label, deleting a draft closes it with `entry-deleted`.
 
 ## v4 issues found along the way
 
@@ -26,6 +26,8 @@ Statuses: `todo` · `done` · `ported-by-laika` (already on v4-beta before this 
 - Fixed: deleting or unpublishing an i18n entry (multiple_files/multiple_folders) named every locale's file, and GitLab rejects a commit deleting a missing one, so an entry with an unfilled locale could not be deleted or unpublished (`72c5ad8f7`). Upstream main has the same bug.
 - Fixed: a note just added on GitLab showed a placeholder instead of the editor's avatar (`d281a807a`).
 - Fixed: the editor's floating view controls covered the notes pane's timestamps (`34efd1df9`); upstream has the same overlap.
+- Fixed: every GitHub OAuth login failed with "Cannot read properties of undefined (reading 'token')": the auth page called `onLogin()` without the Netlify result (`33f23d719`). Regression from the v4 rewrite; PAT login was unaffected.
+- Open (needs a decision): unpublish deletes the published files before it creates the draft, as upstream does. When creating the draft fails (on GitLab: a leftover `cms/<collection>/<slug>` branch with no open MR), the published entry is gone and no draft exists. Proposed: create the draft first, delete second.
 - Open: while an existing entry loads, the editor briefly shows "Untitled", "Delete unpublished entry" and an empty notes pane before the entry arrives (GitLab tester).
 - Open: opening an existing entry can show "UNSAVED CHANGES" straight away. The richtext widget re-serializes its markdown on mount, and a list nested in an object writes an empty richtext value to the wrong path before correcting it (Kitchen Sink entry). Same on untouched v4-beta.
 
