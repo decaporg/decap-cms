@@ -128,7 +128,7 @@ edit form. The full prop bundle is pre-resolved so the renderer stays presentati
 - Props: `EditorToolbarRenderProps` (persist/publish/delete state and handlers, `user?`,
   `hasChanged?`, `displayUrl?`, `collection`, `hasWorkflow?`, `useOpenAuthoring?`, and more — see
   the interface in `slots.tsx`)
-- Consumer: `packages/decap-cms/src/core/components/Editor/EditorInterface.tsx:334`
+- Consumer: `packages/decap-cms/src/core/components/Editor/EditorInterface.tsx:346`
 
 ### `renderEditorViewControls`
 
@@ -137,9 +137,10 @@ pane, and scroll-sync. Each toggle arrives as `<feature>Enabled` (should it rend
 `<feature>Visible` (is it currently active), and the click handler.
 
 - Props: `EditorViewControlsRenderProps` (`i18nEnabled`, `i18nVisible`, `onToggleI18n`,
-  `previewEnabled`, `previewVisible`, `onTogglePreview`, `scrollSyncEnabled`, `scrollSyncVisible`,
-  `onToggleScrollSync`)
-- Consumer: `packages/decap-cms/src/core/components/Editor/EditorInterface.tsx:334`
+  `previewEnabled`, `previewVisible`, `onTogglePreview`, `notesEnabled`, `notesVisible`,
+  `onToggleNotes`, `scrollSyncEnabled`, `scrollSyncVisible`, `onToggleScrollSync`). The i18n,
+  notes and preview panes share one slot beside the fields, so at most one is visible.
+- Consumer: `packages/decap-cms/src/core/components/Editor/EditorInterface.tsx:346`
 
 ### `renderMediaLibraryCard`
 

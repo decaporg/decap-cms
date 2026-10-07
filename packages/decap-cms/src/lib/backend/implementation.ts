@@ -12,6 +12,7 @@ import type {
   CmsUser,
 } from '@/lib/util/index';
 import type { BackendEntry, BackendFileRef, UnpublishedEntry } from './entry';
+import type { Note, NotesWatchCallbacks } from './notes';
 import type { Asset, MediaFile, PersistPayload } from './persist';
 
 /**
@@ -186,6 +187,28 @@ export interface BackendImplementation {
    * stays open, so a long editing session doesn't go stale mid-edit.
    */
   refreshEntryLock?: (path: string, owner: CmsEntryLockOwner) => Promise<CmsEntryLock | null>;
+
+  /**
+   * Editor notes (optional capability; decaporg #7563): comments on an entry
+   * under the editorial workflow, shown in the editor's notes pane. A backend
+   * declares support by implementing `getNotes` and the mutations below. The
+   * `notesFormat` helpers re-exported from this module encode a note as a
+   * host comment the same way across backends.
+   */
+  getNotes?: (collection: string, slug: string) => Promise<Note[]>;
+  /** `entryTitle` names the thread a backend creates for the entry's first note. */
+  addNote?: (collection: string, slug: string, note: Omit<Note, 'id'>, entryTitle?: string) => Promise<Note>;
+  updateNote?: (collection: string, slug: string, noteId: string, updates: Partial<Note>) => Promise<Note>;
+  deleteNote?: (collection: string, slug: string, noteId: string) => Promise<void>;
+  toggleNoteResolution?: (collection: string, slug: string, noteId: string) => Promise<Note>;
+  /**
+   * Keep the open entry's notes current (optional): watch its thread and call
+   * back when it changes. `NotesPollingManager` (re-exported from this module)
+   * implements the watching on top of a small per-host API.
+   */
+  startNotesPolling?: (collection: string, slug: string, callbacks: NotesWatchCallbacks) => Promise<void>;
+  stopNotesPolling?: (collection: string, slug: string) => Promise<void>;
+  refreshNotesNow?: (collection: string, slug: string) => Promise<void>;
 }
 
 /**

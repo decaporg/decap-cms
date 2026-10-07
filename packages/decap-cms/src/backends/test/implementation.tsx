@@ -19,6 +19,7 @@ import type {
   BackendFileRef,
   BackendImplementation,
   MediaFile,
+  Note,
   PersistPayload,
 } from '@/lib/backend/index';
 import type {
@@ -56,11 +57,14 @@ declare global {
   interface Window {
     repoFiles: RepoTree;
     repoFilesUnpublished: { [key: string]: UnpublishedRepoEntry };
+    /** Editor notes, keyed `collection/slug` (decaporg #7563). */
+    repoNotes: { [key: string]: Note[] };
   }
 }
 
 window.repoFiles = window.repoFiles || {};
 window.repoFilesUnpublished = window.repoFilesUnpublished || [];
+window.repoNotes = window.repoNotes || {};
 
 // Module-level singleton (not per-instance) so every tab of the same
 // dev-test/demo origin arbitrates against the same locks, mirroring how
@@ -530,6 +534,50 @@ export default class TestBackend implements BackendImplementation {
     });
 
     return Promise.resolve();
+  }
+
+  // ===== EDITOR NOTES (in memory, decaporg #7563) =====
+
+  private notesFor(collection: string, slug: string) {
+    const key = `${collection}/${slug}`;
+    window.repoNotes[key] ??= [];
+    return window.repoNotes[key];
+  }
+
+  private findNote(collection: string, slug: string, noteId: string) {
+    const notes = this.notesFor(collection, slug);
+    const index = notes.findIndex(note => note.id === noteId);
+    if (index === -1) {
+      throw new Error(`Note with id ${noteId} not found`);
+    }
+    return { notes, index };
+  }
+
+  async getNotes(collection: string, slug: string): Promise<Note[]> {
+    return [...this.notesFor(collection, slug)];
+  }
+
+  async addNote(collection: string, slug: string, note: Omit<Note, 'id'>): Promise<Note> {
+    const newNote: Note = { ...note, id: crypto.randomUUID(), timestamp: new Date().toISOString() };
+    this.notesFor(collection, slug).push(newNote);
+    return newNote;
+  }
+
+  async updateNote(collection: string, slug: string, noteId: string, updates: Partial<Note>): Promise<Note> {
+    const { notes, index } = this.findNote(collection, slug, noteId);
+    const updatedNote = { ...notes[index], ...updates, id: noteId } as Note;
+    notes[index] = updatedNote;
+    return updatedNote;
+  }
+
+  async deleteNote(collection: string, slug: string, noteId: string): Promise<void> {
+    const { notes, index } = this.findNote(collection, slug, noteId);
+    notes.splice(index, 1);
+  }
+
+  async toggleNoteResolution(collection: string, slug: string, noteId: string): Promise<Note> {
+    const { notes, index } = this.findNote(collection, slug, noteId);
+    return this.updateNote(collection, slug, noteId, { resolved: !notes[index].resolved });
   }
 
   async getDeployPreview() {

@@ -53,6 +53,9 @@ function Editor({ newRecord = false, collectionName, slug, renderNotFound }: Edi
     user,
     hasChanged,
     canCreateNewEntry,
+    notesEnabled,
+    notes,
+    handleNotesChange,
     displayUrl,
     hasWorkflow,
     useOpenAuthoring,
@@ -224,6 +227,9 @@ function Editor({ newRecord = false, collectionName, slug, renderNotFound }: Edi
       deployPreview={deployPreview}
       loadDeployPreview={handleLoadDeployPreview}
       editorBackLink={editorBackLink}
+      notesEnabled={notesEnabled}
+      notes={notes}
+      onNotesChange={handleNotesChange}
       t={t}
     />
   );

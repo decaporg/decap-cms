@@ -139,6 +139,10 @@ export interface EditorViewControlsRenderProps {
   previewEnabled: boolean;
   previewVisible: boolean;
   onTogglePreview: () => void;
+  /** The notes pane (decaporg #7563): offered for saved entries under the editorial workflow. */
+  notesEnabled: boolean;
+  notesVisible: boolean;
+  onToggleNotes: () => void;
   scrollSyncEnabled: boolean;
   scrollSyncVisible: boolean;
   onToggleScrollSync: () => void;

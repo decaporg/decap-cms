@@ -291,6 +291,13 @@ export function getConfigSchema(): JSONSchema {
                   preview_path: { type: 'string' },
                   preview_path_date_field: { type: 'string' },
                   preview_path_preserve_slashes: { type: 'boolean' },
+                  editor: {
+                    type: 'object',
+                    properties: {
+                      preview: { type: 'boolean' },
+                      notes: { type: 'boolean' },
+                    },
+                  },
                   fields: fieldsConfig(),
                 },
                 required: ['name', 'label', 'file', 'fields'],
@@ -324,6 +331,7 @@ export function getConfigSchema(): JSONSchema {
               properties: {
                 preview: { type: 'boolean' },
                 visualEditing: { type: 'boolean' },
+                notes: { type: 'boolean' },
               },
             },
             format: { type: 'string' },
@@ -429,6 +437,7 @@ export function getConfigSchema(): JSONSchema {
         type: 'object',
         properties: {
           preview: { type: 'boolean' },
+          notes: { type: 'boolean' },
         },
       },
     },

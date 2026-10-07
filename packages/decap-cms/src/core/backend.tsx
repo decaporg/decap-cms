@@ -60,6 +60,8 @@ import type {
   BackendEntry,
   BackendEntryContent,
   BackendImplementation,
+  Note,
+  NotesWatchCallbacks,
   UnpublishedEntry,
   UnpublishedEntryDiff,
 } from '@/lib/backend/index';
@@ -1251,6 +1253,66 @@ export class Backend {
       const entryWithFormat = await readAndFormatDataFile(dataFiles[0]);
       return entryWithFormat;
     }
+  }
+
+  // -- Editor notes (decaporg #7563) ------------------------------------------
+
+  /** Whether the backend implements editor notes at all. */
+  supportsNotes() {
+    return typeof this.implementation.getNotes === 'function';
+  }
+
+  async getNotes(collection: string, slug: string): Promise<Note[]> {
+    if (typeof this.implementation.getNotes === 'function') {
+      return this.implementation.getNotes(collection, slug);
+    }
+    console.warn(`Backend '${this.backendName}' does not support notes`);
+    return [];
+  }
+
+  async addNote(collection: string, slug: string, note: Omit<Note, 'id'>, entryTitle?: string): Promise<Note> {
+    if (typeof this.implementation.addNote === 'function') {
+      return this.implementation.addNote(collection, slug, note, entryTitle);
+    }
+    throw new Error(`Backend '${this.backendName}' does not support adding notes`);
+  }
+
+  async updateNote(collection: string, slug: string, noteId: string, updates: Partial<Note>): Promise<Note> {
+    if (typeof this.implementation.updateNote === 'function') {
+      return this.implementation.updateNote(collection, slug, noteId, updates);
+    }
+    throw new Error(`Backend '${this.backendName}' does not support updating notes`);
+  }
+
+  async deleteNote(collection: string, slug: string, noteId: string): Promise<void> {
+    if (typeof this.implementation.deleteNote === 'function') {
+      return this.implementation.deleteNote(collection, slug, noteId);
+    }
+    throw new Error(`Backend '${this.backendName}' does not support deleting notes`);
+  }
+
+  async toggleNoteResolution(collection: string, slug: string, noteId: string): Promise<Note> {
+    if (typeof this.implementation.toggleNoteResolution === 'function') {
+      return this.implementation.toggleNoteResolution(collection, slug, noteId);
+    }
+    throw new Error(`Backend '${this.backendName}' does not support resolving notes`);
+  }
+
+  /** Whether the backend can keep notes current while an entry is open. */
+  supportsNotesPolling() {
+    return typeof this.implementation.startNotesPolling === 'function';
+  }
+
+  async startNotesPolling(collection: string, slug: string, callbacks: NotesWatchCallbacks): Promise<void> {
+    return this.implementation.startNotesPolling?.(collection, slug, callbacks);
+  }
+
+  async stopNotesPolling(collection: string, slug: string): Promise<void> {
+    return this.implementation.stopNotesPolling?.(collection, slug);
+  }
+
+  async refreshNotesNow(collection: string, slug: string): Promise<void> {
+    return this.implementation.refreshNotesNow?.(collection, slug);
   }
 
   /**

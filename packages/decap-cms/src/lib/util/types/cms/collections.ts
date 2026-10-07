@@ -22,6 +22,8 @@ export interface CmsCollectionFile {
   i18n?: boolean | CmsI18nConfig;
   media_folder?: string;
   public_folder?: string;
+  /** Overrides the collection's `editor` settings for this file. */
+  editor?: { preview?: boolean, notes?: boolean };
 }
 
 export interface CmsCollection {
@@ -65,6 +67,12 @@ export interface CmsCollection {
        * can opt out with `visualEditing: false`. Defaults to `false` (disabled).
        */
       visualEditing?: boolean | undefined,
+      /**
+       * Shows the notes pane for this collection's entries while they are under
+       * the editorial workflow: comments stored on the entry's pull/merge
+       * request, where the backend supports it. Defaults to `false`.
+       */
+      notes?: boolean | undefined,
     }
     | undefined;
   publish?: boolean | undefined;

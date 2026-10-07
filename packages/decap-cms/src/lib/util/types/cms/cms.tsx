@@ -80,6 +80,8 @@ export interface CmsConfig<Backend extends CmsBackend = CmsBackend> {
   local_backend?: boolean | CmsLocalBackend;
   editor?: {
     preview?: boolean,
+    /** Default for every collection's `editor.notes`. */
+    notes?: boolean,
   };
   search?: boolean;
   isFetching?: boolean;

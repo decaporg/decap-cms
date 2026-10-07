@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import * as actions from '@/core/actions/entries';
+import * as notesActions from '@/core/actions/notes';
 import { FOLDER } from '@/core/constants/collectionTypes';
 import reducer, { selectCustomPath } from '@/core/reducers/entryDraft';
 
@@ -396,6 +397,38 @@ describe('entryDraft reducer', () => {
       } as any;
 
       expect(selectCustomPath(collection, entryDraft)).toBe('_pages/blog/日本語のタイトル.md');
+    });
+  });
+
+  // decaporg #7563
+  describe('notes', () => {
+    const note = (id: string, extra: Record<string, unknown> = {}) => ({
+      id,
+      content: `note ${id}`,
+      author: 'alice',
+      timestamp: '2026-10-01T00:00:00Z',
+      entrySlug: 'slug',
+      resolved: false,
+      ...extra,
+    });
+
+    it('loads, adds, updates and deletes notes on the draft', () => {
+      let state = reducer(initialState, notesActions.loadNotesForEntry([note('1'), note('2')]));
+      expect(state.notes.map(n => n.id)).toEqual(['1', '2']);
+
+      state = reducer(state, notesActions.addDraftNote(note('3')));
+      expect(state.notes.map(n => n.id)).toEqual(['1', '2', '3']);
+
+      state = reducer(state, notesActions.updateDraftNote('2', { resolved: true }));
+      expect(state.notes.find(n => n.id === '2')?.resolved).toBe(true);
+
+      state = reducer(state, notesActions.deleteDraftNote('1'));
+      expect(state.notes.map(n => n.id)).toEqual(['2', '3']);
+    });
+
+    it('clears the notes when another entry is opened', () => {
+      const withNotes = reducer(initialState, notesActions.loadNotesForEntry([note('1')]));
+      expect(reducer(withNotes, actions.createDraftFromEntry(entry)).notes).toBeUndefined();
     });
   });
 });

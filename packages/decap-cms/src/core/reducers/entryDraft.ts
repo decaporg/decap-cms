@@ -29,11 +29,18 @@ import {
   ENTRY_PERSIST_SUCCESS,
   REMOVE_DRAFT_ENTRY_MEDIA_FILE,
 } from '@/core/actions/entries';
+import {
+  DRAFT_NOTE_ADD,
+  DRAFT_NOTE_DELETE,
+  DRAFT_NOTE_UPDATE,
+  DRAFT_NOTES_LOAD,
+} from '@/core/actions/notesActionTypes';
 import { duplicateI18nFields, getDataPath } from '@/core/lib/i18n';
 import { sanitizeSlug } from '@/core/lib/urlHelper';
 import { basename, getNestedValue, join, randomUUID } from '@/lib/util/index';
 import { selectFolderEntryExtension, selectHasMetaPath } from './collections';
 
+import type { Note } from '@/lib/backend/index';
 import type { CmsCollectionState, CmsEntry, CmsEntryField, CmsMediaFileMap } from '@/lib/util/index';
 import type { AnyAction } from 'redux';
 
@@ -47,6 +54,12 @@ export type EntryDraft = {
   fieldsErrors?: Record<string, unknown>,
   hasChanged: boolean,
   key: string,
+  /**
+   * Notes of the open entry (decaporg #7563). Absent until loaded; every new
+   * draft starts from `initialState`, so they never carry over to another
+   * entry.
+   */
+  notes?: Note[],
   // Carried over verbatim across draft resets, including when it is still
   // undecided (undefined); see DCMS-1157 below.
   localBackup?: Omit<EntryDraft, 'localBackup'> | undefined,
@@ -153,6 +166,24 @@ const entryDraftReducer = produce((state: EntryDraft, action: AnyAction): EntryD
 
     case DRAFT_DISCARD:
       return initialState;
+
+    case DRAFT_NOTES_LOAD:
+      state.notes = action.payload.notes;
+      break;
+
+    case DRAFT_NOTE_ADD:
+      state.notes = [...(state.notes ?? []), action.payload.note];
+      break;
+
+    case DRAFT_NOTE_UPDATE:
+      state.notes = (state.notes ?? []).map(note =>
+        note.id === action.payload.id ? { ...note, ...action.payload.updates } : note
+      );
+      break;
+
+    case DRAFT_NOTE_DELETE:
+      state.notes = (state.notes ?? []).filter(note => note.id !== action.payload.id);
+      break;
 
     case DRAFT_LOCAL_BACKUP_RETRIEVED: {
       const { entry } = action.payload;

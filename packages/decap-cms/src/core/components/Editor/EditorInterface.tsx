@@ -11,24 +11,27 @@ import { ScrollSync, ScrollSyncPane } from '@/ui';
 import { colors, colorsRaw, components, IconButton, transitions, zIndex } from '@/ui/default/index';
 import EditorControlPane, { type ControlPaneHandle } from './EditorControlPane/EditorControlPane';
 import EditorFieldNavigator, { flattenNavigableFields } from './EditorFieldNavigator/EditorFieldNavigator';
+import EditorNotesPane from './EditorNotesPane/EditorNotesPane';
 import EditorPanels from './EditorPanels';
 import EditorPreviewPane from './EditorPreviewPane/EditorPreviewPane';
 import EditorToolbar from './EditorToolbar';
 import EntryLockBanner from './EntryLockBanner';
+import { NO_PANE, resolveRightPane, RIGHT_PANE, storedPanePreference } from './rightPane';
 
 import type { I18nInfo } from '@/core/lib/i18n';
+import type { Note } from '@/lib/backend/index';
 import type { CmsCollectionState, CmsEntry, CmsEntryField } from '@/lib/util/index';
 import type { TranslateFunction } from '@/ui/default/index';
 import type { ReactNode } from 'react';
+import type { NotesChange } from './EditorNotesPane/EditorNotesPane';
+import type { PanePreference, RightPane } from './rightPane';
 
 type Collection = CmsCollectionState;
 type EntryMap = CmsEntry;
 type EntryField = CmsEntryField;
 
-const PREVIEW_VISIBLE = 'cms.preview-visible';
 const SCROLL_SYNC_ENABLED = 'cms.scroll-sync-enabled';
 const SPLIT_PANE_POSITION = 'cms.split-pane-position';
-const I18N_VISIBLE = 'cms.i18n-visible';
 const FIELD_NAVIGATOR_VISIBLE = 'cms.field-navigator-visible';
 
 // Below this width the side-by-side split leaves each pane too narrow to use
@@ -232,27 +235,32 @@ const ViewControls = styled.div`
   z-index: ${zIndex.zIndex299};
 `;
 
+const NotesPaneContainer = styled.div<{ $blockEntry: boolean }>`
+  height: 100%;
+  pointer-events: ${props => (props.$blockEntry ? 'none' : 'auto')};
+  overflow: hidden;
+`;
+
 interface EditorContentProps {
-  i18nVisible: boolean;
-  previewVisible: boolean;
+  rightPane: RightPane | null;
   editor: ReactNode;
   editorWithEditor: ReactNode;
   editorWithPreview: ReactNode;
+  editorWithNotes: ReactNode;
 }
 
-function EditorContent({
-  i18nVisible,
-  previewVisible,
-  editor,
-  editorWithEditor,
-  editorWithPreview,
-}: EditorContentProps) {
-  if (i18nVisible) {
-    return editorWithEditor;
-  } else if (previewVisible) {
-    return editorWithPreview;
-  } else {
-    return <NoPreviewContainer>{editor}</NoPreviewContainer>;
+function EditorContent(
+  { rightPane, editor, editorWithEditor, editorWithPreview, editorWithNotes }: EditorContentProps,
+) {
+  switch (rightPane) {
+    case 'i18n':
+      return editorWithEditor;
+    case 'notes':
+      return editorWithNotes;
+    case 'preview':
+      return editorWithPreview;
+    default:
+      return <NoPreviewContainer>{editor}</NoPreviewContainer>;
   }
 }
 
@@ -326,6 +334,10 @@ interface EditorInterfaceProps {
   draftKey: string;
   t: TranslateFunction;
   editorBackLink?: string;
+  /** Whether this entry offers the notes pane (decaporg #7563). */
+  notesEnabled?: boolean;
+  notes?: Note[] | undefined;
+  onNotesChange?: (change: NotesChange) => void;
 }
 
 type ControlPaneRef = ControlPaneHandle;
@@ -366,6 +378,9 @@ function EditorInterface(props: EditorInterfaceProps) {
     deployPreview,
     draftKey,
     editorBackLink,
+    notesEnabled = false,
+    notes,
+    onNotesChange,
     t,
   } = props;
 
@@ -387,14 +402,9 @@ function EditorInterface(props: EditorInterfaceProps) {
   // save triggers (persist success re-creates the draft with a new key).
   const lastFocusedFieldRef = React.useRef<{ name: string, index: number } | null>(null);
   const [showEventBlocker, setShowEventBlocker] = React.useState(false);
-  const [previewVisible, setPreviewVisible] = React.useState(
-    () => localStorage.getItem(PREVIEW_VISIBLE) !== 'false',
-  );
+  const [panePreference, setPanePreference] = React.useState<PanePreference | null>(storedPanePreference);
   const [scrollSyncEnabled, setScrollSyncEnabled] = React.useState(
     () => localStorage.getItem(SCROLL_SYNC_ENABLED) !== 'false',
-  );
-  const [i18nVisibleState, setI18nVisibleState] = React.useState(
-    () => localStorage.getItem(I18N_VISIBLE) !== 'false',
   );
   const [fieldNavigatorVisible, setFieldNavigatorVisible] = React.useState(
     () => localStorage.getItem(FIELD_NAVIGATOR_VISIBLE) === 'true',
@@ -534,12 +544,19 @@ function EditorInterface(props: EditorInterfaceProps) {
     onPublish({ createNew, duplicate });
   }
 
+  /**
+   * Toggle `pane` against the pane that is actually showing, not the stored
+   * preference: they differ when the preference names a pane this entry
+   * can't offer, and a toggle must act on what the editor sees.
+   */
+  function handleTogglePane(pane: RightPane) {
+    const next: PanePreference = rightPane === pane ? NO_PANE : pane;
+    setPanePreference(next);
+    localStorage.setItem(RIGHT_PANE, next);
+  }
+
   function handleTogglePreview() {
-    setPreviewVisible(prev => {
-      const next = !prev;
-      localStorage.setItem(PREVIEW_VISIBLE, String(next));
-      return next;
-    });
+    handleTogglePane('preview');
   }
 
   function handleToggleScrollSync() {
@@ -551,11 +568,11 @@ function EditorInterface(props: EditorInterfaceProps) {
   }
 
   function handleToggleI18n() {
-    setI18nVisibleState(prev => {
-      const next = !prev;
-      localStorage.setItem(I18N_VISIBLE, String(next));
-      return next;
-    });
+    handleTogglePane('i18n');
+  }
+
+  function handleToggleNotes() {
+    handleTogglePane('notes');
   }
 
   function handleToggleFieldNavigator() {
@@ -710,8 +727,43 @@ function EditorInterface(props: EditorInterfaceProps) {
     </ScrollSync>
   );
 
-  const i18nVisible = collectionI18nEnabled && i18nVisibleState;
-  const previewVisibleResolved = previewEnabled && previewVisible;
+  const editorWithNotes = (
+    <ScrollSync enabled={scrollSyncEnabled}>
+      <SplitPaneWrapper>
+        <ReactSplitPaneGlobalStyles />
+        <StyledSplitPane
+          direction={splitPaneDirection}
+          onResizeStart={handleSplitPaneResizeStart}
+          onResizeEnd={handleSplitPaneResizeEnd}
+        >
+          <Pane
+            className="Pane1"
+            maxSize={-100}
+            minSize={400}
+            defaultSize={parseInt(localStorage.getItem(SPLIT_PANE_POSITION) || '0', 10) || '50%'}
+          >
+            <ScrollSyncPane>{editor}</ScrollSyncPane>
+          </Pane>
+          <Pane className="Pane2">
+            <NotesPaneContainer $blockEntry={showEventBlocker}>
+              <EditorNotesPane notes={notes} onChange={change => onNotesChange?.(change)} user={user} t={t} />
+            </NotesPaneContainer>
+          </Pane>
+        </StyledSplitPane>
+      </SplitPaneWrapper>
+    </ScrollSync>
+  );
+
+  const rightPane = resolveRightPane(panePreference, {
+    i18n: !!collectionI18nEnabled,
+    notes: notesEnabled && !isNewEntry && !!hasWorkflow,
+    preview: !!previewEnabled,
+  });
+  const i18nVisible = rightPane === 'i18n';
+  const previewVisibleResolved = rightPane === 'preview';
+  const notesVisible = rightPane === 'notes';
+  const notesAvailable = notesEnabled && !isNewEntry && !!hasWorkflow;
+  // Scroll sync only pairs scrollable views: the second locale or the preview.
   const scrollSyncVisible = i18nVisible || previewVisibleResolved;
 
   // DCMS-2134: recompute the union of the view-controls icon row and the
@@ -795,6 +847,9 @@ function EditorInterface(props: EditorInterfaceProps) {
             previewEnabled: !!previewEnabled,
             previewVisible: !!previewVisibleResolved,
             onTogglePreview: handleTogglePreview,
+            notesEnabled: notesAvailable,
+            notesVisible,
+            onToggleNotes: handleToggleNotes,
             scrollSyncEnabled: !!scrollSyncEnabled,
             scrollSyncVisible: !!scrollSyncVisible && !(collection as any).editor?.visualEditing,
             onToggleScrollSync: handleToggleScrollSync,
@@ -832,6 +887,16 @@ function EditorInterface(props: EditorInterfaceProps) {
                   title={t('editor.editorInterface.togglePreview')}
                 />
               )}
+              {notesAvailable && (
+                <EditorToggle
+                  isActive={notesVisible}
+                  isToggle
+                  onClick={handleToggleNotes}
+                  size="large"
+                  type="write"
+                  title={t('editor.editorInterface.toggleNotes')}
+                />
+              )}
               {scrollSyncVisible && !(collection as any).editor?.visualEditing && (
                 <EditorToggle
                   isActive={scrollSyncEnabled}
@@ -858,11 +923,11 @@ function EditorInterface(props: EditorInterfaceProps) {
           )}
           <EditorContentContainer>
             <EditorContent
-              i18nVisible={!!i18nVisible}
-              previewVisible={!!previewVisibleResolved}
+              rightPane={rightPane}
               editor={editor}
               editorWithEditor={editorWithEditor}
               editorWithPreview={editorWithPreview}
+              editorWithNotes={editorWithNotes}
             />
           </EditorContentContainer>
         </EditorLayout>

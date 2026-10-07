@@ -27,8 +27,10 @@ import {
   retrieveLocalBackup,
 } from '@/core/actions/entries';
 import { acquireEntryLock, refreshEntryLock, releaseEntryLock } from '@/core/actions/entryLock';
+import { deleteNotePersist, loadNotes, persistNote, stopNotesPolling, updateNotePersist } from '@/core/actions/notes';
 import { EDITORIAL_WORKFLOW, status } from '@/core/constants/publishModes';
 import { selectCanCreateNewEntry } from '@/core/lib/canCreateNewEntry';
+import { isNotesEnabled } from '@/core/lib/notes';
 import { selectDeployPreview, selectEntry, selectUnpublishedEntry } from '@/core/reducers';
 import { selectFields } from '@/core/reducers/collections';
 import { useRouter } from '@/core/routing/context';
@@ -38,6 +40,7 @@ import { useAppDispatch, useAppSelector } from './useRedux';
 import { useTranslate } from './useTranslate';
 import { useWorkflow } from './useWorkflow';
 
+import type { NotesChange } from '@/core/components/Editor/EditorNotesPane/EditorNotesPane';
 import type { Status } from '@/core/constants/publishModes';
 import type { RouterTransition, RouterUpdate } from '@/core/routing/router';
 import type { CmsCollectionState, CmsEntry } from '@/lib/util/index';
@@ -160,6 +163,41 @@ export function useEditor({
   const isModification = entryDraft?.entry?.isModification as boolean | undefined;
   const localBackup = entryDraft?.localBackup;
   const draftKey = entryDraft?.key;
+
+  // Editor notes (decaporg #7563): saved entries under the editorial workflow,
+  // in collections that enable them.
+  const notesEnabled = !newEntry && !!hasWorkflow && !!slug && isNotesEnabled(collection, slug);
+  const notes = entryDraft?.notes;
+  const draftIsThisEntry = !!slug && entryDraft?.entry?.slug === slug;
+
+  // Load once the draft for this entry exists: creating a draft resets the
+  // notes, so loading any earlier could be wiped out.
+  useEffect(() => {
+    if (!notesEnabled || !draftIsThisEntry || !collection || !slug) return undefined;
+    dispatch(loadNotes(collection, slug));
+    return () => {
+      dispatch(stopNotesPolling(collection, slug));
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- reload per draft, not per collection object identity
+  }, [notesEnabled, draftIsThisEntry, collectionName, slug, draftKey]);
+
+  const handleNotesChange = useCallback(
+    (change: NotesChange) => {
+      if (!collection || !slug) return;
+      switch (change.action) {
+        case 'ADD_NOTE':
+          dispatch(persistNote(collection, slug, change.note));
+          break;
+        case 'UPDATE_NOTE':
+          dispatch(updateNotePersist(collection, slug, change.id, change.updates));
+          break;
+        case 'DELETE_NOTE':
+          dispatch(deleteNotePersist(collection, slug, change.id));
+          break;
+      }
+    },
+    [collection, slug, dispatch],
+  );
   const currentStatus = unPublishedEntry?.status as Status | undefined;
   const scheduledPublishAt = unPublishedEntry?.publishAt as string | undefined;
 
@@ -787,6 +825,9 @@ export function useEditor({
     fields,
     user,
     hasChanged,
+    notesEnabled,
+    notes,
+    handleNotesChange,
     canCreateNewEntry,
     displayUrl,
     hasWorkflow,

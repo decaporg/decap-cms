@@ -211,7 +211,11 @@
           "type": "object",
           "properties": {
             "preview": { "type": "boolean" },
-            "visualEditing": { "type": "boolean" }
+            "visualEditing": { "type": "boolean" },
+            "notes": {
+              "type": "boolean",
+              "description": "Show the notes pane for this collection's entries while they are under the editorial workflow."
+            }
           }
         },
         "format": { "type": "string" },
@@ -472,7 +476,11 @@
     "editor": {
       "type": "object",
       "properties": {
-        "preview": { "type": "boolean" }
+        "preview": { "type": "boolean" },
+        "notes": {
+          "type": "boolean",
+          "description": "Default for every collection's editor.notes: show the notes pane while an entry is under the editorial workflow."
+        }
       }
     }
   },

@@ -522,8 +522,13 @@ export function applyDefaults(originalConfig: CmsConfig) {
         };
       });
 
-      if (config.editor && !collection.editor) {
-        collection.editor = { preview: config.editor.preview };
+      // The global `editor` settings are defaults; a collection's own win.
+      if (config.editor) {
+        collection.editor = {
+          preview: config.editor.preview,
+          notes: config.editor.notes,
+          ...collection.editor,
+        };
       }
     }
   });

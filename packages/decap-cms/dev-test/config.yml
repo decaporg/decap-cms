@@ -126,6 +126,7 @@ collections: # A list of collections the CMS should be able to edit
     label: 'FAQ' # Used in the UI
     folder: '_faqs'
     create: true # Allow users to create new documents in this collection
+    editor: { notes: true } # the notes pane, stored in memory by the test backend
     fields: # The fields each document in this collection have
       - { label: 'Question', name: 'title', widget: 'string', tagname: 'h1' }
       - { label: 'Answer', name: 'body', widget: 'richtext' }

@@ -1,0 +1,511 @@
+/**
+ * Notes polling
+ *
+ * Watches the thread an entry's notes live in and reports what changed, so
+ * notes another editor adds appear without a reload. Where the host supports
+ * conditional requests the poll is an ETag round trip that returns 304 and
+ * costs no rate limit; where it does not, the manager still only reports a
+ * change when the thread's contents actually differ, so a host that always
+ * answers 200 is slower, not wrong.
+ *
+ * Not specific to one host: it talks to `NotesPollingAPI` below,
+ * which any backend with a comment thread per entry can satisfy.
+ *
+ * @module notesPolling
+ */
+
+import { commentsToNotes } from './notesFormat';
+
+import type { CommentData, IssueChange, IssueState, Note, NotesWatchCallbacks } from './notes';
+
+interface WatchedIssue {
+  issueNumber: number;
+  collection: string;
+  slug: string;
+  etag: string | null;
+  lastState: IssueState | null;
+  onUpdate?: ((notes: Note[], changes: IssueChange[]) => void) | undefined;
+  onChange?: ((change: IssueChange) => void) | undefined;
+  prepareNotes?: ((notes: Note[]) => Note[] | Promise<Note[]>) | undefined;
+  retryCount?: number;
+  maxRetries?: number;
+}
+
+export interface NotesPollingAPI {
+  getIssueState(issueNumber: number): Promise<IssueState>;
+  getIssueWithETag(
+    issueNumber: number,
+    etag: string | null,
+  ): Promise<
+    | { status: 304, data?: never, etag?: never }
+    | { status: 200, data: IssueState, etag: string | null }
+  >;
+  parseCommentToNote?(comment: CommentData): Note;
+  findEntryIssue(collection: string, slug: string): Promise<{ number: number } | null>;
+}
+
+function noop() {
+  /* nothing to unwatch */
+}
+
+export class NotesPollingManager {
+  private currentWatch: WatchedIssue | null = null;
+  private currentIssueKey: string | null = null;
+  private pollingInterval = 15000;
+  private intervalId: ReturnType<typeof setInterval> | null = null;
+  private isDocumentVisible = true;
+  private api: NotesPollingAPI;
+  private isPolling = false;
+  private pendingRetryTimeout: ReturnType<typeof setTimeout> | null = null;
+  private cancelPendingRetry: (() => void) | null = null;
+  private pendingIssueKey: string | null = null;
+  private watchGeneration = 0;
+
+  constructor(api: NotesPollingAPI, pollingInterval = 15000) {
+    this.api = api;
+    this.pollingInterval = pollingInterval;
+    this.setupVisibilityListener();
+  }
+
+  /**
+   * Setup Page Visibility API listener
+   * Pauses polling when tab is hidden
+   */
+  private setupVisibilityListener() {
+    if (typeof document !== 'undefined') {
+      document.addEventListener('visibilitychange', this.handleVisibilityChange);
+    }
+  }
+
+  private handleVisibilityChange = () => {
+    this.isDocumentVisible = !document.hidden;
+
+    if (this.isDocumentVisible) {
+      this.startPolling();
+      this.checkAllIssuesNow();
+    } else {
+      this.stopPolling();
+    }
+  };
+
+  /**
+   * Start watching an issue for changes
+   * This will automatically stop watching any previously watched issue
+   *
+   * @param issueNumber - GitHub issue number
+   * @param collection - Collection name
+   * @param slug - Entry slug
+   * @returns Function to stop watching
+   */
+  async watchIssue(
+    issueNumber: number,
+    collection: string,
+    slug: string,
+    callbacks: NotesWatchCallbacks,
+    initialState: IssueState | null = null,
+  ): Promise<() => void> {
+    const issueKey = this.getIssueKey(collection, slug);
+
+    // STOP ANY EXISTING WATCH FIRST
+    this.stopCurrentWatch();
+    const generation = this.watchGeneration;
+
+    // Get initial state if not provided
+    if (!initialState) {
+      try {
+        initialState = await this.api.getIssueState(issueNumber);
+      } catch (error) {
+        console.error('[DecapNotes Polling] Failed to get initial state:', error);
+      }
+
+      if (generation !== this.watchGeneration) {
+        return noop;
+      }
+    }
+
+    const watch: WatchedIssue = {
+      issueNumber,
+      collection,
+      slug,
+      etag: null,
+      lastState: initialState,
+      onUpdate: callbacks.onUpdate,
+      onChange: callbacks.onChange,
+      prepareNotes: callbacks.prepareNotes,
+      retryCount: 0,
+      maxRetries: 5,
+    };
+
+    this.currentWatch = watch;
+    this.currentIssueKey = issueKey;
+
+    // Start polling if not already running
+    if (!this.intervalId && this.isDocumentVisible) {
+      this.startPolling();
+    }
+
+    // Do an immediate check
+    this.checkCurrentIssue();
+
+    // Return unwatch function
+    return () => {
+      if (this.currentWatch === watch) {
+        this.stopCurrentWatch();
+      }
+    };
+  }
+
+  /**
+   * Watch issue with retry logic for newly created issues
+   */
+  async watchIssueWithRetry(
+    collection: string,
+    slug: string,
+    callbacks: NotesWatchCallbacks,
+    maxRetries = 5,
+    retryDelay = 2000,
+  ): Promise<() => void> {
+    const issueKey = this.getIssueKey(collection, slug);
+
+    // STOP ANY EXISTING WATCH FIRST
+    this.stopCurrentWatch();
+    const generation = this.watchGeneration;
+    this.pendingIssueKey = issueKey;
+
+    const isSuperseded = () => generation !== this.watchGeneration;
+
+    const attemptWatch = async (attempt: number): Promise<() => void> => {
+      let lookupError: unknown;
+      let issue: { number: number } | null = null;
+
+      try {
+        issue = await this.api.findEntryIssue(collection, slug);
+      } catch (error) {
+        console.error(`[DecapNotes Polling] Error finding issue for ${issueKey}:`, error);
+        lookupError = error;
+      }
+
+      if (isSuperseded()) {
+        return noop;
+      }
+
+      if (issue) {
+        this.pendingIssueKey = null;
+        return this.watchIssue(issue.number, collection, slug, callbacks);
+      }
+
+      if (attempt < maxRetries) {
+        const elapsed = await this.waitForRetry(retryDelay);
+        return elapsed && !isSuperseded() ? attemptWatch(attempt + 1) : noop;
+      }
+
+      this.pendingIssueKey = null;
+
+      if (lookupError) {
+        throw lookupError;
+      }
+
+      console.log(
+        `[DecapNotes Polling] No issue found for ${issueKey} after ${maxRetries} attempts. This is expected if there are no notes for this entry yet.`,
+      );
+      return noop;
+    };
+
+    return attemptWatch(1);
+  }
+
+  private waitForRetry(delay: number): Promise<boolean> {
+    return new Promise(resolve => {
+      this.cancelPendingRetry = () => resolve(false);
+      this.pendingRetryTimeout = setTimeout(() => {
+        this.pendingRetryTimeout = null;
+        this.cancelPendingRetry = null;
+        resolve(true);
+      }, delay);
+    });
+  }
+
+  private clearPendingRetry() {
+    if (this.pendingRetryTimeout) {
+      clearTimeout(this.pendingRetryTimeout);
+      this.pendingRetryTimeout = null;
+    }
+    this.cancelPendingRetry?.();
+    this.cancelPendingRetry = null;
+    this.pendingIssueKey = null;
+  }
+
+  /**
+   * Stop watching an entry, including a pending retry
+   */
+  stopWatching(collection: string, slug: string) {
+    const issueKey = this.getIssueKey(collection, slug);
+    if (this.currentIssueKey === issueKey || this.pendingIssueKey === issueKey) {
+      this.stopCurrentWatch();
+    }
+  }
+
+  /**
+   * Stop watching the current issue - complete cleanup
+   */
+  private stopCurrentWatch() {
+    this.watchGeneration += 1;
+    this.clearPendingRetry();
+
+    if (!this.currentWatch) {
+      return;
+    }
+
+    // Clear current watch
+    this.currentWatch = null;
+    this.currentIssueKey = null;
+
+    // Stop polling since there's nothing to watch
+    this.stopPolling();
+  }
+
+  /**
+   * Start the polling loop
+   */
+  private startPolling() {
+    if (this.intervalId || !this.isDocumentVisible || !this.currentWatch) return;
+
+    console.log(
+      `[DecapNotes Polling] Starting polling loop (${this.pollingInterval}ms interval) for ${this.currentIssueKey}`,
+    );
+
+    this.intervalId = setInterval(() => {
+      this.pollAllIssues();
+    }, this.pollingInterval);
+  }
+
+  /**
+   * Stop the polling loop
+   */
+  private stopPolling() {
+    if (this.intervalId) {
+      console.log('[DecapNotes Polling] Stopping polling loop');
+      clearInterval(this.intervalId);
+      this.intervalId = null;
+    }
+  }
+
+  /**
+   * Poll current watched issue
+   */
+  private async pollAllIssues() {
+    await this.checkCurrentIssue();
+  }
+
+  /**
+   * Check current issue for changes using ETag
+   */
+  private async checkCurrentIssue() {
+    if (!this.currentWatch) {
+      return;
+    }
+
+    if (this.isPolling) {
+      return;
+    }
+
+    this.isPolling = true;
+
+    try {
+      const watch = this.currentWatch;
+
+      const response = await this.api.getIssueWithETag(watch.issueNumber, watch.etag);
+
+      if (response.status === 304) {
+        return;
+      }
+
+      if (this.currentWatch !== watch) {
+        return;
+      }
+
+      if (response.status === 200) {
+        const newState: IssueState = response.data;
+
+        // Detect specific changes
+        const changes = this.detectChanges(watch.lastState, newState);
+
+        if (changes.length > 0) {
+          // Convert comments to notes
+          let newNotes = commentsToNotes(
+            newState.comments,
+            newState.html_url,
+            this.api.parseCommentToNote && (comment => this.api.parseCommentToNote!(comment)),
+          );
+
+          if (watch.prepareNotes) {
+            newNotes = await watch.prepareNotes(newNotes);
+
+            if (this.currentWatch !== watch) {
+              return;
+            }
+          }
+
+          if (watch.onUpdate) {
+            watch.onUpdate(newNotes, changes);
+          }
+
+          if (watch.onChange) {
+            changes.forEach(change => {
+              watch.onChange!(change);
+            });
+          }
+        }
+
+        // Update ETag and stored state
+        watch.etag = response.etag || null;
+        watch.lastState = newState;
+      }
+    } catch (error) {
+      console.error(`[DecapNotes Polling] Error checking ${this.currentIssueKey}:`, error);
+    } finally {
+      this.isPolling = false;
+    }
+  }
+
+  /**
+   * Immediately check current issue
+   */
+  private async checkAllIssuesNow() {
+    await this.checkCurrentIssue();
+  }
+
+  /**
+   * Manually trigger a check - only works if this is the current entry
+   */
+  async checkIssueNow(collection: string, slug: string) {
+    const issueKey = this.getIssueKey(collection, slug);
+
+    if (this.currentIssueKey !== issueKey) {
+      console.warn(
+        `[DecapNotes Polling] Cannot check ${issueKey} - currently watching ${this.currentIssueKey}`,
+      );
+      return;
+    }
+
+    await this.checkCurrentIssue();
+  }
+
+  /**
+   * Detect what changed between two states
+   */
+  private detectChanges(previous: IssueState | null, current: IssueState): IssueChange[] {
+    if (!previous) {
+      return [];
+    }
+
+    const changes: IssueChange[] = [];
+
+    // New comments
+    const newComments = current.comments.filter(
+      comment => !previous.comments.some(prev => prev.id === comment.id),
+    );
+    newComments.forEach(comment => {
+      changes.push({
+        type: 'comment_added',
+        data: comment,
+        timestamp: comment.created_at,
+      });
+    });
+
+    // Updated comments
+    current.comments.forEach(comment => {
+      const prevComment = previous.comments.find(prev => prev.id === comment.id);
+      if (prevComment && prevComment.updated_at !== comment.updated_at) {
+        changes.push({
+          type: 'comment_updated',
+          data: comment,
+          previousData: prevComment,
+          timestamp: comment.updated_at,
+        });
+      }
+    });
+
+    // Deleted comments
+    const deletedComments = previous.comments.filter(
+      prevComment => !current.comments.some(comment => comment.id === prevComment.id),
+    );
+    deletedComments.forEach(comment => {
+      changes.push({
+        type: 'comment_deleted',
+        data: comment,
+        timestamp: new Date().toISOString(),
+      });
+    });
+
+    // Issue state changed
+    if (previous.state !== current.state) {
+      changes.push({
+        type: 'issue_state_changed',
+        data: { from: previous.state, to: current.state },
+        timestamp: current.updated_at,
+      });
+    }
+
+    // Labels changed
+    if (this.hasLabelsChanged(previous.labels, current.labels)) {
+      changes.push({
+        type: 'issue_labels_changed',
+        data: { from: previous.labels, to: current.labels },
+        timestamp: current.updated_at,
+      });
+    }
+
+    return changes;
+  }
+
+  /**
+   * Check if labels changed
+   */
+  private hasLabelsChanged(
+    previous: Array<{ name: string }>,
+    current: Array<{ name: string }>,
+  ): boolean {
+    if (previous.length !== current.length) return true;
+    const prevNames = previous.map(l => l.name).sort();
+    const currNames = current.map(l => l.name).sort();
+    return prevNames.join(',') !== currNames.join(',');
+  }
+
+  /**
+   * Get issue key for storage
+   */
+  private getIssueKey(collection: string, slug: string): string {
+    return `${collection}/${slug}`;
+  }
+
+  /**
+   * Get polling status
+   */
+  getStatus() {
+    return {
+      isPolling: this.intervalId !== null,
+      currentWatch: this.currentIssueKey,
+      watchedCount: this.currentWatch ? 1 : 0,
+      pollingInterval: this.pollingInterval,
+      isDocumentVisible: this.isDocumentVisible,
+      hasPendingRetry: this.pendingRetryTimeout !== null,
+    };
+  }
+
+  /**
+   * Clean up - stop all polling
+   */
+  destroy() {
+    console.log('[DecapNotes Polling] Destroying polling manager');
+
+    // Stop current watch
+    this.stopCurrentWatch();
+
+    if (typeof document !== 'undefined') {
+      document.removeEventListener('visibilitychange', this.handleVisibilityChange);
+    }
+  }
+}
+
+export default NotesPollingManager;
