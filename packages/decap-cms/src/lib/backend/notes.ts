@@ -1,9 +1,11 @@
 /**
  * Editor notes (decaporg #7563 / #7994): comments on an entry, shown in the
  * editor's notes pane while the entry is under the editorial workflow. A git
- * backend stores them as comments on the entry's pull/merge request (or a
- * companion issue), so the thread stays readable on the host.
+ * backend stores them as comments on a companion issue per entry, so the
+ * thread stays readable on the host and survives the pull/merge request.
  */
+
+import type { CmsConfig } from '@/lib/util/index';
 
 export interface Note {
   id: string;
@@ -69,4 +71,16 @@ export interface NotesWatchCallbacks {
   onUpdate?: ((notes: Note[], changes: IssueChange[]) => void) | undefined;
   onChange?: ((change: IssueChange) => void) | undefined;
   prepareNotes?: ((notes: Note[]) => Note[] | Promise<Note[]>) | undefined;
+}
+
+/**
+ * Whether any collection or file can show notes. Publishing and deleting look
+ * the entry's notes thread up with a search request, which backends skip for
+ * sites that never use notes.
+ */
+export function notesConfigured(config: Pick<Partial<CmsConfig>, 'editor' | 'collections'>) {
+  return !!config.editor?.notes
+    || (config.collections || []).some(
+      collection => collection.editor?.notes || collection.files?.some(file => file.editor?.notes),
+    );
 }

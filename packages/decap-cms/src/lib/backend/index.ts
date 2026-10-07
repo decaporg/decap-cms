@@ -28,6 +28,7 @@ export type {
   Note,
   NotesWatchCallbacks,
 } from './notes';
+export { notesConfigured } from './notes';
 export { commentsToNotes, commentToNote, formatNoteBody, markOwnNotes, parseNoteBody } from './notesFormat';
 export type { ParsedNoteBody } from './notesFormat';
 export { NotesPollingManager } from './notesPolling';

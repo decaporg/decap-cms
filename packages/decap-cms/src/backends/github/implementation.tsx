@@ -1,7 +1,7 @@
 import { trimStart } from 'lodash-es';
 import * as React from 'react';
 
-import { markOwnNotes, NotesPollingManager, rawContent } from '@/lib/backend/index';
+import { markOwnNotes, notesConfigured, NotesPollingManager, rawContent } from '@/lib/backend/index';
 import { GitLfsClient } from '@/lib/util/git-lfs-client';
 import { stripIndent } from '@/lib/util/index';
 import {
@@ -86,18 +86,6 @@ let registeredGraphQLAPI: typeof API | null = null;
 
 /** How often the open entry's notes thread is checked for other editors' notes. */
 const NOTES_POLLING_INTERVAL = 15000;
-
-/**
- * Whether any collection or file can show notes. Publishing and deleting look
- * the entry's notes thread up with a search request, which is skipped for
- * sites that never use notes.
- */
-function notesConfigured(config: CmsConfig) {
-  return !!config.editor?.notes
-    || (config.collections || []).some(
-      collection => collection.editor?.notes || collection.files?.some(file => file.editor?.notes),
-    );
-}
 
 /**
  * Registers the API class used when the backend has `use_graphql` enabled. Wired up by

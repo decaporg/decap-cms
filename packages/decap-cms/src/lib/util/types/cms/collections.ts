@@ -69,8 +69,8 @@ export interface CmsCollection {
       visualEditing?: boolean | undefined,
       /**
        * Shows the notes pane for this collection's entries while they are under
-       * the editorial workflow: comments stored on the entry's pull/merge
-       * request, where the backend supports it. Defaults to `false`.
+       * the editorial workflow: comments stored on a companion issue per entry,
+       * where the backend supports it. Defaults to `false`.
        */
       notes?: boolean | undefined,
     }

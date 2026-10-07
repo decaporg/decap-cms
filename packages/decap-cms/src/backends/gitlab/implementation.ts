@@ -1,7 +1,7 @@
 import { trim, trimStart } from 'lodash-es';
 
 import { PkceAuthenticator } from '@/lib/auth/index';
-import { markOwnNotes, NotesPollingManager, rawContent } from '@/lib/backend/index';
+import { markOwnNotes, notesConfigured, NotesPollingManager, rawContent } from '@/lib/backend/index';
 import { stripIndent } from '@/lib/util/index';
 import {
   AccessTokenError,
@@ -86,6 +86,8 @@ export function registerGraphQLAPI(
 export default class GitLab implements BackendImplementation {
   /** Created on authenticate and dropped on logout, with the polling manager. */
   notesApi: GitLabNotesAPI | undefined;
+  /** Whether any collection or file shows notes; see `notesConfigured`. */
+  notesConfigured: boolean;
   pollingManager: NotesPollingManager | undefined;
   private unwatchNotes = new Map<string, () => void>();
   private notesUserPromise: Promise<NotesUser> | undefined;
@@ -155,6 +157,9 @@ export default class GitLab implements BackendImplementation {
     this.baseUrl = config.backend.base_url || 'https://gitlab.com';
     this.authEndpoint = config.backend.auth_endpoint || 'oauth/authorize';
     this.appID = config.backend.app_id || '';
+    // Core passes the whole config; the backend init type only declares the
+    // keys backends read for themselves.
+    this.notesConfigured = notesConfigured(config as Parameters<typeof notesConfigured>[0]);
     this.lock = asyncLock();
   }
 
@@ -608,7 +613,9 @@ export default class GitLab implements BackendImplementation {
         await this.api!.deleteUnpublishedEntry(collection, slug);
         // Best effort: losing the thread's label does not make the entry any
         // less deleted, and failing the delete over it would be worse.
-        await this.notesApi?.closeEntryNotesIssue(collection, slug);
+        if (this.notesConfigured) {
+          await this.notesApi?.closeEntryNotesIssue(collection, slug);
+        }
       },
       'Failed to acquire delete entry lock',
     );
@@ -620,7 +627,9 @@ export default class GitLab implements BackendImplementation {
       this.lock,
       async () => {
         await this.api!.publishUnpublishedEntry(collection, slug);
-        await this.notesApi?.closeIssueOnPublish(collection, slug);
+        if (this.notesConfigured) {
+          await this.notesApi?.closeIssueOnPublish(collection, slug);
+        }
       },
       'Failed to acquire publish entry lock',
     );
@@ -728,7 +737,9 @@ export default class GitLab implements BackendImplementation {
    * (upstream calls it after unpublishing), so it is ready for when it does.
    */
   async reopenIssueForUnpublishedEntry(collection: string, slug: string) {
-    await this.notesApi?.reopenIssueOnUnpublish(collection, slug);
+    if (this.notesConfigured) {
+      await this.notesApi?.reopenIssueOnUnpublish(collection, slug);
+    }
   }
 
   async startNotesPolling(collection: string, slug: string, callbacks: NotesWatchCallbacks): Promise<void> {

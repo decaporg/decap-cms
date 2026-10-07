@@ -694,7 +694,7 @@ describe('gitlab backend', () => {
       vi.spyOn(console, 'error').mockImplementation(() => undefined);
       vi.spyOn(console, 'warn').mockImplementation(() => undefined);
       vi.spyOn(console, 'log').mockImplementation(() => undefined);
-      backend = resolveBackend(defaultConfig);
+      backend = resolveBackend({ ...defaultConfig, editor: { notes: true } });
       interceptAuth(backend, { userResponse: notesUser });
       await backend.authenticate(mockCredentials);
     });
@@ -906,6 +906,61 @@ describe('gitlab backend', () => {
       await implementation.reopenIssueForUnpublishedEntry('posts', 'my-post');
 
       expect(reopen).toHaveBeenCalledWith('posts', 'my-post');
+    });
+
+    describe('on a site where no collection uses notes', () => {
+      beforeEach(async () => {
+        backend = resolveBackend(defaultConfig);
+        interceptAuth(backend, { userResponse: notesUser });
+        await backend.authenticate(mockCredentials);
+      });
+
+      it('publishes without looking the thread up', async () => {
+        const implementation = backend.implementation;
+        implementation.api.publishUnpublishedEntry = vi.fn().mockResolvedValue(undefined);
+        const close = vi.spyOn(implementation.notesApi, 'closeIssueOnPublish');
+
+        await implementation.publishUnpublishedEntry('posts', 'my-post');
+
+        expect(implementation.api.publishUnpublishedEntry).toHaveBeenCalledWith('posts', 'my-post');
+        expect(close).not.toHaveBeenCalled();
+      });
+
+      it('deletes without looking the thread up', async () => {
+        const implementation = backend.implementation;
+        implementation.api.deleteUnpublishedEntry = vi.fn().mockResolvedValue(undefined);
+        const close = vi.spyOn(implementation.notesApi, 'closeEntryNotesIssue');
+
+        await implementation.deleteUnpublishedEntry('posts', 'my-post');
+
+        expect(implementation.api.deleteUnpublishedEntry).toHaveBeenCalledWith('posts', 'my-post');
+        expect(close).not.toHaveBeenCalled();
+      });
+
+      it('does not reopen anything on unpublish', async () => {
+        const implementation = backend.implementation;
+        const reopen = vi.spyOn(implementation.notesApi, 'reopenIssueOnUnpublish');
+
+        await implementation.reopenIssueForUnpublishedEntry('posts', 'my-post');
+
+        expect(reopen).not.toHaveBeenCalled();
+      });
+
+      it('still closes the thread when a single file enables notes', async () => {
+        backend = resolveBackend({
+          ...defaultConfig,
+          collections: [{ ...collectionFilesConfig, files: [{ ...collectionFilesConfig.files[0], editor: { notes: true } }] }],
+        });
+        interceptAuth(backend, { userResponse: notesUser });
+        await backend.authenticate(mockCredentials);
+        const implementation = backend.implementation;
+        implementation.api.publishUnpublishedEntry = vi.fn().mockResolvedValue(undefined);
+        const close = vi.spyOn(implementation.notesApi, 'closeIssueOnPublish').mockResolvedValue(undefined);
+
+        await implementation.publishUnpublishedEntry('foo', 'foo');
+
+        expect(close).toHaveBeenCalledWith('foo', 'foo');
+      });
     });
 
     describe('polling', () => {
