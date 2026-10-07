@@ -74,10 +74,8 @@ export const UNPUBLISHED_ENTRY_DELETE_REQUEST = 'UNPUBLISHED_ENTRY_DELETE_REQUES
 export const UNPUBLISHED_ENTRY_DELETE_SUCCESS = 'UNPUBLISHED_ENTRY_DELETE_SUCCESS';
 export const UNPUBLISHED_ENTRY_DELETE_FAILURE = 'UNPUBLISHED_ENTRY_DELETE_FAILURE';
 
-export const UNPUBLISHED_ENTRY_PUBLISH_SCHEDULE_SUCCESS =
-  'UNPUBLISHED_ENTRY_PUBLISH_SCHEDULE_SUCCESS';
-export const UNPUBLISHED_ENTRY_PUBLISH_UNSCHEDULE_SUCCESS =
-  'UNPUBLISHED_ENTRY_PUBLISH_UNSCHEDULE_SUCCESS';
+export const UNPUBLISHED_ENTRY_PUBLISH_SCHEDULE_SUCCESS = 'UNPUBLISHED_ENTRY_PUBLISH_SCHEDULE_SUCCESS';
+export const UNPUBLISHED_ENTRY_PUBLISH_UNSCHEDULE_SUCCESS = 'UNPUBLISHED_ENTRY_PUBLISH_UNSCHEDULE_SUCCESS';
 
 /*
  * Simple Action Creators (Internal)
@@ -397,7 +395,9 @@ export function persistUnpublishedEntry(collection: Collection, existingUnpublis
     // Early return if draft contains validation errors
     if (fieldsErrors && Object.keys(fieldsErrors).length > 0) {
       const presenceErrorFieldsCount = Object.values(fieldsErrors).filter((errors: any) =>
-        errors.some((error: any) => error.type && error.type === ValidationErrorTypes.PRESENCE)
+        errors.some((error: any) =>
+          error.type && error.type === ValidationErrorTypes.PRESENCE
+        )
       ).length;
       const hasPresenceErrors = presenceErrorFieldsCount > 0;
 
@@ -727,6 +727,13 @@ export function unpublishPublishedEntry(collection: Collection, slug: string) {
           assetProxies: [],
           usedSlugs: [],
           status: status.PENDING_PUBLISH,
+        })
+      )
+      // Notes threads close on publish; reopen it for the unpublished entry
+      // (decaporg #7563). Best effort: it must not fail the unpublish.
+      .then(() =>
+        backend.reopenIssueForUnpublishedEntry(collection.name, slug).catch((error: unknown) => {
+          console.error('[DecapNotes] Failed to reopen the notes thread:', error);
         })
       )
       .then(() => {

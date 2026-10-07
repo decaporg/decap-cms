@@ -1315,6 +1315,10 @@ export class Backend {
     return this.implementation.refreshNotesNow?.(collection, slug);
   }
 
+  async reopenIssueForUnpublishedEntry(collection: string, slug: string): Promise<void> {
+    return this.implementation.reopenIssueForUnpublishedEntry?.(collection, slug);
+  }
+
   /**
    * Every slug a collection already holds: published entries, the slugs the
    * caller already knows about and, with the editorial workflow, unpublished

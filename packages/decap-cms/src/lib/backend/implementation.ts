@@ -209,6 +209,11 @@ export interface BackendImplementation {
   startNotesPolling?: (collection: string, slug: string, callbacks: NotesWatchCallbacks) => Promise<void>;
   stopNotesPolling?: (collection: string, slug: string) => Promise<void>;
   refreshNotesNow?: (collection: string, slug: string) => Promise<void>;
+  /**
+   * Reopen an entry's notes thread after the entry is unpublished (it was
+   * closed on publish), so notes can continue on the new unpublished entry.
+   */
+  reopenIssueForUnpublishedEntry?: (collection: string, slug: string) => Promise<void>;
 }
 
 /**

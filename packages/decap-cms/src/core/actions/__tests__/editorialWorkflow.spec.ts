@@ -489,4 +489,47 @@ describe('editorialWorkflow actions', () => {
       expect(store.getActions()).toEqual([]);
     });
   });
+
+  // decaporg #7563: an entry's notes thread is closed on publish and
+  // reopened when the entry is unpublished.
+  describe('unpublishPublishedEntry', () => {
+    function setup(reopen: () => Promise<void>) {
+      const currentBackend = vi.mocked(backendModule.currentBackend);
+      const backend = {
+        deleteEntry: vi.fn().mockResolvedValue(undefined),
+        persistEntry: vi.fn().mockResolvedValue(undefined),
+        reopenIssueForUnpublishedEntry: vi.fn(reopen),
+        unpublishedEntry: vi.fn().mockResolvedValue({ slug: 'slug', collection: 'posts', data: {} }),
+      };
+      currentBackend.mockReturnValue(backend as never);
+      const store = mockStore({
+        config: { publish_mode: 'editorial_workflow' },
+        integrations: { providers: {}, hooks: {} },
+        mediaLibrary: { isLoading: false },
+        collections: { posts: { name: 'posts' } },
+        entries: { entities: { 'posts.slug': { slug: 'slug', data: {} } }, pages: {} },
+        editorialWorkflow: { entities: {}, pages: {} },
+        entryDraft: { entry: {} },
+      });
+      return { backend, store };
+    }
+
+    it('reopens the notes thread after unpublishing', async () => {
+      const { backend, store } = setup(() => Promise.resolve());
+
+      await store.dispatch(actions.unpublishPublishedEntry({ name: 'posts' } as never, 'slug') as never);
+
+      expect(backend.reopenIssueForUnpublishedEntry).toHaveBeenCalledWith('posts', 'slug');
+      expect(store.getActions().map(a => a.payload?.message?.key)).toContain('ui.toast.entryUnpublished');
+    });
+
+    it('still unpublishes when reopening the thread fails', async () => {
+      vi.spyOn(console, 'error').mockImplementation(() => {});
+      const { store } = setup(() => Promise.reject(new Error('no issues access')));
+
+      await store.dispatch(actions.unpublishPublishedEntry({ name: 'posts' } as never, 'slug') as never);
+
+      expect(store.getActions().map(a => a.payload?.message?.key)).toContain('ui.toast.entryUnpublished');
+    });
+  });
 });
