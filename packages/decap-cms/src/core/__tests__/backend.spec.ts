@@ -939,6 +939,48 @@ describe('Backend', () => {
     });
   });
 
+  describe('deleteEntry', () => {
+    function setup(entry: Record<string, unknown> | undefined) {
+      const implementation = { init: vi.fn(() => implementation), deleteFiles: vi.fn().mockResolvedValue(undefined) };
+      const config = { backend: { commit_messages: 'commit-messages' } };
+      const collection = {
+        name: 'posts',
+        type: FOLDER,
+        folder: 'content/posts',
+        extension: 'md',
+        delete: true,
+        i18n: { structure: 'multiple_files', locales: ['en', 'de', 'si'], default_locale: 'en' },
+      };
+      const backend = new Backend(implementation as any, { config, backendName: 'gitlab' } as any);
+      backend.currentUser = vi.fn().mockResolvedValue({ login: 'login', name: 'name' });
+      backend.invokePreUnpublishEvent = vi.fn().mockResolvedValue(undefined);
+      backend.invokePostUnpublishEvent = vi.fn().mockResolvedValue(undefined);
+      const state = { config, entries: { entities: entry ? { 'posts.test': entry } : {} } };
+      return { backend, implementation, state, collection };
+    }
+
+    it('deletes only the locale files an i18n entry has', async () => {
+      // GitLab rejects a commit that deletes a file which does not exist, so a
+      // locale nobody filled in must not be named.
+      const { backend, implementation, state, collection } = setup({ slug: 'test', i18n: {} });
+
+      await backend.deleteEntry(state as any, collection as any, 'test');
+
+      expect(implementation.deleteFiles).toHaveBeenCalledWith(['content/posts/test.en.md'], expect.any(String));
+    });
+
+    it('deletes every locale file the entry has data for', async () => {
+      const { backend, implementation, state, collection } = setup({ slug: 'test', i18n: { de: { data: {} } } });
+
+      await backend.deleteEntry(state as any, collection as any, 'test');
+
+      expect(implementation.deleteFiles).toHaveBeenCalledWith(
+        ['content/posts/test.en.md', 'content/posts/test.de.md'],
+        expect.any(String),
+      );
+    });
+  });
+
   describe('persistMedia', () => {
     it('should persist media', async () => {
       const persistMediaResult = {};

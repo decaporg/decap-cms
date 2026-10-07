@@ -195,6 +195,50 @@ describe('i18n', () => {
     });
   });
 
+  describe('getEntryFilePaths', () => {
+    const args = ['md', 'src/content/index.md', 'index'];
+    const collection = {
+      i18n: {
+        structure: i18n.I18N_STRUCTURE.MULTIPLE_FILES,
+        locales: ['en', 'de', 'si'],
+        default_locale: 'en',
+      },
+    };
+
+    it('names only the default locale when no other locale has a file', () => {
+      expect(i18n.getEntryFilePaths(collection, ...args, { i18n: {} })).toEqual(['src/content/index.en.md']);
+    });
+
+    it('names the default locale and every locale the entry has data for', () => {
+      expect(i18n.getEntryFilePaths(collection, ...args, { i18n: { si: { data: { title: 'Naslov' } } } })).toEqual([
+        'src/content/index.en.md',
+        'src/content/index.si.md',
+      ]);
+    });
+
+    it('treats a loaded entry without an i18n map as default-locale only', () => {
+      expect(i18n.getEntryFilePaths(collection, ...args, {})).toEqual(['src/content/index.en.md']);
+    });
+
+    it('names every locale when the entry is not loaded', () => {
+      expect(i18n.getEntryFilePaths(collection, ...args, undefined)).toEqual([
+        'src/content/index.en.md',
+        'src/content/index.de.md',
+        'src/content/index.si.md',
+      ]);
+    });
+
+    it('returns the single file for the single_file structure', () => {
+      expect(
+        i18n.getEntryFilePaths(
+          { i18n: { ...collection.i18n, structure: i18n.I18N_STRUCTURE.SINGLE_FILE } },
+          ...args,
+          { i18n: {} },
+        ),
+      ).toEqual(['src/content/index.md']);
+    });
+  });
+
   describe('normalizeFilePath', () => {
     it('should remove locale folder from path when structure is I18N_STRUCTURE.MULTIPLE_FOLDERS', () => {
       expect(

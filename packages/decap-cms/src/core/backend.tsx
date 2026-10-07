@@ -25,7 +25,7 @@ import { contentExists, entryDataFromContent, legacyRaw } from './lib/backendEnt
 import { commitMessageFormatter, previewUrlFormatter, slugFormatter } from './lib/formatters';
 import {
   formatI18nBackup,
-  getFilePaths,
+  getEntryFilePaths,
   getI18nBackup,
   getI18nDataFiles,
   getI18nEntry,
@@ -1754,7 +1754,7 @@ export class Backend {
     await this.invokePreUnpublishEvent(entry);
     let paths = [path];
     if (hasI18n(collection)) {
-      paths = getFilePaths(collection, extension, path, slug);
+      paths = getEntryFilePaths(collection, extension, path, slug, entry);
     }
     await this.implementation.deleteFiles(paths, commitMessage);
 

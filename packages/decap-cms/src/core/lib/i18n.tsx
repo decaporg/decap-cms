@@ -136,6 +136,30 @@ export function getFilePaths(
   return paths;
 }
 
+/**
+ * The file paths an existing entry occupies: the default locale's plus every
+ * locale it has data for. A locale nobody filled in has no file, and deleting
+ * a missing file fails the whole commit on some hosts (GitLab rejects it), so
+ * deleting or unpublishing must not name it. Without a loaded entry to go by,
+ * every locale's path is returned.
+ */
+export function getEntryFilePaths(
+  collection: Collection,
+  extension: string,
+  path: string,
+  slug: string,
+  entry: Pick<CmsEntry, 'i18n'> | undefined,
+) {
+  const { structure, locales, defaultLocale } = getI18nInfo(collection) as I18nInfo;
+  if (!entry || structure === I18N_STRUCTURE.SINGLE_FILE) {
+    return getFilePaths(collection, extension, path, slug);
+  }
+  const present = new Set([defaultLocale, ...Object.keys(entry.i18n ?? {})]);
+  return locales
+    .filter(locale => present.has(locale))
+    .map(locale => getFilePath(structure, extension, path, slug, locale));
+}
+
 export function normalizeFilePath(structure: I18N_STRUCTURE, path: string, locale: string) {
   switch (structure) {
     case I18N_STRUCTURE.MULTIPLE_FOLDERS:
