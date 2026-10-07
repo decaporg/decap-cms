@@ -25,7 +25,7 @@ const ForkButtonsContainer = styled.div`
 `;
 
 interface GitHubAuthenticationPageProps {
-  onLogin?: (e?: any) => void;
+  onLogin?: (data: NetlifyAuthResult | undefined) => void;
   inProgress?: boolean;
   base_url?: string;
   siteId?: string;
@@ -102,10 +102,12 @@ export default function GitHubAuthenticationPage({
         setLoginError(err.toString());
         return;
       }
+      // The OAuth result carries the token, so it must reach onLogin: the
+      // backend authenticates with it.
       if (openAuthoring) {
-        return loginWithOpenAuthoring(data!).then(() => onLogin?.());
+        return loginWithOpenAuthoring(data!).then(() => onLogin?.(data));
       }
-      onLogin?.();
+      onLogin?.(data);
     });
   }
 
