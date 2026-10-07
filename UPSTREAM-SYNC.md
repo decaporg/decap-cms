@@ -14,15 +14,19 @@ Statuses: `todo` · `done` · `ported-by-laika` (already on v4-beta before this 
 ## Needs a real-backend check
 
 - `1f6f71c23`: Bitbucket token refresh through Netlify auth.
-- `cec9441e1`: GitLab PKCE refresh on an expired token, REST and GraphQL (decap-cms-tester-GITLAB).
+- `cec9441e1`: GitLab PKCE refresh on an expired token: REST verified 2026-10-07 (401 → `oauth/token` → retry, new token stored); GraphQL still open (the tester doesn't set `use_graphql`).
 - `a82d93578`: git-gateway PKCE session survives a reload.
 - `59843046c`: Forgejo editorial workflow PR matching.
-- `03d6446d5`/`f269a8a4f`: notes on GitHub and GitLab.
+- `03d6446d5`/`f269a8a4f`: notes on GitLab verified 2026-10-07 (read an existing 2025 thread, add, edit, resolve, delete, polling picks up a comment posted on GitLab, others' notes read-only); publish/unpublish lifecycle on GitLab and everything on GitHub still open.
 
 ## v4 issues found along the way
 
 - Fixed: choosing media in the library didn't fill file/image fields until something else re-rendered them (`52771896e`).
 - Fixed: the shared combobox showed a blank band above every option list (with #7968).
+- Fixed: deleting or unpublishing an i18n entry (multiple_files/multiple_folders) named every locale's file, and GitLab rejects a commit deleting a missing one, so an entry with an unfilled locale could not be deleted or unpublished (`72c5ad8f7`). Upstream main has the same bug.
+- Fixed: a note just added on GitLab showed a placeholder instead of the editor's avatar (`d281a807a`).
+- Fixed: the editor's floating view controls covered the notes pane's timestamps (`34efd1df9`); upstream has the same overlap.
+- Open: while an existing entry loads, the editor briefly shows "Untitled", "Delete unpublished entry" and an empty notes pane before the entry arrives (GitLab tester).
 - Open: opening an existing entry can show "UNSAVED CHANGES" straight away. The richtext widget re-serializes its markdown on mount, and a list nested in an object writes an empty richtext value to the wrong path before correcting it (Kitchen Sink entry). Same on untouched v4-beta.
 
 ## Ledger
