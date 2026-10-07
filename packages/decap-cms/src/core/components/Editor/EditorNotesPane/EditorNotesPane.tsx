@@ -19,7 +19,8 @@ const NotesContainer = styled.div`
 `;
 
 const NotesHeader = styled.div`
-  padding: 16px 24px;
+  /* Clears the editor's floating view controls, as the list below does. */
+  padding: 16px 64px 16px 24px;
   border-bottom: 1px solid ${colors.textFieldBorder};
   background-color: ${colors.inputBackground};
   display: flex;

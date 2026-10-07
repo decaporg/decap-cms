@@ -10,7 +10,9 @@ import type { NoteUser } from './NoteItem';
 const ListContainer = styled.div`
   flex: 1;
   overflow-y: auto;
-  padding: 8px 30px;
+  /* The editor's view controls float over the pane's top-right corner; the
+     wider right padding keeps them off the notes' timestamps. */
+  padding: 8px 64px 8px 30px;
 `;
 
 /** Unresolved notes first, then newest first. */
