@@ -116,6 +116,7 @@
     "@codemirror/state": "catalog:",
     "@codemirror/view": "catalog:",
     "@emotion/is-prop-valid": "catalog:",
+    "@jsquash/webp": "1.5.0",
     "@lezer/highlight": "catalog:",
     "@platejs/basic-nodes": "^49.0.0",
     "@platejs/link": "^50.2.7",

@@ -74,6 +74,14 @@ export {
 } from './imageOptimization.js';
 export type { TargetDimensions } from './imageOptimization.js';
 export {
+  getMediaProcessingConfig,
+  getMediaProcessingFileName,
+  mediaProcessingSchema,
+  shouldTransformImage,
+  transformImageFile,
+} from './mediaProcessing.js';
+export type { MediaProcessingConfig } from './mediaProcessing.js';
+export {
   clampCropRect,
   constrainCropRectToAspectRatio,
   cropImageFile,

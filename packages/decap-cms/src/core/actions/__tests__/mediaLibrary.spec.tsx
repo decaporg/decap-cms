@@ -20,10 +20,12 @@ import { ConfirmDialogHost } from '@/ui';
 vi.mock('../../backend');
 vi.mock('../waitUntil');
 vi.mock('../../../lib/util/index', async () => {
-  const lib = await vi.importActual('../../../lib/util/index');
+  const lib = await vi.importActual<typeof libUtil>('../../../lib/util/index');
   return {
     ...lib,
     getBlobSHA: vi.fn(),
+    // Real implementation by default; tests that care stub it.
+    transformImageFile: vi.fn(lib.transformImageFile),
   };
 });
 
@@ -319,6 +321,95 @@ describe('mediaLibrary', () => {
         .finally(() => {
           vi.unstubAllGlobals();
         });
+    });
+
+    // decaporg #7845: `media_processing` is the canonical upload processing
+    // config; `media_library.config.image_optimization` is the deprecated v4
+    // predecessor.
+    describe('media_processing', () => {
+      function storeWith(config: Record<string, unknown>) {
+        return mockStore({
+          config: {
+            media_folder: 'static/media',
+            slug: { encoding: 'unicode', clean_accents: false, sanitize_replacement: '-' },
+            ...config,
+          },
+          collections: { posts: { name: 'posts' } },
+          integrations: { providers: {}, hooks: {} },
+          mediaLibrary: { files: [] },
+          entryDraft: { entry: {} },
+        });
+      }
+
+      beforeEach(() => {
+        vi.mocked(libUtil.transformImageFile).mockReset();
+        vi.mocked(libUtil.transformImageFile).mockResolvedValue(
+          new File(['processed'], 'photo.webp', { type: 'image/webp' }),
+        );
+      });
+
+      it('processes the upload and stores it under the converted name', async () => {
+        const store = storeWith({
+          media_processing: { enabled: true, format: { enabled: true, default: 'webp' }, quality: 80 },
+        });
+
+        await store.dispatch(persistMedia(new File(['original'], 'photo.png', { type: 'image/png' })));
+
+        expect(libUtil.transformImageFile).toHaveBeenCalledWith(
+          expect.objectContaining({ name: 'photo.png' }),
+          expect.objectContaining({ format: 'webp', quality: 0.8 }),
+        );
+        expect(backend.persistMedia).toHaveBeenCalledWith(
+          store.getState().config,
+          expect.objectContaining({ path: 'static/media/photo.webp' }),
+        );
+      });
+
+      it('uses the field media_processing over the global one', async () => {
+        const store = storeWith({ media_processing: { enabled: false } });
+        const field = {
+          name: 'image',
+          widget: 'image',
+          media_processing: { enabled: true, format: { enabled: true, default: 'webp' } },
+        };
+
+        await store.dispatch(
+          persistMedia(new File(['original'], 'photo.png', { type: 'image/png' }), { field } as any),
+        );
+
+        expect(libUtil.transformImageFile).toHaveBeenCalledTimes(1);
+      });
+
+      it('leaves SVG uploads alone', async () => {
+        const store = storeWith({
+          media_processing: { enabled: true, format: { enabled: true, default: 'webp' } },
+        });
+
+        await store.dispatch(persistMedia(new File(['<svg/>'], 'logo.svg', { type: 'image/svg+xml' })));
+
+        expect(libUtil.transformImageFile).not.toHaveBeenCalled();
+        expect(backend.persistMedia).toHaveBeenCalledWith(
+          store.getState().config,
+          expect.objectContaining({ path: 'static/media/logo.svg' }),
+        );
+      });
+
+      it('takes precedence over the deprecated image_optimization', async () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+        const store = storeWith({
+          media_processing: { enabled: true, format: { enabled: true, default: 'webp' } },
+          media_library: {
+            name: 'default',
+            config: { image_optimization: { enabled: true, max_width: 10, format: 'jpeg' } },
+          },
+        });
+
+        await store.dispatch(persistMedia(new File(['original'], 'photo.png', { type: 'image/png' })));
+
+        expect(libUtil.transformImageFile).toHaveBeenCalledTimes(1);
+        expect(warn).not.toHaveBeenCalledWith(expect.stringContaining('image_optimization'));
+        warn.mockRestore();
+      });
     });
   });
 

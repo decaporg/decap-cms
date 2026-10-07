@@ -316,10 +316,10 @@ importers:
     devDependencies:
       '@changesets/cli':
         specifier: 'catalog:'
-        version: 2.31.1(@types/node@24.13.3)
+        version: 2.31.1(@types/node@26.6.4)
       '@commitlint/cli':
         specifier: 'catalog:'
-        version: 21.2.1(@types/node@24.13.3)(conventional-commits-parser@7.1.0)(typescript@7.0.2)
+        version: 21.2.1(@types/node@26.6.4)(conventional-commits-parser@7.1.0)(typescript@7.0.2)
       '@commitlint/config-conventional':
         specifier: 'catalog:'
         version: 21.2.0
@@ -371,6 +371,9 @@ importers:
       '@emotion/styled':
         specifier: ^11.14.1
         version: 11.14.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.7))(@types/react@19.2.17)(react@19.2.7)
+      '@jsquash/webp':
+        specifier: 1.5.0
+        version: 1.5.0
       '@lezer/highlight':
         specifier: 'catalog:'
         version: 1.2.3
@@ -1569,6 +1572,9 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
+
+  '@jsquash/webp@1.5.0':
+    resolution: {integrity: sha512-KggLoj2MnRSfIqTeKe1EmbljTX2vuV7mh79k89PCL1pyqiDULcPM1L47twxXt0hkb68F70bXiL31MxsuoZtKFw==}
 
   '@juggle/resize-observer@3.4.0':
     resolution: {integrity: sha512-dfLbk+PwWvFzSxwk3n5ySL0hfBog779o8h68wK/7/APo/7cgyWp5jcXockbxdk5kFRkbeXWm4Fbi9FrdN381sA==}
@@ -5764,6 +5770,9 @@ packages:
     resolution: {integrity: sha512-o8qghlI8NZHU1lLPrpi2+Uq7abh4GGPpYANlalzWxyWteJOCsr/P+oPBA49TOLu5FTZO4d3F9MnWJfiMo4BkmA==}
     engines: {node: '>=18'}
 
+  wasm-feature-detect@1.9.0:
+    resolution: {integrity: sha512-zonE+xlIIYtxPy++L24ow0hAD8CICb4+FgPyROd3buyXIqsJvUEDkBgfCCoXOd1Hu3DUr0GOfnPIdcGV+YpNaA==}
+
   web-namespaces@1.1.4:
     resolution: {integrity: sha512-wYxSGajtmoP4WxfejAPIr4l0fVh+jeMXZb08wNc0tMg6xsfZXj3cECqIK0G7ZAqUq0PP8WlMDtaOGVBTAWztNw==}
 
@@ -6152,7 +6161,7 @@ snapshots:
     dependencies:
       '@changesets/types': 6.1.0
 
-  '@changesets/cli@2.31.1(@types/node@24.13.3)':
+  '@changesets/cli@2.31.1(@types/node@26.6.4)':
     dependencies:
       '@changesets/apply-release-plan': 7.1.1
       '@changesets/assemble-release-plan': 6.0.10
@@ -6168,7 +6177,7 @@ snapshots:
       '@changesets/should-skip-package': 0.1.2
       '@changesets/types': 6.1.0
       '@changesets/write': 0.4.0
-      '@inquirer/external-editor': 1.0.3(@types/node@24.13.3)
+      '@inquirer/external-editor': 1.0.3(@types/node@26.6.4)
       '@manypkg/get-packages': 1.1.3
       ansi-colors: 4.1.3
       enquirer: 2.4.1
@@ -6517,12 +6526,12 @@ snapshots:
       style-mod: 4.1.3
       w3c-keyname: 2.2.8
 
-  '@commitlint/cli@21.2.1(@types/node@24.13.3)(conventional-commits-parser@7.1.0)(typescript@7.0.2)':
+  '@commitlint/cli@21.2.1(@types/node@26.6.4)(conventional-commits-parser@7.1.0)(typescript@7.0.2)':
     dependencies:
       '@commitlint/config-conventional': 21.2.0
       '@commitlint/format': 21.2.0
       '@commitlint/lint': 21.2.0
-      '@commitlint/load': 21.2.0(@types/node@24.13.3)(typescript@7.0.2)
+      '@commitlint/load': 21.2.0(@types/node@26.6.4)(typescript@7.0.2)
       '@commitlint/read': 21.2.1(conventional-commits-parser@7.1.0)
       '@commitlint/types': 21.2.0
       tinyexec: 1.2.4
@@ -6567,14 +6576,14 @@ snapshots:
       '@commitlint/rules': 21.2.0
       '@commitlint/types': 21.2.0
 
-  '@commitlint/load@21.2.0(@types/node@24.13.3)(typescript@7.0.2)':
+  '@commitlint/load@21.2.0(@types/node@26.6.4)(typescript@7.0.2)':
     dependencies:
       '@commitlint/config-validator': 21.2.0
       '@commitlint/execute-rule': 21.0.1
       '@commitlint/resolve-extends': 21.2.0
       '@commitlint/types': 21.2.0
       cosmiconfig: 9.0.2(typescript@7.0.2)
-      cosmiconfig-typescript-loader: 6.3.0(@types/node@24.13.3)(cosmiconfig@9.0.2(typescript@7.0.2))(typescript@7.0.2)
+      cosmiconfig-typescript-loader: 6.3.0(@types/node@26.6.4)(cosmiconfig@9.0.2(typescript@7.0.2))(typescript@7.0.2)
       es-toolkit: 1.49.0
       is-plain-obj: 4.1.0
       picocolors: 1.1.1
@@ -7018,12 +7027,12 @@ snapshots:
 
   '@humanwhocodes/retry@0.4.3': {}
 
-  '@inquirer/external-editor@1.0.3(@types/node@24.13.3)':
+  '@inquirer/external-editor@1.0.3(@types/node@26.6.4)':
     dependencies:
       chardet: 2.2.0
       iconv-lite: 0.7.3
     optionalDependencies:
-      '@types/node': 24.13.3
+      '@types/node': 26.6.4
 
   '@joshwooding/vite-plugin-react-docgen-typescript@0.7.0(typescript@6.0.3)(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.6.1)(yaml@2.9.0))':
     dependencies:
@@ -7051,6 +7060,10 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
+
+  '@jsquash/webp@1.5.0':
+    dependencies:
+      wasm-feature-detect: 1.9.0
 
   '@juggle/resize-observer@3.4.0': {}
 
@@ -7846,7 +7859,6 @@ snapshots:
   '@types/node@26.6.4':
     dependencies:
       undici-types: 8.9.0
-    optional: true
 
   '@types/parse-json@4.0.2': {}
 
@@ -8593,9 +8605,9 @@ snapshots:
     dependencies:
       browserslist: 4.28.6
 
-  cosmiconfig-typescript-loader@6.3.0(@types/node@24.13.3)(cosmiconfig@9.0.2(typescript@7.0.2))(typescript@7.0.2):
+  cosmiconfig-typescript-loader@6.3.0(@types/node@26.6.4)(cosmiconfig@9.0.2(typescript@7.0.2))(typescript@7.0.2):
     dependencies:
-      '@types/node': 24.13.3
+      '@types/node': 26.6.4
       cosmiconfig: 9.0.2(typescript@7.0.2)
       jiti: 2.6.1
       typescript: 7.0.2
@@ -11252,8 +11264,7 @@ snapshots:
 
   undici-types@7.18.2: {}
 
-  undici-types@8.9.0:
-    optional: true
+  undici-types@8.9.0: {}
 
   undici@7.28.0: {}
 
@@ -11483,6 +11494,8 @@ snapshots:
   w3c-xmlserializer@5.0.0:
     dependencies:
       xml-name-validator: 5.0.0
+
+  wasm-feature-detect@1.9.0: {}
 
   web-namespaces@1.1.4: {}
 

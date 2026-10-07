@@ -5,17 +5,25 @@ import { selectAssetCollectionForFolder } from '@/core/lib/assetCollections';
 import { assetFilenameFormatter } from '@/core/lib/formatters';
 import { getPhrases } from '@/core/lib/phrases';
 import { sanitizeSlug } from '@/core/lib/urlHelper';
+import { selectLocale } from '@/core/reducers/config';
 import {
   selectEditingDraft,
   selectMediaFilePath,
   selectMediaFilePublicPath,
   selectMediaFolder,
 } from '@/core/reducers/entries';
-import { selectLocale } from '@/core/reducers/config';
 import { selectMediaDisplayURL, selectMediaFiles } from '@/core/reducers/mediaLibrary';
 import { selectIntegration } from '@/core/reducers/selectors';
 import { createAssetProxy } from '@/core/valueObjects/AssetProxy';
-import { basename, getBlobSHA, isImageOptimizationEnabled, optimizeImageFile } from '@/lib/util/index';
+import {
+  basename,
+  getBlobSHA,
+  getMediaProcessingConfig,
+  isImageOptimizationEnabled,
+  optimizeImageFile,
+  shouldTransformImage,
+  transformImageFile,
+} from '@/lib/util/index';
 import { confirmDialog } from '@/ui';
 import { addDraftEntryMediaFile, removeDraftEntryMediaFile } from './entries';
 import { addAsset, removeAsset } from './media';
@@ -352,6 +360,8 @@ function selectImageOptimizationConfig(
     ?? config.media_library?.config?.image_optimization;
 }
 
+let warnedImageOptimizationDeprecated = false;
+
 export function persistMedia(file: File, opts: MediaOptions = {}) {
   const { privateUpload, field } = opts;
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
@@ -360,9 +370,25 @@ export function persistMedia(file: File, opts: MediaOptions = {}) {
     const integration = selectIntegration(state, null, 'assetStore');
     const files: MediaFile[] = selectMediaFiles(state, field);
 
-    const imageOptimizationConfig = selectImageOptimizationConfig(state.config, field);
-    if (isImageOptimizationEnabled(imageOptimizationConfig)) {
-      file = await optimizeImageFile(file, imageOptimizationConfig);
+    // `media_processing` (upstream's API, field over global) is the canonical
+    // upload processing config. `media_library.config.image_optimization`
+    // still works when it isn't set, but is deprecated.
+    const mediaProcessingConfig = getMediaProcessingConfig(state.config, field as any);
+    if (mediaProcessingConfig) {
+      if (shouldTransformImage(file, mediaProcessingConfig)) {
+        file = await transformImageFile(file, mediaProcessingConfig);
+      }
+    } else {
+      const imageOptimizationConfig = selectImageOptimizationConfig(state.config, field);
+      if (isImageOptimizationEnabled(imageOptimizationConfig)) {
+        if (!warnedImageOptimizationDeprecated) {
+          warnedImageOptimizationDeprecated = true;
+          console.warn(
+            "Decap CMS: 'media_library.config.image_optimization' is deprecated. Use 'media_processing' instead.",
+          );
+        }
+        file = await optimizeImageFile(file, imageOptimizationConfig);
+      }
     }
 
     let fileName = sanitizeSlug(file.name.toLowerCase(), state.config.slug);

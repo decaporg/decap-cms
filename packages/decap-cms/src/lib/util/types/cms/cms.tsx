@@ -18,7 +18,7 @@ import type {
 import type { CmsField } from './field';
 import type { CmsFieldBase } from './fields/base';
 import type { CmsI18nConfig } from './i18n';
-import type { CmsAssetCollection, CmsMediaLibrary, CmsMediaLibraryOptions } from './media';
+import type { CmsAssetCollection, CmsMediaLibrary, CmsMediaLibraryOptions, CmsMediaProcessing } from './media';
 
 export interface CmsIssueReports {
   url?: string;
@@ -45,6 +45,8 @@ export interface CmsConfig<Backend extends CmsBackend = CmsBackend> {
   site_id?: string;
   media_folder_relative?: boolean;
   media_library?: CmsMediaLibrary;
+  /** Browser-side processing of uploaded images; image/file fields can override it. */
+  media_processing?: CmsMediaProcessing;
   /** Named, config-defined asset groupings surfaced as sections in the media library. */
   asset_collections?: CmsAssetCollection[];
   publish_mode?: CmsPublishMode;

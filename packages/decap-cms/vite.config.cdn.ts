@@ -2,6 +2,8 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 import { defineConfig } from 'vite';
 
+import { webpWasmBesideBundle } from './vite.webp-wasm';
+
 import type { Plugin } from 'vite';
 
 /**
@@ -109,7 +111,7 @@ function inlineCss(styleId: string): Plugin {
 }
 
 export default defineConfig({
-  plugins: [react(), inlineCss(selected.name)],
+  plugins: [react(), inlineCss(selected.name), webpWasmBesideBundle()],
   build: {
     // `dist/` also holds the tsc output, so this build must never empty it;
     // `pnpm build:cdn` removes just the three artifacts it owns beforehand.

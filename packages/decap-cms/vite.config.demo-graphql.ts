@@ -3,6 +3,8 @@ import path from 'path';
 import { visualizer } from 'rollup-plugin-visualizer';
 import { defineConfig } from 'vite';
 
+import { webpWasmBesideBundle } from './vite.webp-wasm';
+
 /**
  * Vite config for building the IIFE bundle that dev-test/index.html loads
  * via <script src="dist/decap-cms-graphql.js"> — the classic bundle plus the opt-in GraphQL backend registrations (see dev-test/graphql-demo-entry.ts).
@@ -10,6 +12,7 @@ import { defineConfig } from 'vite';
 export default defineConfig({
   plugins: [
     react(),
+    webpWasmBesideBundle(),
     // ANALYZE=1 → interactive treemap next to the bundle.
     ...(process.env.ANALYZE
       ? [

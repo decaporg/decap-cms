@@ -1,4 +1,5 @@
 import { getExtensionFormatters, getFrontmatterFormats } from '@/core/formats/formats';
+import { mediaProcessingSchema } from '@/lib/util/mediaProcessing';
 import { I18N_FIELD, I18N_STRUCTURE } from './i18n';
 import { validateJSONSchema } from './jsonSchemaValidator';
 import { getWidgets } from './registry';
@@ -198,6 +199,7 @@ export function getConfigSchema(): JSONSchema {
       media_folder: { type: 'string', examples: ['assets/uploads'] },
       public_folder: { type: 'string', examples: ['/uploads'] },
       media_folder_relative: { type: 'boolean' },
+      media_processing: mediaProcessingSchema,
       media_library: {
         type: 'object',
         properties: {

@@ -8,6 +8,7 @@
     "vitest.config.ts",
     "vitest.setup.ts",
     "vite.config.cdn.ts",
-    "vite.config.demo.ts"
+    "vite.config.demo.ts",
+    "vite.webp-wasm.ts"
   ]
 }

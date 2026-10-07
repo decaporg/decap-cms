@@ -173,3 +173,28 @@ export interface CmsMediaLibraryInstance {
   onRemoveControl: (args: { id: string }) => void;
   enableStandalone: () => boolean;
 }
+
+/** Output format for `media_processing.format`. */
+export type CmsMediaProcessingFormat = 'jpeg' | 'webp';
+
+/**
+ * Browser-side processing applied once to an uploaded image (JPEG, PNG or
+ * WebP; SVG is never processed) before it is stored. Set globally or on an
+ * image/file field, which then overrides the global setting.
+ */
+export interface CmsMediaProcessing {
+  enabled: boolean;
+  /** Convert to this format; when disabled the original format is kept. */
+  format?: {
+    enabled: boolean,
+    default: CmsMediaProcessingFormat,
+  };
+  /** Encoding quality, 1-100. */
+  quality?: number;
+  /** Re-encode the image, which drops its metadata (EXIF and the like). */
+  strip_metadata?: boolean;
+  width?: number | null;
+  height?: number | null;
+  /** Crop to this aspect ratio: a number or `16_9`, `16:9`, `16x9`. */
+  aspect_ratio?: number | string | null;
+}
