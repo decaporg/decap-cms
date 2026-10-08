@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.2.0-beta.1](https://github.com/decaporg/decap-cms/compare/decap-cms-media-library-s3@0.2.0-beta.0...decap-cms-media-library-s3@0.2.0-beta.1) (2026-09-22)
+
+### Bug Fixes
+
+- backend name ([0de9d7f](https://github.com/decaporg/decap-cms/commit/0de9d7fc546637a344a5e678bfc3fd61f1a53a41))
+
 # 0.2.0-beta.0 (2026-09-10)
 
 ### Bug Fixes

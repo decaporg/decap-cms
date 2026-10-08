@@ -19,11 +19,12 @@ import {
   contentKeyFromBranch,
   unsentRequest,
   branchFromContentKey,
+  NotesPollingManager,
+  markOwnNotes,
 } from 'decap-cms-lib-util';
 
 import AuthenticationPage from './AuthenticationPage';
 import API, { API_NAME } from './API';
-import { ETagPollingManager } from './polling';
 import GraphQLAPI from './GraphQLAPI';
 
 import type { Endpoints } from '@octokit/types';
@@ -92,7 +93,7 @@ export default class GitHub implements Implementation {
     [key: string]: Promise<boolean>;
   };
   _mediaDisplayURLSem?: Semaphore;
-  pollingManager?: ETagPollingManager;
+  pollingManager?: NotesPollingManager;
   unwatchFunctions: Map<string, () => void> = new Map();
 
   constructor(config: Config, options = {}) {
@@ -386,7 +387,7 @@ export default class GitHub implements Implementation {
     // }
 
     if (this.api && !this.pollingManager) {
-      this.pollingManager = new ETagPollingManager(this.api, 15000);
+      this.pollingManager = new NotesPollingManager(this.api, 15000);
     }
     // Authorized user
     return { ...user, token: state.token as string, useOpenAuthoring: this.useOpenAuthoring };
@@ -751,40 +752,61 @@ export default class GitHub implements Implementation {
 
   // Notes implementation, which is an abstraction to Github's PR issue comments.
 
+  /**
+   * Who the signed-in editor is, as a note records them: a display name for the
+   * pane and a stable id for the ownership check behind Edit/Resolve/Delete.
+   */
+  async noteAuthorIdentity(): Promise<{ author: string; authorId?: string }> {
+    const currentUser = await this.currentUser({ token: this.token! });
+    return {
+      author: currentUser.login || currentUser.name || '',
+      // No id on purpose: GitHub reports the author's current login on every
+      // read, so ownership follows a rename. Recording it here would freeze it.
+      authorId: undefined,
+    };
+  }
+
+  /**
+   * Resolves each note's `isOwn` here rather than in the pane, because only the
+   * backend knows how its identities compare. Falls back to the display name
+   * for notes with no recorded id.
+   */
+  private async markOwnNotes(notes: Note[]): Promise<Note[]> {
+    return markOwnNotes(notes, await this.noteAuthorIdentity());
+  }
+
   // Notes implementation using GitHub Issues
   async getNotes(collection: string, slug: string): Promise<Note[]> {
     try {
       const notes = await this.api!.getEntryNotes(collection, slug);
-      return notes.map(note => ({ ...note, entrySlug: slug }));
+      return this.markOwnNotes(notes.map(note => ({ ...note, entrySlug: slug })));
     } catch (error) {
       console.error('Failed to get notes:', error);
       return [];
     }
   }
 
-  async addNote(collection: string, slug: string, noteData: Omit<Note, 'id'>): Promise<Note> {
+  async addNote(
+    collection: string,
+    slug: string,
+    noteData: Omit<Note, 'id'>,
+    entryTitle?: string,
+  ): Promise<Note> {
     const currentUser = await this.currentUser({ token: this.token! });
+    const identity = await this.noteAuthorIdentity();
 
     const note: Note = {
       ...noteData,
       id: 'temp-' + Date.now(),
-      author: currentUser.login || currentUser.name || '',
+      author: identity.author,
+      authorId: identity.authorId,
+      isOwn: true,
       avatarUrl: currentUser.avatar_url,
       entrySlug: slug,
       timestamp: noteData.timestamp || new Date().toISOString(),
       resolved: noteData.resolved || false,
       issueUrl: undefined,
     };
-
-    // Get entry title for better issue naming
-    let entryTitle: string | undefined;
-    try {
-      const entryData = await this.getEntry(`${collection}/${slug}.md`);
-      const titleMatch = entryData.data.match(/^title:\s*["']?([^"'\n]+)["']?/m);
-      entryTitle = titleMatch ? titleMatch[1] : undefined;
-    } catch (error) {
-      // Entry not found or error reading, use undefined title
-    }
 
     const { commentId, issueUrl } = await this.api!.addNoteToEntry(
       collection,
@@ -883,7 +905,14 @@ export default class GitHub implements Implementation {
       const unwatchFn = await this.pollingManager.watchIssueWithRetry(
         collection,
         slug,
-        callbacks,
+        {
+          ...callbacks,
+          // The polling manager rebuilds notes straight from the issue's
+          // comments, so they arrive without the ownership flag getNotes adds.
+          // Without this, a poll silently strips Edit/Resolve/Delete off the
+          // editor's own notes ~15s after they appear.
+          prepareNotes: notes => this.markOwnNotes(notes),
+        },
         5, // maxRetries - will try up to 5 times
         2000, // retryDelay - 2 seconds between attempts
       );
@@ -908,9 +937,9 @@ export default class GitHub implements Implementation {
     if (unwatchFn) {
       unwatchFn();
       this.unwatchFunctions.delete(issueKey);
-    } else {
-      console.log(`[DecapNotes Polling] No active polling found for ${issueKey}`);
     }
+
+    this.pollingManager?.stopWatching(collection, slug);
   }
 
   /**

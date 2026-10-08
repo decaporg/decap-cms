@@ -59,6 +59,13 @@ interface CommitFile {
  */
 const FALLBACK_STATUSES = new Set([400, 404, 413]);
 
+const PER_PAGE = 100;
+const MAX_ISSUE_PAGES = 20;
+
+/** The issue shape the inherited method resolves to. Referenced through it
+ *  rather than redeclared, because the interface itself is not exported. */
+type NotesIssue = NonNullable<Awaited<ReturnType<API['findEntryIssue']>>>;
+
 export default class TurboAPI extends API {
   turboFetch: TurboAPIConfig['turboFetch'];
 
@@ -250,6 +257,76 @@ export default class TurboAPI extends API {
         return super.persistFiles(dataFiles, mediaFiles, options);
       }
       throw error;
+    }
+  }
+
+  /**
+   * Finds an entry's notes thread by listing the repo's own notes issues
+   * rather than through `/search/issues`, which is what the inherited method
+   * uses. Three reasons, in descending order of how badly each bites:
+   *
+   * - `search/issues` is not shaped like `repos/{owner}/{repo}/...`, so the
+   *   proxy's repo scope check does not apply to it and a hand-written query
+   *   would reach issues in any repo the organization's installation covers.
+   *   The list endpoint is repo-scoped by its own path, so the boundary that
+   *   protects every other route protects this one too.
+   * - search runs on a separate 30/minute budget shared by the whole
+   *   installation, which the CMS has no way to see it exhausting.
+   * - search reads an index that lags issue creation by seconds. A thread
+   *   created moments ago is simply absent, and `addNoteToEntry` answers that
+   *   by opening a second one - splitting an entry's notes across two issues
+   *   with nothing to show anything went wrong.
+   *
+   * Paged explicitly by page number rather than through `requestAllPages`:
+   * the proxy builds its response headers from scratch, so GitHub's `Link`
+   * header never reaches the client and following `rel="next"` would stop
+   * after the first page - silently, once a site had more than PER_PAGE
+   * entries carrying notes.
+   *
+   * `state: 'all'` because a published entry's thread is closed, and its notes
+   * still belong to the entry.
+   *
+   * Narrowed to the entry's own collection by the second label `createEntryIssue`
+   * writes. GitHub's list endpoint ANDs the labels it is given and offers no way
+   * to match the body, so this is the only narrowing available - without it a
+   * site's every notes thread comes back on each lookup, and an entry is looked
+   * up several times per open (core reads the notes, then the polling manager
+   * finds the thread, retrying while the entry has none yet).
+   */
+  async findEntryIssue(collectionName: string, slug: string): Promise<NotesIssue | null> {
+    const needle = `${collectionName}/${slug}`;
+
+    // The description is confirmed exactly, because the label narrows the list
+    // to notes issues but says nothing about which entry each one is for.
+    function isExact(issue: NotesIssue) {
+      return (issue.body ?? '').includes(`\`${needle}\``);
+    }
+
+    try {
+      for (let page = 1; page <= MAX_ISSUE_PAGES; page += 1) {
+        const issues: NotesIssue[] = await this.request(`${this.repoURL}/issues`, {
+          params: {
+            labels: `${API.NOTES_LABEL},collection:${collectionName}`,
+            state: 'all',
+            per_page: PER_PAGE,
+            page,
+          },
+        });
+
+        if (!Array.isArray(issues) || issues.length === 0) {
+          return null;
+        }
+
+        const match = issues.find(isExact);
+        if (match || issues.length < PER_PAGE) {
+          return match ?? null;
+        }
+      }
+
+      return null;
+    } catch (error) {
+      console.warn('Failed to list notes issues:', error);
+      return null;
     }
   }
 
