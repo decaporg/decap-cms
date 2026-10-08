@@ -221,4 +221,29 @@ describe('login', () => {
       await turbo.close();
     }
   });
+
+  it.each([
+    ['an older error shape', { status: 401, body: { error: 'Not authenticated' } }],
+    ['an HTML page', { status: 404, body: '<!doctype html><title>Not found</title>' }],
+    ['a redirect to the login page', { status: 302, body: '' }],
+  ])('fails fast on an instance without the CLI API: %s', async (_, answer) => {
+    const turbo = await fakeTurbo({ 'GET /api/v1/me': () => answer });
+    const openBrowser = jest.fn();
+    try {
+      await expect(login({ apiUrl: turbo.url, admin: false, openBrowser })).rejects.toThrow(
+        `${turbo.url} does not support the decap CLI yet`,
+      );
+      expect(openBrowser).not.toHaveBeenCalled();
+    } finally {
+      await turbo.close();
+    }
+  });
+
+  it('fails fast when the instance cannot be reached', async () => {
+    const openBrowser = jest.fn();
+    await expect(
+      login({ apiUrl: 'http://127.0.0.1:9', admin: false, openBrowser }),
+    ).rejects.toThrow('Could not reach http://127.0.0.1:9');
+    expect(openBrowser).not.toHaveBeenCalled();
+  });
 });

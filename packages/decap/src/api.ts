@@ -101,6 +101,50 @@ export class ApiClient {
     }
     return parsed as T;
   }
+
+  /**
+   * Throws unless `apiUrl` serves the CLI API. Asked by `login` before it opens
+   * a browser: on an instance without the API, /cli/authorize lands on the
+   * dashboard's login page and never calls back, and the CLI used to wait out
+   * its full five minutes. An unauthenticated GET /me answers a contract
+   * instance with the contract's `{ error: { code, message } }`; anything else
+   * — an HTML page, a redirect, an older `{ error: "..." }` — means no API.
+   */
+  async assertCliApi(): Promise<void> {
+    const path = `/api/v1${operations.me.path}`;
+    let response: Response;
+    try {
+      response = await fetch(`${this.apiUrl}${path}`, {
+        headers: {
+          accept: 'application/json',
+          'user-agent': `decap-cli/${CLI_VERSION} (${this.client})`,
+          'x-decap-client': this.client,
+        },
+        redirect: 'manual',
+      });
+    } catch (err) {
+      throw new ApiError(
+        0,
+        'network_error',
+        `Could not reach ${this.apiUrl}: ${(err as Error).message}`,
+      );
+    }
+
+    let error: { code?: unknown; message?: unknown } | undefined;
+    try {
+      error = JSON.parse(await response.text())?.error;
+    } catch {
+      // Not JSON: not the API.
+    }
+    if (typeof error?.code === 'string' && typeof error?.message === 'string') return;
+    throw new ApiError(
+      response.status,
+      'cli_unsupported',
+      `${this.apiUrl} does not support the decap CLI yet: GET ${path} answered ${response.status} ` +
+        'without the API’s error shape. Pass --api-url (or set DECAP_API_URL) to sign in to a ' +
+        'Turbo instance that does.',
+    );
+  }
 }
 
 export { operations };

@@ -35,6 +35,8 @@ export async function login(options: {
 }): Promise<void> {
   // The token this login replaces, read before anything can overwrite it.
   const previous = readCredentials();
+  await new ApiClient(options.apiUrl, null).assertCliApi();
+
   const verifier = crypto.randomBytes(32).toString('base64url');
   const challenge = crypto.createHash('sha256').update(verifier).digest('base64url');
   const state = crypto.randomBytes(24).toString('base64url');
