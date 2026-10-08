@@ -220,8 +220,11 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
       '') as string;
     this.supabaseId = (config.backend.supabase_app_id || '') as string;
     this.siteId = (config.backend.turbo_site_id || '') as string;
-    // The editor bridge (editorBridge.ts) is on unless the site turns it off.
-    this.editorBridgeEnabled = config.backend.editor_bridge !== false;
+    // The editor bridge (editorBridge.ts) is still in development, so a site
+    // opts in with `editor_bridge: true`. On by default it would show its badge
+    // and "Ask Claude" on every entry, and upload every editor's unsaved draft
+    // to Turbo every few seconds, whether or not an agent is connected.
+    this.editorBridgeEnabled = config.backend.editor_bridge === true;
     this.commitAuthorEmailFallback =
       ((config.backend as Record<string, unknown>).commit_author_email as string | undefined) ||
       ((config.backend as Record<string, unknown>).noreply_email as string | undefined);
@@ -430,7 +433,7 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
     return this.authenticate(user);
   }
 
-  editorBridgeEnabled = true;
+  editorBridgeEnabled = false;
   editorBridgeInstance: EditorBridge | null = null;
 
   /**

@@ -75,7 +75,7 @@ decap editor set --session <id> --fields '{"title": "New title", "seo.descriptio
 decap editor open --site <site-id> --collection posts --slug hello   # the CMS link for an entry
 ```
 
-The CMS shows a small "Agent bridge on" badge while an entry is open; its × turns the bridge off for that tab, and `editor_bridge: false` in config.yml turns it off for the site.
+The editor bridge is experimental and off by default: turn it on for a site with `editor_bridge: true` under `backend` in config.yml. While it is on, the CMS shows a small "Agent bridge on" badge while an entry is open; its × turns the bridge off for that tab.
 
 ## Use it from an AI agent
 

@@ -446,6 +446,56 @@ describe('turbo gitlab backend preloadConfig', () => {
   });
 });
 
+describe('turbo gitlab backend editor bridge', () => {
+  const config: any = {
+    backend: {
+      repo: 'group/project',
+      branch: 'main',
+      supabase_app_id: 'supabase-project-id',
+      supabase_anon_key: 'supabase-anon-key',
+      turbo_site_id: 'site-123',
+    },
+  };
+
+  function editorApi() {
+    return {
+      getCurrentEntry: jest.fn(() => null),
+      applyFieldPatch: jest.fn(() => ({ applied: [], rejected: [] })),
+      onEditorChange: jest.fn(() => () => undefined),
+    };
+  }
+
+  it('stays off unless the site opts in', () => {
+    // Still in development: on by default it would advertise itself on every
+    // entry and upload every editor's unsaved draft, agent or not.
+    const backend = new DecapTurboGitLabBackend(config);
+    const editor = editorApi();
+    const registerFieldAction = jest.fn();
+
+    backend.attachEditor({ editor, registerFieldAction } as any);
+
+    expect(backend.editorBridgeInstance).toBeNull();
+    expect(editor.onEditorChange).not.toHaveBeenCalled();
+    expect(registerFieldAction).not.toHaveBeenCalled();
+  });
+
+  it('starts when the site sets editor_bridge: true', () => {
+    const backend = new DecapTurboGitLabBackend({
+      ...config,
+      backend: { ...config.backend, editor_bridge: true },
+    });
+    const editor = editorApi();
+    const registerFieldAction = jest.fn();
+
+    backend.attachEditor({ editor, registerFieldAction } as any);
+
+    expect(backend.editorBridgeInstance).not.toBeNull();
+    expect(editor.onEditorChange).toHaveBeenCalledTimes(1);
+    expect(registerFieldAction).toHaveBeenCalledTimes(1);
+    backend.editorBridgeInstance!.stop();
+  });
+});
+
 describe('turbo gitlab backend use_graphql rejection', () => {
   // Same rationale as decap-cms-backend-turbo-github's GitHub twin: GitLab's own
   // GraphQL client also builds its transport independently of
