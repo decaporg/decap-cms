@@ -183,7 +183,6 @@ class EditorControl extends Component {
     isHidden: PropTypes.bool,
     isHighlighted: PropTypes.bool,
     fieldActions: PropTypes.array,
-    fieldActionContext: PropTypes.object,
     isFieldDuplicate: PropTypes.func,
     isFieldHidden: PropTypes.func,
     locale: PropTypes.string,
@@ -253,7 +252,6 @@ class EditorControl extends Component {
       parentIds,
       isHighlighted,
       fieldActions,
-      fieldActionContext,
       t,
       validateMetaField,
       isLoadingAsset,
@@ -308,9 +306,14 @@ class EditorControl extends Component {
                   // depends on the editor's Immutable internals.
                   const context = {
                     field: field.toJS(),
-                    collection: fieldActionContext?.collection?.get('name'),
-                    locale: fieldActionContext?.locale,
-                    entry: editorApi.getCurrentEntry(),
+                    collection: collection?.get('name'),
+                    locale,
+                    // A getter, so rendering doesn't convert the whole entry for
+                    // every top-level field on every keystroke; only an action
+                    // that reads it pays for it, and gets the entry as it is now.
+                    get entry() {
+                      return editorApi.getCurrentEntry();
+                    },
                     applyFieldPatch: editorApi.applyFieldPatch,
                   };
                   const available = fieldActions.filter(

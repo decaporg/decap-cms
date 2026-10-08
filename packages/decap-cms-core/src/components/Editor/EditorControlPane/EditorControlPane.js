@@ -296,7 +296,6 @@ export default class ControlPane extends Component {
                 locale={locale}
                 isHighlighted={Boolean(fieldHighlights?.get(field.get('name')))}
                 fieldActions={fieldActions}
-                fieldActionContext={{ collection, entry, locale }}
               />
             );
           })}
