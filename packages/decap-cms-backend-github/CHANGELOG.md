@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.9.0-beta.2](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-github@3.9.0-beta.1...decap-cms-backend-github@3.9.0-beta.2) (2026-10-08)
+
+### Bug Fixes
+
+- **github:** find notes issues by label instead of search ([4573989](https://github.com/decaporg/decap-cms/commit/457398989434e8c743225c63b6ef573c49be8bb8))
+
 # [3.9.0-beta.1](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-github@3.9.0-beta.0...decap-cms-backend-github@3.9.0-beta.1) (2026-09-22)
 
 ### Features
