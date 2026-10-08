@@ -1643,23 +1643,52 @@ ${note.content}`;
   }
 
   /**
+   * List the repo's notes issues by label.
+   *
+   * Deliberately not `/search/issues`: with a GitHub App installation token the
+   * search API intermittently answers an identical query with 422 "cannot be
+   * searched", observed alternating 200/422 within a second on the same repo.
+   * Every caller swallowed that as "no issue", so notes vanished from the pane
+   * and the next note opened a duplicate issue. The label listing is a plain
+   * repo read with no index behind it.
+   */
+  private async listNotesIssues(state: 'open' | 'all'): Promise<GitHubIssue[]> {
+    // Paged by number rather than requestAllPages: that follows the Link
+    // header, which the Turbo proxy does not forward, so it would stop after
+    // the first page there.
+    const perPage = 100;
+    const issues: (GitHubIssue & { pull_request?: unknown })[] = [];
+    for (let page = 1; ; page++) {
+      const batch: (GitHubIssue & { pull_request?: unknown })[] = await this.request(
+        `${this.repoURL}/issues`,
+        { params: { labels: API.NOTES_LABEL, state, per_page: perPage, page } },
+      );
+      issues.push(...batch);
+      if (batch.length < perPage) break;
+    }
+    return issues.filter(issue => !issue.pull_request);
+  }
+
+  private async findNotesIssue(
+    collectionName: string,
+    slug: string,
+    state: 'open' | 'all',
+  ): Promise<GitHubIssue | null> {
+    // createEntryIssue writes the key between backticks, so matching on them
+    // keeps `posts/foo` from also matching the issue for `posts/foo-bar`.
+    const marker = `\`${collectionName}/${slug}\``;
+    const issues = await this.listNotesIssues(state);
+    return issues.find(issue => issue.body?.includes(marker)) ?? null;
+  }
+
+  /**
    * Find existing issue for an entry (returns null if not found)
    */
   async findEntryIssue(collectionName: string, slug: string): Promise<GitHubIssue | null> {
-    // Search for existing issue
-    const searchQuery = `repo:${this.repo} label:${API.NOTES_LABEL} "${collectionName}/${slug}" in:body`;
-
     try {
-      const searchResponse = await this.request('/search/issues', {
-        params: { q: searchQuery },
-      });
-
-      if (searchResponse.items && searchResponse.items.length > 0) {
-        return searchResponse.items[0];
-      }
-      return null;
+      return await this.findNotesIssue(collectionName, slug, 'all');
     } catch (error) {
-      console.warn('Failed to search for existing notes issue:', error);
+      console.warn('Failed to look up existing notes issue:', error);
       return null;
     }
   }
@@ -1819,13 +1848,8 @@ ${note.content}`;
    */
   async closeIssueOnPublish(collectionName: string, slug: string): Promise<void> {
     try {
-      const searchQuery = `repo:${this.repo} label:${API.NOTES_LABEL} "${collectionName}/${slug}" in:body state:open`;
-      const searchResponse = await this.request('/search/issues', {
-        params: { q: searchQuery },
-      });
-
-      if (searchResponse.items && searchResponse.items.length > 0) {
-        const issue = searchResponse.items[0];
+      const issue = await this.findNotesIssue(collectionName, slug, 'open');
+      if (issue) {
         await this.request(`${this.repoURL}/issues/${issue.number}`, {
           method: 'PATCH',
           body: JSON.stringify({
@@ -1847,13 +1871,8 @@ ${note.content}`;
    */
   async reopenIssueOnUnpublish(collectionName: string, slug: string): Promise<void> {
     try {
-      const searchQuery = `repo:${this.repo} label:${API.NOTES_LABEL} "${collectionName}/${slug}" in:body`;
-      const searchResponse = await this.request('/search/issues', {
-        params: { q: searchQuery },
-      });
-
-      if (searchResponse.items && searchResponse.items.length > 0) {
-        const issue = searchResponse.items[0];
+      const issue = await this.findNotesIssue(collectionName, slug, 'all');
+      if (issue) {
         // Remove 'entry-published' or 'entry-deleted' labels and reopen
         const updatedLabels = (issue.labels || [])
           .map((l: { name: string }) => l.name)
@@ -1945,14 +1964,11 @@ ${note.content}`;
     Array<{ collection: string; slug: string; noteCount: number }>
   > {
     try {
-      const searchQuery = `repo:${this.repo} label:${API.NOTES_LABEL} state:open`;
-      const searchResponse = await this.request('/search/issues', {
-        params: { q: searchQuery, per_page: 100 },
-      });
+      const issues = await this.listNotesIssues('open');
 
       const entriesWithNotes = [];
 
-      for (const issue of searchResponse.items || []) {
+      for (const issue of issues) {
         // Extract collection/slug from issue body
         const match = issue.body.match(/entry: `(.+)\/(.+)`/);
         if (match) {
@@ -1977,13 +1993,8 @@ ${note.content}`;
    */
   async closeEntryNotesIssue(collectionName: string, slug: string): Promise<void> {
     try {
-      const searchQuery = `repo:${this.repo} label:${API.NOTES_LABEL} "${collectionName}/${slug}" in:body state:open`;
-      const searchResponse = await this.request('/search/issues', {
-        params: { q: searchQuery },
-      });
-
-      if (searchResponse.items && searchResponse.items.length > 0) {
-        const issue = searchResponse.items[0];
+      const issue = await this.findNotesIssue(collectionName, slug, 'open');
+      if (issue) {
         await this.request(`${this.repoURL}/issues/${issue.number}`, {
           method: 'PATCH',
           body: JSON.stringify({

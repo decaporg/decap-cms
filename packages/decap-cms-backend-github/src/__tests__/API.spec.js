@@ -19,6 +19,76 @@ describe('github API', () => {
     });
   }
 
+  describe('notes issues', () => {
+    function notesIssue(number, key, extra = {}) {
+      return {
+        number,
+        body: `This issue tracks notes for entry: \`${key}\`\n\n---`,
+        labels: [{ name: 'decap-cms-notes' }],
+        ...extra,
+      };
+    }
+
+    it('finds the entry issue by listing labelled issues, never by search', async () => {
+      const api = new API({ branch: 'main', repo: 'owner/repo' });
+      const requests = [];
+      mockAPI(api, {
+        '/repos/owner/repo/issues': options => {
+          requests.push(options.params);
+          return [
+            notesIssue(1, 'posts/foo-bar'),
+            notesIssue(2, 'posts/foo', { pull_request: {} }),
+            notesIssue(3, 'posts/foo'),
+          ];
+        },
+      });
+
+      const issue = await api.findEntryIssue('posts', 'foo');
+
+      expect(issue.number).toBe(3);
+      expect(requests).toEqual([
+        { labels: 'decap-cms-notes', state: 'all', per_page: 100, page: 1 },
+      ]);
+      expect(api.request).not.toHaveBeenCalledWith('/search/issues', expect.anything());
+    });
+
+    it('pages until a short page', async () => {
+      const api = new API({ branch: 'main', repo: 'owner/repo' });
+      const fullPage = Array.from({ length: 100 }, (_, i) => notesIssue(i + 10, `posts/p${i}`));
+      mockAPI(api, {
+        '/repos/owner/repo/issues': ({ params }) =>
+          params.page === 1 ? fullPage : [notesIssue(500, 'posts/late')],
+      });
+
+      const issue = await api.findEntryIssue('posts', 'late');
+
+      expect(issue.number).toBe(500);
+      expect(api.request).toHaveBeenCalledTimes(2);
+    });
+
+    it('closes only an open issue on publish', async () => {
+      const api = new API({ branch: 'main', repo: 'owner/repo' });
+      let patched = null;
+      mockAPI(api, {
+        '/repos/owner/repo/issues': ({ params }) => {
+          expect(params.state).toBe('open');
+          return [notesIssue(7, 'posts/foo')];
+        },
+        '/repos/owner/repo/issues/7': req => {
+          patched = JSON.parse(req.body);
+          return {};
+        },
+      });
+
+      await api.closeIssueOnPublish('posts', 'foo');
+
+      expect(patched).toEqual({
+        state: 'closed',
+        labels: ['decap-cms-notes', 'entry-published'],
+      });
+    });
+  });
+
   describe('editorialWorkflowGit', () => {
     it('should create PR with correct base branch name when publishing with editorial workflow', () => {
       let prBaseBranch = null;
