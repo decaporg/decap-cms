@@ -84,6 +84,10 @@ const TERMINAL_REFRESH_CODES = new Set([
   'session_expired',
 ]);
 
+const TURBO_SITE_ACCESS_DENIED_MESSAGE =
+  "Your Decap Turbo account doesn't have access to this site. A team owner can add you " +
+  "from the site's Members tab in Decap Turbo, then log in again.";
+
 // Shared control-plane values (supabase_app_id, supabase_anon_key, base_url,
 // api_root) are identical across every site, so a site's config.yml only
 // needs `turbo_site_id`. This is resolved here, in this backend's own code,
@@ -647,8 +651,9 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
     // `refreshedTokenPromise`, so sharing one with `currentUser` costs nothing.
     await this.refreshSessionIfNeeded();
 
+    let res: Response;
     try {
-      const res = await fetch(
+      res = await fetch(
         `${this.baseUrl}/functions/v1/permissions?site_id=${encodeURIComponent(this.siteId)}`,
         {
           headers: {
@@ -657,15 +662,31 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
           },
         },
       );
-      if (!res.ok) {
-        console.warn('Failed to fetch Turbo site permissions', res.status);
-        return undefined;
-      }
-      return await res.json();
     } catch (error) {
       console.warn('Failed to fetch Turbo site permissions', error);
       return undefined;
     }
+
+    // 403 is the one answer that is not a soft failure: the endpoint returns it
+    // only when the signed-in user has no membership on this site. Team
+    // membership alone is not enough (owners included), and the gh proxy
+    // refuses every request on the same grounds — so letting the login through
+    // put the editor in a "logged in" CMS where every collection load raised
+    // its own 403 toast. Failing here turns that into a single error on the
+    // login page, and on a restored session core logs the user out.
+    if (res.status === 403) {
+      this.logout();
+      throw new Error(TURBO_SITE_ACCESS_DENIED_MESSAGE);
+    }
+
+    if (!res.ok) {
+      console.warn('Failed to fetch Turbo site permissions', res.status);
+      return undefined;
+    }
+    return res.json().catch((error: unknown) => {
+      console.warn('Failed to fetch Turbo site permissions', error);
+      return undefined;
+    });
   }
 
   async pollUntilForkExists({ repo }: { repo: string; token: string }) {

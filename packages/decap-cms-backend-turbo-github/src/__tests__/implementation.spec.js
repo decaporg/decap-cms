@@ -305,6 +305,46 @@ describe('turbo backend supabase session refresh', () => {
 
       expect(result).toBeUndefined();
     });
+
+    it('rejects and drops the session when the user is not a member of the site', async () => {
+      const backend = new DecapTurboGitHubBackend({
+        ...config,
+        backend: { ...config.backend, turbo_site_id: 'site-123' },
+      });
+      backend.supabaseAccessToken = 'access-123';
+      backend.supabaseRefreshToken = 'refresh-123';
+
+      global.fetch = jest.fn().mockResolvedValue({ ok: false, status: 403 });
+
+      // A team member who is not assigned to this site: the gh proxy refuses
+      // every request, so the login itself has to fail rather than land the
+      // editor in a CMS that raises one 403 toast per collection.
+      await expect(backend.fetchTurboPermissions()).rejects.toThrow(
+        "doesn't have access to this site",
+      );
+      expect(backend.supabaseAccessToken).toBeNull();
+      expect(backend.supabaseRefreshToken).toBeNull();
+    });
+
+    it('fails authenticate for a user who is not a member of the site', async () => {
+      const backend = new DecapTurboGitHubBackend({
+        ...config,
+        backend: { ...config.backend, turbo_site_id: 'site-123', branch: 'main' },
+      });
+      backend.setActiveSiteAndRefresh = jest.fn().mockResolvedValue(undefined);
+
+      global.fetch = jest.fn().mockResolvedValue({ ok: false, status: 403 });
+
+      await expect(
+        backend.authenticate({
+          token: 'access-123',
+          access_token: 'access-123',
+          refresh_token: 'refresh-123',
+          user_metadata: { active_site_id: 'site-123' },
+        }),
+      ).rejects.toThrow("doesn't have access to this site");
+      expect(recordCmsEvent).not.toHaveBeenCalled();
+    });
   });
 
   describe('setActiveSiteAndRefresh', () => {

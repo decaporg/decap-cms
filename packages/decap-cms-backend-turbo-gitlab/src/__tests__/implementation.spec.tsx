@@ -126,6 +126,38 @@ describe('turbo gitlab backend supabase session refresh', () => {
     expect(init.headers['x-site-id']).toBe('site-123');
   });
 
+  describe('fetchTurboPermissions', () => {
+    it('rejects and drops the session when the user is not a member of the site', async () => {
+      const backend = new DecapTurboGitLabBackend({
+        ...config,
+        backend: { ...config.backend, turbo_site_id: 'site-123' },
+      });
+      backend.supabaseAccessToken = 'access-123';
+      backend.supabaseRefreshToken = 'refresh-123';
+
+      global.fetch = jest.fn().mockResolvedValue({ ok: false, status: 403 });
+
+      await expect(backend.fetchTurboPermissions()).rejects.toThrow(
+        "doesn't have access to this site",
+      );
+      expect(backend.supabaseAccessToken).toBeNull();
+      expect(backend.supabaseRefreshToken).toBeNull();
+    });
+
+    it('treats any other failure as soft, so a blip does not block login', async () => {
+      const backend = new DecapTurboGitLabBackend({
+        ...config,
+        backend: { ...config.backend, turbo_site_id: 'site-123' },
+      });
+      backend.supabaseAccessToken = 'access-123';
+
+      global.fetch = jest.fn().mockResolvedValue({ ok: false, status: 500 });
+
+      await expect(backend.fetchTurboPermissions()).resolves.toBeUndefined();
+      expect(backend.supabaseAccessToken).toBe('access-123');
+    });
+  });
+
   describe('setActiveSiteAndRefresh', () => {
     it('refreshes an expired token before sending it, instead of PUTting a stale one', async () => {
       const backend = new DecapTurboGitLabBackend(config);
