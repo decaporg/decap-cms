@@ -95,6 +95,19 @@ export function authenticateUser() {
   };
 }
 
+/**
+ * The backend found its session dead mid-use. Same exit as a failed restore
+ * in authenticateUser: the reason goes on the login page, and logoutUser
+ * clears the toasts the failing requests had already raised.
+ */
+export function sessionInvalidated(message: string) {
+  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+    if (!getState().auth.user) return;
+    dispatch(authError(new Error(message)));
+    dispatch(logoutUser());
+  };
+}
+
 export function loginUser(credentials: Credentials) {
   return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();

@@ -60,15 +60,25 @@ export async function withRefreshLock<T>(refresh: () => Promise<T>): Promise<T> 
  * The `session_id` claim of a Supabase access token: which `auth.sessions` row
  * it belongs to. Null when the token is missing or unreadable.
  */
-export function sessionIdOf(accessToken: string | null | undefined): string | null {
+function claimsOf(accessToken: string | null | undefined): Record<string, unknown> | null {
   const payload = accessToken?.split('.')[1];
   if (!payload) return null;
   try {
-    const claims = JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/')));
-    return typeof claims.session_id === 'string' ? claims.session_id : null;
+    return JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/')));
   } catch {
     return null;
   }
+}
+
+export function sessionIdOf(accessToken: string | null | undefined): string | null {
+  const claims = claimsOf(accessToken);
+  return typeof claims?.session_id === 'string' ? claims.session_id : null;
+}
+
+/** The token's own `exp`, in epoch seconds, for a stored user saved without `expires_at`. */
+export function expiresAtOf(accessToken: string | null | undefined): number | null {
+  const claims = claimsOf(accessToken);
+  return typeof claims?.exp === 'number' ? claims.exp : null;
 }
 
 /**

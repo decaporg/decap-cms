@@ -304,6 +304,28 @@ interface ImplementationInitOptions {
   updateUserCredentials: (credentials: Credentials) => void;
   retrieveUserCredentials: () => Credentials | null;
   initialWorkflowStatus: string;
+  /**
+   * For a backend that learns mid-session that its session is gone for good
+   * (a refresh token that was revoked, a membership that was removed). Core
+   * logs the user out and shows `message` on the login page, once, instead of
+   * every later request failing on its own toast.
+   */
+  onSessionInvalid: (message: string) => void;
+}
+
+type SessionInvalidListener = (message: string) => void;
+// An array, not a Set: `Set` in this module is Immutable's.
+let sessionInvalidListeners: SessionInvalidListener[] = [];
+
+/**
+ * The backend is built outside React and Redux, so the app subscribes here
+ * (see App.js) rather than the backend reaching for the store.
+ */
+export function subscribeToSessionInvalid(listener: SessionInvalidListener) {
+  sessionInvalidListeners.push(listener);
+  return () => {
+    sessionInvalidListeners = sessionInvalidListeners.filter(l => l !== listener);
+  };
 }
 
 type Implementation = BackendImplementation & {
@@ -443,6 +465,8 @@ export class Backend {
       updateUserCredentials: this.updateUserCredentials,
       retrieveUserCredentials: this.retrieveUserCredentials,
       initialWorkflowStatus: status.first(),
+      onSessionInvalid: (message: string) =>
+        sessionInvalidListeners.forEach(listener => listener(message)),
     });
     this.backendName = backendName;
     this.authStore = authStore;

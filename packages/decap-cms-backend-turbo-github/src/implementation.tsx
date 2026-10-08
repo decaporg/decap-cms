@@ -17,7 +17,7 @@ import SupabaseAuthenticationPage from './AuthenticationPage';
 import { resolveCommitAuthorFromSupabaseUser } from './commitAuthor';
 import { coalesceKey, createRequestCoalescer, type RequestCoalescer } from './requestCoalescer';
 import { recordCmsEvent } from './telemetry';
-import { revokeSession, sessionIdOf, withRefreshLock } from './sessionSync';
+import { expiresAtOf, revokeSession, sessionIdOf, withRefreshLock } from './sessionSync';
 import { EditorBridge, registerAskClaudeAction } from './editorBridge';
 import {
   createProxyMeter,
@@ -90,6 +90,49 @@ const TERMINAL_REFRESH_CODES = new Set([
 const TURBO_SITE_ACCESS_DENIED_MESSAGE =
   "Your Decap Turbo account doesn't have access to this site. A team owner can add you " +
   "from the site's Members tab in Decap Turbo, then log in again.";
+
+const SESSION_EXPIRED_MESSAGE = 'Session expired. Please log in again.';
+
+/**
+ * The proxy's own refusal of the access token (supabase/functions/gh/index.ts)
+ * is this exact plain-text body. A 401 GitHub sent back through the proxy is
+ * JSON ("Bad credentials") and is about the installation, not this session,
+ * so it must not log the editor out.
+ */
+const PROXY_UNAUTHORIZED_BODY = 'Unauthorized';
+
+/** The proxy's 403 for a user with no membership on this site. */
+const SITE_ACCESS_DENIED_MARKER = 'no access to requested site';
+
+function isProxyUrl(url: string) {
+  return url.includes('/functions/v1/');
+}
+
+/**
+ * The proxy writes the reason an editor should read into `error` — "an owner
+ * can add this repo under Git connection", "this entry's slug is too long" —
+ * while GitHub's own bodies use `message`. Either way the toast should show
+ * the sentence, not the JSON around it.
+ */
+function proxyErrorMessage(body: string): string {
+  try {
+    const parsed = JSON.parse(body);
+    if (typeof parsed?.error === 'string') return parsed.error;
+    if (typeof parsed?.message === 'string') return parsed.message;
+  } catch {
+    // Not JSON: the body is already the message.
+  }
+  return body;
+}
+
+/** Reads a response's body without consuming it for whoever parses it next. */
+function peekBody(response: Response): Promise<string> {
+  if (typeof response.clone !== 'function') return Promise.resolve('');
+  return response
+    .clone()
+    .text()
+    .catch(() => '');
+}
 
 // Shared control-plane values (supabase_app_id, supabase_anon_key, base_url,
 // api_root) are identical across every site, so a site's config.yml only
@@ -214,6 +257,13 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
   refreshedTokenPromise?: Promise<string>;
   /** Epoch ms before which refreshSessionIfNeeded will not try again. */
   refreshBlockedUntil = 0;
+  /** Core's hook for a session that has ended for good; see invalidateSession. */
+  onSessionInvalid: (message: string) => void;
+  /**
+   * Set once this session is known to be over, and cleared by the next login.
+   * While set, requests fail here without reaching the proxy.
+   */
+  sessionInvalidMessage: string | null = null;
   reloadEntriesAfterPersist?: boolean;
   /**
    * Non-null only while a save is in flight. Every proxied response is folded
@@ -284,6 +334,7 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
 
     this.updateUserCredentials = options.updateUserCredentials || (() => undefined);
     this.retrieveUserCredentials = options.retrieveUserCredentials || (() => null);
+    this.onSessionInvalid = options.onSessionInvalid || (() => undefined);
 
     this.bypassWriteAccessCheckForAppTokens = true;
     this.tokenKeyword = 'Bearer';
@@ -298,7 +349,8 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
     );
   }
 
-  async ghFetch(url: string, init: RequestInit = {}) {
+  async ghFetch(url: string, init: RequestInit = {}, isRetry = false): Promise<Response> {
+    this.assertSessionUsable();
     await this.refreshSessionIfNeeded();
     const accessToken = this.supabaseAccessToken || this.token || '';
     const headers: Record<string, string> = Object.fromEntries(
@@ -335,10 +387,77 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
 
     if (!response.ok) {
       const body = await response.text().catch(() => '');
-      throw new APIError(body || response.statusText, response.status, 'Decap Turbo');
+      if (isProxyUrl(scopedUrl)) {
+        const verdict = await this.reactToProxyAuthAnswer(response.status, body, isRetry);
+        if (verdict === 'retry') return this.ghFetch(url, init, true);
+      }
+      throw new APIError(
+        proxyErrorMessage(body) || response.statusText,
+        response.status,
+        'Decap Turbo',
+      );
     }
 
     return response;
+  }
+
+  /**
+   * One place for the proxy's two "this session cannot continue" answers,
+   * which used to surface as an error toast per request and nothing else.
+   *
+   * - A 401 from the proxy itself means the access token was refused: expired
+   *   despite the local clock, or its session revoked server-side (another
+   *   tab's CMS logout revokes the session they share). One forced refresh,
+   *   ignoring the transient-failure cooldown, decides which: a new token is
+   *   worth one retry, a terminal refusal ends the session.
+   * - A 403 for a site the user is no longer a member of cannot be fixed from
+   *   here at all.
+   *
+   * Without this a dead session kept a tab looking logged in, and every click
+   * cost a request and a toast: 20 refused syncs in 35 s from one editor.
+   */
+  async reactToProxyAuthAnswer(
+    status: number,
+    body: string,
+    isRetry: boolean,
+  ): Promise<'retry' | 'fail'> {
+    if (status === 403 && body.includes(SITE_ACCESS_DENIED_MARKER)) {
+      this.invalidateSession(TURBO_SITE_ACCESS_DENIED_MESSAGE);
+      return 'fail';
+    }
+    if (status !== 401 || body.trim() !== PROXY_UNAUTHORIZED_BODY) return 'fail';
+    if (isRetry || !this.supabaseRefreshToken) {
+      this.invalidateSession(SESSION_EXPIRED_MESSAGE);
+      return 'fail';
+    }
+    try {
+      await this.getRefreshedAccessToken();
+      return 'retry';
+    } catch (error) {
+      if (this.shouldForceLogoutOnRefreshFailure(error)) {
+        this.invalidateSession(this.getRefreshFailureMessage(error));
+      }
+      return 'fail';
+    }
+  }
+
+  /**
+   * Ends a session that cannot recover: logs out once, hands core the reason
+   * (it returns to the login page and shows it), and latches, so whatever is
+   * still queued behind this request fails in assertSessionUsable instead of
+   * each going to the proxy for the same answer.
+   */
+  invalidateSession(message: string) {
+    if (this.sessionInvalidMessage) return;
+    this.sessionInvalidMessage = message;
+    this.logout();
+    this.onSessionInvalid(message);
+  }
+
+  assertSessionUsable() {
+    if (this.sessionInvalidMessage) {
+      throw new APIError(this.sessionInvalidMessage, 401, 'Decap Turbo');
+    }
   }
 
   setScopedApiRequestBuilder() {
@@ -365,6 +484,7 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
     const originalRequestHeaders = this.api.requestHeaders.bind(this.api);
     this.api.requestHeaders = async (headers: Record<string, string> = {}) => {
       if (isGhProxyApiRoot) {
+        this.assertSessionUsable();
         await this.refreshSessionIfNeeded();
         api.token = this.supabaseAccessToken || this.token || '';
       }
@@ -393,18 +513,62 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
     // Cast because the hook is declared on lib-util's API interface (and read
     // there) but not redeclared on decap-cms-backend-github's own API class —
     // the same reason turbo-gitlab can assign it directly and this cannot.
+    const perform = (req: unknown) => {
+      const request = req as { get: (key: string) => string | undefined };
+      return this.coalesceRequest(
+        coalesceKey(request.get('method'), unsentRequest.toURL(req as never)),
+        () =>
+          (unsentRequest.performRequest(req as never) as Promise<Response>).then(response => {
+            recordProxyResponse(this.proxyMeter, response);
+            return response;
+          }),
+      );
+    };
     (api as unknown as { requestFunction?: (req: unknown) => Promise<Response> }).requestFunction =
-      req => {
-        const request = req as { get: (key: string) => string | undefined };
-        return this.coalesceRequest(
-          coalesceKey(request.get('method'), unsentRequest.toURL(req as never)),
-          () =>
-            (unsentRequest.performRequest(req as never) as Promise<Response>).then(response => {
-              recordProxyResponse(this.proxyMeter, response);
-              return response;
-            }),
+      async req => {
+        const response = await perform(req);
+        if (response.ok || !isGhProxyApiRoot) return response;
+        const body = await peekBody(response);
+        const verdict = await this.reactToProxyAuthAnswer(response.status, body, false);
+        if (verdict !== 'retry') return response;
+        // The request was built with the refused token; rebuild its header
+        // with the one just refreshed. Not coalesced: it is this caller's.
+        const retried = unsentRequest.withHeaders(
+          { Authorization: `${this.tokenKeyword} ${this.supabaseAccessToken}` },
+          req as never,
         );
+        const second = (await unsentRequest.performRequest(retried as never)) as Response;
+        recordProxyResponse(this.proxyMeter, second);
+        if (!second.ok) {
+          const secondBody = await peekBody(second);
+          await this.reactToProxyAuthAnswer(second.status, secondBody, true);
+        }
+        return second;
       };
+
+    // Paginated reads (the editorial-workflow board's pull request list among
+    // them) go through lib-util's getAllResponses, which calls performRequest
+    // directly and never reaches requestFunction. Every page still passes
+    // through parseResponse, so the session-ending answers are caught there;
+    // they are not retried, but the latch stops whatever would follow.
+    // GitHub's handleRequestError reads `message`; a proxy refusal carries its
+    // reason in `error`, which used to leave the editor with an empty toast.
+    const originalHandleRequestError = api.handleRequestError.bind(api);
+    api.handleRequestError = (error: { message?: string; error?: unknown }, status: number) =>
+      originalHandleRequestError(
+        (!error?.message && typeof error?.error === 'string'
+          ? { ...error, message: error.error }
+          : error) as never,
+        status,
+      );
+
+    const originalParseResponse = api.parseResponse.bind(api);
+    api.parseResponse = async (response: Response) => {
+      if (!response.ok && isGhProxyApiRoot && response.status === 403) {
+        await this.reactToProxyAuthAnswer(response.status, await peekBody(response), true);
+      }
+      return originalParseResponse(response);
+    };
   }
 
   async status() {
@@ -540,6 +704,7 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
   }
 
   async authenticate(state: Credentials) {
+    this.sessionInvalidMessage = null;
     // Idempotent; ticks do nothing until the session has a token.
     this.editorBridgeInstance?.start();
     if ('access_token' in state) {
@@ -1072,6 +1237,11 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
 
   async refreshSessionIfNeeded() {
     const now = Math.floor(Date.now() / 1000);
+    if (!this.supabaseExpiresAt && this.supabaseAccessToken) {
+      // A stored user saved without `expires_at` used to skip refreshing
+      // forever, and its token started failing an hour in.
+      this.supabaseExpiresAt = expiresAtOf(this.supabaseAccessToken);
+    }
     if (!this.supabaseExpiresAt || this.supabaseExpiresAt - now >= REFRESH_BUFFER_SECONDS) {
       return;
     }
@@ -1092,8 +1262,9 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
     } catch (error) {
       console.error('Failed to refresh token:', error);
       if (this.shouldForceLogoutOnRefreshFailure(error)) {
-        this.logout();
-        throw new Error(this.getRefreshFailureMessage(error));
+        const message = this.getRefreshFailureMessage(error);
+        this.invalidateSession(message);
+        throw new Error(message);
       }
       this.refreshBlockedUntil = Date.now() + REFRESH_COOLDOWN_MS;
     }

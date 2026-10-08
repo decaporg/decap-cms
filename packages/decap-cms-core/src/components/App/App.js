@@ -8,8 +8,8 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 import TopBarProgress from 'react-topbar-progress-indicator';
 import { Loader, colors } from 'decap-cms-ui-default';
 
-import { loginUser, logoutUser } from '../../actions/auth';
-import { currentBackend } from '../../backend';
+import { loginUser, logoutUser, sessionInvalidated } from '../../actions/auth';
+import { currentBackend, subscribeToSessionInvalid } from '../../backend';
 import { createNewEntry } from '../../actions/collections';
 import { openMediaLibrary } from '../../actions/mediaLibrary';
 import { startDeployNotifications, startDeployStatus } from '../../actions/deployStatus';
@@ -78,6 +78,7 @@ export class App extends Component {
     collections: ImmutablePropTypes.map.isRequired,
     loginUser: PropTypes.func.isRequired,
     logoutUser: PropTypes.func.isRequired,
+    sessionInvalidated: PropTypes.func.isRequired,
     user: PropTypes.object,
     isFetching: PropTypes.bool.isRequired,
     publishMode: PropTypes.oneOf([SIMPLE, EDITORIAL_WORKFLOW]),
@@ -96,6 +97,14 @@ export class App extends Component {
     PropTypes.checkPropTypes(App.propTypes, this.props, 'prop', 'App');
 
     this.startDeployWatching();
+
+    this.unsubscribeSessionInvalid = subscribeToSessionInvalid(message =>
+      this.props.sessionInvalidated(message),
+    );
+  }
+
+  componentWillUnmount() {
+    this.unsubscribeSessionInvalid?.();
   }
 
   componentDidUpdate(prevProps) {
@@ -334,6 +343,7 @@ const mapDispatchToProps = {
   openMediaLibrary,
   loginUser,
   logoutUser,
+  sessionInvalidated,
   startDeployNotifications,
   startDeployStatus,
 };

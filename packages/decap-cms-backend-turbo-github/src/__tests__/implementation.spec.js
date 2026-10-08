@@ -202,6 +202,96 @@ describe('turbo backend supabase session refresh', () => {
     });
   });
 
+  describe('proxy auth answers', () => {
+    const proxyUrl = 'https://supabase.example/functions/v1/gh/_content/sync';
+    const refused = { ok: false, status: 401, text: () => Promise.resolve('Unauthorized') };
+    const ok = { ok: true, status: 200, text: () => Promise.resolve('{}') };
+
+    function backendWithSession(options = {}) {
+      const backend = new DecapTurboGitHubBackend(config, options);
+      backend.supabaseAccessToken = 'old-token';
+      backend.supabaseRefreshToken = 'refresh-token';
+      backend.supabaseExpiresAt = Math.floor(Date.now() / 1000) + 3600;
+      return backend;
+    }
+
+    it('refreshes once on a proxy 401 and retries with the new token', async () => {
+      const backend = backendWithSession();
+      backend.getRefreshedAccessToken = jest.fn().mockImplementation(async () => {
+        backend.supabaseAccessToken = 'new-token';
+        return 'new-token';
+      });
+      global.fetch = jest.fn().mockResolvedValueOnce(refused).mockResolvedValueOnce(ok);
+
+      await backend.ghFetch(proxyUrl);
+
+      expect(backend.getRefreshedAccessToken).toHaveBeenCalledTimes(1);
+      expect(global.fetch).toHaveBeenCalledTimes(2);
+      expect(global.fetch.mock.calls[1][1].headers.Authorization).toBe('Bearer new-token');
+    });
+
+    it('ends the session once when the refresh is refused, then fails fast', async () => {
+      const onSessionInvalid = jest.fn();
+      const backend = backendWithSession({ onSessionInvalid });
+      const terminal = Object.assign(new Error('refresh_token_not_found'), { isTerminal: true });
+      backend.getRefreshedAccessToken = jest.fn().mockRejectedValue(terminal);
+      global.fetch = jest.fn().mockResolvedValue(refused);
+
+      await expect(backend.ghFetch(proxyUrl)).rejects.toMatchObject({ status: 401 });
+      await expect(backend.ghFetch(proxyUrl)).rejects.toThrow(
+        'Session expired. Please log in again.',
+      );
+
+      expect(onSessionInvalid).toHaveBeenCalledTimes(1);
+      expect(onSessionInvalid).toHaveBeenCalledWith('Session expired. Please log in again.');
+      // The second call never reached the network.
+      expect(global.fetch).toHaveBeenCalledTimes(1);
+      expect(backend.supabaseAccessToken).toBeNull();
+    });
+
+    it('does not log out over a GitHub 401 passed through the proxy', async () => {
+      const onSessionInvalid = jest.fn();
+      const backend = backendWithSession({ onSessionInvalid });
+      backend.getRefreshedAccessToken = jest.fn();
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: false,
+        status: 401,
+        text: () => Promise.resolve('{"message":"Bad credentials"}'),
+      });
+
+      await expect(backend.ghFetch(proxyUrl)).rejects.toMatchObject({ status: 401 });
+
+      expect(backend.getRefreshedAccessToken).not.toHaveBeenCalled();
+      expect(onSessionInvalid).not.toHaveBeenCalled();
+    });
+
+    it('ends the session on a 403 for a site the user lost access to', async () => {
+      const onSessionInvalid = jest.fn();
+      const backend = backendWithSession({ onSessionInvalid });
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: false,
+        status: 403,
+        text: () => Promise.resolve('{"error":"Forbidden: no access to requested site"}'),
+      });
+
+      await expect(backend.ghFetch(proxyUrl)).rejects.toMatchObject({ status: 403 });
+
+      expect(onSessionInvalid).toHaveBeenCalledWith(
+        expect.stringContaining("doesn't have access to this site"),
+      );
+    });
+
+    it('a new login clears the latch', async () => {
+      const backend = backendWithSession();
+      backend.sessionInvalidMessage = 'Session expired. Please log in again.';
+      backend.isBranchConfigured = true;
+
+      await backend.authenticate({ token: 't', access_token: 'fresh', refresh_token: 'r' });
+
+      expect(backend.sessionInvalidMessage).toBeNull();
+    });
+  });
+
   describe('pollUntilForkExists', () => {
     it('keeps polling while the fork 404s, then resolves once it exists', async () => {
       const backend = new DecapTurboGitHubBackend(config);

@@ -24,6 +24,7 @@ function renderApp(props) {
           collections={fromJS({})}
           loginUser={jest.fn()}
           logoutUser={jest.fn()}
+          sessionInvalidated={jest.fn()}
           isFetching={false}
           openMediaLibrary={jest.fn()}
           startDeployNotifications={jest.fn()}
@@ -63,6 +64,7 @@ describe('App deploy watching', () => {
             collections={fromJS({})}
             loginUser={jest.fn()}
             logoutUser={jest.fn()}
+            sessionInvalidated={jest.fn()}
             isFetching={false}
             openMediaLibrary={jest.fn()}
             startDeployNotifications={startDeployNotifications}
@@ -87,6 +89,7 @@ describe('App deploy watching', () => {
       collections: fromJS({}),
       loginUser: jest.fn(),
       logoutUser: jest.fn(),
+      sessionInvalidated: jest.fn(),
       isFetching: false,
       openMediaLibrary: jest.fn(),
       startDeployNotifications: jest.fn(),
