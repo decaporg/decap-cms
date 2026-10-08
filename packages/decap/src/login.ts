@@ -195,14 +195,25 @@ export function deviceName(hostname = os.hostname()): string {
   return hostname.replace(/\.(local|localdomain|lan|home)$/i, '').split('.')[0] || 'unknown device';
 }
 
+/**
+ * The program that opens `url` in the default browser, and its arguments.
+ * Never through a shell: on Windows `cmd /c start` reads the `&` between query
+ * parameters as a command separator, which cut the authorize link off after
+ * `port` and dropped the state and PKCE challenge. rundll32 takes the URL as
+ * one argument and hands it to the registered protocol handler.
+ */
+export function browserCommand(
+  url: string,
+  platform: NodeJS.Platform = process.platform,
+): [string, string[]] {
+  if (platform === 'darwin') return ['open', [url]];
+  if (platform === 'win32') return ['rundll32', ['url.dll,FileProtocolHandler', url]];
+  return ['xdg-open', [url]];
+}
+
 function openBrowser(url: string): void {
   if (process.env.DECAP_NO_BROWSER) return;
-  const [command, args] =
-    process.platform === 'darwin'
-      ? ['open', [url]]
-      : process.platform === 'win32'
-      ? ['cmd', ['/c', 'start', '""', url]]
-      : ['xdg-open', [url]];
+  const [command, args] = browserCommand(url);
   try {
     spawn(command, args, { stdio: 'ignore', detached: true }).on('error', ignore).unref();
   } catch {

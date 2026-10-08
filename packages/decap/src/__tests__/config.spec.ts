@@ -9,7 +9,7 @@ import {
   resolveAuth,
   writeCredentials,
 } from '../config.js';
-import { deviceName } from '../login.js';
+import { browserCommand, deviceName } from '../login.js';
 
 const credentials = {
   apiUrl: 'http://localhost:4321',
@@ -67,5 +67,19 @@ describe('deviceName', () => {
     expect(deviceName('Martins-MBP.local')).toBe('Martins-MBP');
     expect(deviceName('Honor_9_Lite-b514ec1d2653.localdomain')).toBe('Honor_9_Lite-b514ec1d2653');
     expect(deviceName('build-42.ci.example.com')).toBe('build-42');
+  });
+});
+
+describe('browserCommand', () => {
+  const url = 'https://turbo.example/cli/authorize?port=1&state=s&code_challenge=c';
+
+  it('passes the whole URL as one argument, past no shell', () => {
+    expect(browserCommand(url, 'darwin')).toEqual(['open', [url]]);
+    expect(browserCommand(url, 'linux')).toEqual(['xdg-open', [url]]);
+    // cmd /c start would split this at the first &.
+    expect(browserCommand(url, 'win32')).toEqual([
+      'rundll32',
+      ['url.dll,FileProtocolHandler', url],
+    ]);
   });
 });
