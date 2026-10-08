@@ -4,7 +4,7 @@ import os from 'node:os';
 import { spawn } from 'node:child_process';
 
 import { ApiClient, ApiError, operations } from './api.js';
-import { credentialsPath, deleteCredentials, writeCredentials } from './config.js';
+import { credentialsPath, deleteCredentials, readCredentials, writeCredentials } from './config.js';
 
 import type { Credentials } from './config.js';
 import type { CliTokenResponse, MeResponse } from 'decap-turbo-api';
@@ -27,7 +27,14 @@ function ignore(): void {
  * Astro app. A one-shot server on 127.0.0.1 receives the code; the PKCE
  * verifier never leaves this process until it is posted with the code.
  */
-export async function login(options: { apiUrl: string; admin: boolean }): Promise<void> {
+export async function login(options: {
+  apiUrl: string;
+  admin: boolean;
+  /** Opens the approval page; tests stand in for the browser here. */
+  openBrowser?: (url: string) => void;
+}): Promise<void> {
+  // The token this login replaces, read before anything can overwrite it.
+  const previous = readCredentials();
   const verifier = crypto.randomBytes(32).toString('base64url');
   const challenge = crypto.createHash('sha256').update(verifier).digest('base64url');
   const state = crypto.randomBytes(24).toString('base64url');
@@ -47,7 +54,7 @@ export async function login(options: { apiUrl: string; admin: boolean }): Promis
   console.log(
     'If it does not open, copy the link above into a browser where you are signed in to Decap Turbo.',
   );
-  openBrowser(authorize.toString());
+  (options.openBrowser ?? openBrowser)(authorize.toString());
 
   let code: string;
   try {
@@ -77,6 +84,21 @@ export async function login(options: { apiUrl: string; admin: boolean }): Promis
     ? `, expires ${new Date(issued.expires_at).toLocaleDateString()}`
     : '';
   console.log(`\n✓ Signed in as ${me.user.email} (${issued.scope} scope${expiry}).`);
+
+  // The file holds one token, so the one it held is unreachable from here on
+  // but would stay valid for the rest of its 90 days. Revoked only now, so a
+  // login that fails halfway leaves the user signed in as before.
+  if (previous && previous.token !== issued.token) {
+    const failure = await revokeStoredToken(previous);
+    if (failure) warnNotRevoked(previous.apiUrl, failure, 'the token this login replaced');
+  }
+}
+
+function warnNotRevoked(apiUrl: string, reason: string, which = 'the token'): void {
+  console.error(
+    `! Could not revoke ${which} on ${apiUrl}: ${reason}\n` +
+      '  It may still be valid until it expires. Revoke it in Decap Turbo under Profile → API tokens.',
+  );
 }
 
 /**
@@ -107,12 +129,7 @@ export async function logout(stored: Credentials | null): Promise<void> {
     return;
   }
   console.log(`Signed out. Removed ${credentialsPath()}.`);
-  if (revokeFailure) {
-    console.error(
-      `! Could not revoke the token on ${stored!.apiUrl}: ${revokeFailure}\n` +
-        '  It may still be valid until it expires. Revoke it in Decap Turbo under Profile → API tokens.',
-    );
-  }
+  if (revokeFailure) warnNotRevoked(stored!.apiUrl, revokeFailure);
 }
 
 function listenForCallback(
