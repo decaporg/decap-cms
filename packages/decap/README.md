@@ -2,6 +2,8 @@
 
 The Decap command line. It runs the local proxy server for editing a site on your own machine, manages [Decap Turbo](https://turbo.decapcms.org), and connects AI agents to Turbo over MCP. Turbo commands go through the Turbo API with a personal access token, so they can never do more than you can in the dashboard.
 
+It needs Node 20 or later.
+
 ## Local development: `decap dev`
 
 Runs the proxy server for Decap's `proxy` backend, so the CMS reads and writes the repository on disk. This was `npx decap-server`, which still works and runs the same server.
@@ -99,11 +101,11 @@ claude mcp add decap -- npx -y decap mcp
 
 ## Developing
 
-The API contract (operations, input schemas, MCP tool metadata) is the [`decap-turbo-api`](../decap-turbo-api) package, shared with the Turbo server. It is bundled into `dist/cli.js` at build time, so the published CLI does not depend on it at runtime.
+The API contract (operations, input schemas, MCP tool metadata) is the [`decap-turbo-api`](../decap-turbo-api) package, shared with the Turbo server. It is bundled into `dist/cli.cjs` at build time, so the published CLI does not depend on it at runtime.
 
 ```sh
 pnpm install            # from the repository root
-pnpm --filter decap build   # dist/cli.js
+pnpm --filter decap build   # dist/cli.cjs
 pnpm --filter decap test
 pnpm run type-check     # from the repository root
 ```
@@ -111,14 +113,14 @@ pnpm run type-check     # from the repository root
 Against a local Turbo (the Turbo app on port 4321):
 
 ```sh
-node dist/cli.js login --api-url http://localhost:4321
-node dist/cli.js whoami
+node dist/cli.cjs login --api-url http://localhost:4321
+node dist/cli.cjs whoami
 ```
 
-Until the package is on npm, `npx decap` 404s, so point your agent at the local build instead. The stored credentials remember the API URL, so no extra env is needed:
+To try changes to the CLI with an agent, point the agent at the local build. The stored credentials remember the API URL, so no extra env is needed:
 
 ```sh
-claude mcp add decap-local --scope user -- node /absolute/path/to/decap-cms/packages/decap/dist/cli.js mcp
+claude mcp add decap-local --scope user -- node /absolute/path/to/decap-cms/packages/decap/dist/cli.cjs mcp
 ```
 
 `claude mcp add` defaults to the current project's scope; `--scope user` makes it available in every session. Start a new Claude Code session afterwards: MCP servers are loaded at startup.
