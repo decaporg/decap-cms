@@ -8,6 +8,11 @@
  * action a widget's onChange dispatches, so validation, i18n duplication and
  * "unsaved changes" behave exactly as for typing, and the entry is only
  * written when someone presses Save.
+ *
+ * Experimental: not yet a stable public API. It exists for the Decap Turbo
+ * editor bridge, which is itself still in development, and its shape may
+ * change or go away in any release, minor and patch included. Typed as
+ * `@experimental` in index.d.ts.
  */
 import { fromJS, List, Map } from 'immutable';
 

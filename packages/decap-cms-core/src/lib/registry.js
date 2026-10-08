@@ -249,6 +249,9 @@ function validateEventName(name) {
  * receive plain values: `{ field, collection, locale, entry, applyFieldPatch }`,
  * where `entry` is `CMS.editor.getCurrentEntry()` and `applyFieldPatch` changes
  * fields without saving (lib/editorApi.ts).
+ *
+ * @experimental Not yet a stable public API: built for the Decap Turbo editor
+ * bridge, and may change or go away in any release, minor and patch included.
  */
 export function registerFieldAction(action) {
   if (!action || typeof action.id !== 'string' || typeof action.label !== 'string') {
