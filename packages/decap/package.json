@@ -1,7 +1,7 @@
 {
   "name": "@decap/cli",
   "description": "The Decap command line: run the local proxy server for the CMS, manage Decap Turbo from your terminal, and connect AI agents to it over MCP",
-  "version": "0.1.0",
+  "version": "0.1.1-beta.0",
   "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
   "license": "MIT",

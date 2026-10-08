@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.20.0-beta.2](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.20.0-beta.1...decap-cms-core@3.20.0-beta.2) (2026-10-08)
+
+### Bug Fixes
+
+- **core:** keep field actions from re-rendering every field ([b98ac09](https://github.com/decaporg/decap-cms/commit/b98ac09d6ee41c29eb0237959352b37be42ab28e)), closes [#7793](https://github.com/decaporg/decap-cms/issues/7793)
+- **core:** keep generated slugs and i18n deletes within what git accepts ([9752f3c](https://github.com/decaporg/decap-cms/commit/9752f3c662fabd2e7ddcb74782c5c3fb37b957ef))
+- **core:** stop a failed workflow load from retrying on every render ([20c99e0](https://github.com/decaporg/decap-cms/commit/20c99e0c443feb3a2dba23fd10c657f54e58dc0e))
+- **turbo:** end a dead session once instead of failing every request ([ef2cefa](https://github.com/decaporg/decap-cms/commit/ef2cefaead2c043c5594a6f3cafd2d1b79649972))
+- **turbo:** make the editor bridge opt-in ([3983a1a](https://github.com/decaporg/decap-cms/commit/3983a1a775fe469ac29313ed6bf34a0b3c1c4217))
+- **turbo:** stop CMS tabs and the dashboard logging each other out ([fbb445d](https://github.com/decaporg/decap-cms/commit/fbb445dd39be3a97f10b7bde059ca85d478dfa7c))
+
+### Features
+
+- **core:** editor API, field actions and the Turbo editor bridge ([2884f29](https://github.com/decaporg/decap-cms/commit/2884f29fc2e72661b98b24d0f126ed5b2a6db311))
+
 # [3.20.0-beta.1](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.20.0-beta.0...decap-cms-core@3.20.0-beta.1) (2026-09-22)
 
 ### Features

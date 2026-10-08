@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.5.0-beta.2](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-turbo-gitlab@3.5.0-beta.1...decap-cms-backend-turbo-gitlab@3.5.0-beta.2) (2026-10-08)
+
+### Bug Fixes
+
+- **turbo-gitlab:** end a dead session once instead of failing every request ([ae38113](https://github.com/decaporg/decap-cms/commit/ae38113192bdfc3b7453f10e44614fff2f77005f))
+- **turbo:** make the editor bridge opt-in ([3983a1a](https://github.com/decaporg/decap-cms/commit/3983a1a775fe469ac29313ed6bf34a0b3c1c4217))
+- **turbo:** refuse login to a site the user is not assigned to ([918c481](https://github.com/decaporg/decap-cms/commit/918c48132f92861fab60c07975adb3ee17b12dc7))
+- **turbo:** stop CMS tabs and the dashboard logging each other out ([fbb445d](https://github.com/decaporg/decap-cms/commit/fbb445dd39be3a97f10b7bde059ca85d478dfa7c))
+
+### Features
+
+- **core:** editor API, field actions and the Turbo editor bridge ([2884f29](https://github.com/decaporg/decap-cms/commit/2884f29fc2e72661b98b24d0f126ed5b2a6db311))
+
 # [3.5.0-beta.1](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-turbo-gitlab@3.5.0-beta.0...decap-cms-backend-turbo-gitlab@3.5.0-beta.1) (2026-09-22)
 
 ### Features
