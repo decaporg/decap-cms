@@ -42,6 +42,28 @@ describe('parseCliArgs', () => {
     });
   });
 
+  it('treats boolean contract fields as switches', () => {
+    expect(parseCliArgs(['editor', 'open', '--site', 's1', '--new-entry'])).toEqual({
+      positionals: ['editor', 'open'],
+      flags: { site: 's1', 'new-entry': true },
+    });
+    // A switch never swallows the next word; the command then refuses it.
+    expect(parseCliArgs(['editor', 'open', '--new-entry', 'posts'])).toEqual({
+      positionals: ['editor', 'open', 'posts'],
+      flags: { 'new-entry': true },
+    });
+    expect(parseCliArgs(['editor', 'open', '--new-entry=false']).flags).toEqual({
+      'new-entry': false,
+    });
+  });
+
+  it('takes the switches it is given', () => {
+    expect(parseCliArgs(['x', '--dry-run', 'y'], new Set(['dry-run']))).toEqual({
+      positionals: ['x', 'y'],
+      flags: { 'dry-run': true },
+    });
+  });
+
   it('stops parsing at --', () => {
     expect(parseCliArgs(['mcp', '--', '--admin']).positionals).toEqual(['mcp', '--admin']);
   });

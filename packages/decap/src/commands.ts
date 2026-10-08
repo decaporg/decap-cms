@@ -8,11 +8,30 @@ import { flagName, operations, validateInput } from 'decap-turbo-api';
 
 import type { JsonSchemaProperty, Operation } from 'decap-turbo-api';
 
+/** Global flags that are switches: present means true, and they never take a value. */
+const GLOBAL_SWITCHES = ['admin', 'json', 'help', 'version'];
+
 /** Flags every command accepts that are not input fields. */
-const GLOBAL_FLAGS = new Set(['api-url', 'json', 'help', 'admin', 'version']);
+const GLOBAL_FLAGS = new Set(['api-url', ...GLOBAL_SWITCHES]);
 
 export function commandOperations(): Operation[] {
   return (Object.values(operations) as Operation[]).filter(op => op.cli);
+}
+
+/**
+ * Every flag the parser must treat as a switch: the global ones and each
+ * boolean input field of a command (`new_entry` → `--new-entry`). Derived from
+ * the contract so a boolean field added there works as `--flag` without a
+ * value, instead of swallowing the next word.
+ */
+export function switchFlags(): Set<string> {
+  const switches = new Set(GLOBAL_SWITCHES);
+  for (const op of commandOperations()) {
+    for (const [field, prop] of Object.entries(op.input.properties)) {
+      if (prop.type === 'boolean') switches.add(flagName(field));
+    }
+  }
+  return switches;
 }
 
 /** The operation whose command words start the positionals, longest match first. */

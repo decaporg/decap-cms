@@ -1,4 +1,4 @@
-import { operations } from 'decap-turbo-api';
+import { flagName, operations } from 'decap-turbo-api';
 
 import {
   commandHelp,
@@ -6,7 +6,10 @@ import {
   findCommand,
   formatResult,
   inputFromFlags,
+  switchFlags,
 } from '../commands.js';
+
+import type { Operation } from 'decap-turbo-api';
 
 const ORG = '14dc6a52-dd6f-44fb-9b3b-d9658a6289ae';
 
@@ -19,6 +22,33 @@ describe('findCommand', () => {
   it('returns null for words that are not a command', () => {
     expect(findCommand(['sites'])).toBeNull();
     expect(findCommand(['nope', 'list'])).toBeNull();
+  });
+});
+
+describe('switchFlags', () => {
+  it('holds the global switches and every boolean input field as a flag', () => {
+    const switches = switchFlags();
+    for (const flag of ['admin', 'json', 'help', 'version', 'new-entry']) {
+      expect(switches.has(flag)).toBe(true);
+    }
+    expect(switches.has('api-url')).toBe(false);
+    expect(switches.has('site')).toBe(false);
+  });
+
+  it('never makes a flag a switch for one command and a value for another', () => {
+    // The parser runs before the command is known, so one flag name must
+    // mean the same kind of flag everywhere.
+    const switches = switchFlags();
+    for (const op of Object.values(operations) as Operation[]) {
+      if (!op.cli) continue;
+      for (const [field, prop] of Object.entries(op.input.properties)) {
+        expect([op.id, field, switches.has(flagName(field))]).toEqual([
+          op.id,
+          field,
+          prop.type === 'boolean',
+        ]);
+      }
+    }
   });
 });
 
@@ -45,6 +75,13 @@ describe('inputFromFlags', () => {
     expect(() => inputFromFlags(operations.listDeploys, { site: ORG, limit: 'many' })).toThrow(
       /--limit must be a number/,
     );
+  });
+
+  it('takes a boolean switch', () => {
+    expect(inputFromFlags(operations.openInEditor, { site: ORG, 'new-entry': true })).toEqual({
+      site_id: ORG,
+      new_entry: true,
+    });
   });
 
   it('ignores global flags', () => {

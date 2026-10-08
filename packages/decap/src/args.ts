@@ -3,20 +3,28 @@
  * `@types/node` predates it, and the commands generated from the API contract
  * take flags that can't be listed up front.
  *
- * `--flag value` and `--flag=value` take a value; the flags in BOOLEAN_FLAGS
- * never do. Positionals are the command words (`sites list`).
+ * `--flag value` and `--flag=value` take a value; switches never do, and
+ * `--switch=false` turns one off. Positionals are the command words
+ * (`sites list`).
  */
+import { switchFlags } from './commands.js';
+
 export interface ParsedArgs {
   positionals: string[];
   flags: Record<string, string | boolean>;
 }
 
-/** Flags that are switches. Every other `--flag` needs a value. */
-const BOOLEAN_FLAGS = new Set(['admin', 'json', 'help', 'version']);
-
 const SHORT_FLAGS: Record<string, string> = { h: 'help', v: 'version' };
 
-export function parseCliArgs(argv: readonly string[]): ParsedArgs {
+/**
+ * `switches` are the flags that never take a value; every other `--flag`
+ * needs one. By default the global switches and the boolean fields of the
+ * contract's commands.
+ */
+export function parseCliArgs(
+  argv: readonly string[],
+  switches: ReadonlySet<string> = switchFlags(),
+): ParsedArgs {
   const positionals: string[] = [];
   const flags: Record<string, string | boolean> = {};
 
@@ -30,7 +38,7 @@ export function parseCliArgs(argv: readonly string[]): ParsedArgs {
 
     if (arg.startsWith('--')) {
       const [name, inline] = arg.slice(2).split(/=(.*)/s, 2);
-      if (BOOLEAN_FLAGS.has(name)) {
+      if (switches.has(name)) {
         flags[name] = inline === undefined ? true : inline !== 'false';
         continue;
       }
