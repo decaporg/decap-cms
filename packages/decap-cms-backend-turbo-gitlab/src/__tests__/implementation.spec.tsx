@@ -1,4 +1,5 @@
 import { unsentRequest } from 'decap-cms-lib-util';
+import { API } from 'decap-cms-backend-gitlab';
 
 import DecapTurboGitLabBackend from '../implementation';
 import { recordCmsEvent } from '../telemetry';
@@ -301,6 +302,262 @@ describe('turbo gitlab backend supabase session refresh', () => {
 
       await expect(backend.setActiveSiteAndRefresh()).resolves.toBeUndefined();
     });
+  });
+});
+
+describe('turbo gitlab backend proxy auth answers', () => {
+  const config: any = {
+    backend: {
+      repo: 'group/project',
+      api_root: 'https://supabase.example/functions/v1/gl',
+      supabase_app_id: 'supabase-project-id',
+      supabase_anon_key: 'supabase-anon-key',
+      turbo_site_id: 'site-123',
+    },
+    media_folder: 'static/media',
+  };
+  const syncUrl = 'https://supabase.example/functions/v1/gl/_content/sync';
+  const treeUrl =
+    'https://supabase.example/functions/v1/gl/projects/group%2Fproject/repository/tree';
+
+  function reply(status: number, body: string, contentType = 'text/plain') {
+    const response: any = {
+      ok: status < 400,
+      status,
+      headers: new Headers({ 'Content-Type': contentType }),
+      text: () => Promise.resolve(body),
+      json: () => Promise.resolve(JSON.parse(body)),
+    };
+    response.clone = () => ({ ...response });
+    return response;
+  }
+  function refused() {
+    return reply(401, 'Unauthorized');
+  }
+  function ok() {
+    return reply(200, '{}', 'application/json');
+  }
+
+  function backendWithSession(options = {}) {
+    const backend: any = new DecapTurboGitLabBackend(config, options);
+    backend.supabaseAccessToken = 'old-token';
+    backend.supabaseRefreshToken = 'refresh-token';
+    backend.supabaseExpiresAt = Math.floor(Date.now() / 1000) + 3600;
+    return backend;
+  }
+
+  function refreshesTo(backend: any, token: string) {
+    backend.getRefreshedAccessToken = jest.fn().mockImplementation(async () => {
+      backend.supabaseAccessToken = token;
+      return token;
+    });
+  }
+
+  function refreshIsRefused(backend: any) {
+    const terminal = Object.assign(new Error('refresh_token_not_found'), { isTerminal: true });
+    backend.getRefreshedAccessToken = jest.fn().mockRejectedValue(terminal);
+  }
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe('glFetch', () => {
+    it('refreshes once on a proxy 401 and retries with the new token', async () => {
+      const backend = backendWithSession();
+      refreshesTo(backend, 'new-token');
+      global.fetch = jest.fn().mockResolvedValueOnce(refused()).mockResolvedValueOnce(ok());
+
+      await backend.glFetch(syncUrl, { method: 'POST' });
+
+      expect(backend.getRefreshedAccessToken).toHaveBeenCalledTimes(1);
+      expect(global.fetch).toHaveBeenCalledTimes(2);
+      expect((global.fetch as jest.Mock).mock.calls[1][1].headers.Authorization).toBe(
+        'Bearer new-token',
+      );
+    });
+
+    it('ends the session once when the refresh is refused, then fails fast', async () => {
+      const onSessionInvalid = jest.fn();
+      const backend = backendWithSession({ onSessionInvalid });
+      refreshIsRefused(backend);
+      global.fetch = jest.fn().mockResolvedValue(refused());
+
+      await expect(backend.glFetch(syncUrl, { method: 'POST' })).rejects.toMatchObject({
+        status: 401,
+      });
+      await expect(backend.glFetch(syncUrl, { method: 'POST' })).rejects.toThrow(
+        'Session expired. Please log in again.',
+      );
+
+      expect(onSessionInvalid).toHaveBeenCalledTimes(1);
+      expect(onSessionInvalid).toHaveBeenCalledWith('Session expired. Please log in again.');
+      // The second call never reached the network.
+      expect(global.fetch).toHaveBeenCalledTimes(1);
+      expect(backend.supabaseAccessToken).toBeNull();
+    });
+
+    it('ends the session when the retry is refused too', async () => {
+      const onSessionInvalid = jest.fn();
+      const backend = backendWithSession({ onSessionInvalid });
+      refreshesTo(backend, 'new-token');
+      global.fetch = jest.fn().mockResolvedValue(refused());
+
+      await expect(backend.glFetch(syncUrl, { method: 'POST' })).rejects.toMatchObject({
+        status: 401,
+      });
+
+      expect(global.fetch).toHaveBeenCalledTimes(2);
+      expect(onSessionInvalid).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not log out over a GitLab 401 passed through the proxy', async () => {
+      const onSessionInvalid = jest.fn();
+      const backend = backendWithSession({ onSessionInvalid });
+      backend.getRefreshedAccessToken = jest.fn();
+      global.fetch = jest
+        .fn()
+        .mockResolvedValue(reply(401, '{"message":"401 Unauthorized"}', 'application/json'));
+
+      await expect(backend.glFetch(syncUrl, { method: 'POST' })).rejects.toMatchObject({
+        status: 401,
+        message: '401 Unauthorized',
+      });
+
+      expect(backend.getRefreshedAccessToken).not.toHaveBeenCalled();
+      expect(onSessionInvalid).not.toHaveBeenCalled();
+    });
+
+    it('ends the session on a 403 for a site the user lost access to', async () => {
+      const onSessionInvalid = jest.fn();
+      const backend = backendWithSession({ onSessionInvalid });
+      global.fetch = jest
+        .fn()
+        .mockResolvedValue(
+          reply(403, '{"error":"Forbidden: no access to requested site"}', 'application/json'),
+        );
+
+      await expect(backend.glFetch(syncUrl, { method: 'POST' })).rejects.toMatchObject({
+        status: 403,
+      });
+
+      expect(onSessionInvalid).toHaveBeenCalledWith(
+        expect.stringContaining("doesn't have access to this site"),
+      );
+    });
+
+    it("shows the proxy's error sentence rather than the JSON around it", async () => {
+      const backend = backendWithSession();
+      global.fetch = jest
+        .fn()
+        .mockResolvedValue(reply(403, '{"error":"This site is read-only"}', 'application/json'));
+
+      await expect(backend.glFetch(syncUrl, { method: 'POST' })).rejects.toThrow(
+        /^This site is read-only$/,
+      );
+    });
+  });
+
+  describe('apiRequestFunction', () => {
+    it('refreshes once on a proxy 401 and retries with the new token', async () => {
+      const backend = backendWithSession();
+      refreshesTo(backend, 'new-token');
+      global.fetch = jest.fn().mockResolvedValueOnce(refused()).mockResolvedValueOnce(ok());
+
+      const response = await backend.apiRequestFunction(unsentRequest.fromURL(treeUrl));
+
+      expect(response.ok).toBe(true);
+      expect(global.fetch).toHaveBeenCalledTimes(2);
+      expect((global.fetch as jest.Mock).mock.calls[1][1].headers.Authorization).toBe(
+        'Bearer new-token',
+      );
+    });
+
+    it('ends the session once, and answers later requests without the network', async () => {
+      const onSessionInvalid = jest.fn();
+      const backend = backendWithSession({ onSessionInvalid });
+      refreshIsRefused(backend);
+      global.fetch = jest.fn().mockResolvedValue(refused());
+
+      const first = await backend.apiRequestFunction(unsentRequest.fromURL(treeUrl));
+      const second = await backend.apiRequestFunction(unsentRequest.fromURL(treeUrl));
+
+      expect(first.status).toBe(401);
+      expect(second.status).toBe(401);
+      await expect(second.json()).resolves.toEqual({
+        message: 'Session expired. Please log in again.',
+      });
+      expect(global.fetch).toHaveBeenCalledTimes(1);
+      expect(onSessionInvalid).toHaveBeenCalledTimes(1);
+    });
+
+    it('fails a GitLab API call at once with the reason, without backing off', async () => {
+      // lib-util's requestWithBackoff retries a throw five times with growing
+      // pauses; a latched session must not throw into it.
+      const backend = backendWithSession();
+      backend.sessionInvalidMessage = 'Session expired. Please log in again.';
+      global.fetch = jest.fn();
+      const api = new API({
+        token: 'old-token',
+        branch: 'main',
+        repo: 'group/project',
+        apiRoot: config.backend.api_root,
+        requestFunction: backend.apiRequestFunction,
+      } as any);
+
+      await expect(api.requestJSON('/user')).rejects.toMatchObject({
+        status: 401,
+        message: 'Session expired. Please log in again.',
+      });
+      await expect(api.requestText('/user')).rejects.toMatchObject({
+        message: 'Session expired. Please log in again.',
+      });
+      expect(global.fetch).not.toHaveBeenCalled();
+    });
+
+    it("makes a GitLab API call read the proxy's error sentence", async () => {
+      const backend = backendWithSession();
+      global.fetch = jest
+        .fn()
+        .mockResolvedValue(reply(403, '{"error":"This site is read-only"}', 'application/json'));
+      const api = new API({
+        token: 'old-token',
+        branch: 'main',
+        repo: 'group/project',
+        apiRoot: config.backend.api_root,
+        requestFunction: backend.apiRequestFunction,
+      } as any);
+
+      await expect(api.requestJSON('/user')).rejects.toMatchObject({
+        status: 403,
+        message: 'This site is read-only',
+      });
+    });
+  });
+
+  it('reads a missing expires_at from the token, so the session still refreshes', async () => {
+    const backend: any = new DecapTurboGitLabBackend(config);
+    const exp = Math.floor(Date.now() / 1000) + 10;
+    backend.supabaseAccessToken = `header.${btoa(JSON.stringify({ exp }))}.signature`;
+    backend.supabaseRefreshToken = 'refresh-token';
+    refreshesTo(backend, 'new-token');
+
+    await backend.refreshSessionIfNeeded();
+
+    expect(backend.getRefreshedAccessToken).toHaveBeenCalledTimes(1);
+  });
+
+  it('ends the session through core when a proactive refresh is refused', async () => {
+    const onSessionInvalid = jest.fn();
+    const backend = backendWithSession({ onSessionInvalid });
+    backend.supabaseExpiresAt = Math.floor(Date.now() / 1000) + 10;
+    refreshIsRefused(backend);
+
+    await expect(backend.refreshSessionIfNeeded()).rejects.toThrow(
+      'Session expired. Please log in again.',
+    );
+    expect(onSessionInvalid).toHaveBeenCalledTimes(1);
+    expect(backend.sessionInvalidMessage).toBe('Session expired. Please log in again.');
   });
 });
 
@@ -972,6 +1229,15 @@ describe('turbo gitlab backend authenticate', () => {
 
     await backend.logout();
     expect(backend.pollingManager).toBeUndefined();
+  });
+
+  it('a new login clears the latch', async () => {
+    const backend: any = ready(new DecapTurboGitLabBackend(config));
+    backend.sessionInvalidMessage = 'Session expired. Please log in again.';
+
+    await backend.authenticate({ token: 'gl-token', access_token: 'access-123' });
+
+    expect(backend.sessionInvalidMessage).toBeNull();
   });
 
   it("replaces the previous session's manager rather than leaving it polling", async () => {

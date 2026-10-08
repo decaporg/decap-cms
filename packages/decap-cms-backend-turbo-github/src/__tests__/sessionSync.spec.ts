@@ -1,4 +1,4 @@
-import { sessionIdOf, withRefreshLock } from '../sessionSync';
+import { expiresAtOf, sessionIdOf, withRefreshLock } from '../sessionSync';
 
 describe('withRefreshLock', () => {
   const originalLocks = Object.getOwnPropertyDescriptor(navigator, 'locks');
@@ -65,5 +65,21 @@ describe('sessionIdOf', () => {
     expect(sessionIdOf(null)).toBeNull();
     expect(sessionIdOf('not-a-jwt')).toBeNull();
     expect(sessionIdOf('header.!!!.signature')).toBeNull();
+  });
+});
+
+describe('expiresAtOf', () => {
+  it('reads the exp claim of an access token', () => {
+    const payload = btoa(JSON.stringify({ exp: 1760000000 }))
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=+$/, '');
+    expect(expiresAtOf(`header.${payload}.signature`)).toBe(1760000000);
+  });
+
+  it('returns null for a missing or unreadable token, or one without exp', () => {
+    expect(expiresAtOf(null)).toBeNull();
+    expect(expiresAtOf('header.!!!.signature')).toBeNull();
+    expect(expiresAtOf(`header.${btoa('{}')}.signature`)).toBeNull();
   });
 });
