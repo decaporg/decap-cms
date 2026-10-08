@@ -10,6 +10,51 @@ describe('editorialWorkflow', () => {
     expect(editorialWorkflow(state, action).getIn(['pages', 'isFetching'])).toBe(false);
   });
 
+  // The collection view retries only while there is no recorded failure, so
+  // this flag is the difference between one failed request and one every
+  // re-render.
+  describe('load failure', () => {
+    it('records the failure without claiming the entries are loaded', () => {
+      const state = fromJS({ pages: { isFetching: true } });
+      const action = { type: 'UNPUBLISHED_ENTRIES_FAILURE', payload: new Error('API_ERROR: 403') };
+
+      const pages = editorialWorkflow(state, action).get('pages');
+
+      expect(pages.get('error')).toBe('API_ERROR: 403');
+      expect(pages.has('ids')).toBe(false);
+    });
+
+    it('records a failure that carries no message', () => {
+      const state = fromJS({ pages: { isFetching: true } });
+      const action = { type: 'UNPUBLISHED_ENTRIES_FAILURE' };
+
+      expect(editorialWorkflow(state, action).getIn(['pages', 'error'])).toBeTruthy();
+    });
+
+    it('clears the failure when a new request starts', () => {
+      const state = fromJS({ pages: { isFetching: false, error: 'API_ERROR: 403' } });
+      const action = { type: 'UNPUBLISHED_ENTRIES_REQUEST' };
+
+      const pages = editorialWorkflow(state, action).get('pages');
+
+      expect(pages.has('error')).toBe(false);
+      expect(pages.get('isFetching')).toBe(true);
+    });
+
+    it('clears the failure when a later load succeeds', () => {
+      const state = fromJS({ pages: { isFetching: true, error: 'API_ERROR: 403' } });
+      const action = {
+        type: 'UNPUBLISHED_ENTRIES_SUCCESS',
+        payload: { pages: {}, entries: [{ collection: 'posts', slug: 'one' }] },
+      };
+
+      const pages = editorialWorkflow(state, action).get('pages');
+
+      expect(pages.has('error')).toBe(false);
+      expect(pages.get('ids').toJS()).toEqual(['one']);
+    });
+  });
+
   // `pages.keys` is what loadUnpublishedEntry reads to decide whether a slug is
   // under editorial workflow, and `pages.loadedAt` is what bounds how old that
   // answer may be. Everything below is about keeping those two honest.

@@ -78,6 +78,7 @@ export class EntriesCollection extends Component {
     entriesLoaded: PropTypes.bool,
     loadUnpublishedEntries: PropTypes.func.isRequired,
     unpublishedEntriesLoaded: PropTypes.bool,
+    unpublishedEntriesFailed: PropTypes.bool,
     isEditorialWorkflowEnabled: PropTypes.bool,
     getWorkflowStatus: PropTypes.func.isRequired,
     getUnpublishedEntries: PropTypes.func.isRequired,
@@ -113,17 +114,24 @@ export class EntriesCollection extends Component {
       entriesLoaded,
       loadEntries,
       unpublishedEntriesLoaded,
+      unpublishedEntriesFailed,
       loadUnpublishedEntries,
       isEditorialWorkflowEnabled,
     } = this.props;
 
-    if (collection !== prevProps.collection && !entriesLoaded) {
+    const collectionChanged = collection !== prevProps.collection;
+
+    if (collectionChanged && !entriesLoaded) {
       loadEntries(collection);
     }
 
+    // After a failed load, wait for a navigation (or an explicit load, such as
+    // the Workflow page's) before asking again. Every store change re-renders
+    // this view — the failure's own toast included — so retrying on "still not
+    // loaded" alone turns one 403 into a request and a toast every half second.
     if (
       isEditorialWorkflowEnabled &&
-      (!unpublishedEntriesLoaded || collection !== prevProps.collection)
+      ((!unpublishedEntriesLoaded && !unpublishedEntriesFailed) || collectionChanged)
     ) {
       loadUnpublishedEntries(collections);
     }
@@ -246,6 +254,8 @@ function mapStateToProps(state, ownProps) {
   const unpublishedEntriesLoaded = isEditorialWorkflowEnabled
     ? !!state.editorialWorkflow?.getIn(['pages', 'ids'], false)
     : true;
+  const unpublishedEntriesFailed =
+    isEditorialWorkflowEnabled && !!state.editorialWorkflow?.getIn(['pages', 'error']);
 
   return {
     collection,
@@ -259,6 +269,7 @@ function mapStateToProps(state, ownProps) {
     viewStyle,
     cursor,
     unpublishedEntriesLoaded,
+    unpublishedEntriesFailed,
     isEditorialWorkflowEnabled,
     getWorkflowStatus: (collectionName, slug) => {
       const unpublishedEntry = selectUnpublishedEntry(state, collectionName, slug);

@@ -129,6 +129,81 @@ describe('EntriesCollection', () => {
     expect(Entries.mock.calls[2][0].entries).toBe(entries);
   });
 
+  describe('unpublished entries', () => {
+    const workflowProps = {
+      ...props,
+      isEditorialWorkflowEnabled: true,
+      unpublishedEntriesLoaded: false,
+      entries: fromJS([]),
+    };
+
+    it('does not retry a failed load on every re-render', () => {
+      const loadUnpublishedEntries = jest.fn();
+      const { rerender } = render(
+        <EntriesCollection
+          {...workflowProps}
+          loadUnpublishedEntries={loadUnpublishedEntries}
+          unpublishedEntriesFailed
+        />,
+      );
+      loadUnpublishedEntries.mockClear();
+
+      // What the failure toast does: the store changes, the view re-renders,
+      // and nothing about the collection is different.
+      rerender(
+        <EntriesCollection
+          {...workflowProps}
+          loadUnpublishedEntries={loadUnpublishedEntries}
+          unpublishedEntriesFailed
+          isFetching
+        />,
+      );
+
+      expect(loadUnpublishedEntries).not.toHaveBeenCalled();
+    });
+
+    it('tries again after a failed load when the collection changes', () => {
+      const loadUnpublishedEntries = jest.fn();
+      const { rerender } = render(
+        <EntriesCollection
+          {...workflowProps}
+          loadUnpublishedEntries={loadUnpublishedEntries}
+          unpublishedEntriesFailed
+        />,
+      );
+      loadUnpublishedEntries.mockClear();
+
+      rerender(
+        <EntriesCollection
+          {...workflowProps}
+          collection={fromJS({ name: 'posts', label: 'Posts', folder: 'src/posts' })}
+          loadUnpublishedEntries={loadUnpublishedEntries}
+          unpublishedEntriesFailed
+        />,
+      );
+
+      expect(loadUnpublishedEntries).toHaveBeenCalledTimes(1);
+    });
+
+    it('keeps loading on re-render while nothing has failed', () => {
+      const loadUnpublishedEntries = jest.fn();
+      const { rerender } = render(
+        <EntriesCollection {...workflowProps} loadUnpublishedEntries={loadUnpublishedEntries} />,
+      );
+      loadUnpublishedEntries.mockClear();
+
+      rerender(
+        <EntriesCollection
+          {...workflowProps}
+          loadUnpublishedEntries={loadUnpublishedEntries}
+          isFetching
+        />,
+      );
+
+      expect(loadUnpublishedEntries).toHaveBeenCalledTimes(1);
+    });
+  });
+
   it('should render connected component', () => {
     const entriesArray = [
       { slug: 'index', path: 'src/pages/index.md', data: { title: 'Root' } },

@@ -271,6 +271,48 @@ describe('editorialWorkflow actions', () => {
       expect(backend.unpublishedEntries).not.toHaveBeenCalled();
       expect(store.getActions()).toHaveLength(0);
     });
+
+    it('records a failed load so the collection view can stop retrying', async () => {
+      const { currentBackend } = require('../../backend');
+      const error = new Error('API_ERROR: 403');
+      const backend = { unpublishedEntries: jest.fn().mockRejectedValue(error) };
+      const store = mockStore({
+        config: { publish_mode: 'editorial_workflow' },
+        collections: fromJS({}),
+        editorialWorkflow: fromJS({ pages: {} }),
+      });
+
+      currentBackend.mockReturnValue(backend);
+      store.dispatch(actions.loadUnpublishedEntries(store.getState().collections));
+      await new Promise(resolve => setTimeout(resolve, 0));
+
+      const types = store.getActions().map(action => action.type);
+      expect(types[0]).toBe('UNPUBLISHED_ENTRIES_REQUEST');
+      expect(types).toContain('UNPUBLISHED_ENTRIES_FAILURE');
+      expect(store.getActions().find(a => a.type === 'UNPUBLISHED_ENTRIES_FAILURE').payload).toBe(
+        error,
+      );
+    });
+
+    // The guard against retrying lives in the collection view, not here: an
+    // explicit load, such as opening the Workflow page, must still go out after
+    // a failure, or one 403 would hide the board for the rest of the session.
+    it('still loads when asked explicitly after a failure', () => {
+      const { currentBackend } = require('../../backend');
+      const backend = {
+        unpublishedEntries: jest.fn().mockResolvedValue({ entries: [], pagination: 0 }),
+      };
+      const store = mockStore({
+        config: { publish_mode: 'editorial_workflow' },
+        collections: fromJS({}),
+        editorialWorkflow: fromJS({ pages: { isFetching: false, error: 'API_ERROR: 403' } }),
+      });
+
+      currentBackend.mockReturnValue(backend);
+      store.dispatch(actions.loadUnpublishedEntries(store.getState().collections));
+
+      expect(backend.unpublishedEntries).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('publishUnpublishedEntry', () => {

@@ -52,7 +52,10 @@ function unpublishedEntries(state = Map(), action: EditorialWorkflowAction) {
       );
 
     case UNPUBLISHED_ENTRIES_REQUEST:
-      return state.setIn(['pages', 'isFetching'], true);
+      return state.withMutations(map => {
+        map.setIn(['pages', 'isFetching'], true);
+        map.deleteIn(['pages', 'error']);
+      });
 
     case UNPUBLISHED_ENTRIES_SUCCESS: {
       const fetchedKeys = List(
@@ -107,8 +110,18 @@ function unpublishedEntries(state = Map(), action: EditorialWorkflowAction) {
         map.setIn(['pages', 'loadedAt'], Date.now());
       });
 
-    case UNPUBLISHED_ENTRIES_FAILURE:
-      return state.setIn(['pages', 'isFetching'], false);
+    // `pages.error` is what stops the collection view from retrying on its
+    // own. Without it a failed load leaves `ids` unset, so every re-render
+    // (the failure toast included) looked like "not loaded yet" and fired the
+    // request again: ~2 requests a second, each with its own toast, for as
+    // long as the view stayed open. A new request or a success clears it.
+    case UNPUBLISHED_ENTRIES_FAILURE: {
+      const error = action.payload as unknown as Error | undefined;
+      return state.withMutations(map => {
+        map.setIn(['pages', 'isFetching'], false);
+        map.setIn(['pages', 'error'], error?.message || 'Failed to load entries');
+      });
+    }
 
     case UNPUBLISHED_ENTRY_PERSIST_REQUEST: {
       return state.setIn(

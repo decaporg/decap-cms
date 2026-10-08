@@ -404,8 +404,10 @@ export function loadUnpublishedEntries(collections: Collections) {
             dismissAfter: 8000,
           }),
         );
+        // Recorded in state, which is what stops the collection view from
+        // retrying on every re-render. No re-throw: nothing awaits this
+        // promise, so a rejection here was only ever an unhandled one.
         dispatch(unpublishedEntriesFailed(error));
-        Promise.reject(error);
       });
   };
 }

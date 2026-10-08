@@ -80,13 +80,18 @@ export async function requestWithBackoff(
     } else if (response.status === 403) {
       // GitHub too many requests
       const json = await response.json().catch(() => ({ message: '' }));
-      if (json.message.match('API rate limit exceeded')) {
+      // Only GitHub's rate-limit body has a `message` to match. Any other 403
+      // body — a proxy's `{"error":"Forbidden: ..."}`, or plain `null` — used
+      // to throw a TypeError here, which the catch below mistook for a fetch
+      // failure and retried five times with growing pauses (~55s in all).
+      const message = String(json?.message ?? '');
+      if (message.match('API rate limit exceeded')) {
         const now = new Date();
         const nextWindowInSeconds = response.headers.has('X-RateLimit-Reset')
           ? parseInt(response.headers.get('X-RateLimit-Reset')!)
           : now.getTime() / 1000 + 60;
 
-        throw new RateLimitError(json.message, nextWindowInSeconds);
+        throw new RateLimitError(message, nextWindowInSeconds);
       }
       response.json = () => Promise.resolve(json);
     }
