@@ -17,6 +17,7 @@ import SupabaseAuthenticationPage from './AuthenticationPage';
 import { resolveCommitAuthorFromSupabaseUser } from './commitAuthor';
 import { coalesceKey, createRequestCoalescer, type RequestCoalescer } from './requestCoalescer';
 import { recordCmsEvent } from './telemetry';
+import { revokeSession, sessionIdOf, withRefreshLock } from './sessionSync';
 import { EditorBridge, registerAskClaudeAction } from './editorBridge';
 import {
   createProxyMeter,
@@ -45,6 +46,8 @@ interface SupabaseUser extends User {
   access_token?: string;
   refresh_token?: string;
   expires_at?: number;
+  /** Set when Turbo minted this session for this CMS alone; see `logout`. */
+  dedicated_session?: boolean;
   user_name?: string;
   user_email?: string;
   email?: string;
@@ -187,6 +190,13 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
   supabaseRefreshToken: string | null = null;
   supabaseExpiresAt: number | null = null;
   /**
+   * Whether this CMS owns its Turbo session outright. "Login with Turbo" now
+   * hands each CMS a session of its own, but logins from before that, or one
+   * where Turbo could not mint one, still share the dashboard's session, and
+   * those must never be revoked from here. See `logout`.
+   */
+  dedicatedSession = false;
+  /**
    * The signed-in person, as opposed to the repo being edited: email, display
    * name and (for OAuth sign-ins) avatar, straight off the Turbo session.
    * `currentUser` reports these to the header. Survives a reload because
@@ -199,6 +209,8 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
   siteId: string;
   commitAuthorEmailFallback?: string;
   updateUserCredentials: (credentials: Credentials) => void;
+  /** The stored user as another tab may have left it; see `adoptRotatedSession`. */
+  retrieveUserCredentials: () => Credentials | null;
   refreshedTokenPromise?: Promise<string>;
   /** Epoch ms before which refreshSessionIfNeeded will not try again. */
   refreshBlockedUntil = 0;
@@ -271,6 +283,7 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
       ((config.backend as Record<string, unknown>).noreply_email as string | undefined);
 
     this.updateUserCredentials = options.updateUserCredentials || (() => undefined);
+    this.retrieveUserCredentials = options.retrieveUserCredentials || (() => null);
 
     this.bypassWriteAccessCheckForAppTokens = true;
     this.tokenKeyword = 'Bearer';
@@ -439,12 +452,23 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
    * reporting `auth: true`), a Supabase client still sending it, a memoised
    * `currentUser`, and a live deploy subscription.
    *
-   * This deliberately does NOT end the Turbo session itself: that cookie
-   * belongs to the dashboard's origin, and one site's CMS logout must not sign
-   * the user out of the dashboard and every other site's CMS. Signing out of
-   * Turbo is the dashboard's own logout button.
+   * A dedicated session (one Turbo minted for this CMS alone) is also revoked
+   * server-side, so it cannot outlive the logout. A shared one, from a login
+   * before Turbo minted per-CMS sessions, is left alone: it is the dashboard's
+   * own session, and one site's CMS logout must not sign the user out of the
+   * dashboard and every other site's CMS. Signing out of Turbo is the
+   * dashboard's own logout button, and that revokes every session, this
+   * CMS's included.
    */
   logout() {
+    if (this.dedicatedSession && this.supabaseAccessToken) {
+      revokeSession(
+        `https://${this.supabaseId}.supabase.co/auth/v1`,
+        this.supabaseAnonKey,
+        this.supabaseAccessToken,
+      );
+    }
+    this.dedicatedSession = false;
     this.editorBridgeInstance?.stop();
     this.supabaseAccessToken = null;
     this.supabaseRefreshToken = null;
@@ -528,6 +552,7 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
     if ('expires_at' in state) {
       this.supabaseExpiresAt = state.expires_at as number;
     }
+    this.dedicatedSession = (state as SupabaseUser).dedicated_session === true;
 
     const supabaseState = state as SupabaseUser;
     this.supabaseIdentity = supabaseState;
@@ -629,6 +654,7 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
       ...('access_token' in state && { access_token: state.access_token }),
       ...('refresh_token' in state && { refresh_token: state.refresh_token }),
       ...('expires_at' in state && { expires_at: state.expires_at }),
+      dedicated_session: this.dedicatedSession,
       ...('user_name' in state && { user_name: (state as SupabaseUser).user_name }),
       ...('user_email' in state && { user_email: (state as SupabaseUser).user_email }),
       ...('email' in state && { email: (state as SupabaseUser).email }),
@@ -929,23 +955,20 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
     if (this.refreshedTokenPromise) {
       return this.refreshedTokenPromise;
     }
-    this.refreshedTokenPromise = (async () => {
+    this.refreshedTokenPromise = withRefreshLock(async () => {
+      // A tab that held the lock before this one may have already spent the
+      // refresh token this tab holds. Taking over what it stored is the only
+      // way to keep this session, and may make a refresh unnecessary.
+      if (this.adoptRotatedSession() && !this.isSessionExpiringSoon()) {
+        return this.supabaseAccessToken as string;
+      }
+
       let lastError: SupabaseRefreshError | undefined;
 
       for (let attempt = 1; attempt <= REFRESH_RETRY_ATTEMPTS; attempt++) {
         try {
           const data = await this.fetchSupabaseRefreshToken();
-
-          this.supabaseAccessToken = data.access_token;
-          this.supabaseRefreshToken = data.refresh_token;
-          this.supabaseExpiresAt = data.expires_at;
-          this.supabase.setAccessToken(this.supabaseAccessToken);
-          this.token = data.access_token;
-          if (this.api) {
-            this.api.token = data.access_token;
-          }
-          this._currentUserPromise = undefined;
-          this.refreshBlockedUntil = 0;
+          this.useSessionTokens(data);
 
           this.updateUserCredentials({
             token: data.access_token,
@@ -974,7 +997,7 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
       }
 
       throw lastError || new Error('Failed to refresh Supabase token');
-    })()
+    })
       .catch((error: Error) => {
         const refreshError = error as SupabaseRefreshError;
         if (typeof refreshError.isTerminal !== 'boolean') {
@@ -987,6 +1010,49 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
       });
 
     return this.refreshedTokenPromise;
+  }
+
+  useSessionTokens(session: { access_token: string; refresh_token: string; expires_at: number }) {
+    this.supabaseAccessToken = session.access_token;
+    this.supabaseRefreshToken = session.refresh_token;
+    this.supabaseExpiresAt = session.expires_at;
+    this.supabase.setAccessToken(this.supabaseAccessToken);
+    this.token = session.access_token;
+    if (this.api) {
+      this.api.token = session.access_token;
+    }
+    this._currentUserPromise = undefined;
+    this.refreshBlockedUntil = 0;
+  }
+
+  isSessionExpiringSoon() {
+    const now = Math.floor(Date.now() / 1000);
+    return !this.supabaseExpiresAt || this.supabaseExpiresAt - now < REFRESH_BUFFER_SECONDS;
+  }
+
+  /**
+   * Takes over this session's tokens from the stored user when another tab of
+   * this CMS has rotated them since this tab last looked. Returns whether it
+   * did. Must run under the refresh lock, or the stored pair can be spent
+   * between reading it here and using it.
+   *
+   * Only the same session is adopted, matched on the `session_id` claim: a
+   * stored user from a later login, possibly as somebody else, is not this
+   * tab's to pick up.
+   */
+  adoptRotatedSession() {
+    const stored = this.retrieveUserCredentials() as SupabaseUser | null;
+    if (!stored?.access_token || !stored.refresh_token || !stored.expires_at) return false;
+    if (stored.refresh_token === this.supabaseRefreshToken) return false;
+    const ownSessionId = sessionIdOf(this.supabaseAccessToken);
+    if (!ownSessionId || sessionIdOf(stored.access_token) !== ownSessionId) return false;
+
+    this.useSessionTokens({
+      access_token: stored.access_token,
+      refresh_token: stored.refresh_token,
+      expires_at: stored.expires_at,
+    });
+    return true;
   }
 
   shouldForceLogoutOnRefreshFailure(error: unknown) {

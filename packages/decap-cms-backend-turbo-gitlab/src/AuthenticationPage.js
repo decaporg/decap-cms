@@ -50,6 +50,9 @@ function credentialsFromFlatParams(credentials) {
     email: credentials.user_email || undefined,
     user_name: credentials.user_name || undefined,
     user_metadata: userMetadata,
+    // '1' when Turbo minted this session for this CMS alone, so the backend's
+    // logout may revoke it. Absent from older Turbo deploys: treated as shared.
+    dedicated_session: credentials.dedicated_session === '1',
   };
 }
 

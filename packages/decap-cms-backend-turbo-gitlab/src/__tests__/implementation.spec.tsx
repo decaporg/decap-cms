@@ -633,6 +633,32 @@ describe('turbo gitlab backend logout', () => {
     expect(backend._currentUserPromise).toBeUndefined();
   });
 
+  it('revokes a session Turbo minted for this CMS alone', async () => {
+    global.fetch = jest.fn().mockResolvedValue({ ok: true });
+    const backend = loggedInBackend();
+    backend.dedicatedSession = true;
+
+    await backend.logout();
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      'https://supabase-project-id.supabase.co/auth/v1/logout?scope=local',
+      expect.objectContaining({
+        method: 'POST',
+        keepalive: true,
+        headers: expect.objectContaining({ Authorization: 'Bearer access-token' }),
+      }),
+    );
+  });
+
+  it('never revokes a session shared with the Turbo dashboard', async () => {
+    global.fetch = jest.fn().mockResolvedValue({ ok: true });
+    const backend = loggedInBackend();
+
+    await backend.logout();
+
+    expect(global.fetch).not.toHaveBeenCalled();
+  });
+
   it('reports unauthenticated status after logout', async () => {
     const backend = loggedInBackend();
     expect((await backend.status()).auth.status).toBe(true);
@@ -640,6 +666,106 @@ describe('turbo gitlab backend logout', () => {
     await backend.logout();
 
     expect((await backend.status()).auth.status).toBe(false);
+  });
+});
+
+describe('turbo gitlab backend session shared across tabs', () => {
+  const config: any = {
+    backend: {
+      repo: 'group/project',
+      supabase_app_id: 'supabase-project-id',
+      supabase_anon_key: 'supabase-anon-key',
+    },
+    media_folder: 'static/media',
+  };
+
+  // A Supabase access token is only read for its `session_id` claim here.
+  function accessToken(sessionId: string, version = 1) {
+    return `header.${btoa(JSON.stringify({ session_id: sessionId, v: version }))}.signature`;
+  }
+
+  function tabWithExpiringSession(stored: any) {
+    const backend: any = new DecapTurboGitLabBackend(config, {
+      updateUserCredentials: jest.fn(),
+      retrieveUserCredentials: () => stored,
+    });
+    backend.supabaseAccessToken = accessToken('session-1');
+    backend.supabaseRefreshToken = 'refresh-1';
+    backend.supabaseExpiresAt = Math.floor(Date.now() / 1000) + 10;
+    backend.delay = jest.fn().mockResolvedValue(undefined);
+    return backend;
+  }
+
+  function refreshResponse() {
+    return {
+      ok: true,
+      json: () =>
+        Promise.resolve({
+          access_token: accessToken('session-1', 3),
+          refresh_token: 'refresh-3',
+          expires_at: Math.floor(Date.now() / 1000) + 3600,
+        }),
+    };
+  }
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    global.fetch = jest.fn().mockResolvedValue(refreshResponse());
+  });
+
+  it('adopts the pair another tab refreshed instead of spending a dead refresh token', async () => {
+    const rotated = {
+      access_token: accessToken('session-1', 2),
+      refresh_token: 'refresh-2',
+      expires_at: Math.floor(Date.now() / 1000) + 3600,
+    };
+    const backend = tabWithExpiringSession(rotated);
+
+    await expect(backend.getRefreshedAccessToken()).resolves.toBe(rotated.access_token);
+
+    expect(global.fetch).not.toHaveBeenCalled();
+    expect(backend.supabaseRefreshToken).toBe('refresh-2');
+    expect(backend.supabaseExpiresAt).toBe(rotated.expires_at);
+    expect(backend.supabase.supabaseAccessToken).toBe(rotated.access_token);
+  });
+
+  it('refreshes with the adopted token when the stored pair is itself expiring', async () => {
+    const backend = tabWithExpiringSession({
+      access_token: accessToken('session-1', 2),
+      refresh_token: 'refresh-2',
+      expires_at: Math.floor(Date.now() / 1000) + 10,
+    });
+
+    await backend.getRefreshedAccessToken();
+
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+    expect(JSON.parse((global.fetch as jest.Mock).mock.calls[0][1].body)).toEqual({
+      refresh_token: 'refresh-2',
+    });
+    expect(backend.supabaseRefreshToken).toBe('refresh-3');
+  });
+
+  it('does not adopt a stored session from a different login', async () => {
+    const backend = tabWithExpiringSession({
+      access_token: accessToken('session-2'),
+      refresh_token: 'refresh-other',
+      expires_at: Math.floor(Date.now() / 1000) + 3600,
+    });
+
+    await backend.getRefreshedAccessToken();
+
+    expect(JSON.parse((global.fetch as jest.Mock).mock.calls[0][1].body)).toEqual({
+      refresh_token: 'refresh-1',
+    });
+  });
+
+  it('refreshes normally when nothing newer is stored', async () => {
+    const backend = tabWithExpiringSession(null);
+
+    await backend.getRefreshedAccessToken();
+
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+    expect(backend.supabaseRefreshToken).toBe('refresh-3');
   });
 });
 

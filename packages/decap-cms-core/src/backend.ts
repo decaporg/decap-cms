@@ -295,6 +295,7 @@ interface PersistArgs {
 interface ImplementationInitOptions {
   useWorkflow: boolean;
   updateUserCredentials: (credentials: Credentials) => void;
+  retrieveUserCredentials: () => Credentials | null;
   initialWorkflowStatus: string;
 }
 
@@ -433,6 +434,7 @@ export class Backend {
     this.implementation = implementation.init(this.config, {
       useWorkflow: selectUseWorkflow(this.config),
       updateUserCredentials: this.updateUserCredentials,
+      retrieveUserCredentials: this.retrieveUserCredentials,
       initialWorkflowStatus: status.first(),
     });
     this.backendName = backendName;
@@ -502,6 +504,17 @@ export class Backend {
       this.authStore!.store(this.user as User);
       return this.user;
     }
+  };
+
+  /**
+   * The stored user as it is now, not as this tab last saw it: another tab of
+   * the same CMS may have rotated the credentials since (through
+   * `updateUserCredentials`), and a backend whose refresh tokens are single-use
+   * must read the newest ones before spending its own.
+   */
+  retrieveUserCredentials = (): Credentials | null => {
+    const storedUser = this.authStore?.retrieve();
+    return storedUser && storedUser.backendName === this.backendName ? storedUser : null;
   };
 
   authComponent() {

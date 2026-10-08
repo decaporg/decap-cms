@@ -82,6 +82,30 @@ describe('SupabaseAuthenticationPage', () => {
     expect(popup.close).toHaveBeenCalledTimes(1);
   });
 
+  it('passes on whether Turbo minted the session for this CMS alone', () => {
+    const onLogin = jest.fn();
+    const { getByText } = render(<SupabaseAuthenticationPage {...baseProps} onLogin={onLogin} />);
+    fireEvent.click(getByText('Login with Turbo'));
+
+    const payload = validCredentialsPayload();
+    postMessageEvent({
+      ...payload,
+      credentials: { ...payload.credentials, dedicated_session: '1' },
+    });
+
+    expect(onLogin).toHaveBeenCalledWith(expect.objectContaining({ dedicated_session: true }));
+  });
+
+  it('treats a session from a Turbo that does not say as shared', () => {
+    const onLogin = jest.fn();
+    const { getByText } = render(<SupabaseAuthenticationPage {...baseProps} onLogin={onLogin} />);
+    fireEvent.click(getByText('Login with Turbo'));
+
+    postMessageEvent(validCredentialsPayload());
+
+    expect(onLogin).toHaveBeenCalledWith(expect.objectContaining({ dedicated_session: false }));
+  });
+
   it('does not close an already-closed popup', () => {
     const onLogin = jest.fn();
     const { getByText } = render(<SupabaseAuthenticationPage {...baseProps} onLogin={onLogin} />);
