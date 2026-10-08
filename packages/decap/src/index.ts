@@ -1,8 +1,8 @@
 import { ApiClient, ApiError, CLI_VERSION, operations } from './api.js';
 import { parseCliArgs } from './args.js';
 import { commandHelp, commandList, findCommand, formatResult, inputFromFlags } from './commands.js';
-import { credentialsPath, deleteCredentials, resolveAuth } from './config.js';
-import { login } from './login.js';
+import { readCredentials, resolveAuth } from './config.js';
+import { login, logout } from './login.js';
 import { serveMcp } from './mcp.js';
 
 import type { MeResponse } from 'decap-turbo-api';
@@ -102,18 +102,9 @@ async function main(argv: string[]): Promise<number> {
     }
 
     case 'logout': {
-      const { apiUrl, token, stored } = resolveAuth(flags);
-      if (stored && token === stored.token) {
-        try {
-          await new ApiClient(apiUrl, token).call(operations.revokeCurrentToken);
-        } catch (err) {
-          // Already revoked or expired: forgetting it locally is still right.
-          if (!(err instanceof ApiError && err.status === 401)) throw err;
-        }
-      }
-      console.log(
-        deleteCredentials() ? `Signed out. Removed ${credentialsPath()}.` : 'Not signed in.',
-      );
+      // The stored token is revoked on the instance that issued it, whatever
+      // --api-url or DECAP_TOKEN say: it is the one being forgotten.
+      await logout(readCredentials());
       if (process.env.DECAP_TOKEN) console.log('DECAP_TOKEN is still set in your environment.');
       return 0;
     }

@@ -4,8 +4,9 @@ import os from 'node:os';
 import { spawn } from 'node:child_process';
 
 import { ApiClient, ApiError, operations } from './api.js';
-import { writeCredentials } from './config.js';
+import { credentialsPath, deleteCredentials, writeCredentials } from './config.js';
 
+import type { Credentials } from './config.js';
 import type { CliTokenResponse, MeResponse } from 'decap-turbo-api';
 
 const LOGIN_TIMEOUT_MS = 5 * 60 * 1000;
@@ -76,6 +77,42 @@ export async function login(options: { apiUrl: string; admin: boolean }): Promis
     ? `, expires ${new Date(issued.expires_at).toLocaleDateString()}`
     : '';
   console.log(`\n✓ Signed in as ${me.user.email} (${issued.scope} scope${expiry}).`);
+}
+
+/**
+ * Revokes a stored token on the instance that issued it. Best effort: the
+ * reason it failed, or null when it is revoked (or was already dead, a 401).
+ */
+export async function revokeStoredToken(stored: Credentials): Promise<string | null> {
+  try {
+    await new ApiClient(stored.apiUrl, stored.token).call(operations.revokeCurrentToken);
+    return null;
+  } catch (err) {
+    if (err instanceof ApiError && err.status === 401) return null;
+    return (err as Error).message ?? String(err);
+  }
+}
+
+/**
+ * `decap logout`: revoke the stored token, then forget it whatever the server
+ * said. Keeping the file because the server was unreachable would leave the
+ * user signed in with no way out but deleting it by hand; a token that could
+ * not be revoked is reported instead, with where to revoke it.
+ */
+export async function logout(stored: Credentials | null): Promise<void> {
+  const revokeFailure = stored ? await revokeStoredToken(stored) : null;
+  if (!deleteCredentials()) {
+    if (stored) throw new Error(`Could not remove ${credentialsPath()}.`);
+    console.log('Not signed in.');
+    return;
+  }
+  console.log(`Signed out. Removed ${credentialsPath()}.`);
+  if (revokeFailure) {
+    console.error(
+      `! Could not revoke the token on ${stored!.apiUrl}: ${revokeFailure}\n` +
+        '  It may still be valid until it expires. Revoke it in Decap Turbo under Profile → API tokens.',
+    );
+  }
 }
 
 function listenForCallback(
