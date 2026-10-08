@@ -890,6 +890,79 @@ describe('Backend', () => {
       expect(implementation.getEntry).toHaveBeenCalledWith('posts/some-post-title.en.md');
     });
 
+    describe('length', () => {
+      const encoder = new (require('util').TextEncoder)();
+      const longVietnamese = 'hướng-dẫn-chăm-sóc-da-mặt-cho-làn-da-nhạy-cảm-'.repeat(20) + 'end';
+      const collection = fromJS({
+        name: 'posts',
+        fields: [{ name: 'title' }],
+        type: FOLDER,
+        folder: 'posts',
+        slug: '{{slug}}',
+      });
+
+      function notFound() {
+        return Promise.reject(Object.assign(new Error('Not Found'), { status: 404 }));
+      }
+
+      function bytes(str) {
+        return encoder.encode(str).length;
+      }
+
+      it('caps a newly generated slug so its workflow branch is a valid ref', async () => {
+        const { sanitizeSlug } = require('../lib/urlHelper');
+        sanitizeSlug.mockReturnValue(longVietnamese);
+        const implementation = { init: jest.fn(() => implementation), getEntry: notFound };
+        const backend = new Backend(implementation, { config: {}, backendName: 'github' });
+
+        const slug = await backend.generateUniqueSlug(
+          collection,
+          Map({ title: 'unused, sanitizeSlug is mocked' }),
+          { slug: { encoding: 'unicode', sanitize_replacement: '-' } },
+          [],
+        );
+
+        expect(bytes(slug)).toBeLessThanOrEqual(200);
+        expect(bytes(`refs/heads/cms/posts/${slug}`)).toBeLessThanOrEqual(255);
+        expect(slug).not.toMatch(/-$/);
+        expect(longVietnamese.startsWith(slug)).toBe(true);
+      });
+
+      it('keeps the uniqueness suffix within the cap', async () => {
+        const { sanitizeSlug, sanitizeChar } = require('../lib/urlHelper');
+        sanitizeSlug.mockReturnValue('a'.repeat(300));
+        sanitizeChar.mockReturnValue('-');
+        const implementation = { init: jest.fn(() => implementation), getEntry: notFound };
+        const backend = new Backend(implementation, { config: {}, backendName: 'github' });
+        const taken = 'a'.repeat(200);
+
+        const slug = await backend.generateUniqueSlug(
+          collection,
+          Map({ title: 'unused' }),
+          { slug: { sanitize_replacement: '-' } },
+          [taken],
+        );
+
+        expect(slug).toBe(`${'a'.repeat(198)}-1`);
+      });
+
+      it('leaves a slug from a custom path alone', async () => {
+        const implementation = { init: jest.fn(() => implementation), getEntry: notFound };
+        const backend = new Backend(implementation, { config: {}, backendName: 'github' });
+        const customPath = `posts/${'d'.repeat(250)}/index.md`;
+
+        const slug = await backend.generateUniqueSlug(
+          collection.set('nested', fromJS({ depth: 10 })),
+          Map({ title: 'unused' }),
+          {},
+          [],
+          customPath,
+        );
+
+        expect(slug).toBe(`${'d'.repeat(250)}/index`);
+      });
+    });
+
     it('should fail the save when it cannot tell whether the entry exists', async () => {
       const { sanitizeSlug, sanitizeChar } = require('../lib/urlHelper');
       sanitizeSlug.mockReturnValue('some-post-title');
@@ -918,6 +991,88 @@ describe('Backend', () => {
       await expect(
         backend.generateUniqueSlug(collection, Map({ title: 'some post title' }), Map({}), []),
       ).rejects.toThrow('API rate limit exceeded');
+    });
+  });
+
+  describe('deleteEntry with i18n', () => {
+    const collection = fromJS({
+      name: 'posts',
+      fields: [{ name: 'title' }],
+      type: FOLDER,
+      folder: 'posts',
+      slug: '{{slug}}',
+      i18n: { structure: 'multiple_files', locales: ['en', 'de', 'fr'], default_locale: 'en' },
+    });
+
+    function notFound() {
+      return Promise.reject(Object.assign(new Error('Not Found'), { status: 404 }));
+    }
+
+    function setup(getEntry, entity) {
+      const implementation = {
+        init: jest.fn(() => implementation),
+        getEntry: jest.fn(getEntry),
+        deleteFiles: jest.fn().mockResolvedValue(),
+      };
+      const backend = new Backend(implementation, { config: {}, backendName: 'github' });
+      backend.currentUser = jest.fn().mockResolvedValue({ login: 'login', name: 'name' });
+      backend.invokePreUnpublishEvent = jest.fn();
+      backend.invokePostUnpublishEvent = jest.fn();
+      const state = {
+        config: { backend: { name: 'github' } },
+        entries: fromJS({ entities: entity ? { 'posts.hello': entity } : {} }),
+      };
+      return { implementation, backend, state };
+    }
+
+    it('deletes only the locales the loaded entry has files for', async () => {
+      // GitHub answers a missing file with empty content, not a 404.
+      const { implementation, backend, state } = setup(() => Promise.resolve({ data: '' }), {
+        slug: 'hello',
+        i18nLocales: ['en', 'fr'],
+      });
+
+      await backend.deleteEntry(state, collection, 'hello');
+
+      expect(implementation.deleteFiles).toHaveBeenCalledWith(
+        ['posts/hello.en.md', 'posts/hello.fr.md'],
+        expect.any(String),
+      );
+      // Only the locale not known to exist was checked.
+      expect(implementation.getEntry).toHaveBeenCalledTimes(1);
+      expect(implementation.getEntry).toHaveBeenCalledWith('posts/hello.de.md');
+    });
+
+    it('still deletes a translation written after the entry was loaded', async () => {
+      const { implementation, backend, state } = setup(
+        p => Promise.resolve({ data: p === 'posts/hello.de.md' ? '---\ntitle: Hallo\n---\n' : '' }),
+        { slug: 'hello', i18nLocales: ['en'] },
+      );
+
+      await backend.deleteEntry(state, collection, 'hello');
+
+      expect(implementation.deleteFiles).toHaveBeenCalledWith(
+        ['posts/hello.en.md', 'posts/hello.de.md'],
+        expect.any(String),
+      );
+    });
+
+    it('checks every translation when the entry is not loaded, keeping the default locale', async () => {
+      const { implementation, backend, state } = setup(p =>
+        p === 'posts/hello.de.md'
+          ? Promise.reject(Object.assign(new Error('Server Error'), { status: 500 }))
+          : notFound(),
+      );
+
+      await backend.deleteEntry(state, collection, 'hello');
+
+      // fr is a confirmed 404 and is skipped. de could not be checked, so it is
+      // kept: a failed delete can be retried, an orphaned translation cannot.
+      expect(implementation.deleteFiles).toHaveBeenCalledWith(
+        ['posts/hello.en.md', 'posts/hello.de.md'],
+        expect.any(String),
+      );
+      expect(implementation.getEntry).not.toHaveBeenCalledWith('posts/hello.en.md');
     });
   });
 

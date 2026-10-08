@@ -635,6 +635,8 @@ export type EntryObject = {
   data: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   i18n?: any;
+  /** Locales whose file was found when the entry was loaded (multi-file i18n). */
+  i18nLocales?: List<string>;
   collection: string;
   mediaFiles: List<MediaFileMap>;
   newRecord: boolean;

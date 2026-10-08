@@ -8,6 +8,10 @@ import {
   entryPreviewPath,
   summaryFormatter,
   folderFormatter,
+  truncateSlug,
+  slugByteBudget,
+  utf8ByteLength,
+  MAX_SLUG_BYTES,
 } from '../formatters';
 
 jest.spyOn(console, 'warn').mockImplementation(() => {});
@@ -422,6 +426,92 @@ describe('formatters', () => {
           slugConfig,
         ),
       ).toBe('--/dir/post-title.en');
+    });
+  });
+
+  describe('slug length', () => {
+    const { selectIdentifier } = require('../../reducers/collections');
+    const vietnamese = 'Hướng dẫn chăm sóc da mặt cho làn da nhạy cảm '.repeat(20);
+    const encoder = new (require('util').TextEncoder)();
+
+    function bytes(str) {
+      return encoder.encode(str).length;
+    }
+
+    it('counts bytes the way UTF-8 does', () => {
+      expect(utf8ByteLength('abc')).toBe(3);
+      expect(utf8ByteLength(vietnamese)).toBe(bytes(vietnamese));
+      expect(utf8ByteLength('😀')).toBe(4);
+    });
+
+    it('caps a long Vietnamese title in bytes and ends on a word', () => {
+      selectIdentifier.mockReturnValueOnce('title');
+      const slug = slugFormatter(Map(), Map({ title: vietnamese }), slugConfig);
+      expect(bytes(slug)).toBeGreaterThan(MAX_SLUG_BYTES);
+
+      const truncated = truncateSlug(slug, MAX_SLUG_BYTES, slugConfig);
+
+      expect(bytes(truncated)).toBeLessThanOrEqual(MAX_SLUG_BYTES);
+      expect(truncated).not.toMatch(/[-_./\s]$/);
+      expect(slug.startsWith(truncated)).toBe(true);
+      // Nothing was mangled on the way: re-encoding round-trips.
+      expect(Buffer.from(truncated, 'utf8').toString('utf8')).toBe(truncated);
+    });
+
+    it('caps a long ASCII title', () => {
+      selectIdentifier.mockReturnValueOnce('title');
+      const slug = slugFormatter(
+        Map(),
+        Map({ title: 'A rather long post title '.repeat(20) }),
+        slugConfig,
+      );
+
+      const truncated = truncateSlug(slug, MAX_SLUG_BYTES, slugConfig);
+
+      expect(truncated.length).toBeLessThanOrEqual(MAX_SLUG_BYTES);
+      expect(truncated).not.toMatch(/[-_./\s]$/);
+      expect(slug.startsWith(truncated)).toBe(true);
+    });
+
+    it('leaves a slug within the budget alone', () => {
+      expect(truncateSlug('post-title', MAX_SLUG_BYTES, slugConfig)).toBe('post-title');
+    });
+
+    it('never splits a surrogate pair', () => {
+      // 3 bytes of ASCII, then 4-byte emoji: a 5-byte cut lands inside the second.
+      expect(truncateSlug('abc😀😀', 9, slugConfig)).toBe('abc😀');
+      expect(truncateSlug('abc😀😀', 8, slugConfig)).toBe('abc😀');
+      expect(truncateSlug('abc😀😀', 6, slugConfig)).toBe('abc');
+    });
+
+    it('drops separators the cut leaves at the end, including a custom replacement', () => {
+      expect(truncateSlug('one-two-three', 8, slugConfig)).toBe('one-two');
+      expect(truncateSlug('dir/sub/name', 8, slugConfig)).toBe('dir/sub');
+      expect(truncateSlug('one__two__three', 10, { sanitize_replacement: '__' })).toBe('one__two');
+    });
+
+    it('keeps the editorial workflow branch within what GitHub accepts', () => {
+      const collection = Map({ name: 'x'.repeat(100) });
+
+      const budget = slugByteBudget(collection, {});
+
+      expect(budget).toBeLessThan(MAX_SLUG_BYTES);
+      expect(bytes(`refs/heads/cms/${collection.get('name')}/`) + budget).toBeLessThanOrEqual(255);
+    });
+
+    it('makes room for the repository under open authoring', () => {
+      const collection = Map({ name: 'posts' });
+      const config = { backend: { open_authoring: true, repo: `owner/${'r'.repeat(80)}` } };
+
+      const budget = slugByteBudget(collection, config);
+
+      expect(bytes(`refs/heads/cms/${config.backend.repo}/posts/`) + budget).toBeLessThanOrEqual(
+        255,
+      );
+    });
+
+    it('allows the full budget for a short collection name', () => {
+      expect(slugByteBudget(Map({ name: 'posts' }), {})).toBe(MAX_SLUG_BYTES);
     });
   });
 

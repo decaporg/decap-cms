@@ -41,7 +41,14 @@ import {
 import { createEntry } from './valueObjects/Entry';
 import { sanitizeChar } from './lib/urlHelper';
 import { getBackend, getEditorApi, invokeEvent, registerFieldAction } from './lib/registry';
-import { commitMessageFormatter, slugFormatter, previewUrlFormatter } from './lib/formatters';
+import {
+  commitMessageFormatter,
+  slugFormatter,
+  previewUrlFormatter,
+  slugByteBudget,
+  truncateSlug,
+  utf8ByteLength,
+} from './lib/formatters';
 import { status } from './constants/publishModes';
 import { FOLDER, FILES } from './constants/collectionTypes';
 import { selectCustomPath } from './reducers/entryDraft';
@@ -50,7 +57,7 @@ import {
   getI18nFiles,
   hasI18n,
   getFilePath,
-  getFilePaths,
+  getI18nFilesToDelete,
   getI18nEntry,
   groupEntries,
   getI18nDataFiles,
@@ -606,10 +613,18 @@ export class Backend {
   ) {
     const slugConfig = config.slug;
     let slug: string;
+    // Capped in bytes, not characters: under the default `unicode` encoding a
+    // Vietnamese or CJK title keeps its characters raw at 2-4 bytes each, and
+    // an uncapped one produced editorial workflow branches GitHub refuses
+    // (refs are limited to 255 bytes) and filenames past NAME_MAX. Not applied
+    // to a nested collection's custom path: that slug is derived from a path
+    // the editor typed, which is saved as-is and must keep matching it.
+    let maxBytes = Infinity;
     if (customPath) {
       slug = slugFromCustomPath(collection, customPath);
     } else {
-      slug = slugFormatter(collection, entryData, slugConfig);
+      maxBytes = slugByteBudget(collection, config);
+      slug = truncateSlug(slugFormatter(collection, entryData, slugConfig), maxBytes, slugConfig);
     }
     let i = 1;
     let uniqueSlug = slug;
@@ -624,7 +639,14 @@ export class Backend {
         selectUseWorkflow(config),
       ))
     ) {
-      uniqueSlug = `${slug}${sanitizeChar(' ', slugConfig)}${i++}`;
+      // The suffix is kept whole and the slug in front of it gives way, so a
+      // slug already at the cap stays within it once `-1`, `-2`, ... is added.
+      const suffix = `${sanitizeChar(' ', slugConfig)}${i++}`;
+      const base =
+        maxBytes === Infinity
+          ? slug
+          : truncateSlug(slug, maxBytes - utf8ByteLength(suffix), slugConfig);
+      uniqueSlug = `${base}${suffix}`;
     }
     return uniqueSlug;
   }
@@ -1559,6 +1581,23 @@ export class Backend {
     return this.implementation.persistMedia(file, options);
   }
 
+  /**
+   * Whether a locale file exists, for deleteEntry. The GitHub backend (and
+   * everything built on it) resolves a missing file as empty content instead
+   * of rejecting, so the content is what is checked, not just the promise.
+   * A failure that is not a 404 counts as "exists": deleting a path that turns
+   * out to be absent fails loudly and can be retried, while skipping one that
+   * is there would leave an orphaned translation behind.
+   */
+  private async i18nFileExists(path: string) {
+    try {
+      const { data } = await this.implementation.getEntry(path);
+      return !!data;
+    } catch (error) {
+      return (error as { status?: number })?.status !== 404;
+    }
+  }
+
   async deleteEntry(state: State, collection: Collection, slug: string) {
     const config = state.config;
     const path = selectEntryPath(collection, slug) as string;
@@ -1587,7 +1626,14 @@ export class Backend {
     await this.invokePreUnpublishEvent(entry);
     let paths = [path];
     if (hasI18n(collection)) {
-      paths = getFilePaths(collection, extension, path, slug);
+      // Only the locales that exist: a translation that was never written has
+      // no file, and asking to delete one fails the whole commit on GitHub
+      // ("A path was requested for deletion which does not exist").
+      const files = getI18nFilesToDelete(collection, extension, path, slug, entry);
+      const exists = await Promise.all(
+        files.map(file => file.known || this.i18nFileExists(file.path)),
+      );
+      paths = files.filter((_, i) => exists[i]).map(file => file.path);
     }
     await this.implementation.deleteFiles(paths, commitMessage);
 

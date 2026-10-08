@@ -169,6 +169,81 @@ export function slugFormatter(
   }
 }
 
+/**
+ * Upper bound on a generated slug, in UTF-8 bytes. Leaves a filename of
+ * slug + extension under NAME_MAX (255 bytes) with room for any plausible
+ * extension, including i18n ones such as `.en.md`.
+ */
+export const MAX_SLUG_BYTES = 200;
+
+/**
+ * The longest a git ref may be on GitHub is 255 bytes including `refs/heads/`,
+ * which leaves 244 for the branch name itself.
+ */
+const MAX_BRANCH_BYTES = 255 - 'refs/heads/'.length;
+
+/** Below this, a slug stops being useful; only an absurd config gets here. */
+const MIN_SLUG_BYTES = 32;
+
+function codePointBytes(char: string) {
+  const codePoint = char.codePointAt(0) as number;
+  if (codePoint < 0x80) return 1;
+  if (codePoint < 0x800) return 2;
+  if (codePoint < 0x10000) return 3;
+  return 4;
+}
+
+export function utf8ByteLength(str: string) {
+  return Array.from(str).reduce((total, char) => total + codePointBytes(char), 0);
+}
+
+/**
+ * How many bytes a newly generated slug may take. Editorial workflow keeps
+ * each entry on a branch named `cms/<collection>/<slug>` (open authoring puts
+ * `<owner>/<repo>/` in front of the collection), and the branch is parsed back
+ * into collection and slug, so the slug itself is what has to fit — hashing
+ * the branch name would break that round trip.
+ */
+export function slugByteBudget(collection: Collection, config?: CmsConfig) {
+  const repo = config?.backend?.open_authoring ? config.backend.repo : undefined;
+  const branchPrefix = ['cms', repo, collection.get('name')].filter(Boolean).join('/') + '/';
+  const budget = Math.min(MAX_SLUG_BYTES, MAX_BRANCH_BYTES - utf8ByteLength(branchPrefix));
+  return Math.max(budget, MIN_SLUG_BYTES);
+}
+
+/**
+ * Cut a slug down to `maxBytes` of UTF-8. Cuts on a code point, so no
+ * surrogate pair is split, then drops whatever separators the cut left at the
+ * end (`-`, `_`, `.`, `/`, whitespace, or the configured replacement): a ref
+ * may not end in `/` or `.`, and a dangling dash is never what anyone wants.
+ */
+export function truncateSlug(slug: string, maxBytes: number, slugConfig?: CmsSlug) {
+  if (utf8ByteLength(slug) <= maxBytes) {
+    return slug;
+  }
+
+  let bytes = 0;
+  const kept: string[] = [];
+  for (const char of Array.from(slug)) {
+    bytes += codePointBytes(char);
+    if (bytes > maxBytes) break;
+    kept.push(char);
+  }
+
+  const replacement = slugConfig?.sanitize_replacement;
+  let truncated = kept.join('');
+  let previous;
+  do {
+    previous = truncated;
+    truncated = truncated.replace(/[\s\-_./]+$/u, '');
+    if (replacement && truncated.endsWith(replacement)) {
+      truncated = truncated.slice(0, -replacement.length);
+    }
+  } while (truncated !== previous);
+
+  return truncated;
+}
+
 export function previewUrlFormatter(
   baseUrl: string,
   collection: Collection,
