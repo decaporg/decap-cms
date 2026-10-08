@@ -15,7 +15,7 @@
     "build": "webpack"
   },
   "dependencies": {
-    "decap": "workspace:*"
+    "@decap/cli": "workspace:*"
   },
   "devDependencies": {
     "webpack": "catalog:",

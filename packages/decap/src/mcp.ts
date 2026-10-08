@@ -22,7 +22,7 @@ export async function serveMcp(flags: { apiUrl?: string }): Promise<void> {
   if (process.stdin.isTTY) {
     console.error(
       'decap mcp is an MCP server and talks over stdin/stdout. Add it to your agent instead, e.g.\n' +
-        '  claude mcp add decap -- npx -y decap mcp\n',
+        '  claude mcp add decap -- npx -y @decap/cli mcp\n',
     );
   }
 

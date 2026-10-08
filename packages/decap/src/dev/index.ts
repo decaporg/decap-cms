@@ -1,5 +1,5 @@
 /**
- * `decap/dev`: the programmatic API of the local proxy server, formerly
+ * `@decap/cli/dev`: the programmatic API of the local proxy server, formerly
  * `decap-server/dist/middlewares`. Mount Decap's proxy endpoints on your own
  * Express app with `registerLocalFs` or `registerLocalGit`, or start the
  * standalone server with `runDevServer` (what `decap dev` does).

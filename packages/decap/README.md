@@ -1,6 +1,6 @@
-# decap
+# @decap/cli
 
-The Decap command line. It runs the local proxy server for editing a site on your own machine, manages [Decap Turbo](https://turbo.decapcms.org), and connects AI agents to Turbo over MCP. Turbo commands go through the Turbo API with a personal access token, so they can never do more than you can in the dashboard.
+The Decap command line, installed as the `decap` command. It runs the local proxy server for editing a site on your own machine, manages [Decap Turbo](https://turbo.decapcms.org), and connects AI agents to Turbo over MCP. Turbo commands go through the Turbo API with a personal access token, so they can never do more than you can in the dashboard.
 
 It needs Node 20 or later.
 
@@ -9,9 +9,9 @@ It needs Node 20 or later.
 Runs the proxy server for Decap's `proxy` backend, so the CMS reads and writes the repository on disk. This was `npx decap-server`, which still works and runs the same server.
 
 ```sh
-npx decap dev                 # serve the current directory on port 8081
-npx decap dev --mode git      # commit changes, with editorial workflow support
-npx decap dev --port 8082 --dir ../my-site
+npx @decap/cli dev                 # serve the current directory on port 8081
+npx @decap/cli dev --mode git      # commit changes, with editorial workflow support
+npx @decap/cli dev --port 8082 --dir ../my-site
 ```
 
 Point the CMS at it:
@@ -33,7 +33,7 @@ Each flag overrides an environment variable, also read from a `.env` file in the
 To mount the proxy endpoints on your own Express app instead:
 
 ```js
-const { registerLocalFs, registerLocalGit } = require('decap/dev');
+const { registerLocalFs, registerLocalGit } = require('@decap/cli/dev');
 
 await registerLocalFs(app); // or registerLocalGit(app)
 ```
@@ -41,10 +41,10 @@ await registerLocalFs(app); // or registerLocalGit(app)
 ## Sign in
 
 ```sh
-npx decap login          # opens the browser; approve, and a token is stored
-npx decap login --admin  # also request admin scope (manage sites and members)
-npx decap whoami
-npx decap logout         # revokes the token and forgets it
+npx @decap/cli login          # opens the browser; approve, and a token is stored
+npx @decap/cli login --admin  # also request admin scope (manage sites and members)
+npx @decap/cli whoami
+npx @decap/cli logout         # revokes the token and forgets it
 ```
 
 The token is stored in `~/.config/decap/credentials.json` (mode 0600). In CI, set `DECAP_TOKEN` to a token created under **API tokens** in the dashboard instead.
@@ -86,7 +86,7 @@ The editor bridge is experimental and off by default: turn it on for a site with
 **Claude Code**
 
 ```sh
-claude mcp add decap -- npx -y decap mcp
+claude mcp add decap -- npx -y @decap/cli mcp
 ```
 
 **Claude Desktop, Cursor, and other clients that take a JSON config**
@@ -94,7 +94,7 @@ claude mcp add decap -- npx -y decap mcp
 ```json
 {
   "mcpServers": {
-    "decap": { "command": "npx", "args": ["-y", "decap", "mcp"] }
+    "decap": { "command": "npx", "args": ["-y", "@decap/cli", "mcp"] }
   }
 }
 ```
@@ -105,8 +105,8 @@ The API contract (operations, input schemas, MCP tool metadata) is the [`decap-t
 
 ```sh
 pnpm install            # from the repository root
-pnpm --filter decap build   # dist/cli.cjs
-pnpm --filter decap test
+pnpm --filter @decap/cli build   # dist/cli.cjs
+pnpm --filter @decap/cli test
 pnpm run type-check     # from the repository root
 ```
 

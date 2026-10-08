@@ -166,7 +166,8 @@ function checkDistForNodeProtocol(packageDir) {
 function testPackagePack(packageName, packageDir) {
   log(`Testing pnpm pack for ${packageName}...`);
 
-  const packDir = mkdtempSync(join(tmpdir(), `decap-pack-${packageName}-`));
+  // A scoped name (`@decap/cli`) would put a path separator in the prefix.
+  const packDir = mkdtempSync(join(tmpdir(), `decap-pack-${packageName.replace(/[@/]/g, '_')}-`));
 
   try {
     const result = spawnSync('pnpm', ['pack', '--json', '--pack-destination', packDir], {

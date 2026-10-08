@@ -16,7 +16,7 @@ module.exports = {
   entry: {
     // The `decap` binary.
     cli: path.join('src', 'index.ts'),
-    // `decap/dev`: the proxy server's programmatic API (registerLocalFs,
+    // `@decap/cli/dev`: the proxy server's programmatic API (registerLocalFs,
     // registerLocalGit, runDevServer), which decap-server re-exports.
     dev: path.join('src', 'dev', 'index.ts'),
   },

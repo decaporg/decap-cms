@@ -26,7 +26,7 @@ const startServer = async (repoDir, mode) => {
   const cliDir = path.join(__dirname, '..', '..', 'packages', 'decap');
   const cli = path.join(cliDir, 'dist', 'cli.cjs');
   if (!(await fs.pathExists(cli))) {
-    throw new Error(`${cli} is missing. Build it with: pnpm --filter decap build`);
+    throw new Error(`${cli} is missing. Build it with: pnpm --filter @decap/cli build`);
   }
 
   const port = 8082;

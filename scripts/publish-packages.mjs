@@ -184,8 +184,8 @@ function isPrerelease(version) {
  *
  * npm gives a package `latest` on its first publish whatever `--tag` says, and
  * never moves it again for a `--tag beta` publish. For a package with only
- * betas (the `decap` CLI), plain `npx decap` and every MCP config written as
- * `npx -y decap mcp` would stay on the first beta forever. A package with any
+ * betas (the `@decap/cli` CLI), plain `npx @decap/cli` and every MCP config
+ * written as `npx -y @decap/cli mcp` would stay on the first beta forever. A package with any
  * stable version on the registry is never touched, so this cannot put a beta
  * in front of `decap-server` or `decap-cms` users.
  *

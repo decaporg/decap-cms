@@ -3044,7 +3044,7 @@ importers:
 
   packages/decap-server:
     dependencies:
-      decap:
+      '@decap/cli':
         specifier: workspace:*
         version: link:../decap
     devDependencies:

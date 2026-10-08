@@ -37,7 +37,7 @@ export class ApiClient {
       throw new ApiError(
         401,
         'not_logged_in',
-        'Not signed in. Run `npx decap login` in a terminal.',
+        'Not signed in. Run `npx @decap/cli login` in a terminal.',
       );
     }
 

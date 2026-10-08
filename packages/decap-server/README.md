@@ -1,6 +1,6 @@
 # Decap CMS Proxy Server
 
-> **This is now `decap dev`.** The server moved into the [`decap`](../decap) command line: run `npx decap dev`, with the same environment variables plus matching flags. This package stays so `npx decap-server` and `require('decap-server/dist/middlewares')` keep working; both run the same code from `decap`.
+> **This is now `decap dev`.** The server moved into the [`decap`](../decap) command line (the `@decap/cli` package): run `npx @decap/cli dev`, with the same environment variables plus matching flags. This package stays so `npx decap-server` and `require('decap-server/dist/middlewares')` keep working; both run the same code from `@decap/cli`.
 
 Decap CMS Proxy Server is an express server created to facilitate local development.
 
