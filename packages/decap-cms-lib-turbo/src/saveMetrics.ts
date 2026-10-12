@@ -4,7 +4,7 @@
  */
 
 /** Matches one `dur=NN` parameter, tolerating whitespace and a float value. */
-const DURATION_PARAM = /^dur\s*=\s*([0-9]*\.?[0-9]+)$/;
+const DURATION_PARAM = /^dur\s*=\s*(\d+(?:\.\d+)?|\.\d+)$/;
 
 /**
  * Reads one metric out of a `Server-Timing` header; null rather than 0 when
