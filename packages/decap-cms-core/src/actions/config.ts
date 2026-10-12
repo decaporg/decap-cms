@@ -437,29 +437,17 @@ async function getConfigYaml(file: string, hasManualConfig: boolean) {
 
 export type CollectionAccess = 'edit' | 'view' | 'none';
 
-// A backend-agnostic permission set a backend can resolve however it likes
-// (e.g. decap-cms-backend-turbo-github/-gitlab fetching it from their shared
-// control plane after auth) and attach to the user object it resolves from `authenticate()`/
-// `currentUser()` as `permissions` (see actions/auth.ts) — the field name is
-// deliberately not backend-specific, since any backend may set it. Core has
-// no opinion on where this comes from; `collections` only ever lists
-// explicit overrides — a collection name absent from it is always full
-// access, so a backend that never supplies this is entirely unaffected.
+// Per-collection access a backend may attach to the user it resolves from
+// `authenticate()`/`currentUser()` as `permissions`. Names absent from
+// `collections` mean full access, so backends that never set it are unaffected.
 export interface BackendPermissions {
   collections?: Record<string, CollectionAccess>;
 }
 
 /**
- * Pure filter: drops collections resolved to `access: 'none'`. Identity
- * function when `permissions` is absent/empty — the overwhelmingly common
- * case (every non-Turbo backend, and Turbo before its post-auth permission
- * fetch completes) — so this is zero behavior change unless a backend
- * explicitly supplies a restriction.
- *
- * This is a UX/defense-in-depth layer only. The real enforcement boundary
- * lives server-side, in whichever backend proxies writes (for
- * decap-cms-backend-turbo-github/-gitlab, that's the `gh`/`gl` Supabase edge
- * function) — nothing here should be relied on as the sole security check.
+ * Drops collections the user has no access to and strips create, delete and
+ * publish from view-only ones. UX only: the backend that proxies writes is the
+ * boundary.
  */
 export function applyBackendPermissionFilter(
   config: CmsConfig,
@@ -469,16 +457,23 @@ export function applyBackendPermissionFilter(
     return config;
   }
 
+  const access = permissions.collections;
   const collections = config.collections || [];
-  const filteredCollections = collections.filter(
-    collection => permissions.collections![collection.name] !== 'none',
-  );
+  let changed = false;
+  const filteredCollections = collections.flatMap(collection => {
+    switch (access[collection.name]) {
+      case 'none':
+        changed = true;
+        return [];
+      case 'view':
+        changed = true;
+        return [{ ...collection, create: false, delete: false, publish: false }];
+      default:
+        return [collection];
+    }
+  });
 
-  if (filteredCollections.length === collections.length) {
-    return config;
-  }
-
-  return { ...config, collections: filteredCollections };
+  return changed ? { ...config, collections: filteredCollections } : config;
 }
 
 /**

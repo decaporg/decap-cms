@@ -1046,12 +1046,26 @@ describe('config', () => {
       expect(actual.collections.map(c => c.name)).toEqual(['posts', 'settings']);
     });
 
-    it('returns the original config reference when nothing is filtered out', () => {
+    it('returns the original config reference when every listed collection is editable', () => {
       const actual = applyBackendPermissionFilter(config, {
-        collections: { posts: 'edit', pages: 'view' },
+        collections: { posts: 'edit', pages: 'edit' },
       });
 
       expect(actual).toBe(config);
+    });
+
+    it('strips create, delete and publish from view-only collections', () => {
+      const actual = applyBackendPermissionFilter(
+        { collections: [{ name: 'posts', create: true, delete: true, publish: true }] },
+        { collections: { posts: 'view' } },
+      );
+
+      expect(actual.collections[0]).toEqual({
+        name: 'posts',
+        create: false,
+        delete: false,
+        publish: false,
+      });
     });
   });
 
