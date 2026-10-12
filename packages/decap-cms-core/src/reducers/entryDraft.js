@@ -156,10 +156,8 @@ function entryDraftReducer(state = Map(), action) {
         );
       });
     }
-    // Per top-level field: how often it was changed from outside the editor
-    // (lib/editorApi.ts), used in its control's React key so the widget
-    // remounts with the new value, and whether it is highlighted right now.
-    // Both maps are created on first use; readers treat a missing one as empty.
+    // Per top-level field: an external-change counter for its control's key,
+    // and whether it is highlighted. Readers treat a missing map as empty.
     case DRAFT_FIELDS_EXTERNALLY_CHANGED: {
       const { names } = action.payload;
       return state.withMutations(state => {

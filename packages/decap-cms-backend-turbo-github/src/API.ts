@@ -1,29 +1,13 @@
-// Imported from the package root, not `decap-cms-backend-github/src/API`:
-// jest's moduleNameMapper rewrites any path containing the package name to its
-// index, so the deep path resolves to the index's (nonexistent) default export
-// and this class would extend `undefined` under test.
+// From the package root, not `.../src/API`: jest's moduleNameMapper maps the
+// deep path to the index, and this class would extend `undefined` under test.
 import { API } from 'decap-cms-backend-github';
 import { branchFromContentKey, DEFAULT_PR_BODY } from 'decap-cms-lib-util';
 
 import type { AssetProxy, DataFile, PersistOptions } from 'decap-cms-lib-util';
 
-/** Whatever the REST path resolves to — callers only test it for truthiness,
- *  but matching it keeps this a drop-in subclass rather than a lookalike. */
+/** Matches the REST path's result, so this stays a drop-in subclass. */
 type PersistFilesResult = Awaited<ReturnType<API['persistFiles']>>;
 type DeleteFilesResult = Awaited<ReturnType<API['deleteFiles']>>;
-
-/**
- * GitHub API client that commits through Turbo's `_content/commit` endpoint
- * instead of the REST blob/tree/commit/ref sequence.
- *
- * The REST sequence is `N + 4` requests — one blob upload per file, then a
- * branch read, a tree, a commit and a ref update — and through Turbo every one
- * of them is a full browser -> edge -> GitHub round trip that re-pays the
- * proxy's auth/scope/quota preamble. The endpoint collapses that to a single
- * request, and server-side to a single GitHub GraphQL call.
- *
- * See decap-turbo/docs/deploy-status-plan.md §B1.
- */
 
 // Derived rather than imported from `decap-cms-backend-github/src/API`: the
 // published package ships that directory as TypeScript source, which no
@@ -31,8 +15,7 @@ type DeleteFilesResult = Awaited<ReturnType<API['deleteFiles']>>;
 type GitHubAPIConfig = ConstructorParameters<typeof API>[0];
 
 type TurboAPIConfig = GitHubAPIConfig & {
-  /** The backend's own scoped fetch — carries the Supabase bearer token, the
-   *  x-site-id scoping and the session refresh, and feeds the save meter. */
+  /** The backend's scoped fetch: token, x-site-id scoping, refresh, save meter. */
   turboFetch: (url: string, init?: RequestInit) => Promise<Response>;
 };
 
@@ -51,17 +34,19 @@ interface CommitFile {
  *   a CMS bundle safe to ship before the server side is live.
  * - 413: the payload exceeded the endpoint's ceiling, rejected during
  *   validation before any GitHub call.
- * - 400: rejected by request validation, which runs before any GitHub call for
- *   the same reason 413 does. This is what makes the two repos safe to deploy
- *   in either order: a bundle that sends a request shape the deployed edge
- *   function does not understand yet — an editorial-workflow commit, say —
- *   saves over REST instead of failing in front of the editor.
+ * - 400: rejected by request validation, also before any GitHub call. This is
+ *   what makes the two repos safe to deploy in either order: a request shape
+ *   the deployed function does not understand yet saves over REST instead.
  *
  * Nothing else falls back. A network error or a 5xx could mean the commit
  * landed and the response was lost, and retrying that would double-commit.
  */
 const FALLBACK_STATUSES = new Set([400, 404, 413]);
 
+/**
+ * GitHub API client that commits through Turbo's `_content/commit` endpoint in
+ * one request, instead of the REST blob/tree/commit/ref sequence's `N + 4`.
+ */
 export default class TurboAPI extends API {
   turboFetch: TurboAPIConfig['turboFetch'];
 
@@ -75,18 +60,12 @@ export default class TurboAPI extends API {
   }
 
   /**
-   * Renames are deliberately excluded. Decap expresses a rename as a directory
-   * move (`updateTree`'s `toMove`), which relocates every sibling file by blob
-   * sha without ever holding their contents — and `_content/commit` takes
-   * contents, not shas, so the move is simply not expressible. The REST path
-   * handles it correctly, and a rename is rare enough that paying `N + 4` for
-   * it costs nothing in aggregate.
+   * Renames stay on REST: Decap moves sibling files by blob sha, and
+   * `_content/commit` takes contents, not shas.
    *
    * Editorial workflow: only a FIRST save, the one that puts an entry into
-   * review. Saving an entry that is already unpublished rebases its branch
-   * against the site branch and computes which media to drop, from a diff the
-   * client reads — that is a different operation, not a commit with extra
-   * steps, so it stays on the REST path.
+   * review. Re-saving an unpublished entry rebases its branch and computes the
+   * media to drop from a client-side diff, which is not a plain commit.
    */
   private canCommitViaTurbo(dataFiles: DataFile[], options: PersistOptions) {
     if (!this.turboFetch) {
@@ -101,22 +80,14 @@ export default class TurboAPI extends API {
     return true;
   }
 
-  /**
-   * The entry's own editorial-workflow branch, by the same rule Decap uses
-   * everywhere else, so the server's branch and the client's agree.
-   */
+  /** The entry's workflow branch by Decap's own rule, so server and client agree. */
   private workflowBranchFor(options: PersistOptions, slug: string) {
     return branchFromContentKey(this.generateContentKey(options.collectionName as string, slug));
   }
 
   /**
-   * Finishes an editorial-workflow save whose commit landed but whose pull
-   * request or label did not.
-   *
-   * Deliberately does NOT re-run the commit: it is already in the branch, and
-   * falling back to `super.persistFiles` here would upload every blob again
-   * and add a second, identical commit. Only the missing steps are redone, on
-   * the REST path that has always done them.
+   * Finishes a workflow save whose commit landed but whose pull request or
+   * label did not. Never re-runs the commit, which would add a duplicate.
    */
   private async finishWorkflowOverRest(
     branch: string,
@@ -142,14 +113,9 @@ export default class TurboAPI extends API {
   }
 
   /**
-   * `asset` tells the server to keep this file out of the content cache — media
-   * is served by the media library, and a base64 image stored as cache text
-   * would bloat it for a row nothing reads. Only the client knows the split:
-   * it is the data-file / asset-proxy distinction Decap already draws, and the
-   * server cannot re-derive it (collection keys are opaque to it).
-   *
-   * Cache bookkeeping only. The server checks permissions on every path in the
-   * commit regardless of this flag.
+   * `asset` keeps media out of the content cache; only the client knows the
+   * data-file / asset split. Cache bookkeeping only: the server checks
+   * permissions on every path regardless.
    */
   private async toCommitAddition(file: CommitFile, asset: boolean) {
     const contents =
@@ -189,33 +155,24 @@ export default class TurboAPI extends API {
       return super.persistFiles(dataFiles, mediaFiles, options);
     }
 
-    // Media first, matching the REST path's `mediaFiles.concat(dataFiles)` —
-    // one commit either way, but keeping the order identical means a reviewer
-    // comparing the two paths sees the same tree.
+    // Media first, matching the REST path's order.
     try {
       const additions = await Promise.all([
         ...(mediaFiles as unknown as CommitFile[]).map(file => this.toCommitAddition(file, true)),
         ...(dataFiles as unknown as CommitFile[]).map(file => this.toCommitAddition(file, false)),
       ]);
 
-      // An editorial-workflow save targets the entry's own branch and asks the
-      // server to open the pull request and apply the status label as part of
-      // the same call. That replaces six further round trips — a branch read, a
-      // tree, a commit, a ref, a pull request and a label — each of which was
-      // re-paying the proxy's preamble.
+      // A workflow save targets the entry's own branch; the server opens the
+      // pull request and applies the status label in the same call.
       const slug = dataFiles[0]?.slug as string | undefined;
       const workflowBranch =
         options.useWorkflow && slug ? this.workflowBranchFor(options, slug) : null;
 
       const commit = await this.turboCommit({
         branch: workflowBranch ?? this.branch,
-        // The branch this deploy edits, which the server cannot infer: one
-        // Turbo site serves several deploys of the same repo (production on
-        // `main`, staging on `develop`), each naming its own in config.yml.
-        // A workflow entry branches off this and opens its pull request
-        // against it; without it the server fell back to the sites row and a
-        // staging draft forked from production. Sent on every save so the
-        // ordinary path records the same branch it committed to.
+        // The branch this deploy edits, which the server cannot infer: one site
+        // can serve several deploys of a repo, and without it a staging draft
+        // forked from production.
         base: this.branch,
         ...(workflowBranch && {
           workflow: {
@@ -227,9 +184,7 @@ export default class TurboAPI extends API {
         }),
         message: options.commitMessage,
         additions,
-        // Descriptive only — nothing about the commit depends on it. It is
-        // what the Deploys page shows in place of a bare sha, for every
-        // editor rather than only the browser that saved.
+        // Descriptive only: what the Deploys page shows in place of a bare sha.
         entry_label: (options as { entryLabel?: string }).entryLabel,
         entry_path: (options as { entryPath?: string }).entryPath,
       });

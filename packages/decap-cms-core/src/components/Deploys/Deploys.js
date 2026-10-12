@@ -20,7 +20,7 @@ import {
 } from './deploysView';
 
 /**
- * The Deploys page (deploy-status-plan.md §A8). The band on top answers the editor's "is my
+ * The Deploys page. The band on top answers the editor's "is my
  * change live" first; the table below answers the developer's "which build, why did it fail".
  */
 
@@ -148,7 +148,7 @@ export class Deploys extends React.Component {
   };
 
   componentDidMount() {
-    // Opening the page is one of only three things that may cause a read (§A8).
+    // Opening the page is one of only three things that may cause a read.
     this.props.loadDeployHistory();
     this.startAutoRefresh();
     document.addEventListener('visibilitychange', this.handleVisibilityChange);
@@ -160,7 +160,7 @@ export class Deploys extends React.Component {
   }
 
   // The only repeating read: it stops when the editor leaves the page, so an idle CMS still polls
-  // zero times (§A4b). `silent` so Refresh does not flicker to "Refreshing…" every ten seconds.
+  // zero times. `silent` so Refresh does not flicker to "Refreshing…" every ten seconds.
   startAutoRefresh() {
     if (this.timer) {
       return;
@@ -276,7 +276,7 @@ export class Deploys extends React.Component {
         <Card>
           {deployments.length === 0 ? (
             // Teaches rather than shrugs: a host that reports nothing is the most likely reason
-            // someone opened this page (§A6).
+            // someone opened this page.
             <Muted>{t(loaded ? 'ui.deploys.emptyConfigured' : 'ui.deploys.emptyUnknown')}</Muted>
           ) : (
             <Table>

@@ -7,21 +7,10 @@ import type { State } from '../types/redux';
 import type { NotificationPayload } from './notifications';
 
 /**
- * Post-save deploy notifications. See decap-turbo/docs/deploy-status-plan.md
- * §A4b.
- *
- * A save tells the editor their entry was committed; it does not tell them
- * whether the site they publish has actually rebuilt. This adds the second
- * half — but asynchronously: the save toast is short-lived, the editor carries
- * on working, and a notification arrives when a deploy accounts for the
- * change. A build can run for many minutes, and a toast that dwells for all of
- * them informs nobody.
- *
- * The watching itself belongs to the backend (Turbo polls its own
- * `site_deployments` table and asks git about ancestry), so this is
- * deliberately duck-typed: a backend without these methods gets exactly
- * today's behaviour, with no import relationship between core and any
- * particular backend.
+ * Post-save deploy notifications: a notification arrives when a deploy
+ * accounts for the change, long after the short save toast is gone. The
+ * watching belongs to the backend, so this is duck-typed: a backend without
+ * these methods keeps today's behaviour, and core imports no backend.
  */
 
 export const DEPLOY_STATUS_UPDATE = 'DEPLOY_STATUS_UPDATE';
@@ -97,26 +86,16 @@ interface DeployWatchingBackend {
   };
 }
 
-/**
- * One subscription for the session, so a resolution reaches the editor
- * wherever they are in the CMS — including on an entry they are no longer
- * looking at, or a collection they have navigated away from.
- */
+/** One subscription for the session, so a resolution reaches the editor anywhere. */
 let unsubscribe: (() => void) | null = null;
 
 /**
- * The save toast currently on screen, if any. A deploy usually resolves long
- * after it has gone, in which case the resolution is a new notification; when
- * the deploy is quick enough to beat it, the toast is updated in place instead
- * of a second one stacking beside it.
+ * The save toast on screen, if any: a deploy quick enough to beat it updates
+ * it in place instead of stacking a second one.
  */
 let saveNotificationId: string | null = null;
 
-/**
- * The status subscription behind the header pill. Held separately from
- * `unsubscribe` because it has different lifecycle rules: it never causes a
- * poll, so it can outlive the notification subscription harmlessly.
- */
+/** Behind the header pill; it never causes a poll, so it may outlive `unsubscribe`. */
 let unsubscribeStatus: (() => void) | null = null;
 
 function backendFor(getState: () => State): DeployWatchingBackend | null {
@@ -130,9 +109,8 @@ function backendFor(getState: () => State): DeployWatchingBackend | null {
 }
 
 /**
- * Starts listening for deploy outcomes. Dispatched once when the CMS mounts,
- * which is also what lets a watch survive a page reload: the backend restores
- * its ledger of unpublished saves when something subscribes.
+ * Starts listening for deploy outcomes. Subscribing is also what makes the
+ * backend resume its ledger of unpublished saves after a reload.
  */
 export function startDeployNotifications() {
   return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
@@ -160,13 +138,8 @@ export function stopDeployNotifications() {
 }
 
 /**
- * Wires the header pill, and takes the ONE read this feature makes on mount.
- *
- * That single read is what lets an editor who has saved nothing this session
- * still see whether the site is live or its last build failed. Everything
- * after it is driven by the watcher, which polls only while a save is
- * outstanding — a pill that polled to stay current would undo the whole point
- * of §A4b. See §A8.
+ * Wires the header pill, and takes the ONE read this feature makes on mount;
+ * after that only the watcher polls, and only while a save is outstanding.
  */
 export function startDeployStatus() {
   return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
@@ -198,9 +171,7 @@ export function startDeployStatus() {
             latest: status.latest,
             supported: true,
             pageEnabled: config.page,
-            // Which branch is the site. Without it the page cannot tell a
-            // deploy of the site from a deploy of an editorial-workflow
-            // branch, and calls the wrong one "Live".
+            // Which branch is the site, so the page calls the right deploy "Live".
             branch: config.branch ?? null,
           },
         }),
@@ -212,12 +183,7 @@ export function startDeployStatus() {
   };
 }
 
-/**
- * Reads the site's recent deploys. Dispatched once at mount and again by the
- * Deploys page's Refresh — the same affordance Decap already offers for deploy
- * preview links, so a manual check does not read as an admission that the
- * automatic path is unreliable.
- */
+/** Reads the site's recent deploys, at mount and on the Deploys page's Refresh. */
 export function loadDeployHistory({ silent = false }: { silent?: boolean } = {}) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const implementation = backendFor(getState);
@@ -225,17 +191,13 @@ export function loadDeployHistory({ silent = false }: { silent?: boolean } = {})
       return;
     }
 
-    // `silent` is for the background refresh the Deploys page runs while it is
-    // open: without it every tick would flip the Refresh button to
-    // "Refreshing…" and the page would visibly twitch once a poll.
+    // `silent`: the Deploys page's background refresh must not flip the button.
     if (!silent) {
       dispatch({ type: DEPLOY_HISTORY_REQUEST });
     }
 
     try {
-      // Together, because the page is unreadable with one and not the other:
-      // a deploy with no entry name is the bare sha this read exists to
-      // replace. A backend that cannot list commits simply contributes none.
+      // Together: a deploy with no entry name is the bare sha this read replaces.
       const [deployments, commits] = await Promise.all([
         implementation.listDeployments(),
         implementation.listCommits?.() ?? Promise.resolve([]),
@@ -268,11 +230,8 @@ export function selectCommitUrl(state: State, sha: string): string | null {
 
 /**
  * Announces a completed save, and asks the backend to watch for the deploy
- * that carries it.
- *
- * Replaces the plain `Entry saved` toast at the one call site that publishes
- * directly. Editorial workflow keeps the plain toast: saving there creates an
- * unpublished change, which by definition has not deployed.
+ * that carries it. Editorial workflow keeps the plain toast: an unpublished
+ * change has not deployed.
  */
 export function notifyEntrySaved(entryLabel?: string, entryUrlPath?: string) {
   return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
@@ -309,16 +268,12 @@ function announceDeployResolution(resolution: DeployResolution) {
     const entries = resolution.entries ?? [];
     const only = entries.length === 1 ? entries[0] : null;
 
-    // The deploy's own URL is the live site (§A2 — it is `environment_url`,
-    // not the build log). `site_url` is the fallback for a host that reports
-    // no URL; without either, no link is shown rather than one that goes
-    // nowhere.
+    // The deploy's own URL is the live site, not the build log; `site_url` is
+    // the fallback, and with neither no link is shown.
     const siteUrl = resolution.targetUrl || state.config.site_url;
 
-    // When exactly one entry is named, send the editor to THAT entry rather
-    // than to the home page — they are being told a specific change is live,
-    // so the link should show them that change. Only in the named case: a
-    // grouped "3 changes are live" has no single page to point at.
+    // One named entry links to that entry; a grouped "3 changes are live" has
+    // no single page to point at.
     const entryUrl = only?.entryUrlPath ? joinUrl(siteUrl, only.entryUrlPath) : null;
 
     const payload: Partial<NotificationPayload> =

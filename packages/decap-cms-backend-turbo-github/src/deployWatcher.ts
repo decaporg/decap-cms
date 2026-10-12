@@ -1,19 +1,11 @@
 /**
- * Browser transport for deploy notifications — the read side of §A2's
- * `site_deployments`. See decap-turbo/docs/deploy-status-plan.md §A3/§A4b.
+ * Browser side of deploy notifications, reading `site_deployments`. It polls
+ * raw PostgREST (no `supabase-js` in this bundle, so no Realtime), behind a
+ * `DeployTransport` so Realtime could later replace that one object.
  *
- * The CMS talks to PostgREST with raw `fetch` (see supabase.ts): there is no
- * `supabase-js` in this bundle and therefore no realtime channel. So v1 polls,
- * behind a `DeployTransport` so that swapping in Realtime later replaces one
- * object rather than the lifecycle rules below.
- *
- * The question this answers is NOT "did my commit's deploy succeed" but
- * **"has a deploy that CONTAINS my commit succeeded"** — ancestry, not
- * identity. That reframing is what makes several saves, a build cancelled in
- * favour of a newer commit, and several editors all behave sensibly: a newer
- * deploy that swallowed my commit still means my change is live.
- *
- * Nothing here renders anything. Its output is a sequence of resolutions.
+ * The question is NOT "did my commit's deploy succeed" but "has a deploy that
+ * CONTAINS my commit succeeded": ancestry, not identity, so a newer deploy that
+ * swallowed my commit still means my change is live.
  */
 
 /** Mirrors the `site_deployments_state_check` constraint. */
@@ -35,8 +27,7 @@ export interface DeploymentRow {
   branch?: string | null;
   source: string;
   external_id: string;
-  /** Null when the host could not be identified — callers then say "your
-   *  site" rather than naming a guess. */
+  /** Null when the host is unknown; callers say "your site", not a guess. */
   provider_label: string | null;
   state: DeployState;
   target_url: string | null;
@@ -48,29 +39,22 @@ export interface DeploymentRow {
   updated_at: string;
 }
 
-/** One save of one entry, waiting to be seen live. */
 /**
- * Identity of one pending save. `record` keeps at most one entry per path, so
- * a path alone does not distinguish "this save" from "the re-save that
- * replaced it" — and resolution runs across awaits during which exactly that
- * replacement can happen.
+ * Identity of one pending save. A path alone cannot tell a save from the
+ * re-save that replaced it while resolution was awaiting.
  */
 function saveKey(save: { entryPath: string; commitSha: string }): string {
   return `${save.entryPath}@${save.commitSha}`;
 }
 
+/** One save of one entry, waiting to be seen live. */
 export interface PendingSave {
   entryPath: string;
   /** Human title for the notification; the path is the fallback. */
   entryLabel?: string;
   /**
-   * Where this entry lives on the built site, as a path — `/blog/my-post/`.
-   *
-   * Resolved at save time, because that is the only moment the collection's
-   * `preview_path` template and the entry's own fields are both in hand. A
-   * path rather than a URL so it can be joined to whichever deploy turns out
-   * to carry the change: on a branch-published site the deploy's own host is
-   * not the one in `site_url`.
+   * Where this entry lives on the built site, e.g. `/blog/my-post/`: a path,
+   * so it joins whichever deploy's host carries the change.
    */
   entryUrlPath?: string;
   commitSha: string;
@@ -90,12 +74,8 @@ export interface DeployResolution {
 }
 
 /**
- * What the header pill renders — see docs/deploy-status-plan.md §A8.
- *
- * Separate from `DeployResolution` because the two answer different questions.
- * A resolution is an event ("this change just went live") and belongs in a
- * toast; a status is a condition ("two changes are still publishing") and
- * belongs in a place on screen that does not go away.
+ * What the header pill renders: a condition ("two changes are still
+ * publishing"), where a `DeployResolution` is an event for a toast.
  */
 export interface WatchStatus {
   /** Saves this browser has made that no deploy has accounted for yet. */
@@ -106,13 +86,8 @@ export interface WatchStatus {
 
 export interface DeployTransport {
   /**
-   * Starts delivering deployment rows for the watched branch, as often as it
-   * learns anything, until the returned stop function is called.
-   *
-   * `sinceIso` is the earliest `updated_at` worth reading — everything older
-   * predates every pending save. The callback receives the full set each
-   * time rather than a delta: resolution has to weigh rows against each other
-   * anyway, and a complete picture is what a polling read naturally produces.
+   * Delivers the watched branch's rows, the full set each time, until stopped.
+   * `getSince` is the earliest `updated_at` worth reading.
    */
   start(
     getSince: () => string,
@@ -122,21 +97,9 @@ export interface DeployTransport {
 }
 
 /**
- * How often to look, by how long the oldest pending save has been waiting.
- *
- * Flat 5s polling was fine when a watch lasted 20s. It is not fine now that a
- * watch outlives a real build: 5s for twenty minutes is 240 requests for one
- * save. This is ~54 for the same window, still quick where it matters — the
- * first minute, when most sites finish.
- */
-/**
  * Whether an editor sees any of this, and which host's success counts as
- * "live". See docs/deploy-status-plan.md §A7.
- *
- * `deploy_status: false` turns it off entirely; an object turns parts off. The
- * default is on, because the surfaces auto-hide anyway when no deploy has ever
- * been reported for the site — a CMS whose host says nothing should look like
- * a CMS without the feature, not like one with a broken one.
+ * "live". `deploy_status: false` turns it off; an object turns parts off. On
+ * by default: the surfaces hide themselves until a deploy is reported.
  */
 export interface DeployStatusOptions {
   enabled: boolean;
@@ -145,19 +108,13 @@ export interface DeployStatusOptions {
   /** The /deploys route and its nav item. */
   page: boolean;
   /**
-   * `provider_label` whose success means live, for a site published to several
-   * hosts at once. Null lets the first success win, which keeps the claim true
-   * (it IS live, somewhere) and is why the toast names the host when a site has
-   * more than one.
+   * `provider_label` whose success means live, for a site on several hosts.
+   * Null lets the first success win, which is why the toast names the host.
    */
   primaryTarget: string | null;
 }
 
-/**
- * What the app is told about this backend's deploy status. The parsed options
- * plus the one runtime fact the surfaces need: which branch is the site, so
- * "Live" can be told apart from "a branch of this repo also built".
- */
+/** The parsed options plus the site's branch, so "Live" ignores other branches' builds. */
 export type DeployStatusConfig = DeployStatusOptions & { branch: string | null };
 
 export const DEFAULT_DEPLOY_STATUS_OPTIONS: DeployStatusOptions = {
@@ -189,15 +146,17 @@ export function parseDeployStatusOptions(raw: unknown): DeployStatusOptions {
 
   return {
     enabled,
-    // A disabled feature disables both surfaces, whatever the sub-keys say —
-    // otherwise `{ enabled: false, page: true }` would leave a nav item that
-    // can never show anything.
+    // A disabled feature disables both surfaces, whatever the sub-keys say.
     notifications: enabled && options.notifications !== false,
     page: enabled && options.page !== false,
     primaryTarget,
   };
 }
 
+/**
+ * How often to look, by how long the oldest pending save has been waiting:
+ * quick in the first minute, when most sites finish, then backing off.
+ */
 export const POLL_STEPS: ReadonlyArray<{ untilMs: number; everyMs: number }> = [
   { untilMs: 60_000, everyMs: 5_000 },
   { untilMs: 180_000, everyMs: 15_000 },
@@ -205,10 +164,8 @@ export const POLL_STEPS: ReadonlyArray<{ untilMs: number; everyMs: number }> = [
 ];
 
 /**
- * If not one deployment row has appeared for the branch in this long, the site
- * has no deploy hook that reports to us (§A0 — the common case) and we stop.
- * Silently: the save was already confirmed by its own toast, and a site with
- * no CI must never be told anything about a deploy.
+ * No deployment row for the branch in this long means no deploy hook reports
+ * to us, so stop, silently: the save was already confirmed.
  */
 export const FIRST_SIGN_TIMEOUT_MS = 120_000;
 
@@ -242,11 +199,7 @@ export function pollIntervalFor(waitedMs: number) {
   return POLL_STEPS[POLL_STEPS.length - 1].everyMs;
 }
 
-/**
- * Where the ledger survives a page reload. A build outlasts a reload easily,
- * and an editor who reloads mid-build should still be told their change went
- * live.
- */
+/** Survives a reload, so an editor who reloads mid-build still hears about it. */
 export interface LedgerStore {
   load(): PendingSave[];
   save(entries: PendingSave[]): void;
@@ -262,11 +215,7 @@ export function createMemoryLedger(): LedgerStore {
   };
 }
 
-/**
- * Falls back to memory when storage is unavailable (Safari private mode) or
- * unreadable. Losing a notification is a far smaller problem than a save path
- * that throws.
- */
+/** Falls back to memory when storage is unavailable; a lost notification beats a throw. */
 export function createLocalStorageLedger(key: string): LedgerStore {
   const memory = createMemoryLedger();
 
@@ -312,11 +261,8 @@ export function createLocalStorageLedger(key: string): LedgerStore {
 }
 
 /**
- * Polling transport (v1). Zero new bundle weight and works through the same
- * PostgREST access the content cache already uses.
- *
- * The next poll is scheduled when the previous one settles, not on a fixed
- * interval, so a slow or hanging request cannot stack up behind itself.
+ * Polling transport. The next poll is scheduled when the previous one settles,
+ * so a slow or hanging request cannot stack up behind itself.
  */
 export function createPollingTransport(
   fetchRows: (sinceIso: string) => Promise<DeploymentRow[]>,
@@ -347,9 +293,7 @@ export function createPollingTransport(
         }
       }
 
-      // Immediately, not after one interval: by the time a save returns the
-      // deploy may already have been reported, and this is the cheapest way
-      // to find out.
+      // Immediately: the deploy may already have been reported.
       poll();
 
       return () => {
@@ -365,28 +309,17 @@ export function createPollingTransport(
 
 export interface DeployWatcherDeps {
   transport: DeployTransport;
-  /**
-   * Whether `head` contains `base` — GitHub's compare, `ahead` or `identical`.
-   * Only consulted when a successful deploy names a commit that is not one of
-   * ours, which is exactly the cancelled-in-favour-of-newer case.
-   */
+  /** Whether `head` contains `base`; asked when a success names a commit not ours. */
   isCommitContained: (base: string, head: string) => Promise<boolean>;
-  /**
-   * The branch the site publishes from. Only a deploy of THIS branch can be
-   * the site's current state — see `rememberLatest`. Null means "unknown", in
-   * which case every row counts, which is the pre-branch-column behaviour.
-   */
+  /** Only this branch's deploys are the site's state; null lets every row count. */
   siteBranch?: string | null;
   ledger?: LedgerStore;
   clock?: Clock;
 }
 
 /**
- * Tracks this editor's saves until a deploy accounts for them.
- *
- * One watcher per site, holding many saves — not one watch per save. Keyed by
- * entry path with the newest commit winning, so re-saving an entry moves the
- * ledger forward rather than leaving an older version to be announced as live.
+ * Tracks this editor's saves until a deploy accounts for them: one watcher per
+ * site, keyed by entry path with the newest commit winning.
  */
 export class DeployWatcher {
   private transport: DeployTransport;
@@ -416,10 +349,7 @@ export class DeployWatcher {
     this.pending = this.prune(this.ledger.load());
   }
 
-  /**
-   * Attaches a listener and resumes any ledger left over from a previous page
-   * load. Returns an unsubscribe function.
-   */
+  /** Attaches a listener and resumes any ledger left from a previous load. */
   subscribe(listener: (resolution: DeployResolution) => void): () => void {
     this.listeners.add(listener);
     if (this.pending.length > 0) {
@@ -436,11 +366,9 @@ export class DeployWatcher {
   }
 
   /**
-   * Attaches a status listener. Unlike `subscribe`, this has NO effect on the
-   * poll lifecycle: a pill watching the status must never be the reason a site
-   * starts polling, or an idle CMS would poll forever just to keep a badge
-   * current (§A8). Emits the current status immediately so a late subscriber
-   * — the header mounting after a save — renders the truth rather than a blank.
+   * Attaches a status listener. Unlike `subscribe`, this never starts a poll,
+   * or an idle CMS would poll forever to keep a badge current. Emits the
+   * current status immediately for a late subscriber.
    */
   subscribeStatus(listener: (status: WatchStatus) => void): () => void {
     this.statusListeners.add(listener);
@@ -454,11 +382,7 @@ export class DeployWatcher {
     return { pendingCount: this.pending.length, latest: this.latestRow };
   }
 
-  /**
-   * Seeds the last known deployment from a source other than the poll — the
-   * one read the app makes on mount, so an editor who has saved nothing this
-   * session still sees whether the site is live or broken.
-   */
+  /** Seeds the last known deployment from outside the poll, e.g. the read on mount. */
   observe(rows: DeploymentRow[]): void {
     this.rememberLatest(rows);
     this.emitStatus();
@@ -479,10 +403,8 @@ export class DeployWatcher {
       { ...save, savedAt: now },
     ];
     this.persist();
-    // Restart the "has anything reported yet" window. Without this, a save
-    // made 119s into a silent watch would be thrown away one second later,
-    // together with the ledger — and a ledger resumed after a reload would be
-    // discarded before its first poll.
+    // Restart the "has anything reported yet" window, or a save late in a
+    // silent watch, or a resumed ledger, is dropped before its first poll.
     this.startedAt = now;
     this.ensureRunning();
   }
@@ -504,14 +426,8 @@ export class DeployWatcher {
 
   private prune(entries: PendingSave[]) {
     const now = this.clock.now();
-    // Bounded on BOTH sides. The ledger lives in localStorage and survives
-    // reloads, so a save stamped while the machine's clock was fast — then
-    // corrected backward by NTP — carries a savedAt in the future. A one-sided
-    // filter never expires that entry: `now - savedAt` stays negative, so
-    // nothing ever empties `pending` and nothing calls stop(), and `waited()`
-    // is negative too, which pins pollIntervalFor at its first 5s step for the
-    // rest of the session. This is the only way the poll can genuinely run
-    // forever.
+    // Bounded on BOTH sides: a savedAt in the future (stamped by a fast clock,
+    // since corrected) would never expire and would pin the poll at 5s forever.
     return entries.filter(
       entry => now - entry.savedAt < LEDGER_TTL_MS && entry.savedAt <= now + SINCE_SKEW_MS,
     );
@@ -525,18 +441,9 @@ export class DeployWatcher {
   }
 
   /**
-   * The latest deploy OF THE SITE'S OWN BRANCH.
-   *
-   * The poll's own rows are already branch-scoped, but `observe` is fed the
-   * Deploys page's unscoped read — which deliberately includes editorial-
-   * workflow branches so the page can show them. Measured on the tester: an
-   * unpublish built `cms/posts/…` as a Netlify branch deploy, that row was the
-   * newest, and the header pill and the page's summary both announced "your
-   * latest change is live" about a preview of an unpublished entry.
-   *
-   * A row with no branch is kept: some hosts report none, and refusing those
-   * would mean a site that never learns its own state. Only a row that names a
-   * DIFFERENT branch is excluded, which is the case we can actually prove.
+   * The latest deploy OF THE SITE'S OWN BRANCH: `observe` is fed the Deploys
+   * page's unscoped read, and a workflow branch's preview must not read as
+   * live. A row with no branch is kept, since some hosts report none.
    */
   private rememberLatest(rows: DeploymentRow[]) {
     for (const row of rows) {
@@ -645,14 +552,9 @@ export class DeployWatcher {
       if (contained.length === 0) {
         continue;
       }
-      // `containedIn` awaits a compare call per entry, and `record()` replaces
-      // `this.pending` wholesale — so by the time we get here the editor may
-      // have re-saved one of these entries at a NEWER commit. Matching on
-      // identity (path + sha) rather than path alone is what keeps that
-      // re-save out of both the removal and the announcement: filtering by
-      // path would delete the still-building save from the ledger and tell
-      // the editor the entry is live, which is precisely what `record`'s own
-      // "newest commit per path wins" comment exists to prevent.
+      // Match on identity (path + sha), not path: the editor may have re-saved
+      // one of these entries at a newer commit during the awaits above, and
+      // that save is still building.
       const resolved = new Set(contained.map(saveKey));
       const stillPending = this.pending.filter(entry => resolved.has(saveKey(entry)));
       if (stillPending.length === 0) {
@@ -677,9 +579,7 @@ export class DeployWatcher {
       if (contained.length === 0) {
         continue;
       }
-      // Same identity match as above. Stamping `failureReported` by path would
-      // mark a newer save as already-reported, silently swallowing its own
-      // build failure later.
+      // Same identity match, or a newer save's own failure would be swallowed.
       const resolved = new Set(contained.map(saveKey));
       const stillPending = this.pending.filter(entry => resolved.has(saveKey(entry)));
       if (stillPending.length === 0) {
@@ -736,11 +636,8 @@ export class DeployWatcher {
           contained.push(entry);
         }
       } catch (error) {
-        // Deliberately no fallback guess. "Your change is live" is the one
-        // claim this feature exists to make trustworthy, and a timestamp
-        // comparison across two clocks is not evidence for it. Leave the save
-        // pending and ask again next poll; if it never answers, the entry
-        // expires and nothing is claimed.
+        // No fallback guess: comparing two clocks is no evidence a change is
+        // live. Ask again next poll; if it never answers, the save expires.
         console.warn('Deploy ancestry check failed, leaving the save pending', error);
       }
     }
@@ -795,16 +692,8 @@ const COMMIT_COLUMNS = [
 const DEPLOYMENT_LIMIT = 20;
 
 /**
- * The window the Deploys page works over.
- *
- * Was 25 — one screenful, on the reasoning that past that the question stops
- * being "did my change ship". Filtering by branch defeats that: a site with
- * editorial workflow on produces three rows per commit (branch deploy, deploy
- * preview, and the git provider's own report of the preview), so twenty-five
- * rows is eight commits and a branch filter would routinely find nothing.
- *
- * Still a window, not the whole table. The page says so when it is full, and
- * `site_deployments` keeps far more than this.
+ * The window the Deploys page works over: deep enough for a branch filter on a
+ * workflow site, which reports about three rows per commit.
  */
 export const HISTORY_LIMIT = 200;
 
@@ -814,25 +703,14 @@ export interface DeploymentFetcherConfig {
   anonKey: string;
   siteId: string;
   branch: string;
-  /**
-   * Read per request, never captured: the access token is rotated by the
-   * session refresh, and a watch outlives several of those.
-   */
+  /** Read per request: the session refresh rotates the token. */
   getAccessToken: () => string | null | undefined;
   fetchImpl?: typeof fetch;
 }
 
 /**
- * Reads `site_deployments` through PostgREST.
- *
- * Filtered by branch rather than by commit: the deploy that carries a change
- * live is not always the deploy of that commit, so the read has to see its
- * neighbours too.
- *
- * `site_id` is filtered here as well as by RLS. RLS already scopes this to the
- * site the JWT is active on, so the filter is not the security boundary — it
- * is what keeps a stale JWT (still scoped to the site the editor was on a
- * moment ago) from returning another site's rows.
+ * Reads `site_deployments` through PostgREST. RLS is the boundary; the
+ * `site_id` filter keeps a stale JWT from returning another site's rows.
  */
 async function queryDeployments(
   config: DeploymentFetcherConfig,
@@ -944,9 +822,7 @@ export function createDeployWatcher(
     clock?: Clock;
   },
 ): DeployWatcher {
-  // The transport asks the watcher for the next interval and the watcher owns
-  // the transport, so one of the two references has to be late-bound. A holder
-  // keeps that explicit rather than relying on a `let` the linter mistrusts.
+  // The transport and the watcher reference each other, so one is late-bound.
   const holder: { watcher: DeployWatcher | null } = { watcher: null };
 
   const transport = createPollingTransport(createDeploymentFetcher(config), {

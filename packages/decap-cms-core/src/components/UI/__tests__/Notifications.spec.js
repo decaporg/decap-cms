@@ -92,8 +92,7 @@ describe('Notifications', () => {
     jest.useRealTimers();
   });
 
-  // The capability §A4 needs: one toast that follows a job through its stages,
-  // rather than a new toast stacked next to it per stage.
+  // One toast follows a job through its stages instead of stacking one per stage.
   it('updates a notification in place instead of stacking a second toast', async () => {
     let notifications = [
       { id: '1', message: 'Saved · Publishing…', type: 'info', dismissAfter: false, spinner: true },

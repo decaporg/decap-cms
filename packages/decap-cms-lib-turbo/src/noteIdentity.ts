@@ -1,27 +1,13 @@
 /**
- * Who a note is attributed to on a Turbo backend.
- *
- * Turbo writes every comment with the organization's shared credential - a
- * GitHub App installation token or a GitLab group token - so the account the
- * host reports as the comment's author is the same bot for every editor. The
- * note body therefore has to carry who actually wrote it, which is what
- * lib-util's `author` / `authorId` marker fields are for.
- *
- * The id is the Supabase user id, read from the `sub` claim of the access
- * token the session already holds. It is stable across a change of display
- * name or email, opaque enough to sit in a public repository's issue comment,
- * and costs no request - unlike the `/gh/user` and `/gl/user` proxy routes,
- * whose id is a 32-bit hash of this same uuid and so can collide.
+ * Who a note is attributed to on a Turbo backend. Turbo writes every comment
+ * with the organization's credential, so the note body carries the author: the
+ * Supabase user id from the access token's `sub` claim. It survives renames and
+ * costs no request; the proxy's `/user` ids are a 32-bit hash that can collide.
  */
 
 /**
- * Base64url, and without the padding a JWT segment omits.
- *
- * `atob` reads the bytes as Latin-1, so a claim carrying a non-ASCII display
- * name comes back as mojibake. That is fine for the one claim read here: a
- * Supabase user id is a uuid, and every byte UTF-8 uses for the rest is above
- * 0x7F, where no JSON syntax character lives - so the payload still parses and
- * `sub` still arrives intact.
+ * Base64url without padding. `atob` reads Latin-1, so non-ASCII claims come
+ * back garbled, but the JSON still parses and `sub` (a uuid) arrives intact.
  */
 function decodeSegment(segment: string) {
   const padded = segment.replace(/-/g, '+').replace(/_/g, '/');
@@ -29,12 +15,8 @@ function decodeSegment(segment: string) {
 }
 
 /**
- * The `sub` claim, or undefined for anything that is not a JWT carrying one.
- *
- * Deliberately does not verify the signature: this picks which notes offer
- * Edit, Resolve and Delete in one editor's own browser. The token was minted
- * by Supabase for this session, and a forged one buys nothing - every write it
- * would enable is checked again server-side against the caller's real identity.
+ * The `sub` claim, or undefined. Unverified on purpose: it only picks which
+ * notes offer Edit, Resolve and Delete; every write is checked server-side.
  */
 export function supabaseUserIdFromToken(token: string | null | undefined) {
   if (!token) {

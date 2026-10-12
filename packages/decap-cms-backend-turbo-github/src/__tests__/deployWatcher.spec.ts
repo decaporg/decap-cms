@@ -136,10 +136,8 @@ describe('pollIntervalFor', () => {
 describe('DeployWatcher ledger', () => {
   it('does not resolve a save made while the ancestry check was in flight', async () => {
     // resolve() awaits one compare per pending entry, and record() replaces
-    // this.pending wholesale. A re-save landing inside that window used to be
-    // removed from the ledger by PATH along with the older save it replaced —
-    // so the still-building commit was dropped and the editor was told the
-    // entry was live.
+    // this.pending wholesale: a re-save in that window must not be resolved
+    // by PATH along with the older save it replaced.
     let release: ((contained: boolean) => void) | null = null;
     const contained = jest.fn().mockImplementation(
       (from: string) =>
@@ -219,8 +217,8 @@ describe('DeployWatcher ledger', () => {
 });
 
 describe('DeployWatcher ancestry', () => {
-  // The whole point of §A4b: a build cancelled in favour of a newer commit
-  // still ships the change, inside that newer deploy.
+  // A build cancelled in favour of a newer commit still ships the change, inside
+  // that newer deploy.
   it("announces a change carried live by a later deploy of someone else's commit", async () => {
     const contained = jest.fn().mockResolvedValue(true);
     const { watcher, transport, resolutions } = makeWatcher({ contained });
@@ -340,8 +338,8 @@ describe('DeployWatcher outcomes', () => {
 });
 
 describe('DeployWatcher giving up', () => {
-  // The common case per §A0: no deploy hook reports to us at all. It must
-  // produce no notification whatsoever — the save already had its own toast.
+  // The common case: no deploy hook reports at all. The save already had its own
+  // toast, so nothing more is shown.
   it('stops silently when no deployment is ever reported', async () => {
     const { watcher, transport, timers, resolutions } = makeWatcher();
 
@@ -770,10 +768,8 @@ describe('DeployWatcher status channel', () => {
     expect(seen[seen.length - 1].latest).toMatchObject({ commit_sha: 'new' });
   });
 
-  // `observe` is fed the Deploys page's read, which is deliberately unscoped so
-  // the page can show editorial-workflow branches. The pill is not the page:
-  // measured on the tester, an unpublish branch-deployed `cms/posts/…` and the
-  // pill announced a preview of an unpublished entry as the site being live.
+  // `observe` is fed the Deploys page's unscoped read; a workflow branch's
+  // preview must not become the site's latest deploy.
   it('ignores a deploy of another branch', () => {
     const { watcher } = makeWatcher({ siteBranch: 'turbo' });
 

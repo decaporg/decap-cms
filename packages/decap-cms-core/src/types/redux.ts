@@ -604,11 +604,7 @@ export type Entries = StaticallyTypedRecord<{
   viewStyle: string;
 }>;
 
-/**
- * The editorial-workflow `pages` slice. Deliberately not `PagesObject`, which
- * is keyed by collection and describes the entries reducer: this one is a
- * single flat record for the whole workflow.
- */
+/** The editorial-workflow `pages` slice: one flat record, unlike `PagesObject`. */
 export type WorkflowPagesObject = {
   isFetching?: boolean;
   page?: number;

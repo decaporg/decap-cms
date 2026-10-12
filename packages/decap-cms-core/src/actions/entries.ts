@@ -1015,13 +1015,8 @@ export function persistEntry(collection: Collection) {
         usedSlugs,
       })
       .then(async (newSlug: string) => {
-        // "Entry saved" plus, where the backend can report one, a later
-        // notification when a deploy carries this change live — see
-        // actions/deployStatus.ts and §A4b. Falls back to exactly the previous
-        // toast when it cannot. The title is passed so that notification can
-        // name the entry rather than its path. Both are guarded: the entry is
-        // already committed, so a preSave handler that reshaped the data must
-        // not turn this into "Failed to persist entry".
+        // Both arguments are guarded: the entry is already committed, so a
+        // preSave handler that reshaped the data must not fail the save.
         dispatch(
           notifyEntrySaved(
             safeEntryLabel(collection, serializedEntry),
@@ -1029,26 +1024,11 @@ export function persistEntry(collection: Collection) {
           ),
         );
 
-        /**
-         * Release the editor as soon as the entry is committed.
-         *
-         * `entryPersisted` is what clears `isPersisting` — the save button's
-         * spinner and the unsaved-changes guard. It used to be dispatched
-         * *after* the media-library reload below, so saving an entry with
-         * images held the editor busy through a refresh of a panel that isn't
-         * even on screen. A save felt as slow as its slowest follow-up rather
-         * than as slow as the write itself.
-         *
-         * Everything after this point is a background refresh of views the
-         * editor is not waiting on.
-         */
+        // Release the editor as soon as the entry is committed: everything
+        // after this is a background refresh the editor is not waiting on.
         dispatch(entryPersisted(collection, serializedEntry, newSlug));
 
-        // Deliberately not awaited, for the same reason. loadMedia already
-        // handles its own failures internally (it dispatches mediaLoadFailed
-        // rather than rejecting); the catch is there so that if it ever does
-        // reject, it surfaces as a logged error rather than an unhandled
-        // rejection — and never as a failed save, because the save succeeded.
+        // Not awaited; a rejection is logged, never reported as a failed save.
         if (assetProxies.length > 0) {
           Promise.resolve(dispatch(loadMedia())).catch(error => {
             console.error('Failed to reload the media library after saving', error);

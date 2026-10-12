@@ -32,9 +32,7 @@ function decodeBase64Json(encoded) {
   return JSON.parse(new TextDecoder().decode(bytes));
 }
 
-// Shared by both delivery paths below: the popup posts this same field set via
-// `window.postMessage`, and a plain (non-popup) link delivers it as a query
-// string in the URL hash. Field names match what decap-redirect.astro sends.
+// The field set both the popup message and the code exchange deliver.
 function credentialsFromFlatParams(credentials) {
   if (!credentials || !credentials.access_token || !credentials.refresh_token) return null;
 
@@ -72,13 +70,8 @@ function credentialsFromPostMessageData(data) {
   return credentialsFromFlatParams(data.credentials);
 }
 
-// Direct (non-popup) links from the Turbo profile page deliver a one-time
-// exchange code (never the real tokens) as a query string merged into the
-// CMS's own HashRouter fragment, e.g. "#/?turbo_exchange_code=...&site_id=...".
-// The router itself only cares about the path portion ("/"), so this reads
-// the hash as a mini-URL, borrows its search string, and leaves routing
-// unaffected. The code must still be redeemed via /auth/exchange — see
-// exchangeCodeFromLocationHash below.
+// Direct links from the Turbo profile page put a one-time exchange code (never
+// the tokens) in the HashRouter fragment: "#/?turbo_exchange_code=...&site_id=...".
 function exchangeParamsFromLocationHash(hash) {
   const searchIndex = hash.indexOf('?');
   if (searchIndex === -1) return null;
@@ -120,17 +113,13 @@ export default class SupabaseAuthenticationPage extends React.Component {
 
     const exchangeParams = exchangeParamsFromLocationHash(window.location.hash);
     if (exchangeParams) {
-      // Clear the hash immediately — the code is single-use and worthless
-      // after this point regardless of how the exchange turns out, and the
-      // HashRouter shouldn't see it once it mounts.
+      // Single-use, and the HashRouter must not see it.
       this.props.clearHash?.();
       this.exchangeCodeForCredentials(exchangeParams);
     }
   }
 
-  // Redeems the one-time code from exchangeParamsFromLocationHash for the
-  // real session tokens via a POST to the Turbo admin app's /auth/exchange —
-  // never the URL itself. See decap-redirect.astro / auth/exchange.ts.
+  // Redeems the one-time code for the session tokens in a POST body, never a URL.
   exchangeCodeForCredentials = async ({ code, siteId }) => {
     const { turbo_admin_url: turboAdminUrl = DEFAULT_TURBO_ADMIN_URL } = this.props.config.backend;
     // site_id is repeated as a query param (in addition to the POST body)

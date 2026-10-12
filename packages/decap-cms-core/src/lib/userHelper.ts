@@ -8,15 +8,8 @@ export type UserIdentity = {
 };
 
 /**
- * Who the editor is signed in as, for the account dropdown.
- *
- * Worth surfacing because backends can log you back in without asking: Decap
- * Turbo's dashboard session deliberately outlives a CMS logout, so the next
- * "Login with Turbo" completes silently — and until now nothing in the CMS
- * said which account that was.
- *
- * Returns undefined when the backend knows neither a name nor an email (the
- * test backend, for one), so the dropdown keeps its old label-less shape.
+ * Who the editor is signed in as, for the account dropdown: a backend may log
+ * them back in silently. Undefined when neither a name nor an email is known.
  */
 export function selectUserIdentity(user?: User): UserIdentity | undefined {
   if (!user) {

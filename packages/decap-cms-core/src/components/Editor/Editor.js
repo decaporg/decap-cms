@@ -488,17 +488,8 @@ function mapStateToProps(state, ownProps) {
   const slug = ownProps.match.params[0];
   const collection = collections.get(ownProps.match.params.name);
 
-  // Missing most often means this member's collection permissions (see
-  // actions/config.ts's applyBackendPermissionFilter) have just narrowed the
-  // config out from under an already-mounted route, faster than
-  // RouteInCollection (App.js) — the primary guard against ever routing
-  // here for a collection that doesn't exist — got a chance to redirect
-  // away: that guard and this component both read `state.collections`
-  // independently, so a store update between their two renders can leave
-  // this one running first. withWorkflow.js checks for exactly this and
-  // renders a Redirect instead of ever mounting Editor, so nothing below
-  // needs to run — but bail out here too rather than let the `.get()` chain
-  // crash the whole app while computing props no one will use.
+  // The collection can vanish when a permissions refilter narrows the config
+  // under a mounted route; withWorkflow redirects, so just don't crash here.
   if (!collection) {
     return { collection: null };
   }

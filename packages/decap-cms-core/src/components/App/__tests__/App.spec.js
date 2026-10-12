@@ -6,13 +6,8 @@ import { MemoryRouter } from 'react-router-dom';
 import { App } from '../App';
 
 /**
- * Regression cover for the wiring, not the rendering.
- *
- * At mount there is no constructed backend — the config is still loading — so
- * both deploy thunks quietly do nothing. Measured on a real site: the Deploys
- * nav item never appeared, because the one read that establishes the site's
- * state never ran. The same gap left an A4b ledger unresumed after a reload
- * unless the editor happened to save again.
+ * Regression cover for the wiring, not the rendering: at mount the config is
+ * still loading, so both deploy thunks do nothing until the user arrives.
  */
 function renderApp(props) {
   return render(

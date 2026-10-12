@@ -1,32 +1,18 @@
 /**
- * Keeps one Turbo session usable from every tab of a CMS.
- *
- * Supabase refresh tokens are single-use. Every tab restores the same stored
- * session, but each holds its own in-memory copy of the refresh token, so the
- * first tab to refresh spends the token every other tab is holding. The next
- * tab to refresh got `refresh_token_already_used`, which is terminal, and the
- * editor was logged out of a session that was still alive one tab over.
- *
- * Two things fix that. Refreshes take a lock shared by every tab on the
- * origin, so they happen one at a time. And a tab that gets the lock first
- * checks whether the stored session has already been rotated by a tab that
- * held the lock before it, and adopts that pair instead of spending a dead
- * token (see `adoptRotatedSession` in session.ts).
+ * Keeps one Turbo session usable from every tab of a CMS. Supabase refresh
+ * tokens are single-use, so a tab refreshing with a token another tab already
+ * spent is logged out. Refreshes take a lock shared by every tab, and the tab
+ * that gets it adopts a pair another tab rotated (`adoptRotatedSession`).
  */
 
 const REFRESH_LOCK_NAME = 'decap-turbo-session-refresh';
 
-/**
- * How long a tab waits for another tab's refresh before refreshing anyway. A
- * refresh is one request, so this is only reached if the holder hangs, and a
- * hung tab must not leave every other tab unable to refresh.
- */
+/** How long to wait for another tab's refresh, so a hung tab cannot block the rest. */
 const REFRESH_LOCK_WAIT_MS = 15_000;
 
 /**
- * Runs `refresh` while holding a lock shared by every tab on this origin.
- * Without the Web Locks API (an insecure origin, an old browser), or if the
- * wait times out, it runs unguarded, which is how every refresh used to run.
+ * Runs `refresh` under a lock shared by every tab on this origin, or unguarded
+ * without the Web Locks API or once the wait times out.
  */
 export async function withRefreshLock<T>(refresh: () => Promise<T>): Promise<T> {
   const locks = typeof navigator === 'undefined' ? undefined : navigator.locks;
@@ -53,10 +39,6 @@ export async function withRefreshLock<T>(refresh: () => Promise<T>): Promise<T> 
   }
 }
 
-/**
- * The `session_id` claim of a Supabase access token: which `auth.sessions` row
- * it belongs to. Null when the token is missing or unreadable.
- */
 function claimsOf(accessToken: string | null | undefined): Record<string, unknown> | null {
   const payload = accessToken?.split('.')[1];
   if (!payload) return null;
@@ -67,6 +49,7 @@ function claimsOf(accessToken: string | null | undefined): Record<string, unknow
   }
 }
 
+/** Which `auth.sessions` row the token belongs to. */
 export function sessionIdOf(accessToken: string | null | undefined): string | null {
   const claims = claimsOf(accessToken);
   return typeof claims?.session_id === 'string' ? claims.session_id : null;
@@ -79,10 +62,8 @@ export function expiresAtOf(accessToken: string | null | undefined): number | nu
 }
 
 /**
- * Ends one Supabase session server-side (`scope=local`: this session only, not
- * the user's others). Fire-and-forget with `keepalive`, so a logout that
- * navigates away still sends it, and a failure only leaves behind a session
- * nothing holds any more.
+ * Ends this one Supabase session server-side (`scope=local`), with `keepalive`
+ * so a logout that navigates away still sends it.
  */
 export function revokeSession(authUrl: string, anonKey: string, accessToken: string) {
   fetch(`${authUrl}/logout?scope=local`, {

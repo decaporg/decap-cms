@@ -125,10 +125,8 @@ export class EntriesCollection extends Component {
       loadEntries(collection);
     }
 
-    // After a failed load, wait for a navigation (or an explicit load, such as
-    // the Workflow page's) before asking again. Every store change re-renders
-    // this view — the failure's own toast included — so retrying on "still not
-    // loaded" alone turns one 403 into a request and a toast every half second.
+    // After a failed load, wait for a navigation or an explicit load: every
+    // re-render, the failure's own toast included, would otherwise retry.
     if (
       isEditorialWorkflowEnabled &&
       ((!unpublishedEntriesLoaded && !unpublishedEntriesFailed) || collectionChanged)

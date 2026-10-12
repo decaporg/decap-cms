@@ -39,11 +39,7 @@ export interface EntryValue {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [locale: string]: any;
   };
-  /**
-   * Locales whose file was found when the entry was loaded. Set only for
-   * `multiple_files` and `multiple_folders` i18n, where each locale is its own
-   * file; see mergeValues in lib/i18n.
-   */
+  /** Locales whose file was found on load; multi-file i18n only. */
   i18nLocales?: string[];
 }
 

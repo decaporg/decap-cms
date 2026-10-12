@@ -258,12 +258,6 @@ class Header extends Component {
               )}
               {hasDeployStatus && (
                 <li>
-                  {/*
-                    Ambient, never an interruption — the counterpart to the
-                    toasts, which announce a change and then leave. See §A8.
-                    Last in the nav: it is the only item that is not somewhere
-                    an editor goes to work.
-                  */}
                   <AppHeaderNavLink to="/deploys" activeClassName="header-link-active">
                     <StatusDot color={deployPill.color} />
                     {t(deployPill.key)}

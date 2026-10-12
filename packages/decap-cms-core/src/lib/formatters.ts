@@ -169,17 +169,10 @@ export function slugFormatter(
   }
 }
 
-/**
- * Upper bound on a generated slug, in UTF-8 bytes. Leaves a filename of
- * slug + extension under NAME_MAX (255 bytes) with room for any plausible
- * extension, including i18n ones such as `.en.md`.
- */
+/** Upper bound on a generated slug in UTF-8 bytes, so slug + extension fits NAME_MAX. */
 export const MAX_SLUG_BYTES = 200;
 
-/**
- * The longest a git ref may be on GitHub is 255 bytes including `refs/heads/`,
- * which leaves 244 for the branch name itself.
- */
+/** GitHub refs may be 255 bytes, `refs/heads/` included. */
 const MAX_BRANCH_BYTES = 255 - 'refs/heads/'.length;
 
 /** Below this, a slug stops being useful; only an absurd config gets here. */
@@ -198,11 +191,8 @@ export function utf8ByteLength(str: string) {
 }
 
 /**
- * How many bytes a newly generated slug may take. Editorial workflow keeps
- * each entry on a branch named `cms/<collection>/<slug>` (open authoring puts
- * `<owner>/<repo>/` in front of the collection), and the branch is parsed back
- * into collection and slug, so the slug itself is what has to fit — hashing
- * the branch name would break that round trip.
+ * How many bytes a newly generated slug may take. The workflow branch
+ * `cms/<collection>/<slug>` is parsed back into its parts, so the slug must fit.
  */
 export function slugByteBudget(collection: Collection, config?: CmsConfig) {
   const repo = config?.backend?.open_authoring ? config.backend.repo : undefined;
@@ -212,10 +202,8 @@ export function slugByteBudget(collection: Collection, config?: CmsConfig) {
 }
 
 /**
- * Cut a slug down to `maxBytes` of UTF-8. Cuts on a code point, so no
- * surrogate pair is split, then drops whatever separators the cut left at the
- * end (`-`, `_`, `.`, `/`, whitespace, or the configured replacement): a ref
- * may not end in `/` or `.`, and a dangling dash is never what anyone wants.
+ * Cut a slug down to `maxBytes` of UTF-8 on a code point, then drop the
+ * separators the cut left at the end: a ref may not end in `/` or `.`.
  */
 export function truncateSlug(slug: string, maxBytes: number, slugConfig?: CmsSlug) {
   if (utf8ByteLength(slug) <= maxBytes) {
@@ -374,17 +362,9 @@ export function folderFormatter(
 }
 
 /**
- * Where an entry will live on the built site, as a path — `/blog/my-post/`.
- *
- * Same template as deploy preview links, so a collection's `preview_path`
- * means one thing across the CMS. A path rather than a URL because the caller
- * may not know the host yet: the deploy that carries a change knows its own,
- * and on a branch-published site that is not the one in `site_url`. See
- * actions/deployStatus.ts.
- *
- * Returns undefined when the collection configures no `preview_path`: the
- * formatter then hands back the base unchanged, and a link to the site root
- * dressed up as a link to the entry is worse than a plain site link.
+ * Where an entry will live on the built site, as a path (`/blog/my-post/`), so
+ * whichever deploy carries the change can supply its own host. Undefined
+ * without a `preview_path`, rather than a site-root link posing as the entry.
  */
 export function entryPreviewPath(
   collection: Collection,
@@ -400,12 +380,8 @@ export function entryPreviewPath(
     if (!url) {
       return undefined;
     }
-    // Compared as parsed origins rather than as a string prefix. The prefix
-    // form is safe only because previewUrlFormatter joins with an unconditional
-    // `/`; without that, `${SENTINEL}.example.com/x` would satisfy startsWith
-    // while naming a different host, and the caller joins whatever comes back
-    // to a real deploy host. Origins do not depend on that distant detail
-    // holding, and CodeQL flags the prefix form for the same reason.
+    // Compared as parsed origins, not a string prefix: `${SENTINEL}.example.com`
+    // would pass startsWith while naming another host. CodeQL flags the prefix form.
     const parsed = new URL(url);
     if (parsed.origin !== new URL(SENTINEL).origin) {
       return undefined;

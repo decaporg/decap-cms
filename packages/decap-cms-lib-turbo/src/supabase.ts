@@ -1,11 +1,6 @@
 /**
- * Read-only view of Turbo's content cache.
- *
- * The server owns the cache: the `_content/sync` endpoint is the only writer,
- * and the browser has no INSERT, UPDATE or DELETE access to `public.data` at
- * all.
- *
- * See decap-turbo/docs/caching-and-github-api-strategy.md §4.
+ * Read-only view of Turbo's content cache: `_content/sync` is the only writer,
+ * and the browser has no write access to `public.data` at all.
  */
 /** The only columns the CMS reads; the rest of the row is server bookkeeping. */
 const ROW_COLUMNS = 'file_meta,file_data';
@@ -43,11 +38,8 @@ export class SupabaseClient {
   }
 
   buildScopedQuery(collection: string, extraParams: Record<string, string> = {}) {
-    // `collections` is a set, not a column in the row's identity: one path is
-    // one row, tagged with every collection that contains it. This is what
-    // removed the 623 duplicate rows a nested parent/child pair used to
-    // produce on moc-www, and with them the duplicate GitHub fetches.
-    // PostgREST spells array-contains `cs.{a,b}`; the braces are literal.
+    // `collections` is a set: one path is one row, tagged with every collection
+    // that contains it. PostgREST spells array-contains `cs.{a,b}`.
     const params = new URLSearchParams({
       select: ROW_COLUMNS,
       repo: `eq.${this.repo}`,

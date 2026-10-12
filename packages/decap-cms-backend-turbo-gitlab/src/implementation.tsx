@@ -1,8 +1,5 @@
-// Imported from the package root, not `decap-cms-backend-gitlab/src/API`:
-// jest's moduleNameMapper rewrites any path containing the package name to its
-// index, so the deep path resolved to the index's (nonexistent) default export
-// and `new API(...)` threw under test - which is why `authenticate` had no
-// coverage here at all.
+// From the package root, not `.../src/API`: jest's moduleNameMapper maps the
+// deep path to the index, and `new API(...)` would throw under test.
 import { GitLabBackend, GitLabNotesAPI, API } from 'decap-cms-backend-gitlab';
 import {
   unsentRequest,
@@ -40,9 +37,7 @@ import {
 } from 'decap-cms-lib-turbo';
 import { stripIndent } from 'common-tags';
 
-// Fake GitLab user shape returned by currentUser/authenticate — this backend
-// never has a real GitLab identity for the CMS user (see /gl/user's
-// synthesized response on the server side, which this mirrors).
+// The CMS user has no real GitLab identity; this mirrors the proxy's synthesized /gl/user.
 type GitLabUser = {
   id: number;
   username: string;
@@ -68,34 +63,16 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
   session: TurboSession;
   supabase: SupabaseClient;
   cache: TurboContentCache;
-  /**
-   * Plain-fetch counterpart to apiRequestFunction, for Turbo's own `_content/*`
-   * routes. Those are not GitLab API calls, so they never pass through
-   * decap-cms-backend-gitlab's API client — but they need the same Supabase
-   * bearer token and the same x-site-id / site_id scoping the `gl` Edge
-   * Function relies on to know which tenant is calling.
-   */
+  /** Turbo's own `_content/*` routes, which bypass GitLab's API client. */
   glFetch: ScopedFetch;
   _currentUserPromise?: Promise<GitLabUser>;
-  /**
-   * Non-null only while a save is in flight. Every proxied response is folded
-   * into it, so `cms_entry_saved` can report how many round trips that one save
-   * cost and how much of the wait was GitLab's own time. Null the rest of the
-   * time, so ordinary reads are not counted.
-   */
+  /** Non-null only while a save is in flight; see `meterSave`. */
   proxyMeter: ProxyMeter | null = null;
 
-  /**
-   * Joins concurrent identical reads. One per backend instance, so every read
-   * path — the proxied GitLab API via `apiRequestFunction` and this backend's
-   * own `glFetch` — shares a single view of what is already in flight.
-   */
+  /** One per instance, so `apiRequestFunction` and `glFetch` join the same in-flight reads. */
   protected coalesceRequest: RequestCoalescer = createRequestCoalescer();
 
-  /**
-   * The server's search covers entry bodies, so core keeps the body in its
-   * own pass rather than filtering those matches back out.
-   */
+  /** The server's search covers entry bodies, so core need not filter them back out. */
   searchesEntryBody = true;
 
   editorBridgeEnabled = false;
@@ -104,9 +81,7 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
   constructor(config: Config, options: any = {}) {
     super(config, options);
 
-    // GitLab also exposes a separate GraphQL API, and a GraphQL transport
-    // here would bypass the x-site-id/site_id scoping this backend adds on
-    // top of every REST request via apiRequestFunction.
+    // A GraphQL transport would bypass the per-site scoping in apiRequestFunction.
     if (this.useGraphQL) {
       throw new Error(
         "Decap Turbo GitLab backend does not support 'use_graphql: true' — GraphQL requests would bypass per-site tenant scoping. Remove use_graphql from your config.",
@@ -126,10 +101,8 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
       '') as string;
     this.supabaseId = (config.backend.supabase_app_id || '') as string;
     this.siteId = (config.backend.turbo_site_id || '') as string;
-    // The editor bridge (editorBridge.ts) is still in development, so a site
-    // opts in with `editor_bridge: true`. On by default it would show its badge
-    // and "Ask Claude" on every entry, and upload every editor's unsaved draft
-    // to Turbo every few seconds, whether or not an agent is connected.
+    // Opt-in while in development: it uploads every editor's unsaved draft to
+    // Turbo every few seconds, whether or not an agent is connected.
     this.editorBridgeEnabled = config.backend.editor_bridge === true;
     this.commitAuthorEmailFallback =
       ((config.backend as Record<string, unknown>).commit_author_email as string | undefined) ||
@@ -179,15 +152,8 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
     });
   }
 
-  // Overrides GitLabBackend's own PKCE-based apiRequestFunction entirely —
-  // this backend never obtains a GitLab OAuth token at all (the CMS user's
-  // only credential is a Supabase JWT), so there is no `refresh_token` grant
-  // to fall back to on a 401 the way the plain GitLab backend does. Instead
-  // this injects the x-site-id header / site_id query param scoping the
-  // shared `gl` Edge Function needs to know which tenant a request belongs
-  // to. The request has already had apiRoot prepended by the time
-  // requestFunction runs (see API.buildRequest), so scoping is added here
-  // rather than at URL-construction time.
+  // Replaces GitLabBackend's PKCE apiRequestFunction: the only credential is a
+  // Supabase JWT, and the `gl` proxy needs the x-site-id / site_id scoping.
   apiRequestFunction = async (req: any): Promise<Response> => {
     const { session } = this;
     if (session.invalidMessage) return sessionEndedResponse(session.invalidMessage);
@@ -211,17 +177,12 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
       scopedReq = unsentRequest.withParams({ site_id: this.siteId }, scopedReq);
     }
 
-    // Coalescing and metering both hang off this one funnel — it is the only
-    // place that sees the final, fully scoped request. `recordProxyResponse`
-    // sits inside the coalesced work so the save meter counts round trips
-    // actually made, rather than letting a joined duplicate inflate the count.
+    // The one funnel that sees the final scoped request; the meter sits inside
+    // the coalesced work so a joined duplicate is not counted.
     const response: Response = await this.coalesceRequest(
       coalesceKey(scopedReq.get('method'), unsentRequest.toURL(scopedReq)),
       () =>
         unsentRequest.performRequest(scopedReq).then((res: Response) => {
-          // Recorded here because this is the one place every API response
-          // passes through — including failures, since a request that failed
-          // still cost the editor the wait.
           recordProxyResponse(this.proxyMeter, res);
           return res;
         }),
@@ -253,26 +214,15 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
     };
   }
 
-  /**
-   * The Turbo session lives on this instance, not only in the auth store core
-   * clears — GitLabBackend.logout only nulls `token` and knows nothing about
-   * Supabase. Without this, a logged-out CMS kept a usable access token
-   * (`status()` would keep reporting `auth: true`), a Supabase client still
-   * sending it, and a memoised `currentUser`.
-   */
+  /** GitLabBackend.logout knows nothing about the Turbo session or the bridge. */
   async logout() {
     this.session.clear();
     this.editorBridgeInstance?.stop();
     return super.logout();
   }
 
-  // Widened to `any`: decap-cms-core only ever forwards whatever this
-  // returns to React unchanged (see Backend.authComponent in
-  // decap-cms-core/src/backend.ts) — the concrete return type GitLabBackend
-  // declares here is an artifact of its own AuthenticationPage's propTypes,
-  // not a real contract, and SupabaseAuthenticationPage's props shape
-  // legitimately differs (it doesn't need GitLab's OAuth-specific props at
-  // all: base_url/siteId/authEndpoint/clearHash).
+  // Widened to `any`: core hands the component to React unchanged, and the
+  // base type describes GitLab's own wrapper, not a contract.
   authComponent(): any {
     return SupabaseAuthenticationPage;
   }
@@ -313,25 +263,14 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
       requestFunction: this.apiRequestFunction,
     });
 
-    // GitLabBackend builds these in its own `authenticate`, which this override
-    // replaces wholesale - without them the notes pane has no API to call and
-    // nothing watching the thread. Rebuilt rather than reused, so a second
-    // login on the same instance cannot leave the previous session's manager
-    // polling through the previous session's api.
+    // GitLabBackend.authenticate builds these, and this override replaces it.
+    // Rebuilt, so a second login cannot leave the old manager polling.
     this.destroyNotesPolling();
     this.notesApi = new GitLabNotesAPI(this.api);
     this.pollingManager = new NotesPollingManager(this.notesApi.asPollingAPI(), 15000);
 
-    // Permissions are only knowable post-auth, but nothing below the
-    // write-access check needs them, so the two round trips overlap instead
-    // of queueing. `currentUser` is local (session identity, no fetch), so it
-    // joins them for free.
-    //
-    // Unlike the GitHub backend, `hasWriteAccess` is NOT redundant here: this
-    // backend commits with the organization's GitLab group token, and whether
-    // that token can write to this project is a real question with a real
-    // answer, enforced below. On GitHub the equivalent check was asking about
-    // a signed-in GitHub user that Turbo does not have.
+    // Unlike on GitHub, `hasWriteAccess` is a real question here: whether the
+    // organization's group token can write to this project.
     const [user, turboPermissions] = await Promise.all([
       this.api.user(),
       this.session.fetchPermissions(this.baseUrl!),
@@ -379,11 +318,8 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
     return {
       ...user,
       login: user.username,
-      // The `gl` proxy synthesizes /user itself (the CMS user has no real
-      // GitLab identity), and falls back to the literal name "CMS Editor"
-      // when Supabase knows no full name — so prefer what the session says
-      // about the person. This object is what core stores and the header
-      // renders.
+      // The proxy's synthesized /user falls back to "CMS Editor"; prefer what
+      // the session knows about the person.
       ...(displayIdentity.name && { name: displayIdentity.name }),
       ...(displayIdentity.email && { email: displayIdentity.email }),
       avatar_url: displayIdentity.avatarUrl ?? user.avatar_url ?? null,

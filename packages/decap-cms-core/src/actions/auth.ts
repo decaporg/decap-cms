@@ -8,12 +8,8 @@ import type { ThunkDispatch } from 'redux-thunk';
 import type { AnyAction } from 'redux';
 import type { State } from '../types/redux';
 
-// Generic, backend-agnostic hook: any backend's resolved user may carry a
-// `permissions` field describing what the just-authenticated user is allowed
-// to access (decap-cms-backend-turbo-github is the first backend to set it, but the
-// field name itself must stay backend-neutral — core doesn't know or care
-// which backend it came from, it just re-filters the loaded config once
-// it's present).
+// Any backend's resolved user may carry `permissions`; the field name stays
+// backend-neutral, and core re-filters the loaded config against it.
 function dispatchPermissionsRefilterIfPresent(
   dispatch: ThunkDispatch<State, {}, AnyAction>,
   user: User,
@@ -95,11 +91,7 @@ export function authenticateUser() {
   };
 }
 
-/**
- * The backend found its session dead mid-use. Same exit as a failed restore
- * in authenticateUser: the reason goes on the login page, and logoutUser
- * clears the toasts the failing requests had already raised.
- */
+/** The backend found its session dead mid-use: the same exit as a failed restore. */
 export function sessionInvalidated(message: string) {
   return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     if (!getState().auth.user) return;
@@ -145,15 +137,8 @@ export function logoutUser() {
   return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const backend = currentBackend(state.config);
-    // Before backend.logout(), which discards the backend's deploy watcher.
-    // The deploy-notification subscriptions are module-level singletons, so
-    // leaving them set means startDeployNotifications() early-returns on the
-    // next sign-in — and signing straight back in is the ordinary flow, since
-    // Turbo's dashboard session outlives CMS logout — while the surviving
-    // unsubscribe closures still point at the discarded watcher. The next save
-    // then builds a fresh watcher with no listeners: it polls
-    // site_deployments for up to the ledger's 20 minutes with nobody to tell,
-    // and the editor gets a "Publishing…" toast that can never resolve.
+    // Before backend.logout(): the subscriptions are module singletons, and left
+    // set they would skip resubscribing after the next login.
     stopDeployNotifications();
     Promise.resolve(backend.logout()).then(() => {
       dispatch(logout());

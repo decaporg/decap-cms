@@ -1,23 +1,14 @@
 /**
- * Measurement for the save path, reported as props on `cms_entry_saved`.
- *
- * The question this answers: of the time an editor waits on a save, how much
- * is the git host and how much is round trips? Today one save is N+4
- * sequential browser -> edge -> git-host requests, so if `upstreamMs` is a
- * small fraction of `durationMs`, collapsing them into a single server-side
- * commit is the win — and if it isn't, it wouldn't be. See
- * decap-turbo/docs/deploy-status-plan.md (B5 -> B1).
+ * Measurement for the save path, reported on `cms_entry_saved`: how much of
+ * the wait on a save is the git host, and how much is round trips.
  */
 
 /** Matches one `dur=NN` parameter, tolerating whitespace and a float value. */
 const DURATION_PARAM = /^dur\s*=\s*([0-9]*\.?[0-9]+)$/;
 
 /**
- * Reads one metric out of a `Server-Timing` header, e.g. `upstream` from
- * `preamble;dur=12, upstream;dur=302, total;dur=316`.
- *
- * Returns null rather than 0 for "not present", so a missing header is never
- * mistaken for a genuinely instant request.
+ * Reads one metric out of a `Server-Timing` header; null rather than 0 when
+ * absent, so a missing header is never mistaken for an instant request.
  */
 export function parseServerTimingMs(header: string | null, metric: string): number | null {
   if (!header) {
@@ -45,12 +36,7 @@ export interface ProxyMeter {
   requests: number;
   /** Summed git-host time across those requests, from Server-Timing. */
   upstreamMs: number;
-  /**
-   * Whether any response actually carried a readable Server-Timing. False
-   * means `upstreamMs` is not merely zero but unknown — an older edge function,
-   * or a browser that stripped the header because it wasn't in the CORS expose
-   * list — and it must be reported as absent, not as zero.
-   */
+  /** False means `upstreamMs` is unknown, not zero, and must be reported as absent. */
   upstreamMeasured: boolean;
 }
 
@@ -59,12 +45,8 @@ export function createProxyMeter(): ProxyMeter {
 }
 
 /**
- * Folds one proxied response into the meter. Called for failures too: a
- * request that 500s still cost the editor the wait.
- *
- * Not exhaustive by design — `requestAllPages` reaches the network without
- * going through the metered request function. That path doesn't run during a
- * save, which is the only window a meter is ever active.
+ * Folds one proxied response into the meter, failures included. Not
+ * exhaustive: `requestAllPages` bypasses it, but never runs during a save.
  */
 export function recordProxyResponse(meter: ProxyMeter | null, response: Response): void {
   if (!meter) {
@@ -90,10 +72,7 @@ interface MeasurableAsset {
 
 /**
  * Payload size of one save, so a slow save can be told apart from a big one.
- *
- * Data files are encoded rather than measured by string length: `raw.length`
- * counts UTF-16 code units, which understates any non-ASCII content — and
- * non-ASCII content is the norm for most of our editors.
+ * Encoded, because `raw.length` counts UTF-16 code units.
  */
 export function measurePayloadBytes(
   dataFiles: MeasurableDataFile[] = [],

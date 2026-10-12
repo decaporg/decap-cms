@@ -15,12 +15,7 @@ import type { MediaLibraryInstance } from './types/redux';
 
 type MediaLibraryOptions = {};
 
-/**
- * The user fields an external media library may see. Deliberately built by
- * picking named fields off the auth user rather than by deleting sensitive
- * ones, so a backend that starts returning a new credential does not leak it
- * here by default.
- */
+/** Picked by name, not by deleting secrets, so a new credential field never leaks here. */
 type MediaLibraryContextUser = {
   id?: string;
   email?: string;
@@ -29,26 +24,14 @@ type MediaLibraryContextUser = {
 };
 
 /**
- * The contract handed to every library registered via `registerMediaLibrary`.
+ * The contract handed to every library registered via `registerMediaLibrary`,
+ * which is untrusted third-party code: treat it as a minimum.
  *
- * `registerMediaLibrary` is a public extension point — libraries are loaded
- * from arbitrary script tags — so everything here is effectively given to
- * untrusted third-party code. Treat it as a minimum, not as a convenient place
- * to expose state.
+ * - `token`: the short-lived access token, the reason this contract exists.
+ * - `backendConfig`: whole on purpose; it is the publicly served `config.yml` block.
+ * - `user`: picked and token-free. Never `state.auth.user`, which carries tokens.
  *
- * - `token` is the short-lived access token; passing it is the reason this
- *   contract exists.
- * - `backendConfig` is passed whole on purpose. It is the site's own
- *   `config.yml` `backend` block, which Decap already serves publicly from
- *   `/admin/config.yml`, so fields like `supabase_anon_key` and
- *   `turbo_config_url` are public by construction, not secrets. Libraries read
- *   arbitrary keys off it (`base_url`, `turbo_site_id`, ...), so narrowing it
- *   would break them for no security gain.
- * - `user` is a picked, token-free shape. Never pass `state.auth.user` itself:
- *   for the Turbo backends it carries `access_token`, `refresh_token` and
- *   `expires_at`.
- *
- * This type is hand-duplicated as `MediaLibraryContext` in
+ * Hand-duplicated as `MediaLibraryContext` in
  * `packages/decap-cms-media-library-s3/src/types.ts` (that package cannot
  * import types from core). Keep the two identical.
  */
@@ -98,8 +81,7 @@ export async function getMediaLibraryContext(): Promise<MediaLibraryContext> {
     token = undefined;
   }
 
-  // Passed whole on purpose — see the note on `MediaLibraryContext`. This is
-  // the publicly served `config.yml` backend block, not secret state.
+  // Passed whole on purpose; see `MediaLibraryContext`.
   const backendConfig: Record<string, unknown> = { ...state.config?.backend };
 
   return {

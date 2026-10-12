@@ -1,18 +1,10 @@
 /**
- * The editor, reachable from outside React: read the entry open in the
- * editor, and change its fields the way a person typing would. Used by
- * extensions — the Decap Turbo editor bridge lets an AI agent fill in fields
- * that the person then reviews and saves — and exposed as `CMS.editor`.
+ * The editor, reachable from outside React as `CMS.editor`: read the open entry
+ * and change its fields the way a person typing would, through the same
+ * `changeDraftField` action. Nothing here saves.
  *
- * Nothing here saves. A patch goes through the same `changeDraftField`
- * action a widget's onChange dispatches, so validation, i18n duplication and
- * "unsaved changes" behave exactly as for typing, and the entry is only
- * written when someone presses Save.
- *
- * Experimental: not yet a stable public API. It exists for the Decap Turbo
- * editor bridge, which is itself still in development, and its shape may
- * change or go away in any release, minor and patch included. Typed as
- * `@experimental` in index.d.ts.
+ * Experimental: built for the Decap Turbo editor bridge, and may change or go
+ * away in any release, minor and patch included.
  */
 import { fromJS, List, Map } from 'immutable';
 
@@ -144,10 +136,8 @@ function checkValue(field: EntryField, isWholeField: boolean, value: unknown): s
 }
 
 /**
- * Applies changes to the open entry, without saving. Each patch is accepted or
- * refused on its own; refusals say why (unknown field, wrong type). `locale`
- * targets another language of an i18n collection; the default locale
- * otherwise.
+ * Applies changes to the open entry without saving. Each patch is accepted or
+ * refused on its own, with a reason; `locale` targets another i18n language.
  */
 export function applyFieldPatch(
   patches: FieldPatch[],
@@ -247,10 +237,8 @@ export function applyFieldPatch(
 }
 
 /**
- * Calls `listener` whenever the open entry changes — opened, closed, or a
- * field edited — with a fresh snapshot, or null when no entry is open.
- * Returns the unsubscribe function. Fires on every draft change; debounce in
- * the listener if it does anything expensive.
+ * Calls `listener` with a fresh snapshot (null when no entry is open) on every
+ * draft change; debounce in the listener if it does anything expensive.
  */
 export function onEditorChange(listener: (snapshot: EditorSnapshot | null) => void): () => void {
   let lastDraft: unknown = undefined;

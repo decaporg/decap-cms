@@ -33,9 +33,7 @@ const registry = {
   eventHandlers,
   formats: {},
   fieldActions: [],
-  // Set by the core entry point (index.js), read by backend.ts. Kept here so
-  // backend.ts need not import lib/editorApi, which imports the store and the
-  // actions that import backend.ts.
+  // Set by index.js, read by backend.ts: importing lib/editorApi there would cycle.
   editorApi: null,
 };
 
@@ -244,14 +242,10 @@ function validateEventName(name) {
 }
 
 /**
- * Field actions: buttons shown beside each top-level field's label in the
- * editor, e.g. "Ask an AI to rewrite this". `onClick` and `isAvailable`
- * receive plain values: `{ field, collection, locale, entry, applyFieldPatch }`,
- * where `entry` is `CMS.editor.getCurrentEntry()` and `applyFieldPatch` changes
- * fields without saving (lib/editorApi.ts).
+ * Field actions: buttons beside each top-level field's label. `onClick` and
+ * `isAvailable` receive `{ field, collection, locale, entry, applyFieldPatch }`.
  *
- * @experimental Not yet a stable public API: built for the Decap Turbo editor
- * bridge, and may change or go away in any release, minor and patch included.
+ * @experimental Built for the Decap Turbo editor bridge; may change in any release.
  */
 export function registerFieldAction(action) {
   if (!action || typeof action.id !== 'string' || typeof action.label !== 'string') {

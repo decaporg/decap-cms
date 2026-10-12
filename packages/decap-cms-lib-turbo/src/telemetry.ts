@@ -1,9 +1,6 @@
 /**
- * Fire-and-forget CMS-editor-side usage telemetry (see docs/beta-telemetry.md
- * in decap-turbo). Posts to the `telemetry` Supabase Edge Function, which
- * enforces auth and the opt-out flag server-side — this call is deliberately
- * not awaited by its callers and never throws, so a failure here can never
- * disrupt the editing experience.
+ * Fire-and-forget CMS usage telemetry to the `telemetry` edge function, which
+ * enforces auth and the opt-out server-side. Never awaited, never throws.
  */
 export function recordCmsEvent(
   baseUrl: string,

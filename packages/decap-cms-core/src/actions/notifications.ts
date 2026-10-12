@@ -3,11 +3,7 @@ import type { TypeOptions } from 'react-toastify';
 export interface NotificationMessage {
   details?: unknown;
   key: string;
-  /**
-   * Any further values are handed to the translator as interpolations, so a
-   * phrase can say `%{entry}` or `%{count}`. The component already spreads the
-   * whole message into `t()`; this only makes that contract expressible.
-   */
+  /** Further values are interpolations for the translator, e.g. `%{entry}`. */
   [interpolation: string]: unknown;
 }
 
@@ -19,20 +15,13 @@ export interface NotificationLink {
 
 export interface NotificationPayload {
   message: string | NotificationMessage;
-  /**
-   * `false` keeps the toast up until something dismisses it — distinct from
-   * omitting it, which leaves react-toastify's own default in place. Needed by
-   * any notification that is going to be updated later rather than replaced.
-   */
+  /** `false` keeps the toast up until dismissed; omitting it uses react-toastify's default. */
   dismissAfter?: number | false;
   type: TypeOptions | undefined;
   link?: NotificationLink;
   /** Shows a spinner in place of the type icon, for work still in progress. */
   spinner?: boolean;
-  /**
-   * Supplied only by a caller that intends to update this notification later,
-   * which needs to know the id before the reducer would mint one.
-   */
+  /** For a caller that will update this notification and needs its id up front. */
   id?: string;
 }
 
@@ -46,11 +35,8 @@ function addNotification(notification: NotificationPayload) {
 }
 
 /**
- * Changes a notification already on screen instead of stacking a new one next
- * to it — for a single toast that follows a job through its stages.
- *
- * A no-op when the id is unknown, which is the ordinary outcome of the user
- * having dismissed the toast mid-job.
+ * Changes a notification on screen instead of stacking a new one. A no-op for
+ * an unknown id, e.g. a toast the user already dismissed.
  */
 function updateNotification(id: string, notification: Partial<NotificationPayload>) {
   return { type: NOTIFICATION_UPDATE, id, payload: notification };

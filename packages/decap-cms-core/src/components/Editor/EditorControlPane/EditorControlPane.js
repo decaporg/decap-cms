@@ -222,8 +222,6 @@ export default class ControlPane extends Component {
       onValidate,
       t,
     } = this.props;
-    // Actions extensions add beside each top-level field's label
-    // (registerFieldAction). Only top-level: nested controls get none.
     const fieldActions = getFieldActions();
 
     if (!collection || !fields) {
@@ -266,8 +264,7 @@ export default class ControlPane extends Component {
             const isTranslatable = isFieldTranslatable(field, locale, defaultLocale);
             const isDuplicate = isFieldDuplicate(field, locale, defaultLocale);
             const isHidden = isFieldHidden(field, locale, defaultLocale);
-            // A field changed from outside the editor (lib/editorApi.ts) gets a
-            // new key, so its widget remounts and shows the new value — the
+            // An externally changed field gets a new key and remounts: the
             // markdown and richtext editors only read their value on mount.
             const revision = fieldRevisions?.get(field.get('name')) ?? 0;
             const key = `${i18n ? `${locale}_${i}` : i}_${revision}`;

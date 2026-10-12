@@ -20,11 +20,6 @@ const en = {
     header: {
       content: 'Contents',
       workflow: 'Workflow',
-      // The deploy nav item doubles as the state indicator — see §A8. It reads
-      // 'Deploys' at rest and names the state when there is one worth naming.
-      // The nav item names the state whenever it knows one — a coloured dot
-      // alone leaves the reader to work out what the colour means. 'Deploys'
-      // is only the fallback for "nothing known yet".
       deploys: 'Deploys',
       deploysDeployed: 'Deployed',
       deploysPublishing: 'Publishing…',
@@ -308,9 +303,6 @@ const en = {
       logOut: 'Log Out',
       account: 'Account options dropdown',
     },
-    // The header pill and the Deploys page. See decap-turbo
-    // docs/deploy-status-plan.md §A8 — state belongs in a place on screen,
-    // not in a toast that has to leave.
     deploys: {
       heading: 'Deploys',
       refresh: 'Refresh',
@@ -323,14 +315,9 @@ const en = {
       summaryUnknown: 'No deploy has been reported for this site yet.',
       loadError: 'Could not load deploys: %{details}',
       multipleTargets: 'Deploys are reported from more than one place: %{targets}.',
-      // Deliberately explicit about the most likely cause. Netlify reports
-      // nothing to git about branch or production deploys, so a site without
-      // the deploy webhook will always show an empty page (§A6).
       emptyConfigured:
         'Nothing recorded yet. If this site deploys on Netlify, add the deploy webhook in your Decap Turbo dashboard — Netlify does not report branch or production deploys to your git provider. Other hosts report automatically.',
       emptyUnknown: 'Loading deploys…',
-      // Only ever seen on a branch that is not the one the site publishes
-      // from, where "Live" is true of that branch's own URL and nothing else.
       liveOnBranchHint:
         "The current deploy of this branch, served at the branch's own URL — not the published site.",
       stalledHint:
@@ -344,15 +331,10 @@ const en = {
       state: {
         pending: 'Queued',
         building: 'Building',
-        // Only the newest success is actually live; every earlier one was live
-        // once and has since been superseded, so it is 'Deployed'.
         live: 'Live',
         deployed: 'Deployed',
         failed: 'Failed',
-        // Not a failure: the change ships inside a newer deploy.
         canceled: 'Superseded',
-        // Not reported by the host — what we call a build that stopped being
-        // mentioned. See `stalledHint`.
         stalled: 'Unknown',
       },
     },
@@ -364,17 +346,11 @@ const en = {
       onFailToUpdateStatus: 'Failed to update status: %{details}',
       missingRequiredField: "Oops, you've missed a required field. Please complete before saving.",
       entrySaved: 'Entry saved',
-      // Deploy status. The save toast is short-lived; a deploy outcome arrives
-      // later as its own notification, wherever the editor happens to be.
-      // See decap-turbo docs/deploy-status-plan.md §A4b.
       entryPublishing: 'Saved · Publishing…',
       entryLive: 'Your change to “%{entry}” is live',
       entriesLive: '%{count} changes are live',
       entryDeployFailed: 'Your site failed to build',
       viewSite: 'View',
-      // Used when a single entry is named and we know where it lives on the
-      // built site — the editor is being told a specific change is live, so
-      // the link should show them that change rather than the home page.
       viewEntry: 'View entry',
       viewBuildLog: 'View build log',
       entryPublished: 'Entry published',

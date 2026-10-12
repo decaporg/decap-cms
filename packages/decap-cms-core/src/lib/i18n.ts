@@ -129,10 +129,8 @@ export function getFilePaths(
 }
 
 /**
- * Every file of an entry, each marked by whether it is known to exist: the
- * default locale's always is, and so is any other locale found when the entry
- * was loaded. The rest — never seen, or written since the entry was loaded,
- * which a save does not record — have to be checked before they are deleted.
+ * Every file of an entry, marked by whether it is known to exist (the default
+ * locale, and locales found on load); the rest must be checked before deleting.
  */
 export function getI18nFilesToDelete(
   collection: Collection,
@@ -288,11 +286,8 @@ function mergeValues(
 
   const path = normalizeFilePath(structure, defaultEntry.value.path, defaultLocale);
   const slug = selectEntrySlug(collection, path) as string;
-  // Which locales have a file on disk. The GitHub backend (and Turbo, which
-  // extends it) answers a missing file with empty content rather than a 404,
-  // so a translation that was never written still arrives here — empty raw is
-  // the only sign of it. deleteEntry reads this to avoid asking the backend
-  // to delete files that do not exist, which fails the whole commit.
+  // Which locales have a file: GitHub answers a missing file with empty content,
+  // and deleteEntry must not ask to delete one, which fails the whole commit.
   const i18nLocales = values
     .filter(({ locale, value }) => locale === defaultEntry!.locale || value.raw !== '')
     .map(({ locale }) => locale);

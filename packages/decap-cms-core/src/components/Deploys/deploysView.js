@@ -9,12 +9,8 @@ export function formatTime(iso) {
 }
 
 /**
- * The one sentence the page exists to say. Publishing wins over everything —
- * an editor with a save in flight is asking about that save, not about a
- * build that finished before it.
- *
- * `latest` is already scoped to the site's own branch by the reducer, so this
- * never speaks for a branch deploy, unlike the table (see `liveDeployIds`).
+ * The one sentence the page exists to say; publishing wins over everything.
+ * `latest` is already scoped to the site's own branch by the reducer.
  */
 export function summaryFor(pendingCount, latest, now) {
   if (pendingCount > 0) {

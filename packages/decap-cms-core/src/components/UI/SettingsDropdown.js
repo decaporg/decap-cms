@@ -67,9 +67,7 @@ const AppHeaderTestRepoIndicator = styled.a`
   }
 `;
 
-// A plain list item, not a DropdownItem: it says who you are signed in as, it
-// is not something you can pick, and react-aria-menubutton would otherwise put
-// it in the keyboard rotation and close the menu when it was chosen.
+// A plain list item, not a DropdownItem: it is not something you can pick.
 const AccountLabel = styled.li`
   padding: 8px 14px;
   border-bottom: 1px solid ${colors.textFieldBorder};

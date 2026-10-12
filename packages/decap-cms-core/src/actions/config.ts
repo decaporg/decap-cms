@@ -476,13 +476,7 @@ export function applyBackendPermissionFilter(
   return changed ? { ...config, collections: filteredCollections } : config;
 }
 
-/**
- * Dispatched by actions/auth.ts once a backend's resolved user carries a
- * `permissions` field — i.e. after the initial config load, once auth has
- * completed and the permission set is actually known. Re-filters the config
- * already in state (which was loaded with no permissions applied, so nothing
- * has been dropped from it yet) and re-dispatches it narrowed.
- */
+/** Re-filters the config already in state once auth knows the user's permissions. */
 export function refilterConfigForPermissions(permissions: BackendPermissions) {
   return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const { config } = getState();
@@ -601,12 +595,8 @@ export async function handleLocalBackend(originalConfig: CmsConfig) {
   });
 }
 
-// Generic extension point: if the backend class registered under
-// `config.backend.name` exposes a static async `preloadConfig(config)`,
-// it's awaited here before the backend is constructed, and its returned
-// config is used from then on. This lets a backend implementation resolve
-// its own config (e.g. fetch remaining fields from a remote endpoint)
-// however it likes, with zero backend-specific knowledge in core.
+// Generic extension point: a backend class's static async `preloadConfig(config)`
+// is awaited before the backend is constructed, so it can resolve its own config.
 export async function applyBackendPreloadConfig(originalConfig: CmsConfig) {
   const backendName = originalConfig.backend?.name;
   const registered = backendName && getBackend(backendName);

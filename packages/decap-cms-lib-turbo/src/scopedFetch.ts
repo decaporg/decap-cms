@@ -24,12 +24,7 @@ export interface ScopedFetchOptions {
   getMeter: () => ProxyMeter | null;
 }
 
-/**
- * The proxy writes the reason an editor should read into `error` — "an owner
- * can add this repo under Git connection", "this entry's slug is too long" —
- * while the git host's own bodies use `message`. Either way the toast should
- * show the sentence, not the JSON around it.
- */
+/** The proxy's reason is in `error`, the git host's in `message`; show the sentence. */
 export function proxyErrorMessage(body: string): string {
   try {
     const parsed = JSON.parse(body);
@@ -51,10 +46,8 @@ export function peekBody(response: Response): Promise<string> {
 }
 
 /**
- * Makes a failed proxy response read as its `error` sentence wherever the
- * git host's API client parses it. lib-util's parseResponse looks for
- * `message`, so a proxy refusal reached the editor as the JSON around the
- * sentence, or as the parsed object in place of a message.
+ * Makes a failed proxy response read as its `error` sentence wherever the git
+ * host's API client parses it; lib-util's parseResponse only looks for `message`.
  */
 export function exposeProxyError(response: Response, body: string): Response {
   let parsed: Record<string, unknown>;
@@ -71,11 +64,9 @@ export function exposeProxyError(response: Response, body: string): Response {
 }
 
 /**
- * What an API request gets once the session is over, without reaching the
- * proxy. A response rather than a throw: lib-util's requestWithBackoff
- * retries any throw five times with growing pauses (~55 s in all), while a
- * 401 goes straight to the parser, which raises it as an APIError carrying
- * `message`.
+ * What an API request gets once the session is over. A response rather than a
+ * throw: lib-util's requestWithBackoff retries any throw five times (~55 s),
+ * while a 401 goes straight to the parser.
  */
 export function sessionEndedResponse(message: string): Response {
   const response = {
@@ -122,9 +113,7 @@ export function createScopedFetch(options: ScopedFetchOptions): ScopedFetch {
 
     const response = await coalesce(coalesceKey(init.method, scopedUrl), () =>
       fetch(scopedUrl, { ...init, headers }).then(res => {
-        // Before the ok-check: a request that failed still cost the editor the
-        // wait, and a save that is slow *because* it is retrying is exactly the
-        // case the measurement exists to catch.
+        // Before the ok-check: a failed request still cost the editor the wait.
         recordProxyResponse(getMeter(), res);
         return res;
       }),

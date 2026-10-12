@@ -108,32 +108,17 @@ export class App extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    // Both deploy thunks need a constructed backend and a live session, and at
-    // mount there is neither — the config is still loading, so `currentBackend`
-    // throws and both calls quietly do nothing.
-    //
-    // Measured, not theorised: the Deploys nav item never appeared on a real
-    // site because the one mount read never ran. The same gap meant a ledger
-    // left over from before a page reload only resumed once the editor
-    // happened to save again, since that path re-dispatches the subscription
-    // itself. Retrying when the user arrives fixes both; the thunks are
-    // idempotent, so a repeat is free.
+    // At mount the config is still loading and both deploy thunks do nothing;
+    // retry when the user arrives (they are idempotent).
     if (!prevProps.user && this.props.user) {
       this.startDeployWatching();
     }
   }
 
   startDeployWatching() {
-    // Deploy outcomes are announced for the whole session, from here rather
-    // than from the editor: a build outlives the screen the save was made on,
-    // and the editor should hear that their change went live wherever they
-    // have navigated to. Backends that cannot report deploys make this a
-    // no-op. See decap-turbo/docs/deploy-status-plan.md §A4b.
+    // From here rather than the editor: a build outlives the screen the save
+    // was made on.
     this.props.startDeployNotifications();
-
-    // The header indicator and the Deploys page, plus the single read that
-    // establishes the site's current state for an editor who has saved
-    // nothing this session. See §A8.
     this.props.startDeployStatus();
   }
 
@@ -224,9 +209,7 @@ export class App extends Component {
 
     const defaultPath = getDefaultPath(collections);
     const hasWorkflow = publishMode === EDITORIAL_WORKFLOW;
-    // Auto-hide: no route and no nav item until the backend has actually
-    // reported a deploy for this site. See §A7 — a CMS whose host says nothing
-    // should look like a CMS without the feature.
+    // Auto-hide: no route and no nav item until the backend reports a deploy.
     const hasDeployStatus = deployStatusVisible;
 
     // Work out if this is an editor route, following the same URL matching as the router.

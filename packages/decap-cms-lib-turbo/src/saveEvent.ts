@@ -1,7 +1,4 @@
-/**
- * The `cms_entry_saved` event, and the measurement around a save that feeds
- * it.
- */
+/** The `cms_entry_saved` event, and the measurement around a save that feeds it. */
 import { branchFromContentKey, generateContentKey } from 'decap-cms-lib-util';
 
 import { createProxyMeter, measurePayloadBytes, type ProxyMeter } from './saveMetrics';
@@ -21,14 +18,8 @@ export interface MeteredSave<T> {
 }
 
 /**
- * Runs a save with `host.proxyMeter` armed for its duration, so every
- * proxied response is folded into it and `cms_entry_saved` can report how
- * many round trips that one save cost and how much of the wait was the git
- * host's own time.
- *
- * Timed around the whole save rather than around the network calls
- * themselves, so the number includes lock acquisition — which is time the
- * editor waits with the save spinner up, whatever it is spent on.
+ * Runs a save with `host.proxyMeter` armed, so `cms_entry_saved` can report its
+ * round trips and git-host time. Timed around the whole save, lock wait included.
  */
 export async function meterSave<T>(
   host: { proxyMeter: ProxyMeter | null },
@@ -49,16 +40,9 @@ export async function meterSave<T>(
 }
 
 /**
- * The branch a save actually committed to, which is not the site's branch
- * for an editorial-workflow save — that goes to the entry's own
- * `cms/<collection>/<slug>` branch. Logging the site's branch made a draft
- * read as a publish in the org's activity feed (decap-turbo
- * docs/pre-production-review-findings.md L8).
- *
- * `result.branch` is authoritative when the one-call commit endpoint
- * answered; otherwise it is derived the same way the base backends'
- * persistFiles does. The content key only feeds telemetry, so `contentKey`
- * must never be the thing that breaks a save.
+ * The branch a save committed to: an editorial-workflow save goes to the
+ * entry's own `cms/<collection>/<slug>` branch, not the site's, and logging the
+ * site's branch made a draft read as a publish in the activity feed.
  */
 export function savedBranch(
   result: unknown,
@@ -79,12 +63,8 @@ export function savedBranch(
 }
 
 /**
- * Records a completed save. Deliberately does not write the cache: the commit
- * moves the branch HEAD, and `reloadEntriesAfterPersist` makes core re-run
- * loadEntries immediately after a save, so the very next allEntriesByFolder
- * syncs against the new HEAD and materialises the saved entry server-side.
- * Writing from here cannot work anyway: core's dataFiles carry no `id`, so
- * any row written would keep its pre-save blob sha.
+ * Records a completed save. Deliberately does not write the cache: core
+ * reloads entries after a save, and that sync materialises the new HEAD.
  */
 export function recordSaveEvent(
   target: TelemetryTarget,
@@ -110,14 +90,6 @@ export function recordSaveEvent(
       // Whether this was an editorial-workflow draft. The branch alone can't
       // say so — a site is free to publish from a `cms/...` branch.
       workflow: options.useWorkflow === true,
-      // No authorEmail. It was a second copy of an email the row already
-      // identifies through the server-derived user_id, and the activity feed's
-      // fallback to it never fired (decap-turbo H12). The server drops the key
-      // regardless, so an older bundle sending it stores nothing either.
-      // Baseline for the one-call commit endpoint (decap-turbo
-      // docs/deploy-status-plan.md B5 -> B1): `requests` is the headline, and
-      // durationMs minus upstreamMs is the share of the wait that collapsing
-      // them removes.
       durationMs: save.durationMs,
       requests: save.meter.requests,
       // Omitted rather than sent as 0 when no response carried a readable

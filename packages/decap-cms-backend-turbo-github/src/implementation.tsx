@@ -67,65 +67,36 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
   session: TurboSession;
   supabase: SupabaseClient;
   cache: TurboContentCache;
-  /**
-   * Every request to Turbo's own routes goes through this: it carries the
-   * session, the x-site-id scoping and the save meter.
-   */
+  /** Every request to Turbo's own routes: session, x-site-id scoping, save meter. */
   ghFetch: ScopedFetch;
-  /**
-   * Non-null only while a save is in flight. Every proxied response is folded
-   * into it, so `cms_entry_saved` can report how many round trips that one save
-   * cost and how much of the wait was GitHub's own time. Null the rest of the
-   * time, so ordinary reads are not counted.
-   */
+  /** Non-null only while a save is in flight; see `meterSave`. */
   proxyMeter: ProxyMeter | null = null;
 
-  /**
-   * Joins concurrent identical reads. One per backend instance, so every read
-   * path — the proxied GitHub API via `requestFunction` and this backend's own
-   * `ghFetch` — shares a single view of what is already in flight.
-   */
+  /** One per instance, so `requestFunction` and `ghFetch` join the same in-flight reads. */
   protected coalesceRequest: RequestCoalescer = createRequestCoalescer();
 
-  /**
-   * The server's search covers entry bodies, so core keeps the body in its
-   * own pass rather than filtering those matches back out.
-   */
+  /** The server's search covers entry bodies, so core need not filter them back out. */
   searchesEntryBody = true;
 
   editorBridgeEnabled = false;
   editorBridgeInstance: EditorBridge | null = null;
 
-  /**
-   * Lazily built, because most of a session never saves anything and a site
-   * with no deploy hook never needs one at all.
-   */
+  /** Lazily built: most sessions never save, and many sites have no deploy hook. */
   private deployWatcherInstance: DeployWatcher | null = null;
 
   /**
-   * The commit the last save produced, and the entry it saved. Core awaits
-   * `persistEntry` without reading its return value, so this is the only place
-   * the new sha can be captured — and the sha is what the deploy ledger keys
-   * on. Null after a save that produced no sha (the REST fallback path), so a
-   * save can never be recorded against a previous save's commit.
+   * Core ignores `persistEntry`'s return value, so the sha the deploy ledger
+   * keys on is captured here. Null after a save that produced no sha.
    */
   lastSavedCommit: { sha: string; entryPath?: string } | null = null;
 
-  /** Whether editors see deploy status at all, and which host counts (§A7). */
+  /** Whether editors see deploy status at all, and which host counts. */
   private deployStatusOptions: DeployStatusOptions = parseDeployStatusOptions(undefined);
 
   constructor(config: Config, options: any = {}) {
     super(config, options);
 
-    // GraphQLAPI (used when use_graphql is set) builds its own Apollo
-    // transport directly off the constructor config and never goes through
-    // setScopedApiRequestBuilder's patched urlFor/requestHeaders below — so
-    // every GraphQL request would silently skip the x-site-id/site_id
-    // scoping the shared `gh` Edge Function relies on to know which
-    // tenant a request belongs to. Rather than retrofit Apollo's transport
-    // with scoping, reject the combination outright: nothing currently
-    // configures use_graphql for this backend, so this can't regress an
-    // existing site.
+    // GraphQLAPI's Apollo transport would bypass the per-site scoping below.
     if (this.useGraphql) {
       throw new Error(
         "Decap Turbo backend does not support 'use_graphql: true' — GraphQL requests would bypass per-site tenant scoping. Remove use_graphql from your config.",
@@ -145,10 +116,8 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
       '') as string;
     this.supabaseId = (config.backend.supabase_app_id || '') as string;
     this.siteId = (config.backend.turbo_site_id || '') as string;
-    // The editor bridge (editorBridge.ts) is still in development, so a site
-    // opts in with `editor_bridge: true`. On by default it would show its badge
-    // and "Ask Claude" on every entry, and upload every editor's unsaved draft
-    // to Turbo every few seconds, whether or not an agent is connected.
+    // Opt-in while in development: it uploads every editor's unsaved draft to
+    // Turbo every few seconds, whether or not an agent is connected.
     this.editorBridgeEnabled = config.backend.editor_bridge === true;
     this.deployStatusOptions = parseDeployStatusOptions(
       (config.backend as Record<string, unknown>).deploy_status,
@@ -201,8 +170,6 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
       apiRoot: this.apiRoot,
       getBranch: () => this.branch,
       host: 'GitHub',
-      // The sync costs 1.4s even when it has nothing to do, so the read is
-      // issued alongside it and kept when the server says nothing changed.
       speculativeRead: true,
     });
   }
@@ -242,24 +209,11 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
       return { ...builtHeaders, 'x-site-id': this.siteId };
     };
 
-    // lib-util's requestWithBackoff reads `api.requestFunction` off the
-    // instance and falls back to unsentRequest.performRequest, so this is the
-    // one place every API request's Response passes through — urlFor and
-    // requestHeaders above only see the request side. Scoping is already
-    // applied by the time this runs.
-    //
-    // Two things hang off that: the save meter observes every response, and
-    // concurrent identical reads are folded into one round trip. Both belong
-    // here rather than further out because this is the only funnel that sees
-    // the final, fully scoped URL.
-    //
-    // `recordProxyResponse` sits inside the coalesced work, not outside it, so
-    // the meter counts round trips actually made — a joined duplicate should
-    // not inflate a save's request count.
-    //
-    // Cast because the hook is declared on lib-util's API interface (and read
-    // there) but not redeclared on decap-cms-backend-github's own API class —
-    // the same reason turbo-gitlab can assign it directly and this cannot.
+    // lib-util's requestWithBackoff calls `api.requestFunction`, the only funnel
+    // that sees every response and the final scoped URL, so the save meter and
+    // the coalescer hang off it; the meter sits inside the coalesced work so a
+    // joined duplicate is not counted. Cast because GitHub's API class does not
+    // redeclare lib-util's hook.
     const perform = (req: unknown) => {
       const request = req as { get: (key: string) => string | undefined };
       return this.coalesceRequest(
@@ -293,13 +247,8 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
         return second;
       };
 
-    // Paginated reads (the editorial-workflow board's pull request list among
-    // them) go through lib-util's getAllResponses, which calls performRequest
-    // directly and never reaches requestFunction. Every page still passes
-    // through parseResponse, so the session-ending answers are caught there;
-    // they are not retried, but the latch stops whatever would follow.
     // GitHub's handleRequestError reads `message`; a proxy refusal carries its
-    // reason in `error`, which used to leave the editor with an empty toast.
+    // reason in `error`.
     const originalHandleRequestError = api.handleRequestError.bind(api);
     api.handleRequestError = (error: { message?: string; error?: unknown }, status: number) =>
       originalHandleRequestError(
@@ -309,6 +258,8 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
         status,
       );
 
+    // Paginated reads never reach requestFunction, but every page passes
+    // through here, so the session-ending answers are caught (not retried).
     const originalParseResponse = api.parseResponse.bind(api);
     api.parseResponse = async (response: Response) => {
       if (
@@ -332,13 +283,7 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
     };
   }
 
-  /**
-   * The Turbo session lives on this instance, not only in the auth store core
-   * clears — GitHubBackend.logout knows nothing about Supabase. Without this,
-   * a logged-out CMS kept a usable access token (`status()` would keep
-   * reporting `auth: true`), a Supabase client still sending it, a memoised
-   * `currentUser`, and a live deploy subscription.
-   */
+  /** GitHubBackend.logout knows nothing about the Turbo session, bridge or deploy watcher. */
   logout() {
     this.session.clear();
     this.editorBridgeInstance?.stop();
@@ -387,14 +332,9 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
       }
     }
 
-    // TurboAPI in place of decap-cms-backend-github's API: it commits through
-    // `_content/commit` (one request instead of N+4) and falls back to the
-    // inherited REST sequence for renames, editorial workflow, oversized
-    // payloads, and edge functions that predate the endpoint. See
-    // decap-turbo/docs/deploy-status-plan.md §B1.
+    // TurboAPI commits through `_content/commit` in one request, and falls back
+    // to the inherited REST sequence for what that endpoint does not cover.
     this.api = new TurboAPI({
-      // The commit request inherits the session refresh, the x-site-id scoping
-      // and the save meter that every other Turbo request already goes through.
       turboFetch: (url, init) => this.ghFetch(url, init),
       token: this.token,
       tokenKeyword: this.tokenKeyword,
@@ -410,32 +350,14 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
     });
     this.setScopedApiRequestBuilder();
 
-    // GitHubBackend builds this in its own `authenticate`, which this override
-    // replaces wholesale - without it the notes pane has nothing watching the
-    // thread and another editor's note never appears. Rebuilt rather than
-    // reused, so a second login on the same instance cannot leave the previous
-    // session's manager polling with the previous session's api.
+    // GitHubBackend.authenticate builds this, and this override replaces it.
+    // Rebuilt, so a second login cannot leave the old manager polling.
     this.pollingManager?.destroy();
     this.unwatchFunctions.clear();
     this.pollingManager = new NotesPollingManager(this.api, 15000);
 
-    // GitHubBackend.authenticate calls `api.hasWriteAccess()` here, which is a
-    // `GET /repos/{owner}/{repo}` read of `permissions.push` for the signed-in
-    // GitHub user. Turbo has no signed-in GitHub user: it commits with the
-    // organization's App installation token, which is exactly why
-    // `bypassWriteAccessCheckForAppTokens` is set in the constructor — the
-    // answer was already being thrown away. The permissions read below is
-    // what actually decides what this editor may touch.
-    //
-    // So it was a round trip whose result nothing read, sitting on the critical
-    // path of every CMS load, ahead of the first content request: measured at
-    // 1.8s through the gh proxy on the tester site. Its other upstream side
-    // effect — normalising `repoOwner` to GitHub's casing — Turbo does not need
-    // either, because `preloadConfig` takes repo from the authoritative `sites`
-    // row rather than from a hand-written config.yml.
-    //
-    // `currentUser` is local (session identity, no fetch), so pairing it with
-    // the permissions read costs nothing and overlaps their latency.
+    // No `api.hasWriteAccess()`: there is no GitHub user to ask about, and the
+    // Turbo permissions read decides what this editor may touch.
     const [user, turboPermissions] = await Promise.all([
       this.api!.user(),
       this.session.fetchPermissions(this.baseUrl!),
@@ -456,9 +378,7 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
 
     return {
       ...user,
-      // API.user() narrows currentUser's result to { name, login, email } and
-      // drops the avatar — but this object is what core stores and the header
-      // renders, so put it back.
+      // API.user() drops the avatar the header renders.
       avatar_url: this.session.sessionIdentity().avatarUrl,
       // Rejected in the constructor, so never true here.
       useOpenAuthoring: false,
@@ -507,10 +427,8 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
   }
 
   /**
-   * Notes written by others show initials rather than an avatar, because the
-   * only avatar the thread carries is the App's. Dropping it here keeps a note
-   * looking the same before and after a reload - otherwise the one just
-   * written showed the editor's own avatar until the thread was re-read.
+   * The thread only carries the App's avatar, so drop it here too and a new
+   * note looks the same before and after a reload.
    */
   async addNote(
     collection: string,
@@ -565,15 +483,9 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
     const save = await meterSave(this, () => super.persistEntry(entry, options));
     const { result } = save;
 
-    // Assigned on every save, including to null: only the one-call commit
-    // endpoint (§B1) returns a sha, and leaving the previous one in place
-    // would have a REST-fallback save watch the deploy of the save before it.
-    //
-    // The branch has to match too. An editorial-workflow save commits to the
-    // entry's own `cms/...` branch, and that commit will never appear in a
-    // deploy of the site's branch — so watching it would leave the editor
-    // waiting on a deploy that is never coming. An unpublished entry is not
-    // going live, and "Entry saved" is the honest thing to say about it.
+    // Assigned on every save, null included, so a fallback save cannot watch
+    // the previous save's deploy; and only on the site's branch, because a
+    // `cms/...` workflow commit never deploys.
     const sha = (result as { sha?: unknown } | undefined)?.sha;
     const committedBranch = (result as { branch?: unknown } | undefined)?.branch;
     this.lastSavedCommit =
@@ -581,9 +493,7 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
         ? { sha, entryPath: entry.dataFiles?.[0]?.path as string | undefined }
         : null;
 
-    // The API client owns the content key format; the bare key is the
-    // fallback for an `api` that is somehow unset, which is unreachable from
-    // a real save but must not be the thing that breaks one.
+    // The API client owns the content key format.
     const branch = savedBranch(result, options, entry, this.branch, (collection, slug) =>
       this.api
         ? this.api.generateContentKey(collection, slug)
@@ -594,13 +504,8 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
   }
 
   /**
-   * Whether `head` contains `base` — the question "is my change in this
-   * deploy?", asked of git rather than of two clocks. See
-   * decap-turbo/docs/deploy-status-plan.md §A4b.
-   *
-   * Only reached when a successful deploy names a commit that is not one of
-   * ours, which is exactly the case where a host cancelled our build in
-   * favour of a newer commit and shipped our change inside it.
+   * Whether `head` contains `base`: "is my change in this deploy?", asked of
+   * git rather than of two clocks.
    */
   private async isCommitContained(base: string, head: string) {
     const response = await this.ghFetch(
@@ -613,11 +518,8 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
   }
 
   /**
-   * The site's deploy watcher, or null when this backend cannot read
-   * deployments at all (no Supabase project or site id configured).
-   *
-   * Built once and shared: it holds one ledger of this editor's unpublished
-   * saves for the whole session, not one watch per save.
+   * One ledger of this editor's unpublished saves for the session, or null when
+   * deployments cannot be read (no Supabase project or site id).
    */
   private deployWatcher(): DeployWatcher | null {
     const baseUrl = this.baseUrl || (this.supabaseId && `https://${this.supabaseId}.supabase.co`);
@@ -631,8 +533,7 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
         anonKey: this.supabaseAnonKey,
         siteId: this.siteId,
         branch: this.branch,
-        // A watch outlives several session refreshes, so the token is read per
-        // request rather than captured here.
+        // Read per request: a watch outlives several session refreshes.
         getAccessToken: () => this.session.accessToken,
         isCommitContained: (base, head) => this.isCommitContained(base, head),
       });
@@ -642,11 +543,8 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
   }
 
   /**
-   * Subscribes to "this change is live / this build failed" for the whole
-   * session, and resumes any ledger left over from a previous page load.
-   *
-   * Returns an unsubscribe function, or null when this backend cannot watch
-   * deploys — the caller's cue that no deploy notification will ever arrive.
+   * Subscribes to "this change is live / this build failed" for the session,
+   * resuming any ledger left from a previous load. Null: none will ever arrive.
    */
   subscribeDeployResolutions(
     listener: (resolution: DeployResolution) => void,
@@ -657,7 +555,7 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
     return this.deployWatcher()?.subscribe(listener) ?? null;
   }
 
-  /** What the header pill renders. Never starts a poll — see §A8. */
+  /** What the header pill renders. Never starts a poll. */
   subscribeDeployStatus(listener: (status: WatchStatus) => void): (() => void) | null {
     if (!this.deployStatusOptions.enabled) {
       return null;
@@ -666,19 +564,13 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
   }
 
   deployStatusConfig(): DeployStatusConfig {
-    // The branch travels with the options so core can scope "Live" without
-    // knowing anything about Turbo — it is the same duck-typed contract the
-    // rest of this feature uses.
+    // The branch lets core scope "Live" without knowing about Turbo.
     return { ...this.deployStatusOptions, branch: this.branch ?? null };
   }
 
   /**
-   * Reads the site's recent deploys — the Deploys page, and the single read
-   * the app makes on mount so an editor who has saved nothing still sees
-   * whether the site is live or broken.
-   *
-   * Rows are handed to the watcher as well as returned, so the pill and the
-   * page cannot disagree about what the latest deploy was.
+   * The site's recent deploys, for the Deploys page and the read on mount. Also
+   * handed to the watcher, so the pill and the page cannot disagree.
    */
   async listDeployments(limit?: number): Promise<DeploymentRow[]> {
     const baseUrl = this.baseUrl || (this.supabaseId && `https://${this.supabaseId}.supabase.co`);
@@ -720,11 +612,7 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
 
   /**
    * Records the save just made, so the deploy that carries it can be reported.
-   *
-   * Returns false when there is nothing to record — no commit sha (the REST
-   * fallback path) or a backend that cannot read deployments. That is the
-   * caller's cue to leave today's plain "Entry saved" in place, and it is the
-   * common case: most sites never produce a deploy row at all (§A0).
+   * False (no sha, or no deployments to read) leaves the plain "Entry saved".
    */
   recordSaveForDeployWatch(entryLabel?: string, entryUrlPath?: string): boolean {
     const saved = this.lastSavedCommit;
@@ -744,15 +632,8 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
   }
 
   /**
-   * Where a commit can be read by a human.
-   *
-   * The Deploys page shows a short sha, and a sha that links to the deployed
-   * site is worse than no link at all — it looks like it will show you the
-   * change and shows you the home page. This is the honest destination.
-   *
-   * `apiRoot` is Turbo's edge function rather than GitHub, so it cannot be
-   * derived from there; this backend is github.com-only (Enterprise is not
-   * supported), so the host is fixed.
+   * Where a human can read a commit. `apiRoot` is Turbo's proxy, and this
+   * backend is github.com-only, so the host is fixed.
    */
   commitUrl(sha: string): string | null {
     if (!sha || !this.originRepo) {

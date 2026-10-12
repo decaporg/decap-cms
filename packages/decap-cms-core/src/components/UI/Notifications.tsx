@@ -20,19 +20,9 @@ interface Props {
 
 type Entry = {
   toastId: Id;
-  /**
-   * What was last rendered. The reducer is immer, which keeps the object of
-   * every notification it did not change, so identity is the change check;
-   * comparing contents would mean serializing `details`, which can hold a
-   * cyclic error.
-   */
+  /** What was last rendered; immer keeps unchanged objects, so identity is the change check. */
   notification: Notification;
-  /**
-   * The queued dismissal, if any. Held rather than merely flagged because an
-   * update may need to CANCEL it: a notification created with a timeout and
-   * later updated to be held open (a save that turns into a failed build)
-   * would otherwise still vanish on the timer armed for the first message.
-   */
+  /** Held so an update can cancel it, e.g. a timed toast later held open. */
   dismissTimer: ReturnType<typeof setTimeout> | null;
   /** The timeout that timer was armed for, so an unchanged one is left alone. */
   dismissAfter: number | false | undefined;

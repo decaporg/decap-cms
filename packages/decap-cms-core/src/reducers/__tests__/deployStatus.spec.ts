@@ -60,7 +60,7 @@ describe('deployStatus reducer', () => {
   });
 
   it('stays hidden while the backend supports it but nothing has deployed', () => {
-    // Auto-hide (§A7): a site whose host reports nothing must look like a CMS
+    // Auto-hide: a site whose host reports nothing must look like a CMS
     // without the feature, not one with a permanently empty page.
     const state = deployStatus(undefined, {
       type: DEPLOY_STATUS_UPDATE,

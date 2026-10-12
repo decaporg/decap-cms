@@ -473,8 +473,7 @@ describe('turbo github backend persistEntry', () => {
   });
 });
 
-// The contract §A4's toast is built on: which commit to watch, and when there
-// is nothing to watch at all. See decap-turbo/docs/deploy-status-plan.md §A3.
+// Which commit the save toast watches, and when there is nothing to watch.
 describe('turbo github backend deploy watch', () => {
   const superPersistEntry = Object.getPrototypeOf(DecapTurboGitHubBackend.prototype);
 
@@ -611,7 +610,7 @@ describe('turbo github backend deploy watch', () => {
     ]);
   });
 
-  // Ancestry is asked of git, not of two clocks — see §A4b.
+  // Ancestry is asked of git, not of two clocks.
   it('answers "is my change in this deploy" with GitHub compare', async () => {
     const backend = makeBackend();
     backend.ghFetch = jest

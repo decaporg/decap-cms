@@ -899,21 +899,15 @@ export default class API {
       );
       branches = branchesWithFilter.filter(b => b.filter).map(b => b.branch);
     } else {
-      // One fetch, two filters. `getPullRequests` re-requests the list for
-      // each predicate, and both calls here pass the same `head`/`state`, so
-      // the two below issued a byte-identical
-      // `GET /pulls?base=…&state=open&per_page=100` on every collection load —
-      // 2.0s + 1.8s of it when the request goes through a proxy. The predicate
-      // is applied client-side anyway, so the page only needs fetching once.
+      // One fetch, two filters: `getPullRequests` re-requests the list per
+      // predicate, and the predicate is applied client-side anyway.
       const openPullRequests = await this.getPullRequests(
         undefined,
         PullRequestState.Open,
         () => true,
       );
 
-      // Backwards compatibility: entries created before the CMS labelled its
-      // pull requests. Effectively always empty on a repo that has only ever
-      // been edited by a current CMS.
+      // Backwards compatibility: entries from before the CMS labelled its PRs.
       const unlabeled = openPullRequests.filter(
         pr => !pr.head.repo.fork && withoutCmsLabel(pr, this.cmsLabelPrefix),
       );
@@ -931,9 +925,7 @@ export default class API {
         await this.migratePullRequest(pr, `${prCount} of ${unlabeled.length}`);
       }
 
-      // Migration is what puts the label on, so when it ran the list has to be
-      // read again — the page fetched above predates those labels. Conditional
-      // rather than unconditional precisely because that path is the rare one.
+      // Migration adds the labels, so when it ran the list must be read again.
       const cmsPullRequests = unlabeled.length
         ? await this.getPullRequests(undefined, PullRequestState.Open, pr =>
             withCmsLabel(pr, this.cmsLabelPrefix),
@@ -1610,19 +1602,9 @@ export default class API {
   }
 
   /**
-   * List the repo's notes issues by label.
-   *
-   * Deliberately not `/search/issues`: with a GitHub App installation token the
-   * search API intermittently answers an identical query with 422 "cannot be
-   * searched", observed alternating 200/422 within a second on the same repo.
-   * Every caller swallowed that as "no issue", so notes vanished from the pane
-   * and the next note opened a duplicate issue. The label listing is a plain
-   * repo read with no index behind it.
-   *
-   * With `collectionName`, narrowed by the `collection:` label createEntryIssue
-   * has always written alongside the notes label; GitHub ANDs the two. One
-   * entry open looks its thread up several times, and without this each
-   * lookup listed every notes thread on the site.
+   * List the repo's notes issues by label, not `/search/issues`, which with an
+   * App installation token intermittently answers 422 and so lost notes. With
+   * `collectionName`, also narrowed by the `collection:` label.
    */
   private async listNotesIssues(
     state: 'open' | 'all',
@@ -1631,10 +1613,8 @@ export default class API {
     const labels = collectionName
       ? `${API.NOTES_LABEL},collection:${collectionName}`
       : API.NOTES_LABEL;
-    // Paged by number rather than requestAllPages: that follows the Link
-    // header, which the Turbo proxy does not forward, so it would stop after
-    // the first page there. Capped so a host that keeps answering full pages
-    // cannot hold a lookup open indefinitely.
+    // Paged by number: requestAllPages follows the Link header, which the Turbo
+    // proxy does not forward. Capped so a lookup cannot run indefinitely.
     const perPage = 100;
     const maxPages = 20;
     const issues: (GitHubIssue & { pull_request?: unknown })[] = [];
@@ -1654,8 +1634,7 @@ export default class API {
     slug: string,
     state: 'open' | 'all',
   ): Promise<GitHubIssue | null> {
-    // createEntryIssue writes the key between backticks, so matching on them
-    // keeps `posts/foo` from also matching the issue for `posts/foo-bar`.
+    // With the backticks, so `posts/foo` does not match `posts/foo-bar`.
     const marker = `\`${collectionName}/${slug}\``;
     const issues = await this.listNotesIssues(state, collectionName);
     return issues.find(issue => issue.body?.includes(marker)) ?? null;

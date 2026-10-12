@@ -682,10 +682,7 @@ describe('entries', () => {
       expect(loadMedia).not.toHaveBeenCalled();
     });
 
-    // THE guard for B3. entryPersisted used to be dispatched after an awaited
-    // loadMedia(), so saving an entry with images held the save spinner
-    // through a refresh of a panel that is not even on screen. Verified to
-    // fail against the previous ordering.
+    // The save spinner must not wait for a media library reload.
     it('releases the editor before reloading the media library', async () => {
       let mediaReloadStarted = false;
       loadMedia.mockImplementation(() => {

@@ -1,16 +1,9 @@
 /**
- * The Decap Turbo editor bridge, CMS side: lets an AI agent (through the
- * Turbo API, `decap mcp`'s set_fields) change fields in the entry open in this
- * tab. The person sees the change highlighted and decides whether to save.
- *
- * While an entry is open and the tab is visible, the bridge calls the
- * `editor_session_sync` RPC every few seconds as the signed-in user. One call
- * records the tab as open on that entry (with a snapshot of its fields and
- * current values when they changed) and returns the patches waiting for it,
- * which are applied through the core editor API (`CMS.editor`) and
- * acknowledged with `editor_patch_ack`. Polling rather than Realtime keeps the
- * Supabase client out of the CMS bundle (decap-turbo docs/ai-agents-plan.md,
- * "The editor bridge").
+ * The Decap Turbo editor bridge, CMS side: lets an AI agent change fields in
+ * the entry open in this tab; the person sees the change and decides whether
+ * to save. While an entry is open, the bridge polls `editor_session_sync`,
+ * which records the tab's snapshot and returns the patches waiting for it.
+ * Polling rather than Realtime keeps the Supabase client out of the CMS bundle.
  */
 
 /** The parts of decap-cms-core's editor API (lib/editorApi.ts) the bridge uses. */
@@ -339,10 +332,6 @@ export class EditorBridge {
  * — and opens Claude Desktop with it. Any other agent with the decap MCP
  * server works with the copied prompt.
  */
-function ignore(): void {
-  // Deliberately nothing; see the caller.
-}
-
 export function registerAskClaudeAction(
   registerFieldAction: RegisterFieldAction,
   bridge: () => EditorBridge | null,
@@ -365,7 +354,7 @@ export function registerAskClaudeAction(
         `"${fieldLabel}" field (${context.field.name}). Don't save; I'll review it in the editor.\n\nWhat I want: `;
 
       // A refused clipboard is fine: the prompt still opens Claude.
-      void navigator.clipboard?.writeText(prompt).catch(ignore);
+      void navigator.clipboard?.writeText(prompt).catch(() => undefined);
       bridge()?.notify('Prompt copied. If Claude Desktop did not open, paste it into your agent.');
       window.location.href = `claude://claude.ai/new?q=${encodeURIComponent(prompt)}`;
     },

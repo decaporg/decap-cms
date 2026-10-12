@@ -12,10 +12,7 @@ function mapStateToProps(state, ownProps) {
   const isEditorialWorkflow = state.config.publish_mode === EDITORIAL_WORKFLOW;
   const collection = collections.get(ownProps.match.params.name);
 
-  // See the matching guard in Editor.js's own mapStateToProps — same race,
-  // same reason. WorkflowEditor's render() below is what actually stops
-  // Editor from mounting in this case; this just has to not crash while
-  // computing props for it.
+  // Same race as the guard in Editor.js's mapStateToProps.
   if (!collection) {
     return { isEditorialWorkflow };
   }
@@ -64,10 +61,7 @@ export default function withWorkflow(Editor) {
   )(
     class WorkflowEditor extends Component {
       render() {
-        // Editor assumes a valid `collection` from its very first lifecycle
-        // method (componentDidMount calls retrieveLocalBackup(collection, ...)
-        // before render ever gets a say) — so the guard has to live here,
-        // stopping it from mounting at all, not inside Editor itself.
+        // Editor uses `collection` in componentDidMount, so it must not mount.
         if (!this.props.collection) {
           return <Redirect to="/" />;
         }

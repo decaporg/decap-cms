@@ -85,9 +85,7 @@ describe('save event', () => {
     expect('upstreamMs' in props()).toBe(false);
   });
 
-  // decap-turbo H12: authorEmail was a second copy of an email the row
-  // already identifies through the server-derived user_id, stored alongside
-  // the content path and slug in a table retained 180 days.
+  // The row already identifies the user; an email here would be a second copy.
   it('sends no email address in the props', async () => {
     await persist({ proxyMeter: null }, async () => 'post');
 
@@ -95,8 +93,7 @@ describe('save event', () => {
     expect(JSON.stringify(props())).not.toContain('@');
   });
 
-  // decap-turbo L8: both used to report the site's branch, so a draft was
-  // logged and displayed as a publish.
+  // A draft must not be logged as a publish.
   it('reports the site branch for a normal save', async () => {
     await persist({ proxyMeter: null }, async () => 'post');
 

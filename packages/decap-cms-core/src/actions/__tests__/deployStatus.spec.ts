@@ -96,7 +96,7 @@ describe('deploy notifications', () => {
     expect(sent(store)[0].payload.message).toEqual({ key: 'ui.toast.entrySaved' });
   });
 
-  // The heart of §A4b: the save toast must not outlive the save.
+  // The save toast must not outlive the save.
   it('says "Publishing…" briefly and does not hold the toast open for the build', () => {
     const { backend, recordSaveForDeployWatch } = backendWithWatch();
     mockedCurrentBackend.mockReturnValue(backend);

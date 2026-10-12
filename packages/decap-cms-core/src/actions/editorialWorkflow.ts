@@ -122,12 +122,7 @@ function unpublishedEntriesLoaded(entries: EntryValue[], pagination: number) {
   };
 }
 
-/**
- * The identities of the entries under editorial workflow, with none of their
- * contents. This is all `loadUnpublishedEntry` needs to know whether a slug is
- * in the workflow, and it costs one request where loading the entries costs one
- * per entry on top of it.
- */
+/** All `loadUnpublishedEntry` needs, in one request instead of one per entry. */
 function unpublishedKeysLoaded(keys: string[]) {
   return {
     type: UNPUBLISHED_KEYS_SUCCESS,
@@ -159,11 +154,8 @@ function unpublishedEntryPersisted(collection: Collection, entry: EntryMap, slug
     payload: {
       collection: collection.get('name'),
       entry,
-      // The slug the backend actually committed under. `entry` is the draft as
-      // serialized, and a new entry's draft carries no slug — persistEntry
-      // computes it. The entity and id below keep using the draft's own value,
-      // because the editor looks the just-saved entry up by the slug still in
-      // its route; only the content key needs the authoritative one.
+      // The slug the backend committed under (a new entry's draft has none);
+      // entity and id keep the draft's, which the editor's route looks up.
       slug,
     },
   };
@@ -269,14 +261,10 @@ export function loadUnpublishedEntry(collection: Collection, slug: string) {
       return Boolean(keys?.includes(contentKey));
     }
 
-    // `backend.unpublishedEntry` re-derives, for this one slug, the open-pull-
-    // request set that `unpublishedContentKeys` lists in a single request, and
-    // through Turbo's proxy it costs 2.4s on every open of a published entry.
-    // So absence from the key set is taken as "not under editorial workflow",
-    // but only from a set fetched in this call: a set even seconds old misses
-    // a draft a colleague just created, and saving that entry as published
-    // then 422s on createBranch. A key already present needs no refresh,
-    // because the per-slug lookup below is authoritative either way.
+    // `unpublishedContentKeys` lists the open pull requests in one request, so
+    // absence from it means "not under editorial workflow", but only from a set
+    // fetched in this call: an older set misses a draft a colleague just
+    // created, and saving that entry as published then 422s on createBranch.
     if (!isKnownUnpublished(state)) {
       let fetchedKeys: string[] | undefined;
       try {
@@ -285,9 +273,8 @@ export function loadUnpublishedEntry(collection: Collection, slug: string) {
         // eslint-disable-next-line no-empty
       } catch (e) {}
 
-      // The reducer unions the fetched keys with the ones this session added,
-      // so the stored set is read again rather than trusting the listing
-      // alone, which may predate a commit this session just made.
+      // Read the stored set again: the reducer unions in keys this session
+      // added, which the listing may predate.
       if (fetchedKeys && !fetchedKeys.includes(contentKey) && !isKnownUnpublished(getState())) {
         dispatch(unpublishedEntryRedirected(collection, slug));
         dispatch(loadEntry(collection, slug));
@@ -359,9 +346,8 @@ export function loadUnpublishedEntries(collections: Collections) {
             dismissAfter: 8000,
           }),
         );
-        // Recorded in state, which is what stops the collection view from
-        // retrying on every re-render. No re-throw: nothing awaits this
-        // promise, so a rejection here was only ever an unhandled one.
+        // Recorded in state, which stops the collection view retrying. Not
+        // re-thrown: nothing awaits this promise.
         dispatch(unpublishedEntriesFailed(error));
       });
   };

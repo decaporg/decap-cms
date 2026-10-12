@@ -68,11 +68,8 @@ describe('TurboSession refresh', () => {
   });
 
   it('marks refresh_token_not_found as terminal, so a dead session cannot storm', async () => {
-    // This is the code GoTrue actually returns for a rotated-away or expired
-    // refresh token. It used to fall outside the terminal allow-list, so it
-    // was retried, swallowed, and left every subsequent request to 401 —
-    // 87 refresh POSTs in 41 seconds on one collection load, until GoTrue's
-    // rate limiter answered 429 and the session could never recover.
+    // The code GoTrue returns for a rotated-away or expired refresh token;
+    // retrying it would storm GoTrue until it rate-limits the session.
     const session = makeSession();
     session.refreshToken = 'rotated-away-token';
 

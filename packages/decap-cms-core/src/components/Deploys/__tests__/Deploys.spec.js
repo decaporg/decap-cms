@@ -117,8 +117,8 @@ describe('Deploys page', () => {
   });
 
   it('reads deploys on mount and again on Refresh', () => {
-    // Opening the page and pressing Refresh are two of only three things that
-    // may cause a read — see §A8 on why nothing else may poll.
+    // Opening the page and pressing Refresh are two of the three things that may
+    // cause a read; nothing else polls.
     const loadDeployHistory = jest.fn();
 
     render(
@@ -176,8 +176,8 @@ describe('Deploys page', () => {
     unmount();
     jest.advanceTimersByTime(60000);
 
-    // §A8: the repeating read is scoped to a page the editor deliberately
-    // opened. Leaving it must leave an idle CMS polling zero times.
+    // The repeating read belongs to this page; leaving it leaves an idle CMS
+    // polling zero times.
     expect(loadDeployHistory).toHaveBeenCalledTimes(4);
     jest.useRealTimers();
   });
@@ -305,11 +305,8 @@ describe('Deploys page', () => {
     expect(screen.getAllByText('—').length).toBeGreaterThan(0);
   });
 
-  // A build nobody has mentioned for half an hour is not "Building". Measured
-  // on the tester: publishing an editorial-workflow entry deletes the `cms/…`
-  // branch, orphaning the Deploy Preview still building for it — Netlify
-  // leaves that deploy in `uploaded` rather than `ready`, so no notification
-  // ever fires. Two rows sat at "Building" for seventeen hours.
+  // A build nobody has mentioned for half an hour is not "Building": a deleted
+  // branch's Deploy Preview is never reported again.
   describe('a build that stopped being reported', () => {
     function longAgo() {
       return new Date(Date.now() - 60 * 60 * 1000).toISOString();
