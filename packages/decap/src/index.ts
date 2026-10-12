@@ -1,6 +1,13 @@
 import { ApiClient, ApiError, CLI_VERSION, operations } from './api.js';
 import { parseCliArgs } from './args.js';
-import { commandHelp, commandList, findCommand, formatResult, inputFromFlags } from './commands.js';
+import {
+  checkBuiltinFlags,
+  commandHelp,
+  commandList,
+  findCommand,
+  formatResult,
+  inputFromFlags,
+} from './commands.js';
 import { readCredentials, resolveAuth } from './config.js';
 import { login, logout } from './login.js';
 import { serveMcp } from './mcp.js';
@@ -9,6 +16,12 @@ import type { MeResponse } from 'decap-turbo-api';
 
 function mainHelp(): string {
   return `decap ${CLI_VERSION} — the Decap command line
+
+Experimental. \`decap dev\` is the stable replacement for \`npx decap-server\`.
+Everything else (login, whoami, logout, mcp and the Turbo commands) talks to
+the Decap Turbo API, which is in preview: commands, flags and output may
+change between releases without a major version bump. Pin an exact version
+in scripts and CI.
 
 Usage:
   decap dev                 Run the local proxy server for the CMS's proxy
@@ -41,7 +54,8 @@ Turbo options:
   -v, --version     Show the version
 
 Environment:
-  DECAP_TOKEN   Use this token instead of the stored one (CI)
+  DECAP_TOKEN       Use this token instead of the stored one (CI)
+  DECAP_NO_BROWSER  login: don't launch a browser (the URL is still printed)
 `;
 }
 
@@ -75,6 +89,7 @@ async function main(argv: string[]): Promise<number> {
     return values.help ? 0 : 1;
   }
 
+  checkBuiltinFlags(command, parsed);
   const flags = { apiUrl: values.apiUrl };
 
   switch (command) {

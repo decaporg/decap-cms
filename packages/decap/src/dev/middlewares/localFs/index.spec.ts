@@ -1,7 +1,16 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { getSchema } from './index.js';
+jest.mock('../utils/fs.js', () => ({
+  ...jest.requireActual('../utils/fs.js'),
+  writeFile: jest.fn().mockResolvedValue(undefined),
+  move: jest.fn(),
+}));
+
+import { getSchema, localFsMiddleware } from './index.js';
+import { move } from '../utils/fs.js';
 
 import type Joi from '@hapi/joi';
+import type express from 'express';
+import type winston from 'winston';
 
 function assetFailure(result: Joi.ValidationResult, expectedMessage: string) {
   const { error } = result;
@@ -87,6 +96,34 @@ describe('localFsMiddleware', () => {
       });
 
       expect(error).toBeUndefined();
+    });
+  });
+
+  describe('persistEntry with a rename', () => {
+    it('awaits the move before responding, so the response implies the rename is done', async () => {
+      const order: string[] = [];
+      (move as jest.Mock).mockImplementation(async () => {
+        order.push('move-start');
+        await new Promise(resolve => setTimeout(resolve, 0));
+        order.push('move-end');
+      });
+      const logger = { error: jest.fn() } as unknown as winston.Logger;
+      const middleware = localFsMiddleware({ repoPath: '/repo', logger });
+      const req = {
+        body: {
+          action: 'persistEntry',
+          params: {
+            entry: { slug: 'a', path: 'a.md', raw: 'x', newPath: 'b.md' },
+            assets: [],
+            options: {},
+          },
+        },
+      } as unknown as express.Request;
+      const res = { json: jest.fn(() => order.push('json')) } as unknown as express.Response;
+
+      await middleware(req, res);
+
+      expect(order).toEqual(['move-start', 'move-end', 'json']);
     });
   });
 });

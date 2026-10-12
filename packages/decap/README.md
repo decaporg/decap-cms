@@ -2,7 +2,9 @@
 
 The Decap command line, installed as the `decap` command. It runs the local proxy server for editing a site on your own machine, manages [Decap Turbo](https://turbo.decapcms.org), and connects AI agents to Turbo over MCP. Turbo commands go through the Turbo API with a personal access token, so they can never do more than you can in the dashboard.
 
-It needs Node 20 or later.
+> **Experimental.** `decap dev` is the stable replacement for `npx decap-server`. Everything else (`login`, `whoami`, `logout`, `mcp` and the Turbo commands) talks to the Decap Turbo API, which is in preview: commands, flags and output may change between releases without a major version bump. Pin an exact version in scripts and CI.
+
+Run it with `npx @decap/cli <command>`, or install it globally (`npm install -g @decap/cli`) to type `decap`. `npx decap` does not run this package; always name `@decap/cli`. It needs Node 20 or later. Product documentation: [CLI and AI agents](https://decapcms.org/docs/turbo-cli-and-agents/).
 
 ## Local development: `decap dev`
 
@@ -47,7 +49,7 @@ npx @decap/cli whoami
 npx @decap/cli logout         # revokes the token and forgets it
 ```
 
-The token is stored in `~/.config/decap/credentials.json` (mode 0600). In CI, set `DECAP_TOKEN` to a token created under **API tokens** in the dashboard instead.
+The token is stored in `~/.config/decap/credentials.json` (mode 0600). In CI, set `DECAP_TOKEN` to a token created under **API tokens** in the dashboard instead. Set `DECAP_NO_BROWSER` to have `login` skip launching a browser, for a machine with none to open; it still prints the approval URL to copy elsewhere.
 
 ## Manage Turbo
 

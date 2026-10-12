@@ -1,6 +1,7 @@
 import { flagName, operations } from 'decap-turbo-api';
 
 import {
+  checkBuiltinFlags,
   commandHelp,
   commandList,
   findCommand,
@@ -120,6 +121,33 @@ describe('help', () => {
     expect(help).toContain('required.');
     expect(help).toContain('(owner, member)');
     expect(help).toContain('admin scope');
+  });
+});
+
+describe('checkBuiltinFlags', () => {
+  it('rejects a flag a built-in command does not take', () => {
+    expect(() => checkBuiltinFlags('login', { 'api-ur': 'https://evil.example' })).toThrow(
+      'Unknown flag --api-ur for "decap login". Flags: --admin, --api-url, --help, --version.',
+    );
+  });
+
+  it('accepts the flags each built-in command takes', () => {
+    expect(() => checkBuiltinFlags('login', { admin: true, 'api-url': 'http://x' })).not.toThrow();
+    expect(() => checkBuiltinFlags('logout', { 'api-url': 'http://x' })).not.toThrow();
+    expect(() => checkBuiltinFlags('whoami', { json: true })).not.toThrow();
+    expect(() => checkBuiltinFlags('mcp', { 'api-url': 'http://x' })).not.toThrow();
+    expect(() =>
+      checkBuiltinFlags('dev', { port: '8082', mode: 'git', 'log-level': 'debug' }),
+    ).not.toThrow();
+  });
+
+  it('rejects a flag of one built-in command on another', () => {
+    expect(() => checkBuiltinFlags('logout', { admin: true })).toThrow(/Unknown flag --admin/);
+    expect(() => checkBuiltinFlags('mcp', { json: true })).toThrow(/Unknown flag --json/);
+  });
+
+  it('leaves a command with no entry alone, e.g. a contract command', () => {
+    expect(() => checkBuiltinFlags('sites', { org: 'o1' })).not.toThrow();
   });
 });
 

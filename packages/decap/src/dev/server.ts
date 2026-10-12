@@ -70,17 +70,30 @@ export async function runDevServer(options: DevServerOptions = {}): Promise<Serv
 
   // The "listening" lines are matched by the e2e suite (cypress/plugins/proxy.js)
   // and possibly by people's own scripts: keep their wording.
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
+    // Without this, a failed listen() (e.g. the port is taken) throws as an
+    // uncaught EventEmitter error — a raw stack trace — instead of rejecting
+    // this promise, which main() turns into a clean one-line "✗ message".
+    function onListenError(err: NodeJS.ErrnoException): void {
+      if (err.code === 'EADDRINUSE') {
+        reject(new Error(`Port ${port} is already in use; pass --port <other>`));
+      } else {
+        reject(err);
+      }
+    }
+
     if (host) {
       const server = app.listen(port, host, () => {
         logger.info(`Decap CMS Proxy Server listening on ${host}:${port}`);
         resolve(server);
       });
+      server.on('error', onListenError);
     } else {
       const server = app.listen(port, () => {
         logger.info(`Decap CMS Proxy Server listening on port ${port}`);
         resolve(server);
       });
+      server.on('error', onListenError);
     }
   });
 }

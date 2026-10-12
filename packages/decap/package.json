@@ -11,7 +11,8 @@
     "cli",
     "mcp",
     "proxy",
-    "local-backend"
+    "local-backend",
+    "experimental"
   ],
   "type": "module",
   "exports": {

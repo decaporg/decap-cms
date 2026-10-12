@@ -7,7 +7,8 @@
   "license": "MIT",
   "keywords": [
     "decap-cms",
-    "decap-turbo"
+    "decap-turbo",
+    "experimental"
   ],
   "type": "module",
   "main": "./dist/index.js",

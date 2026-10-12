@@ -79,9 +79,12 @@ export function localFsMiddleware({ repoPath, logger }: FsOptions) {
             assets.map(a => writeFile(repoPath, a.path, Buffer.from(a.content, a.encoding))),
           );
           if (dataFiles.every(dataFile => dataFile.newPath)) {
-            dataFiles.forEach(async dataFile => {
-              await move(repoPath, dataFile.path, dataFile.newPath!, hasSubfolders);
-            });
+            // Awaited: the rename must finish before the response is sent.
+            await Promise.all(
+              dataFiles.map(dataFile =>
+                move(repoPath, dataFile.path, dataFile.newPath!, hasSubfolders),
+              ),
+            );
           }
           res.json({ message: 'entry persisted' });
           break;

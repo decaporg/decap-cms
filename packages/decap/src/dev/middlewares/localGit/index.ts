@@ -95,9 +95,10 @@ async function commitEntry(
     assets.map(a => writeFile(repoPath, a.path, Buffer.from(a.content, a.encoding))),
   );
   if (dataFiles.every(dataFile => dataFile.newPath)) {
-    dataFiles.forEach(async dataFile => {
-      await move(repoPath, dataFile.path, dataFile.newPath!, hasSubfolders);
-    });
+    // Awaited: the rename must finish before the commit below.
+    await Promise.all(
+      dataFiles.map(dataFile => move(repoPath, dataFile.path, dataFile.newPath!, hasSubfolders)),
+    );
   }
 
   // commits files

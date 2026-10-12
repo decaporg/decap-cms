@@ -14,6 +14,31 @@ const GLOBAL_SWITCHES = ['admin', 'json', 'help', 'version'];
 /** Flags every command accepts that are not input fields. */
 const GLOBAL_FLAGS = new Set(['api-url', ...GLOBAL_SWITCHES]);
 
+/**
+ * Flags each built-in command (the ones not generated from the contract)
+ * accepts. Unlike contract commands, these were never validated against a
+ * schema, so an unknown flag such as `--api-ur` was silently dropped and
+ * `login` proceeded against the default, production, API.
+ */
+const BUILTIN_COMMAND_FLAGS: Record<string, ReadonlySet<string>> = {
+  dev: new Set(['port', 'host', 'mode', 'dir', 'origin', 'log-level', 'help', 'version']),
+  login: new Set(['admin', 'api-url', 'help', 'version']),
+  logout: new Set(['api-url', 'help', 'version']),
+  whoami: new Set(['api-url', 'json', 'help', 'version']),
+  mcp: new Set(['api-url', 'help', 'version']),
+};
+
+/** Rejects a flag `command` (a built-in, not a contract command) does not take, phrased like the contract's unknown-flag error. A command with no entry here is left alone. */
+export function checkBuiltinFlags(command: string, flags: Record<string, string | boolean>): void {
+  const allowed = BUILTIN_COMMAND_FLAGS[command];
+  if (!allowed) return;
+  for (const flag of Object.keys(flags)) {
+    if (allowed.has(flag)) continue;
+    const known = [...allowed].map(name => `--${name}`).join(', ') || 'none';
+    throw new Error(`Unknown flag --${flag} for "decap ${command}". Flags: ${known}.`);
+  }
+}
+
 export function commandOperations(): Operation[] {
   return (Object.values(operations) as Operation[]).filter(op => op.cli);
 }
