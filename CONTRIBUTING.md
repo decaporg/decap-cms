@@ -164,6 +164,20 @@ When debugging the CMS with Git Gateway you must:
    4. Refresh the page
    5. You should be able to log in via your Netlify Identity email/password
 
+### Debugging the Turbo backends
+
+Same steps as above, with a Turbo-specific `dev-test/config.yml`:
+
+```yaml
+backend:
+  name: turbo-github
+  turbo_site_id: <a develop site's site id>
+  turbo_config_url: https://ioltadnfuvnndhbzbagl.supabase.co/functions/v1/config
+  turbo_admin_url: https://develop--decap-turbo.netlify.app
+```
+
+Use a site on the `develop` Supabase project, not production. Before logging in, add `http://localhost:8080` to that site's admin interface URLs in the Turbo dashboard, or the login popup will refuse the origin.
+
 ### Fine tune the way you run unit tests
 
 There are situations where you would want to run a specific test file, or tests that match a certain pattern.
