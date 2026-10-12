@@ -137,7 +137,7 @@ jobs:
           path: dev-test/dist
       # The proxy backend specs start the local server from the built CLI.
       - name: build @decap/cli
-        run: pnpm --filter @decap/cli run build
+        run: pnpm --filter "@decap/cli..." run build
       - name: run e2e tests (parallel)
         run: pnpm run test:e2e:run-ci
         env:
