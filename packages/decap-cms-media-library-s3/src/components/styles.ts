@@ -1,7 +1,6 @@
 import styled from '@emotion/styled';
 import { css } from '@emotion/react';
 
-// Design system tokens
 export const designTokens = {
   colors: {
     primary: '#0066cc',
@@ -59,7 +58,6 @@ export const designTokens = {
   },
 };
 
-// Modal widget styles
 export const StyledWidget = styled.div`
   position: fixed;
   top: 0;
@@ -96,7 +94,6 @@ export const StyledContainer = styled.div`
   overflow: hidden;
 `;
 
-// Header styles
 export const StyledHeader = styled.div`
   padding: ${designTokens.spacing.xl} ${designTokens.spacing.xxl};
   border-bottom: 1px solid ${designTokens.colors.border};
@@ -132,7 +129,6 @@ export const StyledCloseButton = styled.button`
   }
 `;
 
-// Error message
 export const StyledError = styled.div`
   padding: ${designTokens.spacing.md} ${designTokens.spacing.xxl};
   background-color: ${designTokens.colors.error};
@@ -141,7 +137,6 @@ export const StyledError = styled.div`
   font-size: ${designTokens.font.size.base};
 `;
 
-// File grid container
 export const StyledFileGridContainer = styled.div`
   flex: 1;
   overflow-y: auto;
@@ -174,7 +169,6 @@ export const StyledEmpty = styled.div`
   font-size: ${designTokens.font.size.lg};
 `;
 
-// Footer & buttons
 export const StyledFooter = styled.div`
   padding: ${designTokens.spacing.lg} ${designTokens.spacing.xxl};
   border-top: 1px solid ${designTokens.colors.border};
@@ -230,45 +224,7 @@ export const StyledButtonSecondary = styled.button`
   }
 `;
 
-// File grid item styles
-export const StyledFileGridItem = styled.div<{ selected?: boolean; isDirectory?: boolean }>`
-  display: flex;
-  flex-direction: column;
-  cursor: ${props => (props.isDirectory ? 'pointer' : 'pointer')};
-  border-width: 2px;
-  border-style: solid;
-  border-color: ${props => (props.selected ? designTokens.colors.primary : 'transparent')};
-  border-radius: ${designTokens.radius.md};
-  padding: ${designTokens.spacing.sm};
-  transition: all ${designTokens.transition};
-  background-color: ${props =>
-    props.selected ? designTokens.colors.primaryLight : designTokens.colors.foreground};
-
-  &:hover {
-    background-color: ${designTokens.colors.hover};
-    border-color: ${designTokens.colors.border};
-  }
-`;
-
-export const StyledFileThumbnail = styled.div`
-  position: relative;
-  width: 100%;
-  aspect-ratio: 1;
-  background-color: #f0f0f0;
-  border-radius: ${designTokens.radius.sm};
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: ${designTokens.spacing.sm};
-`;
-
-export const StyledFileImage = styled.img`
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-`;
-
+// Shared by FileGrid.tsx for the non-image file icon and the filename label.
 export const StyledFileIcon = styled.div`
   font-size: 32px;
   color: ${designTokens.colors.textTertiary};
@@ -286,43 +242,6 @@ export const StyledFileName = styled.div`
   -webkit-box-orient: vertical;
 `;
 
-// File browser styles
-export const StyledFileBrowser = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${designTokens.spacing.md};
-`;
-
-export const StyledBreadcrumb = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${designTokens.spacing.sm};
-  font-size: ${designTokens.font.size.base};
-  color: ${designTokens.colors.textSecondary};
-  padding-bottom: ${designTokens.spacing.md};
-  border-bottom: 1px solid ${designTokens.colors.border};
-`;
-
-export const StyledBreadcrumbItem = styled.button`
-  background: none;
-  border: none;
-  color: ${designTokens.colors.primary};
-  cursor: pointer;
-  font-size: ${designTokens.font.size.base};
-  padding: 0;
-  transition: color ${designTokens.transition};
-
-  &:hover {
-    text-decoration: underline;
-  }
-`;
-
-export const StyledBreadcrumbSeparator = styled.span`
-  color: ${designTokens.colors.textTertiary};
-  margin: 0 ${designTokens.spacing.xs};
-`;
-
-// FileGrid-specific item styles
 export const StyledFileGridItemContainer = styled.div<{
   isSelected?: boolean;
   isHovered?: boolean;
@@ -420,50 +339,6 @@ export const StyledFileDate = styled.span`
   color: #bbb;
 `;
 
-// Login prompt styles
-export const StyledLoginContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100%;
-  padding: ${designTokens.spacing.xl};
-`;
-
-export const StyledLoginCard = styled.div`
-  text-align: center;
-  padding: 40px 60px;
-  background-color: ${designTokens.colors.foreground};
-  border-radius: ${designTokens.radius.lg};
-  box-shadow: ${designTokens.shadow.md};
-`;
-
-export const StyledLoginIcon = styled.div`
-  font-size: 48px;
-  margin-bottom: ${designTokens.spacing.xl};
-  color: ${designTokens.colors.primary};
-`;
-
-export const StyledLoginTitle = styled.h2`
-  margin: 0 0 ${designTokens.spacing.md} 0;
-  font-size: ${designTokens.font.size.xxl};
-  font-weight: ${designTokens.font.weight.semibold};
-  color: ${designTokens.colors.text};
-`;
-
-export const StyledLoginDescription = styled.p`
-  margin: 0 0 30px 0;
-  font-size: ${designTokens.font.size.base};
-  color: ${designTokens.colors.textSecondary};
-  line-height: 1.5;
-`;
-
-export const StyledLoginButton = styled(StyledButtonPrimary)`
-  padding: ${designTokens.spacing.md} ${designTokens.spacing.xxl};
-  font-size: ${designTokens.font.size.lg};
-  font-weight: ${designTokens.font.weight.semibold};
-`;
-
-// File upload styles
 export const StyledFileUploadContainer = styled.div`
   padding: ${designTokens.spacing.lg} ${designTokens.spacing.xxl} 0;
 `;

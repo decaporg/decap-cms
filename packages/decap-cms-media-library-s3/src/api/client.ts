@@ -1,9 +1,4 @@
-/**
- * HTTP Client for S3-compatible Storage APIs (via decap-turbo's edge-function proxy)
- * Handles authentication and request/response formatting. The actual AWS
- * SigV4 signing and provider credentials live server-side in the proxy —
- * this client only ever sends the caller's Decap session token and site id.
- */
+// HTTP client for S3-compatible storage APIs via decap-turbo's edge-function proxy; SigV4 signing and provider credentials stay server-side, this client only ever sends the caller's Decap session token and site id.
 
 import type { S3File } from '../types';
 
@@ -80,6 +75,14 @@ function truncateForLog(body: string): string {
     : body;
 }
 
+// Percent-encode each `/`-delimited segment of an S3 key on its own, so
+// characters that are valid in a key but reserved in a URL (`#`, `?`, `%`,
+// spaces, ...) survive the request without the `/` separators themselves
+// being encoded into `%2F` and breaking the path.
+function encodeKeyForUrl(key: string): string {
+  return key.split('/').map(encodeURIComponent).join('/');
+}
+
 export class S3Client {
   private edgeBaseUrl: string;
   private getAccessToken: () => Promise<string | null>;
@@ -119,7 +122,7 @@ export class S3Client {
 
   private buildObjectUrl(key: string): string {
     const normalizedKey = key.replace(/^\/+/, '');
-    return `${this.edgeBaseUrl}/${normalizedKey}`;
+    return `${this.edgeBaseUrl}/${encodeKeyForUrl(normalizedKey)}`;
   }
 
   private async handleErrorResponse(response: Response): Promise<never> {
@@ -133,7 +136,21 @@ export class S3Client {
       statusText: response.statusText,
       body: truncateForLog(errorBody),
     });
-    throw new Error(`S3 API error: ${response.status} - ${errorBody}`);
+
+    // The edge function returns structured JSON errors (`{ error, upgrade_required? }`)
+    // for its own failures; surface that message directly instead of the raw body.
+    // A non-JSON body (e.g. an upstream gateway error page) falls back to the old format.
+    let message = `S3 API error: ${response.status} - ${errorBody}`;
+    try {
+      const parsed = JSON.parse(errorBody);
+      if (parsed && typeof parsed.error === 'string') {
+        message = parsed.upgrade_required ? `Upgrade required: ${parsed.error}` : parsed.error;
+      }
+    } catch {
+      // Not JSON — keep the default message above, with the full untruncated body.
+    }
+
+    throw new Error(message);
   }
 
   /**
@@ -218,6 +235,6 @@ export class S3Client {
     const cleanPrefix = publicUrlPrefix.endsWith('/')
       ? publicUrlPrefix.slice(0, -1)
       : publicUrlPrefix;
-    return `${cleanPrefix}/${cleanKey}`;
+    return `${cleanPrefix}/${encodeKeyForUrl(cleanKey)}`;
   }
 }

@@ -1,7 +1,4 @@
-/**
- * File Upload Component
- * Handles file uploads with drag-and-drop support
- */
+// File upload with drag-and-drop support.
 
 import { useRef, useState } from 'react';
 
@@ -72,7 +69,6 @@ export function FileUpload({
     if (selectedFiles.length > 0) {
       onUpload(selectedFiles);
     }
-    // Reset input so same file can be selected again
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }

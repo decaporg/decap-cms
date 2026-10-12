@@ -1,7 +1,4 @@
-/**
- * Main S3-compatible Media Library Widget Component
- * Provides file browser interface integrated with Decap CMS
- */
+// Main S3-compatible media library widget: a file browser integrated with Decap CMS.
 
 import { useState, useEffect, useRef } from 'react';
 
@@ -27,9 +24,9 @@ import {
 
 import type { AddressedMediaFile } from '../types';
 
-// Supabase Edge Functions reject request bodies above this size before our
-// code ever runs, so uploads must be rejected client-side with a clear
-// message rather than surfacing an opaque gateway/edge-function error.
+// The edge function buffers the whole request body in memory and refuses
+// anything above 50MB, so uploads need to stay well under that limit and be
+// rejected client-side with a clear message instead of an opaque edge-function error.
 const DEFAULT_MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024;
 
 function formatBytes(bytes: number): string {
@@ -156,7 +153,6 @@ export function S3Widget({
     };
   }, [isAuthenticated, config.public_url_prefix, resolveRequestContext]);
 
-  // Load files when path changes (only when authenticated)
   useEffect(() => {
     if (!isAuthenticated || !isManagerReady || !fileManagerRef.current) {
       setIsLoading(false);
@@ -211,7 +207,6 @@ export function S3Widget({
     if (file.IsDirectory) {
       handleNavigate(`${currentPath}${file.ObjectName}/`.replace(/\/+/g, '/'));
     } else if (!allowMultiple) {
-      // Auto-insert on double-click if single select
       onInsert(file.publicUrl);
       onClose();
     }
@@ -224,7 +219,6 @@ export function S3Widget({
     try {
       setError(null);
       await fileManagerRef.current.deleteFile(key);
-      // Reload files after deletion
       const filesData = await fileManagerRef.current.getFilesWithUrls(currentPath, imagesOnly);
       setFiles(filesData);
       setSelectedFiles(prev => {
@@ -263,7 +257,6 @@ export function S3Widget({
         setUploadProgress(Math.round(((i + 1) / uploadedFiles.length) * 100));
       }
 
-      // Reload files after upload
       const filesData = await fileManagerRef.current.getFilesWithUrls(currentPath, imagesOnly);
       setFiles(filesData);
 
@@ -310,11 +303,9 @@ export function S3Widget({
     );
   }
 
-  // Main widget UI (after authentication)
   return (
     <StyledWidget>
       <StyledContainer>
-        {/* Header */}
         <StyledHeader>
           <StyledHeaderTitle>S3 Media Library</StyledHeaderTitle>
           <StyledCloseButton onClick={onClose} title="Close">
@@ -322,17 +313,14 @@ export function S3Widget({
           </StyledCloseButton>
         </StyledHeader>
 
-        {/* Error Message */}
         {error && <StyledError>{error}</StyledError>}
 
-        {/* Navigation */}
         <S3FileBrowser
           currentPath={currentPath}
           onNavigate={handleNavigate}
           onParentDirectory={handleParentDirectory}
         />
 
-        {/* Upload Area */}
         <S3FileUpload
           onUpload={handleUpload}
           isUploading={isUploading}
@@ -341,7 +329,6 @@ export function S3Widget({
           maxFileSizeLabel={formatBytes(maxFileSize)}
         />
 
-        {/* File Grid */}
         <StyledFileGridContainer>
           {isLoading ? (
             <StyledLoading>Loading files...</StyledLoading>
@@ -359,7 +346,6 @@ export function S3Widget({
           )}
         </StyledFileGridContainer>
 
-        {/* Footer Actions */}
         <StyledFooter>
           <StyledButtonSecondary onClick={onClose}>Cancel</StyledButtonSecondary>
           {selectedFiles.size > 0 && (
@@ -370,7 +356,6 @@ export function S3Widget({
         </StyledFooter>
       </StyledContainer>
 
-      {/* Backdrop */}
       <StyledBackdrop onClick={onClose} />
     </StyledWidget>
   );

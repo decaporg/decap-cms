@@ -301,4 +301,108 @@ describe('S3Client', () => {
 
     expect(url).toBe('https://cdn.example.com/folder/file.jpg');
   });
+
+  describe('key encoding', () => {
+    const client = new S3Client({
+      edgeBaseUrl: 'https://edge.example.test/functions/v1/integrations/s3',
+      getAccessToken,
+      getActiveSiteId,
+    });
+
+    it.each([
+      ['a#b.txt', 'a%23b.txt'],
+      ['a?b.txt', 'a%3Fb.txt'],
+      ['a%b.txt', 'a%25b.txt'],
+      ['a b.txt', 'a%20b.txt'],
+      ['folder/a#b.txt', 'folder/a%23b.txt'],
+    ])('encodes %s per path segment when building object URLs', async (key, encoded) => {
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        headers: { entries: () => [] },
+      });
+
+      await client.deleteFile(key);
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        `https://edge.example.test/functions/v1/integrations/s3/${encoded}`,
+        expect.objectContaining({ method: 'DELETE' }),
+      );
+    });
+
+    it.each([
+      ['a#b.txt', 'a%23b.txt'],
+      ['a?b.txt', 'a%3Fb.txt'],
+      ['a%b.txt', 'a%25b.txt'],
+      ['a b.txt', 'a%20b.txt'],
+      ['folder/a#b.txt', 'folder/a%23b.txt'],
+    ])('encodes %s per path segment when generating public URLs', (key, encoded) => {
+      const url = client.generatePublicUrl('https://cdn.example.com', key);
+
+      expect(url).toBe(`https://cdn.example.com/${encoded}`);
+    });
+  });
+
+  describe('structured JSON error bodies', () => {
+    it('throws the server-provided error message for a JSON error body', async () => {
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: false,
+        status: 403,
+        statusText: 'Forbidden',
+        headers: { entries: () => [] },
+        text: async () => JSON.stringify({ error: 'Bucket not found' }),
+      });
+
+      const client = new S3Client({
+        edgeBaseUrl: 'https://edge.example.test/functions/v1/integrations/s3',
+        getAccessToken,
+        getActiveSiteId,
+      });
+
+      await expect(client.listObjects('')).rejects.toThrow('Bucket not found');
+    });
+
+    it('prefixes the message with "Upgrade required: " when upgrade_required is true', async () => {
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: false,
+        status: 402,
+        statusText: 'Payment Required',
+        headers: { entries: () => [] },
+        text: async () =>
+          JSON.stringify({
+            error: 'S3 media library requires a paid plan',
+            upgrade_required: true,
+          }),
+      });
+
+      const client = new S3Client({
+        edgeBaseUrl: 'https://edge.example.test/functions/v1/integrations/s3',
+        getAccessToken,
+        getActiveSiteId,
+      });
+
+      await expect(client.listObjects('')).rejects.toThrow(
+        'Upgrade required: S3 media library requires a paid plan',
+      );
+    });
+
+    it('falls back to the raw-body format for a non-JSON error body', async () => {
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: false,
+        status: 502,
+        statusText: 'Bad Gateway',
+        headers: { entries: () => [] },
+        text: async () => '<html>Bad Gateway</html>',
+      });
+
+      const client = new S3Client({
+        edgeBaseUrl: 'https://edge.example.test/functions/v1/integrations/s3',
+        getAccessToken,
+        getActiveSiteId,
+      });
+
+      await expect(client.listObjects('')).rejects.toThrow(
+        'S3 API error: 502 - <html>Bad Gateway</html>',
+      );
+    });
+  });
 });

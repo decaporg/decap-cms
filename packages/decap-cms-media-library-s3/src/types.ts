@@ -1,6 +1,4 @@
-/**
- * S3-compatible Storage API Types
- */
+// S3-compatible storage API types.
 
 // A single entry in a ListObjectsV2 response: either an object (Contents)
 // or an emulated "folder" (CommonPrefixes, derived from the delimiter).

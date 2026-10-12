@@ -122,4 +122,38 @@ describe('S3FileManager', () => {
     expect(uploadFile).toHaveBeenCalledWith('images/cat.png', expect.any(Blob));
     expect(url).toBe('https://cdn.example.com/images/cat.png');
   });
+
+  it.each(['a#b.txt', 'a?b.txt', 'a%b.txt', 'a b.txt', 'a/b.txt'])(
+    'should build the raw, un-encoded key %s and let S3Client encode it',
+    async filename => {
+      const manager = new S3FileManager(mockConfig);
+      const uploadFile = (manager as any).client.uploadFile as jest.Mock;
+      uploadFile.mockResolvedValueOnce(undefined);
+
+      await manager.uploadFile('/images/', new Blob(['x']), filename);
+
+      expect(uploadFile).toHaveBeenCalledWith(`images/${filename}`, expect.any(Blob));
+    },
+  );
+
+  it('should not re-encode a listed file Key before generating its public URL', async () => {
+    const manager = new S3FileManager(mockConfig);
+    const listAllObjects = (manager as any).client.listAllObjects as jest.Mock;
+    const generatePublicUrl = (manager as any).client.generatePublicUrl as jest.Mock;
+    const rawKey = 'images/a#b c.txt';
+    listAllObjects.mockResolvedValueOnce([
+      {
+        Key: rawKey,
+        Size: 1,
+        LastModified: '',
+        ETag: '',
+        IsDirectory: false,
+        ObjectName: 'a#b c.txt',
+      },
+    ]);
+
+    await manager.getFilesWithUrls('/images/');
+
+    expect(generatePublicUrl).toHaveBeenCalledWith('https://cdn.example.com', rawKey);
+  });
 });

@@ -1,8 +1,4 @@
-/**
- * Decap CMS Media Library Integration for S3-compatible object storage
- * (AWS S3, Cloudflare R2, and other S3-compatible providers)
- * Main entry point that exports the media library interface
- */
+// Decap CMS media library integration for S3-compatible object storage (AWS S3, Cloudflare R2, and others).
 
 import React from 'react';
 import { createRoot } from 'react-dom/client';
@@ -63,7 +59,6 @@ function createContextResolver(providedConfig, getMediaLibraryContext) {
 async function init({ options = {}, handleInsert = () => {}, getMediaLibraryContext } = {}) {
   const { config: providedConfig = {} } = options;
 
-  // Validate required configuration
   if (!providedConfig.public_url_prefix) {
     throw new Error('public_url_prefix is required in media_library config');
   }
@@ -76,16 +71,12 @@ async function init({ options = {}, handleInsert = () => {}, getMediaLibraryCont
   let isOpen = false;
 
   const mediaLibraryInstance = {
-    /**
-     * Show the media library widget
-     */
     show: ({ allowMultiple = false, imagesOnly = false, config: instanceConfig = {} } = {}) => {
       if (isOpen) return;
 
       const resolvedMultiple =
         allowMultiple !== false && Boolean(instanceConfig.multiple ?? providedConfig.multiple);
 
-      // Create container if it doesn't exist
       if (!widgetContainer) {
         widgetContainer = document.createElement('div');
         document.body.appendChild(widgetContainer);
@@ -93,10 +84,8 @@ async function init({ options = {}, handleInsert = () => {}, getMediaLibraryCont
 
       isOpen = true;
 
-      // Create React root
       widgetRoot = createRoot(widgetContainer);
 
-      // Render the widget
       widgetRoot.render(
         React.createElement(S3Widget, {
           config,
@@ -114,18 +103,13 @@ async function init({ options = {}, handleInsert = () => {}, getMediaLibraryCont
       );
     },
 
-    /**
-     * Hide the media library widget
-     */
     hide: () => {
       if (!isOpen || !widgetRoot) return;
 
       isOpen = false;
 
-      // Unmount React component
       widgetRoot.unmount();
 
-      // Remove container from DOM
       if (widgetContainer && widgetContainer.parentNode) {
         widgetContainer.parentNode.removeChild(widgetContainer);
         widgetContainer = null;
@@ -133,19 +117,9 @@ async function init({ options = {}, handleInsert = () => {}, getMediaLibraryCont
       }
     },
 
-    /**
-     * Handle field clear - currently no-op
-     */
-    onClearControl: () => {
-      // No-op for this implementation
-    },
+    onClearControl: () => {},
 
-    /**
-     * Handle field removal - currently no-op
-     */
-    onRemoveControl: () => {
-      // No-op for this implementation
-    },
+    onRemoveControl: () => {},
 
     /**
      * Enable standalone mode - allows widget to appear in toolbar and field buttons
@@ -156,9 +130,6 @@ async function init({ options = {}, handleInsert = () => {}, getMediaLibraryCont
   return mediaLibraryInstance;
 }
 
-/**
- * Export the media library instance for Decap CMS
- */
 const s3MediaLibrary = {
   name: 's3',
   init,

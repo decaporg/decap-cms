@@ -1,7 +1,4 @@
-/**
- * File Browser Navigation Component
- * Displays breadcrumbs and navigation controls
- */
+// File browser navigation: breadcrumbs and parent-directory controls.
 
 import React from 'react';
 
@@ -103,7 +100,6 @@ export function FileBrowser({ currentPath, onNavigate, onParentDirectory }: File
 
   return (
     <div style={styles.browser}>
-      {/* Navigation Controls */}
       <div style={styles.controls}>
         <button
           style={{
@@ -124,7 +120,6 @@ export function FileBrowser({ currentPath, onNavigate, onParentDirectory }: File
         </button>
       </div>
 
-      {/* Breadcrumb Trail */}
       <div style={styles.breadcrumbs}>
         {breadcrumbs.map((breadcrumb, index) => (
           <React.Fragment key={breadcrumb.path}>
@@ -152,7 +147,6 @@ export function FileBrowser({ currentPath, onNavigate, onParentDirectory }: File
         ))}
       </div>
 
-      {/* Current Path Display */}
       <div style={styles.pathDisplay}>{currentPath}</div>
     </div>
   );

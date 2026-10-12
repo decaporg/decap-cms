@@ -1,7 +1,4 @@
-/**
- * File Manager for S3-compatible storage
- * Provides high-level operations for file management
- */
+// High-level file operations for S3-compatible storage.
 
 import { S3Client } from './client';
 
@@ -38,9 +35,6 @@ export class S3FileManager {
     this.publicUrlPrefix = publicUrlPrefix;
   }
 
-  /**
-   * List files and "folders" directly under a given path
-   */
   async listFiles(path = '/'): Promise<S3File[]> {
     try {
       return await this.client.listAllObjects(pathToPrefix(path));
@@ -50,9 +44,6 @@ export class S3FileManager {
     }
   }
 
-  /**
-   * Filter files to only include images
-   */
   filterImageFiles(files: S3File[]): S3File[] {
     return files.filter(file => {
       if (file.IsDirectory) return false;
@@ -61,9 +52,6 @@ export class S3FileManager {
     });
   }
 
-  /**
-   * Get files with public URLs
-   */
   async getFilesWithUrls(path = '/', imagesOnly = false): Promise<AddressedMediaFile[]> {
     const files = await this.listFiles(path);
     const filtered = imagesOnly ? this.filterImageFiles(files) : files;
@@ -74,9 +62,6 @@ export class S3FileManager {
     }));
   }
 
-  /**
-   * Upload a file to a specific path
-   */
   async uploadFile(filePath: string, file: Blob, fileName: string): Promise<string> {
     try {
       const key = `${pathToPrefix(filePath)}${fileName}`;
@@ -88,9 +73,6 @@ export class S3FileManager {
     }
   }
 
-  /**
-   * Delete a file by its full key
-   */
   async deleteFile(key: string): Promise<void> {
     try {
       await this.client.deleteFile(key);
@@ -100,9 +82,6 @@ export class S3FileManager {
     }
   }
 
-  /**
-   * Get parent directory path
-   */
   getParentPath(currentPath: string): string {
     if (currentPath === '/') return '/';
     const parts = currentPath.split('/').filter(p => p);
@@ -110,9 +89,6 @@ export class S3FileManager {
     return parts.length === 0 ? '/' : `/${parts.join('/')}/`;
   }
 
-  /**
-   * Normalize a path
-   */
   normalizePath(path: string): string {
     if (!path || path === '') return '/';
     if (!path.startsWith('/')) path = '/' + path;
