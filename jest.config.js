@@ -4,6 +4,7 @@ module.exports = {
   moduleNameMapper: {
     'decap-cms-lib-auth': '<rootDir>/packages/decap-cms-lib-auth/src/index.js',
     'decap-cms-lib-util': '<rootDir>/packages/decap-cms-lib-util/src/index.ts',
+    '^decap-cms-lib-turbo$': '<rootDir>/packages/decap-cms-lib-turbo/src/index.ts',
     'decap-cms-ui-default': '<rootDir>/packages/decap-cms-ui-default/src/index.js',
     'decap-cms-ui-auth': '<rootDir>/packages/decap-cms-ui-auth/src/index.js',
     'decap-cms-backend-bitbucket': '<rootDir>/packages/decap-cms-backend-bitbucket/src/index.ts',

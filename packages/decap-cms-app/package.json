@@ -48,6 +48,7 @@
     "decap-cms-core": "workspace:*",
     "decap-cms-editor-component-image": "workspace:*",
     "decap-cms-lib-auth": "workspace:*",
+    "decap-cms-lib-turbo": "workspace:*",
     "decap-cms-lib-util": "workspace:*",
     "decap-cms-lib-widgets": "workspace:*",
     "decap-cms-locales": "workspace:*",

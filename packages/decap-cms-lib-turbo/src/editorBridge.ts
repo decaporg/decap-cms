@@ -3,10 +3,6 @@
  * Turbo API, `decap mcp`'s set_fields) change fields in the entry open in this
  * tab. The person sees the change highlighted and decides whether to save.
  *
- * NOTE: byte-for-byte the same as decap-cms-backend-turbo-github's copy, for
- * the same reason as supabase.ts: Turbo-only code with no shared package yet.
- * Changes here must be mirrored.
- *
  * While an entry is open and the tab is visible, the bridge calls the
  * `editor_session_sync` RPC every few seconds as the signed-in user. One call
  * records the tab as open on that entry (with a snapshot of its fields and

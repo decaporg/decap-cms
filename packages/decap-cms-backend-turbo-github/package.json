@@ -28,6 +28,7 @@
     "@emotion/react": "catalog:",
     "@emotion/styled": "catalog:",
     "decap-cms-backend-github": "workspace:*",
+    "decap-cms-lib-turbo": "workspace:*",
     "decap-cms-lib-util": "workspace:*",
     "decap-cms-ui-default": "workspace:*",
     "lodash": "catalog:",

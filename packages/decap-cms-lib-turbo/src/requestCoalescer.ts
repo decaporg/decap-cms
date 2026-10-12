@@ -5,20 +5,18 @@
  * view of what is already in flight, so several callers routinely ask for the
  * exact same URL at the exact same moment. On a site with `i18n.structure:
  * multiple_files`, opening one entry calls `getEntry` once per locale
- * concurrently, and each locale that misses the content cache resolves its blob
- * sha from the *same* parent-folder tree — measured on the tester as two
- * identical `git/trees/{branch}:content/posts` requests fired in the same tick,
- * 2.7s and 4.4s. Through a proxy that charges a fixed ~1.3s preamble per
- * request, the duplicate is pure waste.
+ * concurrently, and each locale that misses the content cache reads the *same*
+ * parent-folder listing to resolve its own blob — measured on the GitHub
+ * tester site as two identical `git/trees/{branch}:content/posts` requests
+ * fired in the same tick, 2.7s and 4.4s; the GitLab read path fans out the
+ * same way. Through a proxy that charges a fixed ~1.3s preamble per request,
+ * the duplicate is pure waste.
  *
  * Deliberately in-flight only: an entry is dropped the moment its request
  * settles, so this can never serve a body from a completed request. It joins
  * callers that genuinely overlap in time and nothing else, which is what makes
  * it safe to apply to reads generally without reasoning about staleness — there
  * is no window in which the cache holds something the network has moved past.
- *
- * NOTE: mirrored in decap-cms-backend-turbo-gitlab, for the same reason
- * `supabase.ts` is — see that file's header.
  */
 
 /** Only idempotent reads are joined. A second POST is a second intended write,

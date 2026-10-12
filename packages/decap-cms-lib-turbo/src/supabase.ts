@@ -1,12 +1,6 @@
 /**
  * Read-only view of Turbo's content cache.
  *
- * NOTE: byte-for-byte the same as decap-cms-backend-turbo-gitlab's copy.
- * The two are duplicated rather than moved into decap-cms-lib-util, because
- * the `data` table is Turbo's schema and not something generic Decap
- * infrastructure should know about; a dedicated shared package is the right
- * home and is follow-up work. Until then, changes here must be mirrored.
- *
  * The server owns the cache: the `_content/sync` endpoint is the only writer,
  * and the browser has no INSERT, UPDATE or DELETE access to `public.data` at
  * all.

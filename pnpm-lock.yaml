@@ -1362,6 +1362,9 @@ importers:
       decap-cms-lib-auth:
         specifier: workspace:*
         version: link:../decap-cms-lib-auth
+      decap-cms-lib-turbo:
+        specifier: workspace:*
+        version: link:../decap-cms-lib-turbo
       decap-cms-lib-util:
         specifier: workspace:*
         version: link:../decap-cms-lib-util
@@ -1905,6 +1908,9 @@ importers:
       decap-cms-backend-github:
         specifier: workspace:*
         version: link:../decap-cms-backend-github
+      decap-cms-lib-turbo:
+        specifier: workspace:*
+        version: link:../decap-cms-lib-turbo
       decap-cms-lib-util:
         specifier: workspace:*
         version: link:../decap-cms-lib-util
@@ -1941,6 +1947,9 @@ importers:
       decap-cms-backend-gitlab:
         specifier: workspace:*
         version: link:../decap-cms-backend-gitlab
+      decap-cms-lib-turbo:
+        specifier: workspace:*
+        version: link:../decap-cms-lib-turbo
       decap-cms-lib-util:
         specifier: workspace:*
         version: link:../decap-cms-lib-util
@@ -2234,6 +2243,27 @@ importers:
       uuid:
         specifier: 'catalog:'
         version: 8.3.2
+
+  packages/decap-cms-lib-turbo:
+    dependencies:
+      '@emotion/react':
+        specifier: 'catalog:'
+        version: 11.14.0(@types/react@19.2.2)(react@19.2.0)
+      '@emotion/styled':
+        specifier: 'catalog:'
+        version: 11.14.1(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(@types/react@19.2.2)(react@19.2.0)
+      decap-cms-lib-util:
+        specifier: workspace:*
+        version: link:../decap-cms-lib-util
+      decap-cms-ui-default:
+        specifier: workspace:*
+        version: link:../decap-cms-ui-default
+      prop-types:
+        specifier: 'catalog:'
+        version: 15.8.1
+      react:
+        specifier: 'catalog:'
+        version: 19.2.0
 
   packages/decap-cms-lib-util:
     dependencies:

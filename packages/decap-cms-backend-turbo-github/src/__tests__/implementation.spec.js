@@ -1,33 +1,65 @@
 import DecapTurboGitHubBackend from '../implementation';
 import TurboAPI from '../API';
-import { recordCmsEvent } from '../telemetry';
-import { recordProxyResponse } from '../saveMetrics';
 
-jest.mock('../telemetry', () => ({ recordCmsEvent: jest.fn() }));
+const config = {
+  backend: {
+    repo: 'owner/repo',
+    supabase_app_id: 'supabase-project-id',
+    supabase_anon_key: 'supabase-anon-key',
+  },
+  media_folder: 'static/media',
+};
 
-describe('turbo backend supabase session refresh', () => {
-  const config = {
-    backend: {
-      repo: 'owner/repo',
-      supabase_app_id: 'supabase-project-id',
-      supabase_anon_key: 'supabase-anon-key',
-    },
-    media_folder: 'static/media',
+const siteConfig = {
+  backend: {
+    ...config.backend,
+    // Always present in practice: `preloadConfig` takes repo and branch from
+    // the authoritative `sites` row, so `isBranchConfigured` is true and the
+    // default-branch lookup never runs.
+    branch: 'main',
+    api_root: 'https://supabase.example/functions/v1/gh',
+    turbo_site_id: 'site-123',
+  },
+  media_folder: 'static/media',
+};
+
+function telemetryEvents() {
+  return global.fetch.mock.calls
+    .filter(([url]) => String(url).includes('/functions/v1/telemetry'))
+    .map(([, init]) => JSON.parse(init.body));
+}
+
+function withSession(backend) {
+  backend.session.accessToken = 'old-token';
+  backend.session.refreshToken = 'refresh-token';
+  backend.session.expiresAt = Math.floor(Date.now() / 1000) + 3600;
+  return backend;
+}
+
+function reply(status, body) {
+  const response = {
+    ok: status < 400,
+    status,
+    headers: new Headers({ 'Content-Type': 'application/json' }),
+    text: () => Promise.resolve(body),
+    json: () => Promise.resolve(JSON.parse(body)),
   };
+  response.clone = () => ({ ...response });
+  return response;
+}
 
+describe('turbo github backend session wiring', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   it('does not logout on non-terminal refresh failure in currentUser', async () => {
     const backend = new DecapTurboGitHubBackend(config);
-    backend.supabaseExpiresAt = Math.floor(Date.now() / 1000) + 10;
-
-    const refreshError = new Error('network down');
-    refreshError.isTerminal = false;
-
-    backend.getRefreshedAccessToken = jest.fn().mockRejectedValue(refreshError);
-    backend.logout = jest.fn().mockResolvedValue(undefined);
+    backend.session.expiresAt = Math.floor(Date.now() / 1000) + 10;
+    backend.session.getRefreshedAccessToken = jest
+      .fn()
+      .mockRejectedValue(Object.assign(new Error('network down'), { isTerminal: false }));
+    backend.logout = jest.fn();
 
     const user = await backend.currentUser({ token: 'token' });
 
@@ -37,13 +69,11 @@ describe('turbo backend supabase session refresh', () => {
 
   it('logs out on terminal refresh failure in currentUser', async () => {
     const backend = new DecapTurboGitHubBackend(config);
-    backend.supabaseExpiresAt = Math.floor(Date.now() / 1000) + 10;
-
-    const refreshError = new Error('invalid refresh token');
-    refreshError.isTerminal = true;
-
-    backend.getRefreshedAccessToken = jest.fn().mockRejectedValue(refreshError);
-    backend.logout = jest.fn().mockResolvedValue(undefined);
+    backend.session.expiresAt = Math.floor(Date.now() / 1000) + 10;
+    backend.session.getRefreshedAccessToken = jest
+      .fn()
+      .mockRejectedValue(Object.assign(new Error('invalid refresh token'), { isTerminal: true }));
+    backend.logout = jest.fn();
 
     await expect(backend.currentUser({ token: 'token' })).rejects.toThrow(
       'Session expired. Please log in again.',
@@ -51,635 +81,116 @@ describe('turbo backend supabase session refresh', () => {
     expect(backend.logout).toHaveBeenCalledTimes(1);
   });
 
-  it('retries refresh for transient failures and updates credentials', async () => {
-    const updateUserCredentials = jest.fn();
-    const backend = new DecapTurboGitHubBackend(config, { updateUserCredentials });
-    backend.supabaseRefreshToken = 'refresh-token';
-    backend.delay = jest.fn().mockResolvedValue(undefined);
-
-    global.fetch = jest
-      .fn()
-      .mockRejectedValueOnce(new Error('temporary network error'))
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () =>
-          Promise.resolve({
-            access_token: 'new-access-token',
-            refresh_token: 'new-refresh-token',
-            expires_at: Math.floor(Date.now() / 1000) + 3600,
-          }),
-      });
-
-    await expect(backend.getRefreshedAccessToken()).resolves.toBe('new-access-token');
-    expect(global.fetch).toHaveBeenCalledTimes(2);
-    expect(updateUserCredentials).toHaveBeenCalledTimes(1);
-    expect(backend.supabaseAccessToken).toBe('new-access-token');
-    expect(backend.supabaseRefreshToken).toBe('new-refresh-token');
-  });
-
-  it('marks invalid_grant as terminal and avoids retries', async () => {
-    const backend = new DecapTurboGitHubBackend(config);
-    backend.supabaseRefreshToken = 'refresh-token';
-
-    global.fetch = jest.fn().mockResolvedValue({
-      ok: false,
-      status: 400,
-      json: () => Promise.resolve({ error: 'invalid_grant' }),
-    });
-
-    await expect(backend.getRefreshedAccessToken()).rejects.toMatchObject({ isTerminal: true });
-    expect(global.fetch).toHaveBeenCalledTimes(1);
-  });
-
-  it('marks refresh_token_not_found as terminal, so a dead session cannot storm', async () => {
-    // This is the code GoTrue actually returns for a rotated-away or expired
-    // refresh token. It used to fall outside the terminal allow-list, so it
-    // was retried, swallowed, and left every subsequent request to 401 —
-    // 87 refresh POSTs in 41 seconds on one collection load, until GoTrue's
-    // rate limiter answered 429 and the session could never recover.
-    const backend = new DecapTurboGitHubBackend(config);
-    backend.supabaseRefreshToken = 'rotated-away-token';
-
-    global.fetch = jest.fn().mockResolvedValue({
-      ok: false,
-      status: 400,
-      json: () =>
-        Promise.resolve({
-          code: 400,
-          error_code: 'refresh_token_not_found',
-          msg: 'Invalid Refresh Token: Refresh Token Not Found',
-        }),
-    });
-
-    await expect(backend.getRefreshedAccessToken()).rejects.toMatchObject({ isTerminal: true });
-    expect(global.fetch).toHaveBeenCalledTimes(1);
-  });
-
-  it('logs out once on a terminal refresh instead of letting callers reuse a dead token', async () => {
-    const backend = new DecapTurboGitHubBackend(config);
-    backend.supabaseRefreshToken = 'rotated-away-token';
-    backend.supabaseAccessToken = 'expired-access-token';
-    // Inside the refresh buffer, so refreshSessionIfNeeded actually runs.
-    backend.supabaseExpiresAt = Math.floor(Date.now() / 1000) + 10;
-    backend.logout = jest.fn();
-
-    global.fetch = jest.fn().mockResolvedValue({
-      ok: false,
-      status: 400,
-      json: () => Promise.resolve({ error_code: 'refresh_token_not_found' }),
-    });
-
-    await expect(backend.refreshSessionIfNeeded()).rejects.toThrow(/log in again/i);
-    expect(backend.logout).toHaveBeenCalledTimes(1);
-  });
-
-  it('stops re-attempting a transiently failed refresh for a cooldown window', async () => {
-    // A rate limit or a 5xx is not worth one three-attempt cycle per request:
-    // refreshedTokenPromise only dedupes refreshes that overlap in flight, and
-    // a collection load fires its entries sequentially.
-    const backend = new DecapTurboGitHubBackend(config);
-    backend.supabaseRefreshToken = 'refresh-token';
-    backend.supabaseAccessToken = 'expired-access-token';
-    backend.supabaseExpiresAt = Math.floor(Date.now() / 1000) + 10;
-    backend.delay = jest.fn().mockResolvedValue(undefined);
-
-    global.fetch = jest.fn().mockResolvedValue({
-      ok: false,
-      status: 429,
-      json: () => Promise.resolve({ error_code: 'over_request_rate_limit' }),
-    });
-
-    // Non-terminal: it must NOT log the user out.
-    await expect(backend.refreshSessionIfNeeded()).resolves.toBeUndefined();
-    const afterFirst = global.fetch.mock.calls.length;
-    expect(afterFirst).toBe(3); // the three in-cycle attempts
-
-    // Three more requests arriving right behind it add nothing.
-    await backend.refreshSessionIfNeeded();
-    await backend.refreshSessionIfNeeded();
-    await backend.refreshSessionIfNeeded();
-    expect(global.fetch).toHaveBeenCalledTimes(afterFirst);
-
-    // Once the window passes, it is willing to try again.
-    backend.refreshBlockedUntil = 0;
-    await backend.refreshSessionIfNeeded();
-    expect(global.fetch.mock.calls.length).toBeGreaterThan(afterFirst);
-  });
-
   it('scopes gh proxy requests with auth header, x-site-id, and site_id query param', async () => {
-    const backend = new DecapTurboGitHubBackend({
-      ...config,
-      backend: {
-        ...config.backend,
-        api_root: 'https://supabase.example/functions/v1/gh',
-        turbo_site_id: 'site-123',
-      },
-    });
-    backend.supabaseAccessToken = 'access-123';
-
+    const backend = new DecapTurboGitHubBackend(siteConfig);
+    backend.session.accessToken = 'access-123';
     global.fetch = jest.fn().mockResolvedValue({ ok: true, json: () => Promise.resolve({}) });
 
     await backend.ghFetch('https://supabase.example/functions/v1/gh/repos/owner/repo');
 
-    expect(global.fetch).toHaveBeenCalledTimes(1);
     const [url, init] = global.fetch.mock.calls[0];
     expect(url).toBe('https://supabase.example/functions/v1/gh/repos/owner/repo?site_id=site-123');
     expect(init.headers.Authorization).toBe('Bearer access-123');
     expect(init.headers['x-site-id']).toBe('site-123');
   });
 
-  it('throws on a non-2xx ghFetch response instead of resolving', async () => {
-    const backend = new DecapTurboGitHubBackend(config);
+  it('repoints the API client, the cache client and the memoised user at a refreshed token', async () => {
+    const backend = withSession(new DecapTurboGitHubBackend(config));
+    backend.api = { token: 'old-token' };
+    await backend.currentUser({ token: 'old-token' });
 
-    global.fetch = jest.fn().mockResolvedValue({
-      ok: false,
-      status: 404,
-      statusText: 'Not Found',
-      text: () => Promise.resolve('{"message":"Not Found"}'),
+    backend.session.useSessionTokens({
+      access_token: 'new-token',
+      refresh_token: 'refresh-2',
+      expires_at: Math.floor(Date.now() / 1000) + 3600,
     });
 
-    await expect(backend.ghFetch('https://api.example/repos/owner/repo')).rejects.toMatchObject({
-      status: 404,
-    });
-  });
-
-  describe('proxy auth answers', () => {
-    const proxyUrl = 'https://supabase.example/functions/v1/gh/_content/sync';
-    const refused = { ok: false, status: 401, text: () => Promise.resolve('Unauthorized') };
-    const ok = { ok: true, status: 200, text: () => Promise.resolve('{}') };
-
-    function backendWithSession(options = {}) {
-      const backend = new DecapTurboGitHubBackend(config, options);
-      backend.supabaseAccessToken = 'old-token';
-      backend.supabaseRefreshToken = 'refresh-token';
-      backend.supabaseExpiresAt = Math.floor(Date.now() / 1000) + 3600;
-      return backend;
-    }
-
-    it('refreshes once on a proxy 401 and retries with the new token', async () => {
-      const backend = backendWithSession();
-      backend.getRefreshedAccessToken = jest.fn().mockImplementation(async () => {
-        backend.supabaseAccessToken = 'new-token';
-        return 'new-token';
-      });
-      global.fetch = jest.fn().mockResolvedValueOnce(refused).mockResolvedValueOnce(ok);
-
-      await backend.ghFetch(proxyUrl);
-
-      expect(backend.getRefreshedAccessToken).toHaveBeenCalledTimes(1);
-      expect(global.fetch).toHaveBeenCalledTimes(2);
-      expect(global.fetch.mock.calls[1][1].headers.Authorization).toBe('Bearer new-token');
-    });
-
-    it('ends the session once when the refresh is refused, then fails fast', async () => {
-      const onSessionInvalid = jest.fn();
-      const backend = backendWithSession({ onSessionInvalid });
-      const terminal = Object.assign(new Error('refresh_token_not_found'), { isTerminal: true });
-      backend.getRefreshedAccessToken = jest.fn().mockRejectedValue(terminal);
-      global.fetch = jest.fn().mockResolvedValue(refused);
-
-      await expect(backend.ghFetch(proxyUrl)).rejects.toMatchObject({ status: 401 });
-      await expect(backend.ghFetch(proxyUrl)).rejects.toThrow(
-        'Session expired. Please log in again.',
-      );
-
-      expect(onSessionInvalid).toHaveBeenCalledTimes(1);
-      expect(onSessionInvalid).toHaveBeenCalledWith('Session expired. Please log in again.');
-      // The second call never reached the network.
-      expect(global.fetch).toHaveBeenCalledTimes(1);
-      expect(backend.supabaseAccessToken).toBeNull();
-    });
-
-    it('does not log out over a GitHub 401 passed through the proxy', async () => {
-      const onSessionInvalid = jest.fn();
-      const backend = backendWithSession({ onSessionInvalid });
-      backend.getRefreshedAccessToken = jest.fn();
-      global.fetch = jest.fn().mockResolvedValue({
-        ok: false,
-        status: 401,
-        text: () => Promise.resolve('{"message":"Bad credentials"}'),
-      });
-
-      await expect(backend.ghFetch(proxyUrl)).rejects.toMatchObject({ status: 401 });
-
-      expect(backend.getRefreshedAccessToken).not.toHaveBeenCalled();
-      expect(onSessionInvalid).not.toHaveBeenCalled();
-    });
-
-    it('ends the session on a 403 for a site the user lost access to', async () => {
-      const onSessionInvalid = jest.fn();
-      const backend = backendWithSession({ onSessionInvalid });
-      global.fetch = jest.fn().mockResolvedValue({
-        ok: false,
-        status: 403,
-        text: () => Promise.resolve('{"error":"Forbidden: no access to requested site"}'),
-      });
-
-      await expect(backend.ghFetch(proxyUrl)).rejects.toMatchObject({ status: 403 });
-
-      expect(onSessionInvalid).toHaveBeenCalledWith(
-        expect.stringContaining("doesn't have access to this site"),
-      );
-    });
-
-    it('does not end the session over a refusal the editor can retry past', async () => {
-      const onSessionInvalid = jest.fn();
-      const backend = backendWithSession({ onSessionInvalid });
-      global.fetch = jest.fn().mockResolvedValue({
-        ok: false,
-        status: 403,
-        text: () => Promise.resolve('{"error":"Forbidden: x","code":"repo_mismatch"}'),
-      });
-
-      await expect(backend.ghFetch(proxyUrl)).rejects.toMatchObject({ status: 403 });
-
-      expect(onSessionInvalid).not.toHaveBeenCalled();
-      expect(backend.sessionInvalidMessage).toBeNull();
-    });
-
-    describe('configuration refusals', () => {
-      const scopeSentence =
-        'Forbidden: repo "owner/repo" is not in this organization\'s selected repo scope. Add it.';
-      const refusals = [
-        [
-          'site_repo_missing',
-          403,
-          { error: 'Forbidden: site has no repo configured. Set it.', code: 'site_repo_missing' },
-        ],
-        ['repo_not_in_scope', 403, { error: scopeSentence, code: 'repo_not_in_scope' }],
-        ['the repo-scope sentence without a code', 403, { error: scopeSentence }],
-        [
-          'github_not_connected',
-          409,
-          { error: 'This organization has no GitHub connection.', code: 'github_not_connected' },
-        ],
-        [
-          'github_installation_missing',
-          409,
-          { error: 'The GitHub App is gone.', code: 'github_installation_missing' },
-        ],
-        [
-          'github_installation_unavailable',
-          409,
-          { error: 'The GitHub App is suspended.', code: 'github_installation_unavailable' },
-        ],
-        [
-          'gitlab_not_connected',
-          409,
-          { error: 'This organization has no GitLab connection.', code: 'gitlab_not_connected' },
-        ],
-      ];
-
-      function reply(status, body) {
-        const response = {
-          ok: status < 400,
-          status,
-          headers: new Headers({ 'Content-Type': 'application/json' }),
-          text: () => Promise.resolve(body),
-          json: () => Promise.resolve(JSON.parse(body)),
-        };
-        response.clone = () => ({ ...response });
-        return response;
-      }
-
-      it.each(refusals)(
-        'ends the session once with the server sentence on %s, then stops asking',
-        async (_name, status, body) => {
-          const onSessionInvalid = jest.fn();
-          const backend = backendWithSession({ onSessionInvalid });
-          global.fetch = jest.fn().mockResolvedValue(reply(status, JSON.stringify(body)));
-
-          await expect(backend.ghFetch(proxyUrl)).rejects.toMatchObject({
-            status,
-            message: body.error,
-          });
-          await expect(backend.ghFetch(proxyUrl)).rejects.toThrow(body.error);
-
-          expect(onSessionInvalid).toHaveBeenCalledTimes(1);
-          expect(onSessionInvalid).toHaveBeenCalledWith(body.error);
-          expect(global.fetch).toHaveBeenCalledTimes(1);
-        },
-      );
-
-      it('ends the session on a refusal reached through a GitHub API call', async () => {
-        const onSessionInvalid = jest.fn();
-        const backend = backendWithSession({ onSessionInvalid });
-        backend.siteId = 'site-123';
-        backend.apiRoot = 'https://supabase.example/functions/v1/gh';
-        backend.api = new TurboAPI({
-          token: 'old-token',
-          branch: 'main',
-          repo: 'owner/repo',
-          originRepo: 'owner/repo',
-          apiRoot: backend.apiRoot,
-          turboFetch: backend.ghFetch.bind(backend),
-        });
-        backend.setScopedApiRequestBuilder();
-        const body = {
-          error: 'This organization has no GitHub connection.',
-          code: 'github_not_connected',
-        };
-        global.fetch = jest.fn().mockResolvedValue(reply(409, JSON.stringify(body)));
-
-        await expect(backend.api.request('/repos/owner/repo/issues')).rejects.toMatchObject({
-          status: 409,
-        });
-        await expect(backend.api.request('/repos/owner/repo/issues')).rejects.toThrow(body.error);
-
-        expect(onSessionInvalid).toHaveBeenCalledTimes(1);
-        expect(onSessionInvalid).toHaveBeenCalledWith(body.error);
-        expect(global.fetch).toHaveBeenCalledTimes(1);
-      });
-    });
-
-    it('a new login clears the latch', async () => {
-      const backend = backendWithSession();
-      backend.sessionInvalidMessage = 'Session expired. Please log in again.';
-      backend.isBranchConfigured = true;
-
-      await backend.authenticate({ token: 't', access_token: 'fresh', refresh_token: 'r' });
-
-      expect(backend.sessionInvalidMessage).toBeNull();
-    });
-  });
-
-  describe('fetchTurboPermissions', () => {
-    it('returns undefined when there is no active session', async () => {
-      const backend = new DecapTurboGitHubBackend(config);
-      global.fetch = jest.fn();
-
-      const result = await backend.fetchTurboPermissions();
-
-      expect(result).toBeUndefined();
-      expect(global.fetch).not.toHaveBeenCalled();
-    });
-
-    it('fetches and returns permissions scoped to the current site', async () => {
-      const backend = new DecapTurboGitHubBackend({
-        ...config,
-        backend: { ...config.backend, turbo_site_id: 'site-123' },
-      });
-      backend.supabaseAccessToken = 'access-123';
-
-      const permissions = { collections: { posts: 'view', drafts: 'none' } };
-      global.fetch = jest.fn().mockResolvedValue({
-        ok: true,
-        json: () => Promise.resolve(permissions),
-      });
-
-      const result = await backend.fetchTurboPermissions();
-
-      expect(result).toEqual(permissions);
-      const [url, init] = global.fetch.mock.calls[0];
-      expect(url).toContain('site_id=site-123');
-      expect(init.headers.Authorization).toBe('Bearer access-123');
-    });
-
-    it('refreshes an expiring token before sending it, instead of 401ing', async () => {
-      const backend = new DecapTurboGitHubBackend({
-        ...config,
-        backend: { ...config.backend, turbo_site_id: 'site-123' },
-      });
-      backend.supabaseAccessToken = 'stale-token';
-      backend.supabaseRefreshToken = 'refresh-1';
-      // Inside REFRESH_BUFFER_SECONDS, so this token is about to expire.
-      backend.supabaseExpiresAt = Math.floor(Date.now() / 1000) + 10;
-
-      backend.getRefreshedAccessToken = jest.fn().mockImplementation(async () => {
-        backend.supabaseAccessToken = 'fresh-token';
-        backend.supabaseExpiresAt = Math.floor(Date.now() / 1000) + 3600;
-        return 'fresh-token';
-      });
-
-      global.fetch = jest.fn().mockResolvedValue({ ok: true, json: () => Promise.resolve({}) });
-
-      await backend.fetchTurboPermissions();
-
-      // `authenticate` runs this concurrently with `currentUser`, so it cannot
-      // rely on currentUser's refresh having landed first. A 401 here does not
-      // fail loudly — it silently drops the editor's collection restrictions.
-      expect(backend.getRefreshedAccessToken).toHaveBeenCalled();
-      const [, init] = global.fetch.mock.calls[0];
-      expect(init.headers.Authorization).toBe('Bearer fresh-token');
-    });
-
-    it('returns undefined and warns when the permissions endpoint fails', async () => {
-      const backend = new DecapTurboGitHubBackend({
-        ...config,
-        backend: { ...config.backend, turbo_site_id: 'site-123' },
-      });
-      backend.supabaseAccessToken = 'access-123';
-
-      global.fetch = jest.fn().mockResolvedValue({ ok: false, status: 500 });
-
-      const result = await backend.fetchTurboPermissions();
-
-      expect(result).toBeUndefined();
-    });
-
-    it('rejects and drops the session when the user is not a member of the site', async () => {
-      const backend = new DecapTurboGitHubBackend({
-        ...config,
-        backend: { ...config.backend, turbo_site_id: 'site-123' },
-      });
-      backend.supabaseAccessToken = 'access-123';
-      backend.supabaseRefreshToken = 'refresh-123';
-
-      global.fetch = jest.fn().mockResolvedValue({ ok: false, status: 403 });
-
-      // A team member who is not assigned to this site: the gh proxy refuses
-      // every request, so the login itself has to fail rather than land the
-      // editor in a CMS that raises one 403 toast per collection.
-      await expect(backend.fetchTurboPermissions()).rejects.toThrow(
-        "doesn't have access to this site",
-      );
-      expect(backend.supabaseAccessToken).toBeNull();
-      expect(backend.supabaseRefreshToken).toBeNull();
-    });
-
-    it('fails authenticate for a user who is not a member of the site', async () => {
-      const backend = new DecapTurboGitHubBackend({
-        ...config,
-        backend: { ...config.backend, turbo_site_id: 'site-123', branch: 'main' },
-      });
-      backend.setActiveSiteAndRefresh = jest.fn().mockResolvedValue(undefined);
-
-      global.fetch = jest.fn().mockResolvedValue({ ok: false, status: 403 });
-
-      await expect(
-        backend.authenticate({
-          token: 'access-123',
-          access_token: 'access-123',
-          refresh_token: 'refresh-123',
-          user_metadata: { active_site_id: 'site-123' },
-        }),
-      ).rejects.toThrow("doesn't have access to this site");
-      expect(recordCmsEvent).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('setActiveSiteAndRefresh', () => {
-    it('refreshes an expired token before sending it, instead of PUTting a stale one', async () => {
-      const backend = new DecapTurboGitHubBackend(config);
-      backend.siteId = 'site-123';
-      backend.supabaseAccessToken = 'stale-token';
-      backend.supabaseRefreshToken = 'refresh-token';
-      backend.supabaseExpiresAt = Math.floor(Date.now() / 1000) - 100;
-
-      global.fetch = jest.fn(url => {
-        if (url.includes('/auth/v1/token')) {
-          return Promise.resolve({
-            ok: true,
-            json: () =>
-              Promise.resolve({
-                access_token: 'fresh-token',
-                refresh_token: 'refresh-token',
-                expires_at: Math.floor(Date.now() / 1000) + 3600,
-              }),
-          });
-        }
-        return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
-      });
-
-      await backend.setActiveSiteAndRefresh();
-
-      const putCall = global.fetch.mock.calls.find(([url]) => url.includes('/auth/v1/user'));
-      expect(putCall[1].headers.Authorization).toBe('Bearer fresh-token');
-    });
-
-    it('retries once after a 401, refreshing the token in between', async () => {
-      const backend = new DecapTurboGitHubBackend(config);
-      backend.siteId = 'site-123';
-      backend.supabaseAccessToken = 'stale-token';
-      backend.supabaseRefreshToken = 'refresh-token';
-      backend.supabaseExpiresAt = Math.floor(Date.now() / 1000) + 3600;
-
-      let putCallCount = 0;
-      global.fetch = jest.fn(url => {
-        if (url.includes('/auth/v1/token')) {
-          return Promise.resolve({
-            ok: true,
-            json: () =>
-              Promise.resolve({
-                access_token: 'fresh-token',
-                refresh_token: 'refresh-token',
-                expires_at: Math.floor(Date.now() / 1000) + 3600,
-              }),
-          });
-        }
-        putCallCount += 1;
-        return Promise.resolve({ ok: putCallCount > 1, status: 401 });
-      });
-
-      await backend.setActiveSiteAndRefresh();
-
-      const putCalls = global.fetch.mock.calls.filter(([url]) => url.includes('/auth/v1/user'));
-      expect(putCalls).toHaveLength(2);
-      expect(putCalls[1][1].headers.Authorization).toBe('Bearer fresh-token');
-    });
-
-    it('throws a friendly session-expired error instead of the raw response when the retry also fails', async () => {
-      const backend = new DecapTurboGitHubBackend(config);
-      backend.siteId = 'site-123';
-      backend.supabaseAccessToken = 'stale-token';
-      backend.supabaseRefreshToken = 'refresh-token';
-      backend.supabaseExpiresAt = Math.floor(Date.now() / 1000) + 3600;
-
-      global.fetch = jest.fn(url => {
-        if (url.includes('/auth/v1/token')) {
-          return Promise.resolve({
-            ok: true,
-            json: () =>
-              Promise.resolve({
-                access_token: 'fresh-token',
-                refresh_token: 'refresh-token',
-                expires_at: Math.floor(Date.now() / 1000) + 3600,
-              }),
-          });
-        }
-        return Promise.resolve({ ok: false, status: 403 });
-      });
-
-      await expect(backend.setActiveSiteAndRefresh()).rejects.toThrow(
-        'Session expired. Please log in again.',
-      );
-    });
-
-    it('throws the friendly error without retrying the PUT when the reactive refresh itself is terminal', async () => {
-      const backend = new DecapTurboGitHubBackend(config);
-      backend.siteId = 'site-123';
-      backend.supabaseAccessToken = 'stale-token';
-      backend.supabaseRefreshToken = 'refresh-token';
-      backend.supabaseExpiresAt = Math.floor(Date.now() / 1000) + 3600;
-
-      global.fetch = jest.fn(url => {
-        if (url.includes('/auth/v1/token')) {
-          return Promise.resolve({ ok: false, status: 401 });
-        }
-        return Promise.resolve({ ok: false, status: 401 });
-      });
-
-      await expect(backend.setActiveSiteAndRefresh()).rejects.toThrow(
-        'Session expired. Please log in again.',
-      );
-      const putCalls = global.fetch.mock.calls.filter(([url]) => url.includes('/auth/v1/user'));
-      expect(putCalls).toHaveLength(1);
-    });
-
-    it('does nothing when there is no access token or site id', async () => {
-      const backend = new DecapTurboGitHubBackend(config);
-      global.fetch = jest.fn();
-
-      await backend.setActiveSiteAndRefresh();
-
-      expect(global.fetch).not.toHaveBeenCalled();
-    });
-
-    it('does not throw when the PUT succeeds but the trailing opportunistic refresh fails', async () => {
-      const backend = new DecapTurboGitHubBackend(config);
-      backend.siteId = 'site-123';
-      backend.supabaseAccessToken = 'still-valid-token';
-      backend.supabaseRefreshToken = 'already-rotated-refresh-token';
-      backend.supabaseExpiresAt = Math.floor(Date.now() / 1000) + 3600;
-
-      global.fetch = jest.fn(url => {
-        if (url.includes('/auth/v1/token')) {
-          return Promise.resolve({
-            ok: false,
-            status: 400,
-            json: () => Promise.resolve({ error_code: 'refresh_token_not_found' }),
-          });
-        }
-        return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
-      });
-
-      await expect(backend.setActiveSiteAndRefresh()).resolves.toBeUndefined();
-    });
+    expect(backend.token).toBe('new-token');
+    expect(backend.api.token).toBe('new-token');
+    expect(backend.supabase.supabaseAccessToken).toBe('new-token');
+    expect(backend._currentUserPromise).toBeUndefined();
   });
 });
 
-describe('turbo backend authenticate', () => {
-  const config = {
-    backend: {
-      repo: 'owner/repo',
-      // Always present in practice: `preloadConfig` takes repo and branch from
-      // the authoritative `sites` row, so `isBranchConfigured` is true and the
-      // default-branch lookup never runs.
+describe('turbo github backend API funnel', () => {
+  function backendWithApi(options = {}) {
+    const backend = withSession(new DecapTurboGitHubBackend(siteConfig, options));
+    backend.api = new TurboAPI({
+      token: 'old-token',
+      tokenKeyword: 'Bearer',
       branch: 'main',
-      supabase_app_id: 'supabase-project-id',
-      supabase_anon_key: 'supabase-anon-key',
-      turbo_site_id: 'site-123',
-    },
-    media_folder: 'static/media',
-  };
+      repo: 'owner/repo',
+      originRepo: 'owner/repo',
+      apiRoot: backend.apiRoot,
+      turboFetch: backend.ghFetch,
+    });
+    backend.setScopedApiRequestBuilder();
+    return backend;
+  }
 
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('does not read repo metadata, because Turbo commits as the App and never reads the answer', async () => {
-    const backend = new DecapTurboGitHubBackend(config);
+  it('scopes every GitHub API request to the site', async () => {
+    const backend = backendWithApi();
+    global.fetch = jest.fn().mockResolvedValue(reply(200, '{}'));
 
+    await backend.api.request('/repos/owner/repo/issues');
+
+    const [url, init] = global.fetch.mock.calls[0];
+    expect(url).toContain('site_id=site-123');
+    expect(init.headers['x-site-id']).toBe('site-123');
+    expect(init.headers.Authorization).toBe('Bearer old-token');
+  });
+
+  it('refreshes once on a proxy 401 and retries with the new token', async () => {
+    const backend = backendWithApi();
+    backend.session.getRefreshedAccessToken = jest.fn().mockImplementation(async () => {
+      backend.session.accessToken = 'new-token';
+      return 'new-token';
+    });
+    global.fetch = jest
+      .fn()
+      .mockResolvedValueOnce({ ...reply(401, 'Unauthorized'), headers: new Headers() })
+      .mockResolvedValueOnce(reply(200, '{}'));
+
+    await backend.api.request('/repos/owner/repo/issues');
+
+    expect(global.fetch).toHaveBeenCalledTimes(2);
+    expect(global.fetch.mock.calls[1][1].headers.Authorization).toBe('Bearer new-token');
+  });
+
+  it('ends the session on a refusal reached through a GitHub API call', async () => {
+    const onSessionInvalid = jest.fn();
+    const backend = backendWithApi({ onSessionInvalid });
+    const body = {
+      error: 'This organization has no GitHub connection.',
+      code: 'github_not_connected',
+    };
+    global.fetch = jest.fn().mockResolvedValue(reply(409, JSON.stringify(body)));
+
+    await expect(backend.api.request('/repos/owner/repo/issues')).rejects.toMatchObject({
+      status: 409,
+    });
+    await expect(backend.api.request('/repos/owner/repo/issues')).rejects.toThrow(body.error);
+
+    expect(onSessionInvalid).toHaveBeenCalledTimes(1);
+    expect(onSessionInvalid).toHaveBeenCalledWith(body.error);
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('turbo github backend authenticate', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    global.fetch = jest
+      .fn()
+      .mockResolvedValue({ ok: true, json: () => Promise.resolve({ collections: {} }) });
+  });
+
+  it('does not read repo metadata, because Turbo commits as the App and never reads the answer', async () => {
+    const backend = new DecapTurboGitHubBackend(siteConfig);
     global.fetch = jest.fn().mockImplementation(url => {
       if (String(url).includes('/functions/v1/permissions')) {
         return Promise.resolve({ ok: true, json: () => Promise.resolve({ collections: {} }) });
@@ -698,6 +209,8 @@ describe('turbo backend authenticate', () => {
     });
 
     expect(user.login).toBe('owner');
+    expect(user.email).toBe('editor@example.com');
+    expect(user.useOpenAuthoring).toBe(false);
 
     // GitHubBackend.authenticate would call hasWriteAccess() here, a
     // `GET /repos/{owner}/{repo}` whose result Turbo discards
@@ -712,11 +225,7 @@ describe('turbo backend authenticate', () => {
     // This override replaces GitHubBackend.authenticate wholesale, and that is
     // the only place the manager is built - without this, notes another editor
     // writes never reach the pane.
-    const backend = new DecapTurboGitHubBackend(config);
-
-    global.fetch = jest
-      .fn()
-      .mockResolvedValue({ ok: true, json: () => Promise.resolve({ collections: {} }) });
+    const backend = new DecapTurboGitHubBackend(siteConfig);
 
     await backend.authenticate({ token: 'gh-token', access_token: 'access-123' });
 
@@ -726,11 +235,7 @@ describe('turbo backend authenticate', () => {
   });
 
   it("replaces the previous session's manager rather than leaving it polling", async () => {
-    const backend = new DecapTurboGitHubBackend(config);
-
-    global.fetch = jest
-      .fn()
-      .mockResolvedValue({ ok: true, json: () => Promise.resolve({ collections: {} }) });
+    const backend = new DecapTurboGitHubBackend(siteConfig);
 
     await backend.authenticate({ token: 'gh-token', access_token: 'access-123' });
     const first = backend.pollingManager;
@@ -742,11 +247,16 @@ describe('turbo backend authenticate', () => {
     expect(backend.pollingManager).not.toBe(first);
   });
 
+  it('a new login clears the latch', async () => {
+    const backend = withSession(new DecapTurboGitHubBackend(siteConfig));
+    backend.session.invalidMessage = 'Session expired. Please log in again.';
+
+    await backend.authenticate({ token: 't', access_token: 'fresh', refresh_token: 'r' });
+
+    expect(backend.session.invalidMessage).toBeNull();
+  });
+
   it('keeps whether the session is dedicated on the stored user, so a reload still knows', async () => {
-    global.fetch = jest.fn().mockResolvedValue({
-      ok: true,
-      json: () => Promise.resolve({ collections: {} }),
-    });
     const credentials = {
       token: 'gh-token',
       access_token: 'access-123',
@@ -754,445 +264,149 @@ describe('turbo backend authenticate', () => {
       user_metadata: { active_site_id: 'site-123' },
     };
 
-    const dedicated = new DecapTurboGitHubBackend(config);
+    const dedicated = new DecapTurboGitHubBackend(siteConfig);
     const dedicatedUser = await dedicated.authenticate({ ...credentials, dedicated_session: true });
     expect(dedicatedUser.dedicated_session).toBe(true);
-    expect(dedicated.dedicatedSession).toBe(true);
+    expect(dedicated.session.dedicated).toBe(true);
 
-    const shared = new DecapTurboGitHubBackend(config);
+    const shared = new DecapTurboGitHubBackend(siteConfig);
     const sharedUser = await shared.authenticate(credentials);
     expect(sharedUser.dedicated_session).toBe(false);
-    expect(shared.dedicatedSession).toBe(false);
+  });
+
+  it('fails for a user who is not a member of the site, before any event is recorded', async () => {
+    const backend = new DecapTurboGitHubBackend(siteConfig);
+    global.fetch = jest.fn().mockResolvedValue({ ok: false, status: 403 });
+
+    await expect(
+      backend.authenticate({
+        token: 'access-123',
+        access_token: 'access-123',
+        refresh_token: 'refresh-123',
+        user_metadata: { active_site_id: 'site-123' },
+      }),
+    ).rejects.toThrow("doesn't have access to this site");
+    expect(telemetryEvents()).toEqual([]);
+    expect(backend.session.accessToken).toBeNull();
   });
 });
 
-describe('turbo backend editor bridge', () => {
-  const config = {
-    backend: {
-      repo: 'owner/repo',
-      branch: 'main',
-      supabase_app_id: 'supabase-project-id',
-      supabase_anon_key: 'supabase-anon-key',
-      turbo_site_id: 'site-123',
-    },
-  };
-
-  function editorApi() {
-    return {
-      getCurrentEntry: jest.fn(() => null),
-      applyFieldPatch: jest.fn(() => ({ applied: [], rejected: [] })),
-      onEditorChange: jest.fn(() => () => {}),
-    };
-  }
-
-  it('stays off unless the site opts in', () => {
-    // Still in development: on by default it would advertise itself on every
-    // entry and upload every editor's unsaved draft, agent or not.
-    const backend = new DecapTurboGitHubBackend(config);
-    const editor = editorApi();
-    const registerFieldAction = jest.fn();
-
-    backend.attachEditor({ editor, registerFieldAction });
-
-    expect(backend.editorBridgeInstance).toBeNull();
-    expect(editor.onEditorChange).not.toHaveBeenCalled();
-    expect(registerFieldAction).not.toHaveBeenCalled();
-  });
-
-  it('starts when the site sets editor_bridge: true', () => {
-    const backend = new DecapTurboGitHubBackend({
-      ...config,
-      backend: { ...config.backend, editor_bridge: true },
-    });
-    const editor = editorApi();
-    const registerFieldAction = jest.fn();
-
-    backend.attachEditor({ editor, registerFieldAction });
-
-    expect(backend.editorBridgeInstance).not.toBeNull();
-    expect(editor.onEditorChange).toHaveBeenCalledTimes(1);
-    expect(registerFieldAction).toHaveBeenCalledTimes(1);
-    backend.editorBridgeInstance.stop();
-  });
-});
-
-describe('turbo backend preloadConfig', () => {
-  afterEach(() => {
-    delete global.fetch;
-  });
-
-  it('returns the config unchanged when fully manually configured', async () => {
-    const config = {
-      backend: { supabase_app_id: 'app-id', supabase_anon_key: 'anon-key' },
-    };
-
-    const actual = await DecapTurboGitHubBackend.preloadConfig(config);
-
-    expect(actual).toBe(config);
-  });
-
-  it('throws when supabase_app_id is set without supabase_anon_key', async () => {
-    const config = { backend: { supabase_app_id: 'app-id' } };
-
-    await expect(DecapTurboGitHubBackend.preloadConfig(config)).rejects.toThrow(
-      /supabase_app_id.*without.*supabase_anon_key/,
-    );
-  });
-
-  it('returns the config unchanged when nothing is configured at all', async () => {
-    const config = { backend: {} };
-
-    const actual = await DecapTurboGitHubBackend.preloadConfig(config);
-
-    expect(actual).toBe(config);
-  });
-
-  it('fetches and merges control-plane defaults when only turbo_site_id is set', async () => {
-    const config = { backend: { turbo_site_id: 'site-123', repo: 'owner/repo' } };
-    global.fetch = jest.fn().mockResolvedValue({
-      ok: true,
-      json: () =>
-        Promise.resolve({ supabase_app_id: 'resolved-app-id', supabase_anon_key: 'resolved-key' }),
-    });
-
-    const actual = await DecapTurboGitHubBackend.preloadConfig(config);
-
-    expect(actual.backend).toEqual({
-      supabase_app_id: 'resolved-app-id',
-      supabase_anon_key: 'resolved-key',
-      turbo_site_id: 'site-123',
-      repo: 'owner/repo',
-    });
-    const [url] = global.fetch.mock.calls[0];
-    expect(url).toContain('site_id=site-123');
-  });
-
-  it('throws when the control-plane config endpoint fails', async () => {
-    const config = { backend: { turbo_site_id: 'site-123' } };
-    global.fetch = jest.fn().mockResolvedValue({
-      ok: false,
-      status: 404,
-      json: () => Promise.resolve({ error: 'site not found' }),
-    });
-
-    await expect(DecapTurboGitHubBackend.preloadConfig(config)).rejects.toThrow('site not found');
-  });
-
-  it("overrides a stale local repo with the control plane's value", async () => {
-    const config = {
-      backend: { turbo_site_id: 'site-123', repo: 'stale/repo' },
-    };
-    global.fetch = jest.fn().mockResolvedValue({
-      ok: true,
-      json: () =>
-        Promise.resolve({
-          supabase_app_id: 'resolved-app-id',
-          supabase_anon_key: 'resolved-key',
-          repo: 'owner/repo',
-          branch: 'main',
-        }),
-    });
-
-    const actual = await DecapTurboGitHubBackend.preloadConfig(config);
-
-    expect(actual.backend.repo).toBe('owner/repo');
-  });
-
-  // One sites row serves every deploy of a repo, so its branch cannot be the
-  // one a staging deploy edits; the deploy's own config.yml says which branch
-  // it is on.
-  it('keeps the branch from config.yml over the control plane branch', async () => {
-    const config = {
-      backend: { turbo_site_id: 'site-123', branch: 'develop' },
-    };
-    global.fetch = jest.fn().mockResolvedValue({
-      ok: true,
-      json: () =>
-        Promise.resolve({
-          supabase_app_id: 'resolved-app-id',
-          supabase_anon_key: 'resolved-key',
-          repo: 'owner/repo',
-          branch: 'main',
-        }),
-    });
-
-    const actual = await DecapTurboGitHubBackend.preloadConfig(config);
-
-    expect(actual.backend.repo).toBe('owner/repo');
-    expect(actual.backend.branch).toBe('develop');
-  });
-
-  it('fills in repo/branch from the control plane when config.yml omits them', async () => {
-    const config = { backend: { turbo_site_id: 'site-123' } };
-    global.fetch = jest.fn().mockResolvedValue({
-      ok: true,
-      json: () =>
-        Promise.resolve({
-          supabase_app_id: 'resolved-app-id',
-          supabase_anon_key: 'resolved-key',
-          repo: 'owner/repo',
-          branch: 'main',
-        }),
-    });
-
-    const actual = await DecapTurboGitHubBackend.preloadConfig(config);
-
-    expect(actual.backend.repo).toBe('owner/repo');
-    expect(actual.backend.branch).toBe('main');
-  });
-
-  it('leaves local repo/branch alone when the control plane does not return them', async () => {
-    const config = {
-      backend: { turbo_site_id: 'site-123', repo: 'owner/repo', branch: 'main' },
-    };
-    global.fetch = jest.fn().mockResolvedValue({
-      ok: true,
-      json: () =>
-        Promise.resolve({ supabase_app_id: 'resolved-app-id', supabase_anon_key: 'resolved-key' }),
-    });
-
-    const actual = await DecapTurboGitHubBackend.preloadConfig(config);
-
-    expect(actual.backend.repo).toBe('owner/repo');
-    expect(actual.backend.branch).toBe('main');
-  });
-});
-
-describe('turbo backend use_graphql rejection', () => {
+describe('turbo github backend config rejections', () => {
   // GraphQLAPI builds its own Apollo transport straight off the constructor
   // config and never goes through setScopedApiRequestBuilder's patched
   // urlFor/requestHeaders — so a GraphQL-mode site would silently bypass the
   // x-site-id/site_id tenant scoping the shared `gh` Edge Function relies on.
   it('throws in the constructor when use_graphql is set', () => {
-    const config = {
-      backend: {
-        repo: 'owner/repo',
-        supabase_app_id: 'supabase-project-id',
-        supabase_anon_key: 'supabase-anon-key',
-        use_graphql: true,
-      },
-      media_folder: 'static/media',
-    };
-
-    expect(() => new DecapTurboGitHubBackend(config)).toThrow(/use_graphql/);
+    expect(
+      () =>
+        new DecapTurboGitHubBackend({
+          ...config,
+          backend: { ...config.backend, use_graphql: true },
+        }),
+    ).toThrow(/use_graphql/);
   });
-});
 
-describe('turbo backend open_authoring rejection', () => {
   it('throws in the constructor when open_authoring is set', () => {
-    const config = {
-      backend: {
-        repo: 'owner/repo',
-        supabase_app_id: 'supabase-project-id',
-        supabase_anon_key: 'supabase-anon-key',
-        open_authoring: true,
-      },
-      publish_mode: 'editorial_workflow',
-      media_folder: 'static/media',
-    };
-
-    expect(() => new DecapTurboGitHubBackend(config)).toThrow(/open_authoring/);
+    expect(
+      () =>
+        new DecapTurboGitHubBackend({
+          ...config,
+          backend: { ...config.backend, open_authoring: true },
+          publish_mode: 'editorial_workflow',
+        }),
+    ).toThrow(/open_authoring/);
   });
 });
 
-describe('turbo backend folder listing', () => {
-  const config = {
-    backend: {
-      repo: 'owner/repo',
-      supabase_app_id: 'supabase-project-id',
-      supabase_anon_key: 'supabase-anon-key',
-    },
-    media_folder: 'static/media',
-  };
-
+describe('turbo github backend delegations', () => {
   it('tells core that its search already covers entry bodies', () => {
     expect(new DecapTurboGitHubBackend(config).searchesEntryBody).toBe(true);
   });
 
-  it('orders entries by code unit, whatever the locale', async () => {
+  it('resolves its config as turbo-github', async () => {
+    await expect(
+      DecapTurboGitHubBackend.preloadConfig({ backend: { supabase_app_id: 'app-id' } }),
+    ).rejects.toThrow(/^turbo-github config error/);
+  });
+
+  it('reads collections and entries through the content cache', async () => {
     const backend = new DecapTurboGitHubBackend(config);
-    backend.syncCollection = jest.fn().mockResolvedValue({ fresh: false });
-    const paths = ['posts/b.md', 'posts/a.md', 'posts/B.md', 'posts/é.md', 'posts/_x.md'];
-    backend.supabase = {
-      fetchEntries: jest.fn().mockResolvedValue(paths.map(path => ({ file: { path } }))),
-    };
+    const regex = /\.en\..*/;
+    backend.cache.allEntriesByFolder = jest.fn().mockResolvedValue(['folder']);
+    backend.cache.entriesByFiles = jest.fn().mockResolvedValue(['files']);
+    backend.cache.getEntry = jest.fn().mockResolvedValue('entry');
 
-    const entries = await backend.allEntriesByFolder('posts', 'md', 1);
-
-    expect(entries.map(entry => entry.file.path)).toEqual([
-      'posts/B.md',
-      'posts/_x.md',
-      'posts/a.md',
-      'posts/b.md',
-      'posts/é.md',
+    await expect(backend.allEntriesByFolder('posts', 'md', 1, regex, 'q', regex)).resolves.toEqual([
+      'folder',
     ]);
-  });
-});
+    await expect(backend.entriesByFolder('posts', 'md', 2)).resolves.toEqual(['folder']);
+    await expect(backend.entriesByFiles([{ path: 'a.md' }])).resolves.toEqual(['files']);
+    await expect(backend.getEntry('a.md')).resolves.toBe('entry');
 
-describe('turbo backend persistEntry save metrics', () => {
-  const config = {
-    backend: {
-      repo: 'owner/repo',
-      supabase_app_id: 'supabase-project-id',
-      supabase_anon_key: 'supabase-anon-key',
-    },
-    media_folder: 'static/media',
-  };
-
-  // super.persistEntry — the real one drives the GitHub API client, which this
-  // suite has no business standing up. Stubbing the prototype lets each test
-  // decide what the save "cost" in proxied requests.
-  const superPersistEntry = Object.getPrototypeOf(DecapTurboGitHubBackend.prototype);
-
-  function makeBackend() {
-    const backend = new DecapTurboGitHubBackend(config);
-    backend.baseUrl = 'https://sb.example.com';
-    backend.supabaseAccessToken = 'access-token';
-    backend.siteId = 'site-id';
-    return backend;
-  }
-
-  function responseWith(serverTiming) {
-    return { headers: { get: name => (name === 'Server-Timing' ? serverTiming : null) } };
-  }
-
-  const entry = {
-    dataFiles: [{ slug: 'post', path: 'content/post.md', raw: 'hello' }],
-    assets: [{ fileObj: { size: 2048 } }],
-  };
-
-  beforeEach(() => {
-    jest.clearAllMocks();
+    expect(backend.cache.allEntriesByFolder.mock.calls).toEqual([
+      ['posts', 'md', 1, regex, 'q', regex],
+      ['posts', 'md', 2, undefined, undefined, undefined],
+    ]);
+    expect(backend.cache.entriesByFiles).toHaveBeenCalledWith([{ path: 'a.md' }]);
+    expect(backend.cache.getEntry).toHaveBeenCalledWith('a.md', expect.any(Function));
   });
 
-  afterEach(() => {
-    jest.restoreAllMocks();
-  });
+  it('builds the cache on the proxy with the speculative read', async () => {
+    const backend = withSession(new DecapTurboGitHubBackend(siteConfig));
+    global.fetch = jest.fn().mockResolvedValue(reply(200, '{"fresh":true}'));
+    backend.supabase.fetchEntries = jest.fn().mockResolvedValue([]);
 
-  it('reports duration, round trips, upstream time and payload size', async () => {
-    jest.spyOn(superPersistEntry, 'persistEntry').mockImplementation(async function () {
-      // Stands in for the N+4 proxied requests a real save makes.
-      recordProxyResponse(this.proxyMeter, responseWith('preamble;dur=20, upstream;dur=120'));
-      recordProxyResponse(this.proxyMeter, responseWith('preamble;dur=15, upstream;dur=80'));
-      return 'post';
-    });
+    await backend.allEntriesByFolder('posts', 'md', 1);
 
-    const backend = makeBackend();
-    await backend.persistEntry(entry, { collectionName: 'posts' });
-
-    expect(recordCmsEvent).toHaveBeenCalledTimes(1);
-    const props = recordCmsEvent.mock.calls[0][5];
-
-    expect(props.requests).toBe(2);
-    expect(props.upstreamMs).toBe(200);
-    expect(props.files).toBe(2);
-    expect(props.bytes).toBe(2053);
-    expect(typeof props.durationMs).toBe('number');
-    expect(props.durationMs).toBeGreaterThanOrEqual(0);
-  });
-
-  // Zero would read as "GitHub answered instantly", which is the one
-  // conclusion the data must never support.
-  it('omits upstreamMs entirely when no response carried a Server-Timing', async () => {
-    jest.spyOn(superPersistEntry, 'persistEntry').mockImplementation(async function () {
-      recordProxyResponse(this.proxyMeter, responseWith(null));
-      return 'post';
-    });
-
-    const backend = makeBackend();
-    await backend.persistEntry(entry, { collectionName: 'posts' });
-
-    const props = recordCmsEvent.mock.calls[0][5];
-    expect(props.requests).toBe(1);
-    expect('upstreamMs' in props).toBe(false);
-  });
-
-  // decap-turbo H12: authorEmail was a second copy of an email the row
-  // already identifies through the server-derived user_id, stored alongside
-  // the content path and slug in a table retained 180 days.
-  it('sends no email address in the props', async () => {
-    jest.spyOn(superPersistEntry, 'persistEntry').mockResolvedValue('post');
-
-    const backend = makeBackend();
-    backend.commitAuthorEmailFallback = 'editor@example.test';
-    await backend.persistEntry(entry, { collectionName: 'posts' });
-
-    const props = recordCmsEvent.mock.calls[0][5];
-    expect(props).not.toHaveProperty('authorEmail');
-    expect(JSON.stringify(props)).not.toContain('@');
-  });
-
-  // decap-turbo L8: both used to report the site's branch, so a draft was
-  // logged and displayed as a publish.
-  it('reports the site branch for a normal save', async () => {
-    jest.spyOn(superPersistEntry, 'persistEntry').mockResolvedValue('post');
-
-    const backend = makeBackend();
-    backend.branch = 'turbo';
-    await backend.persistEntry(entry, { collectionName: 'posts' });
-
-    const props = recordCmsEvent.mock.calls[0][5];
-    expect(props.branch).toBe('turbo');
-    expect(props.workflow).toBe(false);
-  });
-
-  it('reports the workflow branch for an editorial-workflow save', async () => {
-    jest.spyOn(superPersistEntry, 'persistEntry').mockResolvedValue('post');
-
-    const backend = makeBackend();
-    backend.branch = 'turbo';
-    await backend.persistEntry(entry, { collectionName: 'posts', useWorkflow: true });
-
-    const props = recordCmsEvent.mock.calls[0][5];
-    expect(props.branch).toBe('cms/posts/post');
-    expect(props.workflow).toBe(true);
-  });
-
-  it('prefers the branch the one-call commit endpoint reports', async () => {
-    jest.spyOn(superPersistEntry, 'persistEntry').mockResolvedValue({
-      sha: 'abc123',
-      branch: 'cms/posts/post',
-    });
-
-    const backend = makeBackend();
-    backend.branch = 'turbo';
-    await backend.persistEntry(entry, { collectionName: 'posts', useWorkflow: true });
-
-    const props = recordCmsEvent.mock.calls[0][5];
-    expect(props.branch).toBe('cms/posts/post');
-  });
-
-  // A meter left active would silently attribute every subsequent read to the
-  // next save.
-  it('clears the meter even when the save throws', async () => {
-    jest.spyOn(superPersistEntry, 'persistEntry').mockRejectedValue(new Error('conflict'));
-
-    const backend = makeBackend();
-
-    await expect(backend.persistEntry(entry, { collectionName: 'posts' })).rejects.toThrow(
-      'conflict',
+    expect(global.fetch.mock.calls[0][0]).toBe(
+      'https://supabase.example/functions/v1/gh/_content/sync?site_id=site-123',
     );
-    expect(backend.proxyMeter).toBeNull();
-    expect(recordCmsEvent).not.toHaveBeenCalled();
+    expect(backend.supabase.fetchEntries).toHaveBeenCalledTimes(1);
+  });
+
+  it('hands out the session token, refreshed first', async () => {
+    const backend = withSession(new DecapTurboGitHubBackend(config));
+    backend.session.refreshIfNeeded = jest.fn().mockResolvedValue(undefined);
+
+    await expect(backend.getToken()).resolves.toBe('old-token');
+    expect(backend.session.refreshIfNeeded).toHaveBeenCalledTimes(1);
+  });
+
+  it('adopts the stored tokens before authenticating a restored user', async () => {
+    const backend = new DecapTurboGitHubBackend(config);
+    backend.authenticate = jest.fn().mockResolvedValue('user');
+    const user = { token: 't', access_token: 'a', refresh_token: 'r', expires_at: 1 };
+
+    await expect(backend.restoreUser(user)).resolves.toBe('user');
+
+    expect(backend.session.accessToken).toBe('a');
+    expect(backend.session.refreshToken).toBe('r');
+    expect(backend.authenticate).toHaveBeenCalledWith(user);
+  });
+
+  it('starts the editor bridge when the site sets editor_bridge: true', () => {
+    const backend = new DecapTurboGitHubBackend({
+      ...siteConfig,
+      backend: { ...siteConfig.backend, editor_bridge: true },
+    });
+    const editor = {
+      getCurrentEntry: jest.fn(() => null),
+      applyFieldPatch: jest.fn(() => ({ applied: [], rejected: [] })),
+      onEditorChange: jest.fn(() => () => {}),
+    };
+    const registerFieldAction = jest.fn();
+
+    backend.attachEditor({ editor, registerFieldAction });
+
+    expect(backend.editorBridgeInstance).not.toBeNull();
+    expect(registerFieldAction).toHaveBeenCalledTimes(1);
+    backend.editorBridgeInstance.stop();
   });
 });
 
-// The contract §A4's toast is built on: which commit to watch, and when there
-// is nothing to watch at all. See decap-turbo/docs/deploy-status-plan.md §A3.
-describe('turbo backend deploy watch', () => {
-  const config = {
-    backend: {
-      repo: 'owner/repo',
-      // Always set in practice — `preloadConfig` takes it from the sites row —
-      // and load-bearing here: only a commit on the site's own branch can
-      // produce a deploy the editor is waiting for.
-      branch: 'main',
-      supabase_app_id: 'supabase-project-id',
-      supabase_anon_key: 'supabase-anon-key',
-    },
-    media_folder: 'static/media',
-  };
-
+describe('turbo github backend persistEntry', () => {
+  // super.persistEntry — the real one drives the GitHub API client, which this
+  // suite has no business standing up.
   const superPersistEntry = Object.getPrototypeOf(DecapTurboGitHubBackend.prototype);
 
   const entry = {
@@ -1201,9 +415,83 @@ describe('turbo backend deploy watch', () => {
   };
 
   function makeBackend() {
-    const backend = new DecapTurboGitHubBackend(config);
+    const backend = new DecapTurboGitHubBackend({
+      ...config,
+      backend: { ...config.backend, branch: 'turbo' },
+    });
     backend.baseUrl = 'https://sb.example.com';
-    backend.supabaseAccessToken = 'access-token';
+    backend.session.accessToken = 'access-token';
+    backend.siteId = 'site-id';
+    return backend;
+  }
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    global.fetch = jest.fn().mockResolvedValue({ ok: true });
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  it('records the save against the site branch', async () => {
+    jest.spyOn(superPersistEntry, 'persistEntry').mockResolvedValue('post');
+    const backend = makeBackend();
+
+    await expect(backend.persistEntry(entry, { collectionName: 'posts' })).resolves.toBe('post');
+
+    expect(telemetryEvents()).toEqual([
+      expect.objectContaining({
+        event_name: 'cms_entry_saved',
+        site_id: 'site-id',
+        props: expect.objectContaining({ branch: 'turbo', workflow: false, requests: 0 }),
+      }),
+    ]);
+    expect(backend.proxyMeter).toBeNull();
+  });
+
+  it('prefers the branch the one-call commit endpoint reports', async () => {
+    jest
+      .spyOn(superPersistEntry, 'persistEntry')
+      .mockResolvedValue({ sha: 'abc123', branch: 'cms/posts/post' });
+    const backend = makeBackend();
+
+    await backend.persistEntry(entry, { collectionName: 'posts', useWorkflow: true });
+
+    expect(telemetryEvents()[0].props.branch).toBe('cms/posts/post');
+  });
+
+  it('names the workflow branch the way the API client does', async () => {
+    jest.spyOn(superPersistEntry, 'persistEntry').mockResolvedValue('post');
+    const backend = makeBackend();
+    backend.api = { generateContentKey: jest.fn().mockReturnValue('posts/post') };
+
+    await backend.persistEntry(entry, { collectionName: 'posts', useWorkflow: true });
+
+    expect(backend.api.generateContentKey).toHaveBeenCalledWith('posts', 'post');
+    expect(telemetryEvents()[0].props).toMatchObject({ branch: 'cms/posts/post', workflow: true });
+  });
+});
+
+// The contract §A4's toast is built on: which commit to watch, and when there
+// is nothing to watch at all. See decap-turbo/docs/deploy-status-plan.md §A3.
+describe('turbo github backend deploy watch', () => {
+  const superPersistEntry = Object.getPrototypeOf(DecapTurboGitHubBackend.prototype);
+
+  const entry = {
+    dataFiles: [{ slug: 'post', path: 'content/post.md', raw: 'hello' }],
+    assets: [],
+  };
+
+  function makeBackend() {
+    // `branch` is load-bearing here: only a commit on the site's own branch can
+    // produce a deploy the editor is waiting for.
+    const backend = new DecapTurboGitHubBackend({
+      ...config,
+      backend: { ...config.backend, branch: 'main' },
+    });
+    backend.baseUrl = 'https://sb.example.com';
+    backend.session.accessToken = 'access-token';
     backend.siteId = 'site-id';
     return backend;
   }
@@ -1232,6 +520,7 @@ describe('turbo backend deploy watch', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     localStorage.clear();
+    global.fetch = jest.fn().mockResolvedValue({ ok: true });
   });
 
   afterEach(() => {
@@ -1343,18 +632,13 @@ describe('turbo backend deploy watch', () => {
   });
 });
 
-describe('turbo backend deploy status config', () => {
+describe('turbo github backend deploy status config', () => {
   // Core has no idea what a Turbo site is; the branch has to travel with the
   // options, or the Deploys page cannot tell "Live" from "a branch also built".
   it('reports the branch the site publishes from', () => {
     const backend = new DecapTurboGitHubBackend({
-      backend: {
-        repo: 'owner/repo',
-        branch: 'turbo',
-        supabase_app_id: 'supabase-project-id',
-        supabase_anon_key: 'supabase-anon-key',
-      },
-      media_folder: 'static/media',
+      ...config,
+      backend: { ...config.backend, branch: 'turbo' },
     });
 
     expect(backend.deployStatusConfig()).toMatchObject({
@@ -1365,86 +649,30 @@ describe('turbo backend deploy status config', () => {
   });
 
   it('reports the default branch when the config names none', () => {
-    const backend = new DecapTurboGitHubBackend({
-      backend: {
-        repo: 'owner/repo',
-        supabase_app_id: 'supabase-project-id',
-        supabase_anon_key: 'supabase-anon-key',
-      },
-      media_folder: 'static/media',
-    });
-
-    expect(backend.deployStatusConfig().branch).toBe('master');
+    expect(new DecapTurboGitHubBackend(config).deployStatusConfig().branch).toBe('master');
   });
 });
 
-describe('turbo backend logout', () => {
-  const config = {
-    backend: {
-      repo: 'owner/repo',
-      supabase_app_id: 'supabase-project-id',
-      supabase_anon_key: 'supabase-anon-key',
-    },
-    media_folder: 'static/media',
-  };
-
+describe('turbo github backend logout', () => {
   function loggedInBackend() {
-    const backend = new DecapTurboGitHubBackend(config);
-    backend.supabaseAccessToken = 'access-token';
-    backend.supabaseRefreshToken = 'refresh-token';
-    backend.supabaseExpiresAt = Math.floor(Date.now() / 1000) + 3600;
-    backend.supabaseIdentity = { user_email: 'editor@example.com' };
-    backend.supabase.setAccessToken('access-token');
+    const backend = withSession(new DecapTurboGitHubBackend(config));
+    backend.session.identity = { user_email: 'editor@example.com' };
+    backend.supabase.setAccessToken('old-token');
     return backend;
   }
 
   it('clears the Supabase session the auth store does not know about', async () => {
     const backend = loggedInBackend();
-    await backend.currentUser({ token: 'access-token' });
-
-    backend.logout();
-
-    expect(backend.supabaseAccessToken).toBeNull();
-    expect(backend.supabaseRefreshToken).toBeNull();
-    expect(backend.supabaseExpiresAt).toBeNull();
-    expect(backend.supabaseIdentity).toBeNull();
-    expect(backend.supabase.supabaseAccessToken).toBeNull();
-    expect(backend._currentUserPromise).toBeUndefined();
-  });
-
-  it('reports unauthenticated status after logout', async () => {
-    const backend = loggedInBackend();
+    await backend.currentUser({ token: 'old-token' });
     expect((await backend.status()).auth.status).toBe(true);
 
     backend.logout();
 
+    expect(backend.session.accessToken).toBeNull();
+    expect(backend.session.identity).toBeNull();
+    expect(backend.supabase.supabaseAccessToken).toBeNull();
+    expect(backend._currentUserPromise).toBeUndefined();
     expect((await backend.status()).auth.status).toBe(false);
-  });
-
-  it('revokes a session Turbo minted for this CMS alone', async () => {
-    global.fetch = jest.fn().mockResolvedValue({ ok: true });
-    const backend = loggedInBackend();
-    backend.dedicatedSession = true;
-
-    backend.logout();
-
-    expect(global.fetch).toHaveBeenCalledWith(
-      'https://supabase-project-id.supabase.co/auth/v1/logout?scope=local',
-      expect.objectContaining({
-        method: 'POST',
-        keepalive: true,
-        headers: expect.objectContaining({ Authorization: 'Bearer access-token' }),
-      }),
-    );
-  });
-
-  it('never revokes a session shared with the Turbo dashboard', async () => {
-    global.fetch = jest.fn().mockResolvedValue({ ok: true });
-    const backend = loggedInBackend();
-
-    backend.logout();
-
-    expect(global.fetch).not.toHaveBeenCalled();
   });
 
   it('stops and drops the deploy watcher', () => {
@@ -1459,119 +687,10 @@ describe('turbo backend logout', () => {
   });
 });
 
-describe('turbo backend session shared across tabs', () => {
-  const config = {
-    backend: {
-      repo: 'owner/repo',
-      supabase_app_id: 'supabase-project-id',
-      supabase_anon_key: 'supabase-anon-key',
-    },
-    media_folder: 'static/media',
-  };
-
-  // A Supabase access token is only read for its `session_id` claim here.
-  function accessToken(sessionId, version = 1) {
-    return `header.${btoa(JSON.stringify({ session_id: sessionId, v: version }))}.signature`;
-  }
-
-  function tabWithExpiringSession(stored) {
-    const backend = new DecapTurboGitHubBackend(config, {
-      updateUserCredentials: jest.fn(),
-      retrieveUserCredentials: () => stored,
-    });
-    backend.supabaseAccessToken = accessToken('session-1');
-    backend.supabaseRefreshToken = 'refresh-1';
-    backend.supabaseExpiresAt = Math.floor(Date.now() / 1000) + 10;
-    backend.delay = jest.fn().mockResolvedValue(undefined);
-    return backend;
-  }
-
-  function refreshResponse() {
-    return {
-      ok: true,
-      json: () =>
-        Promise.resolve({
-          access_token: accessToken('session-1', 3),
-          refresh_token: 'refresh-3',
-          expires_at: Math.floor(Date.now() / 1000) + 3600,
-        }),
-    };
-  }
-
-  beforeEach(() => {
-    jest.clearAllMocks();
-    global.fetch = jest.fn().mockResolvedValue(refreshResponse());
-  });
-
-  it('adopts the pair another tab refreshed instead of spending a dead refresh token', async () => {
-    const rotated = {
-      access_token: accessToken('session-1', 2),
-      refresh_token: 'refresh-2',
-      expires_at: Math.floor(Date.now() / 1000) + 3600,
-    };
-    const backend = tabWithExpiringSession(rotated);
-
-    await expect(backend.getRefreshedAccessToken()).resolves.toBe(rotated.access_token);
-
-    expect(global.fetch).not.toHaveBeenCalled();
-    expect(backend.supabaseRefreshToken).toBe('refresh-2');
-    expect(backend.supabaseExpiresAt).toBe(rotated.expires_at);
-    expect(backend.supabase.supabaseAccessToken).toBe(rotated.access_token);
-  });
-
-  it('refreshes with the adopted token when the stored pair is itself expiring', async () => {
-    const backend = tabWithExpiringSession({
-      access_token: accessToken('session-1', 2),
-      refresh_token: 'refresh-2',
-      expires_at: Math.floor(Date.now() / 1000) + 10,
-    });
-
-    await backend.getRefreshedAccessToken();
-
-    expect(global.fetch).toHaveBeenCalledTimes(1);
-    expect(JSON.parse(global.fetch.mock.calls[0][1].body)).toEqual({
-      refresh_token: 'refresh-2',
-    });
-    expect(backend.supabaseRefreshToken).toBe('refresh-3');
-  });
-
-  it('does not adopt a stored session from a different login', async () => {
-    const backend = tabWithExpiringSession({
-      access_token: accessToken('session-2'),
-      refresh_token: 'refresh-other',
-      expires_at: Math.floor(Date.now() / 1000) + 3600,
-    });
-
-    await backend.getRefreshedAccessToken();
-
-    expect(JSON.parse(global.fetch.mock.calls[0][1].body)).toEqual({
-      refresh_token: 'refresh-1',
-    });
-  });
-
-  it('refreshes normally when nothing newer is stored', async () => {
-    const backend = tabWithExpiringSession(null);
-
-    await backend.getRefreshedAccessToken();
-
-    expect(global.fetch).toHaveBeenCalledTimes(1);
-    expect(backend.supabaseRefreshToken).toBe('refresh-3');
-  });
-});
-
-describe('turbo backend user identity', () => {
-  const config = {
-    backend: {
-      repo: 'owner/repo',
-      supabase_app_id: 'supabase-project-id',
-      supabase_anon_key: 'supabase-anon-key',
-    },
-    media_folder: 'static/media',
-  };
-
+describe('turbo github backend user identity', () => {
   it('reports the signed-in Turbo user, not the repo owner', async () => {
     const backend = new DecapTurboGitHubBackend(config);
-    backend.supabaseIdentity = {
+    backend.session.identity = {
       user_email: 'editor@example.com',
       user_metadata: { full_name: 'Ed Editor', avatar_url: 'https://cdn.example.com/ed.png' },
     };
@@ -1586,138 +705,28 @@ describe('turbo backend user identity', () => {
     expect(user.login).toBe('owner');
   });
 
-  it('falls back to the email local part and no avatar when the account has neither', async () => {
-    const backend = new DecapTurboGitHubBackend(config);
-    backend.supabaseIdentity = { user_email: 'editor@example.com' };
-
-    const user = await backend.currentUser({ token: 'token' });
-
-    expect(user.name).toBe('editor');
-    expect(user.avatar_url).toBeNull();
-  });
-
   it('falls back to the repo owner when no session identity is known', async () => {
-    const backend = new DecapTurboGitHubBackend(config);
-
-    const user = await backend.currentUser({ token: 'token' });
+    const user = await new DecapTurboGitHubBackend(config).currentUser({ token: 'token' });
 
     expect(user.name).toBe('owner');
     expect(user.email).toBeUndefined();
+    expect(user.avatar_url).toBeNull();
   });
 });
 
-describe('turbo backend locale sibling prefetch', () => {
-  const config = {
-    backend: {
-      repo: 'owner/repo',
-      supabase_app_id: 'supabase-project-id',
-      supabase_anon_key: 'supabase-anon-key',
-    },
-    media_folder: 'static/media',
-  };
-
-  function makeBackend() {
-    const backend = new DecapTurboGitHubBackend(config);
-    backend.baseUrl = 'https://sb.example.com';
-    backend.supabaseAccessToken = 'access-token';
-    backend.siteId = 'site-id';
-    // The listing's own sync and read, stubbed: these tests are about the
-    // EXTRA sync the prefetch does, not about how a collection loads.
-    backend.supabase = { fetchEntries: jest.fn().mockResolvedValue([]) };
-    return backend;
-  }
-
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
-  afterEach(() => {
-    jest.restoreAllMocks();
-  });
-
-  const listingRegex = /\.en\..*/;
-  const siblingRegex = /\.(?:de|si)\..*/;
-
-  it('syncs the locale siblings under their own collection key', async () => {
-    const backend = makeBackend();
-    const sync = jest.spyOn(backend, 'syncCollection').mockResolvedValue({ fresh: true });
-
-    await backend.allEntriesByFolder(
-      'content/posts',
-      'md',
-      1,
-      listingRegex,
-      undefined,
-      siblingRegex,
-    );
-
-    const collections = sync.mock.calls.map(call => call[0]);
-    const regexes = sync.mock.calls.map(call => call[4]);
-
-    // Two syncs, and crucially two DIFFERENT collection keys: the sibling rows
-    // must not be tagged with the listing's key, or fetchEntries would return
-    // three rows per entry and the collection would render each locale as its
-    // own card.
-    expect(sync).toHaveBeenCalledTimes(2);
-    expect(new Set(collections).size).toBe(2);
-    expect(regexes).toContain(siblingRegex);
-    expect(collections.some(name => name.includes(siblingRegex.toString()))).toBe(true);
-  });
-
-  it('does not sync siblings when the collection has none', async () => {
-    const backend = makeBackend();
-    const sync = jest.spyOn(backend, 'syncCollection').mockResolvedValue({ fresh: true });
-
-    await backend.allEntriesByFolder('content/posts', 'md', 1, listingRegex);
-
-    expect(sync).toHaveBeenCalledTimes(1);
-  });
-
-  it('does not let a failed prefetch fail the collection load', async () => {
-    // The prefetch is not awaited, so a rejection here would otherwise surface
-    // as an unhandled rejection rather than as a slower entry open.
-    const backend = makeBackend();
-    jest
-      .spyOn(backend, 'syncCollection')
-      .mockImplementation(collection =>
-        collection.includes(siblingRegex.toString())
-          ? Promise.reject(new Error('sibling sync failed'))
-          : Promise.resolve({ fresh: true }),
-      );
-
-    await expect(
-      backend.allEntriesByFolder('content/posts', 'md', 1, listingRegex, undefined, siblingRegex),
-    ).resolves.toEqual([]);
-  });
-});
-
-describe('turbo backend notes', () => {
-  const config = {
-    backend: {
-      repo: 'owner/repo',
-      supabase_app_id: 'supabase-project-id',
-      supabase_anon_key: 'supabase-anon-key',
-    },
-    media_folder: 'static/media',
-  };
-
+describe('turbo github backend notes', () => {
   const USER_ID = '3f2b1c4d-0000-4a5b-8c9d-1e2f3a4b5c6d';
 
   function segment(value) {
     return Buffer.from(JSON.stringify(value), 'utf8').toString('base64url');
   }
 
-  function tokenFor(claims) {
-    return `${segment({ alg: 'HS256' })}.${segment(claims)}.signature`;
-  }
-
-  function signedIn(overrides = {}) {
+  function signedIn() {
     const backend = new DecapTurboGitHubBackend(config);
-    backend.supabaseAccessToken = tokenFor({ sub: USER_ID });
-    backend.supabaseIdentity = {
+    backend.session.accessToken = `${segment({ alg: 'HS256' })}.${segment({ sub: USER_ID })}.sig`;
+    backend.session.identity = {
       user_email: 'decap@p-m.si',
       user_metadata: { full_name: 'Decap Tester' },
-      ...overrides,
     };
     return backend;
   }
@@ -1733,22 +742,6 @@ describe('turbo backend notes', () => {
       authorId: USER_ID,
     });
     expect((await backend.currentUser({ token: 't' })).login).toBe('owner');
-  });
-
-  it('falls back to the email when the session carries no name', async () => {
-    const backend = signedIn({ user_metadata: {} });
-    // resolveCommitAuthorFromSupabaseUser already names an unnamed user after
-    // the local part, which is better than an empty byline.
-    expect((await backend.noteAuthorIdentity()).author).toBe('decap');
-  });
-
-  it('records no id when there is no session to read one from', async () => {
-    const backend = signedIn();
-    backend.supabaseAccessToken = null;
-
-    // Both or neither: lib-util drops a name with no id to compare against,
-    // and ownership falls back to comparing names.
-    expect((await backend.noteAuthorIdentity()).authorId).toBeUndefined();
   });
 
   it('leaves a new note without an avatar, as a re-read of it would be', async () => {

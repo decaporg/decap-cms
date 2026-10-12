@@ -1,9 +1,6 @@
 /**
  * Who a note is attributed to on a Turbo backend.
  *
- * NOTE: byte-for-byte the same as decap-cms-backend-turbo-github's copy;
- * changes here must be mirrored, like supabase.ts and commitAuthor.ts.
- *
  * Turbo writes every comment with the organization's shared credential - a
  * GitHub App installation token or a GitLab group token - so the account the
  * host reports as the comment's author is the same bot for every editor. The

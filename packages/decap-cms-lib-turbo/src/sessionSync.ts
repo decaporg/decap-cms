@@ -11,10 +11,7 @@
  * origin, so they happen one at a time. And a tab that gets the lock first
  * checks whether the stored session has already been rotated by a tab that
  * held the lock before it, and adopts that pair instead of spending a dead
- * token (see `adoptRotatedSession` in implementation.tsx).
- *
- * NOTE: mirrored in decap-cms-backend-turbo-gitlab, for the same reason
- * `supabase.ts` is — see that file's header.
+ * token (see `adoptRotatedSession` in session.ts).
  */
 
 const REFRESH_LOCK_NAME = 'decap-turbo-session-refresh';

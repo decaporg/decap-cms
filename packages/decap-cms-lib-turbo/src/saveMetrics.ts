@@ -1,9 +1,6 @@
 /**
  * Measurement for the save path, reported as props on `cms_entry_saved`.
  *
- * NOTE: byte-for-byte the same as decap-cms-backend-turbo-github's copy, for
- * the same reason supabase.ts is duplicated — changes here must be mirrored.
- *
  * The question this answers: of the time an editor waits on a save, how much
  * is the git host and how much is round trips? Today one save is N+4
  * sequential browser -> edge -> git-host requests, so if `upstreamMs` is a
