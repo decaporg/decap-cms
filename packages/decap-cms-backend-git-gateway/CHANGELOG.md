@@ -11,6 +11,10 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 **Note:** Version bump only for package decap-cms-backend-git-gateway
 
+## [3.7.3](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-git-gateway@3.7.2...decap-cms-backend-git-gateway@3.7.3) (2026-09-22)
+
+**Note:** Version bump only for package decap-cms-backend-git-gateway
+
 ## [3.7.3-beta.0](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-git-gateway@3.7.2...decap-cms-backend-git-gateway@3.7.3-beta.0) (2026-09-10)
 
 **Note:** Version bump only for package decap-cms-backend-git-gateway

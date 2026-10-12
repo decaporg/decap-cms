@@ -13,6 +13,10 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 - attribute Turbo notes to signed-in editor and fix github issue lookup ([2414aca](https://github.com/decaporg/decap-cms/commit/2414aca6e024ad8e3d417ac7b547491592cca66e))
 
+## [3.6.4](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-gitlab@3.6.3...decap-cms-backend-gitlab@3.6.4) (2026-09-22)
+
+**Note:** Version bump only for package decap-cms-backend-gitlab
+
 ## [3.6.4-beta.0](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-gitlab@3.6.3...decap-cms-backend-gitlab@3.6.4-beta.0) (2026-09-10)
 
 **Note:** Version bump only for package decap-cms-backend-gitlab

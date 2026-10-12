@@ -11,6 +11,10 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 **Note:** Version bump only for package decap-cms-widget-markdown
 
+## [3.13.1](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-markdown@3.13.0...decap-cms-widget-markdown@3.13.1) (2026-09-22)
+
+**Note:** Version bump only for package decap-cms-widget-markdown
+
 ## [3.13.1-beta.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-markdown@3.13.0...decap-cms-widget-markdown@3.13.1-beta.0) (2026-09-10)
 
 **Note:** Version bump only for package decap-cms-widget-markdown

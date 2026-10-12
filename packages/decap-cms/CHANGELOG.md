@@ -11,6 +11,10 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 **Note:** Version bump only for package decap-cms
 
+## [3.16.3](https://github.com/decaporg/decap-cms/compare/decap-cms@3.16.2...decap-cms@3.16.3) (2026-09-22)
+
+**Note:** Version bump only for package decap-cms
+
 # [3.17.0-beta.1](https://github.com/decaporg/decap-cms/compare/decap-cms@3.17.0-beta.0...decap-cms@3.17.0-beta.1) (2026-09-14)
 
 **Note:** Version bump only for package decap-cms

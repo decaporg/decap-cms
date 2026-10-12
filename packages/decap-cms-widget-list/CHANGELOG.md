@@ -11,6 +11,10 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 **Note:** Version bump only for package decap-cms-widget-list
 
+## [3.6.3](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-list@3.6.2...decap-cms-widget-list@3.6.3) (2026-09-22)
+
+**Note:** Version bump only for package decap-cms-widget-list
+
 ## [3.6.3-beta.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-list@3.6.2...decap-cms-widget-list@3.6.3-beta.0) (2026-09-10)
 
 **Note:** Version bump only for package decap-cms-widget-list

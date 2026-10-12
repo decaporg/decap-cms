@@ -14,6 +14,10 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 **Note:** Version bump only for package decap-server
 
+## [3.11.3](https://github.com/decaporg/decap-cms/compare/decap-server@3.11.2...decap-server@3.11.3) (2026-09-22)
+
+**Note:** Version bump only for package decap-server
+
 ## [3.11.3-beta.0](https://github.com/decaporg/decap-cms/compare/decap-server@3.11.2...decap-server@3.11.3-beta.0) (2026-09-10)
 
 **Note:** Version bump only for package decap-server

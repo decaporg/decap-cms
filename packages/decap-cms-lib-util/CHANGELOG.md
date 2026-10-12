@@ -18,6 +18,10 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 **Note:** Version bump only for package decap-cms-lib-util
 
+## [3.8.3](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-util@3.8.2...decap-cms-lib-util@3.8.3) (2026-09-22)
+
+**Note:** Version bump only for package decap-cms-lib-util
+
 # [3.9.0-beta.0](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-util@3.8.2...decap-cms-lib-util@3.9.0-beta.0) (2026-09-10)
 
 ### Bug Fixes
