@@ -35,8 +35,11 @@ describe('credentials', () => {
 
   it('stores credentials owner-only', () => {
     writeCredentials(credentials);
-    expect(fs.statSync(credentialsPath()).mode & 0o777).toBe(0o600);
-    expect(fs.statSync(path.dirname(credentialsPath())).mode & 0o777).toBe(0o700);
+    // Windows has no POSIX permission bits, so only the round trip is checked there.
+    if (process.platform !== 'win32') {
+      expect(fs.statSync(credentialsPath()).mode & 0o777).toBe(0o600);
+      expect(fs.statSync(path.dirname(credentialsPath())).mode & 0o777).toBe(0o700);
+    }
     expect(readCredentials()).toEqual(credentials);
   });
 
