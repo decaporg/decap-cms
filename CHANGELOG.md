@@ -8,6 +8,7 @@ below. The legacy pre-2.0 changelog is below as well.
 
 ## Shared libraries
 - [decap-cms-lib-auth](https://github.com/decaporg/decap-cms/blob/main/packages/decap-cms-lib-auth/CHANGELOG.md)
+- [decap-cms-lib-turbo](https://github.com/decaporg/decap-cms/blob/main/packages/decap-cms-lib-turbo/CHANGELOG.md)
 - [decap-cms-lib-util](https://github.com/decaporg/decap-cms/blob/main/packages/decap-cms-lib-util/CHANGELOG.md)
 - [decap-cms-ui-default](https://github.com/decaporg/decap-cms/blob/main/packages/decap-cms-ui-default/CHANGELOG.md)
 
@@ -17,6 +18,15 @@ below. The legacy pre-2.0 changelog is below as well.
 - [decap-cms-backend-github](https://github.com/decaporg/decap-cms/blob/main/packages/decap-cms-backend-github/CHANGELOG.md)
 - [decap-cms-backend-gitlab](https://github.com/decaporg/decap-cms/blob/main/packages/decap-cms-backend-gitlab/CHANGELOG.md)
 - [decap-cms-backend-test](https://github.com/decaporg/decap-cms/blob/main/packages/decap-cms-backend-test/CHANGELOG.md)
+- [decap-cms-backend-turbo-github](https://github.com/decaporg/decap-cms/blob/main/packages/decap-cms-backend-turbo-github/CHANGELOG.md)
+- [decap-cms-backend-turbo-gitlab](https://github.com/decaporg/decap-cms/blob/main/packages/decap-cms-backend-turbo-gitlab/CHANGELOG.md)
+
+## Media Libraries
+- [decap-cms-media-library-s3](https://github.com/decaporg/decap-cms/blob/main/packages/decap-cms-media-library-s3/CHANGELOG.md)
+
+## Tools
+- [@decap/cli](https://github.com/decaporg/decap-cms/blob/main/packages/decap/CHANGELOG.md)
+- [decap-turbo-api](https://github.com/decaporg/decap-cms/blob/main/packages/decap-turbo-api/CHANGELOG.md)
 
 ## Editor Components
 - [decap-cms-editor-component-image](https://github.com/decaporg/decap-cms/blob/main/packages/decap-cms-editor-component-image/CHANGELOG.md)

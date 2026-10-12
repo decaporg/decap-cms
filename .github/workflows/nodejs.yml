@@ -90,6 +90,8 @@ jobs:
         run: pnpm run build:demo
       - name: test package integrity
         run: pnpm run test:package-integrity
+      - name: smoke-install packed packages
+        run: node scripts/smoke-install-packed.mjs
       - name: upload demo site
         uses: actions/upload-artifact@v4
         with:
