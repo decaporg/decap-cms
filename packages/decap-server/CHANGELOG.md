@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.11.4-beta.1](https://github.com/decaporg/decap-cms/compare/decap-server@3.11.3-beta.2...decap-server@3.11.4-beta.1) (2026-10-12)
+
+### Bug Fixes
+
+- **decap:** reject unknown flags, report a busy port, await file moves ([9d5c98e](https://github.com/decaporg/decap-cms/commit/9d5c98e78c4f57636d7a4c0b2171870bcb502ce9))
+
 ## [3.11.3-beta.2](https://github.com/decaporg/decap-cms/compare/decap-server@3.11.3-beta.1...decap-server@3.11.3-beta.2) (2026-10-08)
 
 ### Features

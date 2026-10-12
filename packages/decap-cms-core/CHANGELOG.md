@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.20.0-beta.3](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.20.0-beta.2...decap-cms-core@3.20.0-beta.3) (2026-10-12)
+
+### Bug Fixes
+
+- **core:** hide create, delete and publish on view-only collections ([915b0be](https://github.com/decaporg/decap-cms/commit/915b0bec8660ce1421a0b184ac698d2d59cdc8a0))
+- **core:** search body only on backends that search it, and other GA fixes ([e57639b](https://github.com/decaporg/decap-cms/commit/e57639bcd7f91a3541cd95280dd0125ec13ecc9e))
+
 # [3.20.0-beta.2](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.20.0-beta.1...decap-cms-core@3.20.0-beta.2) (2026-10-08)
 
 ### Bug Fixes

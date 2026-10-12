@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.2.0-beta.3](https://github.com/decaporg/decap-cms/compare/decap-cms-media-library-s3@0.2.0-beta.2...decap-cms-media-library-s3@0.2.0-beta.3) (2026-10-12)
+
+### Bug Fixes
+
+- **media-library-s3:** encode object keys and surface plan-gate errors ([8dcfe3e](https://github.com/decaporg/decap-cms/commit/8dcfe3e6dbe22ed603abf30ecaaea029d5ee6fe5))
+
 # [0.2.0-beta.2](https://github.com/decaporg/decap-cms/compare/decap-cms-media-library-s3@0.2.0-beta.1...decap-cms-media-library-s3@0.2.0-beta.2) (2026-10-08)
 
 **Note:** Version bump only for package decap-cms-media-library-s3

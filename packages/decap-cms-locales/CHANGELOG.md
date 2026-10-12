@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.9.0-beta.1](https://github.com/decaporg/decap-cms/compare/decap-cms-locales@3.9.0-beta.0...decap-cms-locales@3.9.0-beta.1) (2026-10-12)
+
+### Bug Fixes
+
+- **core:** search body only on backends that search it, and other GA fixes ([e57639b](https://github.com/decaporg/decap-cms/commit/e57639bcd7f91a3541cd95280dd0125ec13ecc9e))
+
 # [3.9.0-beta.0](https://github.com/decaporg/decap-cms/compare/decap-cms-locales@3.8.2...decap-cms-locales@3.9.0-beta.0) (2026-09-10)
 
 ### Bug Fixes
