@@ -295,6 +295,12 @@ export interface Implementation {
      */
     localeSiblingRegex?: RegExp,
   ) => Promise<ImplementationEntry[]>;
+  /**
+   * True when `allEntriesByFolder` already matched `searchTerm` against entry
+   * bodies, so core's own search pass may include the body without changing
+   * results on backends that only search the listed fields.
+   */
+  searchesEntryBody?: boolean;
   traverseCursor?: (
     cursor: Cursor,
     action: string,

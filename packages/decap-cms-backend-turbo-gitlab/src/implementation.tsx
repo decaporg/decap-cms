@@ -111,6 +111,42 @@ const PROXY_UNAUTHORIZED_BODY = 'Unauthorized';
 /** The proxy's 403 for a user with no membership on this site. */
 const SITE_ACCESS_DENIED_MARKER = 'no access to requested site';
 
+/**
+ * Proxy refusals that only an organization owner can fix from the dashboard:
+ * no repo on the site, no Git connection, or a repo outside the connection's
+ * scope. Retrying cannot help, and every collection load used to ask again
+ * (79-129 refused requests a minute from one tab).
+ *
+ * `github_installation_unavailable` is what the proxy sends for an uninstalled
+ * or suspended App; `github_installation_missing` and `gitlab_not_connected`
+ * are accepted ahead of the server sending them.
+ */
+const TERMINAL_PROXY_CODES = new Set([
+  'site_repo_missing',
+  'repo_not_in_scope',
+  'github_not_connected',
+  'github_installation_missing',
+  'github_installation_unavailable',
+  'gitlab_not_connected',
+]);
+
+/** The repo-scope 403, matched on its sentence for proxies that predate `code`. */
+const REPO_SCOPE_MARKER = "is not in this organization's selected repo scope";
+
+/** The proxy's `error` sentence when `body` is one of the refusals above. */
+function terminalProxyRefusal(body: string): string | null {
+  let parsed: { error?: unknown; code?: unknown } | null;
+  try {
+    parsed = JSON.parse(body);
+  } catch {
+    return null;
+  }
+  if (typeof parsed?.error !== 'string') return null;
+  const isTerminal =
+    TERMINAL_PROXY_CODES.has(String(parsed.code)) || parsed.error.includes(REPO_SCOPE_MARKER);
+  return isTerminal ? parsed.error : null;
+}
+
 function isProxyUrl(url: string) {
   return url.includes('/functions/v1/gl');
 }
@@ -297,6 +333,12 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
    */
   protected coalesceRequest: RequestCoalescer = createRequestCoalescer();
 
+  /**
+   * The server's search covers entry bodies, so core keeps the body in its
+   * own pass rather than filtering those matches back out.
+   */
+  searchesEntryBody = true;
+
   supabase: SupabaseClient;
 
   constructor(config: Config, options: any = {}) {
@@ -310,6 +352,14 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
     if (this.useGraphQL) {
       throw new Error(
         "Decap Turbo GitLab backend does not support 'use_graphql: true' — GraphQL requests would bypass per-site tenant scoping. Remove use_graphql from your config.",
+      );
+    }
+
+    // GitLabBackend has no open authoring to fall back on, so without this the
+    // option would be silently ignored rather than refused.
+    if (config.backend.open_authoring) {
+      throw new Error(
+        "Decap Turbo GitLab backend does not support 'open_authoring: true' — Turbo commits with the organization's GitLab connection, which cannot fork or commit to an editor's own project. Remove open_authoring from your config.",
       );
     }
 
@@ -472,8 +522,8 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
    *   tab's CMS logout revokes the session they share). One forced refresh,
    *   ignoring the transient-failure cooldown, decides which: a new token is
    *   worth one retry, a terminal refusal ends the session.
-   * - A 403 for a site the user is no longer a member of cannot be fixed from
-   *   here at all.
+   * - A 403 for a site the user is no longer a member of, and the refusals in
+   *   TERMINAL_PROXY_CODES, cannot be fixed from here at all.
    *
    * Mirrors decap-cms-backend-turbo-github's, where a dead session kept a tab
    * looking logged in and every click cost a request and a toast: 20 refused
@@ -486,6 +536,11 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
   ): Promise<'retry' | 'fail'> {
     if (status === 403 && body.includes(SITE_ACCESS_DENIED_MARKER)) {
       this.invalidateSession(TURBO_SITE_ACCESS_DENIED_MESSAGE);
+      return 'fail';
+    }
+    const refusal = terminalProxyRefusal(body);
+    if (refusal) {
+      this.invalidateSession(refusal);
       return 'fail';
     }
     if (status !== 401 || body.trim() !== PROXY_UNAUTHORIZED_BODY) return 'fail';
@@ -602,11 +657,6 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
   // legitimately differs (it doesn't need GitLab's OAuth-specific props at
   // all: base_url/siteId/authEndpoint/clearHash).
   authComponent(): any {
-    // Unlike decap-cms-backend-turbo-github's GitHub twin, no `backend={this}`
-    // injection is needed here — SupabaseAuthenticationPage only ever reads
-    // `props.config`/`props.onLogin`, both already supplied by core's
-    // standard auth-page render call, so this can return the component
-    // directly rather than a wrapping function.
     return SupabaseAuthenticationPage;
   }
 
@@ -1370,11 +1420,14 @@ export default class DecapTurboGitLabBackend extends GitLabBackend {
 
     const entries = await this.supabase.fetchEntries(collection, searchTerm);
 
-    // The client no longer lists a tree, so sort by path to keep entry order
-    // stable across loads. Path order is what the tree gave anyway.
-    entries.sort((a: any, b: any) =>
-      String(a.file?.path ?? '').localeCompare(String(b.file?.path ?? '')),
-    );
+    // Sorted by path so entry order is stable across loads. Compared by code
+    // unit rather than with localeCompare, so the order does not depend on the
+    // editor's locale.
+    entries.sort((a: any, b: any) => {
+      const pathA = String(a.file?.path ?? '');
+      const pathB = String(b.file?.path ?? '');
+      return pathA < pathB ? -1 : pathA > pathB ? 1 : 0;
+    });
 
     return entries;
   }

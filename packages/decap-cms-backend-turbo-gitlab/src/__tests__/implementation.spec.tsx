@@ -456,6 +456,113 @@ describe('turbo gitlab backend proxy auth answers', () => {
         /^This site is read-only$/,
       );
     });
+
+    it('does not end the session over a refusal the editor can retry past', async () => {
+      const onSessionInvalid = jest.fn();
+      const backend = backendWithSession({ onSessionInvalid });
+      global.fetch = jest
+        .fn()
+        .mockResolvedValue(
+          reply(403, '{"error":"Forbidden: x","code":"repo_mismatch"}', 'application/json'),
+        );
+
+      await expect(backend.glFetch(syncUrl, { method: 'POST' })).rejects.toMatchObject({
+        status: 403,
+      });
+
+      expect(onSessionInvalid).not.toHaveBeenCalled();
+      expect(backend.sessionInvalidMessage).toBeNull();
+    });
+  });
+
+  describe('configuration refusals', () => {
+    const refusals: [string, number, Record<string, string>][] = [
+      [
+        'site_repo_missing',
+        403,
+        {
+          error: 'Forbidden: site has no project configured. An organization owner can set it.',
+          code: 'site_repo_missing',
+        },
+      ],
+      [
+        'repo_not_in_scope',
+        403,
+        {
+          error:
+            'Forbidden: project "group/project" is not in this organization\'s selected repo scope. Add it.',
+          code: 'repo_not_in_scope',
+        },
+      ],
+      [
+        'the repo-scope sentence without a code',
+        403,
+        {
+          error:
+            'Forbidden: project "group/project" is not in this organization\'s selected repo scope. Add it.',
+        },
+      ],
+      [
+        'gitlab_not_connected',
+        409,
+        { error: 'This organization has no GitLab connection.', code: 'gitlab_not_connected' },
+      ],
+      [
+        'github_not_connected',
+        409,
+        { error: 'This organization has no GitHub connection.', code: 'github_not_connected' },
+      ],
+      [
+        'github_installation_missing',
+        409,
+        { error: 'The GitHub App is gone.', code: 'github_installation_missing' },
+      ],
+      [
+        'github_installation_unavailable',
+        409,
+        { error: 'The GitHub App is suspended.', code: 'github_installation_unavailable' },
+      ],
+    ];
+
+    it.each(refusals)(
+      'ends the session once with the server sentence on %s, then stops asking',
+      async (_name, status, body) => {
+        const onSessionInvalid = jest.fn();
+        const backend = backendWithSession({ onSessionInvalid });
+        global.fetch = jest
+          .fn()
+          .mockResolvedValue(reply(status, JSON.stringify(body), 'application/json'));
+
+        await expect(backend.glFetch(syncUrl, { method: 'POST' })).rejects.toMatchObject({
+          status,
+          message: body.error,
+        });
+        const later = await backend.apiRequestFunction(unsentRequest.fromURL(treeUrl));
+        await expect(backend.glFetch(syncUrl, { method: 'POST' })).rejects.toThrow(body.error);
+
+        expect(onSessionInvalid).toHaveBeenCalledTimes(1);
+        expect(onSessionInvalid).toHaveBeenCalledWith(body.error);
+        expect(later.status).toBe(401);
+        expect(global.fetch).toHaveBeenCalledTimes(1);
+      },
+    );
+
+    it('ends the session on a refusal reached through a GitLab API call', async () => {
+      const onSessionInvalid = jest.fn();
+      const backend = backendWithSession({ onSessionInvalid });
+      const body = {
+        error: 'This organization has no GitLab connection.',
+        code: 'gitlab_not_connected',
+      };
+      global.fetch = jest
+        .fn()
+        .mockResolvedValue(reply(409, JSON.stringify(body), 'application/json'));
+
+      const response = await backend.apiRequestFunction(unsentRequest.fromURL(treeUrl));
+
+      expect(response.status).toBe(409);
+      expect(onSessionInvalid).toHaveBeenCalledWith(body.error);
+    });
   });
 
   describe('apiRequestFunction', () => {
@@ -770,6 +877,57 @@ describe('turbo gitlab backend use_graphql rejection', () => {
     } as any;
 
     expect(() => new DecapTurboGitLabBackend(config)).toThrow(/use_graphql/);
+  });
+});
+
+describe('turbo gitlab backend open_authoring rejection', () => {
+  it('throws in the constructor when open_authoring is set', () => {
+    const config = {
+      backend: {
+        repo: 'group/project',
+        supabase_app_id: 'supabase-project-id',
+        supabase_anon_key: 'supabase-anon-key',
+        open_authoring: true,
+      },
+      publish_mode: 'editorial_workflow',
+      media_folder: 'static/media',
+    } as any;
+
+    expect(() => new DecapTurboGitLabBackend(config)).toThrow(/open_authoring/);
+  });
+});
+
+describe('turbo gitlab backend folder listing', () => {
+  const config = {
+    backend: {
+      repo: 'group/project',
+      supabase_app_id: 'supabase-project-id',
+      supabase_anon_key: 'supabase-anon-key',
+    },
+    media_folder: 'static/media',
+  } as any;
+
+  it('tells core that its search already covers entry bodies', () => {
+    expect(new DecapTurboGitLabBackend(config).searchesEntryBody).toBe(true);
+  });
+
+  it('orders entries by code unit, whatever the locale', async () => {
+    const backend: any = new DecapTurboGitLabBackend(config);
+    backend.syncCollection = jest.fn().mockResolvedValue({});
+    const paths = ['posts/b.md', 'posts/a.md', 'posts/B.md', 'posts/é.md', 'posts/_x.md'];
+    backend.supabase = {
+      fetchEntries: jest.fn().mockResolvedValue(paths.map(path => ({ file: { path } }))),
+    };
+
+    const entries = await backend.allEntriesByFolder('posts', 'md', 1);
+
+    expect(entries.map((entry: any) => entry.file.path)).toEqual([
+      'posts/B.md',
+      'posts/_x.md',
+      'posts/a.md',
+      'posts/b.md',
+      'posts/é.md',
+    ]);
   });
 });
 

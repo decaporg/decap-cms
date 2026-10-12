@@ -48,7 +48,7 @@ describe('github API', () => {
 
       expect(issue.number).toBe(3);
       expect(requests).toEqual([
-        { labels: 'decap-cms-notes', state: 'all', per_page: 100, page: 1 },
+        { labels: 'decap-cms-notes,collection:posts', state: 'all', per_page: 100, page: 1 },
       ]);
       expect(api.request).not.toHaveBeenCalledWith('/search/issues', expect.anything());
     });
@@ -65,6 +65,31 @@ describe('github API', () => {
 
       expect(issue.number).toBe(500);
       expect(api.request).toHaveBeenCalledTimes(2);
+    });
+
+    it('stops paging after 20 pages of a host that keeps answering full pages', async () => {
+      const api = new API({ branch: 'main', repo: 'owner/repo' });
+      const fullPage = Array.from({ length: 100 }, (_, i) => notesIssue(i + 10, `posts/p${i}`));
+      mockAPI(api, { '/repos/owner/repo/issues': () => fullPage });
+
+      expect(await api.findEntryIssue('posts', 'missing')).toBeNull();
+      expect(api.request).toHaveBeenCalledTimes(20);
+    });
+
+    it('lists every collection when asked for all entries with notes', async () => {
+      const api = new API({ branch: 'main', repo: 'owner/repo' });
+      const requests = [];
+      mockAPI(api, {
+        '/repos/owner/repo/issues': options => {
+          requests.push(options.params);
+          return [notesIssue(1, 'posts/foo'), notesIssue(2, 'authors/bar')];
+        },
+      });
+
+      const entries = await api.getEntriesWithNotes();
+
+      expect(entries.map(entry => entry.collection)).toEqual(['posts', 'authors']);
+      expect(requests[0].labels).toBe('decap-cms-notes');
     });
 
     it('closes only an open issue on publish', async () => {

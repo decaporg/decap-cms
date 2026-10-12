@@ -1618,17 +1618,30 @@ export default class API {
    * Every caller swallowed that as "no issue", so notes vanished from the pane
    * and the next note opened a duplicate issue. The label listing is a plain
    * repo read with no index behind it.
+   *
+   * With `collectionName`, narrowed by the `collection:` label createEntryIssue
+   * has always written alongside the notes label; GitHub ANDs the two. One
+   * entry open looks its thread up several times, and without this each
+   * lookup listed every notes thread on the site.
    */
-  private async listNotesIssues(state: 'open' | 'all'): Promise<GitHubIssue[]> {
+  private async listNotesIssues(
+    state: 'open' | 'all',
+    collectionName?: string,
+  ): Promise<GitHubIssue[]> {
+    const labels = collectionName
+      ? `${API.NOTES_LABEL},collection:${collectionName}`
+      : API.NOTES_LABEL;
     // Paged by number rather than requestAllPages: that follows the Link
     // header, which the Turbo proxy does not forward, so it would stop after
-    // the first page there.
+    // the first page there. Capped so a host that keeps answering full pages
+    // cannot hold a lookup open indefinitely.
     const perPage = 100;
+    const maxPages = 20;
     const issues: (GitHubIssue & { pull_request?: unknown })[] = [];
-    for (let page = 1; ; page++) {
+    for (let page = 1; page <= maxPages; page++) {
       const batch: (GitHubIssue & { pull_request?: unknown })[] = await this.request(
         `${this.repoURL}/issues`,
-        { params: { labels: API.NOTES_LABEL, state, per_page: perPage, page } },
+        { params: { labels, state, per_page: perPage, page } },
       );
       issues.push(...batch);
       if (batch.length < perPage) break;
@@ -1644,7 +1657,7 @@ export default class API {
     // createEntryIssue writes the key between backticks, so matching on them
     // keeps `posts/foo` from also matching the issue for `posts/foo-bar`.
     const marker = `\`${collectionName}/${slug}\``;
-    const issues = await this.listNotesIssues(state);
+    const issues = await this.listNotesIssues(state, collectionName);
     return issues.find(issue => issue.body?.includes(marker)) ?? null;
   }
 

@@ -25,6 +25,13 @@ const DEFAULT_TURBO_ADMIN_URL = 'https://turbo.decapcms.org';
 
 const POPUP_MESSAGE_SOURCE = 'decap-turbo-login';
 
+// Turbo base64-encodes the UTF-8 JSON, and atob alone returns one character
+// per byte, which garbles any non-ASCII name.
+function decodeBase64Json(encoded) {
+  const bytes = Uint8Array.from(atob(encoded), char => char.charCodeAt(0));
+  return JSON.parse(new TextDecoder().decode(bytes));
+}
+
 // Shared by both delivery paths below: the popup posts this same field set via
 // `window.postMessage`, and a plain (non-popup) link delivers it as a query
 // string in the URL hash. Field names match what decap-redirect.astro sends.
@@ -34,7 +41,7 @@ function credentialsFromFlatParams(credentials) {
   let userMetadata = {};
   if (credentials.user_metadata) {
     try {
-      userMetadata = JSON.parse(atob(credentials.user_metadata));
+      userMetadata = decodeBase64Json(credentials.user_metadata);
     } catch {
       userMetadata = {};
     }
@@ -45,7 +52,6 @@ function credentialsFromFlatParams(credentials) {
     access_token: credentials.access_token,
     refresh_token: credentials.refresh_token,
     expires_at: Number(credentials.expires_at) || undefined,
-    provider_token: credentials.access_token,
     user_email: credentials.user_email || undefined,
     email: credentials.user_email || undefined,
     user_name: credentials.user_name || undefined,
@@ -175,16 +181,23 @@ export default class SupabaseAuthenticationPage extends React.Component {
   };
 
   getTurboLoginUrl = () => {
-    const { turbo_admin_url: turboAdminUrl = DEFAULT_TURBO_ADMIN_URL } = this.props.config.backend;
+    const { turbo_admin_url: turboAdminUrl = DEFAULT_TURBO_ADMIN_URL, turbo_site_id: siteId } =
+      this.props.config.backend;
     const redirectTo = `${window.location.origin}${window.location.pathname}?popup=1`;
+    // The site lets Turbo check that the signed-in user is a member of the
+    // site this origin belongs to before it mints a session for it.
+    const siteParam = siteId ? `&site_id=${encodeURIComponent(siteId)}` : '';
     return `${turboAdminUrl.replace(
       /\/$/,
       '',
-    )}/auth/decap-redirect?redirect_to=${encodeURIComponent(redirectTo)}`;
+    )}/auth/decap-redirect?redirect_to=${encodeURIComponent(redirectTo)}${siteParam}`;
   };
 
   handlePopupMessage = event => {
     if (event.origin !== this.getTurboAdminOrigin()) return;
+    // Any Turbo page open in another window shares that origin; only the
+    // popup this page opened may log it in.
+    if (this.popup && event.source !== this.popup) return;
 
     const credentials = credentialsFromPostMessageData(event.data);
     if (!credentials) return;

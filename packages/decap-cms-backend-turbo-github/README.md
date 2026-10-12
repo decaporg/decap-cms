@@ -1,164 +1,79 @@
 # Decap CMS — Turbo GitHub Backend
 
-**This backend is under active development.**
+`turbo-github` connects Decap CMS to [Decap Turbo](https://decapcms.org/docs/turbo-overview/). Content stays in your GitHub repository and every save is a commit, as with the `github` backend, but editors sign in with a Turbo account instead of a GitHub account, and GitHub is reached through Turbo's server-side proxy, which also caches the repository's content.
 
-`turbo-github` is a Decap CMS backend that still stores content as files in a GitHub repo (like `decap-cms-backend-github`), but changes two things about how the CMS talks to GitHub:
+It extends `GitHubBackend` from `decap-cms-backend-github`. Anything not overridden here, including branching and the pull-request-based editorial workflow, behaves as it does there. The GitLab twin is [`decap-cms-backend-turbo-gitlab`](../decap-cms-backend-turbo-gitlab); code the two share lives in [`decap-cms-lib-turbo`](../decap-cms-lib-turbo).
 
-1. **Auth**: instead of a GitHub OAuth app or personal access token, users sign in through a hosted Supabase-backed login flow. No GitHub account is required for CMS users at all — GitHub API calls are made by a Supabase Edge Function on their behalf, using their Supabase session as the credential.
-2. **Speed for large folder collections**: instead of listing and reading every file in a folder collection from the GitHub API on every load, entries are mirrored into a Postgres table (via Supabase's PostgREST API) and served from there. This is the difference between a few GitHub API calls and hundreds/thousands of them for a collection with many entries.
+Product documentation: [overview](https://decapcms.org/docs/turbo-overview/), [getting started](https://decapcms.org/docs/turbo-getting-started/), [connecting a site](https://decapcms.org/docs/turbo-connecting-a-site/), [roles and members](https://decapcms.org/docs/turbo-roles-and-members/), [deploy status](https://decapcms.org/docs/turbo-deploy-status/), [CLI and agents](https://decapcms.org/docs/turbo-cli-and-agents/).
 
-It's built as a subclass of `GitHubBackend` (`decap-cms-backend-github`) — everything not explicitly overridden (branching, PR-based editorial workflow, media handling, etc.) behaves exactly like the GitHub backend.
+## Configuration
 
-## Architecture
+The backend is registered in the `decap-cms` and `decap-cms-app` bundles. [Create a site](https://decapcms.org/docs/turbo-getting-started/) in Turbo, then:
 
-The backend is built in three parts.
+```yaml
+backend:
+  name: turbo-github
+  turbo_site_id: your-site-id
+```
 
-### 1. Auth layer (`implementation.tsx`, `AuthenticationPage.js`)
+`turbo_site_id` is the only required key. Before the backend is constructed, its static `preloadConfig` hook fetches the rest from Turbo's `config` endpoint (Supabase project, anon key, `base_url`, `api_root`, `repo` and the default `branch`) and merges it into `backend`. Values in `config.yml` win, with one exception: `repo` always comes from the site in Turbo, because the proxy checks permissions against it.
 
-Clicking "Login with Turbo" opens a popup pointed at a hosted Turbo admin app (`turbo_admin_url`, default `https://turbo.decapcms.org`), where the user authenticates with Supabase Auth. On success, the popup `postMessage`s the resulting Supabase session (access/refresh tokens, expiry, user metadata) back to the CMS tab; `AuthenticationPage.js` validates the message's `event.origin` against the admin app's origin before accepting it — this origin check is the flow's whole security boundary and must not be weakened.
-
-Once authenticated, the Supabase access token (a JWT) is used as a Bearer token for all GitHub API calls, which are routed through a Supabase Edge Function (`api_root`, typically `.../functions/v1/gh`) that proxies them to the real GitHub API using server-side credentials. The CMS never sees a GitHub token.
-
-Token refresh is automatic: `implementation.tsx` tracks the JWT's expiry and silently refreshes it in the background (with retry/backoff for transient failures) before it expires, persisting the new tokens back to the Decap CMS auth store via `updateUserCredentials`. A terminal failure (expired/invalid refresh token) forces a logout with a clear message; a transient failure (network blip, 5xx) does not.
-
-`commitAuthor.ts` derives the Git commit author (name + email) from the Supabase user's metadata/email, so commits are attributed to the actual CMS user rather than a shared service account.
-
-### 2. DB cache layer (`supabase.ts`)
-
-For folder collections, entry data is mirrored into a single Supabase table (`public.data`), queried directly via PostgREST rather than through the GitHub proxy. The flow on every collection load (`allEntriesByFolder`) is:
-
-1. List the folder's files from GitHub (as the GitHub backend normally would).
-2. Diff that list against the cached rows for this collection in Supabase (`validateFiles`): remove rows for files that no longer exist, and read + insert (in batches) any files missing from the cache.
-3. Return entries from Supabase, filtered by `repo`, `site_id`, `branch`, and `collection`, re-sorted to match the GitHub listing's order.
-
-A successful `persistEntry` (save) also pushes the new content straight into the cache (`updateEntriesAfterSave`), so a save is immediately reflected without waiting for the next full diff.
-
-Each cached row is keyed by:
-
-| column | description |
+| Optional key | |
 |---|---|
-| `repo` | GitHub repository (`owner/repo`) |
-| `site_id` | identifies which site owns the row when multiple sites share one Supabase project |
-| `branch` | Git branch |
-| `collection` | a fingerprint of `folder:extension:depth:pathRegex` — i.e. two different folder-collection configs never share cache rows, even if they'd otherwise match the same file |
-| `file_id` | Git blob SHA (used to detect changed content) |
-| `file_path` | path of the file within the repo |
+| `branch` | Branch to edit. Defaults to the site's branch in Turbo. Set it to let one site back several deploys of the same repo. |
+| `deploy_status` | `false`, or an object with `notifications`, `page` and `primary_target`. See [deploy status](https://decapcms.org/docs/turbo-deploy-status/). |
+| `editor_bridge` | `true` turns on the experimental [editor bridge](#editor-bridge). Off by default. |
 
-The upsert conflict target for batch inserts (`site_id, repo, branch, collection, file_path`) must always match the DB's unique index — see [Cache table](#cache-table) below. If they drift apart, batch upserts fail outright.
+`use_graphql: true` is not supported and throws in the constructor: the GraphQL client builds its own transport, which would skip the per-site scoping (`x-site-id` header and `site_id` parameter) the proxy relies on.
 
-### 3. Permissions (optional, cross-package)
+### Escape hatches
 
-After authentication, the backend fetches per-collection permissions for the signed-in user from the control plane's `permissions` endpoint (`fetchTurboPermissions`) and attaches them to the resolved user object as a generic `permissions.collections` map (`{ [collectionName]: 'edit' | 'view' | 'none' }`). This isn't Turbo-specific plumbing in `decap-cms-core` — core just knows that *any* backend's authenticated user may carry a `permissions` field, and if it does, `actions/auth.ts` re-filters the already-loaded config to drop collections resolved to `'none'` (`actions/config.ts`: `applyBackendPermissionFilter` / `refilterConfigForPermissions`). A backend that never sets `permissions` (every backend except this one, today) is entirely unaffected.
+For running against a self-hosted control plane or working offline. The hosted product never needs them.
 
-This is a UX / defense-in-depth layer only — it hides collections the user shouldn't see, nothing more. The real enforcement boundary is server-side, in the `gh` Edge Function that proxies writes; nothing client-side should be relied on as the sole access control.
+| Key | |
+|---|---|
+| `turbo_config_url` | Config endpoint to fetch from, instead of `https://sb.decapcms.org/functions/v1/config`. |
+| `turbo_admin_url` | Turbo app that serves the login popup. Default `https://turbo.decapcms.org`. |
+| `supabase_app_id`, `supabase_anon_key` | Supabase project ref and anon key. The ref builds the auth and content cache URLs (`https://<ref>.supabase.co`). Setting both skips the fetch entirely, so `base_url`, `api_root` and `repo` must then be set too. Setting `supabase_app_id` alone throws. |
+| `base_url` | Supabase project URL, for the `permissions` and `telemetry` functions, deploy status, the editor bridge and media libraries. |
+| `api_root` | The `gh` proxy function, `<base_url>/functions/v1/gh`. |
 
-### 4. Usage telemetry (`telemetry.ts`)
+## How it works
 
-After a session starts and after each entry save, the backend fires a
-best-effort, non-blocking event (`cms_session_started` / `cms_entry_saved`) to
-the control plane's `telemetry` Edge Function. This call is never awaited by
-its callers and swallows its own errors — a failed or slow telemetry request
-can never disrupt the editing experience.
+### Login
 
-Users can opt out from the Turbo admin app's Profile page.
+"Login with Turbo" opens a popup on `turbo_admin_url`. The Turbo app sends the resulting Supabase session back with `postMessage`, and `AuthenticationPage.js` accepts it only when `event.origin` equals the origin of `turbo_admin_url`. That check is the security boundary of the flow and must never be relaxed. Links from the Turbo profile page carry a one-time code in the URL hash instead, which is redeemed for the session with a POST to the Turbo app's `/auth/exchange`.
 
-## Decap CMS config
+A session Turbo minted for this CMS alone is revoked server-side on logout. An older session shared with the Turbo dashboard is left alone, so logging out of one CMS does not sign the user out of Turbo.
 
-```yaml
-backend:
-  name: turbo-github
-  repo: owner/repo
-  branch: main
+### Requests and token refresh
 
-  # Stable identifier for this site.
-  turbo_site_id: your-site-id
-```
+The Supabase access token is sent as a Bearer token to the `gh` proxy, which calls GitHub with the organization's GitHub App installation token. The CMS never holds a GitHub token.
 
-`supabase_app_id`, `supabase_anon_key`, `base_url`, and `api_root` are
-identical across every site on the shared control plane, so they don't
-need to be copied into each site's `config.yml` by hand. This package's
-`DecapTurboGitHubBackend` class implements a static `preloadConfig(config)` hook
-— a generic extension point in Decap CMS core
-(`packages/decap-cms-core/src/actions/config.ts`): core has no built-in
-knowledge of Turbo or Supabase, it just awaits whatever `preloadConfig`
-the registered backend class provides, before constructing the backend.
-Here, `preloadConfig` fetches the site's config from the control plane's
-`config` endpoint (`site_id` in the query string) and merges the response
-into `backend`.
+The access token is refreshed before it expires, with retries for transient failures. Supabase refresh tokens are single-use, so refreshes take a lock shared by every tab on the origin, and a tab adopts a session another tab already rotated. A terminal refresh failure, or a 401 from the proxy that one forced refresh cannot fix, ends the session with "Session expired. Please log in again." A 403 because the user is not a member of the site fails the login, or ends the session if it arrives later.
 
-An optional `turbo_config_url` field can override which endpoint is
-queried, for a control plane other than the default shared one:
+### Content cache
 
-```yaml
-backend:
-  name: turbo-github
-  repo: owner/repo
-  branch: main
-  turbo_site_id: your-site-id
-  turbo_config_url: https://your-control-plane.example/functions/v1/config
-```
+Turbo's server owns the cache. For each folder or files collection the backend calls `_content/sync`, which brings the cache up to the branch's current head, and reads the entries from `public.data` through PostgREST. The browser has read access only. Locale files of `multiple_files` i18n collections are synced in the background. Opening a single entry checks the cached row with `_content/entry` and reads from GitHub when it is stale.
 
-To skip the fetch entirely — e.g. for local/offline development — specify
-**both** `supabase_app_id` and `supabase_anon_key` explicitly instead. Setting
-only one of the two is a config error and `preloadConfig` will throw rather
-than silently running with a broken key:
+Saves go through `_content/commit`: one request that commits and updates the cache. Renames, saves to an entry already in editorial review, open authoring, and requests the endpoint refuses with 400, 404 or 413 fall back to the inherited REST sequence.
 
-```yaml
-backend:
-  name: turbo-github
-  repo: owner/repo
-  branch: main
+### Permissions
 
-  # Full Supabase project URL — used by the auth page and token refresh.
-  base_url: https://your-project-ref.supabase.co
-  api_root: https://your-project-ref.supabase.co/functions/v1/gh
+After login the backend fetches the user's per-collection permissions from the `permissions` function and attaches them to the user as `permissions.collections` (`edit`, `view` or `none`). Core hides `none` collections for any backend whose user carries that field. This is a UI convenience; the proxy enforces permissions on every request.
 
-  # Supabase project ref — used to build the PostgREST endpoint for the cache.
-  supabase_app_id: your-project-ref
+### Commit attribution
 
-  # Supabase anon key — used for both auth API calls and cache queries.
-  supabase_anon_key: your-supabase-anon-key
+Commits are authored by the Turbo GitHub App. The proxy adds the editor in a `Co-authored-by` trailer, derived from the session rather than from anything the browser sends.
 
-  # Stable identifier for this site.
-  turbo_site_id: your-site-id
-```
+### Deploy status
 
-Any field present in `config.yml` always wins over a fetched default.
+After a save, the backend polls Turbo's `site_deployments` for a successful deploy whose commit contains the save, and tells the editor when the change is live. If nothing reports a deploy for the branch within two minutes, it stops silently. `deploy_status` turns the notifications and the Deploys page off.
 
-`use_graphql: true` (inherited from the base GitHub backend) is not
-supported and throws in the constructor: `GraphQLAPI` builds its own Apollo
-transport directly from the constructor config, bypassing the
-`x-site-id`/`site_id` scoping this backend adds on top of every REST
-request, which the shared `gh` Edge Function relies on to know which
-tenant a request belongs to.
+### Telemetry
 
-## Supabase setup
+The backend sends `cms_session_started` and `cms_entry_saved` to Turbo's `telemetry` function. The call is not awaited and swallows its own errors, so it cannot affect editing. Editors opt out of analytics on their Turbo profile, owners for the whole organization in its settings. Opting out is applied server-side; the save event that feeds the organization's Activity log is still recorded.
 
-### Auth
+### Editor bridge
 
-Enable the **Email** provider in your Supabase project under Authentication → Providers. Create an account for each CMS user.
-
-### Cache table
-
-Create a table named `data` in the `public` schema:
-
-```sql
-create table public.data (
-  id            bigserial primary key,
-  repo          text not null,
-  site_id       text not null,
-  branch        text not null,
-  collection    text not null,
-  file_id       text not null,
-  file_path     text not null,
-  file_meta     jsonb not null,
-  file_data     text
-);
-
-create unique index data_identity_idx
-  on public.data (site_id, repo, branch, collection, file_path);
-```
-
-The unique index must cover exactly `(site_id, repo, branch, collection, file_path)` — that's the `on_conflict` target `insertDbFilesBatch` upserts against (`supabase.ts`). It's keyed on `file_path` rather than `file_id` so that saving new content for an existing path replaces its cached row instead of inserting a duplicate.
-
-Make sure the anon role has `SELECT`, `INSERT`, `UPDATE`, and `DELETE` on `public.data`, or configure an appropriate RLS policy.
+With `editor_bridge: true`, the entry open in the CMS is synced to Turbo every few seconds, so an agent using [`decap mcp`](../decap) can propose field changes. They appear highlighted in the editor and are saved only when the editor saves. The bridge also adds an "Ask Claude" action beside each field and an "Agent bridge on" badge, whose × turns it off for the tab. It is experimental and may change.

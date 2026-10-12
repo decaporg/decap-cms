@@ -13,6 +13,9 @@
  *
  * See decap-turbo/docs/caching-and-github-api-strategy.md §4.
  */
+/** The only columns the CMS reads; the rest of the row is server bookkeeping. */
+const ROW_COLUMNS = 'file_meta,file_data';
+
 export class SupabaseClient {
   supabaseUrl: string;
   supabaseAnonKey: string;
@@ -52,6 +55,7 @@ export class SupabaseClient {
     // produce on moc-www, and with them the duplicate GitHub fetches.
     // PostgREST spells array-contains `cs.{a,b}`; the braces are literal.
     const params = new URLSearchParams({
+      select: ROW_COLUMNS,
       repo: `eq.${this.repo}`,
       site_id: `eq.${this.siteId}`,
       branch: `eq.${this.branch}`,
@@ -79,6 +83,10 @@ export class SupabaseClient {
           headers: {
             apikey: this.supabaseAnonKey,
             Authorization: `Bearer ${this.supabaseAccessToken || this.supabaseAnonKey}`,
+            // Row-level security reads the site from this header before the
+            // JWT's active_site_id claim, which another tab on another site
+            // can change under this one.
+            'x-site-id': this.siteId,
             'Content-Type': 'application/json',
             'Range-Unit': 'items',
             Range: `${rangeStart}-${rangeEnd}`,
@@ -109,6 +117,7 @@ export class SupabaseClient {
 
   async fetchEntryByPath(path: string) {
     const params = new URLSearchParams({
+      select: ROW_COLUMNS,
       repo: `eq.${this.repo}`,
       site_id: `eq.${this.siteId}`,
       branch: `eq.${this.branch}`,

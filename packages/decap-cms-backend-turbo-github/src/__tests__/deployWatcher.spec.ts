@@ -583,6 +583,7 @@ describe('createDeploymentFetcher', () => {
     expect(url).toContain('updated_at=gte.2026-09-02T10');
     expect(url).not.toContain('commit_sha=');
     expect(init.headers.Authorization).toBe('Bearer jwt-token');
+    expect(init.headers['x-site-id']).toBe('site-1');
     expect(rows).toEqual([row()]);
   });
 
@@ -867,6 +868,7 @@ describe('createCommitLister', () => {
     expect(url).toContain('site_id=eq.site-1');
     expect(url).toContain('order=created_at.desc');
     expect(init.headers.Authorization).toBe('Bearer jwt-token');
+    expect(init.headers['x-site-id']).toBe('site-1');
     expect(rows[0].entry_label).toBe('Spring menu');
   });
 

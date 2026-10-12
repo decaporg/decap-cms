@@ -1,12 +1,10 @@
 // Imported from the package root, not `decap-cms-backend-github/src/API`:
 // jest's moduleNameMapper rewrites any path containing the package name to its
 // index, so the deep path resolves to the index's (nonexistent) default export
-// and this class would extend `undefined` under test. The type-only import
-// below is erased before that mapping ever applies.
+// and this class would extend `undefined` under test.
 import { API } from 'decap-cms-backend-github';
 import { branchFromContentKey, DEFAULT_PR_BODY } from 'decap-cms-lib-util';
 
-import type { Config as GitHubAPIConfig } from 'decap-cms-backend-github/src/API';
 import type { AssetProxy, DataFile, PersistOptions } from 'decap-cms-lib-util';
 
 /** Whatever the REST path resolves to — callers only test it for truthiness,
@@ -26,6 +24,11 @@ type DeleteFilesResult = Awaited<ReturnType<API['deleteFiles']>>;
  *
  * See decap-turbo/docs/deploy-status-plan.md §B1.
  */
+
+// Derived rather than imported from `decap-cms-backend-github/src/API`: the
+// published package ships that directory as TypeScript source, which no
+// consumer's bundler is configured to resolve.
+type GitHubAPIConfig = ConstructorParameters<typeof API>[0];
 
 type TurboAPIConfig = GitHubAPIConfig & {
   /** The backend's own scoped fetch — carries the Supabase bearer token, the
@@ -59,13 +62,6 @@ interface CommitFile {
  */
 const FALLBACK_STATUSES = new Set([400, 404, 413]);
 
-const PER_PAGE = 100;
-const MAX_ISSUE_PAGES = 20;
-
-/** The issue shape the inherited method resolves to. Referenced through it
- *  rather than redeclared, because the interface itself is not exported. */
-type NotesIssue = NonNullable<Awaited<ReturnType<API['findEntryIssue']>>>;
-
 export default class TurboAPI extends API {
   turboFetch: TurboAPIConfig['turboFetch'];
 
@@ -90,8 +86,7 @@ export default class TurboAPI extends API {
    * review. Saving an entry that is already unpublished rebases its branch
    * against the site branch and computes which media to drop, from a diff the
    * client reads — that is a different operation, not a commit with extra
-   * steps, so it stays on the REST path. Open authoring likewise: it creates a
-   * branch with no pull request at all, and commits from a fork.
+   * steps, so it stays on the REST path.
    */
   private canCommitViaTurbo(dataFiles: DataFile[], options: PersistOptions) {
     if (!this.turboFetch) {
@@ -101,7 +96,7 @@ export default class TurboAPI extends API {
       return false;
     }
     if (options.useWorkflow) {
-      return !options.unpublished && !this.useOpenAuthoring;
+      return !options.unpublished;
     }
     return true;
   }
@@ -260,78 +255,8 @@ export default class TurboAPI extends API {
     }
   }
 
-  /**
-   * Finds an entry's notes thread by listing the repo's own notes issues
-   * rather than through `/search/issues`, which is what the inherited method
-   * uses. Three reasons, in descending order of how badly each bites:
-   *
-   * - `search/issues` is not shaped like `repos/{owner}/{repo}/...`, so the
-   *   proxy's repo scope check does not apply to it and a hand-written query
-   *   would reach issues in any repo the organization's installation covers.
-   *   The list endpoint is repo-scoped by its own path, so the boundary that
-   *   protects every other route protects this one too.
-   * - search runs on a separate 30/minute budget shared by the whole
-   *   installation, which the CMS has no way to see it exhausting.
-   * - search reads an index that lags issue creation by seconds. A thread
-   *   created moments ago is simply absent, and `addNoteToEntry` answers that
-   *   by opening a second one - splitting an entry's notes across two issues
-   *   with nothing to show anything went wrong.
-   *
-   * Paged explicitly by page number rather than through `requestAllPages`:
-   * the proxy builds its response headers from scratch, so GitHub's `Link`
-   * header never reaches the client and following `rel="next"` would stop
-   * after the first page - silently, once a site had more than PER_PAGE
-   * entries carrying notes.
-   *
-   * `state: 'all'` because a published entry's thread is closed, and its notes
-   * still belong to the entry.
-   *
-   * Narrowed to the entry's own collection by the second label `createEntryIssue`
-   * writes. GitHub's list endpoint ANDs the labels it is given and offers no way
-   * to match the body, so this is the only narrowing available - without it a
-   * site's every notes thread comes back on each lookup, and an entry is looked
-   * up several times per open (core reads the notes, then the polling manager
-   * finds the thread, retrying while the entry has none yet).
-   */
-  async findEntryIssue(collectionName: string, slug: string): Promise<NotesIssue | null> {
-    const needle = `${collectionName}/${slug}`;
-
-    // The description is confirmed exactly, because the label narrows the list
-    // to notes issues but says nothing about which entry each one is for.
-    function isExact(issue: NotesIssue) {
-      return (issue.body ?? '').includes(`\`${needle}\``);
-    }
-
-    try {
-      for (let page = 1; page <= MAX_ISSUE_PAGES; page += 1) {
-        const issues: NotesIssue[] = await this.request(`${this.repoURL}/issues`, {
-          params: {
-            labels: `${API.NOTES_LABEL},collection:${collectionName}`,
-            state: 'all',
-            per_page: PER_PAGE,
-            page,
-          },
-        });
-
-        if (!Array.isArray(issues) || issues.length === 0) {
-          return null;
-        }
-
-        const match = issues.find(isExact);
-        if (match || issues.length < PER_PAGE) {
-          return match ?? null;
-        }
-      }
-
-      return null;
-    } catch (error) {
-      console.warn('Failed to list notes issues:', error);
-      return null;
-    }
-  }
-
   async deleteFiles(paths: string[], message: string): Promise<DeleteFilesResult> {
-    if (!this.turboFetch || this.useOpenAuthoring) {
+    if (!this.turboFetch) {
       return super.deleteFiles(paths, message);
     }
 

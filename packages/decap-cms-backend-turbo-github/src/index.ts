@@ -1,5 +1,4 @@
-import { API } from 'decap-cms-backend-github';
-
+import API from './API';
 import DecapTurboGitHubBackend from './implementation';
 
 export const DecapCmsBackendTurboGitHub = {

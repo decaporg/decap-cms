@@ -1,4 +1,5 @@
 import DecapTurboGitHubBackend from '../implementation';
+import TurboAPI from '../API';
 import { recordCmsEvent } from '../telemetry';
 import { recordProxyResponse } from '../saveMetrics';
 
@@ -281,6 +282,116 @@ describe('turbo backend supabase session refresh', () => {
       );
     });
 
+    it('does not end the session over a refusal the editor can retry past', async () => {
+      const onSessionInvalid = jest.fn();
+      const backend = backendWithSession({ onSessionInvalid });
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: false,
+        status: 403,
+        text: () => Promise.resolve('{"error":"Forbidden: x","code":"repo_mismatch"}'),
+      });
+
+      await expect(backend.ghFetch(proxyUrl)).rejects.toMatchObject({ status: 403 });
+
+      expect(onSessionInvalid).not.toHaveBeenCalled();
+      expect(backend.sessionInvalidMessage).toBeNull();
+    });
+
+    describe('configuration refusals', () => {
+      const scopeSentence =
+        'Forbidden: repo "owner/repo" is not in this organization\'s selected repo scope. Add it.';
+      const refusals = [
+        [
+          'site_repo_missing',
+          403,
+          { error: 'Forbidden: site has no repo configured. Set it.', code: 'site_repo_missing' },
+        ],
+        ['repo_not_in_scope', 403, { error: scopeSentence, code: 'repo_not_in_scope' }],
+        ['the repo-scope sentence without a code', 403, { error: scopeSentence }],
+        [
+          'github_not_connected',
+          409,
+          { error: 'This organization has no GitHub connection.', code: 'github_not_connected' },
+        ],
+        [
+          'github_installation_missing',
+          409,
+          { error: 'The GitHub App is gone.', code: 'github_installation_missing' },
+        ],
+        [
+          'github_installation_unavailable',
+          409,
+          { error: 'The GitHub App is suspended.', code: 'github_installation_unavailable' },
+        ],
+        [
+          'gitlab_not_connected',
+          409,
+          { error: 'This organization has no GitLab connection.', code: 'gitlab_not_connected' },
+        ],
+      ];
+
+      function reply(status, body) {
+        const response = {
+          ok: status < 400,
+          status,
+          headers: new Headers({ 'Content-Type': 'application/json' }),
+          text: () => Promise.resolve(body),
+          json: () => Promise.resolve(JSON.parse(body)),
+        };
+        response.clone = () => ({ ...response });
+        return response;
+      }
+
+      it.each(refusals)(
+        'ends the session once with the server sentence on %s, then stops asking',
+        async (_name, status, body) => {
+          const onSessionInvalid = jest.fn();
+          const backend = backendWithSession({ onSessionInvalid });
+          global.fetch = jest.fn().mockResolvedValue(reply(status, JSON.stringify(body)));
+
+          await expect(backend.ghFetch(proxyUrl)).rejects.toMatchObject({
+            status,
+            message: body.error,
+          });
+          await expect(backend.ghFetch(proxyUrl)).rejects.toThrow(body.error);
+
+          expect(onSessionInvalid).toHaveBeenCalledTimes(1);
+          expect(onSessionInvalid).toHaveBeenCalledWith(body.error);
+          expect(global.fetch).toHaveBeenCalledTimes(1);
+        },
+      );
+
+      it('ends the session on a refusal reached through a GitHub API call', async () => {
+        const onSessionInvalid = jest.fn();
+        const backend = backendWithSession({ onSessionInvalid });
+        backend.siteId = 'site-123';
+        backend.apiRoot = 'https://supabase.example/functions/v1/gh';
+        backend.api = new TurboAPI({
+          token: 'old-token',
+          branch: 'main',
+          repo: 'owner/repo',
+          originRepo: 'owner/repo',
+          apiRoot: backend.apiRoot,
+          turboFetch: backend.ghFetch.bind(backend),
+        });
+        backend.setScopedApiRequestBuilder();
+        const body = {
+          error: 'This organization has no GitHub connection.',
+          code: 'github_not_connected',
+        };
+        global.fetch = jest.fn().mockResolvedValue(reply(409, JSON.stringify(body)));
+
+        await expect(backend.api.request('/repos/owner/repo/issues')).rejects.toMatchObject({
+          status: 409,
+        });
+        await expect(backend.api.request('/repos/owner/repo/issues')).rejects.toThrow(body.error);
+
+        expect(onSessionInvalid).toHaveBeenCalledTimes(1);
+        expect(onSessionInvalid).toHaveBeenCalledWith(body.error);
+        expect(global.fetch).toHaveBeenCalledTimes(1);
+      });
+    });
+
     it('a new login clears the latch', async () => {
       const backend = backendWithSession();
       backend.sessionInvalidMessage = 'Session expired. Please log in again.';
@@ -289,36 +400,6 @@ describe('turbo backend supabase session refresh', () => {
       await backend.authenticate({ token: 't', access_token: 'fresh', refresh_token: 'r' });
 
       expect(backend.sessionInvalidMessage).toBeNull();
-    });
-  });
-
-  describe('pollUntilForkExists', () => {
-    it('keeps polling while the fork 404s, then resolves once it exists', async () => {
-      const backend = new DecapTurboGitHubBackend(config);
-
-      global.fetch = jest
-        .fn()
-        .mockResolvedValueOnce({ ok: false, status: 404, text: () => Promise.resolve('') })
-        .mockResolvedValueOnce({ ok: true, status: 200, text: () => Promise.resolve('') });
-
-      await backend.pollUntilForkExists({ repo: 'owner/repo-fork', token: 'token' });
-
-      expect(global.fetch).toHaveBeenCalledTimes(2);
-    });
-
-    it('propagates a non-404 failure instead of retrying forever', async () => {
-      const backend = new DecapTurboGitHubBackend(config);
-
-      global.fetch = jest.fn().mockResolvedValue({
-        ok: false,
-        status: 500,
-        text: () => Promise.resolve(''),
-      });
-
-      await expect(
-        backend.pollUntilForkExists({ repo: 'owner/repo-fork', token: 'token' }),
-      ).rejects.toMatchObject({ status: 500 });
-      expect(global.fetch).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -894,6 +975,57 @@ describe('turbo backend use_graphql rejection', () => {
     };
 
     expect(() => new DecapTurboGitHubBackend(config)).toThrow(/use_graphql/);
+  });
+});
+
+describe('turbo backend open_authoring rejection', () => {
+  it('throws in the constructor when open_authoring is set', () => {
+    const config = {
+      backend: {
+        repo: 'owner/repo',
+        supabase_app_id: 'supabase-project-id',
+        supabase_anon_key: 'supabase-anon-key',
+        open_authoring: true,
+      },
+      publish_mode: 'editorial_workflow',
+      media_folder: 'static/media',
+    };
+
+    expect(() => new DecapTurboGitHubBackend(config)).toThrow(/open_authoring/);
+  });
+});
+
+describe('turbo backend folder listing', () => {
+  const config = {
+    backend: {
+      repo: 'owner/repo',
+      supabase_app_id: 'supabase-project-id',
+      supabase_anon_key: 'supabase-anon-key',
+    },
+    media_folder: 'static/media',
+  };
+
+  it('tells core that its search already covers entry bodies', () => {
+    expect(new DecapTurboGitHubBackend(config).searchesEntryBody).toBe(true);
+  });
+
+  it('orders entries by code unit, whatever the locale', async () => {
+    const backend = new DecapTurboGitHubBackend(config);
+    backend.syncCollection = jest.fn().mockResolvedValue({ fresh: false });
+    const paths = ['posts/b.md', 'posts/a.md', 'posts/B.md', 'posts/é.md', 'posts/_x.md'];
+    backend.supabase = {
+      fetchEntries: jest.fn().mockResolvedValue(paths.map(path => ({ file: { path } }))),
+    };
+
+    const entries = await backend.allEntriesByFolder('posts', 'md', 1);
+
+    expect(entries.map(entry => entry.file.path)).toEqual([
+      'posts/B.md',
+      'posts/_x.md',
+      'posts/a.md',
+      'posts/b.md',
+      'posts/é.md',
+    ]);
   });
 });
 

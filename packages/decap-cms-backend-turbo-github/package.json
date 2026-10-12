@@ -20,13 +20,7 @@
     "build:esm": "cross-env NODE_ENV=esm babel src --out-dir dist/esm --ignore **/__tests__ --root-mode upward --extensions \".js,.jsx,.ts,.tsx\""
   },
   "dependencies": {
-    "apollo-cache-inmemory": "catalog:",
-    "apollo-client": "catalog:",
-    "apollo-link-context": "catalog:",
-    "apollo-link-http": "catalog:",
     "common-tags": "catalog:",
-    "graphql": "catalog:",
-    "graphql-tag": "catalog:",
     "js-base64": "catalog:",
     "semaphore": "catalog:"
   },

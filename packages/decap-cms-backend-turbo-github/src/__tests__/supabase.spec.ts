@@ -50,6 +50,16 @@ describe('SupabaseClient', () => {
       expect(global.fetch).toHaveBeenCalledTimes(1);
     });
 
+    it('names the site in a header on every page', async () => {
+      global.fetch = mockPaginatedFetch([[{ file_id: 'a' }, { file_id: 'b' }], []]);
+
+      await client.fetchDbPaginated('?repo=eq.owner/repo', 2);
+
+      for (const [, init] of (global.fetch as jest.Mock).mock.calls) {
+        expect(init.headers['x-site-id']).toBe(siteId);
+      }
+    });
+
     it('throws when a page request fails', async () => {
       global.fetch = jest.fn().mockResolvedValue({
         ok: false,
@@ -76,6 +86,11 @@ describe('SupabaseClient', () => {
       expect(params.get('site_id')).toBe(`eq.${siteId}`);
       expect(params.get('repo')).toBe(`eq.${repo}`);
       expect(params.get('branch')).toBe(`eq.${branch}`);
+    });
+
+    it('selects only the columns the CMS reads', () => {
+      const params = new URLSearchParams(client.buildScopedQuery('k').slice(1));
+      expect(params.get('select')).toBe('file_meta,file_data');
     });
 
     it('quotes a collection key containing commas and braces so the array literal stays intact', () => {
@@ -128,6 +143,15 @@ describe('SupabaseClient', () => {
       const result = await client.fetchEntryByPath('a.md');
 
       expect(result).toEqual({ file: { id: 'id-1' }, data: 'hello world' });
+    });
+
+    it('selects only the columns the CMS reads', async () => {
+      global.fetch = jest.fn().mockResolvedValue({ ok: true, text: () => Promise.resolve('[]') });
+
+      await client.fetchEntryByPath('a.md');
+
+      const [url] = (global.fetch as jest.Mock).mock.calls[0];
+      expect(new URL(url).searchParams.get('select')).toBe('file_meta,file_data');
     });
   });
 });

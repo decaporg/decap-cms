@@ -11,7 +11,6 @@ import {
   generateContentKey,
   unsentRequest,
 } from 'decap-cms-lib-util';
-import GraphQLAPI from 'decap-cms-backend-github/src/GraphQLAPI';
 
 import TurboAPI from './API';
 import { SupabaseClient } from './supabase';
@@ -43,7 +42,11 @@ import {
 } from './deployWatcher';
 
 import type { EditorApi, RegisterFieldAction } from './editorBridge';
-import type { GitHubUser } from 'decap-cms-backend-github/src/implementation';
+
+// Derived rather than imported from `decap-cms-backend-github/src/...`: the
+// published package ships that directory as TypeScript source, which no
+// consumer's bundler is configured to resolve.
+type GitHubUser = Awaited<ReturnType<GitHubBackend['currentUser']>>;
 
 interface SupabaseUser extends User {
   access_token?: string;
@@ -107,6 +110,42 @@ const PROXY_UNAUTHORIZED_BODY = 'Unauthorized';
 /** The proxy's 403 for a user with no membership on this site. */
 const SITE_ACCESS_DENIED_MARKER = 'no access to requested site';
 
+/**
+ * Proxy refusals that only an organization owner can fix from the dashboard:
+ * no repo on the site, no Git connection, or a repo outside the connection's
+ * scope. Retrying cannot help, and every collection load used to ask again
+ * (79-129 refused requests a minute from one tab).
+ *
+ * `github_installation_unavailable` is what the proxy sends for an uninstalled
+ * or suspended App; `github_installation_missing` and `gitlab_not_connected`
+ * are accepted ahead of the server sending them.
+ */
+const TERMINAL_PROXY_CODES = new Set([
+  'site_repo_missing',
+  'repo_not_in_scope',
+  'github_not_connected',
+  'github_installation_missing',
+  'github_installation_unavailable',
+  'gitlab_not_connected',
+]);
+
+/** The repo-scope 403, matched on its sentence for proxies that predate `code`. */
+const REPO_SCOPE_MARKER = "is not in this organization's selected repo scope";
+
+/** The proxy's `error` sentence when `body` is one of the refusals above. */
+function terminalProxyRefusal(body: string): string | null {
+  let parsed: { error?: unknown; code?: unknown } | null;
+  try {
+    parsed = JSON.parse(body);
+  } catch {
+    return null;
+  }
+  if (typeof parsed?.error !== 'string') return null;
+  const isTerminal =
+    TERMINAL_PROXY_CODES.has(String(parsed.code)) || parsed.error.includes(REPO_SCOPE_MARKER);
+  return isTerminal ? parsed.error : null;
+}
+
 function isProxyUrl(url: string) {
   return url.includes('/functions/v1/');
 }
@@ -148,8 +187,7 @@ const DEFAULT_CONFIG_ENDPOINT = 'https://sb.decapcms.org/functions/v1/config';
 /**
  * The content key an editorial-workflow save's branch is named after.
  *
- * Delegates to the API client, which adds open authoring's `${repo}/` prefix,
- * and falls back to the bare key if `api` is somehow unset. That fallback is
+ * Delegates to the API client, which owns the key format, and falls back to the bare key if `api` is somehow unset. That fallback is
  * unreachable from a real save — `authenticate` builds `api` long before
  * `persistEntry` can run — but this value only feeds telemetry, and telemetry
  * must never be the thing that breaks a save.
@@ -283,6 +321,12 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
    */
   protected coalesceRequest: RequestCoalescer = createRequestCoalescer();
 
+  /**
+   * The server's search covers entry bodies, so core keeps the body in its
+   * own pass rather than filtering those matches back out.
+   */
+  searchesEntryBody = true;
+
   supabase: SupabaseClient;
 
   /**
@@ -318,6 +362,14 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
     if (this.useGraphql) {
       throw new Error(
         "Decap Turbo backend does not support 'use_graphql: true' — GraphQL requests would bypass per-site tenant scoping. Remove use_graphql from your config.",
+      );
+    }
+
+    // Every request goes out with the organization's GitHub App token, which
+    // can neither fork a repo on an editor's behalf nor commit to one.
+    if (this.openAuthoringEnabled) {
+      throw new Error(
+        "Decap Turbo backend does not support 'open_authoring: true' — Turbo commits with the organization's GitHub App, which cannot fork or commit to an editor's own repository. Remove open_authoring from your config.",
       );
     }
 
@@ -416,8 +468,8 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
    *   tab's CMS logout revokes the session they share). One forced refresh,
    *   ignoring the transient-failure cooldown, decides which: a new token is
    *   worth one retry, a terminal refusal ends the session.
-   * - A 403 for a site the user is no longer a member of cannot be fixed from
-   *   here at all.
+   * - A 403 for a site the user is no longer a member of, and the refusals in
+   *   TERMINAL_PROXY_CODES, cannot be fixed from here at all.
    *
    * Without this a dead session kept a tab looking logged in, and every click
    * cost a request and a toast: 20 refused syncs in 35 s from one editor.
@@ -429,6 +481,11 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
   ): Promise<'retry' | 'fail'> {
     if (status === 403 && body.includes(SITE_ACCESS_DENIED_MARKER)) {
       this.invalidateSession(TURBO_SITE_ACCESS_DENIED_MESSAGE);
+      return 'fail';
+    }
+    const refusal = terminalProxyRefusal(body);
+    if (refusal) {
+      this.invalidateSession(refusal);
       return 'fail';
     }
     if (status !== 401 || body.trim() !== PROXY_UNAUTHORIZED_BODY) return 'fail';
@@ -570,7 +627,11 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
 
     const originalParseResponse = api.parseResponse.bind(api);
     api.parseResponse = async (response: Response) => {
-      if (!response.ok && isGhProxyApiRoot && response.status === 403) {
+      if (
+        !response.ok &&
+        isGhProxyApiRoot &&
+        (response.status === 403 || response.status === 409)
+      ) {
         await this.reactToProxyAuthAnswer(response.status, await peekBody(response), true);
       }
       return originalParseResponse(response);
@@ -685,13 +746,10 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
     registerAskClaudeAction(registerFieldAction, () => this.editorBridgeInstance, this.siteId);
   }
 
-  authComponent() {
-    const wrappedAuthenticationPage = (props: Record<string, unknown>) => {
-      const allProps = { ...props, backend: this };
-      return <SupabaseAuthenticationPage {...allProps} />;
-    };
-    wrappedAuthenticationPage.displayName = 'AuthenticationPage';
-    return wrappedAuthenticationPage;
+  // Widened to `any` as in turbo-gitlab: core hands the component to React
+  // unchanged, and the base type describes GitHub's own wrapper, not a contract.
+  authComponent(): any {
+    return SupabaseAuthenticationPage;
   }
 
   restoreUser(user: User) {
@@ -748,8 +806,7 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
     // inherited REST sequence for renames, editorial workflow, oversized
     // payloads, and edge functions that predate the endpoint. See
     // decap-turbo/docs/deploy-status-plan.md §B1.
-    const apiCtor = this.useGraphql ? GraphQLAPI : TurboAPI;
-    this.api = new apiCtor({
+    this.api = new TurboAPI({
       // Bound so the commit request inherits the session refresh, the
       // x-site-id scoping and the save meter that every other Turbo request
       // already goes through.
@@ -762,7 +819,6 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
       apiRoot: this.apiRoot,
       squashMerges: this.squashMerges,
       cmsLabelPrefix: this.cmsLabelPrefix,
-      useOpenAuthoring: this.useOpenAuthoring,
       initialWorkflowStatus: this.options.initialWorkflowStatus,
       baseUrl: this.baseUrl,
       getUser: this.currentUser.bind(this),
@@ -830,7 +886,8 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
       // renders, so put it back.
       avatar_url: this.sessionIdentity().avatarUrl,
       token: state.token as string,
-      useOpenAuthoring: this.useOpenAuthoring,
+      // Rejected in the constructor, so never true here.
+      useOpenAuthoring: false,
       ...('access_token' in state && { access_token: state.access_token }),
       ...('refresh_token' in state && { refresh_token: state.refresh_token }),
       ...('expires_at' in state && { expires_at: state.expires_at }),
@@ -893,99 +950,6 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
       console.warn('Failed to fetch Turbo site permissions', error);
       return undefined;
     });
-  }
-
-  async pollUntilForkExists({ repo }: { repo: string; token: string }) {
-    const pollDelay = 250;
-    let repoExists = false;
-    while (!repoExists) {
-      repoExists = await this.ghFetch(`${this.apiRoot}/repos/${repo}`)
-        .then(() => true)
-        .catch(err => {
-          if (err && err.status === 404) {
-            return false;
-          } else {
-            return Promise.reject(err);
-          }
-        });
-      if (!repoExists) {
-        await new Promise(resolve => setTimeout(resolve, pollDelay));
-      }
-    }
-    return Promise.resolve();
-  }
-
-  async userIsOriginMaintainer({ username: usernameArg }: { username?: string; token: string }) {
-    const username = usernameArg || (await this.currentUser({ token: this.token || '' })).login;
-    this._userIsOriginMaintainerPromises = this._userIsOriginMaintainerPromises || {};
-    if (!this._userIsOriginMaintainerPromises[username]) {
-      this._userIsOriginMaintainerPromises[username] = this.ghFetch(
-        `${this.apiRoot}/repos/${this.originRepo}/collaborators/${username}/permission`,
-      )
-        .then(res => res.json())
-        .then(({ permission }) => permission === 'admin' || permission === 'write');
-    }
-    return this._userIsOriginMaintainerPromises[username];
-  }
-
-  async forkExists({ token }: { token: string }) {
-    try {
-      const currentUser = await this.currentUser({ token });
-      const repoName = this.originRepo.split('/')[1];
-      const repo = await this.ghFetch(`${this.apiRoot}/repos/${currentUser.login}/${repoName}`, {
-        method: 'GET',
-      }).then(res => res.json());
-
-      const forkExists =
-        repo.fork === true &&
-        repo.parent &&
-        repo.parent.full_name.toLowerCase() === this.originRepo.toLowerCase();
-      return forkExists;
-    } catch {
-      return false;
-    }
-  }
-
-  async authenticateWithFork({
-    userData,
-    getPermissionToFork,
-  }: {
-    userData: User;
-    getPermissionToFork: () => Promise<boolean> | boolean;
-  }) {
-    if (!this.openAuthoringEnabled) {
-      throw new Error('Cannot authenticate with fork; Open Authoring is turned off.');
-    }
-
-    const token = userData.token as string;
-    this.token = token;
-
-    if (!this.alwaysForkEnabled && (await this.userIsOriginMaintainer({ token }))) {
-      this.repo = this.originRepo;
-      this.useOpenAuthoring = false;
-      return Promise.resolve();
-    }
-
-    const currentUser = await this.currentUser({ token });
-    const repoName = this.originRepo.split('/')[1];
-    this.repo = `${currentUser.login}/${repoName}`;
-    this.useOpenAuthoring = true;
-
-    if (await this.forkExists({ token })) {
-      return this.ghFetch(`${this.apiRoot}/repos/${this.repo}/merge-upstream`, {
-        method: 'POST',
-        body: JSON.stringify({
-          branch: this.branch,
-        }),
-      });
-    } else {
-      await getPermissionToFork();
-
-      const fork = await this.ghFetch(`${this.apiRoot}/repos/${this.originRepo}/forks`, {
-        method: 'POST',
-      }).then(res => res.json());
-      return this.pollUntilForkExists({ repo: fork.full_name, token });
-    }
   }
 
   async setActiveSiteAndRefresh() {
@@ -1843,10 +1807,14 @@ export default class DecapTurboGitHubBackend extends GitHubBackend {
       (sync?.fresh ? await speculativeRead : null) ??
       (await this.supabase.fetchEntries(collection, searchTerm));
 
-    // The client no longer fetches a tree, so sort by path here to keep entry
-    // order stable across loads. Path order is what the tree gave anyway —
-    // GitHub returns tree entries sorted by path.
-    entries.sort((a, b) => String(a.file?.path ?? '').localeCompare(String(b.file?.path ?? '')));
+    // Sorted by path so entry order is stable across loads. Compared by code
+    // unit rather than with localeCompare, so the order does not depend on the
+    // editor's locale.
+    entries.sort((a, b) => {
+      const pathA = String(a.file?.path ?? '');
+      const pathB = String(b.file?.path ?? '');
+      return pathA < pathB ? -1 : pathA > pathB ? 1 : 0;
+    });
 
     return entries;
   }

@@ -1899,18 +1899,6 @@ importers:
       '@emotion/styled':
         specifier: 'catalog:'
         version: 11.14.1(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(@types/react@19.2.2)(react@19.2.0)
-      apollo-cache-inmemory:
-        specifier: 'catalog:'
-        version: 1.6.6(graphql@15.10.1)
-      apollo-client:
-        specifier: 'catalog:'
-        version: 2.6.10(graphql@15.10.1)
-      apollo-link-context:
-        specifier: 'catalog:'
-        version: 1.0.20(graphql@15.10.1)
-      apollo-link-http:
-        specifier: 'catalog:'
-        version: 1.5.17(graphql@15.10.1)
       common-tags:
         specifier: 'catalog:'
         version: 1.8.2
@@ -1923,12 +1911,6 @@ importers:
       decap-cms-ui-default:
         specifier: workspace:*
         version: link:../decap-cms-ui-default
-      graphql:
-        specifier: 'catalog:'
-        version: 15.10.1
-      graphql-tag:
-        specifier: 'catalog:'
-        version: 2.12.6(graphql@15.10.1)
       js-base64:
         specifier: 'catalog:'
         version: 3.7.5

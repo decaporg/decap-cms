@@ -866,6 +866,8 @@ async function queryDeployments(
     headers: {
       apikey: config.anonKey,
       Authorization: `Bearer ${accessToken}`,
+      // See supabase.ts: RLS takes the site from here before the JWT claim.
+      'x-site-id': config.siteId,
       'Content-Type': 'application/json',
     },
   });
@@ -920,6 +922,7 @@ export function createCommitLister(config: DeploymentFetcherConfig) {
       headers: {
         apikey: config.anonKey,
         Authorization: `Bearer ${accessToken}`,
+        'x-site-id': config.siteId,
         'Content-Type': 'application/json',
       },
     });
