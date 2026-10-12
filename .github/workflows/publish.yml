@@ -14,6 +14,11 @@ on:
         options:
           - latest
           - beta
+      allow_unattested:
+        description: >
+          Comma-separated packages published by hand for their first release, which carry no provenance (for example decap-cms-lib-turbo).
+        type: string
+        default: ''
 
 permissions:
   contents: read
@@ -126,4 +131,4 @@ jobs:
       # naming HEAD, and the dispatched dist-tag to point at the tree version.
       - name: Verify published manifests
         if: always()
-        run: node scripts/verify-published-packages.mjs --expect-tag=${{ inputs.dist_tag || 'latest' }}
+        run: node scripts/verify-published-packages.mjs --expect-tag=${{ inputs.dist_tag || 'latest' }} ${{ inputs.allow_unattested && format('--allow-unattested={0}', inputs.allow_unattested) || '' }}
