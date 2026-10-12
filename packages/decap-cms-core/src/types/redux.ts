@@ -616,8 +616,6 @@ export type WorkflowPagesObject = {
   ids?: List<string>;
   /** `collection/slug` for every entry under editorial workflow. */
   keys?: List<string>;
-  /** When `keys` was last confirmed against the backend. */
-  loadedAt?: number;
 };
 
 export type WorkflowPages = StaticallyTypedRecord<WorkflowPagesObject>;

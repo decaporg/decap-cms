@@ -6,9 +6,9 @@ import {
   DEPLOY_HISTORY_FAILURE,
 } from '../../actions/deployStatus';
 
-import type { DeploymentRow } from '../../actions/deployStatus';
+import type { Deployment } from '../../actions/deployStatus';
 
-function row(overrides: Partial<DeploymentRow> = {}): DeploymentRow {
+function row(overrides: Partial<Deployment> = {}): Deployment {
   return {
     commit_sha: 'abc1234',
     source: 'webhook',
@@ -17,7 +17,6 @@ function row(overrides: Partial<DeploymentRow> = {}): DeploymentRow {
     state: 'success',
     target_url: 'https://example.com',
     error_message: null,
-    started_at: null,
     finished_at: '2026-09-02T10:00:00.000Z',
     updated_at: '2026-09-02T10:00:00.000Z',
     ...overrides,

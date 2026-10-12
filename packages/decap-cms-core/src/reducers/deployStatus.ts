@@ -7,7 +7,7 @@ import {
   DEPLOY_HISTORY_FAILURE,
 } from '../actions/deployStatus';
 
-import type { DeployStatusAction, DeploymentRow } from '../actions/deployStatus';
+import type { DeployStatusAction, Deployment } from '../actions/deployStatus';
 
 /**
  * Deploy status — the header pill and the Deploys page.
@@ -21,9 +21,9 @@ export type DeployStatusState = {
   /** Saves this browser has made that no deploy has accounted for yet. */
   pendingCount: number;
   /** Most recent deployment seen, in any state. Null until one is read. */
-  latest: DeploymentRow | null;
+  latest: Deployment | null;
   /** History, newest first — only populated once something asks for it. */
-  deployments: DeploymentRow[];
+  deployments: Deployment[];
   /**
    * The branch the site publishes from, as the backend reports it. Null when
    * the backend cannot say, which makes every row a candidate for "Live" —
@@ -69,7 +69,7 @@ const defaultState: DeployStatusState = {
  * would leave such a site permanently unable to say anything about itself.
  * Only a row that names a different branch is excluded.
  */
-export function onSiteBranch(deployments: DeploymentRow[], branch: string | null) {
+export function onSiteBranch(deployments: Deployment[], branch: string | null) {
   if (!branch) {
     return deployments;
   }

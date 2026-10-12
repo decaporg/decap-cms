@@ -13,7 +13,7 @@ import {
 } from '../reducers/collections';
 import { selectIntegration, selectPublishedSlugs } from '../reducers';
 import { getIntegrationProvider } from '../integrations';
-import { currentBackend } from '../backend';
+import { currentBackend, safeEntryLabel } from '../backend';
 import { serializeValues } from '../lib/serializeEntryValues';
 import { createEntry } from '../valueObjects/Entry';
 import { createAssetProxy } from '../valueObjects/AssetProxy';
@@ -1019,10 +1019,12 @@ export function persistEntry(collection: Collection) {
         // notification when a deploy carries this change live — see
         // actions/deployStatus.ts and §A4b. Falls back to exactly the previous
         // toast when it cannot. The title is passed so that notification can
-        // name the entry rather than its path.
+        // name the entry rather than its path. Both are guarded: the entry is
+        // already committed, so a preSave handler that reshaped the data must
+        // not turn this into "Failed to persist entry".
         dispatch(
           notifyEntrySaved(
-            selectEntryCollectionTitle(collection, serializedEntry),
+            safeEntryLabel(collection, serializedEntry),
             entryPreviewPath(collection, newSlug, serializedEntry, state.config.slug),
           ),
         );

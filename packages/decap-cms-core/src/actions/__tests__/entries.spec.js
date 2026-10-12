@@ -727,6 +727,28 @@ describe('entries', () => {
       );
     });
 
+    it('reports a committed save as saved when the title cannot be computed', async () => {
+      const backendModule = require('../../backend');
+      backendModule.safeEntryLabel.mockImplementation(
+        jest.requireActual('../../backend').safeEntryLabel,
+      );
+      // What a preSave handler that reshapes the data can cause.
+      jest.spyOn(collections, 'selectEntryCollectionTitle').mockImplementation(() => {
+        throw new TypeError("Cannot read properties of undefined (reading 'get')");
+      });
+      currentBackend.mockReturnValue({
+        persistEntry: jest.fn().mockResolvedValue('hello'),
+        implementation: {},
+      });
+
+      const store = storeWithDraft();
+      await store.dispatch(persistEntry(collection));
+
+      const types = typesOf(store);
+      expect(types).toContain('ENTRY_PERSIST_SUCCESS');
+      expect(types).not.toContain('ENTRY_PERSIST_FAILURE');
+    });
+
     it('does not release the editor when the commit fails', async () => {
       currentBackend.mockReturnValue({
         persistEntry: jest.fn().mockRejectedValue(new Error('conflict')),

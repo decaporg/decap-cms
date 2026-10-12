@@ -71,14 +71,18 @@ describe('deploy notifications', () => {
     mockedCurrentBackend.mockReturnValue({ implementation: {} });
     const store = storeWith();
 
-    store.dispatch(notifyEntrySaved('A post'));
+    store.dispatch(notifyEntrySaved('A post', '/blog/a/'));
 
     expect(sent(store)).toHaveLength(1);
-    expect(sent(store)[0].payload).toMatchObject({
+    const payload = sent(store)[0].payload;
+    expect(payload).toMatchObject({
       message: { key: 'ui.toast.entrySaved' },
       type: 'success',
       dismissAfter: 4000,
     });
+    expect(payload.message).toEqual({ key: 'ui.toast.entrySaved' });
+    expect(payload.link).toBeUndefined();
+    expect(payload.spinner).toBeUndefined();
   });
 
   // Promising a follow-up that cannot come is worse than silence.
@@ -353,7 +357,7 @@ describe('deploy notifications — the entry link', () => {
 
 /**
  * Every backend that is not Turbo. None of this feature may reach them: no
- * subscription, no read, no change to the toast they have always shown.
+ * subscription and no read. The unchanged save toast is covered above.
  */
 describe('deploy status on a backend that does not support it', () => {
   beforeEach(() => {
@@ -379,19 +383,6 @@ describe('deploy status on a backend that does not support it', () => {
     store.dispatch(loadDeployHistory());
 
     expect(store.getActions().filter(a => typeof a !== 'function')).toEqual([]);
-  });
-
-  it('sends exactly the toast it always sent on save', () => {
-    mockedCurrentBackend.mockReturnValue(plainBackend);
-    const store = storeWith();
-
-    store.dispatch(notifyEntrySaved('A post', '/blog/a/'));
-
-    const payload = sent(store)[0].payload;
-    expect(payload.message).toEqual({ key: 'ui.toast.entrySaved' });
-    expect(payload.type).toBe('success');
-    expect(payload.link).toBeUndefined();
-    expect(payload.spinner).toBeUndefined();
   });
 
   it('survives a backend that cannot be constructed at all', () => {

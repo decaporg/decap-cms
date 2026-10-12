@@ -29,8 +29,8 @@ export const DEPLOY_HISTORY_REQUEST = 'DEPLOY_HISTORY_REQUEST';
 export const DEPLOY_HISTORY_SUCCESS = 'DEPLOY_HISTORY_SUCCESS';
 export const DEPLOY_HISTORY_FAILURE = 'DEPLOY_HISTORY_FAILURE';
 
-/** One row of `site_deployments`, as the backend hands it over. */
-export interface DeploymentRow {
+/** A deploy as the backend reports it, narrowed to what core reads. */
+export interface Deployment {
   commit_sha: string;
   /** The branch that was built — the site's, or an editorial-workflow one. */
   branch?: string | null;
@@ -42,19 +42,14 @@ export interface DeploymentRow {
   error_message: string | null;
   /** Where it published to, in the host's words. */
   environment?: string | null;
-  started_at: string | null;
   finished_at: string | null;
   updated_at: string;
 }
 
-/** One CMS save, as `site_commits` records it. */
-export interface CommitRow {
+/** One CMS save, narrowed to what core reads. */
+export interface DeployCommit {
   commit_sha: string;
-  branch: string;
   entry_label: string | null;
-  entry_path: string | null;
-  message: string | null;
-  created_at: string;
 }
 
 export type DeployStatusAction =
@@ -62,7 +57,7 @@ export type DeployStatusAction =
       type: typeof DEPLOY_STATUS_UPDATE;
       payload: {
         pendingCount: number;
-        latest: DeploymentRow | null;
+        latest: Deployment | null;
         supported?: boolean;
         pageEnabled?: boolean;
         /** The branch the site publishes from; null when the backend cannot say. */
@@ -72,7 +67,7 @@ export type DeployStatusAction =
   | { type: typeof DEPLOY_HISTORY_REQUEST }
   | {
       type: typeof DEPLOY_HISTORY_SUCCESS;
-      payload: { deployments: DeploymentRow[]; commits: CommitRow[] };
+      payload: { deployments: Deployment[]; commits: DeployCommit[] };
     }
   | { type: typeof DEPLOY_HISTORY_FAILURE; payload: { error: string } };
 
@@ -90,10 +85,10 @@ interface DeployWatchingBackend {
   recordSaveForDeployWatch?: (entryLabel?: string, entryUrlPath?: string) => boolean;
   commitUrl?: (sha: string) => string | null;
   subscribeDeployStatus?: (
-    listener: (status: { pendingCount: number; latest: DeploymentRow | null }) => void,
+    listener: (status: { pendingCount: number; latest: Deployment | null }) => void,
   ) => (() => void) | null;
-  listDeployments?: (limit?: number) => Promise<DeploymentRow[]>;
-  listCommits?: (limit?: number) => Promise<CommitRow[]>;
+  listDeployments?: () => Promise<Deployment[]>;
+  listCommits?: () => Promise<DeployCommit[]>;
   deployStatusConfig?: () => {
     enabled: boolean;
     page: boolean;
@@ -223,10 +218,7 @@ export function startDeployStatus() {
  * preview links, so a manual check does not read as an admission that the
  * automatic path is unreliable.
  */
-export function loadDeployHistory({
-  limit,
-  silent = false,
-}: { limit?: number; silent?: boolean } = {}) {
+export function loadDeployHistory({ silent = false }: { silent?: boolean } = {}) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const implementation = backendFor(getState);
     if (typeof implementation?.listDeployments !== 'function') {
@@ -245,8 +237,8 @@ export function loadDeployHistory({
       // a deploy with no entry name is the bare sha this read exists to
       // replace. A backend that cannot list commits simply contributes none.
       const [deployments, commits] = await Promise.all([
-        implementation.listDeployments(limit),
-        implementation.listCommits?.(limit) ?? Promise.resolve([]),
+        implementation.listDeployments(),
+        implementation.listCommits?.() ?? Promise.resolve([]),
       ]);
       dispatch({ type: DEPLOY_HISTORY_SUCCESS, payload: { deployments, commits } });
     } catch (error) {

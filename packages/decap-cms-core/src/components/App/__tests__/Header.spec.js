@@ -61,25 +61,12 @@ const liveDeploy = {
 };
 
 describe('Header deploy indicator', () => {
-  // Every backend that is not Turbo. Nothing about this feature may appear.
+  // Every backend that is not Turbo. Which states count as visible is covered
+  // by the selectDeployStatusVisible reducer tests.
   it('renders nothing for a backend that cannot report deploys', () => {
-    renderHeader({ supported: false });
-
-    expect(screen.queryByText('Deployed')).not.toBeInTheDocument();
-  });
-
-  // Auto-hide (§A7): supported is not enough — a site whose host has never
-  // reported a deploy should look like a CMS without the feature.
-  it('renders nothing until the site has actually reported a deploy', () => {
-    renderHeader({ supported: true, pageEnabled: true });
+    renderHeader({ supported: false, pageEnabled: true, latest: liveDeploy });
 
     expect(screen.queryByText('Deploys')).not.toBeInTheDocument();
-    expect(screen.queryByText('Deployed')).not.toBeInTheDocument();
-  });
-
-  it('renders nothing when the page is configured off', () => {
-    renderHeader({ supported: true, pageEnabled: false, latest: liveDeploy });
-
     expect(screen.queryByText('Deployed')).not.toBeInTheDocument();
   });
 

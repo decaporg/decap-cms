@@ -3,6 +3,7 @@
  * registered via `registerMediaLibrary`.
  */
 import once from 'lodash/once';
+import pick from 'lodash/pick';
 
 import { getMediaLibrary } from './lib/registry';
 import { currentBackend } from './backend';
@@ -67,40 +68,19 @@ interface MediaLibrary {
   }) => MediaLibraryInstance;
 }
 
-function toPlainObject(value: unknown): Record<string, unknown> {
-  if (!value || typeof value !== 'object') {
-    return {};
-  }
-
-  const maybeImmutable = value as { toJS?: () => unknown };
-  if (typeof maybeImmutable.toJS === 'function') {
-    const plain = maybeImmutable.toJS();
-    return plain && typeof plain === 'object' ? (plain as Record<string, unknown>) : {};
-  }
-
-  return value as Record<string, unknown>;
-}
-
-function asString(value: unknown): string | undefined {
-  return typeof value === 'string' && value ? value : undefined;
-}
-
-function pickContextUser(value: unknown): MediaLibraryContextUser | undefined {
-  if (!value) {
+function pickContextUser(user: unknown): MediaLibraryContextUser | undefined {
+  if (!user) {
     return undefined;
   }
 
-  const user = toPlainObject(value);
-  const picked: MediaLibraryContextUser = {
-    id: asString(user.id),
-    email: asString(user.email) || asString(user.user_email),
-    name: asString(user.name) || asString(user.user_name) || asString(user.login),
-    avatarUrl: asString(user.avatarUrl) || asString(user.avatar_url),
-  };
-
-  return Object.fromEntries(
-    Object.entries(picked).filter(([, fieldValue]) => fieldValue !== undefined),
-  ) as MediaLibraryContextUser;
+  const plain = (user as { toJS?: () => unknown }).toJS?.() ?? user;
+  const { avatar_url: avatarUrl, ...picked } = pick(plain as Record<string, string>, [
+    'id',
+    'email',
+    'name',
+    'avatar_url',
+  ]);
+  return avatarUrl === undefined ? picked : { ...picked, avatarUrl };
 }
 
 export async function getMediaLibraryContext(): Promise<MediaLibraryContext> {
@@ -120,7 +100,7 @@ export async function getMediaLibraryContext(): Promise<MediaLibraryContext> {
 
   // Passed whole on purpose — see the note on `MediaLibraryContext`. This is
   // the publicly served `config.yml` backend block, not secret state.
-  const backendConfig = toPlainObject(state.config?.backend);
+  const backendConfig: Record<string, unknown> = { ...state.config?.backend };
 
   return {
     backendName: backendConfig?.name as string | undefined,

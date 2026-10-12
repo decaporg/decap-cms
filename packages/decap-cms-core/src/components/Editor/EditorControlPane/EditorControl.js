@@ -147,6 +147,42 @@ function LabelComponent({ field, isActive, hasErrors, uniqueFieldId, isFieldOpti
   return labelComponent;
 }
 
+function FieldActionBar({ field, collection, locale, actions }) {
+  // registerFieldAction: plain values only, so an extension never depends on
+  // the editor's Immutable internals.
+  const context = {
+    field: field.toJS(),
+    collection: collection?.get('name'),
+    locale,
+    // A getter, so rendering doesn't convert the whole entry for every
+    // top-level field on every keystroke; only an action that reads it pays
+    // for it, and gets the entry as it is now.
+    get entry() {
+      return editorApi.getCurrentEntry();
+    },
+    applyFieldPatch: editorApi.applyFieldPatch,
+  };
+  const available = actions.filter(action => !action.isAvailable || action.isAvailable(context));
+  if (available.length === 0) {
+    return null;
+  }
+
+  return (
+    <FieldActions>
+      {available.map(action => (
+        <FieldActionButton
+          key={action.id}
+          type="button"
+          title={action.title || action.label}
+          onClick={() => action.onClick(context)}
+        >
+          {action.label}
+        </FieldActionButton>
+      ))}
+    </FieldActions>
+  );
+}
+
 class EditorControl extends Component {
   static propTypes = {
     value: PropTypes.oneOfType([
@@ -300,42 +336,14 @@ class EditorControl extends Component {
                 isFieldOptional={isFieldOptional}
                 t={t}
               />
-              {fieldActions?.length > 0 &&
-                (() => {
-                  // registerFieldAction: plain values only, so an extension never
-                  // depends on the editor's Immutable internals.
-                  const context = {
-                    field: field.toJS(),
-                    collection: collection?.get('name'),
-                    locale,
-                    // A getter, so rendering doesn't convert the whole entry for
-                    // every top-level field on every keystroke; only an action
-                    // that reads it pays for it, and gets the entry as it is now.
-                    get entry() {
-                      return editorApi.getCurrentEntry();
-                    },
-                    applyFieldPatch: editorApi.applyFieldPatch,
-                  };
-                  const available = fieldActions.filter(
-                    action => !action.isAvailable || action.isAvailable(context),
-                  );
-                  return (
-                    available.length > 0 && (
-                      <FieldActions>
-                        {available.map(action => (
-                          <FieldActionButton
-                            key={action.id}
-                            type="button"
-                            title={action.title || action.label}
-                            onClick={() => action.onClick(context)}
-                          >
-                            {action.label}
-                          </FieldActionButton>
-                        ))}
-                      </FieldActions>
-                    )
-                  );
-                })()}
+              {fieldActions?.length > 0 && (
+                <FieldActionBar
+                  field={field}
+                  collection={collection}
+                  locale={locale}
+                  actions={fieldActions}
+                />
+              )}
               {errors && (
                 <ControlErrorsList>
                   {errors.map(

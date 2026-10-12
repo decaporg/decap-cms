@@ -20,8 +20,13 @@ interface Props {
 
 type Entry = {
   toastId: Id;
-  /** What was last rendered, so an unchanged notification is left alone. */
-  signature: string;
+  /**
+   * What was last rendered. The reducer is immer, which keeps the object of
+   * every notification it did not change, so identity is the change check;
+   * comparing contents would mean serializing `details`, which can hold a
+   * cyclic error.
+   */
+  notification: Notification;
   /**
    * The queued dismissal, if any. Held rather than merely flagged because an
    * update may need to CANCEL it: a notification created with a timeout and
@@ -41,16 +46,6 @@ type Translate = ReturnType<typeof useTranslate>;
 
 function translateMessage(message: Notification['message'], t: Translate) {
   return typeof message === 'string' ? message : t(message.key, { ...message });
-}
-
-/**
- * Two notifications with the same signature would produce the same toast, so
- * only a change here is worth a `toast.update` — without it every unrelated
- * dispatch would re-render and restart every toast on screen.
- */
-function signatureOf(notification: Notification) {
-  const { message, type, dismissAfter, link, spinner } = notification;
-  return JSON.stringify({ message, type, dismissAfter, link, spinner });
 }
 
 function renderNotification(notification: Notification, t: Translate): ReactNode {
@@ -112,7 +107,7 @@ function Notifications({ notifications }: Props) {
 
         const entry: Entry = {
           toastId,
-          signature: signatureOf(notification),
+          notification,
           dismissTimer: null,
           dismissAfter: undefined,
         };
@@ -126,12 +121,11 @@ function Notifications({ notifications }: Props) {
     // through a single toast rather than stacking one per stage.
     notifications.forEach(notification => {
       const entry = idMap[notification.id];
-      const signature = signatureOf(notification);
-      if (!entry || entry.signature === signature) {
+      if (!entry || entry.notification === notification) {
         return;
       }
 
-      entry.signature = signature;
+      entry.notification = notification;
       toast.update(entry.toastId, {
         render: renderNotification(notification, t),
         type: notification.type,

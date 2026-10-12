@@ -56,10 +56,9 @@ describe('editorialWorkflow', () => {
   });
 
   // `pages.keys` is what loadUnpublishedEntry reads to decide whether a slug is
-  // under editorial workflow, and `pages.loadedAt` is what bounds how old that
-  // answer may be. Everything below is about keeping those two honest.
+  // under editorial workflow.
   describe('workflow keys', () => {
-    it('records the keys and when they were confirmed, from the entries themselves', () => {
+    it('records the keys from the entries themselves', () => {
       const action = {
         type: 'UNPUBLISHED_ENTRIES_SUCCESS',
         payload: {
@@ -74,16 +73,8 @@ describe('editorialWorkflow', () => {
       const pages = editorialWorkflow(fromJS({}), action).get('pages');
 
       expect(pages.get('keys').toJS()).toEqual(['posts/one', 'authors/someone']);
-      expect(pages.get('loadedAt')).toBeGreaterThan(0);
     });
 
-    // The e2e editorial-workflow failures: save an entry, then anything that
-    // lists the workflow (the collection view, the board) returned a list
-    // taken before that commit landed. Replacing the keys dropped the one the
-    // persist had just added, and `loadedAt` then certified the absence — so
-    // loadUnpublishedEntry treated a live draft as published and loaded it
-    // from the site branch, giving "404 File Not Found" and an editor showing
-    // "Published" for an entry still in review.
     // The e2e editorial-workflow failures, root cause. A new entry's draft has
     // no slug until persistEntry computes one, so keying on the entry itself
     // recorded `posts/` — and loadUnpublishedEntry, called with the real slug
@@ -155,8 +146,21 @@ describe('editorialWorkflow', () => {
       const pages = editorialWorkflow(state, action).get('pages');
 
       expect(pages.get('keys').toJS()).toEqual(['posts/one']);
-      expect(pages.get('loadedAt')).toBeGreaterThan(0);
       expect(pages.get('ids')).toBeUndefined();
+    });
+
+    it('keeps a key this session added when a key listing does not mention it', () => {
+      const state = fromJS({ pages: { keys: ['posts/just-saved', 'posts/one'] } });
+      const action = {
+        type: 'UNPUBLISHED_KEYS_SUCCESS',
+        payload: { keys: ['posts/one', 'posts/two'] },
+      };
+
+      expect(editorialWorkflow(state, action).getIn(['pages', 'keys']).toJS()).toEqual([
+        'posts/one',
+        'posts/two',
+        'posts/just-saved',
+      ]);
     });
 
     it('adds the key of an entry this session put into review', () => {
@@ -182,21 +186,6 @@ describe('editorialWorkflow', () => {
       expect(editorialWorkflow(state, action).getIn(['pages', 'keys']).toJS()).toEqual([
         'posts/one',
       ]);
-    });
-
-    it('does not treat a save as proof that the whole key set is current', () => {
-      // A save proves one key, not the set: a colleague's draft created since
-      // the last refresh is still unaccounted for. Refreshing `loadedAt` here
-      // would restart the staleness window without asking the backend anything,
-      // which is exactly the multi-editor failure the window exists to bound.
-      const confirmedAt = Date.now() - 10 * 60 * 1000;
-      const state = fromJS({ pages: { keys: ['posts/one'], ids: [], loadedAt: confirmedAt } });
-      const action = {
-        type: 'UNPUBLISHED_ENTRY_PERSIST_SUCCESS',
-        payload: { collection: 'posts', entry: fromJS({ slug: 'two' }) },
-      };
-
-      expect(editorialWorkflow(state, action).getIn(['pages', 'loadedAt'])).toBe(confirmedAt);
     });
 
     it.each([

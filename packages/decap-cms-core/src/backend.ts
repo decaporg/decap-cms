@@ -440,7 +440,7 @@ function localeSiblingRegex(collection: Collection): RegExp | undefined {
   return ruleString ? new RegExp(ruleString) : undefined;
 }
 
-function safeEntryLabel(collection: Collection, entry: EntryMap) {
+export function safeEntryLabel(collection: Collection, entry: EntryMap) {
   try {
     return selectEntryCollectionTitle(collection, entry);
   } catch {
@@ -923,6 +923,7 @@ export class Backend {
     // collection, load it, search, and call onCollectionResults with
     // its results.
     const errors: Error[] = [];
+    const searchesEntryBody = this.implementation.searchesEntryBody === true;
     const collectionEntriesRequests = collections
       .map(async collection => {
         const summary = collection.get('summary', '') as string;
@@ -950,8 +951,13 @@ export class Backend {
               }
               return elem;
             }),
-            'body',
           ];
+          // fuzzy.filter is subsequence matching, so a long body matches almost
+          // any short term. A backend that already matched the body
+          // server-side opts in so this pass does not drop its hits.
+          if (searchesEntryBody) {
+            searchFields.push('body');
+          }
         }
         const filteredSearchFields = searchFields.filter(Boolean) as string[];
         const collectionEntries = await this.listAllEntries(collection, searchTerm);

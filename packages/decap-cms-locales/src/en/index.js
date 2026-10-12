@@ -311,12 +311,6 @@ const en = {
     // The header pill and the Deploys page. See decap-turbo
     // docs/deploy-status-plan.md §A8 — state belongs in a place on screen,
     // not in a toast that has to leave.
-    deployStatus: {
-      publishing: 'Publishing…',
-      building: 'Building',
-      live: 'Live',
-      failed: 'Build failed',
-    },
     deploys: {
       heading: 'Deploys',
       refresh: 'Refresh',
@@ -335,14 +329,6 @@ const en = {
       emptyConfigured:
         'Nothing recorded yet. If this site deploys on Netlify, add the deploy webhook in your Decap Turbo dashboard — Netlify does not report branch or production deploys to your git provider. Other hosts report automatically.',
       emptyUnknown: 'Loading deploys…',
-      emptyFiltered: 'No deploys match these filters.',
-      filterAny: 'Any',
-      filterBranch: 'Branch',
-      branchUnknown: 'Not reported',
-      perPage: 'Per page',
-      previousPage: 'Previous',
-      nextPage: 'Next',
-      pageRange: 'Showing %{first}–%{last} of %{total}',
       // Only ever seen on a branch that is not the one the site publishes
       // from, where "Live" is true of that branch's own URL and nothing else.
       liveOnBranchHint:
@@ -355,8 +341,6 @@ const en = {
       columnTarget: 'Reported by',
       columnCommit: 'Commit',
       columnWhen: 'When',
-      webhook: 'Deploy webhook',
-      gitProvider: 'Git provider',
       state: {
         pending: 'Queued',
         building: 'Building',

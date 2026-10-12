@@ -1,4 +1,5 @@
 import configureMockStore from 'redux-mock-store';
+import { applyMiddleware, combineReducers, createStore } from 'redux';
 import thunk from 'redux-thunk';
 import { fromJS } from 'immutable';
 import { generateContentKey } from 'decap-cms-lib-util';
@@ -33,6 +34,7 @@ describe('editorialWorkflow actions', () => {
       const entry = { mediaFiles: [{ file: { name: 'name' }, id: '1', draft: true }] };
       const backend = {
         unpublishedEntry: jest.fn().mockResolvedValue(entry),
+        unpublishedContentKeys: jest.fn(),
       };
 
       const store = mockStore({
@@ -46,14 +48,7 @@ describe('editorialWorkflow actions', () => {
           isLoading: false,
         }),
         editorialWorkflow: fromJS({
-          // The entry has to actually be among the known workflow keys: a slug
-          // absent from them is, by definition, not under editorial workflow,
-          // and loadUnpublishedEntry now answers that from state instead of
-          // spending a round trip asking the backend to confirm it. `loadedAt`
-          // is what marks the set as backend-confirmed, so it is set here too —
-          // without it the refresh runs and this test would pass only because
-          // the missing mock threw into a swallowing catch.
-          pages: { keys: ['posts/slug'], loadedAt: Date.now() },
+          pages: { keys: ['posts/slug'] },
           entities: { 'posts.slug': { collection: 'posts', slug: 'slug' } },
         }),
       });
@@ -65,6 +60,9 @@ describe('editorialWorkflow actions', () => {
       const collection = store.getState().collections.get('posts');
 
       return store.dispatch(actions.loadUnpublishedEntry(collection, slug)).then(() => {
+        // A known key goes straight to the per-slug lookup, which is
+        // authoritative, so refreshing the set first would be pure latency.
+        expect(backend.unpublishedContentKeys).not.toHaveBeenCalled();
         const actions = store.getActions();
         expect(actions).toHaveLength(4);
         expect(actions[0]).toEqual({
@@ -91,72 +89,12 @@ describe('editorialWorkflow actions', () => {
       });
     });
 
-    it('loads the published entry without asking the backend when the loaded list does not contain the slug', () => {
-      const { currentBackend } = require('../../backend');
-
-      const backend = {
-        unpublishedEntry: jest.fn(),
-        unpublishedEntries: jest.fn(),
-        unpublishedContentKeys: jest.fn(),
-      };
-
-      const store = mockStore({
-        config: fromJS({ editor: { notes: true } }),
-        collections: fromJS({ posts: { name: 'posts' } }),
-        mediaLibrary: fromJS({ isLoading: false }),
-        entries: fromJS({}),
-        editorialWorkflow: fromJS({
-          // Known, FRESH, and this slug is not among the keys. Without
-          // loadedAt the set counts as stale and the assertions below would
-          // pass only because the refresh threw into a swallowing catch.
-          pages: { keys: ['posts/other'], loadedAt: Date.now() },
-          entities: { 'posts.other': { collection: 'posts', slug: 'other' } },
-        }),
-      });
-
-      currentBackend.mockReturnValue(backend);
-
-      const collection = store.getState().collections.get('posts');
-
-      return store.dispatch(actions.loadUnpublishedEntry(collection, 'slug')).then(() => {
-        // The open-pull-request set the backend would consult is the same one
-        // the keys came from, so the request is pure latency.
-        expect(backend.unpublishedEntry).not.toHaveBeenCalled();
-        expect(backend.unpublishedEntries).not.toHaveBeenCalled();
-        expect(backend.unpublishedContentKeys).not.toHaveBeenCalled();
-
-        const dispatched = store.getActions();
-        expect(dispatched[0]).toEqual({
-          type: 'UNPUBLISHED_ENTRY_REDIRECT',
-          payload: { collection: 'posts', slug: 'slug' },
-        });
-        expect(dispatched.map(a => a.type)).not.toContain('UNPUBLISHED_ENTRY_REQUEST');
-      });
-    });
-
-    // These two cover the freshness window on `pages.loadedAt`. Without it the
-    // key set is fetched once per page load and never again, so "this slug is
-    // not in the set" — which the shortcut above treats as proof the entry is
-    // not under editorial workflow — is answered from a snapshot that can be an
-    // entire session old. A colleague's draft created in between then opens as
-    // the published entry and saving it 422s on the existing cms/ branch.
-    //
-    // Both also pin WHICH call the refresh makes. `unpublishedEntries` answers
-    // the same question but hydrates every draft it finds — a pull request
-    // lookup, a diff and a blob read each — which measured 20 requests and
-    // 3.1s through Turbo's proxy in front of an entry load that had not started
-    // yet. Proving a slug absent needs identities only.
-    //
-    // Note redux-mock-store never runs reducers, so getState() cannot reflect
-    // the refresh; what is asserted is that the refresh HAPPENS and that the
-    // subsequent decision reads state. The two branches of that decision are
-    // covered by the fresh-set test above and by the absent case below.
-    it('refreshes a stale key set rather than trusting a session-old snapshot', () => {
+    it("detects a colleague's draft created since the key set was loaded", () => {
       const { currentBackend } = require('../../backend');
 
       const draft = { collection: 'posts', slug: 'slug', mediaFiles: [] };
       const backend = {
-        unpublishedContentKeys: jest.fn().mockResolvedValue(['posts/slug']),
+        unpublishedContentKeys: jest.fn().mockResolvedValue(['posts/other', 'posts/slug']),
         unpublishedEntries: jest.fn(),
         unpublishedEntry: jest.fn().mockResolvedValue(draft),
       };
@@ -167,10 +105,8 @@ describe('editorialWorkflow actions', () => {
         mediaLibrary: fromJS({ isLoading: false }),
         entries: fromJS({}),
         editorialWorkflow: fromJS({
-          // Confirmed at the start of a long-lived session, well past the
-          // window.
-          pages: { keys: ['posts/slug'], loadedAt: Date.now() - 10 * 60 * 1000 },
-          entities: { 'posts.slug': { collection: 'posts', slug: 'slug' } },
+          pages: { keys: ['posts/other'] },
+          entities: { 'posts.other': { collection: 'posts', slug: 'other' } },
         }),
       });
 
@@ -178,23 +114,23 @@ describe('editorialWorkflow actions', () => {
       const collection = store.getState().collections.get('posts');
 
       return store.dispatch(actions.loadUnpublishedEntry(collection, 'slug')).then(() => {
-        expect(backend.unpublishedContentKeys).toHaveBeenCalled();
+        expect(backend.unpublishedContentKeys).toHaveBeenCalledTimes(1);
         // The keys, not the drafts behind them.
         expect(backend.unpublishedEntries).not.toHaveBeenCalled();
+        expect(backend.unpublishedEntry).toHaveBeenCalled();
 
         const types = store.getActions().map(a => a.type);
         expect(types).toContain('UNPUBLISHED_KEYS_SUCCESS');
-        // Known unpublished, so it opens through the workflow path.
         expect(types).toContain('UNPUBLISHED_ENTRY_REQUEST');
         expect(types).not.toContain('UNPUBLISHED_ENTRY_REDIRECT');
       });
     });
 
-    it('still redirects to the published entry when a refreshed key set confirms the slug is absent', () => {
+    it('redirects to the published entry after one key request confirms the slug is absent', () => {
       const { currentBackend } = require('../../backend');
 
       const backend = {
-        unpublishedContentKeys: jest.fn().mockResolvedValue([]),
+        unpublishedContentKeys: jest.fn().mockResolvedValue(['posts/other']),
         unpublishedEntries: jest.fn(),
         unpublishedEntry: jest.fn(),
       };
@@ -205,7 +141,7 @@ describe('editorialWorkflow actions', () => {
         mediaLibrary: fromJS({ isLoading: false }),
         entries: fromJS({}),
         editorialWorkflow: fromJS({
-          pages: { keys: ['posts/other'], loadedAt: Date.now() - 10 * 60 * 1000 },
+          pages: { keys: ['posts/other'] },
           entities: { 'posts.other': { collection: 'posts', slug: 'other' } },
         }),
       });
@@ -214,12 +150,87 @@ describe('editorialWorkflow actions', () => {
       const collection = store.getState().collections.get('posts');
 
       return store.dispatch(actions.loadUnpublishedEntry(collection, 'slug')).then(() => {
-        expect(backend.unpublishedContentKeys).toHaveBeenCalled();
-        // One identity request, not a per-slug lookup and not a full hydration:
-        // that is what keeps the optimisation this window protects.
+        expect(backend.unpublishedContentKeys).toHaveBeenCalledTimes(1);
         expect(backend.unpublishedEntry).not.toHaveBeenCalled();
         expect(backend.unpublishedEntries).not.toHaveBeenCalled();
-        expect(store.getActions().map(a => a.type)).toContain('UNPUBLISHED_ENTRY_REDIRECT');
+        expect(store.getActions()[1]).toEqual({
+          type: 'UNPUBLISHED_ENTRY_REDIRECT',
+          payload: { collection: 'posts', slug: 'slug' },
+        });
+      });
+    });
+
+    it('keeps a draft this session saved when a later listing predates the commit', async () => {
+      const { currentBackend } = require('../../backend');
+      const editorialWorkflow = require('../../reducers/editorialWorkflow').default;
+
+      const draft = { collection: 'posts', slug: 'just-saved', mediaFiles: [] };
+      const backend = {
+        unpublishedContentKeys: jest.fn().mockResolvedValue([]),
+        unpublishedEntries: jest.fn(),
+        unpublishedEntry: jest.fn().mockResolvedValue(draft),
+      };
+      currentBackend.mockReturnValue(backend);
+
+      function fixed(value) {
+        return (state = value) => state;
+      }
+      const store = createStore(
+        combineReducers({
+          config: fixed(fromJS({ editor: { notes: true } })),
+          collections: fixed(fromJS({ posts: { name: 'posts' } })),
+          mediaLibrary: fixed(fromJS({ isLoading: false })),
+          entries: fixed(fromJS({})),
+          editorialWorkflow,
+        }),
+        { editorialWorkflow: fromJS({ pages: { keys: [] }, entities: {} }) },
+        applyMiddleware(thunk),
+      );
+      const collection = store.getState().collections.get('posts');
+
+      store.dispatch({
+        type: 'UNPUBLISHED_ENTRY_PERSIST_SUCCESS',
+        payload: { collection: 'posts', entry: fromJS({ slug: 'just-saved' }), slug: 'just-saved' },
+      });
+      // Opening another entry refreshes the keys with a listing taken before
+      // that commit landed.
+      await store.dispatch(actions.loadUnpublishedEntry(collection, 'other'));
+      backend.unpublishedContentKeys.mockClear();
+
+      await store.dispatch(actions.loadUnpublishedEntry(collection, 'just-saved'));
+
+      expect(backend.unpublishedContentKeys).not.toHaveBeenCalled();
+      expect(backend.unpublishedEntry).toHaveBeenCalledWith(
+        expect.anything(),
+        collection,
+        'just-saved',
+      );
+    });
+
+    it('asks the backend per slug when the key refresh fails', () => {
+      const { currentBackend } = require('../../backend');
+
+      const backend = {
+        unpublishedContentKeys: jest.fn().mockRejectedValue(new Error('offline')),
+        unpublishedEntry: jest.fn().mockRejectedValue(new Error('nope')),
+      };
+
+      const store = mockStore({
+        config: fromJS({ editor: { notes: true } }),
+        collections: fromJS({ posts: { name: 'posts' } }),
+        mediaLibrary: fromJS({ isLoading: false }),
+        // A set from earlier in the session must not be trusted once the
+        // refresh that would confirm it has failed.
+        editorialWorkflow: fromJS({ pages: { keys: ['posts/other'] } }),
+      });
+
+      currentBackend.mockReturnValue(backend);
+      const collection = store.getState().collections.get('posts');
+
+      return store.dispatch(actions.loadUnpublishedEntry(collection, 'slug')).then(() => {
+        expect(backend.unpublishedContentKeys).toHaveBeenCalledTimes(1);
+        expect(backend.unpublishedEntry).toHaveBeenCalled();
+        expect(store.getActions().map(a => a.type)).not.toContain('UNPUBLISHED_ENTRY_REDIRECT');
       });
     });
 

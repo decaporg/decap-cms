@@ -1176,7 +1176,7 @@ describe('Backend', () => {
     ];
 
     const implementation = {
-      init: jest.fn(() => implementation),
+      init: () => implementation,
     };
 
     let backend;
@@ -1254,6 +1254,30 @@ describe('Backend', () => {
       });
       expect(await backend.search(collections, 'find me by other')).toEqual({
         entries: [files[1]],
+      });
+    });
+
+    describe('entry body', () => {
+      const body =
+        'The cat sat on the mat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, ' +
+        'sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim ' +
+        'veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo.';
+      const bodyPosts = [
+        { path: 'posts/hello.md', slug: 'hello', data: { title: 'Hello world', body } },
+      ];
+
+      it('does not match the body on a backend that does not search it', async () => {
+        backend.listAllEntries = jest.fn(() => Promise.resolve(bodyPosts));
+
+        expect(await backend.search([collections[0]], 'cat')).toEqual({ entries: [] });
+      });
+
+      it('matches the body on a backend that searches it server-side', async () => {
+        const bodyImplementation = { init: () => bodyImplementation, searchesEntryBody: true };
+        backend = new Backend(bodyImplementation, { config: {}, backendName: 'turbo-github' });
+        backend.listAllEntries = jest.fn(() => Promise.resolve(bodyPosts));
+
+        expect(await backend.search([collections[0]], 'cat')).toEqual({ entries: bodyPosts });
       });
     });
 
