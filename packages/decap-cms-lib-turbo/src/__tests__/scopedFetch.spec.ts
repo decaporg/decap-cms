@@ -253,6 +253,24 @@ describe('proxy response helpers', () => {
     await expect(peekBody({} as Response)).resolves.toBe('');
   });
 
+  it('reads the cached JSON of a 403 that requestWithBackoff already consumed', async () => {
+    const consumed = {
+      bodyUsed: true,
+      json: () => Promise.resolve({ error: 'no access to requested site', code: 'x' }),
+      clone: () => {
+        throw new TypeError(
+          "Failed to execute 'clone' on 'Response': Response body is already used",
+        );
+      },
+    } as unknown as Response;
+    await expect(peekBody(consumed)).resolves.toBe(
+      '{"error":"no access to requested site","code":"x"}',
+    );
+
+    const unreadable = { bodyUsed: true, json: () => Promise.reject(new Error('used')) };
+    await expect(peekBody(unreadable as unknown as Response)).resolves.toBe('');
+  });
+
   it('makes a proxy refusal parse as its sentence where the client expects `message`', async () => {
     const exposed = exposeProxyError(reply(403, '{"error":"read-only"}'), '{"error":"read-only"}');
     await expect(exposed.json()).resolves.toEqual({ error: 'read-only', message: 'read-only' });

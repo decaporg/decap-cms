@@ -36,13 +36,23 @@ export function proxyErrorMessage(body: string): string {
   return body;
 }
 
-/** Reads a response's body without consuming it for whoever parses it next. */
-export function peekBody(response: Response): Promise<string> {
-  if (typeof response.clone !== 'function') return Promise.resolve('');
-  return response
-    .clone()
-    .text()
-    .catch(() => '');
+/**
+ * Reads a response's body without consuming it for whoever parses it next.
+ * lib-util's requestWithBackoff has already read every 403 body and left only
+ * `json()` answering, and `clone()` throws on a used body, so that case reads
+ * the cached JSON instead.
+ */
+export async function peekBody(response: Response): Promise<string> {
+  try {
+    if (response.bodyUsed) {
+      const json = await response.json();
+      return typeof json === 'string' ? json : JSON.stringify(json);
+    }
+    if (typeof response.clone !== 'function') return '';
+    return await response.clone().text();
+  } catch {
+    return '';
+  }
 }
 
 /**
