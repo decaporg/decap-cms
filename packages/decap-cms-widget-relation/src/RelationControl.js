@@ -178,6 +178,21 @@ function getFieldArray(field) {
   return List.isList(field) ? field.toJS() : [field];
 }
 
+function isFilterMatch(data, filter) {
+  // resolve wildcard paths the same way as value_field, and for list fields
+  // match if any of the items is in the filter values
+  const values = stringTemplate.expandPath({ data, path: filter.field }).flatMap(path => {
+    const value = get(data, path);
+    return Array.isArray(value) ? value : [value];
+  });
+  // compare as strings, since entry data may be parsed as numbers or booleans
+  // while filter values are strings (and vice versa)
+  const filterValues = filter.values.map(String);
+  return values.some(
+    value => value != null && typeof value !== 'object' && filterValues.includes(String(value)),
+  );
+}
+
 function getSelectedValue({ value, options, isMultiple }) {
   if (isMultiple) {
     const selectedOptions = getSelectedOptions(value);
@@ -399,12 +414,15 @@ export default class RelationControl extends Component {
     }
   };
 
-  parseNestedFields = (hit, field) => {
+  getHitData = hit => {
     const { locale } = this.props;
-    const hitData =
-      locale != null && hit.i18n != null && hit.i18n[locale] != null
-        ? hit.i18n[locale].data
-        : hit.data;
+    return locale != null && hit.i18n != null && hit.i18n[locale] != null
+      ? hit.i18n[locale].data
+      : hit.data;
+  };
+
+  parseNestedFields = (hit, field) => {
+    const hitData = this.getHitData(hit);
     const templateVars = stringTemplate.extractTemplateVars(field);
     // return non template fields as is
     if (templateVars.length <= 0) {
@@ -426,24 +444,8 @@ export default class RelationControl extends Component {
     const filters = getFieldArray(field.get('filters'));
 
     const options = hits.reduce((acc, hit) => {
-      if (
-        filters.every(filter => {
-          // check if the value for the (nested) filter field is in the filter values
-          const fieldKeys = filter.field.split('.');
-          let value = hit.data;
-          for (let i = 0; i < fieldKeys.length; i++) {
-            if (Object.prototype.hasOwnProperty.call(value, fieldKeys[i])) {
-              value = value[fieldKeys[i]];
-            } else {
-              return false;
-            }
-          }
-          // for list fields, match if any of the values is in the filter values
-          return Array.isArray(value)
-            ? value.some(item => filter.values.includes(item))
-            : filter.values.includes(value);
-        })
-      ) {
+      const hitData = this.getHitData(hit);
+      if (filters.every(filter => isFilterMatch(hitData, filter))) {
         const valuesPaths = stringTemplate.expandPath({ data: hit.data, path: valueField });
         for (let i = 0; i < valuesPaths.length; i++) {
           const label = displayField
