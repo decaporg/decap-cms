@@ -20,7 +20,7 @@
  */
 
 import { spawnSync } from 'child_process';
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'fs';
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
 import { fileURLToPath } from 'url';
@@ -245,10 +245,19 @@ function main() {
   if (missingEntries.length > 0) {
     throw new Error(`Entry packages not in the workspace: ${missingEntries.join(', ')}`);
   }
-  const entries = [
+  const direct = [
     ...ENTRY_PACKAGES,
     ...packages.map(pkg => pkg.name).filter(name => ENTRY_PATTERN.test(name)),
   ];
+  // Workspace peers of the entries are installed directly from their tarballs,
+  // as a site would. pnpm auto-installs a missing peer from the registry and
+  // skips overrides, which fails for a version this release has not published.
+  const byName = new Map(packages.map(pkg => [pkg.name, pkg]));
+  const peers = direct.flatMap(name => {
+    const manifest = JSON.parse(readFileSync(join(byName.get(name).path, 'package.json'), 'utf8'));
+    return Object.keys(manifest.peerDependencies || {}).filter(peer => names.has(peer));
+  });
+  const entries = [...new Set([...direct, ...peers])];
 
   const base = mkdtempSync(join(tmpdir(), 'decap-smoke-'));
   log(`Working in ${base}`);
