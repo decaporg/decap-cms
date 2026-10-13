@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.9.0-beta.4](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-github@3.9.0-beta.2...decap-cms-backend-github@3.9.0-beta.4) (2026-10-13)
+
+### Bug Fixes
+
+- **turbo-github,turbo-gitlab:** send site_id on login and drop the GraphQL deep import ([c779d90](https://github.com/decaporg/decap-cms/commit/c779d90b180efa2dd2a03755766b563d23c33008))
+
 # [3.9.0-beta.3](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-github@3.9.0-beta.2...decap-cms-backend-github@3.9.0-beta.3) (2026-10-12)
 
 ### Bug Fixes

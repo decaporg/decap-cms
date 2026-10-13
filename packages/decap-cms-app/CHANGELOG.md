@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.17.0-beta.5](https://github.com/decaporg/decap-cms/compare/decap-cms-app@3.17.0-beta.3...decap-cms-app@3.17.0-beta.5) (2026-10-13)
+
+### Features
+
+- **lib-turbo:** share the Turbo backends' session, fetch, cache and login code ([367b528](https://github.com/decaporg/decap-cms/commit/367b5286afe2c98bb28be38866b43275ab63bd65))
+
 # [3.17.0-beta.4](https://github.com/decaporg/decap-cms/compare/decap-cms-app@3.17.0-beta.3...decap-cms-app@3.17.0-beta.4) (2026-10-12)
 
 ### Features
