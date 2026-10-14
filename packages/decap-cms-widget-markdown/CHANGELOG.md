@@ -3,10 +3,6 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [3.13.2](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-markdown@3.13.2-beta.2...decap-cms-widget-markdown@3.13.2) (2026-10-14)
-
-**Note:** Version bump only for package decap-cms-widget-markdown
-
 ## [3.13.2-beta.2](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-markdown@3.13.1-beta.2...decap-cms-widget-markdown@3.13.2-beta.2) (2026-10-13)
 
 **Note:** Version bump only for package decap-cms-widget-markdown

@@ -3,10 +3,6 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [3.11.4](https://github.com/decaporg/decap-cms/compare/decap-server@3.11.4-beta.2...decap-server@3.11.4) (2026-10-14)
-
-**Note:** Version bump only for package decap-server
-
 ## [3.11.4-beta.2](https://github.com/decaporg/decap-cms/compare/decap-server@3.11.3-beta.2...decap-server@3.11.4-beta.2) (2026-10-13)
 
 ### Bug Fixes
