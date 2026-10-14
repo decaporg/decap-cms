@@ -227,7 +227,7 @@ catalog:
   rimraf: ^3.0.0
   sanitize-filename: ^1.6.1
   semaphore: ^1.1.0
-  simple-git: ^3.0.0
+  simple-git: ^4.0.1
   slate: ^0.118.1
   slate-base64-serializer: ^0.2.107
   slate-dom: ^0.118.1

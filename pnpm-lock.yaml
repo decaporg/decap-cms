@@ -658,8 +658,8 @@ catalogs:
       specifier: ^1.1.0
       version: 1.1.0
     simple-git:
-      specifier: ^3.0.0
-      version: 3.20.0
+      specifier: ^4.0.1
+      version: 4.0.2
     slate:
       specifier: ^0.118.1
       version: 0.118.1
@@ -1145,7 +1145,7 @@ importers:
         version: 3.0.2
       simple-git:
         specifier: 'catalog:'
-        version: 3.20.0(supports-color@8.1.1)
+        version: 4.0.2
       start-server-and-test:
         specifier: 'catalog:'
         version: 1.15.5
@@ -1211,7 +1211,7 @@ importers:
         version: 1.10.1
       simple-git:
         specifier: 'catalog:'
-        version: 3.20.0(supports-color@8.1.1)
+        version: 4.0.2
       what-the-diff:
         specifier: 'catalog:'
         version: 0.6.0
@@ -5133,6 +5133,12 @@ packages:
     resolution: {integrity: sha512-I5Hk5ZTnShgchggKBHmjkTecm1usFnFyagWsE6Sy+GQOA++WTADTaAly9eYcXtMhGTesFyc/zDCWRH1vRgNRkw==}
     peerDependencies:
       cypress: '>10.0.0'
+
+  '@simple-git/args-pathspec@1.0.4':
+    resolution: {integrity: sha512-EtMX6XjRWSastG2SdkmSQByPtJ9dx/NIjnHbpQPCYt62j4RmSx5rgLTGpw0YCjF5h191gZOmBfheOT23cRSFdw==}
+
+  '@simple-git/argv-parser@2.0.1':
+    resolution: {integrity: sha512-M++IaVWrN+vYalilOHfwvT2IL3wYZtVEBQpmX6DLSOJLtxbZ+SUeIDE3IiPogzhPACLajwtxfa5rp+ZX1FczzQ==}
 
   '@sinclair/typebox@0.34.41':
     resolution: {integrity: sha512-6gS8pZzSXdyRHTIqoqSVknxolr1kzfy4/CeDnrzsVz8TTIWUbOBr6gnzOmTYJ3eXQNh4IYHIGi5aIL7sOZ2G/g==}
@@ -11900,8 +11906,8 @@ packages:
   simple-concat@1.0.1:
     resolution: {integrity: sha512-cSFtAPtRhljv69IK0hTVZQ+OfE9nePi/rtJmw5UjHeVyVroEqJXP1sFztKUy1qU+xvz3u/sfYJLa947b7nAN2Q==}
 
-  simple-git@3.20.0:
-    resolution: {integrity: sha512-ozK8tl2hvLts8ijTs18iFruE+RoqmC/mqZhjs/+V7gS5W68JpJ3+FCTmLVqmR59MaUQ52MfGQuWsIqfsTbbJ0Q==}
+  simple-git@4.0.2:
+    resolution: {integrity: sha512-l0sIsv9VrPwovKELFDBOj/lhmIcbMvxBk2B+hRhsMM4/VL3gKtuZvYnBNixVo+N/0HnqQx2cBdLvxnAbygHpqA==}
 
   simple-html-tokenizer@0.1.1:
     resolution: {integrity: sha512-Mc/gH3RvlKvB/gkp9XwgDKEWrSYyefIJPGG8Jk1suZms/rISdUuVEMx5O1WBnTWaScvxXDvGJrZQWblUmQHjkQ==}
@@ -15314,7 +15320,7 @@ snapshots:
 
   '@juggle/resize-observer@3.4.0': {}
 
-  '@kwsites/file-exists@1.1.1(supports-color@8.1.1)':
+  '@kwsites/file-exists@1.1.1':
     dependencies:
       debug: 4.4.3(supports-color@8.1.1)
     transitivePeerDependencies:
@@ -16018,6 +16024,12 @@ snapshots:
       just-extend: 6.2.0
     transitivePeerDependencies:
       - jest
+
+  '@simple-git/args-pathspec@1.0.4': {}
+
+  '@simple-git/argv-parser@2.0.1':
+    dependencies:
+      '@simple-git/args-pathspec': 1.0.4
 
   '@sinclair/typebox@0.34.41': {}
 
@@ -24359,11 +24371,13 @@ snapshots:
 
   simple-concat@1.0.1: {}
 
-  simple-git@3.20.0(supports-color@8.1.1):
+  simple-git@4.0.2:
     dependencies:
-      '@kwsites/file-exists': 1.1.1(supports-color@8.1.1)
+      '@kwsites/file-exists': 1.1.1
       '@kwsites/promise-deferred': 1.1.1
-      debug: 4.4.1(supports-color@8.1.1)
+      '@simple-git/args-pathspec': 1.0.4
+      '@simple-git/argv-parser': 2.0.1
+      debug: 4.4.3(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
 
