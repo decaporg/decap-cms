@@ -249,14 +249,21 @@ function main() {
     ...ENTRY_PACKAGES,
     ...packages.map(pkg => pkg.name).filter(name => ENTRY_PATTERN.test(name)),
   ];
-  // Workspace peers of the entries are installed directly from their tarballs,
-  // as a site would. pnpm auto-installs a missing peer from the registry and
-  // skips overrides, which fails for a version this release has not published.
+  // Workspace peers anywhere below the entries are installed directly from
+  // their tarballs, as a site would. pnpm auto-installs a missing peer from the
+  // registry and skips overrides, which fails for a version this release has
+  // not published.
   const byName = new Map(packages.map(pkg => [pkg.name, pkg]));
-  const peers = direct.flatMap(name => {
+  const reachable = new Set(direct);
+  const peers = new Set();
+  for (const name of reachable) {
     const manifest = JSON.parse(readFileSync(join(byName.get(name).path, 'package.json'), 'utf8'));
-    return Object.keys(manifest.peerDependencies || {}).filter(peer => names.has(peer));
-  });
+    const workspaceDeps = field => Object.keys(manifest[field] || {}).filter(dep => names.has(dep));
+    workspaceDeps('peerDependencies').forEach(peer => peers.add(peer));
+    ['dependencies', 'optionalDependencies', 'peerDependencies']
+      .flatMap(workspaceDeps)
+      .forEach(dep => reachable.add(dep));
+  }
   const entries = [...new Set([...direct, ...peers])];
 
   const base = mkdtempSync(join(tmpdir(), 'decap-smoke-'));
