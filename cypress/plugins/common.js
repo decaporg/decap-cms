@@ -1,8 +1,12 @@
 const path = require('path');
-const { default: simpleGit } = require('simple-git');
+const { simpleGit } = require('simple-git');
 
 const GIT_SSH_COMMAND = 'ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no';
 const GIT_SSL_NO_VERIFY = true;
+// simple-git throws when any of these reach git through .env() without being
+// listed in allowEnvironment, so ambient ones are dropped (as simple-git itself
+// does when .env() isn't used) and only our own are allowed through
+const GUARDED_ENV = /^(git_.*|editor|visual|pager|prefix|ssh_askpass)$/i;
 
 const getExpectationsFilename = taskData => {
   const { spec, testName } = taskData;
@@ -67,9 +71,13 @@ const transformRecordedData = (expectation, requestBodySanitizer, responseBodySa
 };
 
 function getGitClient(repoDir) {
-  const env = { ...process.env, GIT_SSH_COMMAND, GIT_SSL_NO_VERIFY };
-  delete env.EDITOR;
-  const git = simpleGit(repoDir, { unsafe: { allowUnsafeSshCommand: true } }).env(env);
+  const env = Object.fromEntries(
+    Object.entries(process.env).filter(([key]) => !GUARDED_ENV.test(key)),
+  );
+  const git = simpleGit(repoDir, {
+    unsafe: { allowUnsafeSshCommand: true },
+    allowEnvironment: ['GIT_SSH_COMMAND', 'GIT_SSL_NO_VERIFY'],
+  }).env({ ...env, GIT_SSH_COMMAND, GIT_SSL_NO_VERIFY });
   return git;
 }
 

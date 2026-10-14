@@ -7,7 +7,7 @@ import type Joi from '@hapi/joi';
 import type express from 'express';
 
 jest.mock('decap-cms-lib-util', () => jest.fn());
-jest.mock('simple-git');
+jest.mock('simple-git', () => ({ simpleGit: jest.fn() }));
 
 function assetFailure(result: Joi.ValidationResult, expectedMessage: string) {
   const { error } = result;
