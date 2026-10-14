@@ -3,6 +3,7 @@ import type { Config } from 'decap-cms-lib-util';
 // Control-plane values are the same for every site, so a config.yml only needs
 // `turbo_site_id`; core awaits the backend's static `preloadConfig` hook.
 const DEFAULT_CONFIG_ENDPOINT = 'https://sb.decapcms.org/functions/v1/config';
+const DEFAULT_TURBO_ADMIN_URL = 'https://turbo.decapcms.org';
 
 /** The static `preloadConfig` hook for the backend registered as `backendName`. */
 export function createPreloadConfig(backendName: string) {
@@ -43,9 +44,22 @@ export function createPreloadConfig(backendName: string) {
 
     const defaults = await response.json();
     const { repo, branch, ...otherDefaults } = defaults as Record<string, unknown> & {
-      repo?: string;
+      repo?: string | null;
       branch?: string;
     };
+
+    // A site can be created before a repo is chosen for it. The proxies only
+    // serve sites.repo, so a repo in config.yml cannot stand in for it, and
+    // without this the git backend's own "needs a repo" error blames config.yml.
+    if ('repo' in defaults && !repo) {
+      let adminUrl = (backend.turbo_admin_url as string) || DEFAULT_TURBO_ADMIN_URL;
+      while (adminUrl.endsWith('/')) adminUrl = adminUrl.slice(0, -1);
+      throw new Error(
+        `${backendName} config error: this Decap Turbo site has no repository set. ` +
+          `Set "Repo" on the site's page in the Turbo dashboard: ` +
+          `${adminUrl}/sites/${encodeURIComponent(backend.turbo_site_id as string)}`,
+      );
+    }
 
     return {
       ...config,
