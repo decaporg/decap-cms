@@ -52,10 +52,8 @@ export function createPreloadConfig(backendName: string) {
     // serve sites.repo, so a repo in config.yml cannot stand in for it, and
     // without this the git backend's own "needs a repo" error blames config.yml.
     if ('repo' in defaults && !repo) {
-      const adminUrl = ((backend.turbo_admin_url as string) || DEFAULT_TURBO_ADMIN_URL).replace(
-        /\/+$/,
-        '',
-      );
+      let adminUrl = (backend.turbo_admin_url as string) || DEFAULT_TURBO_ADMIN_URL;
+      while (adminUrl.endsWith('/')) adminUrl = adminUrl.slice(0, -1);
       throw new Error(
         `${backendName} config error: this Decap Turbo site has no repository set. ` +
           `Set "Repo" on the site's page in the Turbo dashboard: ` +
