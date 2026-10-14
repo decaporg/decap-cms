@@ -10,7 +10,7 @@ exports[`EditorToolbar should render normal save button 1`] = `
   width: 100%;
   min-width: 800px;
   z-index: 300;
-  background-color: #fff;
+  background-color: var(--decap-color-foreground, #fff);
   height: 66px;
   display: -webkit-box;
   display: -webkit-flex;
@@ -31,7 +31,7 @@ exports[`EditorToolbar should render normal save button 1`] = `
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 0 solid #dfdfe3;
+  border: 0 solid var(--decap-color-text-field-border, #dfdfe3);
   border-right-width: 1px;
   font-weight: normal;
   padding: 0 20px;
@@ -39,18 +39,18 @@ exports[`EditorToolbar should render normal save button 1`] = `
 
 .emotion-2:hover,
 .emotion-2:focus {
-  background-color: #f1f2f4;
+  background-color: var(--decap-color-hover-background, #f1f2f4);
 }
 
 .emotion-4 {
-  color: #313d3e;
+  color: var(--decap-color-text-lead, #313d3e);
   font-size: 21px;
   font-weight: 600;
   margin-right: 16px;
 }
 
 .emotion-6 {
-  color: #313d3e;
+  color: var(--decap-color-text-lead, #313d3e);
   font-size: 14px;
 }
 
@@ -61,7 +61,7 @@ exports[`EditorToolbar should render normal save button 1`] = `
   display: inline-block;
   font-weight: 700;
   text-transform: uppercase;
-  color: #ff003b;
+  color: var(--decap-color-error-text, #ff003b);
 }
 
 .emotion-10 {
@@ -74,7 +74,7 @@ exports[`EditorToolbar should render normal save button 1`] = `
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 0 solid #dfdfe3;
+  border: 0 solid var(--decap-color-text-field-border, #dfdfe3);
   -webkit-flex: 10;
   -ms-flex: 10;
   flex: 10;
@@ -172,8 +172,8 @@ exports[`EditorToolbar should render normal save button 1`] = `
   white-space: nowrap;
   text-overflow: ellipsis;
   display: block;
-  background-color: #fcefea;
-  color: #D60032;
+  background-color: var(--decap-color-error-background, #fcefea);
+  color: var(--decap-color-danger-text, #D60032);
 }
 
 @media (max-width: 1200px) {
@@ -207,7 +207,7 @@ exports[`EditorToolbar should render normal save button 1`] = `
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 0 solid #dfdfe3;
+  border: 0 solid var(--decap-color-text-field-border, #dfdfe3);
   border-left-width: 1px;
   padding: 0 7px;
 }
@@ -291,7 +291,7 @@ exports[`EditorToolbar should render normal save button 2`] = `
   width: 100%;
   min-width: 800px;
   z-index: 300;
-  background-color: #fff;
+  background-color: var(--decap-color-foreground, #fff);
   height: 66px;
   display: -webkit-box;
   display: -webkit-flex;
@@ -312,7 +312,7 @@ exports[`EditorToolbar should render normal save button 2`] = `
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 0 solid #dfdfe3;
+  border: 0 solid var(--decap-color-text-field-border, #dfdfe3);
   border-right-width: 1px;
   font-weight: normal;
   padding: 0 20px;
@@ -320,18 +320,18 @@ exports[`EditorToolbar should render normal save button 2`] = `
 
 .emotion-2:hover,
 .emotion-2:focus {
-  background-color: #f1f2f4;
+  background-color: var(--decap-color-hover-background, #f1f2f4);
 }
 
 .emotion-4 {
-  color: #313d3e;
+  color: var(--decap-color-text-lead, #313d3e);
   font-size: 21px;
   font-weight: 600;
   margin-right: 16px;
 }
 
 .emotion-6 {
-  color: #313d3e;
+  color: var(--decap-color-text-lead, #313d3e);
   font-size: 14px;
 }
 
@@ -342,7 +342,7 @@ exports[`EditorToolbar should render normal save button 2`] = `
   display: inline-block;
   font-weight: 700;
   text-transform: uppercase;
-  color: #ff003b;
+  color: var(--decap-color-error-text, #ff003b);
 }
 
 .emotion-10 {
@@ -355,7 +355,7 @@ exports[`EditorToolbar should render normal save button 2`] = `
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 0 solid #dfdfe3;
+  border: 0 solid var(--decap-color-text-field-border, #dfdfe3);
   -webkit-flex: 10;
   -ms-flex: 10;
   flex: 10;
@@ -453,8 +453,8 @@ exports[`EditorToolbar should render normal save button 2`] = `
   white-space: nowrap;
   text-overflow: ellipsis;
   display: block;
-  background-color: #fcefea;
-  color: #D60032;
+  background-color: var(--decap-color-error-background, #fcefea);
+  color: var(--decap-color-danger-text, #D60032);
 }
 
 @media (max-width: 1200px) {
@@ -488,7 +488,7 @@ exports[`EditorToolbar should render normal save button 2`] = `
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 0 solid #dfdfe3;
+  border: 0 solid var(--decap-color-text-field-border, #dfdfe3);
   border-left-width: 1px;
   padding: 0 7px;
 }
@@ -572,7 +572,7 @@ exports[`EditorToolbar should render with default props 1`] = `
   width: 100%;
   min-width: 800px;
   z-index: 300;
-  background-color: #fff;
+  background-color: var(--decap-color-foreground, #fff);
   height: 66px;
   display: -webkit-box;
   display: -webkit-flex;
@@ -593,7 +593,7 @@ exports[`EditorToolbar should render with default props 1`] = `
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 0 solid #dfdfe3;
+  border: 0 solid var(--decap-color-text-field-border, #dfdfe3);
   border-right-width: 1px;
   font-weight: normal;
   padding: 0 20px;
@@ -601,18 +601,18 @@ exports[`EditorToolbar should render with default props 1`] = `
 
 .emotion-2:hover,
 .emotion-2:focus {
-  background-color: #f1f2f4;
+  background-color: var(--decap-color-hover-background, #f1f2f4);
 }
 
 .emotion-4 {
-  color: #313d3e;
+  color: var(--decap-color-text-lead, #313d3e);
   font-size: 21px;
   font-weight: 600;
   margin-right: 16px;
 }
 
 .emotion-6 {
-  color: #313d3e;
+  color: var(--decap-color-text-lead, #313d3e);
   font-size: 14px;
 }
 
@@ -623,7 +623,7 @@ exports[`EditorToolbar should render with default props 1`] = `
   display: inline-block;
   font-weight: 700;
   text-transform: uppercase;
-  color: #005614;
+  color: var(--decap-color-success-text, #005614);
 }
 
 .emotion-10 {
@@ -636,7 +636,7 @@ exports[`EditorToolbar should render with default props 1`] = `
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 0 solid #dfdfe3;
+  border: 0 solid var(--decap-color-text-field-border, #dfdfe3);
   -webkit-flex: 10;
   -ms-flex: 10;
   flex: 10;
@@ -676,8 +676,8 @@ exports[`EditorToolbar should render with default props 1`] = `
   white-space: nowrap;
   text-overflow: ellipsis;
   display: block;
-  background-color: #ddf5f9;
-  color: #117888;
+  background-color: var(--decap-color-teal-background, #ddf5f9);
+  color: var(--decap-color-teal-text, #117888);
 }
 
 @media (max-width: 1200px) {
@@ -701,8 +701,8 @@ exports[`EditorToolbar should render with default props 1`] = `
   white-space: nowrap;
   text-overflow: ellipsis;
   display: block;
-  background-color: #fcefea;
-  color: #D60032;
+  background-color: var(--decap-color-error-background, #fcefea);
+  color: var(--decap-color-danger-text, #D60032);
 }
 
 @media (max-width: 1200px) {
@@ -736,7 +736,7 @@ exports[`EditorToolbar should render with default props 1`] = `
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 0 solid #dfdfe3;
+  border: 0 solid var(--decap-color-text-field-border, #dfdfe3);
   border-left-width: 1px;
   padding: 0 7px;
 }
@@ -808,7 +808,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=false 1`
   width: 100%;
   min-width: 800px;
   z-index: 300;
-  background-color: #fff;
+  background-color: var(--decap-color-foreground, #fff);
   height: 66px;
   display: -webkit-box;
   display: -webkit-flex;
@@ -829,7 +829,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=false 1`
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 0 solid #dfdfe3;
+  border: 0 solid var(--decap-color-text-field-border, #dfdfe3);
   border-right-width: 1px;
   font-weight: normal;
   padding: 0 20px;
@@ -837,18 +837,18 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=false 1`
 
 .emotion-2:hover,
 .emotion-2:focus {
-  background-color: #f1f2f4;
+  background-color: var(--decap-color-hover-background, #f1f2f4);
 }
 
 .emotion-4 {
-  color: #313d3e;
+  color: var(--decap-color-text-lead, #313d3e);
   font-size: 21px;
   font-weight: 600;
   margin-right: 16px;
 }
 
 .emotion-6 {
-  color: #313d3e;
+  color: var(--decap-color-text-lead, #313d3e);
   font-size: 14px;
 }
 
@@ -859,7 +859,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=false 1`
   display: inline-block;
   font-weight: 700;
   text-transform: uppercase;
-  color: #005614;
+  color: var(--decap-color-success-text, #005614);
 }
 
 .emotion-10 {
@@ -872,7 +872,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=false 1`
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 0 solid #dfdfe3;
+  border: 0 solid var(--decap-color-text-field-border, #dfdfe3);
   -webkit-flex: 10;
   -ms-flex: 10;
   flex: 10;
@@ -912,8 +912,8 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=false 1`
   white-space: nowrap;
   text-overflow: ellipsis;
   display: block;
-  background-color: #e8f5fe;
-  color: #3a69c7;
+  background-color: var(--decap-color-active-background, #e8f5fe);
+  color: var(--decap-color-active, #3a69c7);
 }
 
 @media (max-width: 1200px) {
@@ -923,8 +923,8 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=false 1`
 }
 
 .emotion-14[disabled] {
-  background-color: #eff0f4;
-  color: #798291;
+  background-color: var(--decap-color-disabled-background, #eff0f4);
+  color: var(--decap-color-text, #798291);
   cursor: default;
 }
 
@@ -961,7 +961,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=false 1`
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  background-color: #ddf5f9;
+  background-color: var(--decap-color-teal-background, #ddf5f9);
   color: #17a2b8;
 }
 
@@ -1002,8 +1002,8 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=false 1`
   white-space: nowrap;
   text-overflow: ellipsis;
   display: block;
-  background-color: #fcefea;
-  color: #D60032;
+  background-color: var(--decap-color-error-background, #fcefea);
+  color: var(--decap-color-danger-text, #D60032);
 }
 
 @media (max-width: 1200px) {
@@ -1037,7 +1037,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=false 1`
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 0 solid #dfdfe3;
+  border: 0 solid var(--decap-color-text-field-border, #dfdfe3);
   border-left-width: 1px;
   padding: 0 7px;
 }
@@ -1123,7 +1123,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=true 1`]
   width: 100%;
   min-width: 800px;
   z-index: 300;
-  background-color: #fff;
+  background-color: var(--decap-color-foreground, #fff);
   height: 66px;
   display: -webkit-box;
   display: -webkit-flex;
@@ -1144,7 +1144,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=true 1`]
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 0 solid #dfdfe3;
+  border: 0 solid var(--decap-color-text-field-border, #dfdfe3);
   border-right-width: 1px;
   font-weight: normal;
   padding: 0 20px;
@@ -1152,18 +1152,18 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=true 1`]
 
 .emotion-2:hover,
 .emotion-2:focus {
-  background-color: #f1f2f4;
+  background-color: var(--decap-color-hover-background, #f1f2f4);
 }
 
 .emotion-4 {
-  color: #313d3e;
+  color: var(--decap-color-text-lead, #313d3e);
   font-size: 21px;
   font-weight: 600;
   margin-right: 16px;
 }
 
 .emotion-6 {
-  color: #313d3e;
+  color: var(--decap-color-text-lead, #313d3e);
   font-size: 14px;
 }
 
@@ -1174,7 +1174,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=true 1`]
   display: inline-block;
   font-weight: 700;
   text-transform: uppercase;
-  color: #005614;
+  color: var(--decap-color-success-text, #005614);
 }
 
 .emotion-10 {
@@ -1187,7 +1187,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=true 1`]
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 0 solid #dfdfe3;
+  border: 0 solid var(--decap-color-text-field-border, #dfdfe3);
   -webkit-flex: 10;
   -ms-flex: 10;
   flex: 10;
@@ -1227,8 +1227,8 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=true 1`]
   white-space: nowrap;
   text-overflow: ellipsis;
   display: block;
-  background-color: #e8f5fe;
-  color: #3a69c7;
+  background-color: var(--decap-color-active-background, #e8f5fe);
+  color: var(--decap-color-active, #3a69c7);
 }
 
 @media (max-width: 1200px) {
@@ -1238,8 +1238,8 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=true 1`]
 }
 
 .emotion-14[disabled] {
-  background-color: #eff0f4;
-  color: #798291;
+  background-color: var(--decap-color-disabled-background, #eff0f4);
+  color: var(--decap-color-text, #798291);
   cursor: default;
 }
 
@@ -1276,7 +1276,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=true 1`]
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  background-color: #ddf5f9;
+  background-color: var(--decap-color-teal-background, #ddf5f9);
   color: #17a2b8;
 }
 
@@ -1386,7 +1386,7 @@ exports[`EditorToolbar should render with status=draft,useOpenAuthoring=true 1`]
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 0 solid #dfdfe3;
+  border: 0 solid var(--decap-color-text-field-border, #dfdfe3);
   border-left-width: 1px;
   padding: 0 7px;
 }
@@ -1499,7 +1499,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
   width: 100%;
   min-width: 800px;
   z-index: 300;
-  background-color: #fff;
+  background-color: var(--decap-color-foreground, #fff);
   height: 66px;
   display: -webkit-box;
   display: -webkit-flex;
@@ -1520,7 +1520,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 0 solid #dfdfe3;
+  border: 0 solid var(--decap-color-text-field-border, #dfdfe3);
   border-right-width: 1px;
   font-weight: normal;
   padding: 0 20px;
@@ -1528,18 +1528,18 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
 
 .emotion-2:hover,
 .emotion-2:focus {
-  background-color: #f1f2f4;
+  background-color: var(--decap-color-hover-background, #f1f2f4);
 }
 
 .emotion-4 {
-  color: #313d3e;
+  color: var(--decap-color-text-lead, #313d3e);
   font-size: 21px;
   font-weight: 600;
   margin-right: 16px;
 }
 
 .emotion-6 {
-  color: #313d3e;
+  color: var(--decap-color-text-lead, #313d3e);
   font-size: 14px;
 }
 
@@ -1550,7 +1550,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
   display: inline-block;
   font-weight: 700;
   text-transform: uppercase;
-  color: #005614;
+  color: var(--decap-color-success-text, #005614);
 }
 
 .emotion-10 {
@@ -1563,7 +1563,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 0 solid #dfdfe3;
+  border: 0 solid var(--decap-color-text-field-border, #dfdfe3);
   -webkit-flex: 10;
   -ms-flex: 10;
   flex: 10;
@@ -1603,8 +1603,8 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
   white-space: nowrap;
   text-overflow: ellipsis;
   display: block;
-  background-color: #e8f5fe;
-  color: #3a69c7;
+  background-color: var(--decap-color-active-background, #e8f5fe);
+  color: var(--decap-color-active, #3a69c7);
 }
 
 @media (max-width: 1200px) {
@@ -1614,8 +1614,8 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
 }
 
 .emotion-14[disabled] {
-  background-color: #eff0f4;
-  color: #798291;
+  background-color: var(--decap-color-disabled-background, #eff0f4);
+  color: var(--decap-color-text, #798291);
   cursor: default;
 }
 
@@ -1652,7 +1652,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  background-color: #ddf5f9;
+  background-color: var(--decap-color-teal-background, #ddf5f9);
   color: #17a2b8;
 }
 
@@ -1693,8 +1693,8 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
   white-space: nowrap;
   text-overflow: ellipsis;
   display: block;
-  background-color: #fcefea;
-  color: #D60032;
+  background-color: var(--decap-color-error-background, #fcefea);
+  color: var(--decap-color-danger-text, #D60032);
 }
 
 @media (max-width: 1200px) {
@@ -1728,7 +1728,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 0 solid #dfdfe3;
+  border: 0 solid var(--decap-color-text-field-border, #dfdfe3);
   border-left-width: 1px;
   padding: 0 7px;
 }
@@ -1814,7 +1814,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
   width: 100%;
   min-width: 800px;
   z-index: 300;
-  background-color: #fff;
+  background-color: var(--decap-color-foreground, #fff);
   height: 66px;
   display: -webkit-box;
   display: -webkit-flex;
@@ -1835,7 +1835,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 0 solid #dfdfe3;
+  border: 0 solid var(--decap-color-text-field-border, #dfdfe3);
   border-right-width: 1px;
   font-weight: normal;
   padding: 0 20px;
@@ -1843,18 +1843,18 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
 
 .emotion-2:hover,
 .emotion-2:focus {
-  background-color: #f1f2f4;
+  background-color: var(--decap-color-hover-background, #f1f2f4);
 }
 
 .emotion-4 {
-  color: #313d3e;
+  color: var(--decap-color-text-lead, #313d3e);
   font-size: 21px;
   font-weight: 600;
   margin-right: 16px;
 }
 
 .emotion-6 {
-  color: #313d3e;
+  color: var(--decap-color-text-lead, #313d3e);
   font-size: 14px;
 }
 
@@ -1865,7 +1865,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
   display: inline-block;
   font-weight: 700;
   text-transform: uppercase;
-  color: #005614;
+  color: var(--decap-color-success-text, #005614);
 }
 
 .emotion-10 {
@@ -1878,7 +1878,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 0 solid #dfdfe3;
+  border: 0 solid var(--decap-color-text-field-border, #dfdfe3);
   -webkit-flex: 10;
   -ms-flex: 10;
   flex: 10;
@@ -1918,8 +1918,8 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
   white-space: nowrap;
   text-overflow: ellipsis;
   display: block;
-  background-color: #e8f5fe;
-  color: #3a69c7;
+  background-color: var(--decap-color-active-background, #e8f5fe);
+  color: var(--decap-color-active, #3a69c7);
 }
 
 @media (max-width: 1200px) {
@@ -1929,8 +1929,8 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
 }
 
 .emotion-14[disabled] {
-  background-color: #eff0f4;
-  color: #798291;
+  background-color: var(--decap-color-disabled-background, #eff0f4);
+  color: var(--decap-color-text, #798291);
   cursor: default;
 }
 
@@ -1967,7 +1967,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  background-color: #ddf5f9;
+  background-color: var(--decap-color-teal-background, #ddf5f9);
   color: #17a2b8;
 }
 
@@ -2059,7 +2059,7 @@ exports[`EditorToolbar should render with status=pending_publish,useOpenAuthorin
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 0 solid #dfdfe3;
+  border: 0 solid var(--decap-color-text-field-border, #dfdfe3);
   border-left-width: 1px;
   padding: 0 7px;
 }
@@ -2167,7 +2167,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
   width: 100%;
   min-width: 800px;
   z-index: 300;
-  background-color: #fff;
+  background-color: var(--decap-color-foreground, #fff);
   height: 66px;
   display: -webkit-box;
   display: -webkit-flex;
@@ -2188,7 +2188,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 0 solid #dfdfe3;
+  border: 0 solid var(--decap-color-text-field-border, #dfdfe3);
   border-right-width: 1px;
   font-weight: normal;
   padding: 0 20px;
@@ -2196,18 +2196,18 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
 
 .emotion-2:hover,
 .emotion-2:focus {
-  background-color: #f1f2f4;
+  background-color: var(--decap-color-hover-background, #f1f2f4);
 }
 
 .emotion-4 {
-  color: #313d3e;
+  color: var(--decap-color-text-lead, #313d3e);
   font-size: 21px;
   font-weight: 600;
   margin-right: 16px;
 }
 
 .emotion-6 {
-  color: #313d3e;
+  color: var(--decap-color-text-lead, #313d3e);
   font-size: 14px;
 }
 
@@ -2218,7 +2218,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
   display: inline-block;
   font-weight: 700;
   text-transform: uppercase;
-  color: #005614;
+  color: var(--decap-color-success-text, #005614);
 }
 
 .emotion-10 {
@@ -2231,7 +2231,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 0 solid #dfdfe3;
+  border: 0 solid var(--decap-color-text-field-border, #dfdfe3);
   -webkit-flex: 10;
   -ms-flex: 10;
   flex: 10;
@@ -2271,8 +2271,8 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
   white-space: nowrap;
   text-overflow: ellipsis;
   display: block;
-  background-color: #e8f5fe;
-  color: #3a69c7;
+  background-color: var(--decap-color-active-background, #e8f5fe);
+  color: var(--decap-color-active, #3a69c7);
 }
 
 @media (max-width: 1200px) {
@@ -2282,8 +2282,8 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
 }
 
 .emotion-14[disabled] {
-  background-color: #eff0f4;
-  color: #798291;
+  background-color: var(--decap-color-disabled-background, #eff0f4);
+  color: var(--decap-color-text, #798291);
   cursor: default;
 }
 
@@ -2320,7 +2320,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  background-color: #ddf5f9;
+  background-color: var(--decap-color-teal-background, #ddf5f9);
   color: #17a2b8;
 }
 
@@ -2361,8 +2361,8 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
   white-space: nowrap;
   text-overflow: ellipsis;
   display: block;
-  background-color: #fcefea;
-  color: #D60032;
+  background-color: var(--decap-color-error-background, #fcefea);
+  color: var(--decap-color-danger-text, #D60032);
 }
 
 @media (max-width: 1200px) {
@@ -2396,7 +2396,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 0 solid #dfdfe3;
+  border: 0 solid var(--decap-color-text-field-border, #dfdfe3);
   border-left-width: 1px;
   padding: 0 7px;
 }
@@ -2482,7 +2482,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
   width: 100%;
   min-width: 800px;
   z-index: 300;
-  background-color: #fff;
+  background-color: var(--decap-color-foreground, #fff);
   height: 66px;
   display: -webkit-box;
   display: -webkit-flex;
@@ -2503,7 +2503,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 0 solid #dfdfe3;
+  border: 0 solid var(--decap-color-text-field-border, #dfdfe3);
   border-right-width: 1px;
   font-weight: normal;
   padding: 0 20px;
@@ -2511,18 +2511,18 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
 
 .emotion-2:hover,
 .emotion-2:focus {
-  background-color: #f1f2f4;
+  background-color: var(--decap-color-hover-background, #f1f2f4);
 }
 
 .emotion-4 {
-  color: #313d3e;
+  color: var(--decap-color-text-lead, #313d3e);
   font-size: 21px;
   font-weight: 600;
   margin-right: 16px;
 }
 
 .emotion-6 {
-  color: #313d3e;
+  color: var(--decap-color-text-lead, #313d3e);
   font-size: 14px;
 }
 
@@ -2533,7 +2533,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
   display: inline-block;
   font-weight: 700;
   text-transform: uppercase;
-  color: #005614;
+  color: var(--decap-color-success-text, #005614);
 }
 
 .emotion-10 {
@@ -2546,7 +2546,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 0 solid #dfdfe3;
+  border: 0 solid var(--decap-color-text-field-border, #dfdfe3);
   -webkit-flex: 10;
   -ms-flex: 10;
   flex: 10;
@@ -2586,8 +2586,8 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
   white-space: nowrap;
   text-overflow: ellipsis;
   display: block;
-  background-color: #e8f5fe;
-  color: #3a69c7;
+  background-color: var(--decap-color-active-background, #e8f5fe);
+  color: var(--decap-color-active, #3a69c7);
 }
 
 @media (max-width: 1200px) {
@@ -2597,8 +2597,8 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
 }
 
 .emotion-14[disabled] {
-  background-color: #eff0f4;
-  color: #798291;
+  background-color: var(--decap-color-disabled-background, #eff0f4);
+  color: var(--decap-color-text, #798291);
   cursor: default;
 }
 
@@ -2635,7 +2635,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  background-color: #ddf5f9;
+  background-color: var(--decap-color-teal-background, #ddf5f9);
   color: #17a2b8;
 }
 
@@ -2745,7 +2745,7 @@ exports[`EditorToolbar should render with status=pending_review,useOpenAuthoring
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 0 solid #dfdfe3;
+  border: 0 solid var(--decap-color-text-field-border, #dfdfe3);
   border-left-width: 1px;
   padding: 0 7px;
 }
@@ -2858,7 +2858,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   width: 100%;
   min-width: 800px;
   z-index: 300;
-  background-color: #fff;
+  background-color: var(--decap-color-foreground, #fff);
   height: 66px;
   display: -webkit-box;
   display: -webkit-flex;
@@ -2879,7 +2879,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 0 solid #dfdfe3;
+  border: 0 solid var(--decap-color-text-field-border, #dfdfe3);
   border-right-width: 1px;
   font-weight: normal;
   padding: 0 20px;
@@ -2887,18 +2887,18 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
 
 .emotion-2:hover,
 .emotion-2:focus {
-  background-color: #f1f2f4;
+  background-color: var(--decap-color-hover-background, #f1f2f4);
 }
 
 .emotion-4 {
-  color: #313d3e;
+  color: var(--decap-color-text-lead, #313d3e);
   font-size: 21px;
   font-weight: 600;
   margin-right: 16px;
 }
 
 .emotion-6 {
-  color: #313d3e;
+  color: var(--decap-color-text-lead, #313d3e);
   font-size: 14px;
 }
 
@@ -2909,7 +2909,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   display: inline-block;
   font-weight: 700;
   text-transform: uppercase;
-  color: #005614;
+  color: var(--decap-color-success-text, #005614);
 }
 
 .emotion-10 {
@@ -2922,7 +2922,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 0 solid #dfdfe3;
+  border: 0 solid var(--decap-color-text-field-border, #dfdfe3);
   -webkit-flex: 10;
   -ms-flex: 10;
   flex: 10;
@@ -2962,8 +2962,8 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   white-space: nowrap;
   text-overflow: ellipsis;
   display: block;
-  background-color: #e8f5fe;
-  color: #3a69c7;
+  background-color: var(--decap-color-active-background, #e8f5fe);
+  color: var(--decap-color-active, #3a69c7);
 }
 
 @media (max-width: 1200px) {
@@ -2973,8 +2973,8 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
 }
 
 .emotion-14[disabled] {
-  background-color: #eff0f4;
-  color: #798291;
+  background-color: var(--decap-color-disabled-background, #eff0f4);
+  color: var(--decap-color-text, #798291);
   cursor: default;
 }
 
@@ -2993,8 +2993,8 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   white-space: nowrap;
   text-overflow: ellipsis;
   display: block;
-  background-color: #fcefea;
-  color: #D60032;
+  background-color: var(--decap-color-error-background, #fcefea);
+  color: var(--decap-color-danger-text, #D60032);
 }
 
 @media (max-width: 1200px) {
@@ -3028,7 +3028,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 0 solid #dfdfe3;
+  border: 0 solid var(--decap-color-text-field-border, #dfdfe3);
   border-left-width: 1px;
   padding: 0 7px;
 }
@@ -3099,7 +3099,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   width: 100%;
   min-width: 800px;
   z-index: 300;
-  background-color: #fff;
+  background-color: var(--decap-color-foreground, #fff);
   height: 66px;
   display: -webkit-box;
   display: -webkit-flex;
@@ -3120,7 +3120,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 0 solid #dfdfe3;
+  border: 0 solid var(--decap-color-text-field-border, #dfdfe3);
   border-right-width: 1px;
   font-weight: normal;
   padding: 0 20px;
@@ -3128,18 +3128,18 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
 
 .emotion-2:hover,
 .emotion-2:focus {
-  background-color: #f1f2f4;
+  background-color: var(--decap-color-hover-background, #f1f2f4);
 }
 
 .emotion-4 {
-  color: #313d3e;
+  color: var(--decap-color-text-lead, #313d3e);
   font-size: 21px;
   font-weight: 600;
   margin-right: 16px;
 }
 
 .emotion-6 {
-  color: #313d3e;
+  color: var(--decap-color-text-lead, #313d3e);
   font-size: 14px;
 }
 
@@ -3150,7 +3150,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   display: inline-block;
   font-weight: 700;
   text-transform: uppercase;
-  color: #005614;
+  color: var(--decap-color-success-text, #005614);
 }
 
 .emotion-10 {
@@ -3163,7 +3163,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 0 solid #dfdfe3;
+  border: 0 solid var(--decap-color-text-field-border, #dfdfe3);
   -webkit-flex: 10;
   -ms-flex: 10;
   flex: 10;
@@ -3203,8 +3203,8 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   white-space: nowrap;
   text-overflow: ellipsis;
   display: block;
-  background-color: #e8f5fe;
-  color: #3a69c7;
+  background-color: var(--decap-color-active-background, #e8f5fe);
+  color: var(--decap-color-active, #3a69c7);
 }
 
 @media (max-width: 1200px) {
@@ -3214,8 +3214,8 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
 }
 
 .emotion-14[disabled] {
-  background-color: #eff0f4;
-  color: #798291;
+  background-color: var(--decap-color-disabled-background, #eff0f4);
+  color: var(--decap-color-text, #798291);
   cursor: default;
 }
 
@@ -3244,7 +3244,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 0 solid #dfdfe3;
+  border: 0 solid var(--decap-color-text-field-border, #dfdfe3);
   border-left-width: 1px;
   padding: 0 7px;
 }
@@ -3310,7 +3310,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   width: 100%;
   min-width: 800px;
   z-index: 300;
-  background-color: #fff;
+  background-color: var(--decap-color-foreground, #fff);
   height: 66px;
   display: -webkit-box;
   display: -webkit-flex;
@@ -3331,7 +3331,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 0 solid #dfdfe3;
+  border: 0 solid var(--decap-color-text-field-border, #dfdfe3);
   border-right-width: 1px;
   font-weight: normal;
   padding: 0 20px;
@@ -3339,18 +3339,18 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
 
 .emotion-2:hover,
 .emotion-2:focus {
-  background-color: #f1f2f4;
+  background-color: var(--decap-color-hover-background, #f1f2f4);
 }
 
 .emotion-4 {
-  color: #313d3e;
+  color: var(--decap-color-text-lead, #313d3e);
   font-size: 21px;
   font-weight: 600;
   margin-right: 16px;
 }
 
 .emotion-6 {
-  color: #313d3e;
+  color: var(--decap-color-text-lead, #313d3e);
   font-size: 14px;
 }
 
@@ -3361,7 +3361,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   display: inline-block;
   font-weight: 700;
   text-transform: uppercase;
-  color: #005614;
+  color: var(--decap-color-success-text, #005614);
 }
 
 .emotion-10 {
@@ -3374,7 +3374,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 0 solid #dfdfe3;
+  border: 0 solid var(--decap-color-text-field-border, #dfdfe3);
   -webkit-flex: 10;
   -ms-flex: 10;
   flex: 10;
@@ -3414,8 +3414,8 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   white-space: nowrap;
   text-overflow: ellipsis;
   display: block;
-  background-color: #e8f5fe;
-  color: #3a69c7;
+  background-color: var(--decap-color-active-background, #e8f5fe);
+  color: var(--decap-color-active, #3a69c7);
 }
 
 @media (max-width: 1200px) {
@@ -3425,8 +3425,8 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
 }
 
 .emotion-14[disabled] {
-  background-color: #eff0f4;
-  color: #798291;
+  background-color: var(--decap-color-disabled-background, #eff0f4);
+  color: var(--decap-color-text, #798291);
   cursor: default;
 }
 
@@ -3445,8 +3445,8 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   white-space: nowrap;
   text-overflow: ellipsis;
   display: block;
-  background-color: #fcefea;
-  color: #D60032;
+  background-color: var(--decap-color-error-background, #fcefea);
+  color: var(--decap-color-danger-text, #D60032);
 }
 
 @media (max-width: 1200px) {
@@ -3480,7 +3480,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 0 solid #dfdfe3;
+  border: 0 solid var(--decap-color-text-field-border, #dfdfe3);
   border-left-width: 1px;
   padding: 0 7px;
 }
@@ -3551,7 +3551,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   width: 100%;
   min-width: 800px;
   z-index: 300;
-  background-color: #fff;
+  background-color: var(--decap-color-foreground, #fff);
   height: 66px;
   display: -webkit-box;
   display: -webkit-flex;
@@ -3572,7 +3572,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 0 solid #dfdfe3;
+  border: 0 solid var(--decap-color-text-field-border, #dfdfe3);
   border-right-width: 1px;
   font-weight: normal;
   padding: 0 20px;
@@ -3580,18 +3580,18 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
 
 .emotion-2:hover,
 .emotion-2:focus {
-  background-color: #f1f2f4;
+  background-color: var(--decap-color-hover-background, #f1f2f4);
 }
 
 .emotion-4 {
-  color: #313d3e;
+  color: var(--decap-color-text-lead, #313d3e);
   font-size: 21px;
   font-weight: 600;
   margin-right: 16px;
 }
 
 .emotion-6 {
-  color: #313d3e;
+  color: var(--decap-color-text-lead, #313d3e);
   font-size: 14px;
 }
 
@@ -3602,7 +3602,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   display: inline-block;
   font-weight: 700;
   text-transform: uppercase;
-  color: #005614;
+  color: var(--decap-color-success-text, #005614);
 }
 
 .emotion-10 {
@@ -3615,7 +3615,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 0 solid #dfdfe3;
+  border: 0 solid var(--decap-color-text-field-border, #dfdfe3);
   -webkit-flex: 10;
   -ms-flex: 10;
   flex: 10;
@@ -3655,8 +3655,8 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   white-space: nowrap;
   text-overflow: ellipsis;
   display: block;
-  background-color: #e8f5fe;
-  color: #3a69c7;
+  background-color: var(--decap-color-active-background, #e8f5fe);
+  color: var(--decap-color-active, #3a69c7);
 }
 
 @media (max-width: 1200px) {
@@ -3666,8 +3666,8 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
 }
 
 .emotion-14[disabled] {
-  background-color: #eff0f4;
-  color: #798291;
+  background-color: var(--decap-color-disabled-background, #eff0f4);
+  color: var(--decap-color-text, #798291);
   cursor: default;
 }
 
@@ -3686,8 +3686,8 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   white-space: nowrap;
   text-overflow: ellipsis;
   display: block;
-  background-color: #fcefea;
-  color: #D60032;
+  background-color: var(--decap-color-error-background, #fcefea);
+  color: var(--decap-color-danger-text, #D60032);
 }
 
 @media (max-width: 1200px) {
@@ -3721,7 +3721,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 0 solid #dfdfe3;
+  border: 0 solid var(--decap-color-text-field-border, #dfdfe3);
   border-left-width: 1px;
   padding: 0 7px;
 }
@@ -3792,7 +3792,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   width: 100%;
   min-width: 800px;
   z-index: 300;
-  background-color: #fff;
+  background-color: var(--decap-color-foreground, #fff);
   height: 66px;
   display: -webkit-box;
   display: -webkit-flex;
@@ -3813,7 +3813,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 0 solid #dfdfe3;
+  border: 0 solid var(--decap-color-text-field-border, #dfdfe3);
   border-right-width: 1px;
   font-weight: normal;
   padding: 0 20px;
@@ -3821,18 +3821,18 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
 
 .emotion-2:hover,
 .emotion-2:focus {
-  background-color: #f1f2f4;
+  background-color: var(--decap-color-hover-background, #f1f2f4);
 }
 
 .emotion-4 {
-  color: #313d3e;
+  color: var(--decap-color-text-lead, #313d3e);
   font-size: 21px;
   font-weight: 600;
   margin-right: 16px;
 }
 
 .emotion-6 {
-  color: #313d3e;
+  color: var(--decap-color-text-lead, #313d3e);
   font-size: 14px;
 }
 
@@ -3843,7 +3843,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   display: inline-block;
   font-weight: 700;
   text-transform: uppercase;
-  color: #005614;
+  color: var(--decap-color-success-text, #005614);
 }
 
 .emotion-10 {
@@ -3856,7 +3856,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 0 solid #dfdfe3;
+  border: 0 solid var(--decap-color-text-field-border, #dfdfe3);
   -webkit-flex: 10;
   -ms-flex: 10;
   flex: 10;
@@ -3896,8 +3896,8 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   white-space: nowrap;
   text-overflow: ellipsis;
   display: block;
-  background-color: #e8f5fe;
-  color: #3a69c7;
+  background-color: var(--decap-color-active-background, #e8f5fe);
+  color: var(--decap-color-active, #3a69c7);
 }
 
 @media (max-width: 1200px) {
@@ -3907,8 +3907,8 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
 }
 
 .emotion-14[disabled] {
-  background-color: #eff0f4;
-  color: #798291;
+  background-color: var(--decap-color-disabled-background, #eff0f4);
+  color: var(--decap-color-text, #798291);
   cursor: default;
 }
 
@@ -3927,8 +3927,8 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   white-space: nowrap;
   text-overflow: ellipsis;
   display: block;
-  background-color: #fcefea;
-  color: #D60032;
+  background-color: var(--decap-color-error-background, #fcefea);
+  color: var(--decap-color-danger-text, #D60032);
 }
 
 @media (max-width: 1200px) {
@@ -3962,7 +3962,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 0 solid #dfdfe3;
+  border: 0 solid var(--decap-color-text-field-border, #dfdfe3);
   border-left-width: 1px;
   padding: 0 7px;
 }
@@ -4033,7 +4033,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   width: 100%;
   min-width: 800px;
   z-index: 300;
-  background-color: #fff;
+  background-color: var(--decap-color-foreground, #fff);
   height: 66px;
   display: -webkit-box;
   display: -webkit-flex;
@@ -4054,7 +4054,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 0 solid #dfdfe3;
+  border: 0 solid var(--decap-color-text-field-border, #dfdfe3);
   border-right-width: 1px;
   font-weight: normal;
   padding: 0 20px;
@@ -4062,18 +4062,18 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
 
 .emotion-2:hover,
 .emotion-2:focus {
-  background-color: #f1f2f4;
+  background-color: var(--decap-color-hover-background, #f1f2f4);
 }
 
 .emotion-4 {
-  color: #313d3e;
+  color: var(--decap-color-text-lead, #313d3e);
   font-size: 21px;
   font-weight: 600;
   margin-right: 16px;
 }
 
 .emotion-6 {
-  color: #313d3e;
+  color: var(--decap-color-text-lead, #313d3e);
   font-size: 14px;
 }
 
@@ -4084,7 +4084,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   display: inline-block;
   font-weight: 700;
   text-transform: uppercase;
-  color: #005614;
+  color: var(--decap-color-success-text, #005614);
 }
 
 .emotion-10 {
@@ -4097,7 +4097,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 0 solid #dfdfe3;
+  border: 0 solid var(--decap-color-text-field-border, #dfdfe3);
   -webkit-flex: 10;
   -ms-flex: 10;
   flex: 10;
@@ -4137,8 +4137,8 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   white-space: nowrap;
   text-overflow: ellipsis;
   display: block;
-  background-color: #e8f5fe;
-  color: #3a69c7;
+  background-color: var(--decap-color-active-background, #e8f5fe);
+  color: var(--decap-color-active, #3a69c7);
 }
 
 @media (max-width: 1200px) {
@@ -4148,8 +4148,8 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
 }
 
 .emotion-14[disabled] {
-  background-color: #eff0f4;
-  color: #798291;
+  background-color: var(--decap-color-disabled-background, #eff0f4);
+  color: var(--decap-color-text, #798291);
   cursor: default;
 }
 
@@ -4168,8 +4168,8 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   white-space: nowrap;
   text-overflow: ellipsis;
   display: block;
-  background-color: #fcefea;
-  color: #D60032;
+  background-color: var(--decap-color-error-background, #fcefea);
+  color: var(--decap-color-danger-text, #D60032);
 }
 
 @media (max-width: 1200px) {
@@ -4203,7 +4203,7 @@ exports[`EditorToolbar should render with workflow controls hasUnpublishedChange
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 0 solid #dfdfe3;
+  border: 0 solid var(--decap-color-text-field-border, #dfdfe3);
   border-left-width: 1px;
   padding: 0 7px;
 }

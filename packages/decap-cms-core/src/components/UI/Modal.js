@@ -2,7 +2,7 @@ import { Component } from 'react';
 import PropTypes from 'prop-types';
 import { css, Global, ClassNames } from '@emotion/react';
 import ReactModal from 'react-modal';
-import { transitions, shadows, lengths, zIndex } from 'decap-cms-ui-default';
+import { colors, transitions, shadows, lengths, zIndex } from 'decap-cms-ui-default';
 
 function ReactModalGlobalStyles() {
   return (
@@ -19,7 +19,7 @@ function ReactModalGlobalStyles() {
 const styleStrings = {
   modalBody: `
     ${shadows.dropDeep};
-    background-color: #fff;
+    background-color: ${colors.foreground};
     border-radius: ${lengths.borderRadius} ${lengths.borderRadius} 0 0;
     height: 90%;
     @media (min-width: 500px) {
