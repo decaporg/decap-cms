@@ -1,6 +1,5 @@
 import flow from 'lodash/flow';
 import fromPairs from 'lodash/fromPairs';
-import { map } from 'lodash/fp';
 import { Map as ImmutableMap } from 'immutable';
 
 import unsentRequest from './unsentRequest';
@@ -79,14 +78,15 @@ export function parseLinkHeader(header: string | null) {
   }
   return flow([
     linksString => linksString.split(','),
-    map((str: string) => str.trim().split(';')),
-    map(([linkStr, keyStr]) => [
-      keyStr.match(/rel="(.*?)"/)[1],
-      linkStr
-        .trim()
-        .match(/<(.*?)>/)[1]
-        .replace(/\+/g, '%20'),
-    ]),
+    (links: string[]) => links.map(str => str.trim().split(';')),
+    (links: string[][]) =>
+      links.map(([linkStr, keyStr]) => [
+        keyStr.match(/rel="(.*?)"/)![1],
+        linkStr
+          .trim()
+          .match(/<(.*?)>/)![1]
+          .replace(/\+/g, '%20'),
+      ]),
     fromPairs,
   ])(header);
 }

@@ -1,4 +1,10 @@
-import { find, findLast, startsWith, endsWith, trimStart, trimEnd, flatMap } from 'lodash';
+import find from 'lodash/find';
+import findLast from 'lodash/findLast';
+import startsWith from 'lodash/startsWith';
+import endsWith from 'lodash/endsWith';
+import trimStart from 'lodash/trimStart';
+import trimEnd from 'lodash/trimEnd';
+import flatMap from 'lodash/flatMap';
 import u from 'unist-builder';
 import toString from 'mdast-util-to-string';
 

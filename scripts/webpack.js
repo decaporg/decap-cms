@@ -96,6 +96,27 @@ function stats() {
   };
 }
 
+/**
+ * `react-dom/server` in the browser bundles both the streaming and the legacy
+ * renderer, but Decap (shortcode previews) and Plate only call
+ * `renderToString`/`renderToStaticMarkup`, which live in the legacy one.
+ * Point the import straight at that file to drop the unused renderer.
+ */
+function reactDomServerAlias() {
+  let reactDomDir;
+  try {
+    reactDomDir = path.dirname(
+      require.resolve('react-dom/package.json', { paths: [process.cwd()] }),
+    );
+  } catch {
+    return {};
+  }
+  const build = isProduction ? 'production' : 'development';
+  return {
+    'react-dom/server$': path.join(reactDomDir, `cjs/react-dom-server-legacy.browser.${build}.js`),
+  };
+}
+
 const umdPath = path.resolve(process.cwd(), 'dist');
 const umdDirPath = path.resolve(process.cwd(), 'dist/umd');
 const cjsPath = path.resolve(process.cwd(), 'dist/cjs');
@@ -162,6 +183,9 @@ function baseConfig({ target = isProduction ? 'umd' : 'umddir' } = {}) {
         'process/browser': require.resolve('process/browser'),
         // Polyfill for fileURLToPath used by clean-stack
         'node:url': require.resolve('url/'),
+        ...reactDomServerAlias(),
+        'react-style-proptype$': path.resolve(__dirname, 'shims/noopPropType.js'),
+        'js-yaml$': path.resolve(__dirname, 'shims/unusedJsYaml.js'),
       },
     },
     plugins: Object.values(plugins()).map(plugin => plugin()),
