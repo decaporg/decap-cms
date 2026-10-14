@@ -956,6 +956,7 @@ export default class API {
       method: 'PUT',
       url: `${this.repoURL}/merge_requests/${mergeRequest.iid}/merge`,
       params: {
+        sha: mergeRequest.sha,
         merge_commit_message: MERGE_COMMIT_MESSAGE,
         squash_commit_message: MERGE_COMMIT_MESSAGE,
         squash: this.squashMerges,
