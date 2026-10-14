@@ -631,7 +631,11 @@ export class Backend {
       uniqueSlug = formatSlug(suffix);
       if (!customPath && utf8ByteLength(uniqueSlug) > maxBytes) {
         // Keep the suffix distinct and inside Git's byte cap when the path has no room for it.
-        uniqueSlug = `${truncateSlug(uniqueSlug, maxBytes - utf8ByteLength(suffix), slugConfig)}${suffix}`;
+        uniqueSlug = `${truncateSlug(
+          uniqueSlug,
+          maxBytes - utf8ByteLength(suffix),
+          slugConfig,
+        )}${suffix}`;
       }
     }
     return uniqueSlug;

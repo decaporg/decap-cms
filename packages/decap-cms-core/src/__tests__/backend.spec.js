@@ -992,6 +992,7 @@ describe('Backend', () => {
         backend.generateUniqueSlug(collection, Map({ title: 'some post title' }), Map({}), []),
       ).rejects.toThrow('API rate limit exceeded');
     });
+
     it('should suffix the slug placeholder before a fixed path filename', async () => {
       const { sanitizeSlug, sanitizeChar } = require('../lib/urlHelper');
       sanitizeSlug.mockReturnValue('some-post-title');
@@ -1029,6 +1030,37 @@ describe('Backend', () => {
         3,
         'posts/some-post-title-2/index.md',
       );
+    });
+
+    it('keeps a nested collision candidate distinct within the byte cap', async () => {
+      const { sanitizeSlug, sanitizeChar } = require('../lib/urlHelper');
+      const longSlug = 'a'.repeat(210);
+      sanitizeSlug.mockReturnValue(longSlug);
+      sanitizeChar.mockReturnValue('-');
+
+      const implementation = {
+        init: jest.fn(() => implementation),
+        getEntry: jest.fn().mockResolvedValue(undefined),
+      };
+      const collection = fromJS({
+        name: 'posts',
+        fields: [{ name: 'title' }],
+        type: FOLDER,
+        folder: 'posts',
+        slug: '{{slug}}',
+        path: '{{slug}}/index',
+      });
+      const backend = new Backend(implementation, { config: {}, backendName: 'github' });
+
+      const result = await backend.generateUniqueSlug(
+        collection,
+        Map({ title: longSlug }),
+        Map({}),
+        List(['a'.repeat(200)]),
+      );
+
+      expect(result).not.toBe('a'.repeat(200));
+      expect(Buffer.byteLength(result, 'utf8')).toBeLessThanOrEqual(200);
     });
   });
 
