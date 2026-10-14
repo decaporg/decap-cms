@@ -992,6 +992,76 @@ describe('Backend', () => {
         backend.generateUniqueSlug(collection, Map({ title: 'some post title' }), Map({}), []),
       ).rejects.toThrow('API rate limit exceeded');
     });
+
+    it('should suffix the slug placeholder before a fixed path filename', async () => {
+      const { sanitizeSlug, sanitizeChar } = require('../lib/urlHelper');
+      sanitizeSlug.mockReturnValue('some-post-title');
+      sanitizeChar.mockReturnValue('-');
+
+      const implementation = {
+        init: jest.fn(() => implementation),
+        getEntry: jest
+          .fn()
+          .mockResolvedValueOnce({ data: 'data' })
+          .mockResolvedValueOnce({ data: 'data' })
+          .mockResolvedValueOnce(undefined),
+      };
+
+      const collection = fromJS({
+        name: 'posts',
+        fields: [{ name: 'title' }],
+        type: FOLDER,
+        folder: 'posts',
+        slug: '{{slug}}',
+        path: '{{slug}}/index',
+      });
+      const entry = Map({ title: 'some post title' });
+      const backend = new Backend(implementation, { config: {}, backendName: 'github' });
+
+      await expect(backend.generateUniqueSlug(collection, entry, Map({}), [])).resolves.toBe(
+        'some-post-title-2/index',
+      );
+      expect(implementation.getEntry).toHaveBeenNthCalledWith(1, 'posts/some-post-title/index.md');
+      expect(implementation.getEntry).toHaveBeenNthCalledWith(
+        2,
+        'posts/some-post-title-1/index.md',
+      );
+      expect(implementation.getEntry).toHaveBeenNthCalledWith(
+        3,
+        'posts/some-post-title-2/index.md',
+      );
+    });
+
+    it('keeps a nested collision candidate distinct within the byte cap', async () => {
+      const { sanitizeSlug, sanitizeChar } = require('../lib/urlHelper');
+      const longSlug = 'a'.repeat(210);
+      sanitizeSlug.mockReturnValue(longSlug);
+      sanitizeChar.mockReturnValue('-');
+
+      const implementation = {
+        init: jest.fn(() => implementation),
+        getEntry: jest.fn().mockResolvedValue(undefined),
+      };
+      const collection = fromJS({
+        name: 'posts',
+        fields: [{ name: 'title' }],
+        type: FOLDER,
+        folder: 'posts',
+        slug: '{{slug}}',
+        path: '{{slug}}/index',
+      });
+      const backend = new Backend(implementation, { config: {}, backendName: 'github' });
+
+      const result = await backend.generateUniqueSlug(
+        collection,
+        Map({ title: longSlug }),
+        Map({}),
+        List(['a'.repeat(200)]),
+      );
+
+      expect(result).not.toBe('a'.repeat(200));
+      expect(Buffer.byteLength(result, 'utf8')).toBeLessThanOrEqual(200);
+    });
   });
 
   describe('deleteEntry with i18n', () => {

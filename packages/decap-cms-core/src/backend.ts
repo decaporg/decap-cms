@@ -43,7 +43,7 @@ import { sanitizeChar } from './lib/urlHelper';
 import { getBackend, getEditorApi, invokeEvent, registerFieldAction } from './lib/registry';
 import {
   commitMessageFormatter,
-  slugFormatter,
+  getSlugFormatter,
   previewUrlFormatter,
   slugByteBudget,
   truncateSlug,
@@ -602,18 +602,20 @@ export class Backend {
     customPath: string | undefined,
   ) {
     const slugConfig = config.slug;
-    let slug: string;
+    let formatSlug: (suffix?: string) => string;
     // Capped in bytes, not characters: refs are limited to 255 bytes. Not for a
     // custom path, which must keep matching the path the editor typed.
     let maxBytes = Infinity;
     if (customPath) {
-      slug = slugFromCustomPath(collection, customPath);
+      const slug = slugFromCustomPath(collection, customPath);
+      formatSlug = (suffix = '') => `${slug}${suffix}`;
     } else {
       maxBytes = slugByteBudget(collection, config);
-      slug = truncateSlug(slugFormatter(collection, entryData, slugConfig), maxBytes, slugConfig);
+      formatSlug = getSlugFormatter(collection, entryData, slugConfig);
     }
     let i = 1;
-    let uniqueSlug = slug;
+    let uniqueSlug = formatSlug();
+    if (!customPath) uniqueSlug = truncateSlug(uniqueSlug, maxBytes, slugConfig);
 
     // Check for duplicate slug in loaded entities store first before repo
     while (
@@ -625,13 +627,16 @@ export class Backend {
         selectUseWorkflow(config),
       ))
     ) {
-      // The suffix stays whole; the slug in front of it gives way to the cap.
       const suffix = `${sanitizeChar(' ', slugConfig)}${i++}`;
-      const base =
-        maxBytes === Infinity
-          ? slug
-          : truncateSlug(slug, maxBytes - utf8ByteLength(suffix), slugConfig);
-      uniqueSlug = `${base}${suffix}`;
+      uniqueSlug = formatSlug(suffix);
+      if (!customPath && utf8ByteLength(uniqueSlug) > maxBytes) {
+        // Keep the suffix distinct and inside Git's byte cap when the path has no room for it.
+        uniqueSlug = `${truncateSlug(
+          uniqueSlug,
+          maxBytes - utf8ByteLength(suffix),
+          slugConfig,
+        )}${suffix}`;
+      }
     }
     return uniqueSlug;
   }
