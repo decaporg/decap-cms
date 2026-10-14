@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.5.0](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-turbo@3.5.0-beta.2...decap-cms-lib-turbo@3.5.0) (2026-10-14)
+
+### Bug Fixes
+
+- **lib-turbo:** read a proxy refusal lib-util already consumed ([9f11919](https://github.com/decaporg/decap-cms/commit/9f119193267d1bc62839299452c951f3d80b61ce))
+
 # 3.5.0-beta.2 (2026-10-13)
 
 ### Bug Fixes

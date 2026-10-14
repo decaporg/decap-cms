@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.4.4](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-forgejo@3.4.4-beta.2...decap-cms-backend-forgejo@3.4.4) (2026-10-14)
+
+**Note:** Version bump only for package decap-cms-backend-forgejo
+
 ## [3.4.4-beta.2](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-forgejo@3.4.3-beta.2...decap-cms-backend-forgejo@3.4.4-beta.2) (2026-10-13)
 
 **Note:** Version bump only for package decap-cms-backend-forgejo
