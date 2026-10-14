@@ -227,7 +227,7 @@ catalog:
   rimraf: ^3.0.0
   sanitize-filename: ^1.6.1
   semaphore: ^1.1.0
-  simple-git: ^3.0.0
+  simple-git: ^4.0.1
   slate: ^0.118.1
   slate-base64-serializer: ^0.2.107
   slate-dom: ^0.118.1
@@ -277,9 +277,8 @@ catalog:
 
 overrides:
   clean-stack: 5.2.0
-  'copy-webpack-plugin@10.2.4>serialize-javascript': 7.0.4
+  'copy-webpack-plugin@10.2.4>serialize-javascript': 7.0.5
   'nx@17.3.0>minimatch': 9.0.9
-  'nx@21.6.6>minimatch': 9.0.9
 
 allowBuilds:
   '@swc/core': true
