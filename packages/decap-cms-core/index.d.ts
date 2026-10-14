@@ -328,6 +328,7 @@ declare module 'decap-cms-core' {
     identifier_field?: string;
     summary?: string;
     slug?: string;
+    slug_collision?: 'suffix' | 'reject';
     preview_path?: string;
     preview_path_date_field?: string;
     preview_path_preserve_slashes?: boolean;

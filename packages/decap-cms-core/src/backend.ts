@@ -56,7 +56,7 @@ import {
   getI18nFilesDepth,
   getI18nFiles,
   hasI18n,
-  getFilePath,
+  getFilePaths,
   getI18nFilesToDelete,
   getI18nEntry,
   groupEntries,
@@ -565,33 +565,52 @@ export class Backend {
 
     if (unpublishedEntry) return unpublishedEntry;
 
-    // With multiple_files/multiple_folders i18n `path` itself always misses,
-    // and a miss reuses the slug and overwrites; probe the default locale.
-    let entryPath = path;
-    if (hasI18n(collection)) {
-      const { structure, defaultLocale } = getI18nInfo(collection) as I18nInfo;
-      entryPath = getFilePath(
-        structure as I18N_STRUCTURE,
-        selectFolderEntryExtension(collection),
-        path,
-        slug,
-        defaultLocale,
-      );
+    // A translation may exist even when the default locale does not.
+    const paths = hasI18n(collection)
+      ? getFilePaths(collection, selectFolderEntryExtension(collection), path, slug)
+      : [path];
+    for (const filePath of paths) {
+      const publishedEntry = await this.implementation
+        .getEntry(filePath)
+        .then(result => result?.data)
+        .catch((error: Error & { status?: number }) => {
+          // An unknown read error must not turn a taken slug into an apparent miss.
+          if (error?.status === 404) return false;
+          throw error;
+        });
+      if (publishedEntry) return publishedEntry;
     }
 
-    const publishedEntry = await this.implementation
-      .getEntry(entryPath)
-      .then(result => result?.data)
-      .catch((error: Error & { status?: number }) => {
-        // Only a 404 means "absent"; anything else fails the save rather than
-        // reuse a taken slug. Backends that swallow read errors never get here.
-        if (error?.status === 404) {
-          return false;
-        }
-        throw error;
-      });
+    return false;
+  }
 
-    return publishedEntry;
+  async slugExists(
+    collection: Collection,
+    config: CmsConfig,
+    usedSlugs: List<string>,
+    slug: string,
+  ) {
+    return (
+      usedSlugs.includes(slug) ||
+      this.entryExist(
+        collection,
+        selectEntryPath(collection, slug) as string,
+        slug,
+        selectUseWorkflow(config),
+      )
+    );
+  }
+
+  async assertNoSlugCollision(
+    collection: Collection,
+    config: CmsConfig,
+    usedSlugs: List<string>,
+    slug: string,
+  ) {
+    if (await this.slugExists(collection, config, usedSlugs, slug)) {
+      const path = selectEntryPath(collection, slug) as string;
+      throw new Error(`An entry already exists at "${path}". Change the entry identifier or path.`);
+    }
   }
 
   async generateUniqueSlug(
@@ -612,19 +631,14 @@ export class Backend {
       maxBytes = slugByteBudget(collection, config);
       slug = truncateSlug(slugFormatter(collection, entryData, slugConfig), maxBytes, slugConfig);
     }
+    if (collection.get('slug_collision', 'suffix') === 'reject') {
+      await this.assertNoSlugCollision(collection, config, usedSlugs, slug);
+      return slug;
+    }
+
     let i = 1;
     let uniqueSlug = slug;
-
-    // Check for duplicate slug in loaded entities store first before repo
-    while (
-      usedSlugs.includes(uniqueSlug) ||
-      (await this.entryExist(
-        collection,
-        selectEntryPath(collection, uniqueSlug) as string,
-        uniqueSlug,
-        selectUseWorkflow(config),
-      ))
-    ) {
+    while (await this.slugExists(collection, config, usedSlugs, uniqueSlug)) {
       // The suffix stays whole; the slug in front of it gives way to the cap.
       const suffix = `${sanitizeChar(' ', slugConfig)}${i++}`;
       const base =
@@ -1434,12 +1448,21 @@ export class Backend {
     } else {
       const slug = entryDraft.getIn(['entry', 'slug']);
       const path = entryDraft.getIn(['entry', 'path']);
+      const newPath = customPath === path ? undefined : customPath;
+      if (newPath && collection.get('slug_collision', 'suffix') === 'reject') {
+        await this.assertNoSlugCollision(
+          collection,
+          config,
+          usedSlugs,
+          slugFromCustomPath(collection, newPath),
+        );
+      }
       dataFile = {
         path,
         // for workflow entries we refresh the slug on publish
         slug: customPath && !useWorkflow ? slugFromCustomPath(collection, customPath) : slug,
         raw: this.entryToRaw(collection, entryDraft.get('entry')),
-        newPath: customPath === path ? undefined : customPath,
+        newPath,
       };
     }
 

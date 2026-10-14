@@ -37,6 +37,21 @@ describe('config', () => {
       }).not.toThrowError();
     });
 
+    it('should allow supported folder collection slug collision policies', () => {
+      expect(() => {
+        validateConfig(merge({}, validConfig, { collections: [{ slug_collision: 'reject' }] }));
+      }).not.toThrowError();
+      expect(() => {
+        validateConfig(merge({}, validConfig, { collections: [{ slug_collision: 'suffix' }] }));
+      }).not.toThrowError();
+    });
+
+    it('should reject unsupported folder collection slug collision policies', () => {
+      expect(() => {
+        validateConfig(merge({}, validConfig, { collections: [{ slug_collision: 'overwrite' }] }));
+      }).toThrowError("'collections[0].slug_collision' must be equal to one of the allowed values");
+    });
+
     it('should throw if backend is not defined in config', () => {
       expect(() => {
         validateConfig({ foo: 'bar' });
