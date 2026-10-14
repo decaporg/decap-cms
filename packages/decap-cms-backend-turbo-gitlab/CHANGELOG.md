@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.5.1](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-turbo-gitlab@3.5.0...decap-cms-backend-turbo-gitlab@3.5.1) (2026-10-14)
+
+**Note:** Version bump only for package decap-cms-backend-turbo-gitlab
+
 # [3.5.0](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-turbo-gitlab@3.5.0-beta.4...decap-cms-backend-turbo-gitlab@3.5.0) (2026-10-14)
 
 **Note:** Version bump only for package decap-cms-backend-turbo-gitlab

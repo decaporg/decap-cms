@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.5.1](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-turbo@3.5.0...decap-cms-lib-turbo@3.5.1) (2026-10-14)
+
+### Bug Fixes
+
+- **turbo:** explain a Turbo site with no repo instead of blaming config.yml ([#8031](https://github.com/decaporg/decap-cms/issues/8031)) ([3d0dab7](https://github.com/decaporg/decap-cms/commit/3d0dab7ca135b6419641caf423a84ae267b51f5e)), closes [decaporg/decap-turbo#12](https://github.com/decaporg/decap-turbo/issues/12)
+
 # [3.5.0](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-turbo@3.5.0-beta.2...decap-cms-lib-turbo@3.5.0) (2026-10-14)
 
 ### Bug Fixes

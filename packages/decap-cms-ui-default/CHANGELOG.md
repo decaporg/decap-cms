@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.9.4](https://github.com/decaporg/decap-cms/compare/decap-cms-ui-default@3.9.3...decap-cms-ui-default@3.9.4) (2026-10-14)
+
+### Performance Improvements
+
+- drop duplicate and unused code from the decap-cms bundle ([#8032](https://github.com/decaporg/decap-cms/issues/8032)) ([f051103](https://github.com/decaporg/decap-cms/commit/f05110384a14d27fd76d358dc1850d11254355b9))
+
 ## [3.9.3](https://github.com/decaporg/decap-cms/compare/decap-cms-ui-default@3.9.3-beta.0...decap-cms-ui-default@3.9.3) (2026-10-14)
 
 **Note:** Version bump only for package decap-cms-ui-default
