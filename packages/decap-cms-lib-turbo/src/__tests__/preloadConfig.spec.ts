@@ -136,6 +136,37 @@ describe('createPreloadConfig', () => {
     expect(actual.backend.branch).toBe('main');
   });
 
+  // The git backend's own error would blame config.yml for a missing `repo`.
+  it('throws, pointing at the dashboard, when the site has no repo set', async () => {
+    const config = { backend: { turbo_site_id: 'site-123', repo: 'owner/repo' } } as any;
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      json: () =>
+        Promise.resolve({
+          supabase_app_id: 'resolved-app-id',
+          supabase_anon_key: 'resolved-key',
+          repo: null,
+          branch: 'main',
+        }),
+    } as any);
+
+    await expect(preloadConfig(config)).rejects.toThrow(
+      'turbo-github config error: this Decap Turbo site has no repository set. ' +
+        `Set "Repo" on the site's page in the Turbo dashboard: https://turbo.decapcms.org/sites/site-123`,
+    );
+  });
+
+  it('links the no-repo error to the dashboard config.yml names', async () => {
+    const config = {
+      backend: { turbo_site_id: 'site-123', turbo_admin_url: 'https://turbo.example/' },
+    } as any;
+    global.fetch = jest
+      .fn()
+      .mockResolvedValue({ ok: true, json: () => Promise.resolve({ repo: null }) } as any);
+
+    await expect(preloadConfig(config)).rejects.toThrow('https://turbo.example/sites/site-123');
+  });
+
   it('leaves local repo/branch alone when the control plane does not return them', async () => {
     const config = {
       backend: { turbo_site_id: 'site-123', repo: 'owner/repo', branch: 'main' },
