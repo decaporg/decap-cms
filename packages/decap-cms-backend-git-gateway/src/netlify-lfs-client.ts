@@ -1,4 +1,5 @@
-import { flow, fromPairs, map } from 'lodash/fp';
+import flow from 'lodash/flow';
+import fromPairs from 'lodash/fromPairs';
 import isPlainObject from 'lodash/isPlainObject';
 import isEmpty from 'lodash/isEmpty';
 import { minimatch } from 'minimatch';
@@ -170,7 +171,7 @@ export type Client = {
 export function getClient(clientConfig: ClientConfig) {
   return flow([
     Object.keys,
-    map((key: string) => [key, configureFn(clientConfig, clientFns[key])]),
+    (keys: string[]) => keys.map(key => [key, configureFn(clientConfig, clientFns[key])]),
     fromPairs,
     configuredFns => ({
       ...configuredFns,

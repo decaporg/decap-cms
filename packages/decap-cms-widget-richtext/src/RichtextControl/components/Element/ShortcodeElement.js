@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styled from '@emotion/styled';
 import { fromJS } from 'immutable';
-import { omit } from 'lodash';
+import omit from 'lodash/omit';
 import { css } from '@emotion/react';
 import { Range, setNodes } from 'slate';
 import { zIndex } from 'decap-cms-ui-default';

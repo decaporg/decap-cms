@@ -1,4 +1,4 @@
-import { trimEnd } from 'lodash';
+import trimEnd from 'lodash/trimEnd';
 import unified from 'unified';
 import u from 'unist-builder';
 import markdownToRemarkPlugin from 'remark-parse';

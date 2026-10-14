@@ -49,6 +49,22 @@ module.exports = {
       },
     ],
     'no-duplicate-imports': 'error',
+    'no-restricted-imports': [
+      'error',
+      {
+        paths: [
+          {
+            name: 'lodash',
+            message:
+              "Import single methods (`lodash/get`) so the bundle doesn't include all of lodash.",
+          },
+          {
+            name: 'lodash/fp',
+            message: 'lodash/fp pulls in a second full copy of lodash; use native array methods.',
+          },
+        ],
+      },
+    ],
     '@emotion/no-vanilla': 'error',
     '@emotion/pkg-renaming': 'error',
     '@emotion/import-from-emotion': 'error',

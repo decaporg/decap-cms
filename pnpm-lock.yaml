@@ -2381,6 +2381,9 @@ importers:
       '@emotion/styled':
         specifier: 'catalog:'
         version: 11.14.1(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(@types/react@19.2.2)(react@19.2.0)
+      immutable:
+        specifier: 'catalog:'
+        version: 4.3.9
       lodash:
         specifier: 'catalog:'
         version: 4.18.1
@@ -2395,7 +2398,7 @@ importers:
         version: 7.0.3(react@19.2.0)
       react-immutable-proptypes:
         specifier: 'catalog:'
-        version: 2.2.0(immutable@5.1.9)
+        version: 2.2.0(immutable@4.3.9)
       react-transition-group:
         specifier: 'catalog:'
         version: 4.4.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -2408,6 +2411,9 @@ importers:
       decap-cms-ui-default:
         specifier: workspace:*
         version: link:../decap-cms-ui-default
+      immutable:
+        specifier: 'catalog:'
+        version: 4.3.9
       lodash:
         specifier: 'catalog:'
         version: 4.18.1
@@ -2419,7 +2425,7 @@ importers:
         version: 19.2.0
       react-immutable-proptypes:
         specifier: 'catalog:'
-        version: 2.2.0(immutable@5.1.9)
+        version: 2.2.0(immutable@4.3.9)
 
   packages/decap-cms-widget-code:
     dependencies:
@@ -2636,6 +2642,9 @@ importers:
       decap-cms-ui-default:
         specifier: workspace:*
         version: link:../decap-cms-ui-default
+      immutable:
+        specifier: 'catalog:'
+        version: 4.3.9
       lodash:
         specifier: 'catalog:'
         version: 4.18.1
@@ -2650,7 +2659,7 @@ importers:
         version: 19.2.0
       react-immutable-proptypes:
         specifier: 'catalog:'
-        version: 2.2.0(immutable@5.1.9)
+        version: 2.2.0(immutable@4.3.9)
 
   packages/decap-cms-widget-markdown:
     dependencies:
@@ -8717,9 +8726,6 @@ packages:
 
   immutable@4.3.9:
     resolution: {integrity: sha512-ObHy4YN7ycwZOUCLI1/6svfyAFu7vL8RhAvVu/bh/RZW9EPlOyDaQ9jDQWCtdqzaXUjgXZCW1migtHE7YI7UGQ==}
-
-  immutable@5.1.9:
-    resolution: {integrity: sha512-m8nVez3rwrgmWxtLMt1ZYXB2Lv7OKYn/disyxAlSDYAlKSlFoPPfIAmAM/M5xqL4m4C/wAPw7S2/CNaUii1Hxg==}
 
   import-fresh@3.3.0:
     resolution: {integrity: sha512-veYYhQa+D1QBKznvhUHxb8faxlrwUnxseDAbAp457E0wLNio2bOSKnjYDhMj+YiAq61xrMGhQk9iXVk5FzgQMw==}
@@ -20610,8 +20616,6 @@ snapshots:
 
   immutable@4.3.9: {}
 
-  immutable@5.1.9: {}
-
   import-fresh@3.3.0:
     dependencies:
       parent-module: 1.0.1
@@ -23788,11 +23792,6 @@ snapshots:
   react-immutable-proptypes@2.2.0(immutable@4.3.9):
     dependencies:
       immutable: 4.3.9
-      invariant: 2.2.4
-
-  react-immutable-proptypes@2.2.0(immutable@5.1.9):
-    dependencies:
-      immutable: 5.1.9
       invariant: 2.2.4
 
   react-is@16.13.1: {}
