@@ -1079,16 +1079,16 @@ describe('Backend', () => {
       expect(implementation.getEntry).not.toHaveBeenCalled();
     });
 
-    it('should reject a slug published at an i18n locale path', async () => {
+    it('should reject a slug published only at a non-default i18n locale path', async () => {
       const { sanitizeSlug } = require('../lib/urlHelper');
       sanitizeSlug.mockReturnValue('some-post-title');
 
       const implementation = {
         init: jest.fn(() => implementation),
         getEntry: jest.fn(path =>
-          path === 'posts/en/some-post-title.md'
+          path === 'posts/fr/some-post-title.md'
             ? Promise.resolve({ data: 'data' })
-            : Promise.reject(new Error('not found')),
+            : Promise.reject(Object.assign(new Error('Not Found'), { status: 404 })),
         ),
       };
 
@@ -1108,6 +1108,7 @@ describe('Backend', () => {
         'An entry already exists at "posts/some-post-title.md"',
       );
       expect(implementation.getEntry).toHaveBeenCalledWith('posts/en/some-post-title.md');
+      expect(implementation.getEntry).toHaveBeenCalledWith('posts/fr/some-post-title.md');
     });
 
     it('should suffix an existing slug when the collision policy is suffix', async () => {
