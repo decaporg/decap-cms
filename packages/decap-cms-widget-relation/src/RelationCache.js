@@ -1,3 +1,14 @@
+/**
+ * Memoises relation lookups for the life of the page, keyed by
+ * collection + search fields + term + file.
+ *
+ * Only RESOLVED values are stored — a rejected `queryFn` leaves the key empty
+ * so the next caller tries again. That is load-bearing rather than incidental:
+ * the query thunk resolves even when the request failed, so before its callers
+ * learned to reject (see `hitsFromQueryResult` in RelationControl) a single
+ * timeout was cached as "this collection is empty" and every later open of the
+ * dropdown read it back, until the page was reloaded.
+ */
 class RelationCache {
   constructor() {
     this.cache = new Map();
