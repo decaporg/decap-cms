@@ -677,7 +677,7 @@ export default class API {
       ? `source.branch.name = "${sourceBranch}"`
       : `source.branch.name ~ "${CMS_BRANCH_PREFIX}/"`;
 
-    const pullRequests: BitBucketPullRequests = await this.requestJSON({
+    let response: BitBucketPullRequests = await this.requestJSON({
       url: `${this.repoURL}/pullrequests`,
       params: {
         pagelen: 50,
@@ -690,12 +690,16 @@ export default class API {
         `,
       },
     });
+    const pullRequests = [...response.values];
+    // Bitbucket returns at most `pagelen` results per page, so follow `next` links to get them all
+    while (response.next) {
+      response = await this.requestJSON(response.next);
+      pullRequests.push(...response.values);
+    }
 
-    const labels = await Promise.all(
-      pullRequests.values.map(pr => this.getPullRequestLabel(pr.id)),
-    );
+    const labels = await Promise.all(pullRequests.map(pr => this.getPullRequestLabel(pr.id)));
 
-    return pullRequests.values.filter((_, index) => isCMSLabel(labels[index], this.cmsLabelPrefix));
+    return pullRequests.filter((_, index) => isCMSLabel(labels[index], this.cmsLabelPrefix));
   }
 
   async getBranchPullRequest(branch: string) {

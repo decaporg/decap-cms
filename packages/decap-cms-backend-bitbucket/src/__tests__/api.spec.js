@@ -32,4 +32,29 @@ describe('bitbucket API', () => {
     expect(api.getPullRequestStatuses).toHaveBeenCalledTimes(1);
     expect(api.getPullRequestStatuses).toHaveBeenCalledWith(pr);
   });
+
+  test('should get pull requests from every page', async () => {
+    const api = new API({ repo: 'owner/repo', branch: 'main' });
+
+    const nextUrl = 'https://api.bitbucket.org/2.0/repositories/owner/repo/pullrequests?page=2';
+    api.requestJSON = jest
+      .fn()
+      .mockResolvedValueOnce({ values: [{ id: 1 }, { id: 2 }], next: nextUrl })
+      .mockResolvedValueOnce({ values: [{ id: 3 }] });
+    api.getPullRequestLabel = jest.fn(id =>
+      Promise.resolve(id === 2 ? 'other' : 'decap-cms/draft'),
+    );
+
+    await expect(api.getPullRequests()).resolves.toEqual([{ id: 1 }, { id: 3 }]);
+
+    expect(api.requestJSON).toHaveBeenCalledTimes(2);
+    expect(api.requestJSON).toHaveBeenNthCalledWith(
+      1,
+      expect.objectContaining({
+        url: '/repositories/owner/repo/pullrequests',
+      }),
+    );
+    expect(api.requestJSON).toHaveBeenNthCalledWith(2, nextUrl);
+    expect(api.getPullRequestLabel).toHaveBeenCalledTimes(3);
+  });
 });
