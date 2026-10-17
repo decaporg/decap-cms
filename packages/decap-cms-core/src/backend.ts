@@ -64,7 +64,11 @@ import {
   getI18nBackup,
   formatI18nBackup,
   getI18nInfo,
+  getDataPath,
+  hasLocalizedSlugs,
+  setI18nTranslationKey,
   I18N_STRUCTURE,
+  TRANSLATION_KEY,
 } from './lib/i18n';
 
 import type { I18nInfo } from './lib/i18n';
@@ -636,6 +640,126 @@ export class Backend {
     return uniqueSlug;
   }
 
+  /**
+   * Whether a locale file may be written at `path`: nothing is there, or the
+   * file there already belongs to the entry with this translation key.
+   */
+  private async isLocaleFileAvailable(
+    collection: Collection,
+    path: string,
+    translationKey: string,
+  ) {
+    try {
+      const { data } = await this.implementation.getEntry(path);
+      if (!data) {
+        return true;
+      }
+      const entry = this.entryWithFormat(collection)(
+        createEntry(collection.get('name'), '', path, { raw: data }),
+      );
+      return entry.data?.[TRANSLATION_KEY] === translationKey;
+    } catch (error) {
+      return (error as { status?: number })?.status === 404;
+    }
+  }
+
+  /**
+   * The paths of the locale files to name after their own localized slug. A
+   * locale that already has a file keeps it; the rest get a new, unique one.
+   */
+  async generateLocalizedPaths(
+    collection: Collection,
+    entry: EntryMap,
+    config: CmsConfig,
+    slug: string,
+    path: string,
+    newEntry: boolean,
+    translationKey: string,
+  ) {
+    const { structure, locales, defaultLocale } = getI18nInfo(collection) as I18nInfo;
+    const extension = selectFolderEntryExtension(collection);
+    const slugConfig = config.slug;
+    const maxBytes = slugByteBudget(collection, config);
+    const knownPaths: Record<string, string> = (!newEntry && entry.get('i18nPaths')?.toJS()) || {};
+    const foundLocales = entry.get('i18nLocales');
+    const localizedPaths: Record<string, string> = {};
+
+    for (const locale of locales) {
+      const localeData = entry.getIn(getDataPath(locale, defaultLocale)) as Map<string, unknown>;
+      if (locale === defaultLocale || !localeData) {
+        continue;
+      }
+      if (knownPaths[locale]) {
+        localizedPaths[locale] = knownPaths[locale];
+        continue;
+      }
+      if (!newEntry) {
+        const defaultPath = getFilePath(structure, extension, path, slug, locale);
+        const hasFile = foundLocales
+          ? foundLocales.includes(locale)
+          : await this.i18nFileExists(defaultPath);
+        if (hasFile) {
+          continue;
+        }
+      }
+
+      const localizedSlug = truncateSlug(
+        slugFormatter(collection, entry.get('data'), slugConfig, localeData),
+        maxBytes,
+        slugConfig,
+      );
+      if (localizedSlug === slug) {
+        continue;
+      }
+
+      let uniqueSlug = localizedSlug;
+      let localePath = getFilePath(
+        structure,
+        extension,
+        selectEntryPath(collection, uniqueSlug) as string,
+        uniqueSlug,
+        locale,
+      );
+      let i = 1;
+      while (!(await this.isLocaleFileAvailable(collection, localePath, translationKey))) {
+        const suffix = `${sanitizeChar(' ', slugConfig)}${i++}`;
+        uniqueSlug = `${truncateSlug(
+          localizedSlug,
+          maxBytes - utf8ByteLength(suffix),
+          slugConfig,
+        )}${suffix}`;
+        localePath = getFilePath(
+          structure,
+          extension,
+          selectEntryPath(collection, uniqueSlug) as string,
+          uniqueSlug,
+          locale,
+        );
+      }
+      localizedPaths[locale] = localePath;
+    }
+
+    return localizedPaths;
+  }
+
+  /** The locale files named with a localized slug of the published entry `slug`. */
+  async findLocalizedPaths(collection: Collection, slug: string) {
+    let entries: EntryValue[];
+    if (this.implementation.allEntriesByFolder) {
+      // Not `listAllEntries`: its path filter leaves out all but the default locale.
+      const loadedEntries = await this.implementation.allEntriesByFolder(
+        collection.get('folder') as string,
+        selectFolderEntryExtension(collection),
+        collectionDepth(collection),
+      );
+      entries = this.processEntries(loadedEntries, collection);
+    } else {
+      entries = await this.listAllEntries(collection);
+    }
+
+    return entries.find(entry => entry.slug === slug)?.i18nPaths;
+  }
+
   async entrySlugsForCollectionLimit(
     collection: Collection,
     config: CmsConfig,
@@ -1115,7 +1239,14 @@ export class Backend {
 
     let entryValue: EntryValue;
     if (hasI18n(collection)) {
-      entryValue = await getI18nEntry(collection, extension, path, slug, getEntryValue);
+      entryValue = await getI18nEntry(
+        collection,
+        extension,
+        path,
+        slug,
+        getEntryValue,
+        hasLocalizedSlugs(collection) ? () => this.findLocalizedPaths(collection, slug) : undefined,
+      );
     } else {
       entryValue = await getEntryValue(path);
     }
@@ -1226,6 +1357,15 @@ export class Backend {
       // we need to read all locales files and not just the changes
       const path = selectEntryPath(collection, slug) as string;
       const i18nFiles = getI18nDataFiles(collection, extension, path, slug, dataFiles);
+      // Unchanged locale files are not in the diff; look them up when opening the entry.
+      if (withMediaFiles && hasLocalizedSlugs(collection)) {
+        const localizedPaths = (await this.findLocalizedPaths(collection, slug)) || {};
+        Object.values(localizedPaths)
+          .filter(localizedPath => !i18nFiles.some(file => file.path === localizedPath))
+          .forEach(localizedPath =>
+            i18nFiles.push({ path: localizedPath, id: '', newFile: false }),
+          );
+      }
       let entries = await Promise.all(
         i18nFiles.map(dataFile => readAndFormatDataFile(dataFile).catch(() => null)),
       );
@@ -1448,14 +1588,31 @@ export class Backend {
     let dataFiles = [dataFile];
     if (hasI18n(collection)) {
       const extension = selectFolderEntryExtension(collection);
+      let entry = entryDraft.get('entry');
+      let localizedPaths;
+      if (hasLocalizedSlugs(collection) && !customPath) {
+        const translationKey =
+          ((!newEntry && entry.getIn(['data', TRANSLATION_KEY])) as string) || slug;
+        entry = setI18nTranslationKey(collection, entry, translationKey);
+        localizedPaths = await this.generateLocalizedPaths(
+          collection,
+          entry,
+          config,
+          slug,
+          path,
+          newEntry,
+          translationKey,
+        );
+      }
       dataFiles = getI18nFiles(
         collection,
         extension,
-        entryDraft.get('entry'),
+        entry,
         (draftData: EntryMap) => this.entryToRaw(collection, draftData),
         path,
         slug,
         newPath,
+        localizedPaths,
       );
     }
 

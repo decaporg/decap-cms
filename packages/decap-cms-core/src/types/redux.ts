@@ -631,6 +631,8 @@ export type EntryObject = {
   i18n?: any;
   /** Locales whose file was found when the entry was loaded (multi-file i18n). */
   i18nLocales?: List<string>;
+  /** Locale files named with a localized slug, by locale. */
+  i18nPaths?: Map<string, string>;
   collection: string;
   mediaFiles: List<MediaFileMap>;
   newRecord: boolean;

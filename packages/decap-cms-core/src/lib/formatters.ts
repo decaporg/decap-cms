@@ -12,6 +12,7 @@ import {
   getFileFromSlug,
 } from '../reducers/collections';
 import { sanitizeSlug } from './urlHelper';
+import { LOCALIZED_SLUG_VARIABLE } from './i18n';
 import { FILES } from '../constants/collectionTypes';
 import { COMMIT_AUTHOR, COMMIT_DATE } from '../constants/commitProps';
 
@@ -135,12 +136,48 @@ export function getProcessSegment(
         ])(value);
 }
 
+/**
+ * Resolves the template tags with the `localize` filter against a locale's data,
+ * falling back to the default locale's value when the translation is empty.
+ */
+function localizeSlugTemplate(
+  collection: Collection,
+  slugTemplate: string,
+  entryData: Map<string, unknown>,
+  localeData: Map<string, unknown>,
+) {
+  let data = entryData;
+  const template = slugTemplate.replace(
+    new RegExp(LOCALIZED_SLUG_VARIABLE, 'g'),
+    (_full, key: string) => {
+      const field = key === 'slug' ? (selectIdentifier(collection) as string) : key;
+      const path = keyToPathArray(field.replace(/^fields\./, ''));
+      const value = localeData.getIn(path);
+      if (value) {
+        data = data.setIn(path, value);
+      }
+      return `{{${key}}}`;
+    },
+  );
+
+  return { template, data };
+}
+
 export function slugFormatter(
   collection: Collection,
   entryData: Map<string, unknown>,
   slugConfig?: CmsSlug,
+  localeData?: Map<string, unknown>,
 ) {
-  const slugTemplate = collection.get('slug') || '{{slug}}';
+  let slugTemplate = collection.get('slug') || '{{slug}}';
+  if (localeData) {
+    ({ template: slugTemplate, data: entryData } = localizeSlugTemplate(
+      collection,
+      slugTemplate,
+      entryData,
+      localeData,
+    ));
+  }
 
   const identifier = entryData.getIn(
     keyToPathArray(selectIdentifier(collection) as string),
