@@ -16,6 +16,10 @@ export enum I18N_STRUCTURE {
   SINGLE_FILE = 'single_file',
 }
 
+export const TRANSLATION_KEY = 'translationKey';
+
+export const LOCALIZED_SLUG_VARIABLE = /{{ *([^}{| ]+) \| localize *}}/;
+
 export enum I18N_FIELD {
   TRANSLATE = 'translate',
   DUPLICATE = 'duplicate',
@@ -38,6 +42,21 @@ export function getI18nInfo(collection: Collection) {
   }
   const { structure, locales, default_locale: defaultLocale } = collection.get(I18N).toJS();
   return { structure, locales, defaultLocale } as I18nInfo;
+}
+
+/**
+ * Whether the slug template has tags with the `localize` filter, so each locale
+ * gets its own file name. Files of one entry are then linked by TRANSLATION_KEY.
+ */
+export function hasLocalizedSlugs(collection: Collection) {
+  if (!hasI18n(collection)) {
+    return false;
+  }
+  const { structure } = getI18nInfo(collection) as I18nInfo;
+  return (
+    structure !== I18N_STRUCTURE.SINGLE_FILE &&
+    LOCALIZED_SLUG_VARIABLE.test(collection.get('slug') || '')
+  );
 }
 
 export function getI18nFilesDepth(collection: Collection, depth: number) {
@@ -146,10 +165,17 @@ export function getI18nFilesToDelete(
   }
 
   const found = entry?.get('i18nLocales');
-  return locales.map(locale => ({
-    path: getFilePath(structure as I18N_STRUCTURE, extension, path, slug, locale),
-    known: locale === defaultLocale || !!found?.includes(locale),
-  }));
+  const localizedPaths = entry?.get('i18nPaths');
+  return locales.map(locale => {
+    const localizedPath = localizedPaths?.get(locale);
+    if (localizedPath) {
+      return { path: localizedPath, known: true };
+    }
+    return {
+      path: getFilePath(structure as I18N_STRUCTURE, extension, path, slug, locale),
+      known: locale === defaultLocale || !!found?.includes(locale),
+    };
+  });
 }
 
 export function normalizeFilePath(structure: I18N_STRUCTURE, path: string, locale: string) {
@@ -172,6 +198,7 @@ export function getI18nFiles(
   path: string,
   slug: string,
   newPath?: string,
+  localizedPaths: Record<string, string> = {},
 ) {
   const { structure, defaultLocale, locales } = getI18nInfo(collection) as I18nInfo;
 
@@ -198,17 +225,34 @@ export function getI18nFiles(
     .map(locale => {
       const dataPath = getDataPath(locale, defaultLocale);
       const draft = entryDraft.set('data', entryDraft.getIn(dataPath));
+      const localizedPath = localizedPaths[locale];
       return {
-        path: getFilePath(structure, extension, path, slug, locale),
+        path: localizedPath || getFilePath(structure, extension, path, slug, locale),
         slug,
         raw: draft.get('data') ? entryToRaw(draft) : '',
-        ...(newPath && {
-          newPath: getFilePath(structure, extension, newPath, slug, locale),
-        }),
+        ...(newPath &&
+          !localizedPath && {
+            newPath: getFilePath(structure, extension, newPath, slug, locale),
+          }),
       };
     })
     .filter(dataFile => dataFile.raw);
   return dataFiles;
+}
+
+export function setI18nTranslationKey(
+  collection: Collection,
+  entry: EntryMap,
+  translationKey: string,
+) {
+  const { locales, defaultLocale } = getI18nInfo(collection) as I18nInfo;
+
+  return locales.reduce((entry, locale) => {
+    const dataPath = getDataPath(locale, defaultLocale);
+    return entry.getIn(dataPath)
+      ? entry.setIn([...dataPath, TRANSLATION_KEY], translationKey)
+      : entry;
+  }, entry);
 }
 
 export function getI18nBackup(
@@ -300,6 +344,20 @@ function mergeValues(
     i18nLocales,
   };
 
+  if (hasLocalizedSlugs(collection)) {
+    // Only the files not named after the default locale's slug.
+    entryValue.i18nPaths = Object.fromEntries(
+      values
+        .filter(
+          ({ locale, value }) =>
+            locale !== defaultEntry!.locale &&
+            value.raw !== '' &&
+            normalizeFilePath(structure, value.path, locale) !== path,
+        )
+        .map(({ locale, value }) => [locale, value.path]),
+    );
+  }
+
   return entryValue;
 }
 
@@ -331,6 +389,7 @@ export async function getI18nEntry(
   path: string,
   slug: string,
   getEntryValue: (path: string) => Promise<EntryValue>,
+  getLocalizedPaths?: () => Promise<Record<string, string> | undefined>,
 ) {
   const { structure, locales, defaultLocale } = getI18nInfo(collection) as I18nInfo;
 
@@ -346,9 +405,36 @@ export async function getI18nEntry(
       }),
     );
 
-    const nonNullValues = entryValuesResults
+    let nonNullValues = entryValuesResults
       .map(e => (e.status === 'fulfilled' ? e.value : undefined))
       .filter((e): e is { value: EntryValue; locale: string } => e !== undefined);
+
+    const missingLocales = getLocalizedPaths
+      ? locales.filter(
+          locale =>
+            locale !== defaultLocale &&
+            !nonNullValues.some(e => e.locale === locale && e.value.raw !== ''),
+        )
+      : [];
+    if (getLocalizedPaths && nonNullValues.length > 0 && missingLocales.length > 0) {
+      const localizedPaths = (await getLocalizedPaths()) || {};
+      const localizedResults = await Promise.allSettled(
+        missingLocales
+          .filter(locale => localizedPaths[locale])
+          .map(async locale => {
+            const value = await getEntryValue(localizedPaths[locale]);
+            return { value, locale };
+          }),
+      );
+      const localizedValues = localizedResults
+        .map(e => (e.status === 'fulfilled' ? e.value : undefined))
+        .filter((e): e is { value: EntryValue; locale: string } => e !== undefined);
+
+      nonNullValues = [
+        ...nonNullValues.filter(e => !localizedValues.some(({ locale }) => locale === e.locale)),
+        ...localizedValues,
+      ];
+    }
 
     if (nonNullValues.length === 0) {
       // mergeValues will throw on an empty list, and show the error messages.
@@ -371,13 +457,18 @@ export function groupEntries(collection: Collection, extension: string, entries:
     return entries.map(e => mergeSingleFileValue(e, defaultLocale, locales));
   }
 
+  const localizedSlugs = hasLocalizedSlugs(collection);
   const grouped = groupBy(
     entries.map(e => ({
       locale: getLocaleFromPath(structure, extension, e.path) as string,
       value: e,
     })),
     ({ locale, value: e }) => {
-      return normalizeFilePath(structure, e.path, locale);
+      const path = normalizeFilePath(structure, e.path, locale);
+      if (!localizedSlugs) {
+        return path;
+      }
+      return e.data?.[TRANSLATION_KEY] || selectEntrySlug(collection, path);
     },
   );
 
@@ -409,6 +500,10 @@ export function getI18nDataFiles(
       return [...acc, { path, id: '', newFile: false }];
     }
   }, [] as { path: string; id: string; newFile: boolean }[]);
+
+  if (hasLocalizedSlugs(collection)) {
+    return [...dataFiles, ...diffFiles.filter(file => !paths.includes(file.path))];
+  }
 
   return dataFiles;
 }

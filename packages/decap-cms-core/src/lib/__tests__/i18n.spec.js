@@ -4,7 +4,7 @@ import * as i18n from '../i18n';
 
 jest.mock('../../reducers/collections', () => {
   return {
-    selectEntrySlug: () => 'index',
+    selectEntrySlug: (collection, path) => path.split('/').pop().replace(/\.md$/, ''),
   };
 });
 
@@ -861,6 +861,228 @@ describe('i18n', () => {
         i18n: { de: { data: { title: 'de' } } },
       });
       expect(i18n.getPreviewEntry(entry, 'en', 'en')).toBe(entry);
+    });
+  });
+
+  describe('localized slugs', () => {
+    const locales = ['en', 'es', 'de'];
+    const default_locale = 'en';
+
+    function collection(structure, slug = '{{title | localize}}') {
+      return fromJS({ folder: 'src/content', slug, i18n: { structure, locales, default_locale } });
+    }
+
+    describe('hasLocalizedSlugs', () => {
+      it('should return true when a slug template tag uses the localize filter', () => {
+        expect(i18n.hasLocalizedSlugs(collection(i18n.I18N_STRUCTURE.MULTIPLE_FOLDERS))).toBe(true);
+        expect(
+          i18n.hasLocalizedSlugs(
+            collection(i18n.I18N_STRUCTURE.MULTIPLE_FILES, '{{year}}-{{fields.slug | localize}}'),
+          ),
+        ).toBe(true);
+      });
+
+      it('should return false without the filter, i18n or a file per locale', () => {
+        expect(
+          i18n.hasLocalizedSlugs(collection(i18n.I18N_STRUCTURE.MULTIPLE_FOLDERS, '{{title}}')),
+        ).toBe(false);
+        expect(i18n.hasLocalizedSlugs(collection(i18n.I18N_STRUCTURE.SINGLE_FILE))).toBe(false);
+        expect(i18n.hasLocalizedSlugs(fromJS({ slug: '{{title | localize}}' }))).toBe(false);
+      });
+    });
+
+    it('should write locale files to their localized paths', () => {
+      const entry = fromJS({
+        data: { title: 'My item' },
+        i18n: { es: { data: { title: 'Mi artículo' } }, de: { data: { title: 'Mein Artikel' } } },
+      });
+
+      expect(
+        i18n
+          .getI18nFiles(
+            collection(i18n.I18N_STRUCTURE.MULTIPLE_FOLDERS),
+            'md',
+            entry,
+            map => map.get('data').toJS(),
+            'src/content/my-item.md',
+            'my-item',
+            'src/content/sub/my-item.md',
+            { es: 'src/content/es/mi-articulo.md' },
+          )
+          .map(({ path, newPath }) => ({ path, newPath })),
+      ).toEqual([
+        { path: 'src/content/en/my-item.md', newPath: 'src/content/sub/en/my-item.md' },
+        { path: 'src/content/es/mi-articulo.md', newPath: undefined },
+        { path: 'src/content/de/my-item.md', newPath: 'src/content/sub/de/my-item.md' },
+      ]);
+    });
+
+    it('should set the translation key on every locale with data', () => {
+      const entry = fromJS({
+        data: { title: 'My item' },
+        i18n: { es: { data: { title: 'Mi artículo' } } },
+      });
+
+      expect(
+        i18n
+          .setI18nTranslationKey(collection(i18n.I18N_STRUCTURE.MULTIPLE_FILES), entry, 'my-item')
+          .toJS(),
+      ).toEqual({
+        data: { title: 'My item', translationKey: 'my-item' },
+        i18n: { es: { data: { title: 'Mi artículo', translationKey: 'my-item' } } },
+      });
+    });
+
+    it('should group locale files by translation key', () => {
+      const entries = [
+        { path: 'src/content/en/my-item.md', raw: 'en', data: { title: 'My item' } },
+        {
+          path: 'src/content/es/mi-articulo.md',
+          raw: 'es',
+          data: { title: 'Mi artículo', translationKey: 'my-item' },
+        },
+        {
+          path: 'src/content/de/my-item.md',
+          raw: 'de',
+          data: { title: 'Mein Artikel' },
+        },
+        { path: 'src/content/en/other.md', raw: 'en', data: { title: 'Other' } },
+      ];
+
+      expect(
+        i18n.groupEntries(collection(i18n.I18N_STRUCTURE.MULTIPLE_FOLDERS), 'md', entries),
+      ).toEqual([
+        {
+          slug: 'my-item',
+          path: 'src/content/my-item.md',
+          data: { title: 'My item' },
+          i18n: {
+            es: { data: { title: 'Mi artículo', translationKey: 'my-item' } },
+            de: { data: { title: 'Mein Artikel' } },
+          },
+          raw: '',
+          i18nLocales: ['en', 'es', 'de'],
+          i18nPaths: { es: 'src/content/es/mi-articulo.md' },
+        },
+        {
+          slug: 'other',
+          path: 'src/content/other.md',
+          data: { title: 'Other' },
+          raw: '',
+          i18nLocales: ['en'],
+          i18nPaths: {},
+        },
+      ]);
+    });
+
+    it('should not group by translation key without localized slugs', () => {
+      jest.spyOn(console, 'warn').mockImplementation(() => {});
+      const entries = [
+        { path: 'src/content/my-item.en.md', data: { title: 'My item' } },
+        { path: 'src/content/mi-articulo.es.md', data: { translationKey: 'my-item' } },
+      ];
+
+      expect(
+        i18n
+          .groupEntries(collection(i18n.I18N_STRUCTURE.MULTIPLE_FILES, '{{title}}'), 'md', entries)
+          .map(e => e.slug),
+      ).toEqual(['my-item', 'mi-articulo.es']);
+    });
+
+    it('should load translations missing from the default paths from their localized paths', async () => {
+      const data = {
+        'src/content/my-item.en.md': {
+          path: 'src/content/my-item.en.md',
+          raw: 'en',
+          data: { title: 'My item', translationKey: 'my-item' },
+        },
+        'src/content/my-item.es.md': { path: 'src/content/my-item.es.md', raw: '', data: {} },
+        'src/content/mi-articulo.es.md': {
+          path: 'src/content/mi-articulo.es.md',
+          raw: 'es',
+          data: { title: 'Mi artículo', translationKey: 'my-item' },
+        },
+      };
+      const getEntryValue = jest.fn(path =>
+        data[path] ? Promise.resolve(data[path]) : Promise.reject('Not found'),
+      );
+      const getLocalizedPaths = jest.fn(() =>
+        Promise.resolve({ es: 'src/content/mi-articulo.es.md' }),
+      );
+
+      await expect(
+        i18n.getI18nEntry(
+          collection(i18n.I18N_STRUCTURE.MULTIPLE_FILES),
+          'md',
+          'src/content/my-item.md',
+          'my-item',
+          getEntryValue,
+          getLocalizedPaths,
+        ),
+      ).resolves.toEqual({
+        path: 'src/content/my-item.md',
+        slug: 'my-item',
+        data: { title: 'My item', translationKey: 'my-item' },
+        i18n: { es: { data: { title: 'Mi artículo', translationKey: 'my-item' } } },
+        raw: '',
+        i18nLocales: ['en', 'es'],
+        i18nPaths: { es: 'src/content/mi-articulo.es.md' },
+      });
+      expect(getLocalizedPaths).toHaveBeenCalledTimes(1);
+      expect(getEntryValue).toHaveBeenCalledWith('src/content/mi-articulo.es.md');
+    });
+
+    it('should not look up localized paths when every translation is found', async () => {
+      const getEntryValue = jest.fn(path =>
+        Promise.resolve({ path, raw: 'raw', data: { title: path } }),
+      );
+      const getLocalizedPaths = jest.fn();
+
+      const entry = await i18n.getI18nEntry(
+        collection(i18n.I18N_STRUCTURE.MULTIPLE_FILES),
+        'md',
+        'src/content/my-item.md',
+        'my-item',
+        getEntryValue,
+        getLocalizedPaths,
+      );
+
+      expect(getLocalizedPaths).not.toHaveBeenCalled();
+      expect(entry.i18nLocales).toEqual(['en', 'es', 'de']);
+      expect(entry.i18nPaths).toEqual({});
+    });
+
+    it('should delete locale files at their localized paths', () => {
+      expect(
+        i18n.getI18nFilesToDelete(
+          collection(i18n.I18N_STRUCTURE.MULTIPLE_FILES),
+          'md',
+          'src/content/my-item.md',
+          'my-item',
+          fromJS({ i18nLocales: ['en', 'es'], i18nPaths: { es: 'src/content/mi-articulo.es.md' } }),
+        ),
+      ).toEqual([
+        { path: 'src/content/my-item.en.md', known: true },
+        { path: 'src/content/mi-articulo.es.md', known: true },
+        { path: 'src/content/my-item.de.md', known: false },
+      ]);
+    });
+
+    it('should keep changed locale files of an unpublished entry', () => {
+      expect(
+        i18n.getI18nDataFiles(
+          collection(i18n.I18N_STRUCTURE.MULTIPLE_FOLDERS),
+          'md',
+          'src/content/my-item.md',
+          'my-item',
+          [{ path: 'src/content/es/mi-articulo.md', id: 'id', newFile: true }],
+        ),
+      ).toEqual([
+        { path: 'src/content/en/my-item.md', id: '', newFile: false },
+        { path: 'src/content/es/my-item.md', id: '', newFile: false },
+        { path: 'src/content/de/my-item.md', id: '', newFile: false },
+        { path: 'src/content/es/mi-articulo.md', id: 'id', newFile: true },
+      ]);
     });
   });
 });
