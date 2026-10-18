@@ -309,6 +309,7 @@ export default class API {
     const url = result.coreAttributes?.Avatar?.value?.value;
     const user = {
       name: name || email || '',
+      login: email,
       avatar_url: `data:image/png;base64,${url}`,
       email,
     };
