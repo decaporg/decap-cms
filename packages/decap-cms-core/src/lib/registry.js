@@ -32,6 +32,9 @@ const registry = {
   locales: {},
   eventHandlers,
   formats: {},
+  fieldActions: [],
+  // Set by index.js, read by backend.ts: importing lib/editorApi there would cycle.
+  editorApi: null,
 };
 
 export default {
@@ -56,6 +59,8 @@ export default {
   registerLocale,
   getLocale,
   registerEventListener,
+  registerFieldAction,
+  getFieldActions,
   removeEventListener,
   getEventListeners,
   invokeEvent,
@@ -207,6 +212,7 @@ export function registerBackend(name, BackendClass) {
   } else {
     registry.backends[name] = {
       init: (...args) => new BackendClass(...args),
+      BackendClass,
     };
   }
 }
@@ -233,6 +239,34 @@ function validateEventName(name) {
   if (!allowedEvents.includes(name)) {
     throw new Error(`Invalid event name '${name}'`);
   }
+}
+
+/**
+ * Field actions: buttons beside each top-level field's label. `onClick` and
+ * `isAvailable` receive `{ field, collection, locale, entry, applyFieldPatch }`.
+ *
+ * @experimental Built for the Decap Turbo editor bridge; may change in any release.
+ */
+export function registerFieldAction(action) {
+  if (!action || typeof action.id !== 'string' || typeof action.label !== 'string') {
+    throw new Error('registerFieldAction needs an id and a label.');
+  }
+  if (typeof action.onClick !== 'function') {
+    throw new Error(`Field action "${action.id}" needs an onClick function.`);
+  }
+  registry.fieldActions = [...registry.fieldActions.filter(a => a.id !== action.id), action];
+}
+
+export function getFieldActions() {
+  return registry.fieldActions;
+}
+
+export function setEditorApi(editorApi) {
+  registry.editorApi = editorApi;
+}
+
+export function getEditorApi() {
+  return registry.editorApi;
 }
 
 export function getEventListeners(name) {

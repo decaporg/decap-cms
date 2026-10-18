@@ -1,10 +1,24 @@
 import { currentBackend } from '../backend';
 import { addNotification, clearNotifications } from './notifications';
+import { refilterConfigForPermissions, type BackendPermissions } from './config';
+import { stopDeployNotifications } from './deployStatus';
 
 import type { Credentials, User } from 'decap-cms-lib-util';
 import type { ThunkDispatch } from 'redux-thunk';
 import type { AnyAction } from 'redux';
 import type { State } from '../types/redux';
+
+// Any backend's resolved user may carry `permissions`; the field name stays
+// backend-neutral, and core re-filters the loaded config against it.
+function dispatchPermissionsRefilterIfPresent(
+  dispatch: ThunkDispatch<State, {}, AnyAction>,
+  user: User,
+) {
+  const permissions = (user as unknown as { permissions?: BackendPermissions }).permissions;
+  if (permissions) {
+    dispatch(refilterConfigForPermissions(permissions));
+  }
+}
 
 export const AUTH_REQUEST = 'AUTH_REQUEST';
 export const AUTH_SUCCESS = 'AUTH_SUCCESS';
@@ -65,6 +79,7 @@ export function authenticateUser() {
             dispatch(useOpenAuthoring());
           }
           dispatch(authenticate(user));
+          dispatchPermissionsRefilterIfPresent(dispatch, user);
         } else {
           dispatch(doneAuthenticating());
         }
@@ -73,6 +88,15 @@ export function authenticateUser() {
         dispatch(authError(error));
         dispatch(logoutUser());
       });
+  };
+}
+
+/** The backend found its session dead mid-use: the same exit as a failed restore. */
+export function sessionInvalidated(message: string) {
+  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+    if (!getState().auth.user) return;
+    dispatch(authError(new Error(message)));
+    dispatch(logoutUser());
   };
 }
 
@@ -89,6 +113,7 @@ export function loginUser(credentials: Credentials) {
           dispatch(useOpenAuthoring());
         }
         dispatch(authenticate(user));
+        dispatchPermissionsRefilterIfPresent(dispatch, user);
       })
       .catch((error: Error) => {
         console.error(error);
@@ -103,6 +128,7 @@ export function loginUser(credentials: Credentials) {
           }),
         );
         dispatch(authError(error));
+        dispatch(doneAuthenticating());
       });
   };
 }
@@ -111,6 +137,9 @@ export function logoutUser() {
   return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const backend = currentBackend(state.config);
+    // Before backend.logout(): the subscriptions are module singletons, and left
+    // set they would skip resubscribing after the next login.
+    stopDeployNotifications();
     Promise.resolve(backend.logout()).then(() => {
       dispatch(logout());
       dispatch(clearNotifications());

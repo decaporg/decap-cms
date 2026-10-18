@@ -7,3 +7,4 @@ packages/decap-cms-backend-gitlab/src/AuthenticationPage.js
 packages/decap-cms-backend-proxy/src/implementation.ts
 
 /.nx/cache
+pnpm-lock.yaml

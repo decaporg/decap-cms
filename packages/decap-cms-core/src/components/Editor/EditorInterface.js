@@ -263,6 +263,8 @@ class EditorInterface extends Component {
       fields,
       fieldsMetaData,
       fieldsErrors,
+      fieldRevisions,
+      fieldHighlights,
       onChange,
       showDelete,
       onDelete,
@@ -304,6 +306,8 @@ class EditorInterface extends Component {
       fields,
       fieldsMetaData,
       fieldsErrors,
+      fieldRevisions,
+      fieldHighlights,
       onChange,
       onValidate,
     };

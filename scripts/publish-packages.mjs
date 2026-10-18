@@ -40,6 +40,12 @@ const FETCH_RETRY_DELAY_MS = 2000;
 // conflict, and the message is the only way to tell it apart from a real
 // permission failure.
 const ALREADY_PUBLISHED = /cannot publish over the previously published versions/i;
+// npm stages some uploads and checks them ("validating" on npmjs.com) before
+// it serves them, then publishes them by itself. Until then the version reads
+// as missing, so a re-run tries again and gets this 409. The upload is done:
+// it is waiting on npm, not on us. Seen with decap-cms-app 3.17.0-beta.3, the
+// largest tarball, on 2026-10-08.
+const STAGED = /cannot publish over previously staged version/i;
 // pnpm logs this and carries on unauthenticated when npm has no trusted
 // publisher to exchange the OIDC token against.
 const OIDC_EXCHANGE_FAILED = /ERR_PNPM_AUTH_TOKEN_EXCHANGE|Skipped OIDC/i;
@@ -145,6 +151,111 @@ async function packageExists(registry, name) {
 }
 
 /**
+ * Semver precedence for the versions this repo publishes (`1.2.3` and
+ * `1.2.3-beta.4`), without depending on the `semver` package from a script
+ * that runs before anything else is trusted. Negative when `a` sorts first.
+ */
+function compareVersions(a, b) {
+  const [aCore, aPre] = a.split('-', 2);
+  const [bCore, bPre] = b.split('-', 2);
+  const aNums = aCore.split('.').map(Number);
+  const bNums = bCore.split('.').map(Number);
+  for (let i = 0; i < 3; i += 1) {
+    if (aNums[i] !== bNums[i]) return aNums[i] - bNums[i];
+  }
+  // A release sorts after any of its prereleases.
+  if (!aPre || !bPre) return (aPre ? -1 : 0) - (bPre ? -1 : 0);
+  const aIds = aPre.split('.');
+  const bIds = bPre.split('.');
+  for (let i = 0; i < Math.max(aIds.length, bIds.length); i += 1) {
+    if (aIds[i] === undefined) return -1;
+    if (bIds[i] === undefined) return 1;
+    const aNum = /^\d+$/.test(aIds[i]);
+    const bNum = /^\d+$/.test(bIds[i]);
+    if (aNum && bNum && Number(aIds[i]) !== Number(bIds[i]))
+      return Number(aIds[i]) - Number(bIds[i]);
+    if (aNum !== bNum) return aNum ? -1 : 1;
+    if (aIds[i] !== bIds[i]) return aIds[i] < bIds[i] ? -1 : 1;
+  }
+  return 0;
+}
+
+function isPrerelease(version) {
+  return version.includes('-');
+}
+
+/**
+ * Keeps `latest` on the newest version of packages that have never had a
+ * stable release, after a publish under another tag.
+ *
+ * npm gives a package `latest` on its first publish whatever `--tag` says, and
+ * never moves it again for a `--tag beta` publish. For a package with only
+ * betas (the `@decap/cli` CLI), plain `npx @decap/cli` and every MCP config
+ * written as `npx -y @decap/cli mcp` would stay on the first beta forever. A package with any
+ * stable version on the registry is never touched, so this cannot put a beta
+ * in front of `decap-server` or `decap-cms` users.
+ *
+ * Runs over every package, not just this run's uploads, so a re-run heals a
+ * move that failed, even when nothing is left to publish.
+ */
+async function promotePrereleaseOnlyLatest(packages, options) {
+  if (options.tag === 'latest') return { failed: [] };
+
+  const failed = [];
+  for (const pkg of packages) {
+    const doc = await fetchJson(`${options.registry}/${encodeName(pkg.name)}`);
+    const latest = doc?.['dist-tags']?.latest;
+    const versions = Object.keys(doc?.versions ?? {});
+    // Any stable version at all, not just `latest`: a `latest` that points at
+    // a beta by mistake (a tag push publishes under `latest`) must be fixed by
+    // hand, not chased along every later beta.
+    if (!latest || versions.some(version => !isPrerelease(version))) continue;
+    if (!versions.includes(pkg.version) || compareVersions(pkg.version, latest) <= 0) continue;
+
+    if (options.dryRun) {
+      log(`  would move ${pkg.name} latest: ${latest} -> ${pkg.version} (no stable release yet)`);
+      continue;
+    }
+
+    let moved = false;
+    for (let attempt = 1; attempt <= PUBLISH_ATTEMPTS && !moved; attempt += 1) {
+      const result = spawnSync(
+        `npm dist-tag add ${pkg.name}@${pkg.version} latest --registry ${options.registry}`,
+        { encoding: 'utf8', stdio: 'pipe', shell: true },
+      );
+      moved = result.status === 0;
+      if (!moved && attempt < PUBLISH_ATTEMPTS) {
+        // Usually registry lag: a version accepted moments ago is not yet
+        // taggable.
+        await delay(PUBLISH_RETRY_DELAY_MS);
+      } else if (!moved) {
+        process.stdout.write(`${result.stdout || ''}${result.stderr || ''}`);
+      }
+    }
+
+    if (moved) {
+      log(`  moved ${pkg.name} latest: ${latest} -> ${pkg.version} (no stable release yet)`);
+    } else {
+      failed.push(pkg);
+    }
+  }
+
+  // A warning, not a failed release: the versions are published, only the tag
+  // lags. In CI it always lands here: npm 11.19 answered `npm dist-tag add`
+  // with E401 under trusted publishing on 2026-10-08, though npm's docs list
+  // dist-tag as supported. A maintainer runs the commands with their own login.
+  if (failed.length > 0) {
+    log('\nWARNING: could not move `latest` for these packages, which have no stable release.');
+    log('Run these with a maintainer login (each needs a one-time password):');
+    for (const pkg of failed) {
+      log(`  npm dist-tag add ${pkg.name}@${pkg.version} latest`);
+    }
+  }
+
+  return { failed };
+}
+
+/**
  * One `pnpm publish` over a filtered set. Returns the combined output so the
  * caller can tell an already-published collision from a real failure.
  */
@@ -193,6 +304,10 @@ async function publishOne(pkg, options) {
       return { status: 'already-published' };
     }
 
+    if (STAGED.test(output)) {
+      return { status: 'staged' };
+    }
+
     if (OIDC_EXCHANGE_FAILED.test(output)) {
       const exists = await packageExists(options.registry, pkg.name);
       if (!exists) {
@@ -226,6 +341,7 @@ async function main() {
 
   if (pending.length === 0) {
     log('\nNothing to publish: every version in the working tree is already on the registry.');
+    await promotePrereleaseOnlyLatest(packages, options);
     return;
   }
 
@@ -261,13 +377,23 @@ async function main() {
 
   const published = [...withStatus('published'), ...withStatus('already-published')];
   const needsBootstrap = withStatus('needs-bootstrap');
+  const staged = withStatus('staged');
   const failed = withStatus('failed');
 
   log('\n=== Summary ===');
   log(`published: ${published.length}`);
   log(`skipped:   ${packages.length - pending.length} (already on the registry)`);
   log(`bootstrap: ${needsBootstrap.length}`);
+  log(`staged:    ${staged.length}`);
   log(`failed:    ${failed.length}`);
+
+  if (staged.length > 0) {
+    log('\nnpm is still validating these uploads ("validating" on npmjs.com). They go');
+    log('public by themselves once it finishes; there is nothing to re-upload:');
+    for (const pkg of staged) {
+      log(`  ${pkg.name}@${pkg.version}`);
+    }
+  }
 
   if (needsBootstrap.length > 0) {
     error('\nThese packages have never been published, so npm has no trusted');
@@ -288,6 +414,8 @@ async function main() {
       error(`  ${pkg.name}@${pkg.version}`);
     }
   }
+
+  await promotePrereleaseOnlyLatest(packages, options);
 
   if (needsBootstrap.length > 0 || failed.length > 0) {
     error('\nRe-running is safe: published versions are skipped, not re-uploaded.');

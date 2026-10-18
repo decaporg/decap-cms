@@ -31,6 +31,7 @@ catalog:
   '@hapi/joi': ^17.0.2
   '@iarna/toml': 2.2.5
   '@jsquash/webp': 1.5.0
+  '@modelcontextprotocol/sdk': ^1.31.0
   '@octokit/rest': ^16.28.7
   '@octokit/types': ^16.0.0
   '@reduxjs/toolkit': ^1.9.1
@@ -112,7 +113,7 @@ catalog:
   detab: ^2.0.4
   diacritics: ^1.3.0
   dompurify: ^3.4.13
-  dotenv: ^10.0.0
+  dotenv: ^16.4.5
   emotion: ^11.0.0
   eslint: ^8.12.0
   eslint-import-resolver-exports: ^1.0.0-beta.5
@@ -226,7 +227,7 @@ catalog:
   rimraf: ^3.0.0
   sanitize-filename: ^1.6.1
   semaphore: ^1.1.0
-  simple-git: ^3.0.0
+  simple-git: ^4.0.1
   slate: ^0.118.1
   slate-base64-serializer: ^0.2.107
   slate-dom: ^0.118.1
@@ -272,12 +273,12 @@ catalog:
   what-the-diff: ^0.6.0
   winston: ^3.3.3
   yaml: ^1.8.3
+  zod: ^3.25.0
 
 overrides:
   clean-stack: 5.2.0
-  'copy-webpack-plugin@10.2.4>serialize-javascript': 7.0.4
+  'copy-webpack-plugin@10.2.4>serialize-javascript': 7.0.5
   'nx@17.3.0>minimatch': 9.0.9
-  'nx@21.6.6>minimatch': 9.0.9
 
 allowBuilds:
   '@swc/core': true

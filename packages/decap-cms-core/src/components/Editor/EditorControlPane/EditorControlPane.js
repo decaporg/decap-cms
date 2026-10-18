@@ -14,6 +14,7 @@ import {
 } from 'decap-cms-ui-default';
 
 import EditorControl from './EditorControl';
+import { getFieldActions } from '../../../lib/registry';
 import {
   getI18nInfo,
   getLocaleDataPath,
@@ -210,7 +211,18 @@ export default class ControlPane extends Component {
   };
 
   render() {
-    const { collection, entry, fields, fieldsMetaData, fieldsErrors, onValidate, t } = this.props;
+    const {
+      collection,
+      entry,
+      fields,
+      fieldsMetaData,
+      fieldsErrors,
+      fieldRevisions,
+      fieldHighlights,
+      onValidate,
+      t,
+    } = this.props;
+    const fieldActions = getFieldActions();
 
     if (!collection || !fields) {
       return null;
@@ -252,7 +264,10 @@ export default class ControlPane extends Component {
             const isTranslatable = isFieldTranslatable(field, locale, defaultLocale);
             const isDuplicate = isFieldDuplicate(field, locale, defaultLocale);
             const isHidden = isFieldHidden(field, locale, defaultLocale);
-            const key = i18n ? `${locale}_${i}` : i;
+            // An externally changed field gets a new key and remounts: the
+            // markdown and richtext editors only read their value on mount.
+            const revision = fieldRevisions?.get(field.get('name')) ?? 0;
+            const key = `${i18n ? `${locale}_${i}` : i}_${revision}`;
 
             return (
               <EditorControl
@@ -276,6 +291,8 @@ export default class ControlPane extends Component {
                 isFieldDuplicate={this.isFieldDuplicate}
                 isFieldHidden={this.isFieldHidden}
                 locale={locale}
+                isHighlighted={Boolean(fieldHighlights?.get(field.get('name')))}
+                fieldActions={fieldActions}
               />
             );
           })}

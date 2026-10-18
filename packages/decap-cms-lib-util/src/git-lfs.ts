@@ -1,7 +1,8 @@
 //
 // Pointer file parsing
 
-import { filter, flow, fromPairs, map } from 'lodash/fp';
+import flow from 'lodash/flow';
+import fromPairs from 'lodash/fromPairs';
 
 import getBlobSHA from './getBlobSHA';
 
@@ -24,11 +25,14 @@ function isNonEmptyString(str: string) {
   return str !== '';
 }
 
-const withoutEmptyLines = flow([map((str: string) => str.trim()), filter(isNonEmptyString)]);
+const withoutEmptyLines = flow([
+  (lines: string[]) => lines.map(str => str.trim()),
+  (lines: string[]) => lines.filter(isNonEmptyString),
+]);
 export const parsePointerFile: (data: string) => PointerFile = flow([
   splitIntoLines,
   withoutEmptyLines,
-  map(splitIntoWords),
+  (lines: string[]) => lines.map(splitIntoWords),
   fromPairs,
   ({ size, oid, ...rest }) => ({
     size: parseInt(size),
@@ -59,7 +63,10 @@ function parseGitPatternAttribute(attributeString: string) {
   return [attributeString, true];
 }
 
-const parseGitPatternAttributes = flow([map(parseGitPatternAttribute), fromPairs]);
+const parseGitPatternAttributes = flow([
+  (attributes: string[]) => attributes.map(parseGitPatternAttribute),
+  fromPairs,
+]);
 
 const parseGitAttributesPatternLine = flow([
   splitIntoWords,
@@ -68,18 +75,19 @@ const parseGitAttributesPatternLine = flow([
 
 const parseGitAttributesFileToPatternAttributePairs = flow([
   splitIntoLines,
-  map(removeGitAttributesCommentsFromLine),
+  (lines: string[]) => lines.map(removeGitAttributesCommentsFromLine),
   withoutEmptyLines,
-  map(parseGitAttributesPatternLine),
+  (lines: string[]) => lines.map(line => parseGitAttributesPatternLine(line)),
 ]);
 
 export const getLargeMediaPatternsFromGitAttributesFile = flow([
   parseGitAttributesFileToPatternAttributePairs,
-  filter(
-    ([, attributes]) =>
-      attributes.filter === 'lfs' && attributes.diff === 'lfs' && attributes.merge === 'lfs',
-  ),
-  map(([pattern]) => pattern),
+  (pairs: [string, Record<string, string | boolean>][]) =>
+    pairs.filter(
+      ([, attributes]) =>
+        attributes.filter === 'lfs' && attributes.diff === 'lfs' && attributes.merge === 'lfs',
+    ),
+  (pairs: [string, Record<string, string | boolean>][]) => pairs.map(([pattern]) => pattern),
 ]);
 
 export function createPointerFile({ size, sha }: PointerFile) {

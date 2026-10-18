@@ -5,8 +5,13 @@ import {
   prepareSlug,
   slugFormatter,
   previewUrlFormatter,
+  entryPreviewPath,
   summaryFormatter,
   folderFormatter,
+  truncateSlug,
+  slugByteBudget,
+  utf8ByteLength,
+  MAX_SLUG_BYTES,
 } from '../formatters';
 
 jest.spyOn(console, 'warn').mockImplementation(() => {});
@@ -424,6 +429,92 @@ describe('formatters', () => {
     });
   });
 
+  describe('slug length', () => {
+    const { selectIdentifier } = require('../../reducers/collections');
+    const vietnamese = 'Hướng dẫn chăm sóc da mặt cho làn da nhạy cảm '.repeat(20);
+    const encoder = new (require('util').TextEncoder)();
+
+    function bytes(str) {
+      return encoder.encode(str).length;
+    }
+
+    it('counts bytes the way UTF-8 does', () => {
+      expect(utf8ByteLength('abc')).toBe(3);
+      expect(utf8ByteLength(vietnamese)).toBe(bytes(vietnamese));
+      expect(utf8ByteLength('😀')).toBe(4);
+    });
+
+    it('caps a long Vietnamese title in bytes and ends on a word', () => {
+      selectIdentifier.mockReturnValueOnce('title');
+      const slug = slugFormatter(Map(), Map({ title: vietnamese }), slugConfig);
+      expect(bytes(slug)).toBeGreaterThan(MAX_SLUG_BYTES);
+
+      const truncated = truncateSlug(slug, MAX_SLUG_BYTES, slugConfig);
+
+      expect(bytes(truncated)).toBeLessThanOrEqual(MAX_SLUG_BYTES);
+      expect(truncated).not.toMatch(/[-_./\s]$/);
+      expect(slug.startsWith(truncated)).toBe(true);
+      // Nothing was mangled on the way: re-encoding round-trips.
+      expect(Buffer.from(truncated, 'utf8').toString('utf8')).toBe(truncated);
+    });
+
+    it('caps a long ASCII title', () => {
+      selectIdentifier.mockReturnValueOnce('title');
+      const slug = slugFormatter(
+        Map(),
+        Map({ title: 'A rather long post title '.repeat(20) }),
+        slugConfig,
+      );
+
+      const truncated = truncateSlug(slug, MAX_SLUG_BYTES, slugConfig);
+
+      expect(truncated.length).toBeLessThanOrEqual(MAX_SLUG_BYTES);
+      expect(truncated).not.toMatch(/[-_./\s]$/);
+      expect(slug.startsWith(truncated)).toBe(true);
+    });
+
+    it('leaves a slug within the budget alone', () => {
+      expect(truncateSlug('post-title', MAX_SLUG_BYTES, slugConfig)).toBe('post-title');
+    });
+
+    it('never splits a surrogate pair', () => {
+      // 3 bytes of ASCII, then 4-byte emoji: a 5-byte cut lands inside the second.
+      expect(truncateSlug('abc😀😀', 9, slugConfig)).toBe('abc😀');
+      expect(truncateSlug('abc😀😀', 8, slugConfig)).toBe('abc😀');
+      expect(truncateSlug('abc😀😀', 6, slugConfig)).toBe('abc');
+    });
+
+    it('drops separators the cut leaves at the end, including a custom replacement', () => {
+      expect(truncateSlug('one-two-three', 8, slugConfig)).toBe('one-two');
+      expect(truncateSlug('dir/sub/name', 8, slugConfig)).toBe('dir/sub');
+      expect(truncateSlug('one__two__three', 10, { sanitize_replacement: '__' })).toBe('one__two');
+    });
+
+    it('keeps the editorial workflow branch within what GitHub accepts', () => {
+      const collection = Map({ name: 'x'.repeat(100) });
+
+      const budget = slugByteBudget(collection, {});
+
+      expect(budget).toBeLessThan(MAX_SLUG_BYTES);
+      expect(bytes(`refs/heads/cms/${collection.get('name')}/`) + budget).toBeLessThanOrEqual(255);
+    });
+
+    it('makes room for the repository under open authoring', () => {
+      const collection = Map({ name: 'posts' });
+      const config = { backend: { open_authoring: true, repo: `owner/${'r'.repeat(80)}` } };
+
+      const budget = slugByteBudget(collection, config);
+
+      expect(bytes(`refs/heads/cms/${config.backend.repo}/posts/`) + budget).toBeLessThanOrEqual(
+        255,
+      );
+    });
+
+    it('allows the full budget for a short collection name', () => {
+      expect(slugByteBudget(Map({ name: 'posts' }), {})).toBe(MAX_SLUG_BYTES);
+    });
+  });
+
   describe('previewUrlFormatter', () => {
     it('should return undefined when missing baseUrl', () => {
       expect(previewUrlFormatter('')).toBeUndefined();
@@ -658,6 +749,58 @@ describe('formatters', () => {
           slugConfig,
         ),
       ).toBe('https://www.example.com/prefix/nested-value');
+    });
+  });
+
+  describe('entryPreviewPath', () => {
+    // Feeds the "your change is live" notification's link, so it can point at
+    // the entry rather than the site's home page — see actions/deployStatus.ts.
+    it('returns only the path, never the sentinel base', () => {
+      const date = new Date('2020-01-02T13:28:27.679Z');
+      const path = entryPreviewPath(
+        Map({
+          preview_path: '{{year}}/{{slug}}',
+          preview_path_date_field: 'customDateField',
+        }),
+        'backendSlug',
+        Map({ data: Map({ customDateField: date, slug: 'entrySlug', title: 'title' }) }),
+        slugConfig,
+      );
+
+      expect(path).toBe('/2020/backendslug');
+      expect(path).not.toContain('invalid');
+      expect(path).not.toContain('https://');
+    });
+
+    // Without a preview_path the formatter hands back the base unchanged, and
+    // a link to the site root dressed up as a link to the entry is worse than
+    // the plain site link the notification already falls back to.
+    it('returns undefined for a collection with no preview_path', () => {
+      expect(entryPreviewPath(Map({}), 'slug', Map({ data: Map({}) }), slugConfig)).toBeUndefined();
+    });
+
+    it('returns undefined rather than throwing on a template it cannot compile', () => {
+      expect(() =>
+        entryPreviewPath(
+          Map({ preview_path: '{{unknown_field}}' }),
+          'slug',
+          Map({ data: Map({}) }),
+          slugConfig,
+        ),
+      ).not.toThrow();
+    });
+
+    // previewUrlFormatter joins base and path with an unconditional `/`, so a
+    // template cannot reach the host position — this stays a path.
+    it('keeps a host-looking template in the path, where it belongs', () => {
+      expect(
+        entryPreviewPath(
+          Map({ preview_path: '.example.com/evil' }),
+          'slug',
+          Map({ data: Map({}) }),
+          slugConfig,
+        ),
+      ).toBe('/.example.com/evil');
     });
   });
 

@@ -14,6 +14,7 @@ import ReactMarkdown from 'react-markdown';
 import gfm from 'remark-gfm';
 
 import { resolveWidget, getEditorComponents } from '../../../lib/registry';
+import { editorApi } from '../../../lib/editorApi';
 import { clearFieldErrors, tryLoadEntry, validateMetaField } from '../../../actions/entries';
 import { addAsset, getAsset } from '../../../actions/media';
 import { selectIsLoadingAsset } from '../../../reducers/medias';
@@ -79,6 +80,29 @@ const ControlContainer = styled.div`
   }
 `;
 
+const FieldActions = styled.div`
+  display: flex;
+  gap: 6px;
+  margin-left: auto;
+`;
+
+const FieldActionButton = styled.button`
+  border: 0;
+  border-radius: ${lengths.borderRadius};
+  background: ${colors.textFieldBorder};
+  color: ${colors.controlLabel};
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 8px;
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible {
+    background: ${colors.active};
+    color: ${colors.textLight};
+  }
+`;
+
 const ControlTopbar = styled.div`
   display: flex;
   justify-content: space-between;
@@ -123,6 +147,39 @@ function LabelComponent({ field, isActive, hasErrors, uniqueFieldId, isFieldOpti
   return labelComponent;
 }
 
+function FieldActionBar({ field, collection, locale, actions }) {
+  // Plain values only, so an extension never depends on Immutable internals.
+  const context = {
+    field: field.toJS(),
+    collection: collection?.get('name'),
+    locale,
+    // A getter, so only an action that reads the entry pays to convert it.
+    get entry() {
+      return editorApi.getCurrentEntry();
+    },
+    applyFieldPatch: editorApi.applyFieldPatch,
+  };
+  const available = actions.filter(action => !action.isAvailable || action.isAvailable(context));
+  if (available.length === 0) {
+    return null;
+  }
+
+  return (
+    <FieldActions>
+      {available.map(action => (
+        <FieldActionButton
+          key={action.id}
+          type="button"
+          title={action.title || action.label}
+          onClick={() => action.onClick(context)}
+        >
+          {action.label}
+        </FieldActionButton>
+      ))}
+    </FieldActions>
+  );
+}
+
 class EditorControl extends Component {
   static propTypes = {
     value: PropTypes.oneOfType([
@@ -157,6 +214,8 @@ class EditorControl extends Component {
     collection: ImmutablePropTypes.map.isRequired,
     isDisabled: PropTypes.bool,
     isHidden: PropTypes.bool,
+    isHighlighted: PropTypes.bool,
+    fieldActions: PropTypes.array,
     isFieldDuplicate: PropTypes.func,
     isFieldHidden: PropTypes.func,
     locale: PropTypes.string,
@@ -224,6 +283,8 @@ class EditorControl extends Component {
       isEditorComponent,
       isNewEditorComponent,
       parentIds,
+      isHighlighted,
+      fieldActions,
       t,
       validateMetaField,
       isLoadingAsset,
@@ -254,6 +315,12 @@ class EditorControl extends Component {
             aria-label={t('editor.editorControl.field.widgetLabel', { widgetLabel: widgetName })}
             css={css`
               ${isHidden && styleStrings.hidden};
+              ${isHighlighted &&
+              `
+                border-radius: ${lengths.borderRadius};
+                box-shadow: 0 0 0 3px ${colors.active};
+              `};
+              transition: box-shadow ${transitions.main};
             `}
           >
             <ControlTopbar>
@@ -266,6 +333,14 @@ class EditorControl extends Component {
                 isFieldOptional={isFieldOptional}
                 t={t}
               />
+              {fieldActions?.length > 0 && (
+                <FieldActionBar
+                  field={field}
+                  collection={collection}
+                  locale={locale}
+                  actions={fieldActions}
+                />
+              )}
               {errors && (
                 <ControlErrorsList>
                   {errors.map(

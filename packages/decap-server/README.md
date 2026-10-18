@@ -1,34 +1,25 @@
-# Decap CMS Proxy Server
+# decap-server
 
-Decap CMS Proxy Server is an express server created to facilitate local development.
+The local proxy server for Decap CMS's `proxy` backend. Run it in the root of your site's repository and the CMS reads and writes files on disk instead of going through a git host:
 
-## How It Works
+```sh
+npx decap-server
+```
 
-1. Navigate to a local Git repository configured with the CMS.
-2. Run `npx decap-server` from the root directory of the above repository.
-3. Update your `config.yml` to connect to the server:
+The CMS side needs only:
 
 ```yaml
-backend:
-  name: proxy
-  proxy_url: http://localhost:8081/api/v1
-  branch: master # optional, defaults to master
+local_backend: true
 ```
 
-4. Start you local development server (e.g. run `gatsby develop`).
+It needs Node 20 or later.
 
-## Custom Configuration
+Settings are read from the environment, also from a `.env` file in the working directory: `PORT` (default 8081), `BIND_HOST`, `MODE` (`fs` or `git`, default `fs`), `GIT_REPO_DIRECTORY` (default the current directory), `ORIGIN` (default localhost and 127.0.0.1) and `LOG_LEVEL` (default `info`). In `git` mode changes are committed to the local repository and the editorial workflow works.
 
-1. Create a `.env` file in the root directory of your local Git repository.
-2. Update the file as follows:
+To mount the endpoints on your own Express app:
 
-```bash
-# optional, defaults to current directory
-GIT_REPO_DIRECTORY=FULL_PATH_TO_LOCAL_GIT_REPO
-# optional, defaults to 8081
-PORT=CUSTOM_PORT
-# optional, only listen for incoming connections on a specific IP address
-BIND_HOST=127.0.0.1
-# optional, restrict API requests to a specific origin. Default is /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/ to allow requests from localhost and 127.0.0.1.
-ORIGIN=https://example.com
+```js
+const { registerLocalFs, registerLocalGit } = require('decap-server/dist/middlewares');
 ```
+
+Since 3.11.4 the server code lives in the internal `@decap/cli` package, which this package depends on and runs. Nothing changes for `npx decap-server` users.

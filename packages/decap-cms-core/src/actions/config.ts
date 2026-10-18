@@ -11,6 +11,7 @@ import { validateConfig } from '../constants/configSchema';
 import { selectDefaultSortableFields } from '../reducers/collections';
 import { getIntegrations, selectIntegration } from '../reducers/integrations';
 import { resolveBackend } from '../backend';
+import { getBackend } from '../lib/registry';
 import { I18N, I18N_FIELD, I18N_STRUCTURE } from '../lib/i18n';
 import { FILES, FOLDER } from '../constants/collectionTypes';
 
@@ -434,6 +435,55 @@ async function getConfigYaml(file: string, hasManualConfig: boolean) {
   return parseConfig(await response.text());
 }
 
+export type CollectionAccess = 'edit' | 'view' | 'none';
+
+// Per-collection access a backend may attach to the user it resolves from
+// `authenticate()`/`currentUser()` as `permissions`. Names absent from
+// `collections` mean full access, so backends that never set it are unaffected.
+export interface BackendPermissions {
+  collections?: Record<string, CollectionAccess>;
+}
+
+/**
+ * Drops collections the user has no access to and strips create, delete and
+ * publish from view-only ones. UX only: the backend that proxies writes is the
+ * boundary.
+ */
+export function applyBackendPermissionFilter(
+  config: CmsConfig,
+  permissions?: BackendPermissions,
+): CmsConfig {
+  if (!permissions?.collections || isEmpty(permissions.collections)) {
+    return config;
+  }
+
+  const access = permissions.collections;
+  const collections = config.collections || [];
+  let changed = false;
+  const filteredCollections = collections.flatMap(collection => {
+    switch (access[collection.name]) {
+      case 'none':
+        changed = true;
+        return [];
+      case 'view':
+        changed = true;
+        return [{ ...collection, create: false, delete: false, publish: false }];
+      default:
+        return [collection];
+    }
+  });
+
+  return changed ? { ...config, collections: filteredCollections } : config;
+}
+
+/** Re-filters the config already in state once auth knows the user's permissions. */
+export function refilterConfigForPermissions(permissions: BackendPermissions) {
+  return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+    const { config } = getState();
+    dispatch(configLoaded(applyBackendPermissionFilter(config, permissions)));
+  };
+}
+
 export function configLoaded(config: CmsConfig) {
   return {
     type: CONFIG_SUCCESS,
@@ -545,6 +595,20 @@ export async function handleLocalBackend(originalConfig: CmsConfig) {
   });
 }
 
+// Generic extension point: a backend class's static async `preloadConfig(config)`
+// is awaited before the backend is constructed, so it can resolve its own config.
+export async function applyBackendPreloadConfig(originalConfig: CmsConfig) {
+  const backendName = originalConfig.backend?.name;
+  const registered = backendName && getBackend(backendName);
+  const preloadConfig = registered?.BackendClass?.preloadConfig;
+
+  if (typeof preloadConfig !== 'function') {
+    return originalConfig;
+  }
+
+  return preloadConfig(originalConfig);
+}
+
 export function loadConfig(manualConfig: Partial<CmsConfig> = {}, onLoad: () => unknown) {
   if (window.CMS_CONFIG) {
     return configLoaded(window.CMS_CONFIG);
@@ -566,7 +630,8 @@ export function loadConfig(manualConfig: Partial<CmsConfig> = {}, onLoad: () => 
       validateConfig(mergedConfig);
 
       const withLocalBackend = await handleLocalBackend(mergedConfig);
-      const normalizedConfig = normalizeConfig(withLocalBackend);
+      const withPreloadedBackend = await applyBackendPreloadConfig(withLocalBackend);
+      const normalizedConfig = normalizeConfig(withPreloadedBackend);
 
       const config = applyDefaults(normalizedConfig);
 

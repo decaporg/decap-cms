@@ -899,28 +899,38 @@ export default class API {
       );
       branches = branchesWithFilter.filter(b => b.filter).map(b => b.branch);
     } else {
-      // backwards compatibility code, get relevant pull requests and migrate them
-      const pullRequests = await this.getPullRequests(
+      // One fetch, two filters: `getPullRequests` re-requests the list per
+      // predicate, and the predicate is applied client-side anyway.
+      const openPullRequests = await this.getPullRequests(
         undefined,
         PullRequestState.Open,
+        () => true,
+      );
+
+      // Backwards compatibility: entries from before the CMS labelled its PRs.
+      const unlabeled = openPullRequests.filter(
         pr => !pr.head.repo.fork && withoutCmsLabel(pr, this.cmsLabelPrefix),
       );
       let prCount = 0;
-      for (const pr of pullRequests) {
+      for (const pr of unlabeled) {
         if (!migrationNotified) {
           migrationNotified = true;
           alert(oneLine`
-            Decap CMS is adding labels to ${pullRequests.length} of your Editorial Workflow
+            Decap CMS is adding labels to ${unlabeled.length} of your Editorial Workflow
             entries. The "Workflow" tab will be unavailable during this migration. You may use other
             areas of the CMS during this time. Note that closing the CMS will pause the migration.
           `);
         }
         prCount = prCount + 1;
-        await this.migratePullRequest(pr, `${prCount} of ${pullRequests.length}`);
+        await this.migratePullRequest(pr, `${prCount} of ${unlabeled.length}`);
       }
-      const cmsPullRequests = await this.getPullRequests(undefined, PullRequestState.Open, pr =>
-        withCmsLabel(pr, this.cmsLabelPrefix),
-      );
+
+      // Migration adds the labels, so when it ran the list must be read again.
+      const cmsPullRequests = unlabeled.length
+        ? await this.getPullRequests(undefined, PullRequestState.Open, pr =>
+            withCmsLabel(pr, this.cmsLabelPrefix),
+          )
+        : openPullRequests.filter(pr => withCmsLabel(pr, this.cmsLabelPrefix));
       branches = cmsPullRequests.map(pr => pr.head.ref);
     }
 
@@ -1556,10 +1566,10 @@ export default class API {
   }
 
   /**
-   * Constants for note formatting to aid with PR comment to note conversion
+   * How a notes issue is recognised on the host.
    */
-  private static readonly NOTES_LABEL = 'decap-cms-notes';
-  private static readonly NOTE_ISSUE_PREFIX = 'Notes: ';
+  static readonly NOTES_LABEL = 'decap-cms-notes';
+  static readonly NOTE_ISSUE_PREFIX = 'Notes: ';
 
   /**
    * Parse a GitHub comment into a Note object
@@ -1592,23 +1602,52 @@ export default class API {
   }
 
   /**
+   * List the repo's notes issues by label, not `/search/issues`, which with an
+   * App installation token intermittently answers 422 and so lost notes. With
+   * `collectionName`, also narrowed by the `collection:` label.
+   */
+  private async listNotesIssues(
+    state: 'open' | 'all',
+    collectionName?: string,
+  ): Promise<GitHubIssue[]> {
+    const labels = collectionName
+      ? `${API.NOTES_LABEL},collection:${collectionName}`
+      : API.NOTES_LABEL;
+    // Paged by number: requestAllPages follows the Link header, which the Turbo
+    // proxy does not forward. Capped so a lookup cannot run indefinitely.
+    const perPage = 100;
+    const maxPages = 20;
+    const issues: (GitHubIssue & { pull_request?: unknown })[] = [];
+    for (let page = 1; page <= maxPages; page++) {
+      const batch: (GitHubIssue & { pull_request?: unknown })[] = await this.request(
+        `${this.repoURL}/issues`,
+        { params: { labels, state, per_page: perPage, page } },
+      );
+      issues.push(...batch);
+      if (batch.length < perPage) break;
+    }
+    return issues.filter(issue => !issue.pull_request);
+  }
+
+  private async findNotesIssue(
+    collectionName: string,
+    slug: string,
+    state: 'open' | 'all',
+  ): Promise<GitHubIssue | null> {
+    // With the backticks, so `posts/foo` does not match `posts/foo-bar`.
+    const marker = `\`${collectionName}/${slug}\``;
+    const issues = await this.listNotesIssues(state, collectionName);
+    return issues.find(issue => issue.body?.includes(marker)) ?? null;
+  }
+
+  /**
    * Find existing issue for an entry (returns null if not found)
    */
   async findEntryIssue(collectionName: string, slug: string): Promise<GitHubIssue | null> {
-    // Search for existing issue
-    const searchQuery = `repo:${this.repo} label:${API.NOTES_LABEL} "${collectionName}/${slug}" in:body`;
-
     try {
-      const searchResponse = await this.request('/search/issues', {
-        params: { q: searchQuery },
-      });
-
-      if (searchResponse.items && searchResponse.items.length > 0) {
-        return searchResponse.items[0];
-      }
-      return null;
+      return await this.findNotesIssue(collectionName, slug, 'all');
     } catch (error) {
-      console.warn('Failed to search for existing notes issue:', error);
+      console.warn('Failed to look up existing notes issue:', error);
       return null;
     }
   }
@@ -1770,13 +1809,8 @@ export default class API {
    */
   async closeIssueOnPublish(collectionName: string, slug: string): Promise<void> {
     try {
-      const searchQuery = `repo:${this.repo} label:${API.NOTES_LABEL} "${collectionName}/${slug}" in:body state:open`;
-      const searchResponse = await this.request('/search/issues', {
-        params: { q: searchQuery },
-      });
-
-      if (searchResponse.items && searchResponse.items.length > 0) {
-        const issue = searchResponse.items[0];
+      const issue = await this.findNotesIssue(collectionName, slug, 'open');
+      if (issue) {
         await this.request(`${this.repoURL}/issues/${issue.number}`, {
           method: 'PATCH',
           body: JSON.stringify({
@@ -1798,13 +1832,8 @@ export default class API {
    */
   async reopenIssueOnUnpublish(collectionName: string, slug: string): Promise<void> {
     try {
-      const searchQuery = `repo:${this.repo} label:${API.NOTES_LABEL} "${collectionName}/${slug}" in:body`;
-      const searchResponse = await this.request('/search/issues', {
-        params: { q: searchQuery },
-      });
-
-      if (searchResponse.items && searchResponse.items.length > 0) {
-        const issue = searchResponse.items[0];
+      const issue = await this.findNotesIssue(collectionName, slug, 'all');
+      if (issue) {
         // Remove 'entry-published' or 'entry-deleted' labels and reopen
         const updatedLabels = (issue.labels || [])
           .map((l: { name: string }) => l.name)
@@ -1893,14 +1922,11 @@ export default class API {
     Array<{ collection: string; slug: string; noteCount: number }>
   > {
     try {
-      const searchQuery = `repo:${this.repo} label:${API.NOTES_LABEL} state:open`;
-      const searchResponse = await this.request('/search/issues', {
-        params: { q: searchQuery, per_page: 100 },
-      });
+      const issues = await this.listNotesIssues('open');
 
       const entriesWithNotes = [];
 
-      for (const issue of searchResponse.items || []) {
+      for (const issue of issues) {
         // Extract collection/slug from issue body
         const match = issue.body.match(/entry: `(.+)\/(.+)`/);
         if (match) {
@@ -1925,13 +1951,8 @@ export default class API {
    */
   async closeEntryNotesIssue(collectionName: string, slug: string): Promise<void> {
     try {
-      const searchQuery = `repo:${this.repo} label:${API.NOTES_LABEL} "${collectionName}/${slug}" in:body state:open`;
-      const searchResponse = await this.request('/search/issues', {
-        params: { q: searchQuery },
-      });
-
-      if (searchResponse.items && searchResponse.items.length > 0) {
-        const issue = searchResponse.items[0];
+      const issue = await this.findNotesIssue(collectionName, slug, 'open');
+      if (issue) {
         await this.request(`${this.repoURL}/issues/${issue.number}`, {
           method: 'PATCH',
           body: JSON.stringify({

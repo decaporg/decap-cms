@@ -20,6 +20,7 @@ import {
 
 import { status } from '../../constants/publishModes';
 import { SettingsDropdown } from '../UI';
+import { selectUserIdentity } from '../../lib/userHelper';
 
 const styles = {
   noOverflow: css`
@@ -721,6 +722,7 @@ export class EditorToolbar extends Component {
           <SettingsDropdown
             displayUrl={displayUrl}
             imageUrl={user?.avatar_url}
+            identity={selectUserIdentity(user)}
             onLogoutClick={onLogoutClick}
           />
         </ToolbarSectionMeta>

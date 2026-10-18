@@ -6,6 +6,7 @@ import trim from 'lodash/trim';
 import sortBy from 'lodash/sortBy';
 import get from 'lodash/get';
 import set from 'lodash/set';
+import escapeRegExp from 'lodash/escapeRegExp';
 import { List, fromJS, Set } from 'immutable';
 import * as fuzzy from 'fuzzy';
 import {
@@ -35,11 +36,19 @@ import {
   selectMediaFolders,
   selectFieldsComments,
   selectHasMetaPath,
+  selectEntryCollectionTitle,
 } from './reducers/collections';
 import { createEntry } from './valueObjects/Entry';
 import { sanitizeChar } from './lib/urlHelper';
-import { getBackend, invokeEvent } from './lib/registry';
-import { commitMessageFormatter, slugFormatter, previewUrlFormatter } from './lib/formatters';
+import { getBackend, getEditorApi, invokeEvent, registerFieldAction } from './lib/registry';
+import {
+  commitMessageFormatter,
+  slugFormatter,
+  previewUrlFormatter,
+  slugByteBudget,
+  truncateSlug,
+  utf8ByteLength,
+} from './lib/formatters';
 import { status } from './constants/publishModes';
 import { FOLDER, FILES } from './constants/collectionTypes';
 import { selectCustomPath } from './reducers/entryDraft';
@@ -47,7 +56,8 @@ import {
   getI18nFilesDepth,
   getI18nFiles,
   hasI18n,
-  getFilePaths,
+  getFilePath,
+  getI18nFilesToDelete,
   getI18nEntry,
   groupEntries,
   getI18nDataFiles,
@@ -292,7 +302,22 @@ interface PersistArgs {
 interface ImplementationInitOptions {
   useWorkflow: boolean;
   updateUserCredentials: (credentials: Credentials) => void;
+  retrieveUserCredentials: () => Credentials | null;
   initialWorkflowStatus: string;
+  /** A session gone for good mid-session: core logs out and shows `message` once. */
+  onSessionInvalid: (message: string) => void;
+}
+
+type SessionInvalidListener = (message: string) => void;
+// An array, not a Set: `Set` in this module is Immutable's.
+let sessionInvalidListeners: SessionInvalidListener[] = [];
+
+/** The backend is built outside React and Redux, so the app subscribes here. */
+export function subscribeToSessionInvalid(listener: SessionInvalidListener) {
+  sessionInvalidListeners.push(listener);
+  return () => {
+    sessionInvalidListeners = sessionInvalidListeners.filter(l => l !== listener);
+  };
 }
 
 type Implementation = BackendImplementation & {
@@ -330,33 +355,76 @@ function collectionDepth(collection: Collection) {
   return depth;
 }
 
-function i18nRulestring(ruleString: string, { defaultLocale, structure }: I18nInfo): string {
+function i18nRulestring(
+  ruleString: string,
+  { defaultLocale, structure }: I18nInfo,
+  locale: string = defaultLocale,
+): string {
   if (structure === I18N_STRUCTURE.MULTIPLE_FOLDERS) {
-    return `${defaultLocale}\\/${ruleString}`;
+    return `${locale}\\/${ruleString}`;
   }
 
   if (structure === I18N_STRUCTURE.MULTIPLE_FILES) {
-    return `${ruleString}\\.${defaultLocale}\\..*`;
+    return `${ruleString}\\.${locale}\\..*`;
   }
 
   return ruleString;
 }
 
-function collectionRegex(collection: Collection): RegExp | undefined {
-  let ruleString = '';
-
-  if (collection.get('path')) {
-    ruleString = `${collection.get('folder')}/${collection.get('path')}`.replace(
-      /{{.*}}/gm,
-      '(.*)',
-    );
+function collectionRuleString(collection: Collection): string {
+  if (!collection.get('path')) {
+    return '';
   }
+  return `${collection.get('folder')}/${collection.get('path')}`.replace(/{{.*}}/gm, '(.*)');
+}
+
+function collectionRegex(collection: Collection): RegExp | undefined {
+  let ruleString = collectionRuleString(collection);
 
   if (hasI18n(collection)) {
     ruleString = i18nRulestring(ruleString, getI18nInfo(collection) as I18nInfo);
   }
 
   return ruleString ? new RegExp(ruleString) : undefined;
+}
+
+/**
+ * The same selector as `collectionRegex`, for the i18n locales it leaves out,
+ * so a caching backend can warm them for the editor. Built from the same rule
+ * string so the two cannot drift; undefined when there is nothing extra.
+ */
+function localeSiblingRegex(collection: Collection): RegExp | undefined {
+  if (!hasI18n(collection)) {
+    return undefined;
+  }
+
+  const i18n = getI18nInfo(collection) as I18nInfo;
+  const { structure, defaultLocale, locales } = i18n;
+
+  if (structure === I18N_STRUCTURE.SINGLE_FILE) {
+    return undefined;
+  }
+
+  const siblings = (locales || []).filter(locale => locale !== defaultLocale);
+  if (siblings.length === 0) {
+    return undefined;
+  }
+
+  const ruleString = i18nRulestring(
+    collectionRuleString(collection),
+    i18n,
+    `(?:${siblings.map(escapeRegExp).join('|')})`,
+  );
+
+  return ruleString ? new RegExp(ruleString) : undefined;
+}
+
+export function safeEntryLabel(collection: Collection, entry: EntryMap) {
+  try {
+    return selectEntryCollectionTitle(collection, entry);
+  } catch {
+    return undefined;
+  }
 }
 
 export class Backend {
@@ -374,7 +442,10 @@ export class Backend {
     this.implementation = implementation.init(this.config, {
       useWorkflow: selectUseWorkflow(this.config),
       updateUserCredentials: this.updateUserCredentials,
+      retrieveUserCredentials: this.retrieveUserCredentials,
       initialWorkflowStatus: status.first(),
+      onSessionInvalid: (message: string) =>
+        sessionInvalidListeners.forEach(listener => listener(message)),
     });
     this.backendName = backendName;
     this.authStore = authStore;
@@ -382,6 +453,17 @@ export class Backend {
       throw new Error('Cannot instantiate a Backend with no implementation');
     }
     this.backupSync = asyncLock();
+
+    // Optional, duck-typed: a backend that works with the open entry (the
+    // Decap Turbo editor bridge) receives the editor API and the field-action
+    // registry here, so it needs no dependency on decap-cms-core.
+    const editor = getEditorApi();
+    const attachable = this.implementation as Implementation & {
+      attachEditor?: (options: { editor: unknown; registerFieldAction: unknown }) => void;
+    };
+    if (editor && typeof attachable.attachEditor === 'function') {
+      attachable.attachEditor({ editor, registerFieldAction });
+    }
   }
 
   async status() {
@@ -434,6 +516,12 @@ export class Backend {
     }
   };
 
+  /** The stored user as it is now: another tab may have rotated single-use tokens. */
+  retrieveUserCredentials = (): Credentials | null => {
+    const storedUser = this.authStore?.retrieve();
+    return storedUser && storedUser.backendName === this.backendName ? storedUser : null;
+  };
+
   authComponent() {
     return this.implementation.authComponent();
   }
@@ -477,11 +565,30 @@ export class Backend {
 
     if (unpublishedEntry) return unpublishedEntry;
 
+    // With multiple_files/multiple_folders i18n `path` itself always misses,
+    // and a miss reuses the slug and overwrites; probe the default locale.
+    let entryPath = path;
+    if (hasI18n(collection)) {
+      const { structure, defaultLocale } = getI18nInfo(collection) as I18nInfo;
+      entryPath = getFilePath(
+        structure as I18N_STRUCTURE,
+        selectFolderEntryExtension(collection),
+        path,
+        slug,
+        defaultLocale,
+      );
+    }
+
     const publishedEntry = await this.implementation
-      .getEntry(path)
-      .then(({ data }) => data)
-      .catch(() => {
-        return Promise.resolve(false);
+      .getEntry(entryPath)
+      .then(result => result?.data)
+      .catch((error: Error & { status?: number }) => {
+        // Only a 404 means "absent"; anything else fails the save rather than
+        // reuse a taken slug. Backends that swallow read errors never get here.
+        if (error?.status === 404) {
+          return false;
+        }
+        throw error;
       });
 
     return publishedEntry;
@@ -496,10 +603,14 @@ export class Backend {
   ) {
     const slugConfig = config.slug;
     let slug: string;
+    // Capped in bytes, not characters: refs are limited to 255 bytes. Not for a
+    // custom path, which must keep matching the path the editor typed.
+    let maxBytes = Infinity;
     if (customPath) {
       slug = slugFromCustomPath(collection, customPath);
     } else {
-      slug = slugFormatter(collection, entryData, slugConfig);
+      maxBytes = slugByteBudget(collection, config);
+      slug = truncateSlug(slugFormatter(collection, entryData, slugConfig), maxBytes, slugConfig);
     }
     let i = 1;
     let uniqueSlug = slug;
@@ -514,7 +625,13 @@ export class Backend {
         selectUseWorkflow(config),
       ))
     ) {
-      uniqueSlug = `${slug}${sanitizeChar(' ', slugConfig)}${i++}`;
+      // The suffix stays whole; the slug in front of it gives way to the cap.
+      const suffix = `${sanitizeChar(' ', slugConfig)}${i++}`;
+      const base =
+        maxBytes === Infinity
+          ? slug
+          : truncateSlug(slug, maxBytes - utf8ByteLength(suffix), slugConfig);
+      uniqueSlug = `${base}${suffix}`;
     }
     return uniqueSlug;
   }
@@ -732,7 +849,7 @@ export class Backend {
   // repeats the process. Once there is no available "next" action, it
   // returns all the collected entries. Used to retrieve all entries
   // for local searches and queries.
-  async listAllEntries(collection: Collection) {
+  async listAllEntries(collection: Collection, searchTerm?: string) {
     if (collection.get('folder') && this.implementation.allEntriesByFolder) {
       const depth = collectionDepth(collection);
       const extension = selectFolderEntryExtension(collection);
@@ -742,6 +859,9 @@ export class Backend {
           extension,
           depth,
           collectionRegex(collection),
+          searchTerm,
+          // The locales this listing leaves out, for a caching backend to warm.
+          localeSiblingRegex(collection),
         )
         .then(entries => this.processEntries(entries, collection));
     }
@@ -762,6 +882,7 @@ export class Backend {
     // collection, load it, search, and call onCollectionResults with
     // its results.
     const errors: Error[] = [];
+    const searchesEntryBody = this.implementation.searchesEntryBody === true;
     const collectionEntriesRequests = collections
       .map(async collection => {
         const summary = collection.get('summary', '') as string;
@@ -790,9 +911,15 @@ export class Backend {
               return elem;
             }),
           ];
+          // fuzzy.filter is subsequence matching, so a long body matches almost
+          // any short term. A backend that already matched the body
+          // server-side opts in so this pass does not drop its hits.
+          if (searchesEntryBody) {
+            searchFields.push('body');
+          }
         }
         const filteredSearchFields = searchFields.filter(Boolean) as string[];
-        const collectionEntries = await this.listAllEntries(collection);
+        const collectionEntries = await this.listAllEntries(collection, searchTerm);
         return fuzzy.filter(searchTerm, collectionEntries, {
           extract: extractSearchFields(uniq(filteredSearchFields)),
         });
@@ -1111,6 +1238,14 @@ export class Backend {
     }
   }
 
+  /**
+   * The content keys of every entry under editorial workflow: the one call
+   * that lists the workflow branches, without hydrating each draft.
+   */
+  async unpublishedContentKeys(): Promise<string[]> {
+    return this.implementation.unpublishedEntries!();
+  }
+
   async unpublishedEntries(collections: Collections) {
     const ids = await this.implementation.unpublishedEntries!();
     const entries = (
@@ -1349,6 +1484,10 @@ export class Backend {
       collectionName,
       useWorkflow,
       hasSubfolders,
+      // The entry's title, for backends that record deploys. Guarded: a preSave
+      // handler may have reshaped the data, and a throw here would cost the save.
+      entryLabel: safeEntryLabel(collection, entryDraft.get('entry')),
+      entryPath: path,
       ...updatedOptions,
     };
 
@@ -1420,6 +1559,20 @@ export class Backend {
     return this.implementation.persistMedia(file, options);
   }
 
+  /**
+   * Whether a locale file exists, for deleteEntry. GitHub resolves a missing
+   * file as empty content, so the content is checked; a non-404 failure counts
+   * as "exists", since skipping a real file would orphan a translation.
+   */
+  private async i18nFileExists(path: string) {
+    try {
+      const { data } = await this.implementation.getEntry(path);
+      return !!data;
+    } catch (error) {
+      return (error as { status?: number })?.status !== 404;
+    }
+  }
+
   async deleteEntry(state: State, collection: Collection, slug: string) {
     const config = state.config;
     const path = selectEntryPath(collection, slug) as string;
@@ -1448,7 +1601,12 @@ export class Backend {
     await this.invokePreUnpublishEvent(entry);
     let paths = [path];
     if (hasI18n(collection)) {
-      paths = getFilePaths(collection, extension, path, slug);
+      // Only the locales that exist: deleting a missing path fails the commit.
+      const files = getI18nFilesToDelete(collection, extension, path, slug, entry);
+      const exists = await Promise.all(
+        files.map(file => file.known || this.i18nFileExists(file.path)),
+      );
+      paths = files.filter((_, i) => exists[i]).map(file => file.path);
     }
     await this.implementation.deleteFiles(paths, commitMessage);
 

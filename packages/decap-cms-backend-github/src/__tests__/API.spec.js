@@ -20,6 +20,101 @@ describe('github API', () => {
     });
   }
 
+  describe('notes issues', () => {
+    function notesIssue(number, key, extra = {}) {
+      return {
+        number,
+        body: `This issue tracks notes for entry: \`${key}\`\n\n---`,
+        labels: [{ name: 'decap-cms-notes' }],
+        ...extra,
+      };
+    }
+
+    it('finds the entry issue by listing labelled issues, never by search', async () => {
+      const api = new API({ branch: 'main', repo: 'owner/repo' });
+      const requests = [];
+      mockAPI(api, {
+        '/repos/owner/repo/issues': options => {
+          requests.push(options.params);
+          return [
+            notesIssue(1, 'posts/foo-bar'),
+            notesIssue(2, 'posts/foo', { pull_request: {} }),
+            notesIssue(3, 'posts/foo'),
+          ];
+        },
+      });
+
+      const issue = await api.findEntryIssue('posts', 'foo');
+
+      expect(issue.number).toBe(3);
+      expect(requests).toEqual([
+        { labels: 'decap-cms-notes,collection:posts', state: 'all', per_page: 100, page: 1 },
+      ]);
+      expect(api.request).not.toHaveBeenCalledWith('/search/issues', expect.anything());
+    });
+
+    it('pages until a short page', async () => {
+      const api = new API({ branch: 'main', repo: 'owner/repo' });
+      const fullPage = Array.from({ length: 100 }, (_, i) => notesIssue(i + 10, `posts/p${i}`));
+      mockAPI(api, {
+        '/repos/owner/repo/issues': ({ params }) =>
+          params.page === 1 ? fullPage : [notesIssue(500, 'posts/late')],
+      });
+
+      const issue = await api.findEntryIssue('posts', 'late');
+
+      expect(issue.number).toBe(500);
+      expect(api.request).toHaveBeenCalledTimes(2);
+    });
+
+    it('stops paging after 20 pages of a host that keeps answering full pages', async () => {
+      const api = new API({ branch: 'main', repo: 'owner/repo' });
+      const fullPage = Array.from({ length: 100 }, (_, i) => notesIssue(i + 10, `posts/p${i}`));
+      mockAPI(api, { '/repos/owner/repo/issues': () => fullPage });
+
+      expect(await api.findEntryIssue('posts', 'missing')).toBeNull();
+      expect(api.request).toHaveBeenCalledTimes(20);
+    });
+
+    it('lists every collection when asked for all entries with notes', async () => {
+      const api = new API({ branch: 'main', repo: 'owner/repo' });
+      const requests = [];
+      mockAPI(api, {
+        '/repos/owner/repo/issues': options => {
+          requests.push(options.params);
+          return [notesIssue(1, 'posts/foo'), notesIssue(2, 'authors/bar')];
+        },
+      });
+
+      const entries = await api.getEntriesWithNotes();
+
+      expect(entries.map(entry => entry.collection)).toEqual(['posts', 'authors']);
+      expect(requests[0].labels).toBe('decap-cms-notes');
+    });
+
+    it('closes only an open issue on publish', async () => {
+      const api = new API({ branch: 'main', repo: 'owner/repo' });
+      let patched = null;
+      mockAPI(api, {
+        '/repos/owner/repo/issues': ({ params }) => {
+          expect(params.state).toBe('open');
+          return [notesIssue(7, 'posts/foo')];
+        },
+        '/repos/owner/repo/issues/7': req => {
+          patched = JSON.parse(req.body);
+          return {};
+        },
+      });
+
+      await api.closeIssueOnPublish('posts', 'foo');
+
+      expect(patched).toEqual({
+        state: 'closed',
+        labels: ['decap-cms-notes', 'entry-published'],
+      });
+    });
+  });
+
   describe('editorialWorkflowGit', () => {
     it('should create PR with correct base branch name when publishing with editorial workflow', () => {
       let prBaseBranch = null;
@@ -721,6 +816,42 @@ describe('github API', () => {
         { name: 'author', email: '', date: undefined },
         { name: 'committer', email: '', date: undefined },
       );
+    });
+  });
+
+  describe('listUnpublishedBranches', () => {
+    function pullRequest(ref, labels) {
+      return { head: { ref, repo: { fork: false } }, labels: labels.map(name => ({ name })) };
+    }
+
+    it('reads the open pull request list once when nothing needs migrating', async () => {
+      const api = new API({ branch: 'main', repo: 'owner/repo' });
+      api.requestAllPages = jest
+        .fn()
+        .mockResolvedValue([pullRequest('cms/posts/a-post', ['decap-cms/pending_review'])]);
+
+      await expect(api.listUnpublishedBranches()).resolves.toEqual(['cms/posts/a-post']);
+
+      // The labelled and unlabelled sets are two filters over the same
+      // `GET /pulls?base=…&state=open` page, so asking for both must not cost
+      // two identical round trips.
+      expect(api.requestAllPages).toHaveBeenCalledTimes(1);
+    });
+
+    it('re-reads the list after a migration, because migrating is what adds the label', async () => {
+      const api = new API({ branch: 'main', repo: 'owner/repo' });
+      const unlabeled = pullRequest('cms/posts/legacy', []);
+      api.requestAllPages = jest
+        .fn()
+        .mockResolvedValueOnce([unlabeled])
+        .mockResolvedValueOnce([pullRequest('cms/posts/legacy', ['decap-cms/draft'])]);
+      api.migratePullRequest = jest.fn().mockResolvedValue(undefined);
+      global.alert = jest.fn();
+
+      await expect(api.listUnpublishedBranches()).resolves.toEqual(['cms/posts/legacy']);
+
+      expect(api.migratePullRequest).toHaveBeenCalledTimes(1);
+      expect(api.requestAllPages).toHaveBeenCalledTimes(2);
     });
   });
 

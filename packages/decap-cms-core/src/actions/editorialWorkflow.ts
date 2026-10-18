@@ -1,6 +1,6 @@
 import get from 'lodash/get';
 import { Map, List } from 'immutable';
-import { EDITORIAL_WORKFLOW_ERROR } from 'decap-cms-lib-util';
+import { EDITORIAL_WORKFLOW_ERROR, generateContentKey } from 'decap-cms-lib-util';
 
 import { currentBackend, slugFromCustomPath } from '../backend';
 import {
@@ -49,6 +49,9 @@ export const UNPUBLISHED_ENTRY_REDIRECT = 'UNPUBLISHED_ENTRY_REDIRECT';
 export const UNPUBLISHED_ENTRIES_REQUEST = 'UNPUBLISHED_ENTRIES_REQUEST';
 export const UNPUBLISHED_ENTRIES_SUCCESS = 'UNPUBLISHED_ENTRIES_SUCCESS';
 export const UNPUBLISHED_ENTRIES_FAILURE = 'UNPUBLISHED_ENTRIES_FAILURE';
+
+/** Which entries are under editorial workflow, without loading any of them. */
+export const UNPUBLISHED_KEYS_SUCCESS = 'UNPUBLISHED_KEYS_SUCCESS';
 
 export const UNPUBLISHED_ENTRY_PERSIST_REQUEST = 'UNPUBLISHED_ENTRY_PERSIST_REQUEST';
 export const UNPUBLISHED_ENTRY_PERSIST_SUCCESS = 'UNPUBLISHED_ENTRY_PERSIST_SUCCESS';
@@ -119,6 +122,14 @@ function unpublishedEntriesLoaded(entries: EntryValue[], pagination: number) {
   };
 }
 
+/** All `loadUnpublishedEntry` needs, in one request instead of one per entry. */
+function unpublishedKeysLoaded(keys: string[]) {
+  return {
+    type: UNPUBLISHED_KEYS_SUCCESS,
+    payload: { keys },
+  };
+}
+
 function unpublishedEntriesFailed(error: Error) {
   return {
     type: UNPUBLISHED_ENTRIES_FAILURE,
@@ -137,12 +148,15 @@ function unpublishedEntryPersisting(collection: Collection, slug: string) {
   };
 }
 
-function unpublishedEntryPersisted(collection: Collection, entry: EntryMap) {
+function unpublishedEntryPersisted(collection: Collection, entry: EntryMap, slug: string) {
   return {
     type: UNPUBLISHED_ENTRY_PERSIST_SUCCESS,
     payload: {
       collection: collection.get('name'),
       entry,
+      // The slug the backend committed under (a new entry's draft has none);
+      // entity and id keep the draft's, which the editor's route looks up.
+      slug,
     },
   };
 }
@@ -241,14 +255,31 @@ export function loadUnpublishedEntry(collection: Collection, slug: string) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
     const state = getState();
     const backend = currentBackend(state.config);
-    const entriesLoaded = get(state.editorialWorkflow.toJS(), 'pages.ids', false);
-    //run possible unpublishedEntries migration
-    if (!entriesLoaded) {
+    const contentKey = generateContentKey(collection.get('name') as string, slug);
+    function isKnownUnpublished(current: State) {
+      const keys = current.editorialWorkflow.getIn(['pages', 'keys']) as List<string> | undefined;
+      return Boolean(keys?.includes(contentKey));
+    }
+
+    // `unpublishedContentKeys` lists the open pull requests in one request, so
+    // absence from it means "not under editorial workflow", but only from a set
+    // fetched in this call: an older set misses a draft a colleague just
+    // created, and saving that entry as published then 422s on createBranch.
+    if (!isKnownUnpublished(state)) {
+      let fetchedKeys: string[] | undefined;
       try {
-        const { entries, pagination } = await backend.unpublishedEntries(state.collections);
-        dispatch(unpublishedEntriesLoaded(entries, pagination));
+        fetchedKeys = await backend.unpublishedContentKeys();
+        dispatch(unpublishedKeysLoaded(fetchedKeys));
         // eslint-disable-next-line no-empty
       } catch (e) {}
+
+      // Read the stored set again: the reducer unions in keys this session
+      // added, which the listing may predate.
+      if (fetchedKeys && !fetchedKeys.includes(contentKey) && !isKnownUnpublished(getState())) {
+        dispatch(unpublishedEntryRedirected(collection, slug));
+        dispatch(loadEntry(collection, slug));
+        return;
+      }
     }
 
     dispatch(unpublishedEntryLoading(collection, slug));
@@ -315,8 +346,9 @@ export function loadUnpublishedEntries(collections: Collections) {
             dismissAfter: 8000,
           }),
         );
+        // Recorded in state, which stops the collection view retrying. Not
+        // re-thrown: nothing awaits this promise.
         dispatch(unpublishedEntriesFailed(error));
-        Promise.reject(error);
       });
   };
 }
@@ -385,7 +417,7 @@ export function persistUnpublishedEntry(collection: Collection, existingUnpublis
           dismissAfter: 4000,
         }),
       );
-      dispatch(unpublishedEntryPersisted(collection, serializedEntry));
+      dispatch(unpublishedEntryPersisted(collection, serializedEntry, newSlug));
 
       if (entry.get('slug') !== newSlug) {
         await dispatch(loadUnpublishedEntry(collection, newSlug));
@@ -544,7 +576,7 @@ export function unpublishPublishedEntry(collection: Collection, slug: string) {
       )
       .then(() => backend.reopenIssueForUnpublishedEntry(collection.get('name'), slug))
       .then(() => {
-        dispatch(unpublishedEntryPersisted(collection, entry));
+        dispatch(unpublishedEntryPersisted(collection, entry, slug));
         dispatch(entryDeleted(collection, slug));
         dispatch(loadUnpublishedEntry(collection, slug));
         dispatch(

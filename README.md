@@ -34,7 +34,7 @@ Decap CMS can be used in two different ways.
   Learn more in the [Quick Start Guide](https://www.decapcms.org/docs/quick-start/).
 * A complete, more advanced install that gives you more flexibility but requires a static site builder with a build system that supports npm packages.
 
-Need centralized user management, advanced roles, a database proxy, or premium support? Explore [Decap Turbo](https://decapcms.org/turbo/).
+Decap Turbo is a hosted backend for Decap CMS: editors log in with Turbo accounts, large collections load from a cache, and access is managed per site. Explore it at https://decapcms.org/turbo/.
 
 ## Sponsors
 

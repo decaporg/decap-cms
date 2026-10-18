@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 
 import { EDITORIAL_WORKFLOW } from '../../constants/publishModes';
 import { selectUnpublishedEntry } from '../../reducers';
@@ -10,6 +11,12 @@ function mapStateToProps(state, ownProps) {
   const { collections } = state;
   const isEditorialWorkflow = state.config.publish_mode === EDITORIAL_WORKFLOW;
   const collection = collections.get(ownProps.match.params.name);
+
+  // Same race as the guard in Editor.js's mapStateToProps.
+  if (!collection) {
+    return { isEditorialWorkflow };
+  }
+
   const returnObj = {
     isEditorialWorkflow,
     showDelete: !ownProps.newEntry && selectAllowDeletion(collection),
@@ -54,6 +61,10 @@ export default function withWorkflow(Editor) {
   )(
     class WorkflowEditor extends Component {
       render() {
+        // Editor uses `collection` in componentDidMount, so it must not mount.
+        if (!this.props.collection) {
+          return <Redirect to="/" />;
+        }
         return <Editor {...this.props} />;
       }
     },

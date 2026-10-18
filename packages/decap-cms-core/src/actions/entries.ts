@@ -13,7 +13,7 @@ import {
 } from '../reducers/collections';
 import { selectIntegration, selectPublishedSlugs } from '../reducers';
 import { getIntegrationProvider } from '../integrations';
-import { currentBackend } from '../backend';
+import { currentBackend, safeEntryLabel } from '../backend';
 import { serializeValues } from '../lib/serializeEntryValues';
 import { createEntry } from '../valueObjects/Entry';
 import { createAssetProxy } from '../valueObjects/AssetProxy';
@@ -25,9 +25,10 @@ import { waitUntil } from './waitUntil';
 import { selectIsFetching, selectEntriesSortFields, selectEntryByPath } from '../reducers/entries';
 import { selectCustomPath } from '../reducers/entryDraft';
 import { navigateToEntry } from '../routing/history';
-import { getProcessSegment } from '../lib/formatters';
+import { getProcessSegment, entryPreviewPath } from '../lib/formatters';
 import { hasI18n, duplicateDefaultI18nFields, serializeI18n, I18N, I18N_FIELD } from '../lib/i18n';
 import { addNotification } from './notifications';
+import { notifyEntrySaved } from './deployStatus';
 import { FILES } from '../constants/collectionTypes';
 
 import type { ImplementationMediaFile, Note, IssueChange } from 'decap-cms-lib-util';
@@ -85,6 +86,8 @@ export const DRAFT_CREATE_FROM_ENTRY = 'DRAFT_CREATE_FROM_ENTRY';
 export const DRAFT_CREATE_EMPTY = 'DRAFT_CREATE_EMPTY';
 export const DRAFT_DISCARD = 'DRAFT_DISCARD';
 export const DRAFT_CHANGE_FIELD = 'DRAFT_CHANGE_FIELD';
+export const DRAFT_FIELDS_EXTERNALLY_CHANGED = 'DRAFT_FIELDS_EXTERNALLY_CHANGED';
+export const DRAFT_CLEAR_FIELD_HIGHLIGHTS = 'DRAFT_CLEAR_FIELD_HIGHLIGHTS';
 export const DRAFT_VALIDATION_ERRORS = 'DRAFT_VALIDATION_ERRORS';
 export const DRAFT_CLEAR_ERRORS = 'DRAFT_CLEAR_ERRORS';
 export const DRAFT_LOCAL_BACKUP_RETRIEVED = 'DRAFT_LOCAL_BACKUP_RETRIEVED';
@@ -456,6 +459,19 @@ export function changeDraftField({
     type: DRAFT_CHANGE_FIELD,
     payload: { field, value, metadata, entries, i18n },
   };
+}
+
+/**
+ * Fields changed from outside the editor (lib/editorApi.ts): remount their
+ * controls so widgets that only read their value on mount (the markdown and
+ * richtext editors) show it, and highlight them until clearFieldHighlights.
+ */
+export function markFieldsExternallyChanged(names: string[]) {
+  return { type: DRAFT_FIELDS_EXTERNALLY_CHANGED, payload: { names } };
+}
+
+export function clearFieldHighlights(names: string[]) {
+  return { type: DRAFT_CLEAR_FIELD_HIGHLIGHTS, payload: { names } };
 }
 
 export function changeDraftFieldValidation(
@@ -999,22 +1015,27 @@ export function persistEntry(collection: Collection) {
         usedSlugs,
       })
       .then(async (newSlug: string) => {
+        // Both arguments are guarded: the entry is already committed, so a
+        // preSave handler that reshaped the data must not fail the save.
         dispatch(
-          addNotification({
-            message: {
-              key: 'ui.toast.entrySaved',
-            },
-            type: 'success',
-            dismissAfter: 4000,
-          }),
+          notifyEntrySaved(
+            safeEntryLabel(collection, serializedEntry),
+            entryPreviewPath(collection, newSlug, serializedEntry, state.config.slug),
+          ),
         );
 
-        // re-load media library if entry had media files
-        if (assetProxies.length > 0) {
-          await dispatch(loadMedia());
-        }
+        // Release the editor as soon as the entry is committed: everything
+        // after this is a background refresh the editor is not waiting on.
         dispatch(entryPersisted(collection, serializedEntry, newSlug));
-        if (collection.has('nested')) {
+
+        // Not awaited; a rejection is logged, never reported as a failed save.
+        if (assetProxies.length > 0) {
+          Promise.resolve(dispatch(loadMedia())).catch(error => {
+            console.error('Failed to reload the media library after saving', error);
+          });
+        }
+
+        if (collection.has('nested') || backend.implementation.reloadEntriesAfterPersist) {
           await dispatch(loadEntries(collection));
         }
         if (entry.get('slug') !== newSlug) {

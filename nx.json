@@ -2,11 +2,13 @@
   "targetDefaults": {
     "build:esm": {
       "cache": true,
-      "dependsOn": ["^build:esm"]
+      "dependsOn": ["^build:esm"],
+      "outputs": ["{projectRoot}/dist/esm"]
     },
     "build": {
       "cache": true,
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build"],
+      "outputs": ["{projectRoot}/dist/*.*", "{projectRoot}/dist/chunks"]
     }
   },
   "namedInputs": {
