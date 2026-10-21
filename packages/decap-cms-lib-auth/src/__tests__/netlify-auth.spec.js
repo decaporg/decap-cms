@@ -31,7 +31,9 @@ describe('NetlifyAuthenticator', () => {
     const success = 'authorization:github:success:{"token":"abc"}';
 
     it('answers the handshake from the origin of a base_url that has a path', () => {
-      const authenticator = new NetlifyAuthenticator({ base_url: 'https://auth.example.com/oauth/' });
+      const authenticator = new NetlifyAuthenticator({
+        base_url: 'https://auth.example.com/oauth/',
+      });
       authenticator.authWindow = { postMessage: jest.fn() };
       const handler = authenticator.handshakeCallback({ provider: 'github' }, jest.fn());
 
@@ -44,7 +46,9 @@ describe('NetlifyAuthenticator', () => {
     });
 
     it('accepts the token from the origin of a base_url that has a path', () => {
-      const authenticator = new NetlifyAuthenticator({ base_url: 'https://auth.example.com/oauth' });
+      const authenticator = new NetlifyAuthenticator({
+        base_url: 'https://auth.example.com/oauth',
+      });
       authenticator.authWindow = { close: jest.fn() };
       const cb = jest.fn();
       const handler = authenticator.authorizeCallback({ provider: 'github' }, cb);
@@ -55,7 +59,9 @@ describe('NetlifyAuthenticator', () => {
     });
 
     it('ignores messages from other origins', () => {
-      const authenticator = new NetlifyAuthenticator({ base_url: 'https://auth.example.com/oauth' });
+      const authenticator = new NetlifyAuthenticator({
+        base_url: 'https://auth.example.com/oauth',
+      });
       authenticator.authWindow = { close: jest.fn() };
       const cb = jest.fn();
       const handler = authenticator.authorizeCallback({ provider: 'github' }, cb);
