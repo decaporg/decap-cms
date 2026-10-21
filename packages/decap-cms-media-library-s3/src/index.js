@@ -1,4 +1,4 @@
-// Decap CMS media library integration for S3-compatible object storage (AWS S3, Cloudflare R2, and others).
+// Decap CMS media library integration for S3-compatible object storage (AWS S3, Cloudflare R2, Neon Object Storage, and others).
 
 import React from 'react';
 import { createRoot } from 'react-dom/client';
