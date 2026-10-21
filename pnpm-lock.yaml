@@ -2001,9 +2001,6 @@ importers:
       buffer:
         specifier: 'catalog:'
         version: 6.0.3
-      clean-stack:
-        specifier: 5.2.0
-        version: 5.2.0
       common-tags:
         specifier: 'catalog:'
         version: 1.8.2

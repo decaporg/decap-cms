@@ -94,7 +94,6 @@ catalog:
   browserify: ^17.0.0
   buffer: ^6.0.3
   cache-me-outside: ^0.0.10
-  clean-stack: ^5.2.0
   codemirror: ^5.46.0
   common-tags: 1.8.2
   commonmark: ^0.30.0
