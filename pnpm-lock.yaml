@@ -639,9 +639,6 @@ catalogs:
     remark-slate:
       specifier: ^1.8.6
       version: 1.8.6
-    remark-slate-transformer:
-      specifier: ^0.7.4
-      version: 0.7.5
     remark-stringify:
       specifier: ^6.0.4
       version: 6.0.4
@@ -660,9 +657,6 @@ catalogs:
     slate:
       specifier: ^0.118.1
       version: 0.118.1
-    slate-base64-serializer:
-      specifier: ^0.2.107
-      version: 0.2.115
     slate-dom:
       specifier: ^0.118.1
       version: 0.118.1
@@ -672,9 +666,6 @@ catalogs:
     slate-hyperscript:
       specifier: ^0.100.0
       version: 0.100.0
-    slate-plain-serializer:
-      specifier: ^0.7.3
-      version: 0.7.13
     slate-react:
       specifier: ^0.117.4
       version: 0.117.4
@@ -2720,18 +2711,12 @@ importers:
       remark-slate:
         specifier: 'catalog:'
         version: 1.8.6
-      remark-slate-transformer:
-        specifier: 'catalog:'
-        version: 0.7.5(unified@9.2.2)
       remark-stringify:
         specifier: 'catalog:'
         version: 6.0.4
       slate:
         specifier: 'catalog:'
         version: 0.118.1
-      slate-base64-serializer:
-        specifier: 'catalog:'
-        version: 0.2.115(slate@0.118.1)
       slate-dom:
         specifier: 'catalog:'
         version: 0.118.1(slate@0.118.1)
@@ -2741,9 +2726,6 @@ importers:
       slate-hyperscript:
         specifier: 'catalog:'
         version: 0.100.0(slate@0.118.1)
-      slate-plain-serializer:
-        specifier: 'catalog:'
-        version: 0.7.13(immutable@4.3.9)(slate@0.118.1)
       slate-react:
         specifier: 'catalog:'
         version: 0.117.4(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(slate-dom@0.118.1(slate@0.118.1))(slate@0.118.1)
@@ -6683,9 +6665,6 @@ packages:
   character-entities@1.2.4:
     resolution: {integrity: sha512-iBMyeEHxfVnIakwOuDXpVkc54HijNgCyQB2w0VfGQThle6NXn50zU6V/u+LDhxHcDUPojn6Kpga3PTAD8W1bQw==}
 
-  character-entities@2.0.2:
-    resolution: {integrity: sha512-shx7oQ0Awen/BRIdkjkvz54PnEEI/EjwXDSIZp86/KKdbafHh1Df/RYGBhn4hbe2+uKC9FnT5UCEdyPz3ai9hQ==}
-
   character-reference-invalid@1.1.4:
     resolution: {integrity: sha512-mKKUkUbhPpQlCOfIuZkvSEgktjPFIsZKRRbC6KWVEMvlzblj3i3asQv5ODsrwt0N3pHAEvjP8KTQPHkp0+6jOg==}
 
@@ -7284,9 +7263,6 @@ packages:
 
   decimal.js@10.4.3:
     resolution: {integrity: sha512-VBBaLc1MgL5XpzgIP7ny5Z6Nx3UrRkIViUkPUdtl9aya5amy3De1gsUUSB1g3+3sExYNjCAsAznmukyxCb1GRA==}
-
-  decode-named-character-reference@1.2.0:
-    resolution: {integrity: sha512-c6fcElNV6ShtZXmsgNgFFV5tVX2PaV4g+MOAkb8eXHvn6sryJBrZa9r0zV6+dtTyoCKxtDy5tyQ5ZwQuidtd+Q==}
 
   decode-uri-component@0.2.2:
     resolution: {integrity: sha512-FqUYQ+8o158GyGTrMFJms9qh3CqTKvAqgqsTnkLI8sKu0028orqBhxNMFkFen0zGyg6epACD32pjVk58ngIErQ==}
@@ -9155,9 +9131,6 @@ packages:
     resolution: {integrity: sha512-WhB9zCku7EGTj/HQQRz5aUQEUeoQZH2bWcltRErOpymJ4boYE6wL9Tbr23krRPSZ+C5zqNSrSw+Cc7sZZ4b7vg==}
     engines: {node: '>=0.10.0'}
 
-  isomorphic-base64@1.0.2:
-    resolution: {integrity: sha512-pQFyLwShVPA1Qr0dE1ZPguJkbOsFGDfSq6Wzz6XaO33v74X6/iQjgYPozwkeKGQxOI1/H3Fz7+ROtnV1veyKEg==}
-
   isomorphic-timers-promises@1.0.1:
     resolution: {integrity: sha512-u4sej9B1LPSxTGKB/HiuzvEQnXH0ECYkSVQU39koSwmFAxhlEAFl9RdTvLv4TOTQUgBS5O3O5fwUxk6byBZ+IQ==}
     engines: {node: '>=10'}
@@ -9722,9 +9695,6 @@ packages:
   longest-streak@2.0.4:
     resolution: {integrity: sha512-vM6rUVCVUJJt33bnmHiZEvr7wPT78ztX7rojL+LW51bHtLh6HTjx84LA5W4+oa6aKEJA7jJu5LR6vQRBpA5DVg==}
 
-  longest-streak@3.1.0:
-    resolution: {integrity: sha512-9Ri+o0JYgehTaVBBDoMqIl8GXtbWg711O3srftcHhZ0dqnETqLaoIK0x17fUw9rFSlK/0NlsKe0Ahhyl5pXE2g==}
-
   loose-envify@1.4.0:
     resolution: {integrity: sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q==}
     hasBin: true
@@ -9857,14 +9827,8 @@ packages:
   mdast-util-gfm@0.1.2:
     resolution: {integrity: sha512-NNkhDx/qYcuOWB7xHUGWZYVXvjPFFd6afg6/e2g+SV4r9q5XUcCbV4Wfa3DLYIiD+xAEZc6K4MGaE/m0KDcPwQ==}
 
-  mdast-util-math@2.0.2:
-    resolution: {integrity: sha512-8gmkKVp9v6+Tgjtq6SYx9kGPpTf6FVYRa53/DLh479aldR9AyP48qeVOgNZ5X7QUK7nOy4yw7vg6mbiGcs9jWQ==}
-
   mdast-util-phrasing@2.0.0:
     resolution: {integrity: sha512-G1rNlW/sViwzbBYD7+k3mKGtoWV2v4GBFky66OYHfktHe7Hg9R+hH4xpeoOtjYiwTvle8C8wlKMpgqPCkaeK8Q==}
-
-  mdast-util-phrasing@3.0.1:
-    resolution: {integrity: sha512-WmI1gTXUBJo4/ZmSk79Wcb2HcjPJBzM1nlI/OUWA8yk2X9ik3ffNbBGsU+09BFmXaL1IBb9fiuvq6/KMiNycSg==}
 
   mdast-util-to-hast@10.2.0:
     resolution: {integrity: sha512-JoPBfJ3gBnHZ18icCwHR50orC9kNH81tiR1gs01D8Q5YpV6adHNO9nKNuFBCJQ941/32PT1a63UF/DitmS3amQ==}
@@ -9875,17 +9839,11 @@ packages:
   mdast-util-to-markdown@0.6.5:
     resolution: {integrity: sha512-XeV9sDE7ZlOQvs45C9UKMtfTcctcaj/pGwH8YLbMHoMOXNNCn2LsqVQOqrF1+/NU8lKDAqozme9SCXWyo9oAcQ==}
 
-  mdast-util-to-markdown@1.5.0:
-    resolution: {integrity: sha512-bbv7TPv/WC49thZPg3jXuqzuvI45IL2EVAr/KxF0BSdHsU0ceFHOmwQn6evxAh1GaoK/6GQ1wp4R4oW2+LFL/A==}
-
   mdast-util-to-string@1.1.0:
     resolution: {integrity: sha512-jVU0Nr2B9X3MU4tSK7JP1CMkSvOj7X5l/GboG1tKRw52lLF1x2Ju92Ms9tNetCcbfX3hzlM73zYo2NKkWSfF/A==}
 
   mdast-util-to-string@2.0.0:
     resolution: {integrity: sha512-AW4DRS3QbBayY/jJmD8437V1Gombjf8RSOUCMFBuo5iHi58AGEgVCKQ+ezHkZZDpAQS75hcBMpLqjpJTjtUL7w==}
-
-  mdast-util-to-string@3.2.0:
-    resolution: {integrity: sha512-V4Zn/ncyN1QNSqSBxTrMOLpjr+IKdHl2v3KVLoWmDPscP4r9GcCi71gjgvUV1SFSKh92AjAG4peFuBl2/YgCJg==}
 
   mdn-data@2.0.14:
     resolution: {integrity: sha512-dn6wd0uw5GsdswPFfsgMp5NSB0/aDe6fK94YJV/AJDYXL6HVLWBsxeq7js7Ad+mU2K9LAlwpk6kN2D5mwCPVow==}
@@ -9960,21 +9918,6 @@ packages:
 
   micromark-extension-gfm@0.3.3:
     resolution: {integrity: sha512-oVN4zv5/tAIA+l3GbMi7lWeYpJ14oQyJ3uEim20ktYFAcfX1x3LNlFGGlmrZHt7u9YlKExmyJdDGaTt6cMSR/A==}
-
-  micromark-util-character@1.2.0:
-    resolution: {integrity: sha512-lXraTwcX3yH/vMDaFWCQJP1uIszLVebzUa3ZHdrgxr7KEU/9mL4mVgCpGbyhvNLNlauROiNUq7WN5u7ndbY6xg==}
-
-  micromark-util-decode-numeric-character-reference@1.1.0:
-    resolution: {integrity: sha512-m9V0ExGv0jB1OT21mrWcuf4QhP46pH1KkfWy9ZEezqHKAxkj4mPCy3nIH1rkbdMlChLHX531eOrymlwyZIf2iw==}
-
-  micromark-util-decode-string@1.1.0:
-    resolution: {integrity: sha512-YphLGCK8gM1tG1bd54azwyrQRjCFcmgj2S2GoJDNnh4vYtnL38JS8M4gpxzOPNyHdNEpheyWXCTnnTDY3N+NVQ==}
-
-  micromark-util-symbol@1.1.0:
-    resolution: {integrity: sha512-uEjpEYY6KMs1g7QfJ2eX1SQEV+ZT4rUD3UcF6l57acZvLNK7PBZL+ty82Z1qhK1/yXIY4bdx04FKMgR0g4IAag==}
-
-  micromark-util-types@1.1.0:
-    resolution: {integrity: sha512-ukRBgie8TIAcacscVHSiddHjO4k/q3pnedmzMQ4iwDcK0FtFCohKOlFbaOL/mPgfnPsL3C1ZyxJa4sbWrBl3jg==}
 
   micromark@2.11.4:
     resolution: {integrity: sha512-+WoovN/ppKolQOFIAajxi7Lu9kInbPxFuTBVEavFcL8eAfVstoc5MocPmqBeAdBOJV00uaVjegzH4+MA0DN/uA==}
@@ -11576,11 +11519,6 @@ packages:
   remark-rehype@8.1.0:
     resolution: {integrity: sha512-EbCu9kHgAxKmW1yEYjx3QafMyGY3q8noUbNUI5xyKbaFP89wbhDrKxyIQNukNYthzjNHZu6J7hwFg7hRm1svYA==}
 
-  remark-slate-transformer@0.7.5:
-    resolution: {integrity: sha512-jyLLjp0wNoQnzy6kwDjUkyjpInCb3NoeJ+sEoNkWVWYpLNSln0toXtsqkYWvM9SH36RpNIxJyNRM/i2nhoJJdw==}
-    peerDependencies:
-      unified: '>=10.1.0'
-
   remark-slate@1.8.6:
     resolution: {integrity: sha512-1Gmt5MGw25MRVP+0xTXqw9JQDWfRNWujD4YFCPg036a9DZYhn7mLFjM6jreHB+9hKa6RCMOm5thiXznAmdn8Ug==}
 
@@ -11987,11 +11925,6 @@ packages:
     resolution: {integrity: sha512-3dOsAHXXUkQTpOYcoAxLIorMTp4gIQr5IW3iVb7A7lFIp0VHhnynm9izx6TssdrIcVIESAlVjtnO2K8bg+Coew==}
     engines: {node: '>=12'}
 
-  slate-base64-serializer@0.2.115:
-    resolution: {integrity: sha512-GnLV7bUW/UQ5j7rVIxCU5zdB6NOVsEU6YWsCp68dndIjSGTGLaQv2+WwV3NcnrGGZEYe5qgo33j2QWrPws2C1A==}
-    peerDependencies:
-      slate: '>=0.32.0 <0.50.0'
-
   slate-dom@0.118.1:
     resolution: {integrity: sha512-D6J0DF9qdJrXnRDVhYZfHzzpVxzqKRKFfS0Wcin2q0UC+OnQZ0lbCGJobatVbisOlbSe7dYFHBp9OZ6v1lEcbQ==}
     peerDependencies:
@@ -12011,12 +11944,6 @@ packages:
     resolution: {integrity: sha512-aaQ1XSfUhw0Lf4cwVLeNFYnnPsC9iX9aEmKvT5PAaGTNVe1LaBCAXB+CFuqp7YPExPj9hYuS5CsIu8dAh9JX2w==}
     peerDependencies:
       slate: '>=0.114.3'
-
-  slate-plain-serializer@0.7.13:
-    resolution: {integrity: sha512-TtrlaslxQBEMV0LYdf3s7VAbTxRPe1xaW10WNNGAzGA855/0RhkaHjKkQiRjHv5rvbRleVf7Nxr9fH+4uErfxQ==}
-    peerDependencies:
-      immutable: '>=3.8.1'
-      slate: '>=0.46.0 <0.50.0'
 
   slate-react@0.117.4:
     resolution: {integrity: sha512-9ckilyUzQS1VHJnstIpgInhcWnTDgv2Cd7m1HOQVl3zasChoapPSMftzT/wl/48grZaZYZIi4xVuzGTcFRUWFg==}
@@ -12893,9 +12820,6 @@ packages:
   unist-util-is@4.1.0:
     resolution: {integrity: sha512-ZOQSsnce92GrxSqlnEEseX0gi7GH9zTJZ0p9dtu87WRb/37mMPO2Ilx1s/t9vBHrFhbgweUwb+t7cIn5dxPhZg==}
 
-  unist-util-is@5.2.1:
-    resolution: {integrity: sha512-u9njyyfEh43npf1M+yGKDGVPbY/JWEemg5nH05ncKPfi+kBbKBJoTdsogMu33uhytuLlv9y0O7GH7fEdwLdLQw==}
-
   unist-util-position@3.1.0:
     resolution: {integrity: sha512-w+PkwCbYSFw8vpgWD0v7zRCl1FpY3fjDSQ3/N/wNd9Ffa4gPi8+4keqt99N3XW6F99t/mUzp2xAhNmfKWp95QA==}
 
@@ -12917,17 +12841,11 @@ packages:
   unist-util-visit-parents@3.1.1:
     resolution: {integrity: sha512-1KROIZWo6bcMrZEwiH2UrXDyalAa0uqzWCxCJj6lPOvTve2WkfgCytoDTPaMnodXh1WrXOq0haVYHj99ynJlsg==}
 
-  unist-util-visit-parents@5.1.3:
-    resolution: {integrity: sha512-x6+y8g7wWMyQhL1iZfhIPhDAs7Xwbn9nRosDXl7qoPTSCy0yNxnKc+hWokFifWQIDGi154rdUqKvbCa4+1kLhg==}
-
   unist-util-visit@1.4.1:
     resolution: {integrity: sha512-AvGNk7Bb//EmJZyhtRUnNMEpId/AZ5Ph/KUpTI09WHQuDZHKovQ1oEv3mfmKpWKtoMzyMC4GLBm1Zy5k12fjIw==}
 
   unist-util-visit@2.0.3:
     resolution: {integrity: sha512-iJ4/RczbJMkD0712mGktuGpm/U4By4FfDonL7N/9tATGIF4imikjOuagyMY53tnZq3NP6BcmlrHhEKAfGWjh7Q==}
-
-  unist-util-visit@4.1.2:
-    resolution: {integrity: sha512-MSd8OUGISqHdVvfY9TPhyK2VdUrPgxkUtWSuMHF6XAAFuL4LokseigBnZtPnJMu+FbynTkFNnFlyjxpVKujMRg==}
 
   universal-user-agent@4.0.1:
     resolution: {integrity: sha512-LnST3ebHwVL2aNe4mejI9IQh2HfZ1RLo8Io2HugSif8ekzD1TlWpHpColOB/eh8JHMLkGH3Akqf040I+4ylNxg==}
@@ -13520,9 +13438,6 @@ packages:
 
   zwitch@1.0.5:
     resolution: {integrity: sha512-V50KMwwzqJV0NpZIZFwfOD5/lyny3WlSzRiXgA0G7VUnRlqttta1L6UQIHzd6EuBY/cHGfwTIck7w1yH6Q5zUw==}
-
-  zwitch@2.0.4:
-    resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
 
 snapshots:
 
@@ -18070,8 +17985,6 @@ snapshots:
 
   character-entities@1.2.4: {}
 
-  character-entities@2.0.2: {}
-
   character-reference-invalid@1.1.4: {}
 
   chardet@0.7.0: {}
@@ -18747,10 +18660,6 @@ snapshots:
   decamelize@1.2.0: {}
 
   decimal.js@10.4.3: {}
-
-  decode-named-character-reference@1.2.0:
-    dependencies:
-      character-entities: 2.0.2
 
   decode-uri-component@0.2.2: {}
 
@@ -20969,8 +20878,6 @@ snapshots:
 
   isobject@3.0.1: {}
 
-  isomorphic-base64@1.0.2: {}
-
   isomorphic-timers-promises@1.0.1: {}
 
   isstream@0.1.2: {}
@@ -21861,8 +21768,6 @@ snapshots:
 
   longest-streak@2.0.4: {}
 
-  longest-streak@3.1.0: {}
-
   loose-envify@1.4.0:
     dependencies:
       js-tokens: 4.0.0
@@ -22034,20 +21939,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  mdast-util-math@2.0.2:
-    dependencies:
-      '@types/mdast': 3.0.15
-      longest-streak: 3.1.0
-      mdast-util-to-markdown: 1.5.0
-
   mdast-util-phrasing@2.0.0:
     dependencies:
       unist-util-is: 4.1.0
-
-  mdast-util-phrasing@3.0.1:
-    dependencies:
-      '@types/mdast': 3.0.15
-      unist-util-is: 5.2.1
 
   mdast-util-to-hast@10.2.0:
     dependencies:
@@ -22083,24 +21977,9 @@ snapshots:
       repeat-string: 1.6.1
       zwitch: 1.0.5
 
-  mdast-util-to-markdown@1.5.0:
-    dependencies:
-      '@types/mdast': 3.0.15
-      '@types/unist': 2.0.9
-      longest-streak: 3.1.0
-      mdast-util-phrasing: 3.0.1
-      mdast-util-to-string: 3.2.0
-      micromark-util-decode-string: 1.1.0
-      unist-util-visit: 4.1.2
-      zwitch: 2.0.4
-
   mdast-util-to-string@1.1.0: {}
 
   mdast-util-to-string@2.0.0: {}
-
-  mdast-util-to-string@3.2.0:
-    dependencies:
-      '@types/mdast': 3.0.15
 
   mdn-data@2.0.14: {}
 
@@ -22210,26 +22089,6 @@ snapshots:
       micromark-extension-gfm-task-list-item: 0.3.3
     transitivePeerDependencies:
       - supports-color
-
-  micromark-util-character@1.2.0:
-    dependencies:
-      micromark-util-symbol: 1.1.0
-      micromark-util-types: 1.1.0
-
-  micromark-util-decode-numeric-character-reference@1.1.0:
-    dependencies:
-      micromark-util-symbol: 1.1.0
-
-  micromark-util-decode-string@1.1.0:
-    dependencies:
-      decode-named-character-reference: 1.2.0
-      micromark-util-character: 1.2.0
-      micromark-util-decode-numeric-character-reference: 1.1.0
-      micromark-util-symbol: 1.1.0
-
-  micromark-util-symbol@1.1.0: {}
-
-  micromark-util-types@1.1.0: {}
 
   micromark@2.11.4:
     dependencies:
@@ -24157,13 +24016,6 @@ snapshots:
     dependencies:
       mdast-util-to-hast: 10.2.0
 
-  remark-slate-transformer@0.7.5(unified@9.2.2):
-    dependencies:
-      '@types/mdast': 3.0.15
-      mdast-util-math: 2.0.2
-      tslib: 2.6.2
-      unified: 9.2.2
-
   remark-slate@1.8.6:
     dependencies:
       '@types/escape-html': 1.0.4
@@ -24648,11 +24500,6 @@ snapshots:
 
   slash@4.0.0: {}
 
-  slate-base64-serializer@0.2.115(slate@0.118.1):
-    dependencies:
-      isomorphic-base64: 1.0.2
-      slate: 0.118.1
-
   slate-dom@0.118.1(slate@0.118.1):
     dependencies:
       '@juggle/resize-observer': 3.4.0
@@ -24676,11 +24523,6 @@ snapshots:
 
   slate-hyperscript@0.115.0(slate@0.118.1):
     dependencies:
-      slate: 0.118.1
-
-  slate-plain-serializer@0.7.13(immutable@4.3.9)(slate@0.118.1):
-    dependencies:
-      immutable: 4.3.9
       slate: 0.118.1
 
   slate-react@0.117.4(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(slate-dom@0.118.1(slate@0.118.1))(slate@0.118.1):
@@ -25681,10 +25523,6 @@ snapshots:
 
   unist-util-is@4.1.0: {}
 
-  unist-util-is@5.2.1:
-    dependencies:
-      '@types/unist': 2.0.9
-
   unist-util-position@3.1.0: {}
 
   unist-util-remove-position@1.1.4:
@@ -25710,11 +25548,6 @@ snapshots:
       '@types/unist': 2.0.9
       unist-util-is: 4.1.0
 
-  unist-util-visit-parents@5.1.3:
-    dependencies:
-      '@types/unist': 2.0.9
-      unist-util-is: 5.2.1
-
   unist-util-visit@1.4.1:
     dependencies:
       unist-util-visit-parents: 2.1.2
@@ -25724,12 +25557,6 @@ snapshots:
       '@types/unist': 2.0.9
       unist-util-is: 4.1.0
       unist-util-visit-parents: 3.1.1
-
-  unist-util-visit@4.1.2:
-    dependencies:
-      '@types/unist': 2.0.9
-      unist-util-is: 5.2.1
-      unist-util-visit-parents: 5.1.3
 
   universal-user-agent@4.0.1:
     dependencies:
@@ -26398,5 +26225,3 @@ snapshots:
       use-sync-external-store: 1.7.0(react@19.2.0)
 
   zwitch@1.0.5: {}
-
-  zwitch@2.0.4: {}
