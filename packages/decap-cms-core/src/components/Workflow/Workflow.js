@@ -108,7 +108,7 @@ class Workflow extends Component {
           <WorkflowTopRow>
             <WorkflowTopHeading>{t('workflow.workflow.workflowHeading')}</WorkflowTopHeading>
             <Dropdown
-              dropdownWidth="160px"
+              dropdownWidth="max-content"
               dropdownPosition="left"
               dropdownTopOverlap="40px"
               renderButton={() => (
