@@ -68,7 +68,6 @@
     "react-window": "catalog:",
     "redux": "catalog:",
     "redux-devtools-extension": "catalog:",
-    "redux-notifications": "catalog:",
     "redux-thunk": "catalog:",
     "remark-gfm": "catalog:",
     "sanitize-filename": "catalog:",

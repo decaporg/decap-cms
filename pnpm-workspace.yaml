@@ -211,7 +211,6 @@ catalog:
   redux: ^4.0.5
   redux-devtools-extension: ^2.13.8
   redux-mock-store: ^1.5.3
-  redux-notifications: ^4.0.1
   redux-thunk: ^2.3.0
   rehype: ^7.0.0
   rehype-parse: ^6.0.0
