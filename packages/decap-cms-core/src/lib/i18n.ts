@@ -128,6 +128,30 @@ export function getFilePaths(
   return paths;
 }
 
+/**
+ * Every file of an entry, marked by whether it is known to exist (the default
+ * locale, and locales found on load); the rest must be checked before deleting.
+ */
+export function getI18nFilesToDelete(
+  collection: Collection,
+  extension: string,
+  path: string,
+  slug: string,
+  entry?: EntryMap,
+) {
+  const { structure, locales, defaultLocale } = getI18nInfo(collection) as I18nInfo;
+
+  if (structure === I18N_STRUCTURE.SINGLE_FILE) {
+    return [{ path, known: true }];
+  }
+
+  const found = entry?.get('i18nLocales');
+  return locales.map(locale => ({
+    path: getFilePath(structure as I18N_STRUCTURE, extension, path, slug, locale),
+    known: locale === defaultLocale || !!found?.includes(locale),
+  }));
+}
+
 export function normalizeFilePath(structure: I18N_STRUCTURE, path: string, locale: string) {
   switch (structure) {
     case I18N_STRUCTURE.MULTIPLE_FOLDERS:
@@ -262,12 +286,18 @@ function mergeValues(
 
   const path = normalizeFilePath(structure, defaultEntry.value.path, defaultLocale);
   const slug = selectEntrySlug(collection, path) as string;
+  // Which locales have a file: GitHub answers a missing file with empty content,
+  // and deleteEntry must not ask to delete one, which fails the whole commit.
+  const i18nLocales = values
+    .filter(({ locale, value }) => locale === defaultEntry!.locale || value.raw !== '')
+    .map(({ locale }) => locale);
   const entryValue: EntryValue = {
     ...defaultEntry.value,
     raw: '',
     ...i18n,
     path,
     slug,
+    i18nLocales,
   };
 
   return entryValue;

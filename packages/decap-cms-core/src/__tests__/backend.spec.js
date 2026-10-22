@@ -852,6 +852,228 @@ describe('Backend', () => {
         'sub_dir/some-post-title-1',
       );
     });
+
+    it('should probe the localised path for multiple_files i18n collections', async () => {
+      const { sanitizeSlug, sanitizeChar } = require('../lib/urlHelper');
+      sanitizeSlug.mockReturnValue('some-post-title');
+      sanitizeChar.mockReturnValue('-');
+
+      function notFound() {
+        return Promise.reject(Object.assign(new Error('Not Found'), { status: 404 }));
+      }
+
+      const implementation = {
+        init: jest.fn(() => implementation),
+        // Only the localised file exists, which is the real shape on disk.
+        getEntry: jest.fn(p =>
+          p === 'posts/some-post-title.en.md' ? Promise.resolve({ data: 'data' }) : notFound(),
+        ),
+      };
+
+      const collection = fromJS({
+        name: 'posts',
+        fields: [{ name: 'title' }],
+        type: FOLDER,
+        folder: 'posts',
+        slug: '{{slug}}',
+        i18n: { structure: 'multiple_files', locales: ['en', 'de'], default_locale: 'en' },
+      });
+
+      const backend = new Backend(implementation, { config: {}, backendName: 'github' });
+
+      // Probing the unlocalised 'posts/some-post-title.md' would miss, and the
+      // caller would reuse the slug and overwrite the existing entry.
+      await expect(
+        backend.generateUniqueSlug(collection, Map({ title: 'some post title' }), Map({}), []),
+      ).resolves.toBe('some-post-title-1');
+
+      expect(implementation.getEntry).toHaveBeenCalledWith('posts/some-post-title.en.md');
+    });
+
+    describe('length', () => {
+      const encoder = new (require('util').TextEncoder)();
+      const longVietnamese = 'hướng-dẫn-chăm-sóc-da-mặt-cho-làn-da-nhạy-cảm-'.repeat(20) + 'end';
+      const collection = fromJS({
+        name: 'posts',
+        fields: [{ name: 'title' }],
+        type: FOLDER,
+        folder: 'posts',
+        slug: '{{slug}}',
+      });
+
+      function notFound() {
+        return Promise.reject(Object.assign(new Error('Not Found'), { status: 404 }));
+      }
+
+      function bytes(str) {
+        return encoder.encode(str).length;
+      }
+
+      it('caps a newly generated slug so its workflow branch is a valid ref', async () => {
+        const { sanitizeSlug } = require('../lib/urlHelper');
+        sanitizeSlug.mockReturnValue(longVietnamese);
+        const implementation = { init: jest.fn(() => implementation), getEntry: notFound };
+        const backend = new Backend(implementation, { config: {}, backendName: 'github' });
+
+        const slug = await backend.generateUniqueSlug(
+          collection,
+          Map({ title: 'unused, sanitizeSlug is mocked' }),
+          { slug: { encoding: 'unicode', sanitize_replacement: '-' } },
+          [],
+        );
+
+        expect(bytes(slug)).toBeLessThanOrEqual(200);
+        expect(bytes(`refs/heads/cms/posts/${slug}`)).toBeLessThanOrEqual(255);
+        expect(slug).not.toMatch(/-$/);
+        expect(longVietnamese.startsWith(slug)).toBe(true);
+      });
+
+      it('keeps the uniqueness suffix within the cap', async () => {
+        const { sanitizeSlug, sanitizeChar } = require('../lib/urlHelper');
+        sanitizeSlug.mockReturnValue('a'.repeat(300));
+        sanitizeChar.mockReturnValue('-');
+        const implementation = { init: jest.fn(() => implementation), getEntry: notFound };
+        const backend = new Backend(implementation, { config: {}, backendName: 'github' });
+        const taken = 'a'.repeat(200);
+
+        const slug = await backend.generateUniqueSlug(
+          collection,
+          Map({ title: 'unused' }),
+          { slug: { sanitize_replacement: '-' } },
+          [taken],
+        );
+
+        expect(slug).toBe(`${'a'.repeat(198)}-1`);
+      });
+
+      it('leaves a slug from a custom path alone', async () => {
+        const implementation = { init: jest.fn(() => implementation), getEntry: notFound };
+        const backend = new Backend(implementation, { config: {}, backendName: 'github' });
+        const customPath = `posts/${'d'.repeat(250)}/index.md`;
+
+        const slug = await backend.generateUniqueSlug(
+          collection.set('nested', fromJS({ depth: 10 })),
+          Map({ title: 'unused' }),
+          {},
+          [],
+          customPath,
+        );
+
+        expect(slug).toBe(`${'d'.repeat(250)}/index`);
+      });
+    });
+
+    it('should fail the save when it cannot tell whether the entry exists', async () => {
+      const { sanitizeSlug, sanitizeChar } = require('../lib/urlHelper');
+      sanitizeSlug.mockReturnValue('some-post-title');
+      sanitizeChar.mockReturnValue('-');
+
+      const implementation = {
+        init: jest.fn(() => implementation),
+        // Not a 404 — the answer is unknown, not "absent".
+        getEntry: jest
+          .fn()
+          .mockRejectedValue(Object.assign(new Error('API rate limit exceeded'), { status: 403 })),
+      };
+
+      const collection = fromJS({
+        name: 'posts',
+        fields: [{ name: 'title' }],
+        type: FOLDER,
+        folder: 'posts',
+        slug: '{{slug}}',
+      });
+
+      const backend = new Backend(implementation, { config: {}, backendName: 'github' });
+
+      // Reporting "absent" would overwrite; reporting "present" would spin the
+      // uniqueness loop forever. Rejecting is the only safe answer.
+      await expect(
+        backend.generateUniqueSlug(collection, Map({ title: 'some post title' }), Map({}), []),
+      ).rejects.toThrow('API rate limit exceeded');
+    });
+  });
+
+  describe('deleteEntry with i18n', () => {
+    const collection = fromJS({
+      name: 'posts',
+      fields: [{ name: 'title' }],
+      type: FOLDER,
+      folder: 'posts',
+      slug: '{{slug}}',
+      i18n: { structure: 'multiple_files', locales: ['en', 'de', 'fr'], default_locale: 'en' },
+    });
+
+    function notFound() {
+      return Promise.reject(Object.assign(new Error('Not Found'), { status: 404 }));
+    }
+
+    function setup(getEntry, entity) {
+      const implementation = {
+        init: jest.fn(() => implementation),
+        getEntry: jest.fn(getEntry),
+        deleteFiles: jest.fn().mockResolvedValue(),
+      };
+      const backend = new Backend(implementation, { config: {}, backendName: 'github' });
+      backend.currentUser = jest.fn().mockResolvedValue({ login: 'login', name: 'name' });
+      backend.invokePreUnpublishEvent = jest.fn();
+      backend.invokePostUnpublishEvent = jest.fn();
+      const state = {
+        config: { backend: { name: 'github' } },
+        entries: fromJS({ entities: entity ? { 'posts.hello': entity } : {} }),
+      };
+      return { implementation, backend, state };
+    }
+
+    it('deletes only the locales the loaded entry has files for', async () => {
+      // GitHub answers a missing file with empty content, not a 404.
+      const { implementation, backend, state } = setup(() => Promise.resolve({ data: '' }), {
+        slug: 'hello',
+        i18nLocales: ['en', 'fr'],
+      });
+
+      await backend.deleteEntry(state, collection, 'hello');
+
+      expect(implementation.deleteFiles).toHaveBeenCalledWith(
+        ['posts/hello.en.md', 'posts/hello.fr.md'],
+        expect.any(String),
+      );
+      // Only the locale not known to exist was checked.
+      expect(implementation.getEntry).toHaveBeenCalledTimes(1);
+      expect(implementation.getEntry).toHaveBeenCalledWith('posts/hello.de.md');
+    });
+
+    it('still deletes a translation written after the entry was loaded', async () => {
+      const { implementation, backend, state } = setup(
+        p => Promise.resolve({ data: p === 'posts/hello.de.md' ? '---\ntitle: Hallo\n---\n' : '' }),
+        { slug: 'hello', i18nLocales: ['en'] },
+      );
+
+      await backend.deleteEntry(state, collection, 'hello');
+
+      expect(implementation.deleteFiles).toHaveBeenCalledWith(
+        ['posts/hello.en.md', 'posts/hello.de.md'],
+        expect.any(String),
+      );
+    });
+
+    it('checks every translation when the entry is not loaded, keeping the default locale', async () => {
+      const { implementation, backend, state } = setup(p =>
+        p === 'posts/hello.de.md'
+          ? Promise.reject(Object.assign(new Error('Server Error'), { status: 500 }))
+          : notFound(),
+      );
+
+      await backend.deleteEntry(state, collection, 'hello');
+
+      // fr is a confirmed 404 and is skipped. de could not be checked, so it is
+      // kept: a failed delete can be retried, an orphaned translation cannot.
+      expect(implementation.deleteFiles).toHaveBeenCalledWith(
+        ['posts/hello.en.md', 'posts/hello.de.md'],
+        expect.any(String),
+      );
+      expect(implementation.getEntry).not.toHaveBeenCalledWith('posts/hello.en.md');
+    });
   });
 
   describe('extractSearchFields', () => {
@@ -954,7 +1176,7 @@ describe('Backend', () => {
     ];
 
     const implementation = {
-      init: jest.fn(() => implementation),
+      init: () => implementation,
     };
 
     let backend;
@@ -1032,6 +1254,30 @@ describe('Backend', () => {
       });
       expect(await backend.search(collections, 'find me by other')).toEqual({
         entries: [files[1]],
+      });
+    });
+
+    describe('entry body', () => {
+      const body =
+        'The cat sat on the mat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, ' +
+        'sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim ' +
+        'veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo.';
+      const bodyPosts = [
+        { path: 'posts/hello.md', slug: 'hello', data: { title: 'Hello world', body } },
+      ];
+
+      it('does not match the body on a backend that does not search it', async () => {
+        backend.listAllEntries = jest.fn(() => Promise.resolve(bodyPosts));
+
+        expect(await backend.search([collections[0]], 'cat')).toEqual({ entries: [] });
+      });
+
+      it('matches the body on a backend that searches it server-side', async () => {
+        const bodyImplementation = { init: () => bodyImplementation, searchesEntryBody: true };
+        backend = new Backend(bodyImplementation, { config: {}, backendName: 'turbo-github' });
+        backend.listAllEntries = jest.fn(() => Promise.resolve(bodyPosts));
+
+        expect(await backend.search([collections[0]], 'cat')).toEqual({ entries: bodyPosts });
       });
     });
 
@@ -1463,6 +1709,78 @@ describe('Backend', () => {
           hasSubfolders: true,
         }),
       );
+    });
+  });
+
+  describe('listAllEntries locale siblings', () => {
+    // A listing wants one file per entry, so the path regex it sends narrows to
+    // the default locale. The EDITOR reads every locale as its own file, so a
+    // backend that caches on the listing's selector caches `slug.en.md` and
+    // misses `slug.de.md` and `slug.si.md` on every entry open. The extra
+    // selector below is how such a backend learns which files those are.
+    function collectionWithI18n(structure) {
+      return fromJS({
+        name: 'posts',
+        type: FOLDER,
+        folder: 'content/posts',
+        extension: 'md',
+        i18n: { structure, locales: ['en', 'de', 'si'], default_locale: 'en' },
+      });
+    }
+
+    function backendWith(implementation) {
+      return new Backend(implementation, { config: { backend: {} }, backendName: 'github' });
+    }
+
+    it('passes a selector for the locales the listing leaves out', async () => {
+      const implementation = {
+        init: jest.fn(() => implementation),
+        allEntriesByFolder: jest.fn().mockResolvedValue([]),
+      };
+      const backend = backendWith(implementation);
+
+      await backend.listAllEntries(collectionWithI18n('multiple_files'));
+
+      const [, , , pathRegex, , siblingRegex] = implementation.allEntriesByFolder.mock.calls[0];
+
+      // The listing selector takes the default locale and nothing else...
+      expect(pathRegex.test('content/posts/slug.en.md')).toBe(true);
+      expect(pathRegex.test('content/posts/slug.de.md')).toBe(false);
+
+      // ...and the sibling selector is its exact complement across the
+      // configured locales, so between them every locale file is accounted for
+      // and none is claimed twice.
+      expect(siblingRegex.test('content/posts/slug.de.md')).toBe(true);
+      expect(siblingRegex.test('content/posts/slug.si.md')).toBe(true);
+      expect(siblingRegex.test('content/posts/slug.en.md')).toBe(false);
+    });
+
+    it('passes no sibling selector when every locale lives in one file', async () => {
+      const implementation = {
+        init: jest.fn(() => implementation),
+        allEntriesByFolder: jest.fn().mockResolvedValue([]),
+      };
+      const backend = backendWith(implementation);
+
+      await backend.listAllEntries(collectionWithI18n('single_file'));
+
+      const [, , , , , siblingRegex] = implementation.allEntriesByFolder.mock.calls[0];
+      expect(siblingRegex).toBeUndefined();
+    });
+
+    it('passes no sibling selector for a collection without i18n', async () => {
+      const implementation = {
+        init: jest.fn(() => implementation),
+        allEntriesByFolder: jest.fn().mockResolvedValue([]),
+      };
+      const backend = backendWith(implementation);
+
+      await backend.listAllEntries(
+        fromJS({ name: 'posts', type: FOLDER, folder: 'content/posts', extension: 'md' }),
+      );
+
+      const [, , , , , siblingRegex] = implementation.allEntriesByFolder.mock.calls[0];
+      expect(siblingRegex).toBeUndefined();
     });
   });
 });

@@ -14,10 +14,21 @@ on:
         options:
           - latest
           - beta
+      allow_unattested:
+        description: >
+          Comma-separated packages published by hand for their first release, which carry no provenance (for example decap-cms-lib-turbo).
+        type: string
+        default: ''
 
 permissions:
   contents: read
   id-token: write  # Required for OIDC trusted publishers
+
+# Two publish runs racing each other (a dispatch plus tag-push runs, or two
+# dispatches) each see the other's half-published state.
+concurrency:
+  group: publish
+  cancel-in-progress: false
 
 jobs:
   publish:
@@ -28,6 +39,16 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Required for Lerna to detect changes
+
+      # Only a lerna version commit may be published: anything else means the
+      # dispatch ran on a branch head that moved past (or never had) a release.
+      - name: Require a release commit
+        run: |
+          subject="$(git log -1 --format=%s)"
+          if [ "$subject" != "chore(release): publish" ]; then
+            echo "::error::HEAD is '$subject', not 'chore(release): publish'. Dispatch on the version commit."
+            exit 1
+          fi
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -52,6 +73,11 @@ jobs:
 
       - name: Test package integrity
         run: pnpm run test:package-integrity
+
+      # Installs the pnpm-packed tarballs with npm, yarn 4, yarn 1 and pnpm and
+      # runs a default-config webpack build of decap-cms-app: what consumers do.
+      - name: Smoke-install packed packages
+        run: node scripts/smoke-install-packed.mjs
 
       - name: Debug
         run: |
@@ -100,6 +126,9 @@ jobs:
       # `always()`: a failed publish is exactly when the true registry state is
       # least obvious. The 3.17.0-beta.0 release reported failure having shipped
       # 16 of 44 packages, and this step being skipped meant nobody could tell.
+      #
+      # Also requires every package released by this commit to carry provenance
+      # naming HEAD, and the dispatched dist-tag to point at the tree version.
       - name: Verify published manifests
         if: always()
-        run: node scripts/verify-published-packages.mjs
+        run: node scripts/verify-published-packages.mjs --expect-tag=${{ inputs.dist_tag || 'latest' }} ${{ inputs.allow_unattested && format('--allow-unattested={0}', inputs.allow_unattested) || '' }}

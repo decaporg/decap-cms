@@ -1,4 +1,9 @@
-import { isEmpty, isArray, flatMap, map, flatten, isEqual } from 'lodash';
+import isEmpty from 'lodash/isEmpty';
+import isArray from 'lodash/isArray';
+import flatMap from 'lodash/flatMap';
+import map from 'lodash/map';
+import flatten from 'lodash/flatten';
+import isEqual from 'lodash/isEqual';
 
 /**
  * Map of MDAST node types to Slate node types.

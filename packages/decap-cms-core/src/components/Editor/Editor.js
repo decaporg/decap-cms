@@ -448,6 +448,8 @@ export class Editor extends Component {
         fields={fields}
         fieldsMetaData={entryDraft.get('fieldsMetaData')}
         fieldsErrors={entryDraft.get('fieldsErrors')}
+        fieldRevisions={entryDraft.get('fieldRevisions')}
+        fieldHighlights={entryDraft.get('fieldHighlights')}
         notes={entryDraft.get('notes')}
         onChange={this.handleChangeDraftField}
         onNotesChange={this.handleNotesChange}
@@ -485,6 +487,13 @@ function mapStateToProps(state, ownProps) {
   const { collections, entryDraft, auth, config, entries, globalUI } = state;
   const slug = ownProps.match.params[0];
   const collection = collections.get(ownProps.match.params.name);
+
+  // The collection can vanish when a permissions refilter narrows the config
+  // under a mounted route; withWorkflow redirects, so just don't crash here.
+  if (!collection) {
+    return { collection: null };
+  }
+
   const collectionName = collection.get('name');
   const newEntry = ownProps.newRecord === true;
   const fields = selectFields(collection, slug);

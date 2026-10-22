@@ -379,6 +379,7 @@ describe('i18n', () => {
           fr: { data: { title: 'fr_title' } },
         },
         raw: '',
+        i18nLocales: ['en', 'de', 'fr'],
       });
     });
 
@@ -421,6 +422,7 @@ describe('i18n', () => {
           fr: { data: { title: 'fr_title' } },
         },
         raw: '',
+        i18nLocales: ['en', 'de', 'fr'],
       });
     });
 
@@ -488,6 +490,76 @@ describe('i18n', () => {
     });
   });
 
+  describe('found locales', () => {
+    const locales = ['en', 'de', 'fr'];
+    const default_locale = 'en';
+    const collection = fromJS({
+      i18n: { structure: i18n.I18N_STRUCTURE.MULTIPLE_FILES, locales, default_locale },
+    });
+
+    it('does not count a translation the backend answered with empty content', async () => {
+      // The GitHub backend resolves a missing file as empty content.
+      const data = {
+        'src/content/index.en.md': {
+          path: 'src/content/index.en.md',
+          raw: 'en',
+          data: { title: 'en_title' },
+        },
+        'src/content/index.de.md': { path: 'src/content/index.de.md', raw: '', data: {} },
+        'src/content/index.fr.md': {
+          path: 'src/content/index.fr.md',
+          raw: 'fr',
+          data: { title: 'fr_title' },
+        },
+      };
+
+      const entry = await i18n.getI18nEntry(
+        collection,
+        'md',
+        'src/content/index.md',
+        'index',
+        path => Promise.resolve(data[path]),
+      );
+
+      expect(entry.i18nLocales).toEqual(['en', 'fr']);
+    });
+
+    it('marks only the default locale and the found ones as known for deletion', () => {
+      expect(
+        i18n.getI18nFilesToDelete(
+          collection,
+          'md',
+          'src/content/index.md',
+          'index',
+          fromJS({ i18nLocales: ['fr'] }),
+        ),
+      ).toEqual([
+        { path: 'src/content/index.en.md', known: true },
+        { path: 'src/content/index.de.md', known: false },
+        { path: 'src/content/index.fr.md', known: true },
+      ]);
+    });
+
+    it('knows nothing but the default locale without a loaded entry', () => {
+      expect(
+        i18n
+          .getI18nFilesToDelete(collection, 'md', 'src/content/index.md', 'index')
+          .map(file => file.known),
+      ).toEqual([true, false, false]);
+    });
+
+    it('treats a single file as one known file', () => {
+      expect(
+        i18n.getI18nFilesToDelete(
+          fromJS({ i18n: { structure: i18n.I18N_STRUCTURE.SINGLE_FILE, locales, default_locale } }),
+          'md',
+          'src/content/index.md',
+          'index',
+        ),
+      ).toEqual([{ path: 'src/content/index.md', known: true }]);
+    });
+  });
+
   describe('groupEntries', () => {
     const locales = ['en', 'de', 'fr'];
     const default_locale = 'en';
@@ -527,6 +599,7 @@ describe('i18n', () => {
           data: { title: 'en_title' },
           i18n: { de: { data: { title: 'de_title' } }, fr: { data: { title: 'fr_title' } } },
           raw: '',
+          i18nLocales: ['en', 'de', 'fr'],
         },
       ]);
     });
@@ -565,6 +638,7 @@ describe('i18n', () => {
           data: { title: 'en_title' },
           i18n: { de: { data: { title: 'de_title' } }, fr: { data: { title: 'fr_title' } } },
           raw: '',
+          i18nLocales: ['en', 'de', 'fr'],
         },
       ]);
     });

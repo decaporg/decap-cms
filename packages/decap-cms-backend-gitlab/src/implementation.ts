@@ -244,7 +244,7 @@ export default class GitLab implements Implementation {
     return this.refreshedTokenPromise;
   }
 
-  private destroyNotesPolling() {
+  protected destroyNotesPolling() {
     this.pollingManager?.destroy();
     this.pollingManager = undefined;
     this.unwatchNotes.clear();

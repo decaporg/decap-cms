@@ -3,7 +3,42 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.11.5](https://github.com/decaporg/decap-cms/compare/decap-server@3.11.4...decap-server@3.11.5) (2026-10-14)
+
+**Note:** Version bump only for package decap-server
+
+## [3.11.4](https://github.com/decaporg/decap-cms/compare/decap-server@3.11.4-beta.2...decap-server@3.11.4) (2026-10-14)
+
+**Note:** Version bump only for package decap-server
+
+## [3.11.4-beta.2](https://github.com/decaporg/decap-cms/compare/decap-server@3.11.3-beta.2...decap-server@3.11.4-beta.2) (2026-10-13)
+
+### Bug Fixes
+
+- **decap:** reject unknown flags, report a busy port, await file moves ([9d5c98e](https://github.com/decaporg/decap-cms/commit/9d5c98e78c4f57636d7a4c0b2171870bcb502ce9))
+
+## [3.11.4-beta.1](https://github.com/decaporg/decap-cms/compare/decap-server@3.11.3-beta.2...decap-server@3.11.4-beta.1) (2026-10-12)
+
+### Bug Fixes
+
+- **decap:** reject unknown flags, report a busy port, await file moves ([9d5c98e](https://github.com/decaporg/decap-cms/commit/9d5c98e78c4f57636d7a4c0b2171870bcb502ce9))
+
+## [3.11.3-beta.2](https://github.com/decaporg/decap-cms/compare/decap-server@3.11.3-beta.1...decap-server@3.11.3-beta.2) (2026-10-08)
+
+### Features
+
+- **decap:** move decap-server into `decap dev` ([58f8888](https://github.com/decaporg/decap-cms/commit/58f88882d7fb71a2ce5ba17d2bd3b7839e25d8d4))
+- **decap:** publish the CLI as @decap/cli ([c1927b9](https://github.com/decaporg/decap-cms/commit/c1927b9d123e6081b239fa076f08ac7ab9e73e82))
+
+## [3.11.3-beta.1](https://github.com/decaporg/decap-cms/compare/decap-server@3.11.3-beta.0...decap-server@3.11.3-beta.1) (2026-09-22)
+
+**Note:** Version bump only for package decap-server
+
 ## [3.11.3](https://github.com/decaporg/decap-cms/compare/decap-server@3.11.2...decap-server@3.11.3) (2026-09-22)
+
+**Note:** Version bump only for package decap-server
+
+## [3.11.3-beta.0](https://github.com/decaporg/decap-cms/compare/decap-server@3.11.2...decap-server@3.11.3-beta.0) (2026-09-10)
 
 **Note:** Version bump only for package decap-server
 

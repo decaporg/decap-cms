@@ -1,4 +1,5 @@
-import { without, flatten } from 'lodash';
+import without from 'lodash/without';
+import flatten from 'lodash/flatten';
 import u from 'unist-builder';
 import * as mdastDefinitionsModule from 'mdast-util-definitions';
 

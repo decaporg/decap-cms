@@ -3,7 +3,37 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.7.1](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-gitlab@3.7.0...decap-cms-backend-gitlab@3.7.1) (2026-10-14)
+
+**Note:** Version bump only for package decap-cms-backend-gitlab
+
+# [3.7.0](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-gitlab@3.7.0-beta.3...decap-cms-backend-gitlab@3.7.0) (2026-10-14)
+
+**Note:** Version bump only for package decap-cms-backend-gitlab
+
+# [3.7.0-beta.3](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-gitlab@3.7.0-beta.1...decap-cms-backend-gitlab@3.7.0-beta.3) (2026-10-13)
+
+**Note:** Version bump only for package decap-cms-backend-gitlab
+
+# [3.7.0-beta.2](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-gitlab@3.7.0-beta.1...decap-cms-backend-gitlab@3.7.0-beta.2) (2026-10-12)
+
+**Note:** Version bump only for package decap-cms-backend-gitlab
+
+# [3.7.0-beta.1](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-gitlab@3.7.0-beta.0...decap-cms-backend-gitlab@3.7.0-beta.1) (2026-10-08)
+
+**Note:** Version bump only for package decap-cms-backend-gitlab
+
+# [3.7.0-beta.0](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-gitlab@3.6.4-beta.0...decap-cms-backend-gitlab@3.7.0-beta.0) (2026-09-22)
+
+### Features
+
+- attribute Turbo notes to signed-in editor and fix github issue lookup ([2414aca](https://github.com/decaporg/decap-cms/commit/2414aca6e024ad8e3d417ac7b547491592cca66e))
+
 ## [3.6.4](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-gitlab@3.6.3...decap-cms-backend-gitlab@3.6.4) (2026-09-22)
+
+**Note:** Version bump only for package decap-cms-backend-gitlab
+
+## [3.6.4-beta.0](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-gitlab@3.6.3...decap-cms-backend-gitlab@3.6.4-beta.0) (2026-09-10)
 
 **Note:** Version bump only for package decap-cms-backend-gitlab
 

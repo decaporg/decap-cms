@@ -173,6 +173,13 @@ export type Config = {
     cms_label_prefix?: string;
     api_version?: string;
     status_endpoint?: string;
+    // decap-turbo backend
+    turbo_site_id?: string;
+    turbo_config_url?: string;
+    supabase_app_id?: string;
+    supabase_anon_key?: string;
+    /** Decap Turbo, experimental: set true to turn on the editor bridge (AI agents setting fields in the open entry). Off by default. */
+    editor_bridge?: boolean;
   };
   auth: {
     use_oidc?: boolean;
@@ -279,13 +286,30 @@ export interface Implementation {
     extension: string,
     depth: number,
     pathRegex?: RegExp,
+    searchTerm?: string,
+    /**
+     * Selects the i18n locale files `pathRegex` excludes — the listing wants
+     * one file per entry, the editor wants every locale. Advisory: a backend
+     * that caches can warm those files, and one that does not may ignore it.
+     * The returned entries must not include them either way.
+     */
+    localeSiblingRegex?: RegExp,
   ) => Promise<ImplementationEntry[]>;
+  /**
+   * True when `allEntriesByFolder` already matched `searchTerm` against entry
+   * bodies, so core's own search pass may include the body without changing
+   * results on backends that only search the listed fields.
+   */
+  searchesEntryBody?: boolean;
   traverseCursor?: (
     cursor: Cursor,
     action: string,
   ) => Promise<{ entries: ImplementationEntry[]; cursor: Cursor }>;
 
   isGitBackend?: () => boolean;
+
+  reloadEntriesAfterPersist?: boolean;
+
   status: () => Promise<{
     auth: { status: boolean };
     api: { status: boolean; statusPage: string };

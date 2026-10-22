@@ -31,7 +31,7 @@ async function switchVersion(version) {
   const replaceString =
     version === 'latest'
       ? '<script src="dist/decap-cms.js"></script>'
-      : `<script src="https://unpkg.com/decap-cms@${version}/dist/decap-cms.js"></script>`;
+      : `<script src="https://cdn.jsdelivr.net/npm/decap-cms@${version}/dist/decap-cms.js"></script>`;
 
   await fs.writeFile(
     htmlFile,

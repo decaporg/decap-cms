@@ -39,6 +39,8 @@ export interface EntryValue {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [locale: string]: any;
   };
+  /** Locales whose file was found on load; multi-file i18n only. */
+  i18nLocales?: string[];
 }
 
 export function createEntry(collection: string, slug = '', path = '', options: Options = {}) {

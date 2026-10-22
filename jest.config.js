@@ -4,6 +4,7 @@ module.exports = {
   moduleNameMapper: {
     'decap-cms-lib-auth': '<rootDir>/packages/decap-cms-lib-auth/src/index.js',
     'decap-cms-lib-util': '<rootDir>/packages/decap-cms-lib-util/src/index.ts',
+    '^decap-cms-lib-turbo$': '<rootDir>/packages/decap-cms-lib-turbo/src/index.ts',
     'decap-cms-ui-default': '<rootDir>/packages/decap-cms-ui-default/src/index.js',
     'decap-cms-ui-auth': '<rootDir>/packages/decap-cms-ui-auth/src/index.js',
     'decap-cms-backend-bitbucket': '<rootDir>/packages/decap-cms-backend-bitbucket/src/index.ts',
@@ -11,6 +12,7 @@ module.exports = {
     'decap-cms-backend-gitlab': '<rootDir>/packages/decap-cms-backend-gitlab/src/index.ts',
     'decap-cms-lib-widgets': '<rootDir>/packages/decap-cms-lib-widgets/src/index.ts',
     'decap-cms-widget-object': '<rootDir>/packages/decap-cms-widget-object/src/index.js',
+    '^decap-turbo-api$': '<rootDir>/packages/decap-turbo-api/src/index.ts',
     '\\.(css|less)$': '<rootDir>/__mocks__/styleMock.js',
     '^#home-directory$': 'clean-stack/home-directory.js',
     '^clean-stack$': '<rootDir>/__mocks__/cleanStackMock.js',
