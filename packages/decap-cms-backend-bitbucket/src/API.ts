@@ -2,6 +2,7 @@ import flow from 'lodash/flow';
 import get from 'lodash/get';
 import orderBy from 'lodash/orderBy';
 import uniqBy from 'lodash/uniqBy';
+import semaphore from 'semaphore';
 import {
   localForage,
   unsentRequest,
@@ -168,6 +169,8 @@ type BitBucketCommit = {
 export const API_NAME = 'Bitbucket';
 
 const DEFAULT_API_ROOT = 'https://api.bitbucket.org/2.0';
+
+const MAX_CONCURRENT_LABEL_REQUESTS = 10;
 
 const APPLICATION_JSON = 'application/json; charset=utf-8';
 
@@ -695,7 +698,21 @@ export default class API {
     // `getBranchPullRequest` takes the first one.
     const pullRequests = orderBy(uniqBy(pages, 'id'), 'updated_on', 'desc');
 
-    const labels = await Promise.all(pullRequests.map(pr => this.getPullRequestLabel(pr.id)));
+    // Each pull request needs its own label request. Limit how many run at once,
+    // so many drafts don't send hundreds of requests at the same time.
+    const sem = semaphore(MAX_CONCURRENT_LABEL_REQUESTS);
+    const labels = await Promise.all(
+      pullRequests.map(
+        pr =>
+          new Promise<string>((resolve, reject) =>
+            sem.take(() =>
+              this.getPullRequestLabel(pr.id)
+                .then(resolve, reject)
+                .finally(() => sem.leave()),
+            ),
+          ),
+      ),
+    );
 
     return pullRequests.filter((_, index) => isCMSLabel(labels[index], this.cmsLabelPrefix));
   }

@@ -131,6 +131,28 @@ describe('bitbucket API', () => {
     expect(api.getPullRequestLabel).toHaveBeenCalledTimes(3);
   });
 
+  test('should request at most 10 pull request labels at a time', async () => {
+    const api = new API({ repo: 'owner/repo', branch: 'main' });
+    const pullRequests = Array.from({ length: 25 }, (_, index) => ({ id: index + 1 }));
+    global.fetch.mockResolvedValueOnce(jsonResponse({ values: pullRequests }));
+    let active = 0;
+    let maxActive = 0;
+    api.getPullRequestLabel = jest.fn(async id => {
+      active++;
+      maxActive = Math.max(maxActive, active);
+      await new Promise(resolve => setTimeout(resolve, 0));
+      active--;
+      return id === 2 ? 'other' : 'decap-cms/draft';
+    });
+
+    const result = await api.getPullRequests();
+
+    expect(result).toHaveLength(24);
+    expect(result).not.toContainEqual({ id: 2 });
+    expect(api.getPullRequestLabel).toHaveBeenCalledTimes(25);
+    expect(maxActive).toBe(10);
+  });
+
   test('should read the status label from the last page of comments', async () => {
     const api = new API({ repo: 'owner/repo' });
     global.fetch
