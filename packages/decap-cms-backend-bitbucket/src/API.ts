@@ -88,13 +88,14 @@ type BitBucketPullRequest = {
   author: BitBucketUser;
 };
 
-type BitBucketPullRequests = {
-  size: number;
-  page: number;
-  pagelen: number;
-  next: string;
-  preview: string;
-  values: BitBucketPullRequest[];
+// One page of a Bitbucket list. `next` is missing on the last page.
+type BitBucketPage<T> = {
+  size?: number;
+  page?: number;
+  pagelen?: number;
+  next?: string;
+  previous?: string;
+  values: T[];
 };
 
 type BitBucketPullComment = {
@@ -103,14 +104,7 @@ type BitBucketPullComment = {
   };
 };
 
-type BitBucketPullComments = {
-  size: number;
-  page: number;
-  pagelen: number;
-  next: string;
-  preview: string;
-  values: BitBucketPullComment[];
-};
+type BitBucketPullComments = BitBucketPage<BitBucketPullComment>;
 
 enum BitBucketPullRequestStatusState {
   Successful = 'SUCCESSFUL',
@@ -129,14 +123,7 @@ type BitBucketPullRequestStatus = {
   state: BitBucketPullRequestStatusState;
 };
 
-type BitBucketPullRequestStatues = {
-  size: number;
-  page: number;
-  pagelen: number;
-  next: string;
-  preview: string;
-  values: BitBucketPullRequestStatus[];
-};
+type BitBucketPullRequestStatues = BitBucketPage<BitBucketPullRequestStatus>;
 
 type DeleteEntry = {
   path: string;
@@ -150,14 +137,7 @@ type BitBucketFile = {
   commit?: { hash: string };
 };
 
-type BitBucketSrcResult = {
-  size: number;
-  page: number;
-  pagelen: number;
-  next: string;
-  previous: string;
-  values: BitBucketFile[];
-};
+type BitBucketSrcResult = BitBucketPage<BitBucketFile>;
 
 type BitBucketUser = {
   username: string;
@@ -189,6 +169,8 @@ type BitBucketCommit = {
 
 export const API_NAME = 'Bitbucket';
 
+const DEFAULT_API_ROOT = 'https://api.bitbucket.org/2.0';
+
 const APPLICATION_JSON = 'application/json; charset=utf-8';
 
 function replace404WithEmptyResponse(err: FetchError) {
@@ -212,7 +194,7 @@ export default class API {
   cmsLabelPrefix: string;
 
   constructor(config: Config) {
-    this.apiRoot = config.apiRoot || 'https://api.bitbucket.org/2.0';
+    this.apiRoot = config.apiRoot || DEFAULT_API_ROOT;
     this.branch = config.branch || 'master';
     this.repo = config.repo || '';
     this.requestFunction = config.requestFunction || unsentRequest.performRequest;
@@ -249,6 +231,26 @@ export default class API {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   requestJSON = (req: ApiRequest) => this.request(req).then(this.responseToJSON) as Promise<any>;
   requestText = (req: ApiRequest) => this.request(req).then(this.responseToText) as Promise<string>;
+
+  // Bitbucket's pagination links are absolute api.bitbucket.org URLs. Make them
+  // relative so `buildRequest` sends them to `apiRoot`, the same as the first page.
+  toRelativeLink = (link: string) =>
+    link.startsWith(`${DEFAULT_API_ROOT}/`) ? link.slice(DEFAULT_API_ROOT.length) : link;
+
+  // Bitbucket returns lists one page at a time. Follow the `next` links and
+  // return the values of every page.
+  async requestAllValues<T>(req: ApiRequest): Promise<T[]> {
+    let page: BitBucketPage<T> = await this.requestJSON(req);
+    const values = [...page.values];
+    // Stop if a `next` link repeats, so a bad link can't cause an endless loop
+    const requestedLinks = new Set<string>();
+    while (page.next && !requestedLinks.has(page.next)) {
+      requestedLinks.add(page.next);
+      page = await this.requestJSON(this.toRelativeLink(page.next));
+      values.push(...page.values);
+    }
+    return values;
+  }
 
   user = () => this.requestJSON('/user') as Promise<BitBucketUser>;
 
@@ -395,6 +397,7 @@ export default class API {
     entries: { path: string; name: string; type: string; id: string }[];
   }> =>
     flow([
+      this.toRelativeLink,
       this.requestJSON,
       then(this.getEntriesAndCursor),
       then<
@@ -407,23 +410,16 @@ export default class API {
     ])(cursor.data!.getIn(['links', action]));
 
   listAllFiles = async (path: string, depth: number, branch: string) => {
-    const { cursor: initialCursor, entries: initialEntries } = await this.listFiles(
-      path,
-      depth,
-      100,
-      branch,
-    );
-    const entries = [...initialEntries];
-    let currentCursor = initialCursor;
-    while (currentCursor && currentCursor.actions!.has('next')) {
-      const { cursor: newCursor, entries: newEntries } = await this.traverseCursor(
-        currentCursor,
-        'next',
-      );
-      entries.push(...newEntries);
-      currentCursor = newCursor;
-    }
-    return this.processFiles(entries);
+    const node = await this.branchCommitSha(branch);
+    const files = await this.requestAllValues<BitBucketFile>({
+      url: `${this.repoURL}/src/${node}/${path}`,
+      params: {
+        max_depth: depth,
+        pagelen: 100,
+      },
+    }).catch(async (err: FetchError) => (await replace404WithEmptyResponse(err)).values);
+
+    return this.processFiles(files);
   };
 
   async uploadFiles(
@@ -677,7 +673,7 @@ export default class API {
       ? `source.branch.name = "${sourceBranch}"`
       : `source.branch.name ~ "${CMS_BRANCH_PREFIX}/"`;
 
-    let response: BitBucketPullRequests = await this.requestJSON({
+    const pullRequests = await this.requestAllValues<BitBucketPullRequest>({
       url: `${this.repoURL}/pullrequests`,
       params: {
         pagelen: 50,
@@ -690,12 +686,6 @@ export default class API {
         `,
       },
     });
-    const pullRequests = [...response.values];
-    // Bitbucket returns at most `pagelen` results per page, so follow `next` links to get them all
-    while (response.next) {
-      response = await this.requestJSON(response.next);
-      pullRequests.push(...response.values);
-    }
 
     const labels = await Promise.all(pullRequests.map(pr => this.getPullRequestLabel(pr.id)));
 
