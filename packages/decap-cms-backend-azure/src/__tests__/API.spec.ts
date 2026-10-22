@@ -64,5 +64,16 @@ describe('azure API', () => {
       expect(user.login).toBe('Jane Doe');
       expect(user.email).toBeUndefined();
     });
+
+    it('should not set an avatar URL when the profile has no avatar', async () => {
+      const api = createApi();
+      api.requestJSON = jest.fn().mockResolvedValue({
+        coreAttributes: { DisplayName: { value: 'Jane Doe' } },
+      });
+
+      const user = await api.user();
+
+      expect(user.avatar_url).toBeUndefined();
+    });
   });
 });

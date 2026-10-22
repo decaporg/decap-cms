@@ -315,7 +315,7 @@ export default class API {
     const user = {
       name: name || email || '',
       login: email || name || '',
-      avatar_url: `data:image/png;base64,${url}`,
+      avatar_url: url ? `data:image/png;base64,${url}` : undefined,
       email,
     };
     return user;
