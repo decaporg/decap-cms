@@ -31,7 +31,12 @@ export const API_NAME = 'Azure DevOps';
 
 const API_VERSION = 'api-version';
 
+// https://learn.microsoft.com/en-us/rest/api/azure/devops/profile/profiles/get?view=azure-devops-rest-6.1
+// Without `details=true` the documented response has top-level fields instead of coreAttributes,
+// so both shapes are read.
 type AzureUser = {
+  displayName?: string;
+  emailAddress?: string;
   coreAttributes?: {
     Avatar?: { value?: { value?: string } };
     DisplayName?: { value?: string };
@@ -304,12 +309,12 @@ export default class API {
       params: { [API_VERSION]: '6.1-preview.2' },
     });
 
-    const name = result.coreAttributes?.DisplayName?.value;
-    const email = result.coreAttributes?.EmailAddress?.value;
+    const name = result.coreAttributes?.DisplayName?.value || result.displayName;
+    const email = result.coreAttributes?.EmailAddress?.value || result.emailAddress;
     const url = result.coreAttributes?.Avatar?.value?.value;
     const user = {
       name: name || email || '',
-      login: email,
+      login: email || name || '',
       avatar_url: `data:image/png;base64,${url}`,
       email,
     };

@@ -33,6 +33,36 @@ describe('azure API', () => {
         email: 'jane@example.com',
         avatar_url: 'data:image/png;base64,avatar',
       });
+      expect(api.requestJSON).toHaveBeenCalledWith({
+        url: 'https://app.vssps.visualstudio.com/_apis/profile/profiles/me',
+        params: { 'api-version': '6.1-preview.2' },
+      });
+    });
+
+    it('should read top-level profile fields when coreAttributes is missing', async () => {
+      const api = createApi();
+      api.requestJSON = jest.fn().mockResolvedValue({
+        displayName: 'Jane Doe',
+        emailAddress: 'jane@example.com',
+      });
+
+      const user = await api.user();
+
+      expect(user.name).toBe('Jane Doe');
+      expect(user.login).toBe('jane@example.com');
+      expect(user.email).toBe('jane@example.com');
+    });
+
+    it('should fall back to the display name for the login when there is no email', async () => {
+      const api = createApi();
+      api.requestJSON = jest.fn().mockResolvedValue({
+        coreAttributes: { DisplayName: { value: 'Jane Doe' } },
+      });
+
+      const user = await api.user();
+
+      expect(user.login).toBe('Jane Doe');
+      expect(user.email).toBeUndefined();
     });
   });
 });
