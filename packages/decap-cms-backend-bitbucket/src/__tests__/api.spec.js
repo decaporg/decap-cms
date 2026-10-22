@@ -109,6 +109,28 @@ describe('bitbucket API', () => {
     expect(api.getPullRequestLabel).toHaveBeenCalledTimes(3);
   });
 
+  test('should list each pull request once, most recently updated first', async () => {
+    const api = new API({ repo: 'owner/repo', branch: 'main' });
+    const first = { id: 1, updated_on: '2026-01-01T00:00:00.000000+00:00' };
+    const second = { id: 2, updated_on: '2026-03-01T00:00:00.000000+00:00' };
+    const third = { id: 3, updated_on: '2026-02-01T00:00:00.000000+00:00' };
+    global.fetch
+      .mockResolvedValueOnce(
+        jsonResponse({
+          values: [first, second],
+          next: `${BITBUCKET}/repositories/owner/repo/pullrequests?sort=id&page=2`,
+        }),
+      )
+      // The second pull request moved onto this page while the pages loaded
+      .mockResolvedValueOnce(jsonResponse({ values: [second, third] }));
+    api.getPullRequestLabel = jest.fn(() => Promise.resolve('decap-cms/draft'));
+
+    await expect(api.getPullRequests()).resolves.toEqual([second, third, first]);
+
+    expect(new URL(fetchedURLs()[0]).searchParams.get('sort')).toBe('id');
+    expect(api.getPullRequestLabel).toHaveBeenCalledTimes(3);
+  });
+
   describe('listAllFiles', () => {
     test('should list the files from every page', async () => {
       const api = new API({ repo: 'owner/repo' });

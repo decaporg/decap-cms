@@ -1,5 +1,7 @@
 import flow from 'lodash/flow';
 import get from 'lodash/get';
+import orderBy from 'lodash/orderBy';
+import uniqBy from 'lodash/uniqBy';
 import {
   localForage,
   unsentRequest,
@@ -673,7 +675,7 @@ export default class API {
       ? `source.branch.name = "${sourceBranch}"`
       : `source.branch.name ~ "${CMS_BRANCH_PREFIX}/"`;
 
-    const pullRequests = await this.requestAllValues<BitBucketPullRequest>({
+    const pages = await this.requestAllValues<BitBucketPullRequest>({
       url: `${this.repoURL}/pullrequests`,
       params: {
         pagelen: 50,
@@ -684,8 +686,17 @@ export default class API {
         AND comment_count > 0
         AND ${sourceQuery}
         `,
+        // The default order is by last update, so an edit made while the pages
+        // load could move a pull request onto a page that was already read.
+        // Sorting by id keeps each one in place and adds new ones at the end.
+        sort: 'id',
       },
     });
+    // The list can still change between page requests, so list each pull request
+    // once. Then put the most recently updated first, like Bitbucket's default
+    // order: the Workflow view shows drafts in this order, and
+    // `getBranchPullRequest` takes the first one.
+    const pullRequests = orderBy(uniqBy(pages, 'id'), 'updated_on', 'desc');
 
     const labels = await Promise.all(pullRequests.map(pr => this.getPullRequestLabel(pr.id)));
 
