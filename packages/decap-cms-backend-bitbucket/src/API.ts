@@ -106,8 +106,6 @@ type BitBucketPullComment = {
   };
 };
 
-type BitBucketPullComments = BitBucketPage<BitBucketPullComment>;
-
 enum BitBucketPullRequestStatusState {
   Successful = 'SUCCESSFUL',
   Failed = 'FAILED',
@@ -124,8 +122,6 @@ type BitBucketPullRequestStatus = {
   description: string;
   state: BitBucketPullRequestStatusState;
 };
-
-type BitBucketPullRequestStatues = BitBucketPage<BitBucketPullRequestStatus>;
 
 type DeleteEntry = {
   path: string;
@@ -551,13 +547,14 @@ export default class API {
   }
 
   async getPullRequestLabel(id: number) {
-    const comments: BitBucketPullComments = await this.requestJSON({
+    const comments = await this.requestAllValues<BitBucketPullComment>({
       url: `${this.repoURL}/pullrequests/${id}/comments`,
       params: {
         pagelen: 100,
       },
     });
-    return comments.values.map(c => c.content.raw)[comments.values.length - 1];
+    // Comments come oldest first, so the current label is the last one
+    return comments[comments.length - 1]?.content.raw;
   }
 
   async createPullRequest(branch: string, commitMessage: string, status: string) {
@@ -798,15 +795,13 @@ export default class API {
     await this.deleteBranch(branch);
   }
 
-  async getPullRequestStatuses(pullRequest: BitBucketPullRequest) {
-    const statuses: BitBucketPullRequestStatues = await this.requestJSON({
+  getPullRequestStatuses(pullRequest: BitBucketPullRequest) {
+    return this.requestAllValues<BitBucketPullRequestStatus>({
       url: `${this.repoURL}/pullrequests/${pullRequest.id}/statuses`,
       params: {
         pagelen: 100,
       },
     });
-
-    return statuses.values;
   }
 
   async getStatuses(collectionName: string, slug: string) {

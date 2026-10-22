@@ -131,6 +131,44 @@ describe('bitbucket API', () => {
     expect(api.getPullRequestLabel).toHaveBeenCalledTimes(3);
   });
 
+  test('should read the status label from the last page of comments', async () => {
+    const api = new API({ repo: 'owner/repo' });
+    global.fetch
+      .mockResolvedValueOnce(
+        jsonResponse({
+          values: [{ content: { raw: 'decap-cms/draft' } }, { content: { raw: 'Looks good' } }],
+          next: `${BITBUCKET}/repositories/owner/repo/pullrequests/1/comments?pagelen=100&page=2`,
+        }),
+      )
+      .mockResolvedValueOnce(
+        jsonResponse({ values: [{ content: { raw: 'decap-cms/pending_publish' } }] }),
+      );
+
+    await expect(api.getPullRequestLabel(1)).resolves.toBe('decap-cms/pending_publish');
+
+    expect(fetchedURLs()).toEqual([
+      `${BITBUCKET}/repositories/owner/repo/pullrequests/1/comments?pagelen=100`,
+      `${BITBUCKET}/repositories/owner/repo/pullrequests/1/comments?pagelen=100&page=2`,
+    ]);
+  });
+
+  test('should get pull request statuses from every page', async () => {
+    const api = new API({ repo: 'owner/repo' });
+    global.fetch
+      .mockResolvedValueOnce(
+        jsonResponse({
+          values: [{ key: 'build' }],
+          next: `${BITBUCKET}/repositories/owner/repo/pullrequests/1/statuses?pagelen=100&page=2`,
+        }),
+      )
+      .mockResolvedValueOnce(jsonResponse({ values: [{ key: 'deploy' }] }));
+
+    await expect(api.getPullRequestStatuses({ id: 1 })).resolves.toEqual([
+      { key: 'build' },
+      { key: 'deploy' },
+    ]);
+  });
+
   describe('listAllFiles', () => {
     test('should list the files from every page', async () => {
       const api = new API({ repo: 'owner/repo' });
