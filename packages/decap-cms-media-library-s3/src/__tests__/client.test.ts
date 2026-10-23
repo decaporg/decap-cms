@@ -55,6 +55,15 @@ const TRUNCATED_PAGE_2_XML = `<?xml version="1.0" encoding="UTF-8"?>
   </Contents>
 </ListBucketResult>`;
 
+// Recorded from Neon Object Storage (public_read bucket, path-style). Unlike the
+// fixtures above it carries the S3 XML namespace, entity-escaped ETag quotes, and
+// both `Marker` and `ContinuationToken` alongside `NextContinuationToken`.
+const NEON_PAGE_1_XML = `<?xml version="1.0" encoding="UTF-8"?>
+<ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>decap-media</Name><Prefix>images/</Prefix><Delimiter>/</Delimiter><MaxKeys>2</MaxKeys><IsTruncated>true</IsTruncated><Marker></Marker><KeyCount>2</KeyCount><NextContinuationToken>aW1hZ2VzL2hlbGxvIHdvcmxkLnR4dA==</NextContinuationToken><CommonPrefixes><Prefix>images/2026/</Prefix></CommonPrefixes><Contents><Key>images/hello world.txt</Key><LastModified>2026-10-21T14:02:07.122Z</LastModified><ETag>&#34;634899aa2ec20b95478704ac150f246e&#34;</ETag><Size>10</Size><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>`;
+
+const NEON_PAGE_2_XML = `<?xml version="1.0" encoding="UTF-8"?>
+<ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>decap-media</Name><Prefix>images/</Prefix><Delimiter>/</Delimiter><MaxKeys>2</MaxKeys><IsTruncated>false</IsTruncated><Marker></Marker><KeyCount>1</KeyCount><ContinuationToken>aW1hZ2VzL2hlbGxvIHdvcmxkLnR4dA==</ContinuationToken><Contents><Key>images/logo.png</Key><LastModified>2026-10-21T14:02:16.130Z</LastModified><ETag>&#34;7f4f483b50c1592db6e9e73d4fcc14c1&#34;</ETag><Size>2048</Size><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>`;
+
 describe('S3Client', () => {
   const getAccessToken = jest.fn(async () => 'test-access-token');
   const getActiveSiteId = jest.fn(async () => 'test-site-id');
@@ -146,6 +155,76 @@ describe('S3Client', () => {
       2,
       expect.stringContaining('continuation-token=token-page-2'),
       expect.anything(),
+    );
+  });
+
+  it('should parse and paginate a Neon Object Storage listing', async () => {
+    (global.fetch as jest.Mock)
+      .mockResolvedValueOnce({ ok: true, headers: xmlHeaders(), text: async () => NEON_PAGE_1_XML })
+      .mockResolvedValueOnce({
+        ok: true,
+        headers: xmlHeaders(),
+        text: async () => NEON_PAGE_2_XML,
+      });
+
+    const client = new S3Client({
+      edgeBaseUrl: 'https://edge.example.test/functions/v1/integrations/s3',
+      getAccessToken,
+      getActiveSiteId,
+    });
+
+    const files = await client.listAllObjects('images/');
+
+    expect(files).toEqual([
+      {
+        Key: 'images/2026/',
+        Size: 0,
+        LastModified: '',
+        ETag: '',
+        IsDirectory: true,
+        ObjectName: '2026',
+      },
+      {
+        Key: 'images/hello world.txt',
+        Size: 10,
+        LastModified: '2026-10-21T14:02:07.122Z',
+        ETag: '634899aa2ec20b95478704ac150f246e',
+        IsDirectory: false,
+        ObjectName: 'hello world.txt',
+      },
+      {
+        Key: 'images/logo.png',
+        Size: 2048,
+        LastModified: '2026-10-21T14:02:16.130Z',
+        ETag: '7f4f483b50c1592db6e9e73d4fcc14c1',
+        IsDirectory: false,
+        ObjectName: 'logo.png',
+      },
+    ]);
+    expect(global.fetch).toHaveBeenCalledTimes(2);
+    expect(global.fetch).toHaveBeenNthCalledWith(
+      2,
+      expect.stringContaining(
+        `continuation-token=${encodeURIComponent('aW1hZ2VzL2hlbGxvIHdvcmxkLnR4dA==')}`,
+      ),
+      expect.anything(),
+    );
+  });
+
+  it('should build Neon public URLs from the branch endpoint and bucket', () => {
+    const client = new S3Client({
+      edgeBaseUrl: 'https://edge.example.test/functions/v1/integrations/s3',
+      getAccessToken,
+      getActiveSiteId,
+    });
+
+    const url = client.generatePublicUrl(
+      'https://br-cool-darkness-a1b2c3d4.storage.c-1.us-east-2.aws.neon.tech/decap-media',
+      'images/hello world.txt',
+    );
+
+    expect(url).toBe(
+      'https://br-cool-darkness-a1b2c3d4.storage.c-1.us-east-2.aws.neon.tech/decap-media/images/hello%20world.txt',
     );
   });
 

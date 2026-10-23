@@ -1,6 +1,6 @@
 {
   "name": "decap-cms-media-library-s3",
-  "description": "S3-compatible object storage integration for Decap CMS (AWS S3, Cloudflare R2, and other S3-compatible providers)",
+  "description": "S3-compatible object storage integration for Decap CMS (AWS S3, Cloudflare R2, Neon Object Storage, and other S3-compatible providers)",
   "version": "0.2.1",
   "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-media-library-s3",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
@@ -13,6 +13,7 @@
     "aws",
     "r2",
     "cloudflare",
+    "neon",
     "image",
     "images",
     "media",
