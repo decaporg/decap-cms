@@ -613,9 +613,15 @@ export class Backend {
       maxBytes = slugByteBudget(collection, config);
       formatSlug = getSlugFormatter(collection, entryData, slugConfig);
     }
+    // Over the cap, the slug in front of the suffix gives way, so the suffix stays distinct
+    function fitSlug(suffix = '') {
+      const slug = formatSlug(suffix);
+      return utf8ByteLength(slug) > maxBytes
+        ? `${truncateSlug(slug, maxBytes - utf8ByteLength(suffix), slugConfig)}${suffix}`
+        : slug;
+    }
     let i = 1;
-    let uniqueSlug = formatSlug();
-    if (!customPath) uniqueSlug = truncateSlug(uniqueSlug, maxBytes, slugConfig);
+    let uniqueSlug = fitSlug();
 
     // Check for duplicate slug in loaded entities store first before repo
     while (
@@ -627,16 +633,7 @@ export class Backend {
         selectUseWorkflow(config),
       ))
     ) {
-      const suffix = `${sanitizeChar(' ', slugConfig)}${i++}`;
-      uniqueSlug = formatSlug(suffix);
-      if (!customPath && utf8ByteLength(uniqueSlug) > maxBytes) {
-        // Keep the suffix distinct and inside Git's byte cap when the path has no room for it.
-        uniqueSlug = `${truncateSlug(
-          uniqueSlug,
-          maxBytes - utf8ByteLength(suffix),
-          slugConfig,
-        )}${suffix}`;
-      }
+      uniqueSlug = fitSlug(`${sanitizeChar(' ', slugConfig)}${i++}`);
     }
     return uniqueSlug;
   }
