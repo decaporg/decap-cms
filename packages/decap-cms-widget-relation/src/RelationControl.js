@@ -416,9 +416,10 @@ export default class RelationControl extends Component {
 
   getHitData = hit => {
     const { locale } = this.props;
-    return locale != null && hit.i18n != null && hit.i18n[locale] != null
-      ? hit.i18n[locale].data
-      : hit.data;
+    const localeData = locale != null ? hit.i18n?.[locale]?.data : null;
+    // a translation only has its translatable fields, so fall back to the
+    // default locale for the rest (e.g. a filter on an `i18n: none` field)
+    return localeData ? { ...hit.data, ...localeData } : hit.data;
   };
 
   parseNestedFields = (hit, field) => {

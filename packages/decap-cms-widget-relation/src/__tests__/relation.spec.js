@@ -864,5 +864,13 @@ describe('Relation widget', () => {
       });
       await expectOwners(getAllByText, ['Owner A', 'Owner B']);
     });
+
+    it('should apply filters on untranslated fields to the default locale data', async () => {
+      const { getAllByText } = setupOwners({
+        filters: [{ field: 'years', values: ['2024'] }],
+        locale: 'fr',
+      });
+      await expectOwners(getAllByText, ['Owner B']);
+    });
   });
 });
