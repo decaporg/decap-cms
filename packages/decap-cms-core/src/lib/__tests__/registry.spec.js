@@ -236,6 +236,75 @@ describe('registry', () => {
         expect(result).toEqual(dataAfterSecondHandlerExecution.entry);
       });
 
+      it('should preserve a complete entry returned by a preSave handler', async () => {
+        const { registerEventListener, invokeEvent } = require('../registry');
+        const entry = fromJS({
+          collection: 'posts',
+          slug: 'article',
+          path: 'content/en/article.md',
+          meta: { path: 'content/en/article.md' },
+          data: { title: 'English' },
+          i18n: { 'pt-br': { data: { title: 'Old translation' } } },
+        });
+        const translated = entry.setIn(['i18n', 'pt-br', 'data', 'title'], 'Portuguese');
+        registerEventListener({ name: 'preSave', handler: async () => translated });
+
+        const result = await invokeEvent({ name: 'preSave', data: { entry } });
+
+        expect(result).toBe(translated);
+        expect(result.get('data')).toEqual(fromJS({ title: 'English' }));
+        expect(result.getIn(['i18n', 'pt-br', 'data', 'title'])).toBe('Portuguese');
+      });
+
+      it('should chain data-only and full-entry handlers without losing metadata or translations', async () => {
+        const { registerEventListener, invokeEvent } = require('../registry');
+        const entry = fromJS({
+          collection: 'posts',
+          slug: 'article',
+          path: 'content/en/article.md',
+          data: { title: 'English' },
+          i18n: { 'pt-br': { data: { title: 'Old translation' } } },
+        });
+        registerEventListener({
+          name: 'preSave',
+          handler: ({ entry }) => entry.get('data').set('title', 'Updated English'),
+        });
+        registerEventListener({
+          name: 'preSave',
+          handler: ({ entry }) => entry.setIn(['i18n', 'pt-br', 'data', 'title'], 'Portuguese'),
+        });
+        registerEventListener({ name: 'preSave', handler: () => undefined });
+        registerEventListener({
+          name: 'preSave',
+          handler: ({ entry }) => entry.get('data').set('description', 'Description'),
+        });
+
+        const result = await invokeEvent({ name: 'preSave', data: { entry } });
+
+        expect(result).toEqual(
+          entry
+            .setIn(['data', 'title'], 'Updated English')
+            .setIn(['data', 'description'], 'Description')
+            .setIn(['i18n', 'pt-br', 'data', 'title'], 'Portuguese'),
+        );
+      });
+
+      it('should treat a content field named data as content rather than a full entry', async () => {
+        const { registerEventListener, invokeEvent } = require('../registry');
+        const entry = fromJS({
+          collection: 'posts',
+          slug: 'article',
+          path: 'content/article.md',
+          data: { data: { title: 'Nested content' } },
+        });
+        const content = entry.get('data').setIn(['data', 'title'], 'Updated nested content');
+        registerEventListener({ name: 'preSave', handler: () => content });
+
+        const result = await invokeEvent({ name: 'preSave', data: { entry } });
+
+        expect(result).toEqual(entry.set('data', content));
+      });
+
       it('should allow multiple events to not return a value', async () => {
         const { registerEventListener, invokeEvent } = require('../registry');
 

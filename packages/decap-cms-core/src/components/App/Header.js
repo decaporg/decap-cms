@@ -273,7 +273,7 @@ class Header extends Component {
                   <AppHeaderQuickNewButton> {t('app.header.quickAdd')}</AppHeaderQuickNewButton>
                 )}
                 dropdownTopOverlap="30px"
-                dropdownWidth="160px"
+                dropdownWidth="max-content"
                 dropdownPosition="left"
               >
                 {creatableCollections.map(collection => (

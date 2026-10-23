@@ -1389,7 +1389,7 @@
   },
   {
     "method": "PUT",
-    "url": "/.netlify/git/gitlab/merge_requests/4/merge?merge_commit_message=Automatically generated. Merged on Decap CMS.&squash_commit_message=Automatically generated. Merged on Decap CMS.&squash=false&should_remove_source_branch=true",
+    "url": "/.netlify/git/gitlab/merge_requests/4/merge?merge_commit_message=Automatically generated. Merged on Decap CMS.&squash_commit_message=Automatically generated. Merged on Decap CMS.&squash=false&should_remove_source_branch=true&sha=68988a05eeb643fdbb69017592505c654319bf15",
     "headers": {
       "Access-Control-Allow-Credentials": "true",
       "Access-Control-Allow-Methods": "GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS",
