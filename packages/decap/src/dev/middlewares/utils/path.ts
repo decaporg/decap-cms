@@ -2,6 +2,20 @@ import path from 'path';
 import { promises as fs } from 'fs';
 
 const invalidPathMessage = 'Path must resolve under the configured repository';
+const gitPathMessage = "Path must not point into the repository's .git directory";
+
+/**
+ * Whether a single path segment names the `.git` directory. Mirrors Git's own
+ * checks: case-insensitive (macOS and Windows file systems), with the trailing
+ * dots and spaces, NTFS alternate stream suffix and 8.3 short name that
+ * Windows also resolves to `.git`.
+ */
+export function isGitDirSegment(segment: string) {
+  const name = segment.toLowerCase();
+  return (
+    name.replace(/[. ]+$/, '') === '.git' || name.startsWith('.git:') || /^git~\d+$/.test(name)
+  );
+}
 
 function assertPathUnderRoot(repoRoot: string, resolvedPath: string) {
   const relativePath = path.relative(repoRoot, resolvedPath);
@@ -12,6 +26,12 @@ function assertPathUnderRoot(repoRoot: string, resolvedPath: string) {
     path.isAbsolute(relativePath)
   ) {
     throw new Error(invalidPathMessage);
+  }
+
+  // Git's config and hooks live under .git, so writing there runs commands
+  // (a clean filter on the next `git add`, a hook on the next commit).
+  if (relativePath.split(/[\\/]/).some(isGitDirSegment)) {
+    throw new Error(gitPathMessage);
   }
 }
 

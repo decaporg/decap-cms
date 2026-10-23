@@ -30,7 +30,7 @@ backend:
   proxy_url: http://localhost:8081/api/v1
 ```
 
-Each flag overrides an environment variable, also read from a `.env` file in the working directory: `--port` (`PORT`, default 8081), `--host` (`BIND_HOST`), `--mode` (`MODE`: `fs` or `git`, default `fs`), `--dir` (`GIT_REPO_DIRECTORY`, default the current directory), `--origin` (`ORIGIN`, the CMS origin allowed to call the server, default localhost) and `--log-level` (`LOG_LEVEL`, default `info`).
+Each flag overrides an environment variable, also read from a `.env` file in the working directory: `--port` (`PORT`, default 8081), `--host` (`BIND_HOST`, default this machine only; the server has no authentication, so only pass `0.0.0.0` or another network address on a network you trust, e.g. inside a container), `--mode` (`MODE`: `fs` or `git`, default `fs`), `--dir` (`GIT_REPO_DIRECTORY`, default the current directory), `--origin` (`ORIGIN`, the CMS origin allowed to call the server, default localhost) and `--log-level` (`LOG_LEVEL`, default `info`).
 
 To mount the proxy endpoints on your own Express app instead:
 
