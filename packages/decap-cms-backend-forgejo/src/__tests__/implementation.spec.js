@@ -472,6 +472,7 @@ describe('forgejo backend implementation', () => {
             useWorkflow: true,
             API: {
               forkExists: mockForkExists,
+              findUserFork: jest.fn().mockResolvedValue(undefined),
               createFork: mockCreateFork,
               mergeUpstream: mockMergeUpstream,
             },
@@ -524,6 +525,46 @@ describe('forgejo backend implementation', () => {
         expect(forgejoImplementation.useOpenAuthoring).toBe(true);
         expect(mockMergeUpstream).toHaveBeenCalled();
         expect(mockCreateFork).not.toHaveBeenCalled();
+      });
+
+      it('should use an existing fork with a different name', async () => {
+        const mockForkExists = jest.fn().mockResolvedValue(false);
+        const mockFindUserFork = jest
+          .fn()
+          .mockResolvedValue({ full_name: 'contributor/renamed-repo' });
+        const mockMergeUpstream = jest.fn().mockResolvedValue(undefined);
+        const mockCreateFork = jest.fn();
+        const getPermissionToFork = jest.fn();
+
+        const forgejoImplementation = new ForgejoImplementation(
+          {
+            ...config,
+            backend: { ...config.backend, open_authoring: true },
+          },
+          {
+            useWorkflow: true,
+            API: {
+              forkExists: mockForkExists,
+              findUserFork: mockFindUserFork,
+              mergeUpstream: mockMergeUpstream,
+              createFork: mockCreateFork,
+            },
+          },
+        );
+
+        forgejoImplementation.userIsOriginMaintainer = jest.fn().mockResolvedValue(false);
+        forgejoImplementation.currentUser = jest.fn().mockResolvedValue({ login: 'contributor' });
+
+        await forgejoImplementation.authenticateWithFork({
+          userData: { token: 'token' },
+          getPermissionToFork,
+        });
+
+        expect(forgejoImplementation.repo).toBe('contributor/renamed-repo');
+        expect(forgejoImplementation.useOpenAuthoring).toBe(true);
+        expect(mockMergeUpstream).toHaveBeenCalled();
+        expect(mockCreateFork).not.toHaveBeenCalled();
+        expect(getPermissionToFork).not.toHaveBeenCalled();
       });
     });
   });
