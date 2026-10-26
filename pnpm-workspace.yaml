@@ -272,7 +272,7 @@ catalog:
 
 overrides:
   clean-stack: 5.2.0
-  'copy-webpack-plugin@10.2.4>serialize-javascript': 7.0.5
+  'copy-webpack-plugin@10.2.4>serialize-javascript': 7.1.3
   'nx@17.3.0>minimatch': 9.0.9
   # Security fixes for transitive dependencies that their parents pin or cap
   # below the patched release. Each selector matches only the vulnerable range,
