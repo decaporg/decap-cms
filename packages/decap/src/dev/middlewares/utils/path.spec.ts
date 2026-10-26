@@ -57,4 +57,10 @@ describe('the .git directory', () => {
     expect(isGitDirSegment('.git')).toBe(true);
     expect(isGitDirSegment('.gitkeep')).toBe(false);
   });
+
+  it('checks long segments in linear time', () => {
+    const started = Date.now();
+    expect(isGitDirSegment(`.git${' '.repeat(100000)}x`)).toBe(false);
+    expect(Date.now() - started).toBeLessThan(1000);
+  });
 });

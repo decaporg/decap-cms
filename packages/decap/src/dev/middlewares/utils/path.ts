@@ -12,8 +12,12 @@ const gitPathMessage = "Path must not point into the repository's .git directory
  */
 export function isGitDirSegment(segment: string) {
   const name = segment.toLowerCase();
+  // Anchored at both ends with a single character class, so these stay linear
+  // on long segments (a `[. ]+$` search backtracks on runs of spaces).
   return (
-    name.replace(/[. ]+$/, '') === '.git' || name.startsWith('.git:') || /^git~\d+$/.test(name)
+    (name.startsWith('.git') && /^[. ]*$/.test(name.slice(4))) ||
+    name.startsWith('.git:') ||
+    /^git~\d+$/.test(name)
   );
 }
 
