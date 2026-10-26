@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.7.5](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-relation@3.7.4...decap-cms-widget-relation@3.7.5) (2026-10-26)
+
+### Bug Fixes
+
+- **relation:** match filters against multiple-value fields ([#8006](https://github.com/decaporg/decap-cms/issues/8006)) ([cf80980](https://github.com/decaporg/decap-cms/commit/cf80980203de1e80325096a2f31ae41f99863a0e)), closes [#8005](https://github.com/decaporg/decap-cms/issues/8005)
+
 ## [3.7.4](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-relation@3.7.3...decap-cms-widget-relation@3.7.4) (2026-10-14)
 
 **Note:** Version bump only for package decap-cms-widget-relation

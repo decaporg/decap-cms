@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.20.2](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.20.1...decap-cms-core@3.20.2) (2026-10-26)
+
+### Bug Fixes
+
+- **core:** add min and max to relation field types ([#8034](https://github.com/decaporg/decap-cms/issues/8034)) ([3eb4401](https://github.com/decaporg/decap-cms/commit/3eb44011911e203b223f57f3e83496c84f9802d3)), closes [#6800](https://github.com/decaporg/decap-cms/issues/6800)
+- **core:** allow uppercase characters in nested collection meta path ([#8007](https://github.com/decaporg/decap-cms/issues/8007)) ([3071551](https://github.com/decaporg/decap-cms/commit/307155155c865f322ba3c36fdbdacb2ea7bcc349)), closes [#7461](https://github.com/decaporg/decap-cms/issues/7461)
+- **core:** never evaluate JavaScript front matter ([a2b0ae1](https://github.com/decaporg/decap-cms/commit/a2b0ae1539d35129b530c43ff4fd957de2656841))
+- **core:** preserve full entries returned by preSave handlers ([#7989](https://github.com/decaporg/decap-cms/issues/7989)) ([3d0f655](https://github.com/decaporg/decap-cms/commit/3d0f6550bb699776da72a3c0c550c4f908d5f7e4)), closes [#7966](https://github.com/decaporg/decap-cms/issues/7966)
+- place slug collision suffix before collection path ([#8000](https://github.com/decaporg/decap-cms/issues/8000)) ([9155f27](https://github.com/decaporg/decap-cms/commit/9155f271ea47a000a275f869acf16020c8cd3f99))
+- several small issues ([#8043](https://github.com/decaporg/decap-cms/issues/8043)) ([70d8e25](https://github.com/decaporg/decap-cms/commit/70d8e2560fc424f220a957a5c35a8161bd173bed)), closes [#2209](https://github.com/decaporg/decap-cms/issues/2209) [#3562](https://github.com/decaporg/decap-cms/issues/3562) [#3622](https://github.com/decaporg/decap-cms/issues/3622) [#3828](https://github.com/decaporg/decap-cms/issues/3828) [#4753](https://github.com/decaporg/decap-cms/issues/4753) [#5125](https://github.com/decaporg/decap-cms/issues/5125) [#6215](https://github.com/decaporg/decap-cms/issues/6215) [#7105](https://github.com/decaporg/decap-cms/issues/7105) [#7203](https://github.com/decaporg/decap-cms/issues/7203)
+
 ## [3.20.1](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.20.0...decap-cms-core@3.20.1) (2026-10-14)
 
 **Note:** Version bump only for package decap-cms-core

@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.6.6](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-list@3.6.5...decap-cms-widget-list@3.6.6) (2026-10-26)
+
+### Bug Fixes
+
+- **widget-list:** restore controls for erroneous typed items ([#7988](https://github.com/decaporg/decap-cms/issues/7988)) ([65df768](https://github.com/decaporg/decap-cms/commit/65df768cfb71c78a92d66e09c8805edb54c126fd)), closes [#7973](https://github.com/decaporg/decap-cms/issues/7973)
+
 ## [3.6.5](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-list@3.6.4...decap-cms-widget-list@3.6.5) (2026-10-14)
 
 **Note:** Version bump only for package decap-cms-widget-list
