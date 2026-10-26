@@ -2,7 +2,7 @@
 
 > **Beta.** The configuration and behaviour of this package may change in a minor release. It will be replaced by a media library rebuilt inside Decap CMS core, and this package retired; the migration will be documented when that ships. Your files live in your own bucket and inserted URLs point at your public domain, so neither depends on this package.
 
-A media library for sites on [Decap Turbo](https://decapcms.org/docs/turbo-overview/) that stores uploads in an S3-compatible bucket: AWS S3, Cloudflare R2, Neon Object Storage, Bunny Storage, Backblaze B2, DigitalOcean Spaces, Wasabi, MinIO and others. Requests go through Turbo's `integrations` edge function, which signs them with the site's credentials, so storage credentials never reach the browser.
+A media library for sites on [Decap Turbo](https://decapcms.org/docs/turbo-overview/) that stores uploads in any S3-compatible bucket. Requests go through Turbo's `integrations` edge function, which signs them with the site's credentials, so storage credentials never reach the browser.
 
 Requires the `turbo-github` or `turbo-gitlab` backend and a Turbo plan with the media library (Pro and above). Product documentation: [Media library](https://decapcms.org/docs/turbo-media-proxy/).
 
@@ -14,16 +14,18 @@ On the site's **Variables** tab in Turbo, not in `config.yml`:
 
 | Key | Secret | Value |
 |---|---|---|
-| `s3_endpoint` | No | S3 API endpoint, e.g. `https://<account-id>.r2.cloudflarestorage.com` or `https://s3.<region>.amazonaws.com` |
-| `s3_region` | No | Region to sign for; `auto` for R2 |
+| `s3_endpoint` | No | Your provider's S3 API endpoint |
+| `s3_region` | No | Region to sign requests for |
 | `s3_bucket` | No | Bucket name |
 | `s3_access_key_id` | No | Access key ID |
 | `s3_secret_access_key` | Yes | Secret access key |
-| `s3_force_path_style` | No | `true` for most providers, including R2, Bunny, MinIO and Neon; `false` usually works on AWS |
+| `s3_force_path_style` | No | `true` to address the bucket in the URL path instead of the host name, which most providers other than AWS need |
+
+The values for some common providers are in [Provider settings](https://decapcms.org/docs/turbo-media-proxy/#provider-settings). Any other S3-compatible provider works the same way: look up its S3 API endpoint, region and addressing style in its documentation.
 
 ### 2. A public URL for the bucket
 
-Buckets are private by default, and this library does not generate presigned URLs for viewing. Serve the bucket publicly through public read access, a custom domain (for example an R2 custom domain) or a CDN, and use that address as `public_url_prefix`.
+Buckets are private by default, and this library does not generate presigned URLs for viewing. Serve the bucket publicly through public read access, a custom domain or a CDN, and use that address as `public_url_prefix`.
 
 ### 3. `config.yml`
 
@@ -91,7 +93,7 @@ Source: `src/index.js` (entry, context resolution), `src/api/client.ts` (HTTP an
 pnpm exec jest packages/decap-cms-media-library-s3
 ```
 
-When changing the client or the `s3` adapter, test browse (including a listing over 1,000 keys), upload at `max_file_size`, single and multiple insert, delete, and the error paths above against at least Cloudflare R2 (`s3_region: auto`) and a path-style provider such as MinIO or Neon Object Storage. When reporting an issue, include the browser, the redacted media config, and the response from `/functions/v1/integrations/s3/*`.
+When changing the client or the `s3` adapter, test browse (including a listing over 1,000 keys), upload at `max_file_size`, single and multiple insert, delete, and the error paths above against at least Cloudflare R2 (`s3_region: auto`) and a path-style provider such as MinIO. When reporting an issue, include the browser, the redacted media config, and the response from `/functions/v1/integrations/s3/*`.
 
 ## License
 
