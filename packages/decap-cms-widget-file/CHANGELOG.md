@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.5.7](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-file@3.5.6...decap-cms-widget-file@3.5.7) (2026-10-26)
+
+### Bug Fixes
+
+- **widget-file:** download unsaved media instead of opening it ([9e1e68a](https://github.com/decaporg/decap-cms/commit/9e1e68aef81b8e709062e15801f2403e6f66542c))
+
 ## [3.5.6](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-file@3.5.5...decap-cms-widget-file@3.5.6) (2026-10-26)
 
 **Note:** Version bump only for package decap-cms-widget-file
