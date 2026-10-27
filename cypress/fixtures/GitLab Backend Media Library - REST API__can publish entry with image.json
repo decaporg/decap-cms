@@ -1030,7 +1030,7 @@
   },
   {
     "method": "PUT",
-    "url": "/api/v4/projects/owner%2Frepo/merge_requests/1/merge?merge_commit_message=Automatically generated. Merged on Decap CMS.&squash_commit_message=Automatically generated. Merged on Decap CMS.&squash=false&should_remove_source_branch=true",
+    "url": "/api/v4/projects/owner%2Frepo/merge_requests/1/merge?merge_commit_message=Automatically generated. Merged on Decap CMS.&squash_commit_message=Automatically generated. Merged on Decap CMS.&squash=false&should_remove_source_branch=true&sha=8608f9d8f1b9670783eeef2bdfcd12a6d86bf25c",
     "headers": {
       "Content-Type": "application/json",
       "Connection": "keep-alive",

@@ -225,6 +225,8 @@ declare module 'decap-cms-core' {
     file?: string;
     display_fields?: string[];
     multiple?: boolean;
+    min?: number;
+    max?: number;
     options_length?: number;
 
     /**

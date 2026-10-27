@@ -27,4 +27,13 @@ describe('runDevServer', () => {
       await new Promise<void>(resolve => blocker.close(() => resolve()));
     }
   });
+
+  it('listens on this machine only unless a host is given', async () => {
+    const server = await runDevServer({ port: 0, logLevel: 'error' });
+    try {
+      expect(server.address()).toMatchObject({ address: '127.0.0.1' });
+    } finally {
+      await new Promise<void>(resolve => server.close(() => resolve()));
+    }
+  });
 });
