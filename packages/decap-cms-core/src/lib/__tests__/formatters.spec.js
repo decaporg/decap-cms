@@ -428,6 +428,60 @@ describe('formatters', () => {
         ),
       ).toBe('--/dir/post-title.en');
     });
+
+    describe('localize filter', () => {
+      const collection = Map({ slug: '{{year}}-{{title | localize}}' });
+      const entryData = Map({ title: 'My Item', date: '2020-01-01' });
+
+      it('should ignore the filter without locale data', () => {
+        selectIdentifier.mockReturnValue('title');
+
+        expect(slugFormatter(collection, entryData, slugConfig)).toBe('2020-my-item');
+      });
+
+      it('should use the locale value for localized tags only', () => {
+        selectIdentifier.mockReturnValue('title');
+
+        expect(
+          slugFormatter(
+            Map({ slug: '{{title | localize}}-{{fields.code}}' }),
+            Map({ title: 'My Item', code: 'abc' }),
+            slugConfig,
+            Map({ title: 'Mi Artículo', code: 'xyz' }),
+          ),
+        ).toBe('mi-artículo-abc');
+      });
+
+      it('should fall back to the default value when the translation is empty', () => {
+        selectIdentifier.mockReturnValue('title');
+
+        expect(slugFormatter(collection, entryData, slugConfig, Map({ title: '' }))).toBe(
+          '2020-my-item',
+        );
+        expect(slugFormatter(collection, entryData, slugConfig, Map({}))).toBe('2020-my-item');
+      });
+
+      it('should localize the identifier and explicit fields', () => {
+        selectIdentifier.mockReturnValue('title');
+
+        expect(
+          slugFormatter(
+            Map({ slug: '{{slug | localize}}' }),
+            Map({ title: 'My Item' }),
+            slugConfig,
+            Map({ title: 'Mein Artikel' }),
+          ),
+        ).toBe('mein-artikel');
+        expect(
+          slugFormatter(
+            Map({ slug: '{{fields.meta.slug | localize}}' }),
+            fromJS({ title: 'My Item', meta: { slug: 'my-item' } }),
+            slugConfig,
+            fromJS({ meta: { slug: 'mon-article' } }),
+          ),
+        ).toBe('mon-article');
+      });
+    });
   });
 
   describe('getSlugFormatter', () => {

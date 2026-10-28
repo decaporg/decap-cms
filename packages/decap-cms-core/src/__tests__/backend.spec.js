@@ -1146,6 +1146,210 @@ describe('Backend', () => {
     });
   });
 
+  describe('localized i18n slugs', () => {
+    const config = { backend: { name: 'github' } };
+
+    function collection(slug = '{{title | localize}}') {
+      return fromJS({
+        name: 'posts',
+        type: FOLDER,
+        folder: 'posts',
+        create: true,
+        slug,
+        fields: [{ name: 'title', i18n: 'translate' }],
+        i18n: { structure: 'multiple_folders', locales: ['en', 'es', 'de'], default_locale: 'en' },
+      });
+    }
+
+    function notFound() {
+      return Promise.reject(Object.assign(new Error('Not Found'), { status: 404 }));
+    }
+
+    function setup(files = {}) {
+      const { sanitizeSlug, sanitizeChar } = require('../lib/urlHelper');
+      sanitizeSlug.mockImplementation(value => value.replace(/\s+/g, '-'));
+      sanitizeChar.mockReturnValue('-');
+
+      const implementation = {
+        init: jest.fn(() => implementation),
+        getEntry: jest.fn(path =>
+          files[path] ? Promise.resolve({ data: files[path], file: { path } }) : notFound(),
+        ),
+        allEntriesByFolder: jest.fn(() =>
+          Promise.resolve(Object.entries(files).map(([path, data]) => ({ data, file: { path } }))),
+        ),
+        persistEntry: jest.fn().mockResolvedValue(),
+      };
+      const backend = new Backend(implementation, { config, backendName: 'github' });
+      backend.currentUser = jest.fn().mockResolvedValue({ login: 'login', name: 'name' });
+      backend.invokePreSaveEvent = jest.fn(entry => Promise.resolve(entry));
+      return { implementation, backend };
+    }
+
+    function persistedFiles(implementation) {
+      const [[{ dataFiles }]] = implementation.persistEntry.mock.calls;
+      return dataFiles.map(({ path, raw }) => ({ path, raw }));
+    }
+
+    it('names each locale file after its translated title, falling back to the default', async () => {
+      const { implementation, backend } = setup();
+      const entryDraft = fromJS({
+        entry: {
+          newRecord: true,
+          data: { title: 'My item' },
+          i18n: { es: { data: { title: 'Mi artículo' } }, de: { data: { title: '' } } },
+        },
+      });
+
+      await expect(
+        backend.persistEntry({ config, collection: collection(), entryDraft, assetProxies: [] }),
+      ).resolves.toBe('my-item');
+
+      expect(persistedFiles(implementation)).toEqual([
+        {
+          path: 'posts/en/my-item.md',
+          raw: '---\ntitle: My item\ntranslationKey: my-item\n---\n',
+        },
+        {
+          path: 'posts/es/mi-artículo.md',
+          raw: '---\ntitle: Mi artículo\ntranslationKey: my-item\n---\n',
+        },
+        {
+          path: 'posts/de/my-item.md',
+          raw: '---\ntitle: ""\ntranslationKey: my-item\n---\n',
+        },
+      ]);
+    });
+
+    it('keeps the slug shared by all locales without the localize filter', async () => {
+      const { implementation, backend } = setup();
+      const entryDraft = fromJS({
+        entry: {
+          newRecord: true,
+          data: { title: 'My item' },
+          i18n: { es: { data: { title: 'Mi artículo' } } },
+        },
+      });
+
+      await backend.persistEntry({
+        config,
+        collection: collection('{{title}}'),
+        entryDraft,
+        assetProxies: [],
+      });
+
+      expect(persistedFiles(implementation)).toEqual([
+        { path: 'posts/en/my-item.md', raw: '---\ntitle: My item\n---\n' },
+        { path: 'posts/es/my-item.md', raw: '---\ntitle: Mi artículo\n---\n' },
+      ]);
+    });
+
+    it("adds a suffix when the localized path holds another entry's translation", async () => {
+      const { implementation, backend } = setup({
+        'posts/es/mi-artículo.md': '---\ntitle: Mi artículo\ntranslationKey: other\n---\n',
+      });
+      const entryDraft = fromJS({
+        entry: {
+          newRecord: true,
+          data: { title: 'My item' },
+          i18n: { es: { data: { title: 'Mi artículo' } } },
+        },
+      });
+
+      await backend.persistEntry({
+        config,
+        collection: collection(),
+        entryDraft,
+        assetProxies: [],
+      });
+
+      expect(persistedFiles(implementation).map(file => file.path)).toEqual([
+        'posts/en/my-item.md',
+        'posts/es/mi-artículo-1.md',
+      ]);
+    });
+
+    it('keeps the files an existing entry has and names a new translation', async () => {
+      const { implementation, backend } = setup({
+        // Written by an earlier save, after the entry was loaded.
+        'posts/de/mein-artikel.md': '---\ntitle: Mein Artikel\ntranslationKey: hello\n---\n',
+      });
+      const entryDraft = fromJS({
+        entry: {
+          newRecord: false,
+          slug: 'hello',
+          path: 'posts/hello.md',
+          data: { title: 'Hello', translationKey: 'hello' },
+          i18n: {
+            es: { data: { title: 'Hola de nuevo' } },
+            de: { data: { title: 'Mein Artikel' } },
+          },
+          i18nLocales: ['en', 'es'],
+          i18nPaths: { es: 'posts/es/hola.md' },
+        },
+      });
+
+      await backend.persistEntry({
+        config,
+        collection: collection(),
+        entryDraft,
+        assetProxies: [],
+      });
+
+      expect(persistedFiles(implementation).map(file => file.path)).toEqual([
+        'posts/en/hello.md',
+        'posts/es/hola.md',
+        'posts/de/mein-artikel.md',
+      ]);
+    });
+
+    it('keeps a translation found at the default path', async () => {
+      const { implementation, backend } = setup();
+      const entryDraft = fromJS({
+        entry: {
+          newRecord: false,
+          slug: 'hello',
+          path: 'posts/hello.md',
+          data: { title: 'Hello' },
+          i18n: { es: { data: { title: 'Hola' } } },
+          i18nLocales: ['en', 'es'],
+        },
+      });
+
+      await backend.persistEntry({
+        config,
+        collection: collection(),
+        entryDraft,
+        assetProxies: [],
+      });
+
+      expect(persistedFiles(implementation)).toEqual([
+        { path: 'posts/en/hello.md', raw: '---\ntitle: Hello\ntranslationKey: hello\n---\n' },
+        { path: 'posts/es/hello.md', raw: '---\ntitle: Hola\ntranslationKey: hello\n---\n' },
+      ]);
+    });
+
+    it('loads translations from their localized paths', async () => {
+      const { backend } = setup({
+        'posts/en/hello.md': '---\ntitle: Hello\ntranslationKey: hello\n---\n',
+        'posts/es/hola.md': '---\ntitle: Hola\ntranslationKey: hello\n---\n',
+        'posts/de/hello.md': '---\ntitle: Hallo\n---\n',
+      });
+      backend.processEntry = jest.fn((state, collection, entry) => entry);
+
+      const entry = await backend.getEntry({}, collection(), 'hello');
+
+      expect(entry.slug).toBe('hello');
+      expect(entry.data).toEqual({ title: 'Hello', translationKey: 'hello' });
+      expect(entry.i18n).toEqual({
+        es: { data: { title: 'Hola', translationKey: 'hello' } },
+        de: { data: { title: 'Hallo' } },
+      });
+      expect(entry.i18nLocales).toEqual(['en', 'de', 'es']);
+      expect(entry.i18nPaths).toEqual({ es: 'posts/es/hola.md' });
+    });
+  });
+
   describe('extractSearchFields', () => {
     it('should extract slug', () => {
       expect(extractSearchFields(['slug'])({ slug: 'entry-slug', data: {} })).toEqual(
