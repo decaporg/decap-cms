@@ -742,8 +742,8 @@ catalogs:
       specifier: ^4.0.1
       version: 4.0.1
     uuid:
-      specifier: ^8.3.2
-      version: 8.3.2
+      specifier: ^14.0.0
+      version: 14.0.3
     vfile-location:
       specifier: ^2.0.6
       version: 2.0.6
@@ -1452,7 +1452,7 @@ importers:
         version: 2.2.0(immutable@4.3.9)
       uuid:
         specifier: 'catalog:'
-        version: 8.3.2
+        version: 14.0.3
 
   packages/decap-cms-backend-aws-cognito-github-proxy:
     dependencies:
@@ -1893,7 +1893,7 @@ importers:
         version: 19.2.0
       uuid:
         specifier: 'catalog:'
-        version: 8.3.2
+        version: 14.0.3
 
   packages/decap-cms-backend-turbo-github:
     dependencies:
@@ -2157,7 +2157,7 @@ importers:
         version: 4.0.1
       uuid:
         specifier: 'catalog:'
-        version: 8.3.2
+        version: 14.0.3
       what-input:
         specifier: 'catalog:'
         version: 5.2.12
@@ -2212,7 +2212,7 @@ importers:
         version: 2.2.0(immutable@4.3.9)
       uuid:
         specifier: 'catalog:'
-        version: 8.3.2
+        version: 14.0.3
 
   packages/decap-cms-editor-component-image:
     dependencies:
@@ -2237,7 +2237,7 @@ importers:
         version: 4.18.1
       uuid:
         specifier: 'catalog:'
-        version: 8.3.2
+        version: 14.0.3
 
   packages/decap-cms-lib-turbo:
     dependencies:
@@ -2339,7 +2339,7 @@ importers:
         version: 1.7.2(uploadcare-widget@3.23.3)
       uuid:
         specifier: 'catalog:'
-        version: 8.3.2
+        version: 14.0.3
 
   packages/decap-cms-ui-auth:
     dependencies:
@@ -2462,7 +2462,7 @@ importers:
         version: 5.10.2(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       uuid:
         specifier: 'catalog:'
-        version: 8.3.2
+        version: 14.0.3
 
   packages/decap-cms-widget-colorstring:
     dependencies:
@@ -2555,7 +2555,7 @@ importers:
         version: 2.2.0(immutable@4.3.9)
       uuid:
         specifier: 'catalog:'
-        version: 8.3.2
+        version: 14.0.3
 
   packages/decap-cms-widget-image:
     dependencies:
@@ -2627,7 +2627,7 @@ importers:
         version: 2.2.0(immutable@4.3.9)
       uuid:
         specifier: 'catalog:'
-        version: 8.3.2
+        version: 14.0.3
 
   packages/decap-cms-widget-map:
     dependencies:
@@ -2865,7 +2865,7 @@ importers:
         version: 1.8.11(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       uuid:
         specifier: 'catalog:'
-        version: 8.3.2
+        version: 14.0.3
 
   packages/decap-cms-widget-richtext:
     dependencies:
@@ -12922,6 +12922,10 @@ packages:
   utils-merge@1.0.1:
     resolution: {integrity: sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==}
     engines: {node: '>= 0.4.0'}
+
+  uuid@14.0.3:
+    resolution: {integrity: sha512-Sc5u1VVln93y1Xnz4R+CunOZc7R9LUcTmhj7Rc7Eg3HVcf7rVn2FOoa812fe0W8p3jD7xeoGSYbfqCGGH2B6xw==}
+    hasBin: true
 
   uuid@8.3.2:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
@@ -25523,6 +25527,8 @@ snapshots:
       which-typed-array: 1.1.19
 
   utils-merge@1.0.1: {}
+
+  uuid@14.0.3: {}
 
   uuid@8.3.2: {}
 
