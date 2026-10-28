@@ -52,14 +52,14 @@ const StyledP = styled.p`
 
 const StyledBlockQuote = styled.blockquote`
   padding-left: 16px;
-  border-left: 3px solid ${colors.background};
+  border-left: 3px solid ${colors.accentBackground};
   margin-left: 0;
   margin-right: 0;
   margin-bottom: ${bottomMargin};
 `;
 
 const StyledCode = styled.code`
-  background-color: ${colors.background};
+  background-color: ${colors.accentBackground};
   border-radius: ${lengths.borderRadius};
   padding: 0 2px;
   font-size: 85%;

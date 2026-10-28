@@ -2,7 +2,7 @@ import { Component } from 'react';
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
 
-import { colorsRaw } from './styles.js';
+import { colors } from './styles.js';
 import Icon from './Icon';
 
 const GoBackButtonStyle = styled.a`
@@ -16,7 +16,7 @@ const GoBackButtonStyle = styled.a`
 `;
 
 const ButtonText = styled.p`
-  color: ${colorsRaw.gray};
+  color: ${colors.text};
   margin: 0 10px;
 `;
 

@@ -7,7 +7,6 @@ import {
   buttons,
   shadows,
   colors,
-  colorsRaw,
   lengths,
   zIndex,
 } from 'decap-cms-ui-default';
@@ -30,7 +29,7 @@ const AuthForm = styled.form`
 `;
 
 const AuthInput = styled.input`
-  background-color: ${colorsRaw.white};
+  background-color: ${colors.foreground};
   border-radius: ${lengths.borderRadius};
 
   font-size: 14px;

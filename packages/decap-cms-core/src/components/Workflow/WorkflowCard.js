@@ -105,8 +105,8 @@ const CardButtonContainer = styled.div`
 
 const DeleteButton = styled.button`
   ${styles.button};
-  background-color: ${colorsRaw.redLight};
-  color: ${colorsRaw.red};
+  background-color: ${colors.errorBackground};
+  color: ${colors.errorText};
 `;
 
 const PublishButton = styled.button`

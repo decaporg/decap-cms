@@ -11,7 +11,7 @@ exports[`ListControl should add to list when add button is clicked 1`] = `
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  background-color: #dfdfe3;
+  background-color: var(--decap-color-text-field-border, #dfdfe3);
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -139,14 +139,14 @@ exports[`ListControl should add to list when add button is clicked 1`] = `
 }
 
 .emotion-17 {
-  background-color: #dfdfe3;
+  background-color: var(--decap-color-text-field-border, #dfdfe3);
 }
 
 .emotion-19 {
   display: none;
   border-top: 0;
   color: inherit;
-  background-color: #dfdfe3;
+  background-color: var(--decap-color-text-field-border, #dfdfe3);
   padding: 13px;
   border-radius: 0 0 5px 5px;
 }
@@ -264,7 +264,7 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  background-color: #dfdfe3;
+  background-color: var(--decap-color-text-field-border, #dfdfe3);
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -392,14 +392,14 @@ exports[`ListControl should remove from list when remove button is clicked 1`] =
 }
 
 .emotion-17 {
-  background-color: #dfdfe3;
+  background-color: var(--decap-color-text-field-border, #dfdfe3);
 }
 
 .emotion-19 {
   display: none;
   border-top: 0;
   color: inherit;
-  background-color: #dfdfe3;
+  background-color: var(--decap-color-text-field-border, #dfdfe3);
   padding: 13px;
   border-radius: 0 0 5px 5px;
 }
@@ -547,7 +547,7 @@ exports[`ListControl should remove from list when remove button is clicked 2`] =
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  background-color: #dfdfe3;
+  background-color: var(--decap-color-text-field-border, #dfdfe3);
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -675,14 +675,14 @@ exports[`ListControl should remove from list when remove button is clicked 2`] =
 }
 
 .emotion-17 {
-  background-color: #dfdfe3;
+  background-color: var(--decap-color-text-field-border, #dfdfe3);
 }
 
 .emotion-19 {
   display: block;
   border-top: 0;
   color: inherit;
-  background-color: #dfdfe3;
+  background-color: var(--decap-color-text-field-border, #dfdfe3);
   padding: 13px;
   border-radius: 0 0 5px 5px;
 }
@@ -813,7 +813,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  background-color: #dfdfe3;
+  background-color: var(--decap-color-text-field-border, #dfdfe3);
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -941,14 +941,14 @@ exports[`ListControl should render list with fields with collapse = "false" and 
 }
 
 .emotion-17 {
-  background-color: #dfdfe3;
+  background-color: var(--decap-color-text-field-border, #dfdfe3);
 }
 
 .emotion-19 {
   display: none;
   border-top: 0;
   color: inherit;
-  background-color: #dfdfe3;
+  background-color: var(--decap-color-text-field-border, #dfdfe3);
   padding: 13px;
   border-radius: 0 0 5px 5px;
 }
@@ -1096,7 +1096,7 @@ exports[`ListControl should render list with fields with collapse = "false" and 
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  background-color: #dfdfe3;
+  background-color: var(--decap-color-text-field-border, #dfdfe3);
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -1224,14 +1224,14 @@ exports[`ListControl should render list with fields with collapse = "false" and 
 }
 
 .emotion-17 {
-  background-color: #dfdfe3;
+  background-color: var(--decap-color-text-field-border, #dfdfe3);
 }
 
 .emotion-19 {
   display: none;
   border-top: 0;
   color: inherit;
-  background-color: #dfdfe3;
+  background-color: var(--decap-color-text-field-border, #dfdfe3);
   padding: 13px;
   border-radius: 0 0 5px 5px;
 }
@@ -1379,7 +1379,7 @@ exports[`ListControl should render list with fields with default collapse ("true
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  background-color: #dfdfe3;
+  background-color: var(--decap-color-text-field-border, #dfdfe3);
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -1507,14 +1507,14 @@ exports[`ListControl should render list with fields with default collapse ("true
 }
 
 .emotion-17 {
-  background-color: #dfdfe3;
+  background-color: var(--decap-color-text-field-border, #dfdfe3);
 }
 
 .emotion-19 {
   display: block;
   border-top: 0;
   color: inherit;
-  background-color: #dfdfe3;
+  background-color: var(--decap-color-text-field-border, #dfdfe3);
   padding: 13px;
   border-radius: 0 0 5px 5px;
 }
@@ -1666,7 +1666,7 @@ exports[`ListControl should render list with fields with default collapse ("true
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  background-color: #dfdfe3;
+  background-color: var(--decap-color-text-field-border, #dfdfe3);
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -1849,7 +1849,7 @@ exports[`ListControl should render list with nested object 1`] = `
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  background-color: #dfdfe3;
+  background-color: var(--decap-color-text-field-border, #dfdfe3);
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -1977,14 +1977,14 @@ exports[`ListControl should render list with nested object 1`] = `
 }
 
 .emotion-17 {
-  background-color: #dfdfe3;
+  background-color: var(--decap-color-text-field-border, #dfdfe3);
 }
 
 .emotion-19 {
   display: block;
   border-top: 0;
   color: inherit;
-  background-color: #dfdfe3;
+  background-color: var(--decap-color-text-field-border, #dfdfe3);
   padding: 13px;
   border-radius: 0 0 5px 5px;
 }
@@ -2136,7 +2136,7 @@ exports[`ListControl should render list with nested object with collapse = false
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  background-color: #dfdfe3;
+  background-color: var(--decap-color-text-field-border, #dfdfe3);
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -2264,14 +2264,14 @@ exports[`ListControl should render list with nested object with collapse = false
 }
 
 .emotion-17 {
-  background-color: #dfdfe3;
+  background-color: var(--decap-color-text-field-border, #dfdfe3);
 }
 
 .emotion-19 {
   display: none;
   border-top: 0;
   color: inherit;
-  background-color: #dfdfe3;
+  background-color: var(--decap-color-text-field-border, #dfdfe3);
   padding: 13px;
   border-radius: 0 0 5px 5px;
 }
