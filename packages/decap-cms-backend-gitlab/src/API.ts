@@ -60,6 +60,7 @@ export interface Config {
   initialWorkflowStatus: string;
   cmsLabelPrefix: string;
   useGraphQL?: boolean;
+  useWorkflow?: boolean;
   requestFunction?: (req: ApiRequest) => Promise<Response>;
 }
 
@@ -156,18 +157,14 @@ type GitLabMergeRequest = {
   sha: string;
 };
 
-type GitLabRepo = {
-  shared_with_groups: { group_access_level: number }[] | null;
-  permissions: {
-    project_access: { access_level: number } | null;
-    group_access: { access_level: number } | null;
-  };
+type GitLabMember = {
+  id: number;
+  access_level: number;
 };
 
 type GitLabBranch = {
   name: string;
-  developers_can_push: boolean;
-  developers_can_merge: boolean;
+  can_push: boolean;
   commit: {
     id: string;
   };
@@ -192,15 +189,6 @@ type GitLabCommit = {
   message: string;
 };
 
-export function getMaxAccess(groups: { group_access_level: number }[]) {
-  return groups.reduce((previous, current) => {
-    if (current.group_access_level > previous.group_access_level) {
-      return current;
-    }
-    return previous;
-  }, groups[0]);
-}
-
 function batch<T>(items: T[], maxPerBatch: number, action: (items: T[]) => void) {
   for (let index = 0; index < items.length; index = index + maxPerBatch) {
     const itemsSlice = items.slice(index, index + maxPerBatch);
@@ -220,6 +208,7 @@ export default class API {
   squashMerges: boolean;
   initialWorkflowStatus: string;
   cmsLabelPrefix: string;
+  useWorkflow: boolean;
   requestFunction?: (req: ApiRequest) => Promise<Response>;
 
   graphQLClient?: ApolloClient<NormalizedCacheObject>;
@@ -235,6 +224,7 @@ export default class API {
     this.squashMerges = config.squashMerges;
     this.initialWorkflowStatus = config.initialWorkflowStatus;
     this.cmsLabelPrefix = config.cmsLabelPrefix;
+    this.useWorkflow = config.useWorkflow || false;
     if (config.useGraphQL === true) {
       this.graphQLClient = this.getApolloClient();
     }
@@ -319,40 +309,41 @@ export default class API {
   user = () => this.requestJSON('/user');
 
   WRITE_ACCESS = 30;
-  MAINTAINER_ACCESS = 40;
 
-  hasWriteAccess = async () => {
-    const { shared_with_groups: sharedWithGroups, permissions }: GitLabRepo =
-      await this.requestJSON(this.repoURL);
+  hasWriteAccess = async (userId: number) => {
+    // Rejects when the project does not exist or the user cannot see it
+    await this.requestJSON(this.repoURL);
+    if (this.useWorkflow) {
+      // Developers can push the branches of entries and open their merge requests whatever
+      // protects the base branch. Publishing and media library changes still write to it.
+      return (await this.getMemberAccessLevel(userId)) >= this.WRITE_ACCESS;
+    }
+    // Without it, entries are committed to the branch itself
+    try {
+      const branch = await this.getDefaultBranch();
+      return branch.can_push;
+    } catch (e) {
+      console.log('Failed getting default branch', e);
+      return false;
+    }
+  };
 
-    const { project_access: projectAccess, group_access: groupAccess } = permissions;
-    if (projectAccess && projectAccess.access_level >= this.WRITE_ACCESS) {
-      return true;
+  // Access level GitLab applies to the user on the project, whatever grants it: membership of the
+  // project or of an ancestor group, or a group invited to either. Memberships awaiting approval
+  // are left out (`state` filter, Premium and Ultimate). 0 without any, or when the lookup fails.
+  getMemberAccessLevel = async (userId: number) => {
+    try {
+      const members: GitLabMember[] = await this.requestJSON({
+        url: `${this.repoURL}/members/all`,
+        params: { 'user_ids[]': userId, state: 'active' },
+      });
+      // Only trust the entry of the user, in case the server ignores the filter
+      const member = members.find(({ id }) => id === userId);
+      return member ? member.access_level : 0;
+    } catch (e) {
+      console.log('Failed getting project member', e);
+      return 0;
     }
-    if (groupAccess && groupAccess.access_level >= this.WRITE_ACCESS) {
-      return true;
-    }
-    // check for group write permissions
-    if (sharedWithGroups && sharedWithGroups.length > 0) {
-      const maxAccess = getMaxAccess(sharedWithGroups);
-      // maintainer access
-      if (maxAccess.group_access_level >= this.MAINTAINER_ACCESS) {
-        return true;
-      }
-      // developer access
-      if (maxAccess.group_access_level >= this.WRITE_ACCESS) {
-        // check permissions to merge and push
-        try {
-          const branch = await this.getDefaultBranch();
-          if (branch.developers_can_merge && branch.developers_can_push) {
-            return true;
-          }
-        } catch (e) {
-          console.log('Failed getting default branch', e);
-        }
-      }
-    }
-    return false;
   };
 
   readFile = async (

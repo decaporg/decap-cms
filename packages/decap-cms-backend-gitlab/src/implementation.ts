@@ -49,6 +49,7 @@ import type {
   UnpublishedEntryMediaFile,
   AsyncLock,
   ApiRequest,
+  APIError,
 } from 'decap-cms-lib-util';
 import type { Semaphore } from 'semaphore';
 
@@ -68,6 +69,7 @@ export default class GitLab implements Implementation {
     API: API | null;
     updateUserCredentials: (args: { token: string; refresh_token?: string }) => Promise<null>;
     initialWorkflowStatus: string;
+    useWorkflow?: boolean;
   };
   repo: string;
   isBranchConfigured: boolean;
@@ -164,12 +166,32 @@ export default class GitLab implements Implementation {
       squashMerges: this.squashMerges,
       cmsLabelPrefix: this.cmsLabelPrefix,
       initialWorkflowStatus: this.options.initialWorkflowStatus,
+      useWorkflow: this.options.useWorkflow,
       useGraphQL: this.useGraphQL,
       graphQLAPIRoot: this.graphQLAPIRoot,
       requestFunction: this.apiRequestFunction,
     });
     const user = await this.api.user();
-    const isCollab = await this.api.hasWriteAccess().catch((error: Error) => {
+    // Query the default branch name when the `branch` property is missing in the config file,
+    // before checking the access to it. A missing project is reported by `hasWriteAccess`.
+    if (!this.isBranchConfigured) {
+      const defaultBranchName = await getDefaultBranchName({
+        backend: 'gitlab',
+        repo: this.repo,
+        token: this.token,
+        apiRoot: this.apiRoot,
+      }).catch((error: APIError) => {
+        if (error.status === 404) {
+          return null;
+        }
+        throw error;
+      });
+      if (defaultBranchName) {
+        this.branch = defaultBranchName;
+        this.api.branch = defaultBranchName;
+      }
+    }
+    const isCollab = await this.api.hasWriteAccess(user.id).catch((error: Error) => {
       error.message = stripIndent`
         Repo "${this.repo}" not found.
 
@@ -185,17 +207,6 @@ export default class GitLab implements Implementation {
       throw new Error('Your GitLab user account does not have access to this repo.');
     }
 
-    if (!this.isBranchConfigured) {
-      const defaultBranchName = await getDefaultBranchName({
-        backend: 'gitlab',
-        repo: this.repo,
-        token: this.token,
-        apiRoot: this.apiRoot,
-      });
-      if (defaultBranchName) {
-        this.branch = defaultBranchName;
-      }
-    }
     this.destroyNotesPolling();
     this.notesApi = new GitLabNotesAPI(this.api);
     this.pollingManager = new NotesPollingManager(this.notesApi.asPollingAPI(), 15000);
