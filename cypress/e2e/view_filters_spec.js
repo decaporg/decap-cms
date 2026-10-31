@@ -18,6 +18,16 @@ const assertNotInEntries = text => {
   cy.get('[class*=ListCardLink] h2').contains(text).should('not.exist');
 };
 
+// dev-test/index.html seeds 15 listed blog posts: 12 carry a category and a featured flag,
+// the 3 front matter format posts carry neither. A 16th file has a .other extension and is
+// never listed. See dev-test/config.yml for the filters these names come from.
+const TOTAL = 15;
+const TUTORIALS = 5;
+const RELEASE_NOTES = 3;
+const FEATURED = 4;
+
+const FORMAT_POSTS = ['Front matter in YAML', 'Front matter in JSON', 'Front matter in TOML'];
+
 describe('View Filter', () => {
   before(() => {
     Cypress.config('defaultCommandTimeout', 4000);
@@ -34,38 +44,31 @@ describe('View Filter', () => {
 
   it('can apply string filter', () => {
     // enable filter
-    filter('Posts With Index');
+    filter('Tutorials');
 
-    assertEntriesCount(20);
-    for (let i = 1; i <= 20; i++) {
-      assertInEntries(`This is post # ${i} --`);
-    }
-    assertNotInEntries('This is a YAML front matter post');
-    assertNotInEntries('This is a JSON front matter post');
-    assertNotInEntries('This is a TOML front matter post');
+    assertEntriesCount(TUTORIALS);
+    assertInEntries('Modelling content with collections');
+    assertInEntries('A field guide to the relation widget');
+    FORMAT_POSTS.forEach(assertNotInEntries);
 
     // disable filter
-    filter('Posts With Index');
-    assertEntriesCount(23);
-    for (let i = 1; i <= 20; i++) {
-      assertInEntries(`This is post # ${i} --`);
-    }
-    assertInEntries('This is a YAML front matter post');
-    assertInEntries('This is a JSON front matter post');
-    assertInEntries('This is a TOML front matter post');
+    filter('Tutorials');
+    assertEntriesCount(TOTAL);
+    assertInEntries('Modelling content with collections');
+    FORMAT_POSTS.forEach(assertInEntries);
   });
 
   it('can apply multiple filters', () => {
     // enable filter
-    filter('Posts Without Index');
+    filter('Release Notes');
 
-    assertEntriesCount(3);
+    assertEntriesCount(RELEASE_NOTES);
+    assertInEntries('Decap CMS 3.8');
+    assertInEntries('Decap CMS 3.7');
+    assertInEntries('Decap CMS 3.6');
 
-    assertInEntries('This is a YAML front matter post');
-    assertInEntries('This is a JSON front matter post');
-    assertInEntries('This is a TOML front matter post');
-
-    filter('Posts With Index');
+    // a post has exactly one category, so combining two category filters matches nothing
+    filter('Tutorials');
 
     assertEntriesCount(0);
 
@@ -74,29 +77,20 @@ describe('View Filter', () => {
 
   it('can apply boolean filter', () => {
     // enable filter
-    filter('Relation Test');
+    filter('Featured');
 
-    assertEntriesCount(10);
-    for (let i = 1; i <= 20; i++) {
-      const inRelationTest = i % 2 !== 0;
-      if (inRelationTest) {
-        assertInEntries(`This is post # ${i} --`);
-      } else {
-        assertNotInEntries(`This is post # ${i} --`);
-      }
-    }
-    assertNotInEntries('This is a YAML front matter post');
-    assertNotInEntries('This is a JSON front matter post');
-    assertNotInEntries('This is a TOML front matter post');
+    assertEntriesCount(FEATURED);
+    assertInEntries('Modelling content with collections');
+    assertInEntries('Editorial workflow, end to end');
+    assertInEntries('Decap CMS 3.8');
+    assertInEntries('Running Decap on a large marketing site');
+    assertNotInEntries('A field guide to the relation widget');
+    FORMAT_POSTS.forEach(assertNotInEntries);
 
     // disable filter
-    filter('Relation Test');
-    assertEntriesCount(23);
-    for (let i = 1; i <= 20; i++) {
-      assertInEntries(`This is post # ${i} --`);
-    }
-    assertInEntries('This is a YAML front matter post');
-    assertInEntries('This is a JSON front matter post');
-    assertInEntries('This is a TOML front matter post');
+    filter('Featured');
+    assertEntriesCount(TOTAL);
+    assertInEntries('A field guide to the relation widget');
+    FORMAT_POSTS.forEach(assertInEntries);
   });
 });
