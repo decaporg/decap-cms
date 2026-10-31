@@ -1,6 +1,6 @@
 import DecapCmsWidgetObject from 'decap-cms-widget-object';
 
-import controlComponent from './ListControl';
+import controlComponent, { ObjectControlWrapper } from './ListControl';
 import schema from './schema';
 
 const previewComponent = DecapCmsWidgetObject.previewComponent;
@@ -15,5 +15,14 @@ function Widget(opts = {}) {
   };
 }
 
-export const DecapCmsWidgetList = { Widget, controlComponent, previewComponent };
+function ObjectWidget(opts = {}) {
+  return {
+    name: 'object',
+    controlComponent: ObjectControlWrapper,
+    previewComponent,
+    ...opts,
+  };
+}
+
+export const DecapCmsWidgetList = { Widget, controlComponent, previewComponent, ObjectWidget };
 export default DecapCmsWidgetList;
