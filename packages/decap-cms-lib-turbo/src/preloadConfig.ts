@@ -31,9 +31,22 @@ export function createPreloadConfig(backendName: string) {
     }
 
     const endpoint = (backend.turbo_config_url as string) || DEFAULT_CONFIG_ENDPOINT;
-    const response = await fetch(
-      `${endpoint}?site_id=${encodeURIComponent(backend.turbo_site_id as string)}`,
-    );
+    let response: Response;
+    try {
+      response = await fetch(
+        `${endpoint}?site_id=${encodeURIComponent(backend.turbo_site_id as string)}`,
+      );
+    } catch {
+      // This is the first request the CMS makes to a Turbo host, so when the
+      // page cannot connect out at all it fails here, and the browser's bare
+      // "Failed to fetch" sends people re-checking a turbo_site_id that is fine.
+      // Free Neocities sites, for one, send `connect-src 'self'`.
+      throw new Error(
+        `${backendName}: the browser could not reach Decap Turbo (${new URL(endpoint).origin}). ` +
+          "This usually means the site's Content-Security-Policy does not allow connecting " +
+          'to it (connect-src), or a browser extension or network filter blocked the request.',
+      );
+    }
 
     if (!response.ok) {
       const body = (await response.json().catch(() => ({}))) as { error?: string };

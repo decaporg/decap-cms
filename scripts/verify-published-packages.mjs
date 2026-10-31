@@ -47,7 +47,9 @@ const FETCH_RETRY_DELAY_MS = 2000;
 // npm accepts a publish before the version is readable, and the lag is per
 // package: in the 3.x.2 release one package took ~4 minutes to appear. Without
 // a settle window this gate reports a green publish as a failed release, and a
-// gate that cries wolf gets ignored.
+// gate that cries wolf gets ignored. Provenance lags the same way, after the
+// manifest: 3.17.0, 3.17.1 and 3.17.2 all went red on a package whose SLSA
+// attestation appeared minutes later.
 const PROPAGATION_SETTLE_MS = 10 * 60 * 1000;
 const PROPAGATION_POLL_MS = 15000;
 
@@ -197,7 +199,8 @@ function findPublishProtocolDependencies(manifest) {
 
 /**
  * The commit the registry's SLSA provenance says this version was built from,
- * or an issue string when there is none to read.
+ * or an issue string when there is none to read. `pending` marks the issue npm
+ * resolves on its own: the publish attestation is there but provenance isn't yet.
  */
 async function provenanceCommit(manifest, label) {
   const url = manifest.dist && manifest.dist.attestations && manifest.dist.attestations.url;
@@ -210,7 +213,7 @@ async function provenanceCommit(manifest, label) {
     attestation => attestation.predicateType === SLSA_PROVENANCE,
   );
   if (!provenance) {
-    return { issue: `attestations have no ${SLSA_PROVENANCE} entry` };
+    return { issue: `attestations have no ${SLSA_PROVENANCE} entry`, pending: true };
   }
 
   const statement = JSON.parse(
@@ -239,11 +242,14 @@ async function checkPackage(registry, pkg, context) {
   }
 
   const issues = findPublishProtocolDependencies(manifest);
+  let pendingIssue;
 
   try {
     if (pkg.releasedAtHead && !context.allowUnattested.has(name)) {
-      const { commit, issue } = await provenanceCommit(manifest, label);
-      if (issue) {
+      const { commit, issue, pending } = await provenanceCommit(manifest, label);
+      if (pending) {
+        pendingIssue = `provenance: ${issue}`;
+      } else if (issue) {
         issues.push(`provenance: ${issue}`);
       } else if (commit !== context.head) {
         issues.push(`provenance: built from ${commit}, expected HEAD ${context.head}`);
@@ -264,13 +270,20 @@ async function checkPackage(registry, pkg, context) {
     issues.push(e.message);
   }
 
-  return issues.length > 0 ? { status: 'broken', issues } : { status: 'ok', issues: [] };
+  if (issues.length > 0) {
+    return { status: 'broken', issues: pendingIssue ? [...issues, pendingIssue] : issues };
+  }
+  if (pendingIssue) {
+    return { status: 'settling', issues: [pendingIssue] };
+  }
+  return { status: 'ok', issues: [] };
 }
 
 /**
- * Re-check packages the registry has not caught up on yet, until they appear or
- * the settle window expires. Only absent versions are retried: an unresolved
- * specifier is a fact about the published manifest and will never fix itself.
+ * Re-check packages the registry has not caught up on yet, until they settle or
+ * the settle window expires. Only absent versions and lagging provenance are
+ * retried: an unresolved specifier is a fact about the published manifest and
+ * will never fix itself. Provenance still missing at the deadline is broken.
  */
 async function waitForPropagation(registry, pending, context) {
   const deadline = Date.now() + PROPAGATION_SETTLE_MS;
@@ -279,24 +292,25 @@ async function waitForPropagation(registry, pending, context) {
 
   while (remaining.length > 0 && Date.now() < deadline) {
     const waitSeconds = Math.round(PROPAGATION_POLL_MS / 1000);
-    log(`  ${remaining.length} not visible yet, re-checking in ${waitSeconds}s...`);
+    log(`  ${remaining.length} not settled yet, re-checking in ${waitSeconds}s...`);
     await delay(PROPAGATION_POLL_MS);
 
-    const stillMissing = [];
+    const unsettled = [];
     for (const pkg of remaining) {
       const { status, issues } = await checkPackage(registry, pkg, context);
       if (status === 'ok') {
-        log(`  ${pkg.name}@${pkg.version} OK (appeared after propagation)`);
+        log(`  ${pkg.name}@${pkg.version} OK (settled after propagation)`);
       } else if (status === 'broken') {
         broken.push({ ...pkg, issues });
       } else {
-        stillMissing.push(pkg);
+        unsettled.push({ ...pkg, status, issues });
       }
     }
-    remaining = stillMissing;
+    remaining = unsettled;
   }
 
-  return { missing: remaining, broken };
+  broken.push(...remaining.filter(pkg => pkg.status === 'settling'));
+  return { missing: remaining.filter(pkg => pkg.status !== 'settling'), broken };
 }
 
 async function main() {
@@ -317,6 +331,7 @@ async function main() {
 
   const broken = [];
   let missing = [];
+  const settling = [];
 
   for (const pkg of packages) {
     const { name, version } = pkg;
@@ -329,19 +344,26 @@ async function main() {
         error(`  ${issue}`);
       }
     } else if (status === 'missing') {
-      missing.push({ name, version });
+      // The whole pkg, so the re-check still knows whether to demand provenance.
+      missing.push({ ...pkg, status });
       log(`  ${name}@${version} is not on the registry yet`);
+    } else if (status === 'settling') {
+      settling.push({ ...pkg, status, issues });
+      log(`  ${name}@${version} is published, its provenance is not readable yet`);
     } else {
       log(`  ${name}@${version} OK`);
     }
   }
 
-  // Absent versions may simply not have propagated yet, so give the registry
-  // time to catch up before calling the release broken.
-  if (missing.length > 0 && !allowMissing) {
+  // Absent versions and provenance may simply not have propagated yet, so give
+  // the registry time to catch up before calling the release broken.
+  const pending = [...(allowMissing ? [] : missing), ...settling];
+  if (pending.length > 0) {
     log(`\nWaiting up to ${PROPAGATION_SETTLE_MS / 60000} minutes for the registry to catch up`);
-    const settled = await waitForPropagation(registry, missing, context);
-    missing = settled.missing;
+    const settled = await waitForPropagation(registry, pending, context);
+    if (!allowMissing) {
+      missing = settled.missing;
+    }
     broken.push(...settled.broken);
   }
 
