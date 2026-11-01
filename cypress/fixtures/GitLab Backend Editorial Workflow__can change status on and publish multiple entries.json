@@ -2080,7 +2080,7 @@
   },
   {
     "method": "PUT",
-    "url": "/api/v4/projects/owner%2Frepo/merge_requests/7/merge?merge_commit_message=Automatically generated. Merged on Decap CMS.&squash_commit_message=Automatically generated. Merged on Decap CMS.&squash=false&should_remove_source_branch=true",
+    "url": "/api/v4/projects/owner%2Frepo/merge_requests/7/merge?merge_commit_message=Automatically generated. Merged on Decap CMS.&squash_commit_message=Automatically generated. Merged on Decap CMS.&squash=false&should_remove_source_branch=true&sha=6b94780dca9dcf6872c44d60528169f70dfa1d90",
     "headers": {
       "Content-Type": "application/json",
       "Connection": "keep-alive",
@@ -2215,7 +2215,7 @@
   },
   {
     "method": "PUT",
-    "url": "/api/v4/projects/owner%2Frepo/merge_requests/6/merge?merge_commit_message=Automatically generated. Merged on Decap CMS.&squash_commit_message=Automatically generated. Merged on Decap CMS.&squash=false&should_remove_source_branch=true",
+    "url": "/api/v4/projects/owner%2Frepo/merge_requests/6/merge?merge_commit_message=Automatically generated. Merged on Decap CMS.&squash_commit_message=Automatically generated. Merged on Decap CMS.&squash=false&should_remove_source_branch=true&sha=47efdb4a2d1d7dcb6c29752570cdff95a662a061",
     "headers": {
       "Content-Type": "application/json",
       "Connection": "keep-alive",
@@ -2350,7 +2350,7 @@
   },
   {
     "method": "PUT",
-    "url": "/api/v4/projects/owner%2Frepo/merge_requests/5/merge?merge_commit_message=Automatically generated. Merged on Decap CMS.&squash_commit_message=Automatically generated. Merged on Decap CMS.&squash=false&should_remove_source_branch=true",
+    "url": "/api/v4/projects/owner%2Frepo/merge_requests/5/merge?merge_commit_message=Automatically generated. Merged on Decap CMS.&squash_commit_message=Automatically generated. Merged on Decap CMS.&squash=false&should_remove_source_branch=true&sha=3b4d607524857ae8cde56e52ebc9295b25ecc337",
     "headers": {
       "Content-Type": "application/json",
       "Connection": "keep-alive",

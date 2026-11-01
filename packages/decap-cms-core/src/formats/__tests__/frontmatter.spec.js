@@ -447,4 +447,25 @@ describe('Frontmatter', () => {
       });
     });
   });
+
+  describe('javascript', () => {
+    afterEach(() => {
+      delete global.frontmatterEvaluated;
+    });
+
+    it.each(['---js', '---JS', '---javascript', '--- javascript '])(
+      'refuses %s front matter without evaluating it',
+      opening => {
+        const content = `${opening}\n{ title: (global.frontmatterEvaluated = true) }\n---\nContent`;
+
+        expect(() => FrontmatterInfer.fromFile(content)).toThrow(
+          'JavaScript front matter is not supported',
+        );
+        expect(() => frontmatterYAML().fromFile(content)).toThrow(
+          'JavaScript front matter is not supported',
+        );
+        expect(global.frontmatterEvaluated).toBeUndefined();
+      },
+    );
+  });
 });

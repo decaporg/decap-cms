@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.5.6](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-bitbucket@3.5.5...decap-cms-backend-bitbucket@3.5.6) (2026-10-26)
+
+### Bug Fixes
+
+- **backend-bitbucket:** load all pages of pull requests ([#8033](https://github.com/decaporg/decap-cms/issues/8033)) ([e926418](https://github.com/decaporg/decap-cms/commit/e9264182110367fa732ae8d7a36bd5e2edd6721f)), closes [#7144](https://github.com/decaporg/decap-cms/issues/7144)
+
 ## [3.5.5](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-bitbucket@3.5.4...decap-cms-backend-bitbucket@3.5.5) (2026-10-14)
 
 **Note:** Version bump only for package decap-cms-backend-bitbucket

@@ -5,7 +5,7 @@ import os from 'os';
 import path from 'path';
 
 import { readMediaFile } from './entries.js';
-import { deleteFile, writeFile } from './fs.js';
+import { deleteFile, move, writeFile } from './fs.js';
 
 describe('repository filesystem boundary', () => {
   let temporaryPath: string;
@@ -62,6 +62,44 @@ describe('repository filesystem boundary', () => {
       'keep-me',
     );
     await expect(fs.stat(path.join(outsidePath, 'write.txt'))).rejects.toMatchObject({
+      code: 'ENOENT',
+    });
+  });
+
+  it('blocks writes into .git, also through a symlink', async () => {
+    await fs.mkdir(path.join(repoPath, '.git'));
+    await fs.writeFile(path.join(repoPath, '.git', 'config'), 'original');
+    await fs.symlink(
+      path.join(repoPath, '.git'),
+      path.join(repoPath, 'linked'),
+      process.platform === 'win32' ? 'junction' : 'dir',
+    );
+
+    await expect(writeFile(repoPath, '.git/config', 'changed')).rejects.toThrow(
+      "Path must not point into the repository's .git directory",
+    );
+    await expect(writeFile(repoPath, 'linked/config', 'changed')).rejects.toThrow(
+      "Path must not point into the repository's .git directory",
+    );
+    await expect(readMediaFile(repoPath, 'linked/config')).rejects.toThrow(
+      "Path must not point into the repository's .git directory",
+    );
+    await expect(fs.readFile(path.join(repoPath, '.git', 'config'), 'utf8')).resolves.toBe(
+      'original',
+    );
+  });
+
+  it('leaves .git in place when an entry at the repository root moves', async () => {
+    await fs.mkdir(path.join(repoPath, '.git'));
+    await fs.writeFile(path.join(repoPath, '.git', 'config'), 'original');
+    await fs.writeFile(path.join(repoPath, 'post.md'), 'post');
+
+    await move(repoPath, 'post.md', 'moved/post.md');
+
+    await expect(fs.readFile(path.join(repoPath, '.git', 'config'), 'utf8')).resolves.toBe(
+      'original',
+    );
+    await expect(fs.stat(path.join(repoPath, 'moved', '.git'))).rejects.toMatchObject({
       code: 'ENOENT',
     });
   });

@@ -3,8 +3,20 @@ import styled from '@emotion/styled';
 import { List } from 'immutable';
 import { WidgetPreviewContainer } from 'decap-cms-ui-default';
 
+// Media that isn't saved yet is served from a `blob:` URL, which belongs to the
+// CMS origin. Opened as a page, an SVG there runs its scripts with access to
+// the CMS's storage, including the signed-in user's token, so download it.
+function isLocalObjectUrl(href) {
+  return /^(blob|data):/i.test(String(href));
+}
+
 const FileLink = styled(({ href, path }) => (
-  <a href={href} rel="noopener noreferrer" target="_blank">
+  <a
+    href={href}
+    rel="noopener noreferrer"
+    target="_blank"
+    download={isLocalObjectUrl(href) ? String(path).split('/').pop() : undefined}
+  >
     {path}
   </a>
 ))`

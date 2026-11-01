@@ -1025,20 +1025,40 @@ export default class API {
   }
 
   // Open Authoring (Fork) Support
+  isForkOfOrigin(repo: ForgejoRepository) {
+    return (
+      repo.fork === true &&
+      !!repo.parent &&
+      repo.parent.full_name.toLowerCase() === this.originRepo.toLowerCase()
+    );
+  }
+
   async forkExists(): Promise<boolean> {
     try {
       const repoName = this.originRepo.split('/')[1];
       const userRepoPath = `/repos/${this.repoOwner}/${repoName}`;
       const repo = (await this.request(userRepoPath)) as ForgejoRepository;
-
-      // Check if it's a fork and the parent is the origin repo
-      const forkExists: boolean =
-        repo.fork === true &&
-        !!repo.parent &&
-        repo.parent.full_name.toLowerCase() === this.originRepo.toLowerCase();
-      return forkExists;
+      return this.isForkOfOrigin(repo);
     } catch {
       return false;
+    }
+  }
+
+  // A fork can be renamed (or created with a custom name), in which case it
+  // won't be found under the origin repo name. Look it up among the user's repos,
+  // which are usually far fewer than the origin's forks.
+  async findUserFork(): Promise<ForgejoRepository | undefined> {
+    try {
+      const repos = await this.requestAllPages<ForgejoRepository>('/user/repos', {
+        params: { limit: 50 },
+      });
+      return repos.find(
+        repo =>
+          repo.owner.login.toLowerCase() === this.repoOwner.toLowerCase() &&
+          this.isForkOfOrigin(repo),
+      );
+    } catch {
+      return undefined;
     }
   }
 

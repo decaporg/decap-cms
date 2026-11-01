@@ -37,6 +37,23 @@ function mapDispatchToProps(state) {
 
 const ConnectedTranslatedApp = connect(mapDispatchToProps)(TranslatedApp);
 
+/**
+ * Keep one React root per container, so calling `init()` again (for example
+ * the automatic init followed by `CMS.init()` without `CMS_MANUAL_INIT`)
+ * re-renders the existing root. A second `createRoot` on the same container
+ * leaves two roots fighting over the same DOM, which crashes with
+ * "NotFoundError: removeChild".
+ */
+const rootRegistry = new WeakMap();
+
+function ensureRoot(container) {
+  const existing = rootRegistry.get(container);
+  if (existing) return existing;
+  const root = createRoot(container);
+  rootRegistry.set(container, root);
+  return root;
+}
+
 function bootstrap(opts = {}) {
   const { config } = opts;
 
@@ -96,7 +113,7 @@ function bootstrap(opts = {}) {
   /**
    * Render application root.
    */
-  const root = createRoot(getRoot());
+  const root = ensureRoot(getRoot());
   root.render(<Root />);
 }
 

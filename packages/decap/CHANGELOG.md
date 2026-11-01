@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.3](https://github.com/decaporg/decap-cms/compare/@decap/cli@0.1.2...@decap/cli@0.1.3) (2026-10-26)
+
+### Bug Fixes
+
+- **decap:** check for .git path segments in linear time ([4b5ac29](https://github.com/decaporg/decap-cms/commit/4b5ac2955151e2f393349ab42067e57b85c3b36a))
+- **decap:** keep the dev proxy local and out of .git ([9324b48](https://github.com/decaporg/decap-cms/commit/9324b482be2564ea3e4879954dff78ce21a65cff))
+
 ## [0.1.2](https://github.com/decaporg/decap-cms/compare/@decap/cli@0.1.1...@decap/cli@0.1.2) (2026-10-14)
 
 **Note:** Version bump only for package @decap/cli

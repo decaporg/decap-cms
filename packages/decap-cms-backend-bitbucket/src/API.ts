@@ -1,5 +1,8 @@
 import flow from 'lodash/flow';
 import get from 'lodash/get';
+import orderBy from 'lodash/orderBy';
+import uniqBy from 'lodash/uniqBy';
+import semaphore from 'semaphore';
 import {
   localForage,
   unsentRequest,
@@ -88,28 +91,20 @@ type BitBucketPullRequest = {
   author: BitBucketUser;
 };
 
-type BitBucketPullRequests = {
-  size: number;
-  page: number;
-  pagelen: number;
-  next: string;
-  preview: string;
-  values: BitBucketPullRequest[];
+// One page of a Bitbucket list. `next` is missing on the last page.
+type BitBucketPage<T> = {
+  size?: number;
+  page?: number;
+  pagelen?: number;
+  next?: string;
+  previous?: string;
+  values: T[];
 };
 
 type BitBucketPullComment = {
   content: {
     raw: string;
   };
-};
-
-type BitBucketPullComments = {
-  size: number;
-  page: number;
-  pagelen: number;
-  next: string;
-  preview: string;
-  values: BitBucketPullComment[];
 };
 
 enum BitBucketPullRequestStatusState {
@@ -129,15 +124,6 @@ type BitBucketPullRequestStatus = {
   state: BitBucketPullRequestStatusState;
 };
 
-type BitBucketPullRequestStatues = {
-  size: number;
-  page: number;
-  pagelen: number;
-  next: string;
-  preview: string;
-  values: BitBucketPullRequestStatus[];
-};
-
 type DeleteEntry = {
   path: string;
   delete: true;
@@ -150,14 +136,7 @@ type BitBucketFile = {
   commit?: { hash: string };
 };
 
-type BitBucketSrcResult = {
-  size: number;
-  page: number;
-  pagelen: number;
-  next: string;
-  previous: string;
-  values: BitBucketFile[];
-};
+type BitBucketSrcResult = BitBucketPage<BitBucketFile>;
 
 type BitBucketUser = {
   username: string;
@@ -189,6 +168,10 @@ type BitBucketCommit = {
 
 export const API_NAME = 'Bitbucket';
 
+const DEFAULT_API_ROOT = 'https://api.bitbucket.org/2.0';
+
+const MAX_CONCURRENT_LABEL_REQUESTS = 10;
+
 const APPLICATION_JSON = 'application/json; charset=utf-8';
 
 function replace404WithEmptyResponse(err: FetchError) {
@@ -212,7 +195,7 @@ export default class API {
   cmsLabelPrefix: string;
 
   constructor(config: Config) {
-    this.apiRoot = config.apiRoot || 'https://api.bitbucket.org/2.0';
+    this.apiRoot = config.apiRoot || DEFAULT_API_ROOT;
     this.branch = config.branch || 'master';
     this.repo = config.repo || '';
     this.requestFunction = config.requestFunction || unsentRequest.performRequest;
@@ -249,6 +232,26 @@ export default class API {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   requestJSON = (req: ApiRequest) => this.request(req).then(this.responseToJSON) as Promise<any>;
   requestText = (req: ApiRequest) => this.request(req).then(this.responseToText) as Promise<string>;
+
+  // Bitbucket's pagination links are absolute api.bitbucket.org URLs. Make them
+  // relative so `buildRequest` sends them to `apiRoot`, the same as the first page.
+  toRelativeLink = (link: string) =>
+    link.startsWith(`${DEFAULT_API_ROOT}/`) ? link.slice(DEFAULT_API_ROOT.length) : link;
+
+  // Bitbucket returns lists one page at a time. Follow the `next` links and
+  // return the values of every page.
+  async requestAllValues<T>(req: ApiRequest): Promise<T[]> {
+    let page: BitBucketPage<T> = await this.requestJSON(req);
+    const values = [...page.values];
+    // Stop if a `next` link repeats, so a bad link can't cause an endless loop
+    const requestedLinks = new Set<string>();
+    while (page.next && !requestedLinks.has(page.next)) {
+      requestedLinks.add(page.next);
+      page = await this.requestJSON(this.toRelativeLink(page.next));
+      values.push(...page.values);
+    }
+    return values;
+  }
 
   user = () => this.requestJSON('/user') as Promise<BitBucketUser>;
 
@@ -395,6 +398,7 @@ export default class API {
     entries: { path: string; name: string; type: string; id: string }[];
   }> =>
     flow([
+      this.toRelativeLink,
       this.requestJSON,
       then(this.getEntriesAndCursor),
       then<
@@ -407,23 +411,16 @@ export default class API {
     ])(cursor.data!.getIn(['links', action]));
 
   listAllFiles = async (path: string, depth: number, branch: string) => {
-    const { cursor: initialCursor, entries: initialEntries } = await this.listFiles(
-      path,
-      depth,
-      100,
-      branch,
-    );
-    const entries = [...initialEntries];
-    let currentCursor = initialCursor;
-    while (currentCursor && currentCursor.actions!.has('next')) {
-      const { cursor: newCursor, entries: newEntries } = await this.traverseCursor(
-        currentCursor,
-        'next',
-      );
-      entries.push(...newEntries);
-      currentCursor = newCursor;
-    }
-    return this.processFiles(entries);
+    const node = await this.branchCommitSha(branch);
+    const files = await this.requestAllValues<BitBucketFile>({
+      url: `${this.repoURL}/src/${node}/${path}`,
+      params: {
+        max_depth: depth,
+        pagelen: 100,
+      },
+    }).catch(async (err: FetchError) => (await replace404WithEmptyResponse(err)).values);
+
+    return this.processFiles(files);
   };
 
   async uploadFiles(
@@ -553,13 +550,14 @@ export default class API {
   }
 
   async getPullRequestLabel(id: number) {
-    const comments: BitBucketPullComments = await this.requestJSON({
+    const comments = await this.requestAllValues<BitBucketPullComment>({
       url: `${this.repoURL}/pullrequests/${id}/comments`,
       params: {
         pagelen: 100,
       },
     });
-    return comments.values.map(c => c.content.raw)[comments.values.length - 1];
+    // Comments come oldest first, so the current label is the last one
+    return comments[comments.length - 1]?.content.raw;
   }
 
   async createPullRequest(branch: string, commitMessage: string, status: string) {
@@ -677,7 +675,7 @@ export default class API {
       ? `source.branch.name = "${sourceBranch}"`
       : `source.branch.name ~ "${CMS_BRANCH_PREFIX}/"`;
 
-    const pullRequests: BitBucketPullRequests = await this.requestJSON({
+    const pages = await this.requestAllValues<BitBucketPullRequest>({
       url: `${this.repoURL}/pullrequests`,
       params: {
         pagelen: 50,
@@ -688,14 +686,35 @@ export default class API {
         AND comment_count > 0
         AND ${sourceQuery}
         `,
+        // The default order is by last update, so an edit made while the pages
+        // load could move a pull request onto a page that was already read.
+        // Sorting by id keeps each one in place and adds new ones at the end.
+        sort: 'id',
       },
     });
+    // The list can still change between page requests, so list each pull request
+    // once. Then put the most recently updated first, like Bitbucket's default
+    // order: the Workflow view shows drafts in this order, and
+    // `getBranchPullRequest` takes the first one.
+    const pullRequests = orderBy(uniqBy(pages, 'id'), 'updated_on', 'desc');
 
+    // Each pull request needs its own label request. Limit how many run at once,
+    // so many drafts don't send hundreds of requests at the same time.
+    const sem = semaphore(MAX_CONCURRENT_LABEL_REQUESTS);
     const labels = await Promise.all(
-      pullRequests.values.map(pr => this.getPullRequestLabel(pr.id)),
+      pullRequests.map(
+        pr =>
+          new Promise<string>((resolve, reject) =>
+            sem.take(() =>
+              this.getPullRequestLabel(pr.id)
+                .then(resolve, reject)
+                .finally(() => sem.leave()),
+            ),
+          ),
+      ),
     );
 
-    return pullRequests.values.filter((_, index) => isCMSLabel(labels[index], this.cmsLabelPrefix));
+    return pullRequests.filter((_, index) => isCMSLabel(labels[index], this.cmsLabelPrefix));
   }
 
   async getBranchPullRequest(branch: string) {
@@ -793,15 +812,13 @@ export default class API {
     await this.deleteBranch(branch);
   }
 
-  async getPullRequestStatuses(pullRequest: BitBucketPullRequest) {
-    const statuses: BitBucketPullRequestStatues = await this.requestJSON({
+  getPullRequestStatuses(pullRequest: BitBucketPullRequest) {
+    return this.requestAllValues<BitBucketPullRequestStatus>({
       url: `${this.repoURL}/pullrequests/${pullRequest.id}/statuses`,
       params: {
         pagelen: 100,
       },
     });
-
-    return statuses.values;
   }
 
   async getStatuses(collectionName: string, slug: string) {

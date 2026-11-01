@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.5.6](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-azure@3.5.5...decap-cms-backend-azure@3.5.6) (2026-10-26)
+
+### Bug Fixes
+
+- **azure:** set login for the authenticated user ([#8038](https://github.com/decaporg/decap-cms/issues/8038)) ([7fbecd6](https://github.com/decaporg/decap-cms/commit/7fbecd60bdb8fabbf90ce8dfe6bf4b3ba1bf0e3c)), closes [#7199](https://github.com/decaporg/decap-cms/issues/7199)
+
 ## [3.5.5](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-azure@3.5.4...decap-cms-backend-azure@3.5.5) (2026-10-14)
 
 **Note:** Version bump only for package decap-cms-backend-azure

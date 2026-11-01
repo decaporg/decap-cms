@@ -43,7 +43,7 @@ import { sanitizeChar } from './lib/urlHelper';
 import { getBackend, getEditorApi, invokeEvent, registerFieldAction } from './lib/registry';
 import {
   commitMessageFormatter,
-  slugFormatter,
+  getSlugFormatter,
   previewUrlFormatter,
   slugByteBudget,
   truncateSlug,
@@ -602,18 +602,26 @@ export class Backend {
     customPath: string | undefined,
   ) {
     const slugConfig = config.slug;
-    let slug: string;
+    let formatSlug: (suffix?: string) => string;
     // Capped in bytes, not characters: refs are limited to 255 bytes. Not for a
     // custom path, which must keep matching the path the editor typed.
     let maxBytes = Infinity;
     if (customPath) {
-      slug = slugFromCustomPath(collection, customPath);
+      const slug = slugFromCustomPath(collection, customPath);
+      formatSlug = (suffix = '') => `${slug}${suffix}`;
     } else {
       maxBytes = slugByteBudget(collection, config);
-      slug = truncateSlug(slugFormatter(collection, entryData, slugConfig), maxBytes, slugConfig);
+      formatSlug = getSlugFormatter(collection, entryData, slugConfig);
+    }
+    // Over the cap, the slug in front of the suffix gives way, so the suffix stays distinct
+    function fitSlug(suffix = '') {
+      const slug = formatSlug(suffix);
+      return utf8ByteLength(slug) > maxBytes
+        ? `${truncateSlug(slug, maxBytes - utf8ByteLength(suffix), slugConfig)}${suffix}`
+        : slug;
     }
     let i = 1;
-    let uniqueSlug = slug;
+    let uniqueSlug = fitSlug();
 
     // Check for duplicate slug in loaded entities store first before repo
     while (
@@ -625,13 +633,7 @@ export class Backend {
         selectUseWorkflow(config),
       ))
     ) {
-      // The suffix stays whole; the slug in front of it gives way to the cap.
-      const suffix = `${sanitizeChar(' ', slugConfig)}${i++}`;
-      const base =
-        maxBytes === Infinity
-          ? slug
-          : truncateSlug(slug, maxBytes - utf8ByteLength(suffix), slugConfig);
-      uniqueSlug = `${base}${suffix}`;
+      uniqueSlug = fitSlug(`${sanitizeChar(' ', slugConfig)}${i++}`);
     }
     return uniqueSlug;
   }

@@ -244,11 +244,33 @@ export default class Forgejo implements Implementation {
     this.repo = `${currentUser.login}/${repoName}`;
     this.useOpenAuthoring = true;
 
-    // Initialize or update API for fork operations
-    // Always recreate to ensure token and repo are up to date (unless a mock was injected for testing)
+    this.setForkApi(token);
+
+    if (await this.api!.forkExists()) {
+      await this.api!.mergeUpstream();
+      return;
+    }
+
+    // The user may already have a fork under a different name
+    const existingFork = await this.api!.findUserFork();
+    if (existingFork) {
+      this.repo = existingFork.full_name;
+      this.setForkApi(token);
+      await this.api!.mergeUpstream();
+      return;
+    }
+
+    await getPermissionToFork();
+
+    const fork = await this.api!.createFork();
+    return this.pollUntilForkExists({ repo: `/repos/${fork.full_name}`, token });
+  }
+
+  // Initialize or update API for fork operations
+  // Always recreate to ensure token and repo are up to date (unless a mock was injected for testing)
+  private setForkApi(token: string) {
     if (!this.options.API) {
-      const apiCtor = API;
-      this.api = new apiCtor({
+      this.api = new API({
         token,
         branch: this.branch,
         repo: this.repo,
@@ -258,16 +280,6 @@ export default class Forgejo implements Implementation {
         cmsLabelPrefix: this.cmsLabelPrefix,
         initialWorkflowStatus: this.initialWorkflowStatus,
       });
-    }
-
-    if (await this.api!.forkExists()) {
-      await this.api!.mergeUpstream();
-      return Promise.resolve();
-    } else {
-      await getPermissionToFork();
-
-      const fork = await this.api!.createFork();
-      return this.pollUntilForkExists({ repo: `/repos/${fork.full_name}`, token });
     }
   }
 

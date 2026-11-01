@@ -43,7 +43,7 @@ function SortControl({ t, fields, onSortClick, sort }) {
       }}
       closeOnSelection={false}
       dropdownTopOverlap="30px"
-      dropdownWidth="160px"
+      dropdownWidth="max-content"
       dropdownPosition="left"
     >
       {fields.map(field => {

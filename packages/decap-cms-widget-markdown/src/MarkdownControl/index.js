@@ -42,7 +42,8 @@ export default class MarkdownControl extends Component {
   constructor(props) {
     super(props);
     editorControl = props.editorControl;
-    const preferredMode = localStorage.getItem(MODE_STORAGE_KEY) ?? 'rich_text';
+    // Without a saved preference, start in the first mode listed in `modes`.
+    const preferredMode = localStorage.getItem(MODE_STORAGE_KEY) ?? this.getAllowedModes()[0];
 
     _getEditorComponents = props.getEditorComponents;
     this.state = {

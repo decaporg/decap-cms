@@ -286,7 +286,8 @@ export class App extends Component {
               render={props => <Collection {...props} isSearchResults />}
             />
             <RouteInCollection
-              path="/edit/:name/:entryName"
+              // `+` keeps nested entry paths like `about/index` in one param
+              path="/edit/:name/:entryName+"
               collections={collections}
               render={({ match }) => {
                 const { name, entryName } = match.params;

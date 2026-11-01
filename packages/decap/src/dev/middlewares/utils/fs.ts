@@ -1,7 +1,7 @@
 import path from 'path';
 import { promises as fs } from 'fs';
 
-import { resolveExistingRepoPath, resolveNewRepoPath } from './path.js';
+import { isGitDirSegment, resolveExistingRepoPath, resolveNewRepoPath } from './path.js';
 
 async function listFiles(dir: string, extension: string, depth: number): Promise<string[]> {
   if (depth <= 0) {
@@ -9,7 +9,11 @@ async function listFiles(dir: string, extension: string, depth: number): Promise
   }
 
   try {
-    const dirents = await fs.readdir(dir, { withFileTypes: true });
+    const dirents = (await fs.readdir(dir, { withFileTypes: true })).filter(
+      // Never list (and so never move) Git's own files, e.g. when an entry at
+      // the repository root is renamed and its whole directory moves with it.
+      dirent => !isGitDirSegment(dirent.name),
+    );
     const files = await Promise.all(
       dirents.map(dirent => {
         const res = path.join(dir, dirent.name);

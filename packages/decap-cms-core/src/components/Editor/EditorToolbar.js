@@ -419,7 +419,7 @@ export class EditorToolbar extends Component {
       <>
         <ToolbarDropdown
           dropdownTopOverlap="40px"
-          dropdownWidth="120px"
+          dropdownWidth="max-content"
           renderButton={() => <StatusButton>{buttonText}</StatusButton>}
         >
           <StatusDropdownItem
@@ -453,7 +453,7 @@ export class EditorToolbar extends Component {
     return canPublish ? (
       <ToolbarDropdown
         dropdownTopOverlap="40px"
-        dropdownWidth="200px"
+        dropdownWidth="max-content"
         renderButton={() => (
           <PublishButton>
             {isPublishing

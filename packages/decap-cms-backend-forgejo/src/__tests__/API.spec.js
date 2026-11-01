@@ -1264,6 +1264,56 @@ describe('forgejo API', () => {
     });
   });
 
+  describe('findUserFork', () => {
+    function fork(full_name, parent, isFork = true) {
+      return {
+        full_name,
+        fork: isFork,
+        owner: { login: full_name.split('/')[0] },
+        parent: parent ? { full_name: parent } : null,
+      };
+    }
+
+    it('should return the user fork of the origin repo', async () => {
+      const api = API({ branch: 'master', repo: 'user/repo', originRepo: 'owner/repo' });
+      const renamed = fork('User/renamed-repo', 'Owner/Repo');
+      api.requestAllPages = jest
+        .fn()
+        .mockResolvedValue([
+          fork('user/other-fork', 'someone/else'),
+          fork('user/not-a-fork', null, false),
+          fork('org/repo', 'owner/repo'),
+          renamed,
+        ]);
+
+      const result = await api.findUserFork();
+
+      expect(result).toBe(renamed);
+      expect(api.requestAllPages).toHaveBeenCalledWith('/user/repos', {
+        params: { limit: 50 },
+      });
+    });
+
+    it('should return undefined when the user has no fork', async () => {
+      const api = API({ branch: 'master', repo: 'user/repo', originRepo: 'owner/repo' });
+      api.requestAllPages = jest
+        .fn()
+        .mockResolvedValue([
+          fork('user/other-fork', 'someone/else'),
+          fork('org/repo', 'owner/repo'),
+        ]);
+
+      await expect(api.findUserFork()).resolves.toBeUndefined();
+    });
+
+    it('should return undefined when the request fails', async () => {
+      const api = API({ branch: 'master', repo: 'user/repo', originRepo: 'owner/repo' });
+      api.requestAllPages = jest.fn().mockRejectedValue(new Error('not found'));
+
+      await expect(api.findUserFork()).resolves.toBeUndefined();
+    });
+  });
+
   describe('createFork', () => {
     it('should create fork', async () => {
       const api = new API({ branch: 'master', repo: 'user/repo', originRepo: 'owner/repo' });

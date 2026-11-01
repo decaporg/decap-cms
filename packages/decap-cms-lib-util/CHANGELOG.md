@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.9.2](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-util@3.9.1...decap-cms-lib-util@3.9.2) (2026-10-26)
+
+### Bug Fixes
+
+- **backend-bitbucket:** load all pages of pull requests ([#8033](https://github.com/decaporg/decap-cms/issues/8033)) ([e926418](https://github.com/decaporg/decap-cms/commit/e9264182110367fa732ae8d7a36bd5e2edd6721f)), closes [#7144](https://github.com/decaporg/decap-cms/issues/7144)
+
 ## [3.9.1](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-util@3.9.0...decap-cms-lib-util@3.9.1) (2026-10-14)
 
 ### Performance Improvements
