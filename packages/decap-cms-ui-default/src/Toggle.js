@@ -55,10 +55,15 @@ function Toggle({
   Background = ToggleBackground,
   Handle = ToggleHandle,
 }) {
-  const [isActive, setIsActive] = useState(active);
+  const [localActive, setLocalActive] = useState(active);
+  // Follow the `active` prop when given, so changes made outside the toggle are shown
+  const isControlled = active !== undefined;
+  const isActive = isControlled ? active : localActive;
 
   function handleToggle() {
-    setIsActive(prevIsActive => !prevIsActive);
+    if (!isControlled) {
+      setLocalActive(!isActive);
+    }
     if (onChange) {
       onChange(!isActive);
     }
