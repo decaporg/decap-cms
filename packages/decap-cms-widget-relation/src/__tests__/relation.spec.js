@@ -691,6 +691,30 @@ describe('Relation widget', () => {
         expect(getByText('category 2')).toBeInTheDocument();
       });
     });
+
+    it('should handle string templates with wildcards', async () => {
+      const field = fromJS({
+        ...fileFieldConfig,
+        file: 'nested_file',
+        value_field: '{{nested.categories.*.id}}-{{nested.categories.*.name}}',
+        display_fields: ['{{nested.categories.*.name}} ({{nested.categories.*.id}})'],
+      });
+      const { getAllByText, input, getByText, onChangeSpy } = setup({ field });
+      fireEvent.keyDown(input, { key: 'ArrowDown' });
+
+      await waitFor(() => {
+        expect(getAllByText(/category/)).toHaveLength(2);
+        expect(getByText('category 1 (cat1)')).toBeInTheDocument();
+        expect(getByText('category 2 (cat2)')).toBeInTheDocument();
+      });
+
+      fireEvent.click(getByText('category 2 (cat2)'));
+
+      await waitFor(() => {
+        expect(onChangeSpy).toHaveBeenCalledTimes(1);
+        expect(onChangeSpy.mock.calls[0][0]).toBe('cat2-category 2');
+      });
+    });
   });
 
   describe('with filter', () => {
