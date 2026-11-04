@@ -276,14 +276,15 @@ export default class ListControl extends Component {
   handleChange = e => {
     const { onChange } = this.props;
     const oldValue = this.state.value;
-    const newValue = e.target.value.trim();
+    const inputValue = e.target.value;
+    const newValue = inputValue.trim();
     const listValue = newValue ? newValue.split(',') : [];
     if (newValue.match(/,$/) && oldValue.match(/, $/)) {
       listValue.pop();
     }
 
-    const parsedValue = this.valueToString(listValue);
-    this.setState({ value: parsedValue });
+    // Keep the text as typed so spaces can be entered; it is normalized on blur.
+    this.setState({ value: inputValue });
     onChange(List(listValue.map(val => val.trim())));
   };
 
