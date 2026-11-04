@@ -193,6 +193,36 @@ function isFilterMatch(data, filter) {
   );
 }
 
+// value_field and display_fields can be string templates with wildcard paths,
+// e.g. `{{list.*.a}} - {{list.*.b}}`. Expand the wildcards inside each template
+// variable so every list item gets its own template.
+function expandFieldPaths(data, field) {
+  const templateVars = stringTemplate.extractTemplateVars(field);
+  if (templateVars.length <= 0) {
+    return stringTemplate.expandPath({ data, path: field });
+  }
+
+  const expandedVars = {};
+  templateVars
+    .filter(templateVar => templateVar.includes('*'))
+    .forEach(templateVar => {
+      expandedVars[templateVar] = stringTemplate.expandPath({ data, path: templateVar });
+    });
+
+  const wildcardVars = Object.keys(expandedVars);
+  if (wildcardVars.length <= 0) {
+    return [field];
+  }
+
+  const length = Math.max(...wildcardVars.map(templateVar => expandedVars[templateVar].length));
+  return Array.from({ length }, (_, index) =>
+    field.replace(/{{( *)([^}{| ]+)/g, (match, spaces, templateVar) => {
+      const paths = expandedVars[templateVar];
+      return paths ? `{{${spaces}${paths[index] || paths[0] || templateVar}` : match;
+    }),
+  );
+}
+
 function getSelectedValue({ value, options, isMultiple }) {
   if (isMultiple) {
     const selectedOptions = getSelectedOptions(value);
@@ -447,12 +477,12 @@ export default class RelationControl extends Component {
     const options = hits.reduce((acc, hit) => {
       const hitData = this.getHitData(hit);
       if (filters.every(filter => isFilterMatch(hitData, filter))) {
-        const valuesPaths = stringTemplate.expandPath({ data: hit.data, path: valueField });
+        const valuesPaths = expandFieldPaths(hit.data, valueField);
         for (let i = 0; i < valuesPaths.length; i++) {
           const label = displayField
             .toJS()
             .map(key => {
-              const displayPaths = stringTemplate.expandPath({ data: hit.data, path: key });
+              const displayPaths = expandFieldPaths(hit.data, key);
               return this.parseNestedFields(hit, displayPaths[i] || displayPaths[0]);
             })
             .join(' ');
