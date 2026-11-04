@@ -99,6 +99,7 @@ function getFieldValue({ field, entry, isTranslatable, locale }) {
 export default class ControlPane extends Component {
   state = {
     selectedLocale: this.props.locale,
+    copyRevisions: {},
   };
 
   childRefs = {};
@@ -140,6 +141,7 @@ export default class ControlPane extends Component {
         defaultLocale,
       };
 
+      const copied = [];
       this.props.fields.forEach(field => {
         if (isFieldTranslatable(field, targetLocale, sourceLocale)) {
           const copyValue = getFieldValue({
@@ -148,9 +150,22 @@ export default class ControlPane extends Component {
             locale: sourceLocale,
             isTranslatable: sourceLocale !== defaultLocale,
           });
-          if (copyValue) this.props.onChange(field, copyValue, undefined, i18n);
+          if (copyValue) {
+            this.props.onChange(field, copyValue, undefined, i18n);
+            copied.push(field.get('name'));
+          }
         }
       });
+
+      // Remount the copied controls: widgets that keep their value in local
+      // state (markdown, list, ...) would otherwise keep showing the old one.
+      if (copied.length > 0) {
+        this.setState(({ copyRevisions }) => {
+          const next = { ...copyRevisions };
+          copied.forEach(name => (next[name] = (next[name] ?? 0) + 1));
+          return { copyRevisions: next };
+        });
+      }
     };
 
   validate = async () => {
@@ -267,7 +282,8 @@ export default class ControlPane extends Component {
             // An externally changed field gets a new key and remounts: the
             // markdown and richtext editors only read their value on mount.
             const revision = fieldRevisions?.get(field.get('name')) ?? 0;
-            const key = `${i18n ? `${locale}_${i}` : i}_${revision}`;
+            const copyRevision = this.state.copyRevisions[field.get('name')] ?? 0;
+            const key = `${i18n ? `${locale}_${i}` : i}_${revision}_${copyRevision}`;
 
             return (
               <EditorControl
