@@ -1532,6 +1532,10 @@ export function validateMetaField(
 ) {
   if (field.get('meta') && field.get('name') === 'path') {
     if (!value) {
+      // An optional path can be left blank, the entry then falls back to the collection path
+      if (field.get('required') === false) {
+        return { error: false };
+      }
       return getPathError(value, 'invalidPath', t);
     }
     const sanitizedPath = (value as string)
