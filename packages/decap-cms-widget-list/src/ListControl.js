@@ -687,6 +687,17 @@ export default class ListControl extends Component {
       }
     }
 
+    // A list with a single non-object `field` stores that widget's value
+    // directly (see `handleChangeFor`), so key it by the field name before
+    // handing it to ObjectControl. Otherwise a map value, such as the code
+    // widget's `{ code, lang }`, would be looked up by the field name and the
+    // widget would get nothing.
+    const singleField = field.get('field');
+    const objectValue =
+      this.getValueType() === valueTypes.SINGLE && singleField.get('widget') !== 'object'
+        ? Map({ [singleField.get('name')]: item })
+        : item;
+
     return (
       <SortableListItem
         css={[styles.listControlItem, collapsed && styles.listControlItemCollapsed]}
@@ -726,7 +737,7 @@ export default class ListControl extends Component {
                   ${styleStrings.collapsedObjectControl};
                 `]: collapsed,
               })}
-              value={item}
+              value={objectValue}
               field={field}
               onChangeObject={this.handleChangeFor(key)}
               editorControl={editorControl}
