@@ -253,7 +253,7 @@ function sortByScore(a: fuzzy.FilterResult<EntryValue>, b: fuzzy.FilterResult<En
 
 export function slugFromCustomPath(collection: Collection, customPath: string) {
   const folderPath = collection.get('folder', '') as string;
-  const entryPath = customPath.toLowerCase().replace(folderPath.toLowerCase(), '');
+  const entryPath = customPath.replace(folderPath, '');
   const slug = join(dirname(trim(entryPath, '/')), basename(entryPath, extname(customPath)));
   return slug;
 }
