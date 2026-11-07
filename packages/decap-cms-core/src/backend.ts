@@ -356,14 +356,15 @@ function collectionDepth(collection: Collection) {
 }
 
 function i18nRulestring(
-  ruleString: string,
+  collection: Collection,
   { defaultLocale, structure }: I18nInfo,
   locale: string = defaultLocale,
 ): string {
   if (structure === I18N_STRUCTURE.MULTIPLE_FOLDERS) {
-    return `${locale}\\/${ruleString}`;
+    return collectionRuleString(collection, `${locale}/`);
   }
 
+  const ruleString = collectionRuleString(collection);
   if (structure === I18N_STRUCTURE.MULTIPLE_FILES) {
     return `${ruleString}\\.${locale}\\..*`;
   }
@@ -371,19 +372,21 @@ function i18nRulestring(
   return ruleString;
 }
 
-function collectionRuleString(collection: Collection): string {
-  if (!collection.get('path')) {
+function collectionRuleString(collection: Collection, localeFolder = ''): string {
+  const path = collection.get('path', '');
+  if (!path && !localeFolder) {
     return '';
   }
-  return `${collection.get('folder')}/${collection.get('path')}`.replace(/{{.*}}/gm, '(.*)');
+  return `${escapeRegExp(collection.get('folder'))}/${localeFolder}${path}`.replace(
+    /{{.*}}/gm,
+    '(.*)',
+  );
 }
 
 function collectionRegex(collection: Collection): RegExp | undefined {
-  let ruleString = collectionRuleString(collection);
-
-  if (hasI18n(collection)) {
-    ruleString = i18nRulestring(ruleString, getI18nInfo(collection) as I18nInfo);
-  }
+  const ruleString = hasI18n(collection)
+    ? i18nRulestring(collection, getI18nInfo(collection) as I18nInfo)
+    : collectionRuleString(collection);
 
   return ruleString ? new RegExp(ruleString) : undefined;
 }
@@ -411,7 +414,7 @@ function localeSiblingRegex(collection: Collection): RegExp | undefined {
   }
 
   const ruleString = i18nRulestring(
-    collectionRuleString(collection),
+    collection,
     i18n,
     `(?:${siblings.map(escapeRegExp).join('|')})`,
   );

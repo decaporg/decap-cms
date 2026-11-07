@@ -143,6 +143,18 @@ describe('i18n', () => {
       ).toEqual('src/content/de/index.md');
     });
 
+    it('should add the locale folder before the slug when a folder name starts with the slug', () => {
+      function getPath(path, slug) {
+        return i18n.getFilePath(i18n.I18N_STRUCTURE.MULTIPLE_FOLDERS, 'md', path, slug, 'de');
+      }
+
+      expect(getPath('content/posts/post.md', 'post')).toEqual('content/posts/de/post.md');
+      expect(getPath('content/posts/posts.md', 'posts')).toEqual('content/posts/de/posts.md');
+      expect(getPath('content/posts/content/index.md', 'content/index')).toEqual(
+        'content/posts/de/content/index.md',
+      );
+    });
+
     it('should return file path based on locale when structure is I18N_STRUCTURE.MULTIPLE_FILES', () => {
       expect(
         i18n.getFilePath(
@@ -201,14 +213,40 @@ describe('i18n', () => {
           i18n.I18N_STRUCTURE.MULTIPLE_FOLDERS,
           'src/content/en/index.md',
           'en',
+          'src/content',
         ),
       ).toEqual('src/content/index.md');
+    });
+
+    it('should only remove the locale folder below the collection folder', () => {
+      function normalize(path, folder) {
+        return i18n.normalizeFilePath(i18n.I18N_STRUCTURE.MULTIPLE_FOLDERS, path, 'en', folder);
+      }
+
+      expect(normalize('content/garden/posts/en/hello.md', 'content/garden/posts')).toEqual(
+        'content/garden/posts/hello.md',
+      );
+      expect(normalize('content/en/en/hello.md', 'content/en')).toEqual('content/en/hello.md');
+      expect(normalize('content/en/hello/en/index.md', 'content')).toEqual(
+        'content/hello/en/index.md',
+      );
+      expect(normalize('content/en/hello.md', 'content/')).toEqual('content/hello.md');
     });
 
     it('should remove locale extension from path when structure is I18N_STRUCTURE.MULTIPLE_FILES', () => {
       expect(
         i18n.normalizeFilePath(i18n.I18N_STRUCTURE.MULTIPLE_FILES, 'src/content/index.en.md', 'en'),
       ).toEqual('src/content/index.md');
+    });
+
+    it('should only remove the locale extension from the end of the file name', () => {
+      function normalize(path) {
+        return i18n.normalizeFilePath(i18n.I18N_STRUCTURE.MULTIPLE_FILES, path, 'en');
+      }
+
+      expect(normalize('content.en/index.en.md')).toEqual('content.en/index.md');
+      expect(normalize('content/my.english.post.en.md')).toEqual('content/my.english.post.md');
+      expect(normalize('content/index.en.en.md')).toEqual('content/index.en.md');
     });
 
     it('should not modify path when structure is I18N_STRUCTURE.SINGLE_FILE', () => {
@@ -225,6 +263,18 @@ describe('i18n', () => {
           i18n.I18N_STRUCTURE.MULTIPLE_FOLDERS,
           'md',
           'src/content/en/index.md',
+          'src/content',
+        ),
+      ).toEqual('en');
+    });
+
+    it('should return the folder below the collection folder when the slug has folders', () => {
+      expect(
+        i18n.getLocaleFromPath(
+          i18n.I18N_STRUCTURE.MULTIPLE_FOLDERS,
+          'md',
+          'src/content/en/hello/index.md',
+          'src/content',
         ),
       ).toEqual('en');
     });
@@ -403,6 +453,7 @@ describe('i18n', () => {
       await expect(
         i18n.getI18nEntry(
           fromJS({
+            folder: 'src/content',
             i18n: { structure: i18n.I18N_STRUCTURE.MULTIPLE_FOLDERS, locales, default_locale },
           }),
           ...args,
@@ -625,6 +676,7 @@ describe('i18n', () => {
       expect(
         i18n.groupEntries(
           fromJS({
+            folder: 'src/content',
             i18n: { structure: i18n.I18N_STRUCTURE.MULTIPLE_FOLDERS, locales, default_locale },
           }),
           extension,
@@ -640,6 +692,57 @@ describe('i18n', () => {
           i18nLocales: ['en', 'de', 'fr'],
         },
       ]);
+    });
+
+    it('should keep entries apart when their slugs have folders', () => {
+      const entries = ['en', 'de']
+        .flatMap(locale => ['first', 'second'].map(slug => ({ locale, slug })))
+        .map(({ locale, slug }) => ({
+          path: `src/content/${locale}/${slug}/index.md`,
+          data: { title: `${locale}_${slug}` },
+        }));
+
+      const grouped = i18n.groupEntries(
+        fromJS({
+          folder: 'src/content',
+          i18n: { structure: i18n.I18N_STRUCTURE.MULTIPLE_FOLDERS, locales, default_locale },
+        }),
+        extension,
+        entries,
+      );
+
+      expect(grouped.map(({ path, data, i18n }) => ({ path, data, i18n }))).toEqual([
+        {
+          path: 'src/content/first/index.md',
+          data: { title: 'en_first' },
+          i18n: { de: { data: { title: 'de_first' } } },
+        },
+        {
+          path: 'src/content/second/index.md',
+          data: { title: 'en_second' },
+          i18n: { de: { data: { title: 'de_second' } } },
+        },
+      ]);
+    });
+
+    it('should keep the translations of an entry in a folder ending with the locale', () => {
+      const entries = ['en', 'de'].map(locale => ({
+        path: `garden/posts/${locale}/hello.md`,
+        data: { title: `${locale}_title` },
+      }));
+
+      const grouped = i18n.groupEntries(
+        fromJS({
+          folder: 'garden/posts',
+          i18n: { structure: i18n.I18N_STRUCTURE.MULTIPLE_FOLDERS, locales, default_locale },
+        }),
+        extension,
+        entries,
+      );
+
+      expect(grouped).toHaveLength(1);
+      expect(grouped[0].path).toEqual('garden/posts/hello.md');
+      expect(grouped[0].i18n).toEqual({ de: { data: { title: 'de_title' } } });
     });
 
     it('should group entries array when structure is I18N_STRUCTURE.MULTIPLE_FILES', () => {

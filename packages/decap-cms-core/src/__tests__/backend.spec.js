@@ -1825,6 +1825,57 @@ describe('Backend', () => {
       expect(siblingRegex.test('content/posts/slug.en.md')).toBe(false);
     });
 
+    describe('multiple_folders', () => {
+      function collectionWithPath(path, folder = 'content/posts') {
+        return collectionWithI18n('multiple_folders').merge(
+          fromJS({ folder, ...(path && { path }) }),
+        );
+      }
+
+      async function regexesFor(collection) {
+        const implementation = {
+          init: jest.fn(() => implementation),
+          allEntriesByFolder: jest.fn().mockResolvedValue([]),
+        };
+
+        await backendWith(implementation).listAllEntries(collection);
+
+        const [, , , pathRegex, , siblingRegex] = implementation.allEntriesByFolder.mock.calls[0];
+        return { pathRegex, siblingRegex };
+      }
+
+      it('selects locale folders below the collection folder', async () => {
+        const { pathRegex, siblingRegex } = await regexesFor(collectionWithPath());
+
+        expect(pathRegex.test('content/posts/en/slug.md')).toBe(true);
+        expect(pathRegex.test('content/posts/de/slug.md')).toBe(false);
+        expect(siblingRegex.test('content/posts/de/slug.md')).toBe(true);
+        expect(siblingRegex.test('content/posts/en/slug.md')).toBe(false);
+      });
+
+      it('does not take a folder ending with the locale for the locale folder', async () => {
+        const { pathRegex } = await regexesFor(collectionWithPath(undefined, 'content/garden'));
+
+        expect(pathRegex.test('content/garden/en/slug.md')).toBe(true);
+        expect(pathRegex.test('content/garden/de/slug.md')).toBe(false);
+      });
+
+      it('selects files of a collection path below the locale folder', async () => {
+        const { pathRegex, siblingRegex } = await regexesFor(collectionWithPath('{{slug}}/index'));
+
+        expect(pathRegex.test('content/posts/en/slug/index.md')).toBe(true);
+        expect(pathRegex.test('content/posts/de/slug/index.md')).toBe(false);
+        expect(siblingRegex.test('content/posts/de/slug/index.md')).toBe(true);
+        expect(siblingRegex.test('content/posts/en/slug/index.md')).toBe(false);
+      });
+
+      it('matches a collection folder with regular expression characters literally', async () => {
+        const { pathRegex } = await regexesFor(collectionWithPath(undefined, 'src/(app)/posts'));
+
+        expect(pathRegex.test('src/(app)/posts/en/slug.md')).toBe(true);
+      });
+    });
+
     it('passes no sibling selector when every locale lives in one file', async () => {
       const implementation = {
         init: jest.fn(() => implementation),
