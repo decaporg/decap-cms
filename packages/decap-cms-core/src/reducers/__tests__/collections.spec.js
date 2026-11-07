@@ -99,6 +99,31 @@ describe('collections', () => {
         ),
       ).toBe('dir1/dir2/slug');
     });
+
+    it('should keep subfolders whose name ends with the collection folder', () => {
+      const collection = fromJS({ type: FOLDER, folder: 'posts' });
+
+      expect(selectEntrySlug(collection, 'posts/old-posts/slug.md')).toBe('old-posts/slug');
+    });
+
+    it('should keep subfolders named like the collection folder', () => {
+      const collection = fromJS({ type: FOLDER, folder: 'posts' });
+
+      expect(selectEntrySlug(collection, 'posts/archive/posts/slug.md')).toBe('archive/posts/slug');
+    });
+
+    it('should resolve to the path the slug came from', () => {
+      const collection = fromJS({ type: FOLDER, folder: 'content/posts', extension: 'md' });
+      const path = 'content/posts/content/posts/old-posts/slug.md';
+
+      expect(selectEntryPath(collection, selectEntrySlug(collection, path))).toBe(path);
+    });
+
+    it('should ignore a trailing slash on the collection folder', () => {
+      const collection = fromJS({ type: FOLDER, folder: 'posts/' });
+
+      expect(selectEntrySlug(collection, 'posts/old-posts/slug.md')).toBe('old-posts/slug');
+    });
   });
 
   describe('selectFieldsMediaFolders', () => {
