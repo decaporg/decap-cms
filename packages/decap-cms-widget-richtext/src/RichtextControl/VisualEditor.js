@@ -118,6 +118,12 @@ export default function VisualEditor(props) {
         ['blockquote']: BlockquoteElement,
         ['image']: withProps(ImageElement, { getAsset, field }),
       },
+      plugins: Object.fromEntries(
+        [KEYS.h1, KEYS.h2, KEYS.h3, KEYS.h4, KEYS.h5, KEYS.h6].map(key => [
+          key,
+          { rules: { delete: { start: 'default' } } },
+        ]),
+      ),
     },
     plugins: [
       ParagraphPlugin,
