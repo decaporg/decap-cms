@@ -44,7 +44,7 @@ function ShortcodeElement(props) {
   const [value, setValue] = useState(fromJS(element?.data[dataKey] ?? { id: '' }));
 
   const selection = useEditorSelection();
-  const path = editor.api.findPath(element);
+  const path = props.path ?? editor.api.findPath(element);
   const isSelected =
     selection && path && Range.isRange(selection) && Range.includes(selection, path);
   const insertBefore = path[0] === 0;
