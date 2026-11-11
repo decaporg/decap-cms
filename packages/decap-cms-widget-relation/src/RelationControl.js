@@ -471,14 +471,21 @@ export default class RelationControl extends Component {
   }
 
   parseHitOptions = hits => {
-    const { field } = this.props;
+    const { field, getEntry } = this.props;
     const valueField = field.get('value_field');
     const displayField = field.get('display_fields') || List([field.get('value_field')]);
     const filters = getFieldArray(field.get('filters'));
-
+    const entry = field.get('file') ? null : getEntry?.();
+    function isCurrentEntry(hit) {
+      return (
+        !!entry?.get('slug') &&
+        hit.slug === entry.get('slug') &&
+        hit.collection === entry.get('collection')
+      );
+    }
     const options = hits.reduce((acc, hit) => {
       const hitData = this.getHitData(hit);
-      if (filters.every(filter => isFilterMatch(hitData, filter))) {
+      if (!isCurrentEntry(hit) && filters.every(filter => isFilterMatch(hitData, filter))) {
         const valuesPaths = stringTemplate.expandPath({ data: hit.data, path: valueField });
         for (let i = 0; i < valuesPaths.length; i++) {
           const label = displayField

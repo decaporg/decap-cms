@@ -892,6 +892,27 @@ describe('Relation widget', () => {
     await waitFor(() => expect(getByText('YAML post post-yaml')).toBeInTheDocument());
   });
 
+  it('should not offer the entry being edited', async () => {
+    const { container, getByText, queryByText } = render(
+      <RelationControl
+        field={fromJS(fieldConfig)}
+        getEntry={() => fromJS({ collection: 'posts', slug: 'post-number-1' })}
+        query={jest.fn(() => Promise.resolve({ payload: { hits: generateHits(25) } }))}
+        queryHits={[]}
+        onChange={jest.fn()}
+        forID="relation-field"
+        classNameWrapper=""
+        setActiveStyle={jest.fn()}
+        setInactiveStyle={jest.fn()}
+      />,
+    );
+
+    fireEvent.keyDown(container.querySelector('input'), { key: 'ArrowDown' });
+
+    await waitFor(() => expect(getByText('Post # 2 post-number-2')).toBeInTheDocument());
+    expect(queryByText('Post # 1 post-number-1')).not.toBeInTheDocument();
+  });
+
   describe('when the filters change', () => {
     const categoryHits = [
       { collection: 'posts', data: { title: 'Match day', category: 'sports' } },
