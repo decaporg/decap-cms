@@ -19,6 +19,12 @@ function getFilters(field: Map<string, unknown>) {
   return List.isList(filters) ? (filters.toJS() as Filter[]) : [];
 }
 
+function getReferenceValues(reference: string, entryData?: Map<string, unknown>) {
+  const current = entryData?.getIn(stringTemplate.keyToPathArray(reference));
+  const items = List.isList(current) ? current.toArray() : [current];
+  return items.filter(item => item != null && item !== '' && typeof item !== 'object');
+}
+
 export function hasFieldReferences(field: Map<string, unknown>) {
   return getFilters(field).some(filter =>
     filter.values.some(value => getFieldReference(value) !== null),
@@ -40,10 +46,20 @@ export function resolveFieldReferences(
       if (reference === null) {
         return [value];
       }
-      const current = entryData?.getIn(stringTemplate.keyToPathArray(reference));
-      const items = List.isList(current) ? current.toArray() : [current];
-      return items.filter(item => item != null && item !== '' && typeof item !== 'object');
+      return getReferenceValues(reference, entryData);
     }),
   }));
   return field.set('filters', fromJS(filters));
+}
+
+/** Names of the referenced fields that are still empty. */
+export function getEmptyReferences(field: Map<string, unknown>, entryData?: Map<string, unknown>) {
+  const references = getFilters(field).flatMap(filter =>
+    filter.values
+      .map(getFieldReference)
+      .filter((reference): reference is string => reference !== null),
+  );
+  return [...new Set(references)].filter(
+    reference => getReferenceValues(reference, entryData).length === 0,
+  );
 }

@@ -16,10 +16,11 @@ import gfm from 'remark-gfm';
 
 import { resolveWidget, getEditorComponents } from '../../../lib/registry';
 import { editorApi } from '../../../lib/editorApi';
-import { resolveFieldReferences } from '../../../lib/fieldFilters';
+import { getEmptyReferences, resolveFieldReferences } from '../../../lib/fieldFilters';
 import { clearFieldErrors, tryLoadEntry, validateMetaField } from '../../../actions/entries';
 import { addAsset, getAsset } from '../../../actions/media';
 import { selectIsLoadingAsset } from '../../../reducers/medias';
+import { selectField } from '../../../reducers/collections';
 import { query, clearSearch } from '../../../actions/search';
 import { store } from '../../../redux';
 import {
@@ -296,6 +297,7 @@ class EditorControl extends Component {
       isFieldHidden,
       locale,
       isParentListCollapsed,
+      waitingFor,
     } = this.props;
 
     const widgetName = field.get('widget');
@@ -308,6 +310,7 @@ class EditorControl extends Component {
     const errors = fieldsErrors && fieldsErrors.get(this.uniqueFieldId);
     const childErrors = this.isAncestorOfFieldError();
     const hasErrors = !!errors || childErrors;
+    const isWaiting = !!waitingFor;
 
     return (
       <ClassNames>
@@ -375,7 +378,7 @@ class EditorControl extends Component {
                 {
                   [css`
                     ${styleStrings.disabled}
-                  `]: isDisabled,
+                  `]: isDisabled || isWaiting,
                 },
               )}
               classNameWidget={css`
@@ -430,7 +433,7 @@ class EditorControl extends Component {
               parentIds={parentIds}
               t={t}
               validateMetaField={validateMetaField}
-              isDisabled={isDisabled}
+              isDisabled={isDisabled || isWaiting}
               isFieldDuplicate={isFieldDuplicate}
               isFieldHidden={isFieldHidden}
               isLoadingAsset={isLoadingAsset}
@@ -457,6 +460,11 @@ class EditorControl extends Component {
                 >
                   {fieldHint}
                 </ReactMarkdown>
+              </ControlHint>
+            )}
+            {isWaiting && (
+              <ControlHint>
+                {t('editor.editorControlPane.widget.selectFirst', { fieldLabel: waitingFor })}
               </ControlHint>
             )}
           </ControlContainer>
@@ -509,7 +517,12 @@ function makeMapStateToProps() {
     const collection = collections.get(entryDraft.getIn(['entry', 'collection']));
     const isLoadingAsset = selectIsLoadingAsset(state.medias);
 
-    const field = resolveFieldReferences(ownProps.field, entryDraft.getIn(['entry', 'data']));
+    const data = entryDraft.getIn(['entry', 'data']);
+    const waitingFor = getEmptyReferences(ownProps.field, data)
+      .map(name => (collection && selectField(collection, name)?.get('label')) || name)
+      .join(', ');
+
+    const field = resolveFieldReferences(ownProps.field, data);
     if (!is(field, resolvedField)) {
       resolvedField = field;
     }
@@ -525,6 +538,7 @@ function makeMapStateToProps() {
       loadEntry: stable.loadEntry,
       validateMetaField: stable.validateMetaField(collection),
       resolvedField,
+      waitingFor,
     };
   };
 }

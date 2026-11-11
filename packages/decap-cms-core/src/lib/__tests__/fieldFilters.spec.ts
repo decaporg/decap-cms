@@ -1,6 +1,6 @@
 import { fromJS } from 'immutable';
 
-import { hasFieldReferences, resolveFieldReferences } from '../fieldFilters';
+import { getEmptyReferences, hasFieldReferences, resolveFieldReferences } from '../fieldFilters';
 
 function relationField(values: unknown[]) {
   return fromJS({
@@ -66,5 +66,21 @@ describe('resolveFieldReferences', () => {
     expect(resolvedValues(['x-{{fields.category}}'], { category: 'blog' })).toEqual([
       { field: 'category', values: ['x-{{fields.category}}'] },
     ]);
+  });
+});
+
+describe('getEmptyReferences', () => {
+  it('lists referenced fields that are empty', () => {
+    const field = relationField(['{{fields.category}}']);
+    expect(getEmptyReferences(field, fromJS({}))).toEqual(['category']);
+  });
+
+  it('ignores referenced fields that have a value', () => {
+    const field = relationField(['{{fields.category}}']);
+    expect(getEmptyReferences(field, fromJS({ category: 'blog' }))).toEqual([]);
+  });
+
+  it('ignores fixed values', () => {
+    expect(getEmptyReferences(relationField(['news']), fromJS({}))).toEqual([]);
   });
 });
