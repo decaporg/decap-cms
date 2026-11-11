@@ -873,4 +873,88 @@ describe('Relation widget', () => {
       await expectOwners(getAllByText, ['Owner B']);
     });
   });
+
+  it('should show a saved option once its label loads, without new query hits', async () => {
+    const { getByText } = render(
+      <RelationControl
+        field={fromJS(fieldConfig)}
+        value="YAML post"
+        query={jest.fn(() => Promise.resolve({ payload: { hits: generateHits(25) } }))}
+        queryHits={[]}
+        onChange={jest.fn()}
+        forID="relation-field"
+        classNameWrapper=""
+        setActiveStyle={jest.fn()}
+        setInactiveStyle={jest.fn()}
+      />,
+    );
+
+    await waitFor(() => expect(getByText('YAML post post-yaml')).toBeInTheDocument());
+  });
+
+  describe('when the filters change', () => {
+    const categoryHits = [
+      { collection: 'posts', data: { title: 'Match day', category: 'sports' } },
+      { collection: 'posts', data: { title: 'Jazz night', category: 'music' } },
+      { collection: 'posts', data: { title: 'Festival', category: ['sports', 'music'] } },
+    ];
+
+    function categoryField(values, extra = {}) {
+      return fromJS({
+        name: 'post',
+        collection: 'posts',
+        search_fields: ['title'],
+        value_field: 'title',
+        filters: [{ field: 'category', values }],
+        ...extra,
+      });
+    }
+
+    function renderControl(field, value) {
+      const props = {
+        value,
+        onChange: jest.fn(),
+        query: jest.fn(() => Promise.resolve({ payload: { hits: categoryHits } })),
+        queryHits: [],
+        forID: 'relation-field',
+        classNameWrapper: '',
+        setActiveStyle: jest.fn(),
+        setInactiveStyle: jest.fn(),
+      };
+      const helpers = render(<RelationControl {...props} field={field} />);
+      return {
+        ...helpers,
+        onChange: props.onChange,
+        setField: next => helpers.rerender(<RelationControl {...props} field={next} />),
+      };
+    }
+
+    it('should drop the value when it no longer matches', async () => {
+      const { onChange, setField } = renderControl(categoryField(['sports']), 'Match day');
+      await waitFor(() => expect(onChange).toHaveBeenCalledTimes(1));
+
+      setField(categoryField(['music']));
+
+      expect(onChange).toHaveBeenLastCalledWith('');
+    });
+
+    it('should keep the value when it still matches', async () => {
+      const { onChange, setField } = renderControl(categoryField(['sports']), 'Festival');
+      await waitFor(() => expect(onChange).toHaveBeenCalledTimes(1));
+
+      setField(categoryField(['music']));
+
+      expect(onChange).toHaveBeenCalledTimes(1);
+    });
+
+    it('should drop unmatched values but keep values it has no data for', async () => {
+      const field = categoryField(['sports'], { multiple: true });
+      const { onChange, setField } = renderControl(field, fromJS(['Match day', 'Unknown post']));
+      await waitFor(() => expect(onChange).toHaveBeenCalledTimes(1));
+
+      setField(categoryField(['music'], { multiple: true }));
+
+      expect(onChange).toHaveBeenLastCalledWith(fromJS(['Unknown post']));
+    });
+  });
 });
