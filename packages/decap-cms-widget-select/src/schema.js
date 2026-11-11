@@ -20,6 +20,17 @@ export default {
         ],
       },
     },
+    filters: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          field: { type: 'string' },
+          values: { type: 'array', minItems: 1, items: { type: ['string', 'boolean', 'integer'] } },
+        },
+        required: ['field', 'values'],
+      },
+    },
   },
   required: ['options'],
 };
