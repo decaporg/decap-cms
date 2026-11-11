@@ -38,6 +38,12 @@ declare module 'decap-cms-core' {
   export interface CmsSelectWidgetOptionObject {
     label: string;
     value: any;
+    [key: string]: unknown;
+  }
+
+  export interface CmsFieldFilter {
+    field: string;
+    values: (string | number | boolean)[];
   }
 
   export type CmsCollectionFormatType = string;
@@ -213,6 +219,7 @@ declare module 'decap-cms-core' {
     multiple?: boolean;
     min?: number;
     max?: number;
+    filters?: CmsFieldFilter[];
   }
 
   export interface CmsFieldRelation {
@@ -228,6 +235,7 @@ declare module 'decap-cms-core' {
     min?: number;
     max?: number;
     options_length?: number;
+    filters?: CmsFieldFilter[];
 
     /**
      * @deprecated Use value_field instead

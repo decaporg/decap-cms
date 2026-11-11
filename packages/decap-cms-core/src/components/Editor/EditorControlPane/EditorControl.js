@@ -9,15 +9,18 @@ import partial from 'lodash/partial';
 import uniqueId from 'lodash/uniqueId';
 import memoize from 'lodash/memoize';
 import { connect } from 'react-redux';
+import { is } from 'immutable';
 import { FieldLabel, colors, transitions, lengths, borders } from 'decap-cms-ui-default';
 import ReactMarkdown from 'react-markdown';
 import gfm from 'remark-gfm';
 
 import { resolveWidget, getEditorComponents } from '../../../lib/registry';
 import { editorApi } from '../../../lib/editorApi';
+import { getEmptyReferences, resolveFieldReferences } from '../../../lib/fieldFilters';
 import { clearFieldErrors, tryLoadEntry, validateMetaField } from '../../../actions/entries';
 import { addAsset, getAsset } from '../../../actions/media';
 import { selectIsLoadingAsset } from '../../../reducers/medias';
+import { selectField } from '../../../reducers/collections';
 import { query, clearSearch } from '../../../actions/search';
 import { store } from '../../../redux';
 import {
@@ -294,6 +297,7 @@ class EditorControl extends Component {
       isFieldHidden,
       locale,
       isParentListCollapsed,
+      waitingFor,
     } = this.props;
 
     const widgetName = field.get('widget');
@@ -306,6 +310,7 @@ class EditorControl extends Component {
     const errors = fieldsErrors && fieldsErrors.get(this.uniqueFieldId);
     const childErrors = this.isAncestorOfFieldError();
     const hasErrors = !!errors || childErrors;
+    const isWaiting = !!waitingFor;
 
     return (
       <ClassNames>
@@ -373,7 +378,7 @@ class EditorControl extends Component {
                 {
                   [css`
                     ${styleStrings.disabled}
-                  `]: isDisabled,
+                  `]: isDisabled || isWaiting,
                 },
               )}
               classNameWidget={css`
@@ -428,7 +433,7 @@ class EditorControl extends Component {
               parentIds={parentIds}
               t={t}
               validateMetaField={validateMetaField}
-              isDisabled={isDisabled}
+              isDisabled={isDisabled || isWaiting}
               isFieldDuplicate={isFieldDuplicate}
               isFieldHidden={isFieldHidden}
               isLoadingAsset={isLoadingAsset}
@@ -455,6 +460,11 @@ class EditorControl extends Component {
                 >
                   {fieldHint}
                 </ReactMarkdown>
+              </ControlHint>
+            )}
+            {isWaiting && (
+              <ControlHint>
+                {t('editor.editorControlPane.widget.selectFirst', { fieldLabel: waitingFor })}
               </ControlHint>
             )}
           </ControlContainer>
@@ -499,21 +509,37 @@ const stable = {
   }),
 };
 
-function mapStateToProps(state) {
-  const { collections, entryDraft } = state;
-  const collection = collections.get(entryDraft.getIn(['entry', 'collection']));
-  const isLoadingAsset = selectIsLoadingAsset(state.medias);
+function makeMapStateToProps() {
+  let resolvedField;
 
-  return {
-    mediaPaths: state.mediaLibrary.get('controlMedia'),
-    isFetching: state.search.isFetching,
-    queryHits: state.search.queryHits,
-    config: state.config,
-    collection,
-    isLoadingAsset,
-    getEntry: stable.getEntry,
-    loadEntry: stable.loadEntry,
-    validateMetaField: stable.validateMetaField(collection),
+  return function mapStateToProps(state, ownProps) {
+    const { collections, entryDraft } = state;
+    const collection = collections.get(entryDraft.getIn(['entry', 'collection']));
+    const isLoadingAsset = selectIsLoadingAsset(state.medias);
+
+    const data = entryDraft.getIn(['entry', 'data']);
+    const waitingFor = getEmptyReferences(ownProps.field, data)
+      .map(name => (collection && selectField(collection, name)?.get('label')) || name)
+      .join(', ');
+
+    const field = resolveFieldReferences(ownProps.field, data);
+    if (!is(field, resolvedField)) {
+      resolvedField = field;
+    }
+
+    return {
+      mediaPaths: state.mediaLibrary.get('controlMedia'),
+      isFetching: state.search.isFetching,
+      queryHits: state.search.queryHits,
+      config: state.config,
+      collection,
+      isLoadingAsset,
+      getEntry: stable.getEntry,
+      loadEntry: stable.loadEntry,
+      validateMetaField: stable.validateMetaField(collection),
+      resolvedField,
+      waitingFor,
+    };
   };
 }
 
@@ -539,16 +565,18 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mergeProps(stateProps, dispatchProps, ownProps) {
+  const { resolvedField, ...state } = stateProps;
   return {
-    ...stateProps,
+    ...state,
     ...dispatchProps,
     ...ownProps,
+    field: resolvedField,
     boundGetAsset: dispatchProps.boundGetAsset(stateProps.collection),
   };
 }
 
 const ConnectedEditorControl = connect(
-  mapStateToProps,
+  makeMapStateToProps,
   mapDispatchToProps,
   mergeProps,
 )(translate()(EditorControl));

@@ -101,6 +101,7 @@ const en = {
         rangeMax: '%{fieldLabel} must be %{maxCount} or less item(s).',
         invalidPath: `'%{path}' is not a valid path`,
         pathExists: `Path '%{path}' already exists`,
+        selectFirst: 'Select %{fieldLabel} first.',
       },
       i18n: {
         writingInLocale: 'Writing in %{locale}',
