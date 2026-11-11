@@ -261,12 +261,14 @@ export default class RelationControl extends Component {
     return error ? { error } : { error: false };
   };
 
-  shouldComponentUpdate(nextProps) {
+  shouldComponentUpdate(nextProps, nextState) {
     return (
       this.props.value !== nextProps.value ||
       this.props.field !== nextProps.field ||
       this.props.hasActiveStyle !== nextProps.hasActiveStyle ||
-      this.props.queryHits !== nextProps.queryHits
+      this.props.queryHits !== nextProps.queryHits ||
+      // Widget calls this with props only
+      (nextState !== undefined && nextState !== this.state)
     );
   }
 
