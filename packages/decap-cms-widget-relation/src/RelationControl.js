@@ -264,6 +264,7 @@ export default class RelationControl extends Component {
   shouldComponentUpdate(nextProps) {
     return (
       this.props.value !== nextProps.value ||
+      this.props.field !== nextProps.field ||
       this.props.hasActiveStyle !== nextProps.hasActiveStyle ||
       this.props.queryHits !== nextProps.queryHits
     );
@@ -277,6 +278,35 @@ export default class RelationControl extends Component {
     const { value } = this.props;
     if (value && this.hasInitialValues(value)) {
       await this.loadInitialOptions();
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.field.get('filters') !== this.props.field.get('filters')) {
+      this.removeUnmatchedValues();
+    }
+  }
+
+  /** Drops selected values whose entries no longer match the filters; values without loaded data are kept. */
+  removeUnmatchedValues() {
+    const { value, field, onChange } = this.props;
+    const filters = getFieldArray(field.get('filters'));
+    const unmatched = this.state.initialOptions
+      .filter(option => !filters.every(filter => isFilterMatch(option.data, filter)))
+      .map(option => option.value);
+
+    if (this.isMultiple()) {
+      const selected = getSelectedOptions(value) || [];
+      const kept = selected.filter(selectedValue => !unmatched.includes(selectedValue));
+      if (kept.length < selected.length) {
+        this.setState({
+          initialOptions: this.state.initialOptions.filter(option => kept.includes(option.value)),
+        });
+        onChange(fromJS(kept));
+      }
+    } else if (value && unmatched.includes(value)) {
+      this.setState({ initialOptions: [] });
+      onChange('');
     }
   }
 

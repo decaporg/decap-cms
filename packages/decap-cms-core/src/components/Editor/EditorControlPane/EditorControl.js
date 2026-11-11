@@ -9,12 +9,14 @@ import partial from 'lodash/partial';
 import uniqueId from 'lodash/uniqueId';
 import memoize from 'lodash/memoize';
 import { connect } from 'react-redux';
+import { is } from 'immutable';
 import { FieldLabel, colors, transitions, lengths, borders } from 'decap-cms-ui-default';
 import ReactMarkdown from 'react-markdown';
 import gfm from 'remark-gfm';
 
 import { resolveWidget, getEditorComponents } from '../../../lib/registry';
 import { editorApi } from '../../../lib/editorApi';
+import { resolveFieldReferences } from '../../../lib/fieldFilters';
 import { clearFieldErrors, tryLoadEntry, validateMetaField } from '../../../actions/entries';
 import { addAsset, getAsset } from '../../../actions/media';
 import { selectIsLoadingAsset } from '../../../reducers/medias';
@@ -499,21 +501,31 @@ const stable = {
   }),
 };
 
-function mapStateToProps(state) {
-  const { collections, entryDraft } = state;
-  const collection = collections.get(entryDraft.getIn(['entry', 'collection']));
-  const isLoadingAsset = selectIsLoadingAsset(state.medias);
+function makeMapStateToProps() {
+  let resolvedField;
 
-  return {
-    mediaPaths: state.mediaLibrary.get('controlMedia'),
-    isFetching: state.search.isFetching,
-    queryHits: state.search.queryHits,
-    config: state.config,
-    collection,
-    isLoadingAsset,
-    getEntry: stable.getEntry,
-    loadEntry: stable.loadEntry,
-    validateMetaField: stable.validateMetaField(collection),
+  return function mapStateToProps(state, ownProps) {
+    const { collections, entryDraft } = state;
+    const collection = collections.get(entryDraft.getIn(['entry', 'collection']));
+    const isLoadingAsset = selectIsLoadingAsset(state.medias);
+
+    const field = resolveFieldReferences(ownProps.field, entryDraft.getIn(['entry', 'data']));
+    if (!is(field, resolvedField)) {
+      resolvedField = field;
+    }
+
+    return {
+      mediaPaths: state.mediaLibrary.get('controlMedia'),
+      isFetching: state.search.isFetching,
+      queryHits: state.search.queryHits,
+      config: state.config,
+      collection,
+      isLoadingAsset,
+      getEntry: stable.getEntry,
+      loadEntry: stable.loadEntry,
+      validateMetaField: stable.validateMetaField(collection),
+      resolvedField,
+    };
   };
 }
 
@@ -539,16 +551,18 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mergeProps(stateProps, dispatchProps, ownProps) {
+  const { resolvedField, ...state } = stateProps;
   return {
-    ...stateProps,
+    ...state,
     ...dispatchProps,
     ...ownProps,
+    field: resolvedField,
     boundGetAsset: dispatchProps.boundGetAsset(stateProps.collection),
   };
 }
 
 const ConnectedEditorControl = connect(
-  mapStateToProps,
+  makeMapStateToProps,
   mapDispatchToProps,
   mergeProps,
 )(translate()(EditorControl));
