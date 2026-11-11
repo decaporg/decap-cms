@@ -25,7 +25,7 @@ export function hasFieldReferences(field: Map<string, unknown>) {
   );
 }
 
-/** Replaces filter values like `{{fields.author}}` with that field's current value(s); skips filters left empty. */
+/** Replaces filter values like `{{fields.author}}` with that field's current value(s); an empty field matches nothing. */
 export function resolveFieldReferences(
   field: Map<string, unknown>,
   entryData?: Map<string, unknown>,
@@ -33,19 +33,17 @@ export function resolveFieldReferences(
   if (!hasFieldReferences(field)) {
     return field;
   }
-  const filters = getFilters(field)
-    .map(filter => ({
-      ...filter,
-      values: filter.values.flatMap(value => {
-        const reference = getFieldReference(value);
-        if (reference === null) {
-          return [value];
-        }
-        const current = entryData?.getIn(stringTemplate.keyToPathArray(reference));
-        const items = List.isList(current) ? current.toArray() : [current];
-        return items.filter(item => item != null && item !== '' && typeof item !== 'object');
-      }),
-    }))
-    .filter(filter => filter.values.length > 0);
+  const filters = getFilters(field).map(filter => ({
+    ...filter,
+    values: filter.values.flatMap(value => {
+      const reference = getFieldReference(value);
+      if (reference === null) {
+        return [value];
+      }
+      const current = entryData?.getIn(stringTemplate.keyToPathArray(reference));
+      const items = List.isList(current) ? current.toArray() : [current];
+      return items.filter(item => item != null && item !== '' && typeof item !== 'object');
+    }),
+  }));
   return field.set('filters', fromJS(filters));
 }

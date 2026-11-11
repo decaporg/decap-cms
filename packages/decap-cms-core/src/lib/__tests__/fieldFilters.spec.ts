@@ -55,10 +55,11 @@ describe('resolveFieldReferences', () => {
     ]);
   });
 
-  it('skips the filter while the referenced field is empty', () => {
-    expect(resolvedValues(['{{fields.category}}'], {})).toEqual([]);
-    expect(resolvedValues(['{{fields.category}}'], { category: '' })).toEqual([]);
-    expect(resolvedValues(['{{fields.category}}'], { category: [] })).toEqual([]);
+  it('matches nothing while the referenced field is empty', () => {
+    const empty = [{ field: 'category', values: [] }];
+    expect(resolvedValues(['{{fields.category}}'], {})).toEqual(empty);
+    expect(resolvedValues(['{{fields.category}}'], { category: '' })).toEqual(empty);
+    expect(resolvedValues(['{{fields.category}}'], { category: [] })).toEqual(empty);
   });
 
   it('treats a reference inside other text as a fixed value', () => {
