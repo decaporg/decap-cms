@@ -194,19 +194,18 @@ export default class BitbucketBackend implements Implementation {
 
   async authenticate(state: Credentials) {
     this.token = state.token as string;
+    this.refreshToken = state.refresh_token;
     if (!this.isBranchConfigured) {
-      const repo = await fetch(`${this.apiRoot}/repositories/${this.repo}`, {
-        headers: {
-          Authorization: `token ${this.token}`,
-        },
-      })
+      // Bitbucket only accepts the Bearer scheme and treats anything else as an
+      // anonymous request, which cannot read a private repository. Going through
+      // `apiRequestFunction` also refreshes an expired token first.
+      const repo = await this.apiRequestFunction(`${this.apiRoot}/repositories/${this.repo}`)
         .then(res => res.json())
         .catch(() => null);
-      if (repo) {
+      if (repo?.mainbranch?.name) {
         this.branch = repo.mainbranch.name;
       }
     }
-    this.refreshToken = state.refresh_token;
     this.api = new API({
       requestFunction: this.apiRequestFunction,
       branch: this.branch,
