@@ -633,6 +633,30 @@ describe('ListControl', () => {
     }
   });
 
+  it('should remove from a single field list that has metadata', () => {
+    const field = fromJS({
+      name: 'list',
+      label: 'List',
+      field: { label: 'Author', name: 'author', widget: 'relation', collection: 'authors' },
+    });
+    const metadata = fromJS({
+      author: { authors: { 'author-a': { title: 'A' }, 'author-b': { title: 'B' } } },
+    });
+    const { getAllByText } = render(
+      <ListControl
+        {...props}
+        field={field}
+        metadata={metadata}
+        value={fromJS(['author-a', 'author-b'])}
+      />,
+    );
+
+    fireEvent.click(getAllByText('Remove')[0]);
+
+    expect(props.onChange).toHaveBeenCalledTimes(1);
+    expect(props.onChange).toHaveBeenCalledWith(fromJS(['author-b']), { list: metadata });
+  });
+
   it('should give validation error if below min elements', () => {
     const field = fromJS({
       name: 'list',
