@@ -64,26 +64,31 @@ describe('editorialWorkflow actions', () => {
         // authoritative, so refreshing the set first would be pure latency.
         expect(backend.unpublishedContentKeys).not.toHaveBeenCalled();
         const actions = store.getActions();
-        expect(actions).toHaveLength(4);
+        expect(actions).toHaveLength(5);
         expect(actions[0]).toEqual({
+          type: 'DRAFT_LOAD_REQUEST',
+          payload: { loadId: expect.any(Number) },
+        });
+        expect(actions[1]).toEqual({
           type: 'UNPUBLISHED_ENTRY_REQUEST',
           payload: {
             collection: 'posts',
             slug,
           },
         });
-        expect(actions[1]).toEqual(addAssets([assetProxy]));
-        expect(actions[2]).toEqual({
+        expect(actions[2]).toEqual(addAssets([assetProxy]));
+        expect(actions[3]).toEqual({
           type: 'UNPUBLISHED_ENTRY_SUCCESS',
           payload: {
             collection: 'posts',
             entry: { ...entry, mediaFiles: [{ file: { name: 'name' }, id: '1', draft: true }] },
           },
         });
-        expect(actions[3]).toEqual({
+        expect(actions[4]).toEqual({
           type: 'DRAFT_CREATE_FROM_ENTRY',
           payload: {
             entry,
+            loadId: actions[0].payload.loadId,
           },
         });
       });
@@ -153,7 +158,7 @@ describe('editorialWorkflow actions', () => {
         expect(backend.unpublishedContentKeys).toHaveBeenCalledTimes(1);
         expect(backend.unpublishedEntry).not.toHaveBeenCalled();
         expect(backend.unpublishedEntries).not.toHaveBeenCalled();
-        expect(store.getActions()[1]).toEqual({
+        expect(store.getActions()[2]).toEqual({
           type: 'UNPUBLISHED_ENTRY_REDIRECT',
           payload: { collection: 'posts', slug: 'slug' },
         });
@@ -205,6 +210,98 @@ describe('editorialWorkflow actions', () => {
         collection,
         'just-saved',
       );
+    });
+
+    // #8065, editorial workflow: a draft that answers after the user left it
+    // must not end up in the new entry's form, or saving there commits the
+    // edit to the old entry's branch.
+    it('keeps the new entry form empty when the old draft answers late', async () => {
+      const { currentBackend } = require('../../backend');
+      const entryDraft = require('../../reducers/entryDraft').default;
+      const { discardDraft, emptyDraftCreated } = require('../entries');
+
+      let answer;
+      const backend = {
+        unpublishedContentKeys: jest.fn(),
+        unpublishedEntry: jest.fn(
+          () => new Promise(resolve => (answer = () => resolve({ slug: 'a', mediaFiles: [] }))),
+        ),
+      };
+      currentBackend.mockReturnValue(backend);
+
+      function fixed(value) {
+        return (state = value) => state;
+      }
+      const store = createStore(
+        combineReducers({
+          config: fixed(fromJS({})),
+          collections: fixed(fromJS({ posts: { name: 'posts' } })),
+          mediaLibrary: fixed(fromJS({ isLoading: false })),
+          editorialWorkflow: fixed(fromJS({ pages: { keys: ['posts/a'] }, entities: {} })),
+          entryDraft,
+        }),
+        applyMiddleware(thunk),
+      );
+      const collection = store.getState().collections.get('posts');
+
+      const loading = store.dispatch(actions.loadUnpublishedEntry(collection, 'a'));
+      store.dispatch(discardDraft()); // Back
+      store.dispatch(emptyDraftCreated({ collection: 'posts', slug: '', data: {} })); // New Post
+      answer();
+      await loading;
+
+      const draft = store.getState().entryDraft.get('entry');
+      expect(draft.get('newRecord')).toBe(true);
+      expect(draft.get('slug')).toBe('');
+    });
+
+    // #5055: on a fresh page load the workflow keys are unknown, so the load
+    // checks them first and then redirects a published entry to `loadEntry`.
+    // A backup restored while that runs must survive the redirect.
+    it('keeps a restored local backup when a published entry loads after it', async () => {
+      const { currentBackend } = require('../../backend');
+      const entryDraft = require('../../reducers/entryDraft').default;
+      const { localBackupRetrieved, loadLocalBackup } = require('../entries');
+
+      let answerKeys;
+      const backend = {
+        unpublishedContentKeys: jest.fn(() => new Promise(resolve => (answerKeys = resolve))),
+        unpublishedEntry: jest.fn(),
+        getEntry: jest.fn().mockResolvedValue({
+          collection: 'posts',
+          slug: 'a',
+          data: { title: 'Saved' },
+          mediaFiles: [],
+        }),
+      };
+      currentBackend.mockReturnValue(backend);
+
+      function fixed(value) {
+        return (state = value) => state;
+      }
+      const store = createStore(
+        combineReducers({
+          config: fixed(fromJS({})),
+          collections: fixed(fromJS({ posts: { name: 'posts' } })),
+          mediaLibrary: fixed(fromJS({ isLoading: false })),
+          editorialWorkflow: fixed(fromJS({ pages: {}, entities: {} })),
+          entryDraft,
+        }),
+        applyMiddleware(thunk),
+      );
+      const collection = store.getState().collections.get('posts');
+
+      const loading = store.dispatch(actions.loadUnpublishedEntry(collection, 'a'));
+      store.dispatch(
+        localBackupRetrieved({ collection: 'posts', slug: 'a', data: { title: 'Unsaved' } }),
+      );
+      store.dispatch(loadLocalBackup()); // "Use the local backup?" > OK
+      answerKeys([]);
+      await loading;
+      await new Promise(resolve => setTimeout(resolve, 0));
+
+      expect(backend.getEntry).toHaveBeenCalled();
+      expect(store.getState().entryDraft.getIn(['entry', 'data', 'title'])).toBe('Unsaved');
     });
 
     it('asks the backend per slug when the key refresh fails', () => {
@@ -355,7 +452,7 @@ describe('editorialWorkflow actions', () => {
 
       return store.dispatch(actions.publishUnpublishedEntry('posts', slug)).then(() => {
         const actions = store.getActions();
-        expect(actions).toHaveLength(8);
+        expect(actions).toHaveLength(9);
 
         expect(actions[0]).toEqual({
           type: 'UNPUBLISHED_ENTRY_PUBLISH_REQUEST',
@@ -387,29 +484,34 @@ describe('editorialWorkflow actions', () => {
         });
 
         expect(actions[4]).toEqual({
+          type: 'DRAFT_LOAD_REQUEST',
+          payload: { loadId: expect.any(Number) },
+        });
+        expect(actions[5]).toEqual({
           type: 'MEDIA_LOAD_SUCCESS',
           payload: {
             files: [],
           },
         });
-        expect(actions[5]).toEqual({
+        expect(actions[6]).toEqual({
           type: 'ENTRY_REQUEST',
           payload: {
             slug,
             collection: 'posts',
           },
         });
-        expect(actions[6]).toEqual({
+        expect(actions[7]).toEqual({
           type: 'ENTRY_SUCCESS',
           payload: {
             entry,
             collection: 'posts',
           },
         });
-        expect(actions[7]).toEqual({
+        expect(actions[8]).toEqual({
           type: 'DRAFT_CREATE_FROM_ENTRY',
           payload: {
             entry,
+            loadId: actions[4].payload.loadId,
           },
         });
       });
