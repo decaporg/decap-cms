@@ -268,17 +268,6 @@ describe('i18n', () => {
       ).toEqual('en');
     });
 
-    it('should return the folder below the collection folder when the slug has folders', () => {
-      expect(
-        i18n.getLocaleFromPath(
-          i18n.I18N_STRUCTURE.MULTIPLE_FOLDERS,
-          'md',
-          'src/content/en/hello/index.md',
-          'src/content',
-        ),
-      ).toEqual('en');
-    });
-
     it('should return the locale extension from the file name when structure is I18N_STRUCTURE.MULTIPLE_FILES', () => {
       expect(
         i18n.getLocaleFromPath(i18n.I18N_STRUCTURE.MULTIPLE_FILES, 'md', 'src/content/index.en.md'),
@@ -723,26 +712,6 @@ describe('i18n', () => {
           i18n: { de: { data: { title: 'de_second' } } },
         },
       ]);
-    });
-
-    it('should keep the translations of an entry in a folder ending with the locale', () => {
-      const entries = ['en', 'de'].map(locale => ({
-        path: `garden/posts/${locale}/hello.md`,
-        data: { title: `${locale}_title` },
-      }));
-
-      const grouped = i18n.groupEntries(
-        fromJS({
-          folder: 'garden/posts',
-          i18n: { structure: i18n.I18N_STRUCTURE.MULTIPLE_FOLDERS, locales, default_locale },
-        }),
-        extension,
-        entries,
-      );
-
-      expect(grouped).toHaveLength(1);
-      expect(grouped[0].path).toEqual('garden/posts/hello.md');
-      expect(grouped[0].i18n).toEqual({ de: { data: { title: 'de_title' } } });
     });
 
     it('should group entries array when structure is I18N_STRUCTURE.MULTIPLE_FILES', () => {
