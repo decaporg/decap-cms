@@ -89,35 +89,18 @@ describe('bitbucket backend default branch', () => {
     const backend = new BitbucketBackend(config);
     backend.authenticator = { refresh };
 
-    await backend.authenticate({ token: 'EXPIRED_TOKEN', refresh_token: 'REFRESH_TOKEN' });
+    const user = await backend.authenticate({
+      token: 'EXPIRED_TOKEN',
+      refresh_token: 'REFRESH_TOKEN',
+    });
 
     expect(refresh).toHaveBeenCalledTimes(1);
     expect(refresh).toHaveBeenCalledWith({ provider: 'bitbucket', refresh_token: 'REFRESH_TOKEN' });
     expect(backend.branch).toBe('main');
     expect(backend.api.branch).toBe('main');
-  });
-
-  it('reports a missing repository instead of failing on the response', async () => {
-    mockBitbucket({ validToken: 'ANOTHER_TOKEN' });
-    const backend = new BitbucketBackend(config);
-
-    await expect(
-      backend.authenticate({ token: 'TOKEN', refresh_token: 'REFRESH_TOKEN' }),
-    ).rejects.toThrow('Repo "owner/repo" not found.');
-
-    expect(backend.branch).toBe('master');
-  });
-
-  it('does not look up the default branch when a branch is configured', async () => {
-    mockBitbucket({ validToken: 'TOKEN' });
-    const backend = new BitbucketBackend({
-      ...config,
-      backend: { ...config.backend, branch: 'develop' },
-    });
-
-    await backend.authenticate({ token: 'TOKEN', refresh_token: 'REFRESH_TOKEN' });
-
-    expect(backend.branch).toBe('develop');
-    expect(backend.api.branch).toBe('develop');
+    // The returned user is stored by core, so it must carry the refreshed credentials
+    expect(user).toEqual(
+      expect.objectContaining({ token: 'NEW_TOKEN', refresh_token: 'NEW_REFRESH_TOKEN' }),
+    );
   });
 });

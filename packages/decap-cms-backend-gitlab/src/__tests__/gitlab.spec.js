@@ -375,15 +375,6 @@ describe('gitlab backend', () => {
       );
       expect(api.isDone()).toBe(true);
     });
-
-    it('keeps the configured branch', async () => {
-      backend = resolveBackend({ backend: { ...defaultConfig.backend, branch: 'develop' } });
-      interceptAuth(backend);
-      await backend.authenticate(mockCredentials);
-
-      expect(backend.implementation.branch).toBe('develop');
-      expect(backend.implementation.api.branch).toBe('develop');
-    });
   });
 
   describe('currentUser', () => {

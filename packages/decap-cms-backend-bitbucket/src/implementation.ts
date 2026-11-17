@@ -248,9 +248,10 @@ export default class BitbucketBackend implements Implementation {
       ...user,
       name: user.display_name,
       login: user.username,
-      token: state.token,
+      // A request above may have refreshed the token; core stores what we return
+      token: this.token,
       avatar_url: user.links.avatar.href,
-      refresh_token: state.refresh_token,
+      refresh_token: this.refreshToken,
     };
   }
 
