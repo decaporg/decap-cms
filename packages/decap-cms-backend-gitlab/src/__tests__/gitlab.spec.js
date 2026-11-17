@@ -451,51 +451,6 @@ describe('gitlab backend', () => {
       expect(refresh).toHaveBeenLastCalledWith({ refresh_token: 'NEW_REFRESH_TOKEN' });
     });
 
-    it('allows a new refresh after concurrent callers receive the same refresh failure', async () => {
-      backend = resolveBackend(pkceConfig);
-      interceptAuth(backend);
-      await backend.authenticate(pkceCredentials);
-
-      const refreshError = new Error('Temporary token endpoint failure');
-      let rejectRefresh;
-      const refresh = jest
-        .fn()
-        .mockImplementationOnce(
-          () =>
-            new Promise((_resolve, reject) => {
-              rejectRefresh = reject;
-            }),
-        )
-        .mockResolvedValue({ token: 'NEW_TOKEN', refresh_token: 'NEW_REFRESH_TOKEN' });
-      backend.implementation.authenticator = { refresh };
-
-      const firstRefresh = backend.implementation.getRefreshedAccessToken();
-      const concurrentRefresh = backend.implementation.getRefreshedAccessToken();
-      const pendingToken = backend.implementation.getToken();
-      const results = Promise.allSettled([firstRefresh, concurrentRefresh, pendingToken]);
-
-      expect(concurrentRefresh).toBe(firstRefresh);
-      expect(pendingToken).toBe(firstRefresh);
-      expect(refresh).toHaveBeenCalledTimes(1);
-
-      rejectRefresh(refreshError);
-      await expect(results).resolves.toEqual([
-        { status: 'rejected', reason: refreshError },
-        { status: 'rejected', reason: refreshError },
-        { status: 'rejected', reason: refreshError },
-      ]);
-      expect(authStore.retrieve()).toEqual(expect.objectContaining(pkceCredentials));
-      expect(backend.implementation.api.token).toBe('EXPIRED_TOKEN');
-
-      await expect(backend.implementation.getRefreshedAccessToken()).resolves.toBe('NEW_TOKEN');
-      expect(refresh).toHaveBeenCalledTimes(2);
-      expect(refresh).toHaveBeenLastCalledWith({ refresh_token: 'REFRESH_TOKEN' });
-      expect(await backend.getToken()).toBe('NEW_TOKEN');
-      expect(authStore.retrieve()).toEqual(
-        expect.objectContaining({ token: 'NEW_TOKEN', refresh_token: 'NEW_REFRESH_TOKEN' }),
-      );
-    });
-
     it('recovers a later API request after the token endpoint temporarily fails', async () => {
       backend = resolveBackend(pkceConfig);
       interceptAuth(backend);

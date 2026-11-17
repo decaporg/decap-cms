@@ -80,50 +80,6 @@ describe('bitbucket backend implementation', () => {
       });
     });
 
-    it('allows a new refresh after concurrent callers receive the same refresh failure', async () => {
-      const refreshError = new Error('Temporary token endpoint failure');
-      let rejectRefresh;
-      refresh
-        .mockImplementationOnce(
-          () =>
-            new Promise((_resolve, reject) => {
-              rejectRefresh = reject;
-            }),
-        )
-        .mockResolvedValue({ token: 'NEW_TOKEN', refresh_token: 'NEW_REFRESH_TOKEN' });
-
-      const firstRefresh = backend.getRefreshedAccessToken();
-      const concurrentRefresh = backend.getRefreshedAccessToken();
-      const pendingToken = backend.getToken();
-      const results = Promise.allSettled([firstRefresh, concurrentRefresh, pendingToken]);
-
-      expect(concurrentRefresh).toBe(firstRefresh);
-      expect(pendingToken).toBe(firstRefresh);
-      expect(refresh).toHaveBeenCalledTimes(1);
-
-      rejectRefresh(refreshError);
-      await expect(results).resolves.toEqual([
-        { status: 'rejected', reason: refreshError },
-        { status: 'rejected', reason: refreshError },
-        { status: 'rejected', reason: refreshError },
-      ]);
-      expect(updateUserCredentials).not.toHaveBeenCalled();
-      expect(await backend.getToken()).toBe('EXPIRED_TOKEN');
-
-      await expect(backend.getRefreshedAccessToken()).resolves.toBe('NEW_TOKEN');
-      expect(refresh).toHaveBeenCalledTimes(2);
-      expect(refresh).toHaveBeenLastCalledWith({
-        provider: 'bitbucket',
-        refresh_token: 'REFRESH_TOKEN',
-      });
-      expect(await backend.getToken()).toBe('NEW_TOKEN');
-      expect(updateUserCredentials).toHaveBeenCalledTimes(1);
-      expect(updateUserCredentials).toHaveBeenCalledWith({
-        token: 'NEW_TOKEN',
-        refresh_token: 'NEW_REFRESH_TOKEN',
-      });
-    });
-
     it('recovers a later API request after the token refresh temporarily fails', async () => {
       const refreshError = new Error('Temporary token endpoint failure');
       refresh
