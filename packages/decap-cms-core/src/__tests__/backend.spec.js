@@ -1963,10 +1963,10 @@ describe('Backend', () => {
         return { backend, implementation };
       }
 
-      function persist(backend, entry) {
+      function persist(backend, entry, entryCollection = collection) {
         return backend.persistEntry({
           config,
-          collection,
+          collection: entryCollection,
           entryDraft: fromJS({ entry }),
           assetProxies: [],
           usedSlugs: List(),
@@ -2002,16 +2002,37 @@ describe('Backend', () => {
         expect(implementation.persistEntry.mock.calls[0][0].dataFiles[0].newPath).toBeUndefined();
       });
 
-      it('should look for an existing file at the path of a new entry', async () => {
+      it('should refuse a new index file over an existing one', async () => {
         const { backend, implementation } = setup(['_pages/Guides/index.md']);
 
-        await persist(backend, {
-          data: { title: 'Test' },
-          meta: { path: 'Guides' },
-          newRecord: true,
-        });
+        await expect(
+          persist(backend, {
+            data: { title: 'Test' },
+            meta: { path: 'Guides' },
+            newRecord: true,
+          }),
+        ).rejects.toThrow('An entry already exists at "_pages/Guides/index.md"');
 
         expect(implementation.getEntry).toHaveBeenNthCalledWith(1, '_pages/Guides/index.md');
+        expect(implementation.persistEntry).not.toHaveBeenCalled();
+      });
+
+      it('should move a new entry named after a taken title aside instead of overwriting', async () => {
+        const { sanitizeSlug, sanitizeChar } = require('../lib/urlHelper');
+        sanitizeSlug.mockReturnValue('intro');
+        sanitizeChar.mockReturnValue('-');
+        const { backend, implementation } = setup(['_pages/Guides/intro.md']);
+
+        const slug = await persist(
+          backend,
+          { data: { title: 'Intro' }, meta: { path: 'Guides' }, newRecord: true },
+          collection.deleteIn(['meta', 'path', 'index_file']),
+        );
+
+        expect(slug).toBe('Guides/intro-1');
+        expect(implementation.persistEntry.mock.calls[0][0].dataFiles[0].path).toBe(
+          '_pages/Guides/intro-1.md',
+        );
       });
     });
   });
