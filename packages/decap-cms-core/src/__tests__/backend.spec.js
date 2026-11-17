@@ -992,6 +992,154 @@ describe('Backend', () => {
         backend.generateUniqueSlug(collection, Map({ title: 'some post title' }), Map({}), []),
       ).rejects.toThrow('API rate limit exceeded');
     });
+    it('should reject an existing slug when the collection collision policy is reject', async () => {
+      const { sanitizeSlug } = require('../lib/urlHelper');
+      sanitizeSlug.mockReturnValue('some-post-title');
+
+      const implementation = {
+        init: jest.fn(() => implementation),
+        getEntry: jest.fn().mockResolvedValue({ data: 'data' }),
+      };
+
+      const collection = fromJS({
+        name: 'posts',
+        fields: [{ name: 'title' }],
+        type: FOLDER,
+        folder: 'posts',
+        slug: '{{slug}}',
+        path: '{{slug}}/index',
+        slug_collision: 'reject',
+      });
+      const entry = Map({ title: 'some post title' });
+      const backend = new Backend(implementation, { config: {}, backendName: 'github' });
+
+      await expect(backend.generateUniqueSlug(collection, entry, Map({}), [])).rejects.toThrow(
+        'An entry already exists at "posts/some-post-title/index.md". Change the entry identifier or path.',
+      );
+      expect(implementation.getEntry).toHaveBeenCalledTimes(1);
+    });
+
+    it('should reject a slug reserved by another loaded entry', async () => {
+      const { sanitizeSlug } = require('../lib/urlHelper');
+      sanitizeSlug.mockReturnValue('some-post-title');
+
+      const implementation = {
+        init: jest.fn(() => implementation),
+        getEntry: jest.fn(),
+      };
+
+      const collection = fromJS({
+        name: 'posts',
+        fields: [{ name: 'title' }],
+        type: FOLDER,
+        folder: 'posts',
+        slug: '{{slug}}',
+        path: '{{slug}}/index',
+        slug_collision: 'reject',
+      });
+      const entry = Map({ title: 'some post title' });
+      const backend = new Backend(implementation, { config: {}, backendName: 'github' });
+
+      await expect(
+        backend.generateUniqueSlug(collection, entry, Map({}), List(['some-post-title/index'])),
+      ).rejects.toThrow('An entry already exists at "posts/some-post-title/index.md"');
+      expect(implementation.getEntry).not.toHaveBeenCalled();
+    });
+
+    it('should reject a slug reserved by an unpublished workflow entry', async () => {
+      const { sanitizeSlug } = require('../lib/urlHelper');
+      sanitizeSlug.mockReturnValue('some-post-title');
+
+      const implementation = {
+        init: jest.fn(() => implementation),
+        unpublishedEntry: jest.fn().mockResolvedValue({ slug: 'some-post-title/index' }),
+        getEntry: jest.fn(),
+      };
+
+      const collection = fromJS({
+        name: 'posts',
+        fields: [{ name: 'title' }],
+        type: FOLDER,
+        folder: 'posts',
+        slug: '{{slug}}',
+        path: '{{slug}}/index',
+        slug_collision: 'reject',
+      });
+      const entry = Map({ title: 'some post title' });
+      const config = { publish_mode: EDITORIAL_WORKFLOW };
+      const backend = new Backend(implementation, { config, backendName: 'github' });
+
+      await expect(backend.generateUniqueSlug(collection, entry, config, List())).rejects.toThrow(
+        'An entry already exists at "posts/some-post-title/index.md"',
+      );
+      expect(implementation.unpublishedEntry).toHaveBeenCalledWith({
+        collection: 'posts',
+        slug: 'some-post-title/index',
+      });
+      expect(implementation.getEntry).not.toHaveBeenCalled();
+    });
+
+    it('should reject a slug published only at a non-default i18n locale path', async () => {
+      const { sanitizeSlug } = require('../lib/urlHelper');
+      sanitizeSlug.mockReturnValue('some-post-title');
+
+      const implementation = {
+        init: jest.fn(() => implementation),
+        getEntry: jest.fn(path =>
+          path === 'posts/fr/some-post-title.md'
+            ? Promise.resolve({ data: 'data' })
+            : Promise.reject(Object.assign(new Error('Not Found'), { status: 404 })),
+        ),
+      };
+
+      const collection = fromJS({
+        name: 'posts',
+        fields: [{ name: 'title' }],
+        type: FOLDER,
+        folder: 'posts',
+        slug: '{{slug}}',
+        i18n: { structure: 'multiple_folders', locales: ['en', 'fr'], default_locale: 'en' },
+        slug_collision: 'reject',
+      });
+      const entry = Map({ title: 'some post title' });
+      const backend = new Backend(implementation, { config: {}, backendName: 'github' });
+
+      await expect(backend.generateUniqueSlug(collection, entry, Map({}), List())).rejects.toThrow(
+        'An entry already exists at "posts/some-post-title.md"',
+      );
+      expect(implementation.getEntry).toHaveBeenCalledWith('posts/en/some-post-title.md');
+      expect(implementation.getEntry).toHaveBeenCalledWith('posts/fr/some-post-title.md');
+    });
+
+    it('should suffix an existing slug when the collision policy is suffix', async () => {
+      const { sanitizeSlug, sanitizeChar } = require('../lib/urlHelper');
+      sanitizeSlug.mockReturnValue('some-post-title');
+      sanitizeChar.mockReturnValue('-');
+
+      const implementation = {
+        init: jest.fn(() => implementation),
+        getEntry: jest
+          .fn()
+          .mockResolvedValueOnce({ data: 'data' })
+          .mockResolvedValueOnce(undefined),
+      };
+
+      const collection = fromJS({
+        name: 'posts',
+        fields: [{ name: 'title' }],
+        type: FOLDER,
+        folder: 'posts',
+        slug: '{{slug}}',
+        path: 'sub_dir/{{slug}}',
+        slug_collision: 'suffix',
+      });
+      const entry = Map({ title: 'some post title' });
+      const backend = new Backend(implementation, { config: {}, backendName: 'github' });
+
+      await expect(backend.generateUniqueSlug(collection, entry, Map({}), List())).resolves.toBe(
+        'sub_dir/some-post-title-1',
+      );
+    });
 
     it('should suffix the slug placeholder before a fixed path filename', async () => {
       const { sanitizeSlug, sanitizeChar } = require('../lib/urlHelper');
@@ -1780,6 +1928,113 @@ describe('Backend', () => {
         }),
       );
     });
+
+    describe('folders with uppercase characters', () => {
+      const config = { backend: { commit_messages: {} } };
+      const collection = fromJS({
+        name: 'pages',
+        type: FOLDER,
+        folder: '_pages',
+        create: true,
+        extension: 'md',
+        fields: [{ name: 'title', widget: 'string' }],
+        nested: { depth: 10 },
+        meta: { path: { label: 'Path', widget: 'string', index_file: 'index' } },
+      });
+
+      function setup(existingPaths = []) {
+        // Paths are case sensitive in a git repository
+        const implementation = {
+          init: jest.fn(() => implementation),
+          persistEntry: jest.fn(),
+          getEntry: jest.fn(path =>
+            existingPaths.includes(path)
+              ? Promise.resolve({ data: 'data' })
+              : Promise.reject(Object.assign(new Error('Not Found'), { status: 404 })),
+          ),
+        };
+        const backend = new Backend(implementation, { config, backendName: 'test' });
+
+        backend.currentUser = jest.fn().mockResolvedValue({ login: 'user', name: 'User' });
+        backend.entryToRaw = jest.fn().mockReturnValue('content');
+        backend.invokePreSaveEvent = jest.fn(entry => Promise.resolve(entry));
+        backend.invokePostSaveEvent = jest.fn().mockResolvedValue();
+
+        return { backend, implementation };
+      }
+
+      function persist(backend, entry, entryCollection = collection) {
+        return backend.persistEntry({
+          config,
+          collection: entryCollection,
+          entryDraft: fromJS({ entry }),
+          assetProxies: [],
+          usedSlugs: List(),
+        });
+      }
+
+      it('should return a slug matching the path of a new entry', async () => {
+        const { backend, implementation } = setup();
+
+        const slug = await persist(backend, {
+          data: { title: 'Test' },
+          meta: { path: 'Guides/API' },
+          newRecord: true,
+        });
+
+        expect(slug).toBe('Guides/API/index');
+        expect(implementation.persistEntry.mock.calls[0][0].dataFiles[0].path).toBe(
+          '_pages/Guides/API/index.md',
+        );
+      });
+
+      it('should keep the slug of an existing entry', async () => {
+        const { backend, implementation } = setup();
+
+        const slug = await persist(backend, {
+          slug: 'Guides/index',
+          path: '_pages/Guides/index.md',
+          data: { title: 'Test' },
+          meta: { path: 'Guides' },
+        });
+
+        expect(slug).toBe('Guides/index');
+        expect(implementation.persistEntry.mock.calls[0][0].dataFiles[0].newPath).toBeUndefined();
+      });
+
+      it('should refuse a new index file over an existing one', async () => {
+        const { backend, implementation } = setup(['_pages/Guides/index.md']);
+
+        await expect(
+          persist(backend, {
+            data: { title: 'Test' },
+            meta: { path: 'Guides' },
+            newRecord: true,
+          }),
+        ).rejects.toThrow('An entry already exists at "_pages/Guides/index.md"');
+
+        expect(implementation.getEntry).toHaveBeenNthCalledWith(1, '_pages/Guides/index.md');
+        expect(implementation.persistEntry).not.toHaveBeenCalled();
+      });
+
+      it('should move a new entry named after a taken title aside instead of overwriting', async () => {
+        const { sanitizeSlug, sanitizeChar } = require('../lib/urlHelper');
+        sanitizeSlug.mockReturnValue('intro');
+        sanitizeChar.mockReturnValue('-');
+        const { backend, implementation } = setup(['_pages/Guides/intro.md']);
+
+        const slug = await persist(
+          backend,
+          { data: { title: 'Intro' }, meta: { path: 'Guides' }, newRecord: true },
+          collection.deleteIn(['meta', 'path', 'index_file']),
+        );
+
+        expect(slug).toBe('Guides/intro-1');
+        expect(implementation.persistEntry.mock.calls[0][0].dataFiles[0].path).toBe(
+          '_pages/Guides/intro-1.md',
+        );
+      });
+    });
   });
 
   describe('listAllEntries locale siblings', () => {
@@ -1851,6 +2106,67 @@ describe('Backend', () => {
 
       const [, , , , , siblingRegex] = implementation.allEntriesByFolder.mock.calls[0];
       expect(siblingRegex).toBeUndefined();
+    });
+  });
+
+  describe('persistEntry with slug_collision reject', () => {
+    function setup(getEntry) {
+      const implementation = {
+        init: jest.fn(() => implementation),
+        persistEntry: jest.fn(),
+        getEntry,
+      };
+      const config = { backend: { commit_messages: {} } };
+      const collection = Map({
+        name: 'pages',
+        type: FOLDER,
+        folder: '_pages',
+        create: true,
+        fields: List([Map({ name: 'title', widget: 'string' })]),
+        nested: Map({ depth: 10 }),
+        meta: Map({ path: Map({ label: 'Path', widget: 'string' }) }),
+        slug_collision: 'reject',
+      });
+      const entryDraft = Map({
+        entry: Map({
+          slug: 'old/index',
+          path: '_pages/old/index.md',
+          data: Map({ title: 'Test' }),
+          meta: Map({ path: 'other' }),
+          newRecord: false,
+        }),
+      });
+      const backend = new Backend(implementation, { config, backendName: 'test' });
+      backend.currentUser = jest.fn().mockResolvedValue({ login: 'user', name: 'User' });
+      backend.entryToRaw = jest.fn().mockReturnValue('content');
+      backend.invokePreSaveEvent = jest.fn().mockResolvedValue(entryDraft.get('entry'));
+      backend.invokePostSaveEvent = jest.fn().mockResolvedValue();
+      function persist() {
+        return backend.persistEntry({
+          config,
+          collection,
+          entryDraft,
+          assetProxies: [],
+          usedSlugs: List(),
+        });
+      }
+      return { implementation, persist };
+    }
+
+    it('should reject moving an existing entry onto another entry path', async () => {
+      const { implementation, persist } = setup(jest.fn().mockResolvedValue({ data: 'data' }));
+
+      await expect(persist()).rejects.toThrow('An entry already exists at');
+      expect(implementation.persistEntry).not.toHaveBeenCalled();
+    });
+
+    it('should allow moving an existing entry to a free path', async () => {
+      const { implementation, persist } = setup(
+        jest.fn().mockRejectedValue(Object.assign(new Error('Not Found'), { status: 404 })),
+      );
+
+      await persist();
+      expect(implementation.persistEntry).toHaveBeenCalled();
     });
   });
 });

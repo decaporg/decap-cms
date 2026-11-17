@@ -275,14 +275,17 @@ export default class BitbucketBackend implements Implementation {
     this.refreshedTokenPromise = this.authenticator!.refresh({
       provider: 'bitbucket',
       refresh_token: this.refreshToken as string,
-    }).then(({ token, refresh_token }) => {
-      this.token = token;
-      this.refreshToken = refresh_token;
-      this.refreshedTokenPromise = undefined;
+    })
+      .then(({ token, refresh_token }) => {
+        this.token = token;
+        this.refreshToken = refresh_token;
 
-      this.updateUserCredentials({ token, refresh_token });
-      return token;
-    });
+        this.updateUserCredentials({ token, refresh_token });
+        return token;
+      })
+      .finally(() => {
+        this.refreshedTokenPromise = undefined;
+      });
 
     return this.refreshedTokenPromise;
   }
