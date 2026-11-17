@@ -197,7 +197,8 @@ function isFilterMatch(data, filter) {
 // e.g. `{{list.*.a}} - {{list.*.b}}`. Expand the wildcards inside each template
 // variable so every list item gets its own template.
 function expandFieldPaths(data, field) {
-  const templateVars = stringTemplate.extractTemplateVars(field);
+  // `{{ list.*.a }}` is valid too; the extracted var keeps the leading space.
+  const templateVars = stringTemplate.extractTemplateVars(field).map(v => v.trim());
   if (templateVars.length <= 0) {
     return stringTemplate.expandPath({ data, path: field });
   }

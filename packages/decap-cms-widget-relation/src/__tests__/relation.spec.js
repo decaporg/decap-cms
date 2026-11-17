@@ -697,7 +697,7 @@ describe('Relation widget', () => {
         ...fileFieldConfig,
         file: 'nested_file',
         value_field: '{{nested.categories.*.id}}-{{nested.categories.*.name}}',
-        display_fields: ['{{nested.categories.*.name}} ({{nested.categories.*.id}})'],
+        display_fields: ['{{ nested.categories.*.name }} ({{nested.categories.*.id}})'],
       });
       const { getAllByText, input, getByText, onChangeSpy } = setup({ field });
       fireEvent.keyDown(input, { key: 'ArrowDown' });
