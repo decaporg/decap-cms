@@ -275,15 +275,12 @@ export default class ListControl extends Component {
 
   handleChange = e => {
     const { onChange } = this.props;
-    const oldValue = this.state.value;
-    const newValue = e.target.value.trim();
+    const inputValue = e.target.value;
+    const newValue = inputValue.trim();
     const listValue = newValue ? newValue.split(',') : [];
-    if (newValue.match(/,$/) && oldValue.match(/, $/)) {
-      listValue.pop();
-    }
 
-    const parsedValue = this.valueToString(listValue);
-    this.setState({ value: parsedValue });
+    // Keep the text as typed so spaces can be entered; it is normalized on blur.
+    this.setState({ value: inputValue });
     onChange(List(listValue.map(val => val.trim())));
   };
 
@@ -292,12 +289,19 @@ export default class ListControl extends Component {
   };
 
   handleBlur = e => {
+    const { value, onChange, setInactiveStyle } = this.props;
     const listValue = e.target.value
       .split(',')
       .map(el => el.trim())
       .filter(el => el);
     this.setState({ value: this.valueToString(listValue) });
-    this.props.setInactiveStyle();
+    // A trailing or doubled comma stores an empty item while typing. Drop it so
+    // the saved list matches the normalized text. Only write when there is one,
+    // so focusing and leaving the field doesn't mark the entry as changed.
+    if (List.isList(value) && value.includes('')) {
+      onChange(value.filter(item => item !== ''));
+    }
+    setInactiveStyle();
   };
 
   handleAdd = e => {
