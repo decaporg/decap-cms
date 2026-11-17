@@ -99,6 +99,15 @@ describe('collections', () => {
         ),
       ).toBe('dir1/dir2/slug');
     });
+
+    it('should strip only the leading folder', () => {
+      expect(
+        selectEntrySlug(
+          fromJS({ type: FOLDER, folder: 'posts', extension: 'md' }),
+          'posts/Guides/posts/index.md',
+        ),
+      ).toBe('Guides/posts/index');
+    });
   });
 
   describe('selectFieldsMediaFolders', () => {
