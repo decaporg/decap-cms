@@ -481,7 +481,7 @@ export default class ListControl extends Component {
     const collectionName = field.get('name');
     const isSingleField = this.getValueType() === valueTypes.SINGLE;
 
-    const metadataRemovePath = isSingleField ? value.get(index) : value.get(index).valueSeq();
+    const metadataRemovePath = isSingleField ? [value.get(index)] : value.get(index).valueSeq();
     const parsedMetadata =
       metadata && !metadata.isEmpty()
         ? { [collectionName]: metadata.removeIn(metadataRemovePath) }
