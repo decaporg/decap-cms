@@ -2,7 +2,6 @@ import attempt from 'lodash/attempt';
 import flatten from 'lodash/flatten';
 import isError from 'lodash/isError';
 import uniq from 'lodash/uniq';
-import trim from 'lodash/trim';
 import sortBy from 'lodash/sortBy';
 import get from 'lodash/get';
 import set from 'lodash/set';
@@ -18,7 +17,7 @@ import {
   asyncLock,
   EDITORIAL_WORKFLOW_ERROR,
 } from 'decap-cms-lib-util';
-import { basename, join, extname, dirname } from 'path';
+import { extname, dirname } from 'path';
 import { stringTemplate } from 'decap-cms-lib-widgets';
 
 import { resolveFormat } from './formats/formats';
@@ -252,10 +251,7 @@ function sortByScore(a: fuzzy.FilterResult<EntryValue>, b: fuzzy.FilterResult<En
 }
 
 export function slugFromCustomPath(collection: Collection, customPath: string) {
-  const folderPath = collection.get('folder', '') as string;
-  const entryPath = customPath.toLowerCase().replace(folderPath.toLowerCase(), '');
-  const slug = join(dirname(trim(entryPath, '/')), basename(entryPath, extname(customPath)));
-  return slug;
+  return selectEntrySlug(collection, customPath) as string;
 }
 
 interface AuthStore {
