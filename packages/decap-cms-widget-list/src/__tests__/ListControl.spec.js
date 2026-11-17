@@ -883,4 +883,22 @@ describe('ListControl', () => {
 
     expect(props.onChange).toHaveBeenCalledTimes(1);
   });
+
+  describe('comma separated input', () => {
+    const field = fromJS({ name: 'tags', label: 'Tags' });
+
+    it('should not save an empty item left by a trailing comma', () => {
+      const { container, rerender } = render(
+        <ListControl {...props} field={field} value={fromJS([])} />,
+      );
+      const input = container.querySelector('input');
+
+      fireEvent.change(input, { target: { value: 'tag one, ' } });
+      const typedValue = props.onChange.mock.calls.at(-1)[0];
+      rerender(<ListControl {...props} field={field} value={typedValue} />);
+      fireEvent.blur(input);
+
+      expect(props.onChange).toHaveBeenLastCalledWith(fromJS(['tag one']));
+    });
+  });
 });
