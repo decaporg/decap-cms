@@ -371,6 +371,7 @@ export interface CmsCollection {
   identifier_field?: string;
   summary?: string;
   slug?: string;
+  slug_collision?: 'suffix' | 'reject';
   preview_path?: string;
   preview_path_date_field?: string;
   preview_path_preserve_slashes?: boolean;
@@ -668,6 +669,7 @@ export type EntryField = StaticallyTypedRecord<{
   media_processing?: CmsMediaProcessing;
   comment?: string;
   meta?: boolean;
+  required?: boolean;
   i18n: 'translate' | 'duplicate' | 'none';
 }>;
 
@@ -741,6 +743,7 @@ type CollectionObject = {
   identifier_field?: string;
   path?: string;
   slug?: string;
+  slug_collision?: 'suffix' | 'reject';
   label_singular?: string;
   label: string;
   sortable_fields: List<StaticallyTypedRecord<SortableField>>;
