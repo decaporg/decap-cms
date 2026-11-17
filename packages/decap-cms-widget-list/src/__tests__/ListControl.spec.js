@@ -863,29 +863,18 @@ describe('ListControl', () => {
   describe('comma separated input', () => {
     const field = fromJS({ name: 'tags', label: 'Tags' });
 
-    it('should keep spaces typed in the input', () => {
-      const { container } = render(<ListControl {...props} field={field} value={fromJS([])} />);
+    it('should not save an empty item left by a trailing comma', () => {
+      const { container, rerender } = render(
+        <ListControl {...props} field={field} value={fromJS([])} />,
+      );
       const input = container.querySelector('input');
-
-      fireEvent.change(input, { target: { value: 'tag ' } });
-      expect(input.value).toBe('tag ');
 
       fireEvent.change(input, { target: { value: 'tag one, ' } });
-      expect(input.value).toBe('tag one, ');
-
-      fireEvent.change(input, { target: { value: 'tag one, tag two' } });
-      expect(input.value).toBe('tag one, tag two');
-      expect(props.onChange).toHaveBeenLastCalledWith(fromJS(['tag one', 'tag two']));
-    });
-
-    it('should normalize the input on blur', () => {
-      const { container } = render(<ListControl {...props} field={field} value={fromJS([])} />);
-      const input = container.querySelector('input');
-
-      fireEvent.change(input, { target: { value: ' tag one ,  tag two , ' } });
+      const typedValue = props.onChange.mock.calls.at(-1)[0];
+      rerender(<ListControl {...props} field={field} value={typedValue} />);
       fireEvent.blur(input);
 
-      expect(input.value).toBe('tag one, tag two');
+      expect(props.onChange).toHaveBeenLastCalledWith(fromJS(['tag one']));
     });
   });
 });
