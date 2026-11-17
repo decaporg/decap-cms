@@ -669,6 +669,7 @@ export type EntryField = StaticallyTypedRecord<{
   media_processing?: CmsMediaProcessing;
   comment?: string;
   meta?: boolean;
+  required?: boolean;
   i18n: 'translate' | 'duplicate' | 'none';
 }>;
 
