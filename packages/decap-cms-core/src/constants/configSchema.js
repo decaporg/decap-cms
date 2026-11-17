@@ -420,10 +420,34 @@ class ConfigError extends Error {
 }
 
 /**
+ * AJV compiles schemas into functions with `new Function`, which a Content
+ * Security Policy without 'unsafe-eval' forbids. Probe for it so pages served
+ * under a strict CSP can still load the CMS.
+ */
+export function canCompileSchemas() {
+  try {
+    return new Function('return true')() === true;
+  } catch {
+    return false;
+  }
+}
+
+/**
  * `validateConfig` is a pure function. It does not mutate
  * the config that is passed in.
  */
 export function validateConfig(config) {
+  if (canCompileSchemas()) {
+    validateConfigSchema(config);
+  } else {
+    console.warn(
+      'Config schema validation skipped: this page forbids eval (Content Security Policy without unsafe-eval). Load the CMS where eval is allowed, such as local development, to validate the config.',
+    );
+  }
+  validateSortableFields(config);
+}
+
+function validateConfigSchema(config) {
   const ajv = new AJV({ allErrors: true, $data: true, strict: false });
   uniqueItemProperties(ajv);
   select(ajv);
@@ -466,7 +490,9 @@ export function validateConfig(config) {
     console.error('Config Errors', errors);
     throw new ConfigError(errors);
   }
+}
 
+function validateSortableFields(config) {
   // Custom validation: only one sortable field can have default_sort property
   if (config.collections) {
     config.collections.forEach((collection, index) => {
