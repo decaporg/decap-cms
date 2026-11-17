@@ -636,7 +636,8 @@ export class Backend {
         : slug;
     }
     let uniqueSlug = fitSlug();
-    if (collection.get('slug_collision', 'suffix') === 'reject') {
+    const isIndexFile = Boolean(customPath && collection.getIn(['meta', 'path', 'index_file']));
+    if (isIndexFile || collection.get('slug_collision', 'suffix') === 'reject') {
       await this.assertNoSlugCollision(collection, config, usedSlugs, uniqueSlug);
       return uniqueSlug;
     }
@@ -1435,7 +1436,10 @@ export class Backend {
         usedSlugs,
         customPath,
       );
-      const path = customPath || (selectEntryPath(collection, slug) as string);
+      const path =
+        customPath && slug === slugFromCustomPath(collection, customPath)
+          ? customPath
+          : (selectEntryPath(collection, slug) as string);
       dataFile = {
         path,
         slug,
