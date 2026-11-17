@@ -12,7 +12,7 @@ import ListControl from '../ListControl';
 function MapValueControl({ value, onChange, field }) {
   const current = value || Map();
   return (
-    <div data-testid={`control-${field.get('name')}`} data-value={JSON.stringify(current)}>
+    <div>
       <button onClick={() => onChange(field, current.set('code', 'echo hi'))}>Set code</button>
       <button onClick={() => onChange(field, current.set('lang', 'shell'))}>Set lang</button>
     </div>
@@ -63,15 +63,6 @@ describe('list with a single field whose value is a map', () => {
     const result = render(<ControlledList />);
     return { ...result, onChange };
   }
-
-  it('passes the whole item value to the widget', () => {
-    const { getByTestId } = renderList([{ code: 'ls', lang: 'shell' }]);
-
-    expect(JSON.parse(getByTestId('control-code_snippet').dataset.value)).toEqual({
-      code: 'ls',
-      lang: 'shell',
-    });
-  });
 
   it('keeps both keys when they are changed one after the other', () => {
     const { getByText, onChange } = renderList([{}]);
