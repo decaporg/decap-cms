@@ -1,5 +1,4 @@
 import { isAbsolutePath } from 'decap-cms-lib-util';
-import memoize from 'lodash/memoize';
 
 import { createAssetProxy } from '../valueObjects/AssetProxy';
 import { selectMediaFilePath } from '../reducers/entries';
@@ -7,6 +6,7 @@ import { selectMediaFileByPath } from '../reducers/mediaLibrary';
 import { getMediaFile, waitForMediaLibraryToLoad, getMediaDisplayURL } from './mediaLibrary';
 
 import type AssetProxy from '../valueObjects/AssetProxy';
+import type { Medias } from '../reducers/medias';
 import type { Collection, State, EntryMap, EntryField } from '../types/redux';
 import type { ThunkDispatch } from 'redux-thunk';
 import type { AnyAction } from 'redux';
@@ -81,18 +81,37 @@ const emptyAsset = createAssetProxy({
   }),
 });
 
-export const boundGetAsset = memoize(
-  (dispatch: ThunkDispatch<State, {}, AnyAction>, collection: Collection, entry: EntryMap) => {
-    function bound(path: string, field: EntryField) {
-      const asset = dispatch(getAsset({ collection, entry, path, field }));
-      return asset;
-    }
-    return bound;
-  },
-  (_dispatch, _collection, entry) => entry,
-);
+type BoundGetAsset = (path: string, field: EntryField) => AssetProxy;
 
-boundGetAsset.cache = new WeakMap();
+const boundGetAssetCache = new WeakMap<object, WeakMap<EntryMap, BoundGetAsset>>();
+const anyMedias = {};
+
+// Stable per entry so previews don't re-render on every store change. Pass the
+// medias state to also get a new function whenever an asset loads: image
+// previews only ask for an asset again when this function changes, so a stable
+// one leaves them on the empty placeholder after the asset arrives (#8055).
+// WeakMaps let old medias states and entries be garbage collected.
+export function boundGetAsset(
+  dispatch: ThunkDispatch<State, {}, AnyAction>,
+  collection: Collection,
+  entry: EntryMap,
+  medias: Medias = anyMedias,
+) {
+  let byEntry = boundGetAssetCache.get(medias);
+  if (!byEntry) {
+    byEntry = new WeakMap();
+    boundGetAssetCache.set(medias, byEntry);
+  }
+
+  let bound = byEntry.get(entry);
+  if (!bound) {
+    bound = (path: string, field: EntryField) =>
+      dispatch(getAsset({ collection, entry, path, field }));
+    byEntry.set(entry, bound);
+  }
+
+  return bound;
+}
 
 export function getAsset({ collection, entry, path, field }: GetAssetArgs) {
   return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
