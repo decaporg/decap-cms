@@ -194,6 +194,8 @@ export default class GitLab implements Implementation {
       });
       if (defaultBranchName) {
         this.branch = defaultBranchName;
+        // The API above was created with the fallback branch
+        this.api.branch = defaultBranchName;
       }
     }
     this.destroyNotesPolling();
