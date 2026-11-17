@@ -1780,6 +1780,92 @@ describe('Backend', () => {
         }),
       );
     });
+
+    describe('folders with uppercase characters', () => {
+      const config = { backend: { commit_messages: {} } };
+      const collection = fromJS({
+        name: 'pages',
+        type: FOLDER,
+        folder: '_pages',
+        create: true,
+        extension: 'md',
+        fields: [{ name: 'title', widget: 'string' }],
+        nested: { depth: 10 },
+        meta: { path: { label: 'Path', widget: 'string', index_file: 'index' } },
+      });
+
+      function setup(existingPaths = []) {
+        // Paths are case sensitive in a git repository
+        const implementation = {
+          init: jest.fn(() => implementation),
+          persistEntry: jest.fn(),
+          getEntry: jest.fn(path =>
+            existingPaths.includes(path)
+              ? Promise.resolve({ data: 'data' })
+              : Promise.reject(Object.assign(new Error('Not Found'), { status: 404 })),
+          ),
+        };
+        const backend = new Backend(implementation, { config, backendName: 'test' });
+
+        backend.currentUser = jest.fn().mockResolvedValue({ login: 'user', name: 'User' });
+        backend.entryToRaw = jest.fn().mockReturnValue('content');
+        backend.invokePreSaveEvent = jest.fn(entry => Promise.resolve(entry));
+        backend.invokePostSaveEvent = jest.fn().mockResolvedValue();
+
+        return { backend, implementation };
+      }
+
+      function persist(backend, entry) {
+        return backend.persistEntry({
+          config,
+          collection,
+          entryDraft: fromJS({ entry }),
+          assetProxies: [],
+          usedSlugs: List(),
+        });
+      }
+
+      it('should return a slug matching the path of a new entry', async () => {
+        const { backend, implementation } = setup();
+
+        const slug = await persist(backend, {
+          data: { title: 'Test' },
+          meta: { path: 'Guides/API' },
+          newRecord: true,
+        });
+
+        expect(slug).toBe('Guides/API/index');
+        expect(implementation.persistEntry.mock.calls[0][0].dataFiles[0].path).toBe(
+          '_pages/Guides/API/index.md',
+        );
+      });
+
+      it('should keep the slug of an existing entry', async () => {
+        const { backend, implementation } = setup();
+
+        const slug = await persist(backend, {
+          slug: 'Guides/index',
+          path: '_pages/Guides/index.md',
+          data: { title: 'Test' },
+          meta: { path: 'Guides' },
+        });
+
+        expect(slug).toBe('Guides/index');
+        expect(implementation.persistEntry.mock.calls[0][0].dataFiles[0].newPath).toBeUndefined();
+      });
+
+      it('should look for an existing file at the path of a new entry', async () => {
+        const { backend, implementation } = setup(['_pages/Guides/index.md']);
+
+        await persist(backend, {
+          data: { title: 'Test' },
+          meta: { path: 'Guides' },
+          newRecord: true,
+        });
+
+        expect(implementation.getEntry).toHaveBeenNthCalledWith(1, '_pages/Guides/index.md');
+      });
+    });
   });
 
   describe('listAllEntries locale siblings', () => {
