@@ -13,6 +13,7 @@ import {
   getFileFromSlug,
 } from '../reducers/collections';
 import { sanitizeSlug } from './urlHelper';
+import { LOCALIZED_SLUG_VARIABLE } from './i18n';
 import { FILES } from '../constants/collectionTypes';
 import { COMMIT_AUTHOR, COMMIT_DATE } from '../constants/commitProps';
 
@@ -137,6 +138,33 @@ export function getProcessSegment(
 }
 
 /**
+ * Resolves the template tags with the `localize` filter against a locale's data,
+ * falling back to the default locale's value when the translation is empty.
+ */
+function localizeSlugTemplate(
+  collection: Collection,
+  slugTemplate: string,
+  entryData: Map<string, unknown>,
+  localeData: Map<string, unknown>,
+) {
+  let data = entryData;
+  const template = slugTemplate.replace(
+    new RegExp(LOCALIZED_SLUG_VARIABLE, 'g'),
+    (_full, key: string) => {
+      const field = key === 'slug' ? (selectIdentifier(collection) as string) : key;
+      const path = keyToPathArray(field.replace(/^fields\./, ''));
+      const value = localeData.getIn(path);
+      if (value) {
+        data = data.setIn(path, value);
+      }
+      return `{{${key}}}`;
+    },
+  );
+
+  return { template, data };
+}
+
+/**
  * Returns a formatter for an entry slug and its optional collection path.
  *
  * The entry identifier, date and slug are resolved once so the formatter renders the same
@@ -149,8 +177,17 @@ export function getSlugFormatter(
   collection: Collection,
   entryData: Map<string, unknown>,
   slugConfig?: CmsSlug,
+  localeData?: Map<string, unknown>,
 ) {
-  const slugTemplate = collection.get('slug') || '{{slug}}';
+  let slugTemplate = collection.get('slug') || '{{slug}}';
+  if (localeData) {
+    ({ template: slugTemplate, data: entryData } = localizeSlugTemplate(
+      collection,
+      slugTemplate,
+      entryData,
+      localeData,
+    ));
+  }
 
   const identifierField = selectIdentifier(collection) as string;
   const identifier = entryData.getIn(keyToPathArray(identifierField)) as string;
@@ -193,8 +230,9 @@ export function slugFormatter(
   collection: Collection,
   entryData: Map<string, unknown>,
   slugConfig?: CmsSlug,
+  localeData?: Map<string, unknown>,
 ) {
-  return getSlugFormatter(collection, entryData, slugConfig)();
+  return getSlugFormatter(collection, entryData, slugConfig, localeData)();
 }
 
 /** Upper bound on a generated slug in UTF-8 bytes, so slug + extension fits NAME_MAX. */

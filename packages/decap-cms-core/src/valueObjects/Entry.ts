@@ -41,6 +41,8 @@ export interface EntryValue {
   };
   /** Locales whose file was found on load; multi-file i18n only. */
   i18nLocales?: string[];
+  /** Locale files named with a localized slug; multi-file i18n only. */
+  i18nPaths?: Record<string, string>;
 }
 
 export function createEntry(collection: string, slug = '', path = '', options: Options = {}) {
