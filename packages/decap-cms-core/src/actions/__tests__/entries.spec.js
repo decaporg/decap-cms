@@ -512,6 +512,13 @@ describe('entries', () => {
       });
     });
 
+    it('should not return error on empty path when path is optional', () => {
+      const field = fromJS({ meta: true, name: 'path', required: false });
+      expect(validateMetaField(null, null, field, null, t)).toEqual({ error: false });
+      expect(validateMetaField(null, null, field, undefined, t)).toEqual({ error: false });
+      expect(validateMetaField(null, null, field, '', t)).toEqual({ error: false });
+    });
+
     it('should return error on invalid path', () => {
       expect(
         validateMetaField(state, null, fromJS({ meta: true, name: 'path' }), 'invalid path', t),
