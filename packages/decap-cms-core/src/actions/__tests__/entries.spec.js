@@ -1,5 +1,6 @@
 import { fromJS, List, Map } from 'immutable';
 import configureMockStore from 'redux-mock-store';
+import { applyMiddleware, combineReducers, createStore } from 'redux';
 import thunk from 'redux-thunk';
 
 import {
@@ -10,6 +11,9 @@ import {
   getMediaAssets,
   persistEntry,
   validateMetaField,
+  loadEntry,
+  discardDraft,
+  emptyDraftCreated,
 } from '../entries';
 import AssetProxy from '../../valueObjects/AssetProxy';
 
@@ -801,6 +805,77 @@ describe('entries', () => {
       expect(types).toContain('ENTRY_PERSIST_FAILURE');
       expect(types).not.toContain('ENTRY_PERSIST_SUCCESS');
       expect(loadMedia).not.toHaveBeenCalled();
+    });
+  });
+
+  // #8065: opening an entry and moving on before it loads must not put that
+  // entry in the next editor, where saving would overwrite it.
+  describe('loadEntry after the user moved on', () => {
+    const { currentBackend } = require('../../backend');
+    const entryDraft = jest.requireActual('../../reducers/entryDraft').default;
+
+    function deferred() {
+      let resolve;
+      const promise = new Promise(r => (resolve = r));
+      return { promise, resolve };
+    }
+
+    function setup() {
+      const pending = {};
+      currentBackend.mockReturnValue({
+        getEntry: jest.fn((_state, _collection, slug) => {
+          pending[slug] = deferred();
+          return pending[slug].promise;
+        }),
+      });
+      const store = createStore(
+        combineReducers({
+          config: (state = fromJS({})) => state,
+          mediaLibrary: (state = fromJS({ isLoading: false })) => state,
+          entryDraft,
+        }),
+        applyMiddleware(thunk),
+      );
+      const collection = fromJS({ name: 'posts' });
+      function answer(slug, title) {
+        pending[slug].resolve({ collection: 'posts', slug, data: { title }, mediaFiles: [] });
+      }
+      return { store, collection, answer, pending };
+    }
+
+    async function flush() {
+      for (let i = 0; i < 5; i++) await Promise.resolve();
+    }
+
+    it('keeps the new entry form empty when the old entry answers late', async () => {
+      const { store, collection, answer } = setup();
+
+      const loadingA = store.dispatch(loadEntry(collection, 'a'));
+      await flush();
+      store.dispatch(discardDraft()); // Back
+      store.dispatch(emptyDraftCreated({ collection: 'posts', slug: '', data: {} })); // New Post
+      answer('a', 'A');
+      await loadingA;
+
+      const draft = store.getState().entryDraft.get('entry');
+      expect(draft.get('newRecord')).toBe(true);
+      expect(draft.get('slug')).toBe('');
+    });
+
+    it('shows the entry in the URL when an earlier one answers after it', async () => {
+      const { store, collection, answer } = setup();
+
+      const loadingA = store.dispatch(loadEntry(collection, 'a'));
+      await flush();
+      store.dispatch(discardDraft()); // Back
+      const loadingB = store.dispatch(loadEntry(collection, 'b'));
+      await flush();
+      answer('b', 'B');
+      await loadingB;
+      answer('a', 'A');
+      await loadingA;
+
+      expect(store.getState().entryDraft.getIn(['entry', 'slug'])).toBe('b');
     });
   });
 });

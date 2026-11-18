@@ -69,6 +69,79 @@ describe('entryDraft reducer', () => {
     });
   });
 
+  // #8065: a load the user left before it answered must not take over the
+  // editor they moved on to, or saving there overwrites the old entry.
+  describe('DRAFT_CREATE_FROM_ENTRY after the user moved on', () => {
+    const otherEntry = { ...entry, slug: 'other', path: 'content/blog/other.md' };
+
+    function requestLoad(state) {
+      const action = actions.draftLoadRequested();
+      return [reducer(state, action), action.payload.loadId];
+    }
+
+    it('creates the draft from the load the editor is waiting for', () => {
+      const [waiting, loadId] = requestLoad(initialState);
+      const state = reducer(waiting, actions.createDraftFromEntry(fromJS(entry), loadId));
+      expect(state.getIn(['entry', 'slug'])).toBe('slug');
+      expect(state.has('pendingLoad')).toBe(false);
+    });
+
+    it('keeps a new entry when the old entry answers late', () => {
+      const [waiting, loadId] = requestLoad(initialState);
+      const left = reducer(waiting, actions.discardDraft());
+      const newEntry = reducer(left, actions.emptyDraftCreated(fromJS({ ...entry, slug: '' })));
+      const state = reducer(newEntry, actions.createDraftFromEntry(fromJS(entry), loadId));
+      expect(state).toBe(newEntry);
+      expect(state.getIn(['entry', 'newRecord'])).toBe(true);
+    });
+
+    it('ignores a load the user left, even with no editor open', () => {
+      const [waiting, loadId] = requestLoad(initialState);
+      const left = reducer(waiting, actions.discardDraft());
+      expect(reducer(left, actions.createDraftFromEntry(fromJS(entry), loadId))).toBe(left);
+    });
+
+    it('lets only the newest load create the draft, whichever answers first', () => {
+      const [first, oldLoad] = requestLoad(initialState);
+      const [waiting, newLoad] = requestLoad(reducer(first, actions.discardDraft()));
+
+      const newFirst = reducer(waiting, actions.createDraftFromEntry(fromJS(otherEntry), newLoad));
+      expect(
+        reducer(newFirst, actions.createDraftFromEntry(fromJS(entry), oldLoad)).getIn([
+          'entry',
+          'slug',
+        ]),
+      ).toBe('other');
+
+      const oldFirst = reducer(waiting, actions.createDraftFromEntry(fromJS(entry), oldLoad));
+      expect(oldFirst).toBe(waiting);
+      expect(
+        reducer(oldFirst, actions.createDraftFromEntry(fromJS(otherEntry), newLoad)).getIn([
+          'entry',
+          'slug',
+        ]),
+      ).toBe('other');
+    });
+
+    it('keeps a restored local backup when the entry answers late', () => {
+      const [waiting, loadId] = requestLoad(initialState);
+      const withBackup = waiting.set(
+        'localBackup',
+        fromJS({ entry: { ...entry, data: { a: 1 } } }),
+      );
+      const restored = reducer(withBackup, { type: actions.DRAFT_CREATE_FROM_LOCAL_BACKUP });
+      const state = reducer(restored, actions.createDraftFromEntry(fromJS(entry), loadId));
+      expect(state).toBe(restored);
+      expect(state.getIn(['entry', 'data', 'a'])).toBe(1);
+    });
+
+    it('still applies a draft created without a load id', () => {
+      const [waiting] = requestLoad(initialState);
+      const state = reducer(waiting, actions.createDraftFromEntry(fromJS(entry)));
+      expect(state.getIn(['entry', 'slug'])).toBe('slug');
+    });
+  });
+
   describe('persisting', () => {
     let initialState;
 
