@@ -16,6 +16,7 @@ import {
   entryDeleted,
   getMediaAssets,
   createDraftFromEntry,
+  draftLoadRequested,
   loadEntries,
   getSerializedEntry,
 } from './entries';
@@ -253,6 +254,9 @@ function unpublishedEntryDeleteError(collection: string, slug: string) {
 
 export function loadUnpublishedEntry(collection: Collection, slug: string) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+    // Before any await; see `draftLoadRequested`. A redirect to `loadEntry`
+    // passes this id on, so a backup restored meanwhile still wins (#5055).
+    const { loadId } = dispatch(draftLoadRequested()).payload;
     const state = getState();
     const backend = currentBackend(state.config);
     const contentKey = generateContentKey(collection.get('name') as string, slug);
@@ -277,7 +281,7 @@ export function loadUnpublishedEntry(collection: Collection, slug: string) {
       // added, which the listing may predate.
       if (fetchedKeys && !fetchedKeys.includes(contentKey) && !isKnownUnpublished(getState())) {
         dispatch(unpublishedEntryRedirected(collection, slug));
-        dispatch(loadEntry(collection, slug));
+        dispatch(loadEntry(collection, slug, loadId));
         return;
       }
     }
@@ -299,11 +303,11 @@ export function loadUnpublishedEntry(collection: Collection, slug: string) {
       );
       dispatch(addAssets(assetProxies));
       dispatch(unpublishedEntryLoaded(collection, entry));
-      dispatch(createDraftFromEntry(entry));
+      dispatch(createDraftFromEntry(entry, loadId));
     } catch (error) {
       if (error.name === EDITORIAL_WORKFLOW_ERROR && error.notUnderEditorialWorkflow) {
         dispatch(unpublishedEntryRedirected(collection, slug));
-        dispatch(loadEntry(collection, slug));
+        dispatch(loadEntry(collection, slug, loadId));
       } else {
         dispatch(
           addNotification({
@@ -535,7 +539,7 @@ export function publishUnpublishedEntry(collectionName: string, slug: string) {
       if (collection.has('nested')) {
         dispatch(loadEntries(collection));
         const newSlug = slugFromCustomPath(collection, entry.get('path'));
-        loadEntry(collection, newSlug);
+        dispatch(loadEntry(collection, newSlug));
         if (slug !== newSlug && selectEditingDraft(state.entryDraft)) {
           navigateToEntry(collection.get('name'), newSlug);
         }
