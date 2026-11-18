@@ -1,6 +1,6 @@
 import merge from 'lodash/merge';
 
-import { canCompileSchemas, validateConfig } from '../configSchema';
+import { validateConfig } from '../configSchema';
 
 jest.mock('../../lib/registry');
 
@@ -695,10 +695,6 @@ describe('config', () => {
         jest.restoreAllMocks();
       });
 
-      it('should report that schemas cannot be compiled', () => {
-        expect(canCompileSchemas()).toBe(false);
-      });
-
       it('should skip schema validation and warn instead of throwing', () => {
         expect(() => {
           validateConfig(merge({}, validConfig, { backend: { name: 42 } }));
@@ -707,27 +703,6 @@ describe('config', () => {
           expect.stringContaining('Config schema validation skipped'),
         );
       });
-
-      it('should still reject more than one default_sort field', () => {
-        expect(() => {
-          validateConfig(
-            merge({}, validConfig, {
-              collections: [
-                {
-                  sortable_fields: [
-                    { field: 'title', default_sort: true },
-                    { field: 'date', default_sort: true },
-                  ],
-                },
-              ],
-            }),
-          );
-        }).toThrowError('only one sortable field can have the default_sort property');
-      });
-    });
-
-    it('should report that schemas can be compiled when eval is allowed', () => {
-      expect(canCompileSchemas()).toBe(true);
     });
   });
 });

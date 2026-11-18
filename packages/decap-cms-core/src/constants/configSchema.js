@@ -424,7 +424,7 @@ class ConfigError extends Error {
  * Security Policy without 'unsafe-eval' forbids. Probe for it so pages served
  * under a strict CSP can still load the CMS.
  */
-export function canCompileSchemas() {
+function canCompileSchemas() {
   try {
     return new Function('return true')() === true;
   } catch {
