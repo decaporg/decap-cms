@@ -268,7 +268,7 @@ catalog:
   what-the-diff: ^0.6.0
   winston: ^3.3.3
   yaml: ^1.8.3
-  zod: ^3.25.0
+  zod: ^4.6.6
 
 overrides:
   clean-stack: 5.2.0

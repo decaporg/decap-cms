@@ -194,6 +194,8 @@ export default class GitLab implements Implementation {
       });
       if (defaultBranchName) {
         this.branch = defaultBranchName;
+        // The API above was created with the fallback branch
+        this.api.branch = defaultBranchName;
       }
     }
     this.destroyNotesPolling();
@@ -229,17 +231,20 @@ export default class GitLab implements Implementation {
 
     this.refreshedTokenPromise = this.authenticator!.refresh({
       refresh_token: this.refreshToken,
-    }).then(({ token, refresh_token }) => {
-      this.token = token;
-      this.refreshToken = refresh_token;
-      this.refreshedTokenPromise = undefined;
+    })
+      .then(({ token, refresh_token }) => {
+        this.token = token;
+        this.refreshToken = refresh_token;
 
-      this.updateUserCredentials({ token, refresh_token });
-      if (this.api) {
-        this.api.token = token;
-      }
-      return token;
-    });
+        this.updateUserCredentials({ token, refresh_token });
+        if (this.api) {
+          this.api.token = token;
+        }
+        return token;
+      })
+      .finally(() => {
+        this.refreshedTokenPromise = undefined;
+      });
 
     return this.refreshedTokenPromise;
   }

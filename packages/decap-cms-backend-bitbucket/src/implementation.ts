@@ -194,19 +194,18 @@ export default class BitbucketBackend implements Implementation {
 
   async authenticate(state: Credentials) {
     this.token = state.token as string;
+    this.refreshToken = state.refresh_token;
     if (!this.isBranchConfigured) {
-      const repo = await fetch(`${this.apiRoot}/repositories/${this.repo}`, {
-        headers: {
-          Authorization: `token ${this.token}`,
-        },
-      })
+      // Bitbucket only accepts the Bearer scheme and treats anything else as an
+      // anonymous request, which cannot read a private repository. Going through
+      // `apiRequestFunction` also refreshes an expired token first.
+      const repo = await this.apiRequestFunction(`${this.apiRoot}/repositories/${this.repo}`)
         .then(res => res.json())
         .catch(() => null);
-      if (repo) {
+      if (repo?.mainbranch?.name) {
         this.branch = repo.mainbranch.name;
       }
     }
-    this.refreshToken = state.refresh_token;
     this.api = new API({
       requestFunction: this.apiRequestFunction,
       branch: this.branch,
@@ -249,9 +248,10 @@ export default class BitbucketBackend implements Implementation {
       ...user,
       name: user.display_name,
       login: user.username,
-      token: state.token,
+      // A request above may have refreshed the token; core stores what we return
+      token: this.token,
       avatar_url: user.links.avatar.href,
-      refresh_token: state.refresh_token,
+      refresh_token: this.refreshToken,
     };
   }
 
@@ -275,14 +275,17 @@ export default class BitbucketBackend implements Implementation {
     this.refreshedTokenPromise = this.authenticator!.refresh({
       provider: 'bitbucket',
       refresh_token: this.refreshToken as string,
-    }).then(({ token, refresh_token }) => {
-      this.token = token;
-      this.refreshToken = refresh_token;
-      this.refreshedTokenPromise = undefined;
+    })
+      .then(({ token, refresh_token }) => {
+        this.token = token;
+        this.refreshToken = refresh_token;
 
-      this.updateUserCredentials({ token, refresh_token });
-      return token;
-    });
+        this.updateUserCredentials({ token, refresh_token });
+        return token;
+      })
+      .finally(() => {
+        this.refreshedTokenPromise = undefined;
+      });
 
     return this.refreshedTokenPromise;
   }
