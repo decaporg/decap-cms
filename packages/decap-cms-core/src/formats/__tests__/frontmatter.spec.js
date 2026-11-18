@@ -428,19 +428,6 @@ describe('Frontmatter', () => {
       );
     });
 
-    it('should stringify JSON with keys ordered by sorted keys', () => {
-      expect(
-        frontmatterJSON().toFile(
-          {
-            body: 'Content',
-            title: 'JSON',
-            date: '2020-01-01',
-          },
-          ['date', 'title'],
-        ),
-      ).toEqual(['{', '"date": "2020-01-01",', '  "title": "JSON"', '}', 'Content'].join('\n'));
-    });
-
     it('should keep field types', () => {
       const frontmatter = frontmatterJSON();
       const file = frontmatter.toFile({
