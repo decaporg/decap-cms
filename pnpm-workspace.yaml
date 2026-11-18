@@ -256,7 +256,7 @@ catalog:
   uploadcare-widget-tab-effects: ^1.4.0
   url: ^0.11.0
   url-join: ^4.0.1
-  uuid: ^8.3.2
+  uuid: ^14.0.0
   vfile-location: ^2.0.6
   vite: ^5.4.8
   vitest: ^2.1.2
