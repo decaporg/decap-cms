@@ -20,7 +20,7 @@ import { getEmptyReferences, resolveFieldReferences } from '../../../lib/fieldFi
 import { clearFieldErrors, tryLoadEntry, validateMetaField } from '../../../actions/entries';
 import { addAsset, getAsset } from '../../../actions/media';
 import { selectIsLoadingAsset } from '../../../reducers/medias';
-import { selectField } from '../../../reducers/collections';
+import { getFileFromSlug, selectField } from '../../../reducers/collections';
 import { query, clearSearch } from '../../../actions/search';
 import { store } from '../../../redux';
 import {
@@ -531,8 +531,12 @@ function makeMapStateToProps() {
     const isLoadingAsset = selectIsLoadingAsset(state.medias);
 
     const data = entryDraft.getIn(['entry', 'data']);
+    // a files collection keeps its fields on each file
+    const fieldsHolder = collection?.has('files')
+      ? getFileFromSlug(collection, entryDraft.getIn(['entry', 'slug']))
+      : collection;
     const waitingFor = getEmptyReferences(ownProps.field, data)
-      .map(name => (collection && selectField(collection, name)?.get('label')) || name)
+      .map(name => (fieldsHolder && selectField(fieldsHolder, name)?.get('label')) || name)
       .join(', ');
 
     const field = resolveFieldReferences(ownProps.field, data);
