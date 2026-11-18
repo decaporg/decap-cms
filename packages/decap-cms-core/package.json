@@ -90,8 +90,7 @@
     "prop-types": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "react-immutable-proptypes": "catalog:",
-    "uuid": "catalog:"
+    "react-immutable-proptypes": "catalog:"
   },
   "devDependencies": {
     "@types/history": "catalog:",

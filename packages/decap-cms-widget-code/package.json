@@ -31,8 +31,7 @@
     "immutable": "catalog:",
     "lodash": "catalog:",
     "prop-types": "catalog:",
-    "react": "catalog:",
-    "uuid": "catalog:"
+    "react": "catalog:"
   },
   "dependencies": {
     "immutable": "catalog:",

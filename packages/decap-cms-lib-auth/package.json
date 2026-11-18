@@ -22,7 +22,6 @@
   },
   "peerDependencies": {
     "immutable": "catalog:",
-    "lodash": "catalog:",
-    "uuid": "catalog:"
+    "lodash": "catalog:"
   }
 }

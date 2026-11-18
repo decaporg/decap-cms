@@ -36,7 +36,6 @@
     "lodash": "catalog:",
     "prop-types": "catalog:",
     "react": "catalog:",
-    "react-immutable-proptypes": "catalog:",
-    "uuid": "catalog:"
+    "react-immutable-proptypes": "catalog:"
   }
 }

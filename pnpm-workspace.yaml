@@ -25,13 +25,13 @@ catalog:
   '@emotion/babel-plugin': ^11.13.5
   '@emotion/babel-preset-css-prop': ^11.11.0
   '@emotion/eslint-plugin': ^11.0.0
-  '@emotion/jest': ^11.11.0
+  '@emotion/jest': ^11.14.2
   '@emotion/react': ^11.11.1
   '@emotion/styled': ^11.11.0
   '@hapi/joi': ^17.0.2
   '@iarna/toml': 2.2.5
   '@jsquash/webp': 1.5.0
-  '@modelcontextprotocol/sdk': ^1.32.0
+  '@modelcontextprotocol/sdk': ^1.32.2
   '@octokit/rest': ^16.28.7
   '@octokit/types': ^16.0.0
   '@reduxjs/toolkit': ^1.9.1
@@ -41,10 +41,10 @@ catalog:
   '@storybook/addon-links': ^9.1.15
   '@storybook/react': ^9.1.15
   '@stylelint/postcss-css-in-js': ^0.37.2
-  '@testing-library/dom': ^10.0.0
+  '@testing-library/dom': ^10.4.2
   '@testing-library/jest-dom': ^5.11.1
-  '@testing-library/react': ^16.3.0
-  '@types/common-tags': ^1.8.0
+  '@testing-library/react': ^16.3.3
+  '@types/common-tags': ^1.8.4
   '@types/cors': ^2.8.6
   '@types/express': ^4.17.15
   '@types/hapi__joi': 17.1.8
@@ -58,10 +58,9 @@ catalog:
   '@types/node': ^16.0.0
   '@types/react': ^19.0.0
   '@types/react-dom': ^19.0.0
-  '@types/react-redux': ^7.1.33
+  '@types/react-redux': ^7.1.35
   '@types/redux-mock-store': ^1.0.2
   '@types/url-join': ^4.0.0
-  '@types/uuid': ^8.3.2
   '@types/vfile-message': ^2.0.0
   '@typescript-eslint/eslint-plugin': ^5.0.0
   '@typescript-eslint/parser': ^5.0.0
@@ -77,7 +76,7 @@ catalog:
   apollo-link-http: ^1.5.15
   array-move: 4.0.0
   async-mutex: ^0.3.0
-  axios: ^1.6.0
+  axios: ^1.21.1
   babel-core: ^7.0.0-bridge.0
   babel-eslint: ^11.0.0-beta.2
   babel-jest: ^27.5.1
@@ -100,18 +99,18 @@ catalog:
   commonmark-spec: ^0.30.0
   copy-text-to-clipboard: ^3.0.0
   copy-webpack-plugin: ^10.2.4
-  cors: ^2.8.5
+  cors: ^2.8.6
   create-react-class: ^15.7.0
   cross-env: ^7.0.0
-  css-loader: ^7.1.2
+  css-loader: ^7.1.5
   cypress: ^12.17.4
   cypress-jest-adapter: ^0.1.1
   cypress-plugin-tab: ^1.0.0
-  dayjs: ^1.11.10
+  dayjs: ^1.11.23
   deepmerge: ^4.2.2
   detab: ^2.0.4
   diacritics: ^1.3.0
-  dompurify: ^3.4.13
+  dompurify: ^3.4.18
   dotenv: ^16.4.5
   emotion: ^11.0.0
   eslint: ^8.12.0
@@ -133,7 +132,7 @@ catalog:
   globby: ^12.0.0
   gotrue-js: ^0.9.24
   graphql: ^15.0.0
-  graphql-tag: ^2.10.1
+  graphql-tag: ^2.12.7
   gray-matter: ^4.0.2
   history: ^4.7.2
   hex-to-array-buffer: ^2.0.0
@@ -149,7 +148,7 @@ catalog:
   jest-cli: ^27.0.0
   jest-environment-jsdom: ^27.0.0
   jest-mock: ^27.0.0
-  js-base64: ^3.0.0
+  js-base64: ^3.9.6
   js-sha256: ^0.9.0
   js-yaml: ^4.0.0
   jsdom: ^25.0.1
@@ -175,7 +174,7 @@ catalog:
   nx: ^23.1.1
   ol: ^6.9.0
   path-browserify: ^1.0.1
-  postcss: ^8.4.7
+  postcss: ^8.5.33
   postcss-scss: ^4.0.3
   postcss-styled-syntax: 0.6.4
   prettier: ^2.3.0
@@ -222,9 +221,9 @@ catalog:
   remark-slate: ^1.8.6
   remark-stringify: ^6.0.4
   rimraf: ^3.0.0
-  sanitize-filename: ^1.6.1
+  sanitize-filename: ^1.6.5
   semaphore: ^1.1.0
-  simple-git: ^4.0.1
+  simple-git: ^4.1.0
   slate: ^0.118.1
   slate-dom: ^0.118.1
   slate-history: ^0.113.1
@@ -244,7 +243,7 @@ catalog:
   to-string-loader: ^1.1.5
   tomlify-j0.4: ^3.0.0-alpha.0
   ts-jest: ^27.0.0
-  ts-loader: ^9.4.2
+  ts-loader: ^9.6.2
   ts-node: ^10.9.1
   tsconfig-paths-webpack-plugin: ^3.2.0
   typescript: ^4.9.4
@@ -256,17 +255,16 @@ catalog:
   uploadcare-widget-tab-effects: ^1.4.0
   url: ^0.11.0
   url-join: ^4.0.1
-  uuid: ^8.3.2
   vfile-location: ^2.0.6
   vite: ^5.4.8
   vitest: ^2.1.2
-  webpack: ^5.75.0
+  webpack: ^5.112.2
   webpack-cli: ^5.0.1
-  webpack-dev-server: ^6.0.0
+  webpack-dev-server: ^6.1.0
   webpack-node-externals: ^3.0.0
   what-input: ^5.1.4
   what-the-diff: ^0.6.0
-  winston: ^3.3.3
+  winston: ^3.19.0
   yaml: ^1.8.3
   zod: ^4.6.6
 
