@@ -30,6 +30,14 @@ import {
   reactSelectStyles,
   GlobalStyles,
 } from './styles';
+import ThemeStyles from './ThemeStyles';
+import {
+  THEME_TOKEN_MAP,
+  DEFAULT_THEME_VALUES,
+  normalizeThemeConfig,
+  buildThemeCssVars,
+  themeVar,
+} from './themeTokens';
 
 export const DecapCmsUiDefault = {
   Dropdown,
@@ -63,6 +71,7 @@ export const DecapCmsUiDefault = {
   zIndex,
   reactSelectStyles,
   GlobalStyles,
+  ThemeStyles,
   renderPageLogo,
 };
 export {
@@ -97,6 +106,12 @@ export {
   zIndex,
   reactSelectStyles,
   GlobalStyles,
+  ThemeStyles,
   GoBackButton,
   renderPageLogo,
+  THEME_TOKEN_MAP,
+  DEFAULT_THEME_VALUES,
+  normalizeThemeConfig,
+  buildThemeCssVars,
+  themeVar,
 };
