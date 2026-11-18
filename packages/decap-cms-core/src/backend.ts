@@ -35,6 +35,7 @@ import {
   selectMediaFolders,
   selectFieldsComments,
   selectHasMetaPath,
+  selectRejectsSlugCollisions,
   selectEntryCollectionTitle,
 } from './reducers/collections';
 import { createEntry } from './valueObjects/Entry';
@@ -640,7 +641,7 @@ export class Backend {
     }
     let uniqueSlug = fitSlug();
     const isIndexFile = Boolean(customPath && collection.getIn(['meta', 'path', 'index_file']));
-    if (isIndexFile || collection.get('slug_collision', 'suffix') === 'reject') {
+    if (isIndexFile || selectRejectsSlugCollisions(collection)) {
       await this.assertNoSlugCollision(collection, config, usedSlugs, uniqueSlug);
       return uniqueSlug;
     }
@@ -1454,7 +1455,7 @@ export class Backend {
       const slug = entryDraft.getIn(['entry', 'slug']);
       const path = entryDraft.getIn(['entry', 'path']);
       const newPath = customPath === path ? undefined : customPath;
-      if (newPath && collection.get('slug_collision', 'suffix') === 'reject') {
+      if (newPath && selectRejectsSlugCollisions(collection)) {
         await this.assertNoSlugCollision(
           collection,
           config,
