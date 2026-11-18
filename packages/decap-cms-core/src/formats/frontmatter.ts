@@ -46,8 +46,9 @@ const parsers = {
       }
       return jsonFormatter.fromFile(JSONinput);
     },
-    stringify: (metadata: object) => {
-      let JSONoutput = jsonFormatter.toFile(metadata).trim();
+    stringify: (metadata: object, opts?: { sortedKeys?: string[] }) => {
+      const { sortedKeys } = opts || {};
+      let JSONoutput = jsonFormatter.toFile(metadata, sortedKeys).trim();
       // Trim leading and trailing brackets.
       if (JSONoutput.slice(0, 1) === '{' && JSONoutput.slice(-1) === '}') {
         JSONoutput = JSONoutput.slice(1, -1);

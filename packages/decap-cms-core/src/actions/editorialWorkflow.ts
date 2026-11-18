@@ -539,7 +539,7 @@ export function publishUnpublishedEntry(collectionName: string, slug: string) {
       if (collection.has('nested')) {
         dispatch(loadEntries(collection));
         const newSlug = slugFromCustomPath(collection, entry.get('path'));
-        loadEntry(collection, newSlug);
+        dispatch(loadEntry(collection, newSlug));
         if (slug !== newSlug && selectEditingDraft(state.entryDraft)) {
           navigateToEntry(collection.get('name'), newSlug);
         }
