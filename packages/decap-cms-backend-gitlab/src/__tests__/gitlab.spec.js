@@ -354,6 +354,27 @@ describe('gitlab backend', () => {
       expect(authStore.retrieve()).toEqual(user);
       expect(user).toEqual({ ...resp.user.success, ...mockCredentials, backendName });
     });
+
+    it('uses the default branch of the project when no branch is configured', async () => {
+      backend = resolveBackend(defaultConfig);
+      interceptAuth(backend);
+      await backend.authenticate(mockCredentials);
+
+      expect(backend.implementation.branch).toBe('main');
+      expect(backend.implementation.api.branch).toBe('main');
+
+      const path = 'content/test1.md';
+      const api = mockApi(backend);
+      api
+        .get(`${expectedRepoUrl}/repository/files/${encodeURIComponent(path)}/raw`)
+        .query(({ ref }) => ref === 'main')
+        .reply(200, mockRepo.files[path]);
+
+      await expect(backend.implementation.api.readFile(path, null)).resolves.toBe(
+        mockRepo.files[path],
+      );
+      expect(api.isDone()).toBe(true);
+    });
   });
 
   describe('currentUser', () => {
@@ -408,6 +429,92 @@ describe('gitlab backend', () => {
       interceptAuth(backend);
       await backend.authenticate(pkceCredentials);
       expect(authStore.retrieve()).toEqual(expect.objectContaining(pkceCredentials));
+    });
+
+    it('shares an in-flight refresh and permits a later refresh with the rotated token', async () => {
+      backend = resolveBackend(pkceConfig);
+      interceptAuth(backend);
+      await backend.authenticate(pkceCredentials);
+
+      let resolveRefresh;
+      const refresh = jest
+        .fn()
+        .mockImplementationOnce(
+          () =>
+            new Promise(resolve => {
+              resolveRefresh = resolve;
+            }),
+        )
+        .mockResolvedValue({ token: 'NEXT_TOKEN', refresh_token: 'NEXT_REFRESH_TOKEN' });
+      backend.implementation.authenticator = { refresh };
+
+      const firstRefresh = backend.implementation.getRefreshedAccessToken();
+      const concurrentRefresh = backend.implementation.getRefreshedAccessToken();
+      const pendingToken = backend.implementation.getToken();
+
+      expect(concurrentRefresh).toBe(firstRefresh);
+      expect(pendingToken).toBe(firstRefresh);
+      expect(refresh).toHaveBeenCalledTimes(1);
+
+      resolveRefresh({ token: 'NEW_TOKEN', refresh_token: 'NEW_REFRESH_TOKEN' });
+      await expect(Promise.all([firstRefresh, concurrentRefresh, pendingToken])).resolves.toEqual([
+        'NEW_TOKEN',
+        'NEW_TOKEN',
+        'NEW_TOKEN',
+      ]);
+      expect(backend.implementation.api.token).toBe('NEW_TOKEN');
+      expect(authStore.retrieve()).toEqual(
+        expect.objectContaining({ token: 'NEW_TOKEN', refresh_token: 'NEW_REFRESH_TOKEN' }),
+      );
+
+      await expect(backend.implementation.getRefreshedAccessToken()).resolves.toBe('NEXT_TOKEN');
+      expect(refresh).toHaveBeenCalledTimes(2);
+      expect(refresh).toHaveBeenLastCalledWith({ refresh_token: 'NEW_REFRESH_TOKEN' });
+    });
+
+    it('recovers a later API request after the token endpoint temporarily fails', async () => {
+      backend = resolveBackend(pkceConfig);
+      interceptAuth(backend);
+      await backend.authenticate(pkceCredentials);
+
+      const api = mockApi(backend);
+      api
+        .get('/user')
+        .twice()
+        .matchHeader('authorization', 'Bearer EXPIRED_TOKEN')
+        .reply(401, unauthorizedTokenResponse);
+      api
+        .get('/user')
+        .matchHeader('authorization', 'Bearer NEW_TOKEN')
+        .reply(200, resp.user.success);
+
+      const tokenRequest = {
+        client_id: 'app-id',
+        grant_type: 'refresh_token',
+        redirect_uri: document.location.origin + document.location.pathname,
+        refresh_token: 'REFRESH_TOKEN',
+      };
+      const tokenApi = nock('https://gitlab.com')
+        .post('/oauth/token', tokenRequest)
+        .reply(503, { error: 'temporarily_unavailable' })
+        .post('/oauth/token', tokenRequest)
+        .reply(200, { access_token: 'NEW_TOKEN', refresh_token: 'NEW_REFRESH_TOKEN' });
+      const req = { url: `${backend.implementation.apiRoot}/user` };
+
+      await expect(backend.implementation.apiRequestFunction(req)).rejects.toThrow(
+        'temporarily_unavailable',
+      );
+      expect(authStore.retrieve()).toEqual(expect.objectContaining(pkceCredentials));
+
+      const response = await backend.implementation.apiRequestFunction(req);
+      expect(response.status).toBe(200);
+      await expect(response.json()).resolves.toEqual(resp.user.success);
+      expect(api.isDone()).toBe(true);
+      expect(tokenApi.isDone()).toBe(true);
+      expect(await backend.getToken()).toBe('NEW_TOKEN');
+      expect(authStore.retrieve()).toEqual(
+        expect.objectContaining({ token: 'NEW_TOKEN', refresh_token: 'NEW_REFRESH_TOKEN' }),
+      );
     });
 
     it.each(restInvalidTokenResponses)(
@@ -709,7 +816,8 @@ describe('gitlab backend', () => {
 
     it('returns all entries from folder collection', async () => {
       const tree = mockRepo.tree[collectionManyEntriesConfig.folder];
-      interceptBranch(backend);
+      // No branch is configured, so requests use the project's default branch
+      interceptBranch(backend, { branch: 'main' });
       tree.forEach(file => interceptFiles(backend, file.path));
 
       interceptCollection(backend, collectionManyEntriesConfig, { repeat: 5 });

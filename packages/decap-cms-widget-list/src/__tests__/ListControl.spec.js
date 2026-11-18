@@ -633,6 +633,30 @@ describe('ListControl', () => {
     }
   });
 
+  it('should remove from a single field list that has metadata', () => {
+    const field = fromJS({
+      name: 'list',
+      label: 'List',
+      field: { label: 'Author', name: 'author', widget: 'relation', collection: 'authors' },
+    });
+    const metadata = fromJS({
+      author: { authors: { 'author-a': { title: 'A' }, 'author-b': { title: 'B' } } },
+    });
+    const { getAllByText } = render(
+      <ListControl
+        {...props}
+        field={field}
+        metadata={metadata}
+        value={fromJS(['author-a', 'author-b'])}
+      />,
+    );
+
+    fireEvent.click(getAllByText('Remove')[0]);
+
+    expect(props.onChange).toHaveBeenCalledTimes(1);
+    expect(props.onChange).toHaveBeenCalledWith(fromJS(['author-b']), { list: metadata });
+  });
+
   it('should give validation error if below min elements', () => {
     const field = fromJS({
       name: 'list',
@@ -858,5 +882,23 @@ describe('ListControl', () => {
     changeSecondItem(fromJS({ name: 'text' }), 'text for a removed item');
 
     expect(props.onChange).toHaveBeenCalledTimes(1);
+  });
+
+  describe('comma separated input', () => {
+    const field = fromJS({ name: 'tags', label: 'Tags' });
+
+    it('should not save an empty item left by a trailing comma', () => {
+      const { container, rerender } = render(
+        <ListControl {...props} field={field} value={fromJS([])} />,
+      );
+      const input = container.querySelector('input');
+
+      fireEvent.change(input, { target: { value: 'tag one, ' } });
+      const typedValue = props.onChange.mock.calls.at(-1)[0];
+      rerender(<ListControl {...props} field={field} value={typedValue} />);
+      fireEvent.blur(input);
+
+      expect(props.onChange).toHaveBeenLastCalledWith(fromJS(['tag one']));
+    });
   });
 });

@@ -199,7 +199,7 @@ export default class Widget extends Component {
       return { error: false };
     }
 
-    if (pattern && !RegExp(pattern.first()).test(value)) {
+    if (pattern && !new RegExp(pattern.first()).test(value)) {
       const error = {
         type: ValidationErrorTypes.PATTERN,
         parentIds,

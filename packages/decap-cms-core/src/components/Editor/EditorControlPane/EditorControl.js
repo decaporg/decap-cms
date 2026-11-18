@@ -500,14 +500,27 @@ const stable = {
     return state.entryDraft.get('entry');
   },
 
-  getBoundedAsset: memoize(collection => {
-    return (path, field) => {
-      const state = store.getState();
-      const entry = state.entryDraft.get('entry');
-      return store.dispatch(getAsset({ collection, entry, path, field }));
-    };
-  }),
+  // Will return the same function instance for the same collection,
+  // critically it returns a different function instance when the mediaState changes,
+  // so widgets rerender when the asset actually loads.
+  // We listen to mediaState instead of `isLoadingAsset` because React 19 might batch updates
+  // and redux might miss the change if it happens too quickly.
+  // This is not a memory leak because we set it up to use a WeakMap for caching,
+  // so when the mediaState is no longer referenced it will be garbage collected.
+  // eslint-disable-next-line no-unused-vars
+  getBoundedAsset: memoize(mediaState =>
+    memoize(collection => {
+      return (path, field) => {
+        const state = store.getState();
+        const entry = state.entryDraft.get('entry');
+        return store.dispatch(getAsset({ collection, entry, path, field }));
+      };
+    }),
+  ),
 };
+
+// Prevents memory leaks on mediaState changes.
+stable.getBoundedAsset.cache = new WeakMap();
 
 function makeMapStateToProps() {
   let resolvedField;
@@ -532,6 +545,7 @@ function makeMapStateToProps() {
       isFetching: state.search.isFetching,
       queryHits: state.search.queryHits,
       config: state.config,
+      medias: state.medias,
       collection,
       isLoadingAsset,
       getEntry: stable.getEntry,
@@ -571,7 +585,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     ...dispatchProps,
     ...ownProps,
     field: resolvedField,
-    boundGetAsset: dispatchProps.boundGetAsset(stateProps.collection),
+    boundGetAsset: dispatchProps.boundGetAsset(stateProps.medias)(stateProps.collection),
   };
 }
 
