@@ -466,8 +466,8 @@ catalogs:
       specifier: ^1.0.5
       version: 1.1.0
     minimatch:
-      specifier: ^7.0.0
-      version: 7.4.9
+      specifier: ^11.0.1
+      version: 11.0.9
     mockserver-client:
       specifier: ^5.8.0
       version: 5.15.0
@@ -1584,7 +1584,7 @@ importers:
         version: 4.18.1
       minimatch:
         specifier: 'catalog:'
-        version: 7.4.9
+        version: 11.0.9
       path-browserify:
         specifier: 'catalog:'
         version: 1.0.1
@@ -1683,7 +1683,7 @@ importers:
         version: 4.18.1
       minimatch:
         specifier: 'catalog:'
-        version: 7.4.9
+        version: 11.0.9
       prop-types:
         specifier: 'catalog:'
         version: 15.8.1
@@ -4429,6 +4429,9 @@ packages:
   '@isaacs/fs-minipass@4.0.1':
     resolution: {integrity: sha512-wgm9Ehl2jpeqP3zw/7mo3kRHFp5MEDhqAdwy1fTGkHAwnkGOVsgpvQhL8B5n1qlb01jV3n/bI0ZfZp5lWA1k4w==}
     engines: {node: '>=18.0.0'}
+
+  '@isaacs/nonrecursive-glob-match@1.1.0':
+    resolution: {integrity: sha512-GPm/Dbvk5RLmhRnxXIa7nTpK0xtl4E0wj0MslsuNiJ1FIROU+2+9lgUC/dgF7Ey4QCWhfEsgxilMRMCdHPfDfw==}
 
   '@isaacs/string-locale-compare@1.1.0':
     resolution: {integrity: sha512-SQ7Kzhh9+D+ZW9MA0zkYv3VXhIDNx+LzM6EJ+/65I3QY+enU6Itte7E5XX7EWrqLW2FN4n06GWzBnPoC3th2aQ==}
@@ -9939,6 +9942,10 @@ packages:
     resolution: {integrity: sha512-vpLQEs+VLCr1nU0BXS07maYoFwlDAH0gngQuuttxIwutDFEMHq2blX+8vpgxDdK3J1PwjCJiep77OitTZ4Ll1A==}
     engines: {node: 18 || 20 || >=22}
 
+  minimatch@11.0.9:
+    resolution: {integrity: sha512-KCFkfyjqerNlSstjlhIGNXIKZGA/6O4V4RlhZ+Dsr621SPPw0mzlypE9D9ZOoPiVefHID+j7/XuMMlqfD/F60Q==}
+    engines: {node: 20 || >=22}
+
   minimatch@3.1.4:
     resolution: {integrity: sha512-twmL+S8+7yIsE9wsqgzU3E8/LumN3M3QELrBZ20OdmQ9jB2JvW5oZtBEmft84k/Gs5CG9mqtWc6Y9vW+JEzGxw==}
 
@@ -9947,10 +9954,6 @@ packages:
 
   minimatch@5.1.9:
     resolution: {integrity: sha512-7o1wEA2RyMP7Iu7GNba9vc0RWWGACJOCZBJX2GJWip0ikV+wcOsgVuY9uE8CPiyQhkGFSlhuSkZPavN7u1c2Fw==}
-    engines: {node: '>=10'}
-
-  minimatch@7.4.9:
-    resolution: {integrity: sha512-Brg/fp/iAVDOQoHxkuN5bEYhyQlZhxddI78yWsCbeEwTHXQjlNLtiJDUsp1GIptVqMI7/gkJMz4vVAc01mpoBw==}
     engines: {node: '>=10'}
 
   minimatch@9.0.9:
@@ -15007,6 +15010,8 @@ snapshots:
   '@isaacs/fs-minipass@4.0.1':
     dependencies:
       minipass: 7.1.3
+
+  '@isaacs/nonrecursive-glob-match@1.1.0': {}
 
   '@isaacs/string-locale-compare@1.1.0': {}
 
@@ -22089,6 +22094,11 @@ snapshots:
     dependencies:
       brace-expansion: 5.0.12
 
+  minimatch@11.0.9:
+    dependencies:
+      '@isaacs/nonrecursive-glob-match': 1.1.0
+      brace-expansion: 5.0.12
+
   minimatch@3.1.4:
     dependencies:
       brace-expansion: 1.1.21
@@ -22098,10 +22108,6 @@ snapshots:
       brace-expansion: 1.1.21
 
   minimatch@5.1.9:
-    dependencies:
-      brace-expansion: 2.1.7
-
-  minimatch@7.4.9:
     dependencies:
       brace-expansion: 2.1.7
 
