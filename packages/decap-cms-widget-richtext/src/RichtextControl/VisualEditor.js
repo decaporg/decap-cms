@@ -177,6 +177,31 @@ export default function VisualEditor(props) {
     }
   }, [props.pendingFocus]);
 
+  // When the DOM caret sits outside Slate's text nodes, slate-react re-applies
+  // its own selection to the DOM. With focus in a text field inside a void
+  // shortcode (the code block's CodeMirror, a string field of a custom
+  // component), that caret is the field's, and Slate moves the document
+  // selection onto the void's spacer. Older Chromium (Electron 106 in our
+  // Cypress runs) then resets the field's caret to the start, so typed text
+  // comes out reversed or is dropped. The field owns its selection, so these
+  // selectionchange events are kept from Slate. A capture listener on window
+  // runs before Slate's listener on document.
+  useEffect(() => {
+    function shieldFieldSelection(event) {
+      const active = document.activeElement;
+      if (
+        (active instanceof HTMLTextAreaElement || active instanceof HTMLInputElement) &&
+        active.closest('[contenteditable="false"]') &&
+        active.closest('[data-slate-editor]') === editor.api.toDOMNode(editor)
+      ) {
+        event.stopImmediatePropagation();
+      }
+    }
+
+    window.addEventListener('selectionchange', shieldFieldSelection, true);
+    return () => window.removeEventListener('selectionchange', shieldFieldSelection, true);
+  }, [editor]);
+
   return (
     <ClassNames>
       {({ css, cx }) => (
