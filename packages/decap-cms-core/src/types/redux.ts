@@ -48,6 +48,12 @@ export type CmsMarkdownWidgetButton =
 export interface CmsSelectWidgetOptionObject {
   label: string;
   value: unknown;
+  [key: string]: unknown;
+}
+
+export interface CmsFieldFilter {
+  field: string;
+  values: (string | number | boolean)[];
 }
 
 export type CmsCollectionFormatType =
@@ -230,6 +236,7 @@ export interface CmsFieldSelect {
   multiple?: boolean;
   min?: number;
   max?: number;
+  filters?: CmsFieldFilter[];
 }
 
 export interface CmsFieldRelation {
@@ -245,6 +252,7 @@ export interface CmsFieldRelation {
   min?: number;
   max?: number;
   options_length?: number;
+  filters?: CmsFieldFilter[];
 
   /**
    * @deprecated Use value_field instead

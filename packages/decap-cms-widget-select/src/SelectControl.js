@@ -20,6 +20,21 @@ function convertToOption(raw) {
   return Map.isMap(raw) ? raw.toJS() : raw;
 }
 
+function getOptions(field) {
+  return [...field.get('options').map(convertToOption)];
+}
+
+function isFilterMatch(option, filter) {
+  const values = [].concat(option[filter.field] ?? []);
+  const filterValues = filter.values.map(String);
+  return values.some(value => filterValues.includes(String(value)));
+}
+
+function getMatchingOptions(field) {
+  const filters = List.isList(field.get('filters')) ? field.get('filters').toJS() : [];
+  return getOptions(field).filter(option => filters.every(filter => isFilterMatch(option, filter)));
+}
+
 function getSelectedValue({ value, options, isMultiple }) {
   if (isMultiple) {
     const selectedOptions = List.isList(value) ? value.toJS() : value;
@@ -110,13 +125,33 @@ export default class SelectControl extends Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.field.get('filters') !== this.props.field.get('filters')) {
+      this.removeUnmatchedValues();
+    }
+  }
+
+  removeUnmatchedValues() {
+    const { field, value, onChange } = this.props;
+    const allowed = getMatchingOptions(field).map(option => option.value);
+
+    if (field.get('multiple', false)) {
+      const selected = List.isList(value) ? value.toJS() : [];
+      const kept = selected.filter(selectedValue => allowed.includes(selectedValue));
+      if (kept.length < selected.length) {
+        onChange(fromJS(kept));
+      }
+    } else if (value != null && value !== '' && !allowed.includes(value)) {
+      onChange(null);
+    }
+  }
+
   render() {
     const { field, value, forID, classNameWrapper, setActiveStyle, setInactiveStyle } = this.props;
-    const fieldOptions = field.get('options');
     const isMultiple = field.get('multiple', false);
     const isClearable = !field.get('required', true) || isMultiple;
 
-    const options = [...fieldOptions.map(convertToOption)];
+    const options = getOptions(field);
     const selectedValue = getSelectedValue({
       options,
       value,
@@ -131,7 +166,7 @@ export default class SelectControl extends Component {
         className={classNameWrapper}
         onFocus={setActiveStyle}
         onBlur={setInactiveStyle}
-        options={options}
+        options={getMatchingOptions(field)}
         styles={reactSelectStyles}
         isMulti={isMultiple}
         isClearable={isClearable}

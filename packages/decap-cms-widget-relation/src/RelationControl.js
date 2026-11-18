@@ -292,11 +292,14 @@ export default class RelationControl extends Component {
     return error ? { error } : { error: false };
   };
 
-  shouldComponentUpdate(nextProps) {
+  shouldComponentUpdate(nextProps, nextState) {
     return (
       this.props.value !== nextProps.value ||
+      this.props.field !== nextProps.field ||
       this.props.hasActiveStyle !== nextProps.hasActiveStyle ||
-      this.props.queryHits !== nextProps.queryHits
+      this.props.queryHits !== nextProps.queryHits ||
+      // Widget calls this with props only
+      (nextState !== undefined && nextState !== this.state)
     );
   }
 
@@ -308,6 +311,35 @@ export default class RelationControl extends Component {
     const { value } = this.props;
     if (value && this.hasInitialValues(value)) {
       await this.loadInitialOptions();
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.field.get('filters') !== this.props.field.get('filters')) {
+      this.removeUnmatchedValues();
+    }
+  }
+
+  /** Drops selected values whose entries no longer match the filters; values without loaded data are kept. */
+  removeUnmatchedValues() {
+    const { value, field, onChange } = this.props;
+    const filters = getFieldArray(field.get('filters'));
+    const unmatched = this.state.initialOptions
+      .filter(option => !filters.every(filter => isFilterMatch(option.data, filter)))
+      .map(option => option.value);
+
+    if (this.isMultiple()) {
+      const selected = getSelectedOptions(value) || [];
+      const kept = selected.filter(selectedValue => !unmatched.includes(selectedValue));
+      if (kept.length < selected.length) {
+        this.setState({
+          initialOptions: this.state.initialOptions.filter(option => kept.includes(option.value)),
+        });
+        onChange(fromJS(kept));
+      }
+    } else if (value && unmatched.includes(value)) {
+      this.setState({ initialOptions: [] });
+      onChange('');
     }
   }
 
@@ -470,14 +502,21 @@ export default class RelationControl extends Component {
   }
 
   parseHitOptions = hits => {
-    const { field } = this.props;
+    const { field, getEntry } = this.props;
     const valueField = field.get('value_field');
     const displayField = field.get('display_fields') || List([field.get('value_field')]);
     const filters = getFieldArray(field.get('filters'));
-
+    const entry = field.get('file') ? null : getEntry?.();
+    function isCurrentEntry(hit) {
+      return (
+        !!entry?.get('slug') &&
+        hit.slug === entry.get('slug') &&
+        hit.collection === entry.get('collection')
+      );
+    }
     const options = hits.reduce((acc, hit) => {
       const hitData = this.getHitData(hit);
-      if (filters.every(filter => isFilterMatch(hitData, filter))) {
+      if (!isCurrentEntry(hit) && filters.every(filter => isFilterMatch(hitData, filter))) {
         const valuesPaths = expandFieldPaths(hit.data, valueField);
         for (let i = 0; i < valuesPaths.length; i++) {
           const label = displayField
@@ -547,6 +586,9 @@ export default class RelationControl extends Component {
 
     return (
       <SortableSelect
+        // AsyncSelect loads its default options once and caches searches, so
+        // remount it when filters that follow another field change
+        key={JSON.stringify(getFieldArray(field.get('filters')))}
         useDragHandle
         onSortEnd={this.onSortEnd(selectedValue)}
         distance={4}

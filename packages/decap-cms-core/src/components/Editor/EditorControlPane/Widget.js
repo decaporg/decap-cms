@@ -97,6 +97,7 @@ export default class Widget extends Component {
     }
     return (
       this.props.value !== nextProps.value ||
+      this.props.field !== nextProps.field ||
       this.props.classNameWrapper !== nextProps.classNameWrapper ||
       this.props.hasActiveStyle !== nextProps.hasActiveStyle
     );

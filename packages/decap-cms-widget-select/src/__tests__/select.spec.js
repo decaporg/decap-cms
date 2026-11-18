@@ -282,6 +282,7 @@ describe('Select widget', () => {
       );
     });
   });
+
   describe('validation', () => {
     function validate(setupOpts) {
       const { ref } = setup(setupOpts);
@@ -373,6 +374,79 @@ describe('Select widget', () => {
       );
       clickClearButton(container);
       expect(ref.isValid().error?.message).toBeUndefined();
+    });
+  });
+
+  describe('filters', () => {
+    const topics = [
+      { value: 'football', label: 'Football', category: 'sports' },
+      { value: 'jazz', label: 'Jazz', category: 'music' },
+      { value: 'other', label: 'Other', category: ['sports', 'music'] },
+      { value: 'misc', label: 'Misc' },
+    ];
+
+    function filteredField(values, extra = {}) {
+      return fromJS({ options: topics, filters: [{ field: 'category', values }], ...extra });
+    }
+
+    function renderControl(field, value) {
+      const props = {
+        value,
+        onChange: jest.fn(),
+        forID: 'filtered-select',
+        classNameWrapper: '',
+        setActiveStyle: jest.fn(),
+        setInactiveStyle: jest.fn(),
+        t: msg => msg,
+      };
+      const helpers = render(<SelectControl {...props} field={field} />);
+      return {
+        ...helpers,
+        onChange: props.onChange,
+        input: helpers.container.querySelector('input'),
+        setField: next => helpers.rerender(<SelectControl {...props} field={next} />),
+      };
+    }
+
+    it('offers only options whose key matches, including list keys', () => {
+      const { input, queryByText } = renderControl(filteredField(['sports']));
+      fireEvent.focus(input);
+      fireEvent.keyDown(input, { key: 'ArrowDown' });
+
+      expect(queryByText('Football')).toBeInTheDocument();
+      expect(queryByText('Other')).toBeInTheDocument();
+      expect(queryByText('Jazz')).not.toBeInTheDocument();
+      expect(queryByText('Misc')).not.toBeInTheDocument();
+    });
+
+    it('shows the label of a saved value that does not match', () => {
+      const { getByText } = renderControl(filteredField(['sports']), 'jazz');
+
+      expect(getByText('Jazz')).toBeInTheDocument();
+    });
+
+    it('drops the value when the filters change and it no longer matches', () => {
+      const { setField, onChange } = renderControl(filteredField(['sports']), 'football');
+      setField(filteredField(['music']));
+
+      expect(onChange).toHaveBeenCalledWith(null);
+    });
+
+    it('keeps the value when it still matches', () => {
+      const { setField, onChange } = renderControl(filteredField(['sports']), 'other');
+      setField(filteredField(['music']));
+
+      expect(onChange).not.toHaveBeenCalled();
+    });
+
+    it('drops only the values that no longer match from a multiple select', () => {
+      const { setField, onChange } = renderControl(
+        filteredField(['sports'], { multiple: true }),
+        fromJS(['football', 'other']),
+      );
+      setField(filteredField(['music'], { multiple: true }));
+
+      expect(onChange).toHaveBeenCalledWith(fromJS(['other']));
     });
   });
 });
