@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.7.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-datetime@3.6.5...decap-cms-widget-datetime@3.7.0) (2026-11-18)
+
+**Note:** Version bump only for package decap-cms-widget-datetime
+
 ## [3.6.5](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-datetime@3.6.4...decap-cms-widget-datetime@3.6.5) (2026-10-26)
 
 ### Bug Fixes

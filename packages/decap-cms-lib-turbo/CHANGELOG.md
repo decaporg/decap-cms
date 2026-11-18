@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.6.0](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-turbo@3.5.2...decap-cms-lib-turbo@3.6.0) (2026-11-18)
+
+### Bug Fixes
+
+- **turbo:** say why the Turbo config request failed instead of "Failed to fetch" ([987e8fa](https://github.com/decaporg/decap-cms/commit/987e8faecd49bd8699784012d8638d3db1c25a34)), closes [decaporg/decap-turbo#15](https://github.com/decaporg/decap-turbo/issues/15)
+
 ## [3.5.2](https://github.com/decaporg/decap-cms/compare/decap-cms-lib-turbo@3.5.1...decap-cms-lib-turbo@3.5.2) (2026-10-26)
 
 **Note:** Version bump only for package decap-cms-lib-turbo

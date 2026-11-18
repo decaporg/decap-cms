@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.7.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-list@3.6.6...decap-cms-widget-list@3.7.0) (2026-11-18)
+
+### Bug Fixes
+
+- **widget-list:** allow typing spaces in comma separated list input ([#8062](https://github.com/decaporg/decap-cms/issues/8062)) ([f983337](https://github.com/decaporg/decap-cms/commit/f9833373c3e85ace444136652c3de77e9ffb1244)), closes [#4646](https://github.com/decaporg/decap-cms/issues/4646)
+- **widget-list:** pass map values to a single field widget ([#8066](https://github.com/decaporg/decap-cms/issues/8066)) ([9834a23](https://github.com/decaporg/decap-cms/commit/9834a239ae0316350758ac428c35cefe3fa86ef9)), closes [#6254](https://github.com/decaporg/decap-cms/issues/6254)
+- **widget-list:** remove items from single field lists that have metadata ([#8081](https://github.com/decaporg/decap-cms/issues/8081)) ([0ec07a0](https://github.com/decaporg/decap-cms/commit/0ec07a016e9d1021eb539d202b06268a443d715a))
+
 ## [3.6.6](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-list@3.6.5...decap-cms-widget-list@3.6.6) (2026-10-26)
 
 ### Bug Fixes
