@@ -682,5 +682,27 @@ describe('config', () => {
         }).not.toThrow();
       });
     });
+
+    describe('when eval is forbidden (Content Security Policy without unsafe-eval)', () => {
+      beforeEach(() => {
+        jest.spyOn(global, 'Function').mockImplementation(() => {
+          throw new EvalError('Refused to evaluate a string as JavaScript');
+        });
+        jest.spyOn(console, 'warn').mockImplementation(() => {});
+      });
+
+      afterEach(() => {
+        jest.restoreAllMocks();
+      });
+
+      it('should skip schema validation and warn instead of throwing', () => {
+        expect(() => {
+          validateConfig(merge({}, validConfig, { backend: { name: 42 } }));
+        }).not.toThrow();
+        expect(console.warn).toHaveBeenCalledWith(
+          expect.stringContaining('Config schema validation skipped'),
+        );
+      });
+    });
   });
 });

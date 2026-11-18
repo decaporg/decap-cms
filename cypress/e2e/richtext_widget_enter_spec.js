@@ -81,7 +81,7 @@ describe('Richtext widget breaks', () => {
         .enter()
         .confirmMarkdownEditorContent(`
           <h1>fo</h1>
-          <h1>ar</h1>
+          <p>ar</p>
         `);
     });
   });

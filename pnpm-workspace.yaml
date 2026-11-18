@@ -160,7 +160,7 @@ catalog:
   lodash-es: ^4.17.21
   mdast-util-definitions: ^1.2.3
   mdast-util-to-string: ^1.0.5
-  minimatch: ^7.0.0
+  minimatch: ^11.0.1
   mockserver-client: ^5.8.0
   mockserver-node: ^5.8.0
   morgan: ^1.9.1
