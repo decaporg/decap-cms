@@ -586,6 +586,9 @@ export default class RelationControl extends Component {
 
     return (
       <SortableSelect
+        // AsyncSelect loads its default options once and caches searches, so
+        // remount it when filters that follow another field change
+        key={JSON.stringify(getFieldArray(field.get('filters')))}
         useDragHandle
         onSortEnd={this.onSortEnd(selectedValue)}
         distance={4}

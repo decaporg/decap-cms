@@ -992,6 +992,20 @@ describe('Relation widget', () => {
       expect(onChange).toHaveBeenCalledTimes(1);
     });
 
+    it('should offer the options that match the new filters', async () => {
+      const { container, getByText, queryByText, setField } = renderControl(
+        categoryField(['sports']),
+      );
+      fireEvent.keyDown(container.querySelector('input'), { key: 'ArrowDown' });
+      await waitFor(() => expect(getByText('Match day')).toBeInTheDocument());
+
+      setField(categoryField(['music']));
+      fireEvent.keyDown(container.querySelector('input'), { key: 'ArrowDown' });
+
+      await waitFor(() => expect(getByText('Jazz night')).toBeInTheDocument());
+      expect(queryByText('Match day')).not.toBeInTheDocument();
+    });
+
     it('should drop unmatched values but keep values it has no data for', async () => {
       const field = categoryField(['sports'], { multiple: true });
       const { onChange, setField } = renderControl(field, fromJS(['Match day', 'Unknown post']));
