@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "common-tags": "^1.8.0",
-    "js-base64": "^3.0.0",
+    "js-base64": "catalog:",
     "semaphore": "^1.1.0"
   },
   "peerDependencies": {

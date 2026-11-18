@@ -82,35 +82,72 @@ const emptyAsset = createAssetProxy({
 });
 
 type BoundGetAsset = (path: string, field: EntryField) => AssetProxy;
+type BoundGetAssetCache = WeakMap<object, WeakMap<object, BoundGetAsset>>;
 
-const boundGetAssetCache = new WeakMap<object, WeakMap<EntryMap, BoundGetAsset>>();
 const anyMedias = {};
 
-// Stable per entry so previews don't re-render on every store change. Pass the
-// medias state to also get a new function whenever an asset loads: image
-// previews only ask for an asset again when this function changes, so a stable
-// one leaves them on the empty placeholder after the asset arrives (#8055).
-// WeakMaps let old medias states and entries be garbage collected.
+// A bound getAsset is kept stable so widgets and previews don't re-render on
+// every store change, but it is replaced whenever the medias state changes:
+// image widgets and previews only ask for an asset again when this function
+// changes, so a stable one leaves them on the empty placeholder after the asset
+// arrives (#8055). WeakMaps let old medias states and entries be garbage collected.
+function cachedPerMedias(
+  cache: BoundGetAssetCache,
+  medias: object,
+  key: object,
+  create: () => BoundGetAsset,
+) {
+  let byKey = cache.get(medias);
+  if (!byKey) {
+    byKey = new WeakMap();
+    cache.set(medias, byKey);
+  }
+
+  let bound = byKey.get(key);
+  if (!bound) {
+    bound = create();
+    byKey.set(key, bound);
+  }
+
+  return bound;
+}
+
+const entryAssetCache: BoundGetAssetCache = new WeakMap();
+
+/**
+ * getAsset bound to a given entry, for entry cards and the preview pane. Pass
+ * the medias state to get a new function whenever an asset loads.
+ */
 export function boundGetAsset(
   dispatch: ThunkDispatch<State, {}, AnyAction>,
   collection: Collection,
   entry: EntryMap,
   medias: Medias = anyMedias,
 ) {
-  let byEntry = boundGetAssetCache.get(medias);
-  if (!byEntry) {
-    byEntry = new WeakMap();
-    boundGetAssetCache.set(medias, byEntry);
-  }
+  return cachedPerMedias(
+    entryAssetCache,
+    medias,
+    entry,
+    () => (path, field) => dispatch(getAsset({ collection, entry, path, field })),
+  );
+}
 
-  let bound = byEntry.get(entry);
-  if (!bound) {
-    bound = (path: string, field: EntryField) =>
-      dispatch(getAsset({ collection, entry, path, field }));
-    byEntry.set(entry, bound);
-  }
+const draftAssetCache: BoundGetAssetCache = new WeakMap();
 
-  return bound;
+/**
+ * getAsset for the editor controls. It reads the entry draft when called, so
+ * it stays the same while the entry is edited.
+ */
+export function boundGetDraftAsset(
+  dispatch: ThunkDispatch<State, {}, AnyAction>,
+  getState: () => State,
+  collection: Collection,
+  medias: Medias,
+) {
+  return cachedPerMedias(draftAssetCache, medias, collection, () => (path, field) => {
+    const entry = getState().entryDraft.get('entry');
+    return dispatch(getAsset({ collection, entry, path, field }));
+  });
 }
 
 export function getAsset({ collection, entry, path, field }: GetAssetArgs) {

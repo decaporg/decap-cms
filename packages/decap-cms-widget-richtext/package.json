@@ -24,7 +24,7 @@
     "@platejs/basic-nodes": "^53.0.0",
     "@platejs/link": "^53.3.5",
     "@platejs/list-classic": "^53.0.0",
-    "dompurify": "^3.4.13",
+    "dompurify": "catalog:",
     "mdast-util-definitions": "^1.2.3",
     "mdast-util-to-string": "^2.0.0",
     "platejs": "^53.3.18",

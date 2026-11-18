@@ -24,8 +24,7 @@
     "immutable": "catalog:",
     "lodash": "catalog:",
     "prop-types": "catalog:",
-    "react-immutable-proptypes": "catalog:",
-    "uuid": "catalog:"
+    "react-immutable-proptypes": "catalog:"
   },
   "peerDependencies": {
     "react": "catalog:",

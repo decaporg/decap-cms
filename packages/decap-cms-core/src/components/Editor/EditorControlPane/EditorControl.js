@@ -16,7 +16,7 @@ import gfm from 'remark-gfm';
 import { resolveWidget, getEditorComponents } from '../../../lib/registry';
 import { editorApi } from '../../../lib/editorApi';
 import { clearFieldErrors, tryLoadEntry, validateMetaField } from '../../../actions/entries';
-import { addAsset, getAsset } from '../../../actions/media';
+import { addAsset, boundGetDraftAsset } from '../../../actions/media';
 import { selectIsLoadingAsset } from '../../../reducers/medias';
 import { query, clearSearch } from '../../../actions/search';
 import { store } from '../../../redux';
@@ -489,28 +489,7 @@ const stable = {
     const state = store.getState();
     return state.entryDraft.get('entry');
   },
-
-  // Will return the same function instance for the same collection,
-  // critically it returns a different function instance when the mediaState changes,
-  // so widgets rerender when the asset actually loads.
-  // We listen to mediaState instead of `isLoadingAsset` because React 19 might batch updates
-  // and redux might miss the change if it happens too quickly.
-  // This is not a memory leak because we set it up to use a WeakMap for caching,
-  // so when the mediaState is no longer referenced it will be garbage collected.
-  // eslint-disable-next-line no-unused-vars
-  getBoundedAsset: memoize(mediaState =>
-    memoize(collection => {
-      return (path, field) => {
-        const state = store.getState();
-        const entry = state.entryDraft.get('entry');
-        return store.dispatch(getAsset({ collection, entry, path, field }));
-      };
-    }),
-  ),
 };
-
-// Prevents memory leaks on mediaState changes.
-stable.getBoundedAsset.cache = new WeakMap();
 
 function mapStateToProps(state) {
   const { collections, entryDraft } = state;
@@ -548,7 +527,8 @@ function mapDispatchToProps(dispatch) {
   );
   return {
     ...creators,
-    boundGetAsset: stable.getBoundedAsset,
+    boundGetAsset: (collection, medias) =>
+      boundGetDraftAsset(dispatch, store.getState, collection, medias),
   };
 }
 
@@ -557,7 +537,9 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     ...stateProps,
     ...dispatchProps,
     ...ownProps,
-    boundGetAsset: dispatchProps.boundGetAsset(stateProps.medias)(stateProps.collection),
+    // Changes with the medias state, so widgets re-render when an asset loads
+    // (with React 19 batching, `isLoadingAsset` can flip back before redux sees it)
+    boundGetAsset: dispatchProps.boundGetAsset(stateProps.collection, stateProps.medias),
   };
 }
 

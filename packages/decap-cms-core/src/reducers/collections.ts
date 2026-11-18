@@ -525,6 +525,10 @@ export function selectFieldsComments(collection: Collection, entryMap: EntryMap)
   return comments;
 }
 
+export function selectRejectsSlugCollisions(collection: Collection) {
+  return collection.get('slug_collision', 'suffix') === 'reject';
+}
+
 export function selectHasMetaPath(collection: Collection) {
   return (
     collection.has('folder') &&

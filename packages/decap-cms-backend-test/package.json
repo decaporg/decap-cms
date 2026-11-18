@@ -27,8 +27,7 @@
     "decap-cms-ui-default": "workspace:*",
     "lodash": "catalog:",
     "prop-types": "catalog:",
-    "react": "catalog:",
-    "uuid": "catalog:"
+    "react": "catalog:"
   },
   "browser": {
     "path": "path-browserify"
