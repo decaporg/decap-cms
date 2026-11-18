@@ -73,4 +73,4 @@ Please make sure you understand its [implications and guarantees](https://writin
 
 Get hands-on help from Decap experts and partners for onboarding, custom feature development, website development and premium support.
 
-[Contact the Decap team](https://decapcms.org/contact/)
+[Explore expert services](https://www.p-m.si/en/code/decap/)
