@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.7.5](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-code@3.7.4...decap-cms-widget-code@3.7.5) (2026-10-26)
+
+### Bug Fixes
+
+- **widget-code:** size markdown code blocks to their content ([#8017](https://github.com/decaporg/decap-cms/issues/8017)) ([b34587c](https://github.com/decaporg/decap-cms/commit/b34587cd705ef668f22ad331a4a8ebce5b09b87d))
+
 ## [3.7.4](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-code@3.7.3...decap-cms-widget-code@3.7.4) (2026-10-14)
 
 **Note:** Version bump only for package decap-cms-widget-code

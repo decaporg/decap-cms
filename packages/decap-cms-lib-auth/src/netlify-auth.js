@@ -32,16 +32,26 @@ const PROVIDERS = {
   },
 };
 
+function getOrigin(url) {
+  try {
+    return new URL(url).origin;
+  } catch {
+    return url;
+  }
+}
+
 class Authenticator {
   constructor(config = {}) {
     this.site_id = config.site_id || null;
     this.base_url = trimEnd(config.base_url, '/') || NETLIFY_API;
+    // Messages from the auth popup carry only the origin, without any path in base_url.
+    this.base_origin = getOrigin(this.base_url);
     this.auth_endpoint = trim(config.auth_endpoint, '/') || AUTH_ENDPOINT;
   }
 
   handshakeCallback(options, cb) {
     const fn = e => {
-      if (e.data === 'authorizing:' + options.provider && e.origin === this.base_url) {
+      if (e.data === 'authorizing:' + options.provider && e.origin === this.base_origin) {
         window.removeEventListener('message', fn, false);
         window.addEventListener('message', this.authorizeCallback(options, cb), false);
         return this.authWindow.postMessage(e.data, e.origin);
@@ -52,7 +62,7 @@ class Authenticator {
 
   authorizeCallback(options, cb) {
     const fn = e => {
-      if (e.origin !== this.base_url) {
+      if (e.origin !== this.base_origin) {
         return;
       }
 

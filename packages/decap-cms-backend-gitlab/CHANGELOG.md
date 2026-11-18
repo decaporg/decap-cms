@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.7.2](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-gitlab@3.7.1...decap-cms-backend-gitlab@3.7.2) (2026-10-26)
+
+### Bug Fixes
+
+- **gitlab:** include merge request SHA when publishing ([#7991](https://github.com/decaporg/decap-cms/issues/7991)) ([b759e3b](https://github.com/decaporg/decap-cms/commit/b759e3b85f37bc740d75346dc47ff5f2b7d2be80)), closes [#7963](https://github.com/decaporg/decap-cms/issues/7963)
+
 ## [3.7.1](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-gitlab@3.7.0...decap-cms-backend-gitlab@3.7.1) (2026-10-14)
 
 **Note:** Version bump only for package decap-cms-backend-gitlab

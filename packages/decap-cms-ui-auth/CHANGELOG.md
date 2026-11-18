@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.3.5](https://github.com/decaporg/decap-cms/compare/decap-cms-ui-auth@3.3.4...decap-cms-ui-auth@3.3.5) (2026-10-26)
+
+**Note:** Version bump only for package decap-cms-ui-auth
+
 ## [3.3.4](https://github.com/decaporg/decap-cms/compare/decap-cms-ui-auth@3.3.3...decap-cms-ui-auth@3.3.4) (2026-10-14)
 
 **Note:** Version bump only for package decap-cms-ui-auth

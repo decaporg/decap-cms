@@ -37,7 +37,8 @@ ${commandList()}
 
 dev options (each overrides the matching variable, also read from .env):
   --port <n>        PORT, default 8081
-  --host <addr>     BIND_HOST, listen on this address only
+  --host <addr>     BIND_HOST, default this machine only (localhost);
+                    0.0.0.0 exposes the unauthenticated server
   --mode <fs|git>   MODE, default fs; git commits and supports the
                     editorial workflow
   --dir <path>      GIT_REPO_DIRECTORY, default the current directory

@@ -14,7 +14,7 @@ local_backend: true
 
 It needs Node 20 or later.
 
-Settings are read from the environment, also from a `.env` file in the working directory: `PORT` (default 8081), `BIND_HOST`, `MODE` (`fs` or `git`, default `fs`), `GIT_REPO_DIRECTORY` (default the current directory), `ORIGIN` (default localhost and 127.0.0.1) and `LOG_LEVEL` (default `info`). In `git` mode changes are committed to the local repository and the editorial workflow works.
+Settings are read from the environment, also from a `.env` file in the working directory: `PORT` (default 8081), `BIND_HOST` (default this machine only; the server has no authentication, so only set `0.0.0.0` or another network address on a network you trust, e.g. inside a container), `MODE` (`fs` or `git`, default `fs`), `GIT_REPO_DIRECTORY` (default the current directory), `ORIGIN` (default localhost and 127.0.0.1) and `LOG_LEVEL` (default `info`). In `git` mode changes are committed to the local repository and the editorial workflow works.
 
 To mount the endpoints on your own Express app:
 

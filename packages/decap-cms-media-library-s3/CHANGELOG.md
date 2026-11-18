@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.1](https://github.com/decaporg/decap-cms/compare/decap-cms-media-library-s3@0.3.0...decap-cms-media-library-s3@0.3.1) (2026-10-26)
+
+**Note:** Version bump only for package decap-cms-media-library-s3
+
+# [0.3.0](https://github.com/decaporg/decap-cms/compare/decap-cms-media-library-s3@0.2.1...decap-cms-media-library-s3@0.3.0) (2026-10-26)
+
+### Features
+
+- **media-library-s3:** list Neon Object Storage as a supported provider ([#8041](https://github.com/decaporg/decap-cms/issues/8041)) ([a5215cc](https://github.com/decaporg/decap-cms/commit/a5215ccfa9140e0741f4fcc0f44c4b9a61d8ba40))
+
 ## [0.2.1](https://github.com/decaporg/decap-cms/compare/decap-cms-media-library-s3@0.2.0...decap-cms-media-library-s3@0.2.1) (2026-10-14)
 
 **Note:** Version bump only for package decap-cms-media-library-s3

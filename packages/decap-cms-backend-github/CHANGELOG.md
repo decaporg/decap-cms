@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.9.2](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-github@3.9.1...decap-cms-backend-github@3.9.2) (2026-10-26)
+
+### Bug Fixes
+
+- **github:** list deep trees with REST when using GraphQL ([#8039](https://github.com/decaporg/decap-cms/issues/8039)) ([141b360](https://github.com/decaporg/decap-cms/commit/141b3600701333b370b015693614f375d908e384)), closes [#7460](https://github.com/decaporg/decap-cms/issues/7460)
+
 ## [3.9.1](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-github@3.9.0...decap-cms-backend-github@3.9.1) (2026-10-14)
 
 **Note:** Version bump only for package decap-cms-backend-github

@@ -1532,6 +1532,10 @@ export function validateMetaField(
 ) {
   if (field.get('meta') && field.get('name') === 'path') {
     if (!value) {
+      // An optional path can be left blank, the entry then falls back to the collection path
+      if (field.get('required') === false) {
+        return { error: false };
+      }
       return getPathError(value, 'invalidPath', t);
     }
     const sanitizedPath = (value as string)
@@ -1539,7 +1543,8 @@ export function validateMetaField(
       .map(getProcessSegment(state.config.slug))
       .join('/');
 
-    if (value !== sanitizedPath) {
+    // Slug processing lower-cases each segment, but folder names may keep their case
+    if (value.toLocaleLowerCase() !== sanitizedPath) {
       return getPathError(value, 'invalidPath', t);
     }
 

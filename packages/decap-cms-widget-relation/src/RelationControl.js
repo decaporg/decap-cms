@@ -178,6 +178,52 @@ function getFieldArray(field) {
   return List.isList(field) ? field.toJS() : [field];
 }
 
+function isFilterMatch(data, filter) {
+  // resolve wildcard paths the same way as value_field, and for list fields
+  // match if any of the items is in the filter values
+  const values = stringTemplate.expandPath({ data, path: filter.field }).flatMap(path => {
+    const value = get(data, path);
+    return Array.isArray(value) ? value : [value];
+  });
+  // compare as strings, since entry data may be parsed as numbers or booleans
+  // while filter values are strings (and vice versa)
+  const filterValues = filter.values.map(String);
+  return values.some(
+    value => value != null && typeof value !== 'object' && filterValues.includes(String(value)),
+  );
+}
+
+// value_field and display_fields can be string templates with wildcard paths,
+// e.g. `{{list.*.a}} - {{list.*.b}}`. Expand the wildcards inside each template
+// variable so every list item gets its own template.
+function expandFieldPaths(data, field) {
+  // `{{ list.*.a }}` is valid too; the extracted var keeps the leading space.
+  const templateVars = stringTemplate.extractTemplateVars(field).map(v => v.trim());
+  if (templateVars.length <= 0) {
+    return stringTemplate.expandPath({ data, path: field });
+  }
+
+  const expandedVars = {};
+  templateVars
+    .filter(templateVar => templateVar.includes('*'))
+    .forEach(templateVar => {
+      expandedVars[templateVar] = stringTemplate.expandPath({ data, path: templateVar });
+    });
+
+  const wildcardVars = Object.keys(expandedVars);
+  if (wildcardVars.length <= 0) {
+    return [field];
+  }
+
+  const length = Math.max(...wildcardVars.map(templateVar => expandedVars[templateVar].length));
+  return Array.from({ length }, (_, index) =>
+    field.replace(/{{( *)([^}{| ]+)/g, (match, spaces, templateVar) => {
+      const paths = expandedVars[templateVar];
+      return paths ? `{{${spaces}${paths[index] || paths[0] || templateVar}` : match;
+    }),
+  );
+}
+
 function getSelectedValue({ value, options, isMultiple }) {
   if (isMultiple) {
     const selectedOptions = getSelectedOptions(value);
@@ -399,12 +445,16 @@ export default class RelationControl extends Component {
     }
   };
 
-  parseNestedFields = (hit, field) => {
+  getHitData = hit => {
     const { locale } = this.props;
-    const hitData =
-      locale != null && hit.i18n != null && hit.i18n[locale] != null
-        ? hit.i18n[locale].data
-        : hit.data;
+    const localeData = locale != null ? hit.i18n?.[locale]?.data : null;
+    // a translation only has its translatable fields, so fall back to the
+    // default locale for the rest (e.g. a filter on an `i18n: none` field)
+    return localeData ? { ...hit.data, ...localeData } : hit.data;
+  };
+
+  parseNestedFields = (hit, field) => {
+    const hitData = this.getHitData(hit);
     const templateVars = stringTemplate.extractTemplateVars(field);
     // return non template fields as is
     if (templateVars.length <= 0) {
@@ -426,27 +476,14 @@ export default class RelationControl extends Component {
     const filters = getFieldArray(field.get('filters'));
 
     const options = hits.reduce((acc, hit) => {
-      if (
-        filters.every(filter => {
-          // check if the value for the (nested) filter field is in the filter values
-          const fieldKeys = filter.field.split('.');
-          let value = hit.data;
-          for (let i = 0; i < fieldKeys.length; i++) {
-            if (Object.prototype.hasOwnProperty.call(value, fieldKeys[i])) {
-              value = value[fieldKeys[i]];
-            } else {
-              return false;
-            }
-          }
-          return filter.values.includes(value);
-        })
-      ) {
-        const valuesPaths = stringTemplate.expandPath({ data: hit.data, path: valueField });
+      const hitData = this.getHitData(hit);
+      if (filters.every(filter => isFilterMatch(hitData, filter))) {
+        const valuesPaths = expandFieldPaths(hit.data, valueField);
         for (let i = 0; i < valuesPaths.length; i++) {
           const label = displayField
             .toJS()
             .map(key => {
-              const displayPaths = stringTemplate.expandPath({ data: hit.data, path: key });
+              const displayPaths = expandFieldPaths(hit.data, key);
               return this.parseNestedFields(hit, displayPaths[i] || displayPaths[0]);
             })
             .join(' ');

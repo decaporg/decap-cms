@@ -2414,7 +2414,7 @@
   },
   {
     "method": "PUT",
-    "url": "/.netlify/git/gitlab/merge_requests/7/merge?merge_commit_message=Automatically generated. Merged on Decap CMS.&squash_commit_message=Automatically generated. Merged on Decap CMS.&squash=false&should_remove_source_branch=true",
+    "url": "/.netlify/git/gitlab/merge_requests/7/merge?merge_commit_message=Automatically generated. Merged on Decap CMS.&squash_commit_message=Automatically generated. Merged on Decap CMS.&squash=false&should_remove_source_branch=true&sha=d8f2ef53744925eca81ad9610119d1e46c7057d9",
     "headers": {
       "Access-Control-Allow-Credentials": "true",
       "Access-Control-Allow-Methods": "GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS",
@@ -2565,7 +2565,7 @@
   },
   {
     "method": "PUT",
-    "url": "/.netlify/git/gitlab/merge_requests/6/merge?merge_commit_message=Automatically generated. Merged on Decap CMS.&squash_commit_message=Automatically generated. Merged on Decap CMS.&squash=false&should_remove_source_branch=true",
+    "url": "/.netlify/git/gitlab/merge_requests/6/merge?merge_commit_message=Automatically generated. Merged on Decap CMS.&squash_commit_message=Automatically generated. Merged on Decap CMS.&squash=false&should_remove_source_branch=true&sha=f24d1c8edabc1e71b008a10ac18eda7a378902f1",
     "headers": {
       "Access-Control-Allow-Credentials": "true",
       "Access-Control-Allow-Methods": "GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS",
@@ -2716,7 +2716,7 @@
   },
   {
     "method": "PUT",
-    "url": "/.netlify/git/gitlab/merge_requests/5/merge?merge_commit_message=Automatically generated. Merged on Decap CMS.&squash_commit_message=Automatically generated. Merged on Decap CMS.&squash=false&should_remove_source_branch=true",
+    "url": "/.netlify/git/gitlab/merge_requests/5/merge?merge_commit_message=Automatically generated. Merged on Decap CMS.&squash_commit_message=Automatically generated. Merged on Decap CMS.&squash=false&should_remove_source_branch=true&sha=6c2de1d768a8af041a728f6c86ae012d8e2d8781",
     "headers": {
       "Access-Control-Allow-Credentials": "true",
       "Access-Control-Allow-Methods": "GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS",

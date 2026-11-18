@@ -15,7 +15,21 @@ type Language = (typeof Languages)[keyof typeof Languages];
 export type Delimiter = string | [string, string];
 type Format = { language: Language; delimiters: Delimiter };
 
+// gray-matter's built-in JavaScript engine eval()s front matter that opens
+// with `---js`, whatever format the collection is configured with, so a file
+// in the repository could run code in the CMS with the editor's credentials.
+const javascript = {
+  parse: () => {
+    throw new Error('JavaScript front matter is not supported');
+  },
+  stringify: () => {
+    throw new Error('JavaScript front matter is not supported');
+  },
+};
+
 const parsers = {
+  javascript,
+  js: javascript,
   toml: {
     parse: (input: string) => tomlFormatter.fromFile(input),
     stringify: (metadata: object, opts?: { sortedKeys?: string[] }) => {
@@ -32,8 +46,9 @@ const parsers = {
       }
       return jsonFormatter.fromFile(JSONinput);
     },
-    stringify: (metadata: object) => {
-      let JSONoutput = jsonFormatter.toFile(metadata).trim();
+    stringify: (metadata: object, opts?: { sortedKeys?: string[] }) => {
+      const { sortedKeys } = opts || {};
+      let JSONoutput = jsonFormatter.toFile(metadata, sortedKeys).trim();
       // Trim leading and trailing brackets.
       if (JSONoutput.slice(0, 1) === '{' && JSONoutput.slice(-1) === '}') {
         JSONoutput = JSONoutput.slice(1, -1);

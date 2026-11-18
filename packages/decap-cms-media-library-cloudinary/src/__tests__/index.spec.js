@@ -218,6 +218,7 @@ describe('cloudinary media library', () => {
         default_transformations: [{ foo: 'bar' }],
         max_files: 2,
         multiple: true,
+        folder: { path: 'blog' },
       };
       const nonBehaviorOptions = {
         api_key: 123,

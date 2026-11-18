@@ -80,8 +80,13 @@ export function getFilePath(
   locale: string,
 ) {
   switch (structure) {
-    case I18N_STRUCTURE.MULTIPLE_FOLDERS:
-      return path.replace(`/${slug}`, `/${locale}/${slug}`);
+    case I18N_STRUCTURE.MULTIPLE_FOLDERS: {
+      // The slug ends the path; the same text may also start a folder name before it.
+      const slugIndex = path.lastIndexOf(`/${slug}`);
+      return slugIndex === -1
+        ? path
+        : `${path.slice(0, slugIndex)}/${locale}${path.slice(slugIndex)}`;
+    }
     case I18N_STRUCTURE.MULTIPLE_FILES:
       return path.replace(new RegExp(`${escapeRegExp(extension)}$`), `${locale}.${extension}`);
     case I18N_STRUCTURE.SINGLE_FILE:
@@ -90,15 +95,20 @@ export function getFilePath(
   }
 }
 
-export function getLocaleFromPath(structure: I18N_STRUCTURE, extension: string, path: string) {
+function folderPrefix(folder: string) {
+  return `${folder.replace(/\/$/, '')}/`;
+}
+
+export function getLocaleFromPath(
+  structure: I18N_STRUCTURE,
+  extension: string,
+  path: string,
+  folder: string,
+) {
   switch (structure) {
-    case I18N_STRUCTURE.MULTIPLE_FOLDERS: {
-      const parts = path.split('/');
-      // filename
-      parts.pop();
-      // locale
-      return parts.pop();
-    }
+    case I18N_STRUCTURE.MULTIPLE_FOLDERS:
+      // The locale folder comes right after the collection folder, and the slug may have folders.
+      return path.slice(folderPrefix(folder).length).split('/')[0];
     case I18N_STRUCTURE.MULTIPLE_FILES: {
       const parts = path.slice(0, -`.${extension}`.length);
       return parts.split('.').pop();
@@ -152,12 +162,25 @@ export function getI18nFilesToDelete(
   }));
 }
 
-export function normalizeFilePath(structure: I18N_STRUCTURE, path: string, locale: string) {
+export function normalizeFilePath(
+  structure: I18N_STRUCTURE,
+  path: string,
+  locale: string,
+  folder: string,
+) {
   switch (structure) {
-    case I18N_STRUCTURE.MULTIPLE_FOLDERS:
-      return path.replace(`${locale}/`, '');
-    case I18N_STRUCTURE.MULTIPLE_FILES:
-      return path.replace(`.${locale}`, '');
+    case I18N_STRUCTURE.MULTIPLE_FOLDERS: {
+      const prefix = folderPrefix(folder);
+      return path.startsWith(`${prefix}${locale}/`)
+        ? `${prefix}${path.slice(prefix.length + locale.length + 1)}`
+        : path;
+    }
+    case I18N_STRUCTURE.MULTIPLE_FILES: {
+      const localeIndex = path.lastIndexOf(`.${locale}.`);
+      return localeIndex === -1
+        ? path
+        : `${path.slice(0, localeIndex)}${path.slice(localeIndex + locale.length + 1)}`;
+    }
     case I18N_STRUCTURE.SINGLE_FILE:
     default:
       return path;
@@ -284,7 +307,12 @@ function mergeValues(
       return set(acc, dataPath, value.data);
     }, {});
 
-  const path = normalizeFilePath(structure, defaultEntry.value.path, defaultLocale);
+  const path = normalizeFilePath(
+    structure,
+    defaultEntry.value.path,
+    defaultLocale,
+    collection.get('folder') as string,
+  );
   const slug = selectEntrySlug(collection, path) as string;
   // Which locales have a file: GitHub answers a missing file with empty content,
   // and deleteEntry must not ask to delete one, which fails the whole commit.
@@ -371,13 +399,14 @@ export function groupEntries(collection: Collection, extension: string, entries:
     return entries.map(e => mergeSingleFileValue(e, defaultLocale, locales));
   }
 
+  const folder = collection.get('folder') as string;
   const grouped = groupBy(
     entries.map(e => ({
-      locale: getLocaleFromPath(structure, extension, e.path) as string,
+      locale: getLocaleFromPath(structure, extension, e.path, folder) as string,
       value: e,
     })),
     ({ locale, value: e }) => {
-      return normalizeFilePath(structure, e.path, locale);
+      return normalizeFilePath(structure, e.path, locale, folder);
     },
   );
 

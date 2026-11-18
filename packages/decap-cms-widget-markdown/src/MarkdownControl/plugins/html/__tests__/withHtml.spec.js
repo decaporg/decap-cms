@@ -1,6 +1,7 @@
 import { Transforms } from 'slate';
 
 import withHtml from '../withHtml';
+import { slateToMarkdown } from '../../../../serializers';
 
 describe('withHtml', () => {
   afterEach(() => {
@@ -59,9 +60,34 @@ describe('withHtml', () => {
       {
         type: 'paragraph',
         children: [
-          { type: 'image', url: 'https://example.com/image.png', children: [{ text: '' }] },
+          {
+            type: 'image',
+            data: { url: 'https://example.com/image.png' },
+            children: [{ text: '' }],
+          },
         ],
       },
     ]);
+  });
+
+  it('should keep image alt and title so pasted images can be serialized', () => {
+    const editor = withHtml(createEditor());
+    const insertFragmentSpy = jest.spyOn(Transforms, 'insertFragment').mockImplementation(() => {});
+
+    editor.insertData(
+      createDataTransfer(
+        '<p>text</p><p><img src="https://example.com/image.png" alt="An image" title="Title"></p>',
+      ),
+    );
+
+    const fragment = insertFragmentSpy.mock.calls[0][1];
+    expect(fragment[1].children[0]).toEqual({
+      type: 'image',
+      data: { url: 'https://example.com/image.png', alt: 'An image', title: 'Title' },
+      children: [{ text: '' }],
+    });
+    expect(slateToMarkdown(fragment)).toBe(
+      'text\n\n![An image](https://example.com/image.png "Title")',
+    );
   });
 });

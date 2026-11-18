@@ -1346,7 +1346,7 @@
   },
   {
     "method": "PUT",
-    "url": "/.netlify/git/gitlab/merge_requests/1/merge?merge_commit_message=Automatically generated. Merged on Decap CMS.&squash_commit_message=Automatically generated. Merged on Decap CMS.&squash=false&should_remove_source_branch=true",
+    "url": "/.netlify/git/gitlab/merge_requests/1/merge?merge_commit_message=Automatically generated. Merged on Decap CMS.&squash_commit_message=Automatically generated. Merged on Decap CMS.&squash=false&should_remove_source_branch=true&sha=7d5888c4fca42055cec7d97bcc2a4dc98e18c37c",
     "headers": {
       "Access-Control-Allow-Credentials": "true",
       "Access-Control-Allow-Methods": "GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS",
@@ -2021,7 +2021,7 @@
   },
   {
     "method": "PUT",
-    "url": "/.netlify/git/gitlab/merge_requests/1/merge?merge_commit_message=Automatically generated. Merged on Decap CMS.&squash_commit_message=Automatically generated. Merged on Decap CMS.&squash=false&should_remove_source_branch=true",
+    "url": "/.netlify/git/gitlab/merge_requests/1/merge?merge_commit_message=Automatically generated. Merged on Decap CMS.&squash_commit_message=Automatically generated. Merged on Decap CMS.&squash=false&should_remove_source_branch=true&sha=7d5888c4fca42055cec7d97bcc2a4dc98e18c37c",
     "headers": {
       "Access-Control-Allow-Credentials": "true",
       "Access-Control-Allow-Methods": "GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS",

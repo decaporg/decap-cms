@@ -275,15 +275,12 @@ export default class ListControl extends Component {
 
   handleChange = e => {
     const { onChange } = this.props;
-    const oldValue = this.state.value;
-    const newValue = e.target.value.trim();
+    const inputValue = e.target.value;
+    const newValue = inputValue.trim();
     const listValue = newValue ? newValue.split(',') : [];
-    if (newValue.match(/,$/) && oldValue.match(/, $/)) {
-      listValue.pop();
-    }
 
-    const parsedValue = this.valueToString(listValue);
-    this.setState({ value: parsedValue });
+    // Keep the text as typed so spaces can be entered; it is normalized on blur.
+    this.setState({ value: inputValue });
     onChange(List(listValue.map(val => val.trim())));
   };
 
@@ -292,12 +289,19 @@ export default class ListControl extends Component {
   };
 
   handleBlur = e => {
+    const { value, onChange, setInactiveStyle } = this.props;
     const listValue = e.target.value
       .split(',')
       .map(el => el.trim())
       .filter(el => el);
     this.setState({ value: this.valueToString(listValue) });
-    this.props.setInactiveStyle();
+    // A trailing or doubled comma stores an empty item while typing. Drop it so
+    // the saved list matches the normalized text. Only write when there is one,
+    // so focusing and leaving the field doesn't mark the entry as changed.
+    if (List.isList(value) && value.includes('')) {
+      onChange(value.filter(item => item !== ''));
+    }
+    setInactiveStyle();
   };
 
   handleAdd = e => {
@@ -477,7 +481,7 @@ export default class ListControl extends Component {
     const collectionName = field.get('name');
     const isSingleField = this.getValueType() === valueTypes.SINGLE;
 
-    const metadataRemovePath = isSingleField ? value.get(index) : value.get(index).valueSeq();
+    const metadataRemovePath = isSingleField ? [value.get(index)] : value.get(index).valueSeq();
     const parsedMetadata =
       metadata && !metadata.isEmpty()
         ? { [collectionName]: metadata.removeIn(metadataRemovePath) }
@@ -687,6 +691,17 @@ export default class ListControl extends Component {
       }
     }
 
+    // A list with a single non-object `field` stores that widget's value
+    // directly (see `handleChangeFor`), so key it by the field name before
+    // handing it to ObjectControl. Otherwise a map value, such as the code
+    // widget's `{ code, lang }`, would be looked up by the field name and the
+    // widget would get nothing.
+    const singleField = field.get('field');
+    const objectValue =
+      this.getValueType() === valueTypes.SINGLE && singleField.get('widget') !== 'object'
+        ? Map({ [singleField.get('name')]: item })
+        : item;
+
     return (
       <SortableListItem
         css={[styles.listControlItem, collapsed && styles.listControlItemCollapsed]}
@@ -726,7 +741,7 @@ export default class ListControl extends Component {
                   ${styleStrings.collapsedObjectControl};
                 `]: collapsed,
               })}
-              value={item}
+              value={objectValue}
               field={field}
               onChangeObject={this.handleChangeFor(key)}
               editorControl={editorControl}
@@ -753,16 +768,19 @@ export default class ListControl extends Component {
   renderErroneousTypedItem(index, item) {
     const field = this.props.field;
     const errorMessage = getErrorMessageForTypedFieldAndValue(field, item);
-    const key = `item-${index}`;
+    const key = this.state.keys[index];
     return (
       <SortableListItem
         css={[styles.listControlItem, styles.listControlItemCollapsed]}
         index={index}
         key={key}
+        id={key}
       >
         <StyledListItemTopBar
           onCollapseToggle={null}
-          onRemove={partial(this.handleRemove, index, key)}
+          onRemove={partial(this.handleRemove, index)}
+          allowRemove={field.get('allow_remove', true)}
+          allowReorder={field.get('allow_reorder', true)}
           dragHandle={DragHandle}
           id={key}
         />

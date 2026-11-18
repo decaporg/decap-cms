@@ -7,7 +7,8 @@ export function pathTraversal(repoPath: string) {
     type: 'path',
     base: Joi.string().required(),
     messages: {
-      'path.invalid': '{{#label}} must resolve to a path under the configured repository',
+      'path.invalid':
+        '{{#label}} must resolve to a path under the configured repository, outside its .git directory',
     },
     validate(value, helpers) {
       try {
