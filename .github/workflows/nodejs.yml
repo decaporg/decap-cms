@@ -59,6 +59,54 @@ jobs:
       - name: run unit tests
         run: pnpm run test:ci
 
+  # Published packages accept React 18 or 19 (`catalogs.peer` in
+  # pnpm-workspace.yaml), but the workspace installs 19. This job overrides
+  # react and react-dom to 18 everywhere and runs the unit tests and the build
+  # against it. Lint and type-check stay on the main job (the types are
+  # @types/react 19) and e2e is left out to keep it cheap.
+  build-unit-react-18:
+    needs: changes
+    if: ${{ needs.changes.outputs.cms == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.12.0
+      - name: Use Node.js 24.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.x
+          check-latest: true
+          cache: 'pnpm'
+      # An override rather than a catalog change: the peers pnpm auto-installs
+      # for workspace packages stay locked to 19 otherwise, since 19 already
+      # satisfies `^18.0.0 || ^19.0.0`.
+      - name: override react and react-dom with 18
+        run: |
+          perl -0pi -e 's/^overrides:\n/overrides:\n  react: ^18.3.1\n  react-dom: ^18.3.1\n/m' pnpm-workspace.yaml
+          grep -A2 '^overrides:' pnpm-workspace.yaml
+      - name: install dependencies (skip Cypress binary)
+        run: pnpm install --no-frozen-lockfile
+        env:
+          CYPRESS_INSTALL_BINARY: 0
+      - name: check that React 18 is the only React installed
+        run: |
+          if grep -qE '^  react(-dom)?@19' pnpm-lock.yaml; then
+            echo "React 19 is still in the lockfile"
+            exit 1
+          fi
+          node -p "'react ' + require('react/package.json').version + ', react-dom ' + require('react-dom/package.json').version"
+      # The snapshots record how React 19 serializes the tests' mock custom
+      # elements (React 18 writes `className` as a `classname` attribute and
+      # booleans as strings), so they are rewritten here instead of compared.
+      # The React 19 job still compares them; every other assertion runs.
+      - name: run unit tests
+        run: pnpm run test:unit --updateSnapshot
+      - name: build
+        run: pnpm run build
+
   e2e-build:
     needs: changes
     if: ${{ needs.changes.outputs.cms == 'true' }}
