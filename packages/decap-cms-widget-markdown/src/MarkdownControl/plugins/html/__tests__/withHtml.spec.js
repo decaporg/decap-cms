@@ -90,4 +90,40 @@ describe('withHtml', () => {
       'text\n\n![An image](https://example.com/image.png "Title")',
     );
   });
+
+  describe('line breaks in pasted html (#8094)', () => {
+    function paste(html) {
+      const editor = withHtml(createEditor());
+      const insertFragmentSpy = jest
+        .spyOn(Transforms, 'insertFragment')
+        .mockImplementation(() => {});
+      editor.insertData(createDataTransfer(html));
+      const { calls } = insertFragmentSpy.mock;
+      return calls[calls.length - 1][1];
+    }
+
+    it('should keep words separated when a line break replaces the space', () => {
+      expect(paste('<p>first\r\nsecond words</p>')).toEqual([
+        { type: 'paragraph', children: [{ text: 'first second words' }] },
+      ]);
+      expect(paste('<p>first\nsecond</p>')).toEqual([
+        { type: 'paragraph', children: [{ text: 'first second' }] },
+      ]);
+    });
+
+    it('should keep a line break between inline elements as a space', () => {
+      const fragment = paste('<p><span>first</span>\r\n<span>second</span></p>');
+      expect(slateToMarkdown(fragment)).toBe('first second');
+    });
+
+    it('should not add whitespace around blocks (#7364)', () => {
+      const fragment = paste('<body>\r\n<p>one</p>\r\n<p>two\r\n</p>\r\n</body>');
+      expect(slateToMarkdown(fragment)).toBe('one\n\ntwo');
+    });
+
+    it('should keep line breaks in code blocks', () => {
+      const fragment = paste('<pre><code>const a = 1;\nconst b = 2;</code></pre>');
+      expect(fragment[0].children[0].text).toBe('const a = 1;\nconst b = 2;');
+    });
+  });
 });
