@@ -31,7 +31,7 @@ Read more about Decap CMS [Core Concepts](https://www.decapcms.org/docs/intro/).
 Decap CMS can be used in two different ways.
 
 * A quick and easy install that requires a single HTML file and a configuration file. All CMS JavaScript and CSS are loaded from a CDN.
-  Learn more in the [Quick Start Guide](https://www.decapcms.org/docs/quick-start/).
+  Learn more in the [Quick Start Guide](https://decapcms.org/docs/basic-steps/).
 * A complete, more advanced install that gives you more flexibility but requires a static site builder with a build system that supports npm packages.
 
 Decap Turbo is a hosted backend for Decap CMS: editors log in with Turbo accounts, large collections load from a cache, and access is managed per site. Explore it at https://decapcms.org/turbo/.

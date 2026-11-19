@@ -28,7 +28,7 @@ Read more about Decap CMS [Core Concepts](https://www.decapcms.org/docs/intro/).
 The Decap CMS can be used in two different ways.
 
 * A Quick and easy install, that requires you to create a single HTML file and a configuration file. All the CMS JavaScript and CSS are loaded from a CDN.
-  To learn more about this installation method, refer to the [Quick Start Guide](https://www.decapcms.org/docs/quick-start/)
+  To learn more about this installation method, refer to the [Quick Start Guide](https://decapcms.org/docs/basic-steps/)
 * A complete, more complex install, that gives you more flexibility but requires that you use a static site builder with a build system that supports npm packages.
 
 ## Contributing
