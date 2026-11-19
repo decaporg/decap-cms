@@ -47,8 +47,8 @@
     "immutable": "catalog:",
     "lodash": "^4.17.11",
     "prop-types": "^15.7.2",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
+    "react": "catalog:peer",
+    "react-dom": "catalog:peer",
     "react-immutable-proptypes": "^2.1.0"
   },
   "devDependencies": {

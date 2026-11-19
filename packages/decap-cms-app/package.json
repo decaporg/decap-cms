@@ -77,8 +77,8 @@
     "react-immutable-proptypes": "catalog:"
   },
   "peerDependencies": {
-    "react": "catalog:",
-    "react-dom": "catalog:"
+    "react": "catalog:peer",
+    "react-dom": "catalog:peer"
   },
   "incrementToForceBump": 2
 }

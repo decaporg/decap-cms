@@ -40,6 +40,6 @@
     "decap-cms-ui-default": "workspace:*",
     "lodash": "catalog:",
     "prop-types": "catalog:",
-    "react": "catalog:"
+    "react": "catalog:peer"
   }
 }

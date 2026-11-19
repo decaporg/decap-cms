@@ -29,8 +29,8 @@
   },
   "peerDependencies": {
     "decap-cms-lib-util": "workspace:*",
-    "react": "catalog:",
-    "react-dom": "catalog:"
+    "react": "catalog:peer",
+    "react-dom": "catalog:peer"
   },
   "dependencies": {
     "@emotion/react": "catalog:",

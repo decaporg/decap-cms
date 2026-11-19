@@ -62,7 +62,8 @@ describe('Editor', () => {
     jest.spyOn(console, 'error').mockImplementation(() => {});
     const { asFragment } = render(<Editor {...props} entryDraft={null} />);
     expect(asFragment()).toMatchSnapshot();
-    expect(console.error).toHaveBeenCalledTimes(1);
+    // No exact call count: Editor checks its propTypes itself because React 19
+    // no longer does, and React 18 still does too, so there it is logged twice.
     expect(console.error).toHaveBeenCalledWith(
       expect.stringContaining(
         'Warning: Failed prop type: Required prop `entryDraft` was not specified in `Editor`.',

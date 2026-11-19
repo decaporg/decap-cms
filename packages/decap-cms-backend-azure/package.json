@@ -33,7 +33,7 @@
     "immutable": "catalog:",
     "lodash": "catalog:",
     "prop-types": "catalog:",
-    "react": "catalog:"
+    "react": "catalog:peer"
   },
   "browser": {
     "path": "path-browserify"

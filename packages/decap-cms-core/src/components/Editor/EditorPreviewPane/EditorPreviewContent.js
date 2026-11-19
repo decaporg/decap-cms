@@ -1,6 +1,5 @@
-import { Component, cloneElement, createElement } from 'react';
+import { Component, cloneElement, createElement, isValidElement } from 'react';
 import PropTypes from 'prop-types';
-import { isElement } from 'react-is';
 import { ScrollSyncPane } from 'react-scroll-sync';
 import { FrameContextConsumer } from 'react-frame-component';
 import { vercelStegaDecode } from '@vercel/stega';
@@ -35,7 +34,7 @@ class PreviewContent extends Component {
     const { previewComponent, previewProps } = this.props;
     return (
       <div onClick={this.handleClick}>
-        {isElement(previewComponent)
+        {isValidElement(previewComponent)
           ? cloneElement(previewComponent, previewProps)
           : createElement(previewComponent, previewProps)}
       </div>

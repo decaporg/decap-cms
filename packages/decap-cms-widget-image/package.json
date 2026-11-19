@@ -28,6 +28,6 @@
     "decap-cms-widget-file": "workspace:*",
     "immutable": "catalog:",
     "prop-types": "catalog:",
-    "react": "catalog:"
+    "react": "catalog:peer"
   }
 }

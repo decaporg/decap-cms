@@ -26,9 +26,11 @@
     "decap-cms-media-library-s3": "workspace:*",
     "decap-cms-media-library-uploadcare": "workspace:*",
     "file-loader": "catalog:",
-    "react": "catalog:",
-    "react-dom": "catalog:",
     "svgo-loader": "catalog:"
+  },
+  "devDependencies": {
+    "react": "catalog:",
+    "react-dom": "catalog:"
   },
   "incrementToForceBump": 2,
   "files": [

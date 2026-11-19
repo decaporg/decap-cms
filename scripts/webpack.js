@@ -1,3 +1,4 @@
+const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
 const FriendlyErrorsWebpackPlugin = require('@soda/friendly-errors-webpack-plugin');
@@ -112,8 +113,19 @@ function reactDomServerAlias() {
     return {};
   }
   const build = isProduction ? 'production' : 'development';
+  // React 19 names the production file `.production.js`, React 18
+  // `.production.min.js`.
+  const legacyServer = [
+    `cjs/react-dom-server-legacy.browser.${build}.js`,
+    `cjs/react-dom-server-legacy.browser.${build}.min.js`,
+  ]
+    .map(file => path.join(reactDomDir, file))
+    .find(file => fs.existsSync(file));
+  if (!legacyServer) {
+    return {};
+  }
   return {
-    'react-dom/server$': path.join(reactDomDir, `cjs/react-dom-server-legacy.browser.${build}.js`),
+    'react-dom/server$': legacyServer,
   };
 }
 

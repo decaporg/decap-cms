@@ -5,7 +5,7 @@ _For a Decap CMS overview, see the general [Decap CMS project README](https://gi
 This package is similar to the [`decap-cms`](https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms/) package, but is designed for use with extensions. It serves that purpose in the following ways.
 
 - It does not automatically initialize - you must run the CMS `init` method.
-- It does not include `react` or `react-dom` - they are required as peer dependencies.
+- It does not include `react` or `react-dom` - they are required as peer dependencies. React 18 and React 19 are both supported.
 - It does not include the following extensions:
   - [`decap-cms-media-library-cloudinary`]
   - [`decap-cms-media-library-uploadcare`]
