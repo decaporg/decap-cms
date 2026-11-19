@@ -23,6 +23,6 @@
   },
   "peerDependencies": {
     "@emotion/react": "catalog:",
-    "react": "catalog:"
+    "react": "catalog:peer"
   }
 }

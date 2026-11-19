@@ -765,6 +765,13 @@ catalogs:
     zod:
       specifier: ^4.6.6
       version: 4.6.7
+  peer:
+    react:
+      specifier: ^18.0.0 || ^19.0.0
+      version: 19.2.0
+    react-dom:
+      specifier: ^18.0.0 || ^19.0.0
+      version: 19.2.0
 
 overrides:
   clean-stack: 5.2.0
@@ -1430,10 +1437,10 @@ importers:
         specifier: 'catalog:'
         version: 15.8.1
       react:
-        specifier: 'catalog:'
+        specifier: catalog:peer
         version: 19.2.0
       react-dom:
-        specifier: 'catalog:'
+        specifier: catalog:peer
         version: 19.2.0(react@19.2.0)
       react-immutable-proptypes:
         specifier: 'catalog:'
@@ -1493,7 +1500,7 @@ importers:
         specifier: 'catalog:'
         version: 15.8.1
       react:
-        specifier: 'catalog:'
+        specifier: catalog:peer
         version: 19.2.0
       semaphore:
         specifier: 'catalog:'
@@ -1532,7 +1539,7 @@ importers:
         specifier: 'catalog:'
         version: 15.8.1
       react:
-        specifier: 'catalog:'
+        specifier: catalog:peer
         version: 19.2.0
       semaphore:
         specifier: 'catalog:'
@@ -1577,7 +1584,7 @@ importers:
         specifier: 'catalog:'
         version: 15.8.1
       react:
-        specifier: 'catalog:'
+        specifier: catalog:peer
         version: 19.2.0
       semaphore:
         specifier: 'catalog:'
@@ -1619,7 +1626,7 @@ importers:
         specifier: ^15.7.2
         version: 15.8.1
       react:
-        specifier: ^19.1.0
+        specifier: catalog:peer
         version: 19.2.0
       semaphore:
         specifier: ^1.1.0
@@ -1673,7 +1680,7 @@ importers:
         specifier: 'catalog:'
         version: 15.8.1
       react:
-        specifier: 'catalog:'
+        specifier: catalog:peer
         version: 19.2.0
 
   packages/decap-cms-backend-gitea:
@@ -1709,7 +1716,7 @@ importers:
         specifier: 'catalog:'
         version: 15.8.1
       react:
-        specifier: 'catalog:'
+        specifier: catalog:peer
         version: 19.2.0
       semaphore:
         specifier: 'catalog:'
@@ -1766,7 +1773,7 @@ importers:
         specifier: 'catalog:'
         version: 15.8.1
       react:
-        specifier: 'catalog:'
+        specifier: catalog:peer
         version: 19.2.0
       semaphore:
         specifier: 'catalog:'
@@ -1823,7 +1830,7 @@ importers:
         specifier: 'catalog:'
         version: 15.8.1
       react:
-        specifier: 'catalog:'
+        specifier: catalog:peer
         version: 19.2.0
       semaphore:
         specifier: 'catalog:'
@@ -1847,7 +1854,7 @@ importers:
         specifier: 'catalog:'
         version: 15.8.1
       react:
-        specifier: 'catalog:'
+        specifier: catalog:peer
         version: 19.2.0
 
   packages/decap-cms-backend-test:
@@ -1874,7 +1881,7 @@ importers:
         specifier: 'catalog:'
         version: 15.8.1
       react:
-        specifier: 'catalog:'
+        specifier: catalog:peer
         version: 19.2.0
 
   packages/decap-cms-backend-turbo-github:
@@ -1910,7 +1917,7 @@ importers:
         specifier: 'catalog:'
         version: 15.8.1
       react:
-        specifier: 'catalog:'
+        specifier: catalog:peer
         version: 19.2.0
       semaphore:
         specifier: 'catalog:'
@@ -1949,7 +1956,7 @@ importers:
         specifier: 'catalog:'
         version: 15.8.1
       react:
-        specifier: 'catalog:'
+        specifier: catalog:peer
         version: 19.2.0
       semaphore:
         specifier: 'catalog:'
@@ -2054,7 +2061,7 @@ importers:
         specifier: 'catalog:'
         version: 15.8.1
       react:
-        specifier: 'catalog:'
+        specifier: catalog:peer
         version: 19.2.0
       react-dnd:
         specifier: 'catalog:'
@@ -2063,7 +2070,7 @@ importers:
         specifier: 'catalog:'
         version: 14.1.0
       react-dom:
-        specifier: 'catalog:'
+        specifier: catalog:peer
         version: 19.2.0(react@19.2.0)
       react-frame-component:
         specifier: 'catalog:'
@@ -2178,10 +2185,10 @@ importers:
         specifier: 'catalog:'
         version: 15.8.1
       react:
-        specifier: 'catalog:'
+        specifier: catalog:peer
         version: 19.2.0
       react-dom:
-        specifier: 'catalog:'
+        specifier: catalog:peer
         version: 19.2.0(react@19.2.0)
       react-immutable-proptypes:
         specifier: 'catalog:'
@@ -2193,7 +2200,7 @@ importers:
         specifier: 'catalog:'
         version: 11.14.0(@types/react@19.2.2)(react@19.2.0)
       react:
-        specifier: 'catalog:'
+        specifier: catalog:peer
         version: 19.2.0
     devDependencies:
       cross-env:
@@ -2227,7 +2234,7 @@ importers:
         specifier: 'catalog:'
         version: 15.8.1
       react:
-        specifier: 'catalog:'
+        specifier: catalog:peer
         version: 19.2.0
 
   packages/decap-cms-lib-util:
@@ -2290,10 +2297,10 @@ importers:
         specifier: workspace:*
         version: link:../decap-cms-lib-util
       react:
-        specifier: 'catalog:'
+        specifier: catalog:peer
         version: 19.2.0
       react-dom:
-        specifier: 'catalog:'
+        specifier: catalog:peer
         version: 19.2.0(react@19.2.0)
 
   packages/decap-cms-media-library-uploadcare:
@@ -2332,7 +2339,7 @@ importers:
         specifier: 'catalog:'
         version: 15.8.1
       react:
-        specifier: 'catalog:'
+        specifier: catalog:peer
         version: 19.2.0
 
   packages/decap-cms-ui-default:
@@ -2353,7 +2360,7 @@ importers:
         specifier: 'catalog:'
         version: 15.8.1
       react:
-        specifier: 'catalog:'
+        specifier: catalog:peer
         version: 19.2.0
       react-aria-menubutton:
         specifier: 'catalog:'
@@ -2383,7 +2390,7 @@ importers:
         specifier: 'catalog:'
         version: 15.8.1
       react:
-        specifier: 'catalog:'
+        specifier: catalog:peer
         version: 19.2.0
       react-immutable-proptypes:
         specifier: 'catalog:'
@@ -2416,7 +2423,7 @@ importers:
         specifier: 'catalog:'
         version: 15.8.1
       react:
-        specifier: 'catalog:'
+        specifier: catalog:peer
         version: 19.2.0
       react-codemirror2:
         specifier: 'catalog:'
@@ -2443,7 +2450,7 @@ importers:
         specifier: 'catalog:'
         version: 15.8.1
       react:
-        specifier: 'catalog:'
+        specifier: catalog:peer
         version: 19.2.0
       react-color:
         specifier: 'catalog:'
@@ -2467,7 +2474,7 @@ importers:
         specifier: 'catalog:'
         version: 15.8.1
       react:
-        specifier: 'catalog:'
+        specifier: catalog:peer
         version: 19.2.0
 
   packages/decap-cms-widget-file:
@@ -2512,7 +2519,7 @@ importers:
         specifier: 'catalog:'
         version: 15.8.1
       react:
-        specifier: 'catalog:'
+        specifier: catalog:peer
         version: 19.2.0
       react-immutable-proptypes:
         specifier: 'catalog:'
@@ -2539,7 +2546,7 @@ importers:
         specifier: 'catalog:'
         version: 15.8.1
       react:
-        specifier: 'catalog:'
+        specifier: catalog:peer
         version: 19.2.0
 
   packages/decap-cms-widget-list:
@@ -2581,7 +2588,7 @@ importers:
         specifier: 'catalog:'
         version: 15.8.1
       react:
-        specifier: 'catalog:'
+        specifier: catalog:peer
         version: 19.2.0
       react-immutable-proptypes:
         specifier: 'catalog:'
@@ -2608,7 +2615,7 @@ importers:
         specifier: 'catalog:'
         version: 15.8.1
       react:
-        specifier: 'catalog:'
+        specifier: catalog:peer
         version: 19.2.0
       react-immutable-proptypes:
         specifier: 'catalog:'
@@ -2653,10 +2660,10 @@ importers:
         specifier: 'catalog:'
         version: 15.8.1
       react:
-        specifier: 'catalog:'
+        specifier: catalog:peer
         version: 19.2.0
       react-dom:
-        specifier: 'catalog:'
+        specifier: catalog:peer
         version: 19.2.0(react@19.2.0)
       react-immutable-proptypes:
         specifier: 'catalog:'
@@ -2738,7 +2745,7 @@ importers:
         specifier: 'catalog:'
         version: 15.8.1
       react:
-        specifier: 'catalog:'
+        specifier: catalog:peer
         version: 19.2.0
       react-immutable-proptypes:
         specifier: 'catalog:'
@@ -2768,7 +2775,7 @@ importers:
         specifier: 'catalog:'
         version: 15.8.1
       react:
-        specifier: 'catalog:'
+        specifier: catalog:peer
         version: 19.2.0
       react-immutable-proptypes:
         specifier: 'catalog:'
@@ -2810,7 +2817,7 @@ importers:
         specifier: 'catalog:'
         version: 15.8.1
       react:
-        specifier: 'catalog:'
+        specifier: catalog:peer
         version: 19.2.0
       react-immutable-proptypes:
         specifier: 'catalog:'
@@ -2864,10 +2871,10 @@ importers:
         specifier: ^15.7.2
         version: 15.8.1
       react:
-        specifier: ^19.1.0
+        specifier: catalog:peer
         version: 19.2.0
       react-dom:
-        specifier: ^19.1.0
+        specifier: catalog:peer
         version: 19.2.0(react@19.2.0)
       react-immutable-proptypes:
         specifier: ^2.1.0
@@ -2937,7 +2944,7 @@ importers:
         specifier: 'catalog:'
         version: 15.8.1
       react:
-        specifier: 'catalog:'
+        specifier: catalog:peer
         version: 19.2.0
       react-immutable-proptypes:
         specifier: 'catalog:'
@@ -2958,7 +2965,7 @@ importers:
         specifier: 'catalog:'
         version: 15.8.1
       react:
-        specifier: 'catalog:'
+        specifier: catalog:peer
         version: 19.2.0
 
   packages/decap-cms-widget-text:
@@ -2973,7 +2980,7 @@ importers:
         specifier: 'catalog:'
         version: 15.8.1
       react:
-        specifier: 'catalog:'
+        specifier: catalog:peer
         version: 19.2.0
       react-textarea-autosize:
         specifier: 'catalog:'
@@ -3000,7 +3007,7 @@ importers:
         specifier: 'catalog:'
         version: 15.8.1
       react:
-        specifier: 'catalog:'
+        specifier: catalog:peer
         version: 19.2.0
 
   packages/decap-server:

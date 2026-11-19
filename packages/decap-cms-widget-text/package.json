@@ -29,6 +29,6 @@
     "@emotion/react": "catalog:",
     "decap-cms-ui-default": "workspace:*",
     "prop-types": "catalog:",
-    "react": "catalog:"
+    "react": "catalog:peer"
   }
 }

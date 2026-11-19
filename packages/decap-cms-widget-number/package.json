@@ -24,7 +24,7 @@
     "decap-cms-ui-default": "workspace:*",
     "immutable": "catalog:",
     "prop-types": "catalog:",
-    "react": "catalog:",
+    "react": "catalog:peer",
     "react-immutable-proptypes": "catalog:"
   },
   "dependencies": {

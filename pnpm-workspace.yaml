@@ -267,6 +267,16 @@ catalog:
   yaml: ^1.8.3
   zod: ^4.6.6
 
+catalogs:
+  # The React versions published packages accept from the host app, referenced
+  # as `catalog:peer` in their peerDependencies. The default catalog above pins
+  # the React the workspace itself installs, builds and tests against; CI also
+  # runs the unit tests and build against React 18 (`build-unit-react-18` in
+  # .github/workflows/nodejs.yml).
+  peer:
+    react: ^18.0.0 || ^19.0.0
+    react-dom: ^18.0.0 || ^19.0.0
+
 overrides:
   clean-stack: 5.2.0
   'copy-webpack-plugin@10.2.4>serialize-javascript': 7.1.3

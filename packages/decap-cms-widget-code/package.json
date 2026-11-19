@@ -31,7 +31,7 @@
     "immutable": "catalog:",
     "lodash": "catalog:",
     "prop-types": "catalog:",
-    "react": "catalog:"
+    "react": "catalog:peer"
   },
   "dependencies": {
     "immutable": "catalog:",
