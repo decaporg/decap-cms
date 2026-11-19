@@ -118,11 +118,7 @@ export class PreviewPane extends Component {
 
     if (inferredField) {
       value = inferredField.defaultPreview(value);
-    } else if (
-      value &&
-      labelledWidgets.indexOf(field.get('widget')) !== -1 &&
-      value.toString().length < 50
-    ) {
+    } else if (value && labelledWidgets.indexOf(field.get('widget')) !== -1) {
       value = (
         <div>
           <strong>{field.get('label', field.get('name'))}:</strong> {value}
