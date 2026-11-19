@@ -122,6 +122,11 @@ function isBlock(node) {
   return Boolean(node) && node.nodeType === 1 && BLOCK_TAGS.has(node.nodeName);
 }
 
+// Whitespace next to a block element or a `<br>` is not rendered by browsers.
+function isLineBoundary(node) {
+  return isBlock(node) || node?.nodeName === 'BR';
+}
+
 // HTML treats a line break in text as whitespace: inside text it separates words,
 // next to block elements it is only markup formatting (`<body>\n<p>`, see #7364).
 function deserializeText(el) {
@@ -131,8 +136,8 @@ function deserializeText(el) {
   }
 
   const { previousSibling, nextSibling, parentNode } = el;
-  const atBlockStart = previousSibling ? isBlock(previousSibling) : isBlock(parentNode);
-  const atBlockEnd = nextSibling ? isBlock(nextSibling) : isBlock(parentNode);
+  const atBlockStart = previousSibling ? isLineBoundary(previousSibling) : isBlock(parentNode);
+  const atBlockEnd = nextSibling ? isLineBoundary(nextSibling) : isBlock(parentNode);
 
   let result = text.replace(/[ \t]*\r?\n\s*/g, ' ');
   if (atBlockStart) result = result.replace(/^\s+/, '');

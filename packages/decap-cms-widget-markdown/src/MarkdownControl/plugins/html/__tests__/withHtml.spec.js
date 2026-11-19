@@ -116,6 +116,12 @@ describe('withHtml', () => {
       expect(slateToMarkdown(fragment)).toBe('first second');
     });
 
+    it('should not add a space after a manual line break', () => {
+      expect(paste('<p>first<br>\r\nsecond</p>')).toEqual([
+        { type: 'paragraph', children: [{ text: 'first\nsecond' }] },
+      ]);
+    });
+
     it('should not add whitespace around blocks (#7364)', () => {
       const fragment = paste('<body>\r\n<p>one</p>\r\n<p>two\r\n</p>\r\n</body>');
       expect(slateToMarkdown(fragment)).toBe('one\n\ntwo');
