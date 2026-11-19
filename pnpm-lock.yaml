@@ -1280,15 +1280,16 @@ importers:
       file-loader:
         specifier: 'catalog:'
         version: 6.2.0(webpack@5.112.2(@swc/core@1.7.11)(esbuild@0.25.11)(postcss@8.5.33)(webpack-cli@5.1.4))
+      svgo-loader:
+        specifier: 'catalog:'
+        version: 3.0.3
+    devDependencies:
       react:
         specifier: 'catalog:'
         version: 19.2.0
       react-dom:
         specifier: 'catalog:'
         version: 19.2.0(react@19.2.0)
-      svgo-loader:
-        specifier: 'catalog:'
-        version: 3.0.3
 
   packages/decap-cms-app:
     dependencies:
