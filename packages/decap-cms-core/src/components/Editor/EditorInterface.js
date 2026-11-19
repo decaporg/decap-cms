@@ -136,6 +136,21 @@ const PreviewPaneContainer = styled.div`
   height: 100%;
   pointer-events: ${props => (props.blockEntry ? 'none' : 'auto')};
   overflow-y: ${props => (props.overFlow ? 'auto' : 'hidden')};
+  position: relative;
+`;
+
+/**
+ * Covers the preview while the divider is dragged so the preview iframe can't
+ * grab the mouse events. Toggling pointer-events on the iframe's container
+ * instead leaves the iframe ignoring wheel events after the drag until the
+ * next click.
+ */
+const PreviewEventBlocker = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
 `;
 
 const ControlPaneContainer = styled(PreviewPaneContainer)`
@@ -348,7 +363,7 @@ class EditorInterface extends Component {
             onDragFinished={this.handleSplitPaneDragFinished}
           >
             <ScrollSyncPane>{editor}</ScrollSyncPane>
-            <PreviewPaneContainer blockEntry={showEventBlocker}>
+            <PreviewPaneContainer>
               <EditorPreviewPane
                 collection={collection}
                 entry={previewEntry}
@@ -357,6 +372,7 @@ class EditorInterface extends Component {
                 locale={leftPanelLocale}
                 onFieldClick={this.handleFieldClick}
               />
+              {showEventBlocker && <PreviewEventBlocker />}
             </PreviewPaneContainer>
           </StyledSplitPane>
         </div>
