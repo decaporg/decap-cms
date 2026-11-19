@@ -1439,6 +1439,27 @@ describe('Backend', () => {
       });
     });
 
+    it('should search other fields, including nested lists and objects', async () => {
+      const filesCollection = fromJS({
+        name: 'files',
+        files: [{ name: 'links', fields: [{ name: 'links', widget: 'list' }] }],
+        type: FILES,
+      });
+      const linkFile = {
+        path: 'files/links.md',
+        slug: 'links',
+        data: { links: [{ label: 'Wilson Profile', url: 'https://example.com' }] },
+      };
+      const orgPost = { path: 'posts/org.md', slug: 'org', data: { title: 'A', org: 'Wilson' } };
+      backend.listAllEntries = jest.fn(collection =>
+        Promise.resolve(collection.get('name') === 'files' ? [linkFile] : [orgPost]),
+      );
+
+      expect(await backend.search([collections[0], filesCollection], 'wilson')).toEqual({
+        entries: [orgPost, linkFile],
+      });
+    });
+
     describe('entry body', () => {
       const body =
         'The cat sat on the mat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, ' +

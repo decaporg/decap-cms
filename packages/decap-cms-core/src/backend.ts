@@ -245,6 +245,25 @@ export function mergeExpandedEntries(entries: (EntryValue & { field: string })[]
   return Object.values(merged);
 }
 
+function collectSearchableValues(value: unknown): string[] {
+  if (typeof value === 'string' || typeof value === 'number') {
+    return [String(value)];
+  }
+  if (value && typeof value === 'object') {
+    return Object.values(value).flatMap(collectSearchableValues);
+  }
+  return [];
+}
+
+function entryContainsTerm(entry: EntryValue, term: string, ignoredFields: string[]) {
+  const data = entry.data || {};
+  return Object.keys(data)
+    .filter(key => !ignoredFields.includes(key))
+    .some(key =>
+      collectSearchableValues(data[key]).some(value => value.toLowerCase().includes(term)),
+    );
+}
+
 function sortByScore(a: fuzzy.FilterResult<EntryValue>, b: fuzzy.FilterResult<EntryValue>) {
   if (a.score > b.score) return -1;
   if (a.score < b.score) return 1;
@@ -937,18 +956,35 @@ export class Backend {
         }
         const filteredSearchFields = searchFields.filter(Boolean) as string[];
         const collectionEntries = await this.listAllEntries(collection, searchTerm);
-        return fuzzy.filter(searchTerm, collectionEntries, {
-          extract: extractSearchFields(uniq(filteredSearchFields)),
-        });
+        const matches = fuzzy
+          .filter(searchTerm, collectionEntries, {
+            extract: extractSearchFields(uniq(filteredSearchFields)),
+          })
+          .filter(({ score }) => score > 5);
+
+        // The fields above drive the ranking, but a term can sit in any other
+        // field, including inside lists and objects. Those entries are found
+        // by a plain substring match and listed after the ranked ones.
+        const matched = new WeakSet(matches.map(m => m.original));
+        const ignoredFields =
+          collection.get('type') !== FILES && !searchesEntryBody ? ['body'] : [];
+        const term = searchTerm.toLowerCase();
+        const fieldMatches = collectionEntries.filter(
+          entry => !matched.has(entry) && entryContainsTerm(entry, term, ignoredFields),
+        );
+        return { matches, fieldMatches };
       })
       .map(p =>
         p.catch(err => {
           errors.push(err);
-          return [] as fuzzy.FilterResult<EntryValue>[];
+          return {
+            matches: [] as fuzzy.FilterResult<EntryValue>[],
+            fieldMatches: [] as EntryValue[],
+          };
         }),
       );
 
-    const entries = await Promise.all(collectionEntriesRequests).then(arrays => flatten(arrays));
+    const results = await Promise.all(collectionEntriesRequests);
 
     if (errors.length > 0) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -956,11 +992,10 @@ export class Backend {
       throw new Error({ message: 'Errors occurred while searching entries locally!', errors });
     }
 
-    const hits = entries
-      .filter(({ score }: fuzzy.FilterResult<EntryValue>) => score > 5)
+    const hits = flatten(results.map(r => r.matches))
       .sort(sortByScore)
       .map((f: fuzzy.FilterResult<EntryValue>) => f.original);
-    return { entries: hits };
+    return { entries: [...hits, ...flatten(results.map(r => r.fieldMatches))] };
   }
 
   async query(
