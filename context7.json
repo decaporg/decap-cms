@@ -1,0 +1,34 @@
+{
+  "$schema": "https://context7.com/schema/context7.json",
+  "projectTitle": "Decap CMS",
+  "description": "Decap CMS: open-source, Git-based CMS for static site generators (formerly Netlify CMS)",
+  "folders": ["packages"],
+  "excludeFolders": [
+    ".github",
+    "dev-test",
+    "cypress",
+    "scripts",
+    "__tests__",
+    "__fixtures__",
+    "__mocks__",
+    "dist",
+    "node_modules"
+  ],
+  "excludeFiles": [
+    "CHANGELOG.md",
+    "CONTRIBUTING.md",
+    "CODE_OF_CONDUCT.md",
+    "SECURITY.md",
+    "AGENTS.md",
+    "LICENSE",
+    "LICENSE.md",
+    "PULL_REQUEST_TEMPLATE.md"
+  ],
+  "rules": [
+    "Install with the decap-cms script tag (https://cdn.jsdelivr.net/npm/decap-cms@^3.0.0/dist/decap-cms.js), or with npm i decap-cms-app react react-dom when using a bundler.",
+    "decap-cms-app needs React 19 from npm. React 19 has no UMD builds, so do not load React or decap-cms-app from a CDN; the decap-cms bundle already includes React.",
+    "Configure the CMS in admin/config.yml, next to admin/index.html; editors open it at /admin/.",
+    "The git-gateway backend is deprecated by its provider; use the github, gitlab, gitea or bitbucket backend with an OAuth client, or Decap Turbo.",
+    "Docs: https://decapcms.org/docs/ and, as one file for agents, https://decapcms.org/llms-full.txt"
+  ]
+}
