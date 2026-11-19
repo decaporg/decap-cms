@@ -80,9 +80,74 @@ const INLINE_STYLES = {
   'font-weight': value => (value === 'bold' || parseInt(value, 10) >= 600 ? { bold: true } : {}),
 };
 
+const BLOCK_TAGS = new Set([
+  'ADDRESS',
+  'ARTICLE',
+  'ASIDE',
+  'BLOCKQUOTE',
+  'BODY',
+  'DD',
+  'DIV',
+  'DL',
+  'DT',
+  'FIGCAPTION',
+  'FIGURE',
+  'FOOTER',
+  'H1',
+  'H2',
+  'H3',
+  'H4',
+  'H5',
+  'H6',
+  'HEADER',
+  'HR',
+  'LI',
+  'MAIN',
+  'NAV',
+  'OL',
+  'P',
+  'PRE',
+  'SECTION',
+  'TABLE',
+  'TBODY',
+  'TD',
+  'TFOOT',
+  'TH',
+  'THEAD',
+  'TR',
+  'UL',
+]);
+
+function isBlock(node) {
+  return Boolean(node) && node.nodeType === 1 && BLOCK_TAGS.has(node.nodeName);
+}
+
+// Whitespace next to a block element or a `<br>` is not rendered by browsers.
+function isLineBoundary(node) {
+  return isBlock(node) || node?.nodeName === 'BR';
+}
+
+// HTML treats a line break in text as whitespace: inside text it separates words,
+// next to block elements it is only markup formatting (`<body>\n<p>`, see #7364).
+function deserializeText(el) {
+  const text = el.textContent;
+  if (!/\r|\n/.test(text) || el.parentNode?.closest?.('pre')) {
+    return text;
+  }
+
+  const { previousSibling, nextSibling, parentNode } = el;
+  const atBlockStart = previousSibling ? isLineBoundary(previousSibling) : isBlock(parentNode);
+  const atBlockEnd = nextSibling ? isLineBoundary(nextSibling) : isBlock(parentNode);
+
+  let result = text.replace(/[ \t]*\r?\n\s*/g, ' ');
+  if (atBlockStart) result = result.replace(/^\s+/, '');
+  if (atBlockEnd) result = result.replace(/\s+$/, '');
+  return result;
+}
+
 function deserialize(el) {
   if (el.nodeType === 3) {
-    return el.textContent.replace(/(\r)?\n/g, '');
+    return deserializeText(el);
   } else if (el.nodeType !== 1) {
     return null;
   } else if (el.nodeName === 'BR') {
