@@ -13,7 +13,7 @@ const HeaderContainer = styled.div`
 
 const CloseButton = styled.button`
   ${buttons.button};
-  background-color: white;
+  background-color: ${colors.foreground};
   @media (min-width: 500px) {
     ${shadows.dropMiddle};
     position: absolute;

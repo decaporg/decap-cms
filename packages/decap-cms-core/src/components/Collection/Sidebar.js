@@ -51,7 +51,7 @@ const SidebarNavLink = styled(NavLink)`
   font-weight: 500;
   align-items: center;
   padding: 8px 18px;
-  border-left: 2px solid #fff;
+  border-left: 2px solid ${colors.foreground};
   z-index: -1;
 
   ${Icon} {

@@ -46,7 +46,7 @@ const styleStrings = {
     outline: 0;
     box-shadow: none;
     background-color: ${colors.inputBackground};
-    color: #444a57;
+    color: ${colors.inputText};
     transition: border-color ${transitions.main};
     position: relative;
     font-size: 15px;

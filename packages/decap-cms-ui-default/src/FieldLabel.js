@@ -52,7 +52,7 @@ const FieldLabel = styled.label`
 
   &:after {
     border-bottom-left-radius: 3px;
-    background-color: #fff;
+    background-color: ${colors.foreground};
   }
 `;
 

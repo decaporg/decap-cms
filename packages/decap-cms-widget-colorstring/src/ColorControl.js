@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import ChromePicker from 'react-color';
 import tinycolor from 'tinycolor2';
-import { zIndex } from 'decap-cms-ui-default';
+import { colors, zIndex } from 'decap-cms-ui-default';
 
 function ClearIcon() {
   return (
@@ -51,7 +51,7 @@ const ColorSwatch = styled.div`
   margin-top: 10px;
   margin-left: 10px;
   border-radius: 5px;
-  border: 2px solid rgb(223, 223, 227);
+  border: 2px solid ${colors.textFieldBorder};
   text-align: center;
   font-size: 27px;
   line-height: 1;

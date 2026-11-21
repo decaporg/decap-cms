@@ -5,7 +5,7 @@ exports[`Sidebar should render nested collection with filterTerm 1`] = `
   .emotion-0 {
   box-shadow: 0 2px 6px 0 rgba(68, 74, 87, 0.05),0 1px 3px 0 rgba(68, 74, 87, 0.1);
   border-radius: 5px;
-  background-color: #fff;
+  background-color: var(--decap-color-foreground, #fff);
   width: 682px;
   max-width: 100%;
   padding: 8px 0 12px;
@@ -33,7 +33,7 @@ exports[`Sidebar should render nested collection with filterTerm 1`] = `
   margin: 0;
   padding: 0;
   margin: 10px 20px;
-  color: #313d3e;
+  color: var(--decap-color-text-lead, #313d3e);
 }
 
 @media (min-width: 500px) {
@@ -81,7 +81,7 @@ exports[`Sidebar should render sidebar with a nested collection 1`] = `
   .emotion-0 {
   box-shadow: 0 2px 6px 0 rgba(68, 74, 87, 0.05),0 1px 3px 0 rgba(68, 74, 87, 0.1);
   border-radius: 5px;
-  background-color: #fff;
+  background-color: var(--decap-color-foreground, #fff);
   width: 682px;
   max-width: 100%;
   padding: 8px 0 12px;
@@ -109,7 +109,7 @@ exports[`Sidebar should render sidebar with a nested collection 1`] = `
   margin: 0;
   padding: 0;
   margin: 10px 20px;
-  color: #313d3e;
+  color: var(--decap-color-text-lead, #313d3e);
 }
 
 @media (min-width: 500px) {
@@ -156,7 +156,7 @@ exports[`Sidebar should render sidebar with a simple collection 1`] = `
   .emotion-0 {
   box-shadow: 0 2px 6px 0 rgba(68, 74, 87, 0.05),0 1px 3px 0 rgba(68, 74, 87, 0.1);
   border-radius: 5px;
-  background-color: #fff;
+  background-color: var(--decap-color-foreground, #fff);
   width: 682px;
   max-width: 100%;
   padding: 8px 0 12px;
@@ -184,7 +184,7 @@ exports[`Sidebar should render sidebar with a simple collection 1`] = `
   margin: 0;
   padding: 0;
   margin: 10px 20px;
-  color: #313d3e;
+  color: var(--decap-color-text-lead, #313d3e);
 }
 
 @media (min-width: 500px) {
@@ -212,7 +212,7 @@ exports[`Sidebar should render sidebar with a simple collection 1`] = `
   -ms-flex-align: center;
   align-items: center;
   padding: 8px 18px;
-  border-left: 2px solid #fff;
+  border-left: 2px solid var(--decap-color-foreground, #fff);
   z-index: -1;
 }
 
@@ -226,8 +226,8 @@ exports[`Sidebar should render sidebar with a simple collection 1`] = `
 .emotion-6:hover,
 .emotion-6:active,
 .emotion-6.sidebar-active {
-  color: #3a69c7;
-  background-color: #e8f5fe;
+  color: var(--decap-color-active, #3a69c7);
+  background-color: var(--decap-color-active-background, #e8f5fe);
   border-left-color: #4863c6;
 }
 
@@ -268,7 +268,7 @@ exports[`Sidebar should render sidebar without search 1`] = `
   .emotion-0 {
   box-shadow: 0 2px 6px 0 rgba(68, 74, 87, 0.05),0 1px 3px 0 rgba(68, 74, 87, 0.1);
   border-radius: 5px;
-  background-color: #fff;
+  background-color: var(--decap-color-foreground, #fff);
   width: 682px;
   max-width: 100%;
   padding: 8px 0 12px;
@@ -296,7 +296,7 @@ exports[`Sidebar should render sidebar without search 1`] = `
   margin: 0;
   padding: 0;
   margin: 10px 20px;
-  color: #313d3e;
+  color: var(--decap-color-text-lead, #313d3e);
 }
 
 @media (min-width: 500px) {
@@ -324,7 +324,7 @@ exports[`Sidebar should render sidebar without search 1`] = `
   -ms-flex-align: center;
   align-items: center;
   padding: 8px 18px;
-  border-left: 2px solid #fff;
+  border-left: 2px solid var(--decap-color-foreground, #fff);
   z-index: -1;
 }
 
@@ -338,8 +338,8 @@ exports[`Sidebar should render sidebar without search 1`] = `
 .emotion-6:hover,
 .emotion-6:active,
 .emotion-6.sidebar-active {
-  color: #3a69c7;
-  background-color: #e8f5fe;
+  color: var(--decap-color-active, #3a69c7);
+  background-color: var(--decap-color-active-background, #e8f5fe);
   border-left-color: #4863c6;
 }
 

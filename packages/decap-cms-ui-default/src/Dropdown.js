@@ -61,7 +61,7 @@ function StyledMenuItem({ isActive, isCheckedItem = false, ...props }) {
         &:not(:focus),
         &:not(:active) {
           background-color: ${isActive ? colors.activeBackground : 'inherit'};
-          color: ${isActive ? colors.active : '#313d3e'};
+          color: ${isActive ? colors.active : colors.textLead};
           ${isCheckedItem ? 'display: flex; justify-content: start' : ''};
         }
         &:hover {

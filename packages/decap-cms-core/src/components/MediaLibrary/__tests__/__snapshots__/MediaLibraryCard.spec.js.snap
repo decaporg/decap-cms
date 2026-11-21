@@ -6,7 +6,7 @@ exports[`MediaLibraryCard should match snapshot for draft image 1`] = `
   width: 100%;
   height: 240px;
   margin: 10px;
-  border: solid 2px #dfdfe3;
+  border: solid 2px var(--decap-color-text-field-border, #dfdfe3);
   border-radius: 5px;
   cursor: pointer;
   overflow: hidden;
@@ -18,34 +18,34 @@ exports[`MediaLibraryCard should match snapshot for draft image 1`] = `
 
 .emotion-2 {
   height: 162px;
-  background-color: #f2f2f2;
+  background-color: var(--decap-color-checkerboard-light, #f2f2f2);
   -webkit-background-size: 16px 16px;
   background-size: 16px 16px;
   -webkit-background-position: 0 0,8px 8px;
   background-position: 0 0,8px 8px;
   background-image: linear-gradient(
         45deg,
-        #e6e6e6 25%,
+        var(--decap-color-checkerboard-dark, #e6e6e6) 25%,
         transparent 25%,
         transparent 75%,
-        #e6e6e6 75%,
-        #e6e6e6
+        var(--decap-color-checkerboard-dark, #e6e6e6) 75%,
+        var(--decap-color-checkerboard-dark, #e6e6e6)
       ),linear-gradient(
         45deg,
-        #e6e6e6 25%,
+        var(--decap-color-checkerboard-dark, #e6e6e6) 25%,
         transparent 25%,
         transparent 75%,
-        #e6e6e6 75%,
-        #e6e6e6
+        var(--decap-color-checkerboard-dark, #e6e6e6) 75%,
+        var(--decap-color-checkerboard-dark, #e6e6e6)
       );
   box-shadow: inset 0 0 4px rgba(68, 74, 87, 0.3);
-  border-bottom: solid 2px #dfdfe3;
+  border-bottom: solid 2px var(--decap-color-text-field-border, #dfdfe3);
   position: relative;
 }
 
 .emotion-4 {
-  color: #70399f;
-  background-color: #f6d8ff;
+  color: var(--decap-color-media-draft-text, #70399f);
+  background-color: var(--decap-color-media-draft-background, #f6d8ff);
   position: absolute;
   padding: 8px;
   border-radius: 5px 0 5px 0;
@@ -59,7 +59,7 @@ exports[`MediaLibraryCard should match snapshot for draft image 1`] = `
 }
 
 .emotion-8 {
-  color: #798291;
+  color: var(--decap-color-text, #798291);
   padding: 8px;
   margin-top: 20px;
   overflow-wrap: break-word;
@@ -102,7 +102,7 @@ exports[`MediaLibraryCard should match snapshot for non draft image 1`] = `
   width: 100%;
   height: 240px;
   margin: 10px;
-  border: solid 2px #dfdfe3;
+  border: solid 2px var(--decap-color-text-field-border, #dfdfe3);
   border-radius: 5px;
   cursor: pointer;
   overflow: hidden;
@@ -114,28 +114,28 @@ exports[`MediaLibraryCard should match snapshot for non draft image 1`] = `
 
 .emotion-2 {
   height: 162px;
-  background-color: #f2f2f2;
+  background-color: var(--decap-color-checkerboard-light, #f2f2f2);
   -webkit-background-size: 16px 16px;
   background-size: 16px 16px;
   -webkit-background-position: 0 0,8px 8px;
   background-position: 0 0,8px 8px;
   background-image: linear-gradient(
         45deg,
-        #e6e6e6 25%,
+        var(--decap-color-checkerboard-dark, #e6e6e6) 25%,
         transparent 25%,
         transparent 75%,
-        #e6e6e6 75%,
-        #e6e6e6
+        var(--decap-color-checkerboard-dark, #e6e6e6) 75%,
+        var(--decap-color-checkerboard-dark, #e6e6e6)
       ),linear-gradient(
         45deg,
-        #e6e6e6 25%,
+        var(--decap-color-checkerboard-dark, #e6e6e6) 25%,
         transparent 25%,
         transparent 75%,
-        #e6e6e6 75%,
-        #e6e6e6
+        var(--decap-color-checkerboard-dark, #e6e6e6) 75%,
+        var(--decap-color-checkerboard-dark, #e6e6e6)
       );
   box-shadow: inset 0 0 4px rgba(68, 74, 87, 0.3);
-  border-bottom: solid 2px #dfdfe3;
+  border-bottom: solid 2px var(--decap-color-text-field-border, #dfdfe3);
   position: relative;
 }
 
@@ -147,7 +147,7 @@ exports[`MediaLibraryCard should match snapshot for non draft image 1`] = `
 }
 
 .emotion-6 {
-  color: #798291;
+  color: var(--decap-color-text, #798291);
   padding: 8px;
   margin-top: 20px;
   overflow-wrap: break-word;
@@ -184,7 +184,7 @@ exports[`MediaLibraryCard should match snapshot for non viewable image 1`] = `
   width: 100%;
   height: 240px;
   margin: 10px;
-  border: solid 2px #dfdfe3;
+  border: solid 2px var(--decap-color-text-field-border, #dfdfe3);
   border-radius: 5px;
   cursor: pointer;
   overflow: hidden;
@@ -196,28 +196,28 @@ exports[`MediaLibraryCard should match snapshot for non viewable image 1`] = `
 
 .emotion-2 {
   height: 162px;
-  background-color: #f2f2f2;
+  background-color: var(--decap-color-checkerboard-light, #f2f2f2);
   -webkit-background-size: 16px 16px;
   background-size: 16px 16px;
   -webkit-background-position: 0 0,8px 8px;
   background-position: 0 0,8px 8px;
   background-image: linear-gradient(
         45deg,
-        #e6e6e6 25%,
+        var(--decap-color-checkerboard-dark, #e6e6e6) 25%,
         transparent 25%,
         transparent 75%,
-        #e6e6e6 75%,
-        #e6e6e6
+        var(--decap-color-checkerboard-dark, #e6e6e6) 75%,
+        var(--decap-color-checkerboard-dark, #e6e6e6)
       ),linear-gradient(
         45deg,
-        #e6e6e6 25%,
+        var(--decap-color-checkerboard-dark, #e6e6e6) 25%,
         transparent 25%,
         transparent 75%,
-        #e6e6e6 75%,
-        #e6e6e6
+        var(--decap-color-checkerboard-dark, #e6e6e6) 75%,
+        var(--decap-color-checkerboard-dark, #e6e6e6)
       );
   box-shadow: inset 0 0 4px rgba(68, 74, 87, 0.3);
-  border-bottom: solid 2px #dfdfe3;
+  border-bottom: solid 2px var(--decap-color-text-field-border, #dfdfe3);
   position: relative;
 }
 
@@ -231,7 +231,7 @@ exports[`MediaLibraryCard should match snapshot for non viewable image 1`] = `
 }
 
 .emotion-6 {
-  color: #798291;
+  color: var(--decap-color-text, #798291);
   padding: 8px;
   margin-top: 20px;
   overflow-wrap: break-word;

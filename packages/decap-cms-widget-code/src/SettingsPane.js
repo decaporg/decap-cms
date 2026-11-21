@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import Select from 'react-select';
 import isHotkey from 'is-hotkey';
-import { text, shadows, zIndex } from 'decap-cms-ui-default';
+import { colors, text, shadows, zIndex } from 'decap-cms-ui-default';
 
 import SettingsButton from './SettingsButton';
 import languageSelectStyles from './languageSelectStyles';
@@ -12,7 +12,7 @@ const SettingsPaneContainer = styled.div`
   width: 200px;
   z-index: ${zIndex.zIndex10};
   height: 100%;
-  background-color: #fff;
+  background-color: ${colors.foreground};
   overflow: hidden;
   overflow-y: scroll;
   padding: 12px;

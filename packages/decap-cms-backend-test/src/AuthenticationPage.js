@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
-import { Icon, buttons, shadows, GoBackButton } from 'decap-cms-ui-default';
+import { Icon, buttons, colors, shadows, GoBackButton } from 'decap-cms-ui-default';
 
 const StyledAuthenticationPage = styled.section`
   display: flex;
@@ -14,6 +14,7 @@ const StyledAuthenticationPage = styled.section`
 
 const PageLogoIcon = styled(Icon)`
   height: auto;
+  color: ${colors.logoText};
 `;
 
 const LoginButton = styled.button`

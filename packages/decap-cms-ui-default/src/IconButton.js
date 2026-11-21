@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 
 import Icon from './Icon';
-import { buttons, colors, colorsRaw, shadows } from './styles';
+import { buttons, colors, shadows } from './styles';
 
 const sizes = {
   small: '28px',
@@ -11,7 +11,7 @@ const sizes = {
 const ButtonRound = styled.button`
   ${buttons.button};
   ${shadows.dropMiddle};
-  background-color: ${colorsRaw.white};
+  background-color: ${colors.foreground};
   color: ${props => colors[props.isActive ? `active` : `inactive`]};
   border-radius: 32px;
   display: flex;

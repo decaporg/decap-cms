@@ -24,7 +24,7 @@ const AvatarDropdownButton = styled(DropdownButton)`
   display: inline-block;
   padding: 8px;
   cursor: pointer;
-  color: #1e2532;
+  color: ${colors.textStrong};
   background-color: transparent;
 `;
 
@@ -35,7 +35,7 @@ const AvatarImage = styled.img`
 const AvatarPlaceholderIcon = styled(Icon)`
   ${styles.avatarImage};
   height: 32px;
-  color: #1e2532;
+  color: ${colors.textStrong};
   background-color: ${colors.textFieldBorder};
 `;
 

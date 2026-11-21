@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { colorsRaw, colors, Icon, lengths, zIndex } from 'decap-cms-ui-default';
+import { colors, Icon, lengths, zIndex } from 'decap-cms-ui-default';
 import { translate } from 'react-polyglot';
 import { Component } from 'react';
 import PropTypes from 'prop-types';
@@ -28,7 +28,7 @@ const InputContainer = styled.div`
 `;
 
 const SearchInput = styled.input`
-  background-color: #eff0f4;
+  background-color: ${colors.background};
   border-radius: ${lengths.borderRadius};
   font-size: 14px;
   padding: 10px 6px 10px 34px;
@@ -38,7 +38,7 @@ const SearchInput = styled.input`
 
   &:focus {
     outline: none;
-    box-shadow: inset 0 0 0 2px ${colorsRaw.blue};
+    box-shadow: inset 0 0 0 2px ${colors.active};
   }
 `;
 
@@ -55,7 +55,7 @@ const Suggestions = styled.ul`
   padding: 10px 0;
   margin: 0;
   list-style: none;
-  background-color: #fff;
+  background-color: ${colors.foreground};
   border-radius: ${lengths.borderRadius};
   border: 1px solid ${colors.textFieldBorder};
   z-index: ${zIndex.zIndex1};
@@ -69,7 +69,7 @@ const SuggestionHeader = styled.li`
 
 const SuggestionItem = styled.li(
   ({ isActive }) => `
-  color: ${isActive ? colors.active : colorsRaw.grayDark};
+  color: ${isActive ? colors.active : colors.textLead};
   background-color: ${isActive ? colors.activeBackground : 'inherit'};
   padding: 6px 6px 6px 34px;
   cursor: pointer;
