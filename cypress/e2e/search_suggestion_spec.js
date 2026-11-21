@@ -13,12 +13,17 @@ const assertSearchHeading = title => {
 };
 
 const assertSearchResult = (text, collection) => {
-  cy.get('[class*=ListCardLink] h2').contains(collection ?? text)
+  cy.get('[class*=ListCardLink] h2').contains(collection ?? text);
 };
 
 const assertNotInSearch = text => {
   cy.get('[class*=ListCardLink] h2').contains(text).should('not.exist');
 };
+
+// "content" appears in a blog post title and in a FAQ question, so it exercises both
+// collections. See dev-test/index.html for the seed data behind these titles.
+const POST = 'Modelling content with collections';
+const FAQ_ITEM = 'Where is my content stored?';
 
 describe('Search Suggestion', () => {
   before(() => {
@@ -35,37 +40,31 @@ describe('Search Suggestion', () => {
   });
 
   it('can search in all collections', () => {
-    search('this', 'All Collections');
+    search('content', 'All Collections');
 
-    assertSearchHeading('Search Results for "this"');
+    assertSearchHeading('Search Results for "content"');
 
-    assertSearchResult('This is post # 20', 'Posts');
-    assertSearchResult('This is a TOML front matter post', 'Posts');
-    assertSearchResult('This is a JSON front matter post', 'Posts');
-    assertSearchResult('This is a YAML front matter post', 'Posts');
-    assertSearchResult('This FAQ item # 5', 'FAQ');
+    assertSearchResult(POST, 'Blog Posts');
+    assertSearchResult(FAQ_ITEM, 'FAQ');
   });
 
   it('can search in posts collection', () => {
-    search('this', 'Posts');
+    search('content', 'Blog Posts');
 
-    assertSearchHeading('Search Results for "this" in Posts');
+    assertSearchHeading('Search Results for "content" in Blog Posts');
 
-    assertSearchResult('This is post # 20');
-    assertSearchResult('This is a TOML front matter post');
-    assertSearchResult('This is a JSON front matter post');
-    assertSearchResult('This is a YAML front matter post');
+    assertSearchResult(POST);
 
-    assertNotInSearch('This FAQ item # 5');
+    assertNotInSearch(FAQ_ITEM);
   });
 
   it('can search in faq collection', () => {
-    search('this', 'FAQ');
+    search('content', 'FAQ');
 
-    assertSearchHeading('Search Results for "this" in FAQ');
+    assertSearchHeading('Search Results for "content" in FAQ');
 
-    assertSearchResult('This FAQ item # 5');
+    assertSearchResult(FAQ_ITEM);
 
-    assertNotInSearch('This is post # 20');
+    assertNotInSearch(POST);
   });
 });

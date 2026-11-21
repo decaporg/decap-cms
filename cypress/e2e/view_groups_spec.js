@@ -24,6 +24,11 @@ const assertInEntries = text => {
   cy.get('[class*=ListCardLink] h2').contains('h2', text);
 };
 
+// dev-test/index.html seeds 15 listed blog posts on fixed dates, so these counts do not
+// drift with the current date. The 3 front matter format posts carry no category and no
+// featured flag, which is what produces the missing_value group.
+const TOTAL = 15;
+
 describe('View Group', () => {
   before(() => {
     Cypress.config('defaultCommandTimeout', 4000);
@@ -42,29 +47,39 @@ describe('View Group', () => {
     // enable group
     group('Year');
 
-    assertGroupsCount(2);
-    const year = new Date().getFullYear();
-    assertEachGroupCount(`Year${year}`, 20);
+    assertGroupsCount(4);
+    assertEachGroupCount('Year2026', 6);
+    assertEachGroupCount('Year2025', 4);
+    assertEachGroupCount('Year2024', 2);
     assertEachGroupCount('Year2015', 3);
 
     //disable group
     group('Year');
 
-    assertEntriesCount(23);
-    for (let i = 1; i <= 20; i++) {
-      assertInEntries(`This is post # ${i} --`);
-    }
-    assertInEntries('This is a YAML front matter post');
-    assertInEntries('This is a JSON front matter post');
-    assertInEntries('This is a TOML front matter post');
+    assertEntriesCount(TOTAL);
+    assertInEntries('Modelling content with collections');
+    assertInEntries('Front matter in YAML');
+    assertInEntries('Front matter in JSON');
+    assertInEntries('Front matter in TOML');
 
     //enable group
-    group('Relation Test');
+    group('Category');
 
-    assertEntriesCount(23);
+    assertEntriesCount(TOTAL);
+    assertGroupsCount(5);
+    assertEachGroupCount('CategoryTutorial', 5);
+    assertEachGroupCount('CategoryRelease Notes', 3);
+    assertEachGroupCount('CategoryCase Study', 2);
+    assertEachGroupCount('CategoryOpinion', 2);
+    assertEachGroupCount('missing_value', 3);
+
+    //switch group
+    group('Featured');
+
+    assertEntriesCount(TOTAL);
     assertGroupsCount(3);
-    assertEachGroupCount('Relation Testtrue', 10);
-    assertEachGroupCount('Relation Testfalse', 10);
+    assertEachGroupCount('Featuredtrue', 4);
+    assertEachGroupCount('Featuredfalse', 8);
     assertEachGroupCount('missing_value', 3);
   });
 });
