@@ -2,7 +2,6 @@ import attempt from 'lodash/attempt';
 import flatten from 'lodash/flatten';
 import isError from 'lodash/isError';
 import uniq from 'lodash/uniq';
-import trim from 'lodash/trim';
 import sortBy from 'lodash/sortBy';
 import get from 'lodash/get';
 import set from 'lodash/set';
@@ -18,7 +17,7 @@ import {
   asyncLock,
   EDITORIAL_WORKFLOW_ERROR,
 } from 'decap-cms-lib-util';
-import { basename, join, extname, dirname } from 'path';
+import { extname, dirname } from 'path';
 import { stringTemplate } from 'decap-cms-lib-widgets';
 
 import { resolveFormat } from './formats/formats';
@@ -36,6 +35,7 @@ import {
   selectMediaFolders,
   selectFieldsComments,
   selectHasMetaPath,
+  selectRejectsSlugCollisions,
   selectEntryCollectionTitle,
 } from './reducers/collections';
 import { createEntry } from './valueObjects/Entry';
@@ -56,7 +56,7 @@ import {
   getI18nFilesDepth,
   getI18nFiles,
   hasI18n,
-  getFilePath,
+  getFilePaths,
   getI18nFilesToDelete,
   getI18nEntry,
   groupEntries,
@@ -252,10 +252,7 @@ function sortByScore(a: fuzzy.FilterResult<EntryValue>, b: fuzzy.FilterResult<En
 }
 
 export function slugFromCustomPath(collection: Collection, customPath: string) {
-  const folderPath = collection.get('folder', '') as string;
-  const entryPath = customPath.toLowerCase().replace(folderPath.toLowerCase(), '');
-  const slug = join(dirname(trim(entryPath, '/')), basename(entryPath, extname(customPath)));
-  return slug;
+  return selectEntrySlug(collection, customPath) as string;
 }
 
 interface AuthStore {
@@ -356,14 +353,15 @@ function collectionDepth(collection: Collection) {
 }
 
 function i18nRulestring(
-  ruleString: string,
+  collection: Collection,
   { defaultLocale, structure }: I18nInfo,
   locale: string = defaultLocale,
 ): string {
   if (structure === I18N_STRUCTURE.MULTIPLE_FOLDERS) {
-    return `${locale}\\/${ruleString}`;
+    return collectionRuleString(collection, `${locale}/`);
   }
 
+  const ruleString = collectionRuleString(collection);
   if (structure === I18N_STRUCTURE.MULTIPLE_FILES) {
     return `${ruleString}\\.${locale}\\..*`;
   }
@@ -371,19 +369,21 @@ function i18nRulestring(
   return ruleString;
 }
 
-function collectionRuleString(collection: Collection): string {
-  if (!collection.get('path')) {
+function collectionRuleString(collection: Collection, localeFolder = ''): string {
+  const path = collection.get('path', '');
+  if (!path && !localeFolder) {
     return '';
   }
-  return `${collection.get('folder')}/${collection.get('path')}`.replace(/{{.*}}/gm, '(.*)');
+  return `${escapeRegExp(collection.get('folder'))}/${localeFolder}${path}`.replace(
+    /{{.*}}/gm,
+    '(.*)',
+  );
 }
 
 function collectionRegex(collection: Collection): RegExp | undefined {
-  let ruleString = collectionRuleString(collection);
-
-  if (hasI18n(collection)) {
-    ruleString = i18nRulestring(ruleString, getI18nInfo(collection) as I18nInfo);
-  }
+  const ruleString = hasI18n(collection)
+    ? i18nRulestring(collection, getI18nInfo(collection) as I18nInfo)
+    : collectionRuleString(collection);
 
   return ruleString ? new RegExp(ruleString) : undefined;
 }
@@ -411,7 +411,7 @@ function localeSiblingRegex(collection: Collection): RegExp | undefined {
   }
 
   const ruleString = i18nRulestring(
-    collectionRuleString(collection),
+    collection,
     i18n,
     `(?:${siblings.map(escapeRegExp).join('|')})`,
   );
@@ -565,33 +565,52 @@ export class Backend {
 
     if (unpublishedEntry) return unpublishedEntry;
 
-    // With multiple_files/multiple_folders i18n `path` itself always misses,
-    // and a miss reuses the slug and overwrites; probe the default locale.
-    let entryPath = path;
-    if (hasI18n(collection)) {
-      const { structure, defaultLocale } = getI18nInfo(collection) as I18nInfo;
-      entryPath = getFilePath(
-        structure as I18N_STRUCTURE,
-        selectFolderEntryExtension(collection),
-        path,
-        slug,
-        defaultLocale,
-      );
+    // A translation may exist even when the default locale does not.
+    const paths = hasI18n(collection)
+      ? getFilePaths(collection, selectFolderEntryExtension(collection), path, slug)
+      : [path];
+    for (const filePath of paths) {
+      const publishedEntry = await this.implementation
+        .getEntry(filePath)
+        .then(result => result?.data)
+        .catch((error: Error & { status?: number }) => {
+          // An unknown read error must not turn a taken slug into an apparent miss.
+          if (error?.status === 404) return false;
+          throw error;
+        });
+      if (publishedEntry) return publishedEntry;
     }
 
-    const publishedEntry = await this.implementation
-      .getEntry(entryPath)
-      .then(result => result?.data)
-      .catch((error: Error & { status?: number }) => {
-        // Only a 404 means "absent"; anything else fails the save rather than
-        // reuse a taken slug. Backends that swallow read errors never get here.
-        if (error?.status === 404) {
-          return false;
-        }
-        throw error;
-      });
+    return false;
+  }
 
-    return publishedEntry;
+  async slugExists(
+    collection: Collection,
+    config: CmsConfig,
+    usedSlugs: List<string>,
+    slug: string,
+  ) {
+    return (
+      usedSlugs.includes(slug) ||
+      this.entryExist(
+        collection,
+        selectEntryPath(collection, slug) as string,
+        slug,
+        selectUseWorkflow(config),
+      )
+    );
+  }
+
+  async assertNoSlugCollision(
+    collection: Collection,
+    config: CmsConfig,
+    usedSlugs: List<string>,
+    slug: string,
+  ) {
+    if (await this.slugExists(collection, config, usedSlugs, slug)) {
+      const path = selectEntryPath(collection, slug) as string;
+      throw new Error(`An entry already exists at "${path}". Change the entry identifier or path.`);
+    }
   }
 
   async generateUniqueSlug(
@@ -620,19 +639,15 @@ export class Backend {
         ? `${truncateSlug(slug, maxBytes - utf8ByteLength(suffix), slugConfig)}${suffix}`
         : slug;
     }
-    let i = 1;
     let uniqueSlug = fitSlug();
+    const isIndexFile = Boolean(customPath && collection.getIn(['meta', 'path', 'index_file']));
+    if (isIndexFile || selectRejectsSlugCollisions(collection)) {
+      await this.assertNoSlugCollision(collection, config, usedSlugs, uniqueSlug);
+      return uniqueSlug;
+    }
 
-    // Check for duplicate slug in loaded entities store first before repo
-    while (
-      usedSlugs.includes(uniqueSlug) ||
-      (await this.entryExist(
-        collection,
-        selectEntryPath(collection, uniqueSlug) as string,
-        uniqueSlug,
-        selectUseWorkflow(config),
-      ))
-    ) {
+    let i = 1;
+    while (await this.slugExists(collection, config, usedSlugs, uniqueSlug)) {
       uniqueSlug = fitSlug(`${sanitizeChar(' ', slugConfig)}${i++}`);
     }
     return uniqueSlug;
@@ -1425,7 +1440,10 @@ export class Backend {
         usedSlugs,
         customPath,
       );
-      const path = customPath || (selectEntryPath(collection, slug) as string);
+      const path =
+        customPath && slug === slugFromCustomPath(collection, customPath)
+          ? customPath
+          : (selectEntryPath(collection, slug) as string);
       dataFile = {
         path,
         slug,
@@ -1436,12 +1454,21 @@ export class Backend {
     } else {
       const slug = entryDraft.getIn(['entry', 'slug']);
       const path = entryDraft.getIn(['entry', 'path']);
+      const newPath = customPath === path ? undefined : customPath;
+      if (newPath && selectRejectsSlugCollisions(collection)) {
+        await this.assertNoSlugCollision(
+          collection,
+          config,
+          usedSlugs,
+          slugFromCustomPath(collection, newPath),
+        );
+      }
       dataFile = {
         path,
         // for workflow entries we refresh the slug on publish
         slug: customPath && !useWorkflow ? slugFromCustomPath(collection, customPath) : slug,
         raw: this.entryToRaw(collection, entryDraft.get('entry')),
-        newPath: customPath === path ? undefined : customPath,
+        newPath,
       };
     }
 

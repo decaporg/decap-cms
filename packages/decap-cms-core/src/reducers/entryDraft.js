@@ -15,6 +15,7 @@ import {
   DRAFT_LOCAL_BACKUP_RETRIEVED,
   DRAFT_CREATE_FROM_LOCAL_BACKUP,
   DRAFT_CREATE_DUPLICATE_FROM_ENTRY,
+  DRAFT_LOAD_REQUEST,
   ENTRY_PERSIST_REQUEST,
   ENTRY_PERSIST_SUCCESS,
   ENTRY_PERSIST_FAILURE,
@@ -73,9 +74,20 @@ function mergeFieldsMetaData(existing, incoming) {
 
 function entryDraftReducer(state = Map(), action) {
   switch (action.type) {
+    case DRAFT_LOAD_REQUEST:
+      // The draft now belongs to this load; see `draftLoadRequested`.
+      return state.set('pendingLoad', action.payload.loadId);
     case DRAFT_CREATE_FROM_ENTRY:
       // Existing Entry
+      if (
+        action.payload.loadId !== undefined &&
+        action.payload.loadId !== state.get('pendingLoad')
+      ) {
+        // A load the user has moved on from, e.g. to a new entry.
+        return state;
+      }
       return state.withMutations(state => {
+        state.delete('pendingLoad');
         state.set('entry', fromJS(action.payload.entry));
         state.setIn(['entry', 'newRecord'], false);
         state.set('fieldsMetaData', Map());
@@ -87,6 +99,7 @@ function entryDraftReducer(state = Map(), action) {
     case DRAFT_CREATE_EMPTY:
       // New Entry
       return state.withMutations(state => {
+        state.delete('pendingLoad');
         state.set('entry', fromJS(action.payload));
         state.setIn(['entry', 'newRecord'], true);
         state.set('fieldsMetaData', Map());
@@ -98,6 +111,7 @@ function entryDraftReducer(state = Map(), action) {
     case DRAFT_CREATE_FROM_LOCAL_BACKUP:
       // Local Backup
       return state.withMutations(state => {
+        state.delete('pendingLoad');
         const backupDraftEntry = state.get('localBackup');
         const backupEntry = backupDraftEntry.get('entry');
         state.delete('localBackup');
@@ -112,6 +126,7 @@ function entryDraftReducer(state = Map(), action) {
     case DRAFT_CREATE_DUPLICATE_FROM_ENTRY:
       // Duplicate Entry
       return state.withMutations(state => {
+        state.delete('pendingLoad');
         state.set('entry', fromJS(action.payload));
         state.setIn(['entry', 'newRecord'], true);
         state.set('mediaFiles', List());

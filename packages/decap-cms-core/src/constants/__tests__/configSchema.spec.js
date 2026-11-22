@@ -37,6 +37,21 @@ describe('config', () => {
       }).not.toThrowError();
     });
 
+    it('should allow supported folder collection slug collision policies', () => {
+      expect(() => {
+        validateConfig(merge({}, validConfig, { collections: [{ slug_collision: 'reject' }] }));
+      }).not.toThrowError();
+      expect(() => {
+        validateConfig(merge({}, validConfig, { collections: [{ slug_collision: 'suffix' }] }));
+      }).not.toThrowError();
+    });
+
+    it('should reject unsupported folder collection slug collision policies', () => {
+      expect(() => {
+        validateConfig(merge({}, validConfig, { collections: [{ slug_collision: 'overwrite' }] }));
+      }).toThrowError("'collections[0].slug_collision' must be equal to one of the allowed values");
+    });
+
     it('should throw if backend is not defined in config', () => {
       expect(() => {
         validateConfig({ foo: 'bar' });
@@ -665,6 +680,28 @@ describe('config', () => {
             }),
           );
         }).not.toThrow();
+      });
+    });
+
+    describe('when eval is forbidden (Content Security Policy without unsafe-eval)', () => {
+      beforeEach(() => {
+        jest.spyOn(global, 'Function').mockImplementation(() => {
+          throw new EvalError('Refused to evaluate a string as JavaScript');
+        });
+        jest.spyOn(console, 'warn').mockImplementation(() => {});
+      });
+
+      afterEach(() => {
+        jest.restoreAllMocks();
+      });
+
+      it('should skip schema validation and warn instead of throwing', () => {
+        expect(() => {
+          validateConfig(merge({}, validConfig, { backend: { name: 42 } }));
+        }).not.toThrow();
+        expect(console.warn).toHaveBeenCalledWith(
+          expect.stringContaining('Config schema validation skipped'),
+        );
       });
     });
   });

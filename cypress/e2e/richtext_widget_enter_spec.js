@@ -63,8 +63,7 @@ describe('Richtext widget breaks', () => {
           <h1>foo</h1>
         `);
     });
-    // behaviour change: plate now splits into default block
-    it('splits block into two same-type blocks when collapsed in middle of selection at block start', () => {
+    it('splits the rest of the block into a paragraph when collapsed in middle of selection at block start', () => {
       cy.clickHeadingOneButton()
         .type('foo')
         .setCursorBefore('oo')
@@ -74,14 +73,14 @@ describe('Richtext widget breaks', () => {
           <p>oo</p>
         `);
     });
-    it('deletes selected content and splits to same-type block when selection is expanded', () => {
+    it('deletes selected content and splits the rest into a paragraph when selection is expanded', () => {
       cy.clickHeadingOneButton()
         .type('foo bar')
         .setSelection('o b')
         .enter()
         .confirmMarkdownEditorContent(`
           <h1>fo</h1>
-          <h1>ar</h1>
+          <p>ar</p>
         `);
     });
   });

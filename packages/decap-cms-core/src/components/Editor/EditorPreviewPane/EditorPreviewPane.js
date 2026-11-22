@@ -316,12 +316,13 @@ PreviewPane.propTypes = {
 
 function mapStateToProps(state) {
   const isLoadingAsset = selectIsLoadingAsset(state.medias);
-  return { isLoadingAsset, config: state.config, state };
+  return { isLoadingAsset, config: state.config, state, medias: state.medias };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    boundGetAsset: (collection, entry) => boundGetAsset(dispatch, collection, entry),
+    boundGetAsset: (collection, entry, medias) =>
+      boundGetAsset(dispatch, collection, entry, medias),
   };
 }
 
@@ -330,7 +331,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     ...stateProps,
     ...dispatchProps,
     ...ownProps,
-    getAsset: dispatchProps.boundGetAsset(ownProps.collection, ownProps.entry),
+    getAsset: dispatchProps.boundGetAsset(ownProps.collection, ownProps.entry, stateProps.medias),
   };
 }
 

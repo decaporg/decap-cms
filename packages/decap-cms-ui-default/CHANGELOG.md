@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.10.0](https://github.com/decaporg/decap-cms/compare/decap-cms-ui-default@3.9.4...decap-cms-ui-default@3.10.0) (2026-11-18)
+
+### Bug Fixes
+
+- **ui-default:** keep the toggle in sync with its active prop ([#8059](https://github.com/decaporg/decap-cms/issues/8059)) ([95c793a](https://github.com/decaporg/decap-cms/commit/95c793a46b0b12ecd22158f47ae13b8543f38454)), closes [#7086](https://github.com/decaporg/decap-cms/issues/7086)
+
 ## [3.9.4](https://github.com/decaporg/decap-cms/compare/decap-cms-ui-default@3.9.3...decap-cms-ui-default@3.9.4) (2026-10-14)
 
 ### Performance Improvements

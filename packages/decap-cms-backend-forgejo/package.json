@@ -1,7 +1,7 @@
 {
   "name": "decap-cms-backend-forgejo",
   "description": "Forgejo backend for Decap CMS",
-  "version": "3.4.6",
+  "version": "3.5.0",
   "repository": "https://github.com/decaporg/decap-cms/tree/main/packages/decap-cms-backend-forgejo",
   "bugs": "https://github.com/decaporg/decap-cms/issues",
   "license": "MIT",
@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "common-tags": "^1.8.0",
-    "js-base64": "^3.0.0",
+    "js-base64": "catalog:",
     "semaphore": "^1.1.0"
   },
   "peerDependencies": {

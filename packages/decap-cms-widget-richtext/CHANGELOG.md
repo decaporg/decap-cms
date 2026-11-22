@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.8.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-richtext@3.7.2...decap-cms-widget-richtext@3.8.0) (2026-11-18)
+
+### Bug Fixes
+
+- **widget-richtext:** upgrade Plate to 53 ([#8047](https://github.com/decaporg/decap-cms/issues/8047)) ([58f8239](https://github.com/decaporg/decap-cms/commit/58f8239ecad88c43d1da2d92e10b9bf134e68010))
+
 ## [3.7.2](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-richtext@3.7.1...decap-cms-widget-richtext@3.7.2) (2026-10-14)
 
 ### Performance Improvements

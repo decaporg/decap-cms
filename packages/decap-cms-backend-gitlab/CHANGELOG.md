@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.8.0](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-gitlab@3.7.2...decap-cms-backend-gitlab@3.8.0) (2026-11-18)
+
+### Bug Fixes
+
+- **gitlab,bitbucket:** make default branch detection work ([#8077](https://github.com/decaporg/decap-cms/issues/8077)) ([000deb8](https://github.com/decaporg/decap-cms/commit/000deb8c4058857ef60a778312c004a1f0efe5ab))
+- **gitlab,bitbucket:** recover after a failed token refresh ([#8076](https://github.com/decaporg/decap-cms/issues/8076)) ([77d5aff](https://github.com/decaporg/decap-cms/commit/77d5aff07635ecec590587c25491e89d1e804ad7))
+
 ## [3.7.2](https://github.com/decaporg/decap-cms/compare/decap-cms-backend-gitlab@3.7.1...decap-cms-backend-gitlab@3.7.2) (2026-10-26)
 
 ### Bug Fixes

@@ -1,5 +1,4 @@
 import { isAbsolutePath } from 'decap-cms-lib-util';
-import memoize from 'lodash/memoize';
 
 import { createAssetProxy } from '../valueObjects/AssetProxy';
 import { selectMediaFilePath } from '../reducers/entries';
@@ -7,6 +6,7 @@ import { selectMediaFileByPath } from '../reducers/mediaLibrary';
 import { getMediaFile, waitForMediaLibraryToLoad, getMediaDisplayURL } from './mediaLibrary';
 
 import type AssetProxy from '../valueObjects/AssetProxy';
+import type { Medias } from '../reducers/medias';
 import type { Collection, State, EntryMap, EntryField } from '../types/redux';
 import type { ThunkDispatch } from 'redux-thunk';
 import type { AnyAction } from 'redux';
@@ -81,18 +81,74 @@ const emptyAsset = createAssetProxy({
   }),
 });
 
-export const boundGetAsset = memoize(
-  (dispatch: ThunkDispatch<State, {}, AnyAction>, collection: Collection, entry: EntryMap) => {
-    function bound(path: string, field: EntryField) {
-      const asset = dispatch(getAsset({ collection, entry, path, field }));
-      return asset;
-    }
-    return bound;
-  },
-  (_dispatch, _collection, entry) => entry,
-);
+type BoundGetAsset = (path: string, field: EntryField) => AssetProxy;
+type BoundGetAssetCache = WeakMap<object, WeakMap<object, BoundGetAsset>>;
 
-boundGetAsset.cache = new WeakMap();
+const anyMedias = {};
+
+// A bound getAsset is kept stable so widgets and previews don't re-render on
+// every store change, but it is replaced whenever the medias state changes:
+// image widgets and previews only ask for an asset again when this function
+// changes, so a stable one leaves them on the empty placeholder after the asset
+// arrives (#8055). WeakMaps let old medias states and entries be garbage collected.
+function cachedPerMedias(
+  cache: BoundGetAssetCache,
+  medias: object,
+  key: object,
+  create: () => BoundGetAsset,
+) {
+  let byKey = cache.get(medias);
+  if (!byKey) {
+    byKey = new WeakMap();
+    cache.set(medias, byKey);
+  }
+
+  let bound = byKey.get(key);
+  if (!bound) {
+    bound = create();
+    byKey.set(key, bound);
+  }
+
+  return bound;
+}
+
+const entryAssetCache: BoundGetAssetCache = new WeakMap();
+
+/**
+ * getAsset bound to a given entry, for entry cards and the preview pane. Pass
+ * the medias state to get a new function whenever an asset loads.
+ */
+export function boundGetAsset(
+  dispatch: ThunkDispatch<State, {}, AnyAction>,
+  collection: Collection,
+  entry: EntryMap,
+  medias: Medias = anyMedias,
+) {
+  return cachedPerMedias(
+    entryAssetCache,
+    medias,
+    entry,
+    () => (path, field) => dispatch(getAsset({ collection, entry, path, field })),
+  );
+}
+
+const draftAssetCache: BoundGetAssetCache = new WeakMap();
+
+/**
+ * getAsset for the editor controls. It reads the entry draft when called, so
+ * it stays the same while the entry is edited.
+ */
+export function boundGetDraftAsset(
+  dispatch: ThunkDispatch<State, {}, AnyAction>,
+  getState: () => State,
+  collection: Collection,
+  medias: Medias,
+) {
+  return cachedPerMedias(draftAssetCache, medias, collection, () => (path, field) => {
+    const entry = getState().entryDraft.get('entry');
+    return dispatch(getAsset({ collection, entry, path, field }));
+  });
+}
 
 export function getAsset({ collection, entry, path, field }: GetAssetArgs) {
   return (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {

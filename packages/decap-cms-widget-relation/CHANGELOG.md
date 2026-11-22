@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.8.0](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-relation@3.7.5...decap-cms-widget-relation@3.8.0) (2026-11-18)
+
+### Bug Fixes
+
+- **widget-relation:** support wildcards inside string template fields ([#8063](https://github.com/decaporg/decap-cms/issues/8063)) ([c1e3e0d](https://github.com/decaporg/decap-cms/commit/c1e3e0d366e68f0a96e078f82ed2daa97b7792ee)), closes [#5487](https://github.com/decaporg/decap-cms/issues/5487)
+
 ## [3.7.5](https://github.com/decaporg/decap-cms/compare/decap-cms-widget-relation@3.7.4...decap-cms-widget-relation@3.7.5) (2026-10-26)
 
 ### Bug Fixes

@@ -85,7 +85,6 @@
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "@types/react-redux": "catalog:",
-    "@types/uuid": "catalog:",
     "@typescript-eslint/eslint-plugin": "catalog:",
     "@typescript-eslint/parser": "catalog:",
     "ajv": "catalog:",

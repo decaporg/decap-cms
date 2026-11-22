@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.21.0](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.20.2...decap-cms-core@3.21.0) (2026-11-18)
+
+### Bug Fixes
+
+- **core:** allow a blank meta path when it is not required ([#8058](https://github.com/decaporg/decap-cms/issues/8058)) ([dd5e670](https://github.com/decaporg/decap-cms/commit/dd5e6703c04bad5eb8fa6ed6190bbf73b9b4a9f0)), closes [#7094](https://github.com/decaporg/decap-cms/issues/7094)
+- **core:** ignore entry loads the user has already left ([#8079](https://github.com/decaporg/decap-cms/issues/8079)) ([c18246a](https://github.com/decaporg/decap-cms/commit/c18246ab004a9bb25f66ad014c4b941b7b3a728c)), closes [#8065](https://github.com/decaporg/decap-cms/issues/8065) [#5055](https://github.com/decaporg/decap-cms/issues/5055)
+- **core:** keep config field order when writing JSON files ([#8060](https://github.com/decaporg/decap-cms/issues/8060)) ([ae9b74e](https://github.com/decaporg/decap-cms/commit/ae9b74e97d902bc1dd3c28407b37bec9aa8c3e94))
+- **core:** keep the case of nested entry paths in their slug ([#8071](https://github.com/decaporg/decap-cms/issues/8071)) ([930dc66](https://github.com/decaporg/decap-cms/commit/930dc6641f33248f4a2cdf24ea7a4c1b17522ccd)), closes [#8007](https://github.com/decaporg/decap-cms/issues/8007) [#8068](https://github.com/decaporg/decap-cms/issues/8068)
+- **core:** never overwrite an entry when a nested path is taken ([#8082](https://github.com/decaporg/decap-cms/issues/8082)) ([0d561b5](https://github.com/decaporg/decap-cms/commit/0d561b5b7885425931948c85e270f8e9f8c6f799))
+- **core:** reset regex state when validating field pattern ([#8061](https://github.com/decaporg/decap-cms/issues/8061)) ([00d12c4](https://github.com/decaporg/decap-cms/commit/00d12c4b1da0b207b44df59b7c48e41f8e6b5632)), closes [#6500](https://github.com/decaporg/decap-cms/issues/6500)
+- **core:** resolve i18n locale paths relative to the collection folder ([#8072](https://github.com/decaporg/decap-cms/issues/8072)) ([5afea43](https://github.com/decaporg/decap-cms/commit/5afea43e7d8348a4eb0ca625ff458d51d0ea48a8)), closes [#8069](https://github.com/decaporg/decap-cms/issues/8069)
+- **core:** skip config schema validation when eval is forbidden ([#8084](https://github.com/decaporg/decap-cms/issues/8084)) ([bf6fca1](https://github.com/decaporg/decap-cms/commit/bf6fca1cf317a4c750c4e82f50d4b8844824c48a)), closes [#2138](https://github.com/decaporg/decap-cms/issues/2138)
+- **core:** update editor controls after filling in from another locale ([#8064](https://github.com/decaporg/decap-cms/issues/8064)) ([a80a56c](https://github.com/decaporg/decap-cms/commit/a80a56c4a25b955c58e4f7e0ba8c60cb144f1e2b)), closes [#7507](https://github.com/decaporg/decap-cms/issues/7507)
+- file control listens to getAsset changes and only rerenders when… ([#8057](https://github.com/decaporg/decap-cms/issues/8057)) ([1246e44](https://github.com/decaporg/decap-cms/commit/1246e44ff5f82f7aeedeae975acac9b23e4176ab)), closes [#8055](https://github.com/decaporg/decap-cms/issues/8055) [#8055](https://github.com/decaporg/decap-cms/issues/8055)
+
+### Features
+
+- **core:** add configurable slug collision policy ([#7999](https://github.com/decaporg/decap-cms/issues/7999)) ([0f02721](https://github.com/decaporg/decap-cms/commit/0f02721f0d057217a026bc63da9d4ee98736de4d))
+
 ## [3.20.2](https://github.com/decaporg/decap-cms/compare/decap-cms-core@3.20.1...decap-cms-core@3.20.2) (2026-10-26)
 
 ### Bug Fixes

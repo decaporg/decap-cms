@@ -93,6 +93,7 @@ export const DRAFT_CLEAR_ERRORS = 'DRAFT_CLEAR_ERRORS';
 export const DRAFT_LOCAL_BACKUP_RETRIEVED = 'DRAFT_LOCAL_BACKUP_RETRIEVED';
 export const DRAFT_CREATE_FROM_LOCAL_BACKUP = 'DRAFT_CREATE_FROM_LOCAL_BACKUP';
 export const DRAFT_CREATE_DUPLICATE_FROM_ENTRY = 'DRAFT_CREATE_DUPLICATE_FROM_ENTRY';
+export const DRAFT_LOAD_REQUEST = 'DRAFT_LOAD_REQUEST';
 
 export const ENTRY_PERSIST_REQUEST = 'ENTRY_PERSIST_REQUEST';
 export const ENTRY_PERSIST_SUCCESS = 'ENTRY_PERSIST_SUCCESS';
@@ -416,10 +417,24 @@ export function emptyDraftCreated(entry: EntryValue) {
 /*
  * Exported simple Action Creators
  */
-export function createDraftFromEntry(entry: EntryValue) {
+/**
+ * A response to an entry load can arrive after the user has left that editor:
+ * opened the entry, pressed Back and clicked "New" or another entry. Applied
+ * then, it would put the old entry in the editor on screen, and saving would
+ * overwrite the old entry. So every load that ends in a draft registers itself
+ * first, and the draft is only created if no other load, and no other draft
+ * (discarded, empty, duplicated, restored from a backup), came after it.
+ */
+let lastDraftLoadId = 0;
+
+export function draftLoadRequested() {
+  return { type: DRAFT_LOAD_REQUEST, payload: { loadId: ++lastDraftLoadId } };
+}
+
+export function createDraftFromEntry(entry: EntryValue, loadId?: number) {
   return {
     type: DRAFT_CREATE_FROM_ENTRY,
-    payload: { entry },
+    payload: loadId === undefined ? { entry } : { entry, loadId },
   };
 }
 
@@ -595,15 +610,24 @@ export function deleteLocalBackup(collection: Collection, slug: string) {
  * Exported Thunk Action Creators
  */
 
-export function loadEntry(collection: Collection, slug: string) {
+/**
+ * `loadId` is only for a load that continues another one, such as an
+ * editorial workflow entry that turns out to be published: it keeps the
+ * original's place, so whatever superseded the original supersedes it too.
+ */
+export function loadEntry(collection: Collection, slug: string, loadId?: number) {
   return async (dispatch: ThunkDispatch<State, {}, AnyAction>, getState: () => State) => {
+    // Before any await, so a draft the user moves on to meanwhile supersedes it.
+    if (loadId === undefined) {
+      loadId = dispatch(draftLoadRequested()).payload.loadId;
+    }
     await waitForMediaLibraryToLoad(dispatch, getState());
     dispatch(entryLoading(collection, slug));
 
     try {
       const loadedEntry = await tryLoadEntry(getState(), collection, slug);
       dispatch(entryLoaded(collection, loadedEntry));
-      dispatch(createDraftFromEntry(loadedEntry));
+      dispatch(createDraftFromEntry(loadedEntry, loadId));
     } catch (error) {
       dispatch(
         addNotification({
@@ -1532,6 +1556,10 @@ export function validateMetaField(
 ) {
   if (field.get('meta') && field.get('name') === 'path') {
     if (!value) {
+      // An optional path can be left blank, the entry then falls back to the collection path
+      if (field.get('required') === false) {
+        return { error: false };
+      }
       return getPathError(value, 'invalidPath', t);
     }
     const sanitizedPath = (value as string)
