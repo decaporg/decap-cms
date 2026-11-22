@@ -2,6 +2,7 @@ import { Component } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { List, Map } from 'immutable';
+import trimEnd from 'lodash/trimEnd';
 
 import RawEditor from './RawEditor';
 import VisualEditor from './VisualEditor';
@@ -75,6 +76,21 @@ export default class MarkdownControl extends Component {
     localStorage.setItem(MODE_STORAGE_KEY, mode);
   };
 
+  // The serializer trims trailing whitespace, while a saved file ends with a newline
+  // (see `entryToRaw`), so the stored value can be "text\n" while the editor reports "text".
+  // Keep the stored value's trailing whitespace on output that has none of its own, so that
+  // loading an entry, or undoing an edit, gives back the saved value instead of marking the
+  // entry as having unsaved changes.
+  handleChange = newValue => {
+    const { onChange } = this.props;
+    const value = this.props.value ?? '';
+    const trailing = value.slice(trimEnd(value).length);
+    const nextValue = newValue && trimEnd(newValue) === newValue ? newValue + trailing : newValue;
+    if (nextValue !== value) {
+      onChange(nextValue);
+    }
+  };
+
   processRef = ref => (this.ref = ref);
 
   setFocusReceived = () => {
@@ -89,7 +105,6 @@ export default class MarkdownControl extends Component {
 
   render() {
     const {
-      onChange,
       onAddAsset,
       getAsset,
       value,
@@ -108,7 +123,7 @@ export default class MarkdownControl extends Component {
     const visualEditor = (
       <div className="cms-editor-visual" ref={this.processRef}>
         <VisualEditor
-          onChange={onChange}
+          onChange={this.handleChange}
           onAddAsset={onAddAsset}
           isShowModeToggle={isShowModeToggle}
           onMode={this.handleMode}
@@ -128,7 +143,7 @@ export default class MarkdownControl extends Component {
     const rawEditor = (
       <div className="cms-editor-raw" ref={this.processRef}>
         <RawEditor
-          onChange={onChange}
+          onChange={this.handleChange}
           onAddAsset={onAddAsset}
           isShowModeToggle={isShowModeToggle}
           onMode={this.handleMode}

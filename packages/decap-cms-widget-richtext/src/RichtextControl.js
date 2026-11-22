@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { List } from 'immutable';
+import trimEnd from 'lodash/trimEnd';
 
 import VisualEditor from './RichtextControl/VisualEditor';
 import { EditorProvider } from './RichtextControl/editorContext';
@@ -59,6 +60,21 @@ export default class RichtextControl extends React.Component {
     localStorage.setItem(MODE_STORAGE_KEY, mode);
   };
 
+  // The serializer trims trailing whitespace, while a saved file ends with a newline
+  // (see `entryToRaw`), so the stored value can be "text\n" while the editor reports "text".
+  // Keep the stored value's trailing whitespace on output that has none of its own, so that
+  // loading an entry, or undoing an edit, gives back the saved value instead of marking the
+  // entry as having unsaved changes.
+  handleChange = newValue => {
+    const { onChange } = this.props;
+    const value = this.props.value ?? '';
+    const trailing = value.slice(trimEnd(value).length);
+    const nextValue = newValue && trimEnd(newValue) === newValue ? newValue + trailing : newValue;
+    if (nextValue !== value) {
+      onChange(nextValue);
+    }
+  };
+
   setFocusReceived = () => {
     this.setState({ pendingFocus: false });
   };
@@ -77,7 +93,6 @@ export default class RichtextControl extends React.Component {
       isDisabled,
       getEditorComponents,
       editorControl,
-      onChange,
       onAddAsset,
       getAsset,
       value,
@@ -99,7 +114,7 @@ export default class RichtextControl extends React.Component {
             isEditorComponent={isEditorComponent}
             onMode={this.handleMode}
             isShowModeToggle={isShowModeToggle}
-            onChange={onChange}
+            onChange={this.handleChange}
             onAddAsset={onAddAsset}
             getAsset={getAsset}
             pendingFocus={pendingFocus && this.setFocusReceived}
@@ -112,7 +127,7 @@ export default class RichtextControl extends React.Component {
     const rawEditor = (
       <div className="cms-editor-raw">
         <RawEditor
-          onChange={onChange}
+          onChange={this.handleChange}
           onAddAsset={onAddAsset}
           getAsset={getAsset}
           isShowModeToggle={isShowModeToggle}
