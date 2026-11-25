@@ -782,6 +782,55 @@ describe('Backend', () => {
     });
   });
 
+  describe('unpublishedEntries', () => {
+    function notUnderWorkflow() {
+      return Promise.reject(
+        Object.assign(new Error('content is not under editorial workflow'), {
+          name: 'EDITORIAL_WORKFLOW_ERROR',
+          notUnderEditorialWorkflow: true,
+        }),
+      );
+    }
+
+    function backendWith(unpublishedEntry) {
+      const implementation = {
+        init: jest.fn(() => implementation),
+        unpublishedEntries: jest.fn().mockResolvedValue(['posts/stray', 'posts/draft']),
+        unpublishedEntry,
+      };
+      const backend = new Backend(implementation, { config: {}, backendName: 'gitlab' });
+      backend.processUnpublishedEntry = jest.fn((collection, entryData) =>
+        Promise.resolve({ slug: entryData.slug }),
+      );
+      return backend;
+    }
+
+    const collections = fromJS([{ name: 'posts' }]);
+
+    it('skips an entry that is not under editorial workflow instead of failing the board', async () => {
+      jest.spyOn(console, 'warn').mockImplementation(() => undefined);
+      const backend = backendWith(
+        jest.fn(({ id }) =>
+          id === 'posts/stray'
+            ? notUnderWorkflow()
+            : Promise.resolve({ collection: 'posts', slug: 'draft' }),
+        ),
+      );
+
+      await expect(backend.unpublishedEntries(collections)).resolves.toEqual({
+        pagination: 0,
+        entries: [{ slug: 'draft' }],
+      });
+    });
+
+    it('still fails on any other error', async () => {
+      const error = new Error('Network down');
+      const backend = backendWith(jest.fn().mockRejectedValue(error));
+
+      await expect(backend.unpublishedEntries(collections)).rejects.toBe(error);
+    });
+  });
+
   describe('generateUniqueSlug', () => {
     function postsCollection(overrides) {
       return fromJS({

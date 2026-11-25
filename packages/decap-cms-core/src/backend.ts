@@ -1268,7 +1268,19 @@ export class Backend {
     const entries = (
       await Promise.all(
         ids.map(async id => {
-          const entryData = await this.implementation.unpublishedEntry({ id });
+          let entryData;
+          try {
+            entryData = await this.implementation.unpublishedEntry({ id });
+          } catch (error) {
+            // A branch that matched the backend's listing but has no editorial
+            // entry behind it (e.g. a hand-made branch or a closed MR) must not
+            // take the whole board down with it.
+            if (error.name === EDITORIAL_WORKFLOW_ERROR && error.notUnderEditorialWorkflow) {
+              console.warn(`Skipping unpublished entry '${id}': ${error.message}`);
+              return null;
+            }
+            throw error;
+          }
           const collectionName = entryData.collection;
           const collection = collections.find(c => c.get('name') === collectionName);
           if (!collection) {

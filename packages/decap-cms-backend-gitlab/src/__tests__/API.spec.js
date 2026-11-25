@@ -180,6 +180,23 @@ describe('GitLab API', () => {
     });
   });
 
+  describe('getMergeRequests', () => {
+    test('only lists merge requests from cms/ branches', async () => {
+      const api = new API({ repo: 'foo/bar' });
+      const label = 'decap-cms/draft';
+      api.requestJSON = jest.fn().mockResolvedValue([
+        { source_branch: 'cms/posts/hello', labels: [label] },
+        { source_branch: 'cms-posts/hello', labels: [label] },
+        { source_branch: 'cmsposts/hello', labels: [label] },
+        { source_branch: 'cms/posts/unlabelled', labels: [] },
+      ]);
+
+      const mergeRequests = await api.getMergeRequests();
+
+      expect(mergeRequests.map(mr => mr.source_branch)).toEqual(['cms/posts/hello']);
+    });
+  });
+
   describe('publishUnpublishedEntry', () => {
     test.each([false, true])(
       'merges the fetched head SHA with squashMerges=%s',
