@@ -67,20 +67,30 @@ async function moveFile(from: string, to: string) {
 }
 
 export async function move(repoPath: string, from: string, to: string, hasSubfolders = true) {
+  const repoRoot = await fs.realpath(path.resolve(repoPath));
   const resolvedFrom = await resolveExistingRepoPath(repoPath, from);
   const resolvedTo = await resolveNewRepoPath(repoPath, to);
+  const sourceDir = path.dirname(resolvedFrom);
+  const destDir = path.dirname(resolvedTo);
 
-  // move file
+  // Legacy behavior (subfolders: true, default): the entry's folder holds the
+  // rest of the entry, such as its media, so the folder moves with it. List it
+  // before the entry moves, as the remote backends do, so an entry moved into
+  // a subfolder of its own folder isn't swept along a second time. Never sweep
+  // the repository root: that would move every file in the repository.
+  const siblings =
+    hasSubfolders && sourceDir !== repoRoot && sourceDir !== destDir
+      ? (await listFiles(sourceDir, '', 100)).filter(file => file !== resolvedFrom)
+      : [];
+  const siblingMoves = await Promise.all(
+    siblings.map(async file => {
+      const target = path.join(destDir, path.relative(sourceDir, file));
+      return [file, await resolveNewRepoPath(repoPath, path.relative(repoRoot, target))];
+    }),
+  );
+
   await moveFile(resolvedFrom, resolvedTo);
-
-  if (hasSubfolders) {
-    // Legacy behavior (subfolders: true, default): move all files in the directory
-    // This is for collections where all files in a folder represent a single entry
-    const sourceDir = path.dirname(resolvedFrom);
-    const destDir = path.dirname(resolvedTo);
-    const allFiles = await listFiles(sourceDir, '', 100);
-    await Promise.all(allFiles.map(file => moveFile(file, file.replace(sourceDir, destDir))));
-  }
+  await Promise.all(siblingMoves.map(([file, target]) => moveFile(file, target)));
 }
 
 export async function getUpdateDate(repoPath: string, filePath: string) {

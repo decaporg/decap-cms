@@ -104,3 +104,78 @@ describe('repository filesystem boundary', () => {
     });
   });
 });
+
+describe('move', () => {
+  let repoPath: string;
+
+  async function write(file: string, content = file) {
+    await fs.mkdir(path.dirname(path.join(repoPath, file)), { recursive: true });
+    await fs.writeFile(path.join(repoPath, file), content);
+  }
+
+  async function listRepo(dir = repoPath): Promise<string[]> {
+    const dirents = await fs.readdir(dir, { withFileTypes: true });
+    const files = await Promise.all(
+      dirents.map(dirent => {
+        const res = path.join(dir, dirent.name);
+        return dirent.isDirectory()
+          ? listRepo(res)
+          : [path.relative(repoPath, res).split(path.sep).join('/')];
+      }),
+    );
+    return ([] as string[]).concat(...files).sort();
+  }
+
+  beforeEach(async () => {
+    repoPath = await fs.mkdtemp(path.join(os.tmpdir(), 'decap-server-move-'));
+  });
+
+  afterEach(async () => {
+    await fs.rm(repoPath, { recursive: true, force: true });
+  });
+
+  it('moves the rest of the entry folder with the entry', async () => {
+    await write('content/pages/about/index.md');
+    await write('content/pages/about/photo.png');
+    await write('content/pages/other/index.md');
+
+    await move(repoPath, 'content/pages/about/index.md', 'content/pages/team/about/index.md');
+
+    expect(await listRepo()).toEqual([
+      'content/pages/other/index.md',
+      'content/pages/team/about/index.md',
+      'content/pages/team/about/photo.png',
+    ]);
+  });
+
+  it('moves an entry into a subfolder of its own folder only once', async () => {
+    await write('content/pages/about/index.md');
+    await write('content/pages/about/photo.png');
+
+    await move(repoPath, 'content/pages/about/index.md', 'content/pages/about/team/index.md');
+
+    expect(await listRepo()).toEqual([
+      'content/pages/about/team/index.md',
+      'content/pages/about/team/photo.png',
+    ]);
+  });
+
+  it('moves only the entry when it sits at the repository root', async () => {
+    await write('post.md');
+    await write('top.txt');
+    await write('content/posts/hello.md');
+
+    await move(repoPath, 'post.md', 'moved/post.md');
+
+    expect(await listRepo()).toEqual(['content/posts/hello.md', 'moved/post.md', 'top.txt']);
+  });
+
+  it('moves only the entry when subfolders is false', async () => {
+    await write('content/posts/a.md');
+    await write('content/posts/b.md');
+
+    await move(repoPath, 'content/posts/a.md', 'content/posts/sub/a.md', false);
+
+    expect(await listRepo()).toEqual(['content/posts/b.md', 'content/posts/sub/a.md']);
+  });
+});
