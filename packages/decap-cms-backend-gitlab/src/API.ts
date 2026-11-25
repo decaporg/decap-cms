@@ -727,7 +727,7 @@ export default class API {
 
     return mergeRequests.filter(
       mr =>
-        mr.source_branch.startsWith(CMS_BRANCH_PREFIX) &&
+        mr.source_branch.startsWith(`${CMS_BRANCH_PREFIX}/`) &&
         mr.labels.some(l => isCMSLabel(l, this.cmsLabelPrefix)),
     );
   }
