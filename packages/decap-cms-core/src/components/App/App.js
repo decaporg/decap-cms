@@ -239,19 +239,23 @@ export class App extends Component {
         <AppMainContainer>
           {isFetching && <TopBarProgress />}
           <Switch>
-            <Redirect exact from="/" to={defaultPath} />
-            <Redirect exact from="/search/" to={defaultPath} />
+            {/*
+              Redirect through a Route so the Switch does not pass its match to the Redirect:
+              React Router would then compile `to` as a path pattern, which throws on a
+              collection name with characters such as `(` or `:` in it.
+            */}
+            <Route exact path={['/', '/search/']} render={() => <Redirect to={defaultPath} />} />
             <RouteInCollection
               exact
               collections={collections}
               path="/collections/:name/search/"
               render={({ match }) => <Redirect to={`/collections/${match.params.name}`} />}
             />
-            <Redirect
+            <Route
               // This happens on Identity + Invite Only + External Provider email not matching
               // the registered user
-              from="/error=access_denied&error_description=Signups+not+allowed+for+this+instance"
-              to={defaultPath}
+              path="/error=access_denied&error_description=Signups+not+allowed+for+this+instance"
+              render={() => <Redirect to={defaultPath} />}
             />
             {hasWorkflow ? <Route path="/workflow" component={Workflow} /> : null}
             {hasDeployStatus ? <Route path="/deploys" component={Deploys} /> : null}
