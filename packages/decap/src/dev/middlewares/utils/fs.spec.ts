@@ -118,7 +118,9 @@ describe('move', () => {
     const files = await Promise.all(
       dirents.map(dirent => {
         const res = path.join(dir, dirent.name);
-        return dirent.isDirectory() ? listRepo(res) : [path.relative(repoPath, res)];
+        return dirent.isDirectory()
+          ? listRepo(res)
+          : [path.relative(repoPath, res).split(path.sep).join('/')];
       }),
     );
     return ([] as string[]).concat(...files).sort();
