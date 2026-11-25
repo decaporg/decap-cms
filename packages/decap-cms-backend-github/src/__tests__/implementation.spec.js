@@ -85,6 +85,75 @@ describe('github backend implementation', () => {
     });
   });
 
+  describe('authenticateWithFork', () => {
+    const forkConfig = {
+      backend: { ...config.backend, open_authoring: true },
+    };
+
+    function response(status, body = {}) {
+      return { ok: status >= 200 && status < 300, status, json: () => Promise.resolve(body) };
+    }
+
+    function setup(routes) {
+      const gitHubImplementation = new GitHubImplementation(forkConfig, { useWorkflow: true });
+      gitHubImplementation.currentUser = jest.fn().mockResolvedValue({ login: 'login' });
+      gitHubImplementation.userIsOriginMaintainer = jest.fn().mockResolvedValue(false);
+      const calls = [];
+      global.fetch = jest.fn((url, init = {}) => {
+        const key = `${init.method || 'GET'} ${url.replace('https://api.github.com', '')}`;
+        calls.push(key);
+        const route = routes[key];
+        return Promise.resolve(typeof route === 'function' ? route() : route || response(404));
+      });
+      return { gitHubImplementation, calls };
+    }
+
+    it('uses the fork GitHub returns when it is named differently from the origin', async () => {
+      const { gitHubImplementation } = setup({
+        'POST /repos/owner/repo/forks': response(202, { full_name: 'login/old-repo-name' }),
+        'GET /repos/login/old-repo-name': response(200, { full_name: 'login/old-repo-name' }),
+      });
+
+      await gitHubImplementation.authenticateWithFork({
+        userData: { token: 'token' },
+        getPermissionToFork: () => true,
+      });
+
+      expect(gitHubImplementation.repo).toBe('login/old-repo-name');
+    });
+
+    it('waits until a new fork exists', async () => {
+      let polls = 0;
+      const { gitHubImplementation } = setup({
+        'POST /repos/owner/repo/forks': response(202, { full_name: 'login/repo' }),
+        'GET /repos/login/repo': () => (++polls < 3 ? response(404) : response(200, {})),
+      });
+
+      await gitHubImplementation.authenticateWithFork({
+        userData: { token: 'token' },
+        getPermissionToFork: () => true,
+      });
+
+      // forkExists gets the first 404, the first poll the second, and the second poll the fork
+      expect(polls).toBe(3);
+      expect(gitHubImplementation.repo).toBe('login/repo');
+    });
+
+    it('stops polling on an error other than 404', async () => {
+      const { gitHubImplementation } = setup({
+        'POST /repos/owner/repo/forks': response(202, { full_name: 'login/repo' }),
+        'GET /repos/login/repo': response(403),
+      });
+
+      await expect(
+        gitHubImplementation.authenticateWithFork({
+          userData: { token: 'token' },
+          getPermissionToFork: () => true,
+        }),
+      ).rejects.toThrow('Failed to load fork login/repo: 403');
+    });
+  });
+
   describe('persistMedia', () => {
     const persistFiles = jest.fn();
     const mockAPI = {

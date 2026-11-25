@@ -195,18 +195,14 @@ export default class GitHub implements Implementation {
     const pollDelay = 250; // milliseconds
     let repoExists = false;
     while (!repoExists) {
-      repoExists = await fetch(`${this.apiRoot}/repos/${repo}`, {
+      const res = await fetch(`${this.apiRoot}/repos/${repo}`, {
         headers: { Authorization: `${this.tokenKeyword} ${token}` },
-      })
-        .then(() => true)
-        .catch(err => {
-          if (err && err.status === 404) {
-            console.log('This 404 was expected and handled appropriately.');
-            return false;
-          } else {
-            return Promise.reject(err);
-          }
-        });
+      });
+      // fetch resolves on HTTP errors: a 404 means GitHub has not finished creating the fork
+      if (!res.ok && res.status !== 404) {
+        throw new Error(`Failed to load fork ${repo}: ${res.status}`);
+      }
+      repoExists = res.ok;
       // wait between polls
       if (!repoExists) {
         await new Promise(resolve => setTimeout(resolve, pollDelay));
@@ -327,6 +323,10 @@ export default class GitHub implements Implementation {
           Authorization: `${this.tokenKeyword} ${token}`,
         },
       }).then(res => res.json());
+      // GitHub returns the user's existing fork, which can have another name than the origin
+      // repository (renamed, or created while the origin had another name), and names a new
+      // fork differently when the user already has a repository with the origin's name.
+      this.repo = fork.full_name;
       return this.pollUntilForkExists({ repo: fork.full_name, token });
     }
   }
